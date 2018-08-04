@@ -1,0 +1,7 @@
+{
+  "name": "regObs4",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
