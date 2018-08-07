@@ -27,6 +27,8 @@
     "@ionic/ng-toolkit": "1.0.0",
     "@ionic/pro": "2.0.3",
     "@ionic/schematics-angular": "1.0.1",
+    "@ngx-translate/core": "^10.0.2",
+    "@ngx-translate/http-loader": "^3.0.1",
     "cordova-android": "^6.4.0",
     "cordova-browser": "^4.1.0",
     "cordova-plugin-device": "^2.0.2",
