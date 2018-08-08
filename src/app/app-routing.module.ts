@@ -4,8 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    loadChildren: './tabs/tabs.module#TabsPageModule'
   },
   {
     path: 'home',
@@ -14,11 +13,20 @@ const routes: Routes = [
   {
     path: 'list',
     loadChildren: './list/list.module#ListPageModule'
-  }
+  },
+  {
+    path: 'trip',
+    loadChildren: './trip/trip.module#TripPageModule'
+  },
+  {
+    path: 'my-observations',
+    loadChildren: './my-observations/my-observations.module#MyObservationsPageModule'
+  },
+  { path: 'varsom', loadChildren: './varsom/varsom.module#VarsomPageModule' }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

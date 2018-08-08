@@ -1,10 +1,10 @@
 {
-    "HELLO_WORLD": "Hallo verden!",
+    "HELLO_WORLD": "Hello world!",
     "TRIP": {
-        "TITLE": "Turer"
+        "TITLE": "Trips"
     },
     "MY_OBSERVATIONS": {
-        "TITLE": "Mine observasjoner"
+        "TITLE": "My observations"
     },
     "VARSOM": {
         "TITLE": "Varsom"
