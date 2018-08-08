@@ -1,11 +1,16 @@
 <ion-tabs>
-  <ion-tab label="Home" icon="home" href="/tabs/(home:home)">
+  <ion-tab aria-label="Home" icon="home" href="/tabs/(home:home)">
     <ion-router-outlet name="home"></ion-router-outlet>
   </ion-tab>
-  <ion-tab label="List" icon="information-circle" href="/tabs/(list:list)">
+  <ion-tab aria-label="Tur" icon="walk" href="/tabs/(list:list)">
     <ion-router-outlet name="list"></ion-router-outlet>
   </ion-tab>
-  <!-- <ion-tab label="Contact" icon="contacts" href="/tabs/(contact:contact)">
-    <ion-router-outlet name="contact"></ion-router-outlet>
-  </ion-tab> -->
+  <ion-tab aria-label="Legg til" icon="add">
+  </ion-tab>
+  <ion-tab aria-label="Observasjoner" icon="eye" href="/tabs/(list:list)">
+    <ion-router-outlet name="list"></ion-router-outlet>
+  </ion-tab>
+  <ion-tab aria-label="Varsom" icon="warning" href="/tabs/(list:list)">
+    <ion-router-outlet name="list"></ion-router-outlet>
+  </ion-tab>
 </ion-tabs>
