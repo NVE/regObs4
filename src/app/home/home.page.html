@@ -10,7 +10,6 @@
 </ion-header>
 
 <ion-content>
-  {{ "HELLO_WORLD" | translate }}
-  <p>If you get lost, the
-    <a target="_blank" href="https://ionicframework.com/docs">docs</a> will be your guide.</p>
+  <div style="width: 100%; height: 100%" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)">
+  </div>
 </ion-content>

@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 @NgModule({
   imports: [
@@ -18,7 +19,9 @@ import { TranslateModule } from '@ngx-translate/core';
       }
     ]),
     TranslateModule,
+    LeafletModule,
   ],
   declarations: [HomePage]
 })
-export class HomePageModule {}
+export class HomePageModule {
+}
