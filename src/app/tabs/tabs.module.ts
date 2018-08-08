@@ -6,8 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { TabsPageRoutingModule } from './tabs.router.module';
 
 import { TabsPage } from './tabs.page';
-import { ListPageModule } from '../list/list.module';
 import { HomePageModule } from '../home/home.module';
+import { TripPageModule } from '../trip/trip.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { MyObservationsPageModule } from '../my-observations/my-observations.module';
+import { VarsomPageModule } from '../varsom/varsom.module';
 
 @NgModule({
   imports: [
@@ -16,8 +19,11 @@ import { HomePageModule } from '../home/home.module';
     FormsModule,
     TabsPageRoutingModule,
     HomePageModule,
-    ListPageModule,
+    TripPageModule,
+    VarsomPageModule,
+    TranslateModule,
+    MyObservationsPageModule,
   ],
   declarations: [TabsPage]
 })
-export class TabsPageModule {}
+export class TabsPageModule { }

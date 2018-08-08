@@ -3,7 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { TabsPage } from './tabs.page';
 import { HomePage } from '../home/home.page';
-import { ListPage } from '../list/list.page';
+import { TripPage } from '../trip/trip.page';
+import { MyObservationsPage } from '../my-observations/my-observations.page';
+import { VarsomPage } from '../varsom/varsom.page';
 
 const routes: Routes = [
   {
@@ -16,9 +18,19 @@ const routes: Routes = [
         component: HomePage
       },
       {
-        path: 'list',
-        outlet: 'list',
-        component: ListPage
+        path: 'trip',
+        outlet: 'trip',
+        component: TripPage
+      },
+      {
+        path: 'my-observations',
+        outlet: 'my-observations',
+        component: MyObservationsPage
+      },
+      {
+        path: 'varsom',
+        outlet: 'varsom',
+        component: VarsomPage
       },
     ]
   },
@@ -33,4 +45,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TabsPageRoutingModule {}
+export class TabsPageRoutingModule { }
