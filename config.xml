@@ -90,6 +90,9 @@
         <variable name="UPDATE_API" value="https://api.ionicjs.com" />
         <variable name="MIN_BACKGROUND_DURATION" value="30" />
     </plugin>
+    <allow-navigation href="http://192.168.140.88:8101" />
     <engine name="browser" spec="^4.1.0" />
     <engine name="android" spec="^7.1.0" />
+    <allow-navigation href="http://192.168.140.88:8100" />
+    <engine name="ios" spec="~4.5.5" />
 </widget>
