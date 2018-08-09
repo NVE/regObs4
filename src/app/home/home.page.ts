@@ -14,6 +14,8 @@ export class HomePage {
   map: L.Map;
   watch: Observable<Geoposition>;
   watchSubscription: Subscription;
+  userMarker: L.Marker;
+  userMarkerIcon: L.DivIcon;
 
   constructor(private platform: Platform, private geolocation: Geolocation) {
 
@@ -47,10 +49,34 @@ export class HomePage {
       // data.coords.latitude
       // data.coords.longitude
       console.log(data);
+      if (!this.userMarker) {
+        this.createUserMarker(data);
+      } else {
+        this.updateUserMarkerPosition(data);
+      }
     });
   }
 
   ionViewWillLeave() {
     this.watchSubscription.unsubscribe();
+  }
+
+  createUserMarker(pos: Geoposition) {
+    this.userMarkerIcon = L.divIcon({
+      className: "leaflet-usermarker",
+      iconSize: [34, 34],
+      html: "<div class='heading'></div><i class='pulse'></i>"
+    });
+    const latLng = L.latLng({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+    this.userMarker = L.marker(
+      latLng,
+      { icon: this.userMarkerIcon }
+    );
+    this.userMarker.addTo(this.map);
+    this.map.panTo(latLng);
+  }
+
+  updateUserMarkerPosition(pos: Geoposition) {
+    this.userMarker.setLatLng({ lat: pos.coords.latitude, lng: pos.coords.longitude });
   }
 }
