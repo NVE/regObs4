@@ -64,7 +64,7 @@ export class HomePage {
   createUserMarker(pos: Geoposition) {
     this.userMarkerIcon = L.divIcon({
       className: "leaflet-usermarker",
-      iconSize: [34, 34],
+      iconSize: [18, 18],
       html: "<div class='heading'></div><i class='pulse'></i>"
     });
     const latLng = L.latLng({ lat: pos.coords.latitude, lng: pos.coords.longitude });
