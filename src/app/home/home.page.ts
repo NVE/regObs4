@@ -3,6 +3,7 @@ import * as L from "leaflet";
 import { Geolocation, Coordinates, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Platform } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
+import { UserMarker } from '../shared/user-marker/user-marker';
 
 @Component({
   selector: 'app-home',
@@ -14,8 +15,7 @@ export class HomePage {
   map: L.Map;
   watch: Observable<Geoposition>;
   watchSubscription: Subscription;
-  userMarker: L.Marker;
-  userMarkerIcon: L.DivIcon;
+  userMarker: UserMarker;
 
   constructor(private platform: Platform, private geolocation: Geolocation) {
 
@@ -48,35 +48,23 @@ export class HomePage {
       // data can be a set of coordinates, or an error (if an error occurred).
       // data.coords.latitude
       // data.coords.longitude
-      console.log(data);
-      if (!this.userMarker) {
-        this.createUserMarker(data);
-      } else {
-        this.updateUserMarkerPosition(data);
+
+      //TODO: Log error if an error occurred
+      if (data.coords) {
+        const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
+        if (!this.userMarker) {
+          this.userMarker = new UserMarker(this.map, latLng);
+          this.map.panTo(latLng);
+        } else {
+          this.userMarker.updatePosition(latLng);
+          //TODO: If follow mode
+          this.map.panTo(latLng);
+        }
       }
     });
   }
 
   ionViewWillLeave() {
     this.watchSubscription.unsubscribe();
-  }
-
-  createUserMarker(pos: Geoposition) {
-    this.userMarkerIcon = L.divIcon({
-      className: "leaflet-usermarker",
-      iconSize: [18, 18],
-      html: "<div class='heading'></div><i class='pulse'></i>"
-    });
-    const latLng = L.latLng({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-    this.userMarker = L.marker(
-      latLng,
-      { icon: this.userMarkerIcon }
-    );
-    this.userMarker.addTo(this.map);
-    this.map.panTo(latLng);
-  }
-
-  updateUserMarkerPosition(pos: Geoposition) {
-    this.userMarker.setLatLng({ lat: pos.coords.latitude, lng: pos.coords.longitude });
   }
 }
