@@ -1,6 +1,6 @@
-import * as L from "leaflet";
+import * as L from 'leaflet';
 import { DeviceOrientation, DeviceOrientationCompassHeading } from '@ionic-native/device-orientation/ngx';
-import { Subscription } from "rxjs";
+import { Subscription } from 'rxjs';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 
 export class UserMarker {
@@ -14,11 +14,11 @@ export class UserMarker {
 
     accuracyCircleStyle = {
         stroke: true,
-        color: "#03f",
+        color: '#03f',
         weight: 3,
         opacity: 0.5,
         fillOpacity: 0.15,
-        fillColor: "#03f",
+        fillColor: '#03f',
         clickable: false
     };
 
@@ -26,9 +26,9 @@ export class UserMarker {
         this.deviceOrientation = deviceOrientation;
         this.map = map;
         this.userMarkerIcon = L.divIcon({
-            className: "leaflet-usermarker",
+            className: 'leaflet-usermarker',
             iconSize: [18, 18],
-            html: "<div class='heading'></div><i class='pulse'></i>"
+            html: '<div class=\'heading\'></div><i class=\'pulse\'></i>'
         });
         const latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
         this.userMarker = L.marker(
@@ -47,9 +47,10 @@ export class UserMarker {
     }
 
     watchHeading() {
-        this.headingSubscription = this.deviceOrientation.watchHeading({ frequency: 500 }).subscribe((data: DeviceOrientationCompassHeading) => {
-            this.setHeading(data.magneticHeading);
-        });
+        this.headingSubscription = this.deviceOrientation.watchHeading({ frequency: 500 })
+            .subscribe((data: DeviceOrientationCompassHeading) => {
+                this.setHeading(data.magneticHeading);
+            });
     }
 
     stopWatch() {
@@ -60,7 +61,7 @@ export class UserMarker {
 
     private setHeading(degrees: number) {
         const element: HTMLElement = this.userMarker.getElement().childNodes[0] as HTMLElement;
-        var rotateZ = degrees - 90;
+        const rotateZ = degrees - 90;
         element.style['-webkit-transform'] = 'rotate(' + rotateZ + 'deg) translateX(15px)';
         element.style.display = 'block';
     }

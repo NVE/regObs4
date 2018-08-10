@@ -1,5 +1,5 @@
 import { Component, AfterViewInit } from '@angular/core';
-import * as L from "leaflet";
+import * as L from 'leaflet';
 import { Geolocation, Coordinates, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Platform } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
@@ -23,6 +23,7 @@ export class HomePage {
 
   options: L.MapOptions = {
     layers: [
+      // tslint:disable-next-line:max-line-length
       L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=matrikkel_bakgrunn&zoom={z}&x={x}&y={y}&format=image/jpeg')
     ],
     zoom: 13,
@@ -55,12 +56,12 @@ export class HomePage {
           this.map.panTo(latLng);
         } else {
           this.userMarker.updatePosition(data);
-          //TODO: If follow mode
+          // TODO: If follow mode
           this.map.panTo(latLng);
         }
       }
     }, error => {
-      //TODO: Handle error
+      // TODO: Handle error
       console.log(error);
     });
   }

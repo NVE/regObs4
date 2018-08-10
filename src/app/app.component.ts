@@ -33,9 +33,9 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.translate.addLangs(["no"]);
-    this.translate.setDefaultLang("no");
-    this.translate.use("no");
+    this.translate.addLangs(['no']);
+    this.translate.setDefaultLang('no');
+    this.translate.use('no');
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();

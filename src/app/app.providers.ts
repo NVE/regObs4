@@ -8,7 +8,12 @@ import { Observable, of } from 'rxjs';
 
 class DeviceOrientationMock {
     watchHeading(options?: DeviceOrientationCompassOptions): Observable<DeviceOrientationCompassHeading> {
-        const testData: DeviceOrientationCompassHeading = { magneticHeading: 90, headingAccuracy: 50, trueHeading: 90, timestamp: new Date().getTime() };
+        const testData: DeviceOrientationCompassHeading = {
+            magneticHeading: 90,
+            headingAccuracy: 50,
+            trueHeading: 90,
+            timestamp: new Date().getTime(),
+        };
         return of(testData);
     }
 }
