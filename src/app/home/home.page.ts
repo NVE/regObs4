@@ -1,5 +1,10 @@
 import { Component, AfterViewInit } from '@angular/core';
-import * as L from "leaflet";
+import * as L from 'leaflet';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { UserMarker } from '../shared/user-marker/user-marker';
+import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 
 @Component({
   selector: 'app-home',
@@ -9,9 +14,16 @@ import * as L from "leaflet";
 export class HomePage {
 
   map: L.Map;
+  watchSubscription: Subscription;
+  userMarker: UserMarker;
+
+  constructor(private platform: Platform, private geolocation: Geolocation, private deviceOrientation: DeviceOrientation) {
+
+  }
 
   options: L.MapOptions = {
     layers: [
+      // tslint:disable-next-line:max-line-length
       L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=matrikkel_bakgrunn&zoom={z}&x={x}&y={y}&format=image/jpeg')
     ],
     zoom: 13,
@@ -24,9 +36,38 @@ export class HomePage {
     this.map = map;
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
+
+    await this.platform.ready();
+
     setTimeout(() => {
       this.map.invalidateSize();
     }, 200);
+
+    this.watchSubscription = this.geolocation.watchPosition().subscribe((data) => {
+      // data can be a set of coordinates, or an error (if an error occurred).
+      // data.coords.latitude
+      // data.coords.longitude
+      if (data.coords) {
+        const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
+        if (!this.userMarker) {
+          this.userMarker = new UserMarker(this.deviceOrientation, this.map, data);
+          this.userMarker.watchHeading();
+          this.map.panTo(latLng);
+        } else {
+          this.userMarker.updatePosition(data);
+          // TODO: If follow mode
+          this.map.panTo(latLng);
+        }
+      }
+    }, error => {
+      // TODO: Handle error
+      console.log(error);
+    });
+  }
+
+  ionViewWillLeave() {
+    this.watchSubscription.unsubscribe();
+    this.userMarker.stopWatch();
   }
 }

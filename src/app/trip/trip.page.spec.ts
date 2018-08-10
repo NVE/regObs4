@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TripPage } from './trip.page';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../mocks/translateLoader';
 
 describe('TripPage', () => {
   let component: TripPage;
@@ -9,10 +11,15 @@ describe('TripPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TripPage ],
+      declarations: [TripPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+        }),
+      ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

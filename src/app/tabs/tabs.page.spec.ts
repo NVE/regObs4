@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TabsPage } from './tabs.page';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../mocks/translateLoader';
 
 describe('TabsPage', () => {
   let component: TabsPage;
@@ -11,6 +13,11 @@ describe('TabsPage', () => {
     TestBed.configureTestingModule({
       declarations: [TabsPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+        }),
+      ],
     }).compileComponents();
   });
 
