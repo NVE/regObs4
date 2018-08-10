@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { VarsomPage } from './varsom.page';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../mocks/translateLoader';
 
 describe('VarsomPage', () => {
   let component: VarsomPage;
@@ -9,10 +11,15 @@ describe('VarsomPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VarsomPage ],
+      declarations: [VarsomPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+        }),
+      ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MyObservationsPage } from './my-observations.page';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../mocks/translateLoader';
 
 describe('MyObservationsPage', () => {
   let component: MyObservationsPage;
@@ -9,10 +11,15 @@ describe('MyObservationsPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MyObservationsPage ],
+      declarations: [MyObservationsPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+        }),
+      ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

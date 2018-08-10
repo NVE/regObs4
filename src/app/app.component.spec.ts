@@ -7,6 +7,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppComponent } from './app.component';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { FakeTranslateLoader } from './mocks/translateLoader';
 
 describe('AppComponent', () => {
 
@@ -26,7 +28,11 @@ describe('AppComponent', () => {
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
       ],
-      imports: [ RouterTestingModule.withRoutes([])],
+      imports: [
+        RouterTestingModule.withRoutes([]),
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+        })],
     }).compileComponents();
   });
 
