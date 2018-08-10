@@ -4,6 +4,7 @@ import { Geolocation, Coordinates, Geoposition } from '@ionic-native/geolocation
 import { Platform } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 import { UserMarker } from '../shared/user-marker/user-marker';
+import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 
 @Component({
   selector: 'app-home',
@@ -13,11 +14,10 @@ import { UserMarker } from '../shared/user-marker/user-marker';
 export class HomePage {
 
   map: L.Map;
-  watch: Observable<Geoposition>;
   watchSubscription: Subscription;
   userMarker: UserMarker;
 
-  constructor(private platform: Platform, private geolocation: Geolocation) {
+  constructor(private platform: Platform, private geolocation: Geolocation, private deviceOrientation: DeviceOrientation) {
 
   }
 
@@ -43,28 +43,30 @@ export class HomePage {
       this.map.invalidateSize();
     }, 200);
 
-    this.watch = this.geolocation.watchPosition();
-    this.watchSubscription = this.watch.subscribe((data) => {
+    this.watchSubscription = this.geolocation.watchPosition().subscribe((data) => {
       // data can be a set of coordinates, or an error (if an error occurred).
       // data.coords.latitude
       // data.coords.longitude
-
-      //TODO: Log error if an error occurred
       if (data.coords) {
         const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
         if (!this.userMarker) {
-          this.userMarker = new UserMarker(this.map, latLng);
+          this.userMarker = new UserMarker(this.deviceOrientation, this.map, data);
+          this.userMarker.watchHeading();
           this.map.panTo(latLng);
         } else {
-          this.userMarker.updatePosition(latLng);
+          this.userMarker.updatePosition(data);
           //TODO: If follow mode
           this.map.panTo(latLng);
         }
       }
+    }, error => {
+      //TODO: Handle error
+      console.log(error);
     });
   }
 
   ionViewWillLeave() {
     this.watchSubscription.unsubscribe();
+    this.userMarker.stopWatch();
   }
 }
