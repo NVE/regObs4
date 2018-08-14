@@ -22,7 +22,14 @@ const routes: Routes = [
     path: 'my-observations',
     loadChildren: './my-observations/my-observations.module#MyObservationsPageModule'
   },
-  { path: 'varsom', loadChildren: './varsom/varsom.module#VarsomPageModule' }
+  {
+    path: 'varsom',
+    loadChildren: './varsom/varsom.module#VarsomPageModule'
+  },
+  {
+    path: 'user-settings',
+    loadChildren: './user-settings/user-settings.module#UserSettingsPageModule'
+  },
 ];
 
 @NgModule({

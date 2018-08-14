@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{"SETTINGS.TITLE" | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item *ngIf="userSettings">
+      <ion-label position="floating">{{ "SETTINGS.APPMODE" | translate }}</ion-label>
+      <ion-select [(ngModel)]="userSettings.appMode" (ngModelChange)="updateSettings()">
+        <ion-select-option value="PROD">regObs</ion-select-option>
+        <ion-select-option value="DEMO">demo regObs</ion-select-option>
+        <ion-select-option value="TEST">test regObs</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

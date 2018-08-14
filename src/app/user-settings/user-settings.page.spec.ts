@@ -1,29 +1,34 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VarsomPage } from './varsom.page';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { UserSettingsPage } from './user-settings.page';
 import { FakeTranslateLoader } from '../core/mocks/translateLoader';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { IonicStorageModule } from '@ionic/storage';
 
-describe('VarsomPage', () => {
-  let component: VarsomPage;
-  let fixture: ComponentFixture<VarsomPage>;
+describe('UserSettingsPage', () => {
+  let component: UserSettingsPage;
+  let fixture: ComponentFixture<UserSettingsPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [VarsomPage],
+      declarations: [UserSettingsPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
         }),
+        IonicStorageModule.forRoot({
+          name: '__regobsdb',
+          driverOrder: ['sqlite', 'indexeddb', 'websql'],
+        }) // TODO: Mock storage instead
       ],
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VarsomPage);
+    fixture = TestBed.createComponent(UserSettingsPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

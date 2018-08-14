@@ -8,5 +8,9 @@
     },
     "VARSOM": {
         "TITLE": "Varsom"
+    },
+    "SETTINGS": {
+        "TITLE": "Innstillinger",
+        "APPMODE": "Appmodus"
     }
 }
