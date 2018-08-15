@@ -11,6 +11,7 @@ export class UserMarker {
     deviceOrientation: DeviceOrientation;
     accuracyMarker: L.Circle;
     map: L.Map;
+    position: Geoposition;
 
     accuracyCircleStyle = {
         stroke: true,
@@ -25,6 +26,7 @@ export class UserMarker {
     constructor(deviceOrientation: DeviceOrientation, map: L.Map, position: Geoposition) {
         this.deviceOrientation = deviceOrientation;
         this.map = map;
+        this.position = position;
         this.userMarkerIcon = L.divIcon({
             className: 'leaflet-usermarker',
             iconSize: [18, 18],
@@ -40,7 +42,12 @@ export class UserMarker {
 
     }
 
+    getPosition(): Geoposition {
+        return this.position;
+    }
+
     updatePosition(position: Geoposition) {
+        this.position = position;
         const latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
         this.userMarker.setLatLng(latLng);
         this.setAccuracy(position);

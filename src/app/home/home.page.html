@@ -12,4 +12,9 @@
 <ion-content>
   <div style="width: 100%; height: 100%" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)">
   </div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="light" (click)="centerMapToUser()">
+      <ion-icon name="locate"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

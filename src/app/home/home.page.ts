@@ -1,6 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { UserMarker } from '../shared/user-marker/user-marker';
@@ -16,6 +16,7 @@ export class HomePage {
   map: L.Map;
   watchSubscription: Subscription;
   userMarker: UserMarker;
+  followMode = true;
 
   constructor(private platform: Platform, private geolocation: Geolocation, private deviceOrientation: DeviceOrientation) {
 
@@ -34,6 +35,24 @@ export class HomePage {
 
   onMapReady(map: L.Map) {
     this.map = map;
+    this.map.on('moveend', this.onMapMoved);
+    this.map.on('dragstart', this.disableFollowMode);
+  }
+
+  centerMapToUser() {
+    this.followMode = true;
+    if (this.userMarker) {
+      const currentPosition = this.userMarker.getPosition();
+      this.map.panTo(L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude));
+    }
+  }
+
+  private onMapMoved() {
+    console.log('map moved');
+  }
+
+  private disableFollowMode() {
+    this.followMode = false;
   }
 
   async ionViewDidEnter() {
@@ -44,26 +63,35 @@ export class HomePage {
       this.map.invalidateSize();
     }, 200);
 
-    this.watchSubscription = this.geolocation.watchPosition().subscribe((data) => {
-      // data can be a set of coordinates, or an error (if an error occurred).
-      // data.coords.latitude
-      // data.coords.longitude
-      if (data.coords) {
-        const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
-        if (!this.userMarker) {
-          this.userMarker = new UserMarker(this.deviceOrientation, this.map, data);
-          this.userMarker.watchHeading();
-          this.map.panTo(latLng);
-        } else {
-          this.userMarker.updatePosition(data);
-          // TODO: If follow mode
+    this.watchSubscription = this.geolocation.watchPosition()
+      .subscribe(
+        (data) => this.onPositionUpdate(data),
+        (error) => this.onPositionError(error)
+      );
+  }
+
+  private onPositionUpdate(data: Geoposition) {
+    // data can be a set of coordinates, or an error (if an error occurred).
+    // data.coords.latitude
+    // data.coords.longitude
+    if (data.coords) {
+      const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
+      if (!this.userMarker) {
+        this.userMarker = new UserMarker(this.deviceOrientation, this.map, data);
+        this.userMarker.watchHeading();
+        this.map.panTo(latLng);
+      } else {
+        this.userMarker.updatePosition(data);
+        if (this.followMode) {
           this.map.panTo(latLng);
         }
       }
-    }, error => {
-      // TODO: Handle error
-      console.log(error);
-    });
+    }
+  }
+
+  private onPositionError(error: any) {
+    // TODO: Handle error
+    console.log(error);
   }
 
   ionViewWillLeave() {
