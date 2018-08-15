@@ -5,35 +5,20 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { UserSettingService } from './core/services/user-setting.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
-  public appPages = [
-    // {
-    //   title: 'Home',
-    //   url: '/home',
-    //   icon: 'home'
-    // },
-    // {
-    //   title: 'List',
-    //   url: '/list',
-    //   icon: 'list'
-    // }
-    {
-      title: 'SETTINGS.TITLE',
-      url: 'user-settings',
-      icon: 'settings',
-    }
-  ];
 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private userSettings: UserSettingService
   ) {
     this.initializeApp();
   }
@@ -41,8 +26,11 @@ export class AppComponent {
   initializeApp() {
     this.translate.addLangs(['no']);
     this.translate.setDefaultLang('no');
-    this.translate.use('no');
-    this.platform.ready().then(() => {
+    this.platform.ready().then(async () => {
+
+      const userSettings = await this.userSettings.getUserSettings();
+      this.translate.use(userSettings.language);
+
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });

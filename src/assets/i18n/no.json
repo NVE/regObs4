@@ -11,6 +11,20 @@
     },
     "SETTINGS": {
         "TITLE": "Innstillinger",
-        "APPMODE": "Appmodus"
+        "APPMODE": "Appmodus",
+        "LANGUAGE": "Språk"
+    },
+    "MENU": {
+        "GENERAL": "Generelt",
+        "MAP_SETTINGS": "Kartvalg",
+        "SHOW_OBSERVATIONS": "Vis observasjoner",
+        "SHOW_TRIPS": "Vis turer",
+        "MAP_SETTINGS_FOR_SNOW": "Kartvalg for snø",
+        "SHOW_STEAPNESS_MAP": "Vis bratthetskart",
+        "OPACITY": "Gjennomsiktighet",
+        "MAP_LEGENDS": "Tegnforklaring for kart"
+    },
+    "OFFLINE_MAP": {
+        "TITLE": "Offline kart"
     }
 }

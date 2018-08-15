@@ -11,6 +11,20 @@
     },
     "SETTINGS": {
         "TITLE": "Settings",
-        "APPMODE": "App mode"
+        "APPMODE": "App mode",
+        "LANGUAGE": "Language"
+    },
+    "MENU": {
+        "GENERAL": "General",
+        "MAP_SETTINGS": "Map settings",
+        "SHOW_OBSERVATIONS": "Show observations",
+        "SHOW_TRIPS": "Show trips",
+        "MAP_SETTINGS_FOR_SNOW": "Map settings for snow",
+        "SHOW_STEAPNESS_MAP": "Show steapness map",
+        "OPACITY": "Opacity",
+        "MAP_LEGENDS": "Legends for map"
+    },
+    "OFFLINE_MAP": {
+        "TITLE": "Offline map"
     }
 }
