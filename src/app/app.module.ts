@@ -9,6 +9,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { AppProviders } from './app.providers';
 import { IonicStorageModule } from '@ionic/storage';
+import { settings } from '../settings';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -31,7 +32,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     LeafletModule.forRoot(),
     IonicStorageModule.forRoot({
-      name: '__regobsdb',
+      name: settings.db.name,
       driverOrder: ['sqlite', 'indexeddb', 'websql'],
     })
   ],

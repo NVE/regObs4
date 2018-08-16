@@ -5,6 +5,8 @@ import { Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { UserMarker } from '../shared/user-marker/user-marker';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
+import { ObservationService } from '../core/services/observation/observation.service';
+import { ObserverSubscriber } from 'nano-sql/lib/observable';
 
 @Component({
   selector: 'app-home',
@@ -17,15 +19,21 @@ export class HomePage {
   watchSubscription: Subscription;
   userMarker: UserMarker;
   followMode = true;
+  markerLayer = L.layerGroup();
+  observationSubscription: ObserverSubscriber;
 
-  constructor(private platform: Platform, private geolocation: Geolocation, private deviceOrientation: DeviceOrientation) {
+  constructor(private platform: Platform,
+    private geolocation: Geolocation,
+    private deviceOrientation: DeviceOrientation,
+    private observationService: ObservationService) {
 
   }
 
   options: L.MapOptions = {
     layers: [
       // tslint:disable-next-line:max-line-length
-      L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=matrikkel_bakgrunn&zoom={z}&x={x}&y={y}&format=image/jpeg')
+      L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=matrikkel_bakgrunn&zoom={z}&x={x}&y={y}&format=image/jpeg'),
+      this.markerLayer,
     ],
     zoom: 13,
     center: L.latLng(59.911197, 10.741059),
@@ -35,8 +43,33 @@ export class HomePage {
 
   onMapReady(map: L.Map) {
     this.map = map;
-    this.map.on('moveend', this.onMapMoved);
-    this.map.on('dragstart', this.disableFollowMode);
+    this.map.on('moveend', () => this.onMapMoved());
+    this.map.on('dragstart', () => this.disableFollowMode());
+
+    const defaultIcon = L.icon({
+      iconUrl: 'leaflet/marker-icon.png',
+      shadowUrl: 'leaflet/marker-shadow.png'
+    });
+
+    L.Marker.prototype.options.icon = defaultIcon;
+
+    this.observationSubscription = this.observationService.getObservationsAsObservable()
+      .filter((regObservations) => regObservations.length > 0)
+      // TODO: filter only visible in map bounds?
+      .subscribe((regObservations) => {
+        this.addMarkersIfNotExists(regObservations);
+      });
+  }
+
+  private addMarkersIfNotExists(regObservations) {
+    regObservations.forEach((regObservation) => {
+      const existingMarker = this.markerLayer.getLayer(regObservation.RegId);
+      if (!existingMarker) {
+        const latLng = L.latLng(regObservation.Latitude, regObservation.Longitude);
+        const marker = L.marker(latLng);
+        marker.addTo(this.markerLayer);
+      }
+    });
   }
 
   centerMapToUser() {
@@ -47,9 +80,17 @@ export class HomePage {
     }
   }
 
-  private onMapMoved() {
+  private async onMapMoved() {
     console.log('map moved');
+    // TODO: If user settings show observations
+    // const viewBounds = this.map.getBounds();
+    // this.loadObservationsForViewBounds(viewBounds);
+    const center = this.map.getCenter();
+    await this.observationService.updateObservations(center.lat, center.lng, 10000);
   }
+
+  // private loadObservationsForViewBounds(bounds: L.LatLngBounds) {
+  // }
 
   private disableFollowMode() {
     this.followMode = false;
@@ -96,6 +137,7 @@ export class HomePage {
 
   ionViewWillLeave() {
     this.watchSubscription.unsubscribe();
+    this.observationSubscription.unsubscribe();
     this.userMarker.stopWatch();
   }
 }
