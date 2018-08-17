@@ -7,49 +7,55 @@ import { RegObsObservation } from '../../models/regobs-observation.model';
 import { settings } from '../../../../settings';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import * as moment from 'moment';
-import { UserSetting } from '../../models/user-settings.model';
 import { SearchRequest } from './searchRequest';
 import { Observable } from 'rxjs';
+import { HelperService } from '../helpers/helper.service';
+import { SearchResult } from './searchResult';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  constructor(private userSettingService: UserSettingService, private httpClient: HttpClient) { }
+  constructor(
+    private userSettingService: UserSettingService,
+    private httpClient: HttpClient,
+    private helperService: HelperService) {
 
-  async getObservationsWithinRadius(
-    latitude: number,
-    longitude: number,
-    radius: number,
-    geoHazards?: Array<GeoHazard>,
-    fromDate?: moment.Moment,
-    langKey?: string,
-    returnCount?: number): Promise<Observable<RegObsObservation>> {
-
-    const userSettings = await this.userSettingService.getUserSettings();
-    const observationRequest: ObservationsWithinRadiusRequest = {
-      GeoHazards: geoHazards ? geoHazards : [userSettings.currentGeoHazard],
-      Latitude: latitude,
-      Longitude: longitude,
-      Radius: radius,
-      FromDate: (fromDate ? fromDate : this.getobservationsFromDate(userSettings)).toISOString(),
-      LangKey: langKey ? langKey : userSettings.language,
-      ReturnCount: returnCount ? returnCount : settings.observations.maxObservationsToFetch,
-    };
-    const baseUrl = settings.services.apiUrl[userSettings.appMode];
-    const headers = await this.getHttpRequestHeaders();
-    return this.httpClient.post<RegObsObservation>(
-      `${baseUrl}/Observations/GetObservationsWithinRadius`,
-      observationRequest,
-      { headers });
   }
 
-  async search(searchRequest: SearchRequest) {
+  // async getObservationsWithinRadius(
+  //   latitude: number,
+  //   longitude: number,
+  //   radius: number,
+  //   geoHazards?: Array<GeoHazard>,
+  //   fromDate?: moment.Moment,
+  //   langKey?: string,
+  //   returnCount?: number): Promise<Observable<RegObsObservation>> {
+
+  //   const userSettings = await this.userSettingService.getUserSettings();
+  //   const observationRequest: ObservationsWithinRadiusRequest = {
+  //     GeoHazards: geoHazards ? geoHazards : [userSettings.currentGeoHazard],
+  //     Latitude: latitude,
+  //     Longitude: longitude,
+  //     Radius: radius,
+  //     FromDate: (fromDate ? fromDate : (await this.helperService.getObservationsFromDate())).toISOString(),
+  //     LangKey: langKey ? langKey : userSettings.language,
+  //     ReturnCount: returnCount ? returnCount : settings.observations.maxObservationsToFetch,
+  //   };
+  //   const baseUrl = settings.services.apiUrl[userSettings.appMode];
+  //   const headers = await this.getHttpRequestHeaders();
+  //   return this.httpClient.post<RegObsObservation>(
+  //     `${baseUrl}/Observations/GetObservationsWithinRadius`,
+  //     observationRequest,
+  //     { headers });
+  // }
+
+  async search(searchRequest: SearchRequest): Promise<Observable<SearchResult>> {
     const userSettings = await this.userSettingService.getUserSettings();
     const baseUrl = settings.services.apiUrl[userSettings.appMode];
     const headers = await this.getHttpRequestHeaders();
-    await this.httpClient.post<RegObsObservation>(
+    return await this.httpClient.post<SearchResult>(
       `${baseUrl}/Search/All`,
       searchRequest,
       { headers });
@@ -57,7 +63,7 @@ export class ApiService {
 
   private async getApiKey(): Promise<string> {
     try {
-      const apiKeyJsonFile = await this.httpClient.get<ApiKey>('/assets/apiKey.json').toPromise();
+      const apiKeyJsonFile = await this.httpClient.get<ApiKey>('assets/apikey.json').toPromise();
       return apiKeyJsonFile.apiKey;
     } catch (Error) {
       throw new Error('/assets/apiKey.json missing. Please read documentation!');
@@ -70,10 +76,5 @@ export class ApiService {
       .set('ApiJsonVersion', settings.services.apiJsonVersion);
   }
 
-  private getobservationsFromDate(userSettings: UserSetting): moment.Moment {
-    const daysBackForCurrentGeoHazard = userSettings.observationDaysBack
-      .find((setting) => setting.geoHazard === userSettings.currentGeoHazard);
-    const daysBack = daysBackForCurrentGeoHazard ? daysBackForCurrentGeoHazard.daysBack : 3; // default to 3 days back if not found
-    return moment().subtract(daysBack, 'days').startOf('day');
-  }
+
 }

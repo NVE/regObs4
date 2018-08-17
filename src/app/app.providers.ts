@@ -5,6 +5,9 @@ import { IonicRouteStrategy } from '@ionic/angular';
 import { DeviceOrientation, DeviceOrientationCompassOptions, DeviceOrientationCompassHeading } from '@ionic-native/device-orientation/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Observable, of } from 'rxjs';
+import { BackgroundFetchService } from './core/services/background-fetch/background-fetch.service';
+import { BackgroundFetchWebService } from './core/services/background-fetch/background-fetch-web.service';
+import { BackgroundFetchNativeService } from './core/services/background-fetch/background-fetch-native.service';
 
 class DeviceOrientationMock {
     watchHeading(options?: DeviceOrientationCompassOptions): Observable<DeviceOrientationCompassHeading> {
@@ -19,37 +22,26 @@ class DeviceOrientationMock {
 }
 
 export class AppProviders {
-
     public static getProviders() {
+        return [
+            StatusBar,
+            SplashScreen,
+            { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+            Geolocation,
+            ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),
+        ];
+    }
 
-        let providers;
+    private static getWebProviders() {
+        return [
+            { provide: BackgroundFetchService, useClass: BackgroundFetchWebService }
+        ];
+    }
 
-        if (document.URL.includes('https://') || document.URL.includes('http://')) {
-
-            // Use browser providers
-            providers = [
-                StatusBar,
-                SplashScreen,
-                { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-                Geolocation,
-                { provide: DeviceOrientation, useClass: DeviceOrientationMock },
-            ];
-
-        } else {
-
-            // Use device providers
-            providers = [
-                StatusBar,
-                SplashScreen,
-                { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-                Geolocation,
-                DeviceOrientation,
-            ];
-
-        }
-
-        return providers;
-
+    private static getNativeProviders() {
+        return [
+            { provide: BackgroundFetchService, useClass: BackgroundFetchNativeService }
+        ];
     }
 
 }

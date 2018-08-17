@@ -1,5 +1,4 @@
 import * as L from 'leaflet';
-import { DeviceOrientation, DeviceOrientationCompassHeading } from '@ionic-native/device-orientation/ngx';
 import { Subscription } from 'rxjs';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 
@@ -8,10 +7,10 @@ export class UserMarker {
     userMarker: L.Marker;
     userMarkerIcon: L.DivIcon;
     headingSubscription: Subscription;
-    deviceOrientation: DeviceOrientation;
     accuracyMarker: L.Circle;
     map: L.Map;
     position: Geoposition;
+    watchId: number;
 
     accuracyCircleStyle = {
         stroke: true,
@@ -23,8 +22,7 @@ export class UserMarker {
         clickable: false
     };
 
-    constructor(deviceOrientation: DeviceOrientation, map: L.Map, position: Geoposition) {
-        this.deviceOrientation = deviceOrientation;
+    constructor(map: L.Map, position: Geoposition) {
         this.map = map;
         this.position = position;
         this.userMarkerIcon = L.divIcon({
@@ -51,18 +49,8 @@ export class UserMarker {
         const latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
         this.userMarker.setLatLng(latLng);
         this.setAccuracy(position);
-    }
-
-    watchHeading() {
-        this.headingSubscription = this.deviceOrientation.watchHeading({ frequency: 500 })
-            .subscribe((data: DeviceOrientationCompassHeading) => {
-                this.setHeading(data.magneticHeading);
-            });
-    }
-
-    stopWatch() {
-        if (this.headingSubscription !== null) {
-            this.headingSubscription.unsubscribe();
+        if (position.coords.heading !== null) {
+            this.setHeading(position.coords.heading);
         }
     }
 

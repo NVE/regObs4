@@ -4,7 +4,6 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { UserMarker } from '../shared/user-marker/user-marker';
-import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { ObservationService } from '../core/services/observation/observation.service';
 import { ObserverSubscriber } from 'nano-sql/lib/observable';
 
@@ -21,12 +20,12 @@ export class HomePage {
   followMode = true;
   markerLayer = L.layerGroup();
   observationSubscription: ObserverSubscriber;
+  markers: Array<{ id: number, marker: L.Marker }>;
 
   constructor(private platform: Platform,
     private geolocation: Geolocation,
-    private deviceOrientation: DeviceOrientation,
     private observationService: ObservationService) {
-
+    this.markers = [];
   }
 
   options: L.MapOptions = {
@@ -41,7 +40,7 @@ export class HomePage {
     zoomControl: false,
   };
 
-  onMapReady(map: L.Map) {
+  async onMapReady(map: L.Map) {
     this.map = map;
     this.map.on('moveend', () => this.onMapMoved());
     this.map.on('dragstart', () => this.disableFollowMode());
@@ -53,7 +52,7 @@ export class HomePage {
 
     L.Marker.prototype.options.icon = defaultIcon;
 
-    this.observationSubscription = this.observationService.getObservationsAsObservable()
+    this.observationSubscription = (await this.observationService.getObservationsAsObservable())
       .filter((regObservations) => regObservations.length > 0)
       // TODO: filter only visible in map bounds?
       .subscribe((regObservations) => {
@@ -63,11 +62,12 @@ export class HomePage {
 
   private addMarkersIfNotExists(regObservations) {
     regObservations.forEach((regObservation) => {
-      const existingMarker = this.markerLayer.getLayer(regObservation.RegId);
+      const existingMarker = this.markers.find((marker) => marker.id === regObservation.RegId);
       if (!existingMarker) {
         const latLng = L.latLng(regObservation.Latitude, regObservation.Longitude);
-        const marker = L.marker(latLng);
+        const marker = L.marker(latLng, {});
         marker.addTo(this.markerLayer);
+        this.markers.push({ id: regObservation.RegId, marker });
       }
     });
   }
@@ -85,8 +85,8 @@ export class HomePage {
     // TODO: If user settings show observations
     // const viewBounds = this.map.getBounds();
     // this.loadObservationsForViewBounds(viewBounds);
-    const center = this.map.getCenter();
-    await this.observationService.updateObservations(center.lat, center.lng, 10000);
+    // const center = this.map.getCenter();
+    // await this.observationService.updateObservations(center.lat, center.lng, 10000);
   }
 
   // private loadObservationsForViewBounds(bounds: L.LatLngBounds) {
@@ -101,7 +101,9 @@ export class HomePage {
     await this.platform.ready();
 
     setTimeout(() => {
-      this.map.invalidateSize();
+      if (this.map) {
+        this.map.invalidateSize();
+      }
     }, 200);
 
     this.watchSubscription = this.geolocation.watchPosition()
@@ -115,11 +117,10 @@ export class HomePage {
     // data can be a set of coordinates, or an error (if an error occurred).
     // data.coords.latitude
     // data.coords.longitude
-    if (data.coords) {
+    if (data.coords && this.map) {
       const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
       if (!this.userMarker) {
-        this.userMarker = new UserMarker(this.deviceOrientation, this.map, data);
-        this.userMarker.watchHeading();
+        this.userMarker = new UserMarker(this.map, data);
         this.map.panTo(latLng);
       } else {
         this.userMarker.updatePosition(data);
@@ -138,6 +139,5 @@ export class HomePage {
   ionViewWillLeave() {
     this.watchSubscription.unsubscribe();
     this.observationSubscription.unsubscribe();
-    this.userMarker.stopWatch();
   }
 }

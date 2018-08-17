@@ -34,7 +34,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     IonicStorageModule.forRoot({
       name: settings.db.name,
       driverOrder: ['sqlite', 'indexeddb', 'websql'],
-    })
+    }),
   ],
   providers: AppProviders.getProviders(),
   bootstrap: [AppComponent]

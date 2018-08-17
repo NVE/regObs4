@@ -9,6 +9,10 @@ import { RegObsObservation } from '../../models/regobs-observation.model';
 import { nSQL } from 'nano-sql';
 import { Platform } from '@ionic/angular';
 import { Observer } from 'nano-sql/lib/observable';
+import { ApiService } from '../api/api.service';
+import { HelperService } from '../helpers/helper.service';
+import { RowCount } from '../../models/row-count.model';
+import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
 
 const tableName = 'regObsObservation';
 
@@ -19,62 +23,56 @@ export class ObservationService {
 
   observations: Array<RegObsObservation>;
 
-  constructor(private httpClient: HttpClient,
-    private userSettingService: UserSettingService,
-    private platform: Platform) { }
+  constructor(
+    private platform: Platform,
+    private apiService: ApiService,
+    private helperService: HelperService
+  ) {
 
-  private getobservationsFromDate(userSettings: UserSetting): string {
-    const daysBackForCurrentGeoHazard = userSettings.observationDaysBack
-      .find((setting) => setting.geoHazard === userSettings.currentGeoHazard);
-    const daysBack = daysBackForCurrentGeoHazard ? daysBackForCurrentGeoHazard.daysBack : 3; // default to 3 if not found
-    return moment().subtract(daysBack, 'days').startOf('day').toISOString();
   }
 
-  // private getDb(): Promise<SQLiteObject> {
-  //   const db = await this.sqlite.create({
-  //     name: settings.db.name,
-  //     location: settings.db.location
-  //   });
-  //   db.executeSql('CREATE TABLE IF NOT EXISTS regObsObservation(id INTEGER PRIMARY KEY, ')
+  async updateObservations() {
+    const fromDate = await this.helperService.getObservationsFromDate();
+    (await this.apiService.search({
+      FromDate: fromDate.toDate()
+    })).subscribe(async (next) => {
+      await nSQL(tableName).loadJS(tableName, next.Results);
+    });
+  }
+
+  // async updateObservations(lat: number, lng: number, radius: number) {
+  //   const userSettings = await this.userSettingService.getUserSettings();
+  //   const observationRequest: ObservationsWithinRadiusRequest = {
+  //     GeoHazards: [userSettings.currentGeoHazard],
+  //     Latitude: lat,
+  //     Longitude: lng,
+  //     Radius: radius,
+  //     FromDate: this.getobservationsFromDate(userSettings),
+  //     LangKey: userSettings.language,
+  //     ReturnCount: settings.observations.maxObservationsToFetch,
+  //   };
+  //   const baseUrl = settings.services.apiUrl[userSettings.appMode];
+  //   await this.getDb();
+  //   await this.httpClient.post<RegObsObservation>(
+  //     `${baseUrl}/Observations/GetObservationsWithinRadius`, observationRequest)
+  //     .subscribe(async (next) => {
+  //       await nSQL(tableName).query('upsert', {
+  //         RegId: next.RegId,
+  //         Latitude: next.Latitude,
+  //         Longitude: next.Longitude
+  //       }).exec();
+  //     });
   // }
-  private async getDb(): Promise<string | Object> {
-    await this.platform.ready();
-    return nSQL(tableName) //  "users" is our table name.
-      .model([ // Declare data model
-        { key: 'RegId', type: 'number', props: ['pk'] },
-        { key: 'Latitude', type: 'number' },
-        { key: 'Longitude', type: 'number' },
-      ])
-      .connect();
-  }
-
-  async updateObservations(lat: number, lng: number, radius: number) {
-    const userSettings = await this.userSettingService.getUserSettings();
-    const observationRequest: ObservationsWithinRadiusRequest = {
-      GeoHazards: [userSettings.currentGeoHazard],
-      Latitude: lat,
-      Longitude: lng,
-      Radius: radius,
-      FromDate: this.getobservationsFromDate(userSettings),
-      LangKey: userSettings.language,
-      ReturnCount: settings.observations.maxObservationsToFetch,
-    };
-    const baseUrl = settings.services.apiUrl[userSettings.appMode];
-    await this.getDb();
-    await this.httpClient.post<RegObsObservation>(
-      `${baseUrl}/Observations/GetObservationsWithinRadius`, observationRequest)
-      .subscribe(async (next) => {
-        await nSQL(tableName).query('upsert', {
-          RegId: next.RegId,
-          Latitude: next.Latitude,
-          Longitude: next.Longitude
-        }).exec();
-      });
-  }
 
   getObservationsAsObservable(): Observer<RegObsObservation[]> {
     return nSQL().observable<RegObsObservation[]>(() => {
       return nSQL(tableName).query('select').emit();
+    });
+  }
+
+  getObserableCount(): Observer<RowCount[]> {
+    return nSQL().observable<RowCount[]>(() => {
+      return nSQL(tableName).query('select', ['COUNT(*) as count']).emit();
     });
   }
 }
