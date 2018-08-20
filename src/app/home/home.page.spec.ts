@@ -7,7 +7,7 @@ import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 
 import { HomePage } from './home.page';
 import { Platform } from '@ionic/angular';
-import { FakeTranslateLoader } from '../mocks/translateLoader';
+import { FakeTranslateLoader } from '../core/mocks/translateLoader';
 
 describe('HomePage', () => {
   let component: HomePage;
