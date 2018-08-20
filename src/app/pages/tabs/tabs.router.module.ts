@@ -6,6 +6,7 @@ import { HomePage } from '../home/home.page';
 import { TripPage } from '../trip/trip.page';
 import { MyObservationsPage } from '../my-observations/my-observations.page';
 import { VarsomPage } from '../varsom/varsom.page';
+import { AddPage } from '../add/add.page';
 
 const routes: Routes = [
   {
@@ -21,6 +22,11 @@ const routes: Routes = [
         path: 'trip',
         outlet: 'trip',
         component: TripPage
+      },
+      {
+        path: 'add',
+        outlet: 'add',
+        component: AddPage
       },
       {
         path: 'my-observations',

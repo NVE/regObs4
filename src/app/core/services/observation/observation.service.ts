@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
 import { RegObsObservation } from '../../models/regobs-observation.model';
-import { nSQL } from 'nano-sql';
+import { nSQL, NanoSQLInstance } from 'nano-sql';
 import { Observer } from 'nano-sql/lib/observable';
 import { ApiService } from '../api/api.service';
 import { HelperService } from '../helpers/helper.service';
@@ -30,20 +30,15 @@ export class ObservationService {
     this._isLoading = new Subject<boolean>();
   }
 
-  async init() {
-    return nSQL(tableName)
+  init() {
+    nSQL(tableName)
       .model([
         { key: 'RegId', type: 'number', props: ['pk'] },
         { key: 'Latitude', type: 'number' },
         { key: 'Longitude', type: 'number' },
         { key: 'DtRegTime', type: 'date' },
         { key: 'DtChangeTime', type: 'date' },
-      ])
-      .config({
-        id: settings.db.nanoSql.dbName,
-        mode: getMode()
-      })
-      .connect();
+      ]);
   }
 
   async updateObservations() {

@@ -25,7 +25,9 @@ const routes: Routes = [
   {
     path: 'user-settings',
     loadChildren: './pages/user-settings/user-settings.module#UserSettingsPageModule'
-  },
+  },  { path: 'add', loadChildren: './pages/add/add.module#AddPageModule' },
+  { path: 'new-trip', loadChildren: './pages/new-trip/new-trip.module#NewTripPageModule' },
+
 ];
 
 @NgModule({

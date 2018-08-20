@@ -6,6 +6,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from './core/services/user-setting.service';
 import { BackgroundFetchService } from './core/services/background-fetch/background-fetch.service';
 import { ObservationService } from './core/services/observation/observation.service';
+import { TripLoggerService } from './core/services/trip-logger/trip-logger.service';
+import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
+import { nSQL } from 'nano-sql';
+import { settings } from '../settings';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +24,8 @@ export class AppComponent {
     private translate: TranslateService,
     private userSettings: UserSettingService,
     private backgroundFetchService: BackgroundFetchService,
-    private observationService: ObservationService
+    private observationService: ObservationService,
+    private tripLoggerService: TripLoggerService,
   ) {
     this.initializeApp();
   }
@@ -30,7 +35,9 @@ export class AppComponent {
     this.translate.setDefaultLang('no');
     this.platform.ready().then(async () => {
       try {
-        await this.observationService.init();
+        await this.initNanoSqlDatabase();
+        // await this.observationService.init();
+        // await this.tripLoggerService.init(); // TODO: Call init on platform ready in counstructor instead?
         const userSettings = await this.userSettings.getUserSettings();
         this.translate.use(userSettings.language);
         this.statusBar.styleDefault();
@@ -46,5 +53,15 @@ export class AppComponent {
       // TODO: Log error
       console.log(err);
     });
+  }
+
+  initNanoSqlDatabase() {
+    nSQL().config({
+      id: settings.db.nanoSql.dbName,
+      mode: getMode()
+    });
+    this.observationService.init();
+    this.tripLoggerService.init();
+    return nSQL().connect();
   }
 }

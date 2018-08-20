@@ -29,7 +29,7 @@ export class HomePage {
     private observationService: ObservationService,
     private toastController: ToastController) {
     this.markers = [];
-    this.initLoadingToast(); // TODO: Create component instead
+    // this.initLoadingToast(); // TODO: Create component instead
   }
 
   options: L.MapOptions = {
