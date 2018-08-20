@@ -12,7 +12,13 @@ export const settings = {
         apiJsonVersion: '3.2.0'
     },
     db: {
-        name: 'regobsDb',
-        location: 'default'
+        simpleStorage: {
+            dbName: 'regobsSimpleStorage',
+            location: 'default'
+        },
+        nanoSql: {
+            dbName: 'nanoSql',
+            tableName: 'registration'
+        }
     }
 };

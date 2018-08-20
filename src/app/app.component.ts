@@ -1,15 +1,11 @@
 import { Component } from '@angular/core';
-
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
 import { UserSettingService } from './core/services/user-setting.service';
 import { BackgroundFetchService } from './core/services/background-fetch/background-fetch.service';
-import { nSQL } from '../../node_modules/nano-sql';
-import { settings } from '../settings';
-import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
+import { ObservationService } from './core/services/observation/observation.service';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +20,7 @@ export class AppComponent {
     private translate: TranslateService,
     private userSettings: UserSettingService,
     private backgroundFetchService: BackgroundFetchService,
+    private observationService: ObservationService
   ) {
     this.initializeApp();
   }
@@ -33,32 +30,21 @@ export class AppComponent {
     this.translate.setDefaultLang('no');
     this.platform.ready().then(async () => {
       try {
-        await this.connectDb();
-
+        await this.observationService.init();
         const userSettings = await this.userSettings.getUserSettings();
         this.translate.use(userSettings.language);
         this.statusBar.styleDefault();
         this.splashScreen.hide();
         this.backgroundFetchService.init();
+        await this.observationService.updateObservations(); // Update observations on app start
+        // after that observations is updated every 15 minutes in background fetch service
       } catch (err) {
+        // TODO: Log error
         console.log(err);
       }
     }).catch((err) => {
+      // TODO: Log error
       console.log(err);
     });
-  }
-
-  async connectDb() {
-    return nSQL('regObsObservation') //  "users" is our table name.
-      .model([ // Declare data model
-        { key: 'RegId', type: 'number', props: ['pk'] },
-        { key: 'Latitude', type: 'number' },
-        { key: 'Longitude', type: 'number' },
-      ])
-      .config({
-        id: 'regobsObservatons',
-        mode: getMode()
-      })
-      .connect();
   }
 }

@@ -1,20 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { UserSettingService } from '../user-setting.service';
-import { ObservationsWithinRadiusRequest } from '../../models/observations-within-radius-request.model';
-import * as moment from 'moment';
-import { UserSetting } from '../../models/user-settings.model';
 import { settings } from '../../../../settings';
 import { RegObsObservation } from '../../models/regobs-observation.model';
 import { nSQL } from 'nano-sql';
-import { Platform } from '@ionic/angular';
 import { Observer } from 'nano-sql/lib/observable';
 import { ApiService } from '../api/api.service';
 import { HelperService } from '../helpers/helper.service';
 import { RowCount } from '../../models/row-count.model';
 import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
+import { Subject, Observable } from 'rxjs';
 
-const tableName = 'regObsObservation';
+const tableName = 'registration';
 
 @Injectable({
   providedIn: 'root'
@@ -22,21 +17,43 @@ const tableName = 'regObsObservation';
 export class ObservationService {
 
   observations: Array<RegObsObservation>;
+  private _isLoading: Subject<boolean>;
+
+  get isLoading(): Observable<boolean> {
+    return this._isLoading.asObservable();
+  }
 
   constructor(
-    private platform: Platform,
     private apiService: ApiService,
     private helperService: HelperService
   ) {
+    this._isLoading = new Subject<boolean>();
+  }
 
+  async init() {
+    return nSQL(tableName)
+      .model([
+        { key: 'RegId', type: 'number', props: ['pk'] },
+        { key: 'Latitude', type: 'number' },
+        { key: 'Longitude', type: 'number' },
+        { key: 'DtRegTime', type: 'date' },
+        { key: 'DtChangeTime', type: 'date' },
+      ])
+      .config({
+        id: settings.db.nanoSql.dbName,
+        mode: getMode()
+      })
+      .connect();
   }
 
   async updateObservations() {
+    this._isLoading.next(true);
     const fromDate = await this.helperService.getObservationsFromDate();
     (await this.apiService.search({
       FromDate: fromDate.toDate()
     })).subscribe(async (next) => {
       await nSQL(tableName).loadJS(tableName, next.Results);
+      this._isLoading.next(false);
     });
   }
 

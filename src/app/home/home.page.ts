@@ -1,7 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
-import { Platform } from '@ionic/angular';
+import { Platform, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { UserMarker } from '../shared/user-marker/user-marker';
 import { ObservationService } from '../core/services/observation/observation.service';
@@ -17,15 +17,19 @@ export class HomePage {
   map: L.Map;
   watchSubscription: Subscription;
   userMarker: UserMarker;
+  toast: HTMLIonToastElement;
   followMode = true;
   markerLayer = L.layerGroup();
   observationSubscription: ObserverSubscriber;
   markers: Array<{ id: number, marker: L.Marker }>;
+  toastDismissTimeout: NodeJS.Timer;
 
   constructor(private platform: Platform,
     private geolocation: Geolocation,
-    private observationService: ObservationService) {
+    private observationService: ObservationService,
+    private toastController: ToastController) {
     this.markers = [];
+    this.initLoadingToast(); // TODO: Create component instead
   }
 
   options: L.MapOptions = {
@@ -39,6 +43,28 @@ export class HomePage {
     attributionControl: false,
     zoomControl: false,
   };
+
+  initLoadingToast() {
+    this.platform.ready().then(() => {
+      this.observationService.isLoading.subscribe(async (isLoading) => {
+        if (isLoading) {
+          if (this.toastDismissTimeout) {
+            clearTimeout(this.toastDismissTimeout);
+          }
+          this.toast = await this.toastController.create({
+            message: 'Laster inn observasjoner',
+            position: 'bottom',
+            translucent: true,
+          });
+          this.toast.present();
+        } else if (this.toast) {
+          this.toastDismissTimeout = setTimeout(() => {
+            this.toast.dismiss();
+          }, 3000);
+        }
+      });
+    });
+  }
 
   async onMapReady(map: L.Map) {
     this.map = map;
@@ -106,7 +132,9 @@ export class HomePage {
       }
     }, 200);
 
-    this.watchSubscription = this.geolocation.watchPosition()
+    this.watchSubscription = this.geolocation.watchPosition(
+      { maximumAge: 60000, enableHighAccuracy: true }
+    )
       .subscribe(
         (data) => this.onPositionUpdate(data),
         (error) => this.onPositionError(error)

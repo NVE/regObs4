@@ -101,7 +101,7 @@
     <plugin name="cordova-sqlite-storage" spec="~2.3.3" />
     <plugin name="cordova-plugin-nano-sqlite" spec="~1.2.0" />
     <plugin name="cordova-plugin-background-fetch" spec="~5.4.1" />
+    <engine name="android" spec="7.1.1" />
     <engine name="browser" spec="5.0.4" />
     <engine name="ios" spec="^4.5.5" />
-    <engine name="android" spec="~7.1.1" />
 </widget>

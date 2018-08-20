@@ -32,7 +32,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     LeafletModule.forRoot(),
     IonicStorageModule.forRoot({
-      name: settings.db.name,
+      name: settings.db.simpleStorage.dbName,
       driverOrder: ['sqlite', 'indexeddb', 'websql'],
     }),
   ],

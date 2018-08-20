@@ -62,12 +62,13 @@ export class UserMarker {
     }
 
     private setAccuracy(position: Geoposition) {
+        const latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
         if (!this.accuracyMarker) {
-            const latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
             this.accuracyMarker = L.circle(latLng, position.coords.accuracy, this.accuracyCircleStyle);
             this.accuracyMarker.addTo(this.map);
         } else {
             this.accuracyMarker.setRadius(position.coords.accuracy);
+            this.accuracyMarker.setLatLng(latLng);
         }
     }
 }

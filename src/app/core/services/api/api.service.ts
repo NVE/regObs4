@@ -63,7 +63,7 @@ export class ApiService {
 
   private async getApiKey(): Promise<string> {
     try {
-      const apiKeyJsonFile = await this.httpClient.get<ApiKey>('assets/apikey.json').toPromise();
+      const apiKeyJsonFile = await this.httpClient.get<ApiKey>('/assets/apikey.json').toPromise();
       return apiKeyJsonFile.apiKey;
     } catch (Error) {
       throw new Error('/assets/apiKey.json missing. Please read documentation!');

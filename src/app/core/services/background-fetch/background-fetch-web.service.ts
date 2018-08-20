@@ -13,6 +13,6 @@ export class BackgroundFetchWebService implements BackgroundFetchService {
     init() {
         setInterval(async () => {
             this.observationService.updateObservations();
-        }, 10 * 1000);
+        }, 2 * 60 * 1000); // Update frequency for observations on web immplementation
     }
 }
