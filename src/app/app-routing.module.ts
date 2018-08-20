@@ -4,31 +4,27 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './tabs/tabs.module#TabsPageModule'
+    loadChildren: './pages/tabs/tabs.module#TabsPageModule'
   },
   {
     path: 'home',
-    loadChildren: './home/home.module#HomePageModule'
-  },
-  {
-    path: 'list',
-    loadChildren: './list/list.module#ListPageModule'
+    loadChildren: './pages/home/home.module#HomePageModule'
   },
   {
     path: 'trip',
-    loadChildren: './trip/trip.module#TripPageModule'
+    loadChildren: './pages/trip/trip.module#TripPageModule'
   },
   {
     path: 'my-observations',
-    loadChildren: './my-observations/my-observations.module#MyObservationsPageModule'
+    loadChildren: './pages/my-observations/my-observations.module#MyObservationsPageModule'
   },
   {
     path: 'varsom',
-    loadChildren: './varsom/varsom.module#VarsomPageModule'
+    loadChildren: './pages/varsom/varsom.module#VarsomPageModule'
   },
   {
     path: 'user-settings',
-    loadChildren: './user-settings/user-settings.module#UserSettingsPageModule'
+    loadChildren: './pages/user-settings/user-settings.module#UserSettingsPageModule'
   },
 ];
 

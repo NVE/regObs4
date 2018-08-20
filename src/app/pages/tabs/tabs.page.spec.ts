@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TabsPage } from './tabs.page';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { FakeTranslateLoader } from '../core/mocks/translateLoader';
+import { FakeTranslateLoader } from '../../core/mocks/translateLoader';
 
 describe('TabsPage', () => {
   let component: TabsPage;

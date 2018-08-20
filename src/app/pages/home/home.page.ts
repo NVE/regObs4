@@ -3,8 +3,8 @@ import * as L from 'leaflet';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Platform, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { UserMarker } from '../shared/user-marker/user-marker';
-import { ObservationService } from '../core/services/observation/observation.service';
+import { UserMarker } from '../../core/helpers/leaflet/user-marker/user-marker';
+import { ObservationService } from '../../core/services/observation/observation.service';
 import { ObserverSubscriber } from 'nano-sql/lib/observable';
 
 @Component({
