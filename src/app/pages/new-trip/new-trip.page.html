@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="dark">
-    <ion-buttons slot="end">
-      <ion-menu-button></ion-menu-button>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>
       Ny tur
@@ -10,8 +10,11 @@
 </ion-header>
 <ion-content>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button large color="success" (click)="startNewTrip()">
+    <ion-fab-button *ngIf="!isRunning" large color="success" (click)="startTrip()">
       <ion-icon name="play"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button *ngIf="isRunning" large color="medium" (click)="stopTrip()">
+      <ion-icon name="square"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

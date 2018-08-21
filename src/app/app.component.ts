@@ -10,6 +10,7 @@ import { TripLoggerService } from './core/services/trip-logger/trip-logger.servi
 import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
 import { nSQL } from 'nano-sql';
 import { settings } from '../settings';
+import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ export class AppComponent {
     private backgroundFetchService: BackgroundFetchService,
     private observationService: ObservationService,
     private tripLoggerService: TripLoggerService,
+    private backroundGeolocationService: BackgroundGeolocationService,
   ) {
     this.initializeApp();
   }
@@ -36,11 +38,9 @@ export class AppComponent {
     this.platform.ready().then(async () => {
       try {
         await this.initNanoSqlDatabase();
-        // await this.observationService.init();
-        // await this.tripLoggerService.init(); // TODO: Call init on platform ready in counstructor instead?
         const userSettings = await this.userSettings.getUserSettings();
         this.translate.use(userSettings.language);
-        this.statusBar.styleDefault();
+        this.statusBar.styleBlackTranslucent();
         this.splashScreen.hide();
         this.backgroundFetchService.init();
         await this.observationService.updateObservations(); // Update observations on app start

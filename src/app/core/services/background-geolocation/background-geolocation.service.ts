@@ -1,3 +1,7 @@
+import { BackgroundGeolocationLocation } from './background-geolocation.model';
+
 export abstract class BackgroundGeolocationService {
-  init(): void { }
+  abstract start(): void;
+  abstract stop(): void;
+  abstract isRunning(): Promise<boolean>;
 }
