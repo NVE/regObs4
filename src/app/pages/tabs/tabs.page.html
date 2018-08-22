@@ -1,17 +1,17 @@
-<ion-tabs>
-  <ion-tab icon="home" href="/tabs/(home:home)">
+<ion-tabs (ionChange)="tabsChanged($event)">
+  <ion-tab name="home" icon="home" href="/tabs/(home:home)">
     <ion-router-outlet name="home"></ion-router-outlet>
   </ion-tab>
-  <ion-tab icon="walk" href="/tabs/(trip:trip)">
+  <ion-tab name="trip" icon="walk" href="/tabs/(trip:trip)">
     <ion-router-outlet name="trip"></ion-router-outlet>
   </ion-tab>
-  <ion-tab icon="add" href="/tabs/(add:add)">
+  <ion-tab name="add" icon="add" href="/tabs/(add:add)">
     <ion-router-outlet name="add"></ion-router-outlet>
   </ion-tab>
-  <ion-tab icon="eye" href="/tabs/(my-observations:my-observations)">
+  <ion-tab name="my-observations" icon="eye" href="/tabs/(my-observations:my-observations)">
     <ion-router-outlet name="my-observations"></ion-router-outlet>
   </ion-tab>
-  <ion-tab icon="warning" href="/tabs/(varsom:varsom)">
+  <ion-tab name="varsom" icon="warning" href="/tabs/(varsom:varsom)">
     <ion-router-outlet name="varsom"></ion-router-outlet>
   </ion-tab>
 </ion-tabs>

@@ -1,7 +1,7 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
-import { Platform, ToastController } from '@ionic/angular';
+import { Platform, ToastController, NavController, Events } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { UserMarker } from '../../core/helpers/leaflet/user-marker/user-marker';
 import { ObservationService } from '../../core/services/observation/observation.service';
@@ -27,7 +27,17 @@ export class HomePage {
   constructor(private platform: Platform,
     private geolocation: Geolocation,
     private observationService: ObservationService,
-    private toastController: ToastController) {
+    private toastController: ToastController,
+    private events: Events,
+  ) {
+
+    const defaultIcon = L.icon({
+      iconUrl: 'leaflet/marker-icon.png',
+      shadowUrl: 'leaflet/marker-shadow.png'
+    });
+
+    L.Marker.prototype.options.icon = defaultIcon;
+
     this.markers = [];
     // this.initLoadingToast(); // TODO: Create component instead
   }
@@ -35,7 +45,13 @@ export class HomePage {
   options: L.MapOptions = {
     layers: [
       // tslint:disable-next-line:max-line-length
-      L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=matrikkel_bakgrunn&zoom={z}&x={x}&y={y}&format=image/jpeg'),
+      L.tileLayer('/assets/map/topo_{z}_{x}_{y}.jpg', {
+        name: 'embedded', maxZoom: 9, minZoom: 1
+      }),
+      // tslint:disable-next-line:max-line-length
+      L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=matrikkel_bakgrunn&zoom={z}&x={x}&y={y}&format=image/jpeg', {
+        name: 'topo', maxZoom: 18, minZoom: 10
+      }),
       this.markerLayer,
     ],
     zoom: 13,
@@ -67,16 +83,11 @@ export class HomePage {
   }
 
   async onMapReady(map: L.Map) {
+    console.log('[INFO] onMapReady home page');
+
     this.map = map;
     this.map.on('moveend', () => this.onMapMoved());
     this.map.on('dragstart', () => this.disableFollowMode());
-
-    const defaultIcon = L.icon({
-      iconUrl: 'leaflet/marker-icon.png',
-      shadowUrl: 'leaflet/marker-shadow.png'
-    });
-
-    L.Marker.prototype.options.icon = defaultIcon;
 
     this.observationSubscription = (await this.observationService.getObservationsAsObservable())
       .filter((regObservations) => regObservations.length > 0)
@@ -110,41 +121,57 @@ export class HomePage {
     console.log('map moved');
     // TODO: If user settings show observations
     // const viewBounds = this.map.getBounds();
-    // this.loadObservationsForViewBounds(viewBounds);
     // const center = this.map.getCenter();
     // await this.observationService.updateObservations(center.lat, center.lng, 10000);
   }
-
-  // private loadObservationsForViewBounds(bounds: L.LatLngBounds) {
-  // }
 
   private disableFollowMode() {
     this.followMode = false;
   }
 
-  async ionViewDidEnter() {
+  ionViewDidEnter() {
 
-    await this.platform.ready();
+    console.log('[INFO] ionViewDidEnter home page');
+    this.events.subscribe('tabs:changed', (tabName: string) => {
+      if (tabName === 'home') {
+        this.startGeoLocationWatch();
+        this.redrawMap();
+      } else {
+        // Stopping geolocation when map is not visible to save battery
+        this.stopGeoLocationWatch();
+      }
+    });
+  }
 
+  private redrawMap() {
     setTimeout(() => {
       if (this.map) {
         this.map.invalidateSize();
       }
-    }, 200);
+    }, 0);
+  }
 
-    this.watchSubscription = this.geolocation.watchPosition(
-      { maximumAge: 60000, enableHighAccuracy: true }
-    )
-      .subscribe(
-        (data) => this.onPositionUpdate(data),
-        (error) => this.onPositionError(error)
-      );
+  private startGeoLocationWatch() {
+    console.log('[INFO] Start watching location changes');
+    if (this.watchSubscription === undefined || this.watchSubscription.closed) {
+      this.watchSubscription = this.geolocation.watchPosition(
+        { maximumAge: 60000, enableHighAccuracy: true }
+      )
+        .subscribe(
+          (data) => this.onPositionUpdate(data),
+          (error) => this.onPositionError(error)
+        );
+    }
+  }
+
+  private stopGeoLocationWatch() {
+    console.log('[INFO] Stop watching location changes');
+    if (this.watchSubscription !== undefined && !this.watchSubscription.closed) {
+      this.watchSubscription.unsubscribe();
+    }
   }
 
   private onPositionUpdate(data: Geoposition) {
-    // data can be a set of coordinates, or an error (if an error occurred).
-    // data.coords.latitude
-    // data.coords.longitude
     if (data.coords && this.map) {
       const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
       if (!this.userMarker) {
@@ -165,7 +192,9 @@ export class HomePage {
   }
 
   ionViewWillLeave() {
-    this.watchSubscription.unsubscribe();
+    console.log('[INFO] ionViewWillLeave home page. Unsubscribe listeners');
     this.observationSubscription.unsubscribe();
+    this.stopGeoLocationWatch();
+    this.events.unsubscribe('tabs:changed');
   }
 }

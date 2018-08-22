@@ -28,7 +28,7 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
             notificationTitle: 'Tur pågår',
             notificationText: 'Klikk for å stoppe',
             activityType: 'OtherNavigation',
-            maxLocations: 100000,
+            maxLocations: 1, // Disable local storage of locations, because we handle this in nanoSQL instead
         };
         this.backgroundGeolocation.configure(config, () => {
             console.log('[INFO] BackgroundGeolocation set up success!');
