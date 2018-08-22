@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { UserMarker } from '../../core/helpers/leaflet/user-marker/user-marker';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { ObserverSubscriber } from 'nano-sql/lib/observable';
+import { OfflineTileLayer } from '../../core/helpers/leaflet/offline-tile-layer/offline-tile-layer';
 
 @Component({
   selector: 'app-home',
@@ -49,7 +50,7 @@ export class HomePage {
         name: 'embedded', maxZoom: 9, minZoom: 1
       }),
       // tslint:disable-next-line:max-line-length
-      L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=matrikkel_bakgrunn&zoom={z}&x={x}&y={y}&format=image/jpeg', {
+      new OfflineTileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=matrikkel_bakgrunn&zoom={z}&x={x}&y={y}&format=image/jpeg', {
         name: 'topo', maxZoom: 18, minZoom: 10
       }),
       this.markerLayer,
