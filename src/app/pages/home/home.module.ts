@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
 
 @NgModule({
   imports: [
@@ -21,7 +22,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     TranslateModule,
     LeafletModule,
   ],
-  declarations: [HomePage]
+  declarations: [HomePage, GeoSelectComponent]
 })
 export class HomePageModule {
 }

@@ -26,5 +26,11 @@
     },
     "OFFLINE_MAP": {
         "TITLE": "Offline map"
+    },
+    "GEO_HAZARDS": {
+        "SNOW": "Snow",
+        "ICE": "Ice",
+        "DIRT": "Dirt",
+        "WATER": "Water"
     }
 }

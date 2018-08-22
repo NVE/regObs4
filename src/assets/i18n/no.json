@@ -26,5 +26,11 @@
     },
     "OFFLINE_MAP": {
         "TITLE": "Offline kart"
+    },
+    "GEO_HAZARDS": {
+        "SNOW": "Snø",
+        "ICE": "Is",
+        "DIRT": "Jord",
+        "WATER": "Vann"
     }
 }

@@ -1,0 +1,65 @@
+.geo-selector {
+    position: absolute;
+    top: 25px;
+    left: 10px;
+    background-color: #fff;
+    opacity: 0.8;
+    z-index: 900;
+    border-radius: 5px;
+}
+
+// .platform-ios .geo-selector {
+//     top: 72px;
+// }
+
+.geo-selector.selectable {
+    width: 100px;
+}
+
+.geo-item {
+    padding: 10px;
+}
+
+.geo-item-name {
+    position: relative;
+    left: 4px;
+    top: -1px;
+    font-weight: 500;
+    padding-right: 10px;
+}
+
+.select-geo-toggle {
+    position: absolute;
+    top: 15px;
+    right: 10px;
+}
+
+.geo-selectable-item {
+    border-top: 1px solid rgb(190,189,189);
+}
+
+.geo-selector .nve-icon {
+    padding-left: 0px;
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    position: relative;
+    top: 3px;
+    margin-right: 5px;
+}
+
+.geo-selector .nve-icon-snow {
+    background: url(/assets/icon/ikon_snoskred.svg) left/20px no-repeat;
+}
+
+.geo-selector .nve-icon-water {
+    background: url(/assets/icon/ikon_flom.svg) left/20px no-repeat;
+}
+
+.geo-selector .nve-icon-ice {
+    background: url(/assets/icon/ikon_isvarsler2.svg) left/20px no-repeat;
+}
+
+.geo-selector .nve-icon-dirt {
+    background: url(/assets/icon/ikon_jordskred.svg) left/20px no-repeat;
+}

@@ -148,6 +148,9 @@ export class HomePage {
     setTimeout(() => {
       if (this.map) {
         this.map.invalidateSize();
+        setTimeout(() => {
+          this.map.invalidateSize();
+        }, 500);
       }
     }, 0);
   }

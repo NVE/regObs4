@@ -12,7 +12,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 }
 
 @NgModule({
