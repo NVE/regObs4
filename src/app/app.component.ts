@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,7 +10,7 @@ import { TripLoggerService } from './core/services/trip-logger/trip-logger.servi
 import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
 import { nSQL } from 'nano-sql';
 import { settings } from '../settings';
-import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
+import { StartWizardPage } from './pages/start-wizard/start-wizard.page';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +27,7 @@ export class AppComponent {
     private backgroundFetchService: BackgroundFetchService,
     private observationService: ObservationService,
     private tripLoggerService: TripLoggerService,
-    private backroundGeolocationService: BackgroundGeolocationService,
+    private navController: NavController,
   ) {
     this.initializeApp();
   }
@@ -41,6 +41,9 @@ export class AppComponent {
         const userSettings = await this.userSettings.getUserSettings();
         this.translate.use(userSettings.language);
         this.statusBar.styleBlackTranslucent();
+        if (!userSettings.completedStartWizard) {
+          this.navController.goRoot('start-wizard', false);
+        }
         this.splashScreen.hide();
         this.backgroundFetchService.init();
         await this.observationService.updateObservations(); // Update observations on app start

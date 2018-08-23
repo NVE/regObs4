@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-user-settings',

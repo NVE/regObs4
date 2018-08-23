@@ -6,4 +6,5 @@ export interface UserSetting {
     language: 'no' | 'en';
     currentGeoHazard: GeoHazard;
     observationDaysBack: Array<{ geoHazard: GeoHazard, daysBack: number }>;
+    completedStartWizard: boolean;
 }

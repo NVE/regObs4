@@ -32,5 +32,41 @@
         "ICE": "Ice",
         "DIRT": "Dirt",
         "WATER": "Water"
+    },
+    "START_WIZARD": {
+        "CHOOSE_LANGUAGE": {
+            "HEADER": "Choose language",
+            "HEADER_SECONDARY_LANGUAGE": "Velg språk",
+            "NORWEGIAN": "Norwegian",
+            "ENGLISH": "English",
+            "NORWEGIAN_SECONDARY_LANGUAGE": "Norsk",
+            "ENGLISH_SECONDARY_LANGUAGE": "Engelsk"
+        },
+        "PAGE_1": {
+            "HEADER": "Be up to date!",
+            "LINE_1": "Plan your tour with regObs and Varsom.",
+            "LINE_2": "Read warings. View observations."
+        },
+        "PAGE_2": {
+            "HEADER": "Geohazard maps",
+            "LINE_1": "View where you are and if you are close to dangers in the terrain. Use support maps:",
+            "LINE_2": "Steepness map, dangerous ice and flood zones."
+        },
+        "PAGE_3": {
+            "HEADER": "What do you observe?",
+            "LINE_1": "Share your observations, images and evaluations with others."
+        },
+        "PAGE_4": {
+            "HEADER": "What and how?",
+            "LINE_1": "Choose what to see and share on regObs. You can read about sharing observations at varsom.no/snøskredskolen and varsom.no/isskolen"
+        },
+        "CHOOSE_INTEREST": {
+            "HEADER": "Choose your interest:",
+            "INTEREST_SNOW": "Take me to the snow!",
+            "INTEREST_ICE": "Ice thickness, load capacity and skating conditions!",
+            "INTEREST_WATER": "Water level, flow and damages!",
+            "INTEREST_DIRT": "Landslide!"
+        },
+        "SKIP_START": "Skip this and start using the app"
     }
 }
