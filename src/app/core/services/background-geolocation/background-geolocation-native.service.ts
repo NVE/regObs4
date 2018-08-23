@@ -37,22 +37,15 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
         });
     }
 
-    async savePositionUpdate(location: BackgroundGeolocationLocation) {
-        return new Promise(async (resolve, reject) => {
-            await this.tripLogger.saveTripLogItem({
-                latitude: location.latitude,
-                longitude: location.longitude,
-                timestamp: new Date(location.time),
-                accuracy: location.accuracy,
-                altitude: location.altitude,
-                heading: location.bearing,
-                speed: location.speed
-            });
-            this.backgroundGeolocation.deleteLocation(location.id, () => {
-                resolve();
-            }, (error) => {
-                reject(error);
-            });
+    savePositionUpdate(location: BackgroundGeolocationLocation) {
+        return this.tripLogger.saveTripLogItem({
+            latitude: location.latitude,
+            longitude: location.longitude,
+            timestamp: new Date(location.time),
+            accuracy: location.accuracy,
+            altitude: location.altitude,
+            heading: location.bearing,
+            speed: location.speed
         });
     }
 
