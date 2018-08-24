@@ -34,6 +34,7 @@
     "@ionic/pro": "2.0.3",
     "@ionic/schematics-angular": "1.0.5",
     "@ionic/storage": "^2.1.3",
+    "@mapbox/leaflet-pip": "^1.1.0",
     "@ngx-translate/core": "^10.0.2",
     "@ngx-translate/http-loader": "^3.0.1",
     "@types/leaflet": "^1.2.9",

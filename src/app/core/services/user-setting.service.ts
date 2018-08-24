@@ -15,7 +15,8 @@ const DEFAULT_SETTINGS: UserSetting = {
     { geoHazard: GeoHazard.Ice, daysBack: 7 },
     { geoHazard: GeoHazard.Dirt, daysBack: 3 },
     { geoHazard: GeoHazard.Water, daysBack: 3 },
-  ]
+  ],
+  completedStartWizard: false
 };
 
 @Injectable({

@@ -32,5 +32,41 @@
         "ICE": "Is",
         "DIRT": "Jord",
         "WATER": "Vann"
+    },
+    "START_WIZARD": {
+        "CHOOSE_LANGUAGE": {
+            "HEADER": "Velg språk",
+            "HEADER_SECONDARY_LANGUAGE": "Choose language",
+            "NORWEGIAN": "Norsk",
+            "ENGLISH": "Engelsk",
+            "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian",
+            "ENGLISH_SECONDARY_LANGUAGE": "English"
+        },
+        "PAGE_1": {
+            "HEADER": "Vær oppdatert",
+            "LINE_1": "Planlegg turen med regObs og Varsom.",
+            "LINE_2": "Les varsel. Se hvor andre har lagt inn observasjoner"
+        },
+        "PAGE_2": {
+            "HEADER": "Naturfarekart",
+            "LINE_1": "Se hvor du er i forhold til faresoner i terrenget, bruk støttekartene:",
+            "LINE_2": "Bratthetskart, kart over svekket is og flomsonekart."
+        },
+        "PAGE_3": {
+            "HEADER": "Hva har du sett?",
+            "LINE_1": "Del dine observasjoner, bilder og vurderinger med andre og varslinga."
+        },
+        "PAGE_4": {
+            "HEADER": "Hva og hvordan?",
+            "LINE_1": "Du velger selv hva du vil se og dele på regObs. Du kan lese om hvordan du deler observasjoner med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
+        },
+        "CHOOSE_INTEREST": {
+            "HEADER": "Velg din interesse:",
+            "INTEREST_SNOW": "Ta meg til snøen!",
+            "INTEREST_ICE": "Istykkelse, bæreevne og skøyteforhold!",
+            "INTEREST_WATER": "Vannstand, vannføring og flomskader!",
+            "INTEREST_DIRT": "Jord til jordskredvarslingen!"
+        },
+        "SKIP_START": "Hopp over dette. Begynn å bruk."
     }
 }

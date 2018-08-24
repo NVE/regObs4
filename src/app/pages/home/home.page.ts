@@ -7,6 +7,11 @@ import { UserMarker } from '../../core/helpers/leaflet/user-marker/user-marker';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { ObserverSubscriber } from 'nano-sql/lib/observable';
 import { OfflineTileLayer } from '../../core/helpers/leaflet/offline-tile-layer/offline-tile-layer';
+import * as norwegianBorder from '../../../assets/norway-borders2.json';
+import * as leafletPip from '@mapbox/leaflet-pip';
+import { settings } from '../../../settings';
+
+const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
 @Component({
   selector: 'app-home',
@@ -14,7 +19,6 @@ import { OfflineTileLayer } from '../../core/helpers/leaflet/offline-tile-layer/
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-
   map: L.Map;
   watchSubscription: Subscription;
   userMarker: UserMarker;
@@ -24,12 +28,15 @@ export class HomePage {
   observationSubscription: ObserverSubscriber;
   markers: Array<{ id: number, marker: L.Marker }>;
   toastDismissTimeout: NodeJS.Timer;
+  embeddedMapLayer = this.getEmbeddedMapLayer();
+  defaultMapLayer = this.getDefaultMapLayer();
+  alternativeMapLayer = this.getAlternativeMapLayer();
 
   constructor(private platform: Platform,
     private geolocation: Geolocation,
     private observationService: ObservationService,
     private toastController: ToastController,
-    private events: Events,
+    private events: Events
   ) {
 
     const defaultIcon = L.icon({
@@ -45,14 +52,8 @@ export class HomePage {
 
   options: L.MapOptions = {
     layers: [
-      // tslint:disable-next-line:max-line-length
-      L.tileLayer('/assets/map/topo_{z}_{x}_{y}.jpg', {
-        name: 'embedded', maxZoom: 9, minZoom: 1
-      }),
-      // tslint:disable-next-line:max-line-length
-      new OfflineTileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=matrikkel_bakgrunn&zoom={z}&x={x}&y={y}&format=image/jpeg', {
-        name: 'topo', maxZoom: 18, minZoom: 10
-      }),
+      this.embeddedMapLayer,
+      this.defaultMapLayer,
       this.markerLayer,
     ],
     zoom: 13,
@@ -60,6 +61,35 @@ export class HomePage {
     attributionControl: false,
     zoomControl: false,
   };
+
+  getEmbeddedMapLayer() {
+    return L.tileLayer(settings.map.tiles.embeddedUrl, {
+      name: 'embedded', maxZoom: 9, minZoom: 1,
+    });
+  }
+
+  getDefaultMapLayer() {
+    // tslint:disable-next-line:max-line-length
+    return L.tileLayer(settings.map.tiles.defaultMapUrl, {
+      name: 'topo', maxZoom: 18, minZoom: 10,
+    });
+    // return L.tileLayer.wms('http://opencache.statkart.no/gatekeeper/gk/gk.open',
+    //   {
+    //     layers: 'norgeskart_bakgrunn',
+    //     format: 'image/jpg',
+    //     transparent: false,
+    //     attribution: '© Kartverket',
+    //     useCache: true,
+    //     minZoom: 10,
+    //     maxZoom: 18,
+    //   });
+  }
+
+  getAlternativeMapLayer() {
+    return L.tileLayer(settings.map.tiles.fallbackMapUrl, {
+      name: 'open-topo', maxZoom: 18, minZoom: 1,
+    });
+  }
 
   initLoadingToast() {
     this.platform.ready().then(() => {
@@ -120,10 +150,27 @@ export class HomePage {
 
   private async onMapMoved() {
     console.log('map moved');
-    // TODO: If user settings show observations
-    // const viewBounds = this.map.getBounds();
-    // const center = this.map.getCenter();
-    // await this.observationService.updateObservations(center.lat, center.lng, 10000);
+    const center = this.map.getCenter();
+    const isInNorway: boolean = leafletPip.pointInLayer(center, NORWEGIAN_BORDER).length > 0;
+    console.log('[INFO] Is in norway: ', isInNorway);
+    if (isInNorway) {
+      this.useDefaultMapLayer();
+    } else {
+      this.useAlternativeMapLayer();
+    }
+  }
+
+  private useAlternativeMapLayer() {
+    this.map.removeLayer(this.embeddedMapLayer);
+    this.map.removeLayer(this.defaultMapLayer);
+    this.alternativeMapLayer = this.getAlternativeMapLayer()
+      .addTo(this.map);
+  }
+
+  private useDefaultMapLayer() {
+    this.map.removeLayer(this.alternativeMapLayer);
+    this.embeddedMapLayer = this.getEmbeddedMapLayer().addTo(this.map);
+    this.defaultMapLayer = this.getDefaultMapLayer().addTo(this.map);
   }
 
   private disableFollowMode() {
