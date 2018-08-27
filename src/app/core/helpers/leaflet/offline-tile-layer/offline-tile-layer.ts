@@ -1,4 +1,9 @@
 import * as L from 'leaflet';
+import * as leafletPip from '@mapbox/leaflet-pip';
+import * as norwegianBorder from '../../../assets/norway-borders2.json';
+
+const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
+
 export class OfflineTileLayer extends L.TileLayer {
 
     createTile(coords, done) {
@@ -25,6 +30,17 @@ export class OfflineTileLayer extends L.TileLayer {
 
         return tile;
     }
+
+
+    /**
+     * Returns whether tile coords is inside norwegian border
+     * @param coords tile coords
+     */
+    private isInsideBorders(coords: [number, number, number]): boolean {
+        const latLngBounds: L.LatLngBounds = (<any>this)._tileCoordsToBounds();
+        return leafletPip.pointInLayer(latLngBounds.getCenter(), NORWEGIAN_BORDER).length > 0;
+    }
+
 
     private getOriginalTileUrl(coords): string {
         return (<any>L.TileLayer.prototype).getTileUrl.call(this, coords);

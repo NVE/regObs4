@@ -7,6 +7,7 @@ import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
+import { FullscreenToggleComponent } from '../../components/fullscreen-toggle/fullscreen-toggle.component';
 
 @NgModule({
   imports: [
@@ -22,7 +23,7 @@ import { GeoSelectComponent } from '../../components/geo-select/geo-select.compo
     TranslateModule,
     LeafletModule,
   ],
-  declarations: [HomePage, GeoSelectComponent]
+  declarations: [HomePage, GeoSelectComponent, FullscreenToggleComponent]
 })
 export class HomePageModule {
 }

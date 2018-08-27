@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Platform, ToastController, NavController, Events } from '@ionic/angular';
@@ -10,6 +10,8 @@ import { OfflineTileLayer } from '../../core/helpers/leaflet/offline-tile-layer/
 import * as norwegianBorder from '../../../assets/norway-borders2.json';
 import * as leafletPip from '@mapbox/leaflet-pip';
 import { settings } from '../../../settings';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { FullscreenToggleComponent } from '../../components/fullscreen-toggle/fullscreen-toggle.component';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
@@ -19,6 +21,7 @@ const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  @ViewChild(FullscreenToggleComponent) fullscreenToggle: FullscreenToggleComponent;
   map: L.Map;
   watchSubscription: Subscription;
   userMarker: UserMarker;
@@ -26,17 +29,21 @@ export class HomePage {
   followMode = true;
   markerLayer = L.layerGroup();
   observationSubscription: ObserverSubscriber;
+  fullscreenSubscription: Subscription;
   markers: Array<{ id: number, marker: L.Marker }>;
   toastDismissTimeout: NodeJS.Timer;
+  // TODO: Create one really good custom Layer with fallback to offline/norwegian/open maps
   embeddedMapLayer = this.getEmbeddedMapLayer();
   defaultMapLayer = this.getDefaultMapLayer();
   alternativeMapLayer = this.getAlternativeMapLayer();
+  fullscreen = false;
 
   constructor(private platform: Platform,
     private geolocation: Geolocation,
     private observationService: ObservationService,
     private toastController: ToastController,
-    private events: Events
+    private events: Events,
+    private statusBar: StatusBar,
   ) {
 
     const defaultIcon = L.icon({
@@ -189,6 +196,10 @@ export class HomePage {
         this.stopGeoLocationWatch();
       }
     });
+
+    this.fullscreenSubscription = this.fullscreenToggle.isFullscreen.subscribe((isFullscreen) => {
+      this.fullscreen = isFullscreen;
+    });
   }
 
   private redrawMap() {
@@ -245,6 +256,7 @@ export class HomePage {
   ionViewWillLeave() {
     console.log('[INFO] ionViewWillLeave home page. Unsubscribe listeners');
     this.observationSubscription.unsubscribe();
+    this.fullscreenSubscription.unsubscribe();
     this.stopGeoLocationWatch();
     this.events.unsubscribe('tabs:changed');
   }

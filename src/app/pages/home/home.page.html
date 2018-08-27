@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-toolbar color="dark">
+<ion-header *ngIf="!fullscreen">
+  <ion-toolbar color="dark" transparent>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
@@ -13,6 +13,7 @@
   <div style="width: 100%; height: 100%" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)">
   </div>
   <app-geo-select></app-geo-select>
+  <app-fullscreen-toggle></app-fullscreen-toggle>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button color="light" (click)="centerMapToUser()">
       <ion-icon name="locate"></ion-icon>

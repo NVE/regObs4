@@ -41,6 +41,7 @@ export class AppComponent {
         const userSettings = await this.userSettings.getUserSettings();
         this.translate.use(userSettings.language);
         this.statusBar.styleBlackTranslucent();
+        this.statusBar.overlaysWebView(true);
         if (!userSettings.completedStartWizard) {
           this.navController.goRoot('start-wizard', false);
         }

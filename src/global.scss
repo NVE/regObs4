@@ -11,3 +11,12 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 @import 'app/core/helpers/leaflet/user-marker/user-marker.scss';
+
+.map-control {
+    background-color: #000;
+    opacity: 0.8;
+    z-index: 900;
+    border-radius: 5px;
+    color: #fff;
+    padding: 5px;
+}
