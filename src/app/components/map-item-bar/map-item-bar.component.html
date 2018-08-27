@@ -1,0 +1,30 @@
+<div class="map-item-bar" (click)="navigateToItem()" *ngIf="visible">
+  <ion-grid text-nowrap nowrap>
+    <ion-row>
+      <ion-col>
+        {{topHeader}}
+      </ion-col>
+      <ion-col>
+
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h5 no-margin>{{title}}</h5>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        {{name}}
+      </ion-col>
+      <ion-col text-right>
+        {{distanceAndType}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-fab vertical="top" horizontal="end" edge slot="fixed">
+    <ion-fab-button color="light">
+      <ion-icon name="eye"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</div>

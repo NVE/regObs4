@@ -68,5 +68,9 @@
             "INTEREST_DIRT": "Jord til jordskredvarslingen!"
         },
         "SKIP_START": "Hopp over dette. Begynn å bruk."
+    },
+    "MAP_ITEM_BAR": {
+        "OBSERVATION": "Observasjon",
+        "AWAY": "Unna"
     }
 }

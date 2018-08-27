@@ -1,7 +1,7 @@
-import { Component, AfterViewInit, OnInit, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import * as L from 'leaflet';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
-import { Platform, ToastController, NavController, Events } from '@ionic/angular';
+import { Platform, ToastController, Events } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { UserMarker } from '../../core/helpers/leaflet/user-marker/user-marker';
 import { ObservationService } from '../../core/services/observation/observation.service';
@@ -12,6 +12,9 @@ import * as leafletPip from '@mapbox/leaflet-pip';
 import { settings } from '../../../settings';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { FullscreenToggleComponent } from '../../components/fullscreen-toggle/fullscreen-toggle.component';
+import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
+import { RegObsObservation } from '../../core/models/regobs-observation.model';
+import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
@@ -20,8 +23,9 @@ const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit, OnDestroy {
   @ViewChild(FullscreenToggleComponent) fullscreenToggle: FullscreenToggleComponent;
+  @ViewChild(MapItemBarComponent) mapItemBar: MapItemBarComponent;
   map: L.Map;
   watchSubscription: Subscription;
   userMarker: UserMarker;
@@ -30,13 +34,15 @@ export class HomePage {
   markerLayer = L.layerGroup();
   observationSubscription: ObserverSubscriber;
   fullscreenSubscription: Subscription;
-  markers: Array<{ id: number, marker: L.Marker }>;
+  mapItemBarSubscription: Subscription;
+  markers: Array<MapItemMarker>;
   toastDismissTimeout: NodeJS.Timer;
   // TODO: Create one really good custom Layer with fallback to offline/norwegian/open maps
   embeddedMapLayer = this.getEmbeddedMapLayer();
   defaultMapLayer = this.getDefaultMapLayer();
   alternativeMapLayer = this.getAlternativeMapLayer();
   fullscreen = false;
+  mapItemBarVisible = false;
 
   constructor(private platform: Platform,
     private geolocation: Geolocation,
@@ -68,6 +74,61 @@ export class HomePage {
     attributionControl: false,
     zoomControl: false,
   };
+
+  ngOnInit(): void {
+    console.log('[INFO] ionViewDidEnter home page');
+    this.events.subscribe('tabs:changed', (tabName: string) => {
+      if (tabName === 'home') {
+        this.startGeoLocationWatch();
+        this.redrawMap();
+      } else {
+        // Stopping geolocation when map is not visible to save battery
+        this.stopGeoLocationWatch();
+      }
+    });
+
+    this.fullscreenSubscription = this.fullscreenToggle.isFullscreen.subscribe((isFullscreen) => {
+      this.fullscreen = isFullscreen;
+    });
+
+    this.mapItemBarSubscription = this.mapItemBar.isVisible.subscribe((isVisible) => {
+      this.mapItemBarVisible = isVisible;
+    });
+  }
+
+  async onMapReady(map: L.Map) {
+    console.log('[INFO] onMapReady home page');
+
+    this.map = map;
+    this.map.on('moveend', () => this.onMapMoved());
+    this.map.on('dragstart', () => this.disableFollowMode());
+    this.map.on('click', () => {
+      this.mapItemBar.hide();
+    });
+
+    this.observationSubscription = (await this.observationService.getObservationsAsObservable())
+      .filter((regObservations) => regObservations.length > 0)
+      // TODO: filter only visible in map bounds?
+      .subscribe((regObservations) => {
+        this.addMarkersIfNotExists(regObservations);
+      });
+  }
+
+  ionViewDidEnter() {
+  }
+
+  ionViewWillLeave() {
+    console.log('[INFO] ionViewWillLeave home page. Unsubscribe listeners');
+    this.stopGeoLocationWatch();
+  }
+
+  ngOnDestroy(): void {
+    this.map.remove();
+    this.observationSubscription.unsubscribe();
+    this.fullscreenSubscription.unsubscribe();
+    this.mapItemBarSubscription.unsubscribe();
+    this.events.unsubscribe('tabs:changed');
+  }
 
   getEmbeddedMapLayer() {
     return L.tileLayer(settings.map.tiles.embeddedUrl, {
@@ -120,29 +181,18 @@ export class HomePage {
     });
   }
 
-  async onMapReady(map: L.Map) {
-    console.log('[INFO] onMapReady home page');
-
-    this.map = map;
-    this.map.on('moveend', () => this.onMapMoved());
-    this.map.on('dragstart', () => this.disableFollowMode());
-
-    this.observationSubscription = (await this.observationService.getObservationsAsObservable())
-      .filter((regObservations) => regObservations.length > 0)
-      // TODO: filter only visible in map bounds?
-      .subscribe((regObservations) => {
-        this.addMarkersIfNotExists(regObservations);
-      });
-  }
-
-  private addMarkersIfNotExists(regObservations) {
+  private addMarkersIfNotExists(regObservations: RegObsObservation[]) {
     regObservations.forEach((regObservation) => {
       const existingMarker = this.markers.find((marker) => marker.id === regObservation.RegId);
       if (!existingMarker) {
         const latLng = L.latLng(regObservation.Latitude, regObservation.Longitude);
-        const marker = L.marker(latLng, {});
+        const marker = new MapItemMarker(regObservation, latLng, {});
+        marker.on('click', (event: L.LeafletEvent) => {
+          const m: MapItemMarker = event.target;
+          this.mapItemBar.show(m.item);
+        });
         marker.addTo(this.markerLayer);
-        this.markers.push({ id: regObservation.RegId, marker });
+        this.markers.push(marker);
       }
     });
   }
@@ -182,24 +232,6 @@ export class HomePage {
 
   private disableFollowMode() {
     this.followMode = false;
-  }
-
-  ionViewDidEnter() {
-
-    console.log('[INFO] ionViewDidEnter home page');
-    this.events.subscribe('tabs:changed', (tabName: string) => {
-      if (tabName === 'home') {
-        this.startGeoLocationWatch();
-        this.redrawMap();
-      } else {
-        // Stopping geolocation when map is not visible to save battery
-        this.stopGeoLocationWatch();
-      }
-    });
-
-    this.fullscreenSubscription = this.fullscreenToggle.isFullscreen.subscribe((isFullscreen) => {
-      this.fullscreen = isFullscreen;
-    });
   }
 
   private redrawMap() {
@@ -251,13 +283,5 @@ export class HomePage {
   private onPositionError(error: any) {
     // TODO: Handle error
     console.log(error);
-  }
-
-  ionViewWillLeave() {
-    console.log('[INFO] ionViewWillLeave home page. Unsubscribe listeners');
-    this.observationSubscription.unsubscribe();
-    this.fullscreenSubscription.unsubscribe();
-    this.stopGeoLocationWatch();
-    this.events.unsubscribe('tabs:changed');
   }
 }

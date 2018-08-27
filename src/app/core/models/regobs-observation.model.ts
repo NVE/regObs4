@@ -24,7 +24,7 @@ export interface RegObsObservation {
   ObserverId: number;
   Pictures: Observation[];
   RegId: number;
-  Registrations: Observation;
+  Registrations: Observation[];
   SourceName: string;
 
   SourceTid: number;

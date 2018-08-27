@@ -68,5 +68,9 @@
             "INTEREST_DIRT": "Landslide!"
         },
         "SKIP_START": "Skip this and start using the app"
+    },
+    "MAP_ITEM_BAR": {
+        "OBSERVATION": "Observation",
+        "AWAY": "Away"
     }
 }

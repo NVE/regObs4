@@ -25,9 +25,11 @@ const routes: Routes = [
   {
     path: 'user-settings',
     loadChildren: './pages/user-settings/user-settings.module#UserSettingsPageModule'
-  },  { path: 'add', loadChildren: './pages/add/add.module#AddPageModule' },
+  },
+  { path: 'add', loadChildren: './pages/add/add.module#AddPageModule' },
   { path: 'new-trip', loadChildren: './pages/new-trip/new-trip.module#NewTripPageModule' },
   { path: 'start-wizard', loadChildren: './pages/start-wizard/start-wizard.module#StartWizardPageModule' },
+  { path: 'view-observation/:id', loadChildren: './pages/view-observation/view-observation.module#ViewObservationPageModule' },
 
 ];
 
