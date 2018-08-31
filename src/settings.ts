@@ -24,6 +24,7 @@ export const settings = {
     map: {
         tiles: {
             embeddedUrl: '/assets/map/topo_{z}_{x}_{y}.jpg',
+            embeddedUrlMaxZoom: 9,
             defaultMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
             fallbackMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
             supportTiles: {

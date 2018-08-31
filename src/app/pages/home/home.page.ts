@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Platform, ToastController, Events } from '@ionic/angular';
 import { Subscription } from 'rxjs';
@@ -15,6 +16,8 @@ import { FullscreenToggleComponent } from '../../components/fullscreen-toggle/fu
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
+import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { UserSettingService } from '../../core/services/user-setting.service';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
@@ -31,7 +34,7 @@ export class HomePage implements OnInit, OnDestroy {
   userMarker: UserMarker;
   toast: HTMLIonToastElement;
   followMode = true;
-  markerLayer = L.layerGroup();
+  markerLayer = L.markerClusterGroup();
   observationSubscription: ObserverSubscriber;
   fullscreenSubscription: Subscription;
   mapItemBarSubscription: Subscription;
@@ -43,6 +46,7 @@ export class HomePage implements OnInit, OnDestroy {
   alternativeMapLayer = this.getAlternativeMapLayer();
   fullscreen = false;
   mapItemBarVisible = false;
+  currentGeoHazard: GeoHazard;
 
   constructor(private platform: Platform,
     private geolocation: Geolocation,
@@ -50,6 +54,7 @@ export class HomePage implements OnInit, OnDestroy {
     private toastController: ToastController,
     private events: Events,
     private statusBar: StatusBar,
+    private userSettingService: UserSettingService
   ) {
 
     const defaultIcon = L.icon({
@@ -65,7 +70,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   options: L.MapOptions = {
     layers: [
-      this.embeddedMapLayer,
+      // this.embeddedMapLayer,
       this.defaultMapLayer,
       this.markerLayer,
     ],
@@ -77,6 +82,16 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('[INFO] ionViewDidEnter home page');
+
+    this.userSettingService.getUserSettings().then((userSettings) => {
+      this.currentGeoHazard = userSettings.currentGeoHazard;
+    });
+
+    this.events.subscribe('geoHazard:changed', (newGeoHazard: GeoHazard) => {
+      this.currentGeoHazard = newGeoHazard;
+      this.redrawObservationMarkers();
+    });
+
     this.events.subscribe('tabs:changed', (tabName: string) => {
       if (tabName === 'home') {
         this.startGeoLocationWatch();
@@ -108,10 +123,11 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.observationSubscription = (await this.observationService.getObservationsAsObservable())
       .filter((regObservations) => regObservations.length > 0)
-      // TODO: filter only visible in map bounds?
       .subscribe((regObservations) => {
         this.addMarkersIfNotExists(regObservations);
       });
+
+    this.redrawMap();
   }
 
   ionViewDidEnter() {
@@ -137,10 +153,13 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   getDefaultMapLayer() {
+
+    return new OfflineTileLayer();
+
     // tslint:disable-next-line:max-line-length
-    return L.tileLayer(settings.map.tiles.defaultMapUrl, {
-      name: 'topo', maxZoom: 18, minZoom: 10,
-    });
+    // return L.tileLayer(settings.map.tiles.defaultMapUrl, {
+    //   name: 'topo', maxZoom: 18, minZoom: 10,
+    // });
     // return L.tileLayer.wms('http://opencache.statkart.no/gatekeeper/gk/gk.open',
     //   {
     //     layers: 'norgeskart_bakgrunn',
@@ -191,10 +210,16 @@ export class HomePage implements OnInit, OnDestroy {
           const m: MapItemMarker = event.target;
           this.mapItemBar.show(m.item);
         });
-        marker.addTo(this.markerLayer);
         this.markers.push(marker);
       }
+      this.redrawObservationMarkers();
     });
+  }
+
+  private redrawObservationMarkers() {
+    this.markerLayer.clearLayers();
+    this.markers.filter((marker) => marker.item.GeoHazardTid === this.currentGeoHazard)
+      .forEach((marker) => marker.addTo(this.markerLayer));
   }
 
   centerMapToUser() {
@@ -207,28 +232,28 @@ export class HomePage implements OnInit, OnDestroy {
 
   private async onMapMoved() {
     console.log('map moved');
-    const center = this.map.getCenter();
-    const isInNorway: boolean = leafletPip.pointInLayer(center, NORWEGIAN_BORDER).length > 0;
-    console.log('[INFO] Is in norway: ', isInNorway);
-    if (isInNorway) {
-      this.useDefaultMapLayer();
-    } else {
-      this.useAlternativeMapLayer();
-    }
+    // const center = this.map.getCenter();
+    // const isInNorway: boolean = leafletPip.pointInLayer(center, NORWEGIAN_BORDER).length > 0;
+    // console.log('[INFO] Is in norway: ', isInNorway);
+    // if (isInNorway) {
+    //   this.useDefaultMapLayer();
+    // } else {
+    //   this.useAlternativeMapLayer();
+    // }
   }
 
-  private useAlternativeMapLayer() {
-    this.map.removeLayer(this.embeddedMapLayer);
-    this.map.removeLayer(this.defaultMapLayer);
-    this.alternativeMapLayer = this.getAlternativeMapLayer()
-      .addTo(this.map);
-  }
+  // private useAlternativeMapLayer() {
+  //   this.map.removeLayer(this.embeddedMapLayer);
+  //   this.map.removeLayer(this.defaultMapLayer);
+  //   this.alternativeMapLayer = this.getAlternativeMapLayer()
+  //     .addTo(this.map);
+  // }
 
-  private useDefaultMapLayer() {
-    this.map.removeLayer(this.alternativeMapLayer);
-    this.embeddedMapLayer = this.getEmbeddedMapLayer().addTo(this.map);
-    this.defaultMapLayer = this.getDefaultMapLayer().addTo(this.map);
-  }
+  // private useDefaultMapLayer() {
+  //   this.map.removeLayer(this.alternativeMapLayer);
+  //   this.embeddedMapLayer = this.getEmbeddedMapLayer().addTo(this.map);
+  //   this.defaultMapLayer = this.getDefaultMapLayer().addTo(this.map);
+  // }
 
   private disableFollowMode() {
     this.followMode = false;
@@ -236,12 +261,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   private redrawMap() {
     setTimeout(() => {
-      if (this.map) {
-        this.map.invalidateSize();
-        setTimeout(() => {
-          this.map.invalidateSize();
-        }, 500);
-      }
+      this.map.invalidateSize();
     }, 0);
   }
 
