@@ -114,7 +114,9 @@
         <variable name="MOTION_USAGE_DESCRIPTION" value="This app requires motion detection" />
     </plugin>
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
+    <plugin name="sentry-cordova" spec="^0.12.2" />
+    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
     <engine name="android" spec="7.1.1" />
     <engine name="browser" spec="5.0.4" />
-    <engine name="ios" spec="^4.5.5" />
+    <engine name="ios" spec="4.5.5" />
 </widget>

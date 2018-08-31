@@ -12,10 +12,12 @@
 
 @import 'app/core/helpers/leaflet/user-marker/user-marker.scss';
 
+$z-index-over-map: 900;
+
 .map-control {
     background-color: #000;
     opacity: 0.8;
-    z-index: 900;
+    z-index: $z-index-over-map;
     border-radius: 5px;
     color: #fff;
     padding: 5px;

@@ -9,6 +9,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
 import { FullscreenToggleComponent } from '../../components/fullscreen-toggle/fullscreen-toggle.component';
 import { MapSearchComponent } from '../../components/map-search/map-search.component';
+import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 
 @NgModule({
   imports: [
@@ -24,7 +25,7 @@ import { MapSearchComponent } from '../../components/map-search/map-search.compo
     TranslateModule,
     LeafletModule,
   ],
-  declarations: [HomePage, GeoSelectComponent, FullscreenToggleComponent, MapSearchComponent]
+  declarations: [HomePage, GeoSelectComponent, FullscreenToggleComponent, MapSearchComponent, MapItemBarComponent]
 })
 export class HomePageModule {
 }

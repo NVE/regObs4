@@ -12,10 +12,12 @@
 <ion-content>
   <div style="width: 100%; height: 100%" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)">
   </div>
+  <app-map-item-bar></app-map-item-bar>
   <app-geo-select></app-geo-select>
   <app-map-search></app-map-search>
   <app-fullscreen-toggle></app-fullscreen-toggle>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab id="centerMapToUserFab" [ngClass]="{'map-item-bar-open': mapItemBarVisible }" vertical="bottom" horizontal="end"
+    slot="fixed">
     <ion-fab-button color="light" (click)="centerMapToUser()">
       <ion-icon name="locate"></ion-icon>
     </ion-fab-button>

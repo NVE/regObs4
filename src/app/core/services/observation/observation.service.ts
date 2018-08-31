@@ -34,10 +34,7 @@ export class ObservationService {
     nSQL(tableName)
       .model([
         { key: 'RegId', type: 'number', props: ['pk'] },
-        { key: 'Latitude', type: 'number' },
-        { key: 'Longitude', type: 'number' },
-        { key: 'DtRegTime', type: 'date' },
-        { key: 'DtChangeTime', type: 'date' },
+        { key: '*', type: '*' },
       ]);
   }
 
