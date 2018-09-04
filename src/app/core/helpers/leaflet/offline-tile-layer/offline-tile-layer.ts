@@ -84,22 +84,25 @@ export class OfflineTileLayer extends L.TileLayer {
     }
 
     async getTileUrl(coords: ExtendedCoords): Promise<string> {
+
+        if (coords.z <= settings.map.tiles.embeddedUrlMaxZoom) {
+            return this.getOriginalTileUrl(coords, settings.map.tiles.embeddedUrl);
+        }
+
         const isInsideNorway = this.isInsideBorders(coords);
 
         if (!isInsideNorway) {
             return this.getOriginalTileUrl(coords, settings.map.tiles.fallbackMapUrl);
         } else {
-            if (coords.z > settings.map.tiles.embeddedUrlMaxZoom) {
-                const offlineUrlResult = await this.getOfflineTileUrl(coords);
-                if (offlineUrlResult.success) {
-                    return offlineUrlResult.url;
-                }
-                const hasNetwork = true; // TODO: test for offline
-                if (hasNetwork) {
-                    return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
-                }
+            const offlineUrlResult = await this.getOfflineTileUrl(coords);
+            if (offlineUrlResult.success) {
+                return offlineUrlResult.url;
+            } else {
+                // const hasNetwork = true; // TODO: test for offline
+                // if (hasNetwork) {
+                return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
+                // }
             }
-            return this.getOriginalTileUrl(coords, settings.map.tiles.embeddedUrl);
         }
     }
 
@@ -110,10 +113,10 @@ export class OfflineTileLayer extends L.TileLayer {
             scale = tile._fallbackScale = (tile._fallbackScale || 1) * 2,
             tileSize = this.getTileSize(),
             style = tile.style;
-        const isInsideNorway = this.isInsideBorders(tile._originalCoords);
+        // const isInsideNorway = this.isInsideBorders(tile._originalCoords);
 
         // If no lower zoom tiles are available, fallback to errorTile.
-        if (fallbackZoom < 1 || !isInsideNorway) {
+        if (fallbackZoom < 1) {
             console.log('Max fallback reached. Return original error handling');
             return (<any>L.TileLayer.prototype)._tileOnError(done, tile, e);
         }

@@ -18,6 +18,7 @@ import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../core/services/user-setting.service';
+import { HelperService } from '../../core/services/helpers/helper.service';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
@@ -54,7 +55,8 @@ export class HomePage implements OnInit, OnDestroy {
     private toastController: ToastController,
     private events: Events,
     private statusBar: StatusBar,
-    private userSettingService: UserSettingService
+    private userSettingService: UserSettingService,
+    private helperService: HelperService
   ) {
 
     const defaultIcon = L.icon({
@@ -83,13 +85,9 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('[INFO] ionViewDidEnter home page');
 
-    this.userSettingService.getUserSettings().then((userSettings) => {
-      this.currentGeoHazard = userSettings.currentGeoHazard;
-    });
-
     this.events.subscribe('geoHazard:changed', (newGeoHazard: GeoHazard) => {
       this.currentGeoHazard = newGeoHazard;
-      this.redrawObservationMarkers();
+      this.resubscribeObservations();
     });
 
     this.events.subscribe('tabs:changed', (tabName: string) => {
@@ -120,13 +118,10 @@ export class HomePage implements OnInit, OnDestroy {
     this.map.on('click', () => {
       this.mapItemBar.hide();
     });
-
-    this.observationSubscription = (await this.observationService.getObservationsAsObservable())
-      .filter((regObservations) => regObservations.length > 0)
-      .subscribe((regObservations) => {
-        this.addMarkersIfNotExists(regObservations);
-      });
-
+    this.userSettingService.getUserSettings().then((userSettings) => {
+      this.currentGeoHazard = userSettings.currentGeoHazard;
+      this.resubscribeObservations();
+    });
     this.redrawMap();
   }
 
@@ -200,27 +195,54 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
-  private addMarkersIfNotExists(regObservations: RegObsObservation[]) {
+  private async resubscribeObservations() {
+    if (this.observationSubscription) {
+      this.observationSubscription.unsubscribe();
+    }
+    const fromDate = await this.helperService.getObservationsFromDate();
+    this.observationSubscription = (await this.observationService.getObservationsAsObservable(
+      this.currentGeoHazard,
+      fromDate.toDate(),
+      null))
+      .subscribe((regObservations) => {
+        this.redrawObservationMarkers(regObservations);
+      });
+  }
+
+  private redrawObservationMarkers(regObservations: RegObsObservation[]) {
+    this.markerLayer.clearLayers();
     regObservations.forEach((regObservation) => {
-      const existingMarker = this.markers.find((marker) => marker.id === regObservation.RegId);
-      if (!existingMarker) {
-        const latLng = L.latLng(regObservation.Latitude, regObservation.Longitude);
-        const marker = new MapItemMarker(regObservation, latLng, {});
-        marker.on('click', (event: L.LeafletEvent) => {
-          const m: MapItemMarker = event.target;
-          this.mapItemBar.show(m.item);
-        });
-        this.markers.push(marker);
-      }
-      this.redrawObservationMarkers();
+      const latLng = L.latLng(regObservation.Latitude, regObservation.Longitude);
+      const marker = new MapItemMarker(regObservation, latLng, {});
+      marker.on('click', (event: L.LeafletEvent) => {
+        const m: MapItemMarker = event.target;
+        this.mapItemBar.show(m.item);
+      });
+      marker.addTo(this.markerLayer);
     });
   }
 
-  private redrawObservationMarkers() {
-    this.markerLayer.clearLayers();
-    this.markers.filter((marker) => marker.item.GeoHazardTid === this.currentGeoHazard)
-      .forEach((marker) => marker.addTo(this.markerLayer));
-  }
+  // private addMarkersIfNotExists(regObservations: RegObsObservation[]) {
+  // regObservations.forEach((regObservation) => {
+  //   const existingMarker = this.markers.find((marker) => marker.id === regObservation.RegId);
+  //   if (!existingMarker) {
+  //     const latLng = L.latLng(regObservation.Latitude, regObservation.Longitude);
+  //     const marker = new MapItemMarker(regObservation, latLng, {});
+  //     marker.on('click', (event: L.LeafletEvent) => {
+  //       const m: MapItemMarker = event.target;
+  //       this.mapItemBar.show(m.item);
+  //     });
+  //     this.markers.push(marker);
+  //   }
+  //   this.redrawObservationMarkers();
+  // });
+  // }
+
+  // private redrawObservationMarkers() {
+  //   this.markerLayer.clearLayers();
+  //   this.markers.filter((marker) => marker.item.GeoHazardTid === this.currentGeoHazard)
+  //     .forEach((marker) => marker.addTo(this.markerLayer));
+  // }
 
   centerMapToUser() {
     this.followMode = true;

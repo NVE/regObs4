@@ -3,9 +3,9 @@ import { Observation } from './observation.model';
 export interface RegObsObservation {
   CompetenceLevelName: string;
   CompetenceLevelTid: number;
-  DtChangeTime: Date;
-  DtObsTime: Date;
-  DtRegTime: Date;
+  DtChangeTime: string;
+  DtObsTime: string;
+  DtRegTime: string;
   ForecastRegionName: string;
 
   ForecastRegionTid: number;

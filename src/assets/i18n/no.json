@@ -12,7 +12,8 @@
     "SETTINGS": {
         "TITLE": "Innstillinger",
         "APPMODE": "Appmodus",
-        "LANGUAGE": "Språk"
+        "LANGUAGE": "Språk",
+        "RESET": "Tilbakestill"
     },
     "MENU": {
         "GENERAL": "Generelt",

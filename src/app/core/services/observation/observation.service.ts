@@ -6,8 +6,10 @@ import { Observer } from 'nano-sql/lib/observable';
 import { ApiService } from '../api/api.service';
 import { HelperService } from '../helpers/helper.service';
 import { RowCount } from '../../models/row-count.model';
-import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
 import { Subject, Observable } from 'rxjs';
+import { GeoHazard } from '../../models/geo-hazard.enum';
+import * as moment from 'moment';
+import 'moment-timezone';
 
 const tableName = 'registration';
 
@@ -34,12 +36,25 @@ export class ObservationService {
     nSQL(tableName)
       .model([
         { key: 'RegId', type: 'number', props: ['pk'] },
+        { key: 'DtObsTime', type: 'date', props: ['idx'] },
+        { key: 'GeoHazardTid', type: 'number', props: ['idx'] },
         { key: '*', type: '*' },
       ]);
   }
 
+  async deleteOldObservations() {
+    const nickName = 'dummy'; // TODO: get logged in user
+    const deleteOldRecordsFrom = moment().subtract(settings.observations.daysBackToKeepBeforeCleanup, 'days').startOf('day');
+    return nSQL(tableName).query('delete')
+      .where((reg: RegObsObservation) => {
+        return moment.tz(reg.DtObsTime, settings.observations.timeZone).isBefore(deleteOldRecordsFrom)
+          && reg.NickName !== nickName;
+      }).exec();
+  }
+
   async updateObservations() {
     this._isLoading.next(true);
+    await this.deleteOldObservations();
     const fromDate = await this.helperService.getObservationsFromDate();
     (await this.apiService.search({
       FromDate: fromDate.toDate()
@@ -73,9 +88,13 @@ export class ObservationService {
   //     });
   // }
 
-  getObservationsAsObservable(): Observer<RegObsObservation[]> {
+  getObservationsAsObservable(geoHazard?: GeoHazard, fromDate?: Date, user?: string): Observer<RegObsObservation[]> {
     return nSQL().observable<RegObsObservation[]>(() => {
-      return nSQL(tableName).query('select').emit();
+      return nSQL(tableName).query('select').where((reg: RegObsObservation) => {
+        return geoHazard ? reg.GeoHazardTid === geoHazard : true &&
+          fromDate ? moment.tz(reg.DtObsTime, settings.observations.timeZone).isAfter(fromDate) : true &&
+            user ? reg.NickName === user : true;
+      }).emit();
     });
   }
 
@@ -83,5 +102,9 @@ export class ObservationService {
     return nSQL().observable<RowCount[]>(() => {
       return nSQL(tableName).query('select', ['COUNT(*) as count']).emit();
     });
+  }
+
+  drop() {
+    return nSQL(tableName).query('drop').exec();
   }
 }

@@ -1,7 +1,9 @@
 
 export const settings = {
     observations: {
-        maxObservationsToFetch: 1000
+        maxObservationsToFetch: 1000,
+        daysBackToKeepBeforeCleanup: 30,
+        timeZone: 'Europe/Oslo'
     },
     services: {
         apiUrl: {
@@ -23,8 +25,8 @@ export const settings = {
     },
     map: {
         tiles: {
-            embeddedUrl: '/assets/map/topo_{z}_{x}_{y}.jpg',
-            embeddedUrlMaxZoom: 9,
+            embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
+            embeddedUrlMaxZoom: 5,
             defaultMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
             fallbackMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
             supportTiles: {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
+import { ObservationService } from '../../core/services/observation/observation.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -11,7 +12,7 @@ export class UserSettingsPage implements OnInit {
 
   userSettings: UserSetting;
 
-  constructor(private userSettingService: UserSettingService) { }
+  constructor(private userSettingService: UserSettingService, private observationService: ObservationService) { }
 
   async ngOnInit() {
     this.userSettings = await this.userSettingService.getUserSettings();
@@ -21,4 +22,8 @@ export class UserSettingsPage implements OnInit {
     await this.userSettingService.saveUserSettings(this.userSettings);
   }
 
+  async reset() {
+    await this.observationService.drop();
+    console.log('Observations reset');
+  }
 }

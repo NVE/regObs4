@@ -12,7 +12,8 @@
     "SETTINGS": {
         "TITLE": "Settings",
         "APPMODE": "App mode",
-        "LANGUAGE": "Language"
+        "LANGUAGE": "Language",
+        "RESET": "Reset"
     },
     "MENU": {
         "GENERAL": "General",
