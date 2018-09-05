@@ -254,6 +254,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   private async onMapMoved() {
     console.log('map moved');
+    this.helperService.setCurrentMapView(this.map.getBounds(), this.map.getCenter());
     // const center = this.map.getCenter();
     // const isInNorway: boolean = leafletPip.pointInLayer(center, NORWEGIAN_BORDER).length > 0;
     // console.log('[INFO] Is in norway: ', isInNorway);

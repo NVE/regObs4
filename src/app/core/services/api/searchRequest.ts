@@ -1,5 +1,5 @@
 import { RegistrationType } from './registrationType';
-import { LangKey } from './langKey';
+import { LangKey } from '../../models/langKey';
 
 export interface SearchRequest {
   RegId?: number;

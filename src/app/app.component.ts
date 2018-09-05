@@ -10,7 +10,6 @@ import { TripLoggerService } from './core/services/trip-logger/trip-logger.servi
 import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
 import { nSQL } from 'nano-sql';
 import { settings } from '../settings';
-import { StartWizardPage } from './pages/start-wizard/start-wizard.page';
 
 @Component({
   selector: 'app-root',

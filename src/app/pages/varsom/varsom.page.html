@@ -7,6 +7,24 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  Varsel fra Varsom
+<ion-content>
+  <ion-list>
+    <ion-list-header *ngIf="regions">
+      <ion-label>Gjeldende kartutsnitt</ion-label>
+    </ion-list-header>
+    <ng-container *ngFor="let region of regionSummary | async">
+      <ion-item *ngIf="!regions || regions.indexOf(region.Name)>=0">
+        <ion-label>{{region.Name}}</ion-label>
+      </ion-item>
+    </ng-container>
+    <ion-list-header>
+      <ion-label>Andre regioner</ion-label>
+    </ion-list-header>
+    <ng-container *ngFor="let region of regionSummary | async">
+      <ion-item *ngIf="!regions || regions.indexOf(region.Name)<0">
+        <ion-label>{{region.Name}}</ion-label>
+      </ion-item>
+    </ng-container>
+
+  </ion-list>
 </ion-content>

@@ -53,9 +53,9 @@ export class ApiService {
 
   async search(searchRequest: SearchRequest): Promise<Observable<SearchResult>> {
     const userSettings = await this.userSettingService.getUserSettings();
-    const baseUrl = settings.services.apiUrl[userSettings.appMode];
+    const baseUrl = settings.services.regObs.apiUrl[userSettings.appMode];
     const headers = await this.getHttpRequestHeaders();
-    return await this.httpClient.post<SearchResult>(
+    return this.httpClient.post<SearchResult>(
       `${baseUrl}/Search/All`,
       searchRequest,
       { headers });
@@ -73,7 +73,7 @@ export class ApiService {
   private async getHttpRequestHeaders(): Promise<HttpHeaders> {
     return new HttpHeaders()
       .set('regObs_apptoken', await this.getApiKey())
-      .set('ApiJsonVersion', settings.services.apiJsonVersion);
+      .set('ApiJsonVersion', settings.services.regObs.apiJsonVersion);
   }
 
 
