@@ -47,6 +47,6 @@ export class StartWizardPage implements OnInit {
     userSettings.currentGeoHazard = geoHazard;
     userSettings.completedStartWizard = true;
     this.userSetting.saveUserSettings(userSettings);
-    this.navController.goRoot('/');
+    this.navController.navigateRoot('/');
   }
 }

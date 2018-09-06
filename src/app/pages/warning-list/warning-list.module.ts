@@ -5,13 +5,14 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { VarsomPage } from './varsom.page';
+import { WarningListPage } from './warning-list.page';
 import { TranslateModule } from '@ngx-translate/core';
+import { RegionSummaryItemComponent } from '../../components/region-summary-item/region-summary-item.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: VarsomPage
+    component: WarningListPage
   }
 ];
 
@@ -23,6 +24,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TranslateModule,
   ],
-  declarations: [VarsomPage]
+  declarations: [WarningListPage, RegionSummaryItemComponent]
 })
-export class VarsomPageModule { }
+export class WarningListPageModule { }

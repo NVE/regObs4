@@ -5,7 +5,7 @@ import { TabsPage } from './tabs.page';
 import { HomePage } from '../home/home.page';
 import { TripPage } from '../trip/trip.page';
 import { MyObservationsPage } from '../my-observations/my-observations.page';
-import { VarsomPage } from '../varsom/varsom.page';
+import { WarningListPage } from '../warning-list/warning-list.page';
 import { AddPage } from '../add/add.page';
 
 const routes: Routes = [
@@ -34,9 +34,9 @@ const routes: Routes = [
         component: MyObservationsPage
       },
       {
-        path: 'varsom',
-        outlet: 'varsom',
-        component: VarsomPage
+        path: 'warning-list',
+        outlet: 'warning-list',
+        component: WarningListPage
       },
     ]
   },

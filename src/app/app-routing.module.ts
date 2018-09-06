@@ -19,8 +19,8 @@ const routes: Routes = [
     loadChildren: './pages/my-observations/my-observations.module#MyObservationsPageModule'
   },
   {
-    path: 'varsom',
-    loadChildren: './pages/varsom/varsom.module#VarsomPageModule'
+    path: 'warning-list',
+    loadChildren: './pages/warning-list/warning-list.module#WarningListPageModule'
   },
   {
     path: 'user-settings',
@@ -30,6 +30,8 @@ const routes: Routes = [
   { path: 'new-trip', loadChildren: './pages/new-trip/new-trip.module#NewTripPageModule' },
   { path: 'start-wizard', loadChildren: './pages/start-wizard/start-wizard.module#StartWizardPageModule' },
   { path: 'view-observation/:id', loadChildren: './pages/view-observation/view-observation.module#ViewObservationPageModule' },
+  { path: 'warning-detail/:id', loadChildren: './pages/warning-detail/warning-detail.module#WarningDetailPageModule' },
+
 
 ];
 

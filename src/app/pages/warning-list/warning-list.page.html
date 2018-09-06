@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{"WARNING_LIST.TITLE" | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header>
+      <ion-label></ion-label>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            {{ getDayName(0) | translate }}
+          </ion-col>
+          <ion-col>
+            {{ getDayName(1) | translate }}
+          </ion-col>
+          <ion-col>
+            {{ getDayName(2) | translate}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-list-header>
+    <ion-list-header *ngIf="regions">
+      <ion-label>Gjeldende kartutsnitt</ion-label>
+    </ion-list-header>
+    <ng-container *ngFor="let region of mapRegions">
+      <app-region-summary-item [regionSummary]="region"></app-region-summary-item>
+    </ng-container>
+    <ion-list-header>
+      <ion-label>Andre regioner</ion-label>
+    </ion-list-header>
+    <ng-container *ngFor="let region of otherRegions">
+      <app-region-summary-item [regionSummary]="region"></app-region-summary-item>
+    </ng-container>
+
+  </ion-list>
+</ion-content>

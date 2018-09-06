@@ -1,0 +1,12 @@
+<ion-item href="warning-detail/{{regionSummary.Id}}">
+  <ion-label>{{regionSummary.Name}}</ion-label>
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngFor="let warning of getDayWarnings()">
+        <ng-container>
+          <ion-badge color="medium">{{ warning.DangerLevel }}</ion-badge>
+        </ng-container>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-item>

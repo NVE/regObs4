@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="regionSummary">
+      {{ regionSummary.Name }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="regionSummary">
+  <ion-list>
+    <ion-item *ngFor="let summary of regionSummary.AvalancheWarningList">
+      <ion-label text-wrap>
+        <ion-text>
+          <h3>{{ summary.ValidTo | date:'dd.MM.yyyy' }}</h3>
+        </ion-text>
+        <h2>{{ summary.MainText }}</h2>
+        <ion-text>
+          <p>Publisert: {{ summary.PublishTime | date:'dd.MM.yyyy HH:mm' }}</p>
+        </ion-text>
+      </ion-label>
+
+    </ion-item>
+  </ion-list>
+</ion-content>

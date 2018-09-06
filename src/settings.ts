@@ -57,5 +57,10 @@ export const settings = {
             }
         }
     },
-    snowRegionsGeoJsonName: 'OMRAADENAV'
+    snowRegionsGeoJsonName: 'OMRAADENAV',
+    events: {
+        nanosqlConnected: 'nanoSql: connected',
+        tabsChanged: 'tabs:changed',
+        geoHazardChanged: '',
+    }
 };

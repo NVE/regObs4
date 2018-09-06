@@ -6,7 +6,7 @@
     "MY_OBSERVATIONS": {
         "TITLE": "Mine observasjoner"
     },
-    "VARSOM": {
+    "WARNING_LIST": {
         "TITLE": "Varsom"
     },
     "SETTINGS": {
@@ -73,5 +73,16 @@
     "MAP_ITEM_BAR": {
         "OBSERVATION": "Observasjon",
         "AWAY": "Unna"
+    },
+    "DAYS": {
+        "SHORT": {
+            "1": "Man",
+            "2": "Tir",
+            "3": "Ons",
+            "4": "Tor",
+            "5": "Fre",
+            "6": "Lør",
+            "7": "Søn"
+        }
     }
 }

@@ -90,7 +90,7 @@ export class HomePage implements OnInit, OnDestroy {
       this.resubscribeObservations();
     });
 
-    this.events.subscribe('tabs:changed', (tabName: string) => {
+    this.events.subscribe(settings.events.tabsChanged, (tabName: string) => {
       if (tabName === 'home') {
         this.startGeoLocationWatch();
         this.redrawMap();
@@ -126,6 +126,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
+    console.log('[INFO] Home page ionViewDidEnter');
   }
 
   ionViewWillLeave() {
@@ -138,7 +139,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.observationSubscription.unsubscribe();
     this.fullscreenSubscription.unsubscribe();
     this.mapItemBarSubscription.unsubscribe();
-    this.events.unsubscribe('tabs:changed');
+    this.events.unsubscribe(settings.events.tabsChanged);
   }
 
   getEmbeddedMapLayer() {

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Platform, NavController } from '@ionic/angular';
+import { Platform, NavController, Events } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,6 +10,7 @@ import { TripLoggerService } from './core/services/trip-logger/trip-logger.servi
 import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
 import { nSQL } from 'nano-sql';
 import { settings } from '../settings';
+import { WarningService } from './core/services/warning/warning.service';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +28,8 @@ export class AppComponent {
     private observationService: ObservationService,
     private tripLoggerService: TripLoggerService,
     private navController: NavController,
+    private warningService: WarningService,
+    private events: Events,
   ) {
     this.initializeApp();
   }
@@ -42,12 +45,11 @@ export class AppComponent {
         this.statusBar.styleBlackTranslucent();
         this.statusBar.overlaysWebView(true);
         if (!userSettings.completedStartWizard) {
-          this.navController.goRoot('start-wizard', false);
+          this.navController.navigateRoot('start-wizard', false);
         }
         this.splashScreen.hide();
+        await this.updateResources();
         this.backgroundFetchService.init();
-        await this.observationService.updateObservations(); // Update observations on app start
-        // after that observations is updated every 15 minutes in background fetch service
       } catch (err) {
         // TODO: Log error
         console.log(err);
@@ -58,13 +60,20 @@ export class AppComponent {
     });
   }
 
-  initNanoSqlDatabase() {
+  async updateResources() {
+    await this.observationService.updateObservations();
+    await this.warningService.updateAvalancheWarnings();
+  }
+
+  async initNanoSqlDatabase() {
     nSQL().config({
       id: settings.db.nanoSql.dbName,
       mode: getMode()
     });
     this.observationService.init();
     this.tripLoggerService.init();
-    return nSQL().connect();
+    this.warningService.init();
+    await nSQL().connect();
+    this.events.publish('nanoSql: connected');
   }
 }

@@ -10,7 +10,7 @@ import { HomePageModule } from '../home/home.module';
 import { TripPageModule } from '../trip/trip.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MyObservationsPageModule } from '../my-observations/my-observations.module';
-import { VarsomPageModule } from '../varsom/varsom.module';
+import { WarningListPageModule } from '../warning-list/warning-list.module';
 import { AddPageModule } from '../add/add.module';
 import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
 
@@ -22,7 +22,7 @@ import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
     TabsPageRoutingModule,
     HomePageModule,
     TripPageModule,
-    VarsomPageModule,
+    WarningListPageModule,
     TranslateModule,
     MyObservationsPageModule,
     AddPageModule,
