@@ -9,6 +9,7 @@ import { BackgroundFetchNativeService } from './core/services/background-fetch/b
 import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
 import { BackgroundGeolocationWebService } from './core/services/background-geolocation/background-geolocation-web.service';
 import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 
 export class AppProviders {
     public static getProviders() {
@@ -17,6 +18,7 @@ export class AppProviders {
             SplashScreen,
             { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
             Geolocation,
+            Deeplinks,
             ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),
         ];
     }
@@ -24,14 +26,14 @@ export class AppProviders {
     private static getWebProviders() {
         return [
             { provide: BackgroundFetchService, useClass: BackgroundFetchWebService },
-            { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationWebService }
+            { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationWebService },
         ];
     }
 
     private static getNativeProviders() {
         return [
             { provide: BackgroundFetchService, useClass: BackgroundFetchNativeService },
-            { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationNativeService }
+            { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationNativeService },
         ];
     }
 

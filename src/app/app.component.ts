@@ -11,6 +11,8 @@ import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
 import { nSQL } from 'nano-sql';
 import { settings } from '../settings';
 import { WarningService } from './core/services/warning/warning.service';
+import { ViewObservationPage } from './pages/view-observation/view-observation.page';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +32,7 @@ export class AppComponent {
     private navController: NavController,
     private warningService: WarningService,
     private events: Events,
+    private deeplinks: Deeplinks,
   ) {
     this.initializeApp();
   }
@@ -39,11 +42,12 @@ export class AppComponent {
     this.translate.setDefaultLang('no');
     this.platform.ready().then(async () => {
       try {
+        this.initDeepLinks();
         await this.initNanoSqlDatabase();
         const userSettings = await this.userSettings.getUserSettings();
         this.translate.use(userSettings.language);
         this.statusBar.styleBlackTranslucent();
-        this.statusBar.overlaysWebView(true);
+        this.statusBar.overlaysWebView(this.platform.is('ios'));
         if (!userSettings.completedStartWizard) {
           this.navController.navigateRoot('start-wizard', false);
         }
@@ -57,6 +61,21 @@ export class AppComponent {
     }).catch((err) => {
       // TODO: Log error
       console.log(err);
+    });
+  }
+
+  initDeepLinks() {
+    this.deeplinks.route({
+      '/Registration/:id': 'view-observation',
+    }).subscribe(match => {
+      // match.$route - the route we matched, which is the matched entry from the arguments to route()
+      // match.$args - the args passed in the link
+      // match.$link - the full link data
+      console.log('Successfully matched route', match);
+      this.navController.navigateForward(`view-observation/${match.$args.id}`);
+    }, nomatch => {
+      // nomatch.$link - the full link data
+      console.error('Got a deeplink that didn\'t match', nomatch);
     });
   }
 

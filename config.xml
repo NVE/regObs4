@@ -19,6 +19,7 @@
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
+    <preference name="AndroidLaunchMode" value="singleTask" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
@@ -116,6 +117,25 @@
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="sentry-cordova" spec="^0.12.2" />
     <plugin name="cordova-plugin-camera" spec="^4.0.3" />
+    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
+    <plugin name="ionic-plugin-deeplinks" spec="^1.0.17">
+        <variable name="URL_SCHEME" value="regobs" />
+        <variable name="DEEPLINK_HOST" value="www.regobs.no" />
+        <variable name="DEEPLINK_SCHEME" value="https" />
+        <variable name="ANDROID_PATH_PREFIX" value="/Registration" />
+        <variable name="ANDROID_2_PATH_PREFIX" value="/" />
+        <variable name="ANDROID_3_PATH_PREFIX" value="/" />
+        <variable name="ANDROID_4_PATH_PREFIX" value="/" />
+        <variable name="ANDROID_5_PATH_PREFIX" value="/" />
+        <variable name="DEEPLINK_2_SCHEME" value=" " />
+        <variable name="DEEPLINK_2_HOST" value=" " />
+        <variable name="DEEPLINK_3_SCHEME" value=" " />
+        <variable name="DEEPLINK_3_HOST" value=" " />
+        <variable name="DEEPLINK_4_SCHEME" value=" " />
+        <variable name="DEEPLINK_4_HOST" value=" " />
+        <variable name="DEEPLINK_5_SCHEME" value=" " />
+        <variable name="DEEPLINK_5_HOST" value=" " />
+    </plugin>
     <engine name="android" spec="7.1.1" />
     <engine name="browser" spec="5.0.4" />
     <engine name="ios" spec="4.5.5" />

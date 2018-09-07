@@ -286,7 +286,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.followMode = false;
   }
 
-  private redrawMap() {
+  redrawMap() {
     setTimeout(() => {
       this.map.invalidateSize();
     }, 0);
