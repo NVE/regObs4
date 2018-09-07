@@ -11,13 +11,14 @@ import { AppProviders } from './app.providers';
 import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
 import { PopoverMenuComponent } from './components/popover-menu/popover-menu.component';
+import { SideMenuComponent } from './components/side-menu/side-menu.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent, PopoverMenuComponent],
+  declarations: [AppComponent, PopoverMenuComponent, SideMenuComponent],
   entryComponents: [PopoverMenuComponent],
   imports: [
     BrowserModule,

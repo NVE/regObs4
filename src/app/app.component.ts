@@ -19,8 +19,6 @@ import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 })
 export class AppComponent {
 
-  lastUpdated: Date;
-
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -54,14 +52,6 @@ export class AppComponent {
         }
         this.splashScreen.hide();
         this.initBackroundUpdates();
-
-        this.lastUpdated = await this.observationService.getLastUpdated();
-        setInterval(() => {
-          setTimeout(async () => {
-            this.lastUpdated = await this.observationService.getLastUpdated();
-          }, 0);
-        }, 5000);
-
       } catch (err) {
         // TODO: Log error
         console.log(err);
