@@ -22,3 +22,8 @@ $z-index-over-map: 900;
     color: #fff;
     padding: 5px;
 }
+
+.menu-popover .popover-content{
+    bottom: 122px !important;
+    top: auto !important;
+};

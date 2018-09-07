@@ -25,7 +25,7 @@ import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.
     TranslateModule,
     LeafletModule,
   ],
-  declarations: [HomePage, GeoSelectComponent, FullscreenToggleComponent, MapSearchComponent, MapItemBarComponent]
+  declarations: [HomePage, GeoSelectComponent, FullscreenToggleComponent, MapSearchComponent, MapItemBarComponent],
 })
 export class HomePageModule {
 }

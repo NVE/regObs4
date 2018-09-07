@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { Events } from '@ionic/angular';
+import { Events, PopoverController } from '@ionic/angular';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { RegionSummary } from '../../core/services/warning/region-summary.model';
 import { Observable } from 'rxjs';
@@ -9,6 +9,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Observer, ObserverSubscriber } from 'nano-sql/lib/observable';
 import { settings } from '../../../settings';
 import * as moment from 'moment';
+import { PopoverMenuComponent } from '../../components/popover-menu/popover-menu.component';
 
 @Component({
   selector: 'app-warning-list',

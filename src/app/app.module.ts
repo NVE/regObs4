@@ -10,14 +10,15 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { AppProviders } from './app.providers';
 import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
+import { PopoverMenuComponent } from './components/popover-menu/popover-menu.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
+  declarations: [AppComponent, PopoverMenuComponent],
+  entryComponents: [PopoverMenuComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -38,5 +39,6 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: AppProviders.getProviders(),
   bootstrap: [AppComponent],
+  exports: [PopoverMenuComponent],
 })
 export class AppModule { }

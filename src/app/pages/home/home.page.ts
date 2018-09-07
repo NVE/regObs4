@@ -2,7 +2,7 @@ import { Component, AfterViewInit, OnInit, ViewChild, OnDestroy, ElementRef } fr
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
-import { Platform, ToastController, Events } from '@ionic/angular';
+import { Platform, ToastController, Events, PopoverController, Fab } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { UserMarker } from '../../core/helpers/leaflet/user-marker/user-marker';
 import { ObservationService } from '../../core/services/observation/observation.service';
@@ -19,6 +19,7 @@ import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-it
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../core/services/user-setting.service';
 import { HelperService } from '../../core/services/helpers/helper.service';
+import { PopoverMenuComponent } from '../../components/popover-menu/popover-menu.component';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
@@ -30,6 +31,7 @@ const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 export class HomePage implements OnInit, OnDestroy {
   @ViewChild(FullscreenToggleComponent) fullscreenToggle: FullscreenToggleComponent;
   @ViewChild(MapItemBarComponent) mapItemBar: MapItemBarComponent;
+  @ViewChild('menuFab') menuFab: Fab;
   map: L.Map;
   watchSubscription: Subscription;
   userMarker: UserMarker;
@@ -56,7 +58,8 @@ export class HomePage implements OnInit, OnDestroy {
     private events: Events,
     private statusBar: StatusBar,
     private userSettingService: UserSettingService,
-    private helperService: HelperService
+    private helperService: HelperService,
+    private popoverController: PopoverController,
   ) {
 
     const defaultIcon = L.icon({
@@ -245,7 +248,7 @@ export class HomePage implements OnInit, OnDestroy {
   //     .forEach((marker) => marker.addTo(this.markerLayer));
   // }
 
-  centerMapToUser() {
+  async centerMapToUser(event: Event) {
     this.followMode = true;
     if (this.userMarker) {
       const currentPosition = this.userMarker.getPosition();
@@ -327,5 +330,21 @@ export class HomePage implements OnInit, OnDestroy {
   private onPositionError(error: any) {
     // TODO: Handle error
     console.log(error);
+  }
+
+  async showFabMenu(event: Event) {
+    const popover = await this.popoverController.create({
+      component: PopoverMenuComponent,
+      translucent: false,
+      mode: 'md',
+      event: event,
+      showBackdrop: true,
+      cssClass: 'menu-popover'
+    });
+    popover.onWillDismiss().then(() => {
+      console.log('dismissed');
+      this.menuFab.close();
+    });
+    return await popover.present();
   }
 }
