@@ -10,8 +10,10 @@ import { Subject, Observable } from 'rxjs';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import * as moment from 'moment';
 import 'moment-timezone';
+import { Storage } from '@ionic/storage';
 
 const tableName = 'registration';
+const REGISTRATION_LAST_UPDATED = 'registration_last_updated';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +29,8 @@ export class ObservationService {
 
   constructor(
     private apiService: ApiService,
-    private helperService: HelperService
+    private helperService: HelperService,
+    private storage: Storage,
   ) {
     this._isLoading = new Subject<boolean>();
   }
@@ -36,7 +39,6 @@ export class ObservationService {
     nSQL(tableName)
       .model([
         { key: 'RegId', type: 'number', props: ['pk'] },
-        { key: 'DtObsTime', type: 'date', props: ['idx'] },
         { key: 'GeoHazardTid', type: 'number', props: ['idx'] },
         { key: '*', type: '*' },
       ]);
@@ -60,6 +62,8 @@ export class ObservationService {
       FromDate: fromDate.toDate()
     })).subscribe(async (next) => {
       await nSQL(tableName).loadJS(tableName, next.Results);
+      await this.storage.ready();
+      this.storage.set(REGISTRATION_LAST_UPDATED, moment().toISOString());
       this._isLoading.next(false);
     });
   }
@@ -104,7 +108,19 @@ export class ObservationService {
     });
   }
 
-  drop() {
+  async getLastUpdated(): Promise<Date> {
+    await this.storage.ready();
+    const storageValue: string = await this.storage.get(REGISTRATION_LAST_UPDATED);
+    if (storageValue) {
+      return moment(storageValue).toDate();
+    } else {
+      return null;
+    }
+  }
+
+  async drop() {
+    await this.storage.ready();
+    await this.storage.remove(REGISTRATION_LAST_UPDATED);
     return nSQL(tableName).query('drop').exec();
   }
 }

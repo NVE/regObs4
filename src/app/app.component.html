@@ -24,6 +24,13 @@
               <ion-toggle checked="true"></ion-toggle>
             </ion-item>
             <ion-item>
+              <ion-icon slot="start" name="refresh"></ion-icon>
+              <ion-label text-wrap>
+                <h2>Oppdater observasjoner</h2>
+                <p *ngIf="lastUpdated">Sist oppdatert {{ lastUpdated | date: 'dd.MM.yyyy HH:mm' }}</p>
+              </ion-label>
+            </ion-item>
+            <ion-item>
               <ion-icon slot="start" name="walk"></ion-icon>
               <ion-label>
                 {{'MENU.SHOW_TRIPS' | translate}}

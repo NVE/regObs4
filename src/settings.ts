@@ -62,5 +62,6 @@ export const settings = {
         nanosqlConnected: 'nanoSql: connected',
         tabsChanged: 'tabs:changed',
         geoHazardChanged: '',
-    }
+    },
+    cordovaNotAvailable: 'cordova_not_available'
 };
