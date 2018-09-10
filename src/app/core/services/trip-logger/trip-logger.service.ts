@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { nSQL, NanoSQLInstance } from 'nano-sql';
+import { nSQL } from 'nano-sql';
 import { TripLogItem } from './trip-log-item.model';
+import { Observer } from 'nano-sql/lib/observable';
 
 const tableName = 'triplog';
-const tableNameItems = 'triplogitem';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +31,20 @@ export class TripLoggerService {
       .query('upsert', item)
       .exec();
   }
+
+  getTripLogAsObservable(): Observer<TripLogItem[]> {
+    return nSQL().observable<TripLogItem[]>(() => {
+      return nSQL(tableName).query('select').emit();
+    });
+  }
+
+  // getTripLogSummaryAsObservable(): Observer<TripLogSummary> {
+  //   return nSQL().observable<TripLogItem[]>(() => {
+  //     return nSQL(tableName).query('select').emit();
+  //   }).map((tripLog) => ({
+  //       started: moment(tripLog[0].timestamp)
+  //    }));
+  // }
 
   // async endTrip() {
   //   await nSQL(tableName)

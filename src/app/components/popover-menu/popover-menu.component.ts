@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavController, PopoverController } from '@ionic/angular';
 
 @Component({
   selector: 'app-popover-menu',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PopoverMenuComponent implements OnInit {
 
-  constructor() { }
+  constructor(private navController: NavController, private popoverController: PopoverController) { }
 
   ngOnInit() {
+  }
+
+  async closeAndNavigate(url: string) {
+    await this.popoverController.dismiss();
+    return this.navController.navigateForward(url);
   }
 
 }

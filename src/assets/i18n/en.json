@@ -84,5 +84,19 @@
             "6": "Sat",
             "7": "Sun"
         }
+    },
+    "TRIP_LOG": {
+        "NOT_STARTED": "New trip",
+        "PAUSED": "Paused",
+        "RUNNING": "GPS log running",
+        "STOPPED": "Trip log completed",
+        "START": "Start",
+        "STOP": "Stop",
+        "COMPLETE": "Complete",
+        "CONTINUE": "Continue"
+    },
+    "GEOLOCATION_SERVICE": {
+        "NOTIFICATION_TITLE": "Logging trip",
+        "NOTIFICATION_TEXT": ""
     }
 }

@@ -5,6 +5,10 @@ import { IonicRouteStrategy } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
+import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
+import { BackgroundGeolocationWebService } from './core/services/background-geolocation/background-geolocation-web.service';
+import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
 
 export class AppProviders {
     public static getProviders() {
@@ -14,23 +18,22 @@ export class AppProviders {
             { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
             Geolocation,
             Deeplinks,
-            BackgroundFetch
-            // ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),
+            BackgroundFetch,
+            BackgroundGeolocation,
+            ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),
         ];
     }
 
-    // private static getWebProviders() {
-    //     return [
-    //         { provide: BackgroundFetchService, useClass: BackgroundFetchWebService },
-    //         { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationWebService },
-    //     ];
-    // }
+    private static getWebProviders() {
+        return [
+            { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationWebService },
+        ];
+    }
 
-    // private static getNativeProviders() {
-    //     return [
-    //         { provide: BackgroundFetchService, useClass: BackgroundFetchNativeService },
-    //         { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationNativeService },
-    //     ];
-    // }
+    private static getNativeProviders() {
+        return [
+            { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationNativeService },
+        ];
+    }
 
 }

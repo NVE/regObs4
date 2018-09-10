@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar color="{{ state === 'RUNNING' ? 'success' : 'dark'  }}">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'TRIP_LOG.'+state | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ng-container *ngIf="state === 'NOT_STARTED'">
+    <ion-fab vertical="bottom" class="x-large" horizontal="center" slot="fixed">
+      <ion-fab-button class="x-large" color="success" (click)="startTrip()">
+        {{ 'TRIP_LOG.START' | translate}}
+      </ion-fab-button>
+    </ion-fab>
+  </ng-container>
+  <ng-container *ngIf="state === 'RUNNING'">
+    <app-trip-log-summary></app-trip-log-summary>
+    <ion-fab vertical="bottom" class="x-large" horizontal="center" slot="fixed">
+      <ion-fab-button class="x-large" color="danger" (click)="pauseTrip()">
+        {{ 'TRIP_LOG.STOP' | translate}}
+      </ion-fab-button>
+    </ion-fab>
+  </ng-container>
+  <ng-container *ngIf="state === 'PAUSED'">
+    <app-trip-log-summary></app-trip-log-summary>
+    <ion-fab vertical="bottom" class="x-large two-buttons" horizontal="start" slot="fixed">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-fab-button class="x-large small-text" color="danger" (click)="completeTrip()">
+              {{ 'TRIP_LOG.COMPLETE' | translate}}
+            </ion-fab-button>
+          </ion-col>
+          <ion-col>
+            <ion-fab-button class="x-large small-text" color="success" (click)="startTrip()">
+              {{ 'TRIP_LOG.CONTINUE' | translate}}
+            </ion-fab-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-fab>
+  </ng-container>
+  <ng-container *ngIf="state === 'STOPPED'">
+    <app-trip-log-summary></app-trip-log-summary>
+  </ng-container>
+</ion-content>

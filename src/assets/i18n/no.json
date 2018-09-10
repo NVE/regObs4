@@ -84,5 +84,19 @@
             "6": "Lør",
             "7": "Søn"
         }
+    },
+    "TRIP_LOG": {
+        "NOT_STARTED": "Ny tur",
+        "PAUSED": "Pauset",
+        "RUNNING": "GPS registrering pågår",
+        "STOPPED": "Tur stoppet og fullført",
+        "START": "Start",
+        "STOP": "Stopp",
+        "COMPLETE": "Ferdig",
+        "CONTINUE": "Fortsett"
+    },
+    "GEOLOCATION_SERVICE": {
+        "NOTIFICATION_TITLE": "Tur pågår",
+        "NOTIFICATION_TEXT": ""
     }
 }

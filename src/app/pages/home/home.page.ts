@@ -20,6 +20,8 @@ import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../core/services/user-setting.service';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { PopoverMenuComponent } from '../../components/popover-menu/popover-menu.component';
+import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
+import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
@@ -50,6 +52,7 @@ export class HomePage implements OnInit, OnDestroy {
   fullscreen = false;
   mapItemBarVisible = false;
   currentGeoHazard: GeoHazard;
+  tripLogLayer = L.layerGroup();
 
   constructor(private platform: Platform,
     private geolocation: Geolocation,
@@ -60,6 +63,8 @@ export class HomePage implements OnInit, OnDestroy {
     private userSettingService: UserSettingService,
     private helperService: HelperService,
     private popoverController: PopoverController,
+    private tripLoggerService: TripLoggerService,
+    private backgroundGeolocationService: BackgroundGeolocationService,
   ) {
 
     const defaultIcon = L.icon({
@@ -78,6 +83,7 @@ export class HomePage implements OnInit, OnDestroy {
       // this.embeddedMapLayer,
       this.defaultMapLayer,
       this.markerLayer,
+      this.tripLogLayer,
     ],
     zoom: 13,
     center: L.latLng(59.911197, 10.741059),
@@ -109,6 +115,15 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.mapItemBarSubscription = this.mapItemBar.isVisible.subscribe((isVisible) => {
       this.mapItemBarVisible = isVisible;
+    });
+
+    this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
+      this.tripLogLayer.clearLayers();
+      const latLngs = tripLogItems.map((tripLogItem) => L.latLng({
+        lat: tripLogItem.latitude,
+        lng: tripLogItem.longitude
+      }));
+      L.polyline(latLngs, { color: 'red', weight: 3 }).addTo(this.tripLogLayer);
     });
   }
 

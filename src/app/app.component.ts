@@ -93,21 +93,27 @@ export class AppComponent {
 
   async initBackroundUpdates() {
     const config = {
-      stopOnTerminate: false, // Set true to cease background-fetch from operating after user "closes" the app. Defaults to true.
-      startOnBoot: true,
+      minimumFetchInterval: 15, // <-- default is 15
+      stopOnTerminate: true,    // <-- Android only
+      startOnBoot: false,       // <-- Android only
+      forceReload: false        // <-- Android only
     };
+    // Be aware. If startOnBoot=true, stopOnTerminate must be false and forceReload must be true.
+    // We don't want to force our app to always be running.
+    // So for Android the app must be running for background fetch to be running.
+    // To be able to fetch without forceReload, we must enable headless java code!
+    // TODO: Write headless java code?
+    // https://github.com/transistorsoft/cordova-plugin-background-fetch
 
-    this.backgroundFetch.configure(config).then(async () => {
-      await this.updateResources();
-      this.backgroundFetch.finish();
-    }).catch((e) => {
-      if (e === settings.cordovaNotAvailable) {
-        console.log('[INFO] Cordova not available, running backround update job in interval');
-        setInterval(async () => {
-          await this.updateResources();
-        }, 2 * 60 * 1000); // Update frequency for observations on web implementation
-      }
-    });
+    this.backgroundFetch.configure(config).then(() => this.updateResources().then(() => this.backgroundFetch.finish()))
+      .catch((error) => {
+        if (error === settings.cordovaNotAvailable) {
+          console.log('[INFO] Cordova not available, running backround update job in interval');
+          setInterval(async () => {
+            await this.updateResources();
+          }, 2 * 60 * 1000); // Update frequency for observations on web implementation
+        }
+      });
 
     await this.updateResources(); // Update resources on startup
   }
