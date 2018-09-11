@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="end">
+      <ion-menu-button color="light"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Observasjoner
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ng-component>
+
+    </ng-component>
+    <app-observation-list-card [obs]="obs" *ngFor="let obs of visibleObservations">
+    </app-observation-list-card>
+  </ion-list>
+</ion-content>

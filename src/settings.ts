@@ -12,6 +12,11 @@ export const settings = {
                 'DEMO': 'https://api.nve.no/hydrology/demo/regobs/webapi_v3.2',
                 'TEST': 'http://tst-h-web03.nve.no/regobswebapi'
             },
+            serviceUrl: {
+                'PROD': 'https://api.nve.no/hydrology/regobs/v3.1.0/',
+                'DEMO': 'http://stg-h-web03.nve.no/RegObsServices/',
+                'TEST': 'http://tst-h-web03.nve.no/regobsservices_test/'
+            },
             apiJsonVersion: '3.2.0',
         },
         warning: {

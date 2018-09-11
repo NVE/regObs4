@@ -27,3 +27,13 @@ $z-index-over-map: 900;
     bottom: 122px !important;
     top: auto !important;
 };
+
+:root {
+    --ion-background-color: #DCECF2;
+    --ion-item-background-color: #fff;
+    --ion-text-color-step-600: #444444;;
+}
+
+ion-list {
+    background: var(--ion-background-color);
+}

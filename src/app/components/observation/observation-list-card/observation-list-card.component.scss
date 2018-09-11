@@ -1,0 +1,41 @@
+ion-item {
+    margin: 10px 10px 10px 10px;
+
+    ion-label {
+        p {
+            font-size: 13px;
+            line-height: 18px;
+        }
+
+    }
+
+    ion-thumbnail {
+        width: 90px;
+        height: 90px;
+    }
+
+    ion-icon {
+        font-size: 18px;
+        top: 4px;
+        position: relative;
+    }
+
+    .observation-types {
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        .badge {
+            border: 0.5px solid #54666C;
+            border-radius: 12px;
+            background-color: #FAFEFF;
+            font-size: 10px;
+            font-weight: 500;
+            line-height: 12px;
+            padding-left: 8px;
+            padding-right: 8px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            color: #54666C;
+        }
+    }
+}

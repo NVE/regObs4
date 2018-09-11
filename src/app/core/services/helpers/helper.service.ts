@@ -9,6 +9,7 @@ import { settings } from '../../../../settings';
 import * as turf from '@turf/turf';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { featureEach } from '@turf/turf';
+import { GeoHazard } from '../../models/geo-hazard.enum';
 
 const STORAGE_KEY_NAME = 'CurrentMapView';
 
@@ -97,6 +98,25 @@ export class HelperService {
       + `:${(minutes < 10) ? '0' + minutes : minutes}`
       + `:${(seconds < 10) ? '0' + seconds : seconds}`
       + (showMilliseconds ? `.${milliseconds}` : '');
+  }
+
+  async getObservationImage(id: string, size: string = 'medium') {
+    const userSettings = await this.userSettingService.getUserSettings();
+    const appMode = userSettings.appMode;
+    return `${settings.services.regObs.serviceUrl[appMode]}/Image/${size}/${id}`;
+  }
+
+  getGeoHazardIcon(geoHazard: GeoHazard) {
+    switch (geoHazard) {
+      case GeoHazard.Dirt:
+        return '/assets/icon/ikon_jordskred.svg';
+      case GeoHazard.Ice:
+        return '/assets/icon/ikon_isvarsler2.svg';
+      case GeoHazard.Snow:
+        return '/assets/icon/ikon_snoskred.svg';
+      case GeoHazard.Water:
+        return '/assets/icon/ikon_flom.svg';
+    }
   }
 
   private getFeaturesFromJson(geoJson: any) {

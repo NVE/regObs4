@@ -9,10 +9,10 @@ import { TabsPage } from './tabs.page';
 import { HomePageModule } from '../home/home.module';
 import { TripPageModule } from '../trip/trip.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MyObservationsPageModule } from '../my-observations/my-observations.module';
 import { WarningListPageModule } from '../warning-list/warning-list.module';
 import { AddPageModule } from '../add/add.module';
 import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
+import { ObservationListPageModule } from '../observation-list/observation-list.module';
 
 @NgModule({
   imports: [
@@ -24,7 +24,7 @@ import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
     TripPageModule,
     WarningListPageModule,
     TranslateModule,
-    MyObservationsPageModule,
+    ObservationListPageModule,
     AddPageModule,
   ],
   declarations: [TabsPage, AddMenuComponent]

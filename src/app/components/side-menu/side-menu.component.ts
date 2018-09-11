@@ -24,4 +24,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     clearInterval(this.interval);
   }
 
+  async updateObservations() {
+    await this.observationService.updateObservations();
+    this.lastUpdated = await this.observationService.getLastUpdated();
+  }
+
 }

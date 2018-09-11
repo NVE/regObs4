@@ -4,9 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 import { HomePage } from '../home/home.page';
 import { TripPage } from '../trip/trip.page';
-import { MyObservationsPage } from '../my-observations/my-observations.page';
 import { WarningListPage } from '../warning-list/warning-list.page';
 import { AddPage } from '../add/add.page';
+import { ObservationListPage } from '../observation-list/observation-list.page';
 
 const routes: Routes = [
   {
@@ -29,9 +29,9 @@ const routes: Routes = [
         component: AddPage
       },
       {
-        path: 'my-observations',
-        outlet: 'my-observations',
-        component: MyObservationsPage
+        path: 'observation-list',
+        outlet: 'observation-list',
+        component: ObservationListPage
       },
       {
         path: 'warning-list',

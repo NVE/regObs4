@@ -1,0 +1,20 @@
+<ion-item>
+  <ion-label>
+    <h2>{{obs.LocationName || obs.MunicipalName}} / {{obs.ForecastRegionName}}</h2>
+    <p>
+      <ion-icon [src]="icon"></ion-icon> {{ geoHazardName }}
+      <ion-icon name="calendar"></ion-icon> {{ dtObsDate | date: 'dd.MM.yyyy HH:mm' }}
+    </p>
+    <p>
+      <ion-icon name="contact"></ion-icon> bli@nve.no
+    </p>
+    <p class="observation-types">
+      <span class="badge">
+        Fritekst, vannstand, skader
+      </span>
+    </p>
+  </ion-label>
+  <ion-thumbnail slot="end">
+    <img *ngIf="hasImage" [src]="imgSrc">
+  </ion-thumbnail>
+</ion-item>
