@@ -64,8 +64,14 @@ export class OfflineTileLayer extends L.TileLayer {
 
 
     private getOriginalTileUrl(coords: L.Coords, urlTemplate: string): string {
-        this.setUrl(urlTemplate, true);
-        return (<any>L.TileLayer.prototype).getTileUrl.call(this, coords);
+        const data = {
+            r: L.Browser.retina ? '@2x' : '',
+            s: (<any>this)._getSubdomain(coords),
+            x: coords.x,
+            y: coords.y,
+            z: coords.z,
+        };
+        return L.Util.template(urlTemplate, L.Util.extend(data, this.options));
     }
 
     private getOfflineTileUrl(coords: L.Coords): Promise<{ success: boolean, url?: string }> {
@@ -86,6 +92,8 @@ export class OfflineTileLayer extends L.TileLayer {
     async getTileUrl(coords: ExtendedCoords): Promise<string> {
 
         if (coords.z <= settings.map.tiles.embeddedUrlMaxZoom) {
+            console.log(`zoom is under ${settings.map.tiles.embeddedUrlMaxZoom} so using embedded map url`,
+                coords, settings.map.tiles.embeddedUrl);
             return this.getOriginalTileUrl(coords, settings.map.tiles.embeddedUrl);
         }
 
@@ -130,7 +138,7 @@ export class OfflineTileLayer extends L.TileLayer {
         this.getTileUrl(currentCoords).then((newUrl) => {
             // tslint:disable-next-line:max-line-length
             console.log('Fallback to next zoom level: ' + fallbackZoom + ' for zoom: ' + originalCoords.z + ' original: ' + JSON.stringify(originalCoords) + ' new coords: ' + JSON.stringify(currentCoords));
-
+            console.log('New url: ' + newUrl);
             // Zoom replacement img.
             style.width = (tileSize.x * scale) + 'px';
             style.height = (tileSize.y * scale) + 'px';
