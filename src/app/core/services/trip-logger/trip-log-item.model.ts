@@ -2,7 +2,7 @@ export interface TripLogItem {
     id?: number;
     latitude: number;
     longitude: number;
-    timestamp: Date;
+    timestamp: number;
     altitude: number;
     speed: number;
     accuracy: number;

@@ -3,6 +3,7 @@ import { BackgroundGeolocationService } from './background-geolocation.service';
 import { Subscription } from 'rxjs';
 import { Geoposition, Geolocation } from '@ionic-native/geolocation/ngx';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
+import { TripLogState } from '../trip-logger/trip-log-state.enum';
 
 @Injectable()
 export class BackgroundGeolocationWebService implements BackgroundGeolocationService {
@@ -11,7 +12,8 @@ export class BackgroundGeolocationWebService implements BackgroundGeolocationSer
     constructor(private geolocation: Geolocation, private tripLogger: TripLoggerService) {
     }
 
-    start() {
+    async start() {
+        await this.tripLogger.updateState(TripLogState.Running);
         this.watchSubscription = this.geolocation.watchPosition(
             { maximumAge: 60000, enableHighAccuracy: true }
         )
@@ -32,7 +34,7 @@ export class BackgroundGeolocationWebService implements BackgroundGeolocationSer
                 accuracy: data.coords.accuracy,
                 altitude: data.coords.altitude,
                 speed: data.coords.speed,
-                timestamp: new Date(data.timestamp),
+                timestamp: data.timestamp,
                 heading: data.coords.heading,
             });
         }
@@ -43,7 +45,8 @@ export class BackgroundGeolocationWebService implements BackgroundGeolocationSer
         console.log(error);
     }
 
-    stop() {
+    async stop() {
+        await this.tripLogger.updateState(TripLogState.Paused);
         this.watchSubscription.unsubscribe();
         this.watchSubscription = null;
     }

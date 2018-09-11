@@ -1,37 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
-import { TripLogState } from './trip-log-state.enum';
+import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enum';
+import { ObserverSubscriber } from 'nano-sql/lib/observable';
 
 @Component({
   selector: 'app-trip-log',
   templateUrl: './trip-log.page.html',
   styleUrls: ['./trip-log.page.scss'],
 })
-export class TripLogPage implements OnInit {
-
+export class TripLogPage implements OnInit, OnDestroy {
   state: TripLogState = TripLogState.NotStarted;
+  private subscription: ObserverSubscriber;
 
   constructor(private backgroundGeolocationService: BackgroundGeolocationService, private tripLoggerService: TripLoggerService) { }
 
   async ngOnInit() {
-    const isRunning = await this.backgroundGeolocationService.isRunning();
-    if (isRunning) {
-      this.state = TripLogState.Running;
-    }
+    this.subscription = this.tripLoggerService.getTripLogStateAsObservable().subscribe((activity) => {
+      this.state = activity.state;
+    });
   }
 
-  startTrip() {
-    this.state = TripLogState.Running;
+  async startTrip() {
     return this.backgroundGeolocationService.start();
   }
 
-  pauseTrip() {
-    this.state = TripLogState.Paused;
+  async pauseTrip() {
     return this.backgroundGeolocationService.stop();
   }
 
-  completeTrip() {
-    this.state = TripLogState.Stopped;
+  async completeTrip() {
+    // await this.tripLoggerService.updateState(TripLogState.Stopped);
+    // this.state = TripLogState.Stopped;
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

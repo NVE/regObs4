@@ -5,6 +5,8 @@ import * as moment from 'moment';
 import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { TripLogItem } from '../../core/services/trip-logger/trip-log-item.model';
+import { TripLogActivity } from '../../core/services/trip-logger/trip-log-activity.model';
+import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enum';
 
 @Component({
   selector: 'app-trip-log-summary',
@@ -12,39 +14,53 @@ import { TripLogItem } from '../../core/services/trip-logger/trip-log-item.model
   styleUrls: ['./trip-log-summary.component.scss']
 })
 export class TripLogSummaryComponent implements OnInit, OnDestroy {
-  private subscription: ObserverSubscriber;
-  length: string;
-  started: moment.Moment;
-  end: moment.Moment;
+  private tripLogSubscription: ObserverSubscriber;
+  private tripLogActivitySubscription: ObserverSubscriber;
+
+  lengthString: string;
   interval: NodeJS.Timer;
   tripLog: TripLogItem[];
+  tripLogActivity: TripLogActivity[];
 
   constructor(
     private tripLoggerService: TripLoggerService,
-    private backgroundGeolocationService: BackgroundGeolocationService,
     private helperService: HelperService) { }
 
   ngOnInit() {
-    this.subscription = this.tripLoggerService.getTripLogAsObservable().subscribe((tripLog) => {
+    this.tripLogSubscription = this.tripLoggerService.getTripLogAsObservable().subscribe((tripLog) => {
       this.tripLog = tripLog;
-      if (tripLog.length > 0) {
-        this.started = moment(tripLog[0].timestamp);
-        this.end = moment(tripLog[tripLog.length - 1].timestamp);
-      }
     });
+    this.tripLogActivitySubscription = this.tripLoggerService.getTripLogActivityAsObservable()
+      .subscribe((tripLogActivity) => {
+        this.tripLogActivity = tripLogActivity;
+      });
 
     this.interval = setInterval(async () => {
-      if (this.tripLog.length > 0) {
-        const running = await this.backgroundGeolocationService.isRunning();
-        const from = running ? moment() : this.end;
-        this.length = this.helperService.formatMsToTime(from.diff(this.started));
-        // TODO: This length is wrong. We have to log each start and stop!
-      }
+      const lengthMs = this.calculateTimeFromTripLogActivity(this.tripLogActivity);
+      this.lengthString = this.helperService.formatMsToTime(lengthMs);
     }, 1000);
   }
 
+  calculateTimeFromTripLogActivity(tripLogActivity: TripLogActivity[]): number {
+    let lengthMs = 0;
+    if (tripLogActivity.length > 0) {
+      let lastItem: TripLogActivity = null;
+      tripLogActivity.forEach((item) => {
+        if (item.state === TripLogState.Paused) {
+          lengthMs += moment.unix(item.timestamp).diff(moment.unix(lastItem.timestamp));
+        }
+        lastItem = item;
+      });
+      if (lastItem.state === TripLogState.Running) {
+        lengthMs += moment().diff(moment.unix(lastItem.timestamp));
+      }
+    }
+    return lengthMs;
+  }
+
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.tripLogSubscription.unsubscribe();
+    this.tripLogActivitySubscription.unsubscribe();
     clearInterval(this.interval);
   }
 

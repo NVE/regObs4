@@ -16,17 +16,14 @@
       </ion-fab-button>
     </ion-fab>
   </ng-container>
-  <ng-container *ngIf="state === 'RUNNING'">
+  <ng-container *ngIf="state === 'PAUSED' || state === 'RUNNING'">
     <app-trip-log-summary></app-trip-log-summary>
-    <ion-fab vertical="bottom" class="x-large" horizontal="center" slot="fixed">
+    <ion-fab *ngIf="state === 'RUNNING'" vertical="bottom" class="x-large" horizontal="center" slot="fixed">
       <ion-fab-button class="x-large" color="danger" (click)="pauseTrip()">
         {{ 'TRIP_LOG.STOP' | translate}}
       </ion-fab-button>
     </ion-fab>
-  </ng-container>
-  <ng-container *ngIf="state === 'PAUSED'">
-    <app-trip-log-summary></app-trip-log-summary>
-    <ion-fab vertical="bottom" class="x-large two-buttons" horizontal="start" slot="fixed">
+    <ion-fab *ngIf="state === 'PAUSED'" vertical="bottom" class="x-large two-buttons" horizontal="start" slot="fixed">
       <ion-grid>
         <ion-row>
           <ion-col>

@@ -5,6 +5,9 @@ import { Platform } from '@ionic/angular';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Geoposition, Geolocation } from '@ionic-native/geolocation/ngx';
+import * as moment from 'moment';
+import { TripLogState } from '../trip-logger/trip-log-state.enum';
+import { TripLogPage } from '../../../pages/trip-log/trip-log.page';
 
 @Injectable()
 export class BackgroundGeolocationNativeService implements BackgroundGeolocationService {
@@ -51,7 +54,7 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
         return this.tripLogger.saveTripLogItem({
             latitude: location.latitude,
             longitude: location.longitude,
-            timestamp: new Date(location.time),
+            timestamp: location.timestamp,
             accuracy: location.accuracy,
             altitude: location.altitude,
             heading: location.bearing,
@@ -60,6 +63,7 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
     }
 
     async start() {
+        await this.tripLogger.updateState(TripLogState.Running);
         await this.configureBackgroundGeoLocation();
         this.backgroundGeolocation.on('location', (location: BackgroundGeolocationResponse) => {
             // handle your locations here
@@ -79,8 +83,9 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
                 }
             });
         });
-        this.backgroundGeolocation.on('error', (error) => {
+        this.backgroundGeolocation.on('error', async (error) => {
             console.log('[ERROR] BackgroundGeolocation error:', error.code, error.message);
+            await this.tripLogger.updateState(TripLogState.Paused);
         });
         this.backgroundGeolocation.on('start', () => {
             console.log('[INFO] BackgroundGeolocation service has been started');
@@ -107,6 +112,7 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
 
     async stop() {
         await this.platform.ready();
+        await this.tripLogger.updateState(TripLogState.Paused);
         this.backgroundGeolocation.stop();
         const lastPosition = await this.geolocation.getCurrentPosition({
             enableHighAccuracy: true,
@@ -119,10 +125,11 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
                 accuracy: lastPosition.coords.accuracy,
                 altitude: lastPosition.coords.altitude,
                 speed: lastPosition.coords.speed,
-                timestamp: new Date(),
+                timestamp: lastPosition.timestamp,
                 heading: lastPosition.coords.heading,
             });
         }
+        this.tripLogger.updateState(TripLogState.Paused);
         this.backgroundGeolocation.events.forEach((event) => {
             return this.backgroundGeolocation.removeAllListeners(event);
         });
