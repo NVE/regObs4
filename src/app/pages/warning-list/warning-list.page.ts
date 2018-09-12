@@ -23,6 +23,7 @@ export class WarningListPage implements OnInit, OnDestroy {
   allRegions: Array<RegionSummary>;
   subscription: ObserverSubscriber;
   regionDistances: { name: string, distance: number }[];
+  showAll: boolean;
 
   constructor(private helperService: HelperService,
     private warningService: WarningService,
@@ -42,6 +43,10 @@ export class WarningListPage implements OnInit, OnDestroy {
         this.filterRegions();
       }
     });
+  }
+
+  toggleTab() {
+    this.showAll = !this.showAll;
   }
 
   getDayName(daysToAdd: number) {

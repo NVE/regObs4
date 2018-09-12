@@ -12,6 +12,15 @@
 
 @import 'app/core/helpers/leaflet/user-marker/user-marker.scss';
 
+:root {
+    --ion-background-color: #DCECF2;
+    --ion-item-background-color: #fff;
+    --ion-text-color-step-600: #444444;
+    --ion-color-primary: #5C90A5;
+    --ion-tabbar-text-color: #8B9399;
+    --ion-tabbar-background-color-focused: #F4F8F9;
+}
+
 $z-index-over-map: 900;
 
 .map-control {
@@ -27,12 +36,6 @@ $z-index-over-map: 900;
     bottom: 122px !important;
     top: auto !important;
 };
-
-:root {
-    --ion-background-color: #DCECF2;
-    --ion-item-background-color: #fff;
-    --ion-text-color-step-600: #444444;;
-}
 
 ion-list {
     background: var(--ion-background-color);

@@ -1,0 +1,38 @@
+.top-tabs {
+    background-color: var(--ion-item-background-color);
+    color: var(--ion-tabbar-text-color);
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 34px;
+
+    ion-grid {
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-bottom: 1px;
+        padding-top: 0px;
+    }
+
+    ion-row {
+        height: 44px;
+    }
+
+    .selected {
+        color: var(--ion-color-primary);
+        border-bottom: 2px solid #5C90A5;
+        background-color: var(--ion-tabbar-background-color-focused);
+    }
+}
+
+ion-list-header {
+        text-transform: capitalize;
+        font-size: 14px;
+
+        ion-grid {
+            margin-right: 6px;
+        }
+
+        ion-col {
+            margin-left: 6px;
+            margin-right: 6px;
+        }
+}

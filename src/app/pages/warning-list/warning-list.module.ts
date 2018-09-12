@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { WarningListPage } from './warning-list.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { RegionSummaryItemComponent } from '../../components/region-summary-item/region-summary-item.component';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     TranslateModule,
+    AngularSvgIconModule,
   ],
   declarations: [WarningListPage, RegionSummaryItemComponent]
 })

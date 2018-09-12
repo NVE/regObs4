@@ -12,6 +12,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
 import { PopoverMenuComponent } from './components/popover-menu/popover-menu.component';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -37,6 +38,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       name: settings.db.simpleStorage.dbName,
       driverOrder: ['sqlite', 'indexeddb', 'websql'],
     }),
+    AngularSvgIconModule,
   ],
   providers: AppProviders.getProviders(),
   bootstrap: [AppComponent],
