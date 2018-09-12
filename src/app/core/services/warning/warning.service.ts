@@ -1,17 +1,13 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting.service';
 import * as moment from 'moment';
 import { LangKey } from '../../models/langKey';
-import { AvalancheWarningSimple } from './avalanche-warning-simple.model';
 import { HelperService } from '../helpers/helper.service';
-import * as L from 'leaflet';
-import { GeometryObject, Feature, Polygon } from 'geojson';
 import { RegionSummary } from './region-summary.model';
 import { nSQL } from 'nano-sql';
 import { Observer } from 'nano-sql/lib/observable';
-import { Events } from '@ionic/angular';
+import { HttpClientService } from '../http-client-service/http-client.service';
 
 const warningSummaryTable = 'warningsummary';
 
@@ -19,7 +15,7 @@ const warningSummaryTable = 'warningsummary';
   providedIn: 'root'
 })
 export class WarningService {
-  constructor(private httpClient: HttpClient,
+  constructor(private httpClient: HttpClientService,
     private userSettingService: UserSettingService,
     private helperService: HelperService
   ) {
@@ -36,8 +32,7 @@ export class WarningService {
 
   async updateAvalancheWarnings() {
     console.log('[INFO] Updating avalanche warning region summary');
-    const observable = await this.getAvalancheWarningRegionSummarySimpleApi();
-    const result = await observable.toPromise();
+    const result = await this.getAvalancheWarningRegionSummarySimpleApi();
     await nSQL().loadJS(warningSummaryTable, result);
   }
 
@@ -54,21 +49,6 @@ export class WarningService {
       `${settings.services.warning.Snow.apiUrl}/`
       + `RegionSummary/Simple/${defaultParams.langKey}/${defaultParams.from}/${defaultParams.to}`);
   }
-
-  // async avalancheWarningByCoordinatesSimple(lat: number, lng: number, langKey?: LangKey, from?: Date, to?: Date)
-  //   : Promise<Observable<AvalancheWarningSimple>> {
-  //   const defaultParams = await this.getDefaultParams();
-  //   return this.httpClient.get<AvalancheWarningSimple>(
-  //     `${settings.services.warning.Snow.apiUrl}/`
-  //     + `AvalancheWarningByCoordinates/Simple`
-  //     + `/${lat}/${lng}/${defaultParams.langKey}/${defaultParams.from}/${defaultParams.to}`);
-  // }
-
-  // async getAvalancheWarningForCurrentMapView() {
-  //   const regions = await this.helperService.getAvalancheWarningRegionsForCurrentMapView();
-  //   // TODO: return api call for region
-  //   return regions;
-  // }
 
   private async getDefaultParams(langKey?: LangKey, from?: Date, to?: Date) {
     const userSettings = await this.userSettingService.getUserSettings();

@@ -304,7 +304,13 @@ export class HomePage implements OnInit, OnDestroy {
   redrawMap() {
     setTimeout(() => {
       this.map.invalidateSize();
-    }, 0);
+      setTimeout(() => {
+        this.map.invalidateSize();
+        setTimeout(() => {
+          this.map.invalidateSize();
+        }, 200);
+      }, 200);
+    }, 200);
   }
 
   private startGeoLocationWatch() {

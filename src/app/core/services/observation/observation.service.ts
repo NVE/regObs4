@@ -55,17 +55,17 @@ export class ObservationService {
   }
 
   async updateObservations() {
+    console.log('[INFO] Updating observations');
     this._isLoading.next(true);
     await this.deleteOldObservations();
     const fromDate = await this.helperService.getObservationsFromDate();
-    (await this.apiService.search({
+    const searchResult = await this.apiService.search({
       FromDate: fromDate.toDate()
-    })).subscribe(async (next) => {
-      await nSQL(tableName).loadJS(tableName, next.Results);
-      await this.storage.ready();
-      this.storage.set(REGISTRATION_LAST_UPDATED, moment().toISOString());
-      this._isLoading.next(false);
     });
+    await nSQL(tableName).loadJS(tableName, searchResult.Results);
+    await this.storage.ready();
+    this.storage.set(REGISTRATION_LAST_UPDATED, moment().toISOString());
+    this._isLoading.next(false);
   }
 
   // async updateObservations(lat: number, lng: number, radius: number) {

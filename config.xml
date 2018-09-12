@@ -136,6 +136,7 @@
         <variable name="ALWAYS_USAGE_DESCRIPTION" value="This app always requires location tracking" />
         <variable name="MOTION_USAGE_DESCRIPTION" value="This app requires motion detection" />
     </plugin>
+    <plugin name="cordova-plugin-advanced-http" spec="^2.0.1" />
     <engine name="android" spec="7.1.1" />
     <engine name="browser" spec="5.0.4" />
     <engine name="ios" spec="4.5.5" />
