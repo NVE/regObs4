@@ -14,6 +14,7 @@ import { SearchResult } from './searchResult';
 import { HTTP } from '@ionic-native/http/ngx';
 import { HttpClientService } from '../http-client-service/http-client.service';
 import { HttpClient } from '@angular/common/http';
+import * as apiKey from '../../../../assets/apikey.json';
 
 @Injectable({
   providedIn: 'root'
@@ -22,10 +23,7 @@ export class ApiService {
 
   constructor(
     private userSettingService: UserSettingService,
-    private httpClientService: HttpClientService,
-    private httpClient: HttpClient,
-    private helperService: HelperService) {
-
+    private httpClientService: HttpClientService) {
   }
 
   // async getObservationsWithinRadius(
@@ -58,7 +56,7 @@ export class ApiService {
   async search(searchRequest: SearchRequest): Promise<SearchResult> {
     const userSettings = await this.userSettingService.getUserSettings();
     const baseUrl = settings.services.regObs.apiUrl[userSettings.appMode];
-    const headers = await this.getHttpRequestHeaders();
+    const headers = this.getHttpRequestHeaders();
     // Use http client service for CORS calls
     return this.httpClientService.post<SearchResult>(
       `${baseUrl}/Search/All`,
@@ -66,19 +64,9 @@ export class ApiService {
       headers);
   }
 
-  private async getApiKey(): Promise<string> {
-    try {
-      // Use standard http client for local http calls, because it supports relative path
-      const apiKeyJsonFile = await this.httpClient.get<ApiKey>('/assets/apikey.json').toPromise();
-      return apiKeyJsonFile.apiKey;
-    } catch (Error) {
-      throw new Error('/assets/apiKey.json missing. Please read documentation!');
-    }
-  }
-
-  private async getHttpRequestHeaders() {
+  private getHttpRequestHeaders() {
     return {
-      regObs_apptoken: await this.getApiKey(),
+      regObs_apptoken: apiKey.default.apiKey,
       ApiJsonVersion: settings.services.regObs.apiJsonVersion,
     };
   }
