@@ -38,7 +38,7 @@ export class AppProviders {
 
     private static getNativeProviders() {
         return [
-            { provide: HttpClientService, useClass: HttpClientNativeService },
+            { provide: HttpClientService, useClass: HttpClientWebService },
             { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationNativeService },
         ];
     }

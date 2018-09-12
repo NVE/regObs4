@@ -40,3 +40,17 @@ $z-index-over-map: 900;
 ion-list {
     background: var(--ion-background-color);
 }
+
+ion-menu {
+    ion-content {
+        background: #fff;
+    }
+
+    ion-list {
+        background: #fff;
+    }
+
+    ion-list-header {
+        background: #f5f5f5;
+    }
+}
