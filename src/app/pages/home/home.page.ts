@@ -12,7 +12,6 @@ import * as norwegianBorder from '../../../assets/norway-borders2.json';
 import * as leafletPip from '@mapbox/leaflet-pip';
 import { settings } from '../../../settings';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { FullscreenToggleComponent } from '../../components/fullscreen-toggle/fullscreen-toggle.component';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
@@ -31,7 +30,6 @@ const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
-  @ViewChild(FullscreenToggleComponent) fullscreenToggle: FullscreenToggleComponent;
   @ViewChild(MapItemBarComponent) mapItemBar: MapItemBarComponent;
   @ViewChild('menuFab') menuFab: Fab;
   map: L.Map;
@@ -41,7 +39,6 @@ export class HomePage implements OnInit, OnDestroy {
   followMode = true;
   markerLayer = L.markerClusterGroup();
   observationSubscription: ObserverSubscriber;
-  fullscreenSubscription: Subscription;
   mapItemBarSubscription: Subscription;
   markers: Array<MapItemMarker>;
   toastDismissTimeout: NodeJS.Timer;
@@ -94,7 +91,7 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('[INFO] ionViewDidEnter home page');
 
-    this.events.subscribe('geoHazard:changed', (newGeoHazard: GeoHazard) => {
+    this.events.subscribe(settings.events.geoHazardChanged, (newGeoHazard: GeoHazard) => {
       this.currentGeoHazard = newGeoHazard;
       this.resubscribeObservations();
     });
@@ -109,7 +106,7 @@ export class HomePage implements OnInit, OnDestroy {
       }
     });
 
-    this.fullscreenSubscription = this.fullscreenToggle.isFullscreen.subscribe((isFullscreen) => {
+    this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
       this.fullscreen = isFullscreen;
     });
 
@@ -155,9 +152,10 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.map.remove();
     this.observationSubscription.unsubscribe();
-    this.fullscreenSubscription.unsubscribe();
     this.mapItemBarSubscription.unsubscribe();
     this.events.unsubscribe(settings.events.tabsChanged);
+    this.events.unsubscribe(settings.events.geoHazardChanged);
+    this.events.unsubscribe(settings.events.fullscreenChanged);
   }
 
   getEmbeddedMapLayer() {

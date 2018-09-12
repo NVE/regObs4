@@ -7,7 +7,7 @@ import { HelperService } from '../helpers/helper.service';
 import { RegionSummary } from './region-summary.model';
 import { nSQL } from 'nano-sql';
 import { Observer } from 'nano-sql/lib/observable';
-import { HttpClientService } from '../http-client-service/http-client.service';
+import { HttpClient } from '@angular/common/http';
 
 const warningSummaryTable = 'warningsummary';
 
@@ -15,7 +15,7 @@ const warningSummaryTable = 'warningsummary';
   providedIn: 'root'
 })
 export class WarningService {
-  constructor(private httpClient: HttpClientService,
+  constructor(private httpClient: HttpClient,
     private userSettingService: UserSettingService,
     private helperService: HelperService
   ) {
@@ -47,7 +47,7 @@ export class WarningService {
     const defaultParams = await this.getDefaultParams(langKey, from, to);
     return this.httpClient.get<Array<RegionSummary>>(
       `${settings.services.warning.Snow.apiUrl}/`
-      + `RegionSummary/Simple/${defaultParams.langKey}/${defaultParams.from}/${defaultParams.to}`);
+      + `RegionSummary/Simple/${defaultParams.langKey}/${defaultParams.from}/${defaultParams.to}`).toPromise();
   }
 
   private async getDefaultParams(langKey?: LangKey, from?: Date, to?: Date) {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Events } from '@ionic/angular';
+import { settings } from '../../../settings';
 
 @Component({
   selector: 'app-geo-select',
@@ -36,6 +37,6 @@ export class GeoSelectComponent implements OnInit {
     await this.userSettingService.saveUserSettings(userSettings);
     this.currentGeoHazard = geoHazard;
     this.isOpen = false;
-    this.events.publish('geoHazard:changed', GeoHazard[geoHazard]);
+    this.events.publish(settings.events.geoHazardChanged, GeoHazard[geoHazard]);
   }
 }

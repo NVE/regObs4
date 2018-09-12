@@ -11,8 +11,6 @@ import { SearchRequest } from './searchRequest';
 import { Observable } from 'rxjs';
 import { HelperService } from '../helpers/helper.service';
 import { SearchResult } from './searchResult';
-import { HTTP } from '@ionic-native/http/ngx';
-import { HttpClientService } from '../http-client-service/http-client.service';
 import { HttpClient } from '@angular/common/http';
 import * as apiKey from '../../../../assets/apikey.json';
 
@@ -23,7 +21,7 @@ export class ApiService {
 
   constructor(
     private userSettingService: UserSettingService,
-    private httpClientService: HttpClientService) {
+    private httpClient: HttpClient) {
   }
 
   // async getObservationsWithinRadius(
@@ -58,10 +56,10 @@ export class ApiService {
     const baseUrl = settings.services.regObs.apiUrl[userSettings.appMode];
     const headers = this.getHttpRequestHeaders();
     // Use http client service for CORS calls
-    return this.httpClientService.post<SearchResult>(
+    return this.httpClient.post<SearchResult>(
       `${baseUrl}/Search/All`,
       searchRequest,
-      headers);
+      { headers }).toPromise();
   }
 
   private getHttpRequestHeaders() {

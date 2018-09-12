@@ -1,6 +1,9 @@
-<ion-tabs (ionChange)="tabsChanged($event)">
+<ion-tabs [tabbarHidden]="fullscreen" (ionChange)="tabsChanged($event)">
   <ion-tab name="home" icon="home" href="/tabs/(home:home)">
     <ion-router-outlet name="home"></ion-router-outlet>
+  </ion-tab>
+  <ion-tab name="observation-list" icon="list" href="/tabs/(observation-list:observation-list)">
+    <ion-router-outlet name="observation-list"></ion-router-outlet>
   </ion-tab>
   <ion-tab name="trip" icon="walk" href="/tabs/(trip:trip)">
     <ion-router-outlet name="trip"></ion-router-outlet>
@@ -8,9 +11,6 @@
   <!-- <ion-tab name="add" icon="add" href="/tabs/(add:add)">
     <ion-router-outlet name="add"></ion-router-outlet>
   </ion-tab> -->
-  <ion-tab name="observation-list" icon="eye" href="/tabs/(observation-list:observation-list)">
-    <ion-router-outlet name="observation-list"></ion-router-outlet>
-  </ion-tab>
   <ion-tab name="warning-list" icon="warning" href="/tabs/(warning-list:warning-list)">
     <ion-router-outlet name="warning-list"></ion-router-outlet>
   </ion-tab>

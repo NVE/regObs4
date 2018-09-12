@@ -49,7 +49,6 @@
     "cordova-android": "7.1.1",
     "cordova-browser": "5.0.4",
     "cordova-ios": "4.5.5",
-    "cordova-plugin-advanced-http": "^2.0.1",
     "cordova-plugin-background-fetch": "^5.4.1",
     "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-device": "^2.0.2",
@@ -161,8 +160,7 @@
         "DEEPLINK_4_HOST": " ",
         "DEEPLINK_5_SCHEME": " ",
         "DEEPLINK_5_HOST": " "
-      },
-      "cordova-plugin-advanced-http": {}
+      }
     },
     "platforms": [
       "android",

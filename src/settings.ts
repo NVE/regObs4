@@ -64,9 +64,10 @@ export const settings = {
     },
     snowRegionsGeoJsonName: 'OMRAADENAV',
     events: {
-        nanosqlConnected: 'nanoSql: connected',
+        nanosqlConnected: 'nanoSql:connected',
         tabsChanged: 'tabs:changed',
-        geoHazardChanged: '',
+        geoHazardChanged: 'geoHazard:changed',
+        fullscreenChanged: 'fullscreen:changed'
     },
     cordovaNotAvailable: 'cordova_not_available'
 };

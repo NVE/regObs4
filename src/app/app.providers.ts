@@ -9,10 +9,6 @@ import { BackgroundGeolocationNativeService } from './core/services/background-g
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
 import { BackgroundGeolocationWebService } from './core/services/background-geolocation/background-geolocation-web.service';
 import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
-import { HTTP } from '@ionic-native/http/ngx';
-import { HttpClientService } from './core/services/http-client-service/http-client.service';
-import { HttpClientWebService } from './core/services/http-client-service/http-client-web.service';
-import { HttpClientNativeService } from './core/services/http-client-service/http-client-native.service';
 
 export class AppProviders {
     public static getProviders() {
@@ -24,21 +20,18 @@ export class AppProviders {
             Deeplinks,
             BackgroundFetch,
             BackgroundGeolocation,
-            HTTP,
             ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),
         ];
     }
 
     private static getWebProviders() {
         return [
-            { provide: HttpClientService, useClass: HttpClientWebService },
             { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationWebService },
         ];
     }
 
     private static getNativeProviders() {
         return [
-            { provide: HttpClientService, useClass: HttpClientWebService },
             { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationNativeService },
         ];
     }
