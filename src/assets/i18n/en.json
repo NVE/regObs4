@@ -1,5 +1,4 @@
 {
-    "HELLO_WORLD": "Hello world!",
     "TRIP": {
         "TITLE": "Trips"
     },
@@ -20,8 +19,8 @@
         "MAP_SETTINGS": "Map settings",
         "SHOW_OBSERVATIONS": "Show observations",
         "SHOW_TRIPS": "Show trips",
-        "MAP_SETTINGS_FOR_SNOW": "Map settings for snow",
-        "SHOW_STEAPNESS_MAP": "Show steapness map",
+        "MAP_SETTINGS_FOR": "Map settings for",
+        "SHOW": "Show",
         "OPACITY": "Opacity",
         "MAP_LEGENDS": "Legends for map"
     },
@@ -98,5 +97,12 @@
     "GEOLOCATION_SERVICE": {
         "NOTIFICATION_TITLE": "Logging trip",
         "NOTIFICATION_TEXT": ""
+    },
+    "SUPPORT_MAP": {
+        "STEEPNESS_MAP_DESCRIPTION": "Steepness map",
+        "CLAY_ZONES_MAP_DESCRIPTION": "Clay zones",
+        "FLOOD_ZONES_MAP_DESCRIPTION": "Flood zones",
+        "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice",
+        "NO_OPACITY": "Solid"
     }
 }

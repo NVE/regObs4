@@ -13,6 +13,8 @@ import { settings } from '../settings';
 import { PopoverMenuComponent } from './components/popover-menu/popover-menu.component';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { SupportTilesMenuComponent } from './components/side-menu/support-tiles-menu/support-tiles-menu.component';
+import { FormsModule } from '@angular/forms';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -22,11 +24,13 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     AppComponent,
     PopoverMenuComponent,
-    SideMenuComponent],
+    SideMenuComponent,
+    SupportTilesMenuComponent],
   entryComponents: [PopoverMenuComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     TranslateModule.forRoot({

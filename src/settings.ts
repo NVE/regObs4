@@ -42,24 +42,40 @@ export const settings = {
             embeddedUrlMaxZoom: 5,
             defaultMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
             fallbackMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-            supportTiles: {
-                Snow: [{
-                    name: 'steepness', description: 'STEEPNESS_MAP_DESCRIPTION',
-                    url: 'http://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}'
-                }],
-                Dirt: [{
-                    name: 'quickclay', description: 'CLAY_ZONES_MAP_DESCRIPTION',
-                    url: 'http://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}'
-                }],
-                Water: [{
-                    name: 'floodzoones', description: 'FLOOD_ZONES_MAP_DESCRIPTION',
-                    url: 'http://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}'
-                }],
-                Ice: [{
-                    name: 'weakened_ice', description: 'WEAKENED_ICE_MAP_DESCRIPTION',
-                    url: 'http://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}'
-                }]
-            }
+            supportTiles: [
+                {
+                    name: 'steepness',
+                    description: 'STEEPNESS_MAP_DESCRIPTION',
+                    url: 'http://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
+                    enabled: true,
+                    opacity: 0.5,
+                    geoHazardId: 10
+                },
+                {
+                    name: 'quickclay',
+                    description: 'CLAY_ZONES_MAP_DESCRIPTION',
+                    url: 'http://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
+                    enabled: true,
+                    opacity: 0.5,
+                    geoHazardId: 20
+                },
+                {
+                    name: 'floodzoones',
+                    description: 'FLOOD_ZONES_MAP_DESCRIPTION',
+                    url: 'http://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
+                    enabled: true,
+                    opacity: 0.5,
+                    geoHazardId: 60
+                },
+                {
+                    name: 'weakened_ice',
+                    description: 'WEAKENED_ICE_MAP_DESCRIPTION',
+                    url: 'http://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}',
+                    enabled: true,
+                    opacity: 0.5,
+                    geoHazardId: 70
+                }
+            ]
         }
     },
     snowRegionsGeoJsonName: 'OMRAADENAV',
@@ -68,7 +84,8 @@ export const settings = {
         tabsChanged: 'tabs:changed',
         geoHazardChanged: 'geoHazard:changed',
         fullscreenChanged: 'fullscreen:changed',
-        centerMapToUser: 'gps:centerMapToUser'
+        centerMapToUser: 'gps:centerMapToUser',
+        supportTilesChanged: 'supportTiles:changed'
     },
     cordovaNotAvailable: 'cordova_not_available'
 };

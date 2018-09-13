@@ -49,27 +49,7 @@
         {{'OFFLINE_MAP.TITLE' | translate}}
       </ion-label>
     </ion-item>
-    <ion-list-header>
-      {{'MENU.MAP_SETTINGS_FOR_SNOW' | translate}}
-    </ion-list-header>
-    <ion-item>
-      <ion-label>
-        {{'MENU.SHOW_STEAPNESS_MAP' | translate}}
-      </ion-label>
-      <ion-toggle checked="true"></ion-toggle>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked">{{'MENU.OPACITY' | translate}}</ion-label>
-      <ion-select>
-        <ion-select-option value="100" selected>Heldekkende</ion-select-option>
-        <ion-select-option value="75">75% synlig</ion-select-option>
-        <ion-select-option value="50">50% synlig</ion-select-option>
-        <ion-select-option value="25">25% synlig</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-list-header color="light">
-      {{'MENU.MAP_LEGENDS' | translate}}
-    </ion-list-header>
+    <app-support-tiles-menu></app-support-tiles-menu>
     <ion-item href="/start-wizard" routerDirection="root">
       Start wizard
     </ion-item>

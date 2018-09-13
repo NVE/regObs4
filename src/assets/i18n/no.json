@@ -1,5 +1,4 @@
 {
-    "HELLO_WORLD": "Hallo verden!",
     "TRIP": {
         "TITLE": "Turer"
     },
@@ -20,8 +19,8 @@
         "MAP_SETTINGS": "Kartvalg",
         "SHOW_OBSERVATIONS": "Vis observasjoner",
         "SHOW_TRIPS": "Vis turer",
-        "MAP_SETTINGS_FOR_SNOW": "Kartvalg for snø",
-        "SHOW_STEAPNESS_MAP": "Vis bratthetskart",
+        "MAP_SETTINGS_FOR": "Kartvalg for",
+        "SHOW": "Vis",
         "OPACITY": "Gjennomsiktighet",
         "MAP_LEGENDS": "Tegnforklaring for kart"
     },
@@ -98,5 +97,12 @@
     "GEOLOCATION_SERVICE": {
         "NOTIFICATION_TITLE": "Tur pågår",
         "NOTIFICATION_TEXT": ""
+    },
+    "SUPPORT_MAP": {
+        "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
+        "CLAY_ZONES_MAP_DESCRIPTION": "Kvikkleire/Jordskred",
+        "FLOOD_ZONES_MAP_DESCRIPTION": "Flomsoner",
+        "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart",
+        "NO_OPACITY": "Heldekkende"
     }
 }

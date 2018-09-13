@@ -24,6 +24,7 @@ export class UserSettingsPage implements OnInit {
 
   async reset() {
     await this.observationService.drop();
+    await this.userSettingService.reset();
     console.log('Observations reset');
   }
 }

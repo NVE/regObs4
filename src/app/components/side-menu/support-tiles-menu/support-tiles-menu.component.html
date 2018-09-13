@@ -1,0 +1,22 @@
+<ion-list-header>
+  {{'MENU.MAP_SETTINGS_FOR' | translate}} {{ ('GEO_HAZARDS.' +geoHazardName) | uppercase | translate }}
+</ion-list-header>
+<ng-container *ngFor="let supportTile of supportTiles">
+  <ng-container *ngIf="supportTile.geoHazardId === currentGeoHazard">
+    <ion-item>
+      <ion-label>
+        {{'MENU.SHOW' | translate}} {{'SUPPORT_MAP.' +supportTile.description | translate | lowercase }}
+      </ion-label>
+      <ion-toggle [(ngModel)]="supportTile.enabled" (ionChange)="onTileChanged(supportTile)"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{'MENU.OPACITY' | translate}}</ion-label>
+      <ion-select [(ngModel)]="supportTile.opacity" (ionChange)="onTileChanged(supportTile)">
+        <ion-select-option *ngFor="let option of opacityValues" [value]="option.value">{{ option.name | translate }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-list-header color="light">
+      {{'MENU.MAP_LEGENDS' | translate}}
+    </ion-list-header>
+  </ng-container>
+</ng-container>
