@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Events } from '@ionic/angular';
-import { settings } from '../../../settings';
+import { settings } from '../../../../settings';
 
 @Component({
   selector: 'app-fullscreen-toggle',

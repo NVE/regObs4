@@ -7,9 +7,11 @@ import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
-import { FullscreenToggleComponent } from '../../components/fullscreen-toggle/fullscreen-toggle.component';
-import { MapSearchComponent } from '../../components/map-search/map-search.component';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
+import { MapControlsComponent } from '../../components/map-controls/map-controls.component';
+import { MapSearchComponent } from '../../components/map-controls/map-search/map-search.component';
+import { FullscreenToggleComponent } from '../../components/map-controls/fullscreen-toggle/fullscreen-toggle.component';
+import { GpsCenterComponent } from '../../components/map-controls/gps-center/gps-center.component';
 
 @NgModule({
   imports: [
@@ -25,7 +27,15 @@ import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.
     TranslateModule,
     LeafletModule,
   ],
-  declarations: [HomePage, GeoSelectComponent, FullscreenToggleComponent, MapSearchComponent, MapItemBarComponent],
+  declarations: [
+    HomePage,
+    GeoSelectComponent,
+    MapItemBarComponent,
+    MapControlsComponent,
+    MapSearchComponent,
+    FullscreenToggleComponent,
+    GpsCenterComponent,
+  ],
 })
 export class HomePageModule {
 }

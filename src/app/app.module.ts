@@ -19,7 +19,10 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 @NgModule({
-  declarations: [AppComponent, PopoverMenuComponent, SideMenuComponent],
+  declarations: [
+    AppComponent,
+    PopoverMenuComponent,
+    SideMenuComponent],
   entryComponents: [PopoverMenuComponent],
   imports: [
     BrowserModule,

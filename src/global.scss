@@ -32,6 +32,11 @@ $z-index-over-map: 900;
     padding: 5px;
 }
 
+.map-control-fab {
+    opacity: 0.9;
+    --size: 44px;
+}
+
 .menu-popover .popover-content{
     bottom: 122px !important;
     top: auto !important;

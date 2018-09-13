@@ -10,17 +10,12 @@
 </ion-header>
 
 <ion-content [ngClass]="{'map-item-bar-open': mapItemBarVisible }">
-  <div style="width: 100%; height: 100%" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)" (onShown)="redrawMap()">
+  <div style="width: 100%; height: 100%" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)"
+    (onShown)="redrawMap()">
   </div>
   <app-map-item-bar></app-map-item-bar>
   <app-geo-select></app-geo-select>
-  <app-map-search></app-map-search>
-  <app-fullscreen-toggle></app-fullscreen-toggle>
-  <ion-fab id="centerMapToUserFab" vertical="bottom" horizontal="start" slot="fixed">
-    <ion-fab-button color="light" (click)="centerMapToUser()">
-      <ion-icon name="md-locate"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+  <app-map-controls></app-map-controls>
   <ion-fab #menuFab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button color="light" (click)="showFabMenu($event)">
       <ion-icon name="add"></ion-icon>

@@ -110,6 +110,8 @@ export class HomePage implements OnInit, OnDestroy {
       this.fullscreen = isFullscreen;
     });
 
+    this.events.subscribe(settings.events.centerMapToUser, () => this.centerMapToUser());
+
     this.mapItemBarSubscription = this.mapItemBar.isVisible.subscribe((isVisible) => {
       this.mapItemBarVisible = isVisible;
     });
@@ -156,6 +158,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.events.unsubscribe(settings.events.tabsChanged);
     this.events.unsubscribe(settings.events.geoHazardChanged);
     this.events.unsubscribe(settings.events.fullscreenChanged);
+    this.events.unsubscribe(settings.events.centerMapToUser);
   }
 
   getEmbeddedMapLayer() {
@@ -261,7 +264,7 @@ export class HomePage implements OnInit, OnDestroy {
   //     .forEach((marker) => marker.addTo(this.markerLayer));
   // }
 
-  async centerMapToUser(event: Event) {
+  centerMapToUser() {
     this.followMode = true;
     if (this.userMarker) {
       const currentPosition = this.userMarker.getPosition();
