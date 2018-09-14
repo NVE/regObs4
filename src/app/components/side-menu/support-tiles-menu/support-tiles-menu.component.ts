@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting.service';
 import { Events } from '@ionic/angular';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
@@ -11,7 +11,10 @@ import { SupportTile } from '../../../core/models/support-tile.model';
   styleUrls: ['./support-tiles-menu.component.scss']
 })
 export class SupportTilesMenuComponent implements OnInit, OnDestroy {
-
+  @ViewChild('steepness') steepness;
+  @ViewChild('weakenedice') weakenedice;
+  @ViewChild('floodzoones') floodzoones;
+  @ViewChild('quickclay') quickclay;
   currentGeoHazard: GeoHazard;
   supportTiles: Array<SupportTile>;
   opacityValues = [
@@ -19,6 +22,15 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
     { name: '75%', value: 0.75 },
     { name: '50%', value: 0.50 }
   ];
+
+  get legends() {
+    return {
+      steepness: this.steepness,
+      weakenedice: this.weakenedice,
+      floodzoones: this.floodzoones,
+      quickclay: this.quickclay,
+    };
+  }
 
   get geoHazardName() {
     return GeoHazard[this.currentGeoHazard];
@@ -46,7 +58,14 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
   async init() {
     const userSettings = await this.userSettingService.getUserSettings();
     this.currentGeoHazard = userSettings.currentGeoHazard;
-    this.supportTiles = userSettings.supportTiles;
+    this.supportTiles = settings.map.tiles.supportTiles;
+    userSettings.supportTiles.forEach((tile) => {
+      const supportTile = this.supportTiles.find((x) => x.name === tile.name);
+      if (supportTile) {
+        supportTile.enabled = tile.enabled;
+        supportTile.opacity = tile.opacity;
+      }
+    });
   }
 
   ngOnDestroy(): void {

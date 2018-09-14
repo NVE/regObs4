@@ -68,7 +68,7 @@ export const settings = {
                     geoHazardId: 60
                 },
                 {
-                    name: 'weakened_ice',
+                    name: 'weakenedice',
                     description: 'WEAKENED_ICE_MAP_DESCRIPTION',
                     url: 'http://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}',
                     enabled: true,
