@@ -12,6 +12,8 @@ import { MapControlsComponent } from '../../components/map-controls/map-controls
 import { MapSearchComponent } from '../../components/map-controls/map-search/map-search.component';
 import { FullscreenToggleComponent } from '../../components/map-controls/fullscreen-toggle/fullscreen-toggle.component';
 import { GpsCenterComponent } from '../../components/map-controls/gps-center/gps-center.component';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
 
 @NgModule({
   imports: [
@@ -26,6 +28,7 @@ import { GpsCenterComponent } from '../../components/map-controls/gps-center/gps
     ]),
     TranslateModule,
     LeafletModule,
+    AngularSvgIconModule,
   ],
   declarations: [
     HomePage,
@@ -35,6 +38,7 @@ import { GpsCenterComponent } from '../../components/map-controls/gps-center/gps
     MapSearchComponent,
     FullscreenToggleComponent,
     GpsCenterComponent,
+    AddMenuComponent,
   ],
 })
 export class HomePageModule {

@@ -27,10 +27,6 @@ export class TabsPage implements OnInit, OnDestroy {
     this.events.unsubscribe(settings.events.fullscreenChanged);
   }
 
-  toggleAddMenu() {
-    this.addMenu.toggle();
-  }
-
   tabsChanged(event: CustomEvent) {
     const tabElement: HTMLIonTabElement = event.detail.tab;
     console.log('[INFO] Tabs changed to: ', tabElement.name);

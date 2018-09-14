@@ -7,3 +7,8 @@
     background-color: #fff;
     z-index: $z-index-over-map;
 }
+
+ion-fab-button svg-icon {
+    position: relative;
+    top: 7px;
+}

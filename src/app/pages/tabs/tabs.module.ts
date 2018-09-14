@@ -11,7 +11,6 @@ import { TripPageModule } from '../trip/trip.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { WarningListPageModule } from '../warning-list/warning-list.module';
 import { AddPageModule } from '../add/add.module';
-import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
 import { ObservationListPageModule } from '../observation-list/observation-list.module';
 
 @NgModule({
@@ -27,6 +26,6 @@ import { ObservationListPageModule } from '../observation-list/observation-list.
     ObservationListPageModule,
     AddPageModule,
   ],
-  declarations: [TabsPage, AddMenuComponent]
+  declarations: [TabsPage]
 })
 export class TabsPageModule { }

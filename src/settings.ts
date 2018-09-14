@@ -54,7 +54,7 @@ export const settings = {
                 {
                     name: 'quickclay',
                     description: 'CLAY_ZONES_MAP_DESCRIPTION',
-                    url: 'http://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
+                    url: 'http://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
                     enabled: true,
                     opacity: 0.5,
                     geoHazardId: 20
@@ -62,7 +62,7 @@ export const settings = {
                 {
                     name: 'floodzoones',
                     description: 'FLOOD_ZONES_MAP_DESCRIPTION',
-                    url: 'http://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
+                    url: 'http://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
                     enabled: true,
                     opacity: 0.5,
                     geoHazardId: 60
@@ -87,5 +87,8 @@ export const settings = {
         centerMapToUser: 'gps:centerMapToUser',
         supportTilesChanged: 'supportTiles:changed'
     },
-    cordovaNotAvailable: 'cordova_not_available'
+    cordovaNotAvailable: 'cordova_not_available',
+    gps: {
+        maximumAge: 180000
+    }
 };

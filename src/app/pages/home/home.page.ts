@@ -32,7 +32,6 @@ const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 })
 export class HomePage implements OnInit, OnDestroy {
   @ViewChild(MapItemBarComponent) mapItemBar: MapItemBarComponent;
-  @ViewChild('menuFab') menuFab: Fab;
   map: L.Map;
   watchSubscription: Subscription;
   userMarker: UserMarker;
@@ -257,7 +256,7 @@ export class HomePage implements OnInit, OnDestroy {
     console.log('[INFO] Start watching location changes');
     if (this.watchSubscription === undefined || this.watchSubscription.closed) {
       this.watchSubscription = this.geolocation.watchPosition(
-        { maximumAge: 60000, enableHighAccuracy: true }
+        { maximumAge: settings.gps.maximumAge, enableHighAccuracy: true }
       )
         .subscribe(
           (data) => this.onPositionUpdate(data),
@@ -291,21 +290,5 @@ export class HomePage implements OnInit, OnDestroy {
   private onPositionError(error: any) {
     // TODO: Handle error
     console.log(error);
-  }
-
-  async showFabMenu(event: Event) {
-    const popover = await this.popoverController.create({
-      component: PopoverMenuComponent,
-      translucent: false,
-      mode: 'md',
-      event: event,
-      showBackdrop: true,
-      cssClass: 'menu-popover'
-    });
-    popover.onWillDismiss().then(() => {
-      console.log('dismissed');
-      this.menuFab.close();
-    });
-    return await popover.present();
   }
 }

@@ -1,3 +1,7 @@
-<div class="add-menu" *ngIf="isVisible">
-  add-menu works!
-</div>
+<ion-fab #menuFab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button color="light" (click)="showFabMenu($event)">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="top">
+  </ion-fab-list>
+</ion-fab>

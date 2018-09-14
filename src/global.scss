@@ -37,11 +37,6 @@ $z-index-over-map: 900;
     --size: 44px;
 }
 
-.menu-popover .popover-content{
-    bottom: 122px !important;
-    top: auto !important;
-};
-
 ion-list {
     background: var(--ion-background-color);
 }
@@ -54,4 +49,8 @@ ion-menu {
     ion-list {
         background: #fff;
     }
+}
+
+.map-item-bar-open .fab-vertical-bottom {
+    bottom: 135px;
 }
