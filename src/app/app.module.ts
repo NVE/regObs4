@@ -25,7 +25,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppComponent,
     PopoverMenuComponent,
     SideMenuComponent,
-    SupportTilesMenuComponent],
+    SupportTilesMenuComponent,
+  ],
   entryComponents: [PopoverMenuComponent],
   imports: [
     BrowserModule,

@@ -14,6 +14,7 @@ import { FullscreenToggleComponent } from '../../components/map-controls/fullscr
 import { GpsCenterComponent } from '../../components/map-controls/gps-center/gps-center.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
+import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
 
 @NgModule({
   imports: [
@@ -39,6 +40,7 @@ import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
     FullscreenToggleComponent,
     GpsCenterComponent,
     AddMenuComponent,
+    GeoIconComponent,
   ],
 })
 export class HomePageModule {

@@ -8,6 +8,7 @@ import * as L from 'leaflet';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
 @Component({
   selector: 'app-map-item-bar',
@@ -22,6 +23,7 @@ export class MapItemBarComponent implements OnInit {
   distanceAndType: string;
   name: string;
   id: number;
+  geoHazard: GeoHazard;
 
   private _isVisible: Subject<boolean>;
 
@@ -56,6 +58,7 @@ export class MapItemBarComponent implements OnInit {
     this.setDistanceAndType(item);
     this.visible = true;
     this.publishChange();
+    this.geoHazard = item.GeoHazardTid;
   }
 
   hide() {

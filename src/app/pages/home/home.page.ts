@@ -37,7 +37,7 @@ export class HomePage implements OnInit, OnDestroy {
   userMarker: UserMarker;
   toast: HTMLIonToastElement;
   followMode = true;
-  markerLayer = L.markerClusterGroup();
+  markerLayer = L.markerClusterGroup({ spiderfyOnMaxZoom: false });
   observationSubscription: ObserverSubscriber;
   mapItemBarSubscription: Subscription;
   markers: Array<MapItemMarker>;
@@ -115,14 +115,14 @@ export class HomePage implements OnInit, OnDestroy {
       this.mapItemBarVisible = isVisible;
     });
 
-    this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
-      this.tripLogLayer.clearLayers();
-      const latLngs = tripLogItems.map((tripLogItem) => L.latLng({
-        lat: tripLogItem.latitude,
-        lng: tripLogItem.longitude
-      }));
-      L.polyline(latLngs, { color: 'red', weight: 3 }).addTo(this.tripLogLayer);
-    });
+    // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
+    //   this.tripLogLayer.clearLayers();
+    //   const latLngs = tripLogItems.map((tripLogItem) => L.latLng({
+    //     lat: tripLogItem.latitude,
+    //     lng: tripLogItem.longitude
+    //   }));
+    //   L.polyline(latLngs, { color: 'red', weight: 3 }).addTo(this.tripLogLayer);
+    // });
   }
 
   async onMapReady(map: L.Map) {
