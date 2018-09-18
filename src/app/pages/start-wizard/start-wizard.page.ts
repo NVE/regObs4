@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UserSettingService } from '../../core/services/user-setting.service';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { Slides, NavController } from '@ionic/angular';
 import { AppMode } from '../../core/models/app-mode.enum';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';

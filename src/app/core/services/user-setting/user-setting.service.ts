@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { UserSetting } from '../models/user-settings.model';
+import { UserSetting } from '../../models/user-settings.model';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
-import { GeoHazard } from '../models/geo-hazard.enum';
-import { AppMode } from '../models/app-mode.enum';
-import { settings } from '../../../settings';
-import { SupportTile } from '../models/support-tile.model';
+import { GeoHazard } from '../../models/geo-hazard.enum';
+import { AppMode } from '../../models/app-mode.enum';
+import { settings } from '../../../../settings';
+import { SupportTile } from '../../models/support-tile.model';
 
 const STORAGE_KEY_NAME = 'UserSettings';
 

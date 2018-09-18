@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserSettingService } from '../user-setting.service';
+import { UserSettingService } from '../user-setting/user-setting.service';
 import { ObservationsWithinRadiusRequest } from '../../models/observations-within-radius-request.model';
 // import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ApiKey } from './api-key.model';

@@ -15,5 +15,6 @@ export class MapItemMarker extends L.Marker {
     constructor(item: MapItem, latlng: L.LatLng, options: L.MarkerOptions) {
         super(latlng, options);
         this._item = item;
+        // this.setIcon(L.icon({ iconSize: [40, 40], iconUrl: '/assets/icon/snow.svg' }));
     }
 }

@@ -1,0 +1,27 @@
+ion-list {
+   position: relative;
+   margin-top: 60px;
+   margin-right: 10px;
+   margin-left: 10px;
+   border-radius: 6px;
+   z-index: 20;
+
+   ion-item {
+       ion-label {
+        .search-result-name {
+            padding-right: 10px;
+        }
+        .search-description {
+            font-size: 10px;
+        }
+       }       
+   }
+}
+.modal-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+}

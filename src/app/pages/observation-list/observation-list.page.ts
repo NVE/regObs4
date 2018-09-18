@@ -5,7 +5,7 @@ import { ObservationService } from '../../core/services/observation/observation.
 import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import * as L from 'leaflet';
-import { UserSettingService } from '../../core/services/user-setting.service';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { ObserverSubscriber } from 'nano-sql/lib/observable';
 
 @Component({

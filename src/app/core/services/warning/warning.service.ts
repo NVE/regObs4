@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { settings } from '../../../../settings';
-import { UserSettingService } from '../user-setting.service';
+import { UserSettingService } from '../user-setting/user-setting.service';
 import * as moment from 'moment';
 import { LangKey } from '../../models/langKey';
 import { HelperService } from '../helpers/helper.service';

@@ -16,12 +16,13 @@ import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.
 import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { UserSettingService } from '../../core/services/user-setting.service';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { PopoverMenuComponent } from '../../components/popover-menu/popover-menu.component';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { SupportTile } from '../../core/models/support-tile.model';
+import { MapSearchResponse } from '../../core/services/map-search/map-search-response.model';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
@@ -111,6 +112,13 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.events.subscribe(settings.events.centerMapToUser, () => this.centerMapToUser());
 
+    this.events.subscribe(settings.events.mapSearchItemClicked, (item: MapSearchResponse) => {
+      if (this.map) {
+        this.disableFollowMode();
+        this.map.flyTo(item.latlng);
+      }
+    });
+
     this.mapItemBarSubscription = this.mapItemBar.isVisible.subscribe((isVisible) => {
       this.mapItemBarVisible = isVisible;
     });
@@ -158,6 +166,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.events.unsubscribe(settings.events.geoHazardChanged);
     this.events.unsubscribe(settings.events.fullscreenChanged);
     this.events.unsubscribe(settings.events.centerMapToUser);
+    this.events.unsubscribe(settings.events.mapSearchItemClicked);
   }
 
   async configureTileLayers() {

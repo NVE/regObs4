@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { UserSettingService } from '../../../core/services/user-setting.service';
+import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { Events } from '@ionic/angular';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { settings } from '../../../../settings';

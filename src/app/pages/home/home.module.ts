@@ -15,6 +15,7 @@ import { GpsCenterComponent } from '../../components/map-controls/gps-center/gps
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
 import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
+import { ModalSearchPageModule } from '../modal-search/modal-search.module';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
     TranslateModule,
     LeafletModule,
     AngularSvgIconModule,
+    ModalSearchPageModule,
   ],
   declarations: [
     HomePage,

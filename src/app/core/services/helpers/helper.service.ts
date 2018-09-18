@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserSettingService } from '../user-setting.service';
+import { UserSettingService } from '../user-setting/user-setting.service';
 import * as moment from 'moment';
 import { Storage } from '@ionic/storage';
 import * as L from 'leaflet';

@@ -32,9 +32,6 @@ const routes: Routes = [
   { path: 'view-observation/:id', loadChildren: './pages/view-observation/view-observation.module#ViewObservationPageModule' },
   { path: 'warning-detail/:id', loadChildren: './pages/warning-detail/warning-detail.module#WarningDetailPageModule' },
   { path: 'observation-list', loadChildren: './pages/observation-list/observation-list.module#ObservationListPageModule' },
-
-
-
 ];
 
 @NgModule({

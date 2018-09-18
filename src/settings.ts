@@ -76,6 +76,18 @@ export const settings = {
                     geoHazardId: 70
                 }
             ]
+        },
+        search: {
+            no: {
+                url: 'https://ws.geonorge.no/SKWS3Index/ssr/sok',
+                maxResults: 20,
+                exactFirst: true,
+            },
+            world: {
+                url: 'https://secure.geonames.org/searchJSON',
+                maxResults: 20,
+                username: 'regobs',
+            }
         }
     },
     snowRegionsGeoJsonName: 'OMRAADENAV',
@@ -85,7 +97,8 @@ export const settings = {
         geoHazardChanged: 'geoHazard:changed',
         fullscreenChanged: 'fullscreen:changed',
         centerMapToUser: 'gps:centerMapToUser',
-        supportTilesChanged: 'supportTiles:changed'
+        supportTilesChanged: 'supportTiles:changed',
+        mapSearchItemClicked: 'mapSearchItem:clicked'
     },
     cordovaNotAvailable: 'cordova_not_available',
     gps: {

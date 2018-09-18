@@ -1,0 +1,17 @@
+<ion-list>
+  <ion-item>
+    <ion-icon slot="start" name="search"></ion-icon>
+    <ion-input placeholder="Søk etter sted" [(ngModel)]="searchText" (keyup)="search()" autofocus>
+    </ion-input>
+    <ion-icon slot="end" name="close" (click)="closeModal()"></ion-icon>
+  </ion-item>
+  <ion-item *ngFor="let item of searchResult$ | async" (click)="searchItemClicked(item)">
+    <ion-label>
+      <span class="search-result-name" [innerHTML]="item.name | startsWithHighlight: searchText"></span><span class="search-description">{{
+        item.description }}</span>
+    </ion-label>
+  </ion-item>
+</ion-list>
+<div class="modal-wrapper" (click)="closeModal()">
+
+</div>

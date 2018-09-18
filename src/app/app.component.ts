@@ -3,7 +3,7 @@ import { Platform, NavController, Events } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { UserSettingService } from './core/services/user-setting.service';
+import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { ObservationService } from './core/services/observation/observation.service';
 import { TripLoggerService } from './core/services/trip-logger/trip-logger.service';
 import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
@@ -50,6 +50,7 @@ export class AppComponent {
         if (!userSettings.completedStartWizard) {
           this.navController.navigateRoot('start-wizard', false);
         }
+
         this.splashScreen.hide();
         this.initBackroundUpdates();
       } catch (err) {
