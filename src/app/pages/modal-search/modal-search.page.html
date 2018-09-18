@@ -7,8 +7,8 @@
   </ion-item>
   <ion-item *ngFor="let item of searchResult$ | async" (click)="searchItemClicked(item)">
     <ion-label>
-      <span class="search-result-name" [innerHTML]="item.name | startsWithHighlight: searchText"></span><span class="search-description">{{
-        item.description }}</span>
+      <ion-text class="search-result-name" [innerHTML]="item.name | startsWithHighlight: searchText"></ion-text>
+      <ion-text class="search-description">{{item.description}}</ion-text>
     </ion-label>
   </ion-item>
 </ion-list>

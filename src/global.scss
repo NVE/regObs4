@@ -51,6 +51,13 @@ ion-menu {
     }
 }
 
+ion-modal {
+    ion-backdrop {
+        z-index: 0 !important;
+        display: block !important;
+    }
+}
+
 .map-item-bar-open .fab-vertical-bottom {
     bottom: 135px;
 }

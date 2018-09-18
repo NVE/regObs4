@@ -25,7 +25,7 @@ export class ModalSearchPage implements OnInit {
   }
 
   async search() {
-    if (this.searchText.length >= 3) {
+    if (this.searchText.length >= 2) {
       this.searchResult$ = await this.mapSearchService.searchAll(this.searchText);
     }
   }
