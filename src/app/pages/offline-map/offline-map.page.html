@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button color="light"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Offline kart
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Kommune</ion-label>
+      <ion-label>Størrelse</ion-label>
+      <ion-label></ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let item of offlineMaps$ | async">
+      <ion-label (click)="presentActionSheet(item)">{{ item.name }}</ion-label>
+      <ion-label *ngIf="isDownloading(item)" (click)="presentActionSheet(item)">{{
+        humanReadableByteSize(item.downloaded || 0) }}
+        ({{getPercentage(item) +'%' }})</ion-label>
+      <ion-label *ngIf="!isDownloading(item)" (click)="presentActionSheet(item)">{{ humanReadableByteSize(item.size) }}</ion-label>
+      <ion-icon slot="end" *ngIf="!item.downloadStart" name="download" (click)="downloadMap(item)"></ion-icon>
+      <ion-icon slot="end" *ngIf="!!item.downloadComplete" name="checkmark" (click)="presentActionSheet(item)"></ion-icon>
+
+    </ion-item>
+  </ion-list>
+</ion-content>

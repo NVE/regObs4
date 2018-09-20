@@ -12,6 +12,8 @@ import { settings } from '../settings';
 import { WarningService } from './core/services/warning/warning.service';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
+import { OfflineMapService } from './core/services/offline-map/offline-map.service';
+import { BackgroundDownloadService } from './core/services/background-download/background-download.service';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +34,8 @@ export class AppComponent {
     private events: Events,
     private deeplinks: Deeplinks,
     private backgroundFetch: BackgroundFetch,
+    private offlineMapService: OfflineMapService,
+    private backgroundDownloadService: BackgroundDownloadService,
   ) {
     this.initializeApp();
   }
@@ -48,7 +52,7 @@ export class AppComponent {
         this.statusBar.styleBlackTranslucent();
         this.statusBar.overlaysWebView(this.platform.is('ios'));
         if (!userSettings.completedStartWizard) {
-          this.navController.navigateRoot('start-wizard', false);
+          await this.navController.navigateRoot('start-wizard', false);
         }
 
         this.splashScreen.hide();
@@ -88,6 +92,8 @@ export class AppComponent {
     this.observationService.init();
     this.tripLoggerService.init();
     this.warningService.init();
+    this.offlineMapService.init();
+    this.backgroundDownloadService.init();
     await nSQL().connect();
     this.events.publish('nanoSql: connected');
   }

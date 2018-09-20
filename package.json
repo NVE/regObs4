@@ -23,11 +23,13 @@
     "@angular/router": "6.1.7",
     "@asymmetrik/ngx-leaflet": "^4.0.0",
     "@asymmetrik/ngx-leaflet-markercluster": "^1.0.0",
+    "@ionic-native/android-permissions": "^5.0.0-beta.20",
     "@ionic-native/background-fetch": "^5.0.0-beta.17",
     "@ionic-native/background-geolocation": "^5.0.0-beta.17",
     "@ionic-native/core": "^5.0.0-beta.17",
     "@ionic-native/deeplinks": "^5.0.0-beta.17",
     "@ionic-native/device-orientation": "^5.0.0-beta.17",
+    "@ionic-native/file": "^5.0.0-beta.17",
     "@ionic-native/geolocation": "^5.0.0-beta.14",
     "@ionic-native/splash-screen": "^5.0.0-beta.17",
     "@ionic-native/sqlite": "^5.0.0-beta.17",
@@ -48,6 +50,8 @@
     "cordova-android": "7.1.1",
     "cordova-browser": "5.0.4",
     "cordova-ios": "4.5.5",
+    "cordova-plugin-android-permissions": "^1.0.0",
+    "cordova-plugin-background-download": "git+https://github.com/sgrebnov/cordova-plugin-background-download.git",
     "cordova-plugin-background-fetch": "^5.4.1",
     "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-device": "^2.0.2",
@@ -159,7 +163,10 @@
         "DEEPLINK_4_HOST": " ",
         "DEEPLINK_5_SCHEME": " ",
         "DEEPLINK_5_HOST": " "
-      }
+      },
+      "cordova-plugin-file": {},
+      "cordova-plugin-android-permissions": {},
+      "cordova-plugin-background-download": {}
     },
     "platforms": [
       "browser",

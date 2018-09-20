@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { ObservationService } from '../../core/services/observation/observation.service';
+import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -12,7 +13,10 @@ export class UserSettingsPage implements OnInit {
 
   userSettings: UserSetting;
 
-  constructor(private userSettingService: UserSettingService, private observationService: ObservationService) { }
+  constructor(
+    private userSettingService: UserSettingService,
+    private observationService: ObservationService,
+    private offlineMapService: OfflineMapService) { }
 
   async ngOnInit() {
     this.userSettings = await this.userSettingService.getUserSettings();
@@ -25,6 +29,7 @@ export class UserSettingsPage implements OnInit {
   async reset() {
     await this.observationService.drop();
     await this.userSettingService.reset();
+    await this.offlineMapService.clear();
     console.log('Observations reset');
   }
 }
