@@ -7,8 +7,11 @@ import * as moment from 'moment';
 import { Events, Platform } from '@ionic/angular';
 import { settings } from '../../../../settings';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
+import * as JSZip from 'jszip';
+import { OfflineTile } from './offline-tile.model';
 
 const tableName = 'offlinemap';
+const tableNameTiles = 'offlinemaptiles';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +21,8 @@ export class OfflineMapService {
 
   constructor(
     private events: Events,
-    private backgroundDownloadService: BackgroundDownloadService
+    private backgroundDownloadService: BackgroundDownloadService,
+    private platform: Platform,
   ) {
 
   }
@@ -28,6 +32,12 @@ export class OfflineMapService {
       .model([
         { key: 'name', type: 'string', props: ['pk'] },
         { key: '*', type: '*' },
+      ])
+      .table(tableNameTiles)
+      .model([
+        { key: 'url', type: 'string', props: ['pk'] },
+        { key: 'tileId', type: 'string', props: ['idx'] },
+        { key: 'mapName', type: 'string' },
       ]);
 
     this.events.subscribe(settings.events.nanosqlConnected, async () => {
@@ -101,28 +111,28 @@ export class OfflineMapService {
 
   async downloadMap(map: OfflineMap) {
     try {
-      const mapToSave = {
-        ...map,
-        downloadStart: moment().unix(),
-        downloaded: 0,
-        progress: 0,
-        downloadComplete: null,
-      };
-      const result = await nSQL(tableName)
-        .query('upsert', mapToSave)
-        .exec();
-      console.log('saved new download offline map', result);
-      const test = await this.getSavedMap(map.name);
-      console.log('Saved map from db: ', test);
-      const test2 = await this.getOfflineMaps();
-      console.log('All saved maps: ', test2);
+      const path = await this.backgroundDownloadService.selectDowloadFolder();
+      if (path.length > 0) {
+        const mapToSave = {
+          ...map,
+          filePath: path,
+          downloadStart: moment().unix(),
+          downloaded: 0,
+          progress: 0,
+          downloadComplete: null,
+        };
+        await nSQL(tableName)
+          .query('upsert', mapToSave)
+          .exec();
 
-      await this.backgroundDownloadService.downloadFile(
-        map.filename,
-        map.url,
-        async () => await this.onComplete(map.name),
-        async (progress) => await this.onProgress(map.name, progress),
-        async (error) => await this.onError(map.name, error));
+        await this.backgroundDownloadService.downloadFile(
+          path,
+          map.filename,
+          map.url,
+          async () => await this.onComplete(map.name),
+          async (progress) => await this.onProgress(map.name, progress),
+          async (error) => await this.onError(map.name, error));
+      }
     } catch (error) {
       await this.onError(map.name, error);
     }
@@ -133,24 +143,21 @@ export class OfflineMapService {
     return result[0];
   }
 
-  private async clearDownloadProperties(name: string) {
-    const result = await nSQL(tableName)
+  private async deleteMapFromDb(name: string) {
+    await nSQL(tableName)
       .query('delete', { name }).exec();
-    console.log('clear download result: ', result);
+    await nSQL(tableNameTiles)
+      .query('delete').where((tile: OfflineTile) => tile.mapName === name).exec();
   }
 
   async remove(map: OfflineMap) {
-    await this.deleteMap(map);
-    await this.clearDownloadProperties(map.name);
-  }
-
-  async deleteMap(map: OfflineMap) {
-    await this.backgroundDownloadService.deleteFile(map.filePath, map.filename);
+    await this.backgroundDownloadService.deleteFolder(map.filePath, map.name);
+    await this.deleteMapFromDb(map.name);
   }
 
   async cancelDownload(map: OfflineMap) {
-    await this.backgroundDownloadService.cancelDownload(map.filePath, map.filename);
-    return this.remove(map);
+    this.backgroundDownloadService.cancelDownload(map.filename);
+    await this.deleteMapFromDb(map.name);
   }
 
   private async onProgress(name: string, progress: Progress) {
@@ -171,17 +178,46 @@ export class OfflineMapService {
 
   private async onError(name: string, error: Error) {
     console.error('Error downloading map ' + name, error);
-    await this.clearDownloadProperties(name);
+    await this.deleteMapFromDb(name);
     // TODO: Mark map with error?
   }
 
   private async onComplete(name: string) {
     const map = await this.getSavedMap(name);
+    await this.saveMetaData(map);
     map.downloadComplete = moment().unix();
     map.progress = 1.0;
     await nSQL(tableName)
       .query('upsert', map)
       .exec();
+  }
+
+  private async saveMetaData(map: OfflineMap) {
+    const tiles = (await this.backgroundDownloadService.getAllFiles(map.filePath, map.name)).map((file) =>
+      this.getOfflineTileFromFile(map.name, file.directory, file.name, file.url)
+    );
+    await nSQL(tableName).loadJS(tableNameTiles, tiles);
+  }
+
+  // Assumes map directoru: /{mapName}/{tileName}/{z}/
+  // filename: tile_{x}_{y}.png
+  private getOfflineTileFromFile(mapName: string, directory: string, filename: string, url: string): OfflineTile {
+    const index = directory.indexOf(mapName) + mapName.length + 1;
+    const tileRest = directory.substr(index);
+    const tileName = tileRest.substr(0, tileRest.indexOf('/')); // topo, clayzones, etc
+    const zRest = tileRest.substr(tileRest.indexOf(tileName) + tileName.length + 1);
+    const z = zRest.substr(0, zRest.indexOf('/'));
+    const xRest = filename.substr(filename.indexOf('_') + 1);
+    const x = xRest.substr(0, xRest.indexOf('_'));
+    const yRest = xRest.substr(xRest.indexOf(x) + 2);
+    const y = yRest.substr(0, yRest.indexOf('.'));
+    const tileId = `${tileName}_${z}_${x}_${y}`;
+    console.log('[getOfflineTileFromFile] tileId: ' + tileId);
+    return {
+      url: url,
+      mapName: mapName,
+      tileId
+    };
   }
 
   async clear() {
@@ -190,5 +226,6 @@ export class OfflineMapService {
       await this.remove(map);
     });
     await nSQL(tableName).query('drop').exec();
+    await nSQL(tableNameTiles).query('drop').exec();
   }
 }

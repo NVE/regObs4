@@ -10,6 +10,7 @@ const tableName = 'webfiles';
 @Injectable()
 export class BackgroundDownloadWebService implements BackgroundDownloadService {
 
+
     currentDownloads: Map<string, Subscription>;
 
     constructor(private httpClient: HttpClient) {
@@ -25,6 +26,7 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
     }
 
     downloadFile(
+        path: string,
         filename: string,
         url: string,
         onComplete: () => void,
@@ -57,9 +59,8 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
         return Promise.resolve();
     }
 
-    cancelDownload(directory: string, filename: string): Promise<void> {
+    cancelDownload(filename: string) {
         this.removeSubscription(filename);
-        return this.deleteFile(directory, filename);
     }
 
     private saveFile(name: string, data: Blob) {
@@ -80,6 +81,29 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
             subscription.unsubscribe();
             this.currentDownloads.delete(filename);
         }
+    }
+
+    async getFileUrl(directory: string, filename: string): Promise<string> {
+        const files = await nSQL(tableName)
+            .query('select', { name: filename })
+            .exec() as { name: string, data: Blob }[];
+        if (files.length > 0) {
+            return URL.createObjectURL(files[0].data);
+        } else {
+            throw new Error(`File ${filename} not found!`);
+        }
+    }
+
+    deleteFolder(path: string, dirName: string): Promise<void> {
+        return Promise.resolve();
+    }
+
+    selectDowloadFolder() {
+        return Promise.resolve('');
+    }
+
+    getAllFiles(path: string, dirName: string): Promise<{ directory: string, name: string, url: string }[]> {
+        return Promise.resolve([]);
     }
 
 }

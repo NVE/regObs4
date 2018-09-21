@@ -14,6 +14,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { BackgroundDownloadService } from './core/services/background-download/background-download.service';
 import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
 import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
+import { Zip } from '@ionic-native/zip/ngx';
 
 export class AppProviders {
     public static getProviders() {
@@ -27,6 +28,7 @@ export class AppProviders {
             BackgroundGeolocation,
             File,
             AndroidPermissions,
+            Zip,
             ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),
         ];
     }

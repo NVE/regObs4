@@ -3,6 +3,7 @@ import { Progress } from '../offline-map/progress.model';
 export abstract class BackgroundDownloadService {
   abstract init();
   abstract downloadFile(
+    path: string,
     filename: string,
     url: string,
     onComplete: () => void,
@@ -10,6 +11,10 @@ export abstract class BackgroundDownloadService {
     onError: (error: Error) => void,
     skipLocationSelector?: boolean
   ): Promise<void>;
-  abstract cancelDownload(directory: string, filename: string): Promise<void>;
-  abstract deleteFile(directory: string, filename: string): Promise<void>;
+  abstract cancelDownload(filename: string);
+  abstract deleteFile(path: string, filename: string): Promise<void>;
+  abstract deleteFolder(path: string, dirName: string): Promise<void>;
+  abstract getFileUrl(path: string, filename: string): Promise<string>;
+  abstract selectDowloadFolder(): Promise<string>;
+  abstract getAllFiles(path: string, dirName: string): Promise<{ directory: string, name: string, url: string }[]>;
 }
