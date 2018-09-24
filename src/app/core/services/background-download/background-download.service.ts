@@ -12,7 +12,6 @@ export abstract class BackgroundDownloadService {
     skipLocationSelector?: boolean
   ): Promise<void>;
   abstract cancelDownload(filename: string);
-  abstract deleteFile(path: string, filename: string): Promise<void>;
   abstract deleteFolder(path: string, dirName: string): Promise<void>;
   abstract getFileUrl(path: string, filename: string): Promise<string>;
   abstract selectDowloadFolder(): Promise<string>;

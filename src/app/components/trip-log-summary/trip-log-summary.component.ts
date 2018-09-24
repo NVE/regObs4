@@ -45,12 +45,12 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
     let lengthMs = 0;
     if (tripLogActivity.length > 0) {
       let lastItem: TripLogActivity = null;
-      tripLogActivity.forEach((item) => {
+      for (const item of tripLogActivity) {
         if (item.state === TripLogState.Paused) {
           lengthMs += moment.unix(item.timestamp).diff(moment.unix(lastItem.timestamp));
         }
         lastItem = item;
-      });
+      }
       if (lastItem.state === TripLogState.Running) {
         lengthMs += moment().diff(moment.unix(lastItem.timestamp));
       }

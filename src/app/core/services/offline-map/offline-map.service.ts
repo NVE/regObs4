@@ -52,9 +52,9 @@ export class OfflineMapService {
   async continueDownload() {
     const offlineMaps = await this.getOfflineMaps();
     const mapsToDownload = offlineMaps.filter((x) => this.isInQueue(x));
-    mapsToDownload.forEach(async map => {
+    for (const map of mapsToDownload) {
       await this.downloadMap(map);
-    });
+    }
   }
 
   getOfflineMaps(): Promise<OfflineMap[]> {
@@ -222,9 +222,9 @@ export class OfflineMapService {
 
   async clear() {
     const maps = await this.getOfflineMaps();
-    maps.forEach(async (map) => {
+    for (const map of maps) {
       await this.remove(map);
-    });
+    }
     await nSQL(tableName).query('drop').exec();
     await nSQL(tableNameTiles).query('drop').exec();
   }

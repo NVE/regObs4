@@ -130,9 +130,9 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
             });
         }
         this.tripLogger.updateState(TripLogState.Paused);
-        this.backgroundGeolocation.events.forEach((event) => {
+        for (const event of this.backgroundGeolocation.events) {
             return this.backgroundGeolocation.removeAllListeners(event);
-        });
+        }
     }
 
     isRunning(): Promise<boolean> {

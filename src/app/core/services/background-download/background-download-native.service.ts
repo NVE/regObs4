@@ -35,8 +35,8 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         const targetFile = await this.file.getFile(directoryEntry, filename, { create: true });
         const downloader = new (<any>window).BackgroundTransfer.BackgroundDownloader();
         const download = downloader.createDownload(url, targetFile, filename);
-        const promise = download.startAsync().then(() => {
-            this.nativeOnComplete(path, filename, onComplete, onProgress, onError);
+        const promise = download.startAsync().then(async () => {
+            await this.nativeOnComplete(path, filename, onComplete, onProgress, onError);
         }, (error) => {
             this.currentDownloads.delete(filename);
             onError(Error(error));
@@ -44,7 +44,7 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         this.currentDownloads.set(filename, promise);
     }
 
-    private nativeOnComplete(
+    private async nativeOnComplete(
         directory: string,
         filename: string,
         onComplete: () => void,
@@ -52,7 +52,7 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         onError: (error: Error) => void
     ) {
         this.currentDownloads.delete(filename);
-        this.unzipFiles(directory, filename, onComplete, onProgress, onError);
+        await this.unzipFiles(directory, filename, onComplete, onProgress, onError);
     }
 
     private async unzipFiles(path: string,
@@ -64,11 +64,12 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         const folder = fullpath.replace('.zip', '');
         console.log(`Unzipping file ${fullpath} to ${folder}`);
         const result = await this.zip.unzip(fullpath, folder, (progress) => {
-            onProgress({ totalBytesToReceive: progress.loaded, bytesReceived: progress.total });
+            onProgress({ totalBytesToReceive: progress.total, bytesReceived: progress.loaded });
         });
         if (result === 0) {
             console.log(`Unzip complete. Deleting zip file.`);
-            await this.deleteFile(path, filename);
+            await this.file.removeFile(path, filename);
+            console.log(`Zip file deleted. Returning.`);
             onComplete();
         } else {
             onError(Error('Could not extract files!'));
@@ -81,24 +82,6 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
             promise.cancel();
         }
         this.currentDownloads.delete(filename);
-    }
-
-    deleteFile(path: string, filename: string): Promise<void> {
-        return new Promise(async (resolve, reject) => {
-            const directoryEntry = await this.file.resolveDirectoryUrl(path);
-            try {
-                const targetFile = await this.file.getFile(directoryEntry, filename, { create: false });
-                targetFile.remove(() => {
-                    resolve();
-                }, (error) => {
-                    console.error(error);
-                    resolve();
-                });
-            } catch (error) {
-                console.error(error);
-                resolve();
-            }
-        });
     }
 
     async deleteFolder(path: string, dirName: string): Promise<void> {
@@ -148,25 +131,6 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
             });
         });
     }
-
-    // private async getAllFilesForDirectory(path: string, dirName: string) {
-    //     return new Promise<Array<{ directory: string, name: string, url: string }>>(async (resolve, reject) => {
-    //         const directoryEntry = await this.file.resolveDirectoryUrl(path);
-    //         const folder = await this.file.getDirectory(directoryEntry, dirName, { create: false });
-    //         const reader = folder.createReader();
-    //         reader.readEntries((entries) => {
-    //             const result: { directory: string, name: string, url: string }[] = [];
-    //             entries.forEach(async (entry) => {
-    //                 if (entry.isFile) {
-    //                     result.push({ directory: dirName, name: entry.name, url: entry.toURL() });
-    //                 }
-    //             });
-    //             resolve(result);
-    //         }, (error) => {
-    //             reject(error);
-    //         });
-    //     });
-    // }
 
     // TODO: Implement clear all files on reset
 }

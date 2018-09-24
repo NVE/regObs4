@@ -173,13 +173,13 @@ export class HomePage implements OnInit, OnDestroy {
     const userSettings = await this.userSettingService.getUserSettings();
     this.tilesLayer.clearLayers();
     this.defaultMapLayer.addTo(this.tilesLayer);
-    userSettings.supportTiles.forEach((supportTile: SupportTile) => {
+    for (const supportTile of userSettings.supportTiles) {
       if (supportTile.geoHazardId === this.currentGeoHazard && supportTile.enabled) {
         const tile = L.tileLayer(supportTile.url);
         tile.setOpacity(supportTile.opacity);
         tile.addTo(this.tilesLayer);
       }
-    });
+    }
   }
 
   // TODO: Create component
@@ -221,7 +221,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   private redrawObservationMarkers(regObservations: RegObsObservation[]) {
     this.markerLayer.clearLayers();
-    regObservations.forEach((regObservation) => {
+    for (const regObservation of regObservations) {
       const latLng = L.latLng(regObservation.Latitude, regObservation.Longitude);
       const marker = new MapItemMarker(regObservation, latLng, {});
       marker.on('click', (event: L.LeafletEvent) => {
@@ -229,7 +229,7 @@ export class HomePage implements OnInit, OnDestroy {
         this.mapItemBar.show(m.item);
       });
       marker.addTo(this.markerLayer);
-    });
+    }
   }
 
   centerMapToUser() {
