@@ -236,6 +236,10 @@ export class HomePage implements OnInit, OnDestroy {
       const marker = new MapItemMarker(regObservation, latLng, {});
       marker.on('click', (event: L.LeafletEvent) => {
         const m: MapItemMarker = event.target;
+        if (this.selectedMarker) {
+          this.selectedMarker.deselect();
+        }
+
         this.selectedMarker = m;
         m.setSelected();
         this.mapItemBar.show(m.item);

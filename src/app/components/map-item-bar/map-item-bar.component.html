@@ -17,14 +17,14 @@
       <ion-col>
         {{name}}
       </ion-col>
-      <ion-col text-right>
+      <ion-col text-right text-wrap>
         {{distanceAndType}}
       </ion-col>
     </ion-row>
   </ion-grid>
   <ion-fab vertical="top" horizontal="end" edge slot="fixed">
-    <ion-fab-button text-center color="light">
-      <app-geo-icon [geoHazard]="geoHazard" size="1.5"></app-geo-icon>
+    <ion-fab-button color="light">
+      <app-geo-icon [geoHazard]="geoHazard"></app-geo-icon>
     </ion-fab-button>
   </ion-fab>
 </div>
