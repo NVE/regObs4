@@ -36,7 +36,7 @@ export class OfflineMapPage implements OnInit {
   }
 
   getPercentage(map: OfflineMap) {
-    return Math.round((map.progress || 0) * 100);
+    return Math.round(((map.progress && map.progress.percentage) ? map.progress.percentage : 0) * 100);
   }
 
   deleteMap(map: OfflineMap) {

@@ -16,6 +16,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
 import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
 import { ModalSearchPageModule } from '../modal-search/modal-search.module';
+import { ShadowCssDirective } from '../../directives/shadow-css.directive';
 
 @NgModule({
   imports: [
@@ -43,6 +44,7 @@ import { ModalSearchPageModule } from '../modal-search/modal-search.module';
     GpsCenterComponent,
     AddMenuComponent,
     GeoIconComponent,
+    ShadowCssDirective,
   ],
 })
 export class HomePageModule {

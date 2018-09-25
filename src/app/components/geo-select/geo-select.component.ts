@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { Events } from '@ionic/angular';
+import { Events, Fab, FabButton } from '@ionic/angular';
 import { settings } from '../../../settings';
 
 @Component({
@@ -10,30 +10,35 @@ import { settings } from '../../../settings';
   styleUrls: ['./geo-select.component.scss']
 })
 export class GeoSelectComponent implements OnInit {
-
-  geoHazardTypes: Array<string>;
+  geoHazardTypes: Array<GeoHazard>;
   isOpen = false;
-  currentGeoHazard: string;
+  currentGeoHazard: GeoHazard;
 
   constructor(private userSettingService: UserSettingService, private events: Events) { }
 
   async ngOnInit() {
-    this.geoHazardTypes = Object.keys(GeoHazard).map(key => GeoHazard[key]).filter(value => typeof value === 'string') as string[];
+    this.geoHazardTypes = Object.keys(GeoHazard)
+      .filter(key => !isNaN(Number(GeoHazard[key])))
+      .map((key) => GeoHazard[key]);
     this.currentGeoHazard = await this.getCurrentGeoHazard();
   }
 
   async getCurrentGeoHazard() {
     const userSettings = await this.userSettingService.getUserSettings();
-    return GeoHazard[userSettings.currentGeoHazard];
+    return userSettings.currentGeoHazard;
+  }
+
+  getName(geoHazard: GeoHazard) {
+    return `GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase();
   }
 
   toggle() {
     this.isOpen = !this.isOpen;
   }
 
-  async changeGeoHazard(geoHazard: string) {
+  async changeGeoHazard(geoHazard: GeoHazard) {
     const userSettings = await this.userSettingService.getUserSettings();
-    userSettings.currentGeoHazard = GeoHazard[geoHazard];
+    userSettings.currentGeoHazard = geoHazard;
     await this.userSettingService.saveUserSettings(userSettings);
     this.currentGeoHazard = geoHazard;
     this.isOpen = false;

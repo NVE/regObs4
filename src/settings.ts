@@ -52,7 +52,7 @@ export const settings = {
                     geoHazardId: 10
                 },
                 {
-                    name: 'quickclay',
+                    name: 'clayzones',
                     description: 'CLAY_ZONES_MAP_DESCRIPTION',
                     url: 'http://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
                     enabled: true,

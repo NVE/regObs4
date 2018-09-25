@@ -17,8 +17,7 @@
     </ion-list-header>
     <ion-item *ngFor="let item of offlineMaps$ | async">
       <ion-label (click)="presentActionSheet(item)">{{ item.name }}</ion-label>
-      <ion-label *ngIf="isDownloading(item)" (click)="presentActionSheet(item)">{{
-        humanReadableByteSize(item.downloaded || 0) }}
+      <ion-label *ngIf="isDownloading(item)" (click)="presentActionSheet(item)">
         ({{getPercentage(item) +'%' }})</ion-label>
       <ion-label *ngIf="!isDownloading(item)" (click)="presentActionSheet(item)">{{ humanReadableByteSize(item.size) }}</ion-label>
       <ion-icon slot="end" *ngIf="!item.downloadStart" name="download" (click)="downloadMap(item)"></ion-icon>

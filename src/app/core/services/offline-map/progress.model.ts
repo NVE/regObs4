@@ -1,4 +1,7 @@
+import { ProgressStep } from './progress-step.model';
+
 export interface Progress {
-    bytesReceived: number;
-    totalBytesToReceive: number;
+    percentage: number;
+    step?: ProgressStep;
+    description?: string;
 }

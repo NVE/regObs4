@@ -97,7 +97,6 @@ export class OfflineMapService {
         currentMap.progress = savedMap.progress;
         currentMap.downloadComplete = savedMap.downloadComplete;
         currentMap.downloadStart = savedMap.downloadStart;
-        currentMap.downloaded = savedMap.downloaded;
         currentMap.size = savedMap.size;
       }
       return currentMap;
@@ -161,19 +160,19 @@ export class OfflineMapService {
   }
 
   private async onProgress(name: string, progress: Progress) {
-    if (progress.bytesReceived > 0 && progress.totalBytesToReceive > 0) {
-      console.log(name + ' progress ' + progress.bytesReceived + ' of ' + progress.totalBytesToReceive);
-      const map = await this.getSavedMap(name);
-      map.downloaded = progress.bytesReceived;
-      map.size = progress.totalBytesToReceive;
-      map.progress = (progress.bytesReceived / progress.totalBytesToReceive);
+    // if (progress.bytesReceived > 0 && progress.totalBytesToReceive > 0) {
+    // console.log(name + ' progress ' + progress.bytesReceived + ' of ' + progress.totalBytesToReceive);
+    const map = await this.getSavedMap(name);
+    // map.downloaded = progress.bytesReceived;
+    // map.size = progress.totalBytesToReceive;
+    map.progress = progress;
 
-      await nSQL(tableName)
-        .query('upsert', map)
-        .exec();
-    } else {
-      return Promise.resolve();
-    }
+    await nSQL(tableName)
+      .query('upsert', map)
+      .exec();
+    // } else {
+    //   return Promise.resolve();
+    // }
   }
 
   private async onError(name: string, error: Error) {
@@ -186,7 +185,7 @@ export class OfflineMapService {
     const map = await this.getSavedMap(name);
     await this.saveMetaData(map);
     map.downloadComplete = moment().unix();
-    map.progress = 1.0;
+    map.progress = { percentage: 1.0 };
     await nSQL(tableName)
       .query('upsert', map)
       .exec();

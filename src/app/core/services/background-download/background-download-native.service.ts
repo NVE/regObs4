@@ -6,6 +6,7 @@ import { BackgroundDownloadService } from './background-download.service';
 import { Zip } from '@ionic-native/zip/ngx';
 import { Platform } from '@ionic/angular';
 import { UserSettingService } from '../user-setting/user-setting.service';
+import { ProgressStep } from '../offline-map/progress-step.model';
 
 @Injectable()
 export class BackgroundDownloadNativeService implements BackgroundDownloadService {
@@ -40,7 +41,14 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         }, (error) => {
             this.currentDownloads.delete(filename);
             onError(Error(error));
-        }, onProgress);
+        }, (progress) => {
+            onProgress(
+                {
+                    percentage: (progress.bytesReceived / progress.totalBytesToRecieve),
+                    step: ProgressStep.download,
+                    description: 'Downloading'
+                });
+        });
         this.currentDownloads.set(filename, promise);
     }
 
@@ -64,7 +72,7 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         const folder = fullpath.replace('.zip', '');
         console.log(`Unzipping file ${fullpath} to ${folder}`);
         const result = await this.zip.unzip(fullpath, folder, (progress) => {
-            onProgress({ totalBytesToReceive: progress.total, bytesReceived: progress.loaded });
+            onProgress({ percentage: (progress.loaded / progress.total), step: ProgressStep.extractZip, description: 'Unzip files' });
         });
         if (result === 0) {
             console.log(`Unzip complete. Deleting zip file.`);

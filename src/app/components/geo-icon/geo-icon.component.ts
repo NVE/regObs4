@@ -1,8 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
-const scale = 0.789444;
-
 @Component({
   selector: 'app-geo-icon',
   templateUrl: './geo-icon.component.html',
@@ -10,19 +8,61 @@ const scale = 0.789444;
 })
 
 export class GeoIconComponent implements OnInit {
-
   constructor() { }
 
   @Input() geoHazard: GeoHazard;
   @Input() size: number;
-  @Input() color: string;
 
   get width() {
-    return (18.0 * (this.size || 1.0) * scale);
+    return this.getDimensions().width * (this.size || 1.0);
   }
 
   get height() {
-    return (18.0 * (this.size || 1.0));
+    return this.getDimensions().height * (this.size || 1.0);
+  }
+
+  get geoClass() {
+    if (this.geoHazard) {
+      return (<string>GeoHazard[this.geoHazard]).toLowerCase();
+    }
+    return '';
+  }
+
+  getDimensions() {
+    switch (this.geoHazard) {
+      case GeoHazard.Snow:
+        return { width: 22, height: 24.2 };
+      case GeoHazard.Dirt:
+        return { width: 22, height: 24 };
+      case GeoHazard.Water:
+        return { width: 33, height: 30.8 };
+      case GeoHazard.Ice:
+        return { width: 22, height: 28 };
+      default:
+        return { width: 22, height: 22 };
+    }
+  }
+
+  getBaseHeight() {
+    switch (this.geoHazard) {
+      case GeoHazard.Snow:
+        return 22;
+      case GeoHazard.Dirt:
+        return 22;
+      case GeoHazard.Water:
+        return 33;
+      case GeoHazard.Ice:
+        return 24.2;
+      default:
+        return 18;
+    }
+  }
+
+  get options() {
+    return {
+      'width.px': this.width,
+      'height.px': this.height
+    };
   }
 
   get iconSrc() {
@@ -39,16 +79,7 @@ export class GeoIconComponent implements OnInit {
         return '';
     }
   }
-
-  options: {
-  };
-
   ngOnInit() {
-    this.options = {
-      'width.px': this.width,
-      'height.px': this.height,
-      'fill': '#000'
-    };
   }
 
 }

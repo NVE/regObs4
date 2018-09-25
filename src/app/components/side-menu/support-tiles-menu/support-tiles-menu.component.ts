@@ -59,7 +59,7 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
     const userSettings = await this.userSettingService.getUserSettings();
     this.currentGeoHazard = userSettings.currentGeoHazard;
     this.supportTiles = settings.map.tiles.supportTiles;
-    for (const tile of userSettings.supportTiles) {
+    for (const tile of (userSettings.supportTiles || [])) {
       const supportTile = this.supportTiles.find((x) => x.name === tile.name);
       if (supportTile) {
         supportTile.enabled = tile.enabled;

@@ -1,15 +1,16 @@
-<div id="geo-selector" class="map-control">
-  <div class="geo-item" (click)="toggle()">
-    <i class="nve-icon nve-icon-snow"></i><span class="geo-item-name">{{('GEO_HAZARDS.' +currentGeoHazard) | uppercase |
-      translate}}
-    </span>
-    <ion-icon name="ios-arrow-down" *ngIf="!isOpen"></ion-icon>
-    <ion-icon name="ios-arrow-up" *ngIf="isOpen"></ion-icon>
+<ion-fab #geoSelectorFab vertical="top" horizontal="start" edge slot="fixed">
+  <ion-fab-button color="light" (click)="toggle()">
+    <app-geo-icon [geoHazard]="currentGeoHazard"></app-geo-icon>
+  </ion-fab-button>
+  <div class="geo-selector-items" [ngClass]="{ 'open': isOpen }">
+    <div class="geo-selector-wrapper" (click)="toggle()"></div>
+    <ng-container *ngFor="let geoHazard of geoHazardTypes">
+      <div *ngIf="(geoHazard !== currentGeoHazard)" class="geo-selector-item" (click)="changeGeoHazard(geoHazard)">
+        <ion-fab-button color="light">
+          <app-geo-icon [geoHazard]="geoHazard"></app-geo-icon>
+        </ion-fab-button>
+        <ion-label>{{ getName(geoHazard) | translate }}</ion-label>
+      </div>
+    </ng-container>
   </div>
-  <div *ngIf="isOpen">
-    <div class="geo-item geo-selectable-item" *ngFor="let $item of geoHazardTypes" (click)="changeGeoHazard($item)" [hidden]="$item === currentGeoHazard">
-      <i class="nve-icon nve-icon-{{$item | lowercase}}"></i><span class="geo-item-name">{{ ('GEO_HAZARDS.' +$item) | uppercase
-        | translate }}</span>
-    </div>
-  </div>
-</div>
+</ion-fab>

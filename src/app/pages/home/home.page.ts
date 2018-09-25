@@ -173,7 +173,8 @@ export class HomePage implements OnInit, OnDestroy {
     const userSettings = await this.userSettingService.getUserSettings();
     this.tilesLayer.clearLayers();
     this.defaultMapLayer.addTo(this.tilesLayer);
-    for (const supportTile of userSettings.supportTiles) {
+    const supportTiles = userSettings.supportTiles || settings.map.tiles.supportTiles;
+    for (const supportTile of supportTiles) {
       if (supportTile.geoHazardId === this.currentGeoHazard && supportTile.enabled) {
         const tile = L.tileLayer(supportTile.url);
         tile.setOpacity(supportTile.opacity);

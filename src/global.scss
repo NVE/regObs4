@@ -61,3 +61,23 @@ ion-modal {
 .map-item-bar-open .fab-vertical-bottom {
     bottom: 135px;
 }
+
+app-geo-icon {
+    .ice {
+        --geo-icon-color: #029BB3;
+    }
+    .water {
+        --geo-icon-color: #63CBFF;
+    }
+    .snow {
+        --geo-icon-color: #468EB3;
+    }
+    .dirt {
+        --geo-icon-color: #735E2F;
+    }
+    svg-icon {
+        path, polygon {
+                fill: var(--geo-icon-color, #000), 
+        }
+    }
+}

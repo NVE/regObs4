@@ -4,6 +4,7 @@ import { Progress } from '../offline-map/progress.model';
 import { HttpRequest, HttpClient, HttpEventType } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { nSQL } from 'nano-sql';
+import { ProgressStep } from '../offline-map/progress-step.model';
 
 const tableName = 'webfiles';
 
@@ -41,7 +42,7 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
         const subscription = this.httpClient.request(request).subscribe(async event => {
             // progress
             if (event.type === HttpEventType.DownloadProgress) {
-                onProgress({ bytesReceived: event.loaded, totalBytesToReceive: event.total });
+                onProgress({ percentage: (event.loaded / event.total), step: ProgressStep.download, description: 'Downloading' });
             }
             // finished
             if (event.type === HttpEventType.Response) {

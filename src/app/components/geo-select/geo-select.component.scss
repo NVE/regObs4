@@ -1,53 +1,33 @@
-#geo-selector {
-    position: absolute;
-    top: 25px;
-    left: 10px;
-    width: 115px;
-}
-.geo-item {
-    padding: 6px;
-}
+ion-fab {
+    ion-fab-button {
+        --size: 44px;
+    }
 
-.geo-item-name {
-    position: relative;
-    left: 4px;
-    top: -1px;
-    font-weight: 500;
-    padding-right: 10px;
-}
+    .geo-selector-items {
+        display: none;
+        &.open {
+            display: block;
+        }
 
-.select-geo-toggle {
-    position: absolute;
-    top: 15px;
-    right: 10px;
-}
+        .geo-selector-item {
+            height: 44px;
+            ion-label {
+                position: relative;
+                left: 60px;
+                top: -35px;
+                background-color: #fff;
+                opacity: 0.7;
+                padding: 4px;
+                display: inline;
+            }
+        }
+    }
 
-.geo-selectable-item {
-    border-top: 1px solid rgb(190,189,189);
-}
-
-#geo-selector .nve-icon {
-    padding-left: 0px;
-    height: 20px;
-    width: 20px;
-    display: inline-block;
-    position: relative;
-    top: 3px;
-    margin-right: 5px;
-}
-
-#geo-selector .nve-icon-snow {
-    background: url(/assets/icon/ikon_snoskred.svg) left/20px no-repeat;
-}
-
-#geo-selector .nve-icon-water {
-    background: url(/assets/icon/ikon_flom.svg) left/20px no-repeat;
-}
-
-#geo-selector .nve-icon-ice {
-    background: url(/assets/icon/ikon_isvarsler2.svg) left/20px no-repeat;
-}
-
-#geo-selector .nve-icon-dirt {
-    background: url(/assets/icon/ikon_jordskred.svg) left/20px no-repeat;
+    .geo-selector-wrapper {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
 }
