@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="28px" viewBox="0 0 18 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>C8631BF0-DA53-482B-8D01-000A31F82058</title>
+    <desc>Created with sketchtool.</desc>
+    <defs></defs>
+    <g id="Ikoner" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="10.1.1-Ikoner-samleark" transform="translate(-133.000000, -80.000000)">
+            <g id="Location-ikoner-[10h-m]" transform="translate(20.000000, 80.000000)">
+                <g id="icon/location/jord/colored_small" transform="translate(113.000000, 0.000000)">
+                    <path d="M9,27.0711862 C14.6654126,18.1632591 17.5,12.1049889 17.5,9 C17.5,4.30557963 13.6944204,0.5 9,0.5 C4.30557963,0.5 0.5,4.30557963 0.5,9 C0.5,12.1049889 3.33458739,18.1632591 9,27.0711862 Z" id="Oval" stroke-width="1" stroke="#326680" fill="#FFFFFF" fill-rule="nonzero"></path>
+                    <g id="Jord" fill-rule="evenodd" transform="translate(4.500000, 4.500000)" fill="#735E2F">
+                        <circle id="Oval-4" fill-rule="nonzero" cx="1.63636364" cy="4.09090909" r="1.63636364"></circle>
+                        <circle id="Oval-4" fill-rule="nonzero" cx="5.31818182" cy="1.22727273" r="1.22727273"></circle>
+                        <circle id="Oval-4" fill-rule="nonzero" cx="6.54545455" cy="7.36363636" r="2.45454545"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

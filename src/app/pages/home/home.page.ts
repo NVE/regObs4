@@ -38,7 +38,11 @@ export class HomePage implements OnInit, OnDestroy {
   userMarker: UserMarker;
   toast: HTMLIonToastElement;
   followMode = true;
-  markerLayer = L.markerClusterGroup({ spiderfyOnMaxZoom: false });
+  markerLayer = L.markerClusterGroup({
+    spiderfyOnMaxZoom: false,
+    showCoverageOnHover: false,
+    maxClusterRadius: 30
+  });
   observationSubscription: ObserverSubscriber;
   mapItemBarSubscription: Subscription;
   markers: Array<MapItemMarker>;
@@ -49,6 +53,7 @@ export class HomePage implements OnInit, OnDestroy {
   mapItemBarVisible = false;
   currentGeoHazard: GeoHazard;
   tripLogLayer = L.layerGroup();
+  selectedMarker: MapItemMarker;
 
   constructor(private platform: Platform,
     private geolocation: Geolocation,
@@ -140,6 +145,10 @@ export class HomePage implements OnInit, OnDestroy {
     this.map.on('moveend', () => this.onMapMoved());
     this.map.on('dragstart', () => this.disableFollowMode());
     this.map.on('click', () => {
+      if (this.selectedMarker) {
+        this.selectedMarker.deselect();
+      }
+      this.selectedMarker = null;
       this.mapItemBar.hide();
     });
     const userSettings = await this.userSettingService.getUserSettings();
@@ -227,6 +236,8 @@ export class HomePage implements OnInit, OnDestroy {
       const marker = new MapItemMarker(regObservation, latLng, {});
       marker.on('click', (event: L.LeafletEvent) => {
         const m: MapItemMarker = event.target;
+        this.selectedMarker = m;
+        m.setSelected();
         this.mapItemBar.show(m.item);
       });
       marker.addTo(this.markerLayer);

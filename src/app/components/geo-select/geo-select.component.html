@@ -1,4 +1,4 @@
-<ion-fab #geoSelectorFab vertical="top" horizontal="start" edge slot="fixed">
+<ion-fab #geoSelectorFab vertical="top" horizontal="start" edge slot="fixed" [ngClass]="{ 'fullscreen': isFullscreen }">
   <ion-fab-button color="light" (click)="toggle()">
     <app-geo-icon [geoHazard]="currentGeoHazard"></app-geo-icon>
   </ion-fab-button>

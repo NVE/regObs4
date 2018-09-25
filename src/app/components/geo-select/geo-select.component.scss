@@ -1,4 +1,8 @@
 ion-fab {
+    &.fullscreen {
+        top: 10px;
+    }
+
     ion-fab-button {
         --size: 44px;
     }

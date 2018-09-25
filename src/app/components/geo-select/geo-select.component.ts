@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Events, Fab, FabButton } from '@ionic/angular';
@@ -9,10 +9,12 @@ import { settings } from '../../../settings';
   templateUrl: './geo-select.component.html',
   styleUrls: ['./geo-select.component.scss']
 })
-export class GeoSelectComponent implements OnInit {
+export class GeoSelectComponent implements OnInit, OnDestroy {
+
   geoHazardTypes: Array<GeoHazard>;
   isOpen = false;
   currentGeoHazard: GeoHazard;
+  isFullscreen = false;
 
   constructor(private userSettingService: UserSettingService, private events: Events) { }
 
@@ -21,6 +23,13 @@ export class GeoSelectComponent implements OnInit {
       .filter(key => !isNaN(Number(GeoHazard[key])))
       .map((key) => GeoHazard[key]);
     this.currentGeoHazard = await this.getCurrentGeoHazard();
+    this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
+      this.isFullscreen = isFullscreen;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.events.unsubscribe(settings.events.fullscreenChanged);
   }
 
   async getCurrentGeoHazard() {
