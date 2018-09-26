@@ -17,11 +17,16 @@
     --ion-item-background-color: #fff;
     --ion-text-color-step-600: #444444;
     --ion-color-primary: #5C90A5;
-    --ion-tabbar-text-color: #8B9399;
+    --ion-tabbar-text-color: #172733;
     --ion-tabbar-background-color-focused: #F4F8F9;
+    --ion-tabbar-background-color: #FFFFFF;
+    --leaflet-bottom: 0px;
+    --map-item-height: 0px;
+    --map-center-info-height: 0px;
 }
 
-$z-index-over-map: 900;
+
+$z-index-over-map: 1001;
 
 .map-control {
     background-color: #000;
@@ -58,8 +63,18 @@ ion-modal {
     }
 }
 
-.map-item-bar-open .fab-vertical-bottom {
-    bottom: 135px;
+
+
+.map-item-bar-open {
+    --map-item-height: 100px;
+
+    .fab-vertical-bottom {
+        bottom: 135px;
+    }
+}
+
+.leaflet-bottom {
+    bottom: calc(var(--map-item-height) + var(--map-center-info-height)) !important;
 }
 
 app-geo-icon {

@@ -98,7 +98,9 @@ export const settings = {
         fullscreenChanged: 'fullscreen:changed',
         centerMapToUser: 'gps:centerMapToUser',
         supportTilesChanged: 'supportTiles:changed',
-        mapSearchItemClicked: 'mapSearchItem:clicked'
+        mapSearchItemClicked: 'mapSearchItem:clicked',
+        userSettingsChanged: 'userSettings:changed',
+        geolocationUpdate: 'gps:locationUpdate'
     },
     cordovaNotAvailable: 'cordova_not_available',
     gps: {

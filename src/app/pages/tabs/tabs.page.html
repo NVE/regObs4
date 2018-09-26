@@ -1,17 +1,14 @@
-<ion-tabs [tabbarHidden]="fullscreen" (ionChange)="tabsChanged($event)">
-  <ion-tab name="home" icon="home" href="/tabs/(home:home)">
+<ion-tabs [tabbarHidden]="fullscreen" (ionChange)="tabsChanged($event)" tabbar-highlight="true">
+  <ion-tab name="home" label="&nbsp;{{'TABS.MAP' | translate}}" icon="map" href="/tabs/(home:home)">
     <ion-router-outlet name="home"></ion-router-outlet>
   </ion-tab>
-  <ion-tab name="observation-list" icon="list" href="/tabs/(observation-list:observation-list)">
+  <ion-tab name="observation-list" label="{{'TABS.LIST' | translate}}" icon="list" href="/tabs/(observation-list:observation-list)">
     <ion-router-outlet name="observation-list"></ion-router-outlet>
   </ion-tab>
-  <ion-tab name="trip" icon="walk" href="/tabs/(trip:trip)">
+  <ion-tab name="trip" label="{{'TABS.TRIPS' | translate}}" icon="walk" href="/tabs/(trip:trip)">
     <ion-router-outlet name="trip"></ion-router-outlet>
   </ion-tab>
-  <!-- <ion-tab name="add" icon="add" href="/tabs/(add:add)">
-    <ion-router-outlet name="add"></ion-router-outlet>
-  </ion-tab> -->
-  <ion-tab name="warning-list" icon="warning" href="/tabs/(warning-list:warning-list)">
+  <ion-tab name="warning-list" label="{{'TABS.WARNINGS' | translate}}" icon="warning" href="/tabs/(warning-list:warning-list)">
     <ion-router-outlet name="warning-list"></ion-router-outlet>
   </ion-tab>
 </ion-tabs>

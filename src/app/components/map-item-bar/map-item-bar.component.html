@@ -1,5 +1,5 @@
 <div class="map-item-bar" (click)="navigateToItem()" *ngIf="visible">
-  <ion-grid text-nowrap nowrap>
+  <ion-grid text-wrap>
     <ion-row>
       <ion-col>
         {{topHeader}}
@@ -10,14 +10,14 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <h5 no-margin>{{title}}</h5>
+        <h5 no-margin text-nowrap>{{title}}</h5>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
+      <ion-col size="4" text-nowrap>
         {{name}}
       </ion-col>
-      <ion-col text-right text-wrap>
+      <ion-col text-right text-nowrap>
         {{distanceAndType}}
       </ion-col>
     </ion-row>

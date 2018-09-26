@@ -22,7 +22,8 @@
         "MAP_SETTINGS_FOR": "Kartvalg for",
         "SHOW": "Vis",
         "OPACITY": "Gjennomsiktighet",
-        "MAP_LEGENDS": "Tegnforklaring for kart"
+        "MAP_LEGENDS": "Tegnforklaring for kart",
+        "SHOW_MAP_CENTER": "Vis kartsenter"
     },
     "OFFLINE_MAP": {
         "TITLE": "Offline kart"
@@ -143,5 +144,11 @@
         "CLAY_DANGER_ZONE": "Faregrad",
         "CAUTION_AREA": "Aktsomhetsområde",
         "MARITINE_BORDER": "Marin grense flate"
+    },
+    "TABS":{
+        "MAP": "Kart",
+        "LIST": "Liste",
+        "TRIPS": "Turer",
+        "WARNINGS": "Varsler"
     }
 }

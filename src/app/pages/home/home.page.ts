@@ -23,6 +23,7 @@ import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.s
 import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { SupportTile } from '../../core/models/support-tile.model';
 import { MapSearchResponse } from '../../core/services/map-search/map-search-response.model';
+import { MapService } from '../../core/services/map/map.service';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
@@ -54,6 +55,7 @@ export class HomePage implements OnInit, OnDestroy {
   currentGeoHazard: GeoHazard;
   tripLogLayer = L.layerGroup();
   selectedMarker: MapItemMarker;
+  showMapCenter: boolean;
 
   constructor(private platform: Platform,
     private geolocation: Geolocation,
@@ -66,6 +68,7 @@ export class HomePage implements OnInit, OnDestroy {
     private popoverController: PopoverController,
     private tripLoggerService: TripLoggerService,
     private backgroundGeolocationService: BackgroundGeolocationService,
+    private mapService: MapService,
   ) {
 
     const defaultIcon = L.icon({
@@ -151,8 +154,10 @@ export class HomePage implements OnInit, OnDestroy {
       this.selectedMarker = null;
       this.mapItemBar.hide();
     });
+    L.control.scale({ imperial: false }).addTo(map);
     const userSettings = await this.userSettingService.getUserSettings();
     this.currentGeoHazard = userSettings.currentGeoHazard;
+    this.showMapCenter = userSettings.showMapCenter;
     this.resubscribeObservations();
     await this.configureTileLayers();
     this.redrawMap();
@@ -258,7 +263,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   private async onMapMoved() {
     console.log('map moved');
-    this.helperService.setCurrentMapView(this.map.getBounds(), this.map.getCenter());
+    // this.helperService.setCurrentMapView(this.map.getBounds(), this.map.getCenter());
+    this.mapService.updateMapView({ bounds: this.map.getBounds(), center: this.map.getCenter() });
   }
 
   private disableFollowMode() {

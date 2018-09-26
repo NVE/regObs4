@@ -22,7 +22,8 @@
         "MAP_SETTINGS_FOR": "Map settings for",
         "SHOW": "Show",
         "OPACITY": "Opacity",
-        "MAP_LEGENDS": "Legends for map"
+        "MAP_LEGENDS": "Legends for map",
+        "SHOW_MAP_CENTER": "Show map center"
     },
     "OFFLINE_MAP": {
         "TITLE": "Offline map"
@@ -143,5 +144,11 @@
         "CLAY_DANGER_ZONE": "Danger level",
         "CAUTION_AREA": "Caution area",
         "MARITINE_BORDER": "Sea border"
+    },
+    "TABS":{
+        "MAP": "Map",
+        "LIST": "List",
+        "TRIPS": "Trips",
+        "WARNINGS": "Warnings"
     }
 }

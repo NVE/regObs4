@@ -14,6 +14,7 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { BackgroundDownloadService } from './core/services/background-download/background-download.service';
+import { MapService } from './core/services/map/map.service';
 
 @Component({
   selector: 'app-root',
@@ -36,6 +37,7 @@ export class AppComponent {
     private backgroundFetch: BackgroundFetch,
     private offlineMapService: OfflineMapService,
     private backgroundDownloadService: BackgroundDownloadService,
+    private mapService: MapService,
   ) {
     this.initializeApp();
   }
@@ -94,6 +96,7 @@ export class AppComponent {
     this.warningService.init();
     this.offlineMapService.init();
     this.backgroundDownloadService.init();
+    this.mapService.init();
     await nSQL().connect();
     this.events.publish('nanoSql: connected');
   }

@@ -16,7 +16,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
 import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
 import { ModalSearchPageModule } from '../modal-search/modal-search.module';
-import { ShadowCssDirective } from '../../directives/shadow-css.directive';
+import { SharedModule } from '../../modules/shared/shared.module';
+import { MapCenterInfoComponent } from '../../components/map-center-info/map-center-info.component';
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import { ShadowCssDirective } from '../../directives/shadow-css.directive';
     LeafletModule,
     AngularSvgIconModule,
     ModalSearchPageModule,
+    SharedModule,
   ],
   declarations: [
     HomePage,
@@ -44,7 +46,7 @@ import { ShadowCssDirective } from '../../directives/shadow-css.directive';
     GpsCenterComponent,
     AddMenuComponent,
     GeoIconComponent,
-    ShadowCssDirective,
+    MapCenterInfoComponent,
   ],
 })
 export class HomePageModule {

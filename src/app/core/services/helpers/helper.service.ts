@@ -36,23 +36,23 @@ export class HelperService {
     }
   }
 
-  async setCurrentMapView(bounds: L.LatLngBounds, center: L.LatLng) {
-    await this.storage.ready();
-    const boundsArray = [
-      [bounds.getSouthWest().lat, bounds.getSouthWest().lng],
-      [bounds.getNorthEast().lat, bounds.getNorthEast().lng]
-    ];
-    return this.storage.set(STORAGE_KEY_NAME, { bounds: boundsArray, center: [center.lat, center.lng] });
-  }
+  // async setCurrentMapView(bounds: L.LatLngBounds, center: L.LatLng) {
+  //   await this.storage.ready();
+  //   const boundsArray = [
+  //     [bounds.getSouthWest().lat, bounds.getSouthWest().lng],
+  //     [bounds.getNorthEast().lat, bounds.getNorthEast().lng]
+  //   ];
+  //   return this.storage.set(STORAGE_KEY_NAME, { bounds: boundsArray, center: [center.lat, center.lng] });
+  // }
 
-  async getCurrentMapView() {
-    const values = await this.storage.get(STORAGE_KEY_NAME);
-    if (values) {
-      return { bounds: L.latLngBounds(values.bounds), center: L.latLng(values.center) };
-    } else {
-      return null;
-    }
-  }
+  // async getCurrentMapView() {
+  //   const values = await this.storage.get(STORAGE_KEY_NAME);
+  //   if (values) {
+  //     return { bounds: L.latLngBounds(values.bounds), center: L.latLng(values.center) };
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   async getDistanceToRegion(): Promise<{ name: string, distance: number }[]> {
     const currentPosition = await this.geolocation.getCurrentPosition(
@@ -73,7 +73,8 @@ export class HelperService {
   }
 
   async getAvalancheWarningRegionsForCurrentMapView() {
-    const currentView = await this.getCurrentMapView();
+    // const currentView = await this.getCurrentMapView();
+    const currentView = null; // TODO: Fix implementation
     if (currentView !== null) {
       const features = this.getFeaturesFromJson(snow_warning_regions.default);
       return features.filter((r) => {

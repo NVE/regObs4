@@ -13,18 +13,18 @@ ion-fab {
         &.open {
             display: block;
         }
+    }
 
-        .geo-selector-item {
-            height: 44px;
-            ion-label {
-                position: relative;
-                left: 60px;
-                top: -35px;
-                background-color: #fff;
-                opacity: 0.7;
-                padding: 4px;
-                display: inline;
-            }
+    .geo-selector-item {
+        height: 44px;
+        ion-label {
+            position: relative;
+            left: 60px;
+            top: -35px;
+            background-color: #fff;
+            opacity: 0.7;
+            padding: 4px;
+            display: inline;
         }
     }
 

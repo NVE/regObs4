@@ -1,0 +1,11 @@
+<div class="map-center-info" [ngClass]="{visible: isVisible}" *ngIf="$mapView |async as info">
+  <div>
+
+  </div>
+  <div>
+    214 moh.
+  </div>
+  <div>
+    {{ info.center.lat | number:'.4' }} &deg;N, {{ info.center.lng | number:'.4' }} &deg;Ø
+  </div>
+</div>

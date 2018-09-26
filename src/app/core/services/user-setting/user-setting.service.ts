@@ -6,6 +6,7 @@ import { GeoHazard } from '../../models/geo-hazard.enum';
 import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
 import { SupportTile } from '../../models/support-tile.model';
+import { Events } from '@ionic/angular';
 
 const STORAGE_KEY_NAME = 'UserSettings';
 
@@ -14,7 +15,7 @@ const STORAGE_KEY_NAME = 'UserSettings';
 })
 export class UserSettingService {
 
-  constructor(private storage: Storage, private translate: TranslateService) {
+  constructor(private storage: Storage, private translate: TranslateService, private events: Events) {
   }
 
   private getDefaultSettings(): UserSetting {
@@ -29,10 +30,12 @@ export class UserSettingService {
         { geoHazard: GeoHazard.Water, daysBack: 3 },
       ],
       completedStartWizard: false,
-      supportTiles: settings.map.tiles.supportTiles
+      supportTiles: settings.map.tiles.supportTiles,
+      showMapCenter: false,
     };
   }
 
+  // TODO: Change storage to NanoSql and create observable of user settings
   async getUserSettings(): Promise<UserSetting> {
     await this.storage.ready();
     const userSettings: UserSetting = await this.storage.get(STORAGE_KEY_NAME);
@@ -47,6 +50,7 @@ export class UserSettingService {
     await this.storage.ready();
     const newSettings = await this.storage.set(STORAGE_KEY_NAME, userSetting);
     this.translate.use(userSetting.language);
+    this.events.publish(settings.events.userSettingsChanged, userSetting);
     return newSettings;
   }
 

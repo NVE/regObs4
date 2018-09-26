@@ -1,7 +1,10 @@
 <ion-fab #geoSelectorFab vertical="top" horizontal="start" edge slot="fixed" [ngClass]="{ 'fullscreen': isFullscreen }">
-  <ion-fab-button color="light" (click)="toggle()">
-    <app-geo-icon [geoHazard]="currentGeoHazard"></app-geo-icon>
-  </ion-fab-button>
+  <div class="geo-selector-item">
+    <ion-fab-button color="light" (click)="toggle()">
+      <app-geo-icon [geoHazard]="currentGeoHazard"></app-geo-icon>
+    </ion-fab-button>
+    <ion-label *ngIf="isOpen">{{ getName(currentGeoHazard) | translate }}</ion-label>
+  </div>
   <div class="geo-selector-items" [ngClass]="{ 'open': isOpen }">
     <div class="geo-selector-wrapper" (click)="toggle()"></div>
     <ng-container *ngFor="let geoHazard of geoHazardTypes">

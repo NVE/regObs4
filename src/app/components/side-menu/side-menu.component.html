@@ -43,6 +43,13 @@
         <ion-select-option value="14">2 uker tilbake i tid</ion-select-option>
       </ion-select>
     </ion-item>
+    <ion-item *ngIf="userSettings">
+      <ion-icon slot="start" name="add"></ion-icon>
+      <ion-label>
+        {{'MENU.SHOW_MAP_CENTER' | translate}}
+      </ion-label>
+      <ion-toggle [(ngModel)]="userSettings.showMapCenter" (ionChange)="saveUserSettings()"></ion-toggle>
+    </ion-item>
     <ion-item href="/offline-map" routerDirection="forward">
       <ion-icon slot="start" name="flash"></ion-icon>
       <ion-label>

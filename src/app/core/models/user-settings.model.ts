@@ -9,4 +9,5 @@ export interface UserSetting {
     observationDaysBack: Array<{ geoHazard: GeoHazard, daysBack: number }>;
     completedStartWizard: boolean;
     supportTiles: Array<SupportTile>;
+    showMapCenter: boolean;
 }

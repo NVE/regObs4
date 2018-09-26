@@ -12,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { WarningListPageModule } from '../warning-list/warning-list.module';
 import { AddPageModule } from '../add/add.module';
 import { ObservationListPageModule } from '../observation-list/observation-list.module';
+import { SharedModule } from '../../modules/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { ObservationListPageModule } from '../observation-list/observation-list.
     TranslateModule,
     ObservationListPageModule,
     AddPageModule,
+    SharedModule,
   ],
   declarations: [TabsPage]
 })
