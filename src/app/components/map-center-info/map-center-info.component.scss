@@ -1,6 +1,6 @@
 @import "../../../global.scss";
 .map-center-info {
-	height: 70px;
+	height: var(--map-center-info-height);
 	width: 153px;
 	border-radius: 5px;
     background-color: rgba(43,51,51,0.9);

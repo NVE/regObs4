@@ -3,10 +3,11 @@ import { Events } from '@ionic/angular';
 import { settings } from '../../../settings';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { RegObsObservation } from '../../core/models/regobs-observation.model';
-import { HelperService } from '../../core/services/helpers/helper.service';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { ObserverSubscriber } from 'nano-sql/lib/observable';
+import { MapService } from '../../core/services/map/map.service';
+import { MapView } from '../../core/services/map/map-view.model';
 
 @Component({
   selector: 'app-observation-list',
@@ -17,11 +18,13 @@ export class ObservationListPage implements OnInit, OnDestroy {
   private observations: RegObsObservation[];
   visibleObservations: RegObsObservation[];
   private observationSubscription: ObserverSubscriber;
+  private mapViewSubscription: ObserverSubscriber;
+  private currentMapView: MapView;
 
   constructor(
     private events: Events,
     private observationService: ObservationService,
-    private helperService: HelperService,
+    private mapService: MapService,
     private userSettingService: UserSettingService) {
     this.observations = [];
     this.visibleObservations = [];
@@ -37,12 +40,16 @@ export class ObservationListPage implements OnInit, OnDestroy {
     this.events.subscribe(settings.events.geoHazardChanged, async () => {
       await this.initObservationSubscription();
     });
+    this.mapViewSubscription = this.mapService.getMapViewObservable().subscribe((currentMapView) => {
+      this.currentMapView = currentMapView;
+    });
   }
 
   ngOnDestroy(): void {
     this.events.unsubscribe(settings.events.tabsChanged);
     this.events.unsubscribe(settings.events.geoHazardChanged);
     this.observationSubscription.unsubscribe();
+    this.mapViewSubscription.unsubscribe();
   }
 
   async initObservationSubscription() {
@@ -55,13 +62,11 @@ export class ObservationListPage implements OnInit, OnDestroy {
   }
 
   filterVisibleObservations() {
-    this.helperService.getCurrentMapView().then((viewBounds) => {
-      if (viewBounds) {
-        setTimeout(() => {
-          this.visibleObservations = this.observations.filter(
-            (observation) => viewBounds.bounds.contains(L.latLng(observation.Latitude, observation.Longitude)));
-        }, 0);
-      }
-    });
+    if (this.currentMapView) {
+      setTimeout(() => {
+        this.visibleObservations = this.observations.filter(
+          (observation) => this.currentMapView.bounds.contains(L.latLng(observation.Latitude, observation.Longitude)));
+      }, 0);
+    }
   }
 }

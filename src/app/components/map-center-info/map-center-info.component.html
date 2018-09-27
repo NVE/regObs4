@@ -1,11 +1,11 @@
-<div class="map-center-info" [ngClass]="{visible: isVisible}" *ngIf="$mapView |async as info">
-  <div>
-
+<div class="map-center-info" text-nowrap [ngClass]="{visible: isVisible}">
+  <div *ngIf="placeName && areaName" class="text-truncate">
+    {{ placeName }}, {{ areaName }}
   </div>
-  <div>
-    214 moh.
+  <div *ngIf="elevation !== undefined">
+    {{ elevation }} moh.
   </div>
-  <div>
-    {{ info.center.lat | number:'.4' }} &deg;N, {{ info.center.lng | number:'.4' }} &deg;Ø
+  <div *ngIf="mapView">
+    {{ mapView.center.lat | number:'.4' }} &deg;N, {{ mapView.center.lng | number:'.4' }} &deg;Ø
   </div>
 </div>

@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
-import { merge, map } from 'rxjs/operators';
-import { Observable, concat } from 'rxjs';
+import { merge, map, switchMap } from 'rxjs/operators';
+import { Observable, concat, bindNodeCallback } from 'rxjs';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/forkJoin';
 import { UserSettingService } from '../user-setting/user-setting.service';
+import { parseString } from 'xml2js';
 
 @Injectable({
   providedIn: 'root'
@@ -51,10 +52,10 @@ export class MapSearchService {
   }
 
   searchWorld(text: string, lang: string): Observable<MapSearchResponse[]> {
-    return this.httpClient.get(`${settings.map.search.world.url}?`
-      + `name_startsWith=${text}&maxRows=${settings.map.search.world.maxResults}`
+    return this.httpClient.get(`${settings.map.search.geonames.url}/searchJSON?`
+      + `name_startsWith=${text}&maxRows=${settings.map.search.geonames.maxResults}`
       + `&lang=${lang}`
-      + `&username=${settings.map.search.world.username}`)
+      + `&username=${settings.map.search.geonames.username}`)
       .pipe(map((data: any) => {
         const geoData = data.geonames || [];
         return geoData.filter((item) => item.countryCode !== 'NO').map((item) => {
@@ -68,5 +69,29 @@ export class MapSearchService {
           return resp;
         });
       }));
+  }
+
+  getElevation(lat: number, lng: number): Observable<number> {
+    return this.httpClient.get(`${settings.map.search.geonames.url}/srtm1JSON?`
+      + `lat=${lat}&lng=${lng}&username=${settings.map.search.geonames.username}`)
+      .pipe(map((data: any) => data.srtm1));
+  }
+
+  reverseGeocodeWorld(lat: number, lng: number) {
+    return this.httpClient.get(`${settings.map.search.geonames.url}/findNearbyJSON?`
+      + `lat=${lat}&lng=${lng}&username=${settings.map.search.geonames.username}`);
+  }
+
+  reverseGeocodeNorway(lat: number, lng: number) {
+    return this.httpClient.get(`https://openwps.statkart.no/skwms1/wps.elevation2?`
+      + `request=Execute&service=WPS&version=1.0.0&identifier=elevationJSON&datainputs=`
+      + `lat=${lat};lon=${lng};epsg=4326`)
+      .pipe(switchMap((res) => bindNodeCallback(parseString)(res)));
+  }
+
+  async getLocationName(lat: number, lng: number) {
+    const userSettings = await this.userSettingService.getUserSettings();
+    return this.httpClient.get(`${settings.services.regObs.apiUrl[userSettings.appMode]}/Location/GetName`
+      + `?latitude=${lat}&longitude=${lng}&geoHazardId=${userSettings.currentGeoHazard}`);
   }
 }

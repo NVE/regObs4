@@ -74,7 +74,11 @@ ion-modal {
 }
 
 .leaflet-bottom {
-    bottom: calc(var(--map-item-height) + var(--map-center-info-height)) !important;
+    bottom: calc(var(--map-item-height) + var(--map-center-info-height) + 15px) !important;
+}
+
+.leaflet-left {
+    left: 7px !important;
 }
 
 app-geo-icon {
@@ -95,4 +99,9 @@ app-geo-icon {
                 fill: var(--geo-icon-color, #000), 
         }
     }
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

@@ -47,6 +47,7 @@
     "@turf/turf": "^5.1.6",
     "@types/leaflet": "^1.2.9",
     "@types/leaflet.markercluster": "^1.0.3",
+    "@types/xml2js": "^0.4.3",
     "angular-svg-icon": "^6.0.0",
     "cordova-android": "7.1.1",
     "cordova-browser": "5.0.4",
@@ -80,7 +81,10 @@
     "rxjs": "^6.2.2",
     "rxjs-compat": "^6.2.2",
     "sentry-cordova": "^0.12.2",
+    "stream": "0.0.2",
+    "timers": "^0.1.1",
     "tunnel-agent": "^0.6.0",
+    "xml2js": "^0.4.19",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

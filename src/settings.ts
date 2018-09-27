@@ -83,12 +83,13 @@ export const settings = {
                 maxResults: 20,
                 exactFirst: true,
             },
-            world: {
-                url: 'https://secure.geonames.org/searchJSON',
+            geonames: {
+                url: 'https://secure.geonames.org',
                 maxResults: 20,
                 username: 'regobs',
             }
-        }
+        },
+        metersLimitForUpdateElevation: 500,
     },
     snowRegionsGeoJsonName: 'OMRAADENAV',
     events: {
