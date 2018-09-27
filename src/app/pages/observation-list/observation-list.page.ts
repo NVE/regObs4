@@ -8,6 +8,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { ObserverSubscriber } from 'nano-sql/lib/observable';
 import { MapService } from '../../core/services/map/map.service';
 import { MapView } from '../../core/services/map/map-view.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-observation-list',
@@ -17,7 +18,7 @@ import { MapView } from '../../core/services/map/map-view.model';
 export class ObservationListPage implements OnInit, OnDestroy {
   private observations: RegObsObservation[];
   visibleObservations: RegObsObservation[];
-  private observationSubscription: ObserverSubscriber;
+  private observationSubscription: Subscription;
   private mapViewSubscription: ObserverSubscriber;
   private currentMapView: MapView;
 

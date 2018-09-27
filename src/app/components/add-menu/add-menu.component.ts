@@ -16,7 +16,6 @@ export class AddMenuComponent implements OnInit {
   }
 
   async showFabMenu(event: Event) {
-    console.log(event.srcElement);
     const ev = {
       ...event, target: {
         ...event.target, getBoundingClientRect: () => {
@@ -36,7 +35,6 @@ export class AddMenuComponent implements OnInit {
       cssClass: 'menu-popover',
     });
     popover.onWillDismiss().then(() => {
-      console.log('dismissed');
       this.menuFab.close();
     });
     return await popover.present();

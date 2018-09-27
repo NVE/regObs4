@@ -22,9 +22,8 @@
     --leaflet-bottom: 0px;
     --map-item-height: 0px;
     --map-center-info-height: 0px;
-
-    // TODO: Change theme.scss instead!
-    --ion-color-primary: #5C90A5;
+    --ion-tabbar-text-color-active: var(--ion-color-primary);
+    --ion-color-primary: #5C90A5; // TODO: Change theme.scss instead!
     --ion-color-primary-rgb: 72,138,255;
     --ion-color-primary-contrast: #fff;
     --ion-color-primary-contrast-rgb: 255,255,255;

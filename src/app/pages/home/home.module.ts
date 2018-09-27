@@ -44,7 +44,6 @@ import { MapCenterInfoComponent } from '../../components/map-center-info/map-cen
     MapSearchComponent,
     FullscreenToggleComponent,
     GpsCenterComponent,
-    AddMenuComponent,
     GeoIconComponent,
     MapCenterInfoComponent,
   ],

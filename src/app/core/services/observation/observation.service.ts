@@ -11,6 +11,9 @@ import { GeoHazard } from '../../models/geo-hazard.enum';
 import * as moment from 'moment';
 import 'moment-timezone';
 import { Storage } from '@ionic/storage';
+import * as Rx from 'rxjs';
+import { throttleTime } from 'rxjs/operators';
+import '../../helpers/nano-sql/nanoObserverToRxjs';
 
 const tableName = 'registration';
 const REGISTRATION_LAST_UPDATED = 'registration_last_updated';
@@ -98,20 +101,29 @@ export class ObservationService {
   //     });
   // }
 
-  getObservationsAsObservable(geoHazard?: GeoHazard, fromDate?: Date, user?: string): Observer<RegObsObservation[]> {
+  getObservationsAsObservable(geoHazard?: GeoHazard, fromDate?: Date, user?: string): Rx.Observable<RegObsObservation[]> {
     return nSQL().observable<RegObsObservation[]>(() => {
       return nSQL(tableName).query('select').where((reg: RegObsObservation) => {
         return geoHazard ? reg.GeoHazardTid === geoHazard : true &&
           fromDate ? moment.tz(reg.DtObsTime, settings.observations.timeZone).isAfter(fromDate) : true &&
             user ? reg.NickName === user : true;
       }).emit();
-    });
+    }).toRxJS().pipe(throttleTime(1000));
   }
+
+  // createObservable<T>(nanoSqlObservable: Observer<T>): Rx.Observable<T> {
+  //   return Rx.Observable.create((observer) => {
+  //     const subscription = nanoSqlObservable.subscribe((val) => {
+  //       observer.next(val);
+  //     });
+  //     return () => subscription.unsubscribe();
+  //   });
+  // }
 
   getObserableCount(): Observer<RowCount[]> {
     return nSQL().observable<RowCount[]>(() => {
       return nSQL(tableName).query('select', ['COUNT(*) as count']).emit();
-    });
+    }).debounce(500);
   }
 
   async getLastUpdated(): Promise<Date> {

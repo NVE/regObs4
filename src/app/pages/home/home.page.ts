@@ -44,7 +44,7 @@ export class HomePage implements OnInit, OnDestroy {
     showCoverageOnHover: false,
     maxClusterRadius: 30
   });
-  observationSubscription: ObserverSubscriber;
+  observationSubscription: Subscription;
   mapItemBarSubscription: Subscription;
   markers: Array<MapItemMarker>;
   toastDismissTimeout: NodeJS.Timer;

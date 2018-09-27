@@ -1,19 +1,17 @@
 import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
 import { Events, Tabs } from '@ionic/angular';
 import { settings } from '../../../settings';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
-  styleUrls: ['tabs.page.scss'],
-  providers: [AddMenuComponent],
+  styleUrls: ['tabs.page.scss']
 })
 export class TabsPage implements OnInit, OnDestroy {
 
   fullscreen = false;
   @ViewChild(Tabs) private tabs: Tabs;
-  constructor(private addMenu: AddMenuComponent, private events: Events) {
+  constructor(private events: Events) {
 
   }
 
