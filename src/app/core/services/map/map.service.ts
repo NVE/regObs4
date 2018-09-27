@@ -36,6 +36,6 @@ export class MapService {
     }).map((result) => {
       const firstItem: { id: string, bounds: L.LatLngExpression[], center: L.LatLngExpression } = result[0];
       return { bounds: L.latLngBounds(firstItem.bounds), center: L.latLng(firstItem.center) };
-    }).debounce(500);
+    }).toRxJS();
   }
 }

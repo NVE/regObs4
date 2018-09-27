@@ -15,6 +15,7 @@ import { SideMenuComponent } from './components/side-menu/side-menu.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { SupportTilesMenuComponent } from './components/side-menu/support-tiles-menu/support-tiles-menu.component';
 import { FormsModule } from '@angular/forms';
+import './core/helpers/nano-sql/nanoObserverToRxjs';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');

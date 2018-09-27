@@ -12,8 +12,7 @@ import * as moment from 'moment';
 import 'moment-timezone';
 import { Storage } from '@ionic/storage';
 import * as Rx from 'rxjs';
-import { throttleTime } from 'rxjs/operators';
-import '../../helpers/nano-sql/nanoObserverToRxjs';
+import { debounceTime } from 'rxjs/operators';
 
 const tableName = 'registration';
 const REGISTRATION_LAST_UPDATED = 'registration_last_updated';
@@ -108,17 +107,8 @@ export class ObservationService {
           fromDate ? moment.tz(reg.DtObsTime, settings.observations.timeZone).isAfter(fromDate) : true &&
             user ? reg.NickName === user : true;
       }).emit();
-    }).toRxJS().pipe(throttleTime(1000));
+    }).debounce(1000).toRxJS();
   }
-
-  // createObservable<T>(nanoSqlObservable: Observer<T>): Rx.Observable<T> {
-  //   return Rx.Observable.create((observer) => {
-  //     const subscription = nanoSqlObservable.subscribe((val) => {
-  //       observer.next(val);
-  //     });
-  //     return () => subscription.unsubscribe();
-  //   });
-  // }
 
   getObserableCount(): Observer<RowCount[]> {
     return nSQL().observable<RowCount[]>(() => {

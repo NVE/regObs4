@@ -13,7 +13,7 @@
     <ng-component>
 
     </ng-component>
-    <app-observation-list-card [obs]="obs" *ngFor="let obs of visibleObservations">
+    <app-observation-list-card [obs]="obs" *ngFor="let obs of $observations | async">
     </app-observation-list-card>
   </ion-list>
   <app-add-menu></app-add-menu>
