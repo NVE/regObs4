@@ -5,7 +5,7 @@
 	border-radius: 5px;
     background-color: rgba(43,51,51,0.9);
     position: absolute;
-    bottom: 12px;
+    bottom: calc(var(--map-item-height) + 12px);
     left: 11px;
     z-index: $z-index-over-map;
     color: #fff;

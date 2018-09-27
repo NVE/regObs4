@@ -16,13 +16,20 @@
     --ion-background-color: #DCECF2;
     --ion-item-background-color: #fff;
     --ion-text-color-step-600: #444444;
-    --ion-color-primary: #5C90A5;
     --ion-tabbar-text-color: #172733;
     --ion-tabbar-background-color-focused: #F4F8F9;
     --ion-tabbar-background-color: #FFFFFF;
     --leaflet-bottom: 0px;
     --map-item-height: 0px;
     --map-center-info-height: 0px;
+
+    // TODO: Change theme.scss instead!
+    --ion-color-primary: #5C90A5;
+    --ion-color-primary-rgb: 72,138,255;
+    --ion-color-primary-contrast: #fff;
+    --ion-color-primary-contrast-rgb: 255,255,255;
+    --ion-color-primary-shade: #5C90A5;
+    --ion-color-primary-tint: #5C90A5;
 }
 
 

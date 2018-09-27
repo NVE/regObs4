@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PopoverMenuComponent } from '../popover-menu/popover-menu.component';
 import { Fab, PopoverController } from '@ionic/angular';
+import { CustomAnimation } from '../../core/animations/custom.animation';
 
 @Component({
   selector: 'app-add-menu',
@@ -32,7 +33,7 @@ export class AddMenuComponent implements OnInit {
       mode: 'md',
       event: ev,
       showBackdrop: true,
-      cssClass: 'menu-popover'
+      cssClass: 'menu-popover',
     });
     popover.onWillDismiss().then(() => {
       console.log('dismissed');

@@ -75,6 +75,8 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     if (this.mapView) {
       if (!this.lastMapCenter || this.lastMapCenter.distanceTo(this.mapView.center) >= settings.map.metersLimitForUpdateElevation) {
         this.lastMapCenter = this.mapView.center;
+        // TODO: Use nve location name within norway and reverse geocode for world?
+        // or else add user setting and wizard to select if app should be used in Norway.
         this.updateElevation();
         this.updatePlaceName();
       }
