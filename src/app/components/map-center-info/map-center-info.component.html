@@ -1,4 +1,4 @@
-<div class="map-center-info" text-nowrap [ngClass]="{visible: isVisible}">
+<div class="map-center-info" (click)="copyToClipboard()" text-nowrap [ngClass]="{visible: isVisible}">
   <div *ngIf="placeName && areaName" class="text-truncate">
     {{ placeName }}, {{ areaName }}
   </div>

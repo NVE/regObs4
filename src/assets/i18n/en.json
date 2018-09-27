@@ -145,10 +145,13 @@
         "CAUTION_AREA": "Caution area",
         "MARITINE_BORDER": "Sea border"
     },
-    "TABS":{
+    "TABS": {
         "MAP": "Map",
         "LIST": "List",
         "TRIPS": "Trips",
         "WARNINGS": "Warnings"
+    },
+    "MAP_CENTER_INFO": {
+        "COPIED_TO_CLIPBOARD": "Copied to clipboard"
     }
 }

@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy, HostBinding, Inject } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { Events } from '@ionic/angular';
+import { Events, ToastController, Platform } from '@ionic/angular';
 import { settings } from '../../../settings';
 import { DOCUMENT } from '@angular/common';
 import { MapService } from '../../core/services/map/map.service';
 import { MapView } from '../../core/services/map/map-view.model';
-import { Observer } from 'nano-sql/lib/observable';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { MapSearchService } from '../../core/services/map-search/map-search.service';
 import * as L from 'leaflet';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-map-center-info',
@@ -27,6 +28,10 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private events: Events,
     private mapService: MapService,
     private mapSerachService: MapSearchService,
+    private clipboard: Clipboard,
+    private toastController: ToastController,
+    private translateService: TranslateService,
+    private platform: Platform,
     @Inject(DOCUMENT) private document: Document) {
 
   }
@@ -104,5 +109,39 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
           }, 0);
         }
       });
+  }
+
+  private useNativeClipboardPlugin() {
+    return window.hasOwnProperty('cordova') && (this.platform.is('android') || this.platform.is('ios'));
+  }
+
+  async copyToClipboard() {
+    const text = `${(this.placeName ? `${this.placeName}, ${this.areaName}, ` : '')}${this.mapView.center.lat}, ${this.mapView.center.lng}`;
+    if (this.useNativeClipboardPlugin()) {
+      await this.clipboard.copy(text);
+    } else {
+      this.copyToClipBoardWeb(text);
+    }
+    const toastText = await this.translateService.get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD').toPromise();
+    const toast = await this.toastController.create({
+      message: toastText,
+      duration: 2000,
+    });
+    toast.present();
+  }
+
+  // TODO: Make service?
+  private copyToClipBoardWeb(val: string) {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
   }
 }
