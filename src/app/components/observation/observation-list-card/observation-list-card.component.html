@@ -6,15 +6,15 @@
       <ion-icon name="calendar"></ion-icon> {{ dtObsDate | date: 'dd.MM.yyyy HH:mm' }}
     </p>
     <p>
-      <ion-icon name="contact"></ion-icon> bli@nve.no
+      <ion-icon name="contact"></ion-icon> {{obs.NickName}}
     </p>
     <p class="observation-types">
-      <span class="badge">
-        Fritekst, vannstand, skader
-      </span>
+      <ion-badge>
+        {{ getRegistrationNames() }}
+      </ion-badge>
     </p>
   </ion-label>
   <ion-thumbnail slot="end">
-    <img *ngIf="hasImage" [src]="imgSrc">
+    <ion-img *ngIf="hasImage" [src]="imgSrc"></ion-img>
   </ion-thumbnail>
 </ion-item>

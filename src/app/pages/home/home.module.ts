@@ -13,7 +13,6 @@ import { MapSearchComponent } from '../../components/map-controls/map-search/map
 import { FullscreenToggleComponent } from '../../components/map-controls/fullscreen-toggle/fullscreen-toggle.component';
 import { GpsCenterComponent } from '../../components/map-controls/gps-center/gps-center.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
 import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
 import { ModalSearchPageModule } from '../modal-search/modal-search.module';
 import { SharedModule } from '../../modules/shared/shared.module';

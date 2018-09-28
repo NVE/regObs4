@@ -21,8 +21,6 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         this.currentDownloads = new Map();
     }
 
-    init() { }
-
     async downloadFile(
         path: string,
         filename: string,

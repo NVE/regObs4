@@ -1,4 +1,7 @@
 ion-item {
+
+    --inner-border-width: 0 0 0 0;
+
     margin: 10px 10px 10px 10px;
 
     ion-label {
@@ -23,19 +26,24 @@ ion-item {
     .observation-types {
         padding-top: 10px;
         padding-bottom: 10px;
-
-        .badge {
-            border: 0.5px solid #54666C;
-            border-radius: 12px;
-            background-color: #FAFEFF;
-            font-size: 10px;
-            font-weight: 500;
-            line-height: 12px;
-            padding-left: 8px;
-            padding-right: 8px;
-            padding-top: 3px;
-            padding-bottom: 3px;
-            color: #54666C;
-        }
     }
+
+    // .observation-types {
+    //     padding-top: 10px;
+    //     padding-bottom: 10px;
+
+    //     .badge {
+    //         border: 0.5px solid #54666C;
+    //         border-radius: 12px;
+    //         background-color: #FAFEFF;
+    //         font-size: 10px;
+    //         font-weight: 500;
+    //         line-height: 12px;
+    //         padding-left: 8px;
+    //         padding-right: 8px;
+    //         padding-top: 3px;
+    //         padding-bottom: 3px;
+    //         color: #54666C;
+    //     }
+    // }
 }

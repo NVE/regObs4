@@ -5,6 +5,7 @@ import { ShadowCssDirective } from '../../directives/shadow-css.directive';
 import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { OfflineImageComponent } from '../../components/offline-image/offline-image.component';
 
 @NgModule({
     imports: [
@@ -14,7 +15,8 @@ import { IonicModule } from '@ionic/angular';
     ],
     declarations: [
         ShadowCssDirective,
-        AddMenuComponent
+        AddMenuComponent,
+        OfflineImageComponent
     ],
     exports: [
         CommonModule,
@@ -22,7 +24,8 @@ import { IonicModule } from '@ionic/angular';
         IonicModule,
         TranslateModule,
         ShadowCssDirective,
-        AddMenuComponent
+        AddMenuComponent,
+        OfflineImageComponent
     ]
 })
 export class SharedModule { }

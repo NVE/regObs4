@@ -8,8 +8,7 @@ import { RegionSummary } from './region-summary.model';
 import { nSQL } from 'nano-sql';
 import { Observer } from 'nano-sql/lib/observable';
 import { HttpClient } from '@angular/common/http';
-
-const warningSummaryTable = 'warningsummary';
+import { NanoSql } from '../../../../nanosql';
 
 @Injectable({
   providedIn: 'root'
@@ -22,23 +21,15 @@ export class WarningService {
 
   }
 
-  init() {
-    nSQL(warningSummaryTable)
-      .model([
-        { key: 'Id', type: 'number', props: ['pk'] },
-        { key: '*', type: '*' },
-      ]);
-  }
-
   async updateAvalancheWarnings() {
     console.log('[INFO] Updating avalanche warning region summary');
     const result = await this.getAvalancheWarningRegionSummarySimpleApi();
-    await nSQL().loadJS(warningSummaryTable, result);
+    await nSQL().loadJS(NanoSql.TABLES.WARNING_SUMMARY.name, result);
   }
 
   getWarningRegionSummaryAsObservable(id?: number): Observer<RegionSummary[]> {
     return nSQL().observable<RegionSummary[]>(() => {
-      return nSQL(warningSummaryTable).query('select')
+      return nSQL(NanoSql.TABLES.WARNING_SUMMARY.name).query('select')
         .where(['Id', id ? '=' : '!=', id ? id : null]).emit();
     });
   }

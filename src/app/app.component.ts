@@ -5,16 +5,11 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { ObservationService } from './core/services/observation/observation.service';
-import { TripLoggerService } from './core/services/trip-logger/trip-logger.service';
-import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
-import { nSQL } from 'nano-sql';
 import { settings } from '../settings';
 import { WarningService } from './core/services/warning/warning.service';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
-import { OfflineMapService } from './core/services/offline-map/offline-map.service';
-import { BackgroundDownloadService } from './core/services/background-download/background-download.service';
-import { MapService } from './core/services/map/map.service';
+import { NanoSql } from '../nanosql';
 
 @Component({
   selector: 'app-root',
@@ -29,15 +24,11 @@ export class AppComponent {
     private translate: TranslateService,
     private userSettings: UserSettingService,
     private observationService: ObservationService,
-    private tripLoggerService: TripLoggerService,
     private navController: NavController,
     private warningService: WarningService,
     private events: Events,
     private deeplinks: Deeplinks,
     private backgroundFetch: BackgroundFetch,
-    private offlineMapService: OfflineMapService,
-    private backgroundDownloadService: BackgroundDownloadService,
-    private mapService: MapService,
   ) {
     this.initializeApp();
   }
@@ -51,6 +42,8 @@ export class AppComponent {
         await this.initNanoSqlDatabase();
         const userSettings = await this.userSettings.getUserSettings();
         this.translate.use(userSettings.language);
+        // TODO: Subscribe to user settings observable instead
+
         this.statusBar.styleBlackTranslucent();
         this.statusBar.overlaysWebView(this.platform.is('ios'));
         if (!userSettings.completedStartWizard) {
@@ -87,17 +80,7 @@ export class AppComponent {
   }
 
   async initNanoSqlDatabase() {
-    nSQL().config({
-      id: settings.db.nanoSql.dbName,
-      mode: getMode()
-    });
-    this.observationService.init();
-    this.tripLoggerService.init();
-    this.warningService.init();
-    this.offlineMapService.init();
-    this.backgroundDownloadService.init();
-    this.mapService.init();
-    await nSQL().connect();
+    await NanoSql.init();
     this.events.publish('nanoSql: connected');
   }
 

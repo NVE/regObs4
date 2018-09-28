@@ -5,13 +5,10 @@ import { nSQL } from 'nano-sql';
 import { Observer, ObserverSubscriber } from 'nano-sql/lib/observable';
 import * as moment from 'moment';
 import { Events, Platform } from '@ionic/angular';
-import { settings } from '../../../../settings';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import * as JSZip from 'jszip';
 import { OfflineTile } from './offline-tile.model';
-
-const tableName = 'offlinemap';
-const tableNameTiles = 'offlinemaptiles';
+import { NanoSql } from '../../../../nanosql';
 
 @Injectable({
   providedIn: 'root'
@@ -27,23 +24,12 @@ export class OfflineMapService {
 
   }
 
-  init() {
-    nSQL(tableName)
-      .model([
-        { key: 'name', type: 'string', props: ['pk'] },
-        { key: '*', type: '*' },
-      ])
-      .table(tableNameTiles)
-      .model([
-        { key: 'url', type: 'string', props: ['pk'] },
-        { key: 'tileId', type: 'string', props: ['idx'] },
-        { key: 'mapName', type: 'string' },
-      ]);
-
-    this.events.subscribe(settings.events.nanosqlConnected, async () => {
-      await this.continueDownload();
-    });
-  }
+  // init() {
+  //   this.events.subscribe(settings.events.nanosqlConnected, async () => {
+  //     await this.continueDownload();
+  //   });
+  // }
+  // TODO: Implement continue download when app restart
 
   private isInQueue(map: OfflineMap) {
     return map.downloadStart && !map.downloadComplete;
@@ -58,12 +44,12 @@ export class OfflineMapService {
   }
 
   getOfflineMaps(): Promise<OfflineMap[]> {
-    return nSQL(tableName).query('select').exec() as Promise<OfflineMap[]>;
+    return nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('select').exec() as Promise<OfflineMap[]>;
   }
 
   getOfflineMapsAsObservable(): Observer<OfflineMap[]> {
     return nSQL().observable<OfflineMap[]>(() => {
-      return nSQL(tableName).query('select').emit();
+      return nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('select').emit();
     })
       .map((x) => this.mergeOfflineMaps(x))
       .debounce(500); // Debounce so progress don't get updated more than each 500ms
@@ -120,7 +106,7 @@ export class OfflineMapService {
           progress: 0,
           downloadComplete: null,
         };
-        await nSQL(tableName)
+        await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
           .query('upsert', mapToSave)
           .exec();
 
@@ -138,14 +124,15 @@ export class OfflineMapService {
   }
 
   private async getSavedMap(name: string): Promise<OfflineMap> {
-    const result = await nSQL(tableName).query('select').where((map: OfflineMap) => map.name === name).exec() as OfflineMap[];
+    const result = await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
+      .query('select').where((map: OfflineMap) => map.name === name).exec() as OfflineMap[];
     return result[0];
   }
 
   private async deleteMapFromDb(name: string) {
-    await nSQL(tableName)
+    await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
       .query('delete', { name }).exec();
-    await nSQL(tableNameTiles)
+    await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
       .query('delete').where((tile: OfflineTile) => tile.mapName === name).exec();
   }
 
@@ -167,7 +154,7 @@ export class OfflineMapService {
     // map.size = progress.totalBytesToReceive;
     map.progress = progress;
 
-    await nSQL(tableName)
+    await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
       .query('upsert', map)
       .exec();
     // } else {
@@ -186,16 +173,17 @@ export class OfflineMapService {
     await this.saveMetaData(map);
     map.downloadComplete = moment().unix();
     map.progress = { percentage: 1.0 };
-    await nSQL(tableName)
+    await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
       .query('upsert', map)
       .exec();
   }
 
   private async saveMetaData(map: OfflineMap) {
+    // TODO: Read metadata from json instead!
     const tiles = (await this.backgroundDownloadService.getAllFiles(map.filePath, map.name)).map((file) =>
       this.getOfflineTileFromFile(map.name, file.directory, file.name, file.url)
     );
-    await nSQL(tableName).loadJS(tableNameTiles, tiles);
+    await nSQL().loadJS(NanoSql.TABLES.OFFLINE_MAP_TILES.name, tiles);
   }
 
   // Assumes map directoru: /{mapName}/{tileName}/{z}/
@@ -224,7 +212,7 @@ export class OfflineMapService {
     for (const map of maps) {
       await this.remove(map);
     }
-    await nSQL(tableName).query('drop').exec();
-    await nSQL(tableNameTiles).query('drop').exec();
+    await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('drop').exec();
+    await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('drop').exec();
   }
 }

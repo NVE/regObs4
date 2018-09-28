@@ -153,5 +153,9 @@
     },
     "MAP_CENTER_INFO": {
         "COPIED_TO_CLIPBOARD": "Copied to clipboard"
+    },
+    "OBSERVATION_LIST": {
+        "OBSERVATIONS": "Observations",
+        "NO_OBSERVATIONS": "No observations in current map view"
     }
 }

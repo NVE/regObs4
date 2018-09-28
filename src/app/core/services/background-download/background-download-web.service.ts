@@ -5,8 +5,7 @@ import { HttpRequest, HttpClient, HttpEventType } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { nSQL } from 'nano-sql';
 import { ProgressStep } from '../offline-map/progress-step.model';
-
-const tableName = 'webfiles';
+import { NanoSql } from '../../../../nanosql';
 
 @Injectable()
 export class BackgroundDownloadWebService implements BackgroundDownloadService {
@@ -16,14 +15,6 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
 
     constructor(private httpClient: HttpClient) {
         this.currentDownloads = new Map();
-    }
-
-    init() {
-        nSQL(tableName)
-            .model([
-                { key: 'name', type: 'string', props: ['pk'] },
-                { key: 'data', type: 'blob' },
-            ]);
     }
 
     downloadFile(
@@ -64,15 +55,15 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
         this.removeSubscription(filename);
     }
 
-    private saveFile(name: string, data: Blob) {
-        return nSQL(tableName)
-            .query('upsert', { name, data })
+    private saveFile(url: string, data: Blob) {
+        return nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
+            .query('upsert', { url, data, type: 'image/png' })
             .exec();
     }
 
     async deleteFile(directory: string, filename: string): Promise<void> {
-        await nSQL(tableName)
-            .query('delete', { name: filename })
+        await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
+            .query('delete', { url: filename })
             .exec();
     }
 
@@ -85,7 +76,7 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
     }
 
     async getFileUrl(directory: string, filename: string): Promise<string> {
-        const files = await nSQL(tableName)
+        const files = await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
             .query('select', { name: filename })
             .exec() as { name: string, data: Blob }[];
         if (files.length > 0) {

@@ -1,7 +1,6 @@
 import { Progress } from '../offline-map/progress.model';
 
 export abstract class BackgroundDownloadService {
-  abstract init();
   abstract downloadFile(
     path: string,
     filename: string,

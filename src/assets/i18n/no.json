@@ -153,5 +153,9 @@
     },
     "MAP_CENTER_INFO": {
         "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen"
+    },
+    "OBSERVATION_LIST": {
+        "OBSERVATIONS": "Observasjoner",
+        "NO_OBSERVATIONS": "Ingen observasjoner i kartutsnittet"
     }
 }

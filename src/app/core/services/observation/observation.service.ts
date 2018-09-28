@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
 import { RegObsObservation } from '../../models/regobs-observation.model';
-import { nSQL, NanoSQLInstance } from 'nano-sql';
+import { nSQL } from 'nano-sql';
 import { Observer } from 'nano-sql/lib/observable';
 import { ApiService } from '../api/api.service';
 import { HelperService } from '../helpers/helper.service';
@@ -12,9 +12,9 @@ import * as moment from 'moment';
 import 'moment-timezone';
 import { Storage } from '@ionic/storage';
 import * as Rx from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { NanoSql } from '../../../../nanosql';
+import { startWith, debounceTime, publishReplay } from 'rxjs/operators';
 
-const tableName = 'registration';
 const REGISTRATION_LAST_UPDATED = 'registration_last_updated';
 
 @Injectable({
@@ -37,19 +37,10 @@ export class ObservationService {
     this._isLoading = new Subject<boolean>();
   }
 
-  init() {
-    nSQL(tableName)
-      .model([
-        { key: 'RegId', type: 'number', props: ['pk'] },
-        { key: 'GeoHazardTid', type: 'number', props: ['idx'] },
-        { key: '*', type: '*' },
-      ]);
-  }
-
   async deleteOldObservations() {
     const nickName = 'dummy'; // TODO: get logged in user
     const deleteOldRecordsFrom = moment().subtract(settings.observations.daysBackToKeepBeforeCleanup, 'days').startOf('day');
-    return nSQL(tableName).query('delete')
+    return nSQL(NanoSql.TABLES.REGISTRATION.name).query('delete')
       .where((reg: RegObsObservation) => {
         return moment.tz(reg.DtObsTime, settings.observations.timeZone).isBefore(deleteOldRecordsFrom)
           && reg.NickName !== nickName;
@@ -66,7 +57,7 @@ export class ObservationService {
         FromDate: fromDate.toDate()
       });
       console.log(`[INFO] Got ${searchResult.Results.length} new observations`);
-      await nSQL(tableName).loadJS(tableName, searchResult.Results);
+      await nSQL(NanoSql.TABLES.REGISTRATION.name).loadJS(NanoSql.TABLES.REGISTRATION.name, searchResult.Results);
       await this.storage.ready();
       console.log('[INFO] Updating last updated');
       this.storage.set(REGISTRATION_LAST_UPDATED, moment().toISOString());
@@ -102,17 +93,17 @@ export class ObservationService {
 
   getObservationsAsObservable(geoHazard?: GeoHazard, fromDate?: Date, user?: string): Rx.Observable<RegObsObservation[]> {
     return nSQL().observable<RegObsObservation[]>(() => {
-      return nSQL(tableName).query('select').where((reg: RegObsObservation) => {
+      return nSQL(NanoSql.TABLES.REGISTRATION.name).query('select').where((reg: RegObsObservation) => {
         return geoHazard ? reg.GeoHazardTid === geoHazard : true &&
           fromDate ? moment.tz(reg.DtObsTime, settings.observations.timeZone).isAfter(fromDate) : true &&
             user ? reg.NickName === user : true;
       }).emit();
-    }).debounce(1000).toRxJS();
+    }).toRxJS().pipe(debounceTime(500));
   }
 
   getObserableCount(): Observer<RowCount[]> {
     return nSQL().observable<RowCount[]>(() => {
-      return nSQL(tableName).query('select', ['COUNT(*) as count']).emit();
+      return nSQL(NanoSql.TABLES.REGISTRATION.name).query('select', ['COUNT(*) as count']).emit();
     }).debounce(500);
   }
 
@@ -129,6 +120,6 @@ export class ObservationService {
   async drop() {
     await this.storage.ready();
     await this.storage.remove(REGISTRATION_LAST_UPDATED);
-    return nSQL(tableName).query('drop').exec();
+    return nSQL(NanoSql.TABLES.REGISTRATION.name).query('drop').exec();
   }
 }
