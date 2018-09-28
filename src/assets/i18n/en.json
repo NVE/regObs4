@@ -1,161 +1,166 @@
 {
-    "TRIP": {
-        "TITLE": "Trips"
-    },
-    "MY_OBSERVATIONS": {
-        "TITLE": "My observations"
-    },
-    "WARNING_LIST": {
-        "TITLE": "Varsom"
-    },
-    "SETTINGS": {
-        "TITLE": "Settings",
-        "APPMODE": "App mode",
-        "LANGUAGE": "Language",
-        "RESET": "Reset"
-    },
-    "MENU": {
-        "GENERAL": "General",
-        "MAP_SETTINGS": "Map settings",
-        "SHOW_OBSERVATIONS": "Show observations",
-        "SHOW_TRIPS": "Show trips",
-        "MAP_SETTINGS_FOR": "Map settings for",
-        "SHOW": "Show",
-        "OPACITY": "Opacity",
-        "MAP_LEGENDS": "Legends for map",
-        "SHOW_MAP_CENTER": "Show map center"
-    },
-    "OFFLINE_MAP": {
-        "TITLE": "Offline map"
-    },
-    "GEO_HAZARDS": {
-        "SNOW": "Snow",
-        "ICE": "Ice",
-        "DIRT": "Dirt",
-        "WATER": "Water"
-    },
-    "START_WIZARD": {
-        "CHOOSE_LANGUAGE": {
-            "HEADER": "Choose language",
-            "HEADER_SECONDARY_LANGUAGE": "Velg språk",
-            "NORWEGIAN": "Norwegian",
-            "ENGLISH": "English",
-            "NORWEGIAN_SECONDARY_LANGUAGE": "Norsk",
-            "ENGLISH_SECONDARY_LANGUAGE": "Engelsk"
-        },
-        "PAGE_1": {
-            "HEADER": "Be up to date!",
-            "LINE_1": "Plan your tour with regObs and Varsom.",
-            "LINE_2": "Read warings. View observations."
-        },
-        "PAGE_2": {
-            "HEADER": "Geohazard maps",
-            "LINE_1": "View where you are and if you are close to dangers in the terrain. Use support maps:",
-            "LINE_2": "Steepness map, dangerous ice and flood zones."
-        },
-        "PAGE_3": {
-            "HEADER": "What do you observe?",
-            "LINE_1": "Share your observations, images and evaluations with others."
-        },
-        "PAGE_4": {
-            "HEADER": "What and how?",
-            "LINE_1": "Choose what to see and share on regObs. You can read about sharing observations at varsom.no/snøskredskolen and varsom.no/isskolen"
-        },
-        "CHOOSE_INTEREST": {
-            "HEADER": "Choose your interest:",
-            "INTEREST_SNOW": "Take me to the snow!",
-            "INTEREST_ICE": "Ice thickness, load capacity and skating conditions!",
-            "INTEREST_WATER": "Water level, flow and damages!",
-            "INTEREST_DIRT": "Landslide!"
-        },
-        "SKIP_START": "Skip this and start using the app"
-    },
-    "MAP_ITEM_BAR": {
-        "OBSERVATION": "Observation",
-        "AWAY": "Away"
-    },
-    "DAYS": {
-        "SHORT": {
-            "1": "Mon",
-            "2": "Tue",
-            "3": "Wed",
-            "4": "Thu",
-            "5": "Fri",
-            "6": "Sat",
-            "7": "Sun"
-        }
-    },
-    "TRIP_LOG": {
-        "NOT_STARTED": "New trip",
-        "PAUSED": "Paused",
-        "RUNNING": "GPS log running",
-        "STOPPED": "Trip log completed",
-        "START": "Start",
-        "STOP": "Stop",
-        "COMPLETE": "Complete",
-        "CONTINUE": "Continue"
-    },
-    "GEOLOCATION_SERVICE": {
-        "NOTIFICATION_TITLE": "Logging trip",
-        "NOTIFICATION_TEXT": ""
-    },
-    "SUPPORT_MAP": {
-        "STEEPNESS_MAP_DESCRIPTION": "Steepness map",
-        "CLAY_ZONES_MAP_DESCRIPTION": "Clay zones",
-        "FLOOD_ZONES_MAP_DESCRIPTION": "Flood zones",
-        "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice",
-        "NO_OPACITY": "Solid",
-        "STEEPNESS_COLOR_INFO": "Colors gives the steepness in terrain",
-        "IN_DEGREES": "In degrees",
-        "ICE_MAP_DESCRIPTION": "The support map shows parts of watercourses that behave unpredictably throughout the winter due to regulations for power generation",
-        "ICE_LEGEND_TEXT_1": "Fractured ice along the shore",
-        "ICE_LEGEND_TEXT_2": "Significantly weakened ice",
-        "ICE_LEGEND_TEXT_3": "Often dangerous ice conditions",
-        "ICE_LEGEND_TEXT_4": "Weakened ice",
-        "ICE_LEGEND_TEXT_5": "Canal",
-        "ICE_LEGEND_TEXT_6": "Pipeline",
-        "ICE_LEGEND_TEXT_7": "Power plant tunnel",
-        "FLOOD_LEGEND_TEXT_1": "Current",
-        "FLOOD_LEGEND_TEXT_2": "For review",
-        "FLOOD_LEGEND_TEXT_3": "Recorded",
-        "FLOOD_LEGEND_TEXT_4": "Under planning",
-        "FLOOD_LEGEND_TEXT_5": "10-year flood",
-        "FLOOD_LEGEND_TEXT_6": "River and water 10-year flood",
-        "FLOOD_LEGEND_TEXT_7": "20-year flood",
-        "FLOOD_LEGEND_TEXT_8": "50-year flood",
-        "FLOOD_LEGEND_TEXT_9": "100-year flood",
-        "FLOOD_LEGEND_TEXT_10": "200-year flood",
-        "FLOOD_LEGEND_TEXT_11": "500-year flood",
-        "FLOOD_LEGEND_TEXT_12": "1000-year flood",
-        "FLOOD_LEGEND_TEXT_13": "200-year flood (climate)",
-        "FLOOD_LEGEND_TEXT_YEAR": "Flooded low point at",
-        "CLAY_LEGEND_TEXT_1": "Quick clay point (SVV)",
-        "CLAY_LEGEND_TEXT_2": "Quick clay area (SVV)",
-        "CLAY_LEGEND_TEXT_3": "Map fully or partially mapped",
-        "CLAY_LEGEND_TEXT_4": "Sea border",
-        "CLAY_LEGEND_TEXT_5": "Area above sea border",
-        "CLAY_LEGEND_TEXT_6": "Area below sea border",
-        "CLAY_LEGEND_TEXT_7": "Little / no marine impact",
-        "CLAY_LEGEND_TEXT_8": "Discharge area",
-        "CLAY_LEGEND_TEXT_9": "Potential avalanche danger",
-        "HIGH": "High",
-        "MIDDLE": "Middle",
-        "LOW": "Low",
-        "CLAY_DANGER_ZONE": "Danger level",
-        "CAUTION_AREA": "Caution area",
-        "MARITINE_BORDER": "Sea border"
-    },
-    "TABS": {
-        "MAP": "Map",
-        "LIST": "List",
-        "TRIPS": "Trips",
-        "WARNINGS": "Warnings"
-    },
-    "MAP_CENTER_INFO": {
-        "COPIED_TO_CLIPBOARD": "Copied to clipboard"
-    },
-    "OBSERVATION_LIST": {
-        "OBSERVATIONS": "Observations",
-        "NO_OBSERVATIONS": "No observations in current map view"
+  "DAYS": {
+    "SHORT": {
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat",
+      "7": "Sun"
     }
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Logging trip"
+  },
+  "GEO_HAZARDS": {
+    "DIRT": "Dirt",
+    "ICE": "Ice",
+    "SNOW": "Snow",
+    "WATER": "Water"
+  },
+  "LOGIN": {
+    "EMAIL": "Email",
+    "LOGIN": "Login",
+    "PASSWORD": "Password",
+    "TITLE": "Login"
+  },
+  "MAP_CENTER_INFO": {
+    "COPIED_TO_CLIPBOARD": "Copied to clipboard"
+  },
+  "MAP_ITEM_BAR": {
+    "AWAY": "Away",
+    "OBSERVATION": "Observation"
+  },
+  "MENU": {
+    "GENERAL": "General",
+    "MAP_LEGENDS": "Legends for map",
+    "MAP_SETTINGS": "Map settings",
+    "MAP_SETTINGS_FOR": "Map settings for",
+    "OPACITY": "Opacity",
+    "SHOW": "Show",
+    "SHOW_MAP_CENTER": "Show map center",
+    "SHOW_OBSERVATIONS": "Show observations",
+    "SHOW_TRIPS": "Show trips"
+  },
+  "MY_OBSERVATIONS": {
+    "TITLE": "My observations"
+  },
+  "OBSERVATION_LIST": {
+    "NO_OBSERVATIONS": "No observations in current map view",
+    "OBSERVATIONS": "Observations"
+  },
+  "OFFLINE_MAP": {
+    "TITLE": "Offline map"
+  },
+  "SETTINGS": {
+    "APPMODE": "App mode",
+    "LANGUAGE": "Language",
+    "RESET": "Reset",
+    "TITLE": "Settings"
+  },
+  "START_WIZARD": {
+    "CHOOSE_INTEREST": {
+      "HEADER": "Choose your interest:",
+      "INTEREST_DIRT": "Landslide!",
+      "INTEREST_ICE": "Ice thickness, load capacity and skating conditions!",
+      "INTEREST_SNOW": "Take me to the snow!",
+      "INTEREST_WATER": "Water level, flow and damages!"
+    },
+    "CHOOSE_LANGUAGE": {
+      "ENGLISH": "English",
+      "ENGLISH_SECONDARY_LANGUAGE": "Engelsk",
+      "HEADER": "Choose language",
+      "HEADER_SECONDARY_LANGUAGE": "Velg språk",
+      "NORWEGIAN": "Norwegian",
+      "NORWEGIAN_SECONDARY_LANGUAGE": "Norsk"
+    },
+    "PAGE_1": {
+      "HEADER": "Be up to date!",
+      "LINE_1": "Plan your tour with regObs and Varsom.",
+      "LINE_2": "Read warings. View observations."
+    },
+    "PAGE_2": {
+      "HEADER": "Geohazard maps",
+      "LINE_1": "View where you are and if you are close to dangers in the terrain. Use support maps:",
+      "LINE_2": "Steepness map, dangerous ice and flood zones."
+    },
+    "PAGE_3": {
+      "HEADER": "What do you observe?",
+      "LINE_1": "Share your observations, images and evaluations with others."
+    },
+    "PAGE_4": {
+      "HEADER": "What and how?",
+      "LINE_1": "Choose what to see and share on regObs. You can read about sharing observations at varsom.no/snøskredskolen and varsom.no/isskolen"
+    },
+    "SKIP_START": "Skip this and start using the app"
+  },
+  "SUPPORT_MAP": {
+    "CAUTION_AREA": "Caution area",
+    "CLAY_DANGER_ZONE": "Danger level",
+    "CLAY_LEGEND_TEXT_1": "Quick clay point (SVV)",
+    "CLAY_LEGEND_TEXT_2": "Quick clay area (SVV)",
+    "CLAY_LEGEND_TEXT_3": "Map fully or partially mapped",
+    "CLAY_LEGEND_TEXT_4": "Sea border",
+    "CLAY_LEGEND_TEXT_5": "Area above sea border",
+    "CLAY_LEGEND_TEXT_6": "Area below sea border",
+    "CLAY_LEGEND_TEXT_7": "Little / no marine impact",
+    "CLAY_LEGEND_TEXT_8": "Discharge area",
+    "CLAY_LEGEND_TEXT_9": "Potential avalanche danger",
+    "CLAY_ZONES_MAP_DESCRIPTION": "Clay zones",
+    "FLOOD_LEGEND_TEXT_1": "Current",
+    "FLOOD_LEGEND_TEXT_10": "200-year flood",
+    "FLOOD_LEGEND_TEXT_11": "500-year flood",
+    "FLOOD_LEGEND_TEXT_12": "1000-year flood",
+    "FLOOD_LEGEND_TEXT_13": "200-year flood (climate)",
+    "FLOOD_LEGEND_TEXT_2": "For review",
+    "FLOOD_LEGEND_TEXT_3": "Recorded",
+    "FLOOD_LEGEND_TEXT_4": "Under planning",
+    "FLOOD_LEGEND_TEXT_5": "10-year flood",
+    "FLOOD_LEGEND_TEXT_6": "River and water 10-year flood",
+    "FLOOD_LEGEND_TEXT_7": "20-year flood",
+    "FLOOD_LEGEND_TEXT_8": "50-year flood",
+    "FLOOD_LEGEND_TEXT_9": "100-year flood",
+    "FLOOD_LEGEND_TEXT_YEAR": "Flooded low point at",
+    "FLOOD_ZONES_MAP_DESCRIPTION": "Flood zones",
+    "HIGH": "High",
+    "ICE_LEGEND_TEXT_1": "Fractured ice along the shore",
+    "ICE_LEGEND_TEXT_2": "Significantly weakened ice",
+    "ICE_LEGEND_TEXT_3": "Often dangerous ice conditions",
+    "ICE_LEGEND_TEXT_4": "Weakened ice",
+    "ICE_LEGEND_TEXT_5": "Canal",
+    "ICE_LEGEND_TEXT_6": "Pipeline",
+    "ICE_LEGEND_TEXT_7": "Power plant tunnel",
+    "ICE_MAP_DESCRIPTION": "The support map shows parts of watercourses that behave unpredictably throughout the winter due to regulations for power generation",
+    "IN_DEGREES": "In degrees",
+    "LOW": "Low",
+    "MARITINE_BORDER": "Sea border",
+    "MIDDLE": "Middle",
+    "NO_OPACITY": "Solid",
+    "STEEPNESS_COLOR_INFO": "Colors gives the steepness in terrain",
+    "STEEPNESS_MAP_DESCRIPTION": "Steepness map",
+    "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice"
+  },
+  "TABS": {
+    "LIST": "List",
+    "MAP": "Map",
+    "TRIPS": "Trips",
+    "WARNINGS": "Warnings"
+  },
+  "TRIP": {
+    "TITLE": "Trips"
+  },
+  "TRIP_LOG": {
+    "COMPLETE": "Complete",
+    "CONTINUE": "Continue",
+    "NOT_STARTED": "New trip",
+    "PAUSED": "Paused",
+    "RUNNING": "GPS log running",
+    "START": "Start",
+    "STOP": "Stop",
+    "STOPPED": "Trip log completed"
+  },
+  "WARNING_LIST": {
+    "TITLE": "Varsom"
+  }
 }

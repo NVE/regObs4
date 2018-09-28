@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'LOGIN.TITLE' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form novalidate (ngSubmit)="login()" [formGroup]="loginform">
+    <ion-item>
+      <ion-label position="stacked">
+        {{ 'LOGIN.EMAIL' | translate }}
+      </ion-label>
+      <ion-input type="text" inputmode="email" formControlName="username" name="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">
+        {{ 'LOGIN.PASSWORD' | translate }}
+      </ion-label>
+      <ion-input type="password" inputmode="password" formControlName="password" name="password"></ion-input>
+    </ion-item>
+    <ion-button expand="full" type="submit" color="primary" [disabled]="loginform.invalid">{{ 'LOGIN.LOGIN' | translate
+      }}</ion-button>
+  </form>
+  <ion-row>
+    <ion-col text-center>
+      <a href="http://www.regobs.no">Glemt passord</a>
+    </ion-col>
+    <ion-col text-center>
+      <a href="http://www.regobs.no">Lag ny bruker</a>
+    </ion-col>
+  </ion-row>
+</ion-content>

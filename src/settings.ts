@@ -87,6 +87,19 @@ export const settings = {
                 url: 'https://secure.geonames.org',
                 maxResults: 20,
                 username: 'regobs',
+            },
+        },
+        elevation: {
+            no: {
+                // tslint:disable-next-line:max-line-length
+                url: 'https://gis3.nve.no/arcgis/rest/services/ImageService/SK_DTM20_NSF/ImageServer/identify?geometry={0},{1}&geometryType=esriGeometryPoint&inSR=32633&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=false&maxAllowableOffset=&outSR=&outFields=*&f=pjson'
+            },
+            svalbard: {
+                // tslint:disable-next-line:max-line-length
+                url: 'https://gis3.nve.no/arcgis/rest/services/ImageService/DTM25_Svalbard/ImageServer/identify?geometry={0},{1}&geometryType=esriGeometryPoint&inSR=32633&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=false&maxAllowableOffset=&outSR=&outFields=*&f=pjson'
+            },
+            world: {
+                url: 'https://secure.geonames.org',
             }
         },
         metersLimitForUpdateElevation: 500,

@@ -1,161 +1,166 @@
 {
-    "TRIP": {
-        "TITLE": "Turer"
-    },
-    "MY_OBSERVATIONS": {
-        "TITLE": "Mine observasjoner"
-    },
-    "WARNING_LIST": {
-        "TITLE": "Varsom"
-    },
-    "SETTINGS": {
-        "TITLE": "Innstillinger",
-        "APPMODE": "Appmodus",
-        "LANGUAGE": "Språk",
-        "RESET": "Tilbakestill"
-    },
-    "MENU": {
-        "GENERAL": "Generelt",
-        "MAP_SETTINGS": "Kartvalg",
-        "SHOW_OBSERVATIONS": "Vis observasjoner",
-        "SHOW_TRIPS": "Vis turer",
-        "MAP_SETTINGS_FOR": "Kartvalg for",
-        "SHOW": "Vis",
-        "OPACITY": "Gjennomsiktighet",
-        "MAP_LEGENDS": "Tegnforklaring for kart",
-        "SHOW_MAP_CENTER": "Vis kartsenter"
-    },
-    "OFFLINE_MAP": {
-        "TITLE": "Offline kart"
-    },
-    "GEO_HAZARDS": {
-        "SNOW": "Snø",
-        "ICE": "Is",
-        "DIRT": "Jord",
-        "WATER": "Vann"
-    },
-    "START_WIZARD": {
-        "CHOOSE_LANGUAGE": {
-            "HEADER": "Velg språk",
-            "HEADER_SECONDARY_LANGUAGE": "Choose language",
-            "NORWEGIAN": "Norsk",
-            "ENGLISH": "Engelsk",
-            "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian",
-            "ENGLISH_SECONDARY_LANGUAGE": "English"
-        },
-        "PAGE_1": {
-            "HEADER": "Vær oppdatert",
-            "LINE_1": "Planlegg turen med regObs og Varsom.",
-            "LINE_2": "Les varsel. Se hvor andre har lagt inn observasjoner"
-        },
-        "PAGE_2": {
-            "HEADER": "Naturfarekart",
-            "LINE_1": "Se hvor du er i forhold til faresoner i terrenget, bruk støttekartene:",
-            "LINE_2": "Bratthetskart, kart over svekket is og flomsonekart."
-        },
-        "PAGE_3": {
-            "HEADER": "Hva har du sett?",
-            "LINE_1": "Del dine observasjoner, bilder og vurderinger med andre og varslinga."
-        },
-        "PAGE_4": {
-            "HEADER": "Hva og hvordan?",
-            "LINE_1": "Du velger selv hva du vil se og dele på regObs. Du kan lese om hvordan du deler observasjoner med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
-        },
-        "CHOOSE_INTEREST": {
-            "HEADER": "Velg din interesse:",
-            "INTEREST_SNOW": "Ta meg til snøen!",
-            "INTEREST_ICE": "Istykkelse, bæreevne og skøyteforhold!",
-            "INTEREST_WATER": "Vannstand, vannføring og flomskader!",
-            "INTEREST_DIRT": "Jord til jordskredvarslingen!"
-        },
-        "SKIP_START": "Hopp over dette. Begynn å bruk."
-    },
-    "MAP_ITEM_BAR": {
-        "OBSERVATION": "Observasjon",
-        "AWAY": "Unna"
-    },
-    "DAYS": {
-        "SHORT": {
-            "1": "Man",
-            "2": "Tir",
-            "3": "Ons",
-            "4": "Tor",
-            "5": "Fre",
-            "6": "Lør",
-            "7": "Søn"
-        }
-    },
-    "TRIP_LOG": {
-        "NOT_STARTED": "Ny tur",
-        "PAUSED": "Pauset",
-        "RUNNING": "GPS registrering pågår",
-        "STOPPED": "Tur stoppet og fullført",
-        "START": "Start",
-        "STOP": "Stopp",
-        "COMPLETE": "Ferdig",
-        "CONTINUE": "Fortsett"
-    },
-    "GEOLOCATION_SERVICE": {
-        "NOTIFICATION_TITLE": "Tur pågår",
-        "NOTIFICATION_TEXT": ""
-    },
-    "SUPPORT_MAP": {
-        "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
-        "CLAY_ZONES_MAP_DESCRIPTION": "Kvikkleire/Jordskred",
-        "FLOOD_ZONES_MAP_DESCRIPTION": "Flomsoner",
-        "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart",
-        "NO_OPACITY": "Heldekkende",
-        "STEEPNESS_COLOR_INFO": "Fargene gir brattheten i terrenget",
-        "IN_DEGREES": "I grader er de",
-        "ICE_MAP_DESCRIPTION": "Støttekartet viser deler av vassdrag som oppfører seg uforutsigbart gjennom vinteren grunnet reguleringer for kraftproduksjon",
-        "ICE_LEGEND_TEXT_1": "Oppsprukket is langs land",
-        "ICE_LEGEND_TEXT_2": "Vesentlig svekket is",
-        "ICE_LEGEND_TEXT_3": "Ofte farlige isforhold",
-        "ICE_LEGEND_TEXT_4": "Svekket is",
-        "ICE_LEGEND_TEXT_5": "Kanal",
-        "ICE_LEGEND_TEXT_6": "Rørgate",
-        "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
-        "FLOOD_LEGEND_TEXT_1": "Gjeldende",
-        "FLOOD_LEGEND_TEXT_2": "Til ny vurdering",
-        "FLOOD_LEGEND_TEXT_3": "Ajourført",
-        "FLOOD_LEGEND_TEXT_4": "Under planlegging",
-        "FLOOD_LEGEND_TEXT_5": "10-årsflom",
-        "FLOOD_LEGEND_TEXT_6": "Elv og vann 10-årsflom",
-        "FLOOD_LEGEND_TEXT_7": "20-årsflom",
-        "FLOOD_LEGEND_TEXT_8": "50-årsflom",
-        "FLOOD_LEGEND_TEXT_9": "100-årsflom",
-        "FLOOD_LEGEND_TEXT_10": "200-årsflom",
-        "FLOOD_LEGEND_TEXT_11": "500-årsflom",
-        "FLOOD_LEGEND_TEXT_12": "1000-årsflom",
-        "FLOOD_LEGEND_TEXT_13": "200-årsflom (klima)",
-        "FLOOD_LEGEND_TEXT_YEAR": "Flomutsatt lavpunkt ved",
-        "CLAY_LEGEND_TEXT_1": "Kvikkleirepunkt (SVV)",
-        "CLAY_LEGEND_TEXT_2": "Kvikkleireområde (SVV)",
-        "CLAY_LEGEND_TEXT_3": "Kartblad helt eller delvis kartlagt",
-        "CLAY_LEGEND_TEXT_4": "Maritim grense",
-        "CLAY_LEGEND_TEXT_5": "Areal over marin grense",
-        "CLAY_LEGEND_TEXT_6": "Areal under marin grense",
-        "CLAY_LEGEND_TEXT_7": "Lite/ingen marin påvirkning",
-        "CLAY_LEGEND_TEXT_8": "Utløpsområde",
-        "CLAY_LEGEND_TEXT_9": "Potensielt skredfare",
-        "HIGH": "Høy",
-        "MIDDLE": "Middels",
-        "LOW": "Lav",
-        "CLAY_DANGER_ZONE": "Faregrad",
-        "CAUTION_AREA": "Aktsomhetsområde",
-        "MARITINE_BORDER": "Marin grense flate"
-    },
-    "TABS": {
-        "MAP": "Kart",
-        "LIST": "Liste",
-        "TRIPS": "Turer",
-        "WARNINGS": "Varsler"
-    },
-    "MAP_CENTER_INFO": {
-        "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen"
-    },
-    "OBSERVATION_LIST": {
-        "OBSERVATIONS": "Observasjoner",
-        "NO_OBSERVATIONS": "Ingen observasjoner i kartutsnittet"
+  "DAYS": {
+    "SHORT": {
+      "1": "Man",
+      "2": "Tir",
+      "3": "Ons",
+      "4": "Tor",
+      "5": "Fre",
+      "6": "Lør",
+      "7": "Søn"
     }
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Tur pågår"
+  },
+  "GEO_HAZARDS": {
+    "DIRT": "Jord",
+    "ICE": "Is",
+    "SNOW": "Snø",
+    "WATER": "Vann"
+  },
+  "LOGIN": {
+    "EMAIL": "Epost",
+    "LOGIN": "Logg inn",
+    "PASSWORD": "Passord",
+    "TITLE": "Logg inn"
+  },
+  "MAP_CENTER_INFO": {
+    "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen"
+  },
+  "MAP_ITEM_BAR": {
+    "AWAY": "Unna",
+    "OBSERVATION": "Observasjon"
+  },
+  "MENU": {
+    "GENERAL": "Generelt",
+    "MAP_LEGENDS": "Tegnforklaring for kart",
+    "MAP_SETTINGS": "Kartvalg",
+    "MAP_SETTINGS_FOR": "Kartvalg for",
+    "OPACITY": "Gjennomsiktighet",
+    "SHOW": "Vis",
+    "SHOW_MAP_CENTER": "Vis kartsenter",
+    "SHOW_OBSERVATIONS": "Vis observasjoner",
+    "SHOW_TRIPS": "Vis turer"
+  },
+  "MY_OBSERVATIONS": {
+    "TITLE": "Mine observasjoner"
+  },
+  "OBSERVATION_LIST": {
+    "NO_OBSERVATIONS": "Ingen observasjoner i kartutsnittet",
+    "OBSERVATIONS": "Observasjoner"
+  },
+  "OFFLINE_MAP": {
+    "TITLE": "Offline kart"
+  },
+  "SETTINGS": {
+    "APPMODE": "Appmodus",
+    "LANGUAGE": "Språk",
+    "RESET": "Tilbakestill",
+    "TITLE": "Innstillinger"
+  },
+  "START_WIZARD": {
+    "CHOOSE_INTEREST": {
+      "HEADER": "Velg din interesse:",
+      "INTEREST_DIRT": "Jord til jordskredvarslingen!",
+      "INTEREST_ICE": "Istykkelse, bæreevne og skøyteforhold!",
+      "INTEREST_SNOW": "Ta meg til snøen!",
+      "INTEREST_WATER": "Vannstand, vannføring og flomskader!"
+    },
+    "CHOOSE_LANGUAGE": {
+      "ENGLISH": "Engelsk",
+      "ENGLISH_SECONDARY_LANGUAGE": "English",
+      "HEADER": "Velg språk",
+      "HEADER_SECONDARY_LANGUAGE": "Choose language",
+      "NORWEGIAN": "Norsk",
+      "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian"
+    },
+    "PAGE_1": {
+      "HEADER": "Vær oppdatert",
+      "LINE_1": "Planlegg turen med regObs og Varsom.",
+      "LINE_2": "Les varsel. Se hvor andre har lagt inn observasjoner"
+    },
+    "PAGE_2": {
+      "HEADER": "Naturfarekart",
+      "LINE_1": "Se hvor du er i forhold til faresoner i terrenget, bruk støttekartene:",
+      "LINE_2": "Bratthetskart, kart over svekket is og flomsonekart."
+    },
+    "PAGE_3": {
+      "HEADER": "Hva har du sett?",
+      "LINE_1": "Del dine observasjoner, bilder og vurderinger med andre og varslinga."
+    },
+    "PAGE_4": {
+      "HEADER": "Hva og hvordan?",
+      "LINE_1": "Du velger selv hva du vil se og dele på regObs. Du kan lese om hvordan du deler observasjoner med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
+    },
+    "SKIP_START": "Hopp over dette. Begynn å bruk."
+  },
+  "SUPPORT_MAP": {
+    "CAUTION_AREA": "Aktsomhetsområde",
+    "CLAY_DANGER_ZONE": "Faregrad",
+    "CLAY_LEGEND_TEXT_1": "Kvikkleirepunkt (SVV)",
+    "CLAY_LEGEND_TEXT_2": "Kvikkleireområde (SVV)",
+    "CLAY_LEGEND_TEXT_3": "Kartblad helt eller delvis kartlagt",
+    "CLAY_LEGEND_TEXT_4": "Maritim grense",
+    "CLAY_LEGEND_TEXT_5": "Areal over marin grense",
+    "CLAY_LEGEND_TEXT_6": "Areal under marin grense",
+    "CLAY_LEGEND_TEXT_7": "Lite/ingen marin påvirkning",
+    "CLAY_LEGEND_TEXT_8": "Utløpsområde",
+    "CLAY_LEGEND_TEXT_9": "Potensielt skredfare",
+    "CLAY_ZONES_MAP_DESCRIPTION": "Kvikkleire/Jordskred",
+    "FLOOD_LEGEND_TEXT_1": "Gjeldende",
+    "FLOOD_LEGEND_TEXT_10": "200-årsflom",
+    "FLOOD_LEGEND_TEXT_11": "500-årsflom",
+    "FLOOD_LEGEND_TEXT_12": "1000-årsflom",
+    "FLOOD_LEGEND_TEXT_13": "200-årsflom (klima)",
+    "FLOOD_LEGEND_TEXT_2": "Til ny vurdering",
+    "FLOOD_LEGEND_TEXT_3": "Ajourført",
+    "FLOOD_LEGEND_TEXT_4": "Under planlegging",
+    "FLOOD_LEGEND_TEXT_5": "10-årsflom",
+    "FLOOD_LEGEND_TEXT_6": "Elv og vann 10-årsflom",
+    "FLOOD_LEGEND_TEXT_7": "20-årsflom",
+    "FLOOD_LEGEND_TEXT_8": "50-årsflom",
+    "FLOOD_LEGEND_TEXT_9": "100-årsflom",
+    "FLOOD_LEGEND_TEXT_YEAR": "Flomutsatt lavpunkt ved",
+    "FLOOD_ZONES_MAP_DESCRIPTION": "Flomsoner",
+    "HIGH": "Høy",
+    "ICE_LEGEND_TEXT_1": "Oppsprukket is langs land",
+    "ICE_LEGEND_TEXT_2": "Vesentlig svekket is",
+    "ICE_LEGEND_TEXT_3": "Ofte farlige isforhold",
+    "ICE_LEGEND_TEXT_4": "Svekket is",
+    "ICE_LEGEND_TEXT_5": "Kanal",
+    "ICE_LEGEND_TEXT_6": "Rørgate",
+    "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
+    "ICE_MAP_DESCRIPTION": "Støttekartet viser deler av vassdrag som oppfører seg uforutsigbart gjennom vinteren grunnet reguleringer for kraftproduksjon",
+    "IN_DEGREES": "I grader er de",
+    "LOW": "Lav",
+    "MARITINE_BORDER": "Marin grense flate",
+    "MIDDLE": "Middels",
+    "NO_OPACITY": "Heldekkende",
+    "STEEPNESS_COLOR_INFO": "Fargene gir brattheten i terrenget",
+    "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
+    "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart"
+  },
+  "TABS": {
+    "LIST": "Liste",
+    "MAP": "Kart",
+    "TRIPS": "Turer",
+    "WARNINGS": "Varsler"
+  },
+  "TRIP": {
+    "TITLE": "Turer"
+  },
+  "TRIP_LOG": {
+    "COMPLETE": "Ferdig",
+    "CONTINUE": "Fortsett",
+    "NOT_STARTED": "Ny tur",
+    "PAUSED": "Pauset",
+    "RUNNING": "GPS registrering pågår",
+    "START": "Start",
+    "STOP": "Stopp",
+    "STOPPED": "Tur stoppet og fullført"
+  },
+  "WARNING_LIST": {
+    "TITLE": "Varsom"
+  }
 }
