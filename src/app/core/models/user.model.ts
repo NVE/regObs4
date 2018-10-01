@@ -1,4 +1,8 @@
+import { ObserverGroup } from './observer-group.model';
+
 export interface User {
-    username: string;
-    guid: string;
+    Id: number;
+    Guid: string;
+    Nick: string;
+    ObserverGroup: Array<ObserverGroup>;
 }

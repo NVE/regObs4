@@ -1,4 +1,8 @@
 {
+  "ALERT": {
+    "DEFAULT_HEADER": "Oisann!",
+    "OK": "Ok"
+  },
   "DAYS": {
     "SHORT": {
       "1": "Man",
@@ -23,7 +27,10 @@
     "EMAIL": "Epost",
     "LOGIN": "Logg inn",
     "PASSWORD": "Passord",
-    "TITLE": "Logg inn"
+    "SERVICE_UNAVAILABLE": "Det er problemer med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen.",
+    "TITLE": "Logg inn",
+    "UNAUTHORIZED": "Feil brukernavn eller passord. Vennligst fyll inn på nytt og prøv igjen.",
+    "UNKNOWN_ERROR": "Det oppsto en feil ved innlogging. Melding fra server:"
   },
   "MAP_CENTER_INFO": {
     "ABOVE_SEA_LEVEL": "moh",

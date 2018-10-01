@@ -77,6 +77,13 @@ export class NanoSql {
                 { key: 'id', type: 'string', props: ['pk'] },
                 { key: '*', type: '*' },
             ]
+        },
+        USER: {
+            name: 'user',
+            model: [
+                { key: 'id', type: 'string', props: ['pk'] },
+                { key: '*', type: '*' },
+            ]
         }
     };
 
