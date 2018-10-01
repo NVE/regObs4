@@ -1,9 +1,6 @@
 import * as L from 'leaflet';
-import * as leafletPip from '@mapbox/leaflet-pip';
-import * as norwegianBorder from '../../../../../assets/norway-borders2.json';
 import { settings } from '../../../../../settings';
-
-const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
+import { BorderHelper } from '../border-helper';
 
 interface ExtendedCoords extends L.Coords {
     fallback: boolean;
@@ -42,10 +39,6 @@ export class OfflineTileLayer extends L.TileLayer {
         return tile;
     }
 
-    private pointInLayerInsideBounds(latLng: L.LatLng): 0 | 1 {
-        return leafletPip.pointInLayer(latLng, NORWEGIAN_BORDER).length > 0 ? 1 : 0;
-    }
-
 
     /**
      * Returns whether tile coords is inside norwegian border
@@ -53,13 +46,7 @@ export class OfflineTileLayer extends L.TileLayer {
      */
     private isInsideBorders(coords: L.Coords): boolean {
         const latLngBounds: L.LatLngBounds = (<any>this)._tileCoordsToBounds(coords);
-        let hits = 0;
-        hits += this.pointInLayerInsideBounds(latLngBounds.getNorthWest());
-        hits += this.pointInLayerInsideBounds(latLngBounds.getNorthEast());
-        hits += this.pointInLayerInsideBounds(latLngBounds.getSouthEast());
-        hits += this.pointInLayerInsideBounds(latLngBounds.getSouthWest());
-        hits += this.pointInLayerInsideBounds(latLngBounds.getCenter());
-        return hits >= 3;
+        return BorderHelper.isBoundsInNorway(latLngBounds);
     }
 
 

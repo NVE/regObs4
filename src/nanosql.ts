@@ -71,6 +71,13 @@ export class NanoSql {
                 { key: '*', type: '*' },
             ]
         },
+        USER_SETTINGS: {
+            name: 'usersettings',
+            model: [
+                { key: 'id', type: 'string', props: ['pk'] },
+                { key: '*', type: '*' },
+            ]
+        }
     };
 
     static getTables(): NanoSqlTable[] {

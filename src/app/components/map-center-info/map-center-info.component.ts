@@ -1,14 +1,16 @@
 import { Component, OnInit, OnDestroy, HostBinding, Inject } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { Events, ToastController, Platform } from '@ionic/angular';
-import { settings } from '../../../settings';
+import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { MapService } from '../../core/services/map/map.service';
 import { MapView } from '../../core/services/map/map-view.model';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { MapSearchService } from '../../core/services/map-search/map-search.service';
-import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { ViewInfo } from '../../core/services/map-search/view-info.model';
+import { UserSetting } from '../../core/models/user-settings.model';
 
 @Component({
   selector: 'app-map-center-info',
@@ -16,16 +18,13 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./map-center-info.component.scss']
 })
 export class MapCenterInfoComponent implements OnInit, OnDestroy {
-  isVisible: boolean;
-  mapView: MapView;
-  elevation: number;
-  private lastMapCenter: L.LatLng;
-  placeName: string;
-  areaName: string;
+  $viewInfo: Observable<ViewInfo>;
+  $userSettings: Observable<UserSetting>;
+
+  private textToCopy: string;
 
   constructor(
     private userSettingService: UserSettingService,
-    private events: Events,
     private mapService: MapService,
     private mapSerachService: MapSearchService,
     private clipboard: Clipboard,
@@ -33,84 +32,21 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private platform: Platform,
     @Inject(DOCUMENT) private document: Document) {
-
   }
 
   async ngOnInit() {
-    const userSettings = await this.userSettingService.getUserSettings();
-    this.isVisible = userSettings.showMapCenter;
-    this.updateHeight();
-
-    this.events.subscribe(settings.events.userSettingsChanged, (newUserSettings) => {
-      this.isVisible = newUserSettings.showMapCenter;
-      this.updateHeight();
-      this.updateInfo();
-    });
-
-    this.mapService.getMapViewObservable().subscribe((mapView: MapView) => {
-      this.mapView = mapView;
-      if (this.isVisible) {
-        this.updateInfo();
-      }
-    });
+    this.$userSettings = this.userSettingService.getUserSettingsAsObservable().pipe(tap((val) => {
+      this.document.documentElement.style.setProperty('--map-center-info-height', val.showMapCenter ? '72px' : '0px');
+    }));
+    this.$viewInfo = this.mapService.getMapViewObservable()
+      .pipe(switchMap((mapView: MapView) => this.mapSerachService.getViewInfo(mapView.center)),
+        tap((val) => {
+          console.log('ViewInfo: ', val);
+          this.textToCopy = `${val.location.name}, `
+            + `${val.location.adminName}, ${val.latLng.lat}, ${val.latLng.lng}`;
+        }));
   }
-
-  private updateHeight() {
-    let lines = 1;
-    if (this.placeName) {
-      lines++;
-    }
-    if (this.elevation !== undefined) {
-      lines++;
-    }
-    const height = 24 * lines;
-    this.document.documentElement.style.setProperty('--map-center-info-height', this.isVisible ? `${height}px` : '0px');
-  }
-
   ngOnDestroy(): void {
-    this.events.unsubscribe(settings.events.userSettingsChanged);
-  }
-
-  updateInfo() {
-    if (this.mapView) {
-      if (!this.lastMapCenter || this.lastMapCenter.distanceTo(this.mapView.center) >= settings.map.metersLimitForUpdateElevation) {
-        this.lastMapCenter = this.mapView.center;
-        // TODO: Use nve location name within norway and reverse geocode for world?
-        // or else add user setting and wizard to select if app should be used in Norway.
-        this.updateElevation();
-        this.updatePlaceName();
-      }
-    }
-  }
-
-  updateElevation() {
-    this.mapSerachService.getElevation(this.mapView.center.lat, this.mapView.center.lng)
-      .toPromise().then((result) => {
-        setTimeout(() => {
-          if (result >= 0) {
-            this.elevation = result;
-          } else {
-            this.elevation = undefined;
-          }
-          this.updateHeight();
-        }, 0);
-      }, (error) => {
-        console.log('Could not update elevation', error);
-      });
-  }
-
-  async updatePlaceName() {
-    this.mapSerachService.reverseGeocodeWorld(this.mapView.center.lat, this.mapView.center.lng)
-      .toPromise().then((result: any) => {
-        const firstResult = result.geonames[0];
-        if (firstResult) {
-          setTimeout(() => {
-            this.placeName = firstResult.toponymName;
-            this.areaName = firstResult.adminName1;
-            this.updateHeight();
-          }, 0);
-        }
-      });
   }
 
   private useNativeClipboardPlugin() {
@@ -118,11 +54,10 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   }
 
   async copyToClipboard() {
-    const text = `${(this.placeName ? `${this.placeName}, ${this.areaName}, ` : '')}${this.mapView.center.lat}, ${this.mapView.center.lng}`;
     if (this.useNativeClipboardPlugin()) {
-      await this.clipboard.copy(text);
+      await this.clipboard.copy(this.textToCopy);
     } else {
-      this.copyToClipBoardWeb(text);
+      this.copyToClipBoardWeb(this.textToCopy);
     }
     const toastText = await this.translateService.get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD').toPromise();
     const toast = await this.toastController.create({

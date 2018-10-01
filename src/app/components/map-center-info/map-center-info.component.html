@@ -1,11 +1,16 @@
-<div class="map-center-info" (click)="copyToClipboard()" text-nowrap [ngClass]="{visible: isVisible}">
-  <div *ngIf="placeName && areaName" class="text-truncate">
-    {{ placeName }}, {{ areaName }}
+<ng-container *ngIf="$userSettings | async as userSettings">
+  <div *ngIf="userSettings.showMapCenter" class="map-center-info" (click)="copyToClipboard()" text-nowrap>
+    <ion-grid no-margin class="text-truncate" *ngIf="$viewInfo | async as v">
+      <ion-row no-margin>
+        <span *ngIf="v.location.name !== v.location.adminName">{{ v.location.name }}, </span>{{ v.location.adminName }}
+      </ion-row>
+      <ion-row no-margin>
+        {{ v.elevation }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL'|translate}}.
+      </ion-row>
+      <ion-row no-margin>
+        {{ v.latLng.lat | number:'.3' }} &deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+        {{ v.latLng.lng | number:'.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
+      </ion-row>
+    </ion-grid>
   </div>
-  <div *ngIf="elevation !== undefined">
-    {{ elevation }} moh.
-  </div>
-  <div *ngIf="mapView">
-    {{ mapView.center.lat | number:'.4' }} &deg;N, {{ mapView.center.lng | number:'.4' }} &deg;Ø
-  </div>
-</div>
+</ng-container>

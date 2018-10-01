@@ -26,7 +26,10 @@
     "TITLE": "Login"
   },
   "MAP_CENTER_INFO": {
-    "COPIED_TO_CLIPBOARD": "Copied to clipboard"
+    "ABOVE_SEA_LEVEL": "amsl",
+    "COPIED_TO_CLIPBOARD": "Copied to clipboard",
+    "EAST_SHORT": "E",
+    "NORTH_SHORT": "N"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Away",

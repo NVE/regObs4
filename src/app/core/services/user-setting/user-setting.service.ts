@@ -7,6 +7,10 @@ import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
 import { SupportTile } from '../../models/support-tile.model';
 import { Events } from '@ionic/angular';
+import { NanoSql } from '../../../../nanosql';
+import { nSQL } from 'nano-sql';
+import { Observable } from 'rxjs';
+import { startWith, flatMap, scan, defaultIfEmpty, last, map, take, tap } from 'rxjs/operators';
 
 const STORAGE_KEY_NAME = 'UserSettings';
 
@@ -35,23 +39,26 @@ export class UserSettingService {
     };
   }
 
-  // TODO: Change storage to NanoSql and create observable of user settings
-  async getUserSettings(): Promise<UserSetting> {
-    await this.storage.ready();
-    const userSettings: UserSetting = await this.storage.get(STORAGE_KEY_NAME);
-    if (userSettings !== null) {
-      return userSettings;
-    } else {
-      return this.getDefaultSettings();
-    }
+  getUserSettings(): Promise<UserSetting> {
+    return this.getUserSettingsAsObservable().pipe(take(1)).toPromise();
   }
 
-  async saveUserSettings(userSetting: UserSetting): Promise<UserSetting> {
-    await this.storage.ready();
-    const newSettings = await this.storage.set(STORAGE_KEY_NAME, userSetting);
+  getUserSettingsAsObservable(): Observable<UserSetting> {
+    return nSQL().observable<UserSetting>(() => {
+      return nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select').emit();
+    }).toRxJS().pipe(
+      map((val: UserSetting[]) => val.length > 0 ? val[0] : this.getDefaultSettings())
+    );
+  }
+
+  async saveUserSettings(userSetting: UserSetting) {
+    // await this.storage.ready();
+    // const newSettings = await this.storage.set(STORAGE_KEY_NAME, userSetting);
+    await nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('upsert', { id: 'usersettings', ...userSetting }).exec();
+
+    // TODO: Subscribe to observable instead
     this.translate.use(userSetting.language);
     this.events.publish(settings.events.userSettingsChanged, userSetting);
-    return newSettings;
   }
 
   reset() {

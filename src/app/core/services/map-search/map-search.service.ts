@@ -4,11 +4,16 @@ import { settings } from '../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
 import { merge, map, switchMap } from 'rxjs/operators';
-import { Observable, concat, bindNodeCallback } from 'rxjs';
+import { Observable, concat, bindNodeCallback, combineLatest } from 'rxjs';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/forkJoin';
+import 'rxjs/add/observable/of';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { parseString } from 'xml2js';
+import { BorderHelper } from '../../helpers/leaflet/border-helper';
+import 'leaflet.utm';
+import { LocationName } from './location-name.model';
+import { ViewInfo } from './view-info.model';
 
 @Injectable({
   providedIn: 'root'
@@ -71,27 +76,85 @@ export class MapSearchService {
       }));
   }
 
-  getElevation(lat: number, lng: number): Observable<number> {
+  getElevation(latLng: L.LatLng): Observable<number> {
+    if (BorderHelper.isInSvalbard(latLng)) {
+      return this.getElevationSvalbard(latLng);
+    } else if (BorderHelper.isInNorway(latLng)) {
+      return this.getElevationNorway(latLng);
+    } else {
+      return this.getElevationWorld(latLng);
+    }
+  }
+
+  getElevationSvalbard(latLng: L.LatLng): Observable<number> {
+    console.log('[INFO] Get elevation for Svalbard');
+    const utm = this.latLngToUtm(latLng);
+    const url = settings.map.elevation.svalbard.url.replace('{0}', utm.x.toString()).replace('{1}', utm.y.toString());
+    return this.httpClient.get(url)
+      .pipe(map((result: any) => parseInt(result.value, 10)));
+  }
+
+  latLngToUtm(latLng: L.LatLng): { x: number, y: number } {
+    return (<any>latLng).utm(33, false);
+  }
+
+  getElevationNorway(latLng: L.LatLng): Observable<number> {
+    console.log('[INFO] Get elevation for Norway');
+    const utm = this.latLngToUtm(latLng);
+    const url = settings.map.elevation.no.url.replace('{0}', utm.x.toString()).replace('{1}', utm.y.toString());
+    return this.httpClient.get(url)
+      .pipe(map((result: any) => parseInt(result.value, 10)));
+  }
+
+  getElevationWorld(latLng: L.LatLng): Observable<number> {
+    console.log('[INFO] Get elevation for world');
     return this.httpClient.get(`${settings.map.search.geonames.url}/srtm1JSON?`
-      + `lat=${lat}&lng=${lng}&username=${settings.map.search.geonames.username}`)
+      + `lat=${latLng.lat}&lng=${latLng.lng}&username=${settings.map.search.geonames.username}`)
       .pipe(map((data: any) => data.srtm1));
   }
 
-  reverseGeocodeWorld(lat: number, lng: number) {
+  reverseGeocodeWorld(latLng: L.LatLng): Observable<LocationName> {
     return this.httpClient.get(`${settings.map.search.geonames.url}/findNearbyJSON?`
-      + `lat=${lat}&lng=${lng}&username=${settings.map.search.geonames.username}`);
+      + `lat=${latLng.lat}&lng=${latLng.lng}&username=${settings.map.search.geonames.username}`)
+      .pipe(map((result: any) => {
+        const firstResult = result.geonames[0];
+        if (firstResult) {
+          return { name: firstResult.toponymName, adminName: firstResult.adminName1 };
+        }
+        return null;
+      }));
   }
 
-  reverseGeocodeNorway(lat: number, lng: number) {
-    return this.httpClient.get(`https://openwps.statkart.no/skwms1/wps.elevation2?`
-      + `request=Execute&service=WPS&version=1.0.0&identifier=elevationJSON&datainputs=`
-      + `lat=${lat};lon=${lng};epsg=4326`)
-      .pipe(switchMap((res) => bindNodeCallback(parseString)(res)));
+  // reverseGeocodeNorway(lat: number, lng: number) {
+  //   return this.httpClient.get(`https://openwps.statkart.no/skwms1/wps.elevation2?`
+  //     + `request=Execute&service=WPS&version=1.0.0&identifier=elevationJSON&datainputs=`
+  //     + `lat=${lat};lon=${lng};epsg=4326`)
+  //     .pipe(switchMap((res) => bindNodeCallback(parseString)(res)));
+  // }
+
+  getLocationName(latLng: L.LatLng): Observable<LocationName> {
+    if (BorderHelper.isInNorway(latLng)) {
+      return this.getLocationNameNorway(latLng);
+    } else {
+      return this.reverseGeocodeWorld(latLng);
+    }
   }
 
-  async getLocationName(lat: number, lng: number) {
-    const userSettings = await this.userSettingService.getUserSettings();
-    return this.httpClient.get(`${settings.services.regObs.apiUrl[userSettings.appMode]}/Location/GetName`
-      + `?latitude=${lat}&longitude=${lng}&geoHazardId=${userSettings.currentGeoHazard}`);
+  getLocationNameNorway(latLng: L.LatLng): Observable<LocationName> {
+    return this.userSettingService.getUserSettingsAsObservable().pipe(
+      switchMap((userSettings) =>
+        this.httpClient.get(`${settings.services.regObs.apiUrl[userSettings.appMode]}/Location/GetName`
+          + `?latitude=${latLng.lat}&longitude=${latLng.lng}&geoHazardId=${userSettings.currentGeoHazard}`)
+          .pipe(map((result: any) => ({ name: result.Data.Navn, adminName: result.Data.Fylke })))));
+  }
+
+  getViewInfo(latLng: L.LatLng): Observable<ViewInfo> {
+    return this.getLocationName(latLng).pipe(($ln) =>
+      combineLatest($ln, this.getElevation(latLng)),
+      map((result) => ({
+        location: result[0],
+        elevation: result[1],
+        latLng,
+      })));
   }
 }

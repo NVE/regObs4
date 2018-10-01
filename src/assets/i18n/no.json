@@ -26,7 +26,10 @@
     "TITLE": "Logg inn"
   },
   "MAP_CENTER_INFO": {
-    "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen"
+    "ABOVE_SEA_LEVEL": "moh",
+    "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen",
+    "EAST_SHORT": "Ø",
+    "NORTH_SHORT": "N"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Unna",
