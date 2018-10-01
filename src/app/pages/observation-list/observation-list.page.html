@@ -13,16 +13,14 @@
     <h4 text-center *ngIf="observations.length === 0">
       {{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}
     </h4>
-    <ion-virtual-scroll [items]="observations" approxItemHeight="339px">
-      <div *virtualItem="let obs">
-        <app-observation-list-card [obs]="obs">
+    <!-- <ion-virtual-scroll [items]="observations" approxItemHeight="339px">
+        <app-observation-list-card [obs]="obs" *virtualItem="let obs">
         </app-observation-list-card>
-      </div>
-    </ion-virtual-scroll>
-    <!-- <ion-list>
+      </ion-virtual-scroll> -->
+    <ion-list>
       <app-observation-list-card [obs]="obs" *ngFor="let obs of observations">
       </app-observation-list-card>
-    </ion-list> -->
+    </ion-list>
   </ng-container>
   <!-- <ion-list *ngIf="!($observations | async)">
     <ion-item>

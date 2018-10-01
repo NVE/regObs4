@@ -7,6 +7,8 @@ import { MapService } from '../../core/services/map/map.service';
 import { Observable } from 'rxjs';
 import { map, combineLatest, tap } from 'rxjs/operators';
 import { MapView } from '../../core/services/map/map-view.model';
+import { Events } from '@ionic/angular';
+import { settings } from '../../../settings';
 
 @Component({
     selector: 'app-observation-list',
@@ -28,7 +30,11 @@ export class ObservationListPage implements OnInit {
         this.$observations = this.observationService.getObservationsAsObservable(userSettings.currentGeoHazard)
             .pipe(combineLatest(this.mapService.getMapViewObservable()),
                 // Using combineLatest to make sure that observable is emitted when wither observations or map view is updated
-                map((val) => this.filterObservationsWithinViewBounds(val[0], val[1])));
+                map((val) => this.filterObservationsWithinViewBounds(val[0], val[1])),
+                // tap((val) => {
+                //     console.log('[INFO] Observable in ObservationListPage changed!', val);
+                // })
+            );
     }
 
     private filterObservationsWithinViewBounds(observations: RegObsObservation[], view: MapView) {
