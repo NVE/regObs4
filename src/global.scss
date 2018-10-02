@@ -54,11 +54,7 @@ ion-list {
 
 ion-menu {
     ion-content {
-        background: #fff;
-    }
-
-    ion-list {
-        background: #fff;
+        --ion-background-color: #fff
     }
 }
 

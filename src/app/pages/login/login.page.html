@@ -9,29 +9,40 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  <form novalidate (ngSubmit)="login()" [formGroup]="loginform">
+<ion-content padding *ngIf="($loggedInUser | async) as loggedInUser">
+  <ng-container *ngIf="isLoggedIn(loggedInUser)">
     <ion-item>
-      <ion-label position="stacked">
-        {{ 'LOGIN.EMAIL' | translate }}
-      </ion-label>
-      <ion-input type="text" inputmode="email" formControlName="username" name="username"></ion-input>
+      <ion-label>{{ 'LOGIN.LOGGED_IN_AS' | translate }} {{ loggedInUser.email }}</ion-label>
     </ion-item>
-    <ion-item>
-      <ion-label position="stacked">
-        {{ 'LOGIN.PASSWORD' | translate }}
-      </ion-label>
-      <ion-input type="password" inputmode="password" formControlName="password" name="password"></ion-input>
-    </ion-item>
-    <ion-button expand="full" type="submit" color="primary" [disabled]="loginform.invalid">{{ 'LOGIN.LOGIN' | translate
-      }}</ion-button>
-  </form>
-  <ion-row>
-    <ion-col text-center>
-      <a href="http://www.regobs.no">Glemt passord</a>
-    </ion-col>
-    <ion-col text-center>
-      <a href="http://www.regobs.no">Lag ny bruker</a>
-    </ion-col>
-  </ion-row>
+    <ion-button expand="full" type="submit" color="primary" (click)="logout()">
+      {{ 'LOGIN.LOGOUT' | translate }}</ion-button>
+  </ng-container>
+  <ng-container *ngIf="!isLoggedIn(loggedInUser)">
+    <form novalidate (ngSubmit)="login()" [formGroup]="loginform">
+      <ion-item>
+        <ion-label position="stacked">
+          {{ 'LOGIN.EMAIL' | translate }}
+        </ion-label>
+        <ion-input type="text" inputmode="email" formControlName="username" name="username"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">
+          {{ 'LOGIN.PASSWORD' | translate }}
+        </ion-label>
+        <ion-input #password type="password" inputmode="password" formControlName="password" name="password"></ion-input>
+      </ion-item>
+      <ion-button expand="full" type="submit" color="primary" [disabled]="loginform.invalid || loading">
+        <span *ngIf="!loading">{{ 'LOGIN.LOGIN' | translate }}</span>
+        <span *ngIf="loading">{{ 'LOGIN.IS_LOGGING_IN' | translate }}</span>
+      </ion-button>
+    </form>
+    <ion-row>
+      <ion-col text-center>
+        <a href="http://www.regobs.no">Glemt passord</a>
+      </ion-col>
+      <ion-col text-center>
+        <a href="http://www.regobs.no">Lag ny bruker</a>
+      </ion-col>
+    </ion-row>
+  </ng-container>
 </ion-content>

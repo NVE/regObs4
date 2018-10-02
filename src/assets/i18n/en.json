@@ -25,7 +25,10 @@
   },
   "LOGIN": {
     "EMAIL": "Email",
+    "IS_LOGGING_IN": "Logging in...",
+    "LOGGED_IN_AS": "Logged in as",
     "LOGIN": "Login",
+    "LOGOUT": "Logout",
     "PASSWORD": "Password",
     "SERVICE_UNAVAILABLE": "Error while connecting to the service. Do you have mobile network? Please wait a few minutes and try again.",
     "TITLE": "Login",
@@ -43,6 +46,7 @@
     "OBSERVATION": "Observation"
   },
   "MENU": {
+    "ABOUT_REGOBS": "About data in regObs",
     "GENERAL": "General",
     "MAP_LEGENDS": "Legends for map",
     "MAP_SETTINGS": "Map settings",
@@ -51,7 +55,11 @@
     "SHOW": "Show",
     "SHOW_MAP_CENTER": "Show map center",
     "SHOW_OBSERVATIONS": "Show observations",
-    "SHOW_TRIPS": "Show trips"
+    "SHOW_TRIPS": "Show trips",
+    "START_WIZARD": "Start wizard",
+    "SUPPORT_MAP_CREDITS": "Support maps delivered by",
+    "TOPO_MAP_CREDITS": "Topo map deliverd by",
+    "USER_SETTINGS": "User"
   },
   "MY_OBSERVATIONS": {
     "TITLE": "My observations"

@@ -80,7 +80,7 @@ export class LoginService {
     return nSQL().observable<LoggedInUser>(() => {
       return nSQL(NanoSql.TABLES.USER.name).query('select').emit();
     }).toRxJS().pipe(
-      map((val: LoggedInUser[]) => val[0])
+      map((val: LoggedInUser[]) => val[0] || { isLoggedIn: false })
     );
   }
 }

@@ -25,7 +25,10 @@
   },
   "LOGIN": {
     "EMAIL": "Epost",
+    "IS_LOGGING_IN": "Logger inn...",
+    "LOGGED_IN_AS": "Logget inn som",
     "LOGIN": "Logg inn",
+    "LOGOUT": "Logg ut",
     "PASSWORD": "Passord",
     "SERVICE_UNAVAILABLE": "Det er problemer med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen.",
     "TITLE": "Logg inn",
@@ -43,6 +46,7 @@
     "OBSERVATION": "Observasjon"
   },
   "MENU": {
+    "ABOUT_REGOBS": "Om data i regObs",
     "GENERAL": "Generelt",
     "MAP_LEGENDS": "Tegnforklaring for kart",
     "MAP_SETTINGS": "Kartvalg",
@@ -51,7 +55,11 @@
     "SHOW": "Vis",
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjoner",
-    "SHOW_TRIPS": "Vis turer"
+    "SHOW_TRIPS": "Vis turer",
+    "START_WIZARD": "Start veiviseren",
+    "SUPPORT_MAP_CREDITS": "Støttekart levert av",
+    "TOPO_MAP_CREDITS": "Topografisk kart levert av",
+    "USER_SETTINGS": "Brukervalg"
   },
   "MY_OBSERVATIONS": {
     "TITLE": "Mine observasjoner"

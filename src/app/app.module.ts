@@ -16,6 +16,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { SupportTilesMenuComponent } from './components/side-menu/support-tiles-menu/support-tiles-menu.component';
 import { FormsModule } from '@angular/forms';
 import './core/helpers/nano-sql/nanoObserverToRxjs';
+import { UserLoginComponent } from './components/side-menu/user-login/user-login.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -27,6 +28,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PopoverMenuComponent,
     SideMenuComponent,
     SupportTilesMenuComponent,
+    UserLoginComponent,
   ],
   entryComponents: [PopoverMenuComponent],
   imports: [
