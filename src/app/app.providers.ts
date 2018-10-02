@@ -16,6 +16,7 @@ import { BackgroundDownloadWebService } from './core/services/background-downloa
 import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
 import { Zip } from '@ionic-native/zip/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 export class AppProviders {
     public static getProviders() {
@@ -31,6 +32,7 @@ export class AppProviders {
             AndroidPermissions,
             Zip,
             Clipboard,
+            InAppBrowser,
             ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),
         ];
     }

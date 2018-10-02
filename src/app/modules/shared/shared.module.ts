@@ -6,6 +6,7 @@ import { AddMenuComponent } from '../../components/add-menu/add-menu.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { OfflineImageComponent } from '../../components/offline-image/offline-image.component';
+import { ExternalLinkComponent } from '../../components/external-link/external-link.component';
 
 @NgModule({
     imports: [
@@ -17,7 +18,8 @@ import { OfflineImageComponent } from '../../components/offline-image/offline-im
     declarations: [
         ShadowCssDirective,
         AddMenuComponent,
-        OfflineImageComponent
+        OfflineImageComponent,
+        ExternalLinkComponent,
     ],
     exports: [
         CommonModule,
@@ -27,7 +29,8 @@ import { OfflineImageComponent } from '../../components/offline-image/offline-im
         TranslateModule,
         ShadowCssDirective,
         AddMenuComponent,
-        OfflineImageComponent
+        OfflineImageComponent,
+        ExternalLinkComponent
     ]
 })
 export class SharedModule { }
