@@ -49,4 +49,8 @@ export class CapListGroupComponent implements OnInit {
     return `DAYS.SHORT.${moment().add(daysToAdd, 'days').day()}`;
   }
 
+  getWarningLevelCssClass(level: number) {
+    return `level-${level < 2 ? 1 : level}`;
+  }
+
 }

@@ -39,8 +39,10 @@ export class WarningService {
     console.log('[INFO] Updating avalanche warning region summary');
     // const result = await this.getLandslideWarningsApi();
     // await nSQL().loadJS(NanoSql.TABLES.LANDSLIDE_WARNING.name, result);
-    const from = moment().subtract(10, 'days');
-    await this.updateCapFeed(GeoHazard.Dirt, from.toDate());
+    const from = moment().startOf('day');
+    const to = from.add(2, 'days');
+    await this.updateCapFeed(GeoHazard.Dirt, from.toDate(), to.toDate());
+    await this.updateCapFeed(GeoHazard.Water, from.toDate(), to.toDate());
     await this.updateCapDetails(null, from.toDate());
 
     // TODO: Cleanup old items

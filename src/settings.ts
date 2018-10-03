@@ -27,6 +27,9 @@ export const settings = {
             },
             Dirt: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api'
+            },
+            Water: {
+                apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.5/api'
             }
         }
     },

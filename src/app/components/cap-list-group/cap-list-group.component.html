@@ -5,13 +5,13 @@
     </ion-label>
     <ion-grid>
       <ion-row>
-        <ion-col>
+        <ion-col text-capitalize>
           {{ getDayName(0) | translate }}
         </ion-col>
-        <ion-col>
+        <ion-col text-capitalize>
           {{ getDayName(1) | translate }}
         </ion-col>
-        <ion-col>
+        <ion-col text-capitalize>
           {{ getDayName(2) | translate}}
         </ion-col>
       </ion-row>
@@ -25,13 +25,13 @@
     <ion-grid>
       <ion-row>
         <ion-col *ngIf="{ level: getDayWarning(capWarning, 0) } as warning">
-          <ion-badge [attr.class]="'level-'+warning.level">{{ warning.level }}</ion-badge>
+          <ion-badge [attr.class]="getWarningLevelCssClass(warning.level)">{{warning.level}}</ion-badge>
         </ion-col>
         <ion-col *ngIf="{ level: getDayWarning(capWarning, 1) } as warning">
-          <ion-badge [attr.class]="'level-'+warning.level">{{ warning.level }}</ion-badge>
+          <ion-badge [attr.class]="getWarningLevelCssClass(warning.level)">{{warning.level}}</ion-badge>
         </ion-col>
         <ion-col *ngIf="{ level: getDayWarning(capWarning, 2) } as warning">
-          <ion-badge [attr.class]="'level-'+warning.level">{{ warning.level }}</ion-badge>
+          <ion-badge [attr.class]="getWarningLevelCssClass(warning.level)">{{warning.level}}</ion-badge>
         </ion-col>
       </ion-row>
     </ion-grid>

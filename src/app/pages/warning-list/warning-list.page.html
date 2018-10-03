@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="dark">
     <ion-buttons slot="end">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button color="light"></ion-menu-button>
     </ion-buttons>
     <ion-title>{{"WARNING_LIST.TITLE" | translate}}</ion-title>
   </ion-toolbar>
@@ -16,6 +16,9 @@
         </ion-col>
         <ion-col text-center [ngClass]="{'selected': showAll}" (click)="toggleTab()">
           ALLE
+        </ion-col>
+        <ion-col text-center (click)="toggleTab()">
+          FAVORITTER
         </ion-col>
       </ion-row>
     </ion-grid>
