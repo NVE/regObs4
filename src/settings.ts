@@ -21,8 +21,12 @@ export const settings = {
         },
         warning: {
             defaultWarningDaysAhead: 3,
+            timezone: 'Europe/Oslo',
             Snow: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.0/api'
+            },
+            Dirt: {
+                apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api'
             }
         }
     },

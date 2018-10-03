@@ -12,35 +12,20 @@
     <ion-grid>
       <ion-row no-padding>
         <ion-col text-center [ngClass]="{'selected': !showAll}" (click)="toggleTab()">
-          I KARTUTSNITTET
+          AKTUELLE
         </ion-col>
         <ion-col text-center [ngClass]="{'selected': showAll}" (click)="toggleTab()">
-          ALLE VARSLER
+          ALLE
         </ion-col>
       </ion-row>
     </ion-grid>
   </div>
-  <ion-list padding *ngIf="!showAll">
-    <ion-list-header no-padding>
-      <ion-label>
-        Snøskredvarsel
-      </ion-label>
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            {{ getDayName(0) | translate }}
-          </ion-col>
-          <ion-col>
-            {{ getDayName(1) | translate }}
-          </ion-col>
-          <ion-col>
-            {{ getDayName(2) | translate}}
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-list-header>
-    <app-region-summary-item *ngFor="let region of mapRegions" [regionSummary]="region"></app-region-summary-item>
-  </ion-list>
+  <ng-container *ngIf="!showAll">
+    <ng-container *ngIf="($capWarningsMapCenter | async) as mapCenterWarnings">
+      <app-cap-list-group title="I kartsenter" [warnings]="mapCenterWarnings.center"></app-cap-list-group>
+      <app-cap-list-group title="I kartutsnittet" [warnings]="mapCenterWarnings.viewBounds"></app-cap-list-group>
+    </ng-container>
+  </ng-container>
   <ion-list padding *ngIf="showAll">
     <ion-list-header no-padding>
       <ion-label>Snøskredvarsel</ion-label>
@@ -58,6 +43,6 @@
         </ion-row>
       </ion-grid>
     </ion-list-header>
-    <app-region-summary-item *ngFor="let region of otherRegions" [regionSummary]="region"></app-region-summary-item>
+    <!-- <app-region-summary-item *ngFor="let region of otherRegions" [regionSummary]="region"></app-region-summary-item> -->
   </ion-list>
 </ion-content>

@@ -1,25 +1,21 @@
 import { Injectable } from '@angular/core';
 import { UserSetting } from '../../models/user-settings.model';
-import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
-import { SupportTile } from '../../models/support-tile.model';
 import { Events } from '@ionic/angular';
 import { NanoSql } from '../../../../nanosql';
 import { nSQL } from 'nano-sql';
 import { Observable } from 'rxjs';
-import { startWith, flatMap, scan, defaultIfEmpty, last, map, take, tap } from 'rxjs/operators';
-
-const STORAGE_KEY_NAME = 'UserSettings';
+import { map, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserSettingService {
 
-  constructor(private storage: Storage, private translate: TranslateService, private events: Events) {
+  constructor(private translate: TranslateService, private events: Events) {
   }
 
   private getDefaultSettings(): UserSetting {
@@ -62,6 +58,6 @@ export class UserSettingService {
   }
 
   reset() {
-    return this.storage.remove(STORAGE_KEY_NAME);
+    return nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('drop').exec();
   }
 }

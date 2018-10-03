@@ -1,5 +1,5 @@
 export interface AvalancheWarningSimple {
-    RegId: string;
+    RegId: number;
     RegionId: number;
     RegionName: string;
     RegionTypeId: number;

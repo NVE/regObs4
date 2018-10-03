@@ -117,7 +117,7 @@ export class ObservationService {
     }
   }
 
-  async drop() {
+  async reset() {
     await this.storage.ready();
     await this.storage.remove(REGISTRATION_LAST_UPDATED);
     return nSQL(NanoSql.TABLES.REGISTRATION.name).query('drop').exec();

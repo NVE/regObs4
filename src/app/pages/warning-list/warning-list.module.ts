@@ -7,8 +7,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { WarningListPage } from './warning-list.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { RegionSummaryItemComponent } from '../../components/region-summary-item/region-summary-item.component';
-import { AngularSvgIconModule } from 'angular-svg-icon';
+import { CapListGroupComponent } from '../../components/cap-list-group/cap-list-group.component';
+import { SharedModule } from '../../modules/shared/shared.module';
 
 const routes: Routes = [
   {
@@ -24,8 +24,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     TranslateModule,
-    AngularSvgIconModule,
+    SharedModule,
   ],
-  declarations: [WarningListPage, RegionSummaryItemComponent]
+  declarations: [WarningListPage, CapListGroupComponent]
 })
 export class WarningListPageModule { }

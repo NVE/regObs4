@@ -207,7 +207,7 @@ export class OfflineMapService {
     };
   }
 
-  async clear() {
+  async reset() {
     const maps = await this.getOfflineMaps();
     for (const map of maps) {
       await this.remove(map);

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { RegionSummary } from '../../core/services/warning/region-summary.model';
+import { RegionSummary } from '../../core/services/warning/snow/region-summary.model';
 import * as moment from 'moment';
-import { AvalancheWarningSimple } from '../../core/services/warning/avalanche-warning-simple.model';
+import { AvalancheWarningSimple } from '../../core/services/warning/snow/avalanche-warning-simple.model';
 
 @Component({
   selector: 'app-region-summary-item',

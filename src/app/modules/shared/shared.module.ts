@@ -7,6 +7,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { OfflineImageComponent } from '../../components/offline-image/offline-image.component';
 import { ExternalLinkComponent } from '../../components/external-link/external-link.component';
+import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
+import { AngularSvgIconModule, SvgIconComponent } from 'angular-svg-icon';
 
 @NgModule({
     imports: [
@@ -14,12 +16,14 @@ import { ExternalLinkComponent } from '../../components/external-link/external-l
         FormsModule,
         ReactiveFormsModule,
         IonicModule,
+        AngularSvgIconModule,
     ],
     declarations: [
         ShadowCssDirective,
         AddMenuComponent,
         OfflineImageComponent,
         ExternalLinkComponent,
+        GeoIconComponent,
     ],
     exports: [
         CommonModule,
@@ -30,7 +34,8 @@ import { ExternalLinkComponent } from '../../components/external-link/external-l
         ShadowCssDirective,
         AddMenuComponent,
         OfflineImageComponent,
-        ExternalLinkComponent
+        ExternalLinkComponent,
+        GeoIconComponent,
     ]
 })
 export class SharedModule { }

@@ -1,0 +1,43 @@
+.geo-icon-circle {
+    height: 36px;
+    width: 36px;
+    background-color: #F7F7F7;
+    border-radius: 50%;
+    margin-left: 16px;
+    margin-right: 15px;
+
+    app-geo-icon {
+        position: relative;
+        top: 5px;
+    }
+}
+
+ion-badge {
+    border-radius: 2px;
+    height: 36px;
+    width: 36px;
+    color: #fff;
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 30px;
+    text-align: center;
+
+    &.level-0 {
+        --background: var(--warning-color-0);
+    }
+    &.level-1 {
+        --background: var(--warning-color-1);
+    }
+    &.level-2 {
+        --background: var(--warning-color-2);
+    }
+    &.level-3 {
+        --background: var(--warning-color-3);
+    }
+    &.level-4 {
+        --background: var(--warning-color-4);
+    }
+    &.level-5 {
+        --background: var(--warning-color-5);
+    }
+}

@@ -1,0 +1,39 @@
+<ion-list padding>
+  <ion-list-header no-padding>
+    <ion-label>
+      {{ title | translate }}
+    </ion-label>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          {{ getDayName(0) | translate }}
+        </ion-col>
+        <ion-col>
+          {{ getDayName(1) | translate }}
+        </ion-col>
+        <ion-col>
+          {{ getDayName(2) | translate}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-list-header>
+  <ion-item *ngFor="let capWarning of warnings" no-padding detail="false" href="warning-detail/{{capWarning.name}}">
+    <div slot="start" class="geo-icon-circle">
+      <app-geo-icon [geoHazard]="capWarning.geoHazard"></app-geo-icon>
+    </div>
+    <ion-label>{{capWarning.name}}</ion-label>
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngIf="{ level: getDayWarning(capWarning, 0) } as warning">
+          <ion-badge [attr.class]="'level-'+warning.level">{{ warning.level }}</ion-badge>
+        </ion-col>
+        <ion-col *ngIf="{ level: getDayWarning(capWarning, 1) } as warning">
+          <ion-badge [attr.class]="'level-'+warning.level">{{ warning.level }}</ion-badge>
+        </ion-col>
+        <ion-col *ngIf="{ level: getDayWarning(capWarning, 2) } as warning">
+          <ion-badge [attr.class]="'level-'+warning.level">{{ warning.level }}</ion-badge>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+</ion-list>

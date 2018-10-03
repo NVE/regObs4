@@ -3,6 +3,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { UserSetting } from '../../core/models/user-settings.model';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
+import { WarningService } from '../../core/services/warning/warning.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -16,7 +17,8 @@ export class UserSettingsPage implements OnInit {
   constructor(
     private userSettingService: UserSettingService,
     private observationService: ObservationService,
-    private offlineMapService: OfflineMapService) { }
+    private offlineMapService: OfflineMapService,
+    private warningService: WarningService) { }
 
   async ngOnInit() {
     this.userSettings = await this.userSettingService.getUserSettings();
@@ -27,9 +29,10 @@ export class UserSettingsPage implements OnInit {
   }
 
   async reset() {
-    await this.observationService.drop();
+    await this.observationService.reset();
     await this.userSettingService.reset();
-    await this.offlineMapService.clear();
-    console.log('Observations reset');
+    await this.offlineMapService.reset();
+    await this.warningService.reset();
+    console.log('[INFO] App reset complete');
   }
 }

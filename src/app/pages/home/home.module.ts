@@ -12,8 +12,6 @@ import { MapControlsComponent } from '../../components/map-controls/map-controls
 import { MapSearchComponent } from '../../components/map-controls/map-search/map-search.component';
 import { FullscreenToggleComponent } from '../../components/map-controls/fullscreen-toggle/fullscreen-toggle.component';
 import { GpsCenterComponent } from '../../components/map-controls/gps-center/gps-center.component';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
 import { ModalSearchPageModule } from '../modal-search/modal-search.module';
 import { SharedModule } from '../../modules/shared/shared.module';
 import { MapCenterInfoComponent } from '../../components/map-center-info/map-center-info.component';
@@ -31,7 +29,6 @@ import { MapCenterInfoComponent } from '../../components/map-center-info/map-cen
     ]),
     TranslateModule,
     LeafletModule,
-    AngularSvgIconModule,
     ModalSearchPageModule,
     SharedModule,
   ],
@@ -43,7 +40,6 @@ import { MapCenterInfoComponent } from '../../components/map-center-info/map-cen
     MapSearchComponent,
     FullscreenToggleComponent,
     GpsCenterComponent,
-    GeoIconComponent,
     MapCenterInfoComponent,
   ],
 })
