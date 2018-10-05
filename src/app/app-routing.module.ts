@@ -30,7 +30,6 @@ const routes: Routes = [
   { path: 'trip-log', loadChildren: './pages/trip-log/trip-log.module#TripLogPageModule' },
   { path: 'start-wizard', loadChildren: './pages/start-wizard/start-wizard.module#StartWizardPageModule' },
   { path: 'view-observation/:id', loadChildren: './pages/view-observation/view-observation.module#ViewObservationPageModule' },
-  { path: 'warning-detail/:id', loadChildren: './pages/warning-detail/warning-detail.module#WarningDetailPageModule' },
   { path: 'observation-list', loadChildren: './pages/observation-list/observation-list.module#ObservationListPageModule' },
   { path: 'offline-map', loadChildren: './pages/offline-map/offline-map.module#OfflineMapPageModule' },
   { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' },

@@ -17,23 +17,30 @@
       </ion-row>
     </ion-grid>
   </ion-list-header>
-  <ion-item *ngFor="let warningGroup of warnings" no-padding detail="false">
-    <div slot="start" class="geo-icon-circle">
-      <app-geo-icon [geoHazard]="warningGroup.group.geoHazard"></app-geo-icon>
-    </div>
-    <ion-label>{{warningGroup.group.groupName}}</ion-label>
-    <ion-grid>
-      <ion-row>
-        <ion-col *ngIf="{ level: getDayWarning(warningGroup, 0) } as warning">
-          <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
-        </ion-col>
-        <ion-col *ngIf="{ level: getDayWarning(warningGroup, 1) } as warning">
-          <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
-        </ion-col>
-        <ion-col *ngIf="{ level: getDayWarning(warningGroup, 2) } as warning">
-          <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-item>
+  <ion-item-sliding *ngFor="let warningGroup of warnings">
+    <ion-item no-padding detail="false">
+      <div slot="start" class="geo-icon-circle">
+        <app-geo-icon [geoHazard]="warningGroup.group.geoHazard"></app-geo-icon>
+      </div>
+      <ion-label>{{warningGroup.group.groupName}}</ion-label>
+      <ion-grid>
+        <ion-row>
+          <ion-col *ngIf="{ level: getDayWarning(warningGroup, 0) } as warning">
+            <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
+          </ion-col>
+          <ion-col *ngIf="{ level: getDayWarning(warningGroup, 1) } as warning">
+            <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
+          </ion-col>
+          <ion-col *ngIf="{ level: getDayWarning(warningGroup, 2) } as warning">
+            <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item-options side="end" (ionSwipe)="itemSwiped(warningGroup)">
+      <ion-item-option expandable="true" (click)="toggleFavourite(warningGroup)">
+        <ion-icon slot="icon-only" name="star"></ion-icon>
+      </ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
 </ion-list>
