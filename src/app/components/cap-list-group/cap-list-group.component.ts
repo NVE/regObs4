@@ -35,10 +35,12 @@ export class CapListGroupComponent implements OnInit {
 
   toggleFavourite(group: WarningGroup) {
     console.log('Add item to favourites');
+    group.isFavourite = true;
   }
 
   itemSwiped(group: WarningGroup) {
     console.log('Add item to favourites');
+    group.isFavourite = true;
     // TODO: maybe add animation?
     // http://masteringionic.com/blog/2017-11-21-implementing-css3-animations-within-an-ionic-framework-project/
     // https://github.com/daneden/animate.css

@@ -51,6 +51,7 @@
     "@types/leaflet.markercluster": "^1.0.3",
     "@types/xml2js": "^0.4.3",
     "angular-svg-icon": "^6.0.0",
+    "animate.css": "^3.7.0",
     "cordova-android": "7.1.1",
     "cordova-browser": "5.0.4",
     "cordova-clipboard": "^1.2.1",

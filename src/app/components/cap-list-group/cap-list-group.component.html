@@ -39,7 +39,7 @@
     </ion-item>
     <ion-item-options side="end" (ionSwipe)="itemSwiped(warningGroup)">
       <ion-item-option expandable="true" (click)="toggleFavourite(warningGroup)">
-        <ion-icon slot="icon-only" name="star"></ion-icon>
+        <ion-icon [ngClass]="{'animated bounce': warningGroup.isFavourite}" slot="icon-only" name="star"></ion-icon>
       </ion-item-option>
     </ion-item-options>
   </ion-item-sliding>

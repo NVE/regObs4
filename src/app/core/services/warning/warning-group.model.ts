@@ -6,6 +6,8 @@ export class WarningGroup {
     private _group: WarningGroupKey;
     private _warnings: IWarning[];
 
+    isFavourite;
+
     get group() {
         return this._group;
     }
