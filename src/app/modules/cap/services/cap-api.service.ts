@@ -6,6 +6,8 @@ import { switchMap, map } from 'rxjs/operators';
 import { Parser } from 'xml2js';
 import { CapAlertWrapper } from '../models/cap-alert.model';
 
+const knownArrayFields = ['items'];
+
 @Injectable({
   providedIn: 'root'
 })

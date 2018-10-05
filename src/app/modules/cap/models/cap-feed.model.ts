@@ -11,14 +11,14 @@ export interface CapFeedRssChannel {
     link: string;
     description: string;
     lastBuildDate: Date;
-    item: CapFeedRssChannelItem[];
+    item: CapFeedRssChannelItem | CapFeedRssChannelItem[];
 }
 
 export interface CapFeedRssChannelItem {
     guid: string;
     link: string;
     author: string;
-    category: string[];
+    category: string | string[];
     title: string;
     description: string;
     pubDate: Date;

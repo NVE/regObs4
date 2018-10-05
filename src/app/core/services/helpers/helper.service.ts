@@ -10,6 +10,7 @@ import * as turf from '@turf/turf';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { featureEach } from '@turf/turf';
 import { GeoHazard } from '../../models/geo-hazard.enum';
+import { Observable } from 'rxjs';
 
 const STORAGE_KEY_NAME = 'CurrentMapView';
 
@@ -54,40 +55,57 @@ export class HelperService {
   //   }
   // }
 
-  async getDistanceToRegion(): Promise<{ name: string, distance: number }[]> {
-    const currentPosition = await this.geolocation.getCurrentPosition(
-      {
-        enableHighAccuracy: true,
-        timeout: 20 * 1000,
-        maximumAge: 10 * 60 * 1000
-      });
-    const target = turf.point([currentPosition.coords.longitude, currentPosition.coords.latitude]);
-    return this.getFeaturesFromJson(snow_warning_regions.default).map((feature) => {
-      const featurePolygon = feature.geometry as Polygon;
-      const nearestPoint = turf.nearest(target, turf.featureCollection(featurePolygon.coordinates[0].map((c) => turf.point(c))));
-      return ({
-        name: feature.properties[settings.snowRegionsGeoJsonName] as string,
-        distance: turf.distance(nearestPoint, target)
-      });
-    });
-  }
+  // async getDistanceToRegion(): Promise<{ name: string, distance: number }[]> {
+  //   const currentPosition = await this.geolocation.getCurrentPosition(
+  //     {
+  //       enableHighAccuracy: true,
+  //       timeout: 20 * 1000,
+  //       maximumAge: 10 * 60 * 1000
+  //     });
+  //   const target = turf.point([currentPosition.coords.longitude, currentPosition.coords.latitude]);
+  //   return this.getFeaturesFromJson(snow_warning_regions.default).map((feature) => {
+  //     const featurePolygon = feature.geometry as Polygon;
+  //     const nearestPoint = turf.nearest(target, turf.featureCollection(featurePolygon.coordinates[0].map((c) => turf.point(c))));
+  //     return ({
+  //       name: feature.properties[settings.snowRegionsGeoJsonName] as string,
+  //       distance: turf.distance(nearestPoint, target)
+  //     });
+  //   });
+  // }
 
-  async getAvalancheWarningRegionsForCurrentMapView() {
-    // const currentView = await this.getCurrentMapView();
-    const currentView = null; // TODO: Fix implementation
-    if (currentView !== null) {
-      const features = this.getFeaturesFromJson(snow_warning_regions.default);
-      return features.filter((r) => {
-        const featurePolygon = r.geometry as Polygon;
-        const currentViewAsPolygon = this.boundsToGeoPolygon(currentView.bounds);
-        return turf.intersect(featurePolygon, currentViewAsPolygon);
-      }).map((feature) => {
-        return feature.properties[settings.snowRegionsGeoJsonName] as string;
-      });
-    } else {
-      return [];
-    }
-  }
+  // async getAvalancheWarningRegionsForCurrentMapView() {
+  //   // const currentView = await this.getCurrentMapView();
+  //   const currentView = null; // TODO: Fix implementation
+  //   if (currentView !== null) {
+  //     const features = this.getFeaturesFromJson(snow_warning_regions.default);
+  //     return features.filter((r) => {
+  //       const featurePolygon = r.geometry as Polygon;
+  //       const currentViewAsPolygon = this.boundsToGeoPolygon(currentView.bounds);
+  //       return turf.intersect(featurePolygon, currentViewAsPolygon);
+  //     }).map((feature) => {
+  //       return feature.properties[settings.snowRegionsGeoJsonName] as string;
+  //     });
+  //   } else {
+  //     return [];
+  //   }
+  // }
+
+  // async getPolygonGroupForCurrentMapView() {
+  //   // const currentView = await this.getCurrentMapView();
+  //   const currentView = null; // TODO: Fix implementation
+  //   if (currentView !== null) {
+  //     const features = this.getFeaturesFromJson(snow_warning_regions.default);
+  //     return features.filter((r) => {
+  //       const featurePolygon = r.geometry as Polygon;
+  //       const currentViewAsPolygon = this.boundsToGeoPolygon(currentView.bounds);
+  //       return turf.intersect(featurePolygon, currentViewAsPolygon);
+  //     }).map((feature) => {
+  //       return feature.properties[settings.snowRegionsGeoJsonName] as string;
+  //     });
+  //   } else {
+  //     return [];
+  //   }
+  // }
 
   formatMsToTime(duration: number, showMilliseconds: boolean = false) {
     const milliseconds = Math.floor((duration % 1000) / 100);
@@ -134,6 +152,16 @@ export class HelperService {
       ++u;
     } while (Math.abs(bytes) >= thresh && u < units.length - 1);
     return bytes.toFixed(1) + ' ' + units[u];
+  }
+
+  getTimeAsObservable(interval: number): Observable<Date> {
+    return Observable.create((observer) => {
+      // setInterval(() => observer.next(new Date().toString()), interval)
+      const handle = setInterval(() => {
+        observer.next(new Date());
+      }, interval);
+      return () => clearInterval(handle);
+    });
   }
 
   private getFeaturesFromJson(geoJson: any) {

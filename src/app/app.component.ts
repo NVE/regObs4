@@ -77,7 +77,7 @@ export class AppComponent {
   async updateResources() {
     await this.observationService.updateObservations();
     // await this.warningService.updateAvalancheWarnings();
-    await this.warningService.updateCap();
+    await this.warningService.updateWarnings();
   }
 
   async initNanoSqlDatabase() {

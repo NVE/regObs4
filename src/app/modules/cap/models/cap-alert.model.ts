@@ -11,7 +11,7 @@ export interface CapAlert {
     scope: string;
     code: string;
     references: string;
-    info: CapAlertInfo[];
+    info: CapAlertInfo | CapAlertInfo[];
 }
 
 export interface CapAlertInfo {
@@ -22,7 +22,7 @@ export interface CapAlertInfo {
     urgency: string;
     severity: string;
     certainty: string;
-    eventCode: CapAlertParameter;
+    eventCode: CapAlertParameter | CapAlertParameter[];
     effective: Date;
     expires: Date;
     senderName: string;
@@ -31,7 +31,7 @@ export interface CapAlertInfo {
     instruction: string;
     web: string;
     contact: string;
-    parameter: CapAlertParameter[];
+    parameter: CapAlertParameter | CapAlertParameter[];
     area: CapAlertArea;
 }
 
@@ -43,5 +43,5 @@ export interface CapAlertParameter {
 export interface CapAlertArea {
     areaDesc: string;
     polygon: string;
-    geocode: CapAlertParameter[];
+    geocode: CapAlertParameter | CapAlertParameter[];
 }

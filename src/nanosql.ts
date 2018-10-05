@@ -34,24 +34,24 @@ export class NanoSql {
                 { key: 'timestamp', type: 'number' },
             ]
         },
-        AVALANCHE_WARNING_SUMMARY: {
-            name: 'warningsummary',
+        // AVALANCHE_WARNING_SUMMARY: {
+        //     name: 'warningsummary',
+        //     model: [
+        //         { key: 'Id', type: 'number', props: ['pk'] },
+        //         { key: '*', type: '*' },
+        //     ]
+        // },
+        // LANDSLIDE_WARNING: {
+        //     name: 'landslidewarning',
+        //     model: [
+        //         { key: 'Id', type: 'number', props: ['pk'] },
+        //         { key: '*', type: '*' },
+        //     ]
+        // },
+        WARNING: {
+            name: 'warning',
             model: [
-                { key: 'Id', type: 'number', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
-        },
-        LANDSLIDE_WARNING: {
-            name: 'landslidewarning',
-            model: [
-                { key: 'Id', type: 'number', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
-        },
-        CAP_WARNING: {
-            name: 'capwarning',
-            model: [
-                { key: 'guid', type: 'string', props: ['pk'] },
+                { key: 'id', type: 'string', props: ['pk'] },
                 { key: 'geoHazard', type: 'number', props: ['idx'] },
                 { key: 'timestamp', type: 'number', props: ['idx'] },
                 { key: '*', type: '*' },

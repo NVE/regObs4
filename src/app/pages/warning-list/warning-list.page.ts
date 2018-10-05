@@ -2,36 +2,37 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Events, PopoverController } from '@ionic/angular';
 import { HelperService } from '../../core/services/helpers/helper.service';
-import { RegionSummary } from '../../core/services/warning/snow/region-summary.model';
-import { Observable, of } from 'rxjs';
+import { Observable, of, combineLatest } from 'rxjs';
 import { map, tap, switchMap, groupBy, partition, filter } from 'rxjs/operators';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Observer, ObserverSubscriber } from 'nano-sql/lib/observable';
 import { settings } from '../../../settings';
 import * as moment from 'moment';
 import { PopoverMenuComponent } from '../../components/popover-menu/popover-menu.component';
-import { WarningCap } from '../../core/services/warning/warning-cap.model';
+import { IWarning } from '../../core/services/warning/warning.interface';
 import { CapAlertInfo } from '../../modules/cap/models/cap-alert.model';
 import { MapService } from '../../core/services/map/map.service';
 import { MapView } from '../../core/services/map/map-view.model';
 import { BorderHelper } from '../../core/helpers/leaflet/border-helper';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { WarningGroup } from '../../core/services/warning/warning-group.model';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 
-export interface CapItemInMapView {
+export interface WarningInMapView {
   inMapView: { center: boolean, viewBounds: boolean };
-  item: CapItemWithTranslation;
+  warningGroup: WarningGroup;
 }
 
-export interface CapItemInMapViewGroup {
-  name: string;
-  geoHazard: GeoHazard;
-  items: CapItemWithTranslation[];
-}
+// export interface CapItemInMapViewGroup {
+//   name: string;
+//   geoHazard: GeoHazard;
+//   items: CapItemWithTranslation[];
+// }
 
-export interface CapItemWithTranslation {
-  warning: WarningCap;
-  translatedItem: CapAlertInfo;
-}
+// export interface CapItemWithTranslation {
+//   warning: IWarning;
+//   translatedItem: CapAlertInfo;
+// }
 
 @Component({
   selector: 'app-warning-list',
@@ -39,25 +40,18 @@ export interface CapItemWithTranslation {
   styleUrls: ['./warning-list.page.scss'],
 })
 export class WarningListPage implements OnInit, OnDestroy {
-  // regions: string[];
-  // otherRegions: Array<RegionSummary>;
-  // mapRegions: Array<RegionSummary>;
-  // allRegions: Array<RegionSummary>;
-  // subscription: ObserverSubscriber;
-  // regionDistances: { name: string, distance: number }[];
   showAll: boolean;
-  $capWarnings: Observable<CapItemWithTranslation[]>;
-  $capWarningsMapCenter: Observable<{
-    center: CapItemInMapViewGroup[],
-    viewBounds: CapItemInMapViewGroup[]
+  warnings$: Observable<WarningGroup[]>;
+  warningsInViewBounds$: Observable<{
+    center: WarningGroup[],
+    viewBounds: WarningGroup[]
   }>;
 
   constructor(private helperService: HelperService,
     private warningService: WarningService,
     private mapService: MapService,
+    private userSettingService: UserSettingService,
     private events: Events) {
-    // this.regions = [];
-    // this.allRegions = [];
   }
 
   async ngOnInit() {
@@ -72,50 +66,39 @@ export class WarningListPage implements OnInit, OnDestroy {
     //     this.filterRegions();
     //   }
     // });
-    this.$capWarnings = this.warningService.getCapWarningsForCurrentLanguageAsObservable().pipe(tap((val) => {
-      console.log('CAP ITEMS: ', val);
+    this.warnings$ = this.warningService.getWarningsForCurrentLanguageAsObservable().pipe(tap((val) => {
+      console.log('[WarningListPage] Warnings changed: ', val);
     }));
 
-    this.$capWarningsMapCenter = this.mapService.getMapViewObservable()
+    this.warningsInViewBounds$ = this.mapService.getMapViewObservable()
       .pipe(switchMap((mapView: MapView) => this.getWarningsForCurrentMapView(mapView)));
   }
 
   getWarningsForCurrentMapView(mapView: MapView) {
-    return this.$capWarnings.pipe(
-      map((warnings) => {
-        const warningsInMapView: CapItemInMapView[] = warnings
-          .filter((items) => moment(items.translatedItem.effective).isAfter(moment().startOf('day')))
-          .map((item) => {
-            const polygon = item.translatedItem.area.polygon;
-            const inMapView = BorderHelper.isinView(mapView.center, mapView.bounds, polygon);
-            return { inMapView, item };
-          }).filter((item) => item.inMapView.center || item.inMapView.viewBounds);
-        return {
-          center: this.groupResult(warningsInMapView.filter((item) => item.inMapView.center).map((item) => item.item)),
-          viewBounds: this.groupResult(warningsInMapView.filter((item) =>
-            item.inMapView.viewBounds && !item.inMapView.center
-          ).map((item) => item.item))
-        };
-      }));
-  }
-
-  groupResult(items: CapItemWithTranslation[]) {
-    const result: CapItemInMapViewGroup[] = [];
-    for (const item of items) {
-      const key = result.find((x) =>
-        x.name === item.translatedItem.area.areaDesc &&
-        x.geoHazard === item.warning.geoHazard);
-      if (key) {
-        key.items.push(item);
-      } else {
-        result.push({
-          name: item.translatedItem.area.areaDesc,
-          geoHazard: item.warning.geoHazard,
-          items: [item]
-        });
-      }
-    }
-    return result;
+    return combineLatest(
+      this.warningService.getWarningsForCurrentLanguageAsObservable(),
+      this.userSettingService.getUserSettingsAsObservable()).pipe(
+        map(([warnings, usersettings]) => {
+          const inMapView = BorderHelper.getGroupInView(usersettings.currentGeoHazard, mapView.center, mapView.bounds);
+          const warningsInMapView: WarningInMapView[] = warnings
+            .map((warningGroup) => {
+              const groupInMapView = {
+                center: inMapView.center.indexOf(warningGroup.group.groupId) >= 0,
+                viewBounds: inMapView.viewBounds.indexOf(warningGroup.group.groupId) >= 0,
+              };
+              return { inMapView: groupInMapView, warningGroup };
+            }).filter((warningGroupInView) => warningGroupInView.inMapView.center || warningGroupInView.inMapView.viewBounds);
+          return {
+            center: warningsInMapView.filter((item) => item.inMapView.center).map((item) => item.warningGroup),
+            viewBounds: warningsInMapView.filter((item) =>
+              item.inMapView.viewBounds && !item.inMapView.center
+            ).map((item) => item.warningGroup)
+          };
+        }),
+        tap((val) => {
+          console.log('[WarningListPage] Warnings for current view changed: ', val);
+        })
+      );
   }
 
   toggleTab() {

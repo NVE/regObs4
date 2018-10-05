@@ -20,7 +20,8 @@ export const settings = {
             apiJsonVersion: '3.2.0',
         },
         warning: {
-            defaultWarningDaysAhead: 3,
+            defaultWarningDaysAhead: 2,
+            summerMonths: [5, 6, 7, 8, 9, 10],
             timezone: 'Europe/Oslo',
             Snow: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.0/api'

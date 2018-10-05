@@ -13,3 +13,11 @@
     font-size: 12px;
     display: block;
 }
+
+.center-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-37px,-37px);
+    z-index: $z-index-over-map;
+}

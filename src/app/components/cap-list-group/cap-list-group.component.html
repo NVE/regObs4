@@ -17,21 +17,21 @@
       </ion-row>
     </ion-grid>
   </ion-list-header>
-  <ion-item *ngFor="let capWarning of warnings" no-padding detail="false" href="warning-detail/{{capWarning.name}}">
+  <ion-item *ngFor="let warningGroup of warnings" no-padding detail="false">
     <div slot="start" class="geo-icon-circle">
-      <app-geo-icon [geoHazard]="capWarning.geoHazard"></app-geo-icon>
+      <app-geo-icon [geoHazard]="warningGroup.group.geoHazard"></app-geo-icon>
     </div>
-    <ion-label>{{capWarning.name}}</ion-label>
+    <ion-label>{{warningGroup.group.groupName}}</ion-label>
     <ion-grid>
       <ion-row>
-        <ion-col *ngIf="{ level: getDayWarning(capWarning, 0) } as warning">
-          <ion-badge [attr.class]="getWarningLevelCssClass(warning.level)">{{warning.level}}</ion-badge>
+        <ion-col *ngIf="{ level: getDayWarning(warningGroup, 0) } as warning">
+          <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
         </ion-col>
-        <ion-col *ngIf="{ level: getDayWarning(capWarning, 1) } as warning">
-          <ion-badge [attr.class]="getWarningLevelCssClass(warning.level)">{{warning.level}}</ion-badge>
+        <ion-col *ngIf="{ level: getDayWarning(warningGroup, 1) } as warning">
+          <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
         </ion-col>
-        <ion-col *ngIf="{ level: getDayWarning(capWarning, 2) } as warning">
-          <ion-badge [attr.class]="getWarningLevelCssClass(warning.level)">{{warning.level}}</ion-badge>
+        <ion-col *ngIf="{ level: getDayWarning(warningGroup, 2) } as warning">
+          <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
         </ion-col>
       </ion-row>
     </ion-grid>
