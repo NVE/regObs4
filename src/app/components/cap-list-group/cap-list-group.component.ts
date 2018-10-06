@@ -19,6 +19,10 @@ export class CapListGroupComponent implements OnInit {
   ngOnInit() {
   }
 
+  trackWarningGroup(index: number, group: WarningGroup) {
+    return group ? group.group.groupId : undefined;
+  }
+
 
   getDayWarning(group: WarningGroup, daysToAdd: number) {
     const day = moment().startOf('day').add(daysToAdd, 'days');

@@ -3,7 +3,7 @@ import { WarningService } from '../../core/services/warning/warning.service';
 import { Events, PopoverController } from '@ionic/angular';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { Observable, of, combineLatest } from 'rxjs';
-import { map, tap, switchMap, groupBy, partition, filter } from 'rxjs/operators';
+import { map, tap, switchMap, groupBy, partition, filter, first } from 'rxjs/operators';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Observer, ObserverSubscriber } from 'nano-sql/lib/observable';
 import { settings } from '../../../settings';
@@ -17,6 +17,7 @@ import { BorderHelper } from '../../core/helpers/leaflet/border-helper';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { MapViewArea } from '../../core/services/map/map-view-area.model';
 
 export interface WarningInMapView {
   inMapView: { center: boolean, viewBounds: boolean };
@@ -70,35 +71,33 @@ export class WarningListPage implements OnInit, OnDestroy {
       console.log('[WarningListPage] Warnings changed: ', val);
     }));
 
-    this.warningsInViewBounds$ = this.mapService.getMapViewObservable()
-      .pipe(switchMap((mapView: MapView) => this.getWarningsForCurrentMapView(mapView)));
+    this.warningsInViewBounds$ = this.mapService.getMapViewAreaObservable()
+      .pipe(switchMap((mapViewArea: MapViewArea) => this.getWarningsForCurrentMapView(mapViewArea)));
   }
 
-  getWarningsForCurrentMapView(mapView: MapView) {
-    return combineLatest(
-      this.warningService.getWarningsForCurrentLanguageAsObservable(),
-      this.userSettingService.getUserSettingsAsObservable()).pipe(
-        map(([warnings, usersettings]) => {
-          const inMapView = BorderHelper.getGroupInView(usersettings.currentGeoHazard, mapView.center, mapView.bounds);
-          const warningsInMapView: WarningInMapView[] = warnings
-            .map((warningGroup) => {
-              const groupInMapView = {
-                center: inMapView.center.indexOf(warningGroup.group.groupId) >= 0,
-                viewBounds: inMapView.viewBounds.indexOf(warningGroup.group.groupId) >= 0,
-              };
-              return { inMapView: groupInMapView, warningGroup };
-            }).filter((warningGroupInView) => warningGroupInView.inMapView.center || warningGroupInView.inMapView.viewBounds);
-          return {
-            center: warningsInMapView.filter((item) => item.inMapView.center).map((item) => item.warningGroup),
-            viewBounds: warningsInMapView.filter((item) =>
-              item.inMapView.viewBounds && !item.inMapView.center
-            ).map((item) => item.warningGroup)
-          };
-        }),
-        tap((val) => {
-          console.log('[WarningListPage] Warnings for current view changed: ', val);
-        })
-      );
+  getWarningsForCurrentMapView(mapViewArea: MapViewArea) {
+    return this.warningService.getWarningsForCurrentLanguageAsObservable().pipe(
+      map((warnings) => {
+        // TODO: Create web worker for this processing task?
+        const warningsInMapView: WarningInMapView[] = warnings
+          .map((warningGroup) => {
+            const groupInMapView = {
+              center: mapViewArea.regionInCenter === warningGroup.group.groupId,
+              viewBounds: mapViewArea.regionsInViewBounds.indexOf(warningGroup.group.groupId) >= 0,
+            };
+            return { inMapView: groupInMapView, warningGroup };
+          }).filter((warningGroupInView) => warningGroupInView.inMapView.center || warningGroupInView.inMapView.viewBounds);
+        return {
+          center: warningsInMapView.filter((item) => item.inMapView.center).map((item) => item.warningGroup),
+          viewBounds: warningsInMapView.filter((item) =>
+            item.inMapView.viewBounds && !item.inMapView.center
+          ).map((item) => item.warningGroup)
+        };
+      }),
+      tap((val) => {
+        console.log('[WarningListPage] Warnings for current view changed: ', val);
+      })
+    );
   }
 
   toggleTab() {

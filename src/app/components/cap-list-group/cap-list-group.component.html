@@ -17,7 +17,7 @@
       </ion-row>
     </ion-grid>
   </ion-list-header>
-  <ion-item-sliding *ngFor="let warningGroup of warnings">
+  <ion-item-sliding *ngFor="let warningGroup of warnings; trackBy: trackWarningGroup">
     <ion-item no-padding detail="false">
       <div slot="start" class="geo-icon-circle">
         <app-geo-icon [geoHazard]="warningGroup.group.geoHazard"></app-geo-icon>
@@ -39,7 +39,7 @@
     </ion-item>
     <ion-item-options side="end" (ionSwipe)="itemSwiped(warningGroup)">
       <ion-item-option expandable="true" (click)="toggleFavourite(warningGroup)">
-        <ion-icon [ngClass]="{'animated bounce': warningGroup.isFavourite}" slot="icon-only" name="star"></ion-icon>
+        <ion-icon [ngClass]="{'animated flip': warningGroup.isFavourite}" slot="icon-only" name="star"></ion-icon>
       </ion-item-option>
     </ion-item-options>
   </ion-item-sliding>
