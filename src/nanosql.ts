@@ -57,6 +57,13 @@ export class NanoSql {
                 { key: '*', type: '*' },
             ]
         },
+        WARNING_FAVOURITE: {
+            name: 'warning_favourite',
+            model: [
+                { key: 'id', type: 'string', props: ['pk'] },
+                { key: '*', type: '*' },
+            ]
+        },
         OFFLINE_MAP: {
             name: 'offlinemap',
             model: [

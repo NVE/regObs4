@@ -8,13 +8,15 @@ import { HelperService } from '../helpers/helper.service';
 import { nSQL } from 'nano-sql';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
-import { map, combineLatest } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
 import { WarningGroupKey } from './warning-group-key.interface';
 import { IWarningApiResult } from './warning-api-result.interface';
 import { IAvalancheWarningApiResult } from './avalanche-warning-api-result.interface';
+import { combineLatest } from 'rxjs';
+import { ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +25,7 @@ export class WarningService {
   constructor(private httpClient: HttpClient,
     private userSettingService: UserSettingService,
     private helperService: HelperService,
+    private toastController: ToastController,
   ) {
 
   }
@@ -56,7 +59,37 @@ export class WarningService {
   getWarningsAsObservable() {
     return nSQL().observable<IWarning[]>(() => {
       return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
-    }).debounce(1000).toRxJS().pipe(map(this.groupWarnings));
+    }).debounce(500).toRxJS().pipe(map(this.groupWarnings));
+  }
+
+  getFavouritesAsObservable() {
+    return nSQL().observable<{ groupId: string, geoHazard: GeoHazard }[]>(() => {
+      return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('select').emit();
+    }).toRxJS();
+  }
+
+  getWarningsAndFavouritesAsObservable() {
+    return combineLatest(this.getWarningsAsObservable(), this.getFavouritesAsObservable())
+      .pipe(map(([warningGroup, favourites]) => {
+        return warningGroup.map((wg) => {
+          wg.isFavourite = !!(favourites.find((x) =>
+            x.groupId === wg.group.groupId &&
+            x.geoHazard === wg.group.geoHazard));
+          return wg;
+        });
+      }));
+  }
+
+  addToFavourite(groupId: string, geoHazard: GeoHazard) {
+    const id = `${geoHazard}_${groupId}`;
+    return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name)
+      .query('upsert', { id, groupId, geoHazard }).exec();
+  }
+
+  removeFromFavourite(groupId: string, geoHazard: GeoHazard) {
+    const id = `${geoHazard}_${groupId}`;
+    return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('delete')
+      .where(['id', '=', id]).exec();
   }
 
   private groupWarnings(warnings: IWarning[]): WarningGroup[] {
@@ -89,9 +122,9 @@ export class WarningService {
   }
 
   getWarningsForCurrentLanguageAsObservable() {
-    return this.userSettingService.getUserSettingsAsObservable()
+    return combineLatest(this.userSettingService.getUserSettingsAsObservable(),
+      this.getWarningsAndFavouritesAsObservable())
       .pipe(
-        combineLatest(this.getWarningsAsObservable()),
         map(([userSetting, warningGroups]) => {
           return warningGroups.filter((w) => w.group.language === userSetting.language);
         })

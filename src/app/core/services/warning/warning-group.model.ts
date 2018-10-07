@@ -5,8 +5,7 @@ import * as moment from 'moment';
 export class WarningGroup {
     private _group: WarningGroupKey;
     private _warnings: IWarning[];
-
-    isFavourite;
+    private _isFavourite: boolean;
 
     get group() {
         return this._group;
@@ -14,6 +13,14 @@ export class WarningGroup {
 
     get warnings() {
         return this._warnings;
+    }
+
+    get isFavourite() {
+        return this._isFavourite;
+    }
+
+    set isFavourite(favourite: boolean) {
+        this._isFavourite = favourite;
     }
 
     getWarningForDay(date: Date) {

@@ -1,39 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { Events, PopoverController } from '@ionic/angular';
+import { Events } from '@ionic/angular';
 import { HelperService } from '../../core/services/helpers/helper.service';
-import { Observable, of, combineLatest } from 'rxjs';
-import { map, tap, switchMap, groupBy, partition, filter, first } from 'rxjs/operators';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { Observer, ObserverSubscriber } from 'nano-sql/lib/observable';
-import { settings } from '../../../settings';
+import { Observable, combineLatest } from 'rxjs';
+import { map, tap, switchMap, share } from 'rxjs/operators';
 import * as moment from 'moment';
-import { PopoverMenuComponent } from '../../components/popover-menu/popover-menu.component';
-import { IWarning } from '../../core/services/warning/warning.interface';
-import { CapAlertInfo } from '../../modules/cap/models/cap-alert.model';
 import { MapService } from '../../core/services/map/map.service';
-import { MapView } from '../../core/services/map/map-view.model';
-import { BorderHelper } from '../../core/helpers/leaflet/border-helper';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { MapViewArea } from '../../core/services/map/map-view-area.model';
+import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
-export interface WarningInMapView {
+interface WarningInMapView {
   inMapView: { center: boolean, viewBounds: boolean };
   warningGroup: WarningGroup;
 }
-
-// export interface CapItemInMapViewGroup {
-//   name: string;
-//   geoHazard: GeoHazard;
-//   items: CapItemWithTranslation[];
-// }
-
-// export interface CapItemWithTranslation {
-//   warning: IWarning;
-//   translatedItem: CapAlertInfo;
-// }
 
 @Component({
   selector: 'app-warning-list',
@@ -41,12 +22,14 @@ export interface WarningInMapView {
   styleUrls: ['./warning-list.page.scss'],
 })
 export class WarningListPage implements OnInit, OnDestroy {
-  showAll: boolean;
+  selectedTab: 'inMapView' | 'all' | 'favourites';
   warnings$: Observable<WarningGroup[]>;
-  warningsInViewBounds$: Observable<{
+  warningsForCurrentGeoHazard$: Observable<WarningGroup[]>;
+  warningsInMapView$: Observable<{
     center: WarningGroup[],
     viewBounds: WarningGroup[]
   }>;
+  favourites$: Observable<WarningGroup[]>;
 
   constructor(private helperService: HelperService,
     private warningService: WarningService,
@@ -56,27 +39,36 @@ export class WarningListPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    // this.regionDistances = await this.helperService.getDistanceToRegion();
-    // this.subscription = (await this.warningService.getAvalancheWarningRegionSummaryAsObservable()).subscribe((regionSummary) => {
-    //   this.allRegions = regionSummary;
-    // });
-    // this.events.subscribe(settings.events.tabsChanged, async (tabName: string) => {
-    //   if (tabName === 'warning-list') {
-    //     this.regions = await this.helperService.getAvalancheWarningRegionsForCurrentMapView();
-    //     // TODO: Create observable of regions in current map view
-    //     this.filterRegions();
-    //   }
-    // });
-    this.warnings$ = this.warningService.getWarningsForCurrentLanguageAsObservable().pipe(tap((val) => {
-      console.log('[WarningListPage] Warnings changed: ', val);
-    }));
 
-    this.warningsInViewBounds$ = this.mapService.getMapViewAreaObservable()
+    this.selectedTab = 'inMapView';
+
+    this.warnings$ = this.warningService.getWarningsForCurrentLanguageAsObservable().pipe(
+      share(),
+      tap((val) => {
+        console.log('[WarningListPage] Warnings changed: ', val);
+      }));
+
+    this.warningsForCurrentGeoHazard$ = combineLatest(this.warnings$,
+      this.userSettingService.getUserSettingsAsObservable())
+      .pipe(map(([warningGroups, userSetting]) => {
+        const geoHazardsToFilter = [userSetting.currentGeoHazard];
+        if (userSetting.currentGeoHazard === GeoHazard.Dirt) {
+          geoHazardsToFilter.push(GeoHazard.Water);
+        } else if (userSetting.currentGeoHazard === GeoHazard.Water) {
+          geoHazardsToFilter.push(GeoHazard.Dirt);
+        }
+        return warningGroups.filter((wg) => geoHazardsToFilter.indexOf(wg.group.geoHazard) >= 0);
+      }));
+
+    this.warningsInMapView$ = this.mapService.getMapViewAreaObservable()
       .pipe(switchMap((mapViewArea: MapViewArea) => this.getWarningsForCurrentMapView(mapViewArea)));
+
+    this.favourites$ = this.warnings$.pipe(map((warningGroups) =>
+      warningGroups.filter((wg) => wg.isFavourite)));
   }
 
   getWarningsForCurrentMapView(mapViewArea: MapViewArea) {
-    return this.warningService.getWarningsForCurrentLanguageAsObservable().pipe(
+    return this.warningsForCurrentGeoHazard$.pipe(
       map((warnings) => {
         // TODO: Create web worker for this processing task?
         const warningsInMapView: WarningInMapView[] = warnings
@@ -100,32 +92,13 @@ export class WarningListPage implements OnInit, OnDestroy {
     );
   }
 
-  toggleTab() {
-    this.showAll = !this.showAll;
+  selectTab(tab: 'inMapView' | 'all' | 'favourites') {
+    this.selectedTab = tab;
   }
 
   getDayName(daysToAdd: number) {
     return `DAYS.SHORT.${moment().add(daysToAdd, 'days').day()}`;
   }
-
-  // private filterRegions() {
-  //   setTimeout(() => {
-  //     const sortedRegions = this.allRegions.sort((a, b) => {
-  //       return this.getDistanceToRegion(a.Name) - this.getDistanceToRegion(b.Name);
-  //     });
-  //     this.mapRegions = sortedRegions.filter((r) => this.regions.indexOf(r.Name) >= 0);
-  //     this.otherRegions = sortedRegions.filter((r) => this.regions.indexOf(r.Name) < 0);
-  //   }, 0);
-  // }
-
-  // private getDistanceToRegion(region: string) {
-  //   const matchingRegion = this.regionDistances.find((x) => x.name === region);
-  //   if (matchingRegion) {
-  //     return matchingRegion.distance;
-  //   } else {
-  //     return -1;
-  //   }
-  // }
 
   ngOnDestroy(): void {
     // this.events.unsubscribe(settings.events.tabsChanged);

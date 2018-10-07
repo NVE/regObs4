@@ -12,6 +12,16 @@
     }
 }
 
+ion-item-option {
+    background-color: var(--favorite-item-option-background,rgba(186,196,204,1));
+}
+
+ion-icon {
+    &.favourite {
+        color: yellow;
+    }
+}
+
 ion-list {
     --padding-start: 10px;
     --padding-end: 10px;

@@ -1,19 +1,23 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import * as moment from 'moment';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { WarningService } from '../../core/services/warning/warning.service';
+import { ToastController, ItemSliding, ItemOption, ItemOptions } from '@ionic/angular';
 
 @Component({
   selector: 'app-cap-list-group',
   templateUrl: './cap-list-group.component.html',
-  styleUrls: ['./cap-list-group.component.scss']
+  styleUrls: ['./cap-list-group.component.scss'],
 })
 export class CapListGroupComponent implements OnInit {
 
   @Input() title: string;
   @Input() warnings: WarningGroup[];
 
-  constructor(public warningService: WarningService) {
+  animate: WarningGroup;
+
+  constructor(private warningService: WarningService, private zone: NgZone,
+    private toastController: ToastController) {
   }
 
   ngOnInit() {
@@ -37,17 +41,47 @@ export class CapListGroupComponent implements OnInit {
     return `DAYS.SHORT.${moment().add(daysToAdd, 'days').day()}`;
   }
 
-  toggleFavourite(group: WarningGroup) {
-    console.log('Add item to favourites');
-    group.isFavourite = true;
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      mode: 'md',
+      duration: 2000
+    });
+    toast.present();
   }
 
-  itemSwiped(group: WarningGroup) {
-    console.log('Add item to favourites');
-    group.isFavourite = true;
-    // TODO: maybe add animation?
-    // http://masteringionic.com/blog/2017-11-21-implementing-css3-animations-within-an-ionic-framework-project/
-    // https://github.com/daneden/animate.css
+  async toggleFavourite(group: WarningGroup) {
+    if (group.isFavourite) {
+      await this.warningService.removeFromFavourite(group.group.groupId, group.group.geoHazard);
+      await this.presentToast(group.group.groupName + ' fjernet fra favoritter');
+    } else {
+      await this.warningService.addToFavourite(group.group.groupId, group.group.geoHazard);
+      await this.presentToast(group.group.groupName + ' lagt til i favoritter');
+    }
+
+    this.animate = group;
+    setTimeout(() => {
+      this.zone.run(() => {
+        this.animate = undefined;
+      });
+    }, 500);
+  }
+
+  async itemSwiped(group: WarningGroup) {
+    await this.toggleFavourite(group);
+  }
+
+  async onDrag(event: Event) {
+    const slider: ItemSliding = <any>event.srcElement;
+    const openAmount = (await slider.getOpenAmount()) / 100.0;
+    const option = <Element>event.srcElement.childNodes[2].childNodes[1];
+    const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
+    const color = `background-color:rgba(186,196,204,${opacity})`;
+    option.setAttribute('style', color);
+  }
+
+  animateActive(group: WarningGroup) {
+    return group && group === this.animate;
   }
 
 }

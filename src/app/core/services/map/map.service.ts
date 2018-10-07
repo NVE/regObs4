@@ -48,26 +48,65 @@ export class MapService {
       );
   }
 
-  private workFunc(input: { url: string, mapView: MapView, geoHazard: GeoHazard },
-    callback: (_: MapViewArea) => void) {
+  // NOTE! This code is running as a web worker!
+  private workFunc(input: {
+    url: string,
+    featureGeoJson: string,
+    featureName: string,
+    center: [number, number],
+    bbox: [number, number, number, number]
+  },
+    callback: (_: {
+      regionInCenter: string;
+      regionsInViewBounds: string[]
+    }) => void) {
     (<any>self).importScripts(`${input.url}/turf/turf.min.js`);
-    (<any>self).importScripts(`${input.url}/assets/countygeojson.js`);
-
-    const featureInCenter = (<any>self).countyGeoJSON.features.find((f) => {
-      return (<any>self).turf.inside([input.mapView.center.lng, input.mapView.center.lat], f.geometry);
+    (<any>self).importScripts(`${input.url}${input.featureGeoJson}`);
+    const currentViewAsPolygon = (<any>self).turf.bboxPolygon(input.bbox);
+    const featuresInViewBounds = (<any>self).regions.features.filter((f) => {
+      return (<any>self).turf.intersect(f.geometry, currentViewAsPolygon.geometry) ||
+        (<any>self).turf.booleanContains(f.geometry, currentViewAsPolygon.geometry) ||
+        (<any>self).turf.booleanContains(currentViewAsPolygon.geometry, f.geometry);
     });
-    const regionInCenter = featureInCenter ? featureInCenter.properties.fylkesnummer : null;
-    callback(Object.assign({}, input.mapView, { regionInCenter, regionsInViewBounds: [] }));
+    const featureInCenter = featuresInViewBounds.find((f) => {
+      return (<any>self).turf.inside(input.center, f.geometry);
+    });
+    const regionsInViewBounds = featuresInViewBounds
+      .map((f) => f.properties[input.featureName]);
+    const regionInCenter = featureInCenter ? featureInCenter.properties[input.featureName] : null;
+    callback({ regionInCenter, regionsInViewBounds });
   }
 
   getRegionInViewObservable(mapView: MapView, geoHazard: GeoHazard): Observable<MapViewArea> {
     return Observable.create((observer) => {
-      const typedWorker: ITypedWorker<{ url: string, mapView: MapView }, MapViewArea>
+      const typedWorker: ITypedWorker<{
+        url: string,
+        featureGeoJson: string,
+        featureName: string,
+        center: [number, number],
+        bbox: [number, number, number, number]
+      }, {
+          regionInCenter: string;
+          regionsInViewBounds: string[]
+        }>
         = createWorker(this.workFunc, (msg) => {
-          observer.next(msg);
+          observer.next({ ...mapView, ...msg });
           observer.complete();
         });
-      typedWorker.postMessage({ url: document.location.protocol + '//' + document.location.host, mapView });
+      typedWorker.postMessage(
+        {
+          url: document.location.protocol + '//' + document.location.host,
+          featureGeoJson: (geoHazard === GeoHazard.Snow ? '/assets/avalancheregions.js'
+            : '/assets/countygeojson.js'),
+          featureName: geoHazard === GeoHazard.Snow ? 'OMRAADEID' : 'fylkesnummer',
+          center: [mapView.center.lng, mapView.center.lat],
+          bbox: [
+            mapView.bounds.getSouthWest().lng, // minx
+            mapView.bounds.getSouthWest().lat, // miny
+            mapView.bounds.getNorthEast().lng, // maxx
+            mapView.bounds.getNorthEast().lat, // maxy
+          ],
+        });
     });
   }
 }
