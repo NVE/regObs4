@@ -7,7 +7,7 @@ import { Observable, combineLatest, Observer } from 'rxjs';
 import { ITypedWorker, createWorker } from 'typed-web-workers';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { switchMap, share, shareReplay } from 'rxjs/operators';
+import { switchMap, share, shareReplay, debounce, debounceTime } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
 
@@ -112,6 +112,7 @@ export class MapService {
             mapView.bounds.getNorthEast().lat, // maxy
           ],
         });
+      return () => typedWorker ? typedWorker.terminate() : null;
     });
   }
 }

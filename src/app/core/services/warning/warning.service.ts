@@ -97,7 +97,7 @@ export class WarningService {
   private getWarningsAsObservable() {
     return nSQL().observable<IWarning[]>(() => {
       return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
-    }).debounce(500).toRxJS().pipe(switchMap((warnings) => this.getWarningGroupAsObservabe(warnings)));
+    }).debounce(200).toRxJS().pipe(switchMap((warnings) => this.getWarningGroupAsObservabe(warnings)));
   }
 
   private getFavouritesAsObservable() {
@@ -148,6 +148,7 @@ export class WarningService {
         observer.complete();
       });
       typedWorker.postMessage(warnings);
+      return () => typedWorker ? typedWorker.terminate() : null; // Tear down logic when unsubscribed (from switchMap)
     });
   }
 
