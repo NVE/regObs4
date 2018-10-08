@@ -8,14 +8,24 @@ import { Events } from '@ionic/angular';
 import { NanoSql } from '../../../../nanosql';
 import { nSQL } from 'nano-sql';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, take, share, shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserSettingService {
 
+  // Setting this observable to be a shared instance since
+  // UserSettingService is a singleton service.
+  // The observable will be shared with many services
+  private _userSettingObservable: Observable<UserSetting>;
+
+  get userSettingObservable$() {
+    return this._userSettingObservable;
+  }
+
   constructor(private translate: TranslateService, private events: Events) {
+    this._userSettingObservable = this.getUserSettingsAsObservable();
   }
 
   private getDefaultSettings(): UserSetting {
@@ -36,14 +46,15 @@ export class UserSettingService {
   }
 
   getUserSettings(): Promise<UserSetting> {
-    return this.getUserSettingsAsObservable().pipe(take(1)).toPromise();
+    return this.userSettingObservable$.pipe(take(1)).toPromise();
   }
 
-  getUserSettingsAsObservable(): Observable<UserSetting> {
+  private getUserSettingsAsObservable(): Observable<UserSetting> {
     return nSQL().observable<UserSetting>(() => {
       return nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select').emit();
     }).toRxJS().pipe(
-      map((val: UserSetting[]) => val.length > 0 ? val[0] : this.getDefaultSettings())
+      map((val: UserSetting[]) => val.length > 0 ? val[0] : this.getDefaultSettings()),
+      shareReplay(1)
     );
   }
 

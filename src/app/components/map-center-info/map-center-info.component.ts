@@ -3,7 +3,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { MapService } from '../../core/services/map/map.service';
-import { MapView } from '../../core/services/map/map-view.model';
+import { IMapView } from '../../core/services/map/map-view.interface';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { MapSearchService } from '../../core/services/map-search/map-search.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -35,11 +35,11 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.$userSettings = this.userSettingService.getUserSettingsAsObservable().pipe(tap((val) => {
+    this.$userSettings = this.userSettingService.userSettingObservable$.pipe(tap((val) => {
       this.document.documentElement.style.setProperty('--map-center-info-height', val.showMapCenter ? '72px' : '0px');
     }));
-    this.$viewInfo = this.mapService.getMapViewObservable()
-      .pipe(switchMap((mapView: MapView) => this.mapSerachService.getViewInfo(mapView.center)),
+    this.$viewInfo = this.mapService.mapViewObservable$
+      .pipe(switchMap((mapView: IMapView) => this.mapSerachService.getViewInfo(mapView.center)),
         tap((val) => {
           console.log('ViewInfo: ', val);
           this.textToCopy = `${val.location.name}, `

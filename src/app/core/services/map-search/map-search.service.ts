@@ -141,7 +141,7 @@ export class MapSearchService {
   }
 
   getLocationNameNorway(latLng: L.LatLng): Observable<LocationName> {
-    return this.userSettingService.getUserSettingsAsObservable().pipe(
+    return this.userSettingService.userSettingObservable$.pipe(
       switchMap((userSettings) =>
         this.httpClient.get(`${settings.services.regObs.apiUrl[userSettings.appMode]}/Location/GetName`
           + `?latitude=${latLng.lat}&longitude=${latLng.lng}&geoHazardId=${userSettings.currentGeoHazard}`)

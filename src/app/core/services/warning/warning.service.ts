@@ -4,39 +4,72 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import * as moment from 'moment';
 import 'moment-timezone';
 import { LangKey } from '../../models/langKey';
-import { HelperService } from '../helpers/helper.service';
 import { nSQL } from 'nano-sql';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
-import { map } from 'rxjs/operators';
+import { map, share, tap, switchMap, distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
 import { WarningGroupKey } from './warning-group-key.interface';
 import { IWarningApiResult } from './warning-api-result.interface';
 import { IAvalancheWarningApiResult } from './avalanche-warning-api-result.interface';
-import { combineLatest } from 'rxjs';
-import { ToastController } from '@ionic/angular';
+import { combineLatest, Observable, Observer } from 'rxjs';
+import { IWarningInMapView } from './warning-in-mapview.interface';
+import { IMapViewAndArea } from '../map/map-view-and-area.interface';
+import { MapService } from '../map/map.service';
+import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
+import { ITypedWorker, createWorker } from 'typed-web-workers';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WarningService {
+
+  private _warningsObservable: Observable<WarningGroup[]>;
+  private _warningsForCurrentGeoHazardObservable: Observable<WarningGroup[]>;
+  private _warningGroupInMapViewObservable: Observable<IWarningGroupInMapView>;
+
+  get warningsObservable$() {
+    return this._warningsObservable;
+  }
+
+  get warningsForCurrentGeoHazardObservable$() {
+    return this._warningsForCurrentGeoHazardObservable;
+  }
+
+  get warningGroupInMapViewObservable$() {
+    return this._warningGroupInMapViewObservable;
+  }
+
   constructor(private httpClient: HttpClient,
     private userSettingService: UserSettingService,
-    private helperService: HelperService,
-    private toastController: ToastController,
+    private mapService: MapService
   ) {
-
+    this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
+    this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();
+    this._warningGroupInMapViewObservable = this.getWarningsForCurrentMapViewAsObservable();
   }
 
   async updateWarnings() {
     console.log('[INFO] Updating warnings by priority');
-    // TODO: Cleanup old items
     await this.updateFloodAndLandslideWarnings(GeoHazard.Dirt, LangKey.no);
     await this.updateFloodAndLandslideWarnings(GeoHazard.Water, LangKey.no);
     await this.updateAvalancheWarnings(LangKey.no);
+    await this.cleanupOldItems();
     // await this.updateLandslideWarnings(LangKey.en); Not using any texts, so no need for english version yet
+  }
+
+  addToFavourite(groupId: string, geoHazard: GeoHazard) {
+    const id = `${geoHazard}_${groupId}`;
+    return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name)
+      .query('upsert', { id, groupId, geoHazard }).exec();
+  }
+
+  removeFromFavourite(groupId: string, geoHazard: GeoHazard) {
+    const id = `${geoHazard}_${groupId}`;
+    return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('delete')
+      .where((g) => g.id === id).exec();
   }
 
   private getUpdatePriority() {
@@ -56,19 +89,24 @@ export class WarningService {
     }
   }
 
-  getWarningsAsObservable() {
-    return nSQL().observable<IWarning[]>(() => {
-      return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
-    }).debounce(500).toRxJS().pipe(map(this.groupWarnings));
+  private cleanupOldItems() {
+    return nSQL(NanoSql.TABLES.WARNING.name).query('delete')
+      .where((warning: IWarning) => moment().subtract(1, 'days').isAfter(warning.validTo)).exec();
   }
 
-  getFavouritesAsObservable() {
+  private getWarningsAsObservable() {
+    return nSQL().observable<IWarning[]>(() => {
+      return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
+    }).debounce(500).toRxJS().pipe(switchMap((warnings) => this.getWarningGroupAsObservabe(warnings)));
+  }
+
+  private getFavouritesAsObservable() {
     return nSQL().observable<{ groupId: string, geoHazard: GeoHazard }[]>(() => {
       return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('select').emit();
     }).toRxJS();
   }
 
-  getWarningsAndFavouritesAsObservable() {
+  private getWarningsAndFavouritesAsObservable() {
     return combineLatest(this.getWarningsAsObservable(), this.getFavouritesAsObservable())
       .pipe(map(([warningGroup, favourites]) => {
         return warningGroup.map((wg) => {
@@ -80,60 +118,104 @@ export class WarningService {
       }));
   }
 
-  addToFavourite(groupId: string, geoHazard: GeoHazard) {
-    const id = `${geoHazard}_${groupId}`;
-    return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name)
-      .query('upsert', { id, groupId, geoHazard }).exec();
-  }
-
-  removeFromFavourite(groupId: string, geoHazard: GeoHazard) {
-    const id = `${geoHazard}_${groupId}`;
-    return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('delete')
-      .where(['id', '=', id]).exec();
-  }
-
-  private groupWarnings(warnings: IWarning[]): WarningGroup[] {
-    const getGroupKey = function (warning: IWarning): WarningGroupKey {
-      return {
+  private groupWarnings(input: IWarning[], callback: (_: { group: WarningGroupKey, warnings: IWarning[] }[]) => void) {
+    const getGroupKey = function (warning: IWarning): string {
+      return JSON.stringify({
         language: warning.language,
         groupId: warning.groupId,
         groupName: warning.groupName,
         geoHazard: warning.geoHazard
-      };
+      });
     };
-    const groupMap = warnings.reduce((pv, cv) => {
-      const groupId = getGroupKey(cv);
-      const key = JSON.stringify(groupId);
+    const groupMap = input.reduce((pv, cv) => {
+      const key = getGroupKey(cv);
       const item = pv.get(key) || [];
       item.push(cv);
       return pv.set(key, item);
     }, new Map<string, IWarning[]>());
-    return Array.from(groupMap.keys()).map((k) => {
+    const groupArray = Array.from(groupMap.keys()).map((k) => {
       const group: WarningGroupKey = JSON.parse(k);
-      return new WarningGroup(group, groupMap.get(k));
+      return { group, warnings: groupMap.get(k) };
+    });
+    callback(groupArray);
+    (<any>self).close(); // cleanup
+  }
+
+  private getWarningGroupAsObservabe(warnings: IWarning[]): Observable<WarningGroup[]> {
+    return Observable.create((observer: Observer<WarningGroup[]>) => {
+      const typedWorker = createWorker(this.groupWarnings, (msg) => {
+        observer.next(msg.map((m) => new WarningGroup(m.group, m.warnings)));
+        observer.complete();
+      });
+      typedWorker.postMessage(warnings);
     });
   }
 
-  getGeoHazardsForCurrentGeoHazard(currentGeoHazard: GeoHazard) {
-    if (currentGeoHazard === GeoHazard.Snow || currentGeoHazard === GeoHazard.Ice) {
-      return [currentGeoHazard];
-    }
-    return [GeoHazard.Dirt, GeoHazard.Water];
-  }
-
-  getWarningsForCurrentLanguageAsObservable() {
-    return combineLatest(this.userSettingService.getUserSettingsAsObservable(),
+  private getWarningsForCurrentLanguageAsObservable() {
+    return combineLatest(this.userSettingService.userSettingObservable$,
       this.getWarningsAndFavouritesAsObservable())
       .pipe(
         map(([userSetting, warningGroups]) => {
           return warningGroups.filter((w) => w.group.language === userSetting.language);
-        })
+        }),
+        shareReplay(1)
       );
+  }
+
+  private getGeoHazardFilter(currentGeoHazard: GeoHazard) {
+    const geoHazards = [currentGeoHazard];
+    if (currentGeoHazard === GeoHazard.Dirt) {
+      geoHazards.push(GeoHazard.Water);
+    } else if (currentGeoHazard === GeoHazard.Water) {
+      geoHazards.push(GeoHazard.Dirt);
+    }
+    return geoHazards;
+  }
+
+  private getWarningsForCurrentLanguageAndCurrentGeoHazard() {
+    return combineLatest(this.getWarningsForCurrentLanguageAsObservable(),
+      this.userSettingService.userSettingObservable$)
+      .pipe(map(([warningGroups, userSetting]) => {
+        const geoHazards = this.getGeoHazardFilter(userSetting.currentGeoHazard);
+        return warningGroups.filter((wg) => geoHazards.find((g) => g === wg.group.geoHazard));
+      }),
+        shareReplay(1));
+  }
+
+  private getWarningsForCurrentMapViewAsObservable() {
+    return this.mapService.mapViewAndAreaObservable$
+      .pipe(switchMap((mapViewArea: IMapViewAndArea) => this.getWarningsForCurrentMapView(mapViewArea)),
+        shareReplay(1));
+  }
+
+  private getWarningsForCurrentMapView(mapViewArea: IMapViewAndArea): Observable<IWarningGroupInMapView> {
+    return this.warningsForCurrentGeoHazardObservable$.pipe(
+      map((warnings) => {
+        // TODO: Create web worker for this processing task?
+        const warningsInMapView: IWarningInMapView[] = warnings
+          .map((warningGroup) => {
+            const groupInMapView = {
+              center: mapViewArea.regionInCenter === warningGroup.group.groupId,
+              viewBounds: mapViewArea.regionsInViewBounds.indexOf(warningGroup.group.groupId) >= 0,
+            };
+            return { inMapView: groupInMapView, warningGroup };
+          }).filter((warningGroupInView) => warningGroupInView.inMapView.center || warningGroupInView.inMapView.viewBounds);
+        return {
+          center: warningsInMapView.filter((item) => item.inMapView.center).map((item) => item.warningGroup),
+          viewBounds: warningsInMapView.filter((item) =>
+            item.inMapView.viewBounds && !item.inMapView.center
+          ).map((item) => item.warningGroup)
+        };
+      }),
+      tap((val) => {
+        console.log('[WarningForCurrentMapViewObservabe] changed: ', val);
+      })
+    );
   }
 
   getWarningsById(...guids: string[]) {
     return nSQL(NanoSql.TABLES.WARNING.name).query('select')
-      .where(['id', 'IN', guids]).exec() as Promise<IWarning[]>;
+      .where((x) => guids.indexOf(x.id) >= 0).exec() as Promise<IWarning[]>;
   }
 
   private async updateFloodAndLandslideWarnings(geoHazard: GeoHazard, language: LangKey, from?: Date, to?: Date) {

@@ -88,7 +88,7 @@ export class AppComponent {
   async initBackroundUpdates() {
     const config = {
       minimumFetchInterval: 15, // <-- default is 15
-      stopOnTerminate: true,    // <-- Android only
+      stopOnTerminate: false,    // <-- Android only
       startOnBoot: false,       // <-- Android only
       forceReload: false        // <-- Android only
     };

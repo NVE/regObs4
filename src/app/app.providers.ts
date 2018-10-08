@@ -17,6 +17,9 @@ import { BackgroundDownloadNativeService } from './core/services/background-down
 import { Zip } from '@ionic-native/zip/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { UserSettingService } from './core/services/user-setting/user-setting.service';
+import { MapService } from './core/services/map/map.service';
+import { WarningService } from './core/services/warning/warning.service';
 
 export class AppProviders {
     public static getProviders() {
@@ -33,7 +36,16 @@ export class AppProviders {
             Zip,
             Clipboard,
             InAppBrowser,
+            ...this.getSingletonServices(),
             ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),
+        ];
+    }
+
+    private static getSingletonServices() {
+        return [
+            UserSettingService,
+            MapService,
+            WarningService,
         ];
     }
 

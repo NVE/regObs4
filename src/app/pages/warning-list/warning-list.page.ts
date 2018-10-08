@@ -1,20 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Events } from '@ionic/angular';
-import { HelperService } from '../../core/services/helpers/helper.service';
-import { Observable, combineLatest } from 'rxjs';
-import { map, tap, switchMap, share } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import * as moment from 'moment';
-import { MapService } from '../../core/services/map/map.service';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { MapViewArea } from '../../core/services/map/map-view-area.model';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
-
-interface WarningInMapView {
-  inMapView: { center: boolean, viewBounds: boolean };
-  warningGroup: WarningGroup;
-}
+import { IWarningGroupInMapView } from '../../core/services/warning/warninggroup-in-mapview.interface';
 
 @Component({
   selector: 'app-warning-list',
@@ -23,76 +14,29 @@ interface WarningInMapView {
 })
 export class WarningListPage implements OnInit, OnDestroy {
   selectedTab: 'inMapView' | 'all' | 'favourites';
-  warnings$: Observable<WarningGroup[]>;
   warningsForCurrentGeoHazard$: Observable<WarningGroup[]>;
-  warningsInMapView$: Observable<{
-    center: WarningGroup[],
-    viewBounds: WarningGroup[]
-  }>;
+  warningsInMapView$: Observable<IWarningGroupInMapView>;
   favourites$: Observable<WarningGroup[]>;
 
-  constructor(private helperService: HelperService,
+  constructor(
     private warningService: WarningService,
-    private mapService: MapService,
-    private userSettingService: UserSettingService,
-    private events: Events) {
+    private events: Events, private zone: NgZone) {
   }
 
   async ngOnInit() {
-
     this.selectedTab = 'inMapView';
-
-    this.warnings$ = this.warningService.getWarningsForCurrentLanguageAsObservable().pipe(
-      share(),
-      tap((val) => {
-        console.log('[WarningListPage] Warnings changed: ', val);
-      }));
-
-    this.warningsForCurrentGeoHazard$ = combineLatest(this.warnings$,
-      this.userSettingService.getUserSettingsAsObservable())
-      .pipe(map(([warningGroups, userSetting]) => {
-        const geoHazardsToFilter = [userSetting.currentGeoHazard];
-        if (userSetting.currentGeoHazard === GeoHazard.Dirt) {
-          geoHazardsToFilter.push(GeoHazard.Water);
-        } else if (userSetting.currentGeoHazard === GeoHazard.Water) {
-          geoHazardsToFilter.push(GeoHazard.Dirt);
-        }
-        return warningGroups.filter((wg) => geoHazardsToFilter.indexOf(wg.group.geoHazard) >= 0);
-      }));
-
-    this.warningsInMapView$ = this.mapService.getMapViewAreaObservable()
-      .pipe(switchMap((mapViewArea: MapViewArea) => this.getWarningsForCurrentMapView(mapViewArea)));
-
-    this.favourites$ = this.warnings$.pipe(map((warningGroups) =>
-      warningGroups.filter((wg) => wg.isFavourite)));
-  }
-
-  getWarningsForCurrentMapView(mapViewArea: MapViewArea) {
-    return this.warningsForCurrentGeoHazard$.pipe(
-      map((warnings) => {
-        // TODO: Create web worker for this processing task?
-        const warningsInMapView: WarningInMapView[] = warnings
-          .map((warningGroup) => {
-            const groupInMapView = {
-              center: mapViewArea.regionInCenter === warningGroup.group.groupId,
-              viewBounds: mapViewArea.regionsInViewBounds.indexOf(warningGroup.group.groupId) >= 0,
-            };
-            return { inMapView: groupInMapView, warningGroup };
-          }).filter((warningGroupInView) => warningGroupInView.inMapView.center || warningGroupInView.inMapView.viewBounds);
-        return {
-          center: warningsInMapView.filter((item) => item.inMapView.center).map((item) => item.warningGroup),
-          viewBounds: warningsInMapView.filter((item) =>
-            item.inMapView.viewBounds && !item.inMapView.center
-          ).map((item) => item.warningGroup)
-        };
-      }),
-      tap((val) => {
-        console.log('[WarningListPage] Warnings for current view changed: ', val);
-      })
-    );
+    this.warningsInMapView$ = this.warningService.warningGroupInMapViewObservable$;
   }
 
   selectTab(tab: 'inMapView' | 'all' | 'favourites') {
+    if (tab === 'all' && !this.warningsForCurrentGeoHazard$) {
+      this.warningsForCurrentGeoHazard$ = this.warningService.warningsForCurrentGeoHazardObservable$;
+    }
+    if (tab === 'favourites' && !this.favourites$) {
+      this.favourites$ = this.warningService.warningsObservable$
+        .pipe(map((warningGroups) =>
+          warningGroups.filter((wg) => wg.isFavourite)));
+    }
     this.selectedTab = tab;
   }
 
