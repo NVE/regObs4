@@ -31,4 +31,6 @@
   </ng-container>
   <app-cap-list-group *ngIf="selectedTab === 'all'" title="Alle varsler" [warnings]="(warningsForCurrentGeoHazard$ | async)"></app-cap-list-group>
   <app-cap-list-group *ngIf="selectedTab === 'favourites'" title="Favoritter" [warnings]="(favourites$ | async)"></app-cap-list-group>
+  <app-add-menu></app-add-menu>
 </ion-content>
+<app-geo-select slot="fixed" [inHeader]="true"></app-geo-select>

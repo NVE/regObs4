@@ -35,14 +35,14 @@
     --warning-color-3: #ffcb00;
     --warning-color-4: #e3000f;
     --warning-color-5: #000;
+    --backdrop-background:  rgba(0, 0, 0, 0.8);
 }
 
 
 $z-index-over-map: 1001;
 
 .map-control {
-    background-color: #000;
-    opacity: 0.8;
+    background-color: var(--backdrop-background);
     z-index: $z-index-over-map;
     border-radius: 5px;
     color: #fff;

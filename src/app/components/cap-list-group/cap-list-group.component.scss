@@ -25,6 +25,12 @@ ion-icon {
 ion-list {
     --padding-start: 10px;
     --padding-end: 10px;
+
+    ion-list-header {
+        ion-label {
+            font-size: 16px;
+        }
+    }
 }
 
 ion-badge {

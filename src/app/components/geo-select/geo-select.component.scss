@@ -1,4 +1,8 @@
 ion-fab {
+    &.fab-vertical-top.fab-edge {
+        top: -24px;
+    }
+
     &.fullscreen {
         top: 10px;
     }
@@ -8,15 +12,22 @@ ion-fab {
         --box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
     }
 
-    .geo-selector-items {
-        display: none;
-        &.open {
-            display: block;
+    .toggle-button {
+        ion-fab-button {
+            --padding-top: 0px;
+            --padding-bottom: 0px;    
         }
     }
 
-    .geo-selector-item {
+    .toggle-button, .geo-selector-item {
         height: 44px;
+        width: 44px;
+
+        ion-fab-button {
+            --padding-start: 0px;
+            --padding-end: 0px; 
+        }
+
         ion-label {
             position: relative;
             left: 60px;
@@ -28,11 +39,47 @@ ion-fab {
         }
     }
 
+    .geo-selector-items {
+        display: none;
+        &.open {
+            display: block;
+        }
+    }
+
     .geo-selector-wrapper {
         position: fixed;
         left: 0;
         right: 0;
         top: 0;
         bottom: 0;
+    }
+
+    &.in-header {
+        top: 7px;
+
+        .toggle-button {
+            height: 32px;
+            width: 32px;
+
+            ion-fab-button {
+                --size: 32px;
+            }
+        }
+
+        .toggle-button, .geo-selector-item {
+            ion-label {
+                background-color: rgba(0,0,0,0);
+                color: #fff;
+            }
+        }
+
+        .geo-selector-items {
+            background-color: var(--backdrop-background);
+            width: 150px;
+            padding: 10px;
+            position: absolute;
+            top: -10px;
+            left: -10px;
+        }
     }
 }

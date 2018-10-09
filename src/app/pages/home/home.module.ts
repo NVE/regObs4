@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { MapControlsComponent } from '../../components/map-controls/map-controls.component';
 import { MapSearchComponent } from '../../components/map-controls/map-search/map-search.component';
@@ -34,7 +33,6 @@ import { MapCenterInfoComponent } from '../../components/map-center-info/map-cen
   ],
   declarations: [
     HomePage,
-    GeoSelectComponent,
     MapItemBarComponent,
     MapControlsComponent,
     MapSearchComponent,

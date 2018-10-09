@@ -9,6 +9,7 @@ import { OfflineImageComponent } from '../../components/offline-image/offline-im
 import { ExternalLinkComponent } from '../../components/external-link/external-link.component';
 import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
 import { AngularSvgIconModule, SvgIconComponent } from 'angular-svg-icon';
+import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
 
 @NgModule({
     imports: [
@@ -17,6 +18,7 @@ import { AngularSvgIconModule, SvgIconComponent } from 'angular-svg-icon';
         ReactiveFormsModule,
         IonicModule,
         AngularSvgIconModule,
+        TranslateModule,
     ],
     declarations: [
         ShadowCssDirective,
@@ -24,6 +26,7 @@ import { AngularSvgIconModule, SvgIconComponent } from 'angular-svg-icon';
         OfflineImageComponent,
         ExternalLinkComponent,
         GeoIconComponent,
+        GeoSelectComponent,
     ],
     exports: [
         CommonModule,
@@ -36,6 +39,7 @@ import { AngularSvgIconModule, SvgIconComponent } from 'angular-svg-icon';
         OfflineImageComponent,
         ExternalLinkComponent,
         GeoIconComponent,
+        GeoSelectComponent,
     ]
 })
 export class SharedModule { }

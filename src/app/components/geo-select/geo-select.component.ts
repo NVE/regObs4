@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy, Input } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Events, Fab, FabButton } from '@ionic/angular';
@@ -16,6 +16,8 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
   currentGeoHazard: GeoHazard;
   isFullscreen = false;
 
+  @Input() inHeader: boolean;
+
   constructor(private userSettingService: UserSettingService, private events: Events) { }
 
   async ngOnInit() {
@@ -24,7 +26,7 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
       .map((key) => GeoHazard[key]);
     this.currentGeoHazard = await this.getCurrentGeoHazard();
     this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
-      this.isFullscreen = isFullscreen;
+      this.isFullscreen = isFullscreen; // TODO: Use css calculated variable instead
     });
   }
 
