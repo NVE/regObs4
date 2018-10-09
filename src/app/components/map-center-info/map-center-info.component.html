@@ -1,16 +1,19 @@
-<ng-container *ngIf="$userSettings | async as userSettings">
+<ng-container *ngIf="userSettings$ | async as userSettings">
   <img class="center-icon" src="../../../assets/icon/center.png" *ngIf="userSettings.showMapCenter">
   <div *ngIf="userSettings.showMapCenter" class="map-center-info" (click)="copyToClipboard()" text-nowrap>
-    <ion-grid no-margin class="text-truncate" *ngIf="$viewInfo | async as v">
-      <ion-row no-margin>
-        <span *ngIf="v.location.name !== v.location.adminName">{{ v.location.name }}, </span>{{ v.location.adminName }}
-      </ion-row>
-      <ion-row no-margin>
-        {{ v.elevation }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL'|translate}}.
-      </ion-row>
-      <ion-row no-margin>
-        {{ v.latLng.lat | number:'.3' }} &deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-        {{ v.latLng.lng | number:'.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
+    <ion-grid no-margin class="text-truncate">
+      <ng-container *ngIf="viewInfo$ | async as v">
+        <ion-row no-margin>
+          <span *ngIf="v.location.name !== v.location.adminName">{{ v.location.name }}, </span>{{ v.location.adminName
+          }}
+        </ion-row>
+        <ion-row no-margin>
+          {{ v.elevation }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL'|translate}}.
+        </ion-row>
+      </ng-container>
+      <ion-row no-margin *ngIf="mapView$ | async as v">
+        {{ v.center.lat | number:'.3' }} &deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+        {{ v.center.lng | number:'.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
       </ion-row>
     </ion-grid>
   </div>

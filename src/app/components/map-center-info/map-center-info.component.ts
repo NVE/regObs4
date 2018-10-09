@@ -18,8 +18,9 @@ import { UserSetting } from '../../core/models/user-settings.model';
   styleUrls: ['./map-center-info.component.scss']
 })
 export class MapCenterInfoComponent implements OnInit, OnDestroy {
-  $viewInfo: Observable<ViewInfo>;
-  $userSettings: Observable<UserSetting>;
+  viewInfo$: Observable<ViewInfo>;
+  mapView$: Observable<IMapView>;
+  userSettings$: Observable<UserSetting>;
 
   private textToCopy: string;
 
@@ -35,10 +36,11 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.$userSettings = this.userSettingService.userSettingObservable$.pipe(tap((val) => {
+    this.userSettings$ = this.userSettingService.userSettingObservable$.pipe(tap((val) => {
       this.document.documentElement.style.setProperty('--map-center-info-height', val.showMapCenter ? '72px' : '0px');
     }));
-    this.$viewInfo = this.mapService.mapViewObservable$
+    this.mapView$ = this.mapService.mapViewObservable$;
+    this.viewInfo$ = this.mapView$
       .pipe(switchMap((mapView: IMapView) => this.mapSerachService.getViewInfo(mapView.center)),
         tap((val) => {
           console.log('ViewInfo: ', val);

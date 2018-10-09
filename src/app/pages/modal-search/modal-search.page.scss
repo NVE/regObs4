@@ -1,22 +1,40 @@
-ion-list {
-   position: relative;
-   margin-top: 60px;
-   margin-right: 10px;
-   margin-left: 10px;
-   border-radius: 6px;
-   z-index: 20;
+.search {
+    position: relative;
+    margin-top: 60px;
+    margin-right: 10px;
+    margin-left: 10px;
+    z-index: 20;
 
-   ion-item {
-       ion-label {
-        .search-result-name {
-            padding-right: 10px;
+    ion-list {
+        ion-item {
+            ion-label {
+             .search-result-name {
+                 padding-right: 10px;
+             }
+             .search-description {
+                 font-size: 10px;
+             }
+            }       
         }
-        .search-description {
-            font-size: 10px;
+     }
+
+    .search-input-form {
+        ion-list {
+            border-radius: 6px;
+
+            &.has-results {
+                border-bottom-left-radius: 0px;
+                border-bottom-right-radius: 0px;
+            }
         }
-       }       
-   }
+    }
+    .search-result {
+        max-height: 400px;
+        overflow: scroll;
+    }
 }
+
+
 .modal-wrapper {
     position: absolute;
     top: 0;

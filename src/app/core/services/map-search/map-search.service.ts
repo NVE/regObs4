@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
-import { merge, map, switchMap } from 'rxjs/operators';
-import { Observable, concat, bindNodeCallback, combineLatest } from 'rxjs';
+import { merge, map, switchMap, concat } from 'rxjs/operators';
+import { Observable, bindNodeCallback, combineLatest, forkJoin } from 'rxjs';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/observable/of';
@@ -22,12 +22,11 @@ export class MapSearchService {
 
   constructor(private httpClient: HttpClient, private userSettingService: UserSettingService) { }
 
-  async searchAll(text: string) {
-    const userSettings = await this.userSettingService.getUserSettings();
-    return Observable.forkJoin(
-      this.searchNorwegianPlaces(text, userSettings.language),
-      this.searchWorld(text, userSettings.language))
-      .pipe(map(([s1, s2]) => [...s1, ...s2]));
+  searchAll(text: string): Observable<MapSearchResponse[]> {
+    return this.userSettingService.userSettingObservable$.pipe(
+      switchMap((userSettings) =>
+        forkJoin(this.searchNorwegianPlaces(text, userSettings.language),
+          this.searchWorld(text, userSettings.language)).pipe(map(([s1, s2]) => [...s1, ...s2]))));
   }
 
   searchNorwegianPlaces(text: string, lang: string): Observable<MapSearchResponse[]> {
