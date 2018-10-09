@@ -26,13 +26,13 @@
       <ion-grid>
         <ion-row>
           <ion-col *ngIf="{ level: getDayWarning(warningGroup, 0) } as warning">
-            <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
+            <ion-badge [color]="'warninglevel-'+warning.level">{{warning.level}}</ion-badge>
           </ion-col>
           <ion-col *ngIf="{ level: getDayWarning(warningGroup, 1) } as warning">
-            <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
+            <ion-badge [color]="'warninglevel-'+warning.level">{{warning.level}}</ion-badge>
           </ion-col>
           <ion-col *ngIf="{ level: getDayWarning(warningGroup, 2) } as warning">
-            <ion-badge [attr.class]="'level-'+warning.level">{{warning.level}}</ion-badge>
+            <ion-badge [color]="'warninglevel-'+warning.level">{{warning.level}}</ion-badge>
           </ion-col>
         </ion-row>
       </ion-grid>

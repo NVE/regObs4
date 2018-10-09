@@ -8,7 +8,8 @@
   <ion-tab name="trip" label="{{'TABS.TRIPS' | translate}}" icon="walk" href="/tabs/(trip:trip)">
     <ion-router-outlet name="trip"></ion-router-outlet>
   </ion-tab>
-  <ion-tab name="warning-list" label="{{'TABS.WARNINGS' | translate}}" icon="warning" href="/tabs/(warning-list:warning-list)">
+  <ion-tab name="warning-list" label="{{'TABS.WARNINGS' | translate}}" [badgeColor]="getBadgeColor()" [badge]="getBadge()"
+    icon="warning" href="/tabs/(warning-list:warning-list)">
     <ion-router-outlet name="warning-list"></ion-router-outlet>
   </ion-tab>
 </ion-tabs>
