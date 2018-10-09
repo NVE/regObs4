@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { ModalSearchPage } from './modal-search.page';
 import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
   {
@@ -21,6 +22,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
+    TranslateModule,
     RouterModule.forChild(routes)
   ],
   declarations: [ModalSearchPage, StartsWithHighlightPipe]

@@ -45,6 +45,9 @@
     "AWAY": "Unna",
     "OBSERVATION": "Observasjon"
   },
+  "MAP_SEARCH": {
+    "SEARCH_TEXT": "Søk etter sted"
+  },
   "MENU": {
     "ABOUT_REGOBS": "Om data i regObs",
     "GENERAL": "Generelt",

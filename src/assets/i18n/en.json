@@ -45,6 +45,9 @@
     "AWAY": "Away",
     "OBSERVATION": "Observation"
   },
+  "MAP_SEARCH": {
+    "SEARCH_TEXT": "Search for location"
+  },
   "MENU": {
     "ABOUT_REGOBS": "About data in regObs",
     "GENERAL": "General",
