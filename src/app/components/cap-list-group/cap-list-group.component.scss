@@ -27,8 +27,29 @@ ion-list {
     --padding-end: 10px;
 
     ion-list-header {
+        font-size: 14px;
+        position: sticky;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        background-color: var(--ion-background-color);
         ion-label {
             font-size: 16px;
+            margin-left: 6px;
+        }
+        ion-grid {
+            width: 140px;
+            position: relative;
+            right: 5px;
+            text-align: center;
+        }
+    }
+
+    ion-item {
+        ion-grid {
+            margin-right: 0px;
+            padding-right: 0px;
         }
     }
 }

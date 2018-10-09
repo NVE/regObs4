@@ -22,17 +22,3 @@
         background-color: var(--ion-tabbar-background-color-focused);
     }
 }
-
-ion-list-header {
-        text-transform: capitalize;
-        font-size: 14px;
-
-        ion-grid {
-            margin-right: 6px;
-        }
-
-        ion-col {
-            margin-left: 6px;
-            margin-right: 6px;
-        }
-}

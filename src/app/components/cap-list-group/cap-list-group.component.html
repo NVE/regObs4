@@ -3,8 +3,8 @@
     <ion-label *ngIf="title">
       {{ title | translate }}
     </ion-label>
-    <ion-grid>
-      <ion-row>
+    <ion-grid no-padding>
+      <ion-row no-padding>
         <ion-col text-capitalize>
           {{ getDayName(0) | translate }}
         </ion-col>
@@ -18,7 +18,7 @@
     </ion-grid>
   </ion-list-header>
   <ion-item-sliding (ionDrag)="onDrag($event)" *ngFor="let warningGroup of warnings; trackBy: trackWarningGroup">
-    <ion-item no-padding detail="false">
+    <ion-item no-padding detail="false" lines="full">
       <div slot="start" class="geo-icon-circle">
         <app-geo-icon [geoHazard]="warningGroup.group.geoHazard"></app-geo-icon>
       </div>

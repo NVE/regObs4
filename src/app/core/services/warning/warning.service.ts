@@ -136,6 +136,15 @@ export class WarningService {
     const groupArray = Array.from(groupMap.keys()).map((k) => {
       const group: WarningGroupKey = JSON.parse(k);
       return { group, warnings: groupMap.get(k) };
+    }).sort((a, b) => {
+      if (a.group.groupName < b.group.groupName) {
+        return -1;
+      }
+      if (a.group.groupName > b.group.groupName) {
+        return 1;
+      }
+      // names must be equal, sort by geohazard
+      return a.group.geoHazard - b.group.geoHazard;
     });
     callback(groupArray);
     (<any>self).close(); // cleanup
