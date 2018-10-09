@@ -24,7 +24,7 @@ export class CapListGroupComponent implements OnInit {
   }
 
   trackWarningGroup(index: number, group: WarningGroup) {
-    return group ? group.group.groupId : undefined;
+    return group ? `${group.group.groupId}_${group.group.geoHazard}` : undefined;
   }
 
 

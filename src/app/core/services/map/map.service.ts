@@ -85,9 +85,9 @@ export class MapService {
     const regionsInViewBounds = featuresInViewBounds
       .map((f) => f.properties[input.featureName].toString());
     const regionInCenter = featureInCenter ? featureInCenter.properties[input.featureName].toString() : null;
-    callback({ regionInCenter, regionsInViewBounds });
     const runtime = new Date().getTime() - start.getTime();
     console.log(`[INFO][MapService] - Calculate regions took ${runtime} milliseconds`);
+    callback({ regionInCenter, regionsInViewBounds });
     that.close();
   }
 
