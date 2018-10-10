@@ -4,6 +4,8 @@ import { UserSetting } from '../../core/models/user-settings.model';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { WarningService } from '../../core/services/warning/warning.service';
+import { NanoSql } from '../../../nanosql';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-user-settings',
@@ -18,7 +20,8 @@ export class UserSettingsPage implements OnInit {
     private userSettingService: UserSettingService,
     private observationService: ObservationService,
     private offlineMapService: OfflineMapService,
-    private warningService: WarningService) { }
+    private warningService: WarningService,
+    private navController: NavController) { }
 
   async ngOnInit() {
     this.userSettings = await this.userSettingService.getUserSettings();
@@ -30,9 +33,9 @@ export class UserSettingsPage implements OnInit {
 
   async reset() {
     await this.observationService.reset();
-    await this.userSettingService.reset();
     await this.offlineMapService.reset();
-    await this.warningService.reset();
+    await NanoSql.dropAllTables();
     console.log('[INFO] App reset complete');
+    await this.navController.navigateRoot('start-wizard');
   }
 }

@@ -5,6 +5,8 @@ import { LoggedInUser } from '../../core/services/login/logged-in-user.model';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Input } from '@ionic/angular';
+import { settings } from '../../../settings';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +18,8 @@ export class LoginPage implements OnInit {
   $loggedInUser: Observable<LoggedInUser>;
   loading: boolean;
   @ViewChild('password') password: Input;
+  forgotPasswordUrl: string;
+  createUserUrl: string;
 
   get loginFormUsername() {
     return this.loginform.get('username').value;
@@ -27,9 +31,9 @@ export class LoginPage implements OnInit {
     return this.loginform.get('password').value;
   }
 
-  constructor(private formBuilder: FormBuilder, private loginService: LoginService) { }
+  constructor(private formBuilder: FormBuilder, private loginService: LoginService, private userSettingsService: UserSettingService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.loginform = this.formBuilder.group({
       username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
@@ -38,10 +42,16 @@ export class LoginPage implements OnInit {
       setTimeout(() => {
         if (!this.loginFormUsername && !val.isLoggedIn && val.email) {
           this.loginFormUsername = val.email; // Setting email to last logged in email for easy login
-          this.password.focus();
+          if (this.password) {
+            this.password.focus();
+          }
         }
-      });
+      }, 500);
     }));
+    const userSettings = await this.userSettingsService.getUserSettings();
+    const baseUrl = settings.services.regObs.serviceUrl[userSettings.appMode];
+    this.forgotPasswordUrl = `${baseUrl}${settings.services.regObs.passwordRecoveryUrl}`;
+    this.createUserUrl = `${baseUrl}${settings.services.regObs.createUserUrl}`;
   }
 
   async login() {

@@ -14,6 +14,11 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: '',
+        outlet: 'home',
+        component: HomePage
+      },
+      {
         path: 'home',
         outlet: 'home',
         component: HomePage
@@ -44,7 +49,7 @@ const routes: Routes = [
     path: '',
     redirectTo: '/tabs/(home:home)',
     pathMatch: 'full'
-  }
+  },
 ];
 
 @NgModule({

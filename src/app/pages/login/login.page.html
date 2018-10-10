@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="dark">
+  <ion-toolbar color="dark" mode="ios">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
@@ -38,10 +38,10 @@
     </form>
     <ion-row>
       <ion-col text-center>
-        <a href="http://www.regobs.no">Glemt passord</a>
+        <app-external-link [src]="forgotPasswordUrl">{{'LOGIN.FORGOT_PASSWORD' | translate}}</app-external-link>
       </ion-col>
       <ion-col text-center>
-        <a href="http://www.regobs.no">Lag ny bruker</a>
+        <app-external-link [src]="createUserUrl">{{'LOGIN.CREATE_USER' | translate }}</app-external-link>
       </ion-col>
     </ion-row>
   </ng-container>

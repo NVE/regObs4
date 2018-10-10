@@ -34,20 +34,6 @@ export class NanoSql {
                 { key: 'timestamp', type: 'number' },
             ]
         },
-        // AVALANCHE_WARNING_SUMMARY: {
-        //     name: 'warningsummary',
-        //     model: [
-        //         { key: 'Id', type: 'number', props: ['pk'] },
-        //         { key: '*', type: '*' },
-        //     ]
-        // },
-        // LANDSLIDE_WARNING: {
-        //     name: 'landslidewarning',
-        //     model: [
-        //         { key: 'Id', type: 'number', props: ['pk'] },
-        //         { key: '*', type: '*' },
-        //     ]
-        // },
         WARNING: {
             name: 'warning',
             model: [
@@ -128,5 +114,13 @@ export class NanoSql {
             nSQL().table(table.name).model(table.model);
         }
         return nSQL().connect();
+    }
+
+    static dropAllTables() {
+        const promises = [];
+        for (const table of NanoSql.getTables()) {
+            promises.push(nSQL().table(table.name).query('drop').exec());
+        }
+        return Promise.all(promises);
     }
 }

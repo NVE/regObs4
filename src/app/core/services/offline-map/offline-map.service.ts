@@ -212,7 +212,5 @@ export class OfflineMapService {
     for (const map of maps) {
       await this.remove(map);
     }
-    await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('drop').exec();
-    await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('drop').exec();
   }
 }

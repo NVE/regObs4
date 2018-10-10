@@ -24,7 +24,9 @@
     "WATER": "Vann"
   },
   "LOGIN": {
+    "CREATE_USER": "Lag ny bruker",
     "EMAIL": "Epost",
+    "FORGOT_PASSWORD": "Glemt passord",
     "IS_LOGGING_IN": "Logger inn...",
     "LOGGED_IN_AS": "Logget inn som",
     "LOGIN": "Logg inn",

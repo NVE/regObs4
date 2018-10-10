@@ -348,8 +348,4 @@ export class WarningService {
       }
     });
   }
-
-  async reset() {
-    return nSQL(NanoSql.TABLES.WARNING.name).query('drop').exec();
-  }
 }

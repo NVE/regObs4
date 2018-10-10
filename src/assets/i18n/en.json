@@ -24,7 +24,9 @@
     "WATER": "Water"
   },
   "LOGIN": {
+    "CREATE_USER": "Create user",
     "EMAIL": "Email",
+    "FORGOT_PASSWORD": "Forgot password",
     "IS_LOGGING_IN": "Logging in...",
     "LOGGED_IN_AS": "Logged in as",
     "LOGIN": "Login",

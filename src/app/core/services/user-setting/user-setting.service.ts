@@ -76,8 +76,4 @@ export class UserSettingService {
     this.translate.use(userSetting.language);
     this.events.publish(settings.events.userSettingsChanged, userSetting);
   }
-
-  reset() {
-    return nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('drop').exec();
-  }
 }
