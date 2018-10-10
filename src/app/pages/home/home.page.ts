@@ -105,7 +105,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
     this.events.subscribe(settings.events.tabsChanged, (tabName: string) => {
-      if (tabName === 'home') {
+      if (tabName === 'home') { // TODO: This is no longer needed. Tabs enter not calls ionViewDidEnter
         this.startGeoLocationWatch();
         this.redrawMap();
       } else {
@@ -165,6 +165,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   ionViewDidEnter() {
     console.log('[INFO] Home page ionViewDidEnter');
+    this.redrawMap();
   }
 
   ionViewWillLeave() {

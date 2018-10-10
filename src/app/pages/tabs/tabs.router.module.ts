@@ -15,6 +15,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
+        pathMatch: 'full',
         outlet: 'home',
         component: HomePage
       },
