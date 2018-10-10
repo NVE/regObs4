@@ -184,6 +184,12 @@
     "STOPPED": "Trip log completed"
   },
   "WARNING_LIST": {
+    "ALL": "All",
+    "ALL_WARNINGS": "All warnings",
+    "FAVOURITES": "Favourites",
+    "IN_MAP_CENTER": "In map center",
+    "IN_MAP_VIEW": "In map view",
+    "RELEVANT": "Relevant",
     "TITLE": "Varsom"
   }
 }

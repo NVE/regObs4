@@ -184,6 +184,12 @@
     "STOPPED": "Tur stoppet og fullført"
   },
   "WARNING_LIST": {
+    "ALL": "Alle",
+    "ALL_WARNINGS": "Alle varsler",
+    "FAVOURITES": "Favoritter",
+    "IN_MAP_CENTER": "I kartsenter",
+    "IN_MAP_VIEW": "I kartutsnittet",
+    "RELEVANT": "Aktuelle",
     "TITLE": "Varsom"
   }
 }
