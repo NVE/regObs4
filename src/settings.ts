@@ -1,8 +1,13 @@
 
 export const settings = {
     observations: {
-        maxObservationsToFetch: 1000,
-        daysBackToKeepBeforeCleanup: 30,
+        maxObservationsToFetch: 5000,
+        maxDaysBack: {
+            Snow: 7 * 2,
+            Ice: 7 * 12,
+            Water: 7 * 2,
+            Dirt: 7 * 2,
+        },
         timeZone: 'Europe/Oslo'
     },
     services: {

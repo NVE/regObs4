@@ -13,7 +13,11 @@ import 'moment-timezone';
 import { Storage } from '@ionic/storage';
 import * as Rx from 'rxjs';
 import { NanoSql } from '../../../../nanosql';
-import { startWith, debounceTime, publishReplay } from 'rxjs/operators';
+import { debounceTime, take } from 'rxjs/operators';
+import { LoginService } from '../login/login.service';
+import { User } from '../../models/user.model';
+import { LoggedInUser } from '../login/logged-in-user.model';
+import { UserSettingService } from '../user-setting/user-setting.service';
 
 const REGISTRATION_LAST_UPDATED = 'registration_last_updated';
 
@@ -33,31 +37,25 @@ export class ObservationService {
     private apiService: ApiService,
     private helperService: HelperService,
     private storage: Storage,
+    private loginService: LoginService,
+    private userSettingService: UserSettingService,
   ) {
     this._isLoading = new Subject<boolean>();
   }
 
-  async deleteOldObservations() {
-    const nickName = 'dummy'; // TODO: get logged in user
-    const deleteOldRecordsFrom = moment().subtract(settings.observations.daysBackToKeepBeforeCleanup, 'days').startOf('day');
-    return nSQL(NanoSql.TABLES.REGISTRATION.name).query('delete')
-      .where((reg: RegObsObservation) => {
-        return moment.tz(reg.DtObsTime, settings.observations.timeZone).isBefore(deleteOldRecordsFrom)
-          && reg.NickName !== nickName;
-      }).exec();
+  private exludeLoggedInUser(user: LoggedInUser, reg: RegObsObservation) {
+    return (user.isLoggedIn ? (reg.NickName !== user.user.Nick) : true);
   }
 
   async updateObservations() {
     try {
-      console.log('[INFO] Updating observations');
-      this._isLoading.next(true);
-      await this.deleteOldObservations();
-      const fromDate = await this.helperService.getObservationsFromDate();
-      const searchResult = await this.apiService.search({
-        FromDate: fromDate.toDate()
-      });
-      console.log(`[INFO] Got ${searchResult.Results.length} new observations`);
-      await nSQL(NanoSql.TABLES.REGISTRATION.name).loadJS(NanoSql.TABLES.REGISTRATION.name, searchResult.Results);
+      const user = await this.loginService.getLoggedInUser();
+      const currentGeoHazard = await this.userSettingService.currentGeoHazardObservable$.pipe(take(1)).toPromise();
+
+      for (const geoHazard of this.getPriority(currentGeoHazard)) {
+        await this.updateObservationsForGeoHazard(geoHazard, user);
+      }
+      // TODO: Implement last update service and skip items recently updated
       await this.storage.ready();
       console.log('[INFO] Updating last updated');
       this.storage.set(REGISTRATION_LAST_UPDATED, moment().toISOString());
@@ -67,29 +65,66 @@ export class ObservationService {
     }
   }
 
-  // async updateObservations(lat: number, lng: number, radius: number) {
-  //   const userSettings = await this.userSettingService.getUserSettings();
-  //   const observationRequest: ObservationsWithinRadiusRequest = {
-  //     GeoHazards: [userSettings.currentGeoHazard],
-  //     Latitude: lat,
-  //     Longitude: lng,
-  //     Radius: radius,
-  //     FromDate: this.getobservationsFromDate(userSettings),
-  //     LangKey: userSettings.language,
-  //     ReturnCount: settings.observations.maxObservationsToFetch,
-  //   };
-  //   const baseUrl = settings.services.apiUrl[userSettings.appMode];
-  //   await this.getDb();
-  //   await this.httpClient.post<RegObsObservation>(
-  //     `${baseUrl}/Observations/GetObservationsWithinRadius`, observationRequest)
-  //     .subscribe(async (next) => {
-  //       await nSQL(tableName).query('upsert', {
-  //         RegId: next.RegId,
-  //         Latitude: next.Latitude,
-  //         Longitude: next.Longitude
-  //       }).exec();
-  //     });
-  // }
+  private getPriority(currentGeoHazard: GeoHazard) {
+    if (currentGeoHazard === GeoHazard.Snow) {
+      return [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Water, GeoHazard.Dirt];
+    } else if (currentGeoHazard === GeoHazard.Ice) {
+      return [GeoHazard.Ice, GeoHazard.Snow, GeoHazard.Water, GeoHazard.Dirt];
+    } else if (currentGeoHazard === GeoHazard.Water) {
+      return [GeoHazard.Water, GeoHazard.Dirt, GeoHazard.Snow, GeoHazard.Ice];
+    } else if (currentGeoHazard === GeoHazard.Dirt) {
+      return [GeoHazard.Dirt, GeoHazard.Water, GeoHazard.Snow, GeoHazard.Ice];
+    }
+  }
+
+  private async updateObservationsForGeoHazard(geoHazard: GeoHazard, user: LoggedInUser) {
+    console.log(`[INFO][ObervationService] Updating observations for geoHazard: ${geoHazard}`);
+    const daysBack = await this.getDaysBackToFetchForGeoHazard(geoHazard);
+    const fromDate = moment().subtract(daysBack, 'days').startOf('day');
+    const searchResult = await this.apiService.search({
+      FromDate: fromDate.toDate(),
+      SelectedGeoHazards: [geoHazard],
+      NumberOfRecords: settings.observations.maxObservationsToFetch,
+    });
+    console.log(`[INFO] Got ${searchResult.Results.length} new observations for geoHazard  ${geoHazard}`);
+    await nSQL(NanoSql.TABLES.REGISTRATION.name).loadJS(NanoSql.TABLES.REGISTRATION.name, searchResult.Results);
+
+    // Deleting items no longer in updated result
+    await this.deleteObservationNoLongerInResult(user, fromDate, searchResult.Results);
+    // Delete old items
+    await this.deleteOldObservations(geoHazard, user);
+  }
+
+  private async getDaysBackToFetchForGeoHazard(geoHazard: GeoHazard): Promise<number> {
+    const userSettings = await this.userSettingService.getUserSettings();
+    if (userSettings.currentGeoHazard === geoHazard) {
+      // Returning max days back for current geoHazard
+      return settings.observations.maxDaysBack[GeoHazard[geoHazard]];
+    } else {
+      // Returning default days back for other geoHazards
+      return this.helperService.getObservationsDaysBack(geoHazard, userSettings);
+    }
+  }
+
+  private deleteObservationNoLongerInResult(user: LoggedInUser, fromDate: moment.Moment, items: RegObsObservation[]) {
+    return nSQL(NanoSql.TABLES.REGISTRATION.name).query('delete')
+      .where((reg: RegObsObservation) => {
+        return moment(reg.DtObsTime).isSameOrAfter(fromDate)
+          && !items.find((item) => item.RegId === reg.RegId)
+          && this.exludeLoggedInUser(user, reg);
+      }).exec();
+  }
+
+  private async deleteOldObservations(geoHazard: GeoHazard, user: LoggedInUser) {
+    const daysBack = await this.getDaysBackToFetchForGeoHazard(geoHazard);
+    const deleteOldRecordsFrom = moment().subtract(daysBack + 1, 'days');
+    return nSQL(NanoSql.TABLES.REGISTRATION.name).query('delete')
+      .where((reg: RegObsObservation) => {
+        return moment(reg.DtObsTime).isBefore(deleteOldRecordsFrom)
+          && reg.GeoHazardTid === geoHazard
+          && this.exludeLoggedInUser(user, reg);
+      }).exec();
+  }
 
   getObservationsAsObservable(geoHazard?: GeoHazard, fromDate?: Date, user?: string): Rx.Observable<RegObsObservation[]> {
     return nSQL().observable<RegObsObservation[]>(() => {

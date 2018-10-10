@@ -11,6 +11,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { featureEach } from '@turf/turf';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { Observable } from 'rxjs';
+import { UserSetting } from '../../models/user-settings.model';
 
 const STORAGE_KEY_NAME = 'CurrentMapView';
 
@@ -22,11 +23,15 @@ export class HelperService {
   constructor(private userSettingService: UserSettingService, private storage: Storage, private geolocation: Geolocation) { }
 
   async getObservationsFromDate(): Promise<moment.Moment> {
-    const userSettings = await this.userSettingService.getUserSettings();
+    const us = await this.userSettingService.getUserSettings();
+    return moment().subtract(this.getObservationsDaysBack(us.currentGeoHazard, us), 'days').startOf('day');
+  }
+
+  getObservationsDaysBack(geoHazard: GeoHazard, userSettings: UserSetting): number {
     const daysBackForCurrentGeoHazard = userSettings.observationDaysBack
-      .find((setting) => setting.geoHazard === userSettings.currentGeoHazard);
+      .find((setting) => setting.geoHazard === geoHazard);
     const daysBack = daysBackForCurrentGeoHazard ? daysBackForCurrentGeoHazard.daysBack : 3; // default to 3 days back if not found
-    return moment().subtract(daysBack, 'days').startOf('day');
+    return daysBack;
   }
 
   getDistanceText(distanceInMeter: number): string {
