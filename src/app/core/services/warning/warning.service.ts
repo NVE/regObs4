@@ -58,6 +58,7 @@ export class WarningService {
     await this.updateAvalancheWarnings(LangKey.no);
     await this.cleanupOldItems();
     // await this.updateLandslideWarnings(LangKey.en); Not using any texts, so no need for english version yet
+    // TODO: Implement update priority
   }
 
   addToFavourite(groupId: string, geoHazard: GeoHazard) {

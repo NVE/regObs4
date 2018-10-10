@@ -3,6 +3,8 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Events, Fab, FabButton } from '@ionic/angular';
 import { settings } from '../../../settings';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-geo-select',
@@ -13,7 +15,7 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
 
   geoHazardTypes: Array<GeoHazard>;
   isOpen = false;
-  currentGeoHazard: GeoHazard;
+  currentGeoHazard$: Observable<GeoHazard>;
   isFullscreen = false;
 
   @Input() inHeader: boolean;
@@ -24,7 +26,7 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
     this.geoHazardTypes = Object.keys(GeoHazard)
       .filter(key => !isNaN(Number(GeoHazard[key])))
       .map((key) => GeoHazard[key]);
-    this.currentGeoHazard = await this.getCurrentGeoHazard();
+    this.currentGeoHazard$ = this.userSettingService.currentGeoHazardObservable$;
     this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
       this.isFullscreen = isFullscreen; // TODO: Use css calculated variable instead
     });
@@ -32,11 +34,6 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.events.unsubscribe(settings.events.fullscreenChanged);
-  }
-
-  async getCurrentGeoHazard() {
-    const userSettings = await this.userSettingService.getUserSettings();
-    return userSettings.currentGeoHazard;
   }
 
   getName(geoHazard: GeoHazard) {
@@ -51,7 +48,6 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
     const userSettings = await this.userSettingService.getUserSettings();
     userSettings.currentGeoHazard = geoHazard;
     await this.userSettingService.saveUserSettings(userSettings);
-    this.currentGeoHazard = geoHazard;
     this.isOpen = false;
     this.events.publish(settings.events.geoHazardChanged, GeoHazard[geoHazard]);
   }

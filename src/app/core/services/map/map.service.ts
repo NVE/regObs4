@@ -17,6 +17,8 @@ import { IMapViewArea } from './map-view-area.interface';
 export class MapService {
   private _mapViewObservable: Observable<IMapView>;
   private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
+  private _avalancheRegions: any;
+  private _regions: any;
 
   get mapViewObservable$() {
     return this._mapViewObservable;
@@ -63,7 +65,7 @@ export class MapService {
   // NOTE! This code is running as a web worker!
   private workFunc(input: {
     url: string,
-    featureGeoJson: string,
+    featureGeoJson: any,
     featureName: string,
     center: [number, number],
     bbox: [number, number, number, number]
@@ -72,9 +74,9 @@ export class MapService {
     const that = <any>self;
     const start = new Date();
     that.importScripts(`${input.url}/turf/turf.min.js`);
-    that.importScripts(`${input.url}${input.featureGeoJson}`);
+    // that.importScripts(`${input.url}${input.featureGeoJson}`);
     const currentViewAsPolygon = that.turf.bboxPolygon(input.bbox);
-    const featuresInViewBounds = that.regions.features.filter((f) => {
+    const featuresInViewBounds = input.featureGeoJson.features.filter((f) => {
       return that.turf.intersect(f.geometry, currentViewAsPolygon.geometry) ||
         that.turf.booleanContains(f.geometry, currentViewAsPolygon.geometry) ||
         that.turf.booleanContains(currentViewAsPolygon.geometry, f.geometry);
@@ -88,11 +90,29 @@ export class MapService {
     const runtime = new Date().getTime() - start.getTime();
     console.log(`[INFO][MapService] - Calculate regions took ${runtime} milliseconds`);
     callback({ regionInCenter, regionsInViewBounds });
-    that.close();
+    // that.close();
+  }
+
+  // Loading regions in memory
+  private loadReagions(geoHazard: GeoHazard) {
+    if (geoHazard === GeoHazard.Snow) {
+      if (!this._avalancheRegions) {
+        this._avalancheRegions = require('../../../../assets/varslingsomraader.json'); // TODO: Add to settings
+      }
+    } else {
+      if (!this._regions) {
+        this._regions = require('../../../../assets/regions-simple.json'); // TODO: Add to settings
+      }
+    }
   }
 
   private getRegionInViewObservable(mapView: IMapView, geoHazard: GeoHazard): Observable<IMapViewAndArea> {
     console.log('getRegionInViewObservable', mapView, geoHazard);
+    this.loadReagions(geoHazard);
+    const regions = (geoHazard === GeoHazard.Snow ? this._avalancheRegions
+      : this._regions);
+    const featureName = geoHazard === GeoHazard.Snow ? 'OMRAADEID' : 'fylkesnummer'; // TODO: Add to settings
+
     return Observable.create((observer: Observer<IMapViewAndArea>) => {
       const typedWorker = createWorker(this.workFunc, (msg) => {
         observer.next({ ...mapView, ...msg });
@@ -101,9 +121,8 @@ export class MapService {
       typedWorker.postMessage(
         {
           url: document.location.protocol + '//' + document.location.host,
-          featureGeoJson: (geoHazard === GeoHazard.Snow ? '/assets/avalancheregions.js'
-            : '/assets/countygeojson.js'),
-          featureName: geoHazard === GeoHazard.Snow ? 'OMRAADEID' : 'fylkesnummer',
+          featureGeoJson: regions,
+          featureName,
           center: [mapView.center.lng, mapView.center.lat],
           bbox: [
             mapView.bounds.getSouthWest().lng, // minx
@@ -112,6 +131,7 @@ export class MapService {
             mapView.bounds.getNorthEast().lat, // maxy
           ],
         });
+
       return () => typedWorker ? typedWorker.terminate() : null;
     });
   }

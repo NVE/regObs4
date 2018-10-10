@@ -8,7 +8,7 @@ import { Events } from '@ionic/angular';
 import { NanoSql } from '../../../../nanosql';
 import { nSQL } from 'nano-sql';
 import { Observable } from 'rxjs';
-import { map, take, share, shareReplay } from 'rxjs/operators';
+import { map, take, share, shareReplay, distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,13 +19,22 @@ export class UserSettingService {
   // UserSettingService is a singleton service.
   // The observable will be shared with many services
   private _userSettingObservable: Observable<UserSetting>;
+  private _currentGeoHazardObservable: Observable<GeoHazard>;
 
   get userSettingObservable$() {
     return this._userSettingObservable;
   }
 
+  get currentGeoHazardObservable$() {
+    return this._currentGeoHazardObservable;
+  }
+
   constructor(private translate: TranslateService, private events: Events) {
     this._userSettingObservable = this.getUserSettingsAsObservable();
+    this._currentGeoHazardObservable = this._userSettingObservable.pipe(
+      map((val) => val.currentGeoHazard),
+      distinctUntilChanged(),
+      shareReplay(1));
   }
 
   private getDefaultSettings(): UserSetting {
