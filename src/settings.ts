@@ -2,11 +2,11 @@
 export const settings = {
     observations: {
         maxObservationsToFetch: 5000,
-        maxDaysBack: {
-            Snow: 7 * 2,
-            Ice: 7 * 12,
-            Water: 7 * 2,
-            Dirt: 7 * 2,
+        daysBack: {
+            Snow: [0, 1, 2, 3, 7, 7 * 2],
+            Ice: [0, 1, 2, 7, 7 * 4, 7 * 12],
+            Water: [0, 1, 2, 3, 7, 7 * 2],
+            Dirt: [0, 1, 2, 3, 7, 7 * 2],
         },
         timeZone: 'Europe/Oslo'
     },

@@ -123,7 +123,7 @@ export class ObservationService {
     const userSettings = await this.userSettingService.getUserSettings();
     if (userSettings.currentGeoHazard === geoHazard) {
       // Returning max days back for current geoHazard
-      return settings.observations.maxDaysBack[GeoHazard[geoHazard]];
+      return Math.max(settings.observations.daysBack[GeoHazard[geoHazard]]);
     } else {
       // Returning default days back for other geoHazards
       return this.helperService.getObservationsDaysBack(geoHazard, userSettings);

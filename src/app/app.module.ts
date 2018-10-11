@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 import './core/helpers/nano-sql/nanoObserverToRxjs';
 import { UserLoginComponent } from './components/side-menu/user-login/user-login.component';
 import { SharedModule } from './modules/shared/shared.module';
+import { ObservationsDaysBackComponent } from './components/side-menu/observations-days-back/observations-days-back.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -30,6 +31,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SideMenuComponent,
     SupportTilesMenuComponent,
     UserLoginComponent,
+    ObservationsDaysBackComponent,
   ],
   entryComponents: [PopoverMenuComponent],
   imports: [
