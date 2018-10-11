@@ -1,38 +1,28 @@
 import { Injectable } from '@angular/core';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import * as moment from 'moment';
-import { Storage } from '@ionic/storage';
-import * as L from 'leaflet';
-import * as snow_warning_regions from '../../../../assets/varslingsomraader.json';
-import { GeometryObject, Feature, Polygon, LineString } from 'geojson';
 import { settings } from '../../../../settings';
-import * as turf from '@turf/turf';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { featureEach } from '@turf/turf';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { Observable } from 'rxjs';
-import { UserSetting } from '../../models/user-settings.model';
-
-const STORAGE_KEY_NAME = 'CurrentMapView';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HelperService {
 
-  constructor(private userSettingService: UserSettingService, private storage: Storage, private geolocation: Geolocation) { }
+  constructor(private userSettingService: UserSettingService) { }
 
-  async getObservationsFromDate(): Promise<moment.Moment> {
-    const us = await this.userSettingService.getUserSettings();
-    return moment().subtract(this.getObservationsDaysBack(us.currentGeoHazard, us), 'days').startOf('day');
-  }
+  // async getObservationsFromDate(): Promise<moment.Moment> {
+  //   const us = await this.userSettingService.getUserSettings();
+  //   return moment().subtract(this.getObservationsDaysBack(us.currentGeoHazard, us), 'days').startOf('day');
+  // }
 
-  getObservationsDaysBack(geoHazard: GeoHazard, userSettings: UserSetting): number {
-    const daysBackForCurrentGeoHazard = userSettings.observationDaysBack
-      .find((setting) => setting.geoHazard === geoHazard);
-    const daysBack = daysBackForCurrentGeoHazard ? daysBackForCurrentGeoHazard.daysBack : 3; // default to 3 days back if not found
-    return daysBack;
-  }
+  // getObservationsDaysBack(geoHazard: GeoHazard, userSettings: UserSetting): number {
+  //   const daysBackForCurrentGeoHazard = userSettings.observationDaysBack
+  //     .find((setting) => setting.geoHazard === geoHazard);
+  //   const daysBack = daysBackForCurrentGeoHazard ? daysBackForCurrentGeoHazard.daysBack : 3; // default to 3 days back if not found
+  //   return daysBack;
+  // }
 
   getDistanceText(distanceInMeter: number): string {
     if (distanceInMeter > 1000) {
@@ -169,23 +159,23 @@ export class HelperService {
     });
   }
 
-  private getFeaturesFromJson(geoJson: any) {
-    const features: Array<Feature<GeometryObject, any>> = [];
-    L.geoJSON(geoJson, {
-      onEachFeature: (feature) => {
-        features.push(feature);
-      }
-    });
-    return features;
-  }
+  // private getFeaturesFromJson(geoJson: any) {
+  //   const features: Array<Feature<GeometryObject, any>> = [];
+  //   L.geoJSON(geoJson, {
+  //     onEachFeature: (feature) => {
+  //       features.push(feature);
+  //     }
+  //   });
+  //   return features;
+  // }
 
-  private boundsToGeoPolygon(bounds: L.LatLngBounds) {
-    return turf.polygon([[
-      [bounds.getNorthWest().lng, bounds.getNorthWest().lat],
-      [bounds.getNorthEast().lng, bounds.getNorthEast().lat],
-      [bounds.getSouthEast().lng, bounds.getSouthEast().lat],
-      [bounds.getSouthWest().lng, bounds.getSouthWest().lat],
-      [bounds.getNorthWest().lng, bounds.getNorthWest().lat],
-    ]]);
-  }
+  // private boundsToGeoPolygon(bounds: L.LatLngBounds) {
+  //   return turf.polygon([[
+  //     [bounds.getNorthWest().lng, bounds.getNorthWest().lat],
+  //     [bounds.getNorthEast().lng, bounds.getNorthEast().lat],
+  //     [bounds.getSouthEast().lng, bounds.getSouthEast().lat],
+  //     [bounds.getSouthWest().lng, bounds.getSouthWest().lat],
+  //     [bounds.getNorthWest().lng, bounds.getNorthWest().lat],
+  //   ]]);
+  // }
 }

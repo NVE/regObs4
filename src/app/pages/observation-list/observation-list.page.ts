@@ -4,11 +4,9 @@ import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { MapService } from '../../core/services/map/map.service';
-import { Observable } from 'rxjs';
-import { map, combineLatest, tap } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { IMapView } from '../../core/services/map/map-view.interface';
-import { Events } from '@ionic/angular';
-import { settings } from '../../../settings';
 
 @Component({
     selector: 'app-observation-list',
@@ -20,20 +18,15 @@ export class ObservationListPage implements OnInit {
 
     constructor(
         private observationService: ObservationService,
-        private mapService: MapService,
-        private userSettingService: UserSettingService) {
+        private mapService: MapService) {
     }
 
     async ngOnInit() {
-        const userSettings = await this.userSettingService.getUserSettings();
-        // TODO: Move user settings to Observable! :)
-        this.$observations = this.observationService.getObservationsAsObservable(userSettings.currentGeoHazard)
-            .pipe(combineLatest(this.mapService.mapViewObservable$),
+        this.$observations = combineLatest(this.observationService.observations$,
+            this.mapService.mapViewObservable$)
+            .pipe(
                 // Using combineLatest to make sure that observable is emitted when wither observations or map view is updated
                 map(([observations, mapView]) => this.filterObservationsWithinViewBounds(observations, mapView)),
-                // tap((val) => {
-                //     console.log('[INFO] Observable in ObservationListPage changed!', val);
-                // })
             );
     }
 

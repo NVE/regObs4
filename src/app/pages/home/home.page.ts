@@ -1,29 +1,22 @@
-import { Component, AfterViewInit, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
-import { Platform, ToastController, Events, PopoverController, Fab } from '@ionic/angular';
+import { Events } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { UserMarker } from '../../core/helpers/leaflet/user-marker/user-marker';
 import { ObservationService } from '../../core/services/observation/observation.service';
-import { ObserverSubscriber } from 'nano-sql/lib/observable';
 import { OfflineTileLayer } from '../../core/helpers/leaflet/offline-tile-layer/offline-tile-layer';
 import * as norwegianBorder from '../../../assets/norway-borders2.json';
-import * as leafletPip from '@mapbox/leaflet-pip';
 import { settings } from '../../../settings';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { HelperService } from '../../core/services/helpers/helper.service';
-import { PopoverMenuComponent } from '../../components/popover-menu/popover-menu.component';
-import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
-import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
-import { SupportTile } from '../../core/models/support-tile.model';
 import { MapSearchResponse } from '../../core/services/map-search/map-search-response.model';
 import { MapService } from '../../core/services/map/map.service';
+import { UserSetting } from '../../core/models/user-settings.model';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
@@ -56,18 +49,14 @@ export class HomePage implements OnInit, OnDestroy {
   tripLogLayer = L.layerGroup();
   selectedMarker: MapItemMarker;
   showMapCenter: boolean;
+  userSetting: UserSetting;
+  dataLoadIds: string[];
 
-  constructor(private platform: Platform,
+  constructor(
     private geolocation: Geolocation,
     private observationService: ObservationService,
-    private toastController: ToastController,
     private events: Events,
-    private statusBar: StatusBar,
     private userSettingService: UserSettingService,
-    private helperService: HelperService,
-    private popoverController: PopoverController,
-    private tripLoggerService: TripLoggerService,
-    private backgroundGeolocationService: BackgroundGeolocationService,
     private mapService: MapService,
   ) {
 
@@ -79,7 +68,6 @@ export class HomePage implements OnInit, OnDestroy {
     L.Marker.prototype.options.icon = defaultIcon;
 
     this.markers = [];
-    // this.initLoadingToast(); // TODO: Create component instead
   }
 
   options: L.MapOptions = {
@@ -95,12 +83,16 @@ export class HomePage implements OnInit, OnDestroy {
     zoomControl: false,
   };
 
-  ngOnInit(): void {
+  async ngOnInit() {
     console.log('[INFO] ionViewDidEnter home page');
+
+    this.userSetting = await this.userSettingService.getUserSettings();
+    this.currentGeoHazard = this.userSetting.currentGeoHazard;
+    this.showMapCenter = this.userSetting.showMapCenter;
+    this.setDataLoadIds();
 
     this.events.subscribe(settings.events.geoHazardChanged, (newGeoHazard: GeoHazard) => {
       this.currentGeoHazard = newGeoHazard;
-      this.resubscribeObservations();
       this.configureTileLayers();
     });
 
@@ -131,6 +123,11 @@ export class HomePage implements OnInit, OnDestroy {
       this.mapItemBarVisible = isVisible;
     });
 
+    this.events.subscribe(settings.events.userSettingsChanged, (userSettings: UserSetting) => {
+      this.userSetting = this.userSetting;
+      this.setDataLoadIds();
+    });
+
     // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
     //   this.tripLogLayer.clearLayers();
     //   const latLngs = tripLogItems.map((tripLogItem) => L.latLng({
@@ -155,10 +152,10 @@ export class HomePage implements OnInit, OnDestroy {
       this.mapItemBar.hide();
     });
     L.control.scale({ imperial: false }).addTo(map);
-    const userSettings = await this.userSettingService.getUserSettings();
-    this.currentGeoHazard = userSettings.currentGeoHazard;
-    this.showMapCenter = userSettings.showMapCenter;
-    this.resubscribeObservations();
+    // TODO: Move this to custom marker layer?
+    this.observationSubscription = this.observationService.observations$.subscribe((regObservations) => {
+      this.redrawObservationMarkers(regObservations);
+    });
     await this.configureTileLayers();
     this.redrawMap();
   }
@@ -198,45 +195,8 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  getDataLoadIds() {
-    return this.observationService.getAllDataLoadIds();
-  }
-
-  // TODO: Create component
-  // initLoadingToast() {
-  //   this.platform.ready().then(() => {
-  //     this.observationService.isLoading.subscribe(async (isLoading) => {
-  //       if (isLoading) {
-  //         if (this.toastDismissTimeout) {
-  //           clearTimeout(this.toastDismissTimeout);
-  //         }
-  //         this.toast = await this.toastController.create({
-  //           message: 'Laster inn observasjoner',
-  //           position: 'bottom',
-  //           translucent: true,
-  //         });
-  //         this.toast.present();
-  //       } else if (this.toast) {
-  //         this.toastDismissTimeout = setTimeout(() => {
-  //           this.toast.dismiss();
-  //         }, 3000);
-  //       }
-  //     });
-  //   });
-  // }
-
-  private async resubscribeObservations() {
-    if (this.observationSubscription) {
-      this.observationSubscription.unsubscribe();
-    }
-    const fromDate = await this.helperService.getObservationsFromDate();
-    this.observationSubscription = (await this.observationService.getObservationsAsObservable(
-      this.currentGeoHazard,
-      fromDate.toDate(),
-      null))
-      .subscribe((regObservations) => {
-        this.redrawObservationMarkers(regObservations);
-      });
+  private setDataLoadIds() {
+    this.dataLoadIds = this.observationService.getAllDataLoadIds(this.userSetting.appMode);
   }
 
   private redrawObservationMarkers(regObservations: RegObsObservation[]) {
