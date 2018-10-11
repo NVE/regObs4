@@ -88,6 +88,12 @@
     "TITLE": "Settings"
   },
   "START_WIZARD": {
+    "CHOOSE_COUNTRY": {
+      "HEADER": "Choose Country",
+      "NO_NORWAY": "No, in other countries as well",
+      "SUBTITLE": "Will you use the app only in Norway?",
+      "YES_NORWAY": "Yes, in Norway only"
+    },
     "CHOOSE_INTEREST": {
       "HEADER": "Choose your interest:",
       "INTEREST_DIRT": "Landslide!",

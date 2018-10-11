@@ -10,6 +10,7 @@ import { WarningService } from './core/services/warning/warning.service';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { NanoSql } from '../nanosql';
+import { LangKey } from './core/models/langKey';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +42,7 @@ export class AppComponent {
         this.initDeepLinks();
         await this.initNanoSqlDatabase();
         const userSettings = await this.userSettings.getUserSettings();
-        this.translate.use(userSettings.language);
+        this.translate.use(LangKey[userSettings.language]);
         // TODO: Subscribe to user settings observable instead
 
         this.statusBar.styleBlackTranslucent();

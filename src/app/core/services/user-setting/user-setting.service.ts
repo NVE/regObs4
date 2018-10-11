@@ -9,6 +9,8 @@ import { NanoSql } from '../../../../nanosql';
 import { nSQL } from 'nano-sql';
 import { Observable } from 'rxjs';
 import { map, take, share, shareReplay, distinctUntilChanged } from 'rxjs/operators';
+import { LangKey } from '../../models/langKey';
+import { AppCountry } from '../../models/app-country.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +42,8 @@ export class UserSettingService {
   private getDefaultSettings(): UserSetting {
     return {
       appMode: AppMode.Prod,
-      language: 'no',
+      language: LangKey.no,
+      country: AppCountry.norway,
       currentGeoHazard: GeoHazard.Snow,
       observationDaysBack: [
         { geoHazard: GeoHazard.Snow, daysBack: 2 },
@@ -73,7 +76,7 @@ export class UserSettingService {
     await nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('upsert', { id: 'usersettings', ...userSetting }).exec();
 
     // TODO: Subscribe to observable instead
-    this.translate.use(userSetting.language);
+    this.translate.use(LangKey[userSetting.language]);
     this.events.publish(settings.events.userSettingsChanged, userSetting);
   }
 }

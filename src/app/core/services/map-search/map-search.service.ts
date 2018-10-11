@@ -14,6 +14,7 @@ import { BorderHelper } from '../../helpers/leaflet/border-helper';
 import 'leaflet.utm';
 import { LocationName } from './location-name.model';
 import { ViewInfo } from './view-info.model';
+import { LangKey } from '../../models/langKey';
 
 @Injectable({
   providedIn: 'root'
@@ -29,14 +30,14 @@ export class MapSearchService {
           this.searchWorld(text, userSettings.language)).pipe(map(([s1, s2]) => [...s1, ...s2]))));
   }
 
-  searchNorwegianPlaces(text: string, lang: string): Observable<MapSearchResponse[]> {
+  searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
     return this.httpClient.get(`${settings.map.search.no.url}?navn=${text}*&antPerSide=${settings.map.search.no.maxResults}`
       + `&eksakteForst=${settings.map.search.no.exactFirst}&epsgKode=3395`).pipe(map((data: any) => {
         const resultList = data.stedsnavn || [];
         return this.removeDuplicates(resultList).map((item) => {
           const resp: MapSearchResponse = {
             name: item.stedsnavn,
-            description: (lang === 'no' ? item.navnetype + ', ' : '')
+            description: (lang === LangKey.no ? item.navnetype + ', ' : '')
               + item.kommunenavn + ' (' + item.fylkesnavn + ')',
             type: item.navnetype,
             latlng: L.Projection.Mercator.unproject(L.point({ x: item.aust, y: item.nord })),
@@ -55,10 +56,10 @@ export class MapSearchService {
     }, []);
   }
 
-  searchWorld(text: string, lang: string): Observable<MapSearchResponse[]> {
+  searchWorld(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
     return this.httpClient.get(`${settings.map.search.geonames.url}/searchJSON?`
       + `name_startsWith=${text}&maxRows=${settings.map.search.geonames.maxResults}`
-      + `&lang=${lang}`
+      + `&lang=${LangKey[lang]}`
       + `&username=${settings.map.search.geonames.username}`)
       .pipe(map((data: any) => {
         const geoData = data.geonames || [];

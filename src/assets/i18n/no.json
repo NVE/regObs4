@@ -88,6 +88,12 @@
     "TITLE": "Innstillinger"
   },
   "START_WIZARD": {
+    "CHOOSE_COUNTRY": {
+      "HEADER": "Velg land",
+      "NO_NORWAY": "Nei, i andre land også",
+      "SUBTITLE": "Kommer du til å bruke appen kun i Norge?",
+      "YES_NORWAY": "Ja, kun i Norge"
+    },
     "CHOOSE_INTEREST": {
       "HEADER": "Velg din interesse:",
       "INTEREST_DIRT": "Jord til jordskredvarslingen!",

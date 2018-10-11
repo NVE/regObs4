@@ -167,7 +167,7 @@ export class WarningService {
       this.getWarningsAndFavouritesAsObservable())
       .pipe(
         map(([userSetting, warningGroups]) => {
-          return warningGroups.filter((w) => w.group.language === userSetting.language);
+          return warningGroups.filter((w) => w.group.language === LangKey[userSetting.language]);
         }),
         shareReplay(1)
       );

@@ -3,6 +3,8 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { Slides, NavController } from '@ionic/angular';
 import { AppMode } from '../../core/models/app-mode.enum';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { LangKey } from '../../core/models/langKey';
+import { AppCountry } from '../../core/models/app-country.enum';
 
 @Component({
   selector: 'app-start-wizard',
@@ -17,28 +19,51 @@ export class StartWizardPage implements OnInit {
     'en': false
   };
   GeoHazard = GeoHazard;
+  AppCountry = AppCountry;
+  LangKey = LangKey;
+  countries = {
+    'norway': false,
+    'world': false,
+  };
 
   constructor(private userSetting: UserSettingService, private navController: NavController) { }
 
   async ngOnInit() {
-    await this.updateLanguagesFromUserSettings();
+    await this.updateFromUserSettings();
   }
 
-  async updateLanguagesFromUserSettings() {
+  async updateFromUserSettings() {
     const userSettings = await this.userSetting.getUserSettings();
     for (const key in this.languages) {
       if (this.languages.hasOwnProperty(key)) {
         this.languages[key] = false;
       }
     }
-    this.languages[userSettings.language] = true;
+    const langKeyName = LangKey[userSettings.language];
+    this.languages[langKeyName] = true;
+
+    for (const key in this.countries) {
+      if (this.countries.hasOwnProperty(key)) {
+        this.countries[key] = false;
+      }
+    }
+    const countryName = AppCountry[userSettings.country];
+    this.countries[countryName] = true;
   }
 
-  async changeLanguage(language: 'no' | 'en') {
+  async changeLanguage(language: LangKey) {
     const userSettings = await this.userSetting.getUserSettings();
     userSettings.language = language;
-    this.userSetting.saveUserSettings(userSettings);
-    await this.updateLanguagesFromUserSettings();
+    await this.userSetting.saveUserSettings(userSettings);
+    await this.updateFromUserSettings();
+    this.slides.slideNext();
+  }
+
+  async changeCountry(country: AppCountry) {
+    const userSettings = await this.userSetting.getUserSettings();
+    userSettings.country = country;
+    await this.userSetting.saveUserSettings(userSettings);
+    await this.updateFromUserSettings();
     this.slides.slideNext();
   }
 
