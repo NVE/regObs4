@@ -75,7 +75,11 @@ export class ObservationService {
   private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard, user: LoggedInUser) {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(geoHazard));
     const lastUpdateLimit = moment().subtract(10, 'minutes');
-    if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
+    const daysBack = await this.getDaysBackToFetchForGeoHazard(geoHazard);
+    const fromDate = moment().subtract(daysBack, 'days').startOf('day');
+    if (!dataLoad.lastUpdated
+      || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
+      || moment(dataLoad.itemsFromDate).isAfter(fromDate)) {
       await this.updateObservationsForGeoHazard(geoHazard, user);
     } else {
       console.log(`[INFO][ObervationService] No need to update ${geoHazard}. Last updated is:`, dataLoad.lastUpdated);

@@ -7,6 +7,7 @@ import { settings } from '../../../../settings';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { Select } from '@ionic/angular';
+import { ObservationService } from '../../../core/services/observation/observation.service';
 
 @Component({
   selector: 'app-observations-days-back',
@@ -17,7 +18,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   daysBack: { val: number, selected: boolean, text: string }[];
   subscription: Subscription;
   recreate: boolean;
-  constructor(private userSettingService: UserSettingService, private zone: NgZone) { }
+  constructor(private userSettingService: UserSettingService, private zone: NgZone, private observationService: ObservationService) { }
 
   ngOnInit() {
     this.subscription = this.userSettingService.userSettingObservable$
@@ -53,7 +54,8 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
     const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard);
     if (existingValue.daysBack !== select.value) {
       existingValue.daysBack = select.value;
-      this.userSettingService.saveUserSettings(userSetting);
+      await this.userSettingService.saveUserSettings(userSetting);
+      this.observationService.updateObservations(); // Checks if updates is needed for new settings
     }
   }
 
