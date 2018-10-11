@@ -93,6 +93,13 @@ export class NanoSql {
                 { key: 'id', type: 'string', props: ['pk'] },
                 { key: '*', type: '*' },
             ]
+        },
+        DATA_LOAD: {
+            name: 'dataload',
+            model: [
+                { key: 'id', type: 'string', props: ['pk'] },
+                { key: '*', type: '*' },
+            ]
         }
     };
 

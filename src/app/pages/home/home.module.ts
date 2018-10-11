@@ -14,6 +14,8 @@ import { GpsCenterComponent } from '../../components/map-controls/gps-center/gps
 import { ModalSearchPageModule } from '../modal-search/modal-search.module';
 import { SharedModule } from '../../modules/shared/shared.module';
 import { MapCenterInfoComponent } from '../../components/map-center-info/map-center-info.component';
+import { DataLoadModule } from '../../modules/data-load/data-load.module';
+import { DataLoadComponent } from '../../modules/data-load/components/data-load/data-load.component';
 
 @NgModule({
   imports: [
@@ -30,6 +32,7 @@ import { MapCenterInfoComponent } from '../../components/map-center-info/map-cen
     LeafletModule,
     ModalSearchPageModule,
     SharedModule,
+    DataLoadModule,
   ],
   declarations: [
     HomePage,
@@ -39,6 +42,7 @@ import { MapCenterInfoComponent } from '../../components/map-center-info/map-cen
     FullscreenToggleComponent,
     GpsCenterComponent,
     MapCenterInfoComponent,
+    DataLoadComponent,
   ],
 })
 export class HomePageModule {

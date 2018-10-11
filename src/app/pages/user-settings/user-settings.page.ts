@@ -32,7 +32,6 @@ export class UserSettingsPage implements OnInit {
   }
 
   async reset() {
-    await this.observationService.reset();
     await this.offlineMapService.reset();
     await NanoSql.dropAllTables();
     console.log('[INFO] App reset complete');

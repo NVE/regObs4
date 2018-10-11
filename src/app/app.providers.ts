@@ -20,6 +20,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { MapService } from './core/services/map/map.service';
 import { WarningService } from './core/services/warning/warning.service';
+import { ErrorHandler } from '@angular/core';
+import { AppErrorHandler } from './core/error-handler/error-handler.class';
 
 export class AppProviders {
     public static getProviders() {
@@ -36,6 +38,7 @@ export class AppProviders {
             Zip,
             Clipboard,
             InAppBrowser,
+            { provide: ErrorHandler, useClass: AppErrorHandler },
             ...this.getSingletonServices(),
             ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),
         ];

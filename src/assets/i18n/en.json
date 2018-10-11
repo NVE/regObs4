@@ -3,6 +3,10 @@
     "DEFAULT_HEADER": "Whoops!",
     "OK": "Ok"
   },
+  "DATA_LOAD": {
+    "DATA": "Loading...",
+    "LOADING": "Loading"
+  },
   "DAYS": {
     "SHORT": {
       "0": "Sun",
@@ -53,6 +57,7 @@
   "MENU": {
     "ABOUT_REGOBS": "About data in regObs",
     "GENERAL": "General",
+    "LAST_UPDATED": "Last updated",
     "MAP_LEGENDS": "Legends for map",
     "MAP_SETTINGS": "Map settings",
     "MAP_SETTINGS_FOR": "Map settings for",

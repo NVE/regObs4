@@ -3,6 +3,10 @@
     "DEFAULT_HEADER": "Oisann!",
     "OK": "Ok"
   },
+  "DATA_LOAD": {
+    "DATA": "Laster data...",
+    "LOADING": "Laster"
+  },
   "DAYS": {
     "SHORT": {
       "0": "Søn",
@@ -53,6 +57,7 @@
   "MENU": {
     "ABOUT_REGOBS": "Om data i regObs",
     "GENERAL": "Generelt",
+    "LAST_UPDATED": "Sist oppdatert",
     "MAP_LEGENDS": "Tegnforklaring for kart",
     "MAP_SETTINGS": "Kartvalg",
     "MAP_SETTINGS_FOR": "Kartvalg for",

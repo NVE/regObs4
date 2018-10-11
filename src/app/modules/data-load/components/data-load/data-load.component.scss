@@ -1,0 +1,17 @@
+.data-load {
+    position: absolute;
+    color: #fff;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50px);
+    width: 100px;
+    z-index: 9999;
+    background-color: var(--backdrop-background);
+    border-radius: 6px;
+    opacity: 0;
+
+    ion-label {
+        font-size: 12px;
+        margin-top: 0px;
+    }
+}

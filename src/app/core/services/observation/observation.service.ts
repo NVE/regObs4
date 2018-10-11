@@ -2,22 +2,21 @@ import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
 import { RegObsObservation } from '../../models/regobs-observation.model';
 import { nSQL } from 'nano-sql';
-import { Observer } from 'nano-sql/lib/observable';
 import { ApiService } from '../api/api.service';
 import { HelperService } from '../helpers/helper.service';
 import { RowCount } from '../../models/row-count.model';
-import { Subject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import * as moment from 'moment';
 import 'moment-timezone';
 import { Storage } from '@ionic/storage';
 import * as Rx from 'rxjs';
 import { NanoSql } from '../../../../nanosql';
-import { debounceTime, take } from 'rxjs/operators';
+import { debounceTime, take, map, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { LoginService } from '../login/login.service';
-import { User } from '../../models/user.model';
 import { LoggedInUser } from '../login/logged-in-user.model';
 import { UserSettingService } from '../user-setting/user-setting.service';
+import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 
 const REGISTRATION_LAST_UPDATED = 'registration_last_updated';
 
@@ -27,11 +26,6 @@ const REGISTRATION_LAST_UPDATED = 'registration_last_updated';
 export class ObservationService {
 
   observations: Array<RegObsObservation>;
-  private _isLoading: Subject<boolean>;
-
-  get isLoading(): Observable<boolean> {
-    return this._isLoading.asObservable();
-  }
 
   constructor(
     private apiService: ApiService,
@@ -39,8 +33,8 @@ export class ObservationService {
     private storage: Storage,
     private loginService: LoginService,
     private userSettingService: UserSettingService,
+    private dataLoadService: DataLoadService,
   ) {
-    this._isLoading = new Subject<boolean>();
   }
 
   private exludeLoggedInUser(user: LoggedInUser, reg: RegObsObservation) {
@@ -48,20 +42,10 @@ export class ObservationService {
   }
 
   async updateObservations() {
-    try {
-      const user = await this.loginService.getLoggedInUser();
-      const currentGeoHazard = await this.userSettingService.currentGeoHazardObservable$.pipe(take(1)).toPromise();
-
-      for (const geoHazard of this.getPriority(currentGeoHazard)) {
-        await this.updateObservationsForGeoHazard(geoHazard, user);
-      }
-      // TODO: Implement last update service and skip items recently updated
-      await this.storage.ready();
-      console.log('[INFO] Updating last updated');
-      this.storage.set(REGISTRATION_LAST_UPDATED, moment().toISOString());
-      this._isLoading.next(false);
-    } catch (err) {
-      console.error('[ERROR] Could not update observations!', err);
+    const user = await this.loginService.getLoggedInUser();
+    const currentGeoHazard = await this.userSettingService.currentGeoHazardObservable$.pipe(take(1)).toPromise();
+    for (const geoHazard of this.getPriority(currentGeoHazard)) {
+      await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard, user);
     }
   }
 
@@ -77,10 +61,47 @@ export class ObservationService {
     }
   }
 
+  private getDataLoadId(geoHazard) {
+    return `${NanoSql.TABLES.REGISTRATION.name}_${geoHazard}`;
+  }
+
+  getAllDataLoadIds() {
+    const geoHazards = Object.keys(GeoHazard)
+      .filter(key => !isNaN(Number(GeoHazard[key])))
+      .map((key) => GeoHazard[key]);
+    return geoHazards.map((val) => this.getDataLoadId(val));
+  }
+
+  private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard, user: LoggedInUser) {
+    const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(geoHazard));
+    const lastUpdateLimit = moment().subtract(10, 'minutes');
+    if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
+      await this.updateObservationsForGeoHazard(geoHazard, user);
+    } else {
+      console.log(`[INFO][ObervationService] No need to update ${geoHazard}. Last updated is:`, dataLoad.lastUpdated);
+    }
+  }
+
+  getLastUpdatedForCurrentGeoHazardAsObservable() {
+    return this.userSettingService.currentGeoHazardObservable$.pipe(switchMap((currentGeoHazard) =>
+      Rx.combineLatest(this.dataLoadService.getStateAsObservable(this.getDataLoadId(currentGeoHazard)))
+    ), map((val) => val[0].lastUpdated));
+  }
+
+  async updateObservationsForCurrentGeoHazard() {
+    const currentGeoHazard = await this.userSettingService.currentGeoHazardObservable$.pipe(take(1)).toPromise();
+    const loggedInUser = await this.loginService.getLoggedInUser();
+    return this.updateObservationsForGeoHazard(currentGeoHazard, loggedInUser);
+  }
+
   private async updateObservationsForGeoHazard(geoHazard: GeoHazard, user: LoggedInUser) {
     console.log(`[INFO][ObervationService] Updating observations for geoHazard: ${geoHazard}`);
+    const dataLoadId = this.getDataLoadId(geoHazard);
+    await this.dataLoadService.startLoading(dataLoadId);
+
     const daysBack = await this.getDaysBackToFetchForGeoHazard(geoHazard);
     const fromDate = moment().subtract(daysBack, 'days').startOf('day');
+    // TODO: Implement cancel? Maybe use observable and unsubscribe when cancel observable in data load table?
     const searchResult = await this.apiService.search({
       FromDate: fromDate.toDate(),
       SelectedGeoHazards: [geoHazard],
@@ -93,6 +114,9 @@ export class ObservationService {
     await this.deleteObservationNoLongerInResult(user, fromDate, searchResult.Results);
     // Delete old items
     await this.deleteOldObservations(geoHazard, user);
+
+    await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.Results.length,
+      fromDate.toDate(), new Date());
   }
 
   private async getDaysBackToFetchForGeoHazard(geoHazard: GeoHazard): Promise<number> {
@@ -130,30 +154,15 @@ export class ObservationService {
     return nSQL().observable<RegObsObservation[]>(() => {
       return nSQL(NanoSql.TABLES.REGISTRATION.name).query('select').where((reg: RegObsObservation) => {
         return geoHazard ? reg.GeoHazardTid === geoHazard : true &&
-          fromDate ? moment.tz(reg.DtObsTime, settings.observations.timeZone).isAfter(fromDate) : true &&
+          fromDate ? moment(reg.DtObsTime).isAfter(fromDate) : true &&
             user ? reg.NickName === user : true;
       }).emit();
     }).toRxJS().pipe(debounceTime(500));
   }
 
-  getObserableCount(): Observer<RowCount[]> {
-    return nSQL().observable<RowCount[]>(() => {
+  getObserableCount(): Observable<number> {
+    return nSQL().observable<number>(() => {
       return nSQL(NanoSql.TABLES.REGISTRATION.name).query('select', ['COUNT(*) as count']).emit();
-    }).debounce(500);
-  }
-
-  async getLastUpdated(): Promise<Date> {
-    await this.storage.ready();
-    const storageValue: string = await this.storage.get(REGISTRATION_LAST_UPDATED);
-    if (storageValue) {
-      return moment(storageValue).toDate();
-    } else {
-      return null;
-    }
-  }
-
-  async reset() {
-    await this.storage.ready();
-    await this.storage.remove(REGISTRATION_LAST_UPDATED);
+    }).debounce(100).toRxJS().pipe(map((val: RowCount[]) => val[0].count), distinctUntilChanged());
   }
 }

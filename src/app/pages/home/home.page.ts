@@ -198,6 +198,10 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
+  getDataLoadIds() {
+    return this.observationService.getAllDataLoadIds();
+  }
+
   // TODO: Create component
   // initLoadingToast() {
   //   this.platform.ready().then(() => {
