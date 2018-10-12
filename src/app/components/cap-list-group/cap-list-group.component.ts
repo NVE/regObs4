@@ -82,7 +82,9 @@ export class CapListGroupComponent implements OnInit {
   }
 
   animateActive(group: WarningGroup) {
-    return group && group === this.animate;
+    return this.animate
+      && group.group.groupId === this.animate.group.groupId
+      && group.group.geoHazard === this.animate.group.geoHazard;
   }
 
 }
