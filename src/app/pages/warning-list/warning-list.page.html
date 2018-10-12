@@ -23,17 +23,11 @@
       </ion-row>
     </ion-grid>
   </div>
-  <ng-container *ngIf="selectedTab === 'inMapView'">
-    <ng-container *ngIf="(userSettings$ | async) as userSettings">
-      <ng-container *ngIf="(warningsInMapView$ | async) as mapCenterWarnings">
-        <app-cap-list-group *ngIf="userSettings.showMapCenter" title="{{'WARNING_LIST.IN_MAP_CENTER'|translate}}"
-          [warnings]="mapCenterWarnings.center"></app-cap-list-group>
-        <app-cap-list-group title="{{'WARNING_LIST.IN_MAP_VIEW'|translate}}" [warnings]="getViewBoundItems(mapCenterWarnings, userSettings)"></app-cap-list-group>
-      </ng-container>
-    </ng-container>
-  </ng-container>
-  <app-cap-list-group *ngIf="selectedTab === 'all'" title="{{'WARNING_LIST.ALL_WARNINGS'|translate}}" [warnings]="(warningsForCurrentGeoHazard$ | async)"></app-cap-list-group>
-  <app-cap-list-group *ngIf="selectedTab === 'favourites'" title="{{'WARNING_LIST.FAVOURITES'|translate}}" [warnings]="(favourites$ | async)"></app-cap-list-group>
+  <app-cap-list-group *ngIf="selectedTab === 'inMapView'" title="{{'WARNING_LIST.IN_MAP_CENTER'|translate}}"
+    [warnings$]="warningsInMapViewCenter$"></app-cap-list-group>
+  <app-cap-list-group *ngIf="selectedTab === 'inMapView'" title="{{'WARNING_LIST.IN_MAP_VIEW'|translate}}" [warnings$]="warningsInMapViewBounds$"></app-cap-list-group>
+  <app-cap-list-group *ngIf="selectedTab === 'all'" title="{{'WARNING_LIST.ALL_WARNINGS'|translate}}" [warnings$]="warningsForCurrentGeoHazard$"></app-cap-list-group>
+  <app-cap-list-group *ngIf="selectedTab === 'favourites'" title="{{'WARNING_LIST.FAVOURITES'|translate}}" [warnings$]="favourites$"></app-cap-list-group>
 </ion-content>
 <app-add-menu></app-add-menu>
 <app-geo-select slot="fixed" [inHeader]="true"></app-geo-select>

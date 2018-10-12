@@ -18,7 +18,7 @@
         </app-observation-list-card>
       </ion-virtual-scroll> -->
     <ion-list>
-      <app-observation-list-card [obs]="obs" *ngFor="let obs of observations">
+      <app-observation-list-card [obs]="obs" *ngFor="let obs of observations; trackBy: trackByRegId">
       </app-observation-list-card>
     </ion-list>
   </ng-container>

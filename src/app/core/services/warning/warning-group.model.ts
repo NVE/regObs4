@@ -19,10 +19,6 @@ export class WarningGroup {
         return this._isFavourite;
     }
 
-    set isFavourite(favourite: boolean) {
-        this._isFavourite = favourite;
-    }
-
     getWarningForDay(date: Date) {
         const warningsForDay = this._warnings.filter((x) => moment(date).isBetween(x.validFrom, x.validTo, null, '[]'));
         if (warningsForDay.length > 0) {
@@ -38,8 +34,9 @@ export class WarningGroup {
         }
     }
 
-    constructor(group: WarningGroupKey, warnings: IWarning[]) {
+    constructor(group: WarningGroupKey, warnings: IWarning[], isFavourite: boolean) {
         this._group = group;
         this._warnings = warnings;
+        this._isFavourite = isFavourite;
     }
 }

@@ -33,4 +33,8 @@ export class ObservationListPage implements OnInit {
     private filterObservationsWithinViewBounds(observations: RegObsObservation[], view: IMapView) {
         return observations.filter((observation) => !view || view.bounds.contains(L.latLng(observation.Latitude, observation.Longitude)));
     }
+
+    trackByRegId(index: number, obs: RegObsObservation) {
+        return obs ? obs.RegId : undefined;
+    }
 }

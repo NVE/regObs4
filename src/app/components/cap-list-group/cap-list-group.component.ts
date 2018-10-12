@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { ToastController, ItemSliding, ItemOption, ItemOptions } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-cap-list-group',
@@ -12,7 +13,7 @@ import { ToastController, ItemSliding, ItemOption, ItemOptions } from '@ionic/an
 export class CapListGroupComponent implements OnInit {
 
   @Input() title: string;
-  @Input() warnings: WarningGroup[];
+  @Input() warnings$: Observable<WarningGroup[]>;
 
   animate: WarningGroup;
 

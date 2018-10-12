@@ -1,4 +1,4 @@
-<ion-list padding>
+<ion-list padding *ngIf="(warnings$ | async) as warningGroups">
   <ion-list-header no-padding>
     <ion-label *ngIf="title">
       {{ title | translate }}
@@ -17,7 +17,7 @@
       </ion-row>
     </ion-grid>
   </ion-list-header>
-  <ion-item-sliding (ionDrag)="onDrag($event)" *ngFor="let warningGroup of warnings; trackBy: trackWarningGroup">
+  <ion-item-sliding (ionDrag)="onDrag($event)" *ngFor="let warningGroup of warningGroups; trackBy: trackWarningGroup">
     <ion-item no-padding detail="false" lines="full">
       <div slot="start" class="geo-icon-circle">
         <app-geo-icon [geoHazard]="warningGroup.group.geoHazard"></app-geo-icon>

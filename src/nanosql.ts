@@ -40,8 +40,6 @@ export class NanoSql {
             name: 'warning',
             model: [
                 { key: 'id', type: 'string', props: ['pk'] },
-                { key: 'geoHazard', type: 'number', props: ['idx'] },
-                { key: 'timestamp', type: 'number', props: ['idx'] },
                 { key: '*', type: '*' },
             ]
         },

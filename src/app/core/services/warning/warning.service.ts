@@ -7,7 +7,7 @@ import { LangKey } from '../../models/langKey';
 import { nSQL } from 'nano-sql';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
-import { map, tap, switchMap, shareReplay } from 'rxjs/operators';
+import { map, tap, switchMap, shareReplay, take } from 'rxjs/operators';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
@@ -19,6 +19,8 @@ import { IMapViewAndArea } from '../map/map-view-and-area.interface';
 import { MapService } from '../map/map.service';
 import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
+import { IWarningGroup } from './warning-group.interface';
+import { UserSetting } from '../../models/user-settings.model';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +63,6 @@ export class WarningService {
     for (const geoHazard of this.getPriority(userSettings.currentGeoHazard)) {
       await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard);
     }
-    await this.cleanupOldItems();
   }
 
   private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard) {
@@ -106,16 +107,10 @@ export class WarningService {
     }
   }
 
-  private cleanupOldItems() {
-    return nSQL(NanoSql.TABLES.WARNING.name).query('delete')
-      .where((warning: IWarning) => moment().subtract(1, 'days').isAfter(warning.validTo)).exec();
-  }
-
   private getWarningsAsObservable() {
-    // return nSQL().observable<IWarning[]>(() => {
-    //   return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
-    // }).debounce(1000).toRxJS();
-    return of([]);
+    return nSQL().observable<IWarningGroup[]>(() => {
+      return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
+    }).debounce(1000).toRxJS();
   }
 
   private getFavouritesAsObservable() {
@@ -124,28 +119,15 @@ export class WarningService {
     }).toRxJS();
   }
 
-  private getWarningRegions(): { id: string, name: string, geoHazard: GeoHazard }[] {
-    const snowRegions = require('../../../../assets/varslingsomraader.json').features
-      .map((f) => ({ id: f.properties['OMRAADEID'].toString(), name: f.properties['OMRAADENAV'], geoHazard: GeoHazard.Snow }));
-    const dirtAndWaterRegions = require('../../../../assets/regions.json')
-      .map((r) => ({ id: r.Id, name: r.Name }));
-    return [
-      ...snowRegions,
-      ...dirtAndWaterRegions.map((x) => ({ ...x, geoHazard: GeoHazard.Dirt })),
-      ...dirtAndWaterRegions.map((x) => ({ ...x, geoHazard: GeoHazard.Water })),
-    ];
-  }
-
   private getWarningsForCurrentLanguageAsObservable() {
     return combineLatest(
-      of(this.getWarningRegions()),
       this.getWarningsAsObservable(),
-      this.getFavouritesAsObservable()).pipe(map(([regions, warnings, favourites]) => {
+      this.getFavouritesAsObservable()).pipe(map(([regions, favourites]) => {
         return regions.map((region) => {
+          const isFavourite = !!favourites.find((x) => x.groupId === region.regionId && x.geoHazard === region.geoHazard);
           const warningGroup = new WarningGroup(
-            { geoHazard: region.geoHazard, groupId: region.id, groupName: region.name, language: 'no' },
-            warnings.filter((w) => w.groupId === region.id && w.geoHazard === region.geoHazard));
-          warningGroup.isFavourite = !!favourites.find((x) => x.groupId === region.id && x.geoHazard === region.geoHazard);
+            { geoHazard: region.geoHazard, groupId: region.regionId, groupName: region.regionName },
+            region.warnings, isFavourite);
           return warningGroup;
         }).sort((a, b) => {
           if (a.group.groupName < b.group.groupName) {
@@ -176,44 +158,43 @@ export class WarningService {
       .pipe(map(([warningGroups, userSetting]) => {
         const geoHazards = this.getGeoHazardFilter(userSetting.currentGeoHazard);
         return warningGroups.filter((wg) => geoHazards.find((g) => g === wg.group.geoHazard));
-      }),
-        shareReplay(1));
+      }), shareReplay(1));
   }
 
   private getWarningsForCurrentMapViewAsObservable() {
-    return this.mapService.mapViewAndAreaObservable$
-      .pipe(switchMap((mapViewArea: IMapViewAndArea) => this.getWarningsForCurrentMapView(mapViewArea)),
-        shareReplay(1));
+    return combineLatest(this.mapService.mapViewAndAreaObservable$, this.userSettingService.userSettingObservable$)
+      .pipe(switchMap(([mapViewArea, userSetting]) =>
+        combineLatest(this.getWarningsForCurrentMapView(mapViewArea, userSetting))),
+        map(([result]) => result),
+        shareReplay(1), tap((val) => {
+          console.log('[WarningForCurrentMapViewObservabe] changed: ', val);
+        }));
   }
 
-  private getWarningsForCurrentMapView(mapViewArea: IMapViewAndArea): Observable<IWarningGroupInMapView> {
+  private getWarningsForCurrentMapView(mapViewArea: IMapViewAndArea, userSetting: UserSetting)
+    : Observable<IWarningGroupInMapView> {
     return this.warningsForCurrentGeoHazardObservable$.pipe(
       map((warnings) => {
         // TODO: Create web worker for this processing task?
         const warningsInMapView: IWarningInMapView[] = warnings
           .map((warningGroup) => {
             const groupInMapView = {
-              center: mapViewArea.regionInCenter === warningGroup.group.groupId,
+              center: mapViewArea.regionInCenter === warningGroup.group.groupId && userSetting.showMapCenter,
               viewBounds: mapViewArea.regionsInViewBounds.indexOf(warningGroup.group.groupId) >= 0,
             };
             return { inMapView: groupInMapView, warningGroup };
           }).filter((warningGroupInView) => warningGroupInView.inMapView.center || warningGroupInView.inMapView.viewBounds);
+        const warningsInCenter = warningsInMapView
+          .filter((item) => item.inMapView.center)
+          .map((item) => item.warningGroup);
         return {
-          center: warningsInMapView.filter((item) => item.inMapView.center).map((item) => item.warningGroup),
+          center: warningsInCenter,
           viewBounds: warningsInMapView.filter((item) =>
             item.inMapView.viewBounds && !item.inMapView.center
           ).map((item) => item.warningGroup)
         };
-      }),
-      tap((val) => {
-        console.log('[WarningForCurrentMapViewObservabe] changed: ', val);
       })
     );
-  }
-
-  getWarningsById(...guids: string[]) {
-    return nSQL(NanoSql.TABLES.WARNING.name).query('select')
-      .where((x) => guids.indexOf(x.id) >= 0).exec() as Promise<IWarning[]>;
   }
 
   private async updateFloodAndLandslideWarnings(geoHazard: GeoHazard, language: LangKey, from?: Date, to?: Date) {
@@ -221,45 +202,47 @@ export class WarningService {
     const dateRange = this.getDefaultDateRange(from, to);
     const dataLoadId = this.getDataLoadId(geoHazard);
     await this.dataLoadService.startLoading(dataLoadId);
-    const country = 'no';
     const url = `${this.getBaseUrl(geoHazard)}`
       + `/Warning/All/${language}`
       + `/${dateRange.from.format('YYYY-MM-DD')}`
       + `/${dateRange.to.format('YYYY-MM-DD')}`;
     const result = await this.httpClient.get<IWarningApiResult[]>(url).toPromise();
-    const warnings: IWarning[] = [];
+    const regions: IWarningGroup[] = [];
     for (const item of result) {
-      const validTo = this.getDate(item.ValidTo);
-      const county = item.CountyList[0].Id;
-      const id = this.getId(geoHazard, country, county, language, validTo);
-      const warningLevel = parseInt(item.ActivityLevel, 10);
+      const regionId = item.CountyList[0].Id;
+      const regionName = item.CountyList[0].Name;
+      const warning: IWarning = {
+        language,
+        mainText: item.MainText,
+        validFrom: this.getDate(item.ValidFrom),
+        validTo: this.getDate(item.ValidTo),
+        publishTime: this.getDate(item.PublishTime),
+        warningLevel: parseInt(item.ActivityLevel, 10),
+      };
 
-      const existing = warnings.find((w) => w.id === id);
-      if (existing) {
-        if (existing.warningLevel < warningLevel) {
-          existing.warningLevel = warningLevel;
+      const existingRegion = regions.find((r) => r.regionId === regionId);
+      if (existingRegion) {
+        const warningForSameDate = existingRegion.warnings
+          .find((w) => moment(w.validTo).format('YYYY-MM-DD') === moment(warning.validTo).format('YYYY-MM-DD'));
+        if (warningForSameDate) {
+          warningForSameDate.warningLevel = Math.max(warning.warningLevel, warningForSameDate.warningLevel);
+        } else {
+          existingRegion.warnings.push(warning);
         }
       } else {
-        warnings.push({
-          id,
-          geoHazard: geoHazard,
-          warningLevel,
-          groupId: county,
-          groupName: item.CountyList[0].Name,
-          language: LangKey[language],
-          publishTime: this.getDate(item.PublishTime),
-          validFrom: this.getDate(item.ValidFrom),
-          validTo,
-          mainText: item.MainText
+        regions.push({
+          id: `${regionId}_${geoHazard}`,
+          regionId,
+          regionName,
+          geoHazard,
+          warnings: [warning],
         });
       }
     }
-    console.log(`[INFO][WarningService] Result from ${GeoHazard[geoHazard]}:`, warnings.length, warnings);
-    const warningsToSave = await this.filterExistingItems(warnings);
-    console.log(`[INFO][WarningService] New updates for ${GeoHazard[geoHazard]}:`, warningsToSave.length, warningsToSave);
-    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, warningsToSave);
+    console.log(`[INFO][WarningService] Result from ${GeoHazard[geoHazard]}:`, regions);
+    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions);
 
-    await this.dataLoadService.loadingCompleted(dataLoadId, warningsToSave.length,
+    await this.dataLoadService.loadingCompleted(dataLoadId, regions.length,
       dateRange.from.toDate(), new Date());
   }
 
@@ -268,56 +251,34 @@ export class WarningService {
     const dateRange = this.getDefaultDateRange(from, to);
     const dataLoadId = this.getDataLoadId(GeoHazard.Snow);
     await this.dataLoadService.startLoading(dataLoadId);
-    const country = 'no';
     const url = `${this.getBaseUrl(GeoHazard.Snow)}`
       + `/RegionSummary/Simple/${language}`
       + `/${dateRange.from.format('YYYY-MM-DD')}`
       + `/${dateRange.to.format('YYYY-MM-DD')}`;
     const result = await this.httpClient.get<IAvalancheWarningApiResult[]>(url).toPromise();
-    const warnings: IWarning[] = [];
-    for (const avalancheGroup of result) {
-      for (const simpleWarning of avalancheGroup.AvalancheWarningList) {
-        const validTo = this.getDate(simpleWarning.ValidTo);
-        const groupId = simpleWarning.RegionId.toString();
-        const id = this.getId(GeoHazard.Snow, country, groupId, language, validTo);
-        const warningLevel = parseInt(simpleWarning.DangerLevel, 10);
+    const regionResult: IWarningGroup[] = result.map((region) => ({
+      id: `${region.Id}_${GeoHazard.Snow}`,
+      regionId: region.Id.toString(),
+      regionName: region.Name,
+      geoHazard: GeoHazard.Snow,
+      warnings: region.AvalancheWarningList.map((simpleWarning) => ({
+        warningLevel: parseInt(simpleWarning.DangerLevel, 10),
+        publishTime: this.getDate(simpleWarning.PublishTime),
+        validFrom: this.getDate(simpleWarning.ValidFrom),
+        validTo: this.getDate(simpleWarning.ValidTo),
+        mainText: simpleWarning.MainText,
+        language,
+      })),
+    }));
+    console.log(`[INFO][WarningService] New updates for avalanche warnings:`, regionResult);
+    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult);
 
-        const existing = warnings.find((w) => w.id === id);
-        if (existing) {
-          if (existing.warningLevel < warningLevel) {
-            existing.warningLevel = warningLevel;
-          }
-        } else {
-          warnings.push({
-            id,
-            geoHazard: GeoHazard.Snow,
-            warningLevel,
-            groupId,
-            groupName: simpleWarning.RegionName,
-            language: LangKey[language],
-            publishTime: this.getDate(simpleWarning.PublishTime),
-            validFrom: this.getDate(simpleWarning.ValidFrom),
-            validTo,
-            mainText: simpleWarning.MainText
-          });
-        }
-      }
-    }
-    console.log(`[INFO][WarningService] Result from avalanche warnings:`, warnings.length, warnings);
-    const warningsToSave = await this.filterExistingItems(warnings);
-    console.log(`[INFO][WarningService] New updates for avalanche warnings:`, warningsToSave.length, warningsToSave);
-    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, warningsToSave);
-
-    await this.dataLoadService.loadingCompleted(dataLoadId, warningsToSave.length,
+    await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length,
       dateRange.from.toDate(), new Date());
   }
 
   private getDate(dateString: string) {
     return moment.tz(dateString, settings.services.warning.timezone).toDate();
-  }
-
-  private getId(geoHazard: GeoHazard, country: string, region: string, language: LangKey, validTo: Date) {
-    return `${geoHazard}_${country}_${region}_${LangKey[language]}_${moment(validTo).format('YYYYMMDD')}`;
   }
 
   private getBaseUrl(geoHazard: GeoHazard) {
@@ -328,21 +289,5 @@ export class WarningService {
     const fromMoment = from ? moment(from) : moment().subtract(1, 'day');
     const toMoment = to ? moment(to) : moment().endOf('day').add(settings.services.warning.defaultWarningDaysAhead, 'days');
     return { from: fromMoment, to: toMoment };
-  }
-
-  private async filterExistingItems(resultToSave: IWarning[]) {
-    const existingItems = await this.getWarningsById(...(resultToSave || []).map((item) => item.id));
-    return this.filterIfExistingItemsPubDateIsSame(resultToSave, existingItems);
-  }
-
-  private async filterIfExistingItemsPubDateIsSame(resultToSave: IWarning[], existingItems: IWarning[]) {
-    return (resultToSave || []).filter((item) => {
-      const existingItem = (existingItems || []).find((x) => x.id === item.id);
-      if (!existingItem || moment(item.publishTime).isAfter(existingItem.publishTime)) {
-        return true;
-      } else {
-        return false;
-      }
-    });
   }
 }

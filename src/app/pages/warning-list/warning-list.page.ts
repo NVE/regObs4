@@ -1,13 +1,9 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ApplicationRef } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { Events } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import * as moment from 'moment';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
-import { IWarningGroupInMapView } from '../../core/services/warning/warninggroup-in-mapview.interface';
-import { UserSetting } from '../../core/models/user-settings.model';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 
 @Component({
   selector: 'app-warning-list',
@@ -17,20 +13,20 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 export class WarningListPage implements OnInit, OnDestroy {
   selectedTab: 'inMapView' | 'all' | 'favourites';
   warningsForCurrentGeoHazard$: Observable<WarningGroup[]>;
-  warningsInMapView$: Observable<IWarningGroupInMapView>;
+  warningsInMapViewCenter$: Observable<WarningGroup[]>;
+  warningsInMapViewBounds$: Observable<WarningGroup[]>;
   favourites$: Observable<WarningGroup[]>;
-  userSettings$: Observable<UserSetting>;
 
   constructor(
-    private warningService: WarningService,
-    private userSettingService: UserSettingService,
-    private events: Events, private zone: NgZone) {
+    private warningService: WarningService, private app: ApplicationRef) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.warningsInMapViewCenter$ = this.warningService.warningGroupInMapViewObservable$
+      .pipe(map((val) => val.center));
+    this.warningsInMapViewBounds$ = this.warningService.warningGroupInMapViewObservable$
+      .pipe(map((val) => val.viewBounds));
     this.selectedTab = 'inMapView';
-    this.warningsInMapView$ = this.warningService.warningGroupInMapViewObservable$;
-    this.userSettings$ = this.userSettingService.userSettingObservable$;
   }
 
   selectTab(tab: 'inMapView' | 'all' | 'favourites') {
@@ -45,20 +41,10 @@ export class WarningListPage implements OnInit, OnDestroy {
     this.selectedTab = tab;
   }
 
-  getViewBoundItems(warnings: IWarningGroupInMapView, userSettings: UserSetting) {
-    if (userSettings.showMapCenter) {
-      return warnings.viewBounds;
-    } else {
-      return [...warnings.center, ...warnings.viewBounds];
-    }
-  }
-
   getDayName(daysToAdd: number) {
     return `DAYS.SHORT.${moment().add(daysToAdd, 'days').day()}`;
   }
 
   ngOnDestroy(): void {
-    // this.events.unsubscribe(settings.events.tabsChanged);
-    // this.subscription.unsubscribe();
   }
 }
