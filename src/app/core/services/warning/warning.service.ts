@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import * as moment from 'moment';
@@ -7,19 +7,18 @@ import { LangKey } from '../../models/langKey';
 import { nSQL } from 'nano-sql';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
-import { map, share, tap, switchMap, distinctUntilChanged, shareReplay } from 'rxjs/operators';
+import { map, tap, switchMap, shareReplay } from 'rxjs/operators';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
-import { WarningGroupKey } from './warning-group-key.interface';
 import { IWarningApiResult } from './warning-api-result.interface';
 import { IAvalancheWarningApiResult } from './avalanche-warning-api-result.interface';
-import { combineLatest, Observable, Observer } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { IWarningInMapView } from './warning-in-mapview.interface';
 import { IMapViewAndArea } from '../map/map-view-and-area.interface';
 import { MapService } from '../map/map.service';
 import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
-import { ITypedWorker, createWorker } from 'typed-web-workers';
+import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 
 @Injectable({
   providedIn: 'root'
@@ -44,21 +43,43 @@ export class WarningService {
 
   constructor(private httpClient: HttpClient,
     private userSettingService: UserSettingService,
-    private mapService: MapService
+    private mapService: MapService,
+    private dataLoadService: DataLoadService,
   ) {
     this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
     this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();
     this._warningGroupInMapViewObservable = this.getWarningsForCurrentMapViewAsObservable();
   }
 
+  private getDataLoadId(geoHazard: GeoHazard) {
+    return `${NanoSql.TABLES.WARNING.name}_${geoHazard}`;
+  }
+
   async updateWarnings() {
-    console.log('[INFO] Updating warnings by priority');
-    await this.updateFloodAndLandslideWarnings(GeoHazard.Dirt, LangKey.no);
-    await this.updateFloodAndLandslideWarnings(GeoHazard.Water, LangKey.no);
-    await this.updateAvalancheWarnings(LangKey.no);
+    console.log('[INFO][WarningService] Updating warnings by priority');
+    const userSettings = await this.userSettingService.getUserSettings();
+    for (const geoHazard of this.getPriority(userSettings.currentGeoHazard)) {
+      await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard);
+    }
     await this.cleanupOldItems();
-    // await this.updateLandslideWarnings(LangKey.en); Not using any texts, so no need for english version yet
-    // TODO: Implement update priority
+  }
+
+  private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard) {
+    const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(geoHazard));
+    const lastUpdateLimit = moment().subtract(1, 'hour');
+    if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
+      await this.updateWarningsForGeoHazard(geoHazard);
+    } else {
+      console.log(`[INFO][WarningService] No need to update ${geoHazard}. Last updated is:`, dataLoad.lastUpdated);
+    }
+  }
+
+  private updateWarningsForGeoHazard(geoHazard: GeoHazard) {
+    if (geoHazard === GeoHazard.Snow) {
+      return this.updateAvalancheWarnings(LangKey.no);
+    } else {
+      return this.updateFloodAndLandslideWarnings(geoHazard, LangKey.no);
+    }
   }
 
   addToFavourite(groupId: string, geoHazard: GeoHazard) {
@@ -73,20 +94,15 @@ export class WarningService {
       .where((g) => g.id === id).exec();
   }
 
-  private getUpdatePriority() {
-    const now = moment();
-    if (settings.services.warning.summerMonths.indexOf(now.month()) >= 0) {
-      return [
-        GeoHazard.Water,
-        GeoHazard.Dirt,
-        GeoHazard.Snow,
-      ];
-    } else {
-      return [
-        GeoHazard.Snow,
-        GeoHazard.Water,
-        GeoHazard.Dirt,
-      ];
+  private getPriority(currentGeoHazard: GeoHazard) {
+    if (currentGeoHazard === GeoHazard.Snow) {
+      return [GeoHazard.Snow, GeoHazard.Water, GeoHazard.Dirt];
+    } else if (currentGeoHazard === GeoHazard.Ice) {
+      return [GeoHazard.Snow, GeoHazard.Water, GeoHazard.Dirt];
+    } else if (currentGeoHazard === GeoHazard.Water) {
+      return [GeoHazard.Water, GeoHazard.Dirt, GeoHazard.Snow];
+    } else if (currentGeoHazard === GeoHazard.Dirt) {
+      return [GeoHazard.Dirt, GeoHazard.Water, GeoHazard.Snow];
     }
   }
 
@@ -98,7 +114,7 @@ export class WarningService {
   private getWarningsAsObservable() {
     return nSQL().observable<IWarning[]>(() => {
       return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
-    }).debounce(200).toRxJS().pipe(switchMap((warnings) => this.getWarningGroupAsObservabe(warnings)));
+    }).debounce(1000).toRxJS();
   }
 
   private getFavouritesAsObservable() {
@@ -107,70 +123,40 @@ export class WarningService {
     }).toRxJS();
   }
 
-  private getWarningsAndFavouritesAsObservable() {
-    return combineLatest(this.getWarningsAsObservable(), this.getFavouritesAsObservable())
-      .pipe(map(([warningGroup, favourites]) => {
-        return warningGroup.map((wg) => {
-          wg.isFavourite = !!(favourites.find((x) =>
-            x.groupId === wg.group.groupId &&
-            x.geoHazard === wg.group.geoHazard));
-          return wg;
-        });
-      }));
-  }
-
-  private groupWarnings(input: IWarning[], callback: (_: { group: WarningGroupKey, warnings: IWarning[] }[]) => void) {
-    const getGroupKey = function (warning: IWarning): string {
-      return JSON.stringify({
-        language: warning.language,
-        groupId: warning.groupId,
-        groupName: warning.groupName,
-        geoHazard: warning.geoHazard
-      });
-    };
-    const groupMap = input.reduce((pv, cv) => {
-      const key = getGroupKey(cv);
-      const item = pv.get(key) || [];
-      item.push(cv);
-      return pv.set(key, item);
-    }, new Map<string, IWarning[]>());
-    const groupArray = Array.from(groupMap.keys()).map((k) => {
-      const group: WarningGroupKey = JSON.parse(k);
-      return { group, warnings: groupMap.get(k) };
-    }).sort((a, b) => {
-      if (a.group.groupName < b.group.groupName) {
-        return -1;
-      }
-      if (a.group.groupName > b.group.groupName) {
-        return 1;
-      }
-      // names must be equal, sort by geohazard
-      return a.group.geoHazard - b.group.geoHazard;
-    });
-    callback(groupArray);
-    (<any>self).close(); // cleanup
-  }
-
-  private getWarningGroupAsObservabe(warnings: IWarning[]): Observable<WarningGroup[]> {
-    return Observable.create((observer: Observer<WarningGroup[]>) => {
-      const typedWorker = createWorker(this.groupWarnings, (msg) => {
-        observer.next(msg.map((m) => new WarningGroup(m.group, m.warnings)));
-        observer.complete();
-      });
-      typedWorker.postMessage(warnings);
-      return () => typedWorker ? typedWorker.terminate() : null; // Tear down logic when unsubscribed (from switchMap)
-    });
+  private getWarningRegions(): { id: string, name: string, geoHazard: GeoHazard }[] {
+    const snowRegions = require('../../../../assets/varslingsomraader.json').features
+      .map((f) => ({ id: f.properties['OMRAADEID'].toString(), name: f.properties['OMRAADENAV'], geoHazard: GeoHazard.Snow }));
+    const dirtAndWaterRegions = require('../../../../assets/regions.json')
+      .map((r) => ({ id: r.Id, name: r.Name }));
+    return [
+      ...snowRegions,
+      ...dirtAndWaterRegions.map((x) => ({ ...x, geoHazard: GeoHazard.Dirt })),
+      ...dirtAndWaterRegions.map((x) => ({ ...x, geoHazard: GeoHazard.Water })),
+    ];
   }
 
   private getWarningsForCurrentLanguageAsObservable() {
-    return combineLatest(this.userSettingService.userSettingObservable$,
-      this.getWarningsAndFavouritesAsObservable())
-      .pipe(
-        map(([userSetting, warningGroups]) => {
-          return warningGroups.filter((w) => w.group.language === LangKey[userSetting.language]);
-        }),
-        shareReplay(1)
-      );
+    return combineLatest(
+      of(this.getWarningRegions()),
+      this.getWarningsAsObservable(),
+      this.getFavouritesAsObservable()).pipe(map(([regions, warnings, favourites]) => {
+        return regions.map((region) => {
+          const warningGroup = new WarningGroup(
+            { geoHazard: region.geoHazard, groupId: region.id, groupName: region.name, language: 'no' },
+            warnings.filter((w) => w.groupId === region.id && w.geoHazard === region.geoHazard));
+          warningGroup.isFavourite = !!favourites.find((x) => x.groupId === region.id && x.geoHazard === region.geoHazard);
+          return warningGroup;
+        }).sort((a, b) => {
+          if (a.group.groupName < b.group.groupName) {
+            return -1;
+          }
+          if (a.group.groupName > b.group.groupName) {
+            return 1;
+          }
+          // names must be equal, sort by geohazard
+          return a.group.geoHazard - b.group.geoHazard;
+        });
+      }), shareReplay(1));
   }
 
   private getGeoHazardFilter(currentGeoHazard: GeoHazard) {
@@ -232,6 +218,8 @@ export class WarningService {
   private async updateFloodAndLandslideWarnings(geoHazard: GeoHazard, language: LangKey, from?: Date, to?: Date) {
     console.log(`[INFO][WarningService] Updating ${GeoHazard[geoHazard]} warnings`);
     const dateRange = this.getDefaultDateRange(from, to);
+    const dataLoadId = this.getDataLoadId(geoHazard);
+    await this.dataLoadService.startLoading(dataLoadId);
     const country = 'no';
     const url = `${this.getBaseUrl(geoHazard)}`
       + `/Warning/All/${language}`
@@ -269,11 +257,16 @@ export class WarningService {
     const warningsToSave = await this.filterExistingItems(warnings);
     console.log(`[INFO][WarningService] New updates for ${GeoHazard[geoHazard]}:`, warningsToSave.length, warningsToSave);
     await nSQL().loadJS(NanoSql.TABLES.WARNING.name, warningsToSave);
+
+    await this.dataLoadService.loadingCompleted(dataLoadId, warningsToSave.length,
+      dateRange.from.toDate(), new Date());
   }
 
   private async updateAvalancheWarnings(language: LangKey, from?: Date, to?: Date) {
     console.log(`[INFO][WarningService] Updating avalanche warnings`);
     const dateRange = this.getDefaultDateRange(from, to);
+    const dataLoadId = this.getDataLoadId(GeoHazard.Snow);
+    await this.dataLoadService.startLoading(dataLoadId);
     const country = 'no';
     const url = `${this.getBaseUrl(GeoHazard.Snow)}`
       + `/RegionSummary/Simple/${language}`
@@ -313,6 +306,9 @@ export class WarningService {
     const warningsToSave = await this.filterExistingItems(warnings);
     console.log(`[INFO][WarningService] New updates for avalanche warnings:`, warningsToSave.length, warningsToSave);
     await nSQL().loadJS(NanoSql.TABLES.WARNING.name, warningsToSave);
+
+    await this.dataLoadService.loadingCompleted(dataLoadId, warningsToSave.length,
+      dateRange.from.toDate(), new Date());
   }
 
   private getDate(dateString: string) {

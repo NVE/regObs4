@@ -174,7 +174,7 @@ export class ObservationService {
     items: RegObsObservation[]) {
     return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('delete')
       .where((reg: RegObsObservation) => {
-        return reg.GeoHazardTid === geoHazard
+        return reg && reg.GeoHazardTid === geoHazard
           && moment(reg.DtObsTime).isSameOrAfter(fromDate)
           && !items.find((item) => item.RegId === reg.RegId)
           && this.exludeLoggedInUser(user, reg);
@@ -186,7 +186,7 @@ export class ObservationService {
     const deleteOldRecordsFrom = moment().subtract(daysBack + 1, 'days');
     return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('delete')
       .where((reg: RegObsObservation) => {
-        return moment(reg.DtObsTime).isBefore(deleteOldRecordsFrom)
+        return reg && moment(reg.DtObsTime).isBefore(deleteOldRecordsFrom)
           && reg.GeoHazardTid === geoHazard
           && this.exludeLoggedInUser(user, reg);
       }).exec();
@@ -217,7 +217,7 @@ export class ObservationService {
     user?: string): Rx.Observable<RegObsObservation[]> {
     return nSQL().observable<RegObsObservation[]>(() => {
       return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('select').where((reg: RegObsObservation) => {
-        return (geoHazard ? reg.GeoHazardTid === geoHazard : true)
+        return reg && (geoHazard ? reg.GeoHazardTid === geoHazard : true)
           && reg.LangKey === langKey
           && (fromDate ? moment(reg.DtObsTime).isAfter(fromDate) : true)
           && (user ? reg.NickName === user : true);

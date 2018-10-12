@@ -37,30 +37,22 @@ export class AppComponent {
   initializeApp() {
     this.translate.addLangs(['no', 'en']);
     this.translate.setDefaultLang('no');
-    this.platform.ready().then(async () => {
-      try {
-        this.initDeepLinks();
-        await this.initNanoSqlDatabase();
-        const userSettings = await this.userSettings.getUserSettings();
+    this.platform.ready()
+      .then(() => this.initDeepLinks())
+      .then(() => this.initNanoSqlDatabase())
+      .then(() => this.userSettings.getUserSettings())
+      .then((userSettings) => {
         this.translate.use(LangKey[userSettings.language]);
-        // TODO: Subscribe to user settings observable instead
-
         this.statusBar.styleBlackTranslucent();
         this.statusBar.overlaysWebView(this.platform.is('ios'));
         if (!userSettings.completedStartWizard) {
-          await this.navController.navigateRoot('start-wizard', false);
+          return this.navController.navigateRoot('start-wizard', false);
+        } else {
+          return Promise.resolve(true);
         }
-
-        this.splashScreen.hide();
-        this.initBackroundUpdates();
-      } catch (err) {
-        // TODO: Log error
-        console.log(err);
-      }
-    }).catch((err) => {
-      // TODO: Log error
-      console.log(err);
-    });
+      })
+      .then(() => Promise.resolve(this.splashScreen.hide()))
+      .then(() => this.initBackroundUpdates());
   }
 
   initDeepLinks() {
