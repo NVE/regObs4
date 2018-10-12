@@ -112,9 +112,10 @@ export class WarningService {
   }
 
   private getWarningsAsObservable() {
-    return nSQL().observable<IWarning[]>(() => {
-      return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
-    }).debounce(1000).toRxJS();
+    // return nSQL().observable<IWarning[]>(() => {
+    //   return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
+    // }).debounce(1000).toRxJS();
+    return of([]);
   }
 
   private getFavouritesAsObservable() {

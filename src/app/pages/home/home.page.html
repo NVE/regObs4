@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [ngClass]="{'map-item-bar-open': mapItemBarVisible, 'map-center-info-open': showMapCenter }">
+<ion-content no-bounce [ngClass]="{'map-item-bar-open': mapItemBarVisible, 'map-center-info-open': showMapCenter }">
   <div style="width: 100%; height: 100%" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)"
     (onShown)="redrawMap()">
   </div>
