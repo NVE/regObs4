@@ -21,8 +21,8 @@
     <ion-item>
       <ion-label position="floating">{{ "SETTINGS.LANGUAGE" | translate }}</ion-label>
       <ion-select [(ngModel)]="userSettings.language" (ngModelChange)="updateSettings()">
-        <ion-select-option value="no">Norsk</ion-select-option>
-        <ion-select-option value="en">Engelsk</ion-select-option>
+        <ion-select-option [value]="LangKey.no">{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN' | translate}}</ion-select-option>
+        <ion-select-option [value]="LangKey.en">{{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH' | translate}}</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item (click)="reset()">

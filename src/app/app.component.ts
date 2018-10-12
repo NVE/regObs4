@@ -35,7 +35,7 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.translate.addLangs(['no']);
+    this.translate.addLangs(['no', 'en']);
     this.translate.setDefaultLang('no');
     this.platform.ready().then(async () => {
       try {
@@ -77,7 +77,6 @@ export class AppComponent {
 
   async updateResources() {
     await this.observationService.updateObservations();
-    // await this.warningService.updateAvalancheWarnings();
     await this.warningService.updateWarnings();
   }
 

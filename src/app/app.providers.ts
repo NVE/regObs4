@@ -22,6 +22,7 @@ import { MapService } from './core/services/map/map.service';
 import { WarningService } from './core/services/warning/warning.service';
 import { ErrorHandler } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
+import { LoginService } from './core/services/login/login.service';
 
 export class AppProviders {
     public static getProviders() {
@@ -49,6 +50,7 @@ export class AppProviders {
             UserSettingService,
             MapService,
             WarningService,
+            LoginService,
         ];
     }
 

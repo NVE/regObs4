@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit, OnDestroy } from '@angular/core';
 import { settings } from '../../../../settings';
 import { RegObsObservation } from '../../models/regobs-observation.model';
 import { nSQL } from 'nano-sql';
 import { ApiService } from '../api/api.service';
-import { HelperService } from '../helpers/helper.service';
 import { RowCount } from '../../models/row-count.model';
 import { Observable } from 'rxjs';
 import { GeoHazard } from '../../models/geo-hazard.enum';
@@ -18,6 +17,7 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { AppMode } from '../../models/app-mode.enum';
 import { UserSetting } from '../../models/user-settings.model';
+import { LangKey } from '../../models/langKey';
 
 @Injectable({
   providedIn: 'root'
@@ -32,12 +32,14 @@ export class ObservationService {
 
   constructor(
     private apiService: ApiService,
-    private helperService: HelperService,
     private loginService: LoginService,
     private userSettingService: UserSettingService,
     private dataLoadService: DataLoadService,
   ) {
     this._observationsObservable = this.getObservationsAsObservable();
+    this.userSettingService.userSettingObservable$.subscribe((val) => {
+      this.updateObservations(); // Do observation update check when user settings change
+    }); // No need to unsubscribe this observable when the service is singleton. It get destroyed when app exits.
   }
 
   private exludeLoggedInUser(user: LoggedInUser, reg: RegObsObservation) {
@@ -48,7 +50,7 @@ export class ObservationService {
     const user = await this.loginService.getLoggedInUser();
     const userSettings = await this.userSettingService.getUserSettings();
     for (const geoHazard of this.getPriority(userSettings.currentGeoHazard)) {
-      await this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.appMode, userSettings.currentGeoHazard, user);
+      await this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.appMode, geoHazard, user, userSettings.language);
     }
     // TODO: Update my observations if user is logged in
   }
@@ -76,15 +78,14 @@ export class ObservationService {
     return geoHazards.map((val) => this.getDataLoadId(appMode, val));
   }
 
-  private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, geoHazard: GeoHazard, user: LoggedInUser) {
+  private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, geoHazard: GeoHazard, user: LoggedInUser, language: LangKey) {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(appMode, geoHazard));
     const lastUpdateLimit = moment().subtract(10, 'minutes');
-    const daysBack = await this.getDaysBackToFetchForGeoHazard(geoHazard);
-    const fromDate = moment().subtract(daysBack, 'days').startOf('day');
+    const fromDate = await this.getDaysBackToFetchAsDate(geoHazard);
     if (!dataLoad.lastUpdated
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
       || moment(dataLoad.itemsFromDate).isAfter(fromDate)) {
-      await this.updateObservationsForGeoHazard(appMode, geoHazard, user);
+      await this.updateObservationsForGeoHazard(appMode, geoHazard, user, language);
     } else {
       console.log(`[INFO][ObervationService] No need to update ${geoHazard}. Last updated is:`, dataLoad.lastUpdated);
     }
@@ -100,7 +101,11 @@ export class ObservationService {
   async updateObservationsForCurrentGeoHazard() {
     const userSettings = await this.userSettingService.getUserSettings();
     const loggedInUser = await this.loginService.getLoggedInUser();
-    return this.updateObservationsForGeoHazard(userSettings.appMode, userSettings.currentGeoHazard, loggedInUser);
+    return this.updateObservationsForGeoHazard(
+      userSettings.appMode,
+      userSettings.currentGeoHazard,
+      loggedInUser,
+      userSettings.language);
   }
 
   private async getDaysBackToFetchAsDate(geoHazard: GeoHazard) {
@@ -109,7 +114,7 @@ export class ObservationService {
     return fromDate.toDate();
   }
 
-  private async updateObservationsForGeoHazard(appMode: AppMode, geoHazard: GeoHazard, user: LoggedInUser) {
+  private async updateObservationsForGeoHazard(appMode: AppMode, geoHazard: GeoHazard, user: LoggedInUser, langKey: LangKey) {
     console.log(`[INFO][ObervationService] Updating observations for geoHazard: ${geoHazard}`);
     const dataLoadId = this.getDataLoadId(appMode, geoHazard);
     await this.dataLoadService.startLoading(dataLoadId);
@@ -120,17 +125,18 @@ export class ObservationService {
       FromDate: fromDate,
       SelectedGeoHazards: [geoHazard],
       NumberOfRecords: settings.observations.maxObservationsToFetch,
+      LangKey: langKey,
     });
     console.log(`[INFO] Got ${searchResult.Results.length} new observations for geoHazard  ${geoHazard}`);
-    const resultsWithAppMode = searchResult.Results.map((item) => ({ ...item, appMode }));
-    await nSQL(NanoSql.TABLES.REGISTRATION.name).loadJS(NanoSql.TABLES.REGISTRATION.name, resultsWithAppMode);
+    const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.REGISTRATION.name, appMode);
+    await NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).loadJS(instanceName, searchResult.Results);
 
     // Deleting items no longer in updated result
-    await this.deleteObservationNoLongerInResult(appMode, user, fromDate, resultsWithAppMode);
+    await this.deleteObservationNoLongerInResult(appMode, geoHazard, user, fromDate, searchResult.Results);
     // Delete old items
     await this.deleteOldObservations(appMode, geoHazard, user);
 
-    await this.dataLoadService.loadingCompleted(dataLoadId, resultsWithAppMode.length,
+    await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.Results.length,
       fromDate, new Date());
   }
 
@@ -138,7 +144,9 @@ export class ObservationService {
     const userSettings = await this.userSettingService.getUserSettings();
     if (userSettings.currentGeoHazard === geoHazard) {
       // Returning max days back for current geoHazard
-      return Math.max(settings.observations.daysBack[GeoHazard[geoHazard]]);
+      const geoHazardString = GeoHazard[geoHazard];
+      const daysBackForCurrentGeoHazard: number[] = settings.observations.daysBack[geoHazardString];
+      return Math.max(...daysBackForCurrentGeoHazard);
     } else {
       // Returning default days back for other geoHazards
       return this.getObservationsDaysBack(userSettings);
@@ -158,12 +166,17 @@ export class ObservationService {
     return fromDate.toDate();
   }
 
-  private deleteObservationNoLongerInResult(appMode: AppMode, user: LoggedInUser, fromDate: Date, items: RegObsObservation[]) {
-    return nSQL(NanoSql.TABLES.REGISTRATION.name).query('delete')
+  private deleteObservationNoLongerInResult(
+    appMode: AppMode,
+    geoHazard: GeoHazard,
+    user: LoggedInUser,
+    fromDate: Date,
+    items: RegObsObservation[]) {
+    return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('delete')
       .where((reg: RegObsObservation) => {
-        return moment(reg.DtObsTime).isSameOrAfter(fromDate)
+        return reg.GeoHazardTid === geoHazard
+          && moment(reg.DtObsTime).isSameOrAfter(fromDate)
           && !items.find((item) => item.RegId === reg.RegId)
-          && reg.AppMode === appMode
           && this.exludeLoggedInUser(user, reg);
       }).exec();
   }
@@ -171,11 +184,10 @@ export class ObservationService {
   private async deleteOldObservations(appMode: AppMode, geoHazard: GeoHazard, user: LoggedInUser) {
     const daysBack = await this.getDaysBackToFetchForGeoHazard(geoHazard);
     const deleteOldRecordsFrom = moment().subtract(daysBack + 1, 'days');
-    return nSQL(NanoSql.TABLES.REGISTRATION.name).query('delete')
+    return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('delete')
       .where((reg: RegObsObservation) => {
         return moment(reg.DtObsTime).isBefore(deleteOldRecordsFrom)
           && reg.GeoHazardTid === geoHazard
-          && reg.AppMode === appMode
           && this.exludeLoggedInUser(user, reg);
       }).exec();
   }
@@ -184,6 +196,7 @@ export class ObservationService {
     return this.userSettingService.userSettingObservable$.pipe(switchMap((userSetting) =>
       Rx.combineLatest(this.getObservationsByParametersAsObservable(
         userSetting.appMode,
+        userSetting.language,
         userSetting.currentGeoHazard,
         this.getObservationDaysBackAsDate(userSetting),
       ))), map(([obs]) => obs), shareReplay(1));
@@ -198,22 +211,23 @@ export class ObservationService {
    */
   getObservationsByParametersAsObservable(
     appMode: AppMode,
+    langKey: LangKey,
     geoHazard?: GeoHazard,
     fromDate?: Date,
     user?: string): Rx.Observable<RegObsObservation[]> {
     return nSQL().observable<RegObsObservation[]>(() => {
-      return nSQL(NanoSql.TABLES.REGISTRATION.name).query('select').where((reg: RegObsObservation) => {
-        return reg.AppMode === appMode
-          && (geoHazard ? reg.GeoHazardTid === geoHazard : true)
+      return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('select').where((reg: RegObsObservation) => {
+        return (geoHazard ? reg.GeoHazardTid === geoHazard : true)
+          && reg.LangKey === langKey
           && (fromDate ? moment(reg.DtObsTime).isAfter(fromDate) : true)
           && (user ? reg.NickName === user : true);
       }).emit();
     }).toRxJS().pipe(debounceTime(500));
   }
 
-  getObserableCount(): Observable<number> {
+  getObserableCount(appMode: AppMode): Observable<number> {
     return nSQL().observable<number>(() => {
-      return nSQL(NanoSql.TABLES.REGISTRATION.name).query('select', ['COUNT(*) as count']).emit();
+      return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('select', ['COUNT(*) as count']).emit();
     }).debounce(100).toRxJS().pipe(map((val: RowCount[]) => val[0].count), distinctUntilChanged());
   }
 }

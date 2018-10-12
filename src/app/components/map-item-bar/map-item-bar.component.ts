@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { MapItem } from '../../core/models/map-item.model';
 import * as moment from 'moment';
@@ -31,11 +31,14 @@ export class MapItemBarComponent implements OnInit {
     return this._isVisible.asObservable();
   }
 
+  // TODO: Rewrite this component to use observable. Maybe put visibleMapItem observable in map service?
+
   constructor(
     private geolocation: Geolocation,
     private helper: HelperService,
     private translateService: TranslateService,
-    private router: Router
+    private router: Router,
+    private zone: NgZone,
   ) {
     this.visible = false;
     this._isVisible = new Subject();
@@ -51,19 +54,23 @@ export class MapItemBarComponent implements OnInit {
   }
 
   show(item: MapItem) {
-    this.id = item.RegId;
-    this.topHeader = moment(item.DtObsTime).format('d/M HH:mm');
-    this.title = this.getTitle(item);
-    this.name = item.NickName;
-    this.setDistanceAndType(item);
-    this.visible = true;
-    this.publishChange();
-    this.geoHazard = item.GeoHazardTid;
+    this.zone.run(() => {
+      this.id = item.RegId;
+      this.topHeader = moment(item.DtObsTime).format('d/M HH:mm');
+      this.title = this.getTitle(item);
+      this.name = item.NickName;
+      this.geoHazard = item.GeoHazardTid;
+      this.setDistanceAndType(item);
+      this.visible = true;
+      this.publishChange();
+    });
   }
 
   hide() {
-    this.visible = false;
-    this.publishChange();
+    this.zone.run(() => {
+      this.visible = false;
+      this.publishChange();
+    });
   }
 
   navigateToItem() {
@@ -86,10 +93,14 @@ export class MapItemBarComponent implements OnInit {
         });
       const distance = L.latLng(item.Latitude, item.Longitude)
         .distanceTo(L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude));
-      this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()} `
-        + `${this.helper.getDistanceText(distance)} ${translations['MAP_ITEM_BAR.AWAY'].toLowerCase()}`;
+      this.zone.run(() => {
+        this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()} `
+          + `${this.helper.getDistanceText(distance)} ${translations['MAP_ITEM_BAR.AWAY'].toLowerCase()}`;
+      });
     } catch {
-      this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
+      this.zone.run(() => {
+        this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
+      });
     }
   }
 }

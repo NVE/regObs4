@@ -2,7 +2,6 @@ import { Observation } from './observation.model';
 import { AppMode } from './app-mode.enum';
 
 export interface RegObsObservation {
-  AppMode: AppMode; // This is added as extra field when saving
   CompetenceLevelName: string;
   CompetenceLevelTid: number;
   DtChangeTime: string;

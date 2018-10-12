@@ -6,6 +6,7 @@ import { OfflineMapService } from '../../core/services/offline-map/offline-map.s
 import { WarningService } from '../../core/services/warning/warning.service';
 import { NanoSql } from '../../../nanosql';
 import { NavController } from '@ionic/angular';
+import { LangKey } from '../../core/models/langKey';
 
 @Component({
   selector: 'app-user-settings',
@@ -15,6 +16,7 @@ import { NavController } from '@ionic/angular';
 export class UserSettingsPage implements OnInit {
 
   userSettings: UserSetting;
+  LangKey = LangKey;
 
   constructor(
     private userSettingService: UserSettingService,

@@ -38,7 +38,7 @@ export class LoginPage implements OnInit {
       username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
     });
-    this.$loggedInUser = this.loginService.getLoggedUserInAsObservable().pipe(tap((val) => {
+    this.$loggedInUser = this.loginService.loggedInUser$.pipe(tap((val) => {
       setTimeout(() => {
         if (!this.loginFormUsername && !val.isLoggedIn && val.email) {
           this.loginFormUsername = val.email; // Setting email to last logged in email for easy login

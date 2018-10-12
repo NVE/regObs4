@@ -55,7 +55,6 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
     if (existingValue.daysBack !== select.value) {
       existingValue.daysBack = select.value;
       await this.userSettingService.saveUserSettings(userSetting);
-      this.observationService.updateObservations(); // Checks if updates is needed for new settings
     }
   }
 

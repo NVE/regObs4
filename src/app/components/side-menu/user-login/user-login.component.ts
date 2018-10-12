@@ -15,7 +15,7 @@ export class UserLoginComponent implements OnInit {
   constructor(private loginService: LoginService) { }
 
   ngOnInit() {
-    this.$loggedInUser = this.loginService.getLoggedUserInAsObservable();
+    this.$loggedInUser = this.loginService.loggedInUser$;
   }
 
 }

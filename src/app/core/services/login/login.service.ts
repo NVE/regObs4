@@ -2,19 +2,26 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { LoggedInUser } from './logged-in-user.model';
 import { User } from '../../models/user.model';
 import { NanoSql } from '../../../../nanosql';
-import { map, take } from 'rxjs/operators';
+import { map, take, switchMap, shareReplay } from 'rxjs/operators';
 import { nSQL } from 'nano-sql';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { AppMode } from '../../models/app-mode.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
+
+  private _loggedInUserObservable: Observable<LoggedInUser>;
+
+  get loggedInUser$() {
+    return this._loggedInUserObservable;
+  }
 
   constructor(
     private httpClient: HttpClient,
@@ -22,7 +29,9 @@ export class LoginService {
     private alertController: AlertController,
     private translateService: TranslateService,
   ) {
-
+    this._loggedInUserObservable = this.userSettingService.userSettingObservable$.pipe(switchMap((userSetting) =>
+      combineLatest(this.getLoggedUserInAsObservable(userSetting.appMode))
+    ), map(([loggedInUser]) => loggedInUser), shareReplay(1));
   }
 
   async login(email: string, password: string) {
@@ -33,15 +42,16 @@ export class LoginService {
     });
     try {
       const result = await this.httpClient.post<User>(`${baseUrl}/Account/Login`, {}, { headers }).toPromise();
-      await this.saveLoggedInUserToDb(email, true, result);
+      await this.saveLoggedInUserToDb(userSettings.appMode, email, true, result);
     } catch (err) {
       await this.showErrorMessage(err.status, err.message);
     }
   }
 
   async logout() {
+    const userSettings = await this.userSettingService.getUserSettings();
     const existingUser = await this.getLoggedInUser();
-    return nSQL(NanoSql.TABLES.USER.name).query('upsert',
+    return NanoSql.getInstance(NanoSql.TABLES.USER.name, userSettings.appMode).query('upsert',
       {
         ...existingUser, // Keep email saved for easy autocomplete and error messages
         isLoggedIn: false,
@@ -62,8 +72,8 @@ export class LoginService {
     await alert.present();
   }
 
-  private saveLoggedInUserToDb(email: string, isLoggedIn: boolean, user: User) {
-    return nSQL(NanoSql.TABLES.USER.name).query('upsert',
+  private saveLoggedInUserToDb(appMode: AppMode, email: string, isLoggedIn: boolean, user: User) {
+    return NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('upsert',
       {
         id: 'user',
         email,
@@ -73,12 +83,12 @@ export class LoginService {
   }
 
   async getLoggedInUser(): Promise<LoggedInUser> {
-    return this.getLoggedUserInAsObservable().pipe(take(1)).toPromise();
+    return this._loggedInUserObservable.pipe(take(1)).toPromise();
   }
 
-  getLoggedUserInAsObservable(): Observable<LoggedInUser> {
+  getLoggedUserInAsObservable(appMode: AppMode): Observable<LoggedInUser> {
     return nSQL().observable<LoggedInUser>(() => {
-      return nSQL(NanoSql.TABLES.USER.name).query('select').emit();
+      return NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('select').emit();
     }).toRxJS().pipe(
       map((val: LoggedInUser[]) => val[0] || { isLoggedIn: false })
     );
