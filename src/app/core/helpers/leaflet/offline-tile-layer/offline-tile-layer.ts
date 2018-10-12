@@ -124,8 +124,8 @@ export class OfflineTileLayer extends L.TileLayer {
         // Generate new src path.
         this.getTileUrl(currentCoords).then((newUrl) => {
             // tslint:disable-next-line:max-line-length
-            console.log('Fallback to next zoom level: ' + fallbackZoom + ' for zoom: ' + originalCoords.z + ' original: ' + JSON.stringify(originalCoords) + ' new coords: ' + JSON.stringify(currentCoords));
-            console.log('New url: ' + newUrl);
+            // console.log('Fallback to next zoom level: ' + fallbackZoom + ' for zoom: ' + originalCoords.z + ' original: ' + JSON.stringify(originalCoords) + ' new coords: ' + JSON.stringify(currentCoords));
+            // console.log('New url: ' + newUrl);
             // Zoom replacement img.
             style.width = (tileSize.x * scale) + 'px';
             style.height = (tileSize.y * scale) + 'px';
