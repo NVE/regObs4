@@ -55,7 +55,7 @@ ion-fab {
     }
 
     &.in-header {
-        top: 7px;
+        top: calc(7px + var(--ion-safe-area-top,0px));
 
         .toggle-button {
             height: 32px;
