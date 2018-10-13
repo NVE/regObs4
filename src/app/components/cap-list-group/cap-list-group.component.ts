@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, NgZone, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import * as moment from 'moment';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { ToastController, ItemSliding, ItemOption, ItemOptions } from '@ionic/angular';
+import { ToastController, ItemSliding } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
@@ -17,7 +17,6 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
 
   warnings: WarningGroup[];
   subscription: Subscription;
-
   animate: WarningGroup;
 
   constructor(private warningService: WarningService, private zone: NgZone,

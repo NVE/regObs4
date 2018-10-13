@@ -11,6 +11,7 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { NanoSql } from '../nanosql';
 import { LangKey } from './core/models/langKey';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,7 @@ export class AppComponent {
     private events: Events,
     private deeplinks: Deeplinks,
     private backgroundFetch: BackgroundFetch,
+    private router: Router,
   ) {
     this.initializeApp();
   }
@@ -46,13 +48,18 @@ export class AppComponent {
         this.statusBar.styleBlackTranslucent();
         this.statusBar.overlaysWebView(this.platform.is('ios'));
         if (!userSettings.completedStartWizard) {
-          return this.navController.navigateRoot('start-wizard', false);
+          return this.router.navigateByUrl('start-wizard');
+          // return this.navController.navigateRoot('start-wizard', false);
         } else {
           return Promise.resolve(true);
         }
       })
-      .then(() => Promise.resolve(this.splashScreen.hide()))
-      .then(() => this.initBackroundUpdates());
+      .then(() => {
+        this.initBackroundUpdates();
+        setTimeout(() => {
+          this.splashScreen.hide();
+        }, 500); // Wait a bit to get the navigation and background sync more completed
+      });
   }
 
   initDeepLinks() {
@@ -77,7 +84,7 @@ export class AppComponent {
     this.events.publish('nanoSql: connected');
   }
 
-  async initBackroundUpdates() {
+  initBackroundUpdates() {
     const config = {
       minimumFetchInterval: 15, // <-- default is 15
       stopOnTerminate: false,    // <-- Android only
@@ -101,6 +108,6 @@ export class AppComponent {
         }
       });
 
-    await this.updateResources(); // Update resources on startup
+    this.updateResources(); // Update resources on startup
   }
 }
