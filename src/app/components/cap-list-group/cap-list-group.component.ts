@@ -1,19 +1,22 @@
-import { Component, OnInit, Input, NgZone, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import * as moment from 'moment';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { ToastController, ItemSliding, ItemOption, ItemOptions } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cap-list-group',
   templateUrl: './cap-list-group.component.html',
   styleUrls: ['./cap-list-group.component.scss'],
 })
-export class CapListGroupComponent implements OnInit {
+export class CapListGroupComponent implements OnInit, OnDestroy {
 
   @Input() title: string;
   @Input() warnings$: Observable<WarningGroup[]>;
+
+  warnings: WarningGroup[];
+  subscription: Subscription;
 
   animate: WarningGroup;
 
@@ -22,6 +25,15 @@ export class CapListGroupComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.subscription = this.warnings$.subscribe((val) => {
+      this.zone.run(() => {
+        this.warnings = val;
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   trackWarningGroup(index: number, group: WarningGroup) {
