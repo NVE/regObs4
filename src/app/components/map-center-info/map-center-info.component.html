@@ -3,11 +3,18 @@
   <div *ngIf="userSettings.showMapCenter" class="map-center-info" (click)="copyToClipboard()" text-nowrap>
     <ion-grid no-margin class="text-truncate">
       <ng-container *ngIf="viewInfo$ | async as v">
+        <ng-container *ngIf="!isLoading">
+          <ion-row no-margin>
+            <span *ngIf="v.location.name !== v.location.adminName">{{ v.location.name }},&nbsp;</span>{{v.location.adminName}}
+          </ion-row>
+          <ion-row no-margin>
+            {{ v.elevation }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL'|translate}}.
+          </ion-row>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="isLoading">
         <ion-row no-margin>
-          <span *ngIf="v.location.name !== v.location.adminName">{{ v.location.name }},&nbsp;</span>{{v.location.adminName}}
-        </ion-row>
-        <ion-row no-margin>
-          {{ v.elevation }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL'|translate}}.
+          <ion-spinner color="light" name="dots"></ion-spinner>
         </ion-row>
       </ng-container>
       <ion-row no-margin *ngIf="mapView$ | async as v">

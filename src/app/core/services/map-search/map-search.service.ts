@@ -151,9 +151,9 @@ export class MapSearchService {
   getViewInfo(latLng: L.LatLng): Observable<ViewInfo> {
     return this.getLocationName(latLng).pipe(($ln) =>
       combineLatest($ln, this.getElevation(latLng)),
-      map((result) => ({
-        location: result[0],
-        elevation: result[1],
+      map(([location, elevation]) => ({
+        location,
+        elevation,
         latLng,
       })));
   }

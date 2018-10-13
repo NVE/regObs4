@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostBinding, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, Inject, NgZone } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
@@ -21,6 +21,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   viewInfo$: Observable<ViewInfo>;
   mapView$: Observable<IMapView>;
   userSettings$: Observable<UserSetting>;
+  isLoading: boolean;
 
   private textToCopy: string;
 
@@ -32,6 +33,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private toastController: ToastController,
     private translateService: TranslateService,
     private platform: Platform,
+    private zone: NgZone,
     @Inject(DOCUMENT) private document: Document) {
   }
 
@@ -39,13 +41,18 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     this.userSettings$ = this.userSettingService.userSettingObservable$.pipe(tap((val) => {
       this.document.documentElement.style.setProperty('--map-center-info-height', val.showMapCenter ? '72px' : '0px');
     }));
-    this.mapView$ = this.mapService.mapViewObservable$;
+    this.mapView$ = this.mapService.mapViewObservable$.pipe(tap((val) => {
+      this.textToCopy = `${val.center.lat}, ${val.center.lng}`;
+      this.zone.run(() => {
+        this.isLoading = true;
+      });
+    }));
     this.viewInfo$ = this.mapView$
       .pipe(switchMap((mapView: IMapView) => this.mapSerachService.getViewInfo(mapView.center)),
-        tap((val) => {
-          console.log('ViewInfo: ', val);
-          this.textToCopy = `${val.location.name}, `
-            + `${val.location.adminName}, ${val.latLng.lat}, ${val.latLng.lng}`;
+        tap(() => {
+          this.zone.run(() => {
+            this.isLoading = false;
+          });
         }));
   }
   ngOnDestroy(): void {
