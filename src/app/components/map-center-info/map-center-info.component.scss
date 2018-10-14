@@ -20,4 +20,5 @@
     left: 50%;
     transform: translate(-37px,-37px);
     z-index: $z-index-over-map;
+    pointer-events: none; // make clicks go trough
 }

@@ -75,8 +75,10 @@ export class AppComponent {
   }
 
   async updateResources() {
-    await this.observationService.updateObservations();
+    // TODO: implement cancel function to pass in.
+    // Set timer to 25 seconds and cancel if running longer.
     await this.warningService.updateWarnings();
+    await this.observationService.updateObservations();
   }
 
   async initNanoSqlDatabase() {
@@ -84,6 +86,7 @@ export class AppComponent {
     this.events.publish('nanoSql: connected');
   }
 
+  // TODO: Move to data sync sevice
   initBackroundUpdates() {
     const config = {
       minimumFetchInterval: 15, // <-- default is 15

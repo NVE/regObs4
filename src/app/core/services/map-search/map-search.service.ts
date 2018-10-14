@@ -132,8 +132,8 @@ export class MapSearchService {
   //     .pipe(switchMap((res) => bindNodeCallback(parseString)(res)));
   // }
 
-  getLocationName(latLng: L.LatLng): Observable<LocationName> {
-    if (BorderHelper.isInNorway(latLng)) {
+  getLocationName(latLng: L.LatLng, isInNorway: boolean): Observable<LocationName> {
+    if (isInNorway) {
       return this.getLocationNameNorway(latLng);
     } else {
       return this.reverseGeocodeWorld(latLng);
@@ -148,8 +148,8 @@ export class MapSearchService {
           .pipe(map((result: any) => ({ name: result.Data.Navn, adminName: result.Data.Fylke })))));
   }
 
-  getViewInfo(latLng: L.LatLng): Observable<ViewInfo> {
-    return this.getLocationName(latLng).pipe(($ln) =>
+  getViewInfo(latLng: L.LatLng, isInNorway: boolean): Observable<ViewInfo> {
+    return this.getLocationName(latLng, isInNorway).pipe(($ln) =>
       combineLatest($ln, this.getElevation(latLng)),
       map(([location, elevation]) => ({
         location,

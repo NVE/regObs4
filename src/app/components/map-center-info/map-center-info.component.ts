@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { ViewInfo } from '../../core/services/map-search/view-info.model';
 import { UserSetting } from '../../core/models/user-settings.model';
+import { IMapViewAndArea } from '../../core/services/map/map-view-and-area.interface';
 
 @Component({
   selector: 'app-map-center-info',
@@ -47,8 +48,9 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
         this.isLoading = true;
       });
     }));
-    this.viewInfo$ = this.mapView$
-      .pipe(switchMap((mapView: IMapView) => this.mapSerachService.getViewInfo(mapView.center)),
+    this.viewInfo$ = this.mapService.mapViewAndAreaObservable$
+      .pipe(switchMap((mapView: IMapViewAndArea) =>
+        this.mapSerachService.getViewInfo(mapView.center, !!mapView.regionInCenter)),
         tap(() => {
           this.zone.run(() => {
             this.isLoading = false;
