@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Platform, NavController, Events } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -32,6 +32,7 @@ export class AppComponent {
     private deeplinks: Deeplinks,
     private backgroundFetch: BackgroundFetch,
     private router: Router,
+    private zone: NgZone,
   ) {
     this.initializeApp();
   }
@@ -49,7 +50,6 @@ export class AppComponent {
         this.statusBar.overlaysWebView(this.platform.is('ios'));
         if (!userSettings.completedStartWizard) {
           return this.router.navigateByUrl('start-wizard');
-          // return this.navController.navigateRoot('start-wizard', false);
         } else {
           return Promise.resolve(true);
         }
@@ -77,8 +77,10 @@ export class AppComponent {
   async updateResources() {
     // TODO: implement cancel function to pass in.
     // Set timer to 25 seconds and cancel if running longer.
-    await this.warningService.updateWarnings();
-    await this.observationService.updateObservations();
+    this.zone.runOutsideAngular(async () => {
+      await this.warningService.updateWarnings();
+      await this.observationService.updateObservations();
+    });
   }
 
   async initNanoSqlDatabase() {

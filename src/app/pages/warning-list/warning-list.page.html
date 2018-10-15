@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div class="top-tabs">
+  <div class="top-tabs" [ngClass]="{'data-spinner-visible': !hasData}">
     <ion-grid>
       <ion-row no-padding>
         <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'inMapView'}" (click)="selectTab('inMapView')">
@@ -22,8 +22,13 @@
       </ion-row>
     </ion-grid>
   </div>
-  <ion-spinner *ngIf="!hasData">
-  </ion-spinner>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh()">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh">
+    </ion-refresher-content>
+  </ion-refresher>
+  <div class="no-data-spinner" slot="fixed" *ngIf="!hasData">
+    <ion-spinner></ion-spinner>
+  </div>
   <ng-container *ngIf="hasData">
     <ng-container *ngIf="(userSetting$ | async) as userSetting">
       <app-cap-list-group *ngIf="userSetting.showMapCenter && selectedTab === 'inMapView'" title="{{'WARNING_LIST.IN_MAP_CENTER'|translate}}"

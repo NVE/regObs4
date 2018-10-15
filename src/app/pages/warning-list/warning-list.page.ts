@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone, ApplicationRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ApplicationRef, ViewChild } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { Refresher } from '@ionic/angular';
 
 @Component({
   selector: 'app-warning-list',
@@ -21,6 +22,7 @@ export class WarningListPage implements OnInit, OnDestroy {
   userSetting$: Observable<UserSetting>;
   hasData: boolean;
   subscription: Subscription;
+  @ViewChild(Refresher) refresher: Refresher;
 
   constructor(
     private warningService: WarningService, private userSettingService: UserSettingService) {
@@ -50,6 +52,11 @@ export class WarningListPage implements OnInit, OnDestroy {
 
   getDayName(daysToAdd: number) {
     return `DAYS.SHORT.${moment().add(daysToAdd, 'days').day()}`;
+  }
+
+  async doRefresh() {
+    await this.warningService.updateWarningsForCurrentGeoHazard();
+    this.refresher.complete();
   }
 
   ngOnDestroy(): void {

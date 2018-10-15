@@ -10,7 +10,7 @@ import * as moment from 'moment';
 import 'moment-timezone';
 import * as Rx from 'rxjs';
 import { NanoSql } from '../../../../nanosql';
-import { debounceTime, take, map, distinctUntilChanged, switchMap, shareReplay } from 'rxjs/operators';
+import { debounceTime, take, map, distinctUntilChanged, switchMap, shareReplay, bufferCount, skip } from 'rxjs/operators';
 import { LoginService } from '../login/login.service';
 import { LoggedInUser } from '../login/logged-in-user.model';
 import { UserSettingService } from '../user-setting/user-setting.service';
@@ -37,8 +37,13 @@ export class ObservationService {
     private dataLoadService: DataLoadService,
   ) {
     this._observationsObservable = this.getObservationsAsObservable();
-    this.userSettingService.userSettingObservable$.subscribe((val) => {
-      this.updateObservations(); // Do observation update check when user settings change
+    this.userSettingService.userSettingObservable$.pipe(
+      map((val) => `${val.appMode}_${val.currentGeoHazard}_${val.language}`),
+      distinctUntilChanged(), // Only emit if app mode, current geohazard or language changed
+      skip(1) // Skip first emit. This will be taken hand of by app init
+    ).subscribe(() => {
+      console.log('[INFO][ObervationService] App settings changed. Need to refresh observations');
+      this.updateObservations();
     }); // No need to unsubscribe this observable when the service is singleton. It get destroyed when app exits.
   }
 

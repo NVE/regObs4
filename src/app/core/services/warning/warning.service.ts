@@ -65,6 +65,11 @@ export class WarningService {
     }
   }
 
+  async updateWarningsForCurrentGeoHazard() {
+    const userSettings = await this.userSettingService.getUserSettings();
+    return this.updateWarningsForGeoHazard(userSettings.currentGeoHazard);
+  }
+
   private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard) {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(geoHazard));
     const lastUpdateLimit = moment().subtract(1, 'hour');
@@ -75,7 +80,7 @@ export class WarningService {
     }
   }
 
-  private updateWarningsForGeoHazard(geoHazard: GeoHazard) {
+  updateWarningsForGeoHazard(geoHazard: GeoHazard) {
     if (geoHazard === GeoHazard.Snow) {
       return this.updateAvalancheWarnings(LangKey.no);
     } else {

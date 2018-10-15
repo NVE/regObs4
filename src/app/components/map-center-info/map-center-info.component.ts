@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostBinding, Inject, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, Inject, NgZone, ChangeDetectorRef } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
@@ -35,6 +35,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private platform: Platform,
     private zone: NgZone,
+    private cdr: ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document) {
   }
 
@@ -44,17 +45,15 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     }));
     this.mapView$ = this.mapService.mapViewObservable$.pipe(tap((val) => {
       this.textToCopy = `${val.center.lat}, ${val.center.lng}`;
-      this.zone.run(() => {
-        this.isLoading = true;
-      });
+      this.isLoading = true;
+      this.cdr.detectChanges();
     }));
     this.viewInfo$ = this.mapService.mapViewAndAreaObservable$
       .pipe(switchMap((mapView: IMapViewAndArea) =>
         this.mapSerachService.getViewInfo(mapView.center, !!mapView.regionInCenter)),
         tap(() => {
-          this.zone.run(() => {
-            this.isLoading = false;
-          });
+          this.isLoading = false;
+          this.cdr.detectChanges();
         }));
   }
   ngOnDestroy(): void {

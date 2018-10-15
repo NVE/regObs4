@@ -1,9 +1,15 @@
 .top-tabs {
+    
     background-color: var(--ion-item-background-color);
     color: var(--ion-tabbar-text-color);
     font-size: 14px;
     font-weight: bold;
     line-height: 34px;
+
+    &.data-spinner-visible {
+        position: relative;
+        top: 50px;
+    }
 
     ion-grid {
         padding-left: 0px;
@@ -20,5 +26,19 @@
         color: var(--ion-color-primary);
         border-bottom: 2px solid #5C90A5;
         background-color: var(--ion-tabbar-background-color-focused);
+    }
+}
+
+.no-data-spinner {
+    background-color: #fff;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 50px;
+    text-align: center;
+
+    ion-spinner {
+        margin-top: 10px;
     }
 }

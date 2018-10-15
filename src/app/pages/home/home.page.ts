@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
@@ -57,6 +57,7 @@ export class HomePage implements OnInit, OnDestroy {
     private events: Events,
     private userSettingService: UserSettingService,
     private mapService: MapService,
+    private zone: NgZone,
   ) {
 
     const defaultIcon = L.icon({
@@ -139,7 +140,13 @@ export class HomePage implements OnInit, OnDestroy {
     console.log('[INFO] onMapReady home page');
 
     this.map = map;
-    this.map.on('moveend', () => this.onMapMoved());
+
+    this.zone.runOutsideAngular(() => {
+      this.map.on('moveend', () =>
+        this.mapService.updateMapView({ bounds: this.map.getBounds(), center: this.map.getCenter() })
+      );
+    });
+
     this.map.on('dragstart', () => this.disableFollowMode());
     this.map.on('click', () => {
       if (this.selectedMarker) {
@@ -223,11 +230,10 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  private async onMapMoved() {
-    console.log('map moved');
-    // this.helperService.setCurrentMapView(this.map.getBounds(), this.map.getCenter());
-    this.mapService.updateMapView({ bounds: this.map.getBounds(), center: this.map.getCenter() });
-  }
+  // private onMapMoved() {
+  //   console.log('map moved');
+  //   this.mapService.updateMapView({ bounds: this.map.getBounds(), center: this.map.getCenter() });
+  // }
 
   private disableFollowMode() {
     this.followMode = false;
