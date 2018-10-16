@@ -58,6 +58,7 @@ export const settings = {
     },
     map: {
         tiles: {
+            cacheFolder: 'tilescache',
             embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
             embeddedUrlMaxZoom: 5,
             defaultMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',

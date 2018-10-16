@@ -60,7 +60,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   }
 
   private useNativeClipboardPlugin() {
-    return window.hasOwnProperty('cordova') && (this.platform.is('android') || this.platform.is('ios'));
+    return this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'));
   }
 
   async copyToClipboard() {

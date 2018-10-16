@@ -1,4 +1,4 @@
-<div class="data-load animated" [ngClass]="{'fadeIn': !firstRun && hasData, 'fadeOut' : !firstRun && !hasData}">
+<div class="data-load animated" [ngClass]="{'fadeIn': !firstRun && isLoading, 'fadeOut' : !firstRun && !isLoading}">
   <ion-grid *ngIf="!simple">
     <ion-row *ngFor="let item of dataLoad">
       <ion-col>

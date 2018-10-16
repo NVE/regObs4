@@ -1,6 +1,9 @@
 import * as L from 'leaflet';
 import { settings } from '../../../../../settings';
 import { BorderHelper } from '../border-helper';
+import { NgZone } from '@angular/core';
+import { OfflineMapService } from '../../../services/offline-map/offline-map.service';
+import { Platform } from '@ionic/angular';
 
 interface ExtendedCoords extends L.Coords {
     fallback: boolean;
@@ -8,35 +11,42 @@ interface ExtendedCoords extends L.Coords {
 
 export class OfflineTileLayer extends L.TileLayer {
 
-    constructor() {
+    constructor(
+        private name: string,
+        private zone: NgZone,
+        private offlineMapService: OfflineMapService,
+        private plaform: Platform,
+    ) {
         super(settings.map.tiles.fallbackMapUrl, {
-            name: 'topo', maxZoom: 18, minZoom: 1,
+            name, maxZoom: 18, minZoom: 1,
         });
     }
 
     createTile(coords, done) {
-        const tile = document.createElement('img');
+        return this.zone.runOutsideAngular(() => {
+            const tile = document.createElement('img');
 
-        L.DomEvent.on(tile, 'load', L.Util.bind((<any>this)._tileOnLoad, this, done, tile));
-        L.DomEvent.on(tile, 'error', L.Util.bind((<any>this)._tileOnError, this, done, tile));
+            L.DomEvent.on(tile, 'load', L.Util.bind((<any>this)._tileOnLoad, this, done, tile));
+            L.DomEvent.on(tile, 'error', L.Util.bind((<any>this)._tileOnError, this, done, tile));
 
-        if (this.options.crossOrigin) {
-            tile.crossOrigin = '';
-        }
+            if (this.options.crossOrigin) {
+                tile.crossOrigin = '';
+            }
 
-        tile.alt = '';
-        (<any>tile)._originalCoords = coords;
+            tile.alt = '';
+            (<any>tile)._originalCoords = coords;
 
-        tile.setAttribute('role', 'presentation');
+            tile.setAttribute('role', 'presentation');
 
-        this.getTileUrl(coords).then(function (url) {
-            tile.src = url;
-            (<any>tile)._originalSrc = tile.src;
-        }).catch(function (err) {
-            throw err;
+            this.getTileUrl(coords).then(function (url) {
+                tile.src = url;
+                (<any>tile)._originalSrc = tile.src;
+            }).catch(function (err) {
+                throw err;
+            });
+
+            return tile;
         });
-
-        return tile;
     }
 
 
@@ -61,43 +71,36 @@ export class OfflineTileLayer extends L.TileLayer {
         return L.Util.template(urlTemplate, L.Util.extend(data, this.options));
     }
 
-    private getOfflineTileUrl(coords: L.Coords): Promise<{ success: boolean, url?: string }> {
-        // TODO: Implement get tile from offline storage
-        // var dbStorageKey = this._getStorageKey(url);
-
-        // var resultPromise = this._tilesDb.getItem(dbStorageKey).then(function (data) {
-        //     if (data && typeof data === 'object') {
-        //         return URL.createObjectURL(data);
-        //     }
-        //     return url;
-        // }).catch(function (err) {
-        //     throw err;
-        // });
-        return Promise.resolve({ success: false });
-    }
-
     async getTileUrl(coords: ExtendedCoords): Promise<string> {
-
         if (coords.z <= settings.map.tiles.embeddedUrlMaxZoom) {
             console.log(`zoom is under ${settings.map.tiles.embeddedUrlMaxZoom} so using embedded map url`,
                 coords, settings.map.tiles.embeddedUrl);
             return this.getOriginalTileUrl(coords, settings.map.tiles.embeddedUrl);
         }
 
-        const isInsideNorway = this.isInsideBorders(coords);
+        const offlineUrl = await this.offlineMapService.getTileUrl(this.name, coords.x, coords.y, coords.z);
+        if (offlineUrl) {
+            console.log('[OfflineTilesLayer] found cached tile for tile: ', { name: this.name, coords });
+            return offlineUrl;
+        } else {
+            const url = this.getTileUrlOrFallbackMap(coords);
+            if (this.downloadTileToCache()) {
+                this.offlineMapService.saveTileAsBlob(this.name, coords.x, coords.y, coords.z, url);
+            }
+            return url;
+        }
+    }
 
+    private downloadTileToCache() {
+        return this.plaform.is('cordova') && (this.plaform.is('ios') || this.plaform.is('android'));
+    }
+
+    private getTileUrlOrFallbackMap(coords: ExtendedCoords): string {
+        const isInsideNorway = this.isInsideBorders(coords);
         if (!isInsideNorway) {
             return this.getOriginalTileUrl(coords, settings.map.tiles.fallbackMapUrl);
         } else {
-            const offlineUrlResult = await this.getOfflineTileUrl(coords);
-            if (offlineUrlResult.success) {
-                return offlineUrlResult.url;
-            } else {
-                // const hasNetwork = true; // TODO: test for offline
-                // if (hasNetwork) {
-                return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
-                // }
-            }
+            return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
         }
     }
 
@@ -108,7 +111,8 @@ export class OfflineTileLayer extends L.TileLayer {
             scale = tile._fallbackScale = (tile._fallbackScale || 1) * 2,
             tileSize = this.getTileSize(),
             style = tile.style;
-        // const isInsideNorway = this.isInsideBorders(tile._originalCoords);
+
+        // TODO: Check if tile url is local cahced file://, then fallback to original url
 
         // If no lower zoom tiles are available, fallback to errorTile.
         if (fallbackZoom < 1) {

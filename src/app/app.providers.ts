@@ -23,6 +23,8 @@ import { WarningService } from './core/services/warning/warning.service';
 import { ErrorHandler } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { LoginService } from './core/services/login/login.service';
+import { HTTP } from '@ionic-native/http/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
 
 export class AppProviders {
     public static getProviders() {
@@ -39,6 +41,8 @@ export class AppProviders {
             Zip,
             Clipboard,
             InAppBrowser,
+            HTTP,
+            WebView,
             { provide: ErrorHandler, useClass: AppErrorHandler },
             ...this.getSingletonServices(),
             ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),

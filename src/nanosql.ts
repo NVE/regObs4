@@ -60,9 +60,11 @@ export class NanoSql {
         OFFLINE_MAP_TILES: {
             name: 'offlinemaptiles',
             model: [
-                { key: 'url', type: 'string', props: ['pk'] },
+                { key: 'id', type: 'int', props: ['pk', 'ai'] },
                 { key: 'tileId', type: 'string', props: ['idx'] },
+                { key: 'url', type: 'string' },
                 { key: 'mapName', type: 'string' },
+                { key: 'lastAccess', type: 'number' },
             ]
         },
         OFFLINE_ASSET: {
@@ -120,8 +122,11 @@ export class NanoSql {
     static init() {
         nSQL().config({
             id: settings.db.nanoSql.dbName,
-            mode: getMode()
+            mode: getMode(),
+            version: 1,
         });
+        // NOTE: It is also possible to implement migrations on version updates.
+        // See: https://github.com/ClickSimply/Nano-SQL/issues/70
         for (const table of NanoSql.getTables()) {
             if (table.instancePerAppMode) {
                 nSQL().table(NanoSql.getInstanceName(table.name, AppMode.Prod)).model(table.model);

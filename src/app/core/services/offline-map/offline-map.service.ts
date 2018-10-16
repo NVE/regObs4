@@ -4,11 +4,15 @@ import { Progress } from './progress.model';
 import { nSQL } from 'nano-sql';
 import { Observer, ObserverSubscriber } from 'nano-sql/lib/observable';
 import * as moment from 'moment';
-import { Events, Platform } from '@ionic/angular';
+import { Events, Platform, } from '@ionic/angular';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
-import * as JSZip from 'jszip';
 import { OfflineTile } from './offline-tile.model';
 import { NanoSql } from '../../../../nanosql';
+import { HTTP } from '@ionic-native/http/ngx';
+import { File, FileEntry } from '@ionic-native/file/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { settings } from '../../../../settings';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -20,15 +24,12 @@ export class OfflineMapService {
     private events: Events,
     private backgroundDownloadService: BackgroundDownloadService,
     private platform: Platform,
+    private http: HTTP,
+    private file: File,
+    private webview: WebView,
+    private httpClient: HttpClient,
   ) {
-
   }
-
-  // init() {
-  //   this.events.subscribe(settings.events.nanosqlConnected, async () => {
-  //     await this.continueDownload();
-  //   });
-  // }
   // TODO: Implement continue download when app restart
 
   private isInQueue(map: OfflineMap) {
@@ -89,9 +90,65 @@ export class OfflineMapService {
     });
   }
 
-  getTile(name: string, x: number, y: number, z: number) {
-    // TODO: Use jszip lib to unzip file and return tile
+  private updateTileLastAccess(tile: OfflineTile) {
+    tile.lastAccess = moment().unix();
+    return nSQL().table(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile);
+  }
+
+  async getTileUrl(name: string, x: number, y: number, z: number) {
+    const tileId = this.getTileId(name, x, y, z);
+    const tileFromDb = await this.getTileFromDb(tileId);
+    if (tileFromDb) {
+      this.updateTileLastAccess(tileFromDb);
+      return this.webview.convertFileSrc(tileFromDb.url);
+    }
     return null;
+  }
+
+  async saveTileAsBlob(name: string, x: number, y: number, z: number, url: string) {
+    try {
+      // const headers = new HttpHeaders(
+      //   { 'Content-Type': 'application/jpeg',
+      //   });
+      // const result = await this.httpClient.get(url, {
+      //   responseType: 'blob', headers
+      // }).toPromise();
+      // CORS ISSUES WHEN USING WKWEBKIT, using native http instead...
+      const tileId = this.getTileId(name, x, y, z);
+      const filename = `${settings.map.tiles.cacheFolder}/${tileId}.png`;
+      const folder = await this.backgroundDownloadService.selectDowloadFolder();
+      try {
+        await this.file.createDir(folder, settings.map.tiles.cacheFolder, false);
+      } catch { }
+
+      const fileResult: FileEntry = await this.http.downloadFile(url, {}, {},
+        `${folder}/${filename}`);
+
+      const tile: OfflineTile = {
+        tileId: this.getTileId(name, x, y, z),
+        mapName: settings.map.tiles.cacheFolder,
+        url: fileResult.toURL(),
+        lastAccess: moment().unix(),
+      };
+      // TODO: Clear cache based on last accessed or cache size has reached
+      return nSQL().table(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
+    } catch (err) {
+      console.log('Could not download tile: ' + url, err);
+    }
+  }
+
+  private getTileId(name: string, x: number, y: number, z: number) {
+    return `${name}_${z}_${x}_${y}`;
+  }
+
+  async getTileFromDb(tileId: string): Promise<OfflineTile> {
+    const tiles = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('select').where(['tileId', '=', tileId]).exec();
+    if (tiles.length > 0) {
+      return tiles[0] as OfflineTile;
+    } else {
+      return null;
+    }
   }
 
   async downloadMap(map: OfflineMap) {
@@ -186,7 +243,7 @@ export class OfflineMapService {
     await nSQL().loadJS(NanoSql.TABLES.OFFLINE_MAP_TILES.name, tiles);
   }
 
-  // Assumes map directoru: /{mapName}/{tileName}/{z}/
+  // Assumes map directory: /{mapName}/{tileName}/{z}/
   // filename: tile_{x}_{y}.png
   private getOfflineTileFromFile(mapName: string, directory: string, filename: string, url: string): OfflineTile {
     const index = directory.indexOf(mapName) + mapName.length + 1;
@@ -203,7 +260,8 @@ export class OfflineMapService {
     return {
       url: url,
       mapName: mapName,
-      tileId
+      tileId,
+      lastAccess: moment().unix(),
     };
   }
 

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
-import { Events } from '@ionic/angular';
+import { Events, Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { UserMarker } from '../../core/helpers/leaflet/user-marker/user-marker';
 import { ObservationService } from '../../core/services/observation/observation.service';
@@ -17,6 +17,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { MapSearchResponse } from '../../core/services/map-search/map-search-response.model';
 import { MapService } from '../../core/services/map/map.service';
 import { UserSetting } from '../../core/models/user-settings.model';
+import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 
@@ -42,7 +43,7 @@ export class HomePage implements OnInit, OnDestroy {
   markers: Array<MapItemMarker>;
   toastDismissTimeout: NodeJS.Timer;
   tilesLayer = L.layerGroup();
-  defaultMapLayer = new OfflineTileLayer();
+  defaultMapLayer: OfflineTileLayer;
   fullscreen = false;
   mapItemBarVisible = false;
   currentGeoHazard: GeoHazard;
@@ -58,6 +59,8 @@ export class HomePage implements OnInit, OnDestroy {
     private userSettingService: UserSettingService,
     private mapService: MapService,
     private zone: NgZone,
+    private offlineMapService: OfflineMapService,
+    private platform: Platform,
   ) {
 
     const defaultIcon = L.icon({
@@ -66,6 +69,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
     L.Marker.prototype.options.icon = defaultIcon;
+    this.defaultMapLayer = new OfflineTileLayer('topo', zone, this.offlineMapService, this.platform);
 
     this.markers = [];
   }

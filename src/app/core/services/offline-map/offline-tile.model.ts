@@ -1,5 +1,6 @@
 export interface OfflineTile {
-    url: string;
     tileId: string;
+    url: string;
     mapName: string;
+    lastAccess: number;
 }

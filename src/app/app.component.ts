@@ -49,7 +49,7 @@ export class AppComponent {
         this.statusBar.styleBlackTranslucent();
         this.statusBar.overlaysWebView(this.platform.is('ios'));
         if (!userSettings.completedStartWizard) {
-          return this.router.navigateByUrl('start-wizard');
+          return this.router.navigate(['start-wizard'], { replaceUrl: true });
         } else {
           return Promise.resolve(true);
         }

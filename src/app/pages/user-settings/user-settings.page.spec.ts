@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSettingsPage } from './user-settings.page';
-import { FakeTranslateLoader } from '../core/mocks/translateLoader';
+import { FakeTranslateLoader } from '../../core/mocks/translateLoader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { IonicStorageModule } from '@ionic/storage';
 

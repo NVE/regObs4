@@ -28,9 +28,10 @@ export class ModalSearchPage implements OnInit {
       .pipe(
         debounceTime(400),
         distinctUntilChanged(),
-        tap(() => {
+        tap((val) => {
           this.loading = true;
           this.hasResults = false;
+          this.searchText = val;
         }),
         switchMap((searchValue: string) => {
           if (searchValue.length >= 2) {

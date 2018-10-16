@@ -4,7 +4,7 @@ ion-fab {
     }
 
     &.fullscreen {
-        top: 10px;
+        top: calc(10px + var(--ion-safe-area-top,0px)) !important;
     }
 
     ion-fab-button {

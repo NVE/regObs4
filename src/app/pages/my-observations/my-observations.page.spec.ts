@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MyObservationsPage } from './my-observations.page';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { FakeTranslateLoader } from '../core/mocks/translateLoader';
+import { FakeTranslateLoader } from '../../core/mocks/translateLoader';
 
 describe('MyObservationsPage', () => {
   let component: MyObservationsPage;
