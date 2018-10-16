@@ -1,26 +1,54 @@
 import { WarningGroupKey } from './warning-group-key.interface';
-import { IWarning } from './warning.interface';
 import * as moment from 'moment';
+import { IWarningGroup } from './warning-group.interface';
+import { settings } from '../../../../settings';
 
 export class WarningGroup {
-    private _group: WarningGroupKey;
-    private _warnings: IWarning[];
+    private _warningGroup: IWarningGroup;
     private _isFavourite: boolean;
 
-    get group() {
-        return this._group;
+    get key(): WarningGroupKey {
+        return {
+            geoHazard: this._warningGroup.geoHazard,
+            groupId: this._warningGroup.regionId,
+            groupName: this._warningGroup.regionName
+        };
     }
 
     get warnings() {
-        return this._warnings;
+        return this._warningGroup.warnings;
     }
 
     get isFavourite() {
         return this._isFavourite;
     }
 
+    get url() {
+        return this._warningGroup.url;
+    }
+
+    get counties() {
+        return this._warningGroup.counties;
+    }
+
+    get lastUpdated() {
+        return this._warningGroup.lastUpdate;
+    }
+
+    get lastUpdatedString() {
+        if (!this.lastUpdated) {
+            return '';
+        }
+        const date = moment(this.lastUpdated);
+        if (date.isSame(date.clone().startOf('day'))) {
+            return date.format(settings.dateFormats.moment.date);
+        } else {
+            return date.format(settings.dateFormats.moment.dateAndTime);
+        }
+    }
+
     getWarningForDay(date: Date) {
-        const warningsForDay = this._warnings.filter((x) => moment(date).isBetween(x.validFrom, x.validTo, null, '[]'));
+        const warningsForDay = this._warningGroup.warnings.filter((x) => moment(date).isBetween(x.validFrom, x.validTo, null, '[]'));
         if (warningsForDay.length > 0) {
             return warningsForDay.reduce((pv, v) => {
                 if (pv && pv.warningLevel < v.warningLevel) {
@@ -34,9 +62,8 @@ export class WarningGroup {
         }
     }
 
-    constructor(group: WarningGroupKey, warnings: IWarning[], isFavourite: boolean) {
-        this._group = group;
-        this._warnings = warnings;
+    constructor(group: IWarningGroup, isFavourite?: boolean) {
+        this._warningGroup = group;
         this._isFavourite = isFavourite;
     }
 }

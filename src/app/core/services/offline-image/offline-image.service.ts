@@ -2,72 +2,81 @@ import { Injectable } from '@angular/core';
 import { nSQL } from 'nano-sql';
 import { NanoSql } from '../../../../nanosql';
 import { HttpRequest, HttpClient, HttpEventType, HttpHeaders } from '@angular/common/http';
+import { BackgroundDownloadService } from '../background-download/background-download.service';
+import { HTTP } from '@ionic-native/http/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { File, FileEntry } from '@ionic-native/file/ngx';
+import { settings } from '../../../../settings';
+import * as moment from 'moment';
+import { IOfflineAsset } from './offline-asset.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OfflineImageService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(
+    private backgroundDownloadService: BackgroundDownloadService,
+    private http: HTTP,
+    private file: File,
+    private webview: WebView,
+  ) { }
 
-  saveImage(url: string, data: Blob, type: string = 'image/jpg') {
-    return nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
-      .query('upsert', { url, data, type })
-      .exec();
-  }
-
-  async getImageOrFallbackToUrl(url: string) {
-    const result = await this.getImage(url);
-    if (result) {
-      return this.blobToDataURL(result.data);
+  async getImageOrFallbackToUrl(url: string, type: string = 'image/jpg') {
+    const offlineAsset = await this.getOfflineAssetFromDb(url);
+    if (offlineAsset) {
+      this.updateLastAccess(offlineAsset);
+      return this.webview.convertFileSrc(offlineAsset.fileUrl);
     } else {
+      this.downloadOfflineAsset(url, type); // Do not wait for promise result
       return url;
     }
-    // TODO: implement https://medium.com/ninjadevs/caching-images-ionic-ccf2f4ca8d1f
-    // but cors is not enabled for images, so it will fail
-    // return await this.blobToDataURL(result ? result.data : await this.downloadImage(url));
   }
 
-  async downloadImage(url: string, type: string = 'image/jpg') {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/jpeg' });
-    const result = await this.httpClient.get(url, {
-      responseType: 'blob', headers
-    }).toPromise();
-    await this.saveImage(url, result, type);
-    return result;
-
-    // All these three attempts returns CORS error :(
-
-    // const result = await window.fetch(url);
-    // const blob = await result.blob();
-    // await this.saveImage(url, blob, type);
-    // return blob;
-
-    // return new Promise<Blob>((resolve) => {
-    //   const img = new Image;
-    //   const c = document.createElement('canvas');
-    //   const ctx = c.getContext('2d');
-    //   const that = this;
-
-    //   img.onload = function () {
-    //     c.width = 300;     // update canvas size to match image
-    //     c.height = 400;
-    //     ctx.drawImage(img, 0, 0);       // draw in image
-    //     c.toBlob(async (blob) => {        // get content as JPEG blob
-    //       // here the image is a blob
-    //       await that.saveImage(url, blob, type);
-    //       resolve(blob);
-    //     }, type, 0.75);
-    //   };
-    //   img.crossOrigin = '';              // if from different origin
-    //   img.src = url;
-    // });
+  private updateLastAccess(offlineAsset: IOfflineAsset) {
+    offlineAsset.lastAccess = moment().unix();
+    return nSQL().table(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
   }
 
-  async getImage(url: string) {
-    const result = await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
-      .query('select').where((item: { url: string }) => item.url === url)
-      .exec() as { url: string, data: Blob, type: string }[];
+  private getFilenameFromType(type: string) {
+    return type.replace('image/', '');
+  }
+
+  async downloadOfflineAsset(url: string, type: string = 'image/jpg') {
+    const folder = await this.backgroundDownloadService.selectDowloadFolder();
+    try {
+      await this.file.createDir(folder, settings.offlineAssetsFolder, false);
+    } catch { }
+
+    try {
+
+      let filename = url.substring(url.lastIndexOf('/') + 1);
+      if (filename.indexOf('.') < 0) {
+        filename = `${filename}.${this.getFilenameFromType(type)}`;
+      }
+
+      const fileResult: FileEntry = await this.http.downloadFile(url, {}, {},
+        `${folder}/${settings.offlineAssetsFolder}/${filename}`);
+
+      const fileUrl = fileResult.toURL();
+      const offlineAsset: IOfflineAsset = {
+        originalUrl: url,
+        fileUrl,
+        type,
+        lastAccess: moment().unix()
+      };
+      // TODO: Clear cache based on last accessed or cache size has reached
+      return nSQL().table(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
+    } catch (error) {
+      // TODO: Create warning in sentry?
+      console.warn('Could not download offline asset: ', error);
+    }
+  }
+
+  async getOfflineAssetFromDb(url: string) {
+    const result = (await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
+      .query('select').where(['originalUrl', '=', url])
+      .exec()) as IOfflineAsset[];
     if (result.length > 0) {
       return result[0];
     } else {

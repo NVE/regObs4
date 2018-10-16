@@ -1,0 +1,69 @@
+﻿[
+	{
+		"name": "Østlandet",
+		"lastUpdate": "2018-10-11",
+		"url": "http://www.varsom.no/isvarsling/isvarsler/ostlandet/",
+		"counties": [
+			"01",
+			"02",
+			"03",
+			"04",
+			"05",
+			"06",
+			"07",
+			"08"
+		]
+	},
+	{
+		"name": "Rogaland - Agder",
+		"lastUpdate": "2018-10-11",
+		"url": "http://www.varsom.no/isvarsling/isvarsler/rogaland-agder/",
+		"counties": [
+			"09",
+			"10",
+			"11"
+		]
+	},
+	{
+		"name": "Sogn og Fjordane - Hordaland",
+		"lastUpdate": "2018-10-11",
+		"url": "http://www.varsom.no/isvarsling/isvarsler/sogn-og-fjordane-hordaland/",
+		"counties": [
+			"12",
+			"14"
+		]
+	},
+	{
+		"name": "Trøndelag - Møre og Romsdal",
+		"lastUpdate": "2018-10-11",
+		"url": "http://www.varsom.no/isvarsling/isvarsler/trondelag-more-og-romsdal/",
+		"counties": [
+			"15",
+			"50"
+		]
+	},
+	{
+		"name": "Nordland",
+		"lastUpdate": "2018-10-11",
+		"url": "http://www.varsom.no/isvarsling/isvarsler/nordland/",
+		"counties": [
+			"18"
+		]
+	},
+	{
+		"name": "Troms",
+		"lastUpdate": "2018-10-11",
+		"url": "http://www.varsom.no/isvarsling/isvarsler/troms/",
+		"counties": [
+			"19"
+		]
+	},
+	{
+		"name": "Finnmark",
+		"lastUpdate": "2018-10-11",
+		"url": "http://www.varsom.no/isvarsling/isvarsler/finnmark/",
+		"counties": [
+			"20"
+		]
+	}
+]

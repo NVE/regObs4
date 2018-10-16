@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { HelperService } from '../../../core/services/helpers/helper.service';
 import { OfflineImageService } from '../../../core/services/offline-image/offline-image.service';
+import { settings } from '../../../../settings';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -19,6 +20,7 @@ export class ObservationListCardComponent implements OnInit {
   icon: string;
   hasImage: boolean;
   imgSrc: string;
+  settings = settings;
 
   constructor(
     private translateService: TranslateService,

@@ -21,6 +21,9 @@ import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { IWarningGroup } from './warning-group.interface';
 import { UserSetting } from '../../models/user-settings.model';
+import { IIceWarningApiResult } from './ice-warning-api-result.interface';
+import { Platform } from '@ionic/angular';
+import { HTTP } from '@ionic-native/http/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +50,8 @@ export class WarningService {
     private userSettingService: UserSettingService,
     private mapService: MapService,
     private dataLoadService: DataLoadService,
+    private platform: Platform,
+    private nativeHttp: HTTP,
   ) {
     this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
     this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();
@@ -83,6 +88,8 @@ export class WarningService {
   updateWarningsForGeoHazard(geoHazard: GeoHazard) {
     if (geoHazard === GeoHazard.Snow) {
       return this.updateAvalancheWarnings(LangKey.no);
+    } else if (geoHazard === GeoHazard.Ice) {
+      return this.updateIceWarnings();
     } else {
       return this.updateFloodAndLandslideWarnings(geoHazard, LangKey.no);
     }
@@ -102,13 +109,13 @@ export class WarningService {
 
   private getPriority(currentGeoHazard: GeoHazard) {
     if (currentGeoHazard === GeoHazard.Snow) {
-      return [GeoHazard.Snow, GeoHazard.Water, GeoHazard.Dirt];
+      return [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Water, GeoHazard.Dirt];
     } else if (currentGeoHazard === GeoHazard.Ice) {
-      return [GeoHazard.Snow, GeoHazard.Water, GeoHazard.Dirt];
+      return [GeoHazard.Ice, GeoHazard.Snow, GeoHazard.Water, GeoHazard.Dirt];
     } else if (currentGeoHazard === GeoHazard.Water) {
-      return [GeoHazard.Water, GeoHazard.Dirt, GeoHazard.Snow];
+      return [GeoHazard.Water, GeoHazard.Dirt, GeoHazard.Snow, GeoHazard.Ice];
     } else if (currentGeoHazard === GeoHazard.Dirt) {
-      return [GeoHazard.Dirt, GeoHazard.Water, GeoHazard.Snow];
+      return [GeoHazard.Dirt, GeoHazard.Water, GeoHazard.Snow, GeoHazard.Ice];
     }
   }
 
@@ -130,19 +137,17 @@ export class WarningService {
       this.getFavouritesAsObservable()).pipe(map(([regions, favourites]) => {
         return regions.map((region) => {
           const isFavourite = !!favourites.find((x) => x.groupId === region.regionId && x.geoHazard === region.geoHazard);
-          const warningGroup = new WarningGroup(
-            { geoHazard: region.geoHazard, groupId: region.regionId, groupName: region.regionName },
-            region.warnings, isFavourite);
+          const warningGroup = new WarningGroup(region, isFavourite);
           return warningGroup;
         }).sort((a, b) => {
-          if (a.group.groupName < b.group.groupName) {
+          if (a.key.groupName < b.key.groupName) {
             return -1;
           }
-          if (a.group.groupName > b.group.groupName) {
+          if (a.key.groupName > b.key.groupName) {
             return 1;
           }
           // names must be equal, sort by geohazard
-          return a.group.geoHazard - b.group.geoHazard;
+          return a.key.geoHazard - b.key.geoHazard;
         });
       }), shareReplay(1));
   }
@@ -162,7 +167,7 @@ export class WarningService {
       this.userSettingService.userSettingObservable$)
       .pipe(map(([warningGroups, userSetting]) => {
         const geoHazards = this.getGeoHazardFilter(userSetting.currentGeoHazard);
-        return warningGroups.filter((wg) => geoHazards.find((g) => g === wg.group.geoHazard));
+        return warningGroups.filter((wg) => geoHazards.find((g) => g === wg.key.geoHazard));
       }), shareReplay(1));
   }
 
@@ -176,6 +181,22 @@ export class WarningService {
         }));
   }
 
+  private groupIsInRegion(warningGroup: WarningGroup, regionId: string) {
+    const arr = [warningGroup.key.groupId, ...warningGroup.counties];
+    return arr.indexOf(regionId) >= 0;
+  }
+
+  private isGroupInMapCenter(mapViewArea: IMapViewAndArea, warningGroup: WarningGroup, userSetting: UserSetting) {
+    if (!userSetting.showMapCenter) {
+      return false;
+    }
+    return this.groupIsInRegion(warningGroup, mapViewArea.regionInCenter);
+  }
+
+  private isGroupInViewBounds(mapViewArea: IMapViewAndArea, warningGroup: WarningGroup) {
+    return mapViewArea.regionsInViewBounds.filter((region) => this.groupIsInRegion(warningGroup, region)).length > 0;
+  }
+
   private getWarningsForCurrentMapView(mapViewArea: IMapViewAndArea, userSetting: UserSetting)
     : Observable<IWarningGroupInMapView> {
     return this.warningsForCurrentGeoHazardObservable$.pipe(
@@ -184,8 +205,8 @@ export class WarningService {
         const warningsInMapView: IWarningInMapView[] = warnings
           .map((warningGroup) => {
             const groupInMapView = {
-              center: mapViewArea.regionInCenter === warningGroup.group.groupId && userSetting.showMapCenter,
-              viewBounds: mapViewArea.regionsInViewBounds.indexOf(warningGroup.group.groupId) >= 0,
+              center: this.isGroupInMapCenter(mapViewArea, warningGroup, userSetting),
+              viewBounds: this.isGroupInViewBounds(mapViewArea, warningGroup),
             };
             return { inMapView: groupInMapView, warningGroup };
           }).filter((warningGroupInView) => warningGroupInView.inMapView.center || warningGroupInView.inMapView.viewBounds);
@@ -239,6 +260,7 @@ export class WarningService {
           id: `${regionId}_${geoHazard}`,
           regionId,
           regionName,
+          counties: [regionId],
           geoHazard,
           warnings: [warning],
         });
@@ -246,6 +268,8 @@ export class WarningService {
     }
     console.log(`[INFO][WarningService] Result from ${GeoHazard[geoHazard]}:`, regions);
     await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions);
+
+    // TODO: Delete regions no longer in result in case regions is changed in api
 
     await this.dataLoadService.loadingCompleted(dataLoadId, regions.length,
       dateRange.from.toDate(), new Date());
@@ -266,6 +290,7 @@ export class WarningService {
       regionId: region.Id.toString(),
       regionName: region.Name,
       geoHazard: GeoHazard.Snow,
+      counties: [],
       warnings: region.AvalancheWarningList.map((simpleWarning) => ({
         warningLevel: parseInt(simpleWarning.DangerLevel, 10),
         publishTime: this.getDate(simpleWarning.PublishTime),
@@ -278,9 +303,61 @@ export class WarningService {
     console.log(`[INFO][WarningService] New updates for avalanche warnings:`, regionResult);
     await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult);
 
+    // TODO: Delete regions no longer in result in case regions is changed in api
+
     await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length,
       dateRange.from.toDate(), new Date());
   }
+
+  private async updateIceWarnings() {
+    console.log(`[INFO][WarningService] Updating ice warnings`);
+    const geoHazard = GeoHazard.Ice;
+    const dataLoadId = this.getDataLoadId(geoHazard);
+    await this.dataLoadService.startLoading(dataLoadId);
+    const url = this.getBaseUrl(geoHazard);
+    const result = await this.getWarningsFromApi(url);
+    const regionResult: IWarningGroup[] = result.map((region) => ({
+      id: `${region.name}_${geoHazard}`,
+      regionId: region.name,
+      regionName: region.name,
+      counties: region.counties,
+      url: region.url,
+      lastUpdate: moment(region.lastUpdate).toDate(),
+      geoHazard,
+      warnings: []
+    }));
+    console.log(`[INFO][WarningService] New updates for ice warnings:`, regionResult);
+    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult);
+
+    // TODO: Delete regions no longer in result in case regions is changed in api
+    await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length);
+  }
+
+  private getWarningsFromApi(url: string) {
+    if (this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'))) {
+      return this.getWarningsFromApiNative(url);
+    } else {
+      return this.getWarningsFromApiWeb(url);
+    }
+  }
+
+  private async getWarningsFromApiNative(url: string): Promise<IIceWarningApiResult[]> {
+    this.nativeHttp.setDataSerializer('json');
+    const result = await this.nativeHttp.get(url, {}, {
+      'Content-Type': 'application/json',
+    });
+    if (result.status === 200) {
+      return JSON.parse(result.data.trim());
+    } else {
+      throw Error(`Could not download warnings from: ${url}. Status: ${result.status}. Message: ${result.error}`);
+    }
+  }
+
+  private getWarningsFromApiWeb(url: string): Promise<IIceWarningApiResult[]> {
+    // NOTE: Mocking ice warnings for web because of missing CORS headers in api (just a static file)
+    return Promise.resolve(require('../../../../assets/ice_forecast_regions.json'));
+  }
+
 
   private getDate(dateString: string) {
     return moment.tz(dateString, settings.services.warning.timezone).toDate();

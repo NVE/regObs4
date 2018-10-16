@@ -4,6 +4,11 @@ import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { ToastController, ItemSliding } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { settings } from '../../../settings';
+import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { UserSetting } from '../../core/models/user-settings.model';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 
 @Component({
   selector: 'app-cap-list-group',
@@ -18,12 +23,18 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
   warnings: WarningGroup[];
   subscription: Subscription;
   animate: WarningGroup;
+  currentGeoHazard$: Observable<GeoHazard>;
 
-  constructor(private warningService: WarningService, private zone: NgZone,
-    private toastController: ToastController) {
+  constructor(
+    private warningService: WarningService,
+    private zone: NgZone,
+    private toastController: ToastController,
+    private userSettingService: UserSettingService,
+    private inAppBrowser: InAppBrowser) {
   }
 
   ngOnInit() {
+    this.currentGeoHazard$ = this.userSettingService.currentGeoHazardObservable$;
     this.subscription = this.warnings$.subscribe((val) => {
       this.zone.run(() => {
         this.warnings = val;
@@ -36,7 +47,7 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
   }
 
   trackWarningGroup(index: number, group: WarningGroup) {
-    return group ? `${group.group.groupId}_${group.group.geoHazard}` : undefined;
+    return group ? `${group.key.groupId}_${group.key.geoHazard}` : undefined;
   }
 
 
@@ -64,11 +75,11 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
 
   async toggleFavourite(group: WarningGroup) {
     if (group.isFavourite) {
-      await this.warningService.removeFromFavourite(group.group.groupId, group.group.geoHazard);
-      await this.presentToast(group.group.groupName + ' fjernet fra favoritter');
+      await this.warningService.removeFromFavourite(group.key.groupId, group.key.geoHazard);
+      await this.presentToast(group.key.groupName + ' fjernet fra favoritter');
     } else {
-      await this.warningService.addToFavourite(group.group.groupId, group.group.geoHazard);
-      await this.presentToast(group.group.groupName + ' lagt til i favoritter');
+      await this.warningService.addToFavourite(group.key.groupId, group.key.geoHazard);
+      await this.presentToast(group.key.groupName + ' lagt til i favoritter');
     }
 
     this.animate = group;
@@ -94,8 +105,24 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
 
   animateActive(group: WarningGroup) {
     return this.animate
-      && group.group.groupId === this.animate.group.groupId
-      && group.group.geoHazard === this.animate.group.geoHazard;
+      && group.key.groupId === this.animate.key.groupId
+      && group.key.geoHazard === this.animate.key.geoHazard;
+  }
+
+  getUrl(group: WarningGroup) {
+    if (group.url) {
+      return group.url;
+    } else {
+      return settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl
+        .replace('{regionName}', group.key.groupName)
+        .replace('{regionId}', group.key.groupId);
+    }
+  }
+
+  navigateToWeb(event: Event, group: WarningGroup) {
+    event.preventDefault();
+    const iap = this.inAppBrowser.create(this.getUrl(group), '_system');
+    iap.show();
   }
 
 }

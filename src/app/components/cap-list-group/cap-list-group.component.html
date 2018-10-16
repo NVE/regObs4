@@ -3,7 +3,7 @@
     <ion-label *ngIf="title">
       {{ title | translate }}
     </ion-label>
-    <ion-grid no-padding>
+    <ion-grid no-padding *ngIf="(currentGeoHazard$ | async) !== 70">
       <ion-row no-padding>
         <ion-col text-capitalize>
           {{ getDayName(0) | translate }}
@@ -18,12 +18,17 @@
     </ion-grid>
   </ion-list-header>
   <ion-item-sliding (ionDrag)="onDrag($event)" *ngFor="let warningGroup of warnings; trackBy: trackWarningGroup">
-    <ion-item no-padding detail="false" lines="full">
+    <ion-item no-padding detail="false" lines="full" (click)="navigateToWeb($event, warningGroup)">
       <div slot="start" class="geo-icon-circle">
-        <app-geo-icon [geoHazard]="warningGroup.group.geoHazard"></app-geo-icon>
+        <app-geo-icon [geoHazard]="warningGroup.key.geoHazard" size="0.8"></app-geo-icon>
       </div>
-      <ion-label>{{warningGroup.group.groupName}}</ion-label>
-      <ion-grid>
+      <ion-label>
+        <h2>{{warningGroup.key.groupName}}</h2>
+        <p *ngIf="warningGroup.lastUpdated">
+          {{'WARNING_LIST.LAST_UPDATED' | translate}}: {{warningGroup.lastUpdatedString}}
+        </p>
+      </ion-label>
+      <ion-grid *ngIf="warningGroup.key.geoHazard !== 70">
         <ion-row>
           <ion-col *ngIf="{ level: getDayWarning(warningGroup, 0) } as warning">
             <ion-badge [color]="'warninglevel-'+warning.level">{{warning.level}}</ion-badge>

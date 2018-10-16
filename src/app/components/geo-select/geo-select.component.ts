@@ -20,6 +20,10 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
 
   @Input() inHeader: boolean;
 
+  get size() {
+    return this.inHeader && !this.isOpen ? 0.7 : 1.0;
+  }
+
   constructor(private userSettingService: UserSettingService, private events: Events) { }
 
   async ngOnInit() {

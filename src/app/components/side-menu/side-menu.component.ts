@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 export class SideMenuComponent implements OnInit, OnDestroy {
   userSettings: UserSetting;
   lastUpdated$: Observable<Date>;
+  settings = settings;
 
   constructor(
     private observationService: ObservationService,

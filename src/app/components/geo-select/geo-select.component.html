@@ -2,7 +2,7 @@
   slot="fixed" [ngClass]="{ 'fullscreen': isFullscreen, 'in-header': inHeader }">
   <div class="toggle-button" *ngIf="!(inHeader && isOpen)">
     <ion-fab-button color="light" (click)="toggle()">
-      <app-geo-icon [geoHazard]="currentGeoHazard"></app-geo-icon>
+      <app-geo-icon [geoHazard]="currentGeoHazard" [size]="size"></app-geo-icon>
     </ion-fab-button>
     <ion-label *ngIf="isOpen">{{ getName(currentGeoHazard) | translate }}</ion-label>
   </div>
@@ -10,7 +10,7 @@
     <div class="geo-selector-wrapper" (click)="toggle()"></div>
     <div *ngIf="inHeader" class="geo-selector-item" (click)="toggle()">
       <ion-fab-button color="light">
-        <app-geo-icon [geoHazard]="currentGeoHazard"></app-geo-icon>
+        <app-geo-icon [geoHazard]="currentGeoHazard" [size]="size"></app-geo-icon>
       </ion-fab-button>
       <ion-label>{{ getName(currentGeoHazard) | translate }}</ion-label>
     </div>

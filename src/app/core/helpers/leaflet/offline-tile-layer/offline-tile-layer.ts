@@ -17,7 +17,7 @@ export class OfflineTileLayer extends L.TileLayer {
         private offlineMapService: OfflineMapService,
         private plaform: Platform,
     ) {
-        super(settings.map.tiles.fallbackMapUrl, {
+        super(settings.map.tiles.defaultMapUrl, {
             name, maxZoom: 18, minZoom: 1,
         });
     }
@@ -96,11 +96,15 @@ export class OfflineTileLayer extends L.TileLayer {
     }
 
     private getTileUrlOrFallbackMap(coords: ExtendedCoords): string {
+        if (coords.z <= settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
+            return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
+        }
+
         const isInsideNorway = this.isInsideBorders(coords);
         if (!isInsideNorway) {
-            return this.getOriginalTileUrl(coords, settings.map.tiles.fallbackMapUrl);
-        } else {
             return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
+        } else {
+            return this.getOriginalTileUrl(coords, settings.map.tiles.nowegianDetailsMapUrl);
         }
     }
 

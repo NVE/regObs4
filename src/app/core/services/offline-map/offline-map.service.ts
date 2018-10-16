@@ -265,6 +265,7 @@ export class OfflineMapService {
     };
   }
 
+  // TODO: delete all directories insted
   async reset() {
     const maps = await this.getOfflineMaps();
     for (const map of maps) {

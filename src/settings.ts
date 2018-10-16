@@ -36,13 +36,19 @@ export const settings = {
             summerMonths: [5, 6, 7, 8, 9, 10],
             timezone: 'Europe/Oslo',
             Snow: {
-                apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.0/api'
+                apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.0/api',
+                webUrl: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/'
             },
             Dirt: {
-                apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api'
+                apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api',
+                webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
             },
             Water: {
-                apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.5/api'
+                apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.5/api',
+                webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
+            },
+            Ice: {
+                apiUrl: 'http://www.iskart.no/json/ice_forecast_regions.json',
             }
         }
     },
@@ -61,8 +67,10 @@ export const settings = {
             cacheFolder: 'tilescache',
             embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
             embeddedUrlMaxZoom: 5,
-            defaultMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
-            fallbackMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+            zoomToShowBeforeNorwegianDetailsMap: 9,
+            // tslint:disable-next-line:max-line-length
+            nowegianDetailsMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
+            defaultMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
             supportTiles: [
                 {
                     name: 'steepness',
@@ -141,5 +149,16 @@ export const settings = {
     cordovaNotAvailable: 'cordova_not_available',
     gps: {
         maximumAge: 180000
+    },
+    offlineAssetsFolder: 'assets',
+    dateFormats: {
+        angular: {
+            date: 'dd.MM.yyyy',
+            dateAndTime: 'dd.MM.yyyy HH:mm',
+        },
+        moment: {
+            date: 'DD.MM.YYYY',
+            dateAndTime: 'DD.MM.YYYY HH:MM',
+        }
     }
 };

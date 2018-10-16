@@ -3,7 +3,7 @@
     <h2>{{obs.LocationName || obs.MunicipalName}} / {{obs.ForecastRegionName}}</h2>
     <p>
       <ion-icon [src]="icon"></ion-icon> {{ geoHazardName }}
-      <ion-icon name="calendar"></ion-icon> {{ dtObsDate | date: 'dd.MM.yyyy HH:mm' }}
+      <ion-icon name="calendar"></ion-icon> {{ dtObsDate | date: settings.dateFormats.angular.dateAndTime }}
     </p>
     <p>
       <ion-icon name="contact"></ion-icon> {{obs.NickName}}
