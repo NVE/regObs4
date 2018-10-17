@@ -6,8 +6,8 @@ import { AppMode } from './app/core/models/app-mode.enum';
 
 export class NanoSql {
     public static readonly TABLES = {
-        REGISTRATION: {
-            name: 'registration',
+        OBSERVATION: {
+            name: 'observation',
             instancePerAppMode: true, // Create one table for each app mode
             model: [
                 { key: 'RegId', type: 'number', props: ['pk'] },
@@ -105,7 +105,21 @@ export class NanoSql {
                 { key: 'id', type: 'string', props: ['pk'] },
                 { key: '*', type: '*' },
             ]
-        }
+        },
+        REGISTRATION: {
+            name: 'registration',
+            model: [
+                { key: 'geoHazard', type: 'int', props: ['pk'] },
+                { key: '*', type: '*' },
+            ]
+        },
+        REGISTRATION_SYNC: {
+            name: 'registration_sync',
+            model: [
+                { key: 'id', type: 'int', props: ['pk', 'ai'] },
+                { key: '*', type: '*' },
+            ]
+        },
     };
 
     static getTables(): NanoSqlTable[] {
@@ -126,6 +140,9 @@ export class NanoSql {
             id: settings.db.nanoSql.dbName,
             mode: getMode(),
             version: 1,
+            historyMode: {
+                table: 'row',
+            }
         });
         // NOTE: It is also possible to implement migrations on version updates.
         // See: https://github.com/ClickSimply/Nano-SQL/issues/70

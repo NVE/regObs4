@@ -33,6 +33,10 @@ const routes: Routes = [
   { path: 'observation-list', loadChildren: './pages/observation-list/observation-list.module#ObservationListPageModule' },
   { path: 'offline-map', loadChildren: './pages/offline-map/offline-map.module#OfflineMapPageModule' },
   { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' },
+  {
+    path: 'registration',
+    loadChildren: 'app/modules/registration/registration.module#RegistrationModule'
+  },
 
 ];
 

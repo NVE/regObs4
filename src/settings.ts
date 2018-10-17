@@ -58,8 +58,7 @@ export const settings = {
             location: 'default'
         },
         nanoSql: {
-            dbName: 'nanoSql',
-            tableName: 'registration'
+            dbName: 'regobs',
         }
     },
     map: {
