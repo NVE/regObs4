@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, PopoverController } from '@ionic/angular';
+import { RegistrationService } from '../../modules/registration/services/registration.service';
 
 @Component({
   selector: 'app-popover-menu',
@@ -8,7 +9,10 @@ import { NavController, PopoverController } from '@ionic/angular';
 })
 export class PopoverMenuComponent implements OnInit {
 
-  constructor(private navController: NavController, private popoverController: PopoverController) { }
+  constructor(
+    private navController: NavController,
+    private popoverController: PopoverController,
+    private registrationService: RegistrationService) { }
 
   ngOnInit() {
   }
@@ -16,6 +20,11 @@ export class PopoverMenuComponent implements OnInit {
   async closeAndNavigate(url: string) {
     await this.popoverController.dismiss();
     return this.navController.navigateForward(url);
+  }
+
+  async createRegistration() {
+    await this.popoverController.dismiss();
+    this.registrationService.createOrGetRegistraionAndRoute();
   }
 
 }

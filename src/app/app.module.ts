@@ -20,6 +20,7 @@ import { UserLoginComponent } from './components/side-menu/user-login/user-login
 import { SharedModule } from './modules/shared/shared.module';
 import { ObservationsDaysBackComponent } from './components/side-menu/observations-days-back/observations-days-back.component';
 import { RegistrationModule } from './modules/registration/registration.module';
+import { RegobsApiModule } from './modules/regobs-api/regobs-api.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -56,6 +57,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AngularSvgIconModule,
     SharedModule,
     RegistrationModule,
+    RegobsApiModule,
   ],
   providers: AppProviders.getProviders(),
   bootstrap: [AppComponent],

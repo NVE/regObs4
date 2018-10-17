@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { RegistrationService } from '../../services/registration.service';
+import { CreateRegistrationRequestDto } from '../../../regobs-api/models';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-set-time',
@@ -7,9 +10,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SetTimePage implements OnInit {
 
-  constructor() { }
+  constructor(private registrationService: RegistrationService) { }
 
   ngOnInit() {
   }
-
 }

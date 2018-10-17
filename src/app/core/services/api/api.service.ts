@@ -12,7 +12,6 @@ import { Observable } from 'rxjs';
 import { HelperService } from '../helpers/helper.service';
 import { SearchResult } from './searchResult';
 import { HttpClient } from '@angular/common/http';
-import * as apiKey from '../../../../assets/apikey.json';
 
 @Injectable({
   providedIn: 'root'
@@ -64,7 +63,7 @@ export class ApiService {
 
   private getHttpRequestHeaders() {
     return {
-      regObs_apptoken: apiKey.default.apiKey,
+      regObs_apptoken: require('../../../../assets/apiKey.json').apiKey,
       ApiJsonVersion: settings.services.regObs.apiJsonVersion,
     };
   }

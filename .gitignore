@@ -33,3 +33,4 @@ $RECYCLE.BIN/
 Thumbs.db
 UserInterfaceState.xcuserstate
 src/assets/apikey.json
+src/app/modules/regobs-api/

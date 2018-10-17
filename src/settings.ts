@@ -147,7 +147,12 @@ export const settings = {
     },
     cordovaNotAvailable: 'cordova_not_available',
     gps: {
-        maximumAge: 180000
+        maximumAge: 180000,
+        currentPositionOptions: {
+            enableHighAccuracy: true,
+            timeout: 20 * 1000, // 20 sec
+            maximumAge: 10 * 60 * 1000 // 10 minutes
+        },
     },
     offlineAssetsFolder: 'assets',
     dateFormats: {

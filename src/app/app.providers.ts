@@ -20,11 +20,19 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { MapService } from './core/services/map/map.service';
 import { WarningService } from './core/services/warning/warning.service';
-import { ErrorHandler } from '@angular/core';
+import { ErrorHandler, Provider, APP_INITIALIZER, forwardRef } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { LoginService } from './core/services/login/login.service';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
+
+export const API_INTERCEPTOR_PROVIDER: Provider = {
+    provide: HTTP_INTERCEPTORS,
+    useExisting: forwardRef(() => ApiInterceptor),
+    multi: true
+};
 
 export class AppProviders {
     public static getProviders() {
@@ -43,6 +51,8 @@ export class AppProviders {
             InAppBrowser,
             HTTP,
             WebView,
+            ApiInterceptor,
+            API_INTERCEPTOR_PROVIDER,
             { provide: ErrorHandler, useClass: AppErrorHandler },
             ...this.getSingletonServices(),
             ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),

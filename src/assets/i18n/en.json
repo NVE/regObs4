@@ -81,6 +81,11 @@
   "OFFLINE_MAP": {
     "TITLE": "Offline map"
   },
+  "REGISTRATION": {
+    "SET_TIME": {
+      "TITLE": "Time"
+    }
+  },
   "SETTINGS": {
     "APPMODE": "App mode",
     "LANGUAGE": "Language",

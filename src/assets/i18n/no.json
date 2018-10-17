@@ -81,6 +81,11 @@
   "OFFLINE_MAP": {
     "TITLE": "Offline kart"
   },
+  "REGISTRATION": {
+    "SET_TIME": {
+      "TITLE": "Tidspunkt"
+    }
+  },
   "SETTINGS": {
     "APPMODE": "Appmodus",
     "LANGUAGE": "Språk",

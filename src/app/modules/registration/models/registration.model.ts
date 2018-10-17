@@ -1,10 +1,6 @@
-export interface IRegistration {
-    GeoHazardTid: number;
-    DtObsTime?: Date;
-    LangKey: number;
-    Latitude?: number;
-    Longitude?: number;
-    LocationId?: number;
-    ObserverGroupId?: number;
-    ObserverId: number;
+import { CreateRegistrationRequestDto } from '../../regobs-api/models';
+import { GeoHazard } from '../../../core/models/geo-hazard.enum';
+
+export interface IRegistration extends CreateRegistrationRequestDto {
+    geoHazard: GeoHazard;
 }
