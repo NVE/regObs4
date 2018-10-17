@@ -8,19 +8,21 @@
   </div>
   <div class="geo-selector-items" [ngClass]="{ 'open': isOpen }">
     <div class="geo-selector-wrapper" (click)="toggle()"></div>
-    <div *ngIf="inHeader" class="geo-selector-item" (click)="toggle()">
-      <ion-fab-button color="light">
-        <app-geo-icon [geoHazard]="currentGeoHazard" [size]="size"></app-geo-icon>
-      </ion-fab-button>
-      <ion-label>{{ getName(currentGeoHazard) | translate }}</ion-label>
-    </div>
-    <ng-container *ngFor="let geoHazard of geoHazardTypes">
-      <div *ngIf="(geoHazard !== currentGeoHazard)" class="geo-selector-item" (click)="changeGeoHazard(geoHazard)">
-        <ion-fab-button color="light">
-          <app-geo-icon [geoHazard]="geoHazard"></app-geo-icon>
+    <ion-list lines="none" no-margin>
+      <ion-item *ngIf="inHeader" no-padding class="geo-selector-item" (click)="toggle()">
+        <ion-fab-button slot="start" color="light">
+          <app-geo-icon [geoHazard]="currentGeoHazard" [size]="size"></app-geo-icon>
         </ion-fab-button>
-        <ion-label>{{ getName(geoHazard) | translate }}</ion-label>
-      </div>
-    </ng-container>
+        <ion-label>{{ getName(currentGeoHazard) | translate }}</ion-label>
+      </ion-item>
+      <ng-container *ngFor="let geoHazard of geoHazardTypes">
+        <ion-item *ngIf="(geoHazard !== currentGeoHazard)" no-padding class="geo-selector-item" (click)="changeGeoHazard(geoHazard)">
+          <ion-fab-button slot="start" color="light">
+            <app-geo-icon [geoHazard]="geoHazard"></app-geo-icon>
+          </ion-fab-button>
+          <ion-label>{{ getName(geoHazard) | translate }}</ion-label>
+        </ion-item>
+      </ng-container>
+    </ion-list>
   </div>
 </ion-fab>

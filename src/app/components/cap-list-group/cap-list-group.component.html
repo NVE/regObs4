@@ -18,7 +18,7 @@
     </ion-grid>
   </ion-list-header>
   <ion-item-sliding (ionDrag)="onDrag($event)" *ngFor="let warningGroup of warnings; trackBy: trackWarningGroup">
-    <ion-item no-padding detail="false" lines="full" (click)="navigateToWeb($event, warningGroup)">
+    <ion-item no-padding [detail]="warningGroup.key.geoHazard === 70" lines="full" (click)="navigateToWeb($event, warningGroup)">
       <div slot="start" class="geo-icon-circle">
         <app-geo-icon [geoHazard]="warningGroup.key.geoHazard" size="0.8"></app-geo-icon>
       </div>

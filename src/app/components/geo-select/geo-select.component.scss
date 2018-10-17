@@ -10,33 +10,37 @@ ion-fab {
     ion-fab-button {
         --size: 44px;
         --box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
+        margin-top: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        margin-right: 5px;
     }
 
     .toggle-button {
+        height: 44px;
+        width: 44px;
         ion-fab-button {
             --padding-top: 0px;
             --padding-bottom: 0px;    
         }
-    }
-
-    .toggle-button, .geo-selector-item {
-        height: 44px;
-        width: 44px;
-
-        ion-fab-button {
-            --padding-start: 0px;
-            --padding-end: 0px; 
-        }
-
         ion-label {
             position: relative;
             left: 60px;
-            top: -35px;
+            top: -32px;
+            display: inline;
+        }
+    }
+
+    .toggle-button, .geo-selector-item {
+        ion-label {
             background-color: #fff;
             opacity: 0.7;
             padding: 4px;
-            display: inline;
         }
+    }
+
+    .geo-selector-item {
+        background-color: rgba(0,0,0,0);
     }
 
     .geo-selector-items {
@@ -44,6 +48,9 @@ ion-fab {
         &.open {
             display: block;
         }
+        --backround: rgba(0,0,0,0);
+        --ion-background-color: rgba(0,0,0,0);
+        --ion-item-background-color: rgba(0,0,0,0);
     }
 
     .geo-selector-wrapper {
@@ -63,6 +70,8 @@ ion-fab {
 
             ion-fab-button {
                 --size: 32px;
+                --padding-start: 0px;
+                --padding-end: 0px;    
             }
         }
 
@@ -70,12 +79,12 @@ ion-fab {
             ion-label {
                 background-color: rgba(0,0,0,0);
                 color: #fff;
+                opacity: 1;
             }
         }
 
         .geo-selector-items {
             background-color: var(--backdrop-background);
-            width: 150px;
             padding: 10px;
             position: absolute;
             top: -10px;
