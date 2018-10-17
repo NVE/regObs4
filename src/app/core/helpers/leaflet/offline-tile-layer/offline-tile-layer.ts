@@ -77,15 +77,14 @@ export class OfflineTileLayer extends L.TileLayer {
                 coords, settings.map.tiles.embeddedUrl);
             return this.getOriginalTileUrl(coords, settings.map.tiles.embeddedUrl);
         }
-
         const offlineUrl = await this.offlineMapService.getTileUrl(this.name, coords.x, coords.y, coords.z);
         if (offlineUrl) {
-            console.log('[OfflineTilesLayer] found cached tile for tile: ', { name: this.name, coords });
             return offlineUrl;
         } else {
             const url = this.getTileUrlOrFallbackMap(coords);
+            const coordsCopy = { ...coords }; // Create a copy because coords reference might get changed on error
             if (this.downloadTileToCache()) {
-                this.offlineMapService.saveTileAsBlob(this.name, coords.x, coords.y, coords.z, url);
+                this.offlineMapService.saveTileAsBlob(this.name, coordsCopy.x, coordsCopy.y, coordsCopy.z, url);
             }
             return url;
         }
