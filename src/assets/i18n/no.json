@@ -1,5 +1,6 @@
 {
   "ALERT": {
+    "CANCEL": "Avbryt",
     "DEFAULT_HEADER": "Oisann!",
     "OK": "Ok"
   },
@@ -17,6 +18,10 @@
       "5": "Fre",
       "6": "Lør"
     }
+  },
+  "DIALOGS": {
+    "CANCEL": "Avbryt",
+    "OK": "Ok"
   },
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Tur pågår"
@@ -71,6 +76,9 @@
     "TOPO_MAP_CREDITS": "Topografisk kart levert av",
     "USER_SETTINGS": "Brukervalg"
   },
+  "MONTHS": {
+    "SHORT_LIST": "Jan, Feb, Mar, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Des"
+  },
   "MY_OBSERVATIONS": {
     "TITLE": "Mine observasjoner"
   },
@@ -82,7 +90,17 @@
     "TITLE": "Offline kart"
   },
   "REGISTRATION": {
+    "DELETE": "Slett observasjon",
+    "DELETE_CONFIRM": "Er du sikker?",
+    "OVERVIEW": {
+      "MY_OBSERVATION": "Min observasjon",
+      "TITLE": "Observasjon"
+    },
+    "SEND": "Send inn",
     "SET_TIME": {
+      "CONFIRM": "Bekreft dato og tid",
+      "HEADER": "Når observerte du?",
+      "NOW": "Nå",
       "TITLE": "Tidspunkt"
     }
   },

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
 import { nSQL } from 'nano-sql';
 import { IRegistration } from '../models/registration.model';
-import { Observable } from 'rxjs';
-import { shareReplay, switchMap, map, take } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
+import { shareReplay, switchMap, map, take, tap } from 'rxjs/operators';
 import * as RegobsApi from '../../regobs-api/services';
 import * as RegobsApiModels from '../../regobs-api/models';
 import { settings } from '../../../../settings';
@@ -12,9 +12,9 @@ import { LoginService } from '../../../core/services/login/login.service';
 import * as moment from 'moment';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { UserSetting } from '../../../core/models/user-settings.model';
-import { User } from '../../../core/models/user.model';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NavController } from '@ionic/angular';
+import { AppMode } from '../../../core/models/app-mode.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -41,40 +41,67 @@ export class RegistrationService {
     private navController: NavController,
   ) {
 
-    this._registrationsObservable = this.getRegistrationsAsObservable();
+    this._registrationsObservable = this.userSettingService.userSettingObservable$
+      .pipe(switchMap((userSettings) => this.getRegistrationsAsObservable(userSettings.appMode)));
     this._registrationForCurrentGeoHazardObservable = this.userSettingService.currentGeoHazardObservable$
       .pipe(switchMap((geoHazard) => this.registrations$
-        .pipe(map((x) => x.find((item) => item.geoHazard === geoHazard)))));
+        .pipe(map((registraions) => registraions.find((item) => item.geoHazard === geoHazard)))));
   }
 
-  saveRegistration(geoHazard: GeoHazard, registration: RegobsApiModels.CreateRegistrationRequestDto) {
-    const reg: IRegistration = { geoHazard, ...registration };
-    return nSQL().table(NanoSql.TABLES.REGISTRATION.name).query('upsert', reg).emit();
+  async saveRegistration(registration: IRegistration) {
+    const userSettings = await this.userSettingService.getUserSettings();
+    return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, userSettings.appMode)
+      .query('upsert', registration).exec();
+  }
+
+  async createNewRegistration() {
+    const userSettings = await this.userSettingService.getUserSettings();
+    const loggedInUser = await this.loginService.getLoggedInUser();
+    if (!loggedInUser.isLoggedIn) {
+      throw Error('User is not logged in!');
+    }
+    const currentPosition = await this.geolocation.getCurrentPosition(settings.gps.currentPositionOptions);
+    const reg: IRegistration = {
+      geoHazard: userSettings.currentGeoHazard,
+      Id: this.createGuid(),
+      DtObsTime: moment().toISOString(),
+      ObserverGuid: loggedInUser.user.Guid,
+      GeoHazardTID: this.getApiGeoHazard(userSettings.currentGeoHazard),
+      ObsLocation: {
+        Latitude: currentPosition.coords.latitude,
+        Longitude: currentPosition.coords.longitude,
+      }
+    };
+    return reg;
   }
 
   getCurrentRegistration() {
     return this.registrationForCurrentGeoHazard$.pipe(take(1)).toPromise();
   }
 
-  async createOrGetRegistraionAndRoute() {
+  async createOrEditRegistrationRoute() {
     const user = await this.loginService.getLoggedInUser();
     if (!user.isLoggedIn) {
       this.navController.navigateForward('login');
     } else {
       const registration = await this.getCurrentRegistration();
       if (!registration) {
-        const userSetting = await this.userSettingService.getUserSettings();
-        await this.createRegistration(userSetting, user.user);
-        this.navController.navigateForward('registration');
+        this.navController.navigateForward('registration/set-time');
       } else {
         this.navController.navigateForward('registration');
       }
     }
   }
 
-  private getRegistrationsAsObservable() {
+  async deleteCurrentRegistration() {
+    const userSettings = await this.userSettingService.getUserSettings();
+    return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, userSettings.appMode)
+      .query('delete').where(['geoHazard', '=', userSettings.currentGeoHazard]).exec();
+  }
+
+  private getRegistrationsAsObservable(appMode: AppMode) {
     return nSQL().observable<IRegistration[]>(() => {
-      return nSQL().table(NanoSql.TABLES.REGISTRATION.name).query('select').emit();
+      return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('select').emit();
     }).toRxJS().pipe(shareReplay(1));
   }
 
@@ -90,7 +117,7 @@ export class RegistrationService {
       return this.getRegistrationById(resp.RegId, userSettings);
     })).toPromise();
     await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode)
-      .query('upsert', result);
+      .query('upsert', result).exec();
   }
 
   private getRegistrationById(regId: number, userSetting: UserSetting) {
@@ -98,21 +125,6 @@ export class RegistrationService {
     return this.searchApiService.SearchAll({ RegId: regId }).pipe(map((result) =>
       result.Results[0]
     ));
-  }
-
-  private async createRegistration(userSetting: UserSetting, user: User) {
-    const currentPosition = await this.geolocation.getCurrentPosition(settings.gps.currentPositionOptions);
-    const reg: RegobsApiModels.CreateRegistrationRequestDto = {
-      Id: this.createGuid(),
-      DtObsTime: moment().toISOString(),
-      ObserverGuid: user.Guid,
-      GeoHazardTID: this.getApiGeoHazard(userSetting.currentGeoHazard),
-      ObsLocation: {
-        Latitude: currentPosition.coords.latitude,
-        Longitude: currentPosition.coords.longitude,
-      }
-    };
-    return this.saveRegistration(userSetting.currentGeoHazard, reg);
   }
 
   private getApiGeoHazard(geoHazard: GeoHazard) {

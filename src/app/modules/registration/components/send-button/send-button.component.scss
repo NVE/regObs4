@@ -1,0 +1,17 @@
+.bottom-send-registration {
+    width: 100%;
+
+    ion-grid {
+        background-color: #fff;
+
+        .send-button-col {
+            padding-bottom: 0px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .delete-button-col {
+            padding-top: 5px;
+        }
+    }
+}

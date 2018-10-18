@@ -162,7 +162,7 @@ export const settings = {
         },
         moment: {
             date: 'DD.MM.YYYY',
-            dateAndTime: 'DD.MM.YYYY HH:MM',
+            dateAndTime: 'DD.MM.YYYY HH:mm',
         }
     }
 };

@@ -24,7 +24,7 @@ export class PopoverMenuComponent implements OnInit {
 
   async createRegistration() {
     await this.popoverController.dismiss();
-    this.registrationService.createOrGetRegistraionAndRoute();
+    this.registrationService.createOrEditRegistrationRoute();
   }
 
 }

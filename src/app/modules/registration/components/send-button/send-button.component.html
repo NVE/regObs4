@@ -1,0 +1,18 @@
+<ion-grid class="bottom-send-registration" slot="fixed" vertical="bottom" no-padding>
+  <ion-row>
+    <ion-col class="send-button-col" size="12">
+      <ion-button expand="full" color="primary">
+        <ion-icon slot="start" name="md-send"></ion-icon>
+        {{"REGISTRATION.SEND" | translate}}
+      </ion-button>
+    </ion-col>
+  </ion-row>
+  <ion-row no-padding>
+    <ion-col class="delete-button-col" no-padding text-center>
+      <ion-button (click)="delete()" color="dark" size="small" fill="clear">
+        <ion-icon slot="start" name="trash"></ion-icon>
+        {{"REGISTRATION.DELETE" | translate}}
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>

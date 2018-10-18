@@ -1,5 +1,6 @@
 {
   "ALERT": {
+    "CANCEL": "Cancel",
     "DEFAULT_HEADER": "Whoops!",
     "OK": "Ok"
   },
@@ -17,6 +18,10 @@
       "5": "Fri",
       "6": "Sat"
     }
+  },
+  "DIALOGS": {
+    "CANCEL": "Cancel",
+    "OK": "Ok"
   },
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Logging trip"
@@ -71,6 +76,9 @@
     "TOPO_MAP_CREDITS": "Topo map deliverd by",
     "USER_SETTINGS": "User"
   },
+  "MONTHS": {
+    "SHORT_LIST": "Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Des"
+  },
   "MY_OBSERVATIONS": {
     "TITLE": "My observations"
   },
@@ -82,7 +90,17 @@
     "TITLE": "Offline map"
   },
   "REGISTRATION": {
+    "DELETE": "Delete observation",
+    "DELETE_CONFIRM": "Are you sure?",
+    "OVERVIEW": {
+      "MY_OBSERVATION": "My observation",
+      "TITLE": "Observation"
+    },
+    "SEND": "Submit",
     "SET_TIME": {
+      "CONFIRM": "Confirm date and time",
+      "HEADER": "What time did you observe?",
+      "NOW": "Now",
       "TITLE": "Time"
     }
   },

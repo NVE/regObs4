@@ -1,15 +1,15 @@
-import { NgModule, forwardRef, Provider } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { RegistrationRoutingModule } from './registration-routing.module';
 import { RegobsApiModule } from '../regobs-api/regobs-api.module';
-import { ApiInterceptor } from '../../core/http-interceptor/ApiInterceptor';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
-    CommonModule,
     RegistrationRoutingModule,
     RegobsApiModule,
+    SharedModule,
+  ],
+  exports: [
   ],
   declarations: []
 })
