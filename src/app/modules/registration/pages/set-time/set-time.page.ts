@@ -44,12 +44,13 @@ export class SetTimePage implements OnInit, OnDestroy {
     const hour: number = event.detail.value.hour.value;
     const minute: number = event.detail.value.minute.value;
     this.registration.DtObsTime = moment()
-      .day(day)
-      .month(month)
+      .date(day)
+      .month(month - 1)
       .year(year)
       .hour(hour)
       .minute(minute)
       .second(0)
+      .millisecond(0)
       .toISOString(true);
     this.cdr.detectChanges();
   }

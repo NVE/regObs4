@@ -21,7 +21,7 @@ export class DateHelperService {
     if (showMonthNames) {
       const monthNames = await this.translateService.get('MONTHS.SHORT_LIST').toPromise();
       const monthName = monthNames.split(',')[dateAsMoment.month()].trim();
-      dateAndMonth = `${dateAsMoment.format('D')}. ${monthName}`;
+      dateAndMonth = `${dateAsMoment.format('D')}. ${monthName},`;
     }
     return `${dateAndMonth} ${(showYear ? dateAsMoment.format('YYYY') : '')} ${(showTime ? dateAsMoment.format('HH:mm') : '')}`.trim();
   }
