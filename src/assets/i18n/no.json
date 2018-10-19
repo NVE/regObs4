@@ -223,8 +223,8 @@
     "FAVOURITES": "Favoritter",
     "IN_MAP_CENTER": "I kartsenter",
     "IN_MAP_VIEW": "I kartutsnittet",
-    "LAST_UPDATED": "Sist oppdatert",
     "RELEVANT": "Aktuelle",
-    "TITLE": "Varsom"
+    "TITLE": "Varsom",
+    "VALID_FROM": "Gyldig fra"
   }
 }

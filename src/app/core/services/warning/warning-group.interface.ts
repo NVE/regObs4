@@ -6,7 +6,8 @@ export interface IWarningGroup {
     regionId: string;
     regionName: string;
     url?: string;
-    lastUpdate?: Date;
+    validFrom?: Date;
+    validTo?: Date;
     counties: Array<string>;
     geoHazard: GeoHazard;
     warnings: IWarning[];

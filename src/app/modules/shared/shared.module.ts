@@ -10,6 +10,7 @@ import { ExternalLinkComponent } from '../../components/external-link/external-l
 import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
 import { AngularSvgIconModule, SvgIconComponent } from 'angular-svg-icon';
 import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
+import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
 
 @NgModule({
     imports: [
@@ -27,6 +28,7 @@ import { GeoSelectComponent } from '../../components/geo-select/geo-select.compo
         ExternalLinkComponent,
         GeoIconComponent,
         GeoSelectComponent,
+        FormatDatePipe,
     ],
     exports: [
         CommonModule,
@@ -40,6 +42,7 @@ import { GeoSelectComponent } from '../../components/geo-select/geo-select.compo
         ExternalLinkComponent,
         GeoIconComponent,
         GeoSelectComponent,
+        FormatDatePipe,
     ]
 })
 export class SharedModule { }

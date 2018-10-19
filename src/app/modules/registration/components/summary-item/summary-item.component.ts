@@ -1,12 +1,11 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
-import { DateHelperService } from '../../../shared/services/date-helper.service';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-summary-item',
   templateUrl: './summary-item.component.html',
   styleUrls: ['./summary-item.component.scss']
 })
-export class SummaryItemComponent implements OnInit, OnChanges {
+export class SummaryItemComponent implements OnInit {
 
   @Input() title: string;
   @Input() subTitle: string;
@@ -14,25 +13,9 @@ export class SummaryItemComponent implements OnInit, OnChanges {
   @Input() hasData: boolean;
   @Input() href: string;
 
-  subTitleFormatted: string;
-
-  constructor(private dateHelperService: DateHelperService, private cdr: ChangeDetectorRef) { }
+  constructor() { }
 
   async ngOnInit() {
-    this.formatSubTitle();
-  }
 
-  private async formatSubTitle() {
-    if (this.subTitleFormat === 'date') {
-      this.subTitleFormatted = await this.dateHelperService.formatDateString(this.subTitle);
-    } else {
-      this.subTitleFormatted = this.subTitle;
-    }
-    this.cdr.detectChanges();
   }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.formatSubTitle();
-  }
-
 }

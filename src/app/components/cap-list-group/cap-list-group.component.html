@@ -24,8 +24,10 @@
       </div>
       <ion-label>
         <h2>{{warningGroup.key.groupName}}</h2>
-        <p *ngIf="warningGroup.lastUpdated">
-          {{'WARNING_LIST.LAST_UPDATED' | translate}}: {{warningGroup.lastUpdatedString}}
+        <p>
+          <span *ngIf="warningGroup.validFrom">{{'WARNING_LIST.VALID_FROM' | translate}}: {{warningGroup.validFrom |
+            formatDate:true:false:false | async }}</span>
+          <span *ngIf="warningGroup.validTo"> - {{warningGroup.validTo | formatDate:true:false:false | async}}</span>
         </p>
       </ion-label>
       <ion-grid *ngIf="warningGroup.key.geoHazard !== 70">

@@ -31,20 +31,12 @@ export class WarningGroup {
         return this._warningGroup.counties;
     }
 
-    get lastUpdated() {
-        return this._warningGroup.lastUpdate;
+    get validFrom() {
+        return this._warningGroup.validFrom;
     }
 
-    get lastUpdatedString() {
-        if (!this.lastUpdated) {
-            return '';
-        }
-        const date = moment(this.lastUpdated);
-        if (date.isSame(date.clone().startOf('day'))) {
-            return date.format(settings.dateFormats.moment.date);
-        } else {
-            return date.format(settings.dateFormats.moment.dateAndTime);
-        }
+    get validTo() {
+        return this._warningGroup.validTo;
     }
 
     getWarningForDay(date: Date) {

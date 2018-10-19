@@ -17,12 +17,23 @@ export class DateHelperService {
 
   async formatDate(date: Date, showMonthNames = true, showYear = true, showTime = true) {
     const dateAsMoment = moment(date);
+    if (!dateAsMoment.isValid()) {
+      return '';
+    }
+    const parts = [];
     let dateAndMonth = dateAsMoment.format('DD/MM');
     if (showMonthNames) {
       const monthNames = await this.translateService.get('MONTHS.SHORT_LIST').toPromise();
       const monthName = monthNames.split(',')[dateAsMoment.month()].trim();
-      dateAndMonth = `${dateAsMoment.format('D')}. ${monthName},`;
+      dateAndMonth = `${dateAsMoment.format('D')}. ${monthName}`;
     }
-    return `${dateAndMonth} ${(showYear ? dateAsMoment.format('YYYY') : '')} ${(showTime ? dateAsMoment.format('HH:mm') : '')}`.trim();
+    parts.push(dateAndMonth);
+    if (showYear) {
+      parts.push(dateAsMoment.format('YYYY'));
+    }
+    if (showTime) {
+      parts.push(dateAsMoment.format('HH:mm'));
+    }
+    return parts.join(' ');
   }
 }

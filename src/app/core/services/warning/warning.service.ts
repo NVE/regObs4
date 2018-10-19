@@ -316,13 +316,14 @@ export class WarningService {
     await this.dataLoadService.startLoading(dataLoadId);
     const url = this.getBaseUrl(geoHazard);
     const result = await this.getWarningsFromApi(url);
-    const regionResult: IWarningGroup[] = result.map((region) => ({
+    const regionResult: IWarningGroup[] = result.forecastRegions.map((region) => ({
       id: `${region.name}_${geoHazard}`,
       regionId: region.name,
       regionName: region.name,
       counties: region.counties,
       url: region.url,
-      lastUpdate: moment(region.lastUpdate).toDate(),
+      validFrom: this.getDate(region.validFrom),
+      validTo: this.getDate(region.validTo),
       geoHazard,
       warnings: []
     }));
@@ -341,7 +342,7 @@ export class WarningService {
     }
   }
 
-  private async getWarningsFromApiNative(url: string): Promise<IIceWarningApiResult[]> {
+  private async getWarningsFromApiNative(url: string): Promise<IIceWarningApiResult> {
     this.nativeHttp.setDataSerializer('json');
     const result = await this.nativeHttp.get(url, {}, {
       'Content-Type': 'application/json',
@@ -353,7 +354,7 @@ export class WarningService {
     }
   }
 
-  private getWarningsFromApiWeb(url: string): Promise<IIceWarningApiResult[]> {
+  private getWarningsFromApiWeb(url: string): Promise<IIceWarningApiResult> {
     // NOTE: Mocking ice warnings for web because of missing CORS headers in api (just a static file)
     return Promise.resolve(require('../../../../assets/ice_forecast_regions.json'));
   }
