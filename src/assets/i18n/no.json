@@ -92,6 +92,9 @@
   "REGISTRATION": {
     "DELETE": "Slett observasjon",
     "DELETE_CONFIRM": "Er du sikker?",
+    "OBS_LOCATION": {
+      "TITLE": "Observasjonspunkt"
+    },
     "OVERVIEW": {
       "MY_OBSERVATION": "Min observasjon",
       "TITLE": "Observasjon"

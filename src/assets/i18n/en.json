@@ -92,6 +92,9 @@
   "REGISTRATION": {
     "DELETE": "Delete observation",
     "DELETE_CONFIRM": "Are you sure?",
+    "OBS_LOCATION": {
+      "TITLE": "Observed location"
+    },
     "OVERVIEW": {
       "MY_OBSERVATION": "My observation",
       "TITLE": "Observation"

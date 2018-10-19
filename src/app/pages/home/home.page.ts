@@ -14,10 +14,10 @@ import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { MapSearchResponse } from '../../core/services/map-search/map-search-response.model';
-import { MapService } from '../../core/services/map/map.service';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
+import { MapService } from '../../modules/map/services/map/map.service';
+import { MapSearchResponse } from '../../modules/map/services/map-search/map-search-response.model';
 
 const NORWEGIAN_BORDER = L.geoJSON(norwegianBorder.default);
 

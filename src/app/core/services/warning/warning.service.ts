@@ -15,8 +15,6 @@ import { IWarningApiResult } from './warning-api-result.interface';
 import { IAvalancheWarningApiResult } from './avalanche-warning-api-result.interface';
 import { combineLatest, Observable, of } from 'rxjs';
 import { IWarningInMapView } from './warning-in-mapview.interface';
-import { IMapViewAndArea } from '../map/map-view-and-area.interface';
-import { MapService } from '../map/map.service';
 import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { IWarningGroup } from './warning-group.interface';
@@ -24,6 +22,8 @@ import { UserSetting } from '../../models/user-settings.model';
 import { IIceWarningApiResult } from './ice-warning-api-result.interface';
 import { Platform } from '@ionic/angular';
 import { HTTP } from '@ionic-native/http/ngx';
+import { MapService } from '../../../modules/map/services/map/map.service';
+import { IMapViewAndArea } from '../../../modules/map/services/map/map-view-and-area.interface';
 
 @Injectable({
   providedIn: 'root'

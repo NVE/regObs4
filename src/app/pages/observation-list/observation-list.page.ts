@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import * as L from 'leaflet';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { MapService } from '../../core/services/map/map.service';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IMapView } from '../../core/services/map/map-view.interface';
+import { MapService } from '../../modules/map/services/map/map.service';
+import { IMapView } from '../../modules/map/services/map/map-view.interface';
 
 @Component({
     selector: 'app-observation-list',

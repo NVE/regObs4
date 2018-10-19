@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { CustomAnimation } from '../../../../../core/animations/custom.animation';
 import { ModalSearchPage } from '../../../pages/modal-search/modal-search.page';
-import { CustomAnimation } from '../../../core/animations/custom.animation';
 
 @Component({
   selector: 'app-map-search',

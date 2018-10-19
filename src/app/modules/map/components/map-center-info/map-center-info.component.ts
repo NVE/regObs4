@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy, HostBinding, Inject, NgZone, ChangeDetectorRef } from '@angular/core';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
-import { MapService } from '../../core/services/map/map.service';
-import { IMapView } from '../../core/services/map/map-view.interface';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { MapSearchService } from '../../core/services/map-search/map-search.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { ViewInfo } from '../../core/services/map-search/view-info.model';
-import { UserSetting } from '../../core/models/user-settings.model';
-import { IMapViewAndArea } from '../../core/services/map/map-view-and-area.interface';
+import { ViewInfo } from '../../services/map-search/view-info.model';
+import { UserSetting } from '../../../../core/models/user-settings.model';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { MapSearchService } from '../../services/map-search/map-search.service';
+import { IMapView } from '../../services/map/map-view.interface';
+import { MapService } from '../../services/map/map.service';
+import { IMapViewAndArea } from '../../services/map/map-view-and-area.interface';
 
 @Component({
   selector: 'app-map-center-info',

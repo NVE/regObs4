@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.OBS_LOCATION.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <app-map *ngIf="locationMarker" [showSupportMaps]="false" (mapReady)="onMapReady($event)" (positionChange)="positionChange($event)"></app-map>
+  <ion-grid class="bottom-info" no-padding>
+    <ion-row>
+      <ion-col class="confirm-button-col">
+        <ion-button expand="full" color="primary" (click)="confirmLocation()">Bekreft observasjonspunkt</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row no-padding>
+      <ion-col class="show-details-col" no-padding text-center>
+        <ion-button color="dark" size="small" fill="clear">
+          <ion-icon slot="start" name="ios-arrow-up"></ion-icon>
+          Vis detaljer
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

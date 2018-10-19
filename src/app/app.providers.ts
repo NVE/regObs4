@@ -18,7 +18,6 @@ import { Zip } from '@ionic-native/zip/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import { MapService } from './core/services/map/map.service';
 import { WarningService } from './core/services/warning/warning.service';
 import { ErrorHandler, Provider, APP_INITIALIZER, forwardRef } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
@@ -27,6 +26,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
+import { MapService } from './modules/map/services/map/map.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,

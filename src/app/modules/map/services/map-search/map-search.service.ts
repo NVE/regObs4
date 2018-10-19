@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { settings } from '../../../../settings';
+import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
 import { merge, map, switchMap, concat } from 'rxjs/operators';
@@ -8,13 +8,13 @@ import { Observable, bindNodeCallback, combineLatest, forkJoin } from 'rxjs';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/observable/of';
-import { UserSettingService } from '../user-setting/user-setting.service';
 import { parseString } from 'xml2js';
-import { BorderHelper } from '../../helpers/leaflet/border-helper';
 import 'leaflet.utm';
 import { LocationName } from './location-name.model';
 import { ViewInfo } from './view-info.model';
-import { LangKey } from '../../models/langKey';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { LangKey } from '../../../../core/models/langKey';
+import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 
 @Injectable({
   providedIn: 'root'

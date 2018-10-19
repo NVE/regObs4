@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalController, Events, Input } from '@ionic/angular';
-import { MapSearchService } from '../../core/services/map-search/map-search.service';
+import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
-import { MapSearchResponse } from '../../core/services/map-search/map-search-response.model';
-import { settings } from '../../../settings';
+import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
+import { settings } from '../../../../../settings';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 

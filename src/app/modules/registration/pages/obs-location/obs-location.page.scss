@@ -1,0 +1,31 @@
+:host {
+    --bottom-content-height: 100px;
+}
+
+app-map {
+    position: absolute;
+    display: block;
+    top:0;
+    left:0;
+    right: 0;
+    bottom: var(--bottom-content-height);
+}
+
+.bottom-info {
+    background-color: #fff;
+    position: absolute;
+    left:0;
+    right: 0;
+    bottom: 0;
+    height: var(--bottom-content-height);
+
+    .confirm-button-col {
+        padding-bottom: 0px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .show-details-col {
+        padding-top: 5px;
+    }
+}

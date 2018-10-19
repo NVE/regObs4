@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { nSQL } from 'nano-sql';
 import * as L from 'leaflet';
 import { IMapView } from './map-view.interface';
-import { NanoSql } from '../../../../nanosql';
 import { Observable, combineLatest, Observer } from 'rxjs';
 import { ITypedWorker, createWorker } from 'typed-web-workers';
-import { GeoHazard } from '../../models/geo-hazard.enum';
-import { UserSettingService } from '../user-setting/user-setting.service';
 import { switchMap, share, shareReplay, debounce, debounceTime } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
+import { NanoSql } from '../../../../../nanosql';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -97,11 +97,11 @@ export class MapService {
   private loadReagions(geoHazard: GeoHazard) {
     if (geoHazard === GeoHazard.Snow) {
       if (!this._avalancheRegions) {
-        this._avalancheRegions = require('../../../../assets/varslingsomraader.json'); // TODO: Add to settings
+        this._avalancheRegions = require('../../../../../assets/varslingsomraader.json'); // TODO: Add to settings
       }
     } else {
       if (!this._regions) {
-        this._regions = require('../../../../assets/regions-simple.json'); // TODO: Add to settings
+        this._regions = require('../../../../../assets/regions-simple.json'); // TODO: Add to settings
       }
     }
   }

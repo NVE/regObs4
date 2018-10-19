@@ -86,7 +86,7 @@ export class RegistrationService {
     } else {
       const registration = await this.getCurrentRegistration();
       if (!registration) {
-        this.navController.navigateForward('registration/set-time');
+        this.navController.navigateForward('registration/obs-location');
       } else {
         this.navController.navigateForward('registration');
       }

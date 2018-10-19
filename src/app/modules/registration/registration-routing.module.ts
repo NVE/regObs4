@@ -7,9 +7,14 @@ const routes: Routes = [
         loadChildren: './pages/overview/overview.module#OverviewPageModule'
     },
     {
-        path: 'set-time',
+        path: 'registration/set-time',
         loadChildren: './pages/set-time/set-time.module#SetTimePageModule'
     },
+    {
+        path: 'registration/obs-location',
+        loadChildren: './pages/obs-location/obs-location.module#ObsLocationPageModule'
+    },
+
 ];
 
 @NgModule({

@@ -7,14 +7,9 @@ import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
-import { MapControlsComponent } from '../../components/map-controls/map-controls.component';
-import { MapSearchComponent } from '../../components/map-controls/map-search/map-search.component';
-import { FullscreenToggleComponent } from '../../components/map-controls/fullscreen-toggle/fullscreen-toggle.component';
-import { GpsCenterComponent } from '../../components/map-controls/gps-center/gps-center.component';
-import { ModalSearchPageModule } from '../modal-search/modal-search.module';
 import { SharedModule } from '../../modules/shared/shared.module';
-import { MapCenterInfoComponent } from '../../components/map-center-info/map-center-info.component';
 import { DataLoadModule } from '../../modules/data-load/data-load.module';
+import { MapModule } from '../../modules/map/map.module';
 
 @NgModule({
   imports: [
@@ -29,18 +24,13 @@ import { DataLoadModule } from '../../modules/data-load/data-load.module';
     ]),
     TranslateModule,
     LeafletModule,
-    ModalSearchPageModule,
     SharedModule,
     DataLoadModule,
+    MapModule,
   ],
   declarations: [
     HomePage,
     MapItemBarComponent,
-    MapControlsComponent,
-    MapSearchComponent,
-    FullscreenToggleComponent,
-    GpsCenterComponent,
-    MapCenterInfoComponent,
   ],
 })
 export class HomePageModule {
