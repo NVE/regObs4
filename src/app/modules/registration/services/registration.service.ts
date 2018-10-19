@@ -60,17 +60,12 @@ export class RegistrationService {
     if (!loggedInUser.isLoggedIn) {
       throw Error('User is not logged in!');
     }
-    const currentPosition = await this.geolocation.getCurrentPosition(settings.gps.currentPositionOptions);
     const reg: IRegistration = {
       geoHazard: userSettings.currentGeoHazard,
       Id: this.createGuid(),
-      DtObsTime: moment().toISOString(),
       ObserverGuid: loggedInUser.user.Guid,
+      DtObsTime: null,
       GeoHazardTID: this.getApiGeoHazard(userSettings.currentGeoHazard),
-      ObsLocation: {
-        Latitude: currentPosition.coords.latitude,
-        Longitude: currentPosition.coords.longitude,
-      }
     };
     return reg;
   }
