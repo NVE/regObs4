@@ -20,6 +20,7 @@ export class MapSearchComponent implements OnInit {
       component: ModalSearchPage,
       showBackdrop: true,
       backdropDismiss: true,
+      keyboardClose: false,
       enterAnimation: CustomAnimation.scaleUpEnterV2,
       leaveAnimation: CustomAnimation.scaleUpLeaveV2
     });

@@ -5,7 +5,7 @@
       <ng-container *ngIf="viewInfo$ | async as v">
         <ng-container *ngIf="!isLoading">
           <ion-row no-margin>
-            <span *ngIf="v.location.name !== v.location.adminName">{{ v.location.name }},&nbsp;</span>{{v.location.adminName}}
+            <span *ngIf="v.location && (v.location.name !== v.location.adminName)">{{ v.location.name }},&nbsp;</span>{{v.location.adminName}}
           </ion-row>
           <ion-row no-margin>
             {{ v.elevation }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL'|translate}}.

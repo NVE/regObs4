@@ -43,7 +43,7 @@ export class LoginPage implements OnInit {
         if (!this.loginFormUsername && !val.isLoggedIn && val.email) {
           this.loginFormUsername = val.email; // Setting email to last logged in email for easy login
           if (this.password) {
-            (<any>this.password).focus();
+            (<any>this.password).setFocus();
           }
         }
       }, 500);

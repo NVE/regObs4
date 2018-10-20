@@ -54,7 +54,7 @@ export class OfflineTileLayer extends L.TileLayer {
      * Returns whether tile coords is inside norwegian border
      * @param coords tile coords
      */
-    private isInsideBorders(coords: L.Coords): boolean {
+    private isInsideBorders(coords: L.Coords): Promise<boolean> {
         const latLngBounds: L.LatLngBounds = (<any>this)._tileCoordsToBounds(coords);
         return BorderHelper.isBoundsInNorway(latLngBounds);
     }
@@ -81,7 +81,7 @@ export class OfflineTileLayer extends L.TileLayer {
         if (offlineUrl) {
             return offlineUrl;
         } else {
-            const url = this.getTileUrlOrFallbackMap(coords);
+            const url = await this.getTileUrlOrFallbackMap(coords);
             const coordsCopy = { ...coords }; // Create a copy because coords reference might get changed on error
             if (this.downloadTileToCache()) {
                 this.offlineMapService.saveTileAsBlob(this.name, coordsCopy.x, coordsCopy.y, coordsCopy.z, url);
@@ -94,12 +94,12 @@ export class OfflineTileLayer extends L.TileLayer {
         return this.plaform.is('cordova') && (this.plaform.is('ios') || this.plaform.is('android'));
     }
 
-    private getTileUrlOrFallbackMap(coords: ExtendedCoords): string {
+    private async getTileUrlOrFallbackMap(coords: ExtendedCoords): Promise<string> {
         if (coords.z <= settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
             return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
         }
 
-        const isInsideNorway = this.isInsideBorders(coords);
+        const isInsideNorway = await this.isInsideBorders(coords);
         if (!isInsideNorway) {
             return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
         } else {

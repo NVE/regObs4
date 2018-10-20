@@ -50,7 +50,7 @@ export class ModalSearchPage implements OnInit {
   focusInput(event: Event) {
     const input: Input = <any>event.target;
     setTimeout(() => {
-      (<any>input).focus();
+      (<any>input).setFocus();
     }, 500);
   }
 

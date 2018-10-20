@@ -77,13 +77,10 @@ export class MapSearchService {
   }
 
   getElevation(latLng: L.LatLng): Observable<number> {
-    if (BorderHelper.isInSvalbard(latLng)) {
-      return this.getElevationSvalbard(latLng);
-    } else if (BorderHelper.isInNorway(latLng)) {
-      return this.getElevationNorway(latLng);
-    } else {
-      return this.getElevationWorld(latLng);
-    }
+    return BorderHelper.getLatLngBoundInSvalbardOrNorwayAsObservable(latLng)
+      .pipe(switchMap((val) =>
+        val.inSvalbard ? this.getElevationSvalbard(latLng) : (val.inNorway ?
+          this.getElevationNorway(latLng) : this.getElevationWorld(latLng))));
   }
 
   getElevationSvalbard(latLng: L.LatLng): Observable<number> {
