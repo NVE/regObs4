@@ -87,10 +87,10 @@ export class LoginService {
   }
 
   getLoggedUserInAsObservable(appMode: AppMode): Observable<LoggedInUser> {
-    return nSQL().observable<LoggedInUser>(() => {
+    return nSQL().observable<LoggedInUser[]>(() => {
       return NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('select').emit();
     }).toRxJS().pipe(
-      map((val: LoggedInUser[]) => val[0] || { isLoggedIn: false })
+      map(([loggedInUser]) => loggedInUser || { isLoggedIn: false })
     );
   }
 }

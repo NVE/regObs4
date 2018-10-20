@@ -62,7 +62,7 @@ export class UserSettingService {
   }
 
   private getUserSettingsAsObservable(): Observable<UserSetting> {
-    return nSQL().observable<UserSetting>(() => {
+    return nSQL().observable<UserSetting[]>(() => {
       return nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select').emit();
     }).toRxJS().pipe(
       map((val: UserSetting[]) => val.length > 0 ? val[0] : this.getDefaultSettings()),

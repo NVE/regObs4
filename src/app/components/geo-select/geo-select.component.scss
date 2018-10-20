@@ -1,7 +1,7 @@
 ion-fab {
-    &.fab-vertical-top.fab-edge {
-        top: -24px;
-    }
+    // &.fab-vertical-top.fab-edge {
+    //     top: -24px;
+    // }
 
     &.fullscreen {
         top: calc(10px + var(--ion-safe-area-top,0px)) !important;
@@ -9,6 +9,8 @@ ion-fab {
 
     ion-fab-button {
         --size: 44px;
+        --height: 44px;
+        --width: 44px;
         --box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
         margin-top: 0px;
         margin-bottom: 0px;
@@ -70,6 +72,8 @@ ion-fab {
 
             ion-fab-button {
                 --size: 32px;
+                --height: 32px;
+                --width: 32px;
                 --padding-start: 0px;
                 --padding-end: 0px;    
             }

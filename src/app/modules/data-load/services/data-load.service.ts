@@ -58,7 +58,7 @@ export class DataLoadService {
   }
 
   getStateAsObservable(id: string): Observable<IDataLoad> {
-    return nSQL().observable<IDataLoad>(() => {
+    return nSQL().observable<IDataLoad[]>(() => {
       return nSQL(NanoSql.TABLES.DATA_LOAD.name).query('select').where((x) => x.id === id).emit();
     }).toRxJS().pipe(
       map((val: IDataLoad[]) => val.length > 0 ? val[0] :

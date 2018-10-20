@@ -32,6 +32,6 @@ export class CapApiService {
 
   getObservableFromXmlResult<T>(xml: string): Observable<T> {
     const parser = new Parser({ explicitArray: false, ignoreAttrs: true });
-    return bindNodeCallback(parser.parseString)(xml).pipe(map((val: T) => val));
+    return bindNodeCallback(parser.parseString)(xml).pipe(map((val) => (<any>val) as T));
   }
 }

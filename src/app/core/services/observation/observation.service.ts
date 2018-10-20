@@ -231,7 +231,7 @@ export class ObservationService {
   }
 
   getObserableCount(appMode: AppMode): Observable<number> {
-    return nSQL().observable<number>(() => {
+    return nSQL().observable<RowCount[]>(() => {
       return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select', ['COUNT(*) as count']).emit();
     }).debounce(100).toRxJS().pipe(map((val: RowCount[]) => val[0].count), distinctUntilChanged());
   }

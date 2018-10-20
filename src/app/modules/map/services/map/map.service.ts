@@ -54,10 +54,10 @@ export class MapService {
   }
 
   private getMapViewAreaObservable() {
-    return combineLatest(this.mapViewObservable$, this.userSettingService.userSettingObservable$)
+    return combineLatest(this.mapViewObservable$.pipe(debounceTime(200)), this.userSettingService.currentGeoHazardObservable$)
       .pipe(
-        switchMap(([mapView, userSetting]) =>
-          this.getRegionInViewObservable(mapView, userSetting.currentGeoHazard)),
+        switchMap(([mapView, currentGeoHazard]) =>
+          this.getRegionInViewObservable(mapView, currentGeoHazard)),
         shareReplay(1)
       );
   }
