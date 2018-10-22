@@ -9,9 +9,10 @@ import { NavController, Events } from '@ionic/angular';
 import { settings } from '../../../../../settings';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { IMapView } from '../../../map/services/map/map-view.interface';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
+import { LocationService } from '../../../../core/services/location/location.service';
 
 @Component({
   selector: 'app-obs-location',
@@ -30,6 +31,9 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   elevation$: Observable<number>;
   location$: Observable<LocationName>;
   isLoading = false;
+  private mapViewObservableSubscription: Subscription;
+  private locationsSubscription: Subscription;
+  private locationGroup = L.markerClusterGroup();
 
   constructor(
     private registrationService: RegistrationService,
@@ -39,6 +43,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     private helperService: HelperService,
     private cdr: ChangeDetectorRef,
     private mapSearchService: MapSearchService,
+    private locationService: LocationService,
   ) { }
 
   async ngOnInit() {
@@ -75,6 +80,11 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.isLoading = true;
       this.cdr.detectChanges();
     }));
+    this.mapViewObservableSubscription = mapViewObservable.pipe(debounceTime(5000)).
+      subscribe((mapView) => {
+        const range = Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2);
+        this.locationService.updateLocationWithinRadius(mapView.center.lat, mapView.center.lng, range);
+      });
     const mapViewInfoObservable = mapViewObservable
       .pipe(debounceTime(200), switchMap((mapView: IMapView) =>
         this.mapSearchService.getViewInfo(mapView.center, true)),
@@ -84,14 +94,25 @@ export class ObsLocationPage implements OnInit, OnDestroy {
         }));
     this.location$ = mapViewInfoObservable.pipe(map((val) => val.location), tap(() => this.cdr.detectChanges()));
     this.elevation$ = mapViewInfoObservable.pipe(map((val) => val.elevation), tap(() => this.cdr.detectChanges()));
+
+    this.locationsSubscription = this.locationService.getCurrentGeoHazardLocationsAsObservable()
+      .subscribe((locations) => {
+        this.locationGroup.clearLayers();
+        for (const location of locations) {
+          L.marker(L.latLng(location.LatLngObject.Latitude, location.LatLngObject.Longitude)).addTo(this.locationGroup);
+        }
+      });
   }
 
   ngOnDestroy(): void {
+    this.mapViewObservableSubscription.unsubscribe();
+    this.locationsSubscription.unsubscribe();
   }
 
   onMapReady(m: L.Map) {
     this.map = m;
     this.locationMarker.addTo(this.map);
+    this.locationGroup.addTo(this.map);
     this.map.setView(this.locationMarker.getLatLng(), 15); // TODO: Set initial view in component
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
     this.events.subscribe(settings.events.centerMapToUser, () => this.centerMapToUser());

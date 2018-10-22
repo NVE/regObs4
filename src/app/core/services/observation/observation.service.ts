@@ -134,7 +134,7 @@ export class ObservationService {
     });
     console.log(`[INFO] Got ${searchResult.Results.length} new observations for geoHazard  ${geoHazard}`);
     const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
-    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult.Results);
+    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult.Results, true);
 
     // Deleting items no longer in updated result
     await this.deleteObservationNoLongerInResult(appMode, geoHazard, user, fromDate, searchResult.Results);

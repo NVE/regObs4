@@ -267,7 +267,7 @@ export class WarningService {
       }
     }
     console.log(`[INFO][WarningService] Result from ${GeoHazard[geoHazard]}:`, regions);
-    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions);
+    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions, true);
 
     // TODO: Delete regions no longer in result in case regions is changed in api
 
@@ -301,7 +301,7 @@ export class WarningService {
       })),
     }));
     console.log(`[INFO][WarningService] New updates for avalanche warnings:`, regionResult);
-    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult);
+    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
 
     // TODO: Delete regions no longer in result in case regions is changed in api
 
@@ -328,7 +328,7 @@ export class WarningService {
       warnings: []
     }));
     console.log(`[INFO][WarningService] New updates for ice warnings:`, regionResult);
-    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult);
+    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
 
     // TODO: Delete regions no longer in result in case regions is changed in api
     await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length);

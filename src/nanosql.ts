@@ -122,6 +122,15 @@ export class NanoSql {
                 { key: '*', type: '*' },
             ]
         },
+        LOCATION: {
+            name: 'location',
+            instancePerAppMode: true,
+            model: [
+                { key: 'Id', type: 'int', props: ['pk'] },
+                { key: 'GeoHazardId', type: 'int', props: ['idx'] },
+                { key: '*', type: '*' },
+            ]
+        },
     };
 
     static getTables(): NanoSqlTable[] {

@@ -240,7 +240,7 @@ export class OfflineMapService {
     const tiles = (await this.backgroundDownloadService.getAllFiles(map.filePath, map.name)).map((file) =>
       this.getOfflineTileFromFile(map.name, file.directory, file.name, file.url)
     );
-    await nSQL().loadJS(NanoSql.TABLES.OFFLINE_MAP_TILES.name, tiles);
+    await nSQL().loadJS(NanoSql.TABLES.OFFLINE_MAP_TILES.name, tiles, true);
   }
 
   // Assumes map directory: /{mapName}/{tileName}/{z}/
