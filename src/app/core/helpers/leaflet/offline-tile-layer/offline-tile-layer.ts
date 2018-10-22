@@ -4,6 +4,7 @@ import { BorderHelper } from '../border-helper';
 import { NgZone } from '@angular/core';
 import { OfflineMapService } from '../../../services/offline-map/offline-map.service';
 import { Platform } from '@ionic/angular';
+import { MapService } from '../../../../modules/map/services/map/map.service';
 
 interface ExtendedCoords extends L.Coords {
     fallback: boolean;
@@ -15,6 +16,7 @@ export class OfflineTileLayer extends L.TileLayer {
         private name: string,
         private zone: NgZone,
         private offlineMapService: OfflineMapService,
+        private mapService: MapService,
         private plaform: Platform,
     ) {
         super(settings.map.tiles.defaultMapUrl, {
@@ -56,7 +58,7 @@ export class OfflineTileLayer extends L.TileLayer {
      */
     private isInsideBorders(coords: L.Coords): Promise<boolean> {
         const latLngBounds: L.LatLngBounds = (<any>this)._tileCoordsToBounds(coords);
-        return BorderHelper.isBoundsInNorway(latLngBounds);
+        return this.mapService.isTileInsideNorway(coords, latLngBounds);
     }
 
 
@@ -98,7 +100,9 @@ export class OfflineTileLayer extends L.TileLayer {
         if (coords.z <= settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
             return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
         }
-
+        // TODO: Implement tile in norway cache, use https://github.com/rsms/js-lru
+        // no need to store in db, because tiles is allready cached offline
+        // but it will improve performance on support tiles?
         const isInsideNorway = await this.isInsideBorders(coords);
         if (!isInsideNorway) {
             return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);

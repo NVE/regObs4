@@ -10,6 +10,8 @@ import { IMapViewArea } from './map-view-area.interface';
 import { NanoSql } from '../../../../../nanosql';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { LRUMap } from 'lru_map';
+import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,7 @@ export class MapService {
   private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
   private _avalancheRegions: any;
   private _regions: any;
+  private _tilesInNorwayCache: LRUMap<string, boolean>;
 
   get mapViewObservable$() {
     return this._mapViewObservable;
@@ -31,6 +34,19 @@ export class MapService {
   constructor(private userSettingService: UserSettingService) {
     this._mapViewObservable = this.getMapViewObservable();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
+    this._tilesInNorwayCache = new LRUMap(10000);
+  }
+
+  async isTileInsideNorway(coords: { x: number, y: number, z: number }, bounds: L.LatLngBounds) {
+    const id = `${coords.z}_${coords.x}_${coords.y}`;
+    const inCahce = this._tilesInNorwayCache.get(id);
+    if (inCahce !== undefined) {
+      return inCahce;
+    } else {
+      const inNorway = await BorderHelper.isBoundsInNorway(bounds);
+      this._tilesInNorwayCache.set(id, inNorway);
+      return inNorway;
+    }
   }
 
   updateMapView(mapView: IMapView) {

@@ -8,7 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { OfflineImageComponent } from '../../components/offline-image/offline-image.component';
 import { ExternalLinkComponent } from '../../components/external-link/external-link.component';
 import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
-import { AngularSvgIconModule, SvgIconComponent } from 'angular-svg-icon';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
 import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
 
@@ -37,6 +37,7 @@ import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
         IonicModule,
         TranslateModule,
         ShadowCssDirective,
+        AngularSvgIconModule,
         AddMenuComponent,
         OfflineImageComponent,
         ExternalLinkComponent,

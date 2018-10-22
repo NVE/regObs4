@@ -11,63 +11,36 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./set-time.page.scss'],
 })
 export class SetTimePage implements OnInit, OnDestroy {
-  registration: IRegistration;
   maxDate: string;
-
-  private subscription: Subscription;
+  date: string;
 
   constructor(
     private registrationService: RegistrationService,
-    private cdr: ChangeDetectorRef,
     private navController: NavController) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.maxDate = moment().toISOString(true);
-    this.subscription = this.registrationService.registrationForCurrentGeoHazard$.subscribe(async (reg) => {
-      if (reg) {
-        this.registration = reg;
-      } else {
-        this.registration = await this.registrationService.createNewRegistration();
-        this.registration.DtObsTime = moment().toISOString(true);
-      }
-      this.cdr.detectChanges();
-    });
-  }
-
-  updateDate(event: any) {
-    if (typeof event.detail.value === 'string') {
-      return;
+    const reg = await this.registrationService.getCurrentRegistration();
+    if (reg && reg.DtObsTime) {
+      this.date = reg.DtObsTime;
+    } else {
+      this.date = moment().toISOString(true);
     }
-    const day: number = event.detail.value.day.value;
-    const month: number = event.detail.value.month.value;
-    const year: number = event.detail.value.year.value;
-    const hour: number = event.detail.value.hour.value;
-    const minute: number = event.detail.value.minute.value;
-    this.registration.DtObsTime = moment()
-      .date(day)
-      .month(month - 1)
-      .year(year)
-      .hour(hour)
-      .minute(minute)
-      .second(0)
-      .millisecond(0)
-      .toISOString(true);
-    this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 
   setToNow() {
     const now = moment().toISOString(true);
     this.maxDate = now;
-    this.registration.DtObsTime = now;
-    this.cdr.detectChanges();
+    this.date = now;
   }
 
   async confirm() {
-    await this.registrationService.saveRegistration(this.registration);
+    const currentRegistration = await this.registrationService.getCurrentRegistration();
+    currentRegistration.DtObsTime = this.date;
+    await this.registrationService.saveRegistration(currentRegistration);
     this.navController.navigateForward('registration');
   }
 }

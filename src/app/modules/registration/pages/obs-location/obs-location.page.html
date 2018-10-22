@@ -8,7 +8,7 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content [ngClass]="{'open': showDetails }">
   <app-map *ngIf="locationMarker" [showSupportMaps]="false" (mapReady)="onMapReady($event)" (positionChange)="positionChange($event)"></app-map>
   <ion-grid class="bottom-info" no-padding>
     <ion-row>
@@ -18,10 +18,90 @@
     </ion-row>
     <ion-row no-padding>
       <ion-col class="show-details-col" no-padding text-center>
-        <ion-button color="dark" size="small" fill="clear">
-          <ion-icon slot="start" name="ios-arrow-up"></ion-icon>
-          Vis detaljer
+        <ion-button color="dark" size="small" fill="clear" (click)="toggleDetails()">
+          <ng-container *ngIf="!showDetails">
+            <ion-icon slot="start" name="ios-arrow-up"></ion-icon>
+            {{'REGISTRATION.OBS_LOCATION.SHOW_DETAILS' | translate}}
+          </ng-container>
+          <ng-container *ngIf="showDetails">
+            <ion-icon slot="start" name="ios-arrow-down"></ion-icon>
+            {{'REGISTRATION.OBS_LOCATION.HIDE_DETAILS' | translate}}
+          </ng-container>
         </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row class="details-row" *ngIf="showDetails">
+      <ion-col>
+        <ion-grid no-padding>
+          <ion-row>
+            <ion-col no-padding text-center size="2">
+              <svg-icon class="obs-location-marker" src="/assets/icon/map/GPS_stop.svg"></svg-icon>
+              <svg class="dotted-line" width="4px" height="15px" viewBox="0 0 4 15">
+                <line x1="1" x2="1" y1="2" y2="14" stroke="#000" stroke-width="2" stroke-linecap="round"
+                  stroke-dasharray="1,4"></line>
+              </svg>
+              <ion-label no-margin class="distance-label small-text">{{
+                distanceToObservationText }}</ion-label>
+              <svg class="dotted-line" width="4px" height="15px" viewBox="0 0 4 15">
+                <line x1="1" x2="1" y1="2" y2="14" stroke="#000" stroke-width="2" stroke-linecap="round"
+                  stroke-dasharray="1,4"></line>
+              </svg>
+              <div class="leaflet-usermarker"></div>
+            </ion-col>
+            <ion-col no-padding>
+              <ion-grid no-padding>
+                <ion-row class="padding-bottom">
+                  <ion-col no-padding class="padding-right">
+                    <ion-grid class="arrow-box">
+                      <ion-row>
+                        <ion-col no-padding>
+                          <ion-label class="detail-header" no-margin text-uppercase>{{'REGISTRATION.OBS_LOCATION.TITLE'
+                            | translate}}</ion-label>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col no-padding>
+                          <ng-container *ngIf="(location$ | async) as location">
+                            <ng-container *ngIf="!isLoading">
+                              <ion-label class="detail-obs-info" no-margin>
+                                <span *ngIf="(location.name !== location.adminName)">{{
+                                  location.name
+                                  }},&nbsp;</span>{{location.adminName}}
+                              </ion-label>
+                            </ng-container>
+                          </ng-container>
+                          <ng-container *ngIf="isLoading">
+                            <ion-spinner color="dark" name="dots"></ion-spinner>
+                          </ng-container>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col no-padding>
+                          <ion-label class="small-text" no-margin>{{ locationMarker.getLatLng().lat | number:'0.3'
+                            }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+                            {{ locationMarker.getLatLng().lng | number:'0.3'
+                            }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
+                            <ng-container *ngIf="(elevation$ | async) as elevation">
+                              <ng-container *ngIf="!isLoading">
+                                , {{ elevation }} moh
+                              </ng-container>
+                            </ng-container>
+                          </ion-label>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col no-padding class="padding-right">
+                    <ion-label no-margin text-uppercase class="arrow-box detail-header">{{'REGISTRATION.OBS_LOCATION.CURRENT_LOCATION'
+                      | translate}}</ion-label>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-col>
     </ion-row>
   </ion-grid>

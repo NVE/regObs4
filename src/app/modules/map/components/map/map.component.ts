@@ -9,6 +9,9 @@ import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
+import { MapService } from '../../services/map/map.service';
+import { Events } from '@ionic/angular';
+import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 
 @Component({
   selector: 'app-map',
@@ -23,7 +26,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
   @Output() positionChange: EventEmitter<Geoposition> = new EventEmitter();
 
-  private _map: L.Map;
+  private map: L.Map;
   private tilesLayer = L.layerGroup();
   private userMarker: UserMarker;
   private followMode = true;
@@ -37,9 +40,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private userSettingService: UserSettingService,
     private offlineMapService: OfflineMapService,
+    private mapService: MapService,
     private platform: Platform,
     private zone: NgZone,
-    private geolocation: Geolocation
+    private geolocation: Geolocation,
+    private events: Events,
   ) { }
 
   options: L.MapOptions = {
@@ -59,15 +64,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.userSettingSubscription.unsubscribe();
     }
     this.stopGeoLocationWatch();
+    this.events.unsubscribe(settings.events.centerMapToUser);
+    this.events.unsubscribe(settings.events.mapSearchItemClicked);
   }
 
   onLeafletMapReady(map: L.Map) {
-    this._map = map;
+    this.map = map;
     if (this.showScale) {
       L.control.scale({ imperial: false }).addTo(map);
     }
-    this.topoTilesLayer = new OfflineTileLayer('topo', this.zone, this.offlineMapService, this.platform);
-    this.tilesLayer.addTo(this._map);
+    this.topoTilesLayer = new OfflineTileLayer(
+      'topo',
+      this.zone,
+      this.offlineMapService,
+      this.mapService,
+      this.platform);
+    this.tilesLayer.addTo(this.map);
     this.topoTilesLayer.addTo(this.tilesLayer);
 
     if (this.showSupportMaps) {
@@ -78,14 +90,41 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.showUserLocation) {
       this.startGeoLocationWatch();
-      this._map.on('dragstart', () => this.disableFollowMode());
+      this.zone.runOutsideAngular(() => {
+        this.map.on('dragstart', () => this.disableFollowMode());
+      });
     }
 
-    this.mapReady.emit(this._map);
+    this.events.subscribe(settings.events.centerMapToUser, () => this.centerMapToUser());
+
+    this.events.subscribe(settings.events.mapSearchItemClicked, (item: MapSearchResponse) => {
+      this.zone.runOutsideAngular(() => {
+        this.disableFollowMode();
+        this.map.flyTo(item.latlng, settings.map.mapSearchZoomToLevel);
+      });
+    });
+
+    this.zone.runOutsideAngular(() => {
+      this.map.on('moveend', () =>
+        this.mapService.updateMapView({ bounds: this.map.getBounds(), center: this.map.getCenter() })
+      );
+    });
+
+    this.mapReady.emit(this.map);
   }
 
   private disableFollowMode() {
     this.followMode = false;
+  }
+
+  centerMapToUser() {
+    this.zone.runOutsideAngular(() => {
+      this.followMode = true;
+      if (this.userMarker) {
+        const currentPosition = this.userMarker.getPosition();
+        this.map.panTo(L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude));
+      }
+    });
   }
 
   configureTileLayers(userSetting: UserSetting) {
@@ -102,8 +141,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   redrawMap() {
-    if (this._map) {
-      this._map.invalidateSize();
+    if (this.map) {
+      this.map.invalidateSize();
     }
     window.dispatchEvent(new Event('resize'));
   }
@@ -132,22 +171,24 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onPositionUpdate(data: Geoposition) {
     this.positionChange.emit(data);
-    if (data.coords && this._map) {
-      const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
-      if (!this.userMarker) {
-        this.userMarker = new UserMarker(this._map, data);
-      } else {
-        this.userMarker.updatePosition(data);
-      }
-      if (this.followMode) {
-        if (this.firstPositionUpdate) {
-          this.firstPositionUpdate = false;
-          this._map.flyTo(latLng, Math.max(15, this._map.getZoom()));
+    this.zone.runOutsideAngular(() => {
+      if (data.coords && this.map) {
+        const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
+        if (!this.userMarker) {
+          this.userMarker = new UserMarker(this.map, data);
         } else {
-          this._map.panTo(latLng);
+          this.userMarker.updatePosition(data);
+        }
+        if (this.followMode) {
+          if (this.firstPositionUpdate) {
+            this.firstPositionUpdate = false;
+            this.map.flyTo(latLng, Math.max(15, this.map.getZoom()));
+          } else {
+            this.map.panTo(latLng);
+          }
         }
       }
-    }
+    });
   }
 
   private onPositionError(error: any) {

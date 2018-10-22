@@ -69,7 +69,12 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
     L.Marker.prototype.options.icon = defaultIcon;
-    this.defaultMapLayer = new OfflineTileLayer('topo', zone, this.offlineMapService, this.platform);
+    this.defaultMapLayer = new OfflineTileLayer(
+      'topo',
+      zone,
+      this.offlineMapService,
+      this.mapService,
+      this.platform);
 
     this.markers = [];
   }

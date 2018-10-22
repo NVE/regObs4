@@ -93,6 +93,9 @@
     "DELETE": "Slett observasjon",
     "DELETE_CONFIRM": "Er du sikker?",
     "OBS_LOCATION": {
+      "CURRENT_LOCATION": "Nåværende posisjon",
+      "HIDE_DETAILS": "Skjul detaljer",
+      "SHOW_DETAILS": "Vis detaljer",
       "TITLE": "Observasjonspunkt"
     },
     "OVERVIEW": {

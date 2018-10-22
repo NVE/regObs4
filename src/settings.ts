@@ -132,6 +132,7 @@ export const settings = {
             }
         },
         metersLimitForUpdateElevation: 500,
+        mapSearchZoomToLevel: 15,
     },
     snowRegionsGeoJsonName: 'OMRAADENAV',
     events: {

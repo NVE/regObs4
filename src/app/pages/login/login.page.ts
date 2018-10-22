@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, Validators, FormControl, FormBuilder } from '@angular/forms';
 import { LoginService } from '../../core/services/login/login.service';
 import { LoggedInUser } from '../../core/services/login/logged-in-user.model';
@@ -31,7 +31,11 @@ export class LoginPage implements OnInit {
     return this.loginform.get('password').value;
   }
 
-  constructor(private formBuilder: FormBuilder, private loginService: LoginService, private userSettingsService: UserSettingService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private loginService: LoginService,
+    private userSettingsService: UserSettingService,
+    private cdr: ChangeDetectorRef) { }
 
   async ngOnInit() {
     this.loginform = this.formBuilder.group({
@@ -39,6 +43,7 @@ export class LoginPage implements OnInit {
       password: new FormControl('', [Validators.required]),
     });
     this.$loggedInUser = this.loginService.loggedInUser$.pipe(tap((val) => {
+      this.cdr.detectChanges();
       setTimeout(() => {
         if (!this.loginFormUsername && !val.isLoggedIn && val.email) {
           this.loginFormUsername = val.email; // Setting email to last logged in email for easy login
@@ -59,6 +64,7 @@ export class LoginPage implements OnInit {
       this.loading = true;
       await this.loginService.login(this.loginFormUsername, this.loginFormPassword);
       this.loading = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -68,6 +74,7 @@ export class LoginPage implements OnInit {
 
   async logout() {
     await this.loginService.logout();
+    this.cdr.detectChanges();
   }
 
 }

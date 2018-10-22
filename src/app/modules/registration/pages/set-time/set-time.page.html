@@ -11,10 +11,9 @@
 <ion-content>
   <h3 padding text-uppercase>{{"REGISTRATION.SET_TIME.HEADER" | translate}}</h3>
   <ion-list lines="none">
-    <ion-item *ngIf="registration">
+    <ion-item>
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
-        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [value]="registration.DtObsTime"
-        (ionChange)="updateDate($event)" [max]="maxDate">
+        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="date" [max]="maxDate">
       </ion-datetime>
       <ion-button fill="outline" color="medium" (click)="setToNow()">
         <ion-icon slot="start" name="time"></ion-icon> {{"REGISTRATION.SET_TIME.NOW" |
