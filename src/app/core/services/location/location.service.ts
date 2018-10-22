@@ -7,14 +7,20 @@ import { nSQL } from 'nano-sql';
 import { NanoSql } from '../../../../nanosql';
 import { ObsLocationsResponseDtoV2 } from '../../../modules/regobs-api/models';
 import { GeoHazard } from '../../models/geo-hazard.enum';
-import { switchMap, debounceTime } from 'rxjs/operators';
+import { switchMap, debounceTime, map } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import * as L from 'leaflet';
+import { MapService } from '../../../modules/map/services/map/map.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocationService {
 
-  constructor(private userSettingService: UserSettingService, private apiLocationService: RegobsApi.LocationService) { }
+  constructor(
+    private userSettingService: UserSettingService,
+    private apiLocationService: RegobsApi.LocationService,
+    private mapService: MapService) { }
 
   async updateLocationWithinRadius(lat: number, lng: number, radius: number) {
     const userSettings = await this.userSettingService.getUserSettings();
@@ -29,21 +35,28 @@ export class LocationService {
     const result = await this.apiLocationService.LocationWithinRadius(params).toPromise();
     console.log(result);
 
-    NanoSql.getInstance(NanoSql.TABLES.LOCATION.name, userSettings.appMode)
-      .loadJS(NanoSql.TABLES.LOCATION.name, result, true);
+    const tableName = NanoSql.getInstanceName(NanoSql.TABLES.LOCATION.name, userSettings.appMode);
+    nSQL(tableName).loadJS(tableName, result);
   }
 
-  getCurrentGeoHazardLocationsAsObservable() {
-    return this.userSettingService.userSettingObservable$.pipe(switchMap((userSetting) =>
-      this.getLocationsAsObservable(userSetting.appMode, userSetting.currentGeoHazard))
-      , debounceTime(200));
+  getLocationsInViewAsObservable() {
+    return combineLatest(
+      this.userSettingService.userSettingObservable$,
+      this.mapService.mapViewObservable$
+    )
+      .pipe(switchMap(([userSetting, mapView]) =>
+        this.getLocationsAsObservable(
+          userSetting.appMode,
+          userSetting.currentGeoHazard,
+          mapView.bounds))
+        , debounceTime(200));
   }
 
-  getLocationsAsObservable(appMode: AppMode, geoHazard: GeoHazard) {
+  getLocationsAsObservable(appMode: AppMode, geoHazard: GeoHazard, bounds: L.LatLngBounds) {
     return nSQL().observable<ObsLocationsResponseDtoV2[]>(() => {
       return NanoSql.getInstance(NanoSql.TABLES.LOCATION.name, appMode)
-        .table(NanoSql.TABLES.LOCATION.name).query('select')
-        .where(['GeoHazardId', '=', geoHazard]).emit();
+        .query('select').where((item: ObsLocationsResponseDtoV2) => item.GeoHazardId === geoHazard
+          && bounds.contains(L.latLng(item.LatLngObject.Latitude, item.LatLngObject.Longitude))).emit();
     }).toRxJS();
   }
 }

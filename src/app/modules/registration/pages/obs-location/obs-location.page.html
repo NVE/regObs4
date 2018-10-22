@@ -59,7 +59,14 @@
                             | translate}}</ion-label>
                         </ion-col>
                       </ion-row>
-                      <ion-row>
+                      <ion-row *ngIf="selectedLocation">
+                        <ion-col no-padding>
+                          <ion-label class="detail-obs-info" no-margin>
+                            {{selectedLocation.Name}}
+                          </ion-label>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row *ngIf="!selectedLocation">
                         <ion-col no-padding>
                           <ng-container *ngIf="(location$ | async) as location">
                             <ng-container *ngIf="!isLoading">

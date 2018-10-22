@@ -13,6 +13,7 @@ import { Observable, Subscription } from 'rxjs';
 import { IMapView } from '../../../map/services/map/map-view.interface';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
 import { LocationService } from '../../../../core/services/location/location.service';
+import { ObsLocationsResponseDtoV2 } from '../../../regobs-api/models';
 
 @Component({
   selector: 'app-obs-location',
@@ -22,7 +23,7 @@ import { LocationService } from '../../../../core/services/location/location.ser
 export class ObsLocationPage implements OnInit, OnDestroy {
   private map: L.Map;
   registration: IRegistration;
-  private locationMarker: L.Marker;
+  locationMarker: L.Marker;
   private followMode = true;
   private userposition: Geoposition;
   private pathLine: L.Polyline;
@@ -34,6 +35,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   private mapViewObservableSubscription: Subscription;
   private locationsSubscription: Subscription;
   private locationGroup = L.markerClusterGroup();
+  selectedLocation: ObsLocationsResponseDtoV2;
 
   constructor(
     private registrationService: RegistrationService,
@@ -67,6 +69,12 @@ export class ObsLocationPage implements OnInit, OnDestroy {
           lng: this.registration.ObsLocation.Longitude
         }
       );
+      if (this.registration.ObsLocation.ObsLocationID) {
+        this.selectedLocation = {
+          Name: this.registration.ObsLocation.LocationName,
+          Id: this.registration.ObsLocation.ObsLocationID,
+        };
+      }
     } else {
       const lastView = await this.mapService.mapViewObservable$.pipe(take(1)).toPromise();
       if (lastView) {
@@ -95,11 +103,13 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     this.location$ = mapViewInfoObservable.pipe(map((val) => val.location), tap(() => this.cdr.detectChanges()));
     this.elevation$ = mapViewInfoObservable.pipe(map((val) => val.elevation), tap(() => this.cdr.detectChanges()));
 
-    this.locationsSubscription = this.locationService.getCurrentGeoHazardLocationsAsObservable()
+    this.locationsSubscription = this.locationService.getLocationsInViewAsObservable()
       .subscribe((locations) => {
         this.locationGroup.clearLayers();
         for (const location of locations) {
-          L.marker(L.latLng(location.LatLngObject.Latitude, location.LatLngObject.Longitude)).addTo(this.locationGroup);
+          const marker = L.marker(L.latLng(location.LatLngObject.Latitude, location.LatLngObject.Longitude))
+            .addTo(this.locationGroup);
+          marker.on('click', () => this.setToPrevouslyUsedLocation(location));
         }
       });
   }
@@ -118,8 +128,18 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     this.events.subscribe(settings.events.centerMapToUser, () => this.centerMapToUser());
   }
 
+  private setToPrevouslyUsedLocation(location: ObsLocationsResponseDtoV2) {
+    this.followMode = false;
+    this.selectedLocation = location;
+    this.locationMarker.setLatLng(L.latLng(location.LatLngObject.Latitude,
+      location.LatLngObject.Longitude));
+    this.map.panTo(this.locationMarker.getLatLng());
+    this.updatePathAndDistance();
+  }
+
   private moveLocationMarkerToCenter() {
     this.followMode = false;
+    this.selectedLocation = null;
     const center = this.map.getCenter();
     this.locationMarker.setLatLng(center);
     this.updatePathAndDistance();
@@ -127,6 +147,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
 
   centerMapToUser() {
     this.followMode = true;
+    this.selectedLocation = null;
     if (this.userposition) {
       this.positionChange(this.userposition);
     }
@@ -180,6 +201,15 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       Latitude: latLng.lat,
       Longitude: latLng.lng
     };
+    if (this.selectedLocation) {
+      this.registration.ObsLocation.LocationName = this.selectedLocation.Name;
+      this.registration.ObsLocationID = this.selectedLocation.Id;
+    }
+    if (this.followMode && this.userposition) {
+      this.registration.ObsLocation.Uncertainty = this.userposition.coords.accuracy;
+    }
+    // this.registration.ObsLocation.UTMSourceTID =
+    // TODO: Set source
     await this.registrationService.saveRegistration(this.registration);
     if (this.registration.DtObsTime) {
       this.navController.navigateForward('registration');
