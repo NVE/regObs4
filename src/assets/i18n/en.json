@@ -90,9 +90,16 @@
     "TITLE": "Offline map"
   },
   "REGISTRATION": {
+    "ADD_IMAGES": "Add images",
     "BACK_TO_OBSERVATION": "Back to observation",
     "DELETE": "Delete observation",
     "DELETE_CONFIRM": "Are you sure?",
+    "GENERAL_COMMENT": {
+      "ADD_NOTES_HEADER": "Write notes of observation",
+      "DESCRIPTION": "You can upload photos of the area you have observed or photos of other things you might find relevant.",
+      "SUBTITLE": "Add observation images",
+      "TITLE": "Images and notes"
+    },
     "GROUP": {
       "SUBTITLE": "Share observation with",
       "TITLE": "Share with group"
@@ -104,7 +111,9 @@
       "TITLE": "Observed location"
     },
     "OVERVIEW": {
+      "DATE_AND_TIME": "Date and time",
       "MY_OBSERVATION": "My observation",
+      "SHARE_WITH_GROUP": "Share observation with group",
       "TITLE": "Observation"
     },
     "SEND": "Submit",

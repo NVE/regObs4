@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.GENERAL_COMMENT.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list lines="full">
+    <ion-list-header padding text-uppercase>
+      <ion-label>
+        <h3>{{"REGISTRATION.GENERAL_COMMENT.SUBTITLE" | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label text-wrap>{{'REGISTRATION.GENERAL_COMMENT.DESCRIPTION' | translate}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-icon name="camera" slot="start"></ion-icon>
+      <ion-label>{{'REGISTRATION.ADD_IMAGES' | translate }}</ion-label>
+    </ion-item>
+    <ion-list-header padding text-uppercase>
+      <ion-label>
+        <h3>{{"REGISTRATION.GENERAL_COMMENT.ADD_NOTES_HEADER" | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label position="stacked" text-uppercase>Beskrivelse</ion-label>
+      <ion-textarea type="textarea" placeholder="Her kan du beskrive ytterligere"></ion-textarea>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<app-save-and-go-back-button (beforeLeave)="save()"></app-save-and-go-back-button>

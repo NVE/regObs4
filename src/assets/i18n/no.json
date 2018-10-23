@@ -90,9 +90,16 @@
     "TITLE": "Offline kart"
   },
   "REGISTRATION": {
+    "ADD_IMAGES": "Legg til bilder",
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
     "DELETE": "Slett observasjon",
     "DELETE_CONFIRM": "Er du sikker?",
+    "GENERAL_COMMENT": {
+      "ADD_NOTES_HEADER": "Skriv notater fra observasjonen",
+      "DESCRIPTION": "Her kan du laste opp bilder av området du har observert eller bilder av andre relevante ting til observasjonen din.",
+      "SUBTITLE": "Legg til bilder av observasjonen",
+      "TITLE": "Bilder og notater"
+    },
     "GROUP": {
       "SUBTITLE": "Del observasjonen med",
       "TITLE": "Del med gruppe"
@@ -104,7 +111,9 @@
       "TITLE": "Observasjonspunkt"
     },
     "OVERVIEW": {
+      "DATE_AND_TIME": "Dato og tid",
       "MY_OBSERVATION": "Min observasjon",
+      "SHARE_WITH_GROUP": "Del observasjon med gruppe",
       "TITLE": "Observasjon"
     },
     "SEND": "Send inn",

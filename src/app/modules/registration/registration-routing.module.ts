@@ -15,6 +15,8 @@ const routes: Routes = [
         loadChildren: './pages/obs-location/obs-location.module#ObsLocationPageModule'
     },
     { path: 'registration/group', loadChildren: './pages/group/group.module#GroupPageModule' },
+    { path: 'registration/general-comment', loadChildren: './pages/general-comment/general-comment.module#GeneralCommentPageModule' },
+
 
 
 ];

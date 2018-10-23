@@ -13,14 +13,12 @@ import { ObserverGroupDto } from '../../../regobs-api/models';
 })
 export class OverviewPage implements OnInit {
   registration$: Observable<IRegistration>;
-  showSendButtons: boolean;
-  userGroups: ObserverGroupDto[];
+  userGroups: ObserverGroupDto[] = [];
 
   constructor(
     private registrationService: RegistrationService,
     private cdr: ChangeDetectorRef,
     private userGroupService: UserGroupService) {
-
   }
 
   async ngOnInit() {
@@ -43,10 +41,8 @@ export class OverviewPage implements OnInit {
   }
 
   ionViewDidEnter() {
-    this.showSendButtons = true;
   }
 
   ionViewWillLeave() {
-    this.showSendButtons = false;
   }
 }

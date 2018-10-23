@@ -16,7 +16,7 @@
         <h3>{{"REGISTRATION.GROUP.SUBTITLE" | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let group of groups">
+    <ion-item *ngFor="let group of groups" (click)="group.selected = !group.selected">
       <ion-checkbox slot="start" [(ngModel)]="group.selected"></ion-checkbox>
       <ion-label>{{group.group.Name}}</ion-label>
     </ion-item>

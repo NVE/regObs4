@@ -2,7 +2,7 @@
   <ion-label padding>
     <h2>{{ title }}</h2>
     <p *ngIf="subTitle">
-      {{ subTitleFormat === 'date' ? (subTitle | formatDate | async) : subTitle }}
+      {{ subTitleFormat === 'date' ? (subTitle | formatDate | async) : (subTitle) }}
     </p>
   </ion-label>
   <ion-icon *ngIf="hasData" slot="end" color="success" name="checkmark-circle"></ion-icon>
