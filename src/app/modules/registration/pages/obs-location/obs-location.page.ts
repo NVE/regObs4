@@ -121,7 +121,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
 
   onMapReady(m: L.Map) {
     this.map = m;
-    this.locationMarker.addTo(this.map);
+    this.locationMarker.setZIndexOffset(100).addTo(this.map);
     this.locationGroup.addTo(this.map);
     this.map.setView(this.locationMarker.getLatLng(), 15); // TODO: Set initial view in component
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
