@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.GROUP.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header padding text-uppercase>
+      <ion-label>
+        <h3>{{"REGISTRATION.GROUP.SUBTITLE" | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let group of groups">
+      <ion-checkbox slot="start" [(ngModel)]="group.selected"></ion-checkbox>
+      <ion-label>{{group.group.Name}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<app-save-and-go-back-button (beforeLeave)="save()"></app-save-and-go-back-button>

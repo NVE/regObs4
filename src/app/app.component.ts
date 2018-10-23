@@ -12,6 +12,7 @@ import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { NanoSql } from '../nanosql';
 import { LangKey } from './core/models/langKey';
 import { Router } from '@angular/router';
+import { KdvService } from './core/services/kdv/kdv.service';
 
 @Component({
   selector: 'app-root',
@@ -33,6 +34,7 @@ export class AppComponent {
     private backgroundFetch: BackgroundFetch,
     private router: Router,
     private zone: NgZone,
+    private kdvService: KdvService,
   ) {
     this.initializeApp();
   }
@@ -80,6 +82,7 @@ export class AppComponent {
     this.zone.runOutsideAngular(async () => {
       await this.warningService.updateWarnings();
       await this.observationService.updateObservations();
+      await this.kdvService.updateKdvElements();
     });
   }
 

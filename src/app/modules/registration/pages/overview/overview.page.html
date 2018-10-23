@@ -16,21 +16,25 @@
           <h3>{{"REGISTRATION.OVERVIEW.MY_OBSERVATION" | translate}}</h3>
         </ion-label>
       </ion-list-header>
-      <ion-item href="registration/obs-location">
+      <!-- <ion-item href="registration/obs-location">
         <ion-label padding>
           <h2>Observasjonstidspunkt</h2>
           <p>Nordmarksvassdraget / Oslo</p>
         </ion-label>
         <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
-      </ion-item>
+      </ion-item> -->
+      <app-summary-item title="Observasjonstidspunkt" [subTitle]="registration.ObsLocation.LocationName" [hasData]="registration.ObsLocation"
+        href="registration/obs-location"></app-summary-item>
       <app-summary-item title="Dato og tid" [subTitle]="registration.DtObsTime" subTitleFormat="date" [hasData]="registration.DtObsTime"
         href="registration/set-time"></app-summary-item>
-      <ion-item href="registration/set-time">
+      <app-summary-item title="Del observasjon med gruppe" [subTitle]="getObservationGroupName(registration)" [hasData]="registration.ObserverGroupID"
+        href="registration/group"></app-summary-item>
+      <!-- <ion-item href="registration/group">
         <ion-label padding>
           <h2>Del observasjon med gruppe</h2>
           <p>Gruppe X</p>
         </ion-label>
-      </ion-item>
+      </ion-item> -->
       <ion-item href="registration/set-time">
         <ion-label padding>
           <h2>Bilder og notater</h2>

@@ -36,7 +36,7 @@ export const settings = {
             summerMonths: [5, 6, 7, 8, 9, 10],
             timezone: 'Europe/Oslo',
             Snow: {
-                apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.0/api',
+                apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
                 webUrl: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/'
             },
             Dirt: {
@@ -165,5 +165,8 @@ export const settings = {
             date: 'DD.MM.YYYY',
             dateAndTime: 'DD.MM.YYYY HH:mm',
         }
+    },
+    kdvElements: {
+        daysBeforeUpdate: 1,
     }
 };

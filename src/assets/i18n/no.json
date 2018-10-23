@@ -90,8 +90,13 @@
     "TITLE": "Offline kart"
   },
   "REGISTRATION": {
+    "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
     "DELETE": "Slett observasjon",
     "DELETE_CONFIRM": "Er du sikker?",
+    "GROUP": {
+      "SUBTITLE": "Del observasjonen med",
+      "TITLE": "Del med gruppe"
+    },
     "OBS_LOCATION": {
       "CURRENT_LOCATION": "Nåværende posisjon",
       "HIDE_DETAILS": "Skjul detaljer",

@@ -131,6 +131,22 @@ export class NanoSql {
                 { key: '*', type: '*' },
             ]
         },
+        KDV_ELEMENTS: {
+            name: 'kdvelements',
+            instancePerAppMode: true,
+            model: [
+                { key: 'langKey', type: 'int', props: ['pk'] },
+                { key: '*', type: '*' },
+            ]
+        },
+        OBSERVER_GROUPS: {
+            name: 'groups',
+            instancePerAppMode: true,
+            model: [
+                { key: 'Id', type: 'int', props: ['pk'] },
+                { key: '*', type: '*' },
+            ]
+        }
     };
 
     static getTables(): NanoSqlTable[] {

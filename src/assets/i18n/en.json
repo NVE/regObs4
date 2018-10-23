@@ -90,8 +90,13 @@
     "TITLE": "Offline map"
   },
   "REGISTRATION": {
+    "BACK_TO_OBSERVATION": "Back to observation",
     "DELETE": "Delete observation",
     "DELETE_CONFIRM": "Are you sure?",
+    "GROUP": {
+      "SUBTITLE": "Share observation with",
+      "TITLE": "Share with group"
+    },
     "OBS_LOCATION": {
       "CURRENT_LOCATION": "Current position",
       "HIDE_DETAILS": "Hide details",

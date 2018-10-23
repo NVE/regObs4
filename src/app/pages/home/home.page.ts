@@ -51,6 +51,7 @@ export class HomePage implements OnInit, OnDestroy {
   selectedMarker: MapItemMarker;
   showMapCenter: boolean;
   userSetting: UserSetting;
+  dataLoadIds: string[];
 
   constructor(
     private geolocation: Geolocation,
@@ -98,6 +99,8 @@ export class HomePage implements OnInit, OnDestroy {
     this.userSetting = await this.userSettingService.getUserSettings();
     this.currentGeoHazard = this.userSetting.currentGeoHazard;
     this.showMapCenter = this.userSetting.showMapCenter;
+
+    this.dataLoadIds = this.observationService.getAllDataLoadIds(this.userSetting.appMode);
 
     this.events.subscribe(settings.events.geoHazardChanged, (newGeoHazard: GeoHazard) => {
       this.currentGeoHazard = newGeoHazard;
@@ -206,10 +209,6 @@ export class HomePage implements OnInit, OnDestroy {
         tile.addTo(this.tilesLayer);
       }
     }
-  }
-
-  getDataLoadIds(userSetting: UserSetting) {
-    return this.observationService.getAllDataLoadIds(userSetting.appMode);
   }
 
   private redrawObservationMarkers(regObservations: RegObsObservation[]) {

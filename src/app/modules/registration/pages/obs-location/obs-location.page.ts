@@ -192,6 +192,13 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     this.showDetails = !this.showDetails;
   }
 
+  getLocationName(location: LocationName) {
+    if (location) {
+      return location.adminName !== location.name ? `${location.name} / ${location.adminName}` : location.name;
+    }
+    return '';
+  }
+
   async confirmLocation() {
     const latLng = this.locationMarker.getLatLng();
     if (!this.registration) {
@@ -204,6 +211,9 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     if (this.selectedLocation) {
       this.registration.ObsLocation.LocationName = this.selectedLocation.Name;
       this.registration.ObsLocationID = this.selectedLocation.Id;
+    } else {
+      const locationName = await this.location$.pipe(take(1)).toPromise();
+      this.registration.ObsLocation.LocationName = this.getLocationName(locationName);
     }
     if (this.followMode && this.userposition) {
       this.registration.ObsLocation.Uncertainty = this.userposition.coords.accuracy;

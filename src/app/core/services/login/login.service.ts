@@ -53,7 +53,8 @@ export class LoginService {
     const existingUser = await this.getLoggedInUser();
     return NanoSql.getInstance(NanoSql.TABLES.USER.name, userSettings.appMode).query('upsert',
       {
-        ...existingUser, // Keep email saved for easy autocomplete and error messages
+        id: 'user',
+        email: existingUser ? existingUser.email : null, // Keep email saved for easy autocomplete and error messages
         isLoggedIn: false,
         user: null,
       }).exec();
