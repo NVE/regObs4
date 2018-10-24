@@ -96,8 +96,11 @@
     "DELETE_CONFIRM": "Are you sure?",
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Write notes of observation",
+      "ADD_PICTURE": "Add a picture",
+      "CHOOSE_FROM_LIBRARY": "Choose from library",
       "DESCRIPTION": "You can upload photos of the area you have observed or photos of other things you might find relevant.",
       "SUBTITLE": "Add observation images",
+      "TAKE_NEW_PHOTO": "Take a new photo",
       "TITLE": "Images and notes"
     },
     "GROUP": {

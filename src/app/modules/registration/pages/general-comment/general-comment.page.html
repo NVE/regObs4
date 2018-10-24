@@ -18,10 +18,7 @@
     <ion-item>
       <ion-label text-wrap>{{'REGISTRATION.GENERAL_COMMENT.DESCRIPTION' | translate}}</ion-label>
     </ion-item>
-    <ion-item>
-      <ion-icon name="camera" slot="start"></ion-icon>
-      <ion-label>{{'REGISTRATION.ADD_IMAGES' | translate }}</ion-label>
-    </ion-item>
+    <app-add-picture-item></app-add-picture-item>
     <ion-list-header padding text-uppercase>
       <ion-label>
         <h3>{{"REGISTRATION.GENERAL_COMMENT.ADD_NOTES_HEADER" | translate}}</h3>
@@ -29,7 +26,7 @@
     </ion-list-header>
     <ion-item>
       <ion-label position="stacked" text-uppercase>Beskrivelse</ion-label>
-      <ion-textarea type="textarea" placeholder="Her kan du beskrive ytterligere"></ion-textarea>
+      <ion-textarea type="textarea" rows="4" (ionChange)="autoresize($event)" placeholder="Her kan du beskrive ytterligere"></ion-textarea>
     </ion-item>
   </ion-list>
 </ion-content>

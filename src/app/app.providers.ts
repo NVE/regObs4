@@ -27,6 +27,7 @@ import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { MapService } from './modules/map/services/map/map.service';
+import { Camera } from '@ionic-native/camera/ngx';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -48,6 +49,7 @@ export class AppProviders {
             AndroidPermissions,
             Zip,
             Clipboard,
+            Camera,
             InAppBrowser,
             HTTP,
             WebView,
