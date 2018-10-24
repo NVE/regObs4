@@ -4,6 +4,9 @@
     <p *ngIf="subTitle">
       {{ subTitleFormat === 'date' ? (subTitle | formatDate | async) : (subTitle) }}
     </p>
+    <p class="images" *ngIf="images">
+      <img width="50" [src]="image.PictureImageBase64" *ngFor="let image of images" />
+    </p>
   </ion-label>
   <ion-icon *ngIf="hasData" slot="end" color="success" name="checkmark-circle"></ion-icon>
 </ion-item>

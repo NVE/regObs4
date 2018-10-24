@@ -5,6 +5,7 @@ import { IRegistration } from '../../models/registration.model';
 import { tap } from 'rxjs/operators';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto } from '../../../regobs-api/models';
+import { RegistationTid } from '../../models/registrationTid.enum';
 
 @Component({
   selector: 'app-overview',
@@ -14,6 +15,7 @@ import { ObserverGroupDto } from '../../../regobs-api/models';
 export class OverviewPage implements OnInit {
   registration$: Observable<IRegistration>;
   userGroups: ObserverGroupDto[] = [];
+  RegistationTid = RegistationTid;
 
   constructor(
     private registrationService: RegistrationService,
@@ -38,6 +40,10 @@ export class OverviewPage implements OnInit {
       }
     }
     return '';
+  }
+
+  getImages(registration: IRegistration, registrationTid: RegistationTid) {
+    return (registration.Picture || []).filter((x) => x.RegistrationTID === registrationTid);
   }
 
   ionViewDidEnter() {

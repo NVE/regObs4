@@ -1,38 +1,31 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Textarea } from '@ionic/angular';
+import { RegistrationService } from '../../services/registration.service';
+import { GeneralObservationDto, PictureRequestDto } from '../../../regobs-api/models';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { IRegistration } from '../../models/registration.model';
+import { RegistationTid } from '../../models/registrationTid.enum';
+import { BasePage } from '../base.page';
 
 @Component({
   selector: 'app-general-comment',
   templateUrl: './general-comment.page.html',
   styleUrls: ['./general-comment.page.scss'],
 })
-export class GeneralCommentPage implements OnInit {
-  minrows: number;
-  constructor() { }
-
-  ngOnInit() {
+export class GeneralCommentPage extends BasePage {
+  registrationTid = RegistationTid.GeneralObservation;
+  constructor(
+    registrationService: RegistrationService
+  ) {
+    super(registrationService);
   }
 
-  save() {
-
-  }
-
-  autoresize(event: Event) {
-    const target: Textarea = <any>(event.target);
-    if (!this.minrows) {
-      this.minrows = target.rows;
+  onInit() {
+    if (!this.registration.GeneralObservation) {
+      this.registration.GeneralObservation = {};
     }
-    const width = window.innerWidth;
-    const charWidth = 10;
-    const breaklines = (target.value.split(/\r?\n|\r/)).length;
-    const textlines = target.value.length / (width / charWidth);
-    const rows = Math.ceil(textlines) + breaklines;
-    if (rows > this.minrows) {
-      target.rows = rows;
-    } else {
-      target.rows = this.minrows;
+    if (!this.registration.Picture) {
+      this.registration.Picture = [];
     }
-    // TODO: Move to shared component?
   }
-
 }

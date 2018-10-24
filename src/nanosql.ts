@@ -167,9 +167,9 @@ export class NanoSql {
             id: settings.db.nanoSql.dbName,
             mode: getMode(),
             version: 1,
-            historyMode: {
-                table: 'row',
-            }
+            // historyMode: {
+            //     table: 'row',
+            // }
         });
         // NOTE: It is also possible to implement migrations on version updates.
         // See: https://github.com/ClickSimply/Nano-SQL/issues/70

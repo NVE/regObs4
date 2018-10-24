@@ -22,7 +22,8 @@
         subTitleFormat="date" [hasData]="registration.DtObsTime" href="registration/set-time"></app-summary-item>
       <app-summary-item *ngIf="userGroups.length > 0" [title]="'REGISTRATION.OVERVIEW.SHARE_WITH_GROUP' | translate"
         [subTitle]="getObservationGroupName(registration)" [hasData]="registration.ObserverGroupID" href="registration/group"></app-summary-item>
-      <app-summary-item [title]="'REGISTRATION.GENERAL_COMMENT.TITLE' | translate" subTitle="test" hasData="true" href="registration/general-comment"></app-summary-item>
+      <app-summary-item [title]="'REGISTRATION.GENERAL_COMMENT.TITLE' | translate" [subTitle]="registration.GeneralObservation.ObsComment"
+        [hasData]="registration.GeneralObservation.ObsComment" href="registration/general-comment" [images]="getImages(registration, RegistationTid.GeneralObservation)"></app-summary-item>
     </ion-list>
   </ion-content>
   <app-send-button></app-send-button>

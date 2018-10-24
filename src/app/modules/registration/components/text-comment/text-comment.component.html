@@ -1,0 +1,4 @@
+<ion-item>
+  <ion-label position="stacked" text-uppercase>{{ title }}</ion-label>
+  <ion-textarea type="textarea" [rows]="rows" (ionChange)="autoresize($event)" [(ngModel)]="value" [placeholder]="placeholder"></ion-textarea>
+</ion-item>

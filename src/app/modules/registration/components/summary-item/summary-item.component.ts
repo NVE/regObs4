@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { PictureRequestDto } from '../../../regobs-api/models';
 
 @Component({
   selector: 'app-summary-item',
@@ -12,6 +13,7 @@ export class SummaryItemComponent implements OnInit {
   @Input() subTitleFormat?: 'string' | 'date';
   @Input() hasData: boolean;
   @Input() href: string;
+  @Input() images: PictureRequestDto[];
 
   constructor() { }
 
