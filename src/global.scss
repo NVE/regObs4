@@ -80,6 +80,17 @@ $z-index-over-map: 1001;
 
 ion-list {
     background: var(--ion-background-color);
+
+    ion-list-header {
+        padding-top: 16px;
+        padding-bottom: 5px;
+    }
+
+    // .sc-ion-label-ios-s h3, .sc-ion-label-ios-s h4, .sc-ion-label-ios-s h5, .sc-ion-label-ios-s h6 {
+//     font-size: 15px;
+//     font-weight: 500;
+//     line-height: normal;
+// }
 }
 
 ion-menu {
@@ -95,7 +106,32 @@ ion-modal {
     }
 }
 
+ion-radio-group {
+    .sc-ion-label-ios-h {
+        margin: 10px 8px 10px 0;
+    }
 
+    .in-item[slot=start] {
+        margin-right: 20px;
+    }
+
+    ion-item {
+        &.selected {
+            ion-label {
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+
+ion-radio {
+    --width: 22px;
+    --height: 22px;
+    --border-width: 1px;
+    --inner-width: 12px;
+    --inner-height: 12px;
+}
 
 .map-item-bar-open {
     --map-item-height: 100px;

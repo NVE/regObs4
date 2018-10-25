@@ -1,0 +1,12 @@
+<ion-list-header text-uppercase *ngIf="title">
+  <ion-label no-margin>
+    <h3>{{ title | translate}}</h3>
+  </ion-label>
+</ion-list-header>
+<ion-radio-group (ionChange)="onChange($event)">
+  <ion-item [ngClass]="{'selected': item.Id === value} " *ngFor="let item of kdvelements" (click)="value = item.Id"
+    [hidden]="hideZeroValues ? item.Id === 0 : false">
+    <ion-label>{{ useDescription ? item.Description : item.Name }}</ion-label>
+    <ion-radio mode="md" slot="start" [value]="item.Id" [checked]="item.Id === value"></ion-radio>
+  </ion-item>
+</ion-radio-group>

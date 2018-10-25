@@ -56,7 +56,8 @@ export class KdvService {
     if (resultFromDb) {
       return resultFromDb.KdvRepositories[key];
     } else {
-      const defaultKdvElements: KdvElementsResponseDto = require(`../../../../assets/kdvelements.${LangKey[langKey]}.json`);
+      const langKeyName = LangKey[langKey];
+      const defaultKdvElements: KdvElementsResponseDto = require(`../../../../assets/kdvelements.${langKeyName}.json`);
       return defaultKdvElements.KdvRepositories[key];
     }
   }

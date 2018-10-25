@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.WATER.WATER_LEVEL.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="registration && registration.WaterLevel2">
+  <ion-list lines="full">
+    <app-kdv-radiobutton-list hideZeroValues="true" [title]="'Hvordan vil du beskrive situasjonen?'" kdvKey="Water_WaterLevelStateKDV"
+      [(value)]="registration.WaterLevel2.WaterLevelStateTID"></app-kdv-radiobutton-list>
+    <app-kdv-radiobutton-list hideZeroValues="true" [title]="'Kan du se vann på avveie?'" kdvKey="Water_WaterAstrayKDV"
+      [(value)]="registration.WaterLevel2.WaterAstrayTID"></app-kdv-radiobutton-list>
+    <app-kdv-radiobutton-list hideZeroValues="true" [title]="'Hvordan registrerer du?'" kdvKey="Water_ObservationTimingKDV"
+      [(value)]="registration.WaterLevel2.ObservationTimingTID"></app-kdv-radiobutton-list>
+    <app-kdv-radiobutton-list hideZeroValues="true" [title]="'Hvordan registrerer du?'" kdvKey="Water_WaterLevelMethodKDV"
+      [(value)]="registration.WaterLevel2.WaterLevelMethodTID"></app-kdv-radiobutton-list>
+    <app-kdv-radiobutton-list *ngIf="registration.WaterLevel2.WaterLevelMethodTID === 1" hideZeroValues="true" [title]="'Hvordan leser du av vannstanden?'"
+      kdvKey="Water_MarkingReferenceKDV" [(value)]="registration.WaterLevel2.MarkingReferenceTID"></app-kdv-radiobutton-list>
+    <app-kdv-radiobutton-list *ngIf="registration.WaterLevel2.WaterLevelMethodTID === 2" hideZeroValues="true" [title]="'Hvordan leser du av vannstanden?'"
+      kdvKey="Water_MeasurementTypeKDV" [(value)]="registration.WaterLevel2.MeasurementTypeTID"></app-kdv-radiobutton-list>
+  </ion-list>
+</ion-content>
+<app-save-and-go-back-button [registration]="registration" [isEmpty]="isEmpty()" (reset)="reset()"></app-save-and-go-back-button>
