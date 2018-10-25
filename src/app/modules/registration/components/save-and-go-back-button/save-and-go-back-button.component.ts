@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { IRegistration } from '../../models/registration.model';
-import { RegistrationService } from '../../services/registration.service';
+import { IsEmptyHelper } from '../../../../core/helpers/is-empty.helper';
+import { RegistationTid } from '../../models/registrationTid.enum';
 
 @Component({
   selector: 'app-save-and-go-back-button',
@@ -11,18 +12,21 @@ import { RegistrationService } from '../../services/registration.service';
 export class SaveAndGoBackButtonComponent implements OnInit {
 
   @Input() registration: IRegistration;
+  @Input() isEmpty: boolean;
+  @Output() reset: EventEmitter<any> = new EventEmitter();
 
   constructor(
-    private navContoller: NavController,
-    private registrationService: RegistrationService,
+    private navContoller: NavController
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
   }
 
   async goBack() {
-    // TODO: If changed and not new and empty
-    await this.registrationService.saveRegistration(this.registration);
     this.navContoller.goBack();
+  }
+
+  doReset() {
+    this.reset.emit();
   }
 }

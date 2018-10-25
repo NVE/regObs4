@@ -69,7 +69,7 @@ export class AddPictureItemComponent implements OnInit {
       const imageUrl = await this.camera.getPicture(options);
       this.images.push({ PictureImageBase64: imageUrl, RegistrationTID: this.registrationTid });
     } else {
-      this.images.push({ PictureImageBase64: '/assets/images/screenshot1_iphone6.png', RegistrationTID: this.registrationTid });
+      this.images.push({ PictureImageBase64: '/assets/images/dummyregobsimage.jpg', RegistrationTID: this.registrationTid });
     }
     return true;
   }

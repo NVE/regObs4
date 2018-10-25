@@ -15,6 +15,8 @@ import { UserSetting } from '../../../core/models/user-settings.model';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NavController } from '@ionic/angular';
 import { AppMode } from '../../../core/models/app-mode.enum';
+import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
+import { fromJS, Map, is } from 'immutable';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +74,15 @@ export class RegistrationService {
 
   getCurrentRegistration() {
     return this.registrationForCurrentGeoHazard$.pipe(take(1)).toPromise();
+  }
+
+  async hasChanged(reg: IRegistration, currentRegistration?: IRegistration) {
+    const current = currentRegistration || (await this.getCurrentRegistration());
+    if (current) {
+      return !is(fromJS(current), fromJS(reg));
+    } else {
+      return !IsEmptyHelper.isEmpty(reg);
+    }
   }
 
   async createOrEditRegistrationRoute() {

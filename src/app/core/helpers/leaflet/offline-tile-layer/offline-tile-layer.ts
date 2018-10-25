@@ -73,7 +73,7 @@ export class OfflineTileLayer extends L.TileLayer {
         return L.Util.template(urlTemplate, L.Util.extend(data, this.options));
     }
 
-    async getTileUrl(coords: ExtendedCoords): Promise<string> {
+    async getTileUrl(coords: ExtendedCoords, save = true): Promise<string> {
         if (coords.z <= settings.map.tiles.embeddedUrlMaxZoom) {
             console.log(`zoom is under ${settings.map.tiles.embeddedUrlMaxZoom} so using embedded map url`,
                 coords, settings.map.tiles.embeddedUrl);
@@ -85,7 +85,7 @@ export class OfflineTileLayer extends L.TileLayer {
         } else {
             const url = await this.getTileUrlOrFallbackMap(coords);
             const coordsCopy = { ...coords }; // Create a copy because coords reference might get changed on error
-            if (this.downloadTileToCache()) {
+            if (this.downloadTileToCache() && save) {
                 this.offlineMapService.saveTileAsBlob(this.name, coordsCopy.x, coordsCopy.y, coordsCopy.z, url);
             }
             return url;
@@ -133,7 +133,7 @@ export class OfflineTileLayer extends L.TileLayer {
         currentCoords.y = Math.floor(currentCoords.y / 2);
 
         // Generate new src path.
-        this.getTileUrl(currentCoords).then((newUrl) => {
+        this.getTileUrl(currentCoords, false).then((newUrl) => {
             // tslint:disable-next-line:max-line-length
             // console.log('Fallback to next zoom level: ' + fallbackZoom + ' for zoom: ' + originalCoords.z + ' original: ' + JSON.stringify(originalCoords) + ' new coords: ' + JSON.stringify(currentCoords));
             // console.log('New url: ' + newUrl);

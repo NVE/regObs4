@@ -15,6 +15,14 @@ export class TextCommentComponent implements OnInit {
   @Input() rows: number;
   minrows: number;
 
+  get valToBind() {
+    return this.value ? this.value : '';
+  }
+
+  set valToBind(val: string) {
+    this.value = val;
+  }
+
   constructor() { }
 
   ngOnInit() {
@@ -28,8 +36,8 @@ export class TextCommentComponent implements OnInit {
     const target: Textarea = <any>(event.target);
     const width = window.innerWidth;
     const charWidth = 10;
-    const breaklines = (target.value.split(/\r?\n|\r/)).length;
-    const textlines = target.value.length / (width / charWidth);
+    const breaklines = target.value ? (target.value.split(/\r?\n|\r/)).length : 0;
+    const textlines = (target.value ? target.value.length : 0) / (width / charWidth);
     const rows = Math.ceil(textlines) + breaklines;
     if (rows > this.minrows) {
       target.rows = rows;

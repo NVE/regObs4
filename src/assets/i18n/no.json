@@ -98,6 +98,8 @@
       "ADD_NOTES_HEADER": "Skriv notater fra observasjonen",
       "ADD_PICTURE": "Legg til et bilde",
       "CHOOSE_FROM_LIBRARY": "Velg fra bibliotek",
+      "COMMENT_PLACEHOLDER": "Her kan du beskrive ytterligere",
+      "COMMENT_TITLE": "Beskrivelse",
       "DESCRIPTION": "Her kan du laste opp bilder av området du har observert eller bilder av andre relevante ting til observasjonen din.",
       "SUBTITLE": "Legg til bilder av observasjonen",
       "TAKE_NEW_PHOTO": "Ta et nytt bilde",
@@ -119,6 +121,7 @@
       "SHARE_WITH_GROUP": "Del observasjon med gruppe",
       "TITLE": "Observasjon"
     },
+    "RESET": "Nullstill denne siden",
     "SEND": "Send inn",
     "SET_TIME": {
       "CONFIRM": "Bekreft dato og tid",

@@ -24,12 +24,8 @@
         <h3>{{"REGISTRATION.GENERAL_COMMENT.ADD_NOTES_HEADER" | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <!-- <ion-item>
-      <ion-label position="stacked" text-uppercase>Beskrivelse</ion-label>
-      <ion-textarea type="textarea" rows="4" (ionChange)="autoresize($event)" placeholder="Her kan du beskrive ytterligere"></ion-textarea>
-    </ion-item> -->
     <app-text-comment *ngIf="registration.GeneralObservation" [(value)]="registration.GeneralObservation.ObsComment"
-      title="Beskrivelse" placeholder="Her kan du beskrive ytterligere"></app-text-comment>
+      title="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
   </ion-list>
 </ion-content>
-<app-save-and-go-back-button [registration]="registration"></app-save-and-go-back-button>
+<app-save-and-go-back-button [registration]="registration" [isEmpty]="isEmpty()" (reset)="reset()"></app-save-and-go-back-button>

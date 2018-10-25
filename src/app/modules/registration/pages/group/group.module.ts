@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { GroupPage } from './group.page';
-import { SharedModule } from '../../../shared/shared.module';
-import { SaveAndGoBackButtonComponent } from '../../components/save-and-go-back-button/save-and-go-back-button.component';
+import { SharedComponentsModule } from '../../shared-components.module';
 
 const routes: Routes = [
   {
@@ -13,9 +12,9 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    SharedModule,
+    SharedComponentsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [GroupPage, SaveAndGoBackButtonComponent]
+  declarations: [GroupPage]
 })
 export class GroupPageModule { }

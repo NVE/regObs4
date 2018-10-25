@@ -13,19 +13,12 @@ import { BasePage } from '../base.page';
   styleUrls: ['./general-comment.page.scss'],
 })
 export class GeneralCommentPage extends BasePage {
-  registrationTid = RegistationTid.GeneralObservation;
   constructor(
     registrationService: RegistrationService
   ) {
-    super(registrationService);
+    super(RegistationTid.GeneralObservation, registrationService);
   }
 
   onInit() {
-    if (!this.registration.GeneralObservation) {
-      this.registration.GeneralObservation = {};
-    }
-    if (!this.registration.Picture) {
-      this.registration.Picture = [];
-    }
   }
 }
