@@ -8,7 +8,7 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ng-container *ngIf="(registration$ | async) as registration">
+<ng-container *ngIf="registration">
   <ion-content>
     <ion-list lines="full">
       <ion-list-header padding text-uppercase>
@@ -16,14 +16,7 @@
           <h3>{{"REGISTRATION.OVERVIEW.MY_OBSERVATION" | translate}}</h3>
         </ion-label>
       </ion-list-header>
-      <app-summary-item [title]="'REGISTRATION.OBS_LOCATION.TITLE'|translate" [subTitle]="registration.ObsLocation.LocationName"
-        [hasData]="registration.ObsLocation" href="registration/obs-location"></app-summary-item>
-      <app-summary-item [title]="'REGISTRATION.OVERVIEW.DATE_AND_TIME' | translate" [subTitle]="registration.DtObsTime"
-        subTitleFormat="date" [hasData]="registration.DtObsTime" href="registration/set-time"></app-summary-item>
-      <app-summary-item *ngIf="userGroups.length > 0" [title]="'REGISTRATION.OVERVIEW.SHARE_WITH_GROUP' | translate"
-        [subTitle]="getObservationGroupName(registration)" [hasData]="registration.ObserverGroupID" href="registration/group"></app-summary-item>
-      <app-summary-item [title]="'REGISTRATION.GENERAL_COMMENT.TITLE' | translate" [subTitle]="registration.GeneralObservation.ObsComment"
-        [hasData]="registration.GeneralObservation.ObsComment" href="registration/general-comment" [images]="getImages(registration, RegistationTid.GeneralObservation)"></app-summary-item>
+      <app-summary-item *ngFor="let item of summaryItems" [item]="item"></app-summary-item>
     </ion-list>
   </ion-content>
   <app-send-button></app-send-button>

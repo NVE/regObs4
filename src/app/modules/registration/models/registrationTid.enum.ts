@@ -1,4 +1,4 @@
-export enum RegistationTid {
+export enum RegistrationTid {
     Incident = 11,
     DangerObs = 13,
     SnowSurfaceObservation = 22,

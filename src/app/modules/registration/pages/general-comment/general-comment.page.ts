@@ -4,7 +4,7 @@ import { RegistrationService } from '../../services/registration.service';
 import { GeneralObservationDto, PictureRequestDto } from '../../../regobs-api/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { IRegistration } from '../../models/registration.model';
-import { RegistationTid } from '../../models/registrationTid.enum';
+import { RegistrationTid } from '../../models/registrationTid.enum';
 import { BasePage } from '../base.page';
 
 @Component({
@@ -16,7 +16,7 @@ export class GeneralCommentPage extends BasePage {
   constructor(
     registrationService: RegistrationService
   ) {
-    super(RegistationTid.GeneralObservation, registrationService);
+    super(RegistrationTid.GeneralObservation, registrationService);
   }
 
   onInit() {

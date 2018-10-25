@@ -17,6 +17,7 @@ import { NavController } from '@ionic/angular';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
 import { fromJS, Map, is } from 'immutable';
+import { RegistrationTid } from '../models/registrationTid.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +84,38 @@ export class RegistrationService {
     } else {
       return !IsEmptyHelper.isEmpty(reg);
     }
+  }
+
+  isEmpty(reg: IRegistration, registrationTid: RegistrationTid) {
+    if (reg && registrationTid) {
+      const isRegistrationEmpty = IsEmptyHelper.isEmpty(this.getRegistationProperty(reg, registrationTid));
+      return isRegistrationEmpty && !this.hasImages(reg, registrationTid);
+    }
+    return true;
+  }
+
+  hasImages(reg: IRegistration, registrationTid: RegistrationTid) {
+    return this.getImages(reg, registrationTid).length > 0;
+  }
+
+  getImages(reg: IRegistration, registrationTid: RegistrationTid) {
+    return reg ?
+      (reg.Picture || []).filter((p) => p.RegistrationTID === registrationTid) : [];
+  }
+
+  getRegistationProperty(reg: IRegistration, registrationTid: RegistrationTid) {
+    if (reg && registrationTid) {
+      return reg[this.getPropertyName(registrationTid)];
+    }
+    return null;
+  }
+
+  getPropertyName(registrationTid: RegistrationTid) {
+    return RegistrationTid[registrationTid];
+  }
+
+  getType(reg: IRegistration, registrationTid: RegistrationTid) {
+    return typeof this.getRegistationProperty(reg, registrationTid);
   }
 
   async createOrEditRegistrationRoute() {

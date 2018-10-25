@@ -128,6 +128,11 @@
       "HEADER": "What time did you observe?",
       "NOW": "Now",
       "TITLE": "Time"
+    },
+    "WATER": {
+      "WATER_LEVEL": {
+        "TITLE": "Water level"
+      }
     }
   },
   "SETTINGS": {

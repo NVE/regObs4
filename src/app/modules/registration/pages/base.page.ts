@@ -1,17 +1,17 @@
 import { OnInit } from '@angular/core';
 import { RegistrationService } from '../services/registration.service';
 import { IRegistration } from '../models/registration.model';
-import { RegistationTid } from '../models/registrationTid.enum';
+import { RegistrationTid } from '../models/registrationTid.enum';
 import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
 
 export abstract class BasePage implements OnInit {
 
     registration: IRegistration;
     registrationService: RegistrationService;
-    registrationTid: RegistationTid;
+    registrationTid: RegistrationTid;
 
     constructor(
-        registrationTid: RegistationTid,
+        registrationTid: RegistrationTid,
         registrationService: RegistrationService,
     ) {
         this.registrationTid = registrationTid;
@@ -63,18 +63,15 @@ export abstract class BasePage implements OnInit {
     }
 
     getRegistationProperty() {
-        if (this.registration && this.registrationTid) {
-            return this.registration[this.getPropertyName()];
-        }
-        return null;
+        return this.registrationService.getRegistationProperty(this.registration, this.registrationTid);
     }
 
     getPropertyName() {
-        return RegistationTid[this.registrationTid];
+        return this.registrationService.getPropertyName(this.registrationTid);
     }
 
     getType() {
-        return typeof this.getRegistationProperty();
+        return this.registrationService.getType(this.registration, this.registrationTid);
     }
 
     getDefaultValue() {
@@ -92,8 +89,7 @@ export abstract class BasePage implements OnInit {
     }
 
     getImages() {
-        return this.registration ?
-            (this.registration.Picture || []).filter((p) => p.RegistrationTID === this.registrationTid) : [];
+        return this.registrationService.getImages(this.registration, this.registrationTid);
     }
 
     hasImages() {
@@ -101,11 +97,7 @@ export abstract class BasePage implements OnInit {
     }
 
     isEmpty() {
-        if (this.registrationTid && this.registration) {
-            const isRegistrationEmpty = IsEmptyHelper.isEmpty(this.getRegistationProperty());
-            return isRegistrationEmpty && !this.hasImages();
-        }
-        return true;
+        this.registrationService.isEmpty(this.registration, this.registrationTid);
     }
 
 }

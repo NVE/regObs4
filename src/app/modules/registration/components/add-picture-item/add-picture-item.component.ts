@@ -1,9 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionSheetController, Platform } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { settings } from '../../../../../settings';
-import { RegistationTid } from '../../models/registrationTid.enum';
+import { RegistrationTid } from '../../models/registrationTid.enum';
 import { PictureRequestDto } from '../../../regobs-api/models';
 
 @Component({
@@ -14,7 +14,8 @@ import { PictureRequestDto } from '../../../regobs-api/models';
 export class AddPictureItemComponent implements OnInit {
 
   @Input() images: PictureRequestDto[];
-  @Input() registrationTid: RegistationTid;
+  @Input() registrationTid: RegistrationTid;
+  @Output() imagesChange = new EventEmitter();
 
   constructor(
     private translateService: TranslateService,
@@ -69,12 +70,14 @@ export class AddPictureItemComponent implements OnInit {
       const imageUrl = await this.camera.getPicture(options);
       this.images.push({ PictureImageBase64: imageUrl, RegistrationTID: this.registrationTid });
     } else {
-      this.images.push({ PictureImageBase64: '/assets/images/dummyregobsimage.jpg', RegistrationTID: this.registrationTid });
+      this.images.push({ PictureImageBase64: '/assets/images/dummyregobsimage.jpeg', RegistrationTID: this.registrationTid });
     }
+    this.imagesChange.emit(this.images);
     return true;
   }
 
   removeImage(image: any) {
     this.images = this.images.filter((x) => x !== image);
+    this.imagesChange.emit(this.images);
   }
 }

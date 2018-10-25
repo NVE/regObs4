@@ -1,12 +1,12 @@
-<ion-item [href]="href">
+<ion-item [href]="item.href">
   <ion-label padding>
-    <h2>{{ title }}</h2>
-    <p *ngIf="subTitle">
-      {{ subTitleFormat === 'date' ? (subTitle | formatDate | async) : (subTitle) }}
+    <h2>{{ item.title | translate}}</h2>
+    <p *ngIf="item.subTitle">
+      {{ item.subTitle | translate }}
     </p>
-    <p class="images" *ngIf="images">
-      <img [src]="image.PictureImageBase64" *ngFor="let image of images" />
+    <p class="images" *ngIf="item.images">
+      <img [src]="image.PictureImageBase64" *ngFor="let image of item.images" />
     </p>
   </ion-label>
-  <ion-icon *ngIf="hasData" slot="end" color="success" name="checkmark-circle"></ion-icon>
+  <ion-icon *ngIf="item.hasData" slot="end" color="success" name="checkmark-circle"></ion-icon>
 </ion-item>

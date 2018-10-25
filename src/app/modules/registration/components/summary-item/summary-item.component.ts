@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PictureRequestDto } from '../../../regobs-api/models';
+import { ISummaryItem } from './summary-item.model';
 
 @Component({
   selector: 'app-summary-item',
@@ -8,12 +9,7 @@ import { PictureRequestDto } from '../../../regobs-api/models';
 })
 export class SummaryItemComponent implements OnInit {
 
-  @Input() title: string;
-  @Input() subTitle: string;
-  @Input() subTitleFormat?: 'string' | 'date';
-  @Input() hasData: boolean;
-  @Input() href: string;
-  @Input() images: PictureRequestDto[];
+  @Input() item: ISummaryItem;
 
   constructor() { }
 
