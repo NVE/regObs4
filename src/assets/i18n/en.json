@@ -109,6 +109,8 @@
       "SUBTITLE": "Share observation with",
       "TITLE": "Share with group"
     },
+    "IMAGE_DESCRIPTION": "Image description",
+    "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
     "OBS_LOCATION": {
       "CURRENT_LOCATION": "Current position",
       "HIDE_DETAILS": "Hide details",
@@ -131,7 +133,27 @@
     },
     "WATER": {
       "WATER_LEVEL": {
-        "TITLE": "Water level"
+        "ADD_NEW": "Add new",
+        "ADD_PICTURE": "Add picture of",
+        "CAN_YOU_SEE_WATER": "Can you see the water gone astray?",
+        "DESCRIBE": "Describe",
+        "DESCRIBE_HEIGHT": "Describe height",
+        "DESCRIBE_SITUATION": "How would you describe the situation?",
+        "HOW_DO_YOU_READ": "How do you read the water level?",
+        "MARKED_WITH": "I have marked the water level with",
+        "MARKING": "Marking",
+        "MARKING_PLURAL": "Marking",
+        "MARKING_REFERENCE": "I have marked water level on",
+        "MEASURE_PLURAL": "Measurement",
+        "MEASURING": "Measurement",
+        "MEASURING_TOOL": "Enter the measuring instrument here",
+        "OBSERVATION_TIMING": "What do you register?",
+        "REGISTRATION_METHOD": "How do you register?",
+        "RELATIVE": "The height is relative to",
+        "TITLE": "Water level",
+        "WATER_LEVEL_METERS": "Water level in meters",
+        "WATER_MARKING": "Water level marking",
+        "WATER_MEASUREMENT": "Water level measurement"
       }
     }
   },

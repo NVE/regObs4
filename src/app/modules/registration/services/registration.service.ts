@@ -89,7 +89,12 @@ export class RegistrationService {
   isEmpty(reg: IRegistration, registrationTid: RegistrationTid) {
     if (reg && registrationTid) {
       const isRegistrationEmpty = IsEmptyHelper.isEmpty(this.getRegistationProperty(reg, registrationTid));
-      return isRegistrationEmpty && !this.hasImages(reg, registrationTid);
+      const hasImages = this.hasImages(reg, registrationTid);
+      if (isRegistrationEmpty && !hasImages) {
+        return true;
+      } else {
+        return false;
+      }
     }
     return true;
   }

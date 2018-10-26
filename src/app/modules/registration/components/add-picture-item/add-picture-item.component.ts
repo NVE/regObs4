@@ -16,6 +16,14 @@ export class AddPictureItemComponent implements OnInit {
   @Input() images: PictureRequestDto[];
   @Input() registrationTid: RegistrationTid;
   @Output() imagesChange = new EventEmitter();
+  @Input() title: 'REGISTRATION.ADD_IMAGES';
+  @Input() pictureCommentText = 'REGISTRATION.IMAGE_DESCRIPTION';
+  @Input() showPictureCommentText = true;
+  @Input() pictureCommentPlaceholder = 'REGISTRATION.IMAGE_DESCRIPTION_PLACEHOLDER';
+  @Input() showPictureCommentPlaceholder = true;
+  @Input() icon = 'camera';
+  @Input() showIcon: true;
+  @Input() iconColor: 'dark';
 
   constructor(
     private translateService: TranslateService,
@@ -72,12 +80,10 @@ export class AddPictureItemComponent implements OnInit {
     } else {
       this.images.push({ PictureImageBase64: '/assets/images/dummyregobsimage.jpeg', RegistrationTID: this.registrationTid });
     }
-    this.imagesChange.emit(this.images);
     return true;
   }
 
   removeImage(image: any) {
     this.images = this.images.filter((x) => x !== image);
-    this.imagesChange.emit(this.images);
   }
 }

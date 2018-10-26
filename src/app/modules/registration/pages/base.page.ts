@@ -97,7 +97,7 @@ export abstract class BasePage implements OnInit {
     }
 
     isEmpty() {
-        this.registrationService.isEmpty(this.registration, this.registrationTid);
+        return this.registrationService.isEmpty(this.registration, this.registrationTid);
     }
 
 }

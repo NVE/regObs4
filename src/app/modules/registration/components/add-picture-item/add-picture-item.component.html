@@ -6,10 +6,10 @@
         <ion-icon name="close"></ion-icon>
       </ion-fab-button>
     </ion-fab>
-    <app-text-comment [(value)]="image.PictureComment" title="Beskrivelse av bildet" rows="2" placeholder="Her kan du gi en beskrivelse av bildet"></app-text-comment>
+    <app-text-comment [(value)]="image.PictureComment" title="{{ pictureCommentText | translate}}" rows="2" placeholder="{{ pictureCommentPlaceholder | translate }}"></app-text-comment>
   </div>
 </div>
 <ion-item (click)="addClick()">
-  <ion-icon name="camera" slot="start"></ion-icon>
-  <ion-label>{{'REGISTRATION.ADD_IMAGES' | translate }}</ion-label>
+  <ion-icon [color]="iconColor" [name]="icon" slot="start"></ion-icon>
+  <ion-label>{{ title | translate }}</ion-label>
 </ion-item>

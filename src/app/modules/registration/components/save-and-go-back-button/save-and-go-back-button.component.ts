@@ -13,7 +13,7 @@ export class SaveAndGoBackButtonComponent implements OnInit {
 
   @Input() registration: IRegistration;
   @Input() isEmpty: boolean;
-  @Output() reset: EventEmitter<any> = new EventEmitter();
+  @Output() reset = new EventEmitter();
 
   constructor(
     private navContoller: NavController

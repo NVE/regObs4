@@ -1,0 +1,28 @@
+<ion-list-header>
+  <ion-label no-margin>
+    <h3>{{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING' :
+      'REGISTRATION.WATER.WATER_LEVEL.MEASURING') |
+      translate }} {{ measurementNumber }}</h3>
+  </ion-label>
+</ion-list-header>
+<ion-item *ngIf="waterLevelMethod === 2" [formGroup]="form">
+  <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.WATER.WATER_LEVEL.WATER_LEVEL_METERS' |
+    translate }}</ion-label>
+  <ion-input formControlName="waterLevelMethod" type="number" [(ngModel)]="waterLevelMeasurement.WaterLevelValue" [min]="0"
+    [max]="10000"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SET_TIME.TITLE' | translate }}</ion-label>
+  <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
+    cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="waterLevelMeasurement.DtMeasurementTime"
+    [max]="maxDate">
+  </ion-datetime>
+  <ion-button slot="end" fill="outline" color="medium" (click)="setToNow()">
+    <ion-icon slot="start" name="time"></ion-icon> {{"REGISTRATION.SET_TIME.NOW" | translate}}
+  </ion-button>
+</ion-item>
+<app-add-picture-item iconColor="primary" icon="add-circle-outline" title="{{ 'REGISTRATION.WATER.WATER_LEVEL.ADD_PICTURE' | translate }} {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' :
+'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL') | translate | lowercase }}"
+  [(images)]="waterLevelMeasurement.Pictures" [registrationTid]="registrationTid"></app-add-picture-item>
+<app-text-comment [(value)]="waterLevelMeasurement.Comment" placeholder="{{'REGISTRATION.WATER.WATER_LEVEL.DESCRIBE' | translate }} {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' :
+'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL') | translate | lowercase }}"></app-text-comment>

@@ -109,6 +109,8 @@
       "SUBTITLE": "Del observasjonen med",
       "TITLE": "Del med gruppe"
     },
+    "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
+    "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
     "OBS_LOCATION": {
       "CURRENT_LOCATION": "Nåværende posisjon",
       "HIDE_DETAILS": "Skjul detaljer",
@@ -131,7 +133,27 @@
     },
     "WATER": {
       "WATER_LEVEL": {
-        "TITLE": "Vannstand"
+        "ADD_NEW": "Legg til ny",
+        "ADD_PICTURE": "Legg til bilde av",
+        "CAN_YOU_SEE_WATER": "Kan du se vann på avveie?",
+        "DESCRIBE": "Beskriv",
+        "DESCRIBE_HEIGHT": "Beskriv høyde",
+        "DESCRIBE_SITUATION": "Hvordan vil du beskrive situasjonen?",
+        "HOW_DO_YOU_READ": "Hvordan leser du av vannstanden?",
+        "MARKED_WITH": "Jeg har markert vannstanden med",
+        "MARKING": "Markering",
+        "MARKING_PLURAL": "Markeringen",
+        "MARKING_REFERENCE": "Jeg har markert vannstanden i/på",
+        "MEASURE_PLURAL": "Målingen",
+        "MEASURING": "Måling",
+        "MEASURING_TOOL": "Skriv inn måleinstrument her",
+        "OBSERVATION_TIMING": "Hva registrerer du?",
+        "REGISTRATION_METHOD": "Hvordan registrerer du?",
+        "RELATIVE": "Høyden er relativ til",
+        "TITLE": "Vannstand",
+        "WATER_LEVEL_METERS": "Vannstand i meter",
+        "WATER_MARKING": "Vannstandsmarkering",
+        "WATER_MEASUREMENT": "Vannstandsmåling"
       }
     }
   },
