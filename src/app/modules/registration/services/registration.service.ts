@@ -18,6 +18,7 @@ import { AppMode } from '../../../core/models/app-mode.enum';
 import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
 import { fromJS, Map, is } from 'immutable';
 import { RegistrationTid } from '../models/registrationTid.enum';
+import { RegistrationTypes } from '../models/registrationTypes.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -119,8 +120,8 @@ export class RegistrationService {
     return RegistrationTid[registrationTid];
   }
 
-  getType(reg: IRegistration, registrationTid: RegistrationTid) {
-    return typeof this.getRegistationProperty(reg, registrationTid);
+  getType(registrationTid: RegistrationTid) {
+    return RegistrationTypes[RegistrationTid[registrationTid]];
   }
 
   async createOrEditRegistrationRoute() {

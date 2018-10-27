@@ -71,11 +71,11 @@ export abstract class BasePage implements OnInit {
     }
 
     getType() {
-        return this.registrationService.getType(this.registration, this.registrationTid);
+        return this.registrationService.getType(this.registrationTid);
     }
 
     getDefaultValue() {
-        if (this.getType() === typeof Array) {
+        if (this.getType() === 'array') {
             return [];
         } else {
             return {};

@@ -4,6 +4,7 @@ import { SaveAndGoBackButtonComponent } from './components/save-and-go-back-butt
 import { TextCommentComponent } from './components/text-comment/text-comment.component';
 import { AddPictureItemComponent } from './components/add-picture-item/add-picture-item.component';
 import { KdvRadiobuttonListComponent } from './components/kdv-radiobutton-list/kdv-radiobutton-list.component';
+import { NavigationButtonsComponent } from './components/navigation-buttons/navigation-buttons.component';
 
 @NgModule({
     imports: [
@@ -15,7 +16,14 @@ import { KdvRadiobuttonListComponent } from './components/kdv-radiobutton-list/k
         AddPictureItemComponent,
         TextCommentComponent,
         KdvRadiobuttonListComponent,
+        NavigationButtonsComponent,
     ],
-    declarations: [SaveAndGoBackButtonComponent, AddPictureItemComponent, TextCommentComponent, KdvRadiobuttonListComponent]
+    declarations: [
+        SaveAndGoBackButtonComponent,
+        AddPictureItemComponent,
+        TextCommentComponent,
+        KdvRadiobuttonListComponent,
+        NavigationButtonsComponent,
+    ]
 })
 export class SharedComponentsModule { }

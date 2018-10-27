@@ -1,0 +1,16 @@
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <ion-button [href]="previousUrl" routerDirection="backward" color="primary" fill="outline" expand="block">
+        <ion-icon slot="start" name="arrow-round-back"></ion-icon>
+        {{ previousText | translate }}
+      </ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button [href]="nextUrl" color="primary" routerDirection="forward" fill="solid" expand="block">
+        <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
+        {{ nextText | translate }}
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>

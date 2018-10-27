@@ -123,6 +123,12 @@ export class OverviewPage implements OnInit, OnDestroy {
         this.registration.WaterLevel2 ? this.registration.WaterLevel2.Comment : '',
         RegistrationTid.WaterLevel2
       ),
+      this.getRegItem(
+        'registration/water/damage',
+        'REGISTRATION.WATER.DAMAGE.TITLE',
+        '', // this.registration.DamageObs ? this.registration.DamageObs.map((x) => x.Comment).join() : '',
+        RegistrationTid.DamageObs
+      ),
     ];
   }
 

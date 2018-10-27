@@ -21,7 +21,9 @@
   },
   "DIALOGS": {
     "CANCEL": "Avbryt",
-    "OK": "Ok"
+    "NO": "Nei",
+    "OK": "Ok",
+    "YES": "Ja"
   },
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Tur pågår"
@@ -132,6 +134,10 @@
       "TITLE": "Tidspunkt"
     },
     "WATER": {
+      "DAMAGE": {
+        "CAN_YOU_SEE_DAMAGE": "Kan du se noen skader?",
+        "TITLE": "Skader"
+      },
       "WATER_LEVEL": {
         "ADD_NEW": "Legg til ny",
         "ADD_PICTURE": "Legg til bilde av",

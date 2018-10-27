@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="dark" mode="ios">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button defaultHref="registration"></ion-back-button>
     </ion-buttons>
     <ion-title>
       {{'REGISTRATION.WATER.WATER_LEVEL.TITLE' | translate}}
@@ -52,5 +52,7 @@
     </ion-button> -->
     </ion-list>
   </ng-container>
+  <app-navigation-buttons previousUrl="registration/group" previousText="Del med gruppe" nextUrl="registration/water/damage"
+    nextText="Skader"></app-navigation-buttons>
 </ion-content>
 <app-save-and-go-back-button [registration]="registration" [isEmpty]="isEmpty()" (reset)="reset()"></app-save-and-go-back-button>

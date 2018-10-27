@@ -21,7 +21,9 @@
   },
   "DIALOGS": {
     "CANCEL": "Cancel",
-    "OK": "Ok"
+    "NO": "No",
+    "OK": "Ok",
+    "YES": "Yes"
   },
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Logging trip"
@@ -132,6 +134,10 @@
       "TITLE": "Time"
     },
     "WATER": {
+      "DAMAGE": {
+        "CAN_YOU_SEE_DAMAGE": "Can you see any damages?",
+        "TITLE": "Damages"
+      },
       "WATER_LEVEL": {
         "ADD_NEW": "Add new",
         "ADD_PICTURE": "Add picture of",

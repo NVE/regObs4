@@ -17,6 +17,8 @@ const routes: Routes = [
     { path: 'registration/group', loadChildren: './pages/group/group.module#GroupPageModule' },
     { path: 'registration/general-comment', loadChildren: './pages/general-comment/general-comment.module#GeneralCommentPageModule' },
     { path: 'registration/water/water-level', loadChildren: './pages/water/water-level/water-level.module#WaterLevelPageModule' },
+    { path: 'registration/water/damage', loadChildren: './pages/water/damage/damage.module#DamagePageModule' },
+
 
 
 
