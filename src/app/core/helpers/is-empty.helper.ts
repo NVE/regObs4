@@ -12,7 +12,7 @@ export class IsEmptyHelper {
         } else {
             const props = Object.getOwnPropertyNames(obj);
             if (props.length === 0) {
-                return JSON.stringify(obj) !== '{}';
+                return JSON.stringify(obj) === '{}';
             } else {
                 return !props.some(x => !IsEmptyHelper.isEmpty(obj[x]));
             }

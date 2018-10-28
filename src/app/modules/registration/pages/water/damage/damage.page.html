@@ -16,45 +16,27 @@
       </ion-label>
     </ion-list-header>
     <ion-radio-group (ionChange)="onChange($event)">
-      <ion-item [ngClass]="{'selected': isDamages === true}" (click)="setDamageSelected(true)">
+      <ion-item [ngClass]="{'selected': checked === true}" (click)="checkedChanged(true)">
         <ion-label>{{ 'DIALOGS.YES' | translate }}</ion-label>
-        <ion-radio mode="md" slot="start" value="true" [checked]="isDamages === true"></ion-radio>
+        <ion-radio mode="md" slot="start" [value]="true" [checked]="checked === true"></ion-radio>
       </ion-item>
-      <ion-item [ngClass]="{'selected': isDamages === false}" (click)="setDamageSelected(false)">
+      <ion-item [ngClass]="{'selected': checked === false}" (click)="checkedChanged(false)">
         <ion-label>{{ 'DIALOGS.NO' | translate }}</ion-label>
-        <ion-radio mode="md" slot="start" value="false" [checked]="isDamages === false"></ion-radio>
+        <ion-radio mode="md" slot="start" [value]="false" [checked]="checked === false"></ion-radio>
       </ion-item>
     </ion-radio-group>
-    <ng-container *ngIf="isDamages">
+    <ng-container *ngIf="checked">
       <ion-list-header text-uppercase>
         <ion-label no-margin>
           <h3>Hva er skadet?</h3>
         </ion-label>
       </ion-list-header>
-      <ng-container *ngFor="let damageType of damages">
-        <ion-item (click)="toggleDamageType(damageType.id)">
-          <ion-checkbox (ionChange)="damageTypeChanged()" mode="md" slot="start" [(ngModel)]="damageType.checked"></ion-checkbox>
-          <ion-label>{{ damageType.name }}</ion-label>
-        </ion-item>
-        <ng-container *ngIf="damageType.checked">
-          <ion-item class="no-border">
-            <ion-label color="medium" position="stacked" text-uppercase>Hvor er skadepunktet?</ion-label>
-          </ion-item>
-          <ion-item class="no-border">
-            <ion-icon slot="start" color="primary" name="add-circle-outline">
-            </ion-icon>
-            <ion-label>Legg til skadepunkt her</ion-label>
-          </ion-item>
-          <ion-item class="no-border">
-            <ion-label color="medium" position="stacked" text-uppercase>Bilder av skaden(e)</ion-label>
-          </ion-item>
-          <app-add-picture-item title="Legg til bilder" icon="add-circle-outline" iconColor="primary" [(images)]="damageType.images"
-            [registrationTid]="registrationTid"></app-add-picture-item>
-        </ng-container>
-      </ng-container>
+      <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration" [damageTypeId]="damageType.Id"
+        [damageTypeName]="damageType.Name">
+      </app-damage-obs>
     </ng-container>
   </ion-list>
-  <app-navigation-buttons previousUrl="registration/group" previousText="Del med gruppe" nextUrl="registration/water/damage"
-    nextText="Skader"></app-navigation-buttons>
+  <app-navigation-buttons previousUrl="registration/water/water-level" previousText="Vannstand" nextUrl="registration/general-comment"
+    nextText="Bilder og notater"></app-navigation-buttons>
 </ion-content>
 <app-save-and-go-back-button [registration]="registration" [isEmpty]="isEmpty()" (reset)="reset()"></app-save-and-go-back-button>

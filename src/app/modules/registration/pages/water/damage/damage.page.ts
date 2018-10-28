@@ -16,10 +16,9 @@ const NO_DAMAGE_VISIBLE = 7;
   styleUrls: ['./damage.page.scss'],
 })
 export class DamagePage extends BasePage {
-
-  isDamages: boolean;
-  damages: Array<{ name: string, id: number, checked: boolean, images: PictureRequestDto[] }>;
   damageTypes: KdvElement[];
+  checked: boolean;
+  onChangeFunc: (bool) => void;
 
   constructor(
     registrationService: RegistrationService,
@@ -31,74 +30,42 @@ export class DamagePage extends BasePage {
 
   async onInit() {
     const userSetting = await this.userSettingService.getUserSettings();
-    this.damageTypes = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode,
-      `${GeoHazard[userSetting.currentGeoHazard]}_DamageTypeKDV`);
-    this.updateCheckboxes();
+    this.damageTypes = (await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode,
+      `${GeoHazard[userSetting.currentGeoHazard]}_DamageTypeKDV`))
+      .filter((x) => x.Id !== NO_DAMAGE_VISIBLE);
+    if (this.registration.DamageObs.length > 0) {
+      this.checked = this.registration.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE).length > 0;
+    }
+    this.onChangeFunc = this.checkedChanged;
+    // NOTE: There is a bug in current framework so I cannot bind radio group
+    // with ngModel. When that is fixed, the onChange logic can be removed
+    // and ngModel binding can be used instead...
   }
 
   onReset() {
-    this.updateCheckboxes();
-  }
-
-  updateCheckboxes() {
-    this.damages = this.damageTypes.filter((damageType) => damageType.Id !== NO_DAMAGE_VISIBLE)
-      .map((damageType) => {
-        const damageObs = this.registration.DamageObs.find((x) => x.DamageTypeTID === damageType.Id);
-        return {
-          name: damageType.Name,
-          id: damageType.Id,
-          checked: !!damageObs,
-          images: damageObs ? damageObs.Pictures : [],
-        };
-      });
-    if (this.registration.DamageObs.length > 0) {
-      const firstDamageObs = this.registration.DamageObs[0];
-      if (firstDamageObs.DamageTypeTID === NO_DAMAGE_VISIBLE) {
-        this.isDamages = false;
-      } else {
-        this.isDamages = true;
-      }
-    }
+    this.checked = undefined;
   }
 
   onBeforeLeave() {
   }
 
-  setDamageSelected(value: boolean) {
-    this.isDamages = value;
-    if (this.isDamages === false) {
+  onChange(event: Event) {
+    const radioGroup: RadioGroup = <any>event.target;
+    if (this.onChangeFunc) {
+      this.onChangeFunc(radioGroup.value);
+    }
+  }
+
+  checkedChanged(value: boolean) {
+    this.checked = value;
+    if (value) {
+      this.registration.DamageObs = this.registration.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE);
+    } else {
       this.registration.DamageObs = [
         {
           DamageTypeTID: NO_DAMAGE_VISIBLE
         }
       ];
-    } else {
-      this.registration.DamageObs = [];
     }
   }
-
-  onChange(event: Event) {
-    const radioGroup: RadioGroup = <any>event.target;
-    this.setDamageSelected(radioGroup.value === 'false' ? false : true);
-  }
-
-  toggleDamageType(id: number) {
-    const damageType = this.damages.find((x) => x.id === id);
-    damageType.checked = !damageType.checked;
-    this.damageTypeChanged();
-  }
-
-  damageTypeChanged() {
-    for (const damageType of this.damages) {
-      const reg = this.registration.DamageObs.find((x) => x.DamageTypeTID === damageType.id);
-      if (damageType.checked && !reg) {
-        this.registration.DamageObs.push({ DamageTypeTID: damageType.id });
-      }
-      if (!damageType.checked && reg) {
-        this.registration.DamageObs = this.registration.DamageObs.filter((x) => x.DamageTypeTID !==
-          damageType.id);
-      }
-    }
-  }
-
 }
