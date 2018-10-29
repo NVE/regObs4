@@ -1,9 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { Textarea } from '@ionic/angular';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
-import { GeneralObservationDto, PictureRequestDto } from '../../../regobs-api/models';
-import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { IRegistration } from '../../models/registration.model';
 import { RegistrationTid } from '../../models/registrationTid.enum';
 import { BasePage } from '../base.page';
 
@@ -14,9 +10,10 @@ import { BasePage } from '../base.page';
 })
 export class GeneralCommentPage extends BasePage {
   constructor(
-    registrationService: RegistrationService
+    registrationService: RegistrationService,
+    changeDetectorRef: ChangeDetectorRef
   ) {
-    super(RegistrationTid.GeneralObservation, registrationService);
+    super(RegistrationTid.GeneralObservation, registrationService, changeDetectorRef);
   }
 
   onInit() {

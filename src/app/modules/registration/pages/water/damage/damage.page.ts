@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import { RegistrationService } from '../../../services/registration.service';
@@ -22,10 +22,11 @@ export class DamagePage extends BasePage {
 
   constructor(
     registrationService: RegistrationService,
+    changeDetectorRef: ChangeDetectorRef,
     private kdvService: KdvService,
     private userSettingService: UserSettingService,
   ) {
-    super(RegistrationTid.DamageObs, registrationService);
+    super(RegistrationTid.DamageObs, registrationService, changeDetectorRef);
   }
 
   async onInit() {

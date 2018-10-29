@@ -114,6 +114,7 @@
     "IMAGE_DESCRIPTION": "Image description",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
     "OBS_LOCATION": {
+      "CONFIRM_TEXT": "Confirm location",
       "CURRENT_LOCATION": "Current position",
       "HIDE_DETAILS": "Hide details",
       "SHOW_DETAILS": "Show details",
@@ -127,6 +128,10 @@
     },
     "RESET": "Reset",
     "SEND": "Submit",
+    "SET_DAMAGE_LOCATION": {
+      "CONFIRM_TEXT": "Confirm damage location",
+      "TITLE": "Damage location"
+    },
     "SET_TIME": {
       "CONFIRM": "Confirm date and time",
       "HEADER": "What time did you observe?",
@@ -135,8 +140,12 @@
     },
     "WATER": {
       "DAMAGE": {
+        "ADD_DAMAGE_LOCATION": "Add damage location",
         "CAN_YOU_SEE_DAMAGE": "Can you see any damages?",
-        "TITLE": "Damages"
+        "IMAGE_OF_DAMAGES": "Images of the damage",
+        "TITLE": "Damages",
+        "WHAT_IS_DAMAGED": "What is damaged?",
+        "WHERE_IS_DAMAGE_LOCATION": "Where is the damage located?"
       },
       "WATER_LEVEL": {
         "ADD_NEW": "Add new",

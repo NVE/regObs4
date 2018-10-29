@@ -23,13 +23,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() showUserLocation = true;
   @Input() showScale = true;
   @Input() showSupportMaps = true;
+  @Input() center = L.latLng(59.911197, 10.741059);
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
   @Output() positionChange: EventEmitter<Geoposition> = new EventEmitter();
+  @Input() followMode = true;
+  @Output() followModeChange = new EventEmitter();
 
   private map: L.Map;
   private tilesLayer = L.layerGroup();
   private userMarker: UserMarker;
-  private followMode = true;
   private firstPositionUpdate = true;
 
   private userSettingSubscription: Subscription;
@@ -50,7 +52,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   options: L.MapOptions = {
     zoom: 5,
     maxZoom: 19,
-    center: L.latLng(59.911197, 10.741059),
+    center: this.center,
     bounceAtZoomLimits: true,
     attributionControl: false,
     zoomControl: false,
@@ -115,11 +117,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private disableFollowMode() {
     this.followMode = false;
+    this.followModeChange.emit(this.followMode);
   }
 
   centerMapToUser() {
     this.zone.runOutsideAngular(() => {
       this.followMode = true;
+      this.followModeChange.emit(this.followMode);
       if (this.userMarker) {
         const currentPosition = this.userMarker.getPosition();
         this.map.panTo(L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude));

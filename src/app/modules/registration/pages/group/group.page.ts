@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto } from '../../../regobs-api/models';
 import { RegistrationService } from '../../services/registration.service';
 import { BasePage } from '../base.page';
-import { TouchSequence } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-group',
@@ -16,9 +15,10 @@ export class GroupPage extends BasePage {
 
   constructor(
     registrationService: RegistrationService,
+    changeDetectorRef: ChangeDetectorRef,
     private userGroupService: UserGroupService,
   ) {
-    super(null, registrationService);
+    super(null, registrationService, changeDetectorRef);
   }
 
   async onInit() {

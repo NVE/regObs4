@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IRegistration } from '../../models/registration.model';
+import { RegistrationService } from '../../services/registration.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-damage-obs',
@@ -34,7 +36,8 @@ export class DamageObsComponent implements OnInit {
     return this.registration.DamageObs.find((x) => x.DamageTypeTID === this.damageTypeId);
   }
 
-  constructor() { }
+  constructor(private registrationService: RegistrationService, private navController: NavController) {
+  }
 
   ngOnInit() {
     if (this.damageObs && this.damageObs.Pictures === undefined) {
@@ -44,5 +47,10 @@ export class DamageObsComponent implements OnInit {
 
   toggleDamageType() {
     this.isSelected = !this.isSelected;
+  }
+
+  async setDamagePosition() {
+    await this.registrationService.saveRegistration(this.registration);
+    this.navController.navigateForward(`registration/set-damage-location/${this.damageTypeId}`);
   }
 }

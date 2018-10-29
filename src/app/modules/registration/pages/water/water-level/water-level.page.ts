@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import { RegistrationService } from '../../../services/registration.service';
@@ -12,9 +12,10 @@ import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
 export class WaterLevelPage extends BasePage {
 
   constructor(
-    registrationService: RegistrationService
+    registrationService: RegistrationService,
+    changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(RegistrationTid.WaterLevel2, registrationService);
+    super(RegistrationTid.WaterLevel2, registrationService, changeDetectorRef);
   }
 
   onInit() {

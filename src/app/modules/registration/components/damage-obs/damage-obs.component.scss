@@ -10,3 +10,7 @@
     --border-width: 0 !important;
     --inner-border-width: 0 !important;
 }
+
+.no-min-height {
+    --min-height: 0px;
+}

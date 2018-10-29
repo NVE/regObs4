@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ObsLocationPage } from './obs-location.page';
+import { SetDamageLocationPage } from './set-damage-location.page';
 import { SharedComponentsModule } from '../../shared-components.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: ObsLocationPage
+    component: SetDamageLocationPage
   }
 ];
 
@@ -15,6 +15,6 @@ const routes: Routes = [
     SharedComponentsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ObsLocationPage]
+  declarations: [SetDamageLocationPage]
 })
-export class ObsLocationPageModule { }
+export class SetDamageLocationPageModule { }

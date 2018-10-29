@@ -8,7 +8,7 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content *ngIf="registration && registration.DamageObs">
+<ion-content>
   <ion-list lines="full">
     <ion-list-header text-uppercase>
       <ion-label no-margin>
@@ -28,7 +28,7 @@
     <ng-container *ngIf="checked">
       <ion-list-header text-uppercase>
         <ion-label no-margin>
-          <h3>Hva er skadet?</h3>
+          <h3>{{ 'REGISTRATION.WATER.DAMAGE.WHAT_IS_DAMAGED' | translate }}</h3>
         </ion-label>
       </ion-list-header>
       <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration" [damageTypeId]="damageType.Id"
@@ -36,7 +36,7 @@
       </app-damage-obs>
     </ng-container>
   </ion-list>
-  <app-navigation-buttons previousUrl="registration/water/water-level" previousText="Vannstand" nextUrl="registration/general-comment"
-    nextText="Bilder og notater"></app-navigation-buttons>
+  <app-navigation-buttons previousUrl="registration/water/water-level" previousText="REGISTRATION.WATER.WATER_LEVEL.TITLE"
+    nextUrl="registration/general-comment" nextText="REGISTRATION.GENERAL_COMMENT.TITLE"></app-navigation-buttons>
 </ion-content>
 <app-save-and-go-back-button [registration]="registration" [isEmpty]="isEmpty()" (reset)="reset()"></app-save-and-go-back-button>

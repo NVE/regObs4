@@ -18,11 +18,10 @@ const routes: Routes = [
     { path: 'registration/general-comment', loadChildren: './pages/general-comment/general-comment.module#GeneralCommentPageModule' },
     { path: 'registration/water/water-level', loadChildren: './pages/water/water-level/water-level.module#WaterLevelPageModule' },
     { path: 'registration/water/damage', loadChildren: './pages/water/damage/damage.module#DamagePageModule' },
-
-
-
-
-
+    {
+        path: 'registration/set-damage-location/:damageTypeTid',
+        loadChildren: './pages/set-damage-location/set-damage-location.module#SetDamageLocationPageModule'
+    },
 ];
 
 @NgModule({

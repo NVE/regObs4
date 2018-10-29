@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.SET_DAMAGE_LOCATION.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <app-set-location-in-map *ngIf="fromMarker" [fromMarker]="fromMarker" [locationMarker]="locationMarker" (locationSet)="onLocationSet($event)"
+    confirmLocationText="REGISTRATION.SET_DAMAGE_LOCATION.CONFIRM_TEXT" fromLocationText="REGISTRATION.OBS_LOCATION.TITLE"
+    [showPreviousUsedLocations]="false" locationTitle="REGISTRATION.SET_DAMAGE_LOCATION.TITLE">
+  </app-set-location-in-map>
+</ion-content>

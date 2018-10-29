@@ -114,6 +114,7 @@
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
     "OBS_LOCATION": {
+      "CONFIRM_TEXT": "Bekreft observasjonspunkt",
       "CURRENT_LOCATION": "Nåværende posisjon",
       "HIDE_DETAILS": "Skjul detaljer",
       "SHOW_DETAILS": "Vis detaljer",
@@ -127,6 +128,10 @@
     },
     "RESET": "Nullstill denne siden",
     "SEND": "Send inn",
+    "SET_DAMAGE_LOCATION": {
+      "CONFIRM_TEXT": "Bekreft skadepunkt",
+      "TITLE": "Skadepunkt"
+    },
     "SET_TIME": {
       "CONFIRM": "Bekreft dato og tid",
       "HEADER": "Når observerte du?",
@@ -135,8 +140,12 @@
     },
     "WATER": {
       "DAMAGE": {
+        "ADD_DAMAGE_LOCATION": "Legg til skadepunkt her",
         "CAN_YOU_SEE_DAMAGE": "Kan du se noen skader?",
-        "TITLE": "Skader"
+        "IMAGE_OF_DAMAGES": "Bilder av skaden(e)",
+        "TITLE": "Skader",
+        "WHAT_IS_DAMAGED": "Hva er skadet?",
+        "WHERE_IS_DAMAGE_LOCATION": "Hvor er skadepunktet?"
       },
       "WATER_LEVEL": {
         "ADD_NEW": "Legg til ny",
