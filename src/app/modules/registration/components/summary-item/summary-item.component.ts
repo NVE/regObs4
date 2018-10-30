@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PictureRequestDto } from '../../../regobs-api/models';
 import { ISummaryItem } from './summary-item.model';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-summary-item',
@@ -10,10 +11,17 @@ import { ISummaryItem } from './summary-item.model';
 export class SummaryItemComponent implements OnInit {
 
   @Input() item: ISummaryItem;
+  @Input() readonly = false;
 
-  constructor() { }
+  constructor(private navController: NavController) { }
 
   async ngOnInit() {
 
+  }
+
+  navigate() {
+    if (!this.readonly) {
+      this.navController.navigateForward(this.item.href);
+    }
   }
 }

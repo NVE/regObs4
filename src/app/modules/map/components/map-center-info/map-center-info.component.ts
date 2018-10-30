@@ -72,6 +72,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     const toastText = await this.translateService.get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD').toPromise();
     const toast = await this.toastController.create({
       message: toastText,
+      mode: 'md',
       duration: 2000,
     });
     toast.present();

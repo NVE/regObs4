@@ -1,12 +1,29 @@
 <ion-header>
   <ion-toolbar color="dark" mode="ios">
-    <ion-buttons slot="end">
-      <ion-menu-button></ion-menu-button>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
     <ion-title>{{"MY_OBSERVATIONS.TITLE" | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  Mine observasjoner
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh()">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh">
+    </ion-refresher-content>
+  </ion-refresher>
+  <app-sync-item-list></app-sync-item-list>
+  <ion-list lines="full">
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{"MY_OBSERVATIONS.MY_SENT_OBSERVATIONS" | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-observation-list-card [obs]="item" *ngFor="let item of registrations;trackBy: trackByRegId">
+    </app-observation-list-card>
+  </ion-list>
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData()">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

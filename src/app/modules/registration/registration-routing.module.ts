@@ -7,21 +7,23 @@ const routes: Routes = [
         loadChildren: './pages/overview/overview.module#OverviewPageModule'
     },
     {
-        path: 'registration/set-time',
+        path: 'registration/set-time/:id',
         loadChildren: './pages/set-time/set-time.module#SetTimePageModule'
     },
     {
-        path: 'registration/obs-location',
+        path: 'registration/obs-location/:id',
         loadChildren: './pages/obs-location/obs-location.module#ObsLocationPageModule'
     },
-    { path: 'registration/group', loadChildren: './pages/group/group.module#GroupPageModule' },
-    { path: 'registration/general-comment', loadChildren: './pages/general-comment/general-comment.module#GeneralCommentPageModule' },
-    { path: 'registration/water/water-level', loadChildren: './pages/water/water-level/water-level.module#WaterLevelPageModule' },
-    { path: 'registration/water/damage', loadChildren: './pages/water/damage/damage.module#DamagePageModule' },
+    { path: 'registration/group/:id', loadChildren: './pages/group/group.module#GroupPageModule' },
+    { path: 'registration/general-comment/:id', loadChildren: './pages/general-comment/general-comment.module#GeneralCommentPageModule' },
+    { path: 'registration/water/water-level/:id', loadChildren: './pages/water/water-level/water-level.module#WaterLevelPageModule' },
+    { path: 'registration/water/damage/:id', loadChildren: './pages/water/damage/damage.module#DamagePageModule' },
     {
-        path: 'registration/set-damage-location/:damageTypeTid',
+        path: 'registration/set-damage-location/:id/:damageTypeTid',
         loadChildren: './pages/set-damage-location/set-damage-location.module#SetDamageLocationPageModule'
     },
+    { path: 'registration/edit/:id', loadChildren: './pages/overview/overview.module#OverviewPageModule' },
+
 ];
 
 @NgModule({

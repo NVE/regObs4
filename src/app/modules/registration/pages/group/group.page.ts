@@ -3,6 +3,7 @@ import { UserGroupService } from '../../../../core/services/user-group/user-grou
 import { ObserverGroupDto } from '../../../regobs-api/models';
 import { RegistrationService } from '../../services/registration.service';
 import { BasePage } from '../base.page';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-group',
@@ -15,10 +16,11 @@ export class GroupPage extends BasePage {
 
   constructor(
     registrationService: RegistrationService,
+    actvatedRoute: ActivatedRoute,
     changeDetectorRef: ChangeDetectorRef,
     private userGroupService: UserGroupService,
   ) {
-    super(null, registrationService, changeDetectorRef);
+    super(null, registrationService, actvatedRoute, changeDetectorRef);
   }
 
   async onInit() {

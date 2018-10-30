@@ -196,6 +196,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   toggleDetails() {
     this.showDetails = !this.showDetails;
+    this.cdr.detectChanges();
   }
 
   getLocationName(location: LocationName) {

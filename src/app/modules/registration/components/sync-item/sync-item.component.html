@@ -1,0 +1,25 @@
+<ion-item href="{{ 'registration/edit/' + registration.Id }}">
+  <app-geo-icon slot="start" [geoHazard]="registration.geoHazard"></app-geo-icon>
+  <ion-label>
+    <h2 *ngIf="registration.ObsLocation && registration.ObsLocation.LocationName">
+      {{registration.ObsLocation.LocationName}}
+    </h2>
+    <p text-wrap>
+      <ion-icon name="calendar"></ion-icon> {{ registration.DtObsTime | formatDate | async }}
+    </p>
+    <p class="observation-types">
+      <ion-badge>
+        <!-- {{ getRegistrationNames() }} -->
+      </ion-badge>
+    </p>
+  </ion-label>
+  <!-- <ion-thumbnail slot="end">
+    <ion-img *ngIf="hasImage" [src]="imgSrc"></ion-img>
+  </ion-thumbnail> -->
+  <ion-icon *ngIf="registration.error" slot="end" name="warning">
+  </ion-icon>
+  <div slot="end">
+    <ion-spinner *ngIf="isLoading" slot="end"></ion-spinner>
+  </div>
+
+</ion-item>

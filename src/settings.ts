@@ -172,5 +172,6 @@ export const settings = {
     images: {
         size: 1800,
         quality: 50,
-    }
+    },
+    errorEmailAddress: 'snoskredvarsling@nve.no'
 };

@@ -1,11 +1,12 @@
-<ion-footer>
+<ion-footer *ngIf="registration">
   <ion-toolbar>
     <ion-grid no-padding>
       <ion-row>
         <ion-col class="send-button-col" size="12">
-          <ion-button expand="full" color="primary">
+          <ion-button expand="full" color="primary" (click)="send()">
             <ion-icon slot="start" name="md-send"></ion-icon>
-            {{"REGISTRATION.SEND" | translate}}
+            <span *ngIf="registration.error">{{"REGISTRATION.RESEND" | translate}}</span>
+            <span *ngIf="!registration.error">{{"REGISTRATION.SEND" | translate}}</span>
           </ion-button>
         </ion-col>
       </ion-row>

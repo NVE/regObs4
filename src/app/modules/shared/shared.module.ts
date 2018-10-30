@@ -11,6 +11,7 @@ import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
 import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
+import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
 
 @NgModule({
     imports: [
@@ -29,6 +30,7 @@ import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
         GeoIconComponent,
         GeoSelectComponent,
         FormatDatePipe,
+        ObservationListCardComponent,
     ],
     exports: [
         CommonModule,
@@ -44,6 +46,7 @@ import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
         GeoIconComponent,
         GeoSelectComponent,
         FormatDatePipe,
+        ObservationListCardComponent,
     ]
 })
 export class SharedModule { }

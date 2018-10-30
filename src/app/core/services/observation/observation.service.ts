@@ -18,6 +18,7 @@ import { DataLoadService } from '../../../modules/data-load/services/data-load.s
 import { AppMode } from '../../models/app-mode.enum';
 import { UserSetting } from '../../models/user-settings.model';
 import { LangKey } from '../../models/langKey';
+import { User } from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -145,6 +146,18 @@ export class ObservationService {
       fromDate, new Date());
   }
 
+  async updateObservationsForCurrentUser(appMode: AppMode, user: User, langKey: LangKey, page: number) {
+    const numberOfRecordsToFetch = 10;
+    const searchResult = await this.apiService.search({
+      NumberOfRecords: numberOfRecordsToFetch,
+      LangKey: langKey,
+      ObserverGuid: user.Guid,
+      Offset: page * numberOfRecordsToFetch,
+    });
+    const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
+    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult.Results);
+  }
+
   private async getDaysBackToFetchForGeoHazard(geoHazard: GeoHazard): Promise<number> {
     const userSettings = await this.userSettingService.getUserSettings();
     if (userSettings.currentGeoHazard === geoHazard) {
@@ -199,12 +212,24 @@ export class ObservationService {
 
   private getObservationsAsObservable(): Rx.Observable<RegObsObservation[]> {
     return this.userSettingService.userSettingObservable$.pipe(switchMap((userSetting) =>
-      Rx.combineLatest(this.getObservationsByParametersAsObservable(
+      this.getObservationsByParametersAsObservable(
         userSetting.appMode,
         userSetting.language,
         userSetting.currentGeoHazard,
         this.getObservationDaysBackAsDate(userSetting),
-      ))), map(([obs]) => obs), shareReplay(1));
+      )), shareReplay(1));
+  }
+
+  getUserObservationsAsObservable(): Rx.Observable<RegObsObservation[]> {
+    return Rx.combineLatest(this.userSettingService.userSettingObservable$, this.loginService.loggedInUser$)
+      .pipe(switchMap(([userSetting, loggedInUser]) =>
+        this.getObservationsByParametersAsObservable(
+          userSetting.appMode,
+          userSetting.language,
+          null,
+          null,
+          loggedInUser.isLoggedIn ? loggedInUser.user.Id : 0,
+        )));
   }
 
   /**
@@ -219,15 +244,16 @@ export class ObservationService {
     langKey: LangKey,
     geoHazard?: GeoHazard,
     fromDate?: Date,
-    user?: string): Rx.Observable<RegObsObservation[]> {
+    observerId?: number): Rx.Observable<RegObsObservation[]> {
     return nSQL().observable<RegObsObservation[]>(() => {
       return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select').where((reg: RegObsObservation) => {
         return reg && (geoHazard ? reg.GeoHazardTid === geoHazard : true)
           && reg.LangKey === langKey
           && (fromDate ? moment(reg.DtObsTime).isAfter(fromDate) : true)
-          && (user ? reg.NickName === user : true);
+          && (observerId ? reg.ObserverId === observerId : true);
       }).emit();
-    }).toRxJS().pipe(debounceTime(500));
+    }).toRxJS().pipe(debounceTime(500),
+      map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))));
   }
 
   getObserableCount(appMode: AppMode): Observable<number> {

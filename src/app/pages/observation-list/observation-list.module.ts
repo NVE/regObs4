@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ObservationListPage } from './observation-list.page';
-import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
 import { SharedModule } from '../../modules/shared/shared.module';
 
 const routes: Routes = [
@@ -16,6 +15,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ObservationListPage, ObservationListCardComponent]
+  declarations: [ObservationListPage]
 })
 export class ObservationListPageModule { }

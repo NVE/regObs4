@@ -82,6 +82,7 @@
     "SHORT_LIST": "Jan, Feb, Mar, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Des"
   },
   "MY_OBSERVATIONS": {
+    "MY_SENT_OBSERVATIONS": "Mine innsendte observasjoner",
     "TITLE": "Mine observasjoner"
   },
   "OBSERVATION_LIST": {
@@ -96,6 +97,10 @@
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
     "DELETE": "Slett observasjon",
     "DELETE_CONFIRM": "Er du sikker?",
+    "EMAIL": {
+      "BODY": "Hei! Jeg har problemer med å sende inn denne registreringen. Kan dere hjelpe meg?",
+      "SUBJECT": "Registrering feilet"
+    },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Skriv notater fra observasjonen",
       "ADD_PICTURE": "Legg til et bilde",
@@ -126,6 +131,7 @@
       "SHARE_WITH_GROUP": "Del observasjon med gruppe",
       "TITLE": "Observasjon"
     },
+    "RESEND": "Prøv å send på nytt",
     "RESET": "Nullstill denne siden",
     "SEND": "Send inn",
     "SET_DAMAGE_LOCATION": {

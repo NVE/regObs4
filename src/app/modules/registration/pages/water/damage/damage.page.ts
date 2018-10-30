@@ -7,6 +7,7 @@ import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../../../../core/models/geo-hazard.enum';
 import { KdvElement, PictureRequestDto } from '../../../../regobs-api/models';
+import { ActivatedRoute } from '@angular/router';
 
 const NO_DAMAGE_VISIBLE = 7;
 
@@ -22,11 +23,12 @@ export class DamagePage extends BasePage {
 
   constructor(
     registrationService: RegistrationService,
+    actvatedRoute: ActivatedRoute,
     changeDetectorRef: ChangeDetectorRef,
     private kdvService: KdvService,
     private userSettingService: UserSettingService,
   ) {
-    super(RegistrationTid.DamageObs, registrationService, changeDetectorRef);
+    super(RegistrationTid.DamageObs, registrationService, actvatedRoute, changeDetectorRef);
   }
 
   async onInit() {

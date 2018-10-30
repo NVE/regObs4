@@ -28,6 +28,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { MapService } from './modules/map/services/map/map.service';
 import { Camera } from '@ionic-native/camera/ngx';
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -54,6 +55,7 @@ export class AppProviders {
             HTTP,
             WebView,
             ApiInterceptor,
+            EmailComposer,
             API_INTERCEPTOR_PROVIDER,
             { provide: ErrorHandler, useClass: AppErrorHandler },
             ...this.getSingletonServices(),

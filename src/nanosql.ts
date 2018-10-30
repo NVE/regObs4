@@ -110,15 +110,7 @@ export class NanoSql {
             name: 'registration',
             instancePerAppMode: true,
             model: [
-                { key: 'geoHazard', type: 'int', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
-        },
-        REGISTRATION_SYNC: {
-            name: 'registration_sync',
-            instancePerAppMode: true,
-            model: [
-                { key: 'id', type: 'int', props: ['pk', 'ai'] },
+                { key: 'Id', type: 'string', props: ['pk'] },
                 { key: '*', type: '*' },
             ]
         },

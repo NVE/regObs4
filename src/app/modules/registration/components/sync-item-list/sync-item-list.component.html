@@ -1,0 +1,13 @@
+<ion-list *ngIf="registrations" lines="full">
+  <ion-list-header text-uppercase>
+    <ion-label no-margin text-wrap>
+      <h3>Lagret på telefonen</h3>
+    </ion-label>
+  </ion-list-header>
+  <ion-item>
+    <ion-label text-wrap>
+      Disse er under innsending blir synkronisert når man har nettverk.
+    </ion-label>
+  </ion-item>
+  <app-sync-item *ngFor="let registration of registrations; let i = index" [registration]="registration" [isLoading]="isLoading(registration, i)"></app-sync-item>
+</ion-list>

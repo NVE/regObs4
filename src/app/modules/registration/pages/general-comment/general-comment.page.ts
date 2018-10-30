@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { RegistrationTid } from '../../models/registrationTid.enum';
 import { BasePage } from '../base.page';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-general-comment',
@@ -11,9 +12,10 @@ import { BasePage } from '../base.page';
 export class GeneralCommentPage extends BasePage {
   constructor(
     registrationService: RegistrationService,
+    actvatedRoute: ActivatedRoute,
     changeDetectorRef: ChangeDetectorRef
   ) {
-    super(RegistrationTid.GeneralObservation, registrationService, changeDetectorRef);
+    super(RegistrationTid.GeneralObservation, registrationService, actvatedRoute, changeDetectorRef);
   }
 
   onInit() {

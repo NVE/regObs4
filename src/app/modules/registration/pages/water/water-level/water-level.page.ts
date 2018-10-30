@@ -3,6 +3,7 @@ import { BasePage } from '../../base.page';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import { RegistrationService } from '../../../services/registration.service';
 import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-water-level',
@@ -13,9 +14,10 @@ export class WaterLevelPage extends BasePage {
 
   constructor(
     registrationService: RegistrationService,
+    actvatedRoute: ActivatedRoute,
     changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(RegistrationTid.WaterLevel2, registrationService, changeDetectorRef);
+    super(RegistrationTid.WaterLevel2, registrationService, actvatedRoute, changeDetectorRef);
   }
 
   onInit() {
@@ -38,7 +40,7 @@ export class WaterLevelPage extends BasePage {
       this.registration.WaterLevel2.MarkingReferenceTID = null;
     }
     this.registration.WaterLevel2.WaterLevelMeasurement =
-      this.registration.WaterLevel2.WaterLevelMeasurement.filter((item) => !IsEmptyHelper.isEmpty(item));
+      (this.registration.WaterLevel2.WaterLevelMeasurement || []).filter((item) => !IsEmptyHelper.isEmpty(item));
   }
 
 }

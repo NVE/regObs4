@@ -1,11 +1,11 @@
-<ion-item [href]="item.href">
+<ion-item (click)="navigate()" [detail]="!readonly">
   <ion-label padding>
     <h2>{{ item.title | translate}}</h2>
     <p *ngIf="item.subTitle">
       {{ item.subTitle | translate }}
     </p>
     <p class="images" *ngIf="item.images">
-      <img [src]="image.PictureImageBase64" *ngFor="let image of item.images" />
+      <app-base64-image [base64encodedImage]="image.PictureImageBase64" *ngFor="let image of item.images"></app-base64-image>
     </p>
   </ion-label>
   <ion-icon *ngIf="item.hasData" slot="end" color="success" name="checkmark-circle"></ion-icon>

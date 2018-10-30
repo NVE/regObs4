@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionSheetController, Platform } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { settings } from '../../../../../settings';
 import { RegistrationTid } from '../../models/registrationTid.enum';
 import { PictureRequestDto } from '../../../regobs-api/models';
+
+const DATA_URL_TAG = 'data:image/jpeg;base64,';
 
 @Component({
   selector: 'app-add-picture-item',
@@ -29,6 +31,7 @@ export class AddPictureItemComponent implements OnInit {
     private translateService: TranslateService,
     private camera: Camera,
     private platform: Platform,
+    private cdr: ChangeDetectorRef,
     private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
@@ -65,7 +68,8 @@ export class AddPictureItemComponent implements OnInit {
   async getPicture(sourceType: number) {
     const options: CameraOptions = {
       quality: settings.images.quality,
-      destinationType: this.camera.DestinationType.FILE_URI,
+      destinationType: this.camera.DestinationType.DATA_URL, // NOTE: Base64 encode. If API supports upload image blob later,
+      // this should be changed to FILE_URL and uploaded separatly
       sourceType: sourceType,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,
@@ -76,14 +80,39 @@ export class AddPictureItemComponent implements OnInit {
     };
     if (this.platform.is('cordova')) {
       const imageUrl = await this.camera.getPicture(options);
-      this.images.push({ PictureImageBase64: imageUrl, RegistrationTID: this.registrationTid });
+      this.images.push({
+        PictureImageBase64: imageUrl.slice(DATA_URL_TAG.length, imageUrl.length),
+        RegistrationTID: this.registrationTid
+      });
     } else {
-      this.images.push({ PictureImageBase64: '/assets/images/dummyregobsimage.jpeg', RegistrationTID: this.registrationTid });
+      const dummyImage = await this.toDataURL('/assets/images/dummyregobsimage.jpeg');
+      this.images.push({
+        PictureImageBase64: dummyImage.slice(DATA_URL_TAG.length, dummyImage.length),
+        RegistrationTID: this.registrationTid
+      });
     }
+    this.cdr.detectChanges();
     return true;
   }
 
-  removeImage(image: any) {
-    this.images = this.images.filter((x) => x !== image);
+  private toDataURL(url: string): Promise<string> {
+    return new Promise((resolve) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        const reader = new FileReader();
+        reader.onloadend = function () {
+          resolve(<string>reader.result);
+        };
+        reader.readAsDataURL(xhr.response);
+      };
+      xhr.open('GET', url);
+      xhr.responseType = 'blob';
+      xhr.send();
+    });
+  }
+
+  removeImage(index: number) {
+    this.images.splice(index, 1);
+    this.cdr.detectChanges();
   }
 }

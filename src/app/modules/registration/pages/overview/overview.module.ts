@@ -4,6 +4,7 @@ import { OverviewPage } from './overview.page';
 import { SharedModule } from '../../../shared/shared.module';
 import { SendButtonComponent } from '../../components/send-button/send-button.component';
 import { SummaryItemComponent } from '../../components/summary-item/summary-item.component';
+import { SharedComponentsModule } from '../../shared-components.module';
 
 const routes: Routes = [
   {
@@ -14,7 +15,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    SharedModule,
+    SharedComponentsModule,
     RouterModule.forChild(routes)
   ],
   declarations: [OverviewPage, SendButtonComponent, SummaryItemComponent]

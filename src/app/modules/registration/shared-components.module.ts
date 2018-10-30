@@ -7,6 +7,9 @@ import { KdvRadiobuttonListComponent } from './components/kdv-radiobutton-list/k
 import { NavigationButtonsComponent } from './components/navigation-buttons/navigation-buttons.component';
 import { SetLocationInMapComponent } from './components/set-location-in-map/set-location-in-map.component';
 import { MapModule } from '../map/map.module';
+import { Base64ImageComponent } from './components/base64-image/base64-image.component';
+import { SyncItemComponent } from './components/sync-item/sync-item.component';
+import { SyncItemListComponent } from './components/sync-item-list/sync-item-list.component';
 
 @NgModule({
     imports: [
@@ -22,6 +25,9 @@ import { MapModule } from '../map/map.module';
         KdvRadiobuttonListComponent,
         NavigationButtonsComponent,
         SetLocationInMapComponent,
+        Base64ImageComponent,
+        SyncItemComponent,
+        SyncItemListComponent,
     ],
     declarations: [
         SaveAndGoBackButtonComponent,
@@ -30,6 +36,9 @@ import { MapModule } from '../map/map.module';
         KdvRadiobuttonListComponent,
         NavigationButtonsComponent,
         SetLocationInMapComponent,
+        Base64ImageComponent,
+        SyncItemComponent,
+        SyncItemListComponent,
     ]
 })
 export class SharedComponentsModule { }

@@ -82,6 +82,7 @@
     "SHORT_LIST": "Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Des"
   },
   "MY_OBSERVATIONS": {
+    "MY_SENT_OBSERVATIONS": "My sent observations",
     "TITLE": "My observations"
   },
   "OBSERVATION_LIST": {
@@ -96,6 +97,10 @@
     "BACK_TO_OBSERVATION": "Back to observation",
     "DELETE": "Delete observation",
     "DELETE_CONFIRM": "Are you sure?",
+    "EMAIL": {
+      "BODY": "Hi! I have problems sending this registration. Can you help me?",
+      "SUBJECT": "Registration failed"
+    },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Write notes of observation",
       "ADD_PICTURE": "Add a picture",
@@ -126,6 +131,7 @@
       "SHARE_WITH_GROUP": "Share observation with group",
       "TITLE": "Observation"
     },
+    "RESEND": "Try to send again",
     "RESET": "Reset",
     "SEND": "Submit",
     "SET_DAMAGE_LOCATION": {

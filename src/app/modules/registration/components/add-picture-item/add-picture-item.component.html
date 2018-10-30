@@ -1,8 +1,8 @@
-<div *ngFor="let image of images">
+<div *ngFor="let image of images; let i = index">
   <div class="image-wrapper">
-    <img [src]="image.PictureImageBase64" />
+    <app-base64-image [base64encodedImage]="image.PictureImageBase64"></app-base64-image>
     <ion-fab slot="fixed" vertical="top" horizontal="end">
-      <ion-fab-button color="dark" class="map-control-fab" (click)="removeImage(image)">
+      <ion-fab-button color="dark" class="map-control-fab" (click)="removeImage(i)">
         <ion-icon name="close"></ion-icon>
       </ion-fab-button>
     </ion-fab>

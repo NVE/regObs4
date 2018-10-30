@@ -1,12 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-
-import { IonicModule } from '@ionic/angular';
-
 import { MyObservationsPage } from './my-observations.page';
-import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from '../../modules/shared/shared.module';
+import { SharedComponentsModule } from '../../modules/registration/shared-components.module';
 
 const routes: Routes = [
   {
@@ -17,11 +13,9 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
+    SharedModule,
+    SharedComponentsModule,
     RouterModule.forChild(routes),
-    TranslateModule,
   ],
   declarations: [MyObservationsPage]
 })
