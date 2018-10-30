@@ -75,17 +75,21 @@ export class OfflineTileLayer extends L.TileLayer {
 
     async getTileUrl(coords: ExtendedCoords, save = true): Promise<string> {
         if (coords.z <= settings.map.tiles.embeddedUrlMaxZoom) {
-            console.log(`zoom is under ${settings.map.tiles.embeddedUrlMaxZoom} so using embedded map url`,
-                coords, settings.map.tiles.embeddedUrl);
+            // console.log(`zoom is under ${settings.map.tiles.embeddedUrlMaxZoom} so using embedded map url`,
+            //     coords, settings.map.tiles.embeddedUrl);
             return this.getOriginalTileUrl(coords, settings.map.tiles.embeddedUrl);
         }
+        // console.log('[DEBUG][OfflineTileLayer] getTileUrl. Try offline first', coords);
         const offlineUrl = await this.offlineMapService.getTileUrl(this.name, coords.x, coords.y, coords.z);
         if (offlineUrl) {
+            // console.log('[DEBUG][OfflineTileLayer] got offline url', offlineUrl);
             return offlineUrl;
         } else {
             const url = await this.getTileUrlOrFallbackMap(coords);
+            // console.log('[DEBUG][OfflineTileLayer] got tile url', url);
             const coordsCopy = { ...coords }; // Create a copy because coords reference might get changed on error
             if (this.downloadTileToCache() && save) {
+                // console.log('[DEBUG][OfflineTileLayer] saving tile ' + name, coordsCopy, url);
                 this.offlineMapService.saveTileAsBlob(this.name, coordsCopy.x, coordsCopy.y, coordsCopy.z, url);
             }
             return url;

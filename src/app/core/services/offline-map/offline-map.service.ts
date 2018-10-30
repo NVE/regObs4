@@ -115,6 +115,7 @@ export class OfflineMapService {
       // }).toPromise();
       // CORS ISSUES WHEN USING WKWEBKIT, using native http instead...
       const tileId = this.getTileId(name, x, y, z);
+      // console.log('[DEBUG][OfflineTileLayer] offline tile id ' + tileId, url);
       const filename = `${settings.map.tiles.cacheFolder}/${tileId}.png`;
       const folder = await this.backgroundDownloadService.selectDowloadFolder();
       try {
@@ -125,11 +126,12 @@ export class OfflineMapService {
         `${folder}/${filename}`);
 
       const tile: OfflineTile = {
-        tileId: this.getTileId(name, x, y, z),
+        tileId: tileId,
         mapName: settings.map.tiles.cacheFolder,
         url: fileResult.toURL(),
         lastAccess: moment().unix(),
       };
+      // console.log('[DEBUG][OfflineTileLayer] offline tile saved', tile);
       // TODO: Clear cache based on last accessed or cache size has reached
       return nSQL().table(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
     } catch (err) {
