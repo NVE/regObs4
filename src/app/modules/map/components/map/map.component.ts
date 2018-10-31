@@ -68,6 +68,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.stopGeoLocationWatch();
     this.events.unsubscribe(settings.events.centerMapToUser);
     this.events.unsubscribe(settings.events.mapSearchItemClicked);
+    if (this.map) {
+      this.map.remove();
+    }
   }
 
   onLeafletMapReady(map: L.Map) {
@@ -155,7 +158,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.redrawMap();
   }
 
-  private startGeoLocationWatch() {
+  startGeoLocationWatch() {
     console.log('[INFO] Start watching location changes');
     if (this.geoLoactionSubscription === undefined || this.geoLoactionSubscription.closed) {
       this.geoLoactionSubscription = this.geolocation.watchPosition(settings.gps.currentPositionOptions)
@@ -166,7 +169,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private stopGeoLocationWatch() {
+  stopGeoLocationWatch() {
     console.log('[INFO] Stop watching location changes');
     if (this.geoLoactionSubscription !== undefined && !this.geoLoactionSubscription.closed) {
       this.geoLoactionSubscription.unsubscribe();

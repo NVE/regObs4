@@ -10,9 +10,7 @@
 </ion-header>
 
 <ion-content no-bounce [ngClass]="{'map-item-bar-open': mapItemBarVisible, 'map-center-info-open': showMapCenter }">
-  <div style="width: 100%; height: 100%" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)"
-    (onShown)="redrawMap()">
-  </div>
+  <app-map (mapReady)="onMapReady($event)"></app-map>
   <app-map-center-info></app-map-center-info>
   <app-map-item-bar></app-map-item-bar>
   <app-geo-select slot="fixed"></app-geo-select>
