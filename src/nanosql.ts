@@ -60,8 +60,7 @@ export class NanoSql {
         OFFLINE_MAP_TILES: {
             name: 'offlinemaptiles',
             model: [
-                { key: 'id', type: 'int', props: ['pk', 'ai'] },
-                { key: 'tileId', type: 'string', props: ['idx'] },
+                { key: 'tileId', type: 'string', props: ['pk'] },
                 { key: 'url', type: 'string' },
                 { key: 'mapName', type: 'string' },
                 { key: 'lastAccess', type: 'number' },
@@ -159,6 +158,7 @@ export class NanoSql {
             id: settings.db.nanoSql.dbName,
             mode: getMode(),
             version: 1,
+            cache: false,
             // historyMode: {
             //     table: 'row',
             // }

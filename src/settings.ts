@@ -66,6 +66,8 @@ export const settings = {
             cacheFolder: 'tilescache',
             embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
             embeddedUrlMaxZoom: 5,
+            maxZoom: 18,
+            zoomInPosition: 15,
             zoomToShowBeforeNorwegianDetailsMap: 9,
             // tslint:disable-next-line:max-line-length
             nowegianDetailsMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',

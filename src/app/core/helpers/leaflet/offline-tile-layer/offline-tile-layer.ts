@@ -20,7 +20,7 @@ export class OfflineTileLayer extends L.TileLayer {
         private plaform: Platform,
     ) {
         super(settings.map.tiles.defaultMapUrl, {
-            name, maxZoom: 18, minZoom: 1,
+            name, maxZoom: settings.map.tiles.maxZoom, minZoom: 1,
         });
     }
 

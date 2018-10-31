@@ -144,9 +144,11 @@ export class OfflineMapService {
   }
 
   async getTileFromDb(tileId: string): Promise<OfflineTile> {
+    // console.log('[DEBUG][OfflineTileLayer] getTileFromDb: ' + tileId);
     const tiles = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
       .query('select').where(['tileId', '=', tileId]).exec();
     if (tiles.length > 0) {
+      // console.log('[DEBUG][OfflineTileLayer] Got tiles from db for tileID: ' + tileId, tiles);
       return tiles[0] as OfflineTile;
     } else {
       return null;
