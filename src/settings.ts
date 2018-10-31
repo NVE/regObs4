@@ -64,6 +64,7 @@ export const settings = {
     map: {
         tiles: {
             cacheFolder: 'tilescache',
+            cacheSize: 10000,
             embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
             embeddedUrlMaxZoom: 5,
             maxZoom: 18,

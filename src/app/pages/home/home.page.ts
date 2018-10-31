@@ -27,10 +27,7 @@ export class HomePage implements OnInit, OnDestroy {
     showCoverageOnHover: false,
     maxClusterRadius: 30
   });
-  private observationSubscription: Subscription;
-  private mapItemBarSubscription: Subscription;
-  private userSettingSubscription: Subscription;
-  private routerSubscription: Subscription;
+  private subscriptions: Subscription[];
 
   fullscreen = false;
   mapItemBarVisible = false;
@@ -52,21 +49,22 @@ export class HomePage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     console.log('[INFO] ionViewDidEnter home page');
-    this.userSettingSubscription = this.userSettingService.userSettingObservable$.subscribe((val) => {
+    this.subscriptions = [];
+    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.showMapCenter = val.showMapCenter;
       this.cdr.detectChanges();
-    }); // TODO: Move this to map component?
+    })); // TODO: Move this to map component?
 
     // TODO: this is a tabs issue workaround.
     // See: https://github.com/ionic-team/ionic/issues/15260
     const routes = ['/tabs/(home:home)', '/tabs', '/', ''];
-    this.routerSubscription = this.router.events.subscribe((event) => {
+    this.subscriptions.push(this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd && routes.indexOf(event.url) >= 0) {
         this.ionViewDidEnter();
       } else {
         this.ionViewWillLeave();
       }
-    });
+    }));
 
     // this.dataLoadIds = this.observationService.getAllDataLoadIds(this.userSetting.appMode);
 
@@ -85,10 +83,10 @@ export class HomePage implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     });
 
-    this.mapItemBarSubscription = this.mapItemBar.isVisible.subscribe((isVisible) => {
+    this.subscriptions.push(this.mapItemBar.isVisible.subscribe((isVisible) => {
       this.mapItemBarVisible = isVisible;
       this.cdr.detectChanges();
-    });
+    }));
 
     // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
     //   this.tripLogLayer.clearLayers();
@@ -107,9 +105,13 @@ export class HomePage implements OnInit, OnDestroy {
     this.markerLayer.addTo(this.map);
 
     this.zone.runOutsideAngular(() => {
-      this.map.on('moveend', () =>
-        this.mapService.updateMapView({ bounds: this.map.getBounds(), center: this.map.getCenter() })
-      );
+      this.map.on('moveend', () => {
+        const bounds = this.map.getBounds();
+        const center = this.map.getCenter();
+        if (bounds && center) {
+          this.mapService.updateMapView({ bounds, center });
+        }
+      });
     });
     this.map.on('click', () => {
       if (this.selectedMarker) {
@@ -119,9 +121,9 @@ export class HomePage implements OnInit, OnDestroy {
       this.mapItemBar.hide();
     });
     // TODO: Move this to custom marker layer?
-    this.observationSubscription = this.observationService.observations$.subscribe((regObservations) => {
+    this.subscriptions.push(this.observationService.observations$.subscribe((regObservations) => {
       this.redrawObservationMarkers(regObservations);
-    });
+    }));
   }
 
   ionViewDidEnter() {
@@ -136,9 +138,9 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.observationSubscription.unsubscribe();
-    this.mapItemBarSubscription.unsubscribe();
-    this.userSettingSubscription.unsubscribe();
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
     this.events.unsubscribe(settings.events.fullscreenChanged);
   }
 

@@ -13,6 +13,8 @@ import { File, FileEntry } from '@ionic-native/file/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { settings } from '../../../../settings';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { UserSettingService } from '../user-setting/user-setting.service';
+import { RowCount } from '../../models/row-count.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +30,7 @@ export class OfflineMapService {
     private file: File,
     private webview: WebView,
     private httpClient: HttpClient,
+    private userSettingService: UserSettingService,
   ) {
   }
   // TODO: Implement continue download when app restart
@@ -155,6 +158,51 @@ export class OfflineMapService {
     }
   }
 
+  async cleanupTilesCache(numberOfItemsToCache: number) {
+    const result = (await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('select').where(['mapName', '=', settings.map.tiles.cacheFolder])
+      .orderBy({ lastAccess: 'desc' }).offset(numberOfItemsToCache).exec()) as OfflineTile[];
+    const tileIds = result.map((x) => x.tileId);
+    const deleted = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('delete').where(['tileId', 'IN', tileIds]).exec();
+    console.log('[DEBUG][OfflineTiles] cache tiles deleted: ', deleted);
+  }
+
+  private async getDirectory(folder: string) {
+    const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
+    return this.file.resolveDirectoryUrl(baseFolder + '/' + folder);
+  }
+
+  private async getFolderSize(folder: string): Promise<number> {
+    const directory = await this.getDirectory(folder);
+    return new Promise<number>((resolve) => {
+      if (!directory) {
+        console.log('[DEBUG][OfflineTiles] could not get directory: ', folder);
+        resolve(0);
+      } else {
+        directory.getMetadata((success) => {
+          console.log('[DEBUG][OfflineTiles] got directory metadata for directory: ' + folder, success, directory.toURL());
+          resolve(success.size);
+        }, () => resolve(0));
+      }
+    });
+  }
+
+  async getTilesCacheSize() {
+    const result = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('select', ['COUNT(*)']).where(['mapName', '=', settings.map.tiles.cacheFolder]).exec();
+    console.log('[DEBUG][OfflineTiles] tiles cache count: ', result);
+    const folderSize = await this.getFolderSize(settings.map.tiles.cacheFolder);
+    return { tiles: result[0]['COUNT(*)'], folderSize: folderSize };
+  }
+
+  async deleteTilesCache() {
+    await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('delete').where(['mapName', '=', settings.map.tiles.cacheFolder]).exec();
+    const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
+    await this.backgroundDownloadService.deleteFolder(baseFolder, settings.map.tiles.cacheFolder);
+  }
+
   async downloadMap(map: OfflineMap) {
     try {
       const path = await this.backgroundDownloadService.selectDowloadFolder();
@@ -275,5 +323,6 @@ export class OfflineMapService {
     for (const map of maps) {
       await this.remove(map);
     }
+    await this.deleteTilesCache();
   }
 }

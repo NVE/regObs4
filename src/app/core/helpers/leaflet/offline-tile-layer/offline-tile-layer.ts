@@ -57,8 +57,13 @@ export class OfflineTileLayer extends L.TileLayer {
      * @param coords tile coords
      */
     private isInsideBorders(coords: L.Coords): Promise<boolean> {
-        const latLngBounds: L.LatLngBounds = (<any>this)._tileCoordsToBounds(coords);
-        return this.mapService.isTileInsideNorway(coords, latLngBounds);
+        if (coords) {
+            const latLngBounds: L.LatLngBounds = (<any>this)._tileCoordsToBounds(coords);
+            if (latLngBounds) {
+                return this.mapService.isTileInsideNorway(coords, latLngBounds);
+            }
+        }
+        return Promise.resolve(false);
     }
 
 

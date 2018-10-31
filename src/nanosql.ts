@@ -63,7 +63,7 @@ export class NanoSql {
                 { key: 'tileId', type: 'string', props: ['pk'] },
                 { key: 'url', type: 'string' },
                 { key: 'mapName', type: 'string' },
-                { key: 'lastAccess', type: 'number' },
+                { key: 'lastAccess', type: 'number', props: ['idx'] },
             ]
         },
         OFFLINE_ASSET: {

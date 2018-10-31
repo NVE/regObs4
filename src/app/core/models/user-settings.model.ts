@@ -13,4 +13,5 @@ export interface UserSetting {
     completedStartWizard: boolean;
     supportTiles: Array<SupportTile>;
     showMapCenter: boolean;
+    tilesCacheSize: number;
 }

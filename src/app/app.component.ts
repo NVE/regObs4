@@ -13,6 +13,7 @@ import { NanoSql } from '../nanosql';
 import { LangKey } from './core/models/langKey';
 import { Router } from '@angular/router';
 import { KdvService } from './core/services/kdv/kdv.service';
+import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 
 @Component({
   selector: 'app-root',
@@ -35,6 +36,7 @@ export class AppComponent {
     private router: Router,
     private zone: NgZone,
     private kdvService: KdvService,
+    private offlineMapService: OfflineMapService,
   ) {
     this.initializeApp();
   }
@@ -42,26 +44,24 @@ export class AppComponent {
   initializeApp() {
     this.translate.addLangs(['no', 'en']);
     this.translate.setDefaultLang('no');
-    this.platform.ready()
-      .then(() => this.initDeepLinks())
-      .then(() => this.initNanoSqlDatabase())
-      .then(() => this.userSettings.getUserSettings())
-      .then((userSettings) => {
-        this.translate.use(LangKey[userSettings.language]);
-        this.statusBar.styleBlackTranslucent();
-        this.statusBar.overlaysWebView(this.platform.is('ios'));
-        if (!userSettings.completedStartWizard) {
-          return this.router.navigate(['start-wizard'], { replaceUrl: true });
-        } else {
-          return Promise.resolve(true);
-        }
-      })
-      .then(() => {
-        this.initBackroundUpdates();
-        setTimeout(() => {
-          this.splashScreen.hide();
-        }, 500); // Wait a bit to get the navigation and background sync more completed
-      });
+    this.platform.ready().then(async () => {
+      await this.initDeepLinks();
+      await this.initNanoSqlDatabase();
+      const userSettings = await this.userSettings.getUserSettings();
+
+      this.translate.use(LangKey[userSettings.language]);
+      this.statusBar.styleBlackTranslucent();
+      this.statusBar.overlaysWebView(this.platform.is('ios'));
+      if (!userSettings.completedStartWizard) {
+        await this.router.navigate(['start-wizard'], { replaceUrl: true });
+      }
+      await this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
+
+      await this.initBackroundUpdates();
+      setTimeout(() => {
+        this.splashScreen.hide();
+      }, 500); // Wait a bit to get the navigation and background sync more completed
+    });
   }
 
   initDeepLinks() {

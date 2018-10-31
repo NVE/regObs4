@@ -8,8 +8,8 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <ion-list *ngIf="userSettings">
+<ion-content *ngIf="userSettings">
+  <ion-list lines="full">
     <ion-item>
       <ion-label position="floating">{{ "SETTINGS.APPMODE" | translate }}</ion-label>
       <ion-select [(ngModel)]="userSettings.appMode" (ngModelChange)="updateSettings()">
@@ -25,9 +25,40 @@
         <ion-select-option [value]="LangKey.en">{{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH' | translate}}</ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-item (click)="reset()">
-      <ion-label>{{ "SETTINGS.RESET" | translate }}</ion-label>
-    </ion-item>
   </ion-list>
+  <ion-button *ngIf="!showAdvanced" (click)="showAdvanced = true" fill="clear" expand="full">
+    <ion-icon slot="start" name="ios-arrow-down"></ion-icon> Vis avanserte innstillinger
+  </ion-button>
+  <ion-button *ngIf="showAdvanced" (click)="showAdvanced = false" fill="clear" expand="full">
+    <ion-icon slot="start" name="ios-arrow-up"></ion-icon> Skjul avanserte innstillinger
+  </ion-button>
+  <ng-container *ngIf="showAdvanced">
+    <ion-list lines="full">
+      <ion-item>
+        <ion-label position="floating">Antall kartblad i cache: {{ userSettings.tilesCacheSize }}</ion-label>
+        <ion-range min="0" max="20000" step="5000" color="secondary" [(ngModel)]="userSettings.tilesCacheSize"
+          (ngModelChange)="updateSettings()">
+        </ion-range>
+      </ion-item>
+      <ion-item (click)="reset()">
+        <ion-label>{{ "SETTINGS.RESET" | translate }}</ion-label>
+      </ion-item>
+    </ion-list>
+    <ion-button *ngIf="!showDebug" (click)="showDebugClick()" fill="clear" expand="full">
+      <ion-icon slot="start" name="ios-arrow-down"></ion-icon> Vis debug
+    </ion-button>
+    <ion-button *ngIf="showDebug" (click)="showDebug = false" fill="clear" expand="full">
+      <ion-icon slot="start" name="ios-arrow-up"></ion-icon> Skjul debug
+    </ion-button>
+    <ion-list lines="full" *ngIf="showDebug">
+      <ion-item *ngIf="numberOfCacheTiles !== undefined">
+        <ion-label>Antall kartblad i cache: {{ numberOfCacheTiles }}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="cacheTilesSize">
+        <ion-label>Størrelse på kartblad i cache: {{ cacheTilesSize }}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
 
 </ion-content>

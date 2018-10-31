@@ -54,6 +54,7 @@ export class UserSettingService {
       completedStartWizard: false,
       supportTiles: settings.map.tiles.supportTiles,
       showMapCenter: false,
+      tilesCacheSize: settings.map.tiles.cacheSize,
     };
   }
 

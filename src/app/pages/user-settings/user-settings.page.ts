@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { ObservationService } from '../../core/services/observation/observation.service';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
-import { WarningService } from '../../core/services/warning/warning.service';
 import { NanoSql } from '../../../nanosql';
 import { NavController } from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
+import { HelperService } from '../../core/services/helpers/helper.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -17,12 +16,15 @@ export class UserSettingsPage implements OnInit {
 
   userSettings: UserSetting;
   LangKey = LangKey;
+  showAdvanced = false;
+  showDebug = false;
+  numberOfCacheTiles: number;
+  cacheTilesSize: string;
 
   constructor(
     private userSettingService: UserSettingService,
-    private observationService: ObservationService,
     private offlineMapService: OfflineMapService,
-    private warningService: WarningService,
+    private helperService: HelperService,
     private navController: NavController) { }
 
   async ngOnInit() {
@@ -31,6 +33,13 @@ export class UserSettingsPage implements OnInit {
 
   async updateSettings() {
     await this.userSettingService.saveUserSettings(this.userSettings);
+  }
+
+  async showDebugClick() {
+    this.showDebug = true;
+    const tilesCache = await this.offlineMapService.getTilesCacheSize();
+    this.numberOfCacheTiles = tilesCache.tiles;
+    this.cacheTilesSize = this.helperService.humanReadableByteSize(tilesCache.folderSize);
   }
 
   async reset() {
