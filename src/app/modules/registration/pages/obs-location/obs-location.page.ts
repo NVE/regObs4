@@ -12,21 +12,25 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './obs-location.page.html',
   styleUrls: ['./obs-location.page.scss'],
 })
-export class ObsLocationPage extends BasePage {
+export class ObsLocationPage implements OnInit {
   locationMarker: L.Marker;
   isLoaded = false;
   selectedLocation: ObsLocationsResponseDtoV2;
+  registration: IRegistration;
 
   constructor(
-    registrationService: RegistrationService,
-    activatedRoute: ActivatedRoute,
-    changeDetectorRef: ChangeDetectorRef,
+    private registrationService: RegistrationService,
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
     private navController: NavController,
   ) {
-    super(null, registrationService, activatedRoute, changeDetectorRef);
+
   }
 
-  async onInit() {
+  async ngOnInit() {
+    if (this.activatedRoute.snapshot.params['id']) {
+      this.registration = await this.registrationService.getSavedRegistrationById(this.activatedRoute.snapshot.params['id']);
+    }
     if (this.hasLocation(this.registration)) {
       this.locationMarker = L.marker(
         {
@@ -52,7 +56,11 @@ export class ObsLocationPage extends BasePage {
   }
 
   async onLocationSet(event: ObsLocationDto) {
+    if (!this.registration) {
+      this.registration = await this.registrationService.createNewRegistration();
+    }
     this.registration.ObsLocation = event;
+    await this.registrationService.saveRegistration(this.registration);
     if (this.registration.DtObsTime) {
       this.navController.navigateForward('registration/edit/' + this.registration.Id);
     } else {

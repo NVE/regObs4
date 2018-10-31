@@ -11,6 +11,10 @@ const routes: Routes = [
         loadChildren: './pages/set-time/set-time.module#SetTimePageModule'
     },
     {
+        path: 'registration/obs-location',
+        loadChildren: './pages/obs-location/obs-location.module#ObsLocationPageModule'
+    },
+    {
         path: 'registration/obs-location/:id',
         loadChildren: './pages/obs-location/obs-location.module#ObsLocationPageModule'
     },

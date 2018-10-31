@@ -68,9 +68,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.stopGeoLocationWatch();
     this.events.unsubscribe(settings.events.centerMapToUser);
     this.events.unsubscribe(settings.events.mapSearchItemClicked);
-    if (this.map) {
-      this.map.remove();
-    }
+    // if (this.map) {
+    //   this.map.remove();
+    // }
   }
 
   onLeafletMapReady(map: L.Map) {
@@ -149,7 +149,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   redrawMap() {
     if (this.map) {
-      this.map.invalidateSize();
+      try {
+        this.map.invalidateSize();
+      } catch (err) {
+        console.warn('Could not invalidate map size');
+      }
     }
     window.dispatchEvent(new Event('resize'));
   }

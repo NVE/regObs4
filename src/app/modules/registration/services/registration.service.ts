@@ -142,11 +142,9 @@ export class RegistrationService {
     if (!user.isLoggedIn) {
       this.navController.navigateForward('login');
     } else {
-      let registration = await this.getCurrentRegistration();
+      const registration = await this.getCurrentRegistration();
       if (!registration) {
-        registration = await this.createNewRegistration();
-        await this.saveRegistration(registration);
-        this.navController.navigateForward('registration/obs-location/' + registration.Id);
+        this.navController.navigateForward('registration/obs-location');
       } else {
         this.navController.navigateForward('registration/edit/' + registration.Id);
       }

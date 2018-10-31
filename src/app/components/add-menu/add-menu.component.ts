@@ -59,7 +59,10 @@ export class AddMenuComponent implements OnInit, OnDestroy {
       });
       return await popover.present();
     } else {
-      return this.registrationService.createOrEditRegistrationRoute();
+      setTimeout(() => {
+        this.menuFab.close();
+        this.registrationService.createOrEditRegistrationRoute();
+      }, 20);
     }
   }
 

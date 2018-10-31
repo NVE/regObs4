@@ -4,7 +4,7 @@ import * as L from 'leaflet';
 import { IMapView } from './map-view.interface';
 import { Observable, combineLatest, Observer } from 'rxjs';
 import { ITypedWorker, createWorker } from 'typed-web-workers';
-import { switchMap, share, shareReplay, debounce, debounceTime } from 'rxjs/operators';
+import { switchMap, share, shareReplay, debounce, debounceTime, filter } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
 import { NanoSql } from '../../../../../nanosql';
@@ -65,8 +65,12 @@ export class MapService {
       return nSQL(NanoSql.TABLES.MAP_SERVICE.name).query('select').emit();
     }).map((result) => {
       const firstItem: { id: string, bounds: L.LatLngExpression[], center: L.LatLngExpression } = result[0];
-      return { bounds: L.latLngBounds(firstItem.bounds), center: L.latLng(firstItem.center) };
-    }).debounce(50).toRxJS().pipe(shareReplay(1));
+      if (firstItem && firstItem.bounds && firstItem.center) {
+        return { bounds: L.latLngBounds(firstItem.bounds), center: L.latLng(firstItem.center) };
+      } else {
+        return null;
+      }
+    }).debounce(50).toRxJS().pipe(filter((val) => val !== null), shareReplay(1));
   }
 
   private getMapViewAreaObservable() {
