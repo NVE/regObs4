@@ -116,6 +116,15 @@
       "SUBTITLE": "Del observasjonen med",
       "TITLE": "Del med gruppe"
     },
+    "ICE": {
+      "ICE_COVER": {
+        "ICE_CAPACITY": "Bæreevne",
+        "ICE_COVER": "Isdekning",
+        "ICE_COVER_BEFORE": "Isdekning før observasjon",
+        "ICE_SKATEABILITY": "Skøytbarhet",
+        "TITLE": "Isdekningsgrad"
+      }
+    },
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
     "OBS_LOCATION": {

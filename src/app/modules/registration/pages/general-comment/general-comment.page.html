@@ -24,7 +24,7 @@
         <h3>{{"REGISTRATION.GENERAL_COMMENT.ADD_NOTES_HEADER" | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <app-text-comment *ngIf="registration.GeneralObservation" [(value)]="registration.GeneralObservation.ObsComment"
+    <app-text-comment (valueChange)="updateUi()" *ngIf="registration.GeneralObservation" [(value)]="registration.GeneralObservation.ObsComment"
       title="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
   </ion-list>
 </ion-content>

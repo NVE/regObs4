@@ -17,7 +17,4 @@ export class GeneralCommentPage extends BasePage {
   ) {
     super(RegistrationTid.GeneralObservation, registrationService, actvatedRoute, changeDetectorRef);
   }
-
-  onInit() {
-  }
 }

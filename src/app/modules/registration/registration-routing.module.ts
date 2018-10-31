@@ -27,6 +27,8 @@ const routes: Routes = [
         loadChildren: './pages/set-damage-location/set-damage-location.module#SetDamageLocationPageModule'
     },
     { path: 'registration/edit/:id', loadChildren: './pages/overview/overview.module#OverviewPageModule' },
+    { path: 'registration/ice/ice-cover/:id', loadChildren: './pages/ice/ice-cover/ice-cover.module#IceCoverPageModule' },
+
 
 ];
 

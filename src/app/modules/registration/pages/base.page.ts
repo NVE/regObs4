@@ -33,9 +33,13 @@ export abstract class BasePage implements OnInit, OnDestroy {
                 if (val) {
                     this.registration = val;
                     this.createDefaultProps();
-                    Promise.resolve(this.onInit()).then(() => {
+                    if (this.onInit) {
+                        Promise.resolve(this.onInit()).then(() => {
+                            this.changeDetectorRef.detectChanges();
+                        });
+                    } else {
                         this.changeDetectorRef.detectChanges();
-                    });
+                    }
                 }
             });
     }
@@ -81,6 +85,7 @@ export abstract class BasePage implements OnInit, OnDestroy {
         if (this.onReset) {
             this.onReset();
         }
+        this.changeDetectorRef.detectChanges();
     }
 
     getRegistationProperty() {
@@ -119,6 +124,10 @@ export abstract class BasePage implements OnInit, OnDestroy {
 
     isEmpty() {
         return this.registrationService.isEmpty(this.registration, this.registrationTid);
+    }
+
+    updateUi() {
+        this.changeDetectorRef.detectChanges();
     }
 
 }

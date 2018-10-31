@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { Textarea } from '@ionic/angular';
 
 @Component({
@@ -21,6 +21,7 @@ export class TextCommentComponent implements OnInit {
 
   set valToBind(val: string) {
     this.value = val;
+    this.valueChange.emit(this.value);
   }
 
   constructor() { }

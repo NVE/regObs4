@@ -164,7 +164,14 @@ export class OverviewPage implements OnInit, OnDestroy {
   }
 
   private getIceItems() {
-    return [];
+    return [
+      this.getRegItem(
+        'registration/ice/ice-cover/' + this.registration.Id,
+        'REGISTRATION.ICE.ICE_COVER.TITLE',
+        this.registration.IceCoverObs ? this.registration.IceCoverObs.Comment : '',
+        RegistrationTid.IceCoverObs
+      ),
+    ];
   }
 
   private getSnowItems() {

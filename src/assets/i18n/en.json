@@ -116,6 +116,15 @@
       "SUBTITLE": "Share observation with",
       "TITLE": "Share with group"
     },
+    "ICE": {
+      "ICE_COVER": {
+        "ICE_CAPACITY": "Capacity",
+        "ICE_COVER": "Ice cover",
+        "ICE_COVER_BEFORE": "Ice cover before observation",
+        "ICE_SKATEABILITY": "Skateability",
+        "TITLE": "Ice cover"
+      }
+    },
     "IMAGE_DESCRIPTION": "Image description",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
     "OBS_LOCATION": {
