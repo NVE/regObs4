@@ -1,15 +1,33 @@
-<ion-tabs [tabbarHidden]="fullscreen" (ionChange)="tabsChanged($event)" tabbar-highlight="true">
-  <ion-tab name="home" label="&nbsp;{{'TABS.MAP' | translate}}" icon="map" href="/tabs/(home:home)">
+<ion-tabs (ionChange)="tabsChanged($event)" tabbar-highlight="true">
+  <ion-tab-bar [hidden]="fullscreen">
+    <ion-tab-button tab="home" href="/tabs/(home:home)">
+      <ion-icon name="map"></ion-icon>
+      <ion-label>{{'TABS.MAP' | translate}}</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="observation-list" href="/tabs/(observation-list:observation-list)">
+      <ion-icon name="list"></ion-icon>
+      <ion-label>{{'TABS.LIST' | translate}}</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="trip" href="/tabs/(trip:trip)">
+      <ion-icon name="walk"></ion-icon>
+      <ion-label>{{'TABS.TRIPS' | translate}}</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="warning-list" href="/tabs/(warning-list:warning-list)">
+      <ion-icon name="warning"></ion-icon>
+      <ion-label>{{'TABS.WARNINGS' | translate}}</ion-label>
+      <ion-badge slot="end" [color]="getBadgeColor()">{{getBadge()}}</ion-badge>
+    </ion-tab-button>
+  </ion-tab-bar>
+  <ion-tab tab="home">
     <ion-router-outlet name="home"></ion-router-outlet>
   </ion-tab>
-  <ion-tab name="observation-list" label="{{'TABS.LIST' | translate}}" icon="list" href="/tabs/(observation-list:observation-list)">
+  <ion-tab tab="observation-list">
     <ion-router-outlet name="observation-list"></ion-router-outlet>
   </ion-tab>
-  <ion-tab name="trip" label="{{'TABS.TRIPS' | translate}}" icon="walk" href="/tabs/(trip:trip)">
+  <ion-tab tab="trip">
     <ion-router-outlet name="trip"></ion-router-outlet>
   </ion-tab>
-  <ion-tab name="warning-list" label="{{'TABS.WARNINGS' | translate}}" [badgeColor]="getBadgeColor()" [badge]="getBadge()"
-    icon="warning" href="/tabs/(warning-list:warning-list)">
+  <ion-tab tab="warning-list">
     <ion-router-outlet name="warning-list"></ion-router-outlet>
   </ion-tab>
 </ion-tabs>
