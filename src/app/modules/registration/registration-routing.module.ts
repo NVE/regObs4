@@ -28,6 +28,11 @@ const routes: Routes = [
     },
     { path: 'registration/edit/:id', loadChildren: './pages/overview/overview.module#OverviewPageModule' },
     { path: 'registration/ice/ice-cover/:id', loadChildren: './pages/ice/ice-cover/ice-cover.module#IceCoverPageModule' },
+    {
+        path: 'registration/ice/ice-thickness/:id',
+        loadChildren: './pages/ice/ice-thickness/ice-thickness.module#IceThicknessPageModule'
+    },
+
 
 
 ];

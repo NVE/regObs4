@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="registration"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.ICE.ICE_THICKNESS.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="registration && registration.IceThickness">
+  <ion-list lines="full">
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{
+        'REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL' | translate }}</ion-label>
+      <ion-input type="number" [min]="minSnowDepth" [max]="maxSnowDepth" (ionChange)="onSnowDepthChange(registration.IceThickness.SnowDepth)"
+        [(ngModel)]="registration.IceThickness.SnowDepth" placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{
+        'REGISTRATION.ICE.ICE_THICKNESS.SLUSH_SNOW_BEFORE_DRILL' | translate }}</ion-label>
+      <ion-input type="number" [min]="minSnowDepth" [max]="maxSnowDepth" (ionChange)="onSnowDepthChange(registration.IceThickness.SlushSnow)"
+        [(ngModel)]="registration.IceThickness.SlushSnow" placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+      </ion-input>
+    </ion-item>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER' | translate }}</h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item (click)="addThicknessLayer()">
+      <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+      <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER' | translate}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{
+        'REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM' | translate }}</ion-label>
+      <ion-input type="number" [min]="minSnowDepth" [max]="maxSnowDepth" (ionChange)="onSnowDepthChange(registration.IceThickness.IceThicknessSum)"
+        [(ngModel)]="registration.IceThickness.IceThicknessSum" placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+      </ion-input>
+    </ion-item>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-text-comment (valueChange)="updateUi()" [(value)]="registration.IceThickness.Comment" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+  </ion-list>
+  <app-navigation-buttons [previousUrl]="applyRegId('registration/ice/ice-cover')" previousText="REGISTRATION.ICE.ICE_COVER.TITLE"
+    [nextUrl]="applyRegId('registration/general-comment')" nextText="REGISTRATION.GENERAL_COMMENT.TITLE"></app-navigation-buttons>
+</ion-content>
+<app-save-and-go-back-button [registration]="registration" [isEmpty]="isEmpty()" (reset)="reset()"></app-save-and-go-back-button>

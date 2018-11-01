@@ -123,10 +123,19 @@
         "ICE_COVER_BEFORE": "Isdekning før observasjon",
         "ICE_SKATEABILITY": "Skøytbarhet",
         "TITLE": "Isdekningsgrad"
+      },
+      "ICE_THICKNESS": {
+        "ADD_ICE_LAYER": "Registrer islag",
+        "DRY_SNOW_BEFORE_DRILL": "Snø før boring (cm)",
+        "ICE_LAYER": "Islag",
+        "ICE_THICKNESS_SUM": "Total istykkelse (cm)",
+        "SLUSH_SNOW_BEFORE_DRILL": "Sørpe før boring (cm)",
+        "TITLE": "Istykkelse"
       }
     },
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
+    "IN_CM": "I centimeter",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt",
       "CURRENT_LOCATION": "Nåværende posisjon",

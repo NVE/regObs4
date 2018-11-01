@@ -123,10 +123,19 @@
         "ICE_COVER_BEFORE": "Ice cover before observation",
         "ICE_SKATEABILITY": "Skateability",
         "TITLE": "Ice cover"
+      },
+      "ICE_THICKNESS": {
+        "ADD_ICE_LAYER": "Add ice layer",
+        "DRY_SNOW_BEFORE_DRILL": "Snow before drilling (cm)",
+        "ICE_LAYER": "Ice layer",
+        "ICE_THICKNESS_SUM": "Total thickness (cm)",
+        "SLUSH_SNOW_BEFORE_DRILL": "Slush snow before drilling (cm)",
+        "TITLE": "Ice thickness"
       }
     },
     "IMAGE_DESCRIPTION": "Image description",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
+    "IN_CM": "In centimeter",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location",
       "CURRENT_LOCATION": "Current position",

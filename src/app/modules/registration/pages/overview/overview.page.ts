@@ -171,6 +171,12 @@ export class OverviewPage implements OnInit, OnDestroy {
         this.registration.IceCoverObs ? this.registration.IceCoverObs.Comment : '',
         RegistrationTid.IceCoverObs
       ),
+      this.getRegItem(
+        'registration/ice/ice-thickness/' + this.registration.Id,
+        'REGISTRATION.ICE.ICE_THICKNESS.TITLE',
+        this.registration.IceThickness ? this.registration.IceThickness.Comment : '',
+        RegistrationTid.IceThickness
+      ),
     ];
   }
 

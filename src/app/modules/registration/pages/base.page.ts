@@ -130,4 +130,8 @@ export abstract class BasePage implements OnInit, OnDestroy {
         this.changeDetectorRef.detectChanges();
     }
 
+    applyRegId(url: string) {
+        return `${url}/${this.registration.Id}`;
+    }
+
 }
