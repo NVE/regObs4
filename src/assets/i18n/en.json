@@ -128,7 +128,10 @@
         "ADD_ICE_LAYER": "Add ice layer",
         "DRY_SNOW_BEFORE_DRILL": "Snow before drilling (cm)",
         "ICE_LAYER": "Ice layer",
+        "ICE_LAYER_DESCRIPTION": "Ice layers are registered from top to bottom",
+        "ICE_LAYER_THICKNESS": "Ice layer thickness (cm)",
         "ICE_THICKNESS_SUM": "Total thickness (cm)",
+        "ICE_TYPE": "Ice type",
         "SLUSH_SNOW_BEFORE_DRILL": "Slush snow before drilling (cm)",
         "TITLE": "Ice thickness"
       }

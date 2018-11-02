@@ -128,7 +128,10 @@
         "ADD_ICE_LAYER": "Registrer islag",
         "DRY_SNOW_BEFORE_DRILL": "Snø før boring (cm)",
         "ICE_LAYER": "Islag",
+        "ICE_LAYER_DESCRIPTION": "Islag registreres ovenfra og ned",
+        "ICE_LAYER_THICKNESS": "Tykkelse på islag (cm)",
         "ICE_THICKNESS_SUM": "Total istykkelse (cm)",
+        "ICE_TYPE": "Type is",
         "SLUSH_SNOW_BEFORE_DRILL": "Sørpe før boring (cm)",
         "TITLE": "Istykkelse"
       }

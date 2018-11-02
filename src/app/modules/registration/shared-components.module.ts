@@ -10,6 +10,8 @@ import { MapModule } from '../map/map.module';
 import { Base64ImageComponent } from './components/base64-image/base64-image.component';
 import { SyncItemComponent } from './components/sync-item/sync-item.component';
 import { SyncItemListComponent } from './components/sync-item-list/sync-item-list.component';
+import { IceLayerPage } from './pages/ice/ice-thickness/ice-layer/ice-layer.page';
+import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
 
 @NgModule({
     imports: [
@@ -28,8 +30,10 @@ import { SyncItemListComponent } from './components/sync-item-list/sync-item-lis
         Base64ImageComponent,
         SyncItemComponent,
         SyncItemListComponent,
+        KdvDescriptionPipe,
     ],
     declarations: [
+        IceLayerPage,
         SaveAndGoBackButtonComponent,
         AddPictureItemComponent,
         TextCommentComponent,
@@ -39,6 +43,10 @@ import { SyncItemListComponent } from './components/sync-item-list/sync-item-lis
         Base64ImageComponent,
         SyncItemComponent,
         SyncItemListComponent,
+        KdvDescriptionPipe,
+    ],
+    entryComponents: [
+        IceLayerPage
     ]
 })
 export class SharedComponentsModule { }

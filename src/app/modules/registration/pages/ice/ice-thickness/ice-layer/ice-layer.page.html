@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>{{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER' | translate}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="ok()">{{ 'DIALOGS.OK' | translate }}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list lines="full">
+    <ion-item>
+      <ion-label text-wrap>
+        {{'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_DESCRIPTION' | translate}}
+      </ion-label>
+    </ion-item>
+    <app-kdv-radiobutton-list (valueChange)="updateUi()" hideZeroValues="true" title="{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_TYPE' | translate}}"
+      kdvKey="Ice_IceLayerKDV" [(value)]="layerCopy.IceLayerTID"></app-kdv-radiobutton-list>
+    <ion-list-header>
+      <ion-label>
+        <h3>{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_THICKNESS' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-input type="number" [min]="0" [max]="10000" [(ngModel)]="layerCopy.IceLayerThickness" placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+      </ion-input>
+    </ion-item>
+  </ion-list>
+  <ion-grid no-padding>
+    <ion-row>
+      <ion-col size="6" offset="3">
+        <ion-button expand="block" fill="solid" color="primary" (click)="ok()" routerDirection="backward">
+          {{ 'DIALOGS.OK' | translate }}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

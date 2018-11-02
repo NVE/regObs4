@@ -32,9 +32,6 @@ const routes: Routes = [
         path: 'registration/ice/ice-thickness/:id',
         loadChildren: './pages/ice/ice-thickness/ice-thickness.module#IceThicknessPageModule'
     },
-
-
-
 ];
 
 @NgModule({

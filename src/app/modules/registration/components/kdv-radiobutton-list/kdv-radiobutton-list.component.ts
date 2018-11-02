@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { KdvElement } from '../../../regobs-api/models';
@@ -20,16 +20,18 @@ export class KdvRadiobuttonListComponent implements OnInit {
 
   kdvelements: KdvElement[];
 
-  constructor(private kdvService: KdvService, private userSettingService: UserSettingService) { }
+  constructor(
+    private kdvService: KdvService,
+    private userSettingService: UserSettingService,
+    private cdr: ChangeDetectorRef,
+  ) { }
 
   async ngOnInit() {
     const userSetting = await this.userSettingService.getUserSettings();
     this.kdvelements = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, this.kdvKey);
   }
 
-  onChange(event: Event) {
-    const radioGroup: RadioGroup = <any>event.target;
-    this.value = radioGroup.value;
+  onChange() {
     this.valueChange.emit(this.value);
   }
 

@@ -29,7 +29,10 @@
         <h3>{{ 'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER' | translate }}</h3>
       </ion-label>
     </ion-list-header>
-    <ion-item (click)="addThicknessLayer()">
+    <ion-item (click)="addOrEditThicknessLayer(i)" *ngFor="let layer of registration.IceThickness.IceThicknessLayer; let i = index">
+      <ion-label> {{ layer.IceLayerTID | kdvDescription:'Ice_IceLayerKDV' | async }} - {{ layer.IceLayerThickness }}cm</ion-label>
+    </ion-item>
+    <ion-item (click)="addOrEditThicknessLayer()">
       <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
       <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER' | translate}}</ion-label>
     </ion-item>
