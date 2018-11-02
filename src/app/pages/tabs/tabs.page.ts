@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Events, Tabs } from '@ionic/angular';
 import { settings } from '../../../settings';
 import { Subscription } from 'rxjs';
@@ -14,8 +14,22 @@ export class TabsPage implements OnInit, OnDestroy {
   private subscription: Subscription;
   warningsInView: { count: number; text: string, maxWarning: number };
   fullscreen = false;
+
+  get showBadge() {
+    return this.warningsInView && this.warningsInView.maxWarning > 0;
+  }
+
+  get badgeColor() {
+    return 'warninglevel-' + this.warningsInView.maxWarning;
+  }
+
+  get badgeText() {
+    return this.warningsInView.maxWarning;
+  }
+
+
   @ViewChild(Tabs) private tabs: Tabs;
-  constructor(private events: Events, private warningService: WarningService) {
+  constructor(private events: Events, private warningService: WarningService, private cdr: ChangeDetectorRef) {
 
   }
 
@@ -37,21 +51,8 @@ export class TabsPage implements OnInit, OnDestroy {
       };
     })).subscribe((val) => {
       this.warningsInView = val;
+      this.cdr.detectChanges();
     });
-  }
-
-  getBadge() {
-    return (this.warningsInView && this.warningsInView.maxWarning > 0) ? this.warningsInView.text : '';
-  }
-
-  getBadgeColor() {
-    if (this.warningsInView && this.warningsInView.maxWarning > 0) {
-      // return 'warninglevel-' + this.warningsInView.maxWarning;
-      // TODO: Comment in when bug is fixed: https://github.com/ionic-team/ionic/issues/14840
-      return '';
-    } else {
-      return '';
-    }
   }
 
   ngOnDestroy(): void {

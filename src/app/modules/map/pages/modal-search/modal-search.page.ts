@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ModalController, Events, Input } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
@@ -20,7 +20,11 @@ export class ModalSearchPage implements OnInit {
   loading: boolean;
   hasResults: boolean;
 
-  constructor(private modalController: ModalController, private mapSearchService: MapSearchService, private events: Events) { }
+  constructor(private modalController: ModalController,
+    private mapSearchService: MapSearchService,
+    private events: Events,
+    private cdr: ChangeDetectorRef,
+  ) { }
 
   ngOnInit() {
     this.searchField = new FormControl();
@@ -61,5 +65,6 @@ export class ModalSearchPage implements OnInit {
   searchItemClicked(item: MapSearchResponse) {
     this.events.publish(settings.events.mapSearchItemClicked, item);
     this.closeModal();
+    this.cdr.detectChanges();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Events, Fab, FabButton } from '@ionic/angular';
@@ -24,7 +24,10 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
     return this.inHeader && !this.isOpen ? 0.7 : 1.0;
   }
 
-  constructor(private userSettingService: UserSettingService, private events: Events) { }
+  constructor(
+    private userSettingService: UserSettingService,
+    private events: Events,
+    private cdr: ChangeDetectorRef) { }
 
   async ngOnInit() {
     this.geoHazardTypes = Object.keys(GeoHazard)
@@ -33,6 +36,7 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
     this.currentGeoHazard$ = this.userSettingService.currentGeoHazardObservable$;
     this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
       this.isFullscreen = isFullscreen; // TODO: Use css calculated variable instead
+      this.cdr.detectChanges();
     });
   }
 
@@ -46,6 +50,7 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
 
   toggle() {
     this.isOpen = !this.isOpen;
+    this.cdr.detectChanges();
   }
 
   async changeGeoHazard(geoHazard: GeoHazard) {
@@ -53,6 +58,7 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
     userSettings.currentGeoHazard = geoHazard;
     await this.userSettingService.saveUserSettings(userSettings);
     this.isOpen = false;
+    this.cdr.detectChanges();
     this.events.publish(settings.events.geoHazardChanged, GeoHazard[geoHazard]);
   }
 }
