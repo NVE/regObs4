@@ -52,6 +52,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   options: L.MapOptions = {
     zoom: settings.map.tiles.embeddedUrlMaxZoom,
     maxZoom: settings.map.tiles.maxZoom,
+    minZoom: 2,
     center: this.center,
     bounceAtZoomLimits: true,
     attributionControl: false,

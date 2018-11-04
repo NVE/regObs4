@@ -123,7 +123,9 @@ export abstract class BasePage implements OnInit, OnDestroy {
     }
 
     isEmpty() {
-        return this.registrationService.isEmpty(this.registration, this.registrationTid);
+        const isEmpty = this.registrationService.isEmpty(this.registration, this.registrationTid);
+        console.log('[INFO][BasePage] isEmpty: ' + isEmpty);
+        return isEmpty;
     }
 
     updateUi() {

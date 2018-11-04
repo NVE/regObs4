@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Textarea } from '@ionic/angular';
 
 @Component({
@@ -20,11 +20,13 @@ export class TextCommentComponent implements OnInit {
   }
 
   set valToBind(val: string) {
-    this.value = val;
-    this.valueChange.emit(this.value);
+    this.ngZone.run(() => {
+      this.value = val;
+      this.valueChange.emit(this.value);
+    });
   }
 
-  constructor() { }
+  constructor(private ngZone: NgZone) { }
 
   ngOnInit() {
     if (!this.rows) {
@@ -45,7 +47,7 @@ export class TextCommentComponent implements OnInit {
     } else {
       target.rows = this.minrows;
     }
-    this.valueChange.emit(this.value);
+    // this.valueChange.emit(this.value);
   }
 
 }

@@ -3,7 +3,7 @@ import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSetting } from '../../../../core/models/user-settings.model';
@@ -19,12 +19,13 @@ import { IMapViewAndArea } from '../../services/map/map-view-and-area.interface'
   styleUrls: ['./map-center-info.component.scss']
 })
 export class MapCenterInfoComponent implements OnInit, OnDestroy {
-  viewInfo$: Observable<ViewInfo>;
-  mapView$: Observable<IMapView>;
-  userSettings$: Observable<UserSetting>;
+  viewInfo: ViewInfo;
+  mapView: IMapView;
+  userSettings: UserSetting;
   isLoading: boolean;
 
   private textToCopy: string;
+  private subscriptions: Subscription[];
 
   constructor(
     private userSettingService: UserSettingService,
@@ -34,29 +35,36 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private toastController: ToastController,
     private translateService: TranslateService,
     private platform: Platform,
-    private zone: NgZone,
     private cdr: ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document) {
+    this.subscriptions = [];
   }
 
   async ngOnInit() {
-    this.userSettings$ = this.userSettingService.userSettingObservable$.pipe(tap((val) => {
-      this.document.documentElement.style.setProperty('--map-center-info-height', val.showMapCenter ? '72px' : '0px');
+    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((userSettings) => {
+      this.userSettings = userSettings;
+      this.document.documentElement.style.setProperty('--map-center-info-height', userSettings.showMapCenter ? '72px' : '0px');
+      this.cdr.detectChanges();
     }));
-    this.mapView$ = this.mapService.mapViewObservable$.pipe(tap((val) => {
-      this.textToCopy = `${val.center.lat}, ${val.center.lng}`;
+    this.subscriptions.push(this.mapService.mapViewObservable$.subscribe((mapView) => {
+      this.mapView = mapView;
+      this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
       this.isLoading = true;
       this.cdr.detectChanges();
     }));
-    this.viewInfo$ = this.mapService.mapViewAndAreaObservable$
+    this.subscriptions.push(this.mapService.mapViewAndAreaObservable$
       .pipe(switchMap((mapView: IMapViewAndArea) =>
-        this.mapSerachService.getViewInfo(mapView.center, !!mapView.regionInCenter)),
-        tap(() => {
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        }));
+        this.mapSerachService.getViewInfo(mapView.center, !!mapView.regionInCenter))).
+      subscribe((viewInfo) => {
+        this.viewInfo = viewInfo;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }));
   }
   ngOnDestroy(): void {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   private useNativeClipboardPlugin() {

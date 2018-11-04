@@ -186,9 +186,9 @@ export class RegistrationService {
 
   private async syncRegistration(registration: IRegistration, appMode: AppMode) {
     try {
-      throw new HttpErrorResponse({ error: Error('test'), status: 500 });
-      // await this.postRegistration(appMode, registration);
-      // await this.deleteRegistrationById(appMode, registration.Id);
+      // throw new HttpErrorResponse({ error: Error('test'), status: 500 });
+      await this.postRegistration(appMode, registration);
+      await this.deleteRegistrationById(appMode, registration.Id);
     } catch (ex) {
       if (ex instanceof HttpErrorResponse) {
         const httpError: HttpErrorResponse = ex;

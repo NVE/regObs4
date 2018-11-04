@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="registration"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list lines="full" *ngIf="registration && registration.LandSlideObs">
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item detail="true">
+      <ion-icon color="primary" name="pin" slot="start"></ion-icon>
+      <ion-label>Sett skredposisjon i kart</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME' | translate }}</ion-label>
+      <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
+        cancelText="{{'DIALOGS.CANCEL' | translate}}" (ionChange)="updateUi()" display-format="D. MMM, YYYY HH:mm"
+        [(ngModel)]="registration.LandSlideObs.DtLandSlideTime">
+      </ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME_END' | translate }}</ion-label>
+      <ion-datetime color="medium" (ionChange)="updateUi()" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
+        doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm"
+        [(ngModel)]="registration.LandSlideObs.DtLandSlideTimeEnd">
+      </ion-datetime>
+    </ion-item>
+    <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_TYPE" kdvKey="Dirt_LandSlideKDV" [(value)]="registration.LandSlideObs.LandSlideTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DESTRUCTIVE_SIZE" kdvKey="Dirt_LandSlideSizeKDV"
+      [(value)]="registration.LandSlideObs.LandSlideSizeTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.AVAL_TRIGGER" kdvKey="Dirt_LandSlideTriggerKDV" [(value)]="registration.LandSlideObs.LandSlideTriggerTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DIRT_ACTIVITY_INFLUENCED" kdvKey="Dirt_ActivityInfluencedKDV"
+      [(value)]="registration.LandSlideObs.ActivityInfluencedTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DAMAGE_EXTENT" kdvKey="DamageExtentKDV" [(value)]="registration.LandSlideObs.DamageExtentTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DIRT_FORECAST_ACCURATE" kdvKey="ForecastAccurateKDV"
+      [(value)]="registration.LandSlideObs.ForecastAccurateTID"></app-kdv-dropdown>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-text-comment [(value)]="registration.LandSlideObs.Comment" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+  </ion-list>
+  <app-navigation-buttons previousUrl="registration/group" previousText="Del med gruppe" nextUrl="registration/general-comment"
+    nextText="REGISTRATION.GENERAL_COMMENT.TITLE"></app-navigation-buttons>
+</ion-content>
+<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

@@ -97,6 +97,19 @@
     "BACK_TO_OBSERVATION": "Back to observation",
     "DELETE": "Delete observation",
     "DELETE_CONFIRM": "Are you sure?",
+    "DIRT": {
+      "LAND_SLIDE_OBS": {
+        "AVAL_TRIGGER": "Avalanche trigger",
+        "DAMAGE_EXTENT": "Damage extent",
+        "DESTRUCTIVE_SIZE": "Size",
+        "DIRT_ACTIVITY_INFLUENCED": "What was affected?",
+        "DIRT_FORECAST_ACCURATE": "Was the warning level correct?",
+        "DT_LAND_SLIDE_TIME": "When did the landslide happen first time",
+        "DT_LAND_SLIDE_TIME_END": "When did the landslide end",
+        "LANDSLIDE_TYPE": "Landslide type",
+        "TITLE": "Avalanche incident"
+      }
+    },
     "EMAIL": {
       "BODY": "Hi! I have problems sending this registration. Can you help me?",
       "SUBJECT": "Registration failed"

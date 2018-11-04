@@ -12,6 +12,7 @@ import { SyncItemComponent } from './components/sync-item/sync-item.component';
 import { SyncItemListComponent } from './components/sync-item-list/sync-item-list.component';
 import { IceLayerPage } from './pages/ice/ice-thickness/ice-layer/ice-layer.page';
 import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
+import { KdvDropdownComponent } from './components/kdv-dropdown/kdv-dropdown.component';
 
 @NgModule({
     imports: [
@@ -31,6 +32,7 @@ import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
         SyncItemComponent,
         SyncItemListComponent,
         KdvDescriptionPipe,
+        KdvDropdownComponent,
     ],
     declarations: [
         IceLayerPage,
@@ -44,6 +46,7 @@ import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
         SyncItemComponent,
         SyncItemListComponent,
         KdvDescriptionPipe,
+        KdvDropdownComponent,
     ],
     entryComponents: [
         IceLayerPage

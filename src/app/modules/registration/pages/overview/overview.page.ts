@@ -160,7 +160,14 @@ export class OverviewPage implements OnInit, OnDestroy {
   }
 
   private getDirtItems() {
-    return [];
+    return [
+      this.getRegItem(
+        'registration/dirt/landslide-obs/' + this.registration.Id,
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE',
+        this.registration.LandSlideObs ? this.registration.LandSlideObs.Comment : '',
+        RegistrationTid.LandSlideObs
+      ),
+    ];
   }
 
   private getIceItems() {

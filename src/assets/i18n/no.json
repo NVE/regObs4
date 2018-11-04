@@ -97,6 +97,19 @@
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
     "DELETE": "Slett observasjon",
     "DELETE_CONFIRM": "Er du sikker?",
+    "DIRT": {
+      "LAND_SLIDE_OBS": {
+        "AVAL_TRIGGER": "Skredutløser",
+        "DAMAGE_EXTENT": "Skadeomfang",
+        "DESTRUCTIVE_SIZE": "Størrelse",
+        "DIRT_ACTIVITY_INFLUENCED": "Hva ble påvirket?",
+        "DIRT_FORECAST_ACCURATE": "Stemte varslet?",
+        "DT_LAND_SLIDE_TIME": "Når skjedde skredet tidligst",
+        "DT_LAND_SLIDE_TIME_END": "Når skjedde skredet senest",
+        "LANDSLIDE_TYPE": "Type skred",
+        "TITLE": "Skredhendelse"
+      }
+    },
     "EMAIL": {
       "BODY": "Hei! Jeg har problemer med å sende inn denne registreringen. Kan dere hjelpe meg?",
       "SUBJECT": "Registrering feilet"

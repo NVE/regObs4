@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionSheetController, Platform } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
@@ -31,7 +31,7 @@ export class AddPictureItemComponent implements OnInit {
     private translateService: TranslateService,
     private camera: Camera,
     private platform: Platform,
-    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
     private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
@@ -80,19 +80,22 @@ export class AddPictureItemComponent implements OnInit {
     };
     if (this.platform.is('cordova')) {
       const imageUrl = await this.camera.getPicture(options);
-      this.images.push({
-        PictureImageBase64: imageUrl.slice(DATA_URL_TAG.length, imageUrl.length),
-        RegistrationTID: this.registrationTid
-      });
+      this.addBase64Image(imageUrl);
     } else {
       const dummyImage = await this.toDataURL('/assets/images/dummyregobsimage.jpeg');
+      this.addBase64Image(dummyImage);
+    }
+    return true;
+  }
+
+  addBase64Image(dataUrl: string) {
+    this.ngZone.run(() => {
       this.images.push({
-        PictureImageBase64: dummyImage.slice(DATA_URL_TAG.length, dummyImage.length),
+        PictureImageBase64: dataUrl.slice(DATA_URL_TAG.length, dataUrl.length),
         RegistrationTID: this.registrationTid
       });
-    }
-    this.cdr.detectChanges();
-    return true;
+      this.imagesChange.emit(this.images);
+    });
   }
 
   private toDataURL(url: string): Promise<string> {
@@ -112,7 +115,9 @@ export class AddPictureItemComponent implements OnInit {
   }
 
   removeImage(index: number) {
-    this.images.splice(index, 1);
-    this.cdr.detectChanges();
+    this.ngZone.run(() => {
+      this.images.splice(index, 1);
+      this.imagesChange.emit(this.images);
+    });
   }
 }
