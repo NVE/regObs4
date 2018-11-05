@@ -27,7 +27,7 @@ export class DangerObsPage extends BasePage {
     const dangerObs = index !== undefined ? this.registration.DangerObs[index] : undefined;
     const modal = await this.modalController.create({
       component: AddOrEditDangerObsModalPage,
-      componentProps: { dangerObs, geoHazard: this.registration.GeoHazardTID },
+      componentProps: { dangerObs, geoHazard: this.registration.geoHazard },
     });
     modal.present();
     const result = await modal.onDidDismiss();
