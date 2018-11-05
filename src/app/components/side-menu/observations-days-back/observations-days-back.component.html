@@ -1,5 +1,5 @@
 <ion-item>
-  <ion-label position="stacked">{{'MENU.SHOW_OBSERVATIONS' | translate}}</ion-label>
+  <ion-label color="medium" position="stacked" text-uppercase>{{'MENU.SHOW_OBSERVATIONS' | translate}}</ion-label>
   <ion-select *ngIf="recreate" (ionChange)="changeDaysBack($event)">
     <ion-select-option *ngFor="let item of daysBack" [value]="item.val" [selected]="item.selected">{{ item.text }}</ion-select-option>
   </ion-select>

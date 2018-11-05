@@ -1,12 +1,10 @@
 import {
   Component,
   OnInit,
-  ChangeDetectorRef,
   Input,
   Output,
   EventEmitter,
   ViewChild,
-  ChangeDetectionStrategy,
   NgZone
 } from '@angular/core';
 import { KdvElement } from '../../../regobs-api/models';
@@ -35,7 +33,7 @@ export class KdvDropdownComponent implements OnInit {
   kdvelements: KdvElement[];
 
   get selectedText() {
-    if (this.value && this.kdvelements) {
+    if ((this.value !== undefined || this.value !== null) && this.kdvelements) {
       const kdvElement = this.kdvelements.find((x) => x.Id === this.value);
       if (kdvElement) {
         return this.useDescription ? kdvElement.Description : kdvElement.Name;
@@ -50,7 +48,6 @@ export class KdvDropdownComponent implements OnInit {
     private userSettingService: UserSettingService,
     private translateService: TranslateService,
     private ngZone: NgZone,
-    private cdr: ChangeDetectorRef,
   ) { }
 
   async ngOnInit() {

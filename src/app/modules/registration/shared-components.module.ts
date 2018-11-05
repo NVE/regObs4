@@ -14,6 +14,9 @@ import { IceLayerPage } from './pages/ice/ice-thickness/ice-layer/ice-layer.page
 import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
 import { KdvDropdownComponent } from './components/kdv-dropdown/kdv-dropdown.component';
 import { SetAvalanchePositionPage } from './pages/set-avalanche-position/set-avalanche-position.page';
+import { AddWebUrlItemComponent } from './components/add-web-url-item/add-web-url-item.component';
+import { AddWebUrlModalPage } from './components/add-web-url-item/add-web-url-modal/add-web-url-modal.page';
+import { ModalSaveOrDeleteButtonsComponent } from './components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 
 @NgModule({
     imports: [
@@ -34,10 +37,13 @@ import { SetAvalanchePositionPage } from './pages/set-avalanche-position/set-ava
         SyncItemListComponent,
         KdvDescriptionPipe,
         KdvDropdownComponent,
+        AddWebUrlItemComponent,
+        ModalSaveOrDeleteButtonsComponent,
     ],
     declarations: [
         IceLayerPage,
         SetAvalanchePositionPage,
+        AddWebUrlModalPage,
         SaveAndGoBackButtonComponent,
         AddPictureItemComponent,
         TextCommentComponent,
@@ -49,10 +55,13 @@ import { SetAvalanchePositionPage } from './pages/set-avalanche-position/set-ava
         SyncItemListComponent,
         KdvDescriptionPipe,
         KdvDropdownComponent,
+        AddWebUrlItemComponent,
+        ModalSaveOrDeleteButtonsComponent
     ],
     entryComponents: [
         IceLayerPage,
         SetAvalanchePositionPage,
+        AddWebUrlModalPage,
     ]
 })
 export class SharedComponentsModule { }

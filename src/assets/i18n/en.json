@@ -20,8 +20,10 @@
     }
   },
   "DIALOGS": {
+    "ARE_YOU_SURE": "Are you sure?",
     "CANCEL": "Cancel",
     "CONFIRM": "Confirm",
+    "DELETE": "Delete",
     "NO": "No",
     "OK": "Ok",
     "YES": "Yes"
@@ -95,6 +97,10 @@
   },
   "REGISTRATION": {
     "ADD_IMAGES": "Add images",
+    "ADD_WEB_URL": {
+      "TITLE": "Add web url",
+      "URL": "Url"
+    },
     "BACK_TO_OBSERVATION": "Back to observation",
     "DELETE": "Delete observation",
     "DELETE_CONFIRM": "Are you sure?",

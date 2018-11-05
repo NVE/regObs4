@@ -17,8 +17,8 @@
         {{'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_DESCRIPTION' | translate}}
       </ion-label>
     </ion-item>
-    <app-kdv-radiobutton-list (valueChange)="updateUi()" hideZeroValues="true" title="{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_TYPE' | translate}}"
-      kdvKey="Ice_IceLayerKDV" [(value)]="layerCopy.IceLayerTID"></app-kdv-radiobutton-list>
+    <app-kdv-dropdown title="{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_TYPE' | translate}}" kdvKey="Ice_IceLayerKDV"
+      [(value)]="layerCopy.IceLayerTID"></app-kdv-dropdown>
     <ion-list-header>
       <ion-label>
         <h3>{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_THICKNESS' | translate}}</h3>
@@ -29,14 +29,6 @@
       </ion-input>
     </ion-item>
   </ion-list>
-  <ion-grid no-padding>
-    <ion-row>
-      <ion-col size="6" offset="3">
-        <ion-button expand="block" fill="solid" color="primary" (click)="ok()" routerDirection="backward">
-          {{ 'DIALOGS.OK' | translate }}
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
+  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">
+  </app-modal-save-or-delete-buttons>
 </ion-content>

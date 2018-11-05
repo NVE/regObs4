@@ -23,6 +23,12 @@ export class LandslideObsPage extends BasePage {
     super(RegistrationTid.LandSlideObs, registrationService, actvatedRoute, changeDetectorRef);
   }
 
+  onInit() {
+    if (!this.registration.LandSlideObs.Urls) {
+      this.registration.LandSlideObs.Urls = [];
+    }
+  }
+
   onReset() {
     this.changeDetectorRef.detectChanges();
   }

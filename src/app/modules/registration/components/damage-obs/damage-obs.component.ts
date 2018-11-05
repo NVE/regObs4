@@ -52,5 +52,6 @@ export class DamageObsComponent implements OnInit {
   async setDamagePosition() {
     await this.registrationService.saveRegistration(this.registration);
     this.navController.navigateForward(`registration/set-damage-location/${this.damageTypeId}`);
+    // TODO: Create modal params instead
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { RegistrationService } from '../../../services/registration.service';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
@@ -22,6 +22,7 @@ export class IceThicknessPage extends BasePage {
     actvatedRoute: ActivatedRoute,
     changeDetectorRef: ChangeDetectorRef,
     private modalController: ModalController,
+    private ngZone: NgZone,
   ) {
     super(RegistrationTid.IceThickness, registrationService, actvatedRoute, changeDetectorRef);
   }
@@ -33,10 +34,11 @@ export class IceThicknessPage extends BasePage {
   }
 
   onSnowDepthChange(val: number) {
-    if (val < this.minSnowDepth) {
-      val = this.minSnowDepth;
-    }
-    this.changeDetectorRef.detectChanges();
+    this.ngZone.run(() => {
+      if (val < this.minSnowDepth) {
+        val = this.minSnowDepth;
+      }
+    });
   }
 
   async addOrEditThicknessLayer(index?: number) {
@@ -47,17 +49,55 @@ export class IceThicknessPage extends BasePage {
     modal.present();
     const result = await modal.onDidDismiss();
     if (result.data) {
-      const iceThicknessLayerCopy: IceThicknessLayerDto = result.data;
-      if (index !== undefined) {
-        this.registration.IceThickness.IceThicknessLayer[index] = iceThicknessLayerCopy;
+      if (result.data.delete) {
+        this.removeLayerAtIndex(index);
       } else {
-        this.registration.IceThickness.IceThicknessLayer.push(iceThicknessLayerCopy);
+        const iceThicknessLayerCopy: IceThicknessLayerDto = result.data;
+        if (index !== undefined) {
+          this.setIceThicknessLayer(index, iceThicknessLayerCopy);
+        } else {
+          this.addIceThicknessLayer(iceThicknessLayerCopy);
+        }
       }
+    }
+  }
+
+  onIceThicknessReorder(event: CustomEvent) {
+    this.ngZone.run(() => {
+      this.reorderList(this.registration.IceThickness.IceThicknessLayer, event.detail.from, event.detail.to);
+    });
+    event.detail.complete();
+  }
+
+  reorderList(array: Array<any>, fromIndex: number, toIndex: number) {
+    array.splice(toIndex, 0, array.splice(fromIndex, 1)[0]);
+  }
+
+  setIceThicknessLayer(index: number, iceThicknessLayer: IceThicknessLayerDto) {
+    this.ngZone.run(() => {
+      this.registration.IceThickness.IceThicknessLayer[index] = iceThicknessLayer;
+    });
+    this.calculateIceThicknessSum();
+  }
+
+  addIceThicknessLayer(iceThicknessLayer: IceThicknessLayerDto) {
+    this.ngZone.run(() => {
+      this.registration.IceThickness.IceThicknessLayer.push(iceThicknessLayer);
+    });
+    this.calculateIceThicknessSum();
+  }
+
+  calculateIceThicknessSum() {
+    this.ngZone.run(() => {
       this.registration.IceThickness.IceThicknessSum = this.registration.IceThickness.IceThicknessLayer
         .reduce((p, c) => p + (c.IceLayerThickness || 0), 0);
-      setTimeout(() => {
-        this.changeDetectorRef.detectChanges();
-      });
-    }
+    });
+  }
+
+  removeLayerAtIndex(index: number) {
+    this.ngZone.run(() => {
+      this.registration.IceThickness.IceThicknessLayer.splice(index, 1);
+    });
+    this.calculateIceThicknessSum();
   }
 }

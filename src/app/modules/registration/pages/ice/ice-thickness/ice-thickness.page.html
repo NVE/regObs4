@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content *ngIf="registration && registration.IceThickness">
-  <ion-list lines="full">
+  <ion-list lines="full" reorder="true">
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{
         'REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL' | translate }}</ion-label>
@@ -29,9 +29,13 @@
         <h3>{{ 'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER' | translate }}</h3>
       </ion-label>
     </ion-list-header>
-    <ion-item (click)="addOrEditThicknessLayer(i)" *ngFor="let layer of registration.IceThickness.IceThicknessLayer; let i = index">
-      <ion-label> {{ layer.IceLayerTID | kdvDescription:'Ice_IceLayerKDV' | async }} - {{ layer.IceLayerThickness }}cm</ion-label>
-    </ion-item>
+    <ion-reorder-group disabled="false" (ionItemReorder)="onIceThicknessReorder($event)">
+      <ion-item (click)="addOrEditThicknessLayer(i)" *ngFor="let layer of registration.IceThickness.IceThicknessLayer; let i = index">
+        <ion-label> {{ layer.IceLayerTID | kdvDescription:'Ice_IceLayerKDV' | async }} - {{ layer.IceLayerThickness
+          }}cm</ion-label>
+        <ion-reorder slot="end"></ion-reorder>
+      </ion-item>
+    </ion-reorder-group>
     <ion-item (click)="addOrEditThicknessLayer()">
       <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
       <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER' | translate}}</ion-label>

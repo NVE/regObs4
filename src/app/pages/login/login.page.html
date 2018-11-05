@@ -20,13 +20,13 @@
   <ng-container *ngIf="!isLoggedIn(loggedInUser)">
     <form novalidate (ngSubmit)="login()" [formGroup]="loginform">
       <ion-item>
-        <ion-label position="stacked">
+        <ion-label color="medium" position="stacked" text-uppercase>
           {{ 'LOGIN.EMAIL' | translate }}
         </ion-label>
         <ion-input type="text" inputmode="email" formControlName="username" name="username"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked">
+        <ion-label color="medium" position="stacked" text-uppercase>
           {{ 'LOGIN.PASSWORD' | translate }}
         </ion-label>
         <ion-input #password type="password" inputmode="password" formControlName="password" name="password"></ion-input>

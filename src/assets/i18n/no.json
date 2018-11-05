@@ -20,8 +20,10 @@
     }
   },
   "DIALOGS": {
+    "ARE_YOU_SURE": "Er du sikker?",
     "CANCEL": "Avbryt",
     "CONFIRM": "Bekreft",
+    "DELETE": "Slett",
     "NO": "Nei",
     "OK": "Ok",
     "YES": "Ja"
@@ -95,6 +97,10 @@
   },
   "REGISTRATION": {
     "ADD_IMAGES": "Legg til bilder",
+    "ADD_WEB_URL": {
+      "TITLE": "Legg til weblenke",
+      "URL": "Url"
+    },
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
     "DELETE": "Slett observasjon",
     "DELETE_CONFIRM": "Er du sikker?",
