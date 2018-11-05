@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="start">
+      <ion-button (click)="ok()">{{ 'DIALOGS.OK' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'REGISTRATION.DIRT.LAND_SLIDE_OBS.SET_LANDSLIDE_POSITION' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <app-set-location-in-map *ngIf="fromMarker" (mapReady)="onMapReady($event)" [fromMarker]="fromMarker"
+    [locationMarker]="locationMarker" (locationSet)="onLocationSet($event)" [confirmLocationText]="confirmLocationText"
+    fromLocationText="REGISTRATION.OBS_LOCATION.TITLE" [showPreviousUsedLocations]="false" [locationTitle]="locationText">
+  </app-set-location-in-map>
+</ion-content>

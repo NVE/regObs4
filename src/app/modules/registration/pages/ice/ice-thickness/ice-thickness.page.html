@@ -59,4 +59,4 @@
   <app-navigation-buttons [previousUrl]="applyRegId('registration/ice/ice-cover')" previousText="REGISTRATION.ICE.ICE_COVER.TITLE"
     [nextUrl]="applyRegId('registration/general-comment')" nextText="REGISTRATION.GENERAL_COMMENT.TITLE"></app-navigation-buttons>
 </ion-content>
-<app-save-and-go-back-button [registration]="registration" [isEmpty]="isEmpty()" (reset)="reset()"></app-save-and-go-back-button>
+<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

@@ -21,6 +21,7 @@
   },
   "DIALOGS": {
     "CANCEL": "Cancel",
+    "CONFIRM": "Confirm",
     "NO": "No",
     "OK": "Ok",
     "YES": "Yes"
@@ -106,7 +107,11 @@
         "DIRT_FORECAST_ACCURATE": "Was the warning level correct?",
         "DT_LAND_SLIDE_TIME": "When did the landslide happen first time",
         "DT_LAND_SLIDE_TIME_END": "When did the landslide end",
+        "END_POSITION": "End position",
+        "IN_MAP": "in map",
         "LANDSLIDE_TYPE": "Landslide type",
+        "SET_LANDSLIDE_POSITION": "Set landslide position",
+        "START_POSITION": "Start position",
         "TITLE": "Avalanche incident"
       }
     },

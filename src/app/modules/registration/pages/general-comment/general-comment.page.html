@@ -28,4 +28,4 @@
       title="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
   </ion-list>
 </ion-content>
-<app-save-and-go-back-button [registration]="registration" [isEmpty]="isEmpty()" (reset)="reset()"></app-save-and-go-back-button>
+<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

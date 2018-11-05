@@ -21,6 +21,7 @@
   },
   "DIALOGS": {
     "CANCEL": "Avbryt",
+    "CONFIRM": "Bekreft",
     "NO": "Nei",
     "OK": "Ok",
     "YES": "Ja"
@@ -106,7 +107,11 @@
         "DIRT_FORECAST_ACCURATE": "Stemte varslet?",
         "DT_LAND_SLIDE_TIME": "Når skjedde skredet tidligst",
         "DT_LAND_SLIDE_TIME_END": "Når skjedde skredet senest",
+        "END_POSITION": "Sluttpunkt",
+        "IN_MAP": "i kart",
         "LANDSLIDE_TYPE": "Type skred",
+        "SET_LANDSLIDE_POSITION": "Sett skredposisjon",
+        "START_POSITION": "Startpunkt",
         "TITLE": "Skredhendelse"
       }
     },

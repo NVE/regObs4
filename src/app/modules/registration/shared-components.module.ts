@@ -13,6 +13,7 @@ import { SyncItemListComponent } from './components/sync-item-list/sync-item-lis
 import { IceLayerPage } from './pages/ice/ice-thickness/ice-layer/ice-layer.page';
 import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
 import { KdvDropdownComponent } from './components/kdv-dropdown/kdv-dropdown.component';
+import { SetAvalanchePositionPage } from './pages/set-avalanche-position/set-avalanche-position.page';
 
 @NgModule({
     imports: [
@@ -36,6 +37,7 @@ import { KdvDropdownComponent } from './components/kdv-dropdown/kdv-dropdown.com
     ],
     declarations: [
         IceLayerPage,
+        SetAvalanchePositionPage,
         SaveAndGoBackButtonComponent,
         AddPictureItemComponent,
         TextCommentComponent,
@@ -49,7 +51,8 @@ import { KdvDropdownComponent } from './components/kdv-dropdown/kdv-dropdown.com
         KdvDropdownComponent,
     ],
     entryComponents: [
-        IceLayerPage
+        IceLayerPage,
+        SetAvalanchePositionPage,
     ]
 })
 export class SharedComponentsModule { }

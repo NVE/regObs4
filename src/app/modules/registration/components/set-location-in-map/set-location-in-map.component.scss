@@ -67,7 +67,7 @@ app-map {
 }
 
 .padding-bottom {
-    padding-bottom: 30px;
+    padding-bottom: 10px;
 }
 
 .fill-parent {
@@ -76,6 +76,10 @@ app-map {
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.block {
+    display: block !important;
 }
 
 .detail-header {

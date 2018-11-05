@@ -22,7 +22,9 @@ import { Events } from '@ionic/angular';
 })
 export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() fromMarker: L.Marker;
+  @Input() fromMarkerIconUrl = '/assets/icon/map/GPS_stop.svg';
   @Input() locationMarker: L.Marker;
+  @Input() locationMarkerIconUrl = '/assets/icon/map/GPS_stop.svg';
   @Output() locationSet = new EventEmitter<ObsLocationDto>();
   @Input() showPreviousUsedLocations = true;
   @Input() showUserPosition = true;
@@ -31,6 +33,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() locationTitle = 'REGISTRATION.OBS_LOCATION.TITLE';
   @Input() selectedLocation: ObsLocationsResponseDtoV2;
   @Output() selectedLocationChange = new EventEmitter<ObsLocationsResponseDtoV2>();
+  @Output() mapReady = new EventEmitter<L.Map>();
 
   private map: L.Map;
   registration: IRegistration;
@@ -65,21 +68,26 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       shadowSize: [41, 41],
     });
     L.Marker.prototype.options.icon = defaultIcon;
+    const locationMarkerIcon = L.icon({
+      iconUrl: this.locationMarkerIconUrl,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    });
     if (!this.locationMarker) {
       if (this.fromMarker) {
-        this.locationMarker = L.marker(this.fromMarker.getLatLng());
+        this.locationMarker = L.marker(this.fromMarker.getLatLng(), { icon: locationMarkerIcon });
       } else {
         this.followMode = true;
         const lastView = await this.mapService.mapViewObservable$.pipe(take(1)).toPromise();
         if (lastView) {
-          this.locationMarker = L.marker(lastView.center);
+          this.locationMarker = L.marker(lastView.center, { icon: locationMarkerIcon });
         } else {
-          this.locationMarker = L.marker(L.latLng(59.1, 10.3)); // TODO: Implemet better default value
+          this.locationMarker = L.marker(L.latLng(59.1, 10.3), { icon: locationMarkerIcon }); // TODO: Implemet better default value
         }
       }
     }
 
-    const mapViewObservable = this.mapService.mapViewObservable$.pipe(tap((val) => {
+    const mapViewObservable = this.mapService.mapViewObservable$.pipe(tap(() => {
       this.isLoading = true;
       this.cdr.detectChanges();
     }));
@@ -130,6 +138,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.map.setView(this.locationMarker.getLatLng(), 15);
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
     this.events.subscribe(settings.events.centerMapToUser, () => this.centerMapToUser());
+    this.mapReady.emit(this.map);
     this.updatePathAndDistance();
   }
 
