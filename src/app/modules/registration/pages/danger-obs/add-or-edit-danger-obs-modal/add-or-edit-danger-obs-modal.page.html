@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="ok()">{{ 'DIALOGS.OK' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="dangerObsToSave">
+  <ion-list lines="none">
+    <ion-item>
+      <ion-checkbox mode="md" slot="start" [(ngModel)]="noDamageObs"></ion-checkbox>
+      <ion-label>Ingen faretegn observert</ion-label>
+    </ion-item>
+    <app-kdv-dropdown title="REGISTRATION.DANGER_OBS.TITLE" *ngIf="!noDamageObs" hideZeroValues="true" kdvKey="{{ GeoHazardName }}_DangerSignKDV"
+      [(value)]="dangerObsToSave.DangerSignTID">
+    </app-kdv-dropdown>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>Område</ion-label>
+      <ion-select mode="ios" [(ngModel)]="tmpArea" [interfaceOptions]="interfaceOptions" interface="action-sheet">
+        <ion-select-option [value]="area" *ngFor="let area of areaArr">
+          {{ area }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">
+  </app-modal-save-or-delete-buttons>
+</ion-content>

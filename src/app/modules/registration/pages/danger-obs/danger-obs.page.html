@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="registration"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.DANGER_OBS.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="registration">
+  <ion-list lines="full">
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.DANGER_OBS.TITLE' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item (click)="addOrEdit(i)" *ngFor="let dangerObs of registration.DangerObs; let i = index">
+      <ion-label>{{ dangerObs.Comment }}</ion-label>
+    </ion-item>
+    <ion-item (click)="addOrEdit()">
+      <ion-icon color="dark" name="add-circle-outline" slot="start"></ion-icon>
+      <ion-label>{{ 'REGISTRATION.DANGER_OBS.NEW_DANGER_OBS' | translate }}</ion-label>
+    </ion-item>
+  </ion-list>
+  <app-navigation-buttons previousUrl="registration/water/water-level" previousText="REGISTRATION.WATER.WATER_LEVEL.TITLE"
+    nextUrl="registration/general-comment" nextText="REGISTRATION.GENERAL_COMMENT.TITLE"></app-navigation-buttons>
+</ion-content>
+<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

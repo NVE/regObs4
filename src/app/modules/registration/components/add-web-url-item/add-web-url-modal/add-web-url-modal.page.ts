@@ -12,7 +12,7 @@ export class AddWebUrlModalPage implements OnInit {
   @Input() weburl: UrlDto;
   urlToSave: UrlDto;
   isNew = true;
-  constructor(private modalController: ModalController, private alertController: AlertController) { }
+  constructor(private modalController: ModalController) { }
 
   ngOnInit() {
     if (this.weburl) {

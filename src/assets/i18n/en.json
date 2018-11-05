@@ -102,6 +102,16 @@
       "URL": "Url"
     },
     "BACK_TO_OBSERVATION": "Back to observation",
+    "DANGER_OBS": {
+      "FOR_MUNICIPAL": "For the municipality",
+      "FOR_REGION": "County / Warning region",
+      "GENERAL_ON_MOUNTAIN": "Generally in the mountains",
+      "IN_THE_VALLEY_OR_FJORD": "In the valley / fjord",
+      "NEW_DANGER_OBS": "Add danger observation",
+      "ON_THIS_MOUNTAIN_SIDE": "In this mountain side",
+      "ON_THIS_PLACE": "At this place",
+      "TITLE": "Danger observation"
+    },
     "DELETE": "Delete observation",
     "DELETE_CONFIRM": "Are you sure?",
     "DIRT": {

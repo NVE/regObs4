@@ -2,9 +2,11 @@
   <ion-label color="medium" position="stacked" text-uppercase>{{ title | translate}}</ion-label>
   <ion-select mode="ios" [(ngModel)]="value" [selectedText]="selectedText" (ngModelChange)="onChange()"
     [interfaceOptions]="interfaceOptions" [interface]="interface" [placeholder]="placeholder">
-    <ion-select-option [value]="kdvelement.Id" *ngFor="let kdvelement of kdvelements">{{
-      useDescription ?
-      kdvelement.Description
-      : kdvelement.Name }}</ion-select-option>
+    <ng-container *ngFor="let kdvelement of kdvelements">
+      <ion-select-option [value]="kdvelement.Id" *ngIf="isVisible(kdvelement)">{{
+        useDescription ?
+        kdvelement.Description
+        : kdvelement.Name }}</ion-select-option>
+    </ng-container>
   </ion-select>
 </ion-item>

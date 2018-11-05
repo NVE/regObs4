@@ -162,6 +162,12 @@ export class OverviewPage implements OnInit, OnDestroy {
   private getDirtItems() {
     return [
       this.getRegItem(
+        'registration/danger-obs/' + this.registration.Id,
+        'REGISTRATION.DANGER_OBS.TITLE',
+        '',
+        RegistrationTid.DangerObs
+      ),
+      this.getRegItem(
         'registration/dirt/landslide-obs/' + this.registration.Id,
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE',
         this.registration.LandSlideObs ? this.registration.LandSlideObs.Comment : '',

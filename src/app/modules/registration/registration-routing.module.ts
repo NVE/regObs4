@@ -35,7 +35,11 @@ const routes: Routes = [
     {
         path: 'registration/dirt/landslide-obs/:id',
         loadChildren: './pages/dirt/landslide-obs/landslide-obs.module#LandslideObsPageModule'
-    }
+    },
+    {
+        path: 'registration/danger-obs/:id',
+        loadChildren: './pages/danger-obs/danger-obs.module#DangerObsPageModule'
+    },
 ];
 
 @NgModule({

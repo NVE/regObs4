@@ -35,4 +35,12 @@ export class KdvRadiobuttonListComponent implements OnInit {
     this.valueChange.emit(this.value);
   }
 
+  isVisible(item: KdvElement) {
+    if (!this.hideZeroValues) {
+      return true;
+    } else {
+      return item.Id % 100 !== 0;
+    }
+  }
+
 }

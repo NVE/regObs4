@@ -102,6 +102,16 @@
       "URL": "Url"
     },
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
+    "DANGER_OBS": {
+      "FOR_MUNICIPAL": "For kommunen",
+      "FOR_REGION": "Fylket/varslingsregion",
+      "GENERAL_ON_MOUNTAIN": "Generelt på fjellet",
+      "IN_THE_VALLEY_OR_FJORD": "I dalen/fjorden",
+      "NEW_DANGER_OBS": "Nytt faretegn",
+      "ON_THIS_MOUNTAIN_SIDE": "I denne fjellsiden",
+      "ON_THIS_PLACE": "På dette stedet",
+      "TITLE": "Faretegn"
+    },
     "DELETE": "Slett observasjon",
     "DELETE_CONFIRM": "Er du sikker?",
     "DIRT": {
