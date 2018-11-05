@@ -12,23 +12,29 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="dangerObsToSave">
+<ion-content *ngIf="loaded">
   <ion-list lines="none">
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.DANGER_OBS.TITLE' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
     <ion-item>
       <ion-checkbox mode="md" slot="start" [(ngModel)]="noDamageObs"></ion-checkbox>
-      <ion-label>Ingen faretegn observert</ion-label>
+      <ion-label>{{ 'REGISTRATION.DANGER_OBS.NO_DAMAGE_SIGN' | translate}}</ion-label>
     </ion-item>
     <app-kdv-dropdown title="REGISTRATION.DANGER_OBS.TITLE" *ngIf="!noDamageObs" hideZeroValues="true" kdvKey="{{ GeoHazardName }}_DangerSignKDV"
-      [(value)]="dangerObsToSave.DangerSignTID">
+      [(value)]="dangerSignTid">
     </app-kdv-dropdown>
     <ion-item>
-      <ion-label color="medium" position="stacked" text-uppercase>Område</ion-label>
+      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.DANGER_OBS.AREA' | translate}}</ion-label>
       <ion-select mode="ios" [(ngModel)]="tmpArea" [interfaceOptions]="interfaceOptions" interface="action-sheet">
         <ion-select-option [value]="area" *ngFor="let area of areaArr">
           {{ area }}</ion-select-option>
       </ion-select>
     </ion-item>
+    <app-text-comment [(value)]="comment" title="REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE" rows="2" placeholder="REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE"></app-text-comment>
   </ion-list>
-  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">
+  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="dangerObs">
   </app-modal-save-or-delete-buttons>
 </ion-content>

@@ -4,6 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { GeoHazard } from '../../../../../core/models/geo-hazard.enum';
 import { TranslateService } from '@ngx-translate/core';
 
+const COMMENT_SEPARATOR = ': ';
 @Component({
   selector: 'app-add-or-edit-danger-obs-modal',
   templateUrl: './add-or-edit-danger-obs-modal.page.html',
@@ -13,11 +14,12 @@ export class AddOrEditDangerObsModalPage implements OnInit {
 
   @Input() dangerObs: DangerObsDto;
   @Input() geoHazard: GeoHazard;
-  dangerObsToSave: DangerObsDto;
-  isNew = true;
   noDamageObs = false;
   areaArr: string[];
   tmpArea = '';
+  dangerSignTid: number;
+  comment: string;
+  loaded = false;
 
   interfaceOptions = {
 
@@ -34,24 +36,48 @@ export class AddOrEditDangerObsModalPage implements OnInit {
     this.areaArr = this.getAreaArray().map((item) => tranlations[item] as string);
 
     if (this.dangerObs) {
-      this.dangerObsToSave = { ...this.dangerObs };
       if (this.dangerObs.Comment) {
         this.tmpArea = this.areaArr.find((x) => this.dangerObs.Comment.indexOf(x) >= 0);
+        if (this.tmpArea) {
+          const index = this.tmpArea.length + COMMENT_SEPARATOR.length;
+          this.comment =
+            this.dangerObs.Comment.substr(index);
+        } else {
+          this.comment = this.dangerObs.Comment;
+        }
       }
-      this.isNew = false;
-    } else {
-      this.dangerObsToSave = {
-        DangerSignTID: 0
-      };
+      if (this.dangerObs.DangerSignTID === this.getZeroValue()) {
+        this.noDamageObs = true;
+      } else {
+        this.dangerSignTid = this.dangerObs.DangerSignTID;
+      }
     }
+    this.loaded = true;
   }
 
   cancel() {
     this.modalController.dismiss();
   }
 
+  getZeroValue() {
+    return this.geoHazard !== GeoHazard.Snow ? this.geoHazard * 10 : 0;
+  }
+
   ok() {
-    this.modalController.dismiss(this.dangerObsToSave);
+    const dangerObsToSave: DangerObsDto = {
+      GeoHazardTID: this.geoHazard,
+      DangerSignTID: this.noDamageObs ? this.getZeroValue() : this.dangerSignTid,
+      Comment: this.getComment(),
+    };
+    this.modalController.dismiss(dangerObsToSave);
+  }
+
+  private getComment() {
+    if (this.tmpArea) {
+      return `${this.tmpArea}${COMMENT_SEPARATOR}${this.comment || ''}`;
+    } else {
+      return this.comment;
+    }
   }
 
   delete() {
@@ -60,7 +86,15 @@ export class AddOrEditDangerObsModalPage implements OnInit {
 
   getAreaArray() {
     switch (this.geoHazard) {
-      case GeoHazard.Dirt: {
+      case GeoHazard.Ice: {
+        return [
+          'REGISTRATION.DANGER_OBS.RIGHT_HERE',
+          'REGISTRATION.DANGER_OBS.ON_THIS_SIDE_OF_THE_WATER',
+          'REGISTRATION.DANGER_OBS.ON_THIS_WATER',
+          'REGISTRATION.DANGER_OBS.MANY_WATER_NEARBY',
+        ];
+      }
+      default:
         return [
           'REGISTRATION.DANGER_OBS.ON_THIS_PLACE',
           'REGISTRATION.DANGER_OBS.ON_THIS_MOUNTAIN_SIDE',
@@ -69,9 +103,6 @@ export class AddOrEditDangerObsModalPage implements OnInit {
           'REGISTRATION.DANGER_OBS.FOR_MUNICIPAL',
           'REGISTRATION.DANGER_OBS.FOR_REGION'
         ];
-      }
-      default:
-        return [];
     }
   }
 }
