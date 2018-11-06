@@ -37,16 +37,14 @@
       <ion-label color="danger" position="stacked" text-uppercase>{{
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME' | translate }}</ion-label>
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
-        cancelText="{{'DIALOGS.CANCEL' | translate}}" (ionChange)="updateUi()" display-format="D. MMM, YYYY HH:mm"
-        [(ngModel)]="registration.LandSlideObs.DtLandSlideTime">
+        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.LandSlideObs.DtLandSlideTime">
       </ion-datetime>
     </ion-item>
     <ion-item>
       <ion-label color="danger" position="stacked" text-uppercase>{{
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME_END' | translate }}</ion-label>
-      <ion-datetime color="medium" (ionChange)="updateUi()" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
-        doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm"
-        [(ngModel)]="registration.LandSlideObs.DtLandSlideTimeEnd">
+      <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
+        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.LandSlideObs.DtLandSlideTimeEnd">
       </ion-datetime>
     </ion-item>
     <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_TYPE" kdvKey="Dirt_LandSlideKDV" [(value)]="registration.LandSlideObs.LandSlideTID"></app-kdv-dropdown>

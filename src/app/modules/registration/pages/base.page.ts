@@ -28,17 +28,15 @@ export abstract class BasePage implements OnInit, OnDestroy {
         this.subscription = this.basePageService.RegistrationService
             .getSavedRegistrationByIdObservable(this.activatedRoute.snapshot.params['id']).subscribe((val) => {
                 if (val) {
-                    this.registration = val;
-                    if (this.registrationTid) {
-                        this.basePageService.createDefaultProps(this.registration, this.registrationTid);
-                    }
-                    if (this.onInit) {
-                        Promise.resolve(this.onInit()).then(() => {
-                            this.basePageService.updateUi();
-                        });
-                    } else {
-                        this.basePageService.updateUi();
-                    }
+                    this.basePageService.Zone.run(async () => {
+                        this.registration = val;
+                        if (this.registrationTid) {
+                            this.basePageService.createDefaultProps(this.registration, this.registrationTid);
+                        }
+                        if (this.onInit) {
+                            await Promise.resolve(this.onInit());
+                        }
+                    });
                 }
             });
     }
@@ -72,10 +70,6 @@ export abstract class BasePage implements OnInit, OnDestroy {
 
     isEmpty() {
         return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid);
-    }
-
-    updateUi() {
-        this.basePageService.updateUi();
     }
 
     applyRegId(url: string) {

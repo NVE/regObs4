@@ -23,7 +23,7 @@
         <h3>{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <app-text-comment (valueChange)="updateUi()" [(value)]="registration.IceCoverObs.Comment" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
+    <app-text-comment [(value)]="registration.IceCoverObs.Comment" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>

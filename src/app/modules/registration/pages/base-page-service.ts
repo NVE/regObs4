@@ -1,7 +1,6 @@
-import { Injectable, ApplicationRef } from '@angular/core';
+import { Injectable, ApplicationRef, NgZone } from '@angular/core';
 import { RegistrationTid } from '../models/registrationTid.enum';
 import { RegistrationService } from '../services/registration.service';
-import { ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { IRegistration } from '../models/registration.model';
@@ -10,6 +9,10 @@ import { IRegistration } from '../models/registration.model';
     providedIn: 'root'
 })
 export class BasePageService {
+
+    get Zone() {
+        return this.ngZone;
+    }
 
     get RegistrationService() {
         return this.registrationService;
@@ -25,7 +28,7 @@ export class BasePageService {
 
     constructor(
         private registrationService: RegistrationService,
-        private applicationRef: ApplicationRef,
+        private ngZone: NgZone,
         private alertController: AlertController,
         private translateService: TranslateService) {
     }
@@ -54,19 +57,16 @@ export class BasePageService {
         return reset;
     }
 
-    updateUi() {
-        return this.applicationRef.tick();
-    }
-
     async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
-        if (registrationTid) {
-            registration[this.registrationService.getPropertyName(registrationTid)] = this.getDefaultValue(registrationTid);
-            this.resetImages(registration, registrationTid);
-        }
-        if (onReset) {
-            onReset();
-        }
-        this.applicationRef.tick();
+        this.ngZone.run(() => {
+            if (registrationTid) {
+                registration[this.registrationService.getPropertyName(registrationTid)] = this.getDefaultValue(registrationTid);
+                this.resetImages(registration, registrationTid);
+            }
+            if (onReset) {
+                onReset();
+            }
+        });
     }
 
     createDefaultProps(registration: IRegistration, registrationTid: RegistrationTid) {

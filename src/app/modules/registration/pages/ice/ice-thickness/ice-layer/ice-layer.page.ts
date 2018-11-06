@@ -14,7 +14,7 @@ export class IceLayerPage implements OnInit {
 
   layerCopy: IceThicknessLayerDto; // Using object copy so cancel does not change input object
 
-  constructor(private modalController: ModalController, private cdr: ChangeDetectorRef) { }
+  constructor(private modalController: ModalController) { }
 
   ngOnInit() {
     if (!this.iceThicknessLayer) {
@@ -23,7 +23,6 @@ export class IceLayerPage implements OnInit {
     } else {
       this.layerCopy = { ...this.iceThicknessLayer };
     }
-    this.cdr.detectChanges();
   }
 
   cancel() {
@@ -36,10 +35,6 @@ export class IceLayerPage implements OnInit {
 
   delete() {
     this.modalController.dismiss({ delete: true });
-  }
-
-  updateUi() {
-    this.cdr.detectChanges();
   }
 
 }
