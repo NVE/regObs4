@@ -16,7 +16,7 @@
       </ion-label>
     </ion-list-header>
     <ion-item (click)="addOrEdit(i)" *ngFor="let dangerObs of registration.DangerObs; let i = index">
-      <ion-label>{{ dangerObs.Comment }}</ion-label>
+      <ion-label>{{ getSummaryText(dangerObs) }}</ion-label>
     </ion-item>
     <ion-item (click)="addOrEdit()">
       <ion-icon color="dark" name="add-circle-outline" slot="start"></ion-icon>

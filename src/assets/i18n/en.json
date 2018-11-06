@@ -194,6 +194,8 @@
     },
     "RESEND": "Try to send again",
     "RESET": "Reset",
+    "SAVED_DESCRIPTION": "These will be synchronized when you have network connection.",
+    "SAVED_ON_PHONE": "Saved on phone",
     "SEND": "Submit",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Confirm damage location",

@@ -194,6 +194,8 @@
     },
     "RESEND": "Prøv å send på nytt",
     "RESET": "Nullstill denne siden",
+    "SAVED_DESCRIPTION": "Disse er under innsending blir synkronisert når man har nettverk.",
+    "SAVED_ON_PHONE": "Lagret på telefonen",
     "SEND": "Send inn",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bekreft skadepunkt",

@@ -187,24 +187,46 @@ export class RegistrationService {
   private async syncRegistration(registration: IRegistration, appMode: AppMode) {
     try {
       // throw new HttpErrorResponse({ error: Error('test'), status: 500 });
-      await this.postRegistration(appMode, registration);
+      const createRegistrationResult = await this.postRegistration(appMode, registration);
+      const newRegistration = await this.updateRegistrationById(createRegistrationResult.RegId, appMode);
       await this.deleteRegistrationById(appMode, registration.Id);
+      return newRegistration;
     } catch (ex) {
       if (ex instanceof HttpErrorResponse) {
         const httpError: HttpErrorResponse = ex;
         console.warn('Could not sync registration', registration, ex);
         if (httpError.status === 409) { // Duplicate, remove
           await this.deleteRegistrationById(appMode, registration.Id);
+          // Updating latest user registration since we don't have an ID for the duplicate
+          await this.updateLatestUserRegistrations();
+        } else if (httpError.status === 400) {
+          // Model error, something is not correct from app. Please review ModelState error!
+          console.error(ex); // TODO: Log exception if not 400 Bad request
+          registration.error = { status: httpError.status, message: this.getErrorsFromBadRequest(httpError) };
+          await this.saveRegistration(registration); // save error message
         } else {
-          registration.error = { status: httpError.status, message: httpError.message };
-          await this.saveRegistration(registration);
+          console.error(ex); // TODO: Log exception if not 400 Bad request
+          registration.error = { status: httpError.status, message: httpError.statusText };
+          await this.saveRegistration(registration); // save error message
         }
       } else {
+        // Another unknown error
         console.error(ex); // TODO: Log exception
         registration.error = { status: 500, message: ex.message || '' };
         await this.saveRegistration(registration);
       }
     }
+  }
+
+  private getErrorsFromBadRequest(httpError: HttpErrorResponse) {
+    const errors: Array<string> = [];
+    if (httpError && httpError.error && httpError.error.ModelState) {
+      Object.keys(httpError.error.ModelState).forEach((key) => {
+        const err: Array<string> = httpError.error.ModelState[key];
+        errors.push(...err);
+      });
+    }
+    return errors.join(', ');
   }
 
   deleteRegistrationById(appMode: AppMode, id: string) {
@@ -235,17 +257,37 @@ export class RegistrationService {
 
   private async postRegistration(appMode: AppMode, registration: RegobsApiModels.CreateRegistrationRequestDto) {
     this.registrationApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
-    const result = await this.registrationApiService.RegistrationInsert(registration).pipe(switchMap((resp) => {
-      return this.getRegistrationByIdFromApi(resp.RegId, appMode);
-    })).toPromise(); // TODO: Set timeout
-    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
-      .query('upsert', result).exec();
+    return this.registrationApiService.RegistrationInsert(registration).toPromise();
   }
 
-  private getRegistrationByIdFromApi(regId: number, appMode: AppMode) {
+  private async updateRegistrationById(regId: number, appMode: AppMode) {
+    const result = await this.getRegistrationByRegIdFromApi(regId, appMode).toPromise();
+    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
+      .query('upsert', result).exec();
+    return result;
+  }
+
+  private getRegistrationByRegIdFromApi(regId: number, appMode: AppMode) {
     this.searchApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
     return this.searchApiService.SearchAll({ RegId: regId }).pipe(map((result) =>
       result.Results[0]
+    ));
+  }
+
+  private async updateLatestUserRegistrations() {
+    const user = await this.loginService.getLoggedInUser();
+    if (user.isLoggedIn) {
+      const userSettings = await this.userSettingService.getUserSettings();
+      const result = await this.getLatestRegistrationsForUserFromApi(userSettings.appMode, user.user.Guid).toPromise();
+      await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode)
+        .loadJS(NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode), result);
+    }
+  }
+
+  private getLatestRegistrationsForUserFromApi(appMode: AppMode, userGuid: string) {
+    this.searchApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
+    return this.searchApiService.SearchAll({ ObserverGuid: userGuid, NumberOfRecords: 10 }).pipe(map((result) =>
+      result.Results
     ));
   }
 
