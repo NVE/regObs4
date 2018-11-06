@@ -35,10 +35,8 @@ export class OverviewPage implements OnInit, OnDestroy {
     private registrationService: RegistrationService,
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
-    private navController: NavController,
     private dateHelperService: DateHelperService,
     private emailComposer: EmailComposer,
-    private file: File,
     private translateService: TranslateService,
     private userGroupService: UserGroupService) {
   }
@@ -54,7 +52,9 @@ export class OverviewPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.userGroupSubscription.unsubscribe();
+    if (this.userGroupSubscription) {
+      this.userGroupSubscription.unsubscribe();
+    }
   }
 
   private getObservationGroupName() {

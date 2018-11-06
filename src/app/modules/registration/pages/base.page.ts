@@ -56,7 +56,8 @@ export abstract class BasePage implements OnInit, OnDestroy {
     async canLeave() {
         const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
         if (!this.isEmpty() && !valid) {
-            return this.basePageService.createOnLeaveAlert(this.registration, this.registrationTid, this.onReset);
+            return this.basePageService.createOnLeaveAlert(this.registration, this.registrationTid,
+                () => this.onReset ? this.onReset() : null);
         }
         return true;
     }
@@ -77,7 +78,7 @@ export abstract class BasePage implements OnInit, OnDestroy {
     }
 
     reset() {
-        return this.basePageService.reset(this.registration, this.registrationTid, this.onReset);
+        return this.basePageService.reset(this.registration, this.registrationTid, () => this.onReset ? this.onReset() : null);
     }
 
 }

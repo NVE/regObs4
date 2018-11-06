@@ -9,17 +9,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="registration">
   <ion-list>
     <ion-list-header padding text-uppercase>
       <ion-label>
         <h3>{{"REGISTRATION.GROUP.SUBTITLE" | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let group of groups" (click)="group.selected = !group.selected">
-      <ion-checkbox slot="start" [(ngModel)]="group.selected"></ion-checkbox>
-      <ion-label>{{group.group.Name}}</ion-label>
-    </ion-item>
+    <ion-radio-group [(ngModel)]="registration.ObserverGroupID">
+      <ion-item *ngFor="let group of groups" (click)="registration.ObserverGroupID = group.Id">
+        <ion-radio mode="md" slot="start" [value]="group.Id"></ion-radio>
+        <ion-label>{{group.Name}}</ion-label>
+      </ion-item>
+    </ion-radio-group>
   </ion-list>
 </ion-content>
-<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>
+<app-save-and-go-back-button [isEmpty]="this.isEmpty()" [registration]="registration" [registrationTid]="registrationTid"
+  (reset)="reset()"></app-save-and-go-back-button>

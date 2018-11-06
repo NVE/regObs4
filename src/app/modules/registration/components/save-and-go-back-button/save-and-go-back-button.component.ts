@@ -13,9 +13,14 @@ export class SaveAndGoBackButtonComponent implements OnInit {
   @Input() registration: IRegistration;
   @Input() registrationTid: RegistrationTid;
   @Output() reset = new EventEmitter();
+  @Input() isEmpty: boolean;
 
-  get isEmpty() {
-    return this.registrationService.isEmpty(this.registration, this.registrationTid);
+  get isEmptyRegistrationEmpty() {
+    if (this.isEmpty !== undefined) {
+      return this.isEmpty;
+    } else {
+      return this.registrationService.isEmpty(this.registration, this.registrationTid);
+    }
   }
 
   constructor(

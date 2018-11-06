@@ -15,24 +15,24 @@
         <h3>{{ 'REGISTRATION.WATER.DAMAGE.CAN_YOU_SEE_DAMAGE' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <ion-radio-group (ionChange)="onChange($event)">
-      <ion-item [ngClass]="{'selected': checked === true}" (click)="checkedChanged(true)">
+    <ion-radio-group [(ngModel)]="isChecked">
+      <ion-item [ngClass]="{'selected': checked === true}" (click)="isChecked = true">
         <ion-label>{{ 'DIALOGS.YES' | translate }}</ion-label>
-        <ion-radio mode="md" slot="start" [value]="true" [checked]="checked === true"></ion-radio>
+        <ion-radio mode="md" slot="start" [value]="true"></ion-radio>
       </ion-item>
-      <ion-item [ngClass]="{'selected': checked === false}" (click)="checkedChanged(false)">
+      <ion-item [ngClass]="{'selected': checked === false}" (click)="isChecked = false">
         <ion-label>{{ 'DIALOGS.NO' | translate }}</ion-label>
-        <ion-radio mode="md" slot="start" [value]="false" [checked]="checked === false"></ion-radio>
+        <ion-radio mode="md" slot="start" [value]="false"></ion-radio>
       </ion-item>
     </ion-radio-group>
-    <ng-container *ngIf="checked">
+    <ng-container *ngIf="isChecked && this.damageTypes">
       <ion-list-header text-uppercase>
         <ion-label no-margin>
           <h3>{{ 'REGISTRATION.WATER.DAMAGE.WHAT_IS_DAMAGED' | translate }}</h3>
         </ion-label>
       </ion-list-header>
       <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration" [damageTypeId]="damageType.Id"
-        [damageTypeName]="damageType.Name">
+        [damageTypeName]="damageType.Name" [registrationTid]="registrationTid">
       </app-damage-obs>
     </ng-container>
   </ion-list>

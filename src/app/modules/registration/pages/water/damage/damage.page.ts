@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import { RadioGroup } from '@ionic/angular';
@@ -19,13 +19,33 @@ const NO_DAMAGE_VISIBLE = 7;
 export class DamagePage extends BasePage {
   damageTypes: KdvElement[];
   checked: boolean;
-  onChangeFunc: (bool) => void;
+
+  get isChecked() {
+    if (!this.registration || this.registration.DamageObs.length === 0) {
+      return this.checked;
+    }
+    return this.registration && this.registration.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE).length > 0;
+  }
+
+  set isChecked(val: boolean) {
+    this.checked = val;
+    if (val === false) {
+      this.registration.DamageObs = [
+        {
+          DamageTypeTID: NO_DAMAGE_VISIBLE
+        }
+      ];
+    } else {
+      this.registration.DamageObs = this.registration.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE);
+    }
+  }
 
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
     private kdvService: KdvService,
     private userSettingService: UserSettingService,
+    private ngZone: NgZone,
   ) {
     super(RegistrationTid.DamageObs, basePageService, activatedRoute);
   }
@@ -35,39 +55,5 @@ export class DamagePage extends BasePage {
     this.damageTypes = (await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode,
       `${GeoHazard[userSetting.currentGeoHazard]}_DamageTypeKDV`))
       .filter((x) => x.Id !== NO_DAMAGE_VISIBLE);
-    if (this.registration.DamageObs.length > 0) {
-      this.checked = this.registration.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE).length > 0;
-    }
-    this.onChangeFunc = this.checkedChanged;
-    // NOTE: There is a bug in current framework so I cannot bind radio group
-    // with ngModel. When that is fixed, the onChange logic can be removed
-    // and ngModel binding can be used instead...
-  }
-
-  onReset() {
-    this.checked = undefined;
-  }
-
-  onBeforeLeave() {
-  }
-
-  onChange(event: Event) {
-    const radioGroup: RadioGroup = <any>event.target;
-    if (this.onChangeFunc) {
-      this.onChangeFunc(radioGroup.value);
-    }
-  }
-
-  checkedChanged(value: boolean) {
-    this.checked = value;
-    if (value) {
-      this.registration.DamageObs = this.registration.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE);
-    } else {
-      this.registration.DamageObs = [
-        {
-          DamageTypeTID: NO_DAMAGE_VISIBLE
-        }
-      ];
-    }
   }
 }

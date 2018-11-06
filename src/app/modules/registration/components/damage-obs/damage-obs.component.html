@@ -1,8 +1,8 @@
-<ion-item (click)="toggleDamageType()">
-  <ion-checkbox mode="md" slot="start" [(ngModel)]="isSelected"></ion-checkbox>
+<ion-item>
+  <ion-checkbox mode="md" slot="start" [(ngModel)]="isSelected" (ionChange)="onCheckedChange()"></ion-checkbox>
   <ion-label>{{ damageTypeName }}</ion-label>
 </ion-item>
-<ion-list lines="none" *ngIf="isSelected">
+<ion-list lines="none" *ngIf="isSelected && damageObs">
   <ion-item class="no-min-height">
     <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.WATER.DAMAGE.WHERE_IS_DAMAGE_LOCATION'
       | translate }}</ion-label>
