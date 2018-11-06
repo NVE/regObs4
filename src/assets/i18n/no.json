@@ -104,6 +104,8 @@
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
     "DANGER_OBS": {
       "AREA": "Område",
+      "COMMENT": "Kommentar",
+      "COMMENT_PLACEHOLDER": "Her kan du gi ytterligere beskrivelse av faretegnet",
       "FOR_MUNICIPAL": "For kommunen",
       "FOR_REGION": "Fylket/varslingsregion",
       "GENERAL_ON_MOUNTAIN": "Generelt på fjellet",

@@ -104,6 +104,8 @@
     "BACK_TO_OBSERVATION": "Back to observation",
     "DANGER_OBS": {
       "AREA": "Area",
+      "COMMENT": "Comment",
+      "COMMENT_PLACEHOLDER": "Provide description of the danger sign",
       "FOR_MUNICIPAL": "For the municipality",
       "FOR_REGION": "County / Warning region",
       "GENERAL_ON_MOUNTAIN": "Generally in the mountains",

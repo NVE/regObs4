@@ -22,6 +22,12 @@
       <ion-icon color="dark" name="add-circle-outline" slot="start"></ion-icon>
       <ion-label>{{ 'REGISTRATION.DANGER_OBS.NEW_DANGER_OBS' | translate }}</ion-label>
     </ion-item>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
   </ion-list>
   <app-navigation-buttons previousUrl="registration/water/water-level" previousText="REGISTRATION.WATER.WATER_LEVEL.TITLE"
     nextUrl="registration/general-comment" nextText="REGISTRATION.GENERAL_COMMENT.TITLE"></app-navigation-buttons>

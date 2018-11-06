@@ -33,7 +33,7 @@
           {{ area }}</ion-select-option>
       </ion-select>
     </ion-item>
-    <app-text-comment [(value)]="comment" title="REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE" rows="2" placeholder="REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE"></app-text-comment>
+    <app-text-comment [(value)]="comment" title="REGISTRATION.DANGER_OBS.COMMENT" rows="2" placeholder="REGISTRATION.DANGER_OBS.COMMENT_PLACEHOLDER"></app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="dangerObs">
   </app-modal-save-or-delete-buttons>
