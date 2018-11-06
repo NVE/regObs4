@@ -225,6 +225,8 @@ export class RegistrationService {
         const err: Array<string> = httpError.error.ModelState[key];
         errors.push(...err);
       });
+    } else if (httpError && httpError.error && httpError.error.ExceptionMessage) {
+      errors.push(httpError.error.ExceptionMessage);
     }
     return errors.join(', ');
   }

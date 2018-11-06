@@ -178,6 +178,12 @@
     },
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
+    "INCIDENT": {
+      "ACTIVITY": "Aktivitet",
+      "COMMENT_PLACEHOLDER": "Hvorfor skjedde det? Hvorfor gikk det forhåpentligvis bra? Kunne situasjonen vært unngått?",
+      "DAMAGE_EXTENT": "Skadeomfang",
+      "TITLE": "Ulykke / hendelse"
+    },
     "IN_CM": "I centimeter",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt",

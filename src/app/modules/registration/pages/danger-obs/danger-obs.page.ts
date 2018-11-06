@@ -79,7 +79,7 @@ export class DangerObsPage extends BasePage {
 
   getSummaryText(dangerObs: DangerObsDto) {
     const text = [];
-    if (dangerObs.DangerSignTID % 100 !== 0) {
+    if (dangerObs.DangerSignTID % 100 !== 0 && this.dangerSignKdv) {
       const kdvElement = this.dangerSignKdv.find((x) => x.Id === dangerObs.DangerSignTID);
       if (kdvElement) {
         text.push(kdvElement.Name);

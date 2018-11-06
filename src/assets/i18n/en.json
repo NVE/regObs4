@@ -178,6 +178,12 @@
     },
     "IMAGE_DESCRIPTION": "Image description",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
+    "INCIDENT": {
+      "ACTIVITY": "Activity",
+      "COMMENT_PLACEHOLDER": "Why did it happen? Could the situation be avoided?",
+      "DAMAGE_EXTENT": "Damage extent",
+      "TITLE": "Accident / Incident"
+    },
     "IN_CM": "In centimeter",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location",

@@ -41,6 +41,8 @@ const routes: Routes = [
         path: 'registration/danger-obs/:id',
         loadChildren: './pages/danger-obs/danger-obs.module#DangerObsPageModule'
     },
+    { path: 'registration/incident/:id', loadChildren: './pages/incident/incident.module#IncidentPageModule' },
+
 ];
 
 @NgModule({

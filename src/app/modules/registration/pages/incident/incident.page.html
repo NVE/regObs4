@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="registration"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.INCIDENT.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="registration">
+  <ion-list lines="full">
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-text-comment [(value)]="registration.Incident.IncidentText" placeholder="{{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
+    <app-kdv-dropdown title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="{{ geoHazardName }}_ActivityInfluencedKDV"
+      [(value)]="registration.Incident.ActivityInfluencedTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV" [(value)]="registration.Incident.DamageExtentTID"></app-kdv-dropdown>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-add-web-url-item [(weburls)]="registration.Incident.IncidentURLs"></app-add-web-url-item>
+  </ion-list>
+</ion-content>
+<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

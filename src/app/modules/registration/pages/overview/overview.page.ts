@@ -190,6 +190,18 @@ export class OverviewPage implements OnInit, OnDestroy {
         this.registration.IceThickness ? this.registration.IceThickness.Comment : '',
         RegistrationTid.IceThickness
       ),
+      this.getRegItem(
+        'registration/danger-obs/' + this.registration.Id,
+        'REGISTRATION.DANGER_OBS.TITLE',
+        '',
+        RegistrationTid.DangerObs
+      ),
+      this.getRegItem(
+        'registration/incident/' + this.registration.Id,
+        'REGISTRATION.INCIDENT.TITLE',
+        '',
+        RegistrationTid.Incident
+      ),
     ];
   }
 
