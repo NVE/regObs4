@@ -31,11 +31,18 @@ export class ObsLocationPage implements OnInit {
       this.registration = await this.registrationService.getSavedRegistrationById(this.activatedRoute.snapshot.params['id']);
     }
     if (this.hasLocation(this.registration)) {
+      const locationMarkerIcon = L.icon({
+        iconUrl: '/assets/icon/map/GPS_stop.svg',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        shadowUrl: 'leaflet/marker-shadow.png',
+        shadowSize: [41, 41],
+      });
       this.locationMarker = L.marker(
         {
           lat: this.registration.ObsLocation.Latitude,
           lng: this.registration.ObsLocation.Longitude
-        }
+        }, { icon: locationMarkerIcon }
       );
       if (this.registration.ObsLocation.ObsLocationID) {
         this.selectedLocation = {

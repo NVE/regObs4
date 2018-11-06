@@ -47,7 +47,21 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   isLoading = false;
   private mapViewObservableSubscription: Subscription;
   private locationsSubscription: Subscription;
-  private locationGroup = L.markerClusterGroup();
+  private locationGroup = L.markerClusterGroup({
+    spiderfyOnMaxZoom: false,
+    showCoverageOnHover: false,
+    maxClusterRadius: 30,
+    iconCreateFunction: (cluster) => {
+      return L.icon({
+        iconUrl: '/assets/icon/map/prev-used-place-cluster.svg',
+        iconSize: [45, 41],
+        iconAnchor: [22, 41],
+        shadowUrl: 'leaflet/marker-shadow.png',
+        shadowSize: [45, 41],
+        className: 'cluster-size-' + cluster.getChildCount()
+      });
+    },
+  });
 
   constructor(
     private mapService: MapService,
@@ -68,10 +82,21 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       shadowSize: [41, 41],
     });
     L.Marker.prototype.options.icon = defaultIcon;
+
+    const previousUsedPlaceIcon = L.icon({
+      iconUrl: '/assets/icon/map/prev-used-place.svg',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      shadowUrl: 'leaflet/marker-shadow.png',
+      shadowSize: [41, 41],
+    });
+
     const locationMarkerIcon = L.icon({
       iconUrl: this.locationMarkerIconUrl,
       iconSize: [25, 41],
       iconAnchor: [12, 41],
+      shadowUrl: 'leaflet/marker-shadow.png',
+      shadowSize: [41, 41],
     });
     if (!this.locationMarker) {
       if (this.fromMarker) {
@@ -111,7 +136,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         .subscribe((locations) => {
           this.locationGroup.clearLayers();
           for (const location of locations) {
-            const marker = L.marker(L.latLng(location.LatLngObject.Latitude, location.LatLngObject.Longitude))
+            const marker = L.marker(L.latLng(location.LatLngObject.Latitude, location.LatLngObject.Longitude),
+              { icon: previousUsedPlaceIcon })
               .addTo(this.locationGroup);
             marker.on('click', () => this.setToPrevouslyUsedLocation(location));
           }

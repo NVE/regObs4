@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="28px" viewBox="0 0 30 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>981C3C2F-F7D3-464F-828C-99DD98279C07</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="Ikoner" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="10.1.1-Ikoner-samleark" transform="translate(-180.000000, -241.000000)">
+            <g id="Page"></g>
+            <g id="Tidligere-obs-punkter" transform="translate(93.000000, 241.000000)">
+                <g id="lokasjonsmarkør/observasjonspunkt/cluster2" transform="translate(87.000000, 0.000000)">
+                    <rect id="Background" x="0" y="0" width="30" height="28"></rect>
+                    <g>
+                        <g id="location/pin" transform="translate(18.000000, 4.000000)">
+                            <rect id="Background" x="0" y="0" width="12" height="18.8571429"></rect>
+                            <path d="M6,17.9200809 C9.66552912,12.0708657 11.5,8.08509605 11.5,6.06122449 C11.5,2.98871509 9.03642344,0.5 6,0.5 C2.96357656,0.5 0.5,2.98871509 0.5,6.06122449 C0.5,8.08509605 2.33447088,12.0708657 6,17.9200809 Z" id="Oval" stroke="#326680" fill="#468EB2" fill-rule="nonzero"></path>
+                        </g>
+                        <g id="location/pin" transform="translate(0.000000, 4.000000)">
+                            <rect id="Background" x="0" y="0" width="12" height="18.8571429"></rect>
+                            <path d="M6,17.9200809 C9.66552912,12.0708657 11.5,8.08509605 11.5,6.06122449 C11.5,2.98871509 9.03642344,0.5 6,0.5 C2.96357656,0.5 0.5,2.98871509 0.5,6.06122449 C0.5,8.08509605 2.33447088,12.0708657 6,17.9200809 Z" id="Oval" stroke="#326680" fill="#468EB2" fill-rule="nonzero"></path>
+                        </g>
+                        <g id="location/pin" transform="translate(6.000000, 0.000000)">
+                            <rect id="Background" x="0" y="0" width="18" height="28"></rect>
+                            <path d="M9,27.0711862 C14.6654126,18.1632591 17.5,12.1049889 17.5,9 C17.5,4.30557963 13.6944204,0.5 9,0.5 C4.30557963,0.5 0.5,4.30557963 0.5,9 C0.5,12.1049889 3.33458739,18.1632591 9,27.0711862 Z" id="Oval" stroke="#326680" fill="#468EB2" fill-rule="nonzero"></path>
+                        </g>
+                        <text id="99" font-family="SourceSansPro-Regular, Source Sans Pro" font-size="7" font-weight="normal" fill="#FFFFFF">
+                            <tspan x="12.021" y="18">99</tspan>
+                        </text>
+                        <g id="icon/12/pin" transform="translate(11.000000, 3.000000)">
+                            <rect id="Background" x="0" y="0" width="8" height="8"></rect>
+                            <path d="M3.43013501,4.2509755 C2.60319196,4.00560506 2,3.23991071 2,2.33333333 C2,1.22876383 2.8954305,0.333333333 4,0.333333333 C5.1045695,0.333333333 6,1.22876383 6,2.33333333 C6,3.23991071 5.39680804,4.00560506 4.56986499,4.2509755 L4.33333333,7.30769231 C4.33333333,7.50594837 4.18409492,7.66666667 4,7.66666667 C3.81590508,7.66666667 3.66666667,7.50594837 3.66666667,7.30769231 L3.43013501,4.2509755 Z" id="Combined-Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+        <g id="Page"></g>
+    </g>
+</svg>
