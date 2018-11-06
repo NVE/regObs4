@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="registration"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list lines="full" *ngIf="registration && registration.AvalancheObs">
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item class="no-border no-min-height">
+      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_OBS.POSITION' |
+        translate}}</ion-label>
+    </ion-item>
+    <ion-item detail="true" (click)="setAvalanchePosition()">
+      <ion-icon color="primary" name="pin" slot="start"></ion-icon>
+      <ion-label *ngIf="!registration.AvalancheObs.StartLat">{{
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.SET_LANDSLIDE_POSITION' | translate }} {{
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.IN_MAP' | translate }}</ion-label>
+      <ion-label text-wrap *ngIf="registration.AvalancheObs.StartLat">{{ registration.AvalancheObs.StartLat |
+        number:'0.3'
+        }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+        {{ registration.AvalancheObs.StartLong | number:'0.3'
+        }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{ registration.AvalancheObs.StopLat | number:'0.3'
+        }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+        {{ registration.AvalancheObs.StopLong | number:'0.3'
+        }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label [color]="!registration.AvalancheObs.DtAvalancheTime ? 'danger' : 'medium'" position="stacked"
+        text-uppercase>{{
+        'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}*</ion-label>
+      <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
+        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.AvalancheObs.DtAvalancheTime">
+      </ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION'
+        | translate}}</ion-label>
+      <ion-select mode="ios" [(ngModel)]="registration.AvalancheObs.ValidExposition" interface="action-sheet">
+        <ng-container *ngFor="let expo of expoArray">
+          <ion-select-option [value]="expo.val">{{
+            expo.name }}</ion-select-option>
+        </ng-container>
+      </ion-select>
+    </ion-item>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE" kdvKey="Snow_DestructiveSizeKDV"
+      [(value)]="registration.AvalancheObs.DestructiveSizeTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TYPE" kdvKey="Snow_AvalancheKDV" [(value)]="registration.AvalancheObs.AvalancheTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TRIGGER" kdvKey="Snow_AvalancheTriggerKDV"
+      [(value)]="registration.AvalancheObs.AvalancheTriggerTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.TERRAIN_START_ZONE" kdvKey="Snow_TerrainStartZoneKDV"
+      [(value)]="registration.AvalancheObs.TerrainStartZoneTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVAL_CAUSE" kdvKey="Snow_AvalCauseKDV" [(value)]="registration.AvalancheObs.AvalCauseTID"></app-kdv-dropdown>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_HEIGTH'
+        | translate}}</ion-label>
+      <ion-input type="number" [min]="0" [max]="50000" [(ngModel)]="registration.AvalancheObs.FractureHeight"
+        placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_WIDTH'
+        | translate}}</ion-label>
+      <ion-input type="number" [min]="0" [max]="50000" [(ngModel)]="registration.AvalancheObs.FractureWidth"
+        placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+      </ion-input>
+    </ion-item>
+    <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [(value)]="registration.AvalancheObs.Trajectory"
+      placeholder="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME"></app-text-comment>
+    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.AvalancheObs.Comment" placeholder="REGISTRATION.DANGER_OBS.COMMENT"></app-text-comment>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+  </ion-list>
+  <app-navigation-buttons [previousUrl]="applyRegId('registration/danger-obs')" previousText="REGISTRATION.DANGER_OBS.TITLE"
+    [nextUrl]="applyRegId('registration/')" nextText="Skredaktivitet"></app-navigation-buttons>
+</ion-content>
+<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

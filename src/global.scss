@@ -183,3 +183,11 @@ app-geo-icon {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.no-border {
+    --border-width: 0 0 0 0;
+}
+
+.no-min-height {
+    --min-height: 0px;
+}

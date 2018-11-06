@@ -206,12 +206,20 @@ export class OverviewPage implements OnInit, OnDestroy {
   }
 
   private getSnowItems() {
-    return [this.getRegItem(
-      'registration/danger-obs/' + this.registration.Id,
-      'REGISTRATION.DANGER_OBS.TITLE',
-      '',
-      RegistrationTid.DangerObs
-    )];
+    return [
+      this.getRegItem(
+        'registration/danger-obs/' + this.registration.Id,
+        'REGISTRATION.DANGER_OBS.TITLE',
+        '',
+        RegistrationTid.DangerObs
+      ),
+      this.getRegItem(
+        'registration/snow/avalanche-obs/' + this.registration.Id,
+        'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE',
+        '',
+        RegistrationTid.AvalancheObs
+      )
+    ];
   }
 
   ionViewWillLeave() {

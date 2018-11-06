@@ -216,6 +216,22 @@
       "NOW": "Now",
       "TITLE": "Time"
     },
+    "SNOW": {
+      "AVALANCHE_OBS": {
+        "AVALANCHE_TRIGGER": "Avalanche trigger",
+        "AVALANCHE_TYPE": "Avalanche type",
+        "AVAL_CAUSE": "Weak layer",
+        "DESTRUCTIVE_SIZE": "Size",
+        "FRACTURE_HEIGTH": "Fracture height (cm)",
+        "FRACTURE_WIDTH": "Fracture width",
+        "POSITION": "Avalanche position",
+        "TERRAIN_START_ZONE": "Tarrain type in the loose snow area",
+        "TIME": "Time when avalance struck",
+        "TITLE": "Avalanche observation",
+        "TRAJECTORY_NAME": "Trajectory",
+        "VALID_EXPOSITION": "Exposition"
+      }
+    },
     "WATER": {
       "DAMAGE": {
         "ADD_DAMAGE_LOCATION": "Add damage location",

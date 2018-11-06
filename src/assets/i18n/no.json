@@ -216,6 +216,22 @@
       "NOW": "Nå",
       "TITLE": "Tidspunkt"
     },
+    "SNOW": {
+      "AVALANCHE_OBS": {
+        "AVALANCHE_TRIGGER": "Skredutløser",
+        "AVALANCHE_TYPE": "Skredtype",
+        "AVAL_CAUSE": "Svakt lag",
+        "DESTRUCTIVE_SIZE": "Størrelse",
+        "FRACTURE_HEIGTH": "Bruddhøyde (cm)",
+        "FRACTURE_WIDTH": "Bruddbredde",
+        "POSITION": "Skredposisjon",
+        "TERRAIN_START_ZONE": "Terrengtype i løsneområdet",
+        "TIME": "Tid da skredet gikk",
+        "TITLE": "Skredhendelse",
+        "TRAJECTORY_NAME": "Skredbanenavn",
+        "VALID_EXPOSITION": "Eksposisjon"
+      }
+    },
     "WATER": {
       "DAMAGE": {
         "ADD_DAMAGE_LOCATION": "Legg til skadepunkt her",
