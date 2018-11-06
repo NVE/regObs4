@@ -4,7 +4,6 @@ import { IRegistration } from '../../models/registration.model';
 import { RegistrationService } from '../../services/registration.service';
 import { NavController } from '@ionic/angular';
 import { ObsLocationDto, ObsLocationsResponseDtoV2 } from '../../../regobs-api/models';
-import { BasePage } from '../base.page';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -46,6 +45,7 @@ export class ObsLocationPage implements OnInit {
       }
     }
     this.isLoaded = true;
+    this.changeDetectorRef.detectChanges();
   }
 
   private hasLocation(reg: IRegistration) {

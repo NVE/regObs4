@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
-import { RegistrationService } from '../../services/registration.service';
+import { Component } from '@angular/core';
 import { RegistrationTid } from '../../models/registrationTid.enum';
 import { BasePage } from '../base.page';
+import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -11,10 +11,9 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class GeneralCommentPage extends BasePage {
   constructor(
-    registrationService: RegistrationService,
-    actvatedRoute: ActivatedRoute,
-    changeDetectorRef: ChangeDetectorRef
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute,
   ) {
-    super(RegistrationTid.GeneralObservation, registrationService, actvatedRoute, changeDetectorRef);
+    super(RegistrationTid.GeneralObservation, basePageService, activatedRoute);
   }
 }

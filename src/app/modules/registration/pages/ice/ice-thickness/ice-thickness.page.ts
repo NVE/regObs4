@@ -1,11 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
-import { RegistrationService } from '../../../services/registration.service';
-import { ActivatedRoute } from '@angular/router';
+import { Component, NgZone } from '@angular/core';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import { BasePage } from '../../base.page';
 import { ModalController } from '@ionic/angular';
 import { IceLayerPage } from './ice-layer/ice-layer.page';
 import { IceThicknessLayerDto } from '../../../../regobs-api/models';
+import { BasePageService } from '../../base-page-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-ice-thickness',
@@ -18,13 +18,12 @@ export class IceThicknessPage extends BasePage {
   maxSnowDepth = 10000;
 
   constructor(
-    registrationService: RegistrationService,
-    actvatedRoute: ActivatedRoute,
-    changeDetectorRef: ChangeDetectorRef,
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute,
     private modalController: ModalController,
     private ngZone: NgZone,
   ) {
-    super(RegistrationTid.IceThickness, registrationService, actvatedRoute, changeDetectorRef);
+    super(RegistrationTid.IceThickness, basePageService, activatedRoute);
   }
 
   onInit() {

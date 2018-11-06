@@ -1,11 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, ApplicationRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { RegistrationService } from '../../../services/registration.service';
-import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import * as L from 'leaflet';
+import { BasePageService } from '../../base-page-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-landslide-obs',
@@ -15,12 +15,11 @@ import * as L from 'leaflet';
 export class LandslideObsPage extends BasePage {
 
   constructor(
-    registrationService: RegistrationService,
-    actvatedRoute: ActivatedRoute,
-    changeDetectorRef: ChangeDetectorRef,
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute,
     private modalController: ModalController,
   ) {
-    super(RegistrationTid.LandSlideObs, registrationService, actvatedRoute, changeDetectorRef);
+    super(RegistrationTid.LandSlideObs, basePageService, activatedRoute);
   }
 
   onInit() {
@@ -29,12 +28,11 @@ export class LandslideObsPage extends BasePage {
     }
   }
 
-  onReset() {
-    this.changeDetectorRef.detectChanges();
-  }
-
-  updateUi() {
-    this.changeDetectorRef.detectChanges();
+  isValid() {
+    return this.registration
+      && this.registration.LandSlideObs
+      && !!this.registration.LandSlideObs.DtLandSlideTime
+      && !!this.registration.LandSlideObs.DtLandSlideTimeEnd;
   }
 
   async setLandslidePosition() {

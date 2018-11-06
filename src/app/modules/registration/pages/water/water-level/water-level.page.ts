@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { RegistrationService } from '../../../services/registration.service';
 import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
+import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -13,11 +13,10 @@ import { ActivatedRoute } from '@angular/router';
 export class WaterLevelPage extends BasePage {
 
   constructor(
-    registrationService: RegistrationService,
-    actvatedRoute: ActivatedRoute,
-    changeDetectorRef: ChangeDetectorRef,
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute,
   ) {
-    super(RegistrationTid.WaterLevel2, registrationService, actvatedRoute, changeDetectorRef);
+    super(RegistrationTid.WaterLevel2, basePageService, activatedRoute);
   }
 
   onInit() {

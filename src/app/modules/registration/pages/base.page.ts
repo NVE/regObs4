@@ -1,59 +1,46 @@
-import { OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { RegistrationService } from '../services/registration.service';
-import { IRegistration } from '../models/registration.model';
+import { OnInit, OnDestroy } from '@angular/core';
 import { RegistrationTid } from '../models/registrationTid.enum';
 import { Subscription } from 'rxjs';
+import { BasePageService } from './base-page-service';
+import { IRegistration } from '../models/registration.model';
 import { ActivatedRoute } from '@angular/router';
 
 export abstract class BasePage implements OnInit, OnDestroy {
 
     registration: IRegistration;
-    registrationService: RegistrationService;
+    basePageService: BasePageService;
     registrationTid: RegistrationTid;
-    changeDetectorRef: ChangeDetectorRef;
     activatedRoute: ActivatedRoute;
 
     private subscription: Subscription;
 
     constructor(
         registrationTid: RegistrationTid,
-        registrationService: RegistrationService,
+        basePageService: BasePageService,
         activatedRoute: ActivatedRoute,
-        changeDetectorRef: ChangeDetectorRef,
     ) {
-        this.registrationTid = registrationTid;
-        this.registrationService = registrationService;
-        this.changeDetectorRef = changeDetectorRef;
+        this.basePageService = basePageService;
         this.activatedRoute = activatedRoute;
+        this.registrationTid = registrationTid;
     }
 
     async ngOnInit(): Promise<void> {
-        this.subscription = this.registrationService
+        this.subscription = this.basePageService.RegistrationService
             .getSavedRegistrationByIdObservable(this.activatedRoute.snapshot.params['id']).subscribe((val) => {
                 if (val) {
                     this.registration = val;
-                    this.createDefaultProps();
+                    if (this.registrationTid) {
+                        this.basePageService.createDefaultProps(this.registration, this.registrationTid);
+                    }
                     if (this.onInit) {
                         Promise.resolve(this.onInit()).then(() => {
-                            this.changeDetectorRef.detectChanges();
+                            this.basePageService.updateUi();
                         });
                     } else {
-                        this.changeDetectorRef.detectChanges();
+                        this.basePageService.updateUi();
                     }
                 }
             });
-    }
-
-    private createDefaultProps() {
-        if (this.registrationTid) {
-            const propName = this.getPropertyName();
-            if (!this.registration[propName]) { // Init to new object if null
-                this.registration[propName] = this.getDefaultValue();
-            }
-            if (!this.registration.Picture) {
-                this.registration.Picture = [];
-            }
-        }
     }
 
     ngOnDestroy() {
@@ -66,7 +53,13 @@ export abstract class BasePage implements OnInit, OnDestroy {
 
     onReset?(): void;
 
-    hasChanged() {
+    isValid?(): boolean | Promise<boolean>;
+
+    async canLeave() {
+        const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
+        if (!this.isEmpty() && !valid) {
+            return this.basePageService.createOnLeaveAlert(this.registration, this.registrationTid, this.onReset);
+        }
         return true;
     }
 
@@ -74,66 +67,23 @@ export abstract class BasePage implements OnInit, OnDestroy {
         if (this.onBeforeLeave) {
             await Promise.resolve(this.onBeforeLeave());
         }
-        this.registrationService.saveRegistration(this.registration);
-    }
-
-    async reset() {
-        if (this.registrationTid) {
-            this.registration[this.getPropertyName()] = this.getDefaultValue();
-            this.resetImages();
-        }
-        if (this.onReset) {
-            this.onReset();
-        }
-        this.changeDetectorRef.detectChanges();
-    }
-
-    getRegistationProperty() {
-        return this.registrationService.getRegistationProperty(this.registration, this.registrationTid);
-    }
-
-    getPropertyName() {
-        return this.registrationService.getPropertyName(this.registrationTid);
-    }
-
-    getType() {
-        return this.registrationService.getType(this.registrationTid);
-    }
-
-    getDefaultValue() {
-        if (this.getType() === 'array') {
-            return [];
-        } else {
-            return {};
-        }
-    }
-
-    resetImages() {
-        if (this.registrationTid && this.registration.Picture && this.registration.Picture.length > 0) {
-            this.registration.Picture = this.registration.Picture.filter((p) => p.RegistrationTID !== this.registrationTid);
-        }
-    }
-
-    getImages() {
-        return this.registrationService.getImages(this.registration, this.registrationTid);
-    }
-
-    hasImages() {
-        return this.getImages().length > 0;
+        this.basePageService.RegistrationService.saveRegistration(this.registration);
     }
 
     isEmpty() {
-        const isEmpty = this.registrationService.isEmpty(this.registration, this.registrationTid);
-        console.log('[INFO][BasePage] isEmpty: ' + isEmpty);
-        return isEmpty;
+        return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid);
     }
 
     updateUi() {
-        this.changeDetectorRef.detectChanges();
+        this.basePageService.updateUi();
     }
 
     applyRegId(url: string) {
         return `${url}/${this.registration.Id}`;
+    }
+
+    reset() {
+        return this.basePageService.reset(this.registration, this.registrationTid, this.onReset);
     }
 
 }

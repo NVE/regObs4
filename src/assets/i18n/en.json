@@ -192,6 +192,7 @@
       "SHARE_WITH_GROUP": "Share observation with group",
       "TITLE": "Observation"
     },
+    "REQUIRED_FIELDS_MISSING": "Required fields are missing. Do you want to reset observation and go back?",
     "RESEND": "Try to send again",
     "RESET": "Reset",
     "SAVED_DESCRIPTION": "These will be synchronized when you have network connection.",

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { CanDeactivateRouteGuard } from './pages/can-deactivate-route.guard';
 
 const routes: Routes = [
     {
@@ -34,7 +35,7 @@ const routes: Routes = [
     },
     {
         path: 'registration/dirt/landslide-obs/:id',
-        loadChildren: './pages/dirt/landslide-obs/landslide-obs.module#LandslideObsPageModule'
+        loadChildren: './pages/dirt/landslide-obs/landslide-obs.module#LandslideObsPageModule',
     },
     {
         path: 'registration/danger-obs/:id',

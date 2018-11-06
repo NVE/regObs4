@@ -192,6 +192,7 @@
       "SHARE_WITH_GROUP": "Del observasjon med gruppe",
       "TITLE": "Observasjon"
     },
+    "REQUIRED_FIELDS_MISSING": "Obigatoriske felt mangler. Vil du nullstille observasjonen og gå tilbake?",
     "RESEND": "Prøv å send på nytt",
     "RESET": "Nullstill denne siden",
     "SAVED_DESCRIPTION": "Disse er under innsending blir synkronisert når man har nettverk.",

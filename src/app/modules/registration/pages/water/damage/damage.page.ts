@@ -1,12 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { RegistrationService } from '../../../services/registration.service';
 import { RadioGroup } from '@ionic/angular';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../../../../core/models/geo-hazard.enum';
-import { KdvElement, PictureRequestDto } from '../../../../regobs-api/models';
+import { KdvElement } from '../../../../regobs-api/models';
+import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 
 const NO_DAMAGE_VISIBLE = 7;
@@ -22,13 +22,12 @@ export class DamagePage extends BasePage {
   onChangeFunc: (bool) => void;
 
   constructor(
-    registrationService: RegistrationService,
-    actvatedRoute: ActivatedRoute,
-    changeDetectorRef: ChangeDetectorRef,
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute,
     private kdvService: KdvService,
     private userSettingService: UserSettingService,
   ) {
-    super(RegistrationTid.DamageObs, registrationService, actvatedRoute, changeDetectorRef);
+    super(RegistrationTid.DamageObs, basePageService, activatedRoute);
   }
 
   async onInit() {

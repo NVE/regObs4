@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import { BasePage } from '../../base.page';
-import { RegistrationService } from '../../../services/registration.service';
+import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -12,10 +12,9 @@ import { ActivatedRoute } from '@angular/router';
 export class IceCoverPage extends BasePage {
 
   constructor(
-    registrationService: RegistrationService,
-    actvatedRoute: ActivatedRoute,
-    changeDetectorRef: ChangeDetectorRef,
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute,
   ) {
-    super(RegistrationTid.IceCoverObs, registrationService, actvatedRoute, changeDetectorRef);
+    super(RegistrationTid.IceCoverObs, basePageService, activatedRoute);
   }
 }

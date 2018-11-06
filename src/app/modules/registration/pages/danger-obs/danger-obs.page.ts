@@ -1,6 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
-import { RegistrationService } from '../../services/registration.service';
-import { ActivatedRoute } from '@angular/router';
+import { Component, NgZone } from '@angular/core';
 import { RegistrationTid } from '../../models/registrationTid.enum';
 import { BasePage } from '../base.page';
 import { ModalController } from '@ionic/angular';
@@ -9,6 +7,8 @@ import { DangerObsDto, KdvElement } from '../../../regobs-api/models';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { BasePageService } from '../base-page-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-danger-obs',
@@ -20,15 +20,14 @@ export class DangerObsPage extends BasePage {
   private dangerSignKdv: KdvElement[];
 
   constructor(
-    registrationService: RegistrationService,
-    actvatedRoute: ActivatedRoute,
-    changeDetectorRef: ChangeDetectorRef,
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute,
     private modalController: ModalController,
     private zone: NgZone,
     private kdvService: KdvService,
     private userSettingService: UserSettingService,
   ) {
-    super(RegistrationTid.DangerObs, registrationService, actvatedRoute, changeDetectorRef);
+    super(RegistrationTid.DangerObs, basePageService, activatedRoute);
   }
 
   async onInit() {

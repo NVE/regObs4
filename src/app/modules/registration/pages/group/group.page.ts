@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto } from '../../../regobs-api/models';
-import { RegistrationService } from '../../services/registration.service';
 import { BasePage } from '../base.page';
+import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -15,12 +15,11 @@ export class GroupPage extends BasePage {
   groups: { group: ObserverGroupDto, selected: boolean }[];
 
   constructor(
-    registrationService: RegistrationService,
-    actvatedRoute: ActivatedRoute,
-    changeDetectorRef: ChangeDetectorRef,
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute,
     private userGroupService: UserGroupService,
   ) {
-    super(null, registrationService, actvatedRoute, changeDetectorRef);
+    super(null, basePageService, activatedRoute);
   }
 
   async onInit() {
