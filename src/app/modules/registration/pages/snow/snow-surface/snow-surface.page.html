@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="registration"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.SNOW.SNOW_SURFACE.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list lines="full" *ngIf="registration && registration.SnowSurfaceObservation">
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.TITLE' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+
+    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.SnowSurfaceObservation.Comment"
+      placeholder="REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_PLACEHOLDER"></app-text-comment>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+  </ion-list>
+  <app-navigation-buttons [previousUrl]="applyRegId('registration/danger-obs')" previousText="REGISTRATION.DANGER_OBS.TITLE"
+    [nextUrl]="applyRegId('registration/snow/avalanche-activity')" nextText="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE"></app-navigation-buttons>
+</ion-content>
+<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

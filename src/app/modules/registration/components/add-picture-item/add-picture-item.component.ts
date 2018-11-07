@@ -27,6 +27,10 @@ export class AddPictureItemComponent implements OnInit {
   @Input() showIcon = true;
   @Input() iconColor = 'dark';
 
+  get imagesForCurrentRegistrationTid() {
+    return this.images.filter((image) => image.RegistrationTID === this.registrationTid);
+  }
+
   constructor(
     private translateService: TranslateService,
     private camera: Camera,

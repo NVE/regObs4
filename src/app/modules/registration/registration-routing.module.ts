@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CanDeactivateRouteGuard } from './pages/can-deactivate-route.guard';
 
 const routes: Routes = [
     {
@@ -75,6 +74,11 @@ const routes: Routes = [
         path: 'registration/snow/weather/:id',
         loadChildren: './pages/snow/weather/weather.module#WeatherPageModule'
     },
+    {
+        path: 'registration/snow/snow-surface/:id',
+        loadChildren: './pages/snow/snow-surface/snow-surface.module#SnowSurfacePageModule'
+    },
+
 ];
 
 @NgModule({

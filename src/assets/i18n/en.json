@@ -152,7 +152,7 @@
       "DESCRIPTION": "You can upload photos of the area you have observed or photos of other things you might find relevant.",
       "SUBTITLE": "Add observation images",
       "TAKE_NEW_PHOTO": "Take a new photo",
-      "TITLE": "Images and notes"
+      "TITLE": "Notes"
     },
     "GROUP": {
       "SUBTITLE": "Share observation with",
@@ -235,6 +235,10 @@
         "TITLE": "Avalanche observation",
         "TRAJECTORY_NAME": "Trajectory",
         "VALID_EXPOSITION": "Exposition"
+      },
+      "SNOW_SURFACE": {
+        "COMMENT_PLACEHOLDER": "How is the snow distribution generally in relation to height and exposure. Is there any differences in the region?",
+        "TITLE": "Snow surface"
       },
       "WEATHER": {
         "AIR_TEMPERATURE": "Air temperature (C)",

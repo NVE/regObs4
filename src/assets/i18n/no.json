@@ -152,7 +152,7 @@
       "DESCRIPTION": "Her kan du laste opp bilder av området du har observert eller bilder av andre relevante ting til observasjonen din.",
       "SUBTITLE": "Legg til bilder av observasjonen",
       "TAKE_NEW_PHOTO": "Ta et nytt bilde",
-      "TITLE": "Bilder og notater"
+      "TITLE": "Notater"
     },
     "GROUP": {
       "SUBTITLE": "Del observasjonen med",
@@ -235,6 +235,10 @@
         "TITLE": "Skredhendelse",
         "TRAJECTORY_NAME": "Skredbanenavn",
         "VALID_EXPOSITION": "Eksposisjon"
+      },
+      "SNOW_SURFACE": {
+        "COMMENT_PLACEHOLDER": "Hvordan er snøfordelingen generelt ifht. høyde og eksposisjon. Er det forskjell i regionen?",
+        "TITLE": "Snødekke"
       },
       "WEATHER": {
         "AIR_TEMPERATURE": "Lufttemperatur (C)",

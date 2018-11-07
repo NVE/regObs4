@@ -1,4 +1,4 @@
-<div *ngFor="let image of images; let i = index">
+<div *ngFor="let image of imagesForCurrentRegistrationTid; let i = index">
   <div class="image-wrapper">
     <app-base64-image [base64encodedImage]="image.PictureImageBase64"></app-base64-image>
     <ion-fab slot="fixed" vertical="top" horizontal="end">

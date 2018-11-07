@@ -12,6 +12,13 @@
   <ion-list lines="full">
     <ion-list-header padding text-uppercase>
       <ion-label>
+        <h3>{{"REGISTRATION.GENERAL_COMMENT.ADD_NOTES_HEADER" | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-text-comment *ngIf="registration.GeneralObservation" [(value)]="registration.GeneralObservation.ObsComment"
+      title="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
+    <ion-list-header padding text-uppercase>
+      <ion-label>
         <h3>{{"REGISTRATION.GENERAL_COMMENT.SUBTITLE" | translate}}</h3>
       </ion-label>
     </ion-list-header>
@@ -19,13 +26,6 @@
       <ion-label text-wrap>{{'REGISTRATION.GENERAL_COMMENT.DESCRIPTION' | translate}}</ion-label>
     </ion-item>
     <app-add-picture-item *ngIf="registration.Picture" [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
-    <ion-list-header padding text-uppercase>
-      <ion-label>
-        <h3>{{"REGISTRATION.GENERAL_COMMENT.ADD_NOTES_HEADER" | translate}}</h3>
-      </ion-label>
-    </ion-list-header>
-    <app-text-comment *ngIf="registration.GeneralObservation" [(value)]="registration.GeneralObservation.ObsComment"
-      title="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
   </ion-list>
 </ion-content>
 <app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>
