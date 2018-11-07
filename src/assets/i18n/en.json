@@ -235,6 +235,26 @@
         "TITLE": "Avalanche observation",
         "TRAJECTORY_NAME": "Trajectory",
         "VALID_EXPOSITION": "Exposition"
+      },
+      "WEATHER": {
+        "AIR_TEMPERATURE": "Air temperature (C)",
+        "AIR_TEMPERATURE_PLACEHOLDER": "Can be given with one decimal",
+        "CLOUD_COVER": "Cloud cover (%)",
+        "COMMENT_PLACEHOLDER": "How has been in the area last 24 hours? Example: Have there been showers? Have there been temperature changes? Where does the nullisotherm go?",
+        "FROM_EAST": "E - from east",
+        "FROM_NORTH": "N - from north",
+        "FROM_NORTH_WEST": "NW - from north-west",
+        "FROM_NOTRH_EAST": "NE - from north-east",
+        "FROM_SOUTH": "S - from south",
+        "FROM_SOUTH_EAST": "SE - from south-east",
+        "FROM_SOUTH_WEST": "SW - from south-west",
+        "FROM_WEST": "W - from west",
+        "NOT_GIVEN": "Not given",
+        "ONLY_FULL_PERCENTAGE": "Precentage without decimals",
+        "PRECIPITATION": "Percipitation",
+        "TITLE": "Weather",
+        "WIND_DIRECTION": "Wind direction",
+        "WIND_SPEED": "Wind speed (m/s)"
       }
     },
     "WATER": {

@@ -235,6 +235,26 @@
         "TITLE": "Skredhendelse",
         "TRAJECTORY_NAME": "Skredbanenavn",
         "VALID_EXPOSITION": "Eksposisjon"
+      },
+      "WEATHER": {
+        "AIR_TEMPERATURE": "Lufttemperatur (C)",
+        "AIR_TEMPERATURE_PLACEHOLDER": "Kan gis med ett desimal",
+        "CLOUD_COVER": "Skydekke (%)",
+        "COMMENT_PLACEHOLDER": "Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor går nullisotermen?",
+        "FROM_EAST": "Ø - fra øst",
+        "FROM_NORTH": "N - fra nord",
+        "FROM_NORTH_WEST": "NV - fra nordvest",
+        "FROM_NOTRH_EAST": "NØ - fra nordøst",
+        "FROM_SOUTH": "S - fra sør",
+        "FROM_SOUTH_EAST": "SØ - fra sørøst",
+        "FROM_SOUTH_WEST": "SV - fra sørvest",
+        "FROM_WEST": "V - fra vest",
+        "NOT_GIVEN": "Ikke gitt",
+        "ONLY_FULL_PERCENTAGE": "Kun hele prosent",
+        "PRECIPITATION": "Nedbørstype",
+        "TITLE": "Vær",
+        "WIND_DIRECTION": "Vindretning",
+        "WIND_SPEED": "Vindhastighet (m/s)"
       }
     },
     "WATER": {
