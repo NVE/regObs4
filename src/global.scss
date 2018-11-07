@@ -191,3 +191,7 @@ app-geo-icon {
 .no-min-height {
     --min-height: 0px;
 }
+
+.shadow-marker {
+   filter: drop-shadow(5px 0px 5px #000);
+}

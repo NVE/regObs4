@@ -39,7 +39,8 @@ export class MapItemMarker extends L.Marker {
         this.setIcon(L.icon({
             iconUrl: iconUrl,
             iconSize: [27, 42],
-            iconAnchor: [13.5, 41]
+            iconAnchor: [13.5, 41],
+            className: 'shadow-marker'
         }));
     }
 

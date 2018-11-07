@@ -12,6 +12,8 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { MapService } from '../../modules/map/services/map/map.service';
 import { MapComponent } from '../../modules/map/components/map/map.component';
 import { Router, NavigationEnd } from '@angular/router';
+import { IconHelper } from '../../modules/map/helpers/icon.helper';
+import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
 @Component({
   selector: 'app-home',
@@ -23,9 +25,10 @@ export class HomePage implements OnInit, OnDestroy {
   @ViewChild(MapComponent) mapComponent: MapComponent;
   private map: L.Map;
   private markerLayer = L.markerClusterGroup({
-    spiderfyOnMaxZoom: false,
+    spiderfyOnMaxZoom: true,
     showCoverageOnHover: false,
-    maxClusterRadius: 30
+    maxClusterRadius: 60,
+    iconCreateFunction: (cluster) => this.createClusterIcon(cluster),
   });
   private subscriptions: Subscription[];
 
@@ -45,6 +48,20 @@ export class HomePage implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private router: Router,
   ) {
+  }
+
+  createClusterIcon(cluster: L.MarkerCluster) {
+    const items = cluster.getAllChildMarkers().map((x: MapItemMarker) => x.item.GeoHazardTid);
+    const unique = Array.from(new Set(items));
+    if (unique.length === 1) {
+      const geoHazard: GeoHazard = unique[0];
+      switch (geoHazard) {
+        default:
+          return IconHelper.getIceObservationsClusterIcon(items.length);
+      }
+    } else {
+      return IconHelper.getMixedObservationsClusterIcon(items.length);
+    }
   }
 
   async ngOnInit() {

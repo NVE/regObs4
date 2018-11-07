@@ -14,6 +14,7 @@ import { LocationService } from '../../../../core/services/location/location.ser
 import { settings } from '../../../../../settings';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { Events } from '@ionic/angular';
+import { IconHelper } from '../../../map/helpers/icon.helper';
 
 @Component({
   selector: 'app-set-location-in-map',
@@ -48,19 +49,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private mapViewObservableSubscription: Subscription;
   private locationsSubscription: Subscription;
   private locationGroup = L.markerClusterGroup({
-    spiderfyOnMaxZoom: false,
     showCoverageOnHover: false,
-    maxClusterRadius: 30,
-    iconCreateFunction: (cluster) => {
-      return L.icon({
-        iconUrl: '/assets/icon/map/prev-used-place-cluster.svg',
-        iconSize: [45, 41],
-        iconAnchor: [22, 41],
-        shadowUrl: 'leaflet/marker-shadow.png',
-        shadowSize: [45, 41],
-        className: 'cluster-size-' + cluster.getChildCount()
-      });
-    },
+    maxClusterRadius: 60,
+    iconCreateFunction: (cluster) => IconHelper.getPreviousUsedPlacesIcon(cluster.getChildCount()),
   });
 
   constructor(
