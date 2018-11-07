@@ -182,6 +182,7 @@
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
     "INCIDENT": {
       "ACTIVITY": "Activity",
+      "COMMENT": "Description",
       "COMMENT_PLACEHOLDER": "Why did it happen? Could the situation be avoided?",
       "DAMAGE_EXTENT": "Damage extent",
       "TITLE": "Accident / Incident"
@@ -224,6 +225,7 @@
         "DESTRUCTIVE_SIZE": "Size",
         "FRACTURE_HEIGTH": "Fracture height (cm)",
         "FRACTURE_WIDTH": "Fracture width",
+        "INCIDENT_DESCRIPTION": "Add info if the avalanche could or has led to accident or injury",
         "POSITION": "Avalanche position",
         "TERRAIN_START_ZONE": "Tarrain type in the loose snow area",
         "TIME": "Time when avalance struck",

@@ -58,7 +58,22 @@ export class AvalancheObsPage extends BasePage {
   }
 
   onInit() {
+    if (!this.registration.Incident) {
+      this.registration.Incident = {};
+    }
+  }
 
+  async onReset() {
+    await this.basePageService.reset(this.registration, RegistrationTid.Incident);
+  }
+
+  isValid() {
+    return !!this.registration.AvalancheObs.DtAvalancheTime;
+  }
+
+  isEmpty() {
+    return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid)
+      && this.basePageService.RegistrationService.isEmpty(this.registration, RegistrationTid.Incident);
   }
 
   async setAvalanchePosition() {

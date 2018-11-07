@@ -182,6 +182,7 @@
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
+      "COMMENT": "Beskrivelse",
       "COMMENT_PLACEHOLDER": "Hvorfor skjedde det? Hvorfor gikk det forhåpentligvis bra? Kunne situasjonen vært unngått?",
       "DAMAGE_EXTENT": "Skadeomfang",
       "TITLE": "Ulykke / hendelse"
@@ -224,6 +225,7 @@
         "DESTRUCTIVE_SIZE": "Størrelse",
         "FRACTURE_HEIGTH": "Bruddhøyde (cm)",
         "FRACTURE_WIDTH": "Bruddbredde",
+        "INCIDENT_DESCRIPTION": "Legg til info hvis skredet kunne, eller har ført til ulykke eller skade",
         "POSITION": "Skredposisjon",
         "TERRAIN_START_ZONE": "Terrengtype i løsneområdet",
         "TIME": "Tid da skredet gikk",
