@@ -14,7 +14,7 @@
 
 :root {
     --ion-background-color: #DCECF2;
-    --ion-item-background-color: #fff;
+    --ion-item-background: #fff;
     --ion-tab-bar-color: #172733;
     --ion-tab-bar-background-focused: #F4F8F9;
     --ion-tab-bar-background: #FFFFFF;
@@ -85,15 +85,20 @@ $z-index-over-map: 1001;
 }
 
 ion-item {
-    --background: var(--ion-item-background-color, #fff);
+    --background: var(--ion-item-background, #fff);
 }
 
 ion-list {
+    // --ion-item-background: var(--ion-background-color);
     background: var(--ion-background-color);
 
     ion-list-header {
         padding-top: 16px;
         padding-bottom: 5px;
+    }
+
+    &.list-ios {
+        background: var(--ion-background-color);
     }
 
     // .sc-ion-label-ios-s h3, .sc-ion-label-ios-s h4, .sc-ion-label-ios-s h5, .sc-ion-label-ios-s h6 {
