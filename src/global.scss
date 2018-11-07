@@ -15,13 +15,13 @@
 :root {
     --ion-background-color: #DCECF2;
     --ion-item-background-color: #fff;
-    --ion-tabbar-text-color: #172733;
-    --ion-tabbar-background-color-focused: #F4F8F9;
-    --ion-tabbar-background-color: #FFFFFF;
+    --ion-tab-bar-color: #172733;
+    --ion-tab-bar-background-focused: #F4F8F9;
+    --ion-tab-bar-background: #FFFFFF;
     --leaflet-bottom: 0px;
     --map-item-height: 0px;
     --map-center-info-height: 0px;
-    --ion-tabbar-text-color-active: var(--ion-color-primary);
+    --ion-tab-bar-color-activated: var(--ion-color-primary);
     --ion-color-primary: #5C90A5; // TODO: Change theme.scss instead?
     --ion-color-primary-rgb: 72,138,255;
     --ion-color-primary-contrast: #fff;

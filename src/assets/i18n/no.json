@@ -218,6 +218,9 @@
       "TITLE": "Tidspunkt"
     },
     "SNOW": {
+      "AVALANCHE_ACTIVITY": {
+        "TITLE": "Skredaktivitet"
+      },
       "AVALANCHE_OBS": {
         "AVALANCHE_TRIGGER": "Skredutløser",
         "AVALANCHE_TYPE": "Skredtype",

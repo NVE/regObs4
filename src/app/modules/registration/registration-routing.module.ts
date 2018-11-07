@@ -67,6 +67,11 @@ const routes: Routes = [
         path: 'registration/snow/avalanche-obs/:id',
         loadChildren: './pages/snow/avalanche-obs/avalanche-obs.module#AvalancheObsPageModule'
     },
+    {
+        path: 'registration/snow/avalanche-activity/:id',
+        loadChildren: './pages/snow/avalanche-activity/avalanche-activity.module#AvalancheActivityPageModule'
+    },
+
 ];
 
 @NgModule({

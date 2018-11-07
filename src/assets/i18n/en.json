@@ -218,6 +218,9 @@
       "TITLE": "Time"
     },
     "SNOW": {
+      "AVALANCHE_ACTIVITY": {
+        "TITLE": "Avalanche activity"
+      },
       "AVALANCHE_OBS": {
         "AVALANCHE_TRIGGER": "Avalanche trigger",
         "AVALANCHE_TYPE": "Avalanche type",

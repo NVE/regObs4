@@ -218,6 +218,12 @@ export class OverviewPage implements OnInit, OnDestroy {
         'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE',
         '',
         RegistrationTid.AvalancheObs
+      ),
+      this.getRegItem(
+        'registration/snow/avalanche-activity/' + this.registration.Id,
+        'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE',
+        '',
+        RegistrationTid.AvalancheActivityObs2
       )
     ];
   }

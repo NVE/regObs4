@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="registration"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list lines="full" *ngIf="registration && registration.AvalancheObs">
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate }}</h3>
+      </ion-label>
+    </ion-list-header>
+  </ion-list>
+  <app-navigation-buttons [previousUrl]="applyRegId('registration/danger-obs')" previousText="REGISTRATION.DANGER_OBS.TITLE"
+    [nextUrl]="applyRegId('registration/')" nextText="Skredaktivitet"></app-navigation-buttons>
+</ion-content>
+<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>
