@@ -189,6 +189,7 @@
     },
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hele centimeter",
+    "NONE": "Ingen valgt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt",
       "CURRENT_LOCATION": "Nåværende posisjon",
@@ -236,6 +237,15 @@
         "TITLE": "Skredhendelse",
         "TRAJECTORY_NAME": "Skredbanenavn",
         "VALID_EXPOSITION": "Eksposisjon"
+      },
+      "COMPRESSION_TEST": {
+        "ADD_NEW": "Legg til ny stabilitetstest",
+        "DISTANCE_FROM_TOP": "Avstand fra toppen (cm)",
+        "FRACTURE_TYPE": "Bruddtype",
+        "STABILITY_EVAL": "Stabilitet",
+        "TAPS_FRACTURE": "Antall slag",
+        "TEST_TYPE": "Test type",
+        "TITLE": "Stabilitetstest"
       },
       "SNOW_PROFILE": {
         "SNOW_PROFILE_HELP_TEXT": "Vi har dessverre ikke støtte for å registrere en snøprofil. En profil eksportert fra AvyLab eller Ullr Labs Avalanche lastes opp som bilde.",

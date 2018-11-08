@@ -189,6 +189,7 @@
     },
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
+    "NONE": "Not selected",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location",
       "CURRENT_LOCATION": "Current position",
@@ -236,6 +237,15 @@
         "TITLE": "Avalanche observation",
         "TRAJECTORY_NAME": "Trajectory",
         "VALID_EXPOSITION": "Exposition"
+      },
+      "COMPRESSION_TEST": {
+        "ADD_NEW": "Add new compression test",
+        "DISTANCE_FROM_TOP": "Distance from top (cm)",
+        "FRACTURE_TYPE": "Fracture type",
+        "STABILITY_EVAL": "Stability",
+        "TAPS_FRACTURE": "Number of hits",
+        "TEST_TYPE": "Test type",
+        "TITLE": "Compression test"
       },
       "SNOW_PROFILE": {
         "SNOW_PROFILE_HELP_TEXT": "Unfortunately, we do not support the registration of a snow profile. A profile exported from AvyLab or Ullr Labs Avalanche is uploaded as an image.",

@@ -82,6 +82,10 @@ const routes: Routes = [
         path: 'registration/snow/snow-profile/:id',
         loadChildren: './pages/snow/snow-profile/snow-profile.module#SnowProfilePageModule'
     },
+    {
+        path: 'registration/snow/compression-test/:id',
+        loadChildren: './pages/snow/compression-test/compression-test.module#CompressionTestPageModule'
+    },
 ];
 
 @NgModule({
