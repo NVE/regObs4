@@ -86,6 +86,11 @@ const routes: Routes = [
         path: 'registration/snow/compression-test/:id',
         loadChildren: './pages/snow/compression-test/compression-test.module#CompressionTestPageModule'
     },
+    {
+        path: 'registration/snow/avalanche-problem/:id',
+        loadChildren: './pages/snow/avalanche-problem/avalanche-problem.module#AvalancheProblemPageModule'
+    },
+
 ];
 
 @NgModule({

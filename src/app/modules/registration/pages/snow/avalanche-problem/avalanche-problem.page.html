@@ -4,23 +4,23 @@
       <ion-back-button defaultHref="registration"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{'REGISTRATION.SNOW.COMPRESSION_TEST.TITLE' | translate}}
+      {{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE' | translate}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-list lines="full" *ngIf="registration && registration.CompressionTest">
+  <ion-list lines="full" *ngIf="registration && registration.AvalancheEvalProblem2">
     <ion-list-header text-uppercase>
       <ion-label no-margin>
-        <h3>{{ 'REGISTRATION.SNOW.COMPRESSION_TEST.TITLE' | translate}}</h3>
+        <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <ion-item detail="true" (click)="addOrEditCompressionTest(i)" *ngFor="let compressionTest of registration.CompressionTest; let i = index">
-      <ion-label>{{ getDescription(compressionTest) }}</ion-label>
+    <ion-item detail="true" (click)="addOrEditAvalancheProblem(i)" *ngFor="let avalancheEvalProblem of registration.AvalancheEvalProblem2; let i = index">
+      <ion-label>{{ getDescription(avalancheEvalProblem) }}</ion-label>
     </ion-item>
-    <ion-item (click)="addOrEditCompressionTest()">
+    <ion-item (click)="addOrEditAvalancheProblem()">
       <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
-      <ion-label>{{'REGISTRATION.SNOW.COMPRESSION_TEST.ADD_NEW' | translate}}</ion-label>
+      <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.ADD_NEW' | translate}}</ion-label>
     </ion-item>
     <ion-list-header text-uppercase>
       <ion-label no-margin>

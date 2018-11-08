@@ -238,6 +238,20 @@
         "TRAJECTORY_NAME": "Trajectory",
         "VALID_EXPOSITION": "Exposition"
       },
+      "AVALANCHE_PROBLEM": {
+        "ADD_NEW": "Add new avalanche problem",
+        "AVALANCHE_DESTRUCTIVE_SIZE": "Size of expected avalanche",
+        "AVALANCHE_PROBABILITY": "The possibility of avalanches?",
+        "AVALANCHE_PROPAGATION_HEADER": "Avalanche propagation",
+        "AVALANCHE_TRIGGER_PROBABILITY": "Probable load to trigger avalanche",
+        "AVALANCHE_TYPE": "Avalanche type",
+        "AVAL_PROBABILITY": "Probability for avalanche",
+        "NO_WEAK_LAYERS": "There are no weak layers",
+        "PROPAGATION": "Propagation",
+        "TITLE": "Avalanche problem",
+        "WEAK_LAYER": "Weak layer",
+        "WEAK_LAYER_DEPTH": "Weak layer depth"
+      },
       "COMPRESSION_TEST": {
         "ADD_NEW": "Add new compression test",
         "DISTANCE_FROM_TOP": "Distance from top (cm)",

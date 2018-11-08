@@ -62,6 +62,17 @@ export class KdvService {
     }
   }
 
+  async getViewRepository(langKey: LangKey, appMode: AppMode, key: string) {
+    const resultFromDb = await this.getKdvElementsFromDb(langKey, appMode);
+    if (resultFromDb) {
+      return resultFromDb.ViewRepositories[key];
+    } else {
+      const langKeyName = LangKey[langKey];
+      const defaultKdvElements: KdvElementsResponseDto = require(`../../../../assets/kdvelements.${langKeyName}.json`);
+      return defaultKdvElements.ViewRepositories[key];
+    }
+  }
+
   getKdvElementsAsObservable(key: string, userSetting?: UserSetting) {
     if (userSetting) {
       return from(this.getKdvElements(userSetting.language, userSetting.appMode, key));

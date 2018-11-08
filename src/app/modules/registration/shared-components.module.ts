@@ -19,6 +19,7 @@ import { AddWebUrlModalPage } from './components/add-web-url-item/add-web-url-mo
 import { ModalSaveOrDeleteButtonsComponent } from './components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { AddOrEditDangerObsModalPage } from './pages/danger-obs/add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { CompressionTestModalPage } from './pages/snow/compression-test/compression-test-modal/compression-test-modal.page';
+// import { AvalancheProblemModalPage } from './pages/snow/avalanche-problem/avalanche-problem-modal/avalanche-problem-modal.page';
 
 @NgModule({
     imports: [
@@ -48,6 +49,7 @@ import { CompressionTestModalPage } from './pages/snow/compression-test/compress
         AddWebUrlModalPage,
         AddOrEditDangerObsModalPage,
         CompressionTestModalPage,
+        // AvalancheProblemModalPage,
         SaveAndGoBackButtonComponent,
         AddPictureItemComponent,
         TextCommentComponent,
@@ -68,6 +70,7 @@ import { CompressionTestModalPage } from './pages/snow/compression-test/compress
         AddWebUrlModalPage,
         AddOrEditDangerObsModalPage,
         CompressionTestModalPage,
+        // AvalancheProblemModalPage,
     ]
 })
 export class SharedComponentsModule { }

@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE' | translate}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="ok()">{{ 'DIALOGS.OK' | translate }}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="avalancheEvalProblemCopy">
+  <ion-list lines="full">
+    <ion-item>
+      <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS' | translate}}</ion-label>
+      <ion-checkbox mode="md" slot="start" [(ngModel)]="noWeakLayers"></ion-checkbox>
+    </ion-item>
+    <ng-container *ngIf="!noWeakLayers">
+      <ion-list-header text-uppercase>
+        <ion-label no-margin>
+          <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER' | translate}}</h3>
+        </ion-label>
+      </ion-list-header>
+      <app-kdv-dropdown (valueChange)="avalCauseChanged()" title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER"
+        kdvKey="Snow_AvalCauseKDV" [(value)]="avalancheEvalProblemCopy.AvalCauseTID"></app-kdv-dropdown>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH" kdvKey="Snow_AvalCauseDepthKDV"
+        [(value)]="avalancheEvalProblemCopy.AvalCauseDepthTID"></app-kdv-dropdown>
+      <ion-item *ngFor="let avalancheCauseAttribute of avalancheCauseAttributes">
+        <ion-label text-wrap> {{ avalancheCauseAttribute.kdvElement.Name }}</ion-label>
+        <ion-checkbox mode="md" slot="start" [(ngModel)]="avalancheCauseAttribute.selected"></ion-checkbox>
+      </ion-item>
+    </ng-container>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE'
+        | translate}}</ion-label>
+      <ion-select *ngIf="avalancheExtKdvFiltered" mode="ios" [(ngModel)]="avalancheEvalProblemCopy.AvalancheExtTID"
+        interface="action-sheet">
+        <ion-select-option [value]="kdvElement.Id" *ngFor="let kdvElement of avalancheExtKdvFiltered">
+          {{ kdvElement.Name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TRIGGER_PROBABILITY" kdvKey="Snow_AvalTriggerSimpleKDV"
+      [(value)]="avalancheEvalProblemCopy.AvalTriggerSimpleTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVAL_PROBABILITY" kdvKey="Snow_AvalProbabilityKDV"
+      [(value)]="avalancheEvalProblemCopy.AvalProbabilityTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_DESTRUCTIVE_SIZE" kdvKey="Snow_DestructiveSizeKDV"
+      [(value)]="avalancheEvalProblemCopy.DestructiveSizeTID"></app-kdv-dropdown>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION" kdvKey="Snow_AvalPropagationKDV"
+      [(value)]="avalancheEvalProblemCopy.AvalPropagationTID"></app-kdv-dropdown>
+    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheEvalProblemCopy.Comment"></app-text-comment>
+  </ion-list>
+  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">
+  </app-modal-save-or-delete-buttons>
+</ion-content>
