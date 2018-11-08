@@ -188,6 +188,7 @@
       "TITLE": "Ulykke / hendelse"
     },
     "IN_CM": "I centimeter",
+    "IN_FULL_CM": "I hele centimeter",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt",
       "CURRENT_LOCATION": "Nåværende posisjon",
@@ -238,6 +239,15 @@
       },
       "SNOW_SURFACE": {
         "COMMENT_PLACEHOLDER": "Hvordan er snøfordelingen generelt ifht. høyde og eksposisjon. Er det forskjell i regionen?",
+        "HEIGHT_LIMIT_LAYERED_SNOW": "Grense lagdelt snø (moh)",
+        "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "Øvre høydegrense for snø uten farlig lagdeling",
+        "NEW_SNOW_DEPTH": "Nysnødybde (cm)",
+        "NEW_SNOW_LINE": "Nysnøgrense (moh)",
+        "SNOW_DEPTH": "Snødybde (cm)",
+        "SNOW_DRIFT": "Snøfokk",
+        "SNOW_LINE": "Snøgrense (moh)",
+        "SNOW_SURFACE": "Snødekkehardhet",
+        "SURFACE_WATER_CONTENT_REG": "Overflatefuktighet",
         "TITLE": "Snødekke"
       },
       "WEATHER": {

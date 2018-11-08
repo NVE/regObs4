@@ -188,6 +188,7 @@
       "TITLE": "Accident / Incident"
     },
     "IN_CM": "In centimeter",
+    "IN_FULL_CM": "In centimeters without decimals",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location",
       "CURRENT_LOCATION": "Current position",
@@ -238,6 +239,15 @@
       },
       "SNOW_SURFACE": {
         "COMMENT_PLACEHOLDER": "How is the snow distribution generally in relation to height and exposure. Is there any differences in the region?",
+        "HEIGHT_LIMIT_LAYERED_SNOW": "Limit for layered snow (amsl)",
+        "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "Upper height limit for snow without hazardous layering",
+        "NEW_SNOW_DEPTH": "New snow depth (cm)",
+        "NEW_SNOW_LINE": "New snow line (amsl)",
+        "SNOW_DEPTH": "Snow depth (cm)",
+        "SNOW_DRIFT": "Snow drift",
+        "SNOW_LINE": "Snowline (amsl)",
+        "SNOW_SURFACE": "Snow surface hardness",
+        "SURFACE_WATER_CONTENT_REG": "Substrate Moisture",
         "TITLE": "Snow surface"
       },
       "WEATHER": {

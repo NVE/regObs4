@@ -16,7 +16,46 @@
         <h3>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.TITLE' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH'
+        | translate}}</ion-label>
+      <ion-input type="number" min="0" max="1000" pattern="[0-9]*" step="1" [(ngModel)]="registration.SnowSurfaceObservation.SnowDepth"
+        placeholder="{{'REGISTRATION.IN_FULL_CM' | translate}}">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH'
+        | translate}}</ion-label>
+      <ion-input type="number" min="0" max="1000" pattern="[0-9]*" step="1" [(ngModel)]="registration.SnowSurfaceObservation.NewSnowDepth24"
+        placeholder="{{'REGISTRATION.IN_FULL_CM' | translate}}">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_LINE'
+        | translate}}</ion-label>
+      <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.SnowSurfaceObservation.NewSnowLine"
+        placeholder="{{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.SNOW_LINE'
+        | translate}}</ion-label>
+      <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.SnowSurfaceObservation.SnowLine"
+        placeholder="{{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{
+        'REGISTRATION.SNOW.SNOW_SURFACE.HEIGHT_LIMIT_LAYERED_SNOW'
+        | translate}}</ion-label>
+      <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.SnowSurfaceObservation.HeightLimitLayeredSnow"
+        placeholder="{{'REGISTRATION.SNOW.SNOW_SURFACE.HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER' | translate}}">
+      </ion-input>
+    </ion-item>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DRIFT" kdvKey="Snow_SnowDriftKDV" [(value)]="registration.SnowSurfaceObservation.SnowDriftTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE" kdvKey="Snow_SnowSurfaceKDV" [(value)]="registration.SnowSurfaceObservation.SnowSurfaceTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SURFACE_WATER_CONTENT_REG" kdvKey="Snow_SurfaceWaterContentKDV"
+      [(value)]="registration.SnowSurfaceObservation.SurfaceWaterContentTID"></app-kdv-dropdown>
     <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.SnowSurfaceObservation.Comment"
       placeholder="REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_PLACEHOLDER"></app-text-comment>
     <ion-list-header text-uppercase>
