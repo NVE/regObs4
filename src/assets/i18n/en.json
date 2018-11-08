@@ -237,6 +237,10 @@
         "TRAJECTORY_NAME": "Trajectory",
         "VALID_EXPOSITION": "Exposition"
       },
+      "SNOW_PROFILE": {
+        "SNOW_PROFILE_HELP_TEXT": "Unfortunately, we do not support the registration of a snow profile. A profile exported from AvyLab or Ullr Labs Avalanche is uploaded as an image.",
+        "TITLE": "Snow profile"
+      },
       "SNOW_SURFACE": {
         "COMMENT_PLACEHOLDER": "How is the snow distribution generally in relation to height and exposure. Is there any differences in the region?",
         "HEIGHT_LIMIT_LAYERED_SNOW": "Limit for layered snow (amsl)",

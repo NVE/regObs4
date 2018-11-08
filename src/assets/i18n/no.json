@@ -237,6 +237,10 @@
         "TRAJECTORY_NAME": "Skredbanenavn",
         "VALID_EXPOSITION": "Eksposisjon"
       },
+      "SNOW_PROFILE": {
+        "SNOW_PROFILE_HELP_TEXT": "Vi har dessverre ikke støtte for å registrere en snøprofil. En profil eksportert fra AvyLab eller Ullr Labs Avalanche lastes opp som bilde.",
+        "TITLE": "Snøprofil"
+      },
       "SNOW_SURFACE": {
         "COMMENT_PLACEHOLDER": "Hvordan er snøfordelingen generelt ifht. høyde og eksposisjon. Er det forskjell i regionen?",
         "HEIGHT_LIMIT_LAYERED_SNOW": "Grense lagdelt snø (moh)",

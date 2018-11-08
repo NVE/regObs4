@@ -78,7 +78,10 @@ const routes: Routes = [
         path: 'registration/snow/snow-surface/:id',
         loadChildren: './pages/snow/snow-surface/snow-surface.module#SnowSurfacePageModule'
     },
-
+    {
+        path: 'registration/snow/snow-profile/:id',
+        loadChildren: './pages/snow/snow-profile/snow-profile.module#SnowProfilePageModule'
+    },
 ];
 
 @NgModule({

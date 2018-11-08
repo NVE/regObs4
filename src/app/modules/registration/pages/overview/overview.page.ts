@@ -236,6 +236,12 @@ export class OverviewPage implements OnInit, OnDestroy {
         'REGISTRATION.SNOW.SNOW_SURFACE.TITLE',
         '',
         RegistrationTid.SnowSurfaceObservation
+      ),
+      this.getRegItem(
+        'registration/snow/snow-profile/' + this.registration.Id,
+        'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
+        '',
+        RegistrationTid.SnowProfile
       )
     ];
   }
