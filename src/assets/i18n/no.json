@@ -232,7 +232,9 @@
     },
     "SNOW": {
       "AVALANCHE_ACTIVITY": {
+        "DURING_THE_DAY": "I løpet av dagen",
         "ESTIMATED_TIME": "Antatt tidsrom",
+        "HOW_MANY_AVALANCHES": "Hvor mange skred er det snakk om?",
         "NO_AVALANCHE_ACTIVITY": "Ingen skredaktivitet observert",
         "TITLE": "Skredaktivitet"
       },

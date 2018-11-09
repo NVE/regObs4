@@ -32,6 +32,16 @@
             {{ timeFrame.text | translate }}</ion-select-option>
         </ion-select>
       </ion-item>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.HOW_MANY_AVALANCHES" kdvKey="Snow_EstimatedNumKDV"
+        [(value)]="avalancheActivityCopy.EstimatedNumTID"></app-kdv-dropdown>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE" kdvKey="Snow_AvalancheExtKDV"
+        [(value)]="avalancheActivityCopy.AvalancheExtTID"></app-kdv-dropdown>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TRIGGER" kdvKey="Snow_AvalTriggerSimpleKDV"
+        [(value)]="avalancheActivityCopy.AvalTriggerSimpleTID"></app-kdv-dropdown>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE" kdvKey="Snow_DestructiveSizeKDV"
+        [(value)]="avalancheActivityCopy.DestructiveSizeTID"></app-kdv-dropdown>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION" kdvKey="Snow_AvalPropagationKDV"
+        [(value)]="avalancheActivityCopy.AvalPropagationTID"></app-kdv-dropdown>
     </ng-container>
     <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheActivityCopy.Comment"></app-text-comment>
   </ion-list>

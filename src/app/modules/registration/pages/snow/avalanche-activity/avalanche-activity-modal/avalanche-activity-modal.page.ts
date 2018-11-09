@@ -5,6 +5,7 @@ import { KdvService } from '../../../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../../../core/services/user-setting/user-setting.service';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import * as moment from 'moment';
+import { settings } from '../../../../../../../settings';
 
 @Component({
   selector: 'app-avalanche-activity-modal',
@@ -35,7 +36,7 @@ export class AvalancheActivityModalPage implements OnInit {
       id: 1,
       start: { h: 0, m: 0 },
       end: { h: 23, m: 59 },
-      text: 'DURING_THE_DAY',
+      text: 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DURING_THE_DAY',
     },
     {
       id: 2,
@@ -66,21 +67,6 @@ export class AvalancheActivityModalPage implements OnInit {
   selectedTimeFrame = 1;
   startDate: string;
 
-  // get startDate() {
-  //   if (this.avalancheActivity.DtStart) {
-  //    return moment(this.avalancheActivity.DtStart).startOf('day').toISOString();
-  //   } else {
-  //     return undefined;
-  //   }
-  // }
-
-  // set startDate(val: string) {
-  //   this.avalancheActivity.DtStart = val;
-  //   const timeFrame = this.timeFrames.find((tf) => tf.id === this.selectedTimeFrame);
-  //   this.avalancheActivity.DtStart = moment(val).hour(timeFrame.start.h).minutes(timeFrame.start.m).toISOString();
-  //   this.avalancheActivity.DtEnd = moment(val).hour(timeFrame.end.h).minutes(timeFrame.end.m).toISOString();
-  // }
-
   constructor(
     private modalController: ModalController,
     private kdvService: KdvService,
@@ -93,19 +79,21 @@ export class AvalancheActivityModalPage implements OnInit {
     //   await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_AvalCauseAttributeFlags');
     if (this.avalancheActivity) {
       this.avalancheActivityCopy = { ...this.avalancheActivity };
-      if (this.avalancheActivity.DtStart && this.avalancheActivity.DtEnd) {
-        const start = moment(this.avalancheActivity.DtStart);
-        const end = moment(this.avalancheActivity.DtEnd);
-        this.startDate = moment(this.avalancheActivity.DtStart).startOf('day').toISOString();
-        const timeFrame = this.timeFrames.find((tf) => tf.start.h === start.hours() && tf.end.h === end.hours()
-          && tf.start.m === start.minutes() && tf.end.m === end.minutes());
-        if (timeFrame) {
-          this.selectedTimeFrame = timeFrame.id;
-        }
-      }
     } else {
       this.avalancheActivityCopy = {};
       this.isNew = true;
+    }
+    if (this.avalancheActivityCopy.DtStart && this.avalancheActivityCopy.DtEnd) {
+      const start = moment(this.avalancheActivityCopy.DtStart);
+      const end = moment(this.avalancheActivityCopy.DtEnd);
+      this.startDate = moment(this.avalancheActivityCopy.DtStart).startOf('day').toISOString(true);
+      const timeFrame = this.timeFrames.find((tf) => tf.start.h === start.hours() && tf.end.h === end.hours()
+        && tf.start.m === start.minutes() && tf.end.m === end.minutes());
+      if (timeFrame) {
+        this.selectedTimeFrame = timeFrame.id;
+      }
+    } else {
+      this.startDate = moment().startOf('day').toISOString(true);
     }
   }
 
@@ -116,8 +104,8 @@ export class AvalancheActivityModalPage implements OnInit {
   ok() {
     const timeFrame = this.timeFrames.find((tf) => tf.id === this.selectedTimeFrame);
     if (this.startDate && timeFrame) {
-      this.avalancheActivityCopy.DtStart = moment(this.startDate).hours(timeFrame.start.h).minutes(timeFrame.start.m).toISOString();
-      this.avalancheActivityCopy.DtEnd = moment(this.startDate).hours(timeFrame.end.h).minutes(timeFrame.end.m).toISOString();
+      this.avalancheActivityCopy.DtStart = moment(this.startDate).hours(timeFrame.start.h).minutes(timeFrame.start.m).toISOString(true);
+      this.avalancheActivityCopy.DtEnd = moment(this.startDate).hours(timeFrame.end.h).minutes(timeFrame.end.m).toISOString(true);
     }
     if (this.isNew && IsEmptyHelper.isEmpty(this.avalancheActivityCopy)) {
       this.modalController.dismiss(null);
