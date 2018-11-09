@@ -94,8 +94,6 @@ const routes: Routes = [
         path: 'registration/snow/avalanche-evaluation/:id',
         loadChildren: './pages/snow/avalanche-evaluation/avalanche-evaluation.module#AvalancheEvaluationPageModule'
     },
-
-
 ];
 
 @NgModule({

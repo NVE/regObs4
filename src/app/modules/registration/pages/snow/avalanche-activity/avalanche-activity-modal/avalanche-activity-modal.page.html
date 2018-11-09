@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="ok()">{{ 'DIALOGS.OK' | translate }}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="avalancheActivityCopy">
+  <ion-list lines="full">
+    <ion-item>
+      <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.NO_AVALANCHE_ACTIVITY' | translate}}</ion-label>
+      <ion-checkbox mode="md" slot="start" [(ngModel)]="noAvalancheActivity"></ion-checkbox>
+    </ion-item>
+    <ng-container *ngIf="!noAvalancheActivity">
+      <ion-item>
+        <ion-label color="medium" position="stacked" text-uppercase>{{
+          'DATE' | translate }}</ion-label>
+        <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
+          cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY" [(ngModel)]="startDate">
+        </ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ESTIMATED_TIME'
+          | translate}}</ion-label>
+        <ion-select mode="ios" [(ngModel)]="selectedTimeFrame" interface="action-sheet">
+          <ion-select-option [value]="timeFrame.id" *ngFor="let timeFrame of timeFrames">
+            {{ timeFrame.text | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ng-container>
+    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheActivityCopy.Comment"></app-text-comment>
+  </ion-list>
+  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">
+  </app-modal-save-or-delete-buttons>
+</ion-content>

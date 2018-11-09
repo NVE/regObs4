@@ -8,6 +8,7 @@
     "DATA": "Laster data...",
     "LOADING": "Laster"
   },
+  "DATE": "Dato",
   "DAYS": {
     "SHORT": {
       "0": "Søn",
@@ -231,6 +232,8 @@
     },
     "SNOW": {
       "AVALANCHE_ACTIVITY": {
+        "ESTIMATED_TIME": "Antatt tidsrom",
+        "NO_AVALANCHE_ACTIVITY": "Ingen skredaktivitet observert",
         "TITLE": "Skredaktivitet"
       },
       "AVALANCHE_EVALUATION": {

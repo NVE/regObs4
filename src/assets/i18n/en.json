@@ -8,6 +8,7 @@
     "DATA": "Loading...",
     "LOADING": "Loading"
   },
+  "DATE": "Date",
   "DAYS": {
     "SHORT": {
       "0": "Sun",
@@ -231,6 +232,8 @@
     },
     "SNOW": {
       "AVALANCHE_ACTIVITY": {
+        "ESTIMATED_TIME": "Estimated timeframe",
+        "NO_AVALANCHE_ACTIVITY": "No avalanche activity observed",
         "TITLE": "Avalanche activity"
       },
       "AVALANCHE_EVALUATION": {
