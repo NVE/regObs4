@@ -28,6 +28,16 @@
     "OK": "Ok",
     "YES": "Ja"
   },
+  "DIRECTION": {
+    "E": "Ø",
+    "N": "N",
+    "NE": "NØ",
+    "NW": "NV",
+    "S": "S",
+    "SE": "SØ",
+    "SW": "SV",
+    "W": "V"
+  },
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Tur pågår"
   },
@@ -240,15 +250,24 @@
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Legg til nytt skredproblem",
+        "ALL": "Alle",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Størrelse på forventet skred",
         "AVALANCHE_PROBABILITY": "Mulighetene for skred?",
         "AVALANCHE_PROPAGATION_HEADER": "Utbredelsen på skredproblemet",
         "AVALANCHE_TRIGGER_PROBABILITY": "Sannsynlig belastning for skred",
         "AVALANCHE_TYPE": "Angi skredtype",
         "AVAL_PROBABILITY": "Sannsynlighet for skred",
+        "BOTTOM": "Nederst",
+        "EXPOSED_HEIGHT1": "Høyde",
+        "EXPOSED_HEIGHT2": "Nedre høyde",
+        "EXPOSED_HEIGHT_COMBO": "Utsatt høyde",
+        "MIDDLE": "I midten",
         "NO_WEAK_LAYERS": "Det finnes ikke svake lag",
         "PROPAGATION": "Utbredelse",
         "TITLE": "Skredproblem",
+        "TOP": "Øverst",
+        "UNKNOWN_TYPE": "Ukjent skredårsak",
+        "VALID_EXPOSITION": "Eksposisjon",
         "WEAK_LAYER": "Svakt lag",
         "WEAK_LAYER_DEPTH": "Svakt lags dybde"
       },

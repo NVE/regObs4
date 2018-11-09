@@ -28,6 +28,16 @@
     "OK": "Ok",
     "YES": "Yes"
   },
+  "DIRECTION": {
+    "E": "E",
+    "N": "N",
+    "NE": "NE",
+    "NW": "NW",
+    "S": "S",
+    "SE": "SE",
+    "SW": "SW",
+    "W": "W"
+  },
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Logging trip"
   },
@@ -240,15 +250,24 @@
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Add new avalanche problem",
+        "ALL": "All",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Size of expected avalanche",
         "AVALANCHE_PROBABILITY": "The possibility of avalanches?",
         "AVALANCHE_PROPAGATION_HEADER": "Avalanche propagation",
         "AVALANCHE_TRIGGER_PROBABILITY": "Probable load to trigger avalanche",
         "AVALANCHE_TYPE": "Avalanche type",
         "AVAL_PROBABILITY": "Probability for avalanche",
+        "BOTTOM": "Bottom",
+        "EXPOSED_HEIGHT1": "Height",
+        "EXPOSED_HEIGHT2": "Lower height",
+        "EXPOSED_HEIGHT_COMBO": "Exposed height",
+        "MIDDLE": "Middle",
         "NO_WEAK_LAYERS": "There are no weak layers",
         "PROPAGATION": "Propagation",
         "TITLE": "Avalanche problem",
+        "TOP": "Top",
+        "UNKNOWN_TYPE": "Unknown avalanche cause",
+        "VALID_EXPOSITION": "Exposition",
         "WEAK_LAYER": "Weak layer",
         "WEAK_LAYER_DEPTH": "Weak layer depth"
       },

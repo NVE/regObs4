@@ -4,8 +4,10 @@ import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { AvalancheEvalProblem2Dto } from '../../../../regobs-api/models';
+import { AvalancheEvalProblem2Dto, KdvElement } from '../../../../regobs-api/models';
 import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-problem-modal.page';
+import { KdvService } from '../../../../../core/services/kdv/kdv.service';
+import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 
 @Component({
   selector: 'app-avalanche-problem',
@@ -14,13 +16,23 @@ import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-p
 })
 export class AvalancheProblemPage extends BasePage {
 
+  private avalancheCause: KdvElement[];
+
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
     private modalController: ModalController,
     private ngZone: NgZone,
+    private kdvService: KdvService,
+    private userSetttingService: UserSettingService,
   ) {
     super(RegistrationTid.AvalancheEvalProblem2, basePageService, activatedRoute);
+    this.avalancheCause = [];
+  }
+
+  async onInit() {
+    const userSetting = await this.userSetttingService.getUserSettings();
+    this.avalancheCause = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_AvalCauseKDV');
   }
 
   async addOrEditAvalancheProblem(index?: number) {
@@ -47,7 +59,12 @@ export class AvalancheProblemPage extends BasePage {
   }
 
   getDescription(avalancheEvalProblem: AvalancheEvalProblem2Dto) {
-    return avalancheEvalProblem.Comment;
+    const cause = this.avalancheCause.find((c) => c.Id === avalancheEvalProblem.AvalCauseTID);
+    if (cause) {
+      return cause.Name;
+    } else {
+      return 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.UNKNOWN_TYPE';
+    }
   }
 
 }

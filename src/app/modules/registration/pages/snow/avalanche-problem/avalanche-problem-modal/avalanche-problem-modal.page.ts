@@ -1,9 +1,12 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AvalancheEvalProblem2Dto, KdvElement } from '../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { KdvService } from '../../../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../../../core/services/user-setting/user-setting.service';
+
+const EMPTY_EXPOSITION = '00000000';
+const ALL_EXPOSITION = '11111111';
 
 @Component({
   selector: 'app-avalanche-problem-modal',
@@ -28,12 +31,22 @@ export class AvalancheProblemModalPage implements OnInit {
   avalancheCauseAttributes: { kdvElement: KdvElement, selected: boolean }[];
   avalancheExtKdv: KdvElement[];
   avalancheExtKdvFiltered: KdvElement[];
+  exposedHeightTop: boolean;
+  exposedHeightMiddle: boolean;
+  exposedHeightBottom: boolean;
+  exposition: number[];
+  heightArray = [
+    2500, 2400, 2300, 2200, 2100,
+    2000, 1900, 1800, 1700, 1600,
+    1500, 1400, 1300, 1200, 1100,
+    1000, 900, 800, 700, 600,
+    500, 400, 300, 200, 100, 0
+  ];
 
   constructor(
     private modalController: ModalController,
     private kdvService: KdvService,
     private userSettingService: UserSettingService,
-    private ngZone: NgZone,
   ) { }
 
   async ngOnInit() {
@@ -49,9 +62,53 @@ export class AvalancheProblemModalPage implements OnInit {
       this.avalancheEvalProblemCopy = {};
       this.isNew = true;
     }
+    this.exposedHeightTop = this.avalancheEvalProblemCopy.ExposedHeightComboTID === 0
+      || this.avalancheEvalProblemCopy.ExposedHeightComboTID === 3 || this.avalancheEvalProblemCopy.ExposedHeightComboTID === 1;
+    this.exposedHeightMiddle = this.avalancheEvalProblemCopy.ExposedHeightComboTID === 0
+      || this.avalancheEvalProblemCopy.ExposedHeightComboTID === 4;
+    this.exposedHeightBottom = this.avalancheEvalProblemCopy.ExposedHeightComboTID === 0
+      || this.avalancheEvalProblemCopy.ExposedHeightComboTID === 3 || this.avalancheEvalProblemCopy.ExposedHeightComboTID === 2;
+
+    if (!this.avalancheEvalProblemCopy.ValidExposition) {
+      this.avalancheEvalProblemCopy.ValidExposition = EMPTY_EXPOSITION;
+    }
+
     this.avalancheCauseAttributes =
       this.getAvalancheCauseAttributes(this.avalancheEvalProblemCopy.AvalCauseAttributes, snowCauseAttributesKdvElements);
     this.avalCauseChanged();
+  }
+
+  setExposedHeights(exposedHeightComboTID: number) {
+    if (exposedHeightComboTID === 0) {
+      this.exposedHeightTop = true;
+      this.exposedHeightMiddle = true;
+      this.exposedHeightBottom = true;
+    } else if (exposedHeightComboTID === 1) { // Hvit nederst
+      this.exposedHeightTop = true;
+      this.exposedHeightMiddle = true;
+      this.exposedHeightBottom = false;
+    } else if (exposedHeightComboTID === 2) { // Svart nederst
+      this.exposedHeightTop = false;
+      this.exposedHeightMiddle = false;
+      this.exposedHeightBottom = true;
+    } else if (exposedHeightComboTID === 3) { // Hvit i midten
+      this.exposedHeightTop = true;
+      this.exposedHeightMiddle = false;
+      this.exposedHeightBottom = true;
+    } else if (exposedHeightComboTID === 4) { // Svart i midten
+      this.exposedHeightTop = false;
+      this.exposedHeightMiddle = true;
+      this.exposedHeightBottom = false;
+    } else {
+      this.exposedHeightTop = false;
+      this.exposedHeightMiddle = false;
+      this.exposedHeightBottom = false;
+    }
+  }
+
+  sholdUseExposedHight2() {
+    return (this.exposedHeightTop && this.exposedHeightBottom && !this.exposedHeightMiddle)
+      || (!this.exposedHeightTop && !this.exposedHeightBottom && this.exposedHeightMiddle);
   }
 
   avalCauseChanged() {
@@ -102,12 +159,32 @@ export class AvalancheProblemModalPage implements OnInit {
     this.avalancheEvalProblemCopy.AvalCauseDepthTID = undefined;
   }
 
+  setExposition(index: number) {
+    const existingValue = this.avalancheEvalProblemCopy.ValidExposition.substr(index, 1);
+    const newValue = existingValue === '1' ? '0' : '1';
+    this.avalancheEvalProblemCopy.ValidExposition =
+      (this.avalancheEvalProblemCopy.ValidExposition.substr(0, index)
+        + newValue + this.avalancheEvalProblemCopy.ValidExposition.substr(index + 1));
+  }
+
+  toggleAllExpositions() {
+    this.avalancheEvalProblemCopy.ValidExposition =
+      this.avalancheEvalProblemCopy.ValidExposition === ALL_EXPOSITION ? EMPTY_EXPOSITION : ALL_EXPOSITION;
+  }
+
   ok() {
     if (this.noWeakLayers) {
       this.resetAvalancheCauseFields();
     } else {
-      this.avalancheEvalProblemCopy.AvalCauseAttributes =
-        this.getAvalacheCauseAttributeValue(this.avalancheCauseAttributes);
+      const causeAttribute = this.getAvalacheCauseAttributeValue(this.avalancheCauseAttributes);
+      this.avalancheEvalProblemCopy.AvalCauseAttributes = causeAttribute > 0 ? causeAttribute : undefined;
+    }
+    this.setExposedHight(this.exposedHeightTop, this.exposedHeightMiddle, this.exposedHeightBottom);
+    if (this.avalancheEvalProblemCopy.ValidExposition === EMPTY_EXPOSITION) {
+      this.avalancheEvalProblemCopy.ValidExposition = undefined;
+    }
+    if (!this.sholdUseExposedHight2()) {
+      this.avalancheEvalProblemCopy.ExposedHeight2 = undefined;
     }
     if (IsEmptyHelper.isEmpty(this.avalancheEvalProblemCopy)) {
       this.modalController.dismiss();
@@ -118,6 +195,22 @@ export class AvalancheProblemModalPage implements OnInit {
 
   delete() {
     this.modalController.dismiss({ delete: true });
+  }
+
+  private setExposedHight(top: boolean, middle: boolean, bottom: boolean) {
+    if (top && middle && bottom) {
+      this.avalancheEvalProblemCopy.ExposedHeightComboTID = 0;
+    } else if (!top && middle && !bottom) {
+      this.avalancheEvalProblemCopy.ExposedHeightComboTID = 4;
+    } else if (top && !middle && bottom) {
+      this.avalancheEvalProblemCopy.ExposedHeightComboTID = 3;
+    } else if (bottom) {
+      this.avalancheEvalProblemCopy.ExposedHeightComboTID = 2;
+    } else if (top) {
+      this.avalancheEvalProblemCopy.ExposedHeightComboTID = 1;
+    } else {
+      this.avalancheEvalProblemCopy.ExposedHeightComboTID = undefined;
+    }
   }
 
 }
