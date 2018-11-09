@@ -233,6 +233,15 @@
       "AVALANCHE_ACTIVITY": {
         "TITLE": "Skredaktivitet"
       },
+      "AVALANCHE_EVALUATION": {
+        "AVALANCHE_DANGER": "Faregrad",
+        "AVALANCHE_DEVELOPMENT": "Utvikling",
+        "AVALANCHE_DEVEOPMENT_PLACEHOLDER": "Utvikling av skredfare",
+        "EVALUATION": "Vurdering",
+        "EVALUATION_PLACEHOLDER": "Vurdering av skredfare",
+        "FORECAST_CORRECT": "Vurdering av varslet faregrad på varsom",
+        "TITLE": "Skredfarevurdering"
+      },
       "AVALANCHE_OBS": {
         "AVALANCHE_TRIGGER": "Skredutløser",
         "AVALANCHE_TYPE": "Skredtype",

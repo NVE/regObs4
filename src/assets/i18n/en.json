@@ -233,6 +233,15 @@
       "AVALANCHE_ACTIVITY": {
         "TITLE": "Avalanche activity"
       },
+      "AVALANCHE_EVALUATION": {
+        "AVALANCHE_DANGER": "Denger level",
+        "AVALANCHE_DEVELOPMENT": "Development",
+        "AVALANCHE_DEVEOPMENT_PLACEHOLDER": "Development of avalanche danger",
+        "EVALUATION": "Evaluation",
+        "EVALUATION_PLACEHOLDER": "Evaluation of avalanche danger",
+        "FORECAST_CORRECT": "Assessment of avalanche forecast on Varsom",
+        "TITLE": "Avalanche evaluation"
+      },
       "AVALANCHE_OBS": {
         "AVALANCHE_TRIGGER": "Avalanche trigger",
         "AVALANCHE_TYPE": "Avalanche type",

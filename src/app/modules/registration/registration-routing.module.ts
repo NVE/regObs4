@@ -90,6 +90,11 @@ const routes: Routes = [
         path: 'registration/snow/avalanche-problem/:id',
         loadChildren: './pages/snow/avalanche-problem/avalanche-problem.module#AvalancheProblemPageModule'
     },
+    {
+        path: 'registration/snow/avalanche-evaluation/:id',
+        loadChildren: './pages/snow/avalanche-evaluation/avalanche-evaluation.module#AvalancheEvaluationPageModule'
+    },
+
 
 ];
 

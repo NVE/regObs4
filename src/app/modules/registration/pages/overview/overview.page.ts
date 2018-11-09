@@ -253,7 +253,13 @@ export class OverviewPage implements OnInit, OnDestroy {
         'registration/snow/avalanche-problem/' + this.registration.Id,
         'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE',
         '',
-        RegistrationTid.CompressionTest
+        RegistrationTid.AvalancheEvalProblem2
+      ),
+      this.getRegItem(
+        'registration/snow/avalanche-evaluation/' + this.registration.Id,
+        'REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE',
+        '',
+        RegistrationTid.AvalancheEvaluation3
       )
     ];
   }
