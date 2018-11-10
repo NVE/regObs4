@@ -101,11 +101,28 @@ export class AvalancheActivityModalPage implements OnInit {
     this.modalController.dismiss();
   }
 
+  private resetWhenNoActivityFields() {
+    this.avalancheActivityCopy.DtStart = undefined;
+    this.avalancheActivityCopy.DtEnd = undefined;
+    this.avalancheActivityCopy.AvalancheExtTID = undefined;
+    this.avalancheActivityCopy.AvalTriggerSimpleTID = undefined;
+    this.avalancheActivityCopy.DestructiveSizeTID = undefined;
+    this.avalancheActivityCopy.AvalPropagationTID = undefined;
+    this.avalancheActivityCopy.ExposedHeightComboTID = undefined;
+    this.avalancheActivityCopy.ExposedHeight1 = undefined;
+    this.avalancheActivityCopy.ExposedHeight2 = undefined;
+    this.avalancheActivityCopy.ValidExposition = undefined;
+  }
+
   ok() {
-    const timeFrame = this.timeFrames.find((tf) => tf.id === this.selectedTimeFrame);
-    if (this.startDate && timeFrame) {
-      this.avalancheActivityCopy.DtStart = moment(this.startDate).hours(timeFrame.start.h).minutes(timeFrame.start.m).toISOString(true);
-      this.avalancheActivityCopy.DtEnd = moment(this.startDate).hours(timeFrame.end.h).minutes(timeFrame.end.m).toISOString(true);
+    if (this.avalancheActivityCopy.EstimatedNumTID === 1) {
+      this.resetWhenNoActivityFields();
+    } else {
+      const timeFrame = this.timeFrames.find((tf) => tf.id === this.selectedTimeFrame);
+      if (this.startDate && timeFrame) {
+        this.avalancheActivityCopy.DtStart = moment(this.startDate).hours(timeFrame.start.h).minutes(timeFrame.start.m).toISOString(true);
+        this.avalancheActivityCopy.DtEnd = moment(this.startDate).hours(timeFrame.end.h).minutes(timeFrame.end.m).toISOString(true);
+      }
     }
     if (this.isNew && IsEmptyHelper.isEmpty(this.avalancheActivityCopy)) {
       this.modalController.dismiss(null);

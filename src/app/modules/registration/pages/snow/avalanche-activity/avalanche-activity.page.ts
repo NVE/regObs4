@@ -5,7 +5,9 @@ import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ModalController } from '@ionic/angular';
 import { AvalancheActivityModalPage } from './avalanche-activity-modal/avalanche-activity-modal.page';
-import { AvalancheActivityObs2Dto } from '../../../../regobs-api/models';
+import { AvalancheActivityObs2Dto, KdvElement } from '../../../../regobs-api/models';
+import { KdvService } from '../../../../../core/services/kdv/kdv.service';
+import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 
 @Component({
   selector: 'app-avalanche-activity',
@@ -13,14 +15,26 @@ import { AvalancheActivityObs2Dto } from '../../../../regobs-api/models';
   styleUrls: ['./avalanche-activity.page.scss'],
 })
 export class AvalancheActivityPage extends BasePage {
+  private avalancheCause: KdvElement[];
+  private estimatedNumber: KdvElement[];
 
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
     private modalController: ModalController,
     private ngZone: NgZone,
+    private kdvService: KdvService,
+    private userSetttingService: UserSettingService,
   ) {
     super(RegistrationTid.AvalancheActivityObs2, basePageService, activatedRoute);
+    this.avalancheCause = [];
+    this.estimatedNumber = [];
+  }
+
+  async onInit() {
+    const userSetting = await this.userSetttingService.getUserSettings();
+    this.avalancheCause = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_AvalancheExtKDV');
+    this.estimatedNumber = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_EstimatedNumKDV');
   }
 
   async addOrEditAvalancheActivity(index?: number) {
@@ -46,13 +60,21 @@ export class AvalancheActivityPage extends BasePage {
     });
   }
 
-  getDescription(avalancheActivityObs: AvalancheActivityObs2Dto) {
-    return '';
-    // const cause = this.avalancheCause.find((c) => c.Id === avalancheActivityObs.AvalCauseTID);
-    // if (cause) {
-    //   return cause.Name;
-    // } else {
-    //   return 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.UNKNOWN_TYPE';
-    // }
+  getCause(avalancheActivityObs: AvalancheActivityObs2Dto) {
+    const cause = this.avalancheCause.find((c) => c.Id === avalancheActivityObs.AvalancheExtTID);
+    if (cause) {
+      return cause.Name;
+    } else {
+      return 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.UNKNOWN_TYPE';
+    }
+  }
+
+  getEstimatedNumber(avalancheActivityObs: AvalancheActivityObs2Dto) {
+    const kdvalue = this.estimatedNumber.find((c) => c.Id === avalancheActivityObs.EstimatedNumTID);
+    if (kdvalue) {
+      return kdvalue.Name;
+    } else {
+      return 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.UNKNOWN_NUMBER';
+    }
   }
 }

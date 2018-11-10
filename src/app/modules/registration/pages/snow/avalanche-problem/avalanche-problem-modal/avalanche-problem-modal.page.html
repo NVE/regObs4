@@ -58,90 +58,9 @@
     </ion-list-header>
     <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION" kdvKey="Snow_AvalPropagationKDV"
       [(value)]="avalancheEvalProblemCopy.AvalPropagationTID"></app-kdv-dropdown>
-    <ion-item class="no-border no-min-height">
-      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT_COMBO'
-        | translate}}</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <ion-grid class="exposedHight">
-          <ion-row class="top padding-bottom" (click)="exposedHeightTop = !exposedHeightTop" [ngClass]="{'selected': exposedHeightTop}">
-            <ion-col size="12" text-center align-self-center>
-              {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TOP' | translate}}
-            </ion-col>
-          </ion-row>
-          <ion-row class="middle padding-bottom" (click)="exposedHeightMiddle = !exposedHeightMiddle" [ngClass]="{'selected': exposedHeightMiddle}">
-            <ion-col size="12" text-center align-self-center>
-              {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.MIDDLE' | translate}}
-            </ion-col>
-          </ion-row>
-          <ion-row (click)="exposedHeightBottom = !exposedHeightBottom" class="bottom" [ngClass]="{'selected': exposedHeightBottom}">
-            <ion-col size="12" text-center align-self-center>
-              {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.BOTTOM' | translate}}
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="exposedHeightTop || exposedHeightMiddle || exposedHeightBottom">
-      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1'
-        | translate}}</ion-label>
-      <ion-select mode="ios" [(ngModel)]="avalancheEvalProblemCopy.ExposedHeight1" interface="action-sheet">
-        <ion-select-option [value]="height" *ngFor="let height of heightArray">
-          {{ height }}</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item *ngIf="sholdUseExposedHight2()">
-      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2'
-        | translate}}</ion-label>
-      <ion-select mode="ios" [(ngModel)]="avalancheEvalProblemCopy.ExposedHeight2" interface="action-sheet">
-        <ion-select-option [value]="height" *ngFor="let height of heightArray">
-          {{ height }}</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item class="no-border no-min-height">
-      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.VALID_EXPOSITION'
-        | translate}}</ion-label>
-    </ion-item>
-    <ion-item *ngIf="avalancheEvalProblemCopy.ValidExposition">
-      <ion-label>
-        <ion-grid class="exposition">
-          <ion-row>
-            <ion-col size="4" text-center (click)="setExposition(7)" [ngClass]="{'selected': avalancheEvalProblemCopy.ValidExposition[7] === '1'}">
-              {{ 'DIRECTION.NW' | translate}}
-            </ion-col>
-            <ion-col size="4" text-center (click)="setExposition(0)" [ngClass]="{'selected': avalancheEvalProblemCopy.ValidExposition[0] === '1'}">
-              {{ 'DIRECTION.N' | translate}}
-            </ion-col>
-            <ion-col size="4" text-center (click)="setExposition(1)" [ngClass]="{'selected': avalancheEvalProblemCopy.ValidExposition[1] === '1'}">
-              {{ 'DIRECTION.NE' | translate}}
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="4" text-center (click)="setExposition(6)" [ngClass]="{'selected': avalancheEvalProblemCopy.ValidExposition[6] === '1'}">
-              {{ 'DIRECTION.W' | translate}}
-            </ion-col>
-            <ion-col size="4" text-center (click)="toggleAllExpositions()" [ngClass]="{'selected': avalancheEvalProblemCopy.ValidExposition === '11111111'}">
-              {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.ALL' | translate}}
-            </ion-col>
-            <ion-col size="4" text-center (click)="setExposition(2)" [ngClass]="{'selected': avalancheEvalProblemCopy.ValidExposition[2] === '1'}">
-              {{ 'DIRECTION.E' | translate}}
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="4" text-center (click)="setExposition(5)" [ngClass]="{'selected': avalancheEvalProblemCopy.ValidExposition[5] === '1'}">
-              {{ 'DIRECTION.SW' | translate}}
-            </ion-col>
-            <ion-col size="4" text-center (click)="setExposition(4)" [ngClass]="{'selected': avalancheEvalProblemCopy.ValidExposition[4] === '1'}">
-              {{ 'DIRECTION.S' | translate}}
-            </ion-col>
-            <ion-col size="4" text-center (click)="setExposition(3)" [ngClass]="{'selected': avalancheEvalProblemCopy.ValidExposition[3] === '1'}">
-              {{ 'DIRECTION.SE' | translate}}
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-label>
-    </ion-item>
+    <app-exposed-height [(exposedHeightComboTID)]="avalancheEvalProblemCopy.ExposedHeightComboTID" [(exposedHight1)]="avalancheEvalProblemCopy.ExposedHeight1"
+      [(exposedHight2)]="avalancheEvalProblemCopy.ExposedHeight2"></app-exposed-height>
+    <app-valid-exposition [(validExposition)]="avalancheEvalProblemCopy.ValidExposition"></app-valid-exposition>
     <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheEvalProblemCopy.Comment"></app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">

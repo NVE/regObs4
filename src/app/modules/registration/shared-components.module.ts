@@ -19,6 +19,8 @@ import { AddWebUrlModalPage } from './components/add-web-url-item/add-web-url-mo
 import { ModalSaveOrDeleteButtonsComponent } from './components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { AddOrEditDangerObsModalPage } from './pages/danger-obs/add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { CompressionTestModalPage } from './pages/snow/compression-test/compression-test-modal/compression-test-modal.page';
+import { ExposedHeightComponent } from './components/snow/exposed-height/exposed-height.component';
+import { ValidExpositionComponent } from './components/snow/valid-exposition/valid-exposition.component';
 // import { AvalancheProblemModalPage } from './pages/snow/avalanche-problem/avalanche-problem-modal/avalanche-problem-modal.page';
 
 @NgModule({
@@ -42,6 +44,8 @@ import { CompressionTestModalPage } from './pages/snow/compression-test/compress
         KdvDropdownComponent,
         AddWebUrlItemComponent,
         ModalSaveOrDeleteButtonsComponent,
+        ExposedHeightComponent,
+        ValidExpositionComponent,
     ],
     declarations: [
         IceLayerPage,
@@ -49,7 +53,6 @@ import { CompressionTestModalPage } from './pages/snow/compression-test/compress
         AddWebUrlModalPage,
         AddOrEditDangerObsModalPage,
         CompressionTestModalPage,
-        // AvalancheProblemModalPage,
         SaveAndGoBackButtonComponent,
         AddPictureItemComponent,
         TextCommentComponent,
@@ -62,7 +65,9 @@ import { CompressionTestModalPage } from './pages/snow/compression-test/compress
         KdvDescriptionPipe,
         KdvDropdownComponent,
         AddWebUrlItemComponent,
-        ModalSaveOrDeleteButtonsComponent
+        ModalSaveOrDeleteButtonsComponent,
+        ExposedHeightComponent,
+        ValidExpositionComponent,
     ],
     entryComponents: [
         IceLayerPage,
@@ -70,7 +75,6 @@ import { CompressionTestModalPage } from './pages/snow/compression-test/compress
         AddWebUrlModalPage,
         AddOrEditDangerObsModalPage,
         CompressionTestModalPage,
-        // AvalancheProblemModalPage,
     ]
 })
 export class SharedComponentsModule { }

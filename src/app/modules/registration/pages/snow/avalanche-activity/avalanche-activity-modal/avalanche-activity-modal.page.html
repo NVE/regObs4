@@ -42,8 +42,12 @@
         [(value)]="avalancheActivityCopy.DestructiveSizeTID"></app-kdv-dropdown>
       <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION" kdvKey="Snow_AvalPropagationKDV"
         [(value)]="avalancheActivityCopy.AvalPropagationTID"></app-kdv-dropdown>
+      <app-exposed-height [(exposedHeightComboTID)]="avalancheActivityCopy.ExposedHeightComboTID" [(exposedHight1)]="avalancheActivityCopy.ExposedHeight1"
+        [(exposedHight2)]="avalancheActivityCopy.ExposedHeight2"></app-exposed-height>
+      <app-valid-exposition [(validExposition)]="avalancheActivityCopy.ValidExposition"></app-valid-exposition>
     </ng-container>
-    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheActivityCopy.Comment"></app-text-comment>
+    <app-text-comment placeholder="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.COMMENT_PLACEHOLDER" title="REGISTRATION.DANGER_OBS.COMMENT"
+      [(value)]="avalancheActivityCopy.Comment"></app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">
   </app-modal-save-or-delete-buttons>

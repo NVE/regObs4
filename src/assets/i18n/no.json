@@ -232,11 +232,14 @@
     },
     "SNOW": {
       "AVALANCHE_ACTIVITY": {
+        "ADD_NEW": "Legg til ny skredaktivitet",
+        "COMMENT_PLACEHOLDER": "Ytterligere kommentar",
         "DURING_THE_DAY": "I løpet av dagen",
         "ESTIMATED_TIME": "Antatt tidsrom",
         "HOW_MANY_AVALANCHES": "Hvor mange skred er det snakk om?",
         "NO_AVALANCHE_ACTIVITY": "Ingen skredaktivitet observert",
-        "TITLE": "Skredaktivitet"
+        "TITLE": "Skredaktivitet",
+        "UNKNOWN_NUMBER": "Ukjent antall"
       },
       "AVALANCHE_EVALUATION": {
         "AVALANCHE_DANGER": "Faregrad",

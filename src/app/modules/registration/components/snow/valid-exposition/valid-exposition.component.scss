@@ -1,0 +1,13 @@
+.exposition {
+    ion-row {
+        ion-col {
+            padding: 18px;
+            background: rgba(0, 0, 0, 0.2);
+
+            &.selected {
+                color: #fff;
+                background: rgba(0, 0, 0, 0.8);
+            }
+        }
+    }
+}

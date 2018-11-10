@@ -16,11 +16,14 @@
       </ion-label>
     </ion-list-header>
     <ion-item detail="true" (click)="addOrEditAvalancheActivity(i)" *ngFor="let avalancheActivity of registration.AvalancheActivityObs2; let i = index">
-      <ion-label>{{ getDescription(avalancheActivity) | translate }}</ion-label>
+      <ion-label>{{ getEstimatedNumber(avalancheActivity) |
+        translate }}<span *ngIf="avalancheActivity.EstimatedNumTID !== 1"> {{ getCause(avalancheActivity) | translate |
+          lowercase
+          }}</span></ion-label>
     </ion-item>
     <ion-item (click)="addOrEditAvalancheActivity()">
       <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
-      <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.ADD_NEW' | translate}}</ion-label>
+      <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ADD_NEW' | translate}}</ion-label>
     </ion-item>
     <ion-list-header text-uppercase>
       <ion-label no-margin>

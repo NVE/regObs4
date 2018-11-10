@@ -232,11 +232,14 @@
     },
     "SNOW": {
       "AVALANCHE_ACTIVITY": {
+        "ADD_NEW": "Add new avalanche activity",
+        "COMMENT_PLACEHOLDER": "Additional comment",
         "DURING_THE_DAY": "During the day",
         "ESTIMATED_TIME": "Estimated timeframe",
         "HOW_MANY_AVALANCHES": "How many avalanches?",
         "NO_AVALANCHE_ACTIVITY": "No avalanche activity observed",
-        "TITLE": "Avalanche activity"
+        "TITLE": "Avalanche activity",
+        "UNKNOWN_NUMBER": "Unknown number of"
       },
       "AVALANCHE_EVALUATION": {
         "AVALANCHE_DANGER": "Denger level",
