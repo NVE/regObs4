@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, NgZone, Output, EventEmitter } from '@angular/core';
 import { UrlDto } from '../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
-import { AddWebUrlModalPage } from './add-web-url-modal/add-web-url-modal.page';
+import { AddWebUrlModalPage } from '../../pages/add-web-url-modal/add-web-url-modal.page';
 
 @Component({
   selector: 'app-add-web-url-item',

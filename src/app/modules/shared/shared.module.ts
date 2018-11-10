@@ -12,6 +12,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
 import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
 import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
+import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.pipe';
 
 @NgModule({
     imports: [
@@ -30,6 +31,7 @@ import { ObservationListCardComponent } from '../../components/observation/obser
         GeoIconComponent,
         GeoSelectComponent,
         FormatDatePipe,
+        StartsWithHighlightPipe,
         ObservationListCardComponent,
     ],
     exports: [
@@ -46,6 +48,7 @@ import { ObservationListCardComponent } from '../../components/observation/obser
         GeoIconComponent,
         GeoSelectComponent,
         FormatDatePipe,
+        StartsWithHighlightPipe,
         ObservationListCardComponent,
     ]
 })

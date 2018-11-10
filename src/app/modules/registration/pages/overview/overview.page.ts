@@ -117,6 +117,8 @@ export class OverviewPage implements OnInit, OnDestroy {
         this.registration.GeneralObservation ? this.registration.GeneralObservation.ObsComment : '',
         RegistrationTid.GeneralObservation
       ));
+
+    this.cdr.detectChanges();
   }
 
   private getGeoHazardItems() {

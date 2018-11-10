@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UrlDto } from '../../../../regobs-api/models';
 import { ModalController, AlertController } from '@ionic/angular';
+import { UrlDto } from '../../../regobs-api/models';
 
 @Component({
   selector: 'app-add-web-url-modal',

@@ -10,19 +10,12 @@ import { MapModule } from '../map/map.module';
 import { Base64ImageComponent } from './components/base64-image/base64-image.component';
 import { SyncItemComponent } from './components/sync-item/sync-item.component';
 import { SyncItemListComponent } from './components/sync-item-list/sync-item-list.component';
-import { IceLayerPage } from './pages/ice/ice-thickness/ice-layer/ice-layer.page';
 import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
 import { KdvDropdownComponent } from './components/kdv-dropdown/kdv-dropdown.component';
-import { SetAvalanchePositionPage } from './pages/set-avalanche-position/set-avalanche-position.page';
 import { AddWebUrlItemComponent } from './components/add-web-url-item/add-web-url-item.component';
-import { AddWebUrlModalPage } from './components/add-web-url-item/add-web-url-modal/add-web-url-modal.page';
 import { ModalSaveOrDeleteButtonsComponent } from './components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
-import { AddOrEditDangerObsModalPage } from './pages/danger-obs/add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
-import { CompressionTestModalPage } from './pages/snow/compression-test/compression-test-modal/compression-test-modal.page';
 import { ExposedHeightComponent } from './components/snow/exposed-height/exposed-height.component';
 import { ValidExpositionComponent } from './components/snow/valid-exposition/valid-exposition.component';
-// import { AvalancheProblemModalPage } from './pages/snow/avalanche-problem/avalanche-problem-modal/avalanche-problem-modal.page';
-
 @NgModule({
     imports: [
         SharedModule,
@@ -48,11 +41,6 @@ import { ValidExpositionComponent } from './components/snow/valid-exposition/val
         ValidExpositionComponent,
     ],
     declarations: [
-        IceLayerPage,
-        SetAvalanchePositionPage,
-        AddWebUrlModalPage,
-        AddOrEditDangerObsModalPage,
-        CompressionTestModalPage,
         SaveAndGoBackButtonComponent,
         AddPictureItemComponent,
         TextCommentComponent,
@@ -69,12 +57,5 @@ import { ValidExpositionComponent } from './components/snow/valid-exposition/val
         ExposedHeightComponent,
         ValidExpositionComponent,
     ],
-    entryComponents: [
-        IceLayerPage,
-        SetAvalanchePositionPage,
-        AddWebUrlModalPage,
-        AddOrEditDangerObsModalPage,
-        CompressionTestModalPage,
-    ]
 })
 export class SharedComponentsModule { }

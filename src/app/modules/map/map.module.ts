@@ -9,11 +9,13 @@ import { MapCenterInfoComponent } from './components/map-center-info/map-center-
 import { SharedModule } from '../shared/shared.module';
 import { ModalSearchPage } from './pages/modal-search/modal-search.page';
 import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.pipe';
+import { ModalSearchPageModule } from './pages/modal-search/modal-search.module';
 
 @NgModule({
   imports: [
     SharedModule,
     LeafletModule,
+    ModalSearchPageModule,
   ],
   declarations: [
     MapComponent,
@@ -21,9 +23,7 @@ import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.
     MapSearchComponent,
     FullscreenToggleComponent,
     GpsCenterComponent,
-    MapCenterInfoComponent,
-    StartsWithHighlightPipe,
-    ModalSearchPage,
+    MapCenterInfoComponent
   ],
   exports: [
     MapComponent,
@@ -32,8 +32,7 @@ import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.
     FullscreenToggleComponent,
     GpsCenterComponent,
     MapCenterInfoComponent,
-    ModalSearchPage,
-  ],
-  entryComponents: [ModalSearchPage]
+    ModalSearchPageModule
+  ]
 })
 export class MapModule { }
