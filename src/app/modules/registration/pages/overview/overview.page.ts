@@ -5,17 +5,14 @@ import { IRegistration } from '../../models/registration.model';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto } from '../../../regobs-api/models';
 import { RegistrationTid } from '../../models/registrationTid.enum';
-import { NavController } from '@ionic/angular';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
-import { IsEmptyHelper } from '../../../../core/helpers/is-empty.helper';
-import { DateHelperService } from '../../../shared/services/date-helper.service';
 import { ActivatedRoute } from '@angular/router';
 import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
-import { File, FileEntry } from '@ionic-native/file/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { settings } from '../../../../../settings';
 import { RegistrationStatus } from '../../models/registrationStatus.enum';
+import { SummaryItemService } from '../../services/summary-item.service';
 
 @Component({
   selector: 'app-overview',
@@ -35,7 +32,7 @@ export class OverviewPage implements OnInit, OnDestroy {
     private registrationService: RegistrationService,
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
-    private dateHelperService: DateHelperService,
+    private summaryItemService: SummaryItemService,
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
     private userGroupService: UserGroupService) {
@@ -57,16 +54,6 @@ export class OverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  private getObservationGroupName() {
-    if (this.registration && this.registration.ObserverGroupID && this.userGroups) {
-      const selectedGroup = this.userGroups.find((x) => x.Id === this.registration.ObserverGroupID);
-      if (selectedGroup) {
-        return selectedGroup.Name;
-      }
-    }
-    return '';
-  }
-
   async ionViewDidEnter() {
     await this.initSummaryItems();
   }
@@ -85,185 +72,8 @@ export class OverviewPage implements OnInit, OnDestroy {
       this.registration = await this.registrationService.createNewRegistration();
       await this.registrationService.saveRegistration(this.registration);
     }
-    this.summaryItems = [
-      {
-        href: 'registration/obs-location/' + this.registration.Id,
-        title: 'REGISTRATION.OBS_LOCATION.TITLE',
-        subTitle: this.registration.ObsLocation ? this.registration.ObsLocation.LocationName : '',
-        hasData: !IsEmptyHelper.isEmpty(this.registration.ObsLocation),
-      },
-      {
-        href: 'registration/set-time/' + this.registration.Id,
-        title: 'REGISTRATION.OVERVIEW.DATE_AND_TIME',
-        subTitle: this.registration.DtObsTime ? (await this.dateHelperService.formatDateString(this.registration.DtObsTime)) : '',
-        hasData: !!this.registration.DtObsTime,
-      },
-    ];
-    if (this.userGroups.length > 0) {
-      this.summaryItems.push({
-        href: 'registration/group/' + this.registration.Id,
-        title: 'REGISTRATION.OVERVIEW.SHARE_WITH_GROUP',
-        subTitle: this.getObservationGroupName(),
-        hasData: !!this.registration.ObserverGroupID,
-      });
-    }
-
-    this.summaryItems.push(...this.getGeoHazardItems());
-
-    this.summaryItems.push(
-      this.getRegItem(
-        'registration/general-comment/' + this.registration.Id,
-        'REGISTRATION.GENERAL_COMMENT.TITLE',
-        this.registration.GeneralObservation ? this.registration.GeneralObservation.ObsComment : '',
-        RegistrationTid.GeneralObservation
-      ));
-
+    this.summaryItems = await this.summaryItemService.getSummaryItems(this.registration);
     this.cdr.detectChanges();
-  }
-
-  private getGeoHazardItems() {
-    switch (this.registration.geoHazard) {
-      case GeoHazard.Water:
-        return this.getWaterItems();
-      case GeoHazard.Ice:
-        return this.getIceItems();
-      case GeoHazard.Dirt:
-        return this.getDirtItems();
-      case GeoHazard.Snow:
-        return this.getSnowItems();
-    }
-  }
-
-  private getWaterItems() {
-    return [
-      this.getRegItem(
-        'registration/water/water-level/' + this.registration.Id,
-        'REGISTRATION.WATER.WATER_LEVEL.TITLE',
-        this.registration.WaterLevel2 ? this.registration.WaterLevel2.Comment : '',
-        RegistrationTid.WaterLevel2
-      ),
-      this.getRegItem(
-        'registration/water/damage/' + this.registration.Id,
-        'REGISTRATION.WATER.DAMAGE.TITLE',
-        '', // this.registration.DamageObs ? this.registration.DamageObs.map((x) => x.Comment).join() : '',
-        RegistrationTid.DamageObs,
-      ),
-    ];
-  }
-
-  private getRegItem(href: string, title: string, subTitle: string, registrationTid: RegistrationTid): ISummaryItem {
-    return {
-      href,
-      title,
-      subTitle,
-      hasData: !this.registrationService.isEmpty(this.registration, registrationTid),
-      images: this.registrationService.getImages(this.registration, registrationTid),
-    };
-  }
-
-  private getDirtItems() {
-    return [
-      this.getRegItem(
-        'registration/danger-obs/' + this.registration.Id,
-        'REGISTRATION.DANGER_OBS.TITLE',
-        '',
-        RegistrationTid.DangerObs
-      ),
-      this.getRegItem(
-        'registration/dirt/landslide-obs/' + this.registration.Id,
-        'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE',
-        this.registration.LandSlideObs ? this.registration.LandSlideObs.Comment : '',
-        RegistrationTid.LandSlideObs
-      ),
-    ];
-  }
-
-  private getIceItems() {
-    return [
-      this.getRegItem(
-        'registration/ice/ice-cover/' + this.registration.Id,
-        'REGISTRATION.ICE.ICE_COVER.TITLE',
-        this.registration.IceCoverObs ? this.registration.IceCoverObs.Comment : '',
-        RegistrationTid.IceCoverObs
-      ),
-      this.getRegItem(
-        'registration/ice/ice-thickness/' + this.registration.Id,
-        'REGISTRATION.ICE.ICE_THICKNESS.TITLE',
-        this.registration.IceThickness ? this.registration.IceThickness.Comment : '',
-        RegistrationTid.IceThickness
-      ),
-      this.getRegItem(
-        'registration/danger-obs/' + this.registration.Id,
-        'REGISTRATION.DANGER_OBS.TITLE',
-        '',
-        RegistrationTid.DangerObs
-      ),
-      this.getRegItem(
-        'registration/incident/' + this.registration.Id,
-        'REGISTRATION.INCIDENT.TITLE',
-        '',
-        RegistrationTid.Incident
-      ),
-    ];
-  }
-
-  private getSnowItems() {
-    return [
-      this.getRegItem(
-        'registration/danger-obs/' + this.registration.Id,
-        'REGISTRATION.DANGER_OBS.TITLE',
-        '',
-        RegistrationTid.DangerObs
-      ),
-      this.getRegItem(
-        'registration/snow/avalanche-obs/' + this.registration.Id,
-        'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE',
-        '',
-        RegistrationTid.AvalancheObs
-      ),
-      this.getRegItem(
-        'registration/snow/avalanche-activity/' + this.registration.Id,
-        'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE',
-        '',
-        RegistrationTid.AvalancheActivityObs2
-      ),
-      this.getRegItem(
-        'registration/snow/weather/' + this.registration.Id,
-        'REGISTRATION.SNOW.WEATHER.TITLE',
-        '',
-        RegistrationTid.WeatherObservation
-      ),
-      this.getRegItem(
-        'registration/snow/snow-surface/' + this.registration.Id,
-        'REGISTRATION.SNOW.SNOW_SURFACE.TITLE',
-        '',
-        RegistrationTid.SnowSurfaceObservation
-      ),
-      this.getRegItem(
-        'registration/snow/snow-profile/' + this.registration.Id,
-        'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
-        '',
-        RegistrationTid.SnowProfile
-      ),
-      this.getRegItem(
-        'registration/snow/compression-test/' + this.registration.Id,
-        'REGISTRATION.SNOW.COMPRESSION_TEST.TITLE',
-        '',
-        RegistrationTid.CompressionTest
-      ),
-      this.getRegItem(
-        'registration/snow/avalanche-problem/' + this.registration.Id,
-        'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE',
-        '',
-        RegistrationTid.AvalancheEvalProblem2
-      ),
-      this.getRegItem(
-        'registration/snow/avalanche-evaluation/' + this.registration.Id,
-        'REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE',
-        '',
-        RegistrationTid.AvalancheEvaluation3
-      )
-    ];
   }
 
   ionViewWillLeave() {

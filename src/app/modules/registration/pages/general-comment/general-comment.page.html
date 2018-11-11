@@ -27,5 +27,6 @@
     </ion-item>
     <app-add-picture-item *ngIf="registration.Picture" [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
   </ion-list>
+  <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
 </ion-content>
 <app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

@@ -52,7 +52,6 @@
     </ion-button> -->
     </ion-list>
   </ng-container>
-  <app-navigation-buttons previousUrl="registration/group" previousText="Del med gruppe" nextUrl="registration/water/damage"
-    nextText="Skader"></app-navigation-buttons>
+  <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
 </ion-content>
 <app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

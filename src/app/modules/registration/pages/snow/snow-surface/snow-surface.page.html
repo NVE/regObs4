@@ -9,8 +9,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list lines="full" *ngIf="registration && registration.SnowSurfaceObservation">
+<ion-content *ngIf="registration && registration.SnowSurfaceObservation">
+  <ion-list lines="full">
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.TITLE' | translate}}</h3>
@@ -65,7 +65,6 @@
     </ion-list-header>
     <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
   </ion-list>
-  <app-navigation-buttons [previousUrl]="applyRegId('registration/danger-obs')" previousText="REGISTRATION.DANGER_OBS.TITLE"
-    [nextUrl]="applyRegId('registration/snow/avalanche-activity')" nextText="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE"></app-navigation-buttons>
+  <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
 </ion-content>
 <app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>
