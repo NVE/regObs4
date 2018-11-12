@@ -198,5 +198,17 @@ app-geo-icon {
 }
 
 .shadow-marker {
-   filter: drop-shadow(5px 0px 5px #000);
+  // filter: drop-shadow(5px 0px 5px #000);
+   &:after {
+       content: "";
+        width: 42px;
+        height: 42px;
+        background: url("/leaflet/marker-shadow.png") no-repeat;
+        background-size: 100%;
+        top: 0px;
+        right: -9px;
+        position: absolute;
+        display: inline-block;
+        z-index: -1,
+  }
 }

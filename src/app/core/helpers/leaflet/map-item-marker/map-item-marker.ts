@@ -40,7 +40,8 @@ export class MapItemMarker extends L.Marker {
             iconUrl: iconUrl,
             iconSize: [27, 42],
             iconAnchor: [13.5, 41],
-            className: 'shadow-marker'
+            shadowUrl: '/leaflet/marker-shadow.png',
+            shadowSize: [42, 42],
         }));
     }
 

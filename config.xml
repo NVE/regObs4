@@ -148,5 +148,5 @@
     <plugin name="cordova-plugin-email-composer" spec="^0.8.15" />
     <engine name="browser" spec="5.0.4" />
     <engine name="ios" spec="4.5.5" />
-    <engine name="android" spec="7.1.1" />
+    <engine name="android" spec="7.1.2" />
 </widget>
