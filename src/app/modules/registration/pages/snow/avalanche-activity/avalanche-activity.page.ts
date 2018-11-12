@@ -40,20 +40,20 @@ export class AvalancheActivityPage extends BasePage {
   async addOrEditAvalancheActivity(index?: number) {
     const modal = await this.modalController.create({
       component: AvalancheActivityModalPage,
-      componentProps: { avalancheActivity: this.registration.AvalancheActivityObs2[index] },
+      componentProps: { avalancheActivity: this.registration.request.AvalancheActivityObs2[index] },
     });
     modal.present();
     const result = await modal.onDidDismiss();
     this.ngZone.run(() => {
       if (result.data) {
         if (result.data.delete) {
-          this.registration.AvalancheActivityObs2.splice(index, 1);
+          this.registration.request.AvalancheActivityObs2.splice(index, 1);
         } else {
           const avalancheActivityObs: AvalancheActivityObs2Dto = result.data;
           if (index !== undefined) {
-            this.registration.AvalancheActivityObs2[index] = avalancheActivityObs;
+            this.registration.request.AvalancheActivityObs2[index] = avalancheActivityObs;
           } else {
-            this.registration.AvalancheActivityObs2.push(avalancheActivityObs);
+            this.registration.request.AvalancheActivityObs2.push(avalancheActivityObs);
           }
         }
       }

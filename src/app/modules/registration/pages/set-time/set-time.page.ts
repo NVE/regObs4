@@ -21,8 +21,8 @@ export class SetTimePage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.maxDate = moment().toISOString(true);
     const reg = await this.registrationService.getCurrentRegistration();
-    if (reg && reg.DtObsTime) {
-      this.date = reg.DtObsTime;
+    if (reg && reg.request.DtObsTime) {
+      this.date = reg.request.DtObsTime;
     } else {
       this.date = moment().toISOString(true);
     }
@@ -39,8 +39,8 @@ export class SetTimePage implements OnInit, OnDestroy {
 
   async confirm() {
     const currentRegistration = await this.registrationService.getCurrentRegistration();
-    currentRegistration.DtObsTime = this.date;
+    currentRegistration.request.DtObsTime = this.date;
     await this.registrationService.saveRegistration(currentRegistration);
-    this.navController.navigateForward('registration/edit/' + currentRegistration.Id);
+    this.navController.navigateForward('registration/edit/' + currentRegistration.id);
   }
 }

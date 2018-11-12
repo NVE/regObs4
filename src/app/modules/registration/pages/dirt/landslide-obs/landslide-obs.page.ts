@@ -23,25 +23,25 @@ export class LandslideObsPage extends BasePage {
   }
 
   onInit() {
-    if (!this.registration.LandSlideObs.Urls) {
-      this.registration.LandSlideObs.Urls = [];
+    if (!this.registration.request.LandSlideObs.Urls) {
+      this.registration.request.LandSlideObs.Urls = [];
     }
   }
 
   isValid() {
     return this.registration
-      && this.registration.LandSlideObs
-      && !!this.registration.LandSlideObs.DtLandSlideTime
-      && !!this.registration.LandSlideObs.DtLandSlideTimeEnd;
+      && this.registration.request.LandSlideObs
+      && !!this.registration.request.LandSlideObs.DtLandSlideTime
+      && !!this.registration.request.LandSlideObs.DtLandSlideTimeEnd;
   }
 
   async setLandslidePosition() {
-    const relativeToLatLng = this.registration.ObsLocation
-      ? L.latLng(this.registration.ObsLocation.Latitude, this.registration.ObsLocation.Longitude) : null;
-    const startLatLng = this.registration.LandSlideObs.StartLat && this.registration.LandSlideObs.StartLong ?
-      L.latLng(this.registration.LandSlideObs.StartLat, this.registration.LandSlideObs.StartLong) : null;
-    const endLatLng = this.registration.LandSlideObs.StopLat && this.registration.LandSlideObs.StopLong ?
-      L.latLng(this.registration.LandSlideObs.StopLat, this.registration.LandSlideObs.StopLong) : null;
+    const relativeToLatLng = this.registration.request.ObsLocation
+      ? L.latLng(this.registration.request.ObsLocation.Latitude, this.registration.request.ObsLocation.Longitude) : null;
+    const startLatLng = this.registration.request.LandSlideObs.StartLat && this.registration.request.LandSlideObs.StartLong ?
+      L.latLng(this.registration.request.LandSlideObs.StartLat, this.registration.request.LandSlideObs.StartLong) : null;
+    const endLatLng = this.registration.request.LandSlideObs.StopLat && this.registration.request.LandSlideObs.StopLong ?
+      L.latLng(this.registration.request.LandSlideObs.StopLat, this.registration.request.LandSlideObs.StopLong) : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,
       componentProps: { relativeToLatLng, startLatLng, endLatLng },
@@ -51,10 +51,10 @@ export class LandslideObsPage extends BasePage {
     if (result.data) {
       const start: L.LatLng = result.data.start;
       const end: L.LatLng = result.data.end;
-      this.registration.LandSlideObs.StartLat = start.lat;
-      this.registration.LandSlideObs.StartLong = start.lng;
-      this.registration.LandSlideObs.StopLat = end.lat;
-      this.registration.LandSlideObs.StopLong = end.lng;
+      this.registration.request.LandSlideObs.StartLat = start.lat;
+      this.registration.request.LandSlideObs.StartLong = start.lng;
+      this.registration.request.LandSlideObs.StopLat = end.lat;
+      this.registration.request.LandSlideObs.StopLong = end.lng;
     }
   }
 

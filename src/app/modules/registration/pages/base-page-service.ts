@@ -60,7 +60,8 @@ export class BasePageService {
     async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
         this.ngZone.run(() => {
             if (registrationTid) {
-                registration[this.registrationService.getPropertyName(registrationTid)] = this.getDefaultValue(registrationTid);
+                registration.request[this.registrationService.getPropertyName(registrationTid)]
+                    = this.getDefaultValue(registrationTid);
                 this.resetImages(registration, registrationTid);
             }
             if (onReset) {
@@ -71,11 +72,11 @@ export class BasePageService {
 
     createDefaultProps(registration: IRegistration, registrationTid: RegistrationTid) {
         const propName = this.registrationService.getPropertyName(registrationTid);
-        if (!registration[propName]) { // Init to new object if null
-            registration[propName] = this.getDefaultValue(registrationTid);
+        if (!registration.request[propName]) { // Init to new object if null
+            registration.request[propName] = this.getDefaultValue(registrationTid);
         }
-        if (!registration.Picture) {
-            registration.Picture = [];
+        if (!registration.request.Picture) {
+            registration.request.Picture = [];
         }
 
     }
@@ -89,15 +90,12 @@ export class BasePageService {
     }
 
     resetImages(registration: IRegistration, registrationTid: RegistrationTid) {
-        if (registration.Picture && registration.Picture.length > 0) {
-            registration.Picture = registration.Picture.filter((p) => p.RegistrationTID !== registrationTid);
+        if (registration.request.Picture && registration.request.Picture.length > 0) {
+            registration.request.Picture = registration.request.Picture.filter((p) => p.RegistrationTID !== registrationTid);
         }
     }
 
     hasImages(registration: IRegistration, registrationTid: RegistrationTid) {
         return this.registrationService.getImages(registration, registrationTid).length > 0;
-    }
-    applyRegId(registration: IRegistration, url: string) {
-        return `${url}/${registration.Id}`;
     }
 }

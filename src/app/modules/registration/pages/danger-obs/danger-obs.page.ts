@@ -37,7 +37,7 @@ export class DangerObsPage extends BasePage {
   }
 
   async addOrEdit(index: number) {
-    const dangerObs = index !== undefined ? this.registration.DangerObs[index] : undefined;
+    const dangerObs = index !== undefined ? this.registration.request.DangerObs[index] : undefined;
     const modal = await this.modalController.create({
       component: AddOrEditDangerObsModalPage,
       componentProps: { dangerObs, geoHazard: this.registration.geoHazard },
@@ -59,20 +59,20 @@ export class DangerObsPage extends BasePage {
 
   setDangerObs(index: number, dangerObs: DangerObsDto) {
     this.zone.run(() => {
-      this.registration.DangerObs[index] = dangerObs;
+      this.registration.request.DangerObs[index] = dangerObs;
     });
   }
 
   addDangerObs(dangerObs: DangerObsDto) {
     this.zone.run(() => {
-      this.registration.DangerObs.push(dangerObs);
+      this.registration.request.DangerObs.push(dangerObs);
     });
   }
 
   removeAtIndex(index: number) {
     this.zone.run(() => {
-      if (this.registration.DangerObs.length > 0) {
-        this.registration.DangerObs.splice(index, 1);
+      if (this.registration.request.DangerObs.length > 0) {
+        this.registration.request.DangerObs.splice(index, 1);
       }
     });
   }

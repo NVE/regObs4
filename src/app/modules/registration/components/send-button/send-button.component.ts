@@ -46,7 +46,7 @@ export class SendButtonComponent implements OnInit {
         {
           text: translations['ALERT.OK'],
           handler: async () => {
-            await this.registrationService.deleteRegistrationById(userSetting.appMode, this.registration.Id);
+            await this.registrationService.deleteRegistrationById(userSetting.appMode, this.registration.id);
             this.navController.navigateRoot('');
           }
         }

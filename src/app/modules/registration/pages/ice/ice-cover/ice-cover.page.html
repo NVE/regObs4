@@ -8,28 +8,28 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content *ngIf="registration && registration.IceCoverObs">
+<ion-content *ngIf="registration && registration.request.IceCoverObs">
   <ion-list lines="full">
     <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.ICE.ICE_COVER.ICE_COVER" kdvKey="Ice_IceCoverKDV"
-      [(value)]="registration.IceCoverObs.IceCoverTID"></app-kdv-radiobutton-list>
+      [(value)]="registration.request.IceCoverObs.IceCoverTID"></app-kdv-radiobutton-list>
     <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.ICE.ICE_COVER.ICE_COVER_BEFORE" kdvKey="Ice_IceCoverBeforeKDV"
-      [(value)]="registration.IceCoverObs.IceCoverBeforeTID"></app-kdv-radiobutton-list>
+      [(value)]="registration.request.IceCoverObs.IceCoverBeforeTID"></app-kdv-radiobutton-list>
     <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.ICE.ICE_COVER.ICE_CAPACITY" kdvKey="Ice_IceCapacityKDV"
-      [(value)]="registration.IceCoverObs.IceCapacityTID"></app-kdv-radiobutton-list>
+      [(value)]="registration.request.IceCoverObs.IceCapacityTID"></app-kdv-radiobutton-list>
     <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.ICE.ICE_COVER.ICE_SKATEABILITY" kdvKey="Ice_IceSkateabilityKDV"
-      [(value)]="registration.IceCoverObs.IceSkateabilityTID"></app-kdv-radiobutton-list>
+      [(value)]="registration.request.IceCoverObs.IceSkateabilityTID"></app-kdv-radiobutton-list>
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <app-text-comment [(value)]="registration.IceCoverObs.Comment" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
+    <app-text-comment [(value)]="registration.request.IceCoverObs.Comment" placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+    <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
   </ion-list>
   <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
 </ion-content>

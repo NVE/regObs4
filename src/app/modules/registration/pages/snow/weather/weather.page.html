@@ -9,52 +9,53 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="registration && registration.WeatherObservation">
+<ion-content *ngIf="registration && registration.request.WeatherObservation">
   <ion-list lines="full">
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.SNOW.WEATHER.TITLE' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.WEATHER.PRECIPITATION" kdvKey="Snow_PrecipitationKDV" [(value)]="registration.WeatherObservation.PrecipitationTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.WEATHER.PRECIPITATION" kdvKey="Snow_PrecipitationKDV" [(value)]="registration.request.WeatherObservation.PrecipitationTID"></app-kdv-dropdown>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE'
         | translate}}</ion-label>
-      <ion-input type="number" min="-50" max="50" [(ngModel)]="registration.WeatherObservation.AirTemperature"
+      <ion-input type="number" min="-50" max="50" [(ngModel)]="registration.request.WeatherObservation.AirTemperature"
         placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
       </ion-input>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_SPEED'
         | translate}}</ion-label>
-      <ion-input type="number" min="0" max="50" [(ngModel)]="registration.WeatherObservation.WindSpeed" placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
+      <ion-input type="number" min="0" max="50" [(ngModel)]="registration.request.WeatherObservation.WindSpeed"
+        placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
       </ion-input>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.CLOUD_COVER'
         | translate}}</ion-label>
-      <ion-input type="number" min="0" max="100" pattern="[0-9]*" step="1" [(ngModel)]="registration.WeatherObservation.CloudCover"
+      <ion-input type="number" min="0" max="100" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.WeatherObservation.CloudCover"
         placeholder="{{'REGISTRATION.SNOW.WEATHER.ONLY_FULL_PERCENTAGE' | translate}}">
       </ion-input>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_DIRECTION'
         | translate}}</ion-label>
-      <ion-select mode="ios" [(ngModel)]="registration.WeatherObservation.WindDirection" interface="action-sheet">
+      <ion-select mode="ios" [(ngModel)]="registration.request.WeatherObservation.WindDirection" interface="action-sheet">
         <ng-container *ngFor="let windDirection of windDirectionArray">
           <ion-select-option [value]="windDirection.val">{{
             windDirection.name | translate }}</ion-select-option>
         </ng-container>
       </ion-select>
     </ion-item>
-    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.WeatherObservation.Comment"
+    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.WeatherObservation.Comment"
       placeholder="REGISTRATION.SNOW.WEATHER.COMMENT_PLACEHOLDER"></app-text-comment>
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+    <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
   </ion-list>
   <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
 </ion-content>

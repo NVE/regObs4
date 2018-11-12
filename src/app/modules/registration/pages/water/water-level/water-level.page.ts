@@ -20,26 +20,27 @@ export class WaterLevelPage extends BasePage {
   }
 
   onInit() {
-    if (!this.registration.WaterLevel2.WaterLevelMeasurement || this.registration.WaterLevel2.WaterLevelMeasurement.length === 0) {
-      this.registration.WaterLevel2.WaterLevelMeasurement = [{}];
+    if (!this.registration.request.WaterLevel2.WaterLevelMeasurement
+      || this.registration.request.WaterLevel2.WaterLevelMeasurement.length === 0) {
+      this.registration.request.WaterLevel2.WaterLevelMeasurement = [{}];
     }
   }
 
   onReset() {
-    this.registration.WaterLevel2.WaterLevelMeasurement = [{}];
+    this.registration.request.WaterLevel2.WaterLevelMeasurement = [{}];
   }
 
   addWaterLevelMeasurement() {
-    this.registration.WaterLevel2.WaterLevelMeasurement.push({});
+    this.registration.request.WaterLevel2.WaterLevelMeasurement.push({});
   }
 
   onBeforeLeave() {
     // Cleanup
-    if (this.registration.WaterLevel2.WaterLevelMethodTID === 2) {
-      this.registration.WaterLevel2.MarkingReferenceTID = null;
+    if (this.registration.request.WaterLevel2.WaterLevelMethodTID === 2) {
+      this.registration.request.WaterLevel2.MarkingReferenceTID = null;
     }
-    this.registration.WaterLevel2.WaterLevelMeasurement =
-      (this.registration.WaterLevel2.WaterLevelMeasurement || []).filter((item) => !IsEmptyHelper.isEmpty(item));
+    this.registration.request.WaterLevel2.WaterLevelMeasurement =
+      (this.registration.request.WaterLevel2.WaterLevelMeasurement || []).filter((item) => !IsEmptyHelper.isEmpty(item));
   }
 
 }

@@ -21,7 +21,7 @@
   </ion-item>
   <ion-item *ngIf="registration.error.status >= 400">
     <ion-label text-wrap>
-      {{'REGISTRATION.FAILED.REFERENCE' | translate}} ID: {{ registration.Id }}
+      {{'REGISTRATION.FAILED.REFERENCE' | translate}} ID: {{ registration.id }}
     </ion-label>
   </ion-item>
   <ion-item (click)="sendEmail()">

@@ -29,12 +29,13 @@ export class GroupPage extends BasePage {
 
   onReset() {
     this.ngZone.run(() => {
-      this.registration.ObserverGroupID = undefined;
+      this.registration.request.ObserverGroupID = undefined;
     });
   }
 
   isEmpty() {
-    return this.registration && (this.registration.ObserverGroupID === undefined || this.registration.ObserverGroupID === null);
+    return this.registration &&
+      (this.registration.request.ObserverGroupID === undefined || this.registration.request.ObserverGroupID === null);
   }
 
 }

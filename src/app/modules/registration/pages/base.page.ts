@@ -73,10 +73,6 @@ export abstract class BasePage implements OnInit, OnDestroy {
         return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid);
     }
 
-    applyRegId(url: string) {
-        return `${url}/${this.registration ? this.registration.Id : ''}`;
-    }
-
     reset() {
         return this.basePageService.reset(this.registration, this.registrationTid, () => this.onReset ? this.onReset() : null);
     }

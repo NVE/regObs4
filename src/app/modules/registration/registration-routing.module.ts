@@ -35,10 +35,6 @@ const routes: Routes = [
         loadChildren: './pages/water/damage/damage.module#DamagePageModule'
     },
     {
-        path: 'registration/set-damage-location/:id/:damageTypeTid',
-        loadChildren: './pages/set-damage-location/set-damage-location.module#SetDamageLocationPageModule'
-    },
-    {
         path: 'registration/edit/:id',
         loadChildren: './pages/overview/overview.module#OverviewPageModule'
     },

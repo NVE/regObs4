@@ -21,22 +21,22 @@ export class DamagePage extends BasePage {
   checked: boolean;
 
   get isChecked() {
-    if (!this.registration || this.registration.DamageObs.length === 0) {
+    if (!this.registration || this.registration.request.DamageObs.length === 0) {
       return this.checked;
     }
-    return this.registration && this.registration.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE).length > 0;
+    return this.registration && this.registration.request.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE).length > 0;
   }
 
   set isChecked(val: boolean) {
     this.checked = val;
     if (val === false) {
-      this.registration.DamageObs = [
+      this.registration.request.DamageObs = [
         {
           DamageTypeTID: NO_DAMAGE_VISIBLE
         }
       ];
     } else {
-      this.registration.DamageObs = this.registration.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE);
+      this.registration.request.DamageObs = this.registration.request.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE);
     }
   }
 

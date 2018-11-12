@@ -31,21 +31,21 @@ export class WeatherPage extends BasePage {
   }
 
   onBeforeLeave() {
-    if (this.registration.WeatherObservation.AirTemperature !== undefined) {
-      this.registration.WeatherObservation.AirTemperature =
-        Math.round(this.registration.WeatherObservation.AirTemperature * 10) / 10.0;
+    if (this.registration.request.WeatherObservation.AirTemperature !== undefined) {
+      this.registration.request.WeatherObservation.AirTemperature =
+        Math.round(this.registration.request.WeatherObservation.AirTemperature * 10) / 10.0;
     }
-    if (this.registration.WeatherObservation.WindSpeed !== undefined) {
-      this.registration.WeatherObservation.WindSpeed =
-        Math.round(this.registration.WeatherObservation.WindSpeed * 10) / 10.0;
+    if (this.registration.request.WeatherObservation.WindSpeed !== undefined) {
+      this.registration.request.WeatherObservation.WindSpeed =
+        Math.round(this.registration.request.WeatherObservation.WindSpeed * 10) / 10.0;
     }
-    if (this.registration.WeatherObservation.CloudCover !== undefined) {
-      if (this.registration.WeatherObservation.CloudCover > 100) {
-        this.registration.WeatherObservation.CloudCover = 100;
-      } else if (this.registration.WeatherObservation.CloudCover < 0) {
-        this.registration.WeatherObservation.CloudCover = 0;
+    if (this.registration.request.WeatherObservation.CloudCover !== undefined) {
+      if (this.registration.request.WeatherObservation.CloudCover > 100) {
+        this.registration.request.WeatherObservation.CloudCover = 100;
+      } else if (this.registration.request.WeatherObservation.CloudCover < 0) {
+        this.registration.request.WeatherObservation.CloudCover = 0;
       } else {
-        this.registration.WeatherObservation.CloudCover = Math.round(this.registration.WeatherObservation.CloudCover);
+        this.registration.request.WeatherObservation.CloudCover = Math.round(this.registration.request.WeatherObservation.CloudCover);
       }
     }
   }

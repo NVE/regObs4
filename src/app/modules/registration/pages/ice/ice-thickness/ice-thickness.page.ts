@@ -27,8 +27,8 @@ export class IceThicknessPage extends BasePage {
   }
 
   onInit() {
-    if (!this.registration.IceThickness.IceThicknessLayer) {
-      this.registration.IceThickness.IceThicknessLayer = [];
+    if (!this.registration.request.IceThickness.IceThicknessLayer) {
+      this.registration.request.IceThickness.IceThicknessLayer = [];
     }
   }
 
@@ -43,7 +43,7 @@ export class IceThicknessPage extends BasePage {
   async addOrEditThicknessLayer(index?: number) {
     const modal = await this.modalController.create({
       component: IceLayerPage,
-      componentProps: { iceThicknessLayer: this.registration.IceThickness.IceThicknessLayer[index] },
+      componentProps: { iceThicknessLayer: this.registration.request.IceThickness.IceThicknessLayer[index] },
     });
     modal.present();
     const result = await modal.onDidDismiss();
@@ -63,7 +63,7 @@ export class IceThicknessPage extends BasePage {
 
   onIceThicknessReorder(event: CustomEvent) {
     this.ngZone.run(() => {
-      this.reorderList(this.registration.IceThickness.IceThicknessLayer, event.detail.from, event.detail.to);
+      this.reorderList(this.registration.request.IceThickness.IceThicknessLayer, event.detail.from, event.detail.to);
     });
     event.detail.complete();
   }
@@ -74,28 +74,28 @@ export class IceThicknessPage extends BasePage {
 
   setIceThicknessLayer(index: number, iceThicknessLayer: IceThicknessLayerDto) {
     this.ngZone.run(() => {
-      this.registration.IceThickness.IceThicknessLayer[index] = iceThicknessLayer;
+      this.registration.request.IceThickness.IceThicknessLayer[index] = iceThicknessLayer;
     });
     this.calculateIceThicknessSum();
   }
 
   addIceThicknessLayer(iceThicknessLayer: IceThicknessLayerDto) {
     this.ngZone.run(() => {
-      this.registration.IceThickness.IceThicknessLayer.push(iceThicknessLayer);
+      this.registration.request.IceThickness.IceThicknessLayer.push(iceThicknessLayer);
     });
     this.calculateIceThicknessSum();
   }
 
   calculateIceThicknessSum() {
     this.ngZone.run(() => {
-      this.registration.IceThickness.IceThicknessSum = this.registration.IceThickness.IceThicknessLayer
+      this.registration.request.IceThickness.IceThicknessSum = this.registration.request.IceThickness.IceThicknessLayer
         .reduce((p, c) => p + (c.IceLayerThickness || 0), 0);
     });
   }
 
   removeLayerAtIndex(index: number) {
     this.ngZone.run(() => {
-      this.registration.IceThickness.IceThicknessLayer.splice(index, 1);
+      this.registration.request.IceThickness.IceThicknessLayer.splice(index, 1);
     });
     this.calculateIceThicknessSum();
   }

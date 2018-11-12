@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="registration && registration.AvalancheObs">
+<ion-content *ngIf="registration && registration.request.AvalancheObs">
   <ion-list lines="full">
     <ion-list-header text-uppercase>
       <ion-label no-margin>
@@ -22,30 +22,31 @@
     </ion-item>
     <ion-item detail="true" (click)="setAvalanchePosition()">
       <ion-icon color="primary" name="pin" slot="start"></ion-icon>
-      <ion-label *ngIf="!registration.AvalancheObs.StartLat">{{
+      <ion-label *ngIf="!registration.request.AvalancheObs.StartLat">{{
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.SET_LANDSLIDE_POSITION' | translate }} {{
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.IN_MAP' | translate }}</ion-label>
-      <ion-label text-wrap *ngIf="registration.AvalancheObs.StartLat">{{ registration.AvalancheObs.StartLat |
+      <ion-label text-wrap *ngIf="registration.request.AvalancheObs.StartLat">{{
+        registration.request.AvalancheObs.StartLat |
         number:'0.3'
         }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-        {{ registration.AvalancheObs.StartLong | number:'0.3'
-        }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{ registration.AvalancheObs.StopLat | number:'0.3'
+        {{ registration.request.AvalancheObs.StartLong | number:'0.3'
+        }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{ registration.request.AvalancheObs.StopLat | number:'0.3'
         }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-        {{ registration.AvalancheObs.StopLong | number:'0.3'
+        {{ registration.request.AvalancheObs.StopLong | number:'0.3'
         }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</ion-label>
     </ion-item>
     <ion-item>
-      <ion-label [color]="!registration.AvalancheObs.DtAvalancheTime ? 'danger' : 'medium'" position="stacked"
+      <ion-label [color]="!registration.request.AvalancheObs.DtAvalancheTime ? 'danger' : 'medium'" position="stacked"
         text-uppercase>{{
         'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}*</ion-label>
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
-        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.AvalancheObs.DtAvalancheTime">
+        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.AvalancheObs.DtAvalancheTime">
       </ion-datetime>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION'
         | translate}}</ion-label>
-      <ion-select mode="ios" [(ngModel)]="registration.AvalancheObs.ValidExposition" interface="action-sheet">
+      <ion-select mode="ios" [(ngModel)]="registration.request.AvalancheObs.ValidExposition" interface="action-sheet">
         <ng-container *ngFor="let expo of expoArray">
           <ion-select-option [value]="expo.val">{{
             expo.name }}</ion-select-option>
@@ -53,50 +54,52 @@
       </ion-select>
     </ion-item>
     <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE" kdvKey="Snow_DestructiveSizeKDV"
-      [(value)]="registration.AvalancheObs.DestructiveSizeTID"></app-kdv-dropdown>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TYPE" kdvKey="Snow_AvalancheKDV" [(value)]="registration.AvalancheObs.AvalancheTID"></app-kdv-dropdown>
+      [(value)]="registration.request.AvalancheObs.DestructiveSizeTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TYPE" kdvKey="Snow_AvalancheKDV" [(value)]="registration.request.AvalancheObs.AvalancheTID"></app-kdv-dropdown>
     <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TRIGGER" kdvKey="Snow_AvalancheTriggerKDV"
-      [(value)]="registration.AvalancheObs.AvalancheTriggerTID"></app-kdv-dropdown>
+      [(value)]="registration.request.AvalancheObs.AvalancheTriggerTID"></app-kdv-dropdown>
     <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.TERRAIN_START_ZONE" kdvKey="Snow_TerrainStartZoneKDV"
-      [(value)]="registration.AvalancheObs.TerrainStartZoneTID"></app-kdv-dropdown>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVAL_CAUSE" kdvKey="Snow_AvalCauseKDV" [(value)]="registration.AvalancheObs.AvalCauseTID"></app-kdv-dropdown>
+      [(value)]="registration.request.AvalancheObs.TerrainStartZoneTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVAL_CAUSE" kdvKey="Snow_AvalCauseKDV" [(value)]="registration.request.AvalancheObs.AvalCauseTID"></app-kdv-dropdown>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_HEIGTH'
         | translate}}</ion-label>
-      <ion-input type="number" [min]="0" [max]="50000" [(ngModel)]="registration.AvalancheObs.FractureHeight"
+      <ion-input type="number" [min]="0" [max]="50000" [(ngModel)]="registration.request.AvalancheObs.FractureHeight"
         placeholder="{{'REGISTRATION.IN_CM' | translate}}">
       </ion-input>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_WIDTH'
         | translate}}</ion-label>
-      <ion-input type="number" [min]="0" [max]="50000" [(ngModel)]="registration.AvalancheObs.FractureWidth"
+      <ion-input type="number" [min]="0" [max]="50000" [(ngModel)]="registration.request.AvalancheObs.FractureWidth"
         placeholder="{{'REGISTRATION.IN_CM' | translate}}">
       </ion-input>
     </ion-item>
-    <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [(value)]="registration.AvalancheObs.Trajectory"
+    <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [(value)]="registration.request.AvalancheObs.Trajectory"
       placeholder="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME"></app-text-comment>
-    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.AvalancheObs.Comment" placeholder="REGISTRATION.DANGER_OBS.COMMENT"></app-text-comment>
+    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.AvalancheObs.Comment"
+      placeholder="REGISTRATION.DANGER_OBS.COMMENT"></app-text-comment>
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+    <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_DESCRIPTION' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="registration.Incident.Comment" placeholder="REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER"></app-text-comment>
-    <app-kdv-dropdown title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="Snow_ActivityInfluencedKDV" [(value)]="registration.Incident.ActivityInfluencedTID"></app-kdv-dropdown>
-    <app-kdv-dropdown title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV" [(value)]="registration.Incident.DamageExtentTID"></app-kdv-dropdown>
+    <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="registration.request.Incident.Comment"
+      placeholder="REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER"></app-text-comment>
+    <app-kdv-dropdown title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="Snow_ActivityInfluencedKDV" [(value)]="registration.request.Incident.ActivityInfluencedTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV" [(value)]="registration.request.Incident.DamageExtentTID"></app-kdv-dropdown>
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <app-add-web-url-item [(weburls)]="registration.Incident.IncidentURLs"></app-add-web-url-item>
+    <app-add-web-url-item [(weburls)]="registration.request.Incident.IncidentURLs"></app-add-web-url-item>
   </ion-list>
   <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
 </ion-content>

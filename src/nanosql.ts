@@ -109,7 +109,7 @@ export class NanoSql {
             name: 'registration',
             instancePerAppMode: true,
             model: [
-                { key: 'Id', type: 'string', props: ['pk'] },
+                { key: 'id', type: 'string', props: ['pk'] },
                 { key: '*', type: '*' },
             ]
         },

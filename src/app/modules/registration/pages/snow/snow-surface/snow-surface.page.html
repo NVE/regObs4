@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="registration && registration.SnowSurfaceObservation">
+<ion-content *ngIf="registration && registration.request.SnowSurfaceObservation">
   <ion-list lines="full">
     <ion-list-header text-uppercase>
       <ion-label no-margin>
@@ -19,28 +19,28 @@
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH'
         | translate}}</ion-label>
-      <ion-input type="number" min="0" max="1000" pattern="[0-9]*" step="1" [(ngModel)]="registration.SnowSurfaceObservation.SnowDepth"
+      <ion-input type="number" min="0" max="1000" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.SnowSurfaceObservation.SnowDepth"
         placeholder="{{'REGISTRATION.IN_FULL_CM' | translate}}">
       </ion-input>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH'
         | translate}}</ion-label>
-      <ion-input type="number" min="0" max="1000" pattern="[0-9]*" step="1" [(ngModel)]="registration.SnowSurfaceObservation.NewSnowDepth24"
+      <ion-input type="number" min="0" max="1000" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.SnowSurfaceObservation.NewSnowDepth24"
         placeholder="{{'REGISTRATION.IN_FULL_CM' | translate}}">
       </ion-input>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_LINE'
         | translate}}</ion-label>
-      <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.SnowSurfaceObservation.NewSnowLine"
+      <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.SnowSurfaceObservation.NewSnowLine"
         placeholder="{{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}">
       </ion-input>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.SNOW_LINE'
         | translate}}</ion-label>
-      <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.SnowSurfaceObservation.SnowLine"
+      <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.SnowSurfaceObservation.SnowLine"
         placeholder="{{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}">
       </ion-input>
     </ion-item>
@@ -48,22 +48,22 @@
       <ion-label color="medium" position="stacked" text-uppercase>{{
         'REGISTRATION.SNOW.SNOW_SURFACE.HEIGHT_LIMIT_LAYERED_SNOW'
         | translate}}</ion-label>
-      <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.SnowSurfaceObservation.HeightLimitLayeredSnow"
+      <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.SnowSurfaceObservation.HeightLimitLayeredSnow"
         placeholder="{{'REGISTRATION.SNOW.SNOW_SURFACE.HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER' | translate}}">
       </ion-input>
     </ion-item>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DRIFT" kdvKey="Snow_SnowDriftKDV" [(value)]="registration.SnowSurfaceObservation.SnowDriftTID"></app-kdv-dropdown>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE" kdvKey="Snow_SnowSurfaceKDV" [(value)]="registration.SnowSurfaceObservation.SnowSurfaceTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DRIFT" kdvKey="Snow_SnowDriftKDV" [(value)]="registration.request.SnowSurfaceObservation.SnowDriftTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE" kdvKey="Snow_SnowSurfaceKDV" [(value)]="registration.request.SnowSurfaceObservation.SnowSurfaceTID"></app-kdv-dropdown>
     <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SURFACE_WATER_CONTENT_REG" kdvKey="Snow_SurfaceWaterContentKDV"
-      [(value)]="registration.SnowSurfaceObservation.SurfaceWaterContentTID"></app-kdv-dropdown>
-    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.SnowSurfaceObservation.Comment"
+      [(value)]="registration.request.SnowSurfaceObservation.SurfaceWaterContentTID"></app-kdv-dropdown>
+    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.SnowSurfaceObservation.Comment"
       placeholder="REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_PLACEHOLDER"></app-text-comment>
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
       </ion-label>
     </ion-list-header>
-    <app-add-picture-item [(images)]="registration.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+    <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
   </ion-list>
   <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
 </ion-content>

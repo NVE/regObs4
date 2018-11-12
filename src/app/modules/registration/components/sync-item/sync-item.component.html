@@ -1,11 +1,11 @@
-<ion-item href="{{ 'registration/edit/' + registration.Id }}">
+<ion-item href="{{ 'registration/edit/' + registration.id }}">
   <app-geo-icon slot="start" [geoHazard]="registration.geoHazard"></app-geo-icon>
   <ion-label>
-    <h2 *ngIf="registration.ObsLocation && registration.ObsLocation.LocationName">
-      {{registration.ObsLocation.LocationName}}
+    <h2 *ngIf="registration.request.ObsLocation && registration.request.ObsLocation.LocationName">
+      {{registration.request.ObsLocation.LocationName}}
     </h2>
     <p text-wrap>
-      <ion-icon name="calendar"></ion-icon> {{ registration.DtObsTime | formatDate | async }}
+      <ion-icon name="calendar"></ion-icon> {{ registration.request.DtObsTime | formatDate | async }}
     </p>
     <p class="observation-types">
       <ion-badge>

@@ -24,24 +24,24 @@ export class SummaryItemService {
     const userGroups = await this.userGroupService.getUserGroups();
     const summaryItems: ISummaryItem[] = [
       {
-        href: '/registration/obs-location/' + registration.Id,
+        href: '/registration/obs-location/' + registration.id,
         title: 'REGISTRATION.OBS_LOCATION.TITLE',
-        subTitle: registration.ObsLocation ? registration.ObsLocation.LocationName : '',
-        hasData: !IsEmptyHelper.isEmpty(registration.ObsLocation),
+        subTitle: registration.request.ObsLocation ? registration.request.ObsLocation.LocationName : '',
+        hasData: !IsEmptyHelper.isEmpty(registration.request.ObsLocation),
       },
       {
-        href: 'registration/set-time/' + registration.Id,
+        href: 'registration/set-time/' + registration.id,
         title: 'REGISTRATION.OVERVIEW.DATE_AND_TIME',
-        subTitle: registration.DtObsTime ? (await this.dateHelperService.formatDateString(registration.DtObsTime)) : '',
-        hasData: !!registration.DtObsTime,
+        subTitle: registration.request.DtObsTime ? (await this.dateHelperService.formatDateString(registration.request.DtObsTime)) : '',
+        hasData: !!registration.request.DtObsTime,
       },
     ];
     if (userGroups.length > 0) {
       summaryItems.push({
-        href: '/registration/group/' + registration.Id,
+        href: '/registration/group/' + registration.id,
         title: 'REGISTRATION.OVERVIEW.SHARE_WITH_GROUP',
         subTitle: this.getObservationGroupName(registration, userGroups),
-        hasData: !!registration.ObserverGroupID,
+        hasData: !!registration.request.ObserverGroupID,
       });
     }
 
@@ -50,9 +50,9 @@ export class SummaryItemService {
     summaryItems.push(
       this.getRegItem(
         registration,
-        '/registration/general-comment/' + registration.Id,
+        '/registration/general-comment/' + registration.id,
         'REGISTRATION.GENERAL_COMMENT.TITLE',
-        registration.GeneralObservation ? registration.GeneralObservation.ObsComment : '',
+        registration.request.GeneralObservation ? registration.request.GeneralObservation.ObsComment : '',
         RegistrationTid.GeneralObservation
       ));
 
@@ -60,8 +60,8 @@ export class SummaryItemService {
   }
 
   private getObservationGroupName(registration: IRegistration, userGroups: ObserverGroupDto[]) {
-    if (registration && registration.ObserverGroupID && userGroups) {
-      const selectedGroup = userGroups.find((x) => x.Id === registration.ObserverGroupID);
+    if (registration && registration.request.ObserverGroupID && userGroups) {
+      const selectedGroup = userGroups.find((x) => x.Id === registration.request.ObserverGroupID);
       if (selectedGroup) {
         return selectedGroup.Name;
       }
@@ -86,14 +86,14 @@ export class SummaryItemService {
     return [
       this.getRegItem(
         registration,
-        '/registration/water/water-level/' + registration.Id,
+        '/registration/water/water-level/' + registration.id,
         'REGISTRATION.WATER.WATER_LEVEL.TITLE',
-        registration.WaterLevel2 ? registration.WaterLevel2.Comment : '',
+        registration.request.WaterLevel2 ? registration.request.WaterLevel2.Comment : '',
         RegistrationTid.WaterLevel2
       ),
       this.getRegItem(
         registration,
-        '/registration/water/damage/' + registration.Id,
+        '/registration/water/damage/' + registration.id,
         'REGISTRATION.WATER.DAMAGE.TITLE',
         '', // this.registration.DamageObs ? this.registration.DamageObs.map((x) => x.Comment).join() : '',
         RegistrationTid.DamageObs,
@@ -120,16 +120,16 @@ export class SummaryItemService {
     return [
       this.getRegItem(
         registration,
-        '/registration/danger-obs/' + registration.Id,
+        '/registration/danger-obs/' + registration.id,
         'REGISTRATION.DANGER_OBS.TITLE',
         '',
         RegistrationTid.DangerObs
       ),
       this.getRegItem(
         registration,
-        '/registration/dirt/landslide-obs/' + registration.Id,
+        '/registration/dirt/landslide-obs/' + registration.id,
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE',
-        registration.LandSlideObs ? registration.LandSlideObs.Comment : '',
+        registration.request.LandSlideObs ? registration.request.LandSlideObs.Comment : '',
         RegistrationTid.LandSlideObs
       ),
     ];
@@ -139,28 +139,28 @@ export class SummaryItemService {
     return [
       this.getRegItem(
         registration,
-        '/registration/ice/ice-cover/' + registration.Id,
+        '/registration/ice/ice-cover/' + registration.id,
         'REGISTRATION.ICE.ICE_COVER.TITLE',
-        registration.IceCoverObs ? registration.IceCoverObs.Comment : '',
+        registration.request.IceCoverObs ? registration.request.IceCoverObs.Comment : '',
         RegistrationTid.IceCoverObs
       ),
       this.getRegItem(
         registration,
-        '/registration/ice/ice-thickness/' + registration.Id,
+        '/registration/ice/ice-thickness/' + registration.id,
         'REGISTRATION.ICE.ICE_THICKNESS.TITLE',
-        registration.IceThickness ? registration.IceThickness.Comment : '',
+        registration.request.IceThickness ? registration.request.IceThickness.Comment : '',
         RegistrationTid.IceThickness
       ),
       this.getRegItem(
         registration,
-        '/registration/danger-obs/' + registration.Id,
+        '/registration/danger-obs/' + registration.id,
         'REGISTRATION.DANGER_OBS.TITLE',
         '',
         RegistrationTid.DangerObs
       ),
       this.getRegItem(
         registration,
-        '/registration/incident/' + registration.Id,
+        '/registration/incident/' + registration.id,
         'REGISTRATION.INCIDENT.TITLE',
         '',
         RegistrationTid.Incident
@@ -172,63 +172,63 @@ export class SummaryItemService {
     return [
       this.getRegItem(
         registration,
-        '/registration/danger-obs/' + registration.Id,
+        '/registration/danger-obs/' + registration.id,
         'REGISTRATION.DANGER_OBS.TITLE',
         '',
         RegistrationTid.DangerObs
       ),
       this.getRegItem(
         registration,
-        '/registration/snow/avalanche-obs/' + registration.Id,
+        '/registration/snow/avalanche-obs/' + registration.id,
         'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE',
         '',
         RegistrationTid.AvalancheObs
       ),
       this.getRegItem(
         registration,
-        '/registration/snow/avalanche-activity/' + registration.Id,
+        '/registration/snow/avalanche-activity/' + registration.id,
         'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE',
         '',
         RegistrationTid.AvalancheActivityObs2
       ),
       this.getRegItem(
         registration,
-        '/registration/snow/weather/' + registration.Id,
+        '/registration/snow/weather/' + registration.id,
         'REGISTRATION.SNOW.WEATHER.TITLE',
         '',
         RegistrationTid.WeatherObservation
       ),
       this.getRegItem(
         registration,
-        '/registration/snow/snow-surface/' + registration.Id,
+        '/registration/snow/snow-surface/' + registration.id,
         'REGISTRATION.SNOW.SNOW_SURFACE.TITLE',
         '',
         RegistrationTid.SnowSurfaceObservation
       ),
       this.getRegItem(
         registration,
-        '/registration/snow/snow-profile/' + registration.Id,
+        '/registration/snow/snow-profile/' + registration.id,
         'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
         '',
         RegistrationTid.SnowProfile
       ),
       this.getRegItem(
         registration,
-        '/registration/snow/compression-test/' + registration.Id,
+        '/registration/snow/compression-test/' + registration.id,
         'REGISTRATION.SNOW.COMPRESSION_TEST.TITLE',
         '',
         RegistrationTid.CompressionTest
       ),
       this.getRegItem(
         registration,
-        '/registration/snow/avalanche-problem/' + registration.Id,
+        '/registration/snow/avalanche-problem/' + registration.id,
         'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE',
         '',
         RegistrationTid.AvalancheEvalProblem2
       ),
       this.getRegItem(
         registration,
-        '/registration/snow/avalanche-evaluation/' + registration.Id,
+        '/registration/snow/avalanche-evaluation/' + registration.id,
         'REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE',
         '',
         RegistrationTid.AvalancheEvaluation3

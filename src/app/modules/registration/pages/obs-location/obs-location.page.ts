@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import { IRegistration } from '../../models/registration.model';
 import { RegistrationService } from '../../services/registration.service';
@@ -20,7 +20,7 @@ export class ObsLocationPage implements OnInit {
   constructor(
     private registrationService: RegistrationService,
     private activatedRoute: ActivatedRoute,
-    private changeDetectorRef: ChangeDetectorRef,
+    private ngZone: NgZone,
     private navController: NavController,
   ) {
 
@@ -40,38 +40,39 @@ export class ObsLocationPage implements OnInit {
       });
       this.locationMarker = L.marker(
         {
-          lat: this.registration.ObsLocation.Latitude,
-          lng: this.registration.ObsLocation.Longitude
+          lat: this.registration.request.ObsLocation.Latitude,
+          lng: this.registration.request.ObsLocation.Longitude
         }, { icon: locationMarkerIcon }
       );
-      if (this.registration.ObsLocation.ObsLocationID) {
+      if (this.registration.request.ObsLocation.ObsLocationID) {
         this.selectedLocation = {
-          Name: this.registration.ObsLocation.LocationName,
-          Id: this.registration.ObsLocation.ObsLocationID,
+          Name: this.registration.request.ObsLocation.LocationName,
+          Id: this.registration.request.ObsLocation.ObsLocationID,
         };
       }
     }
-    this.isLoaded = true;
-    this.changeDetectorRef.detectChanges();
+    this.ngZone.run(() => {
+      this.isLoaded = true;
+    });
   }
 
   private hasLocation(reg: IRegistration) {
     return reg
-      && reg.ObsLocation
-      && reg.ObsLocation.Latitude
-      && reg.ObsLocation.Longitude;
+      && reg.request.ObsLocation
+      && reg.request.ObsLocation.Latitude
+      && reg.request.ObsLocation.Longitude;
   }
 
   async onLocationSet(event: ObsLocationDto) {
     if (!this.registration) {
       this.registration = await this.registrationService.createNewRegistration();
     }
-    this.registration.ObsLocation = event;
+    this.registration.request.ObsLocation = event;
     await this.registrationService.saveRegistration(this.registration);
-    if (this.registration.DtObsTime) {
-      this.navController.navigateForward('registration/edit/' + this.registration.Id);
+    if (this.registration.request.DtObsTime) {
+      this.navController.navigateForward('registration/edit/' + this.registration.id);
     } else {
-      this.navController.navigateForward('registration/set-time/' + this.registration.Id);
+      this.navController.navigateForward('registration/set-time/' + this.registration.id);
     }
   }
 

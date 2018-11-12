@@ -49,20 +49,20 @@ export class CompressionTestPage extends BasePage {
   async addOrEditCompressionTest(index?: number) {
     const modal = await this.modalController.create({
       component: CompressionTestModalPage,
-      componentProps: { compressionTest: this.registration.CompressionTest[index] },
+      componentProps: { compressionTest: this.registration.request.CompressionTest[index] },
     });
     modal.present();
     const result = await modal.onDidDismiss();
     this.ngZone.run(() => {
       if (result.data) {
         if (result.data.delete) {
-          this.registration.CompressionTest.splice(index, 1);
+          this.registration.request.CompressionTest.splice(index, 1);
         } else {
           const compressionTest: CompressionTestDto = result.data;
           if (index !== undefined) {
-            this.registration.CompressionTest[index] = compressionTest;
+            this.registration.request.CompressionTest[index] = compressionTest;
           } else {
-            this.registration.CompressionTest.push(compressionTest);
+            this.registration.request.CompressionTest.push(compressionTest);
           }
         }
       }

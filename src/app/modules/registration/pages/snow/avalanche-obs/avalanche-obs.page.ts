@@ -58,8 +58,8 @@ export class AvalancheObsPage extends BasePage {
   }
 
   onInit() {
-    if (!this.registration.Incident) {
-      this.registration.Incident = {};
+    if (!this.registration.request.Incident) {
+      this.registration.request.Incident = {};
     }
   }
 
@@ -68,7 +68,7 @@ export class AvalancheObsPage extends BasePage {
   }
 
   isValid() {
-    return !!this.registration.AvalancheObs.DtAvalancheTime;
+    return !!this.registration.request.AvalancheObs.DtAvalancheTime;
   }
 
   isEmpty() {
@@ -77,12 +77,12 @@ export class AvalancheObsPage extends BasePage {
   }
 
   async setAvalanchePosition() {
-    const relativeToLatLng = this.registration.ObsLocation
-      ? L.latLng(this.registration.ObsLocation.Latitude, this.registration.ObsLocation.Longitude) : null;
-    const startLatLng = this.registration.AvalancheObs.StartLat && this.registration.AvalancheObs.StartLong ?
-      L.latLng(this.registration.AvalancheObs.StartLat, this.registration.AvalancheObs.StartLong) : null;
-    const endLatLng = this.registration.AvalancheObs.StopLat && this.registration.AvalancheObs.StopLong ?
-      L.latLng(this.registration.AvalancheObs.StopLat, this.registration.AvalancheObs.StopLong) : null;
+    const relativeToLatLng = this.registration.request.ObsLocation
+      ? L.latLng(this.registration.request.ObsLocation.Latitude, this.registration.request.ObsLocation.Longitude) : null;
+    const startLatLng = this.registration.request.AvalancheObs.StartLat && this.registration.request.AvalancheObs.StartLong ?
+      L.latLng(this.registration.request.AvalancheObs.StartLat, this.registration.request.AvalancheObs.StartLong) : null;
+    const endLatLng = this.registration.request.AvalancheObs.StopLat && this.registration.request.AvalancheObs.StopLong ?
+      L.latLng(this.registration.request.AvalancheObs.StopLat, this.registration.request.AvalancheObs.StopLong) : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,
       componentProps: { relativeToLatLng, startLatLng, endLatLng },
@@ -92,10 +92,10 @@ export class AvalancheObsPage extends BasePage {
     if (result.data) {
       const start: L.LatLng = result.data.start;
       const end: L.LatLng = result.data.end;
-      this.registration.AvalancheObs.StartLat = start.lat;
-      this.registration.AvalancheObs.StartLong = start.lng;
-      this.registration.AvalancheObs.StopLat = end.lat;
-      this.registration.AvalancheObs.StopLong = end.lng;
+      this.registration.request.AvalancheObs.StartLat = start.lat;
+      this.registration.request.AvalancheObs.StartLong = start.lng;
+      this.registration.request.AvalancheObs.StopLat = end.lat;
+      this.registration.request.AvalancheObs.StopLong = end.lng;
     }
   }
 

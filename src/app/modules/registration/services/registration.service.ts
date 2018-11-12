@@ -55,6 +55,7 @@ export class RegistrationService {
   }
 
   async saveRegistration(registration: IRegistration) {
+    this.cleanupRegistration(registration);
     registration.changed = moment().unix();
     const userSettings = await this.userSettingService.getUserSettings();
     return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, userSettings.appMode)
@@ -67,14 +68,17 @@ export class RegistrationService {
     if (!loggedInUser.isLoggedIn) {
       throw Error('User is not logged in!');
     }
+    const newId = this.createGuid();
     const reg: IRegistration = {
+      id: newId,
       geoHazard: userSettings.currentGeoHazard,
       changed: moment().unix(),
-      Id: this.createGuid(),
-      ObserverGuid: loggedInUser.user.Guid,
-      DtObsTime: null,
-      GeoHazardTID: this.getApiGeoHazard(userSettings.currentGeoHazard),
-      status: RegistrationStatus.Draft
+      status: RegistrationStatus.Draft,
+      request: {
+        Id: newId, ObserverGuid: loggedInUser.user.Guid,
+        DtObsTime: null,
+        GeoHazardTID: this.getApiGeoHazard(userSettings.currentGeoHazard)
+      }
     };
     return reg;
   }
@@ -86,10 +90,22 @@ export class RegistrationService {
   async hasChanged(reg: IRegistration, currentRegistration?: IRegistration) {
     const current = currentRegistration || (await this.getCurrentRegistration());
     if (current) {
-      return !is(fromJS(current), fromJS(reg));
+      return !is(fromJS(current.request), fromJS(reg.request));
     } else {
       return !IsEmptyHelper.isEmpty(reg);
     }
+  }
+
+  cleanupRegistration(reg: IRegistration) {
+    const registrationTypes = Object.keys(RegistrationTypes)
+      .filter(key => !isNaN(Number(RegistrationTypes[key])))
+      .map((key) => RegistrationTypes[key]);
+    for (const registrationType of registrationTypes) {
+      if (this.isEmpty(reg, registrationType)) {
+        reg.request[registrationType] = undefined;
+      }
+    }
+    return reg;
   }
 
   isEmpty(reg: IRegistration, registrationTid: RegistrationTid) {
@@ -113,9 +129,9 @@ export class RegistrationService {
     if (!reg) {
       return [];
     }
-    const pictures = (reg.Picture || []).filter((p) => p.RegistrationTID === registrationTid);
+    const pictures = (reg.request.Picture || []).filter((p) => p.RegistrationTID === registrationTid);
     if (registrationTid === RegistrationTid.DamageObs) {
-      for (const damageObs of (reg.DamageObs || [])) {
+      for (const damageObs of (reg.request.DamageObs || [])) {
         pictures.push(...(damageObs.Pictures || []));
       }
     }
@@ -123,8 +139,8 @@ export class RegistrationService {
   }
 
   getRegistationProperty(reg: IRegistration, registrationTid: RegistrationTid) {
-    if (reg && registrationTid) {
-      return reg[this.getPropertyName(registrationTid)];
+    if (reg && reg.request && registrationTid) {
+      return reg.request[this.getPropertyName(registrationTid)];
     }
     return null;
   }
@@ -146,7 +162,7 @@ export class RegistrationService {
       if (!registration) {
         this.navController.navigateForward('registration/obs-location');
       } else {
-        this.navController.navigateForward('registration/edit/' + registration.Id);
+        this.navController.navigateForward('registration/edit/' + registration.id);
       }
     }
   }
@@ -187,16 +203,17 @@ export class RegistrationService {
   private async syncRegistration(registration: IRegistration, appMode: AppMode) {
     try {
       // throw new HttpErrorResponse({ error: Error('test'), status: 500 });
-      const createRegistrationResult = await this.postRegistration(appMode, registration);
+      this.cleanupRegistration(registration);
+      const createRegistrationResult = await this.postRegistration(appMode, registration.request);
       const newRegistration = await this.updateRegistrationById(createRegistrationResult.RegId, appMode);
-      await this.deleteRegistrationById(appMode, registration.Id);
+      await this.deleteRegistrationById(appMode, registration.id);
       return newRegistration;
     } catch (ex) {
       if (ex instanceof HttpErrorResponse) {
         const httpError: HttpErrorResponse = ex;
         console.warn('Could not sync registration', registration, ex);
         if (httpError.status === 409) { // Duplicate, remove
-          await this.deleteRegistrationById(appMode, registration.Id);
+          await this.deleteRegistrationById(appMode, registration.id);
           // Updating latest user registration since we don't have an ID for the duplicate
           await this.updateLatestUserRegistrations();
         } else if (httpError.status === 400) {
@@ -254,7 +271,7 @@ export class RegistrationService {
 
   getSavedRegistrationByIdObservable(id: string) {
     return this.registrations$
-      .pipe(map((items) => items.find((x) => x.Id === id)));
+      .pipe(map((items) => items.find((x) => x.id === id)));
   }
 
   private async postRegistration(appMode: AppMode, registration: RegobsApiModels.CreateRegistrationRequestDto) {
