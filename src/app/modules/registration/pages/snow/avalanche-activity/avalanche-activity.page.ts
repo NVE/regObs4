@@ -33,8 +33,8 @@ export class AvalancheActivityPage extends BasePage {
 
   async onInit() {
     const userSetting = await this.userSetttingService.getUserSettings();
-    this.avalancheCause = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_AvalancheExtKDV');
-    this.estimatedNumber = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_EstimatedNumKDV');
+    this.avalancheCause = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_AvalancheExtKDV');
+    this.estimatedNumber = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_EstimatedNumKDV');
   }
 
   async addOrEditAvalancheActivity(index?: number) {

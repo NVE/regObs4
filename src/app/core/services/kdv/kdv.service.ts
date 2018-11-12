@@ -39,46 +39,50 @@ export class KdvService {
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
       await this.updateKdvElementsForLanguage(appMode, language);
     } else {
-      console.log(`[INFO][KdvService] No need to update for language ${LangKey[language]}. Last updated is:`, dataLoad.lastUpdated);
+      const nextUpdate = moment(dataLoad.lastUpdated).add(settings.kdvElements.daysBeforeUpdate, 'day').toISOString();
+      console.log(`[INFO][KdvService] No need to update for language ${LangKey[language]}.
+        Last updated is: ${dataLoad.lastUpdated}. Next update should be: ${nextUpdate}`);
     }
   }
 
   async updateKdvElementsForLanguage(appMode: AppMode, language: LangKey) {
-    await this.dataLoadService.startLoading(this.getDataLoadId(appMode, language));
+    const dataLoadId = this.getDataLoadId(appMode, language);
+    await this.dataLoadService.startLoading(dataLoadId);
     this.kdvApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
     const kdvElements = await this.kdvApiService.KdvElementsGetKdvs({ langkey: language }).toPromise();
-    console.log('[INFO] KDV elements: ', kdvElements);
-    // TODO: Save to database
+    console.log('[INFO] Updated KDV elements: ', kdvElements);
+    await NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode)
+      .query('upsert', { langKey: language, ...kdvElements }).exec();
+    await this.dataLoadService.loadingCompleted(dataLoadId);
   }
 
-  async getKdvElements(langKey: LangKey, appMode: AppMode, key: string) {
+  async getKdvRepositories(langKey: LangKey, appMode: AppMode, key: string) {
+    const kdvElemetns = await this.getKdvElements(langKey, appMode);
+    return kdvElemetns.KdvRepositories[key];
+  }
+
+  async getViewRepositories(langKey: LangKey, appMode: AppMode, key: string) {
+    const kdvElemetns = await this.getKdvElements(langKey, appMode);
+    return kdvElemetns.ViewRepositories[key];
+  }
+
+  async getKdvElements(langKey: LangKey, appMode: AppMode) {
     const resultFromDb = await this.getKdvElementsFromDb(langKey, appMode);
     if (resultFromDb) {
-      return resultFromDb.KdvRepositories[key];
+      return resultFromDb;
     } else {
       const langKeyName = LangKey[langKey];
       const defaultKdvElements: KdvElementsResponseDto = require(`../../../../assets/kdvelements.${langKeyName}.json`);
-      return defaultKdvElements.KdvRepositories[key];
-    }
-  }
-
-  async getViewRepository(langKey: LangKey, appMode: AppMode, key: string) {
-    const resultFromDb = await this.getKdvElementsFromDb(langKey, appMode);
-    if (resultFromDb) {
-      return resultFromDb.ViewRepositories[key];
-    } else {
-      const langKeyName = LangKey[langKey];
-      const defaultKdvElements: KdvElementsResponseDto = require(`../../../../assets/kdvelements.${langKeyName}.json`);
-      return defaultKdvElements.ViewRepositories[key];
+      return defaultKdvElements;
     }
   }
 
   getKdvElementsAsObservable(key: string, userSetting?: UserSetting) {
     if (userSetting) {
-      return from(this.getKdvElements(userSetting.language, userSetting.appMode, key));
+      return from(this.getKdvRepositories(userSetting.language, userSetting.appMode, key));
     } else {
       return this.userSettingService.userSettingObservable$.pipe(
-        switchMap((us) => from(this.getKdvElements(us.language, us.appMode, key))));
+        switchMap((us) => from(this.getKdvRepositories(us.language, us.appMode, key))));
     }
   }
 

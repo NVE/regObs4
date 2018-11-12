@@ -39,10 +39,10 @@ export class AvalancheProblemModalPage implements OnInit {
   async ngOnInit() {
     const userSetting = await this.userSettingService.getUserSettings();
     const snowCauseAttributesKdvElements =
-      await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_AvalCauseAttributeFlags');
+      await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_AvalCauseAttributeFlags');
     this.avalancheProblemView =
-      await this.kdvService.getViewRepository(userSetting.language, userSetting.appMode, 'AvalancheProblemMenu3V');
-    this.avalancheExtKdv = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_AvalancheExtKDV');
+      await this.kdvService.getViewRepositories(userSetting.language, userSetting.appMode, 'AvalancheProblemMenu3V');
+    this.avalancheExtKdv = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_AvalancheExtKDV');
     if (this.avalancheEvalProblem) {
       this.avalancheEvalProblemCopy = { ...this.avalancheEvalProblem };
     } else {

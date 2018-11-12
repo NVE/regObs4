@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding *ngIf="($loggedInUser | async) as loggedInUser">
+<ion-content padding>
   <ng-container *ngIf="isLoggedIn(loggedInUser)">
     <ion-item>
       <ion-label>{{ 'LOGIN.LOGGED_IN_AS' | translate }} {{ loggedInUser.email }}</ion-label>

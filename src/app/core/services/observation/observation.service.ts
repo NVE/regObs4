@@ -101,7 +101,7 @@ export class ObservationService {
     return this.userSettingService.userSettingObservable$.pipe(switchMap((userSettings) =>
       Rx.combineLatest(this.dataLoadService.getStateAsObservable(
         this.getDataLoadId(userSettings.appMode, userSettings.currentGeoHazard)))
-    ), map((val) => val[0].lastUpdated));
+    ), map((val) => moment(val[0].lastUpdated).toDate()));
   }
 
   async updateObservationsForCurrentGeoHazard() {

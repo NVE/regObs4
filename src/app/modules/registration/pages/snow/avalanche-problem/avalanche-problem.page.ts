@@ -32,7 +32,7 @@ export class AvalancheProblemPage extends BasePage {
 
   async onInit() {
     const userSetting = await this.userSetttingService.getUserSettings();
-    this.avalancheCause = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_AvalCauseKDV');
+    this.avalancheCause = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_AvalCauseKDV');
   }
 
   async addOrEditAvalancheProblem(index?: number) {

@@ -1,13 +1,13 @@
 export interface IDataLoad {
     id: string;
-    lastUpdated?: Date;
-    startedDate?: Date;
-    completedDate?: Date;
+    lastUpdated?: string;
+    startedDate?: string;
+    completedDate?: string;
     isLoading: boolean;
     progress?: number;
     status?: string;
     itemsComplete?: number;
     totalItems?: number;
-    itemsFromDate?: Date;
-    itemsToDate?: Date;
+    itemsFromDate?: string;
+    itemsToDate?: string;
 }

@@ -1,4 +1,8 @@
 {
+  "ADD_MENU": {
+    "NEW_OBSERVATION": "Ny observasjon",
+    "NEW_TRIP": "Ny tur"
+  },
   "ALERT": {
     "CANCEL": "Avbryt",
     "DEFAULT_HEADER": "Oisann!",

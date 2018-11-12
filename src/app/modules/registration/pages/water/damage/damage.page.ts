@@ -52,7 +52,7 @@ export class DamagePage extends BasePage {
 
   async onInit() {
     const userSetting = await this.userSettingService.getUserSettings();
-    this.damageTypes = (await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode,
+    this.damageTypes = (await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode,
       `${GeoHazard[userSetting.currentGeoHazard]}_DamageTypeKDV`))
       .filter((x) => x.Id !== NO_DAMAGE_VISIBLE);
   }

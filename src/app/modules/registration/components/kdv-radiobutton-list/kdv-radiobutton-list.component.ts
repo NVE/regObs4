@@ -28,7 +28,7 @@ export class KdvRadiobuttonListComponent implements OnInit {
 
   async ngOnInit() {
     const userSetting = await this.userSettingService.getUserSettings();
-    this.kdvelements = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, this.kdvKey);
+    this.kdvelements = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, this.kdvKey);
   }
 
   onChange() {

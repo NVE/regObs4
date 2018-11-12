@@ -32,8 +32,8 @@ export class CompressionTestPage extends BasePage {
 
   async onInit() {
     const userSetting = await this.userSettingService.getUserSettings();
-    this.propagation = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_PropagationKDV');
-    this.fractureTypes = await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_PropagationKDV');
+    this.propagation = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_PropagationKDV');
+    this.fractureTypes = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_PropagationKDV');
   }
 
   getKdvElementName(id: number, kdvElements: KdvElement[]) {

@@ -1,4 +1,8 @@
 {
+  "ADD_MENU": {
+    "NEW_OBSERVATION": "New observation",
+    "NEW_TRIP": "New trip"
+  },
   "ALERT": {
     "CANCEL": "Cancel",
     "DEFAULT_HEADER": "Whoops!",

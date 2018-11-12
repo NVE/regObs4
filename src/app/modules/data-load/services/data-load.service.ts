@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { IDataLoad } from '../models/data-load.interface';
 import { nSQL } from 'nano-sql';
 import { map, take } from 'rxjs/operators';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class DataLoadService {
 
   async startLoading(id: string, totalItems?: number) {
     const existingItem = await this.getState(id);
-    existingItem.startedDate = new Date();
+    existingItem.startedDate = moment().toISOString();
     existingItem.isLoading = true;
     existingItem.completedDate = null;
     existingItem.progress = 0;
@@ -39,13 +40,13 @@ export class DataLoadService {
   async loadingCompleted(id: string, totalItems?: number, itemsFromDate?: Date, itemsToDate?: Date) {
     const existingItem = await this.getState(id);
     existingItem.isLoading = false;
-    existingItem.completedDate = new Date();
-    existingItem.lastUpdated = new Date();
+    existingItem.completedDate = moment().toISOString();
+    existingItem.lastUpdated = moment().toISOString();
     existingItem.progress = 1.0;
     existingItem.totalItems = totalItems;
     existingItem.itemsComplete = totalItems;
-    existingItem.itemsFromDate = itemsFromDate;
-    existingItem.itemsToDate = itemsToDate;
+    existingItem.itemsFromDate = moment(itemsFromDate).toISOString();
+    existingItem.itemsToDate = moment(itemsToDate).toISOString();
     return this.saveDataLoadItem(existingItem);
   }
 
