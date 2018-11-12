@@ -8,9 +8,6 @@ import { RegistrationTid } from '../../models/registrationTid.enum';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
 import { ActivatedRoute } from '@angular/router';
-import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
-import { TranslateService } from '@ngx-translate/core';
-import { settings } from '../../../../../settings';
 import { RegistrationStatus } from '../../models/registrationStatus.enum';
 import { SummaryItemService } from '../../services/summary-item.service';
 
@@ -33,8 +30,6 @@ export class OverviewPage implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private summaryItemService: SummaryItemService,
-    private emailComposer: EmailComposer,
-    private translateService: TranslateService,
     private userGroupService: UserGroupService) {
   }
 
@@ -77,40 +72,5 @@ export class OverviewPage implements OnInit, OnDestroy {
   }
 
   ionViewWillLeave() {
-  }
-
-  // private async getEmailAddress() {
-  //   const userSetting = await this.userSettingService.getUserSettings();
-  //   switch (userSetting.currentGeoHazard) {
-  //     case GeoHazard.Snow:
-  //       return 'snoskredvarsling@nve.no';
-  //     case GeoHazard.Ice:
-  //       return 'isvarsling@nve.no';
-  //     case GeoHazard.Water:
-  //       return 'flomvarsling@nve.no';
-  //     case GeoHazard.Dirt:
-  //       return 'jordskredvarsling@nve.no';
-  //   }
-  // }
-
-  async openForEdit() {
-    this.registration.status = RegistrationStatus.Draft;
-    await this.registrationService.saveRegistration(this.registration);
-  }
-
-  async sendEmail() {
-    const translations = await this.translateService
-      .get(['REGISTRATION.EMAIL.SUBJECT', 'REGISTRATION.EMAIL.BODY']).toPromise();
-    const base64string = btoa(JSON.stringify(this.registration));
-    const email: EmailComposerOptions = {
-      to: settings.errorEmailAddress,
-      attachments: [
-        'base64:registration.json//' + base64string,
-      ],
-      subject: translations['REGISTRATION.EMAIL.SUBJECT'],
-      body: translations['REGISTRATION.EMAIL.BODY'],
-      isHtml: true
-    };
-    this.emailComposer.open(email);
   }
 }

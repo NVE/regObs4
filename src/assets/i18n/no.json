@@ -154,6 +154,16 @@
       "BODY": "Hei! Jeg har problemer med å sende inn denne registreringen. Kan dere hjelpe meg?",
       "SUBJECT": "Registrering feilet"
     },
+    "FAILED": {
+      "EDIT_OBSERVATION": "Rediger observasjon",
+      "LOGGED": "Vi har logget problemet.",
+      "PROBLEM": "Det har oppstått et problem med registreringen din",
+      "PROBLEM_HELP_TEXT": "Feilede observasjoner lagres i telefonen din, og når problemet er løst vil du kunne sende inn observasjoen på nytt.",
+      "REFERENCE": "Referanse",
+      "SEND_EMAIL": "Send til oss på epost",
+      "SUBTITLE": "Mangler nettverk eller innsending tok for lang tid. Vi prøver igjen etter en stund og håper at nettet har bedret seg.",
+      "TITLE": "Innsending feilet"
+    },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Skriv notater fra observasjonen",
       "ADD_PICTURE": "Legg til et bilde",
@@ -211,7 +221,7 @@
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",
       "MY_OBSERVATION": "Min observasjon",
-      "SHARE_WITH_GROUP": "Del observasjon med gruppe",
+      "SHARE_WITH_GROUP": "Del med gruppe",
       "TITLE": "Observasjon"
     },
     "REQUIRED_FIELDS_MISSING": "Obigatoriske felt mangler. Vil du nullstille observasjonen og gå tilbake?",

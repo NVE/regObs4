@@ -5,6 +5,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { SendButtonComponent } from '../../components/send-button/send-button.component';
 import { SummaryItemComponent } from '../../components/summary-item/summary-item.component';
 import { SharedComponentsModule } from '../../shared-components.module';
+import { FailedRegistrationComponent } from '../../components/failed-registration/failed-registration.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,6 @@ const routes: Routes = [
     SharedComponentsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [OverviewPage, SendButtonComponent, SummaryItemComponent]
+  declarations: [OverviewPage, SendButtonComponent, SummaryItemComponent, FailedRegistrationComponent]
 })
 export class OverviewPageModule { }

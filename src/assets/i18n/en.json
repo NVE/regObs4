@@ -154,6 +154,16 @@
       "BODY": "Hi! I have problems sending this registration. Can you help me?",
       "SUBJECT": "Registration failed"
     },
+    "FAILED": {
+      "EDIT_OBSERVATION": "Edit observation",
+      "LOGGED": "The problem has been logged.",
+      "PROBLEM": "There has been a problem with your registration",
+      "PROBLEM_HELP_TEXT": "Observations with errors are stored in your phone and when the problem is resolved you will be able to resubmit.",
+      "REFERENCE": "Reference",
+      "SEND_EMAIL": "Send to us by email",
+      "SUBTITLE": "Missing network or submission took too long. We'll try again after a while and hope that the network has improved.",
+      "TITLE": "Submission failed"
+    },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Write notes of observation",
       "ADD_PICTURE": "Add a picture",
@@ -211,7 +221,7 @@
     "OVERVIEW": {
       "DATE_AND_TIME": "Date and time",
       "MY_OBSERVATION": "My observation",
-      "SHARE_WITH_GROUP": "Share observation with group",
+      "SHARE_WITH_GROUP": "Share with group",
       "TITLE": "Observation"
     },
     "REQUIRED_FIELDS_MISSING": "Required fields are missing. Do you want to reset observation and go back?",
