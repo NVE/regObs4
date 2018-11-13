@@ -39,6 +39,13 @@ export class WaterLevelPage extends BasePage {
     if (this.registration.request.WaterLevel2.WaterLevelMethodTID === 2) {
       this.registration.request.WaterLevel2.MarkingReferenceTID = null;
     }
+    if (this.registration.request.WaterLevel2.MeasurementTypeTID !== 3) {
+      this.registration.request.WaterLevel2.MeasuringToolDescription = undefined;
+    }
+    if (!(this.registration.request.WaterLevel2.WaterLevelMethodTID === 1
+      || this.registration.request.WaterLevel2.MeasurementTypeTID === 1)) {
+      this.registration.request.WaterLevel2.Comment = undefined;
+    }
     this.registration.request.WaterLevel2.WaterLevelMeasurement =
       (this.registration.request.WaterLevel2.WaterLevelMeasurement || []).filter((item) => !IsEmptyHelper.isEmpty(item));
   }

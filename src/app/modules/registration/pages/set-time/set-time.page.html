@@ -9,8 +9,12 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <h3 padding text-uppercase>{{"REGISTRATION.SET_TIME.HEADER" | translate}}</h3>
   <ion-list lines="none">
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{"REGISTRATION.SET_TIME.HEADER" | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
     <ion-item>
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
         cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="date" [max]="maxDate">

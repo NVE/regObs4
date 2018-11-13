@@ -1,18 +1,16 @@
 ion-list {
-    --ion-background-color: #fff;
-
     ion-item {
-        padding-top: 30px;
-        padding-bottom: 30px;
-
         ion-datetime {
             margin-left: 20px;
             color: var(--ion-color-medium);
             font-size: 23px;
+            padding-top: 30px;
+            padding-bottom: 30px;
         }
 
         ion-button {
             margin-left: 15px;
+            z-index: 200;
         }
     }
 }

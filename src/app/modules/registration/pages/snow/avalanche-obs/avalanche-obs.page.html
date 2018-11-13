@@ -42,6 +42,9 @@
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
         cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.AvalancheObs.DtAvalancheTime">
       </ion-datetime>
+      <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium" (click)="setAvalancheTimeTimeToNow()">
+        <ion-icon slot="start" name="time"></ion-icon> {{"REGISTRATION.SET_TIME.NOW" | translate}}
+      </ion-button>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION'

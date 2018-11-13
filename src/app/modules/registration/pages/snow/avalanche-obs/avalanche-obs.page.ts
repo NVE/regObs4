@@ -6,6 +6,7 @@ import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import * as L from 'leaflet';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-avalanche-obs',
@@ -74,6 +75,10 @@ export class AvalancheObsPage extends BasePage {
   isEmpty() {
     return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid)
       && this.basePageService.RegistrationService.isEmpty(this.registration, RegistrationTid.Incident);
+  }
+
+  setAvalancheTimeTimeToNow() {
+    this.registration.request.AvalancheObs.DtAvalancheTime = moment().toISOString(true);
   }
 
   async setAvalanchePosition() {

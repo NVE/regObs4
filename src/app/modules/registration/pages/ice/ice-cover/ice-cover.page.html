@@ -10,14 +10,10 @@
 </ion-header>
 <ion-content *ngIf="registration && registration.request.IceCoverObs">
   <ion-list lines="full">
-    <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.ICE.ICE_COVER.ICE_COVER" kdvKey="Ice_IceCoverKDV"
-      [(value)]="registration.request.IceCoverObs.IceCoverTID"></app-kdv-radiobutton-list>
-    <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.ICE.ICE_COVER.ICE_COVER_BEFORE" kdvKey="Ice_IceCoverBeforeKDV"
-      [(value)]="registration.request.IceCoverObs.IceCoverBeforeTID"></app-kdv-radiobutton-list>
-    <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.ICE.ICE_COVER.ICE_CAPACITY" kdvKey="Ice_IceCapacityKDV"
-      [(value)]="registration.request.IceCoverObs.IceCapacityTID"></app-kdv-radiobutton-list>
-    <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.ICE.ICE_COVER.ICE_SKATEABILITY" kdvKey="Ice_IceSkateabilityKDV"
-      [(value)]="registration.request.IceCoverObs.IceSkateabilityTID"></app-kdv-radiobutton-list>
+    <app-kdv-dropdown title="REGISTRATION.ICE.ICE_COVER.ICE_COVER" kdvKey="Ice_IceCoverKDV" [(value)]="registration.request.IceCoverObs.IceCoverTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.ICE.ICE_COVER.ICE_COVER_BEFORE" kdvKey="Ice_IceCoverBeforeKDV" [(value)]="registration.request.IceCoverObs.IceCoverBeforeTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.ICE.ICE_COVER.ICE_CAPACITY" kdvKey="Ice_IceCapacityKDV" [(value)]="registration.request.IceCoverObs.IceCapacityTID"></app-kdv-dropdown>
+    <app-kdv-dropdown title="REGISTRATION.ICE.ICE_COVER.ICE_SKATEABILITY" kdvKey="Ice_IceSkateabilityKDV" [(value)]="registration.request.IceCoverObs.IceSkateabilityTID"></app-kdv-dropdown>
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}</h3>

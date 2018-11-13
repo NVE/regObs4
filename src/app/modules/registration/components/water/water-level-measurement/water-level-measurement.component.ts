@@ -17,13 +17,13 @@ export class WaterLevelMeasurementComponent implements OnInit {
   @Output() waterLevelMeasurementChange = new EventEmitter();
 
   maxDate: string;
-  form: FormGroup;
+  // form: FormGroup;
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.form = this.formBuilder.group({
-      waterLevelMethod: new FormControl('', [Validators.min(0), Validators.max(10000)]),
-    });
+    // this.form = this.formBuilder.group({
+    //   waterLevelMethod: new FormControl('', [Validators.min(0), Validators.max(10000)]),
+    // });
     this.maxDate = moment().toISOString(true);
     if (!this.waterLevelMeasurement.Pictures) {
       this.waterLevelMeasurement.Pictures = [];

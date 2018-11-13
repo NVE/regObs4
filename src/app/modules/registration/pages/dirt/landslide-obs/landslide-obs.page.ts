@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import { ModalController } from '@ionic/angular';
@@ -6,6 +6,7 @@ import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avala
 import * as L from 'leaflet';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-landslide-obs',
@@ -18,6 +19,7 @@ export class LandslideObsPage extends BasePage {
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
     private modalController: ModalController,
+    private ngZone: NgZone,
   ) {
     super(RegistrationTid.LandSlideObs, basePageService, activatedRoute);
   }
@@ -33,6 +35,14 @@ export class LandslideObsPage extends BasePage {
       && this.registration.request.LandSlideObs
       && !!this.registration.request.LandSlideObs.DtLandSlideTime
       && !!this.registration.request.LandSlideObs.DtLandSlideTimeEnd;
+  }
+
+  setDtLandSlideTimeToNow() {
+    this.registration.request.LandSlideObs.DtLandSlideTime = moment().toISOString(true);
+  }
+
+  setDtLandSlideTimeEndToNow() {
+    this.registration.request.LandSlideObs.DtLandSlideTimeEnd = moment().toISOString(true);
   }
 
   async setLandslidePosition() {

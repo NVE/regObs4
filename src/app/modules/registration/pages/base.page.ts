@@ -42,7 +42,9 @@ export abstract class BasePage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     onInit?(): void | Promise<any>;

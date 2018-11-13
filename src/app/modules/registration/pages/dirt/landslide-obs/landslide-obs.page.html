@@ -36,18 +36,26 @@
         }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</ion-label>
     </ion-item>
     <ion-item>
-      <ion-label color="danger" position="stacked" text-uppercase>{{
+      <ion-label [color]="!registration.request.LandSlideObs.DtLandSlideTime ? 'danger' : 'medium'" position="stacked"
+        text-uppercase>{{
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME' | translate }}</ion-label>
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
         cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.LandSlideObs.DtLandSlideTime">
       </ion-datetime>
+      <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium" (click)="setDtLandSlideTimeToNow()">
+        <ion-icon slot="start" name="time"></ion-icon> {{"REGISTRATION.SET_TIME.NOW" | translate}}
+      </ion-button>
     </ion-item>
     <ion-item>
-      <ion-label color="danger" position="stacked" text-uppercase>{{
+      <ion-label [color]="!registration.request.LandSlideObs.DtLandSlideTimeEnd ? 'danger' : 'medium'" position="stacked"
+        text-uppercase>{{
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME_END' | translate }}</ion-label>
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
         cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.LandSlideObs.DtLandSlideTimeEnd">
       </ion-datetime>
+      <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium" (click)="setDtLandSlideTimeEndToNow()">
+        <ion-icon slot="start" name="time"></ion-icon> {{"REGISTRATION.SET_TIME.NOW" | translate}}
+      </ion-button>
     </ion-item>
     <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_TYPE" kdvKey="Dirt_LandSlideKDV" [(value)]="registration.request.LandSlideObs.LandSlideTID"></app-kdv-dropdown>
     <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DESTRUCTIVE_SIZE" kdvKey="Dirt_LandSlideSizeKDV"

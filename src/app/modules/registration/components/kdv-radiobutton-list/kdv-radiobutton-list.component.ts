@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, NgZone } from '@angular/core';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { KdvElement } from '../../../regobs-api/models';
@@ -24,6 +24,7 @@ export class KdvRadiobuttonListComponent implements OnInit {
     private kdvService: KdvService,
     private userSettingService: UserSettingService,
     private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
   ) { }
 
   async ngOnInit() {
@@ -32,7 +33,16 @@ export class KdvRadiobuttonListComponent implements OnInit {
   }
 
   onChange() {
-    this.valueChange.emit(this.value);
+    this.ngZone.run(() => {
+      this.valueChange.emit(this.value);
+    });
+  }
+
+  setSelected(value: number) {
+    this.ngZone.run(() => {
+      this.value = value;
+      this.valueChange.emit(this.value);
+    });
   }
 
   isVisible(item: KdvElement) {
