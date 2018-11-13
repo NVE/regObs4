@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
-import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import * as L from 'leaflet';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
+import { RegistrationViewModel } from '../../modules/regobs-api/models';
 
 @Component({
     selector: 'app-observation-list',
@@ -13,7 +13,7 @@ import { IMapView } from '../../modules/map/services/map/map-view.interface';
     styleUrls: ['./observation-list.page.scss'],
 })
 export class ObservationListPage implements OnInit {
-    $observations: Observable<RegObsObservation[]>;
+    $observations: Observable<RegistrationViewModel[]>;
 
     constructor(
         private observationService: ObservationService,
@@ -29,11 +29,12 @@ export class ObservationListPage implements OnInit {
             );
     }
 
-    private filterObservationsWithinViewBounds(observations: RegObsObservation[], view: IMapView) {
-        return observations.filter((observation) => !view || view.bounds.contains(L.latLng(observation.Latitude, observation.Longitude)));
+    private filterObservationsWithinViewBounds(observations: RegistrationViewModel[], view: IMapView) {
+        return observations.filter((observation) => !view ||
+            view.bounds.contains(L.latLng(observation.ObsLocation.Latitude, observation.ObsLocation.Longitude)));
     }
 
-    trackByRegId(index: number, obs: RegObsObservation) {
-        return obs ? obs.RegId : undefined;
+    trackByRegId(index: number, obs: RegistrationViewModel) {
+        return obs ? obs.RegID : undefined;
     }
 }

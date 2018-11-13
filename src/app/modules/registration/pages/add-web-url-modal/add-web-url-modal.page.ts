@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
-import { UrlDto } from '../../../regobs-api/models';
+import { UrlViewModel } from '../../../regobs-api/models';
 
 @Component({
   selector: 'app-add-web-url-modal',
@@ -9,8 +9,8 @@ import { UrlDto } from '../../../regobs-api/models';
 })
 export class AddWebUrlModalPage implements OnInit {
 
-  @Input() weburl: UrlDto;
-  urlToSave: UrlDto;
+  @Input() weburl: UrlViewModel;
+  urlToSave: UrlViewModel;
   isNew = true;
   constructor(private modalController: ModalController) { }
 

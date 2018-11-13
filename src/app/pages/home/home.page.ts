@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { settings } from '../../../settings';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
-import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { MapService } from '../../modules/map/services/map/map.service';
@@ -14,6 +13,7 @@ import { MapComponent } from '../../modules/map/components/map/map.component';
 import { Router, NavigationEnd } from '@angular/router';
 import { IconHelper } from '../../modules/map/helpers/icon.helper';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { RegistrationViewModel } from '../../modules/regobs-api/models';
 
 @Component({
   selector: 'app-home',
@@ -51,7 +51,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   createClusterIcon(cluster: L.MarkerCluster) {
-    const items = cluster.getAllChildMarkers().map((x: MapItemMarker) => x.item.GeoHazardTid);
+    const items = cluster.getAllChildMarkers().map((x: MapItemMarker) => parseInt(x.item.GeoHazardTID, 10));
     const unique = Array.from(new Set(items));
     if (unique.length === 1) {
       const geoHazard: GeoHazard = unique[0];
@@ -161,10 +161,10 @@ export class HomePage implements OnInit, OnDestroy {
     this.events.unsubscribe(settings.events.fullscreenChanged);
   }
 
-  private redrawObservationMarkers(regObservations: RegObsObservation[]) {
+  private redrawObservationMarkers(regObservations: RegistrationViewModel[]) {
     this.markerLayer.clearLayers();
     for (const regObservation of regObservations) {
-      const latLng = L.latLng(regObservation.Latitude, regObservation.Longitude);
+      const latLng = L.latLng(regObservation.ObsLocation.Latitude, regObservation.ObsLocation.Longitude);
       const marker = new MapItemMarker(regObservation, latLng, {});
       marker.on('click', (event: L.LeafletEvent) => {
         const m: MapItemMarker = event.target;

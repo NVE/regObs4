@@ -11,7 +11,7 @@ export class MapItemMarker extends L.Marker {
     }
 
     get id(): number {
-        return this._item.RegId;
+        return this._item.RegID;
     }
 
     get isSelected(): boolean {
@@ -46,7 +46,7 @@ export class MapItemMarker extends L.Marker {
     }
 
     private getIconUrl() {
-        const geoName = GeoHazard[this._item.GeoHazardTid].toLowerCase();
+        const geoName = GeoHazard[parseInt(this._item.GeoHazardTID, 10)].toLowerCase();
         return `/assets/icon/map/${geoName}${this._isSelected ? '_selected' : ''}.svg`;
     }
 }

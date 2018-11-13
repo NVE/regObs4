@@ -4,13 +4,13 @@ import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { Observable, combineLatest } from 'rxjs';
 import { LoggedInUser } from './logged-in-user.model';
-import { User } from '../../models/user.model';
 import { NanoSql } from '../../../../nanosql';
 import { map, take, switchMap, shareReplay } from 'rxjs/operators';
 import { nSQL } from 'nano-sql';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AppMode } from '../../models/app-mode.enum';
+import { ObserverResponseDto } from '../../../modules/regobs-api/models';
 
 @Injectable({
   providedIn: 'root'
@@ -37,11 +37,17 @@ export class LoginService {
   async login(email: string, password: string) {
     const userSettings = await this.userSettingService.getUserSettings();
     const baseUrl = settings.services.regObs.apiUrl[userSettings.appMode];
+    const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
+    if (!apiKey) {
+      throw new Error('apiKey.json not found in assets folder!');
+    }
     const headers = new HttpHeaders({
-      Authorization: 'Basic ' + btoa(email + ':' + password)
+      regObs_apptoken: apiKey.apiKey,
+      ApiJsonVersion: settings.services.regObs.apiJsonVersion,
+      Authorization: 'Basic ' + btoa(email + ':' + password),
     });
     try {
-      const result = await this.httpClient.post<User>(`${baseUrl}/Account/Login`, {}, { headers }).toPromise();
+      const result = await this.httpClient.get<ObserverResponseDto>(`${baseUrl}/Account/Login`, { headers }).toPromise();
       await this.saveLoggedInUserToDb(userSettings.appMode, email, true, result);
     } catch (err) {
       await this.showErrorMessage(err.status, err.message);
@@ -73,14 +79,19 @@ export class LoginService {
     await alert.present();
   }
 
-  private saveLoggedInUserToDb(appMode: AppMode, email: string, isLoggedIn: boolean, user: User) {
-    return NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('upsert',
+  private async saveLoggedInUserToDb(appMode: AppMode, email: string, isLoggedIn: boolean, user: ObserverResponseDto) {
+    await NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('upsert',
       {
         id: 'user',
         email,
         isLoggedIn,
         user
       }).exec();
+    const userGroups = (user.ObserverGroup || []).map((val) => {
+      return { key: `${user.Guid}_${val.Id}`, userId: user.Guid, Id: val.Id, Name: val.Name };
+    });
+    const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
+    return nSQL(instanceName).loadJS(instanceName, userGroups);
   }
 
   async getLoggedInUser(): Promise<LoggedInUser> {

@@ -10,8 +10,8 @@ export class NanoSql {
             name: 'observation',
             instancePerAppMode: true, // Create one table for each app mode
             model: [
-                { key: 'RegId', type: 'number', props: ['pk'] },
-                { key: 'GeoHazardTid', type: 'number', props: ['idx'] },
+                { key: 'RegID', type: 'number', props: ['pk'] },
+                { key: 'GeoHazardTID', type: 'string', props: ['idx'] },
                 { key: '*', type: '*' },
             ]
         },
@@ -134,7 +134,8 @@ export class NanoSql {
             name: 'groups',
             instancePerAppMode: true,
             model: [
-                { key: 'Id', type: 'int', props: ['pk'] },
+                { key: 'key', type: 'string', props: ['pk'] },
+                { key: 'userId', type: 'string', props: ['idx'] },
                 { key: '*', type: '*' },
             ]
         }

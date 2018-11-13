@@ -3,25 +3,28 @@ import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
-import { merge, map, switchMap, concat } from 'rxjs/operators';
-import { Observable, bindNodeCallback, combineLatest, forkJoin } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { Observable, combineLatest, forkJoin } from 'rxjs';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/observable/of';
-import { parseString } from 'xml2js';
 import 'leaflet.utm';
 import { LocationName } from './location-name.model';
 import { ViewInfo } from './view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LangKey } from '../../../../core/models/langKey';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
+import { LocationService } from '../../../regobs-api/services';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapSearchService {
 
-  constructor(private httpClient: HttpClient, private userSettingService: UserSettingService) { }
+  constructor(
+    private httpClient: HttpClient,
+    private userSettingService: UserSettingService,
+    private locationService: LocationService) { }
 
   searchAll(text: string): Observable<MapSearchResponse[]> {
     return this.userSettingService.userSettingObservable$.pipe(
@@ -140,9 +143,11 @@ export class MapSearchService {
   getLocationNameNorway(latLng: L.LatLng): Observable<LocationName> {
     return this.userSettingService.userSettingObservable$.pipe(
       switchMap((userSettings) =>
-        this.httpClient.get(`${settings.services.regObs.apiUrl[userSettings.appMode]}/Location/GetName`
-          + `?latitude=${latLng.lat}&longitude=${latLng.lng}&geoHazardId=${userSettings.currentGeoHazard}`)
-          .pipe(map((result: any) => ({ name: result.Data.Navn, adminName: result.Data.Fylke })))));
+        this.locationService.LocationGetName({ latitude: latLng.lat, longitude: latLng.lng, uri: '' }).pipe(map((result) =>
+          ({ name: result.Navn, adminName: result.Fylke })))));
+    // this.httpClient.get(`${settings.services.regObs.apiUrl[userSettings.appMode]}/Location/GetName`
+    //   + `?latitude=${latLng.lat}&longitude=${latLng.lng}&geoHazardId=${userSettings.currentGeoHazard}`)
+    //   .pipe(map((result: any) => ({ name: result.Data.Navn, adminName: result.Data.Fylke })))));
   }
 
   getViewInfo(latLng: L.LatLng, isInNorway: boolean): Observable<ViewInfo> {

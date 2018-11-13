@@ -132,19 +132,19 @@
         <ion-row class="cards">
           <ion-col>
             <ion-card>
-              <ion-item (click)="selectGeoHazard(GeoHazard.Snow)">
+              <ion-item (click)="selectGeoHazard(GeoHazard.Avalanche)">
                 <ion-icon src="/assets/icon/ikon_snoskred.svg" slot="start"></ion-icon>
                 <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_SNOW'|translate}}</ion-label>
               </ion-item>
             </ion-card>
             <ion-card>
-              <ion-item (click)="selectGeoHazard(GeoHazard.Dirt)">
+              <ion-item (click)="selectGeoHazard(GeoHazard.LandSlide)">
                 <ion-icon src="/assets/icon/ikon_jordskred.svg" slot="start"></ion-icon>
                 <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_DIRT'|translate}}</ion-label>
               </ion-item>
             </ion-card>
             <ion-card>
-              <ion-item (click)="selectGeoHazard(GeoHazard.Water)">
+              <ion-item (click)="selectGeoHazard(GeoHazard.Flooding)">
                 <ion-icon src="/assets/icon/ikon_flom.svg" slot="start"></ion-icon>
                 <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_WATER'|translate}}</ion-label>
               </ion-item>
@@ -163,6 +163,6 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar color="dark" mode="ios">
-    <ion-title text-wrap (click)="selectGeoHazard(GeoHazard.Snow)" text-center>{{'START_WIZARD.SKIP_START'|translate}}</ion-title>
+    <ion-title text-wrap (click)="selectGeoHazard(GeoHazard.Avalanche)" text-center>{{'START_WIZARD.SKIP_START'|translate}}</ion-title>
   </ion-toolbar>
 </ion-footer>

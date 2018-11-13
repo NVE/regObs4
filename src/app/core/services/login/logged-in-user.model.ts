@@ -1,8 +1,8 @@
-import { User } from '../../models/user.model';
+import { ObserverResponseDto } from '../../../modules/regobs-api/models';
 
 export interface LoggedInUser {
     id?: string;
-    user?: User;
+    user?: ObserverResponseDto;
     isLoggedIn: boolean;
     email?: string;
 }

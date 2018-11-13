@@ -114,7 +114,7 @@ export class HelperService {
       + (showMilliseconds ? `.${milliseconds}` : '');
   }
 
-  async getObservationImage(id: string, size: string = 'medium') {
+  async getObservationImage(id: number, size: string = 'medium') {
     const userSettings = await this.userSettingService.getUserSettings();
     const appMode = userSettings.appMode;
     return `${settings.services.regObs.serviceUrl[appMode]}/Image/${size}/${id}`;
@@ -122,13 +122,13 @@ export class HelperService {
 
   getGeoHazardIcon(geoHazard: GeoHazard) {
     switch (geoHazard) {
-      case GeoHazard.Dirt:
+      case GeoHazard.LandSlide:
         return '/assets/icon/ikon_jordskred.svg';
       case GeoHazard.Ice:
         return '/assets/icon/ikon_isvarsler2.svg';
-      case GeoHazard.Snow:
+      case GeoHazard.Avalanche:
         return '/assets/icon/ikon_snoskred.svg';
-      case GeoHazard.Water:
+      case GeoHazard.Flooding:
         return '/assets/icon/ikon_flom.svg';
     }
   }

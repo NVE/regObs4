@@ -77,7 +77,7 @@ export class RegistrationService {
       request: {
         Id: newId, ObserverGuid: loggedInUser.user.Guid,
         DtObsTime: null,
-        GeoHazardTID: this.getApiGeoHazard(userSettings.currentGeoHazard)
+        GeoHazardTID: <any>GeoHazard[userSettings.currentGeoHazard]
       }
     };
     return reg;
@@ -289,7 +289,7 @@ export class RegistrationService {
   private getRegistrationByRegIdFromApi(regId: number, appMode: AppMode) {
     this.searchApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
     return this.searchApiService.SearchAll({ RegId: regId }).pipe(map((result) =>
-      result.Results[0]
+      result[0]
     ));
   }
 
@@ -305,22 +305,7 @@ export class RegistrationService {
 
   private getLatestRegistrationsForUserFromApi(appMode: AppMode, userGuid: string) {
     this.searchApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
-    return this.searchApiService.SearchAll({ ObserverGuid: userGuid, NumberOfRecords: 10 }).pipe(map((result) =>
-      result.Results
-    ));
-  }
-
-  private getApiGeoHazard(geoHazard: GeoHazard) {
-    switch (geoHazard) {
-      case GeoHazard.Snow:
-        return 'Avalanche';
-      case GeoHazard.Ice:
-        return 'Ice';
-      case GeoHazard.Water:
-        return 'Flooding';
-      case GeoHazard.Dirt:
-        return 'LandSlide';
-    }
+    return this.searchApiService.SearchAll({ ObserverGuid: userGuid, NumberOfRecords: 10 });
   }
 
   private S4() {

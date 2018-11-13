@@ -1,3 +1,3 @@
-import { RegObsObservation } from './regobs-observation.model';
+import { RegistrationViewModel } from '../../modules/regobs-api/models';
 
-export type MapItem = RegObsObservation;
+export type MapItem = RegistrationViewModel;

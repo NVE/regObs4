@@ -3,19 +3,19 @@ export const settings = {
     observations: {
         maxObservationsToFetch: 5000,
         daysBack: {
-            Snow: [0, 1, 2, 3, 7, 7 * 2],
+            Avalanche: [0, 1, 2, 3, 7, 7 * 2],
             Ice: [0, 1, 2, 7, 7 * 4, 7 * 12],
-            Water: [0, 1, 2, 3, 7, 7 * 2],
-            Dirt: [0, 1, 2, 3, 7, 7 * 2],
+            Flooding: [0, 1, 2, 3, 7, 7 * 2],
+            LandSlide: [0, 1, 2, 3, 7, 7 * 2],
         },
         timeZone: 'Europe/Oslo'
     },
     services: {
         regObs: {
             apiUrl: {
-                'PROD': 'https://api.nve.no/hydrology/regobs/webapi_v3.2.0',
-                'DEMO': 'https://api.nve.no/hydrology/demo/regobs/webapi_v3.2',
-                'TEST': 'http://tst-h-web03.nve.no/regobswebapi'
+                'PROD': 'https://tst-h-web03.nve.no/regobswebapi_v4.0',
+                'DEMO': 'https://tst-h-web03.nve.no/regobswebapi_v4.0',
+                'TEST': 'https://tst-h-web03.nve.no/regobswebapi_v4.0'
             },
             serviceUrl: {
                 'PROD': 'https://api.nve.no/hydrology/regobs/v3.1.0',
@@ -29,21 +29,21 @@ export const settings = {
             },
             createUserUrl: '/Account/Register?c=Home',
             passwordRecoveryUrl: '/Account/PasswordRecovery?c=Home',
-            apiJsonVersion: '3.2.0',
+            apiJsonVersion: '4.0.0',
         },
         warning: {
             defaultWarningDaysAhead: 2,
             summerMonths: [5, 6, 7, 8, 9, 10],
             timezone: 'Europe/Oslo',
-            Snow: {
+            Avalanche: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
                 webUrl: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/'
             },
-            Dirt: {
+            LandSlide: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api',
                 webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
             },
-            Water: {
+            Flooding: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.5/api',
                 webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
             },

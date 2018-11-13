@@ -87,8 +87,10 @@ export class AppComponent {
   }
 
   async initNanoSqlDatabase() {
-    await NanoSql.init();
-    this.events.publish('nanoSql: connected');
+    return this.zone.runOutsideAngular(async () => {
+      await NanoSql.init();
+      this.events.publish('nanoSql: connected');
+    });
   }
 
   // TODO: Move to data sync sevice

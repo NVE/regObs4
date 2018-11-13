@@ -44,11 +44,6 @@ export class TripLoggerService {
     });
   }
 
-  async drop() {
-    await nSQL(NanoSql.TABLES.TRIP_LOG.name).query('drop').exec();
-    await nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('drop').exec();
-  }
-
   // getTripLogSummaryAsObservable(): Observer<TripLogSummary> {
   //   return nSQL().observable<TripLogItem[]>(() => {
   //     return nSQL(tableName).query('select').emit();

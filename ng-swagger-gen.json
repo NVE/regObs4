@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/ng-swagger-gen/ng-swagger-gen-schema.json",
-  "swagger": "http://tst-h-web03.nve.no/regobswebapi/swagger/docs/v1",
+  "swagger": "https://tst-h-web03.nve.no/regobswebapi_v4.0/swagger/docs/v4",
   "output": "src/app/modules/regobs-api",
   "prefix": "regobsApi",
   "ignoreUnusedModels": true,

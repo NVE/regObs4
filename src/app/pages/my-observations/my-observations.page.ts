@@ -1,16 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
-import { RegistrationService } from '../../modules/registration/services/registration.service';
 import { ObservationService } from '../../core/services/observation/observation.service';
-import { IRegistration } from '../../modules/registration/models/registration.model';
-import { Observable, Subscription } from 'rxjs';
-import { RegObsObservation } from '../../core/models/regobs-observation.model';
+import { Subscription } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { map, tap } from 'rxjs/operators';
 import { LoginService } from '../../core/services/login/login.service';
 import { Refresher, InfiniteScroll, NavController } from '@ionic/angular';
 import { SyncItemListComponent } from '../../modules/registration/components/sync-item-list/sync-item-list.component';
-import { LoggedInUser } from '../../core/services/login/logged-in-user.model';
-import { User } from '../../core/models/user.model';
+import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 
 @Component({
   selector: 'app-my-observations',
@@ -18,13 +13,13 @@ import { User } from '../../core/models/user.model';
   styleUrls: ['./my-observations.page.scss'],
 })
 export class MyObservationsPage implements OnInit, OnDestroy {
-  registrations: RegObsObservation[];
+  registrations: RegistrationViewModel[];
   @ViewChild(Refresher) refresher: Refresher;
   @ViewChild(SyncItemListComponent) syncList: SyncItemListComponent;
   @ViewChild(InfiniteScroll) infiniteScroll: InfiniteScroll;
 
   private subscription: Subscription;
-  private user: User;
+  private user: ObserverResponseDto;
 
   constructor(
     private observationService: ObservationService,
@@ -67,8 +62,8 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       userSettings.appMode, this.user, userSettings.language, pageNumber);
   }
 
-  trackByRegId(index: number, obs: RegObsObservation) {
-    return obs ? obs.RegId : undefined;
+  trackByRegId(index: number, obs: RegistrationViewModel) {
+    return obs ? obs.RegID : undefined;
   }
 
 }

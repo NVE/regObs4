@@ -30,11 +30,11 @@ export class GeoIconComponent implements OnInit {
 
   getDimensions() {
     switch (this.geoHazard) {
-      case GeoHazard.Snow:
+      case GeoHazard.Avalanche:
         return { width: 22, height: 24.2 };
-      case GeoHazard.Dirt:
+      case GeoHazard.LandSlide:
         return { width: 22, height: 24 };
-      case GeoHazard.Water:
+      case GeoHazard.Flooding:
         return { width: 33, height: 30.8 };
       case GeoHazard.Ice:
         return { width: 22, height: 28 };
@@ -45,11 +45,11 @@ export class GeoIconComponent implements OnInit {
 
   getBaseHeight() {
     switch (this.geoHazard) {
-      case GeoHazard.Snow:
+      case GeoHazard.Avalanche:
         return 22;
-      case GeoHazard.Dirt:
+      case GeoHazard.LandSlide:
         return 22;
-      case GeoHazard.Water:
+      case GeoHazard.Flooding:
         return 33;
       case GeoHazard.Ice:
         return 24.2;
@@ -66,19 +66,9 @@ export class GeoIconComponent implements OnInit {
   }
 
   get iconSrc() {
-    switch (this.geoHazard) {
-      case GeoHazard.Snow:
-        return '/assets/icon/snow.svg';
-      case GeoHazard.Dirt:
-        return '/assets/icon/dirt.svg';
-      case GeoHazard.Water:
-        return '/assets/icon/water.svg';
-      case GeoHazard.Ice:
-        return '/assets/icon/ice.svg';
-      default:
-        return '';
-    }
+    return `/assets/icon/${GeoHazard[this.geoHazard].toLowerCase()}.svg`;
   }
+
   ngOnInit() {
   }
 

@@ -71,13 +71,13 @@ export class SummaryItemService {
 
   private getGeoHazardItems(registration: IRegistration) {
     switch (registration.geoHazard) {
-      case GeoHazard.Water:
+      case GeoHazard.Flooding:
         return this.getWaterItems(registration);
       case GeoHazard.Ice:
         return this.getIceItems(registration);
-      case GeoHazard.Dirt:
+      case GeoHazard.LandSlide:
         return this.getDirtItems(registration);
-      case GeoHazard.Snow:
+      case GeoHazard.Avalanche:
         return this.getSnowItems(registration);
     }
   }

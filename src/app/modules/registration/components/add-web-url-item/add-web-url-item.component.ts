@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, NgZone, Output, EventEmitter } from '@angular/core';
-import { UrlDto } from '../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { AddWebUrlModalPage } from '../../pages/add-web-url-modal/add-web-url-modal.page';
+import { UrlViewModel } from '../../../regobs-api/models';
 
 @Component({
   selector: 'app-add-web-url-item',
@@ -11,7 +11,7 @@ import { AddWebUrlModalPage } from '../../pages/add-web-url-modal/add-web-url-mo
 export class AddWebUrlItemComponent implements OnInit {
 
   @Input() title = 'REGISTRATION.ADD_WEB_URL.TITLE';
-  @Input() weburls: UrlDto[];
+  @Input() weburls: UrlViewModel[];
   @Output() weburlsChange = new EventEmitter();
   @Input() icon = 'add-circle-outline';
   @Input() iconColor = 'dark';
@@ -42,14 +42,14 @@ export class AddWebUrlItemComponent implements OnInit {
     }
   }
 
-  setWebUrl(index: number, url: UrlDto) {
+  setWebUrl(index: number, url: UrlViewModel) {
     this.zone.run(() => {
       this.weburls[index] = url;
       this.weburlsChange.emit(this.weburls);
     });
   }
 
-  addWebUrl(url: UrlDto) {
+  addWebUrl(url: UrlViewModel) {
     this.zone.run(() => {
       if (!this.weburls) {
         this.weburls = [];

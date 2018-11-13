@@ -2,13 +2,13 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { MapItem } from '../../core/models/map-item.model';
 import * as moment from 'moment';
-import { RegObsObservation } from '../../core/models/regobs-observation.model';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { RegistrationViewModel } from '../../modules/regobs-api/models';
 
 @Component({
   selector: 'app-map-item-bar',
@@ -47,19 +47,19 @@ export class MapItemBarComponent implements OnInit {
   ngOnInit() {
   }
 
-  getTitle(item: RegObsObservation) {
-    const allRegistrationNames: Array<string> = (item.Registrations || []).map((registration) => registration.RegistrationName);
+  getTitle(item: RegistrationViewModel) {
+    const allRegistrationNames: Array<string> = (item.Summaries || []).map((registration) => registration.RegistrationName);
     const uniqueValues = Array.from(new Set(allRegistrationNames));
     return uniqueValues.join(', ');
   }
 
   show(item: MapItem) {
     this.zone.run(() => {
-      this.id = item.RegId;
+      this.id = item.RegID;
       this.topHeader = moment(item.DtObsTime).format('d/M HH:mm');
       this.title = this.getTitle(item);
-      this.name = item.NickName;
-      this.geoHazard = item.GeoHazardTid;
+      this.name = item.Observer.NickName;
+      this.geoHazard = parseInt(item.GeoHazardTID, 10); //TODO: Bug in api model?
       this.setDistanceAndType(item);
       this.visible = true;
       this.publishChange();
@@ -91,7 +91,7 @@ export class MapItemBarComponent implements OnInit {
           timeout: 20 * 1000,
           maximumAge: 10 * 60 * 1000
         });
-      const distance = L.latLng(item.Latitude, item.Longitude)
+      const distance = L.latLng(item.ObsLocation.Latitude, item.ObsLocation.Longitude)
         .distanceTo(L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude));
       this.zone.run(() => {
         this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()} `

@@ -4,11 +4,9 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import * as RegobsApi from '../../../modules/regobs-api/services';
 import { NanoSql } from '../../../../nanosql';
 import { AppMode } from '../../models/app-mode.enum';
-import { User } from '../../models/user.model';
 import { settings } from '../../../../settings';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
-import { JsonResultHelper } from '../../helpers/json-result.helper';
-import { ObserverGroupDto } from '../../../modules/regobs-api/models';
+import { ObserverGroupDto, ObserverResponseDto } from '../../../modules/regobs-api/models';
 import { nSQL } from 'nano-sql';
 import * as moment from 'moment';
 import { from, combineLatest, Observable } from 'rxjs';
@@ -34,7 +32,7 @@ export class UserGroupService {
     }
   }
 
-  private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, user: User) {
+  private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, user: ObserverResponseDto) {
     const dataLoadId = this.getDataLoadId(appMode, user);
     const dataLoad = await this.dataLoadService.getState(dataLoadId);
     const lastUpdateLimit = moment().subtract(settings.kdvElements.daysBeforeUpdate, 'day');
@@ -46,24 +44,22 @@ export class UserGroupService {
     }
   }
 
-  async updateUserGroupsForUser(appMode: AppMode, user: User) {
+  async updateUserGroupsForUser(appMode: AppMode, user: ObserverResponseDto) {
     const dataLoadId = this.getDataLoadId(appMode, user);
     await this.dataLoadService.startLoading(dataLoadId);
     this.accountApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
-    const result = await this.accountApiService.AccountGetObserverGroups(user.Id).toPromise();
-    const userGroups: ObserverGroupDto[] = JsonResultHelper.unwrapToArray<{ [key: number]: string }>(result)
-      .map((val) => {
-        const Id = parseInt(Object.keys(val)[0], 10);
-        const Name = val[Id];
-        return { key: `${user.Id}_${Id}`, userId: user.Id, Id, Name };
-      });
+    // TODO: get observer groups from api...
+    const result = await this.accountApiService.AccountGetObserverGroups(user.Guid).toPromise();
+    const userGroups = (result || []).map((val) => {
+      return { key: `${user.Guid}_${val.Id}`, userId: user.Guid, ...result };
+    });
     const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
     await nSQL(instanceName).loadJS(instanceName, userGroups);
     await this.dataLoadService.loadingCompleted(dataLoadId, userGroups.length);
   }
 
-  private getDataLoadId(appMode: AppMode, user: User) {
-    return `${NanoSql.TABLES.OBSERVER_GROUPS.name}_${appMode}_${user.Id}`;
+  private getDataLoadId(appMode: AppMode, user: ObserverResponseDto) {
+    return `${NanoSql.TABLES.OBSERVER_GROUPS.name}_${appMode}_${user.Guid}`;
   }
 
   getUserGroupsAsObservable(): Observable<ObserverGroupDto[]> {
@@ -76,9 +72,9 @@ export class UserGroupService {
     return this.getUserGroupsAsObservable().pipe(take(1)).toPromise();
   }
 
-  private async getUserGroupsFromDb(appMode: AppMode, user: User): Promise<ObserverGroupDto[]> {
+  private async getUserGroupsFromDb(appMode: AppMode, user: ObserverResponseDto): Promise<ObserverGroupDto[]> {
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode).query('select')
-      .where(['userId', '=', user.Id]).exec();
+      .where(['userId', '=', user.Guid]).exec();
   }
 
 }
