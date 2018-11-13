@@ -59,7 +59,7 @@ export class MapItemBarComponent implements OnInit {
       this.topHeader = moment(item.DtObsTime).format('d/M HH:mm');
       this.title = this.getTitle(item);
       this.name = item.Observer.NickName;
-      this.geoHazard = parseInt(item.GeoHazardTID, 10); //TODO: Bug in api model?
+      this.geoHazard = parseInt(item.GeoHazardTID, 10); // TODO: Bug in api model?
       this.setDistanceAndType(item);
       this.visible = true;
       this.publishChange();

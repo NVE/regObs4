@@ -14,6 +14,7 @@
 <ion-content>
   <app-set-location-in-map *ngIf="fromMarker" (mapReady)="onMapReady($event)" [fromMarker]="fromMarker"
     [locationMarker]="locationMarker" (locationSet)="onLocationSet($event)" [confirmLocationText]="confirmLocationText"
-    fromLocationText="REGISTRATION.OBS_LOCATION.TITLE" [showPreviousUsedLocations]="false" [locationTitle]="locationText">
+    fromLocationText="REGISTRATION.OBS_LOCATION.TITLE" [showPreviousUsedLocations]="false" [locationTitle]="locationText"
+    [showPolyline]="false" [showFromMarkerInDetails]="false">
   </app-set-location-in-map>
 </ion-content>

@@ -4,6 +4,7 @@ import { ObsLocationDto } from '../../../regobs-api/models';
 import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-set-avalanche-position',
@@ -14,6 +15,7 @@ export class SetAvalanchePositionPage implements OnInit {
   @Input() startLatLng?: L.LatLng;
   @Input() endLatLng?: L.LatLng;
   @Input() relativeToLatLng?: L.LatLng;
+  @Input() showPolyline = true;
 
   start: L.LatLng;
   end: L.LatLng;
@@ -36,6 +38,8 @@ export class SetAvalanchePositionPage implements OnInit {
     iconSize: [27, 42],
     iconAnchor: [13.5, 41]
   });
+  private startMarker: L.Marker;
+  private endMarker: L.Marker;
   private translations;
 
   @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
@@ -62,6 +66,14 @@ export class SetAvalanchePositionPage implements OnInit {
     this.locationMarker = L.marker(this.relativeToLatLng || fallbackLatlng, {
       icon: this.startIcon
     });
+    this.startMarker = L.marker(this.locationMarker.getLatLng(), { icon: this.startIcon })
+      .on('click', function () {
+        this.updateMarkers(true);
+      });
+    this.endMarker = L.marker(this.locationMarker.getLatLng(), { icon: this.endIcon })
+      .on('click', function () {
+        this.updateMarkers(false);
+      });
     if (this.relativeToLatLng) {
       this.fromMarker = L.marker(this.relativeToLatLng); // TODO: Icon
     }
@@ -69,25 +81,34 @@ export class SetAvalanchePositionPage implements OnInit {
 
   onMapReady(map: L.Map) {
     this.map = map;
-    this.updateMarkers();
+    this.updateMarkers(true);
   }
 
-  private updateMarkers() {
+  private updateMarkers(setStartActive: boolean) {
+    this.startMarker.remove();
+    this.endMarker.remove();
     if (!this.start) {
       this.locationMarker.setIcon(this.startIcon);
       this.confirmLocationText =
         `${this.translations['DIALOGS.CONFIRM']} ${this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'].toLowerCase()}`;
       this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'];
     } else {
-      L.marker(this.start, { icon: this.startIcon }).addTo(this.map);
-
-      this.locationMarker.setIcon(this.endIcon);
-      if (this.end) {
-        this.locationMarker.setLatLng(this.end);
+      if (!setStartActive) {
+        this.locationMarker.setIcon(this.endIcon);
+        this.locationMarker.setLatLng(this.end || this.startMarker.getLatLng());
+        this.confirmLocationText =
+          `${this.translations['DIALOGS.CONFIRM']} ${this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'].toLowerCase()}`;
+        this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'];
+        this.startMarker.setLatLng(this.start);
+        this.startMarker.addTo(this.map);
+      } else {
+        this.locationMarker.setIcon(this.startIcon);
+        this.locationMarker.setLatLng(this.start);
+        if (this.end) {
+          this.endMarker.setLatLng(this.end);
+          this.endMarker.addTo(this.map);
+        }
       }
-      this.confirmLocationText =
-        `${this.translations['DIALOGS.CONFIRM']} ${this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'].toLowerCase()}`;
-      this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'];
 
       this.ngZone.runOutsideAngular(() => {
         this.map.on('drag', () => this.updatePolyline());
@@ -111,7 +132,7 @@ export class SetAvalanchePositionPage implements OnInit {
   async onLocationSet(event: ObsLocationDto) {
     if (!this.start) {
       this.start = L.latLng(event.Latitude, event.Longitude);
-      this.updateMarkers();
+      this.updateMarkers(false);
     } else {
       this.end = L.latLng(event.Latitude, event.Longitude);
       this.modalController.dismiss({ start: this.start, end: this.end });

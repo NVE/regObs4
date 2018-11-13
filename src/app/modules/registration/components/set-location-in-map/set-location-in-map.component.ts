@@ -35,6 +35,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() selectedLocation: ObsLocationsResponseDtoV2;
   @Output() selectedLocationChange = new EventEmitter<ObsLocationsResponseDtoV2>();
   @Output() mapReady = new EventEmitter<L.Map>();
+  @Input() showPolyline = true;
+  @Input() showFromMarkerInDetails = true;
 
   private map: L.Map;
   registration: IRegistration;
@@ -208,7 +210,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const locationMarkerLatLng = this.locationMarker.getLatLng();
     const path = [locationMarkerLatLng, from];
     if (!this.pathLine) {
-      this.pathLine = L.polyline(path, { color: 'black', weight: 6, opacity: .9, dashArray: '1,12' }).addTo(this.map);
+      this.pathLine = L.polyline(path, { color: 'black', weight: 6, opacity: .9, dashArray: '1,12' });
+      if (this.showPolyline) {
+        this.pathLine.addTo(this.map);
+      }
     } else {
       this.pathLine.setLatLngs(path);
     }

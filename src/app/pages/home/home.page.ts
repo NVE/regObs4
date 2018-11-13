@@ -97,6 +97,7 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
       this.fullscreen = isFullscreen;
+      this.mapComponent.redrawMap();
       this.cdr.detectChanges();
     });
 
