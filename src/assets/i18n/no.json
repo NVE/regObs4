@@ -81,12 +81,14 @@
   },
   "MENU": {
     "ABOUT_REGOBS": "Om data i regObs",
+    "AND": "og",
     "GENERAL": "Generelt",
     "LAST_UPDATED": "Sist oppdatert",
     "MAP_LEGENDS": "Tegnforklaring for kart",
     "MAP_SETTINGS": "Kartvalg",
     "MAP_SETTINGS_FOR": "Kartvalg for",
     "OPACITY": "Gjennomsiktighet",
+    "OTHER": "Annet",
     "SHOW": "Vis",
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjoner",
@@ -94,6 +96,7 @@
     "START_WIZARD": "Start veiviseren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
     "TOPO_MAP_CREDITS": "Topografisk kart levert av",
+    "UPDATE_OBSERVATIONS": "Oppdater observasjoner",
     "USER_SETTINGS": "Brukervalg"
   },
   "MONTHS": {

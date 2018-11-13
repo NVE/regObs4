@@ -24,7 +24,7 @@
     <ion-item (click)="updateObservations()">
       <ion-icon slot="start" name="refresh"></ion-icon>
       <ion-label text-wrap>
-        <h2>Oppdater observasjoner</h2>
+        <h2>{{'MENU.UPDATE_OBSERVATIONS' | translate}}</h2>
         <p *ngIf="(lastUpdated$ | async) as lastUpdated">{{'MENU.LAST_UPDATED' | translate}} {{ lastUpdated | date:
           settings.dateFormats.angular.dateAndTime }}</p>
       </ion-label>
@@ -45,13 +45,16 @@
       </ion-label>
       <ion-toggle [(ngModel)]="userSettings.showMapCenter" (ionChange)="saveUserSettings()"></ion-toggle>
     </ion-item>
-    <ion-item href="/offline-map" routerDirection="forward">
+    <ion-item *ngIf="useAppInNorway" href="/offline-map" routerDirection="forward">
       <ion-icon slot="start" name="flash"></ion-icon>
       <ion-label>
         {{'OFFLINE_MAP.TITLE' | translate}}
       </ion-label>
     </ion-item>
-    <app-support-tiles-menu></app-support-tiles-menu>
+    <app-support-tiles-menu *ngIf="useAppInNorway"></app-support-tiles-menu>
+    <ion-list-header color="light">
+      {{'MENU.OTHER' | translate}}
+    </ion-list-header>
     <ion-item>
       <ion-icon slot="start" name="information-circle-outline"></ion-icon>
       <ion-label>{{'MENU.ABOUT_REGOBS' | translate}}</ion-label>
@@ -62,13 +65,11 @@
     </ion-item>
   </ion-menu-toggle>
   <ion-item>
-    <ion-label>
-      <p>
-        {{'MENU.TOPO_MAP_CREDITS' | translate}} <app-external-link src="https://www.kartverket.no/">@Karverket</app-external-link>
-      </p>
-      <p>
-        {{'MENU.SUPPORT_MAP_CREDITS' | translate}} <app-external-link src="https://www.nve.no/">@NVE</app-external-link>
-      </p>
+    <ion-label text-wrap>
+      {{'MENU.TOPO_MAP_CREDITS' | translate}} <app-external-link src="https://www.kartverket.no/">@Karverket</app-external-link>
+      {{'MENU.AND' | translate}}
+      <app-external-link src="https://opentopomap.org/">@OpenTopoMap</app-external-link>.
+      {{'MENU.SUPPORT_MAP_CREDITS' | translate}} <app-external-link src="https://www.nve.no/">@NVE</app-external-link>
     </ion-label>
   </ion-item>
 </ion-list>

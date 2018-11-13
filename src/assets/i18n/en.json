@@ -81,12 +81,14 @@
   },
   "MENU": {
     "ABOUT_REGOBS": "About data in regObs",
+    "AND": "and",
     "GENERAL": "General",
     "LAST_UPDATED": "Last updated",
     "MAP_LEGENDS": "Legends for map",
     "MAP_SETTINGS": "Map settings",
     "MAP_SETTINGS_FOR": "Map settings for",
     "OPACITY": "Opacity",
+    "OTHER": "Other",
     "SHOW": "Show",
     "SHOW_MAP_CENTER": "Show map center",
     "SHOW_OBSERVATIONS": "Show observations",
@@ -94,6 +96,7 @@
     "START_WIZARD": "Start wizard",
     "SUPPORT_MAP_CREDITS": "Support maps delivered by",
     "TOPO_MAP_CREDITS": "Topo map deliverd by",
+    "UPDATE_OBSERVATIONS": "Update observations",
     "USER_SETTINGS": "User"
   },
   "MONTHS": {
