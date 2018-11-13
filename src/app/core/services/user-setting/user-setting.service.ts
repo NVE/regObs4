@@ -52,7 +52,7 @@ export class UserSettingService {
         { geoHazard: GeoHazard.Water, daysBack: 3 },
       ],
       completedStartWizard: false,
-      supportTiles: settings.map.tiles.supportTiles,
+      supportTiles: [],
       showMapCenter: false,
       tilesCacheSize: settings.map.tiles.cacheSize,
     };

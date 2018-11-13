@@ -25,7 +25,7 @@
       <ion-icon slot="start" name="refresh"></ion-icon>
       <ion-label text-wrap>
         <h2>{{'MENU.UPDATE_OBSERVATIONS' | translate}}</h2>
-        <p *ngIf="(lastUpdated$ | async) as lastUpdated">{{'MENU.LAST_UPDATED' | translate}} {{ lastUpdated | date:
+        <p *ngIf="lastUpdated">{{'MENU.LAST_UPDATED' | translate}} {{ lastUpdated | date:
           settings.dateFormats.angular.dateAndTime }}</p>
       </ion-label>
     </ion-item>
@@ -51,7 +51,7 @@
         {{'OFFLINE_MAP.TITLE' | translate}}
       </ion-label>
     </ion-item>
-    <app-support-tiles-menu *ngIf="useAppInNorway"></app-support-tiles-menu>
+    <app-support-tiles-menu *ngIf="useAppInNorway" [userSetting]="userSettings"></app-support-tiles-menu>
     <ion-list-header color="light">
       {{'MENU.OTHER' | translate}}
     </ion-list-header>

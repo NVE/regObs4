@@ -11,7 +11,7 @@ export interface UserSetting {
     currentGeoHazard: GeoHazard;
     observationDaysBack: Array<{ geoHazard: GeoHazard, daysBack: number }>;
     completedStartWizard: boolean;
-    supportTiles: Array<SupportTile>;
+    supportTiles: Array<{ name: string; enabled: boolean; opacity: number }>;
     showMapCenter: boolean;
     tilesCacheSize: number;
 }

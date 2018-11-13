@@ -136,16 +136,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   configureTileLayers(userSetting: UserSetting) {
-    this.tilesLayer.clearLayers();
-    this.topoTilesLayer.addTo(this.tilesLayer);
-    const supportTiles = userSetting.supportTiles || settings.map.tiles.supportTiles;
-    for (const supportTile of supportTiles) {
-      if (supportTile.geoHazardId === userSetting.currentGeoHazard && supportTile.enabled) {
-        const tile = L.tileLayer(supportTile.url);
-        tile.setOpacity(supportTile.opacity);
-        tile.addTo(this.tilesLayer);
+    this.zone.runOutsideAngular(() => {
+      this.tilesLayer.clearLayers();
+      this.topoTilesLayer.addTo(this.tilesLayer);
+      const supportTiles = settings.map.tiles.supportTiles;
+      for (const supportTile of supportTiles) {
+        const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
+        if (supportTile.geoHazardId === userSetting.currentGeoHazard
+          && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
+          const tile = L.tileLayer(supportTile.url);
+          tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
+          tile.addTo(this.tilesLayer);
+        }
       }
-    }
+    });
   }
 
   redrawMap() {

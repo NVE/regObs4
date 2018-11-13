@@ -9,16 +9,16 @@
       </ion-label>
       <ion-toggle [(ngModel)]="supportTile.enabled" (ionChange)="onTileChanged(supportTile)"></ion-toggle>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="supportTile.enabled">
       <ion-label position="stacked">{{'MENU.OPACITY' | translate}}</ion-label>
       <ion-select [(ngModel)]="supportTile.opacity" (ionChange)="onTileChanged(supportTile)">
         <ion-select-option *ngFor="let option of opacityValues" [value]="option.value">{{ option.name | translate }}</ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-list-header color="light">
+    <ion-list-header color="light" *ngIf="supportTile.enabled">
       {{'MENU.MAP_LEGENDS' | translate}}
     </ion-list-header>
-    <ng-container [ngTemplateOutlet]="legends[supportTile.name]"></ng-container>
+    <ng-container *ngIf="supportTile.enabled" [ngTemplateOutlet]="legends[supportTile.name]"></ng-container>
   </ng-container>
 </ng-container>
 <ng-template #steepness>
