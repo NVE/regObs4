@@ -21,6 +21,7 @@ export class ObservationListCardComponent implements OnInit {
   hasImage: boolean;
   imgSrc: string;
   settings = settings;
+  header: string;
 
   constructor(
     private translateService: TranslateService,
@@ -29,6 +30,7 @@ export class ObservationListCardComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    this.header = this.getHeader(this.obs);
     this.geoHazardName = await this.translateService.get(`GEO_HAZARDS.${GeoHazard[this.obs.GeoHazardTid]}`.toUpperCase()).toPromise();
     this.dtObsDate = moment(this.obs.DtObsTime).toDate();
     this.icon = this.helperService.getGeoHazardIcon(this.obs.GeoHazardTid);
@@ -37,6 +39,19 @@ export class ObservationListCardComponent implements OnInit {
       this.imgSrc = await this.offlineImageService.getImageOrFallbackToUrl(url);
       this.hasImage = true;
     }
+  }
+
+  getHeader(obs: RegObsObservation) {
+    const headerValues = [];
+    if (obs.MunicipalName) {
+      headerValues.push(obs.MunicipalName);
+    } else if (obs.LocationName) {
+      headerValues.push(obs.MunicipalName);
+    }
+    if (obs.ForecastRegionName) {
+      headerValues.push(obs.ForecastRegionName);
+    }
+    return headerValues.join(' / ');
   }
 
   getRegistrationNames() {

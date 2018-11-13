@@ -1,20 +1,41 @@
-<ion-item>
-  <ion-label>
-    <h2>{{obs.LocationName || obs.MunicipalName}} / {{obs.ForecastRegionName}}</h2>
+<ion-card>
+  <ion-card-header *ngIf="header">
+    <!-- <ion-card-title color="medium">{{header}}</ion-card-title> -->
+    <h3 color="medium">{{header}}</h3>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="5">
+          <ion-icon [src]="icon"></ion-icon> {{ geoHazardName }}
+        </ion-col>
+        <ion-col size="7">
+          <ion-icon src="/assets/icon/moh.svg"></ion-icon> 589 moh
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="5">
+          <ion-icon name="calendar"></ion-icon> {{ dtObsDate | formatDate | async }}
+        </ion-col>
+        <ion-col size="7">
+          <ion-icon name="contact"></ion-icon> {{obs.NickName}} *****
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+  <!-- <h2></h2>
     <p>
-      <ion-icon [src]="icon"></ion-icon> {{ geoHazardName }}
-      <ion-icon name="calendar"></ion-icon> {{ dtObsDate | date: settings.dateFormats.angular.dateAndTime }}
     </p>
     <p>
       <ion-icon name="contact"></ion-icon> {{obs.NickName}}
     </p>
     <p class="observation-types">
-      <ion-badge>
+      <ion-badge text-wrap>
         {{ getRegistrationNames() }}
       </ion-badge>
     </p>
-  </ion-label>
-  <ion-thumbnail slot="end">
-    <ion-img *ngIf="hasImage" [src]="imgSrc"></ion-img>
-  </ion-thumbnail>
-</ion-item>
+  </ion-card-content>
+  <ion-thumbnail slot="end" *ngIf="hasImage">
+    <ion-img [src]="imgSrc"></ion-img>
+  </ion-thumbnail> -->
+</ion-card>
