@@ -47,10 +47,10 @@
     "NOTIFICATION_TITLE": "Tur pågår"
   },
   "GEO_HAZARDS": {
-    "AVALANCHE": "Snø",
-    "FLOODING": "Vann",
-    "ICE": "Is",
-    "LANDSLIDE": "Jord"
+    "SNOW": "Snø",
+    "DIRT": "Jord",
+    "WATER": "Vann",
+    "ICE": "Is"
   },
   "LOGIN": {
     "CREATE_USER": "Lag ny bruker",

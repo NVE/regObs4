@@ -47,10 +47,10 @@
     "NOTIFICATION_TITLE": "Logging trip"
   },
   "GEO_HAZARDS": {
-    "AVALANCHE": "Snow",
-    "FLOODING": "Water",
-    "ICE": "Ice",
-    "LANDSLIDE": "Dirt"
+    "SNOW": "Snow",
+    "DIRT": "Dirt",
+    "WATER": "Water",
+    "ICE": "Ice"
   },
   "LOGIN": {
     "CREATE_USER": "Create user",

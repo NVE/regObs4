@@ -61,14 +61,14 @@ export class ObservationService {
   }
 
   private getPriority(currentGeoHazard: GeoHazard) {
-    if (currentGeoHazard === GeoHazard.Avalanche) {
-      return [GeoHazard.Avalanche, GeoHazard.Ice, GeoHazard.Flooding, GeoHazard.EarthFlow];
+    if (currentGeoHazard === GeoHazard.Snow) {
+      return [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Water, GeoHazard.Dirt];
     } else if (currentGeoHazard === GeoHazard.Ice) {
-      return [GeoHazard.Ice, GeoHazard.Avalanche, GeoHazard.Flooding, GeoHazard.EarthFlow];
-    } else if (currentGeoHazard === GeoHazard.Flooding) {
-      return [GeoHazard.Flooding, GeoHazard.EarthFlow, GeoHazard.Avalanche, GeoHazard.Ice];
-    } else if (currentGeoHazard === GeoHazard.EarthFlow) {
-      return [GeoHazard.EarthFlow, GeoHazard.Flooding, GeoHazard.Avalanche, GeoHazard.Ice];
+      return [GeoHazard.Ice, GeoHazard.Snow, GeoHazard.Water, GeoHazard.Dirt];
+    } else if (currentGeoHazard === GeoHazard.Water) {
+      return [GeoHazard.Water, GeoHazard.Dirt, GeoHazard.Snow, GeoHazard.Ice];
+    } else if (currentGeoHazard === GeoHazard.Dirt) {
+      return [GeoHazard.Dirt, GeoHazard.Water, GeoHazard.Snow, GeoHazard.Ice];
     }
   }
 

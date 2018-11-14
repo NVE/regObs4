@@ -1,7 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { RadioGroup } from '@ionic/angular';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../../../../core/models/geo-hazard.enum';
@@ -21,7 +20,10 @@ export class DamagePage extends BasePage {
   checked: boolean;
 
   get isChecked() {
-    if (!this.registration || this.registration.request.DamageObs.length === 0) {
+    if (!this.registration
+      || !this.registration.request
+      || !this.registration.request.DamageObs
+      || this.registration.request.DamageObs.length === 0) {
       return this.checked;
     }
     return this.registration && this.registration.request.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE).length > 0;
@@ -52,8 +54,9 @@ export class DamagePage extends BasePage {
 
   async onInit() {
     const userSetting = await this.userSettingService.getUserSettings();
+    const currentGeoHazard = GeoHazard[userSetting.currentGeoHazard];
     this.damageTypes = (await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode,
-      `${GeoHazard[userSetting.currentGeoHazard]}_DamageTypeKDV`))
+      `${currentGeoHazard}_DamageTypeKDV`))
       .filter((x) => x.Id !== NO_DAMAGE_VISIBLE);
   }
 }

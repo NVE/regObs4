@@ -122,13 +122,13 @@ export class HelperService {
 
   getGeoHazardIcon(geoHazard: GeoHazard) {
     switch (geoHazard) {
-      case GeoHazard.EarthFlow:
+      case GeoHazard.Dirt:
         return '/assets/icon/ikon_jordskred.svg';
       case GeoHazard.Ice:
         return '/assets/icon/ikon_isvarsler2.svg';
-      case GeoHazard.Avalanche:
+      case GeoHazard.Snow:
         return '/assets/icon/ikon_snoskred.svg';
-      case GeoHazard.Flooding:
+      case GeoHazard.Water:
         return '/assets/icon/ikon_flom.svg';
     }
   }

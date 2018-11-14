@@ -12,9 +12,9 @@
 
 <ion-content *ngIf="avalancheActivityCopy">
   <ion-list lines="full">
-    <ion-item>
+    <ion-item (click)="noAvalancheActivity = !noAvalancheActivity">
       <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.NO_AVALANCHE_ACTIVITY' | translate}}</ion-label>
-      <ion-checkbox mode="md" slot="start" [(ngModel)]="noAvalancheActivity"></ion-checkbox>
+      <ion-checkbox slot="start" [(ngModel)]="noAvalancheActivity"></ion-checkbox>
     </ion-item>
     <ng-container *ngIf="!noAvalancheActivity">
       <ion-item>

@@ -86,7 +86,7 @@ export class WarningService {
   }
 
   updateWarningsForGeoHazard(geoHazard: GeoHazard) {
-    if (geoHazard === GeoHazard.Avalanche) {
+    if (geoHazard === GeoHazard.Snow) {
       return this.updateAvalancheWarnings(LangKey.no);
     } else if (geoHazard === GeoHazard.Ice) {
       return this.updateIceWarnings();
@@ -108,14 +108,14 @@ export class WarningService {
   }
 
   private getPriority(currentGeoHazard: GeoHazard) {
-    if (currentGeoHazard === GeoHazard.Avalanche) {
-      return [GeoHazard.Avalanche, GeoHazard.Ice, GeoHazard.Flooding, GeoHazard.EarthFlow];
+    if (currentGeoHazard === GeoHazard.Snow) {
+      return [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Water, GeoHazard.Dirt];
     } else if (currentGeoHazard === GeoHazard.Ice) {
-      return [GeoHazard.Ice, GeoHazard.Avalanche, GeoHazard.Flooding, GeoHazard.EarthFlow];
-    } else if (currentGeoHazard === GeoHazard.Flooding) {
-      return [GeoHazard.Flooding, GeoHazard.EarthFlow, GeoHazard.Avalanche, GeoHazard.Ice];
-    } else if (currentGeoHazard === GeoHazard.EarthFlow) {
-      return [GeoHazard.EarthFlow, GeoHazard.Flooding, GeoHazard.Avalanche, GeoHazard.Ice];
+      return [GeoHazard.Ice, GeoHazard.Snow, GeoHazard.Water, GeoHazard.Dirt];
+    } else if (currentGeoHazard === GeoHazard.Water) {
+      return [GeoHazard.Water, GeoHazard.Dirt, GeoHazard.Snow, GeoHazard.Ice];
+    } else if (currentGeoHazard === GeoHazard.Dirt) {
+      return [GeoHazard.Dirt, GeoHazard.Water, GeoHazard.Snow, GeoHazard.Ice];
     }
   }
 
@@ -154,10 +154,10 @@ export class WarningService {
 
   private getGeoHazardFilter(currentGeoHazard: GeoHazard) {
     const geoHazards = [currentGeoHazard];
-    if (currentGeoHazard === GeoHazard.EarthFlow) {
-      geoHazards.push(GeoHazard.Flooding);
-    } else if (currentGeoHazard === GeoHazard.Flooding) {
-      geoHazards.push(GeoHazard.EarthFlow);
+    if (currentGeoHazard === GeoHazard.Dirt) {
+      geoHazards.push(GeoHazard.Water);
+    } else if (currentGeoHazard === GeoHazard.Water) {
+      geoHazards.push(GeoHazard.Dirt);
     }
     return geoHazards;
   }
@@ -278,18 +278,18 @@ export class WarningService {
   private async updateAvalancheWarnings(language: LangKey, from?: Date, to?: Date) {
     console.log(`[INFO][WarningService] Updating avalanche warnings`);
     const dateRange = this.getDefaultDateRange(from, to);
-    const dataLoadId = this.getDataLoadId(GeoHazard.Avalanche);
+    const dataLoadId = this.getDataLoadId(GeoHazard.Snow);
     await this.dataLoadService.startLoading(dataLoadId);
-    const url = `${this.getBaseUrl(GeoHazard.Avalanche)}`
+    const url = `${this.getBaseUrl(GeoHazard.Snow)}`
       + `/RegionSummary/Simple/${language}`
       + `/${dateRange.from.format('YYYY-MM-DD')}`
       + `/${dateRange.to.format('YYYY-MM-DD')}`;
     const result = await this.httpClient.get<IAvalancheWarningApiResult[]>(url).toPromise();
     const regionResult: IWarningGroup[] = result.map((region) => ({
-      id: `${region.Id}_${GeoHazard.Avalanche}`,
+      id: `${region.Id}_${GeoHazard.Snow}`,
       regionId: region.Id.toString(),
       regionName: region.Name,
-      geoHazard: GeoHazard.Avalanche,
+      geoHazard: GeoHazard.Snow,
       counties: [],
       warnings: region.AvalancheWarningList.map((simpleWarning) => ({
         warningLevel: parseInt(simpleWarning.DangerLevel, 10),

@@ -75,7 +75,7 @@ export class OfflineImageService {
 
   async getOfflineAssetFromDb(url: string) {
     const result = (await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
-      .query('select').where(['originalUrl', '=', url])
+      .query('select').where((x) => x.originalUrl === url)
       .exec()) as IOfflineAsset[];
     if (result.length > 0) {
       return result[0];

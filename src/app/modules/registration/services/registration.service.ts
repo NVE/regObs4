@@ -250,7 +250,7 @@ export class RegistrationService {
 
   deleteRegistrationById(appMode: AppMode, id: string) {
     return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
-      .query('delete').where(['id', '=', id]).exec();
+      .query('delete').where((x: IRegistration) => x.id === id).exec();
   }
 
   private getRegistrationsAsObservable(appMode: AppMode) {

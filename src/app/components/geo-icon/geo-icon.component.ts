@@ -30,11 +30,11 @@ export class GeoIconComponent implements OnInit {
 
   getDimensions() {
     switch (this.geoHazard) {
-      case GeoHazard.Avalanche:
+      case GeoHazard.Snow:
         return { width: 22, height: 24.2 };
-      case GeoHazard.EarthFlow:
+      case GeoHazard.Dirt:
         return { width: 22, height: 24 };
-      case GeoHazard.Flooding:
+      case GeoHazard.Water:
         return { width: 33, height: 30.8 };
       case GeoHazard.Ice:
         return { width: 22, height: 28 };
@@ -45,11 +45,11 @@ export class GeoIconComponent implements OnInit {
 
   getBaseHeight() {
     switch (this.geoHazard) {
-      case GeoHazard.Avalanche:
+      case GeoHazard.Snow:
         return 22;
-      case GeoHazard.EarthFlow:
+      case GeoHazard.Dirt:
         return 22;
-      case GeoHazard.Flooding:
+      case GeoHazard.Water:
         return 33;
       case GeoHazard.Ice:
         return 24.2;

@@ -60,7 +60,7 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   }
 
   getZeroValue() {
-    return this.geoHazard !== GeoHazard.Avalanche ? this.geoHazard * 10 : 0;
+    return this.geoHazard !== GeoHazard.Snow ? this.geoHazard * 10 : 0;
   }
 
   ok() {

@@ -1,6 +1,6 @@
 export enum GeoHazard {
-    Avalanche = 10,
-    EarthFlow = 20,
-    Flooding = 60,
+    Snow = 10,
+    Dirt = 20,
+    Water = 60,
     Ice = 70,
 }

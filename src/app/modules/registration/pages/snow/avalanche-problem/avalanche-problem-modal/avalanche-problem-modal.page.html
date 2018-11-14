@@ -12,9 +12,9 @@
 
 <ion-content *ngIf="avalancheEvalProblemCopy">
   <ion-list lines="full">
-    <ion-item>
+    <ion-item (click)="noWeakLayers = !noWeakLayers">
       <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS' | translate}}</ion-label>
-      <ion-checkbox mode="md" slot="start" [(ngModel)]="noWeakLayers"></ion-checkbox>
+      <ion-checkbox slot="start" [(ngModel)]="noWeakLayers"></ion-checkbox>
     </ion-item>
     <ng-container *ngIf="!noWeakLayers">
       <ion-list-header text-uppercase>
@@ -26,9 +26,9 @@
         kdvKey="Snow_AvalCauseKDV" [(value)]="avalancheEvalProblemCopy.AvalCauseTID"></app-kdv-dropdown>
       <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH" kdvKey="Snow_AvalCauseDepthKDV"
         [(value)]="avalancheEvalProblemCopy.AvalCauseDepthTID"></app-kdv-dropdown>
-      <ion-item *ngFor="let avalancheCauseAttribute of avalancheCauseAttributes">
+      <ion-item (click)="avalancheCauseAttribute.selected = !avalancheCauseAttribute.selected" *ngFor="let avalancheCauseAttribute of avalancheCauseAttributes">
         <ion-label text-wrap> {{ avalancheCauseAttribute.kdvElement.Name }}</ion-label>
-        <ion-checkbox mode="md" slot="start" [(ngModel)]="avalancheCauseAttribute.selected"></ion-checkbox>
+        <ion-checkbox slot="start" [(ngModel)]="avalancheCauseAttribute.selected"></ion-checkbox>
       </ion-item>
     </ng-container>
     <ion-list-header text-uppercase>

@@ -88,7 +88,7 @@ export class KdvService {
 
   private async getKdvElementsFromDb(langKey: LangKey, appMode: AppMode): Promise<KdvElementsResponseDto> {
     const result = await NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode).query('select')
-      .where(['langKey', '=', langKey]).exec();
+      .where((x) => x.langKey === langKey).exec();
     if (result.length > 0) {
       return result[0] as KdvElementsResponseDto;
     } else {

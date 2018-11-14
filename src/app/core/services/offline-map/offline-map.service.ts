@@ -149,7 +149,7 @@ export class OfflineMapService {
   async getTileFromDb(tileId: string): Promise<OfflineTile> {
     // console.log('[DEBUG][OfflineTileLayer] getTileFromDb: ' + tileId);
     const tiles = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select').where(['tileId', '=', tileId]).exec();
+      .query('select').where((x) => x.tileId === tileId).exec();
     if (tiles.length > 0) {
       // console.log('[DEBUG][OfflineTileLayer] Got tiles from db for tileID: ' + tileId, tiles);
       return tiles[0] as OfflineTile;
@@ -160,11 +160,11 @@ export class OfflineMapService {
 
   async cleanupTilesCache(numberOfItemsToCache: number) {
     const result = (await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select').where(['mapName', '=', settings.map.tiles.cacheFolder])
+      .query('select').where((x) => x.mapName === settings.map.tiles.cacheFolder)
       .orderBy({ lastAccess: 'desc' }).offset(numberOfItemsToCache).exec()) as OfflineTile[];
     const tileIds = result.map((x) => x.tileId);
     const deleted = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('delete').where(['tileId', 'IN', tileIds]).exec();
+      .query('delete').where((x) => tileIds.indexOf(x.tileId) >= 0).exec();
     console.log('[DEBUG][OfflineTiles] cache tiles deleted: ', deleted);
   }
 

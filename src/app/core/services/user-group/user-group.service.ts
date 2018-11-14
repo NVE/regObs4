@@ -74,7 +74,7 @@ export class UserGroupService {
 
   private async getUserGroupsFromDb(appMode: AppMode, user: ObserverResponseDto): Promise<ObserverGroupDto[]> {
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode).query('select')
-      .where(['userId', '=', user.Guid]).exec();
+      .where((x) => x.userId === user.Guid).exec();
   }
 
 }

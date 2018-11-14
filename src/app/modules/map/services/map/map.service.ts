@@ -115,7 +115,7 @@ export class MapService {
 
   // Loading regions in memory
   private loadReagions(geoHazard: GeoHazard) {
-    if (geoHazard === GeoHazard.Avalanche) {
+    if (geoHazard === GeoHazard.Snow) {
       if (!this._avalancheRegions) {
         this._avalancheRegions = require('../../../../../assets/varslingsomraader.json'); // TODO: Add to settings
       }
@@ -129,9 +129,9 @@ export class MapService {
   private getRegionInViewObservable(mapView: IMapView, geoHazard: GeoHazard): Observable<IMapViewAndArea> {
     console.log('getRegionInViewObservable', mapView, geoHazard);
     this.loadReagions(geoHazard);
-    const regions = (geoHazard === GeoHazard.Avalanche ? this._avalancheRegions
+    const regions = (geoHazard === GeoHazard.Snow ? this._avalancheRegions
       : this._regions);
-    const featureName = geoHazard === GeoHazard.Avalanche ? 'OMRAADEID' : 'fylkesnummer'; // TODO: Add to settings
+    const featureName = geoHazard === GeoHazard.Snow ? 'OMRAADEID' : 'fylkesnummer'; // TODO: Add to settings
 
     return Observable.create((observer: Observer<IMapViewAndArea>) => {
       const typedWorker = createWorker(this.workFunc, (msg) => {

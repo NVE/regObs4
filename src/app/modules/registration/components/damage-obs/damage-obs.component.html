@@ -1,5 +1,5 @@
-<ion-item>
-  <ion-checkbox mode="md" slot="start" [(ngModel)]="isSelected" (ionChange)="onCheckedChange()"></ion-checkbox>
+<ion-item click="isSelected = !isSelected">
+  <ion-checkbox slot="start" [(ngModel)]="isSelected" (ionChange)="onCheckedChange()"></ion-checkbox>
   <ion-label>{{ damageTypeName }}</ion-label>
 </ion-item>
 <ion-list lines="none" *ngIf="isSelected && damageObs">

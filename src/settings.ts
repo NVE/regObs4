@@ -3,10 +3,10 @@ export const settings = {
     observations: {
         maxObservationsToFetch: 5000,
         daysBack: {
-            Avalanche: [0, 1, 2, 3, 7, 7 * 2],
+            Snow: [0, 1, 2, 3, 7, 7 * 2],
             Ice: [0, 1, 2, 7, 7 * 4, 7 * 12],
-            Flooding: [0, 1, 2, 3, 7, 7 * 2],
-            EarthFlow: [0, 1, 2, 3, 7, 7 * 2],
+            Water: [0, 1, 2, 3, 7, 7 * 2],
+            Dirt: [0, 1, 2, 3, 7, 7 * 2],
         },
         timeZone: 'Europe/Oslo'
     },
@@ -35,15 +35,15 @@ export const settings = {
             defaultWarningDaysAhead: 2,
             summerMonths: [5, 6, 7, 8, 9, 10],
             timezone: 'Europe/Oslo',
-            Avalanche: {
+            Snow: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
                 webUrl: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/'
             },
-            EarthFlow: {
+            Dirt: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api',
                 webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
             },
-            Flooding: {
+            Water: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.5/api',
                 webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
             },

@@ -35,7 +35,7 @@ export class AddMenuComponent implements OnInit, OnDestroy {
   }
 
   async showFabMenu(event: Event) {
-    if (this.userSettings && this.userSettings.currentGeoHazard === GeoHazard.Avalanche) {
+    if (this.userSettings && this.userSettings.currentGeoHazard === GeoHazard.Snow) {
       const ev = {
         ...event, target: {
           ...event.target, getBoundingClientRect: () => {
