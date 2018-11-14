@@ -88,7 +88,8 @@ export class AddPictureItemComponent implements OnInit {
     };
     if (this.platform.is('cordova')) {
       const imageUrl = await this.camera.getPicture(options);
-      this.addBase64Image(this.platform.is('ios') ? (await this.toDataURL(imageUrl)) : `${DATA_URL_TAG}${imageUrl}`);
+      this.addBase64Image(this.platform.is('ios') ?
+        (await this.toDataURL(this.webView.convertFileSrc(imageUrl))) : `${DATA_URL_TAG}${imageUrl}`);
     } else {
       const dummyImage = await this.toDataURL('/assets/images/dummyregobsimage.jpeg');
       this.addBase64Image(dummyImage);
