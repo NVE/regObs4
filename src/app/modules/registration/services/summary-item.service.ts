@@ -75,7 +75,7 @@ export class SummaryItemService {
         return this.getWaterItems(registration);
       case GeoHazard.Ice:
         return this.getIceItems(registration);
-      case GeoHazard.LandSlide:
+      case GeoHazard.EarthFlow:
         return this.getDirtItems(registration);
       case GeoHazard.Avalanche:
         return this.getSnowItems(registration);

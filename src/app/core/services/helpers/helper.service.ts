@@ -122,7 +122,7 @@ export class HelperService {
 
   getGeoHazardIcon(geoHazard: GeoHazard) {
     switch (geoHazard) {
-      case GeoHazard.LandSlide:
+      case GeoHazard.EarthFlow:
         return '/assets/icon/ikon_jordskred.svg';
       case GeoHazard.Ice:
         return '/assets/icon/ikon_isvarsler2.svg';

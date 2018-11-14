@@ -6,7 +6,7 @@ export const settings = {
             Avalanche: [0, 1, 2, 3, 7, 7 * 2],
             Ice: [0, 1, 2, 7, 7 * 4, 7 * 12],
             Flooding: [0, 1, 2, 3, 7, 7 * 2],
-            LandSlide: [0, 1, 2, 3, 7, 7 * 2],
+            EarthFlow: [0, 1, 2, 3, 7, 7 * 2],
         },
         timeZone: 'Europe/Oslo'
     },
@@ -39,7 +39,7 @@ export const settings = {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
                 webUrl: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/'
             },
-            LandSlide: {
+            EarthFlow: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api',
                 webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
             },

@@ -109,13 +109,13 @@ export class WarningService {
 
   private getPriority(currentGeoHazard: GeoHazard) {
     if (currentGeoHazard === GeoHazard.Avalanche) {
-      return [GeoHazard.Avalanche, GeoHazard.Ice, GeoHazard.Flooding, GeoHazard.LandSlide];
+      return [GeoHazard.Avalanche, GeoHazard.Ice, GeoHazard.Flooding, GeoHazard.EarthFlow];
     } else if (currentGeoHazard === GeoHazard.Ice) {
-      return [GeoHazard.Ice, GeoHazard.Avalanche, GeoHazard.Flooding, GeoHazard.LandSlide];
+      return [GeoHazard.Ice, GeoHazard.Avalanche, GeoHazard.Flooding, GeoHazard.EarthFlow];
     } else if (currentGeoHazard === GeoHazard.Flooding) {
-      return [GeoHazard.Flooding, GeoHazard.LandSlide, GeoHazard.Avalanche, GeoHazard.Ice];
-    } else if (currentGeoHazard === GeoHazard.LandSlide) {
-      return [GeoHazard.LandSlide, GeoHazard.Flooding, GeoHazard.Avalanche, GeoHazard.Ice];
+      return [GeoHazard.Flooding, GeoHazard.EarthFlow, GeoHazard.Avalanche, GeoHazard.Ice];
+    } else if (currentGeoHazard === GeoHazard.EarthFlow) {
+      return [GeoHazard.EarthFlow, GeoHazard.Flooding, GeoHazard.Avalanche, GeoHazard.Ice];
     }
   }
 
@@ -154,10 +154,10 @@ export class WarningService {
 
   private getGeoHazardFilter(currentGeoHazard: GeoHazard) {
     const geoHazards = [currentGeoHazard];
-    if (currentGeoHazard === GeoHazard.LandSlide) {
+    if (currentGeoHazard === GeoHazard.EarthFlow) {
       geoHazards.push(GeoHazard.Flooding);
     } else if (currentGeoHazard === GeoHazard.Flooding) {
-      geoHazards.push(GeoHazard.LandSlide);
+      geoHazards.push(GeoHazard.EarthFlow);
     }
     return geoHazards;
   }

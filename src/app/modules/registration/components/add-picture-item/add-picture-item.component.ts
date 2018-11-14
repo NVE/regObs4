@@ -84,7 +84,7 @@ export class AddPictureItemComponent implements OnInit {
       targetHeight: settings.images.size,
       targetWidth: settings.images.size,
       correctOrientation: true,
-      saveToPhotoAlbum: true,
+      saveToPhotoAlbum: sourceType === 1,
     };
     if (this.platform.is('cordova')) {
       const imageUrl = await this.camera.getPicture(options);

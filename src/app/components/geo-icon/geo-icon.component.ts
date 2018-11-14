@@ -32,7 +32,7 @@ export class GeoIconComponent implements OnInit {
     switch (this.geoHazard) {
       case GeoHazard.Avalanche:
         return { width: 22, height: 24.2 };
-      case GeoHazard.LandSlide:
+      case GeoHazard.EarthFlow:
         return { width: 22, height: 24 };
       case GeoHazard.Flooding:
         return { width: 33, height: 30.8 };
@@ -47,7 +47,7 @@ export class GeoIconComponent implements OnInit {
     switch (this.geoHazard) {
       case GeoHazard.Avalanche:
         return 22;
-      case GeoHazard.LandSlide:
+      case GeoHazard.EarthFlow:
         return 22;
       case GeoHazard.Flooding:
         return 33;

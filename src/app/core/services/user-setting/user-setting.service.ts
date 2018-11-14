@@ -48,7 +48,7 @@ export class UserSettingService {
       observationDaysBack: [
         { geoHazard: GeoHazard.Avalanche, daysBack: 2 },
         { geoHazard: GeoHazard.Ice, daysBack: 7 },
-        { geoHazard: GeoHazard.LandSlide, daysBack: 3 },
+        { geoHazard: GeoHazard.EarthFlow, daysBack: 3 },
         { geoHazard: GeoHazard.Flooding, daysBack: 3 },
       ],
       completedStartWizard: false,
