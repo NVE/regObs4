@@ -59,6 +59,9 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
         this.viewInfo = viewInfo;
         this.isLoading = false;
         this.cdr.detectChanges();
+      }, (error) => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
       }));
   }
   ngOnDestroy(): void {
