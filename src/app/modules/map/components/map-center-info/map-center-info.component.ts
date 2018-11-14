@@ -25,7 +25,9 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   isLoading: boolean;
 
   private textToCopy: string;
-  private subscriptions: Subscription[];
+  private userSettingsSubscription: Subscription;
+  private mapViewSubscription: Subscription;
+  private mapViewAndAreaSubscription: Subscription;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -37,22 +39,29 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private platform: Platform,
     private cdr: ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document) {
-    this.subscriptions = [];
   }
 
   async ngOnInit() {
-    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((userSettings) => {
+    this.userSettingsSubscription = this.userSettingService.userSettingObservable$.subscribe((userSettings) => {
       this.userSettings = userSettings;
+      if (userSettings.showMapCenter) {
+        this.startMapViewSubscriptions();
+      } else {
+        this.stopMapViewSubscriptions();
+      }
       this.document.documentElement.style.setProperty('--map-center-info-height', userSettings.showMapCenter ? '72px' : '0px');
       this.cdr.detectChanges();
-    }));
-    this.subscriptions.push(this.mapService.mapViewObservable$.subscribe((mapView) => {
+    });
+  }
+
+  private startMapViewSubscriptions() {
+    this.mapViewSubscription = this.mapService.mapViewObservable$.subscribe((mapView) => {
       this.mapView = mapView;
       this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
       this.isLoading = true;
       this.cdr.detectChanges();
-    }));
-    this.subscriptions.push(this.mapService.mapViewAndAreaObservable$
+    });
+    this.mapViewAndAreaSubscription = this.mapService.mapViewAndAreaObservable$
       .pipe(switchMap((mapView: IMapViewAndArea) =>
         this.mapSerachService.getViewInfo(mapView.center, !!mapView.regionInCenter))).
       subscribe((viewInfo) => {
@@ -62,12 +71,23 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
       }, (error) => {
         this.isLoading = false;
         this.cdr.detectChanges();
-      }));
+      });
   }
-  ngOnDestroy(): void {
-    for (const subscription of this.subscriptions) {
-      subscription.unsubscribe();
+
+  private stopMapViewSubscriptions() {
+    if (this.mapViewSubscription) {
+      this.mapViewSubscription.unsubscribe();
     }
+    if (this.mapViewAndAreaSubscription) {
+      this.mapViewAndAreaSubscription.unsubscribe();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSettingsSubscription) {
+      this.userSettingsSubscription.unsubscribe();
+    }
+    this.stopMapViewSubscriptions();
   }
 
   private useNativeClipboardPlugin() {
