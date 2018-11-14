@@ -1,8 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-
-const DATA_URL_TAG = 'data:image/jpeg;base64,';
-
 @Component({
   selector: 'app-base64-image',
   templateUrl: './base64-image.component.html',
@@ -11,12 +8,14 @@ const DATA_URL_TAG = 'data:image/jpeg;base64,';
 export class Base64ImageComponent implements OnInit {
 
   @Input() base64encodedImage: string;
+  @Input() dataUrlTag = 'data:image/jpeg;base64,';
   imgSrc: SafeUrl;
 
   constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
-    this.imgSrc = this.sanitizer.bypassSecurityTrustUrl(DATA_URL_TAG + this.base64encodedImage);
+    const applyImageUrlTag = !this.base64encodedImage.startsWith('data:image');
+    this.imgSrc = this.sanitizer.bypassSecurityTrustUrl((applyImageUrlTag ? this.dataUrlTag : '') + this.base64encodedImage);
   }
 
 }

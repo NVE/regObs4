@@ -5,6 +5,7 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { settings } from '../../../../../settings';
 import { RegistrationTid } from '../../models/registrationTid.enum';
 import { PictureRequestDto } from '../../../regobs-api/models';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
 
 const DATA_URL_TAG = 'data:image/jpeg;base64,';
 
@@ -36,6 +37,7 @@ export class AddPictureItemComponent implements OnInit {
     private camera: Camera,
     private platform: Platform,
     private ngZone: NgZone,
+    private webView: WebView,
     private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
@@ -72,7 +74,9 @@ export class AddPictureItemComponent implements OnInit {
   async getPicture(sourceType: number) {
     const options: CameraOptions = {
       quality: settings.images.quality,
-      destinationType: this.camera.DestinationType.DATA_URL, // NOTE: Base64 encode. If API supports upload image blob later,
+      destinationType: this.platform.is('ios') ?
+        this.camera.DestinationType.FILE_URI : this.camera.DestinationType.DATA_URL,
+      // NOTE: Base64 encode. If API supports upload image blob later,
       // this should be changed to FILE_URL and uploaded separatly
       sourceType: sourceType,
       encodingType: this.camera.EncodingType.JPEG,
@@ -84,7 +88,7 @@ export class AddPictureItemComponent implements OnInit {
     };
     if (this.platform.is('cordova')) {
       const imageUrl = await this.camera.getPicture(options);
-      this.addBase64Image(imageUrl);
+      this.addBase64Image(this.platform.is('ios') ? (await this.toDataURL(imageUrl)) : `${DATA_URL_TAG}${imageUrl}`);
     } else {
       const dummyImage = await this.toDataURL('/assets/images/dummyregobsimage.jpeg');
       this.addBase64Image(dummyImage);
@@ -95,7 +99,7 @@ export class AddPictureItemComponent implements OnInit {
   addBase64Image(dataUrl: string) {
     this.ngZone.run(() => {
       this.images.push({
-        PictureImageBase64: dataUrl.slice(DATA_URL_TAG.length, dataUrl.length),
+        PictureImageBase64: dataUrl,
         RegistrationTID: this.registrationTid
       });
       this.imagesChange.emit(this.images);
