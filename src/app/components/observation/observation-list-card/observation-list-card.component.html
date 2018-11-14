@@ -18,9 +18,44 @@
           <ion-icon name="calendar"></ion-icon> {{ dtObsDate | formatDate | async }}
         </ion-col>
         <ion-col size="7">
-          <ion-icon name="contact"></ion-icon> {{obs.NickName}} *****
+          <ion-icon name="contact"></ion-icon> {{obs.Observer.NickName}} *****
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <h3>{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-badge (click)="setSelectedBadge(0)" [color]="selectedBadgeIndex === 0 ? 'medium' : 'light'">
+            Alle observasjoner
+          </ion-badge>
+          <ion-badge (click)="setSelectedBadge(i+1)" text-wrap [color]="selectedBadgeIndex === (i+1) ? 'medium' : 'light'"
+            *ngFor="let summary of obs.Summaries; let i = index">
+            {{ summary.RegistrationName }}
+          </ion-badge>
+        </ion-col>
+      </ion-row>
+      <ng-container *ngFor="let summary of obs.Summaries; let i = index">
+        <ng-container *ngIf="selectedBadgeIndex === 0 || selectedBadgeIndex === (i+1)">
+          <ion-row>
+            <ion-col size="12">
+              <h3>{{ summary.RegistrationName }}</h3>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <ng-container *ngFor="let s of summary.Summaries; let i = index">
+                <ng-container *ngIf="s.Kind === 0">
+                  <ion-label text-wrap><span *ngIf="i>0">&nbsp;&bull;&nbsp;</span><strong>{{ s.Header }}</strong>: {{
+                    s.Value }}</ion-label>
+                </ng-container>
+              </ng-container>
+            </ion-col>
+          </ion-row>
+        </ng-container>
+      </ng-container>
     </ion-grid>
   </ion-card-content>
   <!-- <h2></h2>

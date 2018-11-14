@@ -17,6 +17,19 @@ ion-card {
             ion-row {
                 ion-col {
                     padding: 2px;
+
+                    ion-badge {
+                        border-radius: 16px;
+                        padding: 10px;
+                        margin-right: 5px;
+                        margin-bottom: 5px;
+                    }
+
+                    h3 {
+                        font-size: 16px;
+                        margin-top: 16px;
+                        margin-bottom: 0px;
+                    }
                 }
             }
         }

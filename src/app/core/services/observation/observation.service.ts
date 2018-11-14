@@ -255,6 +255,14 @@ export class ObservationService {
       map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))));
   }
 
+  async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {
+    const result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
+      .query('select').where((reg: RegistrationViewModel) => {
+        return reg.RegID === id && reg.LangKey === langKey;
+      }).exec();
+    return result[0] as RegistrationViewModel;
+  }
+
   getObserableCount(appMode: AppMode): Observable<number> {
     return nSQL().observable<RowCount[]>(() => {
       return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select', ['COUNT(*) as count']).emit();

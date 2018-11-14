@@ -1,13 +1,13 @@
 <ion-header>
   <ion-toolbar color="dark">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      Observasjon
+      {{'REGISTRATION.OVERVIEW.TITLE' | translate}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-
+  <app-observation-list-card *ngIf="obs" [obs]="obs"></app-observation-list-card>
 </ion-content>

@@ -97,12 +97,12 @@ export class RegistrationService {
   }
 
   cleanupRegistration(reg: IRegistration) {
-    const registrationTypes = Object.keys(RegistrationTypes)
-      .filter(key => !isNaN(Number(RegistrationTypes[key])))
-      .map((key) => RegistrationTypes[key]);
-    for (const registrationType of registrationTypes) {
-      if (this.isEmpty(reg, registrationType)) {
-        reg.request[registrationType] = undefined;
+    const registrationTids: RegistrationTid[] = Object.keys(RegistrationTypes)
+      .map((key) => RegistrationTid[key]).filter((val) => val !== undefined);
+    for (const registrationTid of registrationTids) {
+      const key = RegistrationTid[registrationTid];
+      if (reg.request[key] && this.isEmpty(reg, registrationTid)) {
+        reg.request[key] = undefined;
       }
     }
     return reg;

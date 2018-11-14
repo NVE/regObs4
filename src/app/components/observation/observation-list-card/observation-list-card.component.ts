@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -22,25 +22,38 @@ export class ObservationListCardComponent implements OnInit {
   imgSrc: string;
   settings = settings;
   header: string;
+  selectedBadgeIndex = 0;
 
   constructor(
     private translateService: TranslateService,
     private helperService: HelperService,
     private offlineImageService: OfflineImageService,
+    private ngZone: NgZone,
   ) { }
 
   async ngOnInit() {
-    this.header = this.getHeader(this.obs);
     const geoHazard = parseInt(this.obs.GeoHazardTID, 10);
     this.geoHazardName = await this.translateService
       .get(`GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase()).toPromise();
-    this.dtObsDate = moment(this.obs.DtObsTime).toDate();
-    this.icon = this.helperService.getGeoHazardIcon(geoHazard);
+    this.ngZone.run(() => {
+      this.header = this.getHeader(this.obs);
+      this.dtObsDate = moment(this.obs.DtObsTime).toDate();
+      this.icon = this.helperService.getGeoHazardIcon(geoHazard);
+    });
     if (this.obs.Attachments.length > 0) {
       const url = await this.helperService.getObservationImage(this.obs.Attachments[0].PictureID);
-      this.imgSrc = await this.offlineImageService.getImageOrFallbackToUrl(url);
-      this.hasImage = true;
+      const imgageSource = await this.offlineImageService.getImageOrFallbackToUrl(url);
+      this.ngZone.run(() => {
+        this.imgSrc = imgageSource;
+        this.hasImage = true;
+      });
     }
+  }
+
+  setSelectedBadge(index: number) {
+    this.ngZone.run(() => {
+      this.selectedBadgeIndex = index;
+    });
   }
 
   getHeader(obs: RegistrationViewModel) {

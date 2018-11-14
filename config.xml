@@ -149,4 +149,9 @@
     <engine name="browser" spec="5.0.4" />
     <engine name="ios" spec="4.5.5" />
     <engine name="android" spec="7.1.2" />
+    <plugin name="cordova-plugin-ios-camera-permissions" spec="^1.2.0">
+        <variable name="CAMERA_USAGE_DESCRIPTION" value="Document observations" />
+        <variable name="PHOTOLIBRARY_ADD_USAGE_DESCRIPTION" value="Document observations" />
+        <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="Document observations" />
+    </plugin>
 </widget>
