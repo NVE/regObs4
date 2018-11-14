@@ -1,10 +1,9 @@
 import { Component, OnInit, Input, NgZone, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { ModalController, Thumbnail } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { ObsLocationDto } from '../../../regobs-api/models';
 import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-set-avalanche-position',
@@ -30,17 +29,30 @@ export class SetAvalanchePositionPage implements OnInit {
   private startIcon = L.icon({
     iconUrl: this.startImageUrl,
     iconSize: [27, 42],
-    iconAnchor: [13.5, 41]
+    iconAnchor: [13.5, 41],
+    shadowUrl: 'leaflet/marker-shadow.png',
+    shadowSize: [41, 41],
   });
   endImageUrl = '/assets/icon/map/GPS_stop.svg';
   private endIcon = L.icon({
     iconUrl: this.endImageUrl,
     iconSize: [27, 42],
-    iconAnchor: [13.5, 41]
+    iconAnchor: [13.5, 41],
+    shadowUrl: 'leaflet/marker-shadow.png',
+    shadowSize: [41, 41],
+  });
+  locationMarkerIcon = L.icon({
+    iconUrl: '/assets/icon/map/obs-location.svg',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    shadowUrl: 'leaflet/marker-shadow.png',
+    shadowSize: [41, 41],
   });
   private startMarker: L.Marker;
   private endMarker: L.Marker;
   private translations;
+  private startIsActive = true;
+  locationMarkerIconUrl = this.startImageUrl;
 
   @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
 
@@ -67,43 +79,58 @@ export class SetAvalanchePositionPage implements OnInit {
       icon: this.startIcon
     });
     this.startMarker = L.marker(this.locationMarker.getLatLng(), { icon: this.startIcon })
-      .on('click', function () {
-        this.updateMarkers(true);
+      .on('click', () => {
+        this.map.panTo(this.startMarker.getLatLng());
+        this.startIsActive = true;
+        this.updateMarkers();
       });
     this.endMarker = L.marker(this.locationMarker.getLatLng(), { icon: this.endIcon })
-      .on('click', function () {
-        this.updateMarkers(false);
+      .on('click', () => {
+        this.map.panTo(this.endMarker.getLatLng());
+        this.startIsActive = false;
+        this.updateMarkers();
       });
     if (this.relativeToLatLng) {
-      this.fromMarker = L.marker(this.relativeToLatLng); // TODO: Icon
+      this.fromMarker = L.marker(this.relativeToLatLng, { icon: this.locationMarkerIcon }); // TODO: Icon
     }
   }
 
   onMapReady(map: L.Map) {
     this.map = map;
-    this.updateMarkers(true);
+    this.updateMarkers();
   }
 
-  private updateMarkers(setStartActive: boolean) {
+  private setStartLocationText() {
+    this.confirmLocationText =
+      `${this.translations['DIALOGS.CONFIRM']} ${this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'].toLowerCase()}`;
+    this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'];
+    this.locationMarkerIconUrl = this.startImageUrl;
+  }
+
+  private setEndLocationText() {
+    this.confirmLocationText =
+      `${this.translations['DIALOGS.CONFIRM']} ${this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'].toLowerCase()}`;
+    this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'];
+    this.locationMarkerIconUrl = this.endImageUrl;
+  }
+
+  private updateMarkers() {
     this.startMarker.remove();
     this.endMarker.remove();
     if (!this.start) {
       this.locationMarker.setIcon(this.startIcon);
-      this.confirmLocationText =
-        `${this.translations['DIALOGS.CONFIRM']} ${this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'].toLowerCase()}`;
-      this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION'];
+      this.setStartLocationText();
     } else {
-      if (!setStartActive) {
+      if (!this.startIsActive) {
         this.locationMarker.setIcon(this.endIcon);
-        this.locationMarker.setLatLng(this.end || this.startMarker.getLatLng());
-        this.confirmLocationText =
-          `${this.translations['DIALOGS.CONFIRM']} ${this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'].toLowerCase()}`;
-        this.locationText = this.translations['REGISTRATION.DIRT.LAND_SLIDE_OBS.END_POSITION'];
+        this.locationMarker.setLatLng(this.end || this.start);
+        this.setEndLocationText();
         this.startMarker.setLatLng(this.start);
         this.startMarker.addTo(this.map);
       } else {
         this.locationMarker.setIcon(this.startIcon);
         this.locationMarker.setLatLng(this.start);
+        this.setStartLocationText();
         if (this.end) {
           this.endMarker.setLatLng(this.end);
           this.endMarker.addTo(this.map);
@@ -119,20 +146,22 @@ export class SetAvalanchePositionPage implements OnInit {
   }
 
   updatePolyline() {
-    if (this.start && this.locationMarker) {
-      const path = [this.locationMarker.getLatLng(), this.start];
-      if (!this.pathLine) {
-        this.pathLine = L.polyline(path, { color: 'red', weight: 6, opacity: .9 }).addTo(this.map);
-      } else {
-        this.pathLine.setLatLngs(path);
-      }
+    const path = [this.locationMarker.getLatLng(), this.startIsActive ? this.end : this.start];
+    if (!this.pathLine) {
+      this.pathLine = L.polyline(path, { color: 'red', weight: 6, opacity: .9 }).addTo(this.map);
+    } else {
+      this.pathLine.setLatLngs(path);
     }
   }
 
   async onLocationSet(event: ObsLocationDto) {
-    if (!this.start) {
+    if (this.startIsActive) {
       this.start = L.latLng(event.Latitude, event.Longitude);
-      this.updateMarkers(false);
+      if (this.end) {
+        this.map.panTo(this.end);
+      }
+      this.startIsActive = false;
+      this.updateMarkers();
     } else {
       this.end = L.latLng(event.Latitude, event.Longitude);
       this.modalController.dismiss({ start: this.start, end: this.end });

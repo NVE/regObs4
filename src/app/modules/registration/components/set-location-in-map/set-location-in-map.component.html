@@ -1,4 +1,4 @@
-<div [ngClass]="{'open': showDetails }">
+<div [ngClass]="{'open': showDetails, 'details-small':!showFromMarkerInDetails }">
   <app-map *ngIf="locationMarker" [followMode]="followMode" [showSupportMaps]="false" (mapReady)="onMapReady($event)"
     (positionChange)="positionChange($event)" [center]="locationMarker.getLatLng()"></app-map>
   <ion-grid class="bottom-info" no-padding>

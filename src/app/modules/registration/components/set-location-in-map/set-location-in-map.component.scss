@@ -35,6 +35,16 @@ app-map {
         .bottom-info {
             height:252px;
         }
+
+        &.details-small {
+            .bottom-info {
+                height:200px;
+            }
+
+            .obs-location-marker {
+                margin-top: 28px;
+            }
+        }
     }
 
 .details-row {
