@@ -11,7 +11,7 @@ export class NanoSql {
             instancePerAppMode: true, // Create one table for each app mode
             model: [
                 { key: 'RegID', type: 'number', props: ['pk'] },
-                { key: 'GeoHazardTID', type: 'string', props: ['idx'] },
+                { key: 'GeoHazardTID', type: 'number', props: ['idx'] },
                 { key: '*', type: '*' },
             ]
         },

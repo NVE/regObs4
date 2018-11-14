@@ -51,7 +51,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   createClusterIcon(cluster: L.MarkerCluster) {
-    const items = cluster.getAllChildMarkers().map((x: MapItemMarker) => parseInt(x.item.GeoHazardTID, 10));
+    const items = cluster.getAllChildMarkers().map((x: MapItemMarker) => x.item.GeoHazardTID);
     const unique = Array.from(new Set(items));
     if (unique.length === 1) {
       const geoHazard: GeoHazard = unique[0];

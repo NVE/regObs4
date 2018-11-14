@@ -32,7 +32,7 @@ export class ObservationListCardComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    const geoHazard = parseInt(this.obs.GeoHazardTID, 10);
+    const geoHazard = this.obs.GeoHazardTID;
     this.geoHazardName = await this.translateService
       .get(`GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase()).toPromise();
     this.ngZone.run(() => {

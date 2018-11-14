@@ -46,7 +46,7 @@ export class MapItemMarker extends L.Marker {
     }
 
     private getIconUrl() {
-        const geoName = GeoHazard[parseInt(this._item.GeoHazardTID, 10)].toLowerCase();
+        const geoName = GeoHazard[this._item.GeoHazardTID].toLowerCase();
         return `/assets/icon/map/${geoName}${this._isSelected ? '_selected' : ''}.svg`;
     }
 }
