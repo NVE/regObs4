@@ -1,10 +1,11 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { IRegistration } from '../../models/registration.model';
 import { RegistrationService } from '../../services/registration.service';
-import { NavController } from '@ionic/angular';
+import { NavController, Events } from '@ionic/angular';
 import { ObsLocationDto, ObsLocationsResponseDtoV2 } from '../../../regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
+import { settings } from '../../../../../settings';
 
 @Component({
   selector: 'app-obs-location',
@@ -16,12 +17,14 @@ export class ObsLocationPage implements OnInit {
   isLoaded = false;
   selectedLocation: ObsLocationsResponseDtoV2;
   registration: IRegistration;
+  fullscreen = false;
 
   constructor(
     private registrationService: RegistrationService,
     private activatedRoute: ActivatedRoute,
     private ngZone: NgZone,
     private navController: NavController,
+    private events: Events,
   ) {
 
   }
@@ -53,6 +56,11 @@ export class ObsLocationPage implements OnInit {
     }
     this.ngZone.run(() => {
       this.isLoaded = true;
+    });
+    this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
+      this.ngZone.run(() => {
+        this.fullscreen = isFullscreen;
+      });
     });
   }
 
