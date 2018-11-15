@@ -3,7 +3,7 @@ import { FormGroup, Validators, FormControl, FormBuilder } from '@angular/forms'
 import { LoginService } from '../../core/services/login/login.service';
 import { LoggedInUser } from '../../core/services/login/logged-in-user.model';
 import { Subscription } from 'rxjs';
-import { Input } from '@ionic/angular';
+import { Input, NavController } from '@ionic/angular';
 import { settings } from '../../../settings';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 
@@ -19,6 +19,7 @@ export class LoginPage implements OnInit, OnDestroy {
   @ViewChild('password') password: Input;
   forgotPasswordUrl: string;
   createUserUrl: string;
+  showPassword = false;
 
   get loginFormUsername() {
     return this.loginform.get('username').value;
@@ -36,6 +37,7 @@ export class LoginPage implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private loginService: LoginService,
     private userSettingsService: UserSettingService,
+    private navContoller: NavController,
     private ngZone: NgZone) { }
 
   async ngOnInit() {
@@ -74,8 +76,13 @@ export class LoginPage implements OnInit, OnDestroy {
       await this.loginService.login(this.loginFormUsername, this.loginFormPassword);
       this.ngZone.run(() => {
         this.loading = false;
+        this.navContoller.goBack();
       });
     }
+  }
+
+  togglePasswordShowHide() {
+    this.showPassword = !this.showPassword;
   }
 
   isLoggedIn(loggedInUser: LoggedInUser) {

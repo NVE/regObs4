@@ -153,9 +153,9 @@ export class RegistrationService {
     return RegistrationTypes[RegistrationTid[registrationTid]];
   }
 
-  async createOrEditRegistrationRoute() {
+  async createOrEditRegistrationRoute() { // TODO: Should have geoHazard as input when multiple geoHazards is visible
     const user = await this.loginService.getLoggedInUser();
-    if (!user.isLoggedIn) {
+    if (!user.isLoggedIn) { // TODO: User nav guard instead on registration pages
       this.navController.navigateForward('login');
     } else {
       const registration = await this.getCurrentRegistration();
@@ -249,9 +249,10 @@ export class RegistrationService {
   }
 
   deleteRegistrationById(appMode: AppMode, id: string) {
-    return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
-      .query('delete').where(['id', '=', id]).exec();
-    // .query('delete').where((x: IRegistration) => x.id === id).exec();
+    const result = NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
+      // .query('delete').where(['id', '=', id]).exec(); // Bug in cordova plugin? Works in browser...
+      .query('delete').where((x: IRegistration) => x.id === id).exec();
+    console.log(`[INFO][RegistrationService] Delete registration by id: ${id}. AppMode: ${appMode} Result: `, result);
   }
 
   private getRegistrationsAsObservable(appMode: AppMode) {

@@ -154,7 +154,7 @@ export class NanoSql {
         return `${name}_${appMode}`;
     }
 
-    static init() {
+    static async init() {
         nSQL().config({
             id: settings.db.nanoSql.dbName,
             mode: getMode(),
@@ -175,7 +175,10 @@ export class NanoSql {
                 nSQL().table(table.name).model(table.model);
             }
         }
-        return nSQL().connect();
+        await nSQL().connect();
+        const adapter = await nSQL().extend('get_adapter');
+        const adapterName = (<any>adapter[0]).constructor.name;
+        console.log(`[INFO][NanoSQL] NanoSQL conencted. Using adapter:`, adapterName);
     }
 
     static getInstance(name: string, appMode: AppMode) {
