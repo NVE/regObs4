@@ -31,7 +31,9 @@ export class ObsLocationPage implements OnInit {
 
   async ngOnInit() {
     if (this.activatedRoute.snapshot.params['id']) {
-      this.registration = await this.registrationService.getSavedRegistrationById(this.activatedRoute.snapshot.params['id']);
+      const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
+      this.registration =
+        await this.registrationService.getSavedRegistrationById(id);
     }
     if (this.hasLocation(this.registration)) {
       const locationMarkerIcon = L.icon({

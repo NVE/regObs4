@@ -15,6 +15,7 @@ import { settings } from '../../../../settings';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { RowCount } from '../../models/row-count.model';
+import { HashcodeHelper } from '../../helpers/hashcode-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -129,8 +130,10 @@ export class OfflineMapService {
         `${folder}/${filename}`);
 
       const tile: OfflineTile = {
+        id: HashcodeHelper.getHashCode(tileId),
         tileId: tileId,
         mapName: settings.map.tiles.cacheFolder,
+        mapNameHash: HashcodeHelper.getHashCode(settings.map.tiles.cacheFolder),
         url: fileResult.toURL(),
         lastAccess: moment().unix(),
       };
@@ -148,8 +151,9 @@ export class OfflineMapService {
 
   async getTileFromDb(tileId: string): Promise<OfflineTile> {
     // console.log('[DEBUG][OfflineTileLayer] getTileFromDb: ' + tileId);
+    const idHash = HashcodeHelper.getHashCode(tileId);
     const tiles = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select').where((x) => x.tileId === tileId).exec();
+      .query('select').where(['id', '=', idHash]).exec();
     if (tiles.length > 0) {
       // console.log('[DEBUG][OfflineTileLayer] Got tiles from db for tileID: ' + tileId, tiles);
       return tiles[0] as OfflineTile;
@@ -160,11 +164,11 @@ export class OfflineMapService {
 
   async cleanupTilesCache(numberOfItemsToCache: number) {
     const result = (await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select').where((x: OfflineTile) => x.mapName === settings.map.tiles.cacheFolder)
+      .query('select').where(['mapNameHash', '=', HashcodeHelper.getHashCode(settings.map.tiles.cacheFolder)])
       .orderBy({ lastAccess: 'desc' }).offset(numberOfItemsToCache).exec()) as OfflineTile[];
-    const tileIds = result.map((x) => x.tileId);
+    const tileIdHashes = result.map((x) => HashcodeHelper.getHashCode(x.tileId));
     const deleted = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('delete').where((x) => tileIds.indexOf(x.tileId) >= 0).exec();
+      .query('delete').where(['id', 'IN', tileIdHashes]).exec();
     console.log('[DEBUG][OfflineTiles] cache tiles deleted: ', deleted);
   }
 
@@ -189,16 +193,18 @@ export class OfflineMapService {
   }
 
   async getTilesCacheSize() {
+    const cacheFolderHash = HashcodeHelper.getHashCode(settings.map.tiles.cacheFolder);
     const result = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select', ['COUNT(*)']).where((x: OfflineTile) => x.mapName === settings.map.tiles.cacheFolder).exec();
+      .query('select', ['COUNT(*)']).where(['mapNameHash', '=', cacheFolderHash]).exec();
     console.log('[DEBUG][OfflineTiles] tiles cache count: ', result);
     const folderSize = await this.getFolderSize(settings.map.tiles.cacheFolder);
     return { tiles: result[0]['COUNT(*)'], folderSize: folderSize };
   }
 
   async deleteTilesCache() {
+    const cacheFolderHash = HashcodeHelper.getHashCode(settings.map.tiles.cacheFolder);
     await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('delete').where((x: OfflineTile) => x.mapName === settings.map.tiles.cacheFolder).exec();
+      .query('delete').where(['mapNameHash', '=', cacheFolderHash]).exec();
     const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
     await this.backgroundDownloadService.deleteFolder(baseFolder, settings.map.tiles.cacheFolder);
   }
@@ -239,10 +245,12 @@ export class OfflineMapService {
   }
 
   private async deleteMapFromDb(name: string) {
+    const nameHash = HashcodeHelper.getHashCode(name);
     await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
-      .query('delete', { name }).exec();
+      .query('delete', { name }).exec(); // TODO: Check that this works on device, maybe change
+    // to hash int here as well...
     await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('delete').where((tile: OfflineTile) => tile.mapName === name).exec();
+      .query('delete').where(['mapNameHash', '=', nameHash]).exec();
   }
 
   async remove(map: OfflineMap) {
@@ -310,8 +318,10 @@ export class OfflineMapService {
     const tileId = `${tileName}_${z}_${x}_${y}`;
     console.log('[getOfflineTileFromFile] tileId: ' + tileId);
     return {
+      id: HashcodeHelper.getHashCode(tileId),
       url: url,
       mapName: mapName,
+      mapNameHash: HashcodeHelper.getHashCode(mapName),
       tileId,
       lastAccess: moment().unix(),
     };

@@ -136,6 +136,8 @@ export const settings = {
         },
         metersLimitForUpdateElevation: 500,
         mapSearchZoomToLevel: 15,
+        unknownMapCenter: [59.911197, 10.741059],
+        flyToOnGpsZoom: 13,
     },
     snowRegionsGeoJsonName: 'OMRAADENAV',
     events: {

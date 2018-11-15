@@ -12,6 +12,7 @@ export class NanoSql {
             model: [
                 { key: 'RegID', type: 'number', props: ['pk'] },
                 { key: 'GeoHazardTID', type: 'number', props: ['idx'] },
+                { key: 'LangKey', type: 'number', props: ['idx'] },
                 { key: '*', type: '*' },
             ]
         },
@@ -60,9 +61,11 @@ export class NanoSql {
         OFFLINE_MAP_TILES: {
             name: 'offlinemaptiles',
             model: [
-                { key: 'tileId', type: 'string', props: ['pk'] },
+                { key: 'id', type: 'int', props: ['pk'] },
+                { key: 'tileId', type: 'string', props: ['idx'] },
                 { key: 'url', type: 'string' },
                 { key: 'mapName', type: 'string' },
+                { key: 'mapNameHash', type: 'int', props: ['idx'] },
                 { key: 'lastAccess', type: 'number', props: ['idx'] },
             ]
         },
@@ -109,7 +112,7 @@ export class NanoSql {
             name: 'registration',
             instancePerAppMode: true,
             model: [
-                { key: 'id', type: 'string', props: ['pk'] },
+                { key: 'id', type: 'int', props: ['ai', 'pk'] },
                 { key: '*', type: '*' },
             ]
         },
@@ -159,7 +162,7 @@ export class NanoSql {
             id: settings.db.nanoSql.dbName,
             mode: getMode(),
             version: 1,
-            cache: false, // https://github.com/ClickSimply/Nano-SQL/issues/34
+            // cache: false, // https://github.com/ClickSimply/Nano-SQL/issues/34
             // historyMode: {
             //     table: 'row',
             // }

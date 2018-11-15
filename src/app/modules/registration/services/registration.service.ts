@@ -69,7 +69,7 @@ export class RegistrationService {
     }
     const newId = this.createGuid();
     const reg: IRegistration = {
-      id: newId,
+      id: undefined, // NOTE: ai value get created on insert
       geoHazard: userSettings.currentGeoHazard,
       changed: moment().unix(),
       status: RegistrationStatus.Draft,
@@ -247,10 +247,9 @@ export class RegistrationService {
     return errors.join(', ');
   }
 
-  deleteRegistrationById(appMode: AppMode, id: string) {
+  deleteRegistrationById(appMode: AppMode, id: number) {
     const result = NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
-      // .query('delete').where(['id', '=', id]).exec(); // Bug in cordova plugin? Works in browser...
-      .query('delete').where((x: IRegistration) => x.id === id).exec();
+      .query('delete').where(['id', '=', id]).exec();
     console.log(`[INFO][RegistrationService] Delete registration by id: ${id}. AppMode: ${appMode} Result: `, result);
   }
 
@@ -265,12 +264,12 @@ export class RegistrationService {
       .pipe(map((items) => items.filter((x) => x.status === RegistrationStatus.Sync)));
   }
 
-  getSavedRegistrationById(id: string) {
+  getSavedRegistrationById(id: number) {
     return this.getSavedRegistrationByIdObservable(id)
       .pipe(take(1)).toPromise();
   }
 
-  getSavedRegistrationByIdObservable(id: string) {
+  getSavedRegistrationByIdObservable(id: number) {
     return this.registrations$
       .pipe(map((items) => items.find((x) => x.id === id)));
   }

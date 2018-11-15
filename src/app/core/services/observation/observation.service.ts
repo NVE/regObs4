@@ -257,9 +257,7 @@ export class ObservationService {
 
   async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {
     const result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
-      .query('select').where((reg: RegistrationViewModel) => {
-        return reg.RegID === id && reg.LangKey === langKey;
-      }).exec();
+      .query('select').where([['RegID', '=', id], 'AND', ['LangKey', '=', langKey]]).exec();
     return result[0] as RegistrationViewModel;
   }
 

@@ -56,25 +56,41 @@ export class MapService {
     ];
     console.log('[MapService] Update map view', mapView);
     return nSQL(NanoSql.TABLES.MAP_SERVICE.name)
-      .query('upsert', { id: 'lastupdate', bounds: boundsArray, center: [mapView.center.lat, mapView.center.lng] })
-      .exec();
+      .query('upsert', {
+        id: 'lastupdate',
+        bounds: boundsArray,
+        center: [mapView.center.lat, mapView.center.lng],
+        zoom: mapView.zoom,
+      }).exec();
   }
 
   private getMapViewObservable() {
     return nSQL().observable<IMapView>(() => {
       return nSQL(NanoSql.TABLES.MAP_SERVICE.name).query('select').emit();
     }).map((result) => {
-      const firstItem: { id: string, bounds: L.LatLngExpression[], center: L.LatLngExpression } = result[0];
+      const firstItem: {
+        id: string,
+        bounds: L.LatLngExpression[],
+        center: L.LatLngExpression,
+        zoom: number
+      } = result[0];
       if (firstItem && firstItem.bounds && firstItem.center) {
-        return { bounds: L.latLngBounds(firstItem.bounds), center: L.latLng(firstItem.center) };
+        const mapView: IMapView = {
+          bounds: L.latLngBounds(firstItem.bounds),
+          center: L.latLng(firstItem.center),
+          zoom: firstItem.zoom
+        };
+        return mapView;
       } else {
         return null;
       }
-    }).debounce(50).toRxJS().pipe(filter((val) => val !== null), shareReplay(1));
+    }).debounce(50).toRxJS().pipe(shareReplay(1));
   }
 
   private getMapViewAreaObservable() {
-    return combineLatest(this.mapViewObservable$.pipe(debounceTime(200)), this.userSettingService.currentGeoHazardObservable$)
+    return combineLatest(this.mapViewObservable$.pipe(
+      filter((x) => x !== null), debounceTime(200)),
+      this.userSettingService.currentGeoHazardObservable$)
       .pipe(
         switchMap(([mapView, currentGeoHazard]) =>
           this.getRegionInViewObservable(mapView, currentGeoHazard)),

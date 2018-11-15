@@ -55,7 +55,8 @@ export class OverviewPage implements OnInit, OnDestroy {
 
   private getRegistration() {
     if (this.activatedRoute.snapshot.params['id']) {
-      return this.registrationService.getSavedRegistrationById(this.activatedRoute.snapshot.params['id']);
+      const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
+      return this.registrationService.getSavedRegistrationById(id);
     } else {
       return this.registrationService.getCurrentRegistration();
     }

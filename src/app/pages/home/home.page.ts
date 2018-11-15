@@ -119,18 +119,7 @@ export class HomePage implements OnInit, OnDestroy {
   async onMapReady(map: L.Map) {
     console.log('[INFO] onMapReady home page');
     this.map = map;
-
     this.markerLayer.addTo(this.map);
-
-    this.zone.runOutsideAngular(() => {
-      this.map.on('moveend', () => {
-        const bounds = this.map.getBounds();
-        const center = this.map.getCenter();
-        if (bounds && center) {
-          this.mapService.updateMapView({ bounds, center });
-        }
-      });
-    });
     this.map.on('click', () => {
       if (this.selectedMarker) {
         this.selectedMarker.deselect();

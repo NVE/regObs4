@@ -12,6 +12,7 @@ import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-ma
 import { MapService } from '../../services/map/map.service';
 import { Events } from '@ionic/angular';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-map',
@@ -23,11 +24,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() showUserLocation = true;
   @Input() showScale = true;
   @Input() showSupportMaps = true;
-  @Input() center = L.latLng(59.911197, 10.741059);
+  @Input() center: L.LatLng;
+  @Input() zoom: number;
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
   @Output() positionChange: EventEmitter<Geoposition> = new EventEmitter();
   @Input() followMode = true;
   @Output() followModeChange = new EventEmitter();
+  loaded = false;
 
   private map: L.Map;
   private tilesLayer = L.layerGroup();
@@ -50,16 +53,33 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   ) { }
 
   options: L.MapOptions = {
-    zoom: settings.map.tiles.embeddedUrlMaxZoom,
+    zoom: this.zoom !== undefined ? this.zoom : settings.map.tiles.embeddedUrlMaxZoom,
     maxZoom: settings.map.tiles.maxZoom,
     minZoom: 2,
-    center: this.center,
+    center: this.center || L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
     bounceAtZoomLimits: true,
     attributionControl: false,
     zoomControl: false,
   };
 
-  ngOnInit() {
+  async ngOnInit() {
+    try {
+      if (this.center === undefined || this.zoom === undefined) {
+        const currentView = await this.mapService.mapViewObservable$.pipe(take(1)).toPromise();
+        if (currentView) {
+          this.firstPositionUpdate = false;
+          if (this.center === undefined) {
+            this.options.center = currentView.center;
+          }
+          if (this.zoom === undefined) {
+            this.options.zoom = currentView.zoom;
+          }
+        }
+      }
+    } finally {
+      this.loaded = true;
+    }
+
   }
 
   ngOnDestroy(): void {
@@ -69,9 +89,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.stopGeoLocationWatch();
     this.events.unsubscribe(settings.events.centerMapToUser);
     this.events.unsubscribe(settings.events.mapSearchItemClicked);
-    // if (this.map) {
-    //   this.map.remove();
-    // }
   }
 
   onLeafletMapReady(map: L.Map) {
@@ -112,10 +129,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.zone.runOutsideAngular(() => {
       this.map.on('moveend', () =>
-        this.mapService.updateMapView({ bounds: this.map.getBounds(), center: this.map.getCenter() })
+        this.mapService.updateMapView({
+          bounds: this.map.getBounds(),
+          center: this.map.getCenter(),
+          zoom: this.map.getZoom(),
+        })
       );
     });
 
+    this.redrawMap();
     this.mapReady.emit(this.map);
   }
 
@@ -198,7 +220,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.followMode) {
           if (this.firstPositionUpdate) {
             this.firstPositionUpdate = false;
-            this.map.flyTo(latLng, Math.max(15, this.map.getZoom()));
+            this.map.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()));
           } else {
             this.map.panTo(latLng);
           }
