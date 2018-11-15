@@ -36,7 +36,7 @@ export class LocationService {
     console.log(result);
 
     const tableName = NanoSql.getInstanceName(NanoSql.TABLES.LOCATION.name, userSettings.appMode);
-    nSQL(tableName).loadJS(tableName, result);
+    nSQL(tableName).loadJS(tableName, result, true);
   }
 
   getLocationsInViewAsObservable() {

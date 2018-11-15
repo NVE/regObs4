@@ -77,7 +77,7 @@ export class RegistrationService {
       request: {
         Id: newId, ObserverGuid: loggedInUser.user.Guid,
         DtObsTime: null,
-        GeoHazardTID: <any>GeoHazard[userSettings.currentGeoHazard]
+        GeoHazardTID: userSettings.currentGeoHazard
       }
     };
     return reg;
@@ -250,7 +250,8 @@ export class RegistrationService {
 
   deleteRegistrationById(appMode: AppMode, id: string) {
     return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
-      .query('delete').where((x: IRegistration) => x.id === id).exec();
+      .query('delete').where(['id', '=', id]).exec();
+    // .query('delete').where((x: IRegistration) => x.id === id).exec();
   }
 
   private getRegistrationsAsObservable(appMode: AppMode) {
@@ -299,7 +300,7 @@ export class RegistrationService {
       const userSettings = await this.userSettingService.getUserSettings();
       const result = await this.getLatestRegistrationsForUserFromApi(userSettings.appMode, user.user.Guid).toPromise();
       await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode)
-        .loadJS(NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode), result);
+        .loadJS(NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode), result, true);
     }
   }
 

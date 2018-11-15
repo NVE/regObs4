@@ -91,7 +91,7 @@ export class LoginService {
       return { key: `${user.Guid}_${val.Id}`, userId: user.Guid, Id: val.Id, Name: val.Name };
     });
     const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
-    return nSQL(instanceName).loadJS(instanceName, userGroups);
+    return nSQL(instanceName).loadJS(instanceName, userGroups, true);
   }
 
   async getLoggedInUser(): Promise<LoggedInUser> {
