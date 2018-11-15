@@ -159,7 +159,7 @@ export class NanoSql {
             id: settings.db.nanoSql.dbName,
             mode: getMode(),
             version: 1,
-            cache: false,
+            cache: false, // https://github.com/ClickSimply/Nano-SQL/issues/34
             // historyMode: {
             //     table: 'row',
             // }

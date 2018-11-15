@@ -41,7 +41,7 @@
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_DIRECTION'
         | translate}}</ion-label>
-      <ion-select mode="ios" [(ngModel)]="registration.request.WeatherObservation.WindDirection" interface="action-sheet">
+      <ion-select [(ngModel)]="registration.request.WeatherObservation.WindDirection" interface="action-sheet">
         <ng-container *ngFor="let windDirection of windDirectionArray">
           <ion-select-option [value]="windDirection.val">{{
             windDirection.name | translate }}</ion-select-option>

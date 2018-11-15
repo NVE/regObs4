@@ -29,6 +29,7 @@ import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { MapService } from './modules/map/services/map/map.service';
 import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
+import { StartWizardGuard } from './core/gurads/start-wizard-guard';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -41,6 +42,7 @@ export class AppProviders {
         return [
             StatusBar,
             SplashScreen,
+            StartWizardGuard,
             { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
             Geolocation,
             Deeplinks,

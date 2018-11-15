@@ -49,7 +49,7 @@
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION'
         | translate}}</ion-label>
-      <ion-select mode="ios" [(ngModel)]="registration.request.AvalancheObs.ValidExposition" interface="action-sheet">
+      <ion-select [(ngModel)]="registration.request.AvalancheObs.ValidExposition" interface="action-sheet">
         <ng-container *ngFor="let expo of expoArray">
           <ion-select-option [value]="expo.val">{{
             expo.name }}</ion-select-option>

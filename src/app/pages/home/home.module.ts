@@ -19,7 +19,7 @@ import { MapModule } from '../../modules/map/map.module';
     RouterModule.forChild([
       {
         path: '',
-        component: HomePage
+        component: HomePage,
       }
     ]),
     TranslateModule,

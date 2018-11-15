@@ -12,7 +12,7 @@
 
 <ion-content *ngIf="avalancheActivityCopy">
   <ion-list lines="full">
-    <ion-item (click)="noAvalancheActivity = !noAvalancheActivity">
+    <ion-item>
       <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.NO_AVALANCHE_ACTIVITY' | translate}}</ion-label>
       <ion-checkbox slot="start" [(ngModel)]="noAvalancheActivity"></ion-checkbox>
     </ion-item>
@@ -27,7 +27,7 @@
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ESTIMATED_TIME'
           | translate}}</ion-label>
-        <ion-select mode="ios" [(ngModel)]="selectedTimeFrame" interface="action-sheet">
+        <ion-select [(ngModel)]="selectedTimeFrame" interface="action-sheet">
           <ion-select-option [value]="timeFrame.id" *ngFor="let timeFrame of timeFrames">
             {{ timeFrame.text | translate }}</ion-select-option>
         </ion-select>

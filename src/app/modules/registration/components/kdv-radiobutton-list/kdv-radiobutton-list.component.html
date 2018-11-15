@@ -7,7 +7,7 @@
   <ng-container *ngFor="let item of kdvelements">
     <ion-item [ngClass]="{'selected': item.Id === value} " (click)="setSelected(item.Id)" [hidden]="!isVisible(item)">
       <ion-label>{{ useDescription ? item.Description : item.Name }}</ion-label>
-      <ion-radio mode="md" slot="start" [value]="item.Id" [checked]="value === item.Id"></ion-radio>
+      <ion-radio slot="start" [value]="item.Id" [checked]="value === item.Id"></ion-radio>
     </ion-item>
     <div *ngIf="item.Id === value">
       <ng-content>

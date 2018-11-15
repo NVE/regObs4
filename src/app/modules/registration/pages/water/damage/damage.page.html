@@ -18,11 +18,11 @@
     <ion-radio-group [(ngModel)]="isChecked">
       <ion-item [ngClass]="{'selected': checked === true}" (click)="isChecked = true">
         <ion-label>{{ 'DIALOGS.YES' | translate }}</ion-label>
-        <ion-radio mode="md" slot="start" [value]="true"></ion-radio>
+        <ion-radio slot="start" [value]="true"></ion-radio>
       </ion-item>
       <ion-item [ngClass]="{'selected': checked === false}" (click)="isChecked = false">
         <ion-label>{{ 'DIALOGS.NO' | translate }}</ion-label>
-        <ion-radio mode="md" slot="start" [value]="false"></ion-radio>
+        <ion-radio slot="start" [value]="false"></ion-radio>
       </ion-item>
     </ion-radio-group>
     <ng-container *ngIf="isChecked && this.damageTypes">

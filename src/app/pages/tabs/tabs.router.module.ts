@@ -7,11 +7,13 @@ import { TripPage } from '../trip/trip.page';
 import { WarningListPage } from '../warning-list/warning-list.page';
 import { AddPage } from '../add/add.page';
 import { ObservationListPage } from '../observation-list/observation-list.page';
+import { StartWizardGuard } from '../../core/gurads/start-wizard-guard';
 
 const routes: Routes = [
   {
     path: 'tabs',
     component: TabsPage,
+    canActivate: [StartWizardGuard],
     children: [
       {
         path: '',

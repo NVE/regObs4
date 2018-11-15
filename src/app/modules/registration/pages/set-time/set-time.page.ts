@@ -39,6 +39,7 @@ export class SetTimePage implements OnInit, OnDestroy {
 
   async confirm() {
     const currentRegistration = await this.registrationService.getCurrentRegistration();
+    console.log('[INFO][SetTime] settig DtObsTime to', this.date);
     currentRegistration.request.DtObsTime = this.date;
     await this.registrationService.saveRegistration(currentRegistration);
     this.navController.navigateForward('registration/edit/' + currentRegistration.id);

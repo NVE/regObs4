@@ -26,7 +26,7 @@
 <ion-item *ngIf="exposedHeightTop || exposedHeightMiddle || exposedHeightBottom">
   <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1'
     | translate}}</ion-label>
-  <ion-select mode="ios" (ionChange)="applyChanges()" [(ngModel)]="exposedHight1" interface="action-sheet">
+  <ion-select (ionChange)="applyChanges()" [(ngModel)]="exposedHight1" interface="action-sheet">
     <ion-select-option [value]="height" *ngFor="let height of heightArray">
       {{ height }}</ion-select-option>
   </ion-select>
@@ -34,7 +34,7 @@
 <ion-item *ngIf="sholdUseExposedHight2()">
   <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2'
     | translate}}</ion-label>
-  <ion-select mode="ios" (ionChange)="applyChanges()" [(ngModel)]="exposedHight2" interface="action-sheet">
+  <ion-select (ionChange)="applyChanges()" [(ngModel)]="exposedHight2" interface="action-sheet">
     <ion-select-option [value]="height" *ngFor="let height of heightArray">
       {{ height }}</ion-select-option>
   </ion-select>

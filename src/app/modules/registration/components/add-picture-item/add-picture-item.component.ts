@@ -29,7 +29,7 @@ export class AddPictureItemComponent implements OnInit {
   @Input() iconColor = 'dark';
 
   get imagesForCurrentRegistrationTid() {
-    return this.images.filter((image) => image.RegistrationTID === this.registrationTid);
+    return this.images ? this.images.filter((image) => image.RegistrationTID === this.registrationTid) : [];
   }
 
   constructor(

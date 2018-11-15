@@ -45,22 +45,19 @@ export class AppComponent {
     this.translate.addLangs(['no', 'en']);
     this.translate.setDefaultLang('no');
     this.platform.ready().then(async () => {
-      await this.initDeepLinks();
+      // await this.initDeepLinks(); //TODO: Comment in when edit registration is possible
       await this.initNanoSqlDatabase();
       const userSettings = await this.userSettings.getUserSettings();
 
       this.translate.use(LangKey[userSettings.language]);
       this.statusBar.styleBlackTranslucent();
       this.statusBar.overlaysWebView(this.platform.is('ios'));
-      if (!userSettings.completedStartWizard) {
-        await this.router.navigate(['start-wizard'], { replaceUrl: true });
-      }
-      await this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
+      this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
 
       await this.initBackroundUpdates();
       setTimeout(() => {
         this.splashScreen.hide();
-      }, 500); // Wait a bit to get the navigation and background sync more completed
+      }, 2000); // https://forum.ionicframework.com/t/android-splashscreen-fade-animation-on-hide-not-working/120130/2
     });
   }
 

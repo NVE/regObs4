@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { DangerObsDto } from '../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { GeoHazard } from '../../../../../core/models/geo-hazard.enum';
@@ -14,7 +14,7 @@ export class AddOrEditDangerObsModalPage implements OnInit {
 
   @Input() dangerObs: DangerObsDto;
   @Input() geoHazard: GeoHazard;
-  noDamageObs = false;
+  noDangerObs = false;
   areaArr: string[];
   tmpArea = '';
   dangerSignTid: number;
@@ -29,7 +29,10 @@ export class AddOrEditDangerObsModalPage implements OnInit {
     return GeoHazard[this.geoHazard];
   }
 
-  constructor(private modalController: ModalController, private translateService: TranslateService) { }
+  constructor(
+    private modalController: ModalController,
+    private translateService: TranslateService,
+    private ngZone: NgZone) { }
 
   async ngOnInit() {
     const tranlations = await this.translateService.get(this.getAreaArray()).toPromise();
@@ -47,12 +50,19 @@ export class AddOrEditDangerObsModalPage implements OnInit {
         }
       }
       if (this.dangerObs.DangerSignTID === this.getZeroValue()) {
-        this.noDamageObs = true;
+        this.noDangerObs = true;
       } else {
         this.dangerSignTid = this.dangerObs.DangerSignTID;
       }
     }
     this.loaded = true;
+  }
+
+  toggleDangerObs() {
+    this.ngZone.run(() => {
+      this.noDangerObs = !this.noDangerObs;
+      console.log('No danger obs: ', this.noDangerObs);
+    });
   }
 
   cancel() {
@@ -66,7 +76,7 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   ok() {
     const dangerObsToSave: DangerObsDto = {
       GeoHazardTID: this.geoHazard,
-      DangerSignTID: this.noDamageObs ? this.getZeroValue() : this.dangerSignTid,
+      DangerSignTID: this.noDangerObs ? this.getZeroValue() : this.dangerSignTid,
       Comment: this.getComment(),
     };
     this.modalController.dismiss(dangerObsToSave);

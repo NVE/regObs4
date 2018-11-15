@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './pages/tabs/tabs.module#TabsPageModule'
+    loadChildren: './pages/tabs/tabs.module#TabsPageModule',
   },
   {
     path: 'home',

@@ -12,7 +12,7 @@
 
 <ion-content *ngIf="avalancheEvalProblemCopy">
   <ion-list lines="full">
-    <ion-item (click)="noWeakLayers = !noWeakLayers">
+    <ion-item>
       <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS' | translate}}</ion-label>
       <ion-checkbox slot="start" [(ngModel)]="noWeakLayers"></ion-checkbox>
     </ion-item>
