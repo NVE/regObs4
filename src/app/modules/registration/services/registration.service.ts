@@ -10,7 +10,6 @@ import { settings } from '../../../../settings';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../../core/services/login/login.service';
 import * as moment from 'moment';
-import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { NavController } from '@ionic/angular';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';

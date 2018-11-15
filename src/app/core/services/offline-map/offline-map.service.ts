@@ -160,7 +160,7 @@ export class OfflineMapService {
 
   async cleanupTilesCache(numberOfItemsToCache: number) {
     const result = (await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select').where((x) => x.mapName === settings.map.tiles.cacheFolder)
+      .query('select').where((x: OfflineTile) => x.mapName === settings.map.tiles.cacheFolder)
       .orderBy({ lastAccess: 'desc' }).offset(numberOfItemsToCache).exec()) as OfflineTile[];
     const tileIds = result.map((x) => x.tileId);
     const deleted = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
@@ -190,7 +190,7 @@ export class OfflineMapService {
 
   async getTilesCacheSize() {
     const result = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select', ['COUNT(*)']).where(['mapName', '=', settings.map.tiles.cacheFolder]).exec();
+      .query('select', ['COUNT(*)']).where((x: OfflineTile) => x.mapName === settings.map.tiles.cacheFolder).exec();
     console.log('[DEBUG][OfflineTiles] tiles cache count: ', result);
     const folderSize = await this.getFolderSize(settings.map.tiles.cacheFolder);
     return { tiles: result[0]['COUNT(*)'], folderSize: folderSize };
@@ -198,7 +198,7 @@ export class OfflineMapService {
 
   async deleteTilesCache() {
     await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('delete').where(['mapName', '=', settings.map.tiles.cacheFolder]).exec();
+      .query('delete').where((x: OfflineTile) => x.mapName === settings.map.tiles.cacheFolder).exec();
     const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
     await this.backgroundDownloadService.deleteFolder(baseFolder, settings.map.tiles.cacheFolder);
   }

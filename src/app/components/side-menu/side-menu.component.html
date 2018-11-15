@@ -45,12 +45,12 @@
       </ion-label>
       <ion-toggle [(ngModel)]="userSettings.showMapCenter" (ionChange)="saveUserSettings()"></ion-toggle>
     </ion-item>
-    <ion-item *ngIf="useAppInNorway" href="/offline-map" routerDirection="forward">
+    <!-- <ion-item *ngIf="useAppInNorway" href="/offline-map" routerDirection="forward">
       <ion-icon slot="start" name="flash"></ion-icon>
       <ion-label>
         {{'OFFLINE_MAP.TITLE' | translate}}
       </ion-label>
-    </ion-item>
+    </ion-item> -->
     <app-support-tiles-menu *ngIf="useAppInNorway" [userSetting]="userSettings"></app-support-tiles-menu>
     <ion-list-header color="light">
       {{'MENU.OTHER' | translate}}
