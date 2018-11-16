@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { MyObservationsPage } from './my-observations.page';
 import { SharedModule } from '../../modules/shared/shared.module';
 import { SharedComponentsModule } from '../../modules/registration/shared-components.module';
+import { FullscreenImageModalPageModule } from '../fullscreen-image-modal/fullscreen-image-modal.module';
 
 const routes: Routes = [
   {
@@ -15,6 +16,7 @@ const routes: Routes = [
   imports: [
     SharedModule,
     SharedComponentsModule,
+    FullscreenImageModalPageModule,
     RouterModule.forChild(routes),
   ],
   declarations: [MyObservationsPage]

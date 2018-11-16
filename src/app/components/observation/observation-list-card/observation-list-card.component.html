@@ -10,7 +10,7 @@
           <ion-icon [src]="icon"></ion-icon> {{ geoHazardName }}
         </ion-col>
         <ion-col size="7">
-          <ion-icon src="/assets/icon/moh.svg"></ion-icon> 589 moh
+          <ion-icon src="/assets/icon/moh.svg"></ion-icon> {{ obs.ObsLocation.Height }} moh
         </ion-col>
       </ion-row>
       <ion-row>
@@ -19,6 +19,17 @@
         </ion-col>
         <ion-col size="7">
           <ion-icon name="contact"></ion-icon> {{obs.Observer.NickName}} *****
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="images.length > 0">
+        <ion-col size="12">
+          <ion-slides [options]="slideOptions" [pager]="true">
+            <ion-slide *ngFor="let image of images">
+              <ion-img [src]="image.url" (click)="slideTap()"></ion-img>
+            </ion-slide>
+            <div class="swiper-button-prev" (click)="slidePrev()"></div>
+            <div class="swiper-button-next" (click)="slideNext()"></div>
+          </ion-slides>
         </ion-col>
       </ion-row>
       <ion-row>

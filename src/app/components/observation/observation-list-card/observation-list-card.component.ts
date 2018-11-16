@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, ViewChild } from '@angular/core';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -6,6 +6,8 @@ import { HelperService } from '../../../core/services/helpers/helper.service';
 import { OfflineImageService } from '../../../core/services/offline-image/offline-image.service';
 import { settings } from '../../../../settings';
 import { RegistrationViewModel } from '../../../modules/regobs-api/models';
+import { Slides, ModalController } from '@ionic/angular';
+import { FullscreenImageModalPage } from '../../../pages/fullscreen-image-modal/fullscreen-image-modal.page';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -14,20 +16,25 @@ import { RegistrationViewModel } from '../../../modules/regobs-api/models';
 })
 export class ObservationListCardComponent implements OnInit {
   @Input() obs: RegistrationViewModel;
+  @ViewChild(Slides) slider: Slides;
 
   geoHazardName: string;
   dtObsDate: Date;
   icon: string;
-  hasImage: boolean;
-  imgSrc: string;
   settings = settings;
   header: string;
   selectedBadgeIndex = 0;
+  images: { url: string, header: string, description: string }[] = [];
+
+  slideOptions = {
+    autoplay: false,
+  };
 
   constructor(
     private translateService: TranslateService,
     private helperService: HelperService,
     private offlineImageService: OfflineImageService,
+    private modalController: ModalController,
     private ngZone: NgZone,
   ) { }
 
@@ -40,14 +47,19 @@ export class ObservationListCardComponent implements OnInit {
       this.dtObsDate = moment(this.obs.DtObsTime).toDate();
       this.icon = this.helperService.getGeoHazardIcon(geoHazard);
     });
-    if (this.obs.Attachments.length > 0) {
-      const url = await this.helperService.getObservationImage(this.obs.Attachments[0].PictureID);
-      const imgageSource = await this.offlineImageService.getImageOrFallbackToUrl(url);
-      this.ngZone.run(() => {
-        this.imgSrc = imgageSource;
-        this.hasImage = true;
-      });
-    }
+    // if (this.obs.Attachments.length > 0) {
+    //   const url = await this.helperService.getObservationImage(this.obs.Attachments[0].PictureID);
+    //   const imgageSource = await this.offlineImageService.getImageOrFallbackToUrl(url);
+    //   this.ngZone.run(() => {
+    //     this.imgSrc = imgageSource;
+    //     this.hasImage = true;
+    //   });
+    // }
+    this.images = [
+      { url: '/assets/images/dummyregobsimage.jpeg', header: 'Skredfare', description: 'tester bilder ' },
+      { url: '/assets/images/dummyregobsimage.jpeg', header: 'Skredfare', description: 'tester bilder ' },
+      { url: '/assets/images/dummyregobsimage.jpeg', header: 'Skredfare', description: 'tester bilder ' }
+    ];
   }
 
   setSelectedBadge(index: number) {
@@ -71,5 +83,22 @@ export class ObservationListCardComponent implements OnInit {
 
   getRegistrationNames() {
     return this.obs.Summaries.map((reg) => reg.RegistrationName).join(', ');
+  }
+
+  async slideTap() {
+    const index = await this.slider.getActiveIndex();
+    const imageUrl = this.images[index].url;
+    const modal = await this.modalController.create({
+      component: FullscreenImageModalPage,
+      componentProps: { imgSrc: imageUrl, header: 'test', description: 'tester bilde ' },
+    });
+    modal.present();
+  }
+
+  slideNext() {
+    this.slider.slideNext();
+  }
+  slidePrev() {
+    this.slider.slidePrev();
   }
 }
