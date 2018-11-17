@@ -114,11 +114,11 @@ export class HelperService {
       + (showMilliseconds ? `.${milliseconds}` : '');
   }
 
-  async getObservationImage(id: number, size: string = 'medium') {
-    const userSettings = await this.userSettingService.getUserSettings();
-    const appMode = userSettings.appMode;
-    return `${settings.services.regObs.serviceUrl[appMode]}/Image/${size}/${id}`;
-  }
+  // async getObservationImage(id: number, size: string = 'medium') {
+  //   const userSettings = await this.userSettingService.getUserSettings();
+  //   const appMode = userSettings.appMode;
+  //   return `${settings.services.regObs.serviceUrl[appMode]}/Image/${size}/${id}`;
+  // }
 
   getGeoHazardIcon(geoHazard: GeoHazard) {
     switch (geoHazard) {

@@ -11,7 +11,7 @@ ion-card {
         }
     }
     ion-card-content {
-        padding: 5px;
+        padding: 0px;
         font-size: 12px;
         ion-grid {
             ion-row {
@@ -23,6 +23,7 @@ ion-card {
                         padding: 10px;
                         margin-right: 5px;
                         margin-bottom: 5px;
+                        --ion-color-medium-contrast: #fff;
                     }
 
                     h3 {
@@ -32,6 +33,10 @@ ion-card {
                     }
                 }
             }
+        }
+
+        .reg-id {
+            font-size: 12px;
         }
     }
 }

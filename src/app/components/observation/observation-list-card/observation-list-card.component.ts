@@ -5,9 +5,12 @@ import * as moment from 'moment';
 import { HelperService } from '../../../core/services/helpers/helper.service';
 import { OfflineImageService } from '../../../core/services/offline-image/offline-image.service';
 import { settings } from '../../../../settings';
-import { RegistrationViewModel } from '../../../modules/regobs-api/models';
+import { RegistrationViewModel, Summary } from '../../../modules/regobs-api/models';
 import { Slides, ModalController } from '@ionic/angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FullscreenImageModalPage } from '../../../pages/fullscreen-image-modal/fullscreen-image-modal.page';
+import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
+import { UserSetting } from '../../../core/models/user-settings.model';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -23,8 +26,10 @@ export class ObservationListCardComponent implements OnInit {
   icon: string;
   settings = settings;
   header: string;
-  selectedBadgeIndex = 0;
-  images: { url: string, header: string, description: string }[] = [];
+  images: { id: number, url: string, header: string, description: string }[] = [];
+  summaries: { summary: Summary, open: boolean }[] = [];
+  private userSetting: UserSetting;
+  allSelected = true;
 
   slideOptions = {
     autoplay: false,
@@ -35,37 +40,32 @@ export class ObservationListCardComponent implements OnInit {
     private helperService: HelperService,
     private offlineImageService: OfflineImageService,
     private modalController: ModalController,
+    private inAppBrowser: InAppBrowser,
     private ngZone: NgZone,
+    private userSettingService: UserSettingService,
   ) { }
 
   async ngOnInit() {
     const geoHazard = this.obs.GeoHazardTID;
+    this.userSetting = await this.userSettingService.getUserSettings();
     this.geoHazardName = await this.translateService
       .get(`GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase()).toPromise();
     this.ngZone.run(() => {
       this.header = this.getHeader(this.obs);
       this.dtObsDate = moment(this.obs.DtObsTime).toDate();
       this.icon = this.helperService.getGeoHazardIcon(geoHazard);
+      this.summaries = this.obs.Summaries.map((x) => ({ summary: x, open: true }));
+      this.images = this.obs.Attachments.map((x) => ({
+        id: x.PictureID,
+        url: this.getImageUrl(x.PictureID),
+        header: x.RegistrationName,
+        description: x.Comment,
+      }));
     });
-    // if (this.obs.Attachments.length > 0) {
-    //   const url = await this.helperService.getObservationImage(this.obs.Attachments[0].PictureID);
-    //   const imgageSource = await this.offlineImageService.getImageOrFallbackToUrl(url);
-    //   this.ngZone.run(() => {
-    //     this.imgSrc = imgageSource;
-    //     this.hasImage = true;
-    //   });
-    // }
-    this.images = [
-      { url: '/assets/images/dummyregobsimage.jpeg', header: 'Skredfare', description: 'tester bilder ' },
-      { url: '/assets/images/dummyregobsimage.jpeg', header: 'Skredfare', description: 'tester bilder ' },
-      { url: '/assets/images/dummyregobsimage.jpeg', header: 'Skredfare', description: 'tester bilder ' }
-    ];
   }
 
-  setSelectedBadge(index: number) {
-    this.ngZone.run(() => {
-      this.selectedBadgeIndex = index;
-    });
+  getImageUrl(id: number, size: 'medium' | 'large' = 'medium') {
+    return `${settings.services.regObs.serviceUrl[this.userSetting.appMode]}/Image/${size}/${id}`;
   }
 
   getHeader(obs: RegistrationViewModel) {
@@ -87,10 +87,14 @@ export class ObservationListCardComponent implements OnInit {
 
   async slideTap() {
     const index = await this.slider.getActiveIndex();
-    const imageUrl = this.images[index].url;
+    const image = this.images[index];
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
-      componentProps: { imgSrc: imageUrl, header: 'test', description: 'tester bilde ' },
+      componentProps: {
+        imgSrc: this.getImageUrl(image.id, 'large'),
+        header: image.header,
+        description: image.description,
+      },
     });
     modal.present();
   }
@@ -100,5 +104,25 @@ export class ObservationListCardComponent implements OnInit {
   }
   slidePrev() {
     this.slider.slidePrev();
+  }
+
+  toggleAllSelected() {
+    this.allSelected = !this.allSelected;
+    for (const s of this.summaries) {
+      s.open = this.allSelected;
+    }
+  }
+
+  toggleRegistration(index: number) {
+    if (this.allSelected) {
+      this.toggleAllSelected();
+    }
+    this.summaries[index].open = !this.summaries[index].open;
+  }
+
+  async openWeb() {
+    const src = `${settings.services.regObs.webUrl[this.userSetting.appMode]}/Registration/${this.obs.RegID}`;
+    const iap = this.inAppBrowser.create(src, '_system');
+    iap.show();
   }
 }

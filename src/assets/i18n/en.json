@@ -47,10 +47,10 @@
     "NOTIFICATION_TITLE": "Logging trip"
   },
   "GEO_HAZARDS": {
-    "SNOW": "Snow",
     "DIRT": "Dirt",
-    "WATER": "Water",
-    "ICE": "Ice"
+    "ICE": "Ice",
+    "SNOW": "Snow",
+    "WATER": "Water"
   },
   "LOGIN": {
     "CREATE_USER": "Create user",
@@ -107,6 +107,7 @@
     "TITLE": "My observations"
   },
   "OBSERVATION_LIST": {
+    "GO_TO_OBSERVATION": "Go to observation",
     "NO_OBSERVATIONS": "No observations in current map view",
     "OBSERVATIONS": "Observations"
   },

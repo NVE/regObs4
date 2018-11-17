@@ -47,10 +47,10 @@
     "NOTIFICATION_TITLE": "Tur pågår"
   },
   "GEO_HAZARDS": {
-    "SNOW": "Snø",
     "DIRT": "Jord",
-    "WATER": "Vann",
-    "ICE": "Is"
+    "ICE": "Is",
+    "SNOW": "Snø",
+    "WATER": "Vann"
   },
   "LOGIN": {
     "CREATE_USER": "Lag ny bruker",
@@ -107,6 +107,7 @@
     "TITLE": "Mine observasjoner"
   },
   "OBSERVATION_LIST": {
+    "GO_TO_OBSERVATION": "Gå til observasjon",
     "NO_OBSERVATIONS": "Ingen observasjoner i kartutsnittet",
     "OBSERVATIONS": "Observasjoner"
   },
