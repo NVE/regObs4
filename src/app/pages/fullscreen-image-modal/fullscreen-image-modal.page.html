@@ -1,5 +1,5 @@
 <ion-content (click)="closeModal()">
-  <pinch-zoom class="fullscreen">
-    <img [src]="imgSrc" />
+  <pinch-zoom class="fullscreen" [ngClass]="{'portrait': portrait, 'landscape': !portrait }">
+    <img #img [src]="imgSrc" (load)="onImageLoaded()" />
   </pinch-zoom>
 </ion-content>

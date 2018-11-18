@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -11,6 +11,8 @@ export class FullscreenImageModalPage implements OnInit {
   @Input() imgSrc: string;
   @Input() header: string;
   @Input() description: string;
+  @ViewChild('img') img: ElementRef;
+  portrait = false;
   constructor(private modalController: ModalController) { }
 
   ngOnInit() {
@@ -18,6 +20,14 @@ export class FullscreenImageModalPage implements OnInit {
 
   closeModal() {
     this.modalController.dismiss();
+  }
+
+  onImageLoaded() {
+    this.portrait = this.isPortrait(this.img.nativeElement);
+  }
+
+  private isPortrait(img: HTMLImageElement) {
+    return (img.naturalHeight || img.height) > (img.naturalWidth || img.width);
   }
 
 }

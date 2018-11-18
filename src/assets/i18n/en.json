@@ -107,6 +107,7 @@
     "TITLE": "My observations"
   },
   "OBSERVATION_LIST": {
+    "ALL_OBSERVATIONS": "All observations",
     "GO_TO_OBSERVATION": "Go to observation",
     "NO_OBSERVATIONS": "No observations in current map view",
     "OBSERVATIONS": "Observations"

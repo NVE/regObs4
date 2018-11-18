@@ -1,6 +1,5 @@
 <ion-card>
   <ion-card-header *ngIf="header">
-    <!-- <ion-card-title color="medium">{{header}}</ion-card-title> -->
     <h3 color="medium">{{header}}</h3>
   </ion-card-header>
   <ion-card-content>
@@ -10,7 +9,8 @@
           <ion-icon [src]="icon"></ion-icon> {{ geoHazardName }}
         </ion-col>
         <ion-col size="7">
-          <ion-icon src="/assets/icon/moh.svg"></ion-icon> {{ obs.ObsLocation.Height }} moh
+          <ion-icon src="/assets/icon/moh.svg"></ion-icon> {{ obs.ObsLocation.Height }}
+          {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}
         </ion-col>
       </ion-row>
       <ion-row>
@@ -22,14 +22,14 @@
         </ion-col>
       </ion-row>
       <ion-row *ngIf="images.length > 0">
-        <ion-col size="12">
-          <ion-slides [options]="slideOptions" [pager]="true">
+        <ion-col size="12" class="slides-container">
+          <ion-slides [options]="slideOptions" [pager]="false">
             <ion-slide *ngFor="let image of images">
               <ion-img [src]="image.url" (click)="slideTap()"></ion-img>
             </ion-slide>
-            <div class="swiper-button-prev" (click)="slidePrev()"></div>
-            <div class="swiper-button-next" (click)="slideNext()"></div>
           </ion-slides>
+          <div class="swiper-button-prev swiper-button-white" *ngIf="images.length > 1" (click)="slidePrev()"></div>
+          <div class="swiper-button-next swiper-button-white" *ngIf="images.length > 1" (click)="slideNext()"></div>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -39,10 +39,10 @@
       </ion-row>
       <ion-row>
         <ion-col size="12">
-          <ion-badge (click)="toggleAllSelected()" [color]="allSelected ? 'medium' : 'light'">
-            Alle observasjoner
+          <ion-badge (click)="toggleAllSelected()" *ngIf="summaries.length > 1" [color]="allSelected ? 'medium' : 'light'">
+            {{'OBSERVATION_LIST.ALL_OBSERVATIONS' | translate}}
           </ion-badge>
-          <ion-badge (click)="toggleRegistration(i)" text-wrap [color]="(s.open && !allSelected) ? 'medium' : 'light'"
+          <ion-badge (click)="toggleRegistration(i)" text-wrap [color]="(s.open && (summaries.length <= 1 || !allSelected)) ? 'medium' : 'light'"
             *ngFor="let s of summaries; let i = index">
             {{ s.summary.RegistrationName }}
           </ion-badge>
@@ -60,8 +60,7 @@
               <ng-container *ngFor="let innerSummary of s.summary.Summaries; let i = index">
                 <ng-container *ngIf="innerSummary.Kind === 0">
                   <ion-label text-wrap><span *ngIf="i>0">&nbsp;&bull;&nbsp;</span><strong>{{ innerSummary.Header }}</strong>:
-                    {{
-                    innerSummary.Value }}</ion-label>
+                    {{ innerSummary.Value }}</ion-label>
                 </ng-container>
               </ng-container>
             </ion-col>
@@ -70,10 +69,10 @@
       </ng-container>
     </ion-grid>
     <ion-item color="light" (click)="openWeb()">
-      <ion-label>
+      <ion-label color="medium">
         {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
       </ion-label>
-      <ion-label class="reg-id" slot="end" text-end>
+      <ion-label color="medium" class="reg-id" slot="end" text-end>
         RegId: {{ obs.RegID }}
       </ion-label>
     </ion-item>

@@ -33,6 +33,10 @@ export class ObservationListCardComponent implements OnInit {
 
   slideOptions = {
     autoplay: false,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
   };
 
   constructor(

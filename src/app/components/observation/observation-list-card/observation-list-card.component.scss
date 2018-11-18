@@ -41,6 +41,16 @@ ion-card {
     }
 }
 
+.swiper-button-next, .swiper-button-prev {
+    background-color: rgba(95, 113, 119, 0.3);
+    padding-top: 25px;
+    padding-bottom: 25px;
+    border-radius: 4px;
+    padding-right: 15px;
+    padding-left: 15px;
+    background-size: 13px 21px;
+    margin-top: -30px;
+}
 // ion-item {
 
 //     --inner-border-width: 0 0 0 0;
