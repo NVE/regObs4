@@ -17,7 +17,7 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
   @ViewChild('steepness') steepness;
   @ViewChild('weakenedice') weakenedice;
   @ViewChild('floodzoones') floodzoones;
-  @ViewChild('quickclay') quickclay;
+  @ViewChild('clayzones') clayzones;
 
   get currentGeoHazard(): GeoHazard {
     return this.userSetting ? this.userSetting.currentGeoHazard : null;
@@ -47,7 +47,7 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
       steepness: this.steepness,
       weakenedice: this.weakenedice,
       floodzoones: this.floodzoones,
-      quickclay: this.quickclay,
+      clayzones: this.clayzones,
     };
   }
 

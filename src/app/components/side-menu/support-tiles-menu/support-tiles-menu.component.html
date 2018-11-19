@@ -7,7 +7,7 @@
       <ion-label>
         {{'MENU.SHOW' | translate}} {{'SUPPORT_MAP.' +supportTile.description | translate | lowercase }}
       </ion-label>
-      <ion-toggle [(ngModel)]="supportTile.enabled" (ionChange)="onTileChanged(supportTile)"></ion-toggle>
+      <ion-toggle [checked]="supportTile.enabled" [(ngModel)]="supportTile.enabled" (ionChange)="onTileChanged(supportTile)"></ion-toggle>
     </ion-item>
     <ion-item *ngIf="supportTile.enabled">
       <ion-label position="stacked">{{'MENU.OPACITY' | translate}}</ion-label>
@@ -261,7 +261,7 @@
     </ion-label>
   </ion-item>
 </ng-template>
-<ng-template #quickclay>
+<ng-template #clayzones>
   <ion-item>
     <ion-label text-wrap>
       <ion-grid>
