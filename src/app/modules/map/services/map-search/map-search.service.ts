@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
-import { map, switchMap } from 'rxjs/operators';
-import { Observable, combineLatest, forkJoin } from 'rxjs';
+import { map, switchMap, catchError } from 'rxjs/operators';
+import { Observable, combineLatest, forkJoin, of } from 'rxjs';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/observable/of';
@@ -34,7 +34,7 @@ export class MapSearchService {
   }
 
   searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
-    return this.httpClient.get(`${settings.map.search.no.url}?navn=${text}*&antPerSide=${settings.map.search.no.maxResults}`
+    return this.httpClient.get(`${settings.map.search.no.url}?navn=${text.trim()}*&antPerSide=${settings.map.search.no.maxResults}`
       + `&eksakteForst=${settings.map.search.no.exactFirst}&epsgKode=3395`).pipe(map((data: any) => {
         const resultList = data.stedsnavn || [];
         return this.removeDuplicates(resultList).map((item) => {
@@ -47,11 +47,12 @@ export class MapSearchService {
           };
           return resp;
         });
-      }));
+      }),
+        catchError(() => of([])));
   }
 
   removeDuplicates(data: any[]) {
-    return data.reduce((acc, currentValue) => {
+    return (data || []).reduce((acc, currentValue) => {
       if (acc.filter((item) => item.ssrId === currentValue.ssrId).length === 0) {
         acc.push(currentValue);
       }
@@ -76,7 +77,7 @@ export class MapSearchService {
           };
           return resp;
         });
-      }));
+      }), catchError(() => of([])));
   }
 
   getElevation(latLng: L.LatLng): Observable<number> {
