@@ -15,6 +15,9 @@ ion-card {
         font-size: 12px;
         ion-grid {
             ion-row {
+                &.row-padding-start {
+                    padding-left: 5px;   
+                  }
                 ion-col {
                     // padding: 2px;
 

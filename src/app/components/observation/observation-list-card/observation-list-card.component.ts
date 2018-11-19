@@ -26,10 +26,14 @@ export class ObservationListCardComponent implements OnInit {
   icon: string;
   settings = settings;
   header: string;
-  images: { id: number, url: string, header: string, description: string }[] = [];
   summaries: { summary: Summary, open: boolean }[] = [];
   private userSetting: UserSetting;
   allSelected = true;
+  loaded = false;
+  prevVisible = false;
+  nextVisible = false;
+  imageHeader = '';
+  imageDecription = '';
 
   slideOptions = {
     autoplay: false,
@@ -59,17 +63,12 @@ export class ObservationListCardComponent implements OnInit {
       this.dtObsDate = moment(this.obs.DtObsTime).toDate();
       this.icon = this.helperService.getGeoHazardIcon(geoHazard);
       this.summaries = this.obs.Summaries.map((x) => ({ summary: x, open: true }));
-      this.images = this.obs.Attachments.map((x) => ({
-        id: x.PictureID,
-        url: this.getImageUrl(x.PictureID),
-        header: x.RegistrationName,
-        description: x.Comment,
-      }));
+      this.loaded = true;
     });
   }
 
-  getImageUrl(id: number, size: 'medium' | 'large' = 'medium') {
-    return `${settings.services.regObs.serviceUrl[this.userSetting.appMode]}/Image/${size}/${id}`;
+  getImageUrl(filename: string, size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'medium') {
+    return `${settings.services.regObs.webUrl[this.userSetting.appMode]}/Attachments/${size}/${filename}`;
   }
 
   getHeader(obs: RegistrationViewModel) {
@@ -91,23 +90,45 @@ export class ObservationListCardComponent implements OnInit {
 
   async slideTap() {
     const index = await this.slider.getActiveIndex();
-    const image = this.images[index];
-    const modal = await this.modalController.create({
-      component: FullscreenImageModalPage,
-      componentProps: {
-        imgSrc: this.getImageUrl(image.id, 'large'),
-        header: image.header,
-        description: image.description,
-      },
-    });
-    modal.present();
+    if (index < this.obs.Attachments.length) {
+      const image = this.obs.Attachments[index];
+      const modal = await this.modalController.create({
+        component: FullscreenImageModalPage,
+        componentProps: {
+          imgSrc: this.getImageUrl(image.AttachmentFileName, 'original'),
+          header: this.obs.Attachments[index].RegistrationName,
+          description: this.obs.Attachments[index].Comment,
+        },
+      });
+      modal.present();
+    } else {
+      this.slider.slideTo(0);
+    }
   }
 
-  slideNext() {
-    this.slider.slideNext();
+  async setNextAndPrevVisibe() {
+    const index = await this.slider.getActiveIndex();
+    this.ngZone.run(() => {
+      this.nextVisible = this.obs.Attachments.length > 1 && index < (this.obs.Attachments.length - 1);
+      this.prevVisible = this.obs.Attachments.length > 1 && index > 0;
+
+      this.imageHeader = this.obs.Attachments[index].RegistrationName;
+      this.imageDecription = this.obs.Attachments[index].Comment;
+    });
   }
-  slidePrev() {
-    this.slider.slidePrev();
+
+  async slideNext() {
+    const index = await this.slider.getActiveIndex();
+    if (index < (this.obs.Attachments.length - 1)) {
+      this.slider.slideNext();
+    }
+  }
+
+  async slidePrev() {
+    const index = await this.slider.getActiveIndex();
+    if (index > 0) {
+      this.slider.slidePrev();
+    }
   }
 
   toggleAllSelected() {

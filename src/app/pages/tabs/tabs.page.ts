@@ -61,9 +61,9 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   tabsChanged(event: CustomEvent) {
-    //   const tabElement: HTMLIonTabElement = event.detail.tab;
-    //   console.log('[INFO] Tabs changed to: ', tabElement.name);
-    //   this.events.publish(settings.events.tabsChanged, tabElement.name);
+    const tabElement: HTMLIonTabElement = event.detail.tab;
+    console.log('[INFO] Tabs changed to: ', tabElement.tab);
+    this.events.publish(settings.events.tabsChanged, tabElement.tab);
   }
 
   ionViewDidEnter() {

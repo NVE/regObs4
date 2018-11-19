@@ -45,7 +45,6 @@ export class HomePage implements OnInit, OnDestroy {
     private userSettingService: UserSettingService,
     private mapService: MapService,
     private zone: NgZone,
-    private cdr: ChangeDetectorRef,
     private router: Router,
   ) {
   }
@@ -68,42 +67,32 @@ export class HomePage implements OnInit, OnDestroy {
     console.log('[INFO] ionViewDidEnter home page');
     this.subscriptions = [];
     this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
-      this.showMapCenter = val.showMapCenter;
-      this.cdr.detectChanges();
+      this.zone.run(() => {
+        this.showMapCenter = val.showMapCenter;
+      });
     })); // TODO: Move this to map component?
 
-    // TODO: this is a tabs issue workaround.
-    // See: https://github.com/ionic-team/ionic/issues/15260
-    const routes = ['/tabs/(home:home)', '/tabs', '/', ''];
-    this.subscriptions.push(this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd && routes.indexOf(event.url) >= 0) {
-        this.ionViewDidEnter();
+    this.events.subscribe(settings.events.tabsChanged, (tabName: string) => {
+      if (tabName === 'home') { // TODO: This is no longer needed. Tabs enter not calls ionViewDidEnter
+        this.mapComponent.startGeoLocationWatch();
+        this.mapComponent.redrawMap();
       } else {
-        this.ionViewWillLeave();
+        // Stopping geolocation when map is not visible to save battery
+        this.mapComponent.stopGeoLocationWatch();
       }
-    }));
-
-    // this.dataLoadIds = this.observationService.getAllDataLoadIds(this.userSetting.appMode);
-
-    // this.events.subscribe(settings.events.tabsChanged, (tabName: string) => {
-    //   if (tabName === 'home') { // TODO: This is no longer needed. Tabs enter not calls ionViewDidEnter
-    //     this.startGeoLocationWatch();
-    //     this.redrawMap();
-    //   } else {
-    //     // Stopping geolocation when map is not visible to save battery
-    //     this.stopGeoLocationWatch();
-    //   }
-    // });
+    });
 
     this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
-      this.fullscreen = isFullscreen;
-      this.mapComponent.redrawMap();
-      this.cdr.detectChanges();
+      this.zone.run(() => {
+        this.fullscreen = isFullscreen;
+        this.mapComponent.redrawMap();
+      });
     });
 
     this.subscriptions.push(this.mapItemBar.isVisible.subscribe((isVisible) => {
-      this.mapItemBarVisible = isVisible;
-      this.cdr.detectChanges();
+      this.zone.run(() => {
+        this.mapItemBarVisible = isVisible;
+      });
     }));
 
     // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {

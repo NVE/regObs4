@@ -27,9 +27,11 @@
   "DIALOGS": {
     "ARE_YOU_SURE": "Are you sure?",
     "CANCEL": "Cancel",
+    "COMMENT": "Comment",
     "CONFIRM": "Confirm",
     "DELETE": "Delete",
     "NO": "No",
+    "OF": "Of",
     "OK": "Ok",
     "YES": "Yes"
   },

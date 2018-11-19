@@ -27,9 +27,11 @@
   "DIALOGS": {
     "ARE_YOU_SURE": "Er du sikker?",
     "CANCEL": "Avbryt",
+    "COMMENT": "Kommentar",
     "CONFIRM": "Bekreft",
     "DELETE": "Slett",
     "NO": "Nei",
+    "OF": "Av",
     "OK": "Ok",
     "YES": "Ja"
   },
