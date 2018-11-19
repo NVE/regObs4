@@ -56,7 +56,7 @@ export class HomePage implements OnInit, OnDestroy {
       const geoHazard: GeoHazard = unique[0];
       switch (geoHazard) {
         default:
-          return IconHelper.getIceObservationsClusterIcon(items.length);
+          return IconHelper.getIceObservationsClusterIcon(items.length); // TODO: Implement other geoHazards
       }
     } else {
       return IconHelper.getMixedObservationsClusterIcon(items.length);

@@ -392,9 +392,19 @@
   },
   "SETTINGS": {
     "APPMODE": "App mode",
+    "COUNTRY": "Country",
+    "DROPDOWNS_FAILED": "Could not update dropdowns. Please check network settings and try again later.",
+    "DROPDOWNS_UPDATED": "Dropdowns updated!",
+    "HIDE_ADVANCED": "Hide advanced settings",
     "LANGUAGE": "Language",
-    "RESET": "Reset",
-    "TITLE": "Settings"
+    "NORWAY_ONLY": "In Norway only",
+    "NUMBER_OF_TILES_IN_CACHE": "Number of tiles saved on device",
+    "RESET": "Reset app",
+    "SHOW_ADVANCED": "Show advanced settings",
+    "SIZE_OF_TILES_CACHE": "Size of tiles saved on device",
+    "TITLE": "Settings",
+    "UPDATE_DROPDOWNS": "Update dropdowns",
+    "USE_IN_WORLD": "Outside Norway"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
