@@ -3,7 +3,7 @@
     <h3 color="medium">{{header}}</h3>
   </ion-card-header>
   <ion-card-content>
-    <ion-grid>
+    <ion-grid no-padding>
       <ion-row>
         <ion-col size="5">
           <ion-icon [src]="icon"></ion-icon> {{ geoHazardName }}
@@ -22,7 +22,7 @@
         </ion-col>
       </ion-row>
       <ion-row *ngIf="images.length > 0">
-        <ion-col size="12" class="slides-container">
+        <ion-col size="12" class="slides-container" no-padding>
           <ion-slides [options]="slideOptions" [pager]="false">
             <ion-slide *ngFor="let image of images">
               <ion-img [src]="image.url" (click)="slideTap()"></ion-img>

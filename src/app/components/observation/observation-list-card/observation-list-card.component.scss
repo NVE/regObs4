@@ -16,7 +16,7 @@ ion-card {
         ion-grid {
             ion-row {
                 ion-col {
-                    padding: 2px;
+                    // padding: 2px;
 
                     ion-badge {
                         border-radius: 16px;
@@ -31,6 +31,13 @@ ion-card {
                         margin-top: 16px;
                         margin-bottom: 0px;
                     }
+
+                    // ion-slide {
+                    //     ion-img {
+                    //         width: 100%;
+                    //         max-height: 300px;
+                    //     }
+                    // }
                 }
             }
         }
