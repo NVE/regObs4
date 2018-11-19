@@ -13,6 +13,7 @@ import { MapService } from '../../services/map/map.service';
 import { Events } from '@ionic/angular';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { take } from 'rxjs/operators';
+import { AppCountry } from '../../../../core/models/app-country.enum';
 
 @Component({
   selector: 'app-map',
@@ -39,8 +40,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private userSettingSubscription: Subscription;
   private geoLoactionSubscription: Subscription;
-
-  private topoTilesLayer: L.TileLayer;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -96,20 +95,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.showScale) {
       L.control.scale({ imperial: false }).addTo(map);
     }
-    this.topoTilesLayer = new OfflineTileLayer(
-      'topo',
-      this.zone,
-      this.offlineMapService,
-      this.mapService,
-      this.platform);
     this.tilesLayer.addTo(this.map);
-    this.topoTilesLayer.addTo(this.tilesLayer);
 
-    if (this.showSupportMaps) {
-      this.userSettingSubscription = this.userSettingService.userSettingObservable$.subscribe((userSetting) => {
-        this.configureTileLayers(userSetting);
-      });
-    }
+    this.userSettingSubscription = this.userSettingService.userSettingObservable$.subscribe((userSetting) => {
+      this.configureTileLayers(userSetting);
+    });
+
 
     if (this.showUserLocation) {
       this.startGeoLocationWatch();
@@ -160,15 +151,41 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   configureTileLayers(userSetting: UserSetting) {
     this.zone.runOutsideAngular(() => {
       this.tilesLayer.clearLayers();
-      this.topoTilesLayer.addTo(this.tilesLayer);
-      const supportTiles = settings.map.tiles.supportTiles;
-      for (const supportTile of supportTiles) {
-        const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
-        if (supportTile.geoHazardId === userSetting.currentGeoHazard
-          && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
-          const tile = L.tileLayer(supportTile.url);
-          tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
-          tile.addTo(this.tilesLayer);
+      const topoTilesLayer = new OfflineTileLayer(
+        'topo',
+        settings.map.tiles.defaultMapUrl,
+        userSetting.tilesCacheSize > 0,
+        this.zone,
+        this.offlineMapService,
+        this.mapService,
+        this.platform,
+        true,
+        settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap,
+        settings.map.tiles.nowegianDetailsMapUrl,
+        true,
+        settings.map.tiles.embeddedUrl,
+        settings.map.tiles.embeddedUrlMaxZoomWorld,
+        settings.map.tiles.embeddedUrlMaxZoomNorway,
+      );
+      topoTilesLayer.addTo(this.tilesLayer);
+      if (userSetting.country === AppCountry.norway) {
+        const supportTiles = settings.map.tiles.supportTiles;
+        for (const supportTile of supportTiles) {
+          const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
+          if (supportTile.geoHazardId === userSetting.currentGeoHazard
+            && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
+            const tile = new OfflineTileLayer(
+              supportTile.name,
+              supportTile.url,
+              userSetting.tilesCacheSize > 0,
+              this.zone,
+              this.offlineMapService,
+              this.mapService,
+              this.platform
+            );
+            tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
+            tile.addTo(this.tilesLayer);
+          }
         }
       }
     });

@@ -1,6 +1,5 @@
 import * as L from 'leaflet';
 import { settings } from '../../../../../settings';
-import { BorderHelper } from '../border-helper';
 import { NgZone } from '@angular/core';
 import { OfflineMapService } from '../../../services/offline-map/offline-map.service';
 import { Platform } from '@ionic/angular';
@@ -14,12 +13,21 @@ export class OfflineTileLayer extends L.TileLayer {
 
     constructor(
         private name: string,
+        private wordlMapUrl: string,
+        private useOfflineMap: boolean,
         private zone: NgZone,
         private offlineMapService: OfflineMapService,
         private mapService: MapService,
         private plaform: Platform,
+        private useNorwegianMapInsideBorders = false,
+        private zoomToShowBeforeNorweginaMap = settings.map.tiles.maxZoom,
+        private norwegianMapUrl = '',
+        private hasEmbeddedMap = false,
+        private embeddedMapUrl = '',
+        private embeddedMapMaxZoomWorld = 5,
+        private embeddedMapMaxZoomNorway = 9,
     ) {
-        super(settings.map.tiles.defaultMapUrl, {
+        super(wordlMapUrl, {
             maxZoom: settings.map.tiles.maxZoom, minZoom: 1,
         });
     }
@@ -79,26 +87,29 @@ export class OfflineTileLayer extends L.TileLayer {
     }
 
     async getTileUrl(coords: ExtendedCoords, save = true): Promise<string> {
-        if (coords.z <= settings.map.tiles.embeddedUrlMaxZoom) {
-            // console.log(`zoom is under ${settings.map.tiles.embeddedUrlMaxZoom} so using embedded map url`,
-            //     coords, settings.map.tiles.embeddedUrl);
-            return this.getOriginalTileUrl(coords, settings.map.tiles.embeddedUrl);
-        }
-        // console.log('[DEBUG][OfflineTileLayer] getTileUrl. Try offline first', coords);
-        const offlineUrl = await this.offlineMapService.getTileUrl(this.name, coords.x, coords.y, coords.z);
-        if (offlineUrl) {
-            // console.log('[DEBUG][OfflineTileLayer] got offline url', offlineUrl);
-            return offlineUrl;
-        } else {
-            const url = await this.getTileUrlOrFallbackMap(coords);
-            // console.log('[DEBUG][OfflineTileLayer] got tile url', url);
-            const coordsCopy = { ...coords }; // Create a copy because coords reference might get changed on error
-            if (this.downloadTileToCache() && save) {
-                // console.log('[DEBUG][OfflineTileLayer] saving tile ' + name, coordsCopy, url);
-                this.offlineMapService.saveTileAsBlob(this.name, coordsCopy.x, coordsCopy.y, coordsCopy.z, url);
+        if (this.hasEmbeddedMap) {
+            const isInsideNorway = await this.isInsideBorders(coords);
+            if (coords.z <= this.embeddedMapMaxZoomWorld || (isInsideNorway && coords.z <= this.embeddedMapMaxZoomNorway)) {
+                return this.getOriginalTileUrl(coords, this.embeddedMapUrl);
             }
-            return url;
         }
+        if (this.useOfflineMap) {
+            // console.log('[DEBUG][OfflineTileLayer] getTileUrl. Try offline first', coords);
+            const offlineUrl = await this.offlineMapService.getTileUrl(this.name, coords.x, coords.y, coords.z);
+            if (offlineUrl) {
+                // console.log('[DEBUG][OfflineTileLayer] got offline url', offlineUrl);
+                return offlineUrl;
+            }
+        }
+        const url = await this.getTileUrlOrFallbackMap(coords);
+        // console.log('[DEBUG][OfflineTileLayer] got tile url', url);
+        const coordsCopy = { ...coords }; // Create a copy because coords reference might get changed on error
+        if (this.downloadTileToCache() && save && this.useOfflineMap) {
+            // console.log('[DEBUG][OfflineTileLayer] saving tile ' + name, coordsCopy, url);
+            this.offlineMapService.saveTileAsBlob(this.name, coordsCopy.x, coordsCopy.y, coordsCopy.z, url);
+        }
+
+        return url;
     }
 
     private downloadTileToCache() {
@@ -106,17 +117,18 @@ export class OfflineTileLayer extends L.TileLayer {
     }
 
     private async getTileUrlOrFallbackMap(coords: ExtendedCoords): Promise<string> {
-        if (coords.z <= settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
-            return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
-        }
-        // TODO: Implement tile in norway cache, use https://github.com/rsms/js-lru
-        // no need to store in db, because tiles is allready cached offline
-        // but it will improve performance on support tiles?
-        const isInsideNorway = await this.isInsideBorders(coords);
-        if (!isInsideNorway) {
-            return this.getOriginalTileUrl(coords, settings.map.tiles.defaultMapUrl);
+        if (this.useNorwegianMapInsideBorders) {
+            if (coords.z <= this.zoomToShowBeforeNorweginaMap) {
+                return this.getOriginalTileUrl(coords, this.wordlMapUrl);
+            }
+            const isInsideNorway = await this.isInsideBorders(coords);
+            if (!isInsideNorway) {
+                return this.getOriginalTileUrl(coords, this.wordlMapUrl);
+            } else {
+                return this.getOriginalTileUrl(coords, this.norwegianMapUrl);
+            }
         } else {
-            return this.getOriginalTileUrl(coords, settings.map.tiles.nowegianDetailsMapUrl);
+            return this.getOriginalTileUrl(coords, this.wordlMapUrl);
         }
     }
 
