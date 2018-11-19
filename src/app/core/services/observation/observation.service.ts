@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import 'moment-timezone';
 import * as Rx from 'rxjs';
 import { NanoSql } from '../../../../nanosql';
-import { debounceTime, take, map, distinctUntilChanged, switchMap, shareReplay, bufferCount, skip } from 'rxjs/operators';
+import { debounceTime, take, map, distinctUntilChanged, switchMap, shareReplay, bufferCount, skip, withLatestFrom } from 'rxjs/operators';
 import { LoginService } from '../login/login.service';
 import { LoggedInUser } from '../login/logged-in-user.model';
 import { UserSettingService } from '../user-setting/user-setting.service';
@@ -38,17 +38,43 @@ export class ObservationService {
   ) {
     this._observationsObservable = this.getObservationsAsObservable();
     this.userSettingService.userSettingObservable$.pipe(
-      map((val) => `${val.appMode}_${val.currentGeoHazard}_${val.language}`),
-      distinctUntilChanged(), // Only emit if app mode, current geohazard or language changed
-      skip(1) // Skip first emit. This will be taken hand of by app init
-    ).subscribe(() => {
-      console.log('[INFO][ObervationService] App settings changed. Need to refresh observations');
-      this.updateObservations();
+      bufferCount(2),
+      map(([prev, next]) => this.hasUserSettingsChangedToRequireReload(prev, next) ? next : null),
+      withLatestFrom(this.loginService.loggedInUser$),
+    ).subscribe(([userSetting, loggedInUser]) => {
+      console.log('[INFO][ObervationService] App settings changed. Need to refresh observations.');
+      if (userSetting) {
+        this.updateObservationsForGeoHazard(
+          userSetting.appMode,
+          userSetting.currentGeoHazard,
+          loggedInUser,
+          userSetting.language);
+      }
     }); // No need to unsubscribe this observable when the service is singleton. It get destroyed when app exits.
   }
 
+  private hasUserSettingsChangedToRequireReload(oldVal: UserSetting, newVal: UserSetting) {
+    if (oldVal && newVal) {
+      if (oldVal.appMode !== newVal.appMode) {
+        return true;
+      }
+      if (oldVal.language !== newVal.language) {
+        return true;
+      }
+      if (oldVal.currentGeoHazard !== newVal.currentGeoHazard) {
+        return true;
+      }
+      const prevDaysBack = this.getObservationsDaysBack(oldVal, newVal.currentGeoHazard);
+      const nextDaysBack = this.getObservationsDaysBack(newVal, newVal.currentGeoHazard);
+      if (nextDaysBack > prevDaysBack) {
+        return true; // We need to update more days back
+      }
+    }
+    return false;
+  }
+
   private exludeLoggedInUser(user: LoggedInUser, reg: RegistrationViewModel) {
-    return (user.isLoggedIn ? (reg.Observer.ObserverGUID !== user.user.Guid) : true); // TODO: Use observer GUID instead!
+    return (user.isLoggedIn ? (reg.Observer.ObserverGUID !== user.user.Guid) : true);
   }
 
   async updateObservations() {
@@ -62,13 +88,13 @@ export class ObservationService {
 
   private getPriority(currentGeoHazard: GeoHazard) {
     if (currentGeoHazard === GeoHazard.Snow) {
-      return [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Water, GeoHazard.Dirt];
+      return [GeoHazard.Snow];
     } else if (currentGeoHazard === GeoHazard.Ice) {
-      return [GeoHazard.Ice, GeoHazard.Snow, GeoHazard.Water, GeoHazard.Dirt];
+      return [GeoHazard.Ice];
     } else if (currentGeoHazard === GeoHazard.Water) {
-      return [GeoHazard.Water, GeoHazard.Dirt, GeoHazard.Snow, GeoHazard.Ice];
+      return [GeoHazard.Water, GeoHazard.Dirt];
     } else if (currentGeoHazard === GeoHazard.Dirt) {
-      return [GeoHazard.Dirt, GeoHazard.Water, GeoHazard.Snow, GeoHazard.Ice];
+      return [GeoHazard.Dirt, GeoHazard.Water];
     }
   }
 
@@ -159,26 +185,18 @@ export class ObservationService {
 
   private async getDaysBackToFetchForGeoHazard(geoHazard: GeoHazard): Promise<number> {
     const userSettings = await this.userSettingService.getUserSettings();
-    if (userSettings.currentGeoHazard === geoHazard) {
-      // Returning max days back for current geoHazard
-      const geoHazardString = GeoHazard[geoHazard];
-      const daysBackForCurrentGeoHazard: number[] = settings.observations.daysBack[geoHazardString];
-      return Math.max(...daysBackForCurrentGeoHazard);
-    } else {
-      // Returning default days back for other geoHazards
-      return this.getObservationsDaysBack(userSettings);
-    }
+    return this.getObservationsDaysBack(userSettings, userSettings.currentGeoHazard);
   }
 
-  private getObservationsDaysBack(userSettings: UserSetting): number {
+  private getObservationsDaysBack(userSettings: UserSetting, geoHazard: GeoHazard): number {
     const daysBackForCurrentGeoHazard = userSettings.observationDaysBack
-      .find((setting) => setting.geoHazard === userSettings.currentGeoHazard);
+      .find((setting) => setting.geoHazard === geoHazard);
     const daysBack = daysBackForCurrentGeoHazard ? daysBackForCurrentGeoHazard.daysBack : 3; // default to 3 days back if not found
     return daysBack;
   }
 
   private getObservationDaysBackAsDate(userSettings: UserSetting): Date {
-    const daysBack = this.getObservationsDaysBack(userSettings);
+    const daysBack = this.getObservationsDaysBack(userSettings, userSettings.currentGeoHazard);
     const fromDate = moment().subtract(daysBack, 'days').startOf('day');
     return fromDate.toDate();
   }
@@ -199,7 +217,7 @@ export class ObservationService {
   }
 
   private async deleteOldObservations(appMode: AppMode, geoHazard: GeoHazard, user: LoggedInUser) {
-    const daysBack = await this.getDaysBackToFetchForGeoHazard(geoHazard);
+    const daysBack = await this.getMaxDaysBackForGeoHazard(geoHazard);
     const deleteOldRecordsFrom = moment().subtract(daysBack + 1, 'days');
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('delete')
       .where((reg: RegistrationViewModel) => {
@@ -207,6 +225,12 @@ export class ObservationService {
           && reg.GeoHazardTID === geoHazard
           && this.exludeLoggedInUser(user, reg);
       }).exec();
+  }
+
+  private getMaxDaysBackForGeoHazard(geoHazard: GeoHazard) {
+    const geoHazardString = GeoHazard[geoHazard];
+    const daysBackForCurrentGeoHazard: number[] = settings.observations.daysBack[geoHazardString];
+    return Math.max(...daysBackForCurrentGeoHazard);
   }
 
   private getObservationsAsObservable(): Rx.Observable<RegistrationViewModel[]> {

@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { Events, Platform } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { settings } from '../../../settings';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
@@ -117,8 +117,10 @@ export class HomePage implements OnInit, OnDestroy {
       this.mapItemBar.hide();
     });
     // TODO: Move this to custom marker layer?
-    this.subscriptions.push(this.observationService.observations$.subscribe((regObservations) => {
-      this.redrawObservationMarkers(regObservations);
+    const observationObservable =
+      combineLatest(this.observationService.observations$, this.userSettingService.userSettingObservable$);
+    this.subscriptions.push(observationObservable.subscribe(([regObservations, userSettings]) => {
+      this.redrawObservationMarkers(userSettings.showObservations ? regObservations : []);
     }));
   }
 

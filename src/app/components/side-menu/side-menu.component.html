@@ -14,12 +14,12 @@
     <ion-list-header color="light">
       {{'MENU.MAP_SETTINGS' | translate}}
     </ion-list-header>
-    <ion-item>
+    <ion-item *ngIf="userSettings">
       <ion-icon slot="start" name="eye"></ion-icon>
       <ion-label>
         {{'MENU.SHOW_OBSERVATIONS' | translate}}
       </ion-label>
-      <ion-toggle checked="true"></ion-toggle>
+      <ion-toggle [checked]="userSettings.showObservations" [(ngModel)]="userSettings.showObservations" (ionChange)="saveUserSettings()"></ion-toggle>
     </ion-item>
     <ion-item (click)="updateObservations()">
       <ion-icon slot="start" name="refresh"></ion-icon>
@@ -43,7 +43,7 @@
       <ion-label>
         {{'MENU.SHOW_MAP_CENTER' | translate}}
       </ion-label>
-      <ion-toggle [(ngModel)]="userSettings.showMapCenter" (ionChange)="saveUserSettings()"></ion-toggle>
+      <ion-toggle [checked]="userSettings.showMapCenter" [(ngModel)]="userSettings.showMapCenter" (ionChange)="saveUserSettings()"></ion-toggle>
     </ion-item>
     <!-- <ion-item *ngIf="useAppInNorway" href="/offline-map" routerDirection="forward">
       <ion-icon slot="start" name="flash"></ion-icon>

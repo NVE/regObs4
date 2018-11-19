@@ -55,6 +55,7 @@ export class UserSettingService {
       supportTiles: [],
       showMapCenter: false,
       tilesCacheSize: settings.map.tiles.cacheSize,
+      showObservations: true,
     };
   }
 

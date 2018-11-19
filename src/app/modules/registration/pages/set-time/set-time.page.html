@@ -19,7 +19,7 @@
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
         cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="date" [max]="maxDate">
       </ion-datetime>
-      <ion-button fill="outline" color="medium" (click)="setToNow()">
+      <ion-button slot="end" fill="outline" color="medium" (click)="setToNow()">
         <ion-icon slot="start" name="time"></ion-icon> {{"REGISTRATION.SET_TIME.NOW" |
         translate}}
       </ion-button>

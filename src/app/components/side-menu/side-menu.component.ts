@@ -1,11 +1,9 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { Events } from '@ionic/angular';
 import { settings } from '../../../settings';
-import { Observable, Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { AppCountry } from '../../core/models/app-country.enum';
 
 @Component({
@@ -28,9 +26,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   constructor(
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
-    private ngZone: NgZone,
-    private cdr: ChangeDetectorRef,
-    private events: Events) {
+    private ngZone: NgZone) {
   }
 
   async ngOnInit() {

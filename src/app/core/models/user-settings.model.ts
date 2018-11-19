@@ -14,4 +14,5 @@ export interface UserSetting {
     supportTiles: Array<{ name: string; enabled: boolean; opacity: number }>;
     showMapCenter: boolean;
     tilesCacheSize: number;
+    showObservations: boolean;
 }
