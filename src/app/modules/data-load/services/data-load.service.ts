@@ -24,6 +24,8 @@ export class DataLoadService {
     existingItem.progress = 0;
     existingItem.itemsComplete = 0;
     existingItem.totalItems = totalItems;
+    existingItem.error = null;
+    existingItem.errorMessage = null;
     existingItem.status = '';
     return this.saveDataLoadItem(existingItem);
   }
@@ -47,6 +49,17 @@ export class DataLoadService {
     existingItem.itemsComplete = totalItems;
     existingItem.itemsFromDate = moment(itemsFromDate).toISOString();
     existingItem.itemsToDate = moment(itemsToDate).toISOString();
+    return this.saveDataLoadItem(existingItem);
+  }
+
+  async loadingError(id: string, errorMessage: string) {
+    const existingItem = await this.getState(id);
+    existingItem.isLoading = false;
+    existingItem.completedDate = moment().toISOString();
+    existingItem.progress = 1.0;
+    existingItem.status = 'Error';
+    existingItem.error = true;
+    existingItem.errorMessage = errorMessage;
     return this.saveDataLoadItem(existingItem);
   }
 

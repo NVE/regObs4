@@ -24,6 +24,7 @@ import { Platform } from '@ionic/angular';
 import { HTTP } from '@ionic-native/http/ngx';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import { IMapViewAndArea } from '../../../modules/map/services/map/map-view-and-area.interface';
+import { ObservableHelper } from '../../helpers/observable-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -62,11 +63,19 @@ export class WarningService {
     return `${NanoSql.TABLES.WARNING.name}_${geoHazard}`;
   }
 
-  async updateWarnings() {
+  async updateWarnings(cancel?: Promise<void>) {
+    let cancelled = false;
+    if (cancel) {
+      cancel.then(() => {
+        cancelled = true;
+      });
+    }
     console.log('[INFO][WarningService] Updating warnings by priority');
     const userSettings = await this.userSettingService.getUserSettings();
     for (const geoHazard of this.getPriority(userSettings.currentGeoHazard)) {
-      await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard);
+      if (!cancelled) {
+        await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard, cancel);
+      }
     }
   }
 
@@ -75,23 +84,23 @@ export class WarningService {
     return this.updateWarningsForGeoHazard(userSettings.currentGeoHazard);
   }
 
-  private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard) {
+  private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard, cancel?: Promise<void>) {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(geoHazard));
     const lastUpdateLimit = moment().subtract(1, 'hour');
     if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
-      await this.updateWarningsForGeoHazard(geoHazard);
+      await this.updateWarningsForGeoHazard(geoHazard, cancel);
     } else {
       console.log(`[INFO][WarningService] No need to update ${geoHazard}. Last updated is:`, dataLoad.lastUpdated);
     }
   }
 
-  updateWarningsForGeoHazard(geoHazard: GeoHazard) {
+  updateWarningsForGeoHazard(geoHazard: GeoHazard, cancel?: Promise<void>) {
     if (geoHazard === GeoHazard.Snow) {
-      return this.updateAvalancheWarnings(LangKey.no);
+      return this.updateAvalancheWarnings(LangKey.no, null, null, cancel);
     } else if (geoHazard === GeoHazard.Ice) {
       return this.updateIceWarnings();
     } else {
-      return this.updateFloodAndLandslideWarnings(geoHazard, LangKey.no);
+      return this.updateFloodAndLandslideWarnings(geoHazard, LangKey.no, null, null, cancel);
     }
   }
 
@@ -109,13 +118,13 @@ export class WarningService {
 
   private getPriority(currentGeoHazard: GeoHazard) {
     if (currentGeoHazard === GeoHazard.Snow) {
-      return [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Water, GeoHazard.Dirt];
+      return [GeoHazard.Snow];
     } else if (currentGeoHazard === GeoHazard.Ice) {
-      return [GeoHazard.Ice, GeoHazard.Snow, GeoHazard.Water, GeoHazard.Dirt];
+      return [GeoHazard.Ice];
     } else if (currentGeoHazard === GeoHazard.Water) {
-      return [GeoHazard.Water, GeoHazard.Dirt, GeoHazard.Snow, GeoHazard.Ice];
+      return [GeoHazard.Water, GeoHazard.Dirt];
     } else if (currentGeoHazard === GeoHazard.Dirt) {
-      return [GeoHazard.Dirt, GeoHazard.Water, GeoHazard.Snow, GeoHazard.Ice];
+      return [GeoHazard.Dirt, GeoHazard.Water];
     }
   }
 
@@ -223,7 +232,12 @@ export class WarningService {
     );
   }
 
-  private async updateFloodAndLandslideWarnings(geoHazard: GeoHazard, language: LangKey, from?: Date, to?: Date) {
+  private async updateFloodAndLandslideWarnings(
+    geoHazard: GeoHazard,
+    language: LangKey,
+    from?: Date,
+    to?: Date,
+    cancelPromise?: Promise<void>) {
     console.log(`[INFO][WarningService] Updating ${GeoHazard[geoHazard]} warnings`);
     const dateRange = this.getDefaultDateRange(from, to);
     const dataLoadId = this.getDataLoadId(geoHazard);
@@ -232,50 +246,54 @@ export class WarningService {
       + `/Warning/All/${language}`
       + `/${dateRange.from.format('YYYY-MM-DD')}`
       + `/${dateRange.to.format('YYYY-MM-DD')}`;
-    const result = await this.httpClient.get<IWarningApiResult[]>(url).toPromise();
-    const regions: IWarningGroup[] = [];
-    for (const item of result) {
-      const regionId = item.CountyList[0].Id;
-      const regionName = item.CountyList[0].Name;
-      const warning: IWarning = {
-        language,
-        mainText: item.MainText,
-        validFrom: this.getDate(item.ValidFrom),
-        validTo: this.getDate(item.ValidTo),
-        publishTime: this.getDate(item.PublishTime),
-        warningLevel: parseInt(item.ActivityLevel, 10),
-      };
+    try {
+      const warningsresult = await ObservableHelper.toPromiseWithCancel(
+        this.httpClient.get<IWarningApiResult[]>(url), cancelPromise);
+      const regions: IWarningGroup[] = [];
+      for (const item of warningsresult) {
+        const regionId = item.CountyList[0].Id;
+        const regionName = item.CountyList[0].Name;
+        const warning: IWarning = {
+          language,
+          mainText: item.MainText,
+          validFrom: this.getDate(item.ValidFrom),
+          validTo: this.getDate(item.ValidTo),
+          publishTime: this.getDate(item.PublishTime),
+          warningLevel: parseInt(item.ActivityLevel, 10),
+        };
 
-      const existingRegion = regions.find((r) => r.regionId === regionId);
-      if (existingRegion) {
-        const warningForSameDate = existingRegion.warnings
-          .find((w) => moment(w.validTo).format('YYYY-MM-DD') === moment(warning.validTo).format('YYYY-MM-DD'));
-        if (warningForSameDate) {
-          warningForSameDate.warningLevel = Math.max(warning.warningLevel, warningForSameDate.warningLevel);
+        const existingRegion = regions.find((r) => r.regionId === regionId);
+        if (existingRegion) {
+          const warningForSameDate = existingRegion.warnings
+            .find((w) => moment(w.validTo).format('YYYY-MM-DD') === moment(warning.validTo).format('YYYY-MM-DD'));
+          if (warningForSameDate) {
+            warningForSameDate.warningLevel = Math.max(warning.warningLevel, warningForSameDate.warningLevel);
+          } else {
+            existingRegion.warnings.push(warning);
+          }
         } else {
-          existingRegion.warnings.push(warning);
+          regions.push({
+            id: `${regionId}_${geoHazard}`,
+            regionId,
+            regionName,
+            counties: [regionId],
+            geoHazard,
+            warnings: [warning],
+          });
         }
-      } else {
-        regions.push({
-          id: `${regionId}_${geoHazard}`,
-          regionId,
-          regionName,
-          counties: [regionId],
-          geoHazard,
-          warnings: [warning],
-        });
       }
+      console.log(`[INFO][WarningService] Result from ${GeoHazard[geoHazard]}:`, regions);
+      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions, true);
+
+      // TODO: Delete regions no longer in result in case regions is changed in api
+      await this.dataLoadService.loadingCompleted(dataLoadId, warningsresult.length,
+        dateRange.from.toDate(), new Date());
+    } catch (err) {
+      await this.dataLoadService.loadingError(dataLoadId, err.message);
     }
-    console.log(`[INFO][WarningService] Result from ${GeoHazard[geoHazard]}:`, regions);
-    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions, true);
-
-    // TODO: Delete regions no longer in result in case regions is changed in api
-
-    await this.dataLoadService.loadingCompleted(dataLoadId, regions.length,
-      dateRange.from.toDate(), new Date());
   }
 
-  private async updateAvalancheWarnings(language: LangKey, from?: Date, to?: Date) {
+  private async updateAvalancheWarnings(language: LangKey, from?: Date, to?: Date, cancelPromise?: Promise<void>) {
     console.log(`[INFO][WarningService] Updating avalanche warnings`);
     const dateRange = this.getDefaultDateRange(from, to);
     const dataLoadId = this.getDataLoadId(GeoHazard.Snow);
@@ -284,29 +302,30 @@ export class WarningService {
       + `/RegionSummary/Simple/${language}`
       + `/${dateRange.from.format('YYYY-MM-DD')}`
       + `/${dateRange.to.format('YYYY-MM-DD')}`;
-    const result = await this.httpClient.get<IAvalancheWarningApiResult[]>(url).toPromise();
-    const regionResult: IWarningGroup[] = result.map((region) => ({
-      id: `${region.Id}_${GeoHazard.Snow}`,
-      regionId: region.Id.toString(),
-      regionName: region.Name,
-      geoHazard: GeoHazard.Snow,
-      counties: [],
-      warnings: region.AvalancheWarningList.map((simpleWarning) => ({
-        warningLevel: parseInt(simpleWarning.DangerLevel, 10),
-        publishTime: this.getDate(simpleWarning.PublishTime),
-        validFrom: this.getDate(simpleWarning.ValidFrom),
-        validTo: this.getDate(simpleWarning.ValidTo),
-        mainText: simpleWarning.MainText,
-        language,
-      })),
-    }));
-    console.log(`[INFO][WarningService] New updates for avalanche warnings:`, regionResult);
-    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
-
-    // TODO: Delete regions no longer in result in case regions is changed in api
-
-    await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length,
-      dateRange.from.toDate(), new Date());
+    try {
+      const warningsresult = await ObservableHelper.toPromiseWithCancel(
+        this.httpClient.get<IAvalancheWarningApiResult[]>(url), cancelPromise);
+      const regionResult: IWarningGroup[] = warningsresult.map((region) => ({
+        id: `${region.Id}_${GeoHazard.Snow}`,
+        regionId: region.Id.toString(),
+        regionName: region.Name,
+        geoHazard: GeoHazard.Snow,
+        counties: [],
+        warnings: region.AvalancheWarningList.map((simpleWarning) => ({
+          warningLevel: parseInt(simpleWarning.DangerLevel, 10),
+          publishTime: this.getDate(simpleWarning.PublishTime),
+          validFrom: this.getDate(simpleWarning.ValidFrom),
+          validTo: this.getDate(simpleWarning.ValidTo),
+          mainText: simpleWarning.MainText,
+          language,
+        })),
+      }));
+      console.log(`[INFO][WarningService] New updates for avalanche warnings:`, regionResult);
+      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
+      await this.dataLoadService.loadingCompleted(dataLoadId, warningsresult.length, dateRange.from.toDate(), new Date());
+    } catch (err) {
+      await this.dataLoadService.loadingError(dataLoadId, err.message);
+    }
   }
 
   private async updateIceWarnings() {

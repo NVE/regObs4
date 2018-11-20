@@ -4,16 +4,13 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import { ObservationService } from './core/services/observation/observation.service';
 import { settings } from '../settings';
-import { WarningService } from './core/services/warning/warning.service';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { NanoSql } from '../nanosql';
 import { LangKey } from './core/models/langKey';
-import { Router } from '@angular/router';
-import { KdvService } from './core/services/kdv/kdv.service';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
+import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 
 @Component({
   selector: 'app-root',
@@ -27,15 +24,12 @@ export class AppComponent {
     private statusBar: StatusBar,
     private translate: TranslateService,
     private userSettings: UserSettingService,
-    private observationService: ObservationService,
     private navController: NavController,
-    private warningService: WarningService,
     private events: Events,
     private deeplinks: Deeplinks,
     private backgroundFetch: BackgroundFetch,
-    private router: Router,
     private zone: NgZone,
-    private kdvService: KdvService,
+    private dataMarshallService: DataMarshallService,
     private offlineMapService: OfflineMapService,
   ) {
     this.initializeApp();
@@ -73,16 +67,6 @@ export class AppComponent {
     });
   }
 
-  async updateResources() {
-    // TODO: implement cancel function to pass in.
-    // Set timer to 25 seconds and cancel if running longer.
-    this.zone.runOutsideAngular(async () => {
-      await this.warningService.updateWarnings();
-      await this.observationService.updateObservations();
-      await this.kdvService.updateKdvElements();
-    });
-  }
-
   async initNanoSqlDatabase() {
     return this.zone.runOutsideAngular(async () => {
       await NanoSql.init();
@@ -105,16 +89,17 @@ export class AppComponent {
     // TODO: Write headless java code?
     // https://github.com/transistorsoft/cordova-plugin-background-fetch
 
-    this.backgroundFetch.configure(config).then(() => this.updateResources().then(() => this.backgroundFetch.finish()))
+    this.backgroundFetch.configure(config).then(() =>
+      this.dataMarshallService.backgroundFetchUpdate().then(() => this.backgroundFetch.finish()))
       .catch((error) => {
         if (error === settings.cordovaNotAvailable) {
           console.log('[INFO] Cordova not available, running backround update job in interval');
           setInterval(async () => {
-            await this.updateResources();
+            await this.dataMarshallService.backgroundFetchUpdate();
           }, 2 * 60 * 1000); // Update frequency for observations on web implementation
         }
       });
 
-    this.updateResources(); // Update resources on startup
+    this.dataMarshallService.backgroundFetchUpdate(); // Update resources on startup
   }
 }

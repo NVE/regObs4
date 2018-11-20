@@ -11,6 +11,7 @@ import { UserSetting } from '../../models/user-settings.model';
 import { switchMap } from 'rxjs/operators';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import * as moment from 'moment';
+import { ObservableHelper } from '../../helpers/observable-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -23,21 +24,21 @@ export class KdvService {
     private dataLoadService: DataLoadService,
   ) { }
 
-  async updateKdvElements() {
+  async updateKdvElements(cancel?: Promise<void>) {
     const userSetting = await this.userSettingService.getUserSettings();
-    this.checkLastUpdatedAndUpdateDataIfNeeded(userSetting.appMode, userSetting.language);
+    this.checkLastUpdatedAndUpdateDataIfNeeded(userSetting.appMode, userSetting.language, cancel);
   }
 
   private getDataLoadId(appMode: AppMode, language: LangKey) {
     return `${NanoSql.TABLES.KDV_ELEMENTS.name}_${appMode}_${language}`;
   }
 
-  private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, language: LangKey) {
+  private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, language: LangKey, cancel?: Promise<void>) {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(appMode, language));
     const lastUpdateLimit = moment().subtract(settings.kdvElements.daysBeforeUpdate, 'day');
     if (!dataLoad.lastUpdated
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
-      await this.updateKdvElementsForLanguage(appMode, language);
+      await this.updateKdvElementsForLanguage(appMode, language, cancel);
     } else {
       const nextUpdate = moment(dataLoad.lastUpdated).add(settings.kdvElements.daysBeforeUpdate, 'day').toISOString();
       console.log(`[INFO][KdvService] No need to update for language ${LangKey[language]}.
@@ -45,15 +46,20 @@ export class KdvService {
     }
   }
 
-  async updateKdvElementsForLanguage(appMode: AppMode, language: LangKey) {
+  async updateKdvElementsForLanguage(appMode: AppMode, language: LangKey, cancel?: Promise<void>) {
     const dataLoadId = this.getDataLoadId(appMode, language);
     await this.dataLoadService.startLoading(dataLoadId);
-    this.kdvApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
-    const kdvElements = await this.kdvApiService.KdvElementsGetKdvs({ langkey: language }).toPromise();
-    console.log('[INFO] Updated KDV elements: ', kdvElements);
-    await NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode)
-      .query('upsert', { langKey: language, ...kdvElements }).exec();
-    await this.dataLoadService.loadingCompleted(dataLoadId);
+    try {
+      this.kdvApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
+      const kdvElements = await ObservableHelper.toPromiseWithCancel(
+        this.kdvApiService.KdvElementsGetKdvs({ langkey: language }), cancel);
+      console.log('[INFO] Updated KDV elements: ', kdvElements);
+      await NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode)
+        .query('upsert', { langKey: language, ...kdvElements }).exec();
+      await this.dataLoadService.loadingCompleted(dataLoadId);
+    } catch (err) {
+      await this.dataLoadService.loadingError(dataLoadId, err.message);
+    }
   }
 
   async getKdvRepositories(langKey: LangKey, appMode: AppMode, key: string) {

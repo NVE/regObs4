@@ -10,4 +10,6 @@ export interface IDataLoad {
     totalItems?: number;
     itemsFromDate?: string;
     itemsToDate?: string;
+    error?: boolean;
+    errorMessage?: string;
 }

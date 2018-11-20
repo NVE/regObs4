@@ -30,6 +30,7 @@ import { MapService } from './modules/map/services/map/map.service';
 import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { StartWizardGuard } from './core/gurads/start-wizard-guard';
+import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -71,6 +72,7 @@ export class AppProviders {
             MapService,
             WarningService,
             LoginService,
+            DataMarshallService,
         ];
     }
 

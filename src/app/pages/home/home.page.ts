@@ -8,9 +8,7 @@ import { settings } from '../../../settings';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { MapService } from '../../modules/map/services/map/map.service';
 import { MapComponent } from '../../modules/map/components/map/map.component';
-import { Router, NavigationEnd } from '@angular/router';
 import { IconHelper } from '../../modules/map/helpers/icon.helper';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
@@ -43,9 +41,7 @@ export class HomePage implements OnInit, OnDestroy {
     private observationService: ObservationService,
     private events: Events,
     private userSettingService: UserSettingService,
-    private mapService: MapService,
     private zone: NgZone,
-    private router: Router,
   ) {
   }
 

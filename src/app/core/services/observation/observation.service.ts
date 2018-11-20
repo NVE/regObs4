@@ -1,4 +1,4 @@
-import { Injectable, OnInit, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
 import { nSQL } from 'nano-sql';
 import { RowCount } from '../../models/row-count.model';
@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import 'moment-timezone';
 import * as Rx from 'rxjs';
 import { NanoSql } from '../../../../nanosql';
-import { debounceTime, take, map, distinctUntilChanged, switchMap, shareReplay, bufferCount, skip, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, map, distinctUntilChanged, switchMap, shareReplay } from 'rxjs/operators';
 import { LoginService } from '../login/login.service';
 import { LoggedInUser } from '../login/logged-in-user.model';
 import { UserSettingService } from '../user-setting/user-setting.service';
@@ -18,6 +18,7 @@ import { UserSetting } from '../../models/user-settings.model';
 import { LangKey } from '../../models/langKey';
 import { SearchService } from '../../../modules/regobs-api/services';
 import { RegistrationViewModel, ObserverResponseDto } from '../../../modules/regobs-api/models';
+import { ObservableHelper } from '../../helpers/observable-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -37,51 +38,25 @@ export class ObservationService {
     private dataLoadService: DataLoadService,
   ) {
     this._observationsObservable = this.getObservationsAsObservable();
-    this.userSettingService.userSettingObservable$.pipe(
-      bufferCount(2),
-      map(([prev, next]) => this.hasUserSettingsChangedToRequireReload(prev, next) ? next : null),
-      withLatestFrom(this.loginService.loggedInUser$),
-    ).subscribe(([userSetting, loggedInUser]) => {
-      console.log('[INFO][ObervationService] App settings changed. Need to refresh observations.');
-      if (userSetting) {
-        this.updateObservationsForGeoHazard(
-          userSetting.appMode,
-          userSetting.currentGeoHazard,
-          loggedInUser,
-          userSetting.language);
-      }
-    }); // No need to unsubscribe this observable when the service is singleton. It get destroyed when app exits.
-  }
-
-  private hasUserSettingsChangedToRequireReload(oldVal: UserSetting, newVal: UserSetting) {
-    if (oldVal && newVal) {
-      if (oldVal.appMode !== newVal.appMode) {
-        return true;
-      }
-      if (oldVal.language !== newVal.language) {
-        return true;
-      }
-      if (oldVal.currentGeoHazard !== newVal.currentGeoHazard) {
-        return true;
-      }
-      const prevDaysBack = this.getObservationsDaysBack(oldVal, newVal.currentGeoHazard);
-      const nextDaysBack = this.getObservationsDaysBack(newVal, newVal.currentGeoHazard);
-      if (nextDaysBack > prevDaysBack) {
-        return true; // We need to update more days back
-      }
-    }
-    return false;
   }
 
   private exludeLoggedInUser(user: LoggedInUser, reg: RegistrationViewModel) {
     return (user.isLoggedIn ? (reg.Observer.ObserverGUID !== user.user.Guid) : true);
   }
 
-  async updateObservations() {
+  async updateObservations(cancel?: Promise<void>) {
+    let cancelled = false;
+    if (cancel) {
+      cancel.then(() => {
+        cancelled = true;
+      });
+    }
     const user = await this.loginService.getLoggedInUser();
     const userSettings = await this.userSettingService.getUserSettings();
     for (const geoHazard of this.getPriority(userSettings.currentGeoHazard)) {
-      await this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.appMode, geoHazard, user, userSettings.language);
+      if (!cancelled) {
+        await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard, user, userSettings, cancel);
+      }
     }
     // TODO: Update my observations if user is logged in
   }
@@ -109,14 +84,18 @@ export class ObservationService {
     return geoHazards.map((val) => this.getDataLoadId(appMode, val));
   }
 
-  private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, geoHazard: GeoHazard, user: LoggedInUser, language: LangKey) {
-    const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(appMode, geoHazard));
+  private async checkLastUpdatedAndUpdateDataIfNeeded(
+    geoHazard: GeoHazard,
+    user: LoggedInUser,
+    userSetting: UserSetting,
+    cancel?: Promise<void>) {
+    const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(userSetting.appMode, geoHazard));
     const lastUpdateLimit = moment().subtract(10, 'minutes');
-    const fromDate = await this.getDaysBackToFetchAsDate(geoHazard);
+    const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazard);
     if (!dataLoad.lastUpdated
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
       || moment(dataLoad.itemsFromDate).isAfter(fromDate)) {
-      await this.updateObservationsForGeoHazard(appMode, geoHazard, user, language);
+      await this.updateObservationsForGeoHazard(geoHazard, user, userSetting, cancel);
     } else {
       console.log(`[INFO][ObervationService] No need to update ${geoHazard}. Last updated is:`, dataLoad.lastUpdated);
     }
@@ -133,42 +112,44 @@ export class ObservationService {
     const userSettings = await this.userSettingService.getUserSettings();
     const loggedInUser = await this.loginService.getLoggedInUser();
     return this.updateObservationsForGeoHazard(
-      userSettings.appMode,
       userSettings.currentGeoHazard,
       loggedInUser,
-      userSettings.language);
+      userSettings
+    );
   }
 
-  private async getDaysBackToFetchAsDate(geoHazard: GeoHazard) {
-    const daysBack = await this.getDaysBackToFetchForGeoHazard(geoHazard);
+  private async getDaysBackToFetchAsDate(userSetting: UserSetting, geoHazard: GeoHazard) {
+    const daysBack = await this.getObservationsDaysBack(userSetting, geoHazard);
     const fromDate = moment().subtract(daysBack, 'days').startOf('day');
     return fromDate.toDate();
   }
 
-  private async updateObservationsForGeoHazard(appMode: AppMode, geoHazard: GeoHazard, user: LoggedInUser, langKey: LangKey) {
+  async updateObservationsForGeoHazard(geoHazard: GeoHazard, user: LoggedInUser, userSetting: UserSetting, cancel?: Promise<void>) {
     console.log(`[INFO][ObervationService] Updating observations for geoHazard: ${geoHazard}`);
-    const dataLoadId = this.getDataLoadId(appMode, geoHazard);
+    const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazard);
     await this.dataLoadService.startLoading(dataLoadId);
-    const fromDate = await this.getDaysBackToFetchAsDate(geoHazard);
+    const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazard);
 
-    // TODO: Implement cancel? Maybe use observable and unsubscribe when cancel observable in data load table?
-    const searchResult = await this.searchService.SearchAll({
-      FromDate: fromDate.toISOString(),
-      SelectedGeoHazards: [geoHazard],
-      NumberOfRecords: settings.observations.maxObservationsToFetch,
-      LangKey: langKey,
-    }).toPromise();
-    console.log(`[INFO] Got ${searchResult.length} new observations for geoHazard  ${geoHazard}`);
-    const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
-    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, true);
+    try {
+      const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchAll({
+          FromDate: fromDate.toISOString(),
+          SelectedGeoHazards: [geoHazard],
+          NumberOfRecords: settings.observations.maxObservationsToFetch,
+          LangKey: userSetting.language,
+        }), cancel);
 
-    // Deleting items no longer in updated result
-    await this.deleteObservationNoLongerInResult(appMode, geoHazard, user, fromDate, searchResult);
-    // Delete old items
-    await this.deleteOldObservations(appMode, geoHazard, user);
+          console.log(`[INFO] Got ${searchResult.length} new observations for geoHazard  ${geoHazard}`);
+          const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode);
+          await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode).loadJS(instanceName, searchResult, true);
 
-    await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.length,
-      fromDate, new Date());
+          // Deleting items no longer in updated result
+          await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazard, user, fromDate, searchResult);
+          // Delete old items
+          await this.deleteOldObservations(userSetting.appMode, geoHazard, user);
+      await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.length, fromDate, new Date());
+    } catch (err) {
+      await this.dataLoadService.loadingError(dataLoadId, err.message);
+    }
   }
 
   async updateObservationsForCurrentUser(appMode: AppMode, user: ObserverResponseDto, langKey: LangKey, page: number) {
@@ -183,12 +164,7 @@ export class ObservationService {
     await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, true);
   }
 
-  private async getDaysBackToFetchForGeoHazard(geoHazard: GeoHazard): Promise<number> {
-    const userSettings = await this.userSettingService.getUserSettings();
-    return this.getObservationsDaysBack(userSettings, userSettings.currentGeoHazard);
-  }
-
-  private getObservationsDaysBack(userSettings: UserSetting, geoHazard: GeoHazard): number {
+  getObservationsDaysBack(userSettings: UserSetting, geoHazard: GeoHazard): number {
     const daysBackForCurrentGeoHazard = userSettings.observationDaysBack
       .find((setting) => setting.geoHazard === geoHazard);
     const daysBack = daysBackForCurrentGeoHazard ? daysBackForCurrentGeoHazard.daysBack : 3; // default to 3 days back if not found
