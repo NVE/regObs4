@@ -4,7 +4,7 @@
   </ion-card-header>
   <ion-card-content>
     <ion-grid no-padding>
-      <ion-row class="row-padding-start">
+      <ion-row class="row-padding-start" align-items-center>
         <ion-col size="5">
           <ion-icon [src]="icon"></ion-icon> {{ geoHazardName }}
         </ion-col>
@@ -18,7 +18,8 @@
           <ion-icon name="calendar"></ion-icon> {{ dtObsDate | formatDate | async }}
         </ion-col>
         <ion-col size="7">
-          <ion-icon name="contact"></ion-icon> {{obs.Observer.NickName}} *****
+          <ion-icon name="contact"></ion-icon> {{obs.Observer.NickName}}
+          <ion-icon [name]="star.full ? 'star' : 'star-outline'" *ngFor="let star of stars"></ion-icon>
         </ion-col>
       </ion-row>
       <ng-container *ngIf="obs.Attachments.length > 0">
@@ -35,25 +36,24 @@
           </ion-col>
         </ion-row>
         <ion-row class="row-padding-start">
-          <ion-col size="12">
-            <ion-label text-wrap>
-              {{'DIALOGS.OF' | translate}}: {{ imageHeader }}. {{'DIALOGS.COMMENT' | translate}}: {{ imageDecription }}
-            </ion-label>
+          <ion-col size="12" text-wrap>
+            {{'DIALOGS.OF' | translate}}: {{ imageHeader }}. {{'DIALOGS.COMMENT' | translate}}: {{ imageDecription }}
           </ion-col>
         </ion-row>
       </ng-container>
       <ion-row class="row-padding-start">
         <ion-col size="12">
-          <h3>{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}</h3>
+          <h3>{{ 'OBSERVATION_LIST.FORMS' | translate }}</h3>
         </ion-col>
       </ion-row>
       <ion-row class="row-padding-start">
         <ion-col size="12">
-          <ion-badge (click)="toggleAllSelected()" *ngIf="summaries.length > 1" [color]="allSelected ? 'medium' : 'light'">
+          <ion-badge (click)="toggleAllSelected()" *ngIf="summaries.length > 1" [color]="allSelected ? 'medium' : 'light'"
+            [ngClass]="{'outline': !allSelected}">
             {{'OBSERVATION_LIST.ALL_OBSERVATIONS' | translate}}
           </ion-badge>
           <ion-badge (click)="toggleRegistration(i)" text-wrap [color]="(s.open && (summaries.length <= 1 || !allSelected)) ? 'medium' : 'light'"
-            *ngFor="let s of summaries; let i = index">
+            *ngFor="let s of summaries; let i = index" [ngClass]="{'outline': !(s.open && (summaries.length <= 1 || !allSelected))}">
             {{ s.summary.RegistrationName }}
           </ion-badge>
         </ion-col>
@@ -66,11 +66,10 @@
             </ion-col>
           </ion-row>
           <ion-row class="row-padding-start">
-            <ion-col size="12">
+            <ion-col size="12" text-wrap>
               <ng-container *ngFor="let innerSummary of s.summary.Summaries; let i = index">
                 <ng-container *ngIf="innerSummary.Kind === 0">
-                  <ion-label text-wrap><span *ngIf="i>0">&nbsp;&bull;&nbsp;</span><strong>{{ innerSummary.Header }}</strong>:
-                    {{ innerSummary.Value }}</ion-label>
+                  <span *ngIf="i>0">&nbsp;&bull;&nbsp;</span>{{ innerSummary.Value }}
                 </ng-container>
               </ng-container>
             </ion-col>
@@ -79,7 +78,7 @@
       </ng-container>
     </ion-grid>
     <ion-item color="light" (click)="openWeb()">
-      <ion-label color="medium">
+      <ion-label color="medium" class="link-title">
         {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
       </ion-label>
       <ion-label color="medium" class="reg-id" slot="end" text-end>

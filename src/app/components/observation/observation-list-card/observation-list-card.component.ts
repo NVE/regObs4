@@ -34,6 +34,7 @@ export class ObservationListCardComponent implements OnInit {
   nextVisible = false;
   imageHeader = '';
   imageDecription = '';
+  stars: { full: boolean }[] = [];
 
   slideOptions = {
     autoplay: false,
@@ -58,11 +59,15 @@ export class ObservationListCardComponent implements OnInit {
     this.userSetting = await this.userSettingService.getUserSettings();
     this.geoHazardName = await this.translateService
       .get(`GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase()).toPromise();
+
     this.ngZone.run(() => {
       this.header = this.getHeader(this.obs);
       this.dtObsDate = moment(this.obs.DtObsTime).toDate();
       this.icon = this.helperService.getGeoHazardIcon(geoHazard);
       this.summaries = this.obs.Summaries.map((x) => ({ summary: x, open: true }));
+      for (let i = 0; i < 5; i++) {
+        this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
+      }
       this.loaded = true;
     });
   }
