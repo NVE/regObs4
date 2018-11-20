@@ -47,6 +47,8 @@ export class DataMarshallService {
       await this.warningService.updateWarnings(cancelTimer);
       await this.observationService.updateObservations(cancelTimer);
       await this.kdvService.updateKdvElements(cancelTimer);
+
+      console.log('[INFO] DataMarshall Background Update Completed');
     });
   }
 

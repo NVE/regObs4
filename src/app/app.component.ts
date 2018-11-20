@@ -48,7 +48,7 @@ export class AppComponent {
       this.statusBar.overlaysWebView(this.platform.is('ios'));
       this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
 
-      await this.initBackroundUpdates();
+      this.initBackroundUpdates();
       setTimeout(() => {
         this.splashScreen.hide();
       }, 2000); // https://forum.ionicframework.com/t/android-splashscreen-fade-animation-on-hide-not-working/120130/2
@@ -76,29 +76,35 @@ export class AppComponent {
 
   // TODO: Move to data sync sevice
   initBackroundUpdates() {
-    const config = {
-      minimumFetchInterval: 15, // <-- default is 15
-      stopOnTerminate: false,    // <-- Android only
-      startOnBoot: false,       // <-- Android only
-      forceReload: false        // <-- Android only
-    };
-    // Be aware. If startOnBoot=true, stopOnTerminate must be false and forceReload must be true.
-    // We don't want to force our app to always be running.
-    // So for Android the app must be running for background fetch to be running.
-    // To be able to fetch without forceReload, we must enable headless java code!
-    // TODO: Write headless java code?
-    // https://github.com/transistorsoft/cordova-plugin-background-fetch
-
-    this.backgroundFetch.configure(config).then(() =>
-      this.dataMarshallService.backgroundFetchUpdate().then(() => this.backgroundFetch.finish()))
-      .catch((error) => {
-        if (error === settings.cordovaNotAvailable) {
-          console.log('[INFO] Cordova not available, running backround update job in interval');
-          setInterval(async () => {
-            await this.dataMarshallService.backgroundFetchUpdate();
-          }, 2 * 60 * 1000); // Update frequency for observations on web implementation
-        }
-      });
+    if (this.platform.is('ios') || this.platform.is('android')) {
+      // Be aware. If startOnBoot=true, stopOnTerminate must be false and forceReload must be true.
+      // We don't want to force our app to always be running.
+      // So for Android the app must be running for background fetch to be running.
+      // To be able to fetch without forceReload, we must enable headless java code!
+      // TODO: Write headless java code?
+      // https://github.com/transistorsoft/cordova-plugin-background-fetch
+      const config = {
+        minimumFetchInterval: 15, // <-- default is 15
+        stopOnTerminate: true,    // <-- Android only (when forceReload is false, this needs to be true)
+        startOnBoot: false,       // <-- Android only (when forceReload is false, this needs to be false)
+        forceReload: false        // <-- Android only. We don't want to force our app to always be running.
+      };
+      // ALSO NOTE: Could not get Ionic Native Background fetch to work, so using ((any)window).BackgroundFetch
+      // (direct use of cordova plugin) instead. To test Android:
+      // Open command window with log: adb logcat -s TSBackgroundFetch
+      // Force run in another command window: adb shell cmd jobscheduler run -f no.nve.regobs 999
+      // Run chrome://inspect to view console.logs from update
+      (<any>window).BackgroundFetch.configure(() => {
+        this.dataMarshallService.backgroundFetchUpdate().then(() => (<any>window).BackgroundFetch.finish());
+      }, (error) => {
+        console.log('[ERROR] Could not run background fetch!');
+        // TODO: Log error
+      }, config);
+    } else {
+      setInterval(() => {
+        this.dataMarshallService.backgroundFetchUpdate();
+      }, 2 * 60 * 1000); // Update frequency for observations on web implementation
+    }
 
     this.dataMarshallService.backgroundFetchUpdate(); // Update resources on startup
   }
