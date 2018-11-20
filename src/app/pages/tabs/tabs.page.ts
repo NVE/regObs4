@@ -66,7 +66,16 @@ export class TabsPage implements OnInit, OnDestroy {
     this.events.publish(settings.events.tabsChanged, tabElement.tab);
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     console.log('[INFO] Tabs page ionViewDidEnter');
+    const selectedTab = await this.tabs.getSelected();
+    if (selectedTab) {
+      this.events.publish(settings.events.tabsChanged, selectedTab.tab);
+    }
+  }
+
+  ionViewWillLeave() {
+    console.log('[INFO] Tabs page ionViewWillLeave');
+    this.events.publish(settings.events.tabsChanged, '');
   }
 }

@@ -10,7 +10,6 @@ import { HomePageModule } from '../home/home.module';
 import { TripPageModule } from '../trip/trip.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { WarningListPageModule } from '../warning-list/warning-list.module';
-import { AddPageModule } from '../add/add.module';
 import { ObservationListPageModule } from '../observation-list/observation-list.module';
 import { SharedModule } from '../../modules/shared/shared.module';
 
@@ -25,7 +24,6 @@ import { SharedModule } from '../../modules/shared/shared.module';
     WarningListPageModule,
     TranslateModule,
     ObservationListPageModule,
-    AddPageModule,
     SharedModule,
   ],
   declarations: [TabsPage]

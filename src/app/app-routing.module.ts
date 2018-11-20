@@ -7,26 +7,13 @@ const routes: Routes = [
     loadChildren: './pages/tabs/tabs.module#TabsPageModule',
   },
   {
-    path: 'home',
-    loadChildren: './pages/home/home.module#HomePageModule'
-  },
-  {
-    path: 'trip',
-    loadChildren: './pages/trip/trip.module#TripPageModule'
-  },
-  {
     path: 'my-observations',
     loadChildren: './pages/my-observations/my-observations.module#MyObservationsPageModule'
-  },
-  {
-    path: 'warning-list',
-    loadChildren: './pages/warning-list/warning-list.module#WarningListPageModule'
   },
   {
     path: 'user-settings',
     loadChildren: './pages/user-settings/user-settings.module#UserSettingsPageModule'
   },
-  { path: 'add', loadChildren: './pages/add/add.module#AddPageModule' },
   { path: 'trip-log', loadChildren: './pages/trip-log/trip-log.module#TripLogPageModule' },
   { path: 'start-wizard', loadChildren: './pages/start-wizard/start-wizard.module#StartWizardPageModule' },
   { path: 'view-observation/:id', loadChildren: './pages/view-observation/view-observation.module#ViewObservationPageModule' },
@@ -37,7 +24,6 @@ const routes: Routes = [
     path: 'registration',
     loadChildren: 'app/modules/registration/registration.module#RegistrationModule'
   },
-
 ];
 
 @NgModule({

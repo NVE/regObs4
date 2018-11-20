@@ -5,7 +5,6 @@ import { TabsPage } from './tabs.page';
 import { HomePage } from '../home/home.page';
 import { TripPage } from '../trip/trip.page';
 import { WarningListPage } from '../warning-list/warning-list.page';
-import { AddPage } from '../add/add.page';
 import { ObservationListPage } from '../observation-list/observation-list.page';
 import { StartWizardGuard } from '../../core/gurads/start-wizard-guard';
 
@@ -17,9 +16,8 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        pathMatch: 'full',
-        outlet: 'home',
-        component: HomePage
+        redirectTo: '/tabs/(home:home)',
+        pathMatch: 'full'
       },
       {
         path: 'home',
@@ -30,11 +28,6 @@ const routes: Routes = [
         path: 'trip',
         outlet: 'trip',
         component: TripPage
-      },
-      {
-        path: 'add',
-        outlet: 'add',
-        component: AddPage
       },
       {
         path: 'observation-list',
