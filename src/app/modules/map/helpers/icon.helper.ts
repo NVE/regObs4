@@ -63,9 +63,10 @@ export class IconHelper {
                                     9 C0.5,12.1049889 3.33458739,18.1632591 9,27.0711862 Z" id="Oval"
                                     stroke="#326680" fill="#468EB2" fill-rule="nonzero"></path>
                                 </g>
-                                <text id="99" font-family="SourceSansPro-Regular, Source Sans Pro" font-size="7"
-                                font-weight="normal" fill="#FFFFFF">
-                                    <tspan x="12.021" y="18">${count > 99 ? 99 : count}</tspan>
+                                <text id="99" x="14.949153" y="19.338984" font-family="SourceSansPro-Regular, Source Sans Pro"
+                                font-size="${ count > 99 ? '6' : '7'}"
+                                font-weight="normal" text-anchor="middle" fill="#FFFFFF">
+                                    ${count > 99 ? 99 : count}
                                 </text>
                                 <g id="icon/12/pin" transform="translate(11.000000, 3.000000)">
                                     <rect id="Background" x="0" y="0" width="8" height="8"></rect>
@@ -116,9 +117,11 @@ export class IconHelper {
                                 7.66666667 3.66666667,7.50594837 3.66666667,7.30769231 L3.43013501,4.2509755 Z"
                                 id="Combined-Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
                             </g>
-                            <text id="99" font-family="SourceSansPro-Regular, Source Sans Pro" font-size="9"
+                            <text id="99" x="14.949153" y="19.338984" text-anchor="middle"
+                            font-family="SourceSansPro-Regular, Source Sans Pro"
+                            font-size="${ count > 99 ? '8' : '9'}"
                             font-weight="normal" fill="#468EB3">
-                                <tspan x="10.527" y="13">${count > 99 ? 99 : count}</tspan>
+                                ${count > 99 ? 99 : count}
                             </text>
                         </g>
                     </g>
@@ -165,9 +168,10 @@ export class IconHelper {
                                 7.66666667 3.66666667,7.50594837 3.66666667,7.30769231 L3.43013501,4.2509755 Z"
                                 id="Combined-Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
                             </g>
-                            <text id="99" font-family="SourceSansPro-Regular, Source Sans Pro" font-size="7"
-                            font-weight="normal" fill="#468EB3">
-                                <tspan x="11.521" y="18">${count > 99 ? 99 : count}</tspan>
+                            <text id="99" x="14.949153" y="19.338984" font-family="SourceSansPro-Regular, Source Sans Pro"
+                            font-size="${ count > 99 ? '6' : '7'}"
+                            font-weight="normal" text-anchor="middle" fill="#468EB3">
+                                ${count > 99 ? 99 : count}
                             </text>
                             <g id="Icon/12/ice" transform="translate(11.000000, 4.000000)">
                                 <rect id="Background" x="0" y="0" width="8" height="8"></rect>
