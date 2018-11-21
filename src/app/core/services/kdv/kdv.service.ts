@@ -26,7 +26,7 @@ export class KdvService {
 
   async updateKdvElements(cancel?: Promise<void>) {
     const userSetting = await this.userSettingService.getUserSettings();
-    this.checkLastUpdatedAndUpdateDataIfNeeded(userSetting.appMode, userSetting.language, cancel);
+    await this.checkLastUpdatedAndUpdateDataIfNeeded(userSetting.appMode, userSetting.language, cancel);
   }
 
   private getDataLoadId(appMode: AppMode, language: LangKey) {
