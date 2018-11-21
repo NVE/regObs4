@@ -62,12 +62,12 @@
                       </ion-row>
                       <ion-row *ngIf="!selectedLocation">
                         <ion-col no-padding>
-                          <ng-container *ngIf="(location$ | async) as location">
-                            <ng-container *ngIf="!isLoading">
+                          <ng-container *ngIf="!isLoading">
+                            <ng-container *ngIf="viewInfo && viewInfo.location">
                               <ion-label class="detail-obs-info" no-margin>
-                                <span *ngIf="(location.name !== location.adminName)">{{
-                                  location.name
-                                  }},&nbsp;</span>{{location.adminName}}&nbsp;
+                                <span *ngIf="(viewInfo.location.name !== viewInfo.location.adminName)">{{
+                                  viewInfo.location.name
+                                  }},&nbsp;</span>{{viewInfo.location.adminName}}&nbsp;
                               </ion-label>
                             </ng-container>
                           </ng-container>
@@ -83,10 +83,10 @@
                               }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
                               {{ locationMarker.getLatLng().lng | number:'0.3'
                               }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</span>
-                            <span *ngIf="(elevation$ | async) as elevation">
-                              <span *ngIf="!isLoading">, {{ elevation }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' |
-                                translate}}
-                              </span>
+                            <span *ngIf="!isLoading && viewInfo && viewInfo.elevation !== null">, {{ viewInfo.elevation
+                              }}
+                              {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' |
+                              translate}}
                             </span>
                           </ion-label>
                         </ion-col>
