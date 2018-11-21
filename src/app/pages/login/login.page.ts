@@ -82,7 +82,7 @@ export class LoginPage implements OnInit, OnDestroy {
     if (this.loginform.valid) {
       this.loading = true;
       await this.loginService.login(this.loginFormUsername, this.loginFormPassword);
-      this.ngZone.run(() => {
+      setTimeout(() => {
         this.loading = false;
         console.log('[INFO][LoginPage] User logged in. Returing to:' + this.returnUrl);
         if (this.returnUrl) {
@@ -90,7 +90,7 @@ export class LoginPage implements OnInit, OnDestroy {
         } else {
           this.navContoller.goBack();
         }
-      });
+      }, 200);
     }
   }
 
