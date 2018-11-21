@@ -209,6 +209,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       L.latLng(this.userposition.coords.latitude, this.userposition.coords.longitude) : this.locationMarker.getLatLng());
     const locationMarkerLatLng = this.locationMarker.getLatLng();
     const path = [locationMarkerLatLng, from];
+    console.log('Update Polyline: ' + this.showPolyline);
     if (!this.pathLine) {
       this.pathLine = L.polyline(path, { color: 'black', weight: 6, opacity: .9, dashArray: '1,12' });
       if (this.showPolyline) {
