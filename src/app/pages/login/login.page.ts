@@ -45,7 +45,10 @@ export class LoginPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.route.queryParams
-      .subscribe(params => this.returnUrl = params['returnUrl']);
+      .subscribe(params => {
+        console.log('[INFO][LoginPage] Got returnUrl:' + params['returnUrl']);
+        this.returnUrl = params['returnUrl'];
+      });
     this.loginform = this.formBuilder.group({
       username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
@@ -81,6 +84,7 @@ export class LoginPage implements OnInit, OnDestroy {
       await this.loginService.login(this.loginFormUsername, this.loginFormPassword);
       this.ngZone.run(() => {
         this.loading = false;
+        console.log('[INFO][LoginPage] User logged in. Returing to:' + this.returnUrl);
         if (this.returnUrl) {
           this.navContoller.navigateRoot(this.returnUrl);
         } else {

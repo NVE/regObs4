@@ -15,6 +15,7 @@ export class LoginGuard implements CanActivate {
 
     const loggedInUser = await this.loginService.getLoggedInUser();
     if (!loggedInUser.isLoggedIn) {
+      console.log('[INFO][LoginGuard] Not logged in! returnUrl:' + state.url);
       this.router.navigate(['login'], {
         queryParams: {
           returnUrl: state.url
