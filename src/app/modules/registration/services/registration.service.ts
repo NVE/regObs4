@@ -153,16 +153,11 @@ export class RegistrationService {
   }
 
   async createOrEditRegistrationRoute() { // TODO: Should have geoHazard as input when multiple geoHazards is visible
-    const user = await this.loginService.getLoggedInUser();
-    if (!user.isLoggedIn) { // TODO: User nav guard instead on registration pages
-      this.navController.navigateForward('login');
+    const registration = await this.getCurrentRegistration();
+    if (!registration) {
+      this.navController.navigateForward('registration/obs-location');
     } else {
-      const registration = await this.getCurrentRegistration();
-      if (!registration) {
-        this.navController.navigateForward('registration/obs-location');
-      } else {
-        this.navController.navigateForward('registration/edit/' + registration.id);
-      }
+      this.navController.navigateForward('registration/edit/' + registration.id);
     }
   }
 

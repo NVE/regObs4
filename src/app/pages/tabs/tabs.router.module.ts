@@ -6,7 +6,7 @@ import { HomePage } from '../home/home.page';
 import { TripPage } from '../trip/trip.page';
 import { WarningListPage } from '../warning-list/warning-list.page';
 import { ObservationListPage } from '../observation-list/observation-list.page';
-import { StartWizardGuard } from '../../core/gurads/start-wizard-guard';
+import { StartWizardGuard } from '../../core/guards/start-wizard.guard';
 
 const routes: Routes = [
   {

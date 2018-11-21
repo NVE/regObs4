@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { Input, NavController } from '@ionic/angular';
 import { settings } from '../../../settings';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginPage implements OnInit, OnDestroy {
   forgotPasswordUrl: string;
   createUserUrl: string;
   showPassword = false;
+  private returnUrl;
 
   get loginFormUsername() {
     return this.loginform.get('username').value;
@@ -38,9 +40,12 @@ export class LoginPage implements OnInit, OnDestroy {
     private loginService: LoginService,
     private userSettingsService: UserSettingService,
     private navContoller: NavController,
+    private route: ActivatedRoute,
     private ngZone: NgZone) { }
 
   async ngOnInit() {
+    this.route.queryParams
+      .subscribe(params => this.returnUrl = params['returnUrl']);
     this.loginform = this.formBuilder.group({
       username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
@@ -76,7 +81,11 @@ export class LoginPage implements OnInit, OnDestroy {
       await this.loginService.login(this.loginFormUsername, this.loginFormPassword);
       this.ngZone.run(() => {
         this.loading = false;
-        this.navContoller.goBack();
+        if (this.returnUrl) {
+          this.navContoller.navigateRoot(this.returnUrl);
+        } else {
+          this.navContoller.goBack();
+        }
       });
     }
   }

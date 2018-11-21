@@ -29,9 +29,10 @@ import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { MapService } from './modules/map/services/map/map.service';
 import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
-import { StartWizardGuard } from './core/gurads/start-wizard-guard';
+import { StartWizardGuard } from './core/guards/start-wizard.guard';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { LoginGuard } from './core/guards/login.guard';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -45,6 +46,7 @@ export class AppProviders {
             StatusBar,
             SplashScreen,
             StartWizardGuard,
+            LoginGuard,
             { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
             Geolocation,
             Deeplinks,
