@@ -40,7 +40,7 @@
       <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE'
         | translate}}</ion-label>
       <ion-select *ngIf="avalancheExtKdvFiltered" mode="ios" [(ngModel)]="avalancheEvalProblemCopy.AvalancheExtTID"
-        interface="action-sheet">
+        interface="action-sheet" cancelText="{{'DIALOGS.CANCEL' | translate}}">
         <ion-select-option [value]="kdvElement.Id" *ngFor="let kdvElement of avalancheExtKdvFiltered">
           {{ kdvElement.Name }}</ion-select-option>
       </ion-select>

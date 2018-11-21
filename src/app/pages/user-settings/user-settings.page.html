@@ -12,7 +12,8 @@
   <ion-list lines="full">
     <ion-item>
       <ion-label position="floating">{{ "SETTINGS.APPMODE" | translate }}</ion-label>
-      <ion-select [(ngModel)]="userSettings.appMode" interface="action-sheet" (ngModelChange)="updateSettings()">
+      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.appMode" interface="action-sheet"
+        (ngModelChange)="updateSettings()">
         <ion-select-option value="PROD">regObs</ion-select-option>
         <ion-select-option value="DEMO">demo regObs</ion-select-option>
         <ion-select-option value="TEST">test regObs</ion-select-option>
@@ -20,14 +21,16 @@
     </ion-item>
     <ion-item>
       <ion-label position="floating">{{ "SETTINGS.LANGUAGE" | translate }}</ion-label>
-      <ion-select [(ngModel)]="userSettings.language" interface="action-sheet" (ngModelChange)="updateSettings()">
+      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language" interface="action-sheet"
+        (ngModelChange)="updateSettings()">
         <ion-select-option [value]="LangKey.no">{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN' | translate}}</ion-select-option>
         <ion-select-option [value]="LangKey.en">{{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH' | translate}}</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
       <ion-label position="floating">{{ "SETTINGS.COUNTRY" | translate }}</ion-label>
-      <ion-select [(ngModel)]="userSettings.country" interface="action-sheet" (ngModelChange)="updateSettings()">
+      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.country" interface="action-sheet"
+        (ngModelChange)="updateSettings()">
         <ion-select-option [value]="AppCountry.norway">{{'SETTINGS.NORWAY_ONLY' | translate}}</ion-select-option>
         <ion-select-option [value]="AppCountry.world">{{'SETTINGS.USE_IN_WORLD' | translate}}</ion-select-option>
       </ion-select>

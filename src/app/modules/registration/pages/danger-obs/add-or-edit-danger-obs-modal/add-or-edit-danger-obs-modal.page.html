@@ -28,7 +28,8 @@
     </app-kdv-dropdown>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.DANGER_OBS.AREA' | translate}}</ion-label>
-      <ion-select [(ngModel)]="tmpArea" [interfaceOptions]="interfaceOptions" interface="action-sheet">
+      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="tmpArea" [interfaceOptions]="interfaceOptions"
+        interface="action-sheet">
         <ion-select-option [value]="area" *ngFor="let area of areaArr">
           {{ area }}</ion-select-option>
       </ion-select>

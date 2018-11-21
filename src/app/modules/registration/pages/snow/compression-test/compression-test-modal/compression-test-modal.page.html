@@ -16,7 +16,8 @@
     <ion-item *ngIf="tapsFractureVisible()">
       <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE'
         | translate}}</ion-label>
-      <ion-select [(ngModel)]="compressionTestCopy.TapsFracture" interface="action-sheet">
+      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="compressionTestCopy.TapsFracture"
+        interface="action-sheet">
         <ion-select-option value=""></ion-select-option>
         <ion-select-option [value]="n" *ngFor="let n of tapsArray">
           {{ n }}</ion-select-option>

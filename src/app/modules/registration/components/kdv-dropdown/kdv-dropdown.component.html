@@ -1,7 +1,7 @@
 <ion-item>
   <ion-label color="medium" position="stacked" text-uppercase>{{ title | translate}}</ion-label>
-  <ion-select [(ngModel)]="value" [selectedText]="selectedText" (ngModelChange)="onChange()" [interfaceOptions]="interfaceOptions"
-    [interface]="interface" [placeholder]="placeholder">
+  <ion-select [(ngModel)]="value" cancelText="{{'DIALOGS.CANCEL' | translate}}" [selectedText]="selectedText"
+    (ngModelChange)="onChange()" [interfaceOptions]="interfaceOptions" [interface]="interface" [placeholder]="placeholder">
     <ng-container *ngFor="let kdvelement of kdvelements">
       <ion-select-option [value]="kdvelement.Id" *ngIf="isVisible(kdvelement)">{{
         useDescription ?
