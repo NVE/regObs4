@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostBinding, Inject, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, NgZone } from '@angular/core';
 import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
@@ -37,7 +37,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private toastController: ToastController,
     private translateService: TranslateService,
     private platform: Platform,
-    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
     @Inject(DOCUMENT) private document: Document) {
   }
 
@@ -50,27 +50,29 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
         this.stopMapViewSubscriptions();
       }
       this.document.documentElement.style.setProperty('--map-center-info-height', userSettings.showMapCenter ? '72px' : '0px');
-      this.cdr.detectChanges();
     });
   }
 
   private startMapViewSubscriptions() {
     this.mapViewSubscription = this.mapService.mapViewObservable$.subscribe((mapView) => {
-      this.mapView = mapView;
-      this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
-      this.isLoading = true;
-      this.cdr.detectChanges();
+      this.ngZone.run(() => {
+        this.mapView = mapView;
+        this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
+        this.isLoading = true;
+      });
     });
     this.mapViewAndAreaSubscription = this.mapService.mapViewAndAreaObservable$
       .pipe(switchMap((mapView: IMapViewAndArea) =>
         this.mapSerachService.getViewInfo(mapView.center, !!mapView.regionInCenter))).
       subscribe((viewInfo) => {
-        this.viewInfo = viewInfo;
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.ngZone.run(() => {
+          this.viewInfo = viewInfo;
+          this.isLoading = false;
+        });
       }, (error) => {
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.ngZone.run(() => {
+          this.isLoading = false;
+        });
       });
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy, Input, ChangeDetectorRef, NgZone } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Events, Fab, FabButton } from '@ionic/angular';
@@ -17,6 +17,7 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
   isOpen = false;
   currentGeoHazard$: Observable<GeoHazard>;
   isFullscreen = false;
+  private fullscreenChangedHandler: (isFullscreen: boolean) => void;
 
   @Input() inHeader: boolean;
 
@@ -27,21 +28,25 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
   constructor(
     private userSettingService: UserSettingService,
     private events: Events,
-    private cdr: ChangeDetectorRef) { }
+    private ngZone: NgZone) {
+
+    this.fullscreenChangedHandler = (isFullscreen: boolean) => {
+      this.ngZone.run(() => {
+        this.isFullscreen = isFullscreen;
+      });
+    };
+  }
 
   async ngOnInit() {
     this.geoHazardTypes = Object.keys(GeoHazard)
       .filter(key => !isNaN(Number(GeoHazard[key])))
       .map((key) => GeoHazard[key]);
     this.currentGeoHazard$ = this.userSettingService.currentGeoHazardObservable$;
-    this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
-      this.isFullscreen = isFullscreen; // TODO: Use css calculated variable instead
-      this.cdr.detectChanges();
-    });
+    this.events.subscribe(settings.events.fullscreenChanged, this.fullscreenChangedHandler);
   }
 
   ngOnDestroy(): void {
-    this.events.unsubscribe(settings.events.fullscreenChanged);
+    this.events.unsubscribe(settings.events.fullscreenChanged, this.fullscreenChangedHandler);
   }
 
   getName(geoHazard: GeoHazard) {
@@ -49,16 +54,18 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
   }
 
   toggle() {
-    this.isOpen = !this.isOpen;
-    this.cdr.detectChanges();
+    this.ngZone.run(() => {
+      this.isOpen = !this.isOpen;
+    });
   }
 
   async changeGeoHazard(geoHazard: GeoHazard) {
     const userSettings = await this.userSettingService.getUserSettings();
     userSettings.currentGeoHazard = geoHazard;
     await this.userSettingService.saveUserSettings(userSettings);
-    this.isOpen = false;
-    this.cdr.detectChanges();
-    this.events.publish(settings.events.geoHazardChanged, GeoHazard[geoHazard]);
+    this.ngZone.run(() => {
+      this.isOpen = false;
+      this.events.publish(settings.events.geoHazardChanged, GeoHazard[geoHazard]);
+    });
   }
 }

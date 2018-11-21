@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Events, Tabs } from '@ionic/angular';
 import { settings } from '../../../settings';
 import { Subscription } from 'rxjs';
@@ -14,6 +14,7 @@ export class TabsPage implements OnInit, OnDestroy {
   private subscription: Subscription;
   warningsInView: { count: number; text: string, maxWarning: number };
   fullscreen = false;
+  private fullscreenChangedhandler: (isFullscreen: boolean) => void;
 
   get showBadge() {
     return this.warningsInView && this.warningsInView.maxWarning > 0;
@@ -29,14 +30,16 @@ export class TabsPage implements OnInit, OnDestroy {
 
 
   @ViewChild(Tabs) private tabs: Tabs;
-  constructor(private events: Events, private warningService: WarningService, private cdr: ChangeDetectorRef) {
-
+  constructor(private events: Events, private warningService: WarningService, private ngZone: NgZone) {
+    this.fullscreenChangedhandler = (isFullscreen: boolean) => {
+      this.ngZone.run(() => {
+        this.fullscreen = isFullscreen;
+      });
+    };
   }
 
   ngOnInit(): void {
-    this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen) => {
-      this.fullscreen = isFullscreen;
-    });
+    this.events.subscribe(settings.events.fullscreenChanged, this.fullscreenChangedhandler);
     this.subscription = this.warningService.warningGroupInMapViewObservable$.pipe(map((warningsInView) => {
       const allWarnings = [...warningsInView.center, ...warningsInView.viewBounds];
       return {
@@ -50,13 +53,14 @@ export class TabsPage implements OnInit, OnDestroy {
         ),
       };
     })).subscribe((val) => {
-      this.warningsInView = val;
-      this.cdr.detectChanges();
+      this.ngZone.run(() => {
+        this.warningsInView = val;
+      });
     });
   }
 
   ngOnDestroy(): void {
-    this.events.unsubscribe(settings.events.fullscreenChanged);
+    this.events.unsubscribe(settings.events.fullscreenChanged, this.fullscreenChangedhandler);
     this.subscription.unsubscribe();
   }
 

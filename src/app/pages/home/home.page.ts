@@ -29,6 +29,7 @@ export class HomePage implements OnInit, OnDestroy {
     iconCreateFunction: (cluster) => this.createClusterIcon(cluster),
   });
   private subscriptions: Subscription[];
+  private fullscreenChangedhandler: (isFullscreen: boolean) => void;
 
   fullscreen = false;
   mapItemBarVisible = false;
@@ -43,6 +44,12 @@ export class HomePage implements OnInit, OnDestroy {
     private userSettingService: UserSettingService,
     private zone: NgZone,
   ) {
+    this.fullscreenChangedhandler = (isFullscreen: boolean) => {
+      this.zone.run(() => {
+        this.fullscreen = isFullscreen;
+        this.mapComponent.redrawMap();
+      });
+    };
   }
 
   createClusterIcon(cluster: L.MarkerCluster) {
@@ -78,12 +85,7 @@ export class HomePage implements OnInit, OnDestroy {
       }
     });
 
-    this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
-      this.zone.run(() => {
-        this.fullscreen = isFullscreen;
-        this.mapComponent.redrawMap();
-      });
-    });
+    this.events.subscribe(settings.events.fullscreenChanged, this.fullscreenChangedhandler);
 
     this.subscriptions.push(this.mapItemBar.isVisible.subscribe((isVisible) => {
       this.zone.run(() => {
@@ -135,7 +137,7 @@ export class HomePage implements OnInit, OnDestroy {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
-    this.events.unsubscribe(settings.events.fullscreenChanged);
+    this.events.unsubscribe(settings.events.fullscreenChanged, this.fullscreenChangedhandler);
   }
 
   private redrawObservationMarkers(regObservations: RegistrationViewModel[]) {
