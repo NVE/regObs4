@@ -51,7 +51,7 @@ export class AppComponent {
       this.initBackroundUpdates();
       setTimeout(() => {
         this.splashScreen.hide();
-      }, 2000); // https://forum.ionicframework.com/t/android-splashscreen-fade-animation-on-hide-not-working/120130/2
+      }, 500); // https://forum.ionicframework.com/t/android-splashscreen-fade-animation-on-hide-not-working/120130/2
     });
   }
 
@@ -74,9 +74,8 @@ export class AppComponent {
     });
   }
 
-  // TODO: Move to data sync sevice
   initBackroundUpdates() {
-    if (this.platform.is('ios') || this.platform.is('android')) {
+    if (this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
       // Be aware. If startOnBoot=true, stopOnTerminate must be false and forceReload must be true.
       // We don't want to force our app to always be running.
       // So for Android the app must be running for background fetch to be running.
