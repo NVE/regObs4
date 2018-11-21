@@ -37,6 +37,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private tilesLayer = L.layerGroup();
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
+  private skipNextMapViewUpdate = false;
 
   private userSettingSubscription: Subscription;
   private geoLoactionSubscription: Subscription;
@@ -133,13 +134,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.events.subscribe(settings.events.mapSearchItemClicked, this.mapItemClickedHandler);
 
     this.zone.runOutsideAngular(() => {
-      this.map.on('moveend', () =>
-        this.mapService.updateMapView({
-          bounds: this.map.getBounds(),
-          center: this.map.getCenter(),
-          zoom: this.map.getZoom(),
-        })
-      );
+      this.map.on('moveend', () => this.updateMapView());
+      this.map.on('zoomend', () => this.updateMapView());
     });
 
     this.redrawMap();
@@ -149,6 +145,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private disableFollowMode() {
     this.followMode = false;
     this.followModeChange.emit(this.followMode);
+  }
+
+  private updateMapView() {
+    if (!this.skipNextMapViewUpdate && this.map) {
+      this.mapService.updateMapView({
+        bounds: this.map.getBounds(),
+        center: this.map.getCenter(),
+        zoom: this.map.getZoom(),
+      });
+    }
+    this.skipNextMapViewUpdate = false;
   }
 
   configureTileLayers(userSetting: UserSetting) {
@@ -242,6 +249,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             this.firstPositionUpdate = false;
             this.map.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()));
           } else {
+            this.skipNextMapViewUpdate = this.map.getCenter().distanceTo(latLng) < 10;
+            // NOTE: Skip updating map view if followmode and distance update is less than 10 meters.
             this.map.panTo(latLng);
           }
         }
