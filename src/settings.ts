@@ -179,5 +179,6 @@ export const settings = {
         size: 1800,
         quality: 50,
     },
+    sentryDsn: 'https://2e07df8503a34dc9973eedd05e7a0f49@sentry.io/170000',
     errorEmailAddress: 'snoskredvarsling@nve.no'
 };
