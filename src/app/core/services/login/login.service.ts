@@ -11,6 +11,7 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AppMode } from '../../models/app-mode.enum';
 import { ObserverResponseDto } from '../../../modules/regobs-api/models';
+import * as Sentry from 'sentry-cordova';
 
 @Injectable({
   providedIn: 'root'

@@ -4,10 +4,12 @@ import { ObservationService } from '../observation/observation.service';
 import { KdvService } from '../kdv/kdv.service';
 import { CancelPromiseTimer } from '../../helpers/cancel-promise-timer';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { bufferCount, map, withLatestFrom, pairwise } from 'rxjs/operators';
+import { pairwise, distinctUntilChanged, map } from 'rxjs/operators';
 import { LoginService } from '../login/login.service';
 import { UserSetting } from '../../models/user-settings.model';
-import { combineLatest } from 'rxjs';
+import * as Sentry from 'sentry-cordova';
+import { environment } from '../../../../environments/environment';
+import { settings } from '../../../../settings';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +39,25 @@ export class DataMarshallService {
           console.log('[INFO][ObervationService] App settings changed. Need to refresh warnings.');
           this.warningService.updateWarnings();
         }
-      }); // No need to unsubscribe this observable when the service is singleton. It get destroyed when app exits.
+      });
+
+    this.loginService.loggedInUser$.subscribe((user) => {
+      if (user.email) {
+        Sentry.configureScope((scope) => {
+          scope.setUser({ email: user.email });
+        });
+      }
+    });
+    this.userSettingService.userSettingObservable$.
+      pipe(map((userSetting) => userSetting.appMode), distinctUntilChanged()).subscribe((appMode) => {
+        Sentry.init(
+          {
+            dsn: settings.sentryDsn,
+            environment: appMode,
+            enabled: environment.production
+          });
+      });
+    // No need to unsubscribe this observables when the service is singleton. It get destroyed when app exits.
   }
 
   backgroundFetchUpdate() {

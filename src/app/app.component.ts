@@ -4,13 +4,17 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import { settings } from '../settings';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { NanoSql } from '../nanosql';
 import { LangKey } from './core/models/langKey';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
+import * as Sentry from 'sentry-cordova';
+import { AppVersion } from '@ionic-native/app-version/ngx';
+import { environment } from '../environments/environment';
+import { AppMode } from './core/models/app-mode.enum';
+import { settings } from '../settings';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +35,7 @@ export class AppComponent {
     private zone: NgZone,
     private dataMarshallService: DataMarshallService,
     private offlineMapService: OfflineMapService,
+    private appVersion: AppVersion,
   ) {
     this.initializeApp();
   }
@@ -42,7 +47,7 @@ export class AppComponent {
       // await this.initDeepLinks(); //TODO: Comment in when edit registration is possible
       await this.initNanoSqlDatabase();
       const userSettings = await this.userSettings.getUserSettings();
-
+      await this.setSentryRelease(userSettings.appMode);
       this.translate.use(LangKey[userSettings.language]);
       this.statusBar.styleBlackTranslucent();
       this.statusBar.overlaysWebView(this.platform.is('ios'));
@@ -106,5 +111,18 @@ export class AppComponent {
     }
 
     this.dataMarshallService.backgroundFetchUpdate(); // Update resources on startup
+  }
+
+  async setSentryRelease(appMode: AppMode) {
+    Sentry.init(
+      {
+        dsn: settings.sentryDsn,
+        environment: appMode,
+        enabled: environment.production
+      });
+    if (this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'))) {
+      const appVersion = await this.appVersion.getVersionNumber();
+      Sentry.setRelease(appVersion);
+    }
   }
 }
