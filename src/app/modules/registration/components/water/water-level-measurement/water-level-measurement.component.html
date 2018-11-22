@@ -1,8 +1,8 @@
 <ion-list-header>
-  <ion-label no-margin>
-    <h3>{{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING' :
-      'REGISTRATION.WATER.WATER_LEVEL.MEASURING') |
-      translate }} {{ measurementNumber }}</h3>
+  <ion-label>
+    {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING' :
+    'REGISTRATION.WATER.WATER_LEVEL.MEASURING') |
+    translate }} {{ measurementNumber }}
   </ion-label>
 </ion-list-header>
 <ion-item *ngIf="waterLevelMethod === 2">

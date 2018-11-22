@@ -269,7 +269,7 @@
         "AVALANCHE_DEVEOPMENT_PLACEHOLDER": "Development of avalanche danger",
         "EVALUATION": "Evaluation",
         "EVALUATION_PLACEHOLDER": "Evaluation of avalanche danger",
-        "FORECAST_CORRECT": "Assessment of avalanche forecast on Varsom",
+        "FORECAST_CORRECT": "Assessment of avalanche forecast",
         "TITLE": "Avalanche evaluation"
       },
       "AVALANCHE_OBS": {
@@ -324,6 +324,7 @@
         "TITLE": "Snow profile"
       },
       "SNOW_SURFACE": {
+        "COMMENT_HEADER": "Describe the snow surface",
         "COMMENT_PLACEHOLDER": "How is the snow distribution generally in relation to height and exposure. Is there any differences in the region?",
         "HEIGHT_LIMIT_LAYERED_SNOW": "Upper limit for layered snow (amsl)",
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snow without hazardous layering",

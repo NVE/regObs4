@@ -173,7 +173,7 @@
       "PROBLEM_HELP_TEXT": "Feilede observasjoner lagres i telefonen din, og når problemet er løst vil du kunne sende inn observasjoen på nytt.",
       "REFERENCE": "Referanse",
       "SEND_EMAIL": "Send til oss på epost",
-      "SUBTITLE": "Mangler nettverk eller innsending tok for lang tid. Vi prøver igjen etter en stund og håper at nettet har bedret seg.",
+      "SUBTITLE": "Mangler nettverk eller innsending tok for lang tid. Vi prøver igjen automatisk etter en stund.",
       "TITLE": "Innsending feilet"
     },
     "GENERAL_COMMENT": {
@@ -269,7 +269,7 @@
         "AVALANCHE_DEVEOPMENT_PLACEHOLDER": "Utvikling av skredfare",
         "EVALUATION": "Vurdering",
         "EVALUATION_PLACEHOLDER": "Vurdering av skredfare",
-        "FORECAST_CORRECT": "Vurdering av varslet faregrad på varsom",
+        "FORECAST_CORRECT": "Vurdering av varslet faregrad",
         "TITLE": "Skredfarevurdering"
       },
       "AVALANCHE_OBS": {
@@ -324,6 +324,7 @@
         "TITLE": "Snøprofil"
       },
       "SNOW_SURFACE": {
+        "COMMENT_HEADER": "Beskriv snødekket",
         "COMMENT_PLACEHOLDER": "Hvordan er snøfordelingen generelt ifht. høyde og eksposisjon. Er det forskjell i regionen?",
         "HEIGHT_LIMIT_LAYERED_SNOW": "Øvre grense lagdelt snø (moh)",
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snø uten farlig lagdeling",

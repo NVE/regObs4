@@ -9,16 +9,16 @@
 
 <ion-content *ngIf="avalancheEvalProblemCopy">
   <ion-list lines="full">
+    <ion-list-header text-uppercase>
+      <ion-label>
+        {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER' | translate}}
+      </ion-label>
+    </ion-list-header>
     <ion-item>
       <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.NO_WEAK_LAYERS' | translate}}</ion-label>
       <ion-checkbox slot="start" [(ngModel)]="noWeakLayers"></ion-checkbox>
     </ion-item>
     <ng-container *ngIf="!noWeakLayers">
-      <ion-list-header text-uppercase>
-        <ion-label no-margin>
-          <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER' | translate}}</h3>
-        </ion-label>
-      </ion-list-header>
       <app-kdv-dropdown (valueChange)="avalCauseChanged()" title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER"
         kdvKey="Snow_AvalCauseKDV" [(value)]="avalancheEvalProblemCopy.AvalCauseTID"></app-kdv-dropdown>
       <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH" kdvKey="Snow_AvalCauseDepthKDV"
@@ -29,8 +29,8 @@
       </ion-item>
     </ng-container>
     <ion-list-header text-uppercase>
-      <ion-label no-margin>
-        <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}}</h3>
+      <ion-label>
+        {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}}
       </ion-label>
     </ion-list-header>
     <ion-item>
@@ -49,8 +49,8 @@
     <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_DESTRUCTIVE_SIZE" kdvKey="Snow_DestructiveSizeKDV"
       [(value)]="avalancheEvalProblemCopy.DestructiveSizeTID"></app-kdv-dropdown>
     <ion-list-header text-uppercase>
-      <ion-label no-margin>
-        <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}}</h3>
+      <ion-label>
+        {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}}
       </ion-label>
     </ion-list-header>
     <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION" kdvKey="Snow_AvalPropagationKDV"

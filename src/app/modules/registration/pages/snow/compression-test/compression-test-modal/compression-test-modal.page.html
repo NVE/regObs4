@@ -24,8 +24,7 @@
       <ion-label color="medium" position="stacked" text-uppercase>{{
         'REGISTRATION.SNOW.COMPRESSION_TEST.DISTANCE_FROM_TOP'
         | translate}}</ion-label>
-      <ion-input type="number" min="0" max="1000" inputmode="numberic" pattern="[0-9]*" step="1" [(ngModel)]="compressionTestCopy.FractureDepth"
-        placeholder="{{'REGISTRATION.IN_FULL_CM' | translate}}">
+      <ion-input type="number" min="0" max="1000" inputmode="numberic" pattern="[0-9]*" step="1" [(ngModel)]="compressionTestCopy.FractureDepth">
       </ion-input>
     </ion-item>
     <app-kdv-dropdown *ngIf="!isCTNorECTX()" title="REGISTRATION.SNOW.COMPRESSION_TEST.FRACTURE_TYPE" kdvKey="Snow_ComprTestFractureKDV"

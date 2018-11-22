@@ -13,9 +13,9 @@
     <app-failed-registration *ngIf="registration.error && registration.status === RegistrationStatus.Sync"
       [registration]="registration"></app-failed-registration>
     <ion-list lines="full">
-      <ion-list-header padding text-uppercase>
+      <ion-list-header text-uppercase>
         <ion-label>
-          <h3>{{"REGISTRATION.OVERVIEW.MY_OBSERVATION" | translate}}</h3>
+          {{"REGISTRATION.OVERVIEW.MY_OBSERVATION" | translate}}
         </ion-label>
       </ion-list-header>
       <app-summary-item [readonly]="registration.status === RegistrationStatus.Sync" *ngFor="let item of summaryItems"

@@ -12,8 +12,8 @@
 <ion-content *ngIf="registration && registration.request.AvalancheObs">
   <ion-list lines="full">
     <ion-list-header text-uppercase>
-      <ion-label no-margin>
-        <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE' | translate}}</h3>
+      <ion-label>
+        {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE' | translate}}
       </ion-label>
     </ion-list-header>
     <ion-item>
@@ -80,14 +80,14 @@
     <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [(value)]="registration.request.AvalancheObs.Trajectory"></app-text-comment>
     <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.AvalancheObs.Comment"></app-text-comment>
     <ion-list-header text-uppercase>
-      <ion-label no-margin>
-        <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
+      <ion-label>
+        {{ 'REGISTRATION.ADD_IMAGES' | translate}}
       </ion-label>
     </ion-list-header>
     <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
     <ion-list-header text-uppercase>
-      <ion-label no-margin>
-        <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_DESCRIPTION' | translate}}</h3>
+      <ion-label>
+        {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_DESCRIPTION' | translate}}
       </ion-label>
     </ion-list-header>
     <ion-item>
@@ -99,8 +99,8 @@
     <app-kdv-dropdown title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="Snow_ActivityInfluencedKDV" [(value)]="registration.request.Incident.ActivityInfluencedTID"></app-kdv-dropdown>
     <app-kdv-dropdown title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV" [(value)]="registration.request.Incident.DamageExtentTID"></app-kdv-dropdown>
     <ion-list-header text-uppercase>
-      <ion-label no-margin>
-        <h3>{{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}</h3>
+      <ion-label>
+        {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}
       </ion-label>
     </ion-list-header>
     <app-add-web-url-item [(weburls)]="registration.request.Incident.IncidentURLs"></app-add-web-url-item>

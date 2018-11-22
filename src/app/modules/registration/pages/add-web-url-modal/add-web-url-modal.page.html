@@ -10,12 +10,16 @@
 </ion-header>
 
 <ion-content>
-  <ion-list lines="none">
-    <app-text-comment [(value)]="urlToSave.UrlDescription" title="REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE" rows="2"
-      placeholder="REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE"></app-text-comment>
+  <ion-list lines="full">
+    <ion-list-header text-uppercase>
+      <ion-label>
+        {{"REGISTRATION.ADD_WEB_URL.TITLE" | translate}}
+      </ion-label>
+    </ion-list-header>
+    <app-text-comment [(value)]="urlToSave.UrlDescription" title="REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE" rows="2"></app-text-comment>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.ADD_WEB_URL.URL' | translate }}</ion-label>
-      <ion-input type="url" [(ngModel)]="urlToSave.UrlLine" placeholder="{{ 'REGISTRATION.ADD_WEB_URL.URL' | translate}}"></ion-input>
+      <ion-input type="url" [(ngModel)]="urlToSave.UrlLine"></ion-input>
     </ion-item>
   </ion-list>
   <app-modal-save-or-delete-buttons [saveDisabled]="!urlToSave.UrlLine" (saveClicked)="ok()" (deleteClicked)="delete()"

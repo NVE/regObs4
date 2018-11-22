@@ -11,9 +11,9 @@
 
 <ion-content *ngIf="registration">
   <ion-list>
-    <ion-list-header padding text-uppercase>
+    <ion-list-header text-uppercase>
       <ion-label>
-        <h3>{{"REGISTRATION.GROUP.SUBTITLE" | translate}}</h3>
+        {{"REGISTRATION.GROUP.SUBTITLE" | translate}}
       </ion-label>
     </ion-list-header>
     <ion-radio-group [(ngModel)]="registration.request.ObserverGroupID">

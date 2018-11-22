@@ -11,8 +11,8 @@
 <ion-content *ngIf="registration && registration.request.AvalancheActivityObs2">
   <ion-list lines="full">
     <ion-list-header text-uppercase>
-      <ion-label no-margin>
-        <h3>{{ 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate }}</h3>
+      <ion-label>
+        {{ 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate }}
       </ion-label>
     </ion-list-header>
     <ion-item detail="true" (click)="addOrEditAvalancheActivity(i)" *ngFor="let avalancheActivity of registration.request.AvalancheActivityObs2; let i = index">
@@ -26,8 +26,8 @@
       <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ADD_NEW' | translate}}</ion-label>
     </ion-item>
     <ion-list-header text-uppercase>
-      <ion-label no-margin>
-        <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>
+      <ion-label>
+        {{ 'REGISTRATION.ADD_IMAGES' | translate}}
       </ion-label>
     </ion-list-header>
     <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>

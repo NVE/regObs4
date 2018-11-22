@@ -14,9 +14,9 @@
   </ion-refresher>
   <app-sync-item-list></app-sync-item-list>
   <ion-list lines="full">
-    <ion-list-header text-uppercase>
-      <ion-label no-margin>
-        <h3>{{"MY_OBSERVATIONS.MY_SENT_OBSERVATIONS" | translate}}</h3>
+    <ion-list-header text-uppercase class="my-observation-header">
+      <ion-label>
+        {{"MY_OBSERVATIONS.MY_SENT_OBSERVATIONS" | translate}}
       </ion-label>
     </ion-list-header>
     <app-observation-list-card [obs]="item" *ngFor="let item of registrations;trackBy: trackByRegId">

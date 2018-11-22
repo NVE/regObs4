@@ -11,8 +11,8 @@
 <ion-content *ngIf="registration">
   <ion-list lines="full">
     <ion-list-header text-uppercase>
-      <ion-label no-margin>
-        <h3>{{ 'REGISTRATION.WATER.DAMAGE.CAN_YOU_SEE_DAMAGE' | translate}}</h3>
+      <ion-label>
+        {{ 'REGISTRATION.WATER.DAMAGE.CAN_YOU_SEE_DAMAGE' | translate}}
       </ion-label>
     </ion-list-header>
     <ion-radio-group [(ngModel)]="isChecked">
@@ -27,8 +27,8 @@
     </ion-radio-group>
     <ng-container *ngIf="isChecked && this.damageTypes">
       <ion-list-header text-uppercase>
-        <ion-label no-margin>
-          <h3>{{ 'REGISTRATION.WATER.DAMAGE.WHAT_IS_DAMAGED' | translate }}</h3>
+        <ion-label>
+          {{ 'REGISTRATION.WATER.DAMAGE.WHAT_IS_DAMAGED' | translate }}
         </ion-label>
       </ion-list-header>
       <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration" [damageTypeId]="damageType.Id"
