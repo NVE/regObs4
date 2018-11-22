@@ -26,15 +26,13 @@
       </ion-row>
       <ng-container *ngIf="obs.Attachments.length > 0">
         <ion-row>
-          <ion-col size="12" class="slides-container" no-padding>
-            <ion-slides [options]="slideOptions" [pager]="false" (ionSlideDidChange)="setNextAndPrevVisibe()"
-              (ionSlidesDidLoad)="setNextAndPrevVisibe()">
+          <ion-col size="12" no-padding>
+            <ion-slides *ngIf="obs.Attachments.length > 1" [options]="slideOptions" [pager]="true" (ionSlideDidChange)="setNextAndPrevVisibe()">
               <ion-slide *ngFor="let image of obs.Attachments">
-                <ion-img [src]="getImageUrl(image.AttachmentFileName)" (click)="slideTap()"></ion-img>
+                <img [src]="getImageUrl(image.AttachmentFileName)" (click)="slideTap()" />
               </ion-slide>
             </ion-slides>
-            <div *ngIf="prevVisible" class="swiper-button-prev swiper-button-white" (click)="slidePrev()"></div>
-            <div *ngIf="nextVisible" class="swiper-button-next swiper-button-white" (click)="slideNext()"></div>
+            <ion-img (click)="openImage(0)" *ngIf="obs.Attachments.length === 1" [src]="getImageUrl(obs.Attachments[0].AttachmentFileName)"></ion-img>
           </ion-col>
         </ion-row>
         <ion-row class="row-padding-start">
@@ -43,23 +41,24 @@
           </ion-col>
         </ion-row>
       </ng-container>
-      <ion-row class="row-padding-start">
-        <ion-col size="12">
-          <h3>{{ 'OBSERVATION_LIST.FORMS' | translate }}</h3>
-        </ion-col>
-      </ion-row>
-      <ion-row class="row-padding-start">
-        <ion-col size="12">
-          <ion-badge (click)="toggleAllSelected()" *ngIf="summaries.length > 1" [color]="allSelected ? 'medium' : 'light'"
-            [ngClass]="{'outline': !allSelected}">
-            {{'OBSERVATION_LIST.ALL_OBSERVATIONS' | translate}}
-          </ion-badge>
-          <ion-badge (click)="toggleRegistration(i)" text-wrap [color]="(s.open && (summaries.length <= 1 || !allSelected)) ? 'medium' : 'light'"
-            *ngFor="let s of summaries; let i = index" [ngClass]="{'outline': !(s.open && (summaries.length <= 1 || !allSelected))}">
-            {{ s.summary.RegistrationName }}
-          </ion-badge>
-        </ion-col>
-      </ion-row>
+      <ng-container *ngIf="summaries.length > 1">
+        <ion-row class="row-padding-start">
+          <ion-col size="12">
+            <h3>{{ 'OBSERVATION_LIST.FORMS' | translate }}</h3>
+          </ion-col>
+        </ion-row>
+        <ion-row class="row-padding-start">
+          <ion-col size="12">
+            <ion-badge (click)="toggleAllSelected()" [color]="allSelected ? 'medium' : 'light'" [ngClass]="{'outline': !allSelected}">
+              {{'OBSERVATION_LIST.ALL_OBSERVATIONS' | translate}}
+            </ion-badge>
+            <ion-badge (click)="toggleRegistration(i)" text-wrap [color]="(s.open && (summaries.length <= 1 || !allSelected)) ? 'medium' : 'light'"
+              *ngFor="let s of summaries; let i = index" [ngClass]="{'outline': !(s.open && (summaries.length <= 1 || !allSelected))}">
+              {{ s.summary.RegistrationName }}
+            </ion-badge>
+          </ion-col>
+        </ion-row>
+      </ng-container>
       <ng-container *ngFor="let s of summaries; let i = index">
         <ng-container *ngIf="s.open">
           <ion-row class="row-padding-start">

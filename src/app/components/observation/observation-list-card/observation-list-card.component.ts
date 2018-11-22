@@ -38,10 +38,7 @@ export class ObservationListCardComponent implements OnInit {
 
   slideOptions = {
     autoplay: false,
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
+    slidesPerView: 'auto',
   };
 
   constructor(
@@ -67,6 +64,10 @@ export class ObservationListCardComponent implements OnInit {
       this.summaries = this.obs.Summaries.filter((x) => x !== undefined).map((x) => ({ summary: x, open: true }));
       for (let i = 0; i < 5; i++) {
         this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
+      }
+      if (this.obs.Attachments.length > 0) {
+        this.imageHeader = this.obs.Attachments[0].RegistrationName;
+        this.imageDecription = this.obs.Attachments[0].Comment;
       }
       this.loaded = true;
     });
@@ -96,19 +97,23 @@ export class ObservationListCardComponent implements OnInit {
   async slideTap() {
     const index = await this.slider.getActiveIndex();
     if (index < this.obs.Attachments.length) {
-      const image = this.obs.Attachments[index];
-      const modal = await this.modalController.create({
-        component: FullscreenImageModalPage,
-        componentProps: {
-          imgSrc: this.getImageUrl(image.AttachmentFileName, 'original'),
-          header: this.obs.Attachments[index].RegistrationName,
-          description: this.obs.Attachments[index].Comment,
-        },
-      });
-      modal.present();
+      await this.openImage(index);
     } else {
       this.slider.slideTo(0);
     }
+  }
+
+  async openImage(index: number) {
+    const image = this.obs.Attachments[index];
+    const modal = await this.modalController.create({
+      component: FullscreenImageModalPage,
+      componentProps: {
+        imgSrc: this.getImageUrl(image.AttachmentFileName, 'original'),
+        header: this.obs.Attachments[index].RegistrationName,
+        description: this.obs.Attachments[index].Comment,
+      },
+    });
+    modal.present();
   }
 
   async setNextAndPrevVisibe() {
