@@ -142,6 +142,10 @@ ion-radio-group {
     }
 }
 
+.button-full:not(.button-round) .button-native {
+    --border-radius: 2px;
+}
+
 
 ion-radio {
     --width: 22px;

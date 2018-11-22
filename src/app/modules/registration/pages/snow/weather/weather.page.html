@@ -20,21 +20,21 @@
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE'
         | translate}}</ion-label>
-      <ion-input type="number" min="-50" max="50" [(ngModel)]="registration.request.WeatherObservation.AirTemperature"
+      <ion-input type="number" min="-50" max="50" inputmode="numberic" pattern="^[0-9-+]*$" [(ngModel)]="registration.request.WeatherObservation.AirTemperature"
         placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
       </ion-input>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_SPEED'
         | translate}}</ion-label>
-      <ion-input type="number" min="0" max="50" [(ngModel)]="registration.request.WeatherObservation.WindSpeed"
+      <ion-input type="number" min="0" max="50" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.WeatherObservation.WindSpeed"
         placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
       </ion-input>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.CLOUD_COVER'
         | translate}}</ion-label>
-      <ion-input type="number" min="0" max="100" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.WeatherObservation.CloudCover"
+      <ion-input type="number" min="0" max="100" inputmode="numberic" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.WeatherObservation.CloudCover"
         placeholder="{{'REGISTRATION.SNOW.WEATHER.ONLY_FULL_PERCENTAGE' | translate}}">
       </ion-input>
     </ion-item>
@@ -49,8 +49,17 @@
         </ng-container>
       </ion-select>
     </ion-item>
-    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.WeatherObservation.Comment"
-      placeholder="REGISTRATION.SNOW.WEATHER.COMMENT_PLACEHOLDER"></app-text-comment>
+    <ion-list-header text-uppercase>
+      <ion-label no-margin>
+        <h3>{{ 'REGISTRATION.SNOW.WEATHER.COMMENT_HEADER' | translate}}</h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label text-wrap>
+        {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_PLACEHOLDER' | translate }}
+      </ion-label>
+    </ion-item>
+    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.WeatherObservation.Comment"></app-text-comment>
     <ion-list-header text-uppercase>
       <ion-label no-margin>
         <h3>{{ 'REGISTRATION.ADD_IMAGES' | translate}}</h3>

@@ -1,6 +1,8 @@
 <ion-card *ngIf="loaded">
   <ion-card-header *ngIf="header">
-    <h3 color="medium">{{header}}</h3>
+    <h3 color="medium"><span *ngFor="let val of header; let i = index"><span class="small-space" *ngIf="i>0">/</span>{{
+        val
+        }}</span></h3>
   </ion-card-header>
   <ion-card-content>
     <ion-grid no-padding>
@@ -13,7 +15,7 @@
           {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}
         </ion-col>
       </ion-row>
-      <ion-row class="row-padding-start">
+      <ion-row class="row-padding-start row-padding-end">
         <ion-col size="5">
           <ion-icon name="calendar"></ion-icon> {{ dtObsDate | formatDate | async }}
         </ion-col>
@@ -66,7 +68,7 @@
             </ion-col>
           </ion-row>
           <ion-row class="row-padding-start">
-            <ion-col size="12" text-wrap>
+            <ion-col size="12" text-wrap class="obs-content">
               <ng-container *ngFor="let innerSummary of s.summary.Summaries; let i = index">
                 <ng-container *ngIf="innerSummary.Kind === 0">
                   <span *ngIf="i>0">&nbsp;&bull;&nbsp;</span>{{ innerSummary.Value }}

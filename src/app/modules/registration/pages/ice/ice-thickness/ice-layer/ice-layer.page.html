@@ -4,9 +4,6 @@
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
     <ion-title>{{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER' | translate}}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="ok()">{{ 'DIALOGS.OK' | translate }}</ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -25,7 +22,8 @@
       </ion-label>
     </ion-list-header>
     <ion-item>
-      <ion-input type="number" [min]="0" [max]="10000" [(ngModel)]="layerCopy.IceLayerThickness" placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+      <ion-input type="number" [min]="0" [max]="10000" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="layerCopy.IceLayerThickness"
+        placeholder="{{'REGISTRATION.IN_CM' | translate}}">
       </ion-input>
     </ion-item>
   </ion-list>

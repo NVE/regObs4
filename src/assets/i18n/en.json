@@ -177,13 +177,13 @@
       "TITLE": "Submission failed"
     },
     "GENERAL_COMMENT": {
-      "ADD_NOTES_HEADER": "Write notes of observation",
+      "ADD_NOTES_HEADER": "Notes for observation",
       "ADD_PICTURE": "Add a picture",
       "CHOOSE_FROM_LIBRARY": "Choose from library",
       "COMMENT_PLACEHOLDER": "You can describe more here",
       "COMMENT_TITLE": "Description",
       "DESCRIPTION": "You can upload photos of the area you have observed or photos of other things you might find relevant.",
-      "SUBTITLE": "Add observation images",
+      "SUBTITLE": "Observation images",
       "TAKE_NEW_PHOTO": "Take a new photo",
       "TITLE": "Notes"
     },
@@ -216,7 +216,7 @@
     "INCIDENT": {
       "ACTIVITY": "Activity",
       "COMMENT": "Description",
-      "COMMENT_PLACEHOLDER": "Why did it happen? Could the situation be avoided?",
+      "COMMENT_PLACEHOLDER": "Did the avalanche cause any damage, accidents or close calls? Why and how did it happen? Could the situation have been avoided?",
       "DAMAGE_EXTENT": "Damage extent",
       "TITLE": "Accident / Incident"
     },
@@ -258,7 +258,7 @@
         "COMMENT_PLACEHOLDER": "Additional comment",
         "DURING_THE_DAY": "During the day",
         "ESTIMATED_TIME": "Estimated timeframe",
-        "HOW_MANY_AVALANCHES": "How many avalanches?",
+        "HOW_MANY_AVALANCHES": "Number of avalanches",
         "NO_AVALANCHE_ACTIVITY": "No avalanche activity observed",
         "TITLE": "Avalanche activity",
         "UNKNOWN_NUMBER": "Unknown number of"
@@ -278,11 +278,11 @@
         "AVAL_CAUSE": "Weak layer",
         "DESTRUCTIVE_SIZE": "Size",
         "FRACTURE_HEIGTH": "Fracture height (cm)",
-        "FRACTURE_WIDTH": "Fracture width",
-        "INCIDENT_DESCRIPTION": "Add info if the avalanche could or has led to accident or injury",
+        "FRACTURE_WIDTH": "Fracture width (cm)",
+        "INCIDENT_DESCRIPTION": "Accident or injury",
         "POSITION": "Avalanche position",
         "TERRAIN_START_ZONE": "Tarrain type in the loose snow area",
-        "TIME": "Time when avalance struck",
+        "TIME": "Avalanche time (required)",
         "TITLE": "Avalanche observation",
         "TRAJECTORY_NAME": "Trajectory",
         "VALID_EXPOSITION": "Exposition"
@@ -325,8 +325,8 @@
       },
       "SNOW_SURFACE": {
         "COMMENT_PLACEHOLDER": "How is the snow distribution generally in relation to height and exposure. Is there any differences in the region?",
-        "HEIGHT_LIMIT_LAYERED_SNOW": "Limit for layered snow (amsl)",
-        "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "Upper height limit for snow without hazardous layering",
+        "HEIGHT_LIMIT_LAYERED_SNOW": "Upper limit for layered snow (amsl)",
+        "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snow without hazardous layering",
         "NEW_SNOW_DEPTH": "New snow depth (cm)",
         "NEW_SNOW_LINE": "New snow line (amsl)",
         "SNOW_DEPTH": "Snow depth (cm)",
@@ -340,6 +340,7 @@
         "AIR_TEMPERATURE": "Air temperature (C)",
         "AIR_TEMPERATURE_PLACEHOLDER": "Can be given with one decimal",
         "CLOUD_COVER": "Cloud cover (%)",
+        "COMMENT_HEADER": "Describe weather",
         "COMMENT_PLACEHOLDER": "How has been in the area last 24 hours? Example: Have there been showers? Have there been temperature changes? Where does the nullisotherm go?",
         "FROM_EAST": "E - from east",
         "FROM_NORTH": "N - from north",

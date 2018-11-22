@@ -18,7 +18,7 @@
     </ion-list-header>
     <ion-radio-group [(ngModel)]="registration.request.ObserverGroupID">
       <ion-item *ngFor="let group of groups" (click)="registration.request.ObserverGroupID = group.Id">
-        <ion-radio slot="start" [value]="group.Id"></ion-radio>
+        <ion-radio mode="md" slot="start" [value]="group.Id"></ion-radio>
         <ion-label>{{group.Name}}</ion-label>
       </ion-item>
     </ion-radio-group>

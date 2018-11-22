@@ -4,9 +4,6 @@
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
     <ion-title>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate}}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="ok()">{{ 'DIALOGS.OK' | translate }}</ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -46,8 +43,7 @@
         [(exposedHight2)]="avalancheActivityCopy.ExposedHeight2"></app-exposed-height>
       <app-valid-exposition [(validExposition)]="avalancheActivityCopy.ValidExposition"></app-valid-exposition>
     </ng-container>
-    <app-text-comment placeholder="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.COMMENT_PLACEHOLDER" title="REGISTRATION.DANGER_OBS.COMMENT"
-      [(value)]="avalancheActivityCopy.Comment"></app-text-comment>
+    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="avalancheActivityCopy.Comment"></app-text-comment>
   </ion-list>
   <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">
   </app-modal-save-or-delete-buttons>

@@ -50,6 +50,8 @@ export class AvalancheObsPage extends BasePage {
     }
   ];
 
+  hasSaved = false;
+
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
@@ -65,10 +67,12 @@ export class AvalancheObsPage extends BasePage {
   }
 
   async onReset() {
+    this.hasSaved = false;
     await this.basePageService.reset(this.registration, RegistrationTid.Incident);
   }
 
   isValid() {
+    this.hasSaved = true;
     return !!this.registration.request.AvalancheObs.DtAvalancheTime;
   }
 

@@ -8,7 +8,8 @@
 <ion-item *ngIf="waterLevelMethod === 2">
   <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.WATER.WATER_LEVEL.WATER_LEVEL_METERS' |
     translate }}</ion-label>
-  <ion-input type="number" [(ngModel)]="waterLevelMeasurement.WaterLevelValue" min="0" max="10000"></ion-input>
+  <ion-input type="number" [(ngModel)]="waterLevelMeasurement.WaterLevelValue" min="0" max="10000" inputmode="numberic"
+    pattern="[0-9]*"></ion-input>
 </ion-item>
 <ion-item>
   <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SET_TIME.TITLE' | translate }}</ion-label>

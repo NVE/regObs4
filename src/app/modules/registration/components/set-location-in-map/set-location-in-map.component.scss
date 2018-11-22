@@ -97,7 +97,7 @@ app-map {
 }
 
 .small-text {
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .leaflet-usermarker {
@@ -140,11 +140,11 @@ app-map {
     width: 10px;
     height: 10px;
     border: 2px solid #d7d6d6;
-    -webkit-transform: translateY(-5px) rotate(45deg);
-    -moz-transform: translateY(-5px) rotate(45deg);
-    -o-transform: translateY(-5px) rotate(45deg);
-    -ms-transform: translateY(-5px) rotate(45deg);
-    transform: translateY(-5px) rotate(45deg);
+    -webkit-transform: translateY(-7px) rotate(45deg);
+    -moz-transform: translateY(-7px) rotate(45deg);
+    -o-transform: translateY(-7px) rotate(45deg);
+    -ms-transform: translateY(-7px) rotate(45deg);
+    transform: translateY(-7px) rotate(45deg);
     position: absolute;
     top: 50%;
     left: -6px;
@@ -162,9 +162,9 @@ app-map {
     position: absolute;
     background: white;
     z-index: 11;
-    -webkit-transform: translateY(-5px) rotate(45deg);
-    -moz-transform: translateY(-5px) rotate(45deg);
-    -o-transform: translateY(-5px) rotate(45deg);
-    -ms-transform: translateY(-5px) rotate(45deg);
-    transform: translateY(-5px) rotate(45deg);
+    -webkit-transform: translateY(-7px) rotate(45deg);
+    -moz-transform: translateY(-7px) rotate(45deg);
+    -o-transform: translateY(-7px) rotate(45deg);
+    -ms-transform: translateY(-7px) rotate(45deg);
+    transform: translateY(-7px) rotate(45deg);
 }

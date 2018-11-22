@@ -91,7 +91,7 @@ export class SetAvalanchePositionPage implements OnInit {
         this.updateMarkers();
       });
     if (this.relativeToLatLng) {
-      this.fromMarker = L.marker(this.relativeToLatLng, { icon: this.locationMarkerIcon }); // TODO: Icon
+      this.fromMarker = L.marker(this.relativeToLatLng, { icon: this.locationMarkerIcon });
     }
   }
 

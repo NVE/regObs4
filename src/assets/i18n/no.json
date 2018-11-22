@@ -177,13 +177,13 @@
       "TITLE": "Innsending feilet"
     },
     "GENERAL_COMMENT": {
-      "ADD_NOTES_HEADER": "Skriv notater fra observasjonen",
+      "ADD_NOTES_HEADER": "Notat fra observasjonen",
       "ADD_PICTURE": "Legg til et bilde",
       "CHOOSE_FROM_LIBRARY": "Velg fra bibliotek",
       "COMMENT_PLACEHOLDER": "Her kan du beskrive ytterligere",
       "COMMENT_TITLE": "Beskrivelse",
       "DESCRIPTION": "Her kan du laste opp bilder av området du har observert eller bilder av andre relevante ting til observasjonen din.",
-      "SUBTITLE": "Legg til bilder av observasjonen",
+      "SUBTITLE": "Bilder av observasjonen",
       "TAKE_NEW_PHOTO": "Ta et nytt bilde",
       "TITLE": "Notater"
     },
@@ -216,7 +216,7 @@
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Beskrivelse",
-      "COMMENT_PLACEHOLDER": "Hvorfor skjedde det? Hvorfor gikk det forhåpentligvis bra? Kunne situasjonen vært unngått?",
+      "COMMENT_PLACEHOLDER": "Førte skredet til skade, ulykke eller nestenulykke? Hva skjedde og hvorfor? Kunne situasjonen vært unngått?",
       "DAMAGE_EXTENT": "Skadeomfang",
       "TITLE": "Ulykke / hendelse"
     },
@@ -258,7 +258,7 @@
         "COMMENT_PLACEHOLDER": "Ytterligere kommentar",
         "DURING_THE_DAY": "I løpet av dagen",
         "ESTIMATED_TIME": "Antatt tidsrom",
-        "HOW_MANY_AVALANCHES": "Hvor mange skred er det snakk om?",
+        "HOW_MANY_AVALANCHES": "Antall skred",
         "NO_AVALANCHE_ACTIVITY": "Ingen skredaktivitet observert",
         "TITLE": "Skredaktivitet",
         "UNKNOWN_NUMBER": "Ukjent antall"
@@ -278,11 +278,11 @@
         "AVAL_CAUSE": "Svakt lag",
         "DESTRUCTIVE_SIZE": "Størrelse",
         "FRACTURE_HEIGTH": "Bruddhøyde (cm)",
-        "FRACTURE_WIDTH": "Bruddbredde",
-        "INCIDENT_DESCRIPTION": "Legg til info hvis skredet kunne, eller har ført til ulykke eller skade",
+        "FRACTURE_WIDTH": "Bruddbredde (cm)",
+        "INCIDENT_DESCRIPTION": "Ulykke eller skade",
         "POSITION": "Skredposisjon",
         "TERRAIN_START_ZONE": "Terrengtype i løsneområdet",
-        "TIME": "Tid da skredet gikk",
+        "TIME": "Skredtidspunkt (obligatorisk)",
         "TITLE": "Skredhendelse",
         "TRAJECTORY_NAME": "Skredbanenavn",
         "VALID_EXPOSITION": "Eksposisjon"
@@ -294,7 +294,7 @@
         "AVALANCHE_PROBABILITY": "Mulighetene for skred?",
         "AVALANCHE_PROPAGATION_HEADER": "Utbredelsen på skredproblemet",
         "AVALANCHE_TRIGGER_PROBABILITY": "Sannsynlig belastning for skred",
-        "AVALANCHE_TYPE": "Angi skredtype",
+        "AVALANCHE_TYPE": "Skredtype",
         "AVAL_PROBABILITY": "Sannsynlighet for skred",
         "BOTTOM": "Nederst",
         "EXPOSED_HEIGHT1": "Høyde",
@@ -325,8 +325,8 @@
       },
       "SNOW_SURFACE": {
         "COMMENT_PLACEHOLDER": "Hvordan er snøfordelingen generelt ifht. høyde og eksposisjon. Er det forskjell i regionen?",
-        "HEIGHT_LIMIT_LAYERED_SNOW": "Grense lagdelt snø (moh)",
-        "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "Øvre høydegrense for snø uten farlig lagdeling",
+        "HEIGHT_LIMIT_LAYERED_SNOW": "Øvre grense lagdelt snø (moh)",
+        "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snø uten farlig lagdeling",
         "NEW_SNOW_DEPTH": "Nysnødybde (cm)",
         "NEW_SNOW_LINE": "Nysnøgrense (moh)",
         "SNOW_DEPTH": "Snødybde (cm)",
@@ -340,6 +340,7 @@
         "AIR_TEMPERATURE": "Lufttemperatur (C)",
         "AIR_TEMPERATURE_PLACEHOLDER": "Kan gis med ett desimal",
         "CLOUD_COVER": "Skydekke (%)",
+        "COMMENT_HEADER": "Beskriv været",
         "COMMENT_PLACEHOLDER": "Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor går nullisotermen?",
         "FROM_EAST": "Ø - fra øst",
         "FROM_NORTH": "N - fra nord",

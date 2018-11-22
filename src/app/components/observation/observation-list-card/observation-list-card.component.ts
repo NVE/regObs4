@@ -25,7 +25,7 @@ export class ObservationListCardComponent implements OnInit {
   dtObsDate: Date;
   icon: string;
   settings = settings;
-  header: string;
+  header: string[];
   summaries: { summary: Summary, open: boolean }[] = [];
   private userSetting: UserSetting;
   allSelected = true;
@@ -64,7 +64,7 @@ export class ObservationListCardComponent implements OnInit {
       this.header = this.getHeader(this.obs);
       this.dtObsDate = moment(this.obs.DtObsTime).toDate();
       this.icon = this.helperService.getGeoHazardIcon(geoHazard);
-      this.summaries = this.obs.Summaries.map((x) => ({ summary: x, open: true }));
+      this.summaries = this.obs.Summaries.filter((x) => x !== undefined).map((x) => ({ summary: x, open: true }));
       for (let i = 0; i < 5; i++) {
         this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
       }
@@ -77,7 +77,7 @@ export class ObservationListCardComponent implements OnInit {
   }
 
   getHeader(obs: RegistrationViewModel) {
-    const headerValues = [];
+    const headerValues: string[] = [];
     if (obs.ObsLocation.MunicipalName) {
       headerValues.push(obs.ObsLocation.MunicipalName);
     } else if (obs.ObsLocation.LocationName) {
@@ -86,7 +86,7 @@ export class ObservationListCardComponent implements OnInit {
     if (obs.ObsLocation.ForecastRegionName) {
       headerValues.push(obs.ObsLocation.ForecastRegionName);
     }
-    return headerValues.join(' / ');
+    return headerValues;
   }
 
   getRegistrationNames() {
