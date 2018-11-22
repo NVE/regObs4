@@ -1,4 +1,4 @@
-<ion-list-header color="light">
+<ion-list-header color="light" no-margin>
   {{'MENU.MAP_SETTINGS_FOR' | translate}} {{ ('GEO_HAZARDS.' +geoHazardName) | uppercase | translate }}
 </ion-list-header>
 <ng-container *ngFor="let supportTile of supportTiles">
@@ -15,8 +15,10 @@
         <ion-select-option *ngFor="let option of opacityValues" [value]="option.value">{{ option.name | translate }}</ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-list-header color="light" *ngIf="supportTile.enabled">
-      {{'MENU.MAP_LEGENDS' | translate}}
+    <ion-list-header color="light" no-margin *ngIf="supportTile.enabled">
+      <ion-label>
+        {{'MENU.MAP_LEGENDS' | translate}}
+      </ion-label>
     </ion-list-header>
     <ng-container *ngIf="supportTile.enabled" [ngTemplateOutlet]="legends[supportTile.name]"></ng-container>
   </ng-container>
