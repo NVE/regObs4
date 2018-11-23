@@ -10,15 +10,15 @@ import { settings } from '../../../../settings';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../../core/services/login/login.service';
 import * as moment from 'moment';
-import { NavController } from '@ionic/angular';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
-import { fromJS, Map, is } from 'immutable';
 import { RegistrationTid } from '../models/registrationTid.enum';
 import { RegistrationTypes } from '../models/registrationTypes.enum';
 import { DataLoadService } from '../../data-load/services/data-load.service';
 import { RegistrationStatus } from '../models/registrationStatus.enum';
 import { HttpErrorResponse } from '@angular/common/http';
+import { GeoHazard } from '../../../core/models/geo-hazard.enum';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -26,14 +26,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class RegistrationService {
 
   private _registrationsObservable: Observable<IRegistration[]>;
-  private _registrationForCurrentGeoHazardObservable: Observable<IRegistration>;
+  private _draftsObservable: Observable<IRegistration[]>;
 
   get registrations$() {
     return this._registrationsObservable;
   }
 
-  get registrationForCurrentGeoHazard$() {
-    return this._registrationForCurrentGeoHazardObservable;
+  get drafts$() {
+    return this._draftsObservable;
   }
 
   constructor(
@@ -41,59 +41,55 @@ export class RegistrationService {
     private loginService: LoginService,
     private registrationApiService: RegobsApi.RegistrationService,
     private searchApiService: RegobsApi.SearchService,
-    private navController: NavController,
+    private router: Router,
     private dataLoadService: DataLoadService,
   ) {
 
     this._registrationsObservable = this.userSettingService.userSettingObservable$
       .pipe(switchMap((userSettings) => this.getRegistrationsAsObservable(userSettings.appMode)));
-    this._registrationForCurrentGeoHazardObservable = this.userSettingService.currentGeoHazardObservable$
-      .pipe(switchMap((geoHazard) => this.registrations$
-        .pipe(map((registraions) => registraions.find((item) => item.geoHazard === geoHazard
-          && item.status === RegistrationStatus.Draft)))));
+    this._draftsObservable = this.registrations$.pipe(map((val) => val.filter((item) => item.status === RegistrationStatus.Draft)));
   }
 
-  async saveRegistration(registration: IRegistration) {
+  async saveRegistration(registration: IRegistration): Promise<number> {
     this.cleanupRegistration(registration);
     registration.changed = moment().unix();
     const userSettings = await this.userSettingService.getUserSettings();
-    return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, userSettings.appMode)
+    const result = await NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, userSettings.appMode)
       .query('upsert', registration).exec();
+    return result[0].affectedRowPKS[0];
   }
 
-  async createNewRegistration() {
+  async createNewRegistration(geoHazard?: GeoHazard) {
     const userSettings = await this.userSettingService.getUserSettings();
     const loggedInUser = await this.loginService.getLoggedInUser();
-    if (!loggedInUser.isLoggedIn) {
-      throw Error('User is not logged in!');
-    }
+    const geoHazardToUse = geoHazard ? geoHazard : userSettings.currentGeoHazard[0];
     const newId = this.createGuid();
     const reg: IRegistration = {
-      id: undefined, // NOTE: ai value get created on insert
-      geoHazard: userSettings.currentGeoHazard,
+      geoHazard: geoHazardToUse,
       changed: moment().unix(),
       status: RegistrationStatus.Draft,
       request: {
-        Id: newId, ObserverGuid: loggedInUser.user.Guid,
+        Id: newId,
+        ObserverGuid: loggedInUser.isLoggedIn ? loggedInUser.user.Guid : null,
         DtObsTime: null,
-        GeoHazardTID: userSettings.currentGeoHazard
+        GeoHazardTID: geoHazardToUse
       }
     };
     return reg;
   }
 
-  getCurrentRegistration() {
-    return this.registrationForCurrentGeoHazard$.pipe(take(1)).toPromise();
-  }
+  // getCurrentRegistration() {
+  //   return this.registrationForCurrentGeoHazard$.pipe(take(1)).toPromise();
+  // }
 
-  async hasChanged(reg: IRegistration, currentRegistration?: IRegistration) {
-    const current = currentRegistration || (await this.getCurrentRegistration());
-    if (current) {
-      return !is(fromJS(current.request), fromJS(reg.request));
-    } else {
-      return !IsEmptyHelper.isEmpty(reg);
-    }
-  }
+  // async hasChanged(reg: IRegistration, currentRegistration?: IRegistration) {
+  //   const current = currentRegistration || (await this.getCurrentRegistration());
+  //   if (current) {
+  //     return !is(fromJS(current.request), fromJS(reg.request));
+  //   } else {
+  //     return !IsEmptyHelper.isEmpty(reg);
+  //   }
+  // }
 
   cleanupRegistration(reg: IRegistration) {
     const registrationTids: RegistrationTid[] = Object.keys(RegistrationTypes)
@@ -152,20 +148,21 @@ export class RegistrationService {
     return RegistrationTypes[RegistrationTid[registrationTid]];
   }
 
-  async createOrEditRegistrationRoute() { // TODO: Should have geoHazard as input when multiple geoHazards is visible
-    const registration = await this.getCurrentRegistration();
-    if (!registration) {
-      this.navController.navigateForward('registration/obs-location');
-    } else {
-      this.navController.navigateForward('registration/edit/' + registration.id);
-    }
-  }
-
   async sendRegistration(reg: IRegistration) {
-    reg.status = RegistrationStatus.Sync;
-    await this.saveRegistration(reg);
-    this.syncRegistrations();
-    this.navController.navigateRoot('my-observations');
+    const loggedInUser = await this.loginService.getLoggedInUser();
+    if (!loggedInUser.isLoggedIn) {
+      this.router.navigate(['login'], {
+        queryParams: {
+          sendRegistrationId: reg.id
+        }
+      });
+    } else {
+      reg.request.ObserverGuid = loggedInUser.user.Guid;
+      reg.status = RegistrationStatus.Sync;
+      await this.saveRegistration(reg);
+      this.syncRegistrations();
+      this.router.navigate(['my-observations']);
+    }
   }
 
   private getDataLoadId(appMode: AppMode) {

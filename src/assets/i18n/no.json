@@ -1,6 +1,6 @@
 {
   "ADD_MENU": {
-    "NEW_OBSERVATION": "Ny observasjon",
+    "NEW_OBSERVATION": "Ny",
     "NEW_TRIP": "Ny tur"
   },
   "ALERT": {
@@ -84,6 +84,7 @@
   "MENU": {
     "ABOUT_REGOBS": "Om data i regObs",
     "AND": "og",
+    "DAYS_BACK": "Dager tilbake",
     "GENERAL": "Generelt",
     "LAST_UPDATED": "Sist oppdatert",
     "MAP_LEGENDS": "Tegnforklaring for kart",
@@ -173,7 +174,7 @@
       "PROBLEM_HELP_TEXT": "Feilede observasjoner lagres i telefonen din, og når problemet er løst vil du kunne sende inn observasjoen på nytt.",
       "REFERENCE": "Referanse",
       "SEND_EMAIL": "Send til oss på epost",
-      "SUBTITLE": "Mangler nettverk eller innsending tok for lang tid. Vi prøver igjen automatisk etter en stund.",
+      "SUBTITLE": "Mangler nettverk eller innsending tok for lang tid. Vi prøver igjen etter en stund og håper at nettet har bedret seg.",
       "TITLE": "Innsending feilet"
     },
     "GENERAL_COMMENT": {

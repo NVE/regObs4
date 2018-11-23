@@ -94,7 +94,7 @@ export class AvalancheObsPage extends BasePage {
       L.latLng(this.registration.request.AvalancheObs.StopLat, this.registration.request.AvalancheObs.StopLong) : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,
-      componentProps: { relativeToLatLng, startLatLng, endLatLng },
+      componentProps: { relativeToLatLng, startLatLng, endLatLng, geoHazard: this.registration.geoHazard },
     });
     modal.present();
     const result = await modal.onDidDismiss();

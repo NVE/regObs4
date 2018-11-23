@@ -1,6 +1,6 @@
 {
   "ADD_MENU": {
-    "NEW_OBSERVATION": "New observation",
+    "NEW_OBSERVATION": "New",
     "NEW_TRIP": "New trip"
   },
   "ALERT": {
@@ -84,6 +84,7 @@
   "MENU": {
     "ABOUT_REGOBS": "About data in regObs",
     "AND": "and",
+    "DAYS_BACK": "Days back",
     "GENERAL": "General",
     "LAST_UPDATED": "Last updated",
     "MAP_LEGENDS": "Legends for map",

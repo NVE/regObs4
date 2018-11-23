@@ -32,7 +32,7 @@ export class SaveAndGoBackButtonComponent implements OnInit {
   }
 
   async goBack() {
-    this.navContoller.navigateBack('registration');
+    this.navContoller.navigateBack('registration/edit/' + this.registration.id);
   }
 
   doReset() {

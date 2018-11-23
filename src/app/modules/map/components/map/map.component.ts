@@ -182,7 +182,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         const supportTiles = settings.map.tiles.supportTiles;
         for (const supportTile of supportTiles) {
           const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
-          if (supportTile.geoHazardId === userSetting.currentGeoHazard
+          if (userSetting.currentGeoHazard.indexOf(supportTile.geoHazardId) >= 0
             && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
             const tile = new OfflineTileLayer(
               supportTile.name,

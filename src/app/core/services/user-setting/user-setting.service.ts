@@ -21,7 +21,7 @@ export class UserSettingService {
   // UserSettingService is a singleton service.
   // The observable will be shared with many services
   private _userSettingObservable: Observable<UserSetting>;
-  private _currentGeoHazardObservable: Observable<GeoHazard>;
+  private _currentGeoHazardObservable: Observable<GeoHazard[]>;
 
   get userSettingObservable$() {
     return this._userSettingObservable;
@@ -35,7 +35,7 @@ export class UserSettingService {
     this._userSettingObservable = this.getUserSettingsAsObservable();
     this._currentGeoHazardObservable = this._userSettingObservable.pipe(
       map((val) => val.currentGeoHazard),
-      distinctUntilChanged(),
+      distinctUntilChanged((prev, next) => prev.join('-') !== next.join('-')),
       shareReplay(1));
   }
 
@@ -44,7 +44,7 @@ export class UserSettingService {
       appMode: AppMode.Prod,
       language: LangKey.no,
       country: AppCountry.norway,
-      currentGeoHazard: GeoHazard.Snow,
+      currentGeoHazard: [GeoHazard.Snow],
       observationDaysBack: [
         { geoHazard: GeoHazard.Snow, daysBack: 2 },
         { geoHazard: GeoHazard.Ice, daysBack: 7 },

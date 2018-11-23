@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,7 +10,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
   templateUrl: './send-button.component.html',
   styleUrls: ['./send-button.component.scss']
 })
-export class SendButtonComponent implements OnInit {
+export class SendButtonComponent implements OnInit, OnDestroy {
 
   @Input() registration: IRegistration;
 
@@ -24,10 +24,12 @@ export class SendButtonComponent implements OnInit {
   ngOnInit() {
   }
 
-  send() {
+  ngOnDestroy(): void {
+  }
+
+  async send() {
     const clone = { ...this.registration };
     this.registrationService.sendRegistration(clone);
-    this.registration = null;
   }
 
   async delete() {

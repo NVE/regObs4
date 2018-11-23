@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { PopoverMenuComponent } from '../popover-menu/popover-menu.component';
-import { Fab, PopoverController } from '@ionic/angular';
+import { Fab, PopoverController, NavController } from '@ionic/angular';
 import { CustomAnimation } from '../../core/animations/custom.animation';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { Subscription } from 'rxjs';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
+import { IRegistration } from '../../modules/registration/models/registration.model';
 
 @Component({
   selector: 'app-add-menu',
@@ -17,35 +18,54 @@ export class AddMenuComponent implements OnInit, OnDestroy {
   @ViewChild('menuFab') menuFab: Fab;
 
   private userSettingSubscription: Subscription;
+  private registrationSubscription: Subscription;
   private userSettings: UserSetting;
+  private drafts: IRegistration[] = [];
 
   constructor(
     private popoverController: PopoverController,
     private registrationService: RegistrationService,
+    private ngZone: NgZone,
+    private navController: NavController,
     private userSettingService: UserSettingService) { }
 
   ngOnInit() {
     this.userSettingSubscription = this.userSettingService.userSettingObservable$.subscribe((val) => {
-      this.userSettings = val;
+      this.ngZone.run(() => {
+        this.userSettings = val;
+      });
+    });
+    this.registrationSubscription = this.registrationService.drafts$.subscribe((val) => {
+      this.ngZone.run(() => {
+        this.drafts = val;
+      });
     });
   }
 
   ngOnDestroy(): void {
-    this.userSettingSubscription.unsubscribe();
+    if (this.userSettingSubscription) {
+      this.userSettingSubscription.unsubscribe();
+    }
+    if (this.registrationSubscription) {
+      this.registrationSubscription.unsubscribe();
+    }
   }
 
   async showFabMenu(event: Event) {
-    if (this.userSettings && this.userSettings.currentGeoHazard === GeoHazard.Snow) {
+    const anyDrafts = this.userSettings && this.drafts.some((x) => this.userSettings.currentGeoHazard.indexOf(x.geoHazard) >= 0);
+    const show = !this.userSettings || !(this.userSettings.currentGeoHazard[0] === GeoHazard.Ice) || anyDrafts;
+    if (show) {
       const ev = {
         ...event, target: {
           ...event.target, getBoundingClientRect: () => {
             return {
-              top: (event.target as any).getBoundingClientRect().top - 110,
+              top: (event.target as any).getBoundingClientRect().top - 160,
               left: (<any>event).pageX
             };
           }
         }
       };
+      // const ev = event;
       const popover = await this.popoverController.create({
         component: PopoverMenuComponent,
         translucent: false,
@@ -61,7 +81,7 @@ export class AddMenuComponent implements OnInit, OnDestroy {
     } else {
       setTimeout(() => {
         this.menuFab.close();
-        this.registrationService.createOrEditRegistrationRoute();
+        this.navController.navigateForward('registration/obs-location?geoHazard=' + GeoHazard.Ice);
       }, 20);
     }
   }

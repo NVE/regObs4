@@ -5,13 +5,11 @@ import { SendButtonComponent } from '../../components/send-button/send-button.co
 import { SummaryItemComponent } from '../../components/summary-item/summary-item.component';
 import { SharedComponentsModule } from '../../shared-components.module';
 import { FailedRegistrationComponent } from '../../components/failed-registration/failed-registration.component';
-import { LoginGuard } from '../../../../core/guards/login.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: OverviewPage,
-    canActivate: [LoginGuard],
+    component: OverviewPage
   }
 ];
 

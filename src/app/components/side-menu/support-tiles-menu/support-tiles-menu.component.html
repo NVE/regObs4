@@ -1,26 +1,28 @@
-<ion-list-header color="light" no-margin>
-  {{'MENU.MAP_SETTINGS_FOR' | translate}} {{ ('GEO_HAZARDS.' +geoHazardName) | uppercase | translate }}
-</ion-list-header>
-<ng-container *ngFor="let supportTile of supportTiles">
-  <ng-container *ngIf="supportTile.geoHazardId === currentGeoHazard">
-    <ion-item>
-      <ion-label>
-        {{'MENU.SHOW' | translate}} {{'SUPPORT_MAP.' +supportTile.description | translate | lowercase }}
-      </ion-label>
-      <ion-toggle [checked]="supportTile.enabled" [(ngModel)]="supportTile.enabled" (ionChange)="onTileChanged(supportTile)"></ion-toggle>
-    </ion-item>
-    <ion-item *ngIf="supportTile.enabled">
-      <ion-label position="stacked">{{'MENU.OPACITY' | translate}}</ion-label>
-      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="supportTile.opacity" (ionChange)="onTileChanged(supportTile)">
-        <ion-select-option *ngFor="let option of opacityValues" [value]="option.value">{{ option.name | translate }}</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-list-header color="light" no-margin *ngIf="supportTile.enabled">
-      <ion-label>
-        {{'MENU.MAP_LEGENDS' | translate}}
-      </ion-label>
-    </ion-list-header>
-    <ng-container *ngIf="supportTile.enabled" [ngTemplateOutlet]="legends[supportTile.name]"></ng-container>
+<ng-container *ngFor="let geoHazard of currentGeoHazards">
+  <ion-list-header color="light" no-margin>
+    {{'MENU.MAP_SETTINGS_FOR' | translate}} {{ ('GEO_HAZARDS.' +getGeoHazardName(geoHazard)) | uppercase | translate }}
+  </ion-list-header>
+  <ng-container *ngFor="let supportTile of supportTiles">
+    <ng-container *ngIf="supportTile.geoHazardId === geoHazard">
+      <ion-item>
+        <ion-label>
+          {{'MENU.SHOW' | translate}} {{'SUPPORT_MAP.' +supportTile.description | translate | lowercase }}
+        </ion-label>
+        <ion-toggle [checked]="supportTile.enabled" [(ngModel)]="supportTile.enabled" (ionChange)="onTileChanged(supportTile)"></ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="supportTile.enabled">
+        <ion-label position="stacked">{{'MENU.OPACITY' | translate}}</ion-label>
+        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="supportTile.opacity" (ionChange)="onTileChanged(supportTile)">
+          <ion-select-option *ngFor="let option of opacityValues" [value]="option.value">{{ option.name | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-list-header color="light" no-margin *ngIf="supportTile.enabled">
+        <ion-label>
+          {{'MENU.MAP_LEGENDS' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <ng-container *ngIf="supportTile.enabled" [ngTemplateOutlet]="legends[supportTile.name]"></ng-container>
+    </ng-container>
   </ng-container>
 </ng-container>
 <ng-template #steepness>

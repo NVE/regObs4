@@ -1,47 +1,39 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { RegistrationService } from '../../services/registration.service';
+import { Component } from '@angular/core';
 import * as moment from 'moment';
-import { Subscription } from 'rxjs';
-import { IRegistration } from '../../models/registration.model';
 import { NavController } from '@ionic/angular';
+import { BasePage } from '../base.page';
+import { BasePageService } from '../base-page-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-set-time',
   templateUrl: './set-time.page.html',
   styleUrls: ['./set-time.page.scss'],
 })
-export class SetTimePage implements OnInit, OnDestroy {
+export class SetTimePage extends BasePage {
   maxDate: string;
-  date: string;
 
   constructor(
-    private registrationService: RegistrationService,
-    private navController: NavController) { }
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute,
+    private navController: NavController,
+  ) {
+    super(null, basePageService, activatedRoute);
+  }
 
-  async ngOnInit() {
+  onInit() {
     this.maxDate = moment().toISOString(true);
-    const reg = await this.registrationService.getCurrentRegistration();
-    if (reg && reg.request.DtObsTime) {
-      this.date = reg.request.DtObsTime;
-    } else {
-      this.date = moment().toISOString(true);
+    if (!this.registration.request.DtObsTime) {
+      this.registration.request.DtObsTime = this.maxDate;
     }
   }
-
-  ngOnDestroy(): void {
-  }
-
   setToNow() {
     const now = moment().toISOString(true);
     this.maxDate = now;
-    this.date = now;
+    this.registration.request.DtObsTime = now;
   }
 
   async confirm() {
-    const currentRegistration = await this.registrationService.getCurrentRegistration();
-    console.log('[INFO][SetTime] settig DtObsTime to', this.date);
-    currentRegistration.request.DtObsTime = this.date;
-    await this.registrationService.saveRegistration(currentRegistration);
-    this.navController.navigateForward('registration/edit/' + currentRegistration.id);
+    this.navController.navigateRoot('registration/edit/' + this.registration.id);
   }
 }

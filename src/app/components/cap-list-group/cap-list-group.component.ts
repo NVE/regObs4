@@ -21,9 +21,12 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
   @Input() warnings$: Observable<WarningGroup[]>;
 
   warnings: WarningGroup[];
-  subscription: Subscription;
+  warningSubscription: Subscription;
+  currentGeoHazardSubscription: Subscription;
   animate: WarningGroup;
-  currentGeoHazard$: Observable<GeoHazard>;
+  currentGeoHazards$: Observable<GeoHazard[]>;
+  GeoHazard = GeoHazard;
+  showWarningLevel = false;
 
   constructor(
     private warningService: WarningService,
@@ -34,8 +37,12 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.currentGeoHazard$ = this.userSettingService.currentGeoHazardObservable$;
-    this.subscription = this.warnings$.subscribe((val) => {
+    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazardObservable$.subscribe((val) => {
+      this.zone.run(() => {
+        this.showWarningLevel = val.indexOf(GeoHazard.Ice) >= 0;
+      });
+    });
+    this.warningSubscription = this.warnings$.subscribe((val) => {
       this.zone.run(() => {
         this.warnings = val;
       });
@@ -43,7 +50,12 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    if (this.warningSubscription) {
+      this.warningSubscription.unsubscribe();
+    }
+    if (this.currentGeoHazardSubscription) {
+      this.currentGeoHazardSubscription.unsubscribe();
+    }
   }
 
   trackWarningGroup(index: number, group: WarningGroup) {

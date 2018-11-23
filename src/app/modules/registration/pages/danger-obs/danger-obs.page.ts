@@ -32,7 +32,7 @@ export class DangerObsPage extends BasePage {
 
   async onInit() {
     const userSetting = await this.userSettingService.getUserSettings();
-    const kdvKey = `${GeoHazard[userSetting.currentGeoHazard]}_DangerSignKDV`;
+    const kdvKey = `${GeoHazard[this.registration.geoHazard]}_DangerSignKDV`;
     this.dangerSignKdv = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, kdvKey);
   }
 

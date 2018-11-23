@@ -144,7 +144,6 @@ export const settings = {
     events: {
         nanosqlConnected: 'nanoSql:connected',
         tabsChanged: 'tabs:changed',
-        geoHazardChanged: 'geoHazard:changed',
         fullscreenChanged: 'fullscreen:changed',
         centerMapToUser: 'gps:centerMapToUser',
         supportTilesChanged: 'supportTiles:changed',

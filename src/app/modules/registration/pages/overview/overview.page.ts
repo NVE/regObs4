@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, NgZone } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { Subscription } from 'rxjs';
 import { IRegistration } from '../../models/registration.model';
@@ -27,17 +27,17 @@ export class OverviewPage implements OnInit, OnDestroy {
 
   constructor(
     private registrationService: RegistrationService,
-    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
     private activatedRoute: ActivatedRoute,
     private summaryItemService: SummaryItemService,
     private userGroupService: UserGroupService) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.userGroupSubscription = this.userGroupService.getUserGroupsAsObservable().subscribe((userGroups) => {
-      this.userGroups = userGroups;
-      this.initSummaryItems().then(() => {
-        this.cdr.detectChanges();
+      this.ngZone.run(() => {
+        this.userGroups = userGroups;
+        this.initSummaryItems();
       });
     });
     this.userGroupService.updateUserGroups();
@@ -49,17 +49,13 @@ export class OverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  async ionViewDidEnter() {
-    await this.initSummaryItems();
+  ionViewDidEnter() {
+    return this.initSummaryItems();
   }
 
   private getRegistration() {
-    if (this.activatedRoute.snapshot.params['id']) {
-      const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
-      return this.registrationService.getSavedRegistrationById(id);
-    } else {
-      return this.registrationService.getCurrentRegistration();
-    }
+    const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
+    return this.registrationService.getSavedRegistrationById(id);
   }
 
   private async initSummaryItems() {
@@ -68,8 +64,10 @@ export class OverviewPage implements OnInit, OnDestroy {
       this.registration = await this.registrationService.createNewRegistration();
       await this.registrationService.saveRegistration(this.registration);
     }
-    this.summaryItems = await this.summaryItemService.getSummaryItems(this.registration);
-    this.cdr.detectChanges();
+    const items = await this.summaryItemService.getSummaryItems(this.registration);
+    this.ngZone.run(() => {
+      this.summaryItems = items;
+    });
   }
 
   ionViewWillLeave() {

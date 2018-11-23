@@ -6,6 +6,7 @@ import { NavController, Events } from '@ionic/angular';
 import { ObsLocationDto, ObsLocationsResponseDtoV2 } from '../../../regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
 import { settings } from '../../../../../settings';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
 @Component({
   selector: 'app-obs-location',
@@ -18,6 +19,7 @@ export class ObsLocationPage implements OnInit {
   selectedLocation: ObsLocationsResponseDtoV2;
   registration: IRegistration;
   fullscreen = false;
+  geoHazard: GeoHazard;
 
   constructor(
     private registrationService: RegistrationService,
@@ -34,6 +36,9 @@ export class ObsLocationPage implements OnInit {
       const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
       this.registration =
         await this.registrationService.getSavedRegistrationById(id);
+      this.geoHazard = this.registration.geoHazard;
+    } else if (this.activatedRoute.snapshot.queryParams['geoHazard']) {
+      this.geoHazard = parseInt(this.activatedRoute.snapshot.queryParams['geoHazard'], 10);
     }
     if (this.hasLocation(this.registration)) {
       const locationMarkerIcon = L.icon({
@@ -75,14 +80,14 @@ export class ObsLocationPage implements OnInit {
 
   async onLocationSet(event: ObsLocationDto) {
     if (!this.registration) {
-      this.registration = await this.registrationService.createNewRegistration();
+      this.registration = await this.registrationService.createNewRegistration(this.geoHazard);
     }
     this.registration.request.ObsLocation = event;
-    await this.registrationService.saveRegistration(this.registration);
+    const id = await this.registrationService.saveRegistration(this.registration);
     if (this.registration.request.DtObsTime) {
-      this.navController.navigateForward('registration/edit/' + this.registration.id);
+      this.navController.navigateForward('registration/edit/' + id);
     } else {
-      this.navController.navigateForward('registration/set-time/' + this.registration.id);
+      this.navController.navigateForward('registration/set-time/' + id);
     }
   }
 

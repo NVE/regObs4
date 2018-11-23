@@ -7,6 +7,7 @@ import { Input, NavController } from '@ionic/angular';
 import { settings } from '../../../settings';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { ActivatedRoute } from '@angular/router';
+import { RegistrationService } from '../../modules/registration/services/registration.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,8 @@ export class LoginPage implements OnInit, OnDestroy {
   forgotPasswordUrl: string;
   createUserUrl: string;
   showPassword = false;
-  private returnUrl;
+  private returnUrl: string;
+  private sendRegistrationId: number;
 
   get loginFormUsername() {
     return this.loginform.get('username').value;
@@ -41,13 +43,17 @@ export class LoginPage implements OnInit, OnDestroy {
     private userSettingsService: UserSettingService,
     private navContoller: NavController,
     private route: ActivatedRoute,
+    private registrationService: RegistrationService,
     private ngZone: NgZone) { }
 
   async ngOnInit() {
     this.route.queryParams
       .subscribe(params => {
-        console.log('[INFO][LoginPage] Got returnUrl:' + params['returnUrl']);
+        console.log('[INFO][LoginPage] Got params:', params);
         this.returnUrl = params['returnUrl'];
+        if (params['sendRegistrationId']) {
+          this.sendRegistrationId = parseInt(params['sendRegistrationId'], 10);
+        }
       });
     this.loginform = this.formBuilder.group({
       username: new FormControl('', [Validators.required]),
@@ -81,16 +87,18 @@ export class LoginPage implements OnInit, OnDestroy {
   async login() {
     if (this.loginform.valid) {
       this.loading = true;
-      await this.loginService.login(this.loginFormUsername, this.loginFormPassword);
-      setTimeout(() => {
-        this.loading = false;
-        console.log('[INFO][LoginPage] User logged in. Returing to:' + this.returnUrl);
+      const loggedIn = await this.loginService.login(this.loginFormUsername, this.loginFormPassword);
+      this.loading = false;
+      if (loggedIn) {
         if (this.returnUrl) {
           this.navContoller.navigateRoot(this.returnUrl);
+        } if (this.sendRegistrationId) {
+          const registration = await this.registrationService.getSavedRegistrationById(this.sendRegistrationId);
+          this.registrationService.sendRegistration(registration);
         } else {
           this.navContoller.goBack();
         }
-      }, 200);
+      }
     }
   }
 

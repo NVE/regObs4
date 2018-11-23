@@ -45,11 +45,6 @@
       <ng-container *ngIf="summaries.length > 1">
         <ion-row class="row-padding-start">
           <ion-col size="12">
-            <h3>{{ 'OBSERVATION_LIST.FORMS' | translate }}</h3>
-          </ion-col>
-        </ion-row>
-        <ion-row class="row-padding-start">
-          <ion-col size="12">
             <ion-badge (click)="toggleAllSelected()" [color]="allSelected ? 'medium' : 'light'" [ngClass]="{'outline': !allSelected}">
               {{'OBSERVATION_LIST.ALL_OBSERVATIONS' | translate}}
             </ion-badge>

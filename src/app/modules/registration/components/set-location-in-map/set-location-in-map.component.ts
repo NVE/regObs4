@@ -1,10 +1,9 @@
-import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, OnDestroy, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from '../../../map/services/map/map.service';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
 import { debounceTime, take, timeout } from 'rxjs/operators';
-import { IRegistration } from '../../models/registration.model';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { Subscription } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
@@ -16,6 +15,7 @@ import { Events } from '@ionic/angular';
 import { IconHelper } from '../../../map/helpers/icon.helper';
 import { ViewInfo } from '../../../map/services/map-search/view-info.model';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
 @Component({
   selector: 'app-set-location-in-map',
@@ -23,6 +23,7 @@ import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
   styleUrls: ['./set-location-in-map.component.scss']
 })
 export class SetLocationInMapComponent implements OnInit, OnDestroy {
+  @Input() geoHazard: GeoHazard;
   @Input() fromMarker: L.Marker;
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Input() locationMarker: L.Marker;
@@ -40,7 +41,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() showFromMarkerInDetails = true;
 
   private map: L.Map;
-  registration: IRegistration;
   followMode = false;
   private userposition: Geoposition;
   private pathLine: L.Polyline;
@@ -101,7 +101,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.mapViewObservableSubscription = this.mapService.mapViewObservable$.pipe(debounceTime(1000)).
       subscribe((mapView) => {
         const range = Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2);
-        this.locationService.updateLocationWithinRadius(mapView.center.lat, mapView.center.lng, range);
+        this.locationService.updateLocationWithinRadius(this.geoHazard, mapView.center.lat, mapView.center.lng, range);
       });
   }
 
@@ -140,7 +140,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     });
 
     if (this.showPreviousUsedLocations) {
-      this.locationsSubscription = this.locationService.getLocationsInViewAsObservable()
+      this.locationsSubscription = this.locationService.getLocationsInViewAsObservable(this.geoHazard)
         .subscribe((locations) => {
           this.locationGroup.clearLayers();
           for (const location of locations) {

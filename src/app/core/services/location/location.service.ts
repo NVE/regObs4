@@ -22,10 +22,10 @@ export class LocationService {
     private apiLocationService: RegobsApi.LocationService,
     private mapService: MapService) { }
 
-  async updateLocationWithinRadius(lat: number, lng: number, radius: number) {
+  async updateLocationWithinRadius(geoHazard: GeoHazard, lat: number, lng: number, radius: number) {
     const userSettings = await this.userSettingService.getUserSettings();
     const params: RegobsApi.LocationService.LocationWithinRadiusParams = {
-      geoHazardTypeIds: [userSettings.currentGeoHazard],
+      geoHazardTypeIds: [geoHazard],
       radius,
       latitude: lat,
       longitude: lng,
@@ -39,7 +39,7 @@ export class LocationService {
     nSQL(tableName).loadJS(tableName, result, true);
   }
 
-  getLocationsInViewAsObservable() {
+  getLocationsInViewAsObservable(geoHazard: GeoHazard) {
     return combineLatest(
       this.userSettingService.userSettingObservable$,
       this.mapService.mapViewObservable$
@@ -47,7 +47,7 @@ export class LocationService {
       .pipe(switchMap(([userSetting, mapView]) =>
         this.getLocationsAsObservable(
           userSetting.appMode,
-          userSetting.currentGeoHazard,
+          geoHazard,
           mapView.bounds))
         , debounceTime(200));
   }

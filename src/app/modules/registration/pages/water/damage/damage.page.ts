@@ -54,9 +54,12 @@ export class DamagePage extends BasePage {
 
   async onInit() {
     const userSetting = await this.userSettingService.getUserSettings();
-    const currentGeoHazard = GeoHazard[userSetting.currentGeoHazard];
-    this.damageTypes = (await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode,
-      `${currentGeoHazard}_DamageTypeKDV`))
+    const geoHazardName = GeoHazard[this.registration.geoHazard];
+    const kdvElements = (await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode,
+      `${geoHazardName}_DamageTypeKDV`))
       .filter((x) => x.Id !== NO_DAMAGE_VISIBLE);
+    this.ngZone.run(() => {
+      this.damageTypes = kdvElements;
+    });
   }
 }

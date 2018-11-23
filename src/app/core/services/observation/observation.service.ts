@@ -53,28 +53,14 @@ export class ObservationService {
     }
     const user = await this.loginService.getLoggedInUser();
     const userSettings = await this.userSettingService.getUserSettings();
-    for (const geoHazard of this.getPriority(userSettings.currentGeoHazard)) {
-      if (!cancelled) {
-        await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard, user, userSettings, cancel);
-      }
+    if (!cancelled) {
+      await this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.currentGeoHazard, user, userSettings, cancel);
     }
     // TODO: Update my observations if user is logged in
   }
 
-  private getPriority(currentGeoHazard: GeoHazard) {
-    if (currentGeoHazard === GeoHazard.Snow) {
-      return [GeoHazard.Snow];
-    } else if (currentGeoHazard === GeoHazard.Ice) {
-      return [GeoHazard.Ice];
-    } else if (currentGeoHazard === GeoHazard.Water) {
-      return [GeoHazard.Water, GeoHazard.Dirt];
-    } else if (currentGeoHazard === GeoHazard.Dirt) {
-      return [GeoHazard.Dirt, GeoHazard.Water];
-    }
-  }
-
-  private getDataLoadId(appMode: AppMode, geoHazard: GeoHazard) {
-    return `${NanoSql.TABLES.OBSERVATION.name}_${geoHazard}_${appMode}`;
+  private getDataLoadId(appMode: AppMode, geoHazards: GeoHazard[]) {
+    return `${NanoSql.TABLES.OBSERVATION.name}_${geoHazards.join('-')}_${appMode}`;
   }
 
   getAllDataLoadIds(appMode: AppMode) {
@@ -85,19 +71,19 @@ export class ObservationService {
   }
 
   private async checkLastUpdatedAndUpdateDataIfNeeded(
-    geoHazard: GeoHazard,
+    geoHazards: GeoHazard[],
     user: LoggedInUser,
     userSetting: UserSetting,
     cancel?: Promise<void>) {
-    const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(userSetting.appMode, geoHazard));
+    const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(userSetting.appMode, geoHazards));
     const lastUpdateLimit = moment().subtract(10, 'minutes');
-    const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazard);
+    const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazards);
     if (!dataLoad.lastUpdated
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
       || moment(dataLoad.itemsFromDate).isAfter(fromDate)) {
-      await this.updateObservationsForGeoHazard(geoHazard, user, userSetting, cancel);
+      await this.updateObservationsForGeoHazard(geoHazards, user, userSetting, cancel);
     } else {
-      console.log(`[INFO][ObervationService] No need to update ${geoHazard}. Last updated is:`, dataLoad.lastUpdated);
+      console.log(`[INFO][ObervationService] No need to update ${geoHazards.join(', ')}. Last updated is:`, dataLoad.lastUpdated);
     }
   }
 
@@ -111,41 +97,37 @@ export class ObservationService {
   async updateObservationsForCurrentGeoHazard() {
     const userSettings = await this.userSettingService.getUserSettings();
     const loggedInUser = await this.loginService.getLoggedInUser();
-    return this.updateObservationsForGeoHazard(
-      userSettings.currentGeoHazard,
-      loggedInUser,
-      userSettings
-    );
+    return this.updateObservationsForGeoHazard(userSettings.currentGeoHazard, loggedInUser, userSettings);
   }
 
-  private async getDaysBackToFetchAsDate(userSetting: UserSetting, geoHazard: GeoHazard) {
-    const daysBack = await this.getObservationsDaysBack(userSetting, geoHazard);
+  private async getDaysBackToFetchAsDate(userSetting: UserSetting, geoHazards: GeoHazard[]) {
+    const daysBack = await this.getObservationsDaysBack(userSetting, geoHazards);
     const fromDate = moment().subtract(daysBack, 'days').startOf('day');
     return fromDate.toDate();
   }
 
-  async updateObservationsForGeoHazard(geoHazard: GeoHazard, user: LoggedInUser, userSetting: UserSetting, cancel?: Promise<void>) {
-    console.log(`[INFO][ObervationService] Updating observations for geoHazard: ${geoHazard}`);
-    const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazard);
+  async updateObservationsForGeoHazard(geoHazards: GeoHazard[], user: LoggedInUser, userSetting: UserSetting, cancel?: Promise<void>) {
+    console.log(`[INFO][ObervationService] Updating observations for geoHazard: ${geoHazards.join(', ')}`);
+    const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazards);
     await this.dataLoadService.startLoading(dataLoadId);
-    const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazard);
+    const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazards);
 
     try {
       const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchAll({
-          FromDate: fromDate.toISOString(),
-          SelectedGeoHazards: [geoHazard],
-          NumberOfRecords: settings.observations.maxObservationsToFetch,
-          LangKey: userSetting.language,
-        }), cancel);
+        FromDate: fromDate.toISOString(),
+        SelectedGeoHazards: geoHazards,
+        NumberOfRecords: settings.observations.maxObservationsToFetch,
+        LangKey: userSetting.language,
+      }), cancel);
 
-          console.log(`[INFO] Got ${searchResult.length} new observations for geoHazard  ${geoHazard}`);
-          const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode);
-          await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode).loadJS(instanceName, searchResult, true);
+      console.log(`[INFO] Got ${searchResult.length} new observations for geoHazards  ${geoHazards.join(', ')}`);
+      const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode);
+      await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode).loadJS(instanceName, searchResult, true);
 
-          // Deleting items no longer in updated result
-          await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazard, user, fromDate, searchResult);
-          // Delete old items
-          await this.deleteOldObservations(userSetting.appMode, geoHazard, user);
+      // Deleting items no longer in updated result
+      await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, user, fromDate, searchResult);
+      // Delete old items
+      await this.deleteOldObservations(userSetting.appMode, geoHazards, user);
       await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.length, fromDate, new Date());
     } catch (err) {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
@@ -164,9 +146,9 @@ export class ObservationService {
     await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, true);
   }
 
-  getObservationsDaysBack(userSettings: UserSetting, geoHazard: GeoHazard): number {
+  getObservationsDaysBack(userSettings: UserSetting, geoHazards: GeoHazard[]): number {
     const daysBackForCurrentGeoHazard = userSettings.observationDaysBack
-      .find((setting) => setting.geoHazard === geoHazard);
+      .find((setting) => setting.geoHazard === geoHazards[0]);
     const daysBack = daysBackForCurrentGeoHazard ? daysBackForCurrentGeoHazard.daysBack : 3; // default to 3 days back if not found
     return daysBack;
   }
@@ -179,32 +161,32 @@ export class ObservationService {
 
   private deleteObservationNoLongerInResult(
     appMode: AppMode,
-    geoHazard: GeoHazard,
+    geoHazards: GeoHazard[],
     user: LoggedInUser,
     fromDate: Date,
     items: RegistrationViewModel[]) {
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('delete')
       .where((reg: RegistrationViewModel) => {
-        return reg && reg.GeoHazardTID === geoHazard
+        return reg && geoHazards.indexOf(reg.GeoHazardTID) >= 0
           && moment(reg.DtObsTime).isSameOrAfter(fromDate)
           && !items.find((item) => item.RegID === reg.RegID)
           && this.exludeLoggedInUser(user, reg);
       }).exec();
   }
 
-  private async deleteOldObservations(appMode: AppMode, geoHazard: GeoHazard, user: LoggedInUser) {
-    const daysBack = await this.getMaxDaysBackForGeoHazard(geoHazard);
+  private async deleteOldObservations(appMode: AppMode, geoHazards: GeoHazard[], user: LoggedInUser) {
+    const daysBack = await this.getMaxDaysBackForGeoHazard(geoHazards);
     const deleteOldRecordsFrom = moment().subtract(daysBack + 1, 'days');
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('delete')
       .where((reg: RegistrationViewModel) => {
         return reg && moment(reg.DtObsTime).isBefore(deleteOldRecordsFrom)
-          && reg.GeoHazardTID === geoHazard
+          && geoHazards.indexOf(reg.GeoHazardTID) >= 0
           && this.exludeLoggedInUser(user, reg);
       }).exec();
   }
 
-  private getMaxDaysBackForGeoHazard(geoHazard: GeoHazard) {
-    const geoHazardString = GeoHazard[geoHazard];
+  private getMaxDaysBackForGeoHazard(geoHazards: GeoHazard[]) {
+    const geoHazardString = GeoHazard[geoHazards[0]];
     const daysBackForCurrentGeoHazard: number[] = settings.observations.daysBack[geoHazardString];
     return Math.max(...daysBackForCurrentGeoHazard);
   }
@@ -241,12 +223,12 @@ export class ObservationService {
   getObservationsByParametersAsObservable(
     appMode: AppMode,
     langKey: LangKey,
-    geoHazard?: GeoHazard,
+    geoHazards?: GeoHazard[],
     fromDate?: Date,
     observerGuid?: string): Rx.Observable<RegistrationViewModel[]> {
     return nSQL().observable<RegistrationViewModel[]>(() => {
       return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select').where((reg: RegistrationViewModel) => {
-        return reg && (geoHazard ? reg.GeoHazardTID === geoHazard : true)
+        return reg && (geoHazards ? geoHazards.indexOf(reg.GeoHazardTID) >= 0 : true)
           && reg.LangKey === langKey
           && (fromDate ? moment(reg.DtObsTime).isAfter(fromDate) : true)
           && (observerGuid ? reg.Observer.ObserverGUID === observerGuid : true);

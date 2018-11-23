@@ -54,7 +54,7 @@ export class LandslideObsPage extends BasePage {
       L.latLng(this.registration.request.LandSlideObs.StopLat, this.registration.request.LandSlideObs.StopLong) : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,
-      componentProps: { relativeToLatLng, startLatLng, endLatLng },
+      componentProps: { relativeToLatLng, startLatLng, endLatLng, geoHazard: this.registration.geoHazard },
     });
     modal.present();
     const result = await modal.onDidDismiss();

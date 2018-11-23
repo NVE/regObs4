@@ -72,7 +72,7 @@ export class WarningService {
     }
     console.log('[INFO][WarningService] Updating warnings by priority');
     const userSettings = await this.userSettingService.getUserSettings();
-    for (const geoHazard of this.getPriority(userSettings.currentGeoHazard)) {
+    for (const geoHazard of userSettings.currentGeoHazard) {
       if (!cancelled) {
         await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard, cancel);
       }
@@ -81,7 +81,9 @@ export class WarningService {
 
   async updateWarningsForCurrentGeoHazard() {
     const userSettings = await this.userSettingService.getUserSettings();
-    return this.updateWarningsForGeoHazard(userSettings.currentGeoHazard);
+    for (const geoHazard of userSettings.currentGeoHazard) {
+      return this.updateWarningsForGeoHazard(geoHazard);
+    }
   }
 
   private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard, cancel?: Promise<void>) {
@@ -116,17 +118,17 @@ export class WarningService {
       .where((g) => g.id === id).exec();
   }
 
-  private getPriority(currentGeoHazard: GeoHazard) {
-    if (currentGeoHazard === GeoHazard.Snow) {
-      return [GeoHazard.Snow];
-    } else if (currentGeoHazard === GeoHazard.Ice) {
-      return [GeoHazard.Ice];
-    } else if (currentGeoHazard === GeoHazard.Water) {
-      return [GeoHazard.Water, GeoHazard.Dirt];
-    } else if (currentGeoHazard === GeoHazard.Dirt) {
-      return [GeoHazard.Dirt, GeoHazard.Water];
-    }
-  }
+  // private getPriority(currentGeoHazard: GeoHazard) {
+  //   if (currentGeoHazard === GeoHazard.Snow) {
+  //     return [GeoHazard.Snow];
+  //   } else if (currentGeoHazard === GeoHazard.Ice) {
+  //     return [GeoHazard.Ice];
+  //   } else if (currentGeoHazard === GeoHazard.Water) {
+  //     return [GeoHazard.Water, GeoHazard.Dirt];
+  //   } else if (currentGeoHazard === GeoHazard.Dirt) {
+  //     return [GeoHazard.Dirt, GeoHazard.Water];
+  //   }
+  // }
 
   private getWarningsAsObservable() {
     return nSQL().observable<IWarningGroup[]>(() => {
@@ -161,21 +163,11 @@ export class WarningService {
       }), shareReplay(1));
   }
 
-  private getGeoHazardFilter(currentGeoHazard: GeoHazard) {
-    const geoHazards = [currentGeoHazard];
-    if (currentGeoHazard === GeoHazard.Dirt) {
-      geoHazards.push(GeoHazard.Water);
-    } else if (currentGeoHazard === GeoHazard.Water) {
-      geoHazards.push(GeoHazard.Dirt);
-    }
-    return geoHazards;
-  }
-
   private getWarningsForCurrentLanguageAndCurrentGeoHazard() {
     return combineLatest(this.getWarningsForCurrentLanguageAsObservable(),
       this.userSettingService.userSettingObservable$)
       .pipe(map(([warningGroups, userSetting]) => {
-        const geoHazards = this.getGeoHazardFilter(userSetting.currentGeoHazard);
+        const geoHazards = userSetting.currentGeoHazard;
         return warningGroups.filter((wg) => geoHazards.find((g) => g === wg.key.geoHazard));
       }), shareReplay(1));
   }

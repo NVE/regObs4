@@ -1,13 +1,11 @@
-import { Component, OnInit, OnDestroy, NgZone, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
-import { Observable, Subscription } from 'rxjs';
-import { validateConfig } from '@angular/router/src/config';
-import { map, distinctUntilChanged, tap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { settings } from '../../../../settings';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { Select } from '@ionic/angular';
-import { ObservationService } from '../../../core/services/observation/observation.service';
 
 @Component({
   selector: 'app-observations-days-back',
@@ -18,7 +16,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   daysBack: { val: number, selected: boolean, text: string }[];
   subscription: Subscription;
   recreate: boolean;
-  constructor(private userSettingService: UserSettingService, private zone: NgZone, private observationService: ObservationService) { }
+  constructor(private userSettingService: UserSettingService, private zone: NgZone) { }
 
   ngOnInit() {
     this.subscription = this.userSettingService.userSettingObservable$
@@ -40,10 +38,9 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
 
   getDaysBackArray(userSetting: UserSetting) {
     const daysBackArr: { val: number, selected: boolean, text: string }[]
-      = settings.observations.daysBack[GeoHazard[userSetting.currentGeoHazard]].map((val: number) => ({
+      = settings.observations.daysBack[GeoHazard[userSetting.currentGeoHazard[0]]].map((val: number) => ({
         val: val,
-        selected: userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard).daysBack === val,
-        text: `${val} dager tilbake`
+        selected: userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]).daysBack === val
       }));
     return daysBackArr;
   }
@@ -51,7 +48,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   async changeDaysBack(event: Event) {
     const select: Select = (<any>event.target);
     const userSetting = await this.userSettingService.getUserSettings();
-    const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard);
+    const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]);
     if (existingValue.daysBack !== select.value) {
       existingValue.daysBack = select.value;
       await this.userSettingService.saveUserSettings(userSetting);

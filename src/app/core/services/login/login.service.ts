@@ -50,8 +50,10 @@ export class LoginService {
     try {
       const result = await this.httpClient.get<ObserverResponseDto>(`${baseUrl}/Account/Login`, { headers }).toPromise();
       await this.saveLoggedInUserToDb(userSettings.appMode, email, true, result);
+      return true;
     } catch (err) {
       await this.showErrorMessage(err.status, err.message);
+      return false;
     }
   }
 

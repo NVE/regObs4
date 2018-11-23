@@ -4,6 +4,7 @@ import { ObsLocationDto } from '../../../regobs-api/models';
 import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
 @Component({
   selector: 'app-set-avalanche-position',
@@ -14,6 +15,7 @@ export class SetAvalanchePositionPage implements OnInit {
   @Input() startLatLng?: L.LatLng;
   @Input() endLatLng?: L.LatLng;
   @Input() relativeToLatLng?: L.LatLng;
+  @Input() geoHazard: GeoHazard;
   @Input() showPolyline = true;
 
   start: L.LatLng;

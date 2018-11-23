@@ -1,11 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, NgZone, ChangeDetectorRef } from '@angular/core';
 import { IRegistration } from '../../models/registration.model';
-import { RegistrationService } from '../../services/registration.service';
-import { NavController, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from '../../models/registrationTid.enum';
 import * as L from 'leaflet';
 import { SetDamageLocationPage } from '../../pages/set-damage-location/set-damage-location.page';
-import { DamageObsDto, ObsLocationDto } from '../../../regobs-api/models';
+import { ObsLocationDto } from '../../../regobs-api/models';
 
 @Component({
   selector: 'app-damage-obs',
@@ -26,20 +25,9 @@ export class DamageObsComponent implements OnInit {
     return this.registration.request.DamageObs.find((x) => x.DamageTypeTID === this.damageTypeId);
   }
 
-  // set damageObs(val: DamageObsDto) {
-  //   const index = this.registration.request.DamageObs.indexOf(val);
-  //   this.ngZone.run(() => {
-  //     this.registration.request.DamageObs[index] = val;
-  //     this.registrationChange.emit(this.registration);
-  //   });
-  // }
-
   constructor(
-    private registrationService: RegistrationService,
-    private navController: NavController,
     private ngZone: NgZone,
     private modalController: ModalController,
-    private cdr: ChangeDetectorRef
   ) {
   }
 
@@ -56,8 +44,9 @@ export class DamageObsComponent implements OnInit {
   }
 
   toggleDamageType() {
-    this.isSelected = !this.isSelected;
-    this.cdr.detectChanges();
+    this.ngZone.run(() => {
+      this.isSelected = !this.isSelected;
+    });
   }
 
   onCheckedChange() {
@@ -79,7 +68,7 @@ export class DamageObsComponent implements OnInit {
       ? L.latLng(this.registration.request.ObsLocation.Latitude, this.registration.request.ObsLocation.Longitude) : null;
     const modal = await this.modalController.create({
       component: SetDamageLocationPage,
-      componentProps: { fromLatLng, damageObs: this.damageObs },
+      componentProps: { fromLatLng, damageObs: this.damageObs, geoHazard: this.registration.geoHazard },
     });
     modal.present();
     const result = await modal.onDidDismiss();

@@ -4,6 +4,7 @@ import { DamageObsDto, ObsLocationDto } from '../../../regobs-api/models';
 import * as L from 'leaflet';
 import { IsEmptyHelper } from '../../../../core/helpers/is-empty.helper';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
 @Component({
   selector: 'app-set-damage-location',
@@ -13,6 +14,7 @@ import { SetLocationInMapComponent } from '../../components/set-location-in-map/
 export class SetDamageLocationPage implements OnInit {
 
   @Input() damageObs: DamageObsDto;
+  @Input() geoHazard: GeoHazard;
   @Input() fromLatLng: L.LatLng;
   fromMarker: L.Marker;
   locationMarker: L.Marker;

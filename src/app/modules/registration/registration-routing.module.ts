@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
     {
-        path: '',
+        path: 'registration/edit/:id',
         loadChildren: './pages/overview/overview.module#OverviewPageModule'
     },
     {
@@ -15,7 +15,7 @@ const routes: Routes = [
         loadChildren: './pages/obs-location/obs-location.module#ObsLocationPageModule'
     },
     {
-        path: 'registration/obs-location/:id',
+        path: 'registration/obs-location/:id?geoHazard=:geoHazard',
         loadChildren: './pages/obs-location/obs-location.module#ObsLocationPageModule'
     },
     {
@@ -33,10 +33,6 @@ const routes: Routes = [
     {
         path: 'registration/water/damage/:id',
         loadChildren: './pages/water/damage/damage.module#DamagePageModule'
-    },
-    {
-        path: 'registration/edit/:id',
-        loadChildren: './pages/overview/overview.module#OverviewPageModule'
     },
     {
         path: 'registration/ice/ice-cover/:id',

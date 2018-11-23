@@ -19,8 +19,8 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
   @ViewChild('floodzoones') floodzoones;
   @ViewChild('clayzones') clayzones;
 
-  get currentGeoHazard(): GeoHazard {
-    return this.userSetting ? this.userSetting.currentGeoHazard : null;
+  get currentGeoHazards(): GeoHazard[] {
+    return this.userSetting ? this.userSetting.currentGeoHazard : [];
   }
   get supportTiles(): Array<SupportTile> {
     const tiles = settings.map.tiles.supportTiles;
@@ -51,8 +51,8 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
     };
   }
 
-  get geoHazardName() {
-    return GeoHazard[this.currentGeoHazard];
+  getGeoHazardName(geoHazard: GeoHazard) {
+    return GeoHazard[geoHazard];
   }
 
   constructor(private userSettingService: UserSettingService) {
