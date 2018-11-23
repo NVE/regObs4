@@ -30,8 +30,6 @@ export class ObservationListCardComponent implements OnInit {
   private userSetting: UserSetting;
   allSelected = true;
   loaded = false;
-  prevVisible = false;
-  nextVisible = false;
   imageHeader = '';
   imageDecription = '';
   stars: { full: boolean }[] = [];
@@ -118,27 +116,12 @@ export class ObservationListCardComponent implements OnInit {
 
   async setNextAndPrevVisibe() {
     const index = await this.slider.getActiveIndex();
+    const isEnd = await this.slider.isEnd();
+    const imgIndex = isEnd ? (this.obs.Attachments.length - 1) : index;
     this.ngZone.run(() => {
-      this.nextVisible = this.obs.Attachments.length > 1 && index < (this.obs.Attachments.length - 1);
-      this.prevVisible = this.obs.Attachments.length > 1 && index > 0;
-
-      this.imageHeader = this.obs.Attachments[index].RegistrationName;
-      this.imageDecription = this.obs.Attachments[index].Comment;
+      this.imageHeader = this.obs.Attachments[imgIndex].RegistrationName;
+      this.imageDecription = this.obs.Attachments[imgIndex].Comment;
     });
-  }
-
-  async slideNext() {
-    const index = await this.slider.getActiveIndex();
-    if (index < (this.obs.Attachments.length - 1)) {
-      this.slider.slideNext();
-    }
-  }
-
-  async slidePrev() {
-    const index = await this.slider.getActiveIndex();
-    if (index > 0) {
-      this.slider.slidePrev();
-    }
   }
 
   toggleAllSelected() {

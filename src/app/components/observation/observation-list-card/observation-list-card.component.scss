@@ -59,6 +59,14 @@ ion-card {
     }
 }
 
+.img-container {
+    max-height: 80vw;
+
+    ion-img {
+        height: 100%; width: 100%; object-fit: cover;
+    }
+}
+
 .small-space {
     padding-left: 3px;
     display: inline-block;

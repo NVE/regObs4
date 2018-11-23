@@ -26,8 +26,9 @@
       </ion-row>
       <ng-container *ngIf="obs.Attachments.length > 0">
         <ion-row>
-          <ion-col size="12" no-padding>
-            <ion-slides *ngIf="obs.Attachments.length > 1" [options]="slideOptions" [pager]="true" (ionSlideDidChange)="setNextAndPrevVisibe()">
+          <ion-col size="12" no-padding class="img-container">
+            <ion-slides *ngIf="obs.Attachments.length > 1" [options]="slideOptions" [pager]="true"
+              (ionSlideTransitionEnd)="setNextAndPrevVisibe()">
               <ion-slide *ngFor="let image of obs.Attachments">
                 <img [src]="getImageUrl(image.AttachmentFileName)" (click)="slideTap()" />
               </ion-slide>
