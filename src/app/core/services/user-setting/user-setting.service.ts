@@ -35,7 +35,6 @@ export class UserSettingService {
     this._userSettingObservable = this.getUserSettingsAsObservable();
     this._currentGeoHazardObservable = this._userSettingObservable.pipe(
       map((val) => val.currentGeoHazard),
-      distinctUntilChanged((prev, next) => prev.join('-') !== next.join('-')),
       shareReplay(1));
   }
 
