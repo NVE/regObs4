@@ -35,11 +35,11 @@ ion-fab {
 
     .toggle-button, .geo-selector-item {
         ion-label {
-            background-color: #fff;
-            opacity: 0.7;
+            background-color: rgba(255, 255, 255, 0.7);
             padding: 4px;
             white-space: nowrap;
             flex: none;
+            font-size: 17px;
         }
     }
 

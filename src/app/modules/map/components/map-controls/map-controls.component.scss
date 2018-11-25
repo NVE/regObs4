@@ -1,6 +1,6 @@
 .map-controls {
     position: absolute;
-    top: 8px;
+    top: calc(10px + var(--ion-safe-area-top,0px));
     right: 10px;
     z-index: 900;
 }

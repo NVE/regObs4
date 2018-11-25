@@ -10,7 +10,6 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { AppProviders } from './app.providers';
 import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
-import { PopoverMenuComponent } from './components/popover-menu/popover-menu.component';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { SupportTilesMenuComponent } from './components/side-menu/support-tiles-menu/support-tiles-menu.component';
@@ -29,13 +28,11 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
-    PopoverMenuComponent,
     SideMenuComponent,
     SupportTilesMenuComponent,
     UserLoginComponent,
     ObservationsDaysBackComponent,
   ],
-  entryComponents: [PopoverMenuComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -61,6 +58,5 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: AppProviders.getProviders(),
   bootstrap: [AppComponent],
-  exports: [PopoverMenuComponent],
 })
 export class AppModule { }

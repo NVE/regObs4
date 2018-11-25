@@ -1,7 +1,24 @@
 <ion-fab #menuFab vertical="bottom" horizontal="end" slot="fixed">
-  <ion-fab-button (click)="showFabMenu($event)">
+  <ion-fab-button>
     <ion-icon name="add"></ion-icon>
   </ion-fab-button>
   <ion-fab-list side="top">
+    <ion-list lines="full" no-margin>
+      <ion-item (click)="createRegistration(geoHazard)" *ngFor="let geoHazard of geoHazards">
+        <ion-icon slot="start" name="eye"></ion-icon>
+        <ion-label>{{'ADD_MENU.NEW_OBSERVATION' | translate}} {{ getName(geoHazard) | translate | lowercase }}{{
+          'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}</ion-label>
+      </ion-item>
+      <ion-item *ngFor="let draft of drafts; let i = index" (click)="editRegistration(draft)">
+        <ion-icon slot="start" name="create"></ion-icon>
+        <ion-label>{{ getName(draft.geoHazard) | translate }} {{ 'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}
+          <p *ngIf="draftDates[i]">{{ draftDates[i] }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="showTrip" (click)="closeAndNavigate('trip-log')">
+        <ion-icon slot="start" name="walk"></ion-icon>
+        <ion-label>{{'ADD_MENU.NEW_TRIP' | translate }}</ion-label>
+      </ion-item>
+    </ion-list>
   </ion-fab-list>
 </ion-fab>
