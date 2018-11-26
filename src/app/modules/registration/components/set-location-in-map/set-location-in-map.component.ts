@@ -100,8 +100,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
     this.mapViewObservableSubscription = this.mapService.mapViewObservable$.pipe(debounceTime(1000)).
       subscribe((mapView) => {
-        const range = Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2);
-        this.locationService.updateLocationWithinRadius(this.geoHazard, mapView.center.lat, mapView.center.lng, range);
+        if (mapView.zoom > 7) { // Do not update when zoom level is too low, we get too much records
+          const range = Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2);
+          this.locationService.updateLocationWithinRadius(this.geoHazard, mapView.center.lat, mapView.center.lng, range);
+        }
       });
   }
 
@@ -140,7 +142,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     });
 
     if (this.showPreviousUsedLocations) {
-      this.locationsSubscription = this.locationService.getLocationsInViewAsObservable(this.geoHazard)
+      this.locationsSubscription = this.locationService.getLocationsAsObservable(this.geoHazard)
         .subscribe((locations) => {
           this.locationGroup.clearLayers();
           for (const location of locations) {
@@ -157,12 +159,15 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   private setToPrevouslyUsedLocation(location: ObsLocationsResponseDtoV2) {
-    this.followMode = false;
-    this.selectedLocation = location;
-    this.locationMarker.setLatLng(L.latLng(location.LatLngObject.Latitude,
-      location.LatLngObject.Longitude));
-    this.map.panTo(this.locationMarker.getLatLng());
-    this.updatePathAndDistance();
+    this.ngZone.run(() => {
+      this.followMode = false;
+      this.selectedLocation = location;
+      this.locationMarker.setLatLng(L.latLng(location.LatLngObject.Latitude,
+        location.LatLngObject.Longitude));
+      this.map.panTo(this.locationMarker.getLatLng());
+      this.updatePathAndDistance();
+      this.showDetails = true;
+    });
   }
 
   private moveLocationMarkerToCenter() {

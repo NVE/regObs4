@@ -66,7 +66,7 @@ export class ObsLocationPage implements OnInit {
     });
     this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
       this.ngZone.run(() => {
-        this.fullscreen = isFullscreen;
+        this.fullscreen = isFullscreen; // TODO: change to observable and unsubscribe!
       });
     });
   }
