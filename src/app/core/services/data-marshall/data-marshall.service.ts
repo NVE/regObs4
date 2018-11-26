@@ -10,6 +10,8 @@ import { UserSetting } from '../../models/user-settings.model';
 import * as Sentry from 'sentry-cordova';
 import { environment } from '../../../../environments/environment';
 import { settings } from '../../../../settings';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { Platform } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +25,8 @@ export class DataMarshallService {
     private kdvService: KdvService,
     private userSettingService: UserSettingService,
     private loginService: LoginService,
+    private platform: Platform,
+    private localNotifications: LocalNotifications,
   ) {
     this.userSettingService.userSettingObservable$.pipe(
       pairwise())
@@ -67,6 +71,10 @@ export class DataMarshallService {
       await this.warningService.updateWarnings(cancelTimer);
       await this.observationService.updateObservations(cancelTimer);
       await this.kdvService.updateKdvElements(cancelTimer);
+
+      if (this.platform.is('cordova') && this.platform.is('ios') || this.platform.is('android')) {
+        this.localNotifications.schedule({ text: `Observations updated: ${new Date()}` });
+      }
 
       console.log('[INFO] DataMarshall Background Update Completed');
     });

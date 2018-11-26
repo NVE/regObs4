@@ -33,6 +33,8 @@ import { StartWizardGuard } from './core/guards/start-wizard.guard';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { LoginGuard } from './core/guards/login.guard';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -63,6 +65,8 @@ export class AppProviders {
             ApiInterceptor,
             EmailComposer,
             AppVersion,
+            LocalNotifications,
+            Keyboard,
             API_INTERCEPTOR_PROVIDER,
             { provide: ErrorHandler, useClass: AppErrorHandler },
             ...this.getSingletonServices(),
