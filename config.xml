@@ -21,6 +21,7 @@
     <preference name="SplashScreenDelay" value="500" />
     <preference name="AndroidLaunchMode" value="singleTask" />
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
+    <preference name="KeyboardResizeMode" value="ionic" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <platform name="android">
         <allow-intent href="market:*" />
@@ -86,10 +87,9 @@
     <allow-navigation href="http://192.168.140.88:8101" />
     <allow-navigation href="http://192.168.140.88:8100" />
     <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
-        <string>Vise posisjon i kartet</string>
+        <string>Show location in map</string>
     </edit-config>
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
-    <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
     <plugin name="cordova-plugin-ionic-webview" spec="^2.0.2" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
@@ -103,7 +103,7 @@
         <variable name="MIN_BACKGROUND_DURATION" value="30" />
     </plugin>
     <plugin name="cordova-plugin-geolocation" spec="^4.0.1">
-        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="Vise posisjon i kartet" />
+        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="Show location in map" />
     </plugin>
     <plugin name="cordova-sqlite-storage" spec="~2.3.3" />
     <plugin name="cordova-plugin-nano-sqlite" spec="~1.2.0" />
@@ -155,8 +155,10 @@
         <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="Document observations" />
     </plugin>
     <plugin name="cordova-plugin-camera" spec="4.0.3" />
+    <plugin name="cordova-plugin-app-version" spec="0.1.9" />
+    <plugin name="cordova-plugin-local-notification" spec="0.9.0-beta.2" />
+    <plugin name="cordova-plugin-ionic-keyboard" spec="^2.1.3" />
     <engine name="browser" spec="5.0.4" />
     <engine name="ios" spec="4.5.5" />
     <engine name="android" spec="7.1.2" />
-    <plugin name="cordova-plugin-app-version" spec="0.1.9" />
 </widget>
