@@ -54,7 +54,7 @@ export class UserGroupService {
       return { key: `${user.Guid}_${val.Id}`, userId: user.Guid, ...result };
     });
     const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
-    await nSQL(instanceName).loadJS(instanceName, userGroups, true);
+    await nSQL(instanceName).loadJS(instanceName, userGroups, false);
     await this.dataLoadService.loadingCompleted(dataLoadId, userGroups.length);
   }
 

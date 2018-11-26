@@ -37,7 +37,7 @@ export class LocationService {
     console.log('[INFO][LocationService] Got new locations: ', result);
 
     const tableName = NanoSql.getInstanceName(NanoSql.TABLES.LOCATION.name, userSettings.appMode);
-    await nSQL(tableName).loadJS(tableName, result, true);
+    await nSQL(tableName).loadJS(tableName, result, false);
     // Cleanup deleted records
     await this.deleteLocationsNoLongerInResult(userSettings.appMode, geoHazard, lat, lng, radius, result);
   }

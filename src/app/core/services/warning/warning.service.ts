@@ -54,6 +54,9 @@ export class WarningService {
     private platform: Platform,
     private nativeHttp: HTTP,
   ) {
+    const test = this.getWarningsAsObservable().subscribe((val) => {
+      console.log('[INFO][WarningService] Warnings in db updated!');
+    });
     this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
     this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();
     this._warningGroupInMapViewObservable = this.getWarningsForCurrentMapViewAsObservable();
@@ -96,14 +99,17 @@ export class WarningService {
     }
   }
 
-  updateWarningsForGeoHazard(geoHazard: GeoHazard, cancel?: Promise<void>) {
+  async updateWarningsForGeoHazard(geoHazard: GeoHazard, cancel?: Promise<void>) {
     if (geoHazard === GeoHazard.Snow) {
-      return this.updateAvalancheWarnings(LangKey.no, null, null, cancel);
+      await this.updateAvalancheWarnings(LangKey.no, null, null, cancel);
     } else if (geoHazard === GeoHazard.Ice) {
-      return this.updateIceWarnings();
+      await this.updateIceWarnings();
     } else {
-      return this.updateFloodAndLandslideWarnings(geoHazard, LangKey.no, null, null, cancel);
+      await this.updateFloodAndLandslideWarnings(geoHazard, LangKey.no, null, null, cancel);
     }
+    // this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
+    // this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();
+    // this._warningGroupInMapViewObservable = this.getWarningsForCurrentMapViewAsObservable();
   }
 
   addToFavourite(groupId: string, geoHazard: GeoHazard) {
@@ -133,7 +139,7 @@ export class WarningService {
   private getWarningsAsObservable() {
     return nSQL().observable<IWarningGroup[]>(() => {
       return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
-    }).debounce(1000).toRxJS();
+    }).debounce(5000).toRxJS();
   }
 
   private getFavouritesAsObservable() {
@@ -275,7 +281,7 @@ export class WarningService {
         }
       }
       console.log(`[INFO][WarningService] Result from ${GeoHazard[geoHazard]}:`, regions);
-      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions, true);
+      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions, false);
 
       // TODO: Delete regions no longer in result in case regions is changed in api
       await this.dataLoadService.loadingCompleted(dataLoadId, warningsresult.length,
@@ -313,7 +319,7 @@ export class WarningService {
         })),
       }));
       console.log(`[INFO][WarningService] New updates for avalanche warnings:`, regionResult);
-      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
+      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, false);
       await this.dataLoadService.loadingCompleted(dataLoadId, warningsresult.length, dateRange.from.toDate(), new Date());
     } catch (err) {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
@@ -339,7 +345,7 @@ export class WarningService {
       warnings: []
     }));
     console.log(`[INFO][WarningService] New updates for ice warnings:`, regionResult);
-    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
+    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, false);
 
     // TODO: Delete regions no longer in result in case regions is changed in api
     await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length);

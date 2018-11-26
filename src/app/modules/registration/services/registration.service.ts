@@ -291,7 +291,7 @@ export class RegistrationService {
       const userSettings = await this.userSettingService.getUserSettings();
       const result = await this.getLatestRegistrationsForUserFromApi(userSettings.appMode, user.user.Guid).toPromise();
       await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode)
-        .loadJS(NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode), result, true);
+        .loadJS(NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode), result, false);
     }
   }
 

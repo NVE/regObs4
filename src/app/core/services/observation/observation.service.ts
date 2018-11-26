@@ -122,7 +122,7 @@ export class ObservationService {
 
       console.log(`[INFO] Got ${searchResult.length} new observations for geoHazards  ${geoHazards.join(', ')}`);
       const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode);
-      await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode).loadJS(instanceName, searchResult, true);
+      await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode).loadJS(instanceName, searchResult, false);
 
       // Deleting items no longer in updated result
       await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, user, fromDate, searchResult);
@@ -143,7 +143,7 @@ export class ObservationService {
       Offset: page * numberOfRecordsToFetch,
     }).toPromise();
     const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
-    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, true);
+    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, false);
   }
 
   getObservationsDaysBack(userSettings: UserSetting, geoHazards: GeoHazard[]): number {
