@@ -22,16 +22,22 @@
     .search-input-form {
         ion-list {
             border-radius: 6px;
+            background-color: #fff;
 
             &.has-results {
                 border-bottom-left-radius: 0px;
                 border-bottom-right-radius: 0px;
+            }
+
+            ion-item {
+                --border-width: 0 0 0 0;
             }
         }
     }
     .search-result {
         max-height: 400px;
         overflow: scroll;
+        border-top: 1px solid black;
     }
 }
 

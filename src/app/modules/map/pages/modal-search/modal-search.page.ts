@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { ModalController, Events, Input } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable } from 'rxjs';
@@ -23,7 +23,7 @@ export class ModalSearchPage implements OnInit {
   constructor(private modalController: ModalController,
     private mapSearchService: MapSearchService,
     private events: Events,
-    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
   ) { }
 
   ngOnInit() {
@@ -33,9 +33,11 @@ export class ModalSearchPage implements OnInit {
         debounceTime(400),
         distinctUntilChanged(),
         tap((val) => {
-          this.loading = true;
-          this.hasResults = false;
-          this.searchText = val;
+          this.ngZone.run(() => {
+            this.loading = true;
+            this.hasResults = false;
+            this.searchText = val;
+          });
         }),
         switchMap((searchValue: string) => {
           if (searchValue.length >= 2) {
@@ -45,8 +47,10 @@ export class ModalSearchPage implements OnInit {
           }
         }),
         tap((values) => {
-          this.hasResults = values.length > 0;
-          this.loading = false;
+          this.ngZone.run(() => {
+            this.hasResults = values.length > 0;
+            this.loading = false;
+          });
         }),
       );
   }
@@ -65,6 +69,5 @@ export class ModalSearchPage implements OnInit {
   searchItemClicked(item: MapSearchResponse) {
     this.events.publish(settings.events.mapSearchItemClicked, item);
     this.closeModal();
-    this.cdr.detectChanges();
   }
 }

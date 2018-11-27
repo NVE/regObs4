@@ -9,8 +9,8 @@
       </ion-item>
     </ion-list>
   </form>
-  <ion-list lines="full" no-padding no-margin class="search-result">
-    <ion-item *ngFor="let item of searchResult$ | async" (click)="searchItemClicked(item)">
+  <ion-list *ngIf="searchResult$ | async as searchResults" lines="full" no-padding no-margin class="search-result">
+    <ion-item *ngFor="let item of searchResults" (click)="searchItemClicked(item)">
       <ion-label>
         <ion-text class="search-result-name" [innerHTML]="item.name | startsWithHighlight:searchText"></ion-text>
         <ion-text class="search-description">{{item.description}}</ion-text>
