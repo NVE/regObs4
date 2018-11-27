@@ -15,6 +15,7 @@ import { AppVersion } from '@ionic-native/app-version/ngx';
 import { environment } from '../environments/environment';
 import { AppMode } from './core/models/app-mode.enum';
 import { settings } from '../settings';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 @Component({
   selector: 'app-root',
@@ -36,6 +37,7 @@ export class AppComponent {
     private dataMarshallService: DataMarshallService,
     private offlineMapService: OfflineMapService,
     private appVersion: AppVersion,
+    private keyboard: Keyboard,
   ) {
     this.initializeApp();
   }
@@ -51,6 +53,7 @@ export class AppComponent {
       this.translate.use(LangKey[userSettings.language]);
       this.statusBar.styleBlackTranslucent();
       this.statusBar.overlaysWebView(this.platform.is('ios'));
+      this.keyboard.hideFormAccessoryBar(false);
       this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
 
       this.initBackroundUpdates();

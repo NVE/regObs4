@@ -21,6 +21,7 @@
     <preference name="SplashScreenDelay" value="500" />
     <preference name="AndroidLaunchMode" value="singleTask" />
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
+    <preference name="KeyboardResize" value="true" />
     <preference name="KeyboardResizeMode" value="ionic" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <platform name="android">

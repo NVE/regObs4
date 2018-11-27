@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import 'moment-timezone';
 import * as Rx from 'rxjs';
 import { NanoSql } from '../../../../nanosql';
-import { debounceTime, map, distinctUntilChanged, switchMap, shareReplay } from 'rxjs/operators';
+import { debounceTime, map, distinctUntilChanged, switchMap, shareReplay, tap } from 'rxjs/operators';
 import { LoginService } from '../login/login.service';
 import { LoggedInUser } from '../login/logged-in-user.model';
 import { UserSettingService } from '../user-setting/user-setting.service';
@@ -54,9 +54,10 @@ export class ObservationService {
     const user = await this.loginService.getLoggedInUser();
     const userSettings = await this.userSettingService.getUserSettings();
     if (!cancelled) {
-      await this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.currentGeoHazard, user, userSettings, cancel);
+      return this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.currentGeoHazard, user, userSettings, cancel);
+    } else {
+      return 0;
     }
-    // TODO: Update my observations if user is logged in
   }
 
   private getDataLoadId(appMode: AppMode, geoHazards: GeoHazard[]) {
@@ -78,12 +79,13 @@ export class ObservationService {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(userSetting.appMode, geoHazards));
     const lastUpdateLimit = moment().subtract(10, 'minutes');
     const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazards);
-    if (!dataLoad.lastUpdated
+    if (true || !dataLoad.lastUpdated
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
       || moment(dataLoad.itemsFromDate).isAfter(fromDate)) {
-      await this.updateObservationsForGeoHazard(geoHazards, user, userSetting, cancel);
+      return this.updateObservationsForGeoHazard(geoHazards, user, userSetting, cancel);
     } else {
       console.log(`[INFO][ObervationService] No need to update ${geoHazards.join(', ')}. Last updated is:`, dataLoad.lastUpdated);
+      return 0;
     }
   }
 
@@ -111,6 +113,12 @@ export class ObservationService {
     const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazards);
     await this.dataLoadService.startLoading(dataLoadId);
     const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazards);
+    let isCanceled = false;
+    if (cancel) {
+      cancel.then(() => {
+        isCanceled = true;
+      });
+    }
 
     try {
       const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchAll({
@@ -120,17 +128,42 @@ export class ObservationService {
         LangKey: userSetting.language,
       }), cancel);
 
-      console.log(`[INFO] Got ${searchResult.length} new observations for geoHazards  ${geoHazards.join(', ')}`);
-      const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode);
-      await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode).loadJS(instanceName, searchResult, false);
-
-      // Deleting items no longer in updated result
-      await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, user, fromDate, searchResult);
-      // Delete old items
-      await this.deleteOldObservations(userSetting.appMode, geoHazards, user);
-      await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.length, fromDate, new Date());
+      console.log(`[INFO][ObervationService] Got ${searchResult.length} new observations for geoHazards  ${geoHazards.join(', ')}`);
+      if (!isCanceled) {
+        const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode);
+        await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode)
+          .loadJS(instanceName, searchResult, true);
+        console.log(`[INFO][ObervationService] observations saved to db`);
+      } else {
+        console.warn(`[INFO][ObervationService] operation cancelled. Skipping saving to db`);
+      }
+      if (!isCanceled) {
+        // Deleting items no longer in updated result
+        await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, user, fromDate, searchResult);
+        console.log(`[INFO][ObervationService] Deleted items no longer in updated result`);
+      } else {
+        console.warn(`[INFO][ObervationService] operation cancelled. Skipping deleting record no longer in result`);
+      }
+      if (!isCanceled) {
+        // Delete old items
+        await this.deleteOldObservations(userSetting.appMode, geoHazards, user);
+        console.log(`[INFO][ObervationService] Deleted old observations`);
+      } else {
+        console.warn(`[INFO][ObervationService] operation cancelled. Skipping deleting old records`);
+      }
+      if (!isCanceled) {
+        await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.length, fromDate, new Date());
+        console.log(`[INFO][ObervationService] returning ${searchResult.length}`);
+        return searchResult.length;
+      } else {
+        console.warn(`[INFO][ObervationService] operation cancelled. Saving load error.`);
+        await this.dataLoadService.loadingError(dataLoadId, 'Operation cancelled');
+        return 0;
+      }
     } catch (err) {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
+      console.error(`[ERROR][ObervationService] Loading error`, err);
+      return 0;
     }
   }
 
@@ -234,7 +267,8 @@ export class ObservationService {
           && (observerGuid ? reg.Observer.ObserverGUID === observerGuid : true);
       }).emit();
     }).toRxJS().pipe(debounceTime(500),
-      map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))));
+      map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
+      tap(() => console.log('[INFO][ObservationService] Observations updated!')));
   }
 
   async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {
