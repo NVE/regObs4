@@ -18,6 +18,8 @@ import { Platform } from '@ionic/angular';
 })
 export class DataMarshallService {
 
+  foregroundUpdateInterval: NodeJS.Timeout;
+
   constructor(
     private ngZone: NgZone,
     private warningService: WarningService,
@@ -61,16 +63,40 @@ export class DataMarshallService {
             enabled: environment.production
           });
       });
+
+    this.platform.ready().then(() => {
+      this.platform.pause.subscribe(() => {
+        console.log('[INFO] App paused. Stop foreground updates.');
+        this.stopForegroundUpdate();
+      });
+      this.platform.resume.subscribe(() => {
+        console.log('[INFO] App resumed. Start foreground updates.');
+        this.startForegroundUpdate();
+      });
+      this.startForegroundUpdate();
+    });
     // No need to unsubscribe this observables when the service is singleton. It get destroyed when app exits.
   }
 
-  backgroundFetchUpdate() {
+  startForegroundUpdate() {
+    this.foregroundUpdateInterval = setInterval(() => {
+      this.backgroundFetchUpdate();
+    }, settings.foregroundUpdateIntervalMs);
+    this.backgroundFetchUpdate(); // Update on resume
+  }
+
+  stopForegroundUpdate() {
+    clearTimeout(this.foregroundUpdateInterval);
+  }
+
+  backgroundFetchUpdate(useTimeout = false, showNotification = false) {
     return this.ngZone.runOutsideAngular(async () => {
-      const cancelTimer = (this.platform.is('cordova') && this.platform.is('ios'))
-        ? CancelPromiseTimer.createCancelPromiseTimer(20 * 1000) : null;
+      const cancelTimer = useTimeout
+        ? CancelPromiseTimer.createCancelPromiseTimer(settings.backgroundFetchTimeout) : null;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
       const observationsUpdated = await this.observationService.updateObservations(cancelTimer);
-      if (observationsUpdated > 0 && this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
+      if (showNotification && observationsUpdated > 0
+        && this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
         this.localNotifications.schedule({ text: `${observationsUpdated} observations saved` });
       }
       await this.warningService.updateWarnings(cancelTimer);

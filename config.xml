@@ -22,7 +22,7 @@
     <preference name="AndroidLaunchMode" value="singleTask" />
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     <preference name="KeyboardResize" value="true" />
-    <preference name="KeyboardResizeMode" value="ionic" />
+    <preference name="KeyboardResizeMode" value="native" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <platform name="android">
         <allow-intent href="market:*" />

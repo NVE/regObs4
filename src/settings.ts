@@ -179,5 +179,7 @@ export const settings = {
         quality: 50,
     },
     sentryDsn: 'https://2e07df8503a34dc9973eedd05e7a0f49@sentry.io/170000',
-    errorEmailAddress: 'regobs@nve.no'
+    errorEmailAddress: 'regobs@nve.no',
+    foregroundUpdateIntervalMs: 2 * 60 * 1000, // 2 minutes
+    backgroundFetchTimeout: 20 * 1000, // 20 seconds
 };
