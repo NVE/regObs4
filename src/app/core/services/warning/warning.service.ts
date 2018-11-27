@@ -80,12 +80,13 @@ export class WarningService {
         await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard, cancel);
       }
     }
+    console.log('[INFO][WarningService] Updating warnings completed');
   }
 
   async updateWarningsForCurrentGeoHazard() {
     const userSettings = await this.userSettingService.getUserSettings();
     for (const geoHazard of userSettings.currentGeoHazard) {
-      return this.updateWarningsForGeoHazard(geoHazard);
+      await this.updateWarningsForGeoHazard(geoHazard);
     }
   }
 
@@ -99,17 +100,14 @@ export class WarningService {
     }
   }
 
-  async updateWarningsForGeoHazard(geoHazard: GeoHazard, cancel?: Promise<void>) {
+  updateWarningsForGeoHazard(geoHazard: GeoHazard, cancel?: Promise<void>) {
     if (geoHazard === GeoHazard.Snow) {
-      await this.updateAvalancheWarnings(LangKey.no, null, null, cancel);
+      return this.updateAvalancheWarnings(LangKey.no, null, null, cancel);
     } else if (geoHazard === GeoHazard.Ice) {
-      await this.updateIceWarnings();
+      return this.updateIceWarnings();
     } else {
-      await this.updateFloodAndLandslideWarnings(geoHazard, LangKey.no, null, null, cancel);
+      return this.updateFloodAndLandslideWarnings(geoHazard, LangKey.no, null, null, cancel);
     }
-    // this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
-    // this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();
-    // this._warningGroupInMapViewObservable = this.getWarningsForCurrentMapViewAsObservable();
   }
 
   addToFavourite(groupId: string, geoHazard: GeoHazard) {

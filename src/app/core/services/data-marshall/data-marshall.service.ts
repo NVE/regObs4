@@ -66,14 +66,15 @@ export class DataMarshallService {
 
   backgroundFetchUpdate() {
     return this.ngZone.runOutsideAngular(async () => {
-      const cancelTimer = CancelPromiseTimer.createCancelPromiseTimer(20 * 1000);
+      const cancelTimer = (this.platform.is('cordova') && this.platform.is('ios'))
+        ? CancelPromiseTimer.createCancelPromiseTimer(20 * 1000) : null;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
       const observationsUpdated = await this.observationService.updateObservations(cancelTimer);
       if (observationsUpdated > 0 && this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
         this.localNotifications.schedule({ text: `${observationsUpdated} observations saved` });
       }
-      await this.warningService.updateWarnings(cancelTimer);
-      await this.kdvService.updateKdvElements(cancelTimer);
+      // await this.warningService.updateWarnings(cancelTimer);
+      // await this.kdvService.updateKdvElements(cancelTimer);
       console.log('[INFO] DataMarshall Background Update Completed');
     });
   }
