@@ -73,8 +73,8 @@ export class DataMarshallService {
       if (observationsUpdated > 0 && this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
         this.localNotifications.schedule({ text: `${observationsUpdated} observations saved` });
       }
-      // await this.warningService.updateWarnings(cancelTimer);
-      // await this.kdvService.updateKdvElements(cancelTimer);
+      await this.warningService.updateWarnings(cancelTimer);
+      await this.kdvService.updateKdvElements(cancelTimer);
       console.log('[INFO] DataMarshall Background Update Completed');
     });
   }
