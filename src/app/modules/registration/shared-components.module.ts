@@ -16,6 +16,7 @@ import { AddWebUrlItemComponent } from './components/add-web-url-item/add-web-ur
 import { ModalSaveOrDeleteButtonsComponent } from './components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { ExposedHeightComponent } from './components/snow/exposed-height/exposed-height.component';
 import { ValidExpositionComponent } from './components/snow/valid-exposition/valid-exposition.component';
+import { RegistrationContentWrapperComponent } from './components/registration-content-wrapper/registration-content-wrapper.component';
 @NgModule({
     imports: [
         SharedModule,
@@ -39,6 +40,7 @@ import { ValidExpositionComponent } from './components/snow/valid-exposition/val
         ModalSaveOrDeleteButtonsComponent,
         ExposedHeightComponent,
         ValidExpositionComponent,
+        RegistrationContentWrapperComponent,
     ],
     declarations: [
         SaveAndGoBackButtonComponent,
@@ -56,6 +58,7 @@ import { ValidExpositionComponent } from './components/snow/valid-exposition/val
         ModalSaveOrDeleteButtonsComponent,
         ExposedHeightComponent,
         ValidExpositionComponent,
+        RegistrationContentWrapperComponent,
     ],
 })
 export class SharedComponentsModule { }

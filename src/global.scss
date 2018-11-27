@@ -89,7 +89,6 @@ ion-item {
 }
 
 ion-list {
-    // --ion-item-background: var(--ion-background-color);
     background: var(--ion-background-color);
 
     ion-list-header {
@@ -104,12 +103,6 @@ ion-list {
     &.list-md {
         background: var(--ion-background-color);
     }
-
-    // .sc-ion-label-ios-s h3, .sc-ion-label-ios-s h4, .sc-ion-label-ios-s h5, .sc-ion-label-ios-s h6 {
-//     font-size: 15px;
-//     font-weight: 500;
-//     line-height: normal;
-// }
 }
 
 ion-menu {
@@ -143,8 +136,10 @@ ion-radio-group {
     }
 }
 
-.button-full:not(.button-round) .button-native {
-    --border-radius: 2px;
+ion-button {
+    &.button-block:not(.button-round), &.button-full:not(.button-round) {
+        --border-radius: 2px;
+    }
 }
 
 
@@ -219,4 +214,18 @@ app-geo-icon {
         display: inline-block;
         z-index: -1,
   }
+}
+
+.pull-last-bottom {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    height: 100%;
+
+    > * {
+        width: 100%;
+        &:last-child {
+            margin-top: auto;
+        }
+    }
 }

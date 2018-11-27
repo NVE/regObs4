@@ -8,65 +8,65 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-
-<ion-content *ngIf="registration && registration.request.WeatherObservation">
-  <ion-list lines="full">
-    <ion-list-header text-uppercase>
-      <ion-label>
-        {{ 'REGISTRATION.SNOW.WEATHER.TITLE' | translate}}
-      </ion-label>
-    </ion-list-header>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.WEATHER.PRECIPITATION" kdvKey="Snow_PrecipitationKDV" [(value)]="registration.request.WeatherObservation.PrecipitationTID"></app-kdv-dropdown>
-    <ion-item>
-      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE'
-        | translate}}</ion-label>
-      <ion-input type="number" min="-50" max="50" inputmode="numberic" pattern="[0-9-+]*" [(ngModel)]="registration.request.WeatherObservation.AirTemperature"
-        placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
-      </ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_SPEED'
-        | translate}}</ion-label>
-      <ion-input type="number" min="0" max="50" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.WeatherObservation.WindSpeed"
-        placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
-      </ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.CLOUD_COVER'
-        | translate}}</ion-label>
-      <ion-input type="number" min="0" max="100" inputmode="numberic" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.WeatherObservation.CloudCover"
-        placeholder="{{'REGISTRATION.SNOW.WEATHER.ONLY_FULL_PERCENTAGE' | translate}}">
-      </ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_DIRECTION'
-        | translate}}</ion-label>
-      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="registration.request.WeatherObservation.WindDirection"
-        interface="action-sheet">
-        <ng-container *ngFor="let windDirection of windDirectionArray">
-          <ion-select-option [value]="windDirection.val">{{
-            windDirection.name | translate }}</ion-select-option>
-        </ng-container>
-      </ion-select>
-    </ion-item>
-    <ion-list-header text-uppercase>
-      <ion-label>
-        {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_HEADER' | translate}}
-      </ion-label>
-    </ion-list-header>
-    <ion-item>
-      <ion-label text-wrap>
-        {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_PLACEHOLDER' | translate }}
-      </ion-label>
-    </ion-item>
-    <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.WeatherObservation.Comment"></app-text-comment>
-    <ion-list-header text-uppercase>
-      <ion-label>
-        {{ 'REGISTRATION.ADD_IMAGES' | translate}}
-      </ion-label>
-    </ion-list-header>
-    <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
-  </ion-list>
-  <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
+<ion-content>
+  <app-registration-content-wrapper *ngIf="registration && registration.request.WeatherObservation" [registration]="registration"
+    [registrationTid]="registrationTid" (reset)="reset()">
+    <ion-list lines="full">
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.WEATHER.TITLE' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.WEATHER.PRECIPITATION" kdvKey="Snow_PrecipitationKDV" [(value)]="registration.request.WeatherObservation.PrecipitationTID"></app-kdv-dropdown>
+      <ion-item>
+        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE'
+          | translate}}</ion-label>
+        <ion-input type="number" min="-50" max="50" inputmode="numberic" pattern="[0-9-+]*" [(ngModel)]="registration.request.WeatherObservation.AirTemperature"
+          placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_SPEED'
+          | translate}}</ion-label>
+        <ion-input type="number" min="0" max="50" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.WeatherObservation.WindSpeed"
+          placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.CLOUD_COVER'
+          | translate}}</ion-label>
+        <ion-input type="number" min="0" max="100" inputmode="numberic" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.WeatherObservation.CloudCover"
+          placeholder="{{'REGISTRATION.SNOW.WEATHER.ONLY_FULL_PERCENTAGE' | translate}}">
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_DIRECTION'
+          | translate}}</ion-label>
+        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="registration.request.WeatherObservation.WindDirection"
+          interface="action-sheet">
+          <ng-container *ngFor="let windDirection of windDirectionArray">
+            <ion-select-option [value]="windDirection.val">{{
+              windDirection.name | translate }}</ion-select-option>
+          </ng-container>
+        </ion-select>
+      </ion-item>
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_HEADER' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <ion-item>
+        <ion-label text-wrap>
+          {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_PLACEHOLDER' | translate }}
+        </ion-label>
+      </ion-item>
+      <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.WeatherObservation.Comment"></app-text-comment>
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.ADD_IMAGES' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+    </ion-list>
+  </app-registration-content-wrapper>
 </ion-content>
-<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

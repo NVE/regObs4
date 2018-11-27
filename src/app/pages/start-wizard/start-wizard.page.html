@@ -15,12 +15,12 @@
                 <ion-item (click)="slideNext()">
                   <ion-label>{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN'|translate}}
                     ({{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN_SECONDARY_LANGUAGE'|translate}})</ion-label>
-                  <ion-radio slot="end" [value]="LangKey.no"></ion-radio>
+                  <ion-radio mode="md" slot="end" [value]="LangKey.no"></ion-radio>
                 </ion-item>
                 <ion-item (click)="slideNext()">
                   <ion-label>{{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH'|translate}}
                     ({{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH_SECONDARY_LANGUAGE'|translate}})</ion-label>
-                  <ion-radio slot="end" [value]="LangKey.en"></ion-radio>
+                  <ion-radio mode="md" slot="end" [value]="LangKey.en"></ion-radio>
                 </ion-item>
               </ion-radio-group>
             </ion-list>
@@ -42,11 +42,11 @@
               <ion-radio-group [(ngModel)]="userSettings.country">
                 <ion-item (click)="slideNext()">
                   <ion-label>{{'START_WIZARD.CHOOSE_COUNTRY.YES_NORWAY'|translate}}</ion-label>
-                  <ion-radio slot="end" [value]="AppCountry.norway"></ion-radio>
+                  <ion-radio mode="md" slot="end" [value]="AppCountry.norway"></ion-radio>
                 </ion-item>
                 <ion-item (click)="slideNext()">
                   <ion-label>{{'START_WIZARD.CHOOSE_COUNTRY.NO_NORWAY'|translate}}</ion-label>
-                  <ion-radio slot="end" [value]="AppCountry.world"></ion-radio>
+                  <ion-radio mode="md" slot="end" [value]="AppCountry.world"></ion-radio>
                 </ion-item>
               </ion-radio-group>
             </ion-list>

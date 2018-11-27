@@ -1,0 +1,14 @@
+<ion-grid *ngIf="registration" no-padding no-margin class="pull-last-bottom">
+  <ion-row>
+    <ion-col no-padding>
+      <ng-content></ng-content>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col no-padding>
+      <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
+      <app-save-and-go-back-button [isEmpty]="isEmpty" [registration]="registration" [registrationTid]="registrationTid"
+        (reset)="emitReset()"></app-save-and-go-back-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>

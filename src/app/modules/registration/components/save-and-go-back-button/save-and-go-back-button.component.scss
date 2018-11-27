@@ -1,9 +1,17 @@
-ion-footer {
-    ion-toolbar {
-        --backround: #fff;
-    }
+// ion-footer {
+//     ion-toolbar {
+//         --backround: #fff;
+//     }
 
-    ion-button {
-        --border-radius: 0;
-    }
+//     ion-button {
+//         --border-radius: 2px;
+//     }
+// }
+ion-grid {
+    background-color: #fff;
+    margin-top: 30px;
+}
+
+.back-button {
+    background-color: var(--ion-background-color,#fff);
 }

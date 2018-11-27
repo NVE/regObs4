@@ -8,27 +8,28 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content *ngIf="registration && registration.request.CompressionTest">
-  <ion-list lines="full">
-    <ion-list-header text-uppercase>
-      <ion-label>
-        {{ 'REGISTRATION.SNOW.COMPRESSION_TEST.TITLE' | translate}}
-      </ion-label>
-    </ion-list-header>
-    <ion-item detail="true" (click)="addOrEditCompressionTest(i)" *ngFor="let compressionTest of registration.request.CompressionTest; let i = index">
-      <ion-label>{{ getDescription(compressionTest) }}</ion-label>
-    </ion-item>
-    <ion-item (click)="addOrEditCompressionTest()">
-      <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
-      <ion-label>{{'REGISTRATION.SNOW.COMPRESSION_TEST.ADD_NEW' | translate}}</ion-label>
-    </ion-item>
-    <ion-list-header text-uppercase>
-      <ion-label>
-        {{ 'REGISTRATION.ADD_IMAGES' | translate}}
-      </ion-label>
-    </ion-list-header>
-    <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
-  </ion-list>
-  <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
+<ion-content>
+  <app-registration-content-wrapper *ngIf="registration && registration.request.CompressionTest" [registration]="registration"
+    [registrationTid]="registrationTid" (reset)="reset()">
+    <ion-list lines="full">
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.COMPRESSION_TEST.TITLE' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <ion-item detail="true" (click)="addOrEditCompressionTest(i)" *ngFor="let compressionTest of registration.request.CompressionTest; let i = index">
+        <ion-label>{{ getDescription(compressionTest) }}</ion-label>
+      </ion-item>
+      <ion-item (click)="addOrEditCompressionTest()">
+        <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+        <ion-label>{{'REGISTRATION.SNOW.COMPRESSION_TEST.ADD_NEW' | translate}}</ion-label>
+      </ion-item>
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.ADD_IMAGES' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+    </ion-list>
+  </app-registration-content-wrapper>
 </ion-content>
-<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>

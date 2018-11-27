@@ -8,34 +8,35 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content *ngIf="registration">
-  <ion-list lines="full">
-    <ion-list-header text-uppercase>
-      <ion-label>
-        {{ 'REGISTRATION.WATER.DAMAGE.CAN_YOU_SEE_DAMAGE' | translate}}
-      </ion-label>
-    </ion-list-header>
-    <ion-radio-group [(ngModel)]="isChecked">
-      <ion-item [ngClass]="{'selected': checked === true}" (click)="isChecked = true">
-        <ion-label>{{ 'DIALOGS.YES' | translate }}</ion-label>
-        <ion-radio slot="start" [value]="true"></ion-radio>
-      </ion-item>
-      <ion-item [ngClass]="{'selected': checked === false}" (click)="isChecked = false">
-        <ion-label>{{ 'DIALOGS.NO' | translate }}</ion-label>
-        <ion-radio slot="start" [value]="false"></ion-radio>
-      </ion-item>
-    </ion-radio-group>
-    <ng-container *ngIf="isChecked && this.damageTypes">
+<ion-content>
+  <app-registration-content-wrapper *ngIf="registration" [registration]="registration" [registrationTid]="registrationTid"
+    (reset)="reset()">
+    <ion-list lines="full">
       <ion-list-header text-uppercase>
         <ion-label>
-          {{ 'REGISTRATION.WATER.DAMAGE.WHAT_IS_DAMAGED' | translate }}
+          {{ 'REGISTRATION.WATER.DAMAGE.CAN_YOU_SEE_DAMAGE' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration" [damageTypeId]="damageType.Id"
-        [damageTypeName]="damageType.Name" [registrationTid]="registrationTid">
-      </app-damage-obs>
-    </ng-container>
-  </ion-list>
-  <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
+      <ion-radio-group [(ngModel)]="isChecked">
+        <ion-item [ngClass]="{'selected': checked === true}" (click)="isChecked = true">
+          <ion-label>{{ 'DIALOGS.YES' | translate }}</ion-label>
+          <ion-radio mode="md" slot="start" [value]="true"></ion-radio>
+        </ion-item>
+        <ion-item [ngClass]="{'selected': checked === false}" (click)="isChecked = false">
+          <ion-label>{{ 'DIALOGS.NO' | translate }}</ion-label>
+          <ion-radio mode="md" slot="start" [value]="false"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <ng-container *ngIf="isChecked && damageTypes">
+        <ion-list-header text-uppercase>
+          <ion-label>
+            {{ 'REGISTRATION.WATER.DAMAGE.WHAT_IS_DAMAGED' | translate }}
+          </ion-label>
+        </ion-list-header>
+        <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration" [damageTypeId]="damageType.Id"
+          [damageTypeName]="damageType.Name" [registrationTid]="registrationTid">
+        </app-damage-obs>
+      </ng-container>
+    </ion-list>
+  </app-registration-content-wrapper>
 </ion-content>
-<app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()"></app-save-and-go-back-button>
