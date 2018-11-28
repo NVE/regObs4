@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy, NgZone } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest, of, from } from 'rxjs';
 import { IRegistration } from '../../models/registration.model';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto } from '../../../regobs-api/models';
@@ -10,6 +10,7 @@ import { ISummaryItem } from '../../components/summary-item/summary-item.model';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationStatus } from '../../models/registrationStatus.enum';
 import { SummaryItemService } from '../../services/summary-item.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-overview',
@@ -18,12 +19,17 @@ import { SummaryItemService } from '../../services/summary-item.service';
 })
 export class OverviewPage implements OnInit, OnDestroy {
   registration: IRegistration;
-  userGroups: ObserverGroupDto[] = [];
   RegistationTid = RegistrationTid;
-  private userGroupSubscription: Subscription;
   GeoHazard = GeoHazard;
   RegistrationStatus = RegistrationStatus;
   summaryItems: Array<ISummaryItem> = [];
+  private summarySubscription: Subscription;
+  private registrationSubscription: Subscription;
+
+  get regiatration$() {
+    const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
+    return this.registrationService.getSavedRegistrationByIdObservable(id);
+  }
 
   constructor(
     private registrationService: RegistrationService,
@@ -34,42 +40,30 @@ export class OverviewPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.userGroupSubscription = this.userGroupService.getUserGroupsAsObservable().subscribe((userGroups) => {
+    this.registrationSubscription = this.regiatration$.subscribe((registration) => {
       this.ngZone.run(() => {
-        this.userGroups = userGroups;
-        this.initSummaryItems();
+        this.registration = registration;
+      });
+    });
+    this.summarySubscription = combineLatest(
+      this.regiatration$,
+      this.userGroupService.getUserGroupsAsObservable()
+    ).pipe(switchMap(([registration, userGroups]) =>
+      from(this.summaryItemService.getSummaryItems(registration, userGroups))
+    )).subscribe((summaryItems) => {
+      this.ngZone.run(() => {
+        this.summaryItems = summaryItems;
       });
     });
     this.userGroupService.updateUserGroups();
   }
 
   ngOnDestroy(): void {
-    if (this.userGroupSubscription) {
-      this.userGroupSubscription.unsubscribe();
+    if (this.summarySubscription) {
+      this.summarySubscription.unsubscribe();
     }
-  }
-
-  ionViewDidEnter() {
-    return this.initSummaryItems();
-  }
-
-  private getRegistration() {
-    const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
-    return this.registrationService.getSavedRegistrationById(id);
-  }
-
-  private async initSummaryItems() {
-    this.registration = await this.getRegistration();
-    if (!this.registration) {
-      this.registration = await this.registrationService.createNewRegistration();
-      await this.registrationService.saveRegistration(this.registration);
+    if (this.registrationSubscription) {
+      this.registrationSubscription.unsubscribe();
     }
-    const items = await this.summaryItemService.getSummaryItems(this.registration);
-    this.ngZone.run(() => {
-      this.summaryItems = items;
-    });
-  }
-
-  ionViewWillLeave() {
   }
 }

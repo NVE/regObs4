@@ -20,8 +20,8 @@ export class SummaryItemService {
     private userGroupService: UserGroupService,
   ) { }
 
-  async getSummaryItems(registration: IRegistration) {
-    const userGroups = await this.userGroupService.getUserGroups();
+  async getSummaryItems(registration: IRegistration, userGroups?: ObserverGroupDto[]) {
+    const userGroupsToUse = userGroups ? userGroups : await this.userGroupService.getUserGroups();
     const summaryItems: ISummaryItem[] = [
       {
         href: '/registration/obs-location/' + registration.id,
@@ -36,11 +36,11 @@ export class SummaryItemService {
         hasData: !!registration.request.DtObsTime,
       },
     ];
-    if (userGroups.length > 0) {
+    if (userGroupsToUse.length > 0) {
       summaryItems.push({
         href: '/registration/group/' + registration.id,
         title: 'REGISTRATION.OVERVIEW.SHARE_WITH_GROUP',
-        subTitle: this.getObservationGroupName(registration, userGroups),
+        subTitle: this.getObservationGroupName(registration, userGroupsToUse),
         hasData: !!registration.request.ObserverGroupID,
       });
     }
