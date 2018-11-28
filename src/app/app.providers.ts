@@ -42,60 +42,44 @@ export const API_INTERCEPTOR_PROVIDER: Provider = {
     multi: true
 };
 
-export class AppProviders {
-    public static getProviders() {
-        return [
-            StatusBar,
-            SplashScreen,
-            StartWizardGuard,
-            LoginGuard,
-            { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-            Geolocation,
-            Deeplinks,
-            BackgroundFetch,
-            BackgroundGeolocation,
-            File,
-            AndroidPermissions,
-            Zip,
-            Clipboard,
-            Camera,
-            InAppBrowser,
-            HTTP,
-            WebView,
-            ApiInterceptor,
-            EmailComposer,
-            AppVersion,
-            LocalNotifications,
-            Keyboard,
-            API_INTERCEPTOR_PROVIDER,
-            { provide: ErrorHandler, useClass: AppErrorHandler },
-            ...this.getSingletonServices(),
-            ...(window.hasOwnProperty('cordova') ? this.getNativeProviders() : this.getWebProviders()),
-        ];
+export const APP_PROVIDERS = [
+    StatusBar,
+    SplashScreen,
+    StartWizardGuard,
+    LoginGuard,
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    Geolocation,
+    Deeplinks,
+    BackgroundFetch,
+    BackgroundGeolocation,
+    File,
+    AndroidPermissions,
+    Zip,
+    Clipboard,
+    Camera,
+    InAppBrowser,
+    HTTP,
+    WebView,
+    ApiInterceptor,
+    EmailComposer,
+    AppVersion,
+    LocalNotifications,
+    Keyboard,
+    API_INTERCEPTOR_PROVIDER,
+    { provide: ErrorHandler, useClass: AppErrorHandler },
+    // Singleton services
+    UserSettingService,
+    MapService,
+    WarningService,
+    LoginService,
+    DataMarshallService,
+    // Custom native/web providers
+    {
+        provide: BackgroundGeolocationService, useClass: window.hasOwnProperty('cordova') ?
+            BackgroundGeolocationNativeService : BackgroundGeolocationWebService
+    },
+    {
+        provide: BackgroundDownloadService, useClass: window.hasOwnProperty('cordova') ?
+            BackgroundDownloadNativeService : BackgroundDownloadWebService
     }
-
-    private static getSingletonServices() {
-        return [
-            UserSettingService,
-            MapService,
-            WarningService,
-            LoginService,
-            DataMarshallService,
-        ];
-    }
-
-    private static getWebProviders() {
-        return [
-            { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationWebService },
-            { provide: BackgroundDownloadService, useClass: BackgroundDownloadWebService },
-        ];
-    }
-
-    private static getNativeProviders() {
-        return [
-            { provide: BackgroundGeolocationService, useClass: BackgroundGeolocationNativeService },
-            { provide: BackgroundDownloadService, useClass: BackgroundDownloadNativeService },
-        ];
-    }
-
-}
+];

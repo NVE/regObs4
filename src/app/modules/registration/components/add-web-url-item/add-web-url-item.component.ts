@@ -21,7 +21,7 @@ export class AddWebUrlItemComponent implements OnInit {
   ngOnInit() {
   }
 
-  async addOrEdit(index: number) {
+  async addOrEdit(index?: number) {
     const weburl = index !== undefined ? this.weburls[index] : undefined;
     const modal = await this.modalController.create({
       component: AddWebUrlModalPage,

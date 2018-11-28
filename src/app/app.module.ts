@@ -7,7 +7,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { AppProviders } from './app.providers';
+import { APP_PROVIDERS } from './app.providers';
 import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
@@ -56,7 +56,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     RegistrationModule,
     RegobsApiModule,
   ],
-  providers: AppProviders.getProviders(),
+  providers: APP_PROVIDERS,
   bootstrap: [AppComponent],
 })
 export class AppModule { }
