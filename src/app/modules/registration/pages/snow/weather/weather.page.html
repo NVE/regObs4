@@ -21,7 +21,7 @@
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE'
           | translate}}</ion-label>
-        <ion-input type="number" min="-50" max="50" inputmode="numberic" pattern="[0-9-+]*" [(ngModel)]="registration.request.WeatherObservation.AirTemperature"
+        <ion-input type="number" min="-50" max="50" inputmode="numberic" pattern="[0-9]*" step="0.1" [(ngModel)]="registration.request.WeatherObservation.AirTemperature"
           placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
         </ion-input>
       </ion-item>
