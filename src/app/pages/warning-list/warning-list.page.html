@@ -6,30 +6,27 @@
     <ion-title>{{"WARNING_LIST.TITLE" | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
+<div class="top-tabs" slot="fixed">
+  <ion-grid>
+    <ion-row no-padding>
+      <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'inMapView'}" (click)="selectTab('inMapView')">
+        {{'WARNING_LIST.RELEVANT'|translate}}
+      </ion-col>
+      <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'all'}" (click)="selectTab('all')">
+        {{'WARNING_LIST.ALL'|translate}}
+      </ion-col>
+      <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'favourites'}" (click)="selectTab('favourites')">
+        {{'WARNING_LIST.FAVOURITES'|translate}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>
 <ion-content>
-  <div class="top-tabs" [ngClass]="{'data-spinner-visible': !hasData}">
-    <ion-grid>
-      <ion-row no-padding>
-        <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'inMapView'}" (click)="selectTab('inMapView')">
-          {{'WARNING_LIST.RELEVANT'|translate}}
-        </ion-col>
-        <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'all'}" (click)="selectTab('all')">
-          {{'WARNING_LIST.ALL'|translate}}
-        </ion-col>
-        <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'favourites'}" (click)="selectTab('favourites')">
-          {{'WARNING_LIST.FAVOURITES'|translate}}
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh()">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh">
+  <ion-refresher (ionRefresh)="doRefresh()">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="{{ 'WARNING_LIST.PULL_TO_REFRESH' | translate}}">
     </ion-refresher-content>
   </ion-refresher>
-  <div class="no-data-spinner" slot="fixed" *ngIf="!hasData">
-    <ion-spinner></ion-spinner>
-  </div>
-  <ng-container *ngIf="hasData">
+  <ng-container>
     <ng-container *ngIf="(userSetting$ | async) as userSetting">
       <app-cap-list-group *ngIf="userSetting.showMapCenter && selectedTab === 'inMapView'" title="{{'WARNING_LIST.IN_MAP_CENTER'|translate}}"
         [warnings$]="warningsInMapViewCenter$"></app-cap-list-group>

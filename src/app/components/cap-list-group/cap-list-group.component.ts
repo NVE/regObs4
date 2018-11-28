@@ -1,13 +1,12 @@
-import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { ToastController, ItemSliding } from '@ionic/angular';
+import { ToastController, ItemSliding, List } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { settings } from '../../../settings';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { UserSetting } from '../../core/models/user-settings.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 
 @Component({
@@ -19,6 +18,8 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
 
   @Input() title: string;
   @Input() warnings$: Observable<WarningGroup[]>;
+
+  @ViewChild('list') list: List;
 
   warnings: WarningGroup[];
   warningSubscription: Subscription;
@@ -39,7 +40,7 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazardObservable$.subscribe((val) => {
       this.zone.run(() => {
-        this.showWarningLevel = val.indexOf(GeoHazard.Ice) >= 0;
+        this.showWarningLevel = val.indexOf(GeoHazard.Ice) < 0;
       });
     });
     this.warningSubscription = this.warnings$.subscribe((val) => {
@@ -49,13 +50,17 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     if (this.warningSubscription) {
       this.warningSubscription.unsubscribe();
     }
     if (this.currentGeoHazardSubscription) {
       this.currentGeoHazardSubscription.unsubscribe();
     }
+  }
+
+  closeSlidingItems() {
+    return this.list.closeSlidingItems();
   }
 
   trackWarningGroup(index: number, group: WarningGroup) {

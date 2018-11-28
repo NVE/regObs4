@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone, ApplicationRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ApplicationRef, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { Refresher } from '@ionic/angular';
+import { CapListGroupComponent } from '../../components/cap-list-group/cap-list-group.component';
 
 @Component({
   selector: 'app-warning-list',
@@ -20,16 +21,12 @@ export class WarningListPage implements OnInit, OnDestroy {
   warningsInMapViewBounds$: Observable<WarningGroup[]>;
   favourites$: Observable<WarningGroup[]>;
   userSetting$: Observable<UserSetting>;
-  hasData: boolean;
-  subscription: Subscription;
   @ViewChild(Refresher) refresher: Refresher;
+  @ViewChildren(CapListGroupComponent) capListGroups: QueryList<CapListGroupComponent>;
 
   constructor(
     private warningService: WarningService, private userSettingService: UserSettingService) {
   }
-
-  // TODO: Pull to refresh and virtual items!
-
   ngOnInit() {
     this.selectedTab = 'inMapView';
     this.userSetting$ = this.userSettingService.userSettingObservable$;
@@ -41,13 +38,21 @@ export class WarningListPage implements OnInit, OnDestroy {
     this.favourites$ = this.warningService.warningsObservable$
       .pipe(map((warningGroups) =>
         warningGroups.filter((wg) => wg.isFavourite)));
-    this.subscription = this.warningsForCurrentGeoHazard$.subscribe((val) => {
-      this.hasData = val.length > 0;
-    });
   }
 
-  selectTab(tab: 'inMapView' | 'all' | 'favourites') {
+  async selectTab(tab: 'inMapView' | 'all' | 'favourites') {
+    await this.closeAllSlidingItems();
     this.selectedTab = tab;
+  }
+
+  async closeAllSlidingItems() {
+    for (const capGroup of this.capListGroups.toArray()) {
+      await capGroup.closeSlidingItems();
+    }
+  }
+
+  ionViewWillLeave() {
+    return this.closeAllSlidingItems();
   }
 
   getDayName(daysToAdd: number) {
@@ -60,6 +65,5 @@ export class WarningListPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 }

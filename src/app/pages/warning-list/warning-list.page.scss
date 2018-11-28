@@ -6,11 +6,6 @@
     font-weight: bold;
     line-height: 34px;
 
-    &.data-spinner-visible {
-        position: relative;
-        top: 50px;
-    }
-
     ion-grid {
         padding-left: 0px;
         padding-right: 0px;
@@ -29,16 +24,6 @@
     }
 }
 
-.no-data-spinner {
-    background-color: #fff;
-    position: relative;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    height: 50px;
-    text-align: center;
-
-    ion-spinner {
-        margin-top: 10px;
-    }
+ion-refresher, ion-content {
+    background-color: var(--ion-background-color,#fff);
 }

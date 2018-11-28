@@ -4,7 +4,7 @@
     background-color: #F7F7F7;
     border-radius: 50%;
     margin-left: 16px;
-    margin-right: 15px;
+    margin-right: 16px;
 
     app-geo-icon {
         position: relative;
@@ -25,6 +25,8 @@ ion-icon {
 ion-list {
     --padding-start: 10px;
     --padding-end: 10px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
 
     ion-list-header {
         font-size: 14px;
@@ -37,6 +39,7 @@ ion-list {
         ion-label {
             font-size: 16px;
             margin-left: 6px;
+            text-overflow: ellipsis;
         }
         ion-grid {
             width: 140px;
@@ -52,6 +55,13 @@ ion-list {
             margin-right: 0px;
             padding-right: 0px;
         }
+
+        ion-label {
+            h2 {
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
     }
 }
 
@@ -64,4 +74,31 @@ ion-badge {
     font-weight: bold;
     line-height: 30px;
     text-align: center;
+}
+
+//Iphone 5 or smaller
+@media (min-width: 320px) and (max-height: 568px) and (orientation:portrait) {
+    ion-list {
+        --padding-start: 0px;
+        --padding-end: 0px;
+
+        ion-list-header {
+            ion-label {
+                font-size: 14px;
+            }
+        }
+
+        ion-item {
+            ion-label {
+                h2 {
+                   font-size: 14px;
+                }
+            }
+        }
+    }
+
+    .geo-icon-circle {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
 }

@@ -1,6 +1,21 @@
 ion-tab-button {
     ion-badge {
         border-radius: 0px;
-        margin-top: 3px;
+    }
+}
+
+.md {
+    ion-tab-button {
+        ion-badge {
+            margin-top: -3px;
+        }
+    }
+}
+
+.ios {
+    ion-tab-button {
+        ion-badge {
+            margin-top: 3px;
+        }
     }
 }
