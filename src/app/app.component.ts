@@ -102,7 +102,7 @@ export class AppComponent {
       // Force run in another command window: adb shell cmd jobscheduler run -f no.nve.regobs 999
       // Run chrome://inspect to view console.logs from update
       (<any>window).BackgroundFetch.configure(() => {
-        this.dataMarshallService.backgroundFetchUpdate(this.platform.is('cordova') && this.platform.is('ios'), true)
+        this.dataMarshallService.backgroundFetchUpdate(this.platform.is('cordova') && this.platform.is('ios'), false)
           .then(() => (<any>window).BackgroundFetch.finish());
       }, (error) => {
         console.log('[ERROR] Could not run background fetch!');

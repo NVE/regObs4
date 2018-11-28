@@ -99,6 +99,7 @@ export class OfflineMapService {
     return nSQL().table(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile);
   }
 
+  // TODO: Implement LRU cache instead and update LRU on app start to db items
   async getTileUrl(name: string, x: number, y: number, z: number) {
     const tileId = this.getTileId(name, x, y, z);
     const tileFromDb = await this.getTileFromDb(tileId);

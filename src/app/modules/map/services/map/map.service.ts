@@ -3,7 +3,7 @@ import { nSQL } from 'nano-sql';
 import * as L from 'leaflet';
 import { IMapView } from './map-view.interface';
 import { Observable, combineLatest, Observer } from 'rxjs';
-import { ITypedWorker, createWorker } from 'typed-web-workers';
+import { createWorker } from 'typed-web-workers';
 import { switchMap, share, shareReplay, debounce, debounceTime, filter } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
@@ -12,6 +12,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { LRUMap } from 'lru_map';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
+import { settings } from '../../../../../settings';
 
 @Injectable({
   providedIn: 'root'
@@ -133,11 +134,11 @@ export class MapService {
   private loadReagions(geoHazards: GeoHazard[]) {
     if (geoHazards[0] === GeoHazard.Snow) {
       if (!this._avalancheRegions) {
-        this._avalancheRegions = require('../../../../../assets/varslingsomraader.json'); // TODO: Add to settings
+        this._avalancheRegions = require('../../../../../assets/json/varslingsomraader.json');
       }
     } else {
       if (!this._regions) {
-        this._regions = require('../../../../../assets/regions-simple.json'); // TODO: Add to settings
+        this._regions = require('../../../../../assets/json/regions-simple-polygons.json');
       }
     }
   }
@@ -147,7 +148,8 @@ export class MapService {
     this.loadReagions(geoHazards);
     const regions = (geoHazards[0] === GeoHazard.Snow ? this._avalancheRegions
       : this._regions);
-    const featureName = geoHazards[0] === GeoHazard.Snow ? 'OMRAADEID' : 'fylkesnummer'; // TODO: Add to settings
+    const featureName = geoHazards[0] === GeoHazard.Snow ?
+      settings.services.warning.Snow.featureName : settings.services.warning.Dirt.featureName;
 
     return Observable.create((observer: Observer<IMapViewAndArea>) => {
       const typedWorker = createWorker(this.workFunc, (msg) => {

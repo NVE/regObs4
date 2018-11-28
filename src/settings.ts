@@ -37,18 +37,22 @@ export const settings = {
             timezone: 'Europe/Oslo',
             Snow: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
-                webUrl: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/'
+                webUrl: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/',
+                featureName: 'OMRAADEID',
             },
             Dirt: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api',
                 webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
+                featureName: 'fylkesnummer',
             },
             Water: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.5/api',
                 webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
+                featureName: 'fylkesnummer',
             },
             Ice: {
                 apiUrl: 'http://www.iskart.no/json/ice_forecast_regions.json',
+                featureName: 'fylkesnummer',
             }
         }
     },

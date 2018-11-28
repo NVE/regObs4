@@ -122,22 +122,63 @@ export class WarningService {
       .where((g) => g.id === id).exec();
   }
 
-  // private getPriority(currentGeoHazard: GeoHazard) {
-  //   if (currentGeoHazard === GeoHazard.Snow) {
-  //     return [GeoHazard.Snow];
-  //   } else if (currentGeoHazard === GeoHazard.Ice) {
-  //     return [GeoHazard.Ice];
-  //   } else if (currentGeoHazard === GeoHazard.Water) {
-  //     return [GeoHazard.Water, GeoHazard.Dirt];
-  //   } else if (currentGeoHazard === GeoHazard.Dirt) {
-  //     return [GeoHazard.Dirt, GeoHazard.Water];
-  //   }
-  // }
-
   private getWarningsAsObservable() {
     return nSQL().observable<IWarningGroup[]>(() => {
       return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
-    }).debounce(5000).toRxJS();
+    }).map((warningGroups) => warningGroups.length === 0 ? this.getDefaultWarningGroups() : warningGroups)
+      .toRxJS();
+  }
+
+  private getDefaultWarningGroups() {
+    return [
+      ...this.getDefaultAvalancheWarningGroups(),
+      ...this.getDefaultIceWarningGroups(),
+      ...this.getCountyWarningGroups(GeoHazard.Water),
+      ...this.getCountyWarningGroups(GeoHazard.Dirt)
+    ];
+  }
+
+  private getDefaultIceWarningGroups() {
+    const iceRegionsDefaultJson = this.getDefaultIceForecastRegions();
+    const geoHazard = GeoHazard.Ice;
+    const regionGroups: IWarningGroup[] = iceRegionsDefaultJson.forecastRegions.map((region) => ({
+      id: `${region.name}_${geoHazard}`,
+      regionId: region.name,
+      regionName: region.name,
+      counties: region.counties,
+      url: region.url,
+      validFrom: null,
+      validTo: null,
+      geoHazard,
+      warnings: []
+    }));
+    return regionGroups;
+  }
+
+  private getCountyWarningGroups(geoHazard: GeoHazard) {
+    const regions = require('../../../../assets/json/regions.json');
+    const regionGroups: IWarningGroup[] = regions.map((region) => ({
+      id: `${region.Id}_${geoHazard}`,
+      regionId: region.Id,
+      regionName: region.Name,
+      counties: [region.Id],
+      geoHazard: geoHazard,
+      warnings: []
+    }));
+    return regionGroups;
+  }
+
+  private getDefaultAvalancheWarningGroups() {
+    const regions = require('../../../../assets/json/varslingsomraader.json');
+    const avalancheRegions: IWarningGroup[] = regions.features.map((region) => ({
+      id: `${region.properties.OMRAADEID}_${GeoHazard.Snow}`,
+      regionId: `${region.properties.OMRAADEID}`,
+      regionName: region.properties.OMRAADENAV,
+      counties: [],
+      geoHazard: GeoHazard.Snow,
+      warnings: []
+    }));
+    return avalancheRegions;
   }
 
   private getFavouritesAsObservable() {
@@ -279,9 +320,9 @@ export class WarningService {
         }
       }
       console.log(`[INFO][WarningService] Result from ${GeoHazard[geoHazard]}:`, regions);
-      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions, false);
+      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions, true);
 
-      // TODO: Delete regions no longer in result in case regions is changed in api
+      await this.deleteRegionsNoLongerInResult(geoHazard, regions); // NOTE: This also trigger change
       await this.dataLoadService.loadingCompleted(dataLoadId, warningsresult.length,
         dateRange.from.toDate(), new Date());
     } catch (err) {
@@ -317,10 +358,20 @@ export class WarningService {
         })),
       }));
       console.log(`[INFO][WarningService] New updates for avalanche warnings:`, regionResult);
-      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, false);
+      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
+      await this.deleteRegionsNoLongerInResult(GeoHazard.Snow, regionResult); // NOTE: This also trigger change
       await this.dataLoadService.loadingCompleted(dataLoadId, warningsresult.length, dateRange.from.toDate(), new Date());
     } catch (err) {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
+    }
+  }
+
+  private async deleteRegionsNoLongerInResult(geoHazard: GeoHazard, regions: IWarningGroup[]) {
+    if (regions.length > 0) {
+      const ids = regions.map((r) => r.id);
+      const deleteResult = await nSQL(NanoSql.TABLES.WARNING.name)
+        .query('delete').where((dbItem: IWarningGroup) => dbItem.geoHazard === geoHazard && ids.indexOf(dbItem.id) < 0).exec();
+      console.log('[INFO][WarningService] Deleted regions no longer in result: ', deleteResult);
     }
   }
 
@@ -329,35 +380,38 @@ export class WarningService {
     const geoHazard = GeoHazard.Ice;
     const dataLoadId = this.getDataLoadId(geoHazard);
     await this.dataLoadService.startLoading(dataLoadId);
-    const url = this.getBaseUrl(geoHazard);
-    const result = await this.getWarningsFromApi(url);
-    const regionResult: IWarningGroup[] = result.forecastRegions.map((region) => ({
-      id: `${region.name}_${geoHazard}`,
-      regionId: region.name,
-      regionName: region.name,
-      counties: region.counties,
-      url: region.url,
-      validFrom: this.getDate(region.validFrom),
-      validTo: this.getDate(region.validTo),
-      geoHazard,
-      warnings: []
-    }));
-    console.log(`[INFO][WarningService] New updates for ice warnings:`, regionResult);
-    await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, false);
-
-    // TODO: Delete regions no longer in result in case regions is changed in api
-    await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length);
-  }
-
-  private getWarningsFromApi(url: string) {
-    if (this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'))) {
-      return this.getWarningsFromApiNative(url);
-    } else {
-      return this.getWarningsFromApiWeb(url);
+    try {
+      const url = this.getBaseUrl(geoHazard);
+      const result = await this.getIceWarningsFromApi(url);
+      const regionResult: IWarningGroup[] = result.forecastRegions.map((region) => ({
+        id: `${region.name}_${geoHazard}`,
+        regionId: region.name,
+        regionName: region.name,
+        counties: region.counties,
+        url: region.url,
+        validFrom: this.getDate(region.validFrom),
+        validTo: this.getDate(region.validTo),
+        geoHazard,
+        warnings: []
+      }));
+      console.log(`[INFO][WarningService] New updates for ice warnings:`, regionResult);
+      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
+      await this.deleteRegionsNoLongerInResult(geoHazard, regionResult); // NOTE: This also trigger change
+      await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length);
+    } catch (err) {
+      await this.dataLoadService.loadingError(dataLoadId, err.message);
     }
   }
 
-  private async getWarningsFromApiNative(url: string): Promise<IIceWarningApiResult> {
+  private getIceWarningsFromApi(url: string) {
+    if (this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'))) {
+      return this.getIceWarningsFromApiNative(url);
+    } else {
+      return Promise.resolve(this.getDefaultIceForecastRegions());
+    }
+  }
+
+  private async getIceWarningsFromApiNative(url: string): Promise<IIceWarningApiResult> {
     this.nativeHttp.setDataSerializer('json');
     const result = await this.nativeHttp.get(url, {}, {
       'Content-Type': 'application/json',
@@ -369,9 +423,9 @@ export class WarningService {
     }
   }
 
-  private getWarningsFromApiWeb(url: string): Promise<IIceWarningApiResult> {
+  private getDefaultIceForecastRegions(): IIceWarningApiResult {
     // NOTE: Mocking ice warnings for web because of missing CORS headers in api (just a static file)
-    return Promise.resolve(require('../../../../assets/ice_forecast_regions.json'));
+    return require('../../../../assets/json/ice_forecast_regions.json');
   }
 
 

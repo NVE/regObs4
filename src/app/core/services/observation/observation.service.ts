@@ -77,9 +77,9 @@ export class ObservationService {
     userSetting: UserSetting,
     cancel?: Promise<void>) {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(userSetting.appMode, geoHazards));
-    const lastUpdateLimit = moment().subtract(10, 'minutes');
+    const lastUpdateLimit = moment().subtract(15, 'minutes');
     const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazards);
-    if (true || !dataLoad.lastUpdated
+    if (!dataLoad.lastUpdated
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
       || moment(dataLoad.itemsFromDate).isAfter(fromDate)) {
       return this.updateObservationsForGeoHazard(geoHazards, user, userSetting, cancel);
