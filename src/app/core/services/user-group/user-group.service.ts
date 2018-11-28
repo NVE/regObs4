@@ -7,7 +7,6 @@ import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { ObserverGroupDto, ObserverResponseDto } from '../../../modules/regobs-api/models';
-import { nSQL } from 'nano-sql';
 import * as moment from 'moment';
 import { from, combineLatest, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
@@ -35,7 +34,7 @@ export class UserGroupService {
   private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, user: ObserverResponseDto) {
     const dataLoadId = this.getDataLoadId(appMode, user);
     const dataLoad = await this.dataLoadService.getState(dataLoadId);
-    const lastUpdateLimit = moment().subtract(settings.kdvElements.daysBeforeUpdate, 'day');
+    const lastUpdateLimit = moment().subtract(1, 'hour');
     if (!dataLoad.lastUpdated
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
       await this.updateUserGroupsForUser(appMode, user);
@@ -48,14 +47,9 @@ export class UserGroupService {
     const dataLoadId = this.getDataLoadId(appMode, user);
     await this.dataLoadService.startLoading(dataLoadId);
     this.accountApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
-    // TODO: get observer groups from api...
     const result = await this.accountApiService.AccountGetObserverGroups(user.Guid).toPromise();
-    const userGroups = (result || []).map((val) => {
-      return { key: `${user.Guid}_${val.Id}`, userId: user.Guid, ...result };
-    });
-    const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
-    await nSQL(instanceName).loadJS(instanceName, userGroups, false);
-    await this.dataLoadService.loadingCompleted(dataLoadId, userGroups.length);
+    this.loginService.saveUserGroups(appMode, user, result);
+    await this.dataLoadService.loadingCompleted(dataLoadId, result.length);
   }
 
   private getDataLoadId(appMode: AppMode, user: ObserverResponseDto) {

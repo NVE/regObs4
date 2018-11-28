@@ -10,7 +10,7 @@ import { nSQL } from 'nano-sql';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AppMode } from '../../models/app-mode.enum';
-import { ObserverResponseDto } from '../../../modules/regobs-api/models';
+import { ObserverResponseDto, ObserverGroupDto } from '../../../modules/regobs-api/models';
 import * as Sentry from 'sentry-cordova';
 
 @Injectable({
@@ -90,11 +90,24 @@ export class LoginService {
         isLoggedIn,
         user
       }).exec();
-    const userGroups = (user.ObserverGroup || []).map((val) => {
+    await this.saveUserGroups(appMode, user, user.ObserverGroup);
+  }
+
+  async saveUserGroups(appMode: AppMode, user: ObserverResponseDto, observerGroups: ObserverGroupDto[]) {
+    const userGroups = (observerGroups || []).map((val) => {
       return { key: `${user.Guid}_${val.Id}`, userId: user.Guid, Id: val.Id, Name: val.Name };
     });
     const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
-    return nSQL(instanceName).loadJS(instanceName, userGroups, false);
+    await nSQL().loadJS(instanceName, userGroups, true);
+    await this.deleteUserGroupsNoLongerInResult(appMode, userGroups.map((ug) => ug.key));
+  }
+
+  private async deleteUserGroupsNoLongerInResult(appMode: AppMode, ids: string[]) {
+    const deleteResult = await NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
+      .query('delete').where((dbGroup: { key: string, userId: string, Id: number, Name: string }) =>
+        ids.indexOf(dbGroup.key) < 0
+      ).exec();
+    console.log('[INFO][LoginService] Deleted groups no longer in result: ', deleteResult);
   }
 
   async getLoggedInUser(): Promise<LoggedInUser> {
