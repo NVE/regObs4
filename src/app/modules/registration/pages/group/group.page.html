@@ -18,12 +18,16 @@
           {{"REGISTRATION.GROUP.SUBTITLE" | translate}}
         </ion-label>
       </ion-list-header>
-      <ion-radio-group [(ngModel)]="registration.request.ObserverGroupID">
-        <ion-item *ngFor="let group of groups" (click)="registration.request.ObserverGroupID = group.Id">
+      <ion-radio-group *ngIf="groups.length > 1" [(ngModel)]="registration.request.ObserverGroupID">
+        <ion-item *ngFor="let group of groups">
           <ion-radio mode="md" slot="start" [value]="group.Id"></ion-radio>
           <ion-label>{{group.Name}}</ion-label>
         </ion-item>
       </ion-radio-group>
+      <ion-item *ngIf="groups.length === 1">
+        <ion-checkbox mode="md" slot="start" [checked]="isSelected" (ionChange)="checkedChanged($event)"></ion-checkbox>
+        <ion-label>{{firstGroup.Name}}</ion-label>
+      </ion-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>
