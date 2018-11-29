@@ -37,6 +37,7 @@ export class ObservationListCardComponent implements OnInit {
   slideOptions = {
     autoplay: false,
     slidesPerView: 'auto',
+    spaceBetween: 30,
   };
 
   constructor(
@@ -93,7 +94,7 @@ export class ObservationListCardComponent implements OnInit {
   }
 
   async slideTap() {
-    const index = await this.slider.getActiveIndex();
+    const index = await this.getImageIndex();
     if (index < this.obs.Attachments.length) {
       await this.openImage(index);
     } else {
@@ -114,13 +115,17 @@ export class ObservationListCardComponent implements OnInit {
     modal.present();
   }
 
-  async setNextAndPrevVisibe() {
+  async getImageIndex() {
     const index = await this.slider.getActiveIndex();
     const isEnd = await this.slider.isEnd();
-    const imgIndex = isEnd ? (this.obs.Attachments.length - 1) : index;
+    return isEnd ? (this.obs.Attachments.length - 1) : index;
+  }
+
+  async setNextAndPrevVisibe() {
+    const index = await this.getImageIndex();
     this.ngZone.run(() => {
-      this.imageHeader = this.obs.Attachments[imgIndex].RegistrationName;
-      this.imageDecription = this.obs.Attachments[imgIndex].Comment;
+      this.imageHeader = this.obs.Attachments[index].RegistrationName;
+      this.imageDecription = this.obs.Attachments[index].Comment;
     });
   }
 

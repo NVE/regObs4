@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 <div class="top-tabs" slot="fixed">
-  <ion-grid>
+  <ion-grid no-padding>
     <ion-row no-padding>
       <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'inMapView'}" (click)="selectTab('inMapView')">
         {{'WARNING_LIST.RELEVANT'|translate}}

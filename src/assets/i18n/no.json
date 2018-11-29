@@ -406,6 +406,7 @@
     "RESET": "Tilbakestill app",
     "SHOW_ADVANCED": "Vis avanserte innstillinger",
     "SIZE_OF_TILES_CACHE": "Størrelse på kartblad lagret på telefonen",
+    "TILES_CACHE_SIZE": "Kartblad buffer størrelse",
     "TITLE": "Innstillinger",
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyer",
     "USE_IN_WORLD": "Utenfor Norge"

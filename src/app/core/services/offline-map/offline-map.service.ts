@@ -179,18 +179,28 @@ export class OfflineMapService {
   }
 
   private async getFolderSize(folder: string): Promise<number> {
-    const directory = await this.getDirectory(folder);
-    return new Promise<number>((resolve) => {
-      if (!directory) {
-        console.log('[DEBUG][OfflineTiles] could not get directory: ', folder);
-        resolve(0);
-      } else {
-        directory.getMetadata((success) => {
-          console.log('[DEBUG][OfflineTiles] got directory metadata for directory: ' + folder, success, directory.toURL());
-          resolve(success.size);
-        }, () => resolve(0));
-      }
-    });
+    const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
+    const files = await this.file.listDir(baseFolder, folder);
+    let totalSize = 0;
+    for (const file of files || []) {
+      totalSize += (await new Promise<number>((resolve) =>
+        file.getMetadata((success) => resolve(success.size), (_) => resolve(0))
+      ));
+    }
+    return totalSize;
+    // const directory = await this.getDirectory(folder);
+    // return new Promise<number>((resolve) => {
+    //   if (!directory) {
+    //     console.log('[DEBUG][OfflineTiles] could not get directory: ', folder);
+    //     resolve(0);
+    //   } else {
+
+    //     directory.getMetadata((success) => {
+    //       console.log('[DEBUG][OfflineTiles] got directory metadata for directory: ' + folder, success, directory.toURL());
+    //       resolve(success.size);
+    //     }, () => resolve(0));
+    //   }
+    // });
   }
 
   async getTilesCacheSize() {

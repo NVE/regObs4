@@ -60,8 +60,6 @@ ion-card {
 }
 
 .img-container {
-    max-height: 80vw;
-
     ion-img {
         height: 100%; width: 100%; object-fit: cover;
     }
@@ -79,10 +77,13 @@ ion-card {
 
 .slides-container {
     margin-top: 10px;
+    width: 100%;
+    height: 100%;
 }
 
-.swiper-slide {
-    width: 80% !important;
+.swiper-slide {  
+    width: auto;
+    height: 100%;
     /* Center slide text vertically */
     display: -webkit-box;
     display: -ms-flexbox;
@@ -97,6 +98,11 @@ ion-card {
     -webkit-align-items: center;
     align-items: center;
   }
+
+  .swiper-slide:first-child {
+    width: 80% !important;
+  }
+
 
 // .swiper-button-next, .swiper-button-prev {
 //     background-color: rgba(95, 113, 119, 0.3);

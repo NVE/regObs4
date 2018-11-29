@@ -406,6 +406,7 @@
     "RESET": "Reset app",
     "SHOW_ADVANCED": "Show advanced settings",
     "SIZE_OF_TILES_CACHE": "Size of tiles saved on device",
+    "TILES_CACHE_SIZE": "Tiles cache size",
     "TITLE": "Settings",
     "UPDATE_DROPDOWNS": "Update dropdowns",
     "USE_IN_WORLD": "Outside Norway"
