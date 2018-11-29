@@ -66,7 +66,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         this.followModeChange.emit(this.followMode);
         if (this.userMarker) {
           const currentPosition = this.userMarker.getPosition();
-          this.map.panTo(L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude));
+          const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+          this.map.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()));
         }
       });
     };
