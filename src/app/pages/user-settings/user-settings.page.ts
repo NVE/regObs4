@@ -46,9 +46,13 @@ export class UserSettingsPage implements OnInit {
   async toggleAdvanced() {
     this.showAdvanced = !this.showAdvanced;
     if (this.showAdvanced) {
-      const tilesCache = await this.offlineMapService.getTilesCacheSize();
-      this.numberOfCacheTiles = tilesCache.tiles;
-      this.cacheTilesSize = this.helperService.humanReadableByteSize(tilesCache.folderSize);
+      if (this.numberOfCacheTiles === undefined) {
+        const tilesCache = await this.offlineMapService.getTilesCacheSize();
+        this.ngZone.run(() => {
+          this.numberOfCacheTiles = tilesCache.tiles;
+          this.cacheTilesSize = this.helperService.humanReadableByteSize(tilesCache.folderSize);
+        });
+      }
     }
   }
 

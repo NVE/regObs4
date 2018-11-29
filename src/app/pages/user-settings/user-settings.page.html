@@ -53,13 +53,15 @@
       </ion-item>
     </ion-list>
     <ion-list lines="full">
-      <ion-item *ngIf="numberOfCacheTiles !== undefined">
+      <ion-item>
         <ion-label position="stacked" color="medium">{{'SETTINGS.TILES_CACHE_SIZE' | translate}}</ion-label>
-        <ion-input type="text" readonly="true" [value]="numberOfCacheTiles"></ion-input>
+        <ion-input *ngIf="numberOfCacheTiles !== undefined" type="text" readonly="true" [value]="numberOfCacheTiles"></ion-input>
+        <ion-spinner name="dots" *ngIf="numberOfCacheTiles === undefined"></ion-spinner>
       </ion-item>
-      <ion-item *ngIf="cacheTilesSize">
+      <ion-item>
         <ion-label position="stacked" color="medium">{{'SETTINGS.SIZE_OF_TILES_CACHE' | translate}}</ion-label>
-        <ion-input type="text" readonly="true" [value]="cacheTilesSize"></ion-input>
+        <ion-input *ngIf="cacheTilesSize !== undefined" type="text" readonly="true" [value]="cacheTilesSize"></ion-input>
+        <ion-spinner name="dots" *ngIf="cacheTilesSize === undefined"></ion-spinner>
       </ion-item>
     </ion-list>
 
