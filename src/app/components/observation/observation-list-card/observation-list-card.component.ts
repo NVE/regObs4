@@ -37,7 +37,7 @@ export class ObservationListCardComponent implements OnInit {
   slideOptions = {
     autoplay: false,
     slidesPerView: 'auto',
-    spaceBetween: 30,
+    spaceBetween: 10,
   };
 
   constructor(
