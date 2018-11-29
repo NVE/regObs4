@@ -6,7 +6,8 @@
   "ALERT": {
     "CANCEL": "Cancel",
     "DEFAULT_HEADER": "Whoops!",
-    "OK": "Ok"
+    "OK": "Ok",
+    "PULL_TO_REFRESH": "Pull to refresh..."
   },
   "DATA_LOAD": {
     "DATA": "Loading...",
@@ -106,6 +107,7 @@
     "SHORT_LIST": "Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Des"
   },
   "MY_OBSERVATIONS": {
+    "LOADING_MORE": "Loading more observations...",
     "MY_SENT_OBSERVATIONS": "My sent observations",
     "TITLE": "My observations"
   },
@@ -524,7 +526,6 @@
     "FAVOURITES": "Favourites",
     "IN_MAP_CENTER": "In map center",
     "IN_MAP_VIEW": "In map view",
-    "PULL_TO_REFRESH": "Pull to refresh",
     "RELEVANT": "Relevant",
     "TITLE": "Varsom",
     "VALID_FROM": "Valid from"

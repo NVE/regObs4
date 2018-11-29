@@ -30,7 +30,7 @@
             <ion-slides *ngIf="obs.Attachments.length > 1" [options]="slideOptions" [pager]="true"
               (ionSlideTransitionEnd)="setNextAndPrevVisibe()">
               <ion-slide *ngFor="let image of obs.Attachments">
-                <img [src]="getImageUrl(image.AttachmentFileName)" (click)="slideTap()" />
+                <img [src]="getImageUrl(image.AttachmentFileName)" (click)="slideTap()" onerror="this.style.display='none'" />
               </ion-slide>
             </ion-slides>
             <ion-img (click)="openImage(0)" *ngIf="obs.Attachments.length === 1" [src]="getImageUrl(obs.Attachments[0].AttachmentFileName)"></ion-img>

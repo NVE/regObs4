@@ -8,9 +8,16 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh()">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh">
+  <ion-refresher (ionRefresh)="doRefresh()">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="{{'ALERT.PULL_TO_REFRESH' | translate }}">
     </ion-refresher-content>
+    <ion-grid *ngIf="showCancel">
+      <ion-row>
+        <ion-col text-center>
+          <ion-button fill="outline" size="small" (click)="cancel()">Avbryt</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-refresher>
   <app-sync-item-list></app-sync-item-list>
   <ion-list lines="full">
@@ -23,7 +30,7 @@
     </app-observation-list-card>
   </ion-list>
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData()">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="{{'MY_OBSERVATIONS.LOADING_MORE' | translate}}">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>

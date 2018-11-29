@@ -167,16 +167,25 @@ export class ObservationService {
     }
   }
 
-  async updateObservationsForCurrentUser(appMode: AppMode, user: ObserverResponseDto, langKey: LangKey, page: number) {
+  async updateObservationsForCurrentUser(
+    appMode: AppMode,
+    user: ObserverResponseDto,
+    langKey: LangKey,
+    page: number,
+    cancel?: Promise<any>) {
     const numberOfRecordsToFetch = 10;
-    const searchResult = await this.searchService.SearchAll({
-      NumberOfRecords: numberOfRecordsToFetch,
-      LangKey: langKey,
-      ObserverGuid: user.Guid,
-      Offset: page * numberOfRecordsToFetch,
-    }).toPromise();
-    const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
-    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, false);
+    try {
+      const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchAll({
+        NumberOfRecords: numberOfRecordsToFetch,
+        LangKey: langKey,
+        ObserverGuid: user.Guid,
+        Offset: page * numberOfRecordsToFetch,
+      }), cancel);
+      const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
+      await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, false);
+    } catch (err) {
+      console.error(err); // TODO: Log error if not cancel error
+    }
   }
 
   getObservationsDaysBack(userSettings: UserSetting, geoHazards: GeoHazard[]): number {

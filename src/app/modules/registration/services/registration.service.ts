@@ -19,6 +19,7 @@ import { RegistrationStatus } from '../models/registrationStatus.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { Router } from '@angular/router';
+import { ObservableHelper } from '../../../core/helpers/observable-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -174,28 +175,41 @@ export class RegistrationService {
       this.dataLoadService.getStateAsObservable(this.getDataLoadId(userSetting.appMode))));
   }
 
-  async syncRegistrations() {
+  async syncRegistrations(cancel?: Promise<any>) {
+    let cancelled = false;
+    if (cancel) {
+      cancel.then(() => {
+        cancelled = true;
+      });
+    }
     const userSettings = await this.userSettingService.getUserSettings();
     const appMode = userSettings.appMode;
     const registrationsToSync = await this.getRegistrationsToSync().pipe(take(1)).toPromise();
     if (registrationsToSync.length > 0) {
       const dataLoadId = this.getDataLoadId(appMode);
-      this.dataLoadService.startLoading(dataLoadId, registrationsToSync.length);
-      let itemCompleted = 0;
-      for (const registration of registrationsToSync) {
-        await this.syncRegistration(registration, appMode);
-        itemCompleted++;
-        this.dataLoadService.updateProgress(dataLoadId, itemCompleted, registrationsToSync.length);
+      try {
+        this.dataLoadService.startLoading(dataLoadId, registrationsToSync.length);
+        let itemCompleted = 0;
+        for (const registration of registrationsToSync) {
+          if (!cancelled) {
+            await this.syncRegistration(registration, appMode, cancel);
+            itemCompleted++;
+            this.dataLoadService.updateProgress(dataLoadId, itemCompleted, registrationsToSync.length);
+          } else {
+            throw Error('Operation cancelled');
+          }
+        }
+        await this.dataLoadService.loadingCompleted(dataLoadId);
+      } catch (err) {
+        await this.dataLoadService.loadingError(dataLoadId, err.message);
       }
-      await this.dataLoadService.loadingCompleted(dataLoadId);
     }
   }
 
-  private async syncRegistration(registration: IRegistration, appMode: AppMode) {
+  private async syncRegistration(registration: IRegistration, appMode: AppMode, cancel?: Promise<void>) {
     try {
-      // throw new HttpErrorResponse({ error: Error('test'), status: 500 });
       this.cleanupRegistration(registration);
-      const createRegistrationResult = await this.postRegistration(appMode, registration.request);
+      const createRegistrationResult = await this.postRegistration(appMode, registration.request, cancel);
       const newRegistration = await this.updateRegistrationById(createRegistrationResult.RegId, appMode);
       await this.deleteRegistrationById(appMode, registration.id);
       return newRegistration;
@@ -266,9 +280,9 @@ export class RegistrationService {
       .pipe(map((items) => items.find((x) => x.id === id)));
   }
 
-  private async postRegistration(appMode: AppMode, registration: RegobsApiModels.CreateRegistrationRequestDto) {
+  private postRegistration(appMode: AppMode, registration: RegobsApiModels.CreateRegistrationRequestDto, cancel?: Promise<void>) {
     this.registrationApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
-    return this.registrationApiService.RegistrationInsert(registration).toPromise();
+    return ObservableHelper.toPromiseWithCancel(this.registrationApiService.RegistrationInsert(registration), cancel);
   }
 
   private async updateRegistrationById(regId: number, appMode: AppMode) {

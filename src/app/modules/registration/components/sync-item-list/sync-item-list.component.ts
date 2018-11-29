@@ -38,7 +38,7 @@ export class SyncItemListComponent implements OnInit, OnDestroy {
   }
 
   refresh() {
-    this.registrationService.syncRegistrations();
+    return this.registrationService.syncRegistrations();
   }
 
   ngOnDestroy(): void {

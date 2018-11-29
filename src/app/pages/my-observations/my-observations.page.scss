@@ -1,3 +1,15 @@
 .my-observation-header {
     margin-bottom: -5px;
 }
+
+ion-refresher, ion-content {
+    background-color: var(--ion-background-color,#fff);
+}
+
+ion-refresher {
+    height: 120px;
+
+    ion-refresher-content {
+        height: 60px;
+    }
+}

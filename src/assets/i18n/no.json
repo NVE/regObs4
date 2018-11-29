@@ -6,7 +6,8 @@
   "ALERT": {
     "CANCEL": "Avbryt",
     "DEFAULT_HEADER": "Oisann!",
-    "OK": "Ok"
+    "OK": "Ok",
+    "PULL_TO_REFRESH": "Dra ned for å oppdatere..."
   },
   "DATA_LOAD": {
     "DATA": "Laster data...",
@@ -106,6 +107,7 @@
     "SHORT_LIST": "Jan, Feb, Mar, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Des"
   },
   "MY_OBSERVATIONS": {
+    "LOADING_MORE": "Laster flere observasjoner...",
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjoner",
     "TITLE": "Mine observasjoner"
   },
@@ -524,7 +526,6 @@
     "FAVOURITES": "Favoritter",
     "IN_MAP_CENTER": "I kartsenter",
     "IN_MAP_VIEW": "I kartutsnittet",
-    "PULL_TO_REFRESH": "Dra ned for å oppdatere",
     "RELEVANT": "Aktuelle",
     "TITLE": "Varsom",
     "VALID_FROM": "Gyldig fra"

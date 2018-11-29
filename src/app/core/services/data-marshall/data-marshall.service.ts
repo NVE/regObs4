@@ -12,6 +12,7 @@ import { environment } from '../../../../environments/environment';
 import { settings } from '../../../../settings';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Platform } from '@ionic/angular';
+import { RegistrationService } from '../../../modules/registration/services/registration.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,7 @@ export class DataMarshallService {
     private loginService: LoginService,
     private platform: Platform,
     private localNotifications: LocalNotifications,
+    private registrationService: RegistrationService,
   ) {
     this.userSettingService.userSettingObservable$.pipe(
       pairwise())
@@ -94,6 +96,7 @@ export class DataMarshallService {
       const cancelTimer = useTimeout
         ? CancelPromiseTimer.createCancelPromiseTimer(settings.backgroundFetchTimeout) : null;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
+      await this.registrationService.syncRegistrations(cancelTimer);
       const observationsUpdated = await this.observationService.updateObservations(cancelTimer);
       if (showNotification && observationsUpdated > 0
         && this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
