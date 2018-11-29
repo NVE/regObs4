@@ -21,7 +21,7 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
 
   @ViewChild('list') list: List;
 
-  warnings: WarningGroup[];
+  warnings: WarningGroup[] = [];
   warningSubscription: Subscription;
   currentGeoHazardSubscription: Subscription;
   animate: WarningGroup;
@@ -45,6 +45,11 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
     });
     this.warningSubscription = this.warnings$.subscribe((val) => {
       this.zone.run(() => {
+        if (this.warnings.length !== val.length) {
+          this.closeSlidingItems();
+          // NOTE: Workaround. A bug prevents sliding items from
+          // beeing opened when items are open when updated.
+        }
         this.warnings = val;
       });
     });
