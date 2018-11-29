@@ -127,6 +127,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.startGeoLocationWatch();
       this.zone.runOutsideAngular(() => {
         this.map.on('dragstart', () => this.disableFollowMode());
+        this.map.on('zoomstart', () => this.disableFollowMode());
       });
     }
 
