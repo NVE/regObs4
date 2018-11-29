@@ -10,4 +10,16 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+    img {
+        position: absolute;
+        left: 5px;
+        width: auto;
+        height: auto;
+        max-width: 200px;
+        max-height: 200px;
+        bottom: 102px;
+        height: auto;
+        border: 2px solid #fff;
+    }
 }

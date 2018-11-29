@@ -1,5 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Observable, Subject, Subscribable, Subscription } from 'rxjs';
 import { MapItem } from '../../core/models/map-item.model';
 import * as moment from 'moment';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
@@ -9,13 +9,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
+import { AppMode } from '../../core/models/app-mode.enum';
+import { settings } from '../../../settings';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { UserSetting } from '../../core/models/user-settings.model';
 
 @Component({
   selector: 'app-map-item-bar',
   templateUrl: './map-item-bar.component.html',
   styleUrls: ['./map-item-bar.component.scss']
 })
-export class MapItemBarComponent implements OnInit {
+export class MapItemBarComponent implements OnInit, OnDestroy {
 
   visible: boolean;
   topHeader: string;
@@ -24,8 +28,11 @@ export class MapItemBarComponent implements OnInit {
   name: string;
   id: number;
   geoHazard: GeoHazard;
+  imageUrl: string;
 
+  private subscription: Subscription;
   private _isVisible: Subject<boolean>;
+  private userSetting: UserSetting;
 
   get isVisible(): Observable<boolean> {
     return this._isVisible.asObservable();
@@ -39,12 +46,20 @@ export class MapItemBarComponent implements OnInit {
     private translateService: TranslateService,
     private router: Router,
     private zone: NgZone,
+    private userSettingService: UserSettingService
   ) {
     this.visible = false;
     this._isVisible = new Subject();
   }
 
   ngOnInit() {
+    this.subscription = this.userSettingService.userSettingObservable$.subscribe((val) => {
+      this.userSetting = val;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   getTitle(item: RegistrationViewModel) {
@@ -54,6 +69,7 @@ export class MapItemBarComponent implements OnInit {
   }
 
   show(item: MapItem) {
+
     this.zone.run(() => {
       this.id = item.RegID;
       this.topHeader = moment(item.DtObsTime).format('d/M HH:mm');
@@ -61,6 +77,10 @@ export class MapItemBarComponent implements OnInit {
       this.name = item.Observer.NickName;
       this.geoHazard = item.GeoHazardTID;
       this.setDistanceAndType(item);
+      this.imageUrl = undefined;
+      if (this.userSetting && item.Attachments && item.Attachments.length > 0) {
+        this.imageUrl = this.getImageUrl(this.userSetting.appMode, item.Attachments[0].AttachmentFileName, 'medium');
+      }
       this.visible = true;
       this.publishChange();
     });
@@ -71,6 +91,10 @@ export class MapItemBarComponent implements OnInit {
       this.visible = false;
       this.publishChange();
     });
+  }
+
+  getImageUrl(appMode: AppMode, filename: string, size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'medium') {
+    return `${settings.services.regObs.webUrl[appMode]}/Attachments/${size}/${filename}`;
   }
 
   navigateToItem() {
