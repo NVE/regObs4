@@ -3,7 +3,7 @@
     <ion-icon name="add"></ion-icon>
   </ion-fab-button>
   <ion-fab-list side="top">
-    <ion-list lines="full" no-margin>
+    <ion-list lines="full" no-margin no-padding>
       <ion-item (click)="createRegistration(geoHazard)" *ngFor="let geoHazard of geoHazards">
         <ion-icon slot="start" name="eye"></ion-icon>
         <ion-label>{{'ADD_MENU.NEW_OBSERVATION' | translate}} {{ getName(geoHazard) | translate | lowercase }}{{
@@ -20,5 +20,6 @@
         <ion-label>{{'ADD_MENU.NEW_TRIP' | translate }}</ion-label>
       </ion-item>
     </ion-list>
+    <div class="backdrop" click="closeMenu()"></div>
   </ion-fab-list>
 </ion-fab>

@@ -39,6 +39,7 @@
     --ion-text-color-step-600: #8B9399;
     --ion-header-size: 17px;
     --ion-color-medium: #757575;
+    --z-index-over-map: 1001;
 }
 
 .ion-color-warninglevel-0 {
@@ -67,11 +68,11 @@
 }
 
 
-$z-index-over-map: 1001;
+// $z-index-over-map: 1001;
 
 .map-control {
     background-color: var(--backdrop-background);
-    z-index: $z-index-over-map;
+    z-index: var(--z-index-over-map);
     border-radius: 5px;
     color: #fff;
     padding: 5px;
@@ -161,6 +162,7 @@ ion-radio {
 
 .leaflet-bottom {
     bottom: calc(var(--map-item-height) + var(--map-center-info-height) + 10px) !important;
+    z-index: 800 !important;
 }
 
 .leaflet-left {

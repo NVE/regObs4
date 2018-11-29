@@ -86,4 +86,8 @@ export class AddMenuComponent implements OnInit, OnDestroy {
   editRegistration(draft: IRegistration) {
     this.closeAndNavigate('registration/edit/' + draft.id);
   }
+
+  closeMenu() {
+    this.menuFab.close();
+  }
 }

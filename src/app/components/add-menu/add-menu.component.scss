@@ -1,3 +1,14 @@
 ion-fab-list {
     right: 5px;
 }
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    opacity: 0.3;
+    background-color: var(--backdrop-background);
+}
