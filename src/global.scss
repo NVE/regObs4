@@ -169,6 +169,21 @@ ion-radio {
     left: 7px !important;
 }
 
+.circle-marker-cluster {
+    background-color: var(--ion-color-primary);
+    border: 2px solid #fff;
+    border-radius: 50% !important;
+    font-size: 14px;
+    display: flex !important;
+    text-align: center;
+
+    div {
+        margin-top: auto;
+        margin-bottom: auto;
+        width: 100%;
+    }
+}
+
 app-geo-icon {
     .ice {
         --geo-icon-color: #029BB3;

@@ -54,16 +54,24 @@ export class HomePage implements OnInit, OnDestroy {
 
   createClusterIcon(cluster: L.MarkerCluster) {
     const items = cluster.getAllChildMarkers().map((x: MapItemMarker) => x.item.GeoHazardTID);
-    const unique = Array.from(new Set(items));
-    if (unique.length === 1) {
-      const geoHazard: GeoHazard = unique[0];
-      switch (geoHazard) {
-        default:
-          return IconHelper.getIceObservationsClusterIcon(items.length); // TODO: Implement other geoHazards
-      }
-    } else {
-      return IconHelper.getMixedObservationsClusterIcon(items.length);
-    }
+    // const unique = Array.from(new Set(items));
+    // if (unique.length === 1) {
+    //   const geoHazard: GeoHazard = unique[0];
+    //   switch (geoHazard) {
+    //     default:
+    //       return IconHelper.getIceObservationsClusterIcon(items.length); // TODO: Implement other geoHazards
+    //   }
+    // } else {
+    //   return IconHelper.getMixedObservationsClusterIcon(items.length);
+    // }
+    const size = (items.length < 100 ? 35 :
+      (items.length < 1000 ? 50 : 70));
+    return L.divIcon({
+      html: '<div>' + items.length + '</div>',
+      iconSize: [size, size],
+      iconAnchor: [size / 2.0, size / 2.0],
+      className: 'circle-marker-cluster',
+    });
   }
 
   async ngOnInit() {
