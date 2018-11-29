@@ -4,18 +4,20 @@ ion-tab-button {
     }
 }
 
-.md {
-    ion-tab-button {
-        ion-badge {
-            margin-top: -3px;
+ion-tabs {
+    &.md {
+        ion-tab-button {
+            ion-badge {
+                margin-top: -3px;
+            }
         }
     }
-}
 
-.ios {
-    ion-tab-button {
-        ion-badge {
-            margin-top: 3px;
+    &.ios {
+        ion-tab-button {
+            ion-badge {
+                margin-top: 3px;
+            }
         }
     }
 }

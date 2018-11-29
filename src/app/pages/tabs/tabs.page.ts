@@ -1,5 +1,5 @@
-import { Component, ViewChild, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
-import { Events, Tabs } from '@ionic/angular';
+import { Component, ViewChild, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Events, Tabs, Platform } from '@ionic/angular';
 import { settings } from '../../../settings';
 import { Subscription } from 'rxjs';
 import { WarningService } from '../../core/services/warning/warning.service';
@@ -15,6 +15,8 @@ export class TabsPage implements OnInit, OnDestroy {
   warningsInView: { count: number; text: string, maxWarning: number };
   fullscreen = false;
   private fullscreenChangedhandler: (isFullscreen: boolean) => void;
+  isIos: boolean;
+  isAndroid: boolean;
 
   get showBadge() {
     return this.warningsInView && this.warningsInView.maxWarning > 0;
@@ -30,7 +32,13 @@ export class TabsPage implements OnInit, OnDestroy {
 
 
   @ViewChild(Tabs) private tabs: Tabs;
-  constructor(private events: Events, private warningService: WarningService, private ngZone: NgZone) {
+  constructor(
+    private events: Events,
+    private platform: Platform,
+    private warningService: WarningService,
+    private ngZone: NgZone) {
+    this.isIos = this.platform.is('ios');
+    this.isAndroid = this.platform.is('android');
     this.fullscreenChangedhandler = (isFullscreen: boolean) => {
       this.ngZone.run(() => {
         this.fullscreen = isFullscreen;
