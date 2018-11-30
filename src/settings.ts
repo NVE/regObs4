@@ -178,6 +178,9 @@ export const settings = {
     kdvElements: {
         daysBeforeUpdate: 1,
     },
+    helpTexts: {
+        daysBeforeUpdate: 1,
+    },
     images: {
         size: 1800,
         quality: 50,

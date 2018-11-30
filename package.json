@@ -102,6 +102,7 @@
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.23",
     "nano-sql": "^1.7.9",
+    "ngx-markdown": "^7.0.2",
     "ngx-pinch-zoom": "^1.2.0",
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.3.3",

@@ -6,6 +6,7 @@
   </ion-row>
   <ion-row>
     <ion-col no-padding>
+      <app-help-text [registrationTid]="registrationTid" [geoHazard]="registration.geoHazard"></app-help-text>
       <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
       <app-save-and-go-back-button [isEmpty]="isEmpty" [registration]="registration" [registrationTid]="registrationTid"
         (reset)="emitReset()"></app-save-and-go-back-button>

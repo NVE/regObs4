@@ -17,10 +17,13 @@ import { ModalSaveOrDeleteButtonsComponent } from './components/modal-save-or-de
 import { ExposedHeightComponent } from './components/snow/exposed-height/exposed-height.component';
 import { ValidExpositionComponent } from './components/snow/valid-exposition/valid-exposition.component';
 import { RegistrationContentWrapperComponent } from './components/registration-content-wrapper/registration-content-wrapper.component';
+import { HelpTextComponent } from './components/help-text/help-text.component';
+import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.module';
 @NgModule({
     imports: [
         SharedModule,
         MapModule,
+        HelpModalPageModule,
     ],
     exports: [
         SharedModule,
@@ -41,6 +44,8 @@ import { RegistrationContentWrapperComponent } from './components/registration-c
         ExposedHeightComponent,
         ValidExpositionComponent,
         RegistrationContentWrapperComponent,
+        HelpTextComponent,
+        HelpModalPageModule,
     ],
     declarations: [
         SaveAndGoBackButtonComponent,
@@ -59,6 +64,7 @@ import { RegistrationContentWrapperComponent } from './components/registration-c
         ExposedHeightComponent,
         ValidExpositionComponent,
         RegistrationContentWrapperComponent,
+        HelpTextComponent,
     ],
 })
 export class SharedComponentsModule { }

@@ -141,7 +141,15 @@ export class NanoSql {
                 { key: 'userId', type: 'string', props: ['idx'] },
                 { key: '*', type: '*' },
             ]
-        }
+        },
+        HELP_TEXTS: {
+            name: 'helptexts',
+            instancePerAppMode: true,
+            model: [
+                { key: 'langKey', type: 'int', props: ['pk'] },
+                { key: '*', type: '*' },
+            ]
+        },
     };
 
     static getTables(): NanoSqlTable[] {

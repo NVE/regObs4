@@ -13,6 +13,7 @@ import { settings } from '../../../../settings';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Platform } from '@ionic/angular';
 import { RegistrationService } from '../../../modules/registration/services/registration.service';
+import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,7 @@ export class DataMarshallService {
     private warningService: WarningService,
     private observationService: ObservationService,
     private kdvService: KdvService,
+    private helpTextService: HelpTextService,
     private userSettingService: UserSettingService,
     private loginService: LoginService,
     private platform: Platform,
@@ -46,6 +48,10 @@ export class DataMarshallService {
         if (this.hasAppModeLanguageOrCurrentGeoHazardChanged(prev, next)) {
           console.log('[INFO][ObervationService] App settings changed. Need to refresh warnings.');
           this.warningService.updateWarnings();
+        }
+        if (this.hasAppModeOrLanguageChanged(prev, next)) {
+          this.kdvService.updateKdvElements();
+          this.helpTextService.updateHelpTexts();
         }
       });
 
@@ -104,19 +110,30 @@ export class DataMarshallService {
       }
       await this.warningService.updateWarnings(cancelTimer);
       await this.kdvService.updateKdvElements(cancelTimer);
+      await this.helpTextService.updateHelpTexts(cancelTimer);
       console.log('[INFO] DataMarshall Background Update Completed');
     });
   }
 
   private hasAppModeLanguageOrCurrentGeoHazardChanged(oldVal: UserSetting, newVal: UserSetting) {
     if (oldVal && newVal) {
+      const appModeChange = this.hasAppModeOrLanguageChanged(oldVal, newVal);
+      if (appModeChange) {
+        return true;
+      }
+      if (oldVal.currentGeoHazard !== newVal.currentGeoHazard) {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  private hasAppModeOrLanguageChanged(oldVal: UserSetting, newVal: UserSetting) {
+    if (oldVal && newVal) {
       if (oldVal.appMode !== newVal.appMode) {
         return true;
       }
       if (oldVal.language !== newVal.language) {
-        return true;
-      }
-      if (oldVal.currentGeoHazard !== newVal.currentGeoHazard) {
         return true;
       }
       return false;

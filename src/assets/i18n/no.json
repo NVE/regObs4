@@ -55,6 +55,9 @@
     "SNOW": "Snø",
     "WATER": "Vann"
   },
+  "HELP": {
+    "TITLE": "Hjelp"
+  },
   "LEGAL_TERMS": {
     "HEADER": "Om data i regObs",
     "OK": "Ok, jeg aksepterer",

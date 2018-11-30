@@ -21,6 +21,7 @@ import { ObservationsDaysBackComponent } from './components/side-menu/observatio
 import { RegistrationModule } from './modules/registration/registration.module';
 import { RegobsApiModule } from './modules/regobs-api/regobs-api.module';
 import { LegalTermsModalPageModule } from './pages/modal-pages/legal-terms-modal/legal-terms-modal.module';
+import { MarkdownModule } from 'ngx-markdown';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -48,6 +49,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     }),
     LeafletModule.forRoot(),
+    MarkdownModule.forRoot(),
     IonicStorageModule.forRoot({
       name: settings.db.simpleStorage.dbName,
       driverOrder: ['sqlite', 'indexeddb', 'websql'],
