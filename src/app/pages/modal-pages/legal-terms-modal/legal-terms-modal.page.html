@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">{{ 'DIALOGS.OK' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'LEGAL_TERMS.HEADER' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col text-center>
+        <app-legal-terms></app-legal-terms>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-center>
+        <ion-button color="primary" (click)="close()">{{'DIALOGS.OK' | translate}}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

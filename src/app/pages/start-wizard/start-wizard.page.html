@@ -2,15 +2,15 @@
   <ion-slides [options]="{autoplay:false}" pager="true">
     <ion-slide>
       <ion-grid>
-        <ion-row>
-          <ion-col>
-            <h1>{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER'|translate}}</h1>
-            <h3>{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER_SECONDARY_LANGUAGE'|translate}}</h3>
+        <ion-row padding>
+          <ion-col padding>
+            <h2>{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER'|translate}}</h2>
+            <ion-label color="medium" text-wrap>{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER_SECONDARY_LANGUAGE'|translate}}</ion-label>
           </ion-col>
         </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-list>
+        <ion-row padding>
+          <ion-col padding>
+            <ion-list lines="none">
               <ion-radio-group [(ngModel)]="userSettings.language" (ionChange)="saveUserSettings()">
                 <ion-item (click)="slideNext()">
                   <ion-label>{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN'|translate}}
@@ -30,15 +30,15 @@
     </ion-slide>
     <ion-slide>
       <ion-grid>
-        <ion-row>
-          <ion-col>
-            <h1>{{'START_WIZARD.CHOOSE_COUNTRY.HEADER'|translate}}</h1>
-            <h3>{{'START_WIZARD.CHOOSE_COUNTRY.SUBTITLE'|translate}}</h3>
+        <ion-row padding>
+          <ion-col padding>
+            <h2>{{'START_WIZARD.CHOOSE_COUNTRY.HEADER'|translate}}</h2>
+            <ion-label color="medium" text-wrap>{{'START_WIZARD.CHOOSE_COUNTRY.SUBTITLE'|translate}}</ion-label>
           </ion-col>
         </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-list>
+        <ion-row padding>
+          <ion-col padding>
+            <ion-list lines="none">
               <ion-radio-group [(ngModel)]="userSettings.country">
                 <ion-item (click)="slideNext()">
                   <ion-label>{{'START_WIZARD.CHOOSE_COUNTRY.YES_NORWAY'|translate}}</ion-label>
@@ -55,7 +55,7 @@
       </ion-grid>
     </ion-slide>
     <ion-slide>
-      <ion-grid no-padding>
+      <ion-grid no-padding class="image-grid">
         <ion-row class="wizard-image-wrap blue">
           <ion-col no-padding>
             <img src="/assets/images/screenshot1_iphone6.png" />
@@ -72,7 +72,7 @@
       </ion-grid>
     </ion-slide>
     <ion-slide>
-      <ion-grid no-padding>
+      <ion-grid no-padding class="image-grid">
         <ion-row class="wizard-image-wrap green">
           <ion-col no-padding>
             <img src="/assets/images/screenshot3_iphone6.png" />
@@ -89,7 +89,7 @@
       </ion-grid>
     </ion-slide>
     <ion-slide>
-      <ion-grid no-padding>
+      <ion-grid no-padding class="image-grid">
         <ion-row class="wizard-image-wrap orange">
           <ion-col no-padding>
             <img src="/assets/images/screenshot4_iphone6.png" />
@@ -106,7 +106,7 @@
       </ion-grid>
     </ion-slide>
     <ion-slide>
-      <ion-grid no-padding>
+      <ion-grid no-padding class="image-grid">
         <ion-row class="wizard-image-wrap yellow">
           <ion-col no-padding>
             <img src="/assets/images/screenshot5_iphone6.png" />
@@ -123,42 +123,54 @@
       </ion-grid>
     </ion-slide>
     <ion-slide>
-      <ion-grid no-padding>
-        <ion-row class="header">
-          <ion-col no-padding>
-          </ion-col>
-        </ion-row>
-        <ion-row class="header">
-          <ion-col no-padding>
-            <h3>{{'START_WIZARD.CHOOSE_INTEREST.HEADER'|translate}}</h3>
-          </ion-col>
-        </ion-row>
-        <ion-row class="cards">
+      <ion-grid>
+        <ion-row>
           <ion-col>
-            <ion-card>
-              <ion-item (click)="selectGeoHazard([GeoHazard.Snow])">
-                <ion-icon src="/assets/icon/ikon_snoskred.svg" slot="start"></ion-icon>
-                <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_SNOW'|translate}}</ion-label>
-              </ion-item>
-            </ion-card>
-            <ion-card>
-              <ion-item (click)="selectGeoHazard([GeoHazard.Water, GeoHazard.Dirt])">
-                <ion-icon src="/assets/icon/ikon_jordskred.svg" slot="start"></ion-icon>
-                <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_DIRT'|translate}}</ion-label>
-              </ion-item>
-            </ion-card>
-            <ion-card>
-              <ion-item (click)="selectGeoHazard([GeoHazard.Water, GeoHazard.Dirt])">
-                <ion-icon src="/assets/icon/ikon_flom.svg" slot="start"></ion-icon>
-                <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_WATER'|translate}}</ion-label>
-              </ion-item>
-            </ion-card>
-            <ion-card>
-              <ion-item (click)="selectGeoHazard([GeoHazard.Ice])">
-                <ion-icon src="/assets/icon/ikon_isvarsler2.svg" slot="start"></ion-icon>
-                <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_ICE'|translate}}</ion-label>
-              </ion-item>
-            </ion-card>
+            <app-legal-terms></app-legal-terms>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button color="primary" (click)="slideNext()">{{'LEGAL_TERMS.OK' | translate}}</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-slide>
+    <ion-slide>
+      <ion-grid>
+        <ion-row padding>
+          <ion-col no-padding>
+            <h2>{{'START_WIZARD.CHOOSE_INTEREST.HEADER'|translate}}</h2>
+          </ion-col>
+        </ion-row>
+        <ion-row padding>
+          <ion-col padding>
+            <ion-list lines="none">
+              <ion-card>
+                <ion-item (click)="selectGeoHazard([GeoHazard.Snow])">
+                  <ion-icon src="/assets/icon/ikon_snoskred.svg" slot="start"></ion-icon>
+                  <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_SNOW'|translate}}</ion-label>
+                </ion-item>
+              </ion-card>
+              <ion-card>
+                <ion-item (click)="selectGeoHazard([GeoHazard.Water, GeoHazard.Dirt])">
+                  <ion-icon src="/assets/icon/ikon_jordskred.svg" slot="start"></ion-icon>
+                  <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_DIRT'|translate}}</ion-label>
+                </ion-item>
+              </ion-card>
+              <ion-card>
+                <ion-item (click)="selectGeoHazard([GeoHazard.Water, GeoHazard.Dirt])">
+                  <ion-icon src="/assets/icon/ikon_flom.svg" slot="start"></ion-icon>
+                  <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_WATER'|translate}}</ion-label>
+                </ion-item>
+              </ion-card>
+              <ion-card>
+                <ion-item (click)="selectGeoHazard([GeoHazard.Ice])">
+                  <ion-icon src="/assets/icon/ikon_isvarsler2.svg" slot="start"></ion-icon>
+                  <ion-label text-wrap>{{'START_WIZARD.CHOOSE_INTEREST.INTEREST_ICE'|translate}}</ion-label>
+                </ion-item>
+              </ion-card>
+            </ion-list>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -167,6 +179,6 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar color="dark" mode="ios">
-    <ion-title text-wrap (click)="selectGeoHazard([GeoHazard.Snow])" text-center>{{'START_WIZARD.SKIP_START'|translate}}</ion-title>
+    <ion-title no-padding text-wrap (click)="selectGeoHazard([GeoHazard.Snow])" text-center>{{'START_WIZARD.SKIP_START'|translate}}</ion-title>
   </ion-toolbar>
 </ion-footer>

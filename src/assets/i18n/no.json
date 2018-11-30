@@ -55,6 +55,11 @@
     "SNOW": "Snø",
     "WATER": "Vann"
   },
+  "LEGAL_TERMS": {
+    "HEADER": "Om data i regObs",
+    "OK": "Ok, jeg aksepterer",
+    "TERMS": "Data på regObs produseres av brukerne av regObs og foreligger \"som den er\". Den kan inneholde feil og utelatelser. NVE gir ingen garantier for informasjonens aktualitet og tar ikke ansvar for at data kan gi feil eller villedende informasjon. Antall stjerner (1-5) beskriver kompetansenivået til den som leverer observasjoner. Uten stjerner er kompetansen ukjent eller lav."
+  },
   "LOGIN": {
     "CREATE_USER": "Lag ny bruker",
     "EMAIL": "Epost",

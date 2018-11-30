@@ -5,6 +5,8 @@ import { UserSetting } from '../../core/models/user-settings.model';
 import { settings } from '../../../settings';
 import { Subscription } from 'rxjs';
 import { AppCountry } from '../../core/models/app-country.enum';
+import { ModalController } from '@ionic/angular';
+import { LegalTermsModalPage } from '../../pages/modal-pages/legal-terms-modal/legal-terms-modal.page';
 
 @Component({
   selector: 'app-side-menu',
@@ -26,6 +28,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   constructor(
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
+    private modalController: ModalController,
     private ngZone: NgZone) {
   }
 
@@ -58,5 +61,12 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   updateObservations() {
     this.observationService.updateObservationsForCurrentGeoHazard();
+  }
+
+  async showLegalTerms() {
+    const modal = await this.modalController.create({
+      component: LegalTermsModalPage
+    });
+    modal.present();
   }
 }

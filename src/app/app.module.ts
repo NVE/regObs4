@@ -20,6 +20,7 @@ import { SharedModule } from './modules/shared/shared.module';
 import { ObservationsDaysBackComponent } from './components/side-menu/observations-days-back/observations-days-back.component';
 import { RegistrationModule } from './modules/registration/registration.module';
 import { RegobsApiModule } from './modules/regobs-api/regobs-api.module';
+import { LegalTermsModalPageModule } from './pages/modal-pages/legal-terms-modal/legal-terms-modal.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -55,6 +56,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SharedModule,
     RegistrationModule,
     RegobsApiModule,
+    LegalTermsModalPageModule,
   ],
   providers: APP_PROVIDERS,
   bootstrap: [AppComponent],

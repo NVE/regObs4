@@ -13,6 +13,7 @@ import { GeoSelectComponent } from '../../components/geo-select/geo-select.compo
 import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
 import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
 import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.pipe';
+import { LegalTermsComponent } from '../../components/legal-terms/legal-terms.component';
 
 @NgModule({
     imports: [
@@ -21,7 +22,7 @@ import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.
         ReactiveFormsModule,
         IonicModule,
         AngularSvgIconModule,
-        TranslateModule,
+        TranslateModule
     ],
     declarations: [
         ShadowCssDirective,
@@ -33,6 +34,7 @@ import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.
         FormatDatePipe,
         StartsWithHighlightPipe,
         ObservationListCardComponent,
+        LegalTermsComponent,
     ],
     exports: [
         CommonModule,
@@ -50,6 +52,7 @@ import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.
         FormatDatePipe,
         StartsWithHighlightPipe,
         ObservationListCardComponent,
+        LegalTermsComponent,
     ]
 })
 export class SharedModule { }

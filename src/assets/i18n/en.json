@@ -55,6 +55,11 @@
     "SNOW": "Snow",
     "WATER": "Water"
   },
+  "LEGAL_TERMS": {
+    "HEADER": "About regObs data",
+    "OK": "Ok, I accept",
+    "TERMS": "Data on regObs is produced by the users of regObs and is available as it is. It may contain errors and omissions. NVE makes no warranties for current the information and does not take responsibility for that data can give incorrect or misleading information. The number of stars (1-5) describes the level of competence of the person providing observations. Without stars, competence is unknown or low."
+  },
   "LOGIN": {
     "CREATE_USER": "Create user",
     "EMAIL": "Email",

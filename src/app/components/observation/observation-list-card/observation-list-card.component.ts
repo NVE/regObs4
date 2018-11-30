@@ -8,9 +8,9 @@ import { settings } from '../../../../settings';
 import { RegistrationViewModel, Summary } from '../../../modules/regobs-api/models';
 import { Slides, ModalController } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { FullscreenImageModalPage } from '../../../pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
+import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 
 @Component({
   selector: 'app-observation-list-card',
