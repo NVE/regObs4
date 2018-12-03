@@ -115,8 +115,8 @@ export class AppComponent {
     Sentry.init(
       {
         dsn: settings.sentryDsn,
-        environment: appMode,
-        enabled: environment.production
+        environment: appMode === AppMode.Prod ? 'regObs' : (appMode === AppMode.Demo ? 'demo regObs' : 'test regObs'),
+        enabled: environment.production,
       });
     if (this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'))) {
       const appVersion = await this.appVersion.getVersionNumber();

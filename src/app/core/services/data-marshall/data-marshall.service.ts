@@ -14,6 +14,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Platform } from '@ionic/angular';
 import { RegistrationService } from '../../../modules/registration/services/registration.service';
 import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
+import { AppMode } from '../../models/app-mode.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +68,7 @@ export class DataMarshallService {
         Sentry.init(
           {
             dsn: settings.sentryDsn,
-            environment: appMode,
+            environment: appMode === AppMode.Prod ? 'regObs' : (appMode === AppMode.Demo ? 'demo regObs' : 'test regObs'),
             enabled: environment.production
           });
       });
