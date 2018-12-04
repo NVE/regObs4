@@ -8,9 +8,7 @@ import { RegistrationService } from '../../services/registration.service';
 })
 export class DraftItemListComponent implements OnInit {
 
-  get drafts$() {
-    return this.registrationService.drafts$;
-  }
+  get drafts$() { return this.registrationService.drafts$; }
 
   constructor(private registrationService: RegistrationService) { }
 

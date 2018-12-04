@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import { MapService } from '../../../map/services/map/map.service';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
-import { debounceTime, take, timeout } from 'rxjs/operators';
+import { debounceTime, take, timeout, switchMap } from 'rxjs/operators';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { Subscription } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
@@ -178,17 +178,23 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.updatePathAndDistance();
   }
 
-  private async updateMapViewInfo() {
+  private updateMapViewInfo() {
     const latLng = this.locationMarker.getLatLng();
-    const inNorway = await BorderHelper.isLatLngInNorwayAsObservable(latLng).toPromise();
-    const result = await this.mapSearchService.getViewInfo(
-      latLng,
-      inNorway
-    ).pipe(take(1)).toPromise();
-    this.ngZone.run(() => {
-      this.viewInfo = result;
-      this.isLoading = false;
-    });
+    BorderHelper.isLatLngInNorwayAsObservable(latLng).pipe(switchMap((inNorway) =>
+      this.mapSearchService.getViewInfo(
+        latLng,
+        inNorway
+      ))).subscribe((val) => {
+        this.ngZone.run(() => {
+          this.viewInfo = val;
+          this.isLoading = false;
+        });
+      }, (_) => {
+        this.ngZone.run(() => {
+          this.viewInfo = null;
+          this.isLoading = false;
+        });
+      });
   }
 
   centerMapToUser() {
