@@ -11,4 +11,5 @@ export interface IAvalancheWarningSimple {
     PublishTime: string;
     MainText: string;
     LangKey: number;
+    EmergencyWarning: string;
 }

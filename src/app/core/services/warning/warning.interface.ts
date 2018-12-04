@@ -9,4 +9,5 @@ export interface IWarning {
     validTo: Date;
     mainText: string;
     language: LangKey;
+    emergencyWarning?: string;
 }

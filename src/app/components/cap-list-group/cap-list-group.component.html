@@ -32,14 +32,10 @@
       </ion-label>
       <ion-grid *ngIf="warningGroup.key.geoHazard !== GeoHazard.Ice">
         <ion-row>
-          <ion-col *ngIf="{ level: getDayWarning(warningGroup, 0) } as warning">
-            <ion-badge [color]="'warninglevel-'+warning.level">{{warning.level}}</ion-badge>
-          </ion-col>
-          <ion-col *ngIf="{ level: getDayWarning(warningGroup, 1) } as warning">
-            <ion-badge [color]="'warninglevel-'+warning.level">{{warning.level}}</ion-badge>
-          </ion-col>
-          <ion-col *ngIf="{ level: getDayWarning(warningGroup, 2) } as warning">
-            <ion-badge [color]="'warninglevel-'+warning.level">{{warning.level}}</ion-badge>
+          <ion-col *ngFor="let day of [0, 1, 2]">
+            <ion-badge *ngIf="getDayWarning(warningGroup, day) as warning else emptyWarning" [color]="'warninglevel-'+warning.warningLevel">{{warning.warningLevel}}
+              <ion-icon *ngIf="warning.emergencyWarning" name="alert"></ion-icon>
+            </ion-badge>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -52,3 +48,6 @@
     </ion-item-options>
   </ion-item-sliding>
 </ion-list>
+<ng-template #emptyWarning>
+  <ion-badge color="warninglevel-0">0</ion-badge>
+</ng-template>

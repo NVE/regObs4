@@ -8,8 +8,6 @@ import { NanoSql } from '../../../../nanosql';
 import { ObsLocationsResponseDtoV2 } from '../../../modules/regobs-api/models';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { switchMap, debounceTime, map } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
-import * as L from 'leaflet';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import * as turf from '@turf/turf';
 

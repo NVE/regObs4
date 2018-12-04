@@ -336,7 +336,7 @@ export class WarningService {
     const dataLoadId = this.getDataLoadId(GeoHazard.Snow);
     await this.dataLoadService.startLoading(dataLoadId);
     const url = `${this.getBaseUrl(GeoHazard.Snow)}`
-      + `/RegionSummary/Simple/${language}`
+      + `/RegionSummary/Detail/${language}`
       + `/${dateRange.from.format('YYYY-MM-DD')}`
       + `/${dateRange.to.format('YYYY-MM-DD')}`;
     try {
@@ -355,6 +355,8 @@ export class WarningService {
           validTo: this.getDate(simpleWarning.ValidTo),
           mainText: simpleWarning.MainText,
           language,
+          extraWarning: simpleWarning.EmergencyWarning !== (language === LangKey.en ? 'Not given' : 'Ikke gitt') ?
+            simpleWarning.EmergencyWarning : null,
         })),
       }));
       console.log(`[INFO][WarningService] New updates for avalanche warnings:`, regionResult);

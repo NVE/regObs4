@@ -74,6 +74,12 @@ ion-badge {
     font-weight: bold;
     line-height: 30px;
     text-align: center;
+
+    ion-icon {
+        position: relative;
+        top: 3px;
+        left: -5px;
+    }
 }
 
 //Iphone 5 or smaller

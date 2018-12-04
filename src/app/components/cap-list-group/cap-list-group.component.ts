@@ -8,6 +8,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { settings } from '../../../settings';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { IWarning } from '../../core/services/warning/warning.interface';
 
 @Component({
   selector: 'app-cap-list-group',
@@ -73,13 +74,9 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
   }
 
 
-  getDayWarning(group: WarningGroup, daysToAdd: number) {
+  getDayWarning(group: WarningGroup, daysToAdd: number): IWarning {
     const day = moment().startOf('day').add(daysToAdd, 'days');
-    const warning = group.getWarningForDay(day.toDate());
-    if (warning) {
-      return warning.warningLevel;
-    }
-    return 0;
+    return group.getWarningForDay(day.toDate());
   }
 
   getDayName(daysToAdd: number) {

@@ -1,7 +1,6 @@
 import { WarningGroupKey } from './warning-group-key.interface';
 import * as moment from 'moment';
 import { IWarningGroup } from './warning-group.interface';
-import { settings } from '../../../../settings';
 
 export class WarningGroup {
     private _warningGroup: IWarningGroup;

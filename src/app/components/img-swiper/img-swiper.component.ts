@@ -1,4 +1,14 @@
-import { Component, OnInit, Input, EventEmitter, Output, ViewChild, NgZone, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
+import { 
+  Component, 
+  OnInit, 
+  Input, 
+  EventEmitter, 
+  Output, 
+  ViewChild, 
+  NgZone, 
+  ChangeDetectorRef, 
+  OnChanges, 
+  SimpleChanges } from '@angular/core';
 import { Slides } from '@ionic/angular';
 
 @Component({
