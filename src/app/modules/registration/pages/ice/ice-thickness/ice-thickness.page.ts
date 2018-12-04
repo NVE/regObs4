@@ -30,6 +30,37 @@ export class IceThicknessPage extends BasePage {
     if (!this.registration.request.IceThickness.IceThicknessLayer) {
       this.registration.request.IceThickness.IceThicknessLayer = [];
     }
+    if (this.registration.request.IceThickness.SnowDepth > 0) {
+      this.registration.request.IceThickness.SnowDepth = this.registration.request.IceThickness.SnowDepth * 100.0;
+    }
+    if (this.registration.request.IceThickness.SlushSnow > 0) {
+      this.registration.request.IceThickness.SlushSnow = this.registration.request.IceThickness.SlushSnow * 100.0;
+    }
+    for (const layer of this.registration.request.IceThickness.IceThicknessLayer) {
+      if (layer.IceLayerThickness > 0) {
+        layer.IceLayerThickness = layer.IceLayerThickness * 100.0;
+      }
+    }
+    if (this.registration.request.IceThickness.IceThicknessSum > 0) {
+      this.registration.request.IceThickness.IceThicknessSum = this.registration.request.IceThickness.IceThicknessSum * 100.0;
+    }
+  }
+
+  onBeforeLeave() {
+    if (this.registration.request.IceThickness.SnowDepth > 0) {
+      this.registration.request.IceThickness.SnowDepth = this.registration.request.IceThickness.SnowDepth / 100.0;
+    }
+    if (this.registration.request.IceThickness.SlushSnow > 0) {
+      this.registration.request.IceThickness.SlushSnow = this.registration.request.IceThickness.SlushSnow / 100.0;
+    }
+    for (const layer of this.registration.request.IceThickness.IceThicknessLayer) {
+      if (layer.IceLayerThickness > 0) {
+        layer.IceLayerThickness = layer.IceLayerThickness / 100.0;
+      }
+    }
+    if (this.registration.request.IceThickness.IceThicknessSum > 0) {
+      this.registration.request.IceThickness.IceThicknessSum = this.registration.request.IceThickness.IceThicknessSum / 100.0;
+    }
   }
 
   onSnowDepthChange(val: number) {

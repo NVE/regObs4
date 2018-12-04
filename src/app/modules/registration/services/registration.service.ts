@@ -18,8 +18,9 @@ import { DataLoadService } from '../../data-load/services/data-load.service';
 import { RegistrationStatus } from '../models/registrationStatus.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
-import { Router } from '@angular/router';
 import { ObservableHelper } from '../../../core/helpers/observable-helper';
+import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,7 @@ export class RegistrationService {
     private loginService: LoginService,
     private registrationApiService: RegobsApi.RegistrationService,
     private searchApiService: RegobsApi.SearchService,
+    private navController: NavController,
     private router: Router,
     private dataLoadService: DataLoadService,
   ) {
@@ -162,7 +164,7 @@ export class RegistrationService {
       reg.status = RegistrationStatus.Sync;
       await this.saveRegistration(reg);
       this.syncRegistrations();
-      this.router.navigate(['my-observations']);
+      this.navController.navigateRoot('my-observations');
     }
   }
 

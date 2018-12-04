@@ -17,6 +17,26 @@ export class SnowSurfacePage extends BasePage {
   ) {
     super(RegistrationTid.SnowSurfaceObservation, basePageService, activatedRoute);
   }
+
+  onInit() {
+    if (this.registration.request.SnowSurfaceObservation.SnowDepth > 0) {
+      this.registration.request.SnowSurfaceObservation.SnowDepth = this.registration.request.SnowSurfaceObservation.SnowDepth * 100.0;
+    }
+    if (this.registration.request.SnowSurfaceObservation.NewSnowDepth24 > 0) {
+      this.registration.request.SnowSurfaceObservation.NewSnowDepth24
+        = this.registration.request.SnowSurfaceObservation.NewSnowDepth24 * 100.0;
+    }
+  }
+
+  onBeforeLeave() {
+    if (this.registration.request.SnowSurfaceObservation.SnowDepth > 0) {
+      this.registration.request.SnowSurfaceObservation.SnowDepth = this.registration.request.SnowSurfaceObservation.SnowDepth / 100.0;
+    }
+    if (this.registration.request.SnowSurfaceObservation.NewSnowDepth24 > 0) {
+      this.registration.request.SnowSurfaceObservation.NewSnowDepth24
+        = this.registration.request.SnowSurfaceObservation.NewSnowDepth24 / 100.0;
+    }
+  }
 }
 
 
