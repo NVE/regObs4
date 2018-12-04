@@ -19,6 +19,7 @@ import { ValidExpositionComponent } from './components/snow/valid-exposition/val
 import { RegistrationContentWrapperComponent } from './components/registration-content-wrapper/registration-content-wrapper.component';
 import { HelpTextComponent } from './components/help-text/help-text.component';
 import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.module';
+import { DraftItemListComponent } from './components/draft-item-list/draft-item-list.component';
 @NgModule({
     imports: [
         SharedModule,
@@ -37,6 +38,7 @@ import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.m
         Base64ImageComponent,
         SyncItemComponent,
         SyncItemListComponent,
+        DraftItemListComponent,
         KdvDescriptionPipe,
         KdvDropdownComponent,
         AddWebUrlItemComponent,
@@ -57,6 +59,7 @@ import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.m
         Base64ImageComponent,
         SyncItemComponent,
         SyncItemListComponent,
+        DraftItemListComponent,
         KdvDescriptionPipe,
         KdvDropdownComponent,
         AddWebUrlItemComponent,

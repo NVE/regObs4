@@ -173,6 +173,8 @@
         "TITLE": "Avalanche incident"
       }
     },
+    "DRAFTS": "My drafts",
+    "DRAFTS_DESCRIPTION": "These observations are in progress and not submitted.",
     "EMAIL": {
       "BODY": "Hi! I have problems sending this registration. Can you help me?",
       "SUBJECT": "Registration failed"
