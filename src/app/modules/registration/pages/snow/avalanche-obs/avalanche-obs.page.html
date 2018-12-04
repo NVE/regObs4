@@ -83,7 +83,7 @@
         <ion-input type="number" [min]="0" [max]="50000" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.AvalancheObs.FractureWidth">
         </ion-input>
       </ion-item>
-      <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [(value)]="registration.request.AvalancheObs.Trajectory"></app-text-comment>
+      <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [rows]="2" [(value)]="registration.request.AvalancheObs.Trajectory"></app-text-comment>
       <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.AvalancheObs.Comment"></app-text-comment>
       <ion-list-header text-uppercase>
         <ion-label>
