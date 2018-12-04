@@ -1,7 +1,8 @@
 <div class="slides-wrapper">
-  <ion-slides *ngIf="imgUrl.length > 1" [options]="slideOptions" [pager]="false" (ionSlideTransitionEnd)="onSlideTransitionEnd()">
-    <ion-slide *ngFor="let url of imgUrl; let index = i">
-      <app-offline-image (loaded)="updateSlider()" [src]="url" (click)="onImageClick(index, url)"></app-offline-image>
+  <ion-slides [hidden]="hidden" *ngIf="imgUrl.length > 1" [options]="slideOptions" [pager]="false"
+    (ionSlideTransitionEnd)="onSlideTransitionEnd()">
+    <ion-slide *ngFor="let url of imgUrl; let i = index">
+      <app-offline-image (loaded)="updateSlider()" [src]="url" (click)="onImageClick(i, url)"></app-offline-image>
     </ion-slide>
   </ion-slides>
   <app-offline-image class="single" (click)="onImageClick(0, imgUrl[0])" *ngIf="imgUrl.length === 1" [src]="imgUrl[0]"></app-offline-image>

@@ -34,17 +34,9 @@ export class ObservationListCardComponent implements OnInit {
   imageDecription = '';
   stars: { full: boolean }[] = [];
 
-  get imageUrls() {
-    return this.obs.Attachments.map((x) => this.getImageUrl(x.AttachmentFileName));
-  }
-
-  get imageHeaders() {
-    return this.obs.Attachments.map((x) => x.RegistrationName);
-  }
-
-  get imageDescriptions() {
-    return this.obs.Attachments.map((x) => x.Comment);
-  }
+  imageUrls: string[] = [];
+  imageHeaders: string[] = [];
+  imageDescriptions: string[] = [];
 
   constructor(
     private translateService: TranslateService,
@@ -70,8 +62,23 @@ export class ObservationListCardComponent implements OnInit {
       for (let i = 0; i < 5; i++) {
         this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
       }
+      this.updateImages();
       this.loaded = true;
     });
+  }
+
+  updateImages() {
+    const openImages = this.obs.Attachments.filter((a) => {
+      const summary = this.summaries.find((s) => s.summary.RegistrationTID === a.RegistrationTID);
+      if (!summary) {
+        return true;
+      } else {
+        return summary.open;
+      }
+    });
+    this.imageHeaders = openImages.map((x) => x.RegistrationName);
+    this.imageDescriptions = openImages.map((x) => x.Comment);
+    this.imageUrls = openImages.map((x) => this.getImageUrl(x.AttachmentFileName));
   }
 
   getImageUrl(filename: string, size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'large') {
@@ -113,6 +120,7 @@ export class ObservationListCardComponent implements OnInit {
     for (const s of this.summaries) {
       s.open = this.allSelected;
     }
+    this.updateImages();
   }
 
   toggleRegistration(index: number) {
@@ -120,6 +128,7 @@ export class ObservationListCardComponent implements OnInit {
       this.toggleAllSelected();
     }
     this.summaries[index].open = !this.summaries[index].open;
+    this.updateImages();
   }
 
   async openWeb() {

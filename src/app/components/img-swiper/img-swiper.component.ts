@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild, NgZone, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import { Slides } from '@ionic/angular';
 
 @Component({
@@ -6,7 +6,7 @@ import { Slides } from '@ionic/angular';
   templateUrl: './img-swiper.component.html',
   styleUrls: ['./img-swiper.component.scss']
 })
-export class ImgSwiperComponent implements OnInit {
+export class ImgSwiperComponent implements OnInit, OnChanges {
 
   @Input() imgUrl: string[] = [];
   @Input() imgComments: string[] = [];
@@ -19,24 +19,48 @@ export class ImgSwiperComponent implements OnInit {
     spaceBetween: 5,
   };
 
+  hidden = true;
+
   comment: string;
   header: string;
 
   @ViewChild(Slides) slider: Slides;
 
-  constructor(private ngZone: NgZone) { }
+  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.setImgHeaderAndComment(0);
   }
 
   updateSlider() {
-    if (this.slider) {
-      this.slider.update();
-    }
+    // NOTE: There is some display issues with the slider on dynamic images,
+    // so have to hide and show it again to get correct display size of slides...
+    this.ngZone.run(() => {
+      this.hidden = true;
+    });
+    setTimeout(() => {
+      this.ngZone.run(() => {
+        this.hidden = false;
+      });
+      if (this.slider) {
+        this.slider.update().then(() => this.cdr.detectChanges()).then(() => this.slider.update());
+      }
+    }, 200);
+  }
+
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    setTimeout(async () => {
+      const index = await this.getImageIndex();
+      this.ngZone.run(() => {
+        this.setImgHeaderAndComment(index);
+      });
+    }, 50);
+    this.updateSlider();
   }
 
   private setImgHeaderAndComment(index: number) {
+    this.comment = undefined;
+    this.header = undefined;
     if (this.imgComments.length > index) {
       this.comment = this.imgComments[index];
     }
@@ -50,6 +74,9 @@ export class ImgSwiperComponent implements OnInit {
   }
 
   async getImageIndex() {
+    if (!this.slider) {
+      return 0;
+    }
     const index = await this.slider.getActiveIndex();
     const isEnd = await this.slider.isEnd();
     return isEnd ? (this.imgUrl.length - 1) : index;

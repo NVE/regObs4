@@ -69,6 +69,16 @@ ion-card {
     padding-top: 1px;
 }
 
-.img-col {
+.img-wrapper {
     max-height: 300px;
+    display: flex;
+    justify-content: center;
+    flex: 1;
+
+    app-img-swiper {
+        display: flex;
+        flex: 1;
+        flex-direction: row;
+        justify-content: left;
+    }
 }
