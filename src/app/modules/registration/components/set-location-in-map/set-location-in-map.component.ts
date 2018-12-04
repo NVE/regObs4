@@ -278,7 +278,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       }
       if (this.followMode && this.userposition) {
         obsLocation.UTMSourceTID = UtmSource.GPS;
-        obsLocation.Uncertainty = this.userposition.coords.accuracy;
+        obsLocation.Uncertainty = Math.round(this.userposition.coords.accuracy);
       }
     }
 
