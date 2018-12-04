@@ -11,7 +11,7 @@
         text-overflow: ellipsis;
     }
 
-    img {
+    .img-wrapper {
         position: absolute;
         left: 5px;
         width: auto;
@@ -19,7 +19,22 @@
         max-width: 200px;
         max-height: 200px;
         bottom: 102px;
-        height: auto;
         border: 2px solid #fff;
+        display: flex;
+        justify-content: center;
+
+        &.full {
+            left: 0px;
+            bottom: 97px;
+            width: 100%;
+            max-width: none;
+        }
+
+        app-img-swiper {
+            display: flex;
+            flex: 1;
+            flex-direction: row;
+            justify-content: left;
+        }
     }
 }

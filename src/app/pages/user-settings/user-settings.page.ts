@@ -9,6 +9,7 @@ import { HelperService } from '../../core/services/helpers/helper.service';
 import { AppCountry } from '../../core/models/app-country.enum';
 import { KdvService } from '../../core/services/kdv/kdv.service';
 import { TranslateService } from '@ngx-translate/core';
+import { OfflineImageService } from '../../core/services/offline-image/offline-image.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -33,6 +34,7 @@ export class UserSettingsPage implements OnInit {
     private ngZone: NgZone,
     private translateService: TranslateService,
     private alertController: AlertController,
+    private offlineImageService: OfflineImageService,
     private navController: NavController) { }
 
   async ngOnInit() {
@@ -86,6 +88,7 @@ export class UserSettingsPage implements OnInit {
   async reset() {
     this.isUpdating = true;
     await this.offlineMapService.reset();
+    await this.offlineImageService.reset();
     await NanoSql.dropAllTables();
     console.log('[INFO] App reset complete');
     await this.navController.navigateRoot('start-wizard');

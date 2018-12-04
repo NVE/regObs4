@@ -1,1 +1,3 @@
-<ion-img *ngIf="url" [src]="url"></ion-img>
+<img *ngIf="url" [hidden]="loading || hasError" [src]="url" (load)="imgDidLoad()" (error)="imgError()" />
+<img *ngIf="loading || hasError" src="/assets/images/empty.jpg" />
+<ion-icon *ngIf="hasError" name="flash-off"></ion-icon>

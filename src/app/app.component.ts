@@ -16,6 +16,7 @@ import { environment } from '../environments/environment';
 import { AppMode } from './core/models/app-mode.enum';
 import { settings } from '../settings';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
+import { OfflineImageService } from './core/services/offline-image/offline-image.service';
 
 @Component({
   selector: 'app-root',
@@ -37,6 +38,7 @@ export class AppComponent {
     private dataMarshallService: DataMarshallService,
     private offlineMapService: OfflineMapService,
     private appVersion: AppVersion,
+    private offlineImageService: OfflineImageService,
     private keyboard: Keyboard,
   ) {
     this.initializeApp();
@@ -55,11 +57,12 @@ export class AppComponent {
       this.statusBar.overlaysWebView(this.platform.is('ios'));
       this.keyboard.hideFormAccessoryBar(false);
       this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
+      this.offlineImageService.cleanupOldItems();
 
       this.initBackroundUpdates();
       setTimeout(() => {
         this.splashScreen.hide();
-      }, 500); // https://forum.ionicframework.com/t/android-splashscreen-fade-animation-on-hide-not-working/120130/2
+      }, 20); // https://forum.ionicframework.com/t/android-splashscreen-fade-animation-on-hide-not-working/120130/2
     });
   }
 

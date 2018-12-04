@@ -27,5 +27,8 @@
       <app-geo-icon [geoHazard]="geoHazard"></app-geo-icon>
     </ion-fab-button>
   </ion-fab>
-  <img *ngIf="imageUrl" [src]="imageUrl" onerror="this.style.display='none'" />
+  <!-- <img *ngIf="imageUrl" [src]="imageUrl" onerror="this.style.display='none'" /> -->
+  <div class="img-wrapper" *ngIf="imageUrls.length > 0" [ngClass]="{'full': imageUrls.length > 1 }">
+    <app-img-swiper [imgUrl]="imageUrls"></app-img-swiper>
+  </div>
 </div>

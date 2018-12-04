@@ -1,0 +1,38 @@
+.slides-wrapper {
+    display: flex;
+    width: auto;
+    height: 100%;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+.swiper-slide {
+    width: auto;
+    height: 100%;
+    justify-content: left;
+    display: block;
+}
+.swiper-slide:first-child {
+    max-width: 80% !important;
+}
+
+app-offline-image {
+    display: inline-flex;
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+
+    &.single {
+        width: 100%;
+    }
+}
+
+ion-slides {
+    display: flex;
+    flex: 1;
+}
+
+ion-label {
+    padding: 10px 5px;
+    display: flex;
+}

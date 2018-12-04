@@ -16,6 +16,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { RowCount } from '../../models/row-count.model';
 import { HashcodeHelper } from '../../helpers/hashcode-helper';
+import { reject } from 'q';
 
 @Injectable({
   providedIn: 'root'
@@ -167,6 +168,17 @@ export class OfflineMapService {
     const result = (await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
       .query('select').where(['mapNameHash', '=', HashcodeHelper.getHashCode(settings.map.tiles.cacheFolder)])
       .orderBy({ lastAccess: 'desc' }).offset(numberOfItemsToCache).exec()) as OfflineTile[];
+    for (const tile of result) {
+      const file = await this.file.resolveLocalFilesystemUrl(tile.url);
+      if (file && file.isFile) {
+        const fileDeleted = await new Promise<boolean>((resolve) => {
+          file.remove(() => resolve(true), () => resolve(false));
+        });
+        console.log(`[INFO][OfflineMapService] Tile file: ${tile.url} deleted: ${fileDeleted}`);
+      } else {
+        console.log(`[INFO][OfflineMapService] Tile file not found: ${tile.url}`);
+      }
+    }
     const tileIdHashes = result.map((x) => HashcodeHelper.getHashCode(x.tileId));
     const deleted = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
       .query('delete').where(['id', 'IN', tileIdHashes]).exec();
@@ -260,6 +272,7 @@ export class OfflineMapService {
     await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
       .query('delete', { name }).exec(); // TODO: Check that this works on device, maybe change
     // to hash int here as well...
+    // TODO: Delete tile files as well...
     await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
       .query('delete').where(['mapNameHash', '=', nameHash]).exec();
   }

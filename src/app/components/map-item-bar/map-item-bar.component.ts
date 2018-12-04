@@ -28,7 +28,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   name: string;
   id: number;
   geoHazard: GeoHazard;
-  imageUrl: string;
+  imageUrls: string[] = [];
 
   private subscription: Subscription;
   private _isVisible: Subject<boolean>;
@@ -77,9 +77,10 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.name = item.Observer.NickName;
       this.geoHazard = item.GeoHazardTID;
       this.setDistanceAndType(item);
-      this.imageUrl = undefined;
+      this.imageUrls = [];
       if (this.userSetting && item.Attachments && item.Attachments.length > 0) {
-        this.imageUrl = this.getImageUrl(this.userSetting.appMode, item.Attachments[0].AttachmentFileName, 'medium');
+        this.imageUrls = item.Attachments.map(
+          (attachment) => this.getImageUrl(this.userSetting.appMode, attachment.AttachmentFileName, 'medium'));
       }
       this.visible = true;
       this.publishChange();

@@ -34,11 +34,17 @@ export class ObservationListCardComponent implements OnInit {
   imageDecription = '';
   stars: { full: boolean }[] = [];
 
-  slideOptions = {
-    autoplay: false,
-    slidesPerView: 'auto',
-    spaceBetween: 10,
-  };
+  get imageUrls() {
+    return this.obs.Attachments.map((x) => this.getImageUrl(x.AttachmentFileName));
+  }
+
+  get imageHeaders() {
+    return this.obs.Attachments.map((x) => x.RegistrationName);
+  }
+
+  get imageDescriptions() {
+    return this.obs.Attachments.map((x) => x.Comment);
+  }
 
   constructor(
     private translateService: TranslateService,
@@ -64,15 +70,11 @@ export class ObservationListCardComponent implements OnInit {
       for (let i = 0; i < 5; i++) {
         this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
       }
-      if (this.obs.Attachments.length > 0) {
-        this.imageHeader = this.obs.Attachments[0].RegistrationName;
-        this.imageDecription = this.obs.Attachments[0].Comment;
-      }
       this.loaded = true;
     });
   }
 
-  getImageUrl(filename: string, size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'medium') {
+  getImageUrl(filename: string, size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'large') {
     return `${settings.services.regObs.webUrl[this.userSetting.appMode]}/Attachments/${size}/${filename}`;
   }
 
@@ -93,40 +95,17 @@ export class ObservationListCardComponent implements OnInit {
     return this.obs.Summaries.map((reg) => reg.RegistrationName).join(', ');
   }
 
-  async slideTap() {
-    const index = await this.getImageIndex();
-    if (index < this.obs.Attachments.length) {
-      await this.openImage(index);
-    } else {
-      this.slider.slideTo(0);
-    }
-  }
-
-  async openImage(index: number) {
-    const image = this.obs.Attachments[index];
+  async openImage(event: any) {
+    const image = this.obs.Attachments[event.index];
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
-        imgSrc: this.getImageUrl(image.AttachmentFileName, 'original'),
-        header: this.obs.Attachments[index].RegistrationName,
-        description: this.obs.Attachments[index].Comment,
+        imgSrc: this.getImageUrl(image.AttachmentFileName, 'large'),
+        header: this.obs.Attachments[event.index].RegistrationName,
+        description: this.obs.Attachments[event.index].Comment,
       },
     });
     modal.present();
-  }
-
-  async getImageIndex() {
-    const index = await this.slider.getActiveIndex();
-    const isEnd = await this.slider.isEnd();
-    return isEnd ? (this.obs.Attachments.length - 1) : index;
-  }
-
-  async setNextAndPrevVisibe() {
-    const index = await this.getImageIndex();
-    this.ngZone.run(() => {
-      this.imageHeader = this.obs.Attachments[index].RegistrationName;
-      this.imageDecription = this.obs.Attachments[index].Comment;
-    });
   }
 
   toggleAllSelected() {

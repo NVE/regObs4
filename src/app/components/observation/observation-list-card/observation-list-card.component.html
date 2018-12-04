@@ -24,24 +24,13 @@
           <ion-icon [name]="star.full ? 'star' : 'star-outline'" *ngFor="let star of stars"></ion-icon>
         </ion-col>
       </ion-row>
-      <ng-container *ngIf="obs.Attachments.length > 0">
-        <ion-row>
-          <ion-col size="12" no-padding class="img-container">
-            <ion-slides *ngIf="obs.Attachments.length > 1" [options]="slideOptions" [pager]="true"
-              (ionSlideTransitionEnd)="setNextAndPrevVisibe()">
-              <ion-slide *ngFor="let image of obs.Attachments">
-                <img [src]="getImageUrl(image.AttachmentFileName)" (click)="slideTap()" onerror="this.style.display='none'" />
-              </ion-slide>
-            </ion-slides>
-            <ion-img (click)="openImage(0)" *ngIf="obs.Attachments.length === 1" [src]="getImageUrl(obs.Attachments[0].AttachmentFileName)"></ion-img>
-          </ion-col>
-        </ion-row>
-        <ion-row class="row-padding-start">
-          <ion-col size="12" text-wrap>
-            {{'DIALOGS.OF' | translate}}: {{ imageHeader }}. {{'DIALOGS.COMMENT' | translate}}: {{ imageDecription }}
-          </ion-col>
-        </ion-row>
-      </ng-container>
+      <ion-row>
+        <ion-col size="12" no-padding class="img-col">
+          <app-img-swiper *ngIf="obs.Attachments.length > 0" [imgUrl]="imageUrls" [imgHeaders]="imageHeaders"
+            [imgComments]="imageDescriptions" (imgClick)="openImage($event)">
+          </app-img-swiper>
+        </ion-col>
+      </ion-row>
       <ng-container *ngIf="summaries.length > 1">
         <ion-row class="row-padding-start">
           <ion-col size="12">

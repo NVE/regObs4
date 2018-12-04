@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { nSQL } from 'nano-sql';
 import { NanoSql } from '../../../../nanosql';
-import { HttpRequest, HttpClient, HttpEventType, HttpHeaders } from '@angular/common/http';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
@@ -92,5 +91,31 @@ export class OfflineImageService {
       };
       fileReader.readAsDataURL(blob);
     });
+  }
+
+  async cleanupOldItems() {
+    const fromDate = moment().subtract(1, 'month').unix();
+    const result = (await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
+      .query('select').where((x) => x.lastAccess < fromDate).exec()) as IOfflineAsset[];
+    for (const asset of result) {
+      try {
+        const file = await this.file.resolveLocalFilesystemUrl(asset.fileUrl);
+        const fileDeleted = await new Promise<boolean>((resolve) => {
+          file.remove(() => resolve(true), () => resolve(false));
+        });
+        console.log(`[INFO][OfflineImageService] File: ${asset.fileUrl} deleted: ${fileDeleted}`);
+      } catch (err) {
+        console.log(`[INFO][OfflineImageService] File not found: ${asset.fileUrl}`);
+      }
+    }
+    const deleteFromDbResult = await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
+      .query('delete').where((x) => x.lastAccess < fromDate).exec();
+    console.log(`[INFO][OfflineImageService] Cleanup result:`, deleteFromDbResult);
+  }
+
+  async reset() {
+    await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('drop').exec();
+    const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
+    await this.file.removeDir(baseFolder, settings.offlineAssetsFolder);
   }
 }

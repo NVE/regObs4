@@ -14,6 +14,7 @@ import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
 import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
 import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.pipe';
 import { LegalTermsComponent } from '../../components/legal-terms/legal-terms.component';
+import { ImgSwiperComponent } from '../../components/img-swiper/img-swiper.component';
 
 @NgModule({
     imports: [
@@ -35,6 +36,7 @@ import { LegalTermsComponent } from '../../components/legal-terms/legal-terms.co
         StartsWithHighlightPipe,
         ObservationListCardComponent,
         LegalTermsComponent,
+        ImgSwiperComponent,
     ],
     exports: [
         CommonModule,
@@ -53,6 +55,7 @@ import { LegalTermsComponent } from '../../components/legal-terms/legal-terms.co
         StartsWithHighlightPipe,
         ObservationListCardComponent,
         LegalTermsComponent,
+        ImgSwiperComponent,
     ]
 })
 export class SharedModule { }
