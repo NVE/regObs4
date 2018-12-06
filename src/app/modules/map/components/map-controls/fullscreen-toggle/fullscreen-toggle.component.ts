@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { Events } from '@ionic/angular';
-import { settings } from '../../../../../../settings';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FullscreenService } from '../../../../../core/services/fullscreen/fullscreen.service';
 
 @Component({
   selector: 'app-fullscreen-toggle',
@@ -10,9 +8,7 @@ import { settings } from '../../../../../../settings';
 })
 export class FullscreenToggleComponent implements OnInit {
 
-  private fullscreen: boolean;
-
-  constructor(private statusBar: StatusBar, private events: Events) {
+  constructor(private fullscreenService: FullscreenService) {
 
   }
 
@@ -20,12 +16,6 @@ export class FullscreenToggleComponent implements OnInit {
   }
 
   toggleFullscreen() {
-    this.fullscreen = !this.fullscreen;
-    if (this.fullscreen) {
-      this.statusBar.styleDefault();
-    } else {
-      this.statusBar.styleBlackTranslucent();
-    }
-    this.events.publish(settings.events.fullscreenChanged, this.fullscreen);
+    this.fullscreenService.toggleFullscreen();
   }
 }

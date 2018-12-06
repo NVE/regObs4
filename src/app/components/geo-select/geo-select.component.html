@@ -1,5 +1,5 @@
 <ion-fab *ngIf="currentGeoHazards" #geoSelectorFab vertical="top" horizontal="start" [edge]="!inHeader" slot="fixed"
-  [ngClass]="{ 'fullscreen': isFullscreen, 'in-header': inHeader }">
+  [ngClass]="{ 'fullscreen': (fullscreen$ | async), 'in-header': inHeader }">
   <div class="toggle-button" *ngIf="!(inHeader && isOpen)">
     <ion-fab-button color="light" (click)="toggle()">
       <app-geo-icon [geoHazard]="currentGeoHazards[0]" [size]="size"></app-geo-icon>

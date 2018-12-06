@@ -1,5 +1,5 @@
 <ion-tabs (ionChange)="tabsChanged($event)" tabbar-highlight="true" [ngClass]="{'ios': isIos, 'md': isAndroid}">
-  <ion-tab-bar [hidden]="fullscreen" slot="bottom">
+  <ion-tab-bar [hidden]="fullscreen$ | async" slot="bottom">
     <ion-tab-button tab="home" href="/tabs/(home:home)">
       <ion-icon name="map"></ion-icon>
       <ion-label>{{'TABS.MAP' | translate}}</ion-label>

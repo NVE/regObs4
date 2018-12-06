@@ -31,11 +31,14 @@ export class UserSettingService {
     return this._currentGeoHazardObservable;
   }
 
-  constructor(private translate: TranslateService, private events: Events) {
+  constructor(private translate: TranslateService) {
     this._userSettingObservable = this.getUserSettingsAsObservable();
     this._currentGeoHazardObservable = this._userSettingObservable.pipe(
       map((val) => val.currentGeoHazard),
       shareReplay(1));
+    this.userSettingObservable$.subscribe((userSetting) => {
+      this.translate.use(LangKey[userSetting.language]);
+    });
   }
 
   private getDefaultSettings(): UserSetting {
@@ -72,12 +75,6 @@ export class UserSettingService {
   }
 
   async saveUserSettings(userSetting: UserSetting) {
-    // await this.storage.ready();
-    // const newSettings = await this.storage.set(STORAGE_KEY_NAME, userSetting);
     await nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('upsert', { id: 'usersettings', ...userSetting }).exec();
-
-    // TODO: Subscribe to observable instead
-    this.translate.use(LangKey[userSetting.language]);
-    this.events.publish(settings.events.userSettingsChanged, userSetting);
   }
 }

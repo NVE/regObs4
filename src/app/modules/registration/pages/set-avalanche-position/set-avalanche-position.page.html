@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="!(fullscreen$ | async)">
   <ion-toolbar color="dark" mode="ios">
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>

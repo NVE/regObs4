@@ -3,8 +3,9 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Events } from '@ionic/angular';
 import { settings } from '../../../settings';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { UserSetting } from '../../core/models/user-settings.model';
+import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 
 @Component({
   selector: 'app-geo-select',
@@ -16,8 +17,8 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
   geoHazardTypes: Array<GeoHazard[]>;
   isOpen = false;
   currentGeoHazards: GeoHazard[];
-  isFullscreen = false;
-  private fullscreenChangedHandler: (isFullscreen: boolean) => void;
+  fullscreen$: Observable<boolean>;
+
   private geoHazardSubscription: Subscription;
   private userSettings: UserSetting;
 
@@ -29,14 +30,9 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
 
   constructor(
     private userSettingService: UserSettingService,
-    private events: Events,
+    private fullscreenService: FullscreenService,
     private ngZone: NgZone) {
-
-    this.fullscreenChangedHandler = (isFullscreen: boolean) => {
-      this.ngZone.run(() => {
-        this.isFullscreen = isFullscreen; // TODO: Use observable instead
-      });
-    };
+    this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
   async ngOnInit() {
@@ -47,11 +43,9 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
         this.currentGeoHazards = val.currentGeoHazard;
       });
     });
-    this.events.subscribe(settings.events.fullscreenChanged, this.fullscreenChangedHandler);
   }
 
   ngOnDestroy(): void {
-    this.events.unsubscribe(settings.events.fullscreenChanged, this.fullscreenChangedHandler);
     if (this.geoHazardSubscription) {
       this.geoHazardSubscription.unsubscribe();
     }

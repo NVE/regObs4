@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-map-controls',
@@ -6,7 +8,12 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./map-controls.component.scss']
 })
 export class MapControlsComponent implements OnInit {
-  constructor() { }
+
+  fullscreen$: Observable<boolean>;
+
+  constructor(private fullscreenService: FullscreenService) {
+    this.fullscreen$ = fullscreenService.isFullscreen$;
+  }
 
   ngOnInit() {
   }

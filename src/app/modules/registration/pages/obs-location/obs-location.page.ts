@@ -1,24 +1,25 @@
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import { IRegistration } from '../../models/registration.model';
 import { RegistrationService } from '../../services/registration.service';
 import { NavController, Events } from '@ionic/angular';
 import { ObsLocationDto, ObsLocationsResponseDtoV2 } from '../../../regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
-import { settings } from '../../../../../settings';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { Observable } from 'rxjs';
+import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 
 @Component({
   selector: 'app-obs-location',
   templateUrl: './obs-location.page.html',
   styleUrls: ['./obs-location.page.scss'],
 })
-export class ObsLocationPage implements OnInit {
+export class ObsLocationPage implements OnInit, OnDestroy {
   locationMarker: L.Marker;
   isLoaded = false;
   selectedLocation: ObsLocationsResponseDtoV2;
   registration: IRegistration;
-  fullscreen = false;
+  fullscreen$: Observable<boolean>;
   geoHazard: GeoHazard;
 
   constructor(
@@ -26,9 +27,9 @@ export class ObsLocationPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private ngZone: NgZone,
     private navController: NavController,
-    private events: Events,
+    private fullscreenService: FullscreenService,
   ) {
-
+    this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
   async ngOnInit() {
@@ -64,11 +65,9 @@ export class ObsLocationPage implements OnInit {
     this.ngZone.run(() => {
       this.isLoaded = true;
     });
-    this.events.subscribe(settings.events.fullscreenChanged, (isFullscreen: boolean) => {
-      this.ngZone.run(() => {
-        this.fullscreen = isFullscreen; // TODO: change to observable and unsubscribe!
-      });
-    });
+  }
+
+  ngOnDestroy(): void {
   }
 
   private hasLocation(reg: IRegistration) {

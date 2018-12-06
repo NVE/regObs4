@@ -37,6 +37,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
+import { FullscreenService } from './core/services/fullscreen/fullscreen.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -77,6 +78,7 @@ export const APP_PROVIDERS = [
     LoginService,
     DataMarshallService,
     DbHelperService,
+    FullscreenService,
     // Custom native/web providers
     {
         provide: BackgroundGeolocationService, useClass: window.hasOwnProperty('cordova') ?

@@ -146,14 +146,9 @@ export const settings = {
     },
     snowRegionsGeoJsonName: 'OMRAADENAV',
     events: {
-        nanosqlConnected: 'nanoSql:connected',
         tabsChanged: 'tabs:changed',
-        fullscreenChanged: 'fullscreen:changed',
         centerMapToUser: 'gps:centerMapToUser',
-        supportTilesChanged: 'supportTiles:changed',
         mapSearchItemClicked: 'mapSearchItem:clicked',
-        userSettingsChanged: 'userSettings:changed',
-        geolocationUpdate: 'gps:locationUpdate'
     },
     cordovaNotAvailable: 'cordova_not_available',
     gps: {

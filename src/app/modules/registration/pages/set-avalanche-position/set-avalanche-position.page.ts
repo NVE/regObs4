@@ -5,6 +5,8 @@ import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { Observable } from 'rxjs';
+import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 
 @Component({
   selector: 'app-set-avalanche-position',
@@ -56,13 +58,18 @@ export class SetAvalanchePositionPage implements OnInit {
   private startIsActive = true;
   locationMarkerIconUrl = this.startImageUrl;
 
+  fullscreen$: Observable<boolean>;
+
   @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
 
   constructor(
     private cdr: ChangeDetectorRef,
     private translateService: TranslateService,
     private ngZone: NgZone,
-    private modalController: ModalController) { }
+    private fullscreenService: FullscreenService,
+    private modalController: ModalController) {
+    this.fullscreen$ = this.fullscreenService.isFullscreen$;
+  }
 
   async ngOnInit() {
     this.translations = await this.translateService.get([

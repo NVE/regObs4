@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { Events, Platform } from '@ionic/angular';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription, combineLatest, Observable } from 'rxjs';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { settings } from '../../../settings';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
@@ -10,6 +10,7 @@ import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-it
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { MapComponent } from '../../modules/map/components/map/map.component';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
+import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 
 @Component({
   selector: 'app-home',
@@ -27,9 +28,8 @@ export class HomePage implements OnInit, OnDestroy {
     iconCreateFunction: (cluster) => this.createClusterIcon(cluster),
   });
   private subscriptions: Subscription[];
-  private fullscreenChangedhandler: (isFullscreen: boolean) => void;
 
-  fullscreen = false;
+  fullscreen$: Observable<boolean>;
   mapItemBarVisible = false;
   // tripLogLayer = L.layerGroup();
   selectedMarker: MapItemMarker;
@@ -39,15 +39,11 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(
     private observationService: ObservationService,
     private events: Events,
+    private fullscreenService: FullscreenService,
     private userSettingService: UserSettingService,
     private zone: NgZone,
   ) {
-    this.fullscreenChangedhandler = (isFullscreen: boolean) => {
-      this.zone.run(() => {
-        this.fullscreen = isFullscreen;
-        this.mapComponent.redrawMap();
-      });
-    };
+    this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
   createClusterIcon(cluster: L.MarkerCluster) {
@@ -80,9 +76,6 @@ export class HomePage implements OnInit, OnDestroy {
         this.mapComponent.stopGeoLocationWatch();
       }
     });
-    // TODO: Move to observable
-    this.events.subscribe(settings.events.fullscreenChanged, this.fullscreenChangedhandler);
-
     this.subscriptions.push(this.mapItemBar.isVisible.subscribe((isVisible) => {
       this.zone.run(() => {
         this.mapItemBarVisible = isVisible;
@@ -133,7 +126,6 @@ export class HomePage implements OnInit, OnDestroy {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
-    this.events.unsubscribe(settings.events.fullscreenChanged, this.fullscreenChangedhandler);
   }
 
   private redrawObservationMarkers(regObservations: RegistrationViewModel[]) {

@@ -5,6 +5,8 @@ import * as L from 'leaflet';
 import { IsEmptyHelper } from '../../../../core/helpers/is-empty.helper';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-set-damage-location',
@@ -19,11 +21,15 @@ export class SetDamageLocationPage implements OnInit {
   fromMarker: L.Marker;
   locationMarker: L.Marker;
   locationMarkerIconUrl = '/assets/icon/map/damage-location.svg';
+  fullscreen$: Observable<boolean>;
 
   @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
 
   constructor(
-    private modalController: ModalController) { }
+    private modalController: ModalController,
+    private fullscreenService: FullscreenService) {
+    this.fullscreen$ = this.fullscreenService.isFullscreen$;
+  }
 
   async ngOnInit() {
     if (this.fromLatLng) {

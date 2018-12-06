@@ -1,9 +1,10 @@
 import { Component, ViewChild, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Events, Tabs, Platform } from '@ionic/angular';
 import { settings } from '../../../settings';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { map } from 'rxjs/operators';
+import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 
 @Component({
   selector: 'app-tabs',
@@ -13,10 +14,9 @@ import { map } from 'rxjs/operators';
 export class TabsPage implements OnInit, OnDestroy {
   private subscription: Subscription;
   warningsInView: { count: number; text: string, maxWarning: number };
-  fullscreen = false;
-  private fullscreenChangedhandler: (isFullscreen: boolean) => void;
   isIos: boolean;
   isAndroid: boolean;
+  fullscreen$: Observable<boolean>;
 
   get showBadge() {
     return this.warningsInView && this.warningsInView.maxWarning > 0;
@@ -34,20 +34,16 @@ export class TabsPage implements OnInit, OnDestroy {
   @ViewChild(Tabs) private tabs: Tabs;
   constructor(
     private events: Events,
+    private fullscreenService: FullscreenService,
     private platform: Platform,
     private warningService: WarningService,
     private ngZone: NgZone) {
     this.isIos = this.platform.is('ios');
     this.isAndroid = this.platform.is('android');
-    this.fullscreenChangedhandler = (isFullscreen: boolean) => {
-      this.ngZone.run(() => {
-        this.fullscreen = isFullscreen;
-      });
-    };
+    this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
   ngOnInit(): void {
-    this.events.subscribe(settings.events.fullscreenChanged, this.fullscreenChangedhandler);
     this.subscription = this.warningService.warningGroupInMapViewObservable$.pipe(map((warningsInView) => {
       const allWarnings = [...warningsInView.center, ...warningsInView.viewBounds];
       return {
@@ -68,7 +64,6 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.events.unsubscribe(settings.events.fullscreenChanged, this.fullscreenChangedhandler);
     this.subscription.unsubscribe();
   }
 

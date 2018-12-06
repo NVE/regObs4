@@ -14,6 +14,7 @@ import { Events } from '@ionic/angular';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { take } from 'rxjs/operators';
 import { AppCountry } from '../../../../core/models/app-country.enum';
+import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 
 @Component({
   selector: 'app-map',
@@ -41,6 +42,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private userSettingSubscription: Subscription;
   private geoLoactionSubscription: Subscription;
+  private fullscreenSubscription: Subscription;
+  private pauseSubscription: Subscription;
+  private resumeSubscription: Subscription;
+
   private mapItemClickedHandler: (item: MapSearchResponse) => void;
   private centerMapToUserHandler: () => void;
 
@@ -52,6 +57,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private zone: NgZone,
     private geolocation: Geolocation,
     private events: Events,
+    private fullscreenService: FullscreenService,
   ) {
     this.mapItemClickedHandler = (item: MapSearchResponse) => {
       this.zone.runOutsideAngular(() => {
@@ -107,6 +113,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.userSettingSubscription) {
       this.userSettingSubscription.unsubscribe();
     }
+    if (this.fullscreenSubscription) {
+      this.fullscreenSubscription.unsubscribe();
+    }
+    if (this.pauseSubscription) {
+      this.pauseSubscription.unsubscribe();
+    }
+    if (this.resumeSubscription) {
+      this.resumeSubscription.unsubscribe();
+    }
+
     this.stopGeoLocationWatch();
     this.events.unsubscribe(settings.events.centerMapToUser, this.centerMapToUserHandler);
     this.events.unsubscribe(settings.events.mapSearchItemClicked, this.mapItemClickedHandler);
@@ -135,9 +151,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.events.subscribe(settings.events.centerMapToUser, this.centerMapToUserHandler);
     this.events.subscribe(settings.events.mapSearchItemClicked, this.mapItemClickedHandler);
 
+    this.pauseSubscription = this.platform.pause.subscribe(() => this.stopGeoLocationWatch());
+    this.resumeSubscription = this.platform.resume.subscribe(() => {
+      if (this.showUserLocation) {
+        this.startGeoLocationWatch();
+      }
+    });
+
     this.zone.runOutsideAngular(() => {
       this.map.on('moveend', () => this.updateMapView());
       this.map.on('zoomend', () => this.updateMapView());
+    });
+
+    this.fullscreenService.isFullscreen$.subscribe(() => {
+      this.redrawMap();
     });
 
     this.redrawMap();
