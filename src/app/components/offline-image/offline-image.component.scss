@@ -3,10 +3,71 @@ img {
     height: inherit;
     object-fit: inherit;
 }
-ion-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 24px;
+
+.real-image {
+    opacity: 0;
+    display: none;
+    transition: opacity 1s linear;
+
+    &.loaded {
+        opacity: 1;
+        display: block;
+    }
+}
+
+@keyframes placeHolderShimmer{
+    0%{
+        background-position: -468px 0
+    }
+    100%{
+        background-position: 468px 0
+    }
+}
+
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+  
+    to {
+      opacity: 0.5;
+    }
+  }
+
+.animated-background {
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    background: #f6f7f8;
+    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+    background-size: 800px 104px;
+    height: 40vw;
+    width: 80vw;
+    position: relative;
+
+    ion-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 24px;
+        opacity: 0;
+    }
+
+    &.loaded {
+        background: #dddddd;
+        animation: none;
+
+        ion-icon {
+            animation-name: fadeIn;
+            animation-duration: 1s;
+            opacity: 0.5;
+        }
+    }
+
+    &.hide {
+        display: none;
+    }
 }
