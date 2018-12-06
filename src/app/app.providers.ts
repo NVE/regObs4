@@ -36,7 +36,7 @@ import { LoginGuard } from './core/guards/login.guard';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';
-import { OfflineMapService } from './core/services/offline-map/offline-map.service';
+import { DbHelperService } from './core/services/db-helper/db-helper.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -76,7 +76,7 @@ export const APP_PROVIDERS = [
     WarningService,
     LoginService,
     DataMarshallService,
-    OfflineMapService,
+    DbHelperService,
     // Custom native/web providers
     {
         provide: BackgroundGeolocationService, useClass: window.hasOwnProperty('cordova') ?

@@ -14,6 +14,7 @@ export class OfflineImageComponent implements OnInit, OnChanges {
   url: string | ArrayBuffer;
   loading = true;
   hasError = false;
+  retryCount = 3;
 
   constructor(private offlineImageService: OfflineImageService, private ngZone: NgZone) { }
 
@@ -33,11 +34,24 @@ export class OfflineImageComponent implements OnInit, OnChanges {
   }
 
   imgError() {
-    this.ngZone.run(() => {
-      this.loading = false;
-      this.hasError = true;
-      this.error.emit();
-    });
+    if (this.retryCount > 0) {
+      this.retryCount--;
+      this.ngZone.run(() => {
+        this.url = undefined;
+      });
+      setTimeout(async () => {
+        const fallbackUrl = await this.offlineImageService.getImageOrFallbackToUrl(this.src);
+        this.ngZone.run(() => {
+          this.url = fallbackUrl;
+        });
+      }, 500);
+    } else {
+      this.ngZone.run(() => {
+        this.loading = false;
+        this.hasError = true;
+        this.error.emit();
+      });
+    }
   }
 
   private async setUrl() {

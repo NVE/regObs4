@@ -71,8 +71,7 @@ export class NanoSql {
         OFFLINE_ASSET: {
             name: 'offlineasset',
             model: [
-                { key: 'id', type: 'int', props: ['pk', 'ai'] },
-                { key: 'originalUrl', type: 'string', props: ['idx'] },
+                { key: 'url', type: 'string', props: ['pk'] },
                 { key: 'fileUrl', type: 'string' },
                 { key: 'type', type: 'string' },
                 { key: 'lastAccess', type: 'number', props: ['idx'] },

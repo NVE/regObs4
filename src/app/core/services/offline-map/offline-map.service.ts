@@ -13,34 +13,20 @@ import { File, FileEntry, Entry } from '@ionic-native/file/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { settings } from '../../../../settings';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
+import { DbHelperService } from '../db-helper/db-helper.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OfflineMapService {
-  sqliteobj: SQLiteObject;
-
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
     private platform: Platform,
     private http: HTTP,
     private file: File,
     private webview: WebView,
-    private sqlite: SQLite,
+    private dbHelperService: DbHelperService,
   ) {
-    // NOTE: This is a hack to get access to nanoSql (SQLite) database
-    // because there is a bug on get items by string id, and it's 5x faster than nano sql on get item by index
-    this.platform.ready().then(() => {
-      if (this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'))) {
-        this.sqlite.create(<any>({
-          name: `${settings.db.nanoSql.dbName}_db`,
-          location: 'default',
-          androidDatabaseProvider: 'system',
-        })).then((result) => {
-          this.sqliteobj = result;
-        });
-      }
-    });
 
   }
   // TODO: Implement continue download when app restart
@@ -173,18 +159,7 @@ export class OfflineMapService {
     // NOTE: This is a hack to get faster query
     // because there is a bug on get items by string id, and it's 5x faster than nano sql on get item by index
     // https://github.com/ClickSimply/Nano-SQL/issues/94
-    if (this.sqliteobj) {
-      const select = `SELECT data FROM '${NanoSql.TABLES.OFFLINE_MAP_TILES.name}' where id = ?1`;
-      const sqlResult = await this.sqliteobj.executeSql(select, [tileId]);
-      if (sqlResult.rows && sqlResult.rows.length > 0) {
-        const jsonString = sqlResult.rows.item(0).data;
-        if (jsonString) {
-          const offlineTile: OfflineTile = JSON.parse(jsonString);
-          return offlineTile;
-        }
-      }
-    }
-    return null;
+    return this.dbHelperService.getItemById<OfflineTile>(NanoSql.TABLES.OFFLINE_MAP_TILES.name, tileId);
   }
 
   async cleanupTilesCache(numberOfItemsToCache: number) {

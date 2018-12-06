@@ -8,6 +8,7 @@ import { File, FileEntry } from '@ionic-native/file/ngx';
 import { settings } from '../../../../settings';
 import * as moment from 'moment';
 import { IOfflineAsset } from './offline-asset.interface';
+import { DbHelperService } from '../db-helper/db-helper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class OfflineImageService {
     private http: HTTP,
     private file: File,
     private webview: WebView,
+    private dbHelperService: DbHelperService,
   ) { }
 
   async getImageOrFallbackToUrl(url: string, type: string = 'image/jpg') {
@@ -59,28 +61,27 @@ export class OfflineImageService {
 
       const fileUrl = fileResult.toURL();
       const offlineAsset: IOfflineAsset = {
-        originalUrl: url,
+        url,
         fileUrl,
         type,
         lastAccess: moment().unix()
       };
-      // TODO: Clear cache based on last accessed or cache size has reached
       return nSQL().table(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
     } catch (error) {
-      // TODO: Create warning in sentry?
       console.warn('Could not download offline asset: ', error);
     }
   }
 
   async getOfflineAssetFromDb(url: string) {
-    const result = (await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
-      .query('select').where((x) => x.originalUrl === url)
-      .exec()) as IOfflineAsset[];
-    if (result.length > 0) {
-      return result[0];
-    } else {
-      return null;
-    }
+    // const result = (await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
+    //   .query('select').where((x) => x.originalUrl === url)
+    //   .exec()) as IOfflineAsset[];
+    // if (result.length > 0) {
+    //   return result[0];
+    // } else {
+    //   return null;
+    // }
+    return this.dbHelperService.getItemById<IOfflineAsset>(NanoSql.TABLES.OFFLINE_ASSET.name, url);
   }
 
   blobToDataURL(blob: Blob): Promise<string> {
