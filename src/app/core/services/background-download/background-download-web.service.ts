@@ -94,7 +94,7 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
         return Promise.resolve('');
     }
 
-    getAllFiles(path: string, dirName: string): Promise<{ directory: string, name: string, url: string }[]> {
+    getAllFiles(path: string, dirName: string): Promise<{ directory: string, name: string, url: string, size: number }[]> {
         return Promise.resolve([]);
     }
 

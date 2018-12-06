@@ -14,5 +14,5 @@ export abstract class BackgroundDownloadService {
   abstract deleteFolder(path: string, dirName: string): Promise<void>;
   abstract getFileUrl(path: string, filename: string): Promise<string>;
   abstract selectDowloadFolder(): Promise<string>;
-  abstract getAllFiles(path: string, dirName: string): Promise<{ directory: string, name: string, url: string }[]>;
+  abstract getAllFiles(path: string, dirName: string): Promise<{ directory: string, name: string, url: string, size: number }[]>;
 }

@@ -10,8 +10,8 @@
 </ion-header>
 
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.AvalancheObs" [registration]="registration"
-    [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="registration && registration.request.AvalancheObs && registration.request.Incident"
+    [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header text-uppercase>
         <ion-label>

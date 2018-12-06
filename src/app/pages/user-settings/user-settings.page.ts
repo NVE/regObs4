@@ -51,8 +51,8 @@ export class UserSettingsPage implements OnInit {
       if (this.numberOfCacheTiles === undefined) {
         const tilesCache = await this.offlineMapService.getTilesCacheSize();
         this.ngZone.run(() => {
-          this.numberOfCacheTiles = tilesCache.tiles;
-          this.cacheTilesSize = this.helperService.humanReadableByteSize(tilesCache.folderSize);
+          this.numberOfCacheTiles = tilesCache.count;
+          this.cacheTilesSize = this.helperService.humanReadableByteSize(tilesCache.size);
         });
       }
     }

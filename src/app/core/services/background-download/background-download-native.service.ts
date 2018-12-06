@@ -111,20 +111,30 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         return this.file.dataDirectory;
     }
 
-    async getAllFiles(path: string, dirName: string): Promise<Array<{ directory: string, name: string, url: string }>> {
+    async getAllFiles(path: string, dirName: string): Promise<Array<{ directory: string, name: string, url: string, size: number }>> {
         const directoryEntry = await this.file.resolveDirectoryUrl(path);
         const folder = await this.file.getDirectory(directoryEntry, dirName, { create: false });
         const entries = await this.getEntries(folder);
-        const result: { directory: string, name: string, url: string }[] = [];
+        const result: { directory: string, name: string, url: string, size: number }[] = [];
         for (const entry of entries) {
             if (entry.isDirectory) {
                 const files = await this.getAllFiles(path, entry.fullPath);
                 result.push(...files);
             } else {
-                result.push({ directory: dirName, name: entry.name, url: entry.toURL() });
+                const fileSize = await this.getFileSize(entry);
+                result.push({ directory: dirName, name: entry.name, url: entry.toURL(), size: fileSize });
             }
         }
         return result;
+    }
+
+    private getFileSize(file: Entry) {
+        if (!file) {
+            return 0;
+        } else {
+            return new Promise<number>((resolve) =>
+                file.getMetadata((success) => resolve(success.size), (_) => resolve(0)));
+        }
     }
 
     private getEntries(folder: DirectoryEntry): Promise<Entry[]> {

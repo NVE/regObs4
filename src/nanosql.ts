@@ -61,12 +61,11 @@ export class NanoSql {
         OFFLINE_MAP_TILES: {
             name: 'offlinemaptiles',
             model: [
-                { key: 'id', type: 'int', props: ['pk'] },
-                { key: 'tileId', type: 'string', props: ['idx'] },
+                { key: 'id', type: 'string', props: ['pk'] },
                 { key: 'url', type: 'string' },
-                { key: 'mapName', type: 'string' },
-                { key: 'mapNameHash', type: 'int', props: ['idx'] },
+                { key: 'mapName', type: 'string', props: ['idx'] },
                 { key: 'lastAccess', type: 'number', props: ['idx'] },
+                { key: 'size', type: 'number' },
             ]
         },
         OFFLINE_ASSET: {
@@ -76,7 +75,7 @@ export class NanoSql {
                 { key: 'originalUrl', type: 'string', props: ['idx'] },
                 { key: 'fileUrl', type: 'string' },
                 { key: 'type', type: 'string' },
-                { key: 'lastAccess', type: 'number' },
+                { key: 'lastAccess', type: 'number', props: ['idx'] },
             ]
         },
         MAP_SERVICE: {

@@ -9,8 +9,6 @@ import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { MapComponent } from '../../modules/map/components/map/map.component';
-import { IconHelper } from '../../modules/map/helpers/icon.helper';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 
 @Component({
@@ -54,16 +52,6 @@ export class HomePage implements OnInit, OnDestroy {
 
   createClusterIcon(cluster: L.MarkerCluster) {
     const items = cluster.getAllChildMarkers().map((x: MapItemMarker) => x.item.GeoHazardTID);
-    // const unique = Array.from(new Set(items));
-    // if (unique.length === 1) {
-    //   const geoHazard: GeoHazard = unique[0];
-    //   switch (geoHazard) {
-    //     default:
-    //       return IconHelper.getIceObservationsClusterIcon(items.length); // TODO: Implement other geoHazards
-    //   }
-    // } else {
-    //   return IconHelper.getMixedObservationsClusterIcon(items.length);
-    // }
     const size = (items.length < 100 ? 35 :
       (items.length < 1000 ? 50 : 70));
     return L.divIcon({
@@ -84,7 +72,7 @@ export class HomePage implements OnInit, OnDestroy {
     })); // TODO: Move this to map component?
 
     this.events.subscribe(settings.events.tabsChanged, (tabName: string) => {
-      if (tabName === 'home') { // TODO: This is no longer needed. Tabs enter not calls ionViewDidEnter
+      if (tabName === 'home') {
         this.mapComponent.startGeoLocationWatch();
         this.mapComponent.redrawMap();
       } else {
@@ -92,7 +80,7 @@ export class HomePage implements OnInit, OnDestroy {
         this.mapComponent.stopGeoLocationWatch();
       }
     });
-
+    // TODO: Move to observable
     this.events.subscribe(settings.events.fullscreenChanged, this.fullscreenChangedhandler);
 
     this.subscriptions.push(this.mapItemBar.isVisible.subscribe((isVisible) => {
