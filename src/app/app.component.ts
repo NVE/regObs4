@@ -62,7 +62,7 @@ export class AppComponent {
       this.initBackroundUpdates();
       setTimeout(() => {
         this.splashScreen.hide();
-      }, 20); // https://forum.ionicframework.com/t/android-splashscreen-fade-animation-on-hide-not-working/120130/2
+      }, 200); // https://forum.ionicframework.com/t/android-splashscreen-fade-animation-on-hide-not-working/120130/2
     });
   }
 
