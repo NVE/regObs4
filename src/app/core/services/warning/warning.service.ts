@@ -25,6 +25,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import { IMapViewAndArea } from '../../../modules/map/services/map/map-view-and-area.interface';
 import { ObservableHelper } from '../../helpers/observable-helper';
+import { IAvalancheWarningSimple } from './avalanche-warning-simple.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -348,16 +349,7 @@ export class WarningService {
         regionName: region.Name,
         geoHazard: GeoHazard.Snow,
         counties: [],
-        warnings: region.AvalancheWarningList.map((simpleWarning) => ({
-          warningLevel: parseInt(simpleWarning.DangerLevel, 10),
-          publishTime: this.getDate(simpleWarning.PublishTime),
-          validFrom: this.getDate(simpleWarning.ValidFrom),
-          validTo: this.getDate(simpleWarning.ValidTo),
-          mainText: simpleWarning.MainText,
-          language,
-          extraWarning: simpleWarning.EmergencyWarning !== (language === LangKey.en ? 'Not given' : 'Ikke gitt') ?
-            simpleWarning.EmergencyWarning : null,
-        })),
+        warnings: region.AvalancheWarningList.map((simpleWarning) => this.convertSimpleWarningToAppWarning(language, simpleWarning)),
       }));
       console.log(`[INFO][WarningService] New updates for avalanche warnings:`, regionResult);
       await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
@@ -366,6 +358,19 @@ export class WarningService {
     } catch (err) {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
     }
+  }
+
+  private convertSimpleWarningToAppWarning(language: LangKey, simpleWarning: IAvalancheWarningSimple): IWarning {
+    return {
+      warningLevel: parseInt(simpleWarning.DangerLevel, 10),
+      publishTime: this.getDate(simpleWarning.PublishTime),
+      validFrom: this.getDate(simpleWarning.ValidFrom),
+      validTo: this.getDate(simpleWarning.ValidTo),
+      mainText: simpleWarning.MainText,
+      language,
+      emergencyWarning: simpleWarning.EmergencyWarning !== (language === LangKey.en ? 'Not given' : 'Ikke gitt') ?
+        simpleWarning.EmergencyWarning : null,
+    };
   }
 
   private async deleteRegionsNoLongerInResult(geoHazard: GeoHazard, regions: IWarningGroup[]) {
