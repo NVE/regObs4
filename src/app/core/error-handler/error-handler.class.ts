@@ -1,18 +1,20 @@
 import { ErrorHandler } from '@angular/core';
 import * as Sentry from 'sentry-cordova';
+import { environment } from '../../../environments/environment';
 
 export class AppErrorHandler extends ErrorHandler {
     handleError(error) {
-        if (error) {
-            super.handleError(error);
-            try {
-                const err = error.originalError || error;
-                if (err) {
+        try {
+            const err = error.originalError || error;
+            if (err) {
+                if (environment.production) {
                     Sentry.captureException(err);
+                } else {
+                    console.error(err);
                 }
-            } catch (e) {
-                console.error(e);
             }
+        } catch (e) {
+            console.error(e);
         }
     }
 }
