@@ -65,13 +65,14 @@
         </ng-container>
       </ng-container>
     </ion-grid>
-    <ion-item color="light" (click)="openWeb()">
-      <ion-label color="medium" class="link-title">
+    <ion-item color="light">
+      <ion-button mode="ios" fill="clear" color="medium" class="link-title" (click)="openWeb()">
         {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
-      </ion-label>
-      <ion-label color="medium" class="reg-id" slot="end" text-end>
+      </ion-button>
+      <ion-button mode="ios" fill="clear" color="medium" class="reg-id" slot="end" (click)="share()">
         RegId: {{ obs.RegID }}
-      </ion-label>
+        <ion-icon slot="end" class="share-icon" name="md-share"></ion-icon>
+      </ion-button>
     </ion-item>
   </ion-card-content>
 </ion-card>

@@ -3,14 +3,14 @@ import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { HelperService } from '../../../core/services/helpers/helper.service';
-import { OfflineImageService } from '../../../core/services/offline-image/offline-image.service';
 import { settings } from '../../../../settings';
 import { RegistrationViewModel, Summary } from '../../../modules/regobs-api/models';
-import { Slides, ModalController } from '@ionic/angular';
+import { Slides, ModalController, Platform } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -41,11 +41,12 @@ export class ObservationListCardComponent implements OnInit {
   constructor(
     private translateService: TranslateService,
     private helperService: HelperService,
-    private offlineImageService: OfflineImageService,
     private modalController: ModalController,
     private inAppBrowser: InAppBrowser,
     private ngZone: NgZone,
     private userSettingService: UserSettingService,
+    private socialSharing: SocialSharing,
+    private platform: Platform,
   ) { }
 
   async ngOnInit() {
@@ -131,9 +132,19 @@ export class ObservationListCardComponent implements OnInit {
     this.updateImages();
   }
 
+  private getRegistrationUrl() {
+    return `${settings.services.regObs.webUrl[this.userSetting.appMode]}/Registration/${this.obs.RegID}`;
+  }
+
   async openWeb() {
-    const src = `${settings.services.regObs.webUrl[this.userSetting.appMode]}/Registration/${this.obs.RegID}`;
-    const iap = this.inAppBrowser.create(src, '_system');
+    const iap = this.inAppBrowser.create(this.getRegistrationUrl(), '_system');
     iap.show();
+  }
+
+  async share() {
+    if (this.platform.isAndroidOrIos()) {
+      const message = `regObs registration ${this.obs.RegID}`;
+      this.socialSharing.share(null, message, this.platform.is('ios') ? this.imageUrls : null, this.getRegistrationUrl());
+    }
   }
 }

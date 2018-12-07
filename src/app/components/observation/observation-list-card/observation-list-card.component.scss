@@ -49,12 +49,19 @@ ion-card {
         }
 
         .link-title {
-            flex: 1.5;
+            font-size: 15px;
         }
 
-        .reg-id {
-            flex: 0.5;
-            font-size: 12px;
+        ion-item {
+            --inner-border-width: 0 !important;
+
+            ion-button {
+                text-transform: none !important;
+
+                &.reg-id {
+                    margin-left: 0px;
+                }
+            }
         }
     }
 }

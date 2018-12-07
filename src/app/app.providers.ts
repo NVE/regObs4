@@ -38,6 +38,7 @@ import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { FullscreenService } from './core/services/fullscreen/fullscreen.service';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -69,6 +70,7 @@ export const APP_PROVIDERS = [
     LocalNotifications,
     Keyboard,
     SQLite,
+    SocialSharing,
     API_INTERCEPTOR_PROVIDER,
     { provide: ErrorHandler, useClass: AppErrorHandler },
     // Singleton services
