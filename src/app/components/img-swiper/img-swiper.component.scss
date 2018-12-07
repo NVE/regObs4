@@ -7,29 +7,29 @@
 }
 
 .swiper-slide {
-    width: auto;
+    width: 80%;
     height: 100%;
     display: inline-flex;
-    justify-content: left;
 }
-.swiper-slide:first-child {
-    max-width: 80% !important;
-}
+// .swiper-slide:first-child {
+//     width: 80% !important;
+// }
 
 app-offline-image {
     display: inline-flex;
     height: 100%;
-    width: auto;
+    width: 100%;
     object-fit: cover;
 
-    &.single {
-        width: 100%;
-    }
+    // &.single {
+    //     width: 100%;
+    // }
 }
 
 ion-slides {
     display: flex;
     flex: 1;
+    width: 100%;
 }
 
 ion-label {
