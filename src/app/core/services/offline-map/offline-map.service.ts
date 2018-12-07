@@ -126,7 +126,6 @@ export class OfflineMapService {
         `${folder}/${filename}`);
 
       const size = await this.getFileSize(fileResult);
-      console.log('[DEBUG][OfflineTileLayer] offline tile size: ' + size);
 
       const tile: OfflineTile = {
         id: tileId,
