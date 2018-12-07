@@ -1,12 +1,3 @@
-// ion-footer {
-//     ion-toolbar {
-//         --backround: #fff;
-//     }
-
-//     ion-button {
-//         --border-radius: 2px;
-//     }
-// }
 ion-grid {
     background-color: #fff;
     margin-top: 30px;
@@ -14,4 +5,8 @@ ion-grid {
 
 .back-button {
     background-color: var(--ion-background-color,#fff);
+}
+
+.reset-button {
+    margin-bottom: var(--ion-safe-area-bottom, 5px);
 }
