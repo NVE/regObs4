@@ -35,6 +35,13 @@ export class TextCommentComponent implements OnInit {
     this.minrows = this.rows;
   }
 
+  onBlur() {
+    if (this.value) {
+      this.value = this.value.trim();
+      this.valueChange.emit(this.value);
+    }
+  }
+
   autoresize(event: Event) {
     const target: Textarea = <any>(event.target);
     const width = window.innerWidth;
@@ -47,7 +54,6 @@ export class TextCommentComponent implements OnInit {
     } else {
       target.rows = this.minrows;
     }
-    // this.valueChange.emit(this.value);
   }
 
 }
