@@ -89,13 +89,17 @@ export class SetAvalanchePositionPage implements OnInit {
     });
     this.startMarker = L.marker(this.locationMarker.getLatLng(), { icon: this.startIcon })
       .on('click', () => {
-        this.map.panTo(this.startMarker.getLatLng());
+        if (!this.startIsActive) {
+          this.end = this.locationMarker.getLatLng();
+        }
         this.startIsActive = true;
         this.updateMarkers();
       });
     this.endMarker = L.marker(this.locationMarker.getLatLng(), { icon: this.endIcon })
       .on('click', () => {
-        this.map.panTo(this.endMarker.getLatLng());
+        if (this.startIsActive) {
+          this.start = this.locationMarker.getLatLng();
+        }
         this.startIsActive = false;
         this.updateMarkers();
       });
@@ -107,6 +111,10 @@ export class SetAvalanchePositionPage implements OnInit {
   onMapReady(map: L.Map) {
     this.map = map;
     this.updateMarkers();
+    this.ngZone.runOutsideAngular(() => {
+      this.map.on('drag', () => this.updatePolyline());
+      this.updatePolyline();
+    });
   }
 
   private setStartLocationText() {
@@ -130,13 +138,7 @@ export class SetAvalanchePositionPage implements OnInit {
       this.locationMarker.setIcon(this.startIcon);
       this.setStartLocationText();
     } else {
-      if (!this.startIsActive) {
-        this.locationMarker.setIcon(this.endIcon);
-        this.locationMarker.setLatLng(this.end || this.start);
-        this.setEndLocationText();
-        this.startMarker.setLatLng(this.start);
-        this.startMarker.addTo(this.map);
-      } else {
+      if (this.startIsActive) {
         this.locationMarker.setIcon(this.startIcon);
         this.locationMarker.setLatLng(this.start);
         this.setStartLocationText();
@@ -144,22 +146,26 @@ export class SetAvalanchePositionPage implements OnInit {
           this.endMarker.setLatLng(this.end);
           this.endMarker.addTo(this.map);
         }
+      } else {
+        this.locationMarker.setIcon(this.endIcon);
+        this.locationMarker.setLatLng(this.end || this.start);
+        this.setEndLocationText();
+        this.startMarker.setLatLng(this.start);
+        this.startMarker.addTo(this.map);
       }
-
-      this.ngZone.runOutsideAngular(() => {
-        this.map.on('drag', () => this.updatePolyline());
-        this.updatePolyline();
-      });
     }
+    this.map.panTo(this.locationMarker.getLatLng());
     this.cdr.detectChanges();
   }
 
   updatePolyline() {
-    const path = [this.locationMarker.getLatLng(), this.startIsActive ? this.end : this.start];
-    if (!this.pathLine) {
-      this.pathLine = L.polyline(path, { color: 'red', weight: 6, opacity: .9 }).addTo(this.map);
-    } else {
-      this.pathLine.setLatLngs(path);
+    if (this.end || this.start) {
+      const path = [this.locationMarker.getLatLng(), this.startIsActive ? this.end : this.start];
+      if (!this.pathLine) {
+        this.pathLine = L.polyline(path, { color: 'red', weight: 6, opacity: .9 }).addTo(this.map);
+      } else {
+        this.pathLine.setLatLngs(path);
+      }
     }
   }
 
@@ -168,6 +174,8 @@ export class SetAvalanchePositionPage implements OnInit {
       this.start = L.latLng(event.Latitude, event.Longitude);
       if (this.end) {
         this.map.panTo(this.end);
+      } else {
+        this.end = L.latLng(event.Latitude, event.Longitude);
       }
       this.startIsActive = false;
       this.updateMarkers();
