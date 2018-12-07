@@ -46,7 +46,6 @@ export class ObservationListCardComponent implements OnInit {
     private ngZone: NgZone,
     private userSettingService: UserSettingService,
     private socialSharing: SocialSharing,
-    private platform: Platform,
   ) { }
 
   async ngOnInit() {
@@ -142,9 +141,6 @@ export class ObservationListCardComponent implements OnInit {
   }
 
   async share() {
-    if (this.platform.isAndroidOrIos()) {
-      const message = `regObs registration ${this.obs.RegID}`;
-      this.socialSharing.share(null, message, this.platform.is('ios') ? this.imageUrls : null, this.getRegistrationUrl());
-    }
+    this.socialSharing.share(null, null, null, this.getRegistrationUrl());
   }
 }
