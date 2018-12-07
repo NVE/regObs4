@@ -22,6 +22,7 @@ export class AvalancheProblemModalPage implements OnInit {
 
   set noWeakLayers(val: boolean) {
     this.avalancheEvalProblemCopy.AvalCauseTID = val ? 24 : undefined;
+    this.avalCauseChanged(this.avalancheEvalProblemCopy.AvalCauseTID);
   }
 
   avalancheProblemView: { AvalancheExtTID: number, AvalCauseTID: number }[];
@@ -52,10 +53,11 @@ export class AvalancheProblemModalPage implements OnInit {
 
     this.avalancheCauseAttributes =
       this.getAvalancheCauseAttributes(this.avalancheEvalProblemCopy.AvalCauseAttributes, snowCauseAttributesKdvElements);
-    this.avalCauseChanged();
+    this.avalCauseChanged(this.avalancheEvalProblemCopy.AvalCauseTID);
   }
 
-  avalCauseChanged() {
+  avalCauseChanged(val: number) {
+    this.avalancheEvalProblemCopy.AvalCauseTID = val;
     setTimeout(() => {
       this.avalancheExtKdvFiltered = null;
       setTimeout(() => {

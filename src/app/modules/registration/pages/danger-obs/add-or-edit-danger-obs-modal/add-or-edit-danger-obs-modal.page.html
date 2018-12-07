@@ -20,8 +20,8 @@
       <ion-checkbox slot="start" [(ngModel)]="noDangerObs"></ion-checkbox>
       <ion-label>{{ 'REGISTRATION.DANGER_OBS.NO_DAMAGE_SIGN' | translate}}</ion-label>
     </ion-item>
-    <app-kdv-dropdown title="REGISTRATION.DANGER_OBS.TITLE" *ngIf="!noDangerObs" hideZeroValues="true" kdvKey="{{ GeoHazardName }}_DangerSignKDV"
-      [(value)]="dangerSignTid">
+    <app-kdv-dropdown (valueChange)="dropdownChanged($event)" title="REGISTRATION.DANGER_OBS.TITLE" *ngIf="!noDangerObs"
+      hideZeroValues="true" kdvKey="{{ GeoHazardName }}_DangerSignKDV" [(value)]="dangerSignTid">
     </app-kdv-dropdown>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.DANGER_OBS.AREA' | translate}}</ion-label>

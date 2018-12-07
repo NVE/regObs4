@@ -48,7 +48,6 @@ export class KdvDropdownComponent implements OnInit {
     private kdvService: KdvService,
     private userSettingService: UserSettingService,
     private translateService: TranslateService,
-    private ngZone: NgZone,
   ) { }
 
   async ngOnInit() {
@@ -64,12 +63,6 @@ export class KdvDropdownComponent implements OnInit {
         this.interfaceOptions.subHeader = translations[this.placeholder];
       }
     }
-  }
-
-  onChange() {
-    this.ngZone.run(() => {
-      this.valueChange.emit(this.value);
-    });
   }
 
   isVisible(item: KdvElement) {

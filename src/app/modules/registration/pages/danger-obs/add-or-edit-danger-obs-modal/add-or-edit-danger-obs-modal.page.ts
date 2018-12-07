@@ -49,7 +49,7 @@ export class AddOrEditDangerObsModalPage implements OnInit {
           this.comment = this.dangerObs.Comment;
         }
       }
-      if (this.dangerObs.DangerSignTID === this.getZeroValue()) {
+      if (this.dangerObs.DangerSignTID === this.getNoDangerSignTid()) {
         this.noDangerObs = true;
       } else {
         this.dangerSignTid = this.dangerObs.DangerSignTID;
@@ -59,24 +59,27 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   }
 
   toggleDangerObs() {
-    this.ngZone.run(() => {
-      this.noDangerObs = !this.noDangerObs;
-      console.log('No danger obs: ', this.noDangerObs);
-    });
+    this.noDangerObs = !this.noDangerObs;
+  }
+
+  dropdownChanged(val: number) {
+    if (val === this.getNoDangerSignTid()) {
+      this.noDangerObs = true;
+    }
   }
 
   cancel() {
     this.modalController.dismiss();
   }
 
-  getZeroValue() {
-    return this.geoHazard !== GeoHazard.Snow ? this.geoHazard * 10 : 0;
+  getNoDangerSignTid() {
+    return (this.geoHazard !== GeoHazard.Snow ? this.geoHazard * 10 : 0) + 1;
   }
 
   ok() {
     const dangerObsToSave: DangerObsDto = {
       GeoHazardTID: this.geoHazard,
-      DangerSignTID: this.noDangerObs ? this.getZeroValue() : this.dangerSignTid,
+      DangerSignTID: this.noDangerObs ? this.getNoDangerSignTid() : this.dangerSignTid,
       Comment: this.getComment(),
     };
     this.modalController.dismiss(dangerObsToSave);
