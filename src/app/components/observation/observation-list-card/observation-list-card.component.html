@@ -54,8 +54,15 @@
           <ion-row class="row-padding-start">
             <ion-col size="12" text-wrap class="obs-content">
               <ng-container *ngFor="let innerSummary of s.summary.Summaries; let i = index">
-                <ng-container *ngIf="innerSummary.Kind === 0">
-                  <span *ngIf="i>0">&nbsp;&bull;&nbsp;</span>{{ innerSummary.Value }}
+                <span *ngIf="i>0">&nbsp;&bull;&nbsp;</span>
+                <span *ngIf="innerSummary.Kind === 0">
+                  {{ innerSummary.Value }}
+                </span>
+                <ng-container *ngIf="innerSummary.Kind === 1">
+                  <ng-container *ngFor="let webUrl of innerSummary.Value; let j = index">
+                    <span *ngIf="j>0">&nbsp;&bull;&nbsp;</span>
+                    <app-external-link [src]="webUrl.Value">{{webUrl.Header}}</app-external-link>
+                  </ng-container>
                 </ng-container>
               </ng-container>
             </ion-col>
