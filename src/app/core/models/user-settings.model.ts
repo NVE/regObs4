@@ -15,4 +15,5 @@ export interface UserSetting {
     showMapCenter: boolean;
     tilesCacheSize: number;
     showObservations: boolean;
+    emailReciept: boolean;
 }

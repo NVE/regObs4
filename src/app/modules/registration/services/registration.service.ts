@@ -21,6 +21,7 @@ import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { ObservableHelper } from '../../../core/helpers/observable-helper';
 import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { UserSetting } from '../../../core/models/user-settings.model';
 
 @Injectable({
   providedIn: 'root'
@@ -194,7 +195,7 @@ export class RegistrationService {
         let itemCompleted = 0;
         for (const registration of registrationsToSync) {
           if (!cancelled) {
-            await this.syncRegistration(registration, appMode, cancel);
+            await this.syncRegistration(registration, userSettings, cancel);
             itemCompleted++;
             this.dataLoadService.updateProgress(dataLoadId, itemCompleted, registrationsToSync.length);
           } else {
@@ -208,19 +209,20 @@ export class RegistrationService {
     }
   }
 
-  private async syncRegistration(registration: IRegistration, appMode: AppMode, cancel?: Promise<void>) {
+  private async syncRegistration(registration: IRegistration, userSetting: UserSetting, cancel?: Promise<void>) {
     try {
       this.cleanupRegistration(registration);
-      const createRegistrationResult = await this.postRegistration(appMode, registration.request, cancel);
-      const newRegistration = await this.updateRegistrationById(createRegistrationResult.RegId, appMode);
-      await this.deleteRegistrationById(appMode, registration.id);
+      registration.request.Email = userSetting.emailReciept;
+      const createRegistrationResult = await this.postRegistration(userSetting.appMode, registration.request, cancel);
+      const newRegistration = await this.updateRegistrationById(createRegistrationResult.RegId, userSetting.appMode);
+      await this.deleteRegistrationById(userSetting.appMode, registration.id);
       return newRegistration;
     } catch (ex) {
       if (ex instanceof HttpErrorResponse) {
         const httpError: HttpErrorResponse = ex;
         console.warn('Could not sync registration', registration, ex);
         if (httpError.status === 409) { // Duplicate, remove
-          await this.deleteRegistrationById(appMode, registration.id);
+          await this.deleteRegistrationById(userSetting.appMode, registration.id);
           // Updating latest user registration since we don't have an ID for the duplicate
           await this.updateLatestUserRegistrations();
         } else if (httpError.status === 400) {

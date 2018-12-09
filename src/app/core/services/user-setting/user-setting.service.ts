@@ -4,11 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
-import { Events } from '@ionic/angular';
 import { NanoSql } from '../../../../nanosql';
 import { nSQL } from 'nano-sql';
 import { Observable } from 'rxjs';
-import { map, take, share, shareReplay, distinctUntilChanged } from 'rxjs/operators';
+import { map, take, shareReplay } from 'rxjs/operators';
 import { LangKey } from '../../models/langKey';
 import { AppCountry } from '../../models/app-country.enum';
 
@@ -58,6 +57,7 @@ export class UserSettingService {
       showMapCenter: false,
       tilesCacheSize: settings.map.tiles.cacheSize,
       showObservations: true,
+      emailReciept: true,
     };
   }
 
