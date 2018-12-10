@@ -19,7 +19,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { WarningService } from './core/services/warning/warning.service';
-import { ErrorHandler, Provider, APP_INITIALIZER, forwardRef } from '@angular/core';
+import { ErrorHandler, Provider, forwardRef } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { LoginService } from './core/services/login/login.service';
 import { HTTP } from '@ionic-native/http/ngx';
@@ -39,6 +39,7 @@ import { SQLite } from '@ionic-native/sqlite/ngx';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { FullscreenService } from './core/services/fullscreen/fullscreen.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { TabService } from './core/services/tab/tab.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -81,6 +82,7 @@ export const APP_PROVIDERS = [
     DataMarshallService,
     DbHelperService,
     FullscreenService,
+    TabService,
     // Custom native/web providers
     {
         provide: BackgroundGeolocationService, useClass: window.hasOwnProperty('cordova') ?

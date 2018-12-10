@@ -1,10 +1,11 @@
 import { Component, ViewChild, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Events, Tabs, Platform } from '@ionic/angular';
-import { settings } from '../../../settings';
+import { Tabs, Platform } from '@ionic/angular';
 import { Subscription, Observable } from 'rxjs';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
+import { TabService } from '../../core/services/tab/tab.service';
+import { TabName } from '../../core/services/tab/tab-name.enum';
 
 @Component({
   selector: 'app-tabs',
@@ -33,10 +34,10 @@ export class TabsPage implements OnInit, OnDestroy {
 
   @ViewChild(Tabs) private tabs: Tabs;
   constructor(
-    private events: Events,
     private fullscreenService: FullscreenService,
     private platform: Platform,
     private warningService: WarningService,
+    private tabService: TabService,
     private ngZone: NgZone) {
     this.isIos = this.platform.is('ios');
     this.isAndroid = this.platform.is('android');
@@ -70,19 +71,25 @@ export class TabsPage implements OnInit, OnDestroy {
   tabsChanged(event: CustomEvent) {
     const tabElement: HTMLIonTabElement = event.detail.tab;
     console.log('[INFO] Tabs changed to: ', tabElement.tab);
-    this.events.publish(settings.events.tabsChanged, tabElement.tab);
+    const tabName = tabElement.tab as TabName;
+    this.tabService.tabChange(tabName, true);
   }
 
   async ionViewDidEnter() {
     console.log('[INFO] Tabs page ionViewDidEnter');
     const selectedTab = await this.tabs.getSelected();
     if (selectedTab) {
-      this.events.publish(settings.events.tabsChanged, selectedTab.tab);
+      const tabName = selectedTab.tab as TabName;
+      this.tabService.tabChange(tabName, true);
     }
   }
 
-  ionViewWillLeave() {
+  async ionViewWillLeave() {
     console.log('[INFO] Tabs page ionViewWillLeave');
-    this.events.publish(settings.events.tabsChanged, '');
+    const selectedTab = await this.tabs.getSelected();
+    if (selectedTab) {
+      const tabName = selectedTab.tab as TabName;
+      this.tabService.tabChange(tabName, false);
+    }
   }
 }

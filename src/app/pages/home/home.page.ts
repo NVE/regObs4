@@ -11,6 +11,8 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { MapComponent } from '../../modules/map/components/map/map.component';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
+import { TabService } from '../../core/services/tab/tab.service';
+import { TabName } from '../../core/services/tab/tab-name.enum';
 
 @Component({
   selector: 'app-home',
@@ -38,7 +40,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   constructor(
     private observationService: ObservationService,
-    private events: Events,
+    private tabService: TabService,
     private fullscreenService: FullscreenService,
     private userSettingService: UserSettingService,
     private zone: NgZone,
@@ -67,15 +69,16 @@ export class HomePage implements OnInit, OnDestroy {
       });
     })); // TODO: Move this to map component?
 
-    this.events.subscribe(settings.events.tabsChanged, (tabName: string) => {
-      if (tabName === 'home') {
-        this.mapComponent.startGeoLocationWatch();
-        this.mapComponent.redrawMap();
-      } else {
-        // Stopping geolocation when map is not visible to save battery
-        this.mapComponent.stopGeoLocationWatch();
+    this.subscriptions.push(this.tabService.tabsChange$.subscribe((val) => {
+      if (val.tab === TabName.Home) {
+        if (val.active) {
+          this.mapComponent.startGeoLocationWatch();
+          this.mapComponent.redrawMap();
+        } else {
+          this.mapComponent.stopGeoLocationWatch();
+        }
       }
-    });
+    }));
     this.subscriptions.push(this.mapItemBar.isVisible.subscribe((isVisible) => {
       this.zone.run(() => {
         this.mapItemBarVisible = isVisible;

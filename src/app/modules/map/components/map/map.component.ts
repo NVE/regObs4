@@ -253,6 +253,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           (data) => this.onPositionUpdate(data),
           (error) => this.onPositionError(error)
         );
+    } else {
+      console.log('[INFO] Geolocation service allready running');
     }
   }
 
