@@ -13,6 +13,7 @@ import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { TabService } from '../../core/services/tab/tab.service';
 import { TabName } from '../../core/services/tab/tab-name.enum';
+import { AppMode } from '../../core/models/app-mode.enum';
 
 @Component({
   selector: 'app-home',

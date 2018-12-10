@@ -1,4 +1,4 @@
-<ion-header *ngIf="!(fullscreen$ | async)">
+<!-- <ion-header *ngIf="!(fullscreen$ | async)">
   <ion-toolbar color="dark" mode="ios">
     <ion-buttons slot="end">
       <ion-menu-button color="light"></ion-menu-button>
@@ -7,8 +7,8 @@
       regObs
     </ion-title>
   </ion-toolbar>
-</ion-header>
-
+</ion-header> -->
+<app-header title="regObs"></app-header>
 <ion-content [ngClass]="{'map-item-bar-open': mapItemBarVisible, 'map-center-info-open': showMapCenter }">
   <app-map (mapReady)="onMapReady($event)"></app-map>
   <app-map-center-info></app-map-center-info>

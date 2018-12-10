@@ -1,0 +1,16 @@
+<ion-header *ngIf="!(isFullscreen$ | async)">
+  <ion-toolbar [ngClass]="headerColor" mode="ios">
+    <ion-buttons slot="start" *ngIf="!showMenuButton">
+      <ion-back-button text="" [defaultHref]="defaultHref"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="showMenuButton">
+      <ion-menu-button color="light"></ion-menu-button>
+    </ion-buttons>
+    <ion-title *ngIf="!tripRunning">
+      {{ title | translate }}
+    </ion-title>
+    <ion-title *ngIf="tripRunning" (click)="endTrip()">
+      {{ 'Tur pågår' }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>

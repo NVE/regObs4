@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button text="" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{"TRIP.TRIP" | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid no-padding no-margin class="pull-last-bottom">
+    <ion-row>
+      <ion-col no-padding>
+        <ion-list lines="full">
+          <app-kdv-dropdown (valueChange)="invalidTripType = false" [labelColor]="invalidTripType ? 'danger' : 'medium'"
+            [disabled]="isRunning || isLoading" title="TRIP.TRIP_TYPE" kdvKey="TripTypeKDV" [(value)]="tripDto.TripTypeID"></app-kdv-dropdown>
+          <ion-item>
+            <ion-label [color]="invalidMinutes ? 'danger' : 'medium'" color="medium" position="stacked" text-uppercase>{{'TRIP.TRIP_END_DESCRIPTION'
+              | translate}}</ion-label>
+            <ion-select [disabled]="isRunning || isLoading" cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="tripDto.ObservationExpectedMinutes"
+              interface="action-sheet" (ngModelChange)="invalidMinutes = false">
+              <ion-select-option *ngFor="let option of minutes" [value]="option.value">{{ option.name }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-list-header text-uppercase>
+            <ion-label>
+              {{"DIALOGS.COMMENT" | translate}}
+            </ion-label>
+          </ion-list-header>
+          <ion-item>
+            <ion-label text-wrap>{{'TRIP.COMMENT_DESCRIPTION' | translate}}</ion-label>
+          </ion-item>
+          <app-text-comment [disabled]="isRunning || isLoading" [(value)]="tripDto.Comment"></app-text-comment>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col no-padding>
+        <ion-grid no-padding>
+          <ion-row>
+            <ion-col text-center>
+              <ion-button (click)="showHelp()" fill="clear">{{'HELP.TITLE' | translate}}</ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row class="white-background">
+            <ion-col size="12">
+              <ion-button (click)="startTrip()" [disabled]="isLoading" *ngIf="!isRunning" class="back-button" expand="block"
+                color="primary">
+                {{ 'TRIP.START_TRIP' | translate }}
+              </ion-button>
+              <ion-button *ngIf="isRunning" [disabled]="isLoading" class="back-button" expand="block" color="primary">
+                {{ 'TRIP.STOP_TRIP' | translate }}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row class="white-background">
+            <ion-col no-padding text-center>
+              <ion-button (click)="clearPage()" [disabled]="isRunning || isLoading" class="reset-button" color="dark"
+                size="small" fill="clear">
+                <ion-icon slot="start" name="undo"></ion-icon>
+                {{"REGISTRATION.RESET" | translate}}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

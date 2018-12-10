@@ -13,6 +13,7 @@ export class TextCommentComponent implements OnInit {
   @Input() value: string;
   @Output() valueChange = new EventEmitter();
   @Input() rows: number;
+  @Input() disabled = false;
   minrows: number;
 
   get valToBind() {

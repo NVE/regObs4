@@ -30,6 +30,8 @@ export class KdvDropdownComponent implements OnInit {
   @Input() useDescription: boolean;
   @Output() valueChange = new EventEmitter();
   @Input() hideZeroValues: boolean;
+  @Input() disabled = false;
+  @Input() labelColor = 'medium';
 
   kdvelements: KdvElement[];
 

@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { HelptextDto } from '../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -9,7 +8,7 @@ import { ModalController } from '@ionic/angular';
 })
 export class HelpModalPage implements OnInit {
 
-  @Input() helpText: HelptextDto;
+  @Input() helpText: string;
 
   constructor(private modalController: ModalController) { }
 

@@ -42,7 +42,7 @@ export class HelpTextComponent implements OnInit {
     const modal = await this.modalController.create({
       component: HelpModalPage,
       componentProps: {
-        helpText: this.helpText,
+        helpText: this.helpText.Text,
       },
     });
     modal.present();

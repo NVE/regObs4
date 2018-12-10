@@ -1,0 +1,15 @@
+ion-toolbar {
+    --ion-text-color: #fff;
+    &.trip-running {
+        --background: #57AB01;
+    }
+    &.prod {
+        --background: var(--ion-color-dark);
+    }
+    &.demo {
+        --background: var(--ion-color-danger);
+    }
+    &.test {
+        --background: var(--ion-color-primary);
+    }
+}

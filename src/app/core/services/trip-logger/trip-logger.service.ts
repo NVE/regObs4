@@ -6,12 +6,30 @@ import * as moment from 'moment';
 import { TripLogState } from './trip-log-state.enum';
 import { TripLogActivity } from './trip-log-activity.model';
 import { NanoSql } from '../../../../nanosql';
+import { Observable, from } from 'rxjs';
+import { TripService } from '../../../modules/regobs-api/services';
+import { CreateTripDto } from '../../../modules/regobs-api/models';
+import { settings } from '../../../../settings';
+import { switchMap, take, map } from 'rxjs/operators';
+import { UserSettingService } from '../user-setting/user-setting.service';
+import { ToastController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+import { LegacyTrip } from './lagacy-trip.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TripLoggerService {
-  constructor() {
+
+  get isTripRunning$() {
+    return this.getLegacyTripAsObservable().pipe(map((val) => !!val));
+  }
+
+  constructor(
+    private tripService: TripService,
+    private userSettingService: UserSettingService,
+    private translateService: TranslateService,
+    private toastController: ToastController) {
   }
 
   saveTripLogItem(item: TripLogItem) {
@@ -20,10 +38,10 @@ export class TripLoggerService {
       .exec();
   }
 
-  getTripLogAsObservable(): Observer<TripLogItem[]> {
+  getTripLogAsObservable(): Observable<TripLogItem[]> {
     return nSQL().observable<TripLogItem[]>(() => {
       return nSQL(NanoSql.TABLES.TRIP_LOG.name).query('select').emit();
-    });
+    }).toRxJS();
   }
 
   updateState(state: TripLogState) {
@@ -32,16 +50,77 @@ export class TripLoggerService {
       .exec();
   }
 
-  getTripLogStateAsObservable(): Observer<TripLogActivity> {
+  getTripLogStateAsObservable(): Observable<TripLogActivity> {
     return nSQL().observable<TripLogActivity>(() => {
       return nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').orderBy({ id: 'desc' }).limit(1).emit();
-    }).map((x) => x[0]);
+    }).map((x) => x[0]).toRxJS();
   }
 
-  getTripLogActivityAsObservable(): Observer<TripLogActivity[]> {
+  getTripLogActivityAsObservable(): Observable<TripLogActivity[]> {
     return nSQL().observable<TripLogActivity[]>(() => {
       return nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').emit();
+    }).toRxJS();
+  }
+
+  getLegacyTripAsObservable(): Observable<LegacyTrip> {
+    return nSQL().observable<LegacyTrip>(() => {
+      return nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name).query('select').emit();
+    }).map((x) => x[0]).toRxJS();
+  }
+
+  startLegacyTrip(tripDto: CreateTripDto) {
+    const legacyTrip: LegacyTrip = { id: 'legacytrip', timestamp: moment().unix(), request: tripDto };
+    return from(this.setTripServiceRootUrl())
+      .pipe(
+        switchMap(() => this.tripService.TripPost(tripDto)),
+        switchMap(() => from(nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name)
+          .query('upsert', legacyTrip).exec())
+        ),
+        switchMap(() => this.infoMessage(true))
+      );
+  }
+
+  private async setTripServiceRootUrl() {
+    const userSetting = await this.userSettingService.getUserSettings();
+    this.tripService.rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
+  }
+
+  async stopLegacyTrip() {
+    await this.setTripServiceRootUrl();
+    const currentTrip = await this.getLegacyTripAsObservable().pipe(take(1)).toPromise();
+    if (currentTrip) {
+      try {
+        await this.tripService.TripPut({ DeviceGuid: currentTrip.request.DeviceGuid });
+      } catch (error) {
+        console.warn('[WARNING][TripLoggerService] Could not stop trip!', error);
+      } finally {
+        await nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name).query('delete').exec();
+        await this.infoMessage(false).toPromise();
+      }
+    }
+  }
+
+  async cleanupOldLegacyTrip() {
+    const limit = moment().startOf('day').unix();
+    const currentTrip = await this.getLegacyTripAsObservable().pipe(take(1)).toPromise();
+    if (currentTrip && (currentTrip.timestamp < limit)) {
+      await nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name).query('delete').exec();
+    }
+  }
+
+  private infoMessage(started: boolean) {
+    const key = started ? 'TRIP.STARTED' : 'TRIP.STOPPED';
+    return this.translateService.get(key).pipe(switchMap((message) =>
+      from(this.presentToast(message))));
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      mode: 'md',
+      duration: 2000
     });
+    return toast.present();
   }
 
   // getTripLogSummaryAsObservable(): Observer<TripLogSummary> {

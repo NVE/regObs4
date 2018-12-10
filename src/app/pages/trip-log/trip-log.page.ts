@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enum';
-import { ObserverSubscriber } from 'nano-sql/lib/observable';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-trip-log',
@@ -11,7 +11,7 @@ import { ObserverSubscriber } from 'nano-sql/lib/observable';
 })
 export class TripLogPage implements OnInit, OnDestroy {
   state: TripLogState = TripLogState.NotStarted;
-  private subscription: ObserverSubscriber;
+  private subscription: Subscription;
 
   constructor(private backgroundGeolocationService: BackgroundGeolocationService, private tripLoggerService: TripLoggerService) { }
 

@@ -8,6 +8,7 @@ import { RegistrationService } from '../../modules/registration/services/registr
 import { IRegistration } from '../../modules/registration/models/registration.model';
 import * as moment from 'moment';
 import { DateHelperService } from '../../modules/shared/services/date-helper.service';
+import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 
 @Component({
   selector: 'app-add-menu',
@@ -17,31 +18,30 @@ import { DateHelperService } from '../../modules/shared/services/date-helper.ser
 export class AddMenuComponent implements OnInit, OnDestroy {
   @ViewChild('menuFab') menuFab: Fab;
 
-  private userSettingSubscription: Subscription;
-  private registrationSubscription: Subscription;
-  private userSettings: UserSetting;
-  private geoHazardSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
+
   drafts: IRegistration[] = [];
   draftDates: string[] = [];
   geoHazards: GeoHazard[] = [];
   showTrip = false;
+  tripStarted = false;
 
   constructor(
     private registrationService: RegistrationService,
     private ngZone: NgZone,
     private navController: NavController,
     private dateHelperService: DateHelperService,
+    private tripLoggerService: TripLoggerService,
     private userSettingService: UserSettingService) { }
 
   ngOnInit() {
-    this.userSettingSubscription = this.userSettingService.userSettingObservable$.subscribe((val) => {
+    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.ngZone.run(() => {
-        this.userSettings = val;
-        this.showTrip = this.userSettings.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0;
-        this.geoHazards = this.userSettings.currentGeoHazard;
+        this.showTrip = val.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0;
+        this.geoHazards = val.currentGeoHazard;
       });
-    });
-    this.registrationSubscription = this.registrationService.drafts$.subscribe(async (val) => {
+    }));
+    this.subscriptions.push(this.registrationService.drafts$.subscribe(async (val) => {
       this.ngZone.run(() => {
         this.drafts = val;
       });
@@ -52,15 +52,17 @@ export class AddMenuComponent implements OnInit, OnDestroy {
       this.ngZone.run(() => {
         this.draftDates = dates;
       });
-    });
+    }));
+    this.subscriptions.push(this.tripLoggerService.getLegacyTripAsObservable().subscribe((val) => {
+      this.ngZone.run(() => {
+        this.tripStarted = !!val;
+      });
+    }));
   }
 
   ngOnDestroy(): void {
-    if (this.userSettingSubscription) {
-      this.userSettingSubscription.unsubscribe();
-    }
-    if (this.registrationSubscription) {
-      this.registrationSubscription.unsubscribe();
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
     }
   }
 
@@ -89,5 +91,13 @@ export class AddMenuComponent implements OnInit, OnDestroy {
 
   closeMenu() {
     this.menuFab.close();
+  }
+
+  startOrStopTrip() {
+    if (!this.tripStarted) {
+      this.closeAndNavigate('lagacy-trip');
+    } else {
+      this.tripLoggerService.stopLegacyTrip();
+    }
   }
 }

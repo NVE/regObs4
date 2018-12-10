@@ -37,6 +37,13 @@ export class NanoSql {
                 { key: 'timestamp', type: 'number' },
             ]
         },
+        LEGACY_TRIP_LOG: {
+            name: 'lagacytrip',
+            model: [
+                { key: 'id', type: 'string', props: ['pk'] },
+                { key: '*', type: '*' },
+            ]
+        },
         WARNING: {
             name: 'warning',
             model: [

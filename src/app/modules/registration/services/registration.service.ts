@@ -22,6 +22,7 @@ import { ObservableHelper } from '../../../core/helpers/observable-helper';
 import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { UserSetting } from '../../../core/models/user-settings.model';
+import { GuidHelper } from '../../../core/helpers/guid.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +68,7 @@ export class RegistrationService {
     const userSettings = await this.userSettingService.getUserSettings();
     const loggedInUser = await this.loginService.getLoggedInUser();
     const geoHazardToUse = geoHazard ? geoHazard : userSettings.currentGeoHazard[0];
-    const newId = this.createGuid();
+    const newId = GuidHelper.createGuid();
     const reg: IRegistration = {
       geoHazard: geoHazardToUse,
       changed: moment().unix(),
@@ -316,15 +317,5 @@ export class RegistrationService {
   private getLatestRegistrationsForUserFromApi(appMode: AppMode, userGuid: string) {
     this.searchApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
     return this.searchApiService.SearchAll({ ObserverGuid: userGuid, NumberOfRecords: 10 });
-  }
-
-  private S4() {
-    // tslint:disable-next-line:no-bitwise
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-  }
-
-  private createGuid() {
-    return (this.S4() + this.S4() + '-' + this.S4() + '-4' + this.S4().substr(0, 3)
-      + '-' + this.S4() + '-' + this.S4() + this.S4() + this.S4()).toLowerCase();
   }
 }

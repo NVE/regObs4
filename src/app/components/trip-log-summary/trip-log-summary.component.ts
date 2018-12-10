@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
-import { ObserverSubscriber } from 'nano-sql/lib/observable';
 import * as moment from 'moment';
 import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { TripLogItem } from '../../core/services/trip-logger/trip-log-item.model';
 import { TripLogActivity } from '../../core/services/trip-logger/trip-log-activity.model';
 import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enum';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-trip-log-summary',
@@ -14,8 +14,8 @@ import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enu
   styleUrls: ['./trip-log-summary.component.scss']
 })
 export class TripLogSummaryComponent implements OnInit, OnDestroy {
-  private tripLogSubscription: ObserverSubscriber;
-  private tripLogActivitySubscription: ObserverSubscriber;
+  private tripLogSubscription: Subscription;
+  private tripLogActivitySubscription: Subscription;
 
   lengthString: string;
   interval: NodeJS.Timer;

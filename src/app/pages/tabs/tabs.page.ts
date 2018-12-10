@@ -6,6 +6,8 @@ import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { TabService } from '../../core/services/tab/tab.service';
 import { TabName } from '../../core/services/tab/tab-name.enum';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
 @Component({
   selector: 'app-tabs',
@@ -13,11 +15,14 @@ import { TabName } from '../../core/services/tab/tab-name.enum';
   styleUrls: ['tabs.page.scss']
 })
 export class TabsPage implements OnInit, OnDestroy {
-  private subscription: Subscription;
+  private warningGroupInMapViewSubscription: Subscription;
+  private currentGeoHazardSubscription: Subscription;
+
   warningsInView: { count: number; text: string, maxWarning: number };
   isIos: boolean;
   isAndroid: boolean;
   fullscreen$: Observable<boolean>;
+  showTrips = false;
 
   get showBadge() {
     return this.warningsInView && this.warningsInView.maxWarning > 0;
@@ -37,6 +42,7 @@ export class TabsPage implements OnInit, OnDestroy {
     private fullscreenService: FullscreenService,
     private platform: Platform,
     private warningService: WarningService,
+    private userSettingService: UserSettingService,
     private tabService: TabService,
     private ngZone: NgZone) {
     this.isIos = this.platform.is('ios');
@@ -45,7 +51,7 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.warningService.warningGroupInMapViewObservable$.pipe(map((warningsInView) => {
+    this.warningGroupInMapViewSubscription = this.warningService.warningGroupInMapViewObservable$.pipe(map((warningsInView) => {
       const allWarnings = [...warningsInView.center, ...warningsInView.viewBounds];
       return {
         count: allWarnings.length,
@@ -62,10 +68,16 @@ export class TabsPage implements OnInit, OnDestroy {
         this.warningsInView = val;
       });
     });
+
+    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazardObservable$.subscribe((val) => {
+      this.ngZone.run(() => {
+        this.showTrips = val.indexOf(GeoHazard.Snow) >= 0;
+      });
+    });
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.warningGroupInMapViewSubscription.unsubscribe();
   }
 
   tabsChanged(event: CustomEvent) {

@@ -15,6 +15,7 @@ import { Platform } from '@ionic/angular';
 import { RegistrationService } from '../../../modules/registration/services/registration.service';
 import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
 import { AppMode } from '../../models/app-mode.enum';
+import { TripLoggerService } from '../trip-logger/trip-logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,7 @@ export class DataMarshallService {
     private platform: Platform,
     private localNotifications: LocalNotifications,
     private registrationService: RegistrationService,
+    private tripLoggerService: TripLoggerService,
   ) {
     this.userSettingService.userSettingObservable$.pipe(
       pairwise())
@@ -112,6 +114,7 @@ export class DataMarshallService {
       await this.warningService.updateWarnings(cancelTimer);
       await this.kdvService.updateKdvElements(cancelTimer);
       await this.helpTextService.updateHelpTexts(cancelTimer);
+      await this.tripLoggerService.cleanupOldLegacyTrip();
       console.log('[INFO] DataMarshall Background Update Completed');
     });
   }

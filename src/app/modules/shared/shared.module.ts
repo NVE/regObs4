@@ -15,6 +15,7 @@ import { ObservationListCardComponent } from '../../components/observation/obser
 import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.pipe';
 import { LegalTermsComponent } from '../../components/legal-terms/legal-terms.component';
 import { ImgSwiperComponent } from '../../components/img-swiper/img-swiper.component';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @NgModule({
     imports: [
@@ -37,6 +38,7 @@ import { ImgSwiperComponent } from '../../components/img-swiper/img-swiper.compo
         ObservationListCardComponent,
         LegalTermsComponent,
         ImgSwiperComponent,
+        HeaderComponent,
     ],
     exports: [
         CommonModule,
@@ -56,6 +58,7 @@ import { ImgSwiperComponent } from '../../components/img-swiper/img-swiper.compo
         ObservationListCardComponent,
         LegalTermsComponent,
         ImgSwiperComponent,
+        HeaderComponent,
     ]
 })
 export class SharedModule { }

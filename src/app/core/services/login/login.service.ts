@@ -110,7 +110,8 @@ export class LoginService {
     console.log('[INFO][LoginService] Deleted groups no longer in result: ', deleteResult);
   }
 
-  async getLoggedInUser(): Promise<LoggedInUser> {
+  async getLoggedInUser(showLoginModal = false): Promise<LoggedInUser> {
+    // TODO: Implement loginmodal if not logged in...
     return this._loggedInUserObservable.pipe(take(1)).toPromise();
   }
 
