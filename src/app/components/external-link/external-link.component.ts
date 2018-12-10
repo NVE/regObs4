@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { Platform } from '@ionic/angular';
+import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
 
 @Component({
   selector: 'app-external-link',
@@ -10,15 +12,14 @@ export class ExternalLinkComponent implements OnInit {
 
   @Input() src: string;
 
-  constructor(private inAppBrowser: InAppBrowser) { }
+  constructor(private externalLinkService: ExternalLinkService) { }
 
   ngOnInit() {
   }
 
   openLink(event: Event) {
     event.preventDefault();
-    const iap = this.inAppBrowser.create(this.src, '_system');
-    iap.show();
+    this.externalLinkService.openExternalLink(this.src);
   }
 
 }

@@ -4,11 +4,11 @@ import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { ToastController, ItemSliding, List } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { settings } from '../../../settings';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IWarning } from '../../core/services/warning/warning.interface';
+import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
 
 @Component({
   selector: 'app-cap-list-group',
@@ -35,7 +35,7 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private toastController: ToastController,
     private userSettingService: UserSettingService,
-    private inAppBrowser: InAppBrowser) {
+    private externalLinkService: ExternalLinkService) {
   }
 
   ngOnInit() {
@@ -140,8 +140,7 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
 
   navigateToWeb(event: Event, group: WarningGroup) {
     event.preventDefault();
-    const iap = this.inAppBrowser.create(this.getUrl(group), '_system');
-    iap.show();
+    this.externalLinkService.openExternalLink(this.getUrl(group));
   }
 
 }

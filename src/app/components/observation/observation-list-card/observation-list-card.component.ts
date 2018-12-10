@@ -5,12 +5,12 @@ import * as moment from 'moment';
 import { HelperService } from '../../../core/services/helpers/helper.service';
 import { settings } from '../../../../settings';
 import { RegistrationViewModel, Summary } from '../../../modules/regobs-api/models';
-import { Slides, ModalController, Platform } from '@ionic/angular';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { Slides, ModalController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -42,7 +42,7 @@ export class ObservationListCardComponent implements OnInit {
     private translateService: TranslateService,
     private helperService: HelperService,
     private modalController: ModalController,
-    private inAppBrowser: InAppBrowser,
+    private externalLinkService: ExternalLinkService,
     private ngZone: NgZone,
     private userSettingService: UserSettingService,
     private socialSharing: SocialSharing,
@@ -136,8 +136,7 @@ export class ObservationListCardComponent implements OnInit {
   }
 
   async openWeb() {
-    const iap = this.inAppBrowser.create(this.getRegistrationUrl(), '_system');
-    iap.show();
+    this.externalLinkService.openExternalLink(this.getRegistrationUrl());
   }
 
   async share() {
