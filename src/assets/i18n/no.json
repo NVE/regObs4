@@ -522,6 +522,7 @@
     "COMMENT_DESCRIPTION": "Her kan du skrive inn hvilken obstur du skal på, hva du ser etter, osv.",
     "ERROR": "Klarte ikke starte tur. Vennligs prøv igjen.",
     "LEGACY_HELP_TEXT": "Her melder du fra om at du planlegger tur i dag.\n\nDet er nyttig for skredvarslingen å vite om det kan ventes observasjoner i dag. Det er også nyttig å vite hva slags observasjoner som kan ventes (hva ser du etter, hvor skal du på tur) og når regner du med at disse sendes inn på regObs.\n\nAlle betalte observatører skal registrere hva slags obstur som planlegges: er det en ordinær betalt observasjonstur, eller er det en tilleggsregistrering? Tilleggsregistrering er innsending av observasjoner du har gjort i annet arbeid eller på fritiden din.",
+    "ONGOING_TRIP": "Tur pågår",
     "STARTED": "Tur startet",
     "START_TRIP": "Start tur",
     "STOPPED": "Tur stoppet",

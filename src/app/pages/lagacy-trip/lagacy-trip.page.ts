@@ -10,6 +10,7 @@ import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../settings';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
+import { GuidHelper } from '../../core/helpers/guid.helper';
 
 @Component({
   selector: 'app-lagacy-trip',
@@ -88,6 +89,7 @@ export class LagacyTripPage implements OnInit, OnDestroy {
         this.isLoading = true;
         this.tripDto.ObserverGuid = loggedInUser.user.Guid;
         this.tripDto.GeoHazardID = GeoHazard.Snow;
+        this.tripDto.DeviceGuid = GuidHelper.createGuid();
         try {
           const currentLocation = await this.geoLocation.getCurrentPosition(settings.gps.currentPositionOptions);
           if (currentLocation) {

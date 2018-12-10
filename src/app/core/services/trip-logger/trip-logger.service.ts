@@ -12,7 +12,7 @@ import { CreateTripDto } from '../../../modules/regobs-api/models';
 import { settings } from '../../../../settings';
 import { switchMap, take, map } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LegacyTrip } from './lagacy-trip.model';
 
@@ -29,6 +29,7 @@ export class TripLoggerService {
     private tripService: TripService,
     private userSettingService: UserSettingService,
     private translateService: TranslateService,
+    private alertController: AlertController,
     private toastController: ToastController) {
   }
 
@@ -85,12 +86,41 @@ export class TripLoggerService {
     this.tripService.rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
   }
 
-  async stopLegacyTrip() {
+  stopLegacyTrip(showConfirm = true) {
+    if (showConfirm) {
+      return this.confirmStopTrip();
+    } else {
+      return this.callStopLegacyTripApiAndDeleteFromDb();
+    }
+  }
+
+  private async confirmStopTrip() {
+    const translations = await this.translateService
+      .get(['TRIP.STOP_TRIP', 'REGISTRATION.DELETE_CONFIRM', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
+    const alert = await this.alertController.create({
+      header: translations['TRIP.STOP_TRIP'] + '?',
+      message: translations['REGISTRATION.DELETE_CONFIRM'],
+      buttons: [
+        {
+          text: translations['ALERT.CANCEL'],
+          role: 'cancel',
+          cssClass: 'secondary',
+        },
+        {
+          text: translations['ALERT.OK'],
+          handler: () => this.callStopLegacyTripApiAndDeleteFromDb(),
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  private async callStopLegacyTripApiAndDeleteFromDb() {
     await this.setTripServiceRootUrl();
     const currentTrip = await this.getLegacyTripAsObservable().pipe(take(1)).toPromise();
     if (currentTrip) {
       try {
-        await this.tripService.TripPut({ DeviceGuid: currentTrip.request.DeviceGuid });
+        await this.tripService.TripPut({ DeviceGuid: currentTrip.request.DeviceGuid }).toPromise();
       } catch (error) {
         console.warn('[WARNING][TripLoggerService] Could not stop trip!', error);
       } finally {
