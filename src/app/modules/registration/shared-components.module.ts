@@ -20,6 +20,7 @@ import { RegistrationContentWrapperComponent } from './components/registration-c
 import { HelpTextComponent } from './components/help-text/help-text.component';
 import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.module';
 import { DraftItemListComponent } from './components/draft-item-list/draft-item-list.component';
+
 @NgModule({
     imports: [
         SharedModule,

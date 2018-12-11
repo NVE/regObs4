@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
 import { nSQL } from 'nano-sql';
 import { IRegistration } from '../models/registration.model';
-import { Observable, combineLatest } from 'rxjs';
-import { shareReplay, switchMap, map, take, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { shareReplay, switchMap, map, take } from 'rxjs/operators';
 import * as RegobsApi from '../../regobs-api/services';
 import * as RegobsApiModels from '../../regobs-api/models';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
-import { LoginService } from '../../../core/services/login/login.service';
+import { LoginService } from '../../login/services/login.service';
 import * as moment from 'moment';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
@@ -19,10 +19,10 @@ import { RegistrationStatus } from '../models/registrationStatus.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { ObservableHelper } from '../../../core/helpers/observable-helper';
-import { NavController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { NavController, ModalController } from '@ionic/angular';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { GuidHelper } from '../../../core/helpers/guid.helper';
+import { LoginModalPage } from '../../login/pages/modal-pages/login-modal/login-modal.page';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +46,7 @@ export class RegistrationService {
     private registrationApiService: RegobsApi.RegistrationService,
     private searchApiService: RegobsApi.SearchService,
     private navController: NavController,
-    private router: Router,
+    private modalController: ModalController,
     private dataLoadService: DataLoadService,
   ) {
 
@@ -82,19 +82,6 @@ export class RegistrationService {
     };
     return reg;
   }
-
-  // getCurrentRegistration() {
-  //   return this.registrationForCurrentGeoHazard$.pipe(take(1)).toPromise();
-  // }
-
-  // async hasChanged(reg: IRegistration, currentRegistration?: IRegistration) {
-  //   const current = currentRegistration || (await this.getCurrentRegistration());
-  //   if (current) {
-  //     return !is(fromJS(current.request), fromJS(reg.request));
-  //   } else {
-  //     return !IsEmptyHelper.isEmpty(reg);
-  //   }
-  // }
 
   cleanupRegistration(reg: IRegistration) {
     const registrationTids: RegistrationTid[] = Object.keys(RegistrationTypes)
@@ -153,16 +140,29 @@ export class RegistrationService {
     return RegistrationTypes[RegistrationTid[registrationTid]];
   }
 
-  async sendRegistration(reg: IRegistration) {
+  private async getLoggedInUser() {
     const loggedInUser = await this.loginService.getLoggedInUser();
-    if (!loggedInUser.isLoggedIn) {
-      this.router.navigate(['login'], {
-        queryParams: {
-          sendRegistrationId: reg.id
-        }
+    if (loggedInUser && !loggedInUser.isLoggedIn) {
+      const loginModal = await this.modalController.create({
+        component: LoginModalPage
       });
+      loginModal.present();
+      const result = await loginModal.onDidDismiss();
+      if (result.data) {
+        const loggedInUserAfterModal = await this.loginService.getLoggedInUser();
+        return loggedInUserAfterModal.user;
+      } else {
+        return null;
+      }
     } else {
-      reg.request.ObserverGuid = loggedInUser.user.Guid;
+      return loggedInUser.user;
+    }
+  }
+
+  async sendRegistration(reg: IRegistration) {
+    const loggedInUser = await this.getLoggedInUser();
+    if (loggedInUser) {
+      reg.request.ObserverGuid = loggedInUser.Guid;
       reg.status = RegistrationStatus.Sync;
       await this.saveRegistration(reg);
       this.syncRegistrations();

@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { settings } from '../../../../settings';
-import { UserSettingService } from '../user-setting/user-setting.service';
+import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { Observable, combineLatest } from 'rxjs';
-import { LoggedInUser } from './logged-in-user.model';
+import { LoggedInUser } from '../models/logged-in-user.model';
 import { NanoSql } from '../../../../nanosql';
 import { map, take, switchMap, shareReplay } from 'rxjs/operators';
 import { nSQL } from 'nano-sql';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { AppMode } from '../../models/app-mode.enum';
-import { ObserverResponseDto, ObserverGroupDto } from '../../../modules/regobs-api/models';
-import * as Sentry from 'sentry-cordova';
+import { AppMode } from '../../../core/models/app-mode.enum';
+import { ObserverResponseDto, ObserverGroupDto } from '../../regobs-api/models';
 
 @Injectable({
   providedIn: 'root'

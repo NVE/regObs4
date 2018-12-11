@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoginService } from '../login/login.service';
+import { LoginService } from '../../../modules/login/services/login.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import * as RegobsApi from '../../../modules/regobs-api/services';
 import { NanoSql } from '../../../../nanosql';

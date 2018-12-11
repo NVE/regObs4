@@ -8,7 +8,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 @Component({
   selector: 'app-send-button',
   templateUrl: './send-button.component.html',
-  styleUrls: ['./send-button.component.scss']
+  styleUrls: ['./send-button.component.scss'],
 })
 export class SendButtonComponent implements OnInit, OnDestroy {
 

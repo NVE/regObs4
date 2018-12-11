@@ -19,13 +19,12 @@ const routes: Routes = [
   { path: 'view-observation/:id', loadChildren: './pages/view-observation/view-observation.module#ViewObservationPageModule' },
   { path: 'observation-list', loadChildren: './pages/observation-list/observation-list.module#ObservationListPageModule' },
   { path: 'offline-map', loadChildren: './pages/offline-map/offline-map.module#OfflineMapPageModule' },
-  { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' },
+  { path: 'login', loadChildren: 'app/modules/login/login.module#LoginModule' },
   {
     path: 'registration',
     loadChildren: 'app/modules/registration/registration.module#RegistrationModule'
   },
   { path: 'legacy-trip', loadChildren: './pages/legacy-trip/legacy-trip.module#LegacyTripPageModule' },
-
 ];
 
 @NgModule({

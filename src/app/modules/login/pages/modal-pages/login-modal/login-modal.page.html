@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar color="dark" mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="close(false)">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'LOGIN.LOGIN' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <app-login-form (loginSuccess)="close(true)"></app-login-form>
+</ion-content>

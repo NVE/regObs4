@@ -24,7 +24,7 @@ import { HeaderComponent } from '../../components/header/header.component';
         ReactiveFormsModule,
         IonicModule,
         AngularSvgIconModule,
-        TranslateModule
+        TranslateModule,
     ],
     declarations: [
         ShadowCssDirective,

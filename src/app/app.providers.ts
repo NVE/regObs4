@@ -21,7 +21,7 @@ import { UserSettingService } from './core/services/user-setting/user-setting.se
 import { WarningService } from './core/services/warning/warning.service';
 import { ErrorHandler, Provider, forwardRef } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
-import { LoginService } from './core/services/login/login.service';
+import { LoginService } from './modules/login/services/login.service';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';

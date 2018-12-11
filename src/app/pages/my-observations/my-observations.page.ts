@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { Subscription, Subject } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { LoginService } from '../../core/services/login/login.service';
+import { LoginService } from '../../modules/login/services/login.service';
 import { Refresher, InfiniteScroll, NavController } from '@ionic/angular';
 import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';

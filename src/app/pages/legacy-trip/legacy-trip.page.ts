@@ -3,7 +3,7 @@ import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.s
 import { Subscription } from 'rxjs';
 import { CreateTripDto } from '../../modules/regobs-api/models';
 import * as moment from 'moment';
-import { LoginService } from '../../core/services/login/login.service';
+import { LoginService } from '../../modules/login/services/login.service';
 import { AlertController, NavController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
@@ -11,6 +11,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../settings';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
 import { GuidHelper } from '../../core/helpers/guid.helper';
+import { LoginModalPage } from '../../modules/login/pages/modal-pages/login-modal/login-modal.page';
 
 @Component({
   selector: 'app-legacy-trip',
@@ -80,14 +81,33 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     return !this.invalidTripType && !this.invalidMinutes;
   }
 
+  private async getLoggedInUser() {
+    const loggedInUser = await this.loginService.getLoggedInUser();
+    if (loggedInUser && !loggedInUser.isLoggedIn) {
+      const loginModal = await this.modalController.create({
+        component: LoginModalPage
+      });
+      loginModal.present();
+      const result = await loginModal.onDidDismiss();
+      if (result.data) {
+        const loggedInUserAfterModal = await this.loginService.getLoggedInUser();
+        return loggedInUserAfterModal.user;
+      } else {
+        return null;
+      }
+    } else {
+      return loggedInUser.user;
+    }
+  }
+
   async startTrip() {
     if (!this.isValid()) {
       return;
     } else {
-      const loggedInUser = await this.loginService.getLoggedInUser();
-      if (loggedInUser && loggedInUser.isLoggedIn) {
+      const loggedInUser = await this.getLoggedInUser();
+      if (loggedInUser) {
         this.isLoading = true;
-        this.tripDto.ObserverGuid = loggedInUser.user.Guid;
+        this.tripDto.ObserverGuid = loggedInUser.Guid;
         this.tripDto.GeoHazardID = GeoHazard.Snow;
         this.tripDto.DeviceGuid = GuidHelper.createGuid();
         try {

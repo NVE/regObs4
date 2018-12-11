@@ -1,0 +1,32 @@
+<form novalidate (ngSubmit)="login()" [formGroup]="loginform">
+  <ion-item>
+    <ion-label color="medium" position="stacked" text-uppercase>
+      {{ 'LOGIN.EMAIL' | translate }}
+    </ion-label>
+    <ion-input #username type="text" inputmode="email" formControlName="username" name="username"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label color="medium" position="stacked" text-uppercase>
+      {{ 'LOGIN.PASSWORD' | translate }}
+    </ion-label>
+    <ion-input #password [type]="showPassword ? 'text' : 'password'" inputmode="password" formControlName="password"
+      name="password"></ion-input>
+    <ion-button slot="end" fill="clear" (click)="togglePasswordShowHide()">
+      <ion-icon slot="start" name="eye"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-button expand="full" type="submit" color="primary" [disabled]="loginform.invalid || loading">
+    <span *ngIf="!loading">{{ 'LOGIN.LOGIN' | translate }}</span>
+    <span *ngIf="loading">{{ 'LOGIN.IS_LOGGING_IN' | translate }}</span>
+  </ion-button>
+  <ion-grid>
+    <ion-row>
+      <ion-col text-center>
+        <app-external-link [src]="forgotPasswordUrl">{{'LOGIN.FORGOT_PASSWORD' | translate}}</app-external-link>
+      </ion-col>
+      <ion-col text-center>
+        <app-external-link [src]="createUserUrl">{{'LOGIN.CREATE_USER' | translate }}</app-external-link>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</form>

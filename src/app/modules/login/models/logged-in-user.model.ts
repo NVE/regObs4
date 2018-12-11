@@ -1,4 +1,4 @@
-import { ObserverResponseDto } from '../../../modules/regobs-api/models';
+import { ObserverResponseDto } from '../../regobs-api/models';
 
 export interface LoggedInUser {
     id?: string;
