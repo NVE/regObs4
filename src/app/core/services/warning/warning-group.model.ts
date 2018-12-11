@@ -53,6 +53,22 @@ export class WarningGroup {
         }
     }
 
+    getDayWarning(daysToAdd: number) {
+        const day = moment().startOf('day').add(daysToAdd, 'days');
+        return this.getWarningForDay(day.toDate());
+    }
+
+    hasAnyWarnings(daysAhead = 2) {
+        let max = 0;
+        for (let i = 0; i <= daysAhead; i++) {
+            const dayWarning = this.getDayWarning(i);
+            if (dayWarning && dayWarning.warningLevel > max) {
+                max = dayWarning.warningLevel;
+            }
+        }
+        return max > 0;
+    }
+
     constructor(group: IWarningGroup, isFavourite?: boolean) {
         this._warningGroup = group;
         this._isFavourite = isFavourite;

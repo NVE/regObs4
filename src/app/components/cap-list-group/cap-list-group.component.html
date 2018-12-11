@@ -1,4 +1,4 @@
-<ion-list #list>
+<ion-list #list *ngIf="warnings.length > 0">
   <ion-list-header no-padding>
     <ion-label *ngIf="title">
       {{ title | translate }}
@@ -33,7 +33,7 @@
       <ion-grid *ngIf="warningGroup.key.geoHazard !== GeoHazard.Ice">
         <ion-row>
           <ion-col *ngFor="let day of [0, 1, 2]">
-            <ion-badge *ngIf="getDayWarning(warningGroup, day) as warning else emptyWarning" [color]="'warninglevel-'+warning.warningLevel">{{warning.warningLevel}}
+            <ion-badge *ngIf="warningGroup.getDayWarning(day) as warning else emptyWarning" [color]="'warninglevel-'+warning.warningLevel">{{warning.warningLevel}}
               <ion-icon *ngIf="warning.emergencyWarning" name="alert"></ion-icon>
             </ion-badge>
           </ion-col>

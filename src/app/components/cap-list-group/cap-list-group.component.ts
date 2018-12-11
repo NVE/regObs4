@@ -7,7 +7,6 @@ import { Observable, Subscription } from 'rxjs';
 import { settings } from '../../../settings';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { IWarning } from '../../core/services/warning/warning.interface';
 import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
 
 @Component({
@@ -19,6 +18,7 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
 
   @Input() title: string;
   @Input() warnings$: Observable<WarningGroup[]>;
+  @Input() filterZeroValues = false;
 
   @ViewChild('list') list: List;
 
@@ -51,7 +51,7 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
           // NOTE: Workaround. A bug prevents sliding items from
           // beeing opened when items are open when updated.
         }
-        this.warnings = val;
+        this.warnings = this.filterZeroValues ? val.filter((warningGroup) => warningGroup.hasAnyWarnings()) : val;
       });
     });
   }
@@ -65,18 +65,14 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
     }
   }
 
-  closeSlidingItems() {
-    return this.list.closeSlidingItems();
+  async closeSlidingItems() {
+    if (this.list) {
+      await this.list.closeSlidingItems();
+    }
   }
 
   trackWarningGroup(index: number, group: WarningGroup) {
     return group ? `${group.key.groupId}_${group.key.geoHazard}` : undefined;
-  }
-
-
-  getDayWarning(group: WarningGroup, daysToAdd: number): IWarning {
-    const day = moment().startOf('day').add(daysToAdd, 'days');
-    return group.getWarningForDay(day.toDate());
   }
 
   getDayName(daysToAdd: number) {

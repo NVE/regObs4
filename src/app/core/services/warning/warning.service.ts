@@ -244,27 +244,26 @@ export class WarningService {
     return mapViewArea.regionsInViewBounds.filter((region) => this.groupIsInRegion(warningGroup, region)).length > 0;
   }
 
+  private isGroupInViewBuffer(mapViewArea: IMapViewAndArea, warningGroup: WarningGroup) {
+    return mapViewArea.regionsInViewBuffer.filter((region) => this.groupIsInRegion(warningGroup, region)).length > 0;
+  }
+
   private getWarningsForCurrentMapView(mapViewArea: IMapViewAndArea, userSetting: UserSetting)
     : Observable<IWarningGroupInMapView> {
     return this.warningsForCurrentGeoHazardObservable$.pipe(
       map((warnings) => {
-        // TODO: Create web worker for this processing task?
-        const warningsInMapView: IWarningInMapView[] = warnings
-          .map((warningGroup) => {
-            const groupInMapView = {
-              center: this.isGroupInMapCenter(mapViewArea, warningGroup, userSetting),
-              viewBounds: this.isGroupInViewBounds(mapViewArea, warningGroup),
-            };
-            return { inMapView: groupInMapView, warningGroup };
-          }).filter((warningGroupInView) => warningGroupInView.inMapView.center || warningGroupInView.inMapView.viewBounds);
-        const warningsInCenter = warningsInMapView
-          .filter((item) => item.inMapView.center)
-          .map((item) => item.warningGroup);
+        const center = warnings
+          .filter((warningGroup) => this.isGroupInMapCenter(mapViewArea, warningGroup, userSetting));
+        const viewBounds = warnings.filter((warningGroup) =>
+          this.isGroupInViewBounds(mapViewArea, warningGroup) && !this.isGroupInMapCenter(mapViewArea, warningGroup, userSetting));
+        const buffer = warnings.filter((warningGroup) =>
+          this.isGroupInViewBuffer(mapViewArea, warningGroup) && !this.isGroupInViewBounds(mapViewArea, warningGroup)
+          && !this.isGroupInMapCenter(mapViewArea, warningGroup, userSetting));
+
         return {
-          center: warningsInCenter,
-          viewBounds: warningsInMapView.filter((item) =>
-            item.inMapView.viewBounds && !item.inMapView.center
-          ).map((item) => item.warningGroup)
+          center,
+          viewBounds,
+          buffer,
         };
       })
     );

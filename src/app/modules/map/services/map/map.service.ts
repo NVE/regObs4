@@ -4,7 +4,7 @@ import * as L from 'leaflet';
 import { IMapView } from './map-view.interface';
 import { Observable, combineLatest, Observer } from 'rxjs';
 import { createWorker } from 'typed-web-workers';
-import { switchMap, share, shareReplay, debounce, debounceTime, filter } from 'rxjs/operators';
+import { switchMap, shareReplay, debounceTime, filter } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
 import { NanoSql } from '../../../../../nanosql';
@@ -13,6 +13,7 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { LRUMap } from 'lru_map';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { settings } from '../../../../../settings';
+import { Feature, Polygon } from '@turf/turf';
 
 @Injectable({
   providedIn: 'root'
@@ -99,10 +100,10 @@ export class MapService {
       );
   }
 
-  // NOTE! This code is running as a web worker!
+  // NOTE! This code is running as a web worker and cannot have external dependencies!
   private workFunc(input: {
     url: string,
-    featureGeoJson: any,
+    featureGeoJson: GeoJSON.FeatureCollection<Polygon>,
     featureName: string,
     center: [number, number],
     bbox: [number, number, number, number]
@@ -111,23 +112,36 @@ export class MapService {
     const that = <any>self;
     const start = new Date();
     that.importScripts(`${input.url}/turf/turf.min.js`);
-    // that.importScripts(`${input.url}${input.featureGeoJson}`);
-    const currentViewAsPolygon = that.turf.bboxPolygon(input.bbox);
-    const featuresInViewBounds = input.featureGeoJson.features.filter((f) => {
-      return that.turf.intersect(f.geometry, currentViewAsPolygon.geometry) ||
-        that.turf.booleanContains(f.geometry, currentViewAsPolygon.geometry) ||
-        that.turf.booleanContains(currentViewAsPolygon.geometry, f.geometry);
-    });
+    const currentViewAsPolygon: Feature<Polygon> = that.turf.bboxPolygon(input.bbox);
+
+    const isInsideOrIntersects = function (firstGeometry: Polygon, secondGeometry: Polygon): boolean {
+      return that.turf.intersect(firstGeometry, secondGeometry) ||
+        that.turf.booleanContains(firstGeometry, secondGeometry) ||
+        that.turf.booleanContains(secondGeometry, firstGeometry);
+    };
+
+    // Geojosn features that is inide or intersects with current view bounds
+    const featuresInViewBounds = input.featureGeoJson.features.filter((f) =>
+      isInsideOrIntersects(f.geometry, currentViewAsPolygon.geometry));
+    const regionsInViewBounds: string[] = featuresInViewBounds
+      .map((f) => f.properties[input.featureName].toString());
+
+    // Region that center view point is inside
     const featureInCenter = featuresInViewBounds.find((f) => {
       return that.turf.inside(input.center, f.geometry);
     });
-    const regionsInViewBounds = featuresInViewBounds
+    const regionInCenter: string = featureInCenter ? featureInCenter.properties[input.featureName].toString() : null;
+
+    // Geojson features that intersects or is inside a buffer of 150 km
+    const buffer: Feature<Polygon> = that.turf.buffer(that.turf.point(input.center), 150, { units: 'kilometers' });
+    const regionsInViewBuffer: string[] = input.featureGeoJson.features.filter((f) =>
+      isInsideOrIntersects(f.geometry, buffer.geometry))
       .map((f) => f.properties[input.featureName].toString());
-    const regionInCenter = featureInCenter ? featureInCenter.properties[input.featureName].toString() : null;
+
+    const result: IMapViewArea = { regionInCenter, regionsInViewBounds, regionsInViewBuffer };
     const runtime = new Date().getTime() - start.getTime();
-    console.log(`[INFO][MapService] - Calculate regions took ${runtime} milliseconds`);
-    callback({ regionInCenter, regionsInViewBounds });
-    // that.close();
+    console.log(`[INFO][MapService] - Calculate regions took ${runtime} milliseconds`, result);
+    callback(result);
   }
 
   // Loading regions in memory

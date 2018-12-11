@@ -16,16 +16,18 @@ import { CapListGroupComponent } from '../../components/cap-list-group/cap-list-
 })
 export class WarningListPage implements OnInit, OnDestroy {
   selectedTab: 'inMapView' | 'all' | 'favourites';
-  warningsForCurrentGeoHazard$: Observable<WarningGroup[]>;
+  allWarnings$: Observable<WarningGroup[]>;
   warningsInMapViewCenter$: Observable<WarningGroup[]>;
   warningsInMapViewBounds$: Observable<WarningGroup[]>;
+  warningsInMapViewBuffer$: Observable<WarningGroup[]>;
   favourites$: Observable<WarningGroup[]>;
   userSetting$: Observable<UserSetting>;
+  warningsInViewBoundsLength: number;
   @ViewChild(Refresher) refresher: Refresher;
   @ViewChildren(CapListGroupComponent) capListGroups: QueryList<CapListGroupComponent>;
 
   constructor(
-    private warningService: WarningService, private userSettingService: UserSettingService) {
+    private warningService: WarningService, private userSettingService: UserSettingService, private ngZone: NgZone) {
   }
   ngOnInit() {
     this.selectedTab = 'inMapView';
@@ -33,8 +35,14 @@ export class WarningListPage implements OnInit, OnDestroy {
     this.warningsInMapViewCenter$ = this.warningService.warningGroupInMapViewObservable$
       .pipe(map((val) => val.center));
     this.warningsInMapViewBounds$ = this.warningService.warningGroupInMapViewObservable$
-      .pipe(map((val) => val.viewBounds));
-    this.warningsForCurrentGeoHazard$ = this.warningService.warningsForCurrentGeoHazardObservable$;
+      .pipe(map((val) => val.viewBounds), tap((values) => {
+        this.ngZone.run(() => {
+          this.warningsInViewBoundsLength = values.length;
+        });
+      }));
+    this.warningsInMapViewBuffer$ = this.warningService.warningGroupInMapViewObservable$
+      .pipe(map((val) => val.buffer));
+    this.allWarnings$ = this.warningService.warningsForCurrentGeoHazardObservable$;
     this.favourites$ = this.warningService.warningsObservable$
       .pipe(map((warningGroups) =>
         warningGroups.filter((wg) => wg.isFavourite)));

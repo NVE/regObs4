@@ -33,7 +33,9 @@
     </ng-container>
     <app-cap-list-group *ngIf="selectedTab === 'inMapView'" title="{{'WARNING_LIST.IN_MAP_VIEW'|translate}}"
       [warnings$]="warningsInMapViewBounds$"></app-cap-list-group>
-    <app-cap-list-group *ngIf="selectedTab === 'all'" title="{{'WARNING_LIST.ALL_WARNINGS'|translate}}" [warnings$]="warningsForCurrentGeoHazard$"></app-cap-list-group>
+    <app-cap-list-group *ngIf="selectedTab === 'inMapView' && warningsInViewBoundsLength < 3" title="{{'WARNING_LIST.OTHER_RELEVANT'|translate}}"
+      [warnings$]="warningsInMapViewBuffer$" [filterZeroValues]="true"></app-cap-list-group>
+    <app-cap-list-group *ngIf="selectedTab === 'all'" title="{{'WARNING_LIST.ALL_WARNINGS'|translate}}" [warnings$]="allWarnings$"></app-cap-list-group>
     <app-cap-list-group *ngIf="selectedTab === 'favourites'" title="{{'WARNING_LIST.FAVOURITES'|translate}}"
       [warnings$]="favourites$"></app-cap-list-group>
   </ng-container>
