@@ -1,13 +1,14 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { IRegistration } from '../../models/registration.model';
 import { RegistrationService } from '../../services/registration.service';
-import { NavController, Events } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { ObsLocationDto, ObsLocationsResponseDtoV2 } from '../../../regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { Observable } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
+import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
 
 @Component({
   selector: 'app-obs-location',
@@ -28,6 +29,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private navController: NavController,
     private fullscreenService: FullscreenService,
+    private swipeBackService: SwipeBackService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -68,6 +70,14 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+  }
+
+  ionViewDidEnter() {
+    this.swipeBackService.disableSwipeBack();
+  }
+
+  ionViewWillLeave() {
+    this.swipeBackService.enableSwipeBack();
   }
 
   private hasLocation(reg: IRegistration) {

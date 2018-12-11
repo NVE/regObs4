@@ -17,12 +17,16 @@ import { AppMode } from './core/models/app-mode.enum';
 import { settings } from '../settings';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
+import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
+
+  swipeBackEnabled$: Observable<boolean>;
 
   constructor(
     private platform: Platform,
@@ -40,7 +44,9 @@ export class AppComponent {
     private appVersion: AppVersion,
     private offlineImageService: OfflineImageService,
     private keyboard: Keyboard,
+    private swipeBackService: SwipeBackService,
   ) {
+    this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
   }
 

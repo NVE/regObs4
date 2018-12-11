@@ -5,6 +5,6 @@
         <app-side-menu></app-side-menu>
       </ion-content>
     </ion-menu>
-    <ion-router-outlet main></ion-router-outlet>
+    <ion-router-outlet main [swipeGesture]="swipeBackEnabled$ | async"></ion-router-outlet>
   </ion-split-pane>
 </ion-app>

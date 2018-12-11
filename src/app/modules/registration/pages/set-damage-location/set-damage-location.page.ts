@@ -7,6 +7,7 @@ import { SetLocationInMapComponent } from '../../components/set-location-in-map/
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable } from 'rxjs';
+import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
 
 @Component({
   selector: 'app-set-damage-location',
@@ -27,6 +28,7 @@ export class SetDamageLocationPage implements OnInit {
 
   constructor(
     private modalController: ModalController,
+    private swipeBackService: SwipeBackService,
     private fullscreenService: FullscreenService) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -53,6 +55,14 @@ export class SetDamageLocationPage implements OnInit {
       });
       this.locationMarker = L.marker(latLng, { icon: damageLocationIcon });
     }
+  }
+
+  ionViewDidEnter() {
+    this.swipeBackService.disableSwipeBack();
+  }
+
+  ionViewWillLeave() {
+    this.swipeBackService.enableSwipeBack();
   }
 
   async onLocationSet(event: ObsLocationDto) {

@@ -7,6 +7,7 @@ import { SetLocationInMapComponent } from '../../components/set-location-in-map/
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { Observable } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
+import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
 
 @Component({
   selector: 'app-set-avalanche-position',
@@ -67,6 +68,7 @@ export class SetAvalanchePositionPage implements OnInit {
     private translateService: TranslateService,
     private ngZone: NgZone,
     private fullscreenService: FullscreenService,
+    private swipeBackService: SwipeBackService,
     private modalController: ModalController) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -115,6 +117,14 @@ export class SetAvalanchePositionPage implements OnInit {
       this.map.on('drag', () => this.updatePolyline());
       this.updatePolyline();
     });
+  }
+
+  ionViewDidEnter() {
+    this.swipeBackService.disableSwipeBack();
+  }
+
+  ionViewWillLeave() {
+    this.swipeBackService.enableSwipeBack();
   }
 
   private setStartLocationText() {
