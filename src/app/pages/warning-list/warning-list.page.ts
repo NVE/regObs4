@@ -50,7 +50,9 @@ export class WarningListPage implements OnInit, OnDestroy {
 
   async selectTab(tab: 'inMapView' | 'all' | 'favourites') {
     await this.closeAllSlidingItems();
-    this.selectedTab = tab;
+    this.ngZone.run(() => {
+      this.selectedTab = tab;
+    });
   }
 
   async closeAllSlidingItems() {
