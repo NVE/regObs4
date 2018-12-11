@@ -56,14 +56,18 @@ export class MapService {
       [mapView.bounds.getSouthWest().lat, mapView.bounds.getSouthWest().lng],
       [mapView.bounds.getNorthEast().lat, mapView.bounds.getNorthEast().lng]
     ];
-    console.log('[MapService] Update map view', mapView);
-    return nSQL(NanoSql.TABLES.MAP_SERVICE.name)
-      .query('upsert', {
-        id: 'lastupdate',
-        bounds: boundsArray,
-        center: [mapView.center.lat, mapView.center.lng],
-        zoom: mapView.zoom,
-      }).exec();
+    if (boundsArray[0][0] !== boundsArray[1][0] && boundsArray[0][1] !== boundsArray[1][1]) {
+      console.log('[MapService] Update map view', mapView);
+      return nSQL(NanoSql.TABLES.MAP_SERVICE.name)
+        .query('upsert', {
+          id: 'lastupdate',
+          bounds: boundsArray,
+          center: [mapView.center.lat, mapView.center.lng],
+          zoom: mapView.zoom,
+        }).exec();
+    } else {
+      console.log('[MapService] SouthWest and NorthEast is the same, do not update...', mapView);
+    }
   }
 
   private getMapViewObservable() {
