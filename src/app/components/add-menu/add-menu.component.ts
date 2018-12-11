@@ -95,7 +95,7 @@ export class AddMenuComponent implements OnInit, OnDestroy {
 
   startOrStopTrip() {
     if (!this.tripStarted) {
-      this.closeAndNavigate('lagacy-trip');
+      this.closeAndNavigate('legacy-trip');
     } else {
       this.tripLoggerService.stopLegacyTrip();
     }

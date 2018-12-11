@@ -520,6 +520,7 @@
   },
   "TRIP": {
     "COMMENT_DESCRIPTION": "Describe what kind of trip you are going and what you are looking for, etc.",
+    "END_ERROR": "Could not stop trip. Please try again later. The trip will stop automatically by midnight.",
     "ERROR": "Error while starting trip. Please try again.",
     "LEGACY_HELP_TEXT": "You can use this form to report that you are planning a trip today.\n\nIt is useful for the warning service team to know if observations can be expected today. It is also useful to know what kind of observations can be expected (what are you looking for, where are you going on a trip) and when do you expect these to be submitted to regObs.\n\nAll paid observers must record what types of obs-tour are being planned: is it an ordinary paid observation trip, or is this an additional registration? Additional registration is the submission of observations you have made during other work or in your spare time.",
     "ONGOING_TRIP": "Trip in progress",

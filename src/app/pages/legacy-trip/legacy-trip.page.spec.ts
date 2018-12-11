@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LagacyTripPage } from './lagacy-trip.page';
+import { LegacyTripPage } from './legacy-trip.page';
 
-describe('LagacyTripPage', () => {
-  let component: LagacyTripPage;
-  let fixture: ComponentFixture<LagacyTripPage>;
+describe('LegacyTripPage', () => {
+  let component: LegacyTripPage;
+  let fixture: ComponentFixture<LegacyTripPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LagacyTripPage ],
+      declarations: [LegacyTripPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LagacyTripPage);
+    fixture = TestBed.createComponent(LegacyTripPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

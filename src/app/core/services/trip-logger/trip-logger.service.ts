@@ -14,7 +14,7 @@ import { switchMap, take, map } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { ToastController, AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { LegacyTrip } from './lagacy-trip.model';
+import { LegacyTrip } from './legacy-trip.model';
 
 @Injectable({
   providedIn: 'root'
@@ -94,6 +94,17 @@ export class TripLoggerService {
     }
   }
 
+  async showTripErrorMessage(start: boolean) {
+    const translations = await this.translateService.get(
+      ['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR', 'END_ERROR']).toPromise();
+    const alert = await this.alertController.create({
+      header: translations['ALERT.DEFAULT_HEADER'],
+      message: start ? translations['TRIP.ERROR'] : translations['TRIP.END_ERROR'],
+      buttons: [translations['ALERT.OK']]
+    });
+    return alert.present();
+  }
+
   private async confirmStopTrip() {
     const translations = await this.translateService
       .get(['TRIP.STOP_TRIP', 'REGISTRATION.DELETE_CONFIRM', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
@@ -121,20 +132,24 @@ export class TripLoggerService {
     if (currentTrip) {
       try {
         await this.tripService.TripPut({ DeviceGuid: currentTrip.request.DeviceGuid }).toPromise();
+        await this.deleteLegacyTripsFromDb();
+        await this.infoMessage(false).toPromise();
       } catch (error) {
         console.warn('[WARNING][TripLoggerService] Could not stop trip!', error);
-      } finally {
-        await nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name).query('delete').exec();
-        await this.infoMessage(false).toPromise();
+        this.showTripErrorMessage(false);
       }
     }
+  }
+
+  private deleteLegacyTripsFromDb() {
+    return nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name).query('delete').exec();
   }
 
   async cleanupOldLegacyTrip() {
     const limit = moment().startOf('day').unix();
     const currentTrip = await this.getLegacyTripAsObservable().pipe(take(1)).toPromise();
     if (currentTrip && (currentTrip.timestamp < limit)) {
-      await nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name).query('delete').exec();
+      await this.deleteLegacyTripsFromDb();
     }
   }
 

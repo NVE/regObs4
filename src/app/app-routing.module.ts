@@ -23,7 +23,8 @@ const routes: Routes = [
   {
     path: 'registration',
     loadChildren: 'app/modules/registration/registration.module#RegistrationModule'
-  },  { path: 'lagacy-trip', loadChildren: './pages/lagacy-trip/lagacy-trip.module#LagacyTripPageModule' },
+  },
+  { path: 'legacy-trip', loadChildren: './pages/legacy-trip/legacy-trip.module#LegacyTripPageModule' },
 
 ];
 

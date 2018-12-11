@@ -13,11 +13,11 @@ import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help
 import { GuidHelper } from '../../core/helpers/guid.helper';
 
 @Component({
-  selector: 'app-lagacy-trip',
-  templateUrl: './lagacy-trip.page.html',
-  styleUrls: ['./lagacy-trip.page.scss'],
+  selector: 'app-legacy-trip',
+  templateUrl: './legacy-trip.page.html',
+  styleUrls: ['./legacy-trip.page.scss'],
 })
-export class LagacyTripPage implements OnInit, OnDestroy {
+export class LegacyTripPage implements OnInit, OnDestroy {
 
 
   private tripLoggerSubscription: Subscription;
@@ -108,7 +108,7 @@ export class LagacyTripPage implements OnInit, OnDestroy {
           console.error('[ERROR][LegacyTrip] Could not start trip!', error);
           this.ngZone.run(() => {
             this.isLoading = false;
-            this.showErrorMessage();
+            this.tripLoggerService.showTripErrorMessage(true);
           });
         });
       }
@@ -119,15 +119,7 @@ export class LagacyTripPage implements OnInit, OnDestroy {
     await this.tripLoggerService.stopLegacyTrip();
   }
 
-  private async showErrorMessage() {
-    const translations = await this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR']).toPromise();
-    const alert = await this.alertController.create({
-      header: translations['ALERT.DEFAULT_HEADER'],
-      message: translations['TRIP.ERROR'],
-      buttons: [translations['ALERT.OK']]
-    });
-    return alert.present();
-  }
+
 
   async showHelp() {
     const translation = await this.translateService.get('TRIP.LEGACY_HELP_TEXT').toPromise();
