@@ -7,9 +7,9 @@ ion-refresher, ion-content {
 }
 
 ion-refresher {
-    height: 120px;
-
-    ion-refresher-content {
-        height: 60px;
+    ion-grid {
+        position: absolute;
+        right: 5px;
+        top: 0px;
     }
 }
