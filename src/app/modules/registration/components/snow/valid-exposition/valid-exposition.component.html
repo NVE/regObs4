@@ -4,7 +4,7 @@
 </ion-item>
 <ion-item *ngIf="validExpositionCopy">
   <ion-label>
-    <ion-grid class="exposition">
+    <ion-grid class="exposition" no-padding>
       <ion-row>
         <ion-col size="4" text-center (click)="setExposition(7)" [ngClass]="{'selected': validExpositionCopy[7] === '1'}">
           {{ 'DIRECTION.NW' | translate}}
