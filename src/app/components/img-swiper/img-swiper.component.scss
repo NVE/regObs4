@@ -10,20 +10,14 @@
     width: 80%;
     height: 100%;
     display: inline-flex;
+    background-color: rgba(0,0,0,0.6);
 }
-// .swiper-slide:first-child {
-//     width: 80% !important;
-// }
 
 app-offline-image {
     display: inline-flex;
     height: 100%;
     width: 100%;
     object-fit: cover;
-
-    // &.single {
-    //     width: 100%;
-    // }
 }
 
 ion-slides {

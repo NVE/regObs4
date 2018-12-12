@@ -36,7 +36,7 @@ export class WarningListPage implements OnInit, OnDestroy {
       .pipe(map((val) => val.center));
     this.warningsInMapViewBounds$ = this.warningService.warningGroupInMapViewObservable$
       .pipe(map((val) => val.viewBounds), tap((values) => {
-        this.ngZone.run(() => {
+        setTimeout(() => {
           this.warningsInViewBoundsLength = values.length;
         });
       }));

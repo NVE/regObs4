@@ -30,8 +30,6 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
     spaceBetween: 5,
   };
 
-  hidden = true;
-
   comment: string;
   header: string;
 
@@ -44,29 +42,18 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   }
 
   updateSlider() {
-    // NOTE: There is some display issues with the slider on dynamic images,
-    // so have to hide and show it again to get correct display size of slides...
-    this.ngZone.run(() => {
-      this.hidden = true;
-    });
-    setTimeout(() => {
-      this.ngZone.run(() => {
-        this.hidden = false;
-      });
-      if (this.slider) {
-        this.slider.update().then(() => this.cdr.detectChanges()).then(() => this.slider.update());
-      }
-    }, 200);
+    if (this.slider) {
+      this.slider.update();
+    }
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    setTimeout(async () => {
-      const index = await this.getImageIndex();
-      this.ngZone.run(() => {
+    setTimeout(() => {
+      this.getImageIndex().then((index) => {
         this.setImgHeaderAndComment(index);
+        this.updateSlider();
       });
-    }, 50);
-    this.updateSlider();
+    });
   }
 
   private setImgHeaderAndComment(index: number) {
@@ -87,10 +74,11 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   async getImageIndex() {
     if (!this.slider) {
       return 0;
+    } else {
+      const index = await this.slider.getActiveIndex();
+      const isEnd = await this.slider.isEnd();
+      return isEnd ? (this.imgUrl.length - 1) : index;
     }
-    const index = await this.slider.getActiveIndex();
-    const isEnd = await this.slider.isEnd();
-    return isEnd ? (this.imgUrl.length - 1) : index;
   }
 
   async onSlideTransitionEnd() {
