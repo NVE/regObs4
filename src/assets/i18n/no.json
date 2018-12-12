@@ -88,6 +88,7 @@
     "OBSERVATION": "Observasjon"
   },
   "MAP_SEARCH": {
+    "SEARCH_HISTORY_HEADER": "Siste søk",
     "SEARCH_TEXT": "Søk etter sted"
   },
   "MENU": {

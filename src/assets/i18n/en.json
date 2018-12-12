@@ -88,6 +88,7 @@
     "OBSERVATION": "Observation"
   },
   "MAP_SEARCH": {
+    "SEARCH_HISTORY_HEADER": "Latest searches",
     "SEARCH_TEXT": "Search for location"
   },
   "MENU": {

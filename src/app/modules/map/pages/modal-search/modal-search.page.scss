@@ -3,69 +3,18 @@ ion-title {
     padding-left: 0px;
 }
 
-ion-list {
-            margin-top: 1px;
-            ion-item {
-                ion-label {
-                 .search-result-name {
-                     padding-right: 10px;
-                 }
-                 .search-description {
-                     font-size: 10px;
-                 }
-                }       
+ion-content {
+    ion-list {
+        margin-top: 1px;
+        ion-item {
+            ion-label {
+            .search-result-name {
+                padding-right: 10px;
             }
-         }
-
-// .search {
-//     position: relative;
-//     margin-top: 60px;
-//     width: auto;
-//     margin-right: 10px;
-//     margin-left: 10px;
-//     z-index: 20;
-
-//     ion-list {
-//         ion-item {
-//             ion-label {
-//              .search-result-name {
-//                  padding-right: 10px;
-//              }
-//              .search-description {
-//                  font-size: 10px;
-//              }
-//             }       
-//         }
-//      }
-
-//     .search-input-form {
-//         ion-list {
-//             border-radius: 6px;
-//             background-color: #fff;
-
-//             &.has-results {
-//                 border-bottom-left-radius: 0px;
-//                 border-bottom-right-radius: 0px;
-//             }
-
-//             ion-item {
-//                 --border-width: 0 0 0 0;
-//             }
-//         }
-//     }
-//     .search-result {
-//         max-height: 400px;
-//         overflow: scroll;
-//         border-top: 1px solid black;
-//     }
-// }
-
-
-// .modal-wrapper {
-//     position: absolute;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     z-index: 10;
-// }
+            .search-description {
+                font-size: 10px;
+            }
+            }       
+        }
+    }
+}

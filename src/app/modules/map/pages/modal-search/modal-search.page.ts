@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ElementRef } from '@angular/core';
 import { ModalController, Events, Input } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable, of } from 'rxjs';
@@ -61,7 +61,7 @@ export class ModalSearchPage implements OnInit {
     const input: Input = <any>event.target;
     setTimeout(() => {
       (<any>input).setFocus();
-    }, 500);
+    }, 1000);
   }
 
   closeModal() {
