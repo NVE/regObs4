@@ -124,6 +124,7 @@ export const settings = {
                 maxResults: 20,
                 username: 'regobs',
             },
+            searchHistorySize: 5,
         },
         elevation: {
             no: {

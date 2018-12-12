@@ -3,11 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
-import { map, switchMap, catchError } from 'rxjs/operators';
+import { map, switchMap, catchError, take } from 'rxjs/operators';
 import { Observable, combineLatest, forkJoin, of } from 'rxjs';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/observable/of';
 import 'leaflet.utm';
 import { LocationName } from './location-name.model';
 import { ViewInfo } from './view-info.model';
@@ -15,6 +12,10 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { LangKey } from '../../../../core/models/langKey';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { LocationService } from '../../../regobs-api/services';
+import { NanoSql } from '../../../../../nanosql';
+import { nSQL } from 'nano-sql';
+import { MapSearchHistory } from './map-search-history.model';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -143,12 +144,11 @@ export class MapSearchService {
 
   getLocationNameNorway(latLng: L.LatLng): Observable<LocationName> {
     return this.userSettingService.userSettingObservable$.pipe(
-      switchMap((userSettings) =>
-        this.locationService.LocationGetName({ latitude: latLng.lat, longitude: latLng.lng, uri: '' }).pipe(map((result) =>
-          ({ name: result.Navn, adminName: result.Fylke })))));
-    // this.httpClient.get(`${settings.services.regObs.apiUrl[userSettings.appMode]}/Location/GetName`
-    //   + `?latitude=${latLng.lat}&longitude=${latLng.lng}&geoHazardId=${userSettings.currentGeoHazard}`)
-    //   .pipe(map((result: any) => ({ name: result.Data.Navn, adminName: result.Data.Fylke })))));
+      switchMap((userSettings) => {
+        this.locationService.rootUrl = settings.services.regObs.apiUrl[userSettings.appMode];
+        return this.locationService.LocationGetName({ latitude: latLng.lat, longitude: latLng.lng, uri: '' }).pipe(map((result) =>
+          ({ name: result.Navn, adminName: result.Fylke })));
+      }));
   }
 
   getViewInfo(latLng: L.LatLng, isInNorway: boolean): Observable<ViewInfo> {
@@ -159,5 +159,20 @@ export class MapSearchService {
         elevation,
         latLng,
       })));
+  }
+
+  async saveSearchHistoryToDb(searchResult: MapSearchResponse) {
+    const existingHistory = (await this.getSearchHistoryAsObservable().pipe(take(1)).toPromise()
+    ).filter((item) =>
+      !(item.latlng.lat === searchResult.latlng.lat && item.latlng.lng === searchResult.latlng.lng));
+    existingHistory.push({ timestamp: moment().unix(), ...searchResult });
+    const items = existingHistory.slice(-(settings.map.search.searchHistorySize)); // Keep only last 5 items
+    await nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('upsert', { id: 'searchresults', items }).exec();
+  }
+
+  getSearchHistoryAsObservable(): Observable<MapSearchHistory[]> {
+    return nSQL().observable<{ id: string, items: MapSearchHistory[] }[]>(() =>
+      nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('select').emit()
+    ).toRxJS().pipe(map((val) => val.length > 0 ? val[0].items.reverse() : []));
   }
 }

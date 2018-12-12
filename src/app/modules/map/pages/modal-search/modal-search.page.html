@@ -17,6 +17,15 @@
       </ion-label>
     </ion-item>
   </ion-list>
+  <ion-list *ngIf="!hasResults" lines="full" no-padding no-margin class="search-result">
+    <ion-item *ngFor="let item of (searchHistory$ | async)" (click)="searchItemClicked(item)">
+      <ion-icon slot="start" mode="md" name="time"></ion-icon>
+      <ion-label>
+        <ion-text class="search-result-name" [innerHTML]="item.name | startsWithHighlight:searchText"></ion-text>
+        <ion-text class="search-description">{{item.description}}</ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </div>
 <div class="modal-wrapper" (click)="closeModal()">
 </div>

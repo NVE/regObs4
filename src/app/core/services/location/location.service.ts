@@ -61,14 +61,6 @@ export class LocationService {
     return turf.inside(turf.point([item.LatLngObject.Longitude, item.LatLngObject.Latitude]), buffered);
   }
 
-  // getLocationsAsObservable(appMode: AppMode, geoHazard: GeoHazard, bounds: L.LatLngBounds) {
-  //   return nSQL().observable<ObsLocationsResponseDtoV2[]>(() => {
-  //     return NanoSql.getInstance(NanoSql.TABLES.LOCATION.name, appMode)
-  //       .query('select').where((item: ObsLocationsResponseDtoV2) => item.GeoHazardId === geoHazard
-  //         && bounds.contains(L.latLng(item.LatLngObject.Latitude, item.LatLngObject.Longitude))).emit();
-  //   }).toRxJS();
-  // }
-
   getLocationsFromDbAsObservable(appMode: AppMode, geoHazard: GeoHazard) {
     return nSQL().observable<ObsLocationsResponseDtoV2[]>(() => {
       return NanoSql.getInstance(NanoSql.TABLES.LOCATION.name, appMode)

@@ -91,6 +91,13 @@ export class NanoSql {
                 { key: '*', type: '*' },
             ]
         },
+        MAP_SEARCH_HISTORY: {
+            name: 'mapsearchhistory',
+            model: [
+                { key: 'id', type: 'string', props: ['pk'] },
+                { key: '*', type: '*' },
+            ]
+        },
         USER_SETTINGS: {
             name: 'usersettings',
             model: [

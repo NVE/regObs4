@@ -203,6 +203,17 @@ app-geo-icon {
     }
 }
 
+app-map-controls {
+    position: absolute;
+    top: 0;
+    right: 0px;
+    width: 60px;
+
+    ion-fab {
+        position: initial !important;
+    }
+}
+
 .text-truncate {
     overflow: hidden;
     text-overflow: ellipsis;

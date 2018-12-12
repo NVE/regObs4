@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ModalController, Events, Input } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { settings } from '../../../../../settings';
 import { FormControl } from '@angular/forms';
@@ -19,6 +19,7 @@ export class ModalSearchPage implements OnInit {
   searchField: FormControl;
   loading: boolean;
   hasResults: boolean;
+  searchHistory$: Observable<MapSearchResponse[]>;
 
   constructor(private modalController: ModalController,
     private mapSearchService: MapSearchService,
@@ -28,6 +29,9 @@ export class ModalSearchPage implements OnInit {
 
   ngOnInit() {
     this.searchField = new FormControl();
+    this.searchHistory$ = this.mapSearchService.getSearchHistoryAsObservable().pipe(tap((val) => {
+      console.log('New search history: ', val);
+    }));
     this.searchResult$ = this.searchField.valueChanges
       .pipe(
         debounceTime(400),
@@ -43,7 +47,7 @@ export class ModalSearchPage implements OnInit {
           if (searchValue.length >= 2) {
             return this.mapSearchService.searchAll(searchValue);
           } else {
-            return Observable.of([]);
+            return of([]);
           }
         }),
         tap((values) => {
@@ -68,6 +72,7 @@ export class ModalSearchPage implements OnInit {
 
   searchItemClicked(item: MapSearchResponse) {
     this.events.publish(settings.events.mapSearchItemClicked, item);
+    this.mapSearchService.saveSearchHistoryToDb(item);
     this.closeModal();
   }
 }

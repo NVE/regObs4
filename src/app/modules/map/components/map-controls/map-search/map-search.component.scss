@@ -1,5 +1,16 @@
-ion-fab {
-    position: relative;
-    top: 0px;
-    right: 0px;
+ion-fab-list {
+    width: 90vw;
+    background-color: lightgray;
+    flex-direction: row;
+    margin-right: 15px;
+    height: 43px;
+    top: 6px;
+    z-index: -1;
+    border-radius: 50px;
+    min-height: 0;
+    min-width: 0;
+
+    ion-fab-button {
+        --margin-start: 0;
+    }
 }
