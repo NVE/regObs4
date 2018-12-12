@@ -18,11 +18,11 @@ export class MapSearchComponent implements OnInit {
   async presentModal() {
     const modal = await this.modalController.create({
       component: ModalSearchPage,
-      showBackdrop: true,
-      backdropDismiss: true,
-      keyboardClose: false,
-      enterAnimation: CustomAnimation.scaleUpEnterV2,
-      leaveAnimation: CustomAnimation.scaleUpLeaveV2
+      // showBackdrop: true,
+      // backdropDismiss: true,
+      // keyboardClose: false,
+      enterAnimation: CustomAnimation.slideInFromRight,
+      leaveAnimation: CustomAnimation.slideOutToRight
     });
     return await modal.present();
   }

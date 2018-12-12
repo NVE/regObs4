@@ -1,15 +1,21 @@
-<div class="search">
-  <form class="search-input-form">
-    <ion-list lines="full" no-padding no-margin [ngClass]="{'has-results': hasResults}">
-      <ion-item>
-        <ion-icon slot="start" name="search"></ion-icon>
-        <ion-input placeholder="{{'MAP_SEARCH.SEARCH_TEXT'|translate}}" [formControl]="searchField" autofocus
-          (ionInputDidLoad)="focusInput($event)"></ion-input>
-        <ion-icon slot="end" name="close" (click)="closeModal()"></ion-icon>
-      </ion-item>
-    </ion-list>
-  </form>
-  <ion-list *ngIf="searchResult$ | async as searchResults" lines="full" no-padding no-margin class="search-result">
+<ion-header>
+  <ion-toolbar mode="ios">
+    <ion-title>
+      <form>
+        <ion-list lines="none" no-padding no-margin [ngClass]="{'has-results': hasResults}">
+          <ion-item>
+            <ion-icon slot="start" name="search"></ion-icon>
+            <ion-input placeholder="{{'MAP_SEARCH.SEARCH_TEXT'|translate}}" [formControl]="searchField" autofocus
+              (ionInputDidLoad)="focusInput($event)"></ion-input>
+            <ion-icon slot="end" name="close" (click)="closeModal()"></ion-icon>
+          </ion-item>
+        </ion-list>
+      </form>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list *ngIf="searchResult$ | async as searchResults" lines="full" class="search-result">
     <ion-item *ngFor="let item of searchResults" (click)="searchItemClicked(item)">
       <ion-label>
         <ion-text class="search-result-name" [innerHTML]="item.name | startsWithHighlight:searchText"></ion-text>
@@ -17,15 +23,18 @@
       </ion-label>
     </ion-item>
   </ion-list>
-  <ion-list *ngIf="!hasResults" lines="full" no-padding no-margin class="search-result">
-    <ion-item *ngFor="let item of (searchHistory$ | async)" (click)="searchItemClicked(item)">
-      <ion-icon slot="start" mode="md" name="time"></ion-icon>
-      <ion-label>
-        <ion-text class="search-result-name" [innerHTML]="item.name | startsWithHighlight:searchText"></ion-text>
-        <ion-text class="search-description">{{item.description}}</ion-text>
-      </ion-label>
-    </ion-item>
-  </ion-list>
-</div>
-<div class="modal-wrapper" (click)="closeModal()">
-</div>
+  <ng-container *ngIf="searchHistory$ | async as searchHistory">
+    <ion-list *ngIf="!hasResults && !loading && searchHistory.length > 0" lines="full" class="search-result">
+      <ion-list-header text-uppercase>
+        <ion-label>Siste søk</ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let item of searchHistory" (click)="searchItemClicked(item)">
+        <ion-icon slot="start" mode="md" name="time"></ion-icon>
+        <ion-label>
+          <ion-text class="search-result-name">{{item.name}}</ion-text>
+          <ion-text class="search-description">{{item.description}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>

@@ -29,9 +29,7 @@ export class ModalSearchPage implements OnInit {
 
   ngOnInit() {
     this.searchField = new FormControl();
-    this.searchHistory$ = this.mapSearchService.getSearchHistoryAsObservable().pipe(tap((val) => {
-      console.log('New search history: ', val);
-    }));
+    this.searchHistory$ = this.mapSearchService.getSearchHistoryAsObservable();
     this.searchResult$ = this.searchField.valueChanges
       .pipe(
         debounceTime(400),

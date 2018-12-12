@@ -28,6 +28,7 @@ export class CustomAnimation {
         );
     }
 
+
     static scaleUpEnterV2(AnimationC: Animation, baseEl: HTMLElement, opts?: any) {
         const baseAnimation = new AnimationC();
 
@@ -99,6 +100,58 @@ export class CustomAnimation {
         return Promise.resolve(baseAnimation
             .addElement(baseEl)
             .duration(200)
+            .add(backdropAnimation)
+            .add(wrapperAnimation)
+        );
+    }
+
+    static slideInFromRight(AnimationC: Animation, baseEl: HTMLElement, opts?: any) {
+        const baseAnimation = new AnimationC();
+
+        const backdropAnimation = new AnimationC();
+        backdropAnimation.addElement(baseEl.querySelector('ion-backdrop'));
+
+        backdropAnimation.fromTo('opacity', 0.01, 0.4);
+
+        const wrapperAnimation = new AnimationC();
+        wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
+
+        wrapperAnimation
+            .beforeStyles({ 'transform': 'translateX(100%)', 'opacity': 0.01 })
+            .fromTo('transform', 'translateX(100%)', 'translateX(0)')
+            .fromTo('opacity', 0.01, 1);
+
+        return Promise.resolve(baseAnimation
+            .addElement(baseEl)
+            .easing('ease-in')
+            .duration(200)
+            .beforeAddClass('show-modal')
+            .add(backdropAnimation)
+            .add(wrapperAnimation)
+        );
+    }
+
+    static slideOutToRight(AnimationC: Animation, baseEl: HTMLElement, opts?: any) {
+        const baseAnimation = new AnimationC();
+
+        const backdropAnimation = new AnimationC();
+        backdropAnimation.addElement(baseEl.querySelector('ion-backdrop'));
+
+        backdropAnimation.fromTo('opacity', 0.4, 0.0);
+
+        const wrapperAnimation = new AnimationC();
+        wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
+
+        wrapperAnimation
+            .beforeStyles({ 'transform': 'translateX(0)', 'opacity': 0.01 })
+            .fromTo('transform', 'translateX(0)', 'translateX(100%)')
+            .fromTo('opacity', 1, 0);
+
+        return Promise.resolve(baseAnimation
+            .addElement(baseEl)
+            .easing('ease-out')
+            .duration(200)
+            .beforeAddClass('show-modal')
             .add(backdropAnimation)
             .add(wrapperAnimation)
         );
