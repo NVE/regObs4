@@ -13,6 +13,7 @@ import { map, distinctUntilChanged } from 'rxjs/operators';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showMenuButton = true;
+  @Input() fullscreenSupport = false;
   @Input() title: string;
   @Input() defaultHref = '/';
 

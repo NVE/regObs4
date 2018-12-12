@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { Events, Platform } from '@ionic/angular';
 import { Subscription, combineLatest, Observable } from 'rxjs';
 import { ObservationService } from '../../core/services/observation/observation.service';
-import { settings } from '../../../settings';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
@@ -13,7 +11,6 @@ import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { TabService } from '../../core/services/tab/tab.service';
 import { TabName } from '../../core/services/tab/tab-name.enum';
-import { AppMode } from '../../core/models/app-mode.enum';
 
 @Component({
   selector: 'app-home',

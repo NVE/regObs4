@@ -1,31 +1,13 @@
-<ion-header>
-  <ion-toolbar color="dark" mode="ios">
-    <ion-buttons slot="end">
-      <ion-menu-button color="light"></ion-menu-button>
-    </ion-buttons>
-    <ion-title>
-      {{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
 <ion-content>
   <ng-container *ngIf="$observations | async as observations">
     <h4 text-center *ngIf="observations.length === 0">
       {{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}
     </h4>
-    <!-- <ion-virtual-scroll [items]="observations" [virtualTrackBy]="trackByRegId" approxItemHeight="339px">
-      <app-observation-list-card [obs]="obs" *virtualItem="let obs">
-      </app-observation-list-card>
-    </ion-virtual-scroll> -->
     <ion-list>
       <app-observation-list-card [obs]="obs" *ngFor="let obs of observations; trackBy: trackByRegId">
       </app-observation-list-card>
     </ion-list>
   </ng-container>
-  <!-- <ion-list *ngIf="!($observations | async)">
-    <ion-item>
-      <ion-skeleton-text width="40px"></ion-skeleton-text>
-    </ion-item>
-  </ion-list> -->
   <app-add-menu slot="fixed"></app-add-menu>
 </ion-content>
