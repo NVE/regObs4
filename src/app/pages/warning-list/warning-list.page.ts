@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone, ApplicationRef, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, Subscription } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, filter } from 'rxjs/operators';
 import * as moment from 'moment';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSetting } from '../../core/models/user-settings.model';
@@ -16,7 +16,8 @@ import { CapListGroupComponent } from '../../components/cap-list-group/cap-list-
 })
 export class WarningListPage implements OnInit, OnDestroy {
   selectedTab: 'inMapView' | 'all' | 'favourites';
-  allWarnings$: Observable<WarningGroup[]>;
+  allAWarnings$: Observable<WarningGroup[]>;
+  allBWarnings$: Observable<WarningGroup[]>;
   warningsInMapViewCenter$: Observable<WarningGroup[]>;
   warningsInMapViewBounds$: Observable<WarningGroup[]>;
   warningsInMapViewBuffer$: Observable<WarningGroup[]>;
@@ -42,7 +43,10 @@ export class WarningListPage implements OnInit, OnDestroy {
       }));
     this.warningsInMapViewBuffer$ = this.warningService.warningGroupInMapViewObservable$
       .pipe(map((val) => val.buffer));
-    this.allWarnings$ = this.warningService.warningsForCurrentGeoHazardObservable$;
+    this.allAWarnings$ = this.warningService.warningsForCurrentGeoHazardObservable$.pipe(
+      map((warnings) => warnings.filter((warning) => warning.groupType === 'A')));
+    this.allBWarnings$ = this.warningService.warningsForCurrentGeoHazardObservable$.pipe(
+      map((warnings) => warnings.filter((warning) => warning.groupType === 'B')));
     this.favourites$ = this.warningService.warningsObservable$
       .pipe(map((warningGroups) =>
         warningGroups.filter((wg) => wg.isFavourite)));

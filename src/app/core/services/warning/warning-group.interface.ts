@@ -5,6 +5,7 @@ export interface IWarningGroup {
     id: string;
     regionId: string;
     regionName: string;
+    regionType?: string;
     url?: string;
     validFrom?: Date;
     validTo?: Date;

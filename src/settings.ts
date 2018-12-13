@@ -23,8 +23,10 @@ export const settings = {
                 'TEST': 'http://tst-h-web03.nve.no/regobsservices_test'
             },
             webUrl: {
-                'PROD': 'https://www.regobs.no',
-                'DEMO': 'http://demo.regobs.no',
+                'PROD': 'http://test.regobs.no',
+                'DEMO': 'http://test.regobs.no',
+                // 'PROD': 'https://www.regobs.no',
+                // 'DEMO': 'http://demo.regobs.no',
                 'TEST': 'http://test.regobs.no'
             },
             createUserUrl: '/Account/Register?c=Home',

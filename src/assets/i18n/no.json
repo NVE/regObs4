@@ -547,9 +547,11 @@
   "WARNING_LIST": {
     "ALL": "Alle",
     "ALL_WARNINGS": "Alle varsler",
+    "B_REGIONS": "Regionene under varsles kun på faregrad 4 og 5",
     "FAVOURITES": "Favoritter",
     "IN_MAP_CENTER": "I kartsenter",
     "IN_MAP_VIEW": "I kartutsnittet",
+    "MAIN_REGIONS": "Hovedregioner",
     "OTHER_RELEVANT": "Andre aktuelle",
     "RELEVANT": "Aktuelle",
     "TITLE": "Varsom",

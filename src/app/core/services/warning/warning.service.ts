@@ -14,7 +14,6 @@ import { WarningGroup } from './warning-group.model';
 import { IWarningApiResult } from './warning-api-result.interface';
 import { IAvalancheWarningApiResult } from './avalanche-warning-api-result.interface';
 import { combineLatest, Observable, of } from 'rxjs';
-import { IWarningInMapView } from './warning-in-mapview.interface';
 import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { IWarningGroup } from './warning-group.interface';
@@ -175,6 +174,7 @@ export class WarningService {
       id: `${region.properties.OMRAADEID}_${GeoHazard.Snow}`,
       regionId: `${region.properties.OMRAADEID}`,
       regionName: region.properties.OMRAADENAV,
+      regionType: region.properties.regionType,
       counties: [],
       geoHazard: GeoHazard.Snow,
       warnings: []
@@ -346,6 +346,7 @@ export class WarningService {
         id: `${region.Id}_${GeoHazard.Snow}`,
         regionId: region.Id.toString(),
         regionName: region.Name,
+        regionType: region.TypeName,
         geoHazard: GeoHazard.Snow,
         counties: [],
         warnings: region.AvalancheWarningList.map((simpleWarning) => this.convertSimpleWarningToAppWarning(language, simpleWarning)),

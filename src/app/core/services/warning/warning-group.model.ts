@@ -18,6 +18,10 @@ export class WarningGroup {
         return this._warningGroup.warnings;
     }
 
+    get groupType() {
+        return this._warningGroup.regionType;
+    }
+
     get isFavourite() {
         return this._isFavourite;
     }

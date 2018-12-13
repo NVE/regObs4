@@ -40,14 +40,15 @@ ion-list {
         ion-label {
             font-size: 16px;
             margin-left: 6px;
-            text-overflow: ellipsis;
+            margin-right: 140px;
         }
         ion-grid {
             width: 140px;
-            position: relative;
+            position: absolute;
             right: 5px;
             text-align: center;
             margin-right: 0px;
+            display: inline-block;
         }
     }
 
