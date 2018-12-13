@@ -22,12 +22,12 @@
     --map-item-height: 0px;
     --map-center-info-height: 0px;
     --ion-tab-bar-color-activated: var(--ion-color-primary);
-    --ion-color-primary: #5C90A5; // TODO: Change theme.scss instead?
-    --ion-color-primary-rgb: 72,138,255;
+    --ion-color-primary: #EE7B04;
+    --ion-color-primary-rgb: 238,123,4;
     --ion-color-primary-contrast: #fff;
     --ion-color-primary-contrast-rgb: 255,255,255;
     --ion-color-primary-shade: #5C90A5;
-    --ion-color-primary-tint: #5C90A5;
+    --ion-color-primary-tint: #F5B068;
     --ion-color-warninglevel-0: #aaa;
     --ion-color-warninglevel-1: #75b100;
     --ion-color-warninglevel-2: #fc3;
@@ -42,6 +42,30 @@
     --z-index-over-map: 801;
     --img-height: 80vw;
     --img-width: 40vw;
+    --ion-color-varsom-blue: #044962;
+    --ion-color-varsom-blue-rgb: 4,73,98;
+    --ion-color-varsom-blue-contrast: #fff;
+    --ion-color-varsom-blue-contrast-rgb: 255,255,255;
+    --ion-color-varsom-blue-shade: #044157;
+    --ion-color-varsom-blue-tint: #6996A3;
+}
+
+.ion-color-varsom-blue {
+  --ion-color-base: var(--ion-color-varsom-blue);
+  --ion-color-base-rgb: var(--ion-color-varsom-blue-rgb);
+  --ion-color-contrast: var(--ion-color-varsom-blue-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-varsom-blue-contrast-rgb);
+  --ion-color-shade: var(--ion-color-varsom-blue-shade);
+  --ion-color-tint: var(--ion-color-varsom-blue-tint);
+}
+
+.ion-color-varsom-dark-blue {
+    --ion-color-base: #044157;
+    --ion-color-base-rgb: 4,65,87;
+    --ion-color-contrast: var(--ion-color-varsom-blue-contrast);
+    --ion-color-contrast-rgb: var(--ion-color-varsom-blue-contrast-rgb);
+    --ion-color-shade: var(--ion-color-varsom-blue-shade);
+    --ion-color-tint: var(--ion-color-varsom-blue-tint);
 }
 
 .ion-color-warninglevel-0 {
@@ -69,18 +93,16 @@
     --ion-color-contrast: #FFF;
 }
 
-.map-control {
-    background-color: var(--backdrop-background);
-    z-index: var(--z-index-over-map);
-    border-radius: 5px;
-    color: #fff;
-    padding: 5px;
-}
+// .map-control {
+//     background-color: var(--backdrop-background);
+//     z-index: var(--z-index-over-map);
+//     border-radius: 5px;
+//     color: #fff;
+//     padding: 5px;
+// }
 
 .map-control-fab {
-    opacity: 0.9;
-    --size: 44px;
-    --height: 44px;
+    // opacity: 0.9;
     --width: 44px;
 }
 
@@ -90,11 +112,14 @@ ion-item {
 
 ion-list {
     background: var(--ion-background-color);
+    --padding-start: 20px;
 
     ion-list-header {
-        font-size: 14px;
+        font-size: 15px;
         margin-bottom: 0px;
         margin-top: 14px;
+        font-weight: 600;
+        padding-left: calc(var(--ion-safe-area-left, 0px) + var(--padding-start));
     }
 
     &.list-ios {
@@ -102,6 +127,13 @@ ion-list {
     }
     &.list-md {
         background: var(--ion-background-color);
+    }
+
+    ion-item {
+
+        ion-label {
+            padding-left: 4px !important;
+        }
     }
 }
 

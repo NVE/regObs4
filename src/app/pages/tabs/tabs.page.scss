@@ -5,6 +5,7 @@ ion-tab-button {
 }
 
 ion-tabs {
+    --ion-tab-bar-color: var(--ion-color-varsom-blue);
     &.md {
         ion-tab-button {
             ion-badge {

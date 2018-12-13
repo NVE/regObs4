@@ -16,7 +16,7 @@
     <ion-item *ngFor="let item of searchResults" (click)="searchItemClicked(item)">
       <ion-label>
         <ion-text class="search-result-name" [innerHTML]="item.name | startsWithHighlight:searchText"></ion-text>
-        <ion-text class="search-description">{{item.description}}</ion-text>
+        <ion-text color="medium" class="search-description">{{item.description}}</ion-text>
       </ion-label>
     </ion-item>
   </ion-list>
@@ -29,7 +29,7 @@
         <ion-icon slot="start" mode="md" name="time"></ion-icon>
         <ion-label>
           <ion-text class="search-result-name">{{item.name}}</ion-text>
-          <ion-text class="search-description">{{item.description}}</ion-text>
+          <ion-text color="medium" class="search-description">{{item.description}}</ion-text>
         </ion-label>
       </ion-item>
     </ion-list>
