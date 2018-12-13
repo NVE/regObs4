@@ -1,4 +1,8 @@
 .map-item-bar {
+    --img-wrapper-height: 22vh;
+    --img-wrapper-width: 30vh;
+    --img-wrapper-buffer: 5px;
+
     position: absolute;
     left:0;
     right: 0;
@@ -13,19 +17,17 @@
 
     .img-wrapper {
         position: absolute;
-        left: 5px;
-        width: auto;
-        height: auto;
-        width: 22vh;
-        height: 14vh;
-        bottom: 102px;
+        left: var(--img-wrapper-buffer);
+        width: var(--img-wrapper-width);
+        height: var(--img-wrapper-height);
+        top: calc(calc(var(--img-wrapper-height) + var(--img-wrapper-buffer)) * -1);
         border: 2px solid #fff;
         display: flex;
         justify-content: center;
 
         &.full {
             left: 0px;
-            bottom: 97px;
+            top: calc(var(--img-wrapper-height) * -1);
             width: 100%;
             max-width: none;
         }
