@@ -35,7 +35,6 @@
     --ion-color-warninglevel-4: #d21523;
     --ion-color-warninglevel-5: #000;
     --backdrop-background:  rgba(0, 0, 0, 0.8);
-    // --ion-text-color-step-600: #444444;
     --ion-text-color-step-600: #8B9399;
     --ion-header-size: 17px;
     --ion-color-medium: #757575;
@@ -48,6 +47,7 @@
     --ion-color-varsom-blue-contrast-rgb: 255,255,255;
     --ion-color-varsom-blue-shade: #044157;
     --ion-color-varsom-blue-tint: #6996A3;
+    --ion-color-varsom-grey: #5C90A5;
 }
 
 .ion-color-varsom-blue {
@@ -201,7 +201,7 @@ ion-radio {
 }
 
 .circle-marker-cluster {
-    background-color: var(--ion-color-primary);
+    background-color: var(--ion-color-varsom-grey);
     border: 2px solid #fff;
     border-radius: 50% !important;
     font-size: 14px;

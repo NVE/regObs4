@@ -16,6 +16,7 @@ import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.
 import { LegalTermsComponent } from '../../components/legal-terms/legal-terms.component';
 import { ImgSwiperComponent } from '../../components/img-swiper/img-swiper.component';
 import { HeaderComponent } from '../../components/header/header.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
@@ -25,6 +26,7 @@ import { HeaderComponent } from '../../components/header/header.component';
         IonicModule,
         AngularSvgIconModule,
         TranslateModule,
+        RouterModule,
     ],
     declarations: [
         ShadowCssDirective,
@@ -46,6 +48,7 @@ import { HeaderComponent } from '../../components/header/header.component';
         ReactiveFormsModule,
         IonicModule,
         TranslateModule,
+        RouterModule,
         ShadowCssDirective,
         AngularSvgIconModule,
         AddMenuComponent,

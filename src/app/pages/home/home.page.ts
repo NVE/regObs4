@@ -9,8 +9,8 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { MapComponent } from '../../modules/map/components/map/map.component';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
-import { TabService } from '../../core/services/tab/tab.service';
-import { TabName } from '../../core/services/tab/tab-name.enum';
+import { Router, NavigationStart } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -38,10 +38,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   constructor(
     private observationService: ObservationService,
-    private tabService: TabService,
     private fullscreenService: FullscreenService,
     private userSettingService: UserSettingService,
     private zone: NgZone,
+    private router: Router,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -67,21 +67,23 @@ export class HomePage implements OnInit, OnDestroy {
       });
     })); // TODO: Move this to map component?
 
-    this.subscriptions.push(this.tabService.tabsChange$.subscribe((val) => {
-      if (val.tab === TabName.Home) {
-        if (val.active) {
-          this.mapComponent.startGeoLocationWatch();
-          this.mapComponent.redrawMap();
-        } else {
-          this.mapComponent.stopGeoLocationWatch();
-        }
-      }
-    }));
     this.subscriptions.push(this.mapItemBar.isVisible.subscribe((isVisible) => {
       this.zone.run(() => {
         this.mapItemBarVisible = isVisible;
       });
     }));
+
+    this.subscriptions.push(
+      this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((val: NavigationStart) => {
+        if (val.url === '/tabs/home' || val.url === '/tabs') {
+          console.log(`[INFO] Home page route changed to ${val.url}. Start GeoLocation.`);
+          this.mapComponent.startGeoLocationWatch();
+          this.mapComponent.redrawMap();
+        } else {
+          console.log(`[INFO] Home page route changed to ${val.url}. Stop GeoLocation.`);
+          this.mapComponent.stopGeoLocationWatch();
+        }
+      }));
 
     // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
     //   this.tripLogLayer.clearLayers();

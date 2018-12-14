@@ -1,12 +1,12 @@
-<ion-list lines="full">
-  <ion-menu-toggle auto-hide="false">
+<ion-menu-toggle auto-hide="false">
+  <ion-list lines="full" *ngIf="userSettings">
     <ion-list-header color="light" no-margin>
       <ion-label>
         {{'MENU.USER_SETTINGS' | translate}}
       </ion-label>
     </ion-list-header>
     <app-user-login></app-user-login>
-    <ion-item href="/user-settings" routerDirection="forward">
+    <ion-item routerLink="/user-settings" routerDirection="forward">
       <ion-icon slot="start" name="settings"></ion-icon>
       <ion-label>
         {{'SETTINGS.TITLE' | translate}}
@@ -17,21 +17,24 @@
         {{'MENU.MAP_SETTINGS' | translate}}
       </ion-label>
     </ion-list-header>
-    <ion-item *ngIf="userSettings">
+    <ion-item>
       <ion-icon slot="start" name="eye"></ion-icon>
       <ion-label>
         {{'MENU.SHOW_OBSERVATIONS' | translate}}
       </ion-label>
-      <ion-toggle [checked]="userSettings.showObservations" [(ngModel)]="userSettings.showObservations" (ionChange)="saveUserSettings()"></ion-toggle>
+      <ion-toggle [(ngModel)]="userSettings.showObservations" (ionChange)="saveUserSettings()"></ion-toggle>
     </ion-item>
-    <ion-item (click)="updateObservations()">
-      <ion-icon slot="start" name="refresh"></ion-icon>
-      <ion-label text-wrap>
-        <h2>{{'MENU.UPDATE_OBSERVATIONS' | translate}}</h2>
-        <p *ngIf="lastUpdated">{{'MENU.LAST_UPDATED' | translate}} {{ lastUpdated | date:
-          settings.dateFormats.angular.dateAndTime }}</p>
-      </ion-label>
-    </ion-item>
+    <ng-container *ngIf="userSettings.showObservations">
+      <ion-item (click)="updateObservations()">
+        <ion-icon slot="start" name="refresh"></ion-icon>
+        <ion-label text-wrap>
+          <h2>{{'MENU.UPDATE_OBSERVATIONS' | translate}}</h2>
+          <p *ngIf="lastUpdated">{{'MENU.LAST_UPDATED' | translate}} {{ lastUpdated | date:
+            settings.dateFormats.angular.dateAndTime }}</p>
+        </ion-label>
+      </ion-item>
+      <app-observations-days-back></app-observations-days-back>
+    </ng-container>
     <!-- <ion-item>
       <ion-icon slot="start" name="walk"></ion-icon>
       <ion-label>
@@ -39,16 +42,14 @@
       </ion-label>
       <ion-toggle checked="true"></ion-toggle>
     </ion-item> -->
-
-    <app-observations-days-back></app-observations-days-back>
-    <ion-item *ngIf="userSettings">
+    <ion-item>
       <ion-icon slot="start" name="add"></ion-icon>
       <ion-label>
         {{'MENU.SHOW_MAP_CENTER' | translate}}
       </ion-label>
       <ion-toggle [checked]="userSettings.showMapCenter" [(ngModel)]="userSettings.showMapCenter" (ionChange)="saveUserSettings()"></ion-toggle>
     </ion-item>
-    <!-- <ion-item *ngIf="useAppInNorway" href="/offline-map" routerDirection="forward">
+    <!-- <ion-item *ngIf="useAppInNorway" routerLink="/offline-map" routerDirection="forward">
       <ion-icon slot="start" name="flash"></ion-icon>
       <ion-label>
         {{'OFFLINE_MAP.TITLE' | translate}}
@@ -64,17 +65,17 @@
       <ion-icon slot="start" name="information-circle-outline"></ion-icon>
       <ion-label>{{'MENU.ABOUT_REGOBS' | translate}}</ion-label>
     </ion-item>
-    <ion-item href="/start-wizard" routerDirection="root">
+    <ion-item routerLink="/start-wizard" routerDirection="root">
       <ion-icon slot="start" name="information-circle-outline"></ion-icon>
       <ion-label>{{'MENU.START_WIZARD' | translate}}</ion-label>
     </ion-item>
-  </ion-menu-toggle>
-  <ion-item>
-    <ion-label text-wrap>
-      {{'MENU.TOPO_MAP_CREDITS' | translate}} <app-external-link src="https://www.kartverket.no/">@Karverket</app-external-link>
-      {{'MENU.AND' | translate}}
-      <app-external-link src="https://opentopomap.org/">@OpenTopoMap</app-external-link>.
-      {{'MENU.SUPPORT_MAP_CREDITS' | translate}} <app-external-link src="https://www.nve.no/">@NVE</app-external-link>
-    </ion-label>
-  </ion-item>
-</ion-list>
+    <ion-item>
+      <ion-label text-wrap>
+        {{'MENU.TOPO_MAP_CREDITS' | translate}} <app-external-link src="https://www.kartverket.no/">@Karverket</app-external-link>
+        {{'MENU.AND' | translate}}
+        <app-external-link src="https://opentopomap.org/">@OpenTopoMap</app-external-link>.
+        {{'MENU.SUPPORT_MAP_CREDITS' | translate}} <app-external-link src="https://www.nve.no/">@NVE</app-external-link>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-menu-toggle>

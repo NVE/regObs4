@@ -39,7 +39,6 @@ import { SQLite } from '@ionic-native/sqlite/ngx';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { FullscreenService } from './core/services/fullscreen/fullscreen.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { TabService } from './core/services/tab/tab.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -82,7 +81,6 @@ export const APP_PROVIDERS = [
     DataMarshallService,
     DbHelperService,
     FullscreenService,
-    TabService,
     // Custom native/web providers
     {
         provide: BackgroundGeolocationService, useClass: window.hasOwnProperty('cordova') ?

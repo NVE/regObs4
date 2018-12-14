@@ -1,4 +1,4 @@
-<ion-item href="{{ 'registration/edit/' + registration.id }}">
+<ion-item routerLink="{{ 'registration/edit/' + registration.id }}">
   <app-geo-icon slot="start" [geoHazard]="registration.geoHazard"></app-geo-icon>
   <ion-label>
     <h2 *ngIf="registration.request.ObsLocation && registration.request.ObsLocation.LocationName">

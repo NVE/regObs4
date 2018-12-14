@@ -4,6 +4,7 @@ import { RegobsApiModule } from '../regobs-api/regobs-api.module';
 import { SharedModule } from '../shared/shared.module';
 import { CanDeactivateRouteGuard } from './pages/can-deactivate-route.guard';
 import { LoginModalPageModule } from '../login/pages/modal-pages/login-modal/login-modal.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
@@ -13,7 +14,7 @@ import { LoginModalPageModule } from '../login/pages/modal-pages/login-modal/log
     LoginModalPageModule,
   ],
   exports: [
-    LoginModalPageModule
+    LoginModalPageModule,
   ],
   declarations: [],
   providers: [CanDeactivateRouteGuard]

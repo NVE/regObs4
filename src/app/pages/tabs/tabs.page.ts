@@ -4,8 +4,6 @@ import { Subscription, Observable } from 'rxjs';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
-import { TabService } from '../../core/services/tab/tab.service';
-import { TabName } from '../../core/services/tab/tab-name.enum';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
@@ -43,7 +41,6 @@ export class TabsPage implements OnInit, OnDestroy {
     private platform: Platform,
     private warningService: WarningService,
     private userSettingService: UserSettingService,
-    private tabService: TabService,
     private ngZone: NgZone) {
     this.isIos = this.platform.is('ios');
     this.isAndroid = this.platform.is('android');
@@ -79,30 +76,5 @@ export class TabsPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.warningGroupInMapViewSubscription.unsubscribe();
     this.currentGeoHazardSubscription.unsubscribe();
-  }
-
-  tabsChanged(event: CustomEvent) {
-    const tabElement: HTMLIonTabElement = event.detail.tab;
-    console.log('[INFO] Tabs changed to: ', tabElement.tab);
-    const tabName = tabElement.tab as TabName;
-    this.tabService.tabChange(tabName, true);
-  }
-
-  async ionViewDidEnter() {
-    console.log('[INFO] Tabs page ionViewDidEnter');
-    const selectedTab = await this.tabs.tabBar.selectedTab;
-    if (selectedTab) {
-      const tabName = selectedTab as TabName;
-      this.tabService.tabChange(tabName, true);
-    }
-  }
-
-  async ionViewWillLeave() {
-    console.log('[INFO] Tabs page ionViewWillLeave');
-    const selectedTab = await this.tabs.tabBar.selectedTab;
-    if (selectedTab) {
-      const tabName = selectedTab as TabName;
-      this.tabService.tabChange(tabName, false);
-    }
   }
 }
