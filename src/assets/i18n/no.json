@@ -409,6 +409,7 @@
   },
   "SETTINGS": {
     "APPMODE": "Appmodus",
+    "APP_VERSION": "App versjon",
     "COUNTRY": "Land",
     "DROPDOWNS_FAILED": "Klarte ikke oppdatere nedtrekksmenyer. Vennligst sjekk om du har nettverk og prøv igjen litt senere.",
     "DROPDOWNS_UPDATED": "Nedtrekksmenyer oppdatert!",

@@ -51,6 +51,11 @@
   <ng-container *ngIf="showAdvanced">
     <ion-list lines="full">
       <ion-item>
+        <ion-label position="stacked" color="medium">{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
+        <ion-input type="text" readonly="true" [value]="version">
+        </ion-input>
+      </ion-item>
+      <ion-item>
         <ion-label position="stacked" color="medium">{{'SETTINGS.NUMBER_OF_TILES_IN_CACHE' | translate}}: {{
           userSettings.tilesCacheSize }}</ion-label>
         <ion-range min="0" max="20000" step="5000" color="secondary" [(ngModel)]="userSettings.tilesCacheSize"
@@ -70,17 +75,16 @@
         <ion-spinner name="dots" *ngIf="cacheTilesSize === undefined"></ion-spinner>
       </ion-item>
     </ion-list>
+    <ion-list lines="none">
+      <ion-button expand="block" [disabled]="isUpdating" (click)="updateDropdowns()">
+        <ion-icon slot="start" name="refresh"></ion-icon>
+        {{ "SETTINGS.UPDATE_DROPDOWNS" | translate }}
+      </ion-button>
 
-    <ion-button expand="block" [disabled]="isUpdating" (click)="updateDropdowns()">
-      <ion-icon slot="start" name="refresh"></ion-icon>
-      {{ "SETTINGS.UPDATE_DROPDOWNS" | translate }}
-    </ion-button>
-
-    <ion-button class="reset-button" color="danger" expand="block" [disabled]="isUpdating" (click)="reset()">
-      <ion-icon slot="start" name="medkit"></ion-icon>
-      {{ "SETTINGS.RESET" | translate }}
-    </ion-button>
+      <ion-button class="reset-button" color="danger" expand="block" [disabled]="isUpdating" (click)="reset()">
+        <ion-icon slot="start" name="medkit"></ion-icon>
+        {{ "SETTINGS.RESET" | translate }}
+      </ion-button>
+    </ion-list>
   </ng-container>
-
-
 </ion-content>

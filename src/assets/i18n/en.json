@@ -409,6 +409,7 @@
   },
   "SETTINGS": {
     "APPMODE": "App mode",
+    "APP_VERSION": "App version",
     "COUNTRY": "Country",
     "DROPDOWNS_FAILED": "Could not update dropdowns. Please check network settings and try again later.",
     "DROPDOWNS_UPDATED": "Dropdowns updated!",
