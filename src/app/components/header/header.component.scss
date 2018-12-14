@@ -7,7 +7,7 @@ ion-toolbar {
         --background: var(--ion-color-varsom-blue);
     }
     &.demo {
-        --background: #8b0000;
+        --background: var(--ion-color-danger);
     }
     &.test {
         --background: var(--ion-color-varsom-grey);
