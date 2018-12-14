@@ -11,7 +11,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "update-packages": "ncu -u & npm install",
-    "upload-sourcemaps": "sentry-cli releases files \"4.0.0-beta.1\" upload-sourcemaps --url-prefix / www"
+    "upload-sourcemaps": "cross-env SENTRY_PROPERTIES=sentry.properties && sentry-cli releases files \"%npm_package_version%\" upload-sourcemaps --url-prefix / www"
   },
   "private": true,
   "dependencies": {
@@ -131,7 +131,7 @@
     "@types/moment-timezone": "^0.5.9",
     "@types/node": "^10.12.15",
     "codelyzer": "^4.5.0",
-    "cross-var": "^1.1.0",
+    "cross-env": "^5.2.0",
     "jasmine-core": "~3.3.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~3.1.3",

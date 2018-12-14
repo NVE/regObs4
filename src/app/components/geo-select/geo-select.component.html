@@ -2,7 +2,7 @@
   [ngClass]="{ 'fullscreen': (fullscreen$ | async), 'in-header': inHeader }">
   <div class="toggle-button" *ngIf="!(inHeader && isOpen)">
     <ion-fab-button color="light" (click)="toggle()">
-      <app-geo-icon [geoHazard]="currentGeoHazards[0]" [size]="size"></app-geo-icon>
+      <app-geo-icon [geoHazards]="currentGeoHazards" [size]="size"></app-geo-icon>
     </ion-fab-button>
     <ng-container *ngIf="isOpen">
       <ion-label><span *ngFor="let name of getNames(currentGeoHazards); let i = index"><span *ngIf="i>0"> / </span>{{
@@ -15,7 +15,7 @@
     <ion-list lines="none" no-margin>
       <ion-item *ngIf="inHeader" no-padding class="geo-selector-item" (click)="toggle()">
         <ion-fab-button slot="start" color="light">
-          <app-geo-icon [geoHazard]="currentGeoHazards[0]" [size]="size"></app-geo-icon>
+          <app-geo-icon [geoHazards]="currentGeoHazards" [size]="size"></app-geo-icon>
         </ion-fab-button>
         <ion-label><span *ngFor="let name of getNames(currentGeoHazards); let i = index"><span *ngIf="i>0"> / </span>{{
             name |
@@ -26,7 +26,7 @@
         <ion-item *ngIf="(geoHazards.join('-') !== currentGeoHazards.join('-'))" no-padding class="geo-selector-item"
           (click)="changeGeoHazard(geoHazards)">
           <ion-fab-button slot="start" color="light">
-            <app-geo-icon [geoHazard]="geoHazards[0]"></app-geo-icon>
+            <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
           </ion-fab-button>
           <ion-label><span *ngFor="let name of getNames(geoHazards); let i = index"><span *ngIf="i>0"> / </span>
               {{ name | translate }}</span></ion-label>

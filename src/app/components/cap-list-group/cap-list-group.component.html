@@ -20,7 +20,7 @@
   <ion-item-sliding (ionDrag)="onDrag($event)" *ngFor="let warningGroup of warnings; trackBy: trackWarningGroup">
     <ion-item no-padding [detail]="warningGroup.key.geoHazard === GeoHazard.Ice" lines="full" (click)="navigateToWeb($event, warningGroup)">
       <div slot="start" class="geo-icon-circle">
-        <app-geo-icon [geoHazard]="warningGroup.key.geoHazard" size="0.8"></app-geo-icon>
+        <app-geo-icon [geoHazards]="[warningGroup.key.geoHazard]" size="0.8"></app-geo-icon>
       </div>
       <ion-label>
         <h2>{{warningGroup.key.groupName}}</h2>

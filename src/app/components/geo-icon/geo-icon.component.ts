@@ -10,7 +10,7 @@ import { GeoHazard } from '../../core/models/geo-hazard.enum';
 export class GeoIconComponent implements OnInit {
   constructor() { }
 
-  @Input() geoHazard: GeoHazard;
+  @Input() geoHazards: GeoHazard[];
   @Input() size: number;
 
   get width() {
@@ -22,41 +22,45 @@ export class GeoIconComponent implements OnInit {
   }
 
   get geoClass() {
-    if (this.geoHazard) {
-      return (<string>GeoHazard[this.geoHazard]).toLowerCase();
+    if (this.geoHazards && this.geoHazards.length > 0) {
+      return this.geoHazards.map((geoHazard) => (<string>GeoHazard[geoHazard]).toLowerCase()).join('_');
     }
     return '';
   }
 
   getDimensions() {
-    switch (this.geoHazard) {
-      case GeoHazard.Snow:
-        return { width: 22, height: 24.2 };
-      case GeoHazard.Dirt:
-        return { width: 22, height: 24 };
-      case GeoHazard.Water:
-        return { width: 33, height: 30.8 };
-      case GeoHazard.Ice:
-        return { width: 22, height: 28 };
-      default:
-        return { width: 22, height: 22 };
+    if (this.geoHazards.length > 1) {
+      return { width: 35, height: 35 };
+    } else {
+      switch (this.geoHazards[0]) {
+        case GeoHazard.Snow:
+          return { width: 22, height: 24.2 };
+        case GeoHazard.Dirt:
+          return { width: 35, height: 35 };
+        case GeoHazard.Water:
+          return { width: 33, height: 30.8 };
+        case GeoHazard.Ice:
+          return { width: 22, height: 28 };
+        default:
+          return { width: 33, height: 33 };
+      }
     }
   }
 
-  getBaseHeight() {
-    switch (this.geoHazard) {
-      case GeoHazard.Snow:
-        return 22;
-      case GeoHazard.Dirt:
-        return 22;
-      case GeoHazard.Water:
-        return 33;
-      case GeoHazard.Ice:
-        return 24.2;
-      default:
-        return 18;
-    }
-  }
+  // getBaseHeight() {
+  //   switch (this.geoHazards[0]) {
+  //     case GeoHazard.Snow:
+  //       return 22;
+  //     case GeoHazard.Dirt:
+  //       return 22;
+  //     case GeoHazard.Water:
+  //       return 33;
+  //     case GeoHazard.Ice:
+  //       return 24.2;
+  //     default:
+  //       return 18;
+  //   }
+  // }
 
   get options() {
     return {
@@ -66,7 +70,7 @@ export class GeoIconComponent implements OnInit {
   }
 
   get iconSrc() {
-    return `/assets/icon/${GeoHazard[this.geoHazard].toLowerCase()}.svg`;
+    return `/assets/icon/${this.geoClass}.svg`;
   }
 
   ngOnInit() {
