@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import { HelperService } from '../../../core/services/helpers/helper.service';
 import { settings } from '../../../../settings';
 import { RegistrationViewModel, Summary } from '../../../modules/regobs-api/models';
-import { Slides, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
@@ -19,7 +19,6 @@ import { ExternalLinkService } from '../../../core/services/external-link/extern
 })
 export class ObservationListCardComponent implements OnInit {
   @Input() obs: RegistrationViewModel;
-  @ViewChild(Slides) slider: Slides;
 
   geoHazardName: string;
   dtObsDate: Date;

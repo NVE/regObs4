@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef, NgZone } from '@angular/core';
-import { Textarea } from '@ionic/angular';
+import { Component, OnInit, Input, EventEmitter, Output, NgZone } from '@angular/core';
+import { IonTextarea } from '@ionic/angular';
 
 @Component({
   selector: 'app-text-comment',
@@ -44,7 +44,7 @@ export class TextCommentComponent implements OnInit {
   }
 
   autoresize(event: Event) {
-    const target: Textarea = <any>(event.target);
+    const target: IonTextarea = <any>(event.target);
     const width = window.innerWidth;
     const charWidth = 10;
     const breaklines = target.value ? (target.value.split(/\r?\n|\r/)).length : 0;

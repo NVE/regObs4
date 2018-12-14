@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, NgZone, ApplicationRef, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { Observable, Subscription } from 'rxjs';
-import { map, tap, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import * as moment from 'moment';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { Refresher } from '@ionic/angular';
+import { IonRefresher } from '@ionic/angular';
 import { CapListGroupComponent } from '../../components/cap-list-group/cap-list-group.component';
 
 @Component({
@@ -24,7 +24,7 @@ export class WarningListPage implements OnInit, OnDestroy {
   favourites$: Observable<WarningGroup[]>;
   userSetting$: Observable<UserSetting>;
   warningsInViewBoundsLength: number;
-  @ViewChild(Refresher) refresher: Refresher;
+  @ViewChild(IonRefresher) refresher: IonRefresher;
   @ViewChildren(CapListGroupComponent) capListGroups: QueryList<CapListGroupComponent>;
 
   constructor(

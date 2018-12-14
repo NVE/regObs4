@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Tabs, Platform } from '@ionic/angular';
+import { IonTabs, Platform } from '@ionic/angular';
 import { Subscription, Observable } from 'rxjs';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { map } from 'rxjs/operators';
@@ -37,7 +37,7 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
 
-  @ViewChild(Tabs) private tabs: Tabs;
+  @ViewChild(IonTabs) private tabs: IonTabs;
   constructor(
     private fullscreenService: FullscreenService,
     private platform: Platform,
@@ -78,6 +78,7 @@ export class TabsPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.warningGroupInMapViewSubscription.unsubscribe();
+    this.currentGeoHazardSubscription.unsubscribe();
   }
 
   tabsChanged(event: CustomEvent) {
@@ -89,18 +90,18 @@ export class TabsPage implements OnInit, OnDestroy {
 
   async ionViewDidEnter() {
     console.log('[INFO] Tabs page ionViewDidEnter');
-    const selectedTab = await this.tabs.getSelected();
+    const selectedTab = await this.tabs.tabBar.selectedTab;
     if (selectedTab) {
-      const tabName = selectedTab.tab as TabName;
+      const tabName = selectedTab as TabName;
       this.tabService.tabChange(tabName, true);
     }
   }
 
   async ionViewWillLeave() {
     console.log('[INFO] Tabs page ionViewWillLeave');
-    const selectedTab = await this.tabs.getSelected();
+    const selectedTab = await this.tabs.tabBar.selectedTab;
     if (selectedTab) {
-      const tabName = selectedTab.tab as TabName;
+      const tabName = selectedTab as TabName;
       this.tabService.tabChange(tabName, false);
     }
   }

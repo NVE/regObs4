@@ -5,14 +5,13 @@ import {
   Output,
   EventEmitter,
   ViewChild,
-  NgZone
 } from '@angular/core';
 import { KdvElement } from '../../../regobs-api/models';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { SelectInterface } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Select } from '@ionic/angular';
+import { IonSelect } from '@ionic/angular';
 
 @Component({
   selector: 'app-kdv-dropdown',
@@ -45,7 +44,7 @@ export class KdvDropdownComponent implements OnInit {
     return '';
   }
 
-  @ViewChild(Select) select: Select;
+  @ViewChild(IonSelect) select: IonSelect;
   constructor(
     private kdvService: KdvService,
     private userSettingService: UserSettingService,

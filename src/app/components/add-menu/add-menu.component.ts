@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
-import { Fab, NavController } from '@ionic/angular';
+import { IonFab, NavController } from '@ionic/angular';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { Subscription } from 'rxjs';
-import { UserSetting } from '../../core/models/user-settings.model';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
 import { IRegistration } from '../../modules/registration/models/registration.model';
@@ -16,7 +15,7 @@ import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.s
   styleUrls: ['./add-menu.component.scss']
 })
 export class AddMenuComponent implements OnInit, OnDestroy {
-  @ViewChild('menuFab') menuFab: Fab;
+  @ViewChild('menuFab') menuFab: IonFab;
 
   private subscriptions: Subscription[] = [];
 

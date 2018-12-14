@@ -73,7 +73,7 @@ export const settings = {
             cacheSize: 10000,
             embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
             embeddedUrlMaxZoomWorld: 5,
-            embeddedUrlMaxZoomNorway: 5,
+            embeddedUrlMaxZoomNorway: 9,
             maxZoom: 18,
             zoomInPosition: 15,
             zoomToShowBeforeNorwegianDetailsMap: 9,

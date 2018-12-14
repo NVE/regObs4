@@ -4,7 +4,7 @@ import { ObserverGroupDto } from '../../../regobs-api/models';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { Checkbox } from '@ionic/angular';
+import { IonCheckbox } from '@ionic/angular';
 
 @Component({
   selector: 'app-group',
@@ -46,7 +46,7 @@ export class GroupPage extends BasePage {
   }
 
   checkedChanged(event: CustomEvent) {
-    const checkBox = <any>event.target as Checkbox;
+    const checkBox = <any>event.target as IonCheckbox;
     if (checkBox.checked) {
       this.registration.request.ObserverGroupID = this.firstGroup.Id;
     } else {

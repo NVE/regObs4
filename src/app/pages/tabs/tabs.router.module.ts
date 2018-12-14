@@ -1,11 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
 import { TabsPage } from './tabs.page';
-import { HomePage } from '../home/home.page';
-import { TripPage } from '../trip/trip.page';
-import { WarningListPage } from '../warning-list/warning-list.page';
-import { ObservationListPage } from '../observation-list/observation-list.page';
 import { StartWizardGuard } from '../../core/guards/start-wizard.guard';
 
 const routes: Routes = [
@@ -16,34 +11,50 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/tabs/(home:home)',
+        redirectTo: '/tabs/home',
         pathMatch: 'full'
       },
       {
         path: 'home',
-        outlet: 'home',
-        component: HomePage
+        children: [
+          {
+            path: '',
+            loadChildren: '../home/home.module#HomePageModule'
+          }
+        ]
       },
       {
         path: 'trip',
-        outlet: 'trip',
-        component: TripPage
+        children: [
+          {
+            path: '',
+            loadChildren: '../trip/trip.module#TripPageModule'
+          }
+        ]
       },
       {
         path: 'observation-list',
-        outlet: 'observation-list',
-        component: ObservationListPage
+        children: [
+          {
+            path: '',
+            loadChildren: '../observation-list/observation-list.module#ObservationListPageModule'
+          }
+        ]
       },
       {
         path: 'warning-list',
-        outlet: 'warning-list',
-        component: WarningListPage
+        children: [
+          {
+            path: '',
+            loadChildren: '../warning-list/warning-list.module#WarningListPageModule'
+          }
+        ]
       },
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/(home:home)',
+    redirectTo: '/tabs/home',
     pathMatch: 'full'
   },
 ];

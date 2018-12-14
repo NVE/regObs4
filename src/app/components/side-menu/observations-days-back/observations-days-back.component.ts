@@ -5,7 +5,7 @@ import { map, tap } from 'rxjs/operators';
 import { settings } from '../../../../settings';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
-import { Select } from '@ionic/angular';
+import { IonSelect } from '@ionic/angular';
 
 @Component({
   selector: 'app-observations-days-back',
@@ -46,7 +46,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   }
 
   async changeDaysBack(event: Event) {
-    const select: Select = (<any>event.target);
+    const select: IonSelect = (<any>event.target);
     const userSetting = await this.userSettingService.getUserSettings();
     const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]);
     if (existingValue.daysBack !== select.value) {

@@ -10,7 +10,7 @@ import {
   OnChanges,
   SimpleChanges
 } from '@angular/core';
-import { Slides } from '@ionic/angular';
+import { IonSlides } from '@ionic/angular';
 
 @Component({
   selector: 'app-img-swiper',
@@ -33,7 +33,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   comment: string;
   header: string;
 
-  @ViewChild(Slides) slider: Slides;
+  @ViewChild(IonSlides) slider: IonSlides;
 
   constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) { }
 

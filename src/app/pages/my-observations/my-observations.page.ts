@@ -3,7 +3,7 @@ import { ObservationService } from '../../core/services/observation/observation.
 import { Subscription, Subject } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../modules/login/services/login.service';
-import { Refresher, InfiniteScroll, NavController } from '@ionic/angular';
+import { IonRefresher, IonInfiniteScroll, NavController } from '@ionic/angular';
 import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
 import { take } from 'rxjs/operators';
@@ -15,8 +15,8 @@ import { take } from 'rxjs/operators';
 })
 export class MyObservationsPage implements OnInit, OnDestroy {
   registrations: RegistrationViewModel[];
-  @ViewChild(Refresher) refresher: Refresher;
-  @ViewChild(InfiniteScroll) infiniteScroll: InfiniteScroll;
+  @ViewChild(IonRefresher) refresher: IonRefresher;
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   private subscription: Subscription;
   private user: ObserverResponseDto;

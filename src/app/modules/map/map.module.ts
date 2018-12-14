@@ -7,8 +7,6 @@ import { FullscreenToggleComponent } from './components/map-controls/fullscreen-
 import { GpsCenterComponent } from './components/map-controls/gps-center/gps-center.component';
 import { MapCenterInfoComponent } from './components/map-center-info/map-center-info.component';
 import { SharedModule } from '../shared/shared.module';
-import { ModalSearchPage } from './pages/modal-search/modal-search.page';
-import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.pipe';
 import { ModalSearchPageModule } from './pages/modal-search/modal-search.module';
 
 @NgModule({

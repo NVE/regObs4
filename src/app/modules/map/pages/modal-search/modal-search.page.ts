@@ -1,5 +1,5 @@
-import { Component, OnInit, NgZone, ElementRef } from '@angular/core';
-import { ModalController, Events, Input } from '@ionic/angular';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { ModalController, Events, IonInput } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable, of } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
@@ -58,7 +58,7 @@ export class ModalSearchPage implements OnInit {
   }
 
   focusInput(event: Event) {
-    const input: Input = <any>event.target;
+    const input: IonInput = <any>event.target;
     setTimeout(() => {
       (<any>input).setFocus();
     }, 1000);

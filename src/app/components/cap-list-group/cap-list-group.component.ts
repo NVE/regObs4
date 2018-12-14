@@ -2,7 +2,7 @@ import { Component, OnInit, Input, NgZone, OnDestroy, ViewChild } from '@angular
 import * as moment from 'moment';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { ToastController, ItemSliding, List } from '@ionic/angular';
+import { ToastController, IonItemSliding, IonList } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 import { settings } from '../../../settings';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
@@ -20,7 +20,7 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
   @Input() warnings$: Observable<WarningGroup[]>;
   @Input() filterZeroValues = false;
 
-  @ViewChild('list') list: List;
+  @ViewChild('list') list: IonList;
 
   warnings: WarningGroup[] = [];
   warningSubscription: Subscription;
@@ -110,7 +110,7 @@ export class CapListGroupComponent implements OnInit, OnDestroy {
   }
 
   async onDrag(event: Event) {
-    const slider: ItemSliding = <any>event.srcElement;
+    const slider: IonItemSliding = <any>event.srcElement;
     const openAmount = (await slider.getOpenAmount()) / 100.0;
     const option = <Element>event.srcElement.childNodes[2].childNodes[1];
     const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
