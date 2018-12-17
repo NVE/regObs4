@@ -19,17 +19,22 @@
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="{{ 'ALERT.PULL_TO_REFRESH' | translate}}">
     </ion-refresher-content>
   </ion-refresher>
-  <ng-container>
-    <ng-container *ngIf="(userSetting$ | async) as userSetting">
-      <app-cap-list-group *ngIf="userSetting.showMapCenter && selectedTab === 'inMapView'" title="{{'WARNING_LIST.IN_MAP_CENTER'|translate}}"
-        [warnings$]="warningsInMapViewCenter$"></app-cap-list-group>
-    </ng-container>
+  <ng-container *ngIf="(userSetting$ | async) as userSetting">
+    <app-cap-list-group *ngIf="userSetting.showMapCenter && selectedTab === 'inMapView'" title="{{'WARNING_LIST.IN_MAP_CENTER'|translate}}"
+      [warnings$]="warningsInMapViewCenter$"></app-cap-list-group>
     <app-cap-list-group *ngIf="selectedTab === 'inMapView'" title="{{'WARNING_LIST.IN_MAP_VIEW'|translate}}"
       [warnings$]="warningsInMapViewBounds$"></app-cap-list-group>
     <app-cap-list-group *ngIf="selectedTab === 'inMapView' && warningsInViewBoundsLength < 3" title="{{'WARNING_LIST.OTHER_RELEVANT'|translate}}"
       [warnings$]="warningsInMapViewBuffer$" [filterZeroValues]="true"></app-cap-list-group>
-    <app-cap-list-group *ngIf="selectedTab === 'all'" title="{{'WARNING_LIST.MAIN_REGIONS'|translate}}" [warnings$]="allAWarnings$"></app-cap-list-group>
-    <app-cap-list-group *ngIf="selectedTab === 'all'" title="{{'WARNING_LIST.B_REGIONS'|translate}}" [warnings$]="allBWarnings$"></app-cap-list-group>
+    <ng-container *ngIf="selectedTab === 'all'">
+      <ng-container *ngIf="userSetting.currentGeoHazard[0] === GeoHazard.Snow">
+        <app-cap-list-group title="{{'WARNING_LIST.MAIN_REGIONS'|translate}}" [warnings$]="allAWarnings$"></app-cap-list-group>
+        <app-cap-list-group title="{{'WARNING_LIST.B_REGIONS'|translate}}" [warnings$]="allBWarnings$"></app-cap-list-group>
+      </ng-container>
+      <ng-container *ngIf="userSetting.currentGeoHazard[0] !== GeoHazard.Snow">
+        <app-cap-list-group title="{{'WARNING_LIST.ALL_WARNINGS'|translate}}" [warnings$]="allWarnings$"></app-cap-list-group>
+      </ng-container>
+    </ng-container>
     <app-cap-list-group *ngIf="selectedTab === 'favourites'" title="{{'WARNING_LIST.FAVOURITES'|translate}}"
       [warnings$]="favourites$"></app-cap-list-group>
   </ng-container>

@@ -8,6 +8,7 @@ import { UserSetting } from '../../core/models/user-settings.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IonRefresher } from '@ionic/angular';
 import { CapListGroupComponent } from '../../components/cap-list-group/cap-list-group.component';
+import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
 @Component({
   selector: 'app-warning-list',
@@ -16,6 +17,7 @@ import { CapListGroupComponent } from '../../components/cap-list-group/cap-list-
 })
 export class WarningListPage implements OnInit, OnDestroy {
   selectedTab: 'inMapView' | 'all' | 'favourites';
+  allWarnings$: Observable<WarningGroup[]>;
   allAWarnings$: Observable<WarningGroup[]>;
   allBWarnings$: Observable<WarningGroup[]>;
   warningsInMapViewCenter$: Observable<WarningGroup[]>;
@@ -26,6 +28,7 @@ export class WarningListPage implements OnInit, OnDestroy {
   warningsInViewBoundsLength: number;
   @ViewChild(IonRefresher) refresher: IonRefresher;
   @ViewChildren(CapListGroupComponent) capListGroups: QueryList<CapListGroupComponent>;
+  GeoHazard = GeoHazard;
 
   constructor(
     private warningService: WarningService, private userSettingService: UserSettingService, private ngZone: NgZone) {
@@ -43,9 +46,10 @@ export class WarningListPage implements OnInit, OnDestroy {
       }));
     this.warningsInMapViewBuffer$ = this.warningService.warningGroupInMapViewObservable$
       .pipe(map((val) => val.buffer));
-    this.allAWarnings$ = this.warningService.warningsForCurrentGeoHazardObservable$.pipe(
+    this.allWarnings$ = this.warningService.warningsForCurrentGeoHazardObservable$;
+    this.allAWarnings$ = this.allWarnings$.pipe(
       map((warnings) => warnings.filter((warning) => warning.groupType === 'A')));
-    this.allBWarnings$ = this.warningService.warningsForCurrentGeoHazardObservable$.pipe(
+    this.allBWarnings$ = this.allWarnings$.pipe(
       map((warnings) => warnings.filter((warning) => warning.groupType === 'B')));
     this.favourites$ = this.warningService.warningsObservable$
       .pipe(map((warningGroups) =>
