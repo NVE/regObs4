@@ -3,12 +3,13 @@ import * as L from 'leaflet';
 import { IRegistration } from '../../models/registration.model';
 import { RegistrationService } from '../../services/registration.service';
 import { NavController } from '@ionic/angular';
-import { ObsLocationDto, ObsLocationsResponseDtoV2 } from '../../../regobs-api/models';
+import { ObsLocationsResponseDtoV2 } from '../../../regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { Observable } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
+import { ObsLocation } from '../../models/obs-location.model';
 
 @Component({
   selector: 'app-obs-location',
@@ -87,11 +88,12 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       && reg.request.ObsLocation.Longitude;
   }
 
-  async onLocationSet(event: ObsLocationDto) {
+  async onLocationSet(event: ObsLocation) {
     if (!this.registration) {
       this.registration = await this.registrationService.createNewRegistration(this.geoHazard);
     }
     this.registration.request.ObsLocation = event;
+    this.registration.calculatedLocationName = event.calculatedLocationName;
     const id = await this.registrationService.saveRegistration(this.registration);
     if (this.registration.request.DtObsTime) {
       this.navController.navigateForward('registration/edit/' + id);

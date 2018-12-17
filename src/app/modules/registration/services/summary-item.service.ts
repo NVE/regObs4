@@ -26,7 +26,8 @@ export class SummaryItemService {
       {
         href: '/registration/obs-location/' + registration.id,
         title: 'REGISTRATION.OBS_LOCATION.TITLE',
-        subTitle: registration.request.ObsLocation ? registration.request.ObsLocation.LocationName : '',
+        subTitle: registration.request.ObsLocation ? registration.request.ObsLocation.LocationName
+          || registration.calculatedLocationName || '' : '',
         hasData: !IsEmptyHelper.isEmpty(registration.request.ObsLocation),
       },
       {

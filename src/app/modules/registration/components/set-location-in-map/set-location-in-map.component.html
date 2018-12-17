@@ -1,5 +1,5 @@
 <div [ngClass]="{'open': showDetails, 'details-small':!showFromMarkerInDetails }">
-  <app-map *ngIf="locationMarker" [followMode]="followMode" [showSupportMaps]="false" (mapReady)="onMapReady($event)"
+  <app-map *ngIf="locationMarker" [(followMode)]="followMode" [showSupportMaps]="false" (mapReady)="onMapReady($event)"
     (positionChange)="positionChange($event)" [center]="locationMarker.getLatLng()"></app-map>
   <ion-grid class="bottom-info" no-padding>
     <ion-row>
@@ -60,8 +60,8 @@
                           </ion-label>
                         </ion-col>
                       </ion-row>
-                      <ion-row *ngIf="!selectedLocation">
-                        <ion-col no-padding>
+                      <ion-row *ngIf="!selectedLocation && !editLocationName">
+                        <ion-col size="10" no-padding>
                           <ng-container *ngIf="!isLoading">
                             <ng-container *ngIf="viewInfo && viewInfo.location">
                               <ion-label class="detail-obs-info" no-margin>
@@ -74,6 +74,14 @@
                           <ng-container *ngIf="isLoading">
                             <ion-spinner color="dark" name="dots"></ion-spinner>
                           </ng-container>
+                        </ion-col>
+                        <ion-col size="2">
+                          <ion-icon name="create" *ngIf="canEditLocationName" (click)="editLocation()"></ion-icon>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row *ngIf="editLocationName">
+                        <ion-col no-padding>
+                          <ion-input #editLocationNameInput type="text" [max]="60" [(ngModel)]="locationName"></ion-input>
                         </ion-col>
                       </ion-row>
                       <ion-row>

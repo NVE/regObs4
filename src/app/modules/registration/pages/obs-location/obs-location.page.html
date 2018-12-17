@@ -10,6 +10,6 @@
 </ion-header>
 <ion-content>
   <app-set-location-in-map *ngIf="isLoaded" [geoHazard]="geoHazard" [locationMarker]="locationMarker" (locationSet)="onLocationSet($event)"
-    [selectedLocation]="selectedLocation">
+    [selectedLocation]="selectedLocation" [canEditLocationName]="true">
   </app-set-location-in-map>
 </ion-content>

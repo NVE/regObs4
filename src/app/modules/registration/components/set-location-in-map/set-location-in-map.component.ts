@@ -1,21 +1,21 @@
-import { Component, OnInit, Input, EventEmitter, Output, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from '../../../map/services/map/map.service';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
-import { debounceTime, take, timeout, switchMap } from 'rxjs/operators';
+import { debounceTime, take, switchMap } from 'rxjs/operators';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { Subscription } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
 import { ObsLocationsResponseDtoV2, ObsLocationDto } from '../../../regobs-api/models';
 import { LocationService } from '../../../../core/services/location/location.service';
-import { settings } from '../../../../../settings';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
-import { Events } from '@ionic/angular';
 import { IconHelper } from '../../../map/helpers/icon.helper';
 import { ViewInfo } from '../../../map/services/map-search/view-info.model';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { ObsLocation } from '../../models/obs-location.model';
+import { IonInput } from '@ionic/angular';
 
 @Component({
   selector: 'app-set-location-in-map',
@@ -39,6 +39,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Output() mapReady = new EventEmitter<L.Map>();
   @Input() showPolyline = true;
   @Input() showFromMarkerInDetails = true;
+  @Input() canEditLocationName = false;
 
   private map: L.Map;
   followMode = false;
@@ -55,10 +56,13 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     maxClusterRadius: 60,
     iconCreateFunction: (cluster) => IconHelper.getPreviousUsedPlacesIcon(cluster.getChildCount()),
   });
+  editLocationName = false;
+  locationName: string;
+
+  @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
 
   constructor(
     private mapService: MapService,
-    private events: Events,
     private helperService: HelperService,
     private ngZone: NgZone,
     private mapSearchService: MapSearchService,
@@ -131,7 +135,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     });
     this.map.on('dragend', () => this.updateMapViewInfo());
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
-    this.events.subscribe(settings.events.centerMapToUser, () => this.centerMapToUser());
 
     const previousUsedPlaceIcon = L.icon({
       iconUrl: '/assets/icon/map/prev-used-place.svg',
@@ -197,14 +200,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       });
   }
 
-  centerMapToUser() {
-    this.followMode = true;
-    this.selectedLocation = null;
-    if (this.userposition) {
-      this.positionChange(this.userposition);
-    }
-  }
-
   positionChange(position: Geoposition) {
     if (position.coords) {
       this.userposition = position;
@@ -263,7 +258,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   async confirmLocation() {
-    const obsLocation: ObsLocationDto = {
+    const obsLocation: ObsLocation = {
       Latitude: this.locationMarker.getLatLng().lat,
       Longitude: this.locationMarker.getLatLng().lng,
       Uncertainty: 0,
@@ -272,17 +267,26 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     if (this.selectedLocation) {
       obsLocation.ObsLocationID = this.selectedLocation.Id;
       obsLocation.LocationName = this.selectedLocation.Name;
-    } else {
-      if (this.viewInfo && this.viewInfo.location) {
-        obsLocation.LocationName = this.getLocationName(this.viewInfo.location);
-      }
-      if (this.followMode && this.userposition) {
-        obsLocation.UTMSourceTID = UtmSource.GPS;
-        obsLocation.Uncertainty = Math.round(this.userposition.coords.accuracy);
-      }
+    } else if (this.editLocationName && this.locationName && this.locationName.length > 0) {
+      obsLocation.LocationName = this.locationName.substring(0, 60);
+    } else if (this.viewInfo && this.viewInfo.location) {
+      obsLocation.calculatedLocationName = this.getLocationName(this.viewInfo.location);
+    }
+    if (this.followMode && this.userposition) {
+      obsLocation.UTMSourceTID = UtmSource.GPS;
+      obsLocation.Uncertainty = Math.round(this.userposition.coords.accuracy);
     }
 
     this.locationSet.emit(obsLocation);
+  }
+
+  editLocation() {
+    this.editLocationName = true;
+    setTimeout(() => {
+      if (this.editLocationNameInput) {
+        this.editLocationNameInput.setFocus();
+      }
+    }, 50);
   }
 
 }
