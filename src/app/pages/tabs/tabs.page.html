@@ -1,4 +1,4 @@
-<ion-tabs (ionChange)="tabsChanged($event)" tabbar-highlight="true" [ngClass]="{'ios': isIos, 'md': isAndroid}">
+<ion-tabs tabbar-highlight="true" [ngClass]="{'ios': isIos, 'md': isAndroid}">
   <ion-tab-bar [hidden]="fullscreen$ | async" slot="bottom">
     <ion-tab-button tab="home">
       <ion-icon name="map"></ion-icon>
