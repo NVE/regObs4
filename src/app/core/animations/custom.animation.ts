@@ -138,14 +138,17 @@ export class CustomAnimation {
         backdropAnimation.addElement(baseEl.querySelector('ion-backdrop'));
 
         backdropAnimation.fromTo('opacity', 0.4, 0.0);
+        const modalWrapperElement = baseEl.querySelector('.modal-wrapper');
 
         const wrapperAnimation = new AnimationC();
-        wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
+        wrapperAnimation.addElement(modalWrapperElement);
+        const currentTranslateX = modalWrapperElement.getAttribute('data-offset-x');
+        const currentOpacity = modalWrapperElement.getAttribute('data-opacity');
 
         wrapperAnimation
-            .beforeStyles({ 'transform': 'translateX(0)', 'opacity': 0.01 })
-            .fromTo('transform', 'translateX(0)', 'translateX(100%)')
-            .fromTo('opacity', 1, 0);
+            .fromTo('transform', `translateX(${currentTranslateX ?
+                parseInt(currentTranslateX, 10) : 0})`, 'translateX(100%)')
+            .fromTo('opacity', currentOpacity ? parseInt(currentOpacity, 10) : 0, 0);
 
         return Promise.resolve(baseAnimation
             .addElement(baseEl)
