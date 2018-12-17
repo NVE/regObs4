@@ -281,8 +281,15 @@ export class ObservationService {
   }
 
   async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {
+    // const debugAll = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
+    //   .query('select').exec();
+    // console.log(`[DEBUG][ObservationService] id: ${id}, appMode. ${appMode}, langKey: ${langKey}.  All observations: `, debugAll);
     const result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
       .query('select').where([['RegID', '=', id], 'AND', ['LangKey', '=', langKey]]).exec();
+    // console.log(`[DEBUG][ObservationService] query result: `, result);
+    // const query2Result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
+    //   .query('select').where((x: RegistrationViewModel) => x.RegID === id && x.LangKey === langKey).exec();
+    // console.log(`[DEBUG][ObservationService] query result2: `, query2Result);
     return result[0] as RegistrationViewModel;
   }
 

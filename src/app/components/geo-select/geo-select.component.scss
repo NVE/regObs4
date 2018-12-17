@@ -1,21 +1,16 @@
 ion-fab {
-    // &.fab-vertical-top.fab-edge {
-    //     top: -24px;
-    // }
-
     &.fullscreen {
         top: calc(10px + var(--ion-safe-area-top,0px)) !important;
     }
 
     ion-fab-button {
-        --size: 44px;
-        --height: 44px;
-        --width: 44px;
+        height: 44px;
+        width: 44px;
         --box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
         margin-top: 0px;
         margin-bottom: 0px;
         margin-left: 0px;
-        margin-right: 5px;
+        margin-right: 10px;
     }
 
     .toggle-button {
@@ -27,7 +22,7 @@ ion-fab {
         }
         ion-label {
             position: relative;
-            left: 60px;
+            left: 54px;
             top: -36px;
             display: inline-block;
         }
@@ -45,6 +40,7 @@ ion-fab {
 
     .geo-selector-item {
         background-color: rgba(0,0,0,0);
+        margin-top: 7px;
     }
 
     .geo-selector-items {
@@ -52,7 +48,7 @@ ion-fab {
         &.open {
             display: block;
         }
-        margin-top: 7px;
+        
         --backround: rgba(0,0,0,0);
         --ion-background-color: rgba(0,0,0,0);
         --ion-item-background: rgba(0,0,0,0);
@@ -67,17 +63,15 @@ ion-fab {
     }
 
     &.in-header {
-        top: calc(-6px + var(--ion-safe-area-top,0px));
-        left: 0px;
+        top: calc(7px + var(--ion-safe-area-top,0px));
 
         .toggle-button {
             height: 32px;
             width: 32px;
 
             ion-fab-button {
-                --size: 32px;
-                --height: 32px;
-                --width: 32px;
+                height: 32px;
+                width: 32px;
                 --padding-start: 0px;
                 --padding-end: 0px;    
             }

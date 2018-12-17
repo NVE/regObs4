@@ -21,6 +21,7 @@
     --leaflet-bottom: 0px;
     --map-item-height: 0px;
     --map-center-info-height: 0px;
+    --map-control-fab-size: 44px;
     --ion-tab-bar-color-activated: var(--ion-color-primary);
     --ion-color-success: #75B100;
     --ion-color-success-rgb:117,177,0;
@@ -95,19 +96,6 @@
 .ion-color-warninglevel-5 {
     --ion-color-base: var(--ion-color-warninglevel-5) !important;
     --ion-color-contrast: #FFF;
-}
-
-// .map-control {
-//     background-color: var(--backdrop-background);
-//     z-index: var(--z-index-over-map);
-//     border-radius: 5px;
-//     color: #fff;
-//     padding: 5px;
-// }
-
-.map-control-fab {
-    // opacity: 0.9;
-    --width: 44px;
 }
 
 ion-item {
@@ -236,17 +224,6 @@ app-geo-icon {
         path, polygon {
                 fill: var(--geo-icon-color, #468EB3), 
         }
-    }
-}
-
-app-map-controls {
-    position: absolute;
-    top: 0;
-    right: 0px;
-    width: 60px;
-
-    ion-fab {
-        position: initial !important;
     }
 }
 
