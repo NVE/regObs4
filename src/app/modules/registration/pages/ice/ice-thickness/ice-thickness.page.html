@@ -52,6 +52,28 @@
           placeholder="{{'REGISTRATION.IN_CM' | translate}}">
         </ion-input>
       </ion-item>
+      <ion-item>
+        <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE' | translate }}</ion-label>
+        <ion-toggle [(ngModel)]="iceHeightBefore"></ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="iceHeightBefore">
+        <ion-label color="medium" position="stacked" text-uppercase>{{
+          'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT' | translate }}</ion-label>
+        <ion-input type="number" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.IceThickness.IceHeightBefore"
+          placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_TOGGLE' | translate }}</ion-label>
+        <ion-toggle [(ngModel)]="iceHeightAfter"></ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="iceHeightAfter">
+        <ion-label color="medium" position="stacked" text-uppercase>{{
+          'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_INPUT' | translate }}</ion-label>
+        <ion-input type="number" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.IceThickness.IceHeightAfter"
+          placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+        </ion-input>
+      </ion-item>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}

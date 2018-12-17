@@ -111,7 +111,6 @@ ion-list {
         margin-bottom: 0px;
         margin-top: 14px;
         font-weight: 600;
-        padding-left: calc(var(--ion-safe-area-left, 0px) + var(--padding-start));
     }
 
     &.list-ios {
@@ -121,11 +120,8 @@ ion-list {
         background: var(--ion-background-color);
     }
 
-    ion-item {
-
-        ion-label {
-            padding-left: 4px !important;
-        }
+    .item.sc-ion-label-ios-h, .item .sc-ion-label-ios-h {
+        padding-left: 0px;
     }
 }
 
