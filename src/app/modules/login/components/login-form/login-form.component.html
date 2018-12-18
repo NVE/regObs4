@@ -15,7 +15,7 @@
       <ion-icon slot="start" name="eye"></ion-icon>
     </ion-button>
   </ion-item>
-  <ion-button class="login-button" expand="block" type="submit" color="primary" [disabled]="loginform.invalid || loading">
+  <ion-button class="login-button" expand="block" type="submit" color="varsom-prange" [disabled]="loginform.invalid || loading">
     <span *ngIf="!loading">{{ 'LOGIN.LOGIN' | translate }}</span>
     <span *ngIf="loading">{{ 'LOGIN.IS_LOGGING_IN' | translate }}</span>
   </ion-button>

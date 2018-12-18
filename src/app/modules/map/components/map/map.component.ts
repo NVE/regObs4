@@ -60,22 +60,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private fullscreenService: FullscreenService,
   ) {
     this.mapItemClickedHandler = (item: MapSearchResponse) => {
+      this.disableFollowMode();
       this.zone.runOutsideAngular(() => {
-        this.disableFollowMode();
         this.map.flyTo(item.latlng, settings.map.mapSearchZoomToLevel);
       });
     };
 
     this.centerMapToUserHandler = () => {
-      this.zone.runOutsideAngular(() => {
-        this.followMode = true;
-        this.followModeChange.emit(this.followMode);
-        if (this.userMarker) {
-          const currentPosition = this.userMarker.getPosition();
-          const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+      this.followMode = true;
+      this.followModeChange.emit(this.followMode);
+      if (this.userMarker) {
+        const currentPosition = this.userMarker.getPosition();
+        const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+        this.zone.runOutsideAngular(() => {
           this.map.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()));
-        }
-      });
+        });
+      }
     };
   }
 

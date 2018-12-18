@@ -1,3 +1,10 @@
+ion-fab-button {
+    --ion-color-primary: var(--ion-color-varsom-orange);
+    --background-activated: var(--ion-color-varsom-orange-shade);
+    --color: var(--ion-color-varsom-orange-contrast);
+    --color-activated: var(--ion-color-varsom-orange-contrast);
+}
+
 ion-fab-list {
     right: 5px;
 }

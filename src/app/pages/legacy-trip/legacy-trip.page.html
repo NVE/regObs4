@@ -45,10 +45,10 @@
           <ion-row class="white-background">
             <ion-col size="12">
               <ion-button (click)="startTrip()" [disabled]="isLoading" *ngIf="!isRunning" class="back-button" expand="block"
-                color="primary">
+                color="varsom-orange">
                 {{ 'TRIP.START_TRIP' | translate }}
               </ion-button>
-              <ion-button *ngIf="isRunning" [disabled]="isLoading" class="back-button" expand="block" color="primary">
+              <ion-button *ngIf="isRunning" [disabled]="isLoading" class="back-button" expand="block" color="varsom-orange">
                 {{ 'TRIP.STOP_TRIP' | translate }}
               </ion-button>
             </ion-col>
