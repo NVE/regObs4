@@ -1,7 +1,7 @@
 .top-tabs {
     
     background-color: var(--ion-item-background);
-    color: var(--ion-tab-bar-color);
+    color: var(--ion-color-primary);
     font-size: 14px;
     font-weight: bold;
     line-height: 34px;
@@ -11,9 +11,8 @@
     }
 
     .selected {
-        color: var(--ion-color-primary);
-        border-bottom: 2px solid #5C90A5;
-        background-color: var(---ion-tab-bar-background-focused);
+        border-bottom: 2px solid var(--ion-color-primary-shade);
+        background-color: #F4F8F9;
     }
 }
 
