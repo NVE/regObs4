@@ -64,6 +64,7 @@
     "TERMS": "Data on regObs is produced by the users of regObs and is available as it is. It may contain errors and omissions. NVE makes no warranties for current the information and does not take responsibility for that data can give incorrect or misleading information. The number of stars (1-5) describes the level of competence of the person providing observations. Without stars, competence is unknown or low."
   },
   "LOGIN": {
+    "CHANGE_PASSWORD": "Change password",
     "CREATE_USER": "Create user",
     "EMAIL": "Email",
     "FORGOT_PASSWORD": "Forgot password",
@@ -71,6 +72,7 @@
     "LOGGED_IN_AS": "Logged in as",
     "LOGIN": "Login",
     "LOGOUT": "Logout",
+    "MY_PROFILE": "My profile",
     "PASSWORD": "Password",
     "SERVICE_UNAVAILABLE": "Error while connecting to the service. Do you have mobile network? Please wait a few minutes and try again.",
     "TITLE": "Login",

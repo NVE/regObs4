@@ -12,6 +12,11 @@ export class ExternalLinkService {
     // const iap = this.inAppBrowser.create(url, '_system');
     // iap.show();
     // NOTE: The above code crashes Android. Workaround is to use cordova plugin direct.
-    (<any>window).cordova.InAppBrowser.open(url, '_system', 'location=yes');
+    const w = (<any>window);
+    if (w.cordova && w.cordova.InAppBrowser) {
+      w.cordova.InAppBrowser.open(url, '_system', 'location=yes');
+    } else {
+      window.open(url, '_blank');
+    }
   }
 }

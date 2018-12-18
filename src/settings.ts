@@ -18,7 +18,7 @@ export const settings = {
                 'TEST': 'https://tst-h-web03.nve.no/regobswebapi_v4.0'
             },
             serviceUrl: {
-                'PROD': 'https://api.nve.no/hydrology/regobs/v3.1.0',
+                'PROD': 'https://api.nve.no/hydrology/regobs/v3.5.0',
                 'DEMO': 'http://stg-h-web03.nve.no/RegObsServices',
                 'TEST': 'http://tst-h-web03.nve.no/regobsservices_test'
             },
@@ -31,6 +31,8 @@ export const settings = {
             },
             createUserUrl: '/Account/Register?c=Home',
             passwordRecoveryUrl: '/Account/PasswordRecovery?c=Home',
+            changePasswordUrl: '/Account/ChangePassword?email={email}&c=Home',
+            viewProfileUrl: '/Account/MyPage',
             apiJsonVersion: '4.0.0',
         },
         warning: {

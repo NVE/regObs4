@@ -64,6 +64,7 @@
     "TERMS": "Data på regObs produseres av brukerne av regObs og foreligger \"som den er\". Den kan inneholde feil og utelatelser. NVE gir ingen garantier for informasjonens aktualitet og tar ikke ansvar for at data kan gi feil eller villedende informasjon. Antall stjerner (1-5) beskriver kompetansenivået til den som leverer observasjoner. Uten stjerner er kompetansen ukjent eller lav."
   },
   "LOGIN": {
+    "CHANGE_PASSWORD": "Endre passord",
     "CREATE_USER": "Lag ny bruker",
     "EMAIL": "Epost",
     "FORGOT_PASSWORD": "Glemt passord",
@@ -71,6 +72,7 @@
     "LOGGED_IN_AS": "Logget inn som",
     "LOGIN": "Logg inn",
     "LOGOUT": "Logg ut",
+    "MY_PROFILE": "Min profil",
     "PASSWORD": "Passord",
     "SERVICE_UNAVAILABLE": "Det er problemer med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen.",
     "TITLE": "Logg inn",
