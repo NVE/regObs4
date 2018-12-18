@@ -223,6 +223,10 @@ app-geo-icon {
     }
 }
 
+app-header {
+    z-index: -1;
+}
+
 .text-truncate {
     overflow: hidden;
     text-overflow: ellipsis;

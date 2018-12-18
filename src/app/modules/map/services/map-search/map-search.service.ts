@@ -112,7 +112,7 @@ export class MapSearchService {
     console.log('[INFO] Get elevation for world');
     return this.httpClient.get(`${settings.map.search.geonames.url}/srtm1JSON?`
       + `lat=${latLng.lat}&lng=${latLng.lng}&username=${settings.map.search.geonames.username}`)
-      .pipe(map((data: any) => data.srtm1));
+      .pipe(map((data: any) => data && data.srtm1 !== -1 ? data.srtm1 : undefined));
   }
 
   reverseGeocodeWorld(latLng: L.LatLng): Observable<LocationName> {
@@ -154,11 +154,12 @@ export class MapSearchService {
   getViewInfo(latLng: L.LatLng, isInNorway: boolean): Observable<ViewInfo> {
     return this.getLocationName(latLng, isInNorway).pipe(($ln) =>
       combineLatest($ln, this.getElevation(latLng)),
-      map(([location, elevation]) => ({
-        location,
-        elevation,
-        latLng,
-      })));
+      map<[LocationName, number], { location: LocationName, elevation: number, latLng: L.LatLng }>
+        (([location, elevation]) => ({
+          location,
+          elevation,
+          latLng,
+        })));
   }
 
   async saveSearchHistoryToDb(searchResult: MapSearchResponse) {
