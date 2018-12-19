@@ -1,13 +1,26 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
-<ion-content>
-  <ng-container *ngIf="$observations | async as observations">
-    <h4 text-center *ngIf="observations.length === 0">
-      {{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}
-    </h4>
+<ion-content #pageContent *ngIf="(observations$ | async) as observations">
+  <cdk-virtual-scroll-viewport *ngIf="(observations.length > 0) else empty" autosize>
+    <div *cdkVirtualFor="let obs of observations; trackBy: trackByRegId">
+      <app-observation-list-card [obs]="obs"></app-observation-list-card>
+    </div>
+  </cdk-virtual-scroll-viewport>
+  <!-- <ion-virtual-scroll *ngIf="(observations.length > 0) else empty" [items]="observations" approxItemHeight="600px">
+    <div *virtualItem="let obs">
+      <app-observation-list-card [obs]="obs"></app-observation-list-card>
+    </div>
+  </ion-virtual-scroll> -->
+  <!-- <ng-container *ngIf="$observations | async as observations">
+    
     <ion-list>
       <app-observation-list-card [obs]="obs" *ngFor="let obs of observations; trackBy: trackByRegId">
       </app-observation-list-card>
     </ion-list>
-  </ng-container>
+  </ng-container> -->
   <app-add-menu slot="fixed"></app-add-menu>
 </ion-content>
+<ng-template #empty>
+  <h4 text-center>
+    {{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}
+  </h4>
+</ng-template>

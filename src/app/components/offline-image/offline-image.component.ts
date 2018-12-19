@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnChanges, SimpleChanges, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { OfflineImageService } from '../../core/services/offline-image/offline-image.service';
 
 @Component({
@@ -6,7 +6,8 @@ import { OfflineImageService } from '../../core/services/offline-image/offline-i
   templateUrl: './offline-image.component.html',
   styleUrls: ['./offline-image.component.scss']
 })
-export class OfflineImageComponent implements OnInit, OnChanges {
+export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
+
   @Input() src: string;
   @Output() loaded: EventEmitter<void> = new EventEmitter();
   @Output() error: EventEmitter<void> = new EventEmitter();
@@ -14,15 +15,27 @@ export class OfflineImageComponent implements OnInit, OnChanges {
   url: string | ArrayBuffer;
   loading = true;
   hasError = false;
-  retryCount = 3;
+  cancelPromise: Promise<any>;
+  cancelPromiseResolver: (value?: any) => void;
 
-  constructor(private offlineImageService: OfflineImageService, private ngZone: NgZone) { }
+  constructor(private offlineImageService: OfflineImageService, private ngZone: NgZone) {
+    this.cancelPromise = new Promise((resolve) => {
+      this.cancelPromiseResolver = resolve;
+    });
+  }
 
   ngOnInit() {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.setUrl();
+    if (changes.src && changes.src.currentValue !== changes.src.previousValue) {
+      this.setUrl();
+    }
+  }
+
+  ngOnDestroy(): void {
+    console.log('[INFO] OfflineImage ngOnDestroy. Cancel image load.');
+    this.cancelPromiseResolver();
   }
 
   imgDidLoad() {
@@ -30,36 +43,21 @@ export class OfflineImageComponent implements OnInit, OnChanges {
       this.loading = false;
       this.loaded.emit();
     });
-
-  }
-
-  imgError() {
-    if (this.retryCount > 0) {
-      this.retryCount--;
-      this.ngZone.run(() => {
-        this.url = undefined;
-      });
-      setTimeout(async () => {
-        const fallbackUrl = await this.offlineImageService.getImageOrFallbackToUrl(this.src);
-        this.ngZone.run(() => {
-          this.url = fallbackUrl;
-        });
-      }, 500);
-    } else {
-      this.ngZone.run(() => {
-        this.loading = false;
-        this.hasError = true;
-        this.error.emit();
-      });
-    }
   }
 
   private async setUrl() {
     this.hasError = false;
     this.loading = true;
-    const fallbackUrl = await this.offlineImageService.getImageOrFallbackToUrl(this.src);
+    const offlineUrl = await this.offlineImageService.getOfflineImage(this.src, { cancelPromise: this.cancelPromise });
     this.ngZone.run(() => {
-      this.url = fallbackUrl;
+      if (offlineUrl) {
+        this.url = offlineUrl;
+      } else {
+        this.hasError = true;
+        this.error.emit();
+        this.loading = false;
+        this.loaded.emit();
+      }
     });
   }
 }

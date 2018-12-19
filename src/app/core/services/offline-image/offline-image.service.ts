@@ -9,6 +9,7 @@ import { settings } from '../../../../settings';
 import * as moment from 'moment';
 import { IOfflineAsset } from './offline-asset.interface';
 import { DbHelperService } from '../db-helper/db-helper.service';
+import { Platform } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class OfflineImageService {
     private backgroundDownloadService: BackgroundDownloadService,
     private http: HTTP,
     private file: File,
+    private platform: Platform,
     private webview: WebView,
     private dbHelperService: DbHelperService,
   ) { }
@@ -31,6 +33,59 @@ export class OfflineImageService {
     } else {
       this.downloadOfflineAsset(url, type); // Do not wait for promise result
       return url;
+    }
+  }
+
+  async getOfflineImage(url: string, options: {
+    retryCount?: number, maxRetry?: number, cancelPromise?: Promise<any>,
+    type?: string
+  }) {
+    if (!this.platform.isAndroidOrIos()) {
+      return url;
+    } // No support for offline image in web
+
+    // Setting default options
+    if (!options.retryCount) {
+      options.retryCount = 0;
+    }
+    if (!options.maxRetry) {
+      options.maxRetry = 5;
+    }
+    if (!options.type) {
+      options.type = 'image/jpg';
+    }
+    let timeout: NodeJS.Timeout = null;
+    if (options.cancelPromise) {
+      options.cancelPromise.then(() => {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        console.log(`[INFO][OfflineImageService] Cancel, return null`);
+        return null;
+      });
+    }
+    const offlineAsset = await this.getOfflineAssetFromDb(url);
+    if (offlineAsset) {
+      this.updateLastAccess(offlineAsset);
+      return this.webview.convertFileSrc(offlineAsset.fileUrl);
+    } else if (options.retryCount < options.maxRetry) {
+      console.log(`[INFO][OfflineImageService] No offline asset found, try to download. Retry count: ${options.retryCount}`);
+      const downloadResult = await this.downloadOfflineAsset(url, options.type);
+      if (downloadResult) {
+        return this.webview.convertFileSrc(downloadResult.fileUrl);
+      } else {
+        const retryDelay = options.retryCount * 500;
+        console.log(`[INFO][OfflineImageService] Could not download image. Retry in ${retryDelay} ms`);
+        return new Promise<string>((resolve) => {
+          timeout = setTimeout(() => {
+            options.retryCount = options.retryCount + 1;
+            resolve(this.getOfflineImage(url, options));
+          }, retryDelay);
+        });
+      }
+    } else {
+      console.log(`[INFO][OfflineImageService] Max retries reached, give up.`);
+      return null;
     }
   }
 
@@ -66,9 +121,11 @@ export class OfflineImageService {
         type,
         lastAccess: moment().unix()
       };
-      return nSQL().table(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
+      await nSQL().table(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
+      return offlineAsset;
     } catch (error) {
       console.warn('Could not download offline asset: ', error);
+      return null;
     }
   }
 

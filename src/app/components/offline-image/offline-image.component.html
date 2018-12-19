@@ -1,5 +1,4 @@
-<img *ngIf="url" class="real-image" [ngClass]="{ 'loaded': (!loading && !hasError) }" [src]="url" (load)="imgDidLoad()"
-    (error)="imgError()" />
+<ion-img *ngIf="url" class="real-image" [ngClass]="{ 'loaded': (!loading && !hasError) }" [src]="url" (ionImgDidLoad)="imgDidLoad()"></ion-img>
 <div class="animated-background" [ngClass]="{ 'loaded': !loading, 'hide': (!loading && !hasError) }">
     <ion-icon name="flash-off"></ion-icon>
 </div>

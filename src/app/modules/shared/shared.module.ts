@@ -18,6 +18,9 @@ import { ImgSwiperComponent } from '../../components/img-swiper/img-swiper.compo
 import { HeaderComponent } from '../../components/header/header.component';
 import { RouterModule } from '@angular/router';
 
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { ScrollingModule as ExperimentalScrollingModule } from '@angular/cdk-experimental/scrolling';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -27,6 +30,8 @@ import { RouterModule } from '@angular/router';
         AngularSvgIconModule,
         TranslateModule,
         RouterModule,
+        ScrollingModule,
+        ExperimentalScrollingModule,
     ],
     declarations: [
         ShadowCssDirective,
@@ -49,6 +54,8 @@ import { RouterModule } from '@angular/router';
         IonicModule,
         TranslateModule,
         RouterModule,
+        ScrollingModule,
+        ExperimentalScrollingModule,
         ShadowCssDirective,
         AngularSvgIconModule,
         AddMenuComponent,

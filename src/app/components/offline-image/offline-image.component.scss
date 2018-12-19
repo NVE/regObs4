@@ -1,4 +1,4 @@
-img {
+ion-img {
     width: inherit;
     height: inherit;
     object-fit: inherit;
@@ -6,7 +6,7 @@ img {
 
 .real-image {
     opacity: 0;
-    display: none;
+    // display: none;
     transition: opacity 1s linear;
 
     &.loaded {
