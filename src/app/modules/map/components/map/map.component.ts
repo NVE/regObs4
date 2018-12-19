@@ -67,8 +67,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     this.centerMapToUserHandler = () => {
-      this.followMode = true;
-      this.followModeChange.emit(this.followMode);
+      this.zone.run(() => {
+        this.followMode = true;
+        this.followModeChange.emit(this.followMode);
+      });
       if (this.userMarker) {
         const currentPosition = this.userMarker.getPosition();
         const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
@@ -172,8 +174,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private disableFollowMode() {
-    this.followMode = false;
-    this.followModeChange.emit(this.followMode);
+    this.zone.run(() => {
+      this.followMode = false;
+      this.followModeChange.emit(this.followMode);
+    });
   }
 
   private updateMapView() {
