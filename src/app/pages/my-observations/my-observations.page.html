@@ -21,14 +21,24 @@
   </ion-refresher>
   <app-draft-item-list></app-draft-item-list>
   <app-sync-item-list></app-sync-item-list>
-  <ion-list lines="full">
-    <ion-list-header text-uppercase class="my-observation-header">
+  <ion-list lines="none">
+    <ion-list-header text-uppercase>
       <ion-label>
         {{"MY_OBSERVATIONS.MY_SENT_OBSERVATIONS" | translate}}
       </ion-label>
     </ion-list-header>
-    <app-observation-list-card [obs]="item" *ngFor="let item of registrations;trackBy: trackByRegId">
-    </app-observation-list-card>
+    <!-- <app-observation-list-card [obs]="item" *ngFor="let item of registrations;trackBy: trackByRegId">
+    </app-observation-list-card> -->
+    <ion-virtual-scroll [ngClass]="{ loaded: loaded }" [items]="registrations" [approxItemHeight]="250">
+      <div *virtualItem="let item">
+        <app-observation-list-card [obs]="item"></app-observation-list-card>
+      </div>
+    </ion-virtual-scroll>
+    <!-- <cdk-virtual-scroll-viewport autosize>
+      <div *cdkVirtualFor="let obs of registrations; trackBy: trackByRegId">
+        <app-observation-list-card [obs]="obs"></app-observation-list-card>
+      </div>
+    </cdk-virtual-scroll-viewport> -->
   </ion-list>
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData()">
     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="{{'MY_OBSERVATIONS.LOADING_MORE' | translate}}">

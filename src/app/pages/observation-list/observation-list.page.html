@@ -1,17 +1,19 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
-<ion-content #pageContent *ngIf="(observations$ | async) as observations">
-  <cdk-virtual-scroll-viewport *ngIf="(observations.length > 0) else empty" autosize>
+<ion-content>
+  <!-- <cdk-virtual-scroll-viewport *ngIf="(observations.length > 0) else empty" autosize>
     <div *cdkVirtualFor="let obs of observations; trackBy: trackByRegId">
       <app-observation-list-card [obs]="obs"></app-observation-list-card>
     </div>
-  </cdk-virtual-scroll-viewport>
-  <!-- <ion-virtual-scroll *ngIf="(observations.length > 0) else empty" [items]="observations" approxItemHeight="600px">
-    <div *virtualItem="let obs">
-      <app-observation-list-card [obs]="obs"></app-observation-list-card>
-    </div>
-  </ion-virtual-scroll> -->
+  </cdk-virtual-scroll-viewport> -->
+  <ng-container *ngIf="observations !== undefined">
+    <ion-virtual-scroll [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" [items]="observations"
+      [approxItemHeight]="250">
+      <div *virtualItem="let obs">
+        <app-observation-list-card [obs]="obs"></app-observation-list-card>
+      </div>
+    </ion-virtual-scroll>
+  </ng-container>
   <!-- <ng-container *ngIf="$observations | async as observations">
-    
     <ion-list>
       <app-observation-list-card [obs]="obs" *ngFor="let obs of observations; trackBy: trackByRegId">
       </app-observation-list-card>

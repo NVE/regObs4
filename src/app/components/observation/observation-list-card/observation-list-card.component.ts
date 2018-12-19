@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, NgZone, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -11,13 +11,16 @@ import { UserSetting } from '../../../core/models/user-settings.model';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
+// import { ObsCardHeightService } from '../../../core/services/obs-card-height/obs-card-height.service';
 
 @Component({
   selector: 'app-observation-list-card',
   templateUrl: './observation-list-card.component.html',
   styleUrls: ['./observation-list-card.component.scss']
 })
-export class ObservationListCardComponent implements OnInit {
+export class ObservationListCardComponent implements OnInit, OnDestroy, AfterViewInit {
+
+
   @Input() obs: RegistrationViewModel;
 
   geoHazardName: string;
@@ -37,6 +40,8 @@ export class ObservationListCardComponent implements OnInit {
   imageHeaders: string[] = [];
   imageDescriptions: string[] = [];
 
+  // private changes: MutationObserver;
+
   constructor(
     private translateService: TranslateService,
     private helperService: HelperService,
@@ -45,6 +50,7 @@ export class ObservationListCardComponent implements OnInit {
     private ngZone: NgZone,
     private userSettingService: UserSettingService,
     private socialSharing: SocialSharing,
+    // private obsCardHeightService: ObsCardHeightService,
   ) { }
 
   async ngOnInit() {
@@ -63,8 +69,45 @@ export class ObservationListCardComponent implements OnInit {
       }
       this.updateImages();
       this.loaded = true;
+      // this.saveItemHeight();
     });
   }
+
+  ngAfterViewInit(): void {
+    // const node = document.querySelector(`#cardRegId_${this.obs.RegID}`);
+
+    // this.changes = new MutationObserver((mutations) => {
+    //   mutations.forEach((mutation) => this.updateHeight(mutation));
+    // });
+
+    // this.changes.observe(node, {
+    //   attributes: true,
+    //   childList: true,
+    //   characterData: true
+    // });
+  }
+
+  // private updateHeight(mutationRecord: MutationRecord) {
+  //   if (mutationRecord.target) {
+  //     const height = (<any>mutationRecord.target).offsetHeight + 10; // add 10px padding
+  //     if (height > 100) {
+  //       this.obsCardHeightService.setHeight(this.obs.RegID, height);
+  //     }
+  //   }
+  // }
+
+  ngOnDestroy(): void {
+    // if (this.changes) {
+    //   this.changes.disconnect();
+    // }
+  }
+
+  // saveItemHeight(): void {
+  //   setTimeout(() => {
+  //     const height = this.elementRef.nativeElement.offsetHeight;
+  //     console.log(`[INFO][ObservationListCard] Loaded RegId: ${this.obs.RegID}. Height: ${height}`);
+  //   }, 200);
+  // }
 
   updateImages() {
     const openImages = this.obs.Attachments.filter((a) => {

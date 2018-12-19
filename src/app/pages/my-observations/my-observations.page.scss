@@ -1,7 +1,3 @@
-.my-observation-header {
-    margin-bottom: -5px;
-}
-
 ion-refresher, ion-content {
     background-color: var(--ion-background-color,#fff);
 }
@@ -13,3 +9,13 @@ ion-refresher {
         top: 0px;
     }
 }
+
+ion-virtual-scroll {
+    opacity: 0;
+    transition: opacity 1s linear;
+
+    &.loaded {
+        opacity: 1;
+    }
+}
+

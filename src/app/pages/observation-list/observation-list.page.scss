@@ -1,3 +1,12 @@
 cdk-virtual-scroll-viewport {
     height: 100%;
 }
+
+ion-virtual-scroll {
+    opacity: 0;
+    transition: opacity 1s linear;
+
+    &.loaded {
+        opacity: 1;
+    }
+}
