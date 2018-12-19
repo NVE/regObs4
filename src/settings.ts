@@ -13,9 +13,9 @@ export const settings = {
     services: {
         regObs: {
             apiUrl: {
-                'PROD': 'https://test-api.regobs.no/v4',
-                'DEMO': 'https://demo-api.regobs.no/v4',
-                'TEST': 'https://test-api.regobs.no/v4'
+                'PROD': 'https://api.regobs.no/app_v4',
+                'DEMO': 'https://demo-api.regobs.no/app_v4',
+                'TEST': 'https://test-api.regobs.no/app_v4'
             },
             serviceUrl: {
                 'PROD': 'https://api.nve.no/hydrology/regobs/v3.5.0',
@@ -23,10 +23,8 @@ export const settings = {
                 'TEST': 'http://tst-h-web03.nve.no/regobsservices_test'
             },
             webUrl: {
-                'PROD': 'http://test.regobs.no',
+                'PROD': 'https://www.regobs.no',
                 'DEMO': 'http://demo.regobs.no',
-                // 'PROD': 'https://www.regobs.no',
-                // 'DEMO': 'http://demo.regobs.no',
                 'TEST': 'http://test.regobs.no'
             },
             createUserUrl: '/Account/Register?c=Home',
