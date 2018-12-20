@@ -1,9 +1,10 @@
-import { ErrorHandler } from '@angular/core';
+import { ErrorHandler, Injectable } from '@angular/core';
 import * as Sentry from 'sentry-cordova';
 import { environment } from '../../../environments/environment';
 
-export class AppErrorHandler extends ErrorHandler {
-    handleError(error) {
+@Injectable()
+export class AppErrorHandler implements ErrorHandler {
+    handleError(error: any) {
         try {
             const err = error.originalError || error;
             if (err) {
