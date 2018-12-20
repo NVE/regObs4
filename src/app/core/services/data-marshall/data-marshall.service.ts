@@ -7,7 +7,7 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { pairwise, distinctUntilChanged, map } from 'rxjs/operators';
 import { LoginService } from '../../../modules/login/services/login.service';
 import { UserSetting } from '../../models/user-settings.model';
-import * as Sentry from 'sentry-cordova';
+import * as Sentry from '@sentry/browser';
 import { environment } from '../../../../environments/environment';
 import { settings } from '../../../../settings';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';

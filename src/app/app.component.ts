@@ -10,7 +10,7 @@ import { NanoSql } from '../nanosql';
 import { LangKey } from './core/models/langKey';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
-import * as Sentry from 'sentry-cordova';
+import * as Sentry from '@sentry/browser';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { environment } from '../environments/environment';
 import { AppMode } from './core/models/app-mode.enum';
@@ -121,15 +121,16 @@ export class AppComponent {
   }
 
   async setSentryRelease(appMode: AppMode) {
+    let appVersion: string = null;
+    if (this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'))) {
+      appVersion = await this.appVersion.getVersionNumber();
+    }
     Sentry.init(
       {
         dsn: settings.sentryDsn,
         environment: appMode === AppMode.Prod ? 'regObs' : (appMode === AppMode.Demo ? 'demo regObs' : 'test regObs'),
         enabled: environment.production,
+        release: appVersion,
       });
-    if (this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'))) {
-      const appVersion = await this.appVersion.getVersionNumber();
-      Sentry.setRelease(appVersion);
-    }
   }
 }

@@ -57,6 +57,7 @@
     "@mapbox/leaflet-pip": "^1.1.0",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
+    "@sentry/browser": "^4.4.2",
     "@sentry/cli": "^1.37.1",
     "@sentry/wizard": "^0.12.1",
     "@turf/turf": "^5.1.6",
@@ -113,7 +114,6 @@
     "ngx-pinch-zoom": "^1.2.0",
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.3.3",
-    "sentry-cordova": "^0.13.1",
     "stream": "0.0.2",
     "timers": "^0.1.1",
     "tunnel-agent": "^0.6.0",
@@ -179,8 +179,6 @@
         "MOTION_USAGE_DESCRIPTION": "This app requires motion detection"
       },
       "cordova-plugin-statusbar": {},
-      "sentry-cordova": {},
-      "cordova-plugin-network-information": {},
       "ionic-plugin-deeplinks": {
         "URL_SCHEME": "regobs",
         "DEEPLINK_HOST": "www.regobs.no",
