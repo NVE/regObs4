@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, ViewChild, ElementRef, AfterViewInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -18,7 +18,7 @@ import { ExternalLinkService } from '../../../core/services/external-link/extern
   templateUrl: './observation-list-card.component.html',
   styleUrls: ['./observation-list-card.component.scss']
 })
-export class ObservationListCardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ObservationListCardComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
 
 
   @Input() obs: RegistrationViewModel;
@@ -54,8 +54,14 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   ) { }
 
   async ngOnInit() {
+
+  }
+
+  private async load() {
+    if (!this.userSetting) {
+      this.userSetting = await this.userSettingService.getUserSettings();
+    }
     const geoHazard = this.obs.GeoHazardTID;
-    this.userSetting = await this.userSettingService.getUserSettings();
     this.geoHazardName = await this.translateService
       .get(`GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase()).toPromise();
 
@@ -64,6 +70,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
       this.dtObsDate = moment(this.obs.DtObsTime).toDate();
       this.icon = this.helperService.getGeoHazardIcon(geoHazard);
       this.summaries = this.obs.Summaries.filter((x) => x !== undefined).map((x) => ({ summary: x, open: true }));
+      this.stars = [];
       for (let i = 0; i < 5; i++) {
         this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
       }
@@ -71,6 +78,10 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
       this.loaded = true;
       // this.saveItemHeight();
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.load();
   }
 
   ngAfterViewInit(): void {

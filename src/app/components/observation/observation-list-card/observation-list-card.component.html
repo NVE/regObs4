@@ -1,87 +1,85 @@
-<div id="cardRegId_{{obs.RegID}}">
-  <ion-card *ngIf="loaded" class="regObsCard">
-    <ion-card-header *ngIf="header">
-      <h3 color="medium"><span *ngFor="let val of header; let i = index"><span class="small-space" *ngIf="i>0"> /
-          </span>{{
-          val
-          }}</span></h3>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-grid no-padding>
-        <ion-row class="row-padding-start" align-items-center>
-          <ion-col size="5">
-            <svg-icon [src]="icon" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon> {{ geoHazardName }}
-          </ion-col>
-          <ion-col size="7">
-            <svg-icon src="/assets/icon/moh.svg" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon> {{
-            obs.ObsLocation.Height }}
-            {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}
+<ion-card *ngIf="loaded">
+  <ion-card-header>
+    <h3 color="medium"><span *ngFor="let val of header; let i = index"><span class="small-space" *ngIf="i>0"> /
+        </span>{{
+        val
+        }}</span></h3>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-grid no-padding>
+      <ion-row class="row-padding-start" align-items-center>
+        <ion-col size="5">
+          <svg-icon [src]="icon" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon> {{ geoHazardName }}
+        </ion-col>
+        <ion-col size="7">
+          <svg-icon src="/assets/icon/moh.svg" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon> {{
+          obs.ObsLocation.Height }}
+          {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}
+        </ion-col>
+      </ion-row>
+      <ion-row class="row-padding-start row-padding-end">
+        <ion-col size="5">
+          <ion-icon name="calendar"></ion-icon> {{ dtObsDate | formatDate | async }}
+        </ion-col>
+        <ion-col size="7">
+          <ion-icon name="contact"></ion-icon> {{obs.Observer.NickName}}
+          <ion-icon [name]="star.full ? 'star' : 'star-outline'" *ngFor="let star of stars"></ion-icon>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" no-padding>
+          <app-img-swiper *ngIf="imageUrls.length > 0" [imgUrl]="imageUrls" [imgHeaders]="imageHeaders" [imgComments]="imageDescriptions"
+            (imgClick)="openImage($event)">
+          </app-img-swiper>
+        </ion-col>
+      </ion-row>
+      <ng-container *ngIf="summaries.length > 1">
+        <ion-row class="row-padding-start">
+          <ion-col size="12">
+            <ion-badge (click)="toggleAllSelected()" [color]="allSelected ? 'medium' : 'light'" [ngClass]="{'outline': !allSelected}">
+              {{'OBSERVATION_LIST.ALL_OBSERVATIONS' | translate}}
+            </ion-badge>
+            <ion-badge (click)="toggleRegistration(i)" text-wrap [color]="(s.open && (summaries.length <= 1 || !allSelected)) ? 'medium' : 'light'"
+              *ngFor="let s of summaries; let i = index" [ngClass]="{'outline': !(s.open && (summaries.length <= 1 || !allSelected))}">
+              {{ s.summary.RegistrationName }}
+            </ion-badge>
           </ion-col>
         </ion-row>
-        <ion-row class="row-padding-start row-padding-end">
-          <ion-col size="5">
-            <ion-icon name="calendar"></ion-icon> {{ dtObsDate | formatDate | async }}
-          </ion-col>
-          <ion-col size="7">
-            <ion-icon name="contact"></ion-icon> {{obs.Observer.NickName}}
-            <ion-icon [name]="star.full ? 'star' : 'star-outline'" *ngFor="let star of stars"></ion-icon>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="12" no-padding>
-            <app-img-swiper *ngIf="obs.Attachments.length > 0" [imgUrl]="imageUrls" [imgHeaders]="imageHeaders"
-              [imgComments]="imageDescriptions" (imgClick)="openImage($event)">
-            </app-img-swiper>
-          </ion-col>
-        </ion-row>
-        <ng-container *ngIf="summaries.length > 1">
+      </ng-container>
+      <ng-container *ngFor="let s of summaries; let i = index">
+        <ng-container *ngIf="s.open">
           <ion-row class="row-padding-start">
             <ion-col size="12">
-              <ion-badge (click)="toggleAllSelected()" [color]="allSelected ? 'medium' : 'light'" [ngClass]="{'outline': !allSelected}">
-                {{'OBSERVATION_LIST.ALL_OBSERVATIONS' | translate}}
-              </ion-badge>
-              <ion-badge (click)="toggleRegistration(i)" text-wrap [color]="(s.open && (summaries.length <= 1 || !allSelected)) ? 'medium' : 'light'"
-                *ngFor="let s of summaries; let i = index" [ngClass]="{'outline': !(s.open && (summaries.length <= 1 || !allSelected))}">
-                {{ s.summary.RegistrationName }}
-              </ion-badge>
+              <h3>{{ s.summary.RegistrationName }}</h3>
+            </ion-col>
+          </ion-row>
+          <ion-row class="row-padding-start">
+            <ion-col size="12" text-wrap class="obs-content">
+              <ng-container *ngFor="let innerSummary of s.summary.Summaries; let i = index">
+                <span *ngIf="i>0">&nbsp;&bull;&nbsp;</span>
+                <span *ngIf="innerSummary.Kind === 0">
+                  {{ innerSummary.Value }}
+                </span>
+                <ng-container *ngIf="innerSummary.Kind === 1">
+                  <ng-container *ngFor="let webUrl of innerSummary.Value; let j = index">
+                    <span *ngIf="j>0">&nbsp;&bull;&nbsp;</span>
+                    <app-external-link [src]="webUrl.Value">{{webUrl.Header}}</app-external-link>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
             </ion-col>
           </ion-row>
         </ng-container>
-        <ng-container *ngFor="let s of summaries; let i = index">
-          <ng-container *ngIf="s.open">
-            <ion-row class="row-padding-start">
-              <ion-col size="12">
-                <h3>{{ s.summary.RegistrationName }}</h3>
-              </ion-col>
-            </ion-row>
-            <ion-row class="row-padding-start">
-              <ion-col size="12" text-wrap class="obs-content">
-                <ng-container *ngFor="let innerSummary of s.summary.Summaries; let i = index">
-                  <span *ngIf="i>0">&nbsp;&bull;&nbsp;</span>
-                  <span *ngIf="innerSummary.Kind === 0">
-                    {{ innerSummary.Value }}
-                  </span>
-                  <ng-container *ngIf="innerSummary.Kind === 1">
-                    <ng-container *ngFor="let webUrl of innerSummary.Value; let j = index">
-                      <span *ngIf="j>0">&nbsp;&bull;&nbsp;</span>
-                      <app-external-link [src]="webUrl.Value">{{webUrl.Header}}</app-external-link>
-                    </ng-container>
-                  </ng-container>
-                </ng-container>
-              </ion-col>
-            </ion-row>
-          </ng-container>
-        </ng-container>
-      </ion-grid>
-      <ion-item color="light">
-        <ion-button mode="ios" fill="clear" color="medium" class="link-title" (click)="openWeb()">
-          {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
-        </ion-button>
-        <ion-button mode="ios" fill="clear" color="medium" class="reg-id" slot="end" (click)="share()">
-          RegId: {{ obs.RegID }}
-          <ion-icon slot="end" class="share-icon" name="md-share"></ion-icon>
-        </ion-button>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
-</div>
+      </ng-container>
+    </ion-grid>
+    <ion-item color="light">
+      <ion-button mode="ios" fill="clear" color="medium" class="link-title" (click)="openWeb()">
+        {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
+      </ion-button>
+      <ion-button mode="ios" fill="clear" color="medium" class="reg-id" slot="end" (click)="share()">
+        RegId: {{ obs.RegID }}
+        <ion-icon slot="end" class="share-icon" name="md-share"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-card-content>
+</ion-card>

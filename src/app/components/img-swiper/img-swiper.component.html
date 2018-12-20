@@ -6,7 +6,8 @@
   </ion-slides>
   <app-offline-image class="single" (click)="onImageClick(0, imgUrl[0])" *ngIf="imgUrl.length === 1" [src]="imgUrl[0]"></app-offline-image>
   <ion-label color="medium" *ngIf="comment || header">
-    <span *ngIf="header">{{'DIALOGS.OF' | translate}}: {{ header }}. </span><span *ngIf="comment">{{'DIALOGS.COMMENT' |
-      translate}}: {{ comment }}</span>
+    <ng-container *ngIf="header">{{'DIALOGS.OF' | translate}}: {{ header }}. </ng-container>
+    <ng-container *ngIf="comment">{{'DIALOGS.COMMENT' |
+      translate}}: {{ comment }}</ng-container>
   </ion-label>
 </div>

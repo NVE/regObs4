@@ -3,7 +3,7 @@ import { ObservationService } from '../../core/services/observation/observation.
 import { Subscription, Subject } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../modules/login/services/login.service';
-import { IonRefresher, IonInfiniteScroll, NavController, VirtualScroll } from '@ionic/angular';
+import { IonRefresher, IonInfiniteScroll, NavController, IonVirtualScroll } from '@ionic/angular';
 import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
 import { take } from 'rxjs/operators';
@@ -18,7 +18,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   registrations: RegistrationViewModel[];
   @ViewChild(IonRefresher) refresher: IonRefresher;
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-  @ViewChild(VirtualScroll) virtualScroll: VirtualScroll;
+  @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
 
   private subscription: Subscription;
   private user: ObserverResponseDto;
@@ -46,21 +46,24 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       this.navContoller.navigateRoot('/');
     } else {
       this.user = loggedInUser.user;
-      setTimeout(() => {
-        this.subscription = this.observationService.getUserObservationsAsObservable().subscribe((val) => {
-          this.ngZone.run(() => {
-            this.registrations = val;
-          });
-          if (!this.loaded) {
-            // NOTE: This is a hack to get correct height of virtual items
-            setTimeout(() => {
-              this.registrations = [...val];
-              this.loaded = true;
-            }, 500);
-          }
+      // setTimeout(() => {
+      this.subscription = this.observationService.getUserObservationsAsObservable().subscribe((val) => {
+        this.ngZone.run(() => {
+          this.registrations = val;
         });
-        this.loadPage(0);
-      }, 200);
+        if (this.registrations.length > 0) { // Reload virtual scroll to get correct item heights
+          setTimeout(() => {
+            this.registrations = [...val];
+            setTimeout(() => {
+              this.ngZone.run(() => {
+                this.loaded = true;
+              });
+            }, 500);
+          }, 500);
+        }
+      });
+      this.loadPage(0);
+      // }, 200);
     }
   }
 

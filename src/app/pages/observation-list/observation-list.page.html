@@ -7,7 +7,7 @@
   </cdk-virtual-scroll-viewport> -->
   <ng-container *ngIf="observations !== undefined">
     <ion-virtual-scroll [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" [items]="observations"
-      [approxItemHeight]="250">
+      [approxItemHeight]="250" [trackBy]="trackByRegId">
       <div *virtualItem="let obs">
         <app-observation-list-card [obs]="obs"></app-observation-list-card>
       </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import * as L from 'leaflet';
 import { combineLatest, Subscription } from 'rxjs';
@@ -7,6 +7,7 @@ import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { Router, NavigationStart } from '@angular/router';
+import { IonVirtualScroll } from '@ionic/angular';
 // import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
 
 @Component({
@@ -20,6 +21,8 @@ export class ObservationListPage implements OnInit, OnDestroy {
     // theBoundCallback: Function;
     private subscription: Subscription;
     private routerSubscription: Subscription;
+
+    @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
 
     constructor(
         private observationService: ObservationService,
@@ -55,12 +58,13 @@ export class ObservationListPage implements OnInit, OnDestroy {
                 // Using combineLatest to make sure that observable is emitted when wither observations or map view is updated
                 map(([observations, mapView]) => this.filterObservationsWithinViewBounds(observations, mapView))
             ).subscribe((val) => {
-                this.loaded = false;
-                this.ngZone.run(() => {
-                    this.observations = undefined; // Recreate virutal scroll
-                });
                 this.ngZone.run(() => {
                     this.observations = val;  // Initial load
+                    // console.log(this.observations);
+                    // if (this.virtualScroll) {
+                    //     this.virtualScroll.checkRange(0, this.observations.length);
+                    // }
+                    // this.loaded = true;
                 });
                 if (this.observations.length > 0) { // Reload virtual scroll to get correct item heights
                     setTimeout(() => {
@@ -80,6 +84,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
             this.subscription.unsubscribe();
         }
         this.ngZone.run(() => {
+            this.loaded = false;
             this.observations = undefined; // Recreate virutal scroll
         });
     }
@@ -98,9 +103,9 @@ export class ObservationListPage implements OnInit, OnDestroy {
             view.bounds.contains(L.latLng(observation.ObsLocation.Latitude, observation.ObsLocation.Longitude)));
     }
 
-    // trackByRegId(_, obs: RegistrationViewModel) {
-    //     return obs ? obs.RegID : undefined;
-    // }
+    trackByRegId(_, obs: RegistrationViewModel) {
+        return obs ? obs.RegID : undefined;
+    }
 
     // getItemHeight(item: RegistrationViewModel, index: number) {
     //     return this.obsCardHeightService.getHeight(item.RegID);

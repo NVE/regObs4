@@ -121,6 +121,7 @@ export class ObservationService {
     }
 
     try {
+      this.searchService.rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
       const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchAll({
         FromDate: fromDate.toISOString(),
         SelectedGeoHazards: geoHazards,
@@ -175,6 +176,7 @@ export class ObservationService {
     cancel?: Promise<any>) {
     const numberOfRecordsToFetch = 10;
     try {
+      this.searchService.rootUrl = settings.services.regObs.apiUrl[appMode];
       const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchAll({
         NumberOfRecords: numberOfRecordsToFetch,
         LangKey: langKey,
