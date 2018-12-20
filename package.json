@@ -209,7 +209,8 @@
       "cordova-plugin-ios-camera-permissions": {
         "CAMERA_USAGE_DESCRIPTION": "Document observations",
         "PHOTOLIBRARY_ADD_USAGE_DESCRIPTION": "Document observations",
-        "PHOTOLIBRARY_USAGE_DESCRIPTION": "Document observations"
+        "PHOTOLIBRARY_USAGE_DESCRIPTION": "Document observations",
+        "MICROPHONE_USAGE_DESCRIPTION": "This app needs microphone access"
       },
       "cordova-plugin-camera": {},
       "cordova-plugin-app-version": {},
