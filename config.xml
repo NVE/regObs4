@@ -103,7 +103,6 @@
     <plugin name="cordova-plugin-background-fetch" spec="~5.4.1" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="sentry-cordova" spec="^0.12.2" />
-    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
     <plugin name="ionic-plugin-deeplinks" spec="^1.0.17">
         <variable name="URL_SCHEME" value="regobs" />
         <variable name="DEEPLINK_HOST" value="www.regobs.no" />
@@ -157,4 +156,5 @@
     <engine name="browser" spec="5.0.4" />
     <engine name="ios" spec="4.5.5" />
     <engine name="android" spec="7.1.4" />
+    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
 </widget>

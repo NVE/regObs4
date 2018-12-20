@@ -39,6 +39,7 @@ import { SQLite } from '@ionic-native/sqlite/ngx';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { FullscreenService } from './core/services/fullscreen/fullscreen.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { Network } from '@ionic-native/network/ngx';
 // import { ObsCardHeightService } from './core/services/obs-card-height/obs-card-height.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
@@ -72,6 +73,7 @@ export const APP_PROVIDERS = [
     Keyboard,
     SQLite,
     SocialSharing,
+    Network,
     API_INTERCEPTOR_PROVIDER,
     { provide: ErrorHandler, useClass: AppErrorHandler },
     // Singleton services
