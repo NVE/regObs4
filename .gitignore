@@ -35,3 +35,5 @@ UserInterfaceState.xcuserstate
 src/assets/apikey.json
 src/app/modules/regobs-api/
 src/environments/version.json
+nve.keystore
+build.json

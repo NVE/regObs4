@@ -7,7 +7,7 @@
     "ng": "ng",
     "start": "ng-swagger-gen -c ng-swagger-gen.json && ng serve",
     "prebuild": "npm run create-version-file",
-    "build": "ng-swagger-gen -c ng-swagger-gen.json && ng build",
+    "build": "cross-env SENTRY_SKIP_AUTO_RELEASE=true && ng-swagger-gen -c ng-swagger-gen.json && ng build",
     "test": "ng test --watch=false --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e",
