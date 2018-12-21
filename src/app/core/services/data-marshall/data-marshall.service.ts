@@ -7,15 +7,13 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { pairwise, distinctUntilChanged, map } from 'rxjs/operators';
 import { LoginService } from '../../../modules/login/services/login.service';
 import { UserSetting } from '../../models/user-settings.model';
-import * as Sentry from '@sentry/browser';
-import { environment } from '../../../../environments/environment';
 import { settings } from '../../../../settings';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Platform } from '@ionic/angular';
 import { RegistrationService } from '../../../modules/registration/services/registration.service';
 import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
-import { AppMode } from '../../models/app-mode.enum';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
+import { SentryService } from '../sentry/sentry.service';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +34,7 @@ export class DataMarshallService {
     private localNotifications: LocalNotifications,
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
+    private sentryService: SentryService,
   ) {
     this.userSettingService.userSettingObservable$.pipe(
       pairwise())
@@ -58,22 +57,10 @@ export class DataMarshallService {
         }
       });
 
-    this.loginService.loggedInUser$.subscribe((user) => {
-      if (user.email) {
-        Sentry.configureScope((scope) => {
-          scope.setUser({ email: user.email });
-        });
-      }
-    });
+    this.loginService.loggedInUser$.subscribe((user) => this.sentryService.setUser(user));
     this.userSettingService.userSettingObservable$.
-      pipe(map((userSetting) => userSetting.appMode), distinctUntilChanged()).subscribe((appMode) => {
-        Sentry.init(
-          {
-            dsn: settings.sentryDsn,
-            environment: appMode === AppMode.Prod ? 'regObs' : (appMode === AppMode.Demo ? 'demo regObs' : 'test regObs'),
-            enabled: environment.production
-          });
-      });
+      pipe(map((userSetting) => userSetting.appMode), distinctUntilChanged())
+      .subscribe((appMode) => this.sentryService.configureSentry(appMode));
 
     this.platform.ready().then(() => {
       this.platform.pause.subscribe(() => {

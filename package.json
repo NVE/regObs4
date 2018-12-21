@@ -6,12 +6,14 @@
   "scripts": {
     "ng": "ng",
     "start": "ng-swagger-gen -c ng-swagger-gen.json && ng serve",
+    "prebuild": "npm run create-version-file",
     "build": "ng-swagger-gen -c ng-swagger-gen.json && ng build",
     "test": "ng test --watch=false --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "update-packages": "ncu -u & npm install",
-    "upload-sourcemaps": "cross-env SENTRY_PROPERTIES=sentry.properties && sentry-cli releases files \"%npm_package_version%\" upload-sourcemaps --url-prefix / www"
+    "upload-sourcemaps": "cross-env SENTRY_PROPERTIES=sentry.properties && sentry-cli releases files \"%npm_package_version%\" upload-sourcemaps --url-prefix / www",
+    "create-version-file": "ts-node git.version.ts"
   },
   "private": true,
   "dependencies": {
@@ -146,7 +148,7 @@
     "karma-jasmine-html-reporter": "^1.4.0",
     "ng-swagger-gen": "^1.4.2",
     "protractor": "~5.4.1",
-    "ts-node": "~7.0.1",
+    "ts-node": "^7.0.1",
     "tslint": "~5.12.0",
     "typescript": "^3.1.6"
   },

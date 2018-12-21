@@ -10,15 +10,11 @@ import { NanoSql } from '../nanosql';
 import { LangKey } from './core/models/langKey';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
-import * as Sentry from '@sentry/browser';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { environment } from '../environments/environment';
-import { AppMode } from './core/models/app-mode.enum';
-import { settings } from '../settings';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
 import { Observable } from 'rxjs';
+import { SentryService } from './core/services/sentry/sentry.service';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +37,7 @@ export class AppComponent {
     private zone: NgZone,
     private dataMarshallService: DataMarshallService,
     private offlineMapService: OfflineMapService,
-    private appVersion: AppVersion,
+    private setnryService: SentryService,
     private offlineImageService: OfflineImageService,
     private keyboard: Keyboard,
     private swipeBackService: SwipeBackService,
@@ -57,7 +53,7 @@ export class AppComponent {
       // await this.initDeepLinks(); //TODO: Comment in when edit registration is possible
       await this.initNanoSqlDatabase();
       const userSettings = await this.userSettings.getUserSettings();
-      await this.setSentryRelease(userSettings.appMode);
+      this.setnryService.configureSentry(userSettings.appMode);
       this.translate.use(LangKey[userSettings.language]);
       this.statusBar.styleBlackTranslucent();
       this.statusBar.overlaysWebView(this.platform.is('ios'));
@@ -118,19 +114,5 @@ export class AppComponent {
         // TODO: Log error
       }, config);
     }
-  }
-
-  async setSentryRelease(appMode: AppMode) {
-    let appVersion: string = null;
-    if (this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'))) {
-      appVersion = await this.appVersion.getVersionNumber();
-    }
-    Sentry.init(
-      {
-        dsn: settings.sentryDsn,
-        environment: appMode === AppMode.Prod ? 'regObs' : (appMode === AppMode.Demo ? 'demo regObs' : 'test regObs'),
-        enabled: environment.production,
-        release: appVersion,
-      });
   }
 }
