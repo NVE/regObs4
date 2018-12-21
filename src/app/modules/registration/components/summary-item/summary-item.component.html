@@ -1,4 +1,5 @@
-<ion-item (click)="navigate()" [detail]="!readonly" *ngIf="!(readonly && !item.hasData)">
+<ion-item [routerLink]="[item.href, item.id]" [routerDirection]="'forward'" [queryParams]="item.queryParams" [detail]="!readonly"
+  *ngIf="!(readonly && !item.hasData)">
   <ion-label padding>
     <h2>{{ item.title | translate}}</h2>
     <p *ngIf="item.subTitle">
