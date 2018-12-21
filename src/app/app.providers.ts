@@ -31,7 +31,6 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { StartWizardGuard } from './core/guards/start-wizard.guard';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
-import { AppVersion } from '@ionic-native/app-version/ngx';
 import { LoginGuard } from './core/guards/login.guard';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
@@ -68,7 +67,6 @@ export const APP_PROVIDERS = [
     WebView,
     ApiInterceptor,
     EmailComposer,
-    AppVersion,
     LocalNotifications,
     Keyboard,
     SQLite,

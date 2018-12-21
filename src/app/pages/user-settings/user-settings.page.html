@@ -50,10 +50,14 @@
   </ion-button>
   <ng-container *ngIf="showAdvanced">
     <ion-list lines="full">
-      <ion-item>
+      <ion-item class="no-border no-min-height">
         <ion-label position="stacked" color="medium">{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
-        <ion-input type="text" readonly="true" [value]="version">
-        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label text-wrap>
+          <h3>{{version.version }}</h3>
+          <p>{{ version.branch }} - {{ version.revision }} - {{ version.date | formatDate | async }}</p>
+        </ion-label>
       </ion-item>
       <ion-item>
         <ion-label position="stacked" color="medium">{{'SETTINGS.NUMBER_OF_TILES_IN_CACHE' | translate}}: {{

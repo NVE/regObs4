@@ -3,14 +3,15 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { UserSetting } from '../../core/models/user-settings.model';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { NanoSql } from '../../../nanosql';
-import { NavController, AlertController, Platform } from '@ionic/angular';
+import { NavController, AlertController } from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { AppCountry } from '../../core/models/app-country.enum';
 import { KdvService } from '../../core/services/kdv/kdv.service';
 import { TranslateService } from '@ngx-translate/core';
 import { OfflineImageService } from '../../core/services/offline-image/offline-image.service';
-import { AppVersion } from '@ionic-native/app-version/ngx';
+import { AppVersionService } from '../../core/services/app-version/app-version.service';
+import { AppVersion } from '../../core/models/app-version.model';
 
 @Component({
   selector: 'app-user-settings',
@@ -26,7 +27,7 @@ export class UserSettingsPage implements OnInit {
   cacheTilesSize: string;
   AppCountry = AppCountry;
   isUpdating = false;
-  version: string;
+  version: AppVersion;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -34,23 +35,18 @@ export class UserSettingsPage implements OnInit {
     private helperService: HelperService,
     private kdvService: KdvService,
     private ngZone: NgZone,
-    private platform: Platform,
     private translateService: TranslateService,
     private alertController: AlertController,
     private offlineImageService: OfflineImageService,
-    private appVersion: AppVersion,
+    private appVersionService: AppVersionService,
     private navController: NavController) { }
 
   async ngOnInit() {
     this.userSettings = await this.userSettingService.getUserSettings();
-    if (this.platform.isAndroidOrIos()) {
-      const appver = await this.appVersion.getVersionNumber();
-      this.ngZone.run(() => {
-        this.version = appver;
-      });
-    } else {
-      this.version = 'Web browser serve';
-    }
+    const appver = await this.appVersionService.getAppVersion();
+    this.ngZone.run(() => {
+      this.version = appver;
+    });
   }
 
   async updateSettings() {
