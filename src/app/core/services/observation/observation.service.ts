@@ -248,13 +248,13 @@ export class ObservationService {
   getUserObservationsAsObservable(): Rx.Observable<RegistrationViewModel[]> {
     return Rx.combineLatest(this.userSettingService.userSettingObservable$, this.loginService.loggedInUser$)
       .pipe(switchMap(([userSetting, loggedInUser]) =>
-        this.getObservationsByParametersAsObservable(
+        loggedInUser.isLoggedIn ? this.getObservationsByParametersAsObservable(
           userSetting.appMode,
           userSetting.language,
           null,
           null,
-          loggedInUser.isLoggedIn ? loggedInUser.user.Guid : null,
-        )));
+          loggedInUser.user.Guid) : Rx.of([])
+      ));
   }
 
   /**
@@ -279,7 +279,7 @@ export class ObservationService {
       }).emit();
     }).toRxJS().pipe(debounceTime(500),
       map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
-      tap(() => console.log('[INFO][ObservationService] Observations updated!')));
+      tap((items) => console.log('[INFO][ObservationService] Observations updated!', items)));
   }
 
   async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {
@@ -287,7 +287,7 @@ export class ObservationService {
     //   .query('select').exec();
     // console.log(`[DEBUG][ObservationService] id: ${id}, appMode. ${appMode}, langKey: ${langKey}.  All observations: `, debugAll);
     const result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
-      .query('select').where([['RegID', '=', id], 'AND', ['LangKey', '=', langKey]]).exec();
+      .query('select').where(['RegID', '=', id]).exec();
     // console.log(`[DEBUG][ObservationService] query result: `, result);
     // const query2Result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
     //   .query('select').where((x: RegistrationViewModel) => x.RegID === id && x.LangKey === langKey).exec();

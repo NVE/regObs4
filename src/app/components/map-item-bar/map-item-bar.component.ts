@@ -72,7 +72,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
 
     this.zone.run(() => {
       this.id = item.RegID;
-      this.topHeader = moment(item.DtObsTime).format('d/M HH:mm');
+      this.topHeader = item.DtObsTime;
       this.title = this.getTitle(item);
       this.name = item.Observer.NickName;
       this.geoHazard = item.GeoHazardTID;
