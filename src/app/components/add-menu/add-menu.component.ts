@@ -6,7 +6,7 @@ import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
 import { IRegistration } from '../../modules/registration/models/registration.model';
 import * as moment from 'moment';
-import { DateHelperService } from '../../modules/shared/services/date-helper.service';
+import { DateHelperService } from '../../modules/shared/services/date-helper/date-helper.service';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 
 @Component({

@@ -39,10 +39,6 @@ export class KdvService {
     if (!dataLoad.lastUpdated
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
       await this.updateKdvElementsForLanguage(appMode, language, cancel);
-    } else {
-      const nextUpdate = moment(dataLoad.lastUpdated).add(settings.kdvElements.daysBeforeUpdate, 'day').toISOString();
-      console.log(`[INFO][KdvService] No need to update for language ${LangKey[language]}.
-        Last updated is: ${dataLoad.lastUpdated}. Next update should be: ${nextUpdate}`);
     }
   }
 
@@ -53,7 +49,6 @@ export class KdvService {
       this.kdvApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
       const kdvElements = await ObservableHelper.toPromiseWithCancel(
         this.kdvApiService.KdvElementsGetKdvs({ langkey: language }), cancel);
-      console.log('[INFO] Updated KDV elements: ', kdvElements);
       await NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode)
         .query('upsert', { langKey: language, ...kdvElements }).exec();
       await this.dataLoadService.loadingCompleted(dataLoadId);

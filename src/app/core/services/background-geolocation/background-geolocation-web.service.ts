@@ -4,12 +4,16 @@ import { Subscription } from 'rxjs';
 import { Geoposition, Geolocation } from '@ionic-native/geolocation/ngx';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { TripLogState } from '../trip-logger/trip-log-state.enum';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 
 @Injectable()
 export class BackgroundGeolocationWebService implements BackgroundGeolocationService {
     watchSubscription?: Subscription;
 
-    constructor(private geolocation: Geolocation, private tripLogger: TripLoggerService) {
+    constructor(
+        private geolocation: Geolocation,
+        private tripLogger: TripLoggerService,
+        private loggingService: LoggingService) {
     }
 
     async start() {
@@ -41,8 +45,7 @@ export class BackgroundGeolocationWebService implements BackgroundGeolocationSer
     }
 
     private onPositionError(error: any) {
-        // TODO: Handle error
-        console.log(error);
+        this.loggingService.error(error, 'BackgroundGeolocationWebService');
     }
 
     async stop() {

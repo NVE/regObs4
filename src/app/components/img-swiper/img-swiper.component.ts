@@ -72,13 +72,9 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   }
 
   async getImageIndex() {
-    if (!this.slider) {
-      return 0;
-    } else {
-      const index = await this.slider.getActiveIndex();
-      const isEnd = await this.slider.isEnd();
-      return isEnd ? (this.imgUrl.length - 1) : index;
-    }
+    const index = await this.slider ? this.slider.getActiveIndex() : 0;
+    const isEnd = await this.slider ? this.slider.isEnd() : false;
+    return isEnd ? (this.imgUrl.length - 1) : index;
   }
 
   async onSlideTransitionEnd() {

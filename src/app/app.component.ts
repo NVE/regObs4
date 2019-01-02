@@ -14,7 +14,7 @@ import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
 import { Observable } from 'rxjs';
-import { SentryService } from './core/services/sentry/sentry.service';
+import { LoggingService } from './modules/shared/services/logging/logging.service';
 
 @Component({
   selector: 'app-root',
@@ -37,10 +37,10 @@ export class AppComponent {
     private zone: NgZone,
     private dataMarshallService: DataMarshallService,
     private offlineMapService: OfflineMapService,
-    private setnryService: SentryService,
     private offlineImageService: OfflineImageService,
     private keyboard: Keyboard,
     private swipeBackService: SwipeBackService,
+    private loggingService: LoggingService,
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -53,7 +53,7 @@ export class AppComponent {
       // await this.initDeepLinks(); //TODO: Comment in when edit registration is possible
       await this.initNanoSqlDatabase();
       const userSettings = await this.userSettings.getUserSettings();
-      this.setnryService.configureSentry(userSettings.appMode);
+      this.loggingService.configureLogging(userSettings.appMode);
       this.translate.use(LangKey[userSettings.language]);
       this.statusBar.styleBlackTranslucent();
       this.statusBar.overlaysWebView(this.platform.is('ios'));
@@ -75,7 +75,6 @@ export class AppComponent {
       // match.$route - the route we matched, which is the matched entry from the arguments to route()
       // match.$args - the args passed in the link
       // match.$link - the full link data
-      console.log('Successfully matched route', match);
       this.navController.navigateForward(`view-observation/${match.$args.id}`);
     });
   }
@@ -109,9 +108,8 @@ export class AppComponent {
       (<any>window).BackgroundFetch.configure(() => {
         this.dataMarshallService.backgroundFetchUpdate(this.platform.is('cordova') && this.platform.is('ios'), false)
           .then(() => (<any>window).BackgroundFetch.finish());
-      }, (error) => {
-        console.log('[ERROR] Could not run background fetch!');
-        // TODO: Log error
+      }, (error: Error) => {
+        this.loggingService.error(error, 'BackroundFetchInit', 'Could not run background fetch!');
       }, config);
     }
   }

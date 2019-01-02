@@ -6,6 +6,7 @@ import { settings } from '../../../../settings';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { IonSelect } from '@ionic/angular';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 
 @Component({
   selector: 'app-observations-days-back',
@@ -16,20 +17,22 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   daysBack: { val: number, selected: boolean, text: string }[];
   subscription: Subscription;
   recreate: boolean;
-  constructor(private userSettingService: UserSettingService, private zone: NgZone) { }
+  constructor(private userSettingService: UserSettingService, private zone: NgZone, private loggingService: LoggingService) { }
 
   ngOnInit() {
     this.subscription = this.userSettingService.userSettingObservable$
       .pipe(map((val) => this.getDaysBackArray(val)),
-        tap((val) => console.log('Days back changed: ', val))).subscribe((val) => {
-          this.zone.run(() => {
-            this.recreate = false;
-          });
-          this.zone.run(() => {
-            this.daysBack = val;
-            this.recreate = true;
-          });
+        tap((val) =>
+          this.loggingService.debug(`Days back changed to ${val.find((d) => d.selected).val}`, 'ObservationsDaysBackComponent')))
+      .subscribe((val) => {
+        this.zone.run(() => {
+          this.recreate = false;
         });
+        this.zone.run(() => {
+          this.daysBack = val;
+          this.recreate = true;
+        });
+      });
   }
 
   ngOnDestroy(): void {

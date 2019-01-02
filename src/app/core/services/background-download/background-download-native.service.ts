@@ -68,14 +68,14 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         onError: (error: Error) => void) {
         const fullpath = path + '/' + filename;
         const folder = fullpath.replace('.zip', '');
-        console.log(`Unzipping file ${fullpath} to ${folder}`);
+        // console.log(`Unzipping file ${fullpath} to ${folder}`);
         const result = await this.zip.unzip(fullpath, folder, (progress) => {
             onProgress({ percentage: (progress.loaded / progress.total), step: ProgressStep.extractZip, description: 'Unzip files' });
         });
         if (result === 0) {
-            console.log(`Unzip complete. Deleting zip file.`);
+            // console.log(`Unzip complete. Deleting zip file.`);
             await this.file.removeFile(path, filename);
-            console.log(`Zip file deleted. Returning.`);
+            // console.log(`Zip file deleted. Returning.`);
             onComplete();
         } else {
             onError(Error('Could not extract files!'));

@@ -8,7 +8,6 @@ import { NanoSql } from '../../../../nanosql';
 import { ObsLocationsResponseDtoV2 } from '../../../modules/regobs-api/models';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { switchMap, debounceTime, map } from 'rxjs/operators';
-import { MapService } from '../../../modules/map/services/map/map.service';
 import * as turf from '@turf/turf';
 
 @Injectable({
@@ -18,8 +17,7 @@ export class LocationService {
 
   constructor(
     private userSettingService: UserSettingService,
-    private apiLocationService: RegobsApi.LocationService,
-    private mapService: MapService) { }
+    private apiLocationService: RegobsApi.LocationService) { }
 
   async updateLocationWithinRadius(geoHazard: GeoHazard, lat: number, lng: number, radius: number) {
     const userSettings = await this.userSettingService.getUserSettings();
@@ -32,8 +30,6 @@ export class LocationService {
     };
     this.apiLocationService.rootUrl = settings.services.regObs.apiUrl[userSettings.appMode];
     const result = await this.apiLocationService.LocationWithinRadius(params).toPromise();
-    console.log('[INFO][LocationService] Got new locations: ', result);
-
     const tableName = NanoSql.getInstanceName(NanoSql.TABLES.LOCATION.name, userSettings.appMode);
     await nSQL(tableName).loadJS(tableName, result, true);
     // Cleanup deleted records. This also triggers change
@@ -53,7 +49,6 @@ export class LocationService {
     const deleteResult = await NanoSql.getInstance(NanoSql.TABLES.LOCATION.name, appMode)
       .query('delete').where((item: ObsLocationsResponseDtoV2) => item.GeoHazardId === geoHazard
         && this.withinRadius(item, lat, lng, radius) && !result.find((x) => x.Id === item.Id)).exec();
-    console.log('[INFO][LocationService] Deleted locations no longer in results: ', deleteResult);
   }
 
   private withinRadius(item: ObsLocationsResponseDtoV2, lat: number, lng: number, radius: number) {

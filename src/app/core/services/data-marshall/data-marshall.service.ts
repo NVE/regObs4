@@ -13,7 +13,9 @@ import { Platform } from '@ionic/angular';
 import { RegistrationService } from '../../../modules/registration/services/registration.service';
 import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
-import { SentryService } from '../sentry/sentry.service';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'DataMarshallService';
 
 @Injectable({
   providedIn: 'root'
@@ -34,13 +36,13 @@ export class DataMarshallService {
     private localNotifications: LocalNotifications,
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
-    private sentryService: SentryService,
+    private loggingService: LoggingService,
   ) {
     this.userSettingService.userSettingObservable$.pipe(
       pairwise())
       .subscribe(async ([prev, next]) => {
         if (this.hasUserSettingsChangedToRequireReloadOfObservations(prev, next)) {
-          console.log('[INFO][ObervationService] App settings changed. Need to refresh observations.');
+          this.loggingService.debug('App settings changed. Need to refresh observations', DEBUG_TAG);
           const loggedInUser = await this.loginService.getLoggedInUser();
           this.observationService.updateObservationsForGeoHazard(
             next.currentGeoHazard,
@@ -48,7 +50,7 @@ export class DataMarshallService {
             next);
         }
         if (this.hasAppModeLanguageOrCurrentGeoHazardChanged(prev, next)) {
-          console.log('[INFO][ObervationService] App settings changed. Need to refresh warnings.');
+          this.loggingService.debug('AppMode, Language or CurrentGeoHazardChanged changed. Need to refresh warnings.', DEBUG_TAG);
           this.warningService.updateWarnings();
         }
         if (this.hasAppModeOrLanguageChanged(prev, next)) {
@@ -57,18 +59,18 @@ export class DataMarshallService {
         }
       });
 
-    this.loginService.loggedInUser$.subscribe((user) => this.sentryService.setUser(user));
+    this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user));
     this.userSettingService.userSettingObservable$.
       pipe(map((userSetting) => userSetting.appMode), distinctUntilChanged())
-      .subscribe((appMode) => this.sentryService.configureSentry(appMode));
+      .subscribe((appMode) => this.loggingService.configureLogging(appMode));
 
     this.platform.ready().then(() => {
       this.platform.pause.subscribe(() => {
-        console.log('[INFO] App paused. Stop foreground updates.');
+        this.loggingService.debug('App paused. Stop foreground updates.', DEBUG_TAG);
         this.stopForegroundUpdate();
       });
       this.platform.resume.subscribe(() => {
-        console.log('[INFO] App resumed. Start foreground updates.');
+        this.loggingService.debug('App resumed. Start foreground updates.', DEBUG_TAG);
         this.startForegroundUpdate();
       });
       this.startForegroundUpdate();
@@ -102,7 +104,7 @@ export class DataMarshallService {
       await this.kdvService.updateKdvElements(cancelTimer);
       await this.helpTextService.updateHelpTexts(cancelTimer);
       await this.tripLoggerService.cleanupOldLegacyTrip();
-      console.log('[INFO] DataMarshall Background Update Completed');
+      this.loggingService.debug('Background update completed', DEBUG_TAG);
     });
   }
 

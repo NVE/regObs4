@@ -34,7 +34,6 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('[INFO] OfflineImage ngOnDestroy. Cancel image load.');
     this.cancelPromiseResolver();
   }
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { RegistrationService } from './registration.service';
 import { IRegistration } from '../models/registration.model';
 import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
-import { DateHelperService } from '../../shared/services/date-helper.service';
+import { DateHelperService } from '../../shared/services/date-helper/date-helper.service';
 import { RegistrationTid } from '../models/registrationTid.enum';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { ISummaryItem } from '../components/summary-item/summary-item.model';

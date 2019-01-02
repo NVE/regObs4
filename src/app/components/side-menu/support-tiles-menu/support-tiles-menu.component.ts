@@ -62,7 +62,6 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
   }
 
   async onTileChanged(supportTile: SupportTile) {
-    console.log('toggle changed for', supportTile.name, supportTile.enabled, supportTile.opacity);
     const currentUserSettingTile = this.userSetting.supportTiles.find((x) => x.name === supportTile.name);
     if (currentUserSettingTile) {
       currentUserSettingTile.enabled = supportTile.enabled;

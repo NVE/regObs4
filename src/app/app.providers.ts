@@ -39,6 +39,10 @@ import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { FullscreenService } from './core/services/fullscreen/fullscreen.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Network } from '@ionic-native/network/ngx';
+import { LoggingService } from './modules/shared/services/logging/logging.service';
+import { SentryService } from './modules/shared/services/logging/sentry.service';
+import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
+import { environment } from '../environments/environment';
 // import { ObsCardHeightService } from './core/services/obs-card-height/obs-card-height.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
@@ -74,6 +78,7 @@ export const APP_PROVIDERS = [
     Network,
     API_INTERCEPTOR_PROVIDER,
     { provide: ErrorHandler, useClass: AppErrorHandler },
+    { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
     // Singleton services
     UserSettingService,
     MapService,

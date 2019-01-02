@@ -4,10 +4,11 @@ import { BackgroundGeolocationConfig, BackgroundGeolocationResponse } from '@ion
 import { Platform } from '@ionic/angular';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Geoposition, Geolocation } from '@ionic-native/geolocation/ngx';
-import * as moment from 'moment';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { TripLogState } from '../trip-logger/trip-log-state.enum';
-import { TripLogPage } from '../../../pages/trip-log/trip-log.page';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'BackgroundGeolocationNativeService';
 
 @Injectable()
 export class BackgroundGeolocationNativeService implements BackgroundGeolocationService {
@@ -17,7 +18,8 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
         private platform: Platform,
         private tripLogger: TripLoggerService,
         private translateService: TranslateService,
-        private geolocation: Geolocation
+        private geolocation: Geolocation,
+        private loggingService: LoggingService,
     ) {
         this.platform.ready().then(() => {
             this.backgroundGeolocation = (<any>window).BackgroundGeolocation;
@@ -44,9 +46,9 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
             maxLocations: 1, // Disable local storage of locations, because we handle this in nanoSQL instead
         };
         this.backgroundGeolocation.configure(config, () => {
-            console.log('[INFO] BackgroundGeolocation set up success!');
+            this.loggingService.debug('BackgroundGeolocation set up success!', DEBUG_TAG);
         }, (error) => {
-            console.log(error); // TODO: Handle error
+            this.loggingService.error(error, DEBUG_TAG, 'Could not configure background geolocation!');
         });
     }
 
@@ -76,33 +78,32 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
                 try {
                     await this.savePositionUpdate(location);
                 } catch (error) {
-                    console.log('[ERROR] Error saving position update ' + error.message);
-                    // TODO: Log error
+                    this.loggingService.error(error, DEBUG_TAG, 'Error saving position update!');
                 } finally {
                     this.backgroundGeolocation.endTask(taskKey);
                 }
             });
         });
         this.backgroundGeolocation.on('error', async (error) => {
-            console.log('[ERROR] BackgroundGeolocation error:', error.code, error.message);
+            this.loggingService.error(
+                new Error(`Error code: ${error.code}. Message:${error.message}`),
+                DEBUG_TAG, 'Error in background geolocation!');
             await this.tripLogger.updateState(TripLogState.Paused);
         });
         this.backgroundGeolocation.on('start', () => {
-            console.log('[INFO] BackgroundGeolocation service has been started');
+            this.loggingService.debug('BackgroundGeolocation service has been started', DEBUG_TAG);
         });
         this.backgroundGeolocation.on('stop', () => {
-            console.log('[INFO] BackgroundGeolocation service has been stopped');
+            this.loggingService.debug('BackgroundGeolocation service has been stopped', DEBUG_TAG);
         });
         this.backgroundGeolocation.on('authorization', (status) => {
-            console.log('[INFO] BackgroundGeolocation authorization status: ' + status);
+            this.loggingService.debug('BackgroundGeolocation authorization status', DEBUG_TAG, status);
             if (status !== this.backgroundGeolocation.AUTHORIZED) {
                 return this.backgroundGeolocation.showAppSettings();
             }
         });
         this.backgroundGeolocation.checkStatus((status) => {
-            console.log('[INFO] BackgroundGeolocation service is running', status.isRunning);
-            console.log('[INFO] BackgroundGeolocation services enabled', status.locationServicesEnabled);
-            console.log('[INFO] BackgroundGeolocation auth status: ' + status.authorization);
+            this.loggingService.debug('BackgroundGeolocation service status', DEBUG_TAG, status);
             // you don't need to check status before start (this is just the example)
             if (!status.isRunning) {
                 this.backgroundGeolocation.start(); // triggers start on start event
