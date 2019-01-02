@@ -62,7 +62,7 @@ export class HelpTextService {
 
   async getHelpTextByKey(langKey: LangKey, appMode: AppMode, geoHazard: GeoHazard, registrationTid: number) {
     const helpTexts = await this.getHelpTexts(langKey, appMode);
-    return helpTexts.find((x) => x.GeoHazardTID === geoHazard && x.RegistrationTID === registrationTid && x.LangKey === langKey);
+    return helpTexts.find((x) => !!x && x.GeoHazardTID === geoHazard && x.RegistrationTID === registrationTid);
   }
 
   async getHelpTexts(langKey: LangKey, appMode: AppMode) {

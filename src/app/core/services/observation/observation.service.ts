@@ -272,7 +272,7 @@ export class ObservationService {
     observerGuid?: string): Rx.Observable<RegistrationViewModel[]> {
     return nSQL().observable<RegistrationViewModel[]>(() => {
       return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select').where((reg: RegistrationViewModel) => {
-        return reg && (geoHazards ? geoHazards.indexOf(reg.GeoHazardTID) >= 0 : true)
+        return !!reg && (geoHazards ? geoHazards.indexOf(reg.GeoHazardTID) >= 0 : true)
           && reg.LangKey === langKey
           && (fromDate ? moment(reg.DtObsTime).isAfter(fromDate) : true)
           && (observerGuid ? reg.Observer.ObserverGUID === observerGuid : true);
