@@ -554,7 +554,9 @@
   "WARNING_LIST": {
     "ALL": "All",
     "ALL_WARNINGS": "All warnings",
-    "B_REGIONS": "Regions below get warnings only for danger level 4 and 5",
+    "A_REGIONS": "A - Regions",
+    "B_REGIONS": "B - Regions",
+    "B_REGIONS_SUBTITLE": "Warnings only for danger level 4 and 5",
     "FAVOURITES": "Favourites",
     "IN_MAP_CENTER": "In map center",
     "IN_MAP_VIEW": "In map view",

@@ -554,7 +554,9 @@
   "WARNING_LIST": {
     "ALL": "Alle",
     "ALL_WARNINGS": "Alle varsler",
-    "B_REGIONS": "Regionene under varsles kun på faregrad 4 og 5",
+    "A_REGIONS": "A - Regioner",
+    "B_REGIONS": "B - Regioner",
+    "B_REGIONS_SUBTITLE": "Varsles kun på faregrad 4 og 5",
     "FAVOURITES": "Favoritter",
     "IN_MAP_CENTER": "I kartsenter",
     "IN_MAP_VIEW": "I kartutsnittet",

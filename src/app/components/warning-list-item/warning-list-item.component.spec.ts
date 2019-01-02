@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CapListGroupComponent } from './cap-list-group.component';
+import { WarningListItemComponent } from './warning-list-item.component';
 
-describe('CapListGroupComponent', () => {
-  let component: CapListGroupComponent;
-  let fixture: ComponentFixture<CapListGroupComponent>;
+describe('WarningListItemComponent', () => {
+  let component: WarningListItemComponent;
+  let fixture: ComponentFixture<WarningListItemComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CapListGroupComponent ]
+      declarations: [ WarningListItemComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CapListGroupComponent);
+    fixture = TestBed.createComponent(WarningListItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

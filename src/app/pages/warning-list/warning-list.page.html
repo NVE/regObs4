@@ -1,43 +1,28 @@
 <app-header title="{{'WARNING_LIST.TITLE' | translate}}"></app-header>
-<div class="top-tabs" slot="fixed">
-  <ion-grid no-padding>
-    <ion-row no-padding>
-      <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'inMapView'}" (click)="selectTab('inMapView')">
-        {{'WARNING_LIST.RELEVANT'|translate}}
-      </ion-col>
-      <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'all'}" (click)="selectTab('all')">
-        {{'WARNING_LIST.ALL'|translate}}
-      </ion-col>
-      <ion-col text-center text-uppercase [ngClass]="{'selected': selectedTab === 'favourites'}" (click)="selectTab('favourites')">
-        {{'WARNING_LIST.FAVOURITES'|translate}}
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</div>
+<ion-segment mode="md" slot="fixed" [(ngModel)]="selectedTab" (ngModelChange)="onSegmentChange()">
+  <ion-segment-button mode="md" value="inMapView">
+    <ion-label>{{'WARNING_LIST.RELEVANT'|translate}}</ion-label>
+  </ion-segment-button>
+  <ion-segment-button mode="md" value="all">
+    <ion-label>{{'WARNING_LIST.ALL'|translate}}</ion-label>
+  </ion-segment-button>
+  <ion-segment-button mode="md" value="favourites">
+    <ion-label>{{'WARNING_LIST.FAVOURITES'|translate}}</ion-label>
+  </ion-segment-button>
+</ion-segment>
 <ion-content>
   <ion-refresher (ionRefresh)="doRefresh()">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="{{ 'ALERT.PULL_TO_REFRESH' | translate}}">
     </ion-refresher-content>
   </ion-refresher>
-  <ng-container *ngIf="(userSetting$ | async) as userSetting">
-    <app-cap-list-group *ngIf="userSetting.showMapCenter && selectedTab === 'inMapView'" title="{{'WARNING_LIST.IN_MAP_CENTER'|translate}}"
-      [warnings$]="warningsInMapViewCenter$"></app-cap-list-group>
-    <app-cap-list-group *ngIf="selectedTab === 'inMapView'" title="{{'WARNING_LIST.IN_MAP_VIEW'|translate}}"
-      [warnings$]="warningsInMapViewBounds$"></app-cap-list-group>
-    <app-cap-list-group *ngIf="selectedTab === 'inMapView' && warningsInViewBoundsLength < 3" title="{{'WARNING_LIST.OTHER_RELEVANT'|translate}}"
-      [warnings$]="warningsInMapViewBuffer$" [filterZeroValues]="true"></app-cap-list-group>
-    <ng-container *ngIf="selectedTab === 'all'">
-      <ng-container *ngIf="userSetting.currentGeoHazard[0] === GeoHazard.Snow">
-        <app-cap-list-group title="{{'WARNING_LIST.MAIN_REGIONS'|translate}}" [warnings$]="allAWarnings$"></app-cap-list-group>
-        <app-cap-list-group title="{{'WARNING_LIST.B_REGIONS'|translate}}" [warnings$]="allBWarnings$"></app-cap-list-group>
-      </ng-container>
-      <ng-container *ngIf="userSetting.currentGeoHazard[0] !== GeoHazard.Snow">
-        <app-cap-list-group title="{{'WARNING_LIST.ALL_WARNINGS'|translate}}" [warnings$]="allWarnings$"></app-cap-list-group>
-      </ng-container>
-    </ng-container>
-    <app-cap-list-group *ngIf="selectedTab === 'favourites'" title="{{'WARNING_LIST.FAVOURITES'|translate}}"
-      [warnings$]="favourites$"></app-cap-list-group>
-  </ng-container>
+  <ion-virtual-scroll [items]="warningGroups" [headerFn]="myHeaderFn" [approxHeaderHeight]="70">
+    <ion-item-divider *virtualHeader="let header">
+      <app-warning-list-header [title]="header.header" [subTitle]="header.infoText" [showDayNames]="header.showDayNames"></app-warning-list-header>
+    </ion-item-divider>
+    <div *virtualItem="let virtialItem">
+      <app-warning-list-item [warningGroup]="virtialItem.item"></app-warning-list-item>
+    </div>
+  </ion-virtual-scroll>
 </ion-content>
 <app-add-menu></app-add-menu>
 <app-geo-select slot="fixed" [inHeader]="true"></app-geo-select>

@@ -2,13 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
-
 import { WarningListPage } from './warning-list.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { CapListGroupComponent } from '../../components/cap-list-group/cap-list-group.component';
 import { SharedModule } from '../../modules/shared/shared.module';
+import { WarningListHeaderComponent } from '../../components/warning-list-header/warning-list-header.component';
+import { WarningListItemComponent } from '../../components/warning-list-item/warning-list-item.component';
 
 const routes: Routes = [
   {
@@ -26,6 +25,6 @@ const routes: Routes = [
     TranslateModule,
     SharedModule,
   ],
-  declarations: [WarningListPage, CapListGroupComponent]
+  declarations: [WarningListPage, WarningListHeaderComponent, WarningListItemComponent]
 })
 export class WarningListPageModule { }

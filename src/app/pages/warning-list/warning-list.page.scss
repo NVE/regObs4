@@ -1,21 +1,10 @@
-.top-tabs {
-    
-    background-color: var(--ion-item-background);
-    color: var(--ion-color-primary);
-    font-size: 14px;
-    font-weight: bold;
-    line-height: 34px;
-
-    ion-row {
-        height: 44px;
-    }
-
-    .selected {
-        border-bottom: 2px solid var(--ion-color-primary-shade);
-        background-color: #F4F8F9;
-    }
-}
-
 ion-refresher, ion-content {
     background-color: var(--ion-background-color,#fff);
+}
+
+ion-item-divider {
+    app-warning-list-header {
+        width: 100%;
+    }
+    // position: sticky;
 }

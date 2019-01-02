@@ -59,6 +59,7 @@
     --ion-color-varsom-orange-contrast-rgb: 255,255,255;
     --ion-color-varsom-orange-shade: #5C90A5;
     --ion-color-varsom-orange-tint: #F5B068;
+    --ion-text-color: #262626;
 }
 
 .ion-color-varsom-orange {
@@ -177,13 +178,30 @@ ion-button {
     }
 }
 
-
 ion-radio {
     --width: 22px;
     --height: 22px;
     --border-width: 1px;
     --inner-width: 12px;
     --inner-height: 12px;
+}
+
+ion-segment {
+    background-color: var(--ion-item-background);
+
+    ion-segment-button {
+        font-weight: 600;
+    }
+}
+
+ion-item-divider {
+    --color: var(--ion-text-color);
+    --background: var(--ion-background-color);
+
+    h3 {
+        font-size: 16px;
+        font-weight: 500;
+    }
 }
 
 .map-item-bar-open {
