@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FullscreenService } from '../../../../../core/services/fullscreen/fullscreen.service';
 
 @Component({

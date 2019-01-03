@@ -148,11 +148,6 @@ export const settings = {
         flyToOnGpsZoom: 14,
     },
     snowRegionsGeoJsonName: 'OMRAADENAV',
-    events: {
-        tabsChanged: 'tabs:changed',
-        centerMapToUser: 'gps:centerMapToUser',
-        mapSearchItemClicked: 'mapSearchItem:clicked',
-    },
     cordovaNotAvailable: 'cordova_not_available',
     gps: {
         maximumAge: 180000,

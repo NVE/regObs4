@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { nSQL } from 'nano-sql';
 import * as L from 'leaflet';
 import { IMapView } from './map-view.interface';
-import { Observable, combineLatest, Observer } from 'rxjs';
+import { Observable, combineLatest, Observer, BehaviorSubject, Subject } from 'rxjs';
 import { createWorker } from 'typed-web-workers';
-import { switchMap, shareReplay, debounceTime, filter } from 'rxjs/operators';
+import { switchMap, shareReplay, debounceTime, filter, distinctUntilChanged } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
 import { NanoSql } from '../../../../../nanosql';
@@ -24,6 +24,10 @@ export class MapService {
   private _avalancheRegions: any;
   private _regions: any;
   private _tilesInNorwayCache: LRUMap<string, boolean>;
+  private _followModeSubject: BehaviorSubject<boolean>;
+  private _followModeObservable: Observable<boolean>;
+  private _centerMapToUserSubject: Subject<void>;
+  private _centerMapToUserObservable: Observable<void>;
 
   get mapViewObservable$() {
     return this._mapViewObservable;
@@ -33,10 +37,31 @@ export class MapService {
     return this._mapViewAndAreaObservable;
   }
 
+  get followMode$() {
+    return this._followModeObservable;
+  }
+
+  get centerMapToUser$() {
+    return this._centerMapToUserObservable;
+  }
+
+  set followMode(val: boolean) {
+    this._followModeSubject.next(val);
+  }
+
   constructor(private userSettingService: UserSettingService) {
     this._mapViewObservable = this.getMapViewObservable();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
     this._tilesInNorwayCache = new LRUMap(10000);
+    this._followModeSubject = new BehaviorSubject<boolean>(true);
+    this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
+    this._centerMapToUserSubject = new Subject<void>();
+    this._centerMapToUserObservable = this._centerMapToUserSubject.asObservable().pipe(shareReplay(1));
+  }
+
+  centerMapToUser() {
+    this.followMode = true;
+    this._centerMapToUserSubject.next();
   }
 
   async isTileInsideNorway(coords: { x: number, y: number, z: number }, bounds: L.LatLngBounds) {

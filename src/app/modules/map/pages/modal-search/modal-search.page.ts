@@ -1,9 +1,8 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import { ModalController, Events, IonInput } from '@ionic/angular';
+import { ModalController, IonInput } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable, of } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
-import { settings } from '../../../../../settings';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
@@ -29,7 +28,6 @@ export class ModalSearchPage implements OnInit {
 
   constructor(private modalController: ModalController,
     private mapSearchService: MapSearchService,
-    private events: Events,
     private ngZone: NgZone,
   ) { }
 
@@ -78,8 +76,7 @@ export class ModalSearchPage implements OnInit {
   }
 
   searchItemClicked(item: MapSearchResponse) {
-    this.events.publish(settings.events.mapSearchItemClicked, item);
-    this.mapSearchService.saveSearchHistoryToDb(item);
+    this.mapSearchService.mapSearchItemSelected = item;
     this.closeModal();
   }
 

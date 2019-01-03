@@ -10,12 +10,11 @@ import { settings } from '../../../../../settings';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
-import { Events } from '@ionic/angular';
-import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { take } from 'rxjs/operators';
 import { AppCountry } from '../../../../core/models/app-country.enum';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
+import { MapSearchService } from '../../services/map-search/map-search.service';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -33,8 +32,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() zoom: number;
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
   @Output() positionChange: EventEmitter<Geoposition> = new EventEmitter();
-  @Input() followMode = true;
-  @Output() followModeChange = new EventEmitter();
   loaded = false;
 
   private map: L.Map;
@@ -43,46 +40,23 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private firstPositionUpdate = true;
   private skipNextMapViewUpdate = false;
 
-  private userSettingSubscription: Subscription;
   private geoLoactionSubscription: Subscription;
-  private fullscreenSubscription: Subscription;
-  private pauseSubscription: Subscription;
-  private resumeSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
 
-  private mapItemClickedHandler: (item: MapSearchResponse) => void;
-  private centerMapToUserHandler: () => void;
+  private followMode = true;
+  private skipDisableFollowMode = false;
 
   constructor(
     private userSettingService: UserSettingService,
     private offlineMapService: OfflineMapService,
     private mapService: MapService,
+    private mapSearchService: MapSearchService,
     private platform: Platform,
     private zone: NgZone,
     private geolocation: Geolocation,
-    private events: Events,
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
   ) {
-    this.mapItemClickedHandler = (item: MapSearchResponse) => {
-      this.disableFollowMode();
-      this.zone.runOutsideAngular(() => {
-        this.map.flyTo(item.latlng, settings.map.mapSearchZoomToLevel);
-      });
-    };
-
-    this.centerMapToUserHandler = () => {
-      this.zone.run(() => {
-        this.followMode = true;
-        this.followModeChange.emit(this.followMode);
-      });
-      if (this.userMarker) {
-        const currentPosition = this.userMarker.getPosition();
-        const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
-        this.zone.runOutsideAngular(() => {
-          this.map.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()));
-        });
-      }
-    };
   }
 
   options: L.MapOptions = {
@@ -116,22 +90,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    if (this.userSettingSubscription) {
-      this.userSettingSubscription.unsubscribe();
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
     }
-    if (this.fullscreenSubscription) {
-      this.fullscreenSubscription.unsubscribe();
-    }
-    if (this.pauseSubscription) {
-      this.pauseSubscription.unsubscribe();
-    }
-    if (this.resumeSubscription) {
-      this.resumeSubscription.unsubscribe();
-    }
-
     this.stopGeoLocationWatch();
-    this.events.unsubscribe(settings.events.centerMapToUser, this.centerMapToUserHandler);
-    this.events.unsubscribe(settings.events.mapSearchItemClicked, this.mapItemClickedHandler);
   }
 
   onLeafletMapReady(map: L.Map) {
@@ -141,10 +103,32 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.tilesLayer.addTo(this.map);
 
-    this.userSettingSubscription = this.userSettingService.userSettingObservable$.subscribe((userSetting) => {
+    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((userSetting) => {
       this.configureTileLayers(userSetting);
-    });
+    }));
 
+    this.subscriptions.push(this.mapService.followMode$.subscribe((val) => {
+      this.followMode = val;
+    }));
+
+    this.subscriptions.push(this.mapSearchService.mapSearchClick$.subscribe((item) => {
+      this.disableFollowMode();
+      this.zone.runOutsideAngular(() => {
+        this.map.flyTo(item.latlng, settings.map.mapSearchZoomToLevel);
+      });
+    }));
+
+    this.subscriptions.push(this.mapService.centerMapToUser$.subscribe(() => {
+      if (this.userMarker) {
+        const currentPosition = this.userMarker.getPosition();
+        const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+        this.zone.runOutsideAngular(() => {
+          this.skipDisableFollowMode = true;
+          this.map.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()));
+          this.skipDisableFollowMode = false;
+        });
+      }
+    }));
 
     if (this.showUserLocation) {
       this.startGeoLocationWatch();
@@ -154,34 +138,30 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
 
-    this.events.subscribe(settings.events.centerMapToUser, this.centerMapToUserHandler);
-    this.events.subscribe(settings.events.mapSearchItemClicked, this.mapItemClickedHandler);
-
-    this.pauseSubscription = this.platform.pause.subscribe(() => this.stopGeoLocationWatch());
-    this.resumeSubscription = this.platform.resume.subscribe(() => {
+    this.subscriptions.push(this.platform.pause.subscribe(() => this.stopGeoLocationWatch()));
+    this.subscriptions.push(this.platform.resume.subscribe(() => {
       if (this.showUserLocation) {
         this.startGeoLocationWatch();
       }
-    });
+    }));
 
     this.zone.runOutsideAngular(() => {
       this.map.on('moveend', () => this.updateMapView());
       this.map.on('zoomend', () => this.updateMapView());
     });
 
-    this.fullscreenService.isFullscreen$.subscribe(() => {
+    this.subscriptions.push(this.fullscreenService.isFullscreen$.subscribe(() => {
       this.redrawMap();
-    });
+    }));
 
     this.redrawMap();
     this.mapReady.emit(this.map);
   }
 
   private disableFollowMode() {
-    this.zone.run(() => {
-      this.followMode = false;
-      this.followModeChange.emit(this.followMode);
-    });
+    if (!this.skipDisableFollowMode) {
+      this.mapService.followMode = false;
+    }
   }
 
   private updateMapView() {
@@ -284,6 +264,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           this.userMarker.updatePosition(data);
         }
         if (this.followMode) {
+          this.skipDisableFollowMode = true;
           if (this.firstPositionUpdate) {
             this.firstPositionUpdate = false;
             this.map.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()));
@@ -292,6 +273,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             // NOTE: Skip updating map view if followmode and distance update is less than 10 meters.
             this.map.panTo(latLng);
           }
+          this.skipDisableFollowMode = false;
         }
       }
     });

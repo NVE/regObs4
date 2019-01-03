@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { Platform, NavController, Events } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,7 +31,6 @@ export class AppComponent {
     private translate: TranslateService,
     private userSettings: UserSettingService,
     private navController: NavController,
-    private events: Events,
     private deeplinks: Deeplinks,
     private backgroundFetch: BackgroundFetch,
     private zone: NgZone,
@@ -82,7 +81,6 @@ export class AppComponent {
   async initNanoSqlDatabase() {
     return this.zone.runOutsideAngular(async () => {
       await NanoSql.init();
-      this.events.publish('nanoSql: connected');
     });
   }
 

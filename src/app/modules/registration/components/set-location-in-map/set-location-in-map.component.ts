@@ -49,8 +49,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   distanceToObservationText = '';
   viewInfo: ViewInfo;
   isLoading = false;
-  private mapViewObservableSubscription: Subscription;
-  private locationsSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
+
   private locationGroup = L.markerClusterGroup({
     showCoverageOnHover: false,
     maxClusterRadius: 60,
@@ -91,7 +91,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       if (this.fromMarker) {
         this.locationMarker = L.marker(this.fromMarker.getLatLng(), { icon: locationMarkerIcon });
       } else {
-        this.followMode = true;
+        this.mapService.followMode = true;
         const lastView = await this.mapService.mapViewObservable$.pipe(take(1)).toPromise();
         if (lastView) {
           this.locationMarker = L.marker(lastView.center, { icon: locationMarkerIcon });
@@ -102,21 +102,18 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
     this.updateMapViewInfo();
 
-    this.mapViewObservableSubscription = this.mapService.mapViewObservable$.pipe(debounceTime(1000)).
+    this.subscriptions.push(this.mapService.mapViewObservable$.pipe(debounceTime(1000)).
       subscribe((mapView) => {
         if (mapView.zoom > 7) { // Do not update when zoom level is too low, we get too much records
           const range = Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2);
           this.locationService.updateLocationWithinRadius(this.geoHazard, mapView.center.lat, mapView.center.lng, range);
         }
-      });
+      }));
   }
 
   ngOnDestroy(): void {
-    if (this.mapViewObservableSubscription) {
-      this.mapViewObservableSubscription.unsubscribe();
-    }
-    if (this.locationsSubscription) {
-      this.locationsSubscription.unsubscribe();
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
     }
   }
 
@@ -145,7 +142,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     });
 
     if (this.showPreviousUsedLocations) {
-      this.locationsSubscription = this.locationService.getLocationsAsObservable(this.geoHazard)
+      this.subscriptions.push(this.locationService.getLocationsAsObservable(this.geoHazard)
         .subscribe((locations) => {
           this.locationGroup.clearLayers();
           for (const location of locations) {
@@ -154,8 +151,12 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
               .addTo(this.locationGroup);
             marker.on('click', () => this.setToPrevouslyUsedLocation(location));
           }
-        });
+        }));
     }
+
+    this.subscriptions.push(this.mapService.followMode$.subscribe((val) => {
+      this.followMode = val;
+    }));
 
     this.mapReady.emit(this.map);
     this.updatePathAndDistance();
@@ -163,7 +164,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   private setToPrevouslyUsedLocation(location: ObsLocationsResponseDtoV2) {
     this.ngZone.run(() => {
-      this.followMode = false;
+      this.mapService.followMode = false;
       this.selectedLocation = location;
       this.locationMarker.setLatLng(L.latLng(location.LatLngObject.Latitude,
         location.LatLngObject.Longitude));
@@ -174,7 +175,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   private moveLocationMarkerToCenter() {
-    this.followMode = false;
+    this.mapService.followMode = false;
     this.selectedLocation = null;
     const center = this.map.getCenter();
     this.locationMarker.setLatLng(center);

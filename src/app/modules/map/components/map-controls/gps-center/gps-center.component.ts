@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Events } from '@ionic/angular';
-import { settings } from '../../../../../../settings';
+import { MapService } from '../../../services/map/map.service';
 
 @Component({
   selector: 'app-gps-center',
@@ -9,13 +8,13 @@ import { settings } from '../../../../../../settings';
 })
 export class GpsCenterComponent implements OnInit {
 
-  constructor(private events: Events) { }
+  constructor(private mapService: MapService) { }
 
   ngOnInit() {
   }
 
   centerMapToUser() {
-    this.events.publish(settings.events.centerMapToUser);
+    this.mapService.centerMapToUser();
   }
 
 }

@@ -43,6 +43,7 @@ import { LoggingService } from './modules/shared/services/logging/logging.servic
 import { SentryService } from './modules/shared/services/logging/sentry.service';
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { environment } from '../environments/environment';
+import { MapSearchService } from './modules/map/services/map-search/map-search.service';
 // import { ObsCardHeightService } from './core/services/obs-card-height/obs-card-height.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
@@ -82,6 +83,7 @@ export const APP_PROVIDERS = [
     // Singleton services
     UserSettingService,
     MapService,
+    MapSearchService,
     WarningService,
     LoginService,
     DataMarshallService,

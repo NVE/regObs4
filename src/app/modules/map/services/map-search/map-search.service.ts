@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
-import { map, switchMap, catchError, take } from 'rxjs/operators';
-import { Observable, combineLatest, forkJoin, of } from 'rxjs';
+import { map, switchMap, catchError, take, shareReplay } from 'rxjs/operators';
+import { Observable, combineLatest, forkJoin, of, Subject } from 'rxjs';
 import 'leaflet.utm';
 import { LocationName } from './location-name.model';
 import { ViewInfo } from './view-info.model';
@@ -22,10 +22,27 @@ import * as moment from 'moment';
 })
 export class MapSearchService {
 
+  private _mapSearchItemClickSubject: Subject<MapSearchResponse>;
+  private _mapSearchItemClickObservable: Observable<MapSearchResponse>;
+
+  get mapSearchClick$() {
+    return this._mapSearchItemClickObservable;
+  }
+
+  set mapSearchItemSelected(item: MapSearchResponse) {
+    this._mapSearchItemClickSubject.next(item);
+  }
+
   constructor(
     private httpClient: HttpClient,
     private userSettingService: UserSettingService,
-    private locationService: LocationService) { }
+    private locationService: LocationService) {
+    this._mapSearchItemClickSubject = new Subject<MapSearchResponse>();
+    this._mapSearchItemClickObservable = this._mapSearchItemClickSubject.asObservable().pipe(shareReplay(0));
+    this._mapSearchItemClickObservable.subscribe((item) => {
+      this.saveSearchHistoryToDb(item);
+    });
+  }
 
   searchAll(text: string): Observable<MapSearchResponse[]> {
     return this.userSettingService.userSettingObservable$.pipe(
@@ -159,7 +176,7 @@ export class MapSearchService {
         })));
   }
 
-  async saveSearchHistoryToDb(searchResult: MapSearchResponse) {
+  private async saveSearchHistoryToDb(searchResult: MapSearchResponse) {
     const existingHistory = (await this.getSearchHistoryAsObservable().pipe(take(1)).toPromise()
     ).filter((item) =>
       !(item.latlng.lat === searchResult.latlng.lat && item.latlng.lng === searchResult.latlng.lng));

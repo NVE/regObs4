@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, NgZone } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { Events } from '@ionic/angular';
-import { settings } from '../../../settings';
 import { Subscription, Observable } from 'rxjs';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
