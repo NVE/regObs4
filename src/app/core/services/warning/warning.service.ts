@@ -221,10 +221,10 @@ export class WarningService {
   }
 
   private getWarningsForCurrentMapViewAsObservable() {
-    return combineLatest(this.mapService.mapViewAndAreaObservable$, this.userSettingService.userSettingObservable$)
-      .pipe(switchMap(([mapViewArea, userSetting]) =>
-        combineLatest(this.getWarningsForCurrentMapView(mapViewArea, userSetting))),
-        map(([result]) => result),
+    return this.mapService.mapViewAndAreaObservable$
+      .pipe(switchMap((mapViewArea) =>
+        this.getWarningsForCurrentMapView(mapViewArea)),
+        map((result) => result),
         shareReplay(1), tap((val) => {
           this.loggingService.debug(`getWarningsForCurrentMapViewAsObservable changed`, DEBUG_TAG, val);
         }));
@@ -235,10 +235,7 @@ export class WarningService {
     return arr.indexOf(regionId) >= 0;
   }
 
-  private isGroupInMapCenter(mapViewArea: IMapViewAndArea, warningGroup: WarningGroup, userSetting: UserSetting) {
-    if (!userSetting.showMapCenter) {
-      return false;
-    }
+  private isGroupInMapCenter(mapViewArea: IMapViewAndArea, warningGroup: WarningGroup) {
     return this.groupIsInRegion(warningGroup, mapViewArea.regionInCenter);
   }
 
@@ -250,18 +247,17 @@ export class WarningService {
     return mapViewArea.regionsInViewBuffer.filter((region) => this.groupIsInRegion(warningGroup, region)).length > 0;
   }
 
-  private getWarningsForCurrentMapView(mapViewArea: IMapViewAndArea, userSetting: UserSetting)
+  private getWarningsForCurrentMapView(mapViewArea: IMapViewAndArea)
     : Observable<IWarningGroupInMapView> {
     return this.warningsForCurrentGeoHazardObservable$.pipe(
       map((warnings) => {
         const center = warnings
-          .filter((warningGroup) => this.isGroupInMapCenter(mapViewArea, warningGroup, userSetting));
+          .filter((warningGroup) => this.isGroupInMapCenter(mapViewArea, warningGroup));
         const viewBounds = warnings.filter((warningGroup) =>
-          this.isGroupInViewBounds(mapViewArea, warningGroup) && !this.isGroupInMapCenter(mapViewArea, warningGroup, userSetting));
+          this.isGroupInViewBounds(mapViewArea, warningGroup) && !this.isGroupInMapCenter(mapViewArea, warningGroup));
         const buffer = warnings.filter((warningGroup) =>
           this.isGroupInViewBuffer(mapViewArea, warningGroup) && !this.isGroupInViewBounds(mapViewArea, warningGroup)
-          && !this.isGroupInMapCenter(mapViewArea, warningGroup, userSetting));
-
+          && !this.isGroupInMapCenter(mapViewArea, warningGroup));
         return {
           center,
           viewBounds,
