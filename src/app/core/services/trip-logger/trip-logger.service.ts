@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { nSQL } from 'nano-sql';
 import { TripLogItem } from './trip-log-item.model';
-import { Observer } from 'nano-sql/lib/observable';
 import * as moment from 'moment';
 import { TripLogState } from './trip-log-state.enum';
 import { TripLogActivity } from './trip-log-activity.model';
@@ -15,6 +14,9 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { ToastController, AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LegacyTrip } from './legacy-trip.model';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'TripLoggerService';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +32,7 @@ export class TripLoggerService {
     private userSettingService: UserSettingService,
     private translateService: TranslateService,
     private alertController: AlertController,
+    private loggingService: LoggingService,
     private toastController: ToastController) {
   }
 
@@ -135,7 +138,7 @@ export class TripLoggerService {
         await this.deleteLegacyTripsFromDb();
         await this.infoMessage(false).toPromise();
       } catch (error) {
-        console.warn('[WARNING][TripLoggerService] Could not stop trip!', error);
+        this.loggingService.error(error, DEBUG_TAG, 'Could not stop trip');
         this.showTripErrorMessage(false);
       }
     }

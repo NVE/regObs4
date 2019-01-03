@@ -106,7 +106,6 @@ export class LoginService {
       .query('delete').where((dbGroup: { key: string, userId: string, Id: number, Name: string }) =>
         ids.indexOf(dbGroup.key) < 0
       ).exec();
-    console.log('[INFO][LoginService] Deleted groups no longer in result: ', deleteResult);
   }
 
   async getLoggedInUser(showLoginModal = false): Promise<LoggedInUser> {

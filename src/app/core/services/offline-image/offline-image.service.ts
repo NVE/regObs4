@@ -10,6 +10,9 @@ import * as moment from 'moment';
 import { IOfflineAsset } from './offline-asset.interface';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { Platform } from '@ionic/angular';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'OfflineImageService';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +26,7 @@ export class OfflineImageService {
     private platform: Platform,
     private webview: WebView,
     private dbHelperService: DbHelperService,
+    private loggingService: LoggingService,
   ) { }
 
   async getImageOrFallbackToUrl(url: string, type: string = 'image/jpg') {
@@ -60,7 +64,6 @@ export class OfflineImageService {
         if (timeout) {
           clearTimeout(timeout);
         }
-        console.log(`[INFO][OfflineImageService] Cancel, return null`);
         return null;
       });
     }
@@ -69,13 +72,13 @@ export class OfflineImageService {
       this.updateLastAccess(offlineAsset);
       return this.webview.convertFileSrc(offlineAsset.fileUrl);
     } else if (options.retryCount < options.maxRetry) {
-      console.log(`[INFO][OfflineImageService] No offline asset found, try to download. Retry count: ${options.retryCount}`);
+      this.loggingService.debug(`No offline asset found, try to download. Retry count: ${options.retryCount}`, DEBUG_TAG, url);
       const downloadResult = await this.downloadOfflineAsset(url, options.type);
       if (downloadResult) {
         return this.webview.convertFileSrc(downloadResult.fileUrl);
       } else {
         const retryDelay = options.retryCount * 500;
-        console.log(`[INFO][OfflineImageService] Could not download image. Retry in ${retryDelay} ms`);
+        this.loggingService.debug(`Could not download image. Retry in ${retryDelay} ms`, DEBUG_TAG, url);
         return new Promise<string>((resolve) => {
           timeout = setTimeout(() => {
             options.retryCount = options.retryCount + 1;
@@ -84,7 +87,7 @@ export class OfflineImageService {
         });
       }
     } else {
-      console.log(`[INFO][OfflineImageService] Max retries reached, give up.`);
+      this.loggingService.debug(`Max retries reached, give up.`, DEBUG_TAG, url);
       return null;
     }
   }
@@ -124,7 +127,7 @@ export class OfflineImageService {
       await nSQL().table(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
       return offlineAsset;
     } catch (error) {
-      console.warn('Could not download offline asset: ', error);
+      this.loggingService.error(error, DEBUG_TAG, `Could not download offline asset`, url);
       return null;
     }
   }
@@ -138,6 +141,7 @@ export class OfflineImageService {
     // } else {
     //   return null;
     // }
+    // TODO: Test performance again after NanoSql patch. This issue with string id should be fixed now.
     return this.dbHelperService.getItemById<IOfflineAsset>(NanoSql.TABLES.OFFLINE_ASSET.name, url);
   }
 
@@ -161,14 +165,12 @@ export class OfflineImageService {
         const fileDeleted = await new Promise<boolean>((resolve) => {
           file.remove(() => resolve(true), () => resolve(false));
         });
-        console.log(`[INFO][OfflineImageService] File: ${asset.fileUrl} deleted: ${fileDeleted}`);
+        this.loggingService.debug(`${asset.fileUrl} deleted: ${fileDeleted}`, DEBUG_TAG, asset);
       } catch (err) {
-        console.log(`[INFO][OfflineImageService] File not found: ${asset.fileUrl}`);
+        this.loggingService.error(err, `Could not delete local file`, DEBUG_TAG, asset);
       }
     }
-    const deleteFromDbResult = await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
-      .query('delete').where((x) => x.lastAccess < fromDate).exec();
-    console.log(`[INFO][OfflineImageService] Cleanup result:`, deleteFromDbResult);
+    await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('delete').where((x) => x.lastAccess < fromDate).exec();
   }
 
   async reset() {

@@ -89,7 +89,6 @@ export class MapSearchService {
   }
 
   getElevationSvalbard(latLng: L.LatLng): Observable<number> {
-    console.log('[INFO] Get elevation for Svalbard');
     const utm = this.latLngToUtm(latLng);
     const url = settings.map.elevation.svalbard.url.replace('{0}', utm.x.toString()).replace('{1}', utm.y.toString());
     return this.httpClient.get(url)
@@ -101,7 +100,6 @@ export class MapSearchService {
   }
 
   getElevationNorway(latLng: L.LatLng): Observable<number> {
-    console.log('[INFO] Get elevation for Norway');
     const utm = this.latLngToUtm(latLng);
     const url = settings.map.elevation.no.url.replace('{0}', utm.x.toString()).replace('{1}', utm.y.toString());
     return this.httpClient.get(url)
@@ -109,7 +107,6 @@ export class MapSearchService {
   }
 
   getElevationWorld(latLng: L.LatLng): Observable<number> {
-    console.log('[INFO] Get elevation for world');
     return this.httpClient.get(`${settings.map.search.geonames.url}/srtm1JSON?`
       + `lat=${latLng.lat}&lng=${latLng.lng}&username=${settings.map.search.geonames.username}`)
       .pipe(map((data: any) => data && data.srtm1 !== -1 ? data.srtm1 : undefined));

@@ -98,7 +98,6 @@ export class UserSettingsPage implements OnInit {
     await this.offlineMapService.reset();
     await this.offlineImageService.reset();
     await NanoSql.dropAllTables();
-    console.log('[INFO] App reset complete');
     await this.navController.navigateRoot('start-wizard');
   }
 }

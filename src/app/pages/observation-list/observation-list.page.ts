@@ -8,7 +8,10 @@ import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { Router, NavigationStart } from '@angular/router';
 import { IonVirtualScroll } from '@ionic/angular';
+import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 // import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
+
+const DEBUG_TAG = 'ObservationListPage';
 
 @Component({
     selector: 'app-observation-list',
@@ -29,6 +32,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
         // private obsCardHeightService: ObsCardHeightService,
         private ngZone: NgZone,
         private router: Router,
+        private loggingService: LoggingService,
         private mapService: MapService) {
     }
 
@@ -36,10 +40,10 @@ export class ObservationListPage implements OnInit, OnDestroy {
         this.routerSubscription =
             this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((val: NavigationStart) => {
                 if (val.url === '/tabs/observation-list') {
-                    console.log(`[INFO] Observation list page route changed to ${val.url}. Start subscription.`);
+                    this.loggingService.debug(`Observation list page route changed to ${val.url}. Start subscription.`, DEBUG_TAG);
                     this.startSubscription();
                 } else {
-                    console.log(`[INFO] Observation list page route changed to ${val.url}. Stop subscription.`);
+                    this.loggingService.debug(`Observation list page route changed to ${val.url}. Stop subscription.`, DEBUG_TAG);
                     this.stopSubscription();
                 }
             });
@@ -66,7 +70,11 @@ export class ObservationListPage implements OnInit, OnDestroy {
                     // }
                     // this.loaded = true;
                 });
-                if (this.observations.length > 0) { // Reload virtual scroll to get correct item heights
+                if (this.observations.length > 0) {
+                    // NOTE: Reload virtual scroll to get correct item heights
+                    // There is still some issues with ionic virtual scroll...
+                    // https://github.com/ionic-team/ionic/issues/15948
+                    // https://github.com/ionic-team/ionic/issues/15258
                     setTimeout(() => {
                         this.observations = [...val];
                         setTimeout(() => {
@@ -110,7 +118,4 @@ export class ObservationListPage implements OnInit, OnDestroy {
     // getItemHeight(item: RegistrationViewModel, index: number) {
     //     return this.obsCardHeightService.getHeight(item.RegID);
     // }
-    // TODO: Change virtual scoll to ionic virtual scoll when no issues:
-    // https://github.com/ionic-team/ionic/issues/15948
-    // https://github.com/ionic-team/ionic/issues/15258
 }

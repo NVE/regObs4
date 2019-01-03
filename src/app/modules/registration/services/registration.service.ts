@@ -23,6 +23,9 @@ import { NavController, ModalController } from '@ionic/angular';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { GuidHelper } from '../../../core/helpers/guid.helper';
 import { LoginModalPage } from '../../login/pages/modal-pages/login-modal/login-modal.page';
+import { LoggingService } from '../../shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'RegistrationService';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +51,7 @@ export class RegistrationService {
     private navController: NavController,
     private modalController: ModalController,
     private dataLoadService: DataLoadService,
+    private loggingService: LoggingService,
   ) {
 
     this._registrationsObservable = this.userSettingService.userSettingObservable$
@@ -221,24 +225,24 @@ export class RegistrationService {
     } catch (ex) {
       if (ex instanceof HttpErrorResponse) {
         const httpError: HttpErrorResponse = ex;
-        console.warn('Could not sync registration', registration, ex);
+        this.loggingService.debug('Could not sync registration', DEBUG_TAG, registration, ex);
         if (httpError.status === 409) { // Duplicate, remove
           await this.deleteRegistrationById(userSetting.appMode, registration.id);
           // Updating latest user registration since we don't have an ID for the duplicate
           await this.updateLatestUserRegistrations();
         } else if (httpError.status === 400) {
           // Model error, something is not correct from app. Please review ModelState error!
-          console.error(ex); // TODO: Log exception if not 400 Bad request
+          this.loggingService.error(ex, 'Got 400 BadRequest when sending registration', DEBUG_TAG, registration);
           registration.error = { status: httpError.status, message: this.getErrorsFromBadRequest(httpError) };
-          await this.saveRegistration(registration); // save error message
+          await this.saveRegistration(registration);
         } else {
-          console.error(ex); // TODO: Log exception if not 400 Bad request
+          this.loggingService.error(ex, 'Got ${httpError.status} when sending registration', DEBUG_TAG, registration);
           registration.error = { status: httpError.status, message: httpError.statusText };
-          await this.saveRegistration(registration); // save error message
+          await this.saveRegistration(registration);
         }
       } else {
         // Another unknown error
-        console.error(ex); // TODO: Log exception
+        this.loggingService.error(ex, 'Error when sending registration', DEBUG_TAG, registration);
         registration.error = { status: 500, message: ex.message || '' };
         await this.saveRegistration(registration);
       }
@@ -259,9 +263,8 @@ export class RegistrationService {
   }
 
   deleteRegistrationById(appMode: AppMode, id: number) {
-    const result = NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
+    return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
       .query('delete').where(['id', '=', id]).exec();
-    console.log(`[INFO][RegistrationService] Delete registration by id: ${id}. AppMode: ${appMode} Result: `, result);
   }
 
   private getRegistrationsAsObservable(appMode: AppMode) {

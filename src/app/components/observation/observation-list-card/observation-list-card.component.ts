@@ -76,7 +76,6 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
       }
       this.updateImages();
       this.loaded = true;
-      // this.saveItemHeight();
     });
   }
 
@@ -112,13 +111,6 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     //   this.changes.disconnect();
     // }
   }
-
-  // saveItemHeight(): void {
-  //   setTimeout(() => {
-  //     const height = this.elementRef.nativeElement.offsetHeight;
-  //     console.log(`[INFO][ObservationListCard] Loaded RegId: ${this.obs.RegID}. Height: ${height}`);
-  //   }, 200);
-  // }
 
   updateImages() {
     const openImages = this.obs.Attachments.filter((a) => {

@@ -19,12 +19,14 @@ import { LangKey } from '../../models/langKey';
 import { SearchService } from '../../../modules/regobs-api/services';
 import { RegistrationViewModel, ObserverResponseDto } from '../../../modules/regobs-api/models';
 import { ObservableHelper } from '../../helpers/observable-helper';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'ObservationService';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ObservationService {
-
   private _observationsObservable: Observable<RegistrationViewModel[]>;
 
   get observations$() {
@@ -36,6 +38,7 @@ export class ObservationService {
     private loginService: LoginService,
     private userSettingService: UserSettingService,
     private dataLoadService: DataLoadService,
+    private loggingService: LoggingService,
   ) {
     this._observationsObservable = this.getObservationsAsObservable();
   }
@@ -84,7 +87,8 @@ export class ObservationService {
       || moment(dataLoad.itemsFromDate).isAfter(fromDate)) {
       return this.updateObservationsForGeoHazard(geoHazards, user, userSetting, cancel);
     } else {
-      console.log(`[INFO][ObervationService] No need to update ${geoHazards.join(', ')}. Last updated is:`, dataLoad.lastUpdated);
+      this.loggingService.debug(`No need to update ${geoHazards.join(', ')}.
+      Last updated is: ${dataLoad.lastUpdated}`, DEBUG_TAG);
       return 0;
     }
   }
@@ -109,7 +113,7 @@ export class ObservationService {
   }
 
   async updateObservationsForGeoHazard(geoHazards: GeoHazard[], user: LoggedInUser, userSetting: UserSetting, cancel?: Promise<void>) {
-    console.log(`[INFO][ObervationService] Updating observations for geoHazard: ${geoHazards.join(', ')}`);
+    this.loggingService.debug(`Updating observations for geoHazard: ${geoHazards.join(', ')}`, DEBUG_TAG);
     const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazards);
     await this.dataLoadService.startLoading(dataLoadId);
     const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazards);
@@ -119,7 +123,6 @@ export class ObservationService {
         isCanceled = true;
       });
     }
-
     try {
       this.searchService.rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
       const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchAll({
@@ -128,42 +131,31 @@ export class ObservationService {
         NumberOfRecords: settings.observations.maxObservationsToFetch,
         LangKey: userSetting.language,
       }), cancel);
-
-      console.log(`[INFO][ObervationService] Got ${searchResult.length} new observations for geoHazards  ${geoHazards.join(', ')}`);
+      this.loggingService.debug(`Got ${searchResult.length} new observations for geoHazards ${geoHazards.join(', ')}`, DEBUG_TAG);
       if (!isCanceled) {
         const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode);
         await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode)
           .loadJS(instanceName, searchResult, true);
-        console.log(`[INFO][ObervationService] observations saved to db`);
-      } else {
-        console.warn(`[INFO][ObervationService] operation cancelled. Skipping saving to db`);
       }
       if (!isCanceled) {
-        // Deleting items no longer in updated result
+        this.loggingService.debug(`Deleted items no longer in updated result`, DEBUG_TAG);
         await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, user, fromDate, searchResult);
-        console.log(`[INFO][ObervationService] Deleted items no longer in updated result`);
-      } else {
-        console.warn(`[INFO][ObervationService] operation cancelled. Skipping deleting record no longer in result`);
       }
       if (!isCanceled) {
-        // Delete old items
+        this.loggingService.debug(`Deleted old observations`, DEBUG_TAG);
         await this.deleteOldObservations(userSetting.appMode, geoHazards, user);
-        console.log(`[INFO][ObervationService] Deleted old observations`);
-      } else {
-        console.warn(`[INFO][ObervationService] operation cancelled. Skipping deleting old records`);
       }
       if (!isCanceled) {
         await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.length, fromDate, new Date());
-        console.log(`[INFO][ObervationService] returning ${searchResult.length}`);
         return searchResult.length;
       } else {
-        console.warn(`[INFO][ObervationService] operation cancelled. Saving load error.`);
+        this.loggingService.debug(`Operation cancelled. Saving load error.`, DEBUG_TAG);
         await this.dataLoadService.loadingError(dataLoadId, 'Operation cancelled');
         return 0;
       }
     } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, `Loading error`);
       await this.dataLoadService.loadingError(dataLoadId, err.message);
-      console.error(`[ERROR][ObervationService] Loading error`, err);
       return 0;
     }
   }
@@ -186,7 +178,7 @@ export class ObservationService {
       const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
       await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, false);
     } catch (err) {
-      console.error(err); // TODO: Log error if not cancel error
+      this.loggingService.error(err, DEBUG_TAG, `Could not update observations for user: `, user);
     }
   }
 
@@ -279,19 +271,12 @@ export class ObservationService {
       }).emit();
     }).toRxJS().pipe(debounceTime(500),
       map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
-      tap((items) => console.log('[INFO][ObservationService] Observations updated!', items)));
+      tap((items) => this.loggingService.debug('Observations updated!', DEBUG_TAG, items)));
   }
 
   async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {
-    // const debugAll = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
-    //   .query('select').exec();
-    // console.log(`[DEBUG][ObservationService] id: ${id}, appMode. ${appMode}, langKey: ${langKey}.  All observations: `, debugAll);
     const result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
       .query('select').where(['RegID', '=', id]).exec();
-    // console.log(`[DEBUG][ObservationService] query result: `, result);
-    // const query2Result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
-    //   .query('select').where((x: RegistrationViewModel) => x.RegID === id && x.LangKey === langKey).exec();
-    // console.log(`[DEBUG][ObservationService] query result2: `, query2Result);
     return result[0] as RegistrationViewModel;
   }
 

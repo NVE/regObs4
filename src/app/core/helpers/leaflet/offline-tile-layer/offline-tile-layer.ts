@@ -148,7 +148,7 @@ export class OfflineTileLayer extends L.TileLayer {
 
         // If no lower zoom tiles are available, fallback to errorTile.
         if (fallbackZoom < 1) {
-            console.log('Max fallback reached. Return original error handling');
+            // console.log('Max fallback reached. Return original error handling');
             return (<any>L.TileLayer.prototype)._tileOnError(done, tile, e);
         }
 

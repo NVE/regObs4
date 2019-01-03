@@ -11,6 +11,9 @@ import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { Router, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { LoggingService } from '../../modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'HomePage';
 
 @Component({
   selector: 'app-home',
@@ -42,6 +45,7 @@ export class HomePage implements OnInit, OnDestroy {
     private userSettingService: UserSettingService,
     private zone: NgZone,
     private router: Router,
+    private loggingService: LoggingService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -59,7 +63,6 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    console.log('[INFO] ionViewDidEnter home page');
     this.subscriptions = [];
     this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.zone.run(() => {
@@ -76,11 +79,11 @@ export class HomePage implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((val: NavigationStart) => {
         if (val.url === '/tabs/home' || val.url === '/tabs') {
-          console.log(`[INFO] Home page route changed to ${val.url}. Start GeoLocation.`);
+          this.loggingService.debug(`Home page route changed to ${val.url}. Start GeoLocation.`, DEBUG_TAG);
           this.mapComponent.startGeoLocationWatch();
           this.mapComponent.redrawMap();
         } else {
-          console.log(`[INFO] Home page route changed to ${val.url}. Stop GeoLocation.`);
+          this.loggingService.debug(`Home page route changed to ${val.url}. Stop GeoLocation.`, DEBUG_TAG);
           this.mapComponent.stopGeoLocationWatch();
         }
       }));
@@ -96,7 +99,6 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async onMapReady(map: L.Map) {
-    console.log('[INFO] onMapReady home page');
     this.map = map;
     this.markerLayer.addTo(this.map);
     this.map.on('click', () => {
@@ -115,13 +117,13 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
-    console.log('[INFO] Home page ionViewDidEnter. Start GeoLocation');
+    this.loggingService.debug(`Home page ionViewDidEnter. Start GeoLocation`, DEBUG_TAG);
     this.mapComponent.startGeoLocationWatch();
     this.mapComponent.redrawMap();
   }
 
   ionViewWillLeave() {
-    console.log('[INFO] Home page ionViewWillLeave. Stop GeoLocation.');
+    this.loggingService.debug(`Home page ionViewWillLeave. Stop GeoLocation.`, DEBUG_TAG);
     this.mapComponent.stopGeoLocationWatch();
   }
 

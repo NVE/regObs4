@@ -15,6 +15,9 @@ import { MapSearchResponse } from '../../services/map-search/map-search-response
 import { take } from 'rxjs/operators';
 import { AppCountry } from '../../../../core/models/app-country.enum';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
+import { LoggingService } from '../../../shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'MapComponent';
 
 @Component({
   selector: 'app-map',
@@ -58,6 +61,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private geolocation: Geolocation,
     private events: Events,
     private fullscreenService: FullscreenService,
+    private loggingService: LoggingService,
   ) {
     this.mapItemClickedHandler = (item: MapSearchResponse) => {
       this.disableFollowMode();
@@ -239,7 +243,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       try {
         this.map.invalidateSize();
       } catch (err) {
-        console.warn('Could not invalidate map size');
+        this.loggingService.debug('Could not invalidate map size', DEBUG_TAG);
       }
     }
     window.dispatchEvent(new Event('resize'));
@@ -250,7 +254,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   startGeoLocationWatch() {
-    console.log('[INFO] Start watching location changes');
+    this.loggingService.debug('Start watching location changes', DEBUG_TAG);
     if (this.geoLoactionSubscription === undefined || this.geoLoactionSubscription.closed) {
       this.geoLoactionSubscription = this.geolocation.watchPosition(settings.gps.currentPositionOptions)
         .subscribe(
@@ -258,12 +262,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           (error) => this.onPositionError(error)
         );
     } else {
-      console.log('[INFO] Geolocation service allready running');
+      this.loggingService.debug('Geolocation service allready running', DEBUG_TAG);
     }
   }
 
   stopGeoLocationWatch() {
-    console.log('[INFO] Stop watching location changes');
+    this.loggingService.debug('Stop watching location changes', DEBUG_TAG);
     if (this.geoLoactionSubscription !== undefined && !this.geoLoactionSubscription.closed) {
       this.geoLoactionSubscription.unsubscribe();
     }
@@ -294,7 +298,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onPositionError(error: any) {
-    // TODO: Handle error
-    console.log(error);
+    this.loggingService.error(error, DEBUG_TAG, 'Got error from GeoLoaction watchPosition');
   }
 }

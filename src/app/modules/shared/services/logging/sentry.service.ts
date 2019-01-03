@@ -18,24 +18,23 @@ export class SentryService implements LoggingService {
   }
 
   error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
-    this.log(message, error, LogLevel.Error, tag, optionalParams);
+    this.log(message, error, LogLevel.Error, tag, ...optionalParams);
   }
 
   debug(message: string, tag?: string, ...optionalParams: any[]) {
-    this.log(message, null, LogLevel.Debug, tag, optionalParams);
+    this.log(message, null, LogLevel.Debug, tag, ...optionalParams);
   }
 
 
   configureLogging(appMode: AppMode) {
-    const version = this.appVersionService.getAppVersion();
-
+    const appVersion = this.appVersionService.getAppVersion();
     Sentry.init(
       {
         dsn: settings.sentryDsn,
         environment: appMode === AppMode.Prod ? 'regObs' : (appMode === AppMode.Demo ? 'demo regObs' : 'test regObs'),
         enabled: environment.production,
-        release: version.version,
-        dist: `${version.branch}-${version.revision}-${version.date}`
+        release: appVersion.version,
+        dist: `${appVersion.branch}-${appVersion.revision}-${appVersion.date}`
       });
   }
 
@@ -48,16 +47,19 @@ export class SentryService implements LoggingService {
   }
 
   log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    if (message) {
-      Sentry.addBreadcrumb({
-        category: tag,
-        data: optionalParams,
-        message,
-        level: <any>level,
-      });
-    }
-    if (error) {
-      Sentry.captureException(error);
+    // Skipping other log levels than Error for performance, so we are not sending a lot of debug messages over the network
+    if (level === LogLevel.Error) {
+      if (message) {
+        Sentry.addBreadcrumb({
+          category: tag,
+          data: optionalParams,
+          message,
+          level: <any>level,
+        });
+      }
+      if (error) {
+        Sentry.captureException(error);
+      }
     }
   }
 }

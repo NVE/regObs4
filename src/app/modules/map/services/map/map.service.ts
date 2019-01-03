@@ -57,7 +57,6 @@ export class MapService {
       [mapView.bounds.getNorthEast().lat, mapView.bounds.getNorthEast().lng]
     ];
     if (boundsArray[0][0] !== boundsArray[1][0] && boundsArray[0][1] !== boundsArray[1][1]) {
-      console.log('[MapService] Update map view', mapView);
       return nSQL(NanoSql.TABLES.MAP_SERVICE.name)
         .query('upsert', {
           id: 'lastupdate',
@@ -65,8 +64,6 @@ export class MapService {
           center: [mapView.center.lat, mapView.center.lng],
           zoom: mapView.zoom,
         }).exec();
-    } else {
-      console.log('[MapService] SouthWest and NorthEast is the same, do not update...', mapView);
     }
   }
 
@@ -114,7 +111,7 @@ export class MapService {
   },
     callback: (_: IMapViewArea) => void) {
     const that = <any>self;
-    const start = new Date();
+    // const start = new Date();
     that.importScripts(`${input.url}/turf/turf.min.js`);
     const currentViewAsPolygon: Feature<Polygon> = that.turf.bboxPolygon(input.bbox);
 
@@ -143,8 +140,8 @@ export class MapService {
       .map((f) => f.properties[input.featureName].toString());
 
     const result: IMapViewArea = { regionInCenter, regionsInViewBounds, regionsInViewBuffer };
-    const runtime = new Date().getTime() - start.getTime();
-    console.log(`[INFO][MapService] - Calculate regions took ${runtime} milliseconds`, result);
+    // const runtime = new Date().getTime() - start.getTime();
+    // console.log(`[INFO][MapService] - Calculate regions took ${runtime} milliseconds`, result);
     callback(result);
   }
 
@@ -162,7 +159,6 @@ export class MapService {
   }
 
   private getRegionInViewObservable(mapView: IMapView, geoHazards: GeoHazard[]): Observable<IMapViewAndArea> {
-    console.log('getRegionInViewObservable', mapView, geoHazards);
     this.loadReagions(geoHazards);
     const regions = (geoHazards[0] === GeoHazard.Snow ? this._avalancheRegions
       : this._regions);

@@ -202,6 +202,7 @@ export class NanoSql {
         const adapter = await nSQL().extend('get_adapter');
         const adapterName = (<any>adapter[0]).constructor.name;
         console.log(`[INFO][NanoSQL] NanoSQL conencted. Using adapter:`, adapterName);
+        // TODO: Create service instead of static methods, inject logger.
     }
 
     static getInstance(name: string, appMode: AppMode) {

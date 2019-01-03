@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { CreateTripDto } from '../../modules/regobs-api/models';
 import * as moment from 'moment';
 import { LoginService } from '../../modules/login/services/login.service';
-import { AlertController, NavController, ModalController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -12,6 +12,10 @@ import { settings } from '../../../settings';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
 import { GuidHelper } from '../../core/helpers/guid.helper';
 import { LoginModalPage } from '../../modules/login/pages/modal-pages/login-modal/login-modal.page';
+import { LoggingService } from '../../modules/shared/services/logging/logging.service';
+import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
+
+const DEBUG_TAG = 'LegacyTripPage';
 
 @Component({
   selector: 'app-legacy-trip',
@@ -34,11 +38,11 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     private tripLoggerService: TripLoggerService,
     private ngZone: NgZone,
     private loginService: LoginService,
-    private alertController: AlertController,
     private translateService: TranslateService,
     private geoLocation: Geolocation,
     private navController: NavController,
     private modalController: ModalController,
+    private loggingService: LoggingService,
   ) {
     this.tripDto = {};
   }
@@ -117,7 +121,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
             this.tripDto.Lng = currentLocation.coords.longitude.toString();
           }
         } catch (error) {
-          console.warn('[Warning][LegacyTrip] Could not get geolocation!', error);
+          this.loggingService.log('Could not get geolocation', error, LogLevel.Warning, DEBUG_TAG);
         }
         this.tripLoggerService.startLegacyTrip(this.tripDto).subscribe(() => {
           this.ngZone.run(() => {
@@ -125,7 +129,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
             this.navController.navigateRoot('/');
           });
         }, (error) => {
-          console.error('[ERROR][LegacyTrip] Could not start trip!', error);
+          this.loggingService.error(error, 'Error when starting trip', DEBUG_TAG);
           this.ngZone.run(() => {
             this.isLoading = false;
             this.tripLoggerService.showTripErrorMessage(true);

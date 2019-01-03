@@ -17,22 +17,22 @@ export class ConsoleLoggingService implements LoggingService {
   setUser(user: LoggedInUser) { }
 
   error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
-    this.log(message, error, LogLevel.Error, tag, optionalParams);
+    this.log(message, error, LogLevel.Error, tag, ...optionalParams);
   }
 
   debug(message: string, tag?: string, ...optionalParams: any[]) {
-    this.log(message, null, LogLevel.Debug, tag, optionalParams);
+    this.log(message, null, LogLevel.Debug, tag, ...optionalParams);
   }
 
   log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    const msg = `[${level.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
+    const msg = `[${level.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}. ${error ? error : ''}`;
     switch (level) {
       case LogLevel.Warning:
       case LogLevel.Error:
-        optionalParams.length > 0 && !!optionalParams[0] ? console.error(msg, optionalParams) : console.warn(msg);
+        optionalParams.length > 0 ? console.error(msg, optionalParams) : console.error(msg);
         break;
       default:
-        optionalParams.length > 0 && !!optionalParams[0] ? console.log(msg, optionalParams) : console.log(msg);
+        optionalParams.length > 0 ? console.log(msg, optionalParams) : console.log(msg);
         break;
     }
   }

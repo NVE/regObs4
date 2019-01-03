@@ -37,10 +37,6 @@ export class HelpTextService {
     if (!dataLoad.lastUpdated
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
       await this.updateHelpTextsForLanguage(appMode, language, cancel);
-    } else {
-      const nextUpdate = moment(dataLoad.lastUpdated).add(settings.helpTexts.daysBeforeUpdate, 'day').toISOString();
-      console.log(`[INFO][HelpTextService] No need to update for language ${LangKey[language]}.
-        Last updated is: ${dataLoad.lastUpdated}. Next update should be: ${nextUpdate}`);
     }
   }
 
@@ -51,7 +47,6 @@ export class HelpTextService {
       this.helptextApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
       const helpTexts = await ObservableHelper.toPromiseWithCancel(
         this.helptextApiService.HelptextGet(language), cancel);
-      console.log('[INFO] Updated help texts: ', helpTexts);
       await NanoSql.getInstance(NanoSql.TABLES.HELP_TEXTS.name, appMode)
         .query('upsert', { langKey: language, helpTexts: helpTexts }).exec();
       await this.dataLoadService.loadingCompleted(dataLoadId);

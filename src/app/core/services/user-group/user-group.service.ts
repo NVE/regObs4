@@ -38,8 +38,6 @@ export class UserGroupService {
     if (!dataLoad.lastUpdated
       || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
       await this.updateUserGroupsForUser(appMode, user);
-    } else {
-      console.log(`[INFO][UserGroupService] No need to update user groups. Last updated is:`, dataLoad.lastUpdated);
     }
   }
 

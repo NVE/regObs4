@@ -66,7 +66,7 @@ export class OfflineMapPage implements OnInit {
         icon: 'trash',
         handler: () => {
           this.offlineMapService.remove(map).then(() => {
-            console.log('map deleted');
+            // console.log('map deleted');
           });
         }
       });
@@ -84,7 +84,7 @@ export class OfflineMapPage implements OnInit {
         icon: 'download',
         handler: () => {
           this.downloadMap(map).then(() => {
-            console.log('Start downloading map');
+            // console.log('Start downloading map');
           });
         }
       });
