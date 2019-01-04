@@ -1,9 +1,6 @@
 <ion-card *ngIf="loaded">
   <ion-card-header>
-    <h3 color="medium"><span *ngFor="let val of header; let i = index"><span class="small-space" *ngIf="i>0"> /
-        </span>{{
-        val
-        }}</span></h3>
+    <h3 color="medium">{{ header }}</h3>
   </ion-card-header>
   <ion-card-content>
     <ion-grid no-padding>
@@ -33,7 +30,7 @@
           </app-img-swiper>
         </ion-col>
       </ion-row>
-      <ng-container *ngIf="summaries.length > 1">
+      <!-- <ng-container *ngIf="summaries.length > 1">
         <ion-row class="row-padding-start">
           <ion-col size="12">
             <ion-badge (click)="toggleAllSelected()" [color]="allSelected ? 'medium' : 'light'" [ngClass]="{'outline': !allSelected}">
@@ -45,7 +42,7 @@
             </ion-badge>
           </ion-col>
         </ion-row>
-      </ng-container>
+      </ng-container> -->
       <ng-container *ngFor="let s of summaries; let i = index">
         <ng-container *ngIf="s.open">
           <ion-row class="row-padding-start">

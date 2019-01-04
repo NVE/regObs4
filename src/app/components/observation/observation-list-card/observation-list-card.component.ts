@@ -27,7 +27,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   dtObsDate: Date;
   icon: string;
   settings = settings;
-  header: string[];
+  header: string;
   summaries: { summary: Summary, open: boolean }[] = [];
   private userSetting: UserSetting;
   allSelected = true;
@@ -66,7 +66,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
       .get(`GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase()).toPromise();
 
     this.ngZone.run(() => {
-      this.header = this.getHeader(this.obs);
+      this.header = this.obs.ObsLocation.Title;
       this.dtObsDate = moment(this.obs.DtObsTime).toDate();
       this.icon = this.helperService.getGeoHazardIcon(geoHazard);
       this.summaries = this.obs.Summaries.filter((x) => x !== undefined).map((x) => ({ summary: x, open: true }));
@@ -128,19 +128,6 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
 
   getImageUrl(filename: string, size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'large') {
     return `${settings.services.regObs.webUrl[this.userSetting.appMode]}/Attachments/${size}/${filename}`;
-  }
-
-  getHeader(obs: RegistrationViewModel) {
-    const headerValues: string[] = [];
-    if (obs.ObsLocation.MunicipalName) {
-      headerValues.push(obs.ObsLocation.MunicipalName);
-    } else if (obs.ObsLocation.LocationName) {
-      headerValues.push(obs.ObsLocation.LocationName);
-    }
-    if (obs.ObsLocation.ForecastRegionName) {
-      headerValues.push(obs.ObsLocation.ForecastRegionName);
-    }
-    return headerValues;
   }
 
   getRegistrationNames() {
