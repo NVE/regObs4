@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
-import { Subscription, Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../modules/login/services/login.service';
-import { IonRefresher, IonInfiniteScroll, NavController, IonVirtualScroll } from '@ionic/angular';
+import { IonInfiniteScroll, NavController, IonVirtualScroll } from '@ionic/angular';
 import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
-import { take } from 'rxjs/operators';
 // import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
 
 @Component({
@@ -16,16 +15,14 @@ import { take } from 'rxjs/operators';
 })
 export class MyObservationsPage implements OnInit, OnDestroy {
   registrations: RegistrationViewModel[];
-  @ViewChild(IonRefresher) refresher: IonRefresher;
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
 
   private subscription: Subscription;
   private user: ObserverResponseDto;
-  showCancel = false;
-  private cancelSubject: Subject<boolean>;
   // theBoundCallback: Function;
   loaded = false;
+  refreshFunc: Function;
 
   constructor(
     private observationService: ObservationService,
@@ -35,11 +32,16 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     private registrationService: RegistrationService,
     // private obsCardHeightService: ObsCardHeightService,
     private loginService: LoginService) {
+    this.refreshFunc = this.refresh.bind(this);
+  }
+
+  refresh(cancelPromise: Promise<any>) {
+    return this.registrationService.syncRegistrations(cancelPromise).then(() =>
+      this.loadPage(0, cancelPromise));
   }
 
   async ngOnInit() {
     // this.theBoundCallback = this.getItemHeight.bind(this);
-    this.cancelSubject = new Subject<boolean>();
     this.registrations = [];
     const loggedInUser = await this.loginService.getLoggedInUser();
     if (!loggedInUser.isLoggedIn) {
@@ -71,28 +73,6 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-  }
-
-  doRefresh() {
-    this.ngZone.run(() => {
-      this.showCancel = true;
-    });
-    const cancelPromise = this.getCancelPromise();
-    this.registrationService.syncRegistrations(cancelPromise).then(() =>
-      this.loadPage(0, cancelPromise)).then(() => {
-        this.ngZone.run(() => {
-          this.showCancel = false;
-          this.refresher.complete();
-        });
-      });
-  }
-
-  cancel() {
-    this.cancelSubject.next(true);
-  }
-
-  private getCancelPromise() {
-    return this.cancelSubject.asObservable().pipe(take(1)).toPromise();
   }
 
   loadData() {

@@ -84,10 +84,10 @@ export class WarningService {
     this.loggingService.debug('Updating warnings completed', DEBUG_TAG);
   }
 
-  async updateWarningsForCurrentGeoHazard() {
+  async updateWarningsForCurrentGeoHazard(cancel?: Promise<void>) {
     const userSettings = await this.userSettingService.getUserSettings();
     for (const geoHazard of userSettings.currentGeoHazard) {
-      await this.updateWarningsForGeoHazard(geoHazard);
+      await this.updateWarningsForGeoHazard(geoHazard, cancel);
     }
   }
 
@@ -338,6 +338,12 @@ export class WarningService {
 
   private async updateAvalancheWarnings(language: LangKey, from?: Date, to?: Date, cancelPromise?: Promise<void>) {
     this.loggingService.debug(`Updating avalanche warnings`, DEBUG_TAG);
+    let cancelled = false;
+    if (cancelPromise) {
+      cancelPromise.then(() => {
+        cancelled = true;
+      });
+    }
     const dateRange = this.getDefaultDateRange(from, to);
     const dataLoadId = this.getDataLoadId(GeoHazard.Snow);
     await this.dataLoadService.startLoading(dataLoadId);
@@ -348,20 +354,24 @@ export class WarningService {
     try {
       const warningsresult = await ObservableHelper.toPromiseWithCancel(
         this.httpClient.get<IAvalancheWarningApiResult[]>(url), cancelPromise);
-      const regionResult: IWarningGroup[] = warningsresult.map((region, index) => ({
-        id: `${region.Id}_${GeoHazard.Snow}`,
-        regionId: region.Id.toString(),
-        regionName: region.Name,
-        regionType: region.TypeName,
-        geoHazard: GeoHazard.Snow,
-        counties: [],
-        warnings: region.AvalancheWarningList.map((simpleWarning) => this.convertSimpleWarningToAppWarning(language, simpleWarning)),
-        sortOrder: index,
-      }));
-      this.loggingService.debug(`New updates for avalanche warnings:`, DEBUG_TAG, regionResult);
-      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
-      await this.deleteRegionsNoLongerInResult(GeoHazard.Snow, regionResult); // NOTE: This also trigger change
-      await this.dataLoadService.loadingCompleted(dataLoadId, warningsresult.length, dateRange.from.toDate(), new Date());
+      if (!cancelled) {
+        const regionResult: IWarningGroup[] = warningsresult.map((region, index) => ({
+          id: `${region.Id}_${GeoHazard.Snow}`,
+          regionId: region.Id.toString(),
+          regionName: region.Name,
+          regionType: region.TypeName,
+          geoHazard: GeoHazard.Snow,
+          counties: [],
+          warnings: region.AvalancheWarningList.map((simpleWarning) => this.convertSimpleWarningToAppWarning(language, simpleWarning)),
+          sortOrder: index,
+        }));
+        this.loggingService.debug(`New updates for avalanche warnings:`, DEBUG_TAG, regionResult);
+        await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
+        await this.deleteRegionsNoLongerInResult(GeoHazard.Snow, regionResult); // NOTE: This also trigger change
+        await this.dataLoadService.loadingCompleted(dataLoadId, warningsresult.length, dateRange.from.toDate(), new Date());
+      } else {
+        await this.dataLoadService.loadingError(dataLoadId, 'Operation cancelled');
+      }
     } catch (err) {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
     }

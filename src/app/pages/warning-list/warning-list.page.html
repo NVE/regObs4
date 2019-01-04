@@ -11,10 +11,7 @@
   </ion-segment-button>
 </ion-segment>
 <ion-content>
-  <ion-refresher (ionRefresh)="doRefresh()">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="{{ 'ALERT.PULL_TO_REFRESH' | translate}}">
-    </ion-refresher-content>
-  </ion-refresher>
+  <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <ion-virtual-scroll [items]="warningGroups" [headerFn]="myHeaderFn" [approxHeaderHeight]="70">
     <ion-item-divider *virtualHeader="let header">
       <app-warning-list-header [title]="header.header" [subTitle]="header.infoText" [showDayNames]="header.showDayNames"></app-warning-list-header>

@@ -1,10 +1,9 @@
-import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { Observable, BehaviorSubject, forkJoin, Subscription, combineLatest } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription, combineLatest } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { IonRefresher } from '@ionic/angular';
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
@@ -18,11 +17,11 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
 })
 export class WarningListPage implements OnInit, OnDestroy {
   selectedTab: SelectedTab;
-  @ViewChild(IonRefresher) refresher: IonRefresher;
   warningGroups: IVirtualScrollItem<WarningGroup>[] = [];
   private segmentPageSubject: BehaviorSubject<SelectedTab>;
   private segmentPageObservable: Observable<SelectedTab>;
   private subscription: Subscription;
+  refreshFunc: Function;
 
   constructor(
     private warningService: WarningService,
@@ -32,6 +31,7 @@ export class WarningListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.selectedTab = 'inMapView';
+    this.refreshFunc = this.refresh.bind(this);
     this.segmentPageSubject = new BehaviorSubject<SelectedTab>(this.selectedTab);
     this.segmentPageObservable = this.segmentPageSubject.asObservable();
   }
@@ -44,6 +44,10 @@ export class WarningListPage implements OnInit, OnDestroy {
         this.warningGroups = warningGroups;
       });
     });
+  }
+
+  refresh(cancelPromise: Promise<any>) {
+    return this.warningService.updateWarningsForCurrentGeoHazard(cancelPromise);
   }
 
   private getWarningGroupObservable(segment: SelectedTab, userSetting: UserSetting)
@@ -135,11 +139,6 @@ export class WarningListPage implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-  }
-
-  async doRefresh() {
-    await this.warningService.updateWarningsForCurrentGeoHazard();
-    this.refresher.complete();
   }
 
   onSegmentChange() {
