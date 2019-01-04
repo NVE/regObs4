@@ -155,6 +155,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }));
 
     this.redrawMap();
+    setTimeout(() => this.updateMapView(), 200);
     this.mapReady.emit(this.map);
   }
 
