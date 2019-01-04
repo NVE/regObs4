@@ -72,7 +72,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   async ngOnInit() {
     try {
       if (this.center === undefined || this.zoom === undefined) {
-        const currentView = await this.mapService.mapViewObservable$.pipe(take(1)).toPromise();
+        const currentView = await this.mapService.mapView$.pipe(take(1)).toPromise();
         if (currentView) {
           this.firstPositionUpdate = false;
           if (this.center === undefined) {

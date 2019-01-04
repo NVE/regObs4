@@ -1,5 +1,6 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
 <ion-content>
+  <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <!-- <cdk-virtual-scroll-viewport *ngIf="(observations.length > 0) else empty" autosize>
     <div *cdkVirtualFor="let obs of observations; trackBy: trackByRegId">
       <app-observation-list-card [obs]="obs"></app-observation-list-card>

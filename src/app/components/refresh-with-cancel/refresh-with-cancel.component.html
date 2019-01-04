@@ -1,0 +1,11 @@
+<ion-refresher (ionRefresh)="doRefresh()">
+  <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="{{'ALERT.PULL_TO_REFRESH' | translate }}">
+  </ion-refresher-content>
+  <ion-grid *ngIf="showCancel">
+    <ion-row>
+      <ion-col text-center>
+        <ion-button fill="clear" size="small" (click)="cancel()">Avbryt</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-refresher>

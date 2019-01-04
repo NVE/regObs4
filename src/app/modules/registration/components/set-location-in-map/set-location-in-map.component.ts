@@ -92,7 +92,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         this.locationMarker = L.marker(this.fromMarker.getLatLng(), { icon: locationMarkerIcon });
       } else {
         this.mapService.followMode = true;
-        const lastView = await this.mapService.mapViewObservable$.pipe(take(1)).toPromise();
+        const lastView = await this.mapService.mapView$.pipe(take(1)).toPromise();
         if (lastView) {
           this.locationMarker = L.marker(lastView.center, { icon: locationMarkerIcon });
         } else {
@@ -102,7 +102,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
     this.updateMapViewInfo();
 
-    this.subscriptions.push(this.mapService.mapViewObservable$.pipe(debounceTime(1000)).
+    this.subscriptions.push(this.mapService.mapView$.pipe(debounceTime(1000)).
       subscribe((mapView) => {
         if (mapView.zoom > 7) { // Do not update when zoom level is too low, we get too much records
           const range = Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2);

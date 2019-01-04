@@ -17,6 +17,7 @@ import { LegalTermsComponent } from '../../components/legal-terms/legal-terms.co
 import { ImgSwiperComponent } from '../../components/img-swiper/img-swiper.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { RouterModule } from '@angular/router';
+import { RefreshWithCancelComponent } from '../../components/refresh-with-cancel/refresh-with-cancel.component';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { RouterModule } from '@angular/router';
         LegalTermsComponent,
         ImgSwiperComponent,
         HeaderComponent,
+        RefreshWithCancelComponent,
     ],
     exports: [
         CommonModule,
@@ -63,6 +65,7 @@ import { RouterModule } from '@angular/router';
         LegalTermsComponent,
         ImgSwiperComponent,
         HeaderComponent,
+        RefreshWithCancelComponent,
     ]
 })
 export class SharedModule { }

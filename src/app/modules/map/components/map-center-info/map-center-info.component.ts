@@ -54,7 +54,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   }
 
   private startMapViewSubscriptions() {
-    this.mapViewSubscription = this.mapService.mapViewObservable$.subscribe((mapView) => {
+    this.mapViewSubscription = this.mapService.mapView$.subscribe((mapView) => {
       this.ngZone.run(() => {
         this.mapView = mapView;
         this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;

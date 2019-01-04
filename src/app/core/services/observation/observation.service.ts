@@ -100,10 +100,10 @@ export class ObservationService {
     ), map((val) => val[0] && val[0].lastUpdated ? moment(val[0].lastUpdated).toDate() : null));
   }
 
-  async updateObservationsForCurrentGeoHazard() {
+  async forceUpdateObservationsForCurrentGeoHazard(cancel?: Promise<void>) {
     const userSettings = await this.userSettingService.getUserSettings();
     const loggedInUser = await this.loginService.getLoggedInUser();
-    return this.updateObservationsForGeoHazard(userSettings.currentGeoHazard, loggedInUser, userSettings);
+    return this.updateObservationsForGeoHazard(userSettings.currentGeoHazard, loggedInUser, userSettings, cancel);
   }
 
   private async getDaysBackToFetchAsDate(userSetting: UserSetting, geoHazards: GeoHazard[]) {

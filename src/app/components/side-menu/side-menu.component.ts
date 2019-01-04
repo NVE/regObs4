@@ -60,7 +60,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   updateObservations() {
-    this.observationService.updateObservationsForCurrentGeoHazard();
+    this.observationService.forceUpdateObservationsForCurrentGeoHazard();
   }
 
   async showLegalTerms() {

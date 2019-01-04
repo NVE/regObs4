@@ -19,7 +19,7 @@ import { Feature, Polygon } from '@turf/turf';
   providedIn: 'root'
 })
 export class MapService {
-  private _mapViewObservable: Observable<IMapView>;
+  // private _mapViewObservable: Observable<IMapView>;
   private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
   private _avalancheRegions: any;
   private _regions: any;
@@ -28,9 +28,11 @@ export class MapService {
   private _followModeObservable: Observable<boolean>;
   private _centerMapToUserSubject: Subject<void>;
   private _centerMapToUserObservable: Observable<void>;
+  private _mapViewSubject: Subject<IMapView>;
+  private _mapView$: Observable<IMapView>;
 
-  get mapViewObservable$() {
-    return this._mapViewObservable;
+  get mapView$() {
+    return this._mapView$;
   }
 
   get mapViewAndAreaObservable$() {
@@ -50,13 +52,15 @@ export class MapService {
   }
 
   constructor(private userSettingService: UserSettingService) {
-    this._mapViewObservable = this.getMapViewObservable();
-    this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
+    // this._mapViewObservable = this.getMapViewObservable();
     this._tilesInNorwayCache = new LRUMap(10000);
     this._followModeSubject = new BehaviorSubject<boolean>(true);
     this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
     this._centerMapToUserSubject = new Subject<void>();
     this._centerMapToUserObservable = this._centerMapToUserSubject.asObservable().pipe(shareReplay(1));
+    this._mapViewSubject = new BehaviorSubject<IMapView>(null);
+    this._mapView$ = this._mapViewSubject.asObservable().pipe(debounceTime(200), shareReplay(1));
+    this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
   }
 
   centerMapToUser() {
@@ -77,48 +81,47 @@ export class MapService {
   }
 
   updateMapView(mapView: IMapView) {
-    const boundsArray = [
-      [mapView.bounds.getSouthWest().lat, mapView.bounds.getSouthWest().lng],
-      [mapView.bounds.getNorthEast().lat, mapView.bounds.getNorthEast().lng]
-    ];
-    if (boundsArray[0][0] !== boundsArray[1][0] && boundsArray[0][1] !== boundsArray[1][1]) {
-      return nSQL(NanoSql.TABLES.MAP_SERVICE.name)
-        .query('upsert', {
-          id: 'lastupdate',
-          bounds: boundsArray,
-          center: [mapView.center.lat, mapView.center.lng],
-          zoom: mapView.zoom,
-        }).exec();
-    }
+    // const boundsArray = [
+    //   [mapView.bounds.getSouthWest().lat, mapView.bounds.getSouthWest().lng],
+    //   [mapView.bounds.getNorthEast().lat, mapView.bounds.getNorthEast().lng]
+    // ];
+    // if (boundsArray[0][0] !== boundsArray[1][0] && boundsArray[0][1] !== boundsArray[1][1]) {
+    //   return nSQL(NanoSql.TABLES.MAP_SERVICE.name)
+    //     .query('upsert', {
+    //       id: 'lastupdate',
+    //       bounds: boundsArray,
+    //       center: [mapView.center.lat, mapView.center.lng],
+    //       zoom: mapView.zoom,
+    //     }).exec();
+    // }
+    this._mapViewSubject.next(mapView);
   }
 
-  private getMapViewObservable() {
-    return nSQL().observable<IMapView>(() => {
-      return nSQL(NanoSql.TABLES.MAP_SERVICE.name).query('select').emit();
-    }).map((result) => {
-      const firstItem: {
-        id: string,
-        bounds: L.LatLngExpression[],
-        center: L.LatLngExpression,
-        zoom: number
-      } = result[0];
-      if (firstItem && firstItem.bounds && firstItem.center) {
-        const mapView: IMapView = {
-          bounds: L.latLngBounds(firstItem.bounds),
-          center: L.latLng(firstItem.center),
-          zoom: firstItem.zoom
-        };
-        return mapView;
-      } else {
-        return null;
-      }
-    }).debounce(50).toRxJS().pipe(shareReplay(1));
-  }
+  // private getMapViewObservable() {
+  //   return nSQL().observable<IMapView>(() => {
+  //     return nSQL(NanoSql.TABLES.MAP_SERVICE.name).query('select').emit();
+  //   }).map((result) => {
+  //     const firstItem: {
+  //       id: string,
+  //       bounds: L.LatLngExpression[],
+  //       center: L.LatLngExpression,
+  //       zoom: number
+  //     } = result[0];
+  //     if (firstItem && firstItem.bounds && firstItem.center) {
+  //       const mapView: IMapView = {
+  //         bounds: L.latLngBounds(firstItem.bounds),
+  //         center: L.latLng(firstItem.center),
+  //         zoom: firstItem.zoom
+  //       };
+  //       return mapView;
+  //     } else {
+  //       return null;
+  //     }
+  //   }).debounce(50).toRxJS().pipe(shareReplay(1));
+  // }
 
   private getMapViewAreaObservable() {
-    return combineLatest(this.mapViewObservable$.pipe(
-      filter((x) => x !== null), debounceTime(200)),
-      this.userSettingService.currentGeoHazardObservable$)
+    return combineLatest(this.mapView$.pipe(filter((val) => val !== null)), this.userSettingService.currentGeoHazardObservable$)
       .pipe(
         switchMap(([mapView, currentGeoHazard]) =>
           this.getRegionInViewObservable(mapView, currentGeoHazard)),
