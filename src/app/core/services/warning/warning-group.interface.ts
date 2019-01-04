@@ -12,4 +12,5 @@ export interface IWarningGroup {
     counties: Array<string>;
     geoHazard: GeoHazard;
     warnings: IWarning[];
+    sortOrder?: number;
 }

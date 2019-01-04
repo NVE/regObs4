@@ -42,6 +42,10 @@ export class WarningGroup {
         return this._warningGroup.validTo;
     }
 
+    get sortOrder() {
+        return this._warningGroup.sortOrder;
+    }
+
     getWarningForDay(date: Date) {
         const warningsForDay = this._warningGroup.warnings.filter((x) => moment(date).isBetween(x.validFrom, x.validTo, null, '[]'));
         if (warningsForDay.length > 0) {

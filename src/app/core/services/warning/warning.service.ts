@@ -7,7 +7,7 @@ import { LangKey } from '../../models/langKey';
 import { nSQL } from 'nano-sql';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
-import { map, tap, switchMap, shareReplay, take } from 'rxjs/operators';
+import { map, tap, switchMap, shareReplay } from 'rxjs/operators';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
@@ -17,7 +17,6 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { IWarningGroup } from './warning-group.interface';
-import { UserSetting } from '../../models/user-settings.model';
 import { IIceWarningApiResult } from './ice-warning-api-result.interface';
 import { Platform } from '@ionic/angular';
 import { HTTP } from '@ionic-native/http/ngx';
@@ -143,7 +142,7 @@ export class WarningService {
   private getDefaultIceWarningGroups() {
     const iceRegionsDefaultJson = this.getDefaultIceForecastRegions();
     const geoHazard = GeoHazard.Ice;
-    const regionGroups: IWarningGroup[] = iceRegionsDefaultJson.forecastRegions.map((region) => ({
+    const regionGroups: IWarningGroup[] = iceRegionsDefaultJson.forecastRegions.map((region, index) => ({
       id: `${region.name}_${geoHazard}`,
       regionId: region.name,
       regionName: region.name,
@@ -152,7 +151,8 @@ export class WarningService {
       validFrom: null,
       validTo: null,
       geoHazard,
-      warnings: []
+      warnings: [],
+      sortOrder: index,
     }));
     return regionGroups;
   }
@@ -165,9 +165,18 @@ export class WarningService {
       regionName: region.Name,
       counties: [region.Id],
       geoHazard: geoHazard,
-      warnings: []
+      warnings: [],
+      sortOrder: this.convertCoutyToSortOrder(region.Id)
     }));
     return regionGroups;
+  }
+
+  private convertCoutyToSortOrder(countyId: string) {
+    const countyNr = parseInt(countyId, 10);
+    // Move Trøndelag to sort order 16 (Previous Sør-Trøndelag)
+    const regionFixedCountyNr = countyNr === 50 ? 16 : countyNr;
+    // Sort should be from north to south, so we have to reverse numbers
+    return (regionFixedCountyNr * -1) + 22; // 22 is the max region nr (Jan Mayen)
   }
 
   private getDefaultAvalancheWarningGroups() {
@@ -179,7 +188,8 @@ export class WarningService {
       regionType: region.properties.regionType,
       counties: [],
       geoHazard: GeoHazard.Snow,
-      warnings: []
+      warnings: [],
+      sortOrder: region.properties.sortID,
     }));
     return avalancheRegions;
   }
@@ -199,14 +209,11 @@ export class WarningService {
           const warningGroup = new WarningGroup(region, isFavourite);
           return warningGroup;
         }).sort((a, b) => {
-          if (a.key.groupName < b.key.groupName) {
-            return -1;
+          if (a.sortOrder === b.sortOrder) {
+            return a.key.geoHazard - b.key.geoHazard;
+          } else {
+            return a.sortOrder - b.sortOrder;
           }
-          if (a.key.groupName > b.key.groupName) {
-            return 1;
-          }
-          // names must be equal, sort by geohazard
-          return a.key.geoHazard - b.key.geoHazard;
         });
       }), shareReplay(1));
   }
@@ -314,6 +321,7 @@ export class WarningService {
             counties: [regionId],
             geoHazard,
             warnings: [warning],
+            sortOrder: this.convertCoutyToSortOrder(regionId),
           });
         }
       }
@@ -340,7 +348,7 @@ export class WarningService {
     try {
       const warningsresult = await ObservableHelper.toPromiseWithCancel(
         this.httpClient.get<IAvalancheWarningApiResult[]>(url), cancelPromise);
-      const regionResult: IWarningGroup[] = warningsresult.map((region) => ({
+      const regionResult: IWarningGroup[] = warningsresult.map((region, index) => ({
         id: `${region.Id}_${GeoHazard.Snow}`,
         regionId: region.Id.toString(),
         regionName: region.Name,
@@ -348,6 +356,7 @@ export class WarningService {
         geoHazard: GeoHazard.Snow,
         counties: [],
         warnings: region.AvalancheWarningList.map((simpleWarning) => this.convertSimpleWarningToAppWarning(language, simpleWarning)),
+        sortOrder: index,
       }));
       this.loggingService.debug(`New updates for avalanche warnings:`, DEBUG_TAG, regionResult);
       await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
@@ -388,7 +397,7 @@ export class WarningService {
     try {
       const url = this.getBaseUrl(geoHazard);
       const result = await this.getIceWarningsFromApi(url);
-      const regionResult: IWarningGroup[] = result.forecastRegions.map((region) => ({
+      const regionResult: IWarningGroup[] = result.forecastRegions.map((region, index) => ({
         id: `${region.name}_${geoHazard}`,
         regionId: region.name,
         regionName: region.name,
@@ -397,7 +406,8 @@ export class WarningService {
         validFrom: this.getDate(region.validFrom),
         validTo: this.getDate(region.validTo),
         geoHazard,
-        warnings: []
+        warnings: [],
+        sortOrder: index,
       }));
       this.loggingService.debug(`New updates for ice warnings:`, DEBUG_TAG, regionResult);
       await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
