@@ -72,14 +72,17 @@ export const settings = {
             cacheFolder: 'tilescache',
             cacheSize: 10000,
             embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
-            embeddedUrlMaxZoomWorld: 5,
-            embeddedUrlMaxZoomNorway: 9,
+            // embeddedUrlMaxZoomWorld: 5,
+            // embeddedUrlMaxZoomNorway: 9,
+            embeddedUrlMaxZoomWorld: 0,
+            embeddedUrlMaxZoomNorway: 0,
             maxZoom: 18,
             zoomInPosition: 15,
             zoomToShowBeforeNorwegianDetailsMap: 9,
             // tslint:disable-next-line:max-line-length
-            nowegianDetailsMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
-            defaultMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+            statensKartverkMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
+            openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+            arcGisOnlineTopoMapUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
             supportTiles: [
                 {
                     name: 'steepness',

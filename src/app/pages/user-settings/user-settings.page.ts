@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { OfflineImageService } from '../../core/services/offline-image/offline-image.service';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
 import { AppVersion } from '../../core/models/app-version.model';
+import { TopoMap } from '../../core/models/topo-map.enum';
 
 @Component({
   selector: 'app-user-settings',
@@ -28,6 +29,7 @@ export class UserSettingsPage implements OnInit {
   AppCountry = AppCountry;
   isUpdating = false;
   version: AppVersion;
+  TopoMap = TopoMap;
 
   constructor(
     private userSettingService: UserSettingService,

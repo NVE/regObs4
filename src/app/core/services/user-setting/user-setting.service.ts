@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, take, shareReplay } from 'rxjs/operators';
 import { LangKey } from '../../models/langKey';
 import { AppCountry } from '../../models/app-country.enum';
+import { TopoMap } from '../../models/topo-map.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +59,7 @@ export class UserSettingService {
       tilesCacheSize: settings.map.tiles.cacheSize,
       showObservations: true,
       emailReciept: true,
+      topoMap: TopoMap.mixArcGisOnline,
     };
   }
 

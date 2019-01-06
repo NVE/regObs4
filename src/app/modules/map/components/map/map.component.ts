@@ -15,6 +15,7 @@ import { AppCountry } from '../../../../core/models/app-country.enum';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
+import { TopoMap } from '../../../../core/models/topo-map.enum';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -176,20 +177,35 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.skipNextMapViewUpdate = false;
   }
 
+  private getWorldTopoMapUrl(topoMap: TopoMap) {
+    switch (topoMap) {
+      case TopoMap.mixArcGisOnline:
+      case TopoMap.arcGisOnline:
+        return settings.map.tiles.arcGisOnlineTopoMapUrl;
+      case TopoMap.mixOpenTopo:
+      case TopoMap.openTopo:
+        return settings.map.tiles.openTopoMapUrl;
+      default:
+        return settings.map.tiles.statensKartverkMapUrl;
+    }
+  }
+
   configureTileLayers(userSetting: UserSetting) {
     this.zone.runOutsideAngular(() => {
       this.tilesLayer.clearLayers();
       const topoTilesLayer = new OfflineTileLayer(
-        'topo',
-        settings.map.tiles.defaultMapUrl,
+        userSetting.topoMap,
+        this.getWorldTopoMapUrl(userSetting.topoMap),
         userSetting.tilesCacheSize > 0,
         this.zone,
         this.offlineMapService,
         this.mapService,
         this.platform,
-        true,
+        (userSetting.topoMap === TopoMap.mixArcGisOnline ||
+          userSetting.topoMap === TopoMap.mixOpenTopo
+        ),
         settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap,
-        settings.map.tiles.nowegianDetailsMapUrl,
+        settings.map.tiles.statensKartverkMapUrl,
         true,
         settings.map.tiles.embeddedUrl,
         settings.map.tiles.embeddedUrlMaxZoomWorld,

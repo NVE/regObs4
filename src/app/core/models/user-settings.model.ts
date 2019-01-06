@@ -1,8 +1,8 @@
 import { GeoHazard } from './geo-hazard.enum';
 import { AppMode } from './app-mode.enum';
-import { SupportTile } from './support-tile.model';
 import { AppCountry } from './app-country.enum';
 import { LangKey } from './langKey';
+import { TopoMap } from './topo-map.enum';
 
 export interface UserSetting {
     appMode: AppMode;
@@ -16,4 +16,5 @@ export interface UserSetting {
     tilesCacheSize: number;
     showObservations: boolean;
     emailReciept: boolean;
+    topoMap: TopoMap;
 }
