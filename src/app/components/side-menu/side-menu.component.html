@@ -25,7 +25,7 @@
       <ion-toggle [(ngModel)]="userSettings.showObservations" (ionChange)="saveUserSettings()"></ion-toggle>
     </ion-item> -->
     <ion-item>
-      <ion-label position="stacked" color="medium">Kart</ion-label>
+      <ion-label position="stacked" color="medium" text-uppercase>{{ 'MENU.MAP' | translate }}</ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap" interface="action-sheet"
         (ngModelChange)="saveUserSettings()">
         <ion-select-option [value]="TopoMap.mixArcGisOnline">ArcGisOnline + Statens Kartverk</ion-select-option>
