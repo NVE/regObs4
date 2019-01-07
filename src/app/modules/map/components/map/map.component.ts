@@ -2,7 +2,6 @@ import { Component, OnInit, Input, NgZone, OnDestroy, AfterViewInit, Output, Eve
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { Subscription } from 'rxjs';
-import { OfflineTileLayer } from '../../../../core/helpers/leaflet/offline-tile-layer/offline-tile-layer';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { Platform } from '@ionic/angular';
 import { UserSetting } from '../../../../core/models/user-settings.model';
@@ -11,11 +10,11 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
 import { take } from 'rxjs/operators';
-import { AppCountry } from '../../../../core/models/app-country.enum';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
+import { RegObsTileLayer } from '../../core/classes/regobs-tile-layer';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -45,7 +44,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private subscriptions: Subscription[] = [];
 
   private followMode = true;
-  private skipDisableFollowMode = false;
+  private isDoingMoveAction = false;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -124,9 +123,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         const currentPosition = this.userMarker.getPosition();
         const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
         this.zone.runOutsideAngular(() => {
-          this.skipDisableFollowMode = true;
+          this.isDoingMoveAction = true;
           this.map.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()));
-          this.skipDisableFollowMode = false;
+          this.map.once('moveend', () => {
+            this.isDoingMoveAction = false;
+          });
         });
       }
     }));
@@ -161,7 +162,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private disableFollowMode() {
-    if (!this.skipDisableFollowMode) {
+    if (!this.isDoingMoveAction) {
       this.mapService.followMode = false;
     }
   }
@@ -177,62 +178,79 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.skipNextMapViewUpdate = false;
   }
 
-  private getWorldTopoMapUrl(topoMap: TopoMap) {
-    switch (topoMap) {
-      case TopoMap.mixArcGisOnline:
-      case TopoMap.arcGisOnline:
-        return settings.map.tiles.arcGisOnlineTopoMapUrl;
-      case TopoMap.mixOpenTopo:
-      case TopoMap.openTopo:
-        return settings.map.tiles.openTopoMapUrl;
-      default:
-        return settings.map.tiles.statensKartverkMapUrl;
-    }
-  }
-
   configureTileLayers(userSetting: UserSetting) {
     this.zone.runOutsideAngular(() => {
       this.tilesLayer.clearLayers();
-      const topoTilesLayer = new OfflineTileLayer(
-        userSetting.topoMap,
-        this.getWorldTopoMapUrl(userSetting.topoMap),
-        userSetting.tilesCacheSize > 0,
+      const topoTilesLayer = new RegObsTileLayer(
         this.zone,
         this.offlineMapService,
-        this.mapService,
-        this.platform,
-        (userSetting.topoMap === TopoMap.mixArcGisOnline ||
-          userSetting.topoMap === TopoMap.mixOpenTopo
-        ),
-        settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap,
-        settings.map.tiles.statensKartverkMapUrl,
-        true,
-        settings.map.tiles.embeddedUrl,
-        settings.map.tiles.embeddedUrlMaxZoomWorld,
-        settings.map.tiles.embeddedUrlMaxZoomNorway,
-      );
+        this.shouldBufferOfflineMap(userSetting),
+        this.getMapOptions(userSetting.topoMap));
       topoTilesLayer.addTo(this.tilesLayer);
-      if (userSetting.country === AppCountry.norway) {
-        const supportTiles = settings.map.tiles.supportTiles;
-        for (const supportTile of supportTiles) {
-          const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
-          if (userSetting.currentGeoHazard.indexOf(supportTile.geoHazardId) >= 0
-            && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
-            const tile = new OfflineTileLayer(
-              supportTile.name,
-              supportTile.url,
-              userSetting.tilesCacheSize > 0,
-              this.zone,
-              this.offlineMapService,
-              this.mapService,
-              this.platform
-            );
-            tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
-            tile.addTo(this.tilesLayer);
-          }
+      for (const supportTile of settings.map.tiles.supportTiles) {
+        const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
+        if (userSetting.currentGeoHazard.indexOf(supportTile.geoHazardId) >= 0
+          && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
+          const tile = new RegObsTileLayer(
+            this.zone,
+            this.offlineMapService,
+            this.shouldBufferOfflineMap(userSetting),
+            [{
+              name: supportTile.name,
+              url: supportTile.url,
+              validFunc: (coords, bounds) => this.mapService.isTileInsideNorway(coords, bounds),
+            }],
+          );
+          tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
+          tile.addTo(this.tilesLayer);
         }
       }
     });
+  }
+
+  private showNorwegianMap(coords: L.Coords, bounds: L.LatLngBounds) {
+    if (coords.z < settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
+      return false;
+    }
+    return this.mapService.isTileInsideNorway(coords, bounds);
+  }
+
+  private getMapOptions(topoMap: TopoMap) {
+    const norwegianMixedMap = {
+      name: TopoMap.statensKartverk,
+      url: settings.map.tiles.statensKartverkMapUrl,
+      validFunc: (coords: L.Coords, bounds: L.LatLngBounds) =>
+        this.showNorwegianMap(coords, bounds),
+    };
+    const openTopoMap = {
+      name: TopoMap.openTopo,
+      url: settings.map.tiles.openTopoMapUrl,
+    };
+    const arcGisOnlineMap = {
+      name: TopoMap.arcGisOnline,
+      url: settings.map.tiles.arcGisOnlineTopoMapUrl,
+    };
+    switch (topoMap) {
+      case TopoMap.statensKartverk:
+        return [
+          {
+            name: TopoMap.statensKartverk,
+            url: settings.map.tiles.statensKartverkMapUrl,
+          }
+        ];
+      case TopoMap.openTopo:
+        return [openTopoMap];
+      case TopoMap.arcGisOnline:
+        return [arcGisOnlineMap];
+      case TopoMap.mixOpenTopo:
+        return [norwegianMixedMap, openTopoMap];
+      case TopoMap.mixArcGisOnline:
+        return [norwegianMixedMap, arcGisOnlineMap];
+    }
+  }
+
+  private shouldBufferOfflineMap(userSetting: UserSetting) {
+    return this.platform.isAndroidOrIos() && userSetting.tilesCacheSize > 0;
   }
 
   redrawMap() {
@@ -280,19 +298,28 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
           this.userMarker.updatePosition(data);
         }
-        if (this.followMode) {
-          this.skipDisableFollowMode = true;
-          if (this.firstPositionUpdate) {
-            this.firstPositionUpdate = false;
-            this.map.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()));
-          } else {
-            this.skipNextMapViewUpdate = this.map.getCenter().distanceTo(latLng) < 10;
-            // NOTE: Skip updating map view if followmode and distance update is less than 10 meters.
-            this.map.panTo(latLng);
-          }
-          this.skipDisableFollowMode = false;
+        if (this.followMode && !this.isDoingMoveAction) {
+          this.skipNextMapViewUpdate = this.map.getCenter().distanceTo(latLng) < 10;
+          this.flyToMaxZoom(latLng, this.firstPositionUpdate);
+          this.firstPositionUpdate = false;
         }
       }
+    });
+  }
+
+  private flyToMaxZoom(latLng: L.LatLng, usePan = false) {
+    this.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()), usePan);
+  }
+
+  private flyTo(latLng: L.LatLng, zoom: number, usePan = false) {
+    this.isDoingMoveAction = true;
+    if (usePan) {
+      this.map.panTo(latLng);
+    } else {
+      this.map.flyTo(latLng, zoom);
+    }
+    this.map.once('moveend', () => {
+      this.isDoingMoveAction = false;
     });
   }
 

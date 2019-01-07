@@ -98,6 +98,7 @@
     "AND": "og",
     "DAYS_BACK": "Dager tilbake",
     "GENERAL": "Generelt",
+    "HIDE_OBSERVATIONS": "Skjul observasjoner",
     "LAST_UPDATED": "Sist oppdatert",
     "MAP_LEGENDS": "Tegnforklaring for kart",
     "MAP_SETTINGS": "Kartvalg",
@@ -110,9 +111,11 @@
     "SHOW_TRIPS": "Vis turer",
     "START_WIZARD": "Start veiviseren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
+    "TODAYS_OBSERVATIONS": "Kun dagens observasjoner",
     "TOPO_MAP_CREDITS": "Topografisk kart levert av",
     "UPDATE_OBSERVATIONS": "Oppdater observasjoner",
-    "USER_SETTINGS": "Brukervalg"
+    "USER_SETTINGS": "Brukervalg",
+    "WEEKS_BACK": "Uker tilbake"
   },
   "MONTHS": {
     "SHORT_LIST": "Jan, Feb, Mar, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Des"

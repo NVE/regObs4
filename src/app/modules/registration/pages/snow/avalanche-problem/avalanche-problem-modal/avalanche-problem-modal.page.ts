@@ -65,6 +65,7 @@ export class AvalancheProblemModalPage implements OnInit {
       });
     });
     // Note! There is a bug where action sheet is not updaing, so have to recreate it with ngIf
+    // TODO: Test if this still is the case...
   }
 
   getAvalancheExtFiltered() {

@@ -27,25 +27,6 @@
         <ion-select-option [value]="LangKey.en">{{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH' | translate}}</ion-select-option>
       </ion-select>
     </ion-item>
-    <!-- <ion-item>
-      <ion-label position="stacked" color="medium">{{ "SETTINGS.COUNTRY" | translate }}</ion-label>
-      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.country" interface="action-sheet"
-        (ngModelChange)="updateSettings()">
-        <ion-select-option [value]="AppCountry.norway">{{'SETTINGS.NORWAY_ONLY' | translate}}</ion-select-option>
-        <ion-select-option [value]="AppCountry.world">{{'SETTINGS.USE_IN_WORLD' | translate}}</ion-select-option>
-      </ion-select>
-    </ion-item> -->
-    <ion-item>
-      <ion-label position="stacked" color="medium">Kart</ion-label>
-      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap" interface="action-sheet"
-        (ngModelChange)="updateSettings()">
-        <ion-select-option [value]="TopoMap.mixArcGisOnline">ArcGisOnline + Statens Kartverk</ion-select-option>
-        <ion-select-option [value]="TopoMap.mixOpenTopo">OpenTopo + Statens Kartverk</ion-select-option>
-        <ion-select-option [value]="TopoMap.statensKartverk">Norgeskart fra Statens Kartverk</ion-select-option>
-        <ion-select-option [value]="TopoMap.arcGisOnline">ArcGisOnline</ion-select-option>
-        <ion-select-option [value]="TopoMap.openTopo">OpenTopo</ion-select-option>
-      </ion-select>
-    </ion-item>
     <ion-item>
       <ion-label>
         {{'SETTINGS.EMAIL_RECIEPT' | translate}}

@@ -16,7 +16,6 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   daysBack: { val: number, selected: boolean, text: string }[];
   subscription: Subscription;
-  recreate: boolean;
   constructor(private userSettingService: UserSettingService, private zone: NgZone, private loggingService: LoggingService) { }
 
   ngOnInit() {
@@ -26,11 +25,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
           this.loggingService.debug(`Days back changed to ${val.find((d) => d.selected).val}`, 'ObservationsDaysBackComponent')))
       .subscribe((val) => {
         this.zone.run(() => {
-          this.recreate = false;
-        });
-        this.zone.run(() => {
           this.daysBack = val;
-          this.recreate = true;
         });
       });
   }
@@ -41,21 +36,31 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
 
   getDaysBackArray(userSetting: UserSetting) {
     const daysBackArr: { val: number, selected: boolean, text: string }[]
-      = settings.observations.daysBack[GeoHazard[userSetting.currentGeoHazard[0]]].map((val: number) => ({
+      = settings.observations.daysBack[GeoHazard[userSetting.currentGeoHazard[0]]].filter((x) => x > 0).map((val: number) => ({
         val: val,
-        selected: userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]).daysBack === val
+        selected: userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]).daysBack === val,
       }));
-    return daysBackArr;
+    const doNowShow = { val: -1, selected: !userSetting.showObservations, text: 'MENU.HIDE_OBSERVATIONS' };
+    const today = {
+      val: 0,
+      selected: userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]).daysBack === 0,
+      text: 'MENU.TODAYS_OBSERVATIONS'
+    };
+    return [doNowShow, today, ...daysBackArr];
   }
 
   async changeDaysBack(event: Event) {
     const select: IonSelect = (<any>event.target);
     const userSetting = await this.userSettingService.getUserSettings();
-    const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]);
-    if (existingValue.daysBack !== select.value) {
-      existingValue.daysBack = select.value;
-      await this.userSettingService.saveUserSettings(userSetting);
+    if (select.value === -1) {
+      userSetting.showObservations = false;
+    } else {
+      userSetting.showObservations = true;
+      const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]);
+      if (existingValue.daysBack !== select.value) {
+        existingValue.daysBack = select.value;
+      }
     }
+    await this.userSettingService.saveUserSettings(userSetting);
   }
-
 }

@@ -4,9 +4,9 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { UserSetting } from '../../core/models/user-settings.model';
 import { settings } from '../../../settings';
 import { Subscription } from 'rxjs';
-import { AppCountry } from '../../core/models/app-country.enum';
 import { ModalController } from '@ionic/angular';
 import { LegalTermsModalPage } from '../../pages/modal-pages/legal-terms-modal/legal-terms-modal.page';
+import { TopoMap } from '../../core/models/topo-map.enum';
 
 @Component({
   selector: 'app-side-menu',
@@ -17,13 +17,10 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   userSettings: UserSetting;
   lastUpdated: Date;
   settings = settings;
+  TopoMap = TopoMap;
 
   private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
-
-  get useAppInNorway() {
-    return this.userSettings && this.userSettings.country === AppCountry.norway;
-  }
 
   constructor(
     private observationService: ObservationService,

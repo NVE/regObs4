@@ -9,7 +9,6 @@ import { nSQL } from 'nano-sql';
 import { Observable } from 'rxjs';
 import { map, take, shareReplay } from 'rxjs/operators';
 import { LangKey } from '../../models/langKey';
-import { AppCountry } from '../../models/app-country.enum';
 import { TopoMap } from '../../models/topo-map.enum';
 
 @Injectable({
@@ -45,7 +44,6 @@ export class UserSettingService {
     return {
       appMode: AppMode.Prod,
       language: LangKey.no,
-      country: AppCountry.norway,
       currentGeoHazard: [GeoHazard.Snow],
       observationDaysBack: [
         { geoHazard: GeoHazard.Snow, daysBack: 2 },

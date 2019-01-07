@@ -3,7 +3,6 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { IonSlides, NavController } from '@ionic/angular';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { LangKey } from '../../core/models/langKey';
-import { AppCountry } from '../../core/models/app-country.enum';
 import { UserSetting } from '../../core/models/user-settings.model';
 
 @Component({
@@ -15,7 +14,6 @@ import { UserSetting } from '../../core/models/user-settings.model';
 export class StartWizardPage implements OnInit {
   @ViewChild(IonSlides) slides: IonSlides;
   GeoHazard = GeoHazard;
-  AppCountry = AppCountry;
   LangKey = LangKey;
   userSettings: UserSetting;
 

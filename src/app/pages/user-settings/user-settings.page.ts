@@ -6,7 +6,6 @@ import { NanoSql } from '../../../nanosql';
 import { NavController, AlertController } from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
 import { HelperService } from '../../core/services/helpers/helper.service';
-import { AppCountry } from '../../core/models/app-country.enum';
 import { KdvService } from '../../core/services/kdv/kdv.service';
 import { TranslateService } from '@ngx-translate/core';
 import { OfflineImageService } from '../../core/services/offline-image/offline-image.service';
@@ -26,7 +25,6 @@ export class UserSettingsPage implements OnInit {
   showAdvanced = false;
   numberOfCacheTiles: number;
   cacheTilesSize: string;
-  AppCountry = AppCountry;
   isUpdating = false;
   version: AppVersion;
   TopoMap = TopoMap;

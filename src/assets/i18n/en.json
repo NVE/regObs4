@@ -98,6 +98,7 @@
     "AND": "and",
     "DAYS_BACK": "Days back",
     "GENERAL": "General",
+    "HIDE_OBSERVATIONS": "Hide observations",
     "LAST_UPDATED": "Last updated",
     "MAP_LEGENDS": "Legends for map",
     "MAP_SETTINGS": "Map settings",
@@ -110,9 +111,11 @@
     "SHOW_TRIPS": "Show trips",
     "START_WIZARD": "Start wizard",
     "SUPPORT_MAP_CREDITS": "Support maps delivered by",
+    "TODAYS_OBSERVATIONS": "Only todays",
     "TOPO_MAP_CREDITS": "Topo map deliverd by",
     "UPDATE_OBSERVATIONS": "Update observations",
-    "USER_SETTINGS": "User"
+    "USER_SETTINGS": "User",
+    "WEEKS_BACK": "Weeks back"
   },
   "MONTHS": {
     "SHORT_LIST": "Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Des"

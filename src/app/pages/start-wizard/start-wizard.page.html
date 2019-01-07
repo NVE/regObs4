@@ -29,32 +29,6 @@
       </ion-grid>
     </ion-slide>
     <ion-slide>
-      <ion-grid>
-        <ion-row padding>
-          <ion-col padding>
-            <h2>{{'START_WIZARD.CHOOSE_COUNTRY.HEADER'|translate}}</h2>
-            <ion-label color="medium" text-wrap>{{'START_WIZARD.CHOOSE_COUNTRY.SUBTITLE'|translate}}</ion-label>
-          </ion-col>
-        </ion-row>
-        <ion-row padding>
-          <ion-col padding>
-            <ion-list lines="none">
-              <ion-radio-group [(ngModel)]="userSettings.country">
-                <ion-item (click)="slideNext()">
-                  <ion-label>{{'START_WIZARD.CHOOSE_COUNTRY.YES_NORWAY'|translate}}</ion-label>
-                  <ion-radio mode="md" slot="end" [value]="AppCountry.norway"></ion-radio>
-                </ion-item>
-                <ion-item (click)="slideNext()">
-                  <ion-label>{{'START_WIZARD.CHOOSE_COUNTRY.NO_NORWAY'|translate}}</ion-label>
-                  <ion-radio mode="md" slot="end" [value]="AppCountry.world"></ion-radio>
-                </ion-item>
-              </ion-radio-group>
-            </ion-list>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-slide>
-    <ion-slide>
       <ion-grid no-padding class="image-grid">
         <ion-row class="wizard-image-wrap blue">
           <ion-col no-padding>
