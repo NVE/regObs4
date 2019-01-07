@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { nSQL } from 'nano-sql';
 import * as L from 'leaflet';
 import { IMapView } from './map-view.interface';
 import { Observable, combineLatest, Observer, BehaviorSubject, Subject } from 'rxjs';
@@ -7,7 +6,6 @@ import { createWorker } from 'typed-web-workers';
 import { switchMap, shareReplay, debounceTime, filter, distinctUntilChanged } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
-import { NanoSql } from '../../../../../nanosql';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { LRUMap } from 'lru_map';
@@ -19,7 +17,6 @@ import { Feature, Polygon } from '@turf/turf';
   providedIn: 'root'
 })
 export class MapService {
-  // private _mapViewObservable: Observable<IMapView>;
   private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
   private _avalancheRegions: any;
   private _regions: any;
@@ -52,7 +49,6 @@ export class MapService {
   }
 
   constructor(private userSettingService: UserSettingService) {
-    // this._mapViewObservable = this.getMapViewObservable();
     this._tilesInNorwayCache = new LRUMap(10000);
     this._followModeSubject = new BehaviorSubject<boolean>(true);
     this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
@@ -81,44 +77,8 @@ export class MapService {
   }
 
   updateMapView(mapView: IMapView) {
-    // const boundsArray = [
-    //   [mapView.bounds.getSouthWest().lat, mapView.bounds.getSouthWest().lng],
-    //   [mapView.bounds.getNorthEast().lat, mapView.bounds.getNorthEast().lng]
-    // ];
-    // if (boundsArray[0][0] !== boundsArray[1][0] && boundsArray[0][1] !== boundsArray[1][1]) {
-    //   return nSQL(NanoSql.TABLES.MAP_SERVICE.name)
-    //     .query('upsert', {
-    //       id: 'lastupdate',
-    //       bounds: boundsArray,
-    //       center: [mapView.center.lat, mapView.center.lng],
-    //       zoom: mapView.zoom,
-    //     }).exec();
-    // }
     this._mapViewSubject.next(mapView);
   }
-
-  // private getMapViewObservable() {
-  //   return nSQL().observable<IMapView>(() => {
-  //     return nSQL(NanoSql.TABLES.MAP_SERVICE.name).query('select').emit();
-  //   }).map((result) => {
-  //     const firstItem: {
-  //       id: string,
-  //       bounds: L.LatLngExpression[],
-  //       center: L.LatLngExpression,
-  //       zoom: number
-  //     } = result[0];
-  //     if (firstItem && firstItem.bounds && firstItem.center) {
-  //       const mapView: IMapView = {
-  //         bounds: L.latLngBounds(firstItem.bounds),
-  //         center: L.latLng(firstItem.center),
-  //         zoom: firstItem.zoom
-  //       };
-  //       return mapView;
-  //     } else {
-  //       return null;
-  //     }
-  //   }).debounce(50).toRxJS().pipe(shareReplay(1));
-  // }
 
   private getMapViewAreaObservable() {
     return combineLatest(this.mapView$.pipe(filter((val) => val !== null)), this.userSettingService.currentGeoHazardObservable$)

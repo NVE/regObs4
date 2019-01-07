@@ -84,13 +84,6 @@ export class NanoSql {
                 { key: 'lastAccess', type: 'number', props: ['idx'] },
             ]
         },
-        MAP_SERVICE: {
-            name: 'mapservice',
-            model: [
-                { key: 'id', type: 'string', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
-        },
         MAP_SEARCH_HISTORY: {
             name: 'mapsearchhistory',
             model: [

@@ -11,6 +11,7 @@ import { IOfflineAsset } from './offline-asset.interface';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { Platform } from '@ionic/angular';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+import { GuidHelper } from '../../helpers/guid.helper';
 
 const DEBUG_TAG = 'OfflineImageService';
 
@@ -109,10 +110,12 @@ export class OfflineImageService {
 
     try {
 
-      let filename = url.substring(url.lastIndexOf('/') + 1);
-      if (filename.indexOf('.') < 0) {
-        filename = `${filename}.${this.getFilenameFromType(type)}`;
-      }
+      // let filename = url.substring(url.lastIndexOf('/') + 1);
+      // if (filename.indexOf('.') < 0) {
+      //   filename = `${filename}.${this.getFilenameFromType(type)}`;
+      // }
+      const filename = `${GuidHelper.createGuid()}.${this.getFilenameFromType(type)}`;
+      // Note: Create unique id so test/demo/prod images do not overwrite each other.
 
       const fileResult: FileEntry = await this.http.downloadFile(url, {}, {},
         `${folder}/${settings.offlineAssetsFolder}/${filename}`);
@@ -176,6 +179,6 @@ export class OfflineImageService {
   async reset() {
     await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('drop').exec();
     const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
-    await this.file.removeDir(baseFolder, settings.offlineAssetsFolder);
+    await this.file.removeRecursively(baseFolder, settings.offlineAssetsFolder);
   }
 }
