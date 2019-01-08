@@ -106,7 +106,7 @@
     "lru_map": "^0.3.3",
     "moment": "^2.23.0",
     "moment-timezone": "^0.5.23",
-    "nano-sql": "^1.8.0",
+    "nano-sql": "^1.8.1",
     "ngx-markdown": "^7.0.3",
     "ngx-pinch-zoom": "^1.2.0",
     "rxjs": "^6.3.3",
@@ -145,7 +145,7 @@
     "protractor": "~5.4.2",
     "ts-node": "^7.0.1",
     "tslint": "~5.12.0",
-    "typescript": "^3.1.6"
+    "typescript": "^3.2.2"
   },
   "description": "An Ionic project",
   "cordova": {
