@@ -87,11 +87,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       shadowUrl: 'leaflet/marker-shadow.png',
       shadowSize: [41, 41],
     });
+    this.mapService.followMode = !this.locationMarker && !this.fromMarker;
     if (!this.locationMarker) {
       if (this.fromMarker) {
         this.locationMarker = L.marker(this.fromMarker.getLatLng(), { icon: locationMarkerIcon });
       } else {
-        this.mapService.followMode = true;
         const lastView = await this.mapService.mapView$.pipe(take(1)).toPromise();
         if (lastView) {
           this.locationMarker = L.marker(lastView.center, { icon: locationMarkerIcon });
@@ -124,7 +124,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       this.fromMarker.addTo(this.map);
     }
     this.locationGroup.addTo(this.map);
-    this.map.setView(this.locationMarker.getLatLng(), 15);
+    if (this.locationMarker) {
+      this.map.setView(this.locationMarker.getLatLng(), 15);
+    }
     this.map.on('dragstart', () => {
       this.ngZone.run(() => {
         this.isLoading = true;
@@ -156,6 +158,15 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(this.mapService.followMode$.subscribe((val) => {
       this.followMode = val;
+      if (this.followMode && this.userposition) {
+        this.locationMarker.setLatLng({
+          lat: this.userposition.coords.latitude,
+          lng: this.userposition.coords.longitude
+        });
+        if (this.map) {
+          this.updatePathAndDistance();
+        }
+      }
     }));
 
     this.mapReady.emit(this.map);

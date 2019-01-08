@@ -16,4 +16,9 @@ export class SyncItemComponent implements OnInit {
   ngOnInit() {
   }
 
+  getLocationName(reg: IRegistration) {
+    return reg.request.ObsLocation ? reg.request.ObsLocation.LocationName
+      || reg.calculatedLocationName || '' : '';
+  }
+
 }

@@ -4,10 +4,10 @@
       {{'REGISTRATION.SAVED_ON_PHONE' | translate}}
     </ion-label>
   </ion-list-header>
-  <ion-item>
+  <ion-list-header class="subheader">
     <ion-label text-wrap>
       {{'REGISTRATION.SAVED_DESCRIPTION' | translate }}
     </ion-label>
-  </ion-item>
+  </ion-list-header>
   <app-sync-item *ngFor="let registration of registrations; let i = index" [registration]="registration" [isLoading]="isLoading(registration, i)"></app-sync-item>
 </ion-list>

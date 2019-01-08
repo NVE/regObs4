@@ -1,25 +1,26 @@
 <ion-item [routerLink]="'/registration/edit/' + registration.id">
-  <app-geo-icon slot="start" [geoHazards]="[registration.geoHazard]"></app-geo-icon>
+  <div slot="start" class="geo-icon-circle">
+    <app-geo-icon [geoHazards]="[registration.geoHazard]" size="0.8"></app-geo-icon>
+  </div>
   <ion-label>
-    <h2 *ngIf="registration.request.ObsLocation && registration.request.ObsLocation.LocationName">
-      {{registration.request.ObsLocation.LocationName}}
+    <h2>
+      {{ getLocationName(registration) }}
     </h2>
     <p text-wrap>
       <ion-icon name="calendar"></ion-icon> {{ registration.request.DtObsTime | formatDate | async }}
     </p>
-    <p class="observation-types">
+    <!-- <p class="observation-types">
       <ion-badge>
-        <!-- {{ getRegistrationNames() }} -->
+         {{ getRegistrationNames() }}
       </ion-badge>
-    </p>
+    </p> -->
   </ion-label>
   <!-- <ion-thumbnail slot="end">
     <ion-img *ngIf="hasImage" [src]="imgSrc"></ion-img>
   </ion-thumbnail> -->
   <ion-icon *ngIf="registration.error" slot="end" name="warning">
   </ion-icon>
-  <div slot="end">
-    <ion-spinner *ngIf="isLoading" slot="end"></ion-spinner>
+  <div slot="end" *ngIf="isLoading">
+    <ion-spinner slot="end"></ion-spinner>
   </div>
-
 </ion-item>

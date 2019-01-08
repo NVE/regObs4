@@ -1,30 +1,33 @@
 <ng-container *ngIf="(drafts$ | async) as drafts">
-  <ion-list no-margin *ngIf="drafts.length > 0" lines="full">
+  <ion-list margin-top *ngIf="drafts.length > 0" lines="full">
     <ion-list-header text-uppercase>
       <ion-label>
         {{'REGISTRATION.DRAFTS' | translate}}
       </ion-label>
     </ion-list-header>
-    <ion-item>
+    <ion-list-header class="subheader">
       <ion-label text-wrap>
         {{'REGISTRATION.DRAFTS_DESCRIPTION' | translate }}
       </ion-label>
-    </ion-item>
-    <ion-item *ngFor="let draft of drafts" [routerLink]="'/registration/edit/' + draft.id">
-      <app-geo-icon slot="start" [geoHazards]="[draft.geoHazard]"></app-geo-icon>
+    </ion-list-header>
+    <!-- <ion-item *ngFor="let draft of drafts" [routerLink]="'/registration/edit/' + draft.id">
+      <div slot="start" class="geo-icon-circle">
+        <app-geo-icon [geoHazards]="[draft.geoHazard]" size="0.8"></app-geo-icon>
+      </div>
       <ion-label>
-        <h2 *ngIf="draft.request.ObsLocation && draft.request.ObsLocation.LocationName">
-          {{draft.request.ObsLocation.LocationName}}
+        <h2>
+          {{ getLocationName(draft)}}
         </h2>
         <p text-wrap>
           <ion-icon name="calendar"></ion-icon> {{ draft.request.DtObsTime | formatDate | async }}
         </p>
         <p class="observation-types">
           <ion-badge>
-            <!-- {{ getRegistrationNames() }} -->
+            {{ getRegistrationNames() }}
           </ion-badge>
         </p>
       </ion-label>
-    </ion-item>
+    </ion-item> -->
+    <app-sync-item *ngFor="let registration of drafts; let i = index" [registration]="registration" [isLoading]="false"></app-sync-item>
   </ion-list>
 </ng-container>

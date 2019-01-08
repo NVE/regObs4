@@ -47,7 +47,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     }
     if (this.hasLocation(this.registration)) {
       const locationMarkerIcon = L.icon({
-        iconUrl: '/assets/icon/map/GPS_stop.svg',
+        iconUrl: '/assets/icon/map/obs-location.svg',
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         shadowUrl: 'leaflet/marker-shadow.png',

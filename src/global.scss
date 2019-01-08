@@ -123,10 +123,15 @@ ion-list {
     --padding-start: 20px;
 
     ion-list-header {
-        font-size: 15px;
-        margin-bottom: 0px;
-        margin-top: 14px;
-        font-weight: 600;
+        &:not(.subheader) {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        &.subheader {
+            text-transform: none;
+            color: var(--ion-color-medium);
+            margin-bottom: 10px;
+        }
     }
 
     &.list-ios {

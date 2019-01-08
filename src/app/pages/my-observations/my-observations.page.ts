@@ -19,7 +19,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   registrations: RegistrationViewModel[];
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
-
+  private registrationSubscription: Subscription;
   private user: ObserverResponseDto;
   // theBoundCallback: Function;
   loaded = false;
@@ -49,23 +49,29 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       this.navContoller.navigateRoot('/');
     } else {
       this.user = loggedInUser.user;
-      const existingObservations = await this.observationService.getUserObservationsAsObservable().pipe(take(1)).toPromise();
-      this.ngZone.run(() => {
-        this.registrations = existingObservations;
+      this.registrationSubscription = this.observationService.getUserObservationsAsObservable().subscribe((val) => {
+        this.ngZone.run(() => {
+          this.mergeRegistrations(val);
+        });
+        if (!this.loaded) {
+          setTimeout(() => {
+            this.registrations = [...val];
+            setTimeout(() => {
+              this.ngZone.run(() => {
+                this.loaded = true;
+              });
+            }, 500);
+          }, 500);
+        }
       });
-      setTimeout(() => {
-        this.registrations = [...existingObservations];
-        setTimeout(() => {
-          this.ngZone.run(() => {
-            this.loaded = true;
-          });
-        }, 500);
-      }, 500);
       this.loadPage(0);
     }
   }
 
   ngOnDestroy(): void {
+    if (this.registrationSubscription) {
+      this.registrationSubscription.unsubscribe();
+    }
   }
 
   loadData() {
@@ -80,12 +86,16 @@ export class MyObservationsPage implements OnInit, OnDestroy {
         if (moment(item.DtChangeTime).isAfter(moment(existingRegistration.DtChangeTime))) {
           const index = this.registrations.indexOf(existingRegistration);
           this.registrations[index] = item;
-          this.virtualScroll.checkRange(index, 1);
+          if (this.loaded) {
+            this.virtualScroll.checkRange(index, 1);
+          }
         }
       } else {
         const index = this.registrations.findIndex((val) => moment(item.DtObsTime).isSameOrAfter(moment(val.DtObsTime)));
-        this.registrations.splice(index, 0, item);
-        this.virtualScroll.checkRange(index);
+        this.registrations.splice(index >= 0 ? index : 0, 0, item);
+        if (this.loaded) {
+          this.virtualScroll.checkRange(index);
+        }
       }
     }
   }
