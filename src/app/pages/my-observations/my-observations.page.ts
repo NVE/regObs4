@@ -6,6 +6,8 @@ import { LoginService } from '../../modules/login/services/login.service';
 import { IonInfiniteScroll, NavController, IonVirtualScroll } from '@ionic/angular';
 import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
+import * as moment from 'moment';
+import { take } from 'rxjs/operators';
 // import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
 
 @Component({
@@ -18,7 +20,6 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
 
-  private subscription: Subscription;
   private user: ObserverResponseDto;
   // theBoundCallback: Function;
   loaded = false;
@@ -48,31 +49,23 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       this.navContoller.navigateRoot('/');
     } else {
       this.user = loggedInUser.user;
-      // setTimeout(() => {
-      this.subscription = this.observationService.getUserObservationsAsObservable().subscribe((val) => {
-        this.ngZone.run(() => {
-          this.registrations = val;
-        });
-        if (this.registrations.length > 0) { // Reload virtual scroll to get correct item heights
-          setTimeout(() => {
-            this.registrations = [...val];
-            setTimeout(() => {
-              this.ngZone.run(() => {
-                this.loaded = true;
-              });
-            }, 500);
-          }, 500);
-        }
+      const existingObservations = await this.observationService.getUserObservationsAsObservable().pipe(take(1)).toPromise();
+      this.ngZone.run(() => {
+        this.registrations = existingObservations;
       });
+      setTimeout(() => {
+        this.registrations = [...existingObservations];
+        setTimeout(() => {
+          this.ngZone.run(() => {
+            this.loaded = true;
+          });
+        }, 500);
+      }, 500);
       this.loadPage(0);
-      // }, 200);
     }
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
   }
 
   loadData() {
@@ -80,15 +73,35 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     return this.loadPage(pageNumber);
   }
 
+  private mergeRegistrations(updatedRegistrations: RegistrationViewModel[]) {
+    for (const item of updatedRegistrations) {
+      const existingRegistration = this.registrations.find((x) => x.RegID === item.RegID);
+      if (existingRegistration) {
+        if (moment(item.DtChangeTime).isAfter(moment(existingRegistration.DtChangeTime))) {
+          const index = this.registrations.indexOf(existingRegistration);
+          this.registrations[index] = item;
+          this.virtualScroll.checkRange(index, 1);
+        }
+      } else {
+        const index = this.registrations.findIndex((val) => moment(item.DtObsTime).isSameOrAfter(moment(val.DtObsTime)));
+        this.registrations.splice(index, 0, item);
+        this.virtualScroll.checkRange(index);
+      }
+    }
+  }
+
   // getItemHeight(item: RegistrationViewModel, index: number) {
   //   return this.obsCardHeightService.getHeight(item.RegID);
   // }
 
-  async loadPage(pageNumber: number, cancel?: Promise<any>) {
+  private async loadPage(pageNumber: number, cancel?: Promise<any>) {
     const userSettings = await this.userSettingService.getUserSettings();
-    await this.observationService.updateObservationsForCurrentUser(
+    const updatedRegistrations = await this.observationService.updateObservationsForCurrentUser(
       userSettings.appMode, this.user, userSettings.language, pageNumber, cancel);
-    this.infiniteScroll.complete();
+    this.ngZone.run(() => {
+      this.mergeRegistrations(updatedRegistrations);
+      this.infiniteScroll.complete();
+    });
   }
 
   // trackByRegId(index: number, obs: RegistrationViewModel) {

@@ -17,13 +17,13 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "7.1.4",
-    "@angular/core": "7.1.4",
-    "@angular/forms": "7.1.4",
-    "@angular/http": "7.1.4",
-    "@angular/platform-browser": "7.1.4",
-    "@angular/platform-browser-dynamic": "7.1.4",
-    "@angular/router": "7.1.4",
+    "@angular/common": "7.2.0",
+    "@angular/core": "7.2.0",
+    "@angular/forms": "7.2.0",
+    "@angular/http": "7.2.0",
+    "@angular/platform-browser": "7.2.0",
+    "@angular/platform-browser-dynamic": "7.2.0",
+    "@angular/router": "7.2.0",
     "@asymmetrik/ngx-leaflet": "^5.0.1",
     "@asymmetrik/ngx-leaflet-markercluster": "^2.0.0",
     "@ionic-native/android-permissions": "^5.0.0-beta.22",
@@ -82,18 +82,18 @@
     "cordova-plugin-inappbrowser": "^3.0.0",
     "cordova-plugin-ionic": "^5.2.9",
     "cordova-plugin-ionic-keyboard": "^2.1.3",
-    "cordova-plugin-ionic-webview": "^2.3.1",
+    "cordova-plugin-ionic-webview": "^3.0.0",
     "cordova-plugin-ios-camera-permissions": "^1.2.0",
     "cordova-plugin-local-notification": "^0.9.0-beta.2",
     "cordova-plugin-mauron85-background-geolocation": "^3.0.0-alpha.50",
-    "cordova-plugin-nano-sqlite": "^1.6.0",
+    "cordova-plugin-nano-sqlite": "1.7.0",
     "cordova-plugin-network-information": "^2.0.1",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
     "cordova-plugin-whitelist": "^1.3.3",
-    "cordova-plugin-x-socialsharing": "^5.4.3",
+    "cordova-plugin-x-socialsharing": "^5.4.4",
     "cordova-plugin-zip": "^3.1.0",
-    "cordova-sqlite-storage": "^2.6.0",
+    "cordova-sqlite-storage": "2.6.0",
     "core-js": "^2.6.1",
     "es6-promise-plugin": "^4.2.2",
     "hammerjs": "^2.0.8",
@@ -124,9 +124,9 @@
     "@angular-devkit/core": "7.1.4",
     "@angular-devkit/schematics": "7.1.4",
     "@angular/cli": "7.1.4",
-    "@angular/compiler": "7.1.4",
-    "@angular/compiler-cli": "7.1.4",
-    "@angular/language-service": "7.1.4",
+    "@angular/compiler": "7.2.0",
+    "@angular/compiler-cli": "7.2.0",
+    "@angular/language-service": "7.2.0",
     "@types/hammerjs": "^2.0.36",
     "@types/jasmine": "~3.3.5",
     "@types/jasminewd2": "~2.0.6",
@@ -152,16 +152,12 @@
     "plugins": {
       "cordova-plugin-device": {},
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-ionic-webview": {
-        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
-      },
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-whitelist": {},
       "cordova-plugin-geolocation": {
         "GEOLOCATION_USAGE_DESCRIPTION": "Show location in map"
       },
       "cordova-sqlite-storage": {},
-      "cordova-plugin-nano-sqlite": {},
       "cordova-plugin-background-fetch": {},
       "cordova-plugin-mauron85-background-geolocation": {
         "GOOGLE_PLAY_SERVICES_VERSION": "11+",
@@ -212,6 +208,9 @@
       "cordova-plugin-local-notification": {},
       "cordova-plugin-x-socialsharing": {
         "ANDROID_SUPPORT_V4_VERSION": "24.1.1+"
+      },
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       }
     },
     "platforms": [

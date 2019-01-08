@@ -24,11 +24,6 @@
         <app-observation-list-card [obs]="item"></app-observation-list-card>
       </div>
     </ion-virtual-scroll>
-    <!-- <cdk-virtual-scroll-viewport autosize>
-      <div *cdkVirtualFor="let obs of registrations; trackBy: trackByRegId">
-        <app-observation-list-card [obs]="obs"></app-observation-list-card>
-      </div>
-    </cdk-virtual-scroll-viewport> -->
   </ion-list>
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData()">
     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="{{'MY_OBSERVATIONS.LOADING_MORE' | translate}}">

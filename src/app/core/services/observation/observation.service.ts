@@ -175,10 +175,14 @@ export class ObservationService {
         ObserverGuid: user.Guid,
         Offset: page * numberOfRecordsToFetch,
       }), cancel);
-      const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
-      await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, false);
+      if (searchResult.length > 0) {
+        const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
+        await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, false);
+      }
+      return searchResult;
     } catch (err) {
       this.loggingService.error(err, DEBUG_TAG, `Could not update observations for user: `, user);
+      return [];
     }
   }
 
