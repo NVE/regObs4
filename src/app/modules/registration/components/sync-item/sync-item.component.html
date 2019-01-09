@@ -1,4 +1,4 @@
-<ion-item [routerLink]="'/registration/edit/' + registration.id">
+<ion-item lines="full" [detail]="!loading" [routerLink]="'/registration/edit/' + registration.id">
   <div slot="start" class="geo-icon-circle">
     <app-geo-icon [geoHazards]="[registration.geoHazard]" size="0.8"></app-geo-icon>
   </div>
@@ -18,9 +18,7 @@
   <!-- <ion-thumbnail slot="end">
     <ion-img *ngIf="hasImage" [src]="imgSrc"></ion-img>
   </ion-thumbnail> -->
-  <ion-icon *ngIf="registration.error" slot="end" name="warning">
+  <ion-icon *ngIf="!loading && registration.error" slot="end" name="warning">
   </ion-icon>
-  <div slot="end" *ngIf="isLoading">
-    <ion-spinner slot="end"></ion-spinner>
-  </div>
+  <ion-spinner *ngIf="loading" slot="end"></ion-spinner>
 </ion-item>

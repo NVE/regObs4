@@ -9,7 +9,6 @@ import { SetLocationInMapComponent } from './components/set-location-in-map/set-
 import { MapModule } from '../map/map.module';
 import { Base64ImageComponent } from './components/base64-image/base64-image.component';
 import { SyncItemComponent } from './components/sync-item/sync-item.component';
-import { SyncItemListComponent } from './components/sync-item-list/sync-item-list.component';
 import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
 import { KdvDropdownComponent } from './components/kdv-dropdown/kdv-dropdown.component';
 import { AddWebUrlItemComponent } from './components/add-web-url-item/add-web-url-item.component';
@@ -19,7 +18,6 @@ import { ValidExpositionComponent } from './components/snow/valid-exposition/val
 import { RegistrationContentWrapperComponent } from './components/registration-content-wrapper/registration-content-wrapper.component';
 import { HelpTextComponent } from './components/help-text/help-text.component';
 import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.module';
-import { DraftItemListComponent } from './components/draft-item-list/draft-item-list.component';
 
 @NgModule({
     imports: [
@@ -38,8 +36,6 @@ import { DraftItemListComponent } from './components/draft-item-list/draft-item-
         SetLocationInMapComponent,
         Base64ImageComponent,
         SyncItemComponent,
-        SyncItemListComponent,
-        DraftItemListComponent,
         KdvDescriptionPipe,
         KdvDropdownComponent,
         AddWebUrlItemComponent,
@@ -59,8 +55,6 @@ import { DraftItemListComponent } from './components/draft-item-list/draft-item-
         SetLocationInMapComponent,
         Base64ImageComponent,
         SyncItemComponent,
-        SyncItemListComponent,
-        DraftItemListComponent,
         KdvDescriptionPipe,
         KdvDropdownComponent,
         AddWebUrlItemComponent,
