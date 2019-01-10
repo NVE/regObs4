@@ -38,7 +38,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private tilesLayer = L.layerGroup();
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
-  private skipNextMapViewUpdate = false;
 
   private geoLoactionSubscription: Subscription;
   private subscriptions: Subscription[] = [];
@@ -168,14 +167,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateMapView() {
-    if (!this.skipNextMapViewUpdate && this.map) {
+    if (this.map) {
       this.mapService.updateMapView({
         bounds: this.map.getBounds(),
         center: this.map.getCenter(),
         zoom: this.map.getZoom(),
       });
     }
-    this.skipNextMapViewUpdate = false;
   }
 
   configureTileLayers(userSetting: UserSetting) {
@@ -299,7 +297,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           this.userMarker.updatePosition(data);
         }
         if (this.followMode && !this.isDoingMoveAction) {
-          this.skipNextMapViewUpdate = this.map.getCenter().distanceTo(latLng) < 10;
           this.flyToMaxZoom(latLng, this.firstPositionUpdate);
           this.firstPositionUpdate = false;
         }

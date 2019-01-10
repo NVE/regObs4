@@ -4,14 +4,13 @@ import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap, filter } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { IMapView } from '../../services/map/map-view.interface';
 import { MapService } from '../../services/map/map.service';
-import { IMapViewAndArea } from '../../services/map/map-view-and-area.interface';
 
 @Component({
   selector: 'app-map-center-info',
@@ -54,16 +53,21 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   }
 
   private startMapViewSubscriptions() {
-    this.mapViewSubscription = this.mapService.mapView$.subscribe((mapView) => {
+    this.mapViewSubscription = this.mapService.mapView$.pipe(filter((x) => !!x)).subscribe((mapView) => {
       this.ngZone.run(() => {
         this.mapView = mapView;
         this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
-        this.isLoading = true;
       });
     });
-    this.mapViewAndAreaSubscription = this.mapService.mapViewAndAreaObservable$
-      .pipe(switchMap((mapView: IMapViewAndArea) =>
-        this.mapSerachService.getViewInfo(mapView.center, !!mapView.regionInCenter))).
+    this.mapViewAndAreaSubscription = this.mapService.getMapViewThatHasRelevantChange()
+      .pipe(
+        tap((val) => {
+          this.ngZone.run(() => {
+            this.isLoading = true;
+          });
+        }),
+        switchMap((val) =>
+          this.mapSerachService.getViewInfo(val.center))).
       subscribe((viewInfo) => {
         this.ngZone.run(() => {
           this.viewInfo = viewInfo;

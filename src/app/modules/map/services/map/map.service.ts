@@ -3,7 +3,20 @@ import * as L from 'leaflet';
 import { IMapView } from './map-view.interface';
 import { Observable, combineLatest, Observer, BehaviorSubject, Subject } from 'rxjs';
 import { createWorker } from 'typed-web-workers';
-import { switchMap, shareReplay, debounceTime, filter, distinctUntilChanged } from 'rxjs/operators';
+import {
+  switchMap,
+  shareReplay,
+  debounceTime,
+  filter,
+  distinctUntilChanged,
+  tap,
+  pairwise,
+  startWith,
+  map,
+  bufferWhen,
+  scan,
+  skipWhile
+} from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -77,11 +90,42 @@ export class MapService {
   }
 
   updateMapView(mapView: IMapView) {
-    this._mapViewSubject.next(mapView);
+    if (mapView) {
+      this._mapViewSubject.next(mapView);
+    }
   }
 
-  private getMapViewAreaObservable() {
-    return combineLatest(this.mapView$.pipe(filter((val) => val !== null)), this.userSettingService.currentGeoHazardObservable$)
+  private getMapMetersChanged() {
+    return this.mapView$.pipe(
+      pairwise(),
+      map(([prev, next]) => {
+        if (!prev || !next) {
+          return 0;
+        }
+        return prev.center.distanceTo(next.center);
+      }),
+      scan((acc, val) => acc + val, 0));
+  }
+
+
+  private triggerWhenMetersReached(metersBuffer: number = 10) {
+    return this.getMapMetersChanged()
+      .pipe(
+        startWith(0),
+        skipWhile((val) => val < metersBuffer));
+  }
+
+  getMapViewThatHasRelevantChange(metersBuffer: number = 10) {
+    return this.mapView$.pipe(
+      bufferWhen(() => this.triggerWhenMetersReached(metersBuffer)),
+      map((val) => {
+        return val.length > 0 ? val[val.length - 1] : null;
+      }));
+  }
+
+  private getMapViewAreaObservable(metersBuffer: number = 10) {
+    return combineLatest(this.getMapViewThatHasRelevantChange(metersBuffer).pipe(
+      filter((val) => !!val)), this.userSettingService.currentGeoHazardObservable$)
       .pipe(
         switchMap(([mapView, currentGeoHazard]) =>
           this.getRegionInViewObservable(mapView, currentGeoHazard)),

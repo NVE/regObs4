@@ -98,18 +98,17 @@ export class MapSearchService {
       }), catchError(() => of([])));
   }
 
-  getElevation(latLng: L.LatLng): Observable<number> {
-    return BorderHelper.getLatLngBoundInSvalbardOrNorwayAsObservable(latLng)
-      .pipe(switchMap((val) =>
-        val.inSvalbard ? this.getElevationSvalbard(latLng) : (val.inNorway ?
-          this.getElevationNorway(latLng) : this.getElevationWorld(latLng))));
+  getElevation(latLng: L.LatLng, inNorwayOrSvalbard: { inSvalbard: boolean, inNorway: boolean }): Observable<number> {
+    return inNorwayOrSvalbard.inSvalbard ? this.getElevationSvalbard(latLng) : (inNorwayOrSvalbard.inNorway ?
+      this.getElevationNorway(latLng) : this.getElevationWorld(latLng));
   }
 
   getElevationSvalbard(latLng: L.LatLng): Observable<number> {
     const utm = this.latLngToUtm(latLng);
     const url = settings.map.elevation.svalbard.url.replace('{0}', utm.x.toString()).replace('{1}', utm.y.toString());
     return this.httpClient.get(url)
-      .pipe(map((result: any) => parseInt(result.value, 10)));
+      .pipe(map((result: any) => parseInt(result.value, 10)),
+        catchError(() => of(null)));
   }
 
   latLngToUtm(latLng: L.LatLng): { x: number, y: number } {
@@ -120,13 +119,16 @@ export class MapSearchService {
     const utm = this.latLngToUtm(latLng);
     const url = settings.map.elevation.no.url.replace('{0}', utm.x.toString()).replace('{1}', utm.y.toString());
     return this.httpClient.get(url)
-      .pipe(map((result: any) => parseInt(result.value, 10)));
+      .pipe(
+        map((result: any) => parseInt(result.value, 10)),
+        catchError(() => of(null)));
   }
 
   getElevationWorld(latLng: L.LatLng): Observable<number> {
     return this.httpClient.get(`${settings.map.search.geonames.url}/srtm1JSON?`
       + `lat=${latLng.lat}&lng=${latLng.lng}&username=${settings.map.search.geonames.username}`)
-      .pipe(map((data: any) => data && data.srtm1 !== -1 ? data.srtm1 : undefined));
+      .pipe(map((data: any) => data && data.srtm1 !== -1 ? data.srtm1 : null),
+        catchError(() => of(null)));
   }
 
   reverseGeocodeWorld(latLng: L.LatLng): Observable<LocationName> {
@@ -138,7 +140,7 @@ export class MapSearchService {
           return { name: firstResult.toponymName, adminName: firstResult.adminName1 };
         }
         return null;
-      }));
+      }), catchError(() => of(null)));
   }
 
   // reverseGeocodeNorway(lat: number, lng: number) {
@@ -160,20 +162,23 @@ export class MapSearchService {
     return this.userSettingService.userSettingObservable$.pipe(
       switchMap((userSettings) => {
         this.locationService.rootUrl = settings.services.regObs.apiUrl[userSettings.appMode];
-        return this.locationService.LocationGetName({ latitude: latLng.lat, longitude: latLng.lng, uri: '' }).pipe(map((result) =>
-          ({ name: result.Navn, adminName: result.Fylke })));
+        return this.locationService.LocationGetName({ latitude: latLng.lat, longitude: latLng.lng, uri: '' })
+          .pipe(map((result) =>
+            ({ name: result.Navn, adminName: result.Fylke })),
+            catchError(() => of(null)));
       }));
   }
 
-  getViewInfo(latLng: L.LatLng, isInNorway: boolean): Observable<ViewInfo> {
-    return this.getLocationName(latLng, isInNorway).pipe(($ln) =>
-      combineLatest($ln, this.getElevation(latLng)),
-      map<[LocationName, number], { location: LocationName, elevation: number, latLng: L.LatLng }>
-        (([location, elevation]) => ({
-          location,
-          elevation,
-          latLng,
-        })));
+  getViewInfo(latLng: L.LatLng): Observable<ViewInfo> {
+    return BorderHelper.getLatLngBoundInSvalbardOrNorwayAsObservable(latLng)
+      .pipe(switchMap((inNorwayOrSvalbard) =>
+        combineLatest(this.getLocationName(latLng, inNorwayOrSvalbard.inNorway),
+          this.getElevation(latLng, inNorwayOrSvalbard)).pipe(
+            map(([location, elevation]) => ({
+              location,
+              elevation,
+              latLng,
+            })))));
   }
 
   private async saveSearchHistoryToDb(searchResult: MapSearchResponse) {
