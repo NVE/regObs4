@@ -31,6 +31,7 @@ export class SentryService implements LoggingService {
     Sentry.init(
       {
         dsn: settings.sentryDsn,
+        transport: Sentry.Transports.FetchTransport,
         environment: appMode === AppMode.Prod ? 'regObs' : (appMode === AppMode.Demo ? 'demo regObs' : 'test regObs'),
         enabled: environment.production,
         release: appVersion.version,
