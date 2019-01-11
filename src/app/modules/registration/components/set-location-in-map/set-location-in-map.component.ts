@@ -195,21 +195,19 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   private updateMapViewInfo() {
     const latLng = this.locationMarker.getLatLng();
-    BorderHelper.isLatLngInNorwayAsObservable(latLng).pipe(switchMap((inNorway) =>
-      this.mapSearchService.getViewInfo(
-        latLng,
-        inNorway
-      ))).subscribe((val) => {
-        this.ngZone.run(() => {
-          this.viewInfo = val;
-          this.isLoading = false;
-        });
-      }, (_) => {
-        this.ngZone.run(() => {
-          this.viewInfo = null;
-          this.isLoading = false;
-        });
+    this.mapSearchService.getViewInfo(
+      latLng,
+    ).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.viewInfo = val;
+        this.isLoading = false;
       });
+    }, (_) => {
+      this.ngZone.run(() => {
+        this.viewInfo = null;
+        this.isLoading = false;
+      });
+    });
   }
 
   positionChange(position: Geoposition) {

@@ -28,7 +28,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   icon: string;
   settings = settings;
   header: string;
-  summaries: { summary: Summary, open: boolean }[] = [];
+  summaries: Summary[] = [];
   private userSetting: UserSetting;
   allSelected = true;
   loaded = false;
@@ -69,7 +69,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
       this.header = this.obs.ObsLocation.Title;
       this.dtObsDate = moment(this.obs.DtObsTime).toDate();
       this.icon = this.helperService.getGeoHazardIcon(geoHazard);
-      this.summaries = this.obs.Summaries.filter((x) => x !== undefined).map((x) => ({ summary: x, open: true }));
+      this.summaries = this.obs.Summaries;
       this.stars = [];
       for (let i = 0; i < 5; i++) {
         this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
@@ -114,12 +114,13 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
 
   updateImages() {
     const openImages = this.obs.Attachments.filter((a) => {
-      const summary = this.summaries.find((s) => s.summary.RegistrationTID === a.RegistrationTID);
-      if (!summary) {
-        return true;
-      } else {
-        return summary.open;
-      }
+      return true;
+      // const summary = this.summaries.find((s) => s.RegistrationTID === a.RegistrationTID);
+      // if (!summary) {
+      //   return true;
+      // } else {
+      //   return summary.open;
+      // }
     });
     this.imageHeaders = openImages.map((x) => x.RegistrationName);
     this.imageDescriptions = openImages.map((x) => x.Comment);
@@ -147,21 +148,21 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     modal.present();
   }
 
-  toggleAllSelected() {
-    this.allSelected = !this.allSelected;
-    for (const s of this.summaries) {
-      s.open = this.allSelected;
-    }
-    this.updateImages();
-  }
+  // toggleAllSelected() {
+  //   this.allSelected = !this.allSelected;
+  //   for (const s of this.summaries) {
+  //     s.open = this.allSelected;
+  //   }
+  //   this.updateImages();
+  // }
 
-  toggleRegistration(index: number) {
-    if (this.allSelected) {
-      this.toggleAllSelected();
-    }
-    this.summaries[index].open = !this.summaries[index].open;
-    this.updateImages();
-  }
+  // toggleRegistration(index: number) {
+  //   if (this.allSelected) {
+  //     this.toggleAllSelected();
+  //   }
+  //   this.summaries[index].open = !this.summaries[index].open;
+  //   this.updateImages();
+  // }
 
   private getRegistrationUrl() {
     return `${settings.services.regObs.webUrl[this.userSetting.appMode]}/Registration/${this.obs.RegID}`;

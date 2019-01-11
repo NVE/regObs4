@@ -43,31 +43,9 @@
           </ion-col>
         </ion-row>
       </ng-container> -->
-      <ng-container *ngFor="let s of summaries; let i = index">
-        <ng-container *ngIf="s.open">
-          <ion-row class="row-padding-start">
-            <ion-col size="12">
-              <h3>{{ s.summary.RegistrationName }}</h3>
-            </ion-col>
-          </ion-row>
-          <ion-row class="row-padding-start">
-            <ion-col size="12" text-wrap class="obs-content">
-              <ng-container *ngFor="let innerSummary of s.summary.Summaries; let i = index">
-                <span *ngIf="i>0">&nbsp;&bull;&nbsp;</span>
-                <span *ngIf="innerSummary.Kind === 0">
-                  {{ innerSummary.Value }}
-                </span>
-                <ng-container *ngIf="innerSummary.Kind === 1">
-                  <ng-container *ngFor="let webUrl of innerSummary.Value; let j = index">
-                    <span *ngIf="j>0">&nbsp;&bull;&nbsp;</span>
-                    <app-external-link [src]="webUrl.Value">{{webUrl.Header}}</app-external-link>
-                  </ng-container>
-                </ng-container>
-              </ng-container>
-            </ion-col>
-          </ion-row>
-        </ng-container>
-      </ng-container>
+      <ion-row>
+        <app-summary [summaries]="summaries"></app-summary>
+      </ion-row>
     </ion-grid>
     <ion-item color="light">
       <ion-button mode="ios" fill="clear" color="medium" class="link-title" (click)="openWeb()">

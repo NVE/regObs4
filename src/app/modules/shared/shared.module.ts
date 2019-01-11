@@ -18,6 +18,7 @@ import { ImgSwiperComponent } from '../../components/img-swiper/img-swiper.compo
 import { HeaderComponent } from '../../components/header/header.component';
 import { RouterModule } from '@angular/router';
 import { RefreshWithCancelComponent } from '../../components/refresh-with-cancel/refresh-with-cancel.component';
+import { SummaryComponent } from '../../components/observation/summary/summary.component';
 
 
 @NgModule({
@@ -44,6 +45,7 @@ import { RefreshWithCancelComponent } from '../../components/refresh-with-cancel
         ImgSwiperComponent,
         HeaderComponent,
         RefreshWithCancelComponent,
+        SummaryComponent,
     ],
     exports: [
         CommonModule,
@@ -66,6 +68,7 @@ import { RefreshWithCancelComponent } from '../../components/refresh-with-cancel
         ImgSwiperComponent,
         HeaderComponent,
         RefreshWithCancelComponent,
+        SummaryComponent,
     ]
 })
 export class SharedModule { }
