@@ -3,7 +3,7 @@ import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { switchMap, tap, filter } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSetting } from '../../../../core/models/user-settings.model';
@@ -24,9 +24,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   isLoading: boolean;
 
   private textToCopy: string;
-  private userSettingsSubscription: Subscription;
-  private mapViewSubscription: Subscription;
-  private mapViewAndAreaSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private userSettingService: UserSettingService,
@@ -41,59 +39,44 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.userSettingsSubscription = this.userSettingService.userSettingObservable$.subscribe((userSettings) => {
+    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((userSettings) => {
       this.userSettings = userSettings;
-      if (userSettings.showMapCenter) {
-        this.startMapViewSubscriptions();
-      } else {
-        this.stopMapViewSubscriptions();
-      }
       this.document.documentElement.style.setProperty('--map-center-info-height', userSettings.showMapCenter ? '72px' : '0px');
-    });
-  }
-
-  private startMapViewSubscriptions() {
-    this.mapViewSubscription = this.mapService.mapView$.pipe(filter((x) => !!x)).subscribe((mapView) => {
-      this.ngZone.run(() => {
-        this.mapView = mapView;
-        this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
-      });
-    });
-    this.mapViewAndAreaSubscription = this.mapService.getMapViewThatHasRelevantChange()
-      .pipe(
-        tap((val) => {
+    }));
+    this.subscriptions.push(
+      this.userSettingService.userSettingObservable$.pipe(switchMap((userSettings) =>
+        userSettings.showMapCenter ? this.mapService.mapView$ : of(null))
+        , filter((val) => !!val)).subscribe((mapView) => {
+          this.ngZone.run(() => {
+            this.mapView = mapView;
+            this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
+          });
+        }));
+    this.subscriptions.push(
+      this.userSettingService.userSettingObservable$.pipe(switchMap((userSettings) =>
+        userSettings.showMapCenter ? this.mapService.getMapViewThatHasRelevantChange() : of(null))
+        , filter((val) => !!val), tap(() => {
           this.ngZone.run(() => {
             this.isLoading = true;
           });
-        }),
-        switchMap((val) =>
-          this.mapSerachService.getViewInfo(val.center))).
-      subscribe((viewInfo) => {
-        this.ngZone.run(() => {
-          this.viewInfo = viewInfo;
-          this.isLoading = false;
-        });
-      }, (error) => {
-        this.ngZone.run(() => {
-          this.isLoading = false;
-        });
-      });
-  }
-
-  private stopMapViewSubscriptions() {
-    if (this.mapViewSubscription) {
-      this.mapViewSubscription.unsubscribe();
-    }
-    if (this.mapViewAndAreaSubscription) {
-      this.mapViewAndAreaSubscription.unsubscribe();
-    }
+        }), switchMap((val) =>
+          this.mapSerachService.getViewInfo(val.center)))
+        .subscribe((viewInfo) => {
+          this.ngZone.run(() => {
+            this.viewInfo = viewInfo;
+            this.isLoading = false;
+          });
+        }, (_) => {
+          this.ngZone.run(() => {
+            this.isLoading = false;
+          });
+        }));
   }
 
   ngOnDestroy(): void {
-    if (this.userSettingsSubscription) {
-      this.userSettingsSubscription.unsubscribe();
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
     }
-    this.stopMapViewSubscriptions();
   }
 
   private useNativeClipboardPlugin() {
