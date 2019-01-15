@@ -13,22 +13,22 @@
       <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.NO_AVALANCHE_ACTIVITY' | translate}}</ion-label>
       <ion-checkbox mode="md" slot="start" [(ngModel)]="noAvalancheActivity"></ion-checkbox>
     </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{
+        'DATE' | translate }}</ion-label>
+      <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
+        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY" [(ngModel)]="startDate">
+      </ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ESTIMATED_TIME'
+        | translate}}</ion-label>
+      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="selectedTimeFrame" interface="action-sheet">
+        <ion-select-option [value]="timeFrame.id" *ngFor="let timeFrame of timeFrames">
+          {{ timeFrame.text | translate }}</ion-select-option>
+      </ion-select>
+    </ion-item>
     <ng-container *ngIf="!noAvalancheActivity">
-      <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>{{
-          'DATE' | translate }}</ion-label>
-        <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
-          cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY" [(ngModel)]="startDate">
-        </ion-datetime>
-      </ion-item>
-      <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ESTIMATED_TIME'
-          | translate}}</ion-label>
-        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="selectedTimeFrame" interface="action-sheet">
-          <ion-select-option [value]="timeFrame.id" *ngFor="let timeFrame of timeFrames">
-            {{ timeFrame.text | translate }}</ion-select-option>
-        </ion-select>
-      </ion-item>
       <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.HOW_MANY_AVALANCHES" kdvKey="Snow_EstimatedNumKDV"
         [(value)]="avalancheActivityCopy.EstimatedNumTID"></app-kdv-dropdown>
       <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE" kdvKey="Snow_AvalancheExtKDV"

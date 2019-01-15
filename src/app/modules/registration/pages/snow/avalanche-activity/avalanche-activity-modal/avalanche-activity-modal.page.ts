@@ -1,11 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AvalancheActivityObs2Dto } from '../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
-import { KdvService } from '../../../../../../core/services/kdv/kdv.service';
-import { UserSettingService } from '../../../../../../core/services/user-setting/user-setting.service';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import * as moment from 'moment';
-import { settings } from '../../../../../../../settings';
 
 @Component({
   selector: 'app-avalanche-activity-modal',
@@ -69,14 +66,9 @@ export class AvalancheActivityModalPage implements OnInit {
 
   constructor(
     private modalController: ModalController,
-    private kdvService: KdvService,
-    private userSettingService: UserSettingService,
   ) { }
 
   async ngOnInit() {
-    // const userSetting = await this.userSettingService.getUserSettings();
-    // const snowCauseAttributesKdvElements =
-    //   await this.kdvService.getKdvElements(userSetting.language, userSetting.appMode, 'Snow_AvalCauseAttributeFlags');
     if (this.avalancheActivity) {
       this.avalancheActivityCopy = { ...this.avalancheActivity };
     } else {
@@ -102,8 +94,6 @@ export class AvalancheActivityModalPage implements OnInit {
   }
 
   private resetWhenNoActivityFields() {
-    this.avalancheActivityCopy.DtStart = undefined;
-    this.avalancheActivityCopy.DtEnd = undefined;
     this.avalancheActivityCopy.AvalancheExtTID = undefined;
     this.avalancheActivityCopy.AvalTriggerSimpleTID = undefined;
     this.avalancheActivityCopy.DestructiveSizeTID = undefined;
@@ -117,12 +107,11 @@ export class AvalancheActivityModalPage implements OnInit {
   ok() {
     if (this.avalancheActivityCopy.EstimatedNumTID === 1) {
       this.resetWhenNoActivityFields();
-    } else {
-      const timeFrame = this.timeFrames.find((tf) => tf.id === this.selectedTimeFrame);
-      if (this.startDate && timeFrame) {
-        this.avalancheActivityCopy.DtStart = moment(this.startDate).hours(timeFrame.start.h).minutes(timeFrame.start.m).toISOString(true);
-        this.avalancheActivityCopy.DtEnd = moment(this.startDate).hours(timeFrame.end.h).minutes(timeFrame.end.m).toISOString(true);
-      }
+    }
+    const timeFrame = this.timeFrames.find((tf) => tf.id === this.selectedTimeFrame);
+    if (this.startDate && timeFrame) {
+      this.avalancheActivityCopy.DtStart = moment(this.startDate).hours(timeFrame.start.h).minutes(timeFrame.start.m).toISOString(true);
+      this.avalancheActivityCopy.DtEnd = moment(this.startDate).hours(timeFrame.end.h).minutes(timeFrame.end.m).toISOString(true);
     }
     if (this.isNew && IsEmptyHelper.isEmpty(this.avalancheActivityCopy)) {
       this.modalController.dismiss(null);
