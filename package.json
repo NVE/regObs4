@@ -48,7 +48,7 @@
     "@ionic-native/sqlite": "^5.0.0-beta.22",
     "@ionic-native/status-bar": "^5.0.0-beta.22",
     "@ionic-native/zip": "^5.0.0-beta.22",
-    "@ionic/angular": "^4.0.0-rc.1",
+    "@ionic/angular": "^4.0.0-rc.0",
     "@ionic/ng-toolkit": "1.1.0",
     "@ionic/pro": "2.0.4",
     "@ionic/schematics-angular": "1.0.7",
@@ -56,14 +56,14 @@
     "@mapbox/leaflet-pip": "^1.1.0",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
-    "@sentry/browser": "^4.4.2",
+    "@sentry/browser": "^4.5.0",
     "@sentry/cli": "^1.37.2",
     "@sentry/wizard": "^0.12.1",
     "@turf/turf": "^5.1.6",
     "@types/leaflet": "^1.2.14",
     "@types/leaflet.markercluster": "^1.0.3",
     "@types/xml2js": "^0.4.3",
-    "angular-svg-icon": "^7.0.2",
+    "angular-svg-icon": "^7.1.1",
     "animate.css": "^3.7.0",
     "cordova-android": "7.1.4",
     "cordova-browser": "5.0.4",
@@ -82,7 +82,7 @@
     "cordova-plugin-inappbrowser": "^3.0.0",
     "cordova-plugin-ionic": "^5.2.10",
     "cordova-plugin-ionic-keyboard": "^2.1.3",
-    "cordova-plugin-ionic-webview": "^3.0.0",
+    "cordova-plugin-ionic-webview": "2.3.1",
     "cordova-plugin-ios-camera-permissions": "^1.2.0",
     "cordova-plugin-local-notification": "^0.9.0-beta.2",
     "cordova-plugin-mauron85-background-geolocation": "^3.0.0-alpha.50",
@@ -106,8 +106,8 @@
     "lru_map": "^0.3.3",
     "moment": "^2.23.0",
     "moment-timezone": "^0.5.23",
-    "nano-sql": "^1.8.1",
-    "ngx-markdown": "^7.0.4",
+    "nano-sql": "^1.8.2",
+    "ngx-markdown": "^7.1.0",
     "ngx-pinch-zoom": "^1.2.0",
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.3.3",
@@ -116,7 +116,7 @@
     "tunnel-agent": "^0.6.0",
     "typed-web-workers": "^2.1.1",
     "xml2js": "^0.4.19",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.27"
   },
   "devDependencies": {
     "@angular-devkit/architect": "0.12.1",
@@ -144,7 +144,7 @@
     "ng-swagger-gen": "^1.4.3",
     "protractor": "~5.4.2",
     "ts-node": "^7.0.1",
-    "tslint": "~5.12.0",
+    "tslint": "~5.12.1",
     "typescript": "^3.2.2"
   },
   "description": "An Ionic project",
@@ -209,10 +209,8 @@
       "cordova-plugin-x-socialsharing": {
         "ANDROID_SUPPORT_V4_VERSION": "24.1.1+"
       },
-      "cordova-plugin-ionic-webview": {
-        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
-      },
-      "cordova-plugin-nano-sqlite": {}
+      "cordova-plugin-nano-sqlite": {},
+      "cordova-plugin-ionic-webview": {}
     },
     "platforms": [
       "browser",
