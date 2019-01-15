@@ -9,6 +9,7 @@ import { ObsLocationsResponseDtoV2 } from '../../../modules/regobs-api/models';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { switchMap, debounceTime, map } from 'rxjs/operators';
 import * as turf from '@turf/turf';
+import { LoginService } from '../../../modules/login/services/login.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,15 +18,18 @@ export class LocationService {
 
   constructor(
     private userSettingService: UserSettingService,
+    private loginService: LoginService,
     private apiLocationService: RegobsApi.LocationService) { }
 
   async updateLocationWithinRadius(geoHazard: GeoHazard, lat: number, lng: number, radius: number) {
     const userSettings = await this.userSettingService.getUserSettings();
+    const loggedInUser = await this.loginService.getLoggedInUser();
     const params: RegobsApi.LocationService.LocationWithinRadiusParams = {
       geoHazardTypeIds: [geoHazard],
       radius,
       latitude: lat,
       longitude: lng,
+      observerGuid: loggedInUser.isLoggedIn ? loggedInUser.user.Guid : null,
       returnCount: 10000, // If this is too small, delete locations no longer in result might clean up too much
     };
     this.apiLocationService.rootUrl = settings.services.regObs.apiUrl[userSettings.appMode];
