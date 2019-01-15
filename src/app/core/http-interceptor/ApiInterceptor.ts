@@ -24,12 +24,6 @@ export class ApiInterceptor implements HttpInterceptor {
             });
         }
 
-        // Also handle errors globally
-        return next.handle(req).pipe(
-            tap(x => x, err => {
-                // Handle this err
-                throw Error(`Error performing request, status code = ${err.status}`);
-            })
-        );
+        return next.handle(req);
     }
 }

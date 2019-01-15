@@ -95,7 +95,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
 
   private checkRange(index: number, toIndex: number) {
     if (this.virtualScroll) {
-      this.virtualScroll.checkRange(index, (toIndex + 1) - index);
+      this.virtualScroll.checkRange(index); // Add an extra to index because of header on next
     }
   }
 
