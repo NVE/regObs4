@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as L from 'leaflet';
 import { IMapView } from './map-view.interface';
-import { Observable, combineLatest, Observer, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, combineLatest, Observer, BehaviorSubject, Subject, from, of } from 'rxjs';
 import { createWorker } from 'typed-web-workers';
 import {
   switchMap,
@@ -15,7 +15,9 @@ import {
   map,
   bufferWhen,
   scan,
-  skipWhile
+  skipWhile,
+  take,
+  bufferCount
 } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
@@ -40,6 +42,7 @@ export class MapService {
   private _centerMapToUserObservable: Observable<void>;
   private _mapViewSubject: Subject<IMapView>;
   private _mapView$: Observable<IMapView>;
+  private _relevantMapChange$: Observable<IMapView>;
 
   get mapView$() {
     return this._mapView$;
@@ -47,6 +50,10 @@ export class MapService {
 
   get mapViewAndAreaObservable$() {
     return this._mapViewAndAreaObservable;
+  }
+
+  get relevantMapChange$() {
+    return this._relevantMapChange$;
   }
 
   get followMode$() {
@@ -69,6 +76,7 @@ export class MapService {
     this._centerMapToUserObservable = this._centerMapToUserSubject.asObservable().pipe(shareReplay(1));
     this._mapViewSubject = new BehaviorSubject<IMapView>(null);
     this._mapView$ = this._mapViewSubject.asObservable().pipe(debounceTime(200), shareReplay(1));
+    this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
   }
 
@@ -99,8 +107,8 @@ export class MapService {
     return this.mapView$.pipe(
       pairwise(),
       map(([prev, next]) => {
-        if (!prev || !next) {
-          return 0;
+        if (!prev) {
+          return 9999;
         }
         return prev.center.distanceTo(next.center);
       }),
@@ -110,22 +118,22 @@ export class MapService {
 
   private triggerWhenMetersReached(metersBuffer: number = 10) {
     return this.getMapMetersChanged()
-      .pipe(
-        startWith(0),
-        skipWhile((val) => val < metersBuffer));
-  }
-
-  getMapViewThatHasRelevantChange(metersBuffer: number = 10) {
-    return this.mapView$.pipe(
-      bufferWhen(() => this.triggerWhenMetersReached(metersBuffer)),
-      map((val) => {
-        return val.length > 0 ? val[val.length - 1] : null;
+      .pipe(skipWhile((val) => {
+        return val < metersBuffer;
       }));
   }
 
-  private getMapViewAreaObservable(metersBuffer: number = 10) {
-    return combineLatest(this.getMapViewThatHasRelevantChange(metersBuffer).pipe(
-      filter((val) => !!val)), this.userSettingService.currentGeoHazardObservable$)
+  private getMapViewThatHasRelevantChange(metersBuffer: number = 10) {
+    return this.mapView$.pipe(
+      bufferWhen(() => this.triggerWhenMetersReached(metersBuffer)),
+      switchMap((buffer) => (buffer.length > 0 && !!buffer[buffer.length - 1]) ? of(buffer[0]) : this.mapView$),
+      shareReplay(1));
+  }
+
+  private getMapViewAreaObservable() {
+    return combineLatest(
+      this.relevantMapChange$,
+      this.userSettingService.currentGeoHazardObservable$)
       .pipe(
         switchMap(([mapView, currentGeoHazard]) =>
           this.getRegionInViewObservable(mapView, currentGeoHazard)),

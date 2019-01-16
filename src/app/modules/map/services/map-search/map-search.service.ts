@@ -171,10 +171,10 @@ export class MapSearchService {
   }
 
   getSteepness(mapView: IMapView, isInNorway: boolean): Observable<number> {
-    if (!isInNorway) {
-      return of(null);
-    } else {
+    if (mapView.center && mapView.bounds && isInNorway) {
       return this.getSteepnessNorway(mapView);
+    } else {
+      return of(null);
     }
   }
 
