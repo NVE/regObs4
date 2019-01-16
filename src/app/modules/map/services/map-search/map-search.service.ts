@@ -16,6 +16,7 @@ import { NanoSql } from '../../../../../nanosql';
 import { nSQL } from 'nano-sql';
 import { MapSearchHistory } from './map-search-history.model';
 import * as moment from 'moment';
+import { IMapView } from '../map/map-view.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -169,16 +170,56 @@ export class MapSearchService {
       }));
   }
 
-  getViewInfo(latLng: L.LatLng): Observable<ViewInfo> {
+  getSteepness(mapView: IMapView, isInNorway: boolean): Observable<number> {
+    if (mapView.center && mapView.bounds && isInNorway) {
+      return this.getSteepnessNorway(mapView);
+    } else {
+      return of(null);
+    }
+  }
+
+  getSteepnessNorway(mapView: IMapView) {
+    const utm = this.latLngToUtm(mapView.center);
+    const bboxUtm = [
+      mapView.bounds.getSouthWest(),
+      mapView.bounds.getNorthEast()].map((val) => this.latLngToUtm(val));
+    const bboxString = `${bboxUtm[0].x},${bboxUtm[0].y},${bboxUtm[1].x},${bboxUtm[1].y}`;
+    const url = settings.map.steepness.no.url
+      .replace('{0}', utm.x.toString())
+      .replace('{1}', utm.y.toString())
+      .replace('{2}', bboxString);
+    return this.httpClient.get(url)
+      .pipe(
+        map((val: { results: Array<{ attributes: { 'Pixel Value': string } }> }) => {
+          if (val.results &&
+            val.results.length > 0 &&
+            val.results[0].attributes &&
+            val.results[0].attributes['Pixel Value'] &&
+            val.results[0].attributes['Pixel Value'] !== 'NoData') {
+            const number = parseInt(val.results[0].attributes['Pixel Value'], 10);
+            return isNaN(number) ? null : number;
+          } else {
+            return null;
+          }
+        }),
+        catchError(() => of(null)));
+  }
+
+  getViewInfo(mapView: IMapView): Observable<ViewInfo> {
+    const latLng = mapView.center;
     return BorderHelper.getLatLngBoundInSvalbardOrNorwayAsObservable(latLng)
       .pipe(switchMap((inNorwayOrSvalbard) =>
-        combineLatest(this.getLocationName(latLng, inNorwayOrSvalbard.inNorway),
-          this.getElevation(latLng, inNorwayOrSvalbard)).pipe(
-            map(([location, elevation]) => ({
-              location,
-              elevation,
-              latLng,
-            })))));
+        combineLatest(
+          this.getLocationName(latLng, inNorwayOrSvalbard.inNorway),
+          this.getElevation(latLng, inNorwayOrSvalbard),
+          this.getSteepness(mapView, inNorwayOrSvalbard.inNorway)
+        ).pipe(
+          map(([location, elevation, steepness]) => ({
+            location,
+            elevation,
+            steepness,
+            latLng,
+          })))));
   }
 
   private async saveSearchHistoryToDb(searchResult: MapSearchResponse) {

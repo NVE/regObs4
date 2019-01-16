@@ -54,13 +54,13 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
         }));
     this.subscriptions.push(
       this.userSettingService.userSettingObservable$.pipe(switchMap((userSettings) =>
-        userSettings.showMapCenter ? this.mapService.getMapViewThatHasRelevantChange() : of(null))
+        userSettings.showMapCenter ? this.mapService.relevantMapChange$ : of(null))
         , filter((val) => !!val), tap(() => {
           this.ngZone.run(() => {
             this.isLoading = true;
           });
-        }), switchMap((val) =>
-          this.mapSerachService.getViewInfo(val.center)))
+        }), switchMap((val: IMapView) =>
+          this.mapSerachService.getViewInfo(val)))
         .subscribe((viewInfo) => {
           this.ngZone.run(() => {
             this.viewInfo = viewInfo;

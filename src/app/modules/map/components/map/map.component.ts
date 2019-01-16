@@ -104,38 +104,37 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((userSetting) => {
       this.configureTileLayers(userSetting);
+      if (userSetting.showMapCenter) {
+        this.updateMapView();
+      }
     }));
 
     this.subscriptions.push(this.mapService.followMode$.subscribe((val) => {
       this.followMode = val;
+      this.loggingService.debug(`Follow mode changed to: ${this.followMode}`, DEBUG_TAG);
     }));
 
     this.subscriptions.push(this.mapSearchService.mapSearchClick$.subscribe((item) => {
       this.disableFollowMode();
       this.zone.runOutsideAngular(() => {
-        this.map.flyTo(item.latlng, settings.map.mapSearchZoomToLevel);
+        this.flyTo(item.latlng, settings.map.mapSearchZoomToLevel);
       });
     }));
 
     this.subscriptions.push(this.mapService.centerMapToUser$.subscribe(() => {
-      if (this.userMarker) {
-        const currentPosition = this.userMarker.getPosition();
-        const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
-        this.zone.runOutsideAngular(() => {
-          this.isDoingMoveAction = true;
-          this.map.flyTo(latLng, Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()));
-          this.map.once('moveend', () => {
-            this.isDoingMoveAction = false;
-          });
-        });
-      }
+      this.zone.runOutsideAngular(() => {
+        if (this.userMarker) {
+          const currentPosition = this.userMarker.getPosition();
+          const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+          this.flyToMaxZoom(latLng);
+        }
+      });
     }));
 
     if (this.showUserLocation) {
       this.startGeoLocationWatch();
       this.zone.runOutsideAngular(() => {
-        this.map.on('dragstart', () => this.disableFollowMode());
-        this.map.on('zoomstart', () => this.disableFollowMode());
+        this.map.on('movestart', () => this.disableFollowMode());
       });
     }
 
@@ -148,7 +147,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.zone.runOutsideAngular(() => {
       this.map.on('moveend', () => this.updateMapView());
-      this.map.on('zoomend', () => this.updateMapView());
     });
 
     this.subscriptions.push(this.fullscreenService.isFullscreen$.subscribe(() => {
@@ -156,12 +154,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }));
 
     this.redrawMap();
-    setTimeout(() => this.updateMapView(), 200);
     this.mapReady.emit(this.map);
   }
 
   private disableFollowMode() {
-    if (!this.isDoingMoveAction) {
+    if (!this.isDoingMoveAction && this.followMode) {
       this.mapService.followMode = false;
     }
   }
@@ -297,7 +294,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           this.userMarker.updatePosition(data);
         }
         if (this.followMode && !this.isDoingMoveAction) {
-          this.flyToMaxZoom(latLng, this.firstPositionUpdate);
+          this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
           this.firstPositionUpdate = false;
         }
       }
@@ -310,11 +307,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private flyTo(latLng: L.LatLng, zoom: number, usePan = false) {
     this.isDoingMoveAction = true;
-    if (usePan) {
-      this.map.panTo(latLng);
-    } else {
-      this.map.flyTo(latLng, zoom);
-    }
+    // if (usePan) {
+    //   this.map.panTo(latLng);
+    // } else {
+    //   this.map.flyTo(latLng, zoom);
+    // }
+    // Note: Poor performance on flyTo effect, so using setView without animate instead.
+    this.map.setView(latLng, zoom, { animate: false });
     this.map.once('moveend', () => {
       this.isDoingMoveAction = false;
     });
