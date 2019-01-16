@@ -146,6 +146,12 @@ export const settings = {
                 url: 'https://secure.geonames.org',
             }
         },
+        steepness: {
+            no: {
+                // tslint:disable-next-line:max-line-length
+                url: 'https://gis3.nve.no/map/rest/services/Bratthet/MapServer/identify?geometry={0},{1}&geometryType=esriGeometryPoint&inSR=32633&layers=visible:0,1&layerDefs=&time=&layerTimeOptions=&tolerance=20&mapExtent={2}&imageDisplay=927,878,96&returnGeometry=false&maxAllowableOffset=20&geometryPrecision=1&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&returnUnformattedValues=false&returnFieldName=false&datumTransformations=&layerParameterValues=&mapRangeValues=&layerRangeValues=&f=pjson',
+            }
+        },
         metersLimitForUpdateElevation: 500,
         mapSearchZoomToLevel: 14,
         unknownMapCenter: [59.911197, 10.741059],

@@ -59,8 +59,8 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
           this.ngZone.run(() => {
             this.isLoading = true;
           });
-        }), switchMap((val) =>
-          this.mapSerachService.getViewInfo(val.center)))
+        }), switchMap((val: IMapView) =>
+          this.mapSerachService.getViewInfo(val)))
         .subscribe((viewInfo) => {
           this.ngZone.run(() => {
             this.viewInfo = viewInfo;
