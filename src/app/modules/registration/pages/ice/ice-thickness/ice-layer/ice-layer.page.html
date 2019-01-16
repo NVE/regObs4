@@ -9,21 +9,19 @@
 
 <ion-content>
   <ion-list lines="full">
-    <ion-item>
-      <ion-label text-wrap>
-        {{'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_DESCRIPTION' | translate}}
-      </ion-label>
-    </ion-item>
-    <app-kdv-dropdown title="{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_TYPE' | translate}}" kdvKey="Ice_IceLayerKDV"
-      [(value)]="layerCopy.IceLayerTID"></app-kdv-dropdown>
     <ion-list-header>
       <ion-label>
-        {{'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_THICKNESS' | translate}}
+        {{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER_TITLE' | translate}}
       </ion-label>
     </ion-list-header>
+    <app-kdv-dropdown title="{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_TYPE' | translate}}" kdvKey="Ice_IceLayerKDV"
+      [(value)]="layerCopy.IceLayerTID"></app-kdv-dropdown>
     <ion-item>
-      <ion-input type="number" [min]="0" [max]="10000" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="layerCopy.IceLayerThickness"
-        placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+      <ion-label color="medium" position="stacked" text-uppercase>{{
+        'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_THICKNESS'
+        | translate}}</ion-label>
+      <ion-input type="number" [min]="0" [max]="10000" inputmode="numberic" pattern="[0-9]+([,\.][0-9]+)?" step="0.1"
+        [(ngModel)]="layerCopy.IceLayerThickness" placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
       </ion-input>
     </ion-item>
   </ion-list>

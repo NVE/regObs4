@@ -36,7 +36,7 @@
       <ion-reorder-group disabled="false" (ionItemReorder)="onIceThicknessReorder($event)">
         <ion-item (click)="addOrEditThicknessLayer(i)" *ngFor="let layer of registration.request.IceThickness.IceThicknessLayer; let i = index">
           <ion-label> {{ layer.IceLayerTID | kdvDescription:'Ice_IceLayerKDV' | async }} - {{ layer.IceLayerThickness
-            }}cm</ion-label>
+            }} cm</ion-label>
           <ion-reorder slot="end"></ion-reorder>
         </ion-item>
       </ion-reorder-group>
