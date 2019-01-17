@@ -76,7 +76,7 @@ export const settings = {
             // embeddedUrlMaxZoomNorway: 9,
             embeddedUrlMaxZoomWorld: 0,
             embeddedUrlMaxZoomNorway: 0,
-            minZoom: 1,
+            minZoom: 3,
             maxZoom: 18,
             zoomInPosition: 15,
             zoomToShowBeforeNorwegianDetailsMap: 9,
