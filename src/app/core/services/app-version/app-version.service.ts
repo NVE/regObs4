@@ -13,7 +13,7 @@ export class AppVersionService {
       // tslint:disable-next-line:no-var-requires
       return require('../../../../environments/version.json');
     } catch {
-      return { version: '0.0.0', revision: '', branch: '', date: new Date().toISOString() };
+      return { version: '0.0.0', buildNumber: 0, revision: '', branch: '', date: new Date().toISOString() };
     }
   }
 }
