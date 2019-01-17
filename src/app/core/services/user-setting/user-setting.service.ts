@@ -7,7 +7,7 @@ import { settings } from '../../../../settings';
 import { NanoSql } from '../../../../nanosql';
 import { nSQL } from 'nano-sql';
 import { Observable } from 'rxjs';
-import { map, take, shareReplay } from 'rxjs/operators';
+import { map, take, shareReplay, distinctUntilChanged } from 'rxjs/operators';
 import { LangKey } from '../../models/langKey';
 import { TopoMap } from '../../models/topo-map.enum';
 
@@ -21,6 +21,7 @@ export class UserSettingService {
   // The observable will be shared with many services
   private _userSettingObservable: Observable<UserSetting>;
   private _currentGeoHazardObservable: Observable<GeoHazard[]>;
+  private _appModeObservable: Observable<AppMode>;
 
   get userSettingObservable$() {
     return this._userSettingObservable;
@@ -28,6 +29,10 @@ export class UserSettingService {
 
   get currentGeoHazardObservable$() {
     return this._currentGeoHazardObservable;
+  }
+
+  get appMode$() {
+    return this._appModeObservable;
   }
 
   constructor(private translate: TranslateService) {
@@ -38,6 +43,10 @@ export class UserSettingService {
     this.userSettingObservable$.subscribe((userSetting) => {
       this.translate.use(LangKey[userSetting.language]);
     });
+    this._appModeObservable = this.userSettingObservable$
+      .pipe(
+        map((val) => val.appMode),
+        distinctUntilChanged(), shareReplay(1));
   }
 
   private getDefaultSettings(): UserSetting {

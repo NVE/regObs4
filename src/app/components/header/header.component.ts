@@ -51,10 +51,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.tripRunning = val;
       });
     }));
-    this.subscriptions.push(this.userSettingService.userSettingObservable$
-      .pipe(
-        map((val) => val.appMode),
-        distinctUntilChanged())
+    this.subscriptions.push(this.userSettingService.appMode$
       .subscribe((appMode) => {
         this.ngZone.run(() => {
           this.appMode = appMode;

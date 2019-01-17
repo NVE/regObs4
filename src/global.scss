@@ -210,6 +210,23 @@ ion-item-divider {
     }
 }
 
+ion-toolbar {
+    --ion-text-color: #fff;
+    --ion-color-primary: #fff;
+    &.trip-running {
+        --background: var(--ion-color-success);
+    }
+    &.prod {
+        --background: var(--ion-color-varsom-blue);
+    }
+    &.demo {
+        --background: var(--ion-color-danger);
+    }
+    &.test {
+        --background: var(--ion-color-varsom-grey);
+    }
+}
+
 .map-item-bar-open {
     --map-item-height: 100px;
 

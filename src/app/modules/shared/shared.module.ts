@@ -19,6 +19,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { RouterModule } from '@angular/router';
 import { RefreshWithCancelComponent } from '../../components/refresh-with-cancel/refresh-with-cancel.component';
 import { SummaryComponent } from '../../components/observation/summary/summary.component';
+import { HeaderColorDirective } from '../../directives/header-color.directive';
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import { SummaryComponent } from '../../components/observation/summary/summary.c
         HeaderComponent,
         RefreshWithCancelComponent,
         SummaryComponent,
+        HeaderColorDirective,
     ],
     exports: [
         CommonModule,
@@ -69,6 +71,7 @@ import { SummaryComponent } from '../../components/observation/summary/summary.c
         HeaderComponent,
         RefreshWithCancelComponent,
         SummaryComponent,
+        HeaderColorDirective
     ]
 })
 export class SharedModule { }
