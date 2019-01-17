@@ -10,12 +10,11 @@ import { LocationName } from '../../../map/services/map-search/location-name.mod
 import { ObsLocationsResponseDtoV2, ObsLocationDto } from '../../../regobs-api/models';
 import { LocationService } from '../../../../core/services/location/location.service';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
-import { IconHelper } from '../../../map/helpers/icon.helper';
 import { ViewInfo } from '../../../map/services/map-search/view-info.model';
-import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { ObsLocation } from '../../models/obs-location.model';
 import { IonInput } from '@ionic/angular';
+import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 
 @Component({
   selector: 'app-set-location-in-map',
@@ -54,7 +53,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locationGroup = L.markerClusterGroup({
     showCoverageOnHover: false,
     maxClusterRadius: 60,
-    iconCreateFunction: (cluster) => IconHelper.getPreviousUsedPlacesIcon(cluster.getChildCount()),
+    iconCreateFunction: LeafletClusterHelper.createClusterIcon,
   });
   editLocationName = false;
   locationName: string;

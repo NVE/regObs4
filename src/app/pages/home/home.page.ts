@@ -12,6 +12,7 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { Router, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
+import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -28,7 +29,7 @@ export class HomePage implements OnInit, OnDestroy {
     spiderfyOnMaxZoom: true,
     showCoverageOnHover: false,
     maxClusterRadius: 60,
-    iconCreateFunction: (cluster) => this.createClusterIcon(cluster),
+    iconCreateFunction: LeafletClusterHelper.createClusterIcon,
   });
   private subscriptions: Subscription[];
 
@@ -48,18 +49,6 @@ export class HomePage implements OnInit, OnDestroy {
     private loggingService: LoggingService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
-  }
-
-  createClusterIcon(cluster: L.MarkerCluster) {
-    const items = cluster.getAllChildMarkers().map((x: MapItemMarker) => x.item.GeoHazardTID);
-    const size = (items.length < 100 ? 35 :
-      (items.length < 1000 ? 50 : 70));
-    return L.divIcon({
-      html: '<div>' + items.length + '</div>',
-      iconSize: [size, size],
-      iconAnchor: [size / 2.0, size / 2.0],
-      className: 'circle-marker-cluster',
-    });
   }
 
   async ngOnInit() {
