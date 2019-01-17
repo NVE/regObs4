@@ -50,11 +50,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   isLoading = false;
   private subscriptions: Subscription[] = [];
 
-  private locationGroup = L.markerClusterGroup({
-    showCoverageOnHover: false,
-    maxClusterRadius: 60,
-    iconCreateFunction: LeafletClusterHelper.createClusterIcon,
-  });
+  private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
   locationName: string;
 

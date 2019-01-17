@@ -1,6 +1,14 @@
 import * as L from 'leaflet';
+import { settings } from '../../../../settings';
 
 export class LeafletClusterHelper {
+    static createMarkerClusterGroup = () => L.markerClusterGroup({
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        maxClusterRadius: settings.map.maxClusterRadius,
+        iconCreateFunction: LeafletClusterHelper.createClusterIcon,
+    })
+
     static createClusterIcon(cluster: L.MarkerCluster) {
         const length = cluster.getAllChildMarkers().length;
         const size = (length < 100 ? 35 :

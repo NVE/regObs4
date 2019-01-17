@@ -25,12 +25,7 @@ export class HomePage implements OnInit, OnDestroy {
   @ViewChild(MapItemBarComponent) mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent) mapComponent: MapComponent;
   private map: L.Map;
-  private markerLayer = L.markerClusterGroup({
-    spiderfyOnMaxZoom: true,
-    showCoverageOnHover: false,
-    maxClusterRadius: 60,
-    iconCreateFunction: LeafletClusterHelper.createClusterIcon,
-  });
+  private markerLayer = LeafletClusterHelper.createMarkerClusterGroup();
   private subscriptions: Subscription[];
 
   fullscreen$: Observable<boolean>;

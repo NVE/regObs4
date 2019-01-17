@@ -156,6 +156,7 @@ export const settings = {
         mapSearchZoomToLevel: 14,
         unknownMapCenter: [59.911197, 10.741059],
         flyToOnGpsZoom: 14,
+        maxClusterRadius: 30,
     },
     snowRegionsGeoJsonName: 'OMRAADENAV',
     cordovaNotAvailable: 'cordova_not_available',
