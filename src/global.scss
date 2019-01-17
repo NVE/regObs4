@@ -52,6 +52,7 @@
     --ion-color-varsom-blue-contrast-rgb: 255,255,255;
     --ion-color-varsom-blue-shade: #044157;
     --ion-color-varsom-blue-tint: #6996A3;
+    --ion-color-varsom-blue-light-2: #9BB9C2;
     --ion-color-varsom-grey: #5C90A5;
     --ion-color-varsom-orange: #EE7B04;
     --ion-color-varsom-orange-rgb: 238,123,4;
@@ -227,7 +228,7 @@ ion-item-divider {
 }
 
 .circle-marker-cluster {
-    background-color: var(--ion-color-varsom-grey);
+    background-color: var(--ion-color-varsom-blue-light-2);
     border: 2px solid #fff;
     border-radius: 50% !important;
     font-size: 14px;

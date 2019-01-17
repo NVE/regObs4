@@ -34,6 +34,7 @@
     "NO": "No",
     "OF": "Of",
     "OK": "Ok",
+    "RESET": "Reset",
     "YES": "Yes"
   },
   "DIRECTION": {
@@ -224,6 +225,7 @@
         "ADD_ICE_LAYER_TITLE": "Ice layer thickness",
         "DRY_SNOW_BEFORE_DRILL": "Snow before drilling (cm)",
         "ICE_HEIGHT_AFTER_INPUT": "Thickness of overwater",
+        "ICE_HEIGHT_AFTER_NO": "Height from the surface to the water in the borehole",
         "ICE_HEIGHT_AFTER_TOGGLE": "Overwater after drilling",
         "ICE_HEIGHT_BEFORE_INPUT": "Thickness of overwater",
         "ICE_HEIGHT_BEFORE_TOGGLE": "Overwater before drilling",

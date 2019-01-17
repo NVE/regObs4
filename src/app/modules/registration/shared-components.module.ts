@@ -18,6 +18,7 @@ import { ValidExpositionComponent } from './components/snow/valid-exposition/val
 import { RegistrationContentWrapperComponent } from './components/registration-content-wrapper/registration-content-wrapper.component';
 import { HelpTextComponent } from './components/help-text/help-text.component';
 import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.module';
+import { YesNoSelectComponent } from './components/yes-no-select/yes-no-select.component';
 
 @NgModule({
     imports: [
@@ -45,6 +46,7 @@ import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.m
         RegistrationContentWrapperComponent,
         HelpTextComponent,
         HelpModalPageModule,
+        YesNoSelectComponent,
     ],
     declarations: [
         SaveAndGoBackButtonComponent,
@@ -63,6 +65,7 @@ import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.m
         ValidExpositionComponent,
         RegistrationContentWrapperComponent,
         HelpTextComponent,
+        YesNoSelectComponent,
     ],
 })
 export class SharedComponentsModule { }

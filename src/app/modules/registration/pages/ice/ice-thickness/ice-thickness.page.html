@@ -52,10 +52,7 @@
           placeholder="{{'REGISTRATION.IN_CM' | translate}}">
         </ion-input>
       </ion-item>
-      <ion-item>
-        <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE' | translate }}</ion-label>
-        <ion-toggle [(ngModel)]="iceHeightBefore"></ion-toggle>
-      </ion-item>
+      <app-yes-no-select [(value)]="iceHeightBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE"></app-yes-no-select>
       <ion-item *ngIf="iceHeightBefore">
         <ion-label color="medium" position="stacked" text-uppercase>{{
           'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT' | translate }}</ion-label>
@@ -63,13 +60,17 @@
           placeholder="{{'REGISTRATION.IN_CM' | translate}}">
         </ion-input>
       </ion-item>
-      <ion-item>
-        <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_TOGGLE' | translate }}</ion-label>
-        <ion-toggle [(ngModel)]="iceHeightAfter"></ion-toggle>
-      </ion-item>
-      <ion-item *ngIf="iceHeightAfter">
+      <app-yes-no-select [(value)]="iceHeightAfter" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_TOGGLE"></app-yes-no-select>
+      <ion-item *ngIf="iceHeightAfter === true">
         <ion-label color="medium" position="stacked" text-uppercase>{{
           'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_INPUT' | translate }}</ion-label>
+        <ion-input type="number" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.IceThickness.IceHeightAfter"
+          placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+        </ion-input>
+      </ion-item>
+      <ion-item *ngIf="iceHeightAfter === false">
+        <ion-label color="medium" position="stacked" text-uppercase text-wrap>{{
+          'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO' | translate }}</ion-label>
         <ion-input type="number" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.IceThickness.IceHeightAfter"
           placeholder="{{'REGISTRATION.IN_CM' | translate}}">
         </ion-input>

@@ -21,6 +21,9 @@ export class SummaryItemService {
   ) { }
 
   async getSummaryItems(registration: IRegistration, userGroups?: ObserverGroupDto[]) {
+    if (!registration) {
+      return [];
+    }
     const userGroupsToUse = userGroups ? userGroups : await this.userGroupService.getUserGroups();
     const summaryItems: ISummaryItem[] = [
       {

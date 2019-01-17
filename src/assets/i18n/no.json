@@ -34,6 +34,7 @@
     "NO": "Nei",
     "OF": "Av",
     "OK": "Ok",
+    "RESET": "Nullstill",
     "YES": "Ja"
   },
   "DIRECTION": {
@@ -224,6 +225,7 @@
         "ADD_ICE_LAYER_TITLE": "Tykkelse på islag",
         "DRY_SNOW_BEFORE_DRILL": "Snø før boring (cm)",
         "ICE_HEIGHT_AFTER_INPUT": "Overvannets tykkelse",
+        "ICE_HEIGHT_AFTER_NO": "Høyde fra isoverflaten til vannflaten i borehullet",
         "ICE_HEIGHT_AFTER_TOGGLE": "Overvann etter boring",
         "ICE_HEIGHT_BEFORE_INPUT": "Overvannets tykkelse",
         "ICE_HEIGHT_BEFORE_TOGGLE": "Overvann før boring",

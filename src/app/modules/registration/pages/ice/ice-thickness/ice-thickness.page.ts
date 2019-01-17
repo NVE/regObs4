@@ -17,8 +17,8 @@ export class IceThicknessPage extends BasePage {
   minSnowDepth = 0;
   maxSnowDepth = 10000;
 
-  iceHeightBefore = false;
-  iceHeightAfter = false;
+  iceHeightBefore: boolean = undefined;
+  iceHeightAfter: boolean = undefined;
 
   constructor(
     basePageService: BasePageService,
@@ -47,12 +47,15 @@ export class IceThicknessPage extends BasePage {
     if (this.registration.request.IceThickness.IceThicknessSum > 0) {
       this.registration.request.IceThickness.IceThicknessSum = this.registration.request.IceThickness.IceThicknessSum * 100.0;
     }
-    if (this.registration.request.IceThickness.IceHeightBefore > 0) {
-      this.registration.request.IceThickness.IceHeightBefore = this.registration.request.IceThickness.IceHeightBefore * 100.0;
+    if (this.registration.request.IceThickness.IceHeightBefore < 0) {
+      this.registration.request.IceThickness.IceHeightBefore = this.registration.request.IceThickness.IceHeightBefore * 100.0 * -1;
       this.iceHeightBefore = true;
     }
     if (this.registration.request.IceThickness.IceHeightAfter > 0) {
       this.registration.request.IceThickness.IceHeightAfter = this.registration.request.IceThickness.IceHeightAfter * 100.0;
+      this.iceHeightAfter = false;
+    } else if (this.registration.request.IceThickness.IceHeightAfter < 0) {
+      this.registration.request.IceThickness.IceHeightAfter = this.registration.request.IceThickness.IceHeightAfter * 100.0 * -1;
       this.iceHeightAfter = true;
     }
   }
@@ -75,14 +78,16 @@ export class IceThicknessPage extends BasePage {
     if (!this.iceHeightBefore) {
       this.registration.request.IceThickness.IceHeightBefore = undefined;
     } else if (this.registration.request.IceThickness.IceHeightBefore > 0) {
-      this.registration.request.IceThickness.IceHeightBefore = this.registration.request.IceThickness.IceHeightBefore / 100.0;
+      this.registration.request.IceThickness.IceHeightBefore = (this.registration.request.IceThickness.IceHeightBefore / 100.0) * -1;
     } else {
       this.registration.request.IceThickness.IceHeightBefore = 0;
     }
-    if (!this.iceHeightAfter) {
+    if (this.iceHeightAfter === undefined) {
       this.registration.request.IceThickness.IceHeightAfter = undefined;
-    } else if (this.registration.request.IceThickness.IceHeightAfter > 0) {
-      this.registration.request.IceThickness.IceHeightAfter = this.registration.request.IceThickness.IceHeightAfter / 100.0;
+    } else if (this.iceHeightAfter === true && this.registration.request.IceThickness.IceHeightAfter > 0) {
+      this.registration.request.IceThickness.IceHeightAfter = (this.registration.request.IceThickness.IceHeightAfter / 100.0) * -1;
+    } else if (this.iceHeightAfter === false && this.registration.request.IceThickness.IceHeightAfter > 0) {
+      this.registration.request.IceThickness.IceHeightAfter = (this.registration.request.IceThickness.IceHeightAfter / 100.0);
     } else {
       this.registration.request.IceThickness.IceHeightAfter = 0;
     }
