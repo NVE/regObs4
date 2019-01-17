@@ -14,7 +14,7 @@ export class HeaderColorDirective implements OnInit, OnDestroy {
 
   @HostBinding('class')
   get elementClass(): string {
-    return (this.appMode ? this.appMode.toLowerCase() : '') + ' hydrated';
+    return `hydrated app-header-color ${(this.appMode ? this.appMode.toLowerCase() : '')}`;
   }
 
   constructor(private userSettingService: UserSettingService, private ngZone: NgZone) { }

@@ -211,19 +211,21 @@ ion-item-divider {
 }
 
 ion-toolbar {
-    --ion-text-color: #fff;
-    --ion-color-primary: #fff;
-    &.trip-running {
-        --background: var(--ion-color-success);
-    }
-    &.prod {
-        --background: var(--ion-color-varsom-blue);
-    }
-    &.demo {
-        --background: var(--ion-color-danger);
-    }
-    &.test {
-        --background: var(--ion-color-varsom-grey);
+    &.app-header-color {
+        --ion-text-color: #fff;
+        --ion-color-primary: #fff;
+        &.trip-running {
+            --background: var(--ion-color-success);
+        }
+        &.prod {
+            --background: var(--ion-color-varsom-blue);
+        }
+        &.demo {
+            --background: var(--ion-color-danger);
+        }
+        &.test {
+            --background: var(--ion-color-varsom-grey);
+        }
     }
 }
 

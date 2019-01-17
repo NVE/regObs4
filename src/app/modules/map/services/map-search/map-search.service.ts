@@ -17,6 +17,8 @@ import { nSQL } from 'nano-sql';
 import { MapSearchHistory } from './map-search-history.model';
 import * as moment from 'moment';
 import { IMapView } from '../map/map-view.interface';
+import { NorwegianSearchResultModel, NorwegianSearchResultModelStednavn } from './norwegian-search-result.model';
+import { WorldSearchResultModel } from './world-search-result.model';
 
 @Injectable({
   providedIn: 'root'
@@ -54,8 +56,11 @@ export class MapSearchService {
 
   searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
     return this.httpClient.get(`${settings.map.search.no.url}?navn=${text.trim()}*&antPerSide=${settings.map.search.no.maxResults}`
-      + `&eksakteForst=${settings.map.search.no.exactFirst}&epsgKode=3395`).pipe(map((data: any) => {
-        const resultList = data.stedsnavn || [];
+      + `&eksakteForst=${settings.map.search.no.exactFirst}&epsgKode=3395`).pipe(map((data: NorwegianSearchResultModel) => {
+        const hits = parseInt(data.totaltAntallTreff, 10);
+        const resultList = hits === 0 ? [] : (hits === 1 ? [
+          data.stedsnavn as NorwegianSearchResultModelStednavn] :
+          data.stedsnavn as Array<NorwegianSearchResultModelStednavn>);
         return this.removeDuplicates(resultList).map((item) => {
           const resp: MapSearchResponse = {
             name: item.stedsnavn,
@@ -70,7 +75,7 @@ export class MapSearchService {
         catchError(() => of([])));
   }
 
-  removeDuplicates(data: any[]) {
+  removeDuplicates(data: NorwegianSearchResultModelStednavn[]) {
     return (data || []).reduce((acc, currentValue) => {
       if (acc.filter((item) => item.ssrId === currentValue.ssrId).length === 0) {
         acc.push(currentValue);
@@ -84,15 +89,15 @@ export class MapSearchService {
       + `name_startsWith=${text}&maxRows=${settings.map.search.geonames.maxResults}`
       + `&lang=${LangKey[lang]}`
       + `&username=${settings.map.search.geonames.username}`)
-      .pipe(map((data: any) => {
+      .pipe(map((data: WorldSearchResultModel) => {
         const geoData = data.geonames || [];
         return geoData.filter((item) => item.countryCode !== 'NO').map((item) => {
           const resp: MapSearchResponse = {
             name: item.name,
             description: (item.fcodeName ? item.fcodeName + ', ' : '') + (item.adminName1 || '')
               + (item.countryName ? (' (' + item.countryName + ')') : ''),
-            type: item.navnetype,
-            latlng: L.latLng(item.lat, item.lng),
+            type: '',
+            latlng: L.latLng(parseFloat(item.lat), parseFloat(item.lng)),
           };
           return resp;
         });

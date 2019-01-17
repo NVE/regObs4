@@ -1,5 +1,5 @@
 <ion-header *ngIf="!fullscreenSupport || !(isFullscreen$ | async)">
-  <ion-toolbar [ngClass]="headerColor" mode="ios">
+  <ion-toolbar class="app-header-color" [ngClass]="headerColor" mode="ios">
     <ion-buttons slot="start" *ngIf="!showMenuButton">
       <ion-back-button text="" [defaultHref]="defaultHref"></ion-back-button>
     </ion-buttons>
