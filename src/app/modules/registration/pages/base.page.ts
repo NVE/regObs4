@@ -65,7 +65,7 @@ export abstract class BasePage implements OnInit, OnDestroy {
         return true;
     }
 
-    async ionViewWillLeave() {
+    async ionViewDidLeave() {
         if (this.onBeforeLeave) {
             await Promise.resolve(this.onBeforeLeave());
         }
