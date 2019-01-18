@@ -133,7 +133,7 @@ export class MapSearchService {
   getElevationWorld(latLng: L.LatLng): Observable<number> {
     return this.httpClient.get(`${settings.map.search.geonames.url}/srtm1JSON?`
       + `lat=${latLng.lat}&lng=${latLng.lng}&username=${settings.map.search.geonames.username}`)
-      .pipe(map((data: any) => data && data.srtm1 !== -1 ? data.srtm1 : null),
+      .pipe(map((data: any) => (data && data.srtm1 >= 0) ? data.srtm1 : null),
         catchError(() => of(null)));
   }
 
