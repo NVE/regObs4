@@ -4,28 +4,35 @@
     height: 100%;
     flex-direction: column;
     background-color: #fff;
-}
 
-.swiper-slide {
-    width: 80%;
-    height: 100%;
-    display: inline-flex;
-    background-color: rgba(0,0,0,0.6);
-}
+    .swiper-slide {
+        width: 80%;
+        height: 100%;
+        display: inline-flex;
+        background-color: rgba(0,0,0,0.6);
+    }
+    
+    app-offline-image {
+        display: inline-flex;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+    
+    ion-slides {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+    
+    ion-label {
+        padding: 10px 10px;
+        color: #444444;
+        font-size: 14px;
+        line-height: 20px;
 
-app-offline-image {
-    display: inline-flex;
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-}
-
-ion-slides {
-    display: flex;
-    flex: 1;
-    width: 100%;
-}
-
-ion-label {
-    padding: 10px 10px;
+        .img-comment-header {
+            font-weight: 600;
+        }
+    }
 }

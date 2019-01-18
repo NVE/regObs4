@@ -68,7 +68,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     this.ngZone.run(() => {
       this.header = this.obs.ObsLocation.Title;
       this.dtObsDate = moment(this.obs.DtObsTime).toDate();
-      this.icon = this.helperService.getGeoHazardIcon(geoHazard);
+      this.icon = this.getGeoHazardCircleIcon(geoHazard);
       this.summaries = this.obs.Summaries;
       this.stars = [];
       for (let i = 0; i < 5; i++) {
@@ -81,6 +81,19 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
 
   ngOnChanges(changes: SimpleChanges) {
     this.load();
+  }
+
+  getGeoHazardCircleIcon(geoHazard: GeoHazard) {
+    switch (geoHazard) {
+      case GeoHazard.Dirt:
+        return '/assets/icon/dirt_circle.svg';
+      case GeoHazard.Ice:
+        return '/assets/icon/ice_circle.svg';
+      case GeoHazard.Snow:
+        return '/assets/icon/snow_circle.svg';
+      case GeoHazard.Water:
+        return '/assets/icon/water_circle.svg';
+    }
   }
 
   ngAfterViewInit(): void {

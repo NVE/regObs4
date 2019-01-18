@@ -32,6 +32,8 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   comment: string;
   header: string;
+  imageIndex: number;
+  totalImages: number;
 
   @ViewChild(IonSlides) slider: IonSlides;
 
@@ -39,6 +41,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.setImgHeaderAndComment(0);
+    this.totalImages = this.imgUrl.length;
   }
 
   updateSlider() {
@@ -65,6 +68,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
     if (this.imgHeaders.length > index) {
       this.header = this.imgHeaders[index];
     }
+    this.imageIndex = (index + 1);
   }
 
   onImageClick(index: number, imgUrl: string) {

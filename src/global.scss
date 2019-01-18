@@ -60,7 +60,8 @@
     --ion-color-varsom-orange-contrast-rgb: 255,255,255;
     --ion-color-varsom-orange-shade: #5C90A5;
     --ion-color-varsom-orange-tint: #F5B068;
-    --ion-text-color: #262626;
+    --ion-text-color: rgba(34, 34, 34, 0.87);
+    --ion-color-step-600: var(--ion-text-color);
     --ion-font-family: 'Source Sans Pro';
 }
 

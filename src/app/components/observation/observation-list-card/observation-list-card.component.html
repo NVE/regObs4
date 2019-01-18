@@ -4,23 +4,38 @@
   </ion-card-header>
   <ion-card-content>
     <ion-grid no-padding>
-      <ion-row class="row-padding-start" align-items-center>
-        <ion-col size="5">
-          <svg-icon [src]="icon" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon> {{ geoHazardName }}
-        </ion-col>
-        <ion-col size="7">
-          <svg-icon src="/assets/icon/moh.svg" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon> {{
-          obs.ObsLocation.Height }}
-          {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}
-        </ion-col>
-      </ion-row>
-      <ion-row class="row-padding-start row-padding-end">
-        <ion-col size="5">
-          <ion-icon name="calendar"></ion-icon> {{ dtObsDate | formatDate | async }}
-        </ion-col>
-        <ion-col size="7">
-          <ion-icon name="contact"></ion-icon> {{obs.Observer.NickName}}
-          <ion-icon [name]="star.full ? 'star' : 'star-outline'" *ngFor="let star of stars"></ion-icon>
+      <ion-row class="row-padding-start">
+        <ion-col size="12">
+          <div class="card-icon-item">
+            <svg-icon class="card-icon-item-icon" src="/assets/icon/time.svg" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+            {{
+            dtObsDate | formatDate | async }}
+          </div>
+          <div class="card-icon-item">
+            <svg-icon class="card-icon-item-icon" [src]="icon" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+            {{ geoHazardName }}
+          </div>
+          <div class="card-icon-item">
+            <svg-icon class="card-icon-item-icon" src="/assets/icon/moh.svg" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+            {{
+            obs.ObsLocation.Height }}
+            {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}
+          </div>
+          <div class="card-icon-item">
+            <svg-icon class="card-icon-item-icon" src="/assets/icon/user.svg" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+            {{obs.Observer.NickName}}
+            <!-- <ion-icon [name]="star.full ? 'star' : 'star-outline'" *ngFor="let star of stars"></ion-icon> -->
+            <div class="stars">
+              <ng-container *ngFor="let star of stars">
+                <svg-icon *ngIf="star.full" src="/assets/icon/star-selected.svg" [svgStyle]="{'width.px':8.34, 'height.px':8  }"></svg-icon>
+                <svg-icon *ngIf="!star.full" src="/assets/icon/star-empty.svg" [svgStyle]="{'width.px':8.34, 'height.px':8  }"></svg-icon>
+              </ng-container>
+            </div>
+          </div>
+          <div class="card-icon-item" *ngIf="obs.Observer.ObserverGroupName">
+            <svg-icon class="card-icon-item-icon" src="/assets/icon/usergroup.svg" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+            {{obs.Observer.ObserverGroupName}}
+          </div>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -49,12 +64,12 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <ion-item color="light">
-      <ion-button mode="ios" fill="clear" color="medium" class="link-title" (click)="openWeb()">
+    <ion-item no-padding color="light">
+      <ion-button mode="ios" fill="clear" class="link-title" (click)="openWeb()">
         {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
       </ion-button>
-      <ion-button mode="ios" fill="clear" color="medium" class="reg-id" slot="end" (click)="share()">
-        RegId: {{ obs.RegID }}
+      <ion-button mode="ios" fill="clear" class="reg-id" slot="end" (click)="share()">
+        ID: {{ obs.RegID }}
         <ion-icon slot="end" class="share-icon" name="md-share"></ion-icon>
       </ion-button>
     </ion-item>
