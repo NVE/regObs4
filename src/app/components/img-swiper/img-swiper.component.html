@@ -6,8 +6,8 @@
   </ion-slides>
   <app-offline-image class="single" (click)="onImageClick(0, imgUrl[0])" *ngIf="imgUrl.length === 1" [src]="imgUrl[0]"></app-offline-image>
   <ion-label>
-    <span class="img-comment-header">{{imageIndex}}/{{totalImages}}&nbsp;</span>
-    <span class="img-comment-header" *ngIf="header">{{ header }}<ng-container *ngIf="comment">:&nbsp;</ng-container></span>
+    <span class="img-comment-header" *ngIf="totalImages > 1">{{imageIndex}}/{{totalImages}}&nbsp;</span>
+    <span [ngClass]="{'img-comment-header': comment }" *ngIf="header">{{ header }}<ng-container *ngIf="comment">:&nbsp;</ng-container></span>
     <ng-container *ngIf="comment">{{ comment }}</ng-container>
   </ion-label>
 </div>

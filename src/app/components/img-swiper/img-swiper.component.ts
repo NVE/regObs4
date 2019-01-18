@@ -41,7 +41,6 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.setImgHeaderAndComment(0);
-    this.totalImages = this.imgUrl.length;
   }
 
   updateSlider() {
@@ -69,6 +68,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
       this.header = this.imgHeaders[index];
     }
     this.imageIndex = (index + 1);
+    this.totalImages = this.imgUrl.length;
   }
 
   onImageClick(index: number, imgUrl: string) {
