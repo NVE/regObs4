@@ -114,11 +114,11 @@ export class DataMarshallService {
       if (appModeChange) {
         return true;
       }
-      if (oldVal.currentGeoHazard !== newVal.currentGeoHazard) {
+      if (oldVal.currentGeoHazard.join(',') !== newVal.currentGeoHazard.join(',')) {
         return true;
       }
-      return false;
     }
+    return false;
   }
 
   private hasAppModeOrLanguageChanged(oldVal: UserSetting, newVal: UserSetting) {

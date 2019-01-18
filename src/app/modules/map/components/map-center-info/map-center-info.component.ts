@@ -4,7 +4,7 @@ import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, of } from 'rxjs';
-import { switchMap, tap, filter } from 'rxjs/operators';
+import { switchMap, tap, filter, distinctUntilChanged, map } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -20,7 +20,7 @@ import { MapService } from '../../services/map/map.service';
 export class MapCenterInfoComponent implements OnInit, OnDestroy {
   viewInfo: ViewInfo;
   mapView: IMapView;
-  userSettings: UserSetting;
+  showMapCenter: boolean;
   isLoading: boolean;
 
   private textToCopy: string;
@@ -39,13 +39,15 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((userSettings) => {
-      this.userSettings = userSettings;
-      this.document.documentElement.style.setProperty('--map-center-info-height', userSettings.showMapCenter ? '72px' : '0px');
+    const showMapCenterObservable = this.userSettingService.showMapCenter$.pipe(tap((showMapCenter) => {
+      this.ngZone.run(() => {
+        this.showMapCenter = showMapCenter;
+        this.document.documentElement.style.setProperty('--map-center-info-height', showMapCenter ? '72px' : '0px');
+      });
     }));
     this.subscriptions.push(
-      this.userSettingService.userSettingObservable$.pipe(switchMap((userSettings) =>
-        userSettings.showMapCenter ? this.mapService.mapView$ : of(null))
+      showMapCenterObservable.pipe(switchMap((showMapCenter) =>
+        showMapCenter ? this.mapService.mapView$ : of(null))
         , filter((val) => !!val)).subscribe((mapView) => {
           this.ngZone.run(() => {
             this.mapView = mapView;
@@ -53,14 +55,13 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
           });
         }));
     this.subscriptions.push(
-      this.userSettingService.userSettingObservable$.pipe(switchMap((userSettings) =>
-        userSettings.showMapCenter ? this.mapService.relevantMapChange$ : of(null))
+      showMapCenterObservable.pipe(switchMap((showMapCenter) =>
+        showMapCenter ? this.mapService.relevantMapChange$ : of(null))
         , filter((val) => !!val), tap(() => {
           this.ngZone.run(() => {
             this.isLoading = true;
           });
-        }), switchMap((val: IMapView) =>
-          this.mapSerachService.getViewInfo(val)))
+        }), switchMap((val: IMapView) => this.mapSerachService.getViewInfo(val)))
         .subscribe((viewInfo) => {
           this.ngZone.run(() => {
             this.viewInfo = viewInfo;

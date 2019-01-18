@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
-import { map, switchMap, catchError, take, shareReplay } from 'rxjs/operators';
+import { map, switchMap, catchError, take, shareReplay, combineAll, tap } from 'rxjs/operators';
 import { Observable, combineLatest, forkJoin, of, Subject } from 'rxjs';
 import 'leaflet.utm';
 import { LocationName } from './location-name.model';
@@ -165,9 +165,9 @@ export class MapSearchService {
   }
 
   getLocationNameNorway(latLng: L.LatLng): Observable<LocationName> {
-    return this.userSettingService.userSettingObservable$.pipe(
-      switchMap((userSettings) => {
-        this.locationService.rootUrl = settings.services.regObs.apiUrl[userSettings.appMode];
+    return this.userSettingService.appMode$.pipe(
+      switchMap((appMode) => {
+        this.locationService.rootUrl = settings.services.regObs.apiUrl[appMode];
         return this.locationService.LocationGetName({ latitude: latLng.lat, longitude: latLng.lng, uri: '' })
           .pipe(map((result) =>
             ({ name: result.Navn, adminName: result.Fylke })),
@@ -214,17 +214,17 @@ export class MapSearchService {
     const latLng = mapView.center;
     return BorderHelper.getLatLngBoundInSvalbardOrNorwayAsObservable(latLng)
       .pipe(switchMap((inNorwayOrSvalbard) =>
-        combineLatest(
-          this.getLocationName(latLng, inNorwayOrSvalbard.inNorway),
-          this.getElevation(latLng, inNorwayOrSvalbard),
-          this.getSteepness(mapView, inNorwayOrSvalbard.inNorway)
+        forkJoin(
+          this.getLocationName(latLng, inNorwayOrSvalbard.inNorway).pipe(take(1)),
+          this.getElevation(latLng, inNorwayOrSvalbard).pipe(take(1)),
+          this.getSteepness(mapView, inNorwayOrSvalbard.inNorway).pipe(take(1))
         ).pipe(
           map(([location, elevation, steepness]) => ({
             location,
             elevation,
             steepness,
             latLng,
-          })))));
+          })))), tap((result) => console.log('getViewInfo', result)));
   }
 
   private async saveSearchHistoryToDb(searchResult: MapSearchResponse) {

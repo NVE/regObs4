@@ -22,6 +22,7 @@ export class UserSettingService {
   private _userSettingObservable: Observable<UserSetting>;
   private _currentGeoHazardObservable: Observable<GeoHazard[]>;
   private _appModeObservable: Observable<AppMode>;
+  private _showMapCenter: Observable<boolean>;
 
   get userSettingObservable$() {
     return this._userSettingObservable;
@@ -35,6 +36,10 @@ export class UserSettingService {
     return this._appModeObservable;
   }
 
+  get showMapCenter$() {
+    return this._showMapCenter;
+  }
+
   constructor(private translate: TranslateService) {
     this._userSettingObservable = this.getUserSettingsAsObservable();
     this._currentGeoHazardObservable = this._userSettingObservable.pipe(
@@ -46,6 +51,10 @@ export class UserSettingService {
     this._appModeObservable = this.userSettingObservable$
       .pipe(
         map((val) => val.appMode),
+        distinctUntilChanged(), shareReplay(1));
+    this._showMapCenter = this.userSettingObservable$
+      .pipe(
+        map((val) => val.showMapCenter),
         distinctUntilChanged(), shareReplay(1));
   }
 
