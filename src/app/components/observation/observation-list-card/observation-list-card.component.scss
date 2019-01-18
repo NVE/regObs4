@@ -15,7 +15,7 @@ ion-card {
         padding: 0px;
         font-size: 12px;
         ion-grid {
-            margin-bottom: 25px;
+            // margin-bottom: 25px;
             ion-row {
                 &.row-padding-start {
                     padding-left: 5px;   
@@ -36,13 +36,6 @@ ion-card {
                         &.outline {
                             border: 1px solid var(--ion-color-medium);
                         }
-                    }
-
-                    h3 {
-                        font-size: 16px;
-                        margin-top: 3px;
-                        margin-bottom: 0px;
-                        font-weight: 600;
                     }
                 }
             }

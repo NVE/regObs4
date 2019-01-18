@@ -43,8 +43,10 @@
           </ion-col>
         </ion-row>
       </ng-container> -->
-      <ion-row>
-        <app-summary [summaries]="summaries" [showHeaders]="false"></app-summary>
+      <ion-row class="row-padding-start">
+        <ion-col size="12">
+          <app-summary [summaries]="summaries" [showHeaders]="false"></app-summary>
+        </ion-col>
       </ion-row>
     </ion-grid>
     <ion-item color="light">
