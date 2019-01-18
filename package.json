@@ -111,6 +111,7 @@
     "ngx-pinch-zoom": "^1.2.0",
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.3.3",
+    "source-sans-pro": "^2.45.0",
     "stream": "0.0.2",
     "timers": "^0.1.1",
     "tunnel-agent": "^0.6.0",
