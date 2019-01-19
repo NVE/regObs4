@@ -17,13 +17,6 @@
         {{'MENU.MAP_SETTINGS' | translate}}
       </ion-label>
     </ion-list-header>
-    <!-- <ion-item>
-      <ion-icon slot="start" name="eye"></ion-icon>
-      <ion-label>
-        {{'MENU.SHOW_OBSERVATIONS' | translate}}
-      </ion-label>
-      <ion-toggle [(ngModel)]="userSettings.showObservations" (ionChange)="saveUserSettings()"></ion-toggle>
-    </ion-item> -->
     <ion-item>
       <ion-label position="stacked" color="medium" text-uppercase>{{ 'MENU.MAP' | translate }}</ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap" interface="action-sheet"

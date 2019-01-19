@@ -11,7 +11,7 @@
 <ion-content *ngIf="userSettings">
   <ion-list lines="full">
     <ion-item>
-      <ion-label position="stacked" color="medium">{{ "SETTINGS.APPMODE" | translate }}</ion-label>
+      <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.APPMODE" | translate }}</ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.appMode" interface="action-sheet"
         (ngModelChange)="updateSettings()">
         <ion-select-option value="PROD">regObs</ion-select-option>
@@ -20,7 +20,7 @@
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label position="stacked" color="medium">{{ "SETTINGS.LANGUAGE" | translate }}</ion-label>
+      <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.LANGUAGE" | translate }}</ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language" interface="action-sheet"
         (ngModelChange)="updateSettings()">
         <ion-select-option [value]="LangKey.no">{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN' | translate}}</ion-select-option>
@@ -43,7 +43,7 @@
   <ng-container *ngIf="showAdvanced">
     <ion-list lines="full">
       <ion-item class="no-border no-min-height">
-        <ion-label position="stacked" color="medium">{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
       </ion-item>
       <ion-item>
         <ion-label text-wrap>
@@ -54,7 +54,8 @@
         </ion-label>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked" color="medium">{{'SETTINGS.NUMBER_OF_TILES_IN_CACHE' | translate}}: {{
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.NUMBER_OF_TILES_IN_CACHE' |
+          translate}}: {{
           userSettings.tilesCacheSize }}</ion-label>
         <ion-range min="0" max="20000" step="5000" color="secondary" [(ngModel)]="userSettings.tilesCacheSize"
           (ngModelChange)="updateSettings()">
@@ -63,12 +64,12 @@
     </ion-list>
     <ion-list lines="full">
       <ion-item>
-        <ion-label position="stacked" color="medium">{{'SETTINGS.TILES_CACHE_SIZE' | translate}}</ion-label>
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.TILES_CACHE_SIZE' | translate}}</ion-label>
         <ion-input *ngIf="numberOfCacheTiles !== undefined" type="text" readonly="true" [value]="numberOfCacheTiles"></ion-input>
         <ion-spinner name="dots" *ngIf="numberOfCacheTiles === undefined"></ion-spinner>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked" color="medium">{{'SETTINGS.SIZE_OF_TILES_CACHE' | translate}}</ion-label>
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.SIZE_OF_TILES_CACHE' | translate}}</ion-label>
         <ion-input *ngIf="cacheTilesSize !== undefined" type="text" readonly="true" [value]="cacheTilesSize"></ion-input>
         <ion-spinner name="dots" *ngIf="cacheTilesSize === undefined"></ion-spinner>
       </ion-item>
