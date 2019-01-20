@@ -144,6 +144,7 @@
       "URL": "Url"
     },
     "BACK_TO_OBSERVATION": "Tilbake til min observasjon",
+    "CONFIRM_RESET": "Er du sikker på du vil nullstille alle felt?",
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",

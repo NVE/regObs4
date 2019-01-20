@@ -8,5 +8,5 @@ ion-grid {
 }
 
 .reset-button {
-    margin-bottom: var(--ion-safe-area-bottom, 5px);
+    margin-bottom: calc(var(--ion-safe-area-bottom, 0px) + 10px);
 }

@@ -6,10 +6,9 @@
       </ion-button>
     </ion-col>
   </ion-row>
-  <ion-row no-padding>
-    <ion-col no-padding text-center>
-      <ion-button [disabled]="isEmptyRegistrationEmpty" class="reset-button" (click)="doReset()" color="dark" size="small"
-        fill="clear">
+  <ion-row class="reset-button-row" *ngIf="!isEmptyRegistrationEmpty">
+    <ion-col text-center>
+      <ion-button class="reset-button" (click)="doReset()" color="dark" size="small" fill="clear">
         <ion-icon slot="start" name="undo"></ion-icon>
         {{"REGISTRATION.RESET" | translate}}
       </ion-button>

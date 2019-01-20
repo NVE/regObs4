@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { SummaryItemService } from '../../services/summary-item.service';
 import { IRegistration } from '../../models/registration.model';
-import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { ISummaryItem } from '../summary-item/summary-item.model';
 
 @Component({
   selector: 'app-navigation-buttons',
@@ -12,10 +12,8 @@ import { Router } from '@angular/router';
 export class NavigationButtonsComponent implements OnInit {
 
   @Input() registration: IRegistration;
-  nextUrl: string;
-  nextText: string;
-  previousUrl: string;
-  previousText: string;
+  next: ISummaryItem;
+  previous: ISummaryItem;
 
   constructor(
     private summaryItemService: SummaryItemService,
@@ -23,22 +21,22 @@ export class NavigationButtonsComponent implements OnInit {
 
   async ngOnInit() {
     const currentUrl = this.router.url;
-    const summaryItems = await this.summaryItemService.getSummaryItems(this.registration);
-    const currentItem = summaryItems.find((x) => x.href === currentUrl);
+    const prevAndNext = await this.summaryItemService.getPreviousAndNext(this.registration, currentUrl);
     this.ngZone.run(() => {
-      if (currentItem) {
-        const index = summaryItems.indexOf(currentItem);
-        if (index > 0) {
-          this.previousUrl = summaryItems[index - 1].href;
-          this.previousText = summaryItems[index - 1].title;
-        }
-        const nextIndex = index + 1;
-        if (nextIndex < summaryItems.length) {
-          this.nextUrl = summaryItems[nextIndex].href;
-          this.nextText = summaryItems[nextIndex].title;
-        }
+      if (prevAndNext.next) {
+        this.next = prevAndNext.next;
+      }
+      if (prevAndNext.previous) {
+        this.previous = prevAndNext.previous;
       }
     });
   }
 
+  goBack() {
+    this.summaryItemService.navigateTo(this.registration, this.previous, 'back');
+  }
+
+  goForward() {
+    this.summaryItemService.navigateTo(this.registration, this.next, 'forward');
+  }
 }

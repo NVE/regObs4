@@ -8,6 +8,8 @@ import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { ISummaryItem } from '../components/summary-item/summary-item.model';
 import { UserGroupService } from '../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto } from '../../regobs-api/models';
+import { NavController } from '@ionic/angular';
+import { RouterDirection } from '@ionic/core';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +20,7 @@ export class SummaryItemService {
     private registrationService: RegistrationService,
     private dateHelperService: DateHelperService,
     private userGroupService: UserGroupService,
+    private navController: NavController,
   ) { }
 
   async getSummaryItems(registration: IRegistration, userGroups?: ObserverGroupDto[]) {
@@ -65,6 +68,38 @@ export class SummaryItemService {
       ));
 
     return summaryItems;
+  }
+
+  async getPreviousAndNext(registration: IRegistration, url: string):
+    Promise<{ previous: ISummaryItem, next: ISummaryItem }> {
+    const summaryItems = await this.getSummaryItems(registration);
+    const currentItem = summaryItems.find((x) => url.indexOf(x.href) >= 0);
+    const result = { previous: undefined, next: undefined };
+    if (currentItem) {
+      const index = summaryItems.indexOf(currentItem);
+      if (index > 0) {
+        result.previous = summaryItems[index - 1];
+      }
+      const nextIndex = index + 1;
+      if (nextIndex < summaryItems.length) {
+        result.next = summaryItems[nextIndex];
+      }
+    }
+    return result;
+  }
+
+  navigateTo(registration: IRegistration, summaryItem: ISummaryItem, direction: RouterDirection = 'forward') {
+    const url = `${summaryItem.href}/${registration.id}`;
+    return direction === 'forward' ? this.navController.navigateForward(url) : this.navController.navigateBack(url);
+  }
+
+  async navigateForward(registration: IRegistration, url: string) {
+    const prevAndNext = await this.getPreviousAndNext(registration, url);
+    if (prevAndNext.next) {
+      return this.navigateTo(registration, prevAndNext.next, 'forward');
+    } else {
+      return this.navController.navigateRoot(`/registration/edit/${registration.id}`);
+    }
   }
 
   private getObservationGroupName(registration: IRegistration, userGroups: ObserverGroupDto[]) {

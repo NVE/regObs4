@@ -59,7 +59,7 @@ export abstract class BasePage implements OnInit, OnDestroy {
     async canLeave() {
         const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
         if (!this.isEmpty() && !valid) {
-            return this.basePageService.createOnLeaveAlert(this.registration, this.registrationTid,
+            return this.basePageService.confirmLeave(this.registration, this.registrationTid,
                 () => this.onReset ? this.onReset() : null);
         }
         return true;
@@ -77,7 +77,21 @@ export abstract class BasePage implements OnInit, OnDestroy {
     }
 
     reset() {
-        return this.basePageService.reset(this.registration, this.registrationTid, () => this.onReset ? this.onReset() : null);
+        return this.basePageService.confirmReset(this.registration, this.registrationTid, () => this.onReset ? this.onReset() : null);
     }
+
+    getResolvedUrl(): string {
+        return '/' + this.activatedRoute.snapshot.pathFromRoot
+            .map(v => v.url.map(segment => segment.toString()).join('/'))
+            .filter((path) => !!path)
+            .join('/');
+    }
+
+    // getConfiguredUrl(): string {
+    //     return '/' + this.activatedRoute.snapshot.pathFromRoot
+    //         .filter(v => v.routeConfig)
+    //         .map(v => v.routeConfig.path)
+    //         .join('/');
+    // }
 
 }

@@ -1,17 +1,15 @@
 <ion-grid>
   <ion-row>
-    <ion-col>
-      <ion-button shape="round" *ngIf="previousUrl" [routerLink]="previousUrl" routerDirection="backward" color="primary"
-        fill="outline" expand="block">
+    <ion-col size="6">
+      <ion-button shape="round" *ngIf="previous" (click)="goBack()" color="primary" fill="outline" expand="block">
         <ion-icon slot="start" name="arrow-round-back"></ion-icon>
-        {{ previousText | translate }}
+        {{ previous.title | translate }}
       </ion-button>
     </ion-col>
-    <ion-col>
-      <ion-button shape="round" *ngIf="nextUrl" [routerLink]="nextUrl" color="primary" routerDirection="forward" fill="solid"
-        expand="block">
+    <ion-col size="6">
+      <ion-button shape="round" *ngIf="next" (click)="goForward()" color="primary" fill="solid" expand="block">
         <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
-        {{ nextText | translate }}
+        {{ next.title | translate }}
       </ion-button>
     </ion-col>
   </ion-row>

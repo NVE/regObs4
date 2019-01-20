@@ -33,11 +33,22 @@ export class BasePageService {
         private translateService: TranslateService) {
     }
 
-    async createOnLeaveAlert(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
-        const translations = await this.translateService
-            .get(['DIALOGS.CANCEL', 'DIALOGS.YES', 'REGISTRATION.REQUIRED_FIELDS_MISSING']).toPromise();
+    async confirmLeave(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+        const leaveText = await this.translateService
+            .get('REGISTRATION.REQUIRED_FIELDS_MISSING').toPromise();
+        return this.createResetDialog(leaveText, registration, registrationTid, onReset);
+    }
+
+    async confirmReset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+        const leaveText = await this.translateService
+            .get('REGISTRATION.CONFIRM_RESET').toPromise();
+        return this.createResetDialog(leaveText, registration, registrationTid, onReset);
+    }
+
+    private async createResetDialog(message: string, registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+        const translations = await this.translateService.get(['DIALOGS.CANCEL', 'DIALOGS.YES']).toPromise();
         const alert = await this.alertController.create({
-            message: translations['REGISTRATION.REQUIRED_FIELDS_MISSING'],
+            message,
             buttons: [
                 {
                     text: translations['DIALOGS.CANCEL'],
@@ -57,7 +68,7 @@ export class BasePageService {
         return reset;
     }
 
-    async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+    private async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
         this.ngZone.run(() => {
             if (registrationTid) {
                 registration.request[this.registrationService.getPropertyName(registrationTid)]

@@ -3,7 +3,8 @@ import * as moment from 'moment';
 import { NavController } from '@ionic/angular';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Route } from '@angular/router';
+import { SummaryItemService } from '../../services/summary-item.service';
 
 @Component({
   selector: 'app-set-time',
@@ -16,7 +17,7 @@ export class SetTimePage extends BasePage {
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
-    private navController: NavController,
+    private summaryItemService: SummaryItemService,
   ) {
     super(null, basePageService, activatedRoute);
   }
@@ -34,6 +35,7 @@ export class SetTimePage extends BasePage {
   }
 
   async confirm() {
-    this.navController.navigateRoot('registration/edit/' + this.registration.id);
+    // this.navController.navigateRoot('registration/edit/' + this.registration.id);
+    this.summaryItemService.navigateForward(this.registration, this.getResolvedUrl());
   }
 }
