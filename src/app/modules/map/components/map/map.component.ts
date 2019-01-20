@@ -85,7 +85,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     } finally {
       this.loaded = true;
     }
-
   }
 
   ngOnDestroy(): void {
