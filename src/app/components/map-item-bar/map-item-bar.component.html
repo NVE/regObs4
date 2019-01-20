@@ -29,6 +29,6 @@
   </ion-fab>
   <!-- <img *ngIf="imageUrl" [src]="imageUrl" onerror="this.style.display='none'" /> -->
   <div class="img-wrapper" *ngIf="imageUrls.length > 0" [ngClass]="{'full': imageUrls.length > 1 }">
-    <app-img-swiper [imgUrl]="imageUrls"></app-img-swiper>
+    <app-img-swiper [showLabels]="false" [imgUrl]="imageUrls"></app-img-swiper>
   </div>
 </div>

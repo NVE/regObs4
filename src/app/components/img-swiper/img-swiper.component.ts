@@ -20,6 +20,7 @@ import { IonSlides } from '@ionic/angular';
 export class ImgSwiperComponent implements OnInit, OnChanges {
 
   @Input() imgUrl: string[] = [];
+  @Input() showLabels = true;
   @Input() imgComments: string[] = [];
   @Input() imgHeaders: string[] = [];
   @Output() imgClick: EventEmitter<{ index: number, imgUrl: string }> = new EventEmitter();
