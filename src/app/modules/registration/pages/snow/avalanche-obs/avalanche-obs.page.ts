@@ -68,6 +68,7 @@ export class AvalancheObsPage extends BasePage {
 
   async onReset() {
     this.hasSaved = false;
+    // Also reset Incident when Avalanche obs is reset.
     await this.basePageService.reset(this.registration, RegistrationTid.Incident);
   }
 

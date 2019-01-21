@@ -68,7 +68,7 @@ export class BasePageService {
         return reset;
     }
 
-    private async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+    async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
         this.ngZone.run(() => {
             if (registrationTid) {
                 registration.request[this.registrationService.getPropertyName(registrationTid)]
