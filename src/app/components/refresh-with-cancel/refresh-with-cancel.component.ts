@@ -34,17 +34,26 @@ export class RefreshWithCancelComponent implements OnInit {
   async doRefresh() {
     if (this.refreshFunc) {
       const cancelPromise = this.getCancelPromise();
+      cancelPromise.then(() => this.complete());
+      // It takes to long to wait for function to complete (even when cancelled), so hide refresher on cancel.
       this.ngZone.run(() => {
         this.showCancel = true;
       });
       try {
         await this.refreshFunc(cancelPromise);
       } finally {
-        this.ngZone.run(() => {
-          this.showCancel = false;
-          this.refresher.complete();
-        });
+        this.complete();
       }
     }
   }
+
+  private complete() {
+    this.ngZone.run(() => {
+      this.refresher.complete();
+    });
+    this.ngZone.run(() => {
+      this.showCancel = false;
+    });
+  }
+
 }
