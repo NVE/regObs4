@@ -44,6 +44,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private followMode = true;
   private isDoingMoveAction = false;
+  private firstClickOnZoomToUser = true;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -125,7 +126,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.userMarker) {
           const currentPosition = this.userMarker.getPosition();
           const latLng = L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
-          this.flyToMaxZoom(latLng);
+          if (this.followMode || this.firstClickOnZoomToUser) {
+            // Follow mode is allready true or first click, zoom in
+            this.flyToMaxZoom(latLng);
+          } else {
+            // Use existing zoom
+            this.flyTo(latLng, this.map.getZoom(), true);
+          }
+          this.firstClickOnZoomToUser = false;
         }
       });
     }));
@@ -134,6 +142,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.startGeoLocationWatch();
       this.zone.runOutsideAngular(() => {
         this.map.on('movestart', () => this.disableFollowMode());
+        this.map.on('zoomstart', () => this.disableFollowMode());
       });
     }
 
