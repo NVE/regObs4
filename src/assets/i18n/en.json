@@ -154,14 +154,14 @@
       "GENERAL_ON_MOUNTAIN": "Generally in the mountains",
       "IN_THE_VALLEY_OR_FJORD": "In the valley / fjord",
       "MANY_WATER_NEARBY": "Many watered nearby",
-      "NEW_DANGER_OBS": "Add danger observation",
+      "NEW_DANGER_OBS": "Add danger sign",
       "NO_DAMAGE_SIGN": "No damage signs",
       "ON_THIS_MOUNTAIN_SIDE": "In this mountain side",
       "ON_THIS_PLACE": "At this place",
       "ON_THIS_SIDE_OF_THE_WATER": "On this side of the water",
       "ON_THIS_WATER": "On this water",
       "RIGHT_HERE": "Right here",
-      "TITLE": "Danger observation"
+      "TITLE": "Danger sign"
     },
     "DELETE": "Delete observation",
     "DELETE_CONFIRM": "Are you sure?",
@@ -311,7 +311,7 @@
         "TERRAIN_START_ZONE": "Tarrain type in the loose snow area",
         "TIME": "Avalanche time (required)",
         "TITLE": "Avalanche observation",
-        "TRAJECTORY_NAME": "Trajectory",
+        "TRAJECTORY_NAME": "Name of avalanche path",
         "VALID_EXPOSITION": "Exposition"
       },
       "AVALANCHE_PROBLEM": {
@@ -319,7 +319,7 @@
         "ALL": "All",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Size of expected avalanche",
         "AVALANCHE_PROBABILITY": "The possibility of avalanches",
-        "AVALANCHE_PROPAGATION_HEADER": "Avalanche propagation",
+        "AVALANCHE_PROPAGATION_HEADER": "Avalanche distribution",
         "AVALANCHE_TRIGGER_PROBABILITY": "Load to trigger avalanche",
         "AVALANCHE_TYPE": "Avalanche type",
         "AVAL_PROBABILITY": "Probability for avalanche",
@@ -329,7 +329,7 @@
         "EXPOSED_HEIGHT_COMBO": "Exposed height",
         "MIDDLE": "Middle",
         "NO_WEAK_LAYERS": "There are no weak layers",
-        "PROPAGATION": "Propagation",
+        "PROPAGATION": "Distribution",
         "TITLE": "Avalanche problem",
         "TOP": "Top",
         "UNKNOWN_TYPE": "Unknown avalanche cause",
@@ -338,13 +338,13 @@
         "WEAK_LAYER_DEPTH": "Weak layer depth"
       },
       "COMPRESSION_TEST": {
-        "ADD_NEW": "Add new compression test",
+        "ADD_NEW": "Add new stability test",
         "DISTANCE_FROM_TOP": "Distance from top (cm)",
         "FRACTURE_TYPE": "Fracture type",
         "STABILITY_EVAL": "Stability",
         "TAPS_FRACTURE": "Number of hits",
         "TEST_TYPE": "Test type",
-        "TITLE": "Compression test"
+        "TITLE": "Stability test"
       },
       "SNOW_PROFILE": {
         "SNOW_PROFILE_HELP_TEXT": "Unfortunately, we do not support the registration of a snow profile. A profile exported from AvyLab or Ullr Labs Avalanche is uploaded as an image.",
@@ -361,7 +361,7 @@
         "SNOW_DRIFT": "Snow drift",
         "SNOW_LINE": "Snowline (masl)",
         "SNOW_SURFACE": "Snow surface hardness",
-        "SURFACE_WATER_CONTENT_REG": "Substrate Moisture",
+        "SURFACE_WATER_CONTENT_REG": "Surface moisture",
         "TITLE": "Snow surface"
       },
       "WEATHER": {
