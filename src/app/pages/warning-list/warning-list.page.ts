@@ -37,26 +37,27 @@ export class WarningListPage implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
-    this.subscription = combineLatest(this.segmentPageObservable, this.userSettingService.userSettingObservable$).pipe(
-      switchMap(([segment, userSetting]) => this.getWarningGroupObservable(segment, userSetting)),
-    ).subscribe((warningGroups) => {
-      this.ngZone.run(() => {
-        this.warningGroups = warningGroups;
+    this.subscription = combineLatest(this.segmentPageObservable, this.userSettingService.currentGeoHazardObservable$)
+      .pipe(
+        switchMap(([segment, currentGeoHazard]) => this.getWarningGroupObservable(segment, currentGeoHazard)),
+      ).subscribe((warningGroups) => {
+        this.ngZone.run(() => {
+          this.warningGroups = warningGroups;
+        });
       });
-    });
   }
 
   refresh(cancelPromise: Promise<any>) {
     return this.warningService.updateWarningsForCurrentGeoHazard(cancelPromise);
   }
 
-  private getWarningGroupObservable(segment: SelectedTab, userSetting: UserSetting)
+  private getWarningGroupObservable(segment: SelectedTab, currentGeoHazard: GeoHazard[])
     : Observable<IVirtualScrollItem<WarningGroup>[]> {
     switch (segment) {
       case 'inMapView':
         return this.getWarningsInMapView();
       case 'all':
-        return this.getAllWarnings(userSetting);
+        return this.getAllWarnings(currentGeoHazard);
       case 'favourites':
         return this.getFavouritesObservable();
     }
@@ -94,8 +95,8 @@ export class WarningListPage implements OnInit, OnDestroy {
       .pipe(map((val) => this.mapToVirtualScrollItem(val.buffer.filter((wg) => wg.hasAnyWarnings()), 'WARNING_LIST.OTHER_RELEVANT')));
   }
 
-  private getAllWarnings(userSetting: UserSetting): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    if (userSetting.currentGeoHazard[0] === GeoHazard.Snow) {
+  private getAllWarnings(currentGeoHazard: GeoHazard[]): Observable<IVirtualScrollItem<WarningGroup>[]> {
+    if (currentGeoHazard[0] === GeoHazard.Snow) {
       return this.getSnowRegionWarnings();
     } else {
       return this.warningService.warningsForCurrentGeoHazardObservable$

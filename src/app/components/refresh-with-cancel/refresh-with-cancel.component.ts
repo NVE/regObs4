@@ -11,16 +11,18 @@ import { IonRefresher } from '@ionic/angular';
 export class RefreshWithCancelComponent implements OnInit {
 
   showCancel = false;
-  private cancelSubject: Subject<boolean>;
 
   // @Output() refresh: EventEmitter<Promise<boolean>> = new EventEmitter();
   @ViewChild(IonRefresher) refresher: IonRefresher;
   @Input() refreshFunc: (cancelPromise: Promise<boolean>) => Promise<any>;
+  @Input() cancelSubject: Subject<any>;
 
   constructor(private ngZone: NgZone) { }
 
   ngOnInit() {
-    this.cancelSubject = new Subject<boolean>();
+    if (!this.cancelSubject) {
+      this.cancelSubject = new Subject<boolean>();
+    }
   }
 
   cancel() {

@@ -23,6 +23,7 @@ import { RegistrationModule } from './modules/registration/registration.module';
 import { RegobsApiModule } from './modules/regobs-api/regobs-api.module';
 import { LegalTermsModalPageModule } from './pages/modal-pages/legal-terms-modal/legal-terms-modal.module';
 import { MarkdownModule } from 'ngx-markdown';
+import { UpdateObservationsComponent } from './components/side-menu/update-observations/update-observations.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -35,6 +36,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SupportTilesMenuComponent,
     UserLoginComponent,
     ObservationsDaysBackComponent,
+    UpdateObservationsComponent,
   ],
   imports: [
     BrowserModule,

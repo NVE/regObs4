@@ -45,6 +45,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private followMode = true;
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
+  private isActive = false;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -138,17 +139,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }));
 
-    if (this.showUserLocation) {
-      this.startGeoLocationWatch();
-      this.zone.runOutsideAngular(() => {
-        this.map.on('movestart', () => this.disableFollowMode());
-        this.map.on('zoomstart', () => this.disableFollowMode());
-      });
-    }
+    this.zone.runOutsideAngular(() => {
+      this.map.on('movestart', () => this.disableFollowMode());
+      this.map.on('zoomstart', () => this.disableFollowMode());
+    });
 
     this.subscriptions.push(this.platform.pause.subscribe(() => this.stopGeoLocationWatch()));
     this.subscriptions.push(this.platform.resume.subscribe(() => {
-      if (this.showUserLocation) {
+      if (this.isActive) {
         this.startGeoLocationWatch();
       }
     }));
@@ -161,18 +159,36 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.redrawMap();
     }));
 
+    this.startGeoLocationWatch();
+
+    this.map.on('resize', () => this.updateMapView());
+    this.isActive = true;
     this.redrawMap();
     this.mapReady.emit(this.map);
   }
 
+  activateUpdates() {
+    this.isActive = true;
+    this.startGeoLocationWatch();
+    this.redrawMap();
+  }
+
+  disableUpdates() {
+    this.isActive = false;
+    this.stopGeoLocationWatch();
+  }
+
   private disableFollowMode() {
-    if (!this.isDoingMoveAction && this.followMode) {
+    if (!this.isDoingMoveAction) {
+      this.loggingService.debug('Disable follow mode!', DEBUG_TAG);
       this.mapService.followMode = false;
+    } else {
+      this.loggingService.debug('Did not disable follow mode, because isDoingMoveAction', DEBUG_TAG);
     }
   }
 
   private updateMapView() {
-    if (this.map) {
+    if (this.map && this.isActive) {
       this.mapService.updateMapView({
         bounds: this.map.getBounds(),
         center: this.map.getCenter(),
@@ -271,20 +287,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.redrawMap();
   }
 
-  startGeoLocationWatch() {
-    this.loggingService.debug('Start watching location changes', DEBUG_TAG);
-    if (this.geoLoactionSubscription === undefined || this.geoLoactionSubscription.closed) {
-      this.geoLoactionSubscription = this.geolocation.watchPosition(settings.gps.currentPositionOptions)
-        .subscribe(
-          (data) => this.onPositionUpdate(data),
-          (error) => this.onPositionError(error)
-        );
-    } else {
-      this.loggingService.debug('Geolocation service allready running', DEBUG_TAG);
+  private startGeoLocationWatch() {
+    if (this.showUserLocation) {
+      this.loggingService.debug('Start watching location changes', DEBUG_TAG);
+      if (this.geoLoactionSubscription === undefined || this.geoLoactionSubscription.closed) {
+        this.geoLoactionSubscription = this.geolocation.watchPosition(settings.gps.currentPositionOptions)
+          .subscribe(
+            (data) => this.onPositionUpdate(data),
+            (error) => this.onPositionError(error)
+          );
+      } else {
+        this.loggingService.debug('Geolocation service allready running', DEBUG_TAG);
+      }
     }
   }
 
-  stopGeoLocationWatch() {
+  private stopGeoLocationWatch() {
     this.loggingService.debug('Stop watching location changes', DEBUG_TAG);
     if (this.geoLoactionSubscription !== undefined && !this.geoLoactionSubscription.closed) {
       this.geoLoactionSubscription.unsubscribe();
@@ -322,9 +340,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     // }
     // Note: Poor performance on flyTo effect, so using setView without animate instead.
     this.map.setView(latLng, zoom, { animate: false });
-    this.map.once('moveend', () => {
-      this.isDoingMoveAction = false;
-    });
+    this.isDoingMoveAction = false;
   }
 
   private onPositionError(error: any) {

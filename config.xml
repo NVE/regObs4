@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="452" id="no.nve.regobs" ios-CFBundleVersion="452" osx-CFBundleVersion="452" version="4.0.0-rc.2" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="469" id="no.nve.regobs" ios-CFBundleVersion="469" osx-CFBundleVersion="469" version="4.0.0-rc.2" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>regObs</name>
     <description>Report incidents in nature</description>
     <author email="regobs@nve.no" href="http://nve.no/">NVE</author>
@@ -149,9 +149,9 @@
     <plugin name="cordova-plugin-x-socialsharing" spec="5.4.3">
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="24.1.1+" />
     </plugin>
+    <plugin name="cordova-plugin-advanced-http" spec="2.0.4" />
+    <plugin name="cordova-plugin-ionic-webview" spec="3.1.1" />
     <engine name="browser" spec="5.0.4" />
     <engine name="android" spec="7.1.4" />
     <engine name="ios" spec="4.5.5" />
-    <plugin name="cordova-plugin-advanced-http" spec="2.0.4" />
-    <plugin name="cordova-plugin-ionic-webview" spec="3.1.1" />
 </widget>

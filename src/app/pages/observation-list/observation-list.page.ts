@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import * as L from 'leaflet';
-import { Subscription } from 'rxjs';
-import { map, switchMap, distinct, tap } from 'rxjs/operators';
+import { Subscription, Subject } from 'rxjs';
+import { map, switchMap, distinct, tap, distinctUntilChanged } from 'rxjs/operators';
 import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { IonVirtualScroll, IonRefresher } from '@ionic/angular';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
+import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 // import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
 
 const DEBUG_TAG = 'ObservationListPage';
@@ -23,6 +24,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
     private subscription: Subscription;
 
     refreshFunc: Function;
+    cancelSubject: Subject<any>;
 
     @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
     @ViewChild(IonRefresher) refresher: IonRefresher;
@@ -31,13 +33,15 @@ export class ObservationListPage implements OnInit, OnDestroy {
         return this.mapService.mapView$.pipe(switchMap((mapView: IMapView) =>
             this.observationService.observations$.pipe(map((observations) =>
                 this.filterObservationsWithinViewBounds(observations, mapView)),
-                distinct((val) => this.getUniqueArray(val))
+                distinctUntilChanged<RegistrationViewModel[], string>((a, b) => a.localeCompare(b) === 0,
+                    (keySelector) => this.getUniqueArray(keySelector))
             )
         ));
     }
 
     constructor(
         private observationService: ObservationService,
+        private dataMarshallService: DataMarshallService,
         // private obsCardHeightService: ObsCardHeightService,
         private ngZone: NgZone,
         private loggingService: LoggingService,
@@ -46,6 +50,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.refreshFunc = this.refresh.bind(this);
+        this.cancelSubject = this.dataMarshallService.observableCancelSubject;
     }
 
     refresh(cancelPromise: Promise<any>) {
@@ -81,6 +86,11 @@ export class ObservationListPage implements OnInit, OnDestroy {
                     }, 500);
                 }, 200);
             });
+        } else if (!this.loaded) {
+            this.ngZone.run(() => {
+                this.observations = observations;
+                this.loaded = true;
+            });
         }
     }
 
@@ -88,7 +98,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
         this.subscription = this.observations$.subscribe((val) => this.reloadVirtualList(val));
     }
 
-    getUniqueArray(arr: RegistrationViewModel[]) {
+    private getUniqueArray(arr: RegistrationViewModel[]) {
         if (!arr) {
             return '';
         }

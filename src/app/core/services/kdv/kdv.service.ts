@@ -6,12 +6,15 @@ import { LangKey } from '../../models/langKey';
 import { AppMode } from '../../models/app-mode.enum';
 import { NanoSql } from '../../../../nanosql';
 import { KdvElementsResponseDto } from '../../../modules/regobs-api/models';
-import { from } from 'rxjs';
+import { from, combineLatest } from 'rxjs';
 import { UserSetting } from '../../models/user-settings.model';
 import { switchMap } from 'rxjs/operators';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import * as moment from 'moment';
 import { ObservableHelper } from '../../helpers/observable-helper';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'KdvService';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +25,7 @@ export class KdvService {
     private kdvApiService: RegobsApi.KdvElementsService,
     private userSettingService: UserSettingService,
     private dataLoadService: DataLoadService,
+    private loggingService: LoggingService,
   ) { }
 
   async updateKdvElements(cancel?: Promise<void>) {
@@ -35,10 +39,14 @@ export class KdvService {
 
   private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, language: LangKey, cancel?: Promise<void>) {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(appMode, language));
-    const lastUpdateLimit = moment().subtract(settings.kdvElements.daysBeforeUpdate, 'day');
-    if (!dataLoad.lastUpdated
-      || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
-      await this.updateKdvElementsForLanguage(appMode, language, cancel);
+    const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
+    if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
+      this.loggingService.debug(`Kdv elements is allready being updated.`, DEBUG_TAG);
+    } else {
+      const lastUpdateLimit = moment().subtract(settings.kdvElements.daysBeforeUpdate, 'day');
+      if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
+        await this.updateKdvElementsForLanguage(appMode, language, cancel);
+      }
     }
   }
 
@@ -82,8 +90,8 @@ export class KdvService {
     if (userSetting) {
       return from(this.getKdvRepositories(userSetting.language, userSetting.appMode, key));
     } else {
-      return this.userSettingService.userSettingObservable$.pipe(
-        switchMap((us) => from(this.getKdvRepositories(us.language, us.appMode, key))));
+      return combineLatest(this.userSettingService.appMode$, this.userSettingService.language$).pipe(
+        switchMap(([appMode, language]) => from(this.getKdvRepositories(language, appMode, key))));
     }
   }
 

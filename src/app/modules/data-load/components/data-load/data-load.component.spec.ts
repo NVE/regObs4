@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DataLoadComponent } from './data-load.component';
 
 describe('DataLoadComponent', () => {
@@ -8,9 +7,9 @@ describe('DataLoadComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataLoadComponent ]
+      declarations: [DataLoadComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

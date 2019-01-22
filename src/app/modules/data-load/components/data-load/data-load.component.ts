@@ -1,37 +1,36 @@
-import { Component, OnInit, Input, NgZone, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { IDataLoad } from '../../models/data-load.interface';
-import { Observable, combineLatest, Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { DataLoadService } from '../../services/data-load.service';
-import { map, tap, debounceTime } from 'rxjs/operators';
-
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-data-load',
   templateUrl: './data-load.component.html',
   styleUrls: ['./data-load.component.scss'],
 })
-export class DataLoadComponent implements OnInit, OnDestroy {
-  dataLoad: IDataLoad[];
+export class DataLoadComponent implements OnInit, OnDestroy, OnChanges {
+  dataLoad: IDataLoad[] = [];
   subscription: Subscription;
   get isLoading() {
-    return this.dataLoad && this.dataLoad.length > 0;
+    return this.dataLoad.length > 0;
   }
-  firstRun: boolean;
-
-  @Input() ids: string[];
-  @Input() simple: boolean;
-  constructor(private dataLoadService: DataLoadService, private zone: NgZone, private cdr: ChangeDetectorRef) {
-    this.firstRun = true;
+  @Input()
+  ids: string[];
+  @Input()
+  simple: boolean;
+  constructor(private dataLoadService: DataLoadService, private ngZone: NgZone) {
   }
-
   ngOnInit() {
-    if (this.ids && this.ids.length > 0) {
-      this.subscription = combineLatest(this.ids.map((id) => this.dataLoadService.getStateAsObservable(id)))
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const ids = changes.ids.currentValue as string[];
+    if (ids && ids.length > 0) {
+      this.subscription = combineLatest(ids.map((id) => this.dataLoadService.getStateAsObservable(id)))
         .pipe(map((val) => val.filter((item) => item.isLoading))).subscribe((val) => {
-          if (this.dataLoad) {
-            this.firstRun = false;
-          }
-          this.dataLoad = val;
-          this.cdr.detectChanges();
+          this.ngZone.run(() => {
+            this.dataLoad = val;
+          });
         });
     }
   }
@@ -41,5 +40,4 @@ export class DataLoadComponent implements OnInit, OnDestroy {
       this.subscription.unsubscribe();
     }
   }
-
 }

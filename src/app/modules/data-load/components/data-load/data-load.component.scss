@@ -1,3 +1,13 @@
+@keyframes fadeOutFromCurrent {
+    0% {
+        opacity: var(--current-opacity, 0);
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
 .data-load {
     position: absolute;
     color: #fff;
@@ -5,13 +15,26 @@
     left: 50%;
     transform: translateX(-50px);
     width: 100px;
-    z-index: 9999;
-    background-color: var(--backdrop-background);
+    z-index: calc(var(--z-index-over-map) - 1);
+    background-color: var(--map-faded-overlay-background);
     border-radius: 6px;
-    opacity: 0;
+    opacity: var(--current-opacity, 0);
+
+    &.fadeIn {
+        --current-opacity: 1;
+    }
+
+    &.fadeOut {
+        --current-opacity: 0;
+        animation-name: fadeOutFromCurrent;
+    }
 
     ion-label {
         font-size: 12px;
         margin-top: 0px;
+    }
+
+    .spinner-col {
+        height: 20px;
     }
 }

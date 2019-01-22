@@ -24,6 +24,7 @@ import { UserSetting } from '../../../core/models/user-settings.model';
 import { GuidHelper } from '../../../core/helpers/guid.helper';
 import { LoginModalPage } from '../../login/pages/modal-pages/login-modal/login-modal.page';
 import { LoggingService } from '../../shared/services/logging/logging.service';
+import { ObservationService } from '../../../core/services/observation/observation.service';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -52,10 +53,11 @@ export class RegistrationService {
     private modalController: ModalController,
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
+    private observationService: ObservationService,
   ) {
 
-    this._registrationsObservable = this.userSettingService.userSettingObservable$
-      .pipe(switchMap((userSettings) => this.getRegistrationsAsObservable(userSettings.appMode)));
+    this._registrationsObservable = this.userSettingService.appMode$
+      .pipe(switchMap((appMode) => this.getRegistrationsAsObservable(appMode)));
     this._draftsObservable = this.registrations$.pipe(map((val) => val.filter((item) => item.status === RegistrationStatus.Draft)));
   }
 
@@ -229,7 +231,7 @@ export class RegistrationService {
         if (httpError.status === 409) { // Duplicate, remove
           await this.deleteRegistrationById(userSetting.appMode, registration.id);
           // Updating latest user registration since we don't have an ID for the duplicate
-          await this.updateLatestUserRegistrations();
+          await this.updateLatestUserRegistrations(cancel);
         } else if (httpError.status === 400) {
           // Model error, something is not correct from app. Please review ModelState error!
           this.loggingService.error(ex, 'Got 400 BadRequest when sending registration', DEBUG_TAG, registration);
@@ -307,18 +309,11 @@ export class RegistrationService {
     ));
   }
 
-  private async updateLatestUserRegistrations() {
+  private async updateLatestUserRegistrations(cancel?: Promise<any>) {
     const user = await this.loginService.getLoggedInUser();
     if (user.isLoggedIn) {
       const userSettings = await this.userSettingService.getUserSettings();
-      const result = await this.getLatestRegistrationsForUserFromApi(userSettings.appMode, user.user.Guid).toPromise();
-      await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode)
-        .loadJS(NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSettings.appMode), result, false);
+      return this.observationService.updateObservationsForCurrentUser(userSettings.appMode, user.user, userSettings.language, 0, cancel);
     }
-  }
-
-  private getLatestRegistrationsForUserFromApi(appMode: AppMode, userGuid: string) {
-    this.searchApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
-    return this.searchApiService.SearchAll({ ObserverGuid: userGuid, NumberOfRecords: 10 });
   }
 }

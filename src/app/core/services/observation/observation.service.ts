@@ -2,15 +2,13 @@ import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
 import { nSQL } from 'nano-sql';
 import { RowCount } from '../../models/row-count.model';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import * as moment from 'moment';
 import 'moment-timezone';
-import * as Rx from 'rxjs';
 import { NanoSql } from '../../../../nanosql';
 import { debounceTime, map, distinctUntilChanged, switchMap, shareReplay, tap } from 'rxjs/operators';
 import { LoginService } from '../../../modules/login/services/login.service';
-import { LoggedInUser } from '../../../modules/login/models/logged-in-user.model';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { AppMode } from '../../models/app-mode.enum';
@@ -28,9 +26,14 @@ const DEBUG_TAG = 'ObservationService';
 })
 export class ObservationService {
   private _observationsObservable: Observable<RegistrationViewModel[]>;
+  private _dataLoadObservable: Observable<string>;
 
   get observations$() {
     return this._observationsObservable;
+  }
+
+  get dataLoad$() {
+    return this._dataLoadObservable;
   }
 
   constructor(
@@ -41,23 +44,19 @@ export class ObservationService {
     private loggingService: LoggingService,
   ) {
     this._observationsObservable = this.getObservationsAsObservable();
+    this._dataLoadObservable = this.getDataLoadObservable();
   }
 
-  private exludeLoggedInUser(user: LoggedInUser, reg: RegistrationViewModel) {
-    return (user.isLoggedIn ? (reg.Observer.ObserverGUID !== user.user.Guid) : true);
-  }
-
-  async updateObservations(cancel?: Promise<void>) {
+  async updateObservations(cancel?: Promise<any>) {
     let cancelled = false;
     if (cancel) {
       cancel.then(() => {
         cancelled = true;
       });
     }
-    const user = await this.loginService.getLoggedInUser();
     const userSettings = await this.userSettingService.getUserSettings();
     if (!cancelled) {
-      return this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.currentGeoHazard, user, userSettings, cancel);
+      return this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.currentGeoHazard, userSettings, cancel);
     } else {
       return 0;
     }
@@ -67,43 +66,45 @@ export class ObservationService {
     return `${NanoSql.TABLES.OBSERVATION.name}_${geoHazards.join('-')}_${appMode}`;
   }
 
-  getAllDataLoadIds(appMode: AppMode) {
-    const geoHazards = Object.keys(GeoHazard)
-      .filter(key => !isNaN(Number(GeoHazard[key])))
-      .map((key) => GeoHazard[key]);
-    return geoHazards.map((val) => this.getDataLoadId(appMode, val));
+  private getDataLoadObservable() {
+    return combineLatest(this.userSettingService.appMode$, this.userSettingService.currentGeoHazardObservable$)
+      .pipe(map(([appMode, currentGeoHazard]) => this.getDataLoadId(appMode, currentGeoHazard)));
   }
 
   private async checkLastUpdatedAndUpdateDataIfNeeded(
     geoHazards: GeoHazard[],
-    user: LoggedInUser,
     userSetting: UserSetting,
     cancel?: Promise<void>) {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(userSetting.appMode, geoHazards));
-    const lastUpdateLimit = moment().subtract(15, 'minutes');
-    const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazards);
-    if (!dataLoad.lastUpdated
-      || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
-      || moment(dataLoad.itemsFromDate).isAfter(fromDate)) {
-      return this.updateObservationsForGeoHazard(geoHazards, user, userSetting, cancel);
-    } else {
-      this.loggingService.debug(`No need to update ${geoHazards.join(', ')}.
-      Last updated is: ${dataLoad.lastUpdated}`, DEBUG_TAG);
+    const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
+    if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
+      this.loggingService.debug(`Observations is already loading.`, DEBUG_TAG);
       return 0;
+    } else {
+      const lastUpdateLimit = moment().subtract(15, 'minutes');
+      const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazards);
+      if (!dataLoad.lastUpdated
+        || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
+        || moment(dataLoad.itemsFromDate).isAfter(fromDate)) {
+        return this.updateObservationsForGeoHazard(geoHazards, userSetting, cancel);
+      } else {
+        this.loggingService.debug(`No need to update ${geoHazards.join(', ')}.
+        Last updated is: ${dataLoad.lastUpdated}`, DEBUG_TAG);
+        return 0;
+      }
     }
   }
 
   getLastUpdatedForCurrentGeoHazardAsObservable() {
-    return this.userSettingService.userSettingObservable$.pipe(switchMap((userSettings) =>
-      Rx.combineLatest(this.dataLoadService.getStateAsObservable(
-        this.getDataLoadId(userSettings.appMode, userSettings.currentGeoHazard)))
-    ), map((val) => val[0] && val[0].lastUpdated ? moment(val[0].lastUpdated).toDate() : null));
+    return combineLatest(this.userSettingService.appMode$, this.userSettingService.currentGeoHazardObservable$)
+      .pipe(switchMap(([appMode, currentGeoHazard]) =>
+        this.dataLoadService.getStateAsObservable(this.getDataLoadId(appMode, currentGeoHazard))
+      ), map((val) => val && val.lastUpdated ? moment(val.lastUpdated).toDate() : null));
   }
 
-  async forceUpdateObservationsForCurrentGeoHazard(cancel?: Promise<void>) {
+  async forceUpdateObservationsForCurrentGeoHazard(cancel?: Promise<any>) {
     const userSettings = await this.userSettingService.getUserSettings();
-    const loggedInUser = await this.loginService.getLoggedInUser();
-    return this.updateObservationsForGeoHazard(userSettings.currentGeoHazard, loggedInUser, userSettings, cancel);
+    return this.updateObservationsForGeoHazard(userSettings.currentGeoHazard, userSettings, cancel);
   }
 
   private async getDaysBackToFetchAsDate(userSetting: UserSetting, geoHazards: GeoHazard[]) {
@@ -112,7 +113,7 @@ export class ObservationService {
     return fromDate.toDate();
   }
 
-  async updateObservationsForGeoHazard(geoHazards: GeoHazard[], user: LoggedInUser, userSetting: UserSetting, cancel?: Promise<void>) {
+  async updateObservationsForGeoHazard(geoHazards: GeoHazard[], userSetting: UserSetting, cancel?: Promise<any>) {
     this.loggingService.debug(`Updating observations for geoHazard: ${geoHazards.join(', ')}`, DEBUG_TAG);
     const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazards);
     await this.dataLoadService.startLoading(dataLoadId);
@@ -139,11 +140,11 @@ export class ObservationService {
       }
       if (!isCanceled) {
         this.loggingService.debug(`Deleted items no longer in updated result`, DEBUG_TAG);
-        await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, user, fromDate, searchResult);
+        await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, fromDate, searchResult);
       }
       if (!isCanceled) {
         this.loggingService.debug(`Deleted old observations`, DEBUG_TAG);
-        await this.deleteOldObservations(userSetting.appMode, geoHazards, user);
+        await this.deleteOldObservations(userSetting.appMode, geoHazards);
       }
       if (!isCanceled) {
         await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.length, fromDate, new Date());
@@ -154,7 +155,11 @@ export class ObservationService {
         return 0;
       }
     } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, `Loading error`);
+      if (isCanceled) {
+        this.loggingService.debug(err, DEBUG_TAG, `Operation cancelled`);
+      } else {
+        this.loggingService.error(err, DEBUG_TAG, `Loading error`);
+      }
       await this.dataLoadService.loadingError(dataLoadId, err.message);
       return 0;
     }
@@ -164,20 +169,28 @@ export class ObservationService {
     appMode: AppMode,
     user: ObserverResponseDto,
     langKey: LangKey,
-    page: number,
+    numberOfRecords: number = 10,
     cancel?: Promise<any>) {
-    const numberOfRecordsToFetch = 10;
     try {
       this.searchService.rootUrl = settings.services.regObs.apiUrl[appMode];
       const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchAll({
-        NumberOfRecords: numberOfRecordsToFetch,
+        NumberOfRecords: numberOfRecords,
         LangKey: langKey,
         ObserverGuid: user.Guid,
-        Offset: page * numberOfRecordsToFetch,
       }), cancel);
       if (searchResult.length > 0) {
         const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
-        await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).loadJS(instanceName, searchResult, false);
+        const instance = NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode);
+        await instance.loadJS(instanceName, searchResult, false);
+        const ids = searchResult.map((x) => x.RegID);
+        const lastId = ids[searchResult.length - 1];
+        // Delete records no longer in result (registration has been deleted)
+        await instance.query('delete')
+          .where((reg: RegistrationViewModel) => {
+            return reg.Observer.ObserverGUID === user.Guid &&
+              reg.RegID < lastId &&
+              !ids.find((item) => item === reg.RegID);
+          }).exec();
       }
       return searchResult;
     } catch (err) {
@@ -202,26 +215,23 @@ export class ObservationService {
   private deleteObservationNoLongerInResult(
     appMode: AppMode,
     geoHazards: GeoHazard[],
-    user: LoggedInUser,
     fromDate: Date,
     items: RegistrationViewModel[]) {
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('delete')
       .where((reg: RegistrationViewModel) => {
         return reg && geoHazards.indexOf(reg.GeoHazardTID) >= 0
           && moment(reg.DtObsTime).isSameOrAfter(fromDate)
-          && !items.find((item) => item.RegID === reg.RegID)
-          && this.exludeLoggedInUser(user, reg);
+          && !items.find((item) => item.RegID === reg.RegID);
       }).exec();
   }
 
-  private async deleteOldObservations(appMode: AppMode, geoHazards: GeoHazard[], user: LoggedInUser) {
+  private async deleteOldObservations(appMode: AppMode, geoHazards: GeoHazard[]) {
     const daysBack = await this.getMaxDaysBackForGeoHazard(geoHazards);
     const deleteOldRecordsFrom = moment().subtract(daysBack + 1, 'days');
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('delete')
       .where((reg: RegistrationViewModel) => {
         return reg && moment(reg.DtObsTime).isBefore(deleteOldRecordsFrom)
-          && geoHazards.indexOf(reg.GeoHazardTID) >= 0
-          && this.exludeLoggedInUser(user, reg);
+          && geoHazards.indexOf(reg.GeoHazardTID) >= 0;
       }).exec();
   }
 
@@ -231,25 +241,34 @@ export class ObservationService {
     return Math.max(...daysBackForCurrentGeoHazard);
   }
 
-  private getObservationsAsObservable(): Rx.Observable<RegistrationViewModel[]> {
-    return this.userSettingService.userSettingObservable$.pipe(switchMap((userSetting) =>
-      this.getObservationsByParametersAsObservable(
-        userSetting.appMode,
-        userSetting.language,
-        userSetting.currentGeoHazard,
-        this.getObservationDaysBackAsDate(userSetting),
-      )), shareReplay(1));
-  }
-
-  getUserObservationsAsObservable(): Rx.Observable<RegistrationViewModel[]> {
-    return Rx.combineLatest(this.userSettingService.userSettingObservable$, this.loginService.loggedInUser$)
-      .pipe(switchMap(([userSetting, loggedInUser]) =>
-        loggedInUser.isLoggedIn ? this.getObservationsByParametersAsObservable(
+  private getObservationsAsObservable(): Observable<RegistrationViewModel[]> {
+    return this.userSettingService.userSettingObservable$.pipe(
+      distinctUntilChanged<UserSetting, string>((x, y) => x.localeCompare(y) === 0,
+        (x) => this.getDistinctUserSettingsToChangeObservations(x)),
+      tap((val) => this.loggingService.debug('User settings changed to trigger new observations observable', DEBUG_TAG, val)),
+      switchMap((userSetting) =>
+        this.getObservationsByParametersAsObservable(
           userSetting.appMode,
           userSetting.language,
+          userSetting.currentGeoHazard,
+          this.getObservationDaysBackAsDate(userSetting),
+        )), shareReplay(1));
+  }
+
+  private getDistinctUserSettingsToChangeObservations(userSetting: UserSetting) {
+    const dateString = this.getObservationDaysBackAsDate(userSetting).toISOString();
+    return `${userSetting.appMode}#${userSetting.language}#${userSetting.currentGeoHazard.join(',')}#${dateString}`;
+  }
+
+  getUserObservationsAsObservable(): Observable<RegistrationViewModel[]> {
+    return combineLatest(this.userSettingService.appMode$, this.userSettingService.language$, this.loginService.loggedInUser$)
+      .pipe(switchMap(([appMode, language, loggedInUser]) =>
+        loggedInUser.isLoggedIn ? this.getObservationsByParametersAsObservable(
+          appMode,
+          language,
           null,
           null,
-          loggedInUser.user.Guid) : Rx.of([])
+          loggedInUser.user.Guid) : of([])
       ));
   }
 
@@ -265,7 +284,7 @@ export class ObservationService {
     langKey: LangKey,
     geoHazards?: GeoHazard[],
     fromDate?: Date,
-    observerGuid?: string): Rx.Observable<RegistrationViewModel[]> {
+    observerGuid?: string): Observable<RegistrationViewModel[]> {
     return nSQL().observable<RegistrationViewModel[]>(() => {
       return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select').where((reg: RegistrationViewModel) => {
         return !!reg && (geoHazards ? geoHazards.indexOf(reg.GeoHazardTID) >= 0 : true)
@@ -275,7 +294,7 @@ export class ObservationService {
       }).emit();
     }).toRxJS().pipe(debounceTime(500),
       map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
-      tap((items) => this.loggingService.debug('Observations updated!', DEBUG_TAG, items)));
+      tap((items) => this.loggingService.debug('Observations observable change feed', DEBUG_TAG, items)));
   }
 
   async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {

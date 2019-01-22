@@ -55,9 +55,9 @@ export class UserGroupService {
   }
 
   getUserGroupsAsObservable(): Observable<ObserverGroupDto[]> {
-    return combineLatest(this.loginService.loggedInUser$, this.userSettingService.userSettingObservable$).pipe(
-      switchMap(([loggedInUser, userSetting]) =>
-        loggedInUser.isLoggedIn ? from(this.getUserGroupsFromDb(userSetting.appMode, loggedInUser.user)) : from(Promise.resolve([]))));
+    return combineLatest(this.loginService.loggedInUser$, this.userSettingService.appMode$).pipe(
+      switchMap(([loggedInUser, appMode]) =>
+        loggedInUser.isLoggedIn ? from(this.getUserGroupsFromDb(appMode, loggedInUser.user)) : from(Promise.resolve([]))));
   }
 
   getUserGroups(): Promise<ObserverGroupDto[]> {

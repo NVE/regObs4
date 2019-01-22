@@ -41,10 +41,10 @@ export class LocationService {
   }
 
   getLocationsAsObservable(geoHazard: GeoHazard) {
-    return this.userSettingService.userSettingObservable$
-      .pipe(switchMap((userSetting) =>
+    return this.userSettingService.appMode$
+      .pipe(switchMap((appMode) =>
         this.getLocationsFromDbAsObservable(
-          userSetting.appMode,
+          appMode,
           geoHazard)), debounceTime(200));
   }
 

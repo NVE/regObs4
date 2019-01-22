@@ -4,9 +4,7 @@ import { ObservationService } from '../observation/observation.service';
 import { KdvService } from '../kdv/kdv.service';
 import { CancelPromiseTimer } from '../../helpers/cancel-promise-timer';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { pairwise, distinctUntilChanged, map } from 'rxjs/operators';
 import { LoginService } from '../../../modules/login/services/login.service';
-import { UserSetting } from '../../models/user-settings.model';
 import { settings } from '../../../../settings';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Platform } from '@ionic/angular';
@@ -14,6 +12,8 @@ import { RegistrationService } from '../../../modules/registration/services/regi
 import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+import { combineLatest, Subject } from 'rxjs';
+import { map, switchMap, distinctUntilChanged, pairwise, skipUntil, skipWhile, tap, filter, take } from 'rxjs/operators';
 
 const DEBUG_TAG = 'DataMarshallService';
 
@@ -23,6 +23,15 @@ const DEBUG_TAG = 'DataMarshallService';
 export class DataMarshallService {
 
   foregroundUpdateInterval: NodeJS.Timeout;
+  private cancelUpdateObservationsSubject: Subject<boolean>;
+
+  get observableCancelSubject() {
+    return this.cancelUpdateObservationsSubject;
+  }
+
+  get cancelObservationsPromise() {
+    return this.cancelUpdateObservationsSubject.asObservable().pipe(take(1)).toPromise();
+  }
 
   constructor(
     private ngZone: NgZone,
@@ -38,31 +47,28 @@ export class DataMarshallService {
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
   ) {
-    this.userSettingService.userSettingObservable$.pipe(
-      pairwise())
-      .subscribe(async ([prev, next]) => {
-        if (this.hasUserSettingsChangedToRequireReloadOfObservations(prev, next)) {
-          this.loggingService.debug('App settings changed. Need to refresh observations', DEBUG_TAG);
-          const loggedInUser = await this.loginService.getLoggedInUser();
-          this.observationService.updateObservationsForGeoHazard(
-            next.currentGeoHazard,
-            loggedInUser,
-            next);
-        }
-        if (this.hasAppModeLanguageOrCurrentGeoHazardChanged(prev, next)) {
-          this.loggingService.debug('AppMode, Language or CurrentGeoHazardChanged changed. Need to refresh warnings.', DEBUG_TAG);
-          this.warningService.updateWarnings();
-        }
-        if (this.hasAppModeOrLanguageChanged(prev, next)) {
-          this.kdvService.updateKdvElements();
-          this.helpTextService.updateHelpTexts();
-        }
-      });
+    this.cancelUpdateObservationsSubject = new Subject<boolean>();
 
+    this.hasDaysBackChangedToLargerValue().subscribe(() => {
+      this.loggingService.debug('DaysBack has changed to a larger value. Update observations.', DEBUG_TAG);
+      this.updateObservations();
+    });
+
+    this.userSettingService.appModeAndLanguage$.subscribe(() => {
+      this.kdvService.updateKdvElements();
+      this.helpTextService.updateHelpTexts();
+      this.loggingService.debug('AppMode or Language has changed. Update kdv elements and help texts.', DEBUG_TAG);
+    });
+    combineLatest(
+      this.userSettingService.appModeAndLanguage$,
+      this.userSettingService.currentGeoHazardObservable$,
+    ).subscribe(() => {
+      this.loggingService.debug('AppMode, Language or CurrentGeoHazard has changed. Update observations and warnings.', DEBUG_TAG);
+      this.updateObservations();
+      this.warningService.updateWarnings();
+    });
     this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user));
-    this.userSettingService.userSettingObservable$.
-      pipe(map((userSetting) => userSetting.appMode), distinctUntilChanged())
-      .subscribe((appMode) => this.loggingService.configureLogging(appMode));
+    this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode));
 
     this.platform.ready().then(() => {
       this.platform.pause.subscribe(() => {
@@ -78,7 +84,31 @@ export class DataMarshallService {
     // No need to unsubscribe this observables when the service is singleton. It get destroyed when app exits.
   }
 
+  cancelUpdateObservations() {
+    this.cancelUpdateObservationsSubject.next(true);
+  }
+
+  updateObservations() {
+    this.observationService.updateObservations(this.cancelObservationsPromise);
+  }
+
+  /**
+   * Emits only when days back has changed to a larger value for current geoHazard
+   */
+  private hasDaysBackChangedToLargerValue() {
+    return this.userSettingService.currentGeoHazardObservable$.pipe(
+      switchMap((currentGeoHazard) => this.userSettingService.daysBack$.pipe(
+        map((val) => val.find((x) => x.geoHazard === currentGeoHazard[0]).daysBack),
+        distinctUntilChanged(),
+        pairwise(),
+        filter(([prev, next]) => next > prev),
+      )));
+  }
+
   startForegroundUpdate() {
+    if (this.foregroundUpdateInterval) {
+      this.stopForegroundUpdate();
+    }
     this.foregroundUpdateInterval = setInterval(() => {
       this.backgroundFetchUpdate();
     }, settings.foregroundUpdateIntervalMs);
@@ -95,7 +125,9 @@ export class DataMarshallService {
         ? CancelPromiseTimer.createCancelPromiseTimer(settings.backgroundFetchTimeout) : null;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
       await this.registrationService.syncRegistrations(cancelTimer);
-      const observationsUpdated = await this.observationService.updateObservations(cancelTimer);
+      const cancelPromiseForObservations = cancelTimer ?
+        Promise.race([this.cancelObservationsPromise, cancelTimer]) : this.cancelObservationsPromise;
+      const observationsUpdated = await this.observationService.updateObservations(cancelPromiseForObservations);
       if (showNotification && observationsUpdated > 0
         && this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
         this.localNotifications.schedule({ text: `${observationsUpdated} observations saved` });
@@ -106,44 +138,5 @@ export class DataMarshallService {
       await this.tripLoggerService.cleanupOldLegacyTrip();
       this.loggingService.debug('Background update completed', DEBUG_TAG);
     });
-  }
-
-  private hasAppModeLanguageOrCurrentGeoHazardChanged(oldVal: UserSetting, newVal: UserSetting) {
-    if (oldVal && newVal) {
-      const appModeChange = this.hasAppModeOrLanguageChanged(oldVal, newVal);
-      if (appModeChange) {
-        return true;
-      }
-      if (oldVal.currentGeoHazard.join(',') !== newVal.currentGeoHazard.join(',')) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private hasAppModeOrLanguageChanged(oldVal: UserSetting, newVal: UserSetting) {
-    if (oldVal && newVal) {
-      if (oldVal.appMode !== newVal.appMode) {
-        return true;
-      }
-      if (oldVal.language !== newVal.language) {
-        return true;
-      }
-      return false;
-    }
-  }
-
-  private hasUserSettingsChangedToRequireReloadOfObservations(oldVal: UserSetting, newVal: UserSetting) {
-    if (oldVal && newVal) {
-      if (this.hasAppModeLanguageOrCurrentGeoHazardChanged(oldVal, newVal)) {
-        return true;
-      }
-      const prevDaysBack = this.observationService.getObservationsDaysBack(oldVal, newVal.currentGeoHazard);
-      const nextDaysBack = this.observationService.getObservationsDaysBack(newVal, newVal.currentGeoHazard);
-      if (nextDaysBack > prevDaysBack) {
-        return true; // We need to update more days back
-      }
-    }
-    return false;
   }
 }

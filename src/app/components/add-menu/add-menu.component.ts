@@ -34,10 +34,10 @@ export class AddMenuComponent implements OnInit, OnDestroy {
     private userSettingService: UserSettingService) { }
 
   ngOnInit() {
-    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
+    this.subscriptions.push(this.userSettingService.currentGeoHazardObservable$.subscribe((val) => {
       this.ngZone.run(() => {
-        this.showTrip = val.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0;
-        this.geoHazards = val.currentGeoHazard;
+        this.showTrip = val.indexOf(GeoHazard.Snow) >= 0;
+        this.geoHazards = val;
       });
     }));
     this.subscriptions.push(this.registrationService.drafts$.subscribe(async (val) => {

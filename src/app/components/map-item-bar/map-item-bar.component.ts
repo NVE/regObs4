@@ -32,7 +32,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
   private _isVisible: Subject<boolean>;
-  private userSetting: UserSetting;
+  private appMode: AppMode;
 
   get isVisible(): Observable<boolean> {
     return this._isVisible.asObservable();
@@ -53,8 +53,8 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscription = this.userSettingService.userSettingObservable$.subscribe((val) => {
-      this.userSetting = val;
+    this.subscription = this.userSettingService.appMode$.subscribe((val) => {
+      this.appMode = val;
     });
   }
 
@@ -78,9 +78,9 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.geoHazard = item.GeoHazardTID;
       this.setDistanceAndType(item);
       this.imageUrls = [];
-      if (this.userSetting && item.Attachments && item.Attachments.length > 0) {
+      if (this.appMode && item.Attachments && item.Attachments.length > 0) {
         this.imageUrls = item.Attachments.map(
-          (attachment) => this.getImageUrl(this.userSetting.appMode, attachment.AttachmentFileName, 'medium'));
+          (attachment) => this.getImageUrl(this.appMode, attachment.AttachmentFileName, 'medium'));
       }
       this.visible = true;
       this.publishChange();

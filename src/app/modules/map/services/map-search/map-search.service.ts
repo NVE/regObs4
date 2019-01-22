@@ -48,10 +48,10 @@ export class MapSearchService {
   }
 
   searchAll(text: string): Observable<MapSearchResponse[]> {
-    return this.userSettingService.userSettingObservable$.pipe(
-      switchMap((userSettings) =>
-        forkJoin(this.searchNorwegianPlaces(text, userSettings.language),
-          this.searchWorld(text, userSettings.language)).pipe(map(([s1, s2]) => [...s1, ...s2]))));
+    return this.userSettingService.language$.pipe(
+      switchMap((language) =>
+        forkJoin(this.searchNorwegianPlaces(text, language),
+          this.searchWorld(text, language)).pipe(map(([s1, s2]) => [...s1, ...s2]))));
   }
 
   searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
@@ -224,7 +224,7 @@ export class MapSearchService {
             elevation,
             steepness,
             latLng,
-          })))), tap((result) => console.log('getViewInfo', result)));
+          })))));
   }
 
   private async saveSearchHistoryToDb(searchResult: MapSearchResponse) {

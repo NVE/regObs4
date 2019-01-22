@@ -10,6 +10,9 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { HelptextDto } from '../../../regobs-api/models';
 import { settings } from '../../../../../settings';
 import { HelptextService } from '../../../regobs-api/services';
+import { LoggingService } from '../../../shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'HelpTextService';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +23,7 @@ export class HelpTextService {
     private helptextApiService: HelptextService,
     private userSettingService: UserSettingService,
     private dataLoadService: DataLoadService,
+    private loggingService: LoggingService,
   ) { }
 
   async updateHelpTexts(cancel?: Promise<void>) {
@@ -33,10 +37,14 @@ export class HelpTextService {
 
   private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, language: LangKey, cancel?: Promise<void>) {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(appMode, language));
-    const lastUpdateLimit = moment().subtract(settings.helpTexts.daysBeforeUpdate, 'day');
-    if (!dataLoad.lastUpdated
-      || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
-      await this.updateHelpTextsForLanguage(appMode, language, cancel);
+    const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
+    if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
+      this.loggingService.debug(`Kdv elements is allready being updated.`, DEBUG_TAG);
+    } else {
+      const lastUpdateLimit = moment().subtract(settings.helpTexts.daysBeforeUpdate, 'day');
+      if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
+        await this.updateHelpTextsForLanguage(appMode, language, cancel);
+      }
     }
   }
 

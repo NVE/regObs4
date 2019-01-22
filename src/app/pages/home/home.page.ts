@@ -9,8 +9,6 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { MapComponent } from '../../modules/map/components/map/map.component';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
-import { Router, NavigationStart } from '@angular/router';
-import { filter } from 'rxjs/operators';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
 
@@ -33,14 +31,13 @@ export class HomePage implements OnInit, OnDestroy {
   // tripLogLayer = L.layerGroup();
   selectedMarker: MapItemMarker;
   showMapCenter: boolean;
-  // dataLoadIds: string[];
+  dataLoadIds: string[] = [];
 
   constructor(
     private observationService: ObservationService,
     private fullscreenService: FullscreenService,
     private userSettingService: UserSettingService,
-    private zone: NgZone,
-    private router: Router,
+    private ngZone: NgZone,
     private loggingService: LoggingService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
@@ -48,29 +45,23 @@ export class HomePage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.subscriptions = [];
-    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
-      this.zone.run(() => {
-        this.showMapCenter = val.showMapCenter;
+    this.subscriptions.push(this.userSettingService.showMapCenter$.subscribe((val) => {
+      this.ngZone.run(() => {
+        this.showMapCenter = val;
       });
-    })); // TODO: Move this to map component?
+    }));
 
     this.subscriptions.push(this.mapItemBar.isVisible.subscribe((isVisible) => {
-      this.zone.run(() => {
+      this.ngZone.run(() => {
         this.mapItemBarVisible = isVisible;
       });
     }));
 
-    this.subscriptions.push(
-      this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((val: NavigationStart) => {
-        if (val.url === '/tabs/home' || val.url === '/tabs') {
-          this.loggingService.debug(`Home page route changed to ${val.url}. Start GeoLocation.`, DEBUG_TAG);
-          this.mapComponent.startGeoLocationWatch();
-          this.mapComponent.redrawMap();
-        } else {
-          this.loggingService.debug(`Home page route changed to ${val.url}. Stop GeoLocation.`, DEBUG_TAG);
-          this.mapComponent.stopGeoLocationWatch();
-        }
-      }));
+    this.subscriptions.push(this.observationService.dataLoad$.subscribe((val) => {
+      this.ngZone.run(() => {
+        this.dataLoadIds = [val];
+      });
+    }));
 
     // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
     //   this.tripLogLayer.clearLayers();
@@ -94,21 +85,20 @@ export class HomePage implements OnInit, OnDestroy {
     });
     // TODO: Move this to custom marker layer?
     const observationObservable =
-      combineLatest(this.observationService.observations$, this.userSettingService.userSettingObservable$);
-    this.subscriptions.push(observationObservable.subscribe(([regObservations, userSettings]) => {
-      this.redrawObservationMarkers(userSettings.showObservations ? regObservations : []);
+      combineLatest(this.observationService.observations$, this.userSettingService.showObservations$);
+    this.subscriptions.push(observationObservable.subscribe(([regObservations, showObservations]) => {
+      this.redrawObservationMarkers(showObservations ? regObservations : []);
     }));
   }
 
   ionViewDidEnter() {
-    this.loggingService.debug(`Home page ionViewDidEnter. Start GeoLocation`, DEBUG_TAG);
-    this.mapComponent.startGeoLocationWatch();
-    this.mapComponent.redrawMap();
+    this.loggingService.debug(`Home page ionViewDidEnter. Activate map updates and GeoLocation`, DEBUG_TAG);
+    this.mapComponent.activateUpdates();
   }
 
   ionViewWillLeave() {
-    this.loggingService.debug(`Home page ionViewWillLeave. Stop GeoLocation.`, DEBUG_TAG);
-    this.mapComponent.stopGeoLocationWatch();
+    this.loggingService.debug(`Home page ionViewWillLeave. Disable map updates and GeoLocation.`, DEBUG_TAG);
+    this.mapComponent.disableUpdates();
   }
 
   ngOnDestroy(): void {

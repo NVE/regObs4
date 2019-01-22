@@ -7,7 +7,7 @@ import { IonInfiniteScroll, NavController, IonVirtualScroll } from '@ionic/angul
 import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
 import * as moment from 'moment';
-import { take, map, distinct, tap } from 'rxjs/operators';
+import { take, map, distinct, tap, distinctUntilChanged } from 'rxjs/operators';
 import { IRegistration } from '../../modules/registration/models/registration.model';
 // import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
 
@@ -52,7 +52,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
 
   refresh(cancelPromise: Promise<any>) {
     return this.registrationService.syncRegistrations(cancelPromise).then(() =>
-      this.loadPage(0, cancelPromise));
+      this.loadData(cancelPromise));
   }
 
   async ngOnInit() {
@@ -68,7 +68,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       this.updateVirtualItems(val);
     });
 
-    this.loadPage(0);
+    this.loadData();
   }
 
   private updateVirtualItems(virtualItems: MyVirtualScrollItem[]) {
@@ -210,7 +210,8 @@ export class MyObservationsPage implements OnInit, OnDestroy {
 
   private getSentObserbable(): Observable<MyVirtualScrollItem[]> {
     return this.observationService.getUserObservationsAsObservable().pipe(
-      distinct((val) => this.getDistinctRegistrationList(val)),
+      distinctUntilChanged<RegistrationViewModel[], string>
+        ((a, b) => a.localeCompare(b) === 0, (keySelector) => this.getDistinctRegistrationList(keySelector)),
       map((val) => val.map((item) => ({ type: <'sent'>'sent', id: item.RegID, item }))));
   }
 
@@ -221,7 +222,8 @@ export class MyObservationsPage implements OnInit, OnDestroy {
 
   private getSyncItemsObservable(): Observable<MyVirtualScrollItem[]> {
     return this.registrationService.getRegistrationsToSync().pipe(
-      distinct((val) => this.getDistinctSyncItemList(val)),
+      distinctUntilChanged<IRegistration[], string>((a, b) => a.localeCompare(b) === 0,
+        (keySelector) => this.getDistinctSyncItemList(keySelector)),
       map((val) => val.map((item) => ({ type: <'sync'>'sync', id: item.id, item }))));
   }
 
@@ -239,16 +241,13 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     }
   }
 
-  loadData() {
+  async loadData(cancel?: Promise<any>) {
     const registrations = this.virtualItems.filter((x) => x.type === 'sent').length;
-    const pageNumber = Math.floor(registrations / 10.0);
-    return this.loadPage(pageNumber);
-  }
-
-  private async loadPage(pageNumber: number, cancel?: Promise<any>) {
+    // const pageNumber = Math.floor(registrations / 10.0);
+    const numberOfRecords = registrations + 10;
     const userSettings = await this.userSettingService.getUserSettings();
     const updatedRegistrations = await this.observationService.updateObservationsForCurrentUser(
-      userSettings.appMode, this.user, userSettings.language, pageNumber, cancel);
+      userSettings.appMode, this.user, userSettings.language, numberOfRecords, cancel);
     this.ngZone.run(() => {
       // this.mergeRegistrations(updatedRegistrations);
       this.infiniteScroll.complete();

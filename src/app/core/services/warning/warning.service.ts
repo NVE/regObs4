@@ -93,11 +93,16 @@ export class WarningService {
 
   private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard, cancel?: Promise<void>) {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(geoHazard));
-    const lastUpdateLimit = moment().subtract(1, 'hour');
-    if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
-      await this.updateWarningsForGeoHazard(geoHazard, cancel);
+    const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
+    if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
+      this.loggingService.debug(`Warnings is allready being updated.`, DEBUG_TAG);
     } else {
-      this.loggingService.debug(`No need to update ${geoHazard}. Last updated is: ${dataLoad.lastUpdated}`, DEBUG_TAG);
+      const lastUpdateLimit = moment().subtract(1, 'hour');
+      if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
+        await this.updateWarningsForGeoHazard(geoHazard, cancel);
+      } else {
+        this.loggingService.debug(`No need to update ${geoHazard}. Last updated is: ${dataLoad.lastUpdated}`, DEBUG_TAG);
+      }
     }
   }
 
@@ -220,10 +225,9 @@ export class WarningService {
 
   private getWarningsForCurrentLanguageAndCurrentGeoHazard() {
     return combineLatest(this.getWarningsForCurrentLanguageAsObservable(),
-      this.userSettingService.userSettingObservable$)
-      .pipe(map(([warningGroups, userSetting]) => {
-        const geoHazards = userSetting.currentGeoHazard;
-        return warningGroups.filter((wg) => geoHazards.find((g) => g === wg.key.geoHazard));
+      this.userSettingService.currentGeoHazardObservable$)
+      .pipe(map(([warningGroups, currentGeoHazard]) => {
+        return warningGroups.filter((wg) => currentGeoHazard.find((g) => g === wg.key.geoHazard));
       }), shareReplay(1));
   }
 

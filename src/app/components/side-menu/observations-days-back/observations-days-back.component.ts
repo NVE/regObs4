@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { settings } from '../../../../settings';
-import { UserSetting } from '../../../core/models/user-settings.model';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { IonSelect } from '@ionic/angular';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
@@ -19,8 +18,12 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   constructor(private userSettingService: UserSettingService, private zone: NgZone, private loggingService: LoggingService) { }
 
   ngOnInit() {
-    this.subscription = this.userSettingService.userSettingObservable$
-      .pipe(map((val) => this.getDaysBackArray(val)),
+    this.subscription = combineLatest(
+      this.userSettingService.daysBack$,
+      this.userSettingService.currentGeoHazardObservable$,
+      this.userSettingService.showObservations$,
+    )
+      .pipe(map(([daysBack, currentGeoHazard, showObservations]) => this.getDaysBackArray(daysBack, currentGeoHazard, showObservations)),
         tap((val) =>
           this.loggingService.debug(`Days back changed to ${val.find((d) => d.selected).val}`, 'ObservationsDaysBackComponent')))
       .subscribe((val) => {
@@ -34,16 +37,16 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  getDaysBackArray(userSetting: UserSetting) {
+  getDaysBackArray(daysBack: { geoHazard: GeoHazard, daysBack: number }[], currentGeoHazard: GeoHazard[], showObservations: boolean) {
     const daysBackArr: { val: number, selected: boolean, text: string }[]
-      = settings.observations.daysBack[GeoHazard[userSetting.currentGeoHazard[0]]].filter((x) => x > 0).map((val: number) => ({
+      = settings.observations.daysBack[GeoHazard[currentGeoHazard[0]]].filter((x) => x > 0).map((val: number) => ({
         val: val,
-        selected: userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]).daysBack === val,
+        selected: daysBack.find((x) => x.geoHazard === currentGeoHazard[0]).daysBack === val,
       }));
-    const doNowShow = { val: -1, selected: !userSetting.showObservations, text: 'MENU.HIDE_OBSERVATIONS' };
+    const doNowShow = { val: -1, selected: !showObservations, text: 'MENU.HIDE_OBSERVATIONS' };
     const today = {
       val: 0,
-      selected: userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]).daysBack === 0,
+      selected: daysBack.find((x) => x.geoHazard === currentGeoHazard[0]).daysBack === 0,
       text: 'MENU.TODAYS_OBSERVATIONS'
     };
     return [doNowShow, today, ...daysBackArr];
