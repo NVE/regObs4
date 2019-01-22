@@ -215,7 +215,7 @@
     },
     "ICE": {
       "ICE_COVER": {
-        "ICE_CAPACITY": "Capacity",
+        "ICE_CAPACITY": "Bearing strength",
         "ICE_COVER": "Ice cover",
         "ICE_COVER_BEFORE": "Ice cover before observation",
         "ICE_SKATEABILITY": "Skateability",
@@ -449,7 +449,7 @@
     "CHOOSE_INTEREST": {
       "HEADER": "Choose your interest:",
       "INTEREST_DIRT": "Landslide!",
-      "INTEREST_ICE": "Ice thickness, load capacity and skating conditions!",
+      "INTEREST_ICE": "Ice thickness, bearing strength and skating conditions!",
       "INTEREST_SNOW": "Take me to the snow!",
       "INTEREST_WATER": "Water level, flow and damages!"
     },
