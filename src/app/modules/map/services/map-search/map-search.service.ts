@@ -113,7 +113,7 @@ export class MapSearchService {
     const utm = this.latLngToUtm(latLng);
     const url = settings.map.elevation.svalbard.url.replace('{0}', utm.x.toString()).replace('{1}', utm.y.toString());
     return this.httpClient.get(url)
-      .pipe(map((result: any) => parseInt(result.value, 10)),
+      .pipe(map((result: any) => this.getValidResultOrNull(result.value)),
         catchError(() => of(null)));
   }
 
@@ -126,8 +126,17 @@ export class MapSearchService {
     const url = settings.map.elevation.no.url.replace('{0}', utm.x.toString()).replace('{1}', utm.y.toString());
     return this.httpClient.get(url)
       .pipe(
-        map((result: any) => parseInt(result.value, 10)),
+        map((result: any) => this.getValidResultOrNull(result.value)),
         catchError(() => of(null)));
+  }
+
+  private getValidResultOrNull(value: string) {
+    const numberResult = parseInt(value, 10);
+    if (!isNaN(numberResult) && numberResult > 0) {
+      return numberResult;
+    } else {
+      return null;
+    }
   }
 
   getElevationWorld(latLng: L.LatLng): Observable<number> {
