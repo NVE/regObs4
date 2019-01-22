@@ -11,6 +11,8 @@ import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
+import { Router, NavigationStart } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -24,7 +26,7 @@ export class HomePage implements OnInit, OnDestroy {
   @ViewChild(MapComponent) mapComponent: MapComponent;
   private map: L.Map;
   private markerLayer = LeafletClusterHelper.createMarkerClusterGroup();
-  private subscriptions: Subscription[];
+  private subscriptions: Subscription[] = [];
 
   fullscreen$: Observable<boolean>;
   mapItemBarVisible = false;
@@ -38,13 +40,27 @@ export class HomePage implements OnInit, OnDestroy {
     private fullscreenService: FullscreenService,
     private userSettingService: UserSettingService,
     private ngZone: NgZone,
+    private router: Router,
     private loggingService: LoggingService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
   async ngOnInit() {
-    this.subscriptions = [];
+    this.subscriptions.push(
+      // TODO: ionViewDidEnter and ionViewWillLeave is only triggerd between tab changes and not when going
+      // to another page (for example settings, my observations etc), so this is a workaround until issue is resolved
+      // https://github.com/ionic-team/ionic/issues/16834
+      this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((val: NavigationStart) => {
+        if (val.url === '/tabs/home' || val.url === '/tabs' || val.url === '/') {
+          this.loggingService.debug(`Home page route changed to ${val.url}. Start GeoLocation.`, DEBUG_TAG);
+          this.mapComponent.activateUpdates();
+        } else {
+          this.loggingService.debug(`Home page route changed to ${val.url}. Stop GeoLocation.`, DEBUG_TAG);
+          this.mapComponent.disableUpdates();
+        }
+      }));
+
     this.subscriptions.push(this.userSettingService.showMapCenter$.subscribe((val) => {
       this.ngZone.run(() => {
         this.showMapCenter = val;

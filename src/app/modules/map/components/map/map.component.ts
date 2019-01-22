@@ -284,7 +284,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.redrawMap();
+    // this.redrawMap();
   }
 
   private startGeoLocationWatch() {

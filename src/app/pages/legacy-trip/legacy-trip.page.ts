@@ -126,7 +126,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
         this.tripLoggerService.startLegacyTrip(this.tripDto).subscribe(() => {
           this.ngZone.run(() => {
             this.isLoading = false;
-            this.navController.navigateRoot('/');
+            this.navController.goBack();
           });
         }, (error) => {
           this.loggingService.error(error, 'Error when starting trip', DEBUG_TAG);
