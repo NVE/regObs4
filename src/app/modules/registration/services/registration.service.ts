@@ -89,9 +89,13 @@ export class RegistrationService {
     return reg;
   }
 
+  getRegistrationTids(): RegistrationTid[] {
+    return Object.keys(RegistrationTypes)
+      .map((key) => RegistrationTid[key]).filter((val: RegistrationTid) => val !== undefined);
+  }
+
   cleanupRegistration(reg: IRegistration) {
-    const registrationTids: RegistrationTid[] = Object.keys(RegistrationTypes)
-      .map((key) => RegistrationTid[key]).filter((val) => val !== undefined);
+    const registrationTids = this.getRegistrationTids();
     for (const registrationTid of registrationTids) {
       const key = RegistrationTid[registrationTid];
       if (reg.request[key] && this.isEmpty(reg, registrationTid)) {
@@ -112,6 +116,10 @@ export class RegistrationService {
       }
     }
     return true;
+  }
+
+  isRegistrationEmpty(reg: IRegistration) {
+    return !this.getRegistrationTids().some((x) => !this.isEmpty(reg, x));
   }
 
   hasImages(reg: IRegistration, registrationTid: RegistrationTid) {

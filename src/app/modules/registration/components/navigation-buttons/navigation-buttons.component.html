@@ -1,13 +1,13 @@
 <ion-grid>
   <ion-row>
     <ion-col size="6">
-      <ion-button shape="round" *ngIf="previous" (click)="goBack()" color="primary" fill="outline" expand="block">
+      <ion-button *ngIf="previous" (click)="goBack()" color="primary" fill="outline" expand="block">
         <ion-icon slot="start" name="arrow-round-back"></ion-icon>
         {{ previous.title | translate }}
       </ion-button>
     </ion-col>
     <ion-col size="6">
-      <ion-button shape="round" *ngIf="next" (click)="goForward()" color="primary" fill="solid" expand="block">
+      <ion-button *ngIf="next" (click)="goForward()" color="primary" fill="solid" expand="block">
         <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
         {{ next.title | translate }}
       </ion-button>

@@ -3,7 +3,7 @@
     <ion-grid no-padding>
       <ion-row>
         <ion-col class="send-button-col" size="12">
-          <ion-button expand="block" color="varsom-orange" (click)="send()">
+          <ion-button [disabled]="isEmpty" expand="block" color="varsom-orange" (click)="send()">
             <ion-icon slot="start" name="md-send"></ion-icon>
             <span *ngIf="registration.error">{{"REGISTRATION.RESEND" | translate}}</span>
             <span *ngIf="!registration.error">{{"REGISTRATION.SEND" | translate}}</span>

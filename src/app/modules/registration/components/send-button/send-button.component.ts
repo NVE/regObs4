@@ -14,6 +14,10 @@ export class SendButtonComponent implements OnInit, OnDestroy {
 
   @Input() registration: IRegistration;
 
+  get isEmpty() {
+    return this.registrationService.isRegistrationEmpty(this.registration);
+  }
+
   constructor(
     private registrationService: RegistrationService,
     private alertController: AlertController,
