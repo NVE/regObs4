@@ -1,57 +1,46 @@
 import { Injectable } from '@angular/core';
-import { Platform } from '@ionic/angular';
-import { Router, NavigationStart } from '@angular/router';
-import { GoogleAnalytics } from '@ionic-native/google-analytics/ngx';
-import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { settings } from '../../../../settings';
-import { AppVersionService } from '../app-version/app-version.service';
+import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, distinctUntilChanged } from 'rxjs/operators';
-import { environment } from '../../../../environments/environment';
-
-const DEBUG_TAG = 'AnalyticService';
+import { settings } from '../../../../settings';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AnalyticService {
 
+  ga: any;
+
   constructor(
-    private platform: Platform,
     private router: Router,
-    private ga: GoogleAnalytics,
-    private loggingService: LoggingService,
-    private appVersionService: AppVersionService,
   ) {
   }
 
-  get enabled() {
-    return this.platform.isAndroidOrIos() && environment.production;
-  }
-
   async init() {
-    const appVersion = await this.appVersionService.getAppVersion();
-    this.loggingService.debug(`Starting GA tracking. setAnonymizeIp:
-      ${settings.googleAnalytics.anonymizeIp}. setAppVersion: ${appVersion.version}`, DEBUG_TAG);
-
-    if (this.enabled) {
-      await this.ga.setAnonymizeIp(settings.googleAnalytics.anonymizeIp);
-      await this.ga.setAppVersion(appVersion.version);
-      await this.ga.startTrackerWithId(settings.googleAnalytics.trackerId);
+    this.ga = (<any>window).ga;
+    if (window.localStorage) {
+      this.ga('create', settings.googleAnalytics.trackerId, 'auto', {
+        'storage': 'none',
+        'clientId': window.localStorage.getItem('ga_clientId')
+      });
+      this.ga(function (tracker) {
+        window.localStorage.setItem('ga_clientId', tracker.get('clientId'));
+      });
+    } else {
+      this.ga('create', settings.googleAnalytics.trackerId, 'auto');
     }
-    this.trackView(this.router.url);
+    this.ga('set', 'appName', 'regObs4');
+    this.ga('set', 'anonymizeIp', settings.googleAnalytics.anonymizeIp);
+    this.ga('send', 'pageview');
 
-    this.loggingService.debug('Subscribing to route changes', DEBUG_TAG);
-    this.router.events.pipe(filter((event) => event instanceof NavigationStart))
-      .pipe(map((val: NavigationStart) => val.url), distinctUntilChanged())
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(map((val: NavigationEnd) => val.urlAfterRedirects), distinctUntilChanged())
       .subscribe((url: string) => {
         this.trackView(url);
       });
   }
 
   private trackView(url: string) {
-    this.loggingService.debug(`Track view: ${url}. Enabled: ${this.enabled}`, DEBUG_TAG);
-    if (this.enabled) {
-      this.ga.trackView(url);
-    }
+    this.ga('set', 'page', url);
+    this.ga('send', 'pageview');
   }
 }

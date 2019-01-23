@@ -44,7 +44,6 @@ import { SentryService } from './modules/shared/services/logging/sentry.service'
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { environment } from '../environments/environment';
 import { MapSearchService } from './modules/map/services/map-search/map-search.service';
-import { GoogleAnalytics } from '@ionic-native/google-analytics/ngx';
 import { AnalyticService } from './core/services/analytic/analytic.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
@@ -81,7 +80,6 @@ export const APP_PROVIDERS = [
     API_INTERCEPTOR_PROVIDER,
     { provide: ErrorHandler, useClass: AppErrorHandler },
     { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
-    GoogleAnalytics,
     // Singleton services
     UserSettingService,
     MapService,
