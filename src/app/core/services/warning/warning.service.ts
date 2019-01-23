@@ -236,9 +236,10 @@ export class WarningService {
       .pipe(switchMap((mapViewArea) =>
         this.getWarningsForCurrentMapView(mapViewArea)),
         map((result) => result),
-        shareReplay(1), tap((val) => {
+        tap((val) => {
           this.loggingService.debug(`getWarningsForCurrentMapViewAsObservable changed`, DEBUG_TAG, val);
-        }));
+        }),
+        shareReplay(1));
   }
 
   private groupIsInRegion(warningGroup: WarningGroup, regionId: string) {
