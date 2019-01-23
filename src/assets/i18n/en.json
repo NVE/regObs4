@@ -570,7 +570,10 @@
     "MAIN_REGIONS": "Main regions",
     "OTHER_RELEVANT": "Other relevant",
     "RELEVANT": "Relevant",
-    "TITLE": "Varsom",
+    "TITLE": "Warnings",
+    "TITLE_ICE": "Ice Warnings",
+    "TITLE_SNOW": "Avalanche Warnings",
+    "TITLE_WATER": "Flood and Landslide Warnings",
     "VALID_FROM": "Valid from"
   }
 }

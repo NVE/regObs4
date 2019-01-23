@@ -21,7 +21,9 @@ export class WarningListPage implements OnInit, OnDestroy {
   private segmentPageSubject: BehaviorSubject<SelectedTab>;
   private segmentPageObservable: Observable<SelectedTab>;
   private subscription: Subscription;
+  private titleSubscription: Subscription;
   refreshFunc: Function;
+  title = 'WARNING_LIST.TITLE';
 
   constructor(
     private warningService: WarningService,
@@ -45,6 +47,20 @@ export class WarningListPage implements OnInit, OnDestroy {
           this.warningGroups = warningGroups;
         });
       });
+    this.titleSubscription = combineLatest(this.segmentPageObservable, this.userSettingService.currentGeoHazardObservable$)
+      .subscribe(([selectedTab, currentGeoHazard]) => {
+        this.ngZone.run(() => {
+          this.setTitle(selectedTab, currentGeoHazard);
+        });
+      });
+  }
+
+  private setTitle(selectedTab: SelectedTab, currentGeoHazard: GeoHazard[]) {
+    if (selectedTab !== 'favourites') {
+      this.title = `WARNING_LIST.TITLE_${GeoHazard[currentGeoHazard[0]].toUpperCase()}`;
+    } else {
+      this.title = 'WARNING_LIST.TITLE';
+    }
   }
 
   refresh(cancelPromise: Promise<any>) {
@@ -139,6 +155,9 @@ export class WarningListPage implements OnInit, OnDestroy {
   ionViewWillLeave() {
     if (this.subscription) {
       this.subscription.unsubscribe();
+    }
+    if (this.titleSubscription) {
+      this.titleSubscription.unsubscribe();
     }
   }
 

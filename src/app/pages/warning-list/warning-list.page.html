@@ -1,4 +1,4 @@
-<app-header title="{{'WARNING_LIST.TITLE' | translate}}"></app-header>
+<app-header [title]="title"></app-header>
 <ion-segment mode="md" slot="fixed" [(ngModel)]="selectedTab" (ngModelChange)="onSegmentChange()">
   <ion-segment-button mode="md" value="inMapView">
     <ion-label>{{'WARNING_LIST.RELEVANT'|translate}}</ion-label>

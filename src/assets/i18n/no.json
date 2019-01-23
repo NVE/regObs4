@@ -570,7 +570,10 @@
     "MAIN_REGIONS": "Hovedregioner",
     "OTHER_RELEVANT": "Andre aktuelle",
     "RELEVANT": "Aktuelle",
-    "TITLE": "Varsom",
+    "TITLE": "Varsler",
+    "TITLE_ICE": "Isvarsel",
+    "TITLE_SNOW": "Snøskredvarsel",
+    "TITLE_WATER": "Flom og jordskredvarsel",
     "VALID_FROM": "Gyldig fra"
   }
 }
