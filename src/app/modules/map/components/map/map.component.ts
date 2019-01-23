@@ -47,6 +47,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private firstClickOnZoomToUser = true;
   private isActive = false;
 
+  private setHeadingFunc: (event: DeviceOrientationEvent) => void;
+
   constructor(
     private userSettingService: UserSettingService,
     private offlineMapService: OfflineMapService,
@@ -58,6 +60,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
   ) {
+    this.setHeadingFunc = this.setHeading.bind(this);
   }
 
   options: L.MapOptions = {
@@ -158,6 +161,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.push(this.fullscreenService.isFullscreen$.subscribe(() => {
       this.redrawMap();
     }));
+
+    //   window.addEventListener('compassneedscalibration', function(event) {
+    //     // ask user to wave device in a figure-eight motion
+    //     event.preventDefault();
+    // }, true);
 
     this.startGeoLocationWatch();
 
@@ -299,6 +307,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         this.loggingService.debug('Geolocation service allready running', DEBUG_TAG);
       }
+      window.addEventListener('deviceorientation', this.setHeadingFunc, true);
+    }
+  }
+
+  private setHeading(event: DeviceOrientationEvent) {
+    if (this.userMarker) {
+      const heading = 360 - event.alpha;
+      this.userMarker.setHeading(heading);
     }
   }
 
@@ -307,6 +323,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.geoLoactionSubscription !== undefined && !this.geoLoactionSubscription.closed) {
       this.geoLoactionSubscription.unsubscribe();
     }
+    window.removeEventListener('deviceorientation', this.setHeadingFunc);
   }
 
   private onPositionUpdate(data: Geoposition) {

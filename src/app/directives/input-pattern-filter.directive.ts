@@ -4,6 +4,7 @@ import { IonInput } from '@ionic/angular';
 @Directive({
   selector: '[appInputPatternFilter]'
 })
+// NOTE: https://codeburst.io/digit-only-directive-in-angular-3db8a94d80c3
 export class InputPatternFilterDirective {
 
   inputElement: IonInput;

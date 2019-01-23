@@ -49,12 +49,13 @@ export class UserMarker {
         const latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
         this.userMarker.setLatLng(latLng);
         this.setAccuracy(position);
-        if (position.coords.heading !== null) {
-            this.setHeading(position.coords.heading);
-        }
+        // if (position.coords.heading !== null) {
+        //     this.setHeading(position.coords.heading);
+        // }
+        // NOTE: This is set by compass instead of gps
     }
 
-    private setHeading(degrees: number) {
+    setHeading(degrees: number) {
         const element: HTMLElement = this.userMarker.getElement().childNodes[0] as HTMLElement;
         const rotateZ = degrees - 90;
         element.style['-webkit-transform'] = 'rotate(' + rotateZ + 'deg) translateX(15px)';
