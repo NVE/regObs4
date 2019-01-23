@@ -5,6 +5,9 @@ import { ExternalLinkService } from '../../core/services/external-link/external-
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { settings } from '../../../settings';
 import { WarningService } from '../../core/services/warning/warning.service';
+import * as moment from 'moment';
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { LangKey } from '../../core/models/langKey';
 
 @Component({
   selector: 'app-warning-list-item',
@@ -22,6 +25,7 @@ export class WarningListItemComponent implements OnInit {
   constructor(
     private externalLinkService: ExternalLinkService,
     private warningService: WarningService,
+    private userSettingService: UserSettingService,
     private zone: NgZone,
     private toastController: ToastController) { }
 
@@ -78,19 +82,37 @@ export class WarningListItemComponent implements OnInit {
     await this.toggleFavourite(group);
   }
 
-  getUrl(group: WarningGroup) {
+  async getUrl(group: WarningGroup) {
     if (group.url) {
       return group.url;
     } else {
-      return settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl
-        .replace('{regionName}', group.key.groupName)
-        .replace('{regionId}', group.key.groupId);
+      const userSettings = await this.userSettingService.getUserSettings();
+      const url = settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl[LangKey[userSettings.language]];
+      if (url) {
+        return url
+          .replace('{regionName}', group.key.groupName)
+          .replace('{regionId}', group.key.groupId);
+      } else {
+        return null;
+      }
     }
   }
 
-  navigateToWeb(event: Event, group: WarningGroup) {
+  async navigateToWeb(event: Event, group: WarningGroup) {
     event.preventDefault();
-    this.externalLinkService.openExternalLink(this.getUrl(group));
+    const url = await this.getUrl(group);
+    if (url) {
+      this.externalLinkService.openExternalLink(url);
+    }
+  }
+
+  async navigateToWebByDay(event: Event, group: WarningGroup, day: number) {
+    event.preventDefault();
+    const dateString = moment().startOf('day').add(day, 'days').format(settings.services.warning.dateFormat);
+    const url = await this.getUrl(group);
+    if (url) {
+      this.externalLinkService.openExternalLink(`${url}${dateString}`);
+    }
   }
 
 }

@@ -290,8 +290,8 @@ export class WarningService {
     await this.dataLoadService.startLoading(dataLoadId);
     const url = `${this.getBaseUrl(geoHazard)}`
       + `/Warning/All/${language}`
-      + `/${dateRange.from.format('YYYY-MM-DD')}`
-      + `/${dateRange.to.format('YYYY-MM-DD')}`;
+      + `/${dateRange.from.format(settings.services.warning.dateFormat)}`
+      + `/${dateRange.to.format(settings.services.warning.dateFormat)}`;
     try {
       const warningsresult = await ObservableHelper.toPromiseWithCancel(
         this.httpClient.get<IWarningApiResult[]>(url), cancelPromise);
@@ -311,7 +311,8 @@ export class WarningService {
         const existingRegion = regions.find((r) => r.regionId === regionId);
         if (existingRegion) {
           const warningForSameDate = existingRegion.warnings
-            .find((w) => moment(w.validTo).format('YYYY-MM-DD') === moment(warning.validTo).format('YYYY-MM-DD'));
+            .find((w) => moment(w.validTo).format(settings.services.warning.dateFormat)
+              === moment(warning.validTo).format(settings.services.warning.dateFormat));
           if (warningForSameDate) {
             warningForSameDate.warningLevel = Math.max(warning.warningLevel, warningForSameDate.warningLevel);
           } else {
@@ -353,8 +354,8 @@ export class WarningService {
     await this.dataLoadService.startLoading(dataLoadId);
     const url = `${this.getBaseUrl(GeoHazard.Snow)}`
       + `/RegionSummary/Detail/${language}`
-      + `/${dateRange.from.format('YYYY-MM-DD')}`
-      + `/${dateRange.to.format('YYYY-MM-DD')}`;
+      + `/${dateRange.from.format(settings.services.warning.dateFormat)}`
+      + `/${dateRange.to.format(settings.services.warning.dateFormat)}`;
     try {
       const warningsresult = await ObservableHelper.toPromiseWithCancel(
         this.httpClient.get<IAvalancheWarningApiResult[]>(url), cancelPromise);

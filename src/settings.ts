@@ -37,19 +37,29 @@ export const settings = {
             defaultWarningDaysAhead: 2,
             summerMonths: [5, 6, 7, 8, 9, 10],
             timezone: 'Europe/Oslo',
+            dateFormat: 'YYYY-MM-DD',
             Snow: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
-                webUrl: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/',
+                webUrl: {
+                    no: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/',
+                    en: 'http://www.varsom.no/en/avalanche-bulletins/forecast/{regionName}/',
+                },
                 featureName: 'OMRAADEID',
             },
             Dirt: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api',
-                webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
+                webUrl: {
+                    no: 'http://www.varsom.no/flom-og-jordskredvarsling/?date=',
+                    en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/?date=',
+                },
                 featureName: 'fylkesnummer',
             },
             Water: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.5/api',
-                webUrl: 'http://www.varsom.no/flom-og-jordskredvarsling/',
+                webUrl: {
+                    no: 'http://www.varsom.no/flom-og-jordskredvarsling/?date=',
+                    en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/?date=',
+                },
                 featureName: 'fylkesnummer',
             },
             Ice: {
