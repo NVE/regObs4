@@ -15,17 +15,15 @@
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{
           'REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL' | translate }}</ion-label>
-        <ion-input type="number" inputmode="numberic" pattern="[0-9]*" [min]="minSnowDepth" [max]="maxSnowDepth"
-          (ionChange)="onSnowDepthChange(registration.request.IceThickness.SnowDepth)" [(ngModel)]="registration.request.IceThickness.SnowDepth"
-          placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+        <ion-input type="number" pattern="[0-9]*" [min]="minSnowDepth" [max]="maxSnowDepth" (ionChange)="onSnowDepthChange(registration.request.IceThickness.SnowDepth)"
+          [(ngModel)]="registration.request.IceThickness.SnowDepth" placeholder="{{'REGISTRATION.IN_CM' | translate}}">
         </ion-input>
       </ion-item>
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{
           'REGISTRATION.ICE.ICE_THICKNESS.SLUSH_SNOW_BEFORE_DRILL' | translate }}</ion-label>
-        <ion-input type="number" inputmode="numberic" pattern="[0-9]*" [min]="minSnowDepth" [max]="maxSnowDepth"
-          (ionChange)="onSnowDepthChange(registration.request.IceThickness.SlushSnow)" [(ngModel)]="registration.request.IceThickness.SlushSnow"
-          placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+        <ion-input type="number" pattern="[0-9]*" [min]="minSnowDepth" [max]="maxSnowDepth" (ionChange)="onSnowDepthChange(registration.request.IceThickness.SlushSnow)"
+          [(ngModel)]="registration.request.IceThickness.SlushSnow" placeholder="{{'REGISTRATION.IN_CM' | translate}}">
         </ion-input>
       </ion-item>
       <ion-list-header text-uppercase>
@@ -47,16 +45,15 @@
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{
           'REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM' | translate }}</ion-label>
-        <ion-input type="number" inputmode="numberic" pattern="[0-9]*" [min]="minSnowDepth" [max]="maxSnowDepth"
-          (ionChange)="onSnowDepthChange(registration.request.IceThickness.IceThicknessSum)" [(ngModel)]="registration.request.IceThickness.IceThicknessSum"
-          placeholder="{{'REGISTRATION.IN_CM' | translate}}">
+        <ion-input type="number" pattern="[0-9]*" [min]="minSnowDepth" [max]="maxSnowDepth" (ionChange)="onSnowDepthChange(registration.request.IceThickness.IceThicknessSum)"
+          [(ngModel)]="registration.request.IceThickness.IceThicknessSum" placeholder="{{'REGISTRATION.IN_CM' | translate}}">
         </ion-input>
       </ion-item>
       <app-yes-no-select [(value)]="iceHeightBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE"></app-yes-no-select>
       <ion-item *ngIf="iceHeightBefore">
         <ion-label color="medium" position="stacked" text-uppercase>{{
           'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT' | translate }}</ion-label>
-        <ion-input type="number" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.IceThickness.IceHeightBefore"
+        <ion-input type="number" pattern="[0-9]*" [(ngModel)]="registration.request.IceThickness.IceHeightBefore"
           placeholder="{{'REGISTRATION.IN_CM' | translate}}">
         </ion-input>
       </ion-item>
@@ -64,14 +61,14 @@
       <ion-item *ngIf="iceHeightAfter === true">
         <ion-label color="medium" position="stacked" text-uppercase>{{
           'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_INPUT' | translate }}</ion-label>
-        <ion-input type="number" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.IceThickness.IceHeightAfter"
+        <ion-input type="number" pattern="[0-9]*" [(ngModel)]="registration.request.IceThickness.IceHeightAfter"
           placeholder="{{'REGISTRATION.IN_CM' | translate}}">
         </ion-input>
       </ion-item>
       <ion-item *ngIf="iceHeightAfter === false">
         <ion-label color="medium" position="stacked" text-uppercase text-wrap>{{
           'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO' | translate }}</ion-label>
-        <ion-input type="number" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.IceThickness.IceHeightAfter"
+        <ion-input type="number" pattern="[0-9]*" [(ngModel)]="registration.request.IceThickness.IceHeightAfter"
           placeholder="{{'REGISTRATION.IN_CM' | translate}}">
         </ion-input>
       </ion-item>

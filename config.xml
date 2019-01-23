@@ -154,4 +154,7 @@
     <engine name="browser" spec="5.0.4" />
     <engine name="android" spec="7.1.4" />
     <engine name="ios" spec="4.5.5" />
+    <plugin name="cordova-plugin-google-analytics" spec="1.8.6">
+        <variable name="GMS_VERSION" value="11.0.1" />
+    </plugin>
 </widget>

@@ -193,4 +193,8 @@ export const settings = {
     errorEmailAddress: 'regobs@nve.no',
     foregroundUpdateIntervalMs: 2 * 60 * 1000, // 2 minutes
     backgroundFetchTimeout: 20 * 1000, // 20 seconds
+    googleAnalytics: {
+        trackerId: 'UA-32394009-4',
+        anonymizeIp: true,
+    }
 };

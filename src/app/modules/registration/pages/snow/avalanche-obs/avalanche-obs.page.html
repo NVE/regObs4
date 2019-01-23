@@ -73,14 +73,15 @@
         <ion-label color="medium" position="stacked" text-uppercase>{{
           'REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_HEIGTH'
           | translate}}</ion-label>
-        <ion-input type="number" [min]="0" [max]="50000" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.AvalancheObs.FractureHeight">
+        <ion-input type="text" inputmode="numeric" [max]="50000" pattern="[0-9]*" [(ngModel)]="registration.request.AvalancheObs.FractureHeight">
         </ion-input>
       </ion-item>
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{
           'REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_WIDTH'
           | translate}}</ion-label>
-        <ion-input type="number" [min]="0" [max]="50000" inputmode="numberic" pattern="[0-9]*" [(ngModel)]="registration.request.AvalancheObs.FractureWidth">
+        <ion-input type="text" inputmode="numeric" [min]="0" [appInputPatternFilter]="'[0-9]+'" [max]="50000" pattern="[0-9]*"
+          [(ngModel)]="registration.request.AvalancheObs.FractureWidth">
         </ion-input>
       </ion-item>
       <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [rows]="2" [(value)]="registration.request.AvalancheObs.Trajectory"></app-text-comment>

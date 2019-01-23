@@ -305,7 +305,7 @@
         "AVAL_CAUSE": "Svakt lag",
         "DESTRUCTIVE_SIZE": "Størrelse",
         "FRACTURE_HEIGTH": "Bruddhøyde (cm)",
-        "FRACTURE_WIDTH": "Bruddbredde (cm)",
+        "FRACTURE_WIDTH": "Bruddbredde (m)",
         "INCIDENT_DESCRIPTION": "Ulykke eller skade",
         "POSITION": "Skredposisjon",
         "TERRAIN_START_ZONE": "Terrengtype i løsneområdet",

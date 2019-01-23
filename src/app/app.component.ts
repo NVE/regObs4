@@ -15,6 +15,7 @@ import { OfflineImageService } from './core/services/offline-image/offline-image
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
 import { Observable } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
+import { AnalyticService } from './core/services/analytic/analytic.service';
 
 @Component({
   selector: 'app-root',
@@ -40,6 +41,7 @@ export class AppComponent {
     private keyboard: Keyboard,
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
+    private analyticService: AnalyticService,
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -53,6 +55,7 @@ export class AppComponent {
       await this.initNanoSqlDatabase();
       const userSettings = await this.userSettings.getUserSettings();
       this.loggingService.configureLogging(userSettings.appMode);
+      this.analyticService.init();
       this.translate.use(LangKey[userSettings.language]);
       this.statusBar.styleBlackTranslucent();
       this.statusBar.overlaysWebView(this.platform.is('ios'));

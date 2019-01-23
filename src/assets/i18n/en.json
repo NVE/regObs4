@@ -305,7 +305,7 @@
         "AVAL_CAUSE": "Weak layer",
         "DESTRUCTIVE_SIZE": "Size",
         "FRACTURE_HEIGTH": "Fracture height (cm)",
-        "FRACTURE_WIDTH": "Fracture width (cm)",
+        "FRACTURE_WIDTH": "Fracture width (m)",
         "INCIDENT_DESCRIPTION": "Accident or injury",
         "POSITION": "Avalanche position",
         "TERRAIN_START_ZONE": "Tarrain type in the loose snow area",
