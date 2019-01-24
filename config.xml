@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget android-versionCode="489" id="no.nve.regobs4" ios-CFBundleVersion="489" osx-CFBundleVersion="489" version="4.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>regObs</name>
+  <name>Varsom Regobs</name>
   <description>Report incidents in nature</description>
   <author email="regobs@nve.no" href="http://nve.no/">NVE</author>
   <content src="index.html"/>
