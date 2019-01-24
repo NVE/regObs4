@@ -6,16 +6,5 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-grid *ngIf="simple" no-padding>
-    <ion-row>
-      <ion-col text-center class="spinner-col">
-        <ion-spinner color="light" name="dots"></ion-spinner>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col text-center>
-        <ion-label>{{ 'DATA_LOAD.DATA' | translate }}</ion-label>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-spinner *ngIf="simple"></ion-spinner>
 </div>
