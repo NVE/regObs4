@@ -32,3 +32,8 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+build.json
+nve.keystore
+src/app/modules/regobs-api/
+src/assets/apikey.json
+src/environments/version.json
