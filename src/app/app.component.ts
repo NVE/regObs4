@@ -104,7 +104,7 @@ export class AppComponent {
       // ALSO NOTE: Could not get Ionic Native Background fetch to work, so using ((any)window).BackgroundFetch
       // (direct use of cordova plugin) instead. To test Android:
       // Open command window with log: adb logcat -s TSBackgroundFetch
-      // Force run in another command window: adb shell cmd jobscheduler run -f no.nve.regobs 999
+      // Force run in another command window: adb shell cmd jobscheduler run -f no.nve.regobs4 999
       // Run chrome://inspect to view console.logs from update
       (<any>window).BackgroundFetch.configure(() => {
         this.dataMarshallService.backgroundFetchUpdate(this.platform.is('cordova') && this.platform.is('ios'), false)
