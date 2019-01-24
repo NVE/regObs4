@@ -56,7 +56,7 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
         return this.tripLogger.saveTripLogItem({
             latitude: location.latitude,
             longitude: location.longitude,
-            timestamp: location.timestamp,
+            timestamp: location.time,
             accuracy: location.accuracy,
             altitude: location.altitude,
             heading: location.bearing,
