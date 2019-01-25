@@ -177,6 +177,7 @@
         "END_POSITION": "Sluttpunkt",
         "IN_MAP": "i kart",
         "LANDSLIDE_TYPE": "Type skred",
+        "POSITION": "Skredposisjon",
         "SET_LANDSLIDE_POSITION": "Sett skredposisjon",
         "START_POSITION": "Startpunkt",
         "TITLE": "Skredhendelse"

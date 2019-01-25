@@ -167,19 +167,20 @@
     "DELETE_CONFIRM": "Are you sure?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
-        "AVAL_TRIGGER": "Avalanche trigger",
+        "AVAL_TRIGGER": "Land slide trigger",
         "DAMAGE_EXTENT": "Damage extent",
         "DESTRUCTIVE_SIZE": "Size",
         "DIRT_ACTIVITY_INFLUENCED": "What was affected?",
         "DIRT_FORECAST_ACCURATE": "Was the warning level correct?",
-        "DT_LAND_SLIDE_TIME": "When did the landslide happen first time",
-        "DT_LAND_SLIDE_TIME_END": "When did the landslide end",
+        "DT_LAND_SLIDE_TIME": "When did the land slide start",
+        "DT_LAND_SLIDE_TIME_END": "When did the land slide end",
         "END_POSITION": "End position",
         "IN_MAP": "in map",
-        "LANDSLIDE_TYPE": "Landslide type",
-        "SET_LANDSLIDE_POSITION": "Set landslide position",
+        "LANDSLIDE_TYPE": "Land slide type",
+        "POSITION": "Land slide position",
+        "SET_LANDSLIDE_POSITION": "Set land slide position",
         "START_POSITION": "Start position",
-        "TITLE": "Avalanche incident"
+        "TITLE": "Land slide observation"
       }
     },
     "DRAFTS": "My drafts",

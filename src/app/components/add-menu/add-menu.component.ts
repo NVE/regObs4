@@ -70,7 +70,7 @@ export class AddMenuComponent implements OnInit, OnDestroy {
   }
 
   getDate(timestamp: number) {
-    return this.dateHelperService.formatDate(moment.unix(timestamp).toDate());
+    return this.dateHelperService.formatDate(moment.unix(timestamp));
   }
 
   closeAndNavigate(url: string) {
