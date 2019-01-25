@@ -35,3 +35,4 @@ UserInterfaceState.xcuserstate
 src/assets/apikey.json
 src/environments/version.json
 nve.keystore
+sentry.properties
