@@ -14,7 +14,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "update-packages": "ncu -u & npm install",
-    "upload-sourcemaps": "sentry-cli releases --org nve --project regobs-app files \"%npm_package_version%\" upload-sourcemaps --url-prefix / www --rewrite",
+    "upload-sourcemaps": "cross-env SENTRY_PROPERTIES_FILE=sentry.properties && sentry-cli releases files \"%npm_package_version%\" upload-sourcemaps --url-prefix / www --rewrite",
     "create-version-file": "ts-node git.version.ts"
   },
   "private": true,
