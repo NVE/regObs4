@@ -25,6 +25,7 @@ import { IMapViewAndArea } from '../../../modules/map/services/map/map-view-and-
 import { ObservableHelper } from '../../helpers/observable-helper';
 import { IAvalancheWarningSimple } from './avalanche-warning-simple.interface';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+import '../../helpers/nano-sql/nanoObserverToRxjs';
 
 const DEBUG_TAG = 'WarningService';
 

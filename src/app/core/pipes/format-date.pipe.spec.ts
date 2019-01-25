@@ -1,8 +1,8 @@
-import { FormatDatePipe } from './format-date.pipe';
+// import { FormatDatePipe } from './format-date.pipe';
 
-describe('FormatDatePipe', () => {
-  it('create an instance', () => {
-    const pipe = new FormatDatePipe(null);
-    expect(pipe).toBeTruthy();
-  });
-});
+// describe('FormatDatePipe', () => {
+//   it('create an instance', () => {
+//     const pipe = new FormatDatePipe(null);
+//     expect(pipe).toBeTruthy();
+//   });
+// });

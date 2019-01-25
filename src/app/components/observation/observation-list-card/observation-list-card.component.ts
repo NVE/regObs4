@@ -24,7 +24,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   @Input() obs: RegistrationViewModel;
 
   geoHazardName: string;
-  dtObsDate: Date;
+  dtObsDate: string;
   icon: string;
   settings = settings;
   header: string;
@@ -67,7 +67,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
 
     this.ngZone.run(() => {
       this.header = this.obs.ObsLocation.Title;
-      this.dtObsDate = moment(this.obs.DtObsTime).toDate();
+      this.dtObsDate = this.obs.DtObsTime;
       this.icon = this.getGeoHazardCircleIcon(geoHazard);
       this.summaries = this.obs.Summaries;
       this.stars = [];

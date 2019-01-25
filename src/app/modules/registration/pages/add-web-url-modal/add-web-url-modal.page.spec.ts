@@ -1,27 +1,27 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddWebUrlModalPage } from './add-web-url-modal.page';
+// import { AddWebUrlModalPage } from './add-web-url-modal.page';
 
-describe('AddWebUrlModalPage', () => {
-  let component: AddWebUrlModalPage;
-  let fixture: ComponentFixture<AddWebUrlModalPage>;
+// describe('AddWebUrlModalPage', () => {
+//   let component: AddWebUrlModalPage;
+//   let fixture: ComponentFixture<AddWebUrlModalPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AddWebUrlModalPage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ AddWebUrlModalPage ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//     })
+//     .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AddWebUrlModalPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(AddWebUrlModalPage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

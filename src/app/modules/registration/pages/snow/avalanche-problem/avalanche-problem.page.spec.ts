@@ -1,27 +1,27 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AvalancheProblemPage } from './avalanche-problem.page';
+// import { AvalancheProblemPage } from './avalanche-problem.page';
 
-describe('AvalancheProblemPage', () => {
-  let component: AvalancheProblemPage;
-  let fixture: ComponentFixture<AvalancheProblemPage>;
+// describe('AvalancheProblemPage', () => {
+//   let component: AvalancheProblemPage;
+//   let fixture: ComponentFixture<AvalancheProblemPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AvalancheProblemPage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ AvalancheProblemPage ],
+//       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+//     })
+//     .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AvalancheProblemPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(AvalancheProblemPage);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

@@ -15,6 +15,7 @@ import { LoggingService } from '../../../shared/services/logging/logging.service
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
 import { RegObsTileLayer } from '../../core/classes/regobs-tile-layer';
+import '../../../../core/helpers/ionic/platform-helper';
 
 const DEBUG_TAG = 'MapComponent';
 

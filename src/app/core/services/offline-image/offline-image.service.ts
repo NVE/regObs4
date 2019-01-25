@@ -12,6 +12,7 @@ import { DbHelperService } from '../db-helper/db-helper.service';
 import { Platform } from '@ionic/angular';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { GuidHelper } from '../../helpers/guid.helper';
+import '../../helpers/ionic/platform-helper';
 
 const DEBUG_TAG = 'OfflineImageService';
 

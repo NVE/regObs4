@@ -5,7 +5,6 @@ import { AppVersionService } from '../../../../core/services/app-version/app-ver
 import { settings } from '../../../../../settings';
 import { environment } from '../../../../../environments/environment';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
-import { Severity } from '@sentry/browser';
 import { LoggingService } from './logging.service';
 import { LogLevel } from './log-level.model';
 

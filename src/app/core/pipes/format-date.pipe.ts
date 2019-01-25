@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DateHelperService } from '../../modules/shared/services/date-helper/date-helper.service';
+import * as moment from 'moment';
 
 @Pipe({
   name: 'formatDate'
@@ -11,9 +12,8 @@ export class FormatDatePipe implements PipeTransform {
   }
 
   transform(value: string | Date, showMonthNames = true, showYear = true, showTime = true) {
-    return typeof (value) === 'string' ?
-      this.dateHelperService.formatDateString(value, showMonthNames, showYear, showTime) :
-      this.dateHelperService.formatDate(value, showMonthNames, showYear, showTime);
+    return this.dateHelperService.formatDateString(typeof (value) === 'string' ? value : value.toISOString()
+      , showMonthNames, showYear, showTime);
   }
 
 }

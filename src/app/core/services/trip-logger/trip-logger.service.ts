@@ -15,6 +15,7 @@ import { ToastController, AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LegacyTrip } from './legacy-trip.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+import '../../helpers/nano-sql/nanoObserverToRxjs';
 
 const DEBUG_TAG = 'TripLoggerService';
 

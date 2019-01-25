@@ -10,6 +10,7 @@ import { GeoHazard } from '../../models/geo-hazard.enum';
 import { switchMap, debounceTime, map } from 'rxjs/operators';
 import * as turf from '@turf/turf';
 import { LoginService } from '../../../modules/login/services/login.service';
+import '../../helpers/nano-sql/nanoObserverToRxjs';
 
 @Injectable({
   providedIn: 'root'

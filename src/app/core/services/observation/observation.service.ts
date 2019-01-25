@@ -18,6 +18,7 @@ import { SearchService } from '../../../modules/regobs-api/services';
 import { RegistrationViewModel, ObserverResponseDto } from '../../../modules/regobs-api/models';
 import { ObservableHelper } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+import '../../helpers/nano-sql/nanoObserverToRxjs';
 
 const DEBUG_TAG = 'ObservationService';
 

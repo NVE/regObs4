@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UpdateObservationsComponent } from './update-observations.component';
+// import { UpdateObservationsComponent } from './update-observations.component';
 
-describe('UpdateObservationsComponent', () => {
-  let component: UpdateObservationsComponent;
-  let fixture: ComponentFixture<UpdateObservationsComponent>;
+// describe('UpdateObservationsComponent', () => {
+//   let component: UpdateObservationsComponent;
+//   let fixture: ComponentFixture<UpdateObservationsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ UpdateObservationsComponent ]
-    })
-    .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ UpdateObservationsComponent ]
+//     })
+//     .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(UpdateObservationsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(UpdateObservationsComponent);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

@@ -11,28 +11,31 @@ export class DateHelperService {
 
   }
 
-  formatDateString(dateString: string, showMonthNames = true, showYear = true, showTime = true) {
-    return this.formatDate(moment(dateString).toDate(), showMonthNames, showYear, showTime);
+  formatDateString(dateString: string, showMonthNames = true, showYear = true, showTime = true, currentTimeZone: string = null) {
+    return this.formatDate(moment.parseZone(dateString), showMonthNames, showYear, showTime, currentTimeZone);
   }
 
-  async formatDate(date: Date, showMonthNames = true, showYear = true, showTime = true) {
-    const dateAsMoment = moment(date);
-    if (!dateAsMoment.isValid()) {
+  async formatDate(date: moment.Moment, showMonthNames = true, showYear = true, showTime = true, currentTimeZone: string = null) {
+    const timezone = currentTimeZone || moment().format('Z');
+    if (!date.isValid()) {
       return '';
     }
     const parts = [];
-    let dateAndMonth = dateAsMoment.format('DD/MM');
+    let dateAndMonth = date.format('DD/MM');
     if (showMonthNames) {
       const monthNames = await this.translateService.get('MONTHS.SHORT_LIST').toPromise();
-      const monthName = monthNames.split(',')[dateAsMoment.month()].trim();
-      dateAndMonth = `${dateAsMoment.format('D')}. ${monthName}`;
+      const monthName = monthNames.split(',')[date.month()].trim();
+      dateAndMonth = `${date.format('D')}. ${monthName}`;
     }
     parts.push(dateAndMonth);
     if (showYear) {
-      parts.push(dateAsMoment.format('YYYY'));
+      parts.push(date.format('YYYY'));
     }
     if (showTime) {
-      parts.push(dateAsMoment.format('HH:mm'));
+      parts.push(date.format('HH:mm'));
+      if (date.format('Z') !== timezone) {
+        parts.push(`(${date.format('Z')})`);
+      }
     }
     return parts.join(' ');
   }

@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GeoSelectComponent } from './geo-select.component';
+// import { GeoSelectComponent } from './geo-select.component';
 
-describe('AppModeSelectComponent', () => {
-  let component: GeoSelectComponent;
-  let fixture: ComponentFixture<GeoSelectComponent>;
+// describe('AppModeSelectComponent', () => {
+//   let component: GeoSelectComponent;
+//   let fixture: ComponentFixture<GeoSelectComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [GeoSelectComponent]
-    })
-      .compileComponents();
-  }));
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [GeoSelectComponent]
+//     })
+//       .compileComponents();
+//   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GeoSelectComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(GeoSelectComponent);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

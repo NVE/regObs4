@@ -8,7 +8,7 @@ import { settings } from '../../../../settings';
 })
 export class AnalyticService {
 
-  ga: UniversalAnalytics.ga;
+  ga: any;
 
   constructor(
     private router: Router,

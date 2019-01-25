@@ -1,15 +1,15 @@
-import { TestBed, inject } from '@angular/core/testing';
+// import { TestBed, inject } from '@angular/core/testing';
 
-import { WarningService } from './warning.service';
+// import { WarningService } from './warning.service';
 
-describe('WarningService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [WarningService]
-    });
-  });
+// describe('WarningService', () => {
+//   beforeEach(() => {
+//     TestBed.configureTestingModule({
+//       providers: [WarningService]
+//     });
+//   });
 
-  it('should be created', inject([WarningService], (service: WarningService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+//   it('should be created', inject([WarningService], (service: WarningService) => {
+//     expect(service).toBeTruthy();
+//   }));
+// });

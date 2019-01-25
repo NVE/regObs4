@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import 'hammerjs';
 
 const SWIPE_BOUNDRY = 0.20; // More than 20% swipe to right will close modal
 

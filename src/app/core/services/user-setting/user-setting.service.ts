@@ -11,6 +11,7 @@ import { map, take, shareReplay, distinctUntilChanged, distinct, tap } from 'rxj
 import { LangKey } from '../../models/langKey';
 import { TopoMap } from '../../models/topo-map.enum';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+import '../../helpers/nano-sql/nanoObserverToRxjs';
 
 const DEBUG_TAG = 'UserSettingService';
 

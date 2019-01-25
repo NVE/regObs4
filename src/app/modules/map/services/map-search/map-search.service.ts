@@ -19,6 +19,7 @@ import * as moment from 'moment';
 import { IMapView } from '../map/map-view.interface';
 import { NorwegianSearchResultModel, NorwegianSearchResultModelStednavn } from './norwegian-search-result.model';
 import { WorldSearchResultModel } from './world-search-result.model';
+import '../../../../core/helpers/nano-sql/nanoObserverToRxjs';
 
 @Injectable({
   providedIn: 'root'

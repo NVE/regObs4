@@ -1,13 +1,13 @@
-import { DataLoadModule } from './data-load.module';
+// import { DataLoadModule } from './data-load.module';
 
-describe('DataLoadModule', () => {
-  let dataLoadModule: DataLoadModule;
+// describe('DataLoadModule', () => {
+//   let dataLoadModule: DataLoadModule;
 
-  beforeEach(() => {
-    dataLoadModule = new DataLoadModule();
-  });
+//   beforeEach(() => {
+//     dataLoadModule = new DataLoadModule();
+//   });
 
-  it('should create an instance', () => {
-    expect(dataLoadModule).toBeTruthy();
-  });
-});
+//   it('should create an instance', () => {
+//     expect(dataLoadModule).toBeTruthy();
+//   });
+// });

@@ -5,6 +5,7 @@ import { IDataLoad } from '../models/data-load.interface';
 import { nSQL } from 'nano-sql';
 import { map, take } from 'rxjs/operators';
 import * as moment from 'moment';
+import '../../../core/helpers/nano-sql/nanoObserverToRxjs';
 
 @Injectable({
   providedIn: 'root'
