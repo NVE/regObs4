@@ -8,7 +8,7 @@
     "generate-swagger-api-module": "ng-swagger-gen -c ng-swagger-gen.json",
     "start": "ng serve",
     "prebuild": "npm run create-version-file",
-    "build": "cross-env SENTRY_SKIP_AUTO_RELEASE=true && ng build",
+    "build": "cross-env SENTRY_SKIP_AUTO_RELEASE=true && npm run generate-swagger-api-module && ng build",
     "test": "ng test --watch=false --browsers=\"ChromeHeadless\" --code-coverage",
     "test-watch": "ng test --watch=true --browsers=\"ChromeHeadless\" --reporters=progress",
     "lint": "ng lint",
