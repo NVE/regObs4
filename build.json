@@ -1,0 +1,26 @@
+{
+    "android": {
+        "release": {
+            "keystore": "nve.keystore",
+            "alias": "regobs",
+            "keystoreType": ""
+        }
+    },
+    "ios": {
+        "debug": {
+            "developmentTeam": "43L5B5X2PE",
+            "codeSignIdentity": "iPhone Developer",
+            "buildFlag": [
+                "-UseModernBuildSystem=0"
+            ]
+        },
+        "release": {
+            "developmentTeam": "43L5B5X2PE",
+            "codeSignIdentity": "iPhone Developer",
+            "packageType": "app-store",
+            "buildFlag": [
+                "-UseModernBuildSystem=0"
+            ]
+        }
+    }
+}
