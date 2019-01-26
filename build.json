@@ -9,12 +9,18 @@
     "ios": {
         "debug": {
             "developmentTeam": "43L5B5X2PE",
-            "codeSignIdentity": "iPhone Developer"
+            "codeSignIdentity": "iPhone Developer",
+            "buildFlag": [
+                "-UseModernBuildSystem=0"
+            ]
         },
         "release": {
             "developmentTeam": "43L5B5X2PE",
             "codeSignIdentity": "iPhone Developer",
-            "packageType": "app-store"
+            "packageType": "app-store",
+            "buildFlag": [
+                "-UseModernBuildSystem=0"
+            ]
         }
     }
 }

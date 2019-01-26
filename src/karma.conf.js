@@ -18,7 +18,7 @@ module.exports = function (config) {
     },
     coverageIstanbulReporter: {
       dir: 'coverage/',
-      reports: ['html', 'lcovonly'],
+      reports: ['html', 'lcovonly', 'cobertura'],
       fixWebpackSourcePaths: true
     },
     reporters: ['progress', 'junit', 'kjhtml'],
@@ -38,6 +38,10 @@ module.exports = function (config) {
       }
     },
     browsers: ['Chrome', 'ChromeHeadless'],
+    junitReporter: {
+      outputDir: 'test-reports',
+      suite: '',
+    },
     singleRun: true
   });
 };

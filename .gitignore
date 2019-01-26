@@ -36,3 +36,4 @@ src/assets/apikey.json
 src/environments/version.json
 nve.keystore
 sentry.properties
+src/test-reports/
