@@ -149,6 +149,7 @@
       "AREA": "Area",
       "COMMENT": "Comment",
       "COMMENT_PLACEHOLDER": "Provide description of the danger sign",
+      "DESCRIPTION": "Description",
       "FOR_MUNICIPAL": "For the municipality",
       "FOR_REGION": "County / Warning region",
       "GENERAL_ON_MOUNTAIN": "Generally in the mountains",

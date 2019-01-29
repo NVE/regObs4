@@ -20,6 +20,7 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   dangerSignTid: number;
   comment: string;
   loaded = false;
+  commentTranslations: string[];
 
   interfaceOptions = {
 
@@ -36,13 +37,17 @@ export class AddOrEditDangerObsModalPage implements OnInit {
 
   async ngOnInit() {
     const tranlations = await this.translateService.get(this.getAreaArray()).toPromise();
+    this.commentTranslations = await this.translateService
+      .get(['REGISTRATION.DANGER_OBS.AREA', 'REGISTRATION.DANGER_OBS.DESCRIPTION']).toPromise();
     this.areaArr = this.getAreaArray().map((item) => tranlations[item] as string);
 
     if (this.dangerObs) {
       if (this.dangerObs.Comment) {
         this.tmpArea = this.areaArr.find((x) => this.dangerObs.Comment.indexOf(x) >= 0);
         if (this.tmpArea) {
-          const index = this.tmpArea.length + COMMENT_SEPARATOR.length;
+          const textToFind = `${this.commentTranslations['REGISTRATION.DANGER_OBS.DESCRIPTION']}`
+            + `${COMMENT_SEPARATOR}`;
+          const index = this.dangerObs.Comment.indexOf(textToFind) + textToFind.length;
           this.comment =
             this.dangerObs.Comment.substr(index);
         } else {
@@ -87,7 +92,10 @@ export class AddOrEditDangerObsModalPage implements OnInit {
 
   private getComment() {
     if (this.tmpArea) {
-      return `${this.tmpArea}${COMMENT_SEPARATOR}${this.comment || ''}`;
+      return `${this.commentTranslations['REGISTRATION.DANGER_OBS.AREA']}`
+        + `${COMMENT_SEPARATOR}${this.tmpArea}. `
+        + `${this.commentTranslations['REGISTRATION.DANGER_OBS.DESCRIPTION']}`
+        + `${COMMENT_SEPARATOR}${this.comment || ''}`;
     } else {
       return this.comment;
     }

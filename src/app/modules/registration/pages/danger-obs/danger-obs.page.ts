@@ -82,7 +82,7 @@ export class DangerObsPage extends BasePage {
     if (dangerObs.DangerSignTID % 100 !== 0 && this.dangerSignKdv) {
       const kdvElement = this.dangerSignKdv.find((x) => x.Id === dangerObs.DangerSignTID);
       if (kdvElement) {
-        text.push(kdvElement.Name);
+        text.push(kdvElement.Name.trim());
       }
     }
     if (dangerObs.Comment) {
