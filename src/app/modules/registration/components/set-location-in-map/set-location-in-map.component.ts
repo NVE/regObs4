@@ -294,4 +294,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }, 50);
   }
 
+  onLocationEditComplete() {
+    if (this.editLocationNameInput.value.length === 0) { // User has deleted all text
+      this.editLocationName = false;
+      this.updateMapViewInfo();
+    }
+  }
+
 }

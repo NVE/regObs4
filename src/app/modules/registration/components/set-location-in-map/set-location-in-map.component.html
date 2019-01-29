@@ -82,7 +82,7 @@
                       </ion-row>
                       <ion-row *ngIf="editLocationName">
                         <ion-col no-padding>
-                          <ion-input #editLocationNameInput type="text" [max]="60" [(ngModel)]="locationName"></ion-input>
+                          <ion-input #editLocationNameInput type="text" [max]="60" [(ngModel)]="locationName" (ionBlur)="onLocationEditComplete()"></ion-input>
                         </ion-col>
                       </ion-row>
                       <ion-row>
