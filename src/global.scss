@@ -151,6 +151,11 @@ ion-list {
     }
 }
 
+.action-sheet-group.sc-ion-action-sheet-ios {
+    /* https://github.com/ionic-team/ionic/issues/17233 */
+    overflow-y: scroll !important;
+}
+
 ion-menu {
     ion-content {
         --ion-background-color: #fff
