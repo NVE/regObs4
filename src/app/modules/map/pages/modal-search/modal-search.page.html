@@ -1,4 +1,4 @@
-<div class="swipeWrapper" (panmove)="onPan($event)" (panend)="onPanend()">
+<div class="swipeWrapper" (panright)="onPan($event)" (panend)="onPanend()">
   <ion-header>
     <ion-toolbar mode="ios">
       <form>
@@ -13,7 +13,7 @@
       </form>
     </ion-toolbar>
   </ion-header>
-  <ion-content>
+  <ion-content scroll-x="false" class="has-footer">
     <ion-list *ngIf="searchResult$ | async as searchResults" lines="full" class="search-result">
       <ion-item *ngFor="let item of searchResults" (click)="searchItemClicked(item)">
         <ion-label>

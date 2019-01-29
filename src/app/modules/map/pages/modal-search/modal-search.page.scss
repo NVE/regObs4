@@ -10,7 +10,9 @@ ion-title {
 
 ion-content {
     ion-list {
+        padding-bottom: 8px;
         margin-top: 1px;
+        margin-bottom: 0px;
         ion-item {
             ion-label {
             .search-result-name {

@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ModalController, IonInput } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
@@ -24,7 +24,6 @@ export class ModalSearchPage implements OnInit {
   searchHistory$: Observable<MapSearchResponse[]>;
   modalPageWrapper: Element;
   swipeOffset = 0;
-  width = 0;
   swipePercentage = 0;
 
   constructor(private modalController: ModalController,
@@ -46,13 +45,7 @@ export class ModalSearchPage implements OnInit {
             this.searchText = val;
           });
         }),
-        switchMap((searchValue: string) => {
-          if (searchValue.length >= 2) {
-            return this.mapSearchService.searchAll(searchValue);
-          } else {
-            return of([]);
-          }
-        }),
+        switchMap((searchValue: string) => this.mapSearchService.searchAll(searchValue)),
         tap((values) => {
           this.ngZone.run(() => {
             this.hasResults = values.length > 0;
@@ -60,9 +53,12 @@ export class ModalSearchPage implements OnInit {
           });
         }),
       );
+  }
+
+  async getWidth() {
     const modalTop = await this.modalController.getTop();
     this.modalPageWrapper = modalTop.getElementsByClassName('modal-wrapper')[0];
-    this.width = modalTop.offsetWidth;
+    return modalTop.offsetWidth;
   }
 
   focusInput(event: Event) {
@@ -82,13 +78,16 @@ export class ModalSearchPage implements OnInit {
   }
 
   // TODO: Create swipe-out component and wrap title and content
-  onPan(event: HammerInput) {
-    this.swipeOffset = Math.max(event.deltaX, 0);
-    this.swipePercentage = this.swipeOffset / this.width;
-    if (this.swipePercentage < SWIPE_BOUNDRY) {
-      this.setPageSwipeAttributes();
-    } else {
-      this.closeModal();
+  async onPan(event: HammerInput) {
+    const width = await this.getWidth();
+    if (width > 0) {
+      this.swipeOffset = Math.max(event.deltaX, 0);
+      this.swipePercentage = this.swipeOffset / width;
+      if (this.swipePercentage < SWIPE_BOUNDRY) {
+        this.setPageSwipeAttributes();
+      } else {
+        this.closeModal();
+      }
     }
   }
 
