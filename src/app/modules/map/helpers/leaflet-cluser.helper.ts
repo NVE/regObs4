@@ -2,12 +2,16 @@ import * as L from 'leaflet';
 import { settings } from '../../../../settings';
 
 export class LeafletClusterHelper {
-    static createMarkerClusterGroup = () => L.markerClusterGroup({
-        spiderfyOnMaxZoom: true,
-        showCoverageOnHover: false,
-        maxClusterRadius: settings.map.maxClusterRadius,
-        iconCreateFunction: LeafletClusterHelper.createClusterIcon,
-    })
+    static createMarkerClusterGroup() {
+        const clusterGroup = L.markerClusterGroup({
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: false,
+            maxClusterRadius: settings.map.maxClusterRadius,
+            iconCreateFunction: LeafletClusterHelper.createClusterIcon,
+        });
+        return clusterGroup;
+    }
 
     static createClusterIcon(cluster: L.MarkerCluster) {
         const length = cluster.getAllChildMarkers().length;

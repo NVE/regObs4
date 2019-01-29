@@ -13,6 +13,7 @@ import { LoggingService } from '../../modules/shared/services/logging/logging.se
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
 import { Router, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { settings } from '../../../settings';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -92,6 +93,12 @@ export class HomePage implements OnInit, OnDestroy {
   async onMapReady(map: L.Map) {
     this.map = map;
     this.markerLayer.addTo(this.map);
+    this.markerLayer.on('clusterclick', (a: any) => {
+      const groupLatLng: L.LatLng = a.latlng;
+      const currentZoom = this.map.getZoom();
+      const newZoom = currentZoom + 1;
+      this.map.setView(groupLatLng, newZoom);
+    });
     this.map.on('click', () => {
       if (this.selectedMarker) {
         this.selectedMarker.deselect();
