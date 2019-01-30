@@ -1,0 +1,7 @@
+<ion-item>
+  <ion-label *ngIf="title" color="medium" position="stacked" text-uppercase>{{
+    title | translate }}</ion-label>
+  <ion-input type="number" [pattern]="pattern" [min]="min" [max]="max" (ionChange)="onInputChange()" [(ngModel)]="cmValue"
+    placeholder="{{ placeholder | translate}}">
+  </ion-input>
+</ion-item>

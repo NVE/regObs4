@@ -16,14 +16,8 @@
     </ion-list-header>
     <app-kdv-dropdown title="{{'REGISTRATION.ICE.ICE_THICKNESS.ICE_TYPE' | translate}}" kdvKey="Ice_IceLayerKDV"
       [(value)]="layerCopy.IceLayerTID"></app-kdv-dropdown>
-    <ion-item>
-      <ion-label color="medium" position="stacked" text-uppercase>{{
-        'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_THICKNESS'
-        | translate}}</ion-label>
-      <ion-input type="number" [min]="0" [max]="10000" pattern="[0-9]+([,\.][0-9]+)?" step="0.1" [(ngModel)]="layerCopy.IceLayerThickness"
-        placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
-      </ion-input>
-    </ion-item>
+    <app-meters-to-cm-input title="REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER_THICKNESS" [(value)]="layerCopy.IceLayerThickness"
+      [min]="0" [max]="10000" placeholder="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER" [decimalPlaces]="1"></app-meters-to-cm-input>
   </ion-list>
   <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="!isNew">
   </app-modal-save-or-delete-buttons>

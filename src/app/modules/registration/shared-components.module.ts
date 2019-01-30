@@ -19,6 +19,7 @@ import { RegistrationContentWrapperComponent } from './components/registration-c
 import { HelpTextComponent } from './components/help-text/help-text.component';
 import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.module';
 import { YesNoSelectComponent } from './components/yes-no-select/yes-no-select.component';
+import { MetersToCmInputComponent } from './components/meters-to-cm-input/meters-to-cm-input.component';
 
 @NgModule({
     imports: [
@@ -47,6 +48,7 @@ import { YesNoSelectComponent } from './components/yes-no-select/yes-no-select.c
         HelpTextComponent,
         HelpModalPageModule,
         YesNoSelectComponent,
+        MetersToCmInputComponent,
     ],
     declarations: [
         SaveAndGoBackButtonComponent,
@@ -66,6 +68,7 @@ import { YesNoSelectComponent } from './components/yes-no-select/yes-no-select.c
         RegistrationContentWrapperComponent,
         HelpTextComponent,
         YesNoSelectComponent,
+        MetersToCmInputComponent,
     ],
 })
 export class SharedComponentsModule { }
