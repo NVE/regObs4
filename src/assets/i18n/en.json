@@ -296,6 +296,7 @@
         "AVALANCHE_DANGER": "Denger level",
         "AVALANCHE_DEVELOPMENT": "Development",
         "AVALANCHE_DEVEOPMENT_PLACEHOLDER": "Development of avalanche danger",
+        "COMMENT": "Comment to avalanche forcast",
         "EVALUATION": "Evaluation",
         "EVALUATION_PLACEHOLDER": "Evaluation of avalanche danger",
         "FORECAST_CORRECT": "Assessment of avalanche forecast",

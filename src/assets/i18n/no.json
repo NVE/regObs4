@@ -296,6 +296,7 @@
         "AVALANCHE_DANGER": "Faregrad",
         "AVALANCHE_DEVELOPMENT": "Utvikling",
         "AVALANCHE_DEVEOPMENT_PLACEHOLDER": "Utvikling av skredfare",
+        "COMMENT": "Kommentar til varslet faregrad",
         "EVALUATION": "Vurdering",
         "EVALUATION_PLACEHOLDER": "Vurdering av skredfare",
         "FORECAST_CORRECT": "Vurdering av varslet faregrad",
