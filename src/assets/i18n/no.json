@@ -465,9 +465,8 @@
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian"
     },
     "PAGE_1": {
-      "HEADER": "Vær oppdatert",
-      "LINE_1": "Planlegg turen med regObs og Varsom.",
-      "LINE_2": "Les varsel. Se hvor andre har lagt inn observasjoner"
+      "HEADER": "Planlegg trygge turer!",
+      "LINE_1": "Se ferske observasjoner og naturarevarsler når du planlegger turen."
     },
     "PAGE_2": {
       "HEADER": "Naturfarekart",
@@ -482,7 +481,7 @@
       "HEADER": "Hva og hvordan?",
       "LINE_1": "Du velger selv hva du vil se og dele på regObs. Du kan lese om hvordan du deler observasjoner med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
     },
-    "SKIP_START": "Hopp over dette. Begynn å bruk."
+    "SKIP_START": "Hopp over"
   },
   "SUPPORT_MAP": {
     "CAUTION_AREA": "Aktsomhetsområde",

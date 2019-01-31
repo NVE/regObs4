@@ -465,9 +465,8 @@
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norsk"
     },
     "PAGE_1": {
-      "HEADER": "Be up to date!",
-      "LINE_1": "Plan your tour with regObs and Varsom.",
-      "LINE_2": "Read warings. View observations."
+      "HEADER": "Plan safe trips!",
+      "LINE_1": "View observations and warnings when you plan your trip."
     },
     "PAGE_2": {
       "HEADER": "Geohazard maps",
@@ -482,7 +481,7 @@
       "HEADER": "What and how?",
       "LINE_1": "Choose what to see and share on regObs. You can read about sharing observations at varsom.no/snøskredskolen and varsom.no/isskolen"
     },
-    "SKIP_START": "Skip this and start using the app"
+    "SKIP_START": "Skip"
   },
   "SUPPORT_MAP": {
     "CAUTION_AREA": "Caution area",

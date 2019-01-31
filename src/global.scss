@@ -35,9 +35,9 @@
     --ion-color-primary-tint: var(--ion-color-varsom-blue-tint);
     --ion-color-warninglevel-0: #aaa;
     --ion-color-warninglevel-1: #75b100;
-    --ion-color-warninglevel-2: #fc3;
-    --ion-color-warninglevel-3: #e46900;
-    --ion-color-warninglevel-4: #d21523;
+    --ion-color-warninglevel-2: #FFCC33;
+    --ion-color-warninglevel-3: #F36000;
+    --ion-color-warninglevel-4: #E3000F;
     --ion-color-warninglevel-5: #000;
     --backdrop-background:  rgba(0, 0, 0, 0.8);
     --map-faded-overlay-background: rgba(43, 51, 51, 0.9);
@@ -52,17 +52,26 @@
     --ion-color-varsom-blue-contrast: #fff;
     --ion-color-varsom-blue-contrast-rgb: 255,255,255;
     --ion-color-varsom-blue-shade: #044157;
-    --ion-color-varsom-blue-tint: #6996A3;
+    --ion-color-varsom-blue-light-1: #6996A3;
     --ion-color-varsom-blue-light-2: #9BB9C2;
+    --ion-color-varsom-blue-light-3: #DAE5E8;
+    --ion-color-varsom-blue-dark-1:  #044157;
+    --ion-color-varsom-blue-dark-2: #033648;
+    --ion-color-varsom-blue-tint: var(--ion-color-varsom-blue-light-1);
     --ion-color-varsom-grey: #5C90A5;
     --ion-color-varsom-orange: #EE7B04;
+    --ion-color-varsom-orange-dark-1: #DB7100;
+    --ion-color-varsom-orange-light-1: #F5B068;
+    --ion-color-varsom-orange-light-2: #F8CA9B;
+    --ion-color-varsom-orange-light-3: #FCEBD9;
     --ion-color-varsom-orange-rgb: 238,123,4;
     --ion-color-varsom-orange-contrast: #fff;
     --ion-color-varsom-orange-contrast-rgb: 255,255,255;
     --ion-color-varsom-orange-shade: #5C90A5;
-    --ion-color-varsom-orange-tint: #F5B068;
-    --ion-text-color: rgba(34, 34, 34, 0.87);
-    --ion-color-step-600: var(--ion-text-color);
+    --ion-color-varsom-orange-tint: var(--ion-color-varsom-orange-light-1);
+    --ion-text-color: #444444;
+    --ion-text-color-heading: #222222;
+    --ion-color-step-600: var(--ion-text-color-heading);
     --ion-font-family: 'Source Sans Pro';
     --ion-color-varsom-test-header: #700CEF;
     --ion-color-varsom-demo-header: var(--ion-color-danger);
@@ -336,5 +345,15 @@ app-header {
         &:last-child {
             margin-top: auto;
         }
+    }
+}
+
+.onboarding {
+    .swiper-pagination-bullets {
+        bottom: 25px;
+    }
+    .swiper-pagination-bullet {
+        height: 12px;
+        width: 12px;
     }
 }

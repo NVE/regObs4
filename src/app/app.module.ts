@@ -24,6 +24,7 @@ import { RegobsApiModule } from './modules/regobs-api/regobs-api.module';
 import { LegalTermsModalPageModule } from './pages/modal-pages/legal-terms-modal/legal-terms-modal.module';
 import { MarkdownModule } from 'ngx-markdown';
 import { UpdateObservationsComponent } from './components/side-menu/update-observations/update-observations.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -40,6 +41,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
     IonicModule.forRoot(),

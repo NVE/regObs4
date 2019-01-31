@@ -3,46 +3,81 @@ ion-content {
 
     ion-slides {
         height: 100%;
-    }
 
-    ion-grid {
-        width: 100%;
+        h2 {
+            margin-top: 0px;
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-        &.image-grid {
+        h3 {
+            font-size: 18px;
+        }
+
+        .dark-color {
+            color: var(--ion-text-color);
+        }
+
+        .full-grid {
+            width: 100%;
             height: 100%;
-            
-            ion-row {
-            &.wizard-image-wrap {
-                height: 60%;
-        
-                &.blue {
-                    background-color: #BDD7EE;
-                }
-                
-                &.green {
-                    background-color: #C5E0B4;
-                }
-                
-                &.orange {
-                    background-color: #F8CBAD;
-                }
-                
-                &.yellow {
-                    background-color: #FFE699;
-                }
-            }
-            height: 40%;
-        
-            .slide-text {
-                font-size: 16px;
-                padding-left: 30px;
-                padding-right: 30px;
-            }
+
+            .full-grid-row {
+                height: 50%;
             }
         }
-    }
 
-  ion-card {
-    --inner-border-width: 0 0 0 0;
-  }
+        ion-list {
+            margin-top: 16px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        ion-card {
+            --inner-border-width: 0 0 0 0;
+        }
+
+        .eclipse {
+            transform: translateX(100px) translateY(50px);
+        }
+        .bubble {
+            transform: translateX(-100px) translateY(100px);
+        }
+
+        .bounce-line {
+            position: absolute;
+            top: 50%;
+        }
+
+        .line {
+            display: block;
+        }
+
+        .warning {
+            display: block;
+            transform: translateX(100px) translateY(180px);
+        }
+
+        .pin-ice {
+            display: block;
+            transform: translateX(0px) translateY(190px);
+        }
+
+        .pin-dirt {
+            display: block;
+            transform: translateX(120px) translateY(-120px); 
+        }
+
+        .pin-snow {
+            display: block;
+            transform: translateX(-20px) translateY(-150px);
+        }
+        .pin-water {
+            display: block;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-140px) translateY(-0px);
+        }
+    }
 }
