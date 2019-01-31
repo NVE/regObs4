@@ -25,7 +25,7 @@
     --ion-tab-bar-color-activated: var(--ion-color-primary);
     --ion-color-success: #75B100;
     --ion-color-success-rgb:117,177,0;
-    --ion-color-danger: #E3000F;
+    --ion-color-danger: #A30808;
     --ion-color-danger-rgb: 227,0,15;
     --ion-color-primary: var(--ion-color-varsom-blue);
     --ion-color-primary-rgb: var(--ion-color-varsom-blue-rgb);
@@ -64,6 +64,8 @@
     --ion-text-color: rgba(34, 34, 34, 0.87);
     --ion-color-step-600: var(--ion-text-color);
     --ion-font-family: 'Source Sans Pro';
+    --ion-color-varsom-test-header: #700CEF;
+    --ion-color-varsom-demo-header: var(--ion-color-danger);
 }
 
 .ion-color-varsom-orange {
@@ -230,10 +232,10 @@ ion-toolbar {
             --background: var(--ion-color-varsom-blue);
         }
         &.demo {
-            --background: var(--ion-color-danger);
+            --background: var(--ion-color-varsom-demo-header);
         }
         &.test {
-            --background: var(--ion-color-varsom-grey);
+            --background: var(--ion-color-varsom-test-header);
         }
     }
 }
