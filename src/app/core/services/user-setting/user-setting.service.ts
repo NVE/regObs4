@@ -28,6 +28,7 @@ export class UserSettingService {
   private _appModeObservable: Observable<AppMode>;
   private _showMapCenter: Observable<boolean>;
   private _appModeAndLanguageObservable: Observable<[AppMode, LangKey]>;
+  private _appModeLanguageAndCurrentGeoHazardObservable: Observable<[AppMode, LangKey, GeoHazard[]]>;
   private _languageObservable: Observable<LangKey>;
   private _daysBackObservable: Observable<{ geoHazard: GeoHazard, daysBack: number }[]>;
   private _showObservationsObservable: Observable<boolean>;
@@ -46,6 +47,10 @@ export class UserSettingService {
 
   get appModeAndLanguage$() {
     return this._appModeAndLanguageObservable;
+  }
+
+  get appModeLanguageAndCurrentGeoHazard$() {
+    return this._appModeLanguageAndCurrentGeoHazardObservable;
   }
 
   get language$() {
@@ -94,6 +99,10 @@ export class UserSettingService {
         shareReplay(1));
 
     this._appModeAndLanguageObservable = combineLatest(this.appMode$, this.language$)
+      .pipe(shareReplay(1));
+
+    this._appModeLanguageAndCurrentGeoHazardObservable = combineLatest(
+      this.appMode$, this.language$, this.currentGeoHazardObservable$)
       .pipe(shareReplay(1));
 
     this._showMapCenter = this.userSettingObservable$

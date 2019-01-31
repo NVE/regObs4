@@ -19,6 +19,7 @@ import { RegistrationViewModel, ObserverResponseDto } from '../../../modules/reg
 import { ObservableHelper } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import '../../helpers/nano-sql/nanoObserverToRxjs';
+import { DbHelperService } from '../db-helper/db-helper.service';
 
 const DEBUG_TAG = 'ObservationService';
 
@@ -43,6 +44,7 @@ export class ObservationService {
     private userSettingService: UserSettingService,
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
+    private dbHelperService: DbHelperService,
   ) {
     this._observationsObservable = this.getObservationsAsObservable();
     this._dataLoadObservable = this.getDataLoadObservable();
@@ -63,20 +65,21 @@ export class ObservationService {
     }
   }
 
-  private getDataLoadId(appMode: AppMode, geoHazards: GeoHazard[]) {
-    return `${NanoSql.TABLES.OBSERVATION.name}_${geoHazards.join('-')}_${appMode}`;
+  private getDataLoadId(appMode: AppMode, geoHazards: GeoHazard[], langKey: LangKey) {
+    return `${NanoSql.TABLES.OBSERVATION.name}_${geoHazards.join('-')}_${appMode}_${langKey}`;
   }
 
   private getDataLoadObservable() {
-    return combineLatest(this.userSettingService.appMode$, this.userSettingService.currentGeoHazardObservable$)
-      .pipe(map(([appMode, currentGeoHazard]) => this.getDataLoadId(appMode, currentGeoHazard)));
+    return this.userSettingService.appModeLanguageAndCurrentGeoHazard$
+      .pipe(map(([appMode, language, currentGeoHazard]) => this.getDataLoadId(appMode, currentGeoHazard, language)));
   }
 
   private async checkLastUpdatedAndUpdateDataIfNeeded(
     geoHazards: GeoHazard[],
     userSetting: UserSetting,
     cancel?: Promise<void>) {
-    const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(userSetting.appMode, geoHazards));
+    const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazards, userSetting.language);
+    const dataLoad = await this.dataLoadService.getState(dataLoadId);
     const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
     if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
       this.loggingService.debug(`Observations is already loading.`, DEBUG_TAG);
@@ -97,9 +100,9 @@ export class ObservationService {
   }
 
   getLastUpdatedForCurrentGeoHazardAsObservable() {
-    return combineLatest(this.userSettingService.appMode$, this.userSettingService.currentGeoHazardObservable$)
-      .pipe(switchMap(([appMode, currentGeoHazard]) =>
-        this.dataLoadService.getStateAsObservable(this.getDataLoadId(appMode, currentGeoHazard))
+    return this.userSettingService.appModeLanguageAndCurrentGeoHazard$
+      .pipe(switchMap(([appMode, language, currentGeoHazard]) =>
+        this.dataLoadService.getStateAsObservable(this.getDataLoadId(appMode, currentGeoHazard, language))
       ), map((val) => val && val.lastUpdated ? moment(val.lastUpdated).toDate() : null));
   }
 
@@ -116,7 +119,7 @@ export class ObservationService {
 
   async updateObservationsForGeoHazard(geoHazards: GeoHazard[], userSetting: UserSetting, cancel?: Promise<any>) {
     this.loggingService.debug(`Updating observations for geoHazard: ${geoHazards.join(', ')}`, DEBUG_TAG);
-    const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazards);
+    const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazards, userSetting.language);
     await this.dataLoadService.startLoading(dataLoadId);
     const fromDate = await this.getDaysBackToFetchAsDate(userSetting, geoHazards);
     let isCanceled = false;
@@ -136,12 +139,13 @@ export class ObservationService {
       this.loggingService.debug(`Got ${searchResult.length} new observations for geoHazards ${geoHazards.join(', ')}`, DEBUG_TAG);
       if (!isCanceled) {
         const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode);
-        await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode)
-          .loadJS(instanceName, searchResult, true);
+        const now = new Date();
+        await this.dbHelperService.fastInsert(instanceName, searchResult, (data) => data.RegID);
+        this.loggingService.debug(`fastInsert took ${new Date().getTime() - now.getTime()} ms`, DEBUG_TAG);
       }
       if (!isCanceled) {
-        this.loggingService.debug(`Deleted items no longer in updated result`, DEBUG_TAG);
-        await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, fromDate, searchResult);
+        const deleteResult = await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, fromDate, searchResult);
+        this.loggingService.debug(`Deleted items no longer in updated result`, DEBUG_TAG, deleteResult);
       }
       if (!isCanceled) {
         this.loggingService.debug(`Deleted old observations`, DEBUG_TAG);
@@ -182,14 +186,16 @@ export class ObservationService {
       if (searchResult.length > 0) {
         const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
         const instance = NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode);
-        await instance.loadJS(instanceName, searchResult, false);
+        await this.dbHelperService.fastInsert(instanceName, searchResult, (r) => r.RegID);
         const ids = searchResult.map((x) => x.RegID);
         const lastId = ids[searchResult.length - 1];
+        const firstId = ids[0];
         // Delete records no longer in result (registration has been deleted)
         await instance.query('delete')
           .where((reg: RegistrationViewModel) => {
             return reg.Observer.ObserverGUID === user.Guid &&
               reg.RegID < lastId &&
+              reg.RegID > firstId &&
               !ids.find((item) => item === reg.RegID);
           }).exec();
       }

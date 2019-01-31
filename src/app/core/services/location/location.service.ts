@@ -11,6 +11,7 @@ import { switchMap, debounceTime, map } from 'rxjs/operators';
 import * as turf from '@turf/turf';
 import { LoginService } from '../../../modules/login/services/login.service';
 import '../../helpers/nano-sql/nanoObserverToRxjs';
+import { DbHelperService } from '../db-helper/db-helper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class LocationService {
   constructor(
     private userSettingService: UserSettingService,
     private loginService: LoginService,
+    private dbHelperService: DbHelperService,
     private apiLocationService: RegobsApi.LocationService) { }
 
   async updateLocationWithinRadius(geoHazard: GeoHazard, lat: number, lng: number, radius: number) {
@@ -36,7 +38,7 @@ export class LocationService {
     this.apiLocationService.rootUrl = settings.services.regObs.apiUrl[userSettings.appMode];
     const result = await this.apiLocationService.LocationWithinRadius(params).toPromise();
     const tableName = NanoSql.getInstanceName(NanoSql.TABLES.LOCATION.name, userSettings.appMode);
-    await nSQL(tableName).loadJS(tableName, result, true);
+    await this.dbHelperService.fastInsert(tableName, result, (loc) => loc.Id);
     // Cleanup deleted records. This also triggers change
     await this.deleteLocationsNoLongerInResult(userSettings.appMode, geoHazard, lat, lng, radius, result);
   }
@@ -51,7 +53,7 @@ export class LocationService {
 
   private async deleteLocationsNoLongerInResult(
     appMode: AppMode, geoHazard: GeoHazard, lat: number, lng: number, radius: number, result: ObsLocationsResponseDtoV2[]) {
-    const deleteResult = await NanoSql.getInstance(NanoSql.TABLES.LOCATION.name, appMode)
+    await NanoSql.getInstance(NanoSql.TABLES.LOCATION.name, appMode)
       .query('delete').where((item: ObsLocationsResponseDtoV2) => item.GeoHazardId === geoHazard
         && this.withinRadius(item, lat, lng, radius) && !result.find((x) => x.Id === item.Id)).exec();
   }

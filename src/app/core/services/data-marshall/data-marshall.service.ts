@@ -12,8 +12,8 @@ import { RegistrationService } from '../../../modules/registration/services/regi
 import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { combineLatest, Subject } from 'rxjs';
-import { map, switchMap, distinctUntilChanged, pairwise, skipUntil, skipWhile, tap, filter, take } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { map, switchMap, distinctUntilChanged, pairwise, filter, take } from 'rxjs/operators';
 
 const DEBUG_TAG = 'DataMarshallService';
 
@@ -59,10 +59,7 @@ export class DataMarshallService {
       this.helpTextService.updateHelpTexts();
       this.loggingService.debug('AppMode or Language has changed. Update kdv elements and help texts.', DEBUG_TAG);
     });
-    combineLatest(
-      this.userSettingService.appModeAndLanguage$,
-      this.userSettingService.currentGeoHazardObservable$,
-    ).subscribe(() => {
+    this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(() => {
       this.loggingService.debug('AppMode, Language or CurrentGeoHazard has changed. Update observations and warnings.', DEBUG_TAG);
       this.updateObservations();
       this.warningService.updateWarnings();

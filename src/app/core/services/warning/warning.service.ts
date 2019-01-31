@@ -26,6 +26,7 @@ import { ObservableHelper } from '../../helpers/observable-helper';
 import { IAvalancheWarningSimple } from './avalanche-warning-simple.interface';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import '../../helpers/nano-sql/nanoObserverToRxjs';
+import { DbHelperService } from '../db-helper/db-helper.service';
 
 const DEBUG_TAG = 'WarningService';
 
@@ -58,14 +59,15 @@ export class WarningService {
     private platform: Platform,
     private nativeHttp: HTTP,
     private loggingService: LoggingService,
+    private dbHelperService: DbHelperService,
   ) {
     this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
     this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();
     this._warningGroupInMapViewObservable = this.getWarningsForCurrentMapViewAsObservable();
   }
 
-  private getDataLoadId(geoHazard: GeoHazard) {
-    return `${NanoSql.TABLES.WARNING.name}_${geoHazard}`;
+  private getDataLoadId(geoHazard: GeoHazard, language: LangKey) {
+    return `${NanoSql.TABLES.WARNING.name}_${geoHazard}_${language}`;
   }
 
   async updateWarnings(cancel?: Promise<void>) {
@@ -79,7 +81,7 @@ export class WarningService {
     const userSettings = await this.userSettingService.getUserSettings();
     for (const geoHazard of userSettings.currentGeoHazard) {
       if (!cancelled) {
-        await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard, cancel);
+        await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard, userSettings.language, cancel);
       }
     }
     this.loggingService.debug('Updating warnings completed', DEBUG_TAG);
@@ -88,32 +90,32 @@ export class WarningService {
   async updateWarningsForCurrentGeoHazard(cancel?: Promise<void>) {
     const userSettings = await this.userSettingService.getUserSettings();
     for (const geoHazard of userSettings.currentGeoHazard) {
-      await this.updateWarningsForGeoHazard(geoHazard, cancel);
+      await this.updateWarningsForGeoHazard(geoHazard, userSettings.language, cancel);
     }
   }
 
-  private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard, cancel?: Promise<void>) {
-    const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(geoHazard));
+  private async checkLastUpdatedAndUpdateDataIfNeeded(geoHazard: GeoHazard, langKey: LangKey, cancel?: Promise<void>) {
+    const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(geoHazard, langKey));
     const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
     if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
       this.loggingService.debug(`Warnings is allready being updated.`, DEBUG_TAG);
     } else {
       const lastUpdateLimit = moment().subtract(1, 'hour');
       if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
-        await this.updateWarningsForGeoHazard(geoHazard, cancel);
+        await this.updateWarningsForGeoHazard(geoHazard, langKey, cancel);
       } else {
         this.loggingService.debug(`No need to update ${geoHazard}. Last updated is: ${dataLoad.lastUpdated}`, DEBUG_TAG);
       }
     }
   }
 
-  updateWarningsForGeoHazard(geoHazard: GeoHazard, cancel?: Promise<void>) {
+  updateWarningsForGeoHazard(geoHazard: GeoHazard, langKey: LangKey, cancel?: Promise<void>) {
     if (geoHazard === GeoHazard.Snow) {
-      return this.updateAvalancheWarnings(LangKey.no, null, null, cancel);
+      return this.updateAvalancheWarnings(langKey, null, null, cancel);
     } else if (geoHazard === GeoHazard.Ice) {
-      return this.updateIceWarnings();
+      return this.updateIceWarnings(langKey);
     } else {
-      return this.updateFloodAndLandslideWarnings(geoHazard, LangKey.no, null, null, cancel);
+      return this.updateFloodAndLandslideWarnings(geoHazard, langKey, null, null, cancel);
     }
   }
 
@@ -288,7 +290,7 @@ export class WarningService {
     cancelPromise?: Promise<void>) {
     this.loggingService.debug(`Updating ${GeoHazard[geoHazard]} warnings`, DEBUG_TAG);
     const dateRange = this.getDefaultDateRange(from, to);
-    const dataLoadId = this.getDataLoadId(geoHazard);
+    const dataLoadId = this.getDataLoadId(geoHazard, language);
     await this.dataLoadService.startLoading(dataLoadId);
     const url = `${this.getBaseUrl(geoHazard)}`
       + `/Warning/All/${language}`
@@ -332,15 +334,22 @@ export class WarningService {
           });
         }
       }
-      this.loggingService.debug(`Saving new ${GeoHazard[geoHazard]} warnings`, DEBUG_TAG, regions);
-      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regions, true);
-
-      await this.deleteRegionsNoLongerInResult(geoHazard, regions); // NOTE: This also trigger change
-      await this.dataLoadService.loadingCompleted(dataLoadId, warningsresult.length,
-        dateRange.from.toDate(), new Date());
+      this.saveWarningResults(geoHazard, language, regions, dateRange.from.toDate(), new Date());
     } catch (err) {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
     }
+  }
+
+  private async saveWarningResults(geoHazard: GeoHazard, langKey: LangKey, regionResult: IWarningGroup[], from: Date, to: Date) {
+    const dataLoadId = this.getDataLoadId(geoHazard, langKey);
+    this.loggingService.debug(`Saving new ${GeoHazard[geoHazard]} warnings`, DEBUG_TAG, regionResult);
+    const now = new Date();
+    await this.dbHelperService.fastInsert(NanoSql.TABLES.WARNING.name, regionResult, (data) => data.id);
+    this.loggingService.debug(`fastInsert took ${new Date().getTime() - now.getTime()} ms`, DEBUG_TAG);
+
+    await this.deleteRegionsNoLongerInResult(geoHazard, regionResult); // NOTE: This also trigger change
+    await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length,
+      from, to);
   }
 
   private async updateAvalancheWarnings(language: LangKey, from?: Date, to?: Date, cancelPromise?: Promise<void>) {
@@ -352,7 +361,7 @@ export class WarningService {
       });
     }
     const dateRange = this.getDefaultDateRange(from, to);
-    const dataLoadId = this.getDataLoadId(GeoHazard.Snow);
+    const dataLoadId = this.getDataLoadId(GeoHazard.Snow, language);
     await this.dataLoadService.startLoading(dataLoadId);
     const url = `${this.getBaseUrl(GeoHazard.Snow)}`
       + `/RegionSummary/Detail/${language}`
@@ -372,10 +381,7 @@ export class WarningService {
           warnings: region.AvalancheWarningList.map((simpleWarning) => this.convertSimpleWarningToAppWarning(language, simpleWarning)),
           sortOrder: index,
         }));
-        this.loggingService.debug(`New updates for avalanche warnings:`, DEBUG_TAG, regionResult);
-        await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
-        await this.deleteRegionsNoLongerInResult(GeoHazard.Snow, regionResult); // NOTE: This also trigger change
-        await this.dataLoadService.loadingCompleted(dataLoadId, warningsresult.length, dateRange.from.toDate(), new Date());
+        this.saveWarningResults(GeoHazard.Snow, language, regionResult, dateRange.from.toDate(), new Date());
       } else {
         await this.dataLoadService.loadingError(dataLoadId, 'Operation cancelled');
       }
@@ -406,10 +412,10 @@ export class WarningService {
     }
   }
 
-  private async updateIceWarnings() {
+  private async updateIceWarnings(laguage: LangKey) {
     this.loggingService.debug(`Updating ice warnings`, DEBUG_TAG);
     const geoHazard = GeoHazard.Ice;
-    const dataLoadId = this.getDataLoadId(geoHazard);
+    const dataLoadId = this.getDataLoadId(geoHazard, laguage);
     await this.dataLoadService.startLoading(dataLoadId);
     try {
       const url = this.getBaseUrl(geoHazard);
@@ -427,9 +433,12 @@ export class WarningService {
         sortOrder: index,
       }));
       this.loggingService.debug(`New updates for ice warnings:`, DEBUG_TAG, regionResult);
-      await nSQL().loadJS(NanoSql.TABLES.WARNING.name, regionResult, true);
+      const now = new Date();
+      await this.dbHelperService.fastInsert(NanoSql.TABLES.WARNING.name, regionResult, (data) => data.id);
+      this.loggingService.debug(`fastInsert took ${new Date().getTime() - now.getTime()} ms`, DEBUG_TAG);
       await this.deleteRegionsNoLongerInResult(geoHazard, regionResult); // NOTE: This also trigger change
       await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length);
+      this.saveWarningResults(geoHazard, laguage, regionResult, null, null);
     } catch (err) {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
     }
