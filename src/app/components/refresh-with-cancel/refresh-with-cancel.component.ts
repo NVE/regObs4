@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, Output, NgZone, ViewChild, Input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { IonRefresher } from '@ionic/angular';
+import { IonRefresher, Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-refresh-with-cancel',
@@ -17,9 +17,12 @@ export class RefreshWithCancelComponent implements OnInit {
   @Input() refreshFunc: (cancelPromise: Promise<boolean>) => Promise<any>;
   @Input() cancelSubject: Subject<any>;
 
-  constructor(private ngZone: NgZone) { }
+  spinner: string;
+
+  constructor(private ngZone: NgZone, private platform: Platform) { }
 
   ngOnInit() {
+    this.spinner = this.platform.is('android') ? 'crescent' : 'lines';
     if (!this.cancelSubject) {
       this.cancelSubject = new Subject<boolean>();
     }

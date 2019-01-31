@@ -1,5 +1,5 @@
 <ion-refresher (ionRefresh)="doRefresh()">
-  <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="{{'ALERT.PULL_TO_REFRESH' | translate }}">
+  <ion-refresher-content pullingIcon="arrow-dropdown" [refreshingSpinner]="spinner" pullingText="{{'ALERT.PULL_TO_REFRESH' | translate }}">
   </ion-refresher-content>
   <ion-grid *ngIf="showCancel">
     <ion-row>
