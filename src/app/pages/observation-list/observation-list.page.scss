@@ -10,3 +10,45 @@ ion-virtual-scroll {
         opacity: 1;
     }
 }
+
+.full-grid {
+    width: 100%;
+    height: 100%;
+
+    .full-grid-row {
+        height: 50%;
+
+        ion-label {
+            font-size: 16px;
+        }
+    }
+}
+
+.center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    .rectangle {
+        position: absolute;
+        left: -75px;
+        top: -75px;
+    }
+
+    .pin1 {
+        position: absolute;
+        left: -200px;
+    }
+
+    .pin2 {
+        position: absolute;
+        left: 100px;
+        top: 28px;
+    }
+
+    .pin3 {
+        position: absolute;
+        left: -117px;
+        top: -173px;
+    }
+}

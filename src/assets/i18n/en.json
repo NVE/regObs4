@@ -131,7 +131,8 @@
     "ALL_OBSERVATIONS": "All observations",
     "FORMS": "Forms",
     "GO_TO_OBSERVATION": "Go to observation",
-    "NO_OBSERVATIONS": "No observations in current map view",
+    "NO_OBSERVATIONS": "No observations",
+    "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
     "OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {

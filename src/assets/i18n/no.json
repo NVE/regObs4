@@ -131,7 +131,8 @@
     "ALL_OBSERVATIONS": "Alle observasjoner",
     "FORMS": "Skjemaer",
     "GO_TO_OBSERVATION": "Gå til observasjon",
-    "NO_OBSERVATIONS": "Ingen observasjoner i kartutsnittet",
+    "NO_OBSERVATIONS": "Ingen observasjoner",
+    "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet, forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
     "OBSERVATIONS": "Observasjoner"
   },
   "OFFLINE_MAP": {

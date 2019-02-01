@@ -24,7 +24,23 @@
   <app-add-menu slot="fixed"></app-add-menu>
 </ion-content>
 <ng-template #empty>
-  <h4 text-center>
-    {{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}
-  </h4>
+  <ion-grid class="full-grid">
+    <ion-row class="full-grid-row">
+      <ion-col align-self-center>
+        <div class="center">
+          <svg-icon class="rectangle" src="/assets/images/empty-states/rectangle.svg"></svg-icon>
+          <svg-icon class="pin1" src="/assets/images/empty-states/pin.svg"></svg-icon>
+          <svg-icon class="pin2" src="/assets/images/empty-states/pin.svg"></svg-icon>
+          <svg-icon class="pin3" src="/assets/images/empty-states/pin.svg"></svg-icon>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row class="full-grid-row">
+      <ion-col text-center margin-horizontal>
+        <h2> {{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}</h2>
+        <ion-label text-wrap>{{'OBSERVATION_LIST.NO_OBSERVATIONS_TEXT'|translate}}
+        </ion-label>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ng-template>
