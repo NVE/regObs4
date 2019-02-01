@@ -93,11 +93,17 @@ export class MapService {
     const inCahce = this._tilesInNorwayCache.get(id);
     if (inCahce !== undefined) {
       return inCahce;
-    } else {
-      const inNorway = await BorderHelper.isBoundsInNorway(bounds);
-      this._tilesInNorwayCache.set(id, inNorway);
-      return inNorway;
     }
+    if (coords.z > 2) {
+      const parentCacheId = `${coords.z - 1}_${Math.round(coords.x / 2)}_${Math.round(coords.y / 2)}`;
+      const parentInCahce = this._tilesInNorwayCache.get(parentCacheId);
+      if (parentInCahce !== undefined && parentInCahce === true) {
+        return true;
+      }
+    }
+    const inNorway = await BorderHelper.isBoundsInNorway(bounds);
+    this._tilesInNorwayCache.set(id, inNorway);
+    return inNorway;
   }
 
   updateMapView(mapView: IMapView) {
