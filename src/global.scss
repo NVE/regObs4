@@ -71,6 +71,7 @@
     --ion-color-varsom-orange-tint: var(--ion-color-varsom-orange-light-1);
     --ion-text-color: #444444;
     --ion-text-color-heading: #222222;
+    --ion-text-color-heading-white-pages: var(--ion-color-varsom-blue-dark-2);
     --ion-color-step-600: var(--ion-text-color-heading);
     --ion-font-family: 'Source Sans Pro';
     --ion-color-varsom-test-header: #700CEF;
@@ -127,6 +128,10 @@
 .ion-color-warninglevel-5 {
     --ion-color-base: var(--ion-color-warninglevel-5) !important;
     --ion-color-contrast: #FFF;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--ion-text-color-heading);
 }
 
 ion-item {

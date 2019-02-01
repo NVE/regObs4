@@ -464,18 +464,19 @@
       "NORWEGIAN": "Norsk",
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian"
     },
+    "I_UNDERSTAND": "Ok, jeg forstår",
     "PAGE_1": {
       "HEADER": "Planlegg trygge turer!",
       "LINE_1": "Se ferske observasjoner og naturarevarsler når du planlegger turen."
     },
     "PAGE_2": {
-      "HEADER": "Naturfarekart",
-      "LINE_1": "Se hvor du er i forhold til faresoner i terrenget, bruk støttekartene:",
-      "LINE_2": "Bratthetskart, kart over svekket is og flomsonekart."
+      "HEADER": "Forstå terrenget bedre!",
+      "LINE_1": "Se hvor du er i forhold til faresoner i terrenget. Bruk støttekart tilpasset farene du er på utkikk etter."
     },
     "PAGE_3": {
-      "HEADER": "Hva har du sett?",
-      "LINE_1": "Del dine observasjoner, bilder og vurderinger med andre og varslinga."
+      "BUTTON_TEXT": "Ny observasjon",
+      "HEADER": "Del det du ser med andre!",
+      "LINE_1": "Del dine observasjoner, bilder og vurderinger med andre. Hjelp dem å gjøre egne vurderinger."
     },
     "PAGE_4": {
       "HEADER": "Hva og hvordan?",

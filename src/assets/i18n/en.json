@@ -464,18 +464,19 @@
       "NORWEGIAN": "Norwegian",
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norsk"
     },
+    "I_UNDERSTAND": "Ok, I understand",
     "PAGE_1": {
       "HEADER": "Plan safe trips!",
       "LINE_1": "View observations and warnings when you plan your trip."
     },
     "PAGE_2": {
-      "HEADER": "Geohazard maps",
-      "LINE_1": "View where you are and if you are close to dangers in the terrain. Use support maps:",
-      "LINE_2": "Steepness map, dangerous ice and flood zones."
+      "HEADER": "Understand the terrain better!",
+      "LINE_1": "See where you are in relation to danger zones in the terrain. Use support maps adapted to the dangers you are looking for."
     },
     "PAGE_3": {
-      "HEADER": "What do you observe?",
-      "LINE_1": "Share your observations, images and evaluations with others."
+      "BUTTON_TEXT": "New observation",
+      "HEADER": "Share what you have seen with others!",
+      "LINE_1": "Share your observations, photos and reviews with others. Help them make their own reviews."
     },
     "PAGE_4": {
       "HEADER": "What and how?",

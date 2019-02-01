@@ -1,13 +1,18 @@
 ion-content {
-    --ion-background-color: #fff;
+    --ion-background-color: #fff;   
 
     ion-slides {
         height: 100%;
+
+        ion-slide{
+            overflow: hidden;
+        }
 
         h2 {
             margin-top: 0px;
             font-size: 24px;
             font-weight: bold;
+            --ion-text-color-heading : var(--ion-text-color-heading-white-pages);
         }
 
         h3 {
@@ -44,40 +49,118 @@ ion-content {
             transform: translateX(-100px) translateY(100px);
         }
 
-        .bounce-line {
-            position: absolute;
-            top: 50%;
+        .legal-icon {
+            font-size: 36px;
+            border-radius: 50%;
+            color: #fff;
+            background-color: var(--ion-color-varsom-blue-tint);
+            width: 70px;
+            height: 70px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .line {
-            display: block;
-        }
-
-        .warning {
-            display: block;
-            transform: translateX(100px) translateY(180px);
-        }
-
-        .pin-ice {
-            display: block;
-            transform: translateX(0px) translateY(190px);
-        }
-
-        .pin-dirt {
-            display: block;
-            transform: translateX(120px) translateY(-120px); 
-        }
-
-        .pin-snow {
-            display: block;
-            transform: translateX(-20px) translateY(-150px);
-        }
-        .pin-water {
-            display: block;
-            position: absolute;
+        .animated-element-wrapper {
+            position: relative;
+            top:50%;
             left: 50%;
-            top: 50%;
-            transform: translateX(-140px) translateY(-0px);
+
+        .animated-element {
+            display: block;
+            position: absolute;
+
+            &.line {
+                left: -188px;
+            }
+    
+            &.warning {
+                left: 58px;
+                top: 54px;
+            }
+    
+            &.pin-ice {
+                top: 115px;
+                left: -50px;
+            }
+    
+            &.pin-dirt {
+                top: -101px;
+                left: 83px;
+            }
+    
+            &.pin-snow {
+                top: -69px;
+                left: -57px;
+            }
+
+            &.pin-water {
+                left: -150px;
+                top: 20px;
+            }
+
+            &.steepness-background {
+                top: -160px;
+                left: -193px;
+            }
+
+            &.danger-map {
+                left: -187px;
+                top: -113px;
+            }
+
+            &.user-location {
+                left: 53px;
+                top: 74px;
+            }
+
+            &.exclamation-mark {
+                left: -70px;
+                 top: -7px;
+            }
+
+            &.add-observation {
+                left: -35px;
+                top: 50px;
+            }
+
+            &.photos {
+                left: -125px;
+                top: 16px;
+            }
+
+            &.pin {
+                left: -70px;
+                top: -53px;
+            }
+
+            &.ruler {
+                left: -125px;
+                top: -94px;
+            }
+
+            &.document {
+                left: 1px;
+                top: -36px;
+            }
+
+            &.path {
+                left: 58px;
+                top: -100px;
+            }
+
+            &.eye {
+                left: 64px;
+                top: 16px;
+            }
+
+            &.text {
+                left: -78px;
+                top: 131px;
+                color: var(--ion-color-varsom-orange);
+                font-size: 24px;
+            }
         }
+    }
     }
 }
