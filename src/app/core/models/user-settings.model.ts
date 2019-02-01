@@ -15,4 +15,5 @@ export interface UserSetting {
     showObservations: boolean;
     emailReciept: boolean;
     topoMap: TopoMap;
+    showGeoSelectInfo: boolean;
 }

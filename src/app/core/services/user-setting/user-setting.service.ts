@@ -134,6 +134,7 @@ export class UserSettingService {
       showObservations: true,
       emailReciept: true,
       topoMap: TopoMap.mixArcGisOnline,
+      showGeoSelectInfo: true,
     };
   }
 

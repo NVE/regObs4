@@ -60,9 +60,9 @@
     "TITLE": "Help"
   },
   "LEGAL_TERMS": {
-    "HEADER": "About regObs data",
+    "HEADER": "About Varsom Regobs data",
     "OK": "Ok, I accept",
-    "TERMS": "Data on regObs is produced by the users of regObs and is available as it is. It may contain errors and omissions. NVE makes no warranties for current the information and does not take responsibility for that data can give incorrect or misleading information. The number of stars (1-5) describes the level of competence of the person providing observations. Without stars, competence is unknown or low."
+    "TERMS": "Data on Varsom Regobs is produced by the users of Regobs and is available as it is. It may contain errors and omissions. NVE makes no warranties for current the information and does not take responsibility for that data can give incorrect or misleading information. The number of stars (1-5) describes the level of competence of the person providing observations. Without stars, competence is unknown or low."
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Change password",
@@ -95,7 +95,7 @@
     "SEARCH_TEXT": "Search for location"
   },
   "MENU": {
-    "ABOUT_REGOBS": "About data in regObs",
+    "ABOUT_REGOBS": "About data in Regobs",
     "AND": "and",
     "DAYS_BACK": "Days back",
     "GENERAL": "General",
@@ -449,13 +449,7 @@
       "SUBTITLE": "Will you use the app only in Norway?",
       "YES_NORWAY": "Yes, in Norway only"
     },
-    "CHOOSE_INTEREST": {
-      "HEADER": "Choose your interest:",
-      "INTEREST_DIRT": "Landslide!",
-      "INTEREST_ICE": "Ice thickness, bearing strength and skating conditions!",
-      "INTEREST_SNOW": "Take me to the snow!",
-      "INTEREST_WATER": "Water level, flow and damages!"
-    },
+    "CHOOSE_INTEREST": "Choose your interest area",
     "CHOOSE_LANGUAGE": {
       "ENGLISH": "English",
       "ENGLISH_SECONDARY_LANGUAGE": "Engelsk",
@@ -480,7 +474,7 @@
     },
     "PAGE_4": {
       "HEADER": "What and how?",
-      "LINE_1": "Choose what to see and share on regObs. You can read about sharing observations at varsom.no/snøskredskolen and varsom.no/isskolen"
+      "LINE_1": "Choose what to see and share on Regobs. You can read about sharing observations at varsom.no/snøskredskolen and varsom.no/isskolen"
     },
     "SKIP_START": "Skip"
   },
@@ -540,7 +534,7 @@
     "COMMENT_DESCRIPTION": "Describe what kind of trip you are going and what you are looking for, etc.",
     "END_ERROR": "Could not stop trip. Please try again later. The trip will stop automatically by midnight.",
     "ERROR": "Error while starting trip. Please try again.",
-    "LEGACY_HELP_TEXT": "You can use this form to report that you are planning a trip today.\n\nIt is useful for the warning service team to know if observations can be expected today. It is also useful to know what kind of observations can be expected (what are you looking for, where are you going on a trip) and when do you expect these to be submitted to regObs.\n\nAll paid observers must record what types of obs-tour are being planned: is it an ordinary paid observation trip, or is this an additional registration? Additional registration is the submission of observations you have made during other work or in your spare time.",
+    "LEGACY_HELP_TEXT": "You can use this form to report that you are planning a trip today.\n\nIt is useful for the warning service team to know if observations can be expected today. It is also useful to know what kind of observations can be expected (what are you looking for, where are you going on a trip) and when do you expect these to be submitted to Regobs.\n\nAll paid observers must record what types of obs-tour are being planned: is it an ordinary paid observation trip, or is this an additional registration? Additional registration is the submission of observations you have made during other work or in your spare time.",
     "ONGOING_TRIP": "Trip in progress",
     "STARTED": "Trip started",
     "START_TRIP": "Start trip",

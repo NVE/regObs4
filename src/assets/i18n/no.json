@@ -60,9 +60,9 @@
     "TITLE": "Hjelp"
   },
   "LEGAL_TERMS": {
-    "HEADER": "Om data i regObs",
+    "HEADER": "Om data i Varsom Regobs",
     "OK": "Ok, jeg aksepterer",
-    "TERMS": "Data på regObs produseres av brukerne av regObs og foreligger \"som den er\". Den kan inneholde feil og utelatelser. NVE gir ingen garantier for informasjonens aktualitet og tar ikke ansvar for at data kan gi feil eller villedende informasjon. Antall stjerner (1-5) beskriver kompetansenivået til den som leverer observasjoner. Uten stjerner er kompetansen ukjent eller lav."
+    "TERMS": "Data på Varsom Regobs produseres av brukerne av Regobs og foreligger \"som den er\". Den kan inneholde feil og utelatelser. NVE gir ingen garantier for informasjonens aktualitet og tar ikke ansvar for at data kan gi feil eller villedende informasjon. Antall stjerner (1-5) beskriver kompetansenivået til den som leverer observasjoner. Uten stjerner er kompetansen ukjent eller lav."
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Endre passord",
@@ -95,7 +95,7 @@
     "SEARCH_TEXT": "Søk etter sted"
   },
   "MENU": {
-    "ABOUT_REGOBS": "Om data i regObs",
+    "ABOUT_REGOBS": "Om data i Regobs",
     "AND": "og",
     "DAYS_BACK": "Dager tilbake",
     "GENERAL": "Generelt",
@@ -449,13 +449,7 @@
       "SUBTITLE": "Kommer du til å bruke appen kun i Norge?",
       "YES_NORWAY": "Ja, kun i Norge"
     },
-    "CHOOSE_INTEREST": {
-      "HEADER": "Velg din interesse:",
-      "INTEREST_DIRT": "Jord til jordskredvarslingen!",
-      "INTEREST_ICE": "Istykkelse, bæreevne og skøyteforhold!",
-      "INTEREST_SNOW": "Ta meg til snøen!",
-      "INTEREST_WATER": "Vannstand, vannføring og flomskader!"
-    },
+    "CHOOSE_INTEREST": "Velg naturfaren du er interessert i",
     "CHOOSE_LANGUAGE": {
       "ENGLISH": "Engelsk",
       "ENGLISH_SECONDARY_LANGUAGE": "English",
@@ -480,7 +474,7 @@
     },
     "PAGE_4": {
       "HEADER": "Hva og hvordan?",
-      "LINE_1": "Du velger selv hva du vil se og dele på regObs. Du kan lese om hvordan du deler observasjoner med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
+      "LINE_1": "Du velger selv hva du vil se og dele på Varsom Regobs. Du kan lese om hvordan du deler observasjoner med andre på varsom.no/snøskredskolen og varsom.no/isskolen"
     },
     "SKIP_START": "Hopp over"
   },
@@ -540,7 +534,7 @@
     "COMMENT_DESCRIPTION": "Her kan du skrive inn hvilken obstur du skal på, hva du ser etter, osv.",
     "END_ERROR": "Klarte ikke stoppe tur. Vennligst prøv igjen senere. Turen vil automatisk ble stoppet ved midnatt.",
     "ERROR": "Klarte ikke starte tur. Vennligs prøv igjen.",
-    "LEGACY_HELP_TEXT": "Her melder du fra om at du planlegger tur i dag.\n\nDet er nyttig for skredvarslingen å vite om det kan ventes observasjoner i dag. Det er også nyttig å vite hva slags observasjoner som kan ventes (hva ser du etter, hvor skal du på tur) og når regner du med at disse sendes inn på regObs.\n\nAlle betalte observatører skal registrere hva slags obstur som planlegges: er det en ordinær betalt observasjonstur, eller er det en tilleggsregistrering? Tilleggsregistrering er innsending av observasjoner du har gjort i annet arbeid eller på fritiden din.",
+    "LEGACY_HELP_TEXT": "Her melder du fra om at du planlegger tur i dag.\n\nDet er nyttig for skredvarslingen å vite om det kan ventes observasjoner i dag. Det er også nyttig å vite hva slags observasjoner som kan ventes (hva ser du etter, hvor skal du på tur) og når regner du med at disse sendes inn på Regobs.\n\nAlle betalte observatører skal registrere hva slags obstur som planlegges: er det en ordinær betalt observasjonstur, eller er det en tilleggsregistrering? Tilleggsregistrering er innsending av observasjoner du har gjort i annet arbeid eller på fritiden din.",
     "ONGOING_TRIP": "Tur pågår",
     "STARTED": "Tur startet",
     "START_TRIP": "Start tur",
