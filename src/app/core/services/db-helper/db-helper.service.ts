@@ -20,7 +20,6 @@ export class DbHelperService {
   }
 
   async init() {
-    await NanoSql.init();
     await this.initSqlite();
   }
 
