@@ -6,7 +6,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
-import { NanoSql } from '../nanosql';
 import { LangKey } from './core/models/langKey';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
@@ -16,6 +15,7 @@ import { SwipeBackService } from './core/services/swipe-back/swipe-back.service'
 import { Observable } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { AnalyticService } from './core/services/analytic/analytic.service';
+import { DbHelperService } from './core/services/db-helper/db-helper.service';
 
 @Component({
   selector: 'app-root',
@@ -42,6 +42,7 @@ export class AppComponent {
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
     private analyticService: AnalyticService,
+    private dbHelperService: DbHelperService,
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -52,7 +53,7 @@ export class AppComponent {
     this.translate.setDefaultLang('no');
     this.platform.ready().then(async () => {
       // await this.initDeepLinks(); //TODO: Comment in when edit registration is possible
-      await this.initNanoSqlDatabase();
+      await this.dbHelperService.init();
       const userSettings = await this.userSettings.getUserSettings();
       this.loggingService.configureLogging(userSettings.appMode);
       this.analyticService.init();
@@ -62,7 +63,7 @@ export class AppComponent {
       this.keyboard.hideFormAccessoryBar(false);
       this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
       this.offlineImageService.cleanupOldItems();
-
+      this.dataMarshallService.init();
       this.initBackroundUpdates();
       setTimeout(() => {
         this.splashScreen.hide();
@@ -78,12 +79,6 @@ export class AppComponent {
       // match.$args - the args passed in the link
       // match.$link - the full link data
       this.navController.navigateForward(`view-observation/${match.$args.id}`);
-    });
-  }
-
-  async initNanoSqlDatabase() {
-    return this.zone.runOutsideAngular(async () => {
-      await NanoSql.init();
     });
   }
 

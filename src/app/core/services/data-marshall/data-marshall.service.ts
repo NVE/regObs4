@@ -48,7 +48,9 @@ export class DataMarshallService {
     private loggingService: LoggingService,
   ) {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
+  }
 
+  init() {
     this.hasDaysBackChangedToLargerValue().subscribe(() => {
       this.loggingService.debug('DaysBack has changed to a larger value. Update observations.', DEBUG_TAG);
       this.updateObservations();

@@ -5,6 +5,9 @@ import { settings } from '../../../../settings';
 import '../../helpers/ionic/platform-helper';
 import { NanoSql } from '../../../../nanosql';
 import { nSQL } from 'nano-sql';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+
+const DEBUG_CONTEXT = 'DbHelperService';
 
 @Injectable({
   providedIn: 'root'
@@ -12,20 +15,29 @@ import { nSQL } from 'nano-sql';
 export class DbHelperService {
 
   sqliteobj: SQLiteObject;
-  readyPromise: Promise<any>;
 
-  constructor(private sqlite: SQLite, private platform: Platform) {
-    this.readyPromise = this.platform.ready().then(() => {
-      if (this.platform.isAndroidOrIos()) {
-        this.sqlite.create(<any>({
-          name: `${settings.db.nanoSql.dbName}_db`,
-          location: 'default',
-          androidDatabaseProvider: 'system',
-        })).then((result) => {
-          this.sqliteobj = result;
-        });
-      }
-    });
+  constructor(private sqlite: SQLite, private platform: Platform, private loggingService: LoggingService) {
+  }
+
+  async init() {
+    await NanoSql.init();
+    await this.initSqlite();
+  }
+
+  private initSqlite() {
+    if (this.platform.isAndroidOrIos()) {
+      this.loggingService.debug('Create sqlite database connection (helper methods)', DEBUG_CONTEXT);
+      return this.sqlite.create(<any>({
+        name: `${settings.db.nanoSql.dbName}_db`,
+        location: 'default',
+        androidDatabaseProvider: 'system',
+      })).then((result) => {
+        this.loggingService.debug('DbHelper connected to SQLite database', DEBUG_CONTEXT);
+        this.sqliteobj = result;
+      });
+    } else {
+      return Promise.resolve();
+    }
   }
 
   /**
@@ -34,7 +46,6 @@ export class DbHelperService {
    * @param id id
    */
   async getItemById<T>(table: string, id: string | number, idColumn = 'id') {
-    await this.readyPromise;
     if (this.sqliteobj) {
       return this.getItemByIdSqlLite<T>(table, id, idColumn);
     } else {
@@ -60,9 +71,11 @@ export class DbHelperService {
   }
 
   async fastInsert<T>(table: string, data: T[], idSelector?: (data: T) => any) {
-    await this.readyPromise;
     if (this.sqliteobj) {
-      await this.fastInsertSqlLite(table, data, idSelector);
+      await this.fastInsertNanoSql(table, data, idSelector);
+      // await this.fastInsertSqlLite(table, data, idSelector);
+      // This does not work when app starts first time, but works next time app opens.
+      // Havent figured out why yet. Try NenoSql v2 instead.
     } else {
       await this.fastInsertNanoSql(table, data, idSelector);
     }
