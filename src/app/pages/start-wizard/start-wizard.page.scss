@@ -42,13 +42,6 @@ ion-content {
             --inner-border-width: 0 0 0 0;
         }
 
-        .eclipse {
-            transform: translateX(100px) translateY(50px);
-        }
-        .bubble {
-            transform: translateX(-100px) translateY(100px);
-        }
-
         .legal-icon {
             font-size: 36px;
             border-radius: 50%;
@@ -69,6 +62,15 @@ ion-content {
         .animated-element {
             display: block;
             position: absolute;
+
+            &.eclipse {
+                left: -46px;
+                top: -58px;
+            }
+            &.bubble {
+                left: -100px;
+                top: 20px;
+            }
 
             &.line {
                 left: -188px;

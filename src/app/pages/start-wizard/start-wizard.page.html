@@ -4,9 +4,13 @@
     <ion-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
-          <ion-col align-self-center [@bounce]='state'>
-            <svg-icon class="eclipse" src="/assets/images/onboarding/eclipse.svg"></svg-icon>
-            <svg-icon class="bubble" src="/assets/images/onboarding/bubble.svg"></svg-icon>
+          <ion-col align-self-center>
+            <div class="animated-element-wrapper">
+              <svg-icon class="animated-element eclipse" src="/assets/images/onboarding/eclipse.svg"></svg-icon>
+            </div>
+            <div class="animated-element-wrapper">
+              <svg-icon class="animated-element bubble" [@pulse]="state" src="/assets/images/onboarding/bubble.svg"></svg-icon>
+            </div>
           </ion-col>
         </ion-row>
         <ion-row class="full-grid-row">
