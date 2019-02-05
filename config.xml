@@ -25,6 +25,7 @@
     <preference name="KeyboardResize" value="true" />
     <preference name="KeyboardResizeMode" value="native" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+    <preference name="orientation" value="portrait" />
     <platform name="android">
         <allow-intent href="market:*" />
         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
