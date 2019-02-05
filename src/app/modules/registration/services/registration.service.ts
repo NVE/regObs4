@@ -229,7 +229,10 @@ export class RegistrationService {
       this.cleanupRegistration(registration);
       registration.request.Email = userSetting.emailReciept;
       const createRegistrationResult = await this.postRegistration(userSetting.appMode, registration.request, cancel);
-      const newRegistration = await this.observationService.updateObservationById(createRegistrationResult.RegId, userSetting.appMode);
+      const newRegistration = await this.observationService.updateObservationById(
+        createRegistrationResult.RegId,
+        userSetting.appMode,
+        userSetting.language);
       await this.deleteRegistrationById(userSetting.appMode, registration.id);
       return newRegistration;
     } catch (ex) {

@@ -210,17 +210,17 @@ export class ObservationService {
     }
   }
 
-  async updateObservationById(regId: number, appMode: AppMode) {
-    const result = await this.getRegistrationByRegIdFromApi(regId, appMode).toPromise();
+  async updateObservationById(regId: number, appMode: AppMode, langKey: LangKey) {
+    const result = await this.getRegistrationByRegIdFromApi(regId, appMode, langKey).toPromise();
     await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
       .query('upsert', result).exec();
     this.changeTrigger.next();
     return result;
   }
 
-  private getRegistrationByRegIdFromApi(regId: number, appMode: AppMode) {
+  private getRegistrationByRegIdFromApi(regId: number, appMode: AppMode, langKey: LangKey) {
     this.searchService.rootUrl = settings.services.regObs.apiUrl[appMode];
-    return this.searchService.SearchAll({ RegId: regId }).pipe(map((result) =>
+    return this.searchService.SearchAll({ RegId: regId, LangKey: langKey }).pipe(map((result) =>
       result[0]
     ));
   }
@@ -298,7 +298,7 @@ export class ObservationService {
       ));
   }
 
-  getObservationsByParameters(appMode: AppMode,
+  async getObservationsByParameters(appMode: AppMode,
     langKey: LangKey,
     geoHazards?: GeoHazard[],
     fromDate?: Date,

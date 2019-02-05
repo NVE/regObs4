@@ -81,10 +81,15 @@ export class AddOrEditDangerObsModalPage implements OnInit {
     return (this.geoHazard !== GeoHazard.Snow ? this.geoHazard * 10 : 0) + 1;
   }
 
+  getDangerSignTidOrFallback() {
+    return this.dangerSignTid !== undefined ? this.dangerSignTid :
+      ((this.geoHazard !== GeoHazard.Snow ? this.geoHazard * 10 : 0));
+  }
+
   ok() {
     const dangerObsToSave: DangerObsDto = {
       GeoHazardTID: this.geoHazard,
-      DangerSignTID: this.noDangerObs ? this.getNoDangerSignTid() : this.dangerSignTid,
+      DangerSignTID: this.noDangerObs ? this.getNoDangerSignTid() : this.getDangerSignTidOrFallback(),
       Comment: this.getComment(),
     };
     this.modalController.dismiss(dangerObsToSave);
