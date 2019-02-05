@@ -9,9 +9,19 @@
     background-color: #fff;
     z-index: var(--z-index-over-map);
 
-    ion-col, h5 {
+    h5 {
         overflow: hidden;
         text-overflow: ellipsis;
+        letter-spacing: 1px;
+    }
+
+    .card-icon-item {
+        display: inline-block;
+        padding-right: 16px;
+
+        .card-icon-item-icon {
+            padding-right: 5px;
+        }
     }
 
     .img-wrapper {
