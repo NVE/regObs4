@@ -149,8 +149,8 @@
     </plugin>
     <plugin name="cordova-plugin-advanced-http" spec="2.0.4" />
     <plugin name="cordova-plugin-ionic-webview" spec="3.1.1" />
-    <plugin name="adapter-sqlite-cordova" spec="@nano-sql/adapter-sqlite-cordova@~2.0.7" />
     <plugin name="cordova-sqlite-storage" spec="3.0.0" />
+    <plugin name="adapter-sqlite-cordova" spec="@nano-sql/adapter-sqlite-cordova@^2.0.8" />
     <engine name="android" spec="7.1.4" />
     <engine name="ios" spec="4.5.5" />
 </widget>
