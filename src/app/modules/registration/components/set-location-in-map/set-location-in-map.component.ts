@@ -97,13 +97,15 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
     this.updateMapViewInfo();
 
-    this.subscriptions.push(this.mapService.mapView$.pipe(debounceTime(1000)).
-      subscribe((mapView) => {
-        if (mapView.zoom > 7) { // Do not update when zoom level is too low, we get too much records
-          const range = Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2);
-          this.locationService.updateLocationWithinRadius(this.geoHazard, mapView.center.lat, mapView.center.lng, range);
-        }
-      }));
+    if (this.showPreviousUsedLocations) {
+      this.subscriptions.push(this.mapService.mapView$.pipe(debounceTime(1000)).
+        subscribe((mapView) => {
+          if (mapView.zoom > 7) { // Do not update when zoom level is too low, we get too much records
+            const range = Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2);
+            this.locationService.updateLocationWithinRadius(this.geoHazard, mapView.center.lat, mapView.center.lng, range);
+          }
+        }));
+    }
   }
 
   ngOnDestroy(): void {
