@@ -51,6 +51,7 @@ export class AnalyticService {
   private internalInit() {
     this.ga = (<any>window).ga;
     if (this.ga) {
+      this.loggingService.debug('Loading google analytics', DEBUG_TAG);
       if (window.localStorage) {
         this.ga('create', settings.googleAnalytics.trackerId, 'auto', {
           'storage': 'none',
@@ -72,6 +73,7 @@ export class AnalyticService {
         .subscribe((url: string) => {
           this.trackView(url);
         });
+      this.loggingService.debug('Ggoogle analytics setup completed', DEBUG_TAG);
     } else {
       this.loggingService.log('Could not load Google Analytics script', null, LogLevel.Warning, DEBUG_TAG);
     }

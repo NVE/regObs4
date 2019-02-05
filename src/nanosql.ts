@@ -2,9 +2,7 @@ import { settings } from './settings';
 import { AppMode } from './app/core/models/app-mode.enum';
 import { nSQL } from '@nano-sql/core';
 import { getMode } from '@nano-sql/adapter-sqlite-cordova';
-import { InanoSQLTableConfig, InanoSQLTable, InanoSQLQuery, adapterConnectFilter } from '@nano-sql/core/lib/interfaces';
-import { SQLiteObject } from '@ionic-native/sqlite/ngx';
-
+import { InanoSQLTableConfig, InanoSQLTable, InanoSQLQuery } from '@nano-sql/core/lib/interfaces';
 export class NanoSql {
     public static readonly TABLES = {
         OBSERVATION: {
