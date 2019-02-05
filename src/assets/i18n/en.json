@@ -252,7 +252,7 @@
     "INCIDENT": {
       "ACTIVITY": "Activity",
       "COMMENT": "Description",
-      "COMMENT_PLACEHOLDER": "Did the avalanche cause any damage, accidents or close calls? Why and how did it happen? Could the situation have been avoided?",
+      "COMMENT_PLACEHOLDER": "Why did it happen? Did it go well? Could the situation have been avoided?",
       "DAMAGE_EXTENT": "Damage extent",
       "TITLE": "Accident / Incident"
     },
@@ -317,6 +317,7 @@
         "FRACTURE_HEIGTH": "Fracture height (cm)",
         "FRACTURE_WIDTH": "Fracture width (m)",
         "INCIDENT_DESCRIPTION": "Accident or injury",
+        "INCIDENT_PLACEHOLDER": "Did the avalanche cause any damage, accidents or close calls? Why and how did it happen? Could the situation have been avoided?",
         "POSITION": "Avalanche position",
         "SET_AVALANCHE_POSITION": "Set avalanche position",
         "TERRAIN_START_ZONE": "Tarrain type in the loose snow area",

@@ -252,7 +252,7 @@
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Beskrivelse",
-      "COMMENT_PLACEHOLDER": "Førte skredet til skade, ulykke eller nestenulykke? Hva skjedde og hvorfor? Kunne situasjonen vært unngått?",
+      "COMMENT_PLACEHOLDER": "Hvorfor skjedde det? Gikk det bra? Kunne situasjonen vært unngått?",
       "DAMAGE_EXTENT": "Skadeomfang",
       "TITLE": "Ulykke / hendelse"
     },
@@ -317,6 +317,7 @@
         "FRACTURE_HEIGTH": "Bruddhøyde (cm)",
         "FRACTURE_WIDTH": "Bruddbredde (m)",
         "INCIDENT_DESCRIPTION": "Ulykke eller skade",
+        "INCIDENT_PLACEHOLDER": "Førte skredet til skade, ulykke eller nestenulykke? Hva skjedde og hvorfor? Kunne situasjonen vært unngått?",
         "POSITION": "Skredposisjon",
         "SET_AVALANCHE_POSITION": "Sett skredposisjon",
         "TERRAIN_START_ZONE": "Terrengtype i løsneområdet",
