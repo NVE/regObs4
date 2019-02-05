@@ -129,6 +129,12 @@ export class ObservationListPage implements OnInit, OnDestroy {
         }
     }
 
+    headerFn(item: RegistrationViewModel, index: number, items: RegistrationViewModel[]) {
+        if (index === 0) {
+            return 'header';
+        }
+    }
+
     // getItemHeight(item: RegistrationViewModel, index: number) {
     //     return this.obsCardHeightService.getHeight(item.RegID);
     // }

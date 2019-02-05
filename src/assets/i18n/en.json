@@ -137,6 +137,7 @@
     "ALL_OBSERVATIONS": "All observations",
     "FORMS": "Forms",
     "GO_TO_OBSERVATION": "Go to observation",
+    "IN_MAP_VIEW": "Observations in map view",
     "NO_OBSERVATIONS": "No observations",
     "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
     "OBSERVATIONS": "Observations"

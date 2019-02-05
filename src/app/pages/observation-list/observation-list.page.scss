@@ -9,6 +9,17 @@ ion-virtual-scroll {
     &.loaded {
         opacity: 1;
     }
+
+    ion-item-divider {
+        h3 {
+            margin-top: 24px;
+            margin-bottom: 0px;
+        }
+
+        &.virtual-list-footer {
+            height: 50px;
+        }
+    }
 }
 
 .full-grid {
@@ -51,8 +62,4 @@ ion-virtual-scroll {
         left: -117px;
         top: -132px;
     }
-}
-
-.virtual-list-footer {
-    height: 50px;
 }

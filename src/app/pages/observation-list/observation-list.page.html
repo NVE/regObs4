@@ -3,7 +3,10 @@
   <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject"></app-refresh-with-cancel>
   <ng-container *ngIf="observations !== undefined">
     <ion-virtual-scroll [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" [items]="observations"
-      [approxItemHeight]="250" [trackBy]="trackByRegId" [footerFn]="footerFn">
+      [approxItemHeight]="250" [trackBy]="trackByRegId" [footerFn]="footerFn" [headerFn]="headerFn">
+      <ion-item-divider *virtualHeader="let header">
+        <h3 text-uppercase>{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+      </ion-item-divider>
       <div *virtualItem="let obs">
         <app-observation-list-card [obs]="obs"></app-observation-list-card>
       </div>
