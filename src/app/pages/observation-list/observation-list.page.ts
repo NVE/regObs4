@@ -123,6 +123,12 @@ export class ObservationListPage implements OnInit, OnDestroy {
         return obs ? obs.RegID : undefined;
     }
 
+    footerFn(item: RegistrationViewModel, index: number, items: RegistrationViewModel[]) {
+        if (index === (items.length - 1)) {
+            return 'footer';
+        }
+    }
+
     // getItemHeight(item: RegistrationViewModel, index: number) {
     //     return this.obsCardHeightService.getHeight(item.RegID);
     // }

@@ -144,12 +144,18 @@ export class WarningListPage implements OnInit, OnDestroy {
       );
   }
 
-  myHeaderFn(record: IVirtualScrollItem<WarningGroup>, recordIndex: number, records: IVirtualScrollItem<WarningGroup>[]) {
-    return record.header ? {
-      header: record.header,
-      infoText: record.infoText,
-      showDayNames: records.some((x) => x.item.key.geoHazard !== GeoHazard.Ice)
+  myHeaderFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
+    return item.header ? {
+      header: item.header,
+      infoText: item.infoText,
+      showDayNames: items.some((x) => x.item.key.geoHazard !== GeoHazard.Ice)
     } : null;
+  }
+
+  footerFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
+    if (index === (items.length - 1)) {
+      return 'footer';
+    }
   }
 
   ionViewWillLeave() {
