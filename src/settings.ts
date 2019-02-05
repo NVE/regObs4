@@ -44,7 +44,7 @@ export const settings = {
                     no: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/',
                     en: 'http://www.varsom.no/en/avalanche-bulletins/forecast/{regionName}/',
                 },
-                featureName: 'OMRAADEID',
+                featureName: 'omradeID',
             },
             Dirt: {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api',
@@ -168,7 +168,7 @@ export const settings = {
         flyToOnGpsZoom: 14,
         maxClusterRadius: 30,
     },
-    snowRegionsGeoJsonName: 'OMRAADENAV',
+    snowRegionsGeoJsonName: 'omradeNavn',
     cordovaNotAvailable: 'cordova_not_available',
     gps: {
         maximumAge: 180000,

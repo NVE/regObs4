@@ -206,9 +206,9 @@ export class WarningService {
   private getDefaultAvalancheWarningGroups() {
     const regions = require('../../../../assets/json/varslingsomraader.json');
     const avalancheRegions: IWarningGroup[] = regions.features.map((region) => ({
-      id: `${region.properties.OMRAADEID}_${GeoHazard.Snow}`,
-      regionId: `${region.properties.OMRAADEID}`,
-      regionName: region.properties.OMRAADENAV,
+      id: `${region.properties.omradeID}_${GeoHazard.Snow}`,
+      regionId: `${region.properties.omradeID}`,
+      regionName: region.properties.omradeNavn,
       regionType: region.properties.regionType,
       counties: [],
       geoHazard: GeoHazard.Snow,
