@@ -4,7 +4,8 @@
       <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
     </ion-buttons>
     <ion-title>
-      {{ 'REGISTRATION.DIRT.LAND_SLIDE_OBS.SET_LANDSLIDE_POSITION' | translate }}
+      {{ (geoHazard === GeoHazard.Snow ? 'REGISTRATION.SNOW.AVALANCHE_OBS.SET_AVALANCHE_POSITION' :
+      'REGISTRATION.DIRT.LAND_SLIDE_OBS.SET_LANDSLIDE_POSITION') | translate }}
     </ion-title>
   </ion-toolbar>
 </ion-header>

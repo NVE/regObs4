@@ -113,6 +113,12 @@
     "SHOW_TRIPS": "Show trips",
     "START_WIZARD": "Start wizard",
     "SUPPORT_MAP_CREDITS": "Support maps provided by",
+    "TILES": {
+      "ARC_GIS": "ArcGIS (world)",
+      "KARTVERKET": "Kartverket (Norway)",
+      "ONLY_KARTVERKET": "Kartverket (only Norway)",
+      "OPEN_TOPO": "OpenTopo (world)"
+    },
     "TODAYS_OBSERVATIONS": "Only todays",
     "TOPO_MAP_CREDITS": "Topo maps provided by",
     "UPDATE_OBSERVATIONS": "Update observations",
@@ -312,6 +318,7 @@
         "FRACTURE_WIDTH": "Fracture width (m)",
         "INCIDENT_DESCRIPTION": "Accident or injury",
         "POSITION": "Avalanche position",
+        "SET_AVALANCHE_POSITION": "Set avalanche position",
         "TERRAIN_START_ZONE": "Tarrain type in the loose snow area",
         "TIME": "Avalanche time (required)",
         "TITLE": "Avalanche observation",

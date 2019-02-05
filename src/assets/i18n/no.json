@@ -113,6 +113,12 @@
     "SHOW_TRIPS": "Vis turer",
     "START_WIZARD": "Start veiviseren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
+    "TILES": {
+      "ARC_GIS": "ArcGIS (verden)",
+      "KARTVERKET": "Kartverket (Norge)",
+      "ONLY_KARTVERKET": "Kartverket (bare Norge)",
+      "OPEN_TOPO": "OpenTopo (verden)"
+    },
     "TODAYS_OBSERVATIONS": "Kun dagens observasjoner",
     "TOPO_MAP_CREDITS": "Topografisk kart levert av",
     "UPDATE_OBSERVATIONS": "Oppdater observasjoner",
@@ -312,6 +318,7 @@
         "FRACTURE_WIDTH": "Bruddbredde (m)",
         "INCIDENT_DESCRIPTION": "Ulykke eller skade",
         "POSITION": "Skredposisjon",
+        "SET_AVALANCHE_POSITION": "Sett skredposisjon",
         "TERRAIN_START_ZONE": "Terrengtype i løsneområdet",
         "TIME": "Skredtidspunkt (obligatorisk)",
         "TITLE": "Skredhendelse",

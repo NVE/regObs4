@@ -21,11 +21,13 @@
       <ion-label position="stacked" color="medium" text-uppercase>{{ 'MENU.MAP' | translate }}</ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap" interface="action-sheet"
         (ngModelChange)="saveUserSettings()">
-        <ion-select-option [value]="TopoMap.mixArcGisOnline">ArcGisOnline + Statens Kartverk</ion-select-option>
-        <ion-select-option [value]="TopoMap.mixOpenTopo">OpenTopo + Statens Kartverk</ion-select-option>
-        <ion-select-option [value]="TopoMap.statensKartverk">Norgeskart fra Statens Kartverk</ion-select-option>
-        <ion-select-option [value]="TopoMap.arcGisOnline">ArcGisOnline</ion-select-option>
-        <ion-select-option [value]="TopoMap.openTopo">OpenTopo</ion-select-option>
+        <ion-select-option [value]="TopoMap.mixArcGisOnline">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{
+          'MENU.TILES.KARTVERKET' | translate }}</ion-select-option>
+        <ion-select-option [value]="TopoMap.mixOpenTopo">{{ 'MENU.TILES.OPEN_TOPO' | translate }} + {{
+          'MENU.TILES.KARTVERKET' | translate }}</ion-select-option>
+        <ion-select-option [value]="TopoMap.statensKartverk">{{ 'MENU.TILES.ONLY_KARTVERKET' | translate }}</ion-select-option>
+        <ion-select-option [value]="TopoMap.arcGisOnline">{{ 'MENU.TILES.ARC_GIS' | translate }}</ion-select-option>
+        <ion-select-option [value]="TopoMap.openTopo">{{ 'MENU.TILES.OPEN_TOPO' | translate }}</ion-select-option>
       </ion-select>
     </ion-item>
     <app-observations-days-back></app-observations-days-back>

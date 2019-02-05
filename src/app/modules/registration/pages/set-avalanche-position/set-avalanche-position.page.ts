@@ -21,6 +21,8 @@ export class SetAvalanchePositionPage implements OnInit {
   @Input() geoHazard: GeoHazard;
   @Input() showPolyline = true;
 
+  GeoHazard = GeoHazard;
+
   start: L.LatLng;
   end: L.LatLng;
   private map: L.Map;
