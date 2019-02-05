@@ -138,7 +138,7 @@ export class OfflineMapService {
         lastAccess: moment().unix(),
         size,
       };
-      return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
+      await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
     } catch (err) {
       this.loggingService.log('Could not download tile', err, LogLevel.Warning, DEBUG_TAG, { name, url, x, y, z });
     }

@@ -60,8 +60,10 @@ export class KdvService {
       await NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode)
         .query('upsert', { langKey: language, ...kdvElements }).exec();
       await this.dataLoadService.loadingCompleted(dataLoadId);
+      return true;
     } catch (err) {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
+      return false;
     }
   }
 

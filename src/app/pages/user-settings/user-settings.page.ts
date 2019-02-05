@@ -68,25 +68,19 @@ export class UserSettingsPage implements OnInit {
 
   async updateDropdowns() {
     this.isUpdating = true;
-    let failed = false;
-    try {
-      // TODO: Show loading with cancel
-      await this.kdvService.updateKdvElementsForLanguage(this.userSettings.appMode, this.userSettings.language);
-    } catch (err) {
-      failed = true;
-    } finally {
-      await this.showKdvElementsUpdated(failed);
-      this.ngZone.run(() => {
-        this.isUpdating = false;
-      });
-    }
+    // TODO: Show loading with cancel
+    const updated = await this.kdvService.updateKdvElementsForLanguage(this.userSettings.appMode, this.userSettings.language);
+    await this.showKdvElementsUpdated(updated);
+    this.ngZone.run(() => {
+      this.isUpdating = false;
+    });
   }
 
-  async showKdvElementsUpdated(failed: boolean) {
+  async showKdvElementsUpdated(ok: boolean) {
     const translations = await this.translateService.get(
       ['SETTINGS.DROPDOWNS_UPDATED', 'SETTINGS.DROPDOWNS_FAILED', 'ALERT.OK']).toPromise();
     const alert = await this.alertController.create({
-      message: failed ? translations['SETTINGS.DROPDOWNS_FAILED'] : translations['SETTINGS.DROPDOWNS_UPDATED'],
+      message: ok ? translations['SETTINGS.DROPDOWNS_UPDATED'] : translations['SETTINGS.DROPDOWNS_FAILED'],
       buttons: [translations['ALERT.OK']]
     });
     alert.present();

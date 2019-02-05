@@ -20,13 +20,31 @@ export class AnalyticService {
   ) {
   }
 
+  private checkIfAnalyticsLoaded = () => {
+    return new Promise((resolve, reject) => {
+      const timeStart = Date.now();
+      const TIMEOUT = 3000;
+      const _isLoaded = function () {
+        if (Date.now() - timeStart > TIMEOUT) {
+          reject('Timeout. Google analytics not injected!');
+          return;
+        }
+        if ((<any>window).ga && (<any>window).ga.create) {
+          resolve(ga);
+          return;
+        } else {
+          setTimeout(_isLoaded, 500);
+        }
+      };
+      _isLoaded();
+    });
+  }
+
+
   async init() {
     if (environment.production) {
-      if ((<any>window).ga) {
-        this.internalInit();
-      } else {
-        setTimeout(() => this.internalInit(), 2000);
-      }
+      await this.checkIfAnalyticsLoaded();
+      this.internalInit();
     }
   }
 
@@ -38,6 +56,7 @@ export class AnalyticService {
           'storage': 'none',
           'clientId': window.localStorage.getItem('ga_clientId')
         });
+        this.ga('set', 'checkProtocolTask', null);
         this.ga(function (tracker) {
           window.localStorage.setItem('ga_clientId', tracker.get('clientId'));
         });
