@@ -1,7 +1,7 @@
 import { TripLogState } from './trip-log-state.enum';
 
 export interface TripLogActivity {
-    id?: number;
+    id?: string;
     state: TripLogState;
     timestamp: number;
 }

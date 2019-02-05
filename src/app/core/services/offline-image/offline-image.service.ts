@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { nSQL } from 'nano-sql';
 import { NanoSql } from '../../../../nanosql';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { HTTP } from '@ionic-native/http/ngx';
@@ -11,8 +10,9 @@ import { IOfflineAsset } from './offline-asset.interface';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { Platform } from '@ionic/angular';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { GuidHelper } from '../../helpers/guid.helper';
 import '../../helpers/ionic/platform-helper';
+import { nSQL } from '@nano-sql/core';
+import * as utils from '@nano-sql/core/lib/utilities';
 
 const DEBUG_TAG = 'OfflineImageService';
 
@@ -96,7 +96,7 @@ export class OfflineImageService {
 
   private updateLastAccess(offlineAsset: IOfflineAsset) {
     offlineAsset.lastAccess = moment().unix();
-    return nSQL().table(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
+    return nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
   }
 
   private getFilenameFromType(type: string) {
@@ -115,7 +115,7 @@ export class OfflineImageService {
       // if (filename.indexOf('.') < 0) {
       //   filename = `${filename}.${this.getFilenameFromType(type)}`;
       // }
-      const filename = `${GuidHelper.createGuid()}.${this.getFilenameFromType(type)}`;
+      const filename = `${utils.uuid()}.${this.getFilenameFromType(type)}`;
       // Note: Create unique id so test/demo/prod images do not overwrite each other.
 
       const fileResult: FileEntry = await this.http.downloadFile(url, {}, {},
@@ -128,7 +128,7 @@ export class OfflineImageService {
         type,
         lastAccess: moment().unix()
       };
-      await nSQL().table(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
+      await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
       return offlineAsset;
     } catch (error) {
       this.loggingService.error(error, DEBUG_TAG, `Could not download offline asset`, url);
@@ -137,16 +137,16 @@ export class OfflineImageService {
   }
 
   async getOfflineAssetFromDb(url: string) {
-    // const result = (await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
-    //   .query('select').where((x) => x.originalUrl === url)
-    //   .exec()) as IOfflineAsset[];
-    // if (result.length > 0) {
-    //   return result[0];
-    // } else {
-    //   return null;
-    // }
+    const result = (await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
+      .query('select').where((x: IOfflineAsset) => x.url === url)
+      .exec()) as IOfflineAsset[];
+    if (result.length > 0) {
+      return result[0];
+    } else {
+      return null;
+    }
     // TODO: Test performance again after NanoSql patch. This issue with string id should be fixed now.
-    return this.dbHelperService.getItemById<IOfflineAsset>(NanoSql.TABLES.OFFLINE_ASSET.name, url);
+    // return this.dbHelperService.getItemById<IOfflineAsset>(NanoSql.TABLES.OFFLINE_ASSET.name, url);
   }
 
   blobToDataURL(blob: Blob): Promise<string> {
@@ -178,7 +178,7 @@ export class OfflineImageService {
   }
 
   async reset() {
-    await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('drop').exec();
+    await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('delete').exec();
     const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
     await this.file.removeRecursively(baseFolder, settings.offlineAssetsFolder);
   }

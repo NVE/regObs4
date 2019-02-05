@@ -78,7 +78,7 @@ export class DataMarshallService {
         this.loggingService.debug('App resumed. Start foreground updates.', DEBUG_TAG);
         this.startForegroundUpdate();
       });
-      this.startForegroundUpdate();
+      // this.startForegroundUpdate();
     });
     // No need to unsubscribe this observables when the service is singleton. It get destroyed when app exits.
   }

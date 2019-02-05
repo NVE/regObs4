@@ -10,10 +10,10 @@ import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../settings';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
-import { GuidHelper } from '../../core/helpers/guid.helper';
 import { LoginModalPage } from '../../modules/login/pages/modal-pages/login-modal/login-modal.page';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
+import * as utils from '@nano-sql/core/lib/utilities';
 
 const DEBUG_TAG = 'LegacyTripPage';
 
@@ -113,7 +113,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
         this.isLoading = true;
         this.tripDto.ObserverGuid = loggedInUser.Guid;
         this.tripDto.GeoHazardID = GeoHazard.Snow;
-        this.tripDto.DeviceGuid = GuidHelper.createGuid();
+        this.tripDto.DeviceGuid = utils.uuid();
         try {
           const currentLocation = await this.geoLocation.getCurrentPosition(settings.gps.currentPositionOptions);
           if (currentLocation) {

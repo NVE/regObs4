@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
-import { nSQL } from 'nano-sql';
 import { IRegistration } from '../models/registration.model';
 import { Observable } from 'rxjs';
 import { shareReplay, switchMap, map, take } from 'rxjs/operators';
@@ -21,10 +20,11 @@ import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { ObservableHelper } from '../../../core/helpers/observable-helper';
 import { NavController, ModalController } from '@ionic/angular';
 import { UserSetting } from '../../../core/models/user-settings.model';
-import { GuidHelper } from '../../../core/helpers/guid.helper';
 import { LoginModalPage } from '../../login/pages/modal-pages/login-modal/login-modal.page';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { ObservationService } from '../../../core/services/observation/observation.service';
+import { NanoSqlObservableHelper } from '../../../core/helpers/nano-sql/nanoObserverToRxjs';
+import * as utils from '@nano-sql/core/lib/utilities';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -61,20 +61,20 @@ export class RegistrationService {
     this._draftsObservable = this.registrations$.pipe(map((val) => val.filter((item) => item.status === RegistrationStatus.Draft)));
   }
 
-  async saveRegistration(registration: IRegistration): Promise<number> {
+  async saveRegistration(registration: IRegistration): Promise<string> {
     this.cleanupRegistration(registration);
     registration.changed = moment().unix();
     const userSettings = await this.userSettingService.getUserSettings();
     const result = await NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, userSettings.appMode)
       .query('upsert', registration).exec();
-    return result[0].affectedRowPKS[0];
+    return (result[0] as IRegistration).id;
   }
 
   async createNewRegistration(geoHazard?: GeoHazard) {
     const userSettings = await this.userSettingService.getUserSettings();
     const loggedInUser = await this.loginService.getLoggedInUser();
     const geoHazardToUse = geoHazard ? geoHazard : userSettings.currentGeoHazard[0];
-    const newId = GuidHelper.createGuid();
+    const newId = utils.uuid();
     const reg: IRegistration = {
       geoHazard: geoHazardToUse,
       changed: moment().unix(),
@@ -229,7 +229,7 @@ export class RegistrationService {
       this.cleanupRegistration(registration);
       registration.request.Email = userSetting.emailReciept;
       const createRegistrationResult = await this.postRegistration(userSetting.appMode, registration.request, cancel);
-      const newRegistration = await this.updateRegistrationById(createRegistrationResult.RegId, userSetting.appMode);
+      const newRegistration = await this.observationService.updateObservationById(createRegistrationResult.RegId, userSetting.appMode);
       await this.deleteRegistrationById(userSetting.appMode, registration.id);
       return newRegistration;
     } catch (ex) {
@@ -272,15 +272,15 @@ export class RegistrationService {
     return errors.join(', ');
   }
 
-  deleteRegistrationById(appMode: AppMode, id: number) {
+  deleteRegistrationById(appMode: AppMode, id: string) {
     return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
       .query('delete').where(['id', '=', id]).exec();
   }
 
   private getRegistrationsAsObservable(appMode: AppMode) {
-    return nSQL().observable<IRegistration[]>(() => {
-      return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('select').emit();
-    }).toRxJS().pipe(shareReplay(1));
+    return NanoSqlObservableHelper.toRxJS<IRegistration[]>(
+      NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('select')
+        .listen()).pipe(shareReplay(1));
   }
 
   getRegistrationsToSync() {
@@ -288,12 +288,12 @@ export class RegistrationService {
       .pipe(map((items) => items.filter((x) => x.status === RegistrationStatus.Sync)));
   }
 
-  getSavedRegistrationById(id: number) {
+  getSavedRegistrationById(id: string) {
     return this.getSavedRegistrationByIdObservable(id)
       .pipe(take(1)).toPromise();
   }
 
-  getSavedRegistrationByIdObservable(id: number) {
+  getSavedRegistrationByIdObservable(id: string) {
     return this.registrations$
       .pipe(map((items) => items.find((x) => x.id === id)));
   }
@@ -301,20 +301,6 @@ export class RegistrationService {
   private postRegistration(appMode: AppMode, registration: RegobsApiModels.CreateRegistrationRequestDto, cancel?: Promise<void>) {
     this.registrationApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
     return ObservableHelper.toPromiseWithCancel(this.registrationApiService.RegistrationInsert(registration), cancel);
-  }
-
-  private async updateRegistrationById(regId: number, appMode: AppMode) {
-    const result = await this.getRegistrationByRegIdFromApi(regId, appMode).toPromise();
-    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
-      .query('upsert', result).exec();
-    return result;
-  }
-
-  private getRegistrationByRegIdFromApi(regId: number, appMode: AppMode) {
-    this.searchApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
-    return this.searchApiService.SearchAll({ RegId: regId }).pipe(map((result) =>
-      result[0]
-    ));
   }
 
   private async updateLatestUserRegistrations(cancel?: Promise<any>) {

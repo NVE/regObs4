@@ -4,7 +4,6 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import * as moment from 'moment';
 import 'moment-timezone';
 import { LangKey } from '../../models/langKey';
-import { nSQL } from 'nano-sql';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
 import { map, tap, switchMap, shareReplay } from 'rxjs/operators';
@@ -13,7 +12,7 @@ import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
 import { IWarningApiResult } from './warning-api-result.interface';
 import { IAvalancheWarningApiResult } from './avalanche-warning-api-result.interface';
-import { combineLatest, Observable, of } from 'rxjs';
+import { combineLatest, Observable, of, BehaviorSubject, from } from 'rxjs';
 import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { IWarningGroup } from './warning-group.interface';
@@ -27,6 +26,8 @@ import { IAvalancheWarningSimple } from './avalanche-warning-simple.interface';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import '../../helpers/nano-sql/nanoObserverToRxjs';
 import { DbHelperService } from '../db-helper/db-helper.service';
+import { nSQL } from '@nano-sql/core';
+import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 
 const DEBUG_TAG = 'WarningService';
 
@@ -38,6 +39,7 @@ export class WarningService {
   private _warningsObservable: Observable<WarningGroup[]>;
   private _warningsForCurrentGeoHazardObservable: Observable<WarningGroup[]>;
   private _warningGroupInMapViewObservable: Observable<IWarningGroupInMapView>;
+  private changeTrigger: BehaviorSubject<void>;
 
   get warningsObservable$() {
     return this._warningsObservable;
@@ -61,6 +63,7 @@ export class WarningService {
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
   ) {
+    this.changeTrigger = new BehaviorSubject<void>(null);
     this._warningsObservable = this.getWarningsForCurrentLanguageAsObservable();
     this._warningsForCurrentGeoHazardObservable = this.getWarningsForCurrentLanguageAndCurrentGeoHazard();
     this._warningGroupInMapViewObservable = this.getWarningsForCurrentMapViewAsObservable();
@@ -131,11 +134,24 @@ export class WarningService {
       .where((g) => g.id === id).exec();
   }
 
+  // private getWarningsAsObservable() {
+  //   return NanoSqlObservableHelper.toRxJS<IWarningGroup[]>
+  //     (nSQL(NanoSql.TABLES.WARNING.name).query('select')
+  //       .listen({
+  //         debounce: 200,
+  //       })).pipe(
+  //         map((warningGroups) => warningGroups.length === 0 ?
+  //           this.getDefaultWarningGroups() : warningGroups),
+  //         tap((result) => this.loggingService.debug('Warnings observable changed', DEBUG_TAG, result)));
+  // }
+
   private getWarningsAsObservable() {
-    return nSQL().observable<IWarningGroup[]>(() => {
-      return nSQL(NanoSql.TABLES.WARNING.name).query('select').emit();
-    }).map((warningGroups) => warningGroups.length === 0 ? this.getDefaultWarningGroups() : warningGroups)
-      .toRxJS();
+    return this.changeTrigger.asObservable().pipe(
+      tap(() => this.loggingService.debug('Trigger change', DEBUG_TAG)),
+      switchMap(() => from(nSQL(NanoSql.TABLES.WARNING.name).query('select').exec())),
+      map((warningGroups: IWarningGroup[]) => warningGroups.length === 0 ?
+        this.getDefaultWarningGroups() : warningGroups),
+      tap((result) => this.loggingService.debug('Warnings observable changed', DEBUG_TAG, result)));
   }
 
   private getDefaultWarningGroups() {
@@ -203,9 +219,8 @@ export class WarningService {
   }
 
   private getFavouritesAsObservable() {
-    return nSQL().observable<{ groupId: string, geoHazard: GeoHazard }[]>(() => {
-      return nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('select').emit();
-    }).toRxJS();
+    return NanoSqlObservableHelper.toRxJS<{ groupId: string, geoHazard: GeoHazard }[]>(
+      nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('select').listen());
   }
 
   private getWarningsForCurrentLanguageAsObservable() {
@@ -235,8 +250,8 @@ export class WarningService {
   }
 
   private getWarningsForCurrentMapViewAsObservable() {
-    return this.mapService.mapViewAndAreaObservable$
-      .pipe(switchMap((mapViewArea) =>
+    return combineLatest(this.mapService.mapViewAndAreaObservable$, this.changeTrigger)
+      .pipe(switchMap(([mapViewArea, _]) =>
         this.getWarningsForCurrentMapView(mapViewArea)),
         map((result) => result),
         tap((val) => {
@@ -350,6 +365,7 @@ export class WarningService {
     await this.deleteRegionsNoLongerInResult(geoHazard, regionResult); // NOTE: This also trigger change
     await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length,
       from, to);
+    this.changeTrigger.next();
   }
 
   private async updateAvalancheWarnings(language: LangKey, from?: Date, to?: Date, cancelPromise?: Promise<void>) {

@@ -3,6 +3,7 @@ import { LogLevel } from './log-level.model';
 import { LoggingService } from './logging.service';
 import { AppMode } from '../../../../core/models/app-mode.enum';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
+const stringify = require('json-stringify-safe');
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class ConsoleLoggingService implements LoggingService {
   }
 
   log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    const msg = `[${level.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}. ${error ? error : ''}`;
+    const msg = `[${level.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}. ${error ? stringify(error) : ''}`;
     switch (level) {
       case LogLevel.Warning:
       case LogLevel.Error:

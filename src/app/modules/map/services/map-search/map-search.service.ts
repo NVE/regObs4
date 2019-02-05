@@ -13,13 +13,14 @@ import { LangKey } from '../../../../core/models/langKey';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { LocationService } from '../../../regobs-api/services';
 import { NanoSql } from '../../../../../nanosql';
-import { nSQL } from 'nano-sql';
 import { MapSearchHistory } from './map-search-history.model';
 import * as moment from 'moment';
 import { IMapView } from '../map/map-view.interface';
 import { NorwegianSearchResultModel, NorwegianSearchResultModelStednavn } from './norwegian-search-result.model';
 import { WorldSearchResultModel } from './world-search-result.model';
 import '../../../../core/helpers/nano-sql/nanoObserverToRxjs';
+import { nSQL } from '@nano-sql/core';
+import { NanoSqlObservableHelper } from '../../../../core/helpers/nano-sql/nanoObserverToRxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -247,8 +248,9 @@ export class MapSearchService {
   }
 
   getSearchHistoryAsObservable(): Observable<MapSearchHistory[]> {
-    return nSQL().observable<{ id: string, items: MapSearchHistory[] }[]>(() =>
-      nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('select').emit()
-    ).toRxJS().pipe(map((val) => val.length > 0 ? val[0].items.reverse() : []));
+    return NanoSqlObservableHelper.toRxJS<{ id: string, items: MapSearchHistory[] }[]>
+      (nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('select')
+        .listen())
+      .pipe(map((val) => val.length > 0 ? val[0].items.reverse() : []));
   }
 }

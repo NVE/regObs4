@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
-import { Observer } from 'nano-sql/lib/observable';
 import { OfflineMap } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { ActionSheetController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-offline-map',
@@ -13,7 +13,7 @@ import { ActionSheetButton } from '@ionic/core';
 })
 export class OfflineMapPage implements OnInit {
 
-  offlineMaps$: Observer<OfflineMap[]>;
+  offlineMaps$: Observable<OfflineMap[]>;
 
   constructor(
     private offlineMapService: OfflineMapService,

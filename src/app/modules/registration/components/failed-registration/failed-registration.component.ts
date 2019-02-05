@@ -5,6 +5,7 @@ import { RegistrationService } from '../../services/registration.service';
 import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { settings } from '../../../../../settings';
+const stringify = require('json-stringify-safe');
 
 @Component({
   selector: 'app-failed-registration',
@@ -35,7 +36,7 @@ export class FailedRegistrationComponent implements OnInit {
   async sendEmail() {
     const translations = await this.translateService
       .get(['REGISTRATION.EMAIL.SUBJECT', 'REGISTRATION.EMAIL.BODY']).toPromise();
-    const base64string = btoa(JSON.stringify(this.registration));
+    const base64string = btoa(stringify(this.registration));
     const email: EmailComposerOptions = {
       to: settings.errorEmailAddress,
       attachments: [

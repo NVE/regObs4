@@ -5,13 +5,14 @@ import { GeoHazard } from '../../models/geo-hazard.enum';
 import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
 import { NanoSql } from '../../../../nanosql';
-import { nSQL } from 'nano-sql';
 import { Observable, combineLatest } from 'rxjs';
 import { map, take, shareReplay, distinctUntilChanged, distinct, tap } from 'rxjs/operators';
 import { LangKey } from '../../models/langKey';
 import { TopoMap } from '../../models/topo-map.enum';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import '../../helpers/nano-sql/nanoObserverToRxjs';
+import { nSQL } from '@nano-sql/core';
+import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 
 const DEBUG_TAG = 'UserSettingService';
 
@@ -143,12 +144,12 @@ export class UserSettingService {
   }
 
   private getUserSettingsAsObservable(): Observable<UserSetting> {
-    return nSQL().observable<UserSetting[]>(() => {
-      return nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select').emit();
-    }).toRxJS().pipe(
-      map((val: UserSetting[]) => val.length > 0 ? val[0] : this.getDefaultSettings()),
-      shareReplay(1)
-    );
+    return NanoSqlObservableHelper.toRxJS<UserSetting[]>(
+      nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select')
+        .listen()).pipe(
+          map((val: UserSetting[]) => val.length > 0 ? val[0] : this.getDefaultSettings()),
+          shareReplay(1)
+        );
   }
 
   async saveUserSettings(userSetting: UserSetting) {

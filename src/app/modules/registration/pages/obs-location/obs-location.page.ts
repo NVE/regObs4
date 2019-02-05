@@ -36,9 +36,8 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    const idParam = this.activatedRoute.snapshot.params['id'] || this.activatedRoute.snapshot.params['id?geoHazard=:geoHazard'];
-    if (idParam) {
-      const id = parseInt(idParam, 10);
+    const id = this.activatedRoute.snapshot.params['id'] || this.activatedRoute.snapshot.params['id?geoHazard=:geoHazard'];
+    if (id) {
       this.registration =
         await this.registrationService.getSavedRegistrationById(id);
       this.geoHazard = this.registration.geoHazard;

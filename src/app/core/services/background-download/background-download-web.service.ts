@@ -3,9 +3,9 @@ import { BackgroundDownloadService } from './background-download.service';
 import { Progress } from '../offline-map/progress.model';
 import { HttpRequest, HttpClient, HttpEventType } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { nSQL } from 'nano-sql';
 import { ProgressStep } from '../offline-map/progress-step.model';
 import { NanoSql } from '../../../../nanosql';
+import { nSQL } from '@nano-sql/core';
 
 @Injectable()
 export class BackgroundDownloadWebService implements BackgroundDownloadService {

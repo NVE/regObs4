@@ -27,7 +27,7 @@ export class OverviewPage implements OnInit, OnDestroy {
   private registrationSubscription: Subscription;
 
   get regiatration$() {
-    const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
+    const id = this.activatedRoute.snapshot.params['id'];
     return this.registrationService.getSavedRegistrationByIdObservable(id);
   }
 

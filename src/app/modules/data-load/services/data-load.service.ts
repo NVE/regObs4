@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
 import { Observable } from 'rxjs';
 import { IDataLoad } from '../models/data-load.interface';
-import { nSQL } from 'nano-sql';
 import { map, take } from 'rxjs/operators';
 import * as moment from 'moment';
 import '../../../core/helpers/nano-sql/nanoObserverToRxjs';
+import { nSQL } from '@nano-sql/core';
+import { NanoSqlObservableHelper } from '../../../core/helpers/nano-sql/nanoObserverToRxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -73,11 +74,12 @@ export class DataLoadService {
   }
 
   getStateAsObservable(id: string): Observable<IDataLoad> {
-    return nSQL().observable<IDataLoad[]>(() => {
-      return nSQL(NanoSql.TABLES.DATA_LOAD.name).query('select').where((x) => x.id === id).emit();
-    }).toRxJS().pipe(
-      map((val: IDataLoad[]) => val.length > 0 ? val[0] :
-        { id, completed: null, lastUpdated: null, isLoading: false, started: null })
-    );
+    return NanoSqlObservableHelper.toRxJS<IDataLoad[]>(nSQL(NanoSql.TABLES.DATA_LOAD.name)
+      .query('select')
+      .where((x) => x.id === id)
+      .listen()).pipe(
+        map((val: IDataLoad[]) => val.length > 0 ? val[0] :
+          { id, completed: null, lastUpdated: null, isLoading: false, started: null })
+      );
   }
 }

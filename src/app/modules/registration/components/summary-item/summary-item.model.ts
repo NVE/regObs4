@@ -1,7 +1,7 @@
 import { PictureRequestDto } from '../../../regobs-api/models';
 
 export interface ISummaryItem {
-    id: number;
+    id: string;
     href: string;
     queryParams?: any;
     title: string;

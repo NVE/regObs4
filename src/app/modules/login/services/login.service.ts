@@ -6,11 +6,12 @@ import { Observable, combineLatest } from 'rxjs';
 import { LoggedInUser } from '../models/logged-in-user.model';
 import { NanoSql } from '../../../../nanosql';
 import { map, take, switchMap, shareReplay } from 'rxjs/operators';
-import { nSQL } from 'nano-sql';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { ObserverResponseDto, ObserverGroupDto } from '../../regobs-api/models';
+import { nSQL } from '@nano-sql/core';
+import { NanoSqlObservableHelper } from '../../../core/helpers/nano-sql/nanoObserverToRxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -97,7 +98,7 @@ export class LoginService {
       return { key: `${user.Guid}_${val.Id}`, userId: user.Guid, Id: val.Id, Name: val.Name };
     });
     const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
-    await nSQL().loadJS(instanceName, userGroups, true);
+    await nSQL(instanceName).loadJS(userGroups);
     await this.deleteUserGroupsNoLongerInResult(appMode, userGroups.map((ug) => ug.key));
   }
 
@@ -114,10 +115,10 @@ export class LoginService {
   }
 
   getLoggedUserInAsObservable(appMode: AppMode): Observable<LoggedInUser> {
-    return nSQL().observable<LoggedInUser[]>(() => {
-      return NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('select').emit();
-    }).toRxJS().pipe(
-      map(([loggedInUser]) => loggedInUser || { isLoggedIn: false })
-    );
+    return NanoSqlObservableHelper.toRxJS<LoggedInUser[]>
+      (NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('select')
+        .listen()).pipe(
+          map(([loggedInUser]) => loggedInUser || { isLoggedIn: false })
+        );
   }
 }

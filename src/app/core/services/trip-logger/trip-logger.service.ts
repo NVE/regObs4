@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { nSQL } from 'nano-sql';
 import { TripLogItem } from './trip-log-item.model';
 import * as moment from 'moment';
 import { TripLogState } from './trip-log-state.enum';
@@ -16,6 +15,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { LegacyTrip } from './legacy-trip.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import '../../helpers/nano-sql/nanoObserverToRxjs';
+import { nSQL } from '@nano-sql/core';
+import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 
 const DEBUG_TAG = 'TripLoggerService';
 
@@ -44,9 +45,9 @@ export class TripLoggerService {
   }
 
   getTripLogAsObservable(): Observable<TripLogItem[]> {
-    return nSQL().observable<TripLogItem[]>(() => {
-      return nSQL(NanoSql.TABLES.TRIP_LOG.name).query('select').emit();
-    }).toRxJS();
+    return NanoSqlObservableHelper.toRxJS<TripLogItem[]>(
+      nSQL(NanoSql.TABLES.TRIP_LOG.name).query('select')
+        .listen());
   }
 
   updateState(state: TripLogState) {
@@ -56,21 +57,22 @@ export class TripLoggerService {
   }
 
   getTripLogStateAsObservable(): Observable<TripLogActivity> {
-    return nSQL().observable<TripLogActivity>(() => {
-      return nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').orderBy({ id: 'desc' }).limit(1).emit();
-    }).map((x) => x[0]).toRxJS();
+    return NanoSqlObservableHelper.toRxJS<TripLogActivity[]>(
+      nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select')
+        .orderBy(['id: desc']).limit(1).listen({
+        })).pipe(map((ta) => ta[0]));
   }
 
   getTripLogActivityAsObservable(): Observable<TripLogActivity[]> {
-    return nSQL().observable<TripLogActivity[]>(() => {
-      return nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').emit();
-    }).toRxJS();
+    return NanoSqlObservableHelper.toRxJS<TripLogActivity[]>(
+      nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select')
+        .listen());
   }
 
   getLegacyTripAsObservable(): Observable<LegacyTrip> {
-    return nSQL().observable<LegacyTrip>(() => {
-      return nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name).query('select').emit();
-    }).map((x) => x[0]).toRxJS();
+    return NanoSqlObservableHelper.toRxJS<LegacyTrip[]>(
+      nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name).query('select')
+        .listen()).pipe(map((x) => x[0]));
   }
 
   startLegacyTrip(tripDto: CreateTripDto) {

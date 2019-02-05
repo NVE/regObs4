@@ -1,3 +1,4 @@
+const stringify = require('json-stringify-safe');
 export class IsEmptyHelper {
     static isEmpty(obj: Object | Array<Object | Array<Object>>) {
         if (obj === null || obj === undefined) {
@@ -12,7 +13,7 @@ export class IsEmptyHelper {
         } else {
             const props = Object.getOwnPropertyNames(obj);
             if (props.length === 0) {
-                return JSON.stringify(obj) === '{}';
+                return stringify(obj) === '{}';
             } else {
                 return !props.some(x => !IsEmptyHelper.isEmpty(obj[x]));
             }

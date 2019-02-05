@@ -1,164 +1,198 @@
-import { nSQL, DataModel } from 'nano-sql';
-import { getMode } from 'cordova-plugin-nano-sqlite/lib/sqlite-adapter';
 import { settings } from './settings';
-import { NanoSqlTable } from './app/core/models/nanosql-table.model';
 import { AppMode } from './app/core/models/app-mode.enum';
+import { nSQL } from '@nano-sql/core';
+import { getMode } from '@nano-sql/adapter-sqlite-cordova';
+import { InanoSQLTableConfig, InanoSQLTable, InanoSQLQuery, adapterConnectFilter } from '@nano-sql/core/lib/interfaces';
+import { SQLiteObject } from '@ionic-native/sqlite/ngx';
 
 export class NanoSql {
     public static readonly TABLES = {
         OBSERVATION: {
             name: 'observation',
-            instancePerAppMode: true, // Create one table for each app mode
-            model: [
-                { key: 'RegID', type: 'number', props: ['pk'] },
-                { key: 'GeoHazardTID', type: 'number', props: ['idx'] },
-                { key: 'LangKey', type: 'number', props: ['idx'] },
-                { key: '*', type: '*' },
-            ]
+            instancePerAppMode: true, // Create one table for each app 
+            model: {
+                'RegID:int': { pk: true },
+                'GeoHazardTID:int': {},
+                'LangKey:int': {},
+                '*:*': {},
+            },
+            indexes: {},
+            // indexes: {
+            //     'GeoHazardTID:int': {},
+            //     'LangKey:int': {},
+            // },
         },
         TRIP_LOG: {
             name: 'triplog',
-            model: [
-                { key: 'id', type: 'int', props: ['pk', 'ai'] },
-                { key: 'latitude', type: 'number' },
-                { key: 'longitude', type: 'number' },
-                { key: 'timestamp', type: 'number' },
-                { key: 'altitude', type: 'number' },
-                { key: 'speed', type: 'number' },
-                { key: 'accuracy', type: 'number' },
-                { key: 'heading', type: 'number' },
-            ]
+            model: {
+                'id:uuid': { pk: true },
+                'latitude:number': {},
+                'longitude:number': {},
+                'timestamp:number': {},
+                'altitude:number': {},
+                'speed:number': {},
+                'accuracy:number': {},
+                'heading:number': {},
+            },
+            indexes: {}
         },
         TRIP_LOG_ACTIVITY: {
             name: 'triplogactivity',
-            model: [
-                { key: 'id', type: 'int', props: ['pk', 'ai'] },
-                { key: 'state', type: 'string' },
-                { key: 'timestamp', type: 'number' },
-            ]
+            model: {
+                'id:uuid': { pk: true },
+                'state:string': {},
+                'timestamp:number': {},
+            },
+            indexes: {},
         },
         LEGACY_TRIP_LOG: {
             name: 'legacytrip',
-            model: [
-                { key: 'id', type: 'string', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'id:string': { pk: true },
+                '*:*': {},
+            },
+            indexes: {},
         },
         WARNING: {
             name: 'warning',
-            model: [
-                { key: 'id', type: 'string', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'id:string': { pk: true },
+                '*:*': {},
+            },
+            indexes: {}
         },
         WARNING_FAVOURITE: {
             name: 'warning_favourite',
-            model: [
-                { key: 'id', type: 'string', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
+            model:
+            {
+                'id:string': { pk: true },
+                '*:*': {},
+            },
+            indexes: {},
         },
         OFFLINE_MAP: {
             name: 'offlinemap',
-            model: [
-                { key: 'name', type: 'string', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
+            model:
+            {
+                'name:string': { pk: true },
+                '*:*': {},
+            },
+            indexes: {}
         },
         OFFLINE_MAP_TILES: {
             name: 'offlinemaptiles',
-            model: [
-                { key: 'id', type: 'string', props: ['pk'] },
-                { key: 'url', type: 'string' },
-                { key: 'mapName', type: 'string', props: ['idx'] },
-                { key: 'lastAccess', type: 'number', props: ['idx'] },
-                { key: 'size', type: 'number' },
-            ]
+            model: {
+                'id:string': { pk: true },
+                'url:string': {},
+                'mapName:string': {},
+                'lastAccess:number': {},
+                'size:number': {},
+            },
+            indexes: {
+                'mapName:string': {},
+                'lastAccess:number': {},
+            }
         },
         OFFLINE_ASSET: {
             name: 'offlineasset',
-            model: [
-                { key: 'url', type: 'string', props: ['pk'] },
-                { key: 'fileUrl', type: 'string' },
-                { key: 'type', type: 'string' },
-                { key: 'lastAccess', type: 'number', props: ['idx'] },
-            ]
+            model: {
+                'url:string': { pk: true },
+                'fileUrl:string': {},
+                'type:string': {},
+                'lastAccess:number': {},
+            },
+            indexes: {
+                'lastAccess:number': {}
+            }
         },
         MAP_SEARCH_HISTORY: {
             name: 'mapsearchhistory',
-            model: [
-                { key: 'id', type: 'string', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'id:string': { pk: true },
+                '*:*': {},
+            },
+            indexes: {},
         },
         USER_SETTINGS: {
             name: 'usersettings',
-            model: [
-                { key: 'id', type: 'string', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'id:string': { pk: true },
+                '*:*': {},
+            },
+            indexes: {},
         },
         USER: {
             name: 'user',
             instancePerAppMode: true,
-            model: [
-                { key: 'id', type: 'string', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'id:string': { 'pk': true },
+                '*:*': {},
+            },
+            indexes: {},
         },
         DATA_LOAD: {
             name: 'dataload',
-            model: [
-                { key: 'id', type: 'string', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'id:string': { pk: true },
+                '*:*': {},
+            },
+            indexes: {},
         },
         REGISTRATION: {
             name: 'registration',
             instancePerAppMode: true,
-            model: [
-                { key: 'id', type: 'int', props: ['ai', 'pk'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'id:uuid': { pk: true },
+                '*:*': {},
+            },
+            indexes: {},
         },
         LOCATION: {
             name: 'location',
             instancePerAppMode: true,
-            model: [
-                { key: 'Id', type: 'int', props: ['pk'] },
-                { key: 'GeoHazardId', type: 'int', props: ['idx'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'Id:int': { pk: true },
+                'GeoHazardId:int': {},
+                '*:*': {},
+            },
+            indexes: {
+                'GeoHazardId:int': {}
+            },
         },
         KDV_ELEMENTS: {
             name: 'kdvelements',
             instancePerAppMode: true,
-            model: [
-                { key: 'langKey', type: 'int', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'langKey:int': { pk: true },
+                '*:*': {},
+            },
+            indexes: {},
         },
         OBSERVER_GROUPS: {
             name: 'groups',
             instancePerAppMode: true,
-            model: [
-                { key: 'key', type: 'string', props: ['pk'] },
-                { key: 'userId', type: 'string', props: ['idx'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'key:string': { pk: true },
+                'userId:string': {},
+                '*:*': {},
+            },
+            indexes: {
+                'userId:string': {},
+            }
         },
         HELP_TEXTS: {
             name: 'helptexts',
             instancePerAppMode: true,
-            model: [
-                { key: 'langKey', type: 'int', props: ['pk'] },
-                { key: '*', type: '*' },
-            ]
+            model: {
+                'langKey:int': { pk: true },
+                '*:*': {},
+            },
+            indexes: {},
         },
     };
 
-    static getTables(): NanoSqlTable[] {
-        const result: NanoSqlTable[] = [];
+    static getTables() {
+        const result = [];
         // tslint:disable-next-line:forin
         for (const tableDef in NanoSql.TABLES) {
             result.push(NanoSql.TABLES[tableDef]);
@@ -170,32 +204,75 @@ export class NanoSql {
         return `${name}_${appMode}`;
     }
 
+    static getTableModels() {
+        const tables: InanoSQLTableConfig[] = [];
+        for (const table of NanoSql.getTables()) {
+            if (table.instancePerAppMode) {
+                tables.push({
+                    name: NanoSql.getInstanceName(table.name, AppMode.Prod),
+                    model: table.model,
+                    indexes: table.indexes,
+                });
+                tables.push({
+                    name: NanoSql.getInstanceName(table.name, AppMode.Demo),
+                    model: table.model,
+                    indexes: table.indexes,
+                });
+                tables.push({
+                    name: NanoSql.getInstanceName(table.name, AppMode.Test),
+                    model: table.model,
+                    indexes: table.indexes,
+                });
+            } else {
+                tables.push({
+                    name: table.name,
+                    model: table.model,
+                    indexes: table.indexes,
+                });
+            }
+        }
+        return tables;
+    }
+
     static async init() {
-        nSQL().config({
+        await nSQL().connect({
             id: settings.db.nanoSql.dbName,
             mode: getMode(),
-            version: 1,
-            // cache: false, // https://github.com/ClickSimply/Nano-SQL/issues/34
+            version: 1.0,
+            tables: this.getTableModels(),
+            // cache: false,
             // historyMode: {
             //     table: 'row',
             // }
+            plugins: [
+                {
+                    name: 'Table Name Plugin', // Plugin to avoid random id on table name
+                    version: 1.0,
+                    dependencies: {},
+                    filters: [
+                        {
+                            name: 'configTableSystem',
+                            priority: 1000,
+                            call: (inputArgs: { res: InanoSQLTable, query: InanoSQLQuery }, complete, cancel) => {
+                                inputArgs.res.id = inputArgs.res.name;
+                                complete(inputArgs);
+                            }
+                        }
+                    ]
+                },
+            ],
         });
+        const db = (<any>nSQL().adapter)._db;
+        if (db && db.executeSql) {
+            db.executeSql('PRAGMA journal_mode = WAL', null, (onSuccess) => {
+                console.log('PRAGMA journal_mode = WAL success');
+            });
+            db.executeSql('PRAGMA synchronous = NORMAL', null, (onSuccess) => {
+                console.log('PRAGMA synchronous = NORMAL success');
+            });
+        }
         // NOTE: It is also possible to implement migrations on version updates.
         // See: https://github.com/ClickSimply/Nano-SQL/issues/70
-        for (const table of NanoSql.getTables()) {
-            if (table.instancePerAppMode) {
-                nSQL().table(NanoSql.getInstanceName(table.name, AppMode.Prod)).model(table.model);
-                nSQL().table(NanoSql.getInstanceName(table.name, AppMode.Demo)).model(table.model);
-                nSQL().table(NanoSql.getInstanceName(table.name, AppMode.Test)).model(table.model);
-            } else {
-                nSQL().table(table.name).model(table.model);
-            }
-        }
-        await nSQL().connect();
-        const adapter = await nSQL().extend('get_adapter');
-        const adapterName = (<any>adapter[0]).constructor.name;
-        console.log(`[INFO][NanoSQL] NanoSQL conencted. Using adapter:`, adapterName);
-        // TODO: Create service instead of static methods, inject logger.
     }
 
     static getInstance(name: string, appMode: AppMode) {
@@ -206,11 +283,11 @@ export class NanoSql {
         const promises = [];
         for (const table of NanoSql.getTables()) {
             if (table.instancePerAppMode) {
-                promises.push(nSQL().table(NanoSql.getInstanceName(table.name, AppMode.Prod)).query('drop').exec());
-                promises.push(nSQL().table(NanoSql.getInstanceName(table.name, AppMode.Demo)).query('drop').exec());
-                promises.push(nSQL().table(NanoSql.getInstanceName(table.name, AppMode.Test)).query('drop').exec());
+                promises.push(nSQL(NanoSql.getInstanceName(table.name, AppMode.Prod)).query('delete').exec());
+                promises.push(nSQL(NanoSql.getInstanceName(table.name, AppMode.Demo)).query('delete').exec());
+                promises.push(nSQL(NanoSql.getInstanceName(table.name, AppMode.Test)).query('delete').exec());
             } else {
-                promises.push(nSQL().table(table.name).query('drop').exec());
+                promises.push(nSQL(table.name).query('delete').exec());
             }
         }
         return Promise.all(promises);

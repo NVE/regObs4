@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
-import { nSQL } from 'nano-sql';
 import { RowCount } from '../../models/row-count.model';
-import { Observable, combineLatest, of } from 'rxjs';
+import { Observable, combineLatest, of, Subject, from, BehaviorSubject } from 'rxjs';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import * as moment from 'moment';
 import 'moment-timezone';
 import { NanoSql } from '../../../../nanosql';
-import { debounceTime, map, distinctUntilChanged, switchMap, shareReplay, tap } from 'rxjs/operators';
+import { map, distinctUntilChanged, switchMap, shareReplay, tap } from 'rxjs/operators';
 import { LoginService } from '../../../modules/login/services/login.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
@@ -20,6 +19,7 @@ import { ObservableHelper } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import '../../helpers/nano-sql/nanoObserverToRxjs';
 import { DbHelperService } from '../db-helper/db-helper.service';
+import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 
 const DEBUG_TAG = 'ObservationService';
 
@@ -29,6 +29,7 @@ const DEBUG_TAG = 'ObservationService';
 export class ObservationService {
   private _observationsObservable: Observable<RegistrationViewModel[]>;
   private _dataLoadObservable: Observable<string>;
+  private changeTrigger: BehaviorSubject<void>;
 
   get observations$() {
     return this._observationsObservable;
@@ -46,6 +47,7 @@ export class ObservationService {
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
   ) {
+    this.changeTrigger = new BehaviorSubject(null);
     this._observationsObservable = this.getObservationsAsObservable();
     this._dataLoadObservable = this.getDataLoadObservable();
   }
@@ -137,8 +139,8 @@ export class ObservationService {
         LangKey: userSetting.language,
       }), cancel);
       this.loggingService.debug(`Got ${searchResult.length} new observations for geoHazards ${geoHazards.join(', ')}`, DEBUG_TAG);
+      const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode);
       if (!isCanceled) {
-        const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, userSetting.appMode);
         const now = new Date();
         await this.dbHelperService.fastInsert(instanceName, searchResult, (data) => data.RegID);
         this.loggingService.debug(`fastInsert took ${new Date().getTime() - now.getTime()} ms`, DEBUG_TAG);
@@ -153,6 +155,7 @@ export class ObservationService {
       }
       if (!isCanceled) {
         await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.length, fromDate, new Date());
+        this.changeTrigger.next();
         return searchResult.length;
       } else {
         this.loggingService.debug(`Operation cancelled. Saving load error.`, DEBUG_TAG);
@@ -193,17 +196,33 @@ export class ObservationService {
         // Delete records no longer in result (registration has been deleted)
         await instance.query('delete')
           .where((reg: RegistrationViewModel) => {
-            return reg.Observer.ObserverGUID === user.Guid &&
+            return reg.Observer && reg.Observer.ObserverGUID === user.Guid &&
               reg.RegID < lastId &&
               reg.RegID > firstId &&
               !ids.find((item) => item === reg.RegID);
           }).exec();
+        this.changeTrigger.next();
       }
       return searchResult;
     } catch (err) {
       this.loggingService.error(err, DEBUG_TAG, `Could not update observations for user: `, user);
       return [];
     }
+  }
+
+  async updateObservationById(regId: number, appMode: AppMode) {
+    const result = await this.getRegistrationByRegIdFromApi(regId, appMode).toPromise();
+    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
+      .query('upsert', result).exec();
+    this.changeTrigger.next();
+    return result;
+  }
+
+  private getRegistrationByRegIdFromApi(regId: number, appMode: AppMode) {
+    this.searchService.rootUrl = settings.services.regObs.apiUrl[appMode];
+    return this.searchService.SearchAll({ RegId: regId }).pipe(map((result) =>
+      result[0]
+    ));
   }
 
   getObservationsDaysBack(userSettings: UserSetting, geoHazards: GeoHazard[]): number {
@@ -279,6 +298,28 @@ export class ObservationService {
       ));
   }
 
+  getObservationsByParameters(appMode: AppMode,
+    langKey: LangKey,
+    geoHazards?: GeoHazard[],
+    fromDate?: Date,
+    observerGuid?: string): Promise<RegistrationViewModel[]> {
+    return this.getObservationsByParametersQuery(appMode, langKey, geoHazards, fromDate, observerGuid).exec();
+  }
+
+  private getObservationsByParametersQuery(appMode: AppMode,
+    langKey: LangKey,
+    geoHazards?: GeoHazard[],
+    fromDate?: Date,
+    observerGuid?: string) {
+    return (NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
+      .query('select').where((reg: RegistrationViewModel) => {
+        return !!reg && (geoHazards ? geoHazards.indexOf(reg.GeoHazardTID) >= 0 : true)
+          && reg.LangKey === langKey
+          && (fromDate ? moment(reg.DtObsTime).isAfter(fromDate) : true)
+          && (observerGuid ? (reg.Observer.ObserverGUID === observerGuid) : true);
+      }));
+  }
+
   /**
    * Query observations by parameters
    * @param appMode
@@ -292,17 +333,46 @@ export class ObservationService {
     geoHazards?: GeoHazard[],
     fromDate?: Date,
     observerGuid?: string): Observable<RegistrationViewModel[]> {
-    return nSQL().observable<RegistrationViewModel[]>(() => {
-      return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select').where((reg: RegistrationViewModel) => {
-        return !!reg && (geoHazards ? geoHazards.indexOf(reg.GeoHazardTID) >= 0 : true)
-          && reg.LangKey === langKey
-          && (fromDate ? moment(reg.DtObsTime).isAfter(fromDate) : true)
-          && (observerGuid ? reg.Observer.ObserverGUID === observerGuid : true);
-      }).emit();
-    }).toRxJS().pipe(debounceTime(500),
+    return this.changeTrigger.asObservable().pipe(
+      switchMap(() => from(this.getObservationsByParameters(appMode, langKey, geoHazards, fromDate, observerGuid))),
       map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
       tap((items) => this.loggingService.debug('Observations observable change feed', DEBUG_TAG, items)));
   }
+
+  // NOTE: Since we are using fastInsert, normal NanoSQL change feed is not supported, using subject trigger instead
+  // /**
+  //  * Query observations by parameters
+  //  * @param appMode
+  //  * @param geoHazard
+  //  * @param fromDate
+  //  * @param user
+  //  */
+  // getObservationsByParametersAsObservable(
+  //   appMode: AppMode,
+  //   langKey: LangKey,
+  //   geoHazards?: GeoHazard[],
+  //   fromDate?: Date,
+  //   observerGuid?: string): Observable<RegistrationViewModel[]> {
+  //   return NanoSqlObservableHelper.toRxJS<RegistrationViewModel[]>
+  //     (this.getObservationsByParametersQuery(appMode, langKey, geoHazards, fromDate, observerGuid).listen({
+  //         debounce: 500,
+  //         unique: true,
+  //         compareFn: (a, b) => this.observableCompareFunc(a, b),
+  //       })).pipe(
+  //     map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
+  //     tap((items) => this.loggingService.debug('Observations observable change feed', DEBUG_TAG, items)));
+  // }
+
+  // private observableCompareFunc(rowsA: RegistrationViewModel[], rowsB: RegistrationViewModel[]) {
+  //   const newRows = rowsA.map((x) => this.uniqueObservation(x)).join('#');
+  //   const oldRows = rowsB.map((x) => this.uniqueObservation(x)).join('#');
+  //   console.log(`New rows: ${newRows}\nOld rows: ${oldRows}+nEquals: ${newRows === oldRows}`);
+  //   return newRows !== oldRows;
+  // }
+
+  // private uniqueObservation(obs: RegistrationViewModel) {
+  //   return `${obs.RegID}_${obs.DtChangeTime}`;
+  // }
 
   async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {
     const result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
@@ -311,8 +381,10 @@ export class ObservationService {
   }
 
   getObserableCount(appMode: AppMode): Observable<number> {
-    return nSQL().observable<RowCount[]>(() => {
-      return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select', ['COUNT(*) as count']).emit();
-    }).debounce(100).toRxJS().pipe(map((val: RowCount[]) => val[0].count), distinctUntilChanged());
+    return NanoSqlObservableHelper.toRxJS<RowCount[]>(
+      NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select', ['COUNT(*) as count'])
+        .listen({
+          debounce: 100,
+        })).pipe(map((val: RowCount[]) => val[0].count), distinctUntilChanged());
   }
 }

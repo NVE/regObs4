@@ -25,7 +25,7 @@ export abstract class BasePage implements OnInit, OnDestroy {
     }
 
     async ngOnInit(): Promise<void> {
-        const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
+        const id = this.activatedRoute.snapshot.params['id'];
         this.subscription = this.basePageService.RegistrationService
             .getSavedRegistrationByIdObservable(id).subscribe((val) => {
                 if (val) {

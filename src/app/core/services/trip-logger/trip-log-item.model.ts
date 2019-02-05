@@ -1,5 +1,5 @@
 export interface TripLogItem {
-    id?: number;
+    id?: string;
     latitude: number;
     longitude: number;
     timestamp: number;

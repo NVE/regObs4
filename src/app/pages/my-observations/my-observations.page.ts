@@ -13,7 +13,7 @@ import { IRegistration } from '../../modules/registration/models/registration.mo
 
 interface MyVirtualScrollItem {
   type: 'draft' | 'sync' | 'sent';
-  id: number;
+  id: string;
   item: IRegistration | RegistrationViewModel;
 }
 
@@ -204,15 +204,15 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     return combineLatest(
       this.getSyncItemsObservable(),
       this.getDraftObservable(),
-      this.getSentObserbable())
+      this.getSentObservable())
       .pipe(map(([a, b, c]) => ([...a, ...b, ...c])));
   }
 
-  private getSentObserbable(): Observable<MyVirtualScrollItem[]> {
+  private getSentObservable(): Observable<MyVirtualScrollItem[]> {
     return this.observationService.getUserObservationsAsObservable().pipe(
       distinctUntilChanged<RegistrationViewModel[], string>
         ((a, b) => a.localeCompare(b) === 0, (keySelector) => this.getDistinctRegistrationList(keySelector)),
-      map((val) => val.map((item) => ({ type: <'sent'>'sent', id: item.RegID, item }))));
+      map((val) => val.map((item) => ({ type: <'sent'>'sent', id: item.RegID.toString(), item }))));
   }
 
   private getDraftObservable(): Observable<MyVirtualScrollItem[]> {
