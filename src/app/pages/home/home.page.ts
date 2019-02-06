@@ -96,8 +96,12 @@ export class HomePage implements OnInit, OnDestroy {
     this.markerLayer.on('clusterclick', (a: any) => {
       const groupLatLng: L.LatLng = a.latlng;
       const currentZoom = this.map.getZoom();
-      const newZoom = currentZoom + 1;
-      this.map.setView(groupLatLng, newZoom);
+      const newZoom = currentZoom + 2;
+      if (newZoom >= settings.map.tiles.maxZoom) {
+        a.layer.spiderfy();
+      } else {
+        this.map.setView(groupLatLng, Math.min(newZoom, settings.map.tiles.maxZoom));
+      }
     });
     this.map.on('click', () => {
       if (this.selectedMarker) {

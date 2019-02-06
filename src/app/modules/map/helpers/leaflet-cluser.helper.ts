@@ -4,7 +4,7 @@ import { settings } from '../../../../settings';
 export class LeafletClusterHelper {
     static createMarkerClusterGroup() {
         const clusterGroup = L.markerClusterGroup({
-            spiderfyOnMaxZoom: true,
+            spiderfyOnMaxZoom: false,
             showCoverageOnHover: false,
             zoomToBoundsOnClick: false,
             maxClusterRadius: settings.map.maxClusterRadius,
