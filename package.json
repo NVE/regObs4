@@ -98,7 +98,7 @@
     "cordova-plugin-whitelist": "^1.3.3",
     "cordova-plugin-x-socialsharing": "^5.4.4",
     "cordova-plugin-zip": "^3.1.0",
-    "cordova-sqlite-storage": "3.0.0",
+    "cordova-sqlite-storage": "2.6.0",
     "core-js": "^2.6.3",
     "es6-promise-plugin": "^4.2.2",
     "hammerjs": "^2.0.8",
@@ -217,11 +217,11 @@
         "ANDROID_SUPPORT_V4_VERSION": "24.1.1+"
       },
       "cordova-plugin-advanced-http": {},
-      "cordova-sqlite-storage": {},
       "adapter-sqlite-cordova": {},
       "cordova-plugin-ionic-webview": {
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
-      }
+      },
+      "cordova-sqlite-storage": {}
     },
     "platforms": [
       "android",
