@@ -33,8 +33,7 @@ export class StartWizardPage implements OnInit {
     this.slides.slideNext();
   }
 
-  async selectGeoHazard(geoHazards: GeoHazard[]) {
-    this.userSettings.currentGeoHazard = geoHazards;
+  async start() {
     this.userSettings.completedStartWizard = true;
     this.userSetting.saveUserSettings(this.userSettings);
     this.navController.navigateRoot('/');

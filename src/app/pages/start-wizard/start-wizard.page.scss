@@ -1,5 +1,13 @@
+ion-footer {
+    --ion-toolbar-background: var(--ion-color-varsom-blue);
+    --ion-toolbar-color: #fff;
+    ion-toolbar {
+        --min-height: 50px;
+    }
+}
+
 ion-content {
-    --ion-background-color: #fff;   
+    --ion-background-color: #fff;
 
     ion-slides {
         height: 100%;

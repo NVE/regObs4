@@ -157,9 +157,12 @@
   </ion-slides>
 </ion-content>
 <ion-footer>
-  <ion-toolbar appHeaderColor mode="ios">
-    <ion-title no-padding text-wrap (click)="selectGeoHazard([GeoHazard.Snow])" text-center>{{ (reachedEnd ?
+  <ion-toolbar mode="ios" (click)="start()">
+    <ion-title no-padding text-wrap text-center>
+      <ion-ripple-effect></ion-ripple-effect>
+      {{ (reachedEnd ?
       'START_WIZARD.I_UNDERSTAND' :
-      'START_WIZARD.SKIP_START') |translate}}</ion-title>
+      'START_WIZARD.SKIP_START') |translate}}
+    </ion-title>
   </ion-toolbar>
 </ion-footer>
