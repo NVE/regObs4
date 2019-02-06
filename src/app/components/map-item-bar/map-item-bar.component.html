@@ -4,11 +4,11 @@
       <ion-col>
         <div class="card-icon-item">
           <svg-icon class="card-icon-item-icon" src="/assets/icon/time.svg" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
-          {{ topHeader | formatDate | async }}
+          <ion-label>{{ topHeader | formatDate | async }}</ion-label>
         </div>
         <div class="card-icon-item" *ngIf="masl">
           <svg-icon class="card-icon-item-icon" src="/assets/icon/moh.svg" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
-          {{ masl }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}
+          <ion-label>{{ masl }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}</ion-label>
         </div>
       </ion-col>
     </ion-row>
@@ -21,13 +21,13 @@
       <ion-col>
         <div class="card-icon-item">
           <svg-icon class="card-icon-item-icon" src="/assets/icon/user.svg" [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
-          {{name}}
+          <ion-label>{{name}}</ion-label>
         </div>
         <div class="card-icon-item">
           <div class="card-icon-item-icon stars">
             <ng-container *ngFor="let star of stars">
-              <svg-icon *ngIf="star.full" src="/assets/icon/star-selected.svg" [svgStyle]="{'width.px':8.34, 'height.px':8  }"></svg-icon>
-              <svg-icon *ngIf="!star.full" src="/assets/icon/star-empty.svg" [svgStyle]="{'width.px':8.34, 'height.px':8  }"></svg-icon>
+              <svg-icon *ngIf="star.full" src="/assets/icon/star-selected.svg" [svgStyle]="{'width.px':12, 'height.px':12  }"></svg-icon>
+              <svg-icon *ngIf="!star.full" src="/assets/icon/star-empty.svg" [svgStyle]="{'width.px':12, 'height.px':12  }"></svg-icon>
             </ng-container>
           </div>
         </div>

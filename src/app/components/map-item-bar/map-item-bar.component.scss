@@ -12,15 +12,25 @@
     h5 {
         overflow: hidden;
         text-overflow: ellipsis;
-        letter-spacing: 1px;
     }
 
     .card-icon-item {
         display: inline-block;
         padding-right: 16px;
+        line-height: normal;
+
+        ion-label {
+            position: relative;
+            bottom: 2px;
+        }
 
         .card-icon-item-icon {
             padding-right: 5px;
+
+            &.stars {
+                position: relative;
+                bottom: 1px;
+            }
         }
     }
 
