@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BackgroundDownloadService } from './background-download.service';
 import { Progress } from '../offline-map/progress.model';
-import { HttpRequest, HttpClient, HttpEventType } from '@angular/common/http';
+import { HttpRequest, HttpClient, HttpEventType, HttpHeaders } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { ProgressStep } from '../offline-map/progress-step.model';
 import { NanoSql } from '../../../../nanosql';
 import { nSQL } from '@nano-sql/core';
+import { DataUrlHelper } from '../../helpers/data-url.helper';
 
 @Injectable()
 export class BackgroundDownloadWebService implements BackgroundDownloadService {
@@ -96,6 +97,14 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
 
     getAllFiles(path: string, dirName: string): Promise<{ directory: string, name: string, url: string, size: number }[]> {
         return Promise.resolve([]);
+    }
+
+    async downloadToDataUrl(url: string, type: string): Promise<{ dataUrl: string, size: number }> {
+        const headers = new HttpHeaders({ 'Content-Type': type });
+        const blob = await this.httpClient.get(url, {
+            responseType: 'blob', headers
+        }).toPromise();
+        return DataUrlHelper.toDataUrlWithSize(blob, type);
     }
 
 }

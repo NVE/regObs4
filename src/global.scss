@@ -228,6 +228,7 @@ ion-segment {
 ion-item-divider {
     --color: var(--ion-text-color);
     --background: var(--ion-background-color);
+    border-bottom: none;
 
     h3 {
         font-size: 16px;

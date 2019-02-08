@@ -81,23 +81,25 @@ export class NanoSql {
             name: 'offlinemaptiles',
             model: {
                 'id:string': { pk: true },
-                'url:string': {},
                 'mapName:string': {},
                 'lastAccess:number': {},
                 'size:number': {},
+                'dataUrl:string': {},
             },
             indexes: {
                 'mapName:string': {},
                 'lastAccess:number': {},
+                'size:number': {},
             }
         },
         OFFLINE_ASSET: {
             name: 'offlineasset',
             model: {
                 'url:string': { pk: true },
-                'fileUrl:string': {},
                 'type:string': {},
                 'lastAccess:number': {},
+                'size:number': {},
+                'dataUrl:string': {},
             },
             indexes: {
                 'lastAccess:number': {}
@@ -277,8 +279,8 @@ export class NanoSql {
         return nSQL(`${name}_${appMode}`);
     }
 
-    static dropAllTables() {
-        const promises = [];
+    static async resetDb() {
+        const promises: Promise<any>[] = [];
         for (const table of NanoSql.getTables()) {
             if (table.instancePerAppMode) {
                 promises.push(nSQL(NanoSql.getInstanceName(table.name, AppMode.Prod)).query('delete').exec());
@@ -288,6 +290,6 @@ export class NanoSql {
                 promises.push(nSQL(table.name).query('delete').exec());
             }
         }
-        return Promise.all(promises);
+        await Promise.all(promises);
     }
 }

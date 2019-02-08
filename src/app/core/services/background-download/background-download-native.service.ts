@@ -1,12 +1,15 @@
 import { Progress } from '../offline-map/progress.model';
 import { Injectable } from '@angular/core';
-import { File, DirectoryEntry, Entry } from '@ionic-native/file/ngx';
+import { File, DirectoryEntry, Entry, IFile, FileEntry } from '@ionic-native/file/ngx';
 import { CancelPromise } from './cancel-promise.model';
 import { BackgroundDownloadService } from './background-download.service';
 import { Zip } from '@ionic-native/zip/ngx';
 import { Platform } from '@ionic/angular';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { ProgressStep } from '../offline-map/progress-step.model';
+import * as utils from '@nano-sql/core/lib/utilities';
+import { HTTP } from '@ionic-native/http/ngx';
+import { DataUrlHelper } from '../../helpers/data-url.helper';
 
 @Injectable()
 export class BackgroundDownloadNativeService implements BackgroundDownloadService {
@@ -16,6 +19,7 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
     constructor(
         private file: File,
         private zip: Zip,
+        private http: HTTP,
         private platform: Platform,
         private userSettingService: UserSettingService) {
         this.currentDownloads = new Map();
@@ -128,6 +132,23 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         return result;
     }
 
+    async downloadToDataUrl(url: string, type: string): Promise<{ dataUrl: string, size: number }> {
+        const directory = this.platform.is('ios') ? this.file.tempDirectory : this.file.dataDirectory;
+        const filename = utils.uuid();
+        const path = `${directory}${filename}`;
+        const fileResult: FileEntry = await this.http.downloadFile(url, {}, {}, path);
+        const blob = await this.getFileBlob(fileResult);
+        blob.type = type;
+        const result = await DataUrlHelper.toDataUrlWithSize(blob, type);
+        await this.file.removeFile(directory, filename);
+        return result;
+    }
+
+    private getFileBlob(file: FileEntry) {
+        return new Promise<IFile>((resolve, reject) =>
+            file.file((success) => resolve(success), (_) => reject(Error('Could not get file'))));
+    }
+
     private getFileSize(file: Entry) {
         if (!file) {
             return 0;
@@ -147,6 +168,4 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
             });
         });
     }
-
-    // TODO: Implement clear all files on reset
 }

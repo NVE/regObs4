@@ -1,6 +1,7 @@
 export interface IOfflineAsset {
     url: string;
-    fileUrl: string;
     type: string;
     lastAccess: number;
+    size: number;
+    dataUrl: string;
 }

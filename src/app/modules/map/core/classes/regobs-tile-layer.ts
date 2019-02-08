@@ -3,6 +3,7 @@ import { settings } from '../../../../../settings';
 import { NgZone } from '@angular/core';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { RegObsMapOption } from './regobs-map-option';
+import { LRUMap } from 'lru_map';
 
 interface ExtendedCoords extends L.Coords {
     fallback: boolean;
@@ -20,16 +21,28 @@ class RegObsTile extends HTMLImageElement {
 }
 
 export class RegObsTileLayer extends L.TileLayer {
+    private cache: LRUMap<string, string>;
+
     constructor(
         private zone: NgZone,
         private offlineMapService: OfflineMapService,
         private bufferOffline: boolean,
-        private tileOptions: RegObsMapOption[]
+        private tileOptions: RegObsMapOption[],
+        private cacheSize: number,
     ) {
         super(tileOptions[0].url, {
             minZoom: settings.map.tiles.minZoom,
             maxZoom: settings.map.tiles.maxZoom,
         });
+        this.cache = new LRUMap<string, string>(this.cacheSize);
+        this.seedCache();
+    }
+
+    private async seedCache() {
+        const allOfflineTiles = await this.offlineMapService.getAllCacheTiles();
+        const cacheItems = allOfflineTiles
+            .map((t) => ([t.id, t.dataUrl] as [string, string]));
+        this.cache.assign(cacheItems);
     }
 
     createTile(coords: ExtendedCoords, done: L.DoneCallback): HTMLElement {
@@ -82,18 +95,29 @@ export class RegObsTileLayer extends L.TileLayer {
                 } else if (!this.bufferOffline) {
                     return this.getOriginalTileUrl(coords, map.url);
                 } else {
-                    const offlineUrl = await this.offlineMapService.getTileUrl(map.name, coords.x, coords.y, coords.z);
-                    if (offlineUrl) {
-                        return offlineUrl;
-                    } else {
-                        const url = this.getOriginalTileUrl(coords, map.url);
-                        this.offlineMapService.saveTileAsBlob(map.name, coords.x, coords.y, coords.z, url);
-                        return url;
-                    }
+                    const offlineUrl = await this.getOfflineTile(map.name, coords, map.url);
+                    return offlineUrl;
                 }
             }
         }
         return this.getBlankUrl();
+    }
+
+    private async getOfflineTile(name: string, coords: ExtendedCoords, urlTemplate: string) {
+        const id = `${name}_${coords.z}_${coords.x}_${coords.y}`;
+        const cacheHit = this.cache.get(id);
+        if (cacheHit) {
+            return cacheHit;
+        } else {
+            const url = this.getOriginalTileUrl(coords, urlTemplate);
+            this.offlineMapService.saveTileAsBlob(name, coords.x, coords.y, coords.z, url)
+                .then((result) => {
+                    if (result) {
+                        this.cache.set(result.id, result.dataUrl);
+                    }
+                });
+            return url;
+        }
     }
 
     private getBlankUrl() {
@@ -108,8 +132,6 @@ export class RegObsTileLayer extends L.TileLayer {
             tileSize = this.getTileSize(),
             style = tile.style;
 
-        // TODO: Check if tile url is local cahced file://, then fallback to original url
-
         // If no lower zoom tiles are available, fallback to errorTile.
         if (fallbackZoom < 1) {
             // console.log('Max fallback reached. Return original error handling');
@@ -123,9 +145,6 @@ export class RegObsTileLayer extends L.TileLayer {
 
         // Generate new src path.
         this.getTileUrl(currentCoords).then((newUrl) => {
-            // tslint:disable-next-line:max-line-length
-            // console.log('Fallback to next zoom level: ' + fallbackZoom + ' for zoom: ' + originalCoords.z + ' original: ' + JSON.stringify(originalCoords) + ' new coords: ' + JSON.stringify(currentCoords));
-            // console.log('New url: ' + newUrl);
             // Zoom replacement img.
             style.width = (tileSize.x * scale) + 'px';
             style.height = (tileSize.y * scale) + 'px';

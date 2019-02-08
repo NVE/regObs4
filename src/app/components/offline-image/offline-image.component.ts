@@ -12,11 +12,18 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
   @Output() loaded: EventEmitter<void> = new EventEmitter();
   @Output() error: EventEmitter<void> = new EventEmitter();
 
-  url: string | ArrayBuffer;
-  loading = true;
+  private _url: string;
+  loading = false;
   hasError = false;
   cancelPromise: Promise<any>;
   cancelPromiseResolver: (value?: any) => void;
+
+  get url() {
+    if (!this._url && !this.loading) {
+      this.setUrl();
+    }
+    return this._url;
+  }
 
   constructor(private offlineImageService: OfflineImageService, private ngZone: NgZone) {
     this.cancelPromise = new Promise((resolve) => {
@@ -28,8 +35,8 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.src && changes.src.currentValue !== changes.src.previousValue) {
-      this.setUrl();
+    if (changes.src && !changes.src.isFirstChange() && changes.src.currentValue !== changes.src.previousValue) {
+      this.refresh();
     }
   }
 
@@ -44,13 +51,28 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  refresh() {
+    this.setUrl();
+  }
+
   private async setUrl() {
     this.hasError = false;
     this.loading = true;
     const offlineUrl = await this.offlineImageService.getOfflineImage(this.src, { cancelPromise: this.cancelPromise });
     this.ngZone.run(() => {
       if (offlineUrl) {
-        this.url = offlineUrl;
+        this._url = offlineUrl;
+        if (this._url.startsWith('http')) {
+          // Try to download image anyway if image has been updated
+          this.offlineImageService.downloadOfflineAsset(this._url)
+            .then((result) => {
+              if (result) {
+                this.ngZone.run(() => {
+                  this._url = result.dataUrl;
+                });
+              }
+            });
+        }
       } else {
         this.hasError = true;
         this.error.emit();

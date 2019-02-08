@@ -23,11 +23,8 @@ export class OfflineImageService {
 
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
-    private http: HTTP,
-    private file: File,
     private platform: Platform,
     private webview: WebView,
-    private dbHelperService: DbHelperService,
     private loggingService: LoggingService,
   ) { }
 
@@ -35,7 +32,8 @@ export class OfflineImageService {
     const offlineAsset = await this.getOfflineAssetFromDb(url);
     if (offlineAsset) {
       this.updateLastAccess(offlineAsset);
-      return this.webview.convertFileSrc(offlineAsset.fileUrl);
+      return offlineAsset.dataUrl;
+      // return this.webview.convertFileSrc(offlineAsset.fileUrl);
     } else {
       this.downloadOfflineAsset(url, type); // Do not wait for promise result
       return url;
@@ -72,12 +70,14 @@ export class OfflineImageService {
     const offlineAsset = await this.getOfflineAssetFromDb(url);
     if (offlineAsset) {
       this.updateLastAccess(offlineAsset);
-      return this.webview.convertFileSrc(offlineAsset.fileUrl);
+      return offlineAsset.dataUrl;
+      // return this.webview.convertFileSrc(offlineAsset.fileUrl);
     } else if (options.retryCount < options.maxRetry) {
       this.loggingService.debug(`No offline asset found, try to download. Retry count: ${options.retryCount}`, DEBUG_TAG, url);
       const downloadResult = await this.downloadOfflineAsset(url, options.type);
       if (downloadResult) {
-        return this.webview.convertFileSrc(downloadResult.fileUrl);
+        return downloadResult.dataUrl;
+        // return this.webview.convertFileSrc(downloadResult.fileUrl);
       } else {
         const retryDelay = options.retryCount * 500;
         this.loggingService.debug(`Could not download image. Retry in ${retryDelay} ms`, DEBUG_TAG, url);
@@ -99,34 +99,15 @@ export class OfflineImageService {
     return nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
   }
 
-  private getFilenameFromType(type: string) {
-    return type.replace('image/', '');
-  }
-
   async downloadOfflineAsset(url: string, type: string = 'image/jpg') {
-    const folder = await this.backgroundDownloadService.selectDowloadFolder();
     try {
-      await this.file.createDir(folder, settings.offlineAssetsFolder, false);
-    } catch { }
-
-    try {
-
-      // let filename = url.substring(url.lastIndexOf('/') + 1);
-      // if (filename.indexOf('.') < 0) {
-      //   filename = `${filename}.${this.getFilenameFromType(type)}`;
-      // }
-      const filename = `${utils.uuid()}.${this.getFilenameFromType(type)}`;
-      // Note: Create unique id so test/demo/prod images do not overwrite each other.
-
-      const fileResult: FileEntry = await this.http.downloadFile(url, {}, {},
-        `${folder}/${settings.offlineAssetsFolder}/${filename}`);
-
-      const fileUrl = fileResult.toURL();
+      const result = await this.backgroundDownloadService.downloadToDataUrl(url, type);
       const offlineAsset: IOfflineAsset = {
         url,
-        fileUrl,
         type,
-        lastAccess: moment().unix()
+        lastAccess: moment().unix(),
+        size: result.size,
+        dataUrl: result.dataUrl
       };
       await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('upsert', offlineAsset).exec();
       return offlineAsset;
@@ -138,48 +119,21 @@ export class OfflineImageService {
 
   async getOfflineAssetFromDb(url: string) {
     const result = (await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
-      .query('select').where((x: IOfflineAsset) => x.url === url)
+      .query('select').where(['url', '=', url])
       .exec()) as IOfflineAsset[];
     if (result.length > 0) {
       return result[0];
     } else {
       return null;
     }
-    // TODO: Test performance again after NanoSql patch. This issue with string id should be fixed now.
-    // return this.dbHelperService.getItemById<IOfflineAsset>(NanoSql.TABLES.OFFLINE_ASSET.name, url);
-  }
-
-  blobToDataURL(blob: Blob): Promise<string> {
-    return new Promise((resolve) => {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        resolve(fileReader.result as string);
-      };
-      fileReader.readAsDataURL(blob);
-    });
   }
 
   async cleanupOldItems() {
     const fromDate = moment().subtract(1, 'month').unix();
-    const result = (await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name)
-      .query('select').where((x) => x.lastAccess < fromDate).exec()) as IOfflineAsset[];
-    for (const asset of result) {
-      try {
-        const file = await this.file.resolveLocalFilesystemUrl(asset.fileUrl);
-        const fileDeleted = await new Promise<boolean>((resolve) => {
-          file.remove(() => resolve(true), () => resolve(false));
-        });
-        this.loggingService.debug(`${asset.fileUrl} deleted: ${fileDeleted}`, DEBUG_TAG, asset);
-      } catch (err) {
-        this.loggingService.error(err, `Could not delete local file`, DEBUG_TAG, asset);
-      }
-    }
-    await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('delete').where((x) => x.lastAccess < fromDate).exec();
+    return nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('delete').where((x) => x.lastAccess < fromDate).exec();
   }
 
   async reset() {
     await nSQL(NanoSql.TABLES.OFFLINE_ASSET.name).query('delete').exec();
-    const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
-    await this.file.removeRecursively(baseFolder, settings.offlineAssetsFolder);
   }
 }

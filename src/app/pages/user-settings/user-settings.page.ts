@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
@@ -12,14 +12,18 @@ import { OfflineImageService } from '../../core/services/offline-image/offline-i
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
 import { AppVersion } from '../../core/models/app-version.model';
 import { TopoMap } from '../../core/models/topo-map.enum';
+import { Subscription } from 'rxjs';
+import { map, distinctUntilChanged } from 'rxjs/operators';
+import { LoggingService } from '../../modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'UserSettingsPage';
 
 @Component({
   selector: 'app-user-settings',
   templateUrl: './user-settings.page.html',
   styleUrls: ['./user-settings.page.scss'],
 })
-export class UserSettingsPage implements OnInit {
-
+export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;
   LangKey = LangKey;
   showAdvanced = false;
@@ -28,6 +32,7 @@ export class UserSettingsPage implements OnInit {
   isUpdating = false;
   version: AppVersion;
   TopoMap = TopoMap;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private userSettingService: UserSettingService,
@@ -35,6 +40,7 @@ export class UserSettingsPage implements OnInit {
     private helperService: HelperService,
     private kdvService: KdvService,
     private ngZone: NgZone,
+    private loggingService: LoggingService,
     private translateService: TranslateService,
     private alertController: AlertController,
     private offlineImageService: OfflineImageService,
@@ -42,11 +48,32 @@ export class UserSettingsPage implements OnInit {
     private navController: NavController) { }
 
   async ngOnInit() {
-    this.userSettings = await this.userSettingService.getUserSettings();
+    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
+      this.ngZone.run(() => {
+        this.userSettings = val;
+      });
+    }));
+    this.subscriptions.push(this.userSettingService.userSettingObservable$
+      .pipe(map((val) => val.tilesCacheSize), distinctUntilChanged()).subscribe((val) => {
+        this.loggingService.debug('tilesCacheSize changed to ' + val, DEBUG_TAG);
+        this.offlineMapService.cleanupTilesCache(val);
+      }));
+    this.subscriptions.push(this.offlineMapService.getTilesCacheAsObservable().subscribe((tilesCache) => {
+      this.ngZone.run(() => {
+        this.numberOfCacheTiles = tilesCache.count;
+        this.cacheTilesSize = this.helperService.humanReadableByteSize(tilesCache.size);
+      });
+    }));
     const appver = await this.appVersionService.getAppVersion();
     this.ngZone.run(() => {
       this.version = appver;
     });
+  }
+
+  ngOnDestroy(): void {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   async updateSettings() {
@@ -55,15 +82,6 @@ export class UserSettingsPage implements OnInit {
 
   async toggleAdvanced() {
     this.showAdvanced = !this.showAdvanced;
-    if (this.showAdvanced) {
-      if (this.numberOfCacheTiles === undefined) {
-        const tilesCache = await this.offlineMapService.getTilesCacheSize();
-        this.ngZone.run(() => {
-          this.numberOfCacheTiles = tilesCache.count;
-          this.cacheTilesSize = this.helperService.humanReadableByteSize(tilesCache.size);
-        });
-      }
-    }
   }
 
   async updateDropdowns() {
@@ -89,9 +107,9 @@ export class UserSettingsPage implements OnInit {
 
   async reset() {
     this.isUpdating = true;
-    await this.offlineMapService.reset();
-    await this.offlineImageService.reset();
-    await NanoSql.dropAllTables();
-    await this.navController.navigateRoot('start-wizard');
+    // await this.offlineMapService.reset();
+    // await this.offlineImageService.reset();
+    await NanoSql.resetDb();
+    this.navController.navigateRoot('start-wizard');
   }
 }

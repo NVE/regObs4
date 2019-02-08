@@ -213,7 +213,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         this.zone,
         this.offlineMapService,
         this.shouldBufferOfflineMap(userSetting),
-        this.getMapOptions(userSetting.topoMap));
+        this.getMapOptions(userSetting.topoMap),
+        userSetting.tilesCacheSize,
+      );
       topoTilesLayer.addTo(this.tilesLayer);
       for (const supportTile of settings.map.tiles.supportTiles) {
         const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
@@ -228,6 +230,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
               url: supportTile.url,
               validFunc: (coords, bounds) => this.mapService.isTileInsideNorway(coords, bounds),
             }],
+            userSetting.tilesCacheSize,
           );
           tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
           tile.addTo(this.tilesLayer);

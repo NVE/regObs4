@@ -13,7 +13,7 @@
       </form>
     </ion-toolbar>
   </ion-header>
-  <ion-content scroll-x="false" class="has-footer">
+  <ion-content [fullscreen]="true" [scrollY]="true" [scrollX]="false" [forceOverscroll]="true">
     <ion-list *ngIf="searchResult$ | async as searchResults" lines="full" class="search-result">
       <ion-item *ngFor="let item of searchResults" (click)="searchItemClicked(item)">
         <ion-label>

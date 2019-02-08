@@ -6,17 +6,16 @@ import { Platform } from '@ionic/angular';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { OfflineTile } from './offline-tile.model';
 import { NanoSql } from '../../../../nanosql';
-import { HTTP } from '@ionic-native/http/ngx';
-import { File, FileEntry, Entry } from '@ionic-native/file/ngx';
+import { File, Entry } from '@ionic-native/file/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { settings } from '../../../../settings';
-import { DbHelperService } from '../db-helper/db-helper.service';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { nSQL } from '@nano-sql/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
+import { DbHelperService } from '../db-helper/db-helper.service';
 
 const DEBUG_TAG = 'OfflineMapService';
 
@@ -27,10 +26,9 @@ export class OfflineMapService {
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
     private platform: Platform,
-    private http: HTTP,
     private file: File,
-    private webview: WebView,
     private dbHelperService: DbHelperService,
+    private webview: WebView,
     private loggingService: LoggingService,
   ) {
 
@@ -99,12 +97,13 @@ export class OfflineMapService {
   }
 
   async getTileUrl(name: string, x: number, y: number, z: number) {
-    if (this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'))) {
+    if (this.platform.isAndroidOrIos()) {
       const tileId = this.getTileId(name, x, y, z);
       const tileFromDb = await this.getTileFromDb(tileId);
       if (tileFromDb) {
         this.updateTileLastAccess(tileFromDb);
-        return this.webview.convertFileSrc(tileFromDb.url);
+        return tileFromDb.dataUrl;
+        // return this.webview.convertFileSrc(tileFromDb.url);
       }
     }
     return null;
@@ -112,35 +111,21 @@ export class OfflineMapService {
 
   async saveTileAsBlob(name: string, x: number, y: number, z: number, url: string) {
     try {
-      // const headers = new HttpHeaders(
-      //   { 'Content-Type': 'application/jpeg',
-      //   });
-      // const result = await this.httpClient.get(url, {
-      //   responseType: 'blob', headers
-      // }).toPromise();
-      // NOTE: CORS ISSUES WHEN USING WKWEBKIT, using native http instead...
       const tileId = this.getTileId(name, x, y, z);
-      const filename = `${settings.map.tiles.cacheFolder}/${tileId}.png`;
-      const folder = await this.backgroundDownloadService.selectDowloadFolder();
-      try {
-        await this.file.createDir(folder, settings.map.tiles.cacheFolder, false);
-      } catch { }
-
-      const fileResult: FileEntry = await this.http.downloadFile(url, {}, {},
-        `${folder}/${filename}`);
-
-      const size = await this.getFileSize(fileResult);
+      const downloadResult = await this.backgroundDownloadService.downloadToDataUrl(url, 'image/png');
 
       const tile: OfflineTile = {
         id: tileId,
         mapName: settings.map.tiles.cacheFolder,
-        url: fileResult.toURL(),
         lastAccess: moment().unix(),
-        size,
+        size: downloadResult.size,
+        dataUrl: downloadResult.dataUrl
       };
       await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
+      return tile;
     } catch (err) {
       this.loggingService.log('Could not download tile', err, LogLevel.Warning, DEBUG_TAG, { name, url, x, y, z });
+      return null;
     }
   }
 
@@ -154,29 +139,24 @@ export class OfflineMapService {
     if (tiles.length > 0) {
       return tiles[0] as OfflineTile;
     }
+    // return this.dbHelperService.getItemById<OfflineTile>(
+    //   NanoSql.TABLES.OFFLINE_MAP_TILES.name, tileId);
+  }
+
+  getAllCacheTiles(): Promise<OfflineTile[]> {
+    return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('select').exec() as Promise<OfflineTile[]>;
   }
 
   async cleanupTilesCache(numberOfItemsToCache: number) {
-    const result = (await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select').where((x) => x.mapName === settings.map.tiles.cacheFolder)
-      .orderBy(['lastAccess: desc']).offset(numberOfItemsToCache).exec()) as OfflineTile[];
-    // TODO: Use index where clause when issue has been fixed
-    for (const tile of result) {
-      const file = await this.file.resolveLocalFilesystemUrl(tile.url);
-      if (file && file.isFile) {
-        const fileDeleted = await new Promise<boolean>((resolve) => {
-          file.remove(() => resolve(true), () => resolve(false));
-        });
-        this.loggingService.debug(`Tile ${tile.url} deleted: ${fileDeleted}`, DEBUG_TAG, tile);
-      } else {
-        this.loggingService.debug(`Tile ${tile.url} not found`, DEBUG_TAG, tile);
-      }
-    }
-    const tileIds = result.map((x) => x.id);
-    const deleted = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('delete').where((x: OfflineTile) => tileIds.indexOf(x.id) >= 0).exec();
-    // TODO: Use index where clause when issue has been fixed
-    this.loggingService.debug(`Cache tiles deleted`, DEBUG_TAG, deleted);
+    const tilesToDelete = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('select', ['id']).where(['mapName', '=', settings.map.tiles.cacheFolder])
+      .orderBy(['lastAccess: desc']).offset(numberOfItemsToCache).exec() as { id: string }[];
+    const ids = tilesToDelete.map((val) => val.id);
+    this.loggingService.debug(`Tiles to delete : ${JSON.stringify(ids)}`, DEBUG_TAG);
+
+    return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('delete').where(['id', 'IN', ids]).exec();
   }
 
   private async getDirectory(folder: string) {
@@ -203,17 +183,24 @@ export class OfflineMapService {
     }
   }
 
-  async getTilesCacheSize(): Promise<{ count: number, size: number }> {
-    const result = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select', ['COUNT(*)', 'SUM(size)']).where((x: OfflineTile) => x.mapName === settings.map.tiles.cacheFolder).exec();
-    return { count: result[0]['COUNT(*)'], size: result[0]['SUM(size)'] };
+  getTilesCacheAsObservable(): Observable<{ count: number, size: number }> {
+    return NanoSqlObservableHelper.toRxJS(nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('select', ['COUNT(*) as count', 'SUM(size) as size'])
+      .where(['mapName', '=', settings.map.tiles.cacheFolder]).listen({
+        debounce: 500,
+      }))
+      .pipe(map((result: { count: number, size: number }[]) => {
+        return (result.length > 0 ? result[0] as {
+          count: number;
+          size: number;
+        } : ({ count: 0, size: 0 }));
+      }), tap((val) => this.loggingService.debug(`tiles cache size updated: ${val.count}, ${val.size}`, DEBUG_TAG)));
   }
 
-  async deleteTilesCache() {
-    await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('delete').where((x: OfflineTile) => x.mapName === settings.map.tiles.cacheFolder).exec();
-    const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
-    await this.backgroundDownloadService.deleteFolder(baseFolder, settings.map.tiles.cacheFolder);
+  deleteTilesCache() {
+    return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('delete').where((x: OfflineTile) => x.mapName === settings.map.tiles.cacheFolder)
+      .exec();
   }
 
   async downloadMap(m: OfflineMap) {
@@ -295,34 +282,34 @@ export class OfflineMapService {
 
   private async saveMetaData(map: OfflineMap) {
     // TODO: Read metadata from json instead!
-    const tiles = (await this.backgroundDownloadService.getAllFiles(map.filePath, map.name)).map((file) =>
-      this.getOfflineTileFromFile(map.name, file.directory, file.name, file.url, file.size)
-    );
-    await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).loadJS(tiles);
+    // const tiles = (await this.backgroundDownloadService.getAllFiles(map.filePath, map.name)).map((file) =>
+    //   this.getOfflineTileFromFile(map.name, file.directory, file.name, file.url, file.size)
+    // );
+    // await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).loadJS(tiles);
   }
 
   // Assumes map directory: /{mapName}/{tileName}/{z}/
   // filename: tile_{x}_{y}.png
-  private getOfflineTileFromFile(mapName: string, directory: string, filename: string, url: string, size: number): OfflineTile {
-    const index = directory.indexOf(mapName) + mapName.length + 1;
-    const tileRest = directory.substr(index);
-    const tileName = tileRest.substr(0, tileRest.indexOf('/')); // topo, clayzones, etc
-    const zRest = tileRest.substr(tileRest.indexOf(tileName) + tileName.length + 1);
-    const z = zRest.substr(0, zRest.indexOf('/'));
-    const xRest = filename.substr(filename.indexOf('_') + 1);
-    const x = xRest.substr(0, xRest.indexOf('_'));
-    const yRest = xRest.substr(xRest.indexOf(x) + 2);
-    const y = yRest.substr(0, yRest.indexOf('.'));
-    const tileId = `${tileName}_${z}_${x}_${y}`;
-    return {
-      id: tileId, // NOTE: This overrides other downloaded maps, so when delete this map other maps can have the same tileId...
-      // but using id as pk because of performance bug in nanoSQL https://github.com/ClickSimply/Nano-SQL/issues/94
-      url: url,
-      mapName: mapName,
-      lastAccess: moment().unix(),
-      size,
-    };
-  }
+  // private getOfflineTileFromFile(mapName: string, directory: string, filename: string, url: string, size: number): OfflineTile {
+  //   const index = directory.indexOf(mapName) + mapName.length + 1;
+  //   const tileRest = directory.substr(index);
+  //   const tileName = tileRest.substr(0, tileRest.indexOf('/')); // topo, clayzones, etc
+  //   const zRest = tileRest.substr(tileRest.indexOf(tileName) + tileName.length + 1);
+  //   const z = zRest.substr(0, zRest.indexOf('/'));
+  //   const xRest = filename.substr(filename.indexOf('_') + 1);
+  //   const x = xRest.substr(0, xRest.indexOf('_'));
+  //   const yRest = xRest.substr(xRest.indexOf(x) + 2);
+  //   const y = yRest.substr(0, yRest.indexOf('.'));
+  //   const tileId = `${tileName}_${z}_${x}_${y}`;
+  //   return {
+  //     id: tileId, // NOTE: This overrides other downloaded maps, so when delete this map other maps can have the same tileId...
+  //     // but using id as pk because of performance bug in nanoSQL https://github.com/ClickSimply/Nano-SQL/issues/94
+  //     url: url,
+  //     mapName: mapName,
+  //     lastAccess: moment().unix(),
+  //     size,
+  //   };
+  // }
 
   // TODO: delete all directories insted
   async reset() {
