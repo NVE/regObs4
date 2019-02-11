@@ -75,7 +75,7 @@
     "animate.css": "^3.7.0",
     "cordova-android": "7.1.4",
     "cordova-clipboard": "^1.2.1",
-    "cordova-ios": "^4.5.5",
+    "cordova-ios": "5.0.0",
     "cordova-plugin-advanced-http": "^2.0.4",
     "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-background-download": "git+https://github.com/sgrebnov/cordova-plugin-background-download.git",
