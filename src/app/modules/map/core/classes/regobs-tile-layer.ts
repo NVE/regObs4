@@ -4,6 +4,7 @@ import { NgZone } from '@angular/core';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { RegObsMapOption } from './regobs-map-option';
 import { LRUMap } from 'lru_map';
+import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 
 interface ExtendedCoords extends L.Coords {
     fallback: boolean;
@@ -52,20 +53,16 @@ export class RegObsTileLayer extends L.TileLayer {
             L.DomEvent.on(tile, 'load', L.Util.bind((<any>this)._tileOnLoad, this, done, tile));
             L.DomEvent.on(tile, 'error', L.Util.bind((<any>this)._tileOnError, this, done, tile));
 
-            if (this.options.crossOrigin) {
-                tile.crossOrigin = '';
-            }
-
+            tile.crossOrigin = 'anonymous';
             tile.alt = '';
             tile.originalCoords = coords;
 
             tile.setAttribute('role', 'presentation');
 
-            this.getTileUrl(coords).then(function (url) {
-                tile.src = url;
+            this.getTileUrl(coords).then((result) => {
+                tile.src = result.url;
+                tile.id = result.id;
                 tile.originalSrc = tile.src;
-            }).catch(function (err) {
-                throw err;
             });
 
             return tile;
@@ -83,45 +80,47 @@ export class RegObsTileLayer extends L.TileLayer {
         return L.Util.template(urlTemplate, L.Util.extend(data, this.options));
     }
 
-    async getTileUrl(coords: ExtendedCoords): Promise<string> {
+    async getTileUrl(coords: ExtendedCoords): Promise<{ id: string, url: string }> {
         for (const map of this.tileOptions) {
+            const id = `${map.name}_${coords.z}_${coords.x}_${coords.y}`;
             let valid = true;
             if (map.validFunc) {
                 valid = await Promise.resolve(map.validFunc(coords, (<any>this)._tileCoordsToBounds(coords)));
             }
             if (valid) {
                 if (map.isEmbedded && coords.z >= map.embeddedMinZoom && coords.z <= map.embeddedMaxZoom) {
-                    return this.getOriginalTileUrl(coords, map.embeddedUrl);
-                } else if (!this.bufferOffline) {
-                    return this.getOriginalTileUrl(coords, map.url);
-                } else {
-                    const offlineUrl = await this.getOfflineTile(map.name, coords, map.url);
-                    return offlineUrl;
+                    return { id, url: this.getOriginalTileUrl(coords, map.embeddedUrl) };
+                } else if (this.bufferOffline) {
+                    const offlineUrl = this.cache.get(id);
+                    if (offlineUrl) {
+                        this.offlineMapService.updateTileLastAccess(id);
+                        return { id, url: offlineUrl };
+                    }
                 }
+                return { id, url: this.getOriginalTileUrl(coords, map.url) };
             }
         }
-        return this.getBlankUrl();
-    }
-
-    private async getOfflineTile(name: string, coords: ExtendedCoords, urlTemplate: string) {
-        const id = `${name}_${coords.z}_${coords.x}_${coords.y}`;
-        const cacheHit = this.cache.get(id);
-        if (cacheHit) {
-            return cacheHit;
-        } else {
-            const url = this.getOriginalTileUrl(coords, urlTemplate);
-            this.offlineMapService.saveTileAsBlob(name, coords.x, coords.y, coords.z, url)
-                .then((result) => {
-                    if (result) {
-                        this.cache.set(result.id, result.dataUrl);
-                    }
-                });
-            return url;
-        }
+        return { id: null, url: this.getBlankUrl() };
     }
 
     private getBlankUrl() {
         return '/assets/map/blank.png';
+    }
+
+    _tileOnLoad(done: L.DoneCallback, tile: RegObsTile) {
+        this.saveTileOffline(tile);
+        (<any>L.TileLayer.prototype)._tileOnLoad(done, tile);
+    }
+
+    private saveTileOffline(tile: RegObsTile) {
+        if (this.bufferOffline && tile.id && tile.src.startsWith('http')) {
+            const dataUrl = DataUrlHelper.getDataUrlFromImage(tile, 'image/png');
+            this.offlineMapService.saveTileDataUrlToDbCache(tile.id, dataUrl).then((result) => {
+                if (result) {
+                    this.cache.set(result.id, result.dataUrl);
+                }
+            });
+        }
     }
 
     _tileOnError(done: L.DoneCallback, tile: RegObsTile, e: Error) {
@@ -168,7 +167,7 @@ export class RegObsTileLayer extends L.TileLayer {
                 left +
                 'px)';
 
-            tile.src = newUrl;
+            tile.src = newUrl.url;
 
             this.fire('tilefallback',
                 {

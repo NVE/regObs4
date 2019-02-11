@@ -281,7 +281,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private shouldBufferOfflineMap(userSetting: UserSetting) {
-    return this.platform.isAndroidOrIos() && userSetting.tilesCacheSize > 0;
+    return userSetting.tilesCacheSize > 0;
   }
 
   redrawMap() {

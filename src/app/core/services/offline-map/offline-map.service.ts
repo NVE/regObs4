@@ -16,6 +16,7 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 import { DbHelperService } from '../db-helper/db-helper.service';
+import { DataUrlHelper } from '../../helpers/data-url.helper';
 
 const DEBUG_TAG = 'OfflineMapService';
 
@@ -91,40 +92,62 @@ export class OfflineMapService {
     });
   }
 
-  private updateTileLastAccess(tile: OfflineTile) {
-    tile.lastAccess = moment().unix();
-    return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
+  updateTileLastAccess(tileId: string) {
+    return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', { id: tileId, lastAccess: moment().unix() }).exec();
   }
 
-  async getTileUrl(name: string, x: number, y: number, z: number) {
-    if (this.platform.isAndroidOrIos()) {
-      const tileId = this.getTileId(name, x, y, z);
-      const tileFromDb = await this.getTileFromDb(tileId);
-      if (tileFromDb) {
-        this.updateTileLastAccess(tileFromDb);
-        return tileFromDb.dataUrl;
-        // return this.webview.convertFileSrc(tileFromDb.url);
-      }
-    }
-    return null;
-  }
+  // private updateTileLastAccess(tile: OfflineTile) {
+  //   tile.lastAccess = moment().unix();
+  //   return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
+  // }
 
-  async saveTileAsBlob(name: string, x: number, y: number, z: number, url: string) {
+  // async getTileUrl(name: string, x: number, y: number, z: number) {
+  //   if (this.platform.isAndroidOrIos()) {
+  //     const tileId = this.getTileId(name, x, y, z);
+  //     const tileFromDb = await this.getTileFromDb(tileId);
+  //     if (tileFromDb) {
+  //       this.updateTileLastAccess(tileFromDb);
+  //       return tileFromDb.dataUrl;
+  //       // return this.webview.convertFileSrc(tileFromDb.url);
+  //     }
+  //   }
+  //   return null;
+  // }
+
+  // async saveTileAsBlob(name: string, x: number, y: number, z: number, url: string) {
+  //   try {
+  //     const tileId = this.getTileId(name, x, y, z);
+  //     const downloadResult = await this.backgroundDownloadService.downloadToDataUrl(url, 'image/png');
+
+  //     const tile: OfflineTile = {
+  //       id: tileId,
+  //       mapName: settings.map.tiles.cacheFolder,
+  //       lastAccess: moment().unix(),
+  //       size: downloadResult.size,
+  //       dataUrl: downloadResult.dataUrl
+  //     };
+  //     await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
+  //     return tile;
+  //   } catch (err) {
+  //     this.loggingService.log('Could not download tile', err, LogLevel.Warning, DEBUG_TAG, { name, url, x, y, z });
+  //     return null;
+  //   }
+  // }
+
+  async saveTileDataUrlToDbCache(id: string, dataUrl: string) {
     try {
-      const tileId = this.getTileId(name, x, y, z);
-      const downloadResult = await this.backgroundDownloadService.downloadToDataUrl(url, 'image/png');
-
+      const size = DataUrlHelper.getDataUriByteLength(dataUrl);
       const tile: OfflineTile = {
-        id: tileId,
+        id,
         mapName: settings.map.tiles.cacheFolder,
         lastAccess: moment().unix(),
-        size: downloadResult.size,
-        dataUrl: downloadResult.dataUrl
+        size,
+        dataUrl
       };
       await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
       return tile;
     } catch (err) {
-      this.loggingService.log('Could not download tile', err, LogLevel.Warning, DEBUG_TAG, { name, url, x, y, z });
+      this.loggingService.log('Could not download tile', err, LogLevel.Warning, DEBUG_TAG, id);
       return null;
     }
   }
@@ -145,7 +168,9 @@ export class OfflineMapService {
 
   getAllCacheTiles(): Promise<OfflineTile[]> {
     return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select').exec() as Promise<OfflineTile[]>;
+      .query('select')
+      .where(['mapName', '=', settings.map.tiles.cacheFolder])
+      .orderBy(['lastAccess: desc']).exec() as Promise<OfflineTile[]>;
   }
 
   async cleanupTilesCache(numberOfItemsToCache: number) {

@@ -75,7 +75,7 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
       try {
         const format = 'image/jpeg';
         const originalSrc = this.src;
-        const result = await DataUrlHelper.getDataUrlFromImage(img, format);
+        const result = await DataUrlHelper.getDataUrlFromImageOnLoad(img, format);
         this.ngZone.run(() => {
           this.httpLoading = false;
           this.hasError = false;

@@ -43,18 +43,23 @@ export class DataUrlHelper {
         return blob.length;
     }
 
-    static getDataUrlFromImage(img: HTMLImageElement, format = 'image/jpeg'): Promise<string> {
+    static getDataUrlFromImageOnLoad(img: HTMLImageElement, format = 'image/jpeg'): Promise<string> {
         return new Promise((resolve, reject) => {
             img.crossOrigin = 'anonymous';
             img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = img.naturalWidth;
-                canvas.height = img.naturalHeight;
-                canvas.getContext('2d').drawImage(img, 0, 0);
                 // Get raw image data
-                resolve(canvas.toDataURL(format));
+                resolve(this.getDataUrlFromImage(img, format));
             };
             img.onerror = () => reject();
         });
+    }
+
+    static getDataUrlFromImage(img: HTMLImageElement, format = 'image/jpeg'): string {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        // Get raw image data
+        return canvas.toDataURL(format);
     }
 }
