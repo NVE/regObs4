@@ -71,6 +71,7 @@
     "@types/leaflet.markercluster": "^1.0.3",
     "@types/websql": "0.0.27",
     "@types/xml2js": "^0.4.3",
+    "adapter-sqlite-cordova": "@nano-sql/adapter-sqlite-cordova@^2.0.8",
     "angular-svg-icon": "^7.2.0",
     "animate.css": "^3.7.0",
     "cordova-android": "7.1.4",
@@ -204,7 +205,9 @@
       "cordova-plugin-zip": {},
       "cordova-clipboard": {},
       "cordova-plugin-inappbrowser": {},
-      "cordova-plugin-email-composer": {},
+      "cordova-plugin-email-composer": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
       "cordova-plugin-ios-camera-permissions": {
         "CAMERA_USAGE_DESCRIPTION": "Document observations",
         "PHOTOLIBRARY_ADD_USAGE_DESCRIPTION": "Document observations",

@@ -6,7 +6,7 @@
   </ion-list-header>
   <ion-menu-toggle auto-hide="false">
     <app-user-login></app-user-login>
-    <ion-item routerLink="/user-settings" routerDirection="forward">
+    <ion-item routerLink="/user-settings" routerDirection="forward" detail="true">
       <ion-icon slot="start" name="settings"></ion-icon>
       <ion-label>
         {{'SETTINGS.TITLE' | translate}}
@@ -68,11 +68,19 @@
     </ion-label>
   </ion-list-header>
   <ion-menu-toggle auto-hide="false">
+    <ion-item (click)="contactUs()" detail="true">
+      <ion-icon slot="start" name="mail"></ion-icon>
+      <ion-label>{{'MENU.CONTACT_REGOBS' | translate}}</ion-label>
+    </ion-item>
+    <ion-item (click)="contactError()" detail="true">
+      <ion-icon slot="start" name="mail"></ion-icon>
+      <ion-label>{{'MENU.CONTACT_REGOBS_ERROR' | translate}}</ion-label>
+    </ion-item>
     <ion-item (click)="showLegalTerms()" detail="true">
       <ion-icon slot="start" name="information-circle-outline"></ion-icon>
       <ion-label>{{'MENU.ABOUT_REGOBS' | translate}}</ion-label>
     </ion-item>
-    <ion-item routerLink="/start-wizard" routerDirection="root">
+    <ion-item routerLink="/start-wizard" routerDirection="root" detail="true">
       <ion-icon slot="start" name="information-circle-outline"></ion-icon>
       <ion-label>{{'MENU.START_WIZARD' | translate}}</ion-label>
     </ion-item>

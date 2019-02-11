@@ -97,7 +97,12 @@
   "MENU": {
     "ABOUT_REGOBS": "About data in Regobs",
     "AND": "and",
+    "CONTACT_REGOBS": "Contact us",
+    "CONTACT_REGOBS_ERROR": "Report error",
+    "CONTACT_SUBJECT": "Contact from app",
     "DAYS_BACK": "Days back",
+    "ERROR_REPORT_DESCRIPTION": "Please describe your issue below. If you have screenshots please attach here.",
+    "ERROR_REPORT_SUBJECT": "Error report from:",
     "GENERAL": "General",
     "HIDE_OBSERVATIONS": "Hide observations",
     "LAST_UPDATED": "Last updated",

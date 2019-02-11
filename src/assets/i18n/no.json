@@ -97,7 +97,12 @@
   "MENU": {
     "ABOUT_REGOBS": "Om data i Regobs",
     "AND": "og",
+    "CONTACT_REGOBS": "Kontakt oss",
+    "CONTACT_REGOBS_ERROR": "Rapporter feil",
+    "CONTACT_SUBJECT": "Kontakt oss fra app",
     "DAYS_BACK": "Dager tilbake",
+    "ERROR_REPORT_DESCRIPTION": "Vennligs beskriv feilen. Dersom du har skjermbilder, vennligs legg de ved.",
+    "ERROR_REPORT_SUBJECT": "Feilrapport fra",
     "GENERAL": "Generelt",
     "HIDE_OBSERVATIONS": "Skjul observasjoner",
     "LAST_UPDATED": "Sist oppdatert",
