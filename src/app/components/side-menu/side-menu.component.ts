@@ -87,12 +87,13 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   async contactError() {
     const translations = await this.translateService
-      .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_SUBJECT']).toPromise();
+      .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR']).toPromise();
     const appVersion = await this.appVersionService.getAppVersion();
     const email: EmailComposerOptions = {
       to: settings.errorEmailAddress,
-      subject: `${translations['MENU.CONTACT_SUBJECT']} ${this.platfrom.platforms().join(', ')}`
-      + ` ${appVersion.version}  ${appVersion.branch} ${appVersion.buildNumber} ${appVersion.revision}`,
+      subject: `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${this.platfrom.is('ios') ? 'ios' : ''}`
+        + `${this.platfrom.is('android') ? 'android' : ''}`
+        + ` ${appVersion.version}  ${appVersion.branch} ${appVersion.buildNumber} ${appVersion.revision}`,
       body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
       isHtml: true
     };
