@@ -1,5 +1,9 @@
 ion-item {
-    --inner-padding-end: 0px
+    --inner-padding-end: 0px;
+
+    ion-grid {
+        display: contents;
+    }
 }
 
 ion-item-option {
