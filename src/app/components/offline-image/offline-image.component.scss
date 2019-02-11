@@ -2,12 +2,9 @@ ion-img {
     width: inherit;
     height: inherit;
     object-fit: inherit;
-}
-
-.real-image {
     opacity: 0;
-    // display: none;
     transition: opacity 1s linear;
+    position: absolute;
 
     &.loaded {
         opacity: 1;
@@ -57,6 +54,11 @@ ion-img {
     }
 
     &.loaded {
+        display: none;
+        animation: none;
+    }
+
+    &.error {
         background: #dddddd;
         animation: none;
 
@@ -65,9 +67,5 @@ ion-img {
             animation-duration: 1s;
             opacity: 0.5;
         }
-    }
-
-    &.hide {
-        display: none;
     }
 }
