@@ -9,9 +9,9 @@ import { map as __map, filter as __filter } from 'rxjs/operators';
 
 import { RegistrationViewModel } from '../models/registration-view-model';
 import { SearchCriteriaRequestDto } from '../models/search-criteria-request-dto';
-import { SearchCountDto } from '../models/search-count-dto';
+import { SearchCountResponseDto } from '../models/search-count-response-dto';
 import { SearchSideBarDto } from '../models/search-side-bar-dto';
-import { NearByRegistrationRequestDto } from '../models/near-by-registration-request-dto';
+import { AtAGlanceViewModel } from '../models/at-aglance-view-model';
 @Injectable({
   providedIn: 'root',
 })
@@ -24,23 +24,17 @@ class SearchService extends __BaseService {
   }
 
   /**
-   * @param params The `SearchService.SearchRssParams` containing the following parameters:
-   *
-   * - `geoHazard`:
-   *
-   * - `criteria`:
-   *
+   * @param criteria undefined
    * @return OK
    */
-  SearchRssResponse(params: SearchService.SearchRssParams): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
+  SearchSearchResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
-    if (params.geoHazard != null) __params = __params.set('geoHazard', params.geoHazard.toString());
-    __body = params.criteria;
+    __body = criteria;
     let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search/Rss`,
+      this.rootUrl + `/Search`,
       __body,
       {
         headers: __headers,
@@ -56,16 +50,11 @@ class SearchService extends __BaseService {
     );
   }
   /**
-   * @param params The `SearchService.SearchRssParams` containing the following parameters:
-   *
-   * - `geoHazard`:
-   *
-   * - `criteria`:
-   *
+   * @param criteria undefined
    * @return OK
    */
-  SearchRss(params: SearchService.SearchRssParams): __Observable<Array<RegistrationViewModel>> {
-    return this.SearchRssResponse(params).pipe(
+  SearchSearch(criteria: SearchCriteriaRequestDto): __Observable<Array<RegistrationViewModel>> {
+    return this.SearchSearchResponse(criteria).pipe(
       __map(_r => _r.body as Array<RegistrationViewModel>)
     );
   }
@@ -74,7 +63,7 @@ class SearchService extends __BaseService {
    * @param criteria undefined
    * @return OK
    */
-  SearchCountResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchCountDto>> {
+  SearchCountResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchCountResponseDto>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -92,7 +81,7 @@ class SearchService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<SearchCountDto>;
+        return _r as __StrictHttpResponse<SearchCountResponseDto>;
       })
     );
   }
@@ -100,81 +89,9 @@ class SearchService extends __BaseService {
    * @param criteria undefined
    * @return OK
    */
-  SearchCount(criteria: SearchCriteriaRequestDto): __Observable<SearchCountDto> {
+  SearchCount(criteria: SearchCriteriaRequestDto): __Observable<SearchCountResponseDto> {
     return this.SearchCountResponse(criteria).pipe(
-      __map(_r => _r.body as SearchCountDto)
-    );
-  }
-
-  /**
-   * @param criteria undefined
-   * @return OK
-   */
-  SearchAllResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    __body = criteria;
-    let req = new HttpRequest<any>(
-      'POST',
-      this.rootUrl + `/Search/All`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<Array<RegistrationViewModel>>;
-      })
-    );
-  }
-  /**
-   * @param criteria undefined
-   * @return OK
-   */
-  SearchAll(criteria: SearchCriteriaRequestDto): __Observable<Array<RegistrationViewModel>> {
-    return this.SearchAllResponse(criteria).pipe(
-      __map(_r => _r.body as Array<RegistrationViewModel>)
-    );
-  }
-
-  /**
-   * @param criteria undefined
-   * @return OK
-   */
-  SearchLandSlideResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    __body = criteria;
-    let req = new HttpRequest<any>(
-      'POST',
-      this.rootUrl + `/Search/LandSlide`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<Array<RegistrationViewModel>>;
-      })
-    );
-  }
-  /**
-   * @param criteria undefined
-   * @return OK
-   */
-  SearchLandSlide(criteria: SearchCriteriaRequestDto): __Observable<Array<RegistrationViewModel>> {
-    return this.SearchLandSlideResponse(criteria).pipe(
-      __map(_r => _r.body as Array<RegistrationViewModel>)
+      __map(_r => _r.body as SearchCountResponseDto)
     );
   }
 
@@ -226,125 +143,17 @@ class SearchService extends __BaseService {
   }
 
   /**
-   * @param criteria undefined
-   * @return OK
-   */
-  SearchIceResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    __body = criteria;
-    let req = new HttpRequest<any>(
-      'POST',
-      this.rootUrl + `/Search/Ice`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<Array<RegistrationViewModel>>;
-      })
-    );
-  }
-  /**
-   * @param criteria undefined
-   * @return OK
-   */
-  SearchIce(criteria: SearchCriteriaRequestDto): __Observable<Array<RegistrationViewModel>> {
-    return this.SearchIceResponse(criteria).pipe(
-      __map(_r => _r.body as Array<RegistrationViewModel>)
-    );
-  }
-
-  /**
-   * @param criteria undefined
-   * @return OK
-   */
-  SearchFloodResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    __body = criteria;
-    let req = new HttpRequest<any>(
-      'POST',
-      this.rootUrl + `/Search/Flood`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<Array<RegistrationViewModel>>;
-      })
-    );
-  }
-  /**
-   * @param criteria undefined
-   * @return OK
-   */
-  SearchFlood(criteria: SearchCriteriaRequestDto): __Observable<Array<RegistrationViewModel>> {
-    return this.SearchFloodResponse(criteria).pipe(
-      __map(_r => _r.body as Array<RegistrationViewModel>)
-    );
-  }
-
-  /**
-   * @param criteria undefined
-   * @return OK
-   */
-  SearchAvalancheResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    __body = criteria;
-    let req = new HttpRequest<any>(
-      'POST',
-      this.rootUrl + `/Search/Avalanche`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<Array<RegistrationViewModel>>;
-      })
-    );
-  }
-  /**
-   * @param criteria undefined
-   * @return OK
-   */
-  SearchAvalanche(criteria: SearchCriteriaRequestDto): __Observable<Array<RegistrationViewModel>> {
-    return this.SearchAvalancheResponse(criteria).pipe(
-      __map(_r => _r.body as Array<RegistrationViewModel>)
-    );
-  }
-
-  /**
    * @param dto undefined
    * @return OK
    */
-  SearchWithinRadiusResponse(dto: NearByRegistrationRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
+  SearchAtAGlanceResponse(dto: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
     __body = dto;
     let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search/WithinRadius`,
+      this.rootUrl + `/Search/AtAGlance`,
       __body,
       {
         headers: __headers,
@@ -355,7 +164,7 @@ class SearchService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<RegistrationViewModel>>;
+        return _r as __StrictHttpResponse<Array<AtAGlanceViewModel>>;
       })
     );
   }
@@ -363,9 +172,9 @@ class SearchService extends __BaseService {
    * @param dto undefined
    * @return OK
    */
-  SearchWithinRadius(dto: NearByRegistrationRequestDto): __Observable<Array<RegistrationViewModel>> {
-    return this.SearchWithinRadiusResponse(dto).pipe(
-      __map(_r => _r.body as Array<RegistrationViewModel>)
+  SearchAtAGlance(dto: SearchCriteriaRequestDto): __Observable<Array<AtAGlanceViewModel>> {
+    return this.SearchAtAGlanceResponse(dto).pipe(
+      __map(_r => _r.body as Array<AtAGlanceViewModel>)
     );
   }
 }
@@ -373,19 +182,11 @@ class SearchService extends __BaseService {
 module SearchService {
 
   /**
-   * Parameters for SearchRss
-   */
-  export interface SearchRssParams {
-    geoHazard: number;
-    criteria: SearchCriteriaRequestDto;
-  }
-
-  /**
    * Parameters for SearchSearchCriteria
    */
   export interface SearchSearchCriteriaParams {
     geoHazard: 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 100 | 110 | 200 | 999;
-    langKey?: number;
+    langKey?: 1 | 2;
   }
 }
 

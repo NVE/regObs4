@@ -8,5 +8,5 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class RegobsApiConfiguration {
-  rootUrl: string = 'https://api.regobs.no:80/app_v4';
+  rootUrl: string = 'http://api.regobs.no/app_v4';
 }

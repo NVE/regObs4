@@ -132,7 +132,7 @@ export class ObservationService {
     }
     try {
       this.searchService.rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
-      const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchAll({
+      const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchSearch({
         FromDate: fromDate.toISOString(),
         SelectedGeoHazards: geoHazards,
         NumberOfRecords: settings.observations.maxObservationsToFetch,
@@ -181,7 +181,7 @@ export class ObservationService {
     cancel?: Promise<any>) {
     try {
       this.searchService.rootUrl = settings.services.regObs.apiUrl[appMode];
-      const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchAll({
+      const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchSearch({
         NumberOfRecords: numberOfRecords,
         LangKey: langKey,
         ObserverGuid: user.Guid,
@@ -220,7 +220,7 @@ export class ObservationService {
 
   private getRegistrationByRegIdFromApi(regId: number, appMode: AppMode, langKey: LangKey) {
     this.searchService.rootUrl = settings.services.regObs.apiUrl[appMode];
-    return this.searchService.SearchAll({ RegId: regId, LangKey: langKey }).pipe(map((result) =>
+    return this.searchService.SearchSearch({ RegId: regId, LangKey: langKey }).pipe(map((result) =>
       result[0]
     ));
   }

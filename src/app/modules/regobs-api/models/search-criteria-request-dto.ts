@@ -1,7 +1,9 @@
 /* tslint:disable */
 import { RegistrationTypeCriteriaDto } from './registration-type-criteria-dto';
+import { WithinRadiusCriteriaDto } from './within-radius-criteria-dto';
+import { WithinExtentCriteriaDto } from './within-extent-criteria-dto';
 export interface SearchCriteriaRequestDto {
-  NumberOfRecords?: number;
+  Offset?: number;
   RegId?: number;
   LocationId?: number;
   ObserverId?: number;
@@ -9,8 +11,8 @@ export interface SearchCriteriaRequestDto {
   GroupId?: number;
   FromDate?: string;
   ToDate?: string;
+  NumberOfRecords?: number;
   LangKey?: number;
-  Offset?: number;
   SelectedRegistrationTypes?: Array<RegistrationTypeCriteriaDto>;
   SelectedRegions?: Array<number>;
   SelectedGeoHazards?: Array<number>;
@@ -18,4 +20,6 @@ export interface SearchCriteriaRequestDto {
   ObserverNickName?: string;
   Countries?: Array<number>;
   TextSearch?: string;
+  Radius?: WithinRadiusCriteriaDto;
+  Extent?: WithinExtentCriteriaDto;
 }

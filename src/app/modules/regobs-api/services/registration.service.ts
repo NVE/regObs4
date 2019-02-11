@@ -69,23 +69,17 @@ class RegistrationService extends __BaseService {
   }
 
   /**
-   * @param params The `RegistrationService.RegistrationGetCaamlParams` containing the following parameters:
-   *
-   * - `regId`:
-   *
-   * - `langKey`:
-   *
+   * @param regId undefined
    * @return OK
    */
-  RegistrationGetCaamlResponse(params: RegistrationService.RegistrationGetCaamlParams): __Observable<__StrictHttpResponse<{}>> {
+  RegistrationGetCaamlResponse(regId: number): __Observable<__StrictHttpResponse<{}>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
 
-
     let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Registration/GetCaaml/${params.regId}/${params.langKey}`,
+      this.rootUrl + `/Registration/Caaml/${regId}`,
       __body,
       {
         headers: __headers,
@@ -101,16 +95,11 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
-   * @param params The `RegistrationService.RegistrationGetCaamlParams` containing the following parameters:
-   *
-   * - `regId`:
-   *
-   * - `langKey`:
-   *
+   * @param regId undefined
    * @return OK
    */
-  RegistrationGetCaaml(params: RegistrationService.RegistrationGetCaamlParams): __Observable<{}> {
-    return this.RegistrationGetCaamlResponse(params).pipe(
+  RegistrationGetCaaml(regId: number): __Observable<{}> {
+    return this.RegistrationGetCaamlResponse(regId).pipe(
       __map(_r => _r.body as {})
     );
   }
@@ -194,14 +183,6 @@ module RegistrationService {
    * Parameters for RegistrationGet
    */
   export interface RegistrationGetParams {
-    regId: number;
-    langKey: 1 | 2;
-  }
-
-  /**
-   * Parameters for RegistrationGetCaaml
-   */
-  export interface RegistrationGetCaamlParams {
     regId: number;
     langKey: 1 | 2;
   }

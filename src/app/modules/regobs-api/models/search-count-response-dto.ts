@@ -1,4 +1,4 @@
 /* tslint:disable */
-export interface SearchCountDto {
+export interface SearchCountResponseDto {
   TotalMatches?: number;
 }
