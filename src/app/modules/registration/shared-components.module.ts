@@ -20,6 +20,7 @@ import { HelpTextComponent } from './components/help-text/help-text.component';
 import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.module';
 import { YesNoSelectComponent } from './components/yes-no-select/yes-no-select.component';
 import { MetersToCmInputComponent } from './components/meters-to-cm-input/meters-to-cm-input.component';
+import { NumericInputComponent } from './components/numeric-input/numeric-input.component';
 
 @NgModule({
     imports: [
@@ -49,6 +50,7 @@ import { MetersToCmInputComponent } from './components/meters-to-cm-input/meters
         HelpModalPageModule,
         YesNoSelectComponent,
         MetersToCmInputComponent,
+        NumericInputComponent,
     ],
     declarations: [
         SaveAndGoBackButtonComponent,
@@ -69,6 +71,7 @@ import { MetersToCmInputComponent } from './components/meters-to-cm-input/meters
         HelpTextComponent,
         YesNoSelectComponent,
         MetersToCmInputComponent,
+        NumericInputComponent,
     ],
 })
 export class SharedComponentsModule { }

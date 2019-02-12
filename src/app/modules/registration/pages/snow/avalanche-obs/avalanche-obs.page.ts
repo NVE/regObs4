@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
@@ -7,7 +7,7 @@ import { RegistrationTid } from '../../../models/registrationTid.enum';
 import * as L from 'leaflet';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import * as moment from 'moment';
-import { NumberHelper } from '../../../../../core/helpers/number-helper';
+import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
 
 @Component({
   selector: 'app-avalanche-obs',
@@ -53,28 +53,8 @@ export class AvalancheObsPage extends BasePage {
 
   showWarning = false;
   maxDate: string;
-  minFractureHeight = 0;
-  maxFractureHeight = 9999;
-  minFractureWidth = 0;
-  maxFractureWidth = 99999;
-
-  get fractureHeightValid() {
-    return NumberHelper.isValid(
-      this.registration.request.AvalancheObs.FractureHeight,
-      this.minFractureHeight,
-      this.maxFractureHeight,
-      false,
-      true);
-  }
-
-  get fractureWidthValid() {
-    return NumberHelper.isValid(
-      this.registration.request.AvalancheObs.FractureWidth,
-      this.minFractureWidth,
-      this.maxFractureWidth,
-      false,
-      true);
-  }
+  @ViewChild('fractureHeight') fractureHeight: NumericInputComponent;
+  @ViewChild('fractureWidth') fractureWidth: NumericInputComponent;
 
   get dateIsDifferentThanObsTime() {
     return this.registration.request.AvalancheObs.DtAvalancheTime
@@ -105,7 +85,9 @@ export class AvalancheObsPage extends BasePage {
 
   isValid() {
     this.showWarning = true;
-    return !!this.registration.request.AvalancheObs.DtAvalancheTime && this.fractureHeightValid;
+    return !!this.registration.request.AvalancheObs.DtAvalancheTime
+      && this.fractureHeight.isValid
+      && this.fractureWidth.isValid;
   }
 
   isEmpty() {

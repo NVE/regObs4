@@ -1,0 +1,17 @@
+<ion-item [ngClass]="{'hasWarning': !isValid}">
+  <ion-label *ngIf="title" color="medium" position="stacked" text-uppercase>{{ title | translate}}</ion-label>
+  <ion-input type="number" [inputmode]="inputmode" [min]="min" [max]="max" [pattern]="pattern" [(ngModel)]="value"
+    placeholder="{{ placeholder | translate}}" (ionChange)="valueChanged()">
+  </ion-input>
+</ion-item>
+<ion-item *ngIf="!isValid">
+  <ion-label color="danger" text-wrap>
+    <ng-container *ngIf="title">{{ title | translate}}</ng-container>
+    {{'VALIDATION.MUST_BE' | translate}}
+    <ng-container *ngIf="decimalPlaces === 0">{{'VALIDATION.INTEGER' | translate}} </ng-container>
+    <ng-container *ngIf="min !== undefined && max !== undefined">{{'VALIDATION.BETWEEN' | translate}} {{ min }}
+      {{'VALIDATION.AND' | translate }} {{ max }}</ng-container>
+    <ng-container *ngIf="min !== undefined && max === undefined">{{'VALIDATION.MIN' | translate}} {{ min }}</ng-container>
+    <ng-container *ngIf="min === undefined && max !== undefined">{{'VALIDATION.MAX' | translate}} {{ max }}</ng-container>
+  </ion-label>
+</ion-item>

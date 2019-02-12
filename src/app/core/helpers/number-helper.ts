@@ -5,7 +5,10 @@ export class NumberHelper {
 
     static setDecimalPlaces(n: number, decimalPlaces?: number) {
         if (this.isNumeric(n)) {
-            return parseFloat(n.toFixed(decimalPlaces));
+            // return parseFloat(n.toFixed(decimalPlaces));
+            const sign = n >= 0 ? 1 : -1;
+            return parseFloat((Math.round((n * Math.pow(10, decimalPlaces)) + (sign * 0.0001)) / Math.pow(10, decimalPlaces))
+                .toFixed(decimalPlaces));
         } else {
             return n;
         }

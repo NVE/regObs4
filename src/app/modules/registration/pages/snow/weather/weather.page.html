@@ -18,54 +18,12 @@
         </ion-label>
       </ion-list-header>
       <app-kdv-dropdown title="REGISTRATION.SNOW.WEATHER.PRECIPITATION" kdvKey="Snow_PrecipitationKDV" [(value)]="registration.request.WeatherObservation.PrecipitationTID"></app-kdv-dropdown>
-      <ion-item [ngClass]="{'hasWarning': !airTemratureValid}">
-        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE'
-          | translate}}</ion-label>
-        <ion-input type="number" [inputmode]="inputTypeDecimal" [min]="airTemperatureMin" [max]="airTemperatureMax"
-          [(ngModel)]="registration.request.WeatherObservation.AirTemperature" placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
-        </ion-input>
-      </ion-item>
-      <ion-item *ngIf="!airTemratureValid">
-        <ion-label color="danger" text-wrap>
-          {{
-          'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE'
-          | translate}} {{'VALIDATION.MUST_BE' | translate}}
-          {{'VALIDATION.BETWEEN' | translate}} {{ airTemperatureMin }} {{'VALIDATION.AND' | translate }} {{
-          airTemperatureMax }}
-        </ion-label>
-      </ion-item>
-      <ion-item [ngClass]="{'hasWarning': !windSpeedValid}">
-        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_SPEED'
-          | translate}}</ion-label>
-        <ion-input type="number" [inputmode]="inputTypeDecimal" [min]="windSpeedMin" [max]="windSpeedMax" [(ngModel)]="registration.request.WeatherObservation.WindSpeed"
-          placeholder="{{'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER' | translate}}">
-        </ion-input>
-      </ion-item>
-      <ion-item *ngIf="!windSpeedValid">
-        <ion-label color="danger" text-wrap>
-          {{
-          'REGISTRATION.SNOW.WEATHER.WIND_SPEED'
-          | translate}} {{'VALIDATION.MUST_BE' | translate}}
-          {{'VALIDATION.BETWEEN' | translate}} {{ windSpeedMin }} {{'VALIDATION.AND' | translate }} {{
-          windSpeedMax }}
-        </ion-label>
-      </ion-item>
-      <ion-item [ngClass]="{'hasWarning': !cloudCoverValid}">
-        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.CLOUD_COVER'
-          | translate}}</ion-label>
-        <ion-input type="number" [min]="cloudCoverMin" [max]="cloudCoverMax" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.WeatherObservation.CloudCover"
-          placeholder="{{'REGISTRATION.SNOW.WEATHER.ONLY_FULL_PERCENTAGE' | translate}}">
-        </ion-input>
-      </ion-item>
-      <ion-item *ngIf="!cloudCoverValid">
-        <ion-label color="danger" text-wrap>
-          {{
-          'REGISTRATION.SNOW.WEATHER.CLOUD_COVER'
-          | translate}} {{'VALIDATION.MUST_BE' | translate}} {{'VALIDATION.INTEGER' | translate}}
-          {{'VALIDATION.BETWEEN' | translate}} {{ cloudCoverMin }} {{'VALIDATION.AND' | translate }} {{
-          cloudCoverMax }}
-        </ion-label>
-      </ion-item>
+      <app-numeric-input #airTemperature [(value)]="registration.request.WeatherObservation.AirTemperature" title="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE"
+        [min]="-150" [max]="60" placeholder="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER" [decimalPlaces]="1"></app-numeric-input>
+      <app-numeric-input #windSpeed [(value)]="registration.request.WeatherObservation.WindSpeed" title="REGISTRATION.SNOW.WEATHER.WIND_SPEED"
+        [min]="0" [max]="50" placeholder="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER" [decimalPlaces]="1"></app-numeric-input>
+      <app-numeric-input #cloudCover [(value)]="registration.request.WeatherObservation.CloudCover" title="REGISTRATION.SNOW.WEATHER.CLOUD_COVER"
+        [min]="0" [max]="100" placeholder="REGISTRATION.SNOW.WEATHER.ONLY_FULL_PERCENTAGE" [decimalPlaces]="0"></app-numeric-input>
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_DIRECTION'
           | translate}}</ion-label>

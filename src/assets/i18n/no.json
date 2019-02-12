@@ -577,7 +577,8 @@
     "BETWEEN": "mellom",
     "CHARACTERS": "tegn",
     "INTEGER": "et heltall",
-    "MAX": "Maks",
+    "MAX": "under",
+    "MIN": "over",
     "MUST_BE": "må være"
   },
   "WARNING_LIST": {

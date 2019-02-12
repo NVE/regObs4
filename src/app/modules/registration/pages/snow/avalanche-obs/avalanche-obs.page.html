@@ -75,40 +75,10 @@
       <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.TERRAIN_START_ZONE" kdvKey="Snow_TerrainStartZoneKDV"
         [(value)]="registration.request.AvalancheObs.TerrainStartZoneTID"></app-kdv-dropdown>
       <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVAL_CAUSE" kdvKey="Snow_AvalCauseKDV" [(value)]="registration.request.AvalancheObs.AvalCauseTID"></app-kdv-dropdown>
-      <ion-item [ngClass]="{'hasWarning': !fractureHeightValid}">
-        <ion-label color="medium" position="stacked" text-uppercase>{{
-          'REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_HEIGTH'
-          | translate}}</ion-label>
-        <ion-input type="text" inputmode="numeric" [min]="minFractureHeight" [max]="maxFractureHeight" pattern="[0-9]*"
-          [(ngModel)]="registration.request.AvalancheObs.FractureHeight">
-        </ion-input>
-      </ion-item>
-      <ion-item *ngIf="!fractureHeightValid">
-        <ion-label color="danger" text-wrap>
-          {{
-          'REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_HEIGTH'
-          | translate}} {{'VALIDATION.MUST_BE' | translate}} {{'VALIDATION.INTEGER' | translate}}
-          {{'VALIDATION.BETWEEN' | translate}} {{ minFractureHeight }} {{'VALIDATION.AND' | translate }} {{
-          maxFractureHeight }}
-        </ion-label>
-      </ion-item>
-      <ion-item [ngClass]="{'hasWarning': !fractureWidthValid}">
-        <ion-label color="medium" position="stacked" text-uppercase>{{
-          'REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_WIDTH'
-          | translate}}</ion-label>
-        <ion-input type="text" inputmode="numeric" [min]="minFractureWidth" [max]="maxFractureWidth" pattern="[0-9]*"
-          [(ngModel)]="registration.request.AvalancheObs.FractureWidth">
-        </ion-input>
-      </ion-item>
-      <ion-item *ngIf="!fractureWidthValid">
-        <ion-label color="danger" text-wrap>
-          {{
-          'REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_WIDTH'
-          | translate}} {{'VALIDATION.MUST_BE' | translate}} {{'VALIDATION.INTEGER' | translate}}
-          {{'VALIDATION.BETWEEN' | translate}} {{ minFractureWidth }} {{'VALIDATION.AND' | translate }} {{
-          maxFractureWidth }}
-        </ion-label>
-      </ion-item>
+      <app-numeric-input #fractureHeight [(value)]="registration.request.AvalancheObs.FractureHeight" title="REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_HEIGTH"
+        [min]="0" [max]="9999" [decimalPlaces]="0"></app-numeric-input>
+      <app-numeric-input #fractureWidth [(value)]="registration.request.AvalancheObs.FractureWidth" title="REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_WIDTH"
+        [min]="0" [max]="99999" [decimalPlaces]="0"></app-numeric-input>
       <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [max]="100" [rows]="2" [(value)]="registration.request.AvalancheObs.Trajectory"></app-text-comment>
       <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.AvalancheObs.Comment"></app-text-comment>
       <ion-list-header text-uppercase>

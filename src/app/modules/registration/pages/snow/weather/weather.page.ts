@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BasePageService } from '../../base-page-service';
 import { BasePage } from '../../base.page';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { NumberHelper } from '../../../../../core/helpers/number-helper';
-import { Platform } from '@ionic/angular';
+import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
 
 @Component({
   selector: 'app-weather',
@@ -12,6 +11,10 @@ import { Platform } from '@ionic/angular';
   styleUrls: ['./weather.page.scss'],
 })
 export class WeatherPage extends BasePage {
+
+  @ViewChild('airTemperature') airTemperature: NumericInputComponent;
+  @ViewChild('windSpeed') windSpeed: NumericInputComponent;
+  @ViewChild('cloudCover') cloudCover: NumericInputComponent;
 
   windDirectionArray = [
     { val: null, name: 'REGISTRATION.SNOW.WEATHER.NOT_GIVEN' },
@@ -25,68 +28,21 @@ export class WeatherPage extends BasePage {
     { val: 315, name: 'REGISTRATION.SNOW.WEATHER.FROM_NORTH_WEST', shortName: 'DIRECTION.NW' }
   ];
 
-  airTemperatureMin = -150;
-  airTemperatureMax = 60;
-  windSpeedMin = 0;
-  windSpeedMax = 50;
-  cloudCoverMin = 0;
-  cloudCoverMax = 100;
-
-  get airTemratureValid() {
-    return NumberHelper.isValid(
-      this.registration.request.WeatherObservation.AirTemperature,
-      this.airTemperatureMin,
-      this.airTemperatureMax);
-  }
-
-  get windSpeedValid() {
-    return NumberHelper.isValid(
-      this.registration.request.WeatherObservation.WindSpeed,
-      this.windSpeedMin,
-      this.windSpeedMax);
-  }
-
-  get cloudCoverValid() {
-    return NumberHelper.isValid(
-      this.registration.request.WeatherObservation.CloudCover,
-      this.cloudCoverMin,
-      this.cloudCoverMax, false, true);
-  }
-
-  get inputTypeDecimal() {
-    return this.platform.is('ios') ? 'tel' : 'number';
-  }
-
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
-    private platform: Platform,
   ) {
     super(RegistrationTid.WeatherObservation, basePageService, activatedRoute);
   }
 
   isValid() {
-    return this.airTemratureValid && this.windSpeedValid && this.cloudCoverValid;
+    return this.airTemperature.isValid && this.windSpeed.isValid && this.cloudCover.isValid;
   }
 
   onBeforeLeave() {
-    if (this.registration.request.WeatherObservation.AirTemperature !== undefined) {
-      this.registration.request.WeatherObservation.AirTemperature =
-        Math.round(this.registration.request.WeatherObservation.AirTemperature * 10) / 10.0;
-    }
-    if (this.registration.request.WeatherObservation.WindSpeed !== undefined) {
-      this.registration.request.WeatherObservation.WindSpeed =
-        Math.round(this.registration.request.WeatherObservation.WindSpeed * 10) / 10.0;
-    }
-    if (this.registration.request.WeatherObservation.CloudCover !== undefined) {
-      if (this.registration.request.WeatherObservation.CloudCover > 100) {
-        this.registration.request.WeatherObservation.CloudCover = 100;
-      } else if (this.registration.request.WeatherObservation.CloudCover < 0) {
-        this.registration.request.WeatherObservation.CloudCover = 0;
-      } else {
-        this.registration.request.WeatherObservation.CloudCover = Math.round(this.registration.request.WeatherObservation.CloudCover);
-      }
-    }
+    this.registration.request.WeatherObservation.AirTemperature = this.airTemperature.getValue();
+    this.registration.request.WeatherObservation.WindSpeed = this.windSpeed.getValue();
+    this.registration.request.WeatherObservation.CloudCover = this.cloudCover.getValue();
   }
 
 }

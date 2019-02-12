@@ -5,6 +5,7 @@
 </ion-item>
 <ion-item *ngIf="!isValid">
   <ion-label color="danger" text-wrap>
-    {{'VALIDATION.MAX'| translate}} {{ max }} {{'VALIDATION.CHARACTERS' | translate }}
+    {{ title | translate }} {{'VALIDATION.MUST_BE' }} {{'VALIDATION.MAX'| translate}} {{ max }}
+    {{'VALIDATION.CHARACTERS' | translate }}
   </ion-label>
 </ion-item>

@@ -577,7 +577,8 @@
     "BETWEEN": "between",
     "CHARACTERS": "characters",
     "INTEGER": "an integer",
-    "MAX": "Max",
+    "MAX": "below",
+    "MIN": "above",
     "MUST_BE": "must be"
   },
   "WARNING_LIST": {
