@@ -13,12 +13,17 @@
       <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.NO_AVALANCHE_ACTIVITY' | translate}}</ion-label>
       <ion-checkbox mode="md" slot="start" [(ngModel)]="noAvalancheActivity"></ion-checkbox>
     </ion-item>
-    <ion-item>
+    <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
       <ion-label color="medium" position="stacked" text-uppercase>{{
         'DATE' | translate }}</ion-label>
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
-        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY" [(ngModel)]="startDate">
+        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY" [max]="maxDate" [(ngModel)]="startDate">
       </ion-datetime>
+    </ion-item>
+    <ion-item *ngIf="dateIsDifferentThanObsTime">
+      <ion-label color="danger" text-wrap>
+        {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
+      </ion-label>
     </ion-item>
     <ion-item>
       <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ESTIMATED_TIME'

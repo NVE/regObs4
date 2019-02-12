@@ -7,7 +7,8 @@
     "CANCEL": "Avbryt",
     "DEFAULT_HEADER": "Oisann!",
     "OK": "Ok",
-    "PULL_TO_REFRESH": "Dra ned for å oppdatere..."
+    "PULL_TO_REFRESH": "Dra ned for å oppdatere...",
+    "WARNING": "Advarsel"
   },
   "DATA_LOAD": {
     "DATA": "Laster data...",
@@ -278,7 +279,7 @@
       "SHARE_WITH_GROUP": "Del med gruppe",
       "TITLE": "Observasjon"
     },
-    "REQUIRED_FIELDS_MISSING": "Obigatoriske felt mangler. Vil du nullstille observasjonen og gå tilbake?",
+    "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
     "RESEND": "Prøv å send på nytt",
     "RESET": "Nullstill denne siden",
     "SAVED_DESCRIPTION": "Disse er under innsending blir synkronisert når man har nettverk.",
@@ -298,6 +299,7 @@
       "AVALANCHE_ACTIVITY": {
         "ADD_NEW": "Legg til ny skredaktivitet",
         "COMMENT_PLACEHOLDER": "Ytterligere kommentar",
+        "DATE_WARNING": "Dato er forskjellig fra observasjonstidspunktet",
         "DURING_THE_DAY": "I løpet av dagen",
         "ESTIMATED_TIME": "Antatt tidsrom",
         "HOW_MANY_AVALANCHES": "Antall skred",
@@ -569,6 +571,14 @@
     "START": "Start",
     "STOP": "Stopp",
     "STOPPED": "Tur stoppet og fullført"
+  },
+  "VALIDATION": {
+    "AND": "og",
+    "BETWEEN": "mellom",
+    "CHARACTERS": "tegn",
+    "INTEGER": "et heltall",
+    "MAX": "Maks",
+    "MUST_BE": "må være"
   },
   "WARNING_LIST": {
     "ALL": "Alle",

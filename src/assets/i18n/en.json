@@ -7,7 +7,8 @@
     "CANCEL": "Cancel",
     "DEFAULT_HEADER": "Whoops!",
     "OK": "Ok",
-    "PULL_TO_REFRESH": "Pull to refresh..."
+    "PULL_TO_REFRESH": "Pull to refresh...",
+    "WARNING": "Warning"
   },
   "DATA_LOAD": {
     "DATA": "Loading...",
@@ -278,7 +279,7 @@
       "SHARE_WITH_GROUP": "Share with group",
       "TITLE": "Observation"
     },
-    "REQUIRED_FIELDS_MISSING": "Required fields are missing. Do you want to reset observation and go back?",
+    "REQUIRED_FIELDS_MISSING": "Some fields are invalid. Do you want to reset form and go back?",
     "RESEND": "Try to send again",
     "RESET": "Reset",
     "SAVED_DESCRIPTION": "These will be synchronized when you have network connection.",
@@ -298,6 +299,7 @@
       "AVALANCHE_ACTIVITY": {
         "ADD_NEW": "Add new avalanche activity",
         "COMMENT_PLACEHOLDER": "Additional comment",
+        "DATE_WARNING": "Date is different from observation time",
         "DURING_THE_DAY": "During the day",
         "ESTIMATED_TIME": "Estimated timeframe",
         "HOW_MANY_AVALANCHES": "Number of avalanches",
@@ -569,6 +571,14 @@
     "START": "Start",
     "STOP": "Stop",
     "STOPPED": "Trip log completed"
+  },
+  "VALIDATION": {
+    "AND": "and",
+    "BETWEEN": "between",
+    "CHARACTERS": "characters",
+    "INTEGER": "an integer",
+    "MAX": "Max",
+    "MUST_BE": "must be"
   },
   "WARNING_LIST": {
     "ALL": "All",

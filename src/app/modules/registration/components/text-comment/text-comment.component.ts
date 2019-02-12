@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, EventEmitter, Output, NgZone } from '@angular/core';
-import { IonTextarea } from '@ionic/angular';
 
 @Component({
   selector: 'app-text-comment',
@@ -14,10 +13,15 @@ export class TextCommentComponent implements OnInit {
   @Output() valueChange = new EventEmitter();
   @Input() rows: number;
   @Input() disabled = false;
+  @Input() max = 1024;
   minrows: number;
 
   get valToBind() {
     return this.value ? this.value : '';
+  }
+
+  get isValid() {
+    return !this.value || (this.value.length <= this.max);
   }
 
   set valToBind(val: string) {
@@ -40,20 +44,6 @@ export class TextCommentComponent implements OnInit {
     if (this.value) {
       this.value = this.value.trim();
       this.valueChange.emit(this.value);
-    }
-  }
-
-  autoresize(event: Event) {
-    const target: IonTextarea = <any>(event.target);
-    const width = window.innerWidth;
-    const charWidth = 10;
-    const breaklines = target.value ? (target.value.split(/\r?\n|\r/)).length : 0;
-    const textlines = (target.value ? target.value.length : 0) / (width / charWidth);
-    const rows = Math.ceil(textlines) + breaklines;
-    if (rows > this.minrows) {
-      target.rows = rows;
-    } else {
-      target.rows = this.minrows;
     }
   }
 

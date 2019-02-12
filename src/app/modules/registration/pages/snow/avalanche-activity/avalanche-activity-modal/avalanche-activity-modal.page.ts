@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AvalancheActivityObs2Dto } from '../../../../../regobs-api/models';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-avalanche-activity-modal',
@@ -12,9 +13,11 @@ import * as moment from 'moment';
 export class AvalancheActivityModalPage implements OnInit {
 
   @Input() avalancheActivity: AvalancheActivityObs2Dto;
+  @Input() dtObsTime: string;
 
   avalancheActivityCopy: AvalancheActivityObs2Dto;
   isNew = false;
+  maxDate: string;
 
   get noAvalancheActivity() {
     return this.avalancheActivityCopy.EstimatedNumTID === 1;
@@ -26,6 +29,10 @@ export class AvalancheActivityModalPage implements OnInit {
     } else {
       this.avalancheActivityCopy.EstimatedNumTID = undefined;
     }
+  }
+
+  get dateIsDifferentThanObsTime() {
+    return this.startDate && !moment(this.startDate).startOf('day').isSame(moment(this.dtObsTime).startOf('day'));
   }
 
   timeFrames = [
@@ -65,10 +72,11 @@ export class AvalancheActivityModalPage implements OnInit {
   startDate: string;
 
   constructor(
-    private modalController: ModalController,
+    private modalController: ModalController
   ) { }
 
   async ngOnInit() {
+    this.maxDate = moment().toISOString();
     if (this.avalancheActivity) {
       this.avalancheActivityCopy = { ...this.avalancheActivity };
     } else {
@@ -85,7 +93,7 @@ export class AvalancheActivityModalPage implements OnInit {
         this.selectedTimeFrame = timeFrame.id;
       }
     } else {
-      this.startDate = moment().startOf('day').toISOString(true);
+      this.startDate = moment(this.dtObsTime).startOf('day').toISOString(true);
     }
   }
 

@@ -1,5 +1,10 @@
-<ion-item>
+<ion-item [ngClass]="{ 'hasWarning': !isValid } ">
   <ion-label color="medium" position="stacked" text-uppercase>{{ title | translate }}</ion-label>
-  <ion-textarea autocapitalize="sentences" [disabled]="disabled" type="textarea" (ionBlur)="onBlur()" [rows]="rows"
-    (ionChange)="autoresize($event)" [(ngModel)]="valToBind" placeholder="{{ placeholder | translate}}"></ion-textarea>
+  <ion-textarea autocapitalize="sentences" [maxlength]="max" [disabled]="disabled" type="textarea" (ionBlur)="onBlur()"
+    [rows]="rows" appAutoresize [(ngModel)]="valToBind" placeholder="{{ placeholder | translate}}"></ion-textarea>
+</ion-item>
+<ion-item *ngIf="!isValid">
+  <ion-label color="danger" text-wrap>
+    {{'VALIDATION.MAX'| translate}} {{ max }} {{'VALIDATION.CHARACTERS' | translate }}
+  </ion-label>
 </ion-item>

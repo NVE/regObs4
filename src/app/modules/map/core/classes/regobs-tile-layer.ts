@@ -100,7 +100,7 @@ export class RegObsTileLayer extends L.TileLayer {
                 return { id, url: this.getOriginalTileUrl(coords, map.url) };
             }
         }
-        return { id: null, url: this.getBlankUrl() };
+        return { id: '', url: this.getBlankUrl() };
     }
 
     private getBlankUrl() {
@@ -113,7 +113,7 @@ export class RegObsTileLayer extends L.TileLayer {
     }
 
     private saveTileOffline(tile: RegObsTile) {
-        if (this.bufferOffline && tile.id && tile.src.startsWith('http')) {
+        if (this.bufferOffline && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
             const dataUrl = DataUrlHelper.getDataUrlFromImage(tile, 'image/png');
             this.offlineMapService.saveTileDataUrlToDbCache(tile.id, dataUrl).then((result) => {
                 if (result) {

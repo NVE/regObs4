@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
@@ -7,6 +7,7 @@ import { RegistrationTid } from '../../../models/registrationTid.enum';
 import * as L from 'leaflet';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import * as moment from 'moment';
+import { NumberHelper } from '../../../../../core/helpers/number-helper';
 
 @Component({
   selector: 'app-avalanche-obs',
@@ -17,45 +18,74 @@ export class AvalancheObsPage extends BasePage {
 
   expoArray = [
     {
-      name: 'N',
+      name: 'DIRECTION.N',
       val: '10000000'
     },
     {
-      name: 'NØ',
+      name: 'DIRECTION.NE',
       val: '01000000'
     },
     {
-      name: 'Ø',
+      name: 'DIRECTION.E',
       val: '00100000'
     },
     {
-      name: 'SØ',
+      name: 'DIRECTION.SE',
       val: '00010000'
     },
     {
-      name: 'S',
+      name: 'DIRECTION.S',
       val: '00001000'
     },
     {
-      name: 'SV',
+      name: 'DIRECTION.SW',
       val: '00000100'
     },
     {
-      name: 'V',
+      name: 'DIRECTION.W',
       val: '00000010'
     },
     {
-      name: 'NV',
+      name: 'DIRECTION.NW',
       val: '00000001'
     }
   ];
 
-  hasSaved = false;
+  showWarning = false;
+  maxDate: string;
+  minFractureHeight = 0;
+  maxFractureHeight = 9999;
+  minFractureWidth = 0;
+  maxFractureWidth = 99999;
+
+  get fractureHeightValid() {
+    return NumberHelper.isValid(
+      this.registration.request.AvalancheObs.FractureHeight,
+      this.minFractureHeight,
+      this.maxFractureHeight,
+      false,
+      true);
+  }
+
+  get fractureWidthValid() {
+    return NumberHelper.isValid(
+      this.registration.request.AvalancheObs.FractureWidth,
+      this.minFractureWidth,
+      this.maxFractureWidth,
+      false,
+      true);
+  }
+
+  get dateIsDifferentThanObsTime() {
+    return this.registration.request.AvalancheObs.DtAvalancheTime
+      && !moment(this.registration.request.AvalancheObs.DtAvalancheTime)
+        .startOf('day').isSame(moment(this.registration.request.DtObsTime).startOf('day'));
+  }
 
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
-    private modalController: ModalController,
+    private modalController: ModalController
   ) {
     super(RegistrationTid.AvalancheObs, basePageService, activatedRoute);
   }
@@ -64,17 +94,18 @@ export class AvalancheObsPage extends BasePage {
     if (!this.registration.request.Incident) {
       this.registration.request.Incident = {};
     }
+    this.maxDate = moment().toISOString(true);
   }
 
   async onReset() {
-    this.hasSaved = false;
+    this.showWarning = false;
     // Also reset Incident when Avalanche obs is reset.
     await this.basePageService.reset(this.registration, RegistrationTid.Incident);
   }
 
   isValid() {
-    this.hasSaved = true;
-    return !!this.registration.request.AvalancheObs.DtAvalancheTime;
+    this.showWarning = true;
+    return !!this.registration.request.AvalancheObs.DtAvalancheTime && this.fractureHeightValid;
   }
 
   isEmpty() {

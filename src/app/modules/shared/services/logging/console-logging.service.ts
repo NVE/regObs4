@@ -26,12 +26,12 @@ export class ConsoleLoggingService implements LoggingService {
   }
 
   log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    const msg = `[${level.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}. ${error ? stringify(error) : ''}`;
+    const msg = `[${level.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
     switch (level) {
       case LogLevel.Warning:
       case LogLevel.Error:
-        optionalParams.length > 0 ? console.error(msg, optionalParams) : console.error(msg);
-        break;
+        optionalParams.length > 0 ? console.log(msg, optionalParams) : console.log(msg);
+        throw (error);
       default:
         optionalParams.length > 0 ? console.log(msg, optionalParams) : console.log(msg);
         break;

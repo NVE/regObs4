@@ -40,7 +40,10 @@ export class AvalancheActivityPage extends BasePage {
   async addOrEditAvalancheActivity(index?: number) {
     const modal = await this.modalController.create({
       component: AvalancheActivityModalPage,
-      componentProps: { avalancheActivity: this.registration.request.AvalancheActivityObs2[index] },
+      componentProps: {
+        avalancheActivity: this.registration.request.AvalancheActivityObs2[index],
+        dtObsTime: this.registration.request.DtObsTime
+      },
     });
     modal.present();
     const result = await modal.onDidDismiss();

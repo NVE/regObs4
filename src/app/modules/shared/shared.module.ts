@@ -21,6 +21,7 @@ import { RefreshWithCancelComponent } from '../../components/refresh-with-cancel
 import { SummaryComponent } from '../../components/observation/summary/summary.component';
 import { HeaderColorDirective } from '../../directives/header-color.directive';
 import { InputPatternFilterDirective } from '../../directives/input-pattern-filter.directive';
+import { AutoResizeDirective } from '../../directives/auto-resize.directive';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { InputPatternFilterDirective } from '../../directives/input-pattern-filt
     ],
     declarations: [
         ShadowCssDirective,
+        AutoResizeDirective,
         AddMenuComponent,
         OfflineImageComponent,
         ExternalLinkComponent,
@@ -59,6 +61,7 @@ import { InputPatternFilterDirective } from '../../directives/input-pattern-filt
         TranslateModule,
         RouterModule,
         ShadowCssDirective,
+        AutoResizeDirective,
         AngularSvgIconModule,
         AddMenuComponent,
         OfflineImageComponent,

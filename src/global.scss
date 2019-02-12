@@ -136,6 +136,10 @@ h1, h2, h3, h4, h5, h6 {
 
 ion-item {
     --background: var(--ion-item-background, #fff);
+
+    &.hasWarning {
+        --border-width: 0 0 0 0 !important;
+    }
 }
 
 ion-list {
