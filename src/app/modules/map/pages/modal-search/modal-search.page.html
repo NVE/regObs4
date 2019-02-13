@@ -13,15 +13,16 @@
       </form>
     </ion-toolbar>
   </ion-header>
-  <ion-content [fullscreen]="true" [scrollY]="true" [scrollX]="false" [forceOverscroll]="true">
-    <ion-list *ngIf="searchResult$ | async as searchResults" lines="full" class="search-result">
-      <ion-item *ngFor="let item of searchResults" (click)="searchItemClicked(item)">
+  <ion-content>
+    <ion-virtual-scroll *ngIf="searchResult$ | async as searchResults" [items]="searchResults">
+      <ion-item *virtualItem="let item" (click)="searchItemClicked(item)">
         <ion-label>
           <ion-text class="search-result-name" [innerHTML]="item.name | startsWithHighlight:searchText"></ion-text>
+          &nbsp;
           <ion-text color="medium" class="search-description">{{item.description}}</ion-text>
         </ion-label>
       </ion-item>
-    </ion-list>
+    </ion-virtual-scroll>
     <ng-container *ngIf="searchHistory$ | async as searchHistory">
       <ion-list *ngIf="!hasResults && !loading && searchHistory.length > 0" lines="full" class="search-result">
         <ion-list-header text-uppercase>
