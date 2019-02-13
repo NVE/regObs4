@@ -5,12 +5,9 @@
     translate }} {{ measurementNumber }}
   </ion-label>
 </ion-list-header>
-<ion-item *ngIf="waterLevelMethod === 2">
-  <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.WATER.WATER_LEVEL.WATER_LEVEL_METERS' |
-    translate }}</ion-label>
-  <ion-input type="number" [(ngModel)]="waterLevelMeasurement.WaterLevelValue" min="0" max="10000" pattern="[0-9]*"></ion-input>
-</ion-item>
-<ion-item>
+<app-numeric-input *ngIf="waterLevelMethod === 2" [(value)]="waterLevelMeasurement.WaterLevelValue" title="REGISTRATION.WATER.WATER_LEVEL.WATER_LEVEL_METERS"
+  [min]="0" [max]="8848" [decimalPlaces]="3"></app-numeric-input>
+<ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
   <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SET_TIME.TITLE' | translate }}</ion-label>
   <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
     cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm" [(ngModel)]="waterLevelMeasurement.DtMeasurementTime"
@@ -19,6 +16,11 @@
   <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium" (click)="setToNow()">
     <ion-icon slot="start" name="time"></ion-icon> {{"REGISTRATION.SET_TIME.NOW" | translate}}
   </ion-button>
+</ion-item>
+<ion-item *ngIf="dateIsDifferentThanObsTime">
+  <ion-label color="danger" text-wrap>
+    {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
+  </ion-label>
 </ion-item>
 <app-add-picture-item iconColor="primary" icon="add-circle-outline" title="{{ 'REGISTRATION.WATER.WATER_LEVEL.ADD_PICTURE' | translate }} {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' :
 'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL') | translate | lowercase }}"

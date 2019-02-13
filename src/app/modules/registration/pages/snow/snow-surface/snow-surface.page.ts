@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { NumberHelper } from '../../../../../core/helpers/number-helper';
 
 @Component({
   selector: 'app-snow-surface',
@@ -16,26 +17,6 @@ export class SnowSurfacePage extends BasePage {
     activatedRoute: ActivatedRoute,
   ) {
     super(RegistrationTid.SnowSurfaceObservation, basePageService, activatedRoute);
-  }
-
-  onInit() {
-    if (this.registration.request.SnowSurfaceObservation.SnowDepth > 0) {
-      this.registration.request.SnowSurfaceObservation.SnowDepth = this.registration.request.SnowSurfaceObservation.SnowDepth * 100.0;
-    }
-    if (this.registration.request.SnowSurfaceObservation.NewSnowDepth24 > 0) {
-      this.registration.request.SnowSurfaceObservation.NewSnowDepth24
-        = this.registration.request.SnowSurfaceObservation.NewSnowDepth24 * 100.0;
-    }
-  }
-
-  onBeforeLeave() {
-    if (this.registration.request.SnowSurfaceObservation.SnowDepth > 0) {
-      this.registration.request.SnowSurfaceObservation.SnowDepth = this.registration.request.SnowSurfaceObservation.SnowDepth / 100.0;
-    }
-    if (this.registration.request.SnowSurfaceObservation.NewSnowDepth24 > 0) {
-      this.registration.request.SnowSurfaceObservation.NewSnowDepth24
-        = this.registration.request.SnowSurfaceObservation.NewSnowDepth24 / 100.0;
-    }
   }
 }
 

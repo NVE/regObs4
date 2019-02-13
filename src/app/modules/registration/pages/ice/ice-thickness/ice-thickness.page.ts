@@ -15,8 +15,6 @@ import { NumberHelper } from '../../../../../core/helpers/number-helper';
 })
 
 export class IceThicknessPage extends BasePage {
-  minSnowDepth = 0;
-  maxSnowDepth = 10000;
 
   iceHeightBefore: boolean = undefined;
   iceHeightAfter: boolean = undefined;
@@ -64,7 +62,7 @@ export class IceThicknessPage extends BasePage {
   }
 
   convertMToCM(value: number) {
-    return NumberHelper.setDecimalPlaces(value * 100.0, 1);
+    return NumberHelper.setDecimalPlaces(value * 100.0, 2);
   }
 
 

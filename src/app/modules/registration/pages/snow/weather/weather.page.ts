@@ -40,9 +40,9 @@ export class WeatherPage extends BasePage {
   }
 
   onBeforeLeave() {
-    this.registration.request.WeatherObservation.AirTemperature = this.airTemperature.getValue();
-    this.registration.request.WeatherObservation.WindSpeed = this.windSpeed.getValue();
-    this.registration.request.WeatherObservation.CloudCover = this.cloudCover.getValue();
+    // this.registration.request.WeatherObservation.AirTemperature = this.airTemperature.getValue();
+    // this.registration.request.WeatherObservation.WindSpeed = this.windSpeed.getValue();
+    // this.registration.request.WeatherObservation.CloudCover = this.cloudCover.getValue();
   }
 
 }

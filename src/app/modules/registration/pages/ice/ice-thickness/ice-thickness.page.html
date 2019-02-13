@@ -12,10 +12,10 @@
   <app-registration-content-wrapper *ngIf="registration && registration.request.IceThickness" [registration]="registration"
     [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full" reorder="true">
-      <app-meters-to-cm-input title="REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL" [(value)]="registration.request.IceThickness.SnowDepth"
-        [min]="minSnowDepth" [max]="maxSnowDepth" placeholder="REGISTRATION.IN_CM"></app-meters-to-cm-input>
-      <app-meters-to-cm-input title="REGISTRATION.ICE.ICE_THICKNESS.SLUSH_SNOW_BEFORE_DRILL" [(value)]="registration.request.IceThickness.SlushSnow"
-        [min]="minSnowDepth" [max]="maxSnowDepth" placeholder="REGISTRATION.IN_CM"></app-meters-to-cm-input>
+      <app-numeric-input [(value)]="registration.request.IceThickness.SnowDepth" title="REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL"
+        [min]="0" [max]="999" [decimalPlaces]="2" [convertMetersToCm]="true" placeholder="REGISTRATION.IN_CM"></app-numeric-input>
+      <app-numeric-input [(value)]="registration.request.IceThickness.SlushSnow" title="REGISTRATION.ICE.ICE_THICKNESS.SLUSH_SNOW_BEFORE_DRILL"
+        [min]="0" [max]="999" [decimalPlaces]="2" [convertMetersToCm]="true" placeholder="REGISTRATION.IN_CM"></app-numeric-input>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER' | translate }}
@@ -32,16 +32,15 @@
         <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
         <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER' | translate}}</ion-label>
       </ion-item>
-      <app-meters-to-cm-input title="REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM" [(value)]="registration.request.IceThickness.IceThicknessSum"
-        [min]="minSnowDepth" [max]="maxSnowDepth" [decimalPlaces]="1"></app-meters-to-cm-input>
+      <app-numeric-input [(value)]="registration.request.IceThickness.IceThicknessSum" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM"
+        [min]="0" [max]="999" [decimalPlaces]="2" [convertMetersToCm]="true"></app-numeric-input>
       <app-yes-no-select [(value)]="iceHeightBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE"></app-yes-no-select>
-      <app-meters-to-cm-input *ngIf="iceHeightBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
-        [(value)]="registration.request.IceThickness.IceHeightBefore" [min]="minSnowDepth" [max]="maxSnowDepth"
-        placeholder="REGISTRATION.IN_CM"></app-meters-to-cm-input>
+      <app-numeric-input *ngIf="iceHeightBefore" [(value)]="registration.request.IceThickness.IceHeightBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
+        [min]="0" [max]="999" [decimalPlaces]="2" [convertMetersToCm]="true" placeholder="REGISTRATION.IN_CM"></app-numeric-input>
       <app-yes-no-select [(value)]="iceHeightAfter" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_TOGGLE"></app-yes-no-select>
-      <app-meters-to-cm-input *ngIf="iceHeightAfter !== undefined" [title]="iceHeightAfter === true ? 'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT' : 'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO'"
-        [(value)]="registration.request.IceThickness.IceHeightAfter" [min]="minSnowDepth" [max]="maxSnowDepth"
-        placeholder="REGISTRATION.IN_CM"></app-meters-to-cm-input>
+      <app-numeric-input *ngIf="iceHeightAfter !== undefined" [(value)]="registration.request.IceThickness.IceHeightAfter"
+        [title]="iceHeightAfter === true ? 'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT' : 'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO'"
+        [min]="0" [max]="999" [decimalPlaces]="2" [convertMetersToCm]="true" placeholder="REGISTRATION.IN_CM"></app-numeric-input>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}

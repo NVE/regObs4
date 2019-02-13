@@ -24,9 +24,6 @@ export class CompressionTestModalPage implements OnInit {
     }
     if (this.compressionTest) {
       this.compressionTestCopy = { ...this.compressionTest };
-      if (this.compressionTestCopy.FractureDepth) {
-        this.compressionTestCopy.FractureDepth = this.compressionTestCopy.FractureDepth * 100.0;
-      }
     } else {
       this.compressionTestCopy = {};
       this.isNew = true;
@@ -50,14 +47,7 @@ export class CompressionTestModalPage implements OnInit {
   }
 
   ok() {
-    if (IsEmptyHelper.isEmpty(this.compressionTestCopy)) {
-      this.modalController.dismiss();
-    } else {
-      if (this.compressionTestCopy.FractureDepth) {
-        this.compressionTestCopy.FractureDepth = Math.round(this.compressionTestCopy.FractureDepth) / 100.0;
-      }
-      this.modalController.dismiss(this.compressionTestCopy);
-    }
+    this.modalController.dismiss(IsEmptyHelper.isEmpty(this.compressionTestCopy) ? null : this.compressionTestCopy);
   }
 
   delete() {

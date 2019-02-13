@@ -386,7 +386,7 @@
       },
       "WEATHER": {
         "AIR_TEMPERATURE": "Air temperature (C)",
-        "AIR_TEMPERATURE_PLACEHOLDER": "Can be given with one decimal",
+        "AIR_TEMPERATURE_PLACEHOLDER": "Can be given with two decimals",
         "CLOUD_COVER": "Cloud cover (%)",
         "COMMENT_HEADER": "Describe weather",
         "COMMENT_PLACEHOLDER": "How has been in the area last 24 hours? Example: Have there been showers? Have there been temperature changes? Where does the nullisotherm go?",

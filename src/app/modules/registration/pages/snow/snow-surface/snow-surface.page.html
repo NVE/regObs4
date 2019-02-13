@@ -18,38 +18,16 @@
           {{ 'REGISTRATION.SNOW.SNOW_SURFACE.TITLE' | translate}}
         </ion-label>
       </ion-list-header>
-      <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH'
-          | translate}}</ion-label>
-        <ion-input type="number" min="0" max="1000" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.SnowSurfaceObservation.SnowDepth">
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH'
-          | translate}}</ion-label>
-        <ion-input type="number" min="0" max="1000" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.SnowSurfaceObservation.NewSnowDepth24">
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_LINE'
-          | translate}}</ion-label>
-        <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.SnowSurfaceObservation.NewSnowLine">
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.SNOW_SURFACE.SNOW_LINE'
-          | translate}}</ion-label>
-        <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.SnowSurfaceObservation.SnowLine">
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>{{
-          'REGISTRATION.SNOW.SNOW_SURFACE.HEIGHT_LIMIT_LAYERED_SNOW'
-          | translate}}</ion-label>
-        <ion-input type="number" min="0" max="9999" pattern="[0-9]*" step="1" [(ngModel)]="registration.request.SnowSurfaceObservation.HeightLimitLayeredSnow"
-          placeholder="{{'REGISTRATION.SNOW.SNOW_SURFACE.HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER' | translate}}">
-        </ion-input>
-      </ion-item>
+      <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.SnowDepth" title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH"
+        [min]="0" [max]="9999" [decimalPlaces]="2" [convertMetersToCm]="true"></app-numeric-input>
+      <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.NewSnowDepth24" title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH"
+        [min]="0" [max]="999" [decimalPlaces]="2" [convertMetersToCm]="true"></app-numeric-input>
+      <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.NewSnowLine" title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_LINE"
+        [min]="0" [max]="8848" [decimalPlaces]="0"></app-numeric-input>
+      <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.SnowLine" title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_LINE"
+        [min]="0" [max]="8848" [decimalPlaces]="0"></app-numeric-input>
+      <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.HeightLimitLayeredSnow" title="REGISTRATION.SNOW.SNOW_SURFACE.HEIGHT_LIMIT_LAYERED_SNOW"
+        [min]="0" [max]="8848" [decimalPlaces]="0" placeholder="REGISTRATION.SNOW.SNOW_SURFACE.HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER"></app-numeric-input>
       <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DRIFT" kdvKey="Snow_SnowDriftKDV" [(value)]="registration.request.SnowSurfaceObservation.SnowDriftTID"></app-kdv-dropdown>
       <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE" kdvKey="Snow_SnowSurfaceKDV" [(value)]="registration.request.SnowSurfaceObservation.SnowSurfaceTID"></app-kdv-dropdown>
       <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SURFACE_WATER_CONTENT_REG" kdvKey="Snow_SurfaceWaterContentKDV"

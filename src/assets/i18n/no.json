@@ -386,7 +386,7 @@
       },
       "WEATHER": {
         "AIR_TEMPERATURE": "Lufttemperatur (C)",
-        "AIR_TEMPERATURE_PLACEHOLDER": "Kan gis med ett desimal",
+        "AIR_TEMPERATURE_PLACEHOLDER": "Kan gis med to desimal",
         "CLOUD_COVER": "Skydekke (%)",
         "COMMENT_HEADER": "Beskriv været",
         "COMMENT_PLACEHOLDER": "Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor går nullisotermen?",

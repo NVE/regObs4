@@ -63,7 +63,7 @@
           interface="action-sheet">
           <ng-container *ngFor="let expo of expoArray">
             <ion-select-option [value]="expo.val">{{
-              expo.name || translate }}</ion-select-option>
+              expo.name | translate }}</ion-select-option>
           </ng-container>
         </ion-select>
       </ion-item>

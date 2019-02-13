@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
-import { Platform } from '@ionic/angular';
+import { Platform, IonInput } from '@ionic/angular';
 
 @Component({
   selector: 'app-numeric-input',
   templateUrl: './numeric-input.component.html',
   styleUrls: ['./numeric-input.component.scss']
 })
-export class NumericInputComponent implements OnInit {
+export class NumericInputComponent implements OnInit, OnChanges {
 
   @Input() value: number;
   @Output() valueChange = new EventEmitter();
@@ -16,11 +16,16 @@ export class NumericInputComponent implements OnInit {
   @Input() required = false;
   @Input() title: string;
   @Input() placeholder: string;
+  @Input() convertMetersToCm = false;
 
   @Input() decimalPlaces = 0;
 
+  @ViewChild(IonInput) input: IonInput;
+
+  localValue: number;
+
   get isValid() {
-    return NumberHelper.isValid(this.value, this.min, this.max, this.required, this.decimalPlaces === 0);
+    return NumberHelper.isValid(this.localValue, this.min, this.max, this.required, this.decimalPlaces === 0);
   }
 
   get inputmode() {
@@ -37,16 +42,41 @@ export class NumericInputComponent implements OnInit {
   ngOnInit() {
   }
 
+  ngOnChanges(simpleChange: SimpleChanges) {
+    if (simpleChange.value && simpleChange.value.currentValue !== undefined) {
+      this.localValue = this.convertMetersToCm ?
+        this.convertMtoCM(simpleChange.value.currentValue) : simpleChange.value.currentValue;
+      this.localValue = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
+    }
+  }
+
   valueChanged() {
+    if (!NumberHelper.isNullOrEmpty(this.localValue)) {
+      this.localValue = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
+      if (this.convertMetersToCm) {
+        this.value = NumberHelper.setDecimalPlaces(this.convertCMtoM(this.localValue), this.decimalPlaces + 2);
+      } else {
+        this.value = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
+      }
+      this.input.value = this.localValue.toString();
+    } else {
+      this.value = undefined;
+    }
     this.valueChange.emit(this.value);
   }
 
-  getValue() {
-    if (this.value !== undefined && this.isValid) {
-      return NumberHelper.setDecimalPlaces(this.value, this.decimalPlaces);
-    } else {
-      return undefined;
+  private convertMtoCM(val: number) {
+    if (val === undefined || val === null) {
+      return val;
     }
+    return val * 100.0;
+  }
+
+  private convertCMtoM(val: number) {
+    if (val === undefined || val === null) {
+      return val;
+    }
+    return val / 100.0;
   }
 
 }

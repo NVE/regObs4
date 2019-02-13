@@ -39,7 +39,8 @@
     <ng-container *ngIf="registration.request.WaterLevel2.WaterLevelMethodTID">
       <ion-list lines="full">
         <app-water-level-measurement [measurementNumber]="i+1" [waterLevelMethod]="registration.request.WaterLevel2.WaterLevelMethodTID"
-          [waterLevelMeasurement]="measurement" [registrationTid]="registrationTid" *ngFor="let measurement of registration.request.WaterLevel2.WaterLevelMeasurement; let i = index">
+          [waterLevelMeasurement]="measurement" [registrationTid]="registrationTid" [dtObsTime]="registration.request.DtObsTime"
+          *ngFor="let measurement of registration.request.WaterLevel2.WaterLevelMeasurement; let i = index">
         </app-water-level-measurement>
       </ion-list>
       <ion-list lines="full">
@@ -50,9 +51,6 @@
             'REGISTRATION.WATER.WATER_LEVEL.WATER_MARKING':
             'REGISTRATION.WATER.WATER_LEVEL.WATER_MEASUREMENT') | translate | lowercase }}</ion-label>
         </ion-item>
-        <!-- <ion-button class="white-button" expand="full" fill="clear" color="dark">
-      <ion-icon slot="start" color="primary" name="add-circle"></ion-icon>Legg til ny vannstandsmåling
-    </ion-button> -->
       </ion-list>
     </ng-container>
   </app-registration-content-wrapper>
