@@ -212,9 +212,11 @@ export class ObservationService {
 
   async updateObservationById(regId: number, appMode: AppMode, langKey: LangKey) {
     const result = await this.getRegistrationByRegIdFromApi(regId, appMode, langKey).toPromise();
-    await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
-      .query('upsert', result).exec();
-    this.changeTrigger.next();
+    if (result) {
+      await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
+        .query('upsert', result).exec();
+      this.changeTrigger.next();
+    }
     return result;
   }
 
