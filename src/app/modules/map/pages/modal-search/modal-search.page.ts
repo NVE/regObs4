@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Renderer2 } from '@angular/core';
+import { Component, OnInit, NgZone, Renderer2, OnDestroy } from '@angular/core';
 import { ModalController, IonInput, DomController } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { Observable, of, Subscription } from 'rxjs';
@@ -9,14 +9,14 @@ import 'hammerjs';
 import * as L from 'leaflet';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
 
-const SWIPE_BOUNDRY = 0.20; // More than 20% swipe to right will close modal
+const SWIPE_BOUNDRY = 0.25; // More than 20% swipe to right will close modal
 
 @Component({
   selector: 'app-modal-search',
   templateUrl: './modal-search.page.html',
   styleUrls: ['./modal-search.page.scss'],
 })
-export class ModalSearchPage implements OnInit {
+export class ModalSearchPage implements OnInit, OnDestroy {
 
   searchText: string;
   searchResult$: Observable<MapSearchResponse[]>;
@@ -24,10 +24,12 @@ export class ModalSearchPage implements OnInit {
   loading: boolean;
   hasResults: boolean;
   searchHistory$: Observable<MapSearchResponse[]>;
-  modalPageWrapper: Element;
-  swipeOffset = 0;
-  swipePercentage = 0;
-  subscription: Subscription;
+
+  private modalPageWrapper: Element;
+  private modalTop: HTMLIonModalElement;
+  private swipeOffset = 0;
+  private swipePercentage = 0;
+  private subscription: Subscription;
 
   constructor(private modalController: ModalController,
     private mapSearchService: MapSearchService,
@@ -36,7 +38,7 @@ export class ModalSearchPage implements OnInit {
     private domCtrl: DomController,
   ) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.searchField = new FormControl();
     this.searchHistory$ = this.mapSearchService.getSearchHistoryAsObservable();
     const searchTextObservable = this.searchField.valueChanges
@@ -69,6 +71,28 @@ export class ModalSearchPage implements OnInit {
         this.closeModal();
       }
     });
+
+    this.createGesture();
+  }
+
+  private async createGesture() {
+    this.modalTop = await this.modalController.getTop();
+    this.modalPageWrapper = this.modalTop.getElementsByClassName('modal-wrapper')[0];
+
+    const hammerManager = new Hammer.Manager(this.modalPageWrapper, {
+      touchAction: 'auto',
+      recognizers: [
+        [Hammer.Pan, { direction: Hammer.DIRECTION_HORIZONTAL }],
+      ]
+    });
+    hammerManager.on('panright', (event) => this.onPan(event));
+    hammerManager.on('panend', () => this.onPanend());
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   isValidLatLng(searchValue: string) {
@@ -103,11 +127,11 @@ export class ModalSearchPage implements OnInit {
     return null;
   }
 
-  async getWidth() {
-    const modalTop = await this.modalController.getTop();
-    this.modalPageWrapper = modalTop.getElementsByClassName('modal-wrapper')[0];
-    return modalTop.offsetWidth;
-  }
+  // async getWidth() {
+  //   this.modalTop = await this.modalController.getTop();
+  //   this.modalPageWrapper = this.modalTop.getElementsByClassName('modal-wrapper')[0];
+  //   return modalTop.offsetWidth;
+  // }
 
   focusInput(event: Event) {
     const input: IonInput = <any>event.target;
@@ -127,7 +151,7 @@ export class ModalSearchPage implements OnInit {
 
   // TODO: Create swipe-out component and wrap title and content?
   async onPan(event: HammerInput) {
-    const width = await this.getWidth();
+    const width = this.modalTop.offsetWidth;
     if (width > 0) {
       this.swipeOffset = Math.max(event.deltaX, 0);
       this.swipePercentage = this.swipeOffset / width;
@@ -137,7 +161,6 @@ export class ModalSearchPage implements OnInit {
         this.closeModal();
       }
     }
-    event.preventDefault();
   }
 
   setPageSwipeAttributes() {
@@ -151,7 +174,7 @@ export class ModalSearchPage implements OnInit {
     }
   }
 
-  onPanend(event: HammerInput) {
+  onPanend() {
     if (this.swipePercentage < SWIPE_BOUNDRY) {
       this.swipeOffset = 0;
       this.swipePercentage = 0;
