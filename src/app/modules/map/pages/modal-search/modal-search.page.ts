@@ -127,12 +127,6 @@ export class ModalSearchPage implements OnInit, OnDestroy {
     return null;
   }
 
-  // async getWidth() {
-  //   this.modalTop = await this.modalController.getTop();
-  //   this.modalPageWrapper = this.modalTop.getElementsByClassName('modal-wrapper')[0];
-  //   return modalTop.offsetWidth;
-  // }
-
   focusInput(event: Event) {
     const input: IonInput = <any>event.target;
     setTimeout(() => {
@@ -149,7 +143,6 @@ export class ModalSearchPage implements OnInit, OnDestroy {
     this.closeModal();
   }
 
-  // TODO: Create swipe-out component and wrap title and content?
   async onPan(event: HammerInput) {
     const width = this.modalTop.offsetWidth;
     if (width > 0) {

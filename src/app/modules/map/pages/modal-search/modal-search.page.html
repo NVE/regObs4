@@ -1,4 +1,3 @@
-<!-- <div class="swipeWrapper" (panright)="onPan($event)" (panend)="onPanend()"> -->
 <ion-header>
   <ion-toolbar mode="ios">
     <form>
@@ -14,15 +13,6 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <!-- <ion-virtual-scroll *ngIf="searchResult$ | async as searchResults" [items]="searchResults">
-      <ion-item *virtualItem="let item" (click)="searchItemClicked(item)">
-        <ion-label>
-          <ion-text class="search-result-name" [innerHTML]="item.name | startsWithHighlight:searchText"></ion-text>
-          &nbsp;
-          <ion-text color="medium" class="search-description">{{item.description}}</ion-text>
-        </ion-label>
-      </ion-item>
-    </ion-virtual-scroll> -->
   <ion-list *ngIf="searchResult$ | async as searchResults" lines="full" class="search-result">
     <ion-item *ngFor="let item of searchResults" (click)="searchItemClicked(item)">
       <ion-label>
@@ -46,4 +36,3 @@
     </ion-list>
   </ng-container>
 </ion-content>
-<!-- </div> -->
