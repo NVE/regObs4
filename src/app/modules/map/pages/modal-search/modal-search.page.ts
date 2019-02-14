@@ -1,11 +1,13 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { ModalController, IonInput } from '@ionic/angular';
+import { Component, OnInit, NgZone, Renderer2 } from '@angular/core';
+import { ModalController, IonInput, DomController } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
-import { Observable } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import 'hammerjs';
+import * as L from 'leaflet';
+import { NumberHelper } from '../../../../core/helpers/number-helper';
 
 const SWIPE_BOUNDRY = 0.20; // More than 20% swipe to right will close modal
 
@@ -25,19 +27,25 @@ export class ModalSearchPage implements OnInit {
   modalPageWrapper: Element;
   swipeOffset = 0;
   swipePercentage = 0;
+  subscription: Subscription;
 
   constructor(private modalController: ModalController,
     private mapSearchService: MapSearchService,
     private ngZone: NgZone,
+    private renderer: Renderer2,
+    private domCtrl: DomController,
   ) { }
 
   async ngOnInit() {
     this.searchField = new FormControl();
     this.searchHistory$ = this.mapSearchService.getSearchHistoryAsObservable();
-    this.searchResult$ = this.searchField.valueChanges
+    const searchTextObservable = this.searchField.valueChanges
       .pipe(
         debounceTime(400),
-        distinctUntilChanged(),
+        distinctUntilChanged());
+
+    this.searchResult$ = searchTextObservable
+      .pipe(
         tap((val) => {
           this.ngZone.run(() => {
             this.loading = true;
@@ -53,6 +61,46 @@ export class ModalSearchPage implements OnInit {
           });
         }),
       );
+
+    this.subscription = searchTextObservable.subscribe((searchValue) => {
+      const validLatLng = this.isValidLatLng(searchValue);
+      if (validLatLng) {
+        this.mapSearchService.mapSearchItemSelected = validLatLng;
+        this.closeModal();
+      }
+    });
+  }
+
+  isValidLatLng(searchValue: string) {
+    if (searchValue && searchValue.length > 0) {
+      const separators = [',', ' '];
+      for (const sep of separators) {
+        const isValidLatLng = this.isValidLatLngArray(searchValue.split(sep));
+        if (isValidLatLng) {
+          return isValidLatLng;
+        }
+      }
+    }
+    return null;
+  }
+
+  isValidLatLngArray(searchValue: string[]) {
+    if (searchValue && searchValue.length === 2) {
+      const trimmedLatString = searchValue[0] ? searchValue[0].trim() : searchValue[0];
+      const trimmedLngString = searchValue[1] ? searchValue[1].trim() : searchValue[1];
+      if (trimmedLatString && trimmedLatString.length > 0 && trimmedLngString && trimmedLngString.length > 0) {
+        const trimmedAndReplacedLatString = trimmedLatString.replace(/,/g, '.');
+        const trimmedAndReplacedLngString = trimmedLngString.replace(/,/g, '.');
+        if (NumberHelper.isNumeric(trimmedAndReplacedLatString) && NumberHelper.isNumeric(trimmedAndReplacedLngString)) {
+          const lat = parseFloat(trimmedAndReplacedLatString);
+          const lng = parseFloat(trimmedAndReplacedLngString);
+          if (lat > -90 && lat < 90 && lng > -180 && lng < 180) {
+            return L.latLng(lat, lng);
+          }
+        }
+      }
+    }
+    return null;
   }
 
   async getWidth() {
@@ -77,7 +125,7 @@ export class ModalSearchPage implements OnInit {
     this.closeModal();
   }
 
-  // TODO: Create swipe-out component and wrap title and content
+  // TODO: Create swipe-out component and wrap title and content?
   async onPan(event: HammerInput) {
     const width = await this.getWidth();
     if (width > 0) {
@@ -89,19 +137,21 @@ export class ModalSearchPage implements OnInit {
         this.closeModal();
       }
     }
+    event.preventDefault();
   }
 
   setPageSwipeAttributes() {
     if (this.modalPageWrapper) {
-      const tranform = `transform: translateX(${this.swipeOffset}px)`;
-      const opacity = `opacity: ${1.0 - this.swipePercentage}`;
-      this.modalPageWrapper.setAttribute('data-offset-x', this.swipeOffset.toString());
-      this.modalPageWrapper.setAttribute('data-opacity', `${1.0 - this.swipePercentage}`);
-      this.modalPageWrapper.setAttribute('style', `${tranform};${opacity}`);
+      this.domCtrl.write(() => {
+        this.renderer.setAttribute(this.modalPageWrapper, 'data-offset-x', this.swipeOffset.toString());
+        this.renderer.setAttribute(this.modalPageWrapper, 'data-opacity', `${1.0 - this.swipePercentage}`);
+        this.renderer.setStyle(this.modalPageWrapper, 'transform', `translateX(${this.swipeOffset}px)`);
+        this.renderer.setStyle(this.modalPageWrapper, 'opacity', `${1.0 - this.swipePercentage}`);
+      });
     }
   }
 
-  onPanend() {
+  onPanend(event: HammerInput) {
     if (this.swipePercentage < SWIPE_BOUNDRY) {
       this.swipeOffset = 0;
       this.swipePercentage = 0;

@@ -27,14 +27,14 @@ import { NanoSqlObservableHelper } from '../../../../core/helpers/nano-sql/nanoO
 })
 export class MapSearchService {
 
-  private _mapSearchItemClickSubject: Subject<MapSearchResponse>;
-  private _mapSearchItemClickObservable: Observable<MapSearchResponse>;
+  private _mapSearchItemClickSubject: Subject<MapSearchResponse | L.LatLng>;
+  private _mapSearchItemClickObservable: Observable<MapSearchResponse | L.LatLng>;
 
   get mapSearchClick$() {
     return this._mapSearchItemClickObservable;
   }
 
-  set mapSearchItemSelected(item: MapSearchResponse) {
+  set mapSearchItemSelected(item: MapSearchResponse | L.LatLng) {
     this._mapSearchItemClickSubject.next(item);
   }
 
@@ -42,10 +42,12 @@ export class MapSearchService {
     private httpClient: HttpClient,
     private userSettingService: UserSettingService,
     private locationService: LocationService) {
-    this._mapSearchItemClickSubject = new Subject<MapSearchResponse>();
+    this._mapSearchItemClickSubject = new Subject<MapSearchResponse | L.LatLng>();
     this._mapSearchItemClickObservable = this._mapSearchItemClickSubject.asObservable().pipe(shareReplay(0));
     this._mapSearchItemClickObservable.subscribe((item) => {
-      this.saveSearchHistoryToDb(item);
+      if (!(item instanceof L.LatLng)) {
+        this.saveSearchHistoryToDb(item as MapSearchResponse);
+      }
     });
   }
 

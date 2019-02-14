@@ -16,6 +16,7 @@ import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
 import { RegObsTileLayer } from '../../core/classes/regobs-tile-layer';
 import '../../../../core/helpers/ionic/platform-helper';
+import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -122,7 +123,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.push(this.mapSearchService.mapSearchClick$.subscribe((item) => {
       this.disableFollowMode();
       this.zone.runOutsideAngular(() => {
-        this.flyTo(item.latlng, settings.map.mapSearchZoomToLevel);
+        const latLng = item instanceof L.LatLng ? item : item.latlng;
+        this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
       });
     }));
 
