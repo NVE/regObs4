@@ -1,7 +1,13 @@
+.offline-image-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
 ion-img {
-    width: inherit;
-    height: inherit;
-    object-fit: inherit;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     opacity: 0;
     transition: opacity 1s linear;
     position: absolute;
