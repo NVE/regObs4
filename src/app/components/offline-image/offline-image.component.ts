@@ -82,7 +82,7 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
         });
         await this.offlineImageService.saveOfflineImageDataUrl(originalSrc, result, format);
       } catch (err) {
-        this.loggingService.log(`Could not save image to offline storage`, err, LogLevel.Warning, DEBUG_TAG);
+        this.loggingService.log(`Could not load image: ${img.src}`, err, LogLevel.Warning, DEBUG_TAG);
       }
     }
   }

@@ -24,8 +24,8 @@ export const settings = {
             },
             webUrl: {
                 'PROD': 'https://www.regobs.no',
-                'DEMO': 'http://demo.regobs.no',
-                'TEST': 'http://test.regobs.no'
+                'DEMO': 'https://demo.regobs.no',
+                'TEST': 'https://test.regobs.no'
             },
             createUserUrl: '/Account/Register?c=Home',
             passwordRecoveryUrl: '/Account/PasswordRecovery?c=Home',
