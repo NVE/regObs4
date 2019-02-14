@@ -110,21 +110,25 @@ export class ModalSearchPage implements OnInit, OnDestroy {
 
   isValidLatLngArray(searchValue: string[]) {
     if (searchValue && searchValue.length === 2) {
-      const trimmedLatString = searchValue[0] ? searchValue[0].trim() : searchValue[0];
-      const trimmedLngString = searchValue[1] ? searchValue[1].trim() : searchValue[1];
-      if (trimmedLatString && trimmedLatString.length > 0 && trimmedLngString && trimmedLngString.length > 0) {
-        const trimmedAndReplacedLatString = trimmedLatString.replace(/,/g, '.');
-        const trimmedAndReplacedLngString = trimmedLngString.replace(/,/g, '.');
-        if (NumberHelper.isNumeric(trimmedAndReplacedLatString) && NumberHelper.isNumeric(trimmedAndReplacedLngString)) {
-          const lat = parseFloat(trimmedAndReplacedLatString);
-          const lng = parseFloat(trimmedAndReplacedLngString);
-          if (lat > -90 && lat < 90 && lng > -180 && lng < 180) {
-            return L.latLng(lat, lng);
-          }
+      const trimmedLatString = this.trimAndReplaceString(searchValue[0]);
+      const trimmedLngString = this.trimAndReplaceString(searchValue[1]);
+      if (trimmedLatString && trimmedLatString.length > 0 && trimmedLngString && trimmedLngString.length > 0
+        && NumberHelper.isNumeric(trimmedLatString) && NumberHelper.isNumeric(trimmedLngString)) {
+        const lat = parseFloat(trimmedLatString);
+        const lng = parseFloat(trimmedLngString);
+        if (lat > -90 && lat < 90 && lng > -180 && lng < 180) {
+          return L.latLng(lat, lng);
         }
       }
     }
     return null;
+  }
+
+  private trimAndReplaceString(input: string) {
+    if (input === undefined || input === null) {
+      return input;
+    }
+    return input.trim().replace(/,/g, '.');
   }
 
   focusInput(event: Event) {
