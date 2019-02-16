@@ -242,7 +242,7 @@
         "ADD_ICE_LAYER_TITLE": "Ice layer thickness",
         "DRY_SNOW_BEFORE_DRILL": "Snow before drilling (cm)",
         "ICE_HEIGHT_AFTER_INPUT": "Thickness of surface water",
-        "ICE_HEIGHT_AFTER_NO": "Height from the surface to the water in the borehole",
+        "ICE_HEIGHT_AFTER_NO": "Height from the surface to the water in the hole",
         "ICE_HEIGHT_AFTER_TOGGLE": "Surface water after drilling",
         "ICE_HEIGHT_BEFORE_INPUT": "Thickness of surface water",
         "ICE_HEIGHT_BEFORE_TOGGLE": "Surface water before drilling",
