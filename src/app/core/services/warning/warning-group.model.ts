@@ -4,7 +4,6 @@ import { IWarningGroup } from './warning-group.interface';
 
 export class WarningGroup {
     private _warningGroup: IWarningGroup;
-    private _isFavourite: boolean;
 
     get key(): WarningGroupKey {
         return {
@@ -20,10 +19,6 @@ export class WarningGroup {
 
     get groupType() {
         return this._warningGroup.regionType;
-    }
-
-    get isFavourite() {
-        return this._isFavourite;
     }
 
     get url() {
@@ -77,8 +72,7 @@ export class WarningGroup {
         return max > 0;
     }
 
-    constructor(group: IWarningGroup, isFavourite?: boolean) {
+    constructor(group: IWarningGroup) {
         this._warningGroup = group;
-        this._isFavourite = isFavourite;
     }
 }

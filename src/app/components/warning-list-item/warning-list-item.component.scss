@@ -1,3 +1,7 @@
+:root {
+    --sliding-background: lightgrey;
+}
+
 ion-item {
     --inner-padding-end: 0px;
 
@@ -6,8 +10,12 @@ ion-item {
     }
 }
 
+ion-item-sliding {
+    --background: var(--sliding-background);
+}
+
 ion-item-option {
-    --background: lightgrey;
+    --background: rgba(0,0,0,0);
 }
 
 .geo-icon-circle {
@@ -21,12 +29,6 @@ ion-item-option {
     app-geo-icon {
         position: relative;
         top: 8px;
-    }
-}
-
-ion-icon {
-    &.favourite {
-        color: yellow;
     }
 }
 

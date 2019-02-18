@@ -8,6 +8,7 @@
     "DEFAULT_HEADER": "Whoops!",
     "OK": "Ok",
     "PULL_TO_REFRESH": "Pull to refresh...",
+    "UNDO": "Undo",
     "WARNING": "Warning"
   },
   "DATA_LOAD": {
@@ -582,6 +583,7 @@
     "MUST_BE": "must be"
   },
   "WARNING_LIST": {
+    "ADDED_TO_FAVOURITES": "added to favourites",
     "ALL": "All",
     "ALL_WARNINGS": "All warnings",
     "A_REGIONS": "A - Regions",
@@ -593,6 +595,7 @@
     "MAIN_REGIONS": "Main regions",
     "OTHER_RELEVANT": "Other relevant",
     "RELEVANT": "Relevant",
+    "REMOVED_FROM_FAVOURITES": "removed from favourites",
     "TITLE": "Warnings",
     "TITLE_ICE": "Ice Warnings",
     "TITLE_SNOW": "Avalanche Warnings",

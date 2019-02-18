@@ -12,9 +12,11 @@
 </ion-segment>
 <ion-content>
   <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <ion-virtual-scroll [items]="warningGroups" [headerFn]="myHeaderFn" [footerFn]="footerFn" [approxHeaderHeight]="70">
+  <ion-virtual-scroll [items]="warningGroups" [headerFn]="myHeaderFn" [footerFn]="footerFn" [approxItemHeight]="52"
+    [approxHeaderHeight]="87">
     <ion-item-divider *virtualHeader="let header">
-      <app-warning-list-header [title]="header.header" [subTitle]="header.infoText" [showDayNames]="header.showDayNames"></app-warning-list-header>
+      <app-warning-list-header [title]="header.header" [subTitle]="header.infoText"
+        [showDayNames]="header.showDayNames"></app-warning-list-header>
     </ion-item-divider>
     <div *virtualItem="let virtialItem">
       <app-warning-list-item [warningGroup]="virtialItem.item"></app-warning-list-item>

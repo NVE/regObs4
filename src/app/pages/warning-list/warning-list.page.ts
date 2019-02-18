@@ -5,7 +5,6 @@ import { map, switchMap } from 'rxjs/operators';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
-import { UserSetting } from '../../core/models/user-settings.model';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
 type SelectedTab = 'inMapView' | 'all' | 'favourites';
@@ -138,10 +137,9 @@ export class WarningListPage implements OnInit, OnDestroy {
   }
 
   private getFavouritesObservable() {
-    return this.warningService.warningsObservable$
+    return this.warningService.getWarningGroupFavouritesObservable()
       .pipe(map((warningGroups) =>
-        this.mapToVirtualScrollItem(warningGroups.filter((wg) => wg.isFavourite), 'WARNING_LIST.FAVOURITES'))
-      );
+        this.mapToVirtualScrollItem(warningGroups, 'WARNING_LIST.FAVOURITES')));
   }
 
   myHeaderFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {

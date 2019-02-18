@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, NgZone, ViewChild } from '@angular/core';
-import { IonItemSliding, ToastController } from '@ionic/angular';
+import { Component, OnInit, Input, ViewChild, Renderer2, Inject } from '@angular/core';
+import { IonItemSliding, DomController, IonItemOption } from '@ionic/angular';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { settings } from '../../../settings';
-import { WarningService } from '../../core/services/warning/warning.service';
 import * as moment from 'moment';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { LangKey } from '../../core/models/langKey';
+import { WarningGroupFavouriteToggleComponent } from '../warning-group-favourite-toggle/warning-group-favourite-toggle.component';
 
 @Component({
   selector: 'app-warning-list-item',
@@ -17,69 +17,45 @@ import { LangKey } from '../../core/models/langKey';
 export class WarningListItemComponent implements OnInit {
 
   @Input() warningGroup: WarningGroup;
-  animate: WarningGroup;
   GeoHazard = GeoHazard;
 
   @ViewChild(IonItemSliding) itemSlide: IonItemSliding;
+  @ViewChild(IonItemOption) itemOption: IonItemOption;
+  @ViewChild(WarningGroupFavouriteToggleComponent) favouriteToggle: WarningGroupFavouriteToggleComponent;
 
   constructor(
     private externalLinkService: ExternalLinkService,
-    private warningService: WarningService,
     private userSettingService: UserSettingService,
-    private zone: NgZone,
-    private toastController: ToastController) { }
+    private domCtrl: DomController,
+    private renderer: Renderer2) { }
 
   ngOnInit() {
   }
 
   async onDrag(event: Event) {
+    this.favouriteToggle.startSubscription();
     const slider: IonItemSliding = <any>event.srcElement;
     const openAmount = (await slider.getOpenAmount()) / 100.0;
-    const option = <Element>event.srcElement.childNodes[2].childNodes[1];
     const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
-    const color = `background-color:rgba(186,196,204,${opacity})`;
-    option.setAttribute('style', color);
+    const color = `rgba(186,196,204,${opacity})`;
+    this.favouriteToggle.setOpen(opacity);
+
+    this.domCtrl.write(() => {
+      this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
+    });
   }
 
-  async toggleFavourite(group: WarningGroup) {
-    if (group.isFavourite) {
-      await this.warningService.removeFromFavourite(group.key.groupId, group.key.geoHazard);
-      await this.presentToast(group.key.groupName + ' fjernet fra favoritter');
-    } else {
-      await this.warningService.addToFavourite(group.key.groupId, group.key.geoHazard);
-      await this.presentToast(group.key.groupName + ' lagt til i favoritter');
-    }
-
+  toggleFavourite() {
+    this.favouriteToggle.toggle();
     setTimeout(() => {
       if (this.itemSlide) {
         this.itemSlide.close();
       }
-    }, 500);
-    // this.animate = group;
-    // setTimeout(() => {
-    //   this.zone.run(() => {
-    //     this.animate = undefined;
-    //   });
-    // }, 500);
+    }, 1000);
   }
 
-  // animateActive(group: WarningGroup) {
-  //   return this.animate
-  //     && group.key.groupId === this.animate.key.groupId
-  //     && group.key.geoHazard === this.animate.key.geoHazard;
-  // }
-
-  async presentToast(message: string) {
-    const toast = await this.toastController.create({
-      message,
-      mode: 'md',
-      duration: 2000
-    });
-    toast.present();
-  }
-
-  async itemSwiped(group: WarningGroup) {
-    await this.toggleFavourite(group);
+  itemSwiped() {
+    this.toggleFavourite();
   }
 
   async getUrl(group: WarningGroup) {
@@ -108,7 +84,8 @@ export class WarningListItemComponent implements OnInit {
 
   async navigateToWebByDay(event: Event, group: WarningGroup, day: number) {
     event.preventDefault();
-    const dateString = moment().startOf('day').add(day, 'days').format(settings.services.warning.dateFormat);
+    const dateString = moment().startOf('day').add(day, 'days')
+      .format(settings.services.warning.dateFormat);
     const url = await this.getUrl(group);
     if (url) {
       this.externalLinkService.openExternalLink(`${url}${dateString}`);

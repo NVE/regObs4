@@ -315,6 +315,10 @@ app-header {
     z-index: -1;
 }
 
+ion-toast {
+    --button-color: var(--ion-color-varsom-blue-light-1);
+}
+
 .text-truncate {
     overflow: hidden;
     text-overflow: ellipsis;

@@ -8,6 +8,7 @@
     "DEFAULT_HEADER": "Oisann!",
     "OK": "Ok",
     "PULL_TO_REFRESH": "Dra ned for å oppdatere...",
+    "UNDO": "Angre",
     "WARNING": "Advarsel"
   },
   "DATA_LOAD": {
@@ -582,6 +583,7 @@
     "MUST_BE": "må være"
   },
   "WARNING_LIST": {
+    "ADDED_TO_FAVOURITES": "lagt til i favoritter",
     "ALL": "Alle",
     "ALL_WARNINGS": "Alle varsler",
     "A_REGIONS": "A - Regioner",
@@ -593,6 +595,7 @@
     "MAIN_REGIONS": "Hovedregioner",
     "OTHER_RELEVANT": "Andre aktuelle",
     "RELEVANT": "Aktuelle",
+    "REMOVED_FROM_FAVOURITES": "fjernet fra favoritter",
     "TITLE": "Varsler",
     "TITLE_ICE": "Isvarsel",
     "TITLE_SNOW": "Snøskredvarsel",

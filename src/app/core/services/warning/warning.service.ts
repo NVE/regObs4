@@ -6,13 +6,13 @@ import 'moment-timezone';
 import { LangKey } from '../../models/langKey';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
-import { map, tap, switchMap, shareReplay } from 'rxjs/operators';
+import { map, tap, switchMap, shareReplay, distinctUntilChanged } from 'rxjs/operators';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
 import { IWarningApiResult } from './warning-api-result.interface';
 import { IAvalancheWarningApiResult } from './avalanche-warning-api-result.interface';
-import { combineLatest, Observable, of, BehaviorSubject, from } from 'rxjs';
+import { combineLatest, Observable, BehaviorSubject, from } from 'rxjs';
 import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { IWarningGroup } from './warning-group.interface';
@@ -134,6 +134,15 @@ export class WarningService {
       .where((g) => g.id === id).exec();
   }
 
+  getIsFavouriteObservable(groupId: string, geoHazard: GeoHazard): Observable<boolean> {
+    const id = `${geoHazard}_${groupId}`;
+    return NanoSqlObservableHelper.toRxJS<{ id: string, groupId: string, geoHazard: GeoHazard }[]>(
+      nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('select')
+        .where(['id', '=', id]).listen())
+      .pipe(map((val) => val.length > 0 ? true : false)
+        , distinctUntilChanged());
+  }
+
   // private getWarningsAsObservable() {
   //   return NanoSqlObservableHelper.toRxJS<IWarningGroup[]>
   //     (nSQL(NanoSql.TABLES.WARNING.name).query('select')
@@ -223,22 +232,31 @@ export class WarningService {
       nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('select').listen());
   }
 
-  private getWarningsForCurrentLanguageAsObservable() {
+  getWarningGroupFavouritesObservable(): Observable<WarningGroup[]> {
     return combineLatest(
       this.getWarningsAsObservable(),
-      this.getFavouritesAsObservable()).pipe(map(([regions, favourites]) => {
-        return regions.map((region) => {
-          const isFavourite = !!favourites.find((x) => x.groupId === region.regionId && x.geoHazard === region.geoHazard);
-          const warningGroup = new WarningGroup(region, isFavourite);
-          return warningGroup;
-        }).sort((a, b) => {
-          if (a.sortOrder === b.sortOrder) {
-            return a.key.geoHazard - b.key.geoHazard;
-          } else {
-            return a.sortOrder - b.sortOrder;
-          }
-        });
-      }), shareReplay(1));
+      this.getFavouritesAsObservable()).pipe(map(([regions, favourites]) =>
+        this.mapAndSort(regions.filter((region) =>
+          !!favourites.find((x) => x.groupId === region.regionId && x.geoHazard === region.geoHazard)))
+      ));
+  }
+
+  private mapAndSort(waringGroup: IWarningGroup[]): WarningGroup[] {
+    return waringGroup.map((group) => new WarningGroup(group))
+      .sort((a, b) => {
+        if (a.sortOrder === b.sortOrder) {
+          return a.key.geoHazard - b.key.geoHazard;
+        } else {
+          return a.sortOrder - b.sortOrder;
+        }
+      });
+  }
+
+  private getWarningsForCurrentLanguageAsObservable() {
+    return this.getWarningsAsObservable()
+      .pipe(
+        map((warningGroups) => this.mapAndSort(warningGroups)),
+        shareReplay(1));
   }
 
   private getWarningsForCurrentLanguageAndCurrentGeoHazard() {
@@ -300,11 +318,11 @@ export class WarningService {
   private async updateFloodAndLandslideWarnings(
     geoHazard: GeoHazard,
     language: LangKey,
-    from?: Date,
-    to?: Date,
+    fromDate?: Date,
+    toDate?: Date,
     cancelPromise?: Promise<void>) {
     this.loggingService.debug(`Updating ${GeoHazard[geoHazard]} warnings`, DEBUG_TAG);
-    const dateRange = this.getDefaultDateRange(from, to);
+    const dateRange = this.getDefaultDateRange(fromDate, toDate);
     const dataLoadId = this.getDataLoadId(geoHazard, language);
     await this.dataLoadService.startLoading(dataLoadId);
     const url = `${this.getBaseUrl(geoHazard)}`
@@ -494,9 +512,9 @@ export class WarningService {
     return settings.services.warning[GeoHazard[geoHazard]].apiUrl;
   }
 
-  private getDefaultDateRange(from?: Date, to?: Date) {
-    const fromMoment = from ? moment(from) : moment().subtract(1, 'day');
-    const toMoment = to ? moment(to) : moment().endOf('day').add(settings.services.warning.defaultWarningDaysAhead, 'days');
+  private getDefaultDateRange(fromDate?: Date, toDate?: Date) {
+    const fromMoment = fromDate ? moment(fromDate) : moment().subtract(1, 'day');
+    const toMoment = toDate ? moment(toDate) : moment().endOf('day').add(settings.services.warning.defaultWarningDaysAhead, 'days');
     return { from: fromMoment, to: toMoment };
   }
 }
