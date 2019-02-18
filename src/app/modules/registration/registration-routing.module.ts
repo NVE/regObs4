@@ -11,11 +11,11 @@ const routes: Routes = [
         loadChildren: './pages/set-time/set-time.module#SetTimePageModule'
     },
     {
-        path: 'registration/obs-location',
+        path: 'registration/new/:geoHazard',
         loadChildren: './pages/obs-location/obs-location.module#ObsLocationPageModule'
     },
     {
-        path: 'registration/obs-location/:id?geoHazard=:geoHazard',
+        path: 'registration/obs-location/:id',
         loadChildren: './pages/obs-location/obs-location.module#ObsLocationPageModule'
     },
     {

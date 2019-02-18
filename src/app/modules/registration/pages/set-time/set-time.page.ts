@@ -4,6 +4,7 @@ import { NavController } from '@ionic/angular';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute, Route } from '@angular/router';
+import { IRegistration } from '../../models/registration.model';
 
 @Component({
   selector: 'app-set-time',
@@ -12,6 +13,7 @@ import { ActivatedRoute, Route } from '@angular/router';
 })
 export class SetTimePage extends BasePage {
   maxDate: string;
+  registration: IRegistration;
 
   constructor(
     basePageService: BasePageService,

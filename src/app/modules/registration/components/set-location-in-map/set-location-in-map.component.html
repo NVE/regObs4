@@ -1,10 +1,10 @@
 <div [ngClass]="{'open': showDetails, 'details-small':!showFromMarkerInDetails }">
-  <app-map *ngIf="locationMarker" [showSupportMaps]="false" (mapReady)="onMapReady($event)" (positionChange)="positionChange($event)"
-    [center]="locationMarker.getLatLng()"></app-map>
+  <app-map *ngIf="locationMarker" [showSupportMaps]="false" (mapReady)="onMapReady($event)"
+    (positionChange)="positionChange($event)" [center]="locationMarker.getLatLng()"></app-map>
   <ion-grid class="bottom-info" no-padding>
     <ion-row>
       <ion-col class="confirm-button-col">
-        <ion-button expand="block" color="varsom-orange" (click)="confirmLocation()">{{ confirmLocationText | translate
+        <ion-button [disabled]="isSaveDisabled" expand="block" color="varsom-orange" (click)="confirmLocation()">{{ confirmLocationText | translate
           }}</ion-button>
       </ion-col>
     </ion-row>
@@ -82,7 +82,8 @@
                       </ion-row>
                       <ion-row *ngIf="editLocationName">
                         <ion-col no-padding>
-                          <ion-input #editLocationNameInput type="text" [max]="60" [(ngModel)]="locationName" (ionBlur)="onLocationEditComplete()"></ion-input>
+                          <ion-input #editLocationNameInput type="text" [max]="60" [(ngModel)]="locationName"
+                            (ionBlur)="onLocationEditComplete()"></ion-input>
                         </ion-col>
                       </ion-row>
                       <ion-row>

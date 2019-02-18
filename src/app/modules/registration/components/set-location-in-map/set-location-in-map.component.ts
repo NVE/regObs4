@@ -39,6 +39,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() showPolyline = true;
   @Input() showFromMarkerInDetails = true;
   @Input() canEditLocationName = false;
+  @Input() isSaveDisabled = false;
 
   private map: L.Map;
   followMode = false;

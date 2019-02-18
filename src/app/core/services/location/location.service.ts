@@ -98,8 +98,15 @@ export class LocationService {
   }
 
   private withinRadius(item: ObsLocationsResponseDtoV2, lat: number, lng: number, radius: number) {
-    const buffered = turf.buffer(turf.point([lng, lat]), radius, { units: 'meters' });
-    return turf.inside(turf.point([item.LatLngObject.Longitude, item.LatLngObject.Latitude]), buffered);
+    if (radius > 0) {
+      try {
+        const buffered = turf.buffer(turf.point([lng, lat]), radius, { units: 'meters' });
+        return turf.inside(turf.point([item.LatLngObject.Longitude, item.LatLngObject.Latitude]), buffered);
+      } catch (err) {
+        this.loggingService.log('Could not check withinRadius', err, LogLevel.Warning, DEBUG_TAG, item, lat, lng, radius);
+      }
+    }
+    return false;
   }
 
   getLocationsFromDbAsObservable(appMode: AppMode, geoHazard: GeoHazard) {

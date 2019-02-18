@@ -10,6 +10,9 @@ import { Observable } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
 import { ObsLocation } from '../../models/obs-location.model';
+import { LoggingService } from '../../../shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'ObsLocationPage';
 
 @Component({
   selector: 'app-obs-location',
@@ -23,6 +26,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   registration: IRegistration;
   fullscreen$: Observable<boolean>;
   geoHazard: GeoHazard;
+  isSaveDisabled = false;
 
   constructor(
     private registrationService: RegistrationService,
@@ -31,18 +35,19 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     private navController: NavController,
     private fullscreenService: FullscreenService,
     private swipeBackService: SwipeBackService,
+    private loggingService: LoggingService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
   async ngOnInit() {
-    const id = this.activatedRoute.snapshot.params['id'] || this.activatedRoute.snapshot.params['id?geoHazard=:geoHazard'];
+    const id = this.activatedRoute.snapshot.params['id'];
     if (id) {
       this.registration =
         await this.registrationService.getSavedRegistrationById(id);
       this.geoHazard = this.registration.geoHazard;
-    } else if (this.activatedRoute.snapshot.queryParams['geoHazard']) {
-      this.geoHazard = parseInt(this.activatedRoute.snapshot.queryParams['geoHazard'], 10);
+    } else if (this.activatedRoute.snapshot.params['geoHazard']) {
+      this.geoHazard = parseInt(this.activatedRoute.snapshot.params['geoHazard'], 10);
     }
     if (this.hasLocation(this.registration)) {
       const locationMarkerIcon = L.icon({
@@ -89,16 +94,25 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   }
 
   async onLocationSet(event: ObsLocation) {
-    if (!this.registration) {
-      this.registration = await this.registrationService.createNewRegistration(this.geoHazard);
-    }
-    this.registration.request.ObsLocation = event;
-    this.registration.calculatedLocationName = event.calculatedLocationName;
-    const id = await this.registrationService.saveRegistration(this.registration);
-    if (this.registration.request.DtObsTime) {
-      this.navController.navigateForward('registration/edit/' + id);
-    } else {
-      this.navController.navigateForward('registration/set-time/' + id);
+    try {
+      this.isSaveDisabled = true;
+      if (!this.registration) {
+        this.registration = await this.registrationService.createNewRegistration(this.geoHazard);
+      }
+      this.registration.request.ObsLocation = event;
+      this.registration.calculatedLocationName = event.calculatedLocationName;
+      const id = await this.registrationService.saveRegistration(this.registration);
+      if (this.registration.request.DtObsTime) {
+        this.navController.navigateForward('registration/edit/' + id);
+      } else {
+        this.navController.navigateForward('registration/set-time/' + id);
+      }
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, 'Could not create new registration');
+    } finally {
+      this.ngZone.run(() => {
+        this.isSaveDisabled = false;
+      });
     }
   }
 

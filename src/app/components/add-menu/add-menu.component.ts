@@ -81,11 +81,11 @@ export class AddMenuComponent implements OnInit, OnDestroy {
   }
 
   createRegistration(geoHazard: GeoHazard) {
-    this.closeAndNavigate('registration/obs-location?geoHazard=' + geoHazard);
+    this.closeAndNavigate(`registration/new/${geoHazard}`);
   }
 
   editRegistration(draft: IRegistration) {
-    this.closeAndNavigate('registration/edit/' + draft.id);
+    this.closeAndNavigate(`registration/edit/${draft.id}`);
   }
 
   closeMenu() {
