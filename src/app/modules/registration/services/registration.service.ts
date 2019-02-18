@@ -48,7 +48,6 @@ export class RegistrationService {
     private userSettingService: UserSettingService,
     private loginService: LoginService,
     private registrationApiService: RegobsApi.RegistrationService,
-    private searchApiService: RegobsApi.SearchService,
     private navController: NavController,
     private modalController: ModalController,
     private dataLoadService: DataLoadService,
@@ -232,7 +231,7 @@ export class RegistrationService {
       const newRegistration = await this.observationService.updateObservationById(
         createRegistrationResult.RegId,
         userSetting.appMode,
-        userSetting.language);
+        userSetting.language, userSetting.currentGeoHazard);
       await this.deleteRegistrationById(userSetting.appMode, registration.id);
       return newRegistration;
     } catch (ex) {
