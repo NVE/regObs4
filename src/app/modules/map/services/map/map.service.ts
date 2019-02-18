@@ -88,21 +88,36 @@ export class MapService {
     this._centerMapToUserSubject.next();
   }
 
+  private isInNorwayCached(coords: { x: number, y: number, z: number }, isParent: boolean) {
+    if (coords.z < 1) {
+      return undefined;
+    }
+    const id = this.getCacheId(coords);
+    const inNorway = this._tilesInNorwayCache.get(id);
+    if (inNorway === undefined) {
+      const z = coords.z - 1;
+      const x = Math.floor(coords.x / 2);
+      const y = Math.floor(coords.y / 2);
+      return this.isInNorwayCached({ x, y, z }, true);
+    }
+    if (isParent) {
+      // Do not return false for parent, bacause child is only in norway
+      // if parent is in Norway, but parent can be outside border of border when child is not.
+      return inNorway === true ? true : undefined;
+    }
+    return inNorway;
+  }
+
+  private getCacheId(coords: { x: number, y: number, z: number }) {
+    return `${coords.z}_${coords.x}_${coords.y}`;
+  }
+
   async isTileInsideNorway(coords: { x: number, y: number, z: number }, bounds: L.LatLngBounds) {
-    const id = `${coords.z}_${coords.x}_${coords.y}`;
-    const inCahce = this._tilesInNorwayCache.get(id);
-    if (inCahce !== undefined) {
-      return inCahce;
+    let inNorway = this.isInNorwayCached(coords, false);
+    if (inNorway === undefined) {
+      inNorway = await BorderHelper.isBoundsInNorway(bounds);
     }
-    if (coords.z > 2) {
-      const parentCacheId = `${coords.z - 1}_${Math.round(coords.x / 2)}_${Math.round(coords.y / 2)}`;
-      const parentInCahce = this._tilesInNorwayCache.get(parentCacheId);
-      if (parentInCahce !== undefined && parentInCahce === true) {
-        return true;
-      }
-    }
-    const inNorway = await BorderHelper.isBoundsInNorway(bounds);
-    this._tilesInNorwayCache.set(id, inNorway);
+    this._tilesInNorwayCache.set(this.getCacheId(coords), inNorway);
     return inNorway;
   }
 

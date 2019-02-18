@@ -3,7 +3,6 @@ import { settings } from '../../../../../settings';
 import { NgZone } from '@angular/core';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { RegObsMapOption } from './regobs-map-option';
-import { LRUMap } from 'lru_map';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 
 interface ExtendedCoords extends L.Coords {
@@ -14,6 +13,7 @@ class RegObsTile extends HTMLImageElement {
     originalCoords?: ExtendedCoords;
     currentCoords?: ExtendedCoords;
     originalSrc: string;
+    hasTriedOffline: boolean;
     fallbackZoom?: number;
     fallbackScale?: number;
     constructor() {
@@ -22,7 +22,6 @@ class RegObsTile extends HTMLImageElement {
 }
 
 export class RegObsTileLayer extends L.TileLayer {
-    private cache: LRUMap<string, string>;
 
     constructor(
         private zone: NgZone,
@@ -35,15 +34,6 @@ export class RegObsTileLayer extends L.TileLayer {
             minZoom: settings.map.tiles.minZoom,
             maxZoom: settings.map.tiles.maxZoom,
         });
-        this.cache = new LRUMap<string, string>(this.cacheSize);
-        this.seedCache();
-    }
-
-    private async seedCache() {
-        const allOfflineTiles = await this.offlineMapService.getAllCacheTiles();
-        const cacheItems = allOfflineTiles
-            .map((t) => ([t.id, t.dataUrl] as [string, string]));
-        this.cache.assign(cacheItems);
     }
 
     createTile(coords: ExtendedCoords, done: L.DoneCallback): HTMLElement {
@@ -88,15 +78,6 @@ export class RegObsTileLayer extends L.TileLayer {
                 valid = await Promise.resolve(map.validFunc(coords, (<any>this)._tileCoordsToBounds(coords)));
             }
             if (valid) {
-                if (map.isEmbedded && coords.z >= map.embeddedMinZoom && coords.z <= map.embeddedMaxZoom) {
-                    return { id, url: this.getOriginalTileUrl(coords, map.embeddedUrl) };
-                } else if (this.bufferOffline) {
-                    const offlineUrl = this.cache.get(id);
-                    if (offlineUrl) {
-                        this.offlineMapService.updateTileLastAccess(id);
-                        return { id, url: offlineUrl };
-                    }
-                }
                 return { id, url: this.getOriginalTileUrl(coords, map.url) };
             }
         }
@@ -115,15 +96,30 @@ export class RegObsTileLayer extends L.TileLayer {
     private saveTileOffline(tile: RegObsTile) {
         if (this.bufferOffline && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
             const dataUrl = DataUrlHelper.getDataUrlFromImage(tile, 'image/png');
-            this.offlineMapService.saveTileDataUrlToDbCache(tile.id, dataUrl).then((result) => {
+            this.offlineMapService.saveTileDataUrlToDbCache(tile.id, dataUrl);
+        }
+    }
+
+    _tileOnError(done: L.DoneCallback, tile: RegObsTile, e: Error) {
+        if (!tile.hasTriedOffline && tile.id && tile.id !== '') {
+            this.offlineMapService.getTileFromDb(tile.id).then((result) => {
+                tile.hasTriedOffline = true;
                 if (result) {
-                    this.cache.set(result.id, result.dataUrl);
+                    this.fire('tilefallback',
+                        {
+                            tile: tile,
+                            url: tile.originalSrc,
+                            urlMissing: tile.src,
+                            urlFallback: result.dataUrl
+                        });
+                } else {
+                    this.tryScaleImage(done, tile, e);
                 }
             });
         }
     }
 
-    _tileOnError(done: L.DoneCallback, tile: RegObsTile, e: Error) {
+    private tryScaleImage(done: L.DoneCallback, tile: RegObsTile, e: Error) {
         const originalCoords = tile.originalCoords,
             currentCoords: ExtendedCoords = tile.currentCoords = tile.currentCoords || this.createCurrentCoords(originalCoords),
             fallbackZoom = tile.fallbackZoom = (tile.fallbackZoom || originalCoords.z) - 1,
