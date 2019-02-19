@@ -32,7 +32,6 @@
     "@asymmetrik/ngx-leaflet-markercluster": "^2.0.0",
     "@ionic-native/android-permissions": "^5.1.0",
     "@ionic-native/background-fetch": "^5.1.0",
-    "@ionic-native/background-geolocation": "^5.1.0",
     "@ionic-native/camera": "^5.1.0",
     "@ionic-native/clipboard": "^5.1.0",
     "@ionic-native/core": "^5.1.0",
@@ -71,7 +70,6 @@
     "@types/leaflet.markercluster": "^1.0.3",
     "@types/websql": "0.0.27",
     "@types/xml2js": "^0.4.3",
-    "adapter-sqlite-cordova": "@nano-sql/adapter-sqlite-cordova@2.0.9",
     "angular-svg-icon": "^7.2.0",
     "animate.css": "^3.7.0",
     "cordova-android": "8.0.0",
@@ -92,7 +90,6 @@
     "cordova-plugin-ionic-webview": "4.0.0",
     "cordova-plugin-ios-camera-permissions": "^1.2.0",
     "cordova-plugin-local-notification": "^0.9.0-beta.3",
-    "cordova-plugin-mauron85-background-geolocation": "^3.0.0-alpha.50",
     "cordova-plugin-network-information": "^2.0.1",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
@@ -123,7 +120,8 @@
     "tunnel-agent": "^0.6.0",
     "typed-web-workers": "^2.1.1",
     "xml2js": "^0.4.19",
-    "zone.js": "^0.8.29"
+    "zone.js": "^0.8.29",
+    "adapter-sqlite-cordova": "@nano-sql/adapter-sqlite-cordova@2.0.9"
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.13.2",
@@ -168,18 +166,6 @@
         "GEOLOCATION_USAGE_DESCRIPTION": "Show location in map"
       },
       "cordova-plugin-background-fetch": {},
-      "cordova-plugin-mauron85-background-geolocation": {
-        "GOOGLE_PLAY_SERVICES_VERSION": "11+",
-        "ANDROID_SUPPORT_LIBRARY_VERSION": "26+",
-        "ICON": "@mipmap/icon",
-        "SMALL_ICON": "@mipmap/icon",
-        "ACCOUNT_NAME": "@string/app_name",
-        "ACCOUNT_LABEL": "@string/app_name",
-        "ACCOUNT_TYPE": "$PACKAGE_NAME.account",
-        "CONTENT_AUTHORITY": "$PACKAGE_NAME",
-        "ALWAYS_USAGE_DESCRIPTION": "This app always requires location tracking",
-        "MOTION_USAGE_DESCRIPTION": "This app requires motion detection"
-      },
       "cordova-plugin-statusbar": {},
       "ionic-plugin-deeplinks": {
         "URL_SCHEME": "regobs",

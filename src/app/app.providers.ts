@@ -6,7 +6,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
-import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
+// import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
 import { BackgroundGeolocationWebService } from './core/services/background-geolocation/background-geolocation-web.service';
 import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
 import { File } from '@ionic-native/file/ngx';
@@ -61,7 +61,7 @@ export const APP_PROVIDERS = [
     Geolocation,
     Deeplinks,
     BackgroundFetch,
-    BackgroundGeolocation,
+    // BackgroundGeolocation,
     File,
     AndroidPermissions,
     Zip,
