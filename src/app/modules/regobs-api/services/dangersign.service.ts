@@ -20,47 +20,13 @@ class DangersignService extends __BaseService {
   }
 
   /**
-   * @param regId undefined
-   */
-  GetGeneralObsResponse(regId: number): __Observable<__StrictHttpResponse<null>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-
-    let req = new HttpRequest<any>(
-      'GET',
-      this.rootUrl + `/Dangersign/${regId}`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<null>;
-      })
-    );
-  }
-  /**
-   * @param regId undefined
-   */
-  GetGeneralObs(regId: number): __Observable<null> {
-    return this.GetGeneralObsResponse(regId).pipe(
-      __map(_r => _r.body as null)
-    );
-  }
-
-  /**
-   * @param params The `DangersignService.PutGeneralObsParams` containing the following parameters:
+   * @param params The `DangersignService.PutDangerSignParams` containing the following parameters:
    *
    * - `regId`:
    *
    * - `dto`:
    */
-  PutGeneralObsResponse(params: DangersignService.PutGeneralObsParams): __Observable<__StrictHttpResponse<null>> {
+  PutDangerSignResponse(params: DangersignService.PutDangerSignParams): __Observable<__StrictHttpResponse<null>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -84,20 +50,20 @@ class DangersignService extends __BaseService {
     );
   }
   /**
-   * @param params The `DangersignService.PutGeneralObsParams` containing the following parameters:
+   * @param params The `DangersignService.PutDangerSignParams` containing the following parameters:
    *
    * - `regId`:
    *
    * - `dto`:
    */
-  PutGeneralObs(params: DangersignService.PutGeneralObsParams): __Observable<null> {
-    return this.PutGeneralObsResponse(params).pipe(
+  PutDangerSign(params: DangersignService.PutDangerSignParams): __Observable<null> {
+    return this.PutDangerSignResponse(params).pipe(
       __map(_r => _r.body as null)
     );
   }
 
   /**
-   * @param params The `DangersignService.PostGeneralObsParams` containing the following parameters:
+   * @param params The `DangersignService.PostDangerSignParams` containing the following parameters:
    *
    * - `regId`:
    *
@@ -105,7 +71,7 @@ class DangersignService extends __BaseService {
    *
    * @return OK
    */
-  PostGeneralObsResponse(params: DangersignService.PostGeneralObsParams): __Observable<__StrictHttpResponse<{}>> {
+  PostDangerSignResponse(params: DangersignService.PostDangerSignParams): __Observable<__StrictHttpResponse<{}>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -129,7 +95,7 @@ class DangersignService extends __BaseService {
     );
   }
   /**
-   * @param params The `DangersignService.PostGeneralObsParams` containing the following parameters:
+   * @param params The `DangersignService.PostDangerSignParams` containing the following parameters:
    *
    * - `regId`:
    *
@@ -137,8 +103,8 @@ class DangersignService extends __BaseService {
    *
    * @return OK
    */
-  PostGeneralObs(params: DangersignService.PostGeneralObsParams): __Observable<{}> {
-    return this.PostGeneralObsResponse(params).pipe(
+  PostDangerSign(params: DangersignService.PostDangerSignParams): __Observable<{}> {
+    return this.PostDangerSignResponse(params).pipe(
       __map(_r => _r.body as {})
     );
   }
@@ -147,7 +113,7 @@ class DangersignService extends __BaseService {
    * @param regId undefined
    * @return OK
    */
-  DeleteGeneralObsResponse(regId: number): __Observable<__StrictHttpResponse<{}>> {
+  DeleteDangerSignResponse(regId: number): __Observable<__StrictHttpResponse<{}>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -173,8 +139,8 @@ class DangersignService extends __BaseService {
    * @param regId undefined
    * @return OK
    */
-  DeleteGeneralObs(regId: number): __Observable<{}> {
-    return this.DeleteGeneralObsResponse(regId).pipe(
+  DeleteDangerSign(regId: number): __Observable<{}> {
+    return this.DeleteDangerSignResponse(regId).pipe(
       __map(_r => _r.body as {})
     );
   }
@@ -183,17 +149,17 @@ class DangersignService extends __BaseService {
 module DangersignService {
 
   /**
-   * Parameters for PutGeneralObs
+   * Parameters for PutDangerSign
    */
-  export interface PutGeneralObsParams {
+  export interface PutDangerSignParams {
     regId: number;
     dto: GeneralObservationEditModel;
   }
 
   /**
-   * Parameters for PostGeneralObs
+   * Parameters for PostDangerSign
    */
-  export interface PostGeneralObsParams {
+  export interface PostDangerSignParams {
     regId: number;
     dto: GeneralObservationEditModel;
   }

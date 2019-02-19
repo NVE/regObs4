@@ -23,11 +23,11 @@ class LocationService extends __BaseService {
   /**
    * @param params The `LocationService.LocationGetNameParams` containing the following parameters:
    *
-   * - `uri`:
-   *
    * - `longitude`:
    *
    * - `latitude`:
+   *
+   * - `geoHazardId`:
    *
    * @return OK
    */
@@ -35,9 +35,9 @@ class LocationService extends __BaseService {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
-    if (params.uri != null) __params = __params.set('uri', params.uri.toString());
     if (params.longitude != null) __params = __params.set('longitude', params.longitude.toString());
     if (params.latitude != null) __params = __params.set('latitude', params.latitude.toString());
+    if (params.geoHazardId != null) __params = __params.set('geoHazardId', params.geoHazardId.toString());
     let req = new HttpRequest<any>(
       'GET',
       this.rootUrl + `/Location/GetName`,
@@ -58,11 +58,11 @@ class LocationService extends __BaseService {
   /**
    * @param params The `LocationService.LocationGetNameParams` containing the following parameters:
    *
-   * - `uri`:
-   *
    * - `longitude`:
    *
    * - `latitude`:
+   *
+   * - `geoHazardId`:
    *
    * @return OK
    */
@@ -146,9 +146,9 @@ module LocationService {
    * Parameters for LocationGetName
    */
   export interface LocationGetNameParams {
-    uri: string;
     longitude: number;
     latitude: number;
+    geoHazardId: number;
   }
 
   /**

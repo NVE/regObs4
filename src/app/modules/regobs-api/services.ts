@@ -1,4 +1,5 @@
 export { AccountService } from './services/account.service';
+export { DangerSignService } from './services/danger-sign.service';
 export { DangersignService } from './services/dangersign.service';
 export { GeneralObsService } from './services/general-obs.service';
 export { HelptextService } from './services/helptext.service';

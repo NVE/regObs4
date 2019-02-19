@@ -21,6 +21,7 @@ import { WorldSearchResultModel } from './world-search-result.model';
 import '../../../../core/helpers/nano-sql/nanoObserverToRxjs';
 import { nSQL } from '@nano-sql/core';
 import { NanoSqlObservableHelper } from '../../../../core/helpers/nano-sql/nanoObserverToRxjs';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -169,19 +170,19 @@ export class MapSearchService {
   //     .pipe(switchMap((res) => bindNodeCallback(parseString)(res)));
   // }
 
-  getLocationName(latLng: L.LatLng, isInNorway: boolean): Observable<LocationName> {
+  getLocationName(latLng: L.LatLng, isInNorway: boolean, geoHazard: GeoHazard): Observable<LocationName> {
     if (isInNorway) {
-      return this.getLocationNameNorway(latLng);
+      return this.getLocationNameNorway(latLng, geoHazard);
     } else {
       return this.reverseGeocodeWorld(latLng);
     }
   }
 
-  getLocationNameNorway(latLng: L.LatLng): Observable<LocationName> {
+  getLocationNameNorway(latLng: L.LatLng, geoHazard: GeoHazard): Observable<LocationName> {
     return this.userSettingService.appMode$.pipe(
       switchMap((appMode) => {
         this.locationService.rootUrl = settings.services.regObs.apiUrl[appMode];
-        return this.locationService.LocationGetName({ latitude: latLng.lat, longitude: latLng.lng, uri: '' })
+        return this.locationService.LocationGetName({ latitude: latLng.lat, longitude: latLng.lng, geoHazardId: geoHazard })
           .pipe(map((result) =>
             ({ name: result.Navn, adminName: result.Fylke })),
             catchError(() => of(null)));
@@ -223,12 +224,12 @@ export class MapSearchService {
         catchError(() => of(null)));
   }
 
-  getViewInfo(mapView: IMapView): Observable<ViewInfo> {
+  getViewInfo(mapView: IMapView, geoHazard = GeoHazard.Dirt): Observable<ViewInfo> {
     const latLng = mapView.center;
     return BorderHelper.getLatLngBoundInSvalbardOrNorwayAsObservable(latLng)
       .pipe(switchMap((inNorwayOrSvalbard) =>
         forkJoin(
-          this.getLocationName(latLng, inNorwayOrSvalbard.inNorway).pipe(take(1)),
+          this.getLocationName(latLng, inNorwayOrSvalbard.inNorway, geoHazard).pipe(take(1)),
           this.getElevation(latLng, inNorwayOrSvalbard).pipe(take(1)),
           this.getSteepness(mapView, inNorwayOrSvalbard.inNorway).pipe(take(1))
         ).pipe(
