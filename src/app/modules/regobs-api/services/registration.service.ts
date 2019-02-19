@@ -14,6 +14,11 @@ import { CreateRegistrationRequestDto } from '../models/create-registration-requ
   providedIn: 'root',
 })
 class RegistrationService extends __BaseService {
+  static readonly RegistrationGetPath = '/Registration/{regId}/{langKey}';
+  static readonly RegistrationGetCaamlPath = '/Registration/Caaml/{regId}';
+  static readonly RegistrationInsertPath = '/Registration';
+  static readonly RegistrationValidatePath = '/Registration/Validate';
+
   constructor(
     config: __Configuration,
     http: HttpClient

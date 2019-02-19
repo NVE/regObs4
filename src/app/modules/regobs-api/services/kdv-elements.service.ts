@@ -12,6 +12,8 @@ import { KdvElementsResponseDto } from '../models/kdv-elements-response-dto';
   providedIn: 'root',
 })
 class KdvElementsService extends __BaseService {
+  static readonly KdvElementsGetKdvsPath = '/KdvElements';
+
   constructor(
     config: __Configuration,
     http: HttpClient

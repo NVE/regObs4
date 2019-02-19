@@ -14,6 +14,10 @@ import { ObsLocationElements } from '../models/obs-location-elements';
   providedIn: 'root',
 })
 class TripService extends __BaseService {
+  static readonly TripPutPath = '/Trip';
+  static readonly TripPostPath = '/Trip';
+  static readonly TripGetObsLocationElementsPath = '/Trip/GetObsLocationElements';
+
   constructor(
     config: __Configuration,
     http: HttpClient

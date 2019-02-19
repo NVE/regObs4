@@ -11,6 +11,8 @@ import { map as __map, filter as __filter } from 'rxjs/operators';
   providedIn: 'root',
 })
 class DangerSignService extends __BaseService {
+  static readonly GetDangerSignPath = '/Dangersign/{regId}';
+
   constructor(
     config: __Configuration,
     http: HttpClient

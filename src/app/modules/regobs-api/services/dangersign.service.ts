@@ -12,6 +12,10 @@ import { GeneralObservationEditModel } from '../models/general-observation-edit-
   providedIn: 'root',
 })
 class DangersignService extends __BaseService {
+  static readonly PutDangerSignPath = '/Dangersign/{regId}';
+  static readonly PostDangerSignPath = '/Dangersign/{regId}';
+  static readonly DeleteDangerSignPath = '/Dangersign/{regId}';
+
   constructor(
     config: __Configuration,
     http: HttpClient

@@ -12,6 +12,8 @@ import { HelptextDto } from '../models/helptext-dto';
   providedIn: 'root',
 })
 class HelptextService extends __BaseService {
+  static readonly HelptextGetPath = '/HelpText';
+
   constructor(
     config: __Configuration,
     http: HttpClient

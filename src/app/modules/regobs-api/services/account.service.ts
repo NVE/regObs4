@@ -14,6 +14,12 @@ import { CreateAccountRequest } from '../models/create-account-request';
   providedIn: 'root',
 })
 class AccountService extends __BaseService {
+  static readonly AccountLoginPath = '/Account/Login';
+  static readonly AccountGetObserverPath = '/Account/GetObserver';
+  static readonly AccountGetObserverGroupsPath = '/Account/Groups/{guid}';
+  static readonly AccountCreateAccountPath = '/Account/Create';
+  static readonly AccountGetMyPageDataPath = '/Account/Mypage';
+
   constructor(
     config: __Configuration,
     http: HttpClient

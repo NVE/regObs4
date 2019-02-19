@@ -12,6 +12,11 @@ import { GeneralObservationEditModel } from '../models/general-observation-edit-
   providedIn: 'root',
 })
 class GeneralObsService extends __BaseService {
+  static readonly GetGeneralObsPath = '/GeneralObs/{regId}';
+  static readonly PutGeneralObsPath = '/GeneralObs/{regId}';
+  static readonly PostGeneralObsPath = '/GeneralObs/{regId}';
+  static readonly DeleteGeneralObsPath = '/GeneralObs/{regId}';
+
   constructor(
     config: __Configuration,
     http: HttpClient

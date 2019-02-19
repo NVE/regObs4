@@ -13,6 +13,9 @@ import { ObsLocationsResponseDtoV2 } from '../models/obs-locations-response-dto-
   providedIn: 'root',
 })
 class LocationService extends __BaseService {
+  static readonly LocationGetNamePath = '/Location/GetName';
+  static readonly LocationWithinRadiusPath = '/Location/WithinRadius';
+
   constructor(
     config: __Configuration,
     http: HttpClient

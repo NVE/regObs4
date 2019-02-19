@@ -16,6 +16,11 @@ import { AtAGlanceViewModel } from '../models/at-aglance-view-model';
   providedIn: 'root',
 })
 class SearchService extends __BaseService {
+  static readonly SearchSearchPath = '/Search';
+  static readonly SearchCountPath = '/Search/Count';
+  static readonly SearchSearchCriteriaPath = '/Search/SearchCriteria';
+  static readonly SearchAtAGlancePath = '/Search/AtAGlance';
+
   constructor(
     config: __Configuration,
     http: HttpClient

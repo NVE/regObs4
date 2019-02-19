@@ -13,6 +13,8 @@ import { GetTokenRequestDto } from '../models/get-token-request-dto';
   providedIn: 'root',
 })
 class TokenService extends __BaseService {
+  static readonly TokenGetPath = '/Token/Get';
+
   constructor(
     config: __Configuration,
     http: HttpClient
