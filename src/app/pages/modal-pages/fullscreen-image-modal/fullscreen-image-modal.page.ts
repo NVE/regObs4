@@ -1,33 +1,38 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { Component, OnInit, Input, ViewChild, ElementRef, OnDestroy, NgZone } from '@angular/core';
+import { ModalController, Platform } from '@ionic/angular';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
 @Component({
   selector: 'app-fullscreen-image-modal',
   templateUrl: './fullscreen-image-modal.page.html',
   styleUrls: ['./fullscreen-image-modal.page.scss'],
 })
-export class FullscreenImageModalPage implements OnInit {
+export class FullscreenImageModalPage implements OnInit, OnDestroy {
 
   @Input() imgSrc: string;
   @Input() header: string;
   @Input() description: string;
   @ViewChild('img') img: ElementRef;
-  portrait = false;
-  constructor(private modalController: ModalController) { }
+
+  constructor(
+    private modalController: ModalController,
+    private screenOrientation: ScreenOrientation,
+    private platform: Platform,
+  ) { }
 
   ngOnInit() {
+    if (this.platform.isAndroidOrIos()) {
+      this.screenOrientation.unlock();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.platform.isAndroidOrIos()) {
+      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+    }
   }
 
   closeModal() {
     this.modalController.dismiss();
   }
-
-  onImageLoaded() {
-    this.portrait = this.isPortrait(this.img.nativeElement);
-  }
-
-  private isPortrait(img: HTMLImageElement) {
-    return (img.naturalHeight || img.height) > (img.naturalWidth || img.width);
-  }
-
 }

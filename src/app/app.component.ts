@@ -16,6 +16,7 @@ import { Observable } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { AnalyticService } from './core/services/analytic/analytic.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
 @Component({
   selector: 'app-root',
@@ -43,6 +44,7 @@ export class AppComponent {
     private loggingService: LoggingService,
     private analyticService: AnalyticService,
     private dbHelperService: DbHelperService,
+    private screenOrientation: ScreenOrientation,
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -52,6 +54,9 @@ export class AppComponent {
     this.translate.addLangs(['no', 'en']);
     this.translate.setDefaultLang('no');
     this.platform.ready().then(async () => {
+      if (this.platform.isAndroidOrIos()) {
+        this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+      }
       // await this.initDeepLinks(); //TODO: Comment in when edit registration is possible
       await this.dbHelperService.init();
       const userSettings = await this.userSettings.getUserSettings();

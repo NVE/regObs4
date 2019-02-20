@@ -25,7 +25,6 @@
     <preference name="KeyboardResize" value="true" />
     <preference name="KeyboardResizeMode" value="native" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
-    <preference name="orientation" value="portrait" />
     <platform name="android">
         <allow-intent href="market:*" />
         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
@@ -141,6 +140,7 @@
         <variable name="ANDROID_SUPPORT_ANNOTATIONS_VERSION" value="27.+" />
     </plugin>
     <plugin name="adapter-sqlite-cordova" spec="@nano-sql/adapter-sqlite-cordova@2.0.9" />
+    <plugin name="cordova-plugin-screen-orientation" spec="3.0.1" />
     <plugin name="cordova-sqlite-storage" spec="2.6.0" />
     <engine name="android" spec="8.0.0" />
     <engine name="ios" spec="5.0.0" />

@@ -45,6 +45,7 @@ import { ConsoleLoggingService } from './modules/shared/services/logging/console
 import { environment } from '../environments/environment';
 import { MapSearchService } from './modules/map/services/map-search/map-search.service';
 import { AnalyticService } from './core/services/analytic/analytic.service';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -77,6 +78,7 @@ export const APP_PROVIDERS = [
     SQLite,
     SocialSharing,
     Network,
+    ScreenOrientation,
     API_INTERCEPTOR_PROVIDER,
     { provide: ErrorHandler, useClass: AppErrorHandler },
     { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },

@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, NgZone, ViewChild, ElementRef, AfterViewInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, NgZone, AfterViewInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { TranslateService } from '@ngx-translate/core';
-import * as moment from 'moment';
 import { HelperService } from '../../../core/services/helpers/helper.service';
 import { settings } from '../../../../settings';
 import { RegistrationViewModel, Summary } from '../../../modules/regobs-api/models';
@@ -11,6 +10,7 @@ import { UserSetting } from '../../../core/models/user-settings.model';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
+import * as utils from '@nano-sql/core/lib/utilities';
 // import { ObsCardHeightService } from '../../../core/services/obs-card-height/obs-card-height.service';
 
 @Component({
@@ -153,7 +153,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
-        imgSrc: this.getImageUrl(image.AttachmentFileName, 'large'),
+        imgSrc: `${this.getImageUrl(image.AttachmentFileName, 'original')}?r=${utils.uuid()}`,
         header: this.obs.Attachments[event.index].RegistrationName,
         description: this.obs.Attachments[event.index].Comment,
       },
