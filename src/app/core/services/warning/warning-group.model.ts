@@ -62,6 +62,10 @@ export class WarningGroup {
     }
 
     hasAnyWarnings(daysAhead = 2) {
+        return this.getMaxWarning(daysAhead) > 0;
+    }
+
+    getMaxWarning(daysAhead = 2) {
         let max = 0;
         for (let i = 0; i <= daysAhead; i++) {
             const dayWarning = this.getDayWarning(i);
@@ -69,7 +73,7 @@ export class WarningGroup {
                 max = dayWarning.warningLevel;
             }
         }
-        return max > 0;
+        return max;
     }
 
     constructor(group: IWarningGroup) {

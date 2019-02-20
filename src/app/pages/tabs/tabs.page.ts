@@ -53,12 +53,7 @@ export class TabsPage implements OnInit, OnDestroy {
       return {
         count: allWarnings.length,
         text: allWarnings.length > 9 ? '9+' : allWarnings.length.toString(),
-        maxWarning: Math.max(
-          ...(allWarnings.map((g) => {
-            const maxFromWarnings = g.warnings.map((w) => w.warningLevel);
-            return Math.max(...maxFromWarnings);
-          }))
-        ),
+        maxWarning: Math.max(...allWarnings.map((g) => g.getMaxWarning())),
       };
     })).subscribe((val) => {
       this.ngZone.run(() => {
