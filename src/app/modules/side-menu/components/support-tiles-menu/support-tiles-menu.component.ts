@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy, ViewChild, Input } from '@angular/core';
-import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
-import { GeoHazard } from '../../../core/models/geo-hazard.enum';
-import { settings } from '../../../../settings';
-import { SupportTile } from '../../../core/models/support-tile.model';
-import { UserSetting } from '../../../core/models/user-settings.model';
+import { UserSetting } from '../../../../core/models/user-settings.model';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { SupportTile } from '../../../../core/models/support-tile.model';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { settings } from '../../../../../settings';
 
 @Component({
   selector: 'app-support-tiles-menu',

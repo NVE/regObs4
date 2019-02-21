@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { ObservationService } from '../../../core/services/observation/observation.service';
 import { Subscription } from 'rxjs';
-import { settings } from '../../../../settings';
-import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { switchMap, map, distinctUntilChanged, tap } from 'rxjs/operators';
-import { DataMarshallService } from '../../../core/services/data-marshall/data-marshall.service';
+import { settings } from '../../../../../settings';
+import { ObservationService } from '../../../../core/services/observation/observation.service';
+import { DataMarshallService } from '../../../../core/services/data-marshall/data-marshall.service';
+import { DataLoadService } from '../../../data-load/services/data-load.service';
 
 @Component({
   selector: 'app-update-observations',

@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { ObservationService } from '../../core/services/observation/observation.service';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { UserSetting } from '../../core/models/user-settings.model';
-import { settings } from '../../../settings';
+import { ObservationService } from '../../../core/services/observation/observation.service';
+import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
+import { UserSetting } from '../../../core/models/user-settings.model';
+import { settings } from '../../../../settings';
 import { Subscription } from 'rxjs';
 import { ModalController, Platform } from '@ionic/angular';
-import { LegalTermsModalPage } from '../../pages/modal-pages/legal-terms-modal/legal-terms-modal.page';
-import { TopoMap } from '../../core/models/topo-map.enum';
+import { LegalTermsModalPage } from '../../../pages/modal-pages/legal-terms-modal/legal-terms-modal.page';
+import { TopoMap } from '../../../core/models/topo-map.enum';
 import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { AppVersionService } from '../../core/services/app-version/app-version.service';
+import { AppVersionService } from '../../../core/services/app-version/app-version.service';
 
 @Component({
   selector: 'app-side-menu',

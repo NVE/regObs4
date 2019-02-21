@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { Subscription, combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { settings } from '../../../../settings';
-import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { IonSelect } from '@ionic/angular';
-import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { LoggingService } from '../../../shared/services/logging/logging.service';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { settings } from '../../../../../settings';
 
 @Component({
   selector: 'app-observations-days-back',
