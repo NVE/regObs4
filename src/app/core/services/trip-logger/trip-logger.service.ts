@@ -17,6 +17,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import '../../helpers/nano-sql/nanoObserverToRxjs';
 import { nSQL } from '@nano-sql/core';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
+import { AppMode } from '../../models/app-mode.enum';
 
 const DEBUG_TAG = 'TripLoggerService';
 
@@ -70,19 +71,20 @@ export class TripLoggerService {
   }
 
   getLegacyTripAsObservable(): Observable<LegacyTrip> {
-    return NanoSqlObservableHelper.toRxJS<LegacyTrip[]>(
-      nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name).query('select')
-        .listen()).pipe(map((x) => x[0]));
+    return this.userSettingService.appMode$.pipe(switchMap((appMode) =>
+      NanoSqlObservableHelper.toRxJS<LegacyTrip[]>(
+        NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('select')
+          .listen()).pipe(map((x) => x[0]))));
   }
 
   startLegacyTrip(tripDto: CreateTripDto) {
     const legacyTrip: LegacyTrip = { id: 'legacytrip', timestamp: moment().unix(), request: tripDto };
     return from(this.setTripServiceRootUrl())
       .pipe(
-        switchMap(() => this.tripService.TripPost(tripDto)),
-        switchMap(() => from(nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name)
-          .query('upsert', legacyTrip).exec())
-        ),
+        switchMap((appMode) => this.tripService.TripPost(tripDto)
+          .pipe(switchMap(() => from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode)
+            .query('upsert', legacyTrip).exec())
+          ))),
         switchMap(() => this.infoMessage(true))
       );
   }
@@ -90,6 +92,7 @@ export class TripLoggerService {
   private async setTripServiceRootUrl() {
     const userSetting = await this.userSettingService.getUserSettings();
     this.tripService.rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
+    return userSetting.appMode;
   }
 
   stopLegacyTrip(showConfirm = true) {
@@ -102,7 +105,7 @@ export class TripLoggerService {
 
   async showTripErrorMessage(start: boolean) {
     const translations = await this.translateService.get(
-      ['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR', 'END_ERROR']).toPromise();
+      ['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR', 'TRIP.END_ERROR']).toPromise();
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
       message: start ? translations['TRIP.ERROR'] : translations['TRIP.END_ERROR'],
@@ -134,28 +137,30 @@ export class TripLoggerService {
 
   private async callStopLegacyTripApiAndDeleteFromDb() {
     await this.setTripServiceRootUrl();
+    const userSetting = await this.userSettingService.getUserSettings();
     const currentTrip = await this.getLegacyTripAsObservable().pipe(take(1)).toPromise();
     if (currentTrip) {
       try {
         await this.tripService.TripPut({ DeviceGuid: currentTrip.request.DeviceGuid }).toPromise();
-        await this.deleteLegacyTripsFromDb();
         await this.infoMessage(false).toPromise();
       } catch (error) {
         this.loggingService.error(error, DEBUG_TAG, 'Could not stop trip');
-        this.showTripErrorMessage(false);
+        // this.showTripErrorMessage(false);
       }
+      await this.deleteLegacyTripsFromDb(userSetting.appMode);
     }
   }
 
-  private deleteLegacyTripsFromDb() {
-    return nSQL(NanoSql.TABLES.LEGACY_TRIP_LOG.name).query('delete').exec();
+  private deleteLegacyTripsFromDb(appMode: AppMode) {
+    return NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('delete').exec();
   }
 
   async cleanupOldLegacyTrip() {
     const limit = moment().startOf('day').unix();
     const currentTrip = await this.getLegacyTripAsObservable().pipe(take(1)).toPromise();
+    const userSetting = await this.userSettingService.getUserSettings();
     if (currentTrip && (currentTrip.timestamp < limit)) {
-      await this.deleteLegacyTripsFromDb();
+      await this.deleteLegacyTripsFromDb(userSetting.appMode);
     }
   }
 

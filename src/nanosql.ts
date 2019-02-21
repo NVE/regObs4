@@ -7,7 +7,7 @@ export class NanoSql {
     public static readonly TABLES = {
         OBSERVATION: {
             name: 'observation',
-            instancePerAppMode: true, // Create one table for each app 
+            instancePerAppMode: true,
             model: {
                 'RegID:int': { pk: true },
                 'GeoHazardTID:int': {},
@@ -45,6 +45,7 @@ export class NanoSql {
         },
         LEGACY_TRIP_LOG: {
             name: 'legacytrip',
+            instancePerAppMode: true,
             model: {
                 'id:string': { pk: true },
                 '*:*': {},
