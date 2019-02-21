@@ -56,13 +56,16 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscription = this.userSettingService.appMode$.subscribe((val) => {
-      this.appMode = val;
+    this.subscription = this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, _, __]) => {
+      this.appMode = appMode;
+      this.hide();
     });
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   getTitle(item: RegistrationViewModel) {
