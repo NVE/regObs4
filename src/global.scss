@@ -76,6 +76,8 @@
     --ion-font-family: 'Source Sans Pro';
     --ion-color-varsom-test-header: #700CEF;
     --ion-color-varsom-demo-header: var(--ion-color-danger);
+    --background-color-menu: #F7F7F7;
+    --h3-font-size: 16px;
 }
 
 .ion-color-varsom-orange {
@@ -178,7 +180,7 @@ ion-list {
 
 ion-menu {
     ion-content {
-        --ion-background-color: #fff
+        --ion-background-color: var(--background-color-menu);
     }
 }
 
@@ -235,7 +237,7 @@ ion-item-divider {
     border-bottom: none;
 
     h3 {
-        font-size: 16px;
+        font-size: var(--h3-font-size);
         font-weight: 500;
     }
 }

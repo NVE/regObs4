@@ -126,9 +126,10 @@
       "ONLY_KARTVERKET": "Kartverket (only Norway)",
       "OPEN_TOPO": "OpenTopo (world)"
     },
+    "TIME_FRAME": "Period",
     "TODAYS_OBSERVATIONS": "Only todays",
     "TOPO_MAP_CREDITS": "Topo maps provided by",
-    "UPDATE_OBSERVATIONS": "Update observations",
+    "UPDATE_OBSERVATIONS": "Updated",
     "USER_SETTINGS": "User",
     "WEEKS_BACK": "Weeks back"
   },

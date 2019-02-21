@@ -1,0 +1,22 @@
+ion-item {
+    --ion-item-background: var(--background-color-menu);
+    ion-toggle {
+        --ion-item-background: #fff;
+        transform: scale(0.8);
+    }
+
+    svg-icon {
+        margin-top: 6px;
+    }
+}
+
+.inner-list-panel {
+    ion-item {
+        --border-width: 0 0 0 0;
+        --ion-item-background: #fff;
+    }
+}
+
+.menu-label {
+    font-size: var(--h3-font-size);
+}

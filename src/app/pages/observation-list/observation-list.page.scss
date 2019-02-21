@@ -30,7 +30,7 @@ ion-virtual-scroll {
         height: 50%;
 
         ion-label {
-            font-size: 16px;
+            font-size: var(--h3-font-size);
         }
     }
 }

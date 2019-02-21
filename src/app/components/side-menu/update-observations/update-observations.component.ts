@@ -1,7 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, NgZone } from '@angular/core';
-import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ObservationService } from '../../../core/services/observation/observation.service';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { settings } from '../../../../settings';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { switchMap, map, distinctUntilChanged, tap } from 'rxjs/operators';
@@ -14,26 +13,18 @@ import { DataMarshallService } from '../../../core/services/data-marshall/data-m
 })
 export class UpdateObservationsComponent implements OnInit, OnDestroy {
 
-
-  showObservations: boolean;
   lastUpdated: Date;
   settings = settings;
   isLoading: boolean;
   subscriptions: Subscription[] = [];
 
   constructor(
-    private userSettingService: UserSettingService,
     private observationService: ObservationService,
     private dataMarshallService: DataMarshallService,
     private ngZone: NgZone,
     private dataLoadService: DataLoadService) { }
 
   ngOnInit() {
-    this.subscriptions.push(this.userSettingService.showObservations$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.showObservations = val;
-      });
-    }));
     this.subscriptions.push(this.observationService.getLastUpdatedForCurrentGeoHazardAsObservable()
       .subscribe((val) => {
         this.ngZone.run(() => {

@@ -43,22 +43,18 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
         val: val,
         selected: daysBack.find((x) => x.geoHazard === currentGeoHazard[0]).daysBack === val,
       }));
-    const doNowShow = { val: -1, selected: !showObservations, text: 'MENU.HIDE_OBSERVATIONS' };
     const today = {
       val: 0,
       selected: daysBack.find((x) => x.geoHazard === currentGeoHazard[0]).daysBack === 0,
       text: 'MENU.TODAYS_OBSERVATIONS'
     };
-    return [doNowShow, today, ...daysBackArr];
+    return [today, ...daysBackArr];
   }
 
   async changeDaysBack(event: Event) {
     const select: IonSelect = (<any>event.target);
     const userSetting = await this.userSettingService.getUserSettings();
-    if (select.value === -1) {
-      userSetting.showObservations = false;
-    } else {
-      userSetting.showObservations = true;
+    for (const geoHazard of userSetting.currentGeoHazard) {
       const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === userSetting.currentGeoHazard[0]);
       if (existingValue.daysBack !== select.value) {
         existingValue.daysBack = select.value;
