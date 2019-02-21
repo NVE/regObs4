@@ -1,4 +1,10 @@
-ion-button {
-    -webkit-margin-end: 0px !important;
-    margin-inline-end: 0px !important;
+ion-item {
+    ion-label {
+        font-size: 14px;
+        margin-bottom: 0px;
+    }
+    ion-button {
+        -webkit-margin-end: 0px !important;
+        margin-inline-end: 0px !important;
+    }
 }

@@ -4,13 +4,18 @@ ion-list {
 
     ion-list-header {
         font-size: var(--h3-font-size);
+        font-weight: unset;
     }
 
     ion-item {
         --ion-item-background: var(--background-color-menu);
         ion-toggle {
             --ion-item-background: #fff;
-            transform: scale(0.8);
+            transform: scale(0.75);
+        }
+
+        ion-icon {
+            font-size: 1.4em;
         }
 
         svg-icon {

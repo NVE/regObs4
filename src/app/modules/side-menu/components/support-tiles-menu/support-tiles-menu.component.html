@@ -11,7 +11,7 @@
       </ion-item>
       <div class="inner-list-panel" *ngIf="supportTile.enabled">
         <ion-item *ngIf="supportTile.enabled">
-          <ion-label position="stacked" color="dark">{{'MENU.OPACITY' | translate}}</ion-label>
+          <ion-label position="stacked" color="dark" class="stacked-label">{{'MENU.OPACITY' | translate}}</ion-label>
           <ion-select interface="action-sheet" cancelText="{{'DIALOGS.CANCEL' | translate}}"
             [(ngModel)]="supportTile.opacity" (ionChange)="onTileChanged(supportTile)">
             <ion-select-option *ngFor="let option of opacityValues" [value]="option.value">{{ option.name | translate }}

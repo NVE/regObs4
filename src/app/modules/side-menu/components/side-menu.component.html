@@ -37,7 +37,7 @@
     <app-update-observations></app-update-observations>
   </div>
   <ion-item>
-    <ion-label position="stacked" color="dark">{{ 'MENU.MAP' | translate }}</ion-label>
+    <ion-label position="stacked" color="dark" class="stacked-label">{{ 'MENU.MAP' | translate }}</ion-label>
     <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap"
       interface="action-sheet" (ngModelChange)="saveUserSettings()">
       <ion-select-option [value]="TopoMap.mixArcGisOnline">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{

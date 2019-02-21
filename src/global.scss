@@ -78,6 +78,8 @@
     --ion-color-varsom-demo-header: var(--ion-color-danger);
     --background-color-menu: #F7F7F7;
     --h3-font-size: 16px;
+    --list-header-font-size: 15px;
+    --list-header-font-weight: 600;
 }
 
 .ion-color-varsom-orange {
@@ -150,8 +152,8 @@ ion-list {
 
     ion-list-header {
         &:not(.subheader) {
-            font-size: 15px;
-            font-weight: 600;
+            font-size: var(-list-header-font-size);
+            font-weight: var(--list-header-font-weight);
         }
         &.subheader {
             text-transform: none;
