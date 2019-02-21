@@ -6,3 +6,7 @@ ion-fab-button {
     height: var(--map-control-fab-size);
     width: var(--map-control-fab-size);
 }
+
+ion-icon {
+    font-size: var(--map-control-fab-icon-size);
+}

@@ -1,5 +1,5 @@
 <ion-fab>
   <ion-fab-button color="varsom-dark-blue" class="map-control-fab" (click)="toggleFullscreen()">
-    <ion-icon name="resize"></ion-icon>
+    <svg-icon [src]="getSrc(isFullscreen$ | async)"></svg-icon>
   </ion-fab-button>
 </ion-fab>
