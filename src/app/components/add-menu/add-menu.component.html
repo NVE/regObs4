@@ -10,13 +10,14 @@
           'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}</ion-label>
       </ion-item>
       <ion-item *ngFor="let draft of drafts; let i = index" (click)="editRegistration(draft)">
-        <ion-icon slot="start" name="create"></ion-icon>
-        <ion-label>{{ getName(draft.geoHazard) | translate }} {{ 'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}
+        <ion-icon slot="start" name="md-create"></ion-icon>
+        <ion-label>{{'ADD_MENU.DRAFT' | translate}}:
+          {{ getName(draft.geoHazard) | translate }}{{ 'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}
           <p *ngIf="draftDates[i]">{{ draftDates[i] }}</p>
         </ion-label>
       </ion-item>
       <ion-item *ngIf="showTrip" (click)="startOrStopTrip()">
-        <ion-icon slot="start" name="walk"></ion-icon>
+        <svg-icon slot="start" src="/assets/icon/man.svg"></svg-icon>
         <ion-label *ngIf="!tripStarted">{{'TRIP.START_TRIP' | translate }}</ion-label>
         <ion-label *ngIf="tripStarted">{{'TRIP.STOP_TRIP' | translate }}</ion-label>
       </ion-item>

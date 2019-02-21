@@ -31,6 +31,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   imageUrls: string[] = [];
   masl: number;
   stars: { full: boolean }[] = [];
+  hasNoStars: boolean;
 
   private subscription: Subscription;
   private _isVisible: Subject<boolean>;
@@ -81,6 +82,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       for (let i = 0; i < 5; i++) {
         this.stars.push({ full: (item.Observer.CompetenceLevelName || '')[i] === '*' });
       }
+      this.hasNoStars = !this.stars.some((x) => x.full);
       this.geoHazard = item.GeoHazardTID;
       this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
       this.setDistanceAndType(item);

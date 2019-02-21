@@ -35,6 +35,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   imageHeader = '';
   imageDecription = '';
   stars: { full: boolean }[] = [];
+  hasNoStars: boolean;
 
   imageUrls: string[] = [];
   imageHeaders: string[] = [];
@@ -74,6 +75,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
       for (let i = 0; i < 5; i++) {
         this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
       }
+      this.hasNoStars = !this.stars.some((x) => x.full);
       this.updateImages();
       this.loaded = true;
     });

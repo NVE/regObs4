@@ -7,6 +7,14 @@ ion-fab-button {
 
 ion-fab-list {
     right: 5px;
+
+    ion-icon {
+        font-size: 1.4em;
+    }
+
+    svg-icon {
+        margin-top: 5px;
+    }
 }
 
 .backdrop {

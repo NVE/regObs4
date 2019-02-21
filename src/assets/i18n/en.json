@@ -1,5 +1,6 @@
 {
   "ADD_MENU": {
+    "DRAFT": "Draft",
     "NEW_OBSERVATION": "New",
     "NEW_TRIP": "New trip"
   },

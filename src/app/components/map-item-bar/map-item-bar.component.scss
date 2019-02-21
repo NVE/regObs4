@@ -30,6 +30,11 @@
             &.stars {
                 position: relative;
                 bottom: 1px;
+
+                .empty-stars {
+                    font-size: 12px;
+                    margin-left: 3px;
+                }
             }
         }
     }
