@@ -287,6 +287,12 @@
     "RESET": "Nullstill denne siden",
     "SAVED_DESCRIPTION": "Disse er under innsending blir synkronisert når man har nettverk.",
     "SAVED_ON_PHONE": "Lagret på telefonen",
+    "SAVE_ALERT": {
+      "HEADER": "Lagre som kladd?",
+      "MESSAGE": "Du er på vei til å forlate registreringen uten å sende inn. Vil du lagre som kladd?",
+      "NO": "Nei, forkast",
+      "YES": "Ja, lagre"
+    },
     "SEND": "Send inn",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bekreft skadepunkt",

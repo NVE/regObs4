@@ -287,6 +287,12 @@
     "RESET": "Reset",
     "SAVED_DESCRIPTION": "These will be synchronized when you have network connection.",
     "SAVED_ON_PHONE": "Saved on phone",
+    "SAVE_ALERT": {
+      "HEADER": "Save as draft?",
+      "MESSAGE": "You are about to leave the registration without submitting. Do you want to save as draft?",
+      "NO": "No, discard",
+      "YES": "Yes, save"
+    },
     "SEND": "Submit",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Confirm damage location",

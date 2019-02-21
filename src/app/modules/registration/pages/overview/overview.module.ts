@@ -5,11 +5,13 @@ import { SendButtonComponent } from '../../components/send-button/send-button.co
 import { SummaryItemComponent } from '../../components/summary-item/summary-item.component';
 import { SharedComponentsModule } from '../../shared-components.module';
 import { FailedRegistrationComponent } from '../../components/failed-registration/failed-registration.component';
+import { SaveAsDraftRouteGuard } from '../save-as-draft.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: OverviewPage
+    component: OverviewPage,
+    canDeactivate: [SaveAsDraftRouteGuard]
   }
 ];
 

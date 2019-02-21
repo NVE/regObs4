@@ -4,7 +4,7 @@ import { RegobsApiModule } from '../regobs-api/regobs-api.module';
 import { SharedModule } from '../shared/shared.module';
 import { CanDeactivateRouteGuard } from './pages/can-deactivate-route.guard';
 import { LoginModalPageModule } from '../login/pages/modal-pages/login-modal/login-modal.module';
-import { RouterModule } from '@angular/router';
+import { SaveAsDraftRouteGuard } from './pages/save-as-draft.guard';
 
 @NgModule({
   imports: [
@@ -17,6 +17,6 @@ import { RouterModule } from '@angular/router';
     LoginModalPageModule,
   ],
   declarations: [],
-  providers: [CanDeactivateRouteGuard]
+  providers: [CanDeactivateRouteGuard, SaveAsDraftRouteGuard]
 })
 export class RegistrationModule { }
