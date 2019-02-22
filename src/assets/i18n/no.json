@@ -140,6 +140,8 @@
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Laster flere observasjoner...",
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjoner",
+    "NO_OBSERVATIONS": "Del dine observasjoner!",
+    "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Med Varsom Regobs er det lett å dele observasjoner, bilder og vurderinger med andre.",
     "TITLE": "Mine observasjoner"
   },
   "OBSERVATION_LIST": {
@@ -601,6 +603,10 @@
     "IN_MAP_CENTER": "I kartsenter",
     "IN_MAP_VIEW": "I kartutsnittet",
     "MAIN_REGIONS": "Hovedregioner",
+    "NO_FAVOURITES": "Velg dine favorittvarsler",
+    "NO_FAVOURITES_TEXT": "Sveip varselet du ønsker å favorittmarkere til venstre så vil du finne det her.",
+    "NO_WARNINGS": "Ingen varsler",
+    "NO_WARNINGS_TEXT": "Det foreligger ingen varsel for området du befinner deg i. Når det foreligger varsel vil de vises her.",
     "OTHER_RELEVANT": "Andre aktuelle",
     "RELEVANT": "Aktuelle",
     "REMOVED_FROM_FAVOURITES": "fjernet fra favoritter",

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, BehaviorSubject, Subscription, combineLatest } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
@@ -23,6 +23,20 @@ export class WarningListPage implements OnInit, OnDestroy {
   private titleSubscription: Subscription;
   refreshFunc: Function;
   title = 'WARNING_LIST.TITLE';
+  noFavourites = false;
+  noRelevant = false;
+
+  get showNoFavourites() {
+    return this.selectedTab === 'favourites' && this.noFavourites;
+  }
+
+  get showNoRelevantEmptyState() {
+    return this.selectedTab === 'inMapView' && this.noRelevant;
+  }
+
+  get showEmptyState() {
+    return this.showNoFavourites || this.showNoRelevantEmptyState;
+  }
 
   constructor(
     private warningService: WarningService,
@@ -92,7 +106,13 @@ export class WarningListPage implements OnInit, OnDestroy {
       this.getWarningsInMapViewCenter(),
       this.getWarningsInMapViewBounds(),
       this.getWarningsInMapViewBuffer())
-      .pipe(map(([a, b, c]) => ([...a, ...b, ...(b.length < 3 ? c : [])])));
+      .pipe(map(([a, b, c]) => ([...a, ...b, ...(b.length < 3 ? c : [])])),
+        tap((val) => {
+          this.ngZone.run(() => {
+            this.noRelevant = val.length === 0;
+          });
+        })
+      );
   }
 
   private getWarningsInMapViewCenter(): Observable<IVirtualScrollItem<WarningGroup>[]> {
@@ -138,7 +158,11 @@ export class WarningListPage implements OnInit, OnDestroy {
 
   private getFavouritesObservable() {
     return this.warningService.getWarningGroupFavouritesObservable()
-      .pipe(map((warningGroups) =>
+      .pipe(tap((val) => {
+        this.ngZone.run(() => {
+          this.noFavourites = val.length === 0;
+        });
+      }), map((warningGroups) =>
         this.mapToVirtualScrollItem(warningGroups, 'WARNING_LIST.FAVOURITES')));
   }
 

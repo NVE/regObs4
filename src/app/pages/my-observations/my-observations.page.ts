@@ -36,9 +36,13 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   // theBoundCallback: Function;
   loaded = false;
   refreshFunc: Function;
-
+  private firstDataLoad = false;
   virtualItems: MyVirtualScrollItem[] = [];
   myObservations: BehaviorSubject<RegistrationViewModel[]>;
+
+  get showEmptyState() {
+    return this.loaded && this.virtualItems.length === 0 && this.firstDataLoad;
+  }
 
   constructor(
     private observationService: ObservationService,
@@ -245,7 +249,6 @@ export class MyObservationsPage implements OnInit, OnDestroy {
 
   async loadData(cancel?: Promise<any>) {
     const currentValue = this.myObservations.value;
-    // const registrations = this.virtualItems.filter((x) => x.type === 'sent').length;
     const numberOfRecords = 10;
     const pageNumber = Math.floor(currentValue.length / numberOfRecords);
 
@@ -256,6 +259,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       currentValue.push(...val);
       this.myObservations.next(currentValue);
       this.ngZone.run(() => {
+        this.firstDataLoad = true;
         this.infiniteScroll.complete();
       });
     }, (_) => {
@@ -268,8 +272,6 @@ export class MyObservationsPage implements OnInit, OnDestroy {
         subscription.unsubscribe();
       });
     }
-    // const updatedRegistrations = await this.observationService.updateObservationsForCurrentUser(
-    //   userSettings.appMode, this.user, userSettings.language, numberOfRecords, cancel);
   }
   // trackByRegId(index: number, obs: RegistrationViewModel) {
   //   return obs ? obs.RegID : undefined;

@@ -140,6 +140,8 @@
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Loading more observations...",
     "MY_SENT_OBSERVATIONS": "My sent observations",
+    "NO_OBSERVATIONS": "Share your observations!",
+    "NO_OBSERVATIONS_TEXT": "Your observartions will appear here. Share your observations, pictures and reviews with others on Varsom Regobs.",
     "TITLE": "My observations"
   },
   "OBSERVATION_LIST": {
@@ -601,6 +603,10 @@
     "IN_MAP_CENTER": "In map center",
     "IN_MAP_VIEW": "In map view",
     "MAIN_REGIONS": "Main regions",
+    "NO_FAVOURITES": "Choose your favourites",
+    "NO_FAVOURITES_TEXT": "Swipe the alert you want to favorite and it will appear here.",
+    "NO_WARNINGS": "No warnings",
+    "NO_WARNINGS_TEXT": "There is no warnings for the area you are in. When there is any, they will appear here.",
     "OTHER_RELEVANT": "Other relevant",
     "RELEVANT": "Relevant",
     "REMOVED_FROM_FAVOURITES": "removed from favourites",

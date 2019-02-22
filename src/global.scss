@@ -141,6 +141,11 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--ion-text-color-heading);
 }
 
+h3 {
+    font-size: var(--h3-font-size);
+}
+
+
 ion-item {
     --background: var(--ion-item-background, #fff);
 
@@ -381,4 +386,17 @@ ion-toast {
 
 .refresher-pulling-text {
     opacity: 0.5;
+}
+
+.full-grid {
+    width: 100%;
+    height: 100%;
+
+    .full-grid-row {
+        height: 50%;
+
+        // ion-label {
+        //     font-size: var(--h3-font-size);
+        // }
+    }
 }

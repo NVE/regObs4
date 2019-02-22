@@ -22,19 +22,6 @@ ion-virtual-scroll {
     }
 }
 
-.full-grid {
-    width: 100%;
-    height: 100%;
-
-    .full-grid-row {
-        height: 50%;
-
-        ion-label {
-            font-size: var(--h3-font-size);
-        }
-    }
-}
-
 .center {
     position: absolute;
     left: 50%;

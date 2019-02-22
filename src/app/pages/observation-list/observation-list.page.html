@@ -1,9 +1,11 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
 <ion-content>
-  <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject"></app-refresh-with-cancel>
+  <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
+  </app-refresh-with-cancel>
   <ng-container *ngIf="observations !== undefined">
-    <ion-virtual-scroll [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" [items]="observations"
-      [approxItemHeight]="250" [trackBy]="trackByRegId" [footerFn]="footerFn" [headerFn]="headerFn">
+    <ion-virtual-scroll [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty"
+      [items]="observations" [approxItemHeight]="250" [trackBy]="trackByRegId" [footerFn]="footerFn"
+      [headerFn]="headerFn">
       <ion-item-divider *virtualHeader="let header">
         <h3 text-uppercase>{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
       </ion-item-divider>
@@ -32,8 +34,7 @@
     <ion-row class="full-grid-row">
       <ion-col text-center margin-horizontal>
         <h2> {{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}</h2>
-        <ion-label text-wrap>{{'OBSERVATION_LIST.NO_OBSERVATIONS_TEXT'|translate}}
-        </ion-label>
+        <h3 text-wrap>{{'OBSERVATION_LIST.NO_OBSERVATIONS_TEXT'|translate}}</h3>
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -12,8 +12,8 @@
 </ion-segment>
 <ion-content>
   <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <ion-virtual-scroll [items]="warningGroups" [headerFn]="myHeaderFn" [footerFn]="footerFn" [approxItemHeight]="52"
-    [approxHeaderHeight]="87">
+  <ion-virtual-scroll *ngIf="!showEmptyState else empty" [items]="warningGroups" [headerFn]="myHeaderFn"
+    [footerFn]="footerFn" [approxItemHeight]="52" [approxHeaderHeight]="87">
     <ion-item-divider *virtualHeader="let header">
       <app-warning-list-header [title]="header.header" [subTitle]="header.infoText"
         [showDayNames]="header.showDayNames"></app-warning-list-header>
@@ -27,3 +27,36 @@
 </ion-content>
 <app-add-menu slot="fixed"></app-add-menu>
 <app-geo-select slot="fixed" [inHeader]="true"></app-geo-select>
+<ng-template #empty>
+  <ng-container *ngTemplateOutlet="showNoFavourites ? emptyFavourites : emptyRelevant"></ng-container>
+</ng-template>
+<ng-template #emptyFavourites>
+  <ion-grid class="full-grid">
+    <ion-row class="full-grid-row">
+      <ion-col align-self-center text-center>
+        <svg-icon src="/assets/images/empty-states/no-favourites.svg"></svg-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row class="full-grid-row">
+      <ion-col text-center margin-horizontal>
+        <h2> {{ 'WARNING_LIST.NO_FAVOURITES' | translate }}</h2>
+        <h3 text-wrap>{{'WARNING_LIST.NO_FAVOURITES_TEXT'|translate}}</h3>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ng-template>
+<ng-template #emptyRelevant>
+  <ion-grid class="full-grid">
+    <ion-row class="full-grid-row">
+      <ion-col align-self-center text-center>
+        <svg-icon src="/assets/images/empty-states/no-warnings.svg"></svg-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row class="full-grid-row">
+      <ion-col text-center margin-horizontal>
+        <h2> {{ 'WARNING_LIST.NO_WARNINGS' | translate }}</h2>
+        <h3 text-wrap>{{'WARNING_LIST.NO_WARNINGS_TEXT'|translate}}</h3>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ng-template>
