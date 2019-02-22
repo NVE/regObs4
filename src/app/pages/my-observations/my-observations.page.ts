@@ -82,11 +82,19 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       this.initVirtualItems(virtualItems);
     } else {
       this.ngZone.run(() => {
+        const reloadMyObservations = this.virtualItems.filter((x) => x.type === 'sync').length !==
+          virtualItems.filter((x) => x.type === 'sync').length;
+
         const indexUpdates = this.mergeVirtualItems(virtualItems);
         const indexRange = this.getIndexRange(indexUpdates);
         setTimeout(() => {
           this.checkRange(indexRange.min, indexRange.max);
         });
+
+        if (reloadMyObservations) {
+          this.myObservations.next([]);
+          this.loadData();
+        }
       });
     }
   }
