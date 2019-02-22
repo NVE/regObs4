@@ -34,9 +34,13 @@ export class StartWizardPage implements OnInit {
   }
 
   async start() {
-    this.userSettings.completedStartWizard = true;
-    this.userSetting.saveUserSettings(this.userSettings);
-    this.navController.navigateRoot('/');
+    if (this.reachedEnd) {
+      this.userSettings.completedStartWizard = true;
+      this.userSetting.saveUserSettings(this.userSettings);
+      this.navController.navigateRoot('/');
+    } else {
+      this.slides.slideTo(4);
+    }
   }
 
   saveUserSettings() {
@@ -52,5 +56,9 @@ export class StartWizardPage implements OnInit {
 
   ionSlideReachEnd() {
     this.reachedEnd = true;
+  }
+
+  ionSlidePrevStart() {
+    this.reachedEnd = false;
   }
 }

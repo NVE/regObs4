@@ -1,8 +1,9 @@
 ion-footer {
-    --ion-toolbar-background: var(--ion-color-varsom-blue);
-    --ion-toolbar-color: #fff;
     ion-toolbar {
-        --min-height: 50px;
+        ion-button {
+            color: #fff;
+            text-transform: initial;
+        }
     }
 }
 
