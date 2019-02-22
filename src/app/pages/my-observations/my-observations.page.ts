@@ -7,7 +7,7 @@ import { IonInfiniteScroll, NavController, IonVirtualScroll } from '@ionic/angul
 import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
 import * as moment from 'moment';
-import { take, map, distinct, tap, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { map, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { IRegistration } from '../../modules/registration/models/registration.model';
 // import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
 
@@ -251,8 +251,6 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     const currentValue = this.myObservations.value;
     const numberOfRecords = 10;
     const pageNumber = Math.floor(currentValue.length / numberOfRecords);
-
-    // const userSettings = await this.userSettingService.getUserSettings();
     const subscription = this.userSettingService.appModeAndLanguage$.pipe(switchMap(([appMode, langKey]) =>
       this.observationService.getObservationsForCurrentUser(appMode, this.user, langKey, pageNumber, numberOfRecords)
     )).subscribe((val) => {
