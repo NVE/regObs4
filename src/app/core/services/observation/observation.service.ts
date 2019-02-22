@@ -139,6 +139,7 @@ export class ObservationService {
         SelectedGeoHazards: geoHazards,
         NumberOfRecords: settings.observations.maxObservationsToFetch,
         LangKey: userSetting.language,
+        TimeZone: moment().format('Z'),
       }), cancel);
       this.loggingService.debug(`Got ${searchResult.length} new observations for geoHazards ${geoHazards.join(', ')}`, DEBUG_TAG);
       if (!isCanceled) {
@@ -180,44 +181,23 @@ export class ObservationService {
     this.loggingService.debug(`fastInsert took ${new Date().getTime() - now.getTime()} ms`, DEBUG_TAG);
     const deleteResult = await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, fromDate, result);
     this.loggingService.debug(`Deleted items no longer in updated result`, DEBUG_TAG, deleteResult);
-    this.loggingService.debug(`Deleted old observations`, DEBUG_TAG);
     await this.deleteOldObservations(userSetting.appMode, geoHazards);
   }
 
-  async updateObservationsForCurrentUser(
+  getObservationsForCurrentUser(
     appMode: AppMode,
     user: ObserverResponseDto,
     langKey: LangKey,
-    numberOfRecords: number = 10,
-    cancel?: Promise<any>) {
-    try {
-      this.searchService.rootUrl = settings.services.regObs.apiUrl[appMode];
-      const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchSearch({
-        NumberOfRecords: numberOfRecords,
-        LangKey: langKey,
-        ObserverGuid: user.Guid,
-      }), cancel);
-      if (searchResult.length > 0) {
-        const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVATION.name, appMode);
-        const instance = NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode);
-        await this.dbHelperService.fastInsert(instanceName, searchResult, (r) => r.RegID);
-        const ids = searchResult.map((x) => x.RegID);
-        const lastId = ids[searchResult.length - 1];
-        const firstId = ids[0];
-        // Delete records no longer in result (registration has been deleted)
-        await instance.query('delete')
-          .where((reg: RegistrationViewModel) => {
-            return reg.Observer && reg.Observer.ObserverGUID === user.Guid &&
-              reg.RegID < lastId &&
-              reg.RegID > firstId &&
-              !ids.find((item) => item === reg.RegID);
-          }).exec();
-      }
-      return searchResult;
-    } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, `Could not update observations for user: `, user);
-      return [];
-    }
+    pageNr?: number,
+    numberOfRecords: number = 10) {
+    this.searchService.rootUrl = settings.services.regObs.apiUrl[appMode];
+    return this.searchService.SearchSearch({
+      NumberOfRecords: numberOfRecords,
+      LangKey: langKey,
+      Offset: (pageNr || 0) * numberOfRecords,
+      ObserverGuid: user.Guid,
+      TimeZone: moment().format('Z'),
+    });
   }
 
   async updateObservationById(regId: number, appMode: AppMode, langKey: LangKey, currentGeoHazards: GeoHazard[]) {
@@ -313,18 +293,6 @@ export class ObservationService {
   private getDistinctUserSettingsToChangeObservations(userSetting: UserSetting) {
     const dateString = this.getObservationDaysBackAsDate(userSetting).toISOString();
     return `${userSetting.appMode}#${userSetting.language}#${userSetting.currentGeoHazard.join(',')}#${dateString}`;
-  }
-
-  getUserObservationsAsObservable(): Observable<RegistrationViewModel[]> {
-    return combineLatest(this.userSettingService.appMode$, this.userSettingService.language$, this.loginService.loggedInUser$)
-      .pipe(switchMap(([appMode, language, loggedInUser]) =>
-        loggedInUser.isLoggedIn ? this.getObservationsByParametersAsObservable(
-          appMode,
-          language,
-          null,
-          null,
-          loggedInUser.user.Guid) : of([])
-      ));
   }
 
   private getObservationsByParametersQuery(appMode: AppMode,

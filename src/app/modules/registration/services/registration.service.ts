@@ -241,7 +241,7 @@ export class RegistrationService {
         if (httpError.status === 409) { // Duplicate, remove
           await this.deleteRegistrationById(userSetting.appMode, registration.id);
           // Updating latest user registration since we don't have an ID for the duplicate
-          await this.updateLatestUserRegistrations(cancel);
+          // await this.updateLatestUserRegistrations(cancel);
         } else if (httpError.status === 400) {
           // Model error, something is not correct from app. Please review ModelState error!
           this.loggingService.error(ex, 'Got 400 BadRequest when sending registration', DEBUG_TAG, registration);
@@ -305,11 +305,11 @@ export class RegistrationService {
     return ObservableHelper.toPromiseWithCancel(this.registrationApiService.RegistrationInsert(registration), cancel);
   }
 
-  private async updateLatestUserRegistrations(cancel?: Promise<any>) {
-    const user = await this.loginService.getLoggedInUser();
-    if (user.isLoggedIn) {
-      const userSettings = await this.userSettingService.getUserSettings();
-      return this.observationService.updateObservationsForCurrentUser(userSettings.appMode, user.user, userSettings.language, 0, cancel);
-    }
-  }
+  // private async updateLatestUserRegistrations(cancel?: Promise<any>) {
+  //   const user = await this.loginService.getLoggedInUser();
+  //   if (user.isLoggedIn) {
+  //     const userSettings = await this.userSettingService.getUserSettings();
+  //     return this.observationService.updateObservationsForCurrentUser(userSettings.appMode, user.user, userSettings.language, 0, cancel);
+  //   }
+  // }
 }

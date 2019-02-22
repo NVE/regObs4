@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
-import { Subscription, combineLatest, Observable } from 'rxjs';
+import { Subscription, combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../modules/login/services/login.service';
 import { IonInfiniteScroll, NavController, IonVirtualScroll } from '@ionic/angular';
 import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
 import * as moment from 'moment';
-import { take, map, distinct, tap, distinctUntilChanged } from 'rxjs/operators';
+import { take, map, distinct, tap, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { IRegistration } from '../../modules/registration/models/registration.model';
 // import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
 
@@ -38,6 +38,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   refreshFunc: Function;
 
   virtualItems: MyVirtualScrollItem[] = [];
+  myObservations: BehaviorSubject<RegistrationViewModel[]>;
 
   constructor(
     private observationService: ObservationService,
@@ -48,6 +49,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     // private obsCardHeightService: ObsCardHeightService,
     private loginService: LoginService) {
     this.refreshFunc = this.refresh.bind(this);
+    this.myObservations = new BehaviorSubject([]);
   }
 
   refresh(cancelPromise: Promise<any>) {
@@ -209,7 +211,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   private getSentObservable(): Observable<MyVirtualScrollItem[]> {
-    return this.observationService.getUserObservationsAsObservable().pipe(
+    return this.myObservations.asObservable().pipe(
       distinctUntilChanged<RegistrationViewModel[], string>
         ((a, b) => a.localeCompare(b) === 0, (keySelector) => this.getDistinctRegistrationList(keySelector)),
       map((val) => val.map((item) => ({ type: <'sent'>'sent', id: item.RegID.toString(), item }))));
@@ -242,18 +244,33 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   async loadData(cancel?: Promise<any>) {
-    const registrations = this.virtualItems.filter((x) => x.type === 'sent').length;
-    // const pageNumber = Math.floor(registrations / 10.0);
-    const numberOfRecords = registrations + 10;
-    const userSettings = await this.userSettingService.getUserSettings();
-    const updatedRegistrations = await this.observationService.updateObservationsForCurrentUser(
-      userSettings.appMode, this.user, userSettings.language, numberOfRecords, cancel);
-    this.ngZone.run(() => {
-      // this.mergeRegistrations(updatedRegistrations);
-      this.infiniteScroll.complete();
-    });
-  }
+    const currentValue = this.myObservations.value;
+    // const registrations = this.virtualItems.filter((x) => x.type === 'sent').length;
+    const numberOfRecords = 10;
+    const pageNumber = Math.floor(currentValue.length / numberOfRecords);
 
+    // const userSettings = await this.userSettingService.getUserSettings();
+    const subscription = this.userSettingService.appModeAndLanguage$.pipe(switchMap(([appMode, langKey]) =>
+      this.observationService.getObservationsForCurrentUser(appMode, this.user, langKey, pageNumber, numberOfRecords)
+    )).subscribe((val) => {
+      currentValue.push(...val);
+      this.myObservations.next(currentValue);
+      this.ngZone.run(() => {
+        this.infiniteScroll.complete();
+      });
+    }, (_) => {
+      this.ngZone.run(() => {
+        this.infiniteScroll.complete();
+      });
+    });
+    if (cancel) {
+      cancel.then(() => {
+        subscription.unsubscribe();
+      });
+    }
+    // const updatedRegistrations = await this.observationService.updateObservationsForCurrentUser(
+    //   userSettings.appMode, this.user, userSettings.language, numberOfRecords, cancel);
+  }
   // trackByRegId(index: number, obs: RegistrationViewModel) {
   //   return obs ? obs.RegID : undefined;
   // }
