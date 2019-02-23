@@ -12,6 +12,21 @@
 
 @import 'app/core/helpers/leaflet/user-marker/user-marker.scss';
 
+/* Font for arrows */
+@font-face {
+    font-family: 'Open Sans Arrows';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/assets/fonts/open-sans-v15-latin_latin-ext-regular.eot'); /* IE9 Compat Modes */
+    src: local('Open Sans Regular'), local('OpenSans-Regular'),
+         url('/assets/fonts/open-sans-v15-latin_latin-ext-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('/assets/fonts/open-sans-v15-latin_latin-ext-regular.woff2') format('woff2'), /* Super Modern Browsers */
+         url('/assets/fonts/open-sans-v15-latin_latin-ext-regular.woff') format('woff'), /* Modern Browsers */
+         url('/assets/fonts/open-sans-v15-latin_latin-ext-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('/assets/fonts/open-sans-v15-latin_latin-ext-regular.svg#OpenSans') format('svg'); /* Legacy iOS */
+    unicode-range: U+2190-2199, U+2B08, U+2B09, U+2B0A, U+2B0B;
+  }
+
 :root {
     --ion-background-color: #DCECF2;
     --ion-item-background: #fff;
@@ -76,7 +91,7 @@
     --ion-text-color-heading: #222222;
     --ion-text-color-heading-white-pages: var(--ion-color-varsom-blue-dark-2);
     --ion-color-step-600: var(--ion-text-color-heading);
-    --ion-font-family: 'Source Sans Pro';
+    --ion-font-family: 'Open Sans Arrows', 'Source Sans Pro';
     --ion-color-varsom-test-header: #700CEF;
     --ion-color-varsom-demo-header: var(--ion-color-danger);
     --background-color-menu: #F7F7F7;
