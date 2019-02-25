@@ -14,6 +14,8 @@ import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { Subject } from 'rxjs';
 import { map, switchMap, distinctUntilChanged, pairwise, filter, take } from 'rxjs/operators';
+import { OfflineMapService } from '../offline-map/offline-map.service';
+import { nSQL } from '@nano-sql/core';
 
 const DEBUG_TAG = 'DataMarshallService';
 
@@ -46,6 +48,7 @@ export class DataMarshallService {
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
+    private offlineMapService: OfflineMapService,
   ) {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
   }
@@ -68,6 +71,10 @@ export class DataMarshallService {
     });
     this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user));
     this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode));
+
+    this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {
+      this.offlineMapService.updateTilesCacheSizeTable(val.count, val.size);
+    });
 
     this.platform.ready().then(() => {
       this.platform.pause.subscribe(() => {

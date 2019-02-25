@@ -93,6 +93,14 @@ export class NanoSql {
                 'size:number': {},
             }
         },
+        OFFLINE_MAP_CACHE_SIZE: {
+            name: 'offlinemapcachessize',
+            model: {
+                'id:string': { pk: true },
+                'count:number': {},
+                'size:number': {},
+            }
+        },
         OFFLINE_ASSET: {
             name: 'offlineasset',
             model: {

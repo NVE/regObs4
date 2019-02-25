@@ -208,18 +208,32 @@ export class OfflineMapService {
     }
   }
 
-  getTilesCacheAsObservable(): Observable<{ count: number, size: number }> {
+  getFullTilesCacheAsObservable(): Observable<{ count: number, size: number }> {
     return NanoSqlObservableHelper.toRxJS(nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
       .query('select', ['COUNT(*) as count', 'SUM(size) as size'])
       .where(['mapName', '=', settings.map.tiles.cacheFolder]).listen({
-        debounce: 500,
+        debounce: 10000,
       }))
       .pipe(map((result: { count: number, size: number }[]) => {
         return (result.length > 0 ? result[0] as {
           count: number;
           size: number;
         } : ({ count: 0, size: 0 }));
-      }), tap((val) => this.loggingService.debug(`tiles cache size updated: ${val.count}, ${val.size}`, DEBUG_TAG)));
+      }));
+  }
+
+  getTilesCacheAsObservable(): Observable<{ count: number, size: number }> {
+    return NanoSqlObservableHelper.toRxJS(nSQL(NanoSql.TABLES.OFFLINE_MAP_CACHE_SIZE.name)
+      .query('select').where(['id', '=', settings.map.tiles.cacheFolder]).listen())
+      .pipe(map((result: { count: number, size: number }[]) => result.length > 0 ? result[0] : { count: 0, size: 0 }));
+  }
+
+  updateTilesCacheSizeTable(count: number, size: number) {
+    return nSQL(NanoSql.TABLES.OFFLINE_MAP_CACHE_SIZE.name).query('upsert', {
+      id: settings.map.tiles.cacheFolder,
+      count,
+      size,
+    }).exec();
   }
 
   deleteTilesCache() {
