@@ -23,7 +23,7 @@ export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLo
         nextState?: RouterStateSnapshot) {
         if (nextState && nextState.url.indexOf('registration/') < 0 && component.registration) {
             const reg = await this.registrationService.getSavedRegistrationById(component.registration.id);
-            if (reg.status === RegistrationStatus.Draft) {
+            if (reg && reg.status === RegistrationStatus.Draft) {
                 const translations = await this.translateService.get([
                     'REGISTRATION.SAVE_ALERT.HEADER',
                     'REGISTRATION.SAVE_ALERT.MESSAGE',
