@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, Renderer2, Inject } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Renderer2, Inject, OnChanges, SimpleChanges } from '@angular/core';
 import { IonItemSliding, DomController, IonItemOption } from '@ionic/angular';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
@@ -30,16 +30,15 @@ export class WarningListItemComponent implements OnInit {
     private renderer: Renderer2) { }
 
   ngOnInit() {
+
   }
 
   async onDrag(event: Event) {
-    this.favouriteToggle.startSubscription();
     const slider: IonItemSliding = <any>event.srcElement;
     const openAmount = (await slider.getOpenAmount()) / 100.0;
     const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
     const color = `rgba(186,196,204,${opacity})`;
     this.favouriteToggle.setOpen(opacity);
-
     this.domCtrl.write(() => {
       this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
     });
@@ -51,7 +50,7 @@ export class WarningListItemComponent implements OnInit {
       if (this.itemSlide) {
         this.itemSlide.close();
       }
-    }, 1000);
+    }, 2000);
   }
 
   itemSwiped() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy, Renderer2, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Subscription } from 'rxjs';
 import { WarningGroupKey } from '../../core/services/warning/warning-group-key.interface';
@@ -10,7 +10,7 @@ import { ToastController, DomController, IonIcon } from '@ionic/angular';
   templateUrl: './warning-group-favourite-toggle.component.html',
   styleUrls: ['./warning-group-favourite-toggle.component.scss']
 })
-export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy {
+export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() key: WarningGroupKey;
   @ViewChild(IonIcon) ionIcon: IonIcon;
@@ -27,6 +27,12 @@ export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy {
     private toastController: ToastController) { }
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.key) {
+      this.startSubscription();
+    }
   }
 
   startSubscription() {
