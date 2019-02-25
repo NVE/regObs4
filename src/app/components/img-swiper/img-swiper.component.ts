@@ -6,7 +6,6 @@ import {
   Output,
   ViewChild,
   NgZone,
-  ChangeDetectorRef,
   OnChanges,
   SimpleChanges
 } from '@angular/core';
@@ -28,7 +27,6 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   slideOptions = {
     autoplay: false,
     slidesPerView: 'auto',
-    spaceBetween: 5,
   };
 
   comment: string;
@@ -38,25 +36,22 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   @ViewChild(IonSlides) slider: IonSlides;
 
-  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) { }
+  constructor(private ngZone: NgZone) { }
 
   ngOnInit() {
     this.setImgHeaderAndComment(0);
   }
 
-  updateSlider() {
-    if (this.slider) {
-      this.slider.update();
-    }
-  }
-
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    setTimeout(() => {
-      this.getImageIndex().then((index) => {
-        this.setImgHeaderAndComment(index);
-        this.updateSlider();
-      });
+    this.ngZone.run(() => {
+      this.setImgHeaderAndComment(0);
     });
+    if (this.slider) {
+      await this.slider.update();
+    }
+    if (this.slider) {
+      await this.slider.slideTo(0, 0);
+    }
   }
 
   private setImgHeaderAndComment(index: number) {

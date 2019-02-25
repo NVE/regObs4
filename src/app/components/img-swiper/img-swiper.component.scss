@@ -9,7 +9,12 @@
         width: 80%;
         height: 100%;
         display: inline-flex;
+        margin-right: 5px;
         background-color: rgba(0,0,0,0.6);
+
+        &:last-child {
+            margin-right: 0px;
+        }
     }
     
     app-offline-image {
