@@ -319,8 +319,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private setHeading(event: DeviceOrientationEvent) {
     if (this.userMarker) {
-      const heading = 360 - event.alpha;
-      this.userMarker.setHeading(heading);
+      const compassHeading = (<any>event).webkitCompassHeading || event.alpha;
+      if (compassHeading !== undefined) {
+        const heading = 360 - event.alpha;
+        this.userMarker.setHeading(heading);
+      }
     }
   }
 
