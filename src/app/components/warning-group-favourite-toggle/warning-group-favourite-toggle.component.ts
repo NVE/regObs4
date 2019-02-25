@@ -17,6 +17,7 @@ export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, 
 
   private warningIsFavouriteSubscription: Subscription;
   isFavourite: boolean;
+  private _lastKey: WarningGroupKey;
 
   constructor(
     private warningService: WarningService,
@@ -30,21 +31,21 @@ export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.key) {
-      this.startSubscription();
+    const currentKey: WarningGroupKey = changes.key.currentValue;
+    if (!this._lastKey || (this._lastKey.groupId !== currentKey.groupId)) {
+      this._lastKey = currentKey;
+      this.startSubscription(currentKey);
     }
   }
 
-  startSubscription() {
-    if (!this.warningIsFavouriteSubscription) {
-      this.warningIsFavouriteSubscription =
-        this.warningService.getIsFavouriteObservable(this.key.groupId, this.key.geoHazard)
-          .subscribe((val) => {
-            this.ngZone.run(() => {
-              this.isFavourite = val;
-            });
+  startSubscription(key: WarningGroupKey) {
+    this.warningIsFavouriteSubscription =
+      this.warningService.getIsFavouriteObservable(key.groupId, key.geoHazard)
+        .subscribe((val) => {
+          this.ngZone.run(() => {
+            this.isFavourite = val;
           });
-    }
+        });
   }
 
   setOpen(openAmount: number) {
