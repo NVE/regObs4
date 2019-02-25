@@ -57,8 +57,12 @@ export class WarningGroup {
     }
 
     getDayWarning(daysToAdd: number) {
-        const day = moment().add(daysToAdd, 'days');
+        const day = this.getMomentAtNoon(moment().add(daysToAdd, 'days'));
         return this.getWarningForDay(day.toDate());
+    }
+
+    private getMomentAtNoon(m: moment.Moment) {
+        return m.clone().hours(12).minutes(0).seconds(0);
     }
 
     hasAnyWarnings(daysAhead = 2) {

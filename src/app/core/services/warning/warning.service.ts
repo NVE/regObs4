@@ -390,12 +390,12 @@ export class WarningService {
           warningLevel: parseInt(item.ActivityLevel, 10),
         };
         // Validate that warning is not outdated
-        if (moment().isSameOrBefore(warning.validTo)) {
+        if (moment(warning.validTo).isAfter(moment())) {
           const existingRegion = regions.find((r) => r.regionId === regionId);
           if (existingRegion) {
             const warningForSameDate = existingRegion.warnings
-              .find((w) => moment(w.validTo).format(settings.services.warning.dateFormat)
-                === moment(warning.validTo).format(settings.services.warning.dateFormat));
+              .find((w) => moment(w.validTo).toISOString()
+                === moment(warning.validTo).toISOString());
             if (warningForSameDate) {
               warningForSameDate.warningLevel = Math.max(warning.warningLevel, warningForSameDate.warningLevel);
             } else {
