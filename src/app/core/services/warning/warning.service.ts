@@ -389,27 +389,29 @@ export class WarningService {
           publishTime: this.getDate(item.PublishTime),
           warningLevel: parseInt(item.ActivityLevel, 10),
         };
-
-        const existingRegion = regions.find((r) => r.regionId === regionId);
-        if (existingRegion) {
-          const warningForSameDate = existingRegion.warnings
-            .find((w) => moment(w.validTo).format(settings.services.warning.dateFormat)
-              === moment(warning.validTo).format(settings.services.warning.dateFormat));
-          if (warningForSameDate) {
-            warningForSameDate.warningLevel = Math.max(warning.warningLevel, warningForSameDate.warningLevel);
+        // Validate that warning is not outdated
+        if (moment().isSameOrBefore(warning.validTo)) {
+          const existingRegion = regions.find((r) => r.regionId === regionId);
+          if (existingRegion) {
+            const warningForSameDate = existingRegion.warnings
+              .find((w) => moment(w.validTo).format(settings.services.warning.dateFormat)
+                === moment(warning.validTo).format(settings.services.warning.dateFormat));
+            if (warningForSameDate) {
+              warningForSameDate.warningLevel = Math.max(warning.warningLevel, warningForSameDate.warningLevel);
+            } else {
+              existingRegion.warnings.push(warning);
+            }
           } else {
-            existingRegion.warnings.push(warning);
+            regions.push({
+              id: `${regionId}_${geoHazard}`,
+              regionId,
+              regionName,
+              counties: [regionId],
+              geoHazard,
+              warnings: [warning],
+              sortOrder: this.convertCoutyToSortOrder(regionId),
+            });
           }
-        } else {
-          regions.push({
-            id: `${regionId}_${geoHazard}`,
-            regionId,
-            regionName,
-            counties: [regionId],
-            geoHazard,
-            warnings: [warning],
-            sortOrder: this.convertCoutyToSortOrder(regionId),
-          });
         }
       }
       this.updateLatestWarnings(geoHazard, language, regions);
@@ -559,7 +561,8 @@ export class WarningService {
   }
 
   private getDefaultDateRange(fromDate?: Date, toDate?: Date) {
-    const fromMoment = fromDate ? moment(fromDate) : moment().subtract(1, 'day');
+    const fromMoment = fromDate ? moment(fromDate) : moment().startOf('day');
+    // const fromMoment = fromDate ? moment(fromDate) : moment().subtract(1, 'day');
     const toMoment = toDate ? moment(toDate) : moment().endOf('day').add(settings.services.warning.defaultWarningDaysAhead, 'days');
     return { from: fromMoment, to: toMoment };
   }

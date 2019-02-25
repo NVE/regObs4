@@ -57,7 +57,7 @@ export class WarningGroup {
     }
 
     getDayWarning(daysToAdd: number) {
-        const day = moment().startOf('day').add(daysToAdd, 'days');
+        const day = moment().add(daysToAdd, 'days');
         return this.getWarningForDay(day.toDate());
     }
 
