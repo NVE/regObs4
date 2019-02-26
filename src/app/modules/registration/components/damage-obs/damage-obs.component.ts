@@ -22,7 +22,10 @@ export class DamageObsComponent implements OnInit {
   isSelected: boolean;
 
   get damageObs() {
-    return this.registration.request.DamageObs.find((x) => x.DamageTypeTID === this.damageTypeId);
+    if (this.registration && this.registration.request && this.registration.request.DamageObs) {
+      return this.registration.request.DamageObs.find((x) => x.DamageTypeTID === this.damageTypeId);
+    }
+    return undefined;
   }
 
   constructor(
