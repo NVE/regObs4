@@ -1,0 +1,18 @@
+<ion-header *ngIf="!(fullscreen$ | async)">
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ (geoHazard === GeoHazard.Snow ? 'REGISTRATION.SNOW.AVALANCHE_OBS.SET_AVALANCHE_POSITION' :
+      'REGISTRATION.DIRT.LAND_SLIDE_OBS.SET_LANDSLIDE_POSITION') | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <app-set-location-in-map *ngIf="fromMarker" [geoHazard]="geoHazard" (mapReady)="onMapReady($event)" [fromMarker]="fromMarker"
+    [locationMarker]="locationMarker" (locationSet)="onLocationSet($event)" [confirmLocationText]="confirmLocationText"
+    fromLocationText="REGISTRATION.OBS_LOCATION.TITLE" [showPreviousUsedLocations]="false" [locationTitle]="locationText"
+    [showPolyline]="false" [showFromMarkerInDetails]="false" [locationMarkerIconUrl]="locationMarkerIconUrl">
+  </app-set-location-in-map>
+</ion-content>

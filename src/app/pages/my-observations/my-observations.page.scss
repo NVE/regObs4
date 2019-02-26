@@ -1,0 +1,25 @@
+ion-refresher, ion-content {
+    background-color: var(--ion-background-color,#fff);
+}
+
+ion-refresher {
+    ion-grid {
+        position: absolute;
+        right: 5px;
+        top: 0px;
+    }
+}
+
+ion-virtual-scroll {
+    opacity: 0;
+    transition: opacity 1s linear;
+
+    &.loaded {
+        opacity: 1;
+    }
+}
+
+ion-item-divider {
+    border-bottom: 0;
+}
+

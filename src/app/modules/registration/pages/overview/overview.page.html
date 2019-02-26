@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button text="" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{"REGISTRATION.OVERVIEW.TITLE" | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ng-container *ngIf="registration">
+  <ion-content>
+    <app-failed-registration *ngIf="registration.error && registration.status === RegistrationStatus.Sync"
+      [registration]="registration"></app-failed-registration>
+    <ion-list lines="full">
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{"REGISTRATION.OVERVIEW.MY_OBSERVATION" | translate}}
+        </ion-label>
+      </ion-list-header>
+      <app-summary-item [readonly]="registration.status === RegistrationStatus.Sync" *ngFor="let item of summaryItems"
+        [item]="item"></app-summary-item>
+    </ion-list>
+  </ion-content>
+  <app-send-button [registration]="registration"></app-send-button>
+</ng-container>

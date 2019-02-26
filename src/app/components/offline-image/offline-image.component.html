@@ -1,0 +1,9 @@
+<div class="offline-image-wrapper">
+    <ion-img *ngIf="offlineUrl" class="offline-image" [ngClass]="{ 'loaded': !offlineLoading }" [src]="offlineUrl"
+        (ionImgDidLoad)="offlineImageLoaded()"></ion-img>
+    <ion-img *ngIf="url" class="real-image" [ngClass]="{ 'loaded': !httpLoading }" [src]="url"
+        (ionImgDidLoad)="httpImgDidLoad($event)"></ion-img>
+    <div class="animated-background" [ngClass]="{ 'loaded': loaded, 'error': hasError }">
+        <ion-icon name="flash-off"></ion-icon>
+    </div>
+</div>

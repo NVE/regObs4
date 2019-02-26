@@ -1,0 +1,41 @@
+<ion-fab *ngIf="currentGeoHazards" #geoSelectorFab vertical="top" horizontal="start" [edge]="!inHeader" slot="fixed"
+  [ngClass]="{ 'fullscreen': (fullscreen$ | async), 'in-header': inHeader, 'show-info': showGeoSelectInfo }">
+  <div class="toggle-button" *ngIf="!(inHeader && isOpen)">
+    <ion-fab-button color="light" (click)="toggle()">
+      <app-geo-icon [geoHazards]="currentGeoHazards" [size]="size"></app-geo-icon>
+    </ion-fab-button>
+    <ng-container *ngIf="isOpen">
+      <ion-label><span *ngFor="let name of getNames(currentGeoHazards); let i = index"><span *ngIf="i>0"> / </span>{{
+          name |
+          translate }}</span></ion-label>
+    </ng-container>
+  </div>
+  <div class="geo-selector-items" [ngClass]="{ 'open': isOpen }">
+    <div class="geo-selector-wrapper" (click)="toggle()"></div>
+    <ion-list lines="none" no-margin>
+      <ion-item *ngIf="inHeader" no-padding class="geo-selector-item" (click)="toggle()">
+        <ion-fab-button slot="start" color="light">
+          <app-geo-icon [geoHazards]="currentGeoHazards" [size]="size"></app-geo-icon>
+        </ion-fab-button>
+        <ion-label><span *ngFor="let name of getNames(currentGeoHazards); let i = index"><span *ngIf="i>0"> / </span>{{
+            name |
+            translate }}</span>
+        </ion-label>
+      </ion-item>
+      <ng-container *ngFor="let geoHazards of geoHazardTypes">
+        <ion-item *ngIf="(geoHazards.join('-') !== currentGeoHazards.join('-'))" no-padding class="geo-selector-item"
+          (click)="changeGeoHazard(geoHazards)">
+          <ion-fab-button slot="start" color="light">
+            <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
+          </ion-fab-button>
+          <ion-label><span *ngFor="let name of getNames(geoHazards); let i = index"><span *ngIf="i>0"> / </span>
+              {{ name | translate }}</span></ion-label>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+    <div class="help-info">
+      <svg-icon src="/assets/images/large-arrow-left.svg" [svgStyle]="{ 'height.px': 120, 'width.px': 120 }"></svg-icon>
+      <h2>{{'START_WIZARD.CHOOSE_INTEREST' | translate }}</h2>
+    </div>
+  </div>
+</ion-fab>

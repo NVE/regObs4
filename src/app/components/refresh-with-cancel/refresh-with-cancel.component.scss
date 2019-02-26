@@ -1,0 +1,10 @@
+ion-refresher {
+    // background-color: var(--ion-background-color,#fff);
+   
+    z-index: auto;
+    ion-grid {
+        position: absolute;
+        right: 5px;
+        top: 0px;
+    }
+}

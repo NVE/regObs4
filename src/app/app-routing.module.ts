@@ -4,21 +4,31 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    loadChildren: './pages/tabs/tabs.module#TabsPageModule',
   },
   {
-    path: 'home',
-    loadChildren: './home/home.module#HomePageModule'
+    path: 'my-observations',
+    loadChildren: './pages/my-observations/my-observations.module#MyObservationsPageModule'
   },
   {
-    path: 'list',
-    loadChildren: './list/list.module#ListPageModule'
-  }
+    path: 'user-settings',
+    loadChildren: './pages/user-settings/user-settings.module#UserSettingsPageModule'
+  },
+  { path: 'trip-log', loadChildren: './pages/trip-log/trip-log.module#TripLogPageModule' },
+  { path: 'start-wizard', loadChildren: './pages/start-wizard/start-wizard.module#StartWizardPageModule' },
+  { path: 'view-observation/:id', loadChildren: './pages/view-observation/view-observation.module#ViewObservationPageModule' },
+  { path: 'observation-list', loadChildren: './pages/observation-list/observation-list.module#ObservationListPageModule' },
+  { path: 'offline-map', loadChildren: './pages/offline-map/offline-map.module#OfflineMapPageModule' },
+  { path: 'login', loadChildren: 'app/modules/login/login.module#LoginModule' },
+  {
+    path: 'registration',
+    loadChildren: 'app/modules/registration/registration.module#RegistrationModule'
+  },
+  { path: 'legacy-trip', loadChildren: './pages/legacy-trip/legacy-trip.module#LegacyTripPageModule' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

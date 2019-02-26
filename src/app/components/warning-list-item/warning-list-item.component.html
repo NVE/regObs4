@@ -1,0 +1,44 @@
+<ion-item-sliding (ionDrag)="onDrag($event)">
+  <ion-item *ngIf="warningGroup.key.geoHazard !== GeoHazard.Ice" no-padding [detail]="false" lines="full">
+    <div slot="start" class="geo-icon-circle" (click)="navigateToWeb($event, warningGroup)">
+      <app-geo-icon [geoHazards]="[warningGroup.key.geoHazard]" size="0.8"></app-geo-icon>
+    </div>
+    <ion-label (click)="navigateToWeb($event, warningGroup)">
+      <h2>{{warningGroup.key.groupName}}</h2>
+    </ion-label>
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngFor="let day of [0, 1, 2]">
+          <ion-badge *ngIf="warningGroup.getDayWarning(day) as warning else emptyWarning"
+            [color]="'warninglevel-'+warning.warningLevel" (click)="navigateToWebByDay($event, warningGroup, day)">
+            {{warning.warningLevel > 0 ? warning.warningLevel : '?'}}
+            <ion-icon *ngIf="warning.emergencyWarning" name="alert"></ion-icon>
+          </ion-badge>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+  <ion-item *ngIf="warningGroup.key.geoHazard === GeoHazard.Ice" no-padding [detail]="true" lines="full"
+    (click)="navigateToWeb($event, warningGroup)">
+    <div slot="start" class="geo-icon-circle">
+      <app-geo-icon [geoHazards]="[warningGroup.key.geoHazard]" size="0.8"></app-geo-icon>
+    </div>
+    <ion-label>
+      <h2>{{warningGroup.key.groupName}}</h2>
+      <p>
+        <span *ngIf="warningGroup.validFrom">{{'WARNING_LIST.VALID_FROM' | translate}}: {{warningGroup.validFrom |
+          formatDate:true:false:false | async }}</span>
+        <span *ngIf="warningGroup.validTo"> - {{warningGroup.validTo | formatDate:true:false:false | async}}</span>
+      </p>
+    </ion-label>
+  </ion-item>
+  <ion-item-options side="end" (ionSwipe)="itemSwiped()">
+    <ion-item-option expandable="true" (click)="toggleFavourite()">
+      <app-warning-group-favourite-toggle [key]="warningGroup.key">
+      </app-warning-group-favourite-toggle>
+    </ion-item-option>
+  </ion-item-options>
+</ion-item-sliding>
+<ng-template #emptyWarning>
+  <ion-badge color="warninglevel-0">?</ion-badge>
+</ng-template>

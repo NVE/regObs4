@@ -1,0 +1,23 @@
+<ion-footer *ngIf="registration">
+  <ion-toolbar>
+    <ion-grid no-padding>
+      <ion-row>
+        <ion-col class="send-button-col" size="12">
+          <ion-button [disabled]="isEmpty" expand="block" color="varsom-orange" (click)="send()">
+            <ion-icon slot="start" name="md-send"></ion-icon>
+            <span *ngIf="registration.error">{{"REGISTRATION.RESEND" | translate}}</span>
+            <span *ngIf="!registration.error">{{"REGISTRATION.SEND" | translate}}</span>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row no-padding>
+        <ion-col class="delete-button-col" no-padding text-center>
+          <ion-button (click)="delete()" color="dark" size="small" fill="clear">
+            <ion-icon slot="start" name="trash"></ion-icon>
+            {{"REGISTRATION.DELETE" | translate}}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

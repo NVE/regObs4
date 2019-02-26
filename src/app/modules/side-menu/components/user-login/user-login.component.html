@@ -1,0 +1,17 @@
+<ng-container *ngIf="($loggedInUser | async) as loggedInUser">
+  <ion-item routerLink="/login" routerDirection="forward" detail="true">
+    <ion-icon slot="start" name="contact" color="varsom-blue"></ion-icon>
+    <ion-label *ngIf="loggedInUser.isLoggedIn" class="menu-label">
+      {{ loggedInUser.email }}
+    </ion-label>
+    <ion-label *ngIf="!loggedInUser.isLoggedIn" class="menu-label">
+      {{'LOGIN.TITLE' | translate}}
+    </ion-label>
+  </ion-item>
+  <ion-item *ngIf="loggedInUser.isLoggedIn" routerLink="/my-observations" routerDirection="forward" detail="true">
+    <ion-icon slot="start" name="eye" color="varsom-blue"></ion-icon>
+    <ion-label class="menu-label">
+      {{'MY_OBSERVATIONS.TITLE' | translate}}
+    </ion-label>
+  </ion-item>
+</ng-container>

@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button text="" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.SNOW.SNOW_PROFILE.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-registration-content-wrapper *ngIf="registration && registration.request.SnowProfile" [registration]="registration"
+    [registrationTid]="registrationTid" (reset)="reset()">
+    <ion-list lines="full">
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.TITLE' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <ion-item>
+        <ion-label text-wrap>
+          {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_PROFILE_HELP_TEXT' | translate}}
+        </ion-label>
+      </ion-item>
+      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+    </ion-list>
+  </app-registration-content-wrapper>
+</ion-content>

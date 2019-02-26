@@ -1,0 +1,17 @@
+.map-controls {
+    position: relative;
+    top: 10px;
+    right: 10px;
+    z-index: 900;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    &.fullscreen {
+        top: calc(10px + var(--ion-safe-area-top,0px));
+    }
+
+    > * {
+        margin-bottom: 5px;
+    }
+}

@@ -1,0 +1,120 @@
+<div [ngClass]="{'open': showDetails, 'details-small':!showFromMarkerInDetails }">
+  <app-map *ngIf="locationMarker" [showSupportMaps]="false" (mapReady)="onMapReady($event)"
+    (positionChange)="positionChange($event)" [center]="locationMarker.getLatLng()"></app-map>
+  <ion-grid class="bottom-info" no-padding>
+    <ion-row>
+      <ion-col class="confirm-button-col">
+        <ion-button [disabled]="isSaveDisabled" expand="block" color="varsom-orange" (click)="confirmLocation()">{{ confirmLocationText | translate
+          }}</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row no-padding>
+      <ion-col class="show-details-col" no-padding text-center>
+        <ion-button color="dark" size="small" fill="clear" (click)="toggleDetails()">
+          <ng-container *ngIf="!showDetails">
+            <ion-icon slot="start" name="ios-arrow-up"></ion-icon>
+            {{'REGISTRATION.OBS_LOCATION.SHOW_DETAILS' | translate}}
+          </ng-container>
+          <ng-container *ngIf="showDetails">
+            <ion-icon slot="start" name="ios-arrow-down"></ion-icon>
+            {{'REGISTRATION.OBS_LOCATION.HIDE_DETAILS' | translate}}
+          </ng-container>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row class="details-row" *ngIf="showDetails">
+      <ion-col>
+        <ion-grid no-padding>
+          <ion-row>
+            <ion-col no-padding text-center size="2">
+              <svg-icon class="obs-location-marker" [src]="locationMarkerIconUrl"></svg-icon>
+              <ng-container *ngIf="showFromMarkerInDetails">
+                <svg class="dotted-line" width="4px" height="15px" viewBox="0 0 4 15">
+                  <line x1="1" x2="1" y1="2" y2="14" stroke="#000" stroke-width="2" stroke-linecap="round"
+                    stroke-dasharray="1,4"></line>
+                </svg>
+                <ion-label no-margin class="distance-label small-text">{{
+                  distanceToObservationText }}</ion-label>
+                <svg class="dotted-line" width="4px" height="15px" viewBox="0 0 4 15">
+                  <line x1="1" x2="1" y1="2" y2="14" stroke="#000" stroke-width="2" stroke-linecap="round"
+                    stroke-dasharray="1,4"></line>
+                </svg>
+                <div class="leaflet-usermarker" *ngIf="!fromMarker"></div>
+                <svg-icon *ngIf="fromMarker" [src]="fromMarkerIconUrl"></svg-icon>
+              </ng-container>
+            </ion-col>
+            <ion-col no-padding>
+              <ion-grid no-padding>
+                <ion-row class="padding-bottom">
+                  <ion-col size="12" no-padding class="padding-right">
+                    <ion-grid class="arrow-box">
+                      <ion-row>
+                        <ion-col no-padding>
+                          <ion-label class="detail-header" no-margin text-uppercase>{{ locationTitle
+                            | translate}}</ion-label>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row *ngIf="selectedLocation">
+                        <ion-col no-padding>
+                          <ion-label class="detail-obs-info" no-margin>
+                            {{selectedLocation.Name}}
+                          </ion-label>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row *ngIf="!selectedLocation && !editLocationName">
+                        <ion-col size="10" no-padding>
+                          <ng-container *ngIf="!isLoading">
+                            <ng-container *ngIf="viewInfo && viewInfo.location">
+                              <ion-label class="detail-obs-info" no-margin>
+                                <span *ngIf="(viewInfo.location.name !== viewInfo.location.adminName)">{{
+                                  viewInfo.location.name
+                                  }},&nbsp;</span>{{viewInfo.location.adminName}}&nbsp;
+                              </ion-label>
+                            </ng-container>
+                          </ng-container>
+                          <ng-container *ngIf="isLoading">
+                            <ion-spinner color="dark" name="dots"></ion-spinner>
+                          </ng-container>
+                        </ion-col>
+                        <ion-col size="2">
+                          <ion-icon name="create" *ngIf="canEditLocationName" (click)="editLocation()"></ion-icon>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row *ngIf="editLocationName">
+                        <ion-col no-padding>
+                          <ion-input #editLocationNameInput type="text" [max]="60" [(ngModel)]="locationName"
+                            (ionBlur)="onLocationEditComplete()"></ion-input>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col no-padding>
+                          <ion-label class="small-text" no-margin>
+                            <span>{{ locationMarker.getLatLng().lat | number:'0.3'
+                              }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+                              {{ locationMarker.getLatLng().lng | number:'0.3'
+                              }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</span>
+                            <span *ngIf="!isLoading && viewInfo && viewInfo.elevation !== null">, {{ viewInfo.elevation
+                              }}
+                              {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' |
+                              translate}}
+                            </span>
+                          </ion-label>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="showFromMarkerInDetails">
+                  <ion-col size="12" no-padding class="padding-right">
+                    <ion-label no-margin text-uppercase class="arrow-box detail-header block">{{fromLocationText
+                      | translate}}</ion-label>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>

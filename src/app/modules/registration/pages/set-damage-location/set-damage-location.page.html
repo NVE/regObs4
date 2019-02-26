@@ -1,0 +1,16 @@
+<ion-header *ngIf="!(fullscreen$ | async)">
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{'REGISTRATION.SET_DAMAGE_LOCATION.TITLE' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <app-set-location-in-map *ngIf="fromMarker" [geoHazard]="geoHazard" [fromMarker]="fromMarker" [locationMarker]="locationMarker"
+    [locationMarkerIconUrl]="locationMarkerIconUrl" (locationSet)="onLocationSet($event)" confirmLocationText="REGISTRATION.SET_DAMAGE_LOCATION.CONFIRM_TEXT"
+    fromLocationText="REGISTRATION.OBS_LOCATION.TITLE" [showPreviousUsedLocations]="false" locationTitle="REGISTRATION.SET_DAMAGE_LOCATION.TITLE">
+  </app-set-location-in-map>
+</ion-content>

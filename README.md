@@ -9,3 +9,23 @@ Ionic 4 uses Angular 6 and TypeScript, so all pages and components have been rew
 ## Build and release
 
 ## Plugins and other custom features
+
+# How to update all npm packages
+
+Install npm-check-updates globally and check packages.json:
+
+npm i -g npm-check-updates
+ncu -u
+npm install
+
+
+# How to update regions and polygons
+
+## Update Avalanche Warning Regions
+Download new regions from [https://nedlasting.nve.no/gis/#].
+- Select "Varslingsområder" -> "Snøskred"
+- Format: GeoJson
+- Coordinates: Geographic WGS84 (lat, lng)
+- Area: "Landsdekkende"
+
+Overwrite /assets/json/varslingsomraader.json

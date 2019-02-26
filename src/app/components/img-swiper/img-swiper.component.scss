@@ -1,0 +1,45 @@
+.slides-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    background-color: #fff;
+
+    .swiper-slide {
+        width: 80%;
+        height: 100%;
+        display: inline-flex;
+        margin-right: 5px;
+        background-color: rgba(0,0,0,0.6);
+
+        &:last-child {
+            margin-right: 0px;
+        }
+    }
+    
+    app-offline-image {
+        display: inline-flex;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        position: relative;
+        flex-grow: 1;
+    }
+    
+    ion-slides {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+    
+    ion-label {
+        padding: 10px 10px;
+        color: #444444;
+        font-size: 14px;
+        line-height: 20px;
+
+        .img-comment-header {
+            font-weight: 600;
+        }
+    }
+}

@@ -1,0 +1,10 @@
+<div class="data-load animated" [ngClass]="{'fadeIn': isLoading, 'fadeOut': !isLoading}">
+  <ion-grid *ngIf="!simple">
+    <ion-row *ngFor="let item of dataLoad">
+      <ion-col>
+        <ion-label>{{ 'DATA_LOAD.LOADING' | translate }} {{ (item.progress * 100) | number: '.1' }} %</ion-label>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-spinner *ngIf="simple"></ion-spinner>
+</div>

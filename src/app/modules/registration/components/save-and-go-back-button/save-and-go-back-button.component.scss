@@ -1,0 +1,12 @@
+ion-grid {
+    background-color: #fff;
+    margin-top: 30px;
+}
+
+.back-button {
+    background-color: var(--ion-background-color,#fff);
+}
+
+.reset-button {
+    margin-bottom: calc(var(--ion-safe-area-bottom, 0px) + 10px);
+}

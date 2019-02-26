@@ -1,0 +1,27 @@
+<ion-fab #menuFab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button>
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="top">
+    <ion-list lines="full" no-margin no-padding>
+      <ion-item (click)="createRegistration(geoHazard)" *ngFor="let geoHazard of geoHazards">
+        <ion-icon slot="start" name="eye"></ion-icon>
+        <ion-label>{{'ADD_MENU.NEW_OBSERVATION' | translate}} {{ getName(geoHazard) | translate | lowercase }}{{
+          'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}</ion-label>
+      </ion-item>
+      <ion-item *ngFor="let draft of drafts; let i = index" (click)="editRegistration(draft)">
+        <ion-icon slot="start" name="md-create"></ion-icon>
+        <ion-label>{{'ADD_MENU.DRAFT' | translate}}:
+          {{ getName(draft.geoHazard) | translate }}{{ 'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}
+          <p *ngIf="draftDates[i]">{{ draftDates[i] }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="showTrip" (click)="startOrStopTrip()">
+        <svg-icon slot="start" src="/assets/icon/man.svg"></svg-icon>
+        <ion-label *ngIf="!tripStarted">{{'TRIP.START_TRIP' | translate }}</ion-label>
+        <ion-label *ngIf="tripStarted">{{'TRIP.STOP_TRIP' | translate }}</ion-label>
+      </ion-item>
+    </ion-list>
+    <div class="backdrop" click="closeMenu()"></div>
+  </ion-fab-list>
+</ion-fab>

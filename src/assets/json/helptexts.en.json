@@ -1,0 +1,156 @@
+[
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 0,
+        "GeoHazardTID": 10,
+        "LangKey": 2,
+        "Text": "English help text not given."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 0,
+        "GeoHazardTID": 20,
+        "LangKey": 2,
+        "Text": "English help text not given."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 0,
+        "GeoHazardTID": 60,
+        "LangKey": 2,
+        "Text": "English help text not given."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 0,
+        "GeoHazardTID": 70,
+        "LangKey": 2,
+        "Text": "English help text not given."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 10,
+        "GeoHazardTID": 10,
+        "LangKey": 2,
+        "Text": "English help text not given."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 10,
+        "GeoHazardTID": 20,
+        "LangKey": 2,
+        "Text": "Want to share something, but the other forms did not quite fit? Use this one! A photo and an informative text describing what you see is very useful. "
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 10,
+        "GeoHazardTID": 60,
+        "LangKey": 2,
+        "Text": "Do you want to share something, but the other forms did not quite fit? Use this one! A photo and an informative text describing what you see is very useful. "
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 10,
+        "GeoHazardTID": 70,
+        "LangKey": 2,
+        "Text": "English help text not given."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 11,
+        "GeoHazardTID": 10,
+        "LangKey": 2,
+        "Text": "We want to collect as much information as possible about accidents and close-calls. This will be part of the preventive work to avoid avalanche events in the future.\n\nYou can register facts about the actual avalanche, as well as reflections on how the avalanche could have been avoided? How much information you want to add is up to you. Remember to focus on learning and facts, do not speculate or benefit.\n\n#### Even though you do not know so much about the snow, a photo of the avalanche is very helpful to us.\nYou can send a registration with photo only\n\nIf there are more choices that are relevant under \"damage scale\", choose the one that gives the greatest social impact.\n"
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 11,
+        "GeoHazardTID": 20,
+        "LangKey": 2,
+        "Text": "What type of landslide have you observed? For the landslide early warning service this is very useful information that helps to improve the service.<br><br>\nIs it debris or soil slides (has not followed creeks), debris flows (follows creeks), rock falls (mostly rocks), clay slides (slides in fine sediments), slush flows (slide of snow with high content of water, mixed with debris) or something else? It is also very important to report approximately when the landslide occurred, even though this could be hard to estimate if you weren't present at the time of the landslide.<br><br>\nWhat consequences has the landslide you are observing caused? Are houses, roads or other infrastructure damaged? Has it influenced people, animals or traffic? Is the landslide damming the flow in creeks or rivers? <br><br>\nImagine what you would communicate to others in the same area, about the the consequences of what you are observing."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 11,
+        "GeoHazardTID": 60,
+        "LangKey": 2,
+        "Text": "What’s the consequences of what you are observing? Is water flowing on places it is not supposed to? Is anyone hurt because of this? Imagine what you would communicate to others in the same area about the the conequences of the water you are observing, be it too much water or too little."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 11,
+        "GeoHazardTID": 70,
+        "LangKey": 2,
+        "Text": "English help text not given."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 13,
+        "GeoHazardTID": 10,
+        "LangKey": 2,
+        "Text": "Do you see signs of instability when you are out in the mountains? The easiest way to register them are in this form.\nThe signs of instability you can register are:: <br><br>\n**Recently made avalanches** -avalanche activity while you are touring. The best sign of instability in the snow pack.<br>\n**Whumpf sound** - Whumpf sounds are made when weak layers in the snow pack are collapsing. <br>\n**Recently made cracks**  - A combination of a slab with a weak layer under. <br>\n**Heavy snowfall** -More than 30 cm/24h.<br>\n**Rime crystals** - Not a problem when they are on the surface, but can become a problem if they get buried under a slab.<br>\n**Quick temperature change** -When temperature rises more than 5 degrees in 3 hours.<br>\n**Much water in the snow** -Rain will increase the weight of the snowpack and weaken the bindings in the snow.<br>\n**Recent snowdrift** -Have the wind made slabs in the last 24 h?<br>"
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 13,
+        "GeoHazardTID": 20,
+        "LangKey": 2,
+        "Text": "A registered **danger sign for landslide** hazard gives the landslide warning service an impression on how the situation is out in the field, with the given weather conditions. Danger signs is very useful additional information to those who is assessing the danger level for the area.\n<br><br>\nUse the comment form if the predefined danger signs does not fit for what you wish to report, or use it to describe the extent of what you are reporting."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 13,
+        "GeoHazardTID": 60,
+        "LangKey": 2,
+        "Text": "Water: Danger signs: <br>\n* Can you see water flowing where it is not supposed to, and can you name the cause for it? \n* Can you see clogged drainage paths?\n* Can you see ice in creeks or culverts that forces the water to drain elsewhere?\n* Can you observe alarmingly quickly rising of water level?\n<br>\nThis kind of information may help the flood forecasting service and others to understand better the effects of a rain- and snowmelt situation. Or maybe the responsible contingency personel get a tip on where their actions are needed?"
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 13,
+        "GeoHazardTID": 70,
+        "LangKey": 2,
+        "Text": "English help text not given."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 14,
+        "GeoHazardTID": 60,
+        "LangKey": 2,
+        "Text": "* Can you see any damage caused by high water level? \n* Can you see water causing damage on roads, rail roads, houses or a water level gauging station? <br>\nImagine what you would communicate to others in the same area about the the consequences of the water you are observing.<br>\nIf the observation is plotted correct on a map, it will be more useful for others later, as documentation of the incident or for learning about which damages that can occur in similar situations."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 22,
+        "GeoHazardTID": 10,
+        "LangKey": 2,
+        "Text": "This is an estimate for the area.\n\nThe most important thing you register is:\n* Snow drift: Do the wind transport the snow?\n* Snow hardness: What we primarily want to know about is whether the snow pack has loose snow available for transport by the wind.\n* Surface moisture: Is snow surface dry or soaked or anything between?\n* Photo: A photo describing snow cover.\n\nYou can also keep up with:\n\n* Snow depth: Measure the total snow type using the probe. Take  three probes within a radius of a few meters around you and calculate / record the average of these three measurements.\n* New snow depth: How much snow has fallen in the last 24 hours?\n* New snow height: At what altitude does precipitation fall like snow? \n* Snow limit: Where is the boundary between snow cover and dryland?\n* Limit layered snow: Lower height for dangerous layers in the snowpack. Mild weather in lowland can destroy weak layers in the snow cover. Without weak layers, we may have only one avalanche problem: loose snow.\n* Comment: How is snow distribution in the area, in relation to height and exposure, are there differences in the region?\n"
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 50,
+        "GeoHazardTID": 70,
+        "LangKey": 2,
+        "Text": "English help text not given."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 51,
+        "GeoHazardTID": 70,
+        "LangKey": 2,
+        "Text": "English help text not given."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 61,
+        "GeoHazardTID": 60,
+        "LangKey": 2,
+        "Text": "In this form you can register observed water level, related to a known scale or other reference points. Has the water level reached the doorhandle of your front door? Take a photo and comment it in this form."
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 71,
+        "GeoHazardTID": 20,
+        "LangKey": 2,
+        "Text": "What type of landslide have you observed? For the landslide early warning service this is very useful information that helps to improve the service.<br><br>\nIs it debris or soil slides (has not followed creeks), debris flows (follows creeks), rock falls (mostly rocks), clay slides (slides in fine sediments), slush flows (slide of snow with high content of water, mixed with debris) or something else? It is also very important to report approximately when the landslide occurred, even though this could be hard to estimate if you weren't present at the time of the landslide.<br><br>\nWhat consequences has the landslide you are observing caused? Are houses, roads or other infrastructure damaged? Has it influenced people, animals or traffic? Is the landslide damming the flow in creeks or rivers? <br><br>\nImagine what you would communicate to others in the same area, about the the consequences of what you are observing."
+    }
+]

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="28px" viewBox="0 0 18 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>FACFEBCB-1844-47E6-93A9-66B004AF8DFC</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="Ikoner" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="10.1.1-Ikoner-samleark" transform="translate(-93.000000, -316.000000)">
+            <g id="Page"></g>
+            <g id="Skadepunkt" transform="translate(93.000000, 316.000000)">
+                <g id="lokasjonmarkør/skadepunkt">
+                    <rect id="Background" x="0" y="0" width="18" height="28"></rect>
+                    <g id="location/pin">
+                        <rect id="Background" x="0" y="0" width="18" height="28"></rect>
+                        <path d="M9,27.0711862 C14.6654126,18.1632591 17.5,12.1049889 17.5,9 C17.5,4.30557963 13.6944204,0.5 9,0.5 C4.30557963,0.5 0.5,4.30557963 0.5,9 C0.5,12.1049889 3.33458739,18.1632591 9,27.0711862 Z" id="Oval" stroke="#326680" fill="#468EB2" fill-rule="nonzero"></path>
+                    </g>
+                    <g id="icon/12/skade" transform="translate(3.000000, 5.000000)">
+                        <rect id="Background" x="0" y="0" width="12" height="12"></rect>
+                        <polygon id="Path-2" fill="#FFFFFF" fill-rule="nonzero" points="5.67826392 0 3 6.82901197 6.04461896 6.82901197 6.04461896 12 8.67826392 5.1053493 5.67826392 5.1053493"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+        <g id="Page"></g>
+    </g>
+</svg>

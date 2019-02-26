@@ -1,0 +1,52 @@
+cdk-virtual-scroll-viewport {
+    height: 100%;
+}
+
+ion-virtual-scroll {
+    opacity: 0;
+    transition: opacity 1s linear;
+
+    &.loaded {
+        opacity: 1;
+    }
+
+    ion-item-divider {
+        h3 {
+            margin-top: 24px;
+            margin-bottom: 0px;
+        }
+
+        &.virtual-list-footer {
+            height: 50px;
+        }
+    }
+}
+
+.center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    .rectangle {
+        position: absolute;
+        left: -75px;
+        top: -39px;
+    }
+
+    .pin1 {
+        position: absolute;
+        left: -186px;
+    }
+
+    .pin2 {
+        position: absolute;
+        left: 100px;
+        top: 75px;
+    }
+
+    .pin3 {
+        position: absolute;
+        left: -117px;
+        top: -132px;
+    }
+}

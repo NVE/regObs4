@@ -1,0 +1,15 @@
+ion-list {
+    ion-item {
+        ion-datetime {
+            color: var(--ion-color-medium);
+            font-size: 6vw;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            padding-left: 3px;
+        }
+
+        ion-button {
+            z-index: 200;
+        }
+    }
+}

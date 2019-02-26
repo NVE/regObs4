@@ -1,0 +1,35 @@
+<div class="summaries" *ngFor="let summary of summaries; let i = index">
+  <ng-container *ngIf="summary.Summaries.length > 0">
+    <h3>{{ summary.RegistrationName }}</h3>
+    <ng-container *ngFor="let genericValue of summary.Summaries; let i = index">
+      <span *ngIf="i>0">&nbsp;&bull;&nbsp;</span>
+      <ng-container *ngTemplateOutlet="RegObsGenericValue; context:genericValue">
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+<ng-template #RegObsGenericValue let-kind="Kind" let-header="Header" let-value="Value">
+  <ng-container [ngSwitch]="kind">
+    <ng-container *ngSwitchCase="SummaryType.Text">
+      <ng-container *ngTemplateOutlet="TextSummary"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="SummaryType.Url">
+      <ng-container *ngTemplateOutlet="UrlSummary"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="SummaryType.List">
+      <ng-container *ngTemplateOutlet="List"></ng-container>
+    </ng-container>
+  </ng-container>
+  <ng-template #TextSummary>
+    <span *ngIf="showHeaders">{{ header }}:&nbsp;</span>{{ value }}
+  </ng-template>
+  <ng-template #UrlSummary>
+    <app-external-link [src]="value">{{header}}</app-external-link>
+  </ng-template>
+  <ng-template #List>
+    <ng-container *ngFor="let item of value; let j = index">
+      <span *ngIf="j>0">&nbsp;&bull;&nbsp;</span>
+      <ng-container *ngTemplateOutlet="RegObsGenericValue; context:item"></ng-container>
+    </ng-container>
+  </ng-template>
+</ng-template>

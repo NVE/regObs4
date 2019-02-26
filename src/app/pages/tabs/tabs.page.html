@@ -1,0 +1,17 @@
+<ion-tabs tabbar-highlight="true" [ngClass]="{'ios': isIos, 'md': isAndroid}">
+  <ion-tab-bar [hidden]="fullscreen$ | async" slot="bottom">
+    <ion-tab-button tab="home">
+      <ion-icon name="map"></ion-icon>
+      <ion-label>{{'TABS.MAP' | translate}}</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="observation-list">
+      <ion-icon name="list"></ion-icon>
+      <ion-label>{{'TABS.LIST' | translate}}</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="warning-list">
+      <ion-icon name="warning"></ion-icon>
+      <ion-label>{{'TABS.WARNINGS' | translate}}</ion-label>
+      <ion-badge *ngIf="showBadge" [color]="badgeColor">{{ badgeText }}</ion-badge>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

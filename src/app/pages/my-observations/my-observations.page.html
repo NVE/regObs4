@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button text="" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{"MY_OBSERVATIONS.TITLE" | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
+  <ion-virtual-scroll *ngIf="!showEmptyState else empty" [ngClass]="{ loaded: loaded }" [headerFn]="myHeaderFn"
+    [items]="virtualItems">
+    <ion-item-divider no-border *virtualHeader="let header">
+      <ion-grid no-margin no-padding>
+        <ion-row>
+          <h3 text-uppercase>{{ header.header | translate }}</h3>
+        </ion-row>
+        <ion-row *ngIf="header.subtitle">
+          <ion-label text-wrap color="medium">
+            {{ header.subtitle | translate }}
+          </ion-label>
+        </ion-row>
+      </ion-grid>
+    </ion-item-divider>
+    <div *virtualItem="let item">
+      <app-observation-list-card *ngIf="item.type === 'sent'" [obs]="item.item"></app-observation-list-card>
+      <app-sync-item *ngIf="item.type === 'draft'" [registration]="item.item"></app-sync-item>
+      <app-sync-item *ngIf="item.type === 'sync'" [registration]="item.item" [refresh]="true"></app-sync-item>
+    </div>
+  </ion-virtual-scroll>
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData()">
+    <ion-infinite-scroll-content loadingText="{{'MY_OBSERVATIONS.LOADING_MORE' | translate}}">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <app-add-menu slot="fixed"></app-add-menu>
+</ion-content>
+<ng-template #empty>
+  <ion-grid class="full-grid">
+    <ion-row class="full-grid-row">
+      <ion-col align-self-center text-center>
+        <svg-icon src="/assets/images/empty-states/no-my-observations.svg"></svg-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row class="full-grid-row">
+      <ion-col text-center margin-horizontal>
+        <h2> {{ 'MY_OBSERVATIONS.NO_OBSERVATIONS' | translate }}</h2>
+        <h3 text-wrap>{{'MY_OBSERVATIONS.NO_OBSERVATIONS_TEXT'|translate}}</h3>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ng-template>

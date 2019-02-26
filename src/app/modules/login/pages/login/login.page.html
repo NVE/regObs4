@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button text="" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'LOGIN.TITLE' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list lines="none" *ngIf="isLoggedIn(loggedInUser)">
+    <ion-item>
+      <ion-label text-wrap>{{ 'LOGIN.LOGGED_IN_AS' | translate }} {{ loggedInUser.email }}</ion-label>
+    </ion-item>
+    <ion-button class="logout-button" expand="block" type="submit" color="varsom-orange" (click)="logout()">
+      {{ 'LOGIN.LOGOUT' | translate }}</ion-button>
+    <ion-grid>
+      <ion-row>
+        <ion-col text-center>
+          <app-external-link [src]="changePasswordUrl">{{'LOGIN.CHANGE_PASSWORD' | translate}}</app-external-link>
+        </ion-col>
+        <ion-col text-center>
+          <app-external-link [src]="userProfileUrl">{{'LOGIN.MY_PROFILE' | translate }}</app-external-link>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-list>
+  <app-login-form *ngIf="!isLoggedIn(loggedInUser)">
+  </app-login-form>
+</ion-content>

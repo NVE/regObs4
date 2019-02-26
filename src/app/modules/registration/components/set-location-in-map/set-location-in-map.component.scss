@@ -1,0 +1,169 @@
+:host {
+    --bottom-content-height: 94px;
+    --map-center-info-height: 0px;
+}
+
+app-map {
+    position: absolute;
+    display: block;
+    top:0;
+    left:0;
+    right: 0;
+    bottom: var(--bottom-content-height);
+}
+
+.bottom-info {
+    background-color: #fff;
+    position: absolute;
+    left:0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    height: var(--bottom-content-height);
+    transition-property: all;
+    transition-duration: .5s;
+    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+
+    .confirm-button-col {
+        padding-bottom: 0px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+.open {
+        // --bottom-content-height: 252px;
+        .bottom-info {
+            height:252px;
+        }
+
+        &.details-small {
+            .bottom-info {
+                height:200px;
+            }
+
+            .obs-location-marker {
+                margin-top: 28px;
+            }
+        }
+    }
+
+.details-row {
+    .dotted-line {
+        width: 100%;
+    }
+
+    .obs-location-marker {
+        margin-top: 15px;
+    }
+
+    .distance-label {
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
+
+    .detail-obs-info {
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 30px;
+    }
+
+    ion-spinner {
+        height: 20px;
+    }
+}
+
+.padding-right {
+    padding-right: 10px;
+}
+
+.padding-bottom {
+    padding-bottom: 10px;
+}
+
+.fill-parent {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.block {
+    display: block !important;
+}
+
+.detail-header {
+    font-size: 12px;
+}
+
+.small-text {
+    font-size: 12px;
+}
+
+.leaflet-usermarker {
+    width: 18px;
+    height: 18px; 
+    background-color: #fff;
+    background-size: 100%;
+    border-radius: 50%;
+    -webkit-box-shadow: 1px 1px 5px 0px black;
+    -moz-box-shadow: 1px 1px 5px 0px black;
+    box-shadow: 1px 1px 5px 0px black; 
+    display: inline-block;
+    transform: translateY(-9px) translateX(-2px);
+    margin-top: 10px;
+}
+  
+  .leaflet-usermarker:before {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: #4286f4;
+    border-radius: 50%;
+    left: 2px;
+    top: 2px; 
+}
+
+.arrow-box {
+    border: 2px solid #d7d6d6;
+    z-index: 20;
+    padding: 10px;
+    padding-left: 15px;
+}
+
+.arrow-box:before {
+    content: '';
+    display: block;
+    width: 10px;
+    height: 10px;
+    border: 2px solid #d7d6d6;
+    -webkit-transform: translateY(-7px) rotate(45deg);
+    -moz-transform: translateY(-7px) rotate(45deg);
+    -o-transform: translateY(-7px) rotate(45deg);
+    -ms-transform: translateY(-7px) rotate(45deg);
+    transform: translateY(-7px) rotate(45deg);
+    position: absolute;
+    top: 50%;
+    left: -6px;
+    z-index: 10;
+}
+
+.arrow-box:after {
+    content: '';
+    display: block;
+    top: 50%;
+    left: -3px;
+    width: 10px;
+    height: 10px;
+    border: 2px solid transparent;
+    position: absolute;
+    background: white;
+    z-index: 11;
+    -webkit-transform: translateY(-7px) rotate(45deg);
+    -moz-transform: translateY(-7px) rotate(45deg);
+    -o-transform: translateY(-7px) rotate(45deg);
+    -ms-transform: translateY(-7px) rotate(45deg);
+    transform: translateY(-7px) rotate(45deg);
+}

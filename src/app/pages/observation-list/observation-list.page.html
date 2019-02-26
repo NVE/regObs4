@@ -1,0 +1,41 @@
+<app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
+<ion-content>
+  <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
+  </app-refresh-with-cancel>
+  <ng-container *ngIf="observations !== undefined">
+    <ion-virtual-scroll [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty"
+      [items]="observations" [approxItemHeight]="250" [trackBy]="trackByRegId" [footerFn]="footerFn"
+      [headerFn]="headerFn">
+      <ion-item-divider *virtualHeader="let header">
+        <h3 text-uppercase>{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+      </ion-item-divider>
+      <div *virtualItem="let obs">
+        <app-observation-list-card [obs]="obs"></app-observation-list-card>
+      </div>
+      <ion-item-divider class="virtual-list-footer" no-border *virtualFooter="let footer">
+      </ion-item-divider>
+    </ion-virtual-scroll>
+  </ng-container>
+  <app-geo-select slot="fixed"></app-geo-select>
+  <app-add-menu slot="fixed"></app-add-menu>
+</ion-content>
+<ng-template #empty>
+  <ion-grid class="full-grid">
+    <ion-row class="full-grid-row">
+      <ion-col align-self-center>
+        <div class="center">
+          <svg-icon class="rectangle" src="/assets/images/empty-states/rectangle.svg"></svg-icon>
+          <svg-icon class="pin1" src="/assets/images/empty-states/pin.svg"></svg-icon>
+          <svg-icon class="pin2" src="/assets/images/empty-states/pin.svg"></svg-icon>
+          <svg-icon class="pin3" src="/assets/images/empty-states/pin.svg"></svg-icon>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row class="full-grid-row">
+      <ion-col text-center margin-horizontal>
+        <h2> {{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}</h2>
+        <h3 text-wrap>{{'OBSERVATION_LIST.NO_OBSERVATIONS_TEXT'|translate}}</h3>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ng-template>

@@ -1,0 +1,40 @@
+ion-list {
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    ion-list-header {
+        font-size: var(--h3-font-size);
+        font-weight: unset;
+    }
+
+    ion-item {
+        --ion-item-background: var(--background-color-menu);
+        ion-toggle {
+            --ion-item-background: #fff;
+            transform: scale(0.75);
+        }
+
+        ion-icon {
+            font-size: 1.4em;
+        }
+
+        svg-icon {
+            margin-top: 6px;
+        }
+    }
+
+    .inner-list-panel {
+        ion-item {
+            --border-width: 0 0 0 0;
+        }
+    }
+}
+
+.menu-label {
+    font-size: var(--h3-font-size);
+}
+
+.stacked-label {
+    font-size: 14px;
+    margin-bottom: 0px;
+}
