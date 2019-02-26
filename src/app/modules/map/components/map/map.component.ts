@@ -16,7 +16,6 @@ import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
 import { RegObsTileLayer } from '../../core/classes/regobs-tile-layer';
 import '../../../../core/helpers/ionic/platform-helper';
-import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -313,15 +312,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         this.loggingService.debug('Geolocation service allready running', DEBUG_TAG);
       }
-      window.addEventListener('deviceorientation', this.setHeadingFunc, true);
+      if ('ondeviceorientationabsolute' in <any>window) {
+        window.addEventListener('deviceorientationabsolute', this.setHeadingFunc, false);
+      } else if ('ondeviceorientation' in <any>window) {
+        window.addEventListener('deviceorientation', this.setHeadingFunc, false);
+      }
     }
   }
 
   private setHeading(event: DeviceOrientationEvent) {
     if (this.userMarker) {
-      const compassHeading = (<any>event).webkitCompassHeading || event.alpha;
-      if (compassHeading !== undefined) {
-        const heading = 360 - event.alpha;
+      const appleHeading = (<any>event).webkitCompassHeading;
+      const heading = appleHeading !== undefined ? appleHeading :
+        (event.alpha !== undefined && event.absolute ? (360 - event.alpha) : undefined);
+      if (heading !== undefined && heading >= 0 && heading <= 360) {
         this.userMarker.setHeading(heading);
       }
     }
@@ -333,6 +337,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.geoLoactionSubscription.unsubscribe();
     }
     window.removeEventListener('deviceorientation', this.setHeadingFunc);
+    window.removeEventListener('deviceorientationabsolute', this.setHeadingFunc);
   }
 
   private onPositionUpdate(data: Geoposition) {
