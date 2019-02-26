@@ -3,7 +3,10 @@ ion-footer {
         --backround: #fff;
     }
 
-    ion-button {
-        --border-radius: 0;
+    .send-button-col {
+        ion-button {
+            margin-left: 6px;
+            margin-right: 6px;
+        }
     }
 }

@@ -1,12 +1,20 @@
 ion-grid {
     background-color: #fff;
     margin-top: 30px;
+    --ion-grid-padding: 10px;
 }
 
 .back-button {
     background-color: var(--ion-background-color,#fff);
 }
 
-.reset-button {
-    margin-bottom: calc(var(--ion-safe-area-bottom, 0px) + 10px);
+.reset-button-row {
+    .reset-button {
+        margin-bottom: calc(var(--ion-safe-area-bottom, 0px) + 10px);
+    }
+
+    svg-icon {
+        position: relative;
+        top: 2px;
+    }
 }

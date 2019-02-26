@@ -81,7 +81,7 @@
     --ion-color-varsom-orange-rgb: 238,123,4;
     --ion-color-varsom-orange-contrast: #fff;
     --ion-color-varsom-orange-contrast-rgb: 255,255,255;
-    --ion-color-varsom-orange-shade: #5C90A5;
+    --ion-color-varsom-orange-shade: var(--ion-color-varsom-orange-dark-1);
     --ion-color-varsom-orange-tint: var(--ion-color-varsom-orange-light-1);
     --ion-text-color: #444444;
     --ion-text-color-heading: #222222;
@@ -94,6 +94,7 @@
     --h3-font-size: 16px;
     --list-header-font-size: 15px;
     --list-header-font-weight: 600;
+    --ion-grid-column-padding: 6px;
 }
 
 .ion-color-varsom-orange {
@@ -171,7 +172,7 @@ ion-list {
 
     ion-list-header {
         &:not(.subheader) {
-            font-size: var(-list-header-font-size);
+            font-size: var(--list-header-font-size);
             font-weight: var(--list-header-font-weight);
         }
         &.subheader {
