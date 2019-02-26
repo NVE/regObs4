@@ -43,15 +43,15 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    this.ngZone.run(() => {
-      this.setImgHeaderAndComment(0);
-    });
     if (this.slider) {
       await this.slider.update();
     }
     if (this.slider) {
       await this.slider.slideTo(0, 0);
     }
+    this.ngZone.run(() => {
+      this.setImgHeaderAndComment(0);
+    });
   }
 
   private setImgHeaderAndComment(index: number) {
