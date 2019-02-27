@@ -142,6 +142,7 @@
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjoner",
     "NO_OBSERVATIONS": "Del dine observasjoner!",
     "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Med Varsom Regobs er det lett å dele observasjoner, bilder og vurderinger med andre.",
+    "SENT_SUBTITLE": "Disse observasjonene er sendt inn og lagret i Regobs.",
     "TITLE": "Mine observasjoner"
   },
   "OBSERVATION_LIST": {

@@ -20,7 +20,7 @@ interface MyVirtualScrollItem {
 const LIST_HEADERS = {
   'draft': { header: 'REGISTRATION.DRAFTS', subtitle: 'REGISTRATION.DRAFTS_DESCRIPTION' },
   'sync': { header: 'REGISTRATION.SAVED_ON_PHONE', subtitle: 'REGISTRATION.SAVED_DESCRIPTION' },
-  'sent': { header: 'MY_OBSERVATIONS.MY_SENT_OBSERVATIONS' },
+  'sent': { header: 'MY_OBSERVATIONS.MY_SENT_OBSERVATIONS', subtitle: 'MY_OBSERVATIONS.SENT_SUBTITLE' },
 };
 
 @Component({
