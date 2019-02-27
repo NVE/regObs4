@@ -229,7 +229,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             [{
               name: supportTile.name,
               url: supportTile.url,
-              validFunc: (coords, bounds) => this.mapService.isTileInsideNorway(coords, bounds),
+              validFunc: (coords, bounds) => this.showNorwegianSupportMap(coords, bounds),
             }],
             userSetting.tilesCacheSize,
           );
@@ -243,6 +243,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private showNorwegianMap(coords: L.Coords, bounds: L.LatLngBounds) {
     if (coords.z < settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
       return false;
+    }
+    return this.mapService.isTileInsideNorway(coords, bounds);
+  }
+
+  private showNorwegianSupportMap(coords: L.Coords, bounds: L.LatLngBounds) {
+    if (coords.z < 5) {
+      return false;
+    }
+    if (coords.z < settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
+      return true;
     }
     return this.mapService.isTileInsideNorway(coords, bounds);
   }
