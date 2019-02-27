@@ -3,12 +3,11 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { UserSetting } from '../../core/models/user-settings.model';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { NanoSql } from '../../../nanosql';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { KdvService } from '../../core/services/kdv/kdv.service';
 import { TranslateService } from '@ngx-translate/core';
-import { OfflineImageService } from '../../core/services/offline-image/offline-image.service';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
 import { AppVersion } from '../../core/models/app-version.model';
 import { TopoMap } from '../../core/models/topo-map.enum';
@@ -43,8 +42,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private loggingService: LoggingService,
     private translateService: TranslateService,
     private alertController: AlertController,
-    private offlineImageService: OfflineImageService,
     private appVersionService: AppVersionService,
+    private loadingController: LoadingController,
     private navController: NavController) { }
 
   async ngOnInit() {
@@ -71,6 +70,10 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.stopSubscriptions();
+  }
+
+  private stopSubscriptions() {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
@@ -105,11 +108,36 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     return alert.onDidDismiss();
   }
 
+  async confirmReset() {
+    const translations = await this.translateService.get(
+      ['SETTINGS.CONFIRM_RESET', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
+    const alert = await this.alertController.create({
+      message: translations['SETTINGS.CONFIRM_RESET'],
+      buttons: [{
+        text: translations['ALERT.OK'],
+        handler: () => this.reset(),
+      },
+      {
+        text: translations['ALERT.CANCEL'],
+        role: 'cancel',
+      }
+      ]
+    });
+    alert.present();
+  }
+
   async reset() {
+    const message = await this.translateService.get('SETTINGS.RESETTING').toPromise();
+    const loading = await this.loadingController.create({
+      message,
+    });
+    loading.present();
     this.isUpdating = true;
-    // await this.offlineMapService.reset();
-    // await this.offlineImageService.reset();
+    this.stopSubscriptions();
     await NanoSql.resetDb();
+    loading.dismiss();
+    this.userSettingService.initObservables();
+    this.isUpdating = false;
     this.navController.navigateRoot('start-wizard');
   }
 }

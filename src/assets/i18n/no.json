@@ -454,6 +454,7 @@
   "SETTINGS": {
     "APPMODE": "Appmodus",
     "APP_VERSION": "App versjon",
+    "CONFIRM_RESET": "Er du sikker på du vil tilbakestille app?",
     "COUNTRY": "Land",
     "DROPDOWNS_FAILED": "Klarte ikke oppdatere nedtrekksmenyer. Vennligst sjekk om du har nettverk og prøv igjen litt senere.",
     "DROPDOWNS_UPDATED": "Nedtrekksmenyer oppdatert!",
@@ -463,6 +464,7 @@
     "NORWAY_ONLY": "Kun i Norge",
     "NUMBER_OF_TILES_IN_CACHE": "Antall kartblad lagret på telefonen",
     "RESET": "Tilbakestill app",
+    "RESETTING": "App tilbakestilles. Vennligst vent...",
     "SHOW_ADVANCED": "Vis avanserte innstillinger",
     "SIZE_OF_TILES_CACHE": "Størrelse på kartblad lagret på telefonen",
     "TILES_CACHE_SIZE": "Kartblad buffer størrelse",

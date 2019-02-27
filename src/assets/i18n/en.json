@@ -454,6 +454,7 @@
   "SETTINGS": {
     "APPMODE": "App mode",
     "APP_VERSION": "App version",
+    "CONFIRM_RESET": "Are you sure you want to reset app?",
     "COUNTRY": "Country",
     "DROPDOWNS_FAILED": "Could not update dropdowns. Please check network settings and try again later.",
     "DROPDOWNS_UPDATED": "Dropdowns updated!",
@@ -463,6 +464,7 @@
     "NORWAY_ONLY": "In Norway only",
     "NUMBER_OF_TILES_IN_CACHE": "Number of tiles saved on device",
     "RESET": "Reset app",
+    "RESETTING": "App is resetting. Please wait...",
     "SHOW_ADVANCED": "Show advanced settings",
     "SIZE_OF_TILES_CACHE": "Size of tiles saved on device",
     "TILES_CACHE_SIZE": "Tiles cache size",

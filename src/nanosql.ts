@@ -2,7 +2,7 @@ import { settings } from './settings';
 import { AppMode } from './app/core/models/app-mode.enum';
 import { nSQL } from '@nano-sql/core';
 import { getMode } from '@nano-sql/adapter-sqlite-cordova';
-import { InanoSQLTableConfig, InanoSQLTable, InanoSQLQuery } from '@nano-sql/core/lib/interfaces';
+import { InanoSQLTableConfig, InanoSQLTable, InanoSQLQuery, InanoSQLDataModel, InanoSQLIndex, InanoSQLTableIndexConfig } from '@nano-sql/core/lib/interfaces';
 export class NanoSql {
     public static readonly TABLES = {
         OBSERVATION: {
@@ -201,7 +201,7 @@ export class NanoSql {
     };
 
     static getTables() {
-        const result = [];
+        const result: { name: string, instancePerAppMode: boolean, model: InanoSQLDataModel, indexes: InanoSQLTableIndexConfig }[] = [];
         // tslint:disable-next-line:forin
         for (const tableDef in NanoSql.TABLES) {
             result.push(NanoSql.TABLES[tableDef]);
@@ -289,16 +289,11 @@ export class NanoSql {
     }
 
     static async resetDb() {
-        const promises: Promise<any>[] = [];
-        for (const table of NanoSql.getTables()) {
-            if (table.instancePerAppMode) {
-                promises.push(nSQL(NanoSql.getInstanceName(table.name, AppMode.Prod)).query('delete').exec());
-                promises.push(nSQL(NanoSql.getInstanceName(table.name, AppMode.Demo)).query('delete').exec());
-                promises.push(nSQL(NanoSql.getInstanceName(table.name, AppMode.Test)).query('delete').exec());
-            } else {
-                promises.push(nSQL(table.name).query('delete').exec());
-            }
-        }
-        await Promise.all(promises);
+        return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig)));
+    }
+
+    static async resetTable(tableConfig: InanoSQLTableConfig) {
+        await nSQL(tableConfig.name).query('drop').exec();
+        await nSQL().query('create table', tableConfig).exec();
     }
 }

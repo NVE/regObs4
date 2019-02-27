@@ -14,12 +14,10 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
 
   geoHazardTypes: Array<GeoHazard[]>;
   isOpen = false;
-  currentGeoHazards: GeoHazard[];
   fullscreen$: Observable<boolean>;
-  showGeoSelectInfo = false;
 
   private geoHazardSubscription: Subscription;
-  private userSettings: UserSetting;
+  userSettings: UserSetting;
 
   @Input() inHeader: boolean;
 
@@ -34,14 +32,12 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.geoHazardTypes = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Dirt]];
     this.geoHazardSubscription = this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
-        this.currentGeoHazards = val.currentGeoHazard;
-        this.showGeoSelectInfo = val.showGeoSelectInfo;
-        this.isOpen = this.showGeoSelectInfo;
+        this.isOpen = this.userSettings.showGeoSelectInfo;
       });
     });
   }
@@ -65,11 +61,9 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
   }
 
   async changeGeoHazard(geoHazards: GeoHazard[]) {
+    this.isOpen = false;
     this.userSettings.currentGeoHazard = geoHazards;
     this.userSettings.showGeoSelectInfo = false;
-    await this.userSettingService.saveUserSettings(this.userSettings);
-    this.ngZone.run(() => {
-      this.isOpen = false;
-    });
+    this.userSettingService.saveUserSettings(this.userSettings);
   }
 }

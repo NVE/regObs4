@@ -71,6 +71,10 @@ export class UserSettingService {
   }
 
   constructor(private translate: TranslateService, private loggingService: LoggingService) {
+    this.initObservables();
+  }
+
+  initObservables() {
     this._userSettingObservable = this.getUserSettingsAsObservable();
     this._currentGeoHazardObservable = this._userSettingObservable.pipe(
       map((val) => val.currentGeoHazard),

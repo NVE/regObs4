@@ -12,8 +12,8 @@
   <ion-list lines="full">
     <ion-item>
       <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.APPMODE" | translate }}</ion-label>
-      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.appMode" interface="action-sheet"
-        (ngModelChange)="updateSettings()">
+      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.appMode"
+        interface="action-sheet" (ngModelChange)="updateSettings()">
         <ion-select-option value="PROD">regObs</ion-select-option>
         <ion-select-option value="DEMO">demo regObs</ion-select-option>
         <ion-select-option value="TEST">test regObs</ion-select-option>
@@ -21,10 +21,12 @@
     </ion-item>
     <ion-item>
       <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.LANGUAGE" | translate }}</ion-label>
-      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language" interface="action-sheet"
-        (ngModelChange)="updateSettings()">
-        <ion-select-option [value]="LangKey.no">{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN' | translate}}</ion-select-option>
-        <ion-select-option [value]="LangKey.en">{{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH' | translate}}</ion-select-option>
+      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language"
+        interface="action-sheet" (ngModelChange)="updateSettings()">
+        <ion-select-option [value]="LangKey.no">{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN' | translate}}
+        </ion-select-option>
+        <ion-select-option [value]="LangKey.en">{{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH' | translate}}
+        </ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
@@ -63,13 +65,17 @@
     </ion-list>
     <ion-list lines="full">
       <ion-item>
-        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.TILES_CACHE_SIZE' | translate}}</ion-label>
-        <ion-input *ngIf="numberOfCacheTiles !== undefined" type="text" readonly="true" [value]="numberOfCacheTiles"></ion-input>
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.TILES_CACHE_SIZE' | translate}}
+        </ion-label>
+        <ion-input *ngIf="numberOfCacheTiles !== undefined" type="text" readonly="true" [value]="numberOfCacheTiles">
+        </ion-input>
         <ion-spinner name="dots" *ngIf="numberOfCacheTiles === undefined"></ion-spinner>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.SIZE_OF_TILES_CACHE' | translate}}</ion-label>
-        <ion-input *ngIf="cacheTilesSize !== undefined" type="text" readonly="true" [value]="cacheTilesSize"></ion-input>
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.SIZE_OF_TILES_CACHE' | translate}}
+        </ion-label>
+        <ion-input *ngIf="cacheTilesSize !== undefined" type="text" readonly="true" [value]="cacheTilesSize">
+        </ion-input>
         <ion-spinner name="dots" *ngIf="cacheTilesSize === undefined"></ion-spinner>
       </ion-item>
     </ion-list>
@@ -79,7 +85,7 @@
         {{ "SETTINGS.UPDATE_DROPDOWNS" | translate }}
       </ion-button>
 
-      <ion-button class="reset-button" color="danger" expand="block" [disabled]="isUpdating" (click)="reset()">
+      <ion-button class="reset-button" color="danger" expand="block" [disabled]="isUpdating" (click)="confirmReset()">
         <ion-icon slot="start" name="medkit"></ion-icon>
         {{ "SETTINGS.RESET" | translate }}
       </ion-button>
