@@ -12,7 +12,7 @@ import { RegistrationService } from '../../../modules/registration/services/regi
 import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { map, switchMap, distinctUntilChanged, pairwise, filter, take } from 'rxjs/operators';
 import { OfflineMapService } from '../offline-map/offline-map.service';
 import { nSQL } from '@nano-sql/core';
@@ -26,6 +26,7 @@ export class DataMarshallService {
 
   foregroundUpdateInterval: NodeJS.Timeout;
   private cancelUpdateObservationsSubject: Subject<boolean>;
+  private subscriptions: Subscription[] = [];
 
   get observableCancelSubject() {
     return this.cancelUpdateObservationsSubject;
@@ -54,40 +55,45 @@ export class DataMarshallService {
   }
 
   init() {
-    this.hasDaysBackChangedToLargerValue().subscribe(() => {
+    this.subscriptions.push(this.hasDaysBackChangedToLargerValue().subscribe(() => {
       this.loggingService.debug('DaysBack has changed to a larger value. Update observations.', DEBUG_TAG);
       this.updateObservations();
-    });
+    }));
 
-    this.userSettingService.appModeAndLanguage$.subscribe(() => {
+    this.subscriptions.push(this.userSettingService.appModeAndLanguage$.subscribe(() => {
       this.kdvService.updateKdvElements();
       this.helpTextService.updateHelpTexts();
       this.loggingService.debug('AppMode or Language has changed. Update kdv elements and help texts.', DEBUG_TAG);
-    });
-    this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(() => {
+    }));
+    this.subscriptions.push(this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(() => {
       this.loggingService.debug('AppMode, Language or CurrentGeoHazard has changed. Update observations and warnings.', DEBUG_TAG);
       this.updateObservations();
       this.warningService.updateWarnings();
-    });
-    this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user));
-    this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode));
+    }));
+    this.subscriptions.push(this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user)));
+    this.subscriptions.push(this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode)));
 
-    this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {
+    this.subscriptions.push(this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {
       this.offlineMapService.updateTilesCacheSizeTable(val.count, val.size);
-    });
+    }));
 
-    this.platform.ready().then(() => {
-      this.platform.pause.subscribe(() => {
-        this.loggingService.debug('App paused. Stop foreground updates.', DEBUG_TAG);
-        this.stopForegroundUpdate();
-      });
-      this.platform.resume.subscribe(() => {
-        this.loggingService.debug('App resumed. Start foreground updates.', DEBUG_TAG);
-        this.startForegroundUpdate();
-      });
-      // this.startForegroundUpdate();
-    });
+    this.subscriptions.push(this.platform.pause.subscribe(() => {
+      this.loggingService.debug('App paused. Stop foreground updates.', DEBUG_TAG);
+      this.stopForegroundUpdate();
+    }));
+    this.subscriptions.push(this.platform.resume.subscribe(() => {
+      this.loggingService.debug('App resumed. Start foreground updates.', DEBUG_TAG);
+      this.startForegroundUpdate();
+    }));
+    // this.startForegroundUpdate();
     // No need to unsubscribe this observables when the service is singleton. It get destroyed when app exits.
+  }
+
+  unsubscribeAll() {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
+    this.subscriptions = [];
   }
 
   cancelUpdateObservations() {

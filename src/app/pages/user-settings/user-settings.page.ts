@@ -14,6 +14,7 @@ import { TopoMap } from '../../core/models/topo-map.enum';
 import { Subscription } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
+import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 
@@ -41,6 +42,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private loggingService: LoggingService,
     private translateService: TranslateService,
+    private dataMarshallService: DataMarshallService,
     private alertController: AlertController,
     private appVersionService: AppVersionService,
     private loadingController: LoadingController,
@@ -77,6 +79,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
+    this.subscriptions = [];
   }
 
   async updateSettings() {
@@ -134,10 +137,12 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     loading.present();
     this.isUpdating = true;
     this.stopSubscriptions();
+    this.dataMarshallService.unsubscribeAll();
     await NanoSql.resetDb();
-    loading.dismiss();
     this.userSettingService.initObservables();
+    this.dataMarshallService.init();
     this.isUpdating = false;
+    loading.dismiss();
     this.navController.navigateRoot('start-wizard');
   }
 }

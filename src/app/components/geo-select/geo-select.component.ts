@@ -18,6 +18,7 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
 
   private geoHazardSubscription: Subscription;
   userSettings: UserSetting;
+  private showGeoSelectInfo: boolean;
 
   @Input() inHeader: boolean;
 
@@ -37,7 +38,10 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
     this.geoHazardSubscription = this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
-        this.isOpen = this.userSettings.showGeoSelectInfo;
+        if (this.showGeoSelectInfo === undefined) {
+          this.showGeoSelectInfo = this.userSettings.showGeoSelectInfo;
+          this.isOpen = this.userSettings.showGeoSelectInfo;
+        }
       });
     });
   }
@@ -54,14 +58,16 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
 
   toggle() {
     this.isOpen = !this.isOpen;
-    if (this.userSettings.showGeoSelectInfo) {
+    if (this.showGeoSelectInfo) {
+      this.showGeoSelectInfo = false;
       this.userSettings.showGeoSelectInfo = false;
       this.userSettingService.saveUserSettings(this.userSettings);
     }
   }
 
-  async changeGeoHazard(geoHazards: GeoHazard[]) {
+  changeGeoHazard(geoHazards: GeoHazard[]) {
     this.isOpen = false;
+    this.showGeoSelectInfo = false;
     this.userSettings.currentGeoHazard = geoHazards;
     this.userSettings.showGeoSelectInfo = false;
     this.userSettingService.saveUserSettings(this.userSettings);

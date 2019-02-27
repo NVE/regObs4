@@ -293,7 +293,8 @@ export class NanoSql {
     }
 
     static async resetTable(tableConfig: InanoSQLTableConfig) {
-        await nSQL(tableConfig.name).query('drop').exec();
-        await nSQL().query('create table', tableConfig).exec();
+        // await nSQL(tableConfig.name).query('drop').exec();
+        // await nSQL().query('create table', tableConfig).exec();
+        await nSQL(tableConfig.name).query('delete').exec();
     }
 }
