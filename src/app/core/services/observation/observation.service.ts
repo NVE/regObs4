@@ -278,16 +278,19 @@ export class ObservationService {
     return combineLatest(this.getUserSettingsObservableDistinctToChangeObservations(), this.latestObservations.asObservable())
       .pipe(
         tap((val) => this.loggingService.debug('User settings or latest observations triggered change', DEBUG_TAG, val)),
-        switchMap(([userSetting, latestObservations]) =>
-          latestObservations[this.getGeoHazardKey(userSetting.currentGeoHazard)] !== undefined ?
-            of(latestObservations[this.getGeoHazardKey(userSetting.currentGeoHazard)].filter((reg) => this.observationByParameterFilter(reg,
-              userSetting.language, userSetting.currentGeoHazard, this.getObservationDaysBackAsDate(userSetting)))) :
-            this.getObservationsByParametersAsObservable(
-              userSetting.appMode,
-              userSetting.language,
-              userSetting.currentGeoHazard,
-              this.getObservationDaysBackAsDate(userSetting),
-            )), shareReplay(1));
+        switchMap(([userSetting, latestObservations]) => {
+          const key = this.getGeoHazardKeyFull(userSetting.appMode, userSetting.language, userSetting.currentGeoHazard);
+          if (latestObservations[key] !== undefined) {
+            const filteredObservations = latestObservations[key].filter((reg) => this.observationByParameterFilter(reg,
+              userSetting.language, userSetting.currentGeoHazard, this.getObservationDaysBackAsDate(userSetting)));
+            return of(filteredObservations);
+          }
+          return this.getObservationsByParametersAsObservable(
+            userSetting.appMode,
+            userSetting.language,
+            userSetting.currentGeoHazard,
+            this.getObservationDaysBackAsDate(userSetting));
+        }), shareReplay(1));
   }
 
   private getDistinctUserSettingsToChangeObservations(userSetting: UserSetting) {
