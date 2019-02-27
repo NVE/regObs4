@@ -22,19 +22,20 @@ export class ObservationListPage implements OnInit, OnDestroy {
     observations: RegistrationViewModel[];
     loaded = false;
     private subscription: Subscription;
-
-    refreshFunc: Function;
     cancelSubject: Subject<any>;
 
     @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
     @ViewChild(IonRefresher) refresher: IonRefresher;
+
+    trackByIdFunc = this.trackByIdFuncInternal.bind(this);
+    refreshFunc = this.refresh.bind(this);
 
     get observations$() {
         return this.mapService.mapView$.pipe(switchMap((mapView: IMapView) =>
             this.observationService.observations$.pipe(map((observations) =>
                 this.filterObservationsWithinViewBounds(observations, mapView)),
                 distinctUntilChanged<RegistrationViewModel[], string>((a, b) => a.localeCompare(b) === 0,
-                    (keySelector) => this.getUniqueArray(keySelector))
+                    (keySelector) => this.observationService.getUniqueObservations(keySelector))
             )
         ));
     }
@@ -49,7 +50,6 @@ export class ObservationListPage implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.refreshFunc = this.refresh.bind(this);
         this.cancelSubject = this.dataMarshallService.observableCancelSubject;
     }
 
@@ -66,7 +66,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
     }
 
     private reloadVirtualList(observations: RegistrationViewModel[]) {
-        if (this.getUniqueArray(this.observations) !== this.getUniqueArray(observations)) {
+        if (this.observationService.isDifferent(this.observations, observations)) {
             this.ngZone.run(() => {
                 this.loaded = false;
                 this.observations = undefined; // Recreate virutal scroll
@@ -98,13 +98,6 @@ export class ObservationListPage implements OnInit, OnDestroy {
         this.subscription = this.observations$.subscribe((val) => this.reloadVirtualList(val));
     }
 
-    private getUniqueArray(arr: RegistrationViewModel[]) {
-        if (!arr) {
-            return '';
-        }
-        return arr.map((reg) => `${reg.RegID}-${reg.DtChangeTime}`).join('#');
-    }
-
     stopSubscription() {
         if (this.subscription) {
             this.subscription.unsubscribe();
@@ -119,8 +112,8 @@ export class ObservationListPage implements OnInit, OnDestroy {
             view.bounds.contains(L.latLng(observation.ObsLocation.Latitude, observation.ObsLocation.Longitude)));
     }
 
-    trackByRegId(_, obs: RegistrationViewModel) {
-        return obs ? obs.RegID : undefined;
+    private trackByIdFuncInternal(_, obs: RegistrationViewModel) {
+        return this.observationService.uniqueObservation(obs);
     }
 
     footerFn(item: RegistrationViewModel, index: number, items: RegistrationViewModel[]) {

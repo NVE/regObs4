@@ -80,6 +80,10 @@ export class WarningGroup {
         return max;
     }
 
+    getKeyAsString() {
+        return `${this._warningGroup.geoHazard}_${this._warningGroup.regionId}_${this._warningGroup.regionName}`;
+    }
+
     constructor(group: IWarningGroup) {
         this._warningGroup = group;
     }

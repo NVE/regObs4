@@ -21,10 +21,11 @@ export class WarningListPage implements OnInit, OnDestroy {
   private segmentPageObservable: Observable<SelectedTab>;
   private subscription: Subscription;
   private titleSubscription: Subscription;
-  refreshFunc: Function;
+  refreshFunc = this.refresh.bind(this);
   title = 'WARNING_LIST.TITLE';
   noFavourites = false;
   noRelevant = false;
+  trackByFunc = this.trackByInternal.bind(this);
 
   get showNoFavourites() {
     return this.selectedTab === 'favourites' && this.noFavourites;
@@ -46,7 +47,6 @@ export class WarningListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.selectedTab = 'inMapView';
-    this.refreshFunc = this.refresh.bind(this);
     this.segmentPageSubject = new BehaviorSubject<SelectedTab>(this.selectedTab);
     this.segmentPageObservable = this.segmentPageSubject.asObservable();
   }
@@ -178,6 +178,10 @@ export class WarningListPage implements OnInit, OnDestroy {
     if (index === (items.length - 1)) {
       return 'footer';
     }
+  }
+
+  trackByInternal(_, item: IVirtualScrollItem<WarningGroup>) {
+    return (item && item.item) ? item.item.getKeyAsString() : undefined;
   }
 
   ionViewWillLeave() {

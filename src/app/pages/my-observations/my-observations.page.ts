@@ -35,7 +35,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   private user: ObserverResponseDto;
   // theBoundCallback: Function;
   loaded = false;
-  refreshFunc: Function;
+  refreshFunc = this.refresh.bind(this);
   private firstDataLoad = false;
   virtualItems: MyVirtualScrollItem[] = [];
   myObservations: BehaviorSubject<RegistrationViewModel[]>;
@@ -52,7 +52,6 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     private registrationService: RegistrationService,
     // private obsCardHeightService: ObsCardHeightService,
     private loginService: LoginService) {
-    this.refreshFunc = this.refresh.bind(this);
     this.myObservations = new BehaviorSubject([]);
   }
 

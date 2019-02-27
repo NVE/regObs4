@@ -338,20 +338,25 @@ export class ObservationService {
       (this.getObservationsByParametersQuery(appMode, langKey, geoHazards, fromDate, observerGuid).listen({
         debounce: 500,
         unique: true,
-        compareFn: (a, b) => this.observableCompareFunc(a, b),
+        compareFn: (a, b) => this.isDifferent(a, b),
       })).pipe(
         map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
         tap((items) => this.loggingService.debug('Observations observable change feed', DEBUG_TAG, items)));
   }
 
-  private observableCompareFunc(rowsA: RegistrationViewModel[], rowsB: RegistrationViewModel[]) {
-    const newRows = rowsA.map((x) => this.uniqueObservation(x)).join('#');
-    const oldRows = rowsB.map((x) => this.uniqueObservation(x)).join('#');
-    return newRows !== oldRows;
+  isDifferent(rowsA: RegistrationViewModel[], rowsB: RegistrationViewModel[]) {
+    return this.getUniqueObservations(rowsA) !== this.getUniqueObservations(rowsB);
   }
 
-  private uniqueObservation(obs: RegistrationViewModel) {
-    return `${obs.RegID}_${obs.DtChangeTime}`;
+  uniqueObservation(obs: RegistrationViewModel) {
+    return `${obs.RegID}_${obs.LangKey}_${obs.DtChangeTime}`;
+  }
+
+  getUniqueObservations(rows: RegistrationViewModel[]) {
+    if (!rows) {
+      return '';
+    }
+    return rows.map((x) => this.uniqueObservation(x)).join('#');
   }
 
   async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {
