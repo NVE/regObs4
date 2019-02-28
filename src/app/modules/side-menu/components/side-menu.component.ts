@@ -93,7 +93,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       to: settings.errorEmailAddress,
       subject: `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${this.platfrom.is('ios') ? 'ios' : ''}`
         + `${this.platfrom.is('android') ? 'android' : ''}`
-        + ` ${appVersion.version}  ${appVersion.branch} ${appVersion.buildNumber} ${appVersion.revision}`,
+        + ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
       body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
       isHtml: true
     };

@@ -49,9 +49,8 @@
       </ion-item>
       <ion-item>
         <ion-label text-wrap>
-          <h3>{{version.version }}</h3>
-          <p>{{ version.branch }} {{ version.buildNumber }} {{ version.revision }} </p>
-          <p>{{ version.date }}</p>
+          <h3>{{version.version }} ({{ version.buildNumber }})</h3>
+          <p>{{ version.revision }} - {{ version.date | formatDate | async }}</p>
         </ion-label>
       </ion-item>
       <ion-item>
