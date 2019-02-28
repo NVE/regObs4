@@ -25,17 +25,21 @@ export class SetTimePage extends BasePage {
 
   onInit() {
     this.maxDate = moment().toISOString(true);
-    if (!this.registration.request.DtObsTime) {
+    if (this.registration && !this.registration.request.DtObsTime) {
       this.registration.request.DtObsTime = this.maxDate;
     }
   }
   setToNow() {
-    const now = moment().toISOString(true);
-    this.maxDate = now;
-    this.registration.request.DtObsTime = now;
+    if (this.registration) {
+      const now = moment().toISOString(true);
+      this.maxDate = now;
+      this.registration.request.DtObsTime = now;
+    }
   }
 
-  async confirm() {
-    this.navController.navigateRoot('registration/edit/' + this.registration.id);
+  confirm() {
+    if (this.registration) {
+      this.navController.navigateRoot('registration/edit/' + this.registration.id);
+    }
   }
 }

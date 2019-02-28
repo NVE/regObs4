@@ -15,7 +15,6 @@ ion-grid {
     }
 
     svg-icon {
-        position: relative;
-        top: 2px;
+        display: flex;
     }
 }

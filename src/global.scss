@@ -198,10 +198,6 @@ ion-list {
         padding-top: 0px;
         background: var(--ion-background-color);
     }
-
-    .item.sc-ion-label-ios-h, .item .sc-ion-label-ios-h {
-        padding-left: 0px;
-    }
 }
 
 .action-sheet-group.sc-ion-action-sheet-ios {
@@ -245,6 +241,12 @@ ion-button {
         --border-radius: 2px;
     }
     text-transform: inherit;
+    font-size: var(--ion-button-font-size, 15px);
+    letter-spacing: inherit;
+
+    &.button-small {
+        font-size: var(--ion-button-font-size, 11px);
+    }
 }
 
 ion-radio {

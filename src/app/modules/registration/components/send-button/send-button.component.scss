@@ -10,4 +10,15 @@ ion-footer {
             height: var(--ion-button-height);
         }
     }
+
+    .delete-button-col {
+        --ion-button-font-size: 11px;
+
+        ion-button {
+            svg-icon {
+                margin-right: 6px;
+                display: flex;
+            }
+        }
+    }
 }

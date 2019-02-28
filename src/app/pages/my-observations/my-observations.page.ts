@@ -57,7 +57,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
 
   refresh(cancelPromise: Promise<any>) {
     return this.registrationService.syncRegistrations(cancelPromise).then(() =>
-      this.loadData(cancelPromise));
+      this.loadData(cancelPromise, true));
   }
 
   async ngOnInit() {
@@ -73,7 +73,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       this.updateVirtualItems(val);
     });
 
-    this.loadData();
+    this.loadData(null, true);
   }
 
   private updateVirtualItems(virtualItems: MyVirtualScrollItem[]) {
@@ -92,7 +92,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
 
         if (reloadMyObservations) {
           this.myObservations.next([]);
-          this.loadData();
+          this.loadData(null, true);
         }
       });
     }
@@ -254,8 +254,8 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     }
   }
 
-  async loadData(cancel?: Promise<any>) {
-    const currentValue = this.myObservations.value;
+  async loadData(cancel?: Promise<any>, forceReload = false) {
+    const currentValue = forceReload ? [] : this.myObservations.value;
     const numberOfRecords = 10;
     const pageNumber = Math.floor(currentValue.length / numberOfRecords);
     const subscription = this.userSettingService.appModeAndLanguage$.pipe(switchMap(([appMode, langKey]) =>
