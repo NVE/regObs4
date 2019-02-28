@@ -4,4 +4,9 @@ ion-grid {
 
 ion-button {
     height: var(--ion-button-height);
+    ion-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
