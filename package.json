@@ -16,7 +16,9 @@
     "update-packages": "ncu -u & npm install",
     "create-version-file": "ts-node git.version.ts",
     "upload-sourcemaps": "sentry-cli releases files \"%npm_package_version%\" upload-sourcemaps --url-prefix / www --rewrite",
-    "win-set-prop-upload-sourcemaps": "set SENTRY_PROPERTIES=sentry.properties && npm run upload-sourcemaps"
+    "sentry-create-release-and-commits": "sentry-cli releases new \"%npm_package_version%\" && sentry-cli releases set-commits --auto \"%npm_package_version%\"",
+    "sentry-create-release": "sentry-cli releases new \"%npm_package_version%\"",
+    "win-set-prop-upload-sourcemaps": "set SENTRY_PROPERTIES=sentry.properties && npm run sentry-create-release && npm run upload-sourcemaps"
   },
   "private": true,
   "dependencies": {
@@ -73,6 +75,7 @@
     "@types/xml2js": "^0.4.3",
     "angular-svg-icon": "^7.2.0",
     "animate.css": "^3.7.0",
+    "build": "0.1.4",
     "cordova-android": "8.0.0",
     "cordova-clipboard": "^1.2.1",
     "cordova-ios": "5.0.0",
