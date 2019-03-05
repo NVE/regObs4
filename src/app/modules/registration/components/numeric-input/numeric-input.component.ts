@@ -44,10 +44,6 @@ export class NumericInputComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(simpleChange: SimpleChanges) {
-    if (this.skipNextChange) {
-      this.skipNextChange = false;
-      return;
-    }
     if (simpleChange.value && simpleChange.value.currentValue !== undefined) {
       this.localValue = this.convertMetersToCm ?
         this.convertMtoCM(simpleChange.value.currentValue) : simpleChange.value.currentValue;
@@ -65,7 +61,6 @@ export class NumericInputComponent implements OnInit, OnChanges {
     } else {
       this.value = undefined;
     }
-    this.skipNextChange = true;
     this.valueChange.emit(this.value);
   }
 
