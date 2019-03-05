@@ -14,6 +14,7 @@ import { IRegistration } from '../../models/registration.model';
 export class SetTimePage extends BasePage {
   maxDate: string;
   registration: IRegistration;
+  localDate: string;
 
   constructor(
     basePageService: BasePageService,
@@ -21,24 +22,23 @@ export class SetTimePage extends BasePage {
     private navController: NavController,
   ) {
     super(null, basePageService, activatedRoute);
+    this.setToNow();
   }
 
   onInit() {
-    this.maxDate = moment().toISOString(true);
-    if (this.registration && !this.registration.request.DtObsTime) {
-      this.registration.request.DtObsTime = this.maxDate;
+    if (this.registration && this.registration.request.DtObsTime) {
+      this.localDate = this.registration.request.DtObsTime;
     }
   }
   setToNow() {
-    if (this.registration) {
-      const now = moment().toISOString(true);
-      this.maxDate = now;
-      this.registration.request.DtObsTime = now;
-    }
+    const now = moment().toISOString(true);
+    this.maxDate = now;
+    this.localDate = now;
   }
 
   confirm() {
     if (this.registration) {
+      this.registration.request.DtObsTime = this.localDate;
       this.navController.navigateRoot('registration/edit/' + this.registration.id);
     }
   }

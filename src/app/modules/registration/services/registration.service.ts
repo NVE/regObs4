@@ -25,6 +25,7 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { ObservationService } from '../../../core/services/observation/observation.service';
 import { NanoSqlObservableHelper } from '../../../core/helpers/nano-sql/nanoObserverToRxjs';
 import * as utils from '@nano-sql/core/lib/utilities';
+import { LoggedInUser } from '../../login/models/logged-in-user.model';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -69,20 +70,18 @@ export class RegistrationService {
     return (result[0] as IRegistration).id;
   }
 
-  async createNewRegistration(geoHazard?: GeoHazard) {
-    const userSettings = await this.userSettingService.getUserSettings();
-    const loggedInUser = await this.loginService.getLoggedInUser();
-    const geoHazardToUse = geoHazard ? geoHazard : userSettings.currentGeoHazard[0];
+  createNewRegistration(geoHazard: GeoHazard, loggedInUser: LoggedInUser) {
     const newId = utils.uuid();
     const reg: IRegistration = {
-      geoHazard: geoHazardToUse,
+      id: newId,
+      geoHazard,
       changed: moment().unix(),
       status: RegistrationStatus.Draft,
       request: {
         Id: newId,
         ObserverGuid: loggedInUser.isLoggedIn ? loggedInUser.user.Guid : null,
         DtObsTime: null,
-        GeoHazardTID: geoHazardToUse
+        GeoHazardTID: geoHazard
       }
     };
     return reg;
@@ -177,8 +176,7 @@ export class RegistrationService {
     if (loggedInUser) {
       reg.request.ObserverGuid = loggedInUser.Guid;
       reg.status = RegistrationStatus.Sync;
-      await this.saveRegistration(reg);
-      this.syncRegistrations();
+      this.saveRegistration(reg).then(() => this.syncRegistrations());
       this.navController.navigateRoot('my-observations');
     }
   }

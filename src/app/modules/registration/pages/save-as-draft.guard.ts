@@ -21,31 +21,10 @@ export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLo
         _: ActivatedRouteSnapshot,
         __: RouterStateSnapshot,
         nextState?: RouterStateSnapshot) {
-        if (nextState && nextState.url.indexOf('registration/') < 0 && component.registration) {
+        if (nextState && !this.isInWhitelist(nextState.url) && component.registration) {
             const reg = await this.registrationService.getSavedRegistrationById(component.registration.id);
             if (reg && reg.status === RegistrationStatus.Draft) {
-                const translations = await this.translateService.get([
-                    'REGISTRATION.SAVE_ALERT.HEADER',
-                    'REGISTRATION.SAVE_ALERT.MESSAGE',
-                    'REGISTRATION.SAVE_ALERT.NO',
-                    'REGISTRATION.SAVE_ALERT.YES',
-                ]).toPromise();
-                const alert = await this.alertController.create({
-                    header: translations['REGISTRATION.SAVE_ALERT.HEADER'],
-                    message: translations['REGISTRATION.SAVE_ALERT.MESSAGE'],
-                    buttons: [
-                        {
-                            text: translations['REGISTRATION.SAVE_ALERT.NO'],
-                            role: 'cancel'
-                        },
-                        {
-                            text: translations['REGISTRATION.SAVE_ALERT.YES'],
-                        }
-                    ]
-                });
-                alert.present();
-                const result = await alert.onDidDismiss();
-                const save: boolean = result.role !== 'cancel';
+                const save = await this.createAlert();
                 if (!save) {
                     const userSettings = await this.userSettingService.getUserSettings();
                     await this.registrationService.deleteRegistrationById(userSettings.appMode, component.registration.id);
@@ -53,5 +32,35 @@ export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLo
             }
         }
         return true;
+    }
+
+    isInWhitelist(url: string) {
+        const whiteList = ['registration/', 'my-observations'];
+        return whiteList.some((w) => url.indexOf(w) >= 0);
+    }
+
+    async createAlert() {
+        const translations = await this.translateService.get([
+            'REGISTRATION.SAVE_ALERT.HEADER',
+            'REGISTRATION.SAVE_ALERT.MESSAGE',
+            'REGISTRATION.SAVE_ALERT.NO',
+            'REGISTRATION.SAVE_ALERT.YES',
+        ]).toPromise();
+        const alert = await this.alertController.create({
+            header: translations['REGISTRATION.SAVE_ALERT.HEADER'],
+            message: translations['REGISTRATION.SAVE_ALERT.MESSAGE'],
+            buttons: [
+                {
+                    text: translations['REGISTRATION.SAVE_ALERT.NO'],
+                    role: 'cancel'
+                },
+                {
+                    text: translations['REGISTRATION.SAVE_ALERT.YES'],
+                }
+            ]
+        });
+        alert.present();
+        const result = await alert.onDidDismiss();
+        return result.role !== 'cancel';
     }
 }

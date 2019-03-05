@@ -266,7 +266,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  async confirmLocation() {
+  confirmLocation() {
     const obsLocation: ObsLocation = {
       Latitude: this.locationMarker.getLatLng().lat,
       Longitude: this.locationMarker.getLatLng().lng,
