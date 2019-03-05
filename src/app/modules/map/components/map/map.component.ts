@@ -296,14 +296,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   redrawMap() {
-    if (this.map) {
-      try {
-        this.map.invalidateSize();
-      } catch (err) {
-        this.loggingService.debug('Could not invalidate map size', DEBUG_TAG);
+    setTimeout(() => {
+      if (this.map) {
+        try {
+          this.map.invalidateSize();
+        } catch (err) {
+          this.loggingService.debug('Could not invalidate map size', DEBUG_TAG);
+        }
       }
-    }
-    window.dispatchEvent(new Event('resize'));
+      window.dispatchEvent(new Event('resize'));
+    }, 0);
   }
 
   ngAfterViewInit(): void {
