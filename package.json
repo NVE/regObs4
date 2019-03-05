@@ -125,8 +125,7 @@
     "tunnel-agent": "^0.6.0",
     "typed-web-workers": "^2.1.1",
     "xml2js": "^0.4.19",
-    "zone.js": "^0.8.29",
-    "adapter-sqlite-cordova": "@nano-sql/adapter-sqlite-cordova@2.0.9"
+    "zone.js": "^0.8.29"
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.13.4",
