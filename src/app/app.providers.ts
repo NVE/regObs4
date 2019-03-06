@@ -46,6 +46,7 @@ import { environment } from '../environments/environment';
 import { MapSearchService } from './modules/map/services/map-search/map-search.service';
 import { AnalyticService } from './core/services/analytic/analytic.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { KdvService } from './core/services/kdv/kdv.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -92,6 +93,7 @@ export const APP_PROVIDERS = [
     DbHelperService,
     FullscreenService,
     AnalyticService,
+    KdvService,
     // ObsCardHeightService,
     // Custom native/web providers
     {

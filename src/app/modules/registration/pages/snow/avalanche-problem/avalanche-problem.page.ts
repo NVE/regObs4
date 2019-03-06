@@ -8,6 +8,7 @@ import { AvalancheEvalProblem2Dto, KdvElement } from '../../../../regobs-api/mod
 import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-problem-modal.page';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-avalanche-problem',
@@ -17,6 +18,7 @@ import { UserSettingService } from '../../../../../core/services/user-setting/us
 export class AvalancheProblemPage extends BasePage {
 
   private avalancheCause: KdvElement[];
+  private kdvSubscription: Subscription;
 
   constructor(
     basePageService: BasePageService,
@@ -24,15 +26,21 @@ export class AvalancheProblemPage extends BasePage {
     private modalController: ModalController,
     private ngZone: NgZone,
     private kdvService: KdvService,
-    private userSetttingService: UserSettingService,
   ) {
     super(RegistrationTid.AvalancheEvalProblem2, basePageService, activatedRoute);
     this.avalancheCause = [];
   }
 
-  async onInit() {
-    const userSetting = await this.userSetttingService.getUserSettings();
-    this.avalancheCause = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_AvalCauseKDV');
+  onInit() {
+    this.kdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalCauseKDV').subscribe((val) => {
+      this.avalancheCause = val;
+    });
+  }
+
+  onBeforeLeave() {
+    if (this.kdvSubscription) {
+      this.kdvSubscription.unsubscribe();
+    }
   }
 
   async addOrEditAvalancheProblem(index?: number) {

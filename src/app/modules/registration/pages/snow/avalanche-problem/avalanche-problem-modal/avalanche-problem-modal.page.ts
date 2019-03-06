@@ -1,16 +1,17 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { AvalancheEvalProblem2Dto, KdvElement } from '../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { KdvService } from '../../../../../../core/services/kdv/kdv.service';
-import { UserSettingService } from '../../../../../../core/services/user-setting/user-setting.service';
+import { Subscription, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-avalanche-problem-modal',
   templateUrl: './avalanche-problem-modal.page.html',
   styleUrls: ['./avalanche-problem-modal.page.scss'],
 })
-export class AvalancheProblemModalPage implements OnInit {
+export class AvalancheProblemModalPage implements OnInit, OnDestroy {
+
 
   @Input() avalancheEvalProblem: AvalancheEvalProblem2Dto;
   avalancheEvalProblemCopy: AvalancheEvalProblem2Dto;
@@ -31,19 +32,14 @@ export class AvalancheProblemModalPage implements OnInit {
   avalancheExtKdvFiltered: KdvElement[];
   exposition: number[];
 
+  private viewSubscription: Subscription;
+
   constructor(
     private modalController: ModalController,
-    private kdvService: KdvService,
-    private userSettingService: UserSettingService,
+    private kdvService: KdvService
   ) { }
 
-  async ngOnInit() {
-    const userSetting = await this.userSettingService.getUserSettings();
-    const snowCauseAttributesKdvElements =
-      await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_AvalCauseAttributeFlags');
-    this.avalancheProblemView =
-      await this.kdvService.getViewRepositories(userSetting.language, userSetting.appMode, 'AvalancheProblemMenu3V');
-    this.avalancheExtKdv = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_AvalancheExtKDV');
+  ngOnInit() {
     if (this.avalancheEvalProblem) {
       this.avalancheEvalProblemCopy = { ...this.avalancheEvalProblem };
     } else {
@@ -51,9 +47,23 @@ export class AvalancheProblemModalPage implements OnInit {
       this.isNew = true;
     }
 
-    this.avalancheCauseAttributes =
-      this.getAvalancheCauseAttributes(this.avalancheEvalProblemCopy.AvalCauseAttributes, snowCauseAttributesKdvElements);
-    this.avalCauseChanged(this.avalancheEvalProblemCopy.AvalCauseTID);
+    this.viewSubscription = combineLatest(
+      this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalCauseAttributeFlags'),
+      this.kdvService.getViewRepositoryByKeyObservable('AvalancheProblemMenu3V'),
+      this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheExtKDV'),
+    ).subscribe(([snowCauseAttributesKdvElements, avalancheProblemView, avalancheExtKdv]) => {
+      this.avalancheProblemView = avalancheProblemView;
+      this.avalancheExtKdv = avalancheExtKdv;
+      this.avalancheCauseAttributes =
+        this.getAvalancheCauseAttributes(this.avalancheEvalProblemCopy.AvalCauseAttributes, snowCauseAttributesKdvElements);
+      this.avalCauseChanged(this.avalancheEvalProblemCopy.AvalCauseTID);
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.viewSubscription) {
+      this.viewSubscription.unsubscribe();
+    }
   }
 
   avalCauseChanged(val: number) {

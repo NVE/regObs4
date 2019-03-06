@@ -2,11 +2,12 @@ import { Component, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
-import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../../../../core/models/geo-hazard.enum';
 import { KdvElement } from '../../../../regobs-api/models';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 const NO_DAMAGE_VISIBLE = 7;
 
@@ -42,24 +43,31 @@ export class DamagePage extends BasePage {
     }
   }
 
+  private kdvSubscription: Subscription;
+
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
     private kdvService: KdvService,
-    private userSettingService: UserSettingService,
     private ngZone: NgZone,
   ) {
     super(RegistrationTid.DamageObs, basePageService, activatedRoute);
   }
 
-  async onInit() {
-    const userSetting = await this.userSettingService.getUserSettings();
+  onInit() {
     const geoHazardName = GeoHazard[this.registration.geoHazard];
-    const kdvElements = (await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode,
-      `${geoHazardName}_DamageTypeKDV`))
-      .filter((x) => x.Id !== NO_DAMAGE_VISIBLE);
-    this.ngZone.run(() => {
-      this.damageTypes = kdvElements;
-    });
+    this.kdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(`${geoHazardName}_DamageTypeKDV`)
+      .pipe(map((val) => val.filter((x) => x.Id !== NO_DAMAGE_VISIBLE)))
+      .subscribe((kdvElements) => {
+        this.ngZone.run(() => {
+          this.damageTypes = kdvElements;
+        });
+      });
+  }
+
+  onBeforeLeave() {
+    if (this.kdvSubscription) {
+      this.kdvSubscription.unsubscribe();
+    }
   }
 }

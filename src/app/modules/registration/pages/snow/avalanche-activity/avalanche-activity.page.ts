@@ -7,7 +7,7 @@ import { ModalController } from '@ionic/angular';
 import { AvalancheActivityModalPage } from './avalanche-activity-modal/avalanche-activity-modal.page';
 import { AvalancheActivityObs2Dto, KdvElement } from '../../../../regobs-api/models';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
-import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
+import { Subscription, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-avalanche-activity',
@@ -17,24 +17,32 @@ import { UserSettingService } from '../../../../../core/services/user-setting/us
 export class AvalancheActivityPage extends BasePage {
   private avalancheCause: KdvElement[];
   private estimatedNumber: KdvElement[];
+  private kdvSubscription: Subscription;
 
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
     private modalController: ModalController,
     private ngZone: NgZone,
-    private kdvService: KdvService,
-    private userSetttingService: UserSettingService,
+    private kdvService: KdvService
   ) {
     super(RegistrationTid.AvalancheActivityObs2, basePageService, activatedRoute);
     this.avalancheCause = [];
     this.estimatedNumber = [];
   }
 
-  async onInit() {
-    const userSetting = await this.userSetttingService.getUserSettings();
-    this.avalancheCause = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_AvalancheExtKDV');
-    this.estimatedNumber = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, 'Snow_EstimatedNumKDV');
+  onInit() {
+    this.kdvSubscription = combineLatest(this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheExtKDV'),
+      this.kdvService.getKdvRepositoryByKeyObservable('Snow_EstimatedNumKDV')).subscribe(([causeKdv, estimatedNumberKdv]) => {
+        this.avalancheCause = causeKdv;
+        this.estimatedNumber = estimatedNumberKdv;
+      });
+  }
+
+  onBeforeLeave() {
+    if (this.kdvSubscription) {
+      this.kdvSubscription.unsubscribe();
+    }
   }
 
   async addOrEditAvalancheActivity(index?: number) {
