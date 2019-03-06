@@ -452,6 +452,7 @@
       }
     }
   },
+  "SEPARATOR": "",
   "SETTINGS": {
     "APPMODE": "Appmodus",
     "APP_VERSION": "App versjon",

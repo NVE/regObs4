@@ -54,7 +54,7 @@
     "NOTIFICATION_TITLE": "Logging trip"
   },
   "GEO_HAZARDS": {
-    "DIRT": "Dirt",
+    "DIRT": "Soil",
     "ICE": "Ice",
     "SNOW": "Snow",
     "WATER": "Water"
@@ -452,6 +452,7 @@
       }
     }
   },
+  "SEPARATOR": " ",
   "SETTINGS": {
     "APPMODE": "App mode",
     "APP_VERSION": "App version",
