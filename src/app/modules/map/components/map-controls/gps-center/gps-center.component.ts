@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MapService } from '../../../services/map/map.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-gps-center',
@@ -8,9 +9,12 @@ import { MapService } from '../../../services/map/map.service';
 })
 export class GpsCenterComponent implements OnInit {
 
+  followMode$: Observable<boolean>;
+
   constructor(private mapService: MapService) { }
 
   ngOnInit() {
+    this.followMode$ = this.mapService.followMode$;
   }
 
   centerMapToUser() {
