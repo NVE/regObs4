@@ -155,12 +155,16 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.mapService.followMode$.subscribe((val) => {
       this.followMode = val;
       if (this.followMode && this.userposition) {
-        this.locationMarker.setLatLng({
+        this.setLocationMarkerLatLng({
           lat: this.userposition.coords.latitude,
           lng: this.userposition.coords.longitude
         });
-        this.updatePathAndDistance();
       }
+    }));
+
+    this.subscriptions.push(this.mapSearchService.mapSearchClick$.subscribe((item) => {
+      const latLng = item instanceof L.LatLng ? item : item.latlng;
+      this.setLocationMarkerLatLng(latLng);
     }));
 
     if (!this.followMode) {
@@ -171,14 +175,19 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.updatePathAndDistance();
   }
 
+  private setLocationMarkerLatLng(latLng: L.LatLngExpression) {
+    this.locationMarker.setLatLng(latLng);
+    this.updatePathAndDistance();
+    this.updateMapViewInfo();
+  }
+
   private setToPrevouslyUsedLocation(location: ObsLocationsResponseDtoV2) {
     this.ngZone.run(() => {
       this.mapService.followMode = false;
       this.selectedLocation = location;
-      this.locationMarker.setLatLng(L.latLng(location.LatLngObject.Latitude,
+      this.setLocationMarkerLatLng(L.latLng(location.LatLngObject.Latitude,
         location.LatLngObject.Longitude));
       this.map.panTo(this.locationMarker.getLatLng());
-      this.updatePathAndDistance();
       this.showDetails = true;
     });
   }
@@ -213,13 +222,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     if (position.coords) {
       this.userposition = position;
       if (this.followMode) {
-        this.locationMarker.setLatLng({
+        this.setLocationMarkerLatLng({
           lat: position.coords.latitude,
           lng: position.coords.longitude
         });
-      }
-      if (this.map) {
-        this.updatePathAndDistance();
       }
     }
   }
