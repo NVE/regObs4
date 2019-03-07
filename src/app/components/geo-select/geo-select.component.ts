@@ -4,11 +4,24 @@ import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Subscription, Observable } from 'rxjs';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
+import { trigger, state, transition, animate, keyframes, style } from '@angular/animations';
 
 @Component({
   selector: 'app-geo-select',
   templateUrl: './geo-select.component.html',
-  styleUrls: ['./geo-select.component.scss']
+  styleUrls: ['./geo-select.component.scss'],
+  animations: [
+    trigger('pulse', [
+      state('*', style({
+        transform: 'scale3d(1, 1, 1)'
+      })),
+      transition('* => showGeoSelectInfo', animate(`700ms 1000ms ease-out`, keyframes([
+        style({ transform: 'scale3d(1, 1, 1)', offset: 0 }),
+        style({ transform: 'scale3d(1.2, 1.2, 1.2)', offset: 0.5 }),
+        style({ transform: 'scale3d(1, 1, 1)', offset: 1.0 })
+      ]))),
+    ]),
+  ]
 })
 export class GeoSelectComponent implements OnInit, OnDestroy {
 
@@ -19,6 +32,7 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
   private geoHazardSubscription: Subscription;
   userSettings: UserSetting;
   private showGeoSelectInfo: boolean;
+  state = 'x';
 
   @Input() inHeader: boolean;
 
@@ -41,6 +55,9 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
         if (this.showGeoSelectInfo === undefined) {
           this.showGeoSelectInfo = this.userSettings.showGeoSelectInfo;
           this.isOpen = this.userSettings.showGeoSelectInfo;
+          if (this.showGeoSelectInfo) {
+            this.state = 'showGeoSelectInfo';
+          }
         }
       });
     });
@@ -61,6 +78,7 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
     if (this.showGeoSelectInfo) {
       this.showGeoSelectInfo = false;
       this.userSettings.showGeoSelectInfo = false;
+      this.state = 'x';
       this.userSettingService.saveUserSettings(this.userSettings);
     }
   }
