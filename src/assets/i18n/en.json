@@ -340,11 +340,11 @@
         "INCIDENT_PLACEHOLDER": "Did the avalanche cause any damage, accidents or close calls? Why and how did it happen? Could the situation have been avoided?",
         "POSITION": "Avalanche position",
         "SET_AVALANCHE_POSITION": "Set avalanche position",
-        "TERRAIN_START_ZONE": "Tarrain type in the loose snow area",
+        "TERRAIN_START_ZONE": "Terrain type in the release area",
         "TIME": "Avalanche time (required)",
         "TITLE": "Avalanche observation",
         "TRAJECTORY_NAME": "Name of avalanche path",
-        "VALID_EXPOSITION": "Exposition"
+        "VALID_EXPOSITION": "Aspect"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Add new avalanche problem",
@@ -365,7 +365,7 @@
         "TITLE": "Avalanche problem",
         "TOP": "Top",
         "UNKNOWN_TYPE": "Unknown avalanche cause",
-        "VALID_EXPOSITION": "Exposition",
+        "VALID_EXPOSITION": "Aspect",
         "WEAK_LAYER": "Weak layer",
         "WEAK_LAYER_DEPTH": "Weak layer depth"
       },
