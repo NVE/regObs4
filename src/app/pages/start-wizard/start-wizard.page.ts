@@ -33,7 +33,11 @@ export class StartWizardPage implements OnInit {
   }
 
   slideNext() {
-    this.slides.slideNext();
+    setTimeout(() => {
+      if (this.slides) {
+        this.slides.slideNext();
+      }
+    }, 700);
   }
 
   async start() {

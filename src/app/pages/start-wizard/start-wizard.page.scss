@@ -62,9 +62,16 @@ ion-content {
             margin-right: 20px;
         }
 
+        ion-radio-group {
+            ion-item {
+                height: 36px;
+            }
+        }
+
         ion-card {
             --inner-border-width: 0 0 0 0;
         }
+        
 
         .legal-icon {
             font-size: 36px;
@@ -78,19 +85,25 @@ ion-content {
             justify-content: center;
             margin-bottom: 30px;
 
-            &:after {
-                /* Ellipse 2 */
-                content: "";
+            .legal-spinner {
                 display: block;
                 position: absolute;
-                width: 120px;
-                height: 120px;
-                background-image: url('/assets/images/onboarding/legal-spinner.png');
-                animation: rotate 3s linear infinite;
-                background-position: center;
-                background-repeat: no-repeat;
-                background-size: cover;
-                opacity: 0.5;
+                top: -25px;
+                left: -24px;
+                opacity: 0;
+                &:after {
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    width: 120px;
+                    height: 120px;
+                    background-image: url('/assets/images/onboarding/legal-spinner.png');
+                    animation: rotate 3s linear infinite;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                    opacity: 0.5;
+                }
             }
         }
 
