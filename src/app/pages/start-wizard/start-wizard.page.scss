@@ -6,6 +6,28 @@ ion-footer {
         }
     }
 }
+  
+@keyframes usermarker-pulsate {
+    from {
+        width: 40px;
+        height: 40px;
+        opacity: 0.5;
+        top: 1px;
+        left: 0px;
+    }
+    to {
+      width: 80px;
+      height: 80px;
+      transform: translate3d(-19px, -19px, 0px);
+      opacity: 0; 
+    } 
+}
+
+@keyframes rotate {
+    to {
+      transform: rotate(-360deg);
+    }
+  }
 
 ion-content {
     --ion-background-color: #fff;
@@ -22,10 +44,12 @@ ion-content {
             font-size: 24px;
             font-weight: bold;
             --ion-text-color-heading : var(--ion-text-color-heading-white-pages);
+            transform-origin: bottom;
         }
 
         h3 {
             font-size: 18px;
+            transform-origin: bottom;
         }
 
         .dark-color {
@@ -52,6 +76,22 @@ ion-content {
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 30px;
+
+            &:after {
+                /* Ellipse 2 */
+                content: "";
+                display: block;
+                position: absolute;
+                width: 120px;
+                height: 120px;
+                background-image: url('/assets/images/onboarding/legal-spinner.png');
+                animation: rotate 3s linear infinite;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                opacity: 0.5;
+            }
         }
 
         .animated-element-wrapper {
@@ -79,26 +119,31 @@ ion-content {
             &.warning {
                 left: 58px;
                 top: 54px;
+                transform-origin: bottom;
             }
     
             &.pin-ice {
                 top: 115px;
                 left: -50px;
+                transform-origin: bottom;
             }
     
             &.pin-dirt {
                 top: -101px;
                 left: 83px;
+                transform-origin: bottom;
             }
     
             &.pin-snow {
                 top: -69px;
                 left: -57px;
+                transform-origin: bottom;
             }
 
             &.pin-water {
                 left: -150px;
                 top: 20px;
+                transform-origin: bottom;
             }
 
             &.steepness-background {
@@ -114,6 +159,20 @@ ion-content {
             &.user-location {
                 left: 53px;
                 top: 74px;
+
+                &:before {
+                        content: "";
+                        display: block;
+                        animation: usermarker-pulsate 1.5s ease-in-out infinite;
+                        border: 5px solid #6996A3;
+                        background-color: #fff;
+                        border-radius: 50%;
+                        height: 40px;
+                        width: 40px;
+                        position: absolute;
+                        top: 1px;
+                        z-index: -1;
+                }
             }
 
             &.exclamation-mark {

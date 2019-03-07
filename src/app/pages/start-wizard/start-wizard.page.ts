@@ -27,6 +27,9 @@ export class StartWizardPage implements OnInit {
 
   async ngOnInit() {
     this.userSettings = await this.userSetting.getUserSettings();
+    setTimeout(() => {
+      this.state = 'page_0';
+    }, 0);
   }
 
   slideNext() {
@@ -47,11 +50,11 @@ export class StartWizardPage implements OnInit {
     this.userSetting.saveUserSettings(this.userSettings);
   }
 
-  ionSlideTransitionStart() {
-    this.state = 'changePage';
-    setTimeout(() => {
-      this.state = 'x';
-    }, 700);
+  async ionSlideTransitionStart() {
+    const index = await this.slides.getActiveIndex();
+    this.ngZone.run(() => {
+      this.state = `page_${index}`;
+    });
   }
 
   ionSlideReachEnd() {
