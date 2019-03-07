@@ -330,7 +330,7 @@
         "TITLE": "Avalanche danger assessment"
       },
       "AVALANCHE_OBS": {
-        "AVALANCHE_TRIGGER": "Avalanche trigger",
+        "AVALANCHE_TRIGGER": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
         "AVAL_CAUSE": "Weak layer",
         "DESTRUCTIVE_SIZE": "Size",
@@ -352,7 +352,7 @@
         "AVALANCHE_DESTRUCTIVE_SIZE": "Size of expected avalanche",
         "AVALANCHE_PROBABILITY": "The possibility of avalanches",
         "AVALANCHE_PROPAGATION_HEADER": "Avalanche spatial distribution",
-        "AVALANCHE_TRIGGER_PROBABILITY": "Load to trigger avalanche",
+        "AVALANCHE_TRIGGER_PROBABILITY": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
         "AVAL_PROBABILITY": "Probability for avalanche",
         "BOTTOM": "Bottom",
