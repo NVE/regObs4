@@ -16,7 +16,7 @@ export class TabsPage implements OnInit, OnDestroy {
   private warningGroupInMapViewSubscription: Subscription;
   private currentGeoHazardSubscription: Subscription;
 
-  warningsInView: { count: number; text: string, maxWarning: number };
+  warningsInView: { count: number; text: string, maxWarning: number, hasEmergencyWarning: boolean };
   isIos: boolean;
   isAndroid: boolean;
   fullscreen$: Observable<boolean>;
@@ -31,7 +31,7 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   get badgeText() {
-    return this.warningsInView.maxWarning;
+    return `${this.warningsInView.maxWarning}${this.warningsInView.hasEmergencyWarning ? '!' : ''}`;
   }
 
 
@@ -50,10 +50,14 @@ export class TabsPage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.warningGroupInMapViewSubscription = this.warningService.warningGroupInMapViewObservable$.pipe(map((warningsInView) => {
       const allWarnings = [...warningsInView.center, ...warningsInView.viewBounds];
+      const allMaxWarnings = allWarnings.map((g) => g.getMaxWarning(0));
+      const maxWarning = Math.max(...allMaxWarnings.map((x) => x.max));
+      const hasEmergencyWarning = allMaxWarnings.some((x) => x.max === maxWarning && x.hasWarning);
       return {
         count: allWarnings.length,
         text: allWarnings.length > 9 ? '9+' : allWarnings.length.toString(),
-        maxWarning: Math.max(...allWarnings.map((g) => g.getMaxWarning())),
+        maxWarning,
+        hasEmergencyWarning,
       };
     })).subscribe((val) => {
       this.ngZone.run(() => {
