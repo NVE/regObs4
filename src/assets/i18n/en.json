@@ -324,10 +324,10 @@
         "AVALANCHE_DEVELOPMENT": "Development",
         "AVALANCHE_DEVEOPMENT_PLACEHOLDER": "Development of avalanche danger",
         "COMMENT": "Comment to avalanche forcast",
-        "EVALUATION": "Evaluation",
+        "EVALUATION": "Danger assessment",
         "EVALUATION_PLACEHOLDER": "Evaluation of avalanche danger",
-        "FORECAST_CORRECT": "Assessment of avalanche forecast",
-        "TITLE": "Avalanche evaluation"
+        "FORECAST_CORRECT": "Assessment of avalanche forecast on varsom.no",
+        "TITLE": "Avalanche danger assessment"
       },
       "AVALANCHE_OBS": {
         "AVALANCHE_TRIGGER": "Avalanche trigger",

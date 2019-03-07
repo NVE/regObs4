@@ -326,7 +326,7 @@
         "COMMENT": "Kommentar til varslet faregrad",
         "EVALUATION": "Vurdering",
         "EVALUATION_PLACEHOLDER": "Vurdering av skredfare",
-        "FORECAST_CORRECT": "Vurdering av varslet faregrad",
+        "FORECAST_CORRECT": "Vurdering av varslet faregrad på varsom.no",
         "TITLE": "Skredfarevurdering"
       },
       "AVALANCHE_OBS": {
