@@ -154,7 +154,16 @@ export const animations = [
         state('*', style({
             opacity: 0
         })),
-        transition('* => page_4', animate('1000ms 2000ms', style({ opacity: 1 }))),
+        transition('* => page_4', animate(`1000ms 700ms`, keyframes([
+            style({
+                opacity: 0,
+                offset: 0,
+            }),
+            style({
+                opacity: 1,
+                offset: 1,
+            }),
+        ]))),
         state('page_4', style({
             opacity: 1
         })),
