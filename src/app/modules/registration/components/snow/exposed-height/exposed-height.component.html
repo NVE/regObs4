@@ -5,17 +5,20 @@
 <ion-item>
   <ion-label>
     <ion-grid class="exposedHight">
-      <ion-row class="top padding-bottom" (click)="toggleExsposedHeightCombo('top')" [ngClass]="{'selected': exposedHeightTop}">
+      <ion-row class="top padding-bottom" (click)="toggleExsposedHeightCombo('top')"
+        [ngClass]="{'selected': exposedHeightTop}">
         <ion-col size="12" text-center align-self-center>
           {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TOP' | translate}}
         </ion-col>
       </ion-row>
-      <ion-row class="middle padding-bottom" (click)="toggleExsposedHeightCombo('middle')" [ngClass]="{'selected': exposedHeightMiddle}">
+      <ion-row class="middle padding-bottom" (click)="toggleExsposedHeightCombo('middle')"
+        [ngClass]="{'selected': exposedHeightMiddle}">
         <ion-col size="12" text-center align-self-center>
           {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.MIDDLE' | translate}}
         </ion-col>
       </ion-row>
-      <ion-row (click)="toggleExsposedHeightCombo('bottom')" class="bottom" [ngClass]="{'selected': exposedHeightBottom}">
+      <ion-row (click)="toggleExsposedHeightCombo('bottom')" class="bottom"
+        [ngClass]="{'selected': exposedHeightBottom}">
         <ion-col size="12" text-center align-self-center>
           {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.BOTTOM' | translate}}
         </ion-col>
@@ -35,8 +38,9 @@
 <ion-item *ngIf="sholdUseExposedHight2()">
   <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2'
     | translate}}</ion-label>
-  <ion-select (ionChange)="applyChanges()" [(ngModel)]="exposedHight2" interface="action-sheet">
-    <ion-select-option [value]="height" *ngFor="let height of heightArray">
+  <ion-select *ngIf="lowerHeightArray" (ionChange)="applyChanges()" [(ngModel)]="exposedHight2"
+    interface="action-sheet">
+    <ion-select-option [value]="height" *ngFor="let height of lowerHeightArray">
       {{ height }}</ion-select-option>
   </ion-select>
 </ion-item>

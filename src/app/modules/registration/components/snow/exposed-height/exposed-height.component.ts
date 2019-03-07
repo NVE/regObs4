@@ -26,6 +26,8 @@ export class ExposedHeightComponent implements OnInit {
     500, 400, 300, 200, 100, 0
   ];
 
+  lowerHeightArray = [...this.heightArray];
+
   constructor(private ngZone: NgZone) { }
 
   ngOnInit() {
@@ -92,7 +94,17 @@ export class ExposedHeightComponent implements OnInit {
     }
   }
 
+  private updateHight2SelectOptions() {
+    setTimeout(() => {
+      this.lowerHeightArray = undefined;
+      setTimeout(() => {
+        this.lowerHeightArray = this.heightArray.filter((x) => x < (this.exposedHight1 || 9999));
+      });
+    });
+  }
+
   applyChanges() {
+    this.updateHight2SelectOptions();
     this.ngZone.run(() => {
       this.updateExposedHeightComboTID(this.exposedHeightTop, this.exposedHeightMiddle, this.exposedHeightBottom);
       if (!this.sholdUseExposedHight2()) {
