@@ -615,9 +615,9 @@
     "RELEVANT": "Relevant",
     "REMOVED_FROM_FAVOURITES": "removed from favourites",
     "TITLE": "Warnings",
-    "TITLE_ICE": "Ice Warnings",
-    "TITLE_SNOW": "Avalanche Warnings",
-    "TITLE_WATER": "Flood and Landslide Warnings",
+    "TITLE_ICE": "Ice Forecasts",
+    "TITLE_SNOW": "Avalanche Forecasts",
+    "TITLE_WATER": "Flood and Landslide Forecasts",
     "VALID_FROM": "Valid from"
   }
 }
