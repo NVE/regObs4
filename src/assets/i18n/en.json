@@ -379,7 +379,7 @@
         "TITLE": "Stability test"
       },
       "SNOW_PROFILE": {
-        "SNOW_PROFILE_HELP_TEXT": "Unfortunately, we do not support the registration of a snow profile. A profile exported from AvyLab or Ullr Labs Avalanche is uploaded as an image.",
+        "SNOW_PROFILE_HELP_TEXT": "Unfortunately, we do not have a form for snow profiles in the current version of the Varsom Regobs app. But, you can upload a picture of a hand drawn profile or an export from a third party app like Ullr Labs Avalanche. On regobs.no you may update the profile information with the forms and plots provided there.",
         "TITLE": "Snow profile"
       },
       "SNOW_SURFACE": {

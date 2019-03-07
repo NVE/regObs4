@@ -379,7 +379,7 @@
         "TITLE": "Stabilitetstest"
       },
       "SNOW_PROFILE": {
-        "SNOW_PROFILE_HELP_TEXT": "Vi har dessverre ikke støtte for å registrere en snøprofil. En profil eksportert fra AvyLab eller Ullr Labs Avalanche lastes opp som bilde.",
+        "SNOW_PROFILE_HELP_TEXT": "Vi har dessverre ikke støtte for å registrere et snøprofil i Varsom Regobs appen. Men, du kan ta et bilde av et håndtegnet profil eller eksportere et profil fra en tredjeparts app som Ullr Labs Avalanche. På regobs.no kan du senere oppdatere observasjonen med å bruke egne skjema og plot for snøprofiler.",
         "TITLE": "Snøprofil"
       },
       "SNOW_SURFACE": {
