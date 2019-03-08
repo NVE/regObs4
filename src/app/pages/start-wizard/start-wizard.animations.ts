@@ -1,26 +1,26 @@
 import { trigger, state, transition, style, animate, keyframes } from '@angular/animations';
 
-const scaleUpCubicBezier = 'cubic-bezier(0.64, 0.1, 0.57, 1.53)';
-const defaultDuration = '700ms';
-const scaleUpHeaderFrom = 'scale3d(0.9, 0.9, 1)';
+export const scaleUpCubicBezier = 'cubic-bezier(0.64, 0.1, 0.57, 1.53)';
+export const defaultDuration = '700ms';
+export const scaleUpHeaderFrom = 'scale3d(0.9, 0.9, 1)';
 
-const keyFramesScaleUp = keyframes([
+export const keyFramesScaleUp = keyframes([
     style({ transform: 'scale3d(0, 0, 1)', offset: 0 }),
     style({ transform: 'scale3d(1, 1, 1)', offset: 1 }),
 ]);
 
-const keyFramesPulse = keyframes([
+export const keyFramesPulse = keyframes([
     style({ transform: 'scale3d(1, 1, 1)', offset: 0 }),
     style({ transform: 'scale3d(1.2, 1.2, 1.2)', offset: 0.5 }),
     style({ transform: 'scale3d(1, 1, 1)', offset: 1.0 })
 ]);
 
-const keyFramesScaleUpHeader = keyframes([
+export const keyFramesScaleUpHeader = keyframes([
     style({ transform: scaleUpHeaderFrom, offset: 0 }),
     style({ transform: 'scale3d(1, 1, 1)', offset: 1 }),
 ]);
 
-const getScaleUpAnimation = (delay: number) => {
+export function getScaleUpAnimation(delay: number){
     return [
         state('*', style({
             transform: 'scale3d(0, 0, 1)'
@@ -33,7 +33,7 @@ const getScaleUpAnimation = (delay: number) => {
     ];
 };
 
-const getHeaderAnimation = (page: number) => {
+export function getHeaderAnimation(page: number){
     return [
         state('*', style({
             transform: scaleUpHeaderFrom
