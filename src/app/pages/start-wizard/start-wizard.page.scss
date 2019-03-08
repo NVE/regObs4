@@ -88,7 +88,7 @@ ion-content {
             justify-content: center;
             margin-bottom: 30px;
 
-            &:after {
+            &:before {
                 content: "";
                 width: 120px;
                 height: 120px;
@@ -99,10 +99,8 @@ ion-content {
                 background-repeat: no-repeat;
                 background-size: cover;
                 opacity: 0.5;
-                display: inline-block;
+                display: block;
                 position: absolute;
-                margin-left: 0px;
-                margin-top: 0px;
             }
         }
 
