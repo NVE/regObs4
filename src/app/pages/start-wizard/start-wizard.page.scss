@@ -93,8 +93,8 @@ ion-content {
                 width: 120px;
                 height: 120px;
                 background-image: url('/assets/images/onboarding/legal-spinner.png');
-                -webkit-animation: rotate 3s linear infinite;
-                animation: rotate 3s linear infinite;
+                -webkit-animation: rotate 3s linear 0.01s infinite;
+                animation: rotate 3s linear 0.01s infinite;
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
