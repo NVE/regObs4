@@ -12,7 +12,7 @@ export class FormatDatePipe implements PipeTransform {
   }
 
   transform(value: string | Date, showMonthNames = true, showYear = true, showTime = true) {
-    return this.dateHelperService.formatDateString(typeof (value) === 'string' ? value : value.toISOString()
+    return this.dateHelperService.formatDateString(typeof (value) === 'string' ? value : (value ? value.toISOString() : '')
       , showMonthNames, showYear, showTime);
   }
 

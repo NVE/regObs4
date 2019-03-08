@@ -54,6 +54,9 @@ export class WaterLevelPage extends BasePage {
   }
 
   isValid() {
+    for (const wl of this.waterLevelMeasurements.toArray()) {
+      wl.showError();
+    }
     return this.waterLevelMeasurements && !this.waterLevelMeasurements.some((x) => !x.isValid);
   }
 

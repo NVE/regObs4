@@ -434,6 +434,7 @@
         "DESCRIBE": "Beskriv",
         "DESCRIBE_HEIGHT": "Beskriv høyde",
         "DESCRIBE_SITUATION": "Hvordan vil du beskrive situasjonen?",
+        "DT_REQUIRED_TEXT": "Tidspunkt er obligatorisk!",
         "HOW_DO_YOU_READ": "Hvordan leser du av vannstanden?",
         "MARKED_WITH": "Jeg har markert vannstanden med",
         "MARKING": "Markering",
@@ -452,7 +453,6 @@
       }
     }
   },
-  "SEPARATOR": "",
   "SETTINGS": {
     "APPMODE": "Appmodus",
     "APP_VERSION": "App versjon",
