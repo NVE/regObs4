@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { CompressionTestDto } from '../../../../../regobs-api/models';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
+import { NumericInputComponent } from '../../../../components/numeric-input/numeric-input.component';
 
 @Component({
   selector: 'app-compression-test-modal',
@@ -11,12 +12,14 @@ import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 export class CompressionTestModalPage implements OnInit {
 
   @Input() compressionTest: CompressionTestDto;
+  @ViewChildren(NumericInputComponent) private numericInputs: QueryList<NumericInputComponent>;
 
   isNew = false;
   compressionTestCopy: CompressionTestDto;
   tapsArray = [];
+  isValid = true;
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController, private ngZone: NgZone) { }
 
   ngOnInit() {
     for (let i = 1; i <= 30; i++) {
@@ -32,6 +35,12 @@ export class CompressionTestModalPage implements OnInit {
 
   tapsFractureVisible() {
     return !(this.isCTNorECTX() || this.isCTVorECTV());
+  }
+
+  valueChanged() {
+    this.ngZone.run(() => {
+      this.isValid = this.numericInputs && !this.numericInputs.some((x) => !x.isValid);
+    });
   }
 
   isCTNorECTX() {

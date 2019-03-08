@@ -11,11 +11,6 @@ import { NumericInputComponent } from '../../../components/numeric-input/numeric
   styleUrls: ['./weather.page.scss'],
 })
 export class WeatherPage extends BasePage {
-
-  @ViewChild('airTemperature') airTemperature: NumericInputComponent;
-  @ViewChild('windSpeed') windSpeed: NumericInputComponent;
-  @ViewChild('cloudCover') cloudCover: NumericInputComponent;
-
   windDirectionArray = [
     { val: null, name: 'REGISTRATION.SNOW.WEATHER.NOT_GIVEN' },
     { val: 0, name: 'REGISTRATION.SNOW.WEATHER.FROM_NORTH', shortName: 'DIRECTION.N' },
@@ -34,15 +29,4 @@ export class WeatherPage extends BasePage {
   ) {
     super(RegistrationTid.WeatherObservation, basePageService, activatedRoute);
   }
-
-  isValid() {
-    return this.airTemperature.isValid && this.windSpeed.isValid && this.cloudCover.isValid;
-  }
-
-  onBeforeLeave() {
-    // this.registration.request.WeatherObservation.AirTemperature = this.airTemperature.getValue();
-    // this.registration.request.WeatherObservation.WindSpeed = this.windSpeed.getValue();
-    // this.registration.request.WeatherObservation.CloudCover = this.cloudCover.getValue();
-  }
-
 }

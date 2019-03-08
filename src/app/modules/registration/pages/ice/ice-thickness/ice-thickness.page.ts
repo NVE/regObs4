@@ -13,7 +13,6 @@ import { NumberHelper } from '../../../../../core/helpers/number-helper';
   templateUrl: './ice-thickness.page.html',
   styleUrls: ['./ice-thickness.page.scss'],
 })
-
 export class IceThicknessPage extends BasePage {
 
   iceHeightBefore: boolean = undefined;
