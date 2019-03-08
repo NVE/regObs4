@@ -143,7 +143,7 @@
     "NO_OBSERVATIONS": "Share your observations!",
     "NO_OBSERVATIONS_TEXT": "Your observartions will appear here. Share your observations, pictures and reviews with others on Varsom Regobs.",
     "SENT_SUBTITLE": "The following observations have been submitted and are now stored in Regobs.",
-    "TITLE": "My observations"
+    "TITLE": "My Observations"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "All observations",
@@ -155,7 +155,7 @@
     "OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline map"
+    "TITLE": "Offline Map"
   },
   "REGISTRATION": {
     "ADD_IMAGES": "Add images",
@@ -182,7 +182,7 @@
       "ON_THIS_SIDE_OF_THE_WATER": "On this side of the water",
       "ON_THIS_WATER": "On this water",
       "RIGHT_HERE": "Right here",
-      "TITLE": "Danger sign"
+      "TITLE": "Danger Sign"
     },
     "DELETE": "Delete observation",
     "DELETE_CONFIRM": "Are you sure?",
@@ -201,7 +201,7 @@
         "POSITION": "Land slide position",
         "SET_LANDSLIDE_POSITION": "Set land slide position",
         "START_POSITION": "Start position",
-        "TITLE": "Land slide observation"
+        "TITLE": "Land Slide Incident"
       }
     },
     "DRAFTS": "My drafts",
@@ -241,10 +241,10 @@
         "ICE_COVER": "Ice cover",
         "ICE_COVER_BEFORE": "Ice cover before observation",
         "ICE_SKATEABILITY": "Skateability",
-        "TITLE": "Ice cover"
+        "TITLE": "Ice Cover"
       },
       "ICE_THICKNESS": {
-        "ADD_ICE_LAYER": "Add ice layer",
+        "ADD_ICE_LAYER": "Add Ice Layer",
         "ADD_ICE_LAYER_TITLE": "Ice layer thickness",
         "DRY_SNOW_BEFORE_DRILL": "Snow before drilling (cm)",
         "ICE_HEIGHT_AFTER_INPUT": "Thickness of surface water",
@@ -257,7 +257,7 @@
         "ICE_THICKNESS_SUM": "Total thickness (cm)",
         "ICE_TYPE": "Ice type",
         "SLUSH_SNOW_BEFORE_DRILL": "Slush snow before drilling (cm)",
-        "TITLE": "Ice thickness"
+        "TITLE": "Ice Thickness"
       }
     },
     "IMAGE_DESCRIPTION": "Image description",
@@ -277,10 +277,10 @@
       "CURRENT_LOCATION": "Current position",
       "HIDE_DETAILS": "Hide details",
       "SHOW_DETAILS": "Show details",
-      "TITLE": "Observed location"
+      "TITLE": "Observed Location"
     },
     "OVERVIEW": {
-      "DATE_AND_TIME": "Date and time",
+      "DATE_AND_TIME": "Date and Time",
       "MY_OBSERVATION": "My observation",
       "SHARE_WITH_GROUP": "Share with group",
       "TITLE": "Observation"
@@ -299,7 +299,7 @@
     "SEND": "Submit",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Confirm damage location",
-      "TITLE": "Damage location"
+      "TITLE": "Damage Location"
     },
     "SET_TIME": {
       "CONFIRM": "Confirm date and time",
@@ -316,7 +316,7 @@
         "ESTIMATED_TIME": "Estimated timeframe",
         "HOW_MANY_AVALANCHES": "Number of avalanches",
         "NO_AVALANCHE_ACTIVITY": "No avalanche activity observed",
-        "TITLE": "Avalanche activity",
+        "TITLE": "Avalanche Activity",
         "UNKNOWN_NUMBER": "Unknown number of"
       },
       "AVALANCHE_EVALUATION": {
@@ -327,7 +327,7 @@
         "EVALUATION": "Danger assessment",
         "EVALUATION_PLACEHOLDER": "Evaluation of avalanche danger",
         "FORECAST_CORRECT": "Assessment of avalanche forecast on varsom.no",
-        "TITLE": "Avalanche danger assessment"
+        "TITLE": "Avalanche Danger Assessment"
       },
       "AVALANCHE_OBS": {
         "AVALANCHE_TRIGGER": "Sensitivity to triggers",
@@ -342,7 +342,7 @@
         "SET_AVALANCHE_POSITION": "Set avalanche position",
         "TERRAIN_START_ZONE": "Terrain type in the release area",
         "TIME": "Avalanche time (required)",
-        "TITLE": "Avalanche observation",
+        "TITLE": "Avalanche Incident",
         "TRAJECTORY_NAME": "Name of avalanche path",
         "VALID_EXPOSITION": "Aspect"
       },
@@ -362,7 +362,7 @@
         "MIDDLE": "Middle",
         "NO_WEAK_LAYERS": "There are no weak layers",
         "PROPAGATION": "Spatial distribution",
-        "TITLE": "Avalanche problem",
+        "TITLE": "Avalanche Problem",
         "TOP": "Top",
         "UNKNOWN_TYPE": "Unknown avalanche cause",
         "VALID_EXPOSITION": "Aspect",
@@ -376,11 +376,11 @@
         "STABILITY_EVAL": "Stability",
         "TAPS_FRACTURE": "Number of hits",
         "TEST_TYPE": "Test type",
-        "TITLE": "Stability test"
+        "TITLE": "Stability Test"
       },
       "SNOW_PROFILE": {
         "SNOW_PROFILE_HELP_TEXT": "Unfortunately, we do not have a form for snow profiles in the current version of the Varsom Regobs app. But, you can upload a picture of a hand drawn profile or an export from a third party app like Ullr Labs Avalanche. On regobs.no you may update the profile information with the forms and plots provided there.",
-        "TITLE": "Snow profile"
+        "TITLE": "Snow Profile"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Describe the snow surface",
@@ -394,7 +394,7 @@
         "SNOW_LINE": "Snowline (masl)",
         "SNOW_SURFACE": "Snow surface hardness",
         "SURFACE_WATER_CONTENT_REG": "Surface moisture",
-        "TITLE": "Snow surface"
+        "TITLE": "Snow Surface"
       },
       "WEATHER": {
         "AIR_TEMPERATURE": "Air temperature (C)",
@@ -445,7 +445,7 @@
         "OBSERVATION_TIMING": "What do you register?",
         "REGISTRATION_METHOD": "How do you register?",
         "RELATIVE": "The height is relative to",
-        "TITLE": "Water level",
+        "TITLE": "Water Level",
         "WATER_LEVEL_METERS": "Water level in meters",
         "WATER_MARKING": "Water level marking",
         "WATER_MEASUREMENT": "Water level measurement"
