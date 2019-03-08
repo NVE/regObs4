@@ -28,6 +28,11 @@ ion-footer {
     to { transform: rotate(-360deg); }
   }
 
+@-webkit-keyframes rotate {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(-360deg); }
+}
+
 ion-content {
     --ion-background-color: #fff;
 
@@ -83,17 +88,21 @@ ion-content {
             justify-content: center;
             margin-bottom: 30px;
 
-            .legal-spinner {
+            &:after {
+                content: "";
                 width: 120px;
                 height: 120px;
                 background-image: url('/assets/images/onboarding/legal-spinner.png');
+                -webkit-animation: rotate 3s linear infinite;
                 animation: rotate 3s linear infinite;
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
                 opacity: 0.5;
-                display: block;
+                display: inline-block;
                 position: absolute;
+                margin-left: 0px;
+                margin-top: 0px;
             }
         }
 
