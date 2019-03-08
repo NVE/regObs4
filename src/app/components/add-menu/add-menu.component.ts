@@ -8,6 +8,7 @@ import { IRegistration } from '../../modules/registration/models/registration.mo
 import * as moment from 'moment';
 import { DateHelperService } from '../../modules/shared/services/date-helper/date-helper.service';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
+import { LangKey } from '../../core/models/langKey';
 
 @Component({
   selector: 'app-add-menu',
@@ -24,6 +25,8 @@ export class AddMenuComponent implements OnInit, OnDestroy {
   geoHazards: GeoHazard[] = [];
   showTrip = false;
   tripStarted = false;
+  langKey = LangKey.no;
+  LangKey = LangKey;
 
   constructor(
     private registrationService: RegistrationService,
@@ -38,6 +41,11 @@ export class AddMenuComponent implements OnInit, OnDestroy {
       this.ngZone.run(() => {
         this.showTrip = val.indexOf(GeoHazard.Snow) >= 0;
         this.geoHazards = val;
+      });
+    }));
+    this.subscriptions.push(this.userSettingService.language$.subscribe((val) => {
+      this.ngZone.run(() => {
+        this.langKey = val;
       });
     }));
     this.subscriptions.push(this.registrationService.drafts$.subscribe(async (val) => {

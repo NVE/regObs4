@@ -143,7 +143,7 @@
     "NO_OBSERVATIONS": "Share your observations!",
     "NO_OBSERVATIONS_TEXT": "Your observartions will appear here. Share your observations, pictures and reviews with others on Varsom Regobs.",
     "SENT_SUBTITLE": "The following observations have been submitted and are now stored in Regobs.",
-    "TITLE": "My Observations"
+    "TITLE": "My observations"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "All observations",
@@ -453,7 +453,6 @@
       }
     }
   },
-  "SEPARATOR": " ",
   "SETTINGS": {
     "APPMODE": "App mode",
     "APP_VERSION": "App version",
