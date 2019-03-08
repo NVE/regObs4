@@ -150,22 +150,4 @@ export const animations = [
 
     // Page 4 animations
     trigger('headerAnimation4', getHeaderAnimation(4)),
-    trigger('legalSpinner', [
-        state('*', style({
-            opacity: 0
-        })),
-        transition('* => page_4', animate(`1000ms 700ms`, keyframes([
-            style({
-                opacity: 0,
-                offset: 0,
-            }),
-            style({
-                opacity: 1,
-                offset: 1,
-            }),
-        ]))),
-        state('page_4', style({
-            opacity: 1
-        })),
-    ]),
 ];
