@@ -159,7 +159,7 @@
       <ion-grid>
         <ion-row>
           <ion-col padding align-self-center>
-            <div class="legal-icon" *ngIf="showLegalIcon">&sect;
+            <div class="legal-icon" [ngClass]="{'hide': !showLegalIcon }">&sect;
             </div>
           </ion-col>
         </ion-row>

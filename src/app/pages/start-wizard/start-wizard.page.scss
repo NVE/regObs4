@@ -88,6 +88,10 @@ ion-content {
             justify-content: center;
             margin-bottom: 30px;
 
+            &.hide {
+             display: none;
+            }
+
             &:before {
                 content: "";
                 width: 120px;

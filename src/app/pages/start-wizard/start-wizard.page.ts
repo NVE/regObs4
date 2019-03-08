@@ -66,7 +66,8 @@ export class StartWizardPage implements OnInit {
     this.reachedEnd = true;
     setTimeout(() => {
       this.showLegalIcon = true;
-    }, 200);
+      // Crazy ios bug to get animation on spinner.. :o
+    }, 0);
   }
 
   ionSlidePrevStart() {
