@@ -160,13 +160,14 @@
         <ion-row>
           <ion-col padding align-self-center>
             <div class="legal-icon">&sect;
+              <div class="legal-spinner"></div>
             </div>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col align-self-center>
             <h2 [@headerAnimation4]="state">{{'LEGAL_TERMS.HEADER' | translate}}</h2>
-            <h3 text-wrap padding-horizontal margin-horizontal>
+            <h3 text-wrap no-padding>
               {{'LEGAL_TERMS.TERMS' | translate}}
             </h3>
           </ion-col>

@@ -24,9 +24,8 @@ ion-footer {
 }
 
 @keyframes rotate {
-    to {
-      transform: rotate(-360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
   }
 
 ion-content {
@@ -71,7 +70,6 @@ ion-content {
         ion-card {
             --inner-border-width: 0 0 0 0;
         }
-        
 
         .legal-icon {
             font-size: 36px;
@@ -85,10 +83,7 @@ ion-content {
             justify-content: center;
             margin-bottom: 30px;
 
-            &:after {
-                content: "";
-                display: block;
-                position: absolute;
+            .legal-spinner {
                 width: 120px;
                 height: 120px;
                 background-image: url('/assets/images/onboarding/legal-spinner.png');
@@ -97,8 +92,9 @@ ion-content {
                 background-repeat: no-repeat;
                 background-size: cover;
                 opacity: 0.5;
+                display: block;
+                position: relative;
             }
-            
         }
 
         .animated-element-wrapper {
