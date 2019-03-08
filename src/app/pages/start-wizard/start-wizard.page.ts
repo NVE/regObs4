@@ -20,6 +20,7 @@ export class StartWizardPage implements OnInit {
   userSettings: UserSetting;
   state = 'x';
   reachedEnd = false;
+  showLegalIcon = false;
 
   constructor(private userSetting: UserSettingService,
     private navController: NavController,
@@ -63,6 +64,9 @@ export class StartWizardPage implements OnInit {
 
   ionSlideReachEnd() {
     this.reachedEnd = true;
+    setTimeout(() => {
+      this.showLegalIcon = true;
+    }, 200);
   }
 
   ionSlidePrevStart() {

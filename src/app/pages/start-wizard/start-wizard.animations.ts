@@ -20,7 +20,7 @@ export const keyFramesScaleUpHeader = keyframes([
     style({ transform: 'scale3d(1, 1, 1)', offset: 1 }),
 ]);
 
-export function getScaleUpAnimation(delay: number){
+export function getScaleUpAnimation(delay: number) {
     return [
         state('*', style({
             transform: 'scale3d(0, 0, 1)'
@@ -33,7 +33,7 @@ export function getScaleUpAnimation(delay: number){
     ];
 };
 
-export function getHeaderAnimation(page: number){
+export function getHeaderAnimation(page: number) {
     return [
         state('*', style({
             transform: scaleUpHeaderFrom

@@ -29,8 +29,8 @@ ion-footer {
   }
 
 @-webkit-keyframes rotate {
-    0% { -webkit-transform: rotate(0deg); }
-    100% { -webkit-transform: rotate(-360deg); }
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(-360deg); }
 }
 
 ion-content {
@@ -93,8 +93,8 @@ ion-content {
                 width: 120px;
                 height: 120px;
                 background-image: url('/assets/images/onboarding/legal-spinner.png');
-                -webkit-animation: rotate 3s linear 0.01s infinite;
-                animation: rotate 3s linear 0.01s infinite;
+                -webkit-animation: rotate 3s linear infinite;
+                animation: rotate 3s linear infinite;
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
