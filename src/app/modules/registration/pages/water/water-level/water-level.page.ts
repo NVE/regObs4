@@ -25,16 +25,16 @@ export class WaterLevelPage extends BasePage {
   onInit() {
     if (!this.registration.request.WaterLevel2.WaterLevelMeasurement
       || this.registration.request.WaterLevel2.WaterLevelMeasurement.length === 0) {
-      this.registration.request.WaterLevel2.WaterLevelMeasurement = [{}];
+      this.registration.request.WaterLevel2.WaterLevelMeasurement = [{ DtMeasurementTime: undefined }];
     }
   }
 
   onReset() {
-    this.registration.request.WaterLevel2.WaterLevelMeasurement = [{}];
+    this.registration.request.WaterLevel2.WaterLevelMeasurement = [{ DtMeasurementTime: undefined }];
   }
 
   addWaterLevelMeasurement() {
-    this.registration.request.WaterLevel2.WaterLevelMeasurement.push({});
+    this.registration.request.WaterLevel2.WaterLevelMeasurement.push({ DtMeasurementTime: undefined });
   }
 
   onBeforeLeave() {
