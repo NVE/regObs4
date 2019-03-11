@@ -11,15 +11,6 @@
 <ion-content padding *ngIf="userSettings">
   <ion-list lines="full">
     <ion-item>
-      <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.APPMODE" | translate }}</ion-label>
-      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.appMode"
-        interface="action-sheet" (ngModelChange)="updateSettings()">
-        <ion-select-option value="PROD">regObs</ion-select-option>
-        <ion-select-option value="DEMO">demo regObs</ion-select-option>
-        <ion-select-option value="TEST">test regObs</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
       <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.LANGUAGE" | translate }}</ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language"
         interface="action-sheet" (ngModelChange)="updateSettings()">
@@ -44,6 +35,15 @@
   </ion-button>
   <ng-container *ngIf="showAdvanced">
     <ion-list lines="full">
+      <ion-item>
+        <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.APPMODE" | translate }}</ion-label>
+        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.appMode"
+          interface="action-sheet" (ngModelChange)="updateSettings()">
+          <ion-select-option value="PROD">Regobs</ion-select-option>
+          <ion-select-option value="DEMO">Demo Regobs</ion-select-option>
+          <ion-select-option value="TEST">Test Regobs</ion-select-option>
+        </ion-select>
+      </ion-item>
       <ion-item class="no-border no-min-height">
         <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
       </ion-item>
@@ -61,8 +61,6 @@
           (ngModelChange)="updateSettings()">
         </ion-range>
       </ion-item>
-    </ion-list>
-    <ion-list lines="full">
       <ion-item>
         <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.TILES_CACHE_SIZE' | translate}}
         </ion-label>
