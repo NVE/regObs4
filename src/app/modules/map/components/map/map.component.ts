@@ -211,22 +211,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.zone.runOutsideAngular(() => {
       this.tilesLayer.clearLayers();
       const mapOptions = this.getMapOptions(userSetting.topoMap);
-      // const topoTilesLayer = new RegObsTileLayer(
-      //   this.zone,
-      //   this.offlineMapService,
-      //   this.shouldBufferOfflineMap(userSetting),
-      //   this.getMapOptions(userSetting.topoMap),
-      //   userSetting.tilesCacheSize,
-      // );
-      // topoTilesLayer.addTo(this.tilesLayer);
       for (const topoMap of mapOptions) {
         const topoTilesLayer = new RegObsTileLayer(
+          topoMap.url,
+          {
+            minZoom: settings.map.tiles.minZoom,
+            maxZoom: settings.map.tiles.maxZoom,
+            bounds: topoMap.bounds
+          },
+          topoMap.name,
           this.zone,
           this.offlineMapService,
           this.shouldBufferOfflineMap(userSetting),
-          topoMap.url,
-          topoMap.name,
-          topoMap.bounds,
         );
         topoTilesLayer.addTo(this.tilesLayer);
       }
@@ -236,12 +232,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         if (userSetting.currentGeoHazard.indexOf(supportTile.geoHazardId) >= 0
           && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
           const tile = new RegObsTileLayer(
+            supportTile.url,
+            {
+              minZoom: 5,
+              maxZoom: settings.map.tiles.maxZoom,
+              bounds: <any>settings.map.tiles.supportTilesBounds,
+            },
+            supportTile.name,
             this.zone,
             this.offlineMapService,
             this.shouldBufferOfflineMap(userSetting),
-            supportTile.url,
-            supportTile.name,
-            null,
           );
           tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
           tile.addTo(this.tilesLayer);
@@ -272,8 +272,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       name: TopoMap.statensKartverk,
       url: settings.map.tiles.statensKartverkMapUrl,
       bounds: NORWEGIAN_BORDER,
-      // validFunc: (coords: L.Coords, bounds: L.LatLngBounds) =>
-      //   this.showNorwegianMap(coords, bounds),
     };
     const openTopoMap = {
       name: TopoMap.openTopo,
