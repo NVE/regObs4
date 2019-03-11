@@ -8,7 +8,7 @@ import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
-import { MapService } from '../../services/map/map.service';
+import { MapService, NORWEGIAN_BORDER } from '../../services/map/map.service';
 import { take } from 'rxjs/operators';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
@@ -210,14 +210,27 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   configureTileLayers(userSetting: UserSetting) {
     this.zone.runOutsideAngular(() => {
       this.tilesLayer.clearLayers();
-      const topoTilesLayer = new RegObsTileLayer(
-        this.zone,
-        this.offlineMapService,
-        this.shouldBufferOfflineMap(userSetting),
-        this.getMapOptions(userSetting.topoMap),
-        userSetting.tilesCacheSize,
-      );
-      topoTilesLayer.addTo(this.tilesLayer);
+      const mapOptions = this.getMapOptions(userSetting.topoMap);
+      // const topoTilesLayer = new RegObsTileLayer(
+      //   this.zone,
+      //   this.offlineMapService,
+      //   this.shouldBufferOfflineMap(userSetting),
+      //   this.getMapOptions(userSetting.topoMap),
+      //   userSetting.tilesCacheSize,
+      // );
+      // topoTilesLayer.addTo(this.tilesLayer);
+      for (const topoMap of mapOptions) {
+        const topoTilesLayer = new RegObsTileLayer(
+          this.zone,
+          this.offlineMapService,
+          this.shouldBufferOfflineMap(userSetting),
+          topoMap.url,
+          topoMap.name,
+          topoMap.bounds,
+        );
+        topoTilesLayer.addTo(this.tilesLayer);
+      }
+
       for (const supportTile of settings.map.tiles.supportTiles) {
         const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
         if (userSetting.currentGeoHazard.indexOf(supportTile.geoHazardId) >= 0
@@ -226,12 +239,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             this.zone,
             this.offlineMapService,
             this.shouldBufferOfflineMap(userSetting),
-            [{
-              name: supportTile.name,
-              url: supportTile.url,
-              validFunc: (coords, bounds) => this.showNorwegianSupportMap(coords, bounds),
-            }],
-            userSetting.tilesCacheSize,
+            supportTile.url,
+            supportTile.name,
+            null,
           );
           tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
           tile.addTo(this.tilesLayer);
@@ -261,16 +271,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     const norwegianMixedMap = {
       name: TopoMap.statensKartverk,
       url: settings.map.tiles.statensKartverkMapUrl,
-      validFunc: (coords: L.Coords, bounds: L.LatLngBounds) =>
-        this.showNorwegianMap(coords, bounds),
+      bounds: NORWEGIAN_BORDER,
+      // validFunc: (coords: L.Coords, bounds: L.LatLngBounds) =>
+      //   this.showNorwegianMap(coords, bounds),
     };
     const openTopoMap = {
       name: TopoMap.openTopo,
       url: settings.map.tiles.openTopoMapUrl,
+      bounds: null,
     };
     const arcGisOnlineMap = {
       name: TopoMap.arcGisOnline,
       url: settings.map.tiles.arcGisOnlineTopoMapUrl,
+      bounds: null,
     };
     switch (topoMap) {
       case TopoMap.statensKartverk:
@@ -278,6 +291,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           {
             name: TopoMap.statensKartverk,
             url: settings.map.tiles.statensKartverkMapUrl,
+            bounds: null,
           }
         ];
       case TopoMap.openTopo:
@@ -285,9 +299,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       case TopoMap.arcGisOnline:
         return [arcGisOnlineMap];
       case TopoMap.mixOpenTopo:
-        return [norwegianMixedMap, openTopoMap];
+        return [openTopoMap, norwegianMixedMap];
       case TopoMap.mixArcGisOnline:
-        return [norwegianMixedMap, arcGisOnlineMap];
+        return [arcGisOnlineMap, norwegianMixedMap];
     }
   }
 

@@ -28,6 +28,8 @@ import { LoggingService } from '../../../shared/services/logging/logging.service
 
 const DEBUG_TAG = 'MapService';
 
+export const NORWEGIAN_BORDER = L.geoJSON(require('../../../../../assets/json/norway-borders.json')).getBounds();
+
 @Injectable({
   providedIn: 'root'
 })
