@@ -55,8 +55,8 @@ export class RegObsTileLayer extends L.TileLayer {
     }
 
     _tileOnLoad(done: L.DoneCallback, tile: RegObsTile) {
-        this.saveTileOffline(tile);
         (<any>L.TileLayer.prototype)._tileOnLoad.call(this, done, tile);
+        this.saveTileOffline(tile);
     }
 
     private async saveTileOffline(tile: RegObsTile) {
