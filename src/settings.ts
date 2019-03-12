@@ -89,7 +89,7 @@ export const settings = {
             maxZoom: 18,
             zoomInPosition: 15,
             edgeBufferTiles: 2,
-            detectRetina: true,
+            detectRetina: false,
             updateWhenIdle: false,
             keepBuffer: 2,
             // tslint:disable-next-line:max-line-length

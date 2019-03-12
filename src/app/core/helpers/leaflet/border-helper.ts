@@ -3,11 +3,13 @@ import { settings } from '../../../../settings';
 import { Observable, Observer, of } from 'rxjs';
 import { createWorker } from 'typed-web-workers';
 import { map } from 'rxjs/operators';
+import { booleanContains, bboxPolygon, GeometryObject } from '@turf/turf';
 
-export const NORWEGIAN_BORDER = require('../../../../assets/json/norway-borders.json');
+// export const NORWEGIAN_BORDER = require('../../../../assets/json/norway-borders.json');
 export const SVALBARD_BOUNDS =
     L.latLngBounds(settings.map.elevation.svalbard.bbox.map((coordinate) => L.latLng(coordinate[0], coordinate[1])));
-export const NORWEGIAN_BOUNDS = L.geoJSON(NORWEGIAN_BORDER).getBounds();
+// export const NORWEGIAN_BOUNDS = L.geoJSON(NORWEGIAN_BORDER).getBounds();
+export const NORWEGIAN_BOUNDS = require('../../../../assets/json/world-topo-mix-border.json');
 
 export class BorderHelper {
 
@@ -21,7 +23,7 @@ export class BorderHelper {
                 .pipe(map((inNorway) => ({ inSvalbard: false, inNorway })));
     }
 
-    static isLatLngInNorwayAsObservable(latLng: L.LatLng, border = NORWEGIAN_BORDER): Observable<boolean> {
+    static isLatLngInNorwayAsObservable(latLng: L.LatLng, border = NORWEGIAN_BOUNDS): Observable<boolean> {
         return Observable.create((observer: Observer<boolean>) => {
             const typedWorker = createWorker(this.isLatLngInNorwayWorkFunc, (msg) => {
                 observer.next(msg);
@@ -30,7 +32,7 @@ export class BorderHelper {
             const input = {
                 baseUrl: document.location.protocol + '//' + document.location.host,
                 latLng: { lat: latLng.lat, lng: latLng.lng },
-                border: border
+                border: border.features[0].geometry
             };
             typedWorker.postMessage(input);
             return () => typedWorker ? typedWorker.terminate() : null;
@@ -41,12 +43,12 @@ export class BorderHelper {
         input: {
             baseUrl: string;
             latLng: { lat: number, lng: number };
-            border: any;
+            border: GeometryObject;
         },
         callback: (_: boolean) => void) {
         const that = <any>self;
         that.importScripts(`${input.baseUrl}/turf/turf.min.js`);
-        const result = that.turf.inside([input.latLng.lng, input.latLng.lat], input.border.geometry);
+        const result = that.turf.inside([input.latLng.lng, input.latLng.lat], input.border);
         callback(result);
     }
 
@@ -57,5 +59,9 @@ export class BorderHelper {
             latLngBounds.getNorthEast().lng, // maxx
             latLngBounds.getNorthEast().lat, // maxy
         ];
+    }
+
+    static isInside(latLngBounds: L.LatLngBounds, geometry: GeometryObject) {
+        return booleanContains(geometry, bboxPolygon(this.toBBox(latLngBounds)));
     }
 }

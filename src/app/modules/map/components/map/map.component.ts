@@ -16,6 +16,7 @@ import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
 import { RegObsTileLayer } from '../../core/classes/regobs-tile-layer';
 import '../../../../core/helpers/ionic/platform-helper';
+import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -225,6 +226,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           topoMap.name,
           this.offlineMapService,
           this.shouldBufferOfflineMap(userSetting),
+          topoMap.notInsideBounds
         );
         topoTilesLayer.addTo(this.tilesLayer);
       }
@@ -259,16 +261,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       name: TopoMap.statensKartverk,
       url: settings.map.tiles.statensKartverkMapUrl,
       bounds: <any>settings.map.tiles.supportTilesBounds,
+      notInsideBounds: null,
     };
     const openTopoMap = {
       name: TopoMap.openTopo,
       url: settings.map.tiles.openTopoMapUrl,
       bounds: null,
+      notInsideBounds: null,
     };
     const arcGisOnlineMap = {
       name: TopoMap.arcGisOnline,
       url: settings.map.tiles.arcGisOnlineTopoMapUrl,
       bounds: null,
+      notInsideBounds: null,
     };
     switch (topoMap) {
       case TopoMap.statensKartverk:
@@ -277,6 +282,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             name: TopoMap.statensKartverk,
             url: settings.map.tiles.statensKartverkMapUrl,
             bounds: null,
+            notInsideBounds: null,
           }
         ];
       case TopoMap.openTopo:
@@ -284,9 +290,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       case TopoMap.arcGisOnline:
         return [arcGisOnlineMap];
       case TopoMap.mixOpenTopo:
-        return [openTopoMap, norwegianMixedMap];
+        return [{ ...openTopoMap, notInsideBounds: NORWEGIAN_BOUNDS.features[0].geometry }, norwegianMixedMap];
       case TopoMap.mixArcGisOnline:
-        return [arcGisOnlineMap, norwegianMixedMap];
+        return [{ ...arcGisOnlineMap, notInsideBounds: NORWEGIAN_BOUNDS.features[0].geometry }, norwegianMixedMap];
     }
   }
 

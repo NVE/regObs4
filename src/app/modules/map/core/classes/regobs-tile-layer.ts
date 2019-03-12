@@ -2,6 +2,8 @@ import * as L from 'leaflet';
 import { settings } from '../../../../../settings';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
+import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
+import { GeometryObject } from '@turf/turf';
 
 interface ExtendedCoords extends L.Coords {
     fallback: boolean;
@@ -27,6 +29,7 @@ export class RegObsTileLayer extends L.TileLayer {
         private name: string,
         private offlineMapService: OfflineMapService,
         private bufferOffline: boolean,
+        private excludeBounds?: GeometryObject,
     ) {
         super(url, options);
     }
@@ -94,6 +97,18 @@ export class RegObsTileLayer extends L.TileLayer {
         const pixelBounds: L.Bounds = (<any>L.GridLayer.prototype)._getTiledPixelBounds.call(this, center);
         const pixelEdgeBuffer = this.getTileSize().multiplyBy(settings.map.tiles.edgeBufferTiles);
         return new L.Bounds(pixelBounds.min.subtract(pixelEdgeBuffer), pixelBounds.max.add(pixelEdgeBuffer));
+    }
+
+    _isValidTile(coords: L.Coords) {
+        const valid = (<any>L.GridLayer.prototype)._isValidTile.call(this, coords);
+        if (!valid) {
+            return false;
+        }
+        if (this.excludeBounds) {
+            const tileBounds = (<any>L.GridLayer.prototype)._tileCoordsToBounds.call(this, coords);
+            return !BorderHelper.isInside(tileBounds, this.excludeBounds);
+        }
+        return true;
     }
 
     private tryScaleImage(done: L.DoneCallback, tile: RegObsTile, e: Error) {
