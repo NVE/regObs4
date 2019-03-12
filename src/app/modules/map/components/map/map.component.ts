@@ -219,7 +219,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             minZoom: settings.map.tiles.minZoom,
             maxZoom: settings.map.tiles.maxZoom,
             bounds: topoMap.bounds,
-            detectRetina: settings.map.tiles.detectRetina,
+            detectRetina: userSetting.useRetinaMap,
             updateWhenIdle: settings.map.tiles.updateWhenIdle,
             keepBuffer: settings.map.tiles.keepBuffer,
           },

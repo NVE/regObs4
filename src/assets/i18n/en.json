@@ -472,7 +472,8 @@
     "TILES_CACHE_SIZE": "Tiles cache size",
     "TITLE": "Settings",
     "UPDATE_DROPDOWNS": "Update dropdowns",
-    "USE_IN_WORLD": "Outside Norway"
+    "USE_IN_WORLD": "Outside Norway",
+    "USE_RETINA_MAP": "Detailed map"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {

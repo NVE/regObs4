@@ -16,4 +16,5 @@ export interface UserSetting {
     emailReciept: boolean;
     topoMap: TopoMap;
     showGeoSelectInfo: boolean;
+    useRetinaMap: boolean;
 }

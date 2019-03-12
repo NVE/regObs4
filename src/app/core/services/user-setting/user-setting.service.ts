@@ -140,6 +140,7 @@ export class UserSettingService {
       emailReciept: true,
       topoMap: TopoMap.mixArcGisOnline,
       showGeoSelectInfo: true,
+      useRetinaMap: false,
     };
   }
 
