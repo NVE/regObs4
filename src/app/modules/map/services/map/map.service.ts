@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as L from 'leaflet';
 import { IMapView } from './map-view.interface';
-import { Observable, combineLatest, Observer, BehaviorSubject, Subject, from, of } from 'rxjs';
+import { Observable, combineLatest, Observer, BehaviorSubject, Subject, of } from 'rxjs';
 import { createWorker } from 'typed-web-workers';
 import {
   switchMap,
@@ -20,15 +19,11 @@ import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
-import { LRUMap } from 'lru_map';
-import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { settings } from '../../../../../settings';
 import { Feature, Polygon } from '@turf/turf';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 
 const DEBUG_TAG = 'MapService';
-
-export const NORWEGIAN_BORDER = L.geoJSON(require('../../../../../assets/json/norway-borders.json')).getBounds();
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +32,6 @@ export class MapService {
   private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
   private _avalancheRegions: any;
   private _regions: any;
-  private _tilesInNorwayCache: LRUMap<string, boolean>;
   private _followModeSubject: BehaviorSubject<boolean>;
   private _followModeObservable: Observable<boolean>;
   private _centerMapToUserSubject: Subject<void>;
@@ -71,7 +65,6 @@ export class MapService {
   }
 
   constructor(private userSettingService: UserSettingService, private loggingService: LoggingService) {
-    this._tilesInNorwayCache = new LRUMap(10000);
     this._followModeSubject = new BehaviorSubject<boolean>(true);
     this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
     this._centerMapToUserSubject = new Subject<void>();
@@ -88,39 +81,6 @@ export class MapService {
   centerMapToUser() {
     this.followMode = true;
     this._centerMapToUserSubject.next();
-  }
-
-  private isInNorwayCached(coords: { x: number, y: number, z: number }, isParent: boolean) {
-    if (coords.z < 1) {
-      return undefined;
-    }
-    const id = this.getCacheId(coords);
-    const inNorway = this._tilesInNorwayCache.get(id);
-    if (inNorway === undefined) {
-      const z = coords.z - 1;
-      const x = Math.floor(coords.x / 2);
-      const y = Math.floor(coords.y / 2);
-      return this.isInNorwayCached({ x, y, z }, true);
-    }
-    if (isParent) {
-      // Do not return false for parent, bacause child is only in norway
-      // if parent is in Norway, but parent can be outside border of border when child is not.
-      return inNorway === true ? true : undefined;
-    }
-    return inNorway;
-  }
-
-  private getCacheId(coords: { x: number, y: number, z: number }) {
-    return `${coords.z}_${coords.x}_${coords.y}`;
-  }
-
-  async isTileInsideNorway(coords: { x: number, y: number, z: number }, bounds: L.LatLngBounds) {
-    let inNorway = this.isInNorwayCached(coords, false);
-    if (inNorway === undefined) {
-      inNorway = await BorderHelper.isBoundsInNorway(bounds);
-    }
-    this._tilesInNorwayCache.set(this.getCacheId(coords), inNorway);
-    return inNorway;
   }
 
   updateMapView(mapView: IMapView) {

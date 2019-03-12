@@ -8,7 +8,7 @@ import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
-import { MapService, NORWEGIAN_BORDER } from '../../services/map/map.service';
+import { MapService } from '../../services/map/map.service';
 import { take } from 'rxjs/operators';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
@@ -65,7 +65,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   options: L.MapOptions = {
-    zoom: this.zoom !== undefined ? this.zoom : settings.map.tiles.embeddedUrlMaxZoomWorld,
+    zoom: this.zoom !== undefined ? this.zoom : settings.map.tiles.defaultZoom,
     maxZoom: settings.map.tiles.maxZoom,
     minZoom: settings.map.tiles.minZoom,
     center: this.center || L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
@@ -217,10 +217,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           {
             minZoom: settings.map.tiles.minZoom,
             maxZoom: settings.map.tiles.maxZoom,
-            bounds: topoMap.bounds
+            bounds: topoMap.bounds,
+            detectRetina: settings.map.tiles.detectRetina,
+            updateWhenIdle: settings.map.tiles.updateWhenIdle,
+            keepBuffer: settings.map.tiles.keepBuffer,
           },
           topoMap.name,
-          this.zone,
           this.offlineMapService,
           this.shouldBufferOfflineMap(userSetting),
         );
@@ -237,9 +239,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
               minZoom: 5,
               maxZoom: settings.map.tiles.maxZoom,
               bounds: <any>settings.map.tiles.supportTilesBounds,
+              detectRetina: settings.map.tiles.detectRetina,
+              updateWhenIdle: settings.map.tiles.updateWhenIdle,
+              keepBuffer: settings.map.tiles.keepBuffer,
             },
             supportTile.name,
-            this.zone,
             this.offlineMapService,
             this.shouldBufferOfflineMap(userSetting),
           );
@@ -250,28 +254,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private showNorwegianMap(coords: L.Coords, bounds: L.LatLngBounds) {
-    if (coords.z < settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
-      return false;
-    }
-    return this.mapService.isTileInsideNorway(coords, bounds);
-  }
-
-  private showNorwegianSupportMap(coords: L.Coords, bounds: L.LatLngBounds) {
-    if (coords.z < 5) {
-      return false;
-    }
-    if (coords.z < settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
-      return true;
-    }
-    return this.mapService.isTileInsideNorway(coords, bounds);
-  }
-
   private getMapOptions(topoMap: TopoMap) {
     const norwegianMixedMap = {
       name: TopoMap.statensKartverk,
       url: settings.map.tiles.statensKartverkMapUrl,
-      bounds: NORWEGIAN_BORDER,
+      bounds: <any>settings.map.tiles.supportTilesBounds,
     };
     const openTopoMap = {
       name: TopoMap.openTopo,
