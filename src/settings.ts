@@ -90,7 +90,7 @@ export const settings = {
             zoomInPosition: 15,
             edgeBufferTiles: 2,
             detectRetina: false,
-            updateWhenIdle: false,
+            updateWhenIdle: true,
             keepBuffer: 2,
             // tslint:disable-next-line:max-line-length
             statensKartverkMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
