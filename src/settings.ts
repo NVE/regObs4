@@ -80,16 +80,22 @@ export const settings = {
     map: {
         tiles: {
             cacheFolder: 'tilescache',
-            cacheSize: 10000,
+            cacheSize: 5000,
+            cacheSaveBufferSize: 30,
+            cacheSaveBufferThrottleTimeMs: 1000,
+            cacheTileSaveQuality: 0.5,
+            tileImageFormat: 'image/png',
             embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
-            // embeddedUrlMaxZoomWorld: 5,
-            // embeddedUrlMaxZoomNorway: 9,
+            defaultZoom: 5,
             embeddedUrlMaxZoomWorld: 0,
             embeddedUrlMaxZoomNorway: 0,
-            minZoom: 3,
+            minZoom: 2,
             maxZoom: 18,
             zoomInPosition: 15,
-            zoomToShowBeforeNorwegianDetailsMap: 9,
+            edgeBufferTiles: 2,
+            detectRetina: false,
+            updateWhenIdle: true,
+            keepBuffer: 2,
             // tslint:disable-next-line:max-line-length
             statensKartverkMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
             openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
@@ -127,7 +133,29 @@ export const settings = {
                     opacity: 0.5,
                     geoHazardId: 70
                 }
-            ]
+            ],
+            supportTilesBounds: [
+                [
+                    57.136239319177434,
+                    -0.17578125
+                ],
+                [
+                    57.136239319177434,
+                    36.03515625
+                ],
+                [
+                    81.36128726057069,
+                    36.03515625
+                ],
+                [
+                    81.36128726057069,
+                    -0.17578125
+                ],
+                [
+                    57.136239319177434,
+                    -0.17578125
+                ]
+            ],
         },
         search: {
             no: {

@@ -1,9 +1,11 @@
 import * as L from 'leaflet';
 import { settings } from '../../../../../settings';
-import { NgZone } from '@angular/core';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
-import { RegObsMapOption } from './regobs-map-option';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
+import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
+import { GeometryObject } from '@turf/turf';
+import { MapService } from '../../services/map/map.service';
+import { LRUMap } from 'lru_map';
 
 interface ExtendedCoords extends L.Coords {
     fallback: boolean;
@@ -23,80 +25,58 @@ class RegObsTile extends HTMLImageElement {
 
 export class RegObsTileLayer extends L.TileLayer {
 
+    private _recentlySavedTile: LRUMap<string, boolean>;
+    private _url: string;
+
     constructor(
-        private zone: NgZone,
+        url: string,
+        options: L.TileLayerOptions,
+        private name: string,
         private offlineMapService: OfflineMapService,
+        private mapService: MapService,
         private bufferOffline: boolean,
-        private tileOptions: RegObsMapOption[],
-        private cacheSize: number,
+        private excludeBounds?: GeometryObject,
     ) {
-        super(tileOptions[0].url, {
-            minZoom: settings.map.tiles.minZoom,
-            maxZoom: settings.map.tiles.maxZoom,
-        });
+        super(url, options);
+        this._url = url;
+        this._recentlySavedTile = new LRUMap(2000);
     }
 
     createTile(coords: ExtendedCoords, done: L.DoneCallback): HTMLElement {
-        return this.zone.runOutsideAngular(() => {
-            const tile = new Image() as RegObsTile;
+        const tile = new Image() as RegObsTile;
 
-            L.DomEvent.on(tile, 'load', L.Util.bind((<any>this)._tileOnLoad, this, done, tile));
-            L.DomEvent.on(tile, 'error', L.Util.bind((<any>this)._tileOnError, this, done, tile));
+        L.DomEvent.on(tile, 'load', L.Util.bind((<any>this)._tileOnLoad, this, done, tile));
+        L.DomEvent.on(tile, 'error', L.Util.bind((<any>this)._tileOnError, this, done, tile));
 
-            tile.crossOrigin = 'anonymous';
-            tile.alt = '';
-            tile.originalCoords = coords;
+        tile.crossOrigin = 'anonymous';
+        tile.alt = '';
+        tile.originalCoords = coords;
 
-            tile.setAttribute('role', 'presentation');
+        tile.setAttribute('role', 'presentation');
 
-            this.getTileUrl(coords).then((result) => {
-                tile.src = result.url;
-                tile.id = result.id;
-                tile.originalSrc = tile.src;
-            });
+        const url = (<any>this).getTileUrl(coords);
+        tile.src = url;
+        tile.originalSrc = url;
+        tile.id = this.getTileId(coords);
 
-            return tile;
-        });
+        return tile;
     }
 
-    private getOriginalTileUrl(coords: L.Coords, urlTemplate: string): string {
-        const data = {
-            r: L.Browser.retina ? '@2x' : '',
-            s: (<any>this)._getSubdomain(coords),
-            x: coords.x,
-            y: coords.y,
-            z: coords.z,
-        };
-        return L.Util.template(urlTemplate, L.Util.extend(data, this.options));
-    }
-
-    async getTileUrl(coords: ExtendedCoords): Promise<{ id: string, url: string }> {
-        for (const map of this.tileOptions) {
-            const id = `${map.name}_${coords.z}_${coords.x}_${coords.y}`;
-            let valid = true;
-            if (map.validFunc) {
-                valid = await Promise.resolve(map.validFunc(coords, (<any>this)._tileCoordsToBounds(coords)));
-            }
-            if (valid) {
-                return { id, url: this.getOriginalTileUrl(coords, map.url) };
-            }
-        }
-        return { id: '', url: this.getBlankUrl() };
-    }
-
-    private getBlankUrl() {
-        return '/assets/map/blank.png';
+    private getTileId(coords: ExtendedCoords) {
+        return `${this.name}_${coords.z}_${coords.x}_${coords.y}`;
     }
 
     _tileOnLoad(done: L.DoneCallback, tile: RegObsTile) {
+        (<any>L.TileLayer.prototype)._tileOnLoad.call(this, done, tile);
         this.saveTileOffline(tile);
-        (<any>L.TileLayer.prototype)._tileOnLoad(done, tile);
     }
 
-    private saveTileOffline(tile: RegObsTile) {
+    private async saveTileOffline(tile: RegObsTile) {
         if (this.bufferOffline && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
-            const dataUrl = DataUrlHelper.getDataUrlFromImage(tile, 'image/png');
-            this.offlineMapService.saveTileDataUrlToDbCache(tile.id, dataUrl);
+            if (!this._recentlySavedTile.has(tile.id)) {
+                this._recentlySavedTile.set(tile.id, true);
+                this.mapService.addImageToSaveQueue(DataUrlHelper.getCanvasFromImage(tile));
+            }
         }
     }
 
@@ -104,19 +84,55 @@ export class RegObsTileLayer extends L.TileLayer {
         if (!tile.hasTriedOffline && tile.id && tile.id !== '') {
             this.offlineMapService.getTileFromDb(tile.id).then((result) => {
                 tile.hasTriedOffline = true;
-                if (result) {
+                if (result && result.dataUrl) {
+                    const oldSrc = tile.src;
+                    tile.src = result.dataUrl;
                     this.fire('tilefallback',
                         {
                             tile: tile,
                             url: tile.originalSrc,
-                            urlMissing: tile.src,
+                            urlMissing: oldSrc,
                             urlFallback: result.dataUrl
                         });
                 } else {
                     this.tryScaleImage(done, tile, e);
                 }
             });
+        } else {
+            this.tryScaleImage(done, tile, e);
         }
+    }
+
+    /**
+     * Override _getTiledPixelBounds to buffer tiles outside edges
+     */
+    _getTiledPixelBounds(center: L.LatLng) {
+        const pixelBounds: L.Bounds = (<any>L.GridLayer.prototype)._getTiledPixelBounds.call(this, center);
+        const pixelEdgeBuffer = this.getTileSize().multiplyBy(settings.map.tiles.edgeBufferTiles);
+        return new L.Bounds(pixelBounds.min.subtract(pixelEdgeBuffer), pixelBounds.max.add(pixelEdgeBuffer));
+    }
+
+    _isValidTile(coords: L.Coords) {
+        const valid = (<any>L.GridLayer.prototype)._isValidTile.call(this, coords);
+        if (!valid) {
+            return false;
+        }
+        if (this.excludeBounds) {
+            const tileBounds = (<any>L.GridLayer.prototype)._tileCoordsToBounds.call(this, coords);
+            return !BorderHelper.isInside(tileBounds, this.excludeBounds);
+        }
+        return true;
+    }
+
+    private getNewZoomTileUrl(coords: ExtendedCoords) {
+        const data = {
+            r: L.Browser.retina ? '@2x' : '',
+            s: (<any>L.TileLayer.prototype)._getSubdomain.call(this, coords),
+            x: coords.x,
+            y: coords.y,
+            z: coords.z,
+        };
+        return L.Util.template(this._url, L.Util.extend(data, this.options));
     }
 
     private tryScaleImage(done: L.DoneCallback, tile: RegObsTile, e: Error) {
@@ -130,7 +146,7 @@ export class RegObsTileLayer extends L.TileLayer {
         // If no lower zoom tiles are available, fallback to errorTile.
         if (fallbackZoom < 1) {
             // console.log('Max fallback reached. Return original error handling');
-            return (<any>L.TileLayer.prototype)._tileOnError(done, tile, e);
+            return (<any>L.TileLayer.prototype)._tileOnError.call(this, done, tile, e);
         }
 
         // Modify tilePoint for replacement img.
@@ -139,40 +155,41 @@ export class RegObsTileLayer extends L.TileLayer {
         currentCoords.y = Math.floor(currentCoords.y / 2);
 
         // Generate new src path.
-        this.getTileUrl(currentCoords).then((newUrl) => {
-            // Zoom replacement img.
-            style.width = (tileSize.x * scale) + 'px';
-            style.height = (tileSize.y * scale) + 'px';
+        const newUrl = this.getNewZoomTileUrl(currentCoords);
+        // Zoom replacement img.
+        style.width = (tileSize.x * scale) + 'px';
+        style.height = (tileSize.y * scale) + 'px';
 
-            // Compute margins to adjust position.
-            const top = (originalCoords.y - currentCoords.y * scale) * tileSize.y;
-            style.marginTop = (-top) + 'px';
-            const left = (originalCoords.x - currentCoords.x * scale) * tileSize.x;
-            style.marginLeft = (-left) + 'px';
+        // Compute margins to adjust position.
+        const top = (originalCoords.y - currentCoords.y * scale) * tileSize.y;
+        style.marginTop = (-top) + 'px';
+        const left = (originalCoords.x - currentCoords.x * scale) * tileSize.x;
+        style.marginLeft = (-left) + 'px';
 
-            // Crop (clip) image.
-            // `clip` is deprecated, but browsers support for `clip-path: inset()` is far behind.
-            // http://caniuse.com/#feat=css-clip-path
-            style.clip = 'rect(' +
-                top +
-                'px ' +
-                (left + tileSize.x) +
-                'px ' +
-                (top + tileSize.y) +
-                'px ' +
-                left +
-                'px)';
+        // Crop (clip) image.
+        // `clip` is deprecated, but browsers support for `clip-path: inset()` is far behind.
+        // http://caniuse.com/#feat=css-clip-path
+        style.clip = 'rect(' +
+            top +
+            'px ' +
+            (left + tileSize.x) +
+            'px ' +
+            (top + tileSize.y) +
+            'px ' +
+            left +
+            'px)';
 
-            tile.src = newUrl.url;
+        tile.src = newUrl;
+        tile.id = this.getTileId(currentCoords);
+        tile.hasTriedOffline = false;
 
-            this.fire('tilefallback',
-                {
-                    tile: tile,
-                    url: tile.originalSrc,
-                    urlMissing: tile.src,
-                    urlFallback: newUrl
-                });
-        });
+        this.fire('tilefallback',
+            {
+                tile: tile,
+                url: tile.originalSrc,
+                urlMissing: tile.src,
+                urlFallback: newUrl
+            });
     }
 
     private createCurrentCoords(originalCoords: L.Coords): ExtendedCoords {

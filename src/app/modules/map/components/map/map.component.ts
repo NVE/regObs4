@@ -16,6 +16,7 @@ import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
 import { RegObsTileLayer } from '../../core/classes/regobs-tile-layer';
 import '../../../../core/helpers/ionic/platform-helper';
+import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -65,7 +66,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   options: L.MapOptions = {
-    zoom: this.zoom !== undefined ? this.zoom : settings.map.tiles.embeddedUrlMaxZoomWorld,
+    zoom: this.zoom !== undefined ? this.zoom : settings.map.tiles.defaultZoom,
     maxZoom: settings.map.tiles.maxZoom,
     minZoom: settings.map.tiles.minZoom,
     center: this.center || L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
@@ -145,8 +146,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }));
 
     this.zone.runOutsideAngular(() => {
-      this.map.on('movestart', () => this.disableFollowMode());
-      this.map.on('zoomstart', () => this.disableFollowMode());
+      this.map.on('movestart', () => this.onMapMove());
+      this.map.on('zoomstart', () => this.onMapMove());
     });
 
     this.subscriptions.push(this.platform.pause.subscribe(() => this.stopGeoLocationWatch()));
@@ -157,7 +158,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }));
 
     this.zone.runOutsideAngular(() => {
-      this.map.on('moveend', () => this.updateMapView());
+      this.map.on('moveend', () => this.onMapMoveEnd());
     });
 
     this.subscriptions.push(this.fullscreenService.isFullscreen$.subscribe(() => {
@@ -188,6 +189,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.stopGeoLocationWatch();
   }
 
+  private onMapMove() {
+    this.mapService.setMapIdle(false);
+    this.disableFollowMode();
+  }
+
+  private onMapMoveEnd() {
+    this.updateMapView();
+    this.mapService.setMapIdle(true);
+  }
+
   private disableFollowMode() {
     if (!this.isDoingMoveAction) {
       this.loggingService.debug('Disable follow mode!', DEBUG_TAG);
@@ -210,28 +221,45 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   configureTileLayers(userSetting: UserSetting) {
     this.zone.runOutsideAngular(() => {
       this.tilesLayer.clearLayers();
-      const topoTilesLayer = new RegObsTileLayer(
-        this.zone,
-        this.offlineMapService,
-        this.shouldBufferOfflineMap(userSetting),
-        this.getMapOptions(userSetting.topoMap),
-        userSetting.tilesCacheSize,
-      );
-      topoTilesLayer.addTo(this.tilesLayer);
+      const mapOptions = this.getMapOptions(userSetting.topoMap);
+      for (const topoMap of mapOptions) {
+        const topoTilesLayer = new RegObsTileLayer(
+          topoMap.url,
+          {
+            minZoom: settings.map.tiles.minZoom,
+            maxZoom: settings.map.tiles.maxZoom,
+            bounds: topoMap.bounds,
+            detectRetina: userSetting.useRetinaMap,
+            updateWhenIdle: settings.map.tiles.updateWhenIdle,
+            keepBuffer: settings.map.tiles.keepBuffer,
+          },
+          topoMap.name,
+          this.offlineMapService,
+          this.mapService,
+          this.shouldBufferOfflineMap(userSetting),
+          topoMap.notInsideBounds
+        );
+        topoTilesLayer.addTo(this.tilesLayer);
+      }
+
       for (const supportTile of settings.map.tiles.supportTiles) {
         const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
         if (userSetting.currentGeoHazard.indexOf(supportTile.geoHazardId) >= 0
           && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
           const tile = new RegObsTileLayer(
-            this.zone,
+            supportTile.url,
+            {
+              minZoom: 5,
+              maxZoom: settings.map.tiles.maxZoom,
+              bounds: <any>settings.map.tiles.supportTilesBounds,
+              detectRetina: settings.map.tiles.detectRetina,
+              updateWhenIdle: settings.map.tiles.updateWhenIdle,
+              keepBuffer: settings.map.tiles.keepBuffer,
+            },
+            supportTile.name,
             this.offlineMapService,
+            this.mapService,
             this.shouldBufferOfflineMap(userSetting),
-            [{
-              name: supportTile.name,
-              url: supportTile.url,
-              validFunc: (coords, bounds) => this.showNorwegianSupportMap(coords, bounds),
-            }],
-            userSetting.tilesCacheSize,
           );
           tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
           tile.addTo(this.tilesLayer);
@@ -240,37 +268,24 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private showNorwegianMap(coords: L.Coords, bounds: L.LatLngBounds) {
-    if (coords.z < settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
-      return false;
-    }
-    return this.mapService.isTileInsideNorway(coords, bounds);
-  }
-
-  private showNorwegianSupportMap(coords: L.Coords, bounds: L.LatLngBounds) {
-    if (coords.z < 5) {
-      return false;
-    }
-    if (coords.z < settings.map.tiles.zoomToShowBeforeNorwegianDetailsMap) {
-      return true;
-    }
-    return this.mapService.isTileInsideNorway(coords, bounds);
-  }
-
   private getMapOptions(topoMap: TopoMap) {
     const norwegianMixedMap = {
       name: TopoMap.statensKartverk,
       url: settings.map.tiles.statensKartverkMapUrl,
-      validFunc: (coords: L.Coords, bounds: L.LatLngBounds) =>
-        this.showNorwegianMap(coords, bounds),
+      bounds: <any>settings.map.tiles.supportTilesBounds,
+      notInsideBounds: null,
     };
     const openTopoMap = {
       name: TopoMap.openTopo,
       url: settings.map.tiles.openTopoMapUrl,
+      bounds: null,
+      notInsideBounds: null,
     };
     const arcGisOnlineMap = {
       name: TopoMap.arcGisOnline,
       url: settings.map.tiles.arcGisOnlineTopoMapUrl,
+      bounds: null,
+      notInsideBounds: null,
     };
     switch (topoMap) {
       case TopoMap.statensKartverk:
@@ -278,6 +293,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           {
             name: TopoMap.statensKartverk,
             url: settings.map.tiles.statensKartverkMapUrl,
+            bounds: null,
+            notInsideBounds: null,
           }
         ];
       case TopoMap.openTopo:
@@ -285,9 +302,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       case TopoMap.arcGisOnline:
         return [arcGisOnlineMap];
       case TopoMap.mixOpenTopo:
-        return [norwegianMixedMap, openTopoMap];
+        return [{ ...openTopoMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
       case TopoMap.mixArcGisOnline:
-        return [norwegianMixedMap, arcGisOnlineMap];
+        return [{ ...arcGisOnlineMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
     }
   }
 

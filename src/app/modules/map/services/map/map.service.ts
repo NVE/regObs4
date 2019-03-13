@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as L from 'leaflet';
 import { IMapView } from './map-view.interface';
-import { Observable, combineLatest, Observer, BehaviorSubject, Subject, from, of } from 'rxjs';
+import { Observable, combineLatest, Observer, BehaviorSubject, Subject, of } from 'rxjs';
 import { createWorker } from 'typed-web-workers';
 import {
   switchMap,
@@ -20,11 +19,12 @@ import { IMapViewAndArea } from './map-view-and-area.interface';
 import { IMapViewArea } from './map-view-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
-import { LRUMap } from 'lru_map';
-import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { settings } from '../../../../../settings';
 import { Feature, Polygon } from '@turf/turf';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
+import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
+import { LRUMap } from 'lru_map';
+import { Platform } from '@ionic/angular';
 
 const DEBUG_TAG = 'MapService';
 
@@ -35,7 +35,6 @@ export class MapService {
   private _mapViewAndAreaObservable: Observable<IMapViewAndArea>;
   private _avalancheRegions: any;
   private _regions: any;
-  private _tilesInNorwayCache: LRUMap<string, boolean>;
   private _followModeSubject: BehaviorSubject<boolean>;
   private _followModeObservable: Observable<boolean>;
   private _centerMapToUserSubject: Subject<void>;
@@ -43,6 +42,9 @@ export class MapService {
   private _mapViewSubject: Subject<IMapView>;
   private _mapView$: Observable<IMapView>;
   private _relevantMapChange$: Observable<IMapView>;
+  private _saveOfflineTilesQueue: HTMLCanvasElement[] = [];
+  private _isIdle = true;
+  private _interval: NodeJS.Timeout;
 
   get mapView$() {
     return this._mapView$;
@@ -68,8 +70,12 @@ export class MapService {
     this._followModeSubject.next(val);
   }
 
-  constructor(private userSettingService: UserSettingService, private loggingService: LoggingService) {
-    this._tilesInNorwayCache = new LRUMap(10000);
+  constructor(
+    private userSettingService: UserSettingService,
+    private loggingService: LoggingService,
+    private offlineMapService: OfflineMapService,
+    private platform: Platform,
+  ) {
     this._followModeSubject = new BehaviorSubject<boolean>(true);
     this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
     this._centerMapToUserSubject = new Subject<void>();
@@ -81,44 +87,22 @@ export class MapService {
       shareReplay(1));
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
+
+    this.platform.pause.subscribe(() => {
+      if (this._interval) {
+        clearTimeout(this._interval);
+      }
+    });
+    this.platform.resume.subscribe(() => {
+      this.startProcessingOfflineImageSaveQueue();
+    });
+
+    this.startProcessingOfflineImageSaveQueue();
   }
 
   centerMapToUser() {
     this.followMode = true;
     this._centerMapToUserSubject.next();
-  }
-
-  private isInNorwayCached(coords: { x: number, y: number, z: number }, isParent: boolean) {
-    if (coords.z < 1) {
-      return undefined;
-    }
-    const id = this.getCacheId(coords);
-    const inNorway = this._tilesInNorwayCache.get(id);
-    if (inNorway === undefined) {
-      const z = coords.z - 1;
-      const x = Math.floor(coords.x / 2);
-      const y = Math.floor(coords.y / 2);
-      return this.isInNorwayCached({ x, y, z }, true);
-    }
-    if (isParent) {
-      // Do not return false for parent, bacause child is only in norway
-      // if parent is in Norway, but parent can be outside border of border when child is not.
-      return inNorway === true ? true : undefined;
-    }
-    return inNorway;
-  }
-
-  private getCacheId(coords: { x: number, y: number, z: number }) {
-    return `${coords.z}_${coords.x}_${coords.y}`;
-  }
-
-  async isTileInsideNorway(coords: { x: number, y: number, z: number }, bounds: L.LatLngBounds) {
-    let inNorway = this.isInNorwayCached(coords, false);
-    if (inNorway === undefined) {
-      inNorway = await BorderHelper.isBoundsInNorway(bounds);
-    }
-    this._tilesInNorwayCache.set(this.getCacheId(coords), inNorway);
-    return inNorway;
   }
 
   updateMapView(mapView: IMapView) {
@@ -254,5 +238,49 @@ export class MapService {
 
       return () => typedWorker ? typedWorker.terminate() : null;
     });
+  }
+
+  addImageToSaveQueue(img: HTMLCanvasElement) {
+    this._saveOfflineTilesQueue.push(img);
+  }
+
+  setMapIdle(isIdle: boolean) {
+    this._isIdle = isIdle;
+  }
+
+  startProcessingOfflineImageSaveQueue() {
+    if (this._interval) {
+      clearInterval(this._interval);
+    }
+    this._interval = setTimeout(() => {
+      this.startProcessingOfflineImageSaveQueueInternal();
+    }, settings.map.tiles.cacheSaveBufferThrottleTimeMs);
+  }
+
+  private startProcessingOfflineImageSaveQueueInternal() {
+    try {
+      const saveBuffer: { id: string, dataUrl: string }[] = [];
+      while (this._isIdle && this._saveOfflineTilesQueue.length > 0 && saveBuffer.length < settings.map.tiles.cacheSaveBufferSize) {
+        const currentTile = this._saveOfflineTilesQueue.shift();
+        if (currentTile && currentTile.id) {
+          const dataUrl = currentTile.toDataURL(settings.map.tiles.tileImageFormat, settings.map.tiles.cacheTileSaveQuality);
+          if (dataUrl) {
+            saveBuffer.push({
+              id: currentTile.id,
+              dataUrl
+            });
+          }
+        }
+      }
+      if (saveBuffer.length > 0) {
+        this.offlineMapService.saveOfflineTileCache(saveBuffer);
+      }
+      // this.loggingService.debug(`Process offline image queue complete. IsIdle: ${this._isIdle}.`
+      //   + `Queue length: ${this._saveOfflineTilesQueue.length}`, DEBUG_TAG);
+    } catch (err) {
+      this.loggingService.debug('Could not process offline image queue. Retry again in 1000ms', DEBUG_TAG);
+    } finally {
+      this.startProcessingOfflineImageSaveQueue();
+    }
   }
 }

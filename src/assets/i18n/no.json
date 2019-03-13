@@ -472,7 +472,8 @@
     "TILES_CACHE_SIZE": "Kartblad buffer størrelse",
     "TITLE": "Innstillinger",
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyer",
-    "USE_IN_WORLD": "Utenfor Norge"
+    "USE_IN_WORLD": "Utenfor Norge",
+    "USE_RETINA_MAP": "Detaljert kart"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
