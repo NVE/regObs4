@@ -188,20 +188,20 @@
     "DELETE_CONFIRM": "Are you sure?",
     "DIRT": {
       "LAND_SLIDE_OBS": {
-        "AVAL_TRIGGER": "Land slide trigger",
+        "AVAL_TRIGGER": "Landslide trigger",
         "DAMAGE_EXTENT": "Damage extent",
         "DESTRUCTIVE_SIZE": "Size",
         "DIRT_ACTIVITY_INFLUENCED": "What was affected?",
         "DIRT_FORECAST_ACCURATE": "Was the warning level correct?",
-        "DT_LAND_SLIDE_TIME": "When did the land slide start",
-        "DT_LAND_SLIDE_TIME_END": "When did the land slide end",
+        "DT_LAND_SLIDE_TIME": "When did the landslide start",
+        "DT_LAND_SLIDE_TIME_END": "When did the landslide end",
         "END_POSITION": "End position",
         "IN_MAP": "in map",
-        "LANDSLIDE_TYPE": "Land slide type",
-        "POSITION": "Land slide position",
-        "SET_LANDSLIDE_POSITION": "Set land slide position",
+        "LANDSLIDE_TYPE": "Landslide type",
+        "POSITION": "Landslide position",
+        "SET_LANDSLIDE_POSITION": "Set landslide position",
         "START_POSITION": "Start position",
-        "TITLE": "Land Slide Incident"
+        "TITLE": "Landslide Incident"
       }
     },
     "DRAFTS": "My drafts",
