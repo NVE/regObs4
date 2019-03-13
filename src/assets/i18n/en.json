@@ -358,7 +358,7 @@
         "BOTTOM": "Bottom",
         "EXPOSED_HEIGHT1": "Height",
         "EXPOSED_HEIGHT2": "Lower height",
-        "EXPOSED_HEIGHT_COMBO": "Exposed height",
+        "EXPOSED_HEIGHT_COMBO": "Elevation",
         "MIDDLE": "Middle",
         "NO_WEAK_LAYERS": "There are no weak layers",
         "PROPAGATION": "Spatial distribution",
