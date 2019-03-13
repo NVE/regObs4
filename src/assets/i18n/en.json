@@ -65,7 +65,7 @@
   "LEGAL_TERMS": {
     "HEADER": "About Varsom Regobs data",
     "OK": "Ok, I accept",
-    "TERMS": "Data on Varsom Regobs is produced by the users of Regobs and is available as it is. It may contain errors and omissions. NVE makes no warranties for current the information and does not take responsibility for that data can give incorrect or misleading information. The number of stars (1-5) describes the level of competence of the person providing observations. Without stars, competence is unknown or low."
+    "TERMS": "Data on Varsom Regobs is produced by the users of Regobs and is available as it is. The information may contain errors and omissions. NVE makes no guarantee for the quality or accuracy of the information which is found on Regobs and does not take responsibility for data which is incorrect or misleading. The number of stars besides a username (1-5) indicates the level of competence of the person providing observations. Without stars, competence is unknown or low."
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Change password",
@@ -503,7 +503,7 @@
     "PAGE_3": {
       "BUTTON_TEXT": "New observation",
       "HEADER": "Share what you have seen with others!",
-      "LINE_1": "Share your observations, photos and reviews with others. Help them make their own reviews."
+      "LINE_1": "Share your observations and photos with others."
     },
     "PAGE_4": {
       "HEADER": "What and how?",
