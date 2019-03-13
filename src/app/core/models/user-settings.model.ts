@@ -13,7 +13,7 @@ export interface UserSetting {
     showMapCenter: boolean;
     tilesCacheSize: number;
     showObservations: boolean;
-    emailReciept: boolean;
+    emailReceipt: boolean;
     topoMap: TopoMap;
     showGeoSelectInfo: boolean;
     useRetinaMap: boolean;

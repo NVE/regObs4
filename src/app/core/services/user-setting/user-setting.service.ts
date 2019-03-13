@@ -137,7 +137,7 @@ export class UserSettingService {
       showMapCenter: false,
       tilesCacheSize: settings.map.tiles.cacheSize,
       showObservations: true,
-      emailReciept: true,
+      emailReceipt: true,
       topoMap: TopoMap.mixArcGisOnline,
       showGeoSelectInfo: true,
       useRetinaMap: false,

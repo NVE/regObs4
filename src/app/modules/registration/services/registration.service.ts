@@ -224,7 +224,7 @@ export class RegistrationService {
   private async syncRegistration(registration: IRegistration, userSetting: UserSetting, cancel?: Promise<void>) {
     try {
       this.cleanupRegistration(registration);
-      registration.request.Email = userSetting.emailReciept;
+      registration.request.Email = userSetting.emailReceipt;
       const createRegistrationResult = await this.postRegistration(userSetting.appMode, registration.request, cancel);
       const newRegistration = await this.observationService.updateObservationById(
         createRegistrationResult.RegId,
