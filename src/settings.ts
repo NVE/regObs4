@@ -81,7 +81,7 @@ export const settings = {
         tiles: {
             cacheFolder: 'tilescache',
             cacheSize: 5000,
-            cacheSaveBufferSize: 50,
+            cacheSaveBufferSize: 30,
             cacheSaveBufferThrottleTimeMs: 1000,
             cacheTileSaveQuality: 0.5,
             tileImageFormat: 'image/png',

@@ -24,6 +24,7 @@ import { Feature, Polygon } from '@turf/turf';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { LRUMap } from 'lru_map';
+import { Platform } from '@ionic/angular';
 
 const DEBUG_TAG = 'MapService';
 
@@ -43,6 +44,7 @@ export class MapService {
   private _relevantMapChange$: Observable<IMapView>;
   private _saveOfflineTilesQueue: HTMLCanvasElement[] = [];
   private _isIdle = true;
+  private _interval: NodeJS.Timeout;
 
   get mapView$() {
     return this._mapView$;
@@ -72,6 +74,7 @@ export class MapService {
     private userSettingService: UserSettingService,
     private loggingService: LoggingService,
     private offlineMapService: OfflineMapService,
+    private platform: Platform,
   ) {
     this._followModeSubject = new BehaviorSubject<boolean>(true);
     this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
@@ -84,6 +87,16 @@ export class MapService {
       shareReplay(1));
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
+
+    this.platform.pause.subscribe(() => {
+      if (this._interval) {
+        clearTimeout(this._interval);
+      }
+    });
+    this.platform.resume.subscribe(() => {
+      this.startProcessingOfflineImageSaveQueue();
+    });
+
     this.startProcessingOfflineImageSaveQueue();
   }
 
@@ -235,7 +248,16 @@ export class MapService {
     this._isIdle = isIdle;
   }
 
-  private startProcessingOfflineImageSaveQueue() {
+  startProcessingOfflineImageSaveQueue() {
+    if (this._interval) {
+      clearInterval(this._interval);
+    }
+    this._interval = setTimeout(() => {
+      this.startProcessingOfflineImageSaveQueueInternal();
+    }, settings.map.tiles.cacheSaveBufferThrottleTimeMs);
+  }
+
+  private startProcessingOfflineImageSaveQueueInternal() {
     try {
       const saveBuffer: { id: string, dataUrl: string }[] = [];
       while (this._isIdle && this._saveOfflineTilesQueue.length > 0 && saveBuffer.length < settings.map.tiles.cacheSaveBufferSize) {
@@ -258,9 +280,7 @@ export class MapService {
     } catch (err) {
       this.loggingService.debug('Could not process offline image queue. Retry again in 1000ms', DEBUG_TAG);
     } finally {
-      setTimeout(() => {
-        this.startProcessingOfflineImageSaveQueue();
-      }, settings.map.tiles.cacheSaveBufferThrottleTimeMs);
+      this.startProcessingOfflineImageSaveQueue();
     }
   }
 }
