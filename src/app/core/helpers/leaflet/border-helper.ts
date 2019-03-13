@@ -1,11 +1,11 @@
 import * as L from 'leaflet';
 import { settings } from '../../../../settings';
 import { of } from 'rxjs';
-import { booleanContains, bboxPolygon, GeometryObject } from '@turf/turf';
+import { booleanContains, bboxPolygon, GeometryObject, booleanWithin, point } from '@turf/turf';
 export const SVALBARD_BOUNDS =
     L.latLngBounds(settings.map.elevation.svalbard.bbox.map((coordinate) => L.latLng(coordinate[0], coordinate[1])));
-export const NORWEGIAN_BOUNDS = require('../../../../assets/json/world-topo-mix-border.json');
-export const NORWEGIAN_LATLNG_BOUNDS = L.geoJSON(NORWEGIAN_BOUNDS).getBounds();
+export const NORWEGIAN_BOUNDS = require('../../../../assets/json/norway-mainland-simple.json').features[0].geometry;
+// export const NORWEGIAN_LATLNG_BOUNDS = L.geoJSON(NORWEGIAN_BOUNDS);
 
 export class BorderHelper {
 
@@ -13,8 +13,9 @@ export class BorderHelper {
         return bounds.contains(latLng);
     }
 
-    static isInNorway(latLng: L.LatLng, bounds = NORWEGIAN_LATLNG_BOUNDS) {
-        return bounds.contains(latLng);
+    static isInNorway(latLng: L.LatLng) {
+        const p = point([latLng.lng, latLng.lat]);
+        return booleanWithin(p, NORWEGIAN_BOUNDS);
     }
 
     static getLatLngBoundInSvalbardOrNorwayAsObservable(latLng: L.LatLng) {
@@ -33,6 +34,6 @@ export class BorderHelper {
     }
 
     static isInside(latLngBounds: L.LatLngBounds, geometry: GeometryObject) {
-        return booleanContains(geometry, bboxPolygon(this.toBBox(latLngBounds)));
+        return booleanWithin(bboxPolygon(this.toBBox(latLngBounds)), geometry);
     }
 }

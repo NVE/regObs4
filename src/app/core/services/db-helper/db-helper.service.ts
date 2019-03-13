@@ -68,7 +68,7 @@ export class DbHelperService {
     }
     if (rebuildIndexes) {
       nSQL(table).query('rebuild indexes').exec();
-      // NOTE: There is a bug in rebuild indexes, to this might throw an exception
+      // NOTE: There is a bug in rebuild indexes, so this might throw an exception
     }
   }
 

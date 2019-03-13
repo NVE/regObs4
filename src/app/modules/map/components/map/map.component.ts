@@ -146,8 +146,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }));
 
     this.zone.runOutsideAngular(() => {
-      this.map.on('movestart', () => this.disableFollowMode());
-      this.map.on('zoomstart', () => this.disableFollowMode());
+      this.map.on('movestart', () => this.onMapMove());
+      this.map.on('zoomstart', () => this.onMapMove());
     });
 
     this.subscriptions.push(this.platform.pause.subscribe(() => this.stopGeoLocationWatch()));
@@ -158,7 +158,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }));
 
     this.zone.runOutsideAngular(() => {
-      this.map.on('moveend', () => this.updateMapView());
+      this.map.on('moveend', () => this.onMapMoveEnd());
     });
 
     this.subscriptions.push(this.fullscreenService.isFullscreen$.subscribe(() => {
@@ -187,6 +187,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   disableUpdates() {
     this.isActive = false;
     this.stopGeoLocationWatch();
+  }
+
+  private onMapMove() {
+    this.mapService.setMapIdle(false);
+    this.disableFollowMode();
+  }
+
+  private onMapMoveEnd() {
+    this.updateMapView();
+    this.mapService.setMapIdle(true);
   }
 
   private disableFollowMode() {
@@ -225,6 +235,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           },
           topoMap.name,
           this.offlineMapService,
+          this.mapService,
           this.shouldBufferOfflineMap(userSetting),
           topoMap.notInsideBounds
         );
@@ -247,6 +258,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             },
             supportTile.name,
             this.offlineMapService,
+            this.mapService,
             this.shouldBufferOfflineMap(userSetting),
           );
           tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
@@ -290,9 +302,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       case TopoMap.arcGisOnline:
         return [arcGisOnlineMap];
       case TopoMap.mixOpenTopo:
-        return [{ ...openTopoMap, notInsideBounds: NORWEGIAN_BOUNDS.features[0].geometry }, norwegianMixedMap];
+        return [{ ...openTopoMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
       case TopoMap.mixArcGisOnline:
-        return [{ ...arcGisOnlineMap, notInsideBounds: NORWEGIAN_BOUNDS.features[0].geometry }, norwegianMixedMap];
+        return [{ ...arcGisOnlineMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
     }
   }
 

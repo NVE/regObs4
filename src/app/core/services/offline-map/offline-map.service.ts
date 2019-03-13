@@ -2,18 +2,16 @@ import { Injectable } from '@angular/core';
 import { OfflineMap } from './offline-map.model';
 import { Progress } from './progress.model';
 import * as moment from 'moment';
-import { Platform } from '@ionic/angular';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { OfflineTile } from './offline-tile.model';
 import { NanoSql } from '../../../../nanosql';
 import { File, Entry } from '@ionic-native/file/ngx';
-import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { nSQL } from '@nano-sql/core';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { DataUrlHelper } from '../../helpers/data-url.helper';
@@ -26,10 +24,8 @@ const DEBUG_TAG = 'OfflineMapService';
 export class OfflineMapService {
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
-    private platform: Platform,
     private file: File,
     private dbHelperService: DbHelperService,
-    private webview: WebView,
     private loggingService: LoggingService,
   ) {
 
@@ -96,44 +92,6 @@ export class OfflineMapService {
     return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', { id: tileId, lastAccess: moment().unix() }).exec();
   }
 
-  // private updateTileLastAccess(tile: OfflineTile) {
-  //   tile.lastAccess = moment().unix();
-  //   return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
-  // }
-
-  // async getTileUrl(name: string, x: number, y: number, z: number) {
-  //   if (this.platform.isAndroidOrIos()) {
-  //     const tileId = this.getTileId(name, x, y, z);
-  //     const tileFromDb = await this.getTileFromDb(tileId);
-  //     if (tileFromDb) {
-  //       this.updateTileLastAccess(tileFromDb);
-  //       return tileFromDb.dataUrl;
-  //       // return this.webview.convertFileSrc(tileFromDb.url);
-  //     }
-  //   }
-  //   return null;
-  // }
-
-  // async saveTileAsBlob(name: string, x: number, y: number, z: number, url: string) {
-  //   try {
-  //     const tileId = this.getTileId(name, x, y, z);
-  //     const downloadResult = await this.backgroundDownloadService.downloadToDataUrl(url, 'image/png');
-
-  //     const tile: OfflineTile = {
-  //       id: tileId,
-  //       mapName: settings.map.tiles.cacheFolder,
-  //       lastAccess: moment().unix(),
-  //       size: downloadResult.size,
-  //       dataUrl: downloadResult.dataUrl
-  //     };
-  //     await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
-  //     return tile;
-  //   } catch (err) {
-  //     this.loggingService.log('Could not download tile', err, LogLevel.Warning, DEBUG_TAG, { name, url, x, y, z });
-  //     return null;
-  //   }
-  // }
-
   async saveTileDataUrlToDbCache(id: string, dataUrl: string) {
     try {
       const size = DataUrlHelper.getDataUriByteLength(dataUrl);
@@ -147,8 +105,28 @@ export class OfflineMapService {
       await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
       return tile;
     } catch (err) {
-      this.loggingService.log('Could not download tile', err, LogLevel.Warning, DEBUG_TAG, id);
+      this.loggingService.log('Could save offline tile cache', err, LogLevel.Warning, DEBUG_TAG, id);
       return null;
+    }
+  }
+
+  saveOfflineTileCache(tiles: { id: string, dataUrl: string }[]) {
+    try {
+      const offlineTiles = tiles.map((t) => {
+        const size = DataUrlHelper.getDataUriByteLength(t.dataUrl);
+        const ot: OfflineTile = {
+          id: t.id,
+          mapName: settings.map.tiles.cacheFolder,
+          lastAccess: moment().unix(),
+          size,
+          dataUrl: t.dataUrl
+        };
+        return ot;
+      });
+      return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).loadJS(offlineTiles);
+      // return this.dbHelperService.fastInsert(NanoSql.TABLES.OFFLINE_MAP_TILES.name, offlineTiles, (tile) => tile.id, true);
+    } catch (err) {
+      this.loggingService.log('Could save offline tiles to cache', err, LogLevel.Warning, DEBUG_TAG);
     }
   }
 
@@ -158,9 +136,9 @@ export class OfflineMapService {
 
   async getTileFromDb(tileId: string): Promise<OfflineTile> {
     const tiles = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select').where(['id', '=', tileId]).exec();
+      .query('select').where(['id', '=', tileId]).exec() as OfflineTile[];
     if (tiles.length > 0) {
-      return tiles[0] as OfflineTile;
+      return tiles[0];
     }
     // return this.dbHelperService.getItemById<OfflineTile>(
     //   NanoSql.TABLES.OFFLINE_MAP_TILES.name, tileId);
@@ -319,7 +297,7 @@ export class OfflineMapService {
       .exec();
   }
 
-  private async saveMetaData(map: OfflineMap) {
+  private async saveMetaData(_: OfflineMap) {
     // TODO: Read metadata from json instead!
     // const tiles = (await this.backgroundDownloadService.getAllFiles(map.filePath, map.name)).map((file) =>
     //   this.getOfflineTileFromFile(map.name, file.directory, file.name, file.url, file.size)

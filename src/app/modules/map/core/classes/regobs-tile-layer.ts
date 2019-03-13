@@ -4,6 +4,8 @@ import { OfflineMapService } from '../../../../core/services/offline-map/offline
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { GeometryObject } from '@turf/turf';
+import { MapService } from '../../services/map/map.service';
+import { LRUMap } from 'lru_map';
 
 interface ExtendedCoords extends L.Coords {
     fallback: boolean;
@@ -23,15 +25,21 @@ class RegObsTile extends HTMLImageElement {
 
 export class RegObsTileLayer extends L.TileLayer {
 
+    private _recentlySavedTile: LRUMap<string, boolean>;
+    private _url: string;
+
     constructor(
         url: string,
         options: L.TileLayerOptions,
         private name: string,
         private offlineMapService: OfflineMapService,
+        private mapService: MapService,
         private bufferOffline: boolean,
         private excludeBounds?: GeometryObject,
     ) {
         super(url, options);
+        this._url = url;
+        this._recentlySavedTile = new LRUMap(2000);
     }
 
     createTile(coords: ExtendedCoords, done: L.DoneCallback): HTMLElement {
@@ -49,9 +57,13 @@ export class RegObsTileLayer extends L.TileLayer {
         const url = (<any>this).getTileUrl(coords);
         tile.src = url;
         tile.originalSrc = url;
-        tile.id = `${this.name}_${coords.z}_${coords.x}_${coords.y}`;
+        tile.id = this.getTileId(coords);
 
         return tile;
+    }
+
+    private getTileId(coords: ExtendedCoords) {
+        return `${this.name}_${coords.z}_${coords.x}_${coords.y}`;
     }
 
     _tileOnLoad(done: L.DoneCallback, tile: RegObsTile) {
@@ -61,10 +73,9 @@ export class RegObsTileLayer extends L.TileLayer {
 
     private async saveTileOffline(tile: RegObsTile) {
         if (this.bufferOffline && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
-            const existingTilecache = await this.offlineMapService.getTileFromDb(tile.id);
-            if (!existingTilecache) {
-                const dataUrl = DataUrlHelper.getDataUrlFromImage(tile, 'image/png');
-                this.offlineMapService.saveTileDataUrlToDbCache(tile.id, dataUrl);
+            if (!this._recentlySavedTile.has(tile.id)) {
+                this._recentlySavedTile.set(tile.id, true);
+                this.mapService.addImageToSaveQueue(DataUrlHelper.getCanvasFromImage(tile));
             }
         }
     }
@@ -73,12 +84,14 @@ export class RegObsTileLayer extends L.TileLayer {
         if (!tile.hasTriedOffline && tile.id && tile.id !== '') {
             this.offlineMapService.getTileFromDb(tile.id).then((result) => {
                 tile.hasTriedOffline = true;
-                if (result) {
+                if (result && result.dataUrl) {
+                    const oldSrc = tile.src;
+                    tile.src = result.dataUrl;
                     this.fire('tilefallback',
                         {
                             tile: tile,
                             url: tile.originalSrc,
-                            urlMissing: tile.src,
+                            urlMissing: oldSrc,
                             urlFallback: result.dataUrl
                         });
                 } else {
@@ -111,6 +124,17 @@ export class RegObsTileLayer extends L.TileLayer {
         return true;
     }
 
+    private getNewZoomTileUrl(coords: ExtendedCoords) {
+        const data = {
+            r: L.Browser.retina ? '@2x' : '',
+            s: (<any>L.TileLayer.prototype)._getSubdomain.call(this, coords),
+            x: coords.x,
+            y: coords.y,
+            z: coords.z,
+        };
+        return L.Util.template(this._url, L.Util.extend(data, this.options));
+    }
+
     private tryScaleImage(done: L.DoneCallback, tile: RegObsTile, e: Error) {
         const originalCoords = tile.originalCoords,
             currentCoords: ExtendedCoords = tile.currentCoords = tile.currentCoords || this.createCurrentCoords(originalCoords),
@@ -131,7 +155,7 @@ export class RegObsTileLayer extends L.TileLayer {
         currentCoords.y = Math.floor(currentCoords.y / 2);
 
         // Generate new src path.
-        const newUrl = (<any>this).getTileUrl(currentCoords);
+        const newUrl = this.getNewZoomTileUrl(currentCoords);
         // Zoom replacement img.
         style.width = (tileSize.x * scale) + 'px';
         style.height = (tileSize.y * scale) + 'px';
@@ -156,6 +180,8 @@ export class RegObsTileLayer extends L.TileLayer {
             'px)';
 
         tile.src = newUrl;
+        tile.id = this.getTileId(currentCoords);
+        tile.hasTriedOffline = false;
 
         this.fire('tilefallback',
             {

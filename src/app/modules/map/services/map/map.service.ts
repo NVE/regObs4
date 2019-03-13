@@ -22,6 +22,8 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { settings } from '../../../../../settings';
 import { Feature, Polygon } from '@turf/turf';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
+import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
+import { LRUMap } from 'lru_map';
 
 const DEBUG_TAG = 'MapService';
 
@@ -39,6 +41,8 @@ export class MapService {
   private _mapViewSubject: Subject<IMapView>;
   private _mapView$: Observable<IMapView>;
   private _relevantMapChange$: Observable<IMapView>;
+  private _saveOfflineTilesQueue: HTMLCanvasElement[] = [];
+  private _isIdle = true;
 
   get mapView$() {
     return this._mapView$;
@@ -64,7 +68,11 @@ export class MapService {
     this._followModeSubject.next(val);
   }
 
-  constructor(private userSettingService: UserSettingService, private loggingService: LoggingService) {
+  constructor(
+    private userSettingService: UserSettingService,
+    private loggingService: LoggingService,
+    private offlineMapService: OfflineMapService,
+  ) {
     this._followModeSubject = new BehaviorSubject<boolean>(true);
     this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
     this._centerMapToUserSubject = new Subject<void>();
@@ -76,6 +84,7 @@ export class MapService {
       shareReplay(1));
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
+    this.startProcessingOfflineImageSaveQueue();
   }
 
   centerMapToUser() {
@@ -216,5 +225,42 @@ export class MapService {
 
       return () => typedWorker ? typedWorker.terminate() : null;
     });
+  }
+
+  addImageToSaveQueue(img: HTMLCanvasElement) {
+    this._saveOfflineTilesQueue.push(img);
+  }
+
+  setMapIdle(isIdle: boolean) {
+    this._isIdle = isIdle;
+  }
+
+  private startProcessingOfflineImageSaveQueue() {
+    try {
+      const saveBuffer: { id: string, dataUrl: string }[] = [];
+      while (this._isIdle && this._saveOfflineTilesQueue.length > 0 && saveBuffer.length < settings.map.tiles.cacheSaveBufferSize) {
+        const currentTile = this._saveOfflineTilesQueue.shift();
+        if (currentTile && currentTile.id) {
+          const dataUrl = currentTile.toDataURL(settings.map.tiles.tileImageFormat, settings.map.tiles.cacheTileSaveQuality);
+          if (dataUrl) {
+            saveBuffer.push({
+              id: currentTile.id,
+              dataUrl
+            });
+          }
+        }
+      }
+      if (saveBuffer.length > 0) {
+        this.offlineMapService.saveOfflineTileCache(saveBuffer);
+      }
+      // this.loggingService.debug(`Process offline image queue complete. IsIdle: ${this._isIdle}.`
+      //   + `Queue length: ${this._saveOfflineTilesQueue.length}`, DEBUG_TAG);
+    } catch (err) {
+      this.loggingService.debug('Could not process offline image queue. Retry again in 1000ms', DEBUG_TAG);
+    } finally {
+      setTimeout(() => {
+        this.startProcessingOfflineImageSaveQueue();
+      }, settings.map.tiles.cacheSaveBufferThrottleTimeMs);
+    }
   }
 }
