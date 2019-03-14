@@ -65,7 +65,8 @@ export class AppComponent {
       this.translate.use(LangKey[userSettings.language]);
       this.statusBar.styleLightContent();
       this.statusBar.backgroundColorByHexString('#99044962');
-      this.statusBar.overlaysWebView(this.platform.is('ios'));
+      // this.statusBar.overlaysWebView(this.platform.is('ios'));
+      this.statusBar.overlaysWebView(false);
       this.keyboard.hideFormAccessoryBar(false);
       this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
       this.offlineImageService.cleanupOldItems();
