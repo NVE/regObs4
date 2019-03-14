@@ -38,7 +38,7 @@
             },
             {
                 "Id": 230,
-                "Name": "Erosion along strems/rivers",
+                "Name": "Erosion along streams/rivers",
                 "Description": null
             },
             {
@@ -174,7 +174,7 @@
             },
             {
                 "Id": 1,
-                "Name": "Triggered by naturaly",
+                "Name": "Triggered naturally",
                 "Description": null
             },
             {
@@ -342,7 +342,7 @@
             },
             {
                 "Id": 11,
-                "Name": "Icing along shore",
+                "Name": "Ice formation along shore",
                 "Description": null
             },
             {
@@ -362,7 +362,7 @@
             },
             {
                 "Id": 10,
-                "Name": "Melting along shore",
+                "Name": "Ice breaking up along shore",
                 "Description": null
             },
             {
@@ -1223,7 +1223,7 @@
             },
             {
                 "Id": 8,
-                "Name": "Super cooled rain",
+                "Name": "Freezing rain",
                 "Description": null
             }
         ],
@@ -1406,7 +1406,7 @@
             },
             {
                 "Id": 6,
-                "Name": "Soaked",
+                "Name": "Slush",
                 "Description": null
             }
         ],
@@ -1932,7 +1932,7 @@
             },
             {
                 "Id": 1,
-                "Name": "Budiling and assets",
+                "Name": "Buildings and assets",
                 "Description": null
             },
             {
@@ -1952,7 +1952,7 @@
             },
             {
                 "Id": 5,
-                "Name": "Person/persons",
+                "Name": "Person/people",
                 "Description": null
             },
             {
