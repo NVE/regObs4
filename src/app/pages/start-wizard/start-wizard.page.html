@@ -156,15 +156,15 @@
       </ion-grid>
     </ion-slide>
     <ion-slide>
-      <ion-grid>
-        <ion-row>
+      <ion-grid class="full-grid">
+        <ion-row class="legal-info-row">
           <ion-col padding align-self-center>
             <div class="legal-icon" [ngClass]="{'hide': !showLegalIcon }">&sect;
             </div>
           </ion-col>
         </ion-row>
-        <ion-row>
-          <ion-col align-self-center>
+        <ion-row class="legal-text-row">
+          <ion-col align-self-top>
             <h2 [@headerAnimation4]="state">{{'LEGAL_TERMS.HEADER' | translate}}</h2>
             <h3 text-wrap no-padding>
               {{'LEGAL_TERMS.TERMS' | translate}}

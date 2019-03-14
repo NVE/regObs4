@@ -39,6 +39,18 @@ ion-content {
     ion-slides {
         height: 100%;
 
+        .full-grid {
+            max-width: 400px;
+        }
+
+        .legal-info-row {
+            height: 30%;
+        }
+
+        .legal-text-row {
+            height: 70%;
+        }
+
         ion-slide{
             overflow: hidden;
         }
