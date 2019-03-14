@@ -385,7 +385,7 @@
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snødekket",
         "COMMENT_PLACEHOLDER": "Hvordan er snøfordelingen generelt ifht. høyde og eksposisjon. Er det forskjell i regionen?",
-        "HEIGHT_LIMIT_LAYERED_SNOW": "Øvre grense lagdelt snø (moh)",
+        "HEIGHT_LIMIT_LAYERED_SNOW": "Øvre grense for snø uten lagdeling (moh)",
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snø uten farlig lagdeling",
         "NEW_SNOW_DEPTH": "Nysnødybde (cm)",
         "NEW_SNOW_LINE": "Nysnøgrense (moh)",

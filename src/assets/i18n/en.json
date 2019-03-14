@@ -385,7 +385,7 @@
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Describe the snow surface",
         "COMMENT_PLACEHOLDER": "How is the snow distribution generally in relation to elevation and aspect? Are there significant differences in the local region?",
-        "HEIGHT_LIMIT_LAYERED_SNOW": "Lower boundary for layered snow (masl)",
+        "HEIGHT_LIMIT_LAYERED_SNOW": "Elevation where layered snow begins (masl)",
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snow without hazardous layering",
         "NEW_SNOW_DEPTH": "New snow depth (cm)",
         "NEW_SNOW_LINE": "New snow line (masl)",
