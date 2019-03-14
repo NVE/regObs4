@@ -464,16 +464,16 @@
     "HIDE_ADVANCED": "Hide advanced settings",
     "LANGUAGE": "Language",
     "NORWAY_ONLY": "In Norway only",
-    "NUMBER_OF_TILES_IN_CACHE": "Number of tiles saved on device",
+    "NUMBER_OF_TILES_IN_CACHE": "Offline tiles cache size",
     "RESET": "Reset app",
     "RESETTING": "App is resetting. Please wait...",
     "SHOW_ADVANCED": "Show advanced settings",
     "SIZE_OF_TILES_CACHE": "Size of tiles saved on device",
-    "TILES_CACHE_SIZE": "Tiles cache size",
+    "TILES_CACHE_SIZE": "Number of tiles saved on device",
     "TITLE": "Settings",
     "UPDATE_DROPDOWNS": "Update dropdowns",
     "USE_IN_WORLD": "Outside Norway",
-    "USE_RETINA_MAP": "Detailed map"
+    "USE_RETINA_MAP": "Use high resolution maps"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
