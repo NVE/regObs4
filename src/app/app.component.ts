@@ -71,6 +71,7 @@ export class AppComponent {
       this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
       this.offlineImageService.cleanupOldItems();
       this.dataMarshallService.init();
+      (<any>window).L_DISABLE_3D = true; // Leaflet hack to prevent ipad crash
       this.initBackroundUpdates();
       setTimeout(() => {
         this.splashScreen.hide();

@@ -231,7 +231,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             bounds: topoMap.bounds,
             detectRetina: userSetting.useRetinaMap,
             updateWhenIdle: settings.map.tiles.updateWhenIdle,
-            keepBuffer: settings.map.tiles.keepBuffer,
+            keepBuffer: this.getKeepBuffer(),
           },
           topoMap.name,
           this.offlineMapService,
@@ -249,12 +249,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           const tile = new RegObsTileLayer(
             supportTile.url,
             {
-              minZoom: 5,
+              minZoom: settings.map.tiles.minZoomSupportMaps,
               maxZoom: settings.map.tiles.maxZoom,
               bounds: <any>settings.map.tiles.supportTilesBounds,
               detectRetina: settings.map.tiles.detectRetina,
               updateWhenIdle: settings.map.tiles.updateWhenIdle,
-              keepBuffer: settings.map.tiles.keepBuffer,
+              keepBuffer: this.getKeepBuffer(),
             },
             supportTile.name,
             this.offlineMapService,
@@ -266,6 +266,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     });
+  }
+
+  private getKeepBuffer() {
+    return this.platform.is('ipad') ? settings.map.tiles.keepBufferIpad : settings.map.tiles.keepBuffer;
   }
 
   private getMapOptions(topoMap: TopoMap) {
