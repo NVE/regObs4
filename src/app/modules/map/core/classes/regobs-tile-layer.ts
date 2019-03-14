@@ -144,7 +144,7 @@ export class RegObsTileLayer extends L.TileLayer {
             style = tile.style;
 
         // If no lower zoom tiles are available, fallback to errorTile.
-        if (fallbackZoom < 1) {
+        if (fallbackZoom < (this.options.minZoom || 1)) {
             // console.log('Max fallback reached. Return original error handling');
             return (<any>L.TileLayer.prototype)._tileOnError.call(this, done, tile, e);
         }
