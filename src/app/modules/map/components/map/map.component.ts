@@ -70,7 +70,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     maxZoom: settings.map.tiles.maxZoom,
     minZoom: settings.map.tiles.minZoom,
     center: this.center || L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
-    bounceAtZoomLimits: true,
+    bounceAtZoomLimits: false,
     attributionControl: false,
     zoomControl: false,
   };
@@ -221,17 +221,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   configureTileLayers(userSetting: UserSetting) {
     this.zone.runOutsideAngular(() => {
       this.tilesLayer.clearLayers();
+      this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
       const mapOptions = this.getMapOptions(userSetting.topoMap);
       for (const topoMap of mapOptions) {
         const topoTilesLayer = new RegObsTileLayer(
           topoMap.url,
           {
             minZoom: settings.map.tiles.minZoom,
-            maxZoom: settings.map.tiles.maxZoom,
+            maxZoom: this.getMaxZoom(userSetting.useRetinaMap),
+            maxNativeZoom: settings.map.tiles.maxZoom,
             bounds: topoMap.bounds,
             detectRetina: userSetting.useRetinaMap,
             updateWhenIdle: settings.map.tiles.updateWhenIdle,
             keepBuffer: this.getKeepBuffer(),
+            updateInterval: this.platform.is('ipad') ? 400 : 200,
           },
           topoMap.name,
           this.offlineMapService,
@@ -250,11 +253,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             supportTile.url,
             {
               minZoom: settings.map.tiles.minZoomSupportMaps,
-              maxZoom: settings.map.tiles.maxZoom,
+              maxZoom: this.getMaxZoom(userSetting.useRetinaMap),
+              maxNativeZoom: settings.map.tiles.maxZoom,
               bounds: <any>settings.map.tiles.supportTilesBounds,
-              detectRetina: settings.map.tiles.detectRetina,
+              detectRetina: userSetting.useRetinaMap,
               updateWhenIdle: settings.map.tiles.updateWhenIdle,
               keepBuffer: this.getKeepBuffer(),
+              updateInterval: this.platform.is('ipad') ? 400 : 200,
             },
             supportTile.name,
             this.offlineMapService,
@@ -270,6 +275,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private getKeepBuffer() {
     return this.platform.is('ipad') ? settings.map.tiles.keepBufferIpad : settings.map.tiles.keepBuffer;
+  }
+
+  private getMaxZoom(detectRetina: boolean) {
+    // return settings.map.tiles.maxZoom;
+    return (detectRetina && L.Browser.retina) ?
+      (settings.map.tiles.maxZoom + 2)
+      : settings.map.tiles.maxZoom;
   }
 
   private getMapOptions(topoMap: TopoMap) {

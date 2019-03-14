@@ -72,10 +72,13 @@ export class RegObsTileLayer extends L.TileLayer {
     }
 
     private async saveTileOffline(tile: RegObsTile) {
-        if (this.bufferOffline && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
+        if (this.bufferOffline && tile && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
             if (!this._recentlySavedTile.has(tile.id)) {
                 this._recentlySavedTile.set(tile.id, true);
-                this.mapService.addImageToSaveQueue(DataUrlHelper.getCanvasFromImage(tile));
+                const canvas = DataUrlHelper.getCanvasFromImage(tile);
+                if (canvas) {
+                    this.mapService.addImageToSaveQueue(canvas);
+                }
             }
         }
     }
@@ -110,6 +113,42 @@ export class RegObsTileLayer extends L.TileLayer {
         const pixelBounds: L.Bounds = (<any>L.GridLayer.prototype)._getTiledPixelBounds.call(this, center);
         const pixelEdgeBuffer = this.getTileSize().multiplyBy(settings.map.tiles.edgeBufferTiles);
         return new L.Bounds(pixelBounds.min.subtract(pixelEdgeBuffer), pixelBounds.max.add(pixelEdgeBuffer));
+    }
+
+    _pruneTiles() {
+        if (!this._map) {
+            return;
+        }
+
+        let tile;
+
+        // const zoom = this._map.getZoom();
+        // if (zoom > this.options.maxZoom ||
+        // 	zoom < this.options.minZoom) {
+        // 	(<any>this)._removeAllTiles();
+        // 	return;
+        // }
+
+        for (const key of (<any>this)._tiles) {
+            tile = this._tiles[key];
+            tile.retain = tile.current;
+        }
+
+        for (const key of (<any>this)._tiles) {
+            tile = (<any>this)._tiles[key];
+            if (tile.current && !tile.active) {
+                const coords = tile.coords;
+                if (!(<any>this)._retainParent(coords.x, coords.y, coords.z, coords.z - 5)) {
+                    (<any>this)._retainChildren(coords.x, coords.y, coords.z, coords.z + 2);
+                }
+            }
+        }
+
+        for (const key of (<any>this)._tiles) {
+            if (!(<any>this)._tiles[key].retain) {
+                (<any>this)._removeTile(key);
+            }
+        }
     }
 
     _isValidTile(coords: L.Coords) {

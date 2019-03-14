@@ -23,8 +23,8 @@ import { settings } from '../../../../../settings';
 import { Feature, Polygon } from '@turf/turf';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
-import { LRUMap } from 'lru_map';
 import { Platform } from '@ionic/angular';
+import * as L from 'leaflet';
 
 const DEBUG_TAG = 'MapService';
 
@@ -45,6 +45,7 @@ export class MapService {
   private _saveOfflineTilesQueue: HTMLCanvasElement[] = [];
   private _isIdle = true;
   private _interval: NodeJS.Timeout;
+  private _saveBuffer: { id: string, dataUrl: string }[] = [];
 
   get mapView$() {
     return this._mapView$;
@@ -248,39 +249,32 @@ export class MapService {
     this._isIdle = isIdle;
   }
 
-  startProcessingOfflineImageSaveQueue() {
+  async startProcessingOfflineImageSaveQueue() {
     if (this._interval) {
       clearInterval(this._interval);
     }
-    this._interval = setTimeout(() => {
-      this.startProcessingOfflineImageSaveQueueInternal();
-    }, settings.map.tiles.cacheSaveBufferThrottleTimeMs);
-  }
-
-  private startProcessingOfflineImageSaveQueueInternal() {
-    try {
-      const saveBuffer: { id: string, dataUrl: string }[] = [];
-      while (this._isIdle && this._saveOfflineTilesQueue.length > 0 && saveBuffer.length < settings.map.tiles.cacheSaveBufferSize) {
-        const currentTile = this._saveOfflineTilesQueue.shift();
-        if (currentTile && currentTile.id) {
-          const dataUrl = currentTile.toDataURL(settings.map.tiles.tileImageFormat, settings.map.tiles.cacheTileSaveQuality);
-          if (dataUrl) {
-            saveBuffer.push({
-              id: currentTile.id,
-              dataUrl
-            });
-          }
+    // this.loggingService.debug(`Process offline image queue complete. IsIdle: ${this._isIdle}.`
+    //   + `Queue length: ${this._saveOfflineTilesQueue.length}`, DEBUG_TAG);
+    if (this._isIdle && this._saveOfflineTilesQueue.length > 0) {
+      const currentTile = this._saveOfflineTilesQueue.shift();
+      if (currentTile && currentTile.id) {
+        const dataUrl = currentTile.toDataURL(settings.map.tiles.tileImageFormat, settings.map.tiles.cacheTileSaveQuality);
+        if (dataUrl) {
+          this._saveBuffer.push({
+            id: currentTile.id,
+            dataUrl
+          });
         }
       }
-      if (saveBuffer.length > 0) {
-        this.offlineMapService.saveOfflineTileCache(saveBuffer);
+      if (this._saveOfflineTilesQueue.length === 0 || this._saveBuffer.length >= settings.map.tiles.cacheSaveBufferSize) {
+        await this.offlineMapService.saveOfflineTileCache(this._saveBuffer);
+        this._saveBuffer = [];
       }
-      // this.loggingService.debug(`Process offline image queue complete. IsIdle: ${this._isIdle}.`
-      //   + `Queue length: ${this._saveOfflineTilesQueue.length}`, DEBUG_TAG);
-    } catch (err) {
-      this.loggingService.debug('Could not process offline image queue. Retry again in 1000ms', DEBUG_TAG);
-    } finally {
-      this.startProcessingOfflineImageSaveQueue();
+      this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
+        settings.map.tiles.cacheSaveBufferThrottleTimeMs);
+    } else {
+      this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
+        settings.map.tiles.cacheSaveBufferIdleDelayTimeMs);
     }
   }
 }
