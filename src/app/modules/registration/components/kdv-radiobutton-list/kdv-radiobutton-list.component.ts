@@ -46,6 +46,13 @@ export class KdvRadiobuttonListComponent implements OnInit, OnDestroy {
     });
   }
 
+  setSelected(value: number) {
+    this.ngZone.run(() => {
+      this.value = value;
+      this.valueChange.emit(this.value);
+    });
+  }
+
   isVisible(item: KdvElement) {
     if (!this.hideZeroValues) {
       return true;
