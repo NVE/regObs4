@@ -63,7 +63,8 @@ export class AppComponent {
       this.loggingService.configureLogging(userSettings.appMode);
       this.analyticService.init();
       this.translate.use(LangKey[userSettings.language]);
-      this.statusBar.styleBlackTranslucent();
+      this.statusBar.styleLightContent();
+      this.statusBar.backgroundColorByHexString('#99044962');
       this.statusBar.overlaysWebView(this.platform.is('ios'));
       this.keyboard.hideFormAccessoryBar(false);
       this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
