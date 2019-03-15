@@ -267,7 +267,7 @@ export class MapService {
         }
       }
       if (this._saveOfflineTilesQueue.length === 0 || this._saveBuffer.length >= settings.map.tiles.cacheSaveBufferSize) {
-        await this.offlineMapService.saveOfflineTileCache(this._saveBuffer);
+        this.offlineMapService.saveOfflineTileCache([...this._saveBuffer]);
         this._saveBuffer = [];
       }
       this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
