@@ -190,13 +190,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onMapMove() {
-    this.mapService.setMapIdle(false);
+    // this.mapService.setMapIdle(false);
     this.disableFollowMode();
   }
 
   private onMapMoveEnd() {
     this.updateMapView();
-    this.mapService.setMapIdle(true);
+    // this.mapService.setMapIdle(true);
   }
 
   private disableFollowMode() {

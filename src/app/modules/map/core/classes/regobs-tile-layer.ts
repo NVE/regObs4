@@ -67,18 +67,19 @@ export class RegObsTileLayer extends L.TileLayer {
     }
 
     _tileOnLoad(done: L.DoneCallback, tile: RegObsTile) {
+        L.Util.throttle(() => this.saveTileOffline(tile), 50, this)();
         (<any>L.TileLayer.prototype)._tileOnLoad.call(this, done, tile);
-        this.saveTileOffline(tile);
     }
 
     private async saveTileOffline(tile: RegObsTile) {
         if (this.bufferOffline && tile && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
             if (!this._recentlySavedTile.has(tile.id)) {
                 this._recentlySavedTile.set(tile.id, true);
-                const canvas = DataUrlHelper.getCanvasFromImage(tile);
-                if (canvas) {
-                    this.mapService.addImageToSaveQueue(canvas);
-                }
+                this.offlineMapService.saveTile(tile.id, tile);
+                // const canvas = DataUrlHelper.getCanvasFromImage(tile);
+                // if (canvas) {
+                //     this.mapService.addImageToSaveQueue(canvas);
+                // }
             }
         }
     }
@@ -182,9 +183,8 @@ export class RegObsTileLayer extends L.TileLayer {
             tileSize = this.getTileSize(),
             style = tile.style;
 
-        // If no lower zoom tiles are available, fallback to errorTile.
-        if (fallbackZoom < (this.options.minZoom || 1)) {
-            // console.log('Max fallback reached. Return original error handling');
+        // Only fallback one zoom level or return error
+        if (fallbackZoom < (originalCoords.z - 1)) {
             return (<any>L.TileLayer.prototype)._tileOnError.call(this, done, tile, e);
         }
 

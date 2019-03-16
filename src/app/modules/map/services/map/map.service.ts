@@ -42,10 +42,10 @@ export class MapService {
   private _mapViewSubject: Subject<IMapView>;
   private _mapView$: Observable<IMapView>;
   private _relevantMapChange$: Observable<IMapView>;
-  private _saveOfflineTilesQueue: HTMLCanvasElement[] = [];
-  private _isIdle = true;
-  private _interval: NodeJS.Timeout;
-  private _saveBuffer: { id: string, dataUrl: string }[] = [];
+  // private _saveOfflineTilesQueue: HTMLCanvasElement[] = [];
+  // private _isIdle = true;
+  // private _interval: NodeJS.Timeout;
+  // private _saveBuffer: { id: string, dataUrl: string }[] = [];
 
   get mapView$() {
     return this._mapView$;
@@ -89,16 +89,16 @@ export class MapService {
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
 
-    this.platform.pause.subscribe(() => {
-      if (this._interval) {
-        clearTimeout(this._interval);
-      }
-    });
-    this.platform.resume.subscribe(() => {
-      this.startProcessingOfflineImageSaveQueue();
-    });
+    // this.platform.pause.subscribe(() => {
+    //   if (this._interval) {
+    //     clearTimeout(this._interval);
+    //   }
+    // });
+    // this.platform.resume.subscribe(() => {
+    //   this.startProcessingOfflineImageSaveQueue();
+    // });
 
-    this.startProcessingOfflineImageSaveQueue();
+    // this.startProcessingOfflineImageSaveQueue();
   }
 
   centerMapToUser() {
@@ -241,40 +241,40 @@ export class MapService {
     });
   }
 
-  addImageToSaveQueue(img: HTMLCanvasElement) {
-    this._saveOfflineTilesQueue.push(img);
-  }
+  // addImageToSaveQueue(img: HTMLCanvasElement) {
+  //   this._saveOfflineTilesQueue.push(img);
+  // }
 
-  setMapIdle(isIdle: boolean) {
-    this._isIdle = isIdle;
-  }
+  // setMapIdle(isIdle: boolean) {
+  //   this._isIdle = isIdle;
+  // }
 
-  async startProcessingOfflineImageSaveQueue() {
-    if (this._interval) {
-      clearInterval(this._interval);
-    }
-    // this.loggingService.debug(`Process offline image queue complete. IsIdle: ${this._isIdle}.`
-    //   + `Queue length: ${this._saveOfflineTilesQueue.length}`, DEBUG_TAG);
-    if (this._isIdle && this._saveOfflineTilesQueue.length > 0) {
-      const currentTile = this._saveOfflineTilesQueue.shift();
-      if (currentTile && currentTile.id) {
-        const dataUrl = currentTile.toDataURL(settings.map.tiles.tileImageFormat, settings.map.tiles.cacheTileSaveQuality);
-        if (dataUrl) {
-          this._saveBuffer.push({
-            id: currentTile.id,
-            dataUrl
-          });
-        }
-      }
-      if (this._saveOfflineTilesQueue.length === 0 || this._saveBuffer.length >= settings.map.tiles.cacheSaveBufferSize) {
-        this.offlineMapService.saveOfflineTileCache([...this._saveBuffer]);
-        this._saveBuffer = [];
-      }
-      this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
-        settings.map.tiles.cacheSaveBufferThrottleTimeMs);
-    } else {
-      this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
-        settings.map.tiles.cacheSaveBufferIdleDelayTimeMs);
-    }
-  }
+  // async startProcessingOfflineImageSaveQueue() {
+  //   if (this._interval) {
+  //     clearInterval(this._interval);
+  //   }
+  //   // this.loggingService.debug(`Process offline image queue complete. IsIdle: ${this._isIdle}.`
+  //   //   + `Queue length: ${this._saveOfflineTilesQueue.length}`, DEBUG_TAG);
+  //   if (this._isIdle && this._saveOfflineTilesQueue.length > 0) {
+  //     const currentTile = this._saveOfflineTilesQueue.shift();
+  //     if (currentTile && currentTile.id) {
+  //       const dataUrl = currentTile.toDataURL(settings.map.tiles.tileImageFormat, settings.map.tiles.cacheTileSaveQuality);
+  //       if (dataUrl) {
+  //         this._saveBuffer.push({
+  //           id: currentTile.id,
+  //           dataUrl
+  //         });
+  //       }
+  //     }
+  //     if (this._saveOfflineTilesQueue.length === 0 || this._saveBuffer.length >= settings.map.tiles.cacheSaveBufferSize) {
+  //       this.offlineMapService.saveOfflineTileCache([...this._saveBuffer]);
+  //       this._saveBuffer = [];
+  //     }
+  //     this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
+  //       settings.map.tiles.cacheSaveBufferThrottleTimeMs);
+  //   } else {
+  //     this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
+  //       settings.map.tiles.cacheSaveBufferIdleDelayTimeMs);
+  //   }
+  // }
 }

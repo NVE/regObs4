@@ -10,11 +10,12 @@ import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { nSQL } from '@nano-sql/core';
-import { Observable } from 'rxjs';
+import { Observable, Observer, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { DataUrlHelper } from '../../helpers/data-url.helper';
+import { createWorker } from 'typed-web-workers';
 
 const DEBUG_TAG = 'OfflineMapService';
 
@@ -92,9 +93,52 @@ export class OfflineMapService {
     return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', { id: tileId, lastAccess: moment().unix() }).exec();
   }
 
-  async saveTileDataUrlToDbCache(id: string, dataUrl: string) {
+  saveTile(id: string, el: HTMLImageElement) {
+    this.getImageDataUrlAsObservable(el).subscribe((result: { dataUrl: string, size: number }) => {
+      if (result && result.dataUrl && result.size > 0) {
+        this.saveTileDataUrlToDbCache(id, result.dataUrl, result.size);
+      }
+    });
+  }
+
+  private workFunc(input: {
+    blob: Blob,
+  },
+    callback: (_: { dataUrl: string, size: number }) => void) {
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      const dataUrl = (<any>e.target).result as string;
+      if (dataUrl) {
+        callback({ dataUrl, size: input.blob.size });
+      } else {
+        callback(null);
+      }
+    };
+    fileReader.readAsDataURL(input.blob);
+  }
+
+  private getImageDataUrlAsObservable(el: HTMLImageElement, format = 'image/png', quality = 0.5):
+    Observable<{ dataUrl: string, size: number }> {
+    return Observable.create((observer: Observer<{ dataUrl: string, size: number }>) => {
+      const typedWorker = createWorker(this.workFunc, (msg) => {
+        observer.next(msg);
+        observer.complete();
+      });
+      const canvas = DataUrlHelper.getCanvasFromImage(el);
+      if (!canvas) {
+        observer.next(null);
+        observer.complete();
+      } else {
+        canvas.toBlob((blob) => {
+          typedWorker.postMessage({ blob });
+        }, format, quality);
+      }
+      return () => typedWorker ? typedWorker.terminate() : null;
+    });
+  }
+
+  async saveTileDataUrlToDbCache(id: string, dataUrl: string, size: number) {
     try {
-      const size = DataUrlHelper.getDataUriByteLength(dataUrl);
       const tile: OfflineTile = {
         id,
         mapName: settings.map.tiles.cacheFolder,
@@ -110,25 +154,25 @@ export class OfflineMapService {
     }
   }
 
-  saveOfflineTileCache(tiles: { id: string, dataUrl: string }[]) {
-    try {
-      const offlineTiles = tiles.map((t) => {
-        const size = DataUrlHelper.getDataUriByteLength(t.dataUrl);
-        const ot: OfflineTile = {
-          id: t.id,
-          mapName: settings.map.tiles.cacheFolder,
-          lastAccess: moment().unix(),
-          size,
-          dataUrl: t.dataUrl
-        };
-        return ot;
-      });
-      return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).loadJS(offlineTiles);
-      // return this.dbHelperService.fastInsert(NanoSql.TABLES.OFFLINE_MAP_TILES.name, offlineTiles, (tile) => tile.id, true);
-    } catch (err) {
-      this.loggingService.log('Could save offline tiles to cache', err, LogLevel.Warning, DEBUG_TAG);
-    }
-  }
+  // saveOfflineTileCache(tiles: { id: string, dataUrl: string }[]) {
+  //   try {
+  //     const offlineTiles = tiles.map((t) => {
+  //       const size = DataUrlHelper.getDataUriByteLength(t.dataUrl);
+  //       const ot: OfflineTile = {
+  //         id: t.id,
+  //         mapName: settings.map.tiles.cacheFolder,
+  //         lastAccess: moment().unix(),
+  //         size,
+  //         dataUrl: t.dataUrl
+  //       };
+  //       return ot;
+  //     });
+  //     return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).loadJS(offlineTiles);
+  //     // return this.dbHelperService.fastInsert(NanoSql.TABLES.OFFLINE_MAP_TILES.name, offlineTiles, (tile) => tile.id, true);
+  //   } catch (err) {
+  //     this.loggingService.log('Could save offline tiles to cache', err, LogLevel.Warning, DEBUG_TAG);
+  //   }
+  // }
 
   private getTileId(name: string, x: number, y: number, z: number) {
     return `${name}_${z}_${x}_${y}`;
