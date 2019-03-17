@@ -22,9 +22,6 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { settings } from '../../../../../settings';
 import { Feature, Polygon } from '@turf/turf';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
-import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
-import { Platform } from '@ionic/angular';
-import * as L from 'leaflet';
 
 const DEBUG_TAG = 'MapService';
 
@@ -74,8 +71,6 @@ export class MapService {
   constructor(
     private userSettingService: UserSettingService,
     private loggingService: LoggingService,
-    private offlineMapService: OfflineMapService,
-    private platform: Platform,
   ) {
     this._followModeSubject = new BehaviorSubject<boolean>(true);
     this._followModeObservable = this._followModeSubject.asObservable().pipe(distinctUntilChanged(), shareReplay(1));
@@ -88,17 +83,6 @@ export class MapService {
       shareReplay(1));
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
-
-    // this.platform.pause.subscribe(() => {
-    //   if (this._interval) {
-    //     clearTimeout(this._interval);
-    //   }
-    // });
-    // this.platform.resume.subscribe(() => {
-    //   this.startProcessingOfflineImageSaveQueue();
-    // });
-
-    // this.startProcessingOfflineImageSaveQueue();
   }
 
   centerMapToUser() {
@@ -240,41 +224,4 @@ export class MapService {
       return () => typedWorker ? typedWorker.terminate() : null;
     });
   }
-
-  // addImageToSaveQueue(img: HTMLCanvasElement) {
-  //   this._saveOfflineTilesQueue.push(img);
-  // }
-
-  // setMapIdle(isIdle: boolean) {
-  //   this._isIdle = isIdle;
-  // }
-
-  // async startProcessingOfflineImageSaveQueue() {
-  //   if (this._interval) {
-  //     clearInterval(this._interval);
-  //   }
-  //   // this.loggingService.debug(`Process offline image queue complete. IsIdle: ${this._isIdle}.`
-  //   //   + `Queue length: ${this._saveOfflineTilesQueue.length}`, DEBUG_TAG);
-  //   if (this._isIdle && this._saveOfflineTilesQueue.length > 0) {
-  //     const currentTile = this._saveOfflineTilesQueue.shift();
-  //     if (currentTile && currentTile.id) {
-  //       const dataUrl = currentTile.toDataURL(settings.map.tiles.tileImageFormat, settings.map.tiles.cacheTileSaveQuality);
-  //       if (dataUrl) {
-  //         this._saveBuffer.push({
-  //           id: currentTile.id,
-  //           dataUrl
-  //         });
-  //       }
-  //     }
-  //     if (this._saveOfflineTilesQueue.length === 0 || this._saveBuffer.length >= settings.map.tiles.cacheSaveBufferSize) {
-  //       this.offlineMapService.saveOfflineTileCache([...this._saveBuffer]);
-  //       this._saveBuffer = [];
-  //     }
-  //     this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
-  //       settings.map.tiles.cacheSaveBufferThrottleTimeMs);
-  //   } else {
-  //     this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
-  //       settings.map.tiles.cacheSaveBufferIdleDelayTimeMs);
-  //   }
-  // }
 }

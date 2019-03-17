@@ -2,7 +2,6 @@ import { Component, OnInit, Input, NgZone, OnDestroy, AfterViewInit, Output, Eve
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { Subscription } from 'rxjs';
-import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { Platform } from '@ionic/angular';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
@@ -53,7 +52,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private userSettingService: UserSettingService,
-    private offlineMapService: OfflineMapService,
     private mapService: MapService,
     private mapSearchService: MapSearchService,
     private platform: Platform,
@@ -190,13 +188,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onMapMove() {
-    // this.mapService.setMapIdle(false);
     this.disableFollowMode();
   }
 
   private onMapMoveEnd() {
     this.updateMapView();
-    // this.mapService.setMapIdle(true);
   }
 
   private disableFollowMode() {
@@ -233,14 +229,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             bounds: topoMap.bounds,
             detectRetina: userSetting.useRetinaMap,
             updateWhenIdle: settings.map.tiles.updateWhenIdle,
-            keepBuffer: this.getKeepBuffer(),
-            updateInterval: this.platform.is('ipad') ? 400 : 200,
-          },
-          topoMap.name,
-          this.offlineMapService,
-          this.mapService,
-          this.shouldBufferOfflineMap(userSetting),
-          topoMap.notInsideBounds
+            edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
+            excludeBounds: topoMap.notInsideBounds
+          }
         );
         topoTilesLayer.addTo(this.tilesLayer);
       }
@@ -249,7 +240,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
         if (userSetting.currentGeoHazard.indexOf(supportTile.geoHazardId) >= 0
           && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
-          const tile = new RegObsTileLayer(
+          const supportMapTileLayer = new RegObsTileLayer(
             supportTile.url,
             {
               minZoom: settings.map.tiles.minZoomSupportMaps,
@@ -257,24 +248,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
               maxNativeZoom: settings.map.tiles.maxZoom,
               bounds: <any>settings.map.tiles.supportTilesBounds,
               detectRetina: userSetting.useRetinaMap,
-              updateWhenIdle: settings.map.tiles.updateWhenIdle,
-              keepBuffer: this.getKeepBuffer(),
-              updateInterval: this.platform.is('ipad') ? 400 : 200,
-            },
-            supportTile.name,
-            this.offlineMapService,
-            this.mapService,
-            this.shouldBufferOfflineMap(userSetting),
+              updateWhenIdle: true,
+            }
           );
-          tile.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
-          tile.addTo(this.tilesLayer);
+          supportMapTileLayer.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
+          supportMapTileLayer.addTo(this.tilesLayer);
         }
       }
     });
-  }
-
-  private getKeepBuffer() {
-    return this.platform.is('ipad') ? settings.map.tiles.keepBufferIpad : settings.map.tiles.keepBuffer;
   }
 
   private getMaxZoom(detectRetina: boolean) {

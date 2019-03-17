@@ -1,18 +1,14 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { NanoSql } from '../../../nanosql';
 import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
-import { HelperService } from '../../core/services/helpers/helper.service';
 import { KdvService } from '../../core/services/kdv/kdv.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
 import { AppVersion } from '../../core/models/app-version.model';
-import { TopoMap } from '../../core/models/topo-map.enum';
 import { Subscription } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 
@@ -27,17 +23,12 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;
   LangKey = LangKey;
   showAdvanced = false;
-  numberOfCacheTiles: number;
-  cacheTilesSize: string;
   isUpdating = false;
   version: AppVersion;
-  TopoMap = TopoMap;
   private subscriptions: Subscription[] = [];
 
   constructor(
     private userSettingService: UserSettingService,
-    private offlineMapService: OfflineMapService,
-    private helperService: HelperService,
     private kdvService: KdvService,
     private ngZone: NgZone,
     private loggingService: LoggingService,
@@ -52,17 +43,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
-      });
-    }));
-    this.subscriptions.push(this.userSettingService.userSettingObservable$
-      .pipe(map((val) => val.tilesCacheSize), distinctUntilChanged()).subscribe((val) => {
-        this.loggingService.debug('tilesCacheSize changed to ' + val, DEBUG_TAG);
-        this.offlineMapService.cleanupTilesCache(val);
-      }));
-    this.subscriptions.push(this.offlineMapService.getTilesCacheAsObservable().subscribe((tilesCache) => {
-      this.ngZone.run(() => {
-        this.numberOfCacheTiles = tilesCache.count;
-        this.cacheTilesSize = this.helperService.humanReadableByteSize(tilesCache.size);
       });
     }));
     const appver = await this.appVersionService.getAppVersion();

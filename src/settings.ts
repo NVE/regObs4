@@ -94,11 +94,9 @@ export const settings = {
             minZoomSupportMaps: 5,
             maxZoom: 18,
             zoomInPosition: 15,
-            edgeBufferTiles: 1,
+            edgeBufferTiles: 2,
             detectRetina: false,
-            updateWhenIdle: true,
-            keepBuffer: 2,
-            keepBufferIpad: 0,
+            updateWhenIdle: false,
             // tslint:disable-next-line:max-line-length
             statensKartverkMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
             openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',

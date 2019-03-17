@@ -16,7 +16,6 @@ import { LegalTermsModalPageModule } from '../modal-pages/legal-terms-modal/lega
         component: HomePage,
       }
     ]),
-    LeafletModule,
     SharedModule,
     DataLoadModule,
     MapModule,

@@ -7,7 +7,6 @@ import { UserSettingService } from './core/services/user-setting/user-setting.se
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { LangKey } from './core/models/langKey';
-import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
@@ -35,9 +34,7 @@ export class AppComponent {
     private navController: NavController,
     private deeplinks: Deeplinks,
     private backgroundFetch: BackgroundFetch,
-    private zone: NgZone,
     private dataMarshallService: DataMarshallService,
-    private offlineMapService: OfflineMapService,
     private offlineImageService: OfflineImageService,
     private keyboard: Keyboard,
     private swipeBackService: SwipeBackService,
@@ -68,7 +65,7 @@ export class AppComponent {
       // this.statusBar.overlaysWebView(this.platform.is('ios'));
       this.statusBar.overlaysWebView(false);
       this.keyboard.hideFormAccessoryBar(false);
-      this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
+      // this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
       this.offlineImageService.cleanupOldItems();
       this.dataMarshallService.init();
       (<any>window).L_DISABLE_3D = true; // Leaflet hack to prevent ipad crash

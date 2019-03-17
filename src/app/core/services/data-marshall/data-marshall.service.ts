@@ -14,8 +14,6 @@ import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { Subject, Subscription } from 'rxjs';
 import { map, switchMap, distinctUntilChanged, pairwise, filter, take } from 'rxjs/operators';
-import { OfflineMapService } from '../offline-map/offline-map.service';
-import { nSQL } from '@nano-sql/core';
 
 const DEBUG_TAG = 'DataMarshallService';
 
@@ -49,7 +47,6 @@ export class DataMarshallService {
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
-    private offlineMapService: OfflineMapService,
   ) {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
   }
@@ -72,10 +69,6 @@ export class DataMarshallService {
     }));
     this.subscriptions.push(this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user)));
     this.subscriptions.push(this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode)));
-
-    this.subscriptions.push(this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {
-      this.offlineMapService.updateTilesCacheSizeTable(val.count, val.size);
-    }));
 
     this.subscriptions.push(this.platform.pause.subscribe(() => {
       this.loggingService.debug('App paused. Stop foreground updates.', DEBUG_TAG);
