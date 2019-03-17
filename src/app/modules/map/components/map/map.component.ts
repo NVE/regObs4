@@ -299,9 +299,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       case TopoMap.arcGisOnline:
         return [arcGisOnlineMap];
       case TopoMap.mixOpenTopo:
-        return [{ ...openTopoMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
+        return [{ ...openTopoMap/*, notInsideBounds: NORWEGIAN_BOUNDS*/ }, norwegianMixedMap];
       case TopoMap.mixArcGisOnline:
-        return [{ ...arcGisOnlineMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
+        return [{ ...arcGisOnlineMap/*, notInsideBounds: NORWEGIAN_BOUNDS*/ }, norwegianMixedMap];
     }
   }
 
