@@ -22,11 +22,11 @@ export class NumericInputComponent implements OnInit, OnChanges {
 
   @ViewChild(IonInput) input: IonInput;
 
-  localValue: number;
+  localValue: string;
   skipNextChange = false;
 
   get isValid() {
-    return NumberHelper.isValid(this.localValue, this.min, this.max, this.required, this.decimalPlaces === 0);
+    return NumberHelper.isValid(this.getNumber(this.localValue), this.min, this.max, this.required, this.decimalPlaces === 0);
   }
 
   get inputmode() {
@@ -48,27 +48,44 @@ export class NumericInputComponent implements OnInit, OnChanges {
       this.localValue = undefined;
       return;
     }
-    this.localValue = this.convertMetersToCm ?
-      this.convertMtoCM(simpleChange.value.currentValue) : simpleChange.value.currentValue;
-    this.localValue = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
+    const lv = NumberHelper.setDecimalPlaces(this.convertMetersToCm ?
+      this.convertMtoCM(simpleChange.value.currentValue) : simpleChange.value.currentValue,
+      this.decimalPlaces);
+    this.localValue = lv.toString();
+  }
+
+  private getNumber(value: string) {
+    if (!NumberHelper.isNullOrEmpty(value)) {
+      const numberReplaced = this.localValue.replace(/,/g, '.');
+      if (NumberHelper.isNumeric(numberReplaced)) {
+        return parseFloat(numberReplaced);
+      }
+    }
+    return undefined;
   }
 
   valueChanged() {
     if (!NumberHelper.isNullOrEmpty(this.localValue)) {
-      if (this.convertMetersToCm) {
-        this.value = NumberHelper.setDecimalPlaces(this.convertCMtoM(this.localValue), this.decimalPlaces + 2);
-      } else {
-        this.value = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
+      const numberValue = this.getNumber(this.localValue);
+      if (numberValue !== undefined) {
+        if (this.convertMetersToCm) {
+          this.value = NumberHelper.setDecimalPlaces(this.convertCMtoM(numberValue), this.decimalPlaces + 2);
+        } else {
+          this.value = NumberHelper.setDecimalPlaces(numberValue, this.decimalPlaces);
+        }
+        this.valueChange.emit(this.value);
       }
     } else {
       this.value = undefined;
+      this.valueChange.emit(this.value);
     }
-    this.valueChange.emit(this.value);
   }
 
   onBlur() {
-    this.localValue = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
-    this.input.value = NumberHelper.isNullOrEmpty(this.localValue) ? '' : this.localValue.toString();
+    const numberValue = this.getNumber(this.localValue);
+    if (numberValue !== undefined) {
+      this.localValue = NumberHelper.setDecimalPlaces(numberValue, this.decimalPlaces).toString();
+    }
   }
 
   private convertMtoCM(val: number) {
