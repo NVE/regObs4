@@ -94,7 +94,7 @@ export const settings = {
             minZoomSupportMaps: 5,
             maxZoom: 18,
             zoomInPosition: 15,
-            edgeBufferTiles: 2,
+            edgeBufferTiles: 1,
             detectRetina: false,
             updateWhenIdle: false,
             // tslint:disable-next-line:max-line-length
