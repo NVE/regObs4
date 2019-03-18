@@ -248,7 +248,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
               maxNativeZoom: settings.map.tiles.maxZoom,
               bounds: <any>settings.map.tiles.supportTilesBounds,
               detectRetina: userSetting.useRetinaMap,
-              updateWhenIdle: true,
+              updateWhenIdle: settings.map.tiles.updateWhenIdle,
+              edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
             }
           );
           supportMapTileLayer.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
@@ -299,9 +300,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       case TopoMap.arcGisOnline:
         return [arcGisOnlineMap];
       case TopoMap.mixOpenTopo:
-        return [{ ...openTopoMap/*, notInsideBounds: NORWEGIAN_BOUNDS*/ }, norwegianMixedMap];
+        return [{ ...openTopoMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
       case TopoMap.mixArcGisOnline:
-        return [{ ...arcGisOnlineMap/*, notInsideBounds: NORWEGIAN_BOUNDS*/ }, norwegianMixedMap];
+        return [{ ...arcGisOnlineMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
     }
   }
 

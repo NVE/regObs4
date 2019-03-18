@@ -33,12 +33,14 @@ export class RegObsTileLayer extends L.TileLayer {
             }
         }
 
-        for (const key of (<any>this)._tiles) {
+        // tslint:disable-next-line:forin
+        for (const key in (<any>this)._tiles) {
             tile = this._tiles[key];
             tile.retain = tile.current;
         }
 
-        for (const key of (<any>this)._tiles) {
+        // tslint:disable-next-line:forin
+        for (const key in (<any>this)._tiles) {
             tile = (<any>this)._tiles[key];
             if (tile.current && !tile.active) {
                 const coords = tile.coords;
@@ -48,7 +50,7 @@ export class RegObsTileLayer extends L.TileLayer {
             }
         }
 
-        for (const key of (<any>this)._tiles) {
+        for (const key in (<any>this)._tiles) {
             if (!(<any>this)._tiles[key].retain) {
                 (<any>this)._removeTile(key);
             }
