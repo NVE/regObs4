@@ -44,11 +44,13 @@ export class NumericInputComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(simpleChange: SimpleChanges) {
-    if (simpleChange.value && simpleChange.value.currentValue !== undefined) {
-      this.localValue = this.convertMetersToCm ?
-        this.convertMtoCM(simpleChange.value.currentValue) : simpleChange.value.currentValue;
-      this.localValue = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
+    if (!simpleChange.value.currentValue) {
+      this.localValue = undefined;
+      return;
     }
+    this.localValue = this.convertMetersToCm ?
+      this.convertMtoCM(simpleChange.value.currentValue) : simpleChange.value.currentValue;
+    this.localValue = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
   }
 
   valueChanged() {
