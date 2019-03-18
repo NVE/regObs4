@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as moment from 'moment';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-warning-list-header',
@@ -12,7 +13,11 @@ export class WarningListHeaderComponent implements OnInit {
   @Input() subTitle: string;
   @Input() showDayNames: boolean;
 
-  constructor() { }
+  get ios() {
+    return this.platform.is('ios');
+  }
+
+  constructor(private platform: Platform) { }
 
   ngOnInit() {
   }
