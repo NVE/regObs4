@@ -40,15 +40,18 @@ ion-content {
         height: 100%;
 
         .full-grid {
-            max-width: 400px;
+            padding-left: 6vw;
+            padding-right: 6vw;
+        }
+
+        .legal-grid {
+            margin-top: auto;
+            padding-bottom: 12vh;
+            height: auto;
         }
 
         .legal-info-row {
-            height: 30%;
-        }
-
-        .legal-text-row {
-            height: 70%;
+            height: 20vh;
         }
 
         ion-slide{
