@@ -37,9 +37,9 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
 
   opacityValues = [
     { name: 'SUPPORT_MAP.NO_OPACITY', value: 1.0 },
-    { name: '75%', value: 0.75 },
+    { name: '25%', value: 0.75 },
     { name: '50%', value: 0.50 },
-    { name: '25%', value: 0.25 }
+    { name: '75%', value: 0.25 },
   ];
 
   get legends() {
