@@ -24,7 +24,7 @@ const DEBUG_TAG = 'OfflineMapService';
   providedIn: 'root'
 })
 export class OfflineMapService {
-  private _savedTiles: LRUMap<string, string>;
+  private _savedTiles: LRUMap<string, boolean>;
 
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
@@ -98,10 +98,9 @@ export class OfflineMapService {
 
   saveTileToOfflineCache(id: string, el: HTMLImageElement) {
     if (!this._savedTiles.has(id)) {
-      this._savedTiles.set(id, null);
+      this._savedTiles.set(id, true);
       this.getImageDataUrlAsObservable(el).subscribe((result: { dataUrl: string, size: number }) => {
         if (result && result.dataUrl && result.size > 0) {
-          this._savedTiles.set(id, result.dataUrl);
           this.saveTileDataUrlToDbCache(id, result.dataUrl, result.size);
         }
       });
