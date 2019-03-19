@@ -200,8 +200,6 @@ export class OfflineMapService {
       .query('select', ['id']).where(['mapName', '=', settings.map.tiles.cacheFolder])
       .orderBy(['lastAccess: desc']).offset(numberOfItemsToCache).exec() as { id: string }[];
     const ids = tilesToDelete.map((val) => val.id);
-    this.loggingService.debug(`Tiles to delete : ${JSON.stringify(ids)}`, DEBUG_TAG);
-
     return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
       .query('delete').where(['id', 'IN', ids]).exec();
   }

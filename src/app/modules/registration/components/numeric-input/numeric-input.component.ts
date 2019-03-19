@@ -23,7 +23,7 @@ export class NumericInputComponent implements OnInit, OnChanges {
   @ViewChild(IonInput) input: IonInput;
 
   localValue: string;
-  skipNextChange = false;
+  private skipNextChange = false;
 
   get isValid() {
     return NumberHelper.isValid(this.getNumber(this.localValue), this.min, this.max, this.required, this.decimalPlaces === 0);
@@ -44,6 +44,10 @@ export class NumericInputComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(simpleChange: SimpleChanges) {
+    if (this.skipNextChange) {
+      this.skipNextChange = false;
+      return;
+    }
     if (!simpleChange.value.currentValue) {
       this.localValue = undefined;
       return;
@@ -68,17 +72,20 @@ export class NumericInputComponent implements OnInit, OnChanges {
     if (!NumberHelper.isNullOrEmpty(this.localValue)) {
       const numberValue = this.getNumber(this.localValue);
       if (numberValue !== undefined) {
-        if (this.convertMetersToCm) {
-          this.value = NumberHelper.setDecimalPlaces(this.convertCMtoM(numberValue), this.decimalPlaces + 2);
-        } else {
-          this.value = NumberHelper.setDecimalPlaces(numberValue, this.decimalPlaces);
-        }
-        this.valueChange.emit(this.value);
+        this.changeValueButSkipNgOnChanges(this.convertMetersToCm ?
+          NumberHelper.setDecimalPlaces(this.convertCMtoM(numberValue), this.decimalPlaces + 2) :
+          NumberHelper.setDecimalPlaces(numberValue, this.decimalPlaces)
+        );
+        return;
       }
-    } else {
-      this.value = undefined;
-      this.valueChange.emit(this.value);
     }
+    this.changeValueButSkipNgOnChanges(undefined);
+  }
+
+  private changeValueButSkipNgOnChanges(val: number) {
+    this.skipNextChange = true;
+    this.value = val;
+    this.valueChange.emit(this.value);
   }
 
   onBlur() {

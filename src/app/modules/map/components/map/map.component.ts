@@ -16,6 +16,7 @@ import { TopoMap } from '../../../../core/models/topo-map.enum';
 import { RegObsTileLayer } from '../../core/classes/regobs-tile-layer';
 import '../../../../core/helpers/ionic/platform-helper';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
+import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -53,6 +54,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private userSettingService: UserSettingService,
     private mapService: MapService,
+    private offlineMapService: OfflineMapService,
     private mapSearchService: MapSearchService,
     private platform: Platform,
     private zone: NgZone,
@@ -221,6 +223,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       const mapOptions = this.getMapOptions(userSetting.topoMap);
       for (const topoMap of mapOptions) {
         const topoTilesLayer = new RegObsTileLayer(
+          topoMap.name,
+          this.offlineMapService,
           topoMap.url,
           {
             minZoom: settings.map.tiles.minZoom,
@@ -230,7 +234,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             detectRetina: userSetting.useRetinaMap,
             updateWhenIdle: settings.map.tiles.updateWhenIdle,
             edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
-            excludeBounds: topoMap.notInsideBounds
+            excludeBounds: topoMap.notInsideBounds,
+            saveTilesToOfflineCache: userSetting.tilesCacheSize > 0,
           }
         );
         topoTilesLayer.addTo(this.tilesLayer);
@@ -241,6 +246,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         if (userSetting.currentGeoHazard.indexOf(supportTile.geoHazardId) >= 0
           && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
           const supportMapTileLayer = new RegObsTileLayer(
+            supportTile.name,
+            this.offlineMapService,
             supportTile.url,
             {
               minZoom: settings.map.tiles.minZoomSupportMaps,
@@ -250,6 +257,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
               detectRetina: userSetting.useRetinaMap,
               updateWhenIdle: settings.map.tiles.updateWhenIdle,
               edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
+              saveTilesToOfflineCache: userSetting.tilesCacheSize > 0,
             }
           );
           supportMapTileLayer.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);

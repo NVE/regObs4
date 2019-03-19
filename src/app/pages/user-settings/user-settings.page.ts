@@ -11,6 +11,8 @@ import { AppVersion } from '../../core/models/app-version.model';
 import { Subscription } from 'rxjs';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
+import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
+import { HelperService } from '../../core/services/helpers/helper.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 
@@ -23,12 +25,16 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;
   LangKey = LangKey;
   showAdvanced = false;
+  numberOfCacheTiles: number;
+  cacheTilesSize: string;
   isUpdating = false;
   version: AppVersion;
   private subscriptions: Subscription[] = [];
 
   constructor(
     private userSettingService: UserSettingService,
+    private offlineMapService: OfflineMapService,
+    private helperService: HelperService,
     private kdvService: KdvService,
     private ngZone: NgZone,
     private loggingService: LoggingService,
@@ -43,6 +49,12 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
+      });
+    }));
+    this.subscriptions.push(this.offlineMapService.getTilesCacheAsObservable().subscribe((tilesCache) => {
+      this.ngZone.run(() => {
+        this.numberOfCacheTiles = tilesCache.count;
+        this.cacheTilesSize = this.helperService.humanReadableByteSize(tilesCache.size);
       });
     }));
     const appver = await this.appVersionService.getAppVersion();

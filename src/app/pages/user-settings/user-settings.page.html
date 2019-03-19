@@ -59,6 +59,28 @@
         </ion-label>
         <ion-toggle slot="end" [(ngModel)]="userSettings.useRetinaMap" (ngModelChange)="updateSettings()"></ion-toggle>
       </ion-item>
+      <ion-item>
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.NUMBER_OF_TILES_IN_CACHE' |
+          translate}}: {{
+          userSettings.tilesCacheSize }}</ion-label>
+        <ion-range min="0" max="20000" step="5000" color="secondary" [(ngModel)]="userSettings.tilesCacheSize"
+          (ngModelChange)="updateSettings()">
+        </ion-range>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.TILES_CACHE_SIZE' | translate}}
+        </ion-label>
+        <ion-input *ngIf="numberOfCacheTiles !== undefined" type="text" readonly="true" [value]="numberOfCacheTiles">
+        </ion-input>
+        <ion-spinner name="dots" *ngIf="numberOfCacheTiles === undefined"></ion-spinner>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.SIZE_OF_TILES_CACHE' | translate}}
+        </ion-label>
+        <ion-input *ngIf="cacheTilesSize !== undefined" type="text" readonly="true" [value]="cacheTilesSize">
+        </ion-input>
+        <ion-spinner name="dots" *ngIf="cacheTilesSize === undefined"></ion-spinner>
+      </ion-item>
     </ion-list>
     <ion-list lines="none">
       <ion-button expand="block" [disabled]="isUpdating" (click)="updateDropdowns()">

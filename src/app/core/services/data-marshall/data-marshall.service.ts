@@ -13,7 +13,8 @@ import { HelpTextService } from '../../../modules/registration/services/help-tex
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { Subject, Subscription } from 'rxjs';
-import { map, switchMap, distinctUntilChanged, pairwise, filter, take } from 'rxjs/operators';
+import { map, switchMap, distinctUntilChanged, pairwise, filter, take, debounceTime } from 'rxjs/operators';
+import { OfflineMapService } from '../offline-map/offline-map.service';
 
 const DEBUG_TAG = 'DataMarshallService';
 
@@ -47,6 +48,7 @@ export class DataMarshallService {
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
+    private offlineMapService: OfflineMapService,
   ) {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
   }
@@ -70,6 +72,14 @@ export class DataMarshallService {
     this.subscriptions.push(this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user)));
     this.subscriptions.push(this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode)));
 
+    this.subscriptions.push(this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {
+      this.offlineMapService.updateTilesCacheSizeTable(val.count, val.size);
+    }));
+    this.subscriptions.push(this.userSettingService.userSettingObservable$.pipe(map((val) => val.tilesCacheSize),
+      distinctUntilChanged(), debounceTime(500)).subscribe((val) => {
+        this.loggingService.debug(`Tiles cahce size changed to ${val}`, DEBUG_TAG);
+        this.offlineMapService.cleanupTilesCache(val);
+      }));
     this.subscriptions.push(this.platform.pause.subscribe(() => {
       this.loggingService.debug('App paused. Stop foreground updates.', DEBUG_TAG);
       this.stopForegroundUpdate();

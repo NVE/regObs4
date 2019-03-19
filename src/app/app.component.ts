@@ -16,6 +16,7 @@ import { LoggingService } from './modules/shared/services/logging/logging.servic
 import { AnalyticService } from './core/services/analytic/analytic.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 
 @Component({
   selector: 'app-root',
@@ -36,6 +37,7 @@ export class AppComponent {
     private backgroundFetch: BackgroundFetch,
     private dataMarshallService: DataMarshallService,
     private offlineImageService: OfflineImageService,
+    private offlineMapService: OfflineMapService,
     private keyboard: Keyboard,
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
@@ -65,10 +67,9 @@ export class AppComponent {
       // this.statusBar.overlaysWebView(this.platform.is('ios'));
       this.statusBar.overlaysWebView(false);
       this.keyboard.hideFormAccessoryBar(false);
-      // this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
+      this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
       this.offlineImageService.cleanupOldItems();
       this.dataMarshallService.init();
-      (<any>window).L_DISABLE_3D = true; // Leaflet hack to prevent ipad crash
       this.initBackroundUpdates();
       setTimeout(() => {
         this.splashScreen.hide();
