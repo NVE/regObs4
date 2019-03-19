@@ -22,11 +22,11 @@ export class NumericInputComponent implements OnInit, OnChanges {
 
   @ViewChild(IonInput) input: IonInput;
 
-  localValue: string;
+  localValue: number;
   private skipNextChange = false;
 
   get isValid() {
-    return NumberHelper.isValid(this.getNumber(this.localValue), this.min, this.max, this.required, this.decimalPlaces === 0);
+    return NumberHelper.isValid(this.localValue, this.min, this.max, this.required, this.decimalPlaces === 0);
   }
 
   get inputmode() {
@@ -52,32 +52,18 @@ export class NumericInputComponent implements OnInit, OnChanges {
       this.localValue = undefined;
       return;
     }
-    const lv = NumberHelper.setDecimalPlaces(this.convertMetersToCm ?
+    this.localValue = NumberHelper.setDecimalPlaces(this.convertMetersToCm ?
       this.convertMtoCM(simpleChange.value.currentValue) : simpleChange.value.currentValue,
       this.decimalPlaces);
-    this.localValue = lv.toString();
-  }
-
-  private getNumber(value: string) {
-    if (!NumberHelper.isNullOrEmpty(value)) {
-      const numberReplaced = this.localValue.replace(/,/g, '.');
-      if (NumberHelper.isNumeric(numberReplaced)) {
-        return parseFloat(numberReplaced);
-      }
-    }
-    return undefined;
   }
 
   valueChanged() {
     if (!NumberHelper.isNullOrEmpty(this.localValue)) {
-      const numberValue = this.getNumber(this.localValue);
-      if (numberValue !== undefined) {
-        this.changeValueButSkipNgOnChanges(this.convertMetersToCm ?
-          NumberHelper.setDecimalPlaces(this.convertCMtoM(numberValue), this.decimalPlaces + 2) :
-          NumberHelper.setDecimalPlaces(numberValue, this.decimalPlaces)
-        );
-        return;
-      }
+      this.changeValueButSkipNgOnChanges(this.convertMetersToCm ?
+        NumberHelper.setDecimalPlaces(this.convertCMtoM(this.localValue), this.decimalPlaces + 2) :
+        NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces)
+      );
+      return;
     }
     this.changeValueButSkipNgOnChanges(undefined);
   }
@@ -86,13 +72,6 @@ export class NumericInputComponent implements OnInit, OnChanges {
     this.skipNextChange = true;
     this.value = val;
     this.valueChange.emit(this.value);
-  }
-
-  onBlur() {
-    const numberValue = this.getNumber(this.localValue);
-    if (numberValue !== undefined) {
-      this.localValue = NumberHelper.setDecimalPlaces(numberValue, this.decimalPlaces).toString();
-    }
   }
 
   private convertMtoCM(val: number) {

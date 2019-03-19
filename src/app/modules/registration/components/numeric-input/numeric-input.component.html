@@ -1,7 +1,7 @@
 <ion-item [ngClass]="{'hasWarning': !isValid}">
   <ion-label *ngIf="title" color="medium" position="stacked" text-uppercase>{{ title | translate}}</ion-label>
-  <ion-input type="text" [inputmode]="inputmode" [min]="min" [max]="max" [pattern]="pattern" [(ngModel)]="localValue"
-    placeholder="{{ placeholder | translate}}" (ionChange)="valueChanged()" (ionBlur)="onBlur()">
+  <ion-input type="number" [inputmode]="inputmode" [min]="min" [max]="max" [pattern]="pattern" [(ngModel)]="localValue"
+    placeholder="{{ placeholder | translate}}" (ionChange)="valueChanged()">
   </ion-input>
 </ion-item>
 <ion-item *ngIf="!isValid">
