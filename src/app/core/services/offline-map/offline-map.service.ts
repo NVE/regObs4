@@ -165,16 +165,11 @@ export class OfflineMapService {
   }
 
   async getCachedTileDataUrl(tileId: string) {
-    const cachedTile = this._savedTiles.get(tileId);
-    if (cachedTile && cachedTile.length > 0) {
-      return cachedTile;
-    }
     const tileFromDb = await this.getTileFromDb(tileId);
     if (tileFromDb) {
-      this.updateTileLastAccess(tileId);
       return tileFromDb.dataUrl;
     }
-    return null;
+    return undefined;
   }
 
   async getTileFromDb(tileId: string): Promise<OfflineTile> {
