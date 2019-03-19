@@ -81,10 +81,7 @@ export const settings = {
         tiles: {
             cacheFolder: 'tilescache',
             cacheSize: 5000,
-            cacheSaveBufferSize: 100,
-            cacheSaveBufferThrottleTimeMs: 30,
-            cacheSaveBufferIdleDelayTimeMs: 2000,
-            cacheTileSaveQuality: 0.5,
+            cacheSaveBufferThrottleTimeMs: 100,
             tileImageFormat: 'image/png',
             embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
             defaultZoom: 5,
@@ -96,7 +93,7 @@ export const settings = {
             zoomInPosition: 15,
             edgeBufferTiles: 1,
             detectRetina: false,
-            updateWhenIdle: false,
+            updateWhenIdle: true,
             // tslint:disable-next-line:max-line-length
             statensKartverkMapUrl: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
             openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',

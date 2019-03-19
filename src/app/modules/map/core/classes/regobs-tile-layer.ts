@@ -3,6 +3,7 @@ import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { GeometryObject } from '@turf/turf';
 import { LRUMap } from 'lru_map';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
+import { settings } from '../../../../../settings';
 
 export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
     edgeBufferTiles?: number;
@@ -64,7 +65,7 @@ export class RegObsTileLayer extends L.TileLayer {
     }
 
     _tileOnLoad(done: L.DoneCallback, tile: RegObsTile) {
-        L.Util.throttle(() => this.saveTileOffline(tile), 50, this)();
+        L.Util.throttle(() => this.saveTileOffline(tile), settings.map.tiles.cacheSaveBufferThrottleTimeMs, this)();
         (<any>L.TileLayer.prototype)._tileOnLoad.call(this, done, tile);
     }
 
@@ -91,7 +92,7 @@ export class RegObsTileLayer extends L.TileLayer {
         }
     }
 
-    private async saveTileOffline(tile: RegObsTile) {
+    private saveTileOffline(tile: RegObsTile) {
         if ((<IRegObsTileLayerOptions>this.options).saveTilesToOfflineCache
             && tile && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
             if (!this._recentlySavedTile.has(tile.id)) {

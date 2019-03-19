@@ -154,26 +154,6 @@ export class OfflineMapService {
     }
   }
 
-  // saveOfflineTileCache(tiles: { id: string, dataUrl: string }[]) {
-  //   try {
-  //     const offlineTiles = tiles.map((t) => {
-  //       const size = DataUrlHelper.getDataUriByteLength(t.dataUrl);
-  //       const ot: OfflineTile = {
-  //         id: t.id,
-  //         mapName: settings.map.tiles.cacheFolder,
-  //         lastAccess: moment().unix(),
-  //         size,
-  //         dataUrl: t.dataUrl
-  //       };
-  //       return ot;
-  //     });
-  //     return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).loadJS(offlineTiles);
-  //     // return this.dbHelperService.fastInsert(NanoSql.TABLES.OFFLINE_MAP_TILES.name, offlineTiles, (tile) => tile.id, true);
-  //   } catch (err) {
-  //     this.loggingService.log('Could save offline tiles to cache', err, LogLevel.Warning, DEBUG_TAG);
-  //   }
-  // }
-
   private getTileId(name: string, x: number, y: number, z: number) {
     return `${name}_${z}_${x}_${y}`;
   }
