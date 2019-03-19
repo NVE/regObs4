@@ -1,14 +1,14 @@
 import * as L from 'leaflet';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { GeometryObject } from '@turf/turf';
-import { LRUMap } from 'lru_map';
-import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { settings } from '../../../../../settings';
 
 export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
     edgeBufferTiles?: number;
     excludeBounds?: GeometryObject;
-    saveTilesToOfflineCache: boolean;
+    saveTilesToCache?: boolean;
+    saveCacheTileFunc?: (id: string, tile: HTMLImageElement) => void | Promise<any>;
+    getCacheTileFunc?: (id: string) => Promise<string>;
 }
 
 interface ExtendedCoords extends L.Coords {
@@ -25,19 +25,15 @@ class RegObsTile extends HTMLImageElement {
 }
 
 export class RegObsTileLayer extends L.TileLayer {
-
-    private _recentlySavedTile: LRUMap<string, boolean>;
     private _url: string;
 
     constructor(
         private name: string,
-        private offlineMapService: OfflineMapService,
         url: string,
         options: IRegObsTileLayerOptions,
     ) {
         super(url, options);
         this._url = url;
-        this._recentlySavedTile = new LRUMap(2000);
     }
 
     createTile(coords: ExtendedCoords, done: L.DoneCallback): HTMLElement {
@@ -70,18 +66,19 @@ export class RegObsTileLayer extends L.TileLayer {
     }
 
     _tileOnError(done: L.DoneCallback, tile: RegObsTile, e: Error) {
-        if (!tile.hasTriedOffline && tile.id && tile.id !== '') {
-            this.offlineMapService.getTileFromDb(tile.id).then((result) => {
+        const opt = (<IRegObsTileLayerOptions>this.options);
+        if (!tile.hasTriedOffline && tile.id && tile.id !== '' && opt.getCacheTileFunc) {
+            opt.getCacheTileFunc(tile.id).then((result) => {
                 tile.hasTriedOffline = true;
-                if (result && result.dataUrl) {
+                if (result) {
                     const oldSrc = tile.src;
-                    tile.src = result.dataUrl;
+                    tile.src = result;
                     this.fire('tilefallback',
                         {
                             tile: tile,
                             url: tile.originalSrc,
                             urlMissing: oldSrc,
-                            urlFallback: result.dataUrl
+                            urlFallback: result
                         });
                 } else {
                     this.tryScaleImage(done, tile, e);
@@ -93,12 +90,10 @@ export class RegObsTileLayer extends L.TileLayer {
     }
 
     private saveTileOffline(tile: RegObsTile) {
-        if ((<IRegObsTileLayerOptions>this.options).saveTilesToOfflineCache
+        const opt = (<IRegObsTileLayerOptions>this.options);
+        if (opt.saveTilesToCache && opt.saveCacheTileFunc
             && tile && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
-            if (!this._recentlySavedTile.has(tile.id)) {
-                this._recentlySavedTile.set(tile.id, true);
-                this.offlineMapService.saveTile(tile.id, tile);
-            }
+            opt.saveCacheTileFunc(tile.id, tile);
         }
     }
 

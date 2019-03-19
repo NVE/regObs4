@@ -16,6 +16,7 @@ import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRx
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { DataUrlHelper } from '../../helpers/data-url.helper';
 import { createWorker } from 'typed-web-workers';
+import { LRUMap } from 'lru_map';
 
 const DEBUG_TAG = 'OfflineMapService';
 
@@ -23,13 +24,15 @@ const DEBUG_TAG = 'OfflineMapService';
   providedIn: 'root'
 })
 export class OfflineMapService {
+  private _savedTiles: LRUMap<string, string>;
+
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
     private file: File,
     private dbHelperService: DbHelperService,
     private loggingService: LoggingService,
   ) {
-
+    this._savedTiles = new LRUMap(2000);
   }
   // TODO: Implement continue download when app restart
 
@@ -89,16 +92,20 @@ export class OfflineMapService {
     });
   }
 
-  updateTileLastAccess(tileId: string) {
+  private updateTileLastAccess(tileId: string) {
     return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', { id: tileId, lastAccess: moment().unix() }).exec();
   }
 
-  saveTile(id: string, el: HTMLImageElement) {
-    this.getImageDataUrlAsObservable(el).subscribe((result: { dataUrl: string, size: number }) => {
-      if (result && result.dataUrl && result.size > 0) {
-        this.saveTileDataUrlToDbCache(id, result.dataUrl, result.size);
-      }
-    });
+  saveTileToOfflineCache(id: string, el: HTMLImageElement) {
+    if (!this._savedTiles.has(id)) {
+      this._savedTiles.set(id, null);
+      this.getImageDataUrlAsObservable(el).subscribe((result: { dataUrl: string, size: number }) => {
+        if (result && result.dataUrl && result.size > 0) {
+          this._savedTiles.set(id, result.dataUrl);
+          this.saveTileDataUrlToDbCache(id, result.dataUrl, result.size);
+        }
+      });
+    }
   }
 
   private workFunc(input: {
@@ -156,6 +163,19 @@ export class OfflineMapService {
 
   private getTileId(name: string, x: number, y: number, z: number) {
     return `${name}_${z}_${x}_${y}`;
+  }
+
+  async getCachedTileDataUrl(tileId: string) {
+    const cachedTile = this._savedTiles.get(tileId);
+    if (cachedTile && cachedTile.length > 0) {
+      return cachedTile;
+    }
+    const tileFromDb = await this.getTileFromDb(tileId);
+    if (tileFromDb) {
+      this.updateTileLastAccess(tileId);
+      return tileFromDb.dataUrl;
+    }
+    return null;
   }
 
   async getTileFromDb(tileId: string): Promise<OfflineTile> {

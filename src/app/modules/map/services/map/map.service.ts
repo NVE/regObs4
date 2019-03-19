@@ -39,10 +39,6 @@ export class MapService {
   private _mapViewSubject: Subject<IMapView>;
   private _mapView$: Observable<IMapView>;
   private _relevantMapChange$: Observable<IMapView>;
-  // private _saveOfflineTilesQueue: HTMLCanvasElement[] = [];
-  // private _isIdle = true;
-  // private _interval: NodeJS.Timeout;
-  // private _saveBuffer: { id: string, dataUrl: string }[] = [];
 
   get mapView$() {
     return this._mapView$;

@@ -13,7 +13,7 @@ import { FullscreenService } from '../../../../core/services/fullscreen/fullscre
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
-import { RegObsTileLayer } from '../../core/classes/regobs-tile-layer';
+import { RegObsTileLayer, IRegObsTileLayerOptions } from '../../core/classes/regobs-tile-layer';
 import '../../../../core/helpers/ionic/platform-helper';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
@@ -216,6 +216,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  private getTileLayerOptions(userSetting: UserSetting): IRegObsTileLayerOptions {
+    return {
+      minZoom: settings.map.tiles.minZoom,
+      maxZoom: this.getMaxZoom(userSetting.useRetinaMap),
+      maxNativeZoom: settings.map.tiles.maxZoom,
+      // bounds: topoMap.bounds,
+      detectRetina: userSetting.useRetinaMap,
+      updateWhenIdle: settings.map.tiles.updateWhenIdle,
+      edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
+      // excludeBounds: topoMap.notInsideBounds,
+      saveTilesToCache: userSetting.tilesCacheSize > 0,
+      saveCacheTileFunc: (id, tile) => this.offlineMapService.saveTileToOfflineCache(id, tile),
+      getCacheTileFunc: (id) => this.offlineMapService.getCachedTileDataUrl(id)
+    };
+  }
+
   configureTileLayers(userSetting: UserSetting) {
     this.zone.runOutsideAngular(() => {
       this.tilesLayer.clearLayers();
@@ -224,18 +240,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       for (const topoMap of mapOptions) {
         const topoTilesLayer = new RegObsTileLayer(
           topoMap.name,
-          this.offlineMapService,
           topoMap.url,
           {
-            minZoom: settings.map.tiles.minZoom,
-            maxZoom: this.getMaxZoom(userSetting.useRetinaMap),
-            maxNativeZoom: settings.map.tiles.maxZoom,
+            ...this.getTileLayerOptions(userSetting),
             bounds: topoMap.bounds,
-            detectRetina: userSetting.useRetinaMap,
-            updateWhenIdle: settings.map.tiles.updateWhenIdle,
-            edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
             excludeBounds: topoMap.notInsideBounds,
-            saveTilesToOfflineCache: userSetting.tilesCacheSize > 0,
           }
         );
         topoTilesLayer.addTo(this.tilesLayer);
@@ -247,17 +256,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
           const supportMapTileLayer = new RegObsTileLayer(
             supportTile.name,
-            this.offlineMapService,
             supportTile.url,
             {
+              ...this.getTileLayerOptions(userSetting),
               minZoom: settings.map.tiles.minZoomSupportMaps,
-              maxZoom: this.getMaxZoom(userSetting.useRetinaMap),
-              maxNativeZoom: settings.map.tiles.maxZoom,
               bounds: <any>settings.map.tiles.supportTilesBounds,
-              detectRetina: userSetting.useRetinaMap,
-              updateWhenIdle: settings.map.tiles.updateWhenIdle,
-              edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
-              saveTilesToOfflineCache: userSetting.tilesCacheSize > 0,
             }
           );
           supportMapTileLayer.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
