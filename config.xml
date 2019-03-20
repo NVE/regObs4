@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="689" id="no.nve.regobs4" ios-CFBundleVersion="689" osx-CFBundleVersion="689" version="4.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="748" id="no.nve.regobs4" ios-CFBundleVersion="748" osx-CFBundleVersion="748" version="4.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Varsom Regobs </name>
     <description>Report incidents in nature</description>
     <author email="regobs@nve.no" href="http://nve.no/">NVE</author>
@@ -52,6 +52,12 @@
         <splash density="port-xhdpi" src="resources/android/splash/drawable-port-xhdpi-screen.png" />
         <splash density="port-xxhdpi" src="resources/android/splash/drawable-port-xxhdpi-screen.png" />
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
+        <splash density="ldpi" src="resources/android/splash/drawable-port-ldpi-screen.png" />
+        <splash density="mdpi" src="resources/android/splash/drawable-port-mdpi-screen.png" />
+        <splash density="hdpi" src="resources/android/splash/drawable-port-hdpi-screen.png" />
+        <splash density="xhdpi" src="resources/android/splash/drawable-port-xhdpi-screen.png" />
+        <splash density="xxhdpi" src="resources/android/splash/drawable-port-xxhdpi-screen.png" />
+        <splash density="xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />

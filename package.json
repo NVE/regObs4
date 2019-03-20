@@ -79,7 +79,7 @@
     "cordova-android": "8.0.0",
     "cordova-clipboard": "^1.2.1",
     "cordova-ios": "5.0.0",
-    "cordova-plugin-advanced-http": "^2.0.5",
+    "cordova-plugin-advanced-http": "^2.0.6",
     "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-background-download": "git+https://github.com/sgrebnov/cordova-plugin-background-download.git",
     "cordova-plugin-background-fetch": "^5.4.1",
