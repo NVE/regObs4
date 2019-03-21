@@ -1,7 +1,7 @@
 /* tslint:disable */
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { RegobsApiConfiguration } from './regobs-api-configuration';
+import { RegobsApiConfiguration, RegobsApiConfigurationInterface } from './regobs-api-configuration';
 
 import { AccountService } from './services/account.service';
 import { DangerSignService } from './services/danger-sign.service';
@@ -41,4 +41,16 @@ import { TripService } from './services/trip.service';
     TripService
   ],
 })
-export class RegobsApiModule { }
+export class RegobsApiModule {
+  static forRoot(customParams: RegobsApiConfigurationInterface): ModuleWithProviders {
+    return {
+      ngModule: RegobsApiModule,
+      providers: [
+        {
+          provide: RegobsApiConfiguration,
+          useValue: {rootUrl: customParams.rootUrl}
+        }
+      ]
+    }
+  }
+}

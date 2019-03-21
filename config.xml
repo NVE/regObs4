@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="748" id="no.nve.regobs4" ios-CFBundleVersion="748" osx-CFBundleVersion="748" version="4.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="750" id="no.nve.regobs4" ios-CFBundleVersion="750" osx-CFBundleVersion="750" version="4.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Varsom Regobs </name>
     <description>Report incidents in nature</description>
     <author email="regobs@nve.no" href="http://nve.no/">NVE</author>
@@ -148,9 +148,9 @@
         <variable name="ANDROID_SUPPORT_ANNOTATIONS_VERSION" value="27.+" />
     </plugin>
     <plugin name="cordova-plugin-screen-orientation" spec="3.0.1" />
-    <plugin name="cordova-sqlite-storage" spec="2.6.0" />
     <plugin name="cordova-plugin-advanced-http" spec="2.0.5" />
     <plugin name="adapter-sqlite-cordova" spec="@nano-sql/adapter-sqlite-cordova@~2.1.0" />
+    <plugin name="cordova-sqlite-storage" spec="2.6.0" />
     <engine name="android" spec="8.0.0" />
     <engine name="ios" spec="5.0.0" />
 </widget>
