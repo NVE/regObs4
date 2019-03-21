@@ -20,30 +20,9 @@ export class AnalyticService {
   ) {
   }
 
-  private checkIfAnalyticsLoaded = () => {
-    return new Promise((resolve, reject) => {
-      const timeStart = Date.now();
-      const TIMEOUT = 3000;
-      const _isLoaded = function () {
-        if (Date.now() - timeStart > TIMEOUT) {
-          reject('Timeout. Google analytics not injected!');
-          return;
-        }
-        if ((<any>window).ga && (<any>window).ga.create) {
-          resolve(ga);
-          return;
-        } else {
-          setTimeout(_isLoaded, 500);
-        }
-      };
-      _isLoaded();
-    });
-  }
-
 
   async init() {
     if (environment.production) {
-      await this.checkIfAnalyticsLoaded();
       this.internalInit();
     }
   }
@@ -73,9 +52,9 @@ export class AnalyticService {
         .subscribe((url: string) => {
           this.trackView(url);
         });
-      this.loggingService.debug('Ggoogle analytics setup completed', DEBUG_TAG);
+      this.loggingService.debug('Google analytics setup completed', DEBUG_TAG);
     } else {
-      this.loggingService.log('Could not load Google Analytics script', null, LogLevel.Warning, DEBUG_TAG);
+      this.loggingService.log('Could not load Google Analytics script. Probably ad blocker installed.', null, LogLevel.Warning, DEBUG_TAG);
     }
   }
 
