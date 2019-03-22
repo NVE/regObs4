@@ -14,6 +14,7 @@ import { DataMarshallService } from '../../core/services/data-marshall/data-mars
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { DbHelperService } from '../../core/services/db-helper/db-helper.service';
+import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'UserSettingsPage';
 
@@ -131,16 +132,24 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     loading.present();
     this.isUpdating = true;
     // TODO: Implement some kind of subscription manager to stop all subscriptions and resubscribe when complete
-    this.stopSubscriptions();
-    this.dataMarshallService.unsubscribeAll();
-    this.offlineMapService.shouldProcessOfflineImage(false);
-    await this.dbHelperService.resetDb((table, err) => {
-      this.loggingService.error(err, DEBUG_TAG, `Error reset table ${table}`);
+    await this.doReset();
+    this.ngZone.run(() => {
+      this.isUpdating = false;
+      loading.dismiss();
+      this.navController.navigateRoot('start-wizard');
     });
-    this.userSettingService.initObservables();
-    this.dataMarshallService.init();
-    this.isUpdating = false;
-    loading.dismiss();
-    this.navController.navigateRoot('start-wizard');
+  }
+
+  private async doReset() {
+    this.ngZone.runOutsideAngular(async () => {
+      this.stopSubscriptions();
+      this.dataMarshallService.unsubscribeAll();
+      this.offlineMapService.shouldProcessOfflineImage(false);
+      await this.dbHelperService.resetDb((table, err) => {
+        this.loggingService.log(`Error reset table ${table}`, err, LogLevel.Warning, DEBUG_TAG);
+      });
+      this.userSettingService.initObservables();
+      this.dataMarshallService.init();
+    });
   }
 }
