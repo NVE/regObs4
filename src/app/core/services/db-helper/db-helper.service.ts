@@ -50,7 +50,13 @@ export class DbHelperService {
       //   await this.sqliteobj.executeSql(`DROP TABLE ${tableName}`)
       //   await nSQL(tableName).query('rebuild indexes').exec();
       // };
-      await this.sqliteobj.executeSql(`CREATE TABLE IF NOT EXISTS "_ai" (id TEXT PRIMARY KEY UNIQUE, inc BIGINT)`);
+      try{
+        await this.sqliteobj.executeSql(`CREATE TABLE IF NOT EXISTS "_ai" (id TEXT PRIMARY KEY UNIQUE, inc BIGINT)`);
+      }catch(err){
+        if(onError){
+          onError(`Could not create _ai table`, err);
+        }
+      }
     }
     return NanoSql.resetDb(onError);
   }
