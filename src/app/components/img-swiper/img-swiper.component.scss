@@ -5,16 +5,30 @@
     flex-direction: column;
     background-color: #fff;
 
-    .swiper-slide {
-        width: 80%;
-        height: 100%;
-        display: inline-flex;
-        margin-right: 5px;
-        background-color: rgba(0,0,0,0.6);
+    ion-slides {
 
-        &:last-child {
-            margin-right: 0px;
+        opacity: 0;
+        transition: opacity 1s linear;
+        &.loaded {
+            opacity: 1;
         }
+
+        .swiper-slide {
+            width: 80%;
+            height: 100%;
+            display: inline-flex;
+            margin-right: 5px;
+            background-color: rgba(0,0,0,0.6);
+
+            &:last-child {
+                margin-right: 0px;
+            }
+        }
+    }
+
+    app-map-image {
+        height: 100%;
+        width: 100%;
     }
     
     app-offline-image {

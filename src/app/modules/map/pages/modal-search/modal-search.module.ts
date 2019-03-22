@@ -1,12 +1,20 @@
 import { NgModule } from '@angular/core';
 import { ModalSearchPage } from './modal-search.page';
-import { SharedModule } from '../../../shared/shared.module';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { IonicModule } from '@ionic/angular';
+import { StartsWithHighlightPipe } from '../../pipes/starts-with-highlight.pipe';
 
 @NgModule({
     imports: [
-        SharedModule,
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        IonicModule,
+        TranslateModule,
     ],
-    declarations: [ModalSearchPage],
+    declarations: [ModalSearchPage, StartsWithHighlightPipe],
     entryComponents: [ModalSearchPage],
 })
 export class ModalSearchPageModule { }

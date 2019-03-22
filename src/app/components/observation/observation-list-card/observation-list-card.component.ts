@@ -11,6 +11,7 @@ import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import * as utils from '@nano-sql/core/lib/utilities';
+import * as L from 'leaflet';
 // import { ObsCardHeightService } from '../../../core/services/obs-card-height/obs-card-height.service';
 
 @Component({
@@ -40,6 +41,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   imageUrls: string[] = [];
   imageHeaders: string[] = [];
   imageDescriptions: string[] = [];
+  location: { latLng: L.LatLng, geoHazard: GeoHazard };
 
   // private changes: MutationObserver;
 
@@ -62,12 +64,16 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     if (!this.userSetting) {
       this.userSetting = await this.userSettingService.getUserSettings();
     }
-    const geoHazard = this.obs.GeoHazardTID;
+    const geoHazard = <GeoHazard>this.obs.GeoHazardTID;
     this.geoHazardName = await this.translateService
       .get(`GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase()).toPromise();
 
     this.ngZone.run(() => {
       this.header = this.obs.ObsLocation.Title;
+      this.location = {
+        latLng: L.latLng(this.obs.ObsLocation.Latitude, this.obs.ObsLocation.Longitude),
+        geoHazard: geoHazard
+      };
       this.dtObsDate = this.obs.DtObsTime;
       this.icon = this.getGeoHazardCircleIcon(geoHazard);
       this.summaries = this.obs.Summaries;
