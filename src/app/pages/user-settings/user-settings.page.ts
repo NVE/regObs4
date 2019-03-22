@@ -132,7 +132,11 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     loading.present();
     this.isUpdating = true;
     // TODO: Implement some kind of subscription manager to stop all subscriptions and resubscribe when complete
-    await this.doReset();
+    try {
+      await this.doReset();
+    } catch (err) {
+      this.loggingService.log(`Could not reset db`, err, LogLevel.Warning, DEBUG_TAG);
+    }
     this.ngZone.run(() => {
       this.isUpdating = false;
       loading.dismiss();
@@ -145,8 +149,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
       this.stopSubscriptions();
       this.dataMarshallService.unsubscribeAll();
       this.offlineMapService.shouldProcessOfflineImage(false);
-      await this.dbHelperService.resetDb((table, err) => {
-        this.loggingService.log(`Error reset table ${table}`, err, LogLevel.Warning, DEBUG_TAG);
+      await this.dbHelperService.resetDb((table, _) => {
+        this.loggingService.log(`Error reset table ${table}`, null, LogLevel.Warning, DEBUG_TAG);
       });
       this.userSettingService.initObservables();
       this.dataMarshallService.init();

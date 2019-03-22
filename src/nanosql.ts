@@ -294,7 +294,7 @@ export class NanoSql {
     }
 
     static async resetDb(onError?: (tableName: string, ex: Error) => void) {
-        return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig)));
+        return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig, onError)));
     }
 
     static async resetTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
