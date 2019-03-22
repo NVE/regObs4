@@ -128,8 +128,10 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     });
     loading.present();
     this.isUpdating = true;
+    // TODO: Implement some kind of subscription manager to stop all subscriptions and resubscribe when complete
     this.stopSubscriptions();
     this.dataMarshallService.unsubscribeAll();
+    this.offlineMapService.shouldProcessOfflineImage(false);
     await NanoSql.resetDb();
     this.userSettingService.initObservables();
     this.dataMarshallService.init();
