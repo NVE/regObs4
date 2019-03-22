@@ -141,7 +141,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   private async doReset() {
-    this.ngZone.runOutsideAngular(async () => {
+    return this.ngZone.runOutsideAngular(async () => {
       this.stopSubscriptions();
       this.dataMarshallService.unsubscribeAll();
       this.offlineMapService.shouldProcessOfflineImage(false);
