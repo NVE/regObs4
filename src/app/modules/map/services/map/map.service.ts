@@ -94,6 +94,7 @@ export class MapService {
 
   private getMapMetersChanged() {
     return this.mapView$.pipe(
+      debounceTime(500),
       pairwise(),
       map(([prev, next]) => {
         if (!prev) {

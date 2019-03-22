@@ -191,10 +191,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onMapMove() {
     this.disableFollowMode();
+    this.offlineMapService.shouldProcessOfflineImage(false);
   }
 
   private onMapMoveEnd() {
     this.updateMapView();
+    this.offlineMapService.shouldProcessOfflineImage(true);
   }
 
   private disableFollowMode() {
@@ -221,11 +223,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       minZoom: settings.map.tiles.minZoom,
       maxZoom: this.getMaxZoom(userSetting.useRetinaMap),
       maxNativeZoom: settings.map.tiles.maxZoom,
-      // bounds: topoMap.bounds,
       detectRetina: userSetting.useRetinaMap,
       updateWhenIdle: settings.map.tiles.updateWhenIdle,
+      updateInterval: 400,
+      keepBuffer: 1,
       edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
-      // excludeBounds: topoMap.notInsideBounds,
       saveTilesToCache: userSetting.tilesCacheSize > 0,
       saveCacheTileFunc: (id, tile) => this.offlineMapService.saveTileToOfflineCache(id, tile),
       getCacheTileFunc: (id) => this.offlineMapService.getCachedTileDataUrl(id)
@@ -243,6 +245,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           topoMap.url,
           {
             ...this.getTileLayerOptions(userSetting),
+            updateInterval: 600,
+            keepBuffer: 0,
             bounds: topoMap.bounds,
             excludeBounds: topoMap.notInsideBounds,
           }

@@ -67,7 +67,6 @@ export class AppComponent {
       // this.statusBar.overlaysWebView(this.platform.is('ios'));
       this.statusBar.overlaysWebView(false);
       this.keyboard.hideFormAccessoryBar(false);
-      this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
       this.offlineImageService.cleanupOldItems();
       this.dataMarshallService.init();
       this.initBackroundUpdates();

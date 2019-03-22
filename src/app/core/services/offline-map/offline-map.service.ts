@@ -10,13 +10,14 @@ import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { nSQL } from '@nano-sql/core';
-import { Observable, Observer, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Observer, of, Subject } from 'rxjs';
+import { map, debounceTime } from 'rxjs/operators';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { DataUrlHelper } from '../../helpers/data-url.helper';
 import { createWorker } from 'typed-web-workers';
 import { LRUMap } from 'lru_map';
+import { Platform } from '@ionic/angular';
 
 const DEBUG_TAG = 'OfflineMapService';
 
@@ -25,17 +26,29 @@ const DEBUG_TAG = 'OfflineMapService';
 })
 export class OfflineMapService {
   private _savedTiles: LRUMap<string, boolean>;
+  private _saveBuffer: LRUMap<string, HTMLImageElement>;
+  private _interval: NodeJS.Timeout;
+  private _shouldProcessOfflineImages: boolean;
 
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
     private file: File,
     private dbHelperService: DbHelperService,
     private loggingService: LoggingService,
+    private platform: Platform,
   ) {
     this._savedTiles = new LRUMap(2000);
+    this._saveBuffer = new LRUMap(100);
+    this.platform.pause.subscribe(() => {
+      clearTimeout(this._interval);
+    });
+    this.platform.resume.subscribe(() => {
+      this.startProcessingOfflineImageSaveQueue();
+    });
+    this.startProcessingOfflineImageSaveQueue();
   }
-  // TODO: Implement continue download when app restart
 
+  // TODO: Implement continue download when app restart
   private isInQueue(m: OfflineMap) {
     return m.downloadStart && !m.downloadComplete;
   }
@@ -99,11 +112,40 @@ export class OfflineMapService {
   saveTileToOfflineCache(id: string, el: HTMLImageElement) {
     if (!this._savedTiles.has(id)) {
       this._savedTiles.set(id, true);
-      this.getImageDataUrlAsObservable(el).subscribe((result: { dataUrl: string, size: number }) => {
+      this._saveBuffer.set(id, el);
+    }
+  }
+
+  shouldProcessOfflineImage(val: boolean) {
+    this._shouldProcessOfflineImages = val;
+  }
+
+  private startProcessingOfflineImageSaveQueue() {
+    const continueProcessing = (timeout?: number) => {
+      this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
+        timeout || settings.map.tiles.cacheSaveBufferThrottleTimeMs);
+    };
+
+    this.loggingService.debug(`Start processing offline tiles queue. Size: ${this._saveBuffer.size}`, DEBUG_TAG);
+    if (this._interval) {
+      clearInterval(this._interval);
+    }
+    if (this._shouldProcessOfflineImages && this._saveBuffer.size > 0) {
+      const latest = this._saveBuffer.newest;
+      this._saveBuffer.delete(latest.key);
+      const currentTile = latest.value;
+      this.getImageDataUrlAsObservable(currentTile).subscribe((result: { dataUrl: string, size: number }) => {
         if (result && result.dataUrl && result.size > 0) {
-          this.saveTileDataUrlToDbCache(id, result.dataUrl, result.size);
+          this.saveTileDataUrlToDbCache(latest.key, result.dataUrl, result.size).then(() => {
+            this.loggingService.debug(`Saved tile: ${latest.key}`, DEBUG_TAG);
+            continueProcessing();
+          }, continueProcessing);
+        } else {
+          continueProcessing();
         }
-      });
+      }, continueProcessing);
+    } else {
+      continueProcessing(settings.map.tiles.cacheSaveBufferIdleInterval);
     }
   }
 
@@ -190,12 +232,15 @@ export class OfflineMapService {
   }
 
   async cleanupTilesCache(numberOfItemsToCache: number) {
-    const tilesToDelete = await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('select', ['id']).where(['mapName', '=', settings.map.tiles.cacheFolder])
-      .orderBy(['lastAccess: desc']).offset(numberOfItemsToCache).exec() as { id: string }[];
-    const ids = tilesToDelete.map((val) => val.id);
-    return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-      .query('delete').where(['id', 'IN', ids]).exec();
+    const lastTile = await (nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+      .query('select').where(['mapName', '=', settings.map.tiles.cacheFolder])
+      .orderBy(['lastAccess: desc']).offset(numberOfItemsToCache).limit(1).exec() as Promise<OfflineTile[]>);
+    if (lastTile.length > 0) {
+      const maxDate = lastTile[0].lastAccess;
+      return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+        .query('delete').where(['lastAccess', '<=', maxDate])
+        .exec();
+    }
   }
 
   private async getDirectory(folder: string) {

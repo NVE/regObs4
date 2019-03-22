@@ -54,40 +54,42 @@ export class DataMarshallService {
   }
 
   init() {
-    this.subscriptions.push(this.hasDaysBackChangedToLargerValue().subscribe(() => {
-      this.loggingService.debug('DaysBack has changed to a larger value. Update observations.', DEBUG_TAG);
-      this.updateObservations();
-    }));
-
-    this.subscriptions.push(this.userSettingService.appModeAndLanguage$.subscribe(() => {
-      this.kdvService.updateKdvElements();
-      this.helpTextService.updateHelpTexts();
-      this.loggingService.debug('AppMode or Language has changed. Update kdv elements and help texts.', DEBUG_TAG);
-    }));
-    this.subscriptions.push(this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(() => {
-      this.loggingService.debug('AppMode, Language or CurrentGeoHazard has changed. Update observations and warnings.', DEBUG_TAG);
-      this.updateObservations();
-      this.warningService.updateWarnings();
-    }));
-    this.subscriptions.push(this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user)));
-    this.subscriptions.push(this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode)));
-
-    this.subscriptions.push(this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {
-      this.offlineMapService.updateTilesCacheSizeTable(val.count, val.size);
-    }));
-    this.subscriptions.push(this.userSettingService.userSettingObservable$.pipe(map((val) => val.tilesCacheSize),
-      distinctUntilChanged(), debounceTime(500)).subscribe((val) => {
-        this.loggingService.debug(`Tiles cahce size changed to ${val}`, DEBUG_TAG);
-        this.offlineMapService.cleanupTilesCache(val);
+    this.ngZone.runOutsideAngular(() => {
+      this.subscriptions.push(this.hasDaysBackChangedToLargerValue().subscribe(() => {
+        this.loggingService.debug('DaysBack has changed to a larger value. Update observations.', DEBUG_TAG);
+        this.updateObservations();
       }));
-    this.subscriptions.push(this.platform.pause.subscribe(() => {
-      this.loggingService.debug('App paused. Stop foreground updates.', DEBUG_TAG);
-      this.stopForegroundUpdate();
-    }));
-    this.subscriptions.push(this.platform.resume.subscribe(() => {
-      this.loggingService.debug('App resumed. Start foreground updates.', DEBUG_TAG);
-      this.startForegroundUpdate();
-    }));
+
+      this.subscriptions.push(this.userSettingService.appModeAndLanguage$.subscribe(() => {
+        this.kdvService.updateKdvElements();
+        this.helpTextService.updateHelpTexts();
+        this.loggingService.debug('AppMode or Language has changed. Update kdv elements and help texts.', DEBUG_TAG);
+      }));
+      this.subscriptions.push(this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(() => {
+        this.loggingService.debug('AppMode, Language or CurrentGeoHazard has changed. Update observations and warnings.', DEBUG_TAG);
+        this.updateObservations();
+        this.warningService.updateWarnings();
+      }));
+      this.subscriptions.push(this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user)));
+      this.subscriptions.push(this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode)));
+
+      this.subscriptions.push(this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {
+        this.offlineMapService.updateTilesCacheSizeTable(val.count, val.size);
+      }));
+      this.subscriptions.push(this.userSettingService.userSettingObservable$.pipe(map((val) => val.tilesCacheSize),
+        distinctUntilChanged(), debounceTime(1000)).subscribe((val) => {
+          this.loggingService.debug(`Tiles cahce size changed to ${val}`, DEBUG_TAG);
+          this.offlineMapService.cleanupTilesCache(val);
+        }));
+      this.subscriptions.push(this.platform.pause.subscribe(() => {
+        this.loggingService.debug('App paused. Stop foreground updates.', DEBUG_TAG);
+        this.stopForegroundUpdate();
+      }));
+      this.subscriptions.push(this.platform.resume.subscribe(() => {
+        this.loggingService.debug('App resumed. Start foreground updates.', DEBUG_TAG);
+        this.startForegroundUpdate();
+      }));
+    });
     // this.startForegroundUpdate();
     // No need to unsubscribe this observables when the service is singleton. It get destroyed when app exits.
   }
