@@ -5,6 +5,7 @@ import { settings } from '../../../../settings';
 import '../../helpers/ionic/platform-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
+import { NanoSql } from '../../../../nanosql';
 const stringify = require('json-stringify-safe');
 
 const DEBUG_CONTEXT = 'DbHelperService';
@@ -41,6 +42,17 @@ export class DbHelperService {
     } else {
       return this.fallbackGetItemById<T>(table, id, idColumn);
     }
+  }
+
+  async resetDb(onError?: (tableName: string, ex: Error) => void) {
+    if (this.sqliteobj) {
+      // const dropTableFunc = async (tableName) => {
+      //   await this.sqliteobj.executeSql(`DROP TABLE ${tableName}`)
+      //   await nSQL(tableName).query('rebuild indexes').exec();
+      // };
+      await this.sqliteobj.executeSql(`CREATE TABLE IF NOT EXISTS "_ai" (id TEXT PRIMARY KEY UNIQUE, inc BIGINT)`);
+    }
+    return NanoSql.resetDb(onError);
   }
 
   private async getItemByIdSqlLite<T>(table: string, id: string | number, idColumn = 'id'): Promise<T> {

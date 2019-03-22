@@ -13,6 +13,7 @@ import { LoggingService } from '../../modules/shared/services/logging/logging.se
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { HelperService } from '../../core/services/helpers/helper.service';
+import { DbHelperService } from '../../core/services/db-helper/db-helper.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 
@@ -37,6 +38,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private helperService: HelperService,
     private kdvService: KdvService,
     private ngZone: NgZone,
+    private dbHelperService: DbHelperService,
     private loggingService: LoggingService,
     private translateService: TranslateService,
     private dataMarshallService: DataMarshallService,
@@ -132,7 +134,9 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     this.stopSubscriptions();
     this.dataMarshallService.unsubscribeAll();
     this.offlineMapService.shouldProcessOfflineImage(false);
-    await NanoSql.resetDb();
+    await this.dbHelperService.resetDb((table, err) => {
+      this.loggingService.error(err, DEBUG_TAG, `Error reset table ${table}`);
+    });
     this.userSettingService.initObservables();
     this.dataMarshallService.init();
     this.isUpdating = false;
