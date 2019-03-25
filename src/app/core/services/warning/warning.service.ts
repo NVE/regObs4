@@ -377,49 +377,93 @@ export class WarningService {
     try {
       const warningsresult = await ObservableHelper.toPromiseWithCancel(
         this.httpClient.get<IWarningApiResult[]>(url), cancelPromise);
-      const regions: IWarningGroup[] = [];
-      for (const item of warningsresult) {
-        const regionId = item.CountyList[0].Id;
-        const regionName = item.CountyList[0].Name;
-        const warning: IWarning = {
-          language,
-          mainText: item.MainText,
-          validFrom: this.getDate(item.ValidFrom),
-          validTo: this.getDate(item.ValidTo),
-          publishTime: this.getDate(item.PublishTime),
-          warningLevel: parseInt(item.ActivityLevel, 10),
-        };
-        // Validate that warning is not outdated
-        if (moment(warning.validTo).isAfter(moment())) {
-          const existingRegion = regions.find((r) => r.regionId === regionId);
-          if (existingRegion) {
-            const warningForSameDate = existingRegion.warnings
-              .find((w) => moment(w.validTo).toISOString()
-                === moment(warning.validTo).toISOString());
-            if (warningForSameDate) {
-              warningForSameDate.warningLevel = Math.max(warning.warningLevel, warningForSameDate.warningLevel);
-            } else {
-              existingRegion.warnings.push(warning);
-            }
-          } else {
-            regions.push({
-              id: `${regionId}_${geoHazard}`,
-              regionId,
-              regionName,
-              counties: [regionId],
-              geoHazard,
-              warnings: [warning],
-              sortOrder: this.convertCoutyToSortOrder(regionId),
-            });
-          }
-        }
-      }
+      const regions = this.aggregateWarningRegions(warningsresult, geoHazard, language, moment());
       this.updateLatestWarnings(geoHazard, language, regions);
       await this.dataLoadService.loadingCompleted(dataLoadId, regions.length, dateRange.from.toDate(), new Date());
       this.saveWarningResultsToDb(geoHazard, regions);
     } catch (err) {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
     }
+  }
+
+  shouldReplaceWarning(existing: IWarning, newWarning: IWarning) {
+    if (moment(newWarning.publishTime).isAfter(moment(existing.publishTime))) {
+      return true;
+    }
+    if (moment(newWarning.publishTime).isSame(moment(existing.publishTime)) &&
+      newWarning.warningLevel > existing.warningLevel) {
+      return true;
+    }
+    return false;
+  }
+
+  getWarningByRegions(warningsresult: IWarningApiResult[]) {
+    const regionMap = new Map<string, IWarningApiResult[]>();
+    for (const item of warningsresult) {
+      const regionId = item.CountyList[0].Id;
+      const collection = regionMap.get(regionId);
+      if (!collection) {
+        regionMap.set(regionId, [item]);
+      } else {
+        collection.push(item);
+      }
+    }
+    return regionMap;
+  }
+
+  getWarningByDay(warningsresult: IWarning[]) {
+    const dayWarningMap = new Map<string, IWarning[]>();
+    for (const item of warningsresult) {
+      const key = moment(item.validTo).startOf('day').toISOString();
+      const collection = dayWarningMap.get(key);
+      if (!collection) {
+        dayWarningMap.set(key, [item]);
+      } else {
+        collection.push(item);
+      }
+    }
+    return dayWarningMap;
+  }
+
+  filterWarningsForGroup(warningsresult: IWarning[]) {
+    return Array.from(this.getWarningByDay(warningsresult)).map(([key, value]) => {
+      if (value.length <= 1) {
+        return value[0];
+      }
+      return this.getMostRelevantDayWarning(value);
+    });
+  }
+
+  getMostRelevantDayWarning(warningsresult: IWarning[]): IWarning {
+    let current = null;
+    for (const next of warningsresult) {
+      if (!current) {
+        current = next;
+      } else if (this.shouldReplaceWarning(current, next)) {
+        current = next;
+      }
+    }
+    return current;
+  }
+
+  aggregateWarningRegions(warningsresult: IWarningApiResult[], geoHazard: GeoHazard, language: LangKey, now: moment.Moment) {
+    const regionGroups = this.getWarningByRegions(warningsresult);
+    return Array.from(regionGroups).map(([key, value]) => ({
+      id: `${key}_${geoHazard}`,
+      regionId: key,
+      regionName: value[0].CountyList[0].Name,
+      counties: [key],
+      geoHazard,
+      warnings: this.filterWarningsForGroup(value.map((w) => ({
+        language,
+        mainText: w.MainText,
+        validFrom: this.getDate(w.ValidFrom),
+        validTo: this.getDate(w.ValidTo),
+        publishTime: this.getDate(w.PublishTime),
+        warningLevel: parseInt(w.ActivityLevel, 10),
+      }))),
+      sortOrder: this.convertCoutyToSortOrder(key),
+    }));
   }
 
   private async saveWarningResultsToDb(geoHazard: GeoHazard, regionResult: IWarningGroup[]) {
