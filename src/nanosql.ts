@@ -293,13 +293,25 @@ export class NanoSql {
         return nSQL(`${name}_${appMode}`);
     }
 
-    static async resetDb() {
-        return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig)));
+    static async resetDb(onError?: (tableName: string, ex: Error) => void) {
+        return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig, onError)));
     }
 
-    static async resetTable(tableConfig: InanoSQLTableConfig) {
-        // await nSQL(tableConfig.name).query('drop').exec();
-        // await nSQL().query('create table', tableConfig).exec();
-        await nSQL(tableConfig.name).query('delete').exec();
+    static async resetTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
+        try {
+            await nSQL(tableConfig.name).query('drop').exec();
+        } catch (ex) {
+            if (onError) {
+                onError(tableConfig.name, ex);
+            }
+        }
+        try {
+            await nSQL().query('create table', tableConfig).exec();
+        } catch (ex) {
+            if (onError) {
+                onError(tableConfig.name, ex);
+            }
+        }
+        // await nSQL(tableConfig.name).query('delete').exec();
     }
 }

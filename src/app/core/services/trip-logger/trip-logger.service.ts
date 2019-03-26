@@ -114,6 +114,17 @@ export class TripLoggerService {
     return alert.present();
   }
 
+  async showTripNoPositionErrorMessage() {
+    const translations = await this.translateService.get(
+      ['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR_POSITION']).toPromise();
+    const alert = await this.alertController.create({
+      header: translations['ALERT.DEFAULT_HEADER'],
+      message: translations['TRIP.ERROR_POSITION'],
+      buttons: [translations['ALERT.OK']]
+    });
+    return alert.present();
+  }
+
   private async confirmStopTrip() {
     const translations = await this.translateService
       .get(['TRIP.STOP_TRIP', 'REGISTRATION.DELETE_CONFIRM', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();

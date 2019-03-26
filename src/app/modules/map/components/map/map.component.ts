@@ -191,10 +191,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onMapMove() {
     this.disableFollowMode();
+    this.offlineMapService.shouldProcessOfflineImage(false);
   }
 
   private onMapMoveEnd() {
     this.updateMapView();
+    this.offlineMapService.shouldProcessOfflineImage(true);
   }
 
   private disableFollowMode() {
@@ -216,16 +218,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private getTileLayerOptions(userSetting: UserSetting): IRegObsTileLayerOptions {
+  private getTileLayerDefaultOptions(userSetting: UserSetting): IRegObsTileLayerOptions {
     return {
       minZoom: settings.map.tiles.minZoom,
       maxZoom: this.getMaxZoom(userSetting.useRetinaMap),
       maxNativeZoom: settings.map.tiles.maxZoom,
-      // bounds: topoMap.bounds,
       detectRetina: userSetting.useRetinaMap,
       updateWhenIdle: settings.map.tiles.updateWhenIdle,
       edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
-      // excludeBounds: topoMap.notInsideBounds,
       saveTilesToCache: userSetting.tilesCacheSize > 0,
       saveCacheTileFunc: (id, tile) => this.offlineMapService.saveTileToOfflineCache(id, tile),
       getCacheTileFunc: (id) => this.offlineMapService.getCachedTileDataUrl(id)
@@ -242,7 +242,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           topoMap.name,
           topoMap.url,
           {
-            ...this.getTileLayerOptions(userSetting),
+            ...this.getTileLayerDefaultOptions(userSetting),
             bounds: topoMap.bounds,
             excludeBounds: topoMap.notInsideBounds,
           }
@@ -258,7 +258,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             supportTile.name,
             supportTile.url,
             {
-              ...this.getTileLayerOptions(userSetting),
+              ...this.getTileLayerDefaultOptions(userSetting),
+              updateInterval: 600,
+              keepBuffer: 0,
+              updateWhenIdle: true,
               minZoom: settings.map.tiles.minZoomSupportMaps,
               bounds: <any>settings.map.tiles.supportTilesBounds,
             }

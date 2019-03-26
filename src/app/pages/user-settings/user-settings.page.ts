@@ -13,6 +13,8 @@ import { LoggingService } from '../../modules/shared/services/logging/logging.se
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { HelperService } from '../../core/services/helpers/helper.service';
+import { DbHelperService } from '../../core/services/db-helper/db-helper.service';
+import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'UserSettingsPage';
 
@@ -37,6 +39,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private helperService: HelperService,
     private kdvService: KdvService,
     private ngZone: NgZone,
+    private dbHelperService: DbHelperService,
     private loggingService: LoggingService,
     private translateService: TranslateService,
     private dataMarshallService: DataMarshallService,
@@ -128,13 +131,29 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     });
     loading.present();
     this.isUpdating = true;
-    this.stopSubscriptions();
-    this.dataMarshallService.unsubscribeAll();
-    await NanoSql.resetDb();
-    this.userSettingService.initObservables();
-    this.dataMarshallService.init();
-    this.isUpdating = false;
-    loading.dismiss();
-    this.navController.navigateRoot('start-wizard');
+    // TODO: Implement some kind of subscription manager to stop all subscriptions and resubscribe when complete
+    try {
+      await this.doReset();
+    } catch (err) {
+      this.loggingService.log(`Could not reset db`, err, LogLevel.Warning, DEBUG_TAG);
+    }
+    this.ngZone.run(() => {
+      this.isUpdating = false;
+      loading.dismiss();
+      this.navController.navigateRoot('start-wizard');
+    });
+  }
+
+  private async doReset() {
+    return this.ngZone.runOutsideAngular(async () => {
+      this.stopSubscriptions();
+      this.dataMarshallService.unsubscribeAll();
+      this.offlineMapService.shouldProcessOfflineImage(false);
+      await this.dbHelperService.resetDb((table, _) => {
+        this.loggingService.log(`Error reset table ${table}`, null, LogLevel.Warning, DEBUG_TAG);
+      });
+      this.userSettingService.initObservables();
+      this.dataMarshallService.init();
+    });
   }
 }

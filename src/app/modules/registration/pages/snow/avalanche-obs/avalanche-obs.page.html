@@ -23,10 +23,14 @@
         <ion-label [color]="(!registration.request.AvalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
           position="stacked" text-uppercase>{{
           'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}</ion-label>
-        <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
+        <!-- <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
           doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
           display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.AvalancheObs.DtAvalancheTime"
           [max]="maxDate">
+        </ion-datetime> -->
+        <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
+          doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
+          display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.AvalancheObs.DtAvalancheTime">
         </ion-datetime>
         <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium"
           (click)="setAvalancheTimeTimeToNow()">

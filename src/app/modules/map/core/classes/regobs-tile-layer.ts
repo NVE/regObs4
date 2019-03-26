@@ -1,7 +1,6 @@
 import * as L from 'leaflet';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { GeometryObject } from '@turf/turf';
-import { settings } from '../../../../../settings';
 
 export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
     edgeBufferTiles?: number;
@@ -39,7 +38,7 @@ export class RegObsTileLayer extends L.TileLayer {
     createTile(coords: ExtendedCoords, done: L.DoneCallback): HTMLElement {
         const tile = new Image() as RegObsTile;
 
-        L.DomEvent.on(tile, 'load', L.Util.bind((<any>this)._tileOnLoad, this, done, tile));
+        L.DomEvent.on(tile, 'load', L.Util.bind((<any>this).saveTileOffline, this, done, tile));
         L.DomEvent.on(tile, 'error', L.Util.bind((<any>this)._tileOnError, this, done, tile));
 
         tile.crossOrigin = 'anonymous';
@@ -58,11 +57,6 @@ export class RegObsTileLayer extends L.TileLayer {
 
     private getTileId(coords: ExtendedCoords) {
         return `${this.name}_${coords.z}_${coords.x}_${coords.y}`;
-    }
-
-    _tileOnLoad(done: L.DoneCallback, tile: RegObsTile) {
-        L.Util.throttle(() => this.saveTileOffline(tile), settings.map.tiles.cacheSaveBufferThrottleTimeMs, this)();
-        (<any>L.TileLayer.prototype)._tileOnLoad.call(this, done, tile);
     }
 
     _tileOnError(done: L.DoneCallback, tile: RegObsTile, e: Error) {
@@ -89,12 +83,13 @@ export class RegObsTileLayer extends L.TileLayer {
         }
     }
 
-    private saveTileOffline(tile: RegObsTile) {
+    private saveTileOffline(done: L.DoneCallback, tile: RegObsTile) {
         const opt = (<IRegObsTileLayerOptions>this.options);
         if (opt.saveTilesToCache && opt.saveCacheTileFunc
             && tile && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
             opt.saveCacheTileFunc(tile.id, tile);
         }
+        done(null, tile);
     }
 
 
