@@ -132,9 +132,11 @@ export class LegacyTripPage implements OnInit, OnDestroy {
               });
             });
           } else {
+            this.isLoading = false;
             this.tripLoggerService.showTripNoPositionErrorMessage();
           }
         } catch (error) {
+          this.isLoading = false;
           this.loggingService.log('Could not get geolocation', error, LogLevel.Warning, DEBUG_TAG);
           this.tripLoggerService.showTripNoPositionErrorMessage();
         }
