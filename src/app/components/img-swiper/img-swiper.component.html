@@ -1,6 +1,7 @@
-<div class="slides-wrapper" *ngIf="show">
-  <ion-slides *ngIf="showSlider" [options]="slideOptions" [pager]="false" [ngClass]="{'loaded': swiperLoaded}"
-    (ionSlideTransitionEnd)="onSlideTransitionEnd()" (ionSlidesDidLoad)="slidesLoaded($event)">
+<div class="slides-wrapper" *ngIf="show" [ngClass]="{'animated-background': (showSlider && !swiperLoaded) }">
+  <ion-slides *ngIf="showSlider && !recreateSwiper" [options]="slideOptions" [pager]="false"
+    [ngClass]="{'loaded': swiperLoaded}" (ionSlideTransitionEnd)="onSlideTransitionEnd()"
+    (ionSlidesDidLoad)="slidesLoaded($event)">
     <ion-slide *ngIf="location">
       <app-map-image [location]="location"></app-map-image>
     </ion-slide>
@@ -13,7 +14,8 @@
   <app-map-image *ngIf="showSingleMap" class="single" [location]="location"></app-map-image>
   <ion-label *ngIf="showLabels">
     <span class="img-comment-header" *ngIf="showImageIndex">{{imageIndex}}/{{totalImages}}&nbsp;</span>
-    <span [ngClass]="{'img-comment-header': comment }" *ngIf="header">{{ header }}<ng-container *ngIf="comment">:&nbsp;
+    <span [ngClass]="{'img-comment-header': comment }" *ngIf="header">{{ header | translate }}<ng-container
+        *ngIf="comment">:&nbsp;
       </ng-container></span>
     <ng-container *ngIf="comment">{{ comment }}</ng-container>
   </ion-label>

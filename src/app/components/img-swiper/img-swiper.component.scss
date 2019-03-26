@@ -29,6 +29,7 @@
     app-map-image {
         height: 100%;
         width: 100%;
+        display: inline-flex;
     }
     
     app-offline-image {
@@ -55,5 +56,41 @@
         .img-comment-header {
             font-weight: 600;
         }
+    }
+}
+
+@keyframes placeHolderShimmer{
+    0%{
+        background-position: -100% 0
+    }
+    100%{
+        background-position: 100% 0
+    }
+}
+
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+  
+    to {
+      opacity: 0.5;
+    }
+  }
+
+.animated-background {
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    background: #f6f7f8;
+    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+    background-size: 300% 100%;
+    position: relative;
+
+    &.loaded {
+        animation: none;
+        background-color: #fff;
     }
 }

@@ -39,6 +39,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   loadedWithMap: boolean;
   swiper: any;
   swiperLoaded = false;
+  recreateSwiper = false;
 
   @ViewChild(IonSlides) slider: IonSlides;
 
@@ -71,35 +72,39 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
 
-  slidesLoaded(el: any) {
+  async slidesLoaded(el: any) {
     this.swiper = el.target.swiper;
-    console.log('init slidesLoaded');
-    this.init();
+    this.initSwiper();
+    this.setImgHeaderAndComment(1);
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes && changes.imgUrl && !changes.imgUrl.firstChange) {
-      if (this.slider) {
-        await this.slider.update();
+      if (this.showSlider) {
+        this.resetImageHeaderAndComment();
+        this.reloadSwiper();
+      } else {
+        this.swiperLoaded = false;
+        this.setImgHeaderAndComment(0);
       }
-      console.log('init from ngOnChanges', changes);
-      this.init();
     }
   }
 
-  private async init() {
-    if (this.slider) {
-      await this.slider.slideTo(0, 0);
-    } else {
-      console.log('init, but slider is not loaed...');
-    }
+  private reloadSwiper() {
+    setTimeout(() => {
+      this.swiperLoaded = false;
+      this.recreateSwiper = true;
+      setTimeout(() => {
+        this.recreateSwiper = false;
+      }, 0);
+    });
+  }
+
+  private initSwiper() {
     if (this.swiper && this.swiper.$wrapperEl && this.swiper.$wrapperEl[0]) {
       this.swiper.$wrapperEl[0].style.transform = 'translate3d(-60%, 0px, 0px)';
-    } else {
-      console.log('init, but swiper wrapper is not loaed...');
     }
     this.ngZone.run(() => {
-      this.setImgHeaderAndComment(0);
       this.swiperLoaded = true;
     });
   }
@@ -112,13 +117,22 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   private setImgHeaderAndComment(index: number) {
     this.resetImageHeaderAndComment();
-    if (this.imgComments.length > index) {
-      this.comment = this.imgComments[index];
+    const i = this.getImageIndex(index) - 1;
+    if (this.location && index === 0) {
+      this.header = 'REGISTRATION.OBS_LOCATION.TITLE';
+    } else {
+      if (i < this.imgComments.length) {
+        this.comment = this.imgComments[i];
+      }
+      if (i < this.imgHeaders.length) {
+        this.header = this.imgHeaders[i];
+      }
+      this.imageIndex = this.getImageIndex(index);
     }
-    if (this.imgHeaders.length > index) {
-      this.header = this.imgHeaders[index];
-    }
-    this.imageIndex = (index + 1);
+  }
+
+  private getImageIndex(index: number) {
+    return (this.location ? (index - 1) : index) + 1;
   }
 
   onImageClick(index: number, imgUrl: string) {
@@ -134,11 +148,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   async onSlideTransitionEnd() {
     const index = await this.getSwiperIndex();
     this.ngZone.run(() => {
-      if (this.location && index === 0) {
-        this.resetImageHeaderAndComment();
-      } else {
-        this.setImgHeaderAndComment(index - (this.location ? 1 : 0));
-      }
+      this.setImgHeaderAndComment(index);
     });
   }
 
