@@ -169,7 +169,7 @@
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-whitelist": {},
       "cordova-plugin-geolocation": {
-        "GEOLOCATION_USAGE_DESCRIPTION": "Show location in map"
+        "GEOLOCATION_USAGE_DESCRIPTION": "Location is used to show your position in the map and to set initial position when documenting observations"
       },
       "cordova-plugin-background-fetch": {},
       "cordova-plugin-statusbar": {},
@@ -201,9 +201,9 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-plugin-ios-camera-permissions": {
-        "CAMERA_USAGE_DESCRIPTION": "Document observations",
-        "PHOTOLIBRARY_ADD_USAGE_DESCRIPTION": "Document observations",
-        "PHOTOLIBRARY_USAGE_DESCRIPTION": "Document observations"
+        "CAMERA_USAGE_DESCRIPTION": "Add images to observations",
+        "PHOTOLIBRARY_ADD_USAGE_DESCRIPTION": "Add images to observations",
+        "PHOTOLIBRARY_USAGE_DESCRIPTION": "Add images to observations"
       },
       "cordova-plugin-camera": {},
       "cordova-plugin-local-notification": {},
