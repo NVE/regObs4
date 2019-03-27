@@ -48,7 +48,7 @@
       <ion-row>
         <ion-col size="12" no-padding>
           <app-img-swiper [location]="location" [imgUrl]="imageUrls" [imgHeaders]="imageHeaders"
-            [imgComments]="imageDescriptions" (imgClick)="openImage($event)">
+            [imgComments]="imageDescriptions" (imgClick)="openImage($event)" (locationClick)="openLocation($event)">
           </app-img-swiper>
         </ion-col>
       </ion-row>

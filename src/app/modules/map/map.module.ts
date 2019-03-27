@@ -15,6 +15,7 @@ import { IonicModule } from '@ionic/angular';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
+import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image.module';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { RouterModule } from '@angular/router';
     LeafletModule,
     LeafletEdgeBufferModule,
     ModalSearchPageModule,
+    ModalMapImagePageModule,
   ],
   declarations: [
     MapComponent,
@@ -37,7 +39,6 @@ import { RouterModule } from '@angular/router';
     FullscreenToggleComponent,
     GpsCenterComponent,
     MapCenterInfoComponent,
-    MapImageComponent,
   ],
   exports: [
     MapComponent,
@@ -47,7 +48,8 @@ import { RouterModule } from '@angular/router';
     GpsCenterComponent,
     MapCenterInfoComponent,
     ModalSearchPageModule,
-    MapImageComponent
+    MapImageComponent,
+    ModalMapImagePageModule,
   ]
 })
 export class MapModule { }

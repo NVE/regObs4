@@ -12,6 +12,7 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import * as utils from '@nano-sql/core/lib/utilities';
 import * as L from 'leaflet';
+import { ModalMapImagePage } from '../../../modules/map/pages/modal-map-image/modal-map-image.page';
 // import { ObsCardHeightService } from '../../../core/services/obs-card-height/obs-card-height.service';
 
 @Component({
@@ -156,7 +157,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     return this.obs.Summaries.map((reg) => reg.RegistrationName).join(', ');
   }
 
-  async openImage(event: any) {
+  async openImage(event: { index: number, imgUrl: string }) {
     const image = this.obs.Attachments[event.index];
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
@@ -164,6 +165,16 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
         imgSrc: `${this.getImageUrl(image.AttachmentFileName, 'original')}?r=${utils.uuid()}`,
         header: this.obs.Attachments[event.index].RegistrationName,
         description: this.obs.Attachments[event.index].Comment,
+      },
+    });
+    modal.present();
+  }
+
+  async openLocation(location: { latLng: L.LatLng, geoHazard: GeoHazard }) {
+    const modal = await this.modalController.create({
+      component: ModalMapImagePage,
+      componentProps: {
+        location
       },
     });
     modal.present();

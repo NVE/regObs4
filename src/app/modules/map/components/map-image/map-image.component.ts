@@ -66,7 +66,8 @@ export class MapImageComponent implements OnInit {
   private addMarker() {
     if (this.location && this.location.latLng) {
       const marker = L.marker(this.location.latLng, {
-        icon: new RegobsGeoHazardMarker(this.location.geoHazard)
+        icon: new RegobsGeoHazardMarker(this.location.geoHazard),
+        interactive: false,
       });
       marker.addTo(this.map);
     }

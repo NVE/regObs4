@@ -12,7 +12,6 @@ import {
 import { IonSlides } from '@ionic/angular';
 import * as L from 'leaflet';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'app-img-swiper',
@@ -27,6 +26,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   @Input() imgHeaders: string[] = [];
   @Output() imgClick: EventEmitter<{ index: number, imgUrl: string }> = new EventEmitter();
   @Input() location: { latLng: L.LatLng, geoHazard: GeoHazard };
+  @Output() locationClick: EventEmitter<{ latLng: L.LatLng, geoHazard: GeoHazard }> = new EventEmitter();
 
   slideOptions = {
     autoplay: false,
@@ -137,6 +137,10 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   onImageClick(index: number, imgUrl: string) {
     this.imgClick.emit({ index, imgUrl });
+  }
+
+  onLocationClick() {
+    this.locationClick.emit(this.location);
   }
 
   async getSwiperIndex() {
