@@ -6,7 +6,6 @@ import { CancelPromiseTimer } from '../../helpers/cancel-promise-timer';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoginService } from '../../../modules/login/services/login.service';
 import { settings } from '../../../../settings';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Platform } from '@ionic/angular';
 import { RegistrationService } from '../../../modules/registration/services/registration.service';
 import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
@@ -44,7 +43,6 @@ export class DataMarshallService {
     private userSettingService: UserSettingService,
     private loginService: LoginService,
     private platform: Platform,
-    private localNotifications: LocalNotifications,
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
@@ -145,10 +143,6 @@ export class DataMarshallService {
       const cancelPromiseForObservations = cancelTimer ?
         Promise.race([this.cancelObservationsPromise, cancelTimer]) : this.cancelObservationsPromise;
       const observationsUpdated = await this.observationService.updateObservations(cancelPromiseForObservations);
-      if (showNotification && observationsUpdated > 0
-        && this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
-        this.localNotifications.schedule({ text: `${observationsUpdated} observations saved` });
-      }
       await this.warningService.updateWarnings(cancelTimer);
       await this.kdvService.updateKdvElements(cancelTimer);
       await this.helpTextService.updateHelpTexts(cancelTimer);

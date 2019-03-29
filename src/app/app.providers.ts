@@ -32,7 +32,6 @@ import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { StartWizardGuard } from './core/guards/start-wizard.guard';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { LoginGuard } from './core/guards/login.guard';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
@@ -75,7 +74,6 @@ export const APP_PROVIDERS = [
     WebView,
     ApiInterceptor,
     EmailComposer,
-    LocalNotifications,
     Keyboard,
     SQLite,
     SocialSharing,
