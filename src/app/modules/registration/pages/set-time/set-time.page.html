@@ -15,10 +15,14 @@
         {{"REGISTRATION.SET_TIME.HEADER" | translate}}
       </ion-label>
     </ion-list-header>
-    <ion-item *ngIf="registration">
+    <ion-item>
+      <!-- <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
+        doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
+        display-format="D. MMM, YYYY HH:mm" [(ngModel)]="localDate" [max]="maxDate">
+      </ion-datetime> -->
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
         doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-        display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.DtObsTime" [max]="maxDate">
+        display-format="D. MMM, YYYY HH:mm" [(ngModel)]="localDate">
       </ion-datetime>
       <ion-button slot="end" fill="outline" color="medium" (click)="setToNow()">
         <ion-icon slot="start" name="time"></ion-icon> {{"REGISTRATION.SET_TIME.NOW" |
@@ -27,7 +31,8 @@
     </ion-item>
   </ion-list>
   <ion-list lines="none" padding>
-    <ion-button no-margin expand="block" color="varsom-orange" (click)="confirm()">{{"REGISTRATION.SET_TIME.CONFIRM" |
+    <ion-button [disabled]="!this.registration" class="confirm-time" no-margin expand="block" color="varsom-orange"
+      (click)="confirm()">{{"REGISTRATION.SET_TIME.CONFIRM" |
       translate}}</ion-button>
   </ion-list>
 </ion-content>

@@ -23,7 +23,7 @@ export class NumericInputComponent implements OnInit, OnChanges {
   @ViewChild(IonInput) input: IonInput;
 
   localValue: number;
-  skipNextChange = false;
+  private skipNextChange = false;
 
   get isValid() {
     return NumberHelper.isValid(this.localValue, this.min, this.max, this.required, this.decimalPlaces === 0);
@@ -48,30 +48,30 @@ export class NumericInputComponent implements OnInit, OnChanges {
       this.skipNextChange = false;
       return;
     }
-    if (simpleChange.value && simpleChange.value.currentValue !== undefined) {
-      this.localValue = this.convertMetersToCm ?
-        this.convertMtoCM(simpleChange.value.currentValue) : simpleChange.value.currentValue;
-      this.localValue = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
+    if (!simpleChange.value.currentValue) {
+      this.localValue = undefined;
+      return;
     }
+    this.localValue = NumberHelper.setDecimalPlaces(this.convertMetersToCm ?
+      this.convertMtoCM(simpleChange.value.currentValue) : simpleChange.value.currentValue,
+      this.decimalPlaces);
   }
 
   valueChanged() {
     if (!NumberHelper.isNullOrEmpty(this.localValue)) {
-      if (this.convertMetersToCm) {
-        this.value = NumberHelper.setDecimalPlaces(this.convertCMtoM(this.localValue), this.decimalPlaces + 2);
-      } else {
-        this.value = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
-      }
-    } else {
-      this.value = undefined;
+      this.changeValueButSkipNgOnChanges(this.convertMetersToCm ?
+        NumberHelper.setDecimalPlaces(this.convertCMtoM(this.localValue), this.decimalPlaces + 2) :
+        NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces)
+      );
+      return;
     }
-    this.skipNextChange = true;
-    this.valueChange.emit(this.value);
+    this.changeValueButSkipNgOnChanges(undefined);
   }
 
-  onBlur() {
-    this.localValue = NumberHelper.setDecimalPlaces(this.localValue, this.decimalPlaces);
-    this.input.value = NumberHelper.isNullOrEmpty(this.localValue) ? '' : this.localValue.toString();
+  private changeValueButSkipNgOnChanges(val: number) {
+    this.skipNextChange = true;
+    this.value = val;
+    this.valueChange.emit(this.value);
   }
 
   private convertMtoCM(val: number) {

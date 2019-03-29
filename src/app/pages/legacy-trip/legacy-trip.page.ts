@@ -119,22 +119,27 @@ export class LegacyTripPage implements OnInit, OnDestroy {
           if (currentLocation) {
             this.tripDto.Lat = currentLocation.coords.latitude.toString();
             this.tripDto.Lng = currentLocation.coords.longitude.toString();
+            this.tripLoggerService.startLegacyTrip(this.tripDto).subscribe(() => {
+              this.ngZone.run(() => {
+                this.isLoading = false;
+                this.navController.back();
+              });
+            }, (error) => {
+              this.loggingService.error(error, 'Error when starting trip', DEBUG_TAG);
+              this.ngZone.run(() => {
+                this.isLoading = false;
+                this.tripLoggerService.showTripErrorMessage(true);
+              });
+            });
+          } else {
+            this.isLoading = false;
+            this.tripLoggerService.showTripNoPositionErrorMessage();
           }
         } catch (error) {
+          this.isLoading = false;
           this.loggingService.log('Could not get geolocation', error, LogLevel.Warning, DEBUG_TAG);
+          this.tripLoggerService.showTripNoPositionErrorMessage();
         }
-        this.tripLoggerService.startLegacyTrip(this.tripDto).subscribe(() => {
-          this.ngZone.run(() => {
-            this.isLoading = false;
-            this.navController.back();
-          });
-        }, (error) => {
-          this.loggingService.error(error, 'Error when starting trip', DEBUG_TAG);
-          this.ngZone.run(() => {
-            this.isLoading = false;
-            this.tripLoggerService.showTripErrorMessage(true);
-          });
-        });
       }
     }
   }

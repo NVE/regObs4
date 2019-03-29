@@ -5,14 +5,16 @@
   <ion-fab-list side="top">
     <ion-list lines="full" no-margin no-padding>
       <ion-item (click)="createRegistration(geoHazard)" *ngFor="let geoHazard of geoHazards">
-        <ion-icon slot="start" name="eye"></ion-icon>
-        <ion-label>{{'ADD_MENU.NEW_OBSERVATION' | translate}} {{ getName(geoHazard) | translate | lowercase }}{{
+        <app-geo-icon slot="start" [geoHazards]="[geoHazard]" [size]="0.8"></app-geo-icon>
+        <ion-label>{{'ADD_MENU.NEW_OBSERVATION' | translate}} {{ getName(geoHazard) | translate | lowercase }}<span
+            *ngIf="langKey === LangKey.en">&nbsp;</span>{{
           'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}</ion-label>
       </ion-item>
       <ion-item *ngFor="let draft of drafts; let i = index" (click)="editRegistration(draft)">
         <ion-icon slot="start" name="md-create"></ion-icon>
         <ion-label>{{'ADD_MENU.DRAFT' | translate}}:
-          {{ getName(draft.geoHazard) | translate }}{{ 'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}
+          {{ getName(draft.geoHazard) | translate }}<span
+            *ngIf="langKey === LangKey.en">&nbsp;</span>{{ 'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}
           <p *ngIf="draftDates[i]">{{ draftDates[i] }}</p>
         </ion-label>
       </ion-item>

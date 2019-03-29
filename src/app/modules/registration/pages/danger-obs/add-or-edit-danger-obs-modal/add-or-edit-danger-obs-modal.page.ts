@@ -45,11 +45,13 @@ export class AddOrEditDangerObsModalPage implements OnInit {
       if (this.dangerObs.Comment) {
         this.tmpArea = this.areaArr.find((x) => this.dangerObs.Comment.indexOf(x) >= 0);
         if (this.tmpArea) {
+          this.comment = this.dangerObs.Comment.substr(this.dangerObs.Comment.indexOf(this.tmpArea) + this.tmpArea.length);
           const textToFind = `${this.commentTranslations['REGISTRATION.DANGER_OBS.DESCRIPTION']}`
             + `${COMMENT_SEPARATOR}`;
-          const index = this.dangerObs.Comment.indexOf(textToFind) + textToFind.length;
-          this.comment =
-            this.dangerObs.Comment.substr(index);
+          const additionalCommentIndex = this.dangerObs.Comment.indexOf(textToFind);
+          if (additionalCommentIndex >= 0) {
+            this.comment = this.dangerObs.Comment.substr(additionalCommentIndex + textToFind.length);
+          }
         } else {
           this.comment = this.dangerObs.Comment;
         }
@@ -96,14 +98,18 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   }
 
   private getComment() {
-    if (this.tmpArea) {
+    if (this.tmpArea && this.tmpArea.length > 0 && this.comment && this.comment.length > 0) {
       return `${this.commentTranslations['REGISTRATION.DANGER_OBS.AREA']}`
         + `${COMMENT_SEPARATOR}${this.tmpArea}. `
         + `${this.commentTranslations['REGISTRATION.DANGER_OBS.DESCRIPTION']}`
         + `${COMMENT_SEPARATOR}${this.comment || ''}`;
-    } else {
-      return this.comment;
     }
+    if (this.tmpArea && this.tmpArea.length > 0) {
+      return `${this.commentTranslations['REGISTRATION.DANGER_OBS.AREA']}`
+        + `${COMMENT_SEPARATOR}${this.tmpArea}`;
+    }
+
+    return this.comment;
   }
 
   delete() {

@@ -34,7 +34,7 @@ export class SentryService implements LoggingService {
         environment: appMode === AppMode.Prod ? 'regObs' : (appMode === AppMode.Demo ? 'demo regObs' : 'test regObs'),
         enabled: environment.production,
         release: appVersion.version,
-        dist: `${appVersion.branch}-${appVersion.revision}-${appVersion.date}`
+        dist: appVersion.revision
       });
   }
 

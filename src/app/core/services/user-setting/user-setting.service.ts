@@ -71,6 +71,10 @@ export class UserSettingService {
   }
 
   constructor(private translate: TranslateService, private loggingService: LoggingService) {
+    this.initObservables();
+  }
+
+  initObservables() {
     this._userSettingObservable = this.getUserSettingsAsObservable();
     this._currentGeoHazardObservable = this._userSettingObservable.pipe(
       map((val) => val.currentGeoHazard),
@@ -133,9 +137,10 @@ export class UserSettingService {
       showMapCenter: false,
       tilesCacheSize: settings.map.tiles.cacheSize,
       showObservations: true,
-      emailReciept: true,
+      emailReceipt: true,
       topoMap: TopoMap.mixArcGisOnline,
       showGeoSelectInfo: true,
+      useRetinaMap: false,
     };
   }
 

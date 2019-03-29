@@ -4,22 +4,35 @@ import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Subscription, Observable } from 'rxjs';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
+import { trigger, state, transition, animate, keyframes, style } from '@angular/animations';
 
 @Component({
   selector: 'app-geo-select',
   templateUrl: './geo-select.component.html',
-  styleUrls: ['./geo-select.component.scss']
+  styleUrls: ['./geo-select.component.scss'],
+  animations: [
+    trigger('pulse', [
+      state('*', style({
+        transform: 'scale3d(1, 1, 1)'
+      })),
+      transition('* => showGeoSelectInfo', animate(`700ms 1000ms ease-out`, keyframes([
+        style({ transform: 'scale3d(1, 1, 1)', offset: 0 }),
+        style({ transform: 'scale3d(1.2, 1.2, 1.2)', offset: 0.5 }),
+        style({ transform: 'scale3d(1, 1, 1)', offset: 1.0 })
+      ]))),
+    ]),
+  ]
 })
 export class GeoSelectComponent implements OnInit, OnDestroy {
 
   geoHazardTypes: Array<GeoHazard[]>;
   isOpen = false;
-  currentGeoHazards: GeoHazard[];
   fullscreen$: Observable<boolean>;
-  showGeoSelectInfo = false;
 
   private geoHazardSubscription: Subscription;
-  private userSettings: UserSetting;
+  userSettings: UserSetting;
+  private showGeoSelectInfo: boolean;
+  state = 'x';
 
   @Input() inHeader: boolean;
 
@@ -34,14 +47,18 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.geoHazardTypes = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Dirt]];
     this.geoHazardSubscription = this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
-        this.currentGeoHazards = val.currentGeoHazard;
-        this.showGeoSelectInfo = val.showGeoSelectInfo;
-        this.isOpen = this.showGeoSelectInfo;
+        if (this.showGeoSelectInfo === undefined) {
+          this.showGeoSelectInfo = this.userSettings.showGeoSelectInfo;
+          this.isOpen = this.userSettings.showGeoSelectInfo;
+          if (this.showGeoSelectInfo) {
+            this.state = 'showGeoSelectInfo';
+          }
+        }
       });
     });
   }
@@ -58,18 +75,19 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
 
   toggle() {
     this.isOpen = !this.isOpen;
-    if (this.userSettings.showGeoSelectInfo) {
+    if (this.showGeoSelectInfo) {
+      this.showGeoSelectInfo = false;
       this.userSettings.showGeoSelectInfo = false;
+      this.state = 'x';
       this.userSettingService.saveUserSettings(this.userSettings);
     }
   }
 
-  async changeGeoHazard(geoHazards: GeoHazard[]) {
+  changeGeoHazard(geoHazards: GeoHazard[]) {
+    this.isOpen = false;
+    this.showGeoSelectInfo = false;
     this.userSettings.currentGeoHazard = geoHazards;
     this.userSettings.showGeoSelectInfo = false;
-    await this.userSettingService.saveUserSettings(this.userSettings);
-    this.ngZone.run(() => {
-      this.isOpen = false;
-    });
+    this.userSettingService.saveUserSettings(this.userSettings);
   }
 }

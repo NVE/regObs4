@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, NgZone, OnDestroy } from '@angular/core';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
-import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { KdvElement } from '../../../regobs-api/models';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-kdv-radiobutton-list',
   templateUrl: './kdv-radiobutton-list.component.html',
   styleUrls: ['./kdv-radiobutton-list.component.scss']
 })
-export class KdvRadiobuttonListComponent implements OnInit {
+export class KdvRadiobuttonListComponent implements OnInit, OnDestroy {
 
   @Input() title: string;
   @Input() kdvKey: string;
@@ -19,15 +19,25 @@ export class KdvRadiobuttonListComponent implements OnInit {
 
   kdvelements: KdvElement[];
 
+  private subscription: Subscription;
+
   constructor(
     private kdvService: KdvService,
-    private userSettingService: UserSettingService,
     private ngZone: NgZone,
   ) { }
 
-  async ngOnInit() {
-    const userSetting = await this.userSettingService.getUserSettings();
-    this.kdvelements = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, this.kdvKey);
+  ngOnInit() {
+    this.subscription = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.kdvelements = val;
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   onChange() {
@@ -50,5 +60,4 @@ export class KdvRadiobuttonListComponent implements OnInit {
       return item.Id % 100 !== 0;
     }
   }
-
 }

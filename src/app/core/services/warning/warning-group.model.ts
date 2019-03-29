@@ -66,18 +66,27 @@ export class WarningGroup {
     }
 
     hasAnyWarnings(daysAhead = 2) {
-        return this.getMaxWarning(daysAhead) > 0;
+        return this.getMaxWarning(daysAhead).max > 0;
     }
 
     getMaxWarning(daysAhead = 2) {
         let max = 0;
+        let hasWarning = false;
         for (let i = 0; i <= daysAhead; i++) {
             const dayWarning = this.getDayWarning(i);
             if (dayWarning && dayWarning.warningLevel > max) {
                 max = dayWarning.warningLevel;
+                hasWarning = false;
+            }
+            if (dayWarning && dayWarning.warningLevel === max && dayWarning.emergencyWarning) {
+                hasWarning = true;
             }
         }
-        return max;
+        return { max, hasWarning };
+    }
+
+    getKeyAsString() {
+        return `${this._warningGroup.geoHazard}_${this._warningGroup.regionId}_${this._warningGroup.regionName}`;
     }
 
     constructor(group: IWarningGroup) {

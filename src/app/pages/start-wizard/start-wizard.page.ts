@@ -20,6 +20,7 @@ export class StartWizardPage implements OnInit {
   userSettings: UserSetting;
   state = 'x';
   reachedEnd = false;
+  showLegalIcon = false;
 
   constructor(private userSetting: UserSettingService,
     private navController: NavController,
@@ -27,10 +28,17 @@ export class StartWizardPage implements OnInit {
 
   async ngOnInit() {
     this.userSettings = await this.userSetting.getUserSettings();
+    setTimeout(() => {
+      this.state = 'page_0';
+    }, 0);
   }
 
   slideNext() {
-    this.slides.slideNext();
+    setTimeout(() => {
+      if (this.slides) {
+        this.slides.slideNext();
+      }
+    }, 700);
   }
 
   async start() {
@@ -47,15 +55,19 @@ export class StartWizardPage implements OnInit {
     this.userSetting.saveUserSettings(this.userSettings);
   }
 
-  ionSlideTransitionStart() {
-    this.state = 'changePage';
-    setTimeout(() => {
-      this.state = 'x';
-    }, 700);
+  async ionSlideTransitionStart() {
+    const index = await this.slides.getActiveIndex();
+    this.ngZone.run(() => {
+      this.state = `page_${index}`;
+    });
   }
 
   ionSlideReachEnd() {
     this.reachedEnd = true;
+    setTimeout(() => {
+      this.showLegalIcon = true;
+      // Crazy ios bug to get animation on spinner.. :o
+    }, 0);
   }
 
   ionSlidePrevStart() {

@@ -1,14 +1,14 @@
-<ion-grid no-margin no-padding *ngIf="!subTitle">
+<ion-grid class="header-grid" [ngClass]="{'ios': ios}" no-margin no-padding *ngIf="!subTitle">
   <ion-row>
-    <ion-col size="7" no-padding>
+    <ion-col size="6" no-padding>
       <h3 text-uppercase>{{ title | translate }}</h3>
     </ion-col>
-    <ion-col size="5" no-padding align-self-end *ngIf="showDayNames">
+    <ion-col size="6" no-padding align-self-end *ngIf="showDayNames">
       <div *ngTemplateOutlet="dayNames"></div>
     </ion-col>
   </ion-row>
 </ion-grid>
-<ion-grid no-margin no-padding *ngIf="subTitle">
+<ion-grid class="header-grid" no-margin no-padding *ngIf="subTitle">
   <ion-row>
     <h3 text-uppercase>{{ title | translate }}</h3>
   </ion-row>
@@ -18,7 +18,7 @@
     </ion-label>
   </ion-row>
   <ion-row>
-    <ion-col offset="7" size="5" no-padding align-self-end *ngIf="showDayNames">
+    <ion-col offset="6" size="6" no-padding align-self-end *ngIf="showDayNames">
       <div *ngTemplateOutlet="dayNames"></div>
     </ion-col>
   </ion-row>
@@ -26,13 +26,13 @@
 <ng-template #dayNames>
   <ion-grid no-padding class="dayNames">
     <ion-row>
-      <ion-col>
+      <ion-col text-center>
         {{ getDayName(0) | translate }}
       </ion-col>
-      <ion-col>
+      <ion-col text-center>
         {{ getDayName(1) | translate }}
       </ion-col>
-      <ion-col>
+      <ion-col text-center>
         {{ getDayName(2) | translate }}
       </ion-col>
     </ion-row>

@@ -21,9 +21,9 @@ export class FullscreenService {
     this.isFullscreen$.subscribe((val) => {
       this._isFullscreen = val;
       if (val) {
-        this.statusBar.styleDefault();
+        this.statusBar.hide();
       } else {
-        this.statusBar.styleBlackTranslucent();
+        this.statusBar.show();
       }
     });
   }

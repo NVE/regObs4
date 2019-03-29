@@ -44,7 +44,7 @@ export class MapSearchService {
     private userSettingService: UserSettingService,
     private locationService: LocationService) {
     this._mapSearchItemClickSubject = new Subject<MapSearchResponse | L.LatLng>();
-    this._mapSearchItemClickObservable = this._mapSearchItemClickSubject.asObservable().pipe(shareReplay(0));
+    this._mapSearchItemClickObservable = this._mapSearchItemClickSubject.asObservable();
     this._mapSearchItemClickObservable.subscribe((item) => {
       if (!(item instanceof L.LatLng)) {
         this.saveSearchHistoryToDb(item as MapSearchResponse);

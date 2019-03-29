@@ -38,7 +38,7 @@
             },
             {
                 "Id": 230,
-                "Name": "Erosion along strems/rivers",
+                "Name": "Erosion along streams/rivers",
                 "Description": null
             },
             {
@@ -174,7 +174,7 @@
             },
             {
                 "Id": 1,
-                "Name": "Triggered by naturaly",
+                "Name": "Triggered naturally",
                 "Description": null
             },
             {
@@ -342,7 +342,7 @@
             },
             {
                 "Id": 11,
-                "Name": "Icing along shore",
+                "Name": "Ice formation along shore",
                 "Description": null
             },
             {
@@ -362,7 +362,7 @@
             },
             {
                 "Id": 10,
-                "Name": "Melting along shore",
+                "Name": "Ice breaking up along shore",
                 "Description": null
             },
             {
@@ -579,7 +579,7 @@
             },
             {
                 "Id": 2,
-                "Name": "Recently made avalanches",
+                "Name": "Recent avalanches",
                 "Description": null
             },
             {
@@ -589,7 +589,7 @@
             },
             {
                 "Id": 4,
-                "Name": "Recently made cracks",
+                "Name": "Recent cracks",
                 "Description": null
             },
             {
@@ -599,7 +599,7 @@
             },
             {
                 "Id": 6,
-                "Name": "Rime crystals",
+                "Name": "Surface hoar",
                 "Description": null
             },
             {
@@ -619,7 +619,7 @@
             },
             {
                 "Id": 99,
-                "Name": "Other dangersign (specify)",
+                "Name": "Other danger sign (specify)",
                 "Description": null
             }
         ],
@@ -814,63 +814,63 @@
         "Snow_AvalCauseKDV": [
             {
                 "Id": 0,
-                "Name": null,
-                "Description": null
+                "Name": "Not given",
+                "Description": "Not given"
             },
             {
                 "Id": 10,
-                "Name": null,
-                "Description": null
+                "Name": "Weak layer of new snow",
+                "Description": "Weak layer of new snow"
             },
             {
                 "Id": 11,
-                "Name": null,
-                "Description": null
+                "Name": "Weak layer of surface hoar",
+                "Description": "Weak layer of surface hoar"
             },
             {
                 "Id": 13,
-                "Name": null,
-                "Description": null
+                "Name": "Weak layer of faceted snow",
+                "Description": "Weak layer of faceted snow"
             },
             {
                 "Id": 14,
-                "Name": null,
-                "Description": null
+                "Name": "Poor bonding to crust",
+                "Description": "Poor bonding to crust"
             },
             {
                 "Id": 15,
-                "Name": null,
-                "Description": null
+                "Name": "Poor bonding within windslab",
+                "Description": "Poor bonding within windslab"
             },
             {
                 "Id": 16,
-                "Name": null,
-                "Description": null
+                "Name": "Faceted snow near the ground",
+                "Description": "Faceted snow near the ground"
             },
             {
                 "Id": 19,
-                "Name": null,
-                "Description": null
+                "Name": "Faceted snow beneath a crust",
+                "Description": "Faceted snow beneath a crust"
             },
             {
                 "Id": 18,
-                "Name": null,
-                "Description": null
+                "Name": "Faceted snow above a crust",
+                "Description": "Faceted snow above a crust"
             },
             {
                 "Id": 22,
-                "Name": null,
-                "Description": null
+                "Name": "Water pooling above snow layers",
+                "Description": "Water pooling above snow layers"
             },
             {
                 "Id": 20,
-                "Name": null,
-                "Description": null
+                "Name": "Melting near the ground",
+                "Description": "Melting near the ground"
             },
             {
                 "Id": 24,
-                "Name": null,
-                "Description": null
+                "Name": "Loose snow",
+                "Description": "Loose snow"
             }
         ],
         "Snow_AvalCauseDepthKDV": [
@@ -957,22 +957,12 @@
             },
             {
                 "Id": 2,
-                "Name": "Some steep slopes",
+                "Name": "Specific steep slopes",
                 "Description": null
             },
             {
                 "Id": 3,
-                "Name": "Many steep slopes",
-                "Description": null
-            },
-            {
-                "Id": 4,
-                "Name": "Most steep slopes",
-                "Description": null
-            },
-            {
-                "Id": 5,
-                "Name": "Also in moderately steep terrain",
+                "Name": "Widespread steep slopes",
                 "Description": null
             }
         ],
@@ -1025,13 +1015,23 @@
                 "Description": null
             },
             {
-                "Id": 10,
-                "Name": "High additional load",
+                "Id": 30,
+                "Name": "Very difficult to trigger",
                 "Description": null
             },
             {
-                "Id": 21,
-                "Name": "Low additional load",
+                "Id": 40,
+                "Name": "Difficult to trigger",
+                "Description": null
+            },
+            {
+                "Id": 50,
+                "Name": "Easy to trigger",
+                "Description": null
+            },
+            {
+                "Id": 60,
+                "Name": "Very easy to trigger",
                 "Description": null
             },
             {
@@ -1176,12 +1176,12 @@
             },
             {
                 "Id": 2,
-                "Name": "Forecast to low",
+                "Name": "Forecast too low",
                 "Description": null
             },
             {
                 "Id": 3,
-                "Name": "Forecast to high",
+                "Name": "Forecast too high",
                 "Description": null
             }
         ],
@@ -1223,7 +1223,7 @@
             },
             {
                 "Id": 8,
-                "Name": "Under cooled rain",
+                "Name": "Freezing rain",
                 "Description": null
             }
         ],
@@ -1235,7 +1235,7 @@
             },
             {
                 "Id": 10,
-                "Name": "Natural or spont. release",
+                "Name": "Naturaly released",
                 "Description": null
             },
             {
@@ -1250,17 +1250,17 @@
             },
             {
                 "Id": 22,
-                "Name": "Remote triggered",
+                "Name": "Remotely triggered",
                 "Description": null
             },
             {
                 "Id": 23,
-                "Name": "Artificial release testslope",
+                "Name": "Artificial release test slope",
                 "Description": null
             },
             {
                 "Id": 25,
-                "Name": "Release with explosives",
+                "Name": "Released by explosives",
                 "Description": null
             },
             {
@@ -1406,7 +1406,7 @@
             },
             {
                 "Id": 6,
-                "Name": "Soaked",
+                "Name": "Slush",
                 "Description": null
             }
         ],
@@ -1503,6 +1503,82 @@
             {
                 "Id": 15,
                 "Name": "CTN ",
+                "Description": null
+            }
+        ],
+        "Snow_WetnessKDV": [
+            {
+                "Id": 0,
+                "Name": " - ",
+                "Description": null
+            },
+            {
+                "Id": 1,
+                "Name": "D",
+                "Description": null
+            },
+            {
+                "Id": 2,
+                "Name": "D-M",
+                "Description": null
+            },
+            {
+                "Id": 3,
+                "Name": "M",
+                "Description": null
+            },
+            {
+                "Id": 4,
+                "Name": "M-W",
+                "Description": null
+            },
+            {
+                "Id": 5,
+                "Name": "W",
+                "Description": null
+            },
+            {
+                "Id": 6,
+                "Name": "W-V",
+                "Description": null
+            },
+            {
+                "Id": 7,
+                "Name": "V",
+                "Description": null
+            },
+            {
+                "Id": 8,
+                "Name": "V-S",
+                "Description": null
+            },
+            {
+                "Id": 9,
+                "Name": "S",
+                "Description": null
+            }
+        ],
+        "Snow_HardnessKDV": [],
+        "Snow_GrainFormKDV": [],
+        "Snow_CriticalLayerKDV": [
+            {
+                "Id": 0,
+                "Name": "Not given",
+                "Description": null
+            },
+            {
+                "Id": 11,
+                "Name": "Upper part",
+                "Description": null
+            },
+            {
+                "Id": 12,
+                "Name": "Lower part",
+                "Description": null
+            },
+            {
+                "Id": 13,
+                "Name": "Entire layer",
                 "Description": null
             }
         ],
@@ -1856,7 +1932,7 @@
             },
             {
                 "Id": 1,
-                "Name": "Budiling and assets",
+                "Name": "Buildings and assets",
                 "Description": null
             },
             {
@@ -1876,7 +1952,7 @@
             },
             {
                 "Id": 5,
-                "Name": "Person/persons",
+                "Name": "Person/people",
                 "Description": null
             },
             {
@@ -1904,7 +1980,7 @@
             },
             {
                 "Id": 2,
-                "Name": "Warning to low",
+                "Name": "Warning too low",
                 "Description": null
             },
             {
@@ -1914,7 +1990,7 @@
             },
             {
                 "Id": 4,
-                "Name": "Warning to high",
+                "Name": "Warning too high",
                 "Description": null
             },
             {
@@ -1945,18 +2021,23 @@
                 "Description": null
             },
             {
-                "Id": 20,
-                "Name": "Only material damage",
-                "Description": null
-            },
-            {
                 "Id": 25,
                 "Name": "Evacuation",
                 "Description": null
             },
             {
-                "Id": 29,
-                "Name": "Close call",
+                "Id": 20,
+                "Name": "Only material damage",
+                "Description": null
+            },
+            {
+                "Id": 27,
+                "Name": "No one buried, but close call",
+                "Description": null
+            },
+            {
+                "Id": 28,
+                "Name": "Person buried, but no injuries",
                 "Description": null
             },
             {

@@ -6,6 +6,7 @@ ion-grid {
 
 .back-button {
     background-color: var(--ion-background-color,#fff);
+    height: var(--ion-button-height);
 }
 
 .reset-button-row {
@@ -14,7 +15,6 @@ ion-grid {
     }
 
     svg-icon {
-        position: relative;
-        top: 2px;
+        display: flex;
     }
 }

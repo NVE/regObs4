@@ -3,13 +3,13 @@
     <ion-col size="6">
       <ion-button no-margin *ngIf="previous" (click)="goBack()" color="primary" fill="outline" expand="block">
         <ion-icon slot="start" name="arrow-round-back"></ion-icon>
-        {{ previous.title | translate }}
+        <ion-text>{{ previous.title | translate }}</ion-text>
       </ion-button>
     </ion-col>
     <ion-col size="6">
       <ion-button no-margin *ngIf="next" (click)="goForward()" color="primary" fill="outline" expand="block">
         <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
-        {{ next.title | translate }}
+        <ion-text>{{ next.title | translate }}</ion-text>
       </ion-button>
     </ion-col>
   </ion-row>

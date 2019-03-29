@@ -16,7 +16,7 @@
         </ion-row>
         <ion-row class="full-grid-row">
           <ion-col align-self-center>
-            <h2>{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER'|translate}}</h2>
+            <h2 [@headerAnimation]="state">{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER'|translate}}</h2>
             <h3>{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER_SECONDARY_LANGUAGE'|translate}}</h3>
             <ion-list lines="none">
               <ion-radio-group class="dark-color" [(ngModel)]="userSettings.language" (ionChange)="saveUserSettings()">
@@ -41,34 +41,34 @@
         <ion-row class="full-grid-row">
           <ion-col align-self-center>
             <div class="animated-element-wrapper">
-              <svg-icon class="animated-element line" [@bounce]="state" src="/assets/images/onboarding/line.svg">
+              <svg-icon class="animated-element line" [@bouncePath]="state" src="/assets/images/onboarding/line.svg">
               </svg-icon>
             </div>
             <div class="animated-element-wrapper">
-              <svg-icon class="animated-element warning" [@moveUpAndABitLeft]="state"
+              <svg-icon class="animated-element warning" [@scaleUpWarning]="state"
                 src="/assets/images/onboarding/warning.svg"></svg-icon>
             </div>
             <div class="animated-element-wrapper">
-              <svg-icon class="animated-element pin-ice" [@moveUpAndABitLeft]="state"
-                src="/assets/icon/map/pin-ice.svg"></svg-icon>
-            </div>
-            <div class="animated-element-wrapper">
-              <svg-icon class="animated-element pin-dirt" [@moveDownLeft]="state" src="/assets/icon/map/pin-dirt.svg">
+              <svg-icon class="animated-element pin-ice" [@scaleUpIce]="state" src="/assets/icon/map/pin-ice.svg">
               </svg-icon>
             </div>
             <div class="animated-element-wrapper">
-              <svg-icon class="animated-element pin-snow" [@moveDownRightLess]="state"
-                src="/assets/icon/map/pin-snow.svg"></svg-icon>
+              <svg-icon class="animated-element pin-dirt" [@scaleUpDirt]="state" src="/assets/icon/map/pin-dirt.svg">
+              </svg-icon>
             </div>
             <div class="animated-element-wrapper">
-              <svg-icon class="animated-element pin-water" [@moveDownRight]="state"
-                src="/assets/icon/map/pin-water.svg"></svg-icon>
+              <svg-icon class="animated-element pin-snow" [@scaleUpSnow]="state" src="/assets/icon/map/pin-snow.svg">
+              </svg-icon>
+            </div>
+            <div class="animated-element-wrapper">
+              <svg-icon class="animated-element pin-water" [@scaleUpWater]="state" src="/assets/icon/map/pin-water.svg">
+              </svg-icon>
             </div>
           </ion-col>
         </ion-row>
         <ion-row class="full-grid-row">
           <ion-col align-self-center>
-            <h2>{{'START_WIZARD.PAGE_1.HEADER'|translate}}</h2>
+            <h2 [@headerAnimation1]="state">{{'START_WIZARD.PAGE_1.HEADER'|translate}}</h2>
             <h3 text-wrap>
               {{'START_WIZARD.PAGE_1.LINE_1'|translate}}
             </h3>
@@ -85,22 +85,22 @@
                 src="/assets/images/onboarding/steepness-background.svg"></svg-icon>
             </div>
             <div class="animated-element-wrapper">
-              <svg-icon class="animated-element danger-map" [@bounce]="state"
-                src="/assets/images/onboarding/danger-map.svg"></svg-icon>
+              <svg-icon class="animated-element danger-map" src="/assets/images/onboarding/danger-map.svg"></svg-icon>
             </div>
             <div class="animated-element-wrapper">
-              <svg-icon class="animated-element user-location" [@pulse]="state"
+              <svg-icon class="animated-element user-location" [@slideInFromRight]="state"
                 src="/assets/images/onboarding/user-location.svg"></svg-icon>
             </div>
             <div class="animated-element-wrapper">
-              <svg-icon class="animated-element exclamation-mark" [@bounce]="state"
-                src="/assets/images/onboarding/exclamation-mark.svg"></svg-icon>
+              <svg-icon class="animated-element exclamation-mark" [@nudgeExclamation]="state"
+                src="/assets/images/onboarding/exclamation-mark.svg">
+              </svg-icon>
             </div>
           </ion-col>
         </ion-row>
         <ion-row class="full-grid-row">
           <ion-col align-self-center>
-            <h2>{{'START_WIZARD.PAGE_2.HEADER'|translate}}</h2>
+            <h2 [@headerAnimation2]="state">{{'START_WIZARD.PAGE_2.HEADER'|translate}}</h2>
             <h3 text-wrap>
               {{'START_WIZARD.PAGE_2.LINE_1'|translate}}
             </h3>
@@ -141,13 +141,13 @@
                 src="/assets/images/onboarding/eye.svg"></svg-icon>
             </div>
             <div class="animated-element-wrapper">
-              <h3 class="animated-element text">{{'START_WIZARD.PAGE_3.BUTTON_TEXT' | translate}}</h3>
+              <h3 class="animated-element text" [@moveUp]="state">{{'START_WIZARD.PAGE_3.BUTTON_TEXT' | translate}}</h3>
             </div>
           </ion-col>
         </ion-row>
         <ion-row class="full-grid-row">
           <ion-col align-self-center>
-            <h2>{{'START_WIZARD.PAGE_3.HEADER'|translate}}</h2>
+            <h2 [@headerAnimation3]="state">{{'START_WIZARD.PAGE_3.HEADER'|translate}}</h2>
             <h3 text-wrap>
               {{'START_WIZARD.PAGE_3.LINE_1'|translate}}
             </h3>
@@ -156,16 +156,17 @@
       </ion-grid>
     </ion-slide>
     <ion-slide>
-      <ion-grid>
-        <ion-row>
-          <ion-col padding align-self-center>
-            <div class="legal-icon" [@pulse]="state">&sect;</div>
+      <ion-grid class="full-grid legal-grid">
+        <ion-row class="legal-info-row">
+          <ion-col padding align-self-bottom>
+            <div class="legal-icon" [ngClass]="{'hide': !showLegalIcon }">&sect;
+            </div>
           </ion-col>
         </ion-row>
-        <ion-row>
-          <ion-col align-self-center>
-            <h2>{{'LEGAL_TERMS.HEADER' | translate}}</h2>
-            <h3 text-wrap padding-horizontal margin-horizontal>
+        <ion-row class="legal-text-row">
+          <ion-col align-self-top>
+            <h2 [@headerAnimation4]="state">{{'LEGAL_TERMS.HEADER' | translate}}</h2>
+            <h3 text-wrap no-padding>
               {{'LEGAL_TERMS.TERMS' | translate}}
             </h3>
           </ion-col>
@@ -176,7 +177,7 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar color="varsom-blue">
-    <ion-button expand="full" (click)="start()" fill="clear">
+    <ion-button no-margin expand="full" (click)="start()" fill="clear">
       {{ (reachedEnd ?
             'START_WIZARD.I_UNDERSTAND' :
             'START_WIZARD.SKIP_START') |translate}}

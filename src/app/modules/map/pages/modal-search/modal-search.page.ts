@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, Renderer2, OnDestroy } from '@angular/core';
 import { ModalController, IonInput, DomController } from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
@@ -29,7 +29,6 @@ export class ModalSearchPage implements OnInit, OnDestroy {
   private modalTop: HTMLIonModalElement;
   private swipeOffset = 0;
   private swipePercentage = 0;
-  private subscription: Subscription;
 
   constructor(private modalController: ModalController,
     private mapSearchService: MapSearchService,
@@ -64,15 +63,15 @@ export class ModalSearchPage implements OnInit, OnDestroy {
         }),
       );
 
-    this.subscription = searchTextObservable.subscribe((searchValue) => {
-      const validLatLng = this.isValidLatLng(searchValue);
-      if (validLatLng) {
-        this.mapSearchService.mapSearchItemSelected = validLatLng;
-        this.closeModal();
-      }
-    });
-
     this.createGesture();
+  }
+
+  doSearch() {
+    const validLatLng = this.isValidLatLng(this.searchText);
+    if (validLatLng) {
+      this.mapSearchService.mapSearchItemSelected = validLatLng;
+      this.closeModal();
+    }
   }
 
   private async createGesture() {
@@ -90,9 +89,6 @@ export class ModalSearchPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
   }
 
   isValidLatLng(searchValue: string) {

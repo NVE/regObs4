@@ -10,3 +10,7 @@ import { Injectable } from '@angular/core';
 export class RegobsApiConfiguration {
   rootUrl: string = 'http://test-api.regobs.no/app_v4';
 }
+
+export interface RegobsApiConfigurationInterface {
+  rootUrl?: string;
+}

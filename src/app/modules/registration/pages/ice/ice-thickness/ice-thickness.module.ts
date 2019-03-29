@@ -3,11 +3,13 @@ import { Routes, RouterModule } from '@angular/router';
 import { IceThicknessPage } from './ice-thickness.page';
 import { SharedComponentsModule } from '../../../shared-components.module';
 import { IceLayerPageModule } from './ice-layer/ice-layer.module';
+import { CanDeactivateRouteGuard } from '../../can-deactivate-route.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: IceThicknessPage
+    component: IceThicknessPage,
+    canDeactivate: [CanDeactivateRouteGuard]
   }
 ];
 

@@ -9,6 +9,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-danger-obs',
@@ -18,6 +19,7 @@ import { ActivatedRoute } from '@angular/router';
 export class DangerObsPage extends BasePage {
 
   private dangerSignKdv: KdvElement[];
+  private dangerSignKdvSubscription: Subscription;
 
   constructor(
     basePageService: BasePageService,
@@ -30,10 +32,19 @@ export class DangerObsPage extends BasePage {
     super(RegistrationTid.DangerObs, basePageService, activatedRoute);
   }
 
-  async onInit() {
-    const userSetting = await this.userSettingService.getUserSettings();
+  onBeforeLeave() {
+    if (this.dangerSignKdvSubscription) {
+      this.dangerSignKdvSubscription.unsubscribe();
+    }
+  }
+
+  onInit() {
     const kdvKey = `${GeoHazard[this.registration.geoHazard]}_DangerSignKDV`;
-    this.dangerSignKdv = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, kdvKey);
+    this.dangerSignKdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).subscribe((val) => {
+      this.zone.run(() => {
+        this.dangerSignKdv = val;
+      });
+    });
   }
 
   async addOrEdit(index: number) {

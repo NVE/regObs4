@@ -6,13 +6,13 @@ import { LangKey } from '../../models/langKey';
 import { AppMode } from '../../models/app-mode.enum';
 import { NanoSql } from '../../../../nanosql';
 import { KdvElementsResponseDto } from '../../../modules/regobs-api/models';
-import { from, combineLatest } from 'rxjs';
-import { UserSetting } from '../../models/user-settings.model';
-import { switchMap } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { switchMap, map, shareReplay } from 'rxjs/operators';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import * as moment from 'moment';
 import { ObservableHelper } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 
 const DEBUG_TAG = 'KdvService';
 
@@ -21,12 +21,20 @@ const DEBUG_TAG = 'KdvService';
 })
 export class KdvService {
 
+  private _kdvElements$: Observable<KdvElementsResponseDto>;
+
+  get kdvElements$() {
+    return this._kdvElements$;
+  }
+
   constructor(
     private kdvApiService: RegobsApi.KdvElementsService,
     private userSettingService: UserSettingService,
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
-  ) { }
+  ) {
+    this._kdvElements$ = this.getKdvElementsObservable();
+  }
 
   async updateKdvElements(cancel?: Promise<void>) {
     const userSetting = await this.userSettingService.getUserSettings();
@@ -67,43 +75,30 @@ export class KdvService {
     }
   }
 
-  async getKdvRepositories(langKey: LangKey, appMode: AppMode, key: string) {
-    const kdvElemetns = await this.getKdvElements(langKey, appMode);
-    return kdvElemetns.KdvRepositories[key];
+  getKdvRepositoryByKeyObservable(key: string) {
+    return this.kdvElements$.pipe(map((val) => val.KdvRepositories[key]));
   }
 
-  async getViewRepositories(langKey: LangKey, appMode: AppMode, key: string) {
-    const kdvElemetns = await this.getKdvElements(langKey, appMode);
-    return kdvElemetns.ViewRepositories[key];
+  getViewRepositoryByKeyObservable(key: string) {
+    return this.kdvElements$.pipe(map((val) => val.ViewRepositories[key]));
   }
 
-  async getKdvElements(langKey: LangKey, appMode: AppMode) {
-    const resultFromDb = await this.getKdvElementsFromDb(langKey, appMode);
-    if (resultFromDb) {
-      return resultFromDb;
-    } else {
-      const langKeyName = LangKey[langKey];
-      const defaultKdvElements: KdvElementsResponseDto = require(`../../../../assets/json/kdvelements.${langKeyName}.json`);
-      return defaultKdvElements;
-    }
+  private getKdvElementsObservable() {
+    return combineLatest(this.userSettingService.appMode$, this.userSettingService.language$).pipe(
+      switchMap(([appMode, langKey]) => this.getKdvElementsFromDbAsStream(appMode, langKey)),
+      shareReplay(1));
   }
 
-  getKdvElementsAsObservable(key: string, userSetting?: UserSetting) {
-    if (userSetting) {
-      return from(this.getKdvRepositories(userSetting.language, userSetting.appMode, key));
-    } else {
-      return combineLatest(this.userSettingService.appMode$, this.userSettingService.language$).pipe(
-        switchMap(([appMode, language]) => from(this.getKdvRepositories(language, appMode, key))));
-    }
+  private getKdvElementsFromDbAsStream(appMode: AppMode, langKey: LangKey) {
+    return NanoSqlObservableHelper.toRxJS<KdvElementsResponseDto[]>(
+      NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode).query('select')
+        .where(['langKey', '=', langKey]).listen())
+      .pipe(map((val: KdvElementsResponseDto[]) => val.length > 0 ? val[0] : this.getDefaultKdvElements(langKey)));
   }
 
-  private async getKdvElementsFromDb(langKey: LangKey, appMode: AppMode): Promise<KdvElementsResponseDto> {
-    const result = await NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode).query('select')
-      .where(['langKey', '=', langKey]).exec();
-    if (result.length > 0) {
-      return result[0] as KdvElementsResponseDto;
-    } else {
-      return null;
-    }
+  private getDefaultKdvElements(langKey: LangKey) {
+    const langKeyName = LangKey[langKey];
+    const defaultKdvElements: KdvElementsResponseDto = require(`../../../../assets/json/kdvelements.${langKeyName}.json`);
+    return defaultKdvElements;
   }
 }

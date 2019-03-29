@@ -48,18 +48,40 @@ export class DataUrlHelper {
             img.crossOrigin = 'anonymous';
             img.onload = () => {
                 // Get raw image data
-                resolve(this.getDataUrlFromImage(img, format));
+                const result = this.getDataUrlFromImage(img, format);
+                if (result) {
+                    resolve(result);
+                } else {
+                    reject();
+                }
             };
             img.onerror = () => reject();
         });
     }
 
-    static getDataUrlFromImage(img: HTMLImageElement, format = 'image/jpeg'): string {
+    static getDataUrlFromImage(img: HTMLImageElement, format = 'image/jpeg', quality = 0.8): string {
+        const canvas = this.getCanvasFromImage(img);
+        if (!canvas) {
+            return null;
+        }
+        // Get raw image data
+        return canvas.toDataURL(format, quality);
+    }
+
+    static getCanvasFromImage(img: HTMLImageElement): HTMLCanvasElement {
+        if (!img) {
+            return null;
+        }
         const canvas = document.createElement('canvas');
+        canvas.id = img.id;
         canvas.width = img.naturalWidth;
         canvas.height = img.naturalHeight;
-        canvas.getContext('2d').drawImage(img, 0, 0);
+        const context = canvas.getContext('2d');
+        if (!context) {
+            return null;
+        }
+        context.drawImage(img, 0, 0);
         // Get raw image data
-        return canvas.toDataURL(format);
+        return canvas;
     }
 }

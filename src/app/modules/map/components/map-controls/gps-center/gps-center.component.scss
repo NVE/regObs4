@@ -5,6 +5,10 @@ ion-fab {
 ion-fab-button {
     height: var(--map-control-fab-size);
     width: var(--map-control-fab-size);
+
+    &.active {
+        --ion-color-base: var(--ion-color-varsom-blue-light-1);
+    }
 }
 
 ion-icon {

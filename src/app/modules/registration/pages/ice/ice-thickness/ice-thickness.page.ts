@@ -13,7 +13,6 @@ import { NumberHelper } from '../../../../../core/helpers/number-helper';
   templateUrl: './ice-thickness.page.html',
   styleUrls: ['./ice-thickness.page.scss'],
 })
-
 export class IceThicknessPage extends BasePage {
 
   iceHeightBefore: boolean = undefined;
@@ -47,17 +46,19 @@ export class IceThicknessPage extends BasePage {
   }
 
   onBeforeLeave() {
-    if (this.iceHeightBefore === undefined) {
-      this.registration.request.IceThickness.IceHeightBefore = undefined;
-    } else if (this.registration.request.IceThickness.IceHeightBefore > 0) {
-      this.registration.request.IceThickness.IceHeightBefore = this.registration.request.IceThickness.IceHeightBefore * -1;
-    } else {
-      this.registration.request.IceThickness.IceHeightBefore = 0;
-    }
-    if (this.iceHeightAfter === undefined) {
-      this.registration.request.IceThickness.IceHeightAfter = undefined;
-    } else if (this.iceHeightAfter === true && NumberHelper.isNumeric(this.registration.request.IceThickness.IceHeightAfter)) {
-      this.registration.request.IceThickness.IceHeightAfter = this.registration.request.IceThickness.IceHeightAfter * -1;
+    if (this.registration) {
+      if (this.iceHeightBefore === undefined) {
+        this.registration.request.IceThickness.IceHeightBefore = undefined;
+      } else if (this.registration.request.IceThickness.IceHeightBefore > 0) {
+        this.registration.request.IceThickness.IceHeightBefore = this.registration.request.IceThickness.IceHeightBefore * -1;
+      } else {
+        this.registration.request.IceThickness.IceHeightBefore = 0;
+      }
+      if (this.iceHeightAfter === undefined) {
+        this.registration.request.IceThickness.IceHeightAfter = undefined;
+      } else if (this.iceHeightAfter === true && NumberHelper.isNumeric(this.registration.request.IceThickness.IceHeightAfter)) {
+        this.registration.request.IceThickness.IceHeightAfter = this.registration.request.IceThickness.IceHeightAfter * -1;
+      }
     }
   }
 
@@ -124,9 +125,10 @@ export class IceThicknessPage extends BasePage {
   }
 
   calculateIceThicknessSum() {
+    const newSum = (this.registration.request.IceThickness.IceThicknessLayer || [])
+      .reduce((p, c) => p + (c.IceLayerThickness || 0), 0);
     this.ngZone.run(() => {
-      this.registration.request.IceThickness.IceThicknessSum = this.registration.request.IceThickness.IceThicknessLayer
-        .reduce((p, c) => p + (c.IceLayerThickness || 0), 0);
+      this.registration.request.IceThickness.IceThicknessSum = newSum;
     });
   }
 

@@ -29,14 +29,13 @@
               [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
             {{obs.Observer.NickName}}
             <!-- <ion-icon [name]="star.full ? 'star' : 'star-outline'" *ngFor="let star of stars"></ion-icon> -->
-            <div class="stars">
+            <div class="stars" *ngIf="!hasNoStars">
               <ng-container *ngFor="let star of stars">
                 <svg-icon *ngIf="star.full" src="/assets/icon/star-selected.svg"
                   [svgStyle]="{'width.px':8.34, 'height.px':8  }"></svg-icon>
                 <svg-icon *ngIf="!star.full" src="/assets/icon/star-empty.svg"
                   [svgStyle]="{'width.px':8.34, 'height.px':8  }"></svg-icon>
               </ng-container>
-              <ion-label class="empty-stars" *ngIf="hasNoStars">(0)</ion-label>
             </div>
           </div>
           <div class="card-icon-item" *ngIf="obs.Observer.ObserverGroupName">

@@ -8,11 +8,13 @@ import { GpsCenterComponent } from './components/map-controls/gps-center/gps-cen
 import { MapCenterInfoComponent } from './components/map-center-info/map-center-info.component';
 import { SharedModule } from '../shared/shared.module';
 import { ModalSearchPageModule } from './pages/modal-search/modal-search.module';
+import { LeafletEdgeBufferModule } from 'ngx-leaflet-edgebuffer';
 
 @NgModule({
   imports: [
     SharedModule,
     LeafletModule,
+    LeafletEdgeBufferModule,
     ModalSearchPageModule,
   ],
   declarations: [

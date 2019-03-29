@@ -9,26 +9,30 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.WeatherObservation" [registration]="registration"
-    [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="registration && registration.request.WeatherObservation"
+    [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.SNOW.WEATHER.TITLE' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.WEATHER.PRECIPITATION" kdvKey="Snow_PrecipitationKDV" [(value)]="registration.request.WeatherObservation.PrecipitationTID"></app-kdv-dropdown>
-      <app-numeric-input #airTemperature [(value)]="registration.request.WeatherObservation.AirTemperature" title="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE"
-        [min]="-150" [max]="60" placeholder="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER" [decimalPlaces]="2"></app-numeric-input>
-      <app-numeric-input #windSpeed [(value)]="registration.request.WeatherObservation.WindSpeed" title="REGISTRATION.SNOW.WEATHER.WIND_SPEED"
-        [min]="0" [max]="50" placeholder="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER" [decimalPlaces]="2"></app-numeric-input>
-      <app-numeric-input #cloudCover [(value)]="registration.request.WeatherObservation.CloudCover" title="REGISTRATION.SNOW.WEATHER.CLOUD_COVER"
-        [min]="0" [max]="100" placeholder="REGISTRATION.SNOW.WEATHER.ONLY_FULL_PERCENTAGE" [decimalPlaces]="0"></app-numeric-input>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.WEATHER.PRECIPITATION" kdvKey="Snow_PrecipitationKDV"
+        [(value)]="registration.request.WeatherObservation.PrecipitationTID"></app-kdv-dropdown>
+      <app-numeric-input [(value)]="registration.request.WeatherObservation.AirTemperature"
+        title="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE" [min]="-150" [max]="60"
+        placeholder="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER" [decimalPlaces]="2"></app-numeric-input>
+      <app-numeric-input [(value)]="registration.request.WeatherObservation.WindSpeed"
+        title="REGISTRATION.SNOW.WEATHER.WIND_SPEED" [min]="0" [max]="50"
+        placeholder="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER" [decimalPlaces]="2"></app-numeric-input>
+      <app-numeric-input [(value)]="registration.request.WeatherObservation.CloudCover"
+        title="REGISTRATION.SNOW.WEATHER.CLOUD_COVER" [min]="0" [max]="100"
+        placeholder="REGISTRATION.SNOW.WEATHER.ONLY_FULL_PERCENTAGE" [decimalPlaces]="0"></app-numeric-input>
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_DIRECTION'
           | translate}}</ion-label>
-        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="registration.request.WeatherObservation.WindDirection"
-          interface="action-sheet">
+        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}"
+          [(ngModel)]="registration.request.WeatherObservation.WindDirection" interface="action-sheet">
           <ng-container *ngFor="let windDirection of windDirectionArray">
             <ion-select-option [value]="windDirection.val">{{
               windDirection.name | translate }}</ion-select-option>
@@ -45,13 +49,15 @@
           {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_PLACEHOLDER' | translate }}
         </ion-label>
       </ion-item>
-      <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.WeatherObservation.Comment"></app-text-comment>
+      <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT"
+        [(value)]="registration.request.WeatherObservation.Comment"></app-text-comment>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid">
+      </app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

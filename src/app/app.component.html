@@ -1,10 +1,8 @@
 <ion-app>
-  <ion-split-pane>
-    <ion-menu side="end" type="overlay" maxEdgeStart="0">
-      <ion-content>
-        <app-side-menu></app-side-menu>
-      </ion-content>
-    </ion-menu>
-    <ion-router-outlet main [swipeGesture]="swipeBackEnabled$ | async"></ion-router-outlet>
-  </ion-split-pane>
+  <ion-menu side="end" type="overlay" maxEdgeStart="0">
+    <ion-content>
+      <app-side-menu></app-side-menu>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet main [swipeGesture]="swipeBackEnabled$ | async"></ion-router-outlet>
 </ion-app>

@@ -3,7 +3,6 @@ import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { NumberHelper } from '../../../../../core/helpers/number-helper';
 
 @Component({
   selector: 'app-snow-surface',

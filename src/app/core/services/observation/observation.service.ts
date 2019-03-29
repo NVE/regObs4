@@ -278,16 +278,19 @@ export class ObservationService {
     return combineLatest(this.getUserSettingsObservableDistinctToChangeObservations(), this.latestObservations.asObservable())
       .pipe(
         tap((val) => this.loggingService.debug('User settings or latest observations triggered change', DEBUG_TAG, val)),
-        switchMap(([userSetting, latestObservations]) =>
-          latestObservations[this.getGeoHazardKey(userSetting.currentGeoHazard)] !== undefined ?
-            of(latestObservations[this.getGeoHazardKey(userSetting.currentGeoHazard)].filter((reg) => this.observationByParameterFilter(reg,
-              userSetting.language, userSetting.currentGeoHazard, this.getObservationDaysBackAsDate(userSetting)))) :
-            this.getObservationsByParametersAsObservable(
-              userSetting.appMode,
-              userSetting.language,
-              userSetting.currentGeoHazard,
-              this.getObservationDaysBackAsDate(userSetting),
-            )), shareReplay(1));
+        switchMap(([userSetting, latestObservations]) => {
+          const key = this.getGeoHazardKeyFull(userSetting.appMode, userSetting.language, userSetting.currentGeoHazard);
+          if (latestObservations[key] !== undefined) {
+            const filteredObservations = latestObservations[key].filter((reg) => this.observationByParameterFilter(reg,
+              userSetting.language, userSetting.currentGeoHazard, this.getObservationDaysBackAsDate(userSetting)));
+            return of(filteredObservations);
+          }
+          return this.getObservationsByParametersAsObservable(
+            userSetting.appMode,
+            userSetting.language,
+            userSetting.currentGeoHazard,
+            this.getObservationDaysBackAsDate(userSetting));
+        }), shareReplay(1));
   }
 
   private getDistinctUserSettingsToChangeObservations(userSetting: UserSetting) {
@@ -335,20 +338,25 @@ export class ObservationService {
       (this.getObservationsByParametersQuery(appMode, langKey, geoHazards, fromDate, observerGuid).listen({
         debounce: 500,
         unique: true,
-        compareFn: (a, b) => this.observableCompareFunc(a, b),
+        compareFn: (a, b) => this.isDifferent(a, b),
       })).pipe(
         map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
         tap((items) => this.loggingService.debug('Observations observable change feed', DEBUG_TAG, items)));
   }
 
-  private observableCompareFunc(rowsA: RegistrationViewModel[], rowsB: RegistrationViewModel[]) {
-    const newRows = rowsA.map((x) => this.uniqueObservation(x)).join('#');
-    const oldRows = rowsB.map((x) => this.uniqueObservation(x)).join('#');
-    return newRows !== oldRows;
+  isDifferent(rowsA: RegistrationViewModel[], rowsB: RegistrationViewModel[]) {
+    return this.getUniqueObservations(rowsA) !== this.getUniqueObservations(rowsB);
   }
 
-  private uniqueObservation(obs: RegistrationViewModel) {
-    return `${obs.RegID}_${obs.DtChangeTime}`;
+  uniqueObservation(obs: RegistrationViewModel) {
+    return `${obs.RegID}_${obs.LangKey}_${obs.DtChangeTime}`;
+  }
+
+  getUniqueObservations(rows: RegistrationViewModel[]) {
+    if (!rows) {
+      return '';
+    }
+    return rows.map((x) => this.uniqueObservation(x)).join('#');
   }
 
   async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {

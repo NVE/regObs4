@@ -148,14 +148,14 @@ class SearchService extends __BaseService {
   }
 
   /**
-   * @param dto undefined
+   * @param criteria undefined
    * @return OK
    */
-  SearchAtAGlanceResponse(dto: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
+  SearchAtAGlanceResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
-    __body = dto;
+    __body = criteria;
     let req = new HttpRequest<any>(
       'POST',
       this.rootUrl + `/Search/AtAGlance`,
@@ -174,11 +174,11 @@ class SearchService extends __BaseService {
     );
   }
   /**
-   * @param dto undefined
+   * @param criteria undefined
    * @return OK
    */
-  SearchAtAGlance(dto: SearchCriteriaRequestDto): __Observable<Array<AtAGlanceViewModel>> {
-    return this.SearchAtAGlanceResponse(dto).pipe(
+  SearchAtAGlance(criteria: SearchCriteriaRequestDto): __Observable<Array<AtAGlanceViewModel>> {
+    return this.SearchAtAGlanceResponse(criteria).pipe(
       __map(_r => _r.body as Array<AtAGlanceViewModel>)
     );
   }

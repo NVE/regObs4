@@ -5,9 +5,9 @@
 </ion-list-header>
 <ion-radio-group (ionChange)="onChange()">
   <ng-container *ngFor="let item of kdvelements">
-    <ion-item [ngClass]="{'selected': item.Id === value} " (click)="setSelected(item.Id)" [hidden]="!isVisible(item)">
+    <ion-item [ngClass]="{'selected': item.Id === value}" [hidden]="!isVisible(item)" (click)="setSelected(item.Id)">
       <ion-label>{{ useDescription ? item.Description : item.Name }}</ion-label>
-      <ion-radio mode="md" slot="start" [value]="item.Id" [checked]="value === item.Id"></ion-radio>
+      <ion-radio mode="md" slot="start" [value]="item.Id" [checked]="item.Id === value"></ion-radio>
     </ion-item>
     <div *ngIf="item.Id === value">
       <ng-content>

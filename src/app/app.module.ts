@@ -44,7 +44,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient]
       }
     }),
-    LeafletModule.forRoot(),
+    // LeafletModule.forRoot(),
     MarkdownModule.forRoot(),
     IonicStorageModule.forRoot({
       name: settings.db.simpleStorage.dbName,

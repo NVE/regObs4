@@ -83,7 +83,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       shadowUrl: 'leaflet/marker-shadow.png',
       shadowSize: [41, 41],
     });
-    this.mapService.followMode = !this.locationMarker && !this.fromMarker;
+    this.followMode = !this.locationMarker && !this.fromMarker;
+    this.mapService.followMode = this.followMode;
     if (!this.locationMarker) {
       if (this.fromMarker) {
         this.locationMarker = L.marker(this.fromMarker.getLatLng(), { icon: locationMarkerIcon });
@@ -122,9 +123,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       this.fromMarker.addTo(this.map);
     }
     this.locationGroup.addTo(this.map);
-    if (this.locationMarker) {
-      this.map.setView(this.locationMarker.getLatLng(), 15);
-    }
     this.map.on('dragstart', () => {
       this.ngZone.run(() => {
         this.isLoading = true;
@@ -157,28 +155,39 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.mapService.followMode$.subscribe((val) => {
       this.followMode = val;
       if (this.followMode && this.userposition) {
-        this.locationMarker.setLatLng({
+        this.setLocationMarkerLatLng({
           lat: this.userposition.coords.latitude,
           lng: this.userposition.coords.longitude
         });
-        if (this.map) {
-          this.updatePathAndDistance();
-        }
       }
     }));
 
+    this.subscriptions.push(this.mapSearchService.mapSearchClick$.subscribe((item) => {
+      const latLng = item instanceof L.LatLng ? item : item.latlng;
+      this.setLocationMarkerLatLng(latLng);
+    }));
+
+    if (!this.followMode) {
+      this.map.setView(this.locationMarker.getLatLng(), 15);
+    }
+
     this.mapReady.emit(this.map);
     this.updatePathAndDistance();
+  }
+
+  private setLocationMarkerLatLng(latLng: L.LatLngExpression) {
+    this.locationMarker.setLatLng(latLng);
+    this.updatePathAndDistance();
+    this.updateMapViewInfo();
   }
 
   private setToPrevouslyUsedLocation(location: ObsLocationsResponseDtoV2) {
     this.ngZone.run(() => {
       this.mapService.followMode = false;
       this.selectedLocation = location;
-      this.locationMarker.setLatLng(L.latLng(location.LatLngObject.Latitude,
+      this.setLocationMarkerLatLng(L.latLng(location.LatLngObject.Latitude,
         location.LatLngObject.Longitude));
       this.map.panTo(this.locationMarker.getLatLng());
-      this.updatePathAndDistance();
       this.showDetails = true;
     });
   }
@@ -213,13 +222,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     if (position.coords) {
       this.userposition = position;
       if (this.followMode) {
-        this.locationMarker.setLatLng({
+        this.setLocationMarkerLatLng({
           lat: position.coords.latitude,
           lng: position.coords.longitude
         });
-      }
-      if (this.map) {
-        this.updatePathAndDistance();
       }
     }
   }
@@ -266,7 +272,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  async confirmLocation() {
+  confirmLocation() {
     const obsLocation: ObsLocation = {
       Latitude: this.locationMarker.getLatLng().lat,
       Longitude: this.locationMarker.getLatLng().lng,

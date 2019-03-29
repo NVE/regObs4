@@ -5,21 +5,22 @@ import {
   Output,
   EventEmitter,
   ViewChild,
+  NgZone,
+  OnDestroy,
 } from '@angular/core';
 import { KdvElement } from '../../../regobs-api/models';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
-import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { SelectInterface } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IonSelect } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-kdv-dropdown',
   templateUrl: './kdv-dropdown.component.html',
   styleUrls: ['./kdv-dropdown.component.scss'],
 })
-export class KdvDropdownComponent implements OnInit {
-
+export class KdvDropdownComponent implements OnInit, OnDestroy {
   @Input() title: string;
   @Input() placeholder: string;
   @Input() kdvKey: string;
@@ -34,6 +35,8 @@ export class KdvDropdownComponent implements OnInit {
 
   kdvelements: KdvElement[];
 
+  private subscription: Subscription;
+
   get selectedText() {
     if ((this.value !== undefined || this.value !== null) && this.kdvelements) {
       const kdvElement = this.kdvelements.find((x) => x.Id === this.value);
@@ -47,22 +50,34 @@ export class KdvDropdownComponent implements OnInit {
   @ViewChild(IonSelect) select: IonSelect;
   constructor(
     private kdvService: KdvService,
-    private userSettingService: UserSettingService,
+    private ngZone: NgZone,
     private translateService: TranslateService,
   ) { }
 
-  async ngOnInit() {
-    const userSetting = await this.userSettingService.getUserSettings();
-    this.kdvelements = await this.kdvService.getKdvRepositories(userSetting.language, userSetting.appMode, this.kdvKey);
-    const translations = await this.translateService.get([this.title || '', this.placeholder || '']).toPromise();
-    if (!this.interfaceOptions) {
-      this.interfaceOptions = {};
-      if (translations[this.title]) {
-        this.interfaceOptions.header = translations[this.title];
-      }
-      if (translations[this.placeholder]) {
-        this.interfaceOptions.subHeader = translations[this.placeholder];
-      }
+  ngOnInit() {
+    this.subscription = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.kdvelements = val;
+      });
+    });
+    this.translateService.get([this.title || '', this.placeholder || '']).subscribe((translations) => {
+      this.ngZone.run(() => {
+        if (!this.interfaceOptions) {
+          this.interfaceOptions = {};
+          if (translations[this.title]) {
+            this.interfaceOptions.header = translations[this.title];
+          }
+          if (translations[this.placeholder]) {
+            this.interfaceOptions.subHeader = translations[this.placeholder];
+          }
+        }
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
 

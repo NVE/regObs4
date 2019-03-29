@@ -1,7 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, NgZone, ViewChildren, QueryList } from '@angular/core';
 import { WaterLevelMeasurementDto } from '../../../../regobs-api/models';
 import * as moment from 'moment';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { NumericInputComponent } from '../../numeric-input/numeric-input.component';
+import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
 
 @Component({
   selector: 'app-water-level-measurement',
@@ -15,13 +17,21 @@ export class WaterLevelMeasurementComponent implements OnInit {
   @Input() waterLevelMeasurement: WaterLevelMeasurementDto;
   @Input() dtObsTime: string;
   @Output() waterLevelMeasurementChange = new EventEmitter();
-
   maxDate: string;
+  @ViewChildren(NumericInputComponent) private numericInputs: QueryList<NumericInputComponent>;
+  showDtMeasurementTimeError = false;
 
   get dateIsDifferentThanObsTime() {
     return this.waterLevelMeasurement.DtMeasurementTime
       && !moment(this.waterLevelMeasurement.DtMeasurementTime)
         .startOf('day').isSame(moment(this.dtObsTime).startOf('day'));
+  }
+
+  get isValid() {
+    if (IsEmptyHelper.isEmpty(this.waterLevelMeasurement)) {
+      return true;
+    }
+    return this.waterLevelMeasurement.DtMeasurementTime && this.numericInputs && !this.numericInputs.some((x) => !x.isValid);
   }
 
   constructor() { }
@@ -37,5 +47,17 @@ export class WaterLevelMeasurementComponent implements OnInit {
     const now = moment().toISOString(true);
     this.maxDate = now;
     this.waterLevelMeasurement.DtMeasurementTime = now;
+  }
+
+  showError() {
+    if (!IsEmptyHelper.isEmpty(this.waterLevelMeasurement) && !this.waterLevelMeasurement.DtMeasurementTime) {
+      this.showDtMeasurementTimeError = true;
+    } else {
+      this.showDtMeasurementTimeError = false;
+    }
+  }
+
+  dtChanged() {
+    this.showError();
   }
 }

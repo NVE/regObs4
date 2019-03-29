@@ -6,11 +6,13 @@ import { NavController } from '@ionic/angular';
 import { ObsLocationsResponseDtoV2 } from '../../../regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
 import { ObsLocation } from '../../models/obs-location.model';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
+import { LoginService } from '../../../login/services/login.service';
+import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 
 const DEBUG_TAG = 'ObsLocationPage';
 
@@ -28,6 +30,9 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   geoHazard: GeoHazard;
   isSaveDisabled = false;
 
+  private subscription: Subscription;
+  private loggedInUser: LoggedInUser;
+
   constructor(
     private registrationService: RegistrationService,
     private activatedRoute: ActivatedRoute,
@@ -36,6 +41,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     private fullscreenService: FullscreenService,
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
+    private loginService: LoginService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -70,12 +76,19 @@ export class ObsLocationPage implements OnInit, OnDestroy {
         };
       }
     }
+    this.subscription = this.loginService.loggedInUser$.subscribe((val) => {
+      this.loggedInUser = val;
+    });
+
     this.ngZone.run(() => {
       this.isLoaded = true;
     });
   }
 
   ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   ionViewDidEnter() {
@@ -93,26 +106,21 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       && reg.request.ObsLocation.Longitude;
   }
 
-  async onLocationSet(event: ObsLocation) {
-    try {
+  onLocationSet(event: ObsLocation) {
+    this.ngZone.run(() => {
       this.isSaveDisabled = true;
-      if (!this.registration) {
-        this.registration = await this.registrationService.createNewRegistration(this.geoHazard);
-      }
-      this.registration.request.ObsLocation = event;
-      this.registration.calculatedLocationName = event.calculatedLocationName;
-      const id = await this.registrationService.saveRegistration(this.registration);
-      if (this.registration.request.DtObsTime) {
-        this.navController.navigateForward('registration/edit/' + id);
-      } else {
-        this.navController.navigateForward('registration/set-time/' + id);
-      }
-    } catch (err) {
-      this.loggingService.error(err, DEBUG_TAG, 'Could not create new registration');
-    } finally {
-      this.ngZone.run(() => {
-        this.isSaveDisabled = false;
-      });
+    });
+    if (!this.registration) {
+      this.registration = this.registrationService.createNewRegistration(this.geoHazard, this.loggedInUser);
+    }
+    this.registration.request.ObsLocation = event;
+    this.registration.calculatedLocationName = event.calculatedLocationName;
+    this.registrationService.saveRegistration(this.registration);
+    this.isSaveDisabled = false;
+    if (this.registration.request.DtObsTime) {
+      this.navController.navigateForward('registration/edit/' + this.registration.id);
+    } else {
+      this.navController.navigateForward('registration/set-time/' + this.registration.id);
     }
   }
 

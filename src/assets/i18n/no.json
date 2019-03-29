@@ -142,6 +142,7 @@
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjoner",
     "NO_OBSERVATIONS": "Del dine observasjoner!",
     "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Med Varsom Regobs er det lett å dele observasjoner, bilder og vurderinger med andre.",
+    "SENT_SUBTITLE": "Disse observasjonene er sendt inn og lagret i Regobs.",
     "TITLE": "Mine observasjoner"
   },
   "OBSERVATION_LIST": {
@@ -325,7 +326,7 @@
         "COMMENT": "Kommentar til varslet faregrad",
         "EVALUATION": "Vurdering",
         "EVALUATION_PLACEHOLDER": "Vurdering av skredfare",
-        "FORECAST_CORRECT": "Vurdering av varslet faregrad",
+        "FORECAST_CORRECT": "Vurdering av varslet faregrad på varsom.no",
         "TITLE": "Skredfarevurdering"
       },
       "AVALANCHE_OBS": {
@@ -378,13 +379,13 @@
         "TITLE": "Stabilitetstest"
       },
       "SNOW_PROFILE": {
-        "SNOW_PROFILE_HELP_TEXT": "Vi har dessverre ikke støtte for å registrere en snøprofil. En profil eksportert fra AvyLab eller Ullr Labs Avalanche lastes opp som bilde.",
+        "SNOW_PROFILE_HELP_TEXT": "Vi har dessverre ikke støtte for å registrere et snøprofil i Varsom Regobs appen. Men, du kan ta et bilde av et håndtegnet profil eller eksportere et profil fra en tredjeparts app som Ullr Labs Avalanche. På regobs.no kan du senere oppdatere observasjonen med å bruke egne skjema og plot for snøprofiler.",
         "TITLE": "Snøprofil"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snødekket",
         "COMMENT_PLACEHOLDER": "Hvordan er snøfordelingen generelt ifht. høyde og eksposisjon. Er det forskjell i regionen?",
-        "HEIGHT_LIMIT_LAYERED_SNOW": "Øvre grense lagdelt snø (moh)",
+        "HEIGHT_LIMIT_LAYERED_SNOW": "Øvre grense for snø uten lagdeling (moh)",
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snø uten farlig lagdeling",
         "NEW_SNOW_DEPTH": "Nysnødybde (cm)",
         "NEW_SNOW_LINE": "Nysnøgrense (moh)",
@@ -433,6 +434,7 @@
         "DESCRIBE": "Beskriv",
         "DESCRIBE_HEIGHT": "Beskriv høyde",
         "DESCRIBE_SITUATION": "Hvordan vil du beskrive situasjonen?",
+        "DT_REQUIRED_TEXT": "Tidspunkt er obligatorisk!",
         "HOW_DO_YOU_READ": "Hvordan leser du av vannstanden?",
         "MARKED_WITH": "Jeg har markert vannstanden med",
         "MARKING": "Markering",
@@ -454,21 +456,24 @@
   "SETTINGS": {
     "APPMODE": "Appmodus",
     "APP_VERSION": "App versjon",
+    "CONFIRM_RESET": "Er du sikker på du vil tilbakestille app?",
     "COUNTRY": "Land",
     "DROPDOWNS_FAILED": "Klarte ikke oppdatere nedtrekksmenyer. Vennligst sjekk om du har nettverk og prøv igjen litt senere.",
     "DROPDOWNS_UPDATED": "Nedtrekksmenyer oppdatert!",
-    "EMAIL_RECIEPT": "Kvittering på epost",
+    "EMAIL_RECEIPT": "Kvittering på epost",
     "HIDE_ADVANCED": "Skjul avanserte innstillinger",
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Kun i Norge",
-    "NUMBER_OF_TILES_IN_CACHE": "Antall kartblad lagret på telefonen",
+    "NUMBER_OF_TILES_IN_CACHE": "Maksimalt antall offline kartblad",
     "RESET": "Tilbakestill app",
+    "RESETTING": "App tilbakestilles. Vennligst vent...",
     "SHOW_ADVANCED": "Vis avanserte innstillinger",
     "SIZE_OF_TILES_CACHE": "Størrelse på kartblad lagret på telefonen",
-    "TILES_CACHE_SIZE": "Kartblad buffer størrelse",
+    "TILES_CACHE_SIZE": "Antall kartblad lagret på telefonen",
     "TITLE": "Innstillinger",
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyer",
-    "USE_IN_WORLD": "Utenfor Norge"
+    "USE_IN_WORLD": "Utenfor Norge",
+    "USE_RETINA_MAP": "Bruk høy oppløsning på kart"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
@@ -489,7 +494,7 @@
     "I_UNDERSTAND": "Ok, jeg forstår",
     "PAGE_1": {
       "HEADER": "Planlegg trygge turer!",
-      "LINE_1": "Se ferske observasjoner og naturarevarsler når du planlegger turen."
+      "LINE_1": "Se ferske observasjoner og naturfarevarsler når du planlegger turen."
     },
     "PAGE_2": {
       "HEADER": "Forstå terrenget bedre!",
@@ -562,6 +567,7 @@
     "COMMENT_DESCRIPTION": "Her kan du skrive inn hvilken obstur du skal på, hva du ser etter, osv.",
     "END_ERROR": "Klarte ikke stoppe tur. Vennligst prøv igjen senere. Turen vil automatisk ble stoppet ved midnatt.",
     "ERROR": "Klarte ikke starte tur. Vennligs prøv igjen.",
+    "ERROR_POSITION": "Kan ikke starte tur uten GPS posisjon.",
     "LEGACY_HELP_TEXT": "Her melder du fra om at du planlegger tur i dag.\n\nDet er nyttig for skredvarslingen å vite om det kan ventes observasjoner i dag. Det er også nyttig å vite hva slags observasjoner som kan ventes (hva ser du etter, hvor skal du på tur) og når regner du med at disse sendes inn på Regobs.\n\nAlle betalte observatører skal registrere hva slags obstur som planlegges: er det en ordinær betalt observasjonstur, eller er det en tilleggsregistrering? Tilleggsregistrering er innsending av observasjoner du har gjort i annet arbeid eller på fritiden din.",
     "ONGOING_TRIP": "Tur pågår",
     "STARTED": "Tur startet",

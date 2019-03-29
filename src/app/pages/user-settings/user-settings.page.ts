@@ -1,20 +1,20 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { NanoSql } from '../../../nanosql';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
-import { HelperService } from '../../core/services/helpers/helper.service';
 import { KdvService } from '../../core/services/kdv/kdv.service';
 import { TranslateService } from '@ngx-translate/core';
-import { OfflineImageService } from '../../core/services/offline-image/offline-image.service';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
 import { AppVersion } from '../../core/models/app-version.model';
-import { TopoMap } from '../../core/models/topo-map.enum';
 import { Subscription } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
+import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
+import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
+import { HelperService } from '../../core/services/helpers/helper.service';
+import { DbHelperService } from '../../core/services/db-helper/db-helper.service';
+import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'UserSettingsPage';
 
@@ -31,7 +31,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   cacheTilesSize: string;
   isUpdating = false;
   version: AppVersion;
-  TopoMap = TopoMap;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -40,11 +39,13 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private helperService: HelperService,
     private kdvService: KdvService,
     private ngZone: NgZone,
+    private dbHelperService: DbHelperService,
     private loggingService: LoggingService,
     private translateService: TranslateService,
+    private dataMarshallService: DataMarshallService,
     private alertController: AlertController,
-    private offlineImageService: OfflineImageService,
     private appVersionService: AppVersionService,
+    private loadingController: LoadingController,
     private navController: NavController) { }
 
   async ngOnInit() {
@@ -53,11 +54,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
         this.userSettings = val;
       });
     }));
-    this.subscriptions.push(this.userSettingService.userSettingObservable$
-      .pipe(map((val) => val.tilesCacheSize), distinctUntilChanged()).subscribe((val) => {
-        this.loggingService.debug('tilesCacheSize changed to ' + val, DEBUG_TAG);
-        this.offlineMapService.cleanupTilesCache(val);
-      }));
     this.subscriptions.push(this.offlineMapService.getTilesCacheAsObservable().subscribe((tilesCache) => {
       this.ngZone.run(() => {
         this.numberOfCacheTiles = tilesCache.count;
@@ -71,9 +67,14 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.stopSubscriptions();
+  }
+
+  private stopSubscriptions() {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
+    this.subscriptions = [];
   }
 
   async updateSettings() {
@@ -105,11 +106,54 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     return alert.onDidDismiss();
   }
 
+  async confirmReset() {
+    const translations = await this.translateService.get(
+      ['SETTINGS.CONFIRM_RESET', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
+    const alert = await this.alertController.create({
+      message: translations['SETTINGS.CONFIRM_RESET'],
+      buttons: [{
+        text: translations['ALERT.OK'],
+        handler: () => this.reset(),
+      },
+      {
+        text: translations['ALERT.CANCEL'],
+        role: 'cancel',
+      }
+      ]
+    });
+    alert.present();
+  }
+
   async reset() {
+    const message = await this.translateService.get('SETTINGS.RESETTING').toPromise();
+    const loading = await this.loadingController.create({
+      message,
+    });
+    loading.present();
     this.isUpdating = true;
-    // await this.offlineMapService.reset();
-    // await this.offlineImageService.reset();
-    await NanoSql.resetDb();
-    this.navController.navigateRoot('start-wizard');
+    // TODO: Implement some kind of subscription manager to stop all subscriptions and resubscribe when complete
+    try {
+      await this.doReset();
+    } catch (err) {
+      this.loggingService.log(`Could not reset db`, err, LogLevel.Warning, DEBUG_TAG);
+    }
+    this.ngZone.run(() => {
+      this.isUpdating = false;
+      loading.dismiss();
+      this.navController.navigateRoot('start-wizard');
+    });
+  }
+
+  private async doReset() {
+    return this.ngZone.runOutsideAngular(async () => {
+      this.stopSubscriptions();
+      this.dataMarshallService.unsubscribeAll();
+      this.offlineMapService.shouldProcessOfflineImage(false);
+      await this.dbHelperService.resetDb((table, _) => {
+        this.loggingService.log(`Error reset table ${table}`, null, LogLevel.Warning, DEBUG_TAG);
+      });
+      this.userSettingService.initObservables();
+      this.dataMarshallService.init();
+    });
   }
 }

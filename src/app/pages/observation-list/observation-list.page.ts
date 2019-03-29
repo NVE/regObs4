@@ -6,7 +6,7 @@ import { map, switchMap, distinct, tap, distinctUntilChanged } from 'rxjs/operat
 import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
-import { IonVirtualScroll, IonRefresher } from '@ionic/angular';
+import { IonVirtualScroll, IonRefresher, IonContent } from '@ionic/angular';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 // import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
@@ -22,19 +22,21 @@ export class ObservationListPage implements OnInit, OnDestroy {
     observations: RegistrationViewModel[];
     loaded = false;
     private subscription: Subscription;
-
-    refreshFunc: Function;
     cancelSubject: Subject<any>;
 
     @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
     @ViewChild(IonRefresher) refresher: IonRefresher;
+    @ViewChild(IonContent) content: IonContent;
+
+    trackByIdFunc = this.trackByIdFuncInternal.bind(this);
+    refreshFunc = this.refresh.bind(this);
 
     get observations$() {
         return this.mapService.mapView$.pipe(switchMap((mapView: IMapView) =>
             this.observationService.observations$.pipe(map((observations) =>
                 this.filterObservationsWithinViewBounds(observations, mapView)),
                 distinctUntilChanged<RegistrationViewModel[], string>((a, b) => a.localeCompare(b) === 0,
-                    (keySelector) => this.getUniqueArray(keySelector))
+                    (keySelector) => this.observationService.getUniqueObservations(keySelector))
             )
         ));
     }
@@ -49,7 +51,6 @@ export class ObservationListPage implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.refreshFunc = this.refresh.bind(this);
         this.cancelSubject = this.dataMarshallService.observableCancelSubject;
     }
 
@@ -62,29 +63,35 @@ export class ObservationListPage implements OnInit, OnDestroy {
     }
 
     ionViewWillLeave() {
+        this.loaded = false;
+        this.observations = undefined;
         this.stopSubscription();
     }
 
-    private reloadVirtualList(observations: RegistrationViewModel[]) {
-        if (this.getUniqueArray(this.observations) !== this.getUniqueArray(observations)) {
-            this.ngZone.run(() => {
-                this.loaded = false;
-                this.observations = undefined; // Recreate virutal scroll
+    private recreateObservations(observations: RegistrationViewModel[]) {
+        this.loaded = false;
+        this.observations = undefined; // Recreate virutal scroll
+        setTimeout(() => {
+            this.observations = observations;  // Initial load
+            // NOTE: Reload virtual scroll to get correct item heights
+            // There is still some issues with ionic virtual scroll...
+            // https://github.com/ionic-team/ionic/issues/15948
+            // https://github.com/ionic-team/ionic/issues/15258
+            setTimeout(() => {
+                this.observations = [...observations];
                 setTimeout(() => {
-                    this.observations = observations;  // Initial load
-                    // NOTE: Reload virtual scroll to get correct item heights
-                    // There is still some issues with ionic virtual scroll...
-                    // https://github.com/ionic-team/ionic/issues/15948
-                    // https://github.com/ionic-team/ionic/issues/15258
-                    setTimeout(() => {
-                        this.observations = [...observations];
-                        setTimeout(() => {
-                            this.ngZone.run(() => {
-                                this.loaded = true;
-                            });
-                        }, 500);
-                    }, 500);
-                }, 200);
+                    this.ngZone.run(() => {
+                        this.loaded = true;
+                    });
+                }, 500);
+            }, 500);
+        }, 200);
+    }
+
+    private reloadVirtualList(observations: RegistrationViewModel[]) {
+        if (this.observationService.isDifferent(this.observations, observations)) {
+            this.ngZone.run(() => {
+                this.recreateObservations(observations);
             });
         } else if (!this.loaded) {
             this.ngZone.run(() => {
@@ -96,13 +103,6 @@ export class ObservationListPage implements OnInit, OnDestroy {
 
     startSubscription() {
         this.subscription = this.observations$.subscribe((val) => this.reloadVirtualList(val));
-    }
-
-    private getUniqueArray(arr: RegistrationViewModel[]) {
-        if (!arr) {
-            return '';
-        }
-        return arr.map((reg) => `${reg.RegID}-${reg.DtChangeTime}`).join('#');
     }
 
     stopSubscription() {
@@ -119,8 +119,8 @@ export class ObservationListPage implements OnInit, OnDestroy {
             view.bounds.contains(L.latLng(observation.ObsLocation.Latitude, observation.ObsLocation.Longitude)));
     }
 
-    trackByRegId(_, obs: RegistrationViewModel) {
-        return obs ? obs.RegID : undefined;
+    private trackByIdFuncInternal(_, obs: RegistrationViewModel) {
+        return this.observationService.uniqueObservation(obs);
     }
 
     footerFn(item: RegistrationViewModel, index: number, items: RegistrationViewModel[]) {

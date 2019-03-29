@@ -7,7 +7,6 @@ import { UserSettingService } from './core/services/user-setting/user-setting.se
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { LangKey } from './core/models/langKey';
-import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
@@ -17,6 +16,7 @@ import { LoggingService } from './modules/shared/services/logging/logging.servic
 import { AnalyticService } from './core/services/analytic/analytic.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 
 @Component({
   selector: 'app-root',
@@ -35,10 +35,9 @@ export class AppComponent {
     private navController: NavController,
     private deeplinks: Deeplinks,
     private backgroundFetch: BackgroundFetch,
-    private zone: NgZone,
     private dataMarshallService: DataMarshallService,
-    private offlineMapService: OfflineMapService,
     private offlineImageService: OfflineImageService,
+    private offlineMapService: OfflineMapService,
     private keyboard: Keyboard,
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
@@ -63,10 +62,11 @@ export class AppComponent {
       this.loggingService.configureLogging(userSettings.appMode);
       this.analyticService.init();
       this.translate.use(LangKey[userSettings.language]);
-      this.statusBar.styleBlackTranslucent();
-      this.statusBar.overlaysWebView(this.platform.is('ios'));
+      this.statusBar.styleLightContent();
+      this.statusBar.backgroundColorByHexString('#99044962');
+      // this.statusBar.overlaysWebView(this.platform.is('ios'));
+      this.statusBar.overlaysWebView(false);
       this.keyboard.hideFormAccessoryBar(false);
-      this.offlineMapService.cleanupTilesCache(userSettings.tilesCacheSize);
       this.offlineImageService.cleanupOldItems();
       this.dataMarshallService.init();
       this.initBackroundUpdates();

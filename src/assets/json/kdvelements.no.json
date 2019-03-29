@@ -964,16 +964,6 @@
                 "Id": 3,
                 "Name": "Mange bratte heng",
                 "Description": null
-            },
-            {
-                "Id": 4,
-                "Name": "De fleste bratte heng",
-                "Description": null
-            },
-            {
-                "Id": 5,
-                "Name": "Også i mindre bratt terreng",
-                "Description": null
             }
         ],
         "Snow_AvalReleaseHeightKDV": [
@@ -1025,13 +1015,23 @@
                 "Description": null
             },
             {
-                "Id": 10,
-                "Name": "Stor tilleggsbelastning",
+                "Id": 30,
+                "Name": "Svært vanskelig å løse ut",
                 "Description": null
             },
             {
-                "Id": 21,
-                "Name": "Liten tilleggsbelastning",
+                "Id": 40,
+                "Name": "Vanskelig å løse ut",
+                "Description": null
+            },
+            {
+                "Id": 50,
+                "Name": "Lett å løse ut",
+                "Description": null
+            },
+            {
+                "Id": 60,
+                "Name": "Svært lett å løse ut",
                 "Description": null
             },
             {
@@ -1503,6 +1503,429 @@
             {
                 "Id": 15,
                 "Name": "CTN ",
+                "Description": null
+            }
+        ],
+        "Snow_WetnessKDV": [
+            {
+                "Id": 0,
+                "Name": " - ",
+                "Description": null
+            },
+            {
+                "Id": 1,
+                "Name": "D",
+                "Description": null
+            },
+            {
+                "Id": 2,
+                "Name": "D-M",
+                "Description": null
+            },
+            {
+                "Id": 3,
+                "Name": "M",
+                "Description": null
+            },
+            {
+                "Id": 4,
+                "Name": "M-W",
+                "Description": null
+            },
+            {
+                "Id": 5,
+                "Name": "W",
+                "Description": null
+            },
+            {
+                "Id": 6,
+                "Name": "W-V",
+                "Description": null
+            },
+            {
+                "Id": 7,
+                "Name": "V",
+                "Description": null
+            },
+            {
+                "Id": 8,
+                "Name": "V-S",
+                "Description": null
+            },
+            {
+                "Id": 9,
+                "Name": "S",
+                "Description": null
+            }
+        ],
+        "Snow_HardnessKDV": [
+            {
+                "Id": 0,
+                "Name": " - ",
+                "Description": null
+            },
+            {
+                "Id": 1,
+                "Name": "F-",
+                "Description": null
+            },
+            {
+                "Id": 2,
+                "Name": "F",
+                "Description": null
+            },
+            {
+                "Id": 3,
+                "Name": "F+",
+                "Description": null
+            },
+            {
+                "Id": 4,
+                "Name": " F-4F",
+                "Description": null
+            },
+            {
+                "Id": 5,
+                "Name": "4F-",
+                "Description": null
+            },
+            {
+                "Id": 6,
+                "Name": "4F",
+                "Description": null
+            },
+            {
+                "Id": 7,
+                "Name": "4F+",
+                "Description": null
+            },
+            {
+                "Id": 8,
+                "Name": "4F-1F",
+                "Description": null
+            },
+            {
+                "Id": 9,
+                "Name": "1F-",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "1F",
+                "Description": null
+            },
+            {
+                "Id": 11,
+                "Name": "1F+ ",
+                "Description": null
+            },
+            {
+                "Id": 12,
+                "Name": "1F-P ",
+                "Description": null
+            },
+            {
+                "Id": 13,
+                "Name": "P- ",
+                "Description": null
+            },
+            {
+                "Id": 14,
+                "Name": "P",
+                "Description": null
+            },
+            {
+                "Id": 15,
+                "Name": "P+",
+                "Description": null
+            },
+            {
+                "Id": 16,
+                "Name": "P-K",
+                "Description": null
+            },
+            {
+                "Id": 17,
+                "Name": "K-",
+                "Description": null
+            },
+            {
+                "Id": 18,
+                "Name": "K",
+                "Description": null
+            },
+            {
+                "Id": 19,
+                "Name": "K+",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "K-I",
+                "Description": null
+            },
+            {
+                "Id": 21,
+                "Name": "I",
+                "Description": null
+            }
+        ],
+        "Snow_GrainFormKDV": [
+            {
+                "Id": 0,
+                "Name": " - ",
+                "Description": null
+            },
+            {
+                "Id": 1,
+                "Name": "PP",
+                "Description": null
+            },
+            {
+                "Id": 2,
+                "Name": "PPco",
+                "Description": null
+            },
+            {
+                "Id": 3,
+                "Name": "PPnd",
+                "Description": null
+            },
+            {
+                "Id": 4,
+                "Name": "PPpl",
+                "Description": null
+            },
+            {
+                "Id": 5,
+                "Name": "PPsd",
+                "Description": null
+            },
+            {
+                "Id": 6,
+                "Name": "PPir",
+                "Description": null
+            },
+            {
+                "Id": 7,
+                "Name": "PPgp",
+                "Description": null
+            },
+            {
+                "Id": 8,
+                "Name": "PPhl",
+                "Description": null
+            },
+            {
+                "Id": 9,
+                "Name": "PPip",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "PPrm",
+                "Description": null
+            },
+            {
+                "Id": 11,
+                "Name": "MM",
+                "Description": null
+            },
+            {
+                "Id": 12,
+                "Name": "MMrp",
+                "Description": null
+            },
+            {
+                "Id": 13,
+                "Name": "MMci",
+                "Description": null
+            },
+            {
+                "Id": 14,
+                "Name": "DF",
+                "Description": null
+            },
+            {
+                "Id": 15,
+                "Name": "DFdc",
+                "Description": null
+            },
+            {
+                "Id": 16,
+                "Name": "DFbk",
+                "Description": null
+            },
+            {
+                "Id": 17,
+                "Name": "RG",
+                "Description": null
+            },
+            {
+                "Id": 18,
+                "Name": "RGsr",
+                "Description": null
+            },
+            {
+                "Id": 19,
+                "Name": "RGlr",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "RGwp",
+                "Description": null
+            },
+            {
+                "Id": 21,
+                "Name": "RGxf",
+                "Description": null
+            },
+            {
+                "Id": 22,
+                "Name": "FC",
+                "Description": null
+            },
+            {
+                "Id": 23,
+                "Name": "FCso",
+                "Description": null
+            },
+            {
+                "Id": 24,
+                "Name": "FCsf",
+                "Description": null
+            },
+            {
+                "Id": 25,
+                "Name": "FCxr",
+                "Description": null
+            },
+            {
+                "Id": 26,
+                "Name": "DH",
+                "Description": null
+            },
+            {
+                "Id": 27,
+                "Name": "DHcp",
+                "Description": null
+            },
+            {
+                "Id": 28,
+                "Name": "DHpr",
+                "Description": null
+            },
+            {
+                "Id": 29,
+                "Name": "DHch",
+                "Description": null
+            },
+            {
+                "Id": 30,
+                "Name": "DHla",
+                "Description": null
+            },
+            {
+                "Id": 31,
+                "Name": "DHxr",
+                "Description": null
+            },
+            {
+                "Id": 32,
+                "Name": "SH",
+                "Description": null
+            },
+            {
+                "Id": 33,
+                "Name": "SHsu",
+                "Description": null
+            },
+            {
+                "Id": 34,
+                "Name": "SHcv",
+                "Description": null
+            },
+            {
+                "Id": 35,
+                "Name": "SHxr",
+                "Description": null
+            },
+            {
+                "Id": 36,
+                "Name": "MF",
+                "Description": null
+            },
+            {
+                "Id": 37,
+                "Name": "MFcl",
+                "Description": null
+            },
+            {
+                "Id": 38,
+                "Name": "MFpc",
+                "Description": null
+            },
+            {
+                "Id": 39,
+                "Name": "MFsl",
+                "Description": null
+            },
+            {
+                "Id": 40,
+                "Name": "MFcr",
+                "Description": null
+            },
+            {
+                "Id": 41,
+                "Name": "IF",
+                "Description": null
+            },
+            {
+                "Id": 42,
+                "Name": "IFil",
+                "Description": null
+            },
+            {
+                "Id": 43,
+                "Name": "IFic",
+                "Description": null
+            },
+            {
+                "Id": 44,
+                "Name": "IFbi",
+                "Description": null
+            },
+            {
+                "Id": 45,
+                "Name": "IFrc",
+                "Description": null
+            },
+            {
+                "Id": 46,
+                "Name": "IFsc",
+                "Description": null
+            }
+        ],
+        "Snow_CriticalLayerKDV": [
+            {
+                "Id": 0,
+                "Name": "Ikke gitt",
+                "Description": null
+            },
+            {
+                "Id": 11,
+                "Name": "Øvre del",
+                "Description": null
+            },
+            {
+                "Id": 12,
+                "Name": "Nedre del",
+                "Description": null
+            },
+            {
+                "Id": 13,
+                "Name": "Hele laget",
                 "Description": null
             }
         ],
@@ -2011,18 +2434,23 @@
                 "Description": null
             },
             {
-                "Id": 20,
-                "Name": "Kun materielle skader ",
-                "Description": null
-            },
-            {
                 "Id": 25,
                 "Name": "Evakuering",
                 "Description": null
             },
             {
-                "Id": 29,
-                "Name": "Nestenulykke",
+                "Id": 20,
+                "Name": "Kun materielle skader ",
+                "Description": null
+            },
+            {
+                "Id": 27,
+                "Name": "Ingen skredtatt, men nære på",
+                "Description": null
+            },
+            {
+                "Id": 28,
+                "Name": "Person skredtatt, uten skader",
                 "Description": null
             },
             {
