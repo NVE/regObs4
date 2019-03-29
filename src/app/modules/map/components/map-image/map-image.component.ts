@@ -12,18 +12,21 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 export class MapImageComponent implements OnInit {
 
   @Input() location: { latLng: L.LatLng, geoHazard: GeoHazard };
+  @Input() allowZoom: boolean;
 
   private map: L.Map;
 
   constructor() { }
 
   options: L.MapOptions = {
-    zoom: settings.map.tiles.zoomInPosition,
+    zoom: settings.map.tiles.zoomLevelObservationList,
     maxZoom: settings.map.tiles.maxZoom,
-    minZoom: settings.map.tiles.minZoom,
+    minZoom: 8,
     bounceAtZoomLimits: false,
     attributionControl: false,
     zoomControl: false,
+    scrollWheelZoom: 'center', // zoom to center regardless where mouse is
+    touchZoom: 'center',
   };
 
   ngOnInit() {
@@ -34,12 +37,18 @@ export class MapImageComponent implements OnInit {
     if (this.location && this.location.latLng) {
       this.map.setView(this.location.latLng, settings.map.tiles.zoomLevelObservationList);
     }
+    if (!this.allowZoom) {
+      this.map.touchZoom.disable();
+      this.map.scrollWheelZoom.disable();
+      this.map.boxZoom.disable();
+    } else {
+      this.map.on('zoomend', () => {
+        this.map.panTo(this.location.latLng);
+      });
+    }
     this.map.dragging.disable();
-    this.map.touchZoom.disable();
-    this.map.doubleClickZoom.disable();
-    this.map.scrollWheelZoom.disable();
-    this.map.boxZoom.disable();
     this.map.keyboard.disable();
+    this.map.doubleClickZoom.disable();
     if (this.map.tap) {
       this.map.tap.disable();
     }
