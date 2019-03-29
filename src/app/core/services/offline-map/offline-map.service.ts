@@ -126,7 +126,7 @@ export class OfflineMapService {
         timeout || settings.map.tiles.cacheSaveBufferThrottleTimeMs);
     };
 
-    this.loggingService.debug(`Start processing offline tiles queue. Size: ${this._saveBuffer.size}`, DEBUG_TAG);
+    // this.loggingService.debug(`Start processing offline tiles queue. Size: ${this._saveBuffer.size}`, DEBUG_TAG);
     if (this._interval) {
       clearInterval(this._interval);
     }
@@ -137,7 +137,7 @@ export class OfflineMapService {
       this.getImageDataUrlAsObservable(currentTile).subscribe((result: { dataUrl: string, size: number }) => {
         if (result && result.dataUrl && result.size > 0) {
           this.saveTileDataUrlToDbCache(latest.key, result.dataUrl, result.size).then(() => {
-            this.loggingService.debug(`Saved tile: ${latest.key}`, DEBUG_TAG);
+            // this.loggingService.debug(`Saved tile: ${latest.key}`, DEBUG_TAG);
             continueProcessing();
           }, continueProcessing);
         } else {

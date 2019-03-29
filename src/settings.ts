@@ -92,6 +92,7 @@ export const settings = {
             minZoomSupportMaps: 5,
             maxZoom: 18,
             zoomInPosition: 15,
+            zoomLevelObservationList: 12,
             edgeBufferTiles: 0,
             detectRetina: false,
             updateWhenIdle: false,

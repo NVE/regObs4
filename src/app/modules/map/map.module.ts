@@ -6,16 +6,31 @@ import { MapSearchComponent } from './components/map-controls/map-search/map-sea
 import { FullscreenToggleComponent } from './components/map-controls/fullscreen-toggle/fullscreen-toggle.component';
 import { GpsCenterComponent } from './components/map-controls/gps-center/gps-center.component';
 import { MapCenterInfoComponent } from './components/map-center-info/map-center-info.component';
-import { SharedModule } from '../shared/shared.module';
 import { ModalSearchPageModule } from './pages/modal-search/modal-search.module';
 import { LeafletEdgeBufferModule } from 'ngx-leaflet-edgebuffer';
+import { MapImageComponent } from './components/map-image/map-image.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { TranslateModule } from '@ngx-translate/core';
+import { RouterModule } from '@angular/router';
+import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image.module';
+
 
 @NgModule({
   imports: [
-    SharedModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    IonicModule,
+    AngularSvgIconModule,
+    TranslateModule,
+    RouterModule,
     LeafletModule,
     LeafletEdgeBufferModule,
     ModalSearchPageModule,
+    ModalMapImagePageModule,
   ],
   declarations: [
     MapComponent,
@@ -23,7 +38,7 @@ import { LeafletEdgeBufferModule } from 'ngx-leaflet-edgebuffer';
     MapSearchComponent,
     FullscreenToggleComponent,
     GpsCenterComponent,
-    MapCenterInfoComponent
+    MapCenterInfoComponent,
   ],
   exports: [
     MapComponent,
@@ -32,7 +47,9 @@ import { LeafletEdgeBufferModule } from 'ngx-leaflet-edgebuffer';
     FullscreenToggleComponent,
     GpsCenterComponent,
     MapCenterInfoComponent,
-    ModalSearchPageModule
+    ModalSearchPageModule,
+    MapImageComponent,
+    ModalMapImagePageModule,
   ]
 })
 export class MapModule { }

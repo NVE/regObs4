@@ -73,6 +73,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     bounceAtZoomLimits: false,
     attributionControl: false,
     zoomControl: false,
+    maxBounds: new L.LatLngBounds(new L.LatLng(90.0, -180.0), new L.LatLng(-90, 180.0)),
+    maxBoundsViscosity: 1.0,
   };
 
   async ngOnInit() {

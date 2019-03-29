@@ -10,6 +10,8 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
+import * as L from 'leaflet';
+import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
 @Component({
   selector: 'app-img-swiper',
@@ -23,6 +25,8 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   @Input() imgComments: string[] = [];
   @Input() imgHeaders: string[] = [];
   @Output() imgClick: EventEmitter<{ index: number, imgUrl: string }> = new EventEmitter();
+  @Input() location: { latLng: L.LatLng, geoHazard: GeoHazard };
+  @Output() locationClick: EventEmitter<{ latLng: L.LatLng, geoHazard: GeoHazard }> = new EventEmitter();
 
   slideOptions = {
     autoplay: false,
@@ -32,53 +36,121 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   comment: string;
   header: string;
   imageIndex: number;
-  totalImages: number;
+  loadedWithMap: boolean;
+  swiper: any;
+  swiperLoaded = false;
+  recreateSwiper = false;
 
   @ViewChild(IonSlides) slider: IonSlides;
+
+  get totalImages() {
+    return this.imgUrl.length;
+  }
+
+  get showSingleImage() {
+    return this.totalImages === 1 && !this.location;
+  }
+
+  get showSingleMap() {
+    return this.location && this.totalImages === 0;
+  }
+
+  get showSlider() {
+    return !this.showSingleImage && !this.showSingleMap;
+  }
+
+  get show() {
+    return this.location || this.totalImages > 0;
+  }
+
+  get showImageIndex() {
+    return this.imageIndex !== undefined && this.totalImages > 1;
+  }
 
   constructor(private ngZone: NgZone) { }
 
   ngOnInit() {
-    this.setImgHeaderAndComment(0);
+  }
+
+  async slidesLoaded(el: any) {
+    this.swiper = el.target.swiper;
+    this.initSwiper();
+    this.setImgHeaderAndComment(1);
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    if (this.slider) {
-      await this.slider.update();
+    if (changes && changes.imgUrl && !changes.imgUrl.firstChange) {
+      if (this.showSlider) {
+        this.resetImageHeaderAndComment();
+        this.reloadSwiper();
+      } else {
+        this.swiperLoaded = false;
+        this.setImgHeaderAndComment(0);
+      }
     }
-    if (this.slider) {
-      await this.slider.slideTo(0, 0);
-    }
-    this.ngZone.run(() => {
-      this.setImgHeaderAndComment(0);
+  }
+
+  private reloadSwiper() {
+    setTimeout(() => {
+      this.swiperLoaded = false;
+      this.recreateSwiper = true;
+      setTimeout(() => {
+        this.recreateSwiper = false;
+      }, 0);
     });
   }
 
-  private setImgHeaderAndComment(index: number) {
+  private initSwiper() {
+    if (this.swiper && this.swiper.$wrapperEl && this.swiper.$wrapperEl[0]) {
+      this.swiper.$wrapperEl[0].style.transform = 'translate3d(-60%, 0px, 0px)';
+    }
+    this.ngZone.run(() => {
+      this.swiperLoaded = true;
+    });
+  }
+
+  private resetImageHeaderAndComment() {
     this.comment = undefined;
     this.header = undefined;
-    if (this.imgComments.length > index) {
-      this.comment = this.imgComments[index];
+    this.imageIndex = undefined;
+  }
+
+  private setImgHeaderAndComment(index: number) {
+    this.resetImageHeaderAndComment();
+    const i = this.getImageIndex(index) - 1;
+    if (this.location && index === 0) {
+      this.header = 'REGISTRATION.OBS_LOCATION.TITLE';
+    } else {
+      if (i < this.imgComments.length) {
+        this.comment = this.imgComments[i];
+      }
+      if (i < this.imgHeaders.length) {
+        this.header = this.imgHeaders[i];
+      }
+      this.imageIndex = this.getImageIndex(index);
     }
-    if (this.imgHeaders.length > index) {
-      this.header = this.imgHeaders[index];
-    }
-    this.imageIndex = (index + 1);
-    this.totalImages = this.imgUrl.length;
+  }
+
+  private getImageIndex(index: number) {
+    return (this.location ? (index - 1) : index) + 1;
   }
 
   onImageClick(index: number, imgUrl: string) {
     this.imgClick.emit({ index, imgUrl });
   }
 
-  async getImageIndex() {
+  onLocationClick() {
+    this.locationClick.emit(this.location);
+  }
+
+  async getSwiperIndex() {
     const index = await (this.slider ? this.slider.getActiveIndex() : Promise.resolve(0));
     const isEnd = await (this.slider ? this.slider.isEnd() : Promise.resolve(false));
-    return isEnd ? (this.imgUrl.length - 1) : index;
+    return isEnd ? (this.imgUrl.length - 1 + (this.location ? 1 : 0)) : index;
   }
 
   async onSlideTransitionEnd() {
-    const index = await this.getImageIndex();
+    const index = await this.getSwiperIndex();
     this.ngZone.run(() => {
       this.setImgHeaderAndComment(index);
     });
