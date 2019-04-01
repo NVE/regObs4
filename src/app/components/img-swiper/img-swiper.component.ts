@@ -101,12 +101,18 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   }
 
   private initSwiper() {
-    if (this.swiper && this.swiper.$wrapperEl && this.swiper.$wrapperEl[0]) {
-      this.swiper.$wrapperEl[0].style.transform = 'translate3d(-60%, 0px, 0px)';
+    if (this.location) {
+      this.moveMapInSwiperToLeftOutsideView();
     }
     this.ngZone.run(() => {
       this.swiperLoaded = true;
     });
+  }
+
+  private moveMapInSwiperToLeftOutsideView() {
+    if (this.swiper && this.swiper.$wrapperEl && this.swiper.$wrapperEl[0]) {
+      this.swiper.$wrapperEl[0].style.transform = 'translate3d(-60%, 0px, 0px)';
+    }
   }
 
   private resetImageHeaderAndComment() {
@@ -116,18 +122,20 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   }
 
   private setImgHeaderAndComment(index: number) {
-    this.resetImageHeaderAndComment();
-    const i = this.getImageIndex(index) - 1;
-    if (this.location && index === 0) {
-      this.header = 'REGISTRATION.OBS_LOCATION.TITLE';
-    } else {
-      if (i < this.imgComments.length) {
-        this.comment = this.imgComments[i];
+    if (this.showLabels) {
+      this.resetImageHeaderAndComment();
+      const i = this.getImageIndex(index) - 1;
+      if (this.location && index === 0) {
+        this.header = 'REGISTRATION.OBS_LOCATION.TITLE';
+      } else {
+        if (i < this.imgComments.length) {
+          this.comment = this.imgComments[i];
+        }
+        if (i < this.imgHeaders.length) {
+          this.header = this.imgHeaders[i];
+        }
+        this.imageIndex = this.getImageIndex(index);
       }
-      if (i < this.imgHeaders.length) {
-        this.header = this.imgHeaders[i];
-      }
-      this.imageIndex = this.getImageIndex(index);
     }
   }
 
