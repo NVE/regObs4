@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapImageComponent } from './map-image.component';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 describe('MapImageComponent', () => {
   let component: MapImageComponent;
@@ -8,9 +9,10 @@ describe('MapImageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MapImageComponent ]
+      imports: [LeafletModule],
+      declarations: [MapImageComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
