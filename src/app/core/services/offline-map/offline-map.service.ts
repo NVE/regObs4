@@ -16,7 +16,7 @@ import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRx
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { DataUrlHelper } from '../../helpers/data-url.helper';
 import { createWorker } from 'typed-web-workers';
-import { LRUMap } from 'lru_map';
+import { LRUCache } from 'lru-fast';
 import { Platform } from '@ionic/angular';
 
 const DEBUG_TAG = 'OfflineMapService';
@@ -25,8 +25,8 @@ const DEBUG_TAG = 'OfflineMapService';
   providedIn: 'root'
 })
 export class OfflineMapService {
-  private _savedTiles: LRUMap<string, boolean>;
-  private _saveBuffer: LRUMap<string, HTMLImageElement>;
+  private _savedTiles: LRUCache<string, boolean>;
+  private _saveBuffer: LRUCache<string, HTMLImageElement>;
   private _interval: NodeJS.Timeout;
   private _shouldProcessOfflineImages: boolean;
 
@@ -37,8 +37,8 @@ export class OfflineMapService {
     private loggingService: LoggingService,
     private platform: Platform,
   ) {
-    this._savedTiles = new LRUMap(2000);
-    this._saveBuffer = new LRUMap(100);
+    this._savedTiles = new LRUCache(2000);
+    this._saveBuffer = new LRUCache(100);
     this.platform.pause.subscribe(() => {
       clearTimeout(this._interval);
     });
@@ -110,7 +110,7 @@ export class OfflineMapService {
   }
 
   saveTileToOfflineCache(id: string, el: HTMLImageElement) {
-    if (!this._savedTiles.has(id)) {
+    if (!this._savedTiles.get(id)) {
       this._savedTiles.set(id, true);
       this._saveBuffer.set(id, el);
     }
@@ -132,7 +132,7 @@ export class OfflineMapService {
     }
     if (this._shouldProcessOfflineImages && this._saveBuffer.size > 0) {
       const latest = this._saveBuffer.newest;
-      this._saveBuffer.delete(latest.key);
+      this._saveBuffer.remove(latest.key);
       const currentTile = latest.value;
       this.getImageDataUrlAsObservable(currentTile).subscribe((result: { dataUrl: string, size: number }) => {
         if (result && result.dataUrl && result.size > 0) {

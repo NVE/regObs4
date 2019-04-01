@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { LRUMap } from 'lru_map';
+import { LRUCache } from 'lru-fast';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ObsCardHeightService {
-  private sizeCache: LRUMap<number, number>;
+  private sizeCache: LRUCache<number, number>;
 
   constructor() {
-    this.sizeCache = new LRUMap<number, number>(5000);
+    this.sizeCache = new LRUCache<number, number>(5000);
   }
 
   getHeight(regId: number) {

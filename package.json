@@ -110,7 +110,7 @@
     "leaflet-edgebuffer": "^1.0.6",
     "leaflet.markercluster": "^1.4.1",
     "leaflet.utm": "0.0.5",
-    "lru_map": "^0.3.3",
+    "lru-fast": "^0.2.2",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
     "ngx-leaflet-edgebuffer": "^1.0.6",
@@ -123,6 +123,7 @@
     "timers": "^0.1.1",
     "tunnel-agent": "^0.6.0",
     "typed-web-workers": "^2.1.1",
+    "web-animations-js": "^2.3.1",
     "xml2js": "^0.4.19",
     "zone.js": "^0.8.29"
   },
