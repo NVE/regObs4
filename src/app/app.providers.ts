@@ -3,7 +3,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { RouteReuseStrategy, Routes } from '@angular/router';
 import { IonicRouteStrategy } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+// import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
 // import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
@@ -61,7 +61,7 @@ export const APP_PROVIDERS = [
     LoginGuard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Geolocation,
-    Deeplinks,
+    // Deeplinks,
     BackgroundFetch,
     // BackgroundGeolocation,
     File,

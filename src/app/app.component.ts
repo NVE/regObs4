@@ -4,7 +4,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+// import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { LangKey } from './core/models/langKey';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
@@ -33,7 +33,7 @@ export class AppComponent {
     private translate: TranslateService,
     private userSettings: UserSettingService,
     private navController: NavController,
-    private deeplinks: Deeplinks,
+    // private deeplinks: Deeplinks,
     private backgroundFetch: BackgroundFetch,
     private dataMarshallService: DataMarshallService,
     private offlineImageService: OfflineImageService,
@@ -76,16 +76,16 @@ export class AppComponent {
     });
   }
 
-  initDeepLinks() {
-    this.deeplinks.route({
-      '/Registration/:id': 'view-observation',
-    }).subscribe(match => {
-      // match.$route - the route we matched, which is the matched entry from the arguments to route()
-      // match.$args - the args passed in the link
-      // match.$link - the full link data
-      this.navController.navigateForward(`view-observation/${match.$args.id}`);
-    });
-  }
+  // initDeepLinks() {
+  //   this.deeplinks.route({
+  //     '/Registration/:id': 'view-observation',
+  //   }).subscribe(match => {
+  //     // match.$route - the route we matched, which is the matched entry from the arguments to route()
+  //     // match.$args - the args passed in the link
+  //     // match.$link - the full link data
+  //     this.navController.navigateForward(`view-observation/${match.$args.id}`);
+  //   });
+  // }
 
   initBackroundUpdates() {
     if (this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
