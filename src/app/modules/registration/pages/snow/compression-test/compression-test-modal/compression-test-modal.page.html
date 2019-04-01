@@ -27,8 +27,8 @@
       placeholder="REGISTRATION.SNOW.SNOW_SURFACE.HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER"></app-numeric-input>
     <app-kdv-dropdown *ngIf="!isCTNorECTX()" title="REGISTRATION.SNOW.COMPRESSION_TEST.FRACTURE_TYPE"
       kdvKey="Snow_ComprTestFractureKDV" [(value)]="compressionTestCopy.ComprTestFractureTID"></app-kdv-dropdown>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.COMPRESSION_TEST.STABILITY_EVAL" kdvKey="Snow_StabilityEvalKDV"
-      [(value)]="compressionTestCopy.StabilityEvalTID"></app-kdv-dropdown>
+    <app-kdv-dropdown *ngIf="!isLBT()" title="REGISTRATION.SNOW.COMPRESSION_TEST.STABILITY_EVAL"
+      kdvKey="Snow_StabilityEvalKDV" [(value)]="compressionTestCopy.StabilityEvalTID"></app-kdv-dropdown>
     <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="compressionTestCopy.Comment">
     </app-text-comment>
   </ion-list>

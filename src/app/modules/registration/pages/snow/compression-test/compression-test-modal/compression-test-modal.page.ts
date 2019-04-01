@@ -34,7 +34,7 @@ export class CompressionTestModalPage implements OnInit {
   }
 
   tapsFractureVisible() {
-    return !(this.isCTNorECTX() || this.isCTVorECTV());
+    return !(this.isCTNorECTX() || this.isCTVorECTV() || this.isLBT());
   }
 
   valueChanged() {
@@ -49,6 +49,10 @@ export class CompressionTestModalPage implements OnInit {
 
   isCTVorECTV() {
     return this.compressionTestCopy.PropagationTID === 11 || this.compressionTestCopy.PropagationTID === 21;
+  }
+
+  isLBT() {
+    return this.compressionTestCopy.PropagationTID === 5;
   }
 
   cancel() {
