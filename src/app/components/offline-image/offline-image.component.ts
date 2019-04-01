@@ -69,21 +69,25 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
     this.offlineLoading = false;
   }
 
-  async httpImgDidLoad(event: any) {
-    const img: HTMLImageElement = event.target.shadowRoot.children[1];
-    if (img) {
-      try {
-        const format = 'image/jpeg';
-        const originalSrc = this.src;
-        const result = await DataUrlHelper.getDataUrlFromImageOnLoad(img, format);
-        this.ngZone.run(() => {
-          this.httpLoading = false;
-          this.hasError = false;
-        });
-        await this.offlineImageService.saveOfflineImageDataUrl(originalSrc, result, format);
-      } catch (err) {
-        this.loggingService.log(`Could not load image: ${img.src}`, err, LogLevel.Warning, DEBUG_TAG);
+  httpImgDidLoad(event: any) {
+    this.httpLoading = false;
+    this.hasError = false;
+    if (event.target && event.target.shadowRoot && event.target.shadowRoot.children && event.target.shadowRoot.children.length > 0) {
+      const img: HTMLImageElement = event.target.shadowRoot.children[1];
+      if (img) {
+        this.saveImage(img);
       }
+    }
+  }
+
+  private async saveImage(img: HTMLImageElement) {
+    try {
+      const format = 'image/jpeg';
+      const originalSrc = this.src;
+      const result = await DataUrlHelper.getDataUrlFromImageOnLoad(img, format);
+      return this.offlineImageService.saveOfflineImageDataUrl(originalSrc, result, format);
+    } catch (err) {
+      this.loggingService.log(`Could not load image: ${img.src}`, err, LogLevel.Warning, DEBUG_TAG);
     }
   }
 
