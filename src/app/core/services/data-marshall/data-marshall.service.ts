@@ -14,13 +14,14 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import { Subject, Subscription } from 'rxjs';
 import { map, switchMap, distinctUntilChanged, pairwise, filter, take, debounceTime } from 'rxjs/operators';
 import { OfflineMapService } from '../offline-map/offline-map.service';
+import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 
 const DEBUG_TAG = 'DataMarshallService';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DataMarshallService {
+export class DataMarshallService implements OnReset {
 
   foregroundUpdateInterval: NodeJS.Timeout;
   private cancelUpdateObservationsSubject: Subject<boolean>;
@@ -92,7 +93,16 @@ export class DataMarshallService {
     // No need to unsubscribe this observables when the service is singleton. It get destroyed when app exits.
   }
 
-  unsubscribeAll() {
+  appOnReset(): void {
+    this.loggingService.debug('App reset. Unsubscribe all.', DEBUG_TAG);
+    this.unsubscribeAll();
+  }
+
+  appOnResetComplete(): void {
+    this.init(); // Re-Init service after reset has completed
+  }
+
+  private unsubscribeAll() {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }

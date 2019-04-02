@@ -10,21 +10,21 @@ import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { nSQL } from '@nano-sql/core';
-import { Observable, Observer, of, Subject } from 'rxjs';
-import { map, debounceTime } from 'rxjs/operators';
+import { Observable, Observer } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
-import { DbHelperService } from '../db-helper/db-helper.service';
 import { DataUrlHelper } from '../../helpers/data-url.helper';
 import { createWorker } from 'typed-web-workers';
 import { LRUCache } from 'lru-fast';
 import { Platform } from '@ionic/angular';
+import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 
 const DEBUG_TAG = 'OfflineMapService';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OfflineMapService {
+export class OfflineMapService implements OnReset {
   private _savedTiles: LRUCache<string, boolean>;
   private _saveBuffer: LRUCache<string, HTMLImageElement>;
   private _interval: NodeJS.Timeout;
@@ -33,19 +33,28 @@ export class OfflineMapService {
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
     private file: File,
-    private dbHelperService: DbHelperService,
     private loggingService: LoggingService,
     private platform: Platform,
   ) {
+    this.init();
+  }
+
+  private init() {
     this._savedTiles = new LRUCache(2000);
     this._saveBuffer = new LRUCache(100);
     this.platform.pause.subscribe(() => {
-      clearTimeout(this._interval);
+      this.stopProcessingOfflineImageSaveQueue();
     });
     this.platform.resume.subscribe(() => {
       this.startProcessingOfflineImageSaveQueue();
     });
     this.startProcessingOfflineImageSaveQueue();
+  }
+
+  private stopProcessingOfflineImageSaveQueue() {
+    if (this._interval) {
+      clearTimeout(this._interval);
+    }
   }
 
   // TODO: Implement continue download when app restart
@@ -125,11 +134,8 @@ export class OfflineMapService {
       this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
         timeout || settings.map.tiles.cacheSaveBufferThrottleTimeMs);
     };
-
     // this.loggingService.debug(`Start processing offline tiles queue. Size: ${this._saveBuffer.size}`, DEBUG_TAG);
-    if (this._interval) {
-      clearInterval(this._interval);
-    }
+    this.stopProcessingOfflineImageSaveQueue();
     if (this._shouldProcessOfflineImages && this._saveBuffer.size > 0) {
       const latest = this._saveBuffer.newest;
       this._saveBuffer.remove(latest.key);
@@ -416,5 +422,13 @@ export class OfflineMapService {
       await this.remove(m);
     }
     await this.deleteTilesCache();
+  }
+
+  appOnReset(): void | Promise<any> {
+    this.stopProcessingOfflineImageSaveQueue();
+  }
+
+  appOnResetComplete(): void | Promise<any> {
+    this.startProcessingOfflineImageSaveQueue();
   }
 }

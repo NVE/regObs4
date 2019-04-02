@@ -95,6 +95,12 @@ export const APP_PROVIDERS = [
     AnalyticService,
     KdvService,
     // ObsCardHeightService,
+
+    // Interface implementations
+    { provide: 'OnReset', useClass: DataMarshallService, multi: true },
+    { provide: 'OnReset', useClass: UserSettingService, multi: true },
+    { provide: 'OnReset', useClass: OfflineMapService, multi: true },
+
     // Custom native/web providers
     {
         provide: BackgroundGeolocationService, useClass: window.hasOwnProperty('cordova') ?
