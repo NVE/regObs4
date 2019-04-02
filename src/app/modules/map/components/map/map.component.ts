@@ -48,6 +48,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
   private isActive = false;
+  private isAskingForPermissions = false;
 
   private setHeadingFunc: (event: DeviceOrientationEvent) => void;
 
@@ -154,7 +155,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.subscriptions.push(this.platform.pause.subscribe(() => this.stopGeoLocationWatch()));
     this.subscriptions.push(this.platform.resume.subscribe(() => {
-      if (this.isActive) {
+      if (this.isActive && !this.isAskingForPermissions) {
         this.startGeoLocationWatch();
       }
     }));
@@ -167,6 +168,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.redrawMap();
     }));
 
+    // TODO: Implement compass needs calibration alert?
     //   window.addEventListener('compassneedscalibration', function(event) {
     //     // ask user to wave device in a figure-eight motion
     //     event.preventDefault();
@@ -276,10 +278,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getMaxZoom(detectRetina: boolean) {
-    // return settings.map.tiles.maxZoom;
-    return (detectRetina && L.Browser.retina) ?
-      (settings.map.tiles.maxZoom + 2)
-      : settings.map.tiles.maxZoom;
+    return (detectRetina && L.Browser.retina) ? (settings.map.tiles.maxZoom + 2) : settings.map.tiles.maxZoom;
   }
 
   private getMapOptions(topoMap: TopoMap) {
@@ -322,10 +321,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private shouldBufferOfflineMap(userSetting: UserSetting) {
-    return userSetting.tilesCacheSize > 0;
-  }
-
   redrawMap() {
     setTimeout(() => {
       if (this.map) {
@@ -340,13 +335,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // this.redrawMap();
   }
 
   private startGeoLocationWatch() {
-    if (this.showUserLocation) {
+    if (this.showUserLocation && !this.isAskingForPermissions) {
       this.loggingService.debug('Start watching location changes', DEBUG_TAG);
       if (this.geoLoactionSubscription === undefined || this.geoLoactionSubscription.closed) {
+        this.isAskingForPermissions = true;
+        // TODO: Start with low accuracy and when that is success, start watching high accuracy?
         this.geoLoactionSubscription = this.geolocation.watchPosition(settings.gps.currentPositionOptions)
           .subscribe(
             (data) => this.onPositionUpdate(data),
@@ -375,30 +371,42 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private stopGeoLocationWatch() {
-    this.loggingService.debug('Stop watching location changes', DEBUG_TAG);
-    if (this.geoLoactionSubscription !== undefined && !this.geoLoactionSubscription.closed) {
-      this.geoLoactionSubscription.unsubscribe();
+    if (!this.isAskingForPermissions) {
+      this.loggingService.debug('Stop watching location changes', DEBUG_TAG);
+      if (this.geoLoactionSubscription !== undefined && !this.geoLoactionSubscription.closed) {
+        this.geoLoactionSubscription.unsubscribe();
+      }
+      window.removeEventListener('deviceorientation', this.setHeadingFunc);
+      window.removeEventListener('deviceorientationabsolute', this.setHeadingFunc);
     }
-    window.removeEventListener('deviceorientation', this.setHeadingFunc);
-    window.removeEventListener('deviceorientationabsolute', this.setHeadingFunc);
   }
 
   private onPositionUpdate(data: Geoposition) {
-    this.positionChange.emit(data);
-    this.zone.runOutsideAngular(() => {
-      if (data.coords && this.map) {
-        const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
-        if (!this.userMarker) {
-          this.userMarker = new UserMarker(this.map, data);
-        } else {
-          this.userMarker.updatePosition(data);
+    if (data.coords) {
+      this.isAskingForPermissions = false;
+      this.positionChange.emit(data);
+      this.zone.runOutsideAngular(() => {
+        if (this.map) {
+          const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
+          if (!this.userMarker) {
+            this.userMarker = new UserMarker(this.map, data);
+          } else {
+            this.userMarker.updatePosition(data);
+          }
+          if (this.followMode && !this.isDoingMoveAction) {
+            this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
+            this.firstPositionUpdate = false;
+          }
         }
-        if (this.followMode && !this.isDoingMoveAction) {
-          this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
-          this.firstPositionUpdate = false;
-        }
+      });
+    } else {
+      const error = data as unknown as PositionError;
+      if (error && error.PERMISSION_DENIED === 1) {
+        this.loggingService.debug('Permission denied for location service', DEBUG_TAG);
+      } else {
+        this.isAskingForPermissions = false;
       }
-    });
+    }
   }
 
   private flyToMaxZoom(latLng: L.LatLng, usePan = false) {
@@ -418,6 +426,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onPositionError(error: any) {
+    this.isAskingForPermissions = false;
     this.loggingService.error(error, DEBUG_TAG, 'Got error from GeoLoaction watchPosition');
   }
 }
