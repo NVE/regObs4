@@ -152,10 +152,6 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
     this.locationClick.emit(this.location);
   }
 
-  onSlideDoubleTap() {
-
-  }
-
   async getSwiperIndex() {
     const index = await (this.slider ? this.slider.getActiveIndex() : Promise.resolve(0));
     const isEnd = await (this.slider ? this.slider.isEnd() : Promise.resolve(false));
