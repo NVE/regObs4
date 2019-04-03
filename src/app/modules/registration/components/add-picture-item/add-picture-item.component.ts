@@ -123,10 +123,13 @@ export class AddPictureItemComponent implements OnInit {
     });
   }
 
-  removeImage(index: number) {
+  removeImage(image: PictureRequestDto) {
     this.ngZone.run(() => {
-      this.images.splice(index, 1);
-      this.imagesChange.emit(this.images);
+      const index = this.images.indexOf(image);
+      if (index >= 0) {
+        this.images.splice(index, 1);
+        this.imagesChange.emit(this.images);
+      }
     });
   }
 }

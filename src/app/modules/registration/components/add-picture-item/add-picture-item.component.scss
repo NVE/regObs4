@@ -1,3 +1,11 @@
-.image-wrapper {
-    position: relative;
+.images {
+    .image-wrapper {
+        position: relative;
+        padding-bottom: 10px;
+
+        app-text-comment {
+            display: block;
+            margin-top: -3px;
+        }
+    }
 }
