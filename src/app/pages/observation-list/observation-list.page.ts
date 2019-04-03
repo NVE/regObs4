@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import * as L from 'leaflet';
 import { Subscription, Subject } from 'rxjs';
-import { map, switchMap, distinct, tap, distinctUntilChanged } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
@@ -34,9 +34,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
     get observations$() {
         return this.mapService.mapView$.pipe(switchMap((mapView: IMapView) =>
             this.observationService.observations$.pipe(map((observations) =>
-                this.filterObservationsWithinViewBounds(observations, mapView)),
-                distinctUntilChanged<RegistrationViewModel[], string>((a, b) => a.localeCompare(b) === 0,
-                    (keySelector) => this.observationService.getUniqueObservations(keySelector))
+                this.filterObservationsWithinViewBounds(observations, mapView))
             )
         ));
     }
@@ -55,6 +53,8 @@ export class ObservationListPage implements OnInit, OnDestroy {
     }
 
     refresh(cancelPromise: Promise<any>) {
+        this.loaded = false;
+        this.observations = undefined;
         return this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
     }
 
@@ -68,35 +68,14 @@ export class ObservationListPage implements OnInit, OnDestroy {
         this.stopSubscription();
     }
 
-    private recreateObservations(observations: RegistrationViewModel[]) {
-        this.loaded = false;
-        this.observations = undefined; // Recreate virutal scroll
-        setTimeout(() => {
-            this.observations = observations;  // Initial load
-            // NOTE: Reload virtual scroll to get correct item heights
-            // There is still some issues with ionic virtual scroll...
-            // https://github.com/ionic-team/ionic/issues/15948
-            // https://github.com/ionic-team/ionic/issues/15258
-            setTimeout(() => {
-                this.observations = [...observations];
-                setTimeout(() => {
-                    this.ngZone.run(() => {
-                        this.loaded = true;
-                    });
-                }, 500);
-            }, 500);
-        }, 200);
-    }
-
     private reloadVirtualList(observations: RegistrationViewModel[]) {
-        if (this.observationService.isDifferent(this.observations, observations)) {
-            this.ngZone.run(() => {
-                this.recreateObservations(observations);
-            });
-        } else if (!this.loaded) {
-            this.ngZone.run(() => {
-                this.observations = observations;
+        if (!this.loaded) {
+            setTimeout(() => {
                 this.loaded = true;
+            }, observations.length > 0 ? 2000 : 500);
+            this.ngZone.run(() => {
+                // Only load observation list one time per page load.
+                this.observations = observations;
             });
         }
     }

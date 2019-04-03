@@ -31,6 +31,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   slideOptions = {
     autoplay: false,
     slidesPerView: 'auto',
+    zoom: false,
   };
 
   comment: string;
@@ -72,7 +73,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
 
-  async slidesLoaded(el: any) {
+  slidesLoaded(el: any) {
     this.swiper = el.target.swiper;
     this.initSwiper();
     this.setImgHeaderAndComment(1);
@@ -149,6 +150,10 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   onLocationClick() {
     this.locationClick.emit(this.location);
+  }
+
+  onSlideDoubleTap() {
+
   }
 
   async getSwiperIndex() {

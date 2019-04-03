@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { settings } from '../../../../../settings';
 import * as L from 'leaflet';
 import { RegobsGeoHazardMarker } from '../../core/classes/regobs-geohazard-marker';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 
 @Component({
   selector: 'app-map-image',
@@ -16,7 +17,7 @@ export class MapImageComponent implements OnInit {
 
   private map: L.Map;
 
-  constructor() { }
+  constructor(private ngZone: NgZone) { }
 
   options: L.MapOptions = {
     zoom: settings.map.tiles.zoomLevelObservationList,
@@ -33,41 +34,46 @@ export class MapImageComponent implements OnInit {
   }
 
   onLeafletMapReady(map: L.Map) {
-    this.map = map;
+    this.ngZone.runOutsideAngular(() => {
+      if (this.map === undefined) {
+        this.map = map;
+        this.map.dragging.disable();
+        this.map.keyboard.disable();
+        this.map.doubleClickZoom.disable();
+        if (this.map.tap) {
+          this.map.tap.disable();
+        }
+        if (this.location && this.location.latLng) {
+          this.map.setView(this.location.latLng, settings.map.tiles.zoomLevelObservationList);
+        }
+        if (!this.allowZoom) {
+          this.map.touchZoom.disable();
+          this.map.scrollWheelZoom.disable();
+          this.map.boxZoom.disable();
+        } else {
+          this.map.on('zoomend', () => {
+            this.map.panTo(this.location.latLng);
+          });
+        }
+        this.addTileLayers();
+        this.addMarker();
+        this.redrawMap();
+      }
+    });
+  }
+
+  private isInNorway() {
     if (this.location && this.location.latLng) {
-      this.map.setView(this.location.latLng, settings.map.tiles.zoomLevelObservationList);
+      return BorderHelper.isInNorway(this.location.latLng);
     }
-    if (!this.allowZoom) {
-      this.map.touchZoom.disable();
-      this.map.scrollWheelZoom.disable();
-      this.map.boxZoom.disable();
-    } else {
-      this.map.on('zoomend', () => {
-        this.map.panTo(this.location.latLng);
-      });
-    }
-    this.map.dragging.disable();
-    this.map.keyboard.disable();
-    this.map.doubleClickZoom.disable();
-    if (this.map.tap) {
-      this.map.tap.disable();
-    }
-    // document.getElementById('map').style.cursor='default';
-    this.addTileLayers();
-    this.addMarker();
-    this.redrawMap();
+    return false;
   }
 
   private addTileLayers() {
     const tileLayerGroup = L.layerGroup();
+    const url = this.isInNorway() ? settings.map.tiles.statensKartverkMapUrl : settings.map.tiles.arcGisOnlineTopoMapUrl;
     L.tileLayer(
-      settings.map.tiles.arcGisOnlineTopoMapUrl
-    ).addTo(tileLayerGroup);
-    L.tileLayer(
-      settings.map.tiles.statensKartverkMapUrl,
-      {
-        bounds: <any>settings.map.tiles.supportTilesBounds,
-      }
+      url
     ).addTo(tileLayerGroup);
     tileLayerGroup.addTo(this.map);
   }

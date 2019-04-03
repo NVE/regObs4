@@ -2,8 +2,8 @@
   <ion-slides *ngIf="showSlider && !recreateSwiper" [options]="slideOptions" [pager]="false"
     [ngClass]="{'loaded': swiperLoaded}" (ionSlideTransitionEnd)="onSlideTransitionEnd()"
     (ionSlidesDidLoad)="slidesLoaded($event)">
-    <ion-slide *ngIf="location">
-      <app-map-image [location]="location" (click)="onLocationClick()"></app-map-image>
+    <ion-slide *ngIf="location" (ionSlideTap)="onLocationClick()" (ionSlideDoubleTap)="onSlideDoubleTap()">
+      <app-map-image [location]="location"></app-map-image>
     </ion-slide>
     <ion-slide *ngFor="let url of imgUrl; let i = index">
       <app-offline-image [src]="url" (click)="onImageClick(i, url)"></app-offline-image>

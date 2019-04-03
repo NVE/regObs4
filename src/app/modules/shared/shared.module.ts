@@ -22,6 +22,7 @@ import { HeaderColorDirective } from '../../directives/header-color.directive';
 import { InputPatternFilterDirective } from '../../directives/input-pattern-filter.directive';
 import { AutoResizeDirective } from '../../directives/auto-resize.directive';
 import { MapModule } from '../map/map.module';
+import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import { MapModule } from '../map/map.module';
         GeoSelectComponent,
         FormatDatePipe,
         ObservationListCardComponent,
+        ObservationSkeletonComponent,
         LegalTermsComponent,
         ImgSwiperComponent,
         HeaderComponent,
@@ -70,6 +72,7 @@ import { MapModule } from '../map/map.module';
         GeoSelectComponent,
         FormatDatePipe,
         ObservationListCardComponent,
+        ObservationSkeletonComponent,
         LegalTermsComponent,
         ImgSwiperComponent,
         HeaderComponent,

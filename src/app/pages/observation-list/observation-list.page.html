@@ -4,7 +4,7 @@
   </app-refresh-with-cancel>
   <ng-container *ngIf="observations !== undefined">
     <ion-virtual-scroll [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty"
-      [items]="observations" [approxItemHeight]="250" [trackBy]="trackByIdFunc" [footerFn]="footerFn"
+      [items]="observations" [approxItemHeight]="10000" [trackBy]="trackByIdFunc" [footerFn]="footerFn"
       [headerFn]="headerFn">
       <ion-item-divider *virtualHeader="let header">
         <h3 text-uppercase>{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
@@ -16,11 +16,19 @@
       </ion-item-divider>
     </ion-virtual-scroll>
   </ng-container>
+  <div class="loading-sceleton" *ngIf="!loaded">
+    <ion-item-divider>
+      <h3 text-uppercase>{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+    </ion-item-divider>
+    <app-observation-skeleton></app-observation-skeleton>
+    <app-observation-skeleton></app-observation-skeleton>
+    <app-observation-skeleton></app-observation-skeleton>
+  </div>
   <app-geo-select slot="fixed"></app-geo-select>
   <app-add-menu slot="fixed"></app-add-menu>
 </ion-content>
 <ng-template #empty>
-  <ion-grid class="full-grid">
+  <ion-grid *ngIf="loaded" class="full-grid">
     <ion-row class="full-grid-row">
       <ion-col align-self-center>
         <div class="center">
