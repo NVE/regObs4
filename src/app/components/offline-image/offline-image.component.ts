@@ -21,8 +21,6 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
   httpLoading = true;
   offlineLoading = true;
   hasError = false;
-  private retryCount = 3;
-  private interval: NodeJS.Timeout;
 
   get loaded() {
     return !(this.httpLoading && this.offlineLoading);
@@ -31,38 +29,25 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private offlineImageService: OfflineImageService, private ngZone: NgZone, private loggingService: LoggingService) {
   }
 
-  ngOnInit() {
-  }
-
-  checkImageLoaded() {
-    if (this.httpLoading && !this.hasError) {
-      if (this.retryCount > 0) {
-        this.retryCount--;
-        this.retryHttpImageLoad();
-      } else {
-        this.hasError = true;
-        clearInterval(this.interval);
-      }
-    }
-  }
-
-  private retryHttpImageLoad() {
-    this.ngZone.run(() => {
-      this.url = undefined;
-    });
+  private init() {
+    this.hasError = false;
+    this.httpLoading = true;
+    this.offlineLoading = true;
+    this.offlineUrl = undefined;
+    this.setOffineUrl();
     this.setHttpImageUrl();
+  }
+
+  ngOnInit() {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.src && changes.src.currentValue !== changes.src.previousValue) {
-      this.setUrl();
+      this.init();
     }
   }
 
   ngOnDestroy(): void {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
   }
 
   offlineImageLoaded() {
@@ -70,12 +55,18 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   httpImgDidLoad(event: any) {
-    this.httpLoading = false;
-    this.hasError = false;
+    // TODO: Fix implementation when issue is fixed: https://github.com/ionic-team/ionic/issues/16947
     if (event.target && event.target.shadowRoot && event.target.shadowRoot.children && event.target.shadowRoot.children.length > 0) {
       const img: HTMLImageElement = event.target.shadowRoot.children[1];
       if (img) {
-        this.saveImage(img);
+        img.onerror = () => {
+          this.hasError = true;
+        };
+        img.onload = () => {
+          this.httpLoading = false;
+          this.hasError = false;
+          this.saveImage(img);
+        };
       }
     }
   }
@@ -91,11 +82,7 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private setUrl() {
-    this.setOffineUrl();
-    this.setHttpImageUrl();
-    this.interval = setInterval(() => this.checkImageLoaded(), 2000);
-  }
+
 
   private setHttpImageUrl() {
     const randomGuid = utils.uuid();
