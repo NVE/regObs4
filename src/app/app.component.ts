@@ -17,6 +17,7 @@ import { AnalyticService } from './core/services/analytic/analytic.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
+import { LogLevel } from './modules/shared/services/logging/log-level.model';
 
 @Component({
   selector: 'app-root',
@@ -110,7 +111,7 @@ export class AppComponent {
         this.dataMarshallService.backgroundFetchUpdate(this.platform.is('cordova') && this.platform.is('ios'), false)
           .then(() => (<any>window).BackgroundFetch.finish());
       }, (error: Error) => {
-        this.loggingService.error(error, 'BackroundFetchInit', 'Could not run background fetch!');
+        this.loggingService.log('Could not run background fetch!', error, LogLevel.Warning);
       }, config);
     }
   }
