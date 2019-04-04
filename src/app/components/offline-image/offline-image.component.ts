@@ -58,25 +58,26 @@ export class OfflineImageComponent implements OnInit, OnChanges, OnDestroy {
     // TODO: Fix implementation when issue is fixed: https://github.com/ionic-team/ionic/issues/16947
     if (event.target && event.target.shadowRoot && event.target.shadowRoot.children && event.target.shadowRoot.children.length > 0) {
       const img: HTMLImageElement = event.target.shadowRoot.children[1];
+      const originalUrl = this.src;
       if (img) {
+        img.crossOrigin = 'anonymous';
         img.onerror = () => {
           this.hasError = true;
         };
         img.onload = () => {
           this.httpLoading = false;
           this.hasError = false;
-          this.saveImage(img);
+          this.saveImage(img, originalUrl);
         };
       }
     }
   }
 
-  private async saveImage(img: HTMLImageElement) {
+  private async saveImage(img: HTMLImageElement, originalUrl: string) {
     try {
       const format = 'image/jpeg';
-      const originalSrc = this.src;
-      const result = await DataUrlHelper.getDataUrlFromImageOnLoad(img, format);
-      return this.offlineImageService.saveOfflineImageDataUrl(originalSrc, result, format);
+      const result = DataUrlHelper.getDataUrlFromImage(img, format, 0.5);
+      return this.offlineImageService.saveOfflineImageDataUrl(originalUrl, result, format);
     } catch (err) {
       this.loggingService.log(`Could not load image: ${img.src}`, err, LogLevel.Warning, DEBUG_TAG);
     }
