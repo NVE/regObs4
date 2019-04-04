@@ -9,7 +9,8 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
         super({
             html: RegobsGeoHazardMarker.getIconSvg(geoHazard, isSelected),
             className: 'obs-marker',
-            iconSize: [25, 36],
+            iconSize: [30, 40],
+            iconAnchor: [15, 40],
         });
         this._selected = isSelected;
         this._geoHazard = geoHazard;
