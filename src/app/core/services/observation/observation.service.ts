@@ -7,7 +7,6 @@ import * as moment from 'moment';
 import 'moment-timezone';
 import { NanoSql } from '../../../../nanosql';
 import { map, distinctUntilChanged, switchMap, shareReplay, tap } from 'rxjs/operators';
-import { LoginService } from '../../../modules/login/services/login.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { AppMode } from '../../models/app-mode.enum';
@@ -42,7 +41,6 @@ export class ObservationService {
 
   constructor(
     private searchService: SearchService,
-    private loginService: LoginService,
     private userSettingService: UserSettingService,
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
