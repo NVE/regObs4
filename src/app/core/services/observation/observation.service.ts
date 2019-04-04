@@ -20,6 +20,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import '../../helpers/nano-sql/nanoObserverToRxjs';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'ObservationService';
 
@@ -156,7 +157,7 @@ export class ObservationService {
       if (isCanceled) {
         this.loggingService.debug(err, DEBUG_TAG, `Operation cancelled`);
       } else {
-        this.loggingService.error(err, DEBUG_TAG, `Loading error`);
+        this.loggingService.log(`Loading error. Is network available?`, err, LogLevel.Warning);
       }
       await this.dataLoadService.loadingError(dataLoadId, err.message);
       return 0;
