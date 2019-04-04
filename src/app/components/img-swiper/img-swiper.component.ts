@@ -41,6 +41,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   swiper: any;
   swiperLoaded = false;
   recreateSwiper = false;
+  private hasSwiped = false;
 
   @ViewChild(IonSlides) slider: IonSlides;
 
@@ -103,7 +104,14 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   private initSwiper() {
     if (this.location) {
+      this.hasSwiped = false;
       this.moveMapInSwiperToLeftOutsideView();
+      setTimeout(() => {
+        this.moveMapInSwiperToLeftOutsideView();
+        setTimeout(() => {
+          this.moveMapInSwiperToLeftOutsideView();
+        }, 50);
+      }, 50);
     }
     this.ngZone.run(() => {
       this.swiperLoaded = true;
@@ -111,7 +119,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   }
 
   private moveMapInSwiperToLeftOutsideView() {
-    if (this.swiper && this.swiper.$wrapperEl && this.swiper.$wrapperEl[0]) {
+    if (this.swiper && this.swiper.$wrapperEl && this.swiper.$wrapperEl[0] && !this.hasSwiped) {
       this.swiper.$wrapperEl[0].style.transform = 'translate3d(-60%, 0px, 0px)';
     }
   }
@@ -165,4 +173,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
     });
   }
 
+  onSlideTouchStart() {
+    this.hasSwiped = true;
+  }
 }

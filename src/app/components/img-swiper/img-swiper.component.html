@@ -1,7 +1,7 @@
 <div class="slides-wrapper" *ngIf="show" [ngClass]="{'animated-background': (showSlider && !swiperLoaded) }">
   <ion-slides *ngIf="showSlider && !recreateSwiper" [options]="slideOptions" [pager]="false"
     [ngClass]="{'loaded': swiperLoaded}" (ionSlideTransitionEnd)="onSlideTransitionEnd()"
-    (ionSlidesDidLoad)="slidesLoaded($event)">
+    (ionSlidesDidLoad)="slidesLoaded($event)" (ionSlideTouchStart)="onSlideTouchStart()">
     <ion-slide *ngIf="location">
       <app-map-image [location]="location" (click)="onLocationClick()"></app-map-image>
     </ion-slide>
