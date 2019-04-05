@@ -99,6 +99,9 @@
         <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
             <string>Location is used to show your position in the map and to set initial position when documenting observations</string>
         </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSLocationAlwaysUsageDescription">
+            <string>Location is used to show your position in the map and to set initial position when documenting observations</string>
+        </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
             <string>Add images to observations</string>
         </edit-config>

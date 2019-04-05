@@ -157,7 +157,7 @@
     "tslint": "~5.15.0",
     "typescript": "^3.2.4"
   },
-  "description": "An Ionic project",
+  "description": "Report incidents in nature",
   "cordova": {
     "plugins": {
       "cordova-plugin-device": {},
