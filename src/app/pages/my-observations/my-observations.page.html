@@ -9,7 +9,7 @@
 <ion-content>
   <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <ion-virtual-scroll *ngIf="!showEmptyState else empty" [ngClass]="{ loaded: loaded }" [headerFn]="myHeaderFn"
-    [items]="virtualItems">
+    [items]="virtualItems" [trackBy]="trackById" [approxItemHeight]="10000">
     <ion-item-divider no-border *virtualHeader="let header">
       <ion-grid no-margin no-padding>
         <ion-row>
@@ -28,7 +28,22 @@
       <app-sync-item *ngIf="item.type === 'sync'" [registration]="item.item" [refresh]="true"></app-sync-item>
     </div>
   </ion-virtual-scroll>
-  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData()">
+  <div class="loading-sceleton" *ngIf="!loaded">
+    <ion-item-divider no-border>
+      <ion-grid no-margin no-padding>
+        <ion-row>
+          <h3 text-uppercase>{{ 'MY_OBSERVATIONS.MY_SENT_OBSERVATIONS' | translate }}</h3>
+        </ion-row>
+        <ion-row>
+          <ion-label text-wrap color="medium">
+            {{ 'MY_OBSERVATIONS.SENT_SUBTITLE' | translate }}
+          </ion-label>
+        </ion-row>
+      </ion-grid>
+    </ion-item-divider>
+    <app-observation-skeleton></app-observation-skeleton>
+  </div>
+  <ion-infinite-scroll *ngIf="loaded" threshold="100px" (ionInfinite)="loadMoreData()">
     <ion-infinite-scroll-content loadingText="{{'MY_OBSERVATIONS.LOADING_MORE' | translate}}">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
