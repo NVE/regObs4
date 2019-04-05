@@ -74,7 +74,6 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   }
 
   slidesLoaded(el: any) {
-    console.log('slidesLoaded');
     this.swiper = el.target.swiper;
     this.initSwiper();
     this.setImgHeaderAndComment(1);
