@@ -47,7 +47,7 @@ export const settings = {
                 featureName: 'omradeID',
             },
             Dirt: {
-                apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.5/api',
+                apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.6/api',
                 webUrl: {
                     no: 'http://www.varsom.no/flom-og-jordskredvarsling/?date=',
                     en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/?date=',
@@ -55,7 +55,7 @@ export const settings = {
                 featureName: 'fylkesnummer',
             },
             Water: {
-                apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.5/api',
+                apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api',
                 webUrl: {
                     no: 'http://www.varsom.no/flom-og-jordskredvarsling/?date=',
                     en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/?date=',
