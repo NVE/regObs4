@@ -8,4 +8,5 @@ export interface IWarningApiResult {
     PublishTime: string;
     MainText: string;
     CountyList: County[];
+    MunicipalityCsvString: string;
 }
