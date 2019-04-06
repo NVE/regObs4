@@ -3,11 +3,12 @@ import { ObservationService } from '../../core/services/observation/observation.
 import { Subscription, combineLatest, Observable } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../modules/login/services/login.service';
-import { IonInfiniteScroll, NavController } from '@ionic/angular';
+import { IonInfiniteScroll, NavController, IonVirtualScroll } from '@ionic/angular';
 import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
-import { map, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { map, distinctUntilChanged, switchMap, take } from 'rxjs/operators';
 import { IRegistration } from '../../modules/registration/models/registration.model';
+import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 
 interface MyVirtualScrollItem {
   type: 'draft' | 'sync' | 'sent';
@@ -21,6 +22,8 @@ const LIST_HEADERS = {
   'sent': { header: 'MY_OBSERVATIONS.MY_SENT_OBSERVATIONS', subtitle: 'MY_OBSERVATIONS.SENT_SUBTITLE' },
 };
 
+const DEBUG_TAG = 'MyObservationsPage';
+
 const itemsToLoad = 20;
 
 @Component({
@@ -30,15 +33,15 @@ const itemsToLoad = 20;
 })
 export class MyObservationsPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
   private registrationSubscription: Subscription;
   private user: ObserverResponseDto;
   loaded = false;
   refreshFunc = this.refresh.bind(this);
-  private firstDataLoad = false;
   virtualItems: MyVirtualScrollItem[] = [];
 
   get showEmptyState() {
-    return this.loaded && this.virtualItems.length === 0 && this.firstDataLoad;
+    return this.loaded && this.virtualItems.length === 0;
   }
 
   constructor(
@@ -47,6 +50,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     private userSettingService: UserSettingService,
     private navContoller: NavController,
     private registrationService: RegistrationService,
+    private loggingService: LoggingService,
     private loginService: LoginService) {
   }
 
@@ -97,13 +101,13 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       this.getSyncItemsObservable(),
       this.getDraftObservable())
       .pipe(map(([a, b]) => ([...a, ...b])),
-        switchMap((syncItems) => this.getMyRegistrationsObservable().pipe(
+        switchMap((syncItems) => this.getMyRegistrationsObservable(0).pipe(
           map((val) => ([...syncItems, ...val])))));
   }
 
-  private getMyRegistrationsObservable() {
+  private getMyRegistrationsObservable(pageNumber: number) {
     return this.userSettingService.appModeAndLanguage$.pipe(switchMap(([appMode, langKey]) =>
-      this.observationService.getObservationsForCurrentUser(appMode, this.user, langKey, 0, itemsToLoad).pipe(
+      this.observationService.getObservationsForCurrentUser(appMode, this.user, langKey, pageNumber, itemsToLoad).pipe(
         map((val) => val.map((item) => ({ type: <'sent'>'sent', id: item.RegID.toString(), item }))))
     ));
   }
@@ -135,21 +139,30 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   async loadMoreData() {
-    const currentLength = this.virtualItems.filter((x) => x.type === 'sent').length;
-    const pageNumber = Math.floor(currentLength / itemsToLoad);
-    const subscription = this.userSettingService.appModeAndLanguage$.pipe(switchMap(([appMode, langKey]) =>
-      this.observationService.getObservationsForCurrentUser(appMode, this.user, langKey, pageNumber, itemsToLoad)
-    )).subscribe((val) => {
-      const sentItems = val.map((item) => ({ type: <'sent'>'sent', id: item.RegID.toString(), item }));
+    try {
+      const currentLength = this.virtualItems.filter((x) => x.type === 'sent').length;
+      const pageNumber = Math.floor(currentLength / itemsToLoad);
+      const nextPage = await this.getMyRegistrationsObservable(pageNumber).pipe(take(1)).toPromise();
+      const hasMoreDataToLoad = nextPage.length === itemsToLoad;
       this.ngZone.run(() => {
-        this.virtualItems.push(...sentItems);
-        this.infiniteScroll.complete();
+        if (this.infiniteScroll) {
+          this.infiniteScroll.complete();
+          this.infiniteScroll.disabled = true; // Disable while adding items to virtual scroll
+        }
+        this.virtualItems.push(...nextPage);
+        this.virtualScroll.checkEnd();
+        setTimeout(() => {
+          if (this.infiniteScroll) {
+            this.infiniteScroll.disabled = !hasMoreDataToLoad;
+          }
+        }, 1000);
       });
-    }, (_) => {
-      this.ngZone.run(() => {
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, 'Could not load more data');
+      if (this.infiniteScroll) {
         this.infiniteScroll.complete();
-      });
-    });
+      }
+    }
   }
 
   trackById(index: number, item: MyVirtualScrollItem) {
