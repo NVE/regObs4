@@ -1,19 +1,20 @@
-<ion-grid padding>
-  <ion-row>
-    <ion-col justify-content-center>
-      <div class="legal-icon">&sect;</div>
+<ion-grid class="full-grid legal-grid">
+  <ion-row class="legal-info-row">
+    <ion-col padding align-self-bottom>
+      <div class="legal-icon">&sect;
+      </div>
     </ion-col>
   </ion-row>
-  <ion-row>
-    <ion-col>
+  <ion-row class="legal-text-row">
+    <ion-col align-self-top>
       <h2>{{'LEGAL_TERMS.HEADER' | translate}}</h2>
-    </ion-col>
-  </ion-row>
-  <ion-row padding>
-    <ion-col padding>
-      <ion-label text-wrap padding>
-        {{'LEGAL_TERMS.TERMS' | translate}}
-      </ion-label>
+      <h3 text-wrap no-padding>
+        <ul>
+          <li>{{'LEGAL_TERMS.LINE_1' | translate}}</li>
+          <li>{{'LEGAL_TERMS.LINE_2' | translate}}</li>
+          <li>{{'LEGAL_TERMS.LINE_3' | translate}}</li>
+        </ul>
+      </h3>
     </ion-col>
   </ion-row>
 </ion-grid>

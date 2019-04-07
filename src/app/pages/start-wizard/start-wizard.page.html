@@ -167,7 +167,11 @@
           <ion-col align-self-top>
             <h2 [@headerAnimation4]="state">{{'LEGAL_TERMS.HEADER' | translate}}</h2>
             <h3 text-wrap no-padding>
-              {{'LEGAL_TERMS.TERMS' | translate}}
+              <ul>
+                <li>{{'LEGAL_TERMS.LINE_1' | translate}}</li>
+                <li>{{'LEGAL_TERMS.LINE_2' | translate}}</li>
+                <li>{{'LEGAL_TERMS.LINE_3' | translate}}</li>
+              </ul>
             </h3>
           </ion-col>
         </ion-row>

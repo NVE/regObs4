@@ -64,6 +64,9 @@
   },
   "LEGAL_TERMS": {
     "HEADER": "Om data i Varsom Regobs",
+    "LINE_1": "Bruk varslene, observasjonene og kartene på eget ansvar. Det kan forekomme feil og mangler.",
+    "LINE_2": "Husk at varselet er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger. Lokale forhold der du er, kan være mer komplekse og avvike fra det som er varslet.",
+    "LINE_3": "Data på Regobs produseres av brukerne av Regobs og foreligger «som den er». Den kan inneholde feil og utelatelser. NVE gir ikke garantier for feil og mangler i denne data.",
     "OK": "Ok, jeg aksepterer",
     "TERMS": "Data på Varsom Regobs produseres av brukerne av Regobs og foreligger \"som den er\". Den kan inneholde feil og utelatelser. NVE gir ingen garantier for informasjonens aktualitet og tar ikke ansvar for at data kan gi feil eller villedende informasjon. Antall stjerner (1-5) beskriver kompetansenivået til den som leverer observasjoner. Uten stjerner er kompetansen ukjent eller lav."
   },
