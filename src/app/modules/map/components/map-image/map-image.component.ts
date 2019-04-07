@@ -37,20 +37,16 @@ export class MapImageComponent implements OnInit {
   onLeafletMapReady(map: L.Map) {
     if (this.map === undefined) {
       this.map = map;
-      this.map.dragging.disable();
-      this.map.keyboard.disable();
-      this.map.doubleClickZoom.disable();
-      if (this.map.tap) {
-        this.map.tap.disable();
-      }
       if (!this.allowZoom) {
+        if (this.map.tap) {
+          this.map.tap.disable();
+        }
+        this.map.doubleClickZoom.disable();
+        this.map.dragging.disable();
+        this.map.keyboard.disable();
         this.map.touchZoom.disable();
         this.map.scrollWheelZoom.disable();
         this.map.boxZoom.disable();
-      } else {
-        this.map.on('zoomend', () => {
-          this.map.panTo(this.location.latLng);
-        });
       }
       this.addTileLayers();
       this.addMarker();
