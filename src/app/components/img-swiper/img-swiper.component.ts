@@ -7,7 +7,9 @@ import {
   ViewChild,
   NgZone,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
 import * as L from 'leaflet';
@@ -16,7 +18,8 @@ import { GeoHazard } from '../../core/models/geo-hazard.enum';
 @Component({
   selector: 'app-img-swiper',
   templateUrl: './img-swiper.component.html',
-  styleUrls: ['./img-swiper.component.scss']
+  styleUrls: ['./img-swiper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImgSwiperComponent implements OnInit, OnChanges {
 
@@ -68,7 +71,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
     return this.imageIndex !== undefined && this.totalImages > 1;
   }
 
-  constructor(private ngZone: NgZone) { }
+  constructor(private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
   }
@@ -95,8 +98,10 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
     setTimeout(() => {
       this.swiperLoaded = false;
       this.recreateSwiper = true;
+      this.cdr.markForCheck();
       setTimeout(() => {
         this.recreateSwiper = false;
+        this.cdr.markForCheck();
       }, 0);
     });
   }
@@ -110,9 +115,8 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
       }
       this.moveMapInSwiperToLeftOutsideView();
     }
-    this.ngZone.run(() => {
-      this.swiperLoaded = true;
-    });
+    this.swiperLoaded = true;
+    this.cdr.markForCheck();
   }
 
   private moveMapInSwiperToLeftOutsideView() {
@@ -143,6 +147,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
         this.imageIndex = this.getImageIndex(index);
       }
     }
+    this.cdr.markForCheck();
   }
 
   private getImageIndex(index: number) {
@@ -165,8 +170,6 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   async onSlideTransitionEnd() {
     const index = await this.getSwiperIndex();
-    this.ngZone.run(() => {
-      this.setImgHeaderAndComment(index);
-    });
+    this.setImgHeaderAndComment(index);
   }
 }
