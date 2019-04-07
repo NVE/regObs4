@@ -42,8 +42,10 @@
       </ion-grid>
     </ion-item-divider>
     <app-observation-skeleton></app-observation-skeleton>
+    <app-observation-skeleton></app-observation-skeleton>
+    <app-observation-skeleton></app-observation-skeleton>
   </div>
-  <ion-infinite-scroll *ngIf="loaded" threshold="100px" (ionInfinite)="loadMoreData()">
+  <ion-infinite-scroll [disabled]="disableInfiniteScroll" threshold="100px" (ionInfinite)="loadMoreData()">
     <ion-infinite-scroll-content loadingText="{{'MY_OBSERVATIONS.LOADING_MORE' | translate}}">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
