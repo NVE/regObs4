@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { settings } from '../../../../../settings';
 import * as L from 'leaflet';
 import { RegobsGeoHazardMarker } from '../../core/classes/regobs-geohazard-marker';
@@ -11,7 +11,7 @@ import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
   styleUrls: ['./map-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapImageComponent implements OnInit {
+export class MapImageComponent implements OnInit, OnDestroy {
 
   @Input() location: { latLng: L.LatLng, geoHazard: GeoHazard };
   @Input() allowZoom: boolean;
@@ -29,9 +29,21 @@ export class MapImageComponent implements OnInit {
     zoomControl: false,
     scrollWheelZoom: 'center', // zoom to center regardless where mouse is
     touchZoom: 'center',
+    trackResize: false,
+    center: L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
   };
 
   ngOnInit() {
+    if (this.location && this.location.latLng) {
+      this.options.center = this.location.latLng;
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined;
+    }
   }
 
   onLeafletMapReady(map: L.Map) {
@@ -50,12 +62,31 @@ export class MapImageComponent implements OnInit {
       }
       this.addTileLayers();
       this.addMarker();
+      this.resize();
+    }
+  }
+
+  private resize() {
+    setTimeout(() => {
+      this.resizeInternal();
       setTimeout(() => {
+        this.resizeInternal();
+      }, 200);
+    }, 200);
+  }
+
+  private resizeInternal() {
+    if (this.map) {
+      try {
         this.map.invalidateSize();
-        if (this.location && this.location.latLng) {
-          this.map.setView(this.location.latLng, settings.map.tiles.zoomLevelObservationList);
-        }
-      }, 500);
+      } catch (err) {
+      }
+    }
+  }
+
+  private resetView() {
+    if (this.map && this.location && this.location.latLng) {
+      this.map.setView(this.location.latLng, settings.map.tiles.zoomLevelObservationList);
     }
   }
 
@@ -69,7 +100,11 @@ export class MapImageComponent implements OnInit {
   private addTileLayers() {
     const url = this.isInNorway() ? settings.map.tiles.statensKartverkMapUrl : settings.map.tiles.arcGisOnlineTopoMapUrl;
     L.tileLayer(
-      url
+      url,
+      {
+        updateWhenIdle: true,
+        keepBuffer: 0,
+      }
     ).addTo(this.map);
   }
 

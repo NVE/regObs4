@@ -102,6 +102,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       subscription.unsubscribe();
     }
     this.stopGeoLocationWatch();
+    if (this.map) {
+      this.map.remove();
+    }
   }
 
   onLeafletMapReady(map: L.Map) {
