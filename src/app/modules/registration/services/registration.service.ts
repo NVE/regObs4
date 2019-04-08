@@ -204,9 +204,16 @@ export class RegistrationService {
     }
     const userSettings = await this.userSettingService.getUserSettings();
     const appMode = userSettings.appMode;
+    const dataLoadId = this.getDataLoadId(appMode);
+    const dataLoad = await this.dataLoadService.getState(dataLoadId);
+    const isLoadingTimeout = moment().subtract(30, 'seconds');
+    if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
+      // Is allready syncing, return
+      return;
+    }
+
     const registrationsToSync = await this.getRegistrationsToSync().pipe(take(1)).toPromise();
     if (registrationsToSync.length > 0) {
-      const dataLoadId = this.getDataLoadId(appMode);
       try {
         this.dataLoadService.startLoading(dataLoadId, registrationsToSync.length);
         let itemCompleted = 0;
