@@ -84,12 +84,6 @@ export class MapImageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private resetView() {
-    if (this.map && this.location && this.location.latLng) {
-      this.map.setView(this.location.latLng, settings.map.tiles.zoomLevelObservationList);
-    }
-  }
-
   private isInNorway() {
     if (this.location && this.location.latLng) {
       return BorderHelper.isInNorway(this.location.latLng);
