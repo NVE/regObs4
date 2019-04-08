@@ -57,7 +57,7 @@ export class WarningListItemComponent implements OnInit {
     this.toggleFavourite();
   }
 
-  async getUrl(group: WarningGroup) {
+  async getUrl(group: WarningGroup, day: string = '') {
     if (group.url) {
       return group.url;
     } else {
@@ -66,7 +66,8 @@ export class WarningListItemComponent implements OnInit {
       if (url) {
         return url
           .replace('{regionName}', group.key.groupName)
-          .replace('{regionId}', group.key.groupId);
+          .replace('{regionId}', group.key.groupId)
+          .replace('{day}', day);
       } else {
         return null;
       }
@@ -85,9 +86,9 @@ export class WarningListItemComponent implements OnInit {
     event.preventDefault();
     const dateString = moment().startOf('day').add(day, 'days')
       .format(settings.services.warning.dateFormat);
-    const url = await this.getUrl(group);
+    const url = await this.getUrl(group, dateString);
     if (url) {
-      this.externalLinkService.openExternalLink(`${url}${dateString}`);
+      this.externalLinkService.openExternalLink(url);
     }
   }
 
