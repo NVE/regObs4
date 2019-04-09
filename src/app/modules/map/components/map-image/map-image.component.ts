@@ -86,7 +86,7 @@ export class MapImageComponent implements OnInit, OnDestroy {
 
   private isInNorway() {
     if (this.location && this.location.latLng) {
-      return BorderHelper.isInNorway(this.location.latLng);
+      return BorderHelper.isInNorway(this.location.latLng) || BorderHelper.isInSvalbard(this.location.latLng);
     }
     return false;
   }
