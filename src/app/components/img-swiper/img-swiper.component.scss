@@ -18,7 +18,7 @@
             height: 100%;
             display: inline-flex;
             margin-right: 5px;
-            background-color: rgba(0,0,0,0.6);
+            // background-color: rgba(0,0,0,0.6);
 
             &:last-child {
                 margin-right: 0px;
@@ -26,10 +26,10 @@
         }
     }
 
-    app-map-image {
+    app-map-image, app-lazy-loaded {
         height: 100%;
         width: 100%;
-        display: inline-flex;
+        display: block;
     }
     
     app-offline-image {
@@ -52,6 +52,11 @@
         color: #444444;
         font-size: 14px;
         line-height: 20px;
+        background-color: #fff;
+        position: absolute;
+        bottom: -1px;
+        width: 100%;
+        z-index: 1;
 
         .img-comment-header {
             font-weight: 600;

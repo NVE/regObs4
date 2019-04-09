@@ -71,6 +71,13 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
     return this.imageIndex !== undefined && this.totalImages > 1;
   }
 
+  get shouldShowLabel() {
+    if (!this.showLabels) {
+      return false;
+    }
+    return this.header !== undefined || this.comment !== undefined;
+  }
+
   constructor(private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {

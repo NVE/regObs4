@@ -12,7 +12,7 @@
   <app-offline-image *ngIf="showSingleImage" class="single" (click)="onImageClick(0, imgUrl[0])" [src]="imgUrl[0]">
   </app-offline-image>
   <app-map-image *ngIf="showSingleMap" class="single" [location]="location" (click)="onLocationClick()"></app-map-image>
-  <ion-label *ngIf="showLabels">
+  <ion-label *ngIf="shouldShowLabel">
     <span class="img-comment-header" *ngIf="showImageIndex">{{imageIndex}}/{{totalImages}}&nbsp;</span>
     <span [ngClass]="{'img-comment-header': comment }" *ngIf="header">{{ header | translate }}<ng-container
         *ngIf="comment">:&nbsp;
