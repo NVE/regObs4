@@ -73,7 +73,7 @@
   "LOGIN": {
     "CHANGE_PASSWORD": "Endre passord",
     "CREATE_USER": "Lag ny bruker",
-    "EMAIL": "Epost",
+    "EMAIL": "E-post",
     "FORGOT_PASSWORD": "Glemt passord",
     "IS_LOGGING_IN": "Logger inn...",
     "LOGGED_IN_AS": "Logget inn som",
@@ -219,7 +219,7 @@
       "PROBLEM": "Det har oppstått et problem med registreringen din",
       "PROBLEM_HELP_TEXT": "Feilede observasjoner lagres i telefonen din, og når problemet er løst vil du kunne sende inn observasjoen på nytt.",
       "REFERENCE": "Referanse",
-      "SEND_EMAIL": "Send til oss på epost",
+      "SEND_EMAIL": "Send til oss på e-post",
       "SUBTITLE": "Mangler nettverk eller innsending tok for lang tid. Vi prøver igjen etter en stund og håper at nettet har bedret seg.",
       "TITLE": "Innsending feilet"
     },
@@ -463,7 +463,7 @@
     "COUNTRY": "Land",
     "DROPDOWNS_FAILED": "Klarte ikke oppdatere nedtrekksmenyer. Vennligst sjekk om du har nettverk og prøv igjen litt senere.",
     "DROPDOWNS_UPDATED": "Nedtrekksmenyer oppdatert!",
-    "EMAIL_RECEIPT": "Kvittering på epost",
+    "EMAIL_RECEIPT": "Kvittering på e-post",
     "HIDE_ADVANCED": "Skjul avanserte innstillinger",
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Kun i Norge",
