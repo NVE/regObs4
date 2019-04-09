@@ -5,7 +5,6 @@ import {
   EventEmitter,
   Output,
   ViewChild,
-  NgZone,
   OnChanges,
   SimpleChanges,
   ChangeDetectionStrategy,
@@ -14,13 +13,26 @@ import {
 import { IonSlides } from '@ionic/angular';
 import * as L from 'leaflet';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-img-swiper',
   templateUrl: './img-swiper.component.html',
   styleUrls: ['./img-swiper.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('fadeInOut', [
+      state('*', style({
+        opacity: 0
+      })),
+      state('show-label', style({
+        opacity: 1
+      })),
+      transition('* => show-label', animate(`700ms 100ms ease-in`)),
+    ]),
+  ],
 })
+
 export class ImgSwiperComponent implements OnInit, OnChanges {
 
   @Input() imgUrl: string[] = [];
@@ -44,6 +56,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   swiper: any;
   swiperLoaded = false;
   recreateSwiper = false;
+  state = '';
 
   @ViewChild(IonSlides) slider: IonSlides;
 
@@ -90,13 +103,19 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.showSlider) {
+    setTimeout(() => {
       this.resetImageHeaderAndComment();
-      this.reloadSwiper();
-    } else {
-      this.swiperLoaded = false;
-      this.setImgHeaderAndComment(0);
-    }
+      this.state = '';
+      this.cdr.markForCheck();
+      setTimeout(() => {
+        if (this.showSlider) {
+          this.reloadSwiper();
+        } else {
+          this.swiperLoaded = false;
+          this.setImgHeaderAndComment(0);
+        }
+      });
+    });
   }
 
   private reloadSwiper() {
@@ -151,6 +170,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
         }
         this.imageIndex = this.getImageIndex(index);
       }
+      this.state = this.shouldShowLabel ? 'show-label' : '';
     }
     this.cdr.markForCheck();
   }

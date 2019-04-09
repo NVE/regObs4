@@ -26,10 +26,10 @@
         }
     }
 
-    app-map-image, app-lazy-loaded {
+    app-map-image {
         height: 100%;
         width: 100%;
-        display: block;
+        display: inline-flex;;
     }
     
     app-offline-image {
@@ -56,7 +56,7 @@
         position: absolute;
         bottom: -1px;
         width: 100%;
-        z-index: 1;
+        z-index: 100;
 
         .img-comment-header {
             font-weight: 600;
