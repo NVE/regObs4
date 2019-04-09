@@ -89,15 +89,13 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
     this.setImgHeaderAndComment(1);
   }
 
-  async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    if (changes && changes.imgUrl && !changes.imgUrl.firstChange) {
-      if (this.showSlider) {
-        this.resetImageHeaderAndComment();
-        this.reloadSwiper();
-      } else {
-        this.swiperLoaded = false;
-        this.setImgHeaderAndComment(0);
-      }
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.showSlider) {
+      this.resetImageHeaderAndComment();
+      this.reloadSwiper();
+    } else {
+      this.swiperLoaded = false;
+      this.setImgHeaderAndComment(0);
     }
   }
 

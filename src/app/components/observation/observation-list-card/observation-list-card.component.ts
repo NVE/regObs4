@@ -1,7 +1,16 @@
-import { Component, OnInit, Input, NgZone, AfterViewInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  AfterViewInit,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { TranslateService } from '@ngx-translate/core';
-import { HelperService } from '../../../core/services/helpers/helper.service';
 import { settings } from '../../../../settings';
 import { RegistrationViewModel, Summary } from '../../../modules/regobs-api/models';
 import { ModalController } from '@ionic/angular';
@@ -18,7 +27,8 @@ import { ModalMapImagePage } from '../../../modules/map/pages/modal-map-image/mo
 @Component({
   selector: 'app-observation-list-card',
   templateUrl: './observation-list-card.component.html',
-  styleUrls: ['./observation-list-card.component.scss']
+  styleUrls: ['./observation-list-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObservationListCardComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
 
@@ -44,17 +54,13 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   imageDescriptions: string[] = [];
   location: { latLng: L.LatLng, geoHazard: GeoHazard };
 
-  // private changes: MutationObserver;
-
   constructor(
     private translateService: TranslateService,
-    private helperService: HelperService,
     private modalController: ModalController,
     private externalLinkService: ExternalLinkService,
-    private ngZone: NgZone,
     private userSettingService: UserSettingService,
     private socialSharing: SocialSharing,
-    // private obsCardHeightService: ObsCardHeightService,
+    private cdr: ChangeDetectorRef,
   ) { }
 
   async ngOnInit() {
@@ -69,23 +75,23 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     this.geoHazardName = await this.translateService
       .get(`GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase()).toPromise();
 
-    this.ngZone.run(() => {
-      this.header = this.obs.ObsLocation.Title;
-      this.location = {
-        latLng: L.latLng(this.obs.ObsLocation.Latitude, this.obs.ObsLocation.Longitude),
-        geoHazard: geoHazard
-      };
-      this.dtObsDate = this.obs.DtObsTime;
-      this.icon = this.getGeoHazardCircleIcon(geoHazard);
-      this.summaries = this.obs.Summaries;
-      this.stars = [];
-      for (let i = 0; i < 5; i++) {
-        this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
-      }
-      this.hasNoStars = !this.stars.some((x) => x.full);
-      this.updateImages();
-      this.loaded = true;
-    });
+    this.header = this.obs.ObsLocation.Title;
+    this.location = {
+      latLng: L.latLng(this.obs.ObsLocation.Latitude, this.obs.ObsLocation.Longitude),
+      geoHazard: geoHazard
+    };
+    this.dtObsDate = this.obs.DtObsTime;
+    this.icon = this.getGeoHazardCircleIcon(geoHazard);
+    this.summaries = this.obs.Summaries;
+    this.stars = [];
+    for (let i = 0; i < 5; i++) {
+      this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
+    }
+    this.hasNoStars = !this.stars.some((x) => x.full);
+    this.updateImages();
+    this.loaded = true;
+
+    this.cdr.markForCheck();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -106,32 +112,9 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   ngAfterViewInit(): void {
-    // const node = document.querySelector(`#cardRegId_${this.obs.RegID}`);
-
-    // this.changes = new MutationObserver((mutations) => {
-    //   mutations.forEach((mutation) => this.updateHeight(mutation));
-    // });
-
-    // this.changes.observe(node, {
-    //   attributes: true,
-    //   childList: true,
-    //   characterData: true
-    // });
   }
 
-  // private updateHeight(mutationRecord: MutationRecord) {
-  //   if (mutationRecord.target) {
-  //     const height = (<any>mutationRecord.target).offsetHeight + 10; // add 10px padding
-  //     if (height > 100) {
-  //       this.obsCardHeightService.setHeight(this.obs.RegID, height);
-  //     }
-  //   }
-  // }
-
   ngOnDestroy(): void {
-    // if (this.changes) {
-    //   this.changes.disconnect();
-    // }
   }
 
   updateImages() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { settings } from '../../../../../settings';
 import * as L from 'leaflet';
 import { RegobsGeoHazardMarker } from '../../core/classes/regobs-geohazard-marker';
@@ -11,14 +11,15 @@ import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
   styleUrls: ['./map-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapImageComponent implements OnInit, OnDestroy {
+export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() location: { latLng: L.LatLng, geoHazard: GeoHazard };
   @Input() allowZoom: boolean;
 
   private map: L.Map;
+  recreateMap = false;
 
-  constructor() { }
+  constructor(private cdr: ChangeDetectorRef) { }
 
   options: L.MapOptions = {
     zoom: settings.map.tiles.zoomLevelObservationList,
@@ -34,12 +35,31 @@ export class MapImageComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
     if (this.location && this.location.latLng) {
       this.options.center = this.location.latLng;
     }
+    this.initMap();
+  }
+
+  private initMap() {
+    setTimeout(() => {
+      this.recreateMap = true;
+      this.cdr.markForCheck();
+      setTimeout(() => {
+        this.recreateMap = false;
+        this.cdr.markForCheck();
+      }, 0);
+    }, 0);
   }
 
   ngOnDestroy(): void {
+    this.destroyMap();
+  }
+
+  private destroyMap() {
     if (this.map) {
       this.map.remove();
       this.map = undefined;
@@ -47,23 +67,22 @@ export class MapImageComponent implements OnInit, OnDestroy {
   }
 
   onLeafletMapReady(map: L.Map) {
-    if (this.map === undefined) {
-      this.map = map;
-      if (!this.allowZoom) {
-        if (this.map.tap) {
-          this.map.tap.disable();
-        }
-        this.map.doubleClickZoom.disable();
-        this.map.dragging.disable();
-        this.map.keyboard.disable();
-        this.map.touchZoom.disable();
-        this.map.scrollWheelZoom.disable();
-        this.map.boxZoom.disable();
+    this.map = map;
+    if (!this.allowZoom) {
+      if (this.map.tap) {
+        this.map.tap.disable();
       }
-      this.addTileLayers();
-      this.addMarker();
-      this.resize();
+      this.map.doubleClickZoom.disable();
+      this.map.dragging.disable();
+      this.map.keyboard.disable();
+      this.map.touchZoom.disable();
+      this.map.scrollWheelZoom.disable();
+      this.map.boxZoom.disable();
     }
+    this.map.eachLayer((layer) => layer.remove());
+    this.addTileLayers();
+    this.addMarker();
+    this.resize();
   }
 
   private resize() {
