@@ -69,7 +69,7 @@ export class DataLoadService {
     try {
       await nSQL(NanoSql.TABLES.DATA_LOAD.name).query('upsert', item).exec();
     } catch (err) {
-      if (err && err.message && err.message.contains('UNIQUE constraint failed')) {
+      if (err && err.message && (<string>err.message).indexOf('UNIQUE constraint failed') >= 0) {
         // Retry again in 20 ms
         setTimeout(() => this.saveDataLoadItem(item), 20);
       } else {
