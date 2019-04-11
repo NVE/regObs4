@@ -295,6 +295,13 @@ ion-toolbar {
     }
 }
 
+.numeric-wheel-picker {
+    .picker-columns {
+        padding-left: 50px;
+        padding-right: 50px;
+    }
+}
+
 .map-item-bar-open {
     --map-item-height: 100px;
 
