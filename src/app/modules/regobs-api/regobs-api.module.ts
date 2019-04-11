@@ -4,8 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { RegobsApiConfiguration, RegobsApiConfigurationInterface } from './regobs-api-configuration';
 
 import { AccountService } from './services/account.service';
-import { DangerSignService } from './services/danger-sign.service';
-import { DangersignService } from './services/dangersign.service';
 import { GeneralObsService } from './services/general-obs.service';
 import { HelptextService } from './services/helptext.service';
 import { KdvElementsService } from './services/kdv-elements.service';
@@ -29,8 +27,6 @@ import { TripService } from './services/trip.service';
   providers: [
     RegobsApiConfiguration,
     AccountService,
-    DangerSignService,
-    DangersignService,
     GeneralObsService,
     HelptextService,
     KdvElementsService,
