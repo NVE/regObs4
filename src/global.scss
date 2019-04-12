@@ -295,6 +295,14 @@ ion-toolbar {
     }
 }
 
+.numeric-input-modal {
+    .modal-wrapper {
+        --height: 60%;
+        position: fixed;
+        bottom: 0;
+    }
+}
+
 .map-item-bar-open {
     --map-item-height: 100px;
 

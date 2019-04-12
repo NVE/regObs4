@@ -20,12 +20,14 @@ import { HelpTextComponent } from './components/help-text/help-text.component';
 import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.module';
 import { YesNoSelectComponent } from './components/yes-no-select/yes-no-select.component';
 import { NumericInputComponent } from './components/numeric-input/numeric-input.component';
+import { NumericInputModalPageModule } from './pages/modal-pages/numeric-input-modal/numeric-input-modal.module';
 
 @NgModule({
     imports: [
         SharedModule,
         MapModule,
         HelpModalPageModule,
+        NumericInputModalPageModule,
     ],
     exports: [
         SharedModule,
@@ -49,6 +51,7 @@ import { NumericInputComponent } from './components/numeric-input/numeric-input.
         HelpModalPageModule,
         YesNoSelectComponent,
         NumericInputComponent,
+        NumericInputModalPageModule,
     ],
     declarations: [
         SaveAndGoBackButtonComponent,

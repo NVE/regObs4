@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="done()">{{ 'DIALOGS.OK' | translate }}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid class="number-pad">
+    <ion-row class="ion-justify-content-center">
+      <ion-col text-center class="ion-align-self-center">
+        <ion-text *ngIf="isNegative">-</ion-text>
+      </ion-col>
+      <ion-col text-center class="ion-align-self-center">
+        <ion-text>{{localeString}}</ion-text>
+        <ion-text *ngIf="localeString && suffix">&nbsp;{{suffix}}</ion-text>
+      </ion-col>
+      <ion-col text-center class="ion-align-self-center">
+        <ion-button fill="clear" (click)="clear()">&larr;</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-center *ngFor="let i of ['1','2','3']">
+        <ion-button fill="clear" (click)="pushNumber(i)">{{i}}</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-center *ngFor="let i of ['4','5','6']">
+        <ion-button fill="clear" (click)="pushNumber(i)">{{i}}</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-center *ngFor="let i of ['7','8','9']">
+        <ion-button fill="clear" (click)="pushNumber(i)">{{i}}</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-center>
+        <ion-button *ngIf="min < 0" (click)="toggleNegative()" fill="clear">+ / -</ion-button>
+      </ion-col>
+      <ion-col text-center>
+        <ion-button fill="clear" (click)="pushNumber('0')">0</ion-button>
+      </ion-col>
+      <ion-col text-center>
+        <ion-button *ngIf="decimalPlaces > 0" fill="clear" (click)="pushDecimalSeparator()">{{decimalSep}}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
