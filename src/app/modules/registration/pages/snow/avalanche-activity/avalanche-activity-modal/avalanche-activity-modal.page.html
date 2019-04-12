@@ -16,12 +16,9 @@
     <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
       <ion-label color="medium" position="stacked" text-uppercase>{{
         'DATE' | translate }}</ion-label>
-      <!-- <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
-        cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY" [max]="maxDate" [(ngModel)]="startDate">
-      </ion-datetime> -->
       <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
         doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-        display-format="D. MMM, YYYY" [(ngModel)]="startDate">
+        display-format="D. MMM, YYYY" [max]="maxDate" [(ngModel)]="startDate">
       </ion-datetime>
     </ion-item>
     <ion-item *ngIf="dateIsDifferentThanObsTime">

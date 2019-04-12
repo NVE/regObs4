@@ -11,13 +11,9 @@
 <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
   <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SET_TIME.TITLE' | translate }}
   </ion-label>
-  <!-- <ion-datetime (ionChange)="dtChanged()" color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
-    doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-    display-format="D. MMM, YYYY HH:mm" [(ngModel)]="waterLevelMeasurement.DtMeasurementTime" [max]="maxDate">
-  </ion-datetime> -->
   <ion-datetime (ionChange)="dtChanged()" color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
     doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-    display-format="D. MMM, YYYY HH:mm" [(ngModel)]="waterLevelMeasurement.DtMeasurementTime">
+    display-format="D. MMM, YYYY HH:mm" [(ngModel)]="waterLevelMeasurement.DtMeasurementTime" [max]="maxDate">
   </ion-datetime>
   <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium" (click)="setToNow()">
     <ion-icon slot="start" name="time"></ion-icon> {{"REGISTRATION.SET_TIME.NOW" | translate}}

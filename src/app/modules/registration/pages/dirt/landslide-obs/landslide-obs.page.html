@@ -42,11 +42,7 @@
         <ion-label [color]="!registration.request.LandSlideObs.DtLandSlideTime ? 'danger' : 'medium'" position="stacked"
           text-uppercase>{{
           'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME' | translate }}</ion-label>
-        <!-- <ion-datetime color="medium" [max]="maxDateStart" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
-          doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}" display-format="D. MMM, YYYY HH:mm"
-          [(ngModel)]="registration.request.LandSlideObs.DtLandSlideTime" (ionChange)="dtTimeChanged()">
-        </ion-datetime> -->
-        <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
+        <ion-datetime color="medium" [max]="maxDateStart" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
           doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
           display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.LandSlideObs.DtLandSlideTime"
           (ionChange)="dtTimeChanged()">
@@ -65,15 +61,10 @@
         <ion-label [color]="!registration.request.LandSlideObs.DtLandSlideTimeEnd ? 'danger' : 'medium'"
           position="stacked" text-uppercase>{{
           'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME_END' | translate }}</ion-label>
-        <!-- <ion-datetime [min]="minDateEnd" [max]="maxDateEnd" color="medium"
+        <ion-datetime [min]="minDateEnd" [max]="maxDateEnd" color="medium"
           monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
           cancelText="{{'DIALOGS.CANCEL' | translate}}" (ionChange)="dtEndTimeChanged()"
           display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.LandSlideObs.DtLandSlideTimeEnd">
-        </ion-datetime> -->
-        <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
-          doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-          (ionChange)="dtEndTimeChanged()" display-format="D. MMM, YYYY HH:mm"
-          [(ngModel)]="registration.request.LandSlideObs.DtLandSlideTimeEnd">
         </ion-datetime>
         <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium"
           (click)="setDtLandSlideTimeEndToNow()">
