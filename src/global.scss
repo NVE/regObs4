@@ -295,10 +295,11 @@ ion-toolbar {
     }
 }
 
-.numeric-wheel-picker {
-    .picker-columns {
-        padding-left: 50px;
-        padding-right: 50px;
+.numeric-input-modal {
+    .modal-wrapper {
+        --height: 60%;
+        position: fixed;
+        bottom: 0;
     }
 }
 
