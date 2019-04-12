@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { IceThicknessLayerDto } from '../../../../../regobs-api/models';
-import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 
 @Component({
   selector: 'app-ice-layer',
