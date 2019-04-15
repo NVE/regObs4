@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget android-versionCode="847" id="no.nve.regobs4" ios-CFBundleVersion="847" osx-CFBundleVersion="847" version="4.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="863" id="no.nve.regobs4" ios-CFBundleVersion="863" osx-CFBundleVersion="863" version="4.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Varsom Regobs </name>
   <description>Report incidents in nature</description>
   <author email="regobs@nve.no" href="http://nve.no/">NVE</author>

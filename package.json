@@ -1,6 +1,6 @@
 {
   "name": "regobs4",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "author": "NVE",
   "homepage": "http://www.nve.no",
   "scripts": {
@@ -15,7 +15,7 @@
     "e2e": "ng e2e",
     "update-packages": "ncu -u & npm install",
     "create-version-file": "ts-node git.version.ts",
-    "upload-sourcemaps": "sentry-cli releases files \"%npm_package_version%\" upload-sourcemaps --url-prefix / www --rewrite",
+    "upload-sourcemaps": "sentry-cli releases files \"%npm_package_version%\" upload-sourcemaps www --rewrite",
     "sentry-create-release-and-commits": "sentry-cli releases new \"%npm_package_version%\" && sentry-cli releases set-commits --auto \"%npm_package_version%\"",
     "sentry-create-release": "sentry-cli releases new \"%npm_package_version%\"",
     "sentry-finalize-release": "sentry-cli releases finalize \"%npm_package_version%\"",
