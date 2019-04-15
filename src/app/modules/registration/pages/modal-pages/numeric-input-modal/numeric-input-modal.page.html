@@ -11,14 +11,12 @@
 <ion-content>
   <ion-grid class="number-pad">
     <ion-row class="ion-justify-content-center">
-      <ion-col text-center class="ion-align-self-center">
-        <ion-text *ngIf="isNegative">-</ion-text>
-      </ion-col>
-      <ion-col text-center class="ion-align-self-center">
+      <ion-col size="8" text-right class="ion-align-self-center text-value">
+        <ion-text *ngIf="isNegative">&#8722;</ion-text>
         <ion-text>{{localeString}}</ion-text>
         <ion-text *ngIf="localeString && suffix">&nbsp;{{suffix}}</ion-text>
       </ion-col>
-      <ion-col text-center class="ion-align-self-center">
+      <ion-col size="4" text-center class="ion-align-self-center">
         <ion-button fill="clear" (click)="clear()">&larr;</ion-button>
       </ion-col>
     </ion-row>
@@ -39,7 +37,8 @@
     </ion-row>
     <ion-row>
       <ion-col text-center>
-        <ion-button *ngIf="min < 0" (click)="toggleNegative()" fill="clear">+ / -</ion-button>
+        <ion-button [fill]="isNegative ? 'solid' : 'clear'" *ngIf="min < 0" (click)="toggleNegative()">+ / -
+        </ion-button>
       </ion-col>
       <ion-col text-center>
         <ion-button fill="clear" (click)="pushNumber('0')">0</ion-button>

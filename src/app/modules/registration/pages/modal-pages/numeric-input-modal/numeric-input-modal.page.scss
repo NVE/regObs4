@@ -1,8 +1,23 @@
-.number-pad {
-    font-size: 20px;
-    ion-button {
-        display: flex;
-        flex-grow: 1;
-        font-size: 22px;
+ion-content {
+    --background: #D4E4EF;
+    .number-pad {
+        font-size: 20px;
+        ion-button {
+            display: flex;
+            flex-grow: 1;
+            font-size: 22px;
+        }
+
+        .text-value {
+            padding-right: 16px;
+            font-size: 26px;
+        }
+
+        ion-button {
+            height: 2.8em;
+            &:not(.button-solid) {
+                --background: var(--ion-background-color);
+            }
+        }
     }
 }
