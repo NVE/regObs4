@@ -16,6 +16,7 @@
     "test.ts"
   ],
   "include": [
+    "zone-flags.ts",
     "polyfills.ts",
     "**/*.spec.ts",
     "**/*.d.ts"
