@@ -13,24 +13,12 @@ import {
 import { IonSlides } from '@ionic/angular';
 import * as L from 'leaflet';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-img-swiper',
   templateUrl: './img-swiper.component.html',
   styleUrls: ['./img-swiper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('fadeInOut', [
-      state('*', style({
-        opacity: 0
-      })),
-      state('show-label', style({
-        opacity: 1
-      })),
-      transition('* => show-label', animate(`700ms 100ms ease-in`)),
-    ]),
-  ],
 })
 
 export class ImgSwiperComponent implements OnInit, OnChanges {
@@ -54,9 +42,8 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   imageIndex: number;
   loadedWithMap: boolean;
   swiper: any;
-  swiperLoaded = false;
+  loaded = false;
   recreateSwiper = false;
-  state = '';
 
   @ViewChild(IonSlides) slider: IonSlides;
 
@@ -103,30 +90,22 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    setTimeout(() => {
-      this.resetImageHeaderAndComment();
-      this.state = '';
-      this.cdr.markForCheck();
-      setTimeout(() => {
-        if (this.showSlider) {
-          this.reloadSwiper();
-        } else {
-          this.swiperLoaded = false;
-          this.setImgHeaderAndComment(0);
-        }
-      });
-    });
+    this.loaded = false;
+    if (this.showSlider) {
+      this.reloadSwiper();
+    } else {
+      this.setImgHeaderAndComment(0);
+    }
   }
 
   private reloadSwiper() {
     setTimeout(() => {
-      this.swiperLoaded = false;
       this.recreateSwiper = true;
       this.cdr.markForCheck();
       setTimeout(() => {
         this.recreateSwiper = false;
         this.cdr.markForCheck();
-      }, 0);
+      });
     });
   }
 
@@ -139,7 +118,6 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
       }
       this.moveMapInSwiperToLeftOutsideView();
     }
-    this.swiperLoaded = true;
     this.cdr.markForCheck();
   }
 
@@ -170,8 +148,8 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
         }
         this.imageIndex = this.getImageIndex(index);
       }
-      this.state = this.shouldShowLabel ? 'show-label' : '';
     }
+    this.loaded = true;
     this.cdr.markForCheck();
   }
 

@@ -5,14 +5,15 @@
     flex-direction: column;
     background-color: #fff;
 
-    ion-slides {
-
+    ion-slides, ion-label {
         opacity: 0;
         transition: opacity 1s linear;
         &.loaded {
             opacity: 1;
         }
+    }
 
+    ion-slides {
         .swiper-slide {
             width: 80%;
             height: 100%;
@@ -89,6 +90,7 @@
     animation-iteration-count: infinite;
     animation-name: placeHolderShimmer;
     animation-timing-function: linear;
+    transform-style: preserve-3d;
     background: #f6f7f8;
     background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
     background-size: 300% 100%;
@@ -97,5 +99,6 @@
     &.loaded {
         animation: none;
         background-color: #fff;
+        animation-fill-mode: none;
     }
 }
