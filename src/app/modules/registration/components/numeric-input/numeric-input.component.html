@@ -1,4 +1,4 @@
-<ion-item (click)="openPicker()">
+<ion-item (tap)="openPicker()">
   <ion-label *ngIf="title" color="medium" position="stacked" text-uppercase>{{ title | translate}}</ion-label>
   <ion-input readonly [value]="displayValue" placeholder="{{ placeholder | translate}}"></ion-input>
 </ion-item>
