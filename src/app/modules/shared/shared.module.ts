@@ -12,7 +12,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
 import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
 import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
-import { StartsWithHighlightPipe } from '../../core/pipes/starts-with-highlight.pipe';
 import { LegalTermsComponent } from '../../components/legal-terms/legal-terms.component';
 import { ImgSwiperComponent } from '../../components/img-swiper/img-swiper.component';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -22,6 +21,8 @@ import { SummaryComponent } from '../../components/observation/summary/summary.c
 import { HeaderColorDirective } from '../../directives/header-color.directive';
 import { InputPatternFilterDirective } from '../../directives/input-pattern-filter.directive';
 import { AutoResizeDirective } from '../../directives/auto-resize.directive';
+import { MapModule } from '../map/map.module';
+import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { AutoResizeDirective } from '../../directives/auto-resize.directive';
         AngularSvgIconModule,
         TranslateModule,
         RouterModule,
+        MapModule,
     ],
     declarations: [
         ShadowCssDirective,
@@ -43,8 +45,8 @@ import { AutoResizeDirective } from '../../directives/auto-resize.directive';
         GeoIconComponent,
         GeoSelectComponent,
         FormatDatePipe,
-        StartsWithHighlightPipe,
         ObservationListCardComponent,
+        ObservationSkeletonComponent,
         LegalTermsComponent,
         ImgSwiperComponent,
         HeaderComponent,
@@ -69,8 +71,8 @@ import { AutoResizeDirective } from '../../directives/auto-resize.directive';
         GeoIconComponent,
         GeoSelectComponent,
         FormatDatePipe,
-        StartsWithHighlightPipe,
         ObservationListCardComponent,
+        ObservationSkeletonComponent,
         LegalTermsComponent,
         ImgSwiperComponent,
         HeaderComponent,

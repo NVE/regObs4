@@ -16,6 +16,10 @@ ion-img {
         opacity: 1;
         display: block;
     }
+
+    &.error {
+        opacity: 0;
+    }
 }
 
 @keyframes placeHolderShimmer{
@@ -65,6 +69,7 @@ ion-img {
     }
 
     &.error {
+        display: block;
         background: #dddddd;
         animation: none;
 

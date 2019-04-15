@@ -10,42 +10,51 @@ import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { nSQL } from '@nano-sql/core';
-import { Observable, Observer, of, Subject } from 'rxjs';
-import { map, debounceTime } from 'rxjs/operators';
+import { Observable, Observer } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
-import { DbHelperService } from '../db-helper/db-helper.service';
 import { DataUrlHelper } from '../../helpers/data-url.helper';
 import { createWorker } from 'typed-web-workers';
-import { LRUMap } from 'lru_map';
+import { LRUCache } from 'lru-fast';
 import { Platform } from '@ionic/angular';
+import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 
 const DEBUG_TAG = 'OfflineMapService';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OfflineMapService {
-  private _savedTiles: LRUMap<string, boolean>;
-  private _saveBuffer: LRUMap<string, HTMLImageElement>;
+export class OfflineMapService implements OnReset {
+  private _savedTiles: LRUCache<string, boolean>;
+  private _saveBuffer: LRUCache<string, HTMLImageElement>;
   private _interval: NodeJS.Timeout;
   private _shouldProcessOfflineImages: boolean;
 
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
     private file: File,
-    private dbHelperService: DbHelperService,
     private loggingService: LoggingService,
     private platform: Platform,
   ) {
-    this._savedTiles = new LRUMap(2000);
-    this._saveBuffer = new LRUMap(100);
+    this.init();
+  }
+
+  private init() {
+    this._savedTiles = new LRUCache(2000);
+    this._saveBuffer = new LRUCache(100);
     this.platform.pause.subscribe(() => {
-      clearTimeout(this._interval);
+      this.stopProcessingOfflineImageSaveQueue();
     });
     this.platform.resume.subscribe(() => {
       this.startProcessingOfflineImageSaveQueue();
     });
     this.startProcessingOfflineImageSaveQueue();
+  }
+
+  private stopProcessingOfflineImageSaveQueue() {
+    if (this._interval) {
+      clearTimeout(this._interval);
+    }
   }
 
   // TODO: Implement continue download when app restart
@@ -110,7 +119,7 @@ export class OfflineMapService {
   }
 
   saveTileToOfflineCache(id: string, el: HTMLImageElement) {
-    if (!this._savedTiles.has(id)) {
+    if (!this._savedTiles.get(id)) {
       this._savedTiles.set(id, true);
       this._saveBuffer.set(id, el);
     }
@@ -125,19 +134,16 @@ export class OfflineMapService {
       this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
         timeout || settings.map.tiles.cacheSaveBufferThrottleTimeMs);
     };
-
-    this.loggingService.debug(`Start processing offline tiles queue. Size: ${this._saveBuffer.size}`, DEBUG_TAG);
-    if (this._interval) {
-      clearInterval(this._interval);
-    }
+    // this.loggingService.debug(`Start processing offline tiles queue. Size: ${this._saveBuffer.size}`, DEBUG_TAG);
+    this.stopProcessingOfflineImageSaveQueue();
     if (this._shouldProcessOfflineImages && this._saveBuffer.size > 0) {
       const latest = this._saveBuffer.newest;
-      this._saveBuffer.delete(latest.key);
+      this._saveBuffer.remove(latest.key);
       const currentTile = latest.value;
       this.getImageDataUrlAsObservable(currentTile).subscribe((result: { dataUrl: string, size: number }) => {
         if (result && result.dataUrl && result.size > 0) {
           this.saveTileDataUrlToDbCache(latest.key, result.dataUrl, result.size).then(() => {
-            this.loggingService.debug(`Saved tile: ${latest.key}`, DEBUG_TAG);
+            // this.loggingService.debug(`Saved tile: ${latest.key}`, DEBUG_TAG);
             continueProcessing();
           }, continueProcessing);
         } else {
@@ -416,5 +422,13 @@ export class OfflineMapService {
       await this.remove(m);
     }
     await this.deleteTilesCache();
+  }
+
+  appOnReset(): void | Promise<any> {
+    this.stopProcessingOfflineImageSaveQueue();
+  }
+
+  appOnResetComplete(): void | Promise<any> {
+    this.startProcessingOfflineImageSaveQueue();
   }
 }

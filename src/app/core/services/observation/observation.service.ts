@@ -7,7 +7,6 @@ import * as moment from 'moment';
 import 'moment-timezone';
 import { NanoSql } from '../../../../nanosql';
 import { map, distinctUntilChanged, switchMap, shareReplay, tap } from 'rxjs/operators';
-import { LoginService } from '../../../modules/login/services/login.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { AppMode } from '../../models/app-mode.enum';
@@ -20,6 +19,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import '../../helpers/nano-sql/nanoObserverToRxjs';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'ObservationService';
 
@@ -41,7 +41,6 @@ export class ObservationService {
 
   constructor(
     private searchService: SearchService,
-    private loginService: LoginService,
     private userSettingService: UserSettingService,
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
@@ -156,7 +155,7 @@ export class ObservationService {
       if (isCanceled) {
         this.loggingService.debug(err, DEBUG_TAG, `Operation cancelled`);
       } else {
-        this.loggingService.error(err, DEBUG_TAG, `Loading error`);
+        this.loggingService.log(`Loading error. Is network available?`, err, LogLevel.Warning);
       }
       await this.dataLoadService.loadingError(dataLoadId, err.message);
       return 0;

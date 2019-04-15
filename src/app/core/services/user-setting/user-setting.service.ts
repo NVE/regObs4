@@ -6,20 +6,21 @@ import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, combineLatest } from 'rxjs';
-import { map, take, shareReplay, distinctUntilChanged, distinct, tap } from 'rxjs/operators';
+import { map, take, shareReplay, distinctUntilChanged, tap } from 'rxjs/operators';
 import { LangKey } from '../../models/langKey';
 import { TopoMap } from '../../models/topo-map.enum';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import '../../helpers/nano-sql/nanoObserverToRxjs';
 import { nSQL } from '@nano-sql/core';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
+import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 
 const DEBUG_TAG = 'UserSettingService';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserSettingService {
+export class UserSettingService implements OnReset {
 
   // Setting this observable to be a shared instance since
   // UserSettingService is a singleton service.
@@ -159,5 +160,13 @@ export class UserSettingService {
 
   async saveUserSettings(userSetting: UserSetting) {
     await nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('upsert', { id: 'usersettings', ...userSetting }).exec();
+  }
+
+  appOnReset(): void | Promise<any> {
+  }
+
+  appOnResetComplete(): void | Promise<any> {
+    this.loggingService.debug(`App reset complete. Re-init observables.`, DEBUG_TAG);
+    this.initObservables();
   }
 }

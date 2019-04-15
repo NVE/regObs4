@@ -27,6 +27,6 @@
       </ion-row>
     </ion-grid>
   </ion-list>
-  <app-login-form *ngIf="!isLoggedIn(loggedInUser)">
+  <app-login-form *ngIf="!isLoggedIn(loggedInUser)" (loginSuccess)="onLoginSuccess()">
   </app-login-form>
 </ion-content>

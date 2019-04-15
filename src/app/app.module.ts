@@ -6,7 +6,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { APP_PROVIDERS } from './app.providers';
 import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
@@ -44,7 +43,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient]
       }
     }),
-    // LeafletModule.forRoot(),
     MarkdownModule.forRoot(),
     IonicStorageModule.forRoot({
       name: settings.db.simpleStorage.dbName,

@@ -64,6 +64,9 @@
   },
   "LEGAL_TERMS": {
     "HEADER": "About Varsom Regobs data",
+    "LINE_1": "Use the warnings, data and maps at your own risk. Errors and omissions may be present.",
+    "LINE_2": "A warning is a planning tool and may differ from the actual situation. Always make your own evaluation. Conditions may be complex and differ from the warning.",
+    "LINE_3": "Data on Regobs is produced by the users and is available «as is». It may contain errors and omissions. NVE makes no warranties for errors and omissions in the data.​",
     "OK": "Ok, I accept",
     "TERMS": "Data on Varsom Regobs is produced by the users of Regobs and is available as it is. The information may contain errors and omissions. NVE makes no guarantee for the quality or accuracy of the information which is found on Regobs and does not take responsibility for data which is incorrect or misleading. The number of stars besides a username (1-5) indicates the level of competence of the person providing observations. Without stars, competence is unknown or low."
   },

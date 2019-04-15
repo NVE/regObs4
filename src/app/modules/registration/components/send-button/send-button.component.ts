@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,22 +18,40 @@ export class SendButtonComponent implements OnInit, OnDestroy {
     return this.registrationService.isRegistrationEmpty(this.registration);
   }
 
+  get isDisabled() {
+    return this.isEmpty || this.isSending;
+  }
+
+  isSending = false;
+
   constructor(
     private registrationService: RegistrationService,
     private alertController: AlertController,
     private userSettingService: UserSettingService,
     private translateService: TranslateService,
+    private ngZone: NgZone,
     private navController: NavController) { }
 
   ngOnInit() {
+    this.isSending = false;
   }
 
   ngOnDestroy(): void {
   }
 
   async send() {
-    const clone = { ...this.registration };
-    this.registrationService.sendRegistration(clone);
+    const canSend = !this.isSending;
+    if (canSend) {
+      this.isSending = true;
+      try {
+        const clone = { ...this.registration };
+        await this.registrationService.sendRegistration(clone);
+      } finally {
+        this.ngZone.run(() => {
+          this.isSending = false;
+        });
+      }
+    }
   }
 
   async delete() {

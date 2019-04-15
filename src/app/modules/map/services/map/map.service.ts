@@ -136,6 +136,8 @@ export class MapService {
   }
 
   // NOTE! This code is running as a web worker and cannot have external dependencies!
+  // TODO: Rewrite to Angular 8 web worker whan Angular 8 is released.
+  // https://next.angular.io/guide/web-worker
   private workFunc(input: {
     url: string,
     featureGeoJson: GeoJSON.FeatureCollection<Polygon>,
@@ -144,39 +146,42 @@ export class MapService {
     bbox: [number, number, number, number]
   },
     callback: (_: IMapViewArea) => void) {
-    const that = <any>self;
-    // const start = new Date();
-    that.importScripts(`${input.url}/turf/turf.min.js`);
-    const currentViewAsPolygon: Feature<Polygon> = that.turf.bboxPolygon(input.bbox);
+    let regionInCenter: string = null;
+    let regionsInViewBounds: string[] = [];
+    let regionsInViewBuffer: string[] = [];
+    try {
+      const that = <any>self;
+      // const start = new Date();
+      that.importScripts(`${input.url}/turf/turf.min.js`);
+      const currentViewAsPolygon: Feature<Polygon> = that.turf.bboxPolygon(input.bbox);
 
-    const isInsideOrIntersects = function (firstGeometry: Polygon, secondGeometry: Polygon): boolean {
-      return that.turf.intersect(firstGeometry, secondGeometry) ||
-        that.turf.booleanContains(firstGeometry, secondGeometry) ||
-        that.turf.booleanContains(secondGeometry, firstGeometry);
-    };
+      const isInsideOrIntersects = function (firstGeometry: Polygon, secondGeometry: Polygon): boolean {
+        return that.turf.intersect(firstGeometry, secondGeometry) ||
+          that.turf.booleanContains(firstGeometry, secondGeometry) ||
+          that.turf.booleanContains(secondGeometry, firstGeometry);
+      };
 
-    // Geojosn features that is inide or intersects with current view bounds
-    const featuresInViewBounds = input.featureGeoJson.features.filter((f) =>
-      isInsideOrIntersects(f.geometry, currentViewAsPolygon.geometry));
-    const regionsInViewBounds: string[] = featuresInViewBounds
-      .map((f) => f.properties[input.featureName].toString());
+      // Geojosn features that is inide or intersects with current view bounds
+      const featuresInViewBounds = input.featureGeoJson.features.filter((f) =>
+        isInsideOrIntersects(f.geometry, currentViewAsPolygon.geometry));
+      regionsInViewBounds = featuresInViewBounds
+        .map((f) => f.properties[input.featureName].toString());
 
-    // Region that center view point is inside
-    const featureInCenter = featuresInViewBounds.find((f) => {
-      return that.turf.inside(input.center, f.geometry);
-    });
-    const regionInCenter: string = featureInCenter ? featureInCenter.properties[input.featureName].toString() : null;
-
-    // Geojson features that intersects or is inside a buffer of 150 km
-    const buffer: Feature<Polygon> = that.turf.buffer(that.turf.point(input.center), 150, { units: 'kilometers' });
-    const regionsInViewBuffer: string[] = input.featureGeoJson.features.filter((f) =>
-      isInsideOrIntersects(f.geometry, buffer.geometry))
-      .map((f) => f.properties[input.featureName].toString());
-
-    const result: IMapViewArea = { regionInCenter, regionsInViewBounds, regionsInViewBuffer };
-    // const runtime = new Date().getTime() - start.getTime();
-    // console.log(`[INFO][MapService] - Calculate regions took ${runtime} milliseconds`, result);
-    callback(result);
+      // Region that center view point is inside
+      const featureInCenter = featuresInViewBounds.find((f) => {
+        return that.turf.inside(input.center, f.geometry);
+      });
+      regionInCenter = featureInCenter ? featureInCenter.properties[input.featureName].toString() : null;
+      // Geojson features that intersects or is inside a buffer of 150 km
+      const buffer: Feature<Polygon> = that.turf.buffer(that.turf.point(input.center), 150, { units: 'kilometers' });
+      regionsInViewBuffer = input.featureGeoJson.features.filter((f) =>
+        isInsideOrIntersects(f.geometry, buffer.geometry))
+        .map((f) => f.properties[input.featureName].toString());
+      // const runtime = new Date().getTime() - start.getTime();
+      // console.log(`[INFO][MapService] - Calculate regions took ${runtime} milliseconds`, result);
+    } finally {
+      callback({ regionInCenter, regionsInViewBounds, regionsInViewBuffer });
+    }
   }
 
   // Loading regions in memory

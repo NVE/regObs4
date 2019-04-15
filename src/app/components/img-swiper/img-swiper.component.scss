@@ -5,16 +5,31 @@
     flex-direction: column;
     background-color: #fff;
 
-    .swiper-slide {
-        width: 80%;
-        height: 100%;
-        display: inline-flex;
-        margin-right: 5px;
-        background-color: rgba(0,0,0,0.6);
+    ion-slides {
 
-        &:last-child {
-            margin-right: 0px;
+        opacity: 0;
+        transition: opacity 1s linear;
+        &.loaded {
+            opacity: 1;
         }
+
+        .swiper-slide {
+            width: 80%;
+            height: 100%;
+            display: inline-flex;
+            margin-right: 5px;
+            // background-color: rgba(0,0,0,0.6);
+
+            &:last-child {
+                margin-right: 0px;
+            }
+        }
+    }
+
+    app-map-image {
+        height: 100%;
+        width: 100%;
+        display: inline-flex;
     }
     
     app-offline-image {
@@ -27,7 +42,7 @@
     }
     
     ion-slides {
-        display: flex;
+        display: inline-flex;
         flex: 1;
         width: 100%;
     }
@@ -37,9 +52,50 @@
         color: #444444;
         font-size: 14px;
         line-height: 20px;
+        background-color: #fff;
+        position: absolute;
+        bottom: -1px;
+        width: 100%;
+        z-index: 100;
 
         .img-comment-header {
             font-weight: 600;
         }
+    }
+}
+
+@keyframes placeHolderShimmer{
+    0%{
+        background-position: -100% 0
+    }
+    100%{
+        background-position: 100% 0
+    }
+}
+
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+  
+    to {
+      opacity: 0.5;
+    }
+  }
+
+.animated-background {
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    background: #f6f7f8;
+    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+    background-size: 300% 100%;
+    position: relative;
+
+    &.loaded {
+        animation: none;
+        background-color: #fff;
     }
 }

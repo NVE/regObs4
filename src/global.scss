@@ -312,6 +312,18 @@ ion-toolbar {
     left: 7px !important;
 }
 
+.leaflet-container, .swiper-wrapper {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+app-map, app-map-image, ion-slides {
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
 .circle-marker-cluster {
     background-color: var(--ion-color-varsom-blue-light-2);
     border: 2px solid #fff;

@@ -1,0 +1,53 @@
+<ion-card>
+  <ion-card-header>
+    <h3>
+      <ion-skeleton-text class="skeleton-header" animated></ion-skeleton-text> / <ion-skeleton-text
+        class="skeleton-header" animated></ion-skeleton-text>
+    </h3>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-grid no-padding>
+      <ion-row class="row-padding-start">
+        <ion-col size="12">
+          <div class="card-icon-item">
+            <svg-icon class="card-icon-item-icon" src="/assets/icon/time.svg"
+              [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+            <ion-skeleton-text class="time-skeleton" animated></ion-skeleton-text>
+          </div>
+          <div class="card-icon-item">
+            <svg-icon class="card-icon-item-icon" src="/assets/icon/moh.svg"
+              [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+            <ion-skeleton-text class="moh-skeleton" animated></ion-skeleton-text>
+          </div>
+          <div class="card-icon-item">
+            <svg-icon class="card-icon-item-icon" src="/assets/icon/user.svg"
+              [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+            <ion-skeleton-text class="user-skeleton" animated></ion-skeleton-text>
+          </div>
+          <div class="card-icon-item">
+            <svg-icon class="card-icon-item-icon" src="/assets/icon/usergroup.svg"
+              [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+            <ion-skeleton-text class="usergroup-skeleton" animated></ion-skeleton-text>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" no-padding>
+          <ion-skeleton-text class="skeleton-image" animated></ion-skeleton-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" no-padding>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-item no-padding color="light">
+      <ion-button mode="ios" fill="clear" class="link-title">
+        {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
+      </ion-button>
+      <ion-button mode="ios" fill="clear" class="reg-id" slot="end">
+        ID: - <ion-icon slot="end" class="share-icon" name="md-share"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-card-content>
+</ion-card>

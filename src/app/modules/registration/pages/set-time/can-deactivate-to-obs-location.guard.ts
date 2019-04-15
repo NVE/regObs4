@@ -12,7 +12,7 @@ export class CanDeactivateToObsLocationRouteGuard implements CanDeactivate<SetTi
         _: ActivatedRouteSnapshot,
         __: RouterStateSnapshot,
         nextState?: RouterStateSnapshot): Promise<boolean> {
-        if (nextState && nextState.url.indexOf('registration/new') >= 0) {
+        if (nextState && nextState.url.indexOf('registration/new') >= 0 && component.registration) {
             this.navController.navigateBack(`registration/obs-location/${component.registration.id}`);
         }
         return true;

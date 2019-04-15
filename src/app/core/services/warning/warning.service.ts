@@ -213,7 +213,7 @@ export class WarningService {
       case GeoHazard.Ice:
         return this.getDefaultIceWarningGroups();
       default:
-        return this.getCountyWarningGroups(geoHazard)
+        return this.getCountyWarningGroups(geoHazard);
     }
   }
 
@@ -411,10 +411,10 @@ export class WarningService {
     return regionMap;
   }
 
-  getWarningByDay(warningsresult: IWarning[]) {
-    const dayWarningMap = new Map<string, IWarning[]>();
+  getWarningByDay(warningsresult: { subRegionId: string, warning: IWarning }[]) {
+    const dayWarningMap = new Map<string, { subRegionId: string, warning: IWarning }[]>();
     for (const item of warningsresult) {
-      const key = moment(item.validTo).startOf('day').toISOString();
+      const key = moment(item.warning.validTo).startOf('day').toISOString();
       const collection = dayWarningMap.get(key);
       if (!collection) {
         dayWarningMap.set(key, [item]);
@@ -425,25 +425,26 @@ export class WarningService {
     return dayWarningMap;
   }
 
-  filterWarningsForGroup(warningsresult: IWarning[]) {
-    return Array.from(this.getWarningByDay(warningsresult)).map(([key, value]) => {
-      if (value.length <= 1) {
-        return value[0];
-      }
-      return this.getMostRelevantDayWarning(value);
-    });
-  }
-
-  getMostRelevantDayWarning(warningsresult: IWarning[]): IWarning {
-    let current = null;
-    for (const next of warningsresult) {
-      if (!current) {
-        current = next;
-      } else if (this.shouldReplaceWarning(current, next)) {
-        current = next;
+  getMostRelevantWarningForSubRegion(warningsresult: { subRegionId: string, warning: IWarning }[]) {
+    const subRegionMap = new Map<string, IWarning>();
+    for (const item of warningsresult) {
+      const warning = subRegionMap.get(item.subRegionId);
+      if (!warning || this.shouldReplaceWarning(warning, item.warning)) {
+        subRegionMap.set(item.subRegionId, item.warning);
       }
     }
-    return current;
+    return subRegionMap;
+  }
+
+  filterWarningsForGroup(warningsresult: { subRegionId: string, warning: IWarning }[]) {
+    return Array.from(this.getWarningByDay(warningsresult)).map(([_, value]) => this.getMostRelevantDayWarning(value));
+  }
+
+  getMostRelevantDayWarning(warningsresult: { subRegionId: string, warning: IWarning }[]): IWarning {
+    const warningsForSubRegions = this.getMostRelevantWarningForSubRegion(warningsresult);
+    const warningsForSubRegionsArray = Array.from(warningsForSubRegions).map(([_, value]) => value);
+    const max = Math.max(...warningsForSubRegionsArray.map((v) => v.warningLevel));
+    return warningsForSubRegionsArray.find((w) => w.warningLevel === max);
   }
 
   aggregateWarningRegions(warningsresult: IWarningApiResult[], geoHazard: GeoHazard, language: LangKey, now: moment.Moment) {
@@ -455,12 +456,14 @@ export class WarningService {
       counties: [key],
       geoHazard,
       warnings: this.filterWarningsForGroup(value.map((w) => ({
-        language,
-        mainText: w.MainText,
-        validFrom: this.getDate(w.ValidFrom),
-        validTo: this.getDate(w.ValidTo),
-        publishTime: this.getDate(w.PublishTime),
-        warningLevel: parseInt(w.ActivityLevel, 10),
+        subRegionId: w.MunicipalityCsvString, warning: {
+          language,
+          mainText: w.MainText,
+          validFrom: this.getDate(w.ValidFrom),
+          validTo: this.getDate(w.ValidTo),
+          publishTime: this.getDate(w.PublishTime),
+          warningLevel: parseInt(w.ActivityLevel, 10),
+        }
       }))),
       sortOrder: this.convertCoutyToSortOrder(key),
     }));

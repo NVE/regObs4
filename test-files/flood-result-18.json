@@ -1,0 +1,2207 @@
+[
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1820",
+                "Name": "Alstahaug",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1820",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1871",
+                "Name": "Andøy",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1871",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1854",
+                "Name": "Ballangen",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1854",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1839",
+                "Name": "Beiarn",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1839",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1811",
+                "Name": "Bindal",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1811",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1804",
+                "Name": "Bodø",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1804",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1813",
+                "Name": "Brønnøy",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1813",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1867",
+                "Name": "Bø",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1867",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1827",
+                "Name": "Dønna",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1827",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1853",
+                "Name": "Evenes",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1853",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1841",
+                "Name": "Fauske",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1841",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1859",
+                "Name": "Flakstad",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1859",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1838",
+                "Name": "Gildeskål",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1838",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1825",
+                "Name": "Grane",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1825",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1866",
+                "Name": "Hadsel",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1866",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1849",
+                "Name": "Hamarøy",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1849",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1826",
+                "Name": "Hattfjelldal",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1826",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1832",
+                "Name": "Hemnes",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1832",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1818",
+                "Name": "Herøy",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1818",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1822",
+                "Name": "Leirfjord",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1822",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1834",
+                "Name": "Lurøy",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1834",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1851",
+                "Name": "Lødingen",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1851",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1837",
+                "Name": "Meløy",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1837",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1874",
+                "Name": "Moskenes",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1874",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1805",
+                "Name": "Narvik",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1805",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1828",
+                "Name": "Nesna",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1828",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "242310",
+        "Id": "242312",
+        "MasterId": "242312",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": "",
+        "MetName": "",
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": [],
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1833",
+                "Name": "Rana",
+                "WarningList": []
+            }
+        ],
+        "MunicipalityCsvString": "1833;",
+        "ActivityLevel": "2",
+        "ActivityLevelName": null,
+        "DangerType": "1",
+        "DangerTypeName": "Flomfare",
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:00",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:04:00",
+        "CreatedTime": "2019-04-04T17:04:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Varsel om flomfare, gult nivå for Stormdalsåga og Ranavassdraget i Rana kommune, Nordland",
+        "WarningText": "Når snøproppen løsner kan de oppdemte vannmassene føre til flom i nedre delen av Stormdalsåga og raskt stigende vannføring i Ranaelva nedstrøms samløpet med Stormdalsåga. Når snøproppen løsner er uavhengig av været og kan ikke forutsees. Den kan også løsne bare delvis slik at vannet kan drenere sakte og uten fare for flom.",
+        "AdviceText": "Vær forbered på raskt stigende vannføring i Stormdalsåga og Ranavassdraget. Det frarådes å oppholde seg langs Stormdalsåga. Aktuell varsel gjelder inntil videre. Hold deg oppdatert om situasjonen.",
+        "ConsequenceText": "Fare for raskt stigende vannføring. Det ventes ikke flomvannføringer i Ranaelva.",
+        "LevelMeaningText": "Utfordrende situasjon som krever oppfølging og kan medføre skader lokalt.\nKontakt: vop@nve.no, 48246638",
+        "CauseText": "Et stort snøskred i nedre delen av Stormdalen i Saltfjellet Nasjonalpark demmer opp Stormdalsåga https://regobs.no/Registration?regId=189691. ",
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": -1,
+        "ExposedHeightValue2": -1,
+        "ExposedClimateType": 0,
+        "CauseList": [
+            {
+                "Id": 4,
+                "Name": "Isgang"
+            }
+        ],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1836",
+                "Name": "Rødøy",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1836",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1856",
+                "Name": "Røst",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1856",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1840",
+                "Name": "Saltdal",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1840",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1870",
+                "Name": "Sortland",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1870",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1848",
+                "Name": "Steigen",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1848",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1812",
+                "Name": "Sømna",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1812",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1845",
+                "Name": "Sørfold",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1845",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1852",
+                "Name": "Tjeldsund",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1852",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1835",
+                "Name": "Træna",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1835",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1850",
+                "Name": "Tysfjord",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1850",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1824",
+                "Name": "Vefsn",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1824",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1815",
+                "Name": "Vega",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1815",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1860",
+                "Name": "Vestvågøy",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1860",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1816",
+                "Name": "Vevelstad",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1816",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1857",
+                "Name": "Værøy",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1857",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1865",
+                "Name": "Vågan",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1865",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    },
+    {
+        "EventId": "xxx",
+        "Id": "xxx",
+        "MasterId": "xxx",
+        "Version": 1,
+        "LangKey": 1,
+        "MetId": null,
+        "MetName": null,
+        "CountyList": [
+            {
+                "Id": "18",
+                "Name": "Nordland",
+                "MunicipalityList": null,
+                "HighestActivityLevel": null
+            }
+        ],
+        "MunicipalityList": [
+            {
+                "Id": "1868",
+                "Name": "Øksnes",
+                "WarningList": null
+            }
+        ],
+        "MunicipalityCsvString": "1868",
+        "ActivityLevel": "1",
+        "ActivityLevelName": null,
+        "DangerType": null,
+        "DangerTypeName": null,
+        "ValidFrom": "2019-04-05T07:00:00",
+        "ValidTo": "2019-04-06T06:59:59",
+        "NextWarningTime": "2019-04-05T11:00:00",
+        "PublishTime": "2019-04-04T17:05:00",
+        "CreatedTime": "2019-04-05T08:18:51.9136504+02:00",
+        "DangerIncreaseDateTime": null,
+        "DangerDecreaseDateTime": null,
+        "MainText": "Generelt trygge forhold",
+        "WarningText": null,
+        "AdviceText": null,
+        "ConsequenceText": null,
+        "LevelMeaningText": null,
+        "CauseText": null,
+        "Area": null,
+        "ExposedHeightType": 0,
+        "ExposedHeightValue": 0,
+        "ExposedHeightValue2": 0,
+        "ExposedClimateType": 0,
+        "CauseList": [],
+        "MicroBlogPostList": [],
+        "StationList": []
+    }
+]

@@ -4,6 +4,7 @@ import { LoggedInUser } from '../../models/logged-in-user.model';
 import { LoginService } from '../../services/login.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../settings';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginPage implements OnInit, OnDestroy {
   constructor(
     private loginService: LoginService,
     private userSettingService: UserSettingService,
+    private navController: NavController,
     private ngZone: NgZone) { }
 
   ngOnInit() {
@@ -55,6 +57,12 @@ export class LoginPage implements OnInit, OnDestroy {
 
   logout() {
     return this.loginService.logout();
+  }
+
+  onLoginSuccess() {
+    setTimeout(() => {
+      this.navController.navigateRoot('/');
+    }, 1000);
   }
 
 }

@@ -3,7 +3,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { RouteReuseStrategy, Routes } from '@angular/router';
 import { IonicRouteStrategy } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+// import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
 // import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
@@ -32,7 +32,6 @@ import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { StartWizardGuard } from './core/guards/start-wizard.guard';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { LoginGuard } from './core/guards/login.guard';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
@@ -62,7 +61,7 @@ export const APP_PROVIDERS = [
     LoginGuard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Geolocation,
-    Deeplinks,
+    // Deeplinks,
     BackgroundFetch,
     // BackgroundGeolocation,
     File,
@@ -75,7 +74,6 @@ export const APP_PROVIDERS = [
     WebView,
     ApiInterceptor,
     EmailComposer,
-    LocalNotifications,
     Keyboard,
     SQLite,
     SocialSharing,
@@ -97,6 +95,12 @@ export const APP_PROVIDERS = [
     AnalyticService,
     KdvService,
     // ObsCardHeightService,
+
+    // Interface implementations
+    { provide: 'OnReset', useClass: DataMarshallService, multi: true },
+    { provide: 'OnReset', useClass: UserSettingService, multi: true },
+    { provide: 'OnReset', useClass: OfflineMapService, multi: true },
+
     // Custom native/web providers
     {
         provide: BackgroundGeolocationService, useClass: window.hasOwnProperty('cordova') ?

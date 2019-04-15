@@ -6,7 +6,6 @@ import { CancelPromiseTimer } from '../../helpers/cancel-promise-timer';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LoginService } from '../../../modules/login/services/login.service';
 import { settings } from '../../../../settings';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Platform } from '@ionic/angular';
 import { RegistrationService } from '../../../modules/registration/services/registration.service';
 import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
@@ -15,13 +14,14 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import { Subject, Subscription } from 'rxjs';
 import { map, switchMap, distinctUntilChanged, pairwise, filter, take, debounceTime } from 'rxjs/operators';
 import { OfflineMapService } from '../offline-map/offline-map.service';
+import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 
 const DEBUG_TAG = 'DataMarshallService';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DataMarshallService {
+export class DataMarshallService implements OnReset {
 
   foregroundUpdateInterval: NodeJS.Timeout;
   private cancelUpdateObservationsSubject: Subject<boolean>;
@@ -44,7 +44,6 @@ export class DataMarshallService {
     private userSettingService: UserSettingService,
     private loginService: LoginService,
     private platform: Platform,
-    private localNotifications: LocalNotifications,
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
@@ -94,7 +93,16 @@ export class DataMarshallService {
     // No need to unsubscribe this observables when the service is singleton. It get destroyed when app exits.
   }
 
-  unsubscribeAll() {
+  appOnReset(): void {
+    this.loggingService.debug('App reset. Unsubscribe all.', DEBUG_TAG);
+    this.unsubscribeAll();
+  }
+
+  appOnResetComplete(): void {
+    this.init(); // Re-Init service after reset has completed
+  }
+
+  private unsubscribeAll() {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
@@ -145,10 +153,6 @@ export class DataMarshallService {
       const cancelPromiseForObservations = cancelTimer ?
         Promise.race([this.cancelObservationsPromise, cancelTimer]) : this.cancelObservationsPromise;
       const observationsUpdated = await this.observationService.updateObservations(cancelPromiseForObservations);
-      if (showNotification && observationsUpdated > 0
-        && this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
-        this.localNotifications.schedule({ text: `${observationsUpdated} observations saved` });
-      }
       await this.warningService.updateWarnings(cancelTimer);
       await this.kdvService.updateKdvElements(cancelTimer);
       await this.helpTextService.updateHelpTexts(cancelTimer);

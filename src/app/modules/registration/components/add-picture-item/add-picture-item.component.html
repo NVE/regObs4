@@ -1,12 +1,13 @@
-<div *ngFor="let image of imagesForCurrentRegistrationTid; let i = index">
-  <div class="image-wrapper">
+<div class="images">
+  <div class="image-wrapper" *ngFor="let image of imagesForCurrentRegistrationTid; let i = index">
     <app-base64-image [base64encodedImage]="image.PictureImageBase64"></app-base64-image>
     <ion-fab slot="fixed" vertical="top" horizontal="end">
-      <ion-fab-button color="dark" class="map-control-fab" (click)="removeImage(i)">
+      <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeImage(image)">
         <ion-icon name="close"></ion-icon>
       </ion-fab-button>
     </ion-fab>
-    <app-text-comment [(value)]="image.PictureComment" title="{{ pictureCommentText | translate}}" rows="2" placeholder="{{ pictureCommentPlaceholder | translate }}"></app-text-comment>
+    <app-text-comment [(value)]="image.PictureComment" title="{{ pictureCommentText | translate}}" rows="2"
+      placeholder="{{ pictureCommentPlaceholder | translate }}"></app-text-comment>
   </div>
 </div>
 <ion-item (click)="addClick()">

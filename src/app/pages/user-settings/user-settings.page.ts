@@ -1,7 +1,6 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { NanoSql } from '../../../nanosql';
 import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
 import { KdvService } from '../../core/services/kdv/kdv.service';
@@ -10,11 +9,10 @@ import { AppVersionService } from '../../core/services/app-version/app-version.s
 import { AppVersion } from '../../core/models/app-version.model';
 import { Subscription } from 'rxjs';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
-import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { HelperService } from '../../core/services/helpers/helper.service';
-import { DbHelperService } from '../../core/services/db-helper/db-helper.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
+import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 
@@ -39,13 +37,12 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private helperService: HelperService,
     private kdvService: KdvService,
     private ngZone: NgZone,
-    private dbHelperService: DbHelperService,
     private loggingService: LoggingService,
     private translateService: TranslateService,
-    private dataMarshallService: DataMarshallService,
     private alertController: AlertController,
     private appVersionService: AppVersionService,
     private loadingController: LoadingController,
+    private appResetService: AppResetService,
     private navController: NavController) { }
 
   async ngOnInit() {
@@ -145,15 +142,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   private async doReset() {
-    return this.ngZone.runOutsideAngular(async () => {
-      this.stopSubscriptions();
-      this.dataMarshallService.unsubscribeAll();
-      this.offlineMapService.shouldProcessOfflineImage(false);
-      await this.dbHelperService.resetDb((table, _) => {
-        this.loggingService.log(`Error reset table ${table}`, null, LogLevel.Warning, DEBUG_TAG);
-      });
-      this.userSettingService.initObservables();
-      this.dataMarshallService.init();
-    });
+    this.stopSubscriptions();
+    return this.appResetService.resetApp();
   }
 }

@@ -54,6 +54,22 @@ ion-content {
             height: 20vh;
         }
 
+        .legal-text-row {
+            ul {
+                padding-left: 18px;
+                li {
+                    text-align: left;
+                    padding-bottom: 5px;
+                    font-size: 4vw;
+                }
+                @media screen and (min-width: 768px) {
+                    li {
+                       font-size: 18px;
+                    }
+                  }
+            }
+        }
+
         ion-slide{
             overflow: hidden;
         }

@@ -62,6 +62,9 @@ export class RegistrationService {
   }
 
   async saveRegistration(registration: IRegistration): Promise<string> {
+    if (!registration) {
+      return null;
+    }
     this.cleanupRegistration(registration);
     registration.changed = moment().unix();
     const userSettings = await this.userSettingService.getUserSettings();
@@ -93,11 +96,13 @@ export class RegistrationService {
   }
 
   cleanupRegistration(reg: IRegistration) {
-    const registrationTids = this.getRegistrationTids();
-    for (const registrationTid of registrationTids) {
-      const key = RegistrationTid[registrationTid];
-      if (reg.request[key] && this.isEmpty(reg, registrationTid)) {
-        reg.request[key] = undefined;
+    if (reg && reg.request) {
+      const registrationTids = this.getRegistrationTids();
+      for (const registrationTid of registrationTids) {
+        const key = RegistrationTid[registrationTid];
+        if (reg.request[key] && this.isEmpty(reg, registrationTid)) {
+          reg.request[key] = undefined;
+        }
       }
     }
     return reg;
@@ -199,9 +204,16 @@ export class RegistrationService {
     }
     const userSettings = await this.userSettingService.getUserSettings();
     const appMode = userSettings.appMode;
+    const dataLoadId = this.getDataLoadId(appMode);
+    const dataLoad = await this.dataLoadService.getState(dataLoadId);
+    const isLoadingTimeout = moment().subtract(30, 'seconds');
+    if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
+      // Is allready syncing, return
+      return;
+    }
+
     const registrationsToSync = await this.getRegistrationsToSync().pipe(take(1)).toPromise();
     if (registrationsToSync.length > 0) {
-      const dataLoadId = this.getDataLoadId(appMode);
       try {
         this.dataLoadService.startLoading(dataLoadId, registrationsToSync.length);
         let itemCompleted = 0;
@@ -223,15 +235,16 @@ export class RegistrationService {
 
   private async syncRegistration(registration: IRegistration, userSetting: UserSetting, cancel?: Promise<void>) {
     try {
-      this.cleanupRegistration(registration);
-      registration.request.Email = userSetting.emailReceipt;
-      const createRegistrationResult = await this.postRegistration(userSetting.appMode, registration.request, cancel);
-      const newRegistration = await this.observationService.updateObservationById(
-        createRegistrationResult.RegId,
-        userSetting.appMode,
-        userSetting.language, userSetting.currentGeoHazard);
+      if (registration.request) {
+        this.cleanupRegistration(registration);
+        registration.request.Email = userSetting.emailReceipt;
+        const createRegistrationResult = await this.postRegistration(userSetting.appMode, registration.request, cancel);
+        await this.observationService.updateObservationById(
+          createRegistrationResult.RegId,
+          userSetting.appMode,
+          userSetting.language, userSetting.currentGeoHazard);
+      }
       await this.deleteRegistrationById(userSetting.appMode, registration.id);
-      return newRegistration;
     } catch (ex) {
       if (ex instanceof HttpErrorResponse) {
         const httpError: HttpErrorResponse = ex;
