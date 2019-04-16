@@ -263,6 +263,7 @@
         "TITLE": "Istykkelse"
       }
     },
+    "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
     "INCIDENT": {
@@ -382,7 +383,34 @@
         "TITLE": "Stabilitetstest"
       },
       "SNOW_PROFILE": {
+        "COMPRESSION_TEST": {
+          "EMPTY": "Ingen tester knyttet til profilen",
+          "TITLE": "Tester"
+        },
+        "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",
+        "SNOW_DENSITY": {
+          "EMPTY": "Ingen tetthetsprofiler",
+          "TITLE": "Tetthet"
+        },
         "SNOW_PROFILE_HELP_TEXT": "Vi har dessverre ikke støtte for å registrere et snøprofil i Varsom Regobs appen. Men, du kan ta et bilde av et håndtegnet profil eller eksportere et profil fra en tredjeparts app som Ullr Labs Avalanche. På regobs.no kan du senere oppdatere observasjonen med å bruke egne skjema og plot for snøprofiler.",
+        "SNOW_TEMP": {
+          "EMPTY": "Ingen temperaturpunkt observert",
+          "TITLE": "Temperaturprofil"
+        },
+        "STRAT_PROFILE": {
+          "ADD_LAYER": "Legg til nytt lag",
+          "ADD_LAYER_BOTTOM": "Legg til nytt lag nederst",
+          "ADD_LAYER_TOP": "Legg til nytt lag øverst",
+          "EMPTY": "Ingen lagdelinger observert",
+          "FROM_OTHER_PROFILE": "Lagdeling fra annen profil",
+          "LAYER": "Lag",
+          "OTHER_PROFILE_DESCRIPTION": "Du kan velge å kopiere inn lagene fra en tidligere registrert profil blant siste 14 dager innen 100 km.",
+          "THICKNESS": "Tykkelse (cm)",
+          "TITLE": "Lagdeling",
+          "TOTAL_THICKNESS": "Total tykkelse (cm)"
+        },
+        "SUBFORMS": "Underskjema",
+        "SUPERIOR": "Overordnet",
         "TITLE": "Snøprofil"
       },
       "SNOW_SURFACE": {

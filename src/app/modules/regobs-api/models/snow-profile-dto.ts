@@ -4,7 +4,8 @@ import { StratProfileDto } from './strat-profile-dto';
 import { DensityProfileDto } from './density-profile-dto';
 export interface SnowProfileDto {
   Comment?: string;
-  TempObs?: TempObsDto;
+  IsProfileToGround?: boolean;
+  SnowTemp?: TempObsDto;
   StratProfile?: StratProfileDto;
   SnowDensity?: Array<DensityProfileDto>;
 }

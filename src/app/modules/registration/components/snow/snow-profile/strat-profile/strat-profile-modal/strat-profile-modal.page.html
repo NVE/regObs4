@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list lines="full">
+    <ion-list-header text-uppercase>
+      <ion-label>
+        {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.FROM_OTHER_PROFILE' | translate}}
+      </ion-label>
+    </ion-list-header>
+    <ion-item>
+      <p>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.OTHER_PROFILE_DESCRIPTION' | translate }}</p>
+    </ion-item>
+    <ion-item>
+      <ion-icon color="dark" name="cloud-download" slot="start"></ion-icon>
+      <ion-label>Hent lagdeling fra annen profil</ion-label>
+    </ion-item>
+    <ion-list-header text-uppercase>
+      <ion-label>
+        {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate}}
+      </ion-label>
+    </ion-list-header>
+    <ng-container *ngIf="hasLayers else noLayers">
+      <ion-item (click)="addLayerTop()">
+        <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+        <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_TOP' | translate}}</ion-label>
+      </ion-item>
+      <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
+        <ion-item (click)="addOrEditThicknessLayer(i)" *ngFor="let layer of profile.Layers; let i = index">
+          <ion-label>
+            {{convertMToCM(layer.Thickness)}} cm</ion-label>
+          <ion-reorder slot="end"></ion-reorder>
+        </ion-item>
+      </ion-reorder-group>
+      <ion-item (click)="addLayerBottom()">
+        <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+        <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_BOTTOM' | translate}}</ion-label>
+      </ion-item>
+    </ng-container>
+    <app-numeric-input title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS" [min]="0" suffix="cm"
+      [decimalPlaces]="2" [convertMetersToCm]="true">
+    </app-numeric-input>
+  </ion-list>
+  <ion-grid no-padding>
+    <ion-row>
+      <ion-col size="6" offset="3">
+        <ion-button expand="block" fill="solid" color="primary" (click)="ok()">
+          {{'DIALOGS.OK' | translate}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<ng-template #noLayers>
+  <ion-item (click)="addLayerBottom()">
+    <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+    <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER' | translate}}</ion-label>
+  </ion-item>
+</ng-template>

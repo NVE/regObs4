@@ -254,7 +254,7 @@ export class SummaryItemService {
         '/registration/snow/snow-profile',
         'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
         '',
-        RegistrationTid.SnowProfile
+        RegistrationTid.SnowProfile2
       ),
       this.getRegItem(
         registration,

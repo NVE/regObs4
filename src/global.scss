@@ -453,3 +453,18 @@ ion-toast {
         height: 50%;
     }
 }
+
+.summary-item {
+    ion-label {
+        margin: 0 !important;
+        p {
+            line-height: 23px;
+            font-size: 13px;
+        }
+    
+        h2 {
+            font-size: 15px;
+            line-height: 23px;
+        }
+    }
+}
