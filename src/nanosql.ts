@@ -8,6 +8,7 @@ import {
     InanoSQLDataModel,
     InanoSQLTableIndexConfig
 } from '@nano-sql/core/lib/interfaces';
+
 export class NanoSql {
     public static readonly TABLES = {
         OBSERVATION: {
@@ -17,7 +18,7 @@ export class NanoSql {
                 'RegID:int': { pk: true },
                 'GeoHazardTID:int': {},
                 'LangKey:int': {},
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {},
             // indexes: {
@@ -53,7 +54,7 @@ export class NanoSql {
             instancePerAppMode: true,
             model: {
                 'id:string': { pk: true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {},
         },
@@ -61,7 +62,7 @@ export class NanoSql {
             name: 'warning',
             model: {
                 'id:string': { pk: true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {}
         },
@@ -70,7 +71,7 @@ export class NanoSql {
             model:
             {
                 'id:string': { pk: true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {},
         },
@@ -79,7 +80,7 @@ export class NanoSql {
             model:
             {
                 'name:string': { pk: true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {}
         },
@@ -123,7 +124,7 @@ export class NanoSql {
             name: 'mapsearchhistory',
             model: {
                 'id:string': { pk: true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {},
         },
@@ -131,7 +132,7 @@ export class NanoSql {
             name: 'usersettings',
             model: {
                 'id:string': { pk: true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {},
         },
@@ -140,7 +141,7 @@ export class NanoSql {
             instancePerAppMode: true,
             model: {
                 'id:string': { 'pk': true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {},
         },
@@ -148,7 +149,7 @@ export class NanoSql {
             name: 'dataload',
             model: {
                 'id:string': { pk: true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {},
         },
@@ -157,7 +158,7 @@ export class NanoSql {
             instancePerAppMode: true,
             model: {
                 'id:uuid': { pk: true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {},
         },
@@ -167,7 +168,7 @@ export class NanoSql {
             model: {
                 'Id:int': { pk: true },
                 'GeoHazardId:int': {},
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {
                 'GeoHazardId:int': {}
@@ -178,7 +179,7 @@ export class NanoSql {
             instancePerAppMode: true,
             model: {
                 'langKey:int': { pk: true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {},
         },
@@ -188,7 +189,7 @@ export class NanoSql {
             model: {
                 'key:string': { pk: true },
                 'userId:string': {},
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {
                 'userId:string': {},
@@ -199,7 +200,7 @@ export class NanoSql {
             instancePerAppMode: true,
             model: {
                 'langKey:int': { pk: true },
-                '*:*': {},
+                '*:any': {},
             },
             indexes: {},
         },
@@ -248,9 +249,9 @@ export class NanoSql {
         return tables;
     }
 
-    static async init() {
-        await nSQL().connect({
-            id: settings.db.nanoSql.dbName,
+    static async init(dbName: string = settings.db.nanoSql.dbName) {
+        await nSQL().createDatabase({
+            id: dbName,
             mode: getMode(),
             version: 1.0,
             tables: this.getTableModels(),
@@ -276,15 +277,6 @@ export class NanoSql {
                 },
             ],
         });
-        const db = (<any>nSQL().adapter)._db;
-        if (db && db.executeSql) {
-            db.executeSql('PRAGMA journal_mode = WAL', null, (onSuccess) => {
-                console.log('PRAGMA journal_mode = WAL success');
-            });
-            db.executeSql('PRAGMA synchronous = NORMAL', null, (onSuccess) => {
-                console.log('PRAGMA synchronous = NORMAL success');
-            });
-        }
         // NOTE: It is also possible to implement migrations on version updates.
         // See: https://github.com/ClickSimply/Nano-SQL/issues/70
     }
@@ -294,6 +286,16 @@ export class NanoSql {
     }
 
     static async resetDb(onError?: (tableName: string, ex: Error) => void) {
+        // try {
+        //     const tmpName = `${settings.db.nanoSql.dbName}Tmp`;
+        //     await this.init(tmpName);
+        //     nSQL().useDatabase(tmpName);
+        //     await nSQL().dropDatabase(settings.db.nanoSql.dbName);
+        //     await this.init();
+        //     nSQL().useDatabase(settings.db.nanoSql.dbName);
+        // } catch (err) {
+        //     console.log(err);
+        // }
         return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig, onError)));
     }
 

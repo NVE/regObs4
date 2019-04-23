@@ -145,5 +145,5 @@
   <plugin name="adapter-sqlite-cordova" spec="@nano-sql/adapter-sqlite-cordova@~2.1.2"/>
   <plugin name="cordova-plugin-advanced-http" spec="2.0.9"/>
   <engine name="android" spec="8.0.0"/>
-  <engine name="ios" spec="5.0.0"/>
+  <engine name="ios" spec="5.0.1"/>
 </widget>

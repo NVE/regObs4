@@ -1,4 +1,5 @@
-<div class="slides-wrapper" *ngIf="show" [ngClass]="{'animated-background': (showSlider && !swiperLoaded) }">
+<div class="slides-wrapper" *ngIf="show"
+  [ngClass]="{'animated-background': (showSlider && !swiperLoaded), 'loaded': loaded }">
   <ion-slides *ngIf="showSlider && !recreateSwiper" [options]="slideOptions" [pager]="false"
     [ngClass]="{'loaded': loaded}" (ionSlideTransitionEnd)="onSlideTransitionEnd()"
     (ionSlidesDidLoad)="slidesLoaded($event)">
