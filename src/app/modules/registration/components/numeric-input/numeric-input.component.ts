@@ -41,7 +41,8 @@ export class NumericInputComponent implements OnInit {
         min: this.min,
         max: this.max,
         suffix: this.suffix,
-        decimalSeparator: this.decimalSeparator
+        decimalSeparator: this.decimalSeparator,
+        title: this.title,
       },
     });
     modal.present();

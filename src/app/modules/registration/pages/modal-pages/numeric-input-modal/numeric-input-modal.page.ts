@@ -15,6 +15,7 @@ export class NumericInputModalPage implements OnInit {
   @Input() max = 100000;
   @Input() decimalPlaces = 0;
   @Input() decimalSeparator;
+  @Input() title: string;
 
 
   decimalSep = '.';
