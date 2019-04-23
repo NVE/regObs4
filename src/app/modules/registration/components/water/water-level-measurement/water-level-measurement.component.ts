@@ -35,15 +35,21 @@ export class WaterLevelMeasurementComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.maxDate = moment().toISOString(true);
+    this.maxDate = this.getMaxDateForNow();
     if (!this.waterLevelMeasurement.Pictures) {
       this.waterLevelMeasurement.Pictures = [];
     }
   }
 
+  getMaxDateForNow() {
+    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
+    // Workaround is to set minutes to 59.
+    return moment().minutes(59).toISOString(true);
+  }
+
   setToNow() {
     const now = moment().toISOString(true);
-    this.maxDate = now;
+    this.maxDate = this.getMaxDateForNow();
     this.waterLevelMeasurement.DtMeasurementTime = now;
   }
 

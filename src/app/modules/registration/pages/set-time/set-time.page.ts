@@ -32,8 +32,14 @@ export class SetTimePage extends BasePage {
   }
   setToNow() {
     const now = moment().toISOString(true);
-    this.maxDate = now;
+    this.maxDate = this.getMaxDateForNow();
     this.localDate = now;
+  }
+
+  getMaxDateForNow() {
+    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
+    // Workaround is to set minutes to 59.
+    return moment().minutes(59).toISOString(true);
   }
 
   confirm() {
