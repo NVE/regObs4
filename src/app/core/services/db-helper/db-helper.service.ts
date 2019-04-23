@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
+import { SQLite, SQLiteObject, SQLiteDatabaseConfig } from '@ionic-native/sqlite/ngx';
 import { Platform } from '@ionic/angular';
 import { settings } from '../../../../settings';
 import '../../helpers/ionic/platform-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
 import { NanoSql } from '../../../../nanosql';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 const stringify = require('json-stringify-safe');
 
 const DEBUG_CONTEXT = 'DbHelperService';
@@ -23,11 +24,22 @@ export class DbHelperService {
   async init() {
     if (this.platform.isAndroidOrIos()) {
       this.loggingService.debug('Create sqlite database connection (helper methods)', DEBUG_CONTEXT);
-      this.sqliteobj = await this.sqlite.create(<any>({
+      const config: SQLiteDatabaseConfig = {
         name: settings.db.nanoSql.dbName,
         location: 'default',
-        androidDatabaseProvider: 'system',
-      }));
+      };
+      this.sqliteobj = await this.sqlite.create(
+        <any>{
+          ...config,
+          androidDatabaseProvider: 'system',
+        }
+      );
+
+      try {
+        await this.sqliteobj.executeSql('PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL', []);
+      } catch (err) {
+        this.loggingService.log('Could not execute PRAGMA', err, LogLevel.Warning, DEBUG_CONTEXT);
+      }
     }
   }
 
