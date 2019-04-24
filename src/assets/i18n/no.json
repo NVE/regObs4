@@ -453,6 +453,8 @@
       "DAMAGE": {
         "ADD_DAMAGE_LOCATION": "Legg til skadepunkt her",
         "CAN_YOU_SEE_DAMAGE": "Kan du se noen skader?",
+        "COMMENT": "Beskriv skaden",
+        "COMMENT_PLACEHOLDER": "Her kan du beskrive skaden ytterligere",
         "IMAGE_OF_DAMAGES": "Bilder av skaden(e)",
         "TITLE": "Skader",
         "WHAT_IS_DAMAGED": "Hva er skadet?",

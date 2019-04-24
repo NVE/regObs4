@@ -38,25 +38,26 @@
           {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
         </ion-label>
       </ion-item>
-      <ion-item class="no-border no-min-height">
-        <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_OBS.POSITION' |
-          translate}}</ion-label>
-      </ion-item>
       <ion-item detail="true" (click)="setAvalanchePosition()">
-        <ion-icon color="meduim" name="pin" slot="start"></ion-icon>
-        <ion-label *ngIf="!registration.request.AvalancheObs.StartLat">{{
-          'REGISTRATION.SNOW.AVALANCHE_OBS.SET_AVALANCHE_POSITION' | translate }} {{
-          'REGISTRATION.DIRT.LAND_SLIDE_OBS.IN_MAP' | translate }}</ion-label>
-        <ion-label text-wrap *ngIf="registration.request.AvalancheObs.StartLat">{{
-          registration.request.AvalancheObs.StartLat |
-          number:'0.3'
-          }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-          {{ registration.request.AvalancheObs.StartLong | number:'0.3'
-          }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{ registration.request.AvalancheObs.StopLat |
-          number:'0.3'
-          }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-          {{ registration.request.AvalancheObs.StopLong | number:'0.3'
-          }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</ion-label>
+        <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_OBS.POSITION' |
+              translate}}</ion-label>
+        <ion-text align-self-start text-wrap>
+          <p no-margin margin-bottom>
+            <ion-icon class="position-pin" color="medium" name="pin"></ion-icon>
+            <ng-container *ngIf="registration.request.AvalancheObs.StartLat else noPosition">
+              {{
+                registration.request.AvalancheObs.StartLat |
+                number:'0.3'
+                }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+              {{ registration.request.AvalancheObs.StartLong | number:'0.3'
+                }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{ registration.request.AvalancheObs.StopLat |
+                number:'0.3'
+                }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+              {{ registration.request.AvalancheObs.StopLong | number:'0.3'
+                }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
+            </ng-container>
+          </p>
+        </ion-text>
       </ion-item>
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{
@@ -122,3 +123,7 @@
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>
+<ng-template #noPosition>
+  {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.SET_AVALANCHE_POSITION' | translate }} {{
+        'REGISTRATION.DIRT.LAND_SLIDE_OBS.IN_MAP' | translate }}
+</ng-template>

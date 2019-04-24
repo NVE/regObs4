@@ -453,6 +453,8 @@
       "DAMAGE": {
         "ADD_DAMAGE_LOCATION": "Add damage location",
         "CAN_YOU_SEE_DAMAGE": "Can you see any damages?",
+        "COMMENT": "Description",
+        "COMMENT_PLACEHOLDER": "Please describe the damage",
         "IMAGE_OF_DAMAGES": "Images of the damage",
         "TITLE": "Damages",
         "WHAT_IS_DAMAGED": "What is damaged?",

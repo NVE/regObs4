@@ -1,43 +1,50 @@
-<ion-item class="no-border no-min-height">
+<ion-item>
   <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.VALID_EXPOSITION'
-    | translate}}</ion-label>
-</ion-item>
-<ion-item *ngIf="validExpositionCopy">
-  <ion-label>
-    <ion-grid class="exposition" no-padding>
+      | translate}}</ion-label>
+  <ion-text align-self-start text-wrap margin-bottom>
+    <ion-grid *ngIf="validExpositionCopy" class="exposition" no-padding>
       <ion-row>
-        <ion-col size="4" text-center (click)="setExposition(7)" [ngClass]="{'selected': validExpositionCopy[7] === '1'}">
+        <ion-col size="4" text-center (click)="setExposition(7)"
+          [ngClass]="{'selected': validExpositionCopy[7] === '1'}">
           {{ 'DIRECTION.NW' | translate}}
         </ion-col>
-        <ion-col size="4" text-center (click)="setExposition(0)" [ngClass]="{'selected': validExpositionCopy[0] === '1'}">
+        <ion-col size="4" text-center (click)="setExposition(0)"
+          [ngClass]="{'selected': validExpositionCopy[0] === '1'}">
           {{ 'DIRECTION.N' | translate}}
         </ion-col>
-        <ion-col size="4" text-center (click)="setExposition(1)" [ngClass]="{'selected': validExpositionCopy[1] === '1'}">
+        <ion-col size="4" text-center (click)="setExposition(1)"
+          [ngClass]="{'selected': validExpositionCopy[1] === '1'}">
           {{ 'DIRECTION.NE' | translate}}
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="4" text-center (click)="setExposition(6)" [ngClass]="{'selected': validExpositionCopy[6] === '1'}">
+        <ion-col size="4" text-center (click)="setExposition(6)"
+          [ngClass]="{'selected': validExpositionCopy[6] === '1'}">
           {{ 'DIRECTION.W' | translate}}
         </ion-col>
-        <ion-col size="4" text-center (click)="toggleAllExpositions()" [ngClass]="{'selected': validExpositionCopy === '11111111'}">
+        <ion-col size="4" text-center (click)="toggleAllExpositions()"
+          [ngClass]="{'selected': validExpositionCopy === '11111111'}">
           {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.ALL' | translate}}
         </ion-col>
-        <ion-col size="4" text-center (click)="setExposition(2)" [ngClass]="{'selected': validExpositionCopy[2] === '1'}">
+        <ion-col size="4" text-center (click)="setExposition(2)"
+          [ngClass]="{'selected': validExpositionCopy[2] === '1'}">
           {{ 'DIRECTION.E' | translate}}
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="4" text-center (click)="setExposition(5)" [ngClass]="{'selected': validExpositionCopy[5] === '1'}">
+        <ion-col size="4" text-center (click)="setExposition(5)"
+          [ngClass]="{'selected': validExpositionCopy[5] === '1'}">
           {{ 'DIRECTION.SW' | translate}}
         </ion-col>
-        <ion-col size="4" text-center (click)="setExposition(4)" [ngClass]="{'selected': validExpositionCopy[4] === '1'}">
+        <ion-col size="4" text-center (click)="setExposition(4)"
+          [ngClass]="{'selected': validExpositionCopy[4] === '1'}">
           {{ 'DIRECTION.S' | translate}}
         </ion-col>
-        <ion-col size="4" text-center (click)="setExposition(3)" [ngClass]="{'selected': validExpositionCopy[3] === '1'}">
+        <ion-col size="4" text-center (click)="setExposition(3)"
+          [ngClass]="{'selected': validExpositionCopy[3] === '1'}">
           {{ 'DIRECTION.SE' | translate}}
         </ion-col>
       </ion-row>
     </ion-grid>
-  </ion-label>
+  </ion-text>
 </ion-item>

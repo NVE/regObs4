@@ -44,14 +44,15 @@
           <ion-select-option value="TEST">Test Regobs</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item class="no-border no-min-height">
-        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
-      </ion-item>
       <ion-item>
-        <ion-label text-wrap>
-          <h3>{{version.version }} ({{ version.buildNumber }})</h3>
-          <p>{{ version.revision }} - {{ version.date | formatDate | async }}</p>
-        </ion-label>
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
+        <ion-text align-self-start>
+          <h3 no-margin>{{version.version }} ({{ version.buildNumber }})</h3>
+        </ion-text>
+        <ion-text align-self-start color="medium">
+          <p class="small-text" no-margin margin-bottom>{{ version.revision }} - {{ version.date | formatDate | async }}
+          </p>
+        </ion-text>
       </ion-item>
       <ion-item>
         <ion-label>

@@ -1,7 +1,7 @@
 .images {
     .image-wrapper {
         position: relative;
-        padding-bottom: 10px;
+        padding-bottom: var(--images-padding-bottom, 10px);
 
         app-text-comment {
             display: block;
