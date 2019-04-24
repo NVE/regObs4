@@ -13,6 +13,8 @@ export class StratProfileModalPage implements OnInit {
 
   @Input() profile: StratProfileDto;
 
+  totalThickness: number;
+
   get hasLayers() {
     return this.profile && this.profile.Layers && this.profile.Layers.length > 0;
   }
@@ -31,43 +33,58 @@ export class StratProfileModalPage implements OnInit {
   }
 
   addLayerTop() {
-    this.addLayer(0);
+    this.addOrEditLayer(0, undefined);
   }
 
   addLayerBottom() {
-    this.addLayer(this.hasLayers ? (this.profile.Layers.length - 1) : 0);
+    this.addOrEditLayer(this.hasLayers ? (this.profile.Layers.length) : 0, undefined);
   }
 
-  private async addLayer(index: number) {
+  async addOrEditLayer(index: number, layer: StratProfileLayerDto) {
+    const add = (layer === undefined);
     const modal = await this.modalController.create({
       component: StratProfileLayerModalPage,
       componentProps: {
-        layer: (this.hasLayers && this.profile.Layers.length > index) ? this.profile.Layers[index] : undefined,
+        layer,
       }
     });
     modal.present();
     const result = await modal.onDidDismiss();
-    if (result.data) {
-      if (result.data.delete) {
-        // this.removeLayerAtIndex(index);
-      } else {
-        const stratProfileLayer: StratProfileLayerDto = result.data;
-        this.setLayer(index, stratProfileLayer);
+    this.zone.run(() => {
+      if (result.data) {
+        if (result.data.delete) {
+          // this.removeLayerAtIndex(index);
+          this.removeLayer(index);
+        } else {
+          const stratProfileLayer: StratProfileLayerDto = result.data;
+          this.setLayer(index, stratProfileLayer, add);
+        }
       }
-    }
+    });
   }
 
-  private setLayer(index: number, layer: StratProfileLayerDto) {
+  private setLayer(index: number, layer: StratProfileLayerDto, add: boolean) {
     if (!this.profile) {
       this.profile = {};
     }
     if (this.profile.Layers === undefined) {
       this.profile.Layers = [];
     }
-    this.zone.run(() => {
-      this.profile.Layers.push(layer);
-    });
-    // this.calculate();
+    this.profile.Layers.splice(index, (add ? 0 : 1), layer);
+    this.calculate();
+  }
+
+  private removeLayer(index: number) {
+    this.profile.Layers.splice(index, 1);
+    this.calculate();
+  }
+
+  private calculate() {
+    const layers = ((this.profile || {}).Layers || []);
+    const sum = layers.filter((x) => x.Thickness !== undefined)
+      .map(((layer) => layer.Thickness))
+      .reduce((pv, cv) => pv + cv, 0);
+    this.totalThickness = sum;
   }
 
   convertMToCM(value: number) {

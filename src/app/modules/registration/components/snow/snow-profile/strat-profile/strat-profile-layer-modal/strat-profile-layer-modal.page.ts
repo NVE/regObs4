@@ -11,23 +11,29 @@ export class StratProfileLayerModalPage implements OnInit {
 
   @Input() layer: StratProfileLayerDto;
 
+  showDelete = false;
+  layerCopy: StratProfileLayerDto;
+
   constructor(private modalController: ModalController) { }
 
   ngOnInit() {
-    if (this.layer === undefined) {
-      this.layer = {};
+    if (this.layer !== undefined) {
+      this.showDelete = true;
+      this.layerCopy = { ...this.layer };
+      return;
     }
+    this.layerCopy = {};
   }
 
   ok() {
-    this.modalController.dismiss(this.layer);
+    this.modalController.dismiss(this.layerCopy);
   }
 
   cancel() {
     this.modalController.dismiss();
   }
 
-  deleteLayer() {
+  delete() {
     this.modalController.dismiss({ delete: true });
   }
 }

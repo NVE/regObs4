@@ -34,8 +34,8 @@
         <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_TOP' | translate}}</ion-label>
       </ion-item>
       <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
-        <ion-item (click)="addOrEditThicknessLayer(i)" *ngFor="let layer of profile.Layers; let i = index">
-          <ion-label>
+        <ion-item (click)="addOrEditLayer(i, layer)" *ngFor="let layer of profile.Layers; let i = index">
+          <ion-label *ngIf="layer.Thickness !== undefined">
             {{convertMToCM(layer.Thickness)}} cm</ion-label>
           <ion-reorder slot="end"></ion-reorder>
         </ion-item>
@@ -46,7 +46,7 @@
       </ion-item>
     </ng-container>
     <app-numeric-input title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS" [min]="0" suffix="cm"
-      [decimalPlaces]="2" [convertMetersToCm]="true">
+      [decimalPlaces]="2" [convertMetersToCm]="true" [(value)]="totalThickness">
     </app-numeric-input>
   </ion-list>
   <ion-grid no-padding>

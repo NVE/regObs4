@@ -15,17 +15,11 @@
         {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate}}
       </ion-label>
     </ion-list-header>
-    <app-numeric-input [(value)]="layer.Thickness" title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
+    <app-numeric-input [(value)]="layerCopy.Thickness" title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
       [min]="0" suffix="cm" [decimalPlaces]="2" [convertMetersToCm]="true">
     </app-numeric-input>
+    <app-kdv-dropdown title="Hardhet" kdvKey="Snow_HardnessKDV" ([value])="layerCopy.HardnessTID"></app-kdv-dropdown>
   </ion-list>
-  <ion-grid no-padding>
-    <ion-row>
-      <ion-col size="6" offset="3">
-        <ion-button expand="block" fill="solid" color="primary" (click)="ok()">
-          {{'DIALOGS.OK' | translate}}
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="showDelete">
+  </app-modal-save-or-delete-buttons>
 </ion-content>
