@@ -1,16 +1,9 @@
-.no-border {
-    --border-width: 0 0 0 0;
 
-    ion-item {
-        --border-width: 0 0 0 0;
-    }
+.label-only {
+    --min-height: 31px;
 }
 
-.list-ios-lines-none .item {
-    --border-width: 0 !important;
-    --inner-border-width: 0 !important;
-}
-
-.no-min-height {
-    --min-height: 0px;
+ion-list {
+    margin-bottom: 10px;
+    --images-padding-bottom: 0px;
 }

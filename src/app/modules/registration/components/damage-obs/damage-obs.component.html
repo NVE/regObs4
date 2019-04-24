@@ -2,27 +2,32 @@
   <ion-checkbox mode="md" slot="start" [(ngModel)]="isSelected" (ionChange)="onCheckedChange()"></ion-checkbox>
   <ion-label>{{ damageTypeName }}</ion-label>
 </ion-item>
-<ion-list lines="full" *ngIf="isSelected && damageObs">
-  <ion-item class="no-min-height">
-    <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.WATER.DAMAGE.WHERE_IS_DAMAGE_LOCATION'
-      | translate }}</ion-label>
-  </ion-item>
+<ion-list lines="none" class="no-border" no-margin *ngIf="isSelected && damageObs">
   <ion-item detail="false" (click)="setDamagePosition()">
-    <ng-container *ngIf="!damageObs.DamagePosition">
-      <ion-icon slot="start" color="primary" name="add-circle-outline">
-      </ion-icon>
-      <ion-label>{{'REGISTRATION.WATER.DAMAGE.ADD_DAMAGE_LOCATION' | translate }}</ion-label>
-    </ng-container>
-    <ng-container *ngIf="damageObs.DamagePosition">
-      <ion-label>{{ damageObs.DamagePosition.Latitude | number:'0.3'
+    <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.WATER.DAMAGE.WHERE_IS_DAMAGE_LOCATION'
+          | translate }}</ion-label>
+    <ion-text align-self-start text-wrap>
+      <p no-margin margin-bottom>
+        <ion-icon class="add-icon" color="primary" name="pin">
+        </ion-icon>
+        <ng-container *ngIf="damageObs.DamagePosition else noDamagePosition">
+          {{ damageObs.DamagePosition.Latitude | number:'0.3'
         }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-        {{ damageObs.DamagePosition.Longitude | number:'0.3'
-        }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</ion-label>
-    </ng-container>
+          {{ damageObs.DamagePosition.Longitude | number:'0.3'
+        }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
+        </ng-container>
+      </p>
+    </ion-text>
   </ion-item>
-  <ion-item class="no-min-height">
+  <ion-item class="label-only">
     <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.WATER.DAMAGE.IMAGE_OF_DAMAGES' |
       translate}}</ion-label>
   </ion-item>
-  <app-add-picture-item icon="add-circle-outline" iconColor="primary" [(images)]="damageObs.Pictures" [registrationTid]="registrationTid"></app-add-picture-item>
+  <app-add-picture-item icon="add-circle-outline" iconColor="primary" [(images)]="damageObs.Pictures"
+    [registrationTid]="registrationTid"></app-add-picture-item>
+  <app-text-comment title="REGISTRATION.WATER.DAMAGE.COMMENT" [(value)]="damageObs.Comment"
+    placeholder="REGISTRATION.WATER.DAMAGE.COMMENT_PLACEHOLDER"></app-text-comment>
 </ion-list>
+<ng-template #noDamagePosition>
+  {{'REGISTRATION.WATER.DAMAGE.ADD_DAMAGE_LOCATION' | translate }}
+</ng-template>
