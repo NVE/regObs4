@@ -1746,7 +1746,7 @@
             },
             {
                 "Id": 4,
-                "Name": "Can not determine water level",
+                "Name": "Cannot determine water level",
                 "Description": "Can not determine that now"
             }
         ],
@@ -2100,102 +2100,122 @@
             {
                 "Id": 200,
                 "Name": "-",
-                "Description": "Unknown for land slides."
+                "Description": "Unknown competance."
             },
             {
                 "Id": 210,
                 "Name": "*",
-                "Description": "Unknown observers who have demonstrated skills."
+                "Description": "Observer has submitted relevant observations."
+            },
+            {
+                "Id": 220,
+                "Name": "**",
+                "Description": "Observer has submitted relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 230,
                 "Name": "***",
-                "Description": "Entrepreneur with experience in geosciences."
+                "Description": "Professional with several relevant observations."
             },
             {
                 "Id": 240,
                 "Name": "****",
-                "Description": "Personnel in NVE, SVV, JBV, NGI, NGU or equivalent with limited experience within geosciences."
+                "Description": "Experienced professional with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 250,
                 "Name": "*****",
-                "Description": "Educated personel in NVE, SVV, JBV, NGI, NGU or eqivalent."
+                "Description": "Professional from NVE or equivalent with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 300,
                 "Name": "-",
-                "Description": "Unknown for wet land slides."
+                "Description": "Unknown competance."
             },
             {
                 "Id": 310,
                 "Name": "*",
-                "Description": "Unknown observers who have demonstrated skills."
+                "Description": "Observer has submitted relevant observations."
+            },
+            {
+                "Id": 320,
+                "Name": "**",
+                "Description": "Observer has submitted relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 330,
                 "Name": "***",
-                "Description": "Entrepreneur with experience in geosciences."
+                "Description": "Professional with several relevant observations."
             },
             {
                 "Id": 340,
                 "Name": "****",
-                "Description": "Personnel in NVE, SVV, JBV, NGI, NGU or equivalent with limited experience within geosciences."
+                "Description": "Experienced professional with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 350,
                 "Name": "*****",
-                "Description": "Educated personnel in NVE, SVV, JBV, NGI, NGU or eqivalent."
+                "Description": "Professional from NVE or equivalent with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 400,
                 "Name": "-",
-                "Description": "Unknown for rockfall."
+                "Description": "Unknown competance."
             },
             {
                 "Id": 410,
                 "Name": "*",
-                "Description": "Unknown observers who have demonstrated skills."
+                "Description": "Observer has submitted relevant observations."
+            },
+            {
+                "Id": 420,
+                "Name": "**",
+                "Description": "Observer has submitted relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 430,
                 "Name": "***",
-                "Description": "Entrepreneur with experience in geosciences."
+                "Description": "Professional with several relevant observations."
             },
             {
                 "Id": 440,
                 "Name": "****",
-                "Description": "Personnel in NVE, SVV, JBV, NGI, NGU or equivalent with limited experience within geosciences."
+                "Description": "Experienced professional with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 450,
                 "Name": "*****",
-                "Description": "Educated personel in NVE, SVV, JBV, NGI, NGU or eqivalent."
+                "Description": "Professional from NVE or equivalent with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 600,
                 "Name": "-",
-                "Description": "Unknown for water."
+                "Description": "Unknown competance."
             },
             {
                 "Id": 610,
                 "Name": "*",
-                "Description": "Unknown observers who have demonstrated skills."
+                "Description": "Observer has submitted relevant observations."
+            },
+            {
+                "Id": 620,
+                "Name": "**",
+                "Description": "Observer has submitted relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 630,
                 "Name": "***",
-                "Description": "Entrepenuer in the municipalities technical departmen."
+                "Description": "Professional with several relevant observations."
             },
             {
                 "Id": 640,
                 "Name": "****",
-                "Description": "NVE observers og hydrologist in power companies."
+                "Description": "Experienced professional with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 650,
                 "Name": "*****",
-                "Description": "Educated personel in NVE or eqivalent."
+                "Description": "Professional from NVE or equivalent with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 700,
@@ -2325,12 +2345,12 @@
             },
             {
                 "Id": 20,
-                "Name": "Dirt",
+                "Name": "Soil",
                 "Description": "Earth slide"
             },
             {
                 "Id": 30,
-                "Name": "Wet dirt",
+                "Name": "Wet soil",
                 "Description": "Flood slide"
             },
             {
