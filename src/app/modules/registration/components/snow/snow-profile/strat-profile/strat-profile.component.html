@@ -2,7 +2,10 @@
   <ion-label padding-vertical padding-end>
     <h2>{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate}}</h2>
     <p>
-      <ion-text *ngIf="!isEmpty else empty">{{profile.Layers ? profile.Layers.length : 0 }} lagdelinger observert
+      <ion-text *ngIf="!isEmpty else empty">{{profile.Layers ? profile.Layers.length : 0 }}
+        <ng-container *ngIf="profile.Layers.length === 1 else multiple">
+          {{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ONE_LAYER' | translate}}
+        </ng-container>
       </ion-text>
     </p>
   </ion-label>
@@ -10,4 +13,7 @@
 </ion-item>
 <ng-template #empty>
   {{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.EMPTY' | translate}}
+</ng-template>
+<ng-template #multiple>
+  {{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MULTIPLE_LAYERS' | translate}}
 </ng-template>

@@ -3,6 +3,8 @@ import { ModalController } from '@ionic/angular';
 import { StratProfileLayerDto } from '../../../../../../regobs-api/models';
 import { TranslateService } from '@ngx-translate/core';
 
+const basicHardnessValues = [2, 6, 10, 14, 18, 21];
+
 @Component({
   selector: 'app-strat-profile-layer-modal',
   templateUrl: './strat-profile-layer-modal.page.html',
@@ -14,9 +16,10 @@ export class StratProfileLayerModalPage implements OnInit {
 
   showDelete = false;
   layerCopy: StratProfileLayerDto;
+  showMore = false;
+  hardnessFilter: (id: number) => boolean;
 
   grainSizeTypes: { id: number, text: string }[] = [
-    { id: undefined, text: '' },
     { id: 1, text: '.1' },
     { id: 2, text: '.3' },
     { id: 3, text: '.5' },
@@ -33,9 +36,14 @@ export class StratProfileLayerModalPage implements OnInit {
     { id: 14, text: '6' },
     { id: 15, text: '8' },
     { id: 16, text: '10' },
+    { id: undefined, text: '' },
   ];
 
   grainSizeInterfaceOptions: any;
+
+  // get hardnessFilter() {
+  //   return (id: number) => this.showMore ? undefined : [2, 6, 10, 14, 18, 21];
+  // }
 
   constructor(private modalController: ModalController, private translateService: TranslateService) { }
 
@@ -43,14 +51,24 @@ export class StratProfileLayerModalPage implements OnInit {
     if (this.layer !== undefined) {
       this.showDelete = true;
       this.layerCopy = { ...this.layer };
-      return;
+    } else {
+      this.layerCopy = {};
     }
-    this.layerCopy = {};
+    this.showMore = this.hasAnyAdvancedOptions();
+    this.setHardnessFilter();
     this.translateService.get('REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE').subscribe((val) => {
       this.grainSizeInterfaceOptions = {
         header: val,
       };
     });
+  }
+
+  private hasAnyAdvancedOptions() {
+    return this.layerCopy.HardnessBottomTID > 0
+      || this.layerCopy.GrainSizeAvgMax > 0
+      || this.layerCopy.GrainFormSecondaryTID > 0
+      || this.layerCopy.CriticalLayerTID > 0
+      || this.layerCopy.Comment !== undefined;
   }
 
   ok() {
@@ -63,5 +81,15 @@ export class StratProfileLayerModalPage implements OnInit {
 
   delete() {
     this.modalController.dismiss({ delete: true });
+  }
+
+  toggleShowMore() {
+    this.showMore = !this.showMore;
+    this.setHardnessFilter();
+  }
+
+  private setHardnessFilter() {
+    this.hardnessFilter = this.showMore ?
+      undefined : (n) => basicHardnessValues.indexOf(n) >= 0;
   }
 }

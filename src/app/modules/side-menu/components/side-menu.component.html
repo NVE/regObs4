@@ -1,4 +1,4 @@
-<ion-list lines="full" *ngIf="userSettings">
+<ion-list lines="full" no-margin *ngIf="userSettings">
   <ion-list-header color="varsom-blue" no-margin>
     <ion-label>
       {{'MENU.USER_SETTINGS' | translate}}
@@ -75,7 +75,7 @@
       <ion-label class="menu-label">{{'MENU.CONTACT_REGOBS' | translate}}</ion-label>
     </ion-item>
   </ion-menu-toggle>
-  <ion-item class="no-border">
+  <ion-item-divider>
     <ion-label text-wrap>
       {{'MENU.TOPO_MAP_CREDITS' | translate}} <app-external-link src="https://www.kartverket.no/">Kartverket
       </app-external-link>,
@@ -84,5 +84,5 @@
       <app-external-link src="https://opentopomap.org/">OpenTopoMap</app-external-link>.
       {{'MENU.SUPPORT_MAP_CREDITS' | translate}} <app-external-link src="https://www.nve.no/">NVE</app-external-link>
     </ion-label>
-  </ion-item>
+  </ion-item-divider>
 </ion-list>

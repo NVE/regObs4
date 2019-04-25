@@ -17,12 +17,13 @@
       </ion-label>
     </ion-list-header>
     <ion-item>
-      <p>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.OTHER_PROFILE_DESCRIPTION' | translate }}</p>
-    </ion-item>
-    <ion-item>
       <ion-icon color="dark" name="cloud-download" slot="start"></ion-icon>
       <ion-label>Hent lagdeling fra annen profil</ion-label>
     </ion-item>
+    <ion-item-divider>
+      <ion-label text-wrap>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.OTHER_PROFILE_DESCRIPTION' | translate }}
+      </ion-label>
+    </ion-item-divider>
     <ion-list-header text-uppercase>
       <ion-label>
         {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate}}
@@ -45,7 +46,7 @@
         <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_BOTTOM' | translate}}</ion-label>
       </ion-item>
     </ng-container>
-    <ion-item>
+    <ion-item *ngIf="hasLayers">
       <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS'
             | translate}}</ion-label>
       <ion-text align-self-start text-wrap margin-bottom>

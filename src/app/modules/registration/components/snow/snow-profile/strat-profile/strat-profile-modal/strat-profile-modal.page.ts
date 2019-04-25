@@ -3,6 +3,8 @@ import { ModalController } from '@ionic/angular';
 import { StratProfileDto, StratProfileLayerDto } from '../../../../../../regobs-api/models';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { NumberHelper } from '../../../../../../../core/helpers/number-helper';
+import { ItemReorderEventDetail } from '@ionic/core';
+import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 
 @Component({
   selector: 'app-strat-profile-modal',
@@ -22,6 +24,7 @@ export class StratProfileModalPage implements OnInit {
   constructor(private modalController: ModalController, private zone: NgZone) { }
 
   ngOnInit() {
+    this.calculate();
   }
 
   ok() {
@@ -38,6 +41,16 @@ export class StratProfileModalPage implements OnInit {
 
   addLayerBottom() {
     this.addOrEditLayer(this.hasLayers ? (this.profile.Layers.length) : 0, undefined);
+  }
+
+
+  onLayerReorder(event: CustomEvent<ItemReorderEventDetail>) {
+    this.profile.Layers = ArrayHelper.reorderList(this.profile.Layers, event.detail.from, event.detail.to);
+    event.detail.complete();
+  }
+
+  reorderList(array: Array<any>, fromIndex: number, toIndex: number) {
+    array.splice(toIndex, 0, array.splice(fromIndex, 1)[0]);
   }
 
   async addOrEditLayer(index: number, layer: StratProfileLayerDto) {

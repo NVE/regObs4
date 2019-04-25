@@ -25,15 +25,13 @@
               </ion-select-option>
             </ion-select>
           </ion-item>
-          <ion-list-header text-uppercase>
-            <ion-label>
-              {{"DIALOGS.COMMENT" | translate}}
+          <app-text-comment title="DIALOGS.COMMENT" [disabled]="isRunning || isLoading" [(value)]="tripDto.Comment">
+          </app-text-comment>
+          <ion-item-divider>
+            <ion-label text-wrap>
+              {{'TRIP.COMMENT_DESCRIPTION' | translate}}
             </ion-label>
-          </ion-list-header>
-          <ion-item>
-            <ion-label text-wrap>{{'TRIP.COMMENT_DESCRIPTION' | translate}}</ion-label>
-          </ion-item>
-          <app-text-comment [disabled]="isRunning || isLoading" [(value)]="tripDto.Comment"></app-text-comment>
+          </ion-item-divider>
         </ion-list>
       </ion-col>
     </ion-row>
