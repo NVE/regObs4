@@ -403,11 +403,14 @@
           "ADD_LAYER_TOP": "Legg til nytt lag øverst",
           "EMPTY": "Ingen lagdelinger observert",
           "FROM_OTHER_PROFILE": "Lagdeling fra annen profil",
+          "GRAIN_FORM": "Kornform",
+          "HARDNESS": "Hardhet",
           "LAYER": "Lag",
           "OTHER_PROFILE_DESCRIPTION": "Du kan velge å kopiere inn lagene fra en tidligere registrert profil blant siste 14 dager innen 100 km.",
+          "SIZE": "Størrelse",
           "THICKNESS": "Tykkelse (cm)",
           "TITLE": "Lagdeling",
-          "TOTAL_THICKNESS": "Total tykkelse (cm)"
+          "TOTAL_THICKNESS": "Total tykkelse"
         },
         "SUBFORMS": "Underskjema",
         "SUPERIOR": "Overordnet",

@@ -45,9 +45,13 @@
         <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_BOTTOM' | translate}}</ion-label>
       </ion-item>
     </ng-container>
-    <app-numeric-input title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS" [min]="0" suffix="cm"
-      [decimalPlaces]="2" [convertMetersToCm]="true" [(value)]="totalThickness">
-    </app-numeric-input>
+    <ion-item>
+      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS'
+            | translate}}</ion-label>
+      <ion-text align-self-start text-wrap margin-bottom>
+        <p no-margin *ngIf="totalThickness !== undefined">{{ convertMToCM(totalThickness) }} cm</p>
+      </ion-text>
+    </ion-item>
   </ion-list>
   <ion-grid no-padding>
     <ion-row>

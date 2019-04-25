@@ -32,6 +32,7 @@ export class KdvDropdownComponent implements OnInit, OnDestroy {
   @Input() hideZeroValues: boolean;
   @Input() disabled = false;
   @Input() labelColor = 'medium';
+  @Input() showResetButton = true;
 
   kdvelements: KdvElement[];
 
@@ -60,7 +61,7 @@ export class KdvDropdownComponent implements OnInit, OnDestroy {
         this.kdvelements = val;
       });
     });
-    this.translateService.get([this.title || '', this.placeholder || '']).subscribe((translations) => {
+    this.translateService.get([this.title || '', this.placeholder || '', 'DIALOGS.CANCEL']).subscribe((translations) => {
       this.ngZone.run(() => {
         if (!this.interfaceOptions) {
           this.interfaceOptions = {};

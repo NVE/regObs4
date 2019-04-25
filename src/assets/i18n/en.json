@@ -403,11 +403,14 @@
           "ADD_LAYER_TOP": "Add layer to top",
           "EMPTY": "No layers",
           "FROM_OTHER_PROFILE": "Layer from other profile",
+          "GRAIN_FORM": "Grain form",
+          "HARDNESS": "Hardness",
           "LAYER": "Layer",
           "OTHER_PROFILE_DESCRIPTION": "You can choose to copy the layers from a previously registered profile among the last 14 days within 100 km.",
+          "SIZE": "Size",
           "THICKNESS": "Thickness (cm)",
           "TITLE": "Layers",
-          "TOTAL_THICKNESS": "Total thickness (cm)"
+          "TOTAL_THICKNESS": "Total thickness"
         },
         "SUBFORMS": "Subforms",
         "SUPERIOR": "Superior",
