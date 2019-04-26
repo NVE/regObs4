@@ -36,8 +36,23 @@
       </ion-item>
       <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
         <ion-item (click)="addOrEditLayer(i, layer)" *ngFor="let layer of profile.Layers; let i = index">
-          <ion-label *ngIf="layer.Thickness !== undefined">
-            {{convertMToCM(layer.Thickness)}} cm</ion-label>
+          <ion-label [color]="layer.CriticalLayerTID !== undefined ? 'danger' : 'dark'">
+            <ng-container *ngIf="layer.Thickness !== undefined">
+              {{convertMToCM(layer.Thickness)}}cm
+            </ng-container>
+            <ng-container *ngIf="layer.HardnessTID !== undefined">
+              {{layer.HardnessTID | kdvDescription: 'Snow_HardnessKDV' | async}}
+            </ng-container>
+            <ng-container *ngIf="layer.GrainFormPrimaryTID !== undefined">
+              {{layer.GrainFormPrimaryTID | kdvDescription: 'Snow_GrainFormKDV' | async}}
+            </ng-container>
+            <ng-container *ngIf="layer.GrainSizeAvg !== undefined">
+              {{layer.GrainSizeAvg }}mm
+            </ng-container>
+            <ng-container *ngIf="layer.WetnessTID !== undefined">
+              {{layer.WetnessTID | kdvDescription: 'Snow_WetnessKDV' | async }}
+            </ng-container>
+          </ion-label>
           <ion-reorder slot="end"></ion-reorder>
         </ion-item>
       </ion-reorder-group>

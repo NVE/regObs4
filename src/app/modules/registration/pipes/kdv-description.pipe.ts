@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform, NgZone } from '@angular/core';
 import { KdvService } from '../../../core/services/kdv/kdv.service';
-import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { take } from 'rxjs/operators';
 
 @Pipe({
@@ -8,7 +7,7 @@ import { take } from 'rxjs/operators';
 })
 export class KdvDescriptionPipe implements PipeTransform {
 
-  constructor(private kdvService: KdvService, private userSettingService: UserSettingService) {
+  constructor(private kdvService: KdvService) {
   }
 
   async transform(value: number, kdvKey: string, returnDescription = false): Promise<string> {

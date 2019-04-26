@@ -5,6 +5,7 @@ import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-p
 import { NumberHelper } from '../../../../../../../core/helpers/number-helper';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
+import { KdvService } from '../../../../../../../core/services/kdv/kdv.service';
 
 @Component({
   selector: 'app-strat-profile-modal',
@@ -21,7 +22,7 @@ export class StratProfileModalPage implements OnInit {
     return this.profile && this.profile.Layers && this.profile.Layers.length > 0;
   }
 
-  constructor(private modalController: ModalController, private zone: NgZone) { }
+  constructor(private modalController: ModalController, private zone: NgZone, private kdvService: KdvService) { }
 
   ngOnInit() {
     this.calculate();
@@ -66,7 +67,6 @@ export class StratProfileModalPage implements OnInit {
     this.zone.run(() => {
       if (result.data) {
         if (result.data.delete) {
-          // this.removeLayerAtIndex(index);
           this.removeLayer(index);
         } else {
           const stratProfileLayer: StratProfileLayerDto = result.data;
