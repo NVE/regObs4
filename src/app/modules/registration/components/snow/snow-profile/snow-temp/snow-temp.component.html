@@ -3,6 +3,10 @@
     <h2>{{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.TITLE' | translate}}</h2>
     <p>
       <ion-text *ngIf="!isEmpty else empty">
+        {{tempProfile.Layers ? tempProfile.Layers.length : 0 }}
+        <ng-container *ngIf="tempProfile.Layers.length === 1 else multiple">
+          {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.ONE_LAYER' | translate}}
+        </ng-container>
       </ion-text>
     </p>
   </ion-label>
@@ -10,4 +14,7 @@
 </ion-item>
 <ng-template #empty>
   {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.EMPTY' | translate}}
+</ng-template>
+<ng-template #multiple>
+  {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.MULTIPLE_LAYERS' | translate}}
 </ng-template>

@@ -38,7 +38,7 @@
         <ion-item (click)="addOrEditLayer(i, layer)" *ngFor="let layer of profile.Layers; let i = index">
           <ion-label [color]="layer.CriticalLayerTID !== undefined ? 'danger' : 'dark'">
             <ng-container *ngIf="layer.Thickness !== undefined">
-              {{convertMToCM(layer.Thickness)}}cm
+              {{layer.Thickness | metersToCm}}cm
             </ng-container>
             <ng-container *ngIf="layer.HardnessTID !== undefined">
               {{layer.HardnessTID | kdvDescription: 'Snow_HardnessKDV' | async}}
@@ -61,13 +61,20 @@
         <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_BOTTOM' | translate}}</ion-label>
       </ion-item>
     </ng-container>
-    <ion-item *ngIf="hasLayers">
-      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS'
+    <ng-container *ngIf="hasLayers">
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.SUMMARY' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <ion-item>
+        <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS'
             | translate}}</ion-label>
-      <ion-text align-self-start text-wrap margin-bottom>
-        <p no-margin *ngIf="totalThickness !== undefined">{{ convertMToCM(totalThickness) }} cm</p>
-      </ion-text>
-    </ion-item>
+        <ion-text align-self-start text-wrap margin-bottom>
+          <p no-margin *ngIf="totalThickness !== undefined">{{ totalThickness | metersToCm }} cm</p>
+        </ion-text>
+      </ion-item>
+    </ng-container>
   </ion-list>
   <ion-grid no-padding>
     <ion-row>

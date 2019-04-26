@@ -61,6 +61,9 @@ export class NumericInputModalPage implements OnInit {
       const positiveValue = this.value * (this.isNegative ? -1 : 1);
       this.numbers = NumberHelper.setDecimalPlaces(positiveValue, this.decimalPlaces).toString(10).split('');
     }
+    if (this.max !== undefined && this.max <= 0) {
+      this.isNegative = true;
+    }
     this.decimalSep = this.decimalSeparator !== undefined ? this.decimalSeparator : this.getDecimalSeparatorForBrowser();
   }
 
@@ -80,6 +83,9 @@ export class NumericInputModalPage implements OnInit {
   }
 
   toggleNegative() {
+    if (this.max !== undefined && this.max <= 0) {
+      return;
+    }
     this.isNegative = !this.isNegative;
   }
 

@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.TITLE' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list lines="full">
+    <ion-list-header text-uppercase>
+      <ion-label>
+        {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.TITLE' | translate}}
+      </ion-label>
+    </ion-list-header>
+    <ion-item (click)="addOrEditLayer(i, layer)" *ngFor="let layer of tempProfile.Layers; let i = index">
+      <ion-label>
+        <ng-container *ngIf="layer.Depth !== undefined">
+          {{layer.Depth | metersToCm }}cm
+        </ng-container>
+        <ng-container *ngIf="layer.SnowTemp !== undefined">
+          {{layer.SnowTemp}}°C
+        </ng-container>
+      </ion-label>
+    </ion-item>
+    <ion-item (click)="addLayerBottom()">
+      <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+      <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.ADD_LAYER_BOTTOM' | translate}}</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-grid no-padding>
+    <ion-row>
+      <ion-col size="6" offset="3">
+        <ion-button expand="block" fill="solid" color="primary" (click)="ok()">
+          {{'DIALOGS.OK' | translate}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

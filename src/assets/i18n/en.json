@@ -394,7 +394,13 @@
         },
         "SNOW_PROFILE_HELP_TEXT": "Unfortunately, we do not have a form for snow profiles in the current version of the Varsom Regobs app. But, you can upload a picture of a hand drawn profile or an export from a third party app like Ullr Labs Avalanche. On regobs.no you may update the profile information with the forms and plots provided there.",
         "SNOW_TEMP": {
-          "EMPTY": "No temperature profles",
+          "ADD_LAYER_BOTTOM": "Add new point",
+          "DEPTH": "Depth (cm)",
+          "EMPTY": "No temperature points observed",
+          "MULTIPLE_LAYERS": "temperature points observed",
+          "ONE_LAYER": "temperature point observed",
+          "POINT": "Temperature Point",
+          "TEMPERATURE": "Temperature (°C)",
           "TITLE": "Temperature Profile"
         },
         "STRAT_PROFILE": {
@@ -461,6 +467,7 @@
         "WIND_SPEED": "Wind speed (m/s)"
       }
     },
+    "SUMMARY": "Summary",
     "WATER": {
       "DAMAGE": {
         "ADD_DAMAGE_LOCATION": "Add damage location",

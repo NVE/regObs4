@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list lines="full">
+    <ion-list-header text-uppercase>
+      <ion-label>
+        {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE' | translate}}
+      </ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label>
+        Sylinderberegning av tetthet
+      </ion-label>
+      <ion-toggle slot="end" [(ngModel)]="useCylinder"></ion-toggle>
+    </ion-item>
+    <ng-container *ngIf="useCylinder">
+      <app-numeric-input [(value)]="profile.CylinderDiameter" title="Sylinderdiameter" [max]="999" [min]="0" suffix="cm"
+        [decimalPlaces]="2" [convertMetersToCm]="true"></app-numeric-input>
+      <app-numeric-input [(value)]="profile.TareWeight" title="Vekt av posen og evt. rør" [max]="999" [min]="0"
+        suffix="g" [decimalPlaces]="2" [convertMetersToCm]="true"></app-numeric-input>
+    </ng-container>
+  </ion-list>
+  <ion-grid no-padding>
+    <ion-row>
+      <ion-col size="6" offset="3">
+        <ion-button expand="block" fill="solid" color="primary" (click)="ok()">
+          {{'DIALOGS.OK' | translate}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

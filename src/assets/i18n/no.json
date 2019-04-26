@@ -394,7 +394,13 @@
         },
         "SNOW_PROFILE_HELP_TEXT": "Vi har dessverre ikke støtte for å registrere et snøprofil i Varsom Regobs appen. Men, du kan ta et bilde av et håndtegnet profil eller eksportere et profil fra en tredjeparts app som Ullr Labs Avalanche. På regobs.no kan du senere oppdatere observasjonen med å bruke egne skjema og plot for snøprofiler.",
         "SNOW_TEMP": {
+          "ADD_LAYER_BOTTOM": "Legg til nytt punkt",
+          "DEPTH": "Dybde (cm)",
           "EMPTY": "Ingen temperaturpunkt observert",
+          "MULTIPLE_LAYERS": "temperaturpunkter observert",
+          "ONE_LAYER": "temperaturpunkt observert",
+          "POINT": "Temperaturpunkt",
+          "TEMPERATURE": "Temperatur (°C)",
           "TITLE": "Temperaturprofil"
         },
         "STRAT_PROFILE": {
@@ -461,6 +467,7 @@
         "WIND_SPEED": "Vindhastighet (m/s)"
       }
     },
+    "SUMMARY": "Oppsummering",
     "WATER": {
       "DAMAGE": {
         "ADD_DAMAGE_LOCATION": "Legg til skadepunkt her",

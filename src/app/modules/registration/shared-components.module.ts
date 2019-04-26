@@ -21,6 +21,7 @@ import { HelpModalPageModule } from './pages/modal-pages/help-modal/help-modal.m
 import { YesNoSelectComponent } from './components/yes-no-select/yes-no-select.component';
 import { NumericInputComponent } from './components/numeric-input/numeric-input.component';
 import { NumericInputModalPageModule } from './pages/modal-pages/numeric-input-modal/numeric-input-modal.module';
+import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
 
 @NgModule({
     imports: [
@@ -41,6 +42,7 @@ import { NumericInputModalPageModule } from './pages/modal-pages/numeric-input-m
         Base64ImageComponent,
         SyncItemComponent,
         KdvDescriptionPipe,
+        MetersToCmPipe,
         KdvDropdownComponent,
         AddWebUrlItemComponent,
         ModalSaveOrDeleteButtonsComponent,
@@ -63,6 +65,7 @@ import { NumericInputModalPageModule } from './pages/modal-pages/numeric-input-m
         Base64ImageComponent,
         SyncItemComponent,
         KdvDescriptionPipe,
+        MetersToCmPipe,
         KdvDropdownComponent,
         AddWebUrlItemComponent,
         ModalSaveOrDeleteButtonsComponent,

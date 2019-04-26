@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TempObsDto } from '../../../../../regobs-api/models';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
+import { ModalController } from '@ionic/angular';
+import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
 
 @Component({
   selector: 'app-snow-temp',
@@ -9,19 +11,29 @@ import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 })
 export class SnowTempComponent implements OnInit {
 
-  @Input() profile: TempObsDto;
+  @Input() tempProfile: TempObsDto;
 
   get isEmpty() {
-    return IsEmptyHelper.isEmpty(this.profile);
+    return IsEmptyHelper.isEmpty(this.tempProfile);
   }
 
-  constructor() { }
+  constructor(private modalContoller: ModalController) { }
 
   ngOnInit() {
   }
 
-  openModal() {
-
+  async openModal() {
+    const modal = await this.modalContoller.create({
+      component: SnowTempModalPage,
+      componentProps: {
+        tempProfile: { ...this.tempProfile },
+      }
+    });
+    modal.present();
+    const result = await modal.onDidDismiss();
+    if (result.data) {
+      this.tempProfile = result.data;
+    }
   }
 
 }

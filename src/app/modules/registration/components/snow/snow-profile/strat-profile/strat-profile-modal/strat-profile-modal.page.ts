@@ -99,8 +99,4 @@ export class StratProfileModalPage implements OnInit {
       .reduce((pv, cv) => pv + cv, 0);
     this.totalThickness = sum;
   }
-
-  convertMToCM(value: number) {
-    return NumberHelper.setDecimalPlaces(value * 100.0, 2);
-  }
 }
