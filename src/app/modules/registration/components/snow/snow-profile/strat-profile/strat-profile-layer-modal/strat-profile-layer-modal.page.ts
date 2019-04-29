@@ -15,9 +15,9 @@ export class StratProfileLayerModalPage implements OnInit {
   @Input() layer: StratProfileLayerDto;
 
   showDelete = false;
-  layerCopy: StratProfileLayerDto;
   showMore = false;
   hardnessFilter: (id: number) => boolean;
+  private initialModel: StratProfileLayerDto;
 
   grainSizeTypes: { id: number, text: string }[] = [
     { id: 1, text: '.1' },
@@ -41,18 +41,14 @@ export class StratProfileLayerModalPage implements OnInit {
 
   grainSizeInterfaceOptions: any;
 
-  // get hardnessFilter() {
-  //   return (id: number) => this.showMore ? undefined : [2, 6, 10, 14, 18, 21];
-  // }
-
   constructor(private modalController: ModalController, private translateService: TranslateService) { }
 
   ngOnInit() {
+    this.initialModel = { ... this.layer };
     if (this.layer !== undefined) {
       this.showDelete = true;
-      this.layerCopy = { ...this.layer };
     } else {
-      this.layerCopy = {};
+      this.layer = {};
     }
     this.showMore = this.hasAnyAdvancedOptions();
     this.setHardnessFilter();
@@ -64,18 +60,19 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   private hasAnyAdvancedOptions() {
-    return this.layerCopy.HardnessBottomTID > 0
-      || this.layerCopy.GrainSizeAvgMax > 0
-      || this.layerCopy.GrainFormSecondaryTID > 0
-      || this.layerCopy.CriticalLayerTID > 0
-      || this.layerCopy.Comment !== undefined;
+    return this.layer.HardnessBottomTID > 0
+      || this.layer.GrainSizeAvgMax > 0
+      || this.layer.GrainFormSecondaryTID > 0
+      || this.layer.CriticalLayerTID > 0
+      || this.layer.Comment !== undefined;
   }
 
   ok() {
-    this.modalController.dismiss(this.layerCopy);
+    this.modalController.dismiss(this.layer);
   }
 
   cancel() {
+    this.layer = this.initialModel;
     this.modalController.dismiss();
   }
 

@@ -26,9 +26,6 @@ export class SnowProfilePage extends BasePage {
   }
 
   onInit() {
-    // if (this.registration.request.SnowProfile2 && this.registration.request.SnowProfile2.StratProfile === undefined) {
-    //   this.registration.request.SnowProfile2.StratProfile = {};
-    // }
   }
 
   async openPreview() {
@@ -40,17 +37,10 @@ export class SnowProfilePage extends BasePage {
       this.registration.request, {
         responseType: 'blob',
       }).subscribe(async (result) => {
-        // const reader = new FileReader();
-        // reader.onloadend = () => {
-        //   console.log(reader.result);
-        //   this.openImageModal(<string>reader.result);
-        // };
-        // reader.readAsDataURL(result);
         const dataUrl = await DataUrlHelper.toDataUrl(result, 'image/png');
         this.openImageModal(dataUrl);
         this.loadingController.dismiss();
       }, () => {
-        console.log('Could not get preview');
         this.loadingController.dismiss();
       });
     // this.registrationApiService.rootUrl = 'http://localhost:40001';

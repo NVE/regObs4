@@ -14,6 +14,9 @@ export class StratProfileComponent implements OnInit {
   @Input() profile: StratProfileDto;
   @Output() profileChange = new EventEmitter();
 
+  private isOpen = false;
+
+
   get isEmpty() {
     return IsEmptyHelper.isEmpty(this.profile);
   }
@@ -24,17 +27,21 @@ export class StratProfileComponent implements OnInit {
   }
 
   async openModal() {
-    const modal = await this.modalContoller.create({
-      component: StratProfileModalPage,
-      componentProps: {
-        profile: { ...this.profile },
+    if (!this.isOpen) {
+      this.isOpen = true;
+      const modal = await this.modalContoller.create({
+        component: StratProfileModalPage,
+        componentProps: {
+          profile: { ...this.profile },
+        }
+      });
+      modal.present();
+      const result = await modal.onDidDismiss();
+      if (result.data) {
+        this.profile = result.data;
+        this.profileChange.emit(this.profile);
       }
-    });
-    modal.present();
-    const result = await modal.onDidDismiss();
-    if (result.data) {
-      this.profile = result.data;
-      this.profileChange.emit(this.profile);
+      this.isOpen = false;
     }
   }
 }

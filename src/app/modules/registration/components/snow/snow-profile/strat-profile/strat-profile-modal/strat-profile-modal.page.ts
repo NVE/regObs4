@@ -1,11 +1,9 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { StratProfileDto, StratProfileLayerDto } from '../../../../../../regobs-api/models';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
-import { NumberHelper } from '../../../../../../../core/helpers/number-helper';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
-import { KdvService } from '../../../../../../../core/services/kdv/kdv.service';
 
 @Component({
   selector: 'app-strat-profile-modal',
@@ -18,11 +16,13 @@ export class StratProfileModalPage implements OnInit {
 
   totalThickness: number;
 
+  private isOpen = false;
+
   get hasLayers() {
     return this.profile && this.profile.Layers && this.profile.Layers.length > 0;
   }
 
-  constructor(private modalController: ModalController, private zone: NgZone, private kdvService: KdvService) { }
+  constructor(private modalController: ModalController) { }
 
   ngOnInit() {
     this.calculate();
@@ -50,21 +50,18 @@ export class StratProfileModalPage implements OnInit {
     event.detail.complete();
   }
 
-  reorderList(array: Array<any>, fromIndex: number, toIndex: number) {
-    array.splice(toIndex, 0, array.splice(fromIndex, 1)[0]);
-  }
-
   async addOrEditLayer(index: number, layer: StratProfileLayerDto) {
-    const add = (layer === undefined);
-    const modal = await this.modalController.create({
-      component: StratProfileLayerModalPage,
-      componentProps: {
-        layer,
-      }
-    });
-    modal.present();
-    const result = await modal.onDidDismiss();
-    this.zone.run(() => {
+    if (!this.isOpen) {
+      this.isOpen = true;
+      const add = (layer === undefined);
+      const modal = await this.modalController.create({
+        component: StratProfileLayerModalPage,
+        componentProps: {
+          layer,
+        }
+      });
+      modal.present();
+      const result = await modal.onDidDismiss();
       if (result.data) {
         if (result.data.delete) {
           this.removeLayer(index);
@@ -73,7 +70,8 @@ export class StratProfileModalPage implements OnInit {
           this.setLayer(index, stratProfileLayer, add);
         }
       }
-    });
+      this.isOpen = false;
+    }
   }
 
   private setLayer(index: number, layer: StratProfileLayerDto, add: boolean) {

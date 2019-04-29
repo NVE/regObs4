@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TempObsDto } from '../../../../../regobs-api/models';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { ModalController } from '@ionic/angular';
@@ -12,6 +12,7 @@ import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
 export class SnowTempComponent implements OnInit {
 
   @Input() tempProfile: TempObsDto;
+  @Output() tempProfileChange = new EventEmitter();
 
   get isEmpty() {
     return IsEmptyHelper.isEmpty(this.tempProfile);
@@ -33,7 +34,7 @@ export class SnowTempComponent implements OnInit {
     const result = await modal.onDidDismiss();
     if (result.data) {
       this.tempProfile = result.data;
+      this.tempProfileChange.emit(this.tempProfile);
     }
   }
-
 }
