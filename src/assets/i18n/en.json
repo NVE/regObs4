@@ -388,9 +388,23 @@
           "TITLE": "Tests"
         },
         "IS_PROFILE_TO_GROUND": "Is the profile going to the ground?",
+        "PREVIEW": "Preview",
+        "PREVIEW_ITEM": "Show Snow Profile",
         "SNOW_DENSITY": {
+          "CYLINDER": "Cylinder",
+          "CYLINDER_DIAMETER": "Cylinder bore diameter (cm)",
+          "CYLINDER_METHOD": "Use cylinder",
+          "DENSITY": "Density (kg/m³)",
           "EMPTY": "No density profiles",
-          "TITLE": "Density"
+          "HEIGHT": "Height (cm)",
+          "LAYER": "Layers",
+          "METHOD": "Method",
+          "MULTIPLE_LAYERS": "dansity profiles",
+          "ONE_LAYER": "density profile added",
+          "TARE_WEIGHT": "Tare Weight",
+          "TITLE": "Density",
+          "WATER_EQUIVALENT": "Water Equivalent",
+          "WEIGHT": "Weight (g)"
         },
         "SNOW_PROFILE_HELP_TEXT": "Unfortunately, we do not have a form for snow profiles in the current version of the Varsom Regobs app. But, you can upload a picture of a hand drawn profile or an export from a third party app like Ullr Labs Avalanche. On regobs.no you may update the profile information with the forms and plots provided there.",
         "SNOW_TEMP": {
@@ -419,6 +433,7 @@
           "MULTIPLE_LAYERS": "layers",
           "ONE_LAYER": "layer",
           "OTHER_PROFILE_DESCRIPTION": "You can choose to copy the layers from a previously registered profile among the last 14 days within 100 km.",
+          "OTHER_PROFILE_ITEM_TEXT": "Get layers from other profile",
           "SHOW_LESS": "Show less options",
           "SHOW_MORE": "Show more options",
           "SIZE": "Grain Size (mm)",

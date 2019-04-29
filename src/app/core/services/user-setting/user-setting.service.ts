@@ -125,7 +125,7 @@ export class UserSettingService implements OnReset {
   private getDefaultSettings(): UserSetting {
     return {
       appMode: AppMode.Prod,
-      language: LangKey.no,
+      language: LangKey.nb,
       currentGeoHazard: [GeoHazard.Snow],
       observationDaysBack: [
         { geoHazard: GeoHazard.Snow, daysBack: 2 },

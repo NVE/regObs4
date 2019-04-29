@@ -18,6 +18,8 @@ import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { LogLevel } from './modules/shared/services/logging/log-level.model';
+import { registerLocaleData } from '@angular/common';
+import localeNb from '@angular/common/locales/nb';
 
 @Component({
   selector: 'app-root',
@@ -51,8 +53,9 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.translate.addLangs(['no', 'en']);
-    this.translate.setDefaultLang('no');
+    registerLocaleData(localeNb);
+    this.translate.addLangs(['nb', 'en']);
+    this.translate.setDefaultLang('nb');
     this.platform.ready().then(async () => {
       if (this.platform.isAndroidOrIos()) {
         this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);

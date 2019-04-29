@@ -388,9 +388,23 @@
           "TITLE": "Tester"
         },
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",
+        "PREVIEW": "Forhåndsvisning",
+        "PREVIEW_ITEM": "Se snøprofil",
         "SNOW_DENSITY": {
+          "CYLINDER": "Sylinder",
+          "CYLINDER_DIAMETER": "Sylinderdiameter (cm)",
+          "CYLINDER_METHOD": "Sylinderberegning",
+          "DENSITY": "Tetthet (kg/m³)",
           "EMPTY": "Ingen tetthetsprofiler",
-          "TITLE": "Tetthet"
+          "HEIGHT": "Høyde (cm)",
+          "LAYER": "Lag",
+          "METHOD": "Metode",
+          "MULTIPLE_LAYERS": "tetthetsprofiler",
+          "ONE_LAYER": "tetthetsprofil lagt til",
+          "TARE_WEIGHT": "Vekt av posen og evt. rør",
+          "TITLE": "Tetthet",
+          "WATER_EQUIVALENT": "Vannekvivalent",
+          "WEIGHT": "Vekt (g)"
         },
         "SNOW_PROFILE_HELP_TEXT": "Vi har dessverre ikke støtte for å registrere et snøprofil i Varsom Regobs appen. Men, du kan ta et bilde av et håndtegnet profil eller eksportere et profil fra en tredjeparts app som Ullr Labs Avalanche. På regobs.no kan du senere oppdatere observasjonen med å bruke egne skjema og plot for snøprofiler.",
         "SNOW_TEMP": {
@@ -419,6 +433,7 @@
           "MULTIPLE_LAYERS": "lagdelinger observert",
           "ONE_LAYER": "lagdeling observert",
           "OTHER_PROFILE_DESCRIPTION": "Du kan velge å kopiere inn lagene fra en tidligere registrert profil blant siste 14 dager innen 100 km.",
+          "OTHER_PROFILE_ITEM_TEXT": "Hent lagdeling fra annen profil",
           "SHOW_LESS": "Vis færre valg",
           "SHOW_MORE": "Vis flere valg",
           "SIZE": "Kornstørrelse (mm)",
