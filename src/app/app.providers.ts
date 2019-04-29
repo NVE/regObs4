@@ -55,6 +55,15 @@ export const API_INTERCEPTOR_PROVIDER: Provider = {
     multi: true
 };
 
+export class DynamicLocaleId extends String {
+    constructor(protected service: TranslateService) {
+        super('');
+    }
+    toString() {
+        return this.service.currentLang;
+    }
+}
+
 export const APP_PROVIDERS = [
     StatusBar,
     SplashScreen,
@@ -63,9 +72,7 @@ export const APP_PROVIDERS = [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
         provide: LOCALE_ID,
-        useFactory: (translate: TranslateService) => {
-            return translate.currentLang;
-        },
+        useClass: DynamicLocaleId,
         deps: [TranslateService]
     },
     Geolocation,
