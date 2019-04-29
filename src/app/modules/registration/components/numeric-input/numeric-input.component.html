@@ -1,4 +1,4 @@
-<ion-item class="item-label-stacked" (click)="openPicker()">
+<ion-item tabindex="0" class="item-label-stacked" (click)="openPicker()" (keyup.enter)="openPicker()">
   <ion-label *ngIf="title" color="medium" position="stacked" text-uppercase>{{ title | translate}}</ion-label>
   <ion-label class="value-label" *ngIf="displayValue else ph">{{ displayValue }}</ion-label>
 </ion-item>
