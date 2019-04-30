@@ -1,8 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { SnowDensityLayerViewModel } from '../../../../../../regobs-api/models';
+import { DensityProfileLayerDto } from '../../../../../../regobs-api/models';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
-import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 
 @Component({
   selector: 'app-snow-density-layer-modal',
@@ -11,12 +10,12 @@ import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper
 })
 export class SnowDensityLayerModalPage implements OnInit {
 
-  @Input() layer: SnowDensityLayerViewModel;
+  @Input() layer: DensityProfileLayerDto;
   @Input() useCylinder = true;
   @Input() cylinderDiameterInM: number;
   @Input() tareWeightInG: number;
   @Input() index: number;
-  private initialModel: SnowDensityLayerViewModel;
+  private initialModel: DensityProfileLayerDto;
   showDelete = false;
 
   constructor(private modalController: ModalController) { }
@@ -51,9 +50,10 @@ export class SnowDensityLayerModalPage implements OnInit {
         this.layer.Depth,
         this.tareWeightInG,
         this.cylinderDiameterInM);
-      if (this.layer.Density !== undefined) {
-        this.layer.WaterEquivalent = HydrologyHelper.calculateWaterEquivalent(this.layer.Density, this.layer.Depth);
-      }
     }
+  }
+
+  getWaterEquivalent(density: number, depth: number) {
+    return HydrologyHelper.calculateWaterEquivalent(density, depth);
   }
 }

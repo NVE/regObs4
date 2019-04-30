@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { ModalController, LoadingController } from '@ionic/angular';
 import { FullscreenImageModalPage } from '../../../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { DataUrlHelper } from '../../../../../core/helpers/data-url.helper';
+import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
 
 @Component({
   selector: 'app-snow-profile',
@@ -26,6 +27,12 @@ export class SnowProfilePage extends BasePage {
   }
 
   onInit() {
+  }
+
+  isEmpty() {
+    return IsEmptyHelper.isEmpty(this.registration.request.SnowProfile2)
+      && !(this.registration.request.CompressionTest || [])
+        .some((ct) => ct.IncludeInSnowProfile === true);
   }
 
   async openPreview() {

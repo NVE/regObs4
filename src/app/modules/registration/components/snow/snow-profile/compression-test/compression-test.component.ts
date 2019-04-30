@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CompressionTestViewModel, CompressionTestDto } from '../../../../../regobs-api/models';
+import { CompressionTestDto } from '../../../../../regobs-api/models';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 
 @Component({

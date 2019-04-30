@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { DensityProfileDto } from '../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
@@ -15,7 +14,7 @@ export class SnowDensityComponent implements OnInit {
   @Output() profilesChange = new EventEmitter();
 
   get isEmpty() {
-    return IsEmptyHelper.isEmpty(this.profiles);
+    return !(this.profiles && this.profiles.length > 0 && this.profiles[0].Layers && this.profiles[0].Layers.length > 0);
   }
 
   constructor(private modalContoller: ModalController) { }

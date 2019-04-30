@@ -34,8 +34,8 @@
           <ion-label position="stacked" color="medium" text-uppercase>
             {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.WATER_EQUIVALENT' | translate}}
           </ion-label>
-          <ion-text align-self-start *ngIf="layer.WaterEquivalent">
-            {{ layer.WaterEquivalent | number:'1.0-2' }} mm
+          <ion-text align-self-start *ngIf="layer.Density && layer.Depth">
+            {{ getWaterEquivalent(layer.Density, layer.Depth) | number:'1.0-2' }} mm
           </ion-text>
         </ion-item>
       </ng-container>

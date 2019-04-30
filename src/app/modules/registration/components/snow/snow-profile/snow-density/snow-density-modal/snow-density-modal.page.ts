@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DensityProfileDto, SnowDensityLayerViewModel } from '../../../../../../regobs-api/models';
+import { DensityProfileDto, DensityProfileLayerDto } from '../../../../../../regobs-api/models';
 import { SnowDensityLayerModalPage } from '../snow-density-layer-modal/snow-density-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
@@ -45,7 +45,7 @@ export class SnowDensityModalPage implements OnInit {
     this.addOrEditLayer(this.hasLayers ? (this.profile.Layers.length) : 0, undefined);
   }
 
-  async addOrEditLayer(index: number, layer: SnowDensityLayerViewModel) {
+  async addOrEditLayer(index: number, layer: DensityProfileLayerDto) {
     const add = (layer === undefined);
     const modal = await this.modalController.create({
       component: SnowDensityLayerModalPage,
@@ -64,7 +64,7 @@ export class SnowDensityModalPage implements OnInit {
         this.removeLayer(index);
       } else {
         let currentIndex = index;
-        const snowDensityLayer: SnowDensityLayerViewModel = result.data.layer;
+        const snowDensityLayer: DensityProfileLayerDto = result.data.layer;
         const isEmpty = this.isEmpty(snowDensityLayer);
         if (isEmpty && !add) {
           this.removeLayer(index);
@@ -81,7 +81,7 @@ export class SnowDensityModalPage implements OnInit {
     }
   }
 
-  private isEmpty(snowDensityLayer: SnowDensityLayerViewModel) {
+  private isEmpty(snowDensityLayer: DensityProfileLayerDto) {
     return this.useCylinder ? (
       snowDensityLayer.Depth === undefined &&
       snowDensityLayer.Weight === undefined) :
@@ -93,7 +93,7 @@ export class SnowDensityModalPage implements OnInit {
     event.detail.complete();
   }
 
-  private setLayer(index: number, layer: SnowDensityLayerViewModel, add: boolean) {
+  private setLayer(index: number, layer: DensityProfileLayerDto, add: boolean) {
     if (!this.profile) {
       this.profile = {};
     }
@@ -109,17 +109,21 @@ export class SnowDensityModalPage implements OnInit {
 
   recalculateLayers() {
     if (this.useCylinder && this.hasLayers) {
-      this.profile.Layers.forEach((layer: SnowDensityLayerViewModel) => {
+      this.profile.Layers.forEach((layer: DensityProfileLayerDto) => {
         layer.Density = HydrologyHelper.calculateDensity(
           layer.Weight,
           layer.Depth,
           this.profile.TareWeight,
           this.profile.CylinderDiameter);
-        if (layer.Density !== undefined) {
-          layer.WaterEquivalent = HydrologyHelper.calculateWaterEquivalent(layer.Density, layer.Depth);
-        }
+        // if (layer.Density !== undefined) {
+        //   layer.WaterEquivalent = HydrologyHelper.calculateWaterEquivalent(layer.Density, layer.Depth);
+        // }
       });
     }
+  }
+
+  getWaterEquivalent(density: number, depth: number) {
+    return HydrologyHelper.calculateWaterEquivalent(density, depth);
   }
 
 }
