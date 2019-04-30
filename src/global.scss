@@ -173,6 +173,14 @@ ion-item {
     .sc-ion-label-md-s p {
         color: var(--ion-color-step-400,#999);
     }
+
+    &.item-label {
+        ion-text {
+            &[align-self-start] {
+                margin-bottom: 10px;
+            }
+        }
+    }
 }
 
 ion-list {
