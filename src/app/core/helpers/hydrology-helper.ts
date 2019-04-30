@@ -17,7 +17,7 @@ export class HydrologyHelper {
         if (heightInMeter <= 0) {
             return 0;
         }
-        const weightInKg = weightInG / 1000.0;
+        const weightInKg = totalWeight / 1000.0;
         const volume = Math.PI * r * r * heightInMeter;
         return weightInKg / volume;
     }
