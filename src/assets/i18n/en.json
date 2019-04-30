@@ -34,9 +34,12 @@
     "COMMENT": "Comment",
     "CONFIRM": "Confirm",
     "DELETE": "Delete",
+    "NEXT": "Next",
     "NO": "No",
     "OF": "Of",
     "OK": "Ok",
+    "OK_BACK": "Ok, back to overview",
+    "PREVIOUS": "Previous",
     "RESET": "Reset",
     "YES": "Yes"
   },

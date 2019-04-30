@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SnowDensityLayerViewModel } from '../../../../../../regobs-api/models';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
+import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 
 @Component({
   selector: 'app-snow-density-layer-modal',
@@ -14,6 +15,7 @@ export class SnowDensityLayerModalPage implements OnInit {
   @Input() useCylinder = true;
   @Input() cylinderDiameterInM: number;
   @Input() tareWeightInG: number;
+  @Input() index: number;
   private initialModel: SnowDensityLayerViewModel;
   showDelete = false;
 
@@ -29,8 +31,8 @@ export class SnowDensityLayerModalPage implements OnInit {
     this.calculate();
   }
 
-  ok() {
-    this.modalController.dismiss(this.layer);
+  ok(gotoIndex?: number) {
+    this.modalController.dismiss({ layer: this.layer, gotoIndex });
   }
 
   cancel() {

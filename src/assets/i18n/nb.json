@@ -34,9 +34,12 @@
     "COMMENT": "Kommentar",
     "CONFIRM": "Bekreft",
     "DELETE": "Slett",
+    "NEXT": "Neste",
     "NO": "Nei",
     "OF": "Av",
     "OK": "Ok",
+    "OK_BACK": "Ok, tilbake til oversikt",
+    "PREVIOUS": "Forrige",
     "RESET": "Nullstill",
     "YES": "Ja"
   },

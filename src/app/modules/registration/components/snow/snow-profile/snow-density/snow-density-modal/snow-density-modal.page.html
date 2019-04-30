@@ -9,74 +9,77 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-list lines="full">
-    <ion-list-header text-uppercase>
-      <ion-label>
-        {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.METHOD' | translate}}
-      </ion-label>
-    </ion-list-header>
-    <ion-item>
-      <ion-label>
-        {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_METHOD' | translate}}
-      </ion-label>
-      <ion-toggle slot="end" [(ngModel)]="useCylinder"></ion-toggle>
-    </ion-item>
-    <ng-container *ngIf="useCylinder">
+  <form (ngSubmit)="ok()">
+    <ion-list lines="full">
       <ion-list-header text-uppercase>
         <ion-label>
-          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER' | translate }}
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.METHOD' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-numeric-input [(value)]="profile.CylinderDiameter"
-        title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_DIAMETER" [max]="999" [min]="0" suffix="cm"
-        [decimalPlaces]="2" [convertMetersToCm]="true"></app-numeric-input>
-      <app-numeric-input [(value)]="profile.TareWeight" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TARE_WEIGHT"
-        [max]="999" [min]="0" suffix="g" [decimalPlaces]="2" [convertMetersToCm]="true"></app-numeric-input>
-    </ng-container>
-    <ion-list-header text-uppercase>
-      <ion-label>
-        {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.LAYER' | translate }}
-      </ion-label>
-    </ion-list-header>
-    <ng-container *ngIf="hasLayers else noLayers">
-      <ion-item tabindex="0" (click)="addLayerTop()" (keyup.enter)="addLayerTop()">
-        <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
-        <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_TOP' | translate}}</ion-label>
+      <ion-item>
+        <ion-label>
+          {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_METHOD' | translate}}
+        </ion-label>
+        <ion-toggle slot="end" [(ngModel)]="useCylinder" name="useCylinder"></ion-toggle>
       </ion-item>
-      <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
-        <ion-item (click)="addOrEditLayer(i, layer)" *ngFor="let layer of profile.Layers; let i = index">
+      <ng-container *ngIf="useCylinder">
+        <ion-list-header text-uppercase>
           <ion-label>
-            <ion-text *ngIf="layer.Depth !== undefined">
-              {{layer.Depth | metersToCm }}cm
-            </ion-text>
-            <ion-text *ngIf="layer.Weight !== undefined">
-              {{layer.Weight}}g
-            </ion-text>
-            <ion-text *ngIf="layer.Density !== undefined">
-              {{ layer.Density | number:'1.0-2' }}kg/m³
-            </ion-text>
-            <ion-text *ngIf="layer.WaterEquivalent !== undefined">
-              ({{ layer.WaterEquivalent | number:'1.0-2' }}mm)
-            </ion-text>
+            {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER' | translate }}
           </ion-label>
-          <ion-reorder slot="end"></ion-reorder>
+        </ion-list-header>
+        <app-numeric-input [(value)]="profile.CylinderDiameter"
+          title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_DIAMETER" [max]="999" [min]="0" suffix="cm"
+          [decimalPlaces]="2" (valueChange)="recalculateLayers()" [convertMetersToCm]="true"></app-numeric-input>
+        <app-numeric-input [(value)]="profile.TareWeight" (valueChange)="recalculateLayers()"
+          title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TARE_WEIGHT" [max]="999" [min]="0" suffix="g"
+          [decimalPlaces]="2"></app-numeric-input>
+      </ng-container>
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.LAYER' | translate }}
+        </ion-label>
+      </ion-list-header>
+      <ng-container *ngIf="hasLayers else noLayers">
+        <ion-item tabindex="0" (click)="addLayerTop()" (keyup.enter)="addLayerTop()">
+          <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+          <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_TOP' | translate}}</ion-label>
         </ion-item>
-      </ion-reorder-group>
-      <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()">
-        <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
-        <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_BOTTOM' | translate}}</ion-label>
-      </ion-item>
-    </ng-container>
-  </ion-list>
-  <ion-grid no-padding>
-    <ion-row>
-      <ion-col size="6" offset="3">
-        <ion-button expand="block" fill="solid" color="primary" (click)="ok()">
-          {{'DIALOGS.OK' | translate}}
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+        <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
+          <ion-item (click)="addOrEditLayer(i, layer)" *ngFor="let layer of profile.Layers; let i = index">
+            <ion-label>
+              <ion-text *ngIf="layer.Depth !== undefined">
+                {{layer.Depth | metersToCm }}cm
+              </ion-text>
+              <ion-text *ngIf="layer.Weight !== undefined">
+                {{layer.Weight}}g
+              </ion-text>
+              <ion-text *ngIf="layer.Density !== undefined">
+                {{ layer.Density | number:'1.0-2' }}kg/m³
+              </ion-text>
+              <ion-text *ngIf="layer.WaterEquivalent !== undefined">
+                ({{ layer.WaterEquivalent | number:'1.0-2' }}mm)
+              </ion-text>
+            </ion-label>
+            <ion-reorder slot="end"></ion-reorder>
+          </ion-item>
+        </ion-reorder-group>
+        <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()">
+          <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+          <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_BOTTOM' | translate}}</ion-label>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+    <ion-grid no-padding>
+      <ion-row>
+        <ion-col size="6" offset="3">
+          <ion-button type="submit" expand="block" fill="solid" color="primary">
+            {{'DIALOGS.OK' | translate}}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 </ion-content>
 <ng-template #noLayers>
   <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()">
