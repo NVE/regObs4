@@ -23,24 +23,24 @@ export class StratProfileLayerModalPage implements OnInit {
   grainFormFilter: (id: number) => boolean;
   wetnessFilter: (id: number) => boolean;
 
-  grainSizeTypes: { id: number, text: string }[] = [
-    { id: 1, text: '.1' },
-    { id: 2, text: '.3' },
-    { id: 3, text: '.5' },
-    { id: 4, text: '1' },
-    { id: 5, text: '1.5' },
-    { id: 6, text: '2' },
-    { id: 7, text: '2.5' },
-    { id: 8, text: '3' },
-    { id: 9, text: '3.5' },
-    { id: 10, text: '4' },
-    { id: 11, text: '4.5' },
-    { id: 12, text: '5' },
-    { id: 13, text: '5.5' },
-    { id: 14, text: '6' },
-    { id: 15, text: '8' },
-    { id: 16, text: '10' },
-    { id: undefined, text: '' },
+  grainSizes: { value: number, text: string }[] = [
+    { value: .001, text: '.1' },
+    { value: .003, text: '.3' },
+    { value: .005, text: '.5' },
+    { value: .01, text: '1' },
+    { value: .015, text: '1.5' },
+    { value: .02, text: '2' },
+    { value: .025, text: '2.5' },
+    { value: .03, text: '3' },
+    { value: .035, text: '3.5' },
+    { value: .04, text: '4' },
+    { value: .045, text: '4.5' },
+    { value: .05, text: '5' },
+    { value: .055, text: '5.5' },
+    { value: .06, text: '6' },
+    { value: .08, text: '8' },
+    { value: .10, text: '10' },
+    { value: undefined, text: '' },
   ];
 
   grainSizeInterfaceOptions: any;
