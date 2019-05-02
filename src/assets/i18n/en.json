@@ -387,7 +387,11 @@
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
-          "EMPTY": "No tests attached to profile",
+          "ATTACHED": "attached to profile",
+          "EMPTY": "No",
+          "INCLUDE_IN_SNOW_PROFILE": "Include in snow profile",
+          "MULTIPLE_TESTS": "tests",
+          "SINGLE_TEST": "test",
           "TITLE": "Tests"
         },
         "IS_PROFILE_TO_GROUND": "Is the profile going to the ground?",

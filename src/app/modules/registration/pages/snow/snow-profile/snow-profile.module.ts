@@ -12,6 +12,8 @@ import { FullscreenImageModalPageModule } from '../../../../../pages/modal-pages
 import { SnowTempModalPageModule } from '../../../components/snow/snow-profile/snow-temp/snow-temp-modal/snow-temp-modal.module';
 // tslint:disable-next-line:max-line-length
 import { SnowDensityModalPageModule } from '../../../components/snow/snow-profile/snow-density/snow-density-modal/snow-density-modal.module';
+// tslint:disable-next-line:max-line-length
+import { CompressionTestListModalPageModule } from '../../../components/snow/snow-profile/compression-test/compression-test-list-modal/compression-test-list-modal.module';
 
 const routes: Routes = [
   {
@@ -26,6 +28,7 @@ const routes: Routes = [
     StratProfileModalPageModule,
     SnowTempModalPageModule,
     SnowDensityModalPageModule,
+    CompressionTestListModalPageModule,
     FullscreenImageModalPageModule,
     RouterModule.forChild(routes)
   ],

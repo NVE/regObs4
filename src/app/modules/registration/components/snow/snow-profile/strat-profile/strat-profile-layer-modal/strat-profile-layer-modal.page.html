@@ -9,61 +9,94 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-list lines="full" no-margin>
-    <ion-list-header text-uppercase>
-      <ion-label>
-        {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate}}
-      </ion-label>
-    </ion-list-header>
-    <app-numeric-input [(value)]="layer.Thickness" title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
-      [min]="0" suffix="cm" [decimalPlaces]="2" [convertMetersToCm]="true">
-    </app-numeric-input>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS" kdvKey="Snow_HardnessKDV"
-      [(value)]="layer.HardnessTID" [filter]="hardnessFilter"></app-kdv-dropdown>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FORM" kdvKey="Snow_GrainFormKDV"
-      [(value)]="layer.GrainFormPrimaryTID">
-    </app-kdv-dropdown>
-    <ion-item>
-      <ion-label color="medium" position="stacked" text-uppercase>
-        {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE' | translate }}</ion-label>
-      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="layer.GrainSizeAvg"
-        interface="action-sheet" [interfaceOptions]="grainSizeInterfaceOptions">
-        <ion-select-option [value]="grainSizeType.id" *ngFor="let grainSizeType of grainSizeTypes">
-          {{ grainSizeType.text | translate }}</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.WETNESS" kdvKey="Snow_WetnessKDV"
-      [(value)]="layer.WetnessTID">
-    </app-kdv-dropdown>
-  </ion-list>
-  <ion-button (click)="toggleShowMore()" fill="clear" expand="full">
-    <ion-icon slot="start" [name]="showMore ? 'ios-arrow-up' : 'ios-arrow-down'"></ion-icon>
-    <ng-container *ngIf="showMore">{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_LESS' | translate  }}
-    </ng-container>
-    <ng-container *ngIf="!showMore">{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE' | translate  }}
-    </ng-container>
-  </ion-button>
-  <ion-list lines="full" *ngIf="showMore">
-    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS_BOTTOM" kdvKey="Snow_HardnessKDV"
-      [(value)]="layer.HardnessBottomTID">
-    </app-kdv-dropdown>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FROM_SECONDARY"
-      kdvKey="Snow_GrainFormKDV" [(value)]="layer.GrainFormSecondaryTID">
-    </app-kdv-dropdown>
-    <ion-item>
-      <ion-label color="medium" position="stacked" text-uppercase>
-        {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE' | translate }}</ion-label>
-      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="layer.GrainSizeAvgMax"
-        interface="action-sheet" [interfaceOptions]="grainSizeInterfaceOptions">
-        <ion-select-option [value]="grainSizeType.id" *ngFor="let grainSizeType of grainSizeTypes">
-          {{ grainSizeType.text | translate }}</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.CRITICAL_LAYER" kdvKey="Snow_CriticalLayerKDV"
-      [(value)]="layer.CriticalLayerTID">
-    </app-kdv-dropdown>
-    <app-text-comment title="DIALOGS.COMMENT" [(value)]="layer.Comment"></app-text-comment>
-  </ion-list>
-  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="showDelete">
-  </app-modal-save-or-delete-buttons>
+  <form (ngSubmit)="ok()">
+    <ion-list lines="full" no-margin>
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <app-numeric-input [(value)]="layer.Thickness" title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
+        [min]="0" suffix="cm" [decimalPlaces]="2" [convertMetersToCm]="true">
+      </app-numeric-input>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS" kdvKey="Snow_HardnessKDV"
+        [(value)]="layer.HardnessTID" [filter]="hardnessFilter"></app-kdv-dropdown>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FORM" kdvKey="Snow_GrainFormKDV"
+        [(value)]="layer.GrainFormPrimaryTID" [filter]="grainFormFilter">
+      </app-kdv-dropdown>
+      <ion-item>
+        <ion-label color="medium" position="stacked" text-uppercase>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE' | translate }}</ion-label>
+        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="layer.GrainSizeAvg" name="GrainSizeAvg"
+          interface="action-sheet" [interfaceOptions]="grainSizeInterfaceOptions">
+          <ion-select-option [value]="grainSizeType.id" *ngFor="let grainSizeType of grainSizeTypes">
+            {{ grainSizeType.text | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.WETNESS" kdvKey="Snow_WetnessKDV"
+        [(value)]="layer.WetnessTID" [filter]="wetnessFilter">
+      </app-kdv-dropdown>
+    </ion-list>
+    <ion-button (click)="toggleShowMore()" fill="clear" expand="full">
+      <ion-icon slot="start" [name]="showMore ? 'ios-arrow-up' : 'ios-arrow-down'"></ion-icon>
+      <ng-container *ngIf="showMore">{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_LESS' | translate  }}
+      </ng-container>
+      <ng-container *ngIf="!showMore">{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE' | translate  }}
+      </ng-container>
+    </ion-button>
+    <ion-list lines="full" *ngIf="showMore">
+      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS_BOTTOM" kdvKey="Snow_HardnessKDV"
+        [(value)]="layer.HardnessBottomTID">
+      </app-kdv-dropdown>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FROM_SECONDARY"
+        kdvKey="Snow_GrainFormKDV" [(value)]="layer.GrainFormSecondaryTID">
+      </app-kdv-dropdown>
+      <ion-item>
+        <ion-label color="medium" position="stacked" text-uppercase>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE' | translate }}</ion-label>
+        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="layer.GrainSizeAvgMax"
+          interface="action-sheet" [interfaceOptions]="grainSizeInterfaceOptions" name="GrainSizeAvgMax">
+          <ion-select-option [value]="grainSizeType.id" *ngFor="let grainSizeType of grainSizeTypes">
+            {{ grainSizeType.text | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.CRITICAL_LAYER"
+        kdvKey="Snow_CriticalLayerKDV" [(value)]="layer.CriticalLayerTID">
+      </app-kdv-dropdown>
+      <app-text-comment title="DIALOGS.COMMENT" [(value)]="layer.Comment"></app-text-comment>
+    </ion-list>
+    <!-- <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="showDelete">
+  </app-modal-save-or-delete-buttons> -->
+    <ion-grid no-padding>
+      <ion-row>
+        <ion-col size="6">
+          <ion-button [disabled]="index === 0" expand="block" fill="outline" color="primary" (click)="ok(-1)">
+            <ion-icon slot="start" name="arrow-round-back"></ion-icon>
+            <ion-text>{{ 'DIALOGS.PREVIOUS' | translate }}</ion-text>
+          </ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button expand="block" fill="outline" color="primary" (click)="ok(1)">
+            <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
+            <ion-text>{{ 'DIALOGS.NEXT' | translate }}</ion-text>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-button type="submit" expand="block" fill="solid" color="primary">
+            {{ 'DIALOGS.OK_BACK' | translate }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="showDelete">
+        <ion-col size="6" offset="3">
+          <ion-button (click)="delete()" size="small" fill="clear" expand="block">
+            <ion-icon slot="start" name="trash"></ion-icon>
+            {{ 'DIALOGS.DELETE' | translate }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 </ion-content>

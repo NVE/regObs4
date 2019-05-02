@@ -10,13 +10,12 @@ import { ModalController } from '@ionic/angular';
 export class SnowTempLayerModalPage implements OnInit {
 
   @Input() layer: TempProfileObsDto;
-  private initialModel: TempProfileObsDto;
+  @Input() index: number;
   showDelete = false;
 
   constructor(private modalController: ModalController) { }
 
   ngOnInit() {
-    this.initialModel = { ... this.layer };
     if (this.layer === undefined) {
       this.layer = {};
     } else {
@@ -24,12 +23,11 @@ export class SnowTempLayerModalPage implements OnInit {
     }
   }
 
-  ok() {
-    this.modalController.dismiss(this.layer);
+  ok(gotoIndex?: number) {
+    this.modalController.dismiss({ layer: this.layer, gotoIndex });
   }
 
   cancel() {
-    this.layer = this.initialModel;
     this.modalController.dismiss();
   }
 

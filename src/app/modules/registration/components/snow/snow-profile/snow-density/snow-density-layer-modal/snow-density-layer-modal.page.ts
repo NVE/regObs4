@@ -15,13 +15,11 @@ export class SnowDensityLayerModalPage implements OnInit {
   @Input() cylinderDiameterInM: number;
   @Input() tareWeightInG: number;
   @Input() index: number;
-  private initialModel: DensityProfileLayerDto;
   showDelete = false;
 
   constructor(private modalController: ModalController) { }
 
   ngOnInit() {
-    this.initialModel = { ... this.layer };
     if (this.layer === undefined) {
       this.layer = {};
     } else {
@@ -35,7 +33,6 @@ export class SnowDensityLayerModalPage implements OnInit {
   }
 
   cancel() {
-    this.layer = this.initialModel;
     this.modalController.dismiss();
   }
 

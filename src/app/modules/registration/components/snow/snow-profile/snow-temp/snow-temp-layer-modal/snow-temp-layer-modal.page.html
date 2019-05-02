@@ -9,17 +9,50 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-list lines="full">
-    <ion-list-header text-uppercase>
-      <ion-label>
-        {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT' | translate}}
-      </ion-label>
-    </ion-list-header>
-    <app-numeric-input [(value)]="layer.Depth" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.DEPTH" [max]="999"
-      [min]="0" suffix="cm" [decimalPlaces]="2" [convertMetersToCm]="true"></app-numeric-input>
-    <app-numeric-input [(value)]="layer.SnowTemp" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.TEMPERATURE" [max]="0"
-      [min]="-70" suffix="°C" [decimalPlaces]="2"></app-numeric-input>
-  </ion-list>
-  <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="showDelete">
-  </app-modal-save-or-delete-buttons>
+  <form (ngSubmit)="ok()">
+    <ion-list lines="full">
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.POINT' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <app-numeric-input [(value)]="layer.Depth" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.DEPTH" [max]="999"
+        [min]="0" suffix="cm" [decimalPlaces]="2" [convertMetersToCm]="true"></app-numeric-input>
+      <app-numeric-input [(value)]="layer.SnowTemp" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_TEMP.TEMPERATURE"
+        [max]="0" [min]="-70" suffix="°C" [decimalPlaces]="2"></app-numeric-input>
+    </ion-list>
+    <!-- <app-modal-save-or-delete-buttons (saveClicked)="ok()" (deleteClicked)="delete()" [showDelete]="showDelete">
+  </app-modal-save-or-delete-buttons> -->
+    <ion-grid no-padding>
+      <ion-row>
+        <ion-col size="6">
+          <ion-button [disabled]="index === 0" expand="block" fill="outline" color="primary" (click)="ok(-1)">
+            <ion-icon slot="start" name="arrow-round-back"></ion-icon>
+            <ion-text>{{ 'DIALOGS.PREVIOUS' | translate }}</ion-text>
+          </ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button expand="block" fill="outline" color="primary" (click)="ok(1)">
+            <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
+            <ion-text>{{ 'DIALOGS.NEXT' | translate }}</ion-text>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-button type="submit" expand="block" fill="solid" color="primary">
+            {{ 'DIALOGS.OK_BACK' | translate }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="showDelete">
+        <ion-col size="6" offset="3">
+          <ion-button (click)="delete()" size="small" fill="clear" expand="block">
+            <ion-icon slot="start" name="trash"></ion-icon>
+            {{ 'DIALOGS.DELETE' | translate }}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 </ion-content>

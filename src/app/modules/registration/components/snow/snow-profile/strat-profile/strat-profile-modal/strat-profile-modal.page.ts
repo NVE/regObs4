@@ -4,6 +4,7 @@ import { StratProfileDto, StratProfileLayerDto } from '../../../../../../regobs-
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
+import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 
 @Component({
   selector: 'app-strat-profile-modal',
@@ -57,20 +58,33 @@ export class StratProfileModalPage implements OnInit {
       const modal = await this.modalController.create({
         component: StratProfileLayerModalPage,
         componentProps: {
-          layer,
+          layer: layer === undefined ? undefined : { ...layer },
+          index,
         }
       });
       modal.present();
       const result = await modal.onDidDismiss();
+      this.isOpen = false;
       if (result.data) {
         if (result.data.delete) {
           this.removeLayer(index);
         } else {
-          const stratProfileLayer: StratProfileLayerDto = result.data;
-          this.setLayer(index, stratProfileLayer, add);
+          let currentIndex = index;
+          const stratProfileLayer: StratProfileLayerDto = result.data.layer;
+          const isEmpty = IsEmptyHelper.isEmpty(stratProfileLayer);
+          if (isEmpty && !add) {
+            this.removeLayer(index);
+            currentIndex--;
+          } else if (!isEmpty) {
+            this.setLayer(index, stratProfileLayer, add);
+          }
+          if (result.data.gotoIndex !== undefined) {
+            const nextIndex = currentIndex + result.data.gotoIndex;
+            const nextLayer = this.hasLayers ? this.profile.Layers[nextIndex] : undefined;
+            this.addOrEditLayer(nextIndex, nextLayer);
+          }
         }
       }
-      this.isOpen = false;
     }
   }
 

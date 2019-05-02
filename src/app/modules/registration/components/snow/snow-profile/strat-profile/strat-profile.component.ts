@@ -37,11 +37,11 @@ export class StratProfileComponent implements OnInit {
       });
       modal.present();
       const result = await modal.onDidDismiss();
+      this.isOpen = false;
       if (result.data) {
         this.profile = result.data;
         this.profileChange.emit(this.profile);
       }
-      this.isOpen = false;
     }
   }
 }

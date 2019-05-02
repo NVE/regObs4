@@ -377,17 +377,21 @@
         "WEAK_LAYER_DEPTH": "Svakt lags dybde"
       },
       "COMPRESSION_TEST": {
-        "ADD_NEW": "Legg til ny stabilitetstest",
+        "ADD_NEW": "Legg til ny test",
         "DISTANCE_FROM_TOP": "Avstand fra toppen (cm)",
         "FRACTURE_TYPE": "Bruddtype",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Antall slag",
         "TEST_TYPE": "Test type",
-        "TITLE": "Stabilitetstest"
+        "TITLE": "Tester"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
-          "EMPTY": "Ingen tester knyttet til profilen",
+          "ATTACHED": "knyttet til profilen",
+          "EMPTY": "Ingen",
+          "INCLUDE_IN_SNOW_PROFILE": "Inkluder i snøprofil",
+          "MULTIPLE_TESTS": "tester",
+          "SINGLE_TEST": "test",
           "TITLE": "Tester"
         },
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",

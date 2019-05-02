@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { TempObsDto, TempProfileObsDto } from '../../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
+import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 
 @Component({
   selector: 'app-snow-temp-modal',
@@ -11,11 +12,11 @@ import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer
 export class SnowTempModalPage implements OnInit {
 
   @Input() tempProfile: TempObsDto;
+  private isOpen = false;
 
   get hasLayers() {
     return this.tempProfile && this.tempProfile.Layers && this.tempProfile.Layers.length > 0;
   }
-
 
   constructor(private modalController: ModalController) { }
 
@@ -36,21 +37,38 @@ export class SnowTempModalPage implements OnInit {
   }
 
   async addOrEditLayer(index: number, layer: TempProfileObsDto) {
-    const add = (layer === undefined);
-    const modal = await this.modalController.create({
-      component: SnowTempLayerModalPage,
-      componentProps: {
-        layer,
-      }
-    });
-    modal.present();
-    const result = await modal.onDidDismiss();
-    if (result.data) {
-      if (result.data.delete) {
-        this.removeLayer(index);
-      } else {
-        const stratProfileLayer: TempProfileObsDto = result.data;
-        this.setLayer(index, stratProfileLayer, add);
+    if (!this.isOpen) {
+      this.isOpen = true;
+      const add = (layer === undefined);
+      const modal = await this.modalController.create({
+        component: SnowTempLayerModalPage,
+        componentProps: {
+          layer: layer === undefined ? undefined : { ...layer },
+          index,
+        }
+      });
+      modal.present();
+      const result = await modal.onDidDismiss();
+      this.isOpen = false;
+      if (result.data) {
+        if (result.data.delete) {
+          this.removeLayer(index);
+        } else {
+          let currentIndex = index;
+          const temperatureProfile: TempProfileObsDto = result.data.layer;
+          const isEmpty = IsEmptyHelper.isEmpty(temperatureProfile);
+          if (isEmpty && !add) {
+            this.removeLayer(index);
+            currentIndex--;
+          } else if (!isEmpty) {
+            this.setLayer(index, temperatureProfile, add);
+          }
+          if (result.data.gotoIndex !== undefined) {
+            const nextIndex = currentIndex + result.data.gotoIndex;
+            const nextLayer = this.hasLayers ? this.tempProfile.Layers[nextIndex] : undefined;
+            this.addOrEditLayer(nextIndex, nextLayer);
+          }
+        }
       }
     }
   }

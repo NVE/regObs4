@@ -46,7 +46,8 @@
           <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_TOP' | translate}}</ion-label>
         </ion-item>
         <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
-          <ion-item (click)="addOrEditLayer(i, layer)" *ngFor="let layer of profile.Layers; let i = index">
+          <ion-item tabindex="0" (click)="addOrEditLayer(i, layer)" (keyup.enter)="addOrEditLayer(i, layer)"
+            *ngFor="let layer of profile.Layers; let i = index">
             <ion-label>
               <ion-text *ngIf="layer.Depth !== undefined">
                 {{layer.Depth | metersToCm }}cm

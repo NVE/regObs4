@@ -13,7 +13,8 @@ export class KdvDescriptionPipe implements PipeTransform {
   async transform(value: number, kdvKey: string, returnDescription = false): Promise<string> {
     const kdvelements = await this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).pipe(take(1)).toPromise();
     const kdvelement = kdvelements.find((x) => x.Id === value);
-    return kdvelement ? (returnDescription ? kdvelement.Description : kdvelement.Name) : '';
+    const result = kdvelement ? (returnDescription ? kdvelement.Description : kdvelement.Name) : '';
+    return result.trim();
   }
 
 }

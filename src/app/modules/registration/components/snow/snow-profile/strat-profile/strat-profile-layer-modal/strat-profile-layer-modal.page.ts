@@ -4,6 +4,8 @@ import { StratProfileLayerDto } from '../../../../../../regobs-api/models';
 import { TranslateService } from '@ngx-translate/core';
 
 const basicHardnessValues = [2, 6, 10, 14, 18, 21];
+const basicGrainFormValues = [1, 14, 17, 22, 26, 32, 36, 40, 41];
+const basicWetnessValues = [1, 3, 5, 7, 9];
 
 @Component({
   selector: 'app-strat-profile-layer-modal',
@@ -13,11 +15,13 @@ const basicHardnessValues = [2, 6, 10, 14, 18, 21];
 export class StratProfileLayerModalPage implements OnInit {
 
   @Input() layer: StratProfileLayerDto;
+  @Input() index: number;
 
   showDelete = false;
   showMore = false;
   hardnessFilter: (id: number) => boolean;
-  private initialModel: StratProfileLayerDto;
+  grainFormFilter: (id: number) => boolean;
+  wetnessFilter: (id: number) => boolean;
 
   grainSizeTypes: { id: number, text: string }[] = [
     { id: 1, text: '.1' },
@@ -44,14 +48,13 @@ export class StratProfileLayerModalPage implements OnInit {
   constructor(private modalController: ModalController, private translateService: TranslateService) { }
 
   ngOnInit() {
-    this.initialModel = { ... this.layer };
     if (this.layer !== undefined) {
       this.showDelete = true;
     } else {
       this.layer = {};
     }
     this.showMore = this.hasAnyAdvancedOptions();
-    this.setHardnessFilter();
+    this.updateFilters();
     this.translateService.get('REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE').subscribe((val) => {
       this.grainSizeInterfaceOptions = {
         header: val,
@@ -67,12 +70,11 @@ export class StratProfileLayerModalPage implements OnInit {
       || this.layer.Comment !== undefined;
   }
 
-  ok() {
-    this.modalController.dismiss(this.layer);
+  ok(gotoIndex?: number) {
+    this.modalController.dismiss({ layer: this.layer, gotoIndex });
   }
 
   cancel() {
-    this.layer = this.initialModel;
     this.modalController.dismiss();
   }
 
@@ -82,11 +84,25 @@ export class StratProfileLayerModalPage implements OnInit {
 
   toggleShowMore() {
     this.showMore = !this.showMore;
+    this.updateFilters();
+  }
+
+  private updateFilters() {
     this.setHardnessFilter();
+    this.setGrainFormFilter();
+    this.setWetnessFilter();
   }
 
   private setHardnessFilter() {
     this.hardnessFilter = this.showMore ?
       undefined : (n) => basicHardnessValues.indexOf(n) >= 0;
+  }
+
+  private setGrainFormFilter() {
+    this.grainFormFilter = this.showMore ? undefined : (n) => basicGrainFormValues.indexOf(n) >= 0;
+  }
+
+  private setWetnessFilter() {
+    this.wetnessFilter = this.showMore ? undefined : (n) => basicWetnessValues.indexOf(n) >= 0;
   }
 }

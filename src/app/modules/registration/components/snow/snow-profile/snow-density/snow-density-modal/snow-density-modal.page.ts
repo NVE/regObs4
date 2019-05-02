@@ -14,8 +14,8 @@ import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-hel
 export class SnowDensityModalPage implements OnInit {
 
   @Input() profile: DensityProfileDto;
-
   useCylinder = true;
+  private isOpen = false;
 
   get hasLayers() {
     return this.profile && this.profile.Layers && this.profile.Layers.length > 0;
@@ -46,36 +46,40 @@ export class SnowDensityModalPage implements OnInit {
   }
 
   async addOrEditLayer(index: number, layer: DensityProfileLayerDto) {
-    const add = (layer === undefined);
-    const modal = await this.modalController.create({
-      component: SnowDensityLayerModalPage,
-      componentProps: {
-        layer,
-        useCylinder: this.useCylinder,
-        cylinderDiameterInM: this.profile.CylinderDiameter,
-        tareWeightInG: this.profile.TareWeight,
-        index,
-      }
-    });
-    modal.present();
-    const result = await modal.onDidDismiss();
-    if (result.data) {
-      if (result.data.delete) {
-        this.removeLayer(index);
-      } else {
-        let currentIndex = index;
-        const snowDensityLayer: DensityProfileLayerDto = result.data.layer;
-        const isEmpty = this.isEmpty(snowDensityLayer);
-        if (isEmpty && !add) {
-          this.removeLayer(index);
-          currentIndex--;
-        } else if (!isEmpty) {
-          this.setLayer(index, snowDensityLayer, add);
+    if (!this.isOpen) {
+      this.isOpen = true;
+      const add = (layer === undefined);
+      const modal = await this.modalController.create({
+        component: SnowDensityLayerModalPage,
+        componentProps: {
+          layer: layer !== undefined ? { ...layer } : undefined,
+          useCylinder: this.useCylinder,
+          cylinderDiameterInM: this.profile.CylinderDiameter,
+          tareWeightInG: this.profile.TareWeight,
+          index,
         }
-        if (result.data.gotoIndex !== undefined) {
-          const nextIndex = currentIndex + result.data.gotoIndex;
-          const nextLayer = this.hasLayers ? this.profile.Layers[nextIndex] : undefined;
-          this.addOrEditLayer(nextIndex, nextLayer);
+      });
+      modal.present();
+      const result = await modal.onDidDismiss();
+      this.isOpen = false;
+      if (result.data) {
+        if (result.data.delete) {
+          this.removeLayer(index);
+        } else {
+          let currentIndex = index;
+          const snowDensityLayer: DensityProfileLayerDto = result.data.layer;
+          const isEmpty = this.isEmpty(snowDensityLayer);
+          if (isEmpty && !add) {
+            this.removeLayer(index);
+            currentIndex--;
+          } else if (!isEmpty) {
+            this.setLayer(index, snowDensityLayer, add);
+          }
+          if (result.data.gotoIndex !== undefined) {
+            const nextIndex = currentIndex + result.data.gotoIndex;
+            const nextLayer = this.hasLayers ? this.profile.Layers[nextIndex] : undefined;
+            this.addOrEditLayer(nextIndex, nextLayer);
+          }
         }
       }
     }
@@ -115,9 +119,6 @@ export class SnowDensityModalPage implements OnInit {
           layer.Depth,
           this.profile.TareWeight,
           this.profile.CylinderDiameter);
-        // if (layer.Density !== undefined) {
-        //   layer.WaterEquivalent = HydrologyHelper.calculateWaterEquivalent(layer.Density, layer.Depth);
-        // }
       });
     }
   }

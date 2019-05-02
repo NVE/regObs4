@@ -13,6 +13,7 @@ export class SnowTempComponent implements OnInit {
 
   @Input() tempProfile: TempObsDto;
   @Output() tempProfileChange = new EventEmitter();
+  private isOpen = false;
 
   get isEmpty() {
     return IsEmptyHelper.isEmpty(this.tempProfile);
@@ -24,17 +25,21 @@ export class SnowTempComponent implements OnInit {
   }
 
   async openModal() {
-    const modal = await this.modalContoller.create({
-      component: SnowTempModalPage,
-      componentProps: {
-        tempProfile: { ...this.tempProfile },
+    if (!this.isOpen) {
+      this.isOpen = true;
+      const modal = await this.modalContoller.create({
+        component: SnowTempModalPage,
+        componentProps: {
+          tempProfile: { ...this.tempProfile },
+        }
+      });
+      modal.present();
+      const result = await modal.onDidDismiss();
+      this.isOpen = false;
+      if (result.data) {
+        this.tempProfile = result.data;
+        this.tempProfileChange.emit(this.tempProfile);
       }
-    });
-    modal.present();
-    const result = await modal.onDidDismiss();
-    if (result.data) {
-      this.tempProfile = result.data;
-      this.tempProfileChange.emit(this.tempProfile);
     }
   }
 }

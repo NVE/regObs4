@@ -22,6 +22,7 @@ import { YesNoSelectComponent } from './components/yes-no-select/yes-no-select.c
 import { NumericInputComponent } from './components/numeric-input/numeric-input.component';
 import { NumericInputModalPageModule } from './pages/modal-pages/numeric-input-modal/numeric-input-modal.module';
 import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
+import { CompressionTestListComponent } from './components/snow/compression-test-list/compression-test-list.component';
 
 @NgModule({
     imports: [
@@ -54,6 +55,7 @@ import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
         YesNoSelectComponent,
         NumericInputComponent,
         NumericInputModalPageModule,
+        CompressionTestListComponent,
     ],
     declarations: [
         SaveAndGoBackButtonComponent,
@@ -75,6 +77,7 @@ import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
         HelpTextComponent,
         YesNoSelectComponent,
         NumericInputComponent,
+        CompressionTestListComponent,
     ],
 })
 export class SharedComponentsModule { }

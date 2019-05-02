@@ -37,7 +37,7 @@
           {{'REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW' | translate}}
         </ion-label>
       </ion-list-header>
-      <ion-item (click)="openPreview()">
+      <ion-item [disabled]="isEmpty()" (click)="openPreview()">
         <ion-icon name="eye" color="dark" slot="start"></ion-icon>
         <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW_ITEM' | translate }}</ion-label>
       </ion-item>
