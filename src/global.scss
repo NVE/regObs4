@@ -303,6 +303,10 @@ ion-toolbar {
     }
 }
 
+ion-toggle {
+        transform: scale(var(--ion-toggle-size, 0.75));
+}
+
 .numeric-input-modal {
     .modal-wrapper {
         --height: 470px;
