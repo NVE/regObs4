@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { CompressionTestDto } from '../../../../../regobs-api/models';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
@@ -11,25 +11,30 @@ import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 export class CompressionTestModalPage implements OnInit {
 
   @Input() compressionTest: CompressionTestDto;
+  @Input() includeInSnowProfileAsDefault = false;
 
-  isNew = false;
-  compressionTestCopy: CompressionTestDto;
+  showDelete = false;
   tapsArray = [];
+
   get isValid() {
-    return !IsEmptyHelper.isEmpty(this.compressionTestCopy);
+    const clone = { ...this.compressionTest };
+    clone.IncludeInSnowProfile = undefined;
+    return !IsEmptyHelper.isEmpty(clone);
   }
 
-  constructor(private modalController: ModalController, private ngZone: NgZone) { }
+  constructor(private modalController: ModalController) { }
 
   ngOnInit() {
     for (let i = 1; i <= 30; i++) {
       this.tapsArray.push(i);
     }
-    if (this.compressionTest) {
-      this.compressionTestCopy = { ...this.compressionTest };
+    if (!this.compressionTest) {
+      this.compressionTest = {};
+      if (this.includeInSnowProfileAsDefault) {
+        this.compressionTest.IncludeInSnowProfile = true;
+      }
     } else {
-      this.compressionTestCopy = {};
-      this.isNew = true;
+      this.showDelete = true;
     }
   }
 
@@ -38,15 +43,15 @@ export class CompressionTestModalPage implements OnInit {
   }
 
   isCTNorECTX() {
-    return this.compressionTestCopy.PropagationTID === 15 || this.compressionTestCopy.PropagationTID === 24;
+    return this.compressionTest.PropagationTID === 15 || this.compressionTest.PropagationTID === 24;
   }
 
   isCTVorECTV() {
-    return this.compressionTestCopy.PropagationTID === 11 || this.compressionTestCopy.PropagationTID === 21;
+    return this.compressionTest.PropagationTID === 11 || this.compressionTest.PropagationTID === 21;
   }
 
   isLBT() {
-    return this.compressionTestCopy.PropagationTID === 5;
+    return this.compressionTest.PropagationTID === 5;
   }
 
   cancel() {
@@ -54,7 +59,7 @@ export class CompressionTestModalPage implements OnInit {
   }
 
   ok() {
-    this.modalController.dismiss(IsEmptyHelper.isEmpty(this.compressionTestCopy) ? null : this.compressionTestCopy);
+    this.modalController.dismiss(this.compressionTest);
   }
 
   delete() {

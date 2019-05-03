@@ -19,7 +19,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { WarningService } from './core/services/warning/warning.service';
-import { ErrorHandler, Provider, forwardRef } from '@angular/core';
+import { ErrorHandler, Provider, forwardRef, LOCALE_ID } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { LoginService } from './modules/login/services/login.service';
 import { HTTP } from '@ionic-native/http/ngx';
@@ -47,6 +47,7 @@ import { AnalyticService } from './core/services/analytic/analytic.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { KdvService } from './core/services/kdv/kdv.service';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -54,12 +55,26 @@ export const API_INTERCEPTOR_PROVIDER: Provider = {
     multi: true
 };
 
+export class DynamicLocaleId extends String {
+    constructor(protected service: TranslateService) {
+        super('');
+    }
+    toString() {
+        return this.service.currentLang;
+    }
+}
+
 export const APP_PROVIDERS = [
     StatusBar,
     SplashScreen,
     StartWizardGuard,
     LoginGuard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    {
+        provide: LOCALE_ID,
+        useClass: DynamicLocaleId,
+        deps: [TranslateService]
+    },
     Geolocation,
     // Deeplinks,
     BackgroundFetch,

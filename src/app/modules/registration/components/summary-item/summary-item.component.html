@@ -1,4 +1,4 @@
-<ion-item (click)="navigate()" [detail]="!readonly" *ngIf="!(readonly && !item.hasData)">
+<ion-item class="summary-item" (click)="navigate()" [detail]="!readonly" *ngIf="!(readonly && !item.hasData)">
   <ion-label padding-vertical padding-end>
     <h2>{{ item.title | translate}}</h2>
     <p *ngIf="item.subTitle">

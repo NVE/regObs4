@@ -44,13 +44,13 @@
           {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_HEADER' | translate}}
         </ion-label>
       </ion-list-header>
-      <ion-item>
+      <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT"
+        [(value)]="registration.request.WeatherObservation.Comment"></app-text-comment>
+      <ion-item-divider>
         <ion-label text-wrap>
           {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_PLACEHOLDER' | translate }}
         </ion-label>
-      </ion-item>
-      <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT"
-        [(value)]="registration.request.WeatherObservation.Comment"></app-text-comment>
+      </ion-item-divider>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}

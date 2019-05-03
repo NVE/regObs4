@@ -69,7 +69,7 @@ export class MapSearchService {
         return this.removeDuplicates(resultList).map((item) => {
           const resp: MapSearchResponse = {
             name: item.stedsnavn,
-            description: (lang === LangKey.no ? item.navnetype + ', ' : '')
+            description: (lang === LangKey.nb ? item.navnetype + ', ' : '')
               + item.kommunenavn + ' (' + item.fylkesnavn + ')',
             type: item.navnetype,
             latlng: L.Projection.Mercator.unproject(L.point({ x: item.aust, y: item.nord })),

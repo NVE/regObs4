@@ -19,6 +19,8 @@ export class NumericInputComponent implements OnInit {
   @Input() placeholder: string;
   @Input() convertMetersToCm = false;
 
+  private isOpen = false;
+
   get displayValue() {
     if (this.value !== undefined) {
       return (this.convertMetersToCm ? this.convertMtoCM(this.value) : this.value).toLocaleString();
@@ -32,24 +34,28 @@ export class NumericInputComponent implements OnInit {
   }
 
   async openPicker() {
-    const modal = await this.modalController.create({
-      component: NumericInputModalPage,
-      cssClass: 'numeric-input-modal',
-      componentProps: {
-        value: this.convertMetersToCm ? this.convertMtoCM(this.value) : this.value,
-        decimalPlaces: this.decimalPlaces,
-        min: this.min,
-        max: this.max,
-        suffix: this.suffix,
-        decimalSeparator: this.decimalSeparator,
-        title: this.title,
-      },
-    });
-    modal.present();
-    const result = await modal.onDidDismiss();
-    if (result.data && result.data.ok) {
-      this.value = this.convertMetersToCm ? this.convertCMtoM(result.data.value) : result.data.value;
-      this.valueChange.emit(this.value);
+    if (!this.isOpen) {
+      this.isOpen = true;
+      const modal = await this.modalController.create({
+        component: NumericInputModalPage,
+        cssClass: 'numeric-input-modal',
+        componentProps: {
+          value: this.convertMetersToCm ? this.convertMtoCM(this.value) : this.value,
+          decimalPlaces: this.decimalPlaces,
+          min: this.min,
+          max: this.max,
+          suffix: this.suffix,
+          decimalSeparator: this.decimalSeparator,
+          title: this.title,
+        },
+      });
+      modal.present();
+      const result = await modal.onDidDismiss();
+      if (result.data && result.data.ok) {
+        this.value = this.convertMetersToCm ? this.convertCMtoM(result.data.value) : result.data.value;
+        this.valueChange.emit(this.value);
+      }
+      this.isOpen = false;
     }
   }
 

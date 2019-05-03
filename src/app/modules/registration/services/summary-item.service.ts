@@ -251,18 +251,21 @@ export class SummaryItemService {
       ),
       this.getRegItem(
         registration,
-        '/registration/snow/snow-profile',
-        'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
-        '',
-        RegistrationTid.SnowProfile
-      ),
-      this.getRegItem(
-        registration,
         '/registration/snow/compression-test',
         'REGISTRATION.SNOW.COMPRESSION_TEST.TITLE',
         '',
         RegistrationTid.CompressionTest
       ),
+      {
+        id: registration.id,
+        href: '/registration/snow/snow-profile',
+        title: 'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
+        subTitle: '',
+        hasData: !this.registrationService.isEmpty(registration, RegistrationTid.SnowProfile2)
+          || (registration.request.CompressionTest
+            && registration.request.CompressionTest.some((x) => x.IncludeInSnowProfile === true)),
+        images: this.registrationService.getImages(registration, RegistrationTid.SnowProfile2),
+      },
       this.getRegItem(
         registration,
         '/registration/snow/avalanche-problem',

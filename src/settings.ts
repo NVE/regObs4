@@ -16,6 +16,7 @@ export const settings = {
                 'PROD': 'https://api.regobs.no/app_v4',
                 'DEMO': 'https://demo-api.regobs.no/app_v4',
                 'TEST': 'https://test-api.regobs.no/app_v4'
+                // 'TEST': 'http://localhost:40001'
             },
             serviceUrl: {
                 'PROD': 'https://api.nve.no/hydrology/regobs/v3.5.0',

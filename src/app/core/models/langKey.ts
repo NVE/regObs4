@@ -1,4 +1,4 @@
 export enum LangKey {
-    no = 1,
+    nb = 1,
     en = 2,
 }

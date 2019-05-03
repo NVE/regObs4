@@ -173,6 +173,14 @@ ion-item {
     .sc-ion-label-md-s p {
         color: var(--ion-color-step-400,#999);
     }
+
+    &.item-label {
+        ion-text {
+            &[align-self-start] {
+                margin-bottom: 10px;
+            }
+        }
+    }
 }
 
 ion-list {
@@ -293,6 +301,10 @@ ion-toolbar {
             --background: var(--ion-color-varsom-test-header);
         }
     }
+}
+
+ion-toggle {
+        transform: scale(var(--ion-toggle-size, 0.75));
 }
 
 .numeric-input-modal {
@@ -459,5 +471,20 @@ ion-toast {
 
     .full-grid-row {
         height: 50%;
+    }
+}
+
+.summary-item {
+    ion-label {
+        margin: 0 !important;
+        p {
+            line-height: 23px;
+            font-size: 13px;
+        }
+    
+        h2 {
+            font-size: 15px;
+            line-height: 23px;
+        }
     }
 }

@@ -9,4 +9,5 @@ export interface CompressionTestDto {
   UsageFlagTID?: number;
   ComprTestFractureTID?: number;
   Comment?: string;
+  IncludeInSnowProfile?: boolean;
 }

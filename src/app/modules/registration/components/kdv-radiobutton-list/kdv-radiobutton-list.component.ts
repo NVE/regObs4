@@ -14,7 +14,7 @@ export class KdvRadiobuttonListComponent implements OnInit, OnDestroy {
   @Input() kdvKey: string;
   @Input() value: number;
   @Input() useDescription: boolean;
-  @Input() hideZeroValues: boolean;
+  @Input() showZeroValues = false;
   @Output() valueChange = new EventEmitter();
 
   kdvelements: KdvElement[];
@@ -54,7 +54,7 @@ export class KdvRadiobuttonListComponent implements OnInit, OnDestroy {
   }
 
   isVisible(item: KdvElement) {
-    if (!this.hideZeroValues) {
+    if (this.showZeroValues) {
       return true;
     } else {
       return item.Id % 100 !== 0;

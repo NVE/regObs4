@@ -7,6 +7,8 @@ import {
   ViewChild,
   NgZone,
   OnDestroy,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { KdvElement } from '../../../regobs-api/models';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
@@ -20,7 +22,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './kdv-dropdown.component.html',
   styleUrls: ['./kdv-dropdown.component.scss'],
 })
-export class KdvDropdownComponent implements OnInit, OnDestroy {
+export class KdvDropdownComponent implements OnInit, OnDestroy, OnChanges {
   @Input() title: string;
   @Input() placeholder: string;
   @Input() kdvKey: string;
@@ -29,22 +31,28 @@ export class KdvDropdownComponent implements OnInit, OnDestroy {
   @Input() interfaceOptions;
   @Input() useDescription: boolean;
   @Output() valueChange = new EventEmitter();
-  @Input() hideZeroValues: boolean;
+  @Input() showZeroValues = false;
   @Input() disabled = false;
   @Input() labelColor = 'medium';
+  @Input() showResetButton = true;
+  @Input() filter: (number) => boolean;
 
-  kdvelements: KdvElement[];
-
+  private kdvelements: KdvElement[];
   private subscription: Subscription;
+  filteredKdvElements: KdvElement[];
+
+  get hasValue() {
+    return this.value !== undefined && this.value !== null;
+  }
 
   get selectedText() {
-    if ((this.value !== undefined || this.value !== null) && this.kdvelements) {
+    if (this.hasValue && this.kdvelements) {
       const kdvElement = this.kdvelements.find((x) => x.Id === this.value);
       if (kdvElement) {
         return this.useDescription ? kdvElement.Description : kdvElement.Name;
       }
     }
-    return '';
+    return ' ';
   }
 
   @ViewChild(IonSelect) select: IonSelect;
@@ -58,9 +66,10 @@ export class KdvDropdownComponent implements OnInit, OnDestroy {
     this.subscription = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).subscribe((val) => {
       this.ngZone.run(() => {
         this.kdvelements = val;
+        this.filteredKdvElements = this.getFilteredKdvElements();
       });
     });
-    this.translateService.get([this.title || '', this.placeholder || '']).subscribe((translations) => {
+    this.translateService.get([this.title || '', this.placeholder || '', 'DIALOGS.CANCEL']).subscribe((translations) => {
       this.ngZone.run(() => {
         if (!this.interfaceOptions) {
           this.interfaceOptions = {};
@@ -75,6 +84,25 @@ export class KdvDropdownComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    const filterChanges = changes['filter'];
+    const valueChanges = changes['value'];
+    if ((filterChanges && !filterChanges.firstChange) || (valueChanges && !valueChanges.firstChange)) {
+      this.recreateDropdown();
+    }
+  }
+
+  private recreateDropdown() {
+    if (this.kdvelements) {
+      setTimeout(() => {
+        this.filteredKdvElements = undefined;
+        setTimeout(() => {
+          this.filteredKdvElements = this.getFilteredKdvElements();
+        });
+      });
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -82,11 +110,20 @@ export class KdvDropdownComponent implements OnInit, OnDestroy {
   }
 
   isVisible(item: KdvElement) {
-    if (!this.hideZeroValues) {
-      return true;
-    } else {
+    if (this.filter !== undefined && !this.filter(item.Id)) {
+      return false;
+    }
+    if (!this.showZeroValues) {
       return item.Id % 100 !== 0;
     }
+    return true;
+  }
+
+  private getFilteredKdvElements() {
+    if (!this.kdvelements) {
+      return [];
+    }
+    return this.kdvelements.filter((x) => this.isVisible(x));
   }
 
 }

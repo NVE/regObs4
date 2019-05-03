@@ -1,21 +1,7 @@
-ion-label {
-    margin: 0 !important;
-    p {
-        line-height: 23px;
-        font-size: 13px;
-    }
 
-    h2 {
-        font-size: 15px;
-        line-height: 23px;
-    }
-}
-
-.images {
-    app-base64-image {
-        max-width: 100px;
-        max-height: 100px;
-        padding-right: 5px;
-        display: inline-block;
-    }
+app-base64-image {
+    max-width: 100px;
+    max-height: 100px;
+    padding-right: 5px;
+    display: inline-block;
 }

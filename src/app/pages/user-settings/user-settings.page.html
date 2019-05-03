@@ -14,7 +14,7 @@
       <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.LANGUAGE" | translate }}</ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language"
         interface="action-sheet" (ngModelChange)="updateSettings()">
-        <ion-select-option [value]="LangKey.no">{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN' | translate}}
+        <ion-select-option [value]="LangKey.nb">{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN' | translate}}
         </ion-select-option>
         <ion-select-option [value]="LangKey.en">{{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH' | translate}}
         </ion-select-option>
@@ -47,7 +47,7 @@
       <ion-item>
         <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
         <ion-text align-self-start>
-          <h3 no-margin>{{version.version }} ({{ version.buildNumber }})</h3>
+          <h3>{{version.version }} ({{ version.buildNumber }})</h3>
         </ion-text>
         <ion-text align-self-start color="medium">
           <p class="small-text" no-margin margin-bottom>{{ version.revision }} - {{ version.date | formatDate | async }}

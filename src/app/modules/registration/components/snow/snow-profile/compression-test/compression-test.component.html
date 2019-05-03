@@ -1,0 +1,18 @@
+<ion-item tabindex="0" class="summary-item" (click)="openModal()" (keyup.enter)="openModal()">
+  <ion-label padding-vertical padding-end>
+    <h2>{{ 'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.TITLE' | translate}}</h2>
+    <p>
+      <ion-text>
+        <ng-container *ngIf="(tests && tests.length > 0) else empty">
+          {{ connectedTests.length  }} / {{ tests.length  }}
+        </ng-container>
+        {{'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.MULTIPLE_TESTS' | translate}}
+        {{'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.ATTACHED' | translate}}
+      </ion-text>
+    </p>
+  </ion-label>
+  <ion-icon *ngIf="!isEmpty" slot="end" color="success" name="checkmark-circle"></ion-icon>
+</ion-item>
+<ng-template #empty>
+  {{'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.EMPTY' | translate}}
+</ng-template>

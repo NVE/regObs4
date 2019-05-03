@@ -6,7 +6,7 @@ export enum RegistrationTid {
     AvalancheActivityObs2 = 33,
     AvalancheObs = 26,
     WeatherObservation = 21,
-    SnowProfile = 36,
+    SnowProfile2 = 36,
     CompressionTest = 25,
     AvalancheEvalProblem2 = 32,
     AvalancheEvaluation3 = 31,
