@@ -19,7 +19,7 @@
     "sentry-create-release-and-commits": "sentry-cli releases new \"%npm_package_version%\" && sentry-cli releases set-commits --auto \"%npm_package_version%\"",
     "sentry-create-release": "sentry-cli releases new \"%npm_package_version%\"",
     "sentry-finalize-release": "sentry-cli releases finalize \"%npm_package_version%\"",
-    "create-release-and-upload-sourcemaps": "export SENTRY_PROPERTIES=sentry.properties || set SENTRY_PROPERTIES=sentry.properties && npm run sentry-create-release && npm run upload-sourcemaps && npm run sentry-finalize-release"
+    "create-release-and-upload-sourcemaps": "export SENTRY_PROPERTIES=sentry.properties|| set SENTRY_PROPERTIES=sentry.properties&& npm run sentry-create-release && npm run upload-sourcemaps && npm run sentry-finalize-release"
   },
   "private": true,
   "dependencies": {
