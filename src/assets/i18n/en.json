@@ -394,8 +394,10 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tests"
         },
+        "GENERATING_PREVIEW": "Generating preview...",
         "IS_PROFILE_TO_GROUND": "Is the profile going to the ground?",
         "PREVIEW": "Preview",
+        "PREVIEW_ERROR": "Could not create plot preview",
         "PREVIEW_ITEM": "Show Snow Profile",
         "SNOW_DENSITY": {
           "CYLINDER": "Cylinder",

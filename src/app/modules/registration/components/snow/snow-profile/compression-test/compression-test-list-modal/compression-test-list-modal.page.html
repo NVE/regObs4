@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
-    <app-compression-test-list [(tests)]="tests">
+    <app-compression-test-list [(tests)]="tests" [includeInSnowProfileAsDefault]="true">
     </app-compression-test-list>
     <ion-grid no-padding>
       <ion-row>

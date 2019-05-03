@@ -10,6 +10,7 @@ import { CompressionTestModalPage } from './compression-test-modal/compression-t
 export class CompressionTestListComponent implements OnInit {
 
   @Input() tests: Array<CompressionTestDto>;
+  @Input() includeInSnowProfileAsDefault = false;
   @Output() testsChange = new EventEmitter();
   private isOpen = false;
 
@@ -25,7 +26,8 @@ export class CompressionTestListComponent implements OnInit {
       const modal = await this.modalController.create({
         component: CompressionTestModalPage,
         componentProps: {
-          compressionTest: add ? undefined : (this.tests || [])[index]
+          compressionTest: add ? undefined : (this.tests || [])[index],
+          includeInSnowProfileAsDefault: this.includeInSnowProfileAsDefault,
         },
       });
       modal.present();

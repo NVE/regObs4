@@ -394,8 +394,10 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tester"
         },
+        "GENERATING_PREVIEW": "Genererer forhåndsvisning...",
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",
         "PREVIEW": "Forhåndsvisning",
+        "PREVIEW_ERROR": "Klarte ikke generere forhåndsvisning",
         "PREVIEW_ITEM": "Se snøprofil",
         "SNOW_DENSITY": {
           "CYLINDER": "Sylinder",
