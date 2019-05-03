@@ -1,19 +1,7 @@
-<ion-item [ngClass]="{'hasWarning': !isValid}">
+<ion-item class="item-label-stacked" (click)="openPicker()">
   <ion-label *ngIf="title" color="medium" position="stacked" text-uppercase>{{ title | translate}}</ion-label>
-  <ion-input type="number" [inputmode]="inputmode" [min]="min" [max]="max" [pattern]="pattern" [(ngModel)]="localValue"
-    placeholder="{{ placeholder | translate}}" (ionChange)="valueChanged()">
-  </ion-input>
+  <ion-label class="value-label" *ngIf="displayValue else ph">{{ displayValue }}</ion-label>
 </ion-item>
-<ion-item *ngIf="!isValid">
-  <ion-label color="danger" text-wrap>
-    <ng-container *ngIf="title">{{ title | translate}}</ng-container>
-    {{'VALIDATION.MUST_BE' | translate}}
-    <ng-container *ngIf="decimalPlaces === 0">{{'VALIDATION.INTEGER' | translate}} </ng-container>
-    <ng-container *ngIf="min !== undefined && max !== undefined">{{'VALIDATION.BETWEEN' | translate}} {{ min }}
-      {{'VALIDATION.AND' | translate }} {{ max }}</ng-container>
-    <ng-container *ngIf="min !== undefined && max === undefined">{{'VALIDATION.MIN' | translate}} {{ min }}
-    </ng-container>
-    <ng-container *ngIf="min === undefined && max !== undefined">{{'VALIDATION.MAX' | translate}} {{ max }}
-    </ng-container>
-  </ion-label>
-</ion-item>
+<ng-template #ph>
+  <ion-label color="medium" class="value-label">{{ placeholder | translate }}</ion-label>
+</ng-template>

@@ -53,8 +53,6 @@ export class ObservationListPage implements OnInit, OnDestroy {
     }
 
     refresh(cancelPromise: Promise<any>) {
-        this.loaded = false;
-        this.observations = undefined;
         return this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
     }
 

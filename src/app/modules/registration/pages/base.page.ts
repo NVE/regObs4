@@ -1,10 +1,9 @@
-import { OnInit, OnDestroy, QueryList, ViewChildren } from '@angular/core';
+import { OnInit, OnDestroy } from '@angular/core';
 import { RegistrationTid } from '../models/registrationTid.enum';
 import { Subscription } from 'rxjs';
 import { BasePageService } from './base-page-service';
 import { IRegistration } from '../models/registration.model';
 import { ActivatedRoute } from '@angular/router';
-import { NumericInputComponent } from '../components/numeric-input/numeric-input.component';
 
 export abstract class BasePage implements OnInit, OnDestroy {
 
@@ -14,7 +13,6 @@ export abstract class BasePage implements OnInit, OnDestroy {
     activatedRoute: ActivatedRoute;
 
     private subscription: Subscription;
-    @ViewChildren(NumericInputComponent) private numericInputs: QueryList<NumericInputComponent>;
 
     constructor(
         registrationTid: RegistrationTid,
@@ -62,10 +60,8 @@ export abstract class BasePage implements OnInit, OnDestroy {
     async canLeave() {
         // Check if implementation page has implemented custom isValid logic
         const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
-        // Check all numeric inputs
-        const allNumericInputsIsValid = this.numericInputs && !this.numericInputs.some((x) => !x.isValid);
         // Only return alert if page is not empty and invalid
-        if (!this.isEmpty() && !(valid && allNumericInputsIsValid)) {
+        if (!this.isEmpty() && !valid) {
             return this.basePageService.confirmLeave(this.registration, this.registrationTid,
                 () => this.onReset ? this.onReset() : null);
         }

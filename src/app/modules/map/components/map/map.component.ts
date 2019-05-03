@@ -82,7 +82,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       if (this.center === undefined || this.zoom === undefined) {
         const currentView = await this.mapService.mapView$.pipe(take(1)).toPromise();
-        if (currentView) {
+        if (currentView && currentView.center) {
           this.firstPositionUpdate = false;
           if (this.center === undefined) {
             this.options.center = currentView.center;

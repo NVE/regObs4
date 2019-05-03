@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WaterLevelMeasurementDto } from '../../../../regobs-api/models';
 import * as moment from 'moment';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { NumericInputComponent } from '../../numeric-input/numeric-input.component';
 import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
 
 @Component({
@@ -18,7 +17,6 @@ export class WaterLevelMeasurementComponent implements OnInit {
   @Input() dtObsTime: string;
   @Output() waterLevelMeasurementChange = new EventEmitter();
   maxDate: string;
-  @ViewChildren(NumericInputComponent) private numericInputs: QueryList<NumericInputComponent>;
   showDtMeasurementTimeError = false;
 
   get dateIsDifferentThanObsTime() {
@@ -31,21 +29,27 @@ export class WaterLevelMeasurementComponent implements OnInit {
     if (IsEmptyHelper.isEmpty(this.waterLevelMeasurement)) {
       return true;
     }
-    return this.waterLevelMeasurement.DtMeasurementTime && this.numericInputs && !this.numericInputs.some((x) => !x.isValid);
+    return this.waterLevelMeasurement.DtMeasurementTime;
   }
 
   constructor() { }
 
   ngOnInit() {
-    this.maxDate = moment().toISOString(true);
+    this.maxDate = this.getMaxDateForNow();
     if (!this.waterLevelMeasurement.Pictures) {
       this.waterLevelMeasurement.Pictures = [];
     }
   }
 
+  getMaxDateForNow() {
+    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
+    // Workaround is to set minutes to 59.
+    return moment().minutes(59).toISOString(true);
+  }
+
   setToNow() {
     const now = moment().toISOString(true);
-    this.maxDate = now;
+    this.maxDate = this.getMaxDateForNow();
     this.waterLevelMeasurement.DtMeasurementTime = now;
   }
 

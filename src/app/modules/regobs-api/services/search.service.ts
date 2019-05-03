@@ -11,6 +11,7 @@ import { RegistrationViewModel } from '../models/registration-view-model';
 import { SearchCriteriaRequestDto } from '../models/search-criteria-request-dto';
 import { SearchCountResponseDto } from '../models/search-count-response-dto';
 import { SearchSideBarDto } from '../models/search-side-bar-dto';
+import { SearchSideBarRequestDto } from '../models/search-side-bar-request-dto';
 import { AtAGlanceViewModel } from '../models/at-aglance-view-model';
 @Injectable({
   providedIn: 'root',
@@ -101,22 +102,16 @@ class SearchService extends __BaseService {
   }
 
   /**
-   * @param params The `SearchService.SearchSearchCriteriaParams` containing the following parameters:
-   *
-   * - `geoHazard`:
-   *
-   * - `langKey`:
-   *
+   * @param request undefined
    * @return OK
    */
-  SearchSearchCriteriaResponse(params: SearchService.SearchSearchCriteriaParams): __Observable<__StrictHttpResponse<SearchSideBarDto>> {
+  SearchSearchCriteriaResponse(request: SearchSideBarRequestDto): __Observable<__StrictHttpResponse<SearchSideBarDto>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
-    if (params.geoHazard != null) __params = __params.set('geoHazard', params.geoHazard.toString());
-    if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
+    __body = request;
     let req = new HttpRequest<any>(
-      'GET',
+      'POST',
       this.rootUrl + `/Search/SearchCriteria`,
       __body,
       {
@@ -133,16 +128,11 @@ class SearchService extends __BaseService {
     );
   }
   /**
-   * @param params The `SearchService.SearchSearchCriteriaParams` containing the following parameters:
-   *
-   * - `geoHazard`:
-   *
-   * - `langKey`:
-   *
+   * @param request undefined
    * @return OK
    */
-  SearchSearchCriteria(params: SearchService.SearchSearchCriteriaParams): __Observable<SearchSideBarDto> {
-    return this.SearchSearchCriteriaResponse(params).pipe(
+  SearchSearchCriteria(request: SearchSideBarRequestDto): __Observable<SearchSideBarDto> {
+    return this.SearchSearchCriteriaResponse(request).pipe(
       __map(_r => _r.body as SearchSideBarDto)
     );
   }
@@ -185,14 +175,6 @@ class SearchService extends __BaseService {
 }
 
 module SearchService {
-
-  /**
-   * Parameters for SearchSearchCriteria
-   */
-  export interface SearchSearchCriteriaParams {
-    geoHazard: 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 100 | 110 | 200 | 999;
-    langKey?: 1 | 2;
-  }
 }
 
 export { SearchService }

@@ -215,13 +215,13 @@ export class RegistrationService {
     const registrationsToSync = await this.getRegistrationsToSync().pipe(take(1)).toPromise();
     if (registrationsToSync.length > 0) {
       try {
-        this.dataLoadService.startLoading(dataLoadId, registrationsToSync.length);
+        await this.dataLoadService.startLoading(dataLoadId, registrationsToSync.length);
         let itemCompleted = 0;
         for (const registration of registrationsToSync) {
           if (!cancelled) {
             await this.syncRegistration(registration, userSettings, cancel);
             itemCompleted++;
-            this.dataLoadService.updateProgress(dataLoadId, itemCompleted, registrationsToSync.length);
+            await this.dataLoadService.updateProgress(dataLoadId, itemCompleted, registrationsToSync.length);
           } else {
             throw Error('Operation cancelled');
           }

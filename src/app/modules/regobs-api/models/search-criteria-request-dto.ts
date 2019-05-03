@@ -20,6 +20,7 @@ export interface SearchCriteriaRequestDto {
   ObserverCompetence?: Array<number>;
   ObserverNickName?: string;
   Countries?: Array<number>;
+  Counties?: Array<string>;
   TextSearch?: string;
   Radius?: WithinRadiusCriteriaDto;
   Extent?: WithinExtentCriteriaDto;

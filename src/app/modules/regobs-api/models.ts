@@ -1,9 +1,8 @@
 export { ObserverResponseDto } from './models/observer-response-dto';
 export { ObserverGroupDto } from './models/observer-group-dto';
 export { CreateAccountRequest } from './models/create-account-request';
-export { GeneralObservationViewModel } from './models/general-observation-view-model';
-export { UrlViewModel } from './models/url-view-model';
 export { GeneralObservationEditModel } from './models/general-observation-edit-model';
+export { UrlViewModel } from './models/url-view-model';
 export { HelptextDto } from './models/helptext-dto';
 export { KdvElementsResponseDto } from './models/kdv-elements-response-dto';
 export { KdvElement } from './models/kdv-element';
@@ -23,6 +22,7 @@ export { AvalancheEvaluationViewModel } from './models/avalanche-evaluation-view
 export { AvalancheObsViewModel } from './models/avalanche-obs-view-model';
 export { CompressionTestViewModel } from './models/compression-test-view-model';
 export { DangerObsViewModel } from './models/danger-obs-view-model';
+export { GeneralObservationViewModel } from './models/general-observation-view-model';
 export { IceCoverViewModel } from './models/ice-cover-view-model';
 export { IceThicknessViewModel } from './models/ice-thickness-view-model';
 export { IncidentViewModel } from './models/incident-view-model';
@@ -84,12 +84,14 @@ export { RegistrationTypeCriteriaDto } from './models/registration-type-criteria
 export { WithinRadiusCriteriaDto } from './models/within-radius-criteria-dto';
 export { WithinExtentCriteriaDto } from './models/within-extent-criteria-dto';
 export { SearchCountResponseDto } from './models/search-count-response-dto';
+export { SearchSideBarRequestDto } from './models/search-side-bar-request-dto';
 export { SearchSideBarDto } from './models/search-side-bar-dto';
 export { RegistrationTypeDto } from './models/registration-type-dto';
 export { ObserverCompetenceLevelDto } from './models/observer-competence-level-dto';
 export { AreasDto } from './models/areas-dto';
 export { RegistrationTypeSubTypeDto } from './models/registration-type-sub-type-dto';
 export { ForecastRegionDto } from './models/forecast-region-dto';
+export { CountyDto } from './models/county-dto';
 export { ForecastRegionSubRegionDto } from './models/forecast-region-sub-region-dto';
 export { AtAGlanceViewModel } from './models/at-aglance-view-model';
 export { GetTokenRequestDto } from './models/get-token-request-dto';

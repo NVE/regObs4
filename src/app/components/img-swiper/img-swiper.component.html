@@ -1,6 +1,7 @@
-<div class="slides-wrapper" *ngIf="show" [ngClass]="{'animated-background': (showSlider && !swiperLoaded) }">
+<div class="slides-wrapper" *ngIf="show"
+  [ngClass]="{'animated-background': (showSlider && !swiperLoaded), 'loaded': loaded }">
   <ion-slides *ngIf="showSlider && !recreateSwiper" [options]="slideOptions" [pager]="false"
-    [ngClass]="{'loaded': swiperLoaded}" (ionSlideTransitionEnd)="onSlideTransitionEnd()"
+    [ngClass]="{'loaded': loaded}" (ionSlideTransitionEnd)="onSlideTransitionEnd()"
     (ionSlidesDidLoad)="slidesLoaded($event)">
     <ion-slide *ngIf="location">
       <app-map-image [location]="location" (click)="onLocationClick()"></app-map-image>
@@ -12,7 +13,7 @@
   <app-offline-image *ngIf="showSingleImage" class="single" (click)="onImageClick(0, imgUrl[0])" [src]="imgUrl[0]">
   </app-offline-image>
   <app-map-image *ngIf="showSingleMap" class="single" [location]="location" (click)="onLocationClick()"></app-map-image>
-  <ion-label *ngIf="showLabels" [@fadeInOut]="state">
+  <ion-label *ngIf="showLabels" [ngClass]="{'loaded': loaded}">
     <span class="img-comment-header" *ngIf="showImageIndex">{{imageIndex}}/{{totalImages}}&nbsp;</span>
     <span [ngClass]="{'img-comment-header': comment }" *ngIf="header">{{ header | translate }}<ng-container
         *ngIf="comment">:&nbsp;

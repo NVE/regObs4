@@ -23,14 +23,10 @@
         <ion-label [color]="(!registration.request.AvalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
           position="stacked" text-uppercase>{{
           'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}</ion-label>
-        <!-- <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
+        <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
           doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
           display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.AvalancheObs.DtAvalancheTime"
           [max]="maxDate">
-        </ion-datetime> -->
-        <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
-          doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-          display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.AvalancheObs.DtAvalancheTime">
         </ion-datetime>
         <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium"
           (click)="setAvalancheTimeTimeToNow()">
@@ -85,10 +81,10 @@
       <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVAL_CAUSE" kdvKey="Snow_AvalCauseKDV"
         [(value)]="registration.request.AvalancheObs.AvalCauseTID"></app-kdv-dropdown>
       <app-numeric-input [(value)]="registration.request.AvalancheObs.FractureHeight"
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_HEIGTH" [min]="0" [max]="9999" [decimalPlaces]="0">
+        title="REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_HEIGTH" [min]="0" [max]="9999" suffix="cm" [decimalPlaces]="0">
       </app-numeric-input>
       <app-numeric-input [(value)]="registration.request.AvalancheObs.FractureWidth"
-        title="REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_WIDTH" [min]="0" [max]="99999" [decimalPlaces]="0">
+        title="REGISTRATION.SNOW.AVALANCHE_OBS.FRACTURE_WIDTH" [min]="0" [max]="99999" suffix="m" [decimalPlaces]="0">
       </app-numeric-input>
       <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_OBS.TRAJECTORY_NAME" [max]="100" [rows]="2"
         [(value)]="registration.request.AvalancheObs.Trajectory"></app-text-comment>

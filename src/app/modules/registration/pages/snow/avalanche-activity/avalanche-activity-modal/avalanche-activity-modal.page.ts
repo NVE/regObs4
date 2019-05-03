@@ -3,7 +3,6 @@ import { AvalancheActivityObs2Dto } from '../../../../../regobs-api/models';
 import { ModalController, AlertController } from '@ionic/angular';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import * as moment from 'moment';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-avalanche-activity-modal',
@@ -76,7 +75,7 @@ export class AvalancheActivityModalPage implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.maxDate = moment().toISOString();
+    this.maxDate = this.getMaxDateForNow();
     if (this.avalancheActivity) {
       this.avalancheActivityCopy = { ...this.avalancheActivity };
     } else {
@@ -95,6 +94,12 @@ export class AvalancheActivityModalPage implements OnInit {
     } else {
       this.startDate = moment(this.dtObsTime).startOf('day').toISOString(true);
     }
+  }
+
+  getMaxDateForNow() {
+    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
+    // Workaround is to set minutes to 59.
+    return moment().minutes(59).toISOString(true);
   }
 
   cancel() {

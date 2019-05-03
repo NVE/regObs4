@@ -71,7 +71,13 @@ export class AvalancheObsPage extends BasePage {
     if (!this.registration.request.Incident) {
       this.registration.request.Incident = {};
     }
-    this.maxDate = moment().toISOString(true);
+    this.maxDate = this.getMaxDateForNow();
+  }
+
+  getMaxDateForNow() {
+    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
+    // Workaround is to set minutes to 59.
+    return moment().minutes(59).toISOString(true);
   }
 
   async onReset() {

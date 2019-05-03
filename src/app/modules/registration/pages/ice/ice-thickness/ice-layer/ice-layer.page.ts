@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, QueryList, ViewChildren, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { IceThicknessLayerDto } from '../../../../../regobs-api/models';
-import { NumericInputComponent } from '../../../../components/numeric-input/numeric-input.component';
 
 @Component({
   selector: 'app-ice-layer',
@@ -10,10 +9,11 @@ import { NumericInputComponent } from '../../../../components/numeric-input/nume
 })
 export class IceLayerPage implements OnInit {
   @Input() iceThicknessLayer: IceThicknessLayerDto;
-  @ViewChildren(NumericInputComponent) private numericInputs: QueryList<NumericInputComponent>;
 
   isNew = false;
-  isValid = true;
+  get isValid() {
+    return this.layerCopy.IceLayerThickness !== undefined;
+  }
 
   layerCopy: IceThicknessLayerDto; // Using object copy so cancel does not change input object
 
@@ -26,12 +26,6 @@ export class IceLayerPage implements OnInit {
     } else {
       this.layerCopy = { ...this.iceThicknessLayer };
     }
-  }
-
-  valueChanged() {
-    this.ngZone.run(() => {
-      this.isValid = this.numericInputs && !this.numericInputs.some((x) => !x.isValid);
-    });
   }
 
   cancel() {

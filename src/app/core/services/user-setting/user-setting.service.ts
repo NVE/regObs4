@@ -76,7 +76,7 @@ export class UserSettingService implements OnReset {
   }
 
   initObservables() {
-    this._userSettingObservable = this.getUserSettingsAsObservable();
+    this._userSettingObservable = this.getUserSettingsFromDbAsObservable();
     this._currentGeoHazardObservable = this._userSettingObservable.pipe(
       map((val) => val.currentGeoHazard),
       distinctUntilChanged<GeoHazard[], string>((a, b) => a.localeCompare(b) === 0, (keySelector) => keySelector.join(',')),
@@ -149,12 +149,12 @@ export class UserSettingService implements OnReset {
     return this.userSettingObservable$.pipe(take(1)).toPromise();
   }
 
-  private getUserSettingsAsObservable(): Observable<UserSetting> {
+  private getUserSettingsFromDbAsObservable(): Observable<UserSetting> {
     return NanoSqlObservableHelper.toRxJS<UserSetting[]>(
       nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select')
         .listen()).pipe(
           map((val: UserSetting[]) => val.length > 0 ? val[0] : this.getDefaultSettings()),
-          shareReplay(1)
+          shareReplay(1),
         );
   }
 
@@ -165,8 +165,8 @@ export class UserSettingService implements OnReset {
   appOnReset(): void | Promise<any> {
   }
 
-  appOnResetComplete(): void | Promise<any> {
+  appOnResetComplete(): Promise<void | Promise<any>> {
     this.loggingService.debug(`App reset complete. Re-init observables.`, DEBUG_TAG);
-    this.initObservables();
+    return this.saveUserSettings(this.getDefaultSettings());
   }
 }
