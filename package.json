@@ -8,7 +8,7 @@
     "generate-swagger-api-module": "ng-swagger-gen -c ng-swagger-gen.json",
     "start": "ng serve",
     "prebuild": "npm run create-version-file",
-    "build": "npm run generate-swagger-api-module && ng build",
+    "build": "npm run generate-swagger-api-module && node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng build",
     "test": "ng test --watch=false --browsers=\"ChromeHeadless\" --code-coverage",
     "test-watch": "ng test --watch=true --browsers=\"ChromeHeadless\" --reporters=progress",
     "lint": "ng lint",
