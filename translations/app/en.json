@@ -1,0 +1,9 @@
+{
+    "config_ios": {
+        "NSLocationWhenInUseUsageDescription": "Location is used to show your position in the map and to set initial position when documenting observations",
+        "NSLocationAlwaysUsageDescription": "Location is used to show your position in the map and to set initial position when documenting observations",
+        "NSPhotoLibraryUsageDescription": "Add images to observations",
+        "NSPhotoLibraryAddUsageDescription": "Add images to observations",
+        "NSCameraUsageDescription": "Add images to observations"
+    }
+}
