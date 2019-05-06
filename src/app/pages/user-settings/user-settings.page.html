@@ -47,11 +47,10 @@
       <ion-item>
         <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
         <ion-text align-self-start>
-          <h3>{{version.version }} ({{ version.buildNumber }})</h3>
+          {{version.version }} ({{ version.buildNumber }})
         </ion-text>
-        <ion-text align-self-start color="medium">
-          <p class="small-text" no-margin margin-bottom>{{ version.revision }} - {{ version.date | formatDate | async }}
-          </p>
+        <ion-text class="small-text" align-self-start color="medium">
+          {{ version.revision }} - {{ version.date | formatDate | async }}
         </ion-text>
       </ion-item>
       <ion-item>

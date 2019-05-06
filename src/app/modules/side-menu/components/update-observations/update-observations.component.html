@@ -2,9 +2,9 @@
   <ion-label color="dark" position="stacked">{{'MENU.UPDATE_OBSERVATIONS' | translate}}</ion-label>
   <ng-container *ngIf="!isLoading else isLoadingTemplate">
     <ion-text align-self-start>
-      <p *ngIf="lastUpdated">
+      <ng-container *ngIf="lastUpdated">
         {{ lastUpdated | date:settings.dateFormats.angular.dateAndTime }}
-      </p>
+      </ng-container>
     </ion-text>
     <ion-button size="small" fill="clear" slot="end">
       <svg-icon src="/assets/icon/refresh.svg"></svg-icon>
@@ -13,9 +13,7 @@
 </ion-item>
 <ng-template #isLoadingTemplate>
   <ion-text align-self-start>
-    <p>
-      <ion-spinner name="dots"></ion-spinner>
-    </p>
+    <ion-spinner name="dots"></ion-spinner>
   </ion-text>
   <ion-button size="small" fill="clear" slot="end">
     {{'DIALOGS.CANCEL' | translate}}

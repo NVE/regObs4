@@ -178,6 +178,8 @@ ion-item {
         ion-text {
             &[align-self-start] {
                 margin-bottom: 10px;
+                margin-top: 10px;
+                min-height: 20px;
             }
         }
     }
