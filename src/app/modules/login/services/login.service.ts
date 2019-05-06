@@ -6,12 +6,13 @@ import { Observable, combineLatest } from 'rxjs';
 import { LoggedInUser } from '../models/logged-in-user.model';
 import { NanoSql } from '../../../../nanosql';
 import { map, take, switchMap, shareReplay } from 'rxjs/operators';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { ObserverResponseDto, ObserverGroupDto } from '../../regobs-api/models';
 import { nSQL } from '@nano-sql/core';
 import { NanoSqlObservableHelper } from '../../../core/helpers/nano-sql/nanoObserverToRxjs';
+import { LoginModalPage } from '../pages/modal-pages/login-modal/login-modal.page';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,7 @@ export class LoginService {
     private userSettingService: UserSettingService,
     private alertController: AlertController,
     private translateService: TranslateService,
+    private modalController: ModalController,
   ) {
     this._loggedInUserObservable = this.userSettingService.userSettingObservable$.pipe(switchMap((userSetting) =>
       combineLatest(this.getLoggedUserInAsObservable(userSetting.appMode))
@@ -110,7 +112,25 @@ export class LoginService {
   }
 
   async getLoggedInUser(showLoginModal = false): Promise<LoggedInUser> {
-    // TODO: Implement loginmodal if not logged in...
+    const loggedInUser = await this.getLoggedInUserAsPromise();
+    if (!loggedInUser.isLoggedIn && showLoginModal) {
+      const loginModal = await this.modalController.create({
+        component: LoginModalPage
+      });
+      loginModal.present();
+      const result = await loginModal.onDidDismiss();
+      if (result.data) {
+        const loggedInUserAfterModal = await this.getLoggedInUserAsPromise();
+        return loggedInUserAfterModal;
+      } else {
+        return loggedInUser;
+      }
+    } else {
+      return loggedInUser;
+    }
+  }
+
+  private getLoggedInUserAsPromise() {
     return this._loggedInUserObservable.pipe(take(1)).toPromise();
   }
 

@@ -5,6 +5,9 @@ import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-p
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
+import { StratProfileLayerHistoryModalPage } from '../strat-profile-layer-history-modal/strat-profile-layer-history-modal.page';
+import { LoginService } from '../../../../../../login/services/login.service';
+import { ObsLocation } from '../../../../../models/obs-location.model';
 
 @Component({
   selector: 'app-strat-profile-modal',
@@ -14,6 +17,7 @@ import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper
 export class StratProfileModalPage implements OnInit {
 
   @Input() profile: StratProfileDto;
+  @Input() obsLocation: ObsLocation;
 
   totalThickness: number;
 
@@ -23,7 +27,7 @@ export class StratProfileModalPage implements OnInit {
     return this.profile && this.profile.Layers && this.profile.Layers.length > 0;
   }
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController, private loginService: LoginService) { }
 
   ngOnInit() {
     this.calculate();
@@ -49,6 +53,29 @@ export class StratProfileModalPage implements OnInit {
   onLayerReorder(event: CustomEvent<ItemReorderEventDetail>) {
     this.profile.Layers = ArrayHelper.reorderList(this.profile.Layers, event.detail.from, event.detail.to);
     event.detail.complete();
+  }
+
+  async getPrevousUsedLayers() {
+    const loggedInUser = await this.loginService.getLoggedInUser(true);
+    if (loggedInUser && loggedInUser.isLoggedIn) {
+      if (!this.isOpen) {
+        this.isOpen = true;
+        const modal = await this.modalController.create({
+          component: StratProfileLayerHistoryModalPage,
+          componentProps: {
+            observerGuid: loggedInUser.user.Guid,
+            obsLocation: this.obsLocation,
+          }
+        });
+        modal.present();
+        const result = await modal.onDidDismiss();
+        this.isOpen = false;
+        if (result.data) {
+          this.profile.Layers = result.data;
+          this.calculate();
+        }
+      }
+    }
   }
 
   async addOrEditLayer(index: number, layer: StratProfileLayerDto) {

@@ -440,6 +440,7 @@
           "LAYER": "Lag",
           "MAX_GRAIN_SIZE": "Maks kornstørrelse (mm)",
           "MULTIPLE_LAYERS": "lagdelinger observert",
+          "NO_PROFILES_FOUND": "Ingen tidligere lagdelinger funnet",
           "ONE_LAYER": "lagdeling observert",
           "OTHER_PROFILE_DESCRIPTION": "Du kan velge å kopiere inn lagene fra en tidligere registrert profil blant siste 14 dager innen 100 km.",
           "OTHER_PROFILE_ITEM_TEXT": "Hent lagdeling fra annen profil",

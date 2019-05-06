@@ -440,6 +440,7 @@
           "LAYER": "Layer",
           "MAX_GRAIN_SIZE": "Max grain size (mm)",
           "MULTIPLE_LAYERS": "layers",
+          "NO_PROFILES_FOUND": "No layers from other profiles found",
           "ONE_LAYER": "layer",
           "OTHER_PROFILE_DESCRIPTION": "You can choose to copy the layers from a previously registered profile among the last 14 days within 100 km.",
           "OTHER_PROFILE_ITEM_TEXT": "Get layers from other profile",

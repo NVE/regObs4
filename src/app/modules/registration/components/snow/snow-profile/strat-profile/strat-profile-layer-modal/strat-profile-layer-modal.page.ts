@@ -67,7 +67,7 @@ export class StratProfileLayerModalPage implements OnInit {
       || this.layer.GrainSizeAvgMax > 0
       || this.layer.GrainFormSecondaryTID > 0
       || this.layer.CriticalLayerTID > 0
-      || this.layer.Comment !== undefined;
+      || !!this.layer.Comment;
   }
 
   ok(gotoIndex?: number) {

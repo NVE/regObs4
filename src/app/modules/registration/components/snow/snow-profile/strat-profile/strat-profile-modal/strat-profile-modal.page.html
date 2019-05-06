@@ -17,7 +17,7 @@
           {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.FROM_OTHER_PROFILE' | translate}}
         </ion-label>
       </ion-list-header>
-      <ion-item tabindex="0">
+      <ion-item tabindex="0" (click)="getPrevousUsedLayers()" (keyup.enter)="getPrevousUsedLayers()">
         <ion-icon color="dark" name="cloud-download" slot="start"></ion-icon>
         <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.OTHER_PROFILE_ITEM_TEXT' | translate }}</ion-label>
       </ion-item>
@@ -38,7 +38,7 @@
         <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
           <ion-item tabindex="0" (click)="addOrEditLayer(i, layer)" (keyup.enter)="addOrEditLayer(i, layer)"
             *ngFor="let layer of profile.Layers; let i = index">
-            <ion-label [color]="layer.CriticalLayerTID !== undefined ? 'danger' : 'dark'">
+            <ion-label [color]="layer.CriticalLayerTID > 0 ? 'danger' : 'dark'">
               <ng-container *ngIf="layer.Thickness !== undefined">
                 {{layer.Thickness | metersToCm}}cm
               </ng-container>

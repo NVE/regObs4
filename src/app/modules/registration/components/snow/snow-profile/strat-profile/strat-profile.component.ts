@@ -3,6 +3,7 @@ import { StratProfileDto } from '../../../../../regobs-api/models/strat-profile-
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { ModalController } from '@ionic/angular';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
+import { ObsLocation } from '../../../../models/obs-location.model';
 
 @Component({
   selector: 'app-strat-profile',
@@ -13,6 +14,7 @@ export class StratProfileComponent implements OnInit {
 
   @Input() profile: StratProfileDto;
   @Output() profileChange = new EventEmitter();
+  @Input() obsLocation: ObsLocation;
 
   private isOpen = false;
 
@@ -33,6 +35,7 @@ export class StratProfileComponent implements OnInit {
         component: StratProfileModalPage,
         componentProps: {
           profile: { ...this.profile },
+          obsLocation: this.obsLocation,
         }
       });
       modal.present();
