@@ -35,16 +35,7 @@
   </ion-button>
   <ng-container *ngIf="showAdvanced">
     <ion-list lines="full">
-      <ion-item>
-        <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.APPMODE" | translate }}</ion-label>
-        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.appMode"
-          interface="action-sheet" (ngModelChange)="updateSettings()">
-          <ion-select-option value="PROD">Regobs</ion-select-option>
-          <ion-select-option value="DEMO">Demo Regobs</ion-select-option>
-          <ion-select-option value="TEST">Test Regobs</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
+      <ion-item (click)="versionClick()">
         <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
         <ion-text align-self-start>
           {{version.version }} ({{ version.buildNumber }})
@@ -52,6 +43,15 @@
         <ion-text class="small-text" align-self-start color="medium">
           {{ version.revision }} - {{ version.date | formatDate | async }}
         </ion-text>
+      </ion-item>
+      <ion-item *ngIf="showAppMode">
+        <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.APPMODE" | translate }}</ion-label>
+        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.appMode"
+          interface="action-sheet" (ngModelChange)="updateSettings()">
+          <ion-select-option value="PROD">Regobs</ion-select-option>
+          <ion-select-option value="DEMO">Demo Regobs</ion-select-option>
+          <ion-select-option value="TEST">Test Regobs</ion-select-option>
+        </ion-select>
       </ion-item>
       <ion-item>
         <ion-label>

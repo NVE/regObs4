@@ -13,6 +13,7 @@ import { OfflineMapService } from '../../core/services/offline-map/offline-map.s
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
+import { AppMode } from '../../core/models/app-mode.enum';
 
 const DEBUG_TAG = 'UserSettingsPage';
 
@@ -30,6 +31,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   isUpdating = false;
   version: AppVersion;
   private subscriptions: Subscription[] = [];
+  showAppMode = false;
+  versionClicks = 0;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -46,9 +49,13 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private navController: NavController) { }
 
   async ngOnInit() {
+    this.versionClicks = 0;
     this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
+        if (!this.showAppMode && this.userSettings.appMode !== AppMode.Prod) {
+          this.showAppMode = true;
+        }
       });
     }));
     this.subscriptions.push(this.offlineMapService.getTilesCacheAsObservable().subscribe((tilesCache) => {
@@ -72,6 +79,13 @@ export class UserSettingsPage implements OnInit, OnDestroy {
       subscription.unsubscribe();
     }
     this.subscriptions = [];
+  }
+
+  versionClick() {
+    this.versionClicks++;
+    if (this.versionClicks >= 7) {
+      this.showAppMode = true;
+    }
   }
 
   async updateSettings() {
