@@ -43,7 +43,7 @@ export const settings = {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
                 webUrl: {
                     // tslint:disable-next-line:max-line-length
-                    no: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
+                    nb: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
                     // tslint:disable-next-line:max-line-length
                     en: 'http://www.varsom.no/en/avalanche-bulletins/forecast/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
                 },
@@ -53,7 +53,7 @@ export const settings = {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.6/api',
                 webUrl: {
                     // tslint:disable-next-line:max-line-length
-                    no: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
+                    nb: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
                     // tslint:disable-next-line:max-line-length
                     en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
                 },
@@ -63,7 +63,7 @@ export const settings = {
                 apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api',
                 webUrl: {
                     // tslint:disable-next-line:max-line-length
-                    no: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
+                    nb: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
                     // tslint:disable-next-line:max-line-length
                     en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
                 },
