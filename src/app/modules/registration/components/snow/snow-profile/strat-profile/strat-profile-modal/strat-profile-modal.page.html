@@ -49,7 +49,7 @@
                 {{layer.GrainFormPrimaryTID | kdvDescription: 'Snow_GrainFormKDV' | async}}
               </ng-container>
               <ng-container *ngIf="layer.GrainSizeAvg !== undefined">
-                {{layer.GrainSizeAvg * 100 }}mm
+                {{layer.GrainSizeAvg * 100 | number:'1.0-2' }}mm
               </ng-container>
               <ng-container *ngIf="layer.WetnessTID !== undefined">
                 {{layer.WetnessTID | kdvDescription: 'Snow_WetnessKDV' | async }}
