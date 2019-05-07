@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import { MapService } from '../../../map/services/map/map.service';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
-import { debounceTime, take, switchMap } from 'rxjs/operators';
+import { debounceTime, take, switchMap, filter } from 'rxjs/operators';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { Subscription } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
@@ -15,6 +15,24 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { ObsLocation } from '../../models/obs-location.model';
 import { IonInput } from '@ionic/angular';
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
+
+const defaultIcon = L.icon({
+  iconUrl: 'leaflet/marker-icon.png',
+  shadowUrl: 'leaflet/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41],
+});
+
+const previousUsedPlaceIcon = L.icon({
+  iconUrl: '/assets/icon/map/prev-used-place.svg',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  shadowUrl: 'leaflet/marker-shadow.png',
+  shadowSize: [41, 41],
+});
 
 @Component({
   selector: 'app-set-location-in-map',
@@ -50,6 +68,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   viewInfo: ViewInfo;
   isLoading = false;
   private subscriptions: Subscription[] = [];
+  private locations: ObsLocationsResponseDtoV2[] = [];
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
@@ -65,15 +84,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     private locationService: LocationService) { }
 
   async ngOnInit() {
-    const defaultIcon = L.icon({
-      iconUrl: 'leaflet/marker-icon.png',
-      shadowUrl: 'leaflet/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      tooltipAnchor: [16, -28],
-      shadowSize: [41, 41],
-    });
     L.Marker.prototype.options.icon = defaultIcon;
 
     const locationMarkerIcon = L.icon({
@@ -98,21 +108,33 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       }
     }
     this.updateMapViewInfo();
-
-    if (this.showPreviousUsedLocations) {
-      this.subscriptions.push(this.mapService.mapView$.pipe(debounceTime(1000)).
-        subscribe((mapView) => {
-          if (mapView.zoom > 7) { // Do not update when zoom level is too low, we get too much records
-            const range = Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2);
-            this.locationService.updateLocationWithinRadius(this.geoHazard, mapView.center.lat, mapView.center.lng, range);
-          }
-        }));
-    }
   }
 
   ngOnDestroy(): void {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
+    }
+  }
+
+  private getLocationsObservable() {
+    return this.mapService.mapView$
+      .pipe(filter((mapView) => mapView && mapView.center !== undefined && mapView.bounds !== undefined),
+        switchMap((mapView) => this.locationService.getLocationWithinRadiusObservable(
+          this.geoHazard,
+          mapView.center.lat,
+          mapView.center.lng,
+          Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2),
+        )));
+  }
+
+  private addLocationIfNotExists(loc: ObsLocationsResponseDtoV2) {
+    const existing = this.locations.some((location) => loc.Id === location.Id);
+    if (!existing) {
+      this.locations.push(loc);
+      const marker = L.marker(L.latLng(loc.LatLngObject.Latitude, loc.LatLngObject.Longitude),
+        { icon: previousUsedPlaceIcon })
+        .addTo(this.locationGroup);
+      marker.on('click', () => this.setToPrevouslyUsedLocation(loc));
     }
   }
 
@@ -131,24 +153,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.map.on('dragend', () => this.updateMapViewInfo());
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
 
-    const previousUsedPlaceIcon = L.icon({
-      iconUrl: '/assets/icon/map/prev-used-place.svg',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      shadowUrl: 'leaflet/marker-shadow.png',
-      shadowSize: [41, 41],
-    });
-
     if (this.showPreviousUsedLocations) {
-      this.subscriptions.push(this.locationService.getLocationsAsObservable(this.geoHazard)
+      this.subscriptions.push(this.getLocationsObservable()
         .subscribe((locations) => {
-          this.locationGroup.clearLayers();
-          for (const location of locations) {
-            const marker = L.marker(L.latLng(location.LatLngObject.Latitude, location.LatLngObject.Longitude),
-              { icon: previousUsedPlaceIcon })
-              .addTo(this.locationGroup);
-            marker.on('click', () => this.setToPrevouslyUsedLocation(location));
-          }
+          locations.forEach((loc) => this.addLocationIfNotExists(loc));
         }));
     }
 
