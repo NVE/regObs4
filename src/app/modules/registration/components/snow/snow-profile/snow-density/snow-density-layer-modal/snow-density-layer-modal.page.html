@@ -74,6 +74,9 @@
   </form>
 </ion-content>
 <ng-template #noCylinder>
+  <app-numeric-input [(value)]="layer.Depth" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.HEIGHT" [max]="999"
+    [min]="0" suffix="cm" [decimalPlaces]="2" (valueChange)="calculate()" [convertMetersToCm]="true">
+  </app-numeric-input>
   <app-numeric-input [(value)]="layer.Density" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.DENSITY" [max]="9999"
     [min]="0" suffix="kg/m³" [decimalPlaces]="3"></app-numeric-input>
 </ng-template>

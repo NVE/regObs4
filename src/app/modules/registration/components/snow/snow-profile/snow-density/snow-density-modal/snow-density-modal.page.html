@@ -58,7 +58,7 @@
               <ion-text *ngIf="layer.Density !== undefined">
                 {{ layer.Density | number:'1.0-2' }}kg/m³
               </ion-text>
-              <ion-text *ngIf="layer.Density !== undefined && layer.Depth !== undefined">
+              <ion-text *ngIf="useCylinder && layer.Density !== undefined && layer.Depth !== undefined">
                 ({{ getWaterEquivalent(layer.Density, layer.Depth) | number:'1.0-2' }}mm)
               </ion-text>
             </ion-label>
