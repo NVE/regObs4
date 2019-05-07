@@ -62,7 +62,6 @@ export class KdvService {
     const dataLoadId = this.getDataLoadId(appMode, language);
     await this.dataLoadService.startLoading(dataLoadId);
     try {
-      this.kdvApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
       const kdvElements = await ObservableHelper.toPromiseWithCancel(
         this.kdvApiService.KdvElementsGetKdvs({ langkey: language }), cancel);
       await NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode)

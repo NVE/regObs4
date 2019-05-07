@@ -44,7 +44,6 @@ export class LocationService {
       observerGuid: loggedInUser.isLoggedIn ? loggedInUser.user.Guid : null,
       returnCount: 10000, // If this is too small, delete locations no longer in result might clean up too much
     };
-    this.apiLocationService.rootUrl = settings.services.regObs.apiUrl[userSettings.appMode];
     const result = await this.apiLocationService.LocationWithinRadius(params).toPromise();
 
     this.saveLatestLocations(result, userSettings.appMode, geoHazard);

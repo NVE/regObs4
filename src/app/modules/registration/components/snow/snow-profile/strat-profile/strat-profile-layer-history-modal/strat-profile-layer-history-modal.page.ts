@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { SearchService } from '../../../../../../regobs-api/services';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { RegistrationViewModel, StratProfileLayerViewModel, StratProfileLayerDto } from '../../../../../../regobs-api/models';
-import { Observable } from 'rxjs';
+import { Observable, pipe } from 'rxjs';
 import { ObsLocation } from '../../../../../models/obs-location.model';
 import * as moment from 'moment';
 import { GeoHazard } from '../../../../../../../core/models/geo-hazard.enum';
@@ -31,24 +31,21 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
     private userSettingService: UserSettingService) { }
 
   ngOnInit() {
-    this.$previousUsedLayers = this.userSettingService.userSettingObservable$.pipe(switchMap((us) => {
-      this.searchService.rootUrl = settings.services.regObs.apiUrl[us.appMode];
-      return this.searchService.SearchSearch({
-        ObserverGuid: this.observerGuid,
-        FromDate: moment().subtract(14, 'days').startOf('day').toISOString(),
-        Radius: {
-          Position: {
-            Latitude: this.obsLocation.Latitude,
-            Longitude: this.obsLocation.Longitude,
-          },
-          Radius: 100000,
+    this.$previousUsedLayers = this.searchService.SearchSearch({
+      ObserverGuid: this.observerGuid,
+      FromDate: moment().subtract(14, 'days').startOf('day').toISOString(),
+      Radius: {
+        Position: {
+          Latitude: this.obsLocation.Latitude,
+          Longitude: this.obsLocation.Longitude,
         },
-        SelectedGeoHazards: [GeoHazard.Snow],
-        SelectedRegistrationTypes: [{
-          Id: RegistrationTid.SnowProfile2
-        }]
-      });
-    }), map((result) => this.getLayersFromSearchResult(result)), tap(() => {
+        Radius: 100000,
+      },
+      SelectedGeoHazards: [GeoHazard.Snow],
+      SelectedRegistrationTypes: [{
+        Id: RegistrationTid.SnowProfile2
+      }]
+    }).pipe(map((result) => this.getLayersFromSearchResult(result)), tap(() => {
       this.isLoading = false;
     }));
   }

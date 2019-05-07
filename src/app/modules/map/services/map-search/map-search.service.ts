@@ -179,14 +179,9 @@ export class MapSearchService {
   }
 
   getLocationNameNorway(latLng: L.LatLng, geoHazard: GeoHazard): Observable<LocationName> {
-    return this.userSettingService.appMode$.pipe(
-      switchMap((appMode) => {
-        this.locationService.rootUrl = settings.services.regObs.apiUrl[appMode];
-        return this.locationService.LocationGetName({ latitude: latLng.lat, longitude: latLng.lng, geoHazardId: geoHazard })
-          .pipe(map((result) =>
-            ({ name: result.Navn, adminName: result.Fylke })),
-            catchError(() => of(null)));
-      }));
+    return this.locationService.LocationGetName({ latitude: latLng.lat, longitude: latLng.lng, geoHazardId: geoHazard })
+      .pipe(map((result) => ({ name: result.Navn, adminName: result.Fylke })),
+        catchError(() => of(null)));
   }
 
   getSteepness(mapView: IMapView, isInNorway: boolean): Observable<number> {

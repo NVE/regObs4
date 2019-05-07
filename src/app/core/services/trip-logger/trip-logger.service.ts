@@ -79,7 +79,7 @@ export class TripLoggerService {
 
   startLegacyTrip(tripDto: CreateTripDto) {
     const legacyTrip: LegacyTrip = { id: 'legacytrip', timestamp: moment().unix(), request: tripDto };
-    return from(this.setTripServiceRootUrl())
+    return this.userSettingService.appMode$
       .pipe(
         switchMap((appMode) => this.tripService.TripPost(tripDto)
           .pipe(switchMap(() => from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode)
@@ -87,12 +87,6 @@ export class TripLoggerService {
           ))),
         switchMap(() => this.infoMessage(true))
       );
-  }
-
-  private async setTripServiceRootUrl() {
-    const userSetting = await this.userSettingService.getUserSettings();
-    this.tripService.rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
-    return userSetting.appMode;
   }
 
   stopLegacyTrip(showConfirm = true) {
@@ -147,7 +141,6 @@ export class TripLoggerService {
   }
 
   private async callStopLegacyTripApiAndDeleteFromDb() {
-    await this.setTripServiceRootUrl();
     const userSetting = await this.userSettingService.getUserSettings();
     const currentTrip = await this.getLegacyTripAsObservable().pipe(take(1)).toPromise();
     if (currentTrip) {

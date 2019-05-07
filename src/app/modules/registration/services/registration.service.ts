@@ -238,7 +238,7 @@ export class RegistrationService {
       if (registration.request) {
         this.cleanupRegistration(registration);
         registration.request.Email = userSetting.emailReceipt;
-        const createRegistrationResult = await this.postRegistration(userSetting.appMode, registration.request, cancel);
+        const createRegistrationResult = await this.postRegistration(registration.request, cancel);
         await this.observationService.updateObservationById(
           createRegistrationResult.RegId,
           userSetting.appMode,
@@ -311,8 +311,7 @@ export class RegistrationService {
       .pipe(map((items) => items.find((x) => x.id === id)));
   }
 
-  private postRegistration(appMode: AppMode, registration: RegobsApiModels.CreateRegistrationRequestDto, cancel?: Promise<void>) {
-    this.registrationApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
+  private postRegistration(registration: RegobsApiModels.CreateRegistrationRequestDto, cancel?: Promise<void>) {
     return ObservableHelper.toPromiseWithCancel(this.registrationApiService.RegistrationInsert(registration), cancel);
   }
 

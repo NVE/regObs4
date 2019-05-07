@@ -52,7 +52,6 @@ export class HelpTextService {
     const dataLoadId = this.getDataLoadId(appMode, language);
     await this.dataLoadService.startLoading(dataLoadId);
     try {
-      this.helptextApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
       const helpTexts = await ObservableHelper.toPromiseWithCancel(
         this.helptextApiService.HelptextGet(language), cancel);
       await NanoSql.getInstance(NanoSql.TABLES.HELP_TEXTS.name, appMode)

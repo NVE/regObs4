@@ -48,6 +48,8 @@ import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { KdvService } from './core/services/kdv/kdv.service';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ApiConfiguration } from './core/http-interceptor/api-configuration';
+import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configuration';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -95,6 +97,7 @@ export const APP_PROVIDERS = [
     Network,
     ScreenOrientation,
     API_INTERCEPTOR_PROVIDER,
+    { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
     { provide: ErrorHandler, useClass: AppErrorHandler },
     { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
     // Singleton services
