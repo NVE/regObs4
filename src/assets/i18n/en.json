@@ -274,6 +274,7 @@
       "COMMENT": "Description",
       "COMMENT_PLACEHOLDER": "Why did it happen? Did it go well? Could the situation have been avoided?",
       "DAMAGE_EXTENT": "Damage extent",
+      "IMAGE_PLACEHOLDER": "+ Add image description",
       "TITLE": "Accident / Incident"
     },
     "IN_CM": "In centimeter",

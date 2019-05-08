@@ -22,20 +22,18 @@
         <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.DIRT.LAND_SLIDE_OBS.POSITION' |
               translate}}</ion-label>
         <ion-text align-self-start text-wrap>
-          <p no-margin margin-bottom>
-            <ion-icon class="position-pin" color="medium" name="pin"></ion-icon>
-            <ng-container *ngIf="registration.request.LandSlideObs.StartLat else noPosition">
-              {{ registration.request.LandSlideObs.StartLat |
+          <ion-icon class="position-pin" color="medium" name="pin"></ion-icon>
+          <ng-container *ngIf="registration.request.LandSlideObs.StartLat else noPosition">
+            {{ registration.request.LandSlideObs.StartLat |
                           number:'0.3'
                           }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-              {{ registration.request.LandSlideObs.StartLong | number:'0.3'
+            {{ registration.request.LandSlideObs.StartLong | number:'0.3'
                           }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{ registration.request.LandSlideObs.StopLat |
                           number:'0.3'
                           }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-              {{ registration.request.LandSlideObs.StopLong | number:'0.3'
+            {{ registration.request.LandSlideObs.StopLong | number:'0.3'
                           }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
-            </ng-container>
-          </p>
+          </ng-container>
         </ion-text>
       </ion-item>
       <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">

@@ -274,6 +274,7 @@
       "COMMENT": "Beskrivelse",
       "COMMENT_PLACEHOLDER": "Hvorfor skjedde det? Gikk det bra? Kunne situasjonen vært unngått?",
       "DAMAGE_EXTENT": "Skadeomfang",
+      "IMAGE_PLACEHOLDER": "+ Legg til en beskrivelse av bildet",
       "TITLE": "Ulykke / hendelse"
     },
     "IN_CM": "I centimeter",

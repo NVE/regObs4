@@ -5,5 +5,15 @@
 
 ion-list {
     margin-bottom: 10px;
-    --images-padding-bottom: 0px;
+    --image-wrapper-padding-bottom: 0px;
+    --images-background: #fff;
+    --image-wrapper-margin-left: 16px;
+    --image-wrapper-margin-right: 16px;
+    --image-wrapper-background: var(--ion-background-color);
+    --image-comment-background: rgba(0,0,0,0);
+
+    app-picture-item {
+        --padding-top: 0px;
+        --padding-bottom: 0px;
+    }
 }

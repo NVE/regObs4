@@ -1,7 +1,7 @@
 <div class="images">
   <div class="image-wrapper" *ngFor="let image of imagesForCurrentRegistrationTid; let i = index">
     <app-base64-image [base64encodedImage]="image.PictureImageBase64"></app-base64-image>
-    <ion-fab slot="fixed" vertical="top" horizontal="end">
+    <ion-fab no-margin slot="fixed" vertical="top" horizontal="end">
       <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeImage(image)">
         <ion-icon name="close"></ion-icon>
       </ion-fab-button>
