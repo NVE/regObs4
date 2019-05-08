@@ -12,21 +12,24 @@
   <app-registration-content-wrapper *ngIf="registration && registration.request.Incident" [registration]="registration"
     [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <ion-item>
+      <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="registration.request.Incident.IncidentText">
+      </app-text-comment>
+      <ion-item-divider>
         <ion-label text-wrap>
           {{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }}
         </ion-label>
-      </ion-item>
-      <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="registration.request.Incident.IncidentText"></app-text-comment>
+      </ion-item-divider>
       <app-kdv-dropdown title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="{{ geoHazardName }}_ActivityInfluencedKDV"
         [(value)]="registration.request.Incident.ActivityInfluencedTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV" [(value)]="registration.request.Incident.DamageExtentTID"></app-kdv-dropdown>
+      <app-kdv-dropdown title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV"
+        [(value)]="registration.request.Incident.DamageExtentTID"></app-kdv-dropdown>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid">
+      </app-add-picture-item>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}
