@@ -137,7 +137,7 @@
         "RegistrationTID": 23,
         "GeoHazardTID": 10,
         "LangKey": 2,
-        "Text": "We have a function for ploting snowprofiles at regobs.no (web). It will soon come to the app.\n\n\nThe location of the snow profile must be representative of the avalanche problems to be assessed.\n  \nThe snow profile is carried out in the shadow side of the pit to avoid direct sunlight on the snow profile. Also, check the snow at the ground.\nIf you have any doubts about what kind of snow crystals you find in the profile, this table can help:\n\n![Symbol i snøprofil.](http://www.varsom.no/media/2098/kornform-og-hardhet.jpg =360x200\"Kornform og hardheit.\")"
+        "Text": "We have a function for ploting snowprofiles at regobs.no (web). It will soon come to the app.\n\n\nThe location of the snow profile must be representative of the avalanche problems to be assessed.\n  \nThe snow profile is carried out in the shadow side of the pit to avoid direct sunlight on the snow profile. Also, check the snow at the ground.\nIf you have any doubts about what kind of snow crystals you find in the profile, this table can help:\n\n![Symbol i snøprofil.](http://www.varsom.no/media/2098/kornform-og-hardhet.jpg \"Kornform og hardheit.\")"
     },
     {
         "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
@@ -165,7 +165,7 @@
         "RegistrationTID": 31,
         "GeoHazardTID": 10,
         "LangKey": 2,
-        "Text": "\nAn **avalanche danger assessment** is a summary and conclusion of all tests and observations you have submitted.\n\n* How is the snow stability? Refer to tests you have done.\n* What is the expected development? Why?\n* Do you agree in todays forecast? This is a good feedback to the forecasters.\n\nWe use the ADAM-matrix to decide the danger level. Use the parameters fram your avalanche problems into the matrix.\n\n![ADAM.](http://www.varsom.no/media/2001/adamnov18.jpg =350x200 \"\")"
+        "Text": "\nAn **avalanche danger assessment** is a summary and conclusion of all tests and observations you have submitted.\n\n* How is the snow stability? Refer to tests you have done.\n* What is the expected development? Why?\n* Do you agree in todays forecast? This is a good feedback to the forecasters.\n\nWe use the ADAM-matrix to decide the danger level. Use the parameters fram your avalanche problems into the matrix.\n\n![ADAM.](http://www.varsom.no/media/2001/adamnov18.jpg \"\")"
     },
     {
         "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
@@ -180,6 +180,13 @@
         "GeoHazardTID": 10,
         "LangKey": 2,
         "Text": "Tell us how many and what kind of avalanches you can see.\n\nFor a quick observations of avlanches: use *danger signs*. \n\nUse this form if you will provide us with more information about the avalanche(s). \nYou can also use this form if you will register observations of avlanches from yesterday and the day before.\nTry to give as good information about size, distribution, exposed height, exposition as you can.\nCheck *No avalanche activity observed*  if you have been out in the field and seen a lot of avlancheterrain without seeing any avlanches"
+    },
+    {
+        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
+        "RegistrationTID": 36,
+        "GeoHazardTID": 10,
+        "LangKey": 2,
+        "Text": "The location of the snow profile must be representative of the avalanche problems to be assessed.\n\nThe snow profile is carried out in the shadow side of the pit to avoid direct sunlight on the snow profile. Also, check the snow at the ground. If you have any doubts about what kind of snow crystals you find in the profile, this table can help:\n\n![Symbol i snøprofil.](http://www.varsom.no/media/2098/kornform-og-hardhet.jpg =360x200\"Kornform og hardheit.\")\n\nTo register layering, tap *Add Layering*.  Specify the thickness of the layer, hardness, grain shape, size and moisture. If you do not get enough options in the drop-down menues, press *Show more choices on this layer*.  You will then have more choices (ie all sub-forms of grain types) in all the drop-down menus, and you will also be able to specify secondary grain shape and maximum grain size.  When you're done with a layer, add another layer over or under what you worked with. If you have forgotten a layer, add it to the top or bottom and \"drag\" it to the right place. The drawing of the snow profile comes up when you press Save"
     },
     {
         "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
