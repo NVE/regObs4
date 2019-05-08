@@ -34,8 +34,8 @@ export class SummaryItemService {
         href: `/registration/obs-location`,
         queryParams: { geoHazard: registration.geoHazard },
         title: 'REGISTRATION.OBS_LOCATION.TITLE',
-        subTitle: registration.request.ObsLocation ? registration.request.ObsLocation.LocationName
-          || registration.calculatedLocationName || '' : '',
+        subTitle: registration.request.ObsLocation ? (registration.request.ObsLocation.LocationName
+          || registration.request.ObsLocation.LocationDescription) : '',
         hasData: !IsEmptyHelper.isEmpty(registration.request.ObsLocation),
       },
       {

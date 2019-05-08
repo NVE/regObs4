@@ -1,13 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { StratProfileDto, StratProfileLayerDto } from '../../../../../../regobs-api/models';
+import { StratProfileDto, StratProfileLayerDto, ObsLocationDto } from '../../../../../../regobs-api/models';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 import { StratProfileLayerHistoryModalPage } from '../strat-profile-layer-history-modal/strat-profile-layer-history-modal.page';
 import { LoginService } from '../../../../../../login/services/login.service';
-import { ObsLocation } from '../../../../../models/obs-location.model';
 
 @Component({
   selector: 'app-strat-profile-modal',
@@ -17,7 +16,7 @@ import { ObsLocation } from '../../../../../models/obs-location.model';
 export class StratProfileModalPage implements OnInit {
 
   @Input() profile: StratProfileDto;
-  @Input() obsLocation: ObsLocation;
+  @Input() obsLocation: ObsLocationDto;
 
   totalThickness: number;
 

@@ -47,8 +47,8 @@ export class SyncItemComponent implements OnInit, OnDestroy {
   }
 
   getLocationName(reg: IRegistration) {
-    return reg.request.ObsLocation ? reg.request.ObsLocation.LocationName
-      || reg.calculatedLocationName || '' : '';
+    return reg.request.ObsLocation ? (reg.request.ObsLocation.LocationName
+      || reg.request.ObsLocation.LocationDescription) : '';
   }
 
 }

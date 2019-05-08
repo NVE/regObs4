@@ -2,9 +2,13 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SearchService } from '../../../../../../regobs-api/services';
 import { map, tap, switchMap } from 'rxjs/operators';
-import { RegistrationViewModel, StratProfileLayerViewModel, StratProfileLayerDto } from '../../../../../../regobs-api/models';
+import {
+  RegistrationViewModel,
+  StratProfileLayerViewModel,
+  StratProfileLayerDto,
+  ObsLocationDto
+} from '../../../../../../regobs-api/models';
 import { Observable, pipe } from 'rxjs';
-import { ObsLocation } from '../../../../../models/obs-location.model';
 import * as moment from 'moment';
 import { GeoHazard } from '../../../../../../../core/models/geo-hazard.enum';
 import { RegistrationTid } from '../../../../../models/registrationTid.enum';
@@ -19,7 +23,7 @@ import { settings } from '../../../../../../../../settings';
 export class StratProfileLayerHistoryModalPage implements OnInit {
 
   @Input() observerGuid: string;
-  @Input() obsLocation: ObsLocation;
+  @Input() obsLocation: ObsLocationDto;
 
   isLoading = true;
 

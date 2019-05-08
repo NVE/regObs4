@@ -9,6 +9,5 @@ export interface IRegistration {
     error?: { status: number, message: string };
     retryCount?: number;
     status: RegistrationStatus;
-    calculatedLocationName?: string;
     request: CreateRegistrationRequestDto;
 }

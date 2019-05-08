@@ -12,7 +12,6 @@ import { LocationService } from '../../../../core/services/location/location.ser
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { ViewInfo } from '../../../map/services/map-search/view-info.model';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
-import { ObsLocation } from '../../models/obs-location.model';
 import { IonInput } from '@ionic/angular';
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 
@@ -52,7 +51,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() fromLocationText = 'REGISTRATION.OBS_LOCATION.CURRENT_LOCATION';
   @Input() locationTitle = 'REGISTRATION.OBS_LOCATION.TITLE';
   @Input() selectedLocation: ObsLocationsResponseDtoV2;
-  @Output() selectedLocationChange = new EventEmitter<ObsLocationsResponseDtoV2>();
   @Output() mapReady = new EventEmitter<L.Map>();
   @Input() showPolyline = true;
   @Input() showFromMarkerInDetails = true;
@@ -234,6 +232,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         });
+      } else {
+        this.updatePathAndDistance();
       }
     }
   }
@@ -281,7 +281,12 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   confirmLocation() {
-    const obsLocation: ObsLocation = {
+    const obsLocation = this.getLocation();
+    this.locationSet.emit(obsLocation);
+  }
+
+  getLocation(): ObsLocationDto {
+    const obsLocation: ObsLocationDto = {
       Latitude: this.locationMarker.getLatLng().lat,
       Longitude: this.locationMarker.getLatLng().lng,
       Uncertainty: 0,
@@ -292,24 +297,26 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       obsLocation.LocationName = this.selectedLocation.Name;
     } else if (this.editLocationName && this.locationName && this.locationName.length > 0) {
       obsLocation.LocationName = this.locationName.substring(0, 60);
-    } else if (this.viewInfo && this.viewInfo.location) {
-      obsLocation.calculatedLocationName = this.getLocationName(this.viewInfo.location);
+    }
+    if (this.viewInfo && this.viewInfo.location) {
+      obsLocation.LocationDescription = this.getLocationName(this.viewInfo.location);
     }
     if (this.followMode && this.userposition) {
       obsLocation.UTMSourceTID = UtmSource.GPS;
       obsLocation.Uncertainty = Math.round(this.userposition.coords.accuracy);
     }
-
-    this.locationSet.emit(obsLocation);
+    return obsLocation;
   }
 
   editLocation() {
-    this.editLocationName = true;
-    setTimeout(() => {
-      if (this.editLocationNameInput) {
-        this.editLocationNameInput.setFocus();
-      }
-    }, 50);
+    if (this.canEditLocationName && !(this.selectedLocation && this.selectedLocation.Id)) {
+      this.editLocationName = true;
+      setTimeout(() => {
+        if (this.editLocationNameInput) {
+          this.editLocationNameInput.setFocus();
+        }
+      }, 50);
+    }
   }
 
   onLocationEditComplete() {

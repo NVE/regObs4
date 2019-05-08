@@ -41,22 +41,20 @@
       <ion-item detail="true" (click)="setAvalanchePosition()">
         <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_OBS.POSITION' |
               translate}}</ion-label>
-        <ion-text align-self-start text-wrap>
-          <p no-margin margin-bottom>
-            <ion-icon class="position-pin" color="medium" name="pin"></ion-icon>
-            <ng-container *ngIf="registration.request.AvalancheObs.StartLat else noPosition">
-              {{
+        <ion-text color="medium" align-self-start text-wrap>
+          <ion-icon class="position-pin" color="medium" name="pin"></ion-icon>
+          <ng-container *ngIf="registration.request.AvalancheObs.StartLat else noPosition">
+            {{
                 registration.request.AvalancheObs.StartLat |
                 number:'0.3'
                 }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-              {{ registration.request.AvalancheObs.StartLong | number:'0.3'
+            {{ registration.request.AvalancheObs.StartLong | number:'0.3'
                 }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{ registration.request.AvalancheObs.StopLat |
                 number:'0.3'
                 }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-              {{ registration.request.AvalancheObs.StopLong | number:'0.3'
+            {{ registration.request.AvalancheObs.StopLong | number:'0.3'
                 }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
-            </ng-container>
-          </p>
+          </ng-container>
         </ion-text>
       </ion-item>
       <ion-item>
