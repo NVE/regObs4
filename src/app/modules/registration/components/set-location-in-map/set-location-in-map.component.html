@@ -48,6 +48,7 @@
                 <ion-row class="padding-bottom">
                   <ion-col size="12" no-padding class="padding-right">
                     <ion-grid class="arrow-box" (click)="editLocation()">
+                      <ion-icon class="edit-icon" name="create" *ngIf="canEditLocationName"></ion-icon>
                       <ion-row>
                         <ion-col no-padding>
                           <ion-label class="detail-header" no-margin text-uppercase>{{ locationTitle
@@ -105,7 +106,7 @@
 </ng-template>
 <ng-template #viewInfoTemplate>
   <ion-row>
-    <ion-col size="10" no-padding>
+    <ion-col no-padding>
       <ng-container *ngIf="!isLoading">
         <ng-container *ngIf="viewInfo && viewInfo.location">
           <ion-label class="detail-obs-info" no-margin>
@@ -118,9 +119,6 @@
       <ng-container *ngIf="isLoading">
         <ion-spinner color="dark" name="dots"></ion-spinner>
       </ng-container>
-    </ion-col>
-    <ion-col size="2">
-      <ion-icon name="create" *ngIf="canEditLocationName"></ion-icon>
     </ion-col>
   </ion-row>
 </ng-template>

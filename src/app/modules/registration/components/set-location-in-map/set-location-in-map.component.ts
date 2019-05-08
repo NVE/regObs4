@@ -54,7 +54,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Output() mapReady = new EventEmitter<L.Map>();
   @Input() showPolyline = true;
   @Input() showFromMarkerInDetails = true;
-  @Input() canEditLocationName = false;
+  @Input() allowEditLocationName = false;
   @Input() isSaveDisabled = false;
 
   private map: L.Map;
@@ -73,6 +73,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   locationName: string;
 
   @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
+
+  get canEditLocationName() {
+    return this.allowEditLocationName && !(this.selectedLocation && this.selectedLocation.Id);
+  }
 
   constructor(
     private mapService: MapService,
@@ -309,7 +313,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   editLocation() {
-    if (this.canEditLocationName && !(this.selectedLocation && this.selectedLocation.Id)) {
+    if (this.canEditLocationName) {
       this.editLocationName = true;
       setTimeout(() => {
         if (this.editLocationNameInput) {
