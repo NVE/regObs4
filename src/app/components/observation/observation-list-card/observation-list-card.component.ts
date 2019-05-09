@@ -22,6 +22,9 @@ import { ExternalLinkService } from '../../../core/services/external-link/extern
 import * as utils from '@nano-sql/core/lib/utilities';
 import * as L from 'leaflet';
 import { ModalMapImagePage } from '../../../modules/map/pages/modal-map-image/modal-map-image.page';
+import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
+import { AppEventCategory } from '../../../modules/analytics/enums/app-event-category.enum';
+import { AppEventAction } from '../../../modules/analytics/enums/app-event-action.enum';
 // import { ObsCardHeightService } from '../../../core/services/obs-card-height/obs-card-height.service';
 
 @Component({
@@ -61,6 +64,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     private userSettingService: UserSettingService,
     private socialSharing: SocialSharing,
     private cdr: ChangeDetectorRef,
+    private analyticService: AnalyticService,
   ) { }
 
   async ngOnInit() {
@@ -184,10 +188,14 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   async openWeb() {
-    this.externalLinkService.openExternalLink(this.getRegistrationUrl());
+    const url = this.getRegistrationUrl();
+    this.analyticService.trackEvent(AppEventCategory.Observations, AppEventAction.Click, url, this.obs.RegID);
+    this.externalLinkService.openExternalLink(url);
   }
 
   async share() {
-    this.socialSharing.share(null, null, null, this.getRegistrationUrl());
+    const url = this.getRegistrationUrl();
+    this.analyticService.trackEvent(AppEventCategory.Observations, AppEventAction.Share, url, this.obs.RegID);
+    this.socialSharing.share(null, null, null, url);
   }
 }

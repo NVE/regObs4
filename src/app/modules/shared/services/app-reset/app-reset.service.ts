@@ -22,6 +22,6 @@ export class AppResetService {
     await this.dbHelperService.resetDb((table, _) => {
       this.loggingService.log(`Error reset table ${table}`, null, LogLevel.Warning, DEBUG_TAG);
     });
-    await Promise.all(this.services.map(s => Promise.resolve(s.appOnResetComplete())));
+    await Promise.all(this.services.map(s => Promise.resolve((s.appOnResetComplete ? s.appOnResetComplete() : true))));
   }
 }

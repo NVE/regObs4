@@ -15,7 +15,11 @@ import { Subject, Subscription } from 'rxjs';
 import { map, switchMap, distinctUntilChanged, pairwise, filter, take, debounceTime } from 'rxjs/operators';
 import { OfflineMapService } from '../offline-map/offline-map.service';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
+import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
+import { LangKey } from '../../models/langKey';
+import { GeoHazard } from '../../models/geo-hazard.enum';
 
+import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
 const DEBUG_TAG = 'DataMarshallService';
 
 @Injectable({
@@ -48,6 +52,7 @@ export class DataMarshallService implements OnReset {
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
     private offlineMapService: OfflineMapService,
+    private analyticService: AnalyticService,
   ) {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
   }
@@ -64,11 +69,26 @@ export class DataMarshallService implements OnReset {
         this.helpTextService.updateHelpTexts();
         this.loggingService.debug('AppMode or Language has changed. Update kdv elements and help texts.', DEBUG_TAG);
       }));
-      this.subscriptions.push(this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(() => {
+      this.subscriptions.push(this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, langKey, geoHazards]) => {
         this.loggingService.debug('AppMode, Language or CurrentGeoHazard has changed. Update observations and warnings.', DEBUG_TAG);
+        this.analyticService.trackDimension(AppCustomDimension.language, LangKey[langKey]);
+        this.analyticService.trackDimension(AppCustomDimension.appMode, appMode);
+        this.analyticService.trackDimension(AppCustomDimension.geoHazard, geoHazards.map((gh) => GeoHazard[gh]).join(','));
         this.updateObservations();
         this.warningService.updateWarnings();
       }));
+      this.subscriptions.push(this.userSettingService.showMapCenter$.subscribe((showMapCenter) => {
+        this.analyticService.trackDimension(AppCustomDimension.showMapCenter, showMapCenter.toString());
+      }));
+      this.subscriptions.push(this.userSettingService.userSettingObservable$
+        .pipe(map((userSetting) => userSetting.topoMap), distinctUntilChanged()).subscribe((topoMap) => {
+          this.analyticService.trackDimension(AppCustomDimension.topoMap, topoMap);
+        }));
+      this.subscriptions.push(this.userSettingService.supportTiles$
+        .pipe(map((st) => st.filter((x) => x.enabled).map((x) => x.name).join(','))
+          , distinctUntilChanged()).subscribe((supportMap) => {
+            this.analyticService.trackDimension(AppCustomDimension.supportMap, supportMap);
+          }));
       this.subscriptions.push(this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user)));
       this.subscriptions.push(this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode)));
 

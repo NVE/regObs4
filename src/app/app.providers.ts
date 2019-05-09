@@ -43,7 +43,6 @@ import { SentryService } from './modules/shared/services/logging/sentry.service'
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { environment } from '../environments/environment';
 import { MapSearchService } from './modules/map/services/map-search/map-search.service';
-import { AnalyticService } from './core/services/analytic/analytic.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { KdvService } from './core/services/kdv/kdv.service';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
@@ -100,19 +99,6 @@ export const APP_PROVIDERS = [
     { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
     { provide: ErrorHandler, useClass: AppErrorHandler },
     { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
-    // Singleton services
-    UserSettingService,
-    MapService,
-    MapSearchService,
-    OfflineMapService,
-    WarningService,
-    LoginService,
-    DataMarshallService,
-    DbHelperService,
-    FullscreenService,
-    AnalyticService,
-    KdvService,
-    // ObsCardHeightService,
 
     // Interface implementations
     { provide: 'OnReset', useClass: DataMarshallService, multi: true },

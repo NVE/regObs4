@@ -20,6 +20,7 @@ import { LegalTermsModalPageModule } from './pages/modal-pages/legal-terms-modal
 import { MarkdownModule } from 'ngx-markdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SideMenuModule } from './modules/side-menu/side-menu.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -54,6 +55,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     RegobsApiModule,
     LegalTermsModalPageModule,
     SideMenuModule,
+    AnalyticsModule.forRoot(),
   ],
   providers: APP_PROVIDERS,
   bootstrap: [AppComponent],

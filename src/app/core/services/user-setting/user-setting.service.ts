@@ -71,8 +71,29 @@ export class UserSettingService implements OnReset {
     return this._showObservationsObservable;
   }
 
+  get supportTiles$() {
+    return this.userSettingObservable$
+      .pipe(map((us) => this.getSupportTilesOptions(us)));
+  }
+
   constructor(private translate: TranslateService, private loggingService: LoggingService) {
     this.initObservables();
+  }
+
+  getSupportTilesOptions(us: UserSetting) {
+    const supportTilesForCurrentGeoHazard = settings.map.tiles.supportTiles
+      .filter((setting) => us.currentGeoHazard.indexOf(setting.geoHazardId) >= 0);
+    return supportTilesForCurrentGeoHazard.map((st) => {
+      const usSupportTile = us.supportTiles.find((usTiles) => usTiles.name === st.name);
+      if (usSupportTile) {
+        return {
+          ...st,
+          opacity: usSupportTile.opacity,
+          enabled: usSupportTile.enabled,
+        };
+      }
+      return st;
+    });
   }
 
   initObservables() {

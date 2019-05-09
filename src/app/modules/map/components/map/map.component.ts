@@ -257,25 +257,21 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         topoTilesLayer.addTo(this.tilesLayer);
       }
 
-      for (const supportTile of settings.map.tiles.supportTiles) {
-        const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
-        if (userSetting.currentGeoHazard.indexOf(supportTile.geoHazardId) >= 0
-          && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
-          const supportMapTileLayer = new RegObsTileLayer(
-            supportTile.name,
-            supportTile.url,
-            {
-              ...this.getTileLayerDefaultOptions(userSetting),
-              updateInterval: 600,
-              keepBuffer: 0,
-              updateWhenIdle: true,
-              minZoom: settings.map.tiles.minZoomSupportMaps,
-              bounds: <any>settings.map.tiles.supportTilesBounds,
-            }
-          );
-          supportMapTileLayer.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
-          supportMapTileLayer.addTo(this.tilesLayer);
-        }
+      for (const supportTile of this.userSettingService.getSupportTilesOptions(userSetting)) {
+        const supportMapTileLayer = new RegObsTileLayer(
+          supportTile.name,
+          supportTile.url,
+          {
+            ...this.getTileLayerDefaultOptions(userSetting),
+            updateInterval: 600,
+            keepBuffer: 0,
+            updateWhenIdle: true,
+            minZoom: settings.map.tiles.minZoomSupportMaps,
+            bounds: <any>settings.map.tiles.supportTilesBounds,
+          }
+        );
+        supportMapTileLayer.setOpacity(supportTile.opacity);
+        supportMapTileLayer.addTo(this.tilesLayer);
       }
     });
   }

@@ -13,7 +13,6 @@ import { OfflineImageService } from './core/services/offline-image/offline-image
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
 import { Observable } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
-import { AnalyticService } from './core/services/analytic/analytic.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
@@ -44,7 +43,6 @@ export class AppComponent {
     private keyboard: Keyboard,
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
-    private analyticService: AnalyticService,
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
   ) {
@@ -64,7 +62,6 @@ export class AppComponent {
       await this.dbHelperService.init();
       const userSettings = await this.userSettings.getUserSettings();
       this.loggingService.configureLogging(userSettings.appMode);
-      this.analyticService.init();
       this.translate.use(LangKey[userSettings.language]);
       this.statusBar.styleLightContent();
       this.statusBar.backgroundColorByHexString('#99044962');
