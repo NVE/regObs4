@@ -17,7 +17,7 @@
         </ion-label>
       </ion-list-header>
       <app-numeric-input [(value)]="layer.Thickness" title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
-        [min]="0" suffix="cm" [decimalPlaces]="2" [convertMetersToCm]="true">
+        [min]="0" suffix="cm" [decimalPlaces]="2" [convertRatio]="100">
       </app-numeric-input>
       <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS" kdvKey="Snow_HardnessKDV"
         [(value)]="layer.HardnessTID" [filter]="hardnessFilter"></app-kdv-dropdown>

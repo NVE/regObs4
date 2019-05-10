@@ -55,7 +55,7 @@ export class SnowDensityModalPage implements OnInit {
           layer: layer !== undefined ? { ...layer } : undefined,
           useCylinder: this.useCylinder,
           cylinderDiameterInM: this.profile.CylinderDiameter,
-          tareWeightInG: this.profile.TareWeight,
+          tareWeight: this.profile.TareWeight,
           index,
         }
       });
@@ -87,7 +87,7 @@ export class SnowDensityModalPage implements OnInit {
 
   private isEmpty(snowDensityLayer: DensityProfileLayerDto) {
     return this.useCylinder ? (
-      snowDensityLayer.Depth === undefined &&
+      snowDensityLayer.Thickness === undefined &&
       snowDensityLayer.Weight === undefined) :
       (snowDensityLayer.Density === undefined);
   }
@@ -116,7 +116,7 @@ export class SnowDensityModalPage implements OnInit {
       this.profile.Layers.forEach((layer: DensityProfileLayerDto) => {
         layer.Density = HydrologyHelper.calculateDensity(
           layer.Weight,
-          layer.Depth,
+          layer.Thickness,
           this.profile.TareWeight,
           this.profile.CylinderDiameter);
       });

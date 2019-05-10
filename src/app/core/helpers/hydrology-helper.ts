@@ -4,12 +4,12 @@ export class HydrologyHelper {
     static isEmpty(obj: Object | Array<Object | Array<Object>>) {
     }
 
-    static calculateDensity(weightInG: number, heightInM: number, tareWeightInG: number, cylinderDiameterInM: number) {
+    static calculateDensity(weightInKg: number, heightInM: number, tareWeightInKg: number, cylinderDiameterInM: number) {
         if (!NumberHelper.isNumeric(cylinderDiameterInM) || cylinderDiameterInM <= 0) {
             return 0;
         }
         const r = cylinderDiameterInM / 2.0;
-        const totalWeight = ((weightInG || 0) - (tareWeightInG || 0));
+        const totalWeight = ((weightInKg || 0) - (tareWeightInKg || 0));
         if (totalWeight <= 0) {
             return 0;
         }
@@ -17,9 +17,8 @@ export class HydrologyHelper {
         if (heightInMeter <= 0) {
             return 0;
         }
-        const weightInKg = totalWeight / 1000.0;
         const volume = Math.PI * r * r * heightInMeter;
-        return weightInKg / volume;
+        return totalWeight / volume;
     }
 
     static calculateWaterEquivalent(density: number, heightInMeter: number) {

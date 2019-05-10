@@ -13,7 +13,7 @@ export class SnowDensityLayerModalPage implements OnInit {
   @Input() layer: DensityProfileLayerDto;
   @Input() useCylinder = true;
   @Input() cylinderDiameterInM: number;
-  @Input() tareWeightInG: number;
+  @Input() tareWeight: number;
   @Input() index: number;
   showDelete = false;
 
@@ -44,8 +44,8 @@ export class SnowDensityLayerModalPage implements OnInit {
     if (this.useCylinder) {
       this.layer.Density = HydrologyHelper.calculateDensity(
         this.layer.Weight,
-        this.layer.Depth,
-        this.tareWeightInG,
+        this.layer.Thickness,
+        this.tareWeight,
         this.cylinderDiameterInM);
     }
   }

@@ -17,11 +17,12 @@
         </ion-label>
       </ion-list-header>
       <ng-container *ngIf="useCylinder else noCylinder">
-        <app-numeric-input [(value)]="layer.Depth" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.HEIGHT"
-          [max]="999" [min]="0" suffix="cm" [decimalPlaces]="2" (valueChange)="calculate()" [convertMetersToCm]="true">
+        <app-numeric-input [(value)]="layer.Thickness" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.HEIGHT"
+          [max]="999" [min]="0" suffix="cm" [decimalPlaces]="2" (valueChange)="calculate()" [convertRatio]="100">
         </app-numeric-input>
         <app-numeric-input [(value)]="layer.Weight" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.WEIGHT"
-          [max]="9999" [min]="0" suffix="g" [decimalPlaces]="2" (valueChange)="calculate()"></app-numeric-input>
+          [max]="9999" [min]="0" [convertRatio]="1000" suffix="g" [decimalPlaces]="2" (valueChange)="calculate()">
+        </app-numeric-input>
         <ion-item>
           <ion-label position="stacked" color="medium" text-uppercase>
             {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE' | translate}}
@@ -34,8 +35,8 @@
           <ion-label position="stacked" color="medium" text-uppercase>
             {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.WATER_EQUIVALENT' | translate}}
           </ion-label>
-          <ion-text align-self-start *ngIf="layer.Density && layer.Depth">
-            {{ getWaterEquivalent(layer.Density, layer.Depth) | number:'1.0-2' }} mm
+          <ion-text align-self-start *ngIf="layer.Density && layer.Thickness">
+            {{ getWaterEquivalent(layer.Density, layer.Thickness) | number:'1.0-2' }} mm
           </ion-text>
         </ion-item>
       </ng-container>
@@ -74,8 +75,8 @@
   </form>
 </ion-content>
 <ng-template #noCylinder>
-  <app-numeric-input [(value)]="layer.Depth" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.HEIGHT" [max]="999"
-    [min]="0" suffix="cm" [decimalPlaces]="2" (valueChange)="calculate()" [convertMetersToCm]="true">
+  <app-numeric-input [(value)]="layer.Thickness" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.HEIGHT" [max]="999"
+    [min]="0" suffix="cm" [decimalPlaces]="2" (valueChange)="calculate()" [convertRatio]="100">
   </app-numeric-input>
   <app-numeric-input [(value)]="layer.Density" title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.DENSITY" [max]="9999"
     [min]="0" suffix="kg/m³" [decimalPlaces]="3"></app-numeric-input>
