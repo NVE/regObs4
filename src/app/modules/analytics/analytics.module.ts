@@ -28,6 +28,6 @@ export class AnalyticsModule {
     }
 }
 
-function initializeAnalyticService(analyticService: AnalyticService) {
+export function initializeAnalyticService(analyticService: AnalyticService) {
     return () => analyticService.init();
 }
