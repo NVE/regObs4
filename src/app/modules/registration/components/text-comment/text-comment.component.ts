@@ -15,10 +15,6 @@ export class TextCommentComponent implements OnInit {
   @Input() disabled = false;
   @Input() max = 1024;
 
-  get isValid() {
-    return !this.value || (this.value.length <= this.max);
-  }
-
   constructor() { }
 
   ngOnInit() {

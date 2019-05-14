@@ -4,9 +4,3 @@
     [rows]="rows" [(ngModel)]="value" [autoGrow]="true" (ngModelChange)="valueChange.emit($event)"
     placeholder="{{ placeholder | translate}}"></ion-textarea>
 </ion-item>
-<ion-item *ngIf="!isValid">
-  <ion-label color="danger" text-wrap>
-    {{ title | translate }} {{'VALIDATION.MUST_BE' }} {{'VALIDATION.MAX'| translate}} {{ max }}
-    {{'VALIDATION.CHARACTERS' | translate }}
-  </ion-label>
-</ion-item>

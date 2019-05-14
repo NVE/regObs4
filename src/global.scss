@@ -309,6 +309,10 @@ ion-toggle {
         transform: scale(var(--ion-toggle-size, 0.75));
 }
 
+.native-textarea {
+    min-height: 55px;
+}
+
 .numeric-input-modal {
     .modal-wrapper {
         --height: 470px;
