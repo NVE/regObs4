@@ -19,8 +19,6 @@ import { RouterModule } from '@angular/router';
 import { RefreshWithCancelComponent } from '../../components/refresh-with-cancel/refresh-with-cancel.component';
 import { SummaryComponent } from '../../components/observation/summary/summary.component';
 import { HeaderColorDirective } from '../../directives/header-color.directive';
-import { InputPatternFilterDirective } from '../../directives/input-pattern-filter.directive';
-import { AutoResizeDirective } from '../../directives/auto-resize.directive';
 import { MapModule } from '../map/map.module';
 import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SelectComponent } from './components/input/select/select.component';
@@ -39,7 +37,6 @@ import { SelectComponent } from './components/input/select/select.component';
     ],
     declarations: [
         ShadowCssDirective,
-        AutoResizeDirective,
         AddMenuComponent,
         OfflineImageComponent,
         ExternalLinkComponent,
@@ -54,7 +51,6 @@ import { SelectComponent } from './components/input/select/select.component';
         RefreshWithCancelComponent,
         SummaryComponent,
         HeaderColorDirective,
-        InputPatternFilterDirective,
         SelectComponent,
     ],
     exports: [
@@ -65,7 +61,6 @@ import { SelectComponent } from './components/input/select/select.component';
         TranslateModule,
         RouterModule,
         ShadowCssDirective,
-        AutoResizeDirective,
         AngularSvgIconModule,
         AddMenuComponent,
         OfflineImageComponent,
@@ -81,7 +76,6 @@ import { SelectComponent } from './components/input/select/select.component';
         RefreshWithCancelComponent,
         SummaryComponent,
         HeaderColorDirective,
-        InputPatternFilterDirective,
         SelectComponent,
     ]
 })
