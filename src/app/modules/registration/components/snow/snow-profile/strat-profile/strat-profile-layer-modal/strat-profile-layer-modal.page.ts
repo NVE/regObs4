@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { StratProfileLayerDto } from '../../../../../../regobs-api/models';
+import { StratProfileLayerDto, KdvElement } from '../../../../../../regobs-api/models';
 import { TranslateService } from '@ngx-translate/core';
+import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
 
 const basicHardnessValues = [2, 6, 10, 14, 18, 21];
 const basicGrainFormValues = [1, 14, 17, 22, 26, 32, 36, 40, 41];
@@ -17,33 +18,33 @@ export class StratProfileLayerModalPage implements OnInit {
   @Input() layer: StratProfileLayerDto;
   @Input() index: number;
 
+  grainSizeInterfaceOptions: any;
   showDelete = false;
   showMore = false;
   hardnessFilter: (id: number) => boolean;
   grainFormFilter: (id: number) => boolean;
   wetnessFilter: (id: number) => boolean;
 
-  grainSizes: { value: number, text: string }[] = [
-    { value: .001, text: '.1' },
-    { value: .003, text: '.3' },
-    { value: .005, text: '.5' },
-    { value: .01, text: '1' },
-    { value: .015, text: '1.5' },
-    { value: .02, text: '2' },
-    { value: .025, text: '2.5' },
-    { value: .03, text: '3' },
-    { value: .035, text: '3.5' },
-    { value: .04, text: '4' },
-    { value: .045, text: '4.5' },
-    { value: .05, text: '5' },
-    { value: .055, text: '5.5' },
-    { value: .06, text: '6' },
-    { value: .08, text: '8' },
-    { value: .10, text: '10' },
-    { value: undefined, text: '' },
+  grainSizeOptions: SelectOption[] = [
+    { id: .001, text: '.1' },
+    { id: .003, text: '.3' },
+    { id: .005, text: '.5' },
+    { id: .01, text: '1' },
+    { id: .015, text: '1.5' },
+    { id: .02, text: '2' },
+    { id: .025, text: '2.5' },
+    { id: .03, text: '3' },
+    { id: .035, text: '3.5' },
+    { id: .04, text: '4' },
+    { id: .045, text: '4.5' },
+    { id: .05, text: '5' },
+    { id: .055, text: '5.5' },
+    { id: .06, text: '6' },
+    { id: .08, text: '8' },
+    { id: .10, text: '10' },
   ];
 
-  grainSizeInterfaceOptions: any;
+  getIconFunc = (kdvElement: KdvElement) => `md-grainform-${((kdvElement || {}).Name || '').toLowerCase()}`;
 
   constructor(private modalController: ModalController, private translateService: TranslateService) { }
 

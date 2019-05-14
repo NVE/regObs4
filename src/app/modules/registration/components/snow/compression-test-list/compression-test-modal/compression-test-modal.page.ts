@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { CompressionTestDto } from '../../../../../regobs-api/models';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
+import { SelectOption } from '../../../../../shared/components/input/select/select-option.model';
 
 @Component({
   selector: 'app-compression-test-modal',
@@ -14,7 +15,7 @@ export class CompressionTestModalPage implements OnInit {
   @Input() includeInSnowProfileAsDefault = false;
 
   showDelete = false;
-  tapsArray = [];
+  tapsArray: SelectOption[] = [];
 
   get isValid() {
     const clone = { ...this.compressionTest };
@@ -26,7 +27,10 @@ export class CompressionTestModalPage implements OnInit {
 
   ngOnInit() {
     for (let i = 1; i <= 30; i++) {
-      this.tapsArray.push(i);
+      this.tapsArray.push({
+        id: i,
+        text: i.toString(),
+      });
     }
     if (!this.compressionTest) {
       this.compressionTest = {};

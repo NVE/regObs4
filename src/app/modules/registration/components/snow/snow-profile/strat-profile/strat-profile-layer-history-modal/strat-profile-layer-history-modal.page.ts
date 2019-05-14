@@ -85,7 +85,9 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
       if (
         reg.SnowProfile2 !== undefined &&
         reg.SnowProfile2.StratProfile !== undefined &&
+        reg.SnowProfile2.StratProfile !== null &&
         reg.SnowProfile2.StratProfile.Layers !== undefined &&
+        reg.SnowProfile2.StratProfile.Layers !== null &&
         reg.SnowProfile2.StratProfile.Layers.length > 0) {
         return {
           id: reg.RegID,

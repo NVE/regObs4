@@ -10,7 +10,6 @@ import { MapModule } from '../map/map.module';
 import { Base64ImageComponent } from './components/base64-image/base64-image.component';
 import { SyncItemComponent } from './components/sync-item/sync-item.component';
 import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
-import { KdvDropdownComponent } from './components/kdv-dropdown/kdv-dropdown.component';
 import { AddWebUrlItemComponent } from './components/add-web-url-item/add-web-url-item.component';
 import { ModalSaveOrDeleteButtonsComponent } from './components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
 import { ExposedHeightComponent } from './components/snow/exposed-height/exposed-height.component';
@@ -23,6 +22,7 @@ import { NumericInputComponent } from './components/numeric-input/numeric-input.
 import { NumericInputModalPageModule } from './pages/modal-pages/numeric-input-modal/numeric-input-modal.module';
 import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
 import { CompressionTestListComponent } from './components/snow/compression-test-list/compression-test-list.component';
+import { KdvSelectComponent } from './components/kdv-select/kdv-select.component';
 
 @NgModule({
     imports: [
@@ -44,7 +44,6 @@ import { CompressionTestListComponent } from './components/snow/compression-test
         SyncItemComponent,
         KdvDescriptionPipe,
         MetersToCmPipe,
-        KdvDropdownComponent,
         AddWebUrlItemComponent,
         ModalSaveOrDeleteButtonsComponent,
         ExposedHeightComponent,
@@ -56,6 +55,7 @@ import { CompressionTestListComponent } from './components/snow/compression-test
         NumericInputComponent,
         NumericInputModalPageModule,
         CompressionTestListComponent,
+        KdvSelectComponent,
     ],
     declarations: [
         SaveAndGoBackButtonComponent,
@@ -68,7 +68,6 @@ import { CompressionTestListComponent } from './components/snow/compression-test
         SyncItemComponent,
         KdvDescriptionPipe,
         MetersToCmPipe,
-        KdvDropdownComponent,
         AddWebUrlItemComponent,
         ModalSaveOrDeleteButtonsComponent,
         ExposedHeightComponent,
@@ -78,6 +77,7 @@ import { CompressionTestListComponent } from './components/snow/compression-test
         YesNoSelectComponent,
         NumericInputComponent,
         CompressionTestListComponent,
+        KdvSelectComponent,
     ],
 })
 export class SharedComponentsModule { }

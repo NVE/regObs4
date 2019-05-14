@@ -36,16 +36,16 @@
       </ion-select>
     </ion-item>
     <ng-container *ngIf="!noAvalancheActivity">
-      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.HOW_MANY_AVALANCHES" kdvKey="Snow_EstimatedNumKDV"
-        [(value)]="avalancheActivityCopy.EstimatedNumTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE" kdvKey="Snow_AvalancheExtKDV"
-        [(value)]="avalancheActivityCopy.AvalancheExtTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TRIGGER" kdvKey="Snow_AvalTriggerSimpleKDV"
-        [(value)]="avalancheActivityCopy.AvalTriggerSimpleTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE" kdvKey="Snow_DestructiveSizeKDV"
-        [(value)]="avalancheActivityCopy.DestructiveSizeTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION" kdvKey="Snow_AvalPropagationKDV"
-        [(value)]="avalancheActivityCopy.AvalPropagationTID"></app-kdv-dropdown>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_ACTIVITY.HOW_MANY_AVALANCHES" kdvKey="Snow_EstimatedNumKDV"
+        [(value)]="avalancheActivityCopy.EstimatedNumTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_TYPE" kdvKey="Snow_AvalancheExtKDV"
+        [(value)]="avalancheActivityCopy.AvalancheExtTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.AVALANCHE_TRIGGER" kdvKey="Snow_AvalTriggerSimpleKDV"
+        [(value)]="avalancheActivityCopy.AvalTriggerSimpleTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_OBS.DESTRUCTIVE_SIZE" kdvKey="Snow_DestructiveSizeKDV"
+        [(value)]="avalancheActivityCopy.DestructiveSizeTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.PROPAGATION" kdvKey="Snow_AvalPropagationKDV"
+        [(value)]="avalancheActivityCopy.AvalPropagationTID"></app-kdv-select>
       <app-exposed-height [(exposedHeightComboTID)]="avalancheActivityCopy.ExposedHeightComboTID"
         [(exposedHight1)]="avalancheActivityCopy.ExposedHeight1"
         [(exposedHight2)]="avalancheActivityCopy.ExposedHeight2"></app-exposed-height>

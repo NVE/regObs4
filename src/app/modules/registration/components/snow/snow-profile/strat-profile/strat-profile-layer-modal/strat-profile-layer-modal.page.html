@@ -19,23 +19,21 @@
       <app-numeric-input [(value)]="layer.Thickness" title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.THICKNESS"
         [min]="0" suffix="cm" [decimalPlaces]="2" [convertRatio]="100">
       </app-numeric-input>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS" kdvKey="Snow_HardnessKDV"
-        [(value)]="layer.HardnessTID" [filter]="hardnessFilter"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FORM" kdvKey="Snow_GrainFormKDV"
-        [(value)]="layer.GrainFormPrimaryTID" [filter]="grainFormFilter">
-      </app-kdv-dropdown>
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS" kdvKey="Snow_HardnessKDV"
+        [(value)]="layer.HardnessTID" [filter]="hardnessFilter"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FORM" kdvKey="Snow_GrainFormKDV"
+        [(value)]="layer.GrainFormPrimaryTID" [filter]="grainFormFilter" [getIconFunc]="getIconFunc">
+      </app-kdv-select>
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>
           {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE' | translate }}</ion-label>
-        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="layer.GrainSizeAvg" name="GrainSizeAvg"
-          interface="action-sheet" [interfaceOptions]="grainSizeInterfaceOptions">
-          <ion-select-option [value]="grainSize.value" *ngFor="let grainSize of grainSizes">
-            {{ grainSize.text | translate }}</ion-select-option>
-        </ion-select>
+        <app-select [(selectedValue)]="layer.GrainSizeAvg" [options]="grainSizeOptions"
+          title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE">
+        </app-select>
       </ion-item>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.WETNESS" kdvKey="Snow_WetnessKDV"
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.WETNESS" kdvKey="Snow_WetnessKDV"
         [(value)]="layer.WetnessTID" [filter]="wetnessFilter">
-      </app-kdv-dropdown>
+      </app-kdv-select>
     </ion-list>
     <ion-button (click)="toggleShowMore()" fill="clear" expand="full">
       <ion-icon slot="start" [name]="showMore ? 'ios-arrow-up' : 'ios-arrow-down'"></ion-icon>
@@ -45,24 +43,22 @@
       </ng-container>
     </ion-button>
     <ion-list lines="full" *ngIf="showMore">
-      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS_BOTTOM" kdvKey="Snow_HardnessKDV"
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.HARDNESS_BOTTOM" kdvKey="Snow_HardnessKDV"
         [(value)]="layer.HardnessBottomTID">
-      </app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FROM_SECONDARY"
-        kdvKey="Snow_GrainFormKDV" [(value)]="layer.GrainFormSecondaryTID">
-      </app-kdv-dropdown>
+      </app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.GRAIN_FROM_SECONDARY"
+        kdvKey="Snow_GrainFormKDV" [(value)]="layer.GrainFormSecondaryTID" [getIconFunc]="getIconFunc">
+      </app-kdv-select>
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>
           {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE' | translate }}</ion-label>
-        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="layer.GrainSizeAvgMax"
-          interface="action-sheet" [interfaceOptions]="grainSizeInterfaceOptions" name="GrainSizeAvgMax">
-          <ion-select-option [value]="grainSize.value" *ngFor="let grainSize of grainSizes">
-            {{ grainSize.text | translate }}</ion-select-option>
-        </ion-select>
+        <app-select [(selectedValue)]="layer.GrainSizeAvgMax" [options]="grainSizeOptions"
+          title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE">
+        </app-select>
       </ion-item>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.CRITICAL_LAYER"
-        kdvKey="Snow_CriticalLayerKDV" [(value)]="layer.CriticalLayerTID">
-      </app-kdv-dropdown>
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.CRITICAL_LAYER" kdvKey="Snow_CriticalLayerKDV"
+        [(value)]="layer.CriticalLayerTID">
+      </app-kdv-select>
       <app-text-comment title="DIALOGS.COMMENT" [(value)]="layer.Comment"></app-text-comment>
     </ion-list>
     <ion-grid no-padding>

@@ -17,8 +17,8 @@
           {{ 'REGISTRATION.SNOW.WEATHER.TITLE' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.WEATHER.PRECIPITATION" kdvKey="Snow_PrecipitationKDV"
-        [(value)]="registration.request.WeatherObservation.PrecipitationTID"></app-kdv-dropdown>
+      <app-kdv-select title="REGISTRATION.SNOW.WEATHER.PRECIPITATION" kdvKey="Snow_PrecipitationKDV"
+        [(value)]="registration.request.WeatherObservation.PrecipitationTID"></app-kdv-select>
       <app-numeric-input [(value)]="registration.request.WeatherObservation.AirTemperature"
         title="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE" [min]="-150" [max]="60" suffix="°C"
         placeholder="REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_PLACEHOLDER" [decimalPlaces]="2"></app-numeric-input>
@@ -31,13 +31,8 @@
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_DIRECTION'
           | translate}}</ion-label>
-        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}"
-          [(ngModel)]="registration.request.WeatherObservation.WindDirection" interface="action-sheet">
-          <ng-container *ngFor="let windDirection of windDirectionArray">
-            <ion-select-option [value]="windDirection.val">{{
-              windDirection.name | translate }}</ion-select-option>
-          </ng-container>
-        </ion-select>
+        <app-select [(selectedValue)]="registration.request.WeatherObservation.WindDirection"
+          [options]="windDirectionOptions" title="REGISTRATION.SNOW.WEATHER.WIND_DIRECTION"></app-select>
       </ion-item>
       <ion-list-header text-uppercase>
         <ion-label>

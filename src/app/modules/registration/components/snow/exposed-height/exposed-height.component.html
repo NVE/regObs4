@@ -27,18 +27,12 @@
 <ion-item *ngIf="exposedHeightTop || exposedHeightMiddle || exposedHeightBottom">
   <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1'
     | translate}}</ion-label>
-  <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" (ionChange)="applyChanges()" [(ngModel)]="exposedHight1"
-    interface="action-sheet">
-    <ion-select-option [value]="height" *ngFor="let height of heightArray">
-      {{ height }}</ion-select-option>
-  </ion-select>
+  <app-select [(selectedValue)]="exposedHight1" (selectedValueChange)="applyChanges()" [options]="heightArray"
+    title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1"></app-select>
 </ion-item>
 <ion-item *ngIf="sholdUseExposedHight2()">
   <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2'
     | translate}}</ion-label>
-  <ion-select *ngIf="lowerHeightArray" (ionChange)="applyChanges()" [(ngModel)]="exposedHight2"
-    interface="action-sheet">
-    <ion-select-option [value]="height" *ngFor="let height of lowerHeightArray">
-      {{ height }}</ion-select-option>
-  </ion-select>
+  <app-select [(selectedValue)]="exposedHight2" (selectedValueChange)="applyChanges()" [options]="lowerHeightArray"
+    title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2"></app-select>
 </ion-item>

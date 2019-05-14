@@ -154,7 +154,7 @@ export class RegistrationService {
     return RegistrationTid[registrationTid];
   }
 
-  getType(registrationTid: RegistrationTid) {
+  getType(registrationTid: RegistrationTid): 'array' | 'object' {
     const arrays = [
       RegistrationTid.DangerObs,
       RegistrationTid.AvalancheActivityObs,

@@ -19,10 +19,10 @@
           {{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }}
         </ion-label>
       </ion-item-divider>
-      <app-kdv-dropdown title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="{{ geoHazardName }}_ActivityInfluencedKDV"
-        [(value)]="registration.request.Incident.ActivityInfluencedTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV"
-        [(value)]="registration.request.Incident.DamageExtentTID"></app-kdv-dropdown>
+      <app-kdv-select title="REGISTRATION.INCIDENT.ACTIVITY" kdvKey="{{ geoHazardName }}_ActivityInfluencedKDV"
+        [(value)]="registration.request.Incident.ActivityInfluencedTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV"
+        [(value)]="registration.request.Incident.DamageExtentTID"></app-kdv-select>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}

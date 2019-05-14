@@ -74,19 +74,19 @@
           {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
         </ion-label>
       </ion-item>
-      <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_TYPE" kdvKey="Dirt_LandSlideKDV"
-        [(value)]="registration.request.LandSlideObs.LandSlideTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DESTRUCTIVE_SIZE" kdvKey="Dirt_LandSlideSizeKDV"
-        [(value)]="registration.request.LandSlideObs.LandSlideSizeTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.AVAL_TRIGGER" kdvKey="Dirt_LandSlideTriggerKDV"
-        [(value)]="registration.request.LandSlideObs.LandSlideTriggerTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DIRT_ACTIVITY_INFLUENCED"
+      <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_TYPE" kdvKey="Dirt_LandSlideKDV"
+        [(value)]="registration.request.LandSlideObs.LandSlideTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DESTRUCTIVE_SIZE" kdvKey="Dirt_LandSlideSizeKDV"
+        [(value)]="registration.request.LandSlideObs.LandSlideSizeTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.AVAL_TRIGGER" kdvKey="Dirt_LandSlideTriggerKDV"
+        [(value)]="registration.request.LandSlideObs.LandSlideTriggerTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DIRT_ACTIVITY_INFLUENCED"
         kdvKey="Dirt_ActivityInfluencedKDV" [(value)]="registration.request.LandSlideObs.ActivityInfluencedTID">
-      </app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DAMAGE_EXTENT" kdvKey="DamageExtentKDV"
-        [(value)]="registration.request.LandSlideObs.DamageExtentTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DIRT_FORECAST_ACCURATE" kdvKey="ForecastAccurateKDV"
-        [(value)]="registration.request.LandSlideObs.ForecastAccurateTID"></app-kdv-dropdown>
+      </app-kdv-select>
+      <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DAMAGE_EXTENT" kdvKey="DamageExtentKDV"
+        [(value)]="registration.request.LandSlideObs.DamageExtentTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DIRT_FORECAST_ACCURATE" kdvKey="ForecastAccurateKDV"
+        [(value)]="registration.request.LandSlideObs.ForecastAccurateTID"></app-kdv-select>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}

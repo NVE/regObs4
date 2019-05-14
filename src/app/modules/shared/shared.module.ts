@@ -23,6 +23,7 @@ import { InputPatternFilterDirective } from '../../directives/input-pattern-filt
 import { AutoResizeDirective } from '../../directives/auto-resize.directive';
 import { MapModule } from '../map/map.module';
 import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
+import { SelectComponent } from './components/input/select/select.component';
 
 
 @NgModule({
@@ -54,6 +55,7 @@ import { ObservationSkeletonComponent } from '../../components/observation/obser
         SummaryComponent,
         HeaderColorDirective,
         InputPatternFilterDirective,
+        SelectComponent,
     ],
     exports: [
         CommonModule,
@@ -80,6 +82,7 @@ import { ObservationSkeletonComponent } from '../../components/observation/obser
         SummaryComponent,
         HeaderColorDirective,
         InputPatternFilterDirective,
+        SelectComponent,
     ]
 })
 export class SharedModule { }

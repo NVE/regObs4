@@ -1,0 +1,6 @@
+<ion-item>
+  <ion-label [color]="labelColor" position="stacked" text-uppercase>{{ title | translate}}</ion-label>
+  <app-select [(selectedValue)]="value" [options]="selectOptions" [disabled]="disabled" [title]="title"
+    [showReset]="showResetButton" (selectedValueChange)="valueChange.emit($event)">
+  </app-select>
+</ion-item>

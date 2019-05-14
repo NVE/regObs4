@@ -5,6 +5,8 @@ import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { KdvService } from '../../../../../../core/services/kdv/kdv.service';
 import { Subscription, combineLatest } from 'rxjs';
 
+const NO_WEAK_LAYER_KDV_VALUE = 24;
+
 @Component({
   selector: 'app-avalanche-problem-modal',
   templateUrl: './avalanche-problem-modal.page.html',
@@ -16,20 +18,18 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
   @Input() avalancheEvalProblem: AvalancheEvalProblem2Dto;
   avalancheEvalProblemCopy: AvalancheEvalProblem2Dto;
   isNew = false;
+  avalancheExtKdvFilter: Function;
 
   get noWeakLayers() {
-    return this.avalancheEvalProblemCopy.AvalCauseTID === 24;
+    return this.avalancheEvalProblemCopy.AvalCauseTID === NO_WEAK_LAYER_KDV_VALUE;
   }
 
   set noWeakLayers(val: boolean) {
-    this.avalancheEvalProblemCopy.AvalCauseTID = val ? 24 : undefined;
-    this.avalCauseChanged(this.avalancheEvalProblemCopy.AvalCauseTID);
+    this.avalancheEvalProblemCopy.AvalCauseTID = val ? NO_WEAK_LAYER_KDV_VALUE : undefined;
   }
 
   avalancheProblemView: { AvalancheExtTID: number, AvalCauseTID: number }[];
   avalancheCauseAttributes: { kdvElement: KdvElement, selected: boolean }[];
-  avalancheExtKdv: KdvElement[];
-  avalancheExtKdvFiltered: KdvElement[];
   exposition: number[];
 
   private viewSubscription: Subscription;
@@ -40,6 +40,8 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.avalancheExtKdvFilter = this.internalAvalancheExtKdvFilter.bind(this);
+
     if (this.avalancheEvalProblem) {
       this.avalancheEvalProblemCopy = { ...this.avalancheEvalProblem };
     } else {
@@ -50,13 +52,10 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
     this.viewSubscription = combineLatest(
       this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalCauseAttributeFlags'),
       this.kdvService.getViewRepositoryByKeyObservable('AvalancheProblemMenu3V'),
-      this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheExtKDV'),
-    ).subscribe(([snowCauseAttributesKdvElements, avalancheProblemView, avalancheExtKdv]) => {
+    ).subscribe(([snowCauseAttributesKdvElements, avalancheProblemView]) => {
       this.avalancheProblemView = avalancheProblemView;
-      this.avalancheExtKdv = avalancheExtKdv;
       this.avalancheCauseAttributes =
         this.getAvalancheCauseAttributes(this.avalancheEvalProblemCopy.AvalCauseAttributes, snowCauseAttributesKdvElements);
-      this.avalCauseChanged(this.avalancheEvalProblemCopy.AvalCauseTID);
     });
   }
 
@@ -66,24 +65,11 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
     }
   }
 
-  avalCauseChanged(val: number) {
-    this.avalancheEvalProblemCopy.AvalCauseTID = val;
-    setTimeout(() => {
-      this.avalancheExtKdvFiltered = null;
-      setTimeout(() => {
-        this.avalancheExtKdvFiltered = this.getAvalancheExtFiltered();
-      });
-    });
-    // Note! There is a bug where action sheet is not updaing, so have to recreate it with ngIf
-    // TODO: Test if this still is the case...
-  }
-
-  getAvalancheExtFiltered() {
+  internalAvalancheExtKdvFilter(id: number) {
     const avalCauseTid = this.avalancheEvalProblemCopy.AvalCauseTID || 0;
     const views = this.avalancheProblemView.filter((v) => v.AvalCauseTID === avalCauseTid)
       .map((v) => v.AvalancheExtTID);
-    const filtered = this.avalancheExtKdv.filter((avalancheExt) => views.indexOf(avalancheExt.Id) >= 0);
-    return filtered;
+    return views.indexOf(id) >= 0;
   }
 
   getAvalancheCauseAttributes(avalancheCauseAttribute: number, kdvElements: KdvElement[]) {
@@ -124,7 +110,7 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
       this.avalancheEvalProblemCopy.AvalCauseAttributes = causeAttribute > 0 ? causeAttribute : undefined;
     }
     if (IsEmptyHelper.isEmpty(this.avalancheEvalProblemCopy)) {
-      this.modalController.dismiss();
+      this.modalController.dismiss({ delete: true });
     } else {
       this.modalController.dismiss(this.avalancheEvalProblemCopy);
     }

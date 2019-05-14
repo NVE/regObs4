@@ -1,20 +1,20 @@
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-// import { KdvDropdownComponent } from './kdv-dropdown.component';
+// import { SelectComponent } from './select.component';
 
-// describe('KdvDropdownComponent', () => {
-//   let component: KdvDropdownComponent;
-//   let fixture: ComponentFixture<KdvDropdownComponent>;
+// describe('SelectComponent', () => {
+//   let component: SelectComponent;
+//   let fixture: ComponentFixture<SelectComponent>;
 
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
-//       declarations: [ KdvDropdownComponent ]
+//       declarations: [ SelectComponent ]
 //     })
 //     .compileComponents();
 //   }));
 
 //   beforeEach(() => {
-//     fixture = TestBed.createComponent(KdvDropdownComponent);
+//     fixture = TestBed.createComponent(SelectComponent);
 //     component = fixture.componentInstance;
 //     fixture.detectChanges();
 //   });
