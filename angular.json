@@ -31,6 +31,11 @@
                 "output": "./svg"
               },
               {
+                "glob": "**/*.svg",
+                "input": "src/custom-icons",
+                "output": "./svg"
+              },
+              {
                 "glob": "**/*",
                 "input": "./node_modules/leaflet/dist/images",
                 "output": "leaflet/"
