@@ -27,16 +27,17 @@
           <ion-label position="stacked" color="medium" text-uppercase>
             {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE' | translate}}
           </ion-label>
-          <ion-text align-self-start *ngIf="layer.Density">
-            {{ layer.Density | number:'1.0-2' }} kg/m³
+          <ion-text align-self-start>
+            <ng-container *ngIf="layer.Density">{{ layer.Density | number:'1.0-2' }} kg/m³</ng-container>
           </ion-text>
         </ion-item>
         <ion-item>
           <ion-label position="stacked" color="medium" text-uppercase>
             {{'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.WATER_EQUIVALENT' | translate}}
           </ion-label>
-          <ion-text align-self-start *ngIf="layer.Density && layer.Thickness">
-            {{ getWaterEquivalent(layer.Density, layer.Thickness) | number:'1.0-2' }} mm
+          <ion-text align-self-start>
+            <ng-container *ngIf="layer.Density && layer.Thickness">
+              {{ getWaterEquivalent(layer.Density, layer.Thickness) | number:'1.0-2' }} mm</ng-container>
           </ion-text>
         </ion-item>
       </ng-container>

@@ -35,27 +35,24 @@
     <ion-list lines="full">
       <ion-item (click)="versionClick()">
         <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
-        <ion-text align-self-start>
+        <ion-text align-self-start class="build-version">
           {{version.version }} ({{ version.buildNumber }})
         </ion-text>
-        <ion-text class="small-text" align-self-start color="medium">
+        <ion-text class="build-rev" align-self-start color="medium">
           {{ version.revision }} - {{ version.date | formatDate | async }}
         </ion-text>
       </ion-item>
-      <ion-item *ngIf="showAppMode">
+      <ion-item>
         <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.APPMODE" | translate }}</ion-label>
-        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.appMode"
-          interface="action-sheet" (ngModelChange)="updateSettings()">
-          <ion-select-option value="PROD">Regobs</ion-select-option>
-          <ion-select-option value="DEMO">Demo Regobs</ion-select-option>
-          <ion-select-option value="TEST">Test Regobs</ion-select-option>
-        </ion-select>
+        <app-select [(selectedValue)]="userSettings.appMode" [options]="appModeOptions"
+          (selectedValueChange)="updateSettings()" [showReset]="false"> </app-select>
       </ion-item>
       <ion-item>
         <ion-label>
           {{'SETTINGS.USE_RETINA_MAP' | translate}}
         </ion-label>
-        <ion-toggle slot="end" [(ngModel)]="userSettings.useRetinaMap" (ngModelChange)="updateSettings()"></ion-toggle>
+        <ion-toggle slot="end" [(ngModel)]="userSettings.useRetinaMap" (ngModelChange)="updateSettings()">
+        </ion-toggle>
       </ion-item>
       <ion-item>
         <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.NUMBER_OF_TILES_IN_CACHE' |

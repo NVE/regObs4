@@ -7,6 +7,20 @@ ion-button.button-block {
     height: var(--ion-button-height);
 }
 
-.small-text {
-    font-size: 14px;
+ion-item {
+
+    &.item-label {
+        ion-text {
+            &[align-self-start] {
+               &.build-version {
+                    margin-top: 5px;
+                    margin-bottom: 5px;
+                }
+                &.build-rev {
+                    font-size: 14px;
+                    margin-top: 0px;
+                }
+            }
+        }
+    }
 }
