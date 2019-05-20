@@ -256,14 +256,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       } else {
         this.pathLine.setLatLngs(path);
       }
-    }
-    if (this.fromMarker) {
-      if (this.fromMarker.getLatLng().equals(this.locationMarker.getLatLng())) {
-        this.fromMarker.setOpacity(0);
-        this.pathLine.setStyle({ opacity: 0 });
-      } else {
-        this.fromMarker.setOpacity(1);
-        this.pathLine.setStyle({ opacity: 0.9 });
+      if (this.fromMarker) {
+        if (this.fromMarker.getLatLng().equals(this.locationMarker.getLatLng())) {
+          this.fromMarker.setOpacity(0);
+          this.pathLine.setStyle({ opacity: 0 });
+        } else {
+          this.fromMarker.setOpacity(1);
+          this.pathLine.setStyle({ opacity: 0.9 });
+        }
       }
     }
     this.ngZone.run(() => {

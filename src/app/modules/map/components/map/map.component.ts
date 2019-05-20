@@ -258,20 +258,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       for (const supportTile of this.userSettingService.getSupportTilesOptions(userSetting)) {
-        const supportMapTileLayer = new RegObsTileLayer(
-          supportTile.name,
-          supportTile.url,
-          {
-            ...this.getTileLayerDefaultOptions(userSetting),
-            updateInterval: 600,
-            keepBuffer: 0,
-            updateWhenIdle: true,
-            minZoom: settings.map.tiles.minZoomSupportMaps,
-            bounds: <any>settings.map.tiles.supportTilesBounds,
-          }
-        );
-        supportMapTileLayer.setOpacity(supportTile.opacity);
-        supportMapTileLayer.addTo(this.tilesLayer);
+        if (supportTile.enabled) {
+          const supportMapTileLayer = new RegObsTileLayer(
+            supportTile.name,
+            supportTile.url,
+            {
+              ...this.getTileLayerDefaultOptions(userSetting),
+              updateInterval: 600,
+              keepBuffer: 0,
+              updateWhenIdle: true,
+              minZoom: settings.map.tiles.minZoomSupportMaps,
+              bounds: <any>settings.map.tiles.supportTilesBounds,
+            }
+          );
+          supportMapTileLayer.setOpacity(supportTile.opacity);
+          supportMapTileLayer.addTo(this.tilesLayer);
+        }
       }
     });
   }
