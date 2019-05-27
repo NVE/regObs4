@@ -33,6 +33,7 @@ export class ExternalLinkService {
       url,
       tintColor: '#ffffff',
       barColor: '#044962',
+      toolbarColor: '#044962',
       controlTintColor: '#ffffff',
     }).subscribe((result) => {
       this.loggingService.debug('External url opened in Safari ViewController or Chrome Custom Tabs', DEBUG_TAG);
