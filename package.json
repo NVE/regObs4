@@ -47,6 +47,7 @@
     "@ionic-native/ionic-webview": "^5.5.1",
     "@ionic-native/keyboard": "^5.5.1",
     "@ionic-native/network": "^5.5.1",
+    "@ionic-native/safari-view-controller": "^5.6.1",
     "@ionic-native/screen-orientation": "^5.5.1",
     "@ionic-native/social-sharing": "^5.5.1",
     "@ionic-native/splash-screen": "^5.5.1",
@@ -92,6 +93,7 @@
     "cordova-plugin-ios-camera-permissions": "^1.2.0",
     "cordova-plugin-localization-strings": "3.1.0",
     "cordova-plugin-network-information": "^2.0.1",
+    "cordova-plugin-safariviewcontroller": "1.6.0",
     "cordova-plugin-screen-orientation": "^3.0.1",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
@@ -197,7 +199,8 @@
       "cordova-plugin-advanced-http": {},
       "cordova-plugin-localization-strings": {
         "TRANSLATION_PATH": "translations/app/"
-      }
+      },
+      "cordova-plugin-safariviewcontroller": {}
     },
     "platforms": [
       "android",

@@ -49,6 +49,7 @@ import { OfflineMapService } from './core/services/offline-map/offline-map.servi
 import { TranslateService } from '@ngx-translate/core';
 import { ApiConfiguration } from './core/http-interceptor/api-configuration';
 import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configuration';
+import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -86,6 +87,7 @@ export const APP_PROVIDERS = [
     Clipboard,
     Camera,
     InAppBrowser,
+    SafariViewController,
     HTTP,
     WebView,
     ApiInterceptor,
