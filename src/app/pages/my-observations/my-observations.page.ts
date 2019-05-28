@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
-import { Subscription, combineLatest, Observable } from 'rxjs';
+import { Subscription, combineLatest, Observable, of } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../modules/login/services/login.service';
 import { IonInfiniteScroll, NavController, IonVirtualScroll } from '@ionic/angular';
@@ -102,15 +102,13 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   private getVirtualScrollItemsObservable() {
-    return combineLatest(
-      this.getSyncItemsObservable(),
-      this.getDraftObservable())
-      .pipe(map(([a, b]) => ([...a, ...b])),
-        switchMap((syncItems) => this.getMyRegistrationsObservable(0).pipe(
-          map((val) => ([...syncItems, ...val])))));
+    return this.getSyncItemsObservable().pipe(
+      switchMap((syncItems) =>
+        combineLatest(of(syncItems), this.getDraftObservable(), this.getMyRegistrationsObservable(0))
+      ), map(([syncIntems, drafts, registrations]) => [...syncIntems, ...drafts, ...registrations]));
   }
 
-  private getMyRegistrationsObservable(pageNumber: number) {
+  private getMyRegistrationsObservable(pageNumber: number): Observable<MyVirtualScrollItem[]> {
     return this.userSettingService.appModeAndLanguage$.pipe(switchMap(([appMode, langKey]) =>
       this.observationService.getObservationsForCurrentUser(appMode, this.user, langKey, pageNumber, numberOfItemsToFetch).pipe(
         map((val) => val.map((item) => ({ type: <'sent'>'sent', id: item.RegID.toString(), item }))))

@@ -6,7 +6,7 @@ import { GeoHazard } from '../../models/geo-hazard.enum';
 import * as moment from 'moment';
 import 'moment-timezone';
 import { NanoSql } from '../../../../nanosql';
-import { map, distinctUntilChanged, switchMap, shareReplay, tap } from 'rxjs/operators';
+import { map, distinctUntilChanged, switchMap, shareReplay, tap, catchError } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { AppMode } from '../../models/app-mode.enum';
@@ -187,14 +187,15 @@ export class ObservationService {
     user: ObserverResponseDto,
     langKey: LangKey,
     pageNr?: number,
-    numberOfRecords: number = 10) {
+    numberOfRecords: number = 10): Observable<RegistrationViewModel[]> {
     return this.searchService.SearchSearch({
       NumberOfRecords: numberOfRecords,
       LangKey: langKey,
       Offset: (pageNr || 0) * numberOfRecords,
       ObserverGuid: user.Guid,
       TimeZone: moment().format('Z'),
-    });
+    })
+      .pipe(catchError((err) => of([]))); // Return empty list if http request fails);
   }
 
   async updateObservationById(regId: number, appMode: AppMode, langKey: LangKey, currentGeoHazards: GeoHazard[]) {
