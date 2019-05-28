@@ -396,7 +396,7 @@
           "TITLE": "Tests"
         },
         "GENERATING_PREVIEW": "Generating preview...",
-        "IS_PROFILE_TO_GROUND": "Is the profile going to the ground?",
+        "IS_PROFILE_TO_GROUND": "Is the profile dug to the ground?",
         "PREVIEW": "Preview",
         "PREVIEW_ERROR": "Could not create plot preview",
         "PREVIEW_ITEM": "Show Snow Profile",
@@ -411,7 +411,7 @@
           "METHOD": "Method",
           "MULTIPLE_LAYERS": "dansity profiles",
           "ONE_LAYER": "density profile added",
-          "TARE_WEIGHT": "Tare Weight",
+          "TARE_WEIGHT": "Tare Weight (g)",
           "TITLE": "Density",
           "WATER_EQUIVALENT": "Water Equivalent",
           "WEIGHT": "Weight (g)"
@@ -454,7 +454,7 @@
           "WETNESS": "Wetness"
         },
         "SUBFORMS": "Subforms",
-        "SUPERIOR": "Superior",
+        "SUPERIOR": "Main",
         "TITLE": "Snow Profile"
       },
       "SNOW_SURFACE": {

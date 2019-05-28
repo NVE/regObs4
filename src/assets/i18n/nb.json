@@ -411,7 +411,7 @@
           "METHOD": "Metode",
           "MULTIPLE_LAYERS": "tetthetsprofiler",
           "ONE_LAYER": "tetthetsprofil lagt til",
-          "TARE_WEIGHT": "Vekt av posen og evt. rør",
+          "TARE_WEIGHT": "Vekt av posen og evt. rør (g)",
           "TITLE": "Tetthet",
           "WATER_EQUIVALENT": "Vannekvivalent",
           "WEIGHT": "Vekt (g)"
