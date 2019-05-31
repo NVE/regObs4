@@ -50,7 +50,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.subscriptions.push(
       // TODO: ionViewDidEnter and ionViewWillLeave is only triggerd between tab changes and not when going
       // to another page (for example settings, my observations etc), so this is a workaround until issue is resolved
@@ -93,7 +93,7 @@ export class HomePage implements OnInit, OnDestroy {
     // });
   }
 
-  async onMapReady(map: L.Map) {
+  onMapReady(map: L.Map) {
     this.map = map;
     this.markerLayer.addTo(this.map);
     this.markerLayer.on('clusterclick', (a: any) => {
