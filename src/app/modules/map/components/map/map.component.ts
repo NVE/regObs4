@@ -64,6 +64,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private loggingService: LoggingService,
   ) {
     this.setHeadingFunc = this.setHeading.bind(this);
+    // Hack to make sure map pane is set before getPosition
+    L.Map.include({
+      _getMapPanePos: function () {
+        if (this._mapPane === undefined) {
+          return new L.Point(0, 0);
+        }
+        return L.DomUtil.getPosition(this._mapPane) || new L.Point(0, 0);
+      },
+    });
   }
 
   options: L.MapOptions = {
@@ -325,17 +334,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   redrawMap() {
     setTimeout(() => {
       if (this.map) {
-        try {
-          this.map.invalidateSize();
-        } catch (err) {
-          this.loggingService.debug('Could not invalidate map size', DEBUG_TAG);
-        }
+        this.map.invalidateSize();
       }
-      window.dispatchEvent(new Event('resize'));
-    }, 0);
+    });
   }
 
   ngAfterViewInit(): void {
+    this.redrawMap();
   }
 
   private startGeoLocationWatch() {
