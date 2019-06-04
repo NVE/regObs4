@@ -5,21 +5,18 @@
       <ion-icon [src]="getIconSrc(currentGeoHazard)" class="geo-icon" [ngClass]="getGeoClass(currentGeoHazard)">
       </ion-icon>
     </ion-fab-button>
-    <ion-label *ngIf="isOpen && showLabels" @animate><span
-        *ngFor="let name of getNames(currentGeoHazard); let i = index"><span *ngIf="i>0"> /
-        </span>{{
-      name |
-      translate }}</span></ion-label>
+    <ion-label *ngIf="isOpen && showLabels" @animate>
+      <app-geo-name [geoHazards]="currentGeoHazard"></app-geo-name>
+    </ion-label>
   </ion-item>
   <ion-list *ngIf="isOpen" lines="none">
     <ion-item @animate *ngFor="let geoHazards of selectableGeoHazards" (click)="setCurrentGeoHazard(geoHazards)">
       <ion-fab-button margin-end slot="start" [color]="color">
         <ion-icon [src]="getIconSrc(geoHazards)" class="geo-icon" [ngClass]="getGeoClass(geoHazards)"></ion-icon>
       </ion-fab-button>
-      <ion-label *ngIf="showLabels"><span *ngFor="let name of getNames(geoHazards); let i = index"><span *ngIf="i>0"> /
-          </span>{{
-      name |
-      translate }}</span></ion-label>
+      <ion-label *ngIf="showLabels">
+        <app-geo-name [geoHazards]="geoHazards"></app-geo-name>
+      </ion-label>
     </ion-item>
   </ion-list>
 </ion-fab>

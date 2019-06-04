@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, Input, NgZone } from '@angular/core';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { Subscription, Observable } from 'rxjs';
-import { UserSetting } from '../../core/models/user-settings.model';
-import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { trigger, state, transition, animate, keyframes, style } from '@angular/animations';
+import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { UserSetting } from '../../../../core/models/user-settings.model';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
 @Component({
   selector: 'app-geo-select',

@@ -9,10 +9,8 @@
         <ion-fab-button slot="start" color="light">
           <app-geo-icon [geoHazards]="userSettings.currentGeoHazard"></app-geo-icon>
         </ion-fab-button>
-        <ion-label><span *ngFor="let name of getNames(userSettings.currentGeoHazard); let i = index"><span *ngIf="i>0">
-              / </span>{{
-            name |
-            translate }}</span>
+        <ion-label>
+          <app-geo-name [geoHazards]="userSettings.currentGeoHazard"></app-geo-name>
         </ion-label>
       </ion-item>
       <ng-container *ngFor="let geoHazards of geoHazardTypes">
@@ -21,8 +19,9 @@
           <ion-fab-button slot="start" color="light">
             <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
           </ion-fab-button>
-          <ion-label><span *ngFor="let name of getNames(geoHazards); let i = index"><span *ngIf="i>0"> / </span>
-              {{ name | translate }}</span></ion-label>
+          <ion-label>
+            <app-geo-name [geoHazards]="geoHazards"></app-geo-name>
+          </ion-label>
         </ion-item>
       </ng-container>
     </ion-list>

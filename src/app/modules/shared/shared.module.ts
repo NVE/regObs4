@@ -9,7 +9,6 @@ import { OfflineImageComponent } from '../../components/offline-image/offline-im
 import { ExternalLinkComponent } from '../../components/external-link/external-link.component';
 import { GeoIconComponent } from '../../components/geo-icon/geo-icon.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { GeoSelectComponent } from '../../components/geo-select/geo-select.component';
 import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
 import { ObservationListCardComponent } from '../../components/observation/observation-list-card/observation-list-card.component';
 import { LegalTermsComponent } from '../../components/legal-terms/legal-terms.component';
@@ -23,7 +22,8 @@ import { MapModule } from '../map/map.module';
 import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SelectComponent } from './components/input/select/select.component';
 import { GeoFabComponent } from './components/geo-fab/geo-fab.component';
-
+import { GeoNameComponent } from './components/geo-name/geo-name.component';
+import { GeoSelectComponent } from './components/geo-select/geo-select.component';
 
 @NgModule({
     imports: [
@@ -54,6 +54,7 @@ import { GeoFabComponent } from './components/geo-fab/geo-fab.component';
         HeaderColorDirective,
         SelectComponent,
         GeoFabComponent,
+        GeoNameComponent,
     ],
     exports: [
         CommonModule,
