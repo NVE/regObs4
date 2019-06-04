@@ -15,13 +15,13 @@ export class GeoIconComponent implements OnInit {
 
   get geoClass() {
     if (this.geoHazards && this.geoHazards.length > 0) {
-      return this.geoHazards.map((geoHazard) => (<string>GeoHazard[geoHazard]).toLowerCase()).join('_');
+      return this.geoHazards.map((geoHazard) => (<string>GeoHazard[geoHazard]).toLowerCase()).join('-');
     }
     return '';
   }
 
   get iconSrc() {
-    return `/assets/icon/${this.geoClass}.svg`;
+    return `/assets/icon/${this.geoClass.replace(/-/, '_')}.svg`;
   }
 
   ngOnInit() {

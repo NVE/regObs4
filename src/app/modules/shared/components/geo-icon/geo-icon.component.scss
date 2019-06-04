@@ -9,7 +9,7 @@ ion-icon {
   &.ice {
       font-size: calc(var(--base-font-size) * 0.9);
   }
-  &.water_dirt {
+  &.water-dirt, &.dirt-water  {
       font-size: calc(var(--base-font-size) * 1.3);
   }
 
