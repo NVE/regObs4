@@ -1,14 +1,15 @@
 import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { IonFab, NavController } from '@ionic/angular';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { Subscription } from 'rxjs';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { RegistrationService } from '../../modules/registration/services/registration.service';
-import { IRegistration } from '../../modules/registration/models/registration.model';
 import * as moment from 'moment';
-import { DateHelperService } from '../../modules/shared/services/date-helper/date-helper.service';
-import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
-import { LangKey } from '../../core/models/langKey';
+import { DateHelperService } from '../../services/date-helper/date-helper.service';
+import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
+import { IRegistration } from '../../../registration/models/registration.model';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { LangKey } from '../../../../core/models/langKey';
+import { RegistrationService } from '../../../registration/services/registration.service';
 
 @Component({
   selector: 'app-add-menu',
@@ -34,7 +35,9 @@ export class AddMenuComponent implements OnInit, OnDestroy {
     private navController: NavController,
     private dateHelperService: DateHelperService,
     private tripLoggerService: TripLoggerService,
-    private userSettingService: UserSettingService) { }
+    private userSettingService: UserSettingService,
+    private geoHelperService: GeoHelperService,
+  ) { }
 
   ngOnInit() {
     this.subscriptions.push(this.userSettingService.currentGeoHazardObservable$.subscribe((val) => {
@@ -74,7 +77,7 @@ export class AddMenuComponent implements OnInit, OnDestroy {
   }
 
   getName(geoHazard: GeoHazard) {
-    return `GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase();
+    return this.geoHelperService.getTranslationKey(geoHazard);
   }
 
   getDate(timestamp: number) {

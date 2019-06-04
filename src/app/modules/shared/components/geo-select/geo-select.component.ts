@@ -40,10 +40,6 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
     }
   }
 
-  getNames(geoHazards: GeoHazard[]) {
-    return geoHazards.map((geoHazard) => `GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase());
-  }
-
   toggle() {
     this.isOpen = !this.isOpen;
   }

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DateHelperService } from '../../modules/shared/services/date-helper/date-helper.service';
 import * as moment from 'moment';
+import { DateHelperService } from '../../services/date-helper/date-helper.service';
 
 @Pipe({
   name: 'formatDate'

@@ -2,8 +2,7 @@
   [ngClass]="{ 'fullscreen': (fullscreen$ | async) }">
   <ion-item (click)="toggle()">
     <ion-fab-button margin-end slot="start" [color]="color">
-      <ion-icon [src]="getIconSrc(currentGeoHazard)" class="geo-icon" [ngClass]="getGeoClass(currentGeoHazard)">
-      </ion-icon>
+      <app-geo-icon [geoHazards]="currentGeoHazard"></app-geo-icon>
     </ion-fab-button>
     <ion-label *ngIf="isOpen && showLabels" @animate>
       <app-geo-name [geoHazards]="currentGeoHazard"></app-geo-name>
@@ -12,7 +11,7 @@
   <ion-list *ngIf="isOpen" lines="none">
     <ion-item @animate *ngFor="let geoHazards of selectableGeoHazards" (click)="setCurrentGeoHazard(geoHazards)">
       <ion-fab-button margin-end slot="start" [color]="color">
-        <ion-icon [src]="getIconSrc(geoHazards)" class="geo-icon" [ngClass]="getGeoClass(geoHazards)"></ion-icon>
+        <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
       </ion-fab-button>
       <ion-label *ngIf="showLabels">
         <app-geo-name [geoHazards]="geoHazards"></app-geo-name>

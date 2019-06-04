@@ -1,8 +1,8 @@
 import { Directive, OnInit, OnDestroy, HostBinding, NgZone } from '@angular/core';
-import { UserSettingService } from '../core/services/user-setting/user-setting.service';
 import { Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { AppMode } from '../core/models/app-mode.enum';
+import { AppMode } from '../../../../core/models/app-mode.enum';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 
 @Directive({
   selector: '[appHeaderColor]'

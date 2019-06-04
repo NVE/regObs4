@@ -72,10 +72,6 @@ export class GeoFabComponent implements OnInit, OnDestroy {
     }
   }
 
-  getNames(geoHazards: GeoHazard[]) {
-    return geoHazards.map((geoHazard) => `GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase());
-  }
-
   async setCurrentGeoHazard(geoHazards: GeoHazard[]) {
     this.close();
     this.currentGeoHazard = geoHazards;
@@ -83,16 +79,4 @@ export class GeoFabComponent implements OnInit, OnDestroy {
     userSettings.currentGeoHazard = geoHazards;
     this.userSettingService.saveUserSettings(userSettings);
   }
-
-  getIconSrc(geoHazards: GeoHazard[]) {
-    return `/assets/icon/${this.getGeoClass(geoHazards)}.svg`;
-  }
-
-  getGeoClass(geoHazards: GeoHazard[]) {
-    if (geoHazards && geoHazards.length > 0) {
-      return geoHazards.map((geoHazard) => (<string>GeoHazard[geoHazard]).toLowerCase()).join('_');
-    }
-    return '';
-  }
-
 }

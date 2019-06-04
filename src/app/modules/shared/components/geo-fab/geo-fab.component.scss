@@ -37,20 +37,6 @@
             margin-top: 2px;
             margin-bottom: 2px;
             --box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
-        
-            ion-icon {
-                font-size: 22px;
-                color: var(--geo-color);
-
-                &.geo-icon {
-                    &.ice {
-                        font-size: 20px;
-                    }
-                    &.water_dirt {
-                        font-size: 28px;
-                    }
-                }
-            }
         }
         ion-list {
             margin-top: 2px;

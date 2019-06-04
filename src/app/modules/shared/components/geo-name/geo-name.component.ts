@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { Observable } from 'rxjs';
+import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
 
 @Component({
   selector: 'app-geo-name',
@@ -10,15 +12,13 @@ export class GeoNameComponent implements OnInit {
 
   @Input() geoHazards: GeoHazard[];
 
-  get translateKeys() {
-    if (this.geoHazards && this.geoHazards.length > 0) {
-      return this.geoHazards.map((geoHazard) => `GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase());
-    }
-    return '';
+  name$: Observable<string>;
+
+  constructor(private geoHelperService: GeoHelperService) {
+
   }
 
-  constructor() { }
-
   ngOnInit() {
+    this.name$ = this.geoHelperService.getName(this.geoHazards);
   }
 }

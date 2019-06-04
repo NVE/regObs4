@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
-import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
-import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { Observable, Subscription } from 'rxjs';
-import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { AppMode } from '../../core/models/app-mode.enum';
 import { map, distinctUntilChanged } from 'rxjs/operators';
+import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
+import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { AppMode } from '../../../../core/models/app-mode.enum';
 
 @Component({
   selector: 'app-header',
