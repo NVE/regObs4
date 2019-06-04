@@ -1,0 +1,43 @@
+ion-fab {
+    top: calc(7px + var(--ion-safe-area-top,0px));
+
+    .toggle-button {
+        height: 32px;
+        width: 32px;
+        --box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
+        --geo-icon-font-size: 18px;
+    }
+
+    .geo-selector-items {
+        --backround: rgba(0,0,0,0);
+        --ion-background-color: rgba(0,0,0,0);
+        --ion-item-background: rgba(0,0,0,0);
+        background-color: var(--backdrop-background);
+        padding: 10px;
+        position: absolute;
+        top: -10px;
+        left: -10px;
+
+        ion-fab-button {
+            height: 44px;
+            width: 44px;
+         }
+
+         ion-item {
+            background-color: rgba(0,0,0,0);
+            color: #fff;
+            --padding-start: 4px;
+            --padding-top: 4px;
+            --padding-bottom: 4px;
+            --padding-end: 0px;
+        }
+    }
+    .geo-selector-wrapper {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: -1;
+    }
+}

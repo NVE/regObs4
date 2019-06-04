@@ -38,7 +38,6 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
 
   @Input() obs: RegistrationViewModel;
 
-  geoHazardName: string;
   dtObsDate: string;
   icon: string;
   settings = settings;
@@ -51,6 +50,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   imageDecription = '';
   stars: { full: boolean }[] = [];
   hasNoStars: boolean;
+  geoHazard: GeoHazard;
 
   imageUrls: string[] = [];
   imageHeaders: string[] = [];
@@ -75,17 +75,15 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     if (!this.userSetting) {
       this.userSetting = await this.userSettingService.getUserSettings();
     }
-    const geoHazard = <GeoHazard>this.obs.GeoHazardTID;
-    this.geoHazardName = await this.translateService
-      .get(`GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase()).toPromise();
+    this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
 
     this.header = this.obs.ObsLocation.Title;
     this.location = {
       latLng: L.latLng(this.obs.ObsLocation.Latitude, this.obs.ObsLocation.Longitude),
-      geoHazard: geoHazard
+      geoHazard: this.geoHazard
     };
     this.dtObsDate = this.obs.DtObsTime;
-    this.icon = this.getGeoHazardCircleIcon(geoHazard);
+    this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
     this.summaries = this.obs.Summaries;
     this.stars = [];
     for (let i = 0; i < 5; i++) {

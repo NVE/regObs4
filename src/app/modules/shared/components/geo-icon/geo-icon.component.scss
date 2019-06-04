@@ -1,0 +1,32 @@
+:host {
+  display: inherit;
+}
+
+ion-icon {
+  --base-font-size: var(--geo-icon-font-size, 22px);
+  font-size: var(--base-font-size);
+
+  &.ice {
+      font-size: calc(var(--base-font-size) * 0.9);
+  }
+  &.water-dirt, &.dirt-water  {
+      font-size: calc(var(--base-font-size) * 1.3);
+  }
+
+  &.geo-color {
+    color: var(--geo-color);
+
+    &.ice {
+      --geo-color: var(--geo-color-ice);
+    }
+    &.water {
+      --geo-color: var(--geo-color-water);
+    }
+    &.snow {
+      --geo-color: var(--geo-color-snow);
+    }
+    &.dirt {
+      --geo-color: var(--geo-color-dirt);
+    }
+  }
+}
