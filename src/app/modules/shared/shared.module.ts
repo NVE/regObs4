@@ -22,6 +22,7 @@ import { HeaderColorDirective } from '../../directives/header-color.directive';
 import { MapModule } from '../map/map.module';
 import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SelectComponent } from './components/input/select/select.component';
+import { GeoFabComponent } from './components/geo-fab/geo-fab.component';
 
 
 @NgModule({
@@ -52,6 +53,7 @@ import { SelectComponent } from './components/input/select/select.component';
         SummaryComponent,
         HeaderColorDirective,
         SelectComponent,
+        GeoFabComponent,
     ],
     exports: [
         CommonModule,
@@ -77,6 +79,7 @@ import { SelectComponent } from './components/input/select/select.component';
         SummaryComponent,
         HeaderColorDirective,
         SelectComponent,
+        GeoFabComponent,
     ]
 })
 export class SharedModule { }

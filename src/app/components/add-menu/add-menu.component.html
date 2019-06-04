@@ -5,7 +5,7 @@
   <ion-fab-list side="top">
     <ion-list lines="full" no-margin no-padding>
       <ion-item (click)="createRegistration(geoHazard)" *ngFor="let geoHazard of geoHazards">
-        <app-geo-icon slot="start" [geoHazards]="[geoHazard]" [size]="0.8"></app-geo-icon>
+        <app-geo-icon slot="start" [geoHazards]="[geoHazard]"></app-geo-icon>
         <ion-label>{{'ADD_MENU.NEW_OBSERVATION' | translate}} {{ getName(geoHazard) | translate | lowercase }}<span
             *ngIf="langKey === LangKey.en">&nbsp;</span>{{
           'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}</ion-label>

@@ -6,6 +6,7 @@ import { TripPageModule } from '../trip/trip.module';
 import { WarningListPageModule } from '../warning-list/warning-list.module';
 import { ObservationListPageModule } from '../observation-list/observation-list.module';
 import { SharedModule } from '../../modules/shared/shared.module';
+import { CoachMarksComponent } from '../../components/coach-marks/coach-marks.component';
 
 @NgModule({
   imports: [
@@ -16,6 +17,6 @@ import { SharedModule } from '../../modules/shared/shared.module';
     ObservationListPageModule,
     SharedModule,
   ],
-  declarations: [TabsPage]
+  declarations: [TabsPage, CoachMarksComponent]
 })
 export class TabsPageModule { }

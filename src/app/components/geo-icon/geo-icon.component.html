@@ -1,1 +1,2 @@
-<svg-icon [ngClass]="geoClass" [src]="iconSrc" [svgStyle]="options"></svg-icon>
+<!-- <svg-icon [ngClass]="geoClass" [src]="iconSrc" [svgStyle]="options"></svg-icon> -->
+<ion-icon [src]="iconSrc" [ngClass]="[useGeoColors ? 'geo-color' : '', geoClass]"></ion-icon>
