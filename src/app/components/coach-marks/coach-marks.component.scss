@@ -19,10 +19,29 @@
     right: 0;
     bottom: 0;
     z-index: 1000;
-    color: #fff;
-    font-family: 'Shadows Into Light', 'Source Sans Pro';
-    font-size: 32px;
-    line-height: 130%;
+    
+
+    app-geo-fab {
+        width: 100px;
+        height: 100px;
+    }
+
+    ion-tab-bar {
+        --ion-tab-bar-background: #010F14;
+        --ion-tab-bar-background-focused: #010F14;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: -1;
+    }
+
+    .coachmark-text {
+        color: #fff;
+        font-family: 'Shadows Into Light', 'Source Sans Pro';
+        font-size: 32px;
+        line-height: 130%;
+    }
 
     .add-fab {
         --ion-color-primary: var(--ion-color-varsom-orange);
@@ -33,9 +52,7 @@
     }
 
     .warning-icon {
-        position: absolute;
-        bottom: 14px;
-        right: 45px;
+        color: #fff;
     }
 
     .geo-coachmark {
@@ -75,12 +92,12 @@
         svg {
             position: absolute;
             bottom: 31px;
-            right: 95px;
+            right: calc(50% - 100px);
         }
         ion-text {
             position: absolute;
             bottom: 66px;
-            right: 141px;
+            right: calc(50% - 60px);
             width: 153px;
             text-align: center;
             transform: rotate(-16.77deg);

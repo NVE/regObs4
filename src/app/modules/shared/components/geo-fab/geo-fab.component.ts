@@ -1,19 +1,28 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { state, trigger, style, transition, animate, keyframes } from '@angular/animations';
+import { state, trigger, style, transition, animate, keyframes, stagger, query } from '@angular/animations';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable, Subscription } from 'rxjs';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { CustomAnimation, EASING_IN_OUT_BACK, DEFAULT_DURATION } from '../../../../core/animations/custom.animation';
 
 @Component({
   selector: 'app-geo-fab',
   templateUrl: './geo-fab.component.html',
   styleUrls: ['./geo-fab.component.scss'],
   animations: [
-    trigger('animate', [
-      transition(':enter', [
-        style({ transform: 'scale(0)', opacity: 0 }),  // initial
-        animate('200ms cubic-bezier(.8, -0.6, 0.2, 1.5)', style({ transform: 'scale(1)', opacity: 1 })),
+    trigger('enterAnimationFab', [
+      state('x', style({ transform: 'scale(0)', opacity: 0 })),
+      state('visible', style({ transform: 'scale(1)', opacity: 1 })),
+      transition('x => startAnimated', CustomAnimation.createScaleInTransition(500, DEFAULT_DURATION, EASING_IN_OUT_BACK))
+    ]),
+    trigger('enterAnimation', CustomAnimation.createEnterAnimation(0, DEFAULT_DURATION, EASING_IN_OUT_BACK)),
+    trigger('listAnimate', [
+      transition('* => *', [
+        query(':enter', [
+          style({ transform: 'scale(0)', opacity: 0 }),  // initial
+          stagger(100, CustomAnimation.createScaleInAnimation(0, DEFAULT_DURATION, EASING_IN_OUT_BACK)),
+        ], { optional: true })
       ]),
     ]),
   ]
@@ -27,6 +36,9 @@ export class GeoFabComponent implements OnInit, OnDestroy {
   @Input() isOpen = false;
   @Input() showLabels = true;
   @Output() isOpenChange = new EventEmitter();
+  @Input() animateOnEnter = false;
+
+  animateOnEnterState = 'x';
 
   geoHazardTypes = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Dirt]];
 
@@ -44,6 +56,13 @@ export class GeoFabComponent implements OnInit, OnDestroy {
     this.geoHazardSubscription = this.userSettingService.currentGeoHazardObservable$.subscribe((val) => {
       this.currentGeoHazard = val;
     });
+    if (this.animateOnEnter) {
+      setTimeout(() => {
+        this.animateOnEnterState = 'startAnimated';
+      }, 500);
+    } else {
+      this.animateOnEnterState = 'visible';
+    }
   }
 
   ngOnDestroy(): void {

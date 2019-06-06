@@ -1,18 +1,18 @@
 <div class="coachmark-backdrop" *ngIf="showCoachMarks" (click)="hide()">
-  <app-geo-fab [isOpen]="isOpen" [showLabels]="false"></app-geo-fab>
+  <app-geo-fab [isOpen]="isOpen" [showLabels]="false" [animateOnEnter]="true"></app-geo-fab>
   <div class="geo-coachmark" @geo-coachmark-animation>
     <svg width="65" height="76" viewBox="0 0 65 76" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M64 62C64 62 51.5 44.5 38.5 35.5C25.5 26.5 3 15.5 3 15.5M3 15.5L18 15.5M3 15.5L12.5 28" stroke="white"
         stroke-width="2" />
     </svg>
-    <ion-text class="geo-coachmark-text">Velg naturfare</ion-text>
+    <ion-text class="coachmark-text">Velg naturfare</ion-text>
   </div>
   <div class="add-coachmark" @add-text-animation>
     <svg width="40" height="46" viewBox="0 0 40 46" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M1 1C1 1 1.5 17.5 12 27C22.5 36.5 37.5 42.5 37.5 42.5M37.5 42.5L29 28.5M37.5 42.5L21 44.5" stroke="white"
         stroke-width="2" />
     </svg>
-    <ion-text>Legg til egne observasjoner</ion-text>
+    <ion-text class="coachmark-text">Legg til egne observasjoner</ion-text>
   </div>
   <ion-fab @add-fab-animation class="add-fab" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
@@ -24,7 +24,22 @@
       <path d="M1 1.5C1 1.5 8 10 25.5 18.5C43 27 86.5 35.5 86.5 35.5M86.5 35.5L73 25.5M86.5 35.5L64.5 38.5"
         stroke="white" stroke-width="2" />
     </svg>
-    <ion-text>Se varsler fra varsom.no</ion-text>
+    <ion-text class="coachmark-text">Se varsler fra varsom.no</ion-text>
   </div>
-  <ion-icon @warning-icon-animation class="warning-icon" name="warning"></ion-icon>
+
+  <!-- <ion-icon @warning-icon-animation class="warning-icon" name="warning"></ion-icon> -->
+  <ion-tab-bar>
+    <ion-tab-button tab="home">
+      <ion-icon name="map"></ion-icon>
+      <ion-label>{{'TABS.MAP' | translate}}</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="observation-list">
+      <ion-icon name="list"></ion-icon>
+      <ion-label>{{'TABS.LIST' | translate}}</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="warning-list">
+      <ion-icon name="warning" @warning-icon-animation class="warning-icon"></ion-icon>
+      <ion-label>{{'TABS.WARNINGS' | translate}}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
 </div>

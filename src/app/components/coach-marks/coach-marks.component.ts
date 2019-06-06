@@ -3,26 +3,19 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { Subscription } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
-
-export function getAnimation(delay: number) {
-  return [
-    transition(':enter', [
-      style({ transform: 'scale(0)', opacity: 0 }),  // initial
-      animate(`200ms ${delay || 0}ms ease-in-out`, style({ transform: 'scale(1)', opacity: 1 })),
-    ]),
-  ];
-}
+import { CustomAnimation, EASING_IN_OUT_BACK } from '../../core/animations/custom.animation';
 
 @Component({
   selector: 'app-coach-marks',
   templateUrl: './coach-marks.component.html',
   styleUrls: ['./coach-marks.component.scss'],
   animations: [
-    trigger('geo-coachmark-animation', getAnimation(2000)),
-    trigger('add-fab-animation', getAnimation(4000)),
-    trigger('add-text-animation', getAnimation(4500)),
-    trigger('warning-icon-animation', getAnimation(6000)),
-    trigger('warning-coachmark-animation', getAnimation(6500)),
+    trigger('geo-fab-animation', CustomAnimation.createEnterAnimation(200, 500, EASING_IN_OUT_BACK)),
+    trigger('geo-coachmark-animation', CustomAnimation.createEnterAnimation(800)),
+    trigger('add-fab-animation', CustomAnimation.createEnterAnimation(3000, 500, EASING_IN_OUT_BACK)),
+    trigger('add-text-animation', CustomAnimation.createEnterAnimation(3500)),
+    trigger('warning-icon-animation', CustomAnimation.createEnterAnimation(4000, 500, EASING_IN_OUT_BACK)),
+    trigger('warning-coachmark-animation', CustomAnimation.createEnterAnimation(4500)),
   ]
 })
 export class CoachMarksComponent implements OnInit {
@@ -43,7 +36,7 @@ export class CoachMarksComponent implements OnInit {
       });
     setTimeout(() => {
       this.isOpen = true;
-    }, 3000);
+    }, 2000);
   }
 
   async hide() {

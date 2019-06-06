@@ -12,7 +12,7 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
 import { Router, NavigationStart } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { settings } from '../../../settings';
 
 const DEBUG_TAG = 'HomePage';
@@ -37,6 +37,7 @@ export class HomePage implements OnInit, OnDestroy {
   // tripLogLayer = L.layerGroup();
   selectedMarker: MapItemMarker;
   showMapCenter: boolean;
+  hideFab = false;
   dataLoadIds: string[] = [];
 
   constructor(
@@ -83,6 +84,15 @@ export class HomePage implements OnInit, OnDestroy {
       });
     }));
 
+    this.subscriptions.push(this.userSettingService.userSettingObservable$.pipe(
+      map((us) => us.showGeoSelectInfo),
+      distinctUntilChanged()
+    ).subscribe((showGeoSelectInfo) => {
+      this.ngZone.run(() => {
+        this.hideFab = showGeoSelectInfo;
+      });
+    }));
+
     // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
     //   this.tripLogLayer.clearLayers();
     //   const latLngs = tripLogItems.map((tripLogItem) => L.latLng({
@@ -93,8 +103,8 @@ export class HomePage implements OnInit, OnDestroy {
     // });
   }
 
-  onMapReady(map: L.Map) {
-    this.map = map;
+  onMapReady(leafletMap: L.Map) {
+    this.map = leafletMap;
     this.markerLayer.addTo(this.map);
     this.markerLayer.on('clusterclick', (a: any) => {
       const groupLatLng: L.LatLng = a.latlng;
