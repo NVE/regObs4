@@ -8,11 +8,11 @@ export const EASE_IN_OUT = 'ease-in-out';
 export class CustomAnimation {
 
     static createScaleInInitialStyle(fromScale = 0, fromOpacity = 0) {
-        return style({ transform: `scale(${fromScale})`, opacity: fromOpacity });  // initial
+        return style({ transform: `scale3d(${fromScale},${fromScale},1)`, opacity: fromOpacity });  // initial
     }
 
     static createScaleInAnimation(delay: number = 0, duration: number = DEFAULT_DURATION, easing = EASE_IN_OUT) {
-        return animate(`${duration}ms ${delay}ms ${easing}`, style({ transform: 'scale(1)', opacity: 1 }));
+        return animate(`${duration}ms ${delay}ms ${easing}`, style({ transform: 'scale3d(1,1,1)', opacity: 1 }));
     }
 
     static createScaleInTransition(

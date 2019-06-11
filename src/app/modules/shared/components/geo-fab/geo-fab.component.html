@@ -9,7 +9,8 @@
     </ion-label>
   </ion-item>
   <ion-list [@listAnimate]="selectableGeoHazards.length" *ngIf="isOpen" lines="none">
-    <ion-item *ngFor="let geoHazards of selectableGeoHazards" (click)="setCurrentGeoHazard(geoHazards)">
+    <ion-item class="list-item" *ngFor="let geoHazards of selectableGeoHazards"
+      (click)="setCurrentGeoHazard(geoHazards)">
       <ion-fab-button margin-end slot="start" [color]="color">
         <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
       </ion-fab-button>

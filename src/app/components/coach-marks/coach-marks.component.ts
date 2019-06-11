@@ -11,10 +11,10 @@ import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../core/anima
   styleUrls: ['./coach-marks.component.scss'],
   animations: [
     trigger('geo-coachmark-animation', CustomAnimation.createEnterScaleInAnimation(1000, 500, EASE_IN_OUT, 0.9)),
-    trigger('add-fab-animation', CustomAnimation.createEnterScaleInAnimation(2000, 500, EASE_IN_OUT_BACK)),
-    trigger('add-text-animation', CustomAnimation.createEnterScaleInAnimation(3000, 500, EASE_IN_OUT, 0.9)),
-    trigger('warning-icon-animation', CustomAnimation.createEnterScaleInAnimation(4000, 500, EASE_IN_OUT_BACK)),
-    trigger('warning-coachmark-animation', CustomAnimation.createEnterScaleInAnimation(5000, 500, EASE_IN_OUT, 0.9)),
+    trigger('add-fab-animation', CustomAnimation.createEnterScaleInAnimation(3000, 500, EASE_IN_OUT_BACK)),
+    trigger('add-text-animation', CustomAnimation.createEnterScaleInAnimation(4000, 500, EASE_IN_OUT, 0.9)),
+    trigger('warning-icon-animation', CustomAnimation.createEnterScaleInAnimation(5000, 500, EASE_IN_OUT_BACK)),
+    trigger('warning-coachmark-animation', CustomAnimation.createEnterScaleInAnimation(6000, 500, EASE_IN_OUT, 0.9)),
   ]
 })
 export class CoachMarksComponent implements OnInit {
@@ -35,7 +35,7 @@ export class CoachMarksComponent implements OnInit {
       });
     setTimeout(() => {
       this.isOpen = true;
-    }, 1500);
+    }, 2000);
   }
 
   async hide() {

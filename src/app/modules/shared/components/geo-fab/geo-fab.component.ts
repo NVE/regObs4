@@ -4,7 +4,7 @@ import { FullscreenService } from '../../../../core/services/fullscreen/fullscre
 import { Observable, Subscription } from 'rxjs';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { CustomAnimation, EASE_IN_OUT_BACK, DEFAULT_DURATION } from '../../../../core/animations/custom.animation';
+import { CustomAnimation, EASE_IN_OUT_BACK, DEFAULT_DURATION, EASE_IN_OUT } from '../../../../core/animations/custom.animation';
 
 @Component({
   selector: 'app-geo-fab',
@@ -12,16 +12,16 @@ import { CustomAnimation, EASE_IN_OUT_BACK, DEFAULT_DURATION } from '../../../..
   styleUrls: ['./geo-fab.component.scss'],
   animations: [
     trigger('enterAnimationFab', [
-      state('x', style({ transform: 'scale(0)', opacity: 0 })),
-      state('visible', style({ transform: 'scale(1)', opacity: 1 })),
-      transition('x => startAnimated', CustomAnimation.createScaleInTransition(500, 1000, EASE_IN_OUT_BACK))
+      state('x', style({ transform: 'scale3d(0,0,1)', opacity: 0 })),
+      state('visible', style({ transform: 'scale3d(1,1,1)', opacity: 1 })),
+      transition('x => startAnimated', CustomAnimation.createScaleInTransition(200, 500, EASE_IN_OUT_BACK))
     ]),
-    trigger('enterAnimation', CustomAnimation.createEnterScaleInAnimation(0, 1000, EASE_IN_OUT_BACK)),
+    trigger('enterAnimation', CustomAnimation.createEnterScaleInAnimation(0, 200, EASE_IN_OUT)),
     trigger('listAnimate', [
       transition('* => *', [
         query(':enter', [
-          style({ transform: 'scale(0)', opacity: 0 }),  // initial
-          stagger(100, CustomAnimation.createScaleInAnimation(0, 1000, EASE_IN_OUT_BACK)),
+          style({ transform: 'translate3d(0, -30px, 0) scale3d(0, 0, 1)', opacity: 0 }),  // initial
+          stagger(100, animate(`200ms 0ms ${EASE_IN_OUT}`, style({ transform: 'translate3d(0, 0, 0) scale3d(1,1,1)', opacity: 1 }))),
         ], { optional: true })
       ]),
     ]),
