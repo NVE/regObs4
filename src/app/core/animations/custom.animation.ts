@@ -2,28 +2,41 @@ import { Animation } from '@ionic/core';
 import { transition, style, animate } from '@angular/animations';
 
 export const DEFAULT_DURATION = 200;
-export const EASING_IN_OUT_BACK = 'cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+export const EASE_IN_OUT_BACK = 'cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+export const EASE_IN_OUT = 'ease-in-out';
 
 export class CustomAnimation {
 
-    static createScaleInInitialStyle(delay: number = 0, duration: number = DEFAULT_DURATION, easing = 'ease-in-out') {
-        return style({ transform: 'scale(0)', opacity: 0 });  // initial
+    static createScaleInInitialStyle(fromScale = 0, fromOpacity = 0) {
+        return style({ transform: `scale(${fromScale})`, opacity: fromOpacity });  // initial
     }
 
-    static createScaleInAnimation(delay: number = 0, duration: number = DEFAULT_DURATION, easing = 'ease-in-out') {
+    static createScaleInAnimation(delay: number = 0, duration: number = DEFAULT_DURATION, easing = EASE_IN_OUT) {
         return animate(`${duration}ms ${delay}ms ${easing}`, style({ transform: 'scale(1)', opacity: 1 }));
     }
 
-    static createScaleInTransition(delay: number = 0, duration: number = DEFAULT_DURATION, easing = 'ease-in-out') {
+    static createScaleInTransition(
+        delay: number = 0,
+        duration: number = DEFAULT_DURATION,
+        easing = EASE_IN_OUT,
+        fromScale = 0,
+        fromOpacity = 0,
+    ) {
         return [
-            CustomAnimation.createScaleInInitialStyle(),  // initial
+            CustomAnimation.createScaleInInitialStyle(fromScale, fromOpacity),  // initial
             CustomAnimation.createScaleInAnimation(delay, duration, easing),
         ];
     }
 
-    static createEnterAnimation(delay: number = 0, duration: number = DEFAULT_DURATION, easing = 'ease-in-out') {
+    static createEnterScaleInAnimation(
+        delay: number = 0,
+        duration: number = DEFAULT_DURATION,
+        easing = EASE_IN_OUT,
+        fromScale = 0,
+        fromOpacity = 0,
+    ) {
         return [
-            transition(':enter', CustomAnimation.createScaleInTransition(delay, duration, easing))
+            transition(':enter', CustomAnimation.createScaleInTransition(delay, duration, easing, fromScale, fromOpacity))
         ];
     }
 
@@ -45,7 +58,7 @@ export class CustomAnimation {
 
         return Promise.resolve(baseAnimation
             .addElement(baseEl)
-            .easing(EASING_IN_OUT_BACK)
+            .easing(EASE_IN_OUT_BACK)
             .duration(DEFAULT_DURATION)
             .beforeAddClass('show-modal')
             .add(backdropAnimation)

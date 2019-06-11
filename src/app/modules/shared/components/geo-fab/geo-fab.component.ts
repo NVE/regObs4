@@ -4,7 +4,7 @@ import { FullscreenService } from '../../../../core/services/fullscreen/fullscre
 import { Observable, Subscription } from 'rxjs';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { CustomAnimation, EASING_IN_OUT_BACK, DEFAULT_DURATION } from '../../../../core/animations/custom.animation';
+import { CustomAnimation, EASE_IN_OUT_BACK, DEFAULT_DURATION } from '../../../../core/animations/custom.animation';
 
 @Component({
   selector: 'app-geo-fab',
@@ -14,14 +14,14 @@ import { CustomAnimation, EASING_IN_OUT_BACK, DEFAULT_DURATION } from '../../../
     trigger('enterAnimationFab', [
       state('x', style({ transform: 'scale(0)', opacity: 0 })),
       state('visible', style({ transform: 'scale(1)', opacity: 1 })),
-      transition('x => startAnimated', CustomAnimation.createScaleInTransition(500, DEFAULT_DURATION, EASING_IN_OUT_BACK))
+      transition('x => startAnimated', CustomAnimation.createScaleInTransition(500, 1000, EASE_IN_OUT_BACK))
     ]),
-    trigger('enterAnimation', CustomAnimation.createEnterAnimation(0, DEFAULT_DURATION, EASING_IN_OUT_BACK)),
+    trigger('enterAnimation', CustomAnimation.createEnterScaleInAnimation(0, 1000, EASE_IN_OUT_BACK)),
     trigger('listAnimate', [
       transition('* => *', [
         query(':enter', [
           style({ transform: 'scale(0)', opacity: 0 }),  // initial
-          stagger(100, CustomAnimation.createScaleInAnimation(0, DEFAULT_DURATION, EASING_IN_OUT_BACK)),
+          stagger(100, CustomAnimation.createScaleInAnimation(0, 1000, EASE_IN_OUT_BACK)),
         ], { optional: true })
       ]),
     ]),

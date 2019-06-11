@@ -62,7 +62,7 @@
       <ion-icon slot="start" name="information-circle-outline" color="varsom-blue"></ion-icon>
       <ion-label class="menu-label">{{'MENU.ABOUT_REGOBS' | translate}}</ion-label>
     </ion-item>
-    <ion-item routerLink="/start-wizard" routerDirection="root" detail="true">
+    <ion-item (click)="openStartWizard()" detail="true">
       <svg-icon slot="start" src="/assets/icon/start-wizard.svg"></svg-icon>
       <ion-label class="menu-label">{{'MENU.START_WIZARD' | translate}}</ion-label>
     </ion-item>

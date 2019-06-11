@@ -37,7 +37,7 @@ export class HomePage implements OnInit, OnDestroy {
   // tripLogLayer = L.layerGroup();
   selectedMarker: MapItemMarker;
   showMapCenter: boolean;
-  hideFab = false;
+  showGeoSelectInfo = false;
   dataLoadIds: string[] = [];
 
   constructor(
@@ -59,10 +59,10 @@ export class HomePage implements OnInit, OnDestroy {
       this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((val: NavigationStart) => {
         if (val.url === '/tabs/home' || val.url === '/tabs' || val.url === '/') {
           this.loggingService.debug(`Home page route changed to ${val.url}. Start GeoLocation.`, DEBUG_TAG);
-          this.mapComponent.activateUpdates();
+          this.mapComponent.startGeoPositionUpdates();
         } else {
           this.loggingService.debug(`Home page route changed to ${val.url}. Stop GeoLocation.`, DEBUG_TAG);
-          this.mapComponent.disableUpdates();
+          this.mapComponent.stopGeoPositionUpdates();
         }
       }));
 
@@ -89,7 +89,12 @@ export class HomePage implements OnInit, OnDestroy {
       distinctUntilChanged()
     ).subscribe((showGeoSelectInfo) => {
       this.ngZone.run(() => {
-        this.hideFab = showGeoSelectInfo;
+        const hasChanged = this.showGeoSelectInfo !== showGeoSelectInfo;
+        this.showGeoSelectInfo = showGeoSelectInfo;
+        if (hasChanged && !this.showGeoSelectInfo) {
+          // Coach marks completed, start geoposition
+          this.mapComponent.startGeoPositionUpdates();
+        }
       });
     }));
 
@@ -131,14 +136,20 @@ export class HomePage implements OnInit, OnDestroy {
     }));
   }
 
-  ionViewDidEnter() {
-    this.loggingService.debug(`Home page ionViewDidEnter. Activate map updates and GeoLocation`, DEBUG_TAG);
-    this.mapComponent.activateUpdates();
+  async ionViewDidEnter() {
+    this.loggingService.debug(`Home page ionViewDidEnter.`, DEBUG_TAG);
+    const userSettings = await this.userSettingService.getUserSettings();
+    if (userSettings.showGeoSelectInfo) {
+      this.loggingService.debug('Display coachmarks, wait with starting geopostion', DEBUG_TAG);
+      return;
+    }
+    this.loggingService.debug(`Activate map updates and GeoLocation`, DEBUG_TAG);
+    this.mapComponent.startGeoPositionUpdates();
   }
 
   ionViewWillLeave() {
     this.loggingService.debug(`Home page ionViewWillLeave. Disable map updates and GeoLocation.`, DEBUG_TAG);
-    this.mapComponent.disableUpdates();
+    this.mapComponent.stopGeoPositionUpdates();
   }
 
   ngOnDestroy(): void {

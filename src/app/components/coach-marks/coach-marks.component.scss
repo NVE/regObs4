@@ -56,16 +56,14 @@
     }
 
     .geo-coachmark {
-        svg {
-            position: absolute;
-            top: 40px;
-            left: 70px;
-        }
+        position: absolute;
+        top: 40px;
+        left: 70px;
 
         ion-text {
             position: absolute;
-            top: 70px;
-            left: 115px;
+            top: 31px;
+            left: 51px;
             transform: rotate(4.28deg);
             width: 112px;
             text-align: center;
@@ -73,15 +71,13 @@
     }
 
     .add-coachmark {
-        svg {
-            position: absolute;
-            bottom: 117px;
-            right: 70px;
-        }
+        position: absolute;
+        bottom: 117px;
+        right: 70px;
         ion-text {
             position: absolute;
-            bottom: 170px;
-            right: 29px;
+            bottom: 60px;
+            right: -45px;
             width: 180px;
             text-align: center;
             transform: rotate(-6.98deg);
@@ -89,15 +85,14 @@
     }
 
     .warning-coachmark {
-        svg {
-            position: absolute;
-            bottom: 31px;
-            right: calc(50% - 100px);
-        }
+        position: absolute;
+        bottom: 23px;
+        right: calc(50% - 100px);
+
         ion-text {
             position: absolute;
-            bottom: 66px;
-            right: calc(50% - 60px);
+            bottom: 44px;
+            right: 40px;
             width: 153px;
             text-align: center;
             transform: rotate(-16.77deg);
