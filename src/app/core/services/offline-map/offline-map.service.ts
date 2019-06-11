@@ -138,21 +138,25 @@ export class OfflineMapService implements OnReset {
     this.stopProcessingOfflineImageSaveQueue();
     if (this._shouldProcessOfflineImages && this._saveBuffer.size > 0) {
       const latest = this._saveBuffer.newest;
-      this._saveBuffer.remove(latest.key);
-      const currentTile = latest.value;
-      this.getImageDataUrlAsObservable(currentTile).subscribe((result: { dataUrl: string, size: number }) => {
-        if (result && result.dataUrl && result.size > 0) {
-          this.saveTileDataUrlToDbCache(latest.key, result.dataUrl, result.size).then(() => {
-            // this.loggingService.debug(`Saved tile: ${latest.key}`, DEBUG_TAG);
-            continueProcessing();
+      if (latest) {
+        const key = latest.key;
+        if (key !== undefined) {
+          this._saveBuffer.remove(key);
+          const currentTile = latest.value;
+          this.getImageDataUrlAsObservable(currentTile).subscribe((result: { dataUrl: string, size: number }) => {
+            if (result && result.dataUrl && result.size > 0) {
+              this.saveTileDataUrlToDbCache(key, result.dataUrl, result.size).then(() => {
+                continueProcessing();
+              }, continueProcessing);
+            } else {
+              continueProcessing();
+            }
           }, continueProcessing);
-        } else {
-          continueProcessing();
+          return;
         }
-      }, continueProcessing);
-    } else {
-      continueProcessing(settings.map.tiles.cacheSaveBufferIdleInterval);
+      }
     }
+    continueProcessing(settings.map.tiles.cacheSaveBufferIdleInterval);
   }
 
   private workFunc(input: {
