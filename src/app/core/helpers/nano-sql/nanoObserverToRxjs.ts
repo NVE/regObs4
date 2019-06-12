@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs/Observable';
 import { InanoSQLObserverQuery } from '@nano-sql/core/lib/interfaces';
+import { Observable } from 'rxjs';
 
 // declare module '@nano-sql/core/lib/interfaces' {
 //     interface InanoSQLObserverQuery {

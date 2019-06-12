@@ -63,9 +63,6 @@
                 "input": "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
               },
               {
-                "input": "node_modules/animate.css/animate.css"
-              },
-              {
                 "input": "node_modules/source-sans-pro/source-sans-pro.css"
               }
             ],
