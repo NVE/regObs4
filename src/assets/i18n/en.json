@@ -12,6 +12,11 @@
     "UNDO": "Undo",
     "WARNING": "Warning"
   },
+  "COACH_MARKS": {
+    "ADD_OBSERVATIONS": "Add your observations",
+    "SELECT_GEO_HAZARD": "Select geo hazard",
+    "VIEW_WARNINGS": "View warnings from varsom.no"
+  },
   "DATA_LOAD": {
     "DATA": "Loading...",
     "LOADING": "Loading"

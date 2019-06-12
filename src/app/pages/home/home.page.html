@@ -4,6 +4,6 @@
   <app-map-center-info></app-map-center-info>
   <app-map-item-bar></app-map-item-bar>
   <app-geo-fab *ngIf="showGeoSelectInfo === false"></app-geo-fab>
-  <app-add-menu></app-add-menu>
+  <app-add-menu slot="fixed"></app-add-menu>
   <app-data-load *ngIf="dataLoadIds" [ids]="dataLoadIds" simple="true"></app-data-load>
 </ion-content>
