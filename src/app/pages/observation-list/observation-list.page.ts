@@ -24,9 +24,9 @@ export class ObservationListPage implements OnInit, OnDestroy {
     private subscription: Subscription;
     cancelSubject: Subject<any>;
 
-    @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
-    @ViewChild(IonRefresher) refresher: IonRefresher;
-    @ViewChild(IonContent) content: IonContent;
+    // @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
+    // @ViewChild(IonRefresher) refresher: IonRefresher;
+    // @ViewChild(IonContent) content: IonContent;
 
     trackByIdFunc = this.trackByIdFuncInternal.bind(this);
     refreshFunc = this.refresh.bind(this);

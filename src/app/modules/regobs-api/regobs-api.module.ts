@@ -5,6 +5,7 @@ import { RegobsApiConfiguration, RegobsApiConfigurationInterface } from './regob
 
 import { AccountService } from './services/account.service';
 import { GeneralObsService } from './services/general-obs.service';
+import { GeoCodeService } from './services/geo-code.service';
 import { HelptextService } from './services/helptext.service';
 import { KdvElementsService } from './services/kdv-elements.service';
 import { LocationService } from './services/location.service';
@@ -28,6 +29,7 @@ import { TripService } from './services/trip.service';
     RegobsApiConfiguration,
     AccountService,
     GeneralObsService,
+    GeoCodeService,
     HelptextService,
     KdvElementsService,
     LocationService,

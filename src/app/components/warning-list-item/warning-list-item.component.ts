@@ -22,9 +22,8 @@ export class WarningListItemComponent implements OnInit {
   @Input() warningGroup: WarningGroup;
   GeoHazard = GeoHazard;
 
-  @ViewChild(IonItemSliding) itemSlide: IonItemSliding;
-  @ViewChild(IonItemOption) itemOption: IonItemOption;
-  @ViewChild(WarningGroupFavouriteToggleComponent) favouriteToggle: WarningGroupFavouriteToggleComponent;
+  @ViewChild(IonItemSliding, { static : false }) itemSlide: IonItemSliding;
+  @ViewChild(WarningGroupFavouriteToggleComponent, { static : false }) favouriteToggle: WarningGroupFavouriteToggleComponent;
 
   constructor(
     private externalLinkService: ExternalLinkService,

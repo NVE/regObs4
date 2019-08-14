@@ -17,7 +17,7 @@ import { RegistrationService } from '../../../registration/services/registration
   styleUrls: ['./add-menu.component.scss']
 })
 export class AddMenuComponent implements OnInit, OnDestroy {
-  @ViewChild('menuFab') menuFab: IonFab;
+  @ViewChild('menuFab', { static : false }) menuFab: IonFab;
 
   private subscriptions: Subscription[] = [];
 

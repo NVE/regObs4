@@ -13,10 +13,10 @@ import { settings } from '../../../../../settings';
 export class SupportTilesMenuComponent implements OnInit, OnDestroy {
 
   @Input() userSetting: UserSetting;
-  @ViewChild('steepness') steepness;
-  @ViewChild('weakenedice') weakenedice;
-  @ViewChild('floodzoones') floodzoones;
-  @ViewChild('clayzones') clayzones;
+  @ViewChild('steepness', { static : true }) steepness;
+  @ViewChild('weakenedice', { static : true }) weakenedice;
+  @ViewChild('floodzoones', { static : true }) floodzoones;
+  @ViewChild('clayzones', { static : true }) clayzones;
 
   get currentGeoHazards(): GeoHazard[] {
     return this.userSetting ? this.userSetting.currentGeoHazard : [];

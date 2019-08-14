@@ -23,8 +23,8 @@ const DEBUG_TAG = 'HomePage';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
-  @ViewChild(MapItemBarComponent) mapItemBar: MapItemBarComponent;
-  @ViewChild(MapComponent) mapComponent: MapComponent;
+  @ViewChild(MapItemBarComponent, { static : true }) mapItemBar: MapItemBarComponent;
+  @ViewChild(MapComponent, { static : true }) mapComponent: MapComponent;
   private map: L.Map;
   private markerLayer = LeafletClusterHelper.createMarkerClusterGroup({
     spiderfyOnMaxZoom: false,

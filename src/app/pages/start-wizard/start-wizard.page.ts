@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
 })
 
 export class StartWizardPage implements OnInit, OnDestroy {
-  @ViewChild(IonSlides) slides: IonSlides;
+  @ViewChild(IonSlides, { static : false }) slides: IonSlides;
   GeoHazard = GeoHazard;
   LangKey = LangKey;
   userSettings: UserSetting;

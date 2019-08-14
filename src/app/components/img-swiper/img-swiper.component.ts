@@ -45,7 +45,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   loaded = false;
   recreateSwiper = false;
 
-  @ViewChild(IonSlides) slider: IonSlides;
+  @ViewChild(IonSlides, { static : false }) slider: IonSlides;
 
   get totalImages() {
     return this.imgUrl.length;

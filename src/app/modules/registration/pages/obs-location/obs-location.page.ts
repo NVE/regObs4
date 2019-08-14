@@ -30,7 +30,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   geoHazard: GeoHazard;
   isSaveDisabled = false;
   hasSaved = false;
-  @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
+  @ViewChild(SetLocationInMapComponent, { static : false }) setLocationInMapComponent: SetLocationInMapComponent;
 
   private subscription: Subscription;
   private loggedInUser: LoggedInUser;

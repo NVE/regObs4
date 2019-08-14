@@ -35,7 +35,7 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
 
-  @ViewChild(IonTabs) private tabs: IonTabs;
+  // @ViewChild(IonTabs) private tabs: IonTabs;
   constructor(
     private fullscreenService: FullscreenService,
     private platform: Platform,
