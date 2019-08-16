@@ -20,16 +20,11 @@ import { map } from 'rxjs/operators';
 import { settings } from '../../../../settings';
 import avalancheRegions from './../../../../assets/json/varslingsomraader.json';
 import regions from './../../../../assets/json/regions-simple-polygons.json';
+import { IRegionInViewOutput, IRegionInViewInput } from './region-in-view-models';
 
-// /// <reference lib="webworker" />
-
-// addEventListener('message', ({ data }) => {
-//   const response = `worker response to ${data}`;
-//   postMessage(response);
-// });
 
 @ObservableWorker()
-export class RegionInViewWorker implements DoWork<string, string> {
+export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInViewOutput> {
   private isInsideOrIntersects(firstGeometry: Polygon, secondGeometry: Polygon): boolean {
     return !!intersect(firstGeometry, secondGeometry) ||
       booleanContains(firstGeometry, secondGeometry) ||
@@ -54,15 +49,13 @@ export class RegionInViewWorker implements DoWork<string, string> {
     return firstAndBest;
   }
 
-  public work(input$: Observable<string>): Observable<string> {
+  public work(input$: Observable<IRegionInViewInput>): Observable<IRegionInViewOutput> {
 
-    return input$.pipe(map((message) => {
+    return input$.pipe(map((mapView) => {
       let regionInCenter: string = null;
       let regionsInViewBounds: string[] = [];
       let regionsInViewBuffer: string[] = [];
-    // try {
-      const mapView: {bounds: BBox, center: {lat: number, lng: number}, geoHazards: GeoHazard[]} = JSON.parse(message);
-      const currentViewAsPolygon: Feature<Polygon> = bboxPolygon(mapView.bounds);
+      const currentViewAsPolygon: Feature<Polygon> = bboxPolygon(<BBox>mapView.bounds);
 
       // Geojosn features that is inide or intersects with current view bounds
       const featuresInViewBounds = this.getFeaturesInViewBounds(currentViewAsPolygon, mapView.geoHazards);
@@ -82,9 +75,7 @@ export class RegionInViewWorker implements DoWork<string, string> {
         .map((f) => f.properties[featureName].toString());
       // const runtime = new Date().getTime() - start.getTime();
       // console.log(`[INFO][MapService] - Calculate regions took ${runtime} milliseconds`, result);
-    // } finally {
-      return JSON.stringify({ regionInCenter, regionsInViewBounds, regionsInViewBuffer });
-    // }
+      return { regionInCenter, regionsInViewBounds, regionsInViewBuffer };
     }));
   }
 }

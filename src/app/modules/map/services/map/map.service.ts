@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IMapView } from './map-view.interface';
 import { Observable, combineLatest, Observer, BehaviorSubject, Subject, of } from 'rxjs';
-import { createWorker } from 'typed-web-workers';
 import {
   switchMap,
   shareReplay,
@@ -23,6 +22,7 @@ import { settings } from '../../../../../settings';
 import { Feature, Polygon } from '@turf/turf';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { fromWorker } from 'observable-webworker';
+import { IRegionInViewInput, IRegionInViewOutput } from '../../web-workers/region-in-view-models';
 
 const DEBUG_TAG = 'MapService';
 
@@ -125,12 +125,12 @@ export class MapService {
   }
 
   private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
-    const currenteMapViewAndGeoHazards =
-    combineLatest(
+    const currenteMapViewAndGeoHazards = combineLatest(
       this.relevantMapChange$,
       this.userSettingService.currentGeoHazardObservable$)
       .pipe(
-        map(([mapView, geoHazards]) => JSON.stringify(({
+        map(([mapView, geoHazards]) => ({
+          mapView,
           bounds: [
                       mapView.bounds.getSouthWest().lng, // minx
                       mapView.bounds.getSouthWest().lat, // miny
@@ -139,109 +139,19 @@ export class MapService {
                     ],
           center: {lat: mapView.center.lat, lng: mapView.center.lng },
           geoHazards
-        })))
+        }))
       );
 
-    return fromWorker<string, string>(() =>
+    return currenteMapViewAndGeoHazards.pipe(
+        switchMap((cvg) => fromWorker<IRegionInViewInput, IRegionInViewOutput>(() =>
             new Worker('../../web-workers/region-in-view.worker',
             { type: 'module' }),
-            currenteMapViewAndGeoHazards)
-          .pipe(
+            currenteMapViewAndGeoHazards).pipe(map((result) => ({
+               ...cvg.mapView,
+               ...result
+            })))),
         tap((val) => this.loggingService.debug('MapViewArea changed', DEBUG_TAG, val)),
-        map((val) => JSON.parse(val)),
         shareReplay(1)
       );
   }
-
-  // // NOTE! This code is running as a web worker and cannot have external dependencies!
-  // // TODO: Rewrite to Angular 8 web worker whan Angular 8 is released.
-  // // https://next.angular.io/guide/web-worker
-  // private workFunc(input: {
-  //   url: string,
-  //   featureGeoJson: GeoJSON.FeatureCollection<Polygon>,
-  //   featureName: string,
-  //   center: [number, number],
-  //   bbox: [number, number, number, number]
-  // },
-  //   callback: (_: IMapViewArea) => void) {
-  //   let regionInCenter: string = null;
-  //   let regionsInViewBounds: string[] = [];
-  //   let regionsInViewBuffer: string[] = [];
-  //   try {
-  //     const that = <any>self;
-  //     // const start = new Date();
-  //     that.importScripts(`${input.url}/turf/turf.min.js`);
-  //     const currentViewAsPolygon: Feature<Polygon> = that.turf.bboxPolygon(input.bbox);
-
-  //     const isInsideOrIntersects = function (firstGeometry: Polygon, secondGeometry: Polygon): boolean {
-  //       return that.turf.intersect(firstGeometry, secondGeometry) ||
-  //         that.turf.booleanContains(firstGeometry, secondGeometry) ||
-  //         that.turf.booleanContains(secondGeometry, firstGeometry);
-  //     };
-
-  //     // Geojosn features that is inide or intersects with current view bounds
-  //     const featuresInViewBounds = input.featureGeoJson.features.filter((f) =>
-  //       isInsideOrIntersects(f.geometry, currentViewAsPolygon.geometry));
-  //     regionsInViewBounds = featuresInViewBounds
-  //       .map((f) => f.properties[input.featureName].toString());
-
-  //     // Region that center view point is inside
-  //     const featureInCenter = featuresInViewBounds.find((f) => {
-  //       return that.turf.inside(input.center, f.geometry);
-  //     });
-  //     regionInCenter = featureInCenter ? featureInCenter.properties[input.featureName].toString() : null;
-  //     // Geojson features that intersects or is inside a buffer of 150 km
-  //     const buffer: Feature<Polygon> = that.turf.buffer(that.turf.point(input.center), 150, { units: 'kilometers' });
-  //     regionsInViewBuffer = input.featureGeoJson.features.filter((f) =>
-  //       isInsideOrIntersects(f.geometry, buffer.geometry))
-  //       .map((f) => f.properties[input.featureName].toString());
-  //     // const runtime = new Date().getTime() - start.getTime();
-  //     // console.log(`[INFO][MapService] - Calculate regions took ${runtime} milliseconds`, result);
-  //   } finally {
-  //     callback({ regionInCenter, regionsInViewBounds, regionsInViewBuffer });
-  //   }
-  // }
-
-  // Loading regions in memory
-  // private loadReagions(geoHazards: GeoHazard[]) {
-  //   if (geoHazards[0] === GeoHazard.Snow) {
-  //     if (!this._avalancheRegions) {
-  //       this._avalancheRegions = require('../../../../../assets/json/varslingsomraader.json');
-  //     }
-  //   } else {
-  //     if (!this._regions) {
-  //       this._regions = require('../../../../../assets/json/regions-simple-polygons.json');
-  //     }
-  //   }
-  // }
-
-  // private getRegionInViewObservable(mapView: IMapView, geoHazards: GeoHazard[]): Observable<IMapViewAndArea> {
-  //   this.loadReagions(geoHazards);
-  //   const regions = (geoHazards[0] === GeoHazard.Snow ? this._avalancheRegions
-  //     : this._regions);
-  //   const featureName = geoHazards[0] === GeoHazard.Snow ?
-  //     settings.services.warning.Snow.featureName : settings.services.warning.Dirt.featureName;
-
-  //   return Observable.create((observer: Observer<IMapViewAndArea>) => {
-  //     const typedWorker = createWorker(this.workFunc, (msg) => {
-  //       observer.next({ ...mapView, ...msg });
-  //       observer.complete();
-  //     });
-  //     typedWorker.postMessage(
-  //       {
-  //         url: document.location.protocol + '//' + document.location.host,
-  //         featureGeoJson: regions,
-  //         featureName,
-  //         center: [mapView.center.lng, mapView.center.lat],
-  //         bbox: [
-  //           mapView.bounds.getSouthWest().lng, // minx
-  //           mapView.bounds.getSouthWest().lat, // miny
-  //           mapView.bounds.getNorthEast().lng, // maxx
-  //           mapView.bounds.getNorthEast().lat, // maxy
-  //         ],
-  //       });
-
-  //     return () => typedWorker ? typedWorker.terminate() : null;
-  //   });
-  // }
 }
