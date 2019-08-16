@@ -3,7 +3,7 @@ import { NanoSql } from '../../../../nanosql';
 import { Observable } from 'rxjs';
 import { IDataLoad } from '../models/data-load.interface';
 import { map, take } from 'rxjs/operators';
-import * as moment from 'moment';
+import moment from 'moment';
 import '../../../core/helpers/nano-sql/nanoObserverToRxjs';
 import { nSQL } from '@nano-sql/core';
 import { NanoSqlObservableHelper } from '../../../core/helpers/nano-sql/nanoObserverToRxjs';

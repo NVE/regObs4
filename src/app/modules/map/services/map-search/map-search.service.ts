@@ -14,7 +14,7 @@ import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { LocationService, GeoCodeService } from '../../../regobs-api/services';
 import { NanoSql } from '../../../../../nanosql';
 import { MapSearchHistory } from './map-search-history.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { IMapView } from '../map/map-view.interface';
 import { NorwegianSearchResultModel, NorwegianSearchResultModelStednavn } from './norwegian-search-result.model';
 import { WorldSearchResultModel } from './world-search-result.model';

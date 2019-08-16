@@ -8,7 +8,7 @@ import * as RegobsApiModels from '../../regobs-api/models';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../login/services/login.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
 import { RegistrationTid } from '../models/registrationTid.enum';

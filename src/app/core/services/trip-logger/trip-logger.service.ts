@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TripLogItem } from './trip-log-item.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { TripLogState } from './trip-log-state.enum';
 import { TripLogActivity } from './trip-log-activity.model';
 import { NanoSql } from '../../../../nanosql';

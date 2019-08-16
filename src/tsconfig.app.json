@@ -3,10 +3,14 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
-    "module": "es2015"
+    "module": "es2015",
+  },
+  "angularCompilerOptions": {
+    "enableIvy": true
   },
   "exclude": [
     "test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "**/*.worker.ts"
   ]
 }

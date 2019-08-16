@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { DateHelperService } from './date-helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 import 'moment-timezone';
 
 describe('DateHelperService', () => {

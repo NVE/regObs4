@@ -7,7 +7,7 @@ import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { ObserverGroupDto, ObserverResponseDto } from '../../../modules/regobs-api/models';
-import * as moment from 'moment';
+import moment from 'moment';
 import { from, combineLatest, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 

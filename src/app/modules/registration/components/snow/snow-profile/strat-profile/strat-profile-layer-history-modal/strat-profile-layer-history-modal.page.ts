@@ -9,7 +9,7 @@ import {
   ObsLocationDto
 } from '../../../../../../regobs-api/models';
 import { Observable, pipe } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 import { GeoHazard } from '../../../../../../../core/models/geo-hazard.enum';
 import { RegistrationTid } from '../../../../../models/registrationTid.enum';
 import { UserSettingService } from '../../../../../../../core/services/user-setting/user-setting.service';

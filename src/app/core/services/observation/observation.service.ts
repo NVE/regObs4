@@ -3,7 +3,7 @@ import { settings } from '../../../../settings';
 import { RowCount } from '../../models/row-count.model';
 import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs';
 import { GeoHazard } from '../../models/geo-hazard.enum';
-import * as moment from 'moment';
+import moment from 'moment';
 import 'moment-timezone';
 import { NanoSql } from '../../../../nanosql';
 import { map, distinctUntilChanged, switchMap, shareReplay, tap, catchError } from 'rxjs/operators';

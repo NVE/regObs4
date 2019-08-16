@@ -3,7 +3,7 @@ import { AppVersion } from './src/app/core/models/app-version.model';
 const cordovaSetVersion = require('cordova-set-version');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const prettifyXml = require('prettify-xml')
+const prettifyXml = require('prettify-xml');
 
 async function getVersion(): Promise<AppVersion> {
   const revision = (await exec('git rev-parse --short HEAD')).stdout.toString().trim();

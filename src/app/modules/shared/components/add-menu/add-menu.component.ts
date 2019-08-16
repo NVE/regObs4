@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { IonFab, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';

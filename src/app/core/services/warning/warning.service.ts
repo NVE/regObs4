@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import 'moment-timezone';
 import { LangKey } from '../../models/langKey';
 import { HttpClient } from '@angular/common/http';

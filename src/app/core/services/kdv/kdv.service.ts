@@ -9,7 +9,7 @@ import { KdvElementsResponseDto } from '../../../modules/regobs-api/models';
 import { combineLatest, Observable } from 'rxjs';
 import { switchMap, map, shareReplay } from 'rxjs/operators';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { ObservableHelper } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';

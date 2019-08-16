@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WaterLevelMeasurementDto } from '../../../../regobs-api/models';
-import * as moment from 'moment';
+import moment from 'moment';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
 

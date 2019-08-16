@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { Observable, Subject, Subscribable, Subscription } from 'rxjs';
 import { MapItem } from '../../core/models/map-item.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 import { HelperService } from '../../core/services/helpers/helper.service';

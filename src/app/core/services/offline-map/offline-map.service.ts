@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OfflineMap } from './offline-map.model';
 import { Progress } from './progress.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { OfflineTile } from './offline-tile.model';
 import { NanoSql } from '../../../../nanosql';

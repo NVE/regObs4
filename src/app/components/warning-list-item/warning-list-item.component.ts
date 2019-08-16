@@ -4,7 +4,7 @@ import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { settings } from '../../../settings';
-import * as moment from 'moment';
+import moment from 'moment';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { LangKey } from '../../core/models/langKey';
 import { WarningGroupFavouriteToggleComponent } from '../warning-group-favourite-toggle/warning-group-favourite-toggle.component';
