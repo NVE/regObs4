@@ -10,14 +10,13 @@ import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { nSQL } from '@nano-sql/core';
-import { Observable, Observer } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Observer, from } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
-import { DataUrlHelper } from '../../helpers/data-url.helper';
-import { createWorker } from 'typed-web-workers';
 import { LRUCache } from 'lru-fast';
 import { Platform } from '@ionic/angular';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
+import { ImageHelper } from '../../helpers/image.helper';
 
 const DEBUG_TAG = 'OfflineMapService';
 
@@ -143,56 +142,14 @@ export class OfflineMapService implements OnReset {
         if (key !== undefined) {
           this._saveBuffer.remove(key);
           const currentTile = latest.value;
-          this.getImageDataUrlAsObservable(currentTile).subscribe((result: { dataUrl: string, size: number }) => {
-            if (result && result.dataUrl && result.size > 0) {
-              this.saveTileDataUrlToDbCache(key, result.dataUrl, result.size).then(() => {
-                continueProcessing();
-              }, continueProcessing);
-            } else {
-              continueProcessing();
-            }
-          }, continueProcessing);
+          ImageHelper.getImageDataUrlAsObservable(currentTile)
+          .pipe(switchMap((result) => from(this.saveTileDataUrlToDbCache(key, result.dataUrl, result.size))))
+          .subscribe((result) => null, continueProcessing, continueProcessing);
           return;
         }
       }
     }
     continueProcessing(settings.map.tiles.cacheSaveBufferIdleInterval);
-  }
-
-  private workFunc(input: {
-    blob: Blob,
-  },
-    callback: (_: { dataUrl: string, size: number }) => void) {
-    const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      const dataUrl = (<any>e.target).result as string;
-      if (dataUrl) {
-        callback({ dataUrl, size: input.blob.size });
-      } else {
-        callback(null);
-      }
-    };
-    fileReader.readAsDataURL(input.blob);
-  }
-
-  private getImageDataUrlAsObservable(el: HTMLImageElement, format = 'image/png', quality = 0.5):
-    Observable<{ dataUrl: string, size: number }> {
-    return Observable.create((observer: Observer<{ dataUrl: string, size: number }>) => {
-      const typedWorker = createWorker(this.workFunc, (msg) => {
-        observer.next(msg);
-        observer.complete();
-      });
-      const canvas = DataUrlHelper.getCanvasFromImage(el);
-      if (!canvas) {
-        observer.next(null);
-        observer.complete();
-      } else {
-        canvas.toBlob((blob) => {
-          typedWorker.postMessage({ blob });
-        }, format, quality);
-      }
-      return () => typedWorker ? typedWorker.terminate() : null;
-    });
   }
 
   async saveTileDataUrlToDbCache(id: string, dataUrl: string, size: number) {
