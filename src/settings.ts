@@ -177,25 +177,10 @@ export const settings = {
             },
             searchHistorySize: 5,
         },
-        elevation: {
-            no: {
-                // tslint:disable-next-line:max-line-length
-                url: 'https://gis3.nve.no/arcgis/rest/services/ImageService/SK_DTM20_NSF/ImageServer/identify?geometry={0},{1}&geometryType=esriGeometryPoint&inSR=32633&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=false&maxAllowableOffset=&outSR=&outFields=*&f=pjson'
-            },
+        bounds: {
             svalbard: {
-                // tslint:disable-next-line:max-line-length
-                url: 'https://gis3.nve.no/arcgis/rest/services/ImageService/DTM25_Svalbard/ImageServer/identify?geometry={0},{1}&geometryType=esriGeometryPoint&inSR=32633&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=false&maxAllowableOffset=&outSR=&outFields=*&f=pjson',
-                bbox: [[80.493155, 3.157765], [80.309405, 21.685119], [76.337433, 18.003936], [76.465943, 4.879966]],
+               bbox: [[80.493155, 3.157765], [80.309405, 21.685119], [76.337433, 18.003936], [76.465943, 4.879966]],
             },
-            world: {
-                url: 'https://secure.geonames.org',
-            }
-        },
-        steepness: {
-            no: {
-                // tslint:disable-next-line:max-line-length
-                url: 'https://gis3.nve.no/map/rest/services/Bratthet/MapServer/identify?geometry={0},{1}&geometryType=esriGeometryPoint&inSR=32633&layers=visible:0,1&layerDefs=&time=&layerTimeOptions=&tolerance=20&mapExtent={2}&imageDisplay=927,878,96&returnGeometry=false&maxAllowableOffset=20&geometryPrecision=1&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&returnUnformattedValues=false&returnFieldName=false&datumTransformations=&layerParameterValues=&mapRangeValues=&layerRangeValues=&f=pjson',
-            }
         },
         mapSearchZoomToLevel: 14,
         unknownMapCenter: [59.911197, 10.741059],
