@@ -537,6 +537,7 @@
     }
   },
   "SETTINGS": {
+    "ALLOW_ANALYTICS": "Allow sending app usage data",
     "APPMODE": "App mode",
     "APP_VERSION": "App version",
     "CONFIRM_RESET": "Are you sure you want to reset app?",

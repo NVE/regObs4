@@ -537,6 +537,7 @@
     }
   },
   "SETTINGS": {
+    "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
     "APPMODE": "Appmodus",
     "APP_VERSION": "App versjon",
     "CONFIRM_RESET": "Er du sikker på du vil tilbakestille app?",

@@ -59,11 +59,28 @@ export class AnalyticService {
     }
   }
 
+  disable() {
+    this.loggingService.debug('Disable Google Analytics', DEBUG_TAG);
+    window[`ga-disable-${settings.googleAnalytics.trackerId}`] = true;
+  }
+
+  enable() {
+    this.loggingService.debug('Enable Google Analytics', DEBUG_TAG);
+    if(environment.production) {
+      window[`ga-disable-${settings.googleAnalytics.trackerId}`] = false;
+    }
+  }
+
   init() {
     if (!ga) {
       this.loggingService.log('Could not load Google Analytics script. Probably ad blocker installed.', null, LogLevel.Warning, DEBUG_TAG);
       return;
     }
+    if (!environment.production) {
+      // Disable sending events unless production build
+      this.disable();
+    }
+
     this.loggingService.debug('Loading google analytics', DEBUG_TAG);
     if (window.localStorage) {
       ga('create', settings.googleAnalytics.trackerId, 'auto', {
@@ -77,9 +94,7 @@ export class AnalyticService {
     } else {
       ga('create', settings.googleAnalytics.trackerId, 'auto');
     }
-    if (!environment.production) {
-      ga('set', 'sendHitTask', null); // Disable sending events unless production build
-    }
+    
     const appVersion = this.appVersionService.getAppVersion();
     ga('set', 'appName', 'regObs4');
     ga('set', 'anonymizeIp', settings.googleAnalytics.anonymizeIp);

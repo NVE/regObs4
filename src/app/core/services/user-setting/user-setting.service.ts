@@ -163,6 +163,8 @@ export class UserSettingService implements OnReset {
       topoMap: TopoMap.mixArcGisOnline,
       showGeoSelectInfo: true,
       useRetinaMap: false,
+      consentForSendingAnalytics: true,
+      consentForSendingAnalyticsDialogCompleted: false,
     };
   }
 
