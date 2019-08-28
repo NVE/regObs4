@@ -30,7 +30,11 @@ class SearchService extends __BaseService {
   }
 
   /**
-   * @param criteria undefined
+   * Example critera for returning the 10 newest registrations:
+   * <code>
+   *     { "NumberOfRecords": 10 }
+   * </code>
+   * @param criteria Search criteria.
    * @return OK
    */
   SearchSearchResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
@@ -56,7 +60,11 @@ class SearchService extends __BaseService {
     );
   }
   /**
-   * @param criteria undefined
+   * Example critera for returning the 10 newest registrations:
+   * <code>
+   *     { "NumberOfRecords": 10 }
+   * </code>
+   * @param criteria Search criteria.
    * @return OK
    */
   SearchSearch(criteria: SearchCriteriaRequestDto): __Observable<Array<RegistrationViewModel>> {
@@ -66,7 +74,7 @@ class SearchService extends __BaseService {
   }
 
   /**
-   * @param criteria undefined
+   * @param criteria Search criteria
    * @return OK
    */
   SearchCountResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchCountResponseDto>> {
@@ -92,7 +100,7 @@ class SearchService extends __BaseService {
     );
   }
   /**
-   * @param criteria undefined
+   * @param criteria Search criteria
    * @return OK
    */
   SearchCount(criteria: SearchCriteriaRequestDto): __Observable<SearchCountResponseDto> {
@@ -102,7 +110,7 @@ class SearchService extends __BaseService {
   }
 
   /**
-   * @param request undefined
+   * @param request
    * @return OK
    */
   SearchSearchCriteriaResponse(request: SearchSideBarRequestDto): __Observable<__StrictHttpResponse<SearchSideBarDto>> {
@@ -128,7 +136,7 @@ class SearchService extends __BaseService {
     );
   }
   /**
-   * @param request undefined
+   * @param request
    * @return OK
    */
   SearchSearchCriteria(request: SearchSideBarRequestDto): __Observable<SearchSideBarDto> {
@@ -138,7 +146,7 @@ class SearchService extends __BaseService {
   }
 
   /**
-   * @param criteria undefined
+   * @param criteria Search criteria
    * @return OK
    */
   SearchAtAGlanceResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
@@ -164,7 +172,7 @@ class SearchService extends __BaseService {
     );
   }
   /**
-   * @param criteria undefined
+   * @param criteria Search criteria
    * @return OK
    */
   SearchAtAGlance(criteria: SearchCriteriaRequestDto): __Observable<Array<AtAGlanceViewModel>> {

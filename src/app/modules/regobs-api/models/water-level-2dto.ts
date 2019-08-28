@@ -12,5 +12,9 @@ export interface WaterLevel2Dto {
   MarkingTypeTID?: number;
   WaterLevelMeasurement?: Array<WaterLevelMeasurementDto>;
   MeasuringToolDescription?: string;
+
+  /**
+   * Max 1024-letters
+   */
   Comment?: string;
 }

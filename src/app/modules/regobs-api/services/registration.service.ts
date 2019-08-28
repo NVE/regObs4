@@ -30,9 +30,9 @@ class RegistrationService extends __BaseService {
   /**
    * @param params The `RegistrationService.RegistrationGetParams` containing the following parameters:
    *
-   * - `regId`:
+   * - `regId`: Registration Id
    *
-   * - `langKey`:
+   * - `langKey`: 1 = norwegian, 2 = english
    *
    * @return OK
    */
@@ -62,9 +62,9 @@ class RegistrationService extends __BaseService {
   /**
    * @param params The `RegistrationService.RegistrationGetParams` containing the following parameters:
    *
-   * - `regId`:
+   * - `regId`: Registration Id
    *
-   * - `langKey`:
+   * - `langKey`: 1 = norwegian, 2 = english
    *
    * @return OK
    */
@@ -75,7 +75,10 @@ class RegistrationService extends __BaseService {
   }
 
   /**
-   * @param regId undefined
+   * CAAML (Canadian Avalanche Association Markup Language) is a standard
+   * for the electronic representation of information pertinent to avalanche
+   * safety operations. See http://caaml.org/.
+   * @param regId Registration Id
    * @return OK
    */
   RegistrationGetCaamlResponse(regId: number): __Observable<__StrictHttpResponse<{}>> {
@@ -101,7 +104,10 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
-   * @param regId undefined
+   * CAAML (Canadian Avalanche Association Markup Language) is a standard
+   * for the electronic representation of information pertinent to avalanche
+   * safety operations. See http://caaml.org/.
+   * @param regId Registration Id
    * @return OK
    */
   RegistrationGetCaaml(regId: number): __Observable<{}> {
@@ -115,13 +121,13 @@ class RegistrationService extends __BaseService {
    *
    * - `width`:
    *
-   * - `registration`:
+   * - `registration`: Snow profile registration
    *
    * - `height`:
    *
    * - `format`:
    *
-   * - `langKey`:
+   * - `langKey`: 1 = norwegian, 2 = english
    *
    * @return OK
    */
@@ -156,13 +162,13 @@ class RegistrationService extends __BaseService {
    *
    * - `width`:
    *
-   * - `registration`:
+   * - `registration`: Snow profile registration
    *
    * - `height`:
    *
    * - `format`:
    *
-   * - `langKey`:
+   * - `langKey`: 1 = norwegian, 2 = english
    *
    * @return OK
    */
@@ -173,7 +179,7 @@ class RegistrationService extends __BaseService {
   }
 
   /**
-   * @param registration undefined
+   * @param registration Registration data
    * @return OK
    */
   RegistrationInsertResponse(registration: CreateRegistrationRequestDto): __Observable<__StrictHttpResponse<CreateRegistrationResponseDto>> {
@@ -199,7 +205,7 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
-   * @param registration undefined
+   * @param registration Registration data
    * @return OK
    */
   RegistrationInsert(registration: CreateRegistrationRequestDto): __Observable<CreateRegistrationResponseDto> {
@@ -209,7 +215,7 @@ class RegistrationService extends __BaseService {
   }
 
   /**
-   * @param registration undefined
+   * @param registration Registration data
    * @return OK
    */
   RegistrationValidateResponse(registration: CreateRegistrationRequestDto): __Observable<__StrictHttpResponse<CreateRegistrationResponseDto>> {
@@ -235,7 +241,7 @@ class RegistrationService extends __BaseService {
     );
   }
   /**
-   * @param registration undefined
+   * @param registration Registration data
    * @return OK
    */
   RegistrationValidate(registration: CreateRegistrationRequestDto): __Observable<CreateRegistrationResponseDto> {
@@ -251,7 +257,15 @@ module RegistrationService {
    * Parameters for RegistrationGet
    */
   export interface RegistrationGetParams {
+
+    /**
+     * Registration Id
+     */
     regId: number;
+
+    /**
+     * 1 = norwegian, 2 = english
+     */
     langKey: 1 | 2;
   }
 
@@ -260,9 +274,17 @@ module RegistrationService {
    */
   export interface RegistrationPlotPreviewPngParams {
     width: number;
+
+    /**
+     * Snow profile registration
+     */
     registration: CreateRegistrationRequestDto;
     height: number;
     format: number;
+
+    /**
+     * 1 = norwegian, 2 = english
+     */
     langKey?: 1 | 2;
   }
 }
