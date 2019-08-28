@@ -1,216 +1,185 @@
 [
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 0,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Hjelpetekst mangler."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 0,
         "GeoHazardTID": 20,
         "LangKey": 1,
         "Text": "Hjelpetekst mangler."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 0,
         "GeoHazardTID": 60,
         "LangKey": 1,
         "Text": "Hjelpetekst mangler."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 0,
         "GeoHazardTID": 70,
         "LangKey": 1,
         "Text": "Hjelpetekst mangler."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 10,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Får du ikke formidlet det du vil med de andre skjemaene? Bruk dette, og skriv i vei!"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 10,
         "GeoHazardTID": 20,
         "LangKey": 1,
         "Text": "Får du ikke formidlet det du vil med de andre skjemaene? Bruk dette, og skriv i vei!"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 10,
         "GeoHazardTID": 60,
         "LangKey": 1,
         "Text": "Får du ikke formidlet det du vil med de andre skjemaene? Bruk dette, og skriv i vei!"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 10,
         "GeoHazardTID": 70,
         "LangKey": 1,
         "Text": "Legg til web-lenker. Bruk helst kommentarfeltene i de andre temaene, men om det trengs mer plass kan du også legge til mer tekst her."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 11,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Vi ønsker å samle inn så mye informasjon som mulig om ulykker, nestenulykker og andre hendelser knyttet til snøskred. Dette vil være en del av det forebyggende arbeidet med å unngå skredhendelser i framtiden.\n  \nDu kan registerere fakta om selve skredet, om årsaken og forløpet, samt refleksjoner om hvordan skredet kunne vært unngått? Hvor mye informasjon du ønsker å legge til der er opp til deg. Fyll gjerne ut så mange som mulig av de andre skjemane i regobs også slik at vi får god info om forholdene rundt skredet. Husk å fokusere på læring og fakta, ikke spekuler eller fordel skyld. Du kan skrive mer utfyllende i vårt <a target=\"_blank \"http://www.varsom.no/ulykker/snoskredulykker-og-hendelser/\"> spørreskjema</a>.\n\nHvis det er flere valg som er aktuelle under \"skadeomfang\" velger du det som gir størst samfunnsmessig konsekvens.\n\n**NB**: Dersom du ønsker å vere anonym så kan du sende oss et samendrag av hendinga (prøv å få med punkta som blir spurt etter i regobs), så kan vil legge det ut på regObs for deg. Send til snoskredvarsling@nve.no"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 11,
         "GeoHazardTID": 60,
         "LangKey": 1,
         "Text": "Hva er konsekvensen av det du registrerer? Er det vann på ville veier som skader veg, jernbane, hus eller en målestasjon? Er noen skadet som følge av dette? Tenk at du vil opplyse andre som beveger seg i området om konsekvensene av at det er mye (eller lite?) vann i elva/bekken."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 11,
         "GeoHazardTID": 70,
         "LangKey": 1,
         "Text": "Vi og alle andre ønsker å lære av dine/deres feil. Hvis man legger inn info når det skjer noe kan alle lære av ulykken og den kan ha en forebyggende effekt. <br><br>\nKunnskap om ulykker og gjenkjenning av mønstre gjør at vi kan gjøre isvarselet mer relevant for å forhindre lignende ulykker. <br><br>\nGode tall på hvor ofte ulike typer ulykker eller nestenulykker forekommer gir også grunnlag for å jobbe prevantivt med opplæring og informasjon, for eksempel gjennom Isskolen på Varsom."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 13,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Her legg du inn fareteikn du har sett eller lagt merke til. Viss du har gått ein tur og ikkje lagt merke til noko er det også god info om du vel \"*ingen fareteikn*\" og sender inn dette. Å lære seg å legge merke til fareteikn er også nyttig for å gjere eigne gode vurderingar av snødekket.\n\nFareteikna me kan registrere er: <br>\n**Ferske skred** - skred som går medan du er på tur, eller som har gått siste 24 timar vert rekna som ferske. Klarare teikn på skredfare enn dette kan ein ikkje få. <br>\n**Drønn i snøen** - drønn i snøen er eit teikn på at det er svake lag som kollapsar i snødekket. <br>\n**Ferske sprekkar** - når snøen sprekker opp rundt deg er det eit teikn på flakdanning i overflata med svakt lag som kan påverkast under.<br>\n**Stort snøfall** - over 30 cm i døgnet vert rekna som stort snøfall. <br>\n**Rimkrystallar i overflata** - er ikkje noko farleg når dei ligg i overflata, men kan bli eit problem på sikt viss dei får snø ned.<br>\n**Rask temperaturstigning** - Meir enn 5 gr C på 3 timar<br>\n**Mykje vatn i snøen** - regn vil både auke vekta på snødekket og svekke bindingar i snødekket.<br>\n**Fersk vindtransportert snø** - Finst det områder der vinden nettopp har lagt igjen snø? Denne treng tid til å stabilisere seg.<br>\n\nLegg også inn informasjon om ca kva område observasjonen gjeld for. (td: over en viss høgde eller i ein spesiell himmelretning osv.)\n\n <a target=\"_blank\" href=\"http://www.varsom.no/snoskredskolen/skredfarevurdering-og-faretegn/faretegn/\">Du kan lese mer om faretegn på skredskolen </a>.\n\n\n\n"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 13,
         "GeoHazardTID": 20,
         "LangKey": 1,
         "Text": "Et registrert **faretegn for jordskred** gir jordskredvarslinga et inntrykk av hvordan situasjonen er i terrenget med de værforholdene som er på tidspunktet. Dette gir nyttig tilleggsinformasjon til den som skal vurdere faregraden for området.   \n\nBruk kommentarfeltet hvis de forhåndsdefinerte faretegnene ikke helt passer inn i det du ønsker å rapportere, eller for å beskrive omfanget/utstrekningen av det du registrerer."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 13,
         "GeoHazardTID": 60,
         "LangKey": 1,
         "Text": "Vann faretegn: \n* Ser du vann på ville veier og kan gi årsaken til det?\n* Er det tette stikkrenner eller andre avløpsveier?\n* Er det is i bekkeløp eller kulverter som tvinger vannet til å ta nye veier?\n* Stiger vannet faretruende fort?\n\t\t \nSlik type informasjon kan hjelpe flomvarslingen og andre til å forstå hvilke effekt en nedbør- eller snøsmeltingssituasjon har.\n  \nEller kanskje ansvarlig beredskapsmyndighet kan få et tips om hvor det er aktuelt å rykke ut nettopp nå?"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 13,
         "GeoHazardTID": 70,
         "LangKey": 1,
         "Text": "**Faretegn på is** kan man bruke til å vurdere hvor trygg isen er:\n\n* Kanskje det er ting som du har lagt merke til som ikke er så lett å vite om? Kanskje du vet at vannføringen har økt og isen tæres fra undersiden?\n* Kanskje man bør holde seg unna den ene enden av vannet da osen er åpen?\n* Eller rett og slett, du har boret og vet at det er bare 5cm is under snøen.  \n\nDet er noen ”kanksje’er” og i teksten over. Faretegn forteller bare en liten del av totalbildet. De er indikatorer, men er veldig nyttige som tilleggsinformasjon når man skal ferdes på isen.\n\nBruk kommentarfeltet til å beskrive så godt som mulig hvor farene er og omfanget."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 21,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Værobservasjonen er mest nyttig når den sier noe om været i området den siste dagen. En værobservasjon gjøres med bilder og billedtekst. En god observasjon dekker:\n* Et godt bilde som beskriver været i dag er gull!\n* Nedbørstype? Når på dagen?\n* Hva har gjennomsnittstemperaturen vært?\n* Vindhastighet og retning, har den variert iløpet av dagen?\n* Hvordan er skydekket?\n* I kommentarfeltet kan du utdype hvordan været har variert. For eksempel: Er det avvik fra værmeldingen? Har det vært byger? Hva er trenden på temperaturendring? Hvor går nullisotermen?"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 22,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "En snødekkeobservasjon er et anslag for området.\n\nDet **viktigste** du registrerer er:\n* Snøfokk: Er det vindtransport av snøen? Dette kan gjelde både gammel og ny snø som flytter på seg.\n* Snødekkehardhet: Det vi primært ønsker å vite noe om er om snødekket har løs snø som er tilgjengelig for transport og slik kan gi fokksnøproblem når det kommer vind.\n* Overflatefuktighet: Er snødekket tørt eller sørpe eller noe mellom?\n* Bilde: Et bilde som beskriver snødekket.\n\nFår vi denne informasjonen er vi veldig fornøyde. Du kan også holde fram med:\n* Snødybde: Mål totalt snødyp ved hjelp av søkestang. Ta helst tre sonderinger innenfor en radius på noen meter rundt deg og beregn / registrer gjennomsnittet av disse tre målingene.\n* Nysnødybde: Hvor mye nysnø er kommet i snitt de siste døgnet. Om annet er vurdert skal det framkomme av kommentarfelt.\n* Nysnøgrensa: Hvor faller nedbør som snø?\n* Snøgrensa: Hvor går grensa mellom snødekke og barmark?\n* Grense lagdelt snø: Øvre høyde for snø uten farlig lagdeling. Mildvær i lavland kan ødelegge svake lag i snødekket. Uten svake lag har vi eventuelt bare ett skredproblem og det er ubunden løs snø.\n* Kommentar: Hvordan er snøfordeling generelt, i forhold til høyde og eksposisjon, er det forskjeller i regionen?\n\n<a target=\"_blank\" href=\" http://www.varsom.no/snoskredskolen/del-informasjon/mine-forste-observasjoner/\">Du kan lese mer om dette på snøskredskolen</a>.\n\n![Alt text](http://api.nve.no/hydrology/regobs/v3.1.0/Image/medium/56434 =100x50 \"Optional title\")"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 23,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "**Merk:** Utgangspunktet for valg av passende sted for snøprofil og stabilitetstester er sikkerheten for de som utfører arbeidet.\n  \nStedet skal være representativt i forhold til de skredproblemer som skal vurderes.\n  \nSnøprofilet utføres i skyggesiden av gropen for å unngå direkte solinnstråling på snøprofilet. Undersøk også snøen ved bakken.\nHvis du er i tvil om hva slags snøkrystaller du finner i profilen kan denne tabellen være til hjelp:\n\n![Symbol i snøprofil.](http://www.varsom.no/media/2098/kornform-og-hardhet.jpg \"Kornform og hardhet\")\n\n![Symbol i snøprofil.](https://www.regobs.no/Attachments/raw/72851.jpg \"Symbol i snøprofil.\")\n\n\n<a target=\"_blank\" href=\"http://www.varsom.no/snoskredskolen/del-informasjon/fullstendig-observasjon/\">På skredskolen kan du lese mer om snøprofil</a>."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 25,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Her legger du inn resultat av stabilitetstester du har gjort. De testene som kan legges inn i feltet er Utvidet kompresjonstest (ECT) og Kompresjonstest (CT). Utfør testen på et område som er representativt for skredproblemet du vil undersøke. Utgangspunktet for valg av sted skal alltid være sikkerheten for den som utfører testen.\n\nFor ECT er kodene slik\n* ECTPV - brudd forplanter seg over hele søylen ved frigjøring. <br>\n* ECTP## - brudd forplanter seg over hele søylen etter ## antall slag. Maks antall slag er 30\n* ECTN## - brudd uten forplantning etter ## slag.\n* ECTX - Ingen brudd under testen (etter 30 slag)\n\nEksempel: ECTP12@85cmQ1 - betyr at søyla gikk til glatt og rent brudd med forplanting etter 12 slag 85 cm fra overflaten\n\n\n For <a target=\"_blank\" href=\"http://www.varsom.no/media/1175/feltbok-nve-forsvaret-nov2012-1.pdf#page=14\">beskrivelse av utføring av testen se vår feltbok</a>.\n\nTa gjerne to tester på samme sted for å sammenligne resultatene.\n\n"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 26,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Vi ønsker å samle inn så mye informasjon som mulig om ulykker, nestenulykker og andre hendelser knyttet til snøskred. Dette vil være en del av det forebyggende arbeidet med å unngå skredhendelser i framtiden.\n  \nDu kan registerere fakta om selve skredet, om årsaken og forløpet, samt refleksjoner om hvordan skredet kunne vært unngått? Hvor mye informasjon du ønsker å legge til der er opp til deg. Fyll gjerne ut så mange som mulig av de andre skjemaene i regobs også slik at vi får god info om forholdene rundt skredet. Husk å fokusere på læring og fakta, ikke spekuler eller fordel skyld. Du kan skrive mer utfyllende i vårt <a target=\"_blank \"http://www.varsom.no/ulykker/snoskredulykker-og-hendelser/\"> spørreskjema</a>.\n\nHvis det er flere valg som er aktuelle under \"skadeomfang\" velger du det som gir størst samfunnsmessig konsekvens.\n\n**NB**: Dersom du ønsker å vere anonym så kan du sende oss et samendrag av hendingen (prøv å få med punkta som blir spurt etter i regobs), så kan vil legge det ut på regObs for deg. Send til snoskredvarsling@nve.no"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 26,
         "GeoHazardTID": 20,
         "LangKey": 1,
         "Text": "Hvilken type jordskred har du observert? For varslingstjenesten er dette nyttig informasjon for å gjøre varslingen bedre.\n  \nEr det jordskred (har ikke gått i bekkeløp), er det flomskred (i bekkeløp), steinsprang (mest stein), leirskred (utglidninger i fine masser) eller noe annet? Det er også svært viktig å registrere når du antar skredet har gått, selv om dette kan være vanskelig å anslå dersom du faktisk ikke var tilstede da det skjedde.\n\nHvilke konsekvenser har jordskredet du har observert? Er det skade på hus, vei eller annen infrastruktur? Har det påvirket mennesker, dyr eller trafikk? Demmes bekk eller elv opp av skredmassene?\n  \nTenk at du vil opplyse andre som beveger seg i området om konsekvensene jordskredet har."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 31,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "En **skredfarevurdering** kan sees på som en oppsummering og konklusjon av alle tester og observasjoner du har meldt inn.\n  \nVurderinger du skal gjøre er:\n* Vurdering av snødekket. Hvordan er det oppbygd (gunstig/ugunstig)? Snøgrense?\n* Si noe om forventet utvikling (og begrunn).\n* Bruk faregradskalaen som referanse.\n* Si også noe om vurderinga av varslet faregrad. Dette er en god tilbakemelding til varslerne om de treffer\n\n\nVi bruker ADAM matrise for å komme fram til faregrad:\n\n![ADAM](http://www.varsom.no/media/2001/adamnov18.jpg \"\")"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 32,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Skjema for **skredproblem** følger arbeidsmønstret til den *<a target=\"_blank\" href=\"http://www.varsom.no/media/1190/faktaark-1-2015-systematisk-sn%C3%B8dekkeunders%C3%B8kelse.pdf\">systematiske snødekkeundersøkelsen</a>* og består av tre hoveddeler:\n1. vurdering av det svake laget\n2. vurdering av mulighetene for skred\n3. utbredelsen av skredproblemet\n\n \n**Utløsbarhet blir definert slik:** <br>\n* **Svært vanskelig** (å løse ut)Det finnes ingen eller kun et underordnet skredproblem. Snødekket har ingen utpregede svake lag. Brudd er vanskelig å initiere og/eller forplanter seg ikke.*Typiske observasjoner: Løs tørr/våt snø; hard og kompakt snø; ingen faretegn (f.eks drønn, skytende sprekker); stabilitets-tester antyder stabilitet (f.eks. EXTX/ECTN>20, ingen brudd i lille blokktest).* \n* **Vanskelig** (å løse ut)Det finnes et skredproblem, men det er ikke særlig utpreget. Det finnes minst ett svakt lag i snødekket, men dette har enten dårlig bruddforplantningsevne eller ligger under et tykt og hardt lag. Stor tilleggsbelastning som en gruppe skiløpere eller en snøskuter kan initiere et brudd.*Typiske observasjoner: Få faretegn (f.eks drønn, skytende sprekker); stabilitetstester viser verken klare tegn på stabilitet eller instabilitet (f.eks. ECTN/ECTP>20, ).«trappeformet» brudd i lille blokktest.*\n* **Lett** (å løse ut)Det finnes minst ett skredproblem. Ett eller flere svake lag er velutviklet. Brudd kan initieres ved liten tilleggsbelastning som fra en person/skiløper, men bruddforplantningen er ofte begrenset.*Typiske observasjoner: Noen faretegn (f.eks drønn, skytende sprekker); stabilitetstester antyder instabilitet (f.eks. ECTP <20, glatt brudd i noen blokktester).*\n* **Svært lett** (å løse ut)Det finnes minst ett skredproblem. Ett eller flere svake lag er vel utviklet og finnes i den øvre meteren av snødekket. Brudd kan initieres ved liten tilleggsbelastning som fra en person/skiløper og forplanter seg godt. Fjernutløsning er typisk.*Typiske observasjoner: Ofte mange og åpenbare faretegn (f.eks drønn, skytende sprekker); stabilitetstester antyder instabilitet og god brudd-forplantningsevne (f.eks. ECTP <10, ). lett og glatt brudd i lille blokktest).*\n\n**Utbredelse** <br>\n\n**Få bratte heng:** Skredproblemet finnes kun i veldig få områder og gir få og sjeldne faretegn <br>\n**Noen bratte heng:** Skredproblemet finnes i deler av terrenget, men er ofte begrenset av terrengformasjoner som bak rygger, i forsenkninger osv.  Faretegn forekommer, men er ikke alltid åpenbare. <br>\n**Mange bratte heng:** Skredproblemet finnes over store deler av terrenget, det er åpenbare og mange faretegn. Skredproblemet har så stor utbredelse at en ikke kan spesifisere faresoner. <br>\n  \nDu kan legge til inntil tre skredproblemer.\n\nFor å komme fra skredproblem til skredfaregrad bruker vi ADAM-matrise: <br>\n![ADAM](http://www.varsom.no/media/2001/adamnov18.jpg  \"\")\n\nLes mer om hvordan å legge inn skredproblem på  <a target=\"_blank\" href=\"http://www.varsom.no/snoskredskolen/del-informasjon/fullstendig-observasjon#skredproblem\">Snøskredskolen</a>."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 33,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Skjema for **skredaktivitet** bruker du når det går (ingen, ett eller mange) skred i et område og du vil formidle dette for å sette lys på skredproblemene i området du er.\n  \nSkredaktivitet forholder seg til det som skjer innen døgnet. Er du usikker så la det framkomme av kommentarfelt. Men husk også at med svært stor usikkerhet (flere dager) mister observasjonen verdi da det er skredaktivitet opp mot bestemte varslede skredproblemer som er nyttig.\n  \nDersom det går flere typer skred i et område kan det registreres flere skredaktiviteter. For eksempel er tørre flakskred i nordhelninger og våte løssnøskred i solutsatte sørhelninger to separate skredaktiviteter.\n  \nI skjema for skredaktivitet oppfordres du til å gjøre noen vurderinger som kan være utfordrende. For eksempel ønsker vi at du setter et høydeintervall skredene går i eller at du vurderer utbredelsen av skredaktiviteten sett i forhold til hele terrenget. Om du greier å vurdere dette blir observasjonene bedre for sammenligning med varslede skredproblemer.\n  \nHvis det ikke er gått skred over et døgn er det veldig nyttig om du formidler *ingen skredaktivitet observert*."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 36,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Pass på at du arbeider på et trygt sted. Stedet for profilgraving skal vere representativt for de skredproblemene som skal vurderes.\n  \nJobb på skyggesiden av gropen for å unngå at solinnstråling fører til omdanning av snøen du skal vurdere. De lagene som det er mest sannsynlig at du vil kunne påvirke er de øverste. Hvis det er mye snø så kan du konsentrere deg om den øverste halvannen meteren når du graver snøprofil.\n\nFor å **registrere lagdelinger** velger du underskjema *Lagdeling* og deretter *legg til nytt lag* <br>\nAngi tykkelse på lag, hardhet, kornform, størrelse og fuktighet. <br>\nHvis du ikke får formidlet det du vil trykker du på *Vis flere valg på dette laget* Du vil da få flere valgmuligheter (ma. alle underformer av korntyper) i alle nedtrekksmenyene, og du vil også få mulighet til å angi sekundær kornform og maks kornstørrelse i laget. NB: du får altså ikke bare frem flere nedtrekksmenyer, men du får også flere valg i menyene du allerede har fremme\n <br><br>\nNår du er ferdig med et lag velger du enten \"neste lag\" som lar deg begynne å arbeide på laget under, eller \"Ok, tilbake til oversikt\"\nNår du er på oversiktsskjerm kan du legge til nye lag øverst og nederst. Hvis du har glemt et lag legger du det til på topp eller bunn og \"drar\" det til rett plass.\n\nI Temperaturprofil er 0 cm snøoverflate. Deretter legger du inn dybde (avstand fra overflate) med postive tall og tilhørende temperatur.<br><br>\n\nEit utgangspunkt for hvilke snøkrystaller du finner kan være denne tabellen, her ser du også sammenheng mellom de symbol og bokstavkoder for de vanligeste kornformene: <br>\n![Symbol i snøprofil.](http://www.varsom.no/media/2098/kornform-og-hardhet.jpg \"Symbol i snøprofil.\") \n\n<a target=\"_blank\" href=\"http://www.varsom.no/snoskredskolen/del-informasjon/fullstendig-observasjon/\">På skredskolen kan du lese mer om snøprofil</a>.\n\n"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 37,
         "GeoHazardTID": 10,
         "LangKey": 1,
         "Text": "Angi tykkelse på lag, hardhet, kornform, størrelse og fuktighet. <br>\nHvis du ikke får formidlet det du vil trykker du på *Vis flere valg på dette laget* Du vil da få flere valgmuligheter (ma. alle underformer av korntyper) i alle nedtrekksmenyene, og du vil også få mulighet til å angi sekundær kornform og maks kornstørrelse i laget. NB: du får altså ikke bare frem flere nedtrekksmenyer, men du får også flere valg i menyene du allerede har fremme\n <br><br>\nNår du er ferdig med et lag velger du enten \"neste lag\" som lar deg begynne å arbeide på laget under, eller \"Ok, tilbake til oversikt\"\nNår du er på oversiktsskjerm kan du legge til nye lag øverst og nederst. Hvis du har glemt et lag legger du det til på topp eller bunn og \"drar\" det til rett plass.\nEit utgangspunkt for hvilke snøkrystaller du finner kan være denne tabellen, her ser du også sammenheng mellom de symbol og bokstavkoder for de vanligeste kornformene: <br>\n![Symbol i snøprofil.](http://www.varsom.no/media/2098/kornform-og-hardhet.jpg \"Symbol i snøprofil.\") \n\n<a target=\"_blank\" href=\"http://www.varsom.no/snoskredskolen/del-informasjon/snoprofil/?ref=mainmenu/\">På skredskolen kan du lese mer om snøprofil</a>.\n"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 50,
         "GeoHazardTID": 70,
         "LangKey": 1,
         "Text": "Før man starter boringen finner man et sted som virker representativt, og helst minst 50 m fra land, men sjekk selvsagt at isen er tykk nok til at det er trygt.<br><br>\nGrav vekk snøen og mål tykkelsen på snøen. Om den nederste delen av snøen er gjennomvåt registreres det som *sørpe*. Snøen over kalles *tørr* selv om den godt kan være fuktig. Du registrerer ett islag om gangen fra toppen og nedover. Også et mellomliggende vannlag registreres som et islag, da av type *Vann/sørpe (mellomlag)*. *Total istykkelse* beregnes av regObs og er avstanden fra toppen av det øverste islaget til bunnen av det nederste islaget. <br><br>\nI kommentarene er det fint med tekst om skøyteforhold og sikkerhet, om du ikke allerede har skrevet det under *Isdekningsgrad*."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 51,
         "GeoHazardTID": 70,
         "LangKey": 1,
         "Text": "Isdekning: viser isforholdene akkurat nå. <br>\n**Isdekning før observasjon:**<br>\n  - Bruk 'Brudd' hvis du ikke vet noe om isdekningen siden forrige observasjon. \n  - Bruk 'Forrige obs gjelder til i går' hvis forrige isdekning gjelder til i går. I dag er isdekningen enten endret eller uendret.\n  - Bruk 'Isfritt, nå første is målested' dersom dette er første is på målestedet denne vinteren.\n  - Bruk 'Isfritt, nå første is langs land' dersom dette er første is langs land denne vinteren.\n  - Bruk 'Isfritt, også isfritt nå' dersom det ikke er is, og ikke har vært det hittil denne vinteren.<br>\n\n**Bæreevne:** Er det fare for å gå gjennom isen som enkeltperson?<br>\n**Skøytbarhet:** Hvor godt egner det islagte vannet seg for å gå på skøyter?<br>\n\n**Kommentar:** Det er fint med tekst som utfyller skøyteforhold og sikkerhet, og kanskje anslag om istykkelsen (hvis du ikke har brukt istykkelsesskjemaet). Beskriv så detaljert som mulig hvor du har vært, og om det er gjettet eller målt. Husk at leseren trenger klar informasjon for å kunne unngå de farlige områdene.\n\n"
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 61,
         "GeoHazardTID": 60,
         "LangKey": 1,
         "Text": "Her kan du registrere observert vannstand, i forhold til en kjent skala eller andre referansepunkt. Er det vann opp til dørklinka? Ta et bilde og referer til bildet med en kommentar her."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 62,
         "GeoHazardTID": 60,
         "LangKey": 1,
         "Text": "Er det vann opp til dørklinka? Her kan du registrere målt eller markert vannstand, i forhold til en kjent skala eller andre referansepunkt.\n\nFå gjerne med hvor og når du har observert. Et bilde er alltid svært nyttig."
     },
     {
-        "ApplicationId": "1b83d144-6a2c-499b-8bdd-d40149212415",
         "RegistrationTID": 71,
         "GeoHazardTID": 20,
         "LangKey": 1,
