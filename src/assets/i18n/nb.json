@@ -7,6 +7,8 @@
   "ALERT": {
     "CANCEL": "Avbryt",
     "DEFAULT_HEADER": "Oisann!",
+    "FINE": "Greit",
+    "NO_THANKS": "Nei takk",
     "OK": "Ok",
     "PULL_TO_REFRESH": "Dra ned for å oppdatere...",
     "UNDO": "Angre",
@@ -538,6 +540,8 @@
   },
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
+    "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å forbedre Varsom Regobs ved å la oss se hvordan du bruker applikasjonen.",
+    "ALLOW_ANALYTICS_HEADER": "Del bruksstatistikk",
     "APPMODE": "Appmodus",
     "APP_VERSION": "App versjon",
     "CONFIRM_RESET": "Er du sikker på du vil tilbakestille app?",
@@ -549,6 +553,7 @@
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Kun i Norge",
     "NUMBER_OF_TILES_IN_CACHE": "Maksimalt antall offline kartblad",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om vår bruk av data i vår personvernerklæring.",
     "RESET": "Tilbakestill app",
     "RESETTING": "App tilbakestilles. Vennligst vent...",
     "SHOW_ADVANCED": "Vis avanserte innstillinger",

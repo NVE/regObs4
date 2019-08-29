@@ -131,9 +131,9 @@ class AccountService extends __BaseService {
 
   /**
    * @param dto undefined
-   * @return Account created
+   * @return OK or Account created
    */
-  AccountCreateAccountResponse(dto: CreateAccountRequest): __Observable<__StrictHttpResponse<ObserverResponseDto>> {
+  AccountCreateAccountResponse(dto: CreateAccountRequest): __Observable<__StrictHttpResponse<{} | ObserverResponseDto>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -151,17 +151,17 @@ class AccountService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<ObserverResponseDto>;
+        return _r as __StrictHttpResponse<{} | ObserverResponseDto>;
       })
     );
   }
   /**
    * @param dto undefined
-   * @return Account created
+   * @return OK or Account created
    */
-  AccountCreateAccount(dto: CreateAccountRequest): __Observable<ObserverResponseDto> {
+  AccountCreateAccount(dto: CreateAccountRequest): __Observable<{} | ObserverResponseDto> {
     return this.AccountCreateAccountResponse(dto).pipe(
-      __map(_r => _r.body as ObserverResponseDto)
+      __map(_r => _r.body as {} | ObserverResponseDto)
     );
   }
 

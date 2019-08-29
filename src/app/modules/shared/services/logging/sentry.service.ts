@@ -29,13 +29,27 @@ export class SentryService implements LoggingService {
     const appVersion = this.appVersionService.getAppVersion();
     Sentry.init(
       {
-        dsn: settings.sentryDsn,
+        dsn: environment.production ? settings.sentryDsn : null,
         transport: Sentry.Transports.FetchTransport,
         environment: appMode === AppMode.Prod ? 'regObs' : (appMode === AppMode.Demo ? 'demo regObs' : 'test regObs'),
         enabled: environment.production,
         release: appVersion.version,
         dist: appVersion.revision
       });
+  }
+
+  enable() {
+    Sentry.init({
+      dsn: environment.production ? settings.sentryDsn : null,
+      enabled: environment.production
+    });
+  }
+
+  disable() {
+    Sentry.init({
+      dsn: null,
+      enabled: false
+    });
   }
 
   setUser(user: LoggedInUser) {

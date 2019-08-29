@@ -7,6 +7,8 @@
   "ALERT": {
     "CANCEL": "Cancel",
     "DEFAULT_HEADER": "Whoops!",
+    "FINE": "Okay",
+    "NO_THANKS": "No thanks",
     "OK": "Ok",
     "PULL_TO_REFRESH": "Pull to refresh...",
     "UNDO": "Undo",
@@ -538,6 +540,8 @@
   },
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Allow sending app usage data",
+    "ALLOW_ANALYTICS_DESCRIPTION": "Help us improve Varsom Regobs by letting us know how you use the application.",
+    "ALLOW_ANALYTICS_HEADER": "Share usage statistics",
     "APPMODE": "App mode",
     "APP_VERSION": "App version",
     "CONFIRM_RESET": "Are you sure you want to reset app?",
@@ -549,6 +553,7 @@
     "LANGUAGE": "Language",
     "NORWAY_ONLY": "In Norway only",
     "NUMBER_OF_TILES_IN_CACHE": "Offline tiles cache size",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "You can read about our use of data in our privacy policy.",
     "RESET": "Reset app",
     "RESETTING": "App is resetting. Please wait...",
     "SHOW_ADVANCED": "Show advanced settings",

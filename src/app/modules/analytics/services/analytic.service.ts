@@ -5,8 +5,6 @@ import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { environment } from '../../../../environments/environment';
-import { Subscription } from 'rxjs';
-import { Platform } from '@ionic/angular';
 import { AppVersionService } from '../../../core/services/app-version/app-version.service';
 import { AppCustomDimension } from '../enums/app-custom-dimension.enum';
 import { AppEventAction } from '../enums/app-event-action.enum';
@@ -17,7 +15,6 @@ const DEBUG_TAG = 'AnalyticService';
   providedIn: 'root'
 })
 export class AnalyticService {
-  private subscription: Subscription;
 
   get router() {
     return this.injector.get(Router);
@@ -38,7 +35,7 @@ export class AnalyticService {
     }
   }
 
-  trackDimension(dimension: AppCustomDimension, value: string) {
+  trackDimension(dimension: AppCustomDimension, value: string | number | boolean) {
     if (ga) {
       this.loggingService.debug(`Tracking dimension ${dimension}: ${value}`, DEBUG_TAG);
       ga('set', dimension, value);
@@ -65,8 +62,9 @@ export class AnalyticService {
   }
 
   enable() {
-    this.loggingService.debug('Enable Google Analytics', DEBUG_TAG);
-    if(environment.production) {
+    this.loggingService.debug(`Enable Google Analytics ${(
+      environment.production ? '' : '(DEV-MODE! Analytics data is not sent to server!)')}`, DEBUG_TAG);
+    if (environment.production) {
       window[`ga-disable-${settings.googleAnalytics.trackerId}`] = false;
     }
   }
@@ -76,6 +74,8 @@ export class AnalyticService {
       this.loggingService.log('Could not load Google Analytics script. Probably ad blocker installed.', null, LogLevel.Warning, DEBUG_TAG);
       return;
     }
+    this.loggingService.debug(`Init Google Analytics ${(
+      environment.production ? '' : '(DEV-MODE! Analytics data is not sent to server!)')}`, DEBUG_TAG);
     if (!environment.production) {
       // Disable sending events unless production build
       this.disable();
@@ -94,7 +94,7 @@ export class AnalyticService {
     } else {
       ga('create', settings.googleAnalytics.trackerId, 'auto');
     }
-    
+
     const appVersion = this.appVersionService.getAppVersion();
     ga('set', 'appName', 'regObs4');
     ga('set', 'anonymizeIp', settings.googleAnalytics.anonymizeIp);

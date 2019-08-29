@@ -7,4 +7,5 @@ export enum AppCustomDimension {
     supportMap = 'dimension3',
     showMapCenter = 'dimension4',
     topoMap = 'dimension5',
+    enabledAnalytics = 'dimension7',
 }

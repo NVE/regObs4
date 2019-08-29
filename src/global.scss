@@ -230,6 +230,15 @@ ion-modal {
     }
 }
 
+ion-alert {
+    button.full-width {
+        width: 100%;
+    }
+    button.normal-weight {
+        font-weight: 400 !important;
+    }
+}
+
 ion-radio-group {
     .sc-ion-label-ios-h {
         margin: 10px 8px 10px 0;

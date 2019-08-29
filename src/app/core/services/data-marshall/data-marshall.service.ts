@@ -79,11 +79,15 @@ export class DataMarshallService implements OnReset {
       }));
       this.subscriptions.push(this.userSettingService.userSettingObservable$
         .pipe(map((userSetting) => userSetting.consentForSendingAnalytics), distinctUntilChanged()).subscribe((consent) => {
-            if(consent) {
-              this.analyticService.enable();
-            }else{
-              this.analyticService.disable();
-            }
+          if (consent) {
+            this.analyticService.enable();
+            this.loggingService.enable();
+            this.analyticService.trackDimension(AppCustomDimension.enabledAnalytics, consent);
+          } else {
+            this.analyticService.trackDimension(AppCustomDimension.enabledAnalytics, consent);
+            this.analyticService.disable();
+            this.loggingService.disable();
+          }
         }));
       this.subscriptions.push(this.userSettingService.showMapCenter$.subscribe((showMapCenter) => {
         this.analyticService.trackDimension(AppCustomDimension.showMapCenter, showMapCenter.toString());

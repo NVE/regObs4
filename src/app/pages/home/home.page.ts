@@ -14,6 +14,7 @@ import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.h
 import { Router, NavigationStart } from '@angular/router';
 import { filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { settings } from '../../../settings';
+import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -31,6 +32,7 @@ export class HomePage implements OnInit, OnDestroy {
     zoomToBoundsOnClick: false
   });
   private subscriptions: Subscription[] = [];
+  private showGeoSelectSubscription: Subscription;
 
   fullscreen$: Observable<boolean>;
   mapItemBarVisible = false;
@@ -47,6 +49,7 @@ export class HomePage implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private router: Router,
     private loggingService: LoggingService,
+    private usageAnalyticsConsentService: UsageAnalyticsConsentService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -84,19 +87,7 @@ export class HomePage implements OnInit, OnDestroy {
       });
     }));
 
-    this.subscriptions.push(this.userSettingService.userSettingObservable$.pipe(
-      map((us) => us.showGeoSelectInfo),
-      distinctUntilChanged()
-    ).subscribe((showGeoSelectInfo) => {
-      this.ngZone.run(() => {
-        const hasChanged = this.showGeoSelectInfo !== showGeoSelectInfo;
-        this.showGeoSelectInfo = showGeoSelectInfo;
-        if (hasChanged && !this.showGeoSelectInfo) {
-          // Coach marks completed, start geoposition
-          this.mapComponent.startGeoPositionUpdates();
-        }
-      });
-    }));
+    this.checkForFirstStartup();
 
     // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
     //   this.tripLogLayer.clearLayers();
@@ -106,6 +97,31 @@ export class HomePage implements OnInit, OnDestroy {
     //   }));
     //   L.polyline(latLngs, { color: 'red', weight: 3 }).addTo(this.tripLogLayer);
     // });
+  }
+
+  async checkForFirstStartup() {
+    const userSettings = await this.userSettingService.getUserSettings();
+    if (userSettings.showGeoSelectInfo) {
+      this.showGeoSelectSubscription = this.userSettingService.userSettingObservable$.pipe(
+        map((us) => us.showGeoSelectInfo),
+        distinctUntilChanged()
+      ).subscribe((showGeoSelectInfo) => {
+        this.ngZone.run(() => {
+          this.showGeoSelectInfo = showGeoSelectInfo;
+          if (!this.showGeoSelectInfo) {
+            if (this.showGeoSelectSubscription) {
+              this.showGeoSelectSubscription.unsubscribe();
+            }
+            this.showUsageAnalyticsDialog();
+          }
+        });
+      });
+    }
+  }
+
+  async showUsageAnalyticsDialog() {
+    await this.usageAnalyticsConsentService.checkUserDataConsentDialog();
+    this.mapComponent.startGeoPositionUpdates();
   }
 
   onMapReady(leafletMap: L.Map) {
@@ -130,7 +146,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
     // TODO: Move this to custom marker layer?
     const observationObservable =
-      combineLatest(this.observationService.observations$, this.userSettingService.showObservations$);
+      combineLatest([this.observationService.observations$, this.userSettingService.showObservations$]);
     this.subscriptions.push(observationObservable.subscribe(([regObservations, showObservations]) => {
       this.redrawObservationMarkers(showObservations ? regObservations : []);
     }));
