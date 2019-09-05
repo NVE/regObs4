@@ -26,4 +26,8 @@ export class GeoHelperService {
     const keys = this.getTranslationKeys(geoHazards);
     return this.translateService.get(keys).pipe(map((val) => keys.map((k) => val[k]).join(' / ')));
   }
+
+  getAllGeoHazards(): GeoHazard[] {
+    return Object.keys(GeoHazard).filter((key) => typeof GeoHazard[key] === 'number').map(key => GeoHazard[key]);
+  }
 }

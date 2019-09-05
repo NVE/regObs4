@@ -38,6 +38,7 @@
     "@ionic-native/camera": "^5.12.0",
     "@ionic-native/clipboard": "^5.12.0",
     "@ionic-native/core": "^5.12.0",
+    "@ionic-native/deeplinks": "^5.13.0",
     "@ionic-native/device-orientation": "^5.12.0",
     "@ionic-native/email-composer": "^5.12.0",
     "@ionic-native/file": "^5.12.0",
@@ -81,6 +82,7 @@
     "cordova-plugin-ionic-webview": "^4.1.1",
     "cordova-plugin-safariviewcontroller": "1.6.0",
     "cordova-plugin-screen-orientation": "^3.0.2",
+    "cordova-plugin-shortcuts-android": "^0.1.1",
     "cordova-plugin-splashscreen": "^5.0.3",
     "cordova-plugin-statusbar": "^2.4.3",
     "cordova-plugin-whitelist": "^1.3.4",
@@ -89,6 +91,7 @@
     "core-js": "^3.2.1",
     "es6-promise-plugin": "^4.2.2",
     "hammerjs": "^2.0.8",
+    "ionic-plugin-deeplinks": "^1.0.20",
     "json-stringify-safe": "^5.0.1",
     "leaflet": "^1.5.1",
     "leaflet-edgebuffer": "^1.0.6",
@@ -179,7 +182,26 @@
         "ANDROID_SUPPORT_V4_VERSION": "24.1.1+"
       },
       "cordova-sqlite-storage": {},
-      "cordova-plugin-background-fetch": {}
+      "cordova-plugin-background-fetch": {},
+      "cordova-plugin-shortcuts-android": {},
+      "ionic-plugin-deeplinks": {
+        "URL_SCHEME": "regobs",
+        "DEEPLINK_HOST": "regobs.no",
+        "DEEPLINK_SCHEME": "https",
+        "ANDROID_PATH_PREFIX": "/",
+        "ANDROID_2_PATH_PREFIX": "/",
+        "ANDROID_3_PATH_PREFIX": "/",
+        "ANDROID_4_PATH_PREFIX": "/",
+        "ANDROID_5_PATH_PREFIX": "/",
+        "DEEPLINK_2_SCHEME": " ",
+        "DEEPLINK_2_HOST": " ",
+        "DEEPLINK_3_SCHEME": " ",
+        "DEEPLINK_3_HOST": " ",
+        "DEEPLINK_4_SCHEME": " ",
+        "DEEPLINK_4_HOST": " ",
+        "DEEPLINK_5_SCHEME": " ",
+        "DEEPLINK_5_HOST": " "
+      }
     },
     "platforms": [
       "android",

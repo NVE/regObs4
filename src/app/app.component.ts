@@ -4,7 +4,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-// import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { LangKey } from './core/models/langKey';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
@@ -19,6 +19,9 @@ import { OfflineMapService } from './core/services/offline-map/offline-map.servi
 import { LogLevel } from './modules/shared/services/logging/log-level.model';
 import { registerLocaleData } from '@angular/common';
 import localeNb from '@angular/common/locales/nb';
+import { ShortcutService } from './core/services/shortcut/shortcut.service';
+
+const DEBUG_TAG = 'AppComponent';
 
 @Component({
   selector: 'app-root',
@@ -35,7 +38,7 @@ export class AppComponent {
     private translate: TranslateService,
     private userSettings: UserSettingService,
     private navController: NavController,
-    // private deeplinks: Deeplinks,
+    private deeplinks: Deeplinks,
     private backgroundFetch: BackgroundFetch,
     private dataMarshallService: DataMarshallService,
     private offlineImageService: OfflineImageService,
@@ -45,6 +48,7 @@ export class AppComponent {
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
+    private shortcutService: ShortcutService,
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -58,7 +62,7 @@ export class AppComponent {
       if (this.platform.isAndroidOrIos()) {
         this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
       }
-      // await this.initDeepLinks(); //TODO: Comment in when edit registration is possible
+      this.initDeepLinks();
       await this.dbHelperService.init();
       const userSettings = await this.userSettings.getUserSettings();
       this.loggingService.configureLogging(userSettings.appMode);
@@ -71,22 +75,26 @@ export class AppComponent {
       this.offlineImageService.cleanupOldItems();
       this.dataMarshallService.init();
       this.initBackroundUpdates();
+      this.shortcutService.init();
       setTimeout(() => {
         this.splashScreen.hide();
       }, 200); // https://forum.ionicframework.com/t/android-splashscreen-fade-animation-on-hide-not-working/120130/2
     });
   }
 
-  // initDeepLinks() {
-  //   this.deeplinks.route({
-  //     '/Registration/:id': 'view-observation',
-  //   }).subscribe(match => {
-  //     // match.$route - the route we matched, which is the matched entry from the arguments to route()
-  //     // match.$args - the args passed in the link
-  //     // match.$link - the full link data
-  //     this.navController.navigateForward(`view-observation/${match.$args.id}`);
-  //   });
-  // }
+  initDeepLinks() {
+    if (this.platform.is('cordova') && this.platform.is('android')) {
+      this.deeplinks.route({
+        '/registration/new/:geoHazard': 'New registration',
+      }).subscribe(match => {
+        // match.$route - the route we matched, which is the matched entry from the arguments to route()
+        // match.$args - the args passed in the link
+        // match.$link - the full link data
+        this.loggingService.debug('Successfully matched route', DEBUG_TAG, match);
+        this.navController.navigateForward(match.$link.path);
+      }, nomatch => this.loggingService.debug('Got a deeplink that didn\'t match', DEBUG_TAG, nomatch));
+    }
+  }
 
   initBackroundUpdates() {
     if (this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
@@ -111,8 +119,10 @@ export class AppComponent {
         this.dataMarshallService.backgroundFetchUpdate(this.platform.is('cordova') && this.platform.is('ios'), false)
           .then(() => (<any>window).BackgroundFetch.finish());
       }, (error: Error) => {
-        this.loggingService.log('Could not run background fetch!', error, LogLevel.Warning);
+        this.loggingService.log('Could not run background fetch!', error, LogLevel.Warning, DEBUG_TAG);
       }, config);
     }
   }
+
+
 }

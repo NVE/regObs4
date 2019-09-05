@@ -50,6 +50,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApiConfiguration } from './core/http-interceptor/api-configuration';
 import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configuration';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -78,7 +79,7 @@ export const APP_PROVIDERS = [
         deps: [TranslateService]
     },
     Geolocation,
-    // Deeplinks,
+    Deeplinks,
     BackgroundFetch,
     // BackgroundGeolocation,
     File,

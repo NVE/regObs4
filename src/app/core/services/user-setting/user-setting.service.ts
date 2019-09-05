@@ -125,11 +125,11 @@ export class UserSettingService implements OnReset {
         tap((val) => this.loggingService.debug(`Days back changed to:`, DEBUG_TAG, val)),
         shareReplay(1));
 
-    this._appModeAndLanguageObservable = combineLatest(this.appMode$, this.language$)
+    this._appModeAndLanguageObservable = combineLatest([this.appMode$, this.language$])
       .pipe(shareReplay(1));
 
-    this._appModeLanguageAndCurrentGeoHazardObservable = combineLatest(
-      this.appMode$, this.language$, this.currentGeoHazardObservable$)
+    this._appModeLanguageAndCurrentGeoHazardObservable = combineLatest([
+      this.appMode$, this.language$, this.currentGeoHazardObservable$])
       .pipe(shareReplay(1));
 
     this._showMapCenter = this.userSettingObservable$
