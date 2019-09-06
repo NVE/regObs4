@@ -1,4 +1,4 @@
-<ion-refresher (ionRefresh)="doRefresh()">
+<ion-refresher slot="fixed" (ionRefresh)="doRefresh()">
   <ion-refresher-content pullingIcon="arrow-dropdown" [refreshingSpinner]="spinner" pullingText="">
   </ion-refresher-content>
   <ion-grid *ngIf="showCancel">
