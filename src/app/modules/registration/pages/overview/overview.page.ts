@@ -58,6 +58,13 @@ export class OverviewPage implements OnInit, OnDestroy {
     this.userGroupService.updateUserGroups();
   }
 
+  trackByFunction(index: number, item: ISummaryItem) {
+    if (!item) {
+      return null;
+    }
+    return item.href;
+  }
+
   ngOnDestroy(): void {
     if (this.summarySubscription) {
       this.summarySubscription.unsubscribe();

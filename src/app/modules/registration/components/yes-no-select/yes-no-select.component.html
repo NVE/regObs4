@@ -1,9 +1,5 @@
 <ion-item>
   <ion-label [color]="labelColor" position="stacked" text-uppercase>{{ title | translate}}</ion-label>
-  <ion-select *ngIf="options" [(ngModel)]="value" cancelText="{{'DIALOGS.CANCEL' | translate}}" (ngModelChange)="valueChange.emit(value)"
-    [interfaceOptions]="interfaceOptions" [interface]="interface" [placeholder]="placeholder">
-    <ion-select-option [value]="option.value" *ngFor="let option of options">
-      {{ option.text }}
-    </ion-select-option>
-  </ion-select>
+  <app-select [(selectedValue)]="value" (selectedValueChange)="valueChange.emit($event)" [title]="title"
+    [options]="options"></app-select>
 </ion-item>

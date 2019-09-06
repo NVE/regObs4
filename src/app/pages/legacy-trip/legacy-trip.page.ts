@@ -14,6 +14,8 @@ import { LoginModalPage } from '../../modules/login/pages/modal-pages/login-moda
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import * as utils from '@nano-sql/core/lib/utilities';
+import { IsEmptyHelper } from '../../core/helpers/is-empty.helper';
+import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 
 const DEBUG_TAG = 'LegacyTripPage';
 
@@ -29,10 +31,18 @@ export class LegacyTripPage implements OnInit, OnDestroy {
 
   isRunning = false;
   tripDto: CreateTripDto;
-  minutes = [];
+  minutes: SelectOption[];
   isLoading = false;
-  invalidMinutes = false;
-  invalidTripType = false;
+  hasClicked = false;
+
+  get isValid() {
+    return this.tripDto.ObservationExpectedMinutes !== undefined
+      && this.tripDto.TripTypeID !== undefined;
+  }
+
+  get isEmpty() {
+    return IsEmptyHelper.isEmpty(this.tripDto);
+  }
 
   constructor(
     private tripLoggerService: TripLoggerService,
@@ -48,6 +58,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.setHoursToMidnight();
     this.tripLoggerSubscription = this.tripLoggerService.getLegacyTripAsObservable().subscribe((val) => {
       this.ngZone.run(() => {
         if (val) {
@@ -58,8 +69,12 @@ export class LegacyTripPage implements OnInit, OnDestroy {
         }
       });
     });
+  }
+
+  private setHoursToMidnight() {
+    this.minutes = [];
     for (let i = moment().get('hours'); i <= 24; i++) {
-      this.minutes.push({ name: `${i}:00`, value: i * 60 });
+      this.minutes.push({ text: `${i}:00`, id: i * 60 });
     }
   }
 
@@ -67,22 +82,6 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     if (this.tripLoggerSubscription) {
       this.tripLoggerSubscription.unsubscribe();
     }
-  }
-
-  private isValid() {
-    this.ngZone.run(() => {
-      if (this.tripDto.ObservationExpectedMinutes === undefined) {
-        this.invalidMinutes = true;
-      } else {
-        this.invalidMinutes = false;
-      }
-      if (this.tripDto.TripTypeID === undefined) {
-        this.invalidTripType = true;
-      } else {
-        this.invalidTripType = false;
-      }
-    });
-    return !this.invalidTripType && !this.invalidMinutes;
   }
 
   private async getLoggedInUser() {
@@ -105,7 +104,8 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   }
 
   async startTrip() {
-    if (!this.isValid()) {
+    if (!this.isValid) {
+      this.hasClicked = true;
       return;
     } else {
       const loggedInUser = await this.getLoggedInUser();

@@ -44,7 +44,6 @@ export class UserGroupService {
   async updateUserGroupsForUser(appMode: AppMode, user: ObserverResponseDto) {
     const dataLoadId = this.getDataLoadId(appMode, user);
     await this.dataLoadService.startLoading(dataLoadId);
-    this.accountApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
     const result = await this.accountApiService.AccountGetObserverGroups(user.Guid).toPromise();
     this.loginService.saveUserGroups(appMode, user, result);
     await this.dataLoadService.loadingCompleted(dataLoadId, result.length);

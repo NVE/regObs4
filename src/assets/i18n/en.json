@@ -34,9 +34,12 @@
     "COMMENT": "Comment",
     "CONFIRM": "Confirm",
     "DELETE": "Delete",
+    "NEXT": "Next",
     "NO": "No",
     "OF": "Of",
     "OK": "Ok",
+    "OK_BACK": "Ok, back to overview",
+    "PREVIOUS": "Previous",
     "RESET": "Reset",
     "YES": "Yes"
   },
@@ -263,6 +266,7 @@
         "TITLE": "Ice Thickness"
       }
     },
+    "IMAGES": "Images",
     "IMAGE_DESCRIPTION": "Image description",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
     "INCIDENT": {
@@ -270,6 +274,7 @@
       "COMMENT": "Description",
       "COMMENT_PLACEHOLDER": "Why did it happen? Did it go well? Could the situation have been avoided?",
       "DAMAGE_EXTENT": "Damage extent",
+      "IMAGE_PLACEHOLDER": "+ Add image description",
       "TITLE": "Accident / Incident"
     },
     "IN_CM": "In centimeter",
@@ -382,7 +387,74 @@
         "TITLE": "Stability Test"
       },
       "SNOW_PROFILE": {
+        "COMPRESSION_TEST": {
+          "ATTACHED": "attached to profile",
+          "EMPTY": "No",
+          "INCLUDE_IN_SNOW_PROFILE": "Include in snow profile",
+          "MULTIPLE_TESTS": "tests",
+          "SINGLE_TEST": "test",
+          "TITLE": "Tests"
+        },
+        "GENERATING_PREVIEW": "Generating preview...",
+        "IS_PROFILE_TO_GROUND": "Is the profile dug to the ground?",
+        "PREVIEW": "Preview",
+        "PREVIEW_ERROR": "Could not create plot preview",
+        "PREVIEW_ITEM": "Show Snow Profile",
+        "SNOW_DENSITY": {
+          "CYLINDER": "Cylinder",
+          "CYLINDER_DIAMETER": "Cylinder bore diameter (cm)",
+          "CYLINDER_METHOD": "Use cylinder",
+          "DENSITY": "Density (kg/m³)",
+          "EMPTY": "No density profiles",
+          "HEIGHT": "Height (cm)",
+          "LAYER": "Layers",
+          "METHOD": "Method",
+          "MULTIPLE_LAYERS": "dansity profiles",
+          "ONE_LAYER": "density profile added",
+          "TARE_WEIGHT": "Tare Weight (g)",
+          "TITLE": "Density",
+          "WATER_EQUIVALENT": "Water Equivalent",
+          "WEIGHT": "Weight (g)"
+        },
         "SNOW_PROFILE_HELP_TEXT": "Unfortunately, we do not have a form for snow profiles in the current version of the Varsom Regobs app. But, you can upload a picture of a hand drawn profile or an export from a third party app like Ullr Labs Avalanche. On regobs.no you may update the profile information with the forms and plots provided there.",
+        "SNOW_TEMP": {
+          "ADD_LAYER_BOTTOM": "Add new point",
+          "DEPTH": "Depth (cm)",
+          "EMPTY": "No temperature points observed",
+          "MULTIPLE_LAYERS": "temperature points observed",
+          "ONE_LAYER": "temperature point observed",
+          "POINT": "Temperature Point",
+          "TEMPERATURE": "Temperature (°C)",
+          "TITLE": "Temperature Profile"
+        },
+        "STRAT_PROFILE": {
+          "ADD_LAYER": "Add layer",
+          "ADD_LAYER_BOTTOM": "Add layer to bottom",
+          "ADD_LAYER_TOP": "Add layer to top",
+          "CRITICAL_LAYER": "Critical layer",
+          "EMPTY": "No layers",
+          "FROM_OTHER_PROFILE": "Layer from other profile",
+          "GRAIN_FORM": "Grain form",
+          "GRAIN_FROM_SECONDARY": "Secondary grain form",
+          "HARDNESS": "Hardness",
+          "HARDNESS_BOTTOM": "Lower hardness",
+          "LAYER": "Layer",
+          "MAX_GRAIN_SIZE": "Max grain size (mm)",
+          "MULTIPLE_LAYERS": "layers",
+          "NO_PROFILES_FOUND": "No layers from other profiles found",
+          "ONE_LAYER": "layer",
+          "OTHER_PROFILE_DESCRIPTION": "You can choose to copy the layers from a previously registered profile among the last 14 days within 100 km.",
+          "OTHER_PROFILE_ITEM_TEXT": "Get layers from other profile",
+          "SHOW_LESS": "Show less options",
+          "SHOW_MORE": "Show more options",
+          "SIZE": "Grain Size (mm)",
+          "THICKNESS": "Thickness (cm)",
+          "TITLE": "Layers",
+          "TOTAL_THICKNESS": "Total thickness",
+          "WETNESS": "Wetness"
+        },
+        "SUBFORMS": "Subforms",
+        "SUPERIOR": "Main",
         "TITLE": "Snow Profile"
       },
       "SNOW_SURFACE": {
@@ -421,10 +493,13 @@
         "WIND_SPEED": "Wind speed (m/s)"
       }
     },
+    "SUMMARY": "Summary",
     "WATER": {
       "DAMAGE": {
         "ADD_DAMAGE_LOCATION": "Add damage location",
         "CAN_YOU_SEE_DAMAGE": "Can you see any damages?",
+        "COMMENT": "Description",
+        "COMMENT_PLACEHOLDER": "Please describe the damage",
         "IMAGE_OF_DAMAGES": "Images of the damage",
         "TITLE": "Damages",
         "WHAT_IS_DAMAGED": "What is damaged?",

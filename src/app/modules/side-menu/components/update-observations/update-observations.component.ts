@@ -40,21 +40,24 @@ export class UpdateObservationsComponent implements OnInit, OnDestroy {
         });
       }));
   }
-
-  updateObservations() {
-    this.observationService.forceUpdateObservationsForCurrentGeoHazard(
-      this.dataMarshallService.cancelObservationsPromise
-    );
-  }
-
   ngOnDestroy(): void {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
   }
 
-  cancel() {
-    this.dataMarshallService.cancelUpdateObservations();
+  async updateOrCancelObservations() {
+    if (this.isLoading) {
+      this.dataMarshallService.cancelUpdateObservations();
+    } else {
+      this.isLoading = true;
+      await this.observationService.forceUpdateObservationsForCurrentGeoHazard(
+        this.dataMarshallService.cancelObservationsPromise
+      );
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 500);
+    }
   }
 
 }

@@ -19,7 +19,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { WarningService } from './core/services/warning/warning.service';
-import { ErrorHandler, Provider, forwardRef } from '@angular/core';
+import { ErrorHandler, Provider, forwardRef, LOCALE_ID } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { LoginService } from './modules/login/services/login.service';
 import { HTTP } from '@ionic-native/http/ngx';
@@ -43,10 +43,13 @@ import { SentryService } from './modules/shared/services/logging/sentry.service'
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { environment } from '../environments/environment';
 import { MapSearchService } from './modules/map/services/map-search/map-search.service';
-import { AnalyticService } from './core/services/analytic/analytic.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { KdvService } from './core/services/kdv/kdv.service';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ApiConfiguration } from './core/http-interceptor/api-configuration';
+import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configuration';
+import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -54,12 +57,26 @@ export const API_INTERCEPTOR_PROVIDER: Provider = {
     multi: true
 };
 
+export class DynamicLocaleId extends String {
+    constructor(protected service: TranslateService) {
+        super('');
+    }
+    toString() {
+        return this.service.currentLang;
+    }
+}
+
 export const APP_PROVIDERS = [
     StatusBar,
     SplashScreen,
     StartWizardGuard,
     LoginGuard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    {
+        provide: LOCALE_ID,
+        useClass: DynamicLocaleId,
+        deps: [TranslateService]
+    },
     Geolocation,
     // Deeplinks,
     BackgroundFetch,
@@ -70,6 +87,7 @@ export const APP_PROVIDERS = [
     Clipboard,
     Camera,
     InAppBrowser,
+    SafariViewController,
     HTTP,
     WebView,
     ApiInterceptor,
@@ -80,21 +98,9 @@ export const APP_PROVIDERS = [
     Network,
     ScreenOrientation,
     API_INTERCEPTOR_PROVIDER,
+    { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
     { provide: ErrorHandler, useClass: AppErrorHandler },
     { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
-    // Singleton services
-    UserSettingService,
-    MapService,
-    MapSearchService,
-    OfflineMapService,
-    WarningService,
-    LoginService,
-    DataMarshallService,
-    DbHelperService,
-    FullscreenService,
-    AnalyticService,
-    KdvService,
-    // ObsCardHeightService,
 
     // Interface implementations
     { provide: 'OnReset', useClass: DataMarshallService, multi: true },

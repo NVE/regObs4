@@ -17,11 +17,14 @@ export class NumericInputComponent implements OnInit {
   @Output() valueChange = new EventEmitter();
   @Input() title: string;
   @Input() placeholder: string;
-  @Input() convertMetersToCm = false;
+  @Input() convertRatio: number;
+
+  private isOpen = false;
 
   get displayValue() {
-    if (this.value !== undefined) {
-      return (this.convertMetersToCm ? this.convertMtoCM(this.value) : this.value).toLocaleString();
+    const converted = this.convert(this.value, 'from');
+    if (converted !== undefined) {
+      return converted.toLocaleString();
     }
     return undefined;
   }
@@ -32,39 +35,35 @@ export class NumericInputComponent implements OnInit {
   }
 
   async openPicker() {
-    const modal = await this.modalController.create({
-      component: NumericInputModalPage,
-      cssClass: 'numeric-input-modal',
-      componentProps: {
-        value: this.convertMetersToCm ? this.convertMtoCM(this.value) : this.value,
-        decimalPlaces: this.decimalPlaces,
-        min: this.min,
-        max: this.max,
-        suffix: this.suffix,
-        decimalSeparator: this.decimalSeparator,
-        title: this.title,
-      },
-    });
-    modal.present();
-    const result = await modal.onDidDismiss();
-    if (result.data && result.data.ok) {
-      this.value = this.convertMetersToCm ? this.convertCMtoM(result.data.value) : result.data.value;
-      this.valueChange.emit(this.value);
+    if (!this.isOpen) {
+      this.isOpen = true;
+      const modal = await this.modalController.create({
+        component: NumericInputModalPage,
+        cssClass: 'numeric-input-modal',
+        componentProps: {
+          value: this.convert(this.value, 'from'),
+          decimalPlaces: this.decimalPlaces,
+          min: this.min,
+          max: this.max,
+          suffix: this.suffix,
+          decimalSeparator: this.decimalSeparator,
+          title: this.title,
+        },
+      });
+      modal.present();
+      const result = await modal.onDidDismiss();
+      if (result.data && result.data.ok) {
+        this.value = this.convert(result.data.value, 'to');
+        this.valueChange.emit(this.value);
+      }
+      this.isOpen = false;
     }
   }
 
-  private convertMtoCM(val: number) {
-    if (val === undefined || val === null) {
+  private convert(val: number, direction: 'from' | 'to') {
+    if (val === undefined || val === null || val === 0 || this.convertRatio === undefined) {
       return val;
     }
-    return val * 100.0;
+    return (direction === 'from') ? (val * this.convertRatio) : (val / this.convertRatio);
   }
-
-  private convertCMtoM(val: number) {
-    if (val === undefined || val === null) {
-      return val;
-    }
-    return val / 100.0;
-  }
-
 }

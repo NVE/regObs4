@@ -7,11 +7,27 @@ export class DataUrlHelper {
         return { size: blob.size, dataUrl };
     }
 
+    static getDataUrlFromSrcUrl(src: string, mimeType = 'image/jpeg'): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.onload = async () => {
+                const result = await DataUrlHelper.toDataUrl(<Blob>xhr.response, mimeType);
+                resolve(result);
+            };
+            xhr.onabort = () => reject();
+            xhr.onerror = () => reject();
+            xhr.open('GET', src);
+            xhr.responseType = 'blob';
+            xhr.send();
+        });
+    }
+
     static toDataUrl(blob: Blob, mimeType: string) {
         return new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
             reader.onloadend = () => resolve(this.ensureCorrectMimeType(reader.result as string, mimeType));
             reader.onerror = () => reject();
+            reader.onabort = () => reject();
             reader.readAsDataURL(blob);
         });
     }

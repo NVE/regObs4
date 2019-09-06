@@ -14,7 +14,7 @@
       <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.LANGUAGE" | translate }}</ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language"
         interface="action-sheet" (ngModelChange)="updateSettings()">
-        <ion-select-option [value]="LangKey.no">{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN' | translate}}
+        <ion-select-option [value]="LangKey.nb">{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN' | translate}}
         </ion-select-option>
         <ion-select-option [value]="LangKey.en">{{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH' | translate}}
         </ion-select-option>
@@ -27,37 +27,32 @@
       <ion-toggle slot="end" [(ngModel)]="userSettings.emailReceipt" (ngModelChange)="updateSettings()"></ion-toggle>
     </ion-item>
   </ion-list>
-  <ion-button *ngIf="!showAdvanced" (click)="toggleAdvanced()" fill="clear" expand="full">
-    <ion-icon slot="start" name="ios-arrow-down"></ion-icon> {{'SETTINGS.SHOW_ADVANCED' | translate}}
-  </ion-button>
-  <ion-button *ngIf="showAdvanced" (click)="toggleAdvanced()" fill="clear" expand="full">
-    <ion-icon slot="start" name="ios-arrow-up"></ion-icon> {{'SETTINGS.HIDE_ADVANCED' | translate }}
+  <ion-button (click)="toggleAdvanced()" fill="clear" expand="full">
+    <ion-icon slot="start" [name]="(showAdvanced ? 'ios-arrow-up' : 'ios-arrow-down')"></ion-icon>
+    {{( showAdvanced ? 'SETTINGS.HIDE_ADVANCED' : 'SETTINGS.SHOW_ADVANCED') | translate }}
   </ion-button>
   <ng-container *ngIf="showAdvanced">
     <ion-list lines="full">
+      <ion-item (click)="versionClick()">
+        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
+        <ion-text align-self-start class="build-version">
+          {{version.version }} ({{ version.buildNumber }})
+        </ion-text>
+        <ion-text class="build-rev" align-self-start color="medium">
+          {{ version.revision }} - {{ version.date | formatDate | async }}
+        </ion-text>
+      </ion-item>
       <ion-item>
         <ion-label position="stacked" color="medium" text-uppercase>{{ "SETTINGS.APPMODE" | translate }}</ion-label>
-        <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.appMode"
-          interface="action-sheet" (ngModelChange)="updateSettings()">
-          <ion-select-option value="PROD">Regobs</ion-select-option>
-          <ion-select-option value="DEMO">Demo Regobs</ion-select-option>
-          <ion-select-option value="TEST">Test Regobs</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item class="no-border no-min-height">
-        <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-label text-wrap>
-          <h3>{{version.version }} ({{ version.buildNumber }})</h3>
-          <p>{{ version.revision }} - {{ version.date | formatDate | async }}</p>
-        </ion-label>
+        <app-select [(selectedValue)]="userSettings.appMode" [options]="appModeOptions"
+          (selectedValueChange)="updateSettings()" [showReset]="false"> </app-select>
       </ion-item>
       <ion-item>
         <ion-label>
           {{'SETTINGS.USE_RETINA_MAP' | translate}}
         </ion-label>
-        <ion-toggle slot="end" [(ngModel)]="userSettings.useRetinaMap" (ngModelChange)="updateSettings()"></ion-toggle>
+        <ion-toggle slot="end" [(ngModel)]="userSettings.useRetinaMap" (ngModelChange)="updateSettings()">
+        </ion-toggle>
       </ion-item>
       <ion-item>
         <ion-label position="stacked" color="medium" text-uppercase>{{'SETTINGS.NUMBER_OF_TILES_IN_CACHE' |

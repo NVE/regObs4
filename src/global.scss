@@ -173,6 +173,16 @@ ion-item {
     .sc-ion-label-md-s p {
         color: var(--ion-color-step-400,#999);
     }
+
+    &.item-label {
+        ion-text {
+            &[align-self-start] {
+                margin-bottom: 10px;
+                margin-top: 10px;
+                min-height: 20px;
+            }
+        }
+    }
 }
 
 ion-list {
@@ -295,6 +305,14 @@ ion-toolbar {
     }
 }
 
+ion-toggle {
+        transform: scale(var(--ion-toggle-size, 0.75));
+}
+
+.native-textarea {
+    min-height: 55px;
+}
+
 .numeric-input-modal {
     .modal-wrapper {
         --height: 470px;
@@ -395,10 +413,18 @@ ion-toast {
 
 .no-border {
     --border-width: 0 0 0 0 !important;
+
+    .item {
+        --border-width: 0 0 0 0 !important;
+    }
 }
 
-.no-min-height {
-    --min-height: 0px;
+.add-icon {
+    width: 27px;
+    height: 27px;
+    position: relative;
+    top: 8px;
+    margin-right: 4px;
 }
 
 .shadow-marker {
@@ -451,5 +477,20 @@ ion-toast {
 
     .full-grid-row {
         height: 50%;
+    }
+}
+
+.summary-item {
+    ion-label {
+        margin: 0 !important;
+        p {
+            line-height: 23px;
+            font-size: 13px;
+        }
+    
+        h2 {
+            font-size: 15px;
+            line-height: 23px;
+        }
     }
 }

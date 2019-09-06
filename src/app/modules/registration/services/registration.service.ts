@@ -12,7 +12,6 @@ import * as moment from 'moment';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
 import { RegistrationTid } from '../models/registrationTid.enum';
-import { RegistrationTypes } from '../models/registrationTypes.enum';
 import { DataLoadService } from '../../data-load/services/data-load.service';
 import { RegistrationStatus } from '../models/registrationStatus.enum';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -91,8 +90,8 @@ export class RegistrationService {
   }
 
   getRegistrationTids(): RegistrationTid[] {
-    return Object.keys(RegistrationTypes)
-      .map((key) => RegistrationTid[key]).filter((val: RegistrationTid) => val !== undefined);
+    return Object.keys(RegistrationTid)
+      .map((key) => RegistrationTid[key]).filter((val: RegistrationTid) => typeof (val) !== 'string');
   }
 
   cleanupRegistration(reg: IRegistration) {
@@ -122,7 +121,9 @@ export class RegistrationService {
   }
 
   isRegistrationEmpty(reg: IRegistration) {
-    return !this.getRegistrationTids().some((x) => !this.isEmpty(reg, x));
+    const registrationTids = this.getRegistrationTids();
+    const hasAnyValues = registrationTids.some((x) => !this.isEmpty(reg, x));
+    return !hasAnyValues;
   }
 
   hasImages(reg: IRegistration, registrationTid: RegistrationTid) {
@@ -153,8 +154,18 @@ export class RegistrationService {
     return RegistrationTid[registrationTid];
   }
 
-  getType(registrationTid: RegistrationTid) {
-    return RegistrationTypes[RegistrationTid[registrationTid]];
+  getType(registrationTid: RegistrationTid): 'array' | 'object' {
+    const arrays = [
+      RegistrationTid.DangerObs,
+      RegistrationTid.AvalancheActivityObs,
+      RegistrationTid.AvalancheActivityObs2,
+      RegistrationTid.AvalancheDangerObs,
+      RegistrationTid.AvalancheEvalProblem2,
+      RegistrationTid.CompressionTest,
+      RegistrationTid.Picture,
+      RegistrationTid.DamageObs,
+    ];
+    return arrays.indexOf(registrationTid) >= 0 ? 'array' : 'object';
   }
 
   private async getLoggedInUser() {
@@ -238,7 +249,7 @@ export class RegistrationService {
       if (registration.request) {
         this.cleanupRegistration(registration);
         registration.request.Email = userSetting.emailReceipt;
-        const createRegistrationResult = await this.postRegistration(userSetting.appMode, registration.request, cancel);
+        const createRegistrationResult = await this.postRegistration(registration.request, cancel);
         await this.observationService.updateObservationById(
           createRegistrationResult.RegId,
           userSetting.appMode,
@@ -311,8 +322,7 @@ export class RegistrationService {
       .pipe(map((items) => items.find((x) => x.id === id)));
   }
 
-  private postRegistration(appMode: AppMode, registration: RegobsApiModels.CreateRegistrationRequestDto, cancel?: Promise<void>) {
-    this.registrationApiService.rootUrl = settings.services.regObs.apiUrl[appMode];
+  private postRegistration(registration: RegobsApiModels.CreateRegistrationRequestDto, cancel?: Promise<void>) {
     return ObservableHelper.toPromiseWithCancel(this.registrationApiService.RegistrationInsert(registration), cancel);
   }
 

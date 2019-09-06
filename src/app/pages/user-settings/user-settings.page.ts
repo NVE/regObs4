@@ -13,8 +13,11 @@ import { OfflineMapService } from '../../core/services/offline-map/offline-map.s
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
+import { AppMode } from '../../core/models/app-mode.enum';
+import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 
 const DEBUG_TAG = 'UserSettingsPage';
+const TAPS_TO_ENABLE_TEST_MODE = 7;
 
 @Component({
   selector: 'app-user-settings',
@@ -30,6 +33,22 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   isUpdating = false;
   version: AppVersion;
   private subscriptions: Subscription[] = [];
+  private versionClicks = 0;
+  private showAppModeTest = false;
+
+  get appModeOptions() {
+    const options: SelectOption[] = [
+      { id: 'PROD', text: 'Regobs' },
+      { id: 'DEMO', text: 'Demo Regobs' },
+      { id: 'TEST', text: 'Test Regobs', disabled: !this.showAppModeTest }
+    ];
+    return options;
+  }
+
+  get appModeTestEnabled() {
+    return ((this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE)
+      || (this.userSettings && this.userSettings.appMode === AppMode.Test));
+  }
 
   constructor(
     private userSettingService: UserSettingService,
@@ -46,9 +65,13 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private navController: NavController) { }
 
   async ngOnInit() {
+    this.versionClicks = 0;
     this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
+        if (this.userSettings.appMode === AppMode.Test) {
+          this.showAppModeTest = true;
+        }
       });
     }));
     this.subscriptions.push(this.offlineMapService.getTilesCacheAsObservable().subscribe((tilesCache) => {
@@ -72,6 +95,13 @@ export class UserSettingsPage implements OnInit, OnDestroy {
       subscription.unsubscribe();
     }
     this.subscriptions = [];
+  }
+
+  versionClick() {
+    this.versionClicks++;
+    if (this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE) {
+      this.showAppModeTest = true;
+    }
   }
 
   async updateSettings() {

@@ -11,40 +11,19 @@ export class TextCommentComponent implements OnInit {
   @Input() placeholder: string;
   @Input() value: string;
   @Output() valueChange = new EventEmitter();
-  @Input() rows: number;
+  @Input() rows = 4;
   @Input() disabled = false;
   @Input() max = 1024;
-  minrows: number;
 
-  get valToBind() {
-    return this.value ? this.value : '';
-  }
-
-  get isValid() {
-    return !this.value || (this.value.length <= this.max);
-  }
-
-  set valToBind(val: string) {
-    this.ngZone.run(() => {
-      this.value = val;
-      this.valueChange.emit(this.value);
-    });
-  }
-
-  constructor(private ngZone: NgZone) { }
+  constructor() { }
 
   ngOnInit() {
-    if (!this.rows) {
-      this.rows = 4;
-    }
-    this.minrows = this.rows;
   }
 
   onBlur() {
     if (this.value) {
       this.value = this.value.trim();
-      this.valueChange.emit(this.value);
     }
+    this.valueChange.emit(this.value);
   }
-
 }

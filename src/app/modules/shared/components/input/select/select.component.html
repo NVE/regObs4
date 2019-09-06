@@ -1,0 +1,8 @@
+<ion-button role="combobox" aria-expanded="false" aria-haspopup="dialog" expand="full" type="button" fill="clear"
+  (click)="openSelect()">
+</ion-button>
+<ion-icon class="value-icon" *ngIf="valueIcon" [name]="valueIcon"></ion-icon>
+<ion-text>
+  {{ valueText | translate }}
+</ion-text>
+<ion-icon class="select-icon" slot="end" name="md-arrow-dropdown"></ion-icon>

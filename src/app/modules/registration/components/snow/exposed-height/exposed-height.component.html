@@ -1,9 +1,7 @@
-<ion-item class="no-border no-min-height">
-  <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT_COMBO'
-    | translate}}</ion-label>
-</ion-item>
 <ion-item>
-  <ion-label>
+  <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT_COMBO'
+        | translate}}</ion-label>
+  <ion-text align-self-start text-wrap margin-bottom>
     <ion-grid class="exposedHight">
       <ion-row class="top padding-bottom" (click)="toggleExsposedHeightCombo('top')"
         [ngClass]="{'selected': exposedHeightTop}">
@@ -24,23 +22,17 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-  </ion-label>
+  </ion-text>
 </ion-item>
 <ion-item *ngIf="exposedHeightTop || exposedHeightMiddle || exposedHeightBottom">
   <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1'
     | translate}}</ion-label>
-  <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" (ionChange)="applyChanges()" [(ngModel)]="exposedHight1"
-    interface="action-sheet">
-    <ion-select-option [value]="height" *ngFor="let height of heightArray">
-      {{ height }}</ion-select-option>
-  </ion-select>
+  <app-select [(selectedValue)]="exposedHight1" (selectedValueChange)="applyChanges()" [options]="heightArray"
+    title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1"></app-select>
 </ion-item>
 <ion-item *ngIf="sholdUseExposedHight2()">
   <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2'
     | translate}}</ion-label>
-  <ion-select *ngIf="lowerHeightArray" (ionChange)="applyChanges()" [(ngModel)]="exposedHight2"
-    interface="action-sheet">
-    <ion-select-option [value]="height" *ngFor="let height of lowerHeightArray">
-      {{ height }}</ion-select-option>
-  </ion-select>
+  <app-select [(selectedValue)]="exposedHight2" (selectedValueChange)="applyChanges()" [options]="lowerHeightArray"
+    title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2"></app-select>
 </ion-item>

@@ -25,7 +25,7 @@ export class AddMenuComponent implements OnInit, OnDestroy {
   geoHazards: GeoHazard[] = [];
   showTrip = false;
   tripStarted = false;
-  langKey = LangKey.no;
+  langKey = LangKey.nb;
   LangKey = LangKey;
 
   constructor(

@@ -1558,8 +1558,355 @@
                 "Description": null
             }
         ],
-        "Snow_HardnessKDV": [],
-        "Snow_GrainFormKDV": [],
+        "Snow_HardnessKDV": [
+            {
+                "Id": 0,
+                "Name": " - ",
+                "Description": null
+            },
+            {
+                "Id": 1,
+                "Name": "F-",
+                "Description": null
+            },
+            {
+                "Id": 2,
+                "Name": "F",
+                "Description": null
+            },
+            {
+                "Id": 3,
+                "Name": "F+",
+                "Description": null
+            },
+            {
+                "Id": 4,
+                "Name": " F-4F",
+                "Description": null
+            },
+            {
+                "Id": 5,
+                "Name": "4F-",
+                "Description": null
+            },
+            {
+                "Id": 6,
+                "Name": "4F",
+                "Description": null
+            },
+            {
+                "Id": 7,
+                "Name": "4F+",
+                "Description": null
+            },
+            {
+                "Id": 8,
+                "Name": "4F-1F",
+                "Description": null
+            },
+            {
+                "Id": 9,
+                "Name": "1F-",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "1F",
+                "Description": null
+            },
+            {
+                "Id": 11,
+                "Name": "1F+ ",
+                "Description": null
+            },
+            {
+                "Id": 12,
+                "Name": "1F-P ",
+                "Description": null
+            },
+            {
+                "Id": 13,
+                "Name": "P- ",
+                "Description": null
+            },
+            {
+                "Id": 14,
+                "Name": "P",
+                "Description": null
+            },
+            {
+                "Id": 15,
+                "Name": "P+",
+                "Description": null
+            },
+            {
+                "Id": 16,
+                "Name": "P-K",
+                "Description": null
+            },
+            {
+                "Id": 17,
+                "Name": "K-",
+                "Description": null
+            },
+            {
+                "Id": 18,
+                "Name": "K",
+                "Description": null
+            },
+            {
+                "Id": 19,
+                "Name": "K+",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "K-I",
+                "Description": null
+            },
+            {
+                "Id": 21,
+                "Name": "I",
+                "Description": null
+            }
+        ],
+        "Snow_GrainFormKDV": [
+            {
+                "Id": 0,
+                "Name": " - ",
+                "Description": null
+            },
+            {
+                "Id": 1,
+                "Name": "PP",
+                "Description": null
+            },
+            {
+                "Id": 2,
+                "Name": "PPco",
+                "Description": null
+            },
+            {
+                "Id": 3,
+                "Name": "PPnd",
+                "Description": null
+            },
+            {
+                "Id": 4,
+                "Name": "PPpl",
+                "Description": null
+            },
+            {
+                "Id": 5,
+                "Name": "PPsd",
+                "Description": null
+            },
+            {
+                "Id": 6,
+                "Name": "PPir",
+                "Description": null
+            },
+            {
+                "Id": 7,
+                "Name": "PPgp",
+                "Description": null
+            },
+            {
+                "Id": 8,
+                "Name": "PPhl",
+                "Description": null
+            },
+            {
+                "Id": 9,
+                "Name": "PPip",
+                "Description": null
+            },
+            {
+                "Id": 10,
+                "Name": "PPrm",
+                "Description": null
+            },
+            {
+                "Id": 11,
+                "Name": "MM",
+                "Description": null
+            },
+            {
+                "Id": 12,
+                "Name": "MMrp",
+                "Description": null
+            },
+            {
+                "Id": 13,
+                "Name": "MMci",
+                "Description": null
+            },
+            {
+                "Id": 14,
+                "Name": "DF",
+                "Description": null
+            },
+            {
+                "Id": 15,
+                "Name": "DFdc",
+                "Description": null
+            },
+            {
+                "Id": 16,
+                "Name": "DFbk",
+                "Description": null
+            },
+            {
+                "Id": 17,
+                "Name": "RG",
+                "Description": null
+            },
+            {
+                "Id": 18,
+                "Name": "RGsr",
+                "Description": null
+            },
+            {
+                "Id": 19,
+                "Name": "RGlr",
+                "Description": null
+            },
+            {
+                "Id": 20,
+                "Name": "RGwp",
+                "Description": null
+            },
+            {
+                "Id": 21,
+                "Name": "RGxf",
+                "Description": null
+            },
+            {
+                "Id": 22,
+                "Name": "FC",
+                "Description": null
+            },
+            {
+                "Id": 23,
+                "Name": "FCso",
+                "Description": null
+            },
+            {
+                "Id": 24,
+                "Name": "FCsf",
+                "Description": null
+            },
+            {
+                "Id": 25,
+                "Name": "FCxr",
+                "Description": null
+            },
+            {
+                "Id": 26,
+                "Name": "DH",
+                "Description": null
+            },
+            {
+                "Id": 27,
+                "Name": "DHcp",
+                "Description": null
+            },
+            {
+                "Id": 28,
+                "Name": "DHpr",
+                "Description": null
+            },
+            {
+                "Id": 29,
+                "Name": "DHch",
+                "Description": null
+            },
+            {
+                "Id": 30,
+                "Name": "DHla",
+                "Description": null
+            },
+            {
+                "Id": 31,
+                "Name": "DHxr",
+                "Description": null
+            },
+            {
+                "Id": 32,
+                "Name": "SH",
+                "Description": null
+            },
+            {
+                "Id": 33,
+                "Name": "SHsu",
+                "Description": null
+            },
+            {
+                "Id": 34,
+                "Name": "SHcv",
+                "Description": null
+            },
+            {
+                "Id": 35,
+                "Name": "SHxr",
+                "Description": null
+            },
+            {
+                "Id": 36,
+                "Name": "MF",
+                "Description": null
+            },
+            {
+                "Id": 37,
+                "Name": "MFcl",
+                "Description": null
+            },
+            {
+                "Id": 38,
+                "Name": "MFpc",
+                "Description": null
+            },
+            {
+                "Id": 39,
+                "Name": "MFsl",
+                "Description": null
+            },
+            {
+                "Id": 40,
+                "Name": "MFcr",
+                "Description": null
+            },
+            {
+                "Id": 41,
+                "Name": "IF",
+                "Description": null
+            },
+            {
+                "Id": 42,
+                "Name": "IFil",
+                "Description": null
+            },
+            {
+                "Id": 43,
+                "Name": "IFic",
+                "Description": null
+            },
+            {
+                "Id": 44,
+                "Name": "IFbi",
+                "Description": null
+            },
+            {
+                "Id": 45,
+                "Name": "IFrc",
+                "Description": null
+            },
+            {
+                "Id": 46,
+                "Name": "IFsc",
+                "Description": null
+            }
+        ],
         "Snow_CriticalLayerKDV": [
             {
                 "Id": 0,
@@ -1746,7 +2093,7 @@
             },
             {
                 "Id": 4,
-                "Name": "Can not determine water level",
+                "Name": "Cannot determine water level",
                 "Description": "Can not determine that now"
             }
         ],
@@ -2100,102 +2447,122 @@
             {
                 "Id": 200,
                 "Name": "-",
-                "Description": "Unknown for land slides."
+                "Description": "Unknown competance."
             },
             {
                 "Id": 210,
                 "Name": "*",
-                "Description": "Unknown observers who have demonstrated skills."
+                "Description": "Observer has submitted relevant observations."
+            },
+            {
+                "Id": 220,
+                "Name": "**",
+                "Description": "Observer has submitted relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 230,
                 "Name": "***",
-                "Description": "Entrepreneur with experience in geosciences."
+                "Description": "Professional with several relevant observations."
             },
             {
                 "Id": 240,
                 "Name": "****",
-                "Description": "Personnel in NVE, SVV, JBV, NGI, NGU or equivalent with limited experience within geosciences."
+                "Description": "Experienced professional with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 250,
                 "Name": "*****",
-                "Description": "Educated personel in NVE, SVV, JBV, NGI, NGU or eqivalent."
+                "Description": "Professional from NVE or equivalent with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 300,
                 "Name": "-",
-                "Description": "Unknown for wet land slides."
+                "Description": "Unknown competance."
             },
             {
                 "Id": 310,
                 "Name": "*",
-                "Description": "Unknown observers who have demonstrated skills."
+                "Description": "Observer has submitted relevant observations."
+            },
+            {
+                "Id": 320,
+                "Name": "**",
+                "Description": "Observer has submitted relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 330,
                 "Name": "***",
-                "Description": "Entrepreneur with experience in geosciences."
+                "Description": "Professional with several relevant observations."
             },
             {
                 "Id": 340,
                 "Name": "****",
-                "Description": "Personnel in NVE, SVV, JBV, NGI, NGU or equivalent with limited experience within geosciences."
+                "Description": "Experienced professional with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 350,
                 "Name": "*****",
-                "Description": "Educated personnel in NVE, SVV, JBV, NGI, NGU or eqivalent."
+                "Description": "Professional from NVE or equivalent with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 400,
                 "Name": "-",
-                "Description": "Unknown for rockfall."
+                "Description": "Unknown competance."
             },
             {
                 "Id": 410,
                 "Name": "*",
-                "Description": "Unknown observers who have demonstrated skills."
+                "Description": "Observer has submitted relevant observations."
+            },
+            {
+                "Id": 420,
+                "Name": "**",
+                "Description": "Observer has submitted relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 430,
                 "Name": "***",
-                "Description": "Entrepreneur with experience in geosciences."
+                "Description": "Professional with several relevant observations."
             },
             {
                 "Id": 440,
                 "Name": "****",
-                "Description": "Personnel in NVE, SVV, JBV, NGI, NGU or equivalent with limited experience within geosciences."
+                "Description": "Experienced professional with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 450,
                 "Name": "*****",
-                "Description": "Educated personel in NVE, SVV, JBV, NGI, NGU or eqivalent."
+                "Description": "Professional from NVE or equivalent with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 600,
                 "Name": "-",
-                "Description": "Unknown for water."
+                "Description": "Unknown competance."
             },
             {
                 "Id": 610,
                 "Name": "*",
-                "Description": "Unknown observers who have demonstrated skills."
+                "Description": "Observer has submitted relevant observations."
+            },
+            {
+                "Id": 620,
+                "Name": "**",
+                "Description": "Observer has submitted relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 630,
                 "Name": "***",
-                "Description": "Entrepenuer in the municipalities technical departmen."
+                "Description": "Professional with several relevant observations."
             },
             {
                 "Id": 640,
                 "Name": "****",
-                "Description": "NVE observers og hydrologist in power companies."
+                "Description": "Experienced professional with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 650,
                 "Name": "*****",
-                "Description": "Educated personel in NVE or eqivalent."
+                "Description": "Professional from NVE or equivalent with several relevant observations with correct use of the Regobs forms."
             },
             {
                 "Id": 700,
@@ -2325,12 +2692,12 @@
             },
             {
                 "Id": 20,
-                "Name": "Dirt",
+                "Name": "Soil",
                 "Description": "Earth slide"
             },
             {
                 "Id": 30,
-                "Name": "Wet dirt",
+                "Name": "Wet soil",
                 "Description": "Flood slide"
             },
             {

@@ -162,18 +162,6 @@ export class NanoSql {
             },
             indexes: {},
         },
-        LOCATION: {
-            name: 'location',
-            instancePerAppMode: true,
-            model: {
-                'Id:int': { pk: true },
-                'GeoHazardId:int': {},
-                '*:any': {},
-            },
-            indexes: {
-                'GeoHazardId:int': {}
-            },
-        },
         KDV_ELEMENTS: {
             name: 'kdvelements',
             instancePerAppMode: true,

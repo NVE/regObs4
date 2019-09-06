@@ -2513,102 +2513,122 @@
             {
                 "Id": 200,
                 "Name": "-",
-                "Description": "Ukjent på jord."
+                "Description": "Ukjent kompetanse."
             },
             {
                 "Id": 210,
                 "Name": "*",
-                "Description": "Ukjente observatører men som har vist at de kan noe."
+                "Description": "Observatør kan vise til noen relevante observasjoner."
+            },
+            {
+                "Id": 220,
+                "Name": "**",
+                "Description": "Observatør som kan vise til relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 230,
                 "Name": "***",
-                "Description": "Entreprenører med geofaglig erfaring."
+                "Description": "Observatør med god faglig forståelse og kan vise til relevante observasjoner."
             },
             {
                 "Id": 240,
                 "Name": "****",
-                "Description": "Fagperson NVE, SVV, JBV, NGI, NGU eller lignende med begrenset geofaglig erfaring."
+                "Description": "Observatør med svært god faglig forståelse og kan vise til relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 250,
                 "Name": "*****",
-                "Description": "Fagperson NVE, SVV, JBV, NGI, NGU eller lignende."
+                "Description": "Fagperson fra NVE eller lignende, som kan vise til flere relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 300,
                 "Name": "-",
-                "Description": "Ukjent på våt jord."
+                "Description": "Ukjent kompetanse."
             },
             {
                 "Id": 310,
                 "Name": "*",
-                "Description": "Ukjente observatører men som har vist at de kan noe."
+                "Description": "Observatør kan vise til noen relevante observasjoner."
+            },
+            {
+                "Id": 320,
+                "Name": "**",
+                "Description": "Observatør som kan vise til relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 330,
                 "Name": "***",
-                "Description": "Entreprenører med geofaglig erfaring."
+                "Description": "Observatør med god faglig forståelse og kan vise til relevante observasjoner."
             },
             {
                 "Id": 340,
                 "Name": "****",
-                "Description": "Fagperson NVE, SVV, JBV, NGI, NGU eller lignende med begrenset geofaglig erfaring."
+                "Description": "Observatør med svært god faglig forståelse og kan vise til relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 350,
                 "Name": "*****",
-                "Description": "Fagperson NVE, SVV, JBV, NGI, NGU eller lignende."
+                "Description": "Fagperson fra NVE eller lignende, som kan vise til flere relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 400,
                 "Name": "-",
-                "Description": "Ukjent på stein."
+                "Description": "Ukjent kompetanse."
             },
             {
                 "Id": 410,
                 "Name": "*",
-                "Description": "Ukjente observatører men som har vist at de kan noe."
+                "Description": "Observatør kan vise til noen relevante observasjoner."
+            },
+            {
+                "Id": 420,
+                "Name": "**",
+                "Description": "Observatør som kan vise til relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 430,
                 "Name": "***",
-                "Description": "Entreprenører med geofaglig erfaring."
+                "Description": "Observatør med god faglig forståelse og kan vise til relevante observasjoner."
             },
             {
                 "Id": 440,
                 "Name": "****",
-                "Description": "Fagperson NVE, SVV, JBV, NGI, NGU eller lignende med begrenset geofaglig erfaring."
+                "Description": "Observatør med svært god faglig forståelse og kan vise til relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 450,
                 "Name": "*****",
-                "Description": "Fagperson NVE, SVV, JBV, NGI, NGU eller lignende."
+                "Description": "Fagperson fra NVE eller lignende, som kan vise til flere relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 600,
                 "Name": "-",
-                "Description": "Ukjent på vann."
+                "Description": "Ukjent kompetanse."
             },
             {
                 "Id": 610,
                 "Name": "*",
-                "Description": "Ukjente observatører men som har vist at de kan noe."
+                "Description": "Observatør kan vise til noen relevante observasjoner."
+            },
+            {
+                "Id": 620,
+                "Name": "**",
+                "Description": "Observatør som kan vise til relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 630,
                 "Name": "***",
-                "Description": "Entreprenører of teknisk ansv i kommuner."
+                "Description": "Observatør med god faglig forståelse og kan vise til relevante observasjoner."
             },
             {
                 "Id": 640,
                 "Name": "****",
-                "Description": "NVE observatører, kraftværksfolk (noe Hydrologisk erfaring)."
+                "Description": "Observatør med svært god faglig forståelse og kan vise til relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 650,
                 "Name": "*****",
-                "Description": "Fagperson NVE eller lignende."
+                "Description": "Fagperson fra NVE eller lignende, som kan vise til flere relevante observasjoner med regObs-skjema."
             },
             {
                 "Id": 700,

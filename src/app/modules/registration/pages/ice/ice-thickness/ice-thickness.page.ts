@@ -62,10 +62,6 @@ export class IceThicknessPage extends BasePage {
     }
   }
 
-  convertMToCM(value: number) {
-    return NumberHelper.setDecimalPlaces(value * 100.0, 2);
-  }
-
 
   isEmpty() {
     return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid) &&

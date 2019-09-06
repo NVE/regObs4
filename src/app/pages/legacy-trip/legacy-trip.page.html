@@ -12,28 +12,23 @@
     <ion-row>
       <ion-col no-padding>
         <ion-list lines="full">
-          <app-kdv-dropdown (valueChange)="invalidTripType = false" [labelColor]="invalidTripType ? 'danger' : 'medium'"
+          <app-kdv-select [labelColor]="(hasClicked && tripDto.TripTypeID === undefined) ? 'danger' : 'medium'"
             [disabled]="isRunning || isLoading" title="TRIP.TRIP_TYPE" kdvKey="TripTypeKDV"
-            [(value)]="tripDto.TripTypeID"></app-kdv-dropdown>
+            [(value)]="tripDto.TripTypeID"></app-kdv-select>
           <ion-item>
-            <ion-label [color]="invalidMinutes ? 'danger' : 'medium'" color="medium" position="stacked" text-uppercase>{{'TRIP.TRIP_END_DESCRIPTION'
+            <ion-label [color]="(hasClicked && tripDto.ObservationExpectedMinutes === undefined) ? 'danger' : 'medium'"
+              color="medium" position="stacked" text-uppercase>{{'TRIP.TRIP_END_DESCRIPTION'
               | translate}}</ion-label>
-            <ion-select [disabled]="isRunning || isLoading" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-              [(ngModel)]="tripDto.ObservationExpectedMinutes" interface="action-sheet"
-              (ngModelChange)="invalidMinutes = false">
-              <ion-select-option *ngFor="let option of minutes" [value]="option.value">{{ option.name }}
-              </ion-select-option>
-            </ion-select>
+            <app-select [disabled]="isRunning || isLoading" [(selectedValue)]="tripDto.ObservationExpectedMinutes"
+              [options]="minutes" title="TRIP.TRIP_END_DESCRIPTION"></app-select>
           </ion-item>
-          <ion-list-header text-uppercase>
-            <ion-label>
-              {{"DIALOGS.COMMENT" | translate}}
+          <app-text-comment title="DIALOGS.COMMENT" [disabled]="isRunning || isLoading" [(value)]="tripDto.Comment">
+          </app-text-comment>
+          <ion-item-divider>
+            <ion-label text-wrap>
+              {{'TRIP.COMMENT_DESCRIPTION' | translate}}
             </ion-label>
-          </ion-list-header>
-          <ion-item>
-            <ion-label text-wrap>{{'TRIP.COMMENT_DESCRIPTION' | translate}}</ion-label>
-          </ion-item>
-          <app-text-comment [disabled]="isRunning || isLoading" [(value)]="tripDto.Comment"></app-text-comment>
+          </ion-item-divider>
         </ion-list>
       </ion-col>
     </ion-row>
@@ -47,17 +42,17 @@
           </ion-row>
           <ion-row class="white-background">
             <ion-col size="12" class="start-buttons">
-              <ion-button (click)="startTrip()" [disabled]="isLoading" *ngIf="!isRunning" class="back-button"
-                expand="block" color="varsom-orange">
+              <ion-button (click)="startTrip()" [disabled]="isLoading || !isValid" *ngIf="!isRunning"
+                class="back-button" expand="block" color="varsom-orange">
                 {{ 'TRIP.START_TRIP' | translate }}
               </ion-button>
-              <ion-button *ngIf="isRunning" [disabled]="isLoading" class="back-button" expand="block"
-                color="varsom-orange">
+              <ion-button *ngIf="isRunning" (click)="stopTrip()" [disabled]="isLoading" class="back-button"
+                expand="block" color="varsom-orange">
                 {{ 'TRIP.STOP_TRIP' | translate }}
               </ion-button>
             </ion-col>
           </ion-row>
-          <ion-row class="white-background">
+          <ion-row class="white-background" *ngIf="!isEmpty">
             <ion-col text-center>
               <ion-button (click)="clearPage()" [disabled]="isRunning || isLoading" class="reset-button" color="dark"
                 size="small" fill="clear">

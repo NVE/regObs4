@@ -9,37 +9,50 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.WaterLevel2" [registration]="registration"
-    [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="registration && registration.request.WaterLevel2"
+    [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.WATER.WATER_LEVEL.DESCRIBE_SITUATION" kdvKey="Water_WaterLevelStateKDV"
-        [(value)]="registration.request.WaterLevel2.WaterLevelStateTID"></app-kdv-radiobutton-list>
-      <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.WATER.WATER_LEVEL.CAN_YOU_SEE_WATER" kdvKey="Water_WaterAstrayKDV"
-        [(value)]="registration.request.WaterLevel2.WaterAstrayTID"></app-kdv-radiobutton-list>
-      <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.WATER.WATER_LEVEL.OBSERVATION_TIMING" kdvKey="Water_ObservationTimingKDV"
-        [(value)]="registration.request.WaterLevel2.ObservationTimingTID"></app-kdv-radiobutton-list>
-      <app-kdv-radiobutton-list hideZeroValues="true" title="REGISTRATION.WATER.WATER_LEVEL.REGISTRATION_METHOD" kdvKey="Water_WaterLevelMethodKDV"
-        [(value)]="registration.request.WaterLevel2.WaterLevelMethodTID"></app-kdv-radiobutton-list>
-      <app-kdv-radiobutton-list *ngIf="registration.request.WaterLevel2.WaterLevelMethodTID === 1" hideZeroValues="true"
-        title="REGISTRATION.WATER.WATER_LEVEL.MARKING_REFERENCE" kdvKey="Water_MarkingReferenceKDV" [(value)]="registration.request.WaterLevel2.MarkingReferenceTID">
-        <app-text-comment [(value)]="registration.request.WaterLevel2.Comment" title="{{ 'REGISTRATION.WATER.WATER_LEVEL.DESCRIBE' | translate | uppercase  }} {{ 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' | translate | uppercase  }}"></app-text-comment>
+      <app-kdv-radiobutton-list title="REGISTRATION.WATER.WATER_LEVEL.DESCRIBE_SITUATION"
+        kdvKey="Water_WaterLevelStateKDV" [(value)]="registration.request.WaterLevel2.WaterLevelStateTID">
       </app-kdv-radiobutton-list>
-      <app-kdv-radiobutton-list *ngIf="registration.request.WaterLevel2.WaterLevelMethodTID === 1" hideZeroValues="true"
-        title="REGISTRATION.WATER.WATER_LEVEL.MARKED_WITH" kdvKey="Water_MarkingTypeKDV" [(value)]="registration.request.WaterLevel2.MarkingTypeTID"></app-kdv-radiobutton-list>
-      <app-kdv-radiobutton-list *ngIf="registration.request.WaterLevel2.WaterLevelMethodTID === 2" hideZeroValues="true"
-        title="REGISTRATION.WATER.WATER_LEVEL.HOW_DO_YOU_READ" kdvKey="Water_MeasurementTypeKDV" [(value)]="registration.request.WaterLevel2.MeasurementTypeTID">
-        <app-text-comment *ngIf="registration.request.WaterLevel2.MeasurementTypeTID === 3" [(value)]="registration.request.WaterLevel2.MeasuringToolDescription"
+      <app-kdv-radiobutton-list title="REGISTRATION.WATER.WATER_LEVEL.CAN_YOU_SEE_WATER" kdvKey="Water_WaterAstrayKDV"
+        [(value)]="registration.request.WaterLevel2.WaterAstrayTID"></app-kdv-radiobutton-list>
+      <app-kdv-radiobutton-list title="REGISTRATION.WATER.WATER_LEVEL.OBSERVATION_TIMING"
+        kdvKey="Water_ObservationTimingKDV" [(value)]="registration.request.WaterLevel2.ObservationTimingTID">
+      </app-kdv-radiobutton-list>
+      <app-kdv-radiobutton-list title="REGISTRATION.WATER.WATER_LEVEL.REGISTRATION_METHOD"
+        kdvKey="Water_WaterLevelMethodKDV" [(value)]="registration.request.WaterLevel2.WaterLevelMethodTID">
+      </app-kdv-radiobutton-list>
+      <app-kdv-radiobutton-list *ngIf="registration.request.WaterLevel2.WaterLevelMethodTID === 1"
+        title="REGISTRATION.WATER.WATER_LEVEL.MARKING_REFERENCE" kdvKey="Water_MarkingReferenceKDV"
+        [(value)]="registration.request.WaterLevel2.MarkingReferenceTID">
+        <app-text-comment [(value)]="registration.request.WaterLevel2.Comment"
+          title="{{ 'REGISTRATION.WATER.WATER_LEVEL.DESCRIBE' | translate | uppercase  }} {{ 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' | translate | uppercase  }}">
+        </app-text-comment>
+      </app-kdv-radiobutton-list>
+      <app-kdv-radiobutton-list *ngIf="registration.request.WaterLevel2.WaterLevelMethodTID === 1"
+        title="REGISTRATION.WATER.WATER_LEVEL.MARKED_WITH" kdvKey="Water_MarkingTypeKDV"
+        [(value)]="registration.request.WaterLevel2.MarkingTypeTID"></app-kdv-radiobutton-list>
+      <app-kdv-radiobutton-list *ngIf="registration.request.WaterLevel2.WaterLevelMethodTID === 2"
+        title="REGISTRATION.WATER.WATER_LEVEL.HOW_DO_YOU_READ" kdvKey="Water_MeasurementTypeKDV"
+        [(value)]="registration.request.WaterLevel2.MeasurementTypeTID">
+        <app-text-comment *ngIf="registration.request.WaterLevel2.MeasurementTypeTID === 3"
+          [(value)]="registration.request.WaterLevel2.MeasuringToolDescription"
           title="REGISTRATION.WATER.WATER_LEVEL.MEASURING_TOOL"></app-text-comment>
       </app-kdv-radiobutton-list>
-      <app-kdv-radiobutton-list *ngIf="registration.request.WaterLevel2.MeasurementTypeTID === 1" hideZeroValues="true"
-        title="REGISTRATION.WATER.WATER_LEVEL.RELATIVE" kdvKey="Water_MeasurementReferenceKDV" [(value)]="registration.request.WaterLevel2.MeasurementReferenceTID">
-        <app-text-comment [(value)]="registration.request.WaterLevel2.Comment" title="REGISTRATION.WATER.WATER_LEVEL.DESCRIBE_HEIGHT"></app-text-comment>
+      <app-kdv-radiobutton-list *ngIf="registration.request.WaterLevel2.MeasurementTypeTID === 1"
+        title="REGISTRATION.WATER.WATER_LEVEL.RELATIVE" kdvKey="Water_MeasurementReferenceKDV"
+        [(value)]="registration.request.WaterLevel2.MeasurementReferenceTID">
+        <app-text-comment [(value)]="registration.request.WaterLevel2.Comment"
+          title="REGISTRATION.WATER.WATER_LEVEL.DESCRIBE_HEIGHT"></app-text-comment>
       </app-kdv-radiobutton-list>
     </ion-list>
     <ng-container *ngIf="registration.request.WaterLevel2.WaterLevelMethodTID">
       <ion-list lines="full">
-        <app-water-level-measurement [measurementNumber]="i+1" [waterLevelMethod]="registration.request.WaterLevel2.WaterLevelMethodTID"
-          [waterLevelMeasurement]="measurement" [registrationTid]="registrationTid" [dtObsTime]="registration.request.DtObsTime"
+        <app-water-level-measurement [measurementNumber]="i+1"
+          [waterLevelMethod]="registration.request.WaterLevel2.WaterLevelMethodTID"
+          [waterLevelMeasurement]="measurement" [registrationTid]="registrationTid"
+          [dtObsTime]="registration.request.DtObsTime"
           *ngFor="let measurement of registration.request.WaterLevel2.WaterLevelMeasurement; let i = index">
         </app-water-level-measurement>
       </ion-list>

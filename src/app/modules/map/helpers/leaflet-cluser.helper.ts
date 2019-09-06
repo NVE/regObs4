@@ -2,15 +2,15 @@ import * as L from 'leaflet';
 import { settings } from '../../../../settings';
 
 export class LeafletClusterHelper {
-    static createMarkerClusterGroup() {
-        const clusterGroup = L.markerClusterGroup({
-            spiderfyOnMaxZoom: false,
+    static createMarkerClusterGroup(options?: L.MarkerClusterGroupOptions) {
+        const defaultOptions = {
+            spiderfyOnMaxZoom: true,
             showCoverageOnHover: false,
-            zoomToBoundsOnClick: false,
+            zoomToBoundsOnClick: true,
             maxClusterRadius: settings.map.maxClusterRadius,
             iconCreateFunction: LeafletClusterHelper.createClusterIcon,
-        });
-        return clusterGroup;
+        };
+        return L.markerClusterGroup({ ...defaultOptions, ...(options || {}) });
     }
 
     static createClusterIcon(cluster: L.MarkerCluster) {

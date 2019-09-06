@@ -1,0 +1,97 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">{{ 'DIALOGS.CANCEL' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="ok()">
+    <ion-list lines="full">
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.FROM_OTHER_PROFILE' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <ion-item tabindex="0" (click)="getPrevousUsedLayers()" (keyup.enter)="getPrevousUsedLayers()">
+        <ion-icon color="dark" name="cloud-download" slot="start"></ion-icon>
+        <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.OTHER_PROFILE_ITEM_TEXT' | translate }}</ion-label>
+      </ion-item>
+      <ion-item-divider>
+        <ion-label text-wrap>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.OTHER_PROFILE_DESCRIPTION' | translate }}
+        </ion-label>
+      </ion-item-divider>
+      <ion-list-header text-uppercase>
+        <ion-label>
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TITLE' | translate}}
+        </ion-label>
+      </ion-list-header>
+      <ng-container *ngIf="hasLayers else noLayers">
+        <ion-item tabindex="0" (click)="addLayerTop()" (keyup.enter)="addLayerTop()">
+          <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+          <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_TOP' | translate}}</ion-label>
+        </ion-item>
+        <ion-reorder-group disabled="false" (ionItemReorder)="onLayerReorder($event)">
+          <ion-item tabindex="0" (click)="addOrEditLayer(i, layer)" (keyup.enter)="addOrEditLayer(i, layer)"
+            *ngFor="let layer of profile.Layers; let i = index">
+            <ion-label [color]="layer.CriticalLayerTID > 0 ? 'danger' : 'dark'">
+              <ng-container *ngIf="layer.Thickness !== undefined">
+                {{layer.Thickness | metersToCm}}cm
+              </ng-container>
+              <ng-container *ngIf="layer.HardnessTID !== undefined">
+                {{layer.HardnessTID | kdvDescription: 'Snow_HardnessKDV' | async}}
+              </ng-container>
+              <ng-container *ngIf="layer.GrainFormPrimaryTID !== undefined">
+                {{layer.GrainFormPrimaryTID | kdvDescription: 'Snow_GrainFormKDV' | async}}
+              </ng-container>
+              <ng-container *ngIf="layer.GrainSizeAvg !== undefined">
+                {{layer.GrainSizeAvg * 100 | number:'1.0-2' }}mm
+              </ng-container>
+              <ng-container *ngIf="layer.WetnessTID !== undefined">
+                {{layer.WetnessTID | kdvDescription: 'Snow_WetnessKDV' | async }}
+              </ng-container>
+            </ion-label>
+            <ion-reorder slot="end"></ion-reorder>
+          </ion-item>
+        </ion-reorder-group>
+        <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()">
+          <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+          <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER_BOTTOM' | translate}}</ion-label>
+        </ion-item>
+      </ng-container>
+      <ng-container *ngIf="hasLayers">
+        <ion-list-header text-uppercase>
+          <ion-label>
+            {{ 'REGISTRATION.SUMMARY' | translate}}
+          </ion-label>
+        </ion-list-header>
+        <ion-item>
+          <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS'
+            | translate}}</ion-label>
+          <ion-text align-self-start text-wrap margin-bottom>
+            <p no-margin *ngIf="totalThickness !== undefined">{{ totalThickness | metersToCm }} cm</p>
+          </ion-text>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+    <ion-grid no-padding>
+      <ion-row>
+        <ion-col size="6" offset="3">
+          <ion-button type="submit" expand="block" fill="solid" color="primary">
+            {{'DIALOGS.OK' | translate}}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>
+<ng-template #noLayers>
+  <ion-item tabindex="0" (click)="addLayerBottom()" (keyup.enter)="addLayerBottom()">
+    <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
+    <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.ADD_LAYER' | translate}}</ion-label>
+  </ion-item>
+</ng-template>

@@ -1,13 +1,21 @@
-<ion-item>
+<ion-item (click)="updateOrCancelObservations()">
   <ion-label color="dark" position="stacked">{{'MENU.UPDATE_OBSERVATIONS' | translate}}</ion-label>
-  <ion-input readonly *ngIf="lastUpdated && !isLoading"
-    value="{{ lastUpdated | date:settings.dateFormats.angular.dateAndTime }}">
-  </ion-input>
-  <ion-spinner *ngIf="isLoading" name="dots"></ion-spinner>
-  <ion-button size="small" fill="clear" *ngIf="!isLoading" slot="end" (click)="updateObservations()">
-    <svg-icon src="/assets/icon/refresh.svg"></svg-icon>
-  </ion-button>
-  <ion-button size="small" fill="clear" *ngIf="isLoading" slot="end" (click)="cancel()">
+  <ng-container *ngIf="!isLoading else isLoadingTemplate">
+    <ion-text align-self-start>
+      <ng-container *ngIf="lastUpdated">
+        {{ lastUpdated | date:settings.dateFormats.angular.dateAndTime }}
+      </ng-container>
+    </ion-text>
+    <ion-button size="small" fill="clear" slot="end">
+      <svg-icon src="/assets/icon/refresh.svg"></svg-icon>
+    </ion-button>
+  </ng-container>
+</ion-item>
+<ng-template #isLoadingTemplate>
+  <ion-text align-self-start>
+    <ion-spinner name="dots"></ion-spinner>
+  </ion-text>
+  <ion-button size="small" fill="clear" slot="end">
     {{'DIALOGS.CANCEL' | translate}}
   </ion-button>
-</ion-item>
+</ng-template>

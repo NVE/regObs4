@@ -20,10 +20,10 @@
       </ion-list-header>
       <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.SnowDepth"
         title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH" [min]="0" [max]="9999" [decimalPlaces]="2"
-        [convertMetersToCm]="true" suffix="cm"></app-numeric-input>
+        [convertRatio]="100" suffix="cm"></app-numeric-input>
       <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.NewSnowDepth24"
         title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH" [min]="0" [max]="999" [decimalPlaces]="2"
-        [convertMetersToCm]="true" suffix="cm"></app-numeric-input>
+        [convertRatio]="100" suffix="cm"></app-numeric-input>
       <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.NewSnowLine"
         title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_LINE" [min]="0" [max]="8848" [decimalPlaces]="0"
         suffix="{{ 'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate }}"></app-numeric-input>
@@ -34,25 +34,25 @@
         title="REGISTRATION.SNOW.SNOW_SURFACE.HEIGHT_LIMIT_LAYERED_SNOW" [min]="0" [max]="8848" [decimalPlaces]="0"
         suffix="{{ 'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate }}"
         placeholder="REGISTRATION.SNOW.SNOW_SURFACE.HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER"></app-numeric-input>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DRIFT" kdvKey="Snow_SnowDriftKDV"
-        [(value)]="registration.request.SnowSurfaceObservation.SnowDriftTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE" kdvKey="Snow_SnowSurfaceKDV"
-        [(value)]="registration.request.SnowSurfaceObservation.SnowSurfaceTID"></app-kdv-dropdown>
-      <app-kdv-dropdown title="REGISTRATION.SNOW.SNOW_SURFACE.SURFACE_WATER_CONTENT_REG"
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DRIFT" kdvKey="Snow_SnowDriftKDV"
+        [(value)]="registration.request.SnowSurfaceObservation.SnowDriftTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_SURFACE" kdvKey="Snow_SnowSurfaceKDV"
+        [(value)]="registration.request.SnowSurfaceObservation.SnowSurfaceTID"></app-kdv-select>
+      <app-kdv-select title="REGISTRATION.SNOW.SNOW_SURFACE.SURFACE_WATER_CONTENT_REG"
         kdvKey="Snow_SurfaceWaterContentKDV"
-        [(value)]="registration.request.SnowSurfaceObservation.SurfaceWaterContentTID"></app-kdv-dropdown>
+        [(value)]="registration.request.SnowSurfaceObservation.SurfaceWaterContentTID"></app-kdv-select>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_HEADER' | translate}}
         </ion-label>
       </ion-list-header>
-      <ion-item>
+      <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT"
+        [(value)]="registration.request.SnowSurfaceObservation.Comment"></app-text-comment>
+      <ion-item-divider>
         <ion-label text-wrap>
           {{ 'REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_PLACEHOLDER' | translate }}
         </ion-label>
-      </ion-item>
-      <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT"
-        [(value)]="registration.request.SnowSurfaceObservation.Comment"></app-text-comment>
+      </ion-item-divider>
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}

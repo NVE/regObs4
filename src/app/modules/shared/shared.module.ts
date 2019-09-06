@@ -19,10 +19,9 @@ import { RouterModule } from '@angular/router';
 import { RefreshWithCancelComponent } from '../../components/refresh-with-cancel/refresh-with-cancel.component';
 import { SummaryComponent } from '../../components/observation/summary/summary.component';
 import { HeaderColorDirective } from '../../directives/header-color.directive';
-import { InputPatternFilterDirective } from '../../directives/input-pattern-filter.directive';
-import { AutoResizeDirective } from '../../directives/auto-resize.directive';
 import { MapModule } from '../map/map.module';
 import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
+import { SelectComponent } from './components/input/select/select.component';
 
 
 @NgModule({
@@ -38,7 +37,6 @@ import { ObservationSkeletonComponent } from '../../components/observation/obser
     ],
     declarations: [
         ShadowCssDirective,
-        AutoResizeDirective,
         AddMenuComponent,
         OfflineImageComponent,
         ExternalLinkComponent,
@@ -53,7 +51,7 @@ import { ObservationSkeletonComponent } from '../../components/observation/obser
         RefreshWithCancelComponent,
         SummaryComponent,
         HeaderColorDirective,
-        InputPatternFilterDirective,
+        SelectComponent,
     ],
     exports: [
         CommonModule,
@@ -63,7 +61,6 @@ import { ObservationSkeletonComponent } from '../../components/observation/obser
         TranslateModule,
         RouterModule,
         ShadowCssDirective,
-        AutoResizeDirective,
         AngularSvgIconModule,
         AddMenuComponent,
         OfflineImageComponent,
@@ -79,7 +76,7 @@ import { ObservationSkeletonComponent } from '../../components/observation/obser
         RefreshWithCancelComponent,
         SummaryComponent,
         HeaderColorDirective,
-        InputPatternFilterDirective,
+        SelectComponent,
     ]
 })
 export class SharedModule { }

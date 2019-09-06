@@ -13,11 +13,12 @@ import { OfflineImageService } from './core/services/offline-image/offline-image
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
 import { Observable } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
-import { AnalyticService } from './core/services/analytic/analytic.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { LogLevel } from './modules/shared/services/logging/log-level.model';
+import { registerLocaleData } from '@angular/common';
+import localeNb from '@angular/common/locales/nb';
 
 @Component({
   selector: 'app-root',
@@ -42,7 +43,6 @@ export class AppComponent {
     private keyboard: Keyboard,
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
-    private analyticService: AnalyticService,
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
   ) {
@@ -51,8 +51,9 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.translate.addLangs(['no', 'en']);
-    this.translate.setDefaultLang('no');
+    registerLocaleData(localeNb);
+    this.translate.addLangs(['nb', 'en']);
+    this.translate.setDefaultLang('nb');
     this.platform.ready().then(async () => {
       if (this.platform.isAndroidOrIos()) {
         this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
@@ -61,7 +62,6 @@ export class AppComponent {
       await this.dbHelperService.init();
       const userSettings = await this.userSettings.getUserSettings();
       this.loggingService.configureLogging(userSettings.appMode);
-      this.analyticService.init();
       this.translate.use(LangKey[userSettings.language]);
       this.statusBar.styleLightContent();
       this.statusBar.backgroundColorByHexString('#99044962');

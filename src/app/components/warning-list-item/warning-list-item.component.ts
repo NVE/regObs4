@@ -8,6 +8,9 @@ import * as moment from 'moment';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { LangKey } from '../../core/models/langKey';
 import { WarningGroupFavouriteToggleComponent } from '../warning-group-favourite-toggle/warning-group-favourite-toggle.component';
+import { AnalyticService } from '../../modules/analytics/services/analytic.service';
+import { AppEventCategory } from '../../modules/analytics/enums/app-event-category.enum';
+import { AppEventAction } from '../../modules/analytics/enums/app-event-action.enum';
 
 @Component({
   selector: 'app-warning-list-item',
@@ -27,6 +30,7 @@ export class WarningListItemComponent implements OnInit {
     private externalLinkService: ExternalLinkService,
     private userSettingService: UserSettingService,
     private domCtrl: DomController,
+    private analyticService: AnalyticService,
     private renderer: Renderer2) { }
 
   ngOnInit() {
@@ -78,6 +82,7 @@ export class WarningListItemComponent implements OnInit {
     event.preventDefault();
     const url = await this.getUrl(group);
     if (url) {
+      this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
       this.externalLinkService.openExternalLink(url);
     }
   }
@@ -88,6 +93,7 @@ export class WarningListItemComponent implements OnInit {
       .format(settings.services.warning.dateFormat);
     const url = await this.getUrl(group, dateString);
     if (url) {
+      this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
       this.externalLinkService.openExternalLink(url);
     }
   }

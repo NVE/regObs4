@@ -3,6 +3,7 @@ import { DangerObsDto } from '../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { GeoHazard } from '../../../../../core/models/geo-hazard.enum';
 import { TranslateService } from '@ngx-translate/core';
+import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 
 const COMMENT_SEPARATOR = ': ';
 @Component({
@@ -15,7 +16,7 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   @Input() dangerObs: DangerObsDto;
   @Input() geoHazard: GeoHazard;
   noDangerObs = false;
-  areaArr: string[];
+  areaArr: SelectOption[];
   tmpArea = '';
   dangerSignTid: number;
   comment: string;
@@ -39,11 +40,14 @@ export class AddOrEditDangerObsModalPage implements OnInit {
     const tranlations = await this.translateService.get(this.getAreaArray()).toPromise();
     this.commentTranslations = await this.translateService
       .get(['REGISTRATION.DANGER_OBS.AREA', 'REGISTRATION.DANGER_OBS.DESCRIPTION']).toPromise();
-    this.areaArr = this.getAreaArray().map((item) => tranlations[item] as string);
+    this.areaArr = this.getAreaArray()
+      .map((item) => tranlations[item] as string)
+      .map((item) => ({ id: item, text: item }));
 
     if (this.dangerObs) {
       if (this.dangerObs.Comment) {
-        this.tmpArea = this.areaArr.find((x) => this.dangerObs.Comment.indexOf(x) >= 0);
+        const option = this.areaArr.find((x) => this.dangerObs.Comment.indexOf(x.id) >= 0);
+        this.tmpArea = option ? option.id : '';
         if (this.tmpArea) {
           this.comment = this.dangerObs.Comment.substr(this.dangerObs.Comment.indexOf(this.tmpArea) + this.tmpArea.length);
           const textToFind = `${this.commentTranslations['REGISTRATION.DANGER_OBS.DESCRIPTION']}`

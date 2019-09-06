@@ -9,7 +9,8 @@
     ],
     "types": [
       "jasmine",
-      "node"
+      "node",
+      "google.analytics"
     ]
   },
   "files": [

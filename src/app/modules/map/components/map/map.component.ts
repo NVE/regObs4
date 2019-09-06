@@ -257,10 +257,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         topoTilesLayer.addTo(this.tilesLayer);
       }
 
-      for (const supportTile of settings.map.tiles.supportTiles) {
-        const userSettingsForSupportTime = userSetting.supportTiles.find((x) => x.name === supportTile.name);
-        if (userSetting.currentGeoHazard.indexOf(supportTile.geoHazardId) >= 0
-          && (!userSettingsForSupportTime || userSettingsForSupportTime.enabled)) {
+      for (const supportTile of this.userSettingService.getSupportTilesOptions(userSetting)) {
+        if (supportTile.enabled) {
           const supportMapTileLayer = new RegObsTileLayer(
             supportTile.name,
             supportTile.url,
@@ -273,7 +271,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
               bounds: <any>settings.map.tiles.supportTilesBounds,
             }
           );
-          supportMapTileLayer.setOpacity(userSettingsForSupportTime ? userSettingsForSupportTime.opacity : supportTile.opacity);
+          supportMapTileLayer.setOpacity(supportTile.opacity);
           supportMapTileLayer.addTo(this.tilesLayer);
         }
       }

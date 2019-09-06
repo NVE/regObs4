@@ -7,6 +7,7 @@ import { RegistrationTid } from '../../../models/registrationTid.enum';
 import * as L from 'leaflet';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import * as moment from 'moment';
+import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 
 @Component({
   selector: 'app-avalanche-obs',
@@ -15,38 +16,38 @@ import * as moment from 'moment';
 })
 export class AvalancheObsPage extends BasePage {
 
-  expoArray = [
+  expoArray: SelectOption[] = [
     {
-      name: 'DIRECTION.N',
-      val: '10000000'
+      text: 'DIRECTION.N',
+      id: '10000000'
     },
     {
-      name: 'DIRECTION.NE',
-      val: '01000000'
+      text: 'DIRECTION.NE',
+      id: '01000000'
     },
     {
-      name: 'DIRECTION.E',
-      val: '00100000'
+      text: 'DIRECTION.E',
+      id: '00100000'
     },
     {
-      name: 'DIRECTION.SE',
-      val: '00010000'
+      text: 'DIRECTION.SE',
+      id: '00010000'
     },
     {
-      name: 'DIRECTION.S',
-      val: '00001000'
+      text: 'DIRECTION.S',
+      id: '00001000'
     },
     {
-      name: 'DIRECTION.SW',
-      val: '00000100'
+      text: 'DIRECTION.SW',
+      id: '00000100'
     },
     {
-      name: 'DIRECTION.W',
-      val: '00000010'
+      text: 'DIRECTION.W',
+      id: '00000010'
     },
     {
-      name: 'DIRECTION.NW',
-      val: '00000001'
+      text: 'DIRECTION.NW',
+      id: '00000001'
     }
   ];
 

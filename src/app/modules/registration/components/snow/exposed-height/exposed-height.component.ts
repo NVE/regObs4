@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, NgZone, EventEmitter } from '@angular/core';
+import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 
 @Component({
   selector: 'app-exposed-height',
@@ -18,15 +19,39 @@ export class ExposedHeightComponent implements OnInit {
   exposedHeightMiddle: boolean;
   exposedHeightBottom: boolean;
 
-  heightArray = [
-    2500, 2400, 2300, 2200, 2100,
-    2000, 1900, 1800, 1700, 1600,
-    1500, 1400, 1300, 1200, 1100,
-    1000, 900, 800, 700, 600,
-    500, 400, 300, 200, 100, 0
+  heightArray: SelectOption[] = [
+    { id: 2500, text: '2500' },
+    { id: 2400, text: '2400' },
+    { id: 2300, text: '2300' },
+    { id: 2200, text: '2200' },
+    { id: 2100, text: '2100' },
+    { id: 2000, text: '2000' },
+    { id: 1900, text: '1900' },
+    { id: 1800, text: '1800' },
+    { id: 1700, text: '1700' },
+    { id: 1600, text: '1600' },
+    { id: 1500, text: '1500' },
+    { id: 1400, text: '1400' },
+    { id: 1300, text: '1300' },
+    { id: 1200, text: '1200' },
+    { id: 1100, text: '1100' },
+    { id: 1000, text: '1000' },
+    { id: 900, text: '900' },
+    { id: 800, text: '800' },
+    { id: 700, text: '700' },
+    { id: 600, text: '600' },
+    { id: 500, text: '500' },
+    { id: 400, text: '400' },
+    { id: 300, text: '300' },
+    { id: 200, text: '200' },
+    { id: 100, text: '100' },
+    { id: 0, text: '0' }
   ];
 
-  lowerHeightArray = [...this.heightArray];
+  get lowerHeightArray() {
+    return this.heightArray.filter((x) => this.exposedHight1 === undefined
+      || x.id < this.exposedHight1);
+  }
 
   constructor(private ngZone: NgZone) { }
 
@@ -94,26 +119,14 @@ export class ExposedHeightComponent implements OnInit {
     }
   }
 
-  private updateHight2SelectOptions() {
-    setTimeout(() => {
-      this.lowerHeightArray = undefined;
-      setTimeout(() => {
-        this.lowerHeightArray = this.heightArray.filter((x) => x < (this.exposedHight1 || 9999));
-      });
-    });
-  }
-
   applyChanges() {
-    this.updateHight2SelectOptions();
-    this.ngZone.run(() => {
-      this.updateExposedHeightComboTID(this.exposedHeightTop, this.exposedHeightMiddle, this.exposedHeightBottom);
-      if (!this.sholdUseExposedHight2()) {
-        this.exposedHight2 = undefined;
-      }
-      this.exposedHeightComboTIDChange.emit(this.exposedHeightComboTID);
-      this.exposedHight1Change.emit(this.exposedHight1);
-      this.exposedHight2Change.emit(this.exposedHight2);
-    });
+    this.updateExposedHeightComboTID(this.exposedHeightTop, this.exposedHeightMiddle, this.exposedHeightBottom);
+    if (!this.sholdUseExposedHight2()) {
+      this.exposedHight2 = undefined;
+    }
+    this.exposedHeightComboTIDChange.emit(this.exposedHeightComboTID);
+    this.exposedHight1Change.emit(this.exposedHight1);
+    this.exposedHight2Change.emit(this.exposedHight2);
   }
 
 }

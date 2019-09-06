@@ -31,6 +31,11 @@
                 "output": "./svg"
               },
               {
+                "glob": "**/*.svg",
+                "input": "src/custom-icons",
+                "output": "./svg"
+              },
+              {
                 "glob": "**/*",
                 "input": "./node_modules/leaflet/dist/images",
                 "output": "leaflet/"
@@ -66,7 +71,8 @@
             ],
             "scripts": [
               "node_modules/marked/lib/marked.js"
-            ]
+            ],
+            "es5BrowserSupport": true
           },
           "configurations": {
             "production": {
@@ -77,8 +83,8 @@
                 }
               ],
               "optimization": true,
-              "outputHashing": "none",
-              "sourceMap": false,
+              "outputHashing": "all",
+              "sourceMap": true,
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
