@@ -28,7 +28,7 @@
       "core-js/es6/*": [
         "../node_modules/core-js/es/*"
       ]
-    },
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": false,

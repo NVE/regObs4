@@ -80,6 +80,7 @@
     "cordova-plugin-inappbrowser": "^3.1.0",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^4.1.1",
+    "cordova-plugin-localization-strings": "^3.2.0",
     "cordova-plugin-safariviewcontroller": "1.6.0",
     "cordova-plugin-screen-orientation": "^3.0.2",
     "cordova-plugin-shortcuts-android": "^0.1.1",
@@ -201,6 +202,9 @@
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-x-socialsharing": {
         "ANDROID_SUPPORT_V4_VERSION": "24.1.1+"
+      },
+      "cordova-plugin-localization-strings": {
+        "TRANSLATION_PATH": "translations/app/"
       }
     },
     "platforms": [
