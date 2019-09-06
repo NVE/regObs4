@@ -6,7 +6,10 @@ import { map, switchMap } from 'rxjs/operators';
 import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
+import { IonVirtualScroll, IonRefresher, IonContent } from '@ionic/angular';
+import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
+// import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
 
 const DEBUG_TAG = 'ObservationListPage';
 
@@ -20,6 +23,10 @@ export class ObservationListPage implements OnInit, OnDestroy {
     loaded = false;
     private subscription: Subscription;
     cancelSubject: Subject<any>;
+
+    // @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
+    // @ViewChild(IonRefresher) refresher: IonRefresher;
+    // @ViewChild(IonContent) content: IonContent;
 
     trackByIdFunc = this.trackByIdFuncInternal.bind(this);
     refreshFunc = this.refresh.bind(this);
@@ -35,7 +42,9 @@ export class ObservationListPage implements OnInit, OnDestroy {
     constructor(
         private observationService: ObservationService,
         private dataMarshallService: DataMarshallService,
+        // private obsCardHeightService: ObsCardHeightService,
         private ngZone: NgZone,
+        private loggingService: LoggingService,
         private mapService: MapService) {
     }
 
@@ -52,15 +61,21 @@ export class ObservationListPage implements OnInit, OnDestroy {
     }
 
     ionViewWillLeave() {
+        this.loaded = false;
+        this.observations = undefined;
         this.stopSubscription();
     }
 
     private reloadVirtualList(observations: RegistrationViewModel[]) {
-        this.ngZone.run(() => {
-            // Only load observation list one time per page load.
-            this.loaded = true;
-            this.observations = observations;
-        });
+        if (!this.loaded) {
+            setTimeout(() => {
+                this.loaded = true;
+            }, observations.length > 0 ? 2000 : 500);
+            this.ngZone.run(() => {
+                // Only load observation list one time per page load.
+                this.observations = observations;
+            });
+        }
     }
 
     startSubscription() {
@@ -96,4 +111,8 @@ export class ObservationListPage implements OnInit, OnDestroy {
             return 'header';
         }
     }
+
+    // getItemHeight(item: RegistrationViewModel, index: number) {
+    //     return this.obsCardHeightService.getHeight(item.RegID);
+    // }
 }
