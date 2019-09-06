@@ -8,7 +8,7 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { LangKey } from './core/models/langKey';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
-import { Keyboard } from '@ionic-native/keyboard/ngx';
+// import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
 import { Observable } from 'rxjs';
@@ -43,7 +43,7 @@ export class AppComponent {
     private dataMarshallService: DataMarshallService,
     private offlineImageService: OfflineImageService,
     private offlineMapService: OfflineMapService,
-    private keyboard: Keyboard,
+    // private keyboard: Keyboard,
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
@@ -71,7 +71,7 @@ export class AppComponent {
       this.statusBar.backgroundColorByHexString('#99044962');
       // this.statusBar.overlaysWebView(this.platform.is('ios'));
       this.statusBar.overlaysWebView(false);
-      this.keyboard.hideFormAccessoryBar(false);
+      // this.keyboard.hideFormAccessoryBar(false);
       this.offlineImageService.cleanupOldItems();
       this.dataMarshallService.init();
       this.initBackroundUpdates();

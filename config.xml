@@ -25,7 +25,8 @@
     <preference name="StatusBarBackgroundColor" value="#99044962" />
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     <preference name="KeyboardResize" value="true" />
-    <preference name="KeyboardResizeMode" value="native" />
+    <preference name="KeyboardResizeMode" value="ionic" />
+    <preference name="HideKeyboardFormAccessoryBar" value="false" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <platform name="android">
         <allow-navigation href="http://localhost:8080/*" />
