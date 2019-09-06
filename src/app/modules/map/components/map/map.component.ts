@@ -325,7 +325,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.map) {
         this.map.invalidateSize();
       }
-    });
+      window.dispatchEvent(new Event('resize'));
+    }, 50);
   }
 
   ngAfterViewInit(): void {
