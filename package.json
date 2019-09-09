@@ -105,7 +105,6 @@
     "moment-timezone": "^0.5.26",
     "ngx-leaflet-edgebuffer": "^1.0.6",
     "ngx-markdown": "^8.1.0",
-    "ngx-pinch-zoom": "^1.2.5",
     "observable-webworker": "^3.2.3",
     "rxjs": "^6.5.3",
     "source-sans-pro": "^3.6.0",
