@@ -12,8 +12,9 @@
 </ion-segment>
 <ion-content>
   <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <ion-virtual-scroll *ngIf="!showEmptyState else empty" [items]="warningGroups" [headerFn]="myHeaderFn"
-    [footerFn]="footerFn" [approxItemHeight]="52" [approxHeaderHeight]="87" [trackBy]="trackByFunc">
+  <ion-virtual-scroll *ngIf="!showEmptyState else empty" [ngClass]="{'loaded': loaded}" [items]="warningGroups"
+    [headerFn]="myHeaderFn" [footerFn]="footerFn" [approxItemHeight]="49" [approxHeaderHeight]="38"
+    [trackBy]="trackByFunc">
     <ion-item-divider *virtualHeader="let header">
       <app-warning-list-header [title]="header.header" [subTitle]="header.infoText"
         [showDayNames]="header.showDayNames"></app-warning-list-header>

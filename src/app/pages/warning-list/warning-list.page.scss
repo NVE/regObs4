@@ -2,6 +2,14 @@ ion-refresher, ion-content {
     background-color: var(--ion-background-color,#fff);
 }
 
+ion-virtual-scroll {
+    opacity: 0;
+    transition: opacity 1s linear;
+
+    &.loaded {
+        opacity: 1;
+    }
+}
 ion-item-divider {
     app-warning-list-header {
         width: 100%;

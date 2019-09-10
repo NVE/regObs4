@@ -26,6 +26,7 @@ export class WarningListPage implements OnInit, OnDestroy {
   noFavourites = false;
   noRelevant = false;
   trackByFunc = this.trackByInternal.bind(this);
+  loaded = false;
 
   get showNoFavourites() {
     return this.selectedTab === 'favourites' && this.noFavourites;
@@ -52,20 +53,35 @@ export class WarningListPage implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
-    this.subscription = combineLatest(this.segmentPageObservable, this.userSettingService.currentGeoHazardObservable$)
+    this.loaded = false;
+    this.subscription = combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazardObservable$])
       .pipe(
         switchMap(([segment, currentGeoHazard]) => this.getWarningGroupObservable(segment, currentGeoHazard)),
       ).subscribe((warningGroups) => {
         this.ngZone.run(() => {
           this.warningGroups = warningGroups;
+          this.hackToShowVirtualScrollItemsThatIsNotVisibleAtFirstLoad();
         });
       });
-    this.titleSubscription = combineLatest(this.segmentPageObservable, this.userSettingService.currentGeoHazardObservable$)
+    this.titleSubscription = combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazardObservable$])
       .subscribe(([selectedTab, currentGeoHazard]) => {
         this.ngZone.run(() => {
           this.setTitle(selectedTab, currentGeoHazard);
         });
       });
+  }
+
+  private hackToShowVirtualScrollItemsThatIsNotVisibleAtFirstLoad() {
+    if (!this.loaded && this.warningGroups && this.warningGroups.length > 0) {
+      const currentItems = [...this.warningGroups];
+      setTimeout(() => {
+        this.warningGroups = null;
+        setTimeout(() => { // Hack to virtual scroll items not showing at first load
+          this.warningGroups = currentItems;
+          this.loaded = true;
+        }, 200);
+      }, 200);
+    }
   }
 
   private setTitle(selectedTab: SelectedTab, currentGeoHazard: GeoHazard[]) {
@@ -102,10 +118,10 @@ export class WarningListPage implements OnInit, OnDestroy {
   }
 
   private getWarningsInMapView() {
-    return combineLatest(
+    return combineLatest([
       this.getWarningsInMapViewCenter(),
       this.getWarningsInMapViewBounds(),
-      this.getWarningsInMapViewBuffer())
+      this.getWarningsInMapViewBuffer()])
       .pipe(map(([a, b, c]) => ([...a, ...b, ...(b.length < 3 ? c : [])])),
         tap((val) => {
           this.ngZone.run(() => {
@@ -140,7 +156,7 @@ export class WarningListPage implements OnInit, OnDestroy {
   }
 
   private getSnowRegionWarnings(): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    return combineLatest(this.getARegionWarnings(), this.getBRegionWarnings())
+    return combineLatest([this.getARegionWarnings(), this.getBRegionWarnings()])
       .pipe(map(([a, b]) => ([...a, ...b])));
   }
 
