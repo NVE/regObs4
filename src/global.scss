@@ -185,6 +185,16 @@ ion-item {
             }
         }
     }
+
+    ion-button[slot="end"],  ion-icon[slot="end"] {
+        align-self: center;
+    }
+
+    .item-detail-icon {
+        color: var(--detail-icon-color);
+        font-size: var(--detail-icon-font-size);
+        opacity: var(--detail-icon-opacity);
+    }
 }
 
 ion-list {
