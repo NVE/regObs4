@@ -19,7 +19,7 @@ import { ImageHelper } from '../../helpers/image.helper';
 
 const DEBUG_TAG = 'OfflineMapService';
 const RECENTLY_SAVED_TILE_CACHE_SIZE = 2000;
-const SAVE_TILE_DELAY_BUFFER = 100;
+const SAVE_TILE_DELAY_BUFFER = 500;
 
 @Injectable({
   providedIn: 'root'
