@@ -2,14 +2,14 @@
 export interface AvalancheObsDto {
 
   /**
-   * SnowLine
-   */
-  SnowLine?: number;
-
-  /**
    * Tid da skredet gikk. DtAvalancheTime
    */
   DtAvalancheTime: string;
+
+  /**
+   * Eksposisjon
+   */
+  Aspect?: number;
 
   /**
    * Høyde i løsneområde
@@ -62,9 +62,9 @@ export interface AvalancheObsDto {
   UTMEastStart?: number;
 
   /**
-   * Eksposisjon
+   * SnowLine
    */
-  Aspect?: number;
+  SnowLine?: number;
 
   /**
    * ValidExposition

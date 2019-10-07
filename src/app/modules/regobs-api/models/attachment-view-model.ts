@@ -1,12 +1,12 @@
 /* tslint:disable */
 export interface AttachmentViewModel {
-  GeoHazardName?: string;
   RegID?: number;
+  PictureID?: number;
   Photographer?: string;
   Copyright?: string;
   Aspect?: number;
   GeoHazardTID?: number;
-  PictureID?: number;
+  GeoHazardName?: string;
   RegistrationTID?: number;
   RegistrationName?: string;
   Comment?: string;

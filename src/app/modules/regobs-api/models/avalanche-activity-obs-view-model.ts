@@ -1,7 +1,7 @@
 /* tslint:disable */
 export interface AvalancheActivityObsViewModel {
-  AvalancheName?: string;
   AvalancheActivityObsID?: number;
+  Aspect?: number;
   HeigthStartZone?: number;
   DtAvalancheTime?: string;
   DestructiveSizeTID?: number;
@@ -9,7 +9,7 @@ export interface AvalancheActivityObsViewModel {
   EstimatedNumTID?: number;
   EstimatedNumName?: string;
   AvalancheTID?: number;
-  Aspect?: number;
+  AvalancheName?: string;
   AvalancheTriggerTID?: number;
   AvalancheTriggerName?: string;
   TerrainStartZoneTID?: number;

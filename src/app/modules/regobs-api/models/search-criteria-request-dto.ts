@@ -3,8 +3,8 @@ import { RegistrationTypeCriteriaDto } from './registration-type-criteria-dto';
 import { WithinRadiusCriteriaDto } from './within-radius-criteria-dto';
 import { WithinExtentCriteriaDto } from './within-extent-criteria-dto';
 export interface SearchCriteriaRequestDto {
-  TimeZone?: string;
   RegId?: number;
+  LangKey?: number;
   LocationId?: number;
   ObserverId?: number;
   ObserverGuid?: string;
@@ -13,7 +13,7 @@ export interface SearchCriteriaRequestDto {
   ToDate?: string;
   NumberOfRecords?: number;
   Offset?: number;
-  LangKey?: number;
+  TimeZone?: string;
   SelectedRegistrationTypes?: Array<RegistrationTypeCriteriaDto>;
   SelectedRegions?: Array<number>;
   SelectedGeoHazards?: Array<number>;

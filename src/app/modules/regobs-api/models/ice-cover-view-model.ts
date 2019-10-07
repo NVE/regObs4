@@ -1,11 +1,11 @@
 /* tslint:disable */
 export interface IceCoverViewModel {
-  IceCoverAfterTID?: number;
   IceCoverBeforeTID?: number;
+  IceCoverBeforeName?: string;
   IceCoverTID?: number;
   IceCoverName?: string;
   Comment?: string;
-  IceCoverBeforeName?: string;
+  IceCoverAfterTID?: number;
   IceCoverAfterName?: string;
   IceSkateabilityTID?: number;
   IceSkateabilityName?: string;

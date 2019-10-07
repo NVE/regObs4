@@ -1,5 +1,4 @@
 /* tslint:disable */
-import { DangerObsDto } from './danger-obs-dto';
 import { AvalancheActivityObsDto } from './avalanche-activity-obs-dto';
 import { AvalancheActivityObs2Dto } from './avalanche-activity-obs-2dto';
 import { AvalancheDangerObsDto } from './avalanche-danger-obs-dto';
@@ -7,6 +6,7 @@ import { AvalancheEvalProblem2Dto } from './avalanche-eval-problem-2dto';
 import { AvalancheEvaluation3Dto } from './avalanche-evaluation-3dto';
 import { AvalancheObsDto } from './avalanche-obs-dto';
 import { CompressionTestDto } from './compression-test-dto';
+import { DangerObsDto } from './danger-obs-dto';
 import { GeneralObservationEditModel } from './general-observation-edit-model';
 import { IceCoverObsDto } from './ice-cover-obs-dto';
 import { IceThicknessDto } from './ice-thickness-dto';
@@ -27,8 +27,12 @@ import { DensityProfileDto } from './density-profile-dto';
  * Denne tabellen knytter observatør, sted og observasjonene sammen. Poetisk sagt er den navet i en registrering. Merknad: For å opprette en ny registrering kreves gyldig observerID og ObsLocationId
  */
 export interface CreateRegistrationRequestDto {
-  DangerObs?: Array<DangerObsDto>;
   Id: string;
+
+  /**
+   * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is). The GeoHazardKD unique identifier
+   */
+  GeoHazardTID: 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 100 | 110 | 200 | 999;
 
   /**
    * Tiden da observasjonen ble gjort.
@@ -87,11 +91,7 @@ export interface CreateRegistrationRequestDto {
    */
   AvalancheObs?: AvalancheObsDto;
   CompressionTest?: Array<CompressionTestDto>;
-
-  /**
-   * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is). The GeoHazardKD unique identifier
-   */
-  GeoHazardTID: 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 100 | 110 | 200 | 999;
+  DangerObs?: Array<DangerObsDto>;
   GeneralObservation?: GeneralObservationEditModel;
 
   /**

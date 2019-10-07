@@ -3,14 +3,14 @@ import { UrlViewModel } from './url-view-model';
 export interface LandSlideObsDto {
 
   /**
-   * Hvor stoppet skredet? UTM sone. Merk at kartene i norge ligger mellom UTM32 og 34.
-   */
-  UTMZoneStop?: number;
-
-  /**
    * Latitude start posisjon
    */
   StartLat?: number;
+
+  /**
+   * Long start posisjon
+   */
+  StartLong?: number;
 
   /**
    * Latitude stopp posisjon
@@ -58,9 +58,9 @@ export interface LandSlideObsDto {
   UTMEastStop?: number;
 
   /**
-   * Long start posisjon
+   * Hvor stoppet skredet? UTM sone. Merk at kartene i norge ligger mellom UTM32 og 34.
    */
-  StartLong?: number;
+  UTMZoneStop?: number;
 
   /**
    * Hva slags type skred er det snakk om? Valg gitt i LandSlideKD. The LandSlideKD unique identifier

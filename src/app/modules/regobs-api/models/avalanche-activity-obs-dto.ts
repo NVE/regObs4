@@ -6,14 +6,14 @@
 export interface AvalancheActivityObsDto {
 
   /**
-   * Typen skred som er gått. The AvalancheKD unique identifier
-   */
-  AvalancheTID?: number;
-
-  /**
    * Unik id på denne tabellen da flere er mulig pr RegID.
    */
   AvalancheActivityObsID: number;
+
+  /**
+   * Hvilken side av fjellene har skredene gått? Gis i grader slik gitt på kompass. 0 er nord og 90 er øst osv.
+   */
+  Aspect: number;
 
   /**
    * Meter over havet på løsneområdet.
@@ -36,9 +36,9 @@ export interface AvalancheActivityObsDto {
   EstimatedNumTID?: number;
 
   /**
-   * Hvilken side av fjellene har skredene gått? Gis i grader slik gitt på kompass. 0 er nord og 90 er øst osv.
+   * Typen skred som er gått. The AvalancheKD unique identifier
    */
-  Aspect: number;
+  AvalancheTID?: number;
 
   /**
    * Hva utløste skredet? Det er ofte beskrevet som det svake laget i snødekket. The AvalancheTriggerKD unique identifier

@@ -1,6 +1,8 @@
 export { ObserverResponseDto } from './models/observer-response-dto';
 export { ObserverGroupDto } from './models/observer-group-dto';
 export { CreateAccountRequest } from './models/create-account-request';
+export { MyPageData } from './models/my-page-data';
+export { ObserverCompetenceDto } from './models/observer-competence-dto';
 export { GeneralObservationEditModel } from './models/general-observation-edit-model';
 export { UrlViewModel } from './models/url-view-model';
 export { GeoLocationInfo } from './models/geo-location-info';

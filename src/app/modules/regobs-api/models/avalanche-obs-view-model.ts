@@ -1,7 +1,7 @@
 /* tslint:disable */
 export interface AvalancheObsViewModel {
-  UTMNorthStop?: number;
   DtAvalancheTime?: string;
+  Aspect?: number;
   HeightStartZone?: number;
   HeightStopZone?: number;
   DestructiveSizeTID?: number;
@@ -14,7 +14,7 @@ export interface AvalancheObsViewModel {
   TerrainStartZoneName?: string;
   UTMZoneStop?: number;
   UTMEastStop?: number;
-  Aspect?: number;
+  UTMNorthStop?: number;
   UTMEastStart?: number;
   SnowLine?: number;
   ValidExposition?: string;

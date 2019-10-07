@@ -2,14 +2,14 @@
 export interface ObsLocationDto {
 
   /**
-   * Nordlig UTM sone uten desimaler
-   */
-  UTMNorth?: number;
-
-  /**
    * Latitude
    */
   Latitude?: number;
+
+  /**
+   * Longitude
+   */
+  Longitude?: number;
 
   /**
    * ObsLocationID
@@ -32,9 +32,9 @@ export interface ObsLocationDto {
   UTMEast?: number;
 
   /**
-   * Longitude
+   * Nordlig UTM sone uten desimaler
    */
-  Longitude?: number;
+  UTMNorth?: number;
 
   /**
    * Kildehenvisning på hvordan koordinaten er satt. (GPS i tlf, klikk i kart, osv). Verdier gitt i UTMSourceKD

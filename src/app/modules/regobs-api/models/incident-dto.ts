@@ -3,14 +3,14 @@ import { IncidentUrlsDto } from './incident-urls-dto';
 export interface IncidentDto {
 
   /**
-   * .. med ingress eller sammendrag ..
-   */
-  IncidentIngress?: string;
-
-  /**
    * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is).
    */
   GeoHazardTID?: number;
+
+  /**
+   * Hva ble påvirket av hendelsen. Valgene er gitt i ActivityInfluencedKD. The ActivityInfluencedKD unique identifier
+   */
+  ActivityInfluencedTID?: number;
 
   /**
    * Skadeomfang. Hva var konsekvensen av hendelsen. Valgene gitt i DamageExtentKD. The DamageExtentKD unique identifier
@@ -33,9 +33,9 @@ export interface IncidentDto {
   IncidentHeader?: string;
 
   /**
-   * Hva ble påvirket av hendelsen. Valgene er gitt i ActivityInfluencedKD. The ActivityInfluencedKD unique identifier
+   * .. med ingress eller sammendrag ..
    */
-  ActivityInfluencedTID?: number;
+  IncidentIngress?: string;
 
   /**
    * .. og teksten eller artikkelen.

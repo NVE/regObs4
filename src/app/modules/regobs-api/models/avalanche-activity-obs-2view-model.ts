@@ -1,7 +1,7 @@
 /* tslint:disable */
 export interface AvalancheActivityObs2ViewModel {
-  AvalancheExtTID?: number;
   EstimatedNumTID?: number;
+  EstimatedNumName?: string;
   DtStart?: string;
   DtEnd?: string;
   DtOffStart?: string;
@@ -11,7 +11,7 @@ export interface AvalancheActivityObs2ViewModel {
   ExposedHeight2?: number;
   ExposedHeightComboTID?: number;
   ExposedHeightComboName?: string;
-  EstimatedNumName?: string;
+  AvalancheExtTID?: number;
   AvalancheExtName?: string;
   AvalCauseTID?: number;
   AvalCauseName?: string;
