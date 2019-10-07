@@ -10,50 +10,48 @@ import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { nSQL } from '@nano-sql/core';
-import { Observable, Observer, from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, from, Subject, BehaviorSubject, zip } from 'rxjs';
+import { map, switchMap, delay, tap, mergeMap } from 'rxjs/operators';
 import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 import { LRUCache } from 'lru-fast';
-import { Platform } from '@ionic/angular';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { ImageHelper } from '../../helpers/image.helper';
 
 const DEBUG_TAG = 'OfflineMapService';
+const RECENTLY_SAVED_TILE_CACHE_SIZE = 2000;
+const SAVE_TILE_DELAY_BUFFER = 100;
 
 @Injectable({
   providedIn: 'root'
 })
 export class OfflineMapService implements OnReset {
-  private _savedTiles: LRUCache<string, boolean>;
-  private _saveBuffer: LRUCache<string, HTMLImageElement>;
-  private _interval: NodeJS.Timeout;
-  private _shouldProcessOfflineImages: boolean;
+  private _recentlySavedTileCache: LRUCache<string, boolean>;
+  private _saveBuffer: Subject<{ id: string, el: HTMLImageElement }>;
+  private _saveTileBufferTrigger = new BehaviorSubject(null);
 
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
     private file: File,
     private loggingService: LoggingService,
-    private platform: Platform,
   ) {
-    this.init();
+    this._recentlySavedTileCache = new LRUCache(RECENTLY_SAVED_TILE_CACHE_SIZE);
+    this._saveBuffer = new Subject<{ id: string, el: HTMLImageElement }>();
+    this.startSavingTiles();
   }
 
-  private init() {
-    this._savedTiles = new LRUCache(2000);
-    this._saveBuffer = new LRUCache(100);
-    this.platform.pause.subscribe(() => {
-      this.stopProcessingOfflineImageSaveQueue();
+  private startSavingTiles() {
+    zip(this._saveBuffer, this._saveTileBufferTrigger.pipe(delay(SAVE_TILE_DELAY_BUFFER))).pipe(
+      map(([tile, _]) => tile),
+      mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el)),
+      tap((_) => this._saveTileBufferTrigger.next(null))
+    ).subscribe((tile) => {
+      this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
     });
-    this.platform.resume.subscribe(() => {
-      this.startProcessingOfflineImageSaveQueue();
-    });
-    this.startProcessingOfflineImageSaveQueue();
   }
 
-  private stopProcessingOfflineImageSaveQueue() {
-    if (this._interval) {
-      clearTimeout(this._interval);
-    }
+  private saveHtmlImageToDb(id: string, el: HTMLImageElement) {
+    return ImageHelper.getImageDataUrlAsObservable(el)
+      .pipe(switchMap((result) => from(this.saveTileDataUrlToDbCache(id, result.dataUrl, result.size))));
   }
 
   // TODO: Implement continue download when app restart
@@ -118,38 +116,10 @@ export class OfflineMapService implements OnReset {
   }
 
   saveTileToOfflineCache(id: string, el: HTMLImageElement) {
-    if (!this._savedTiles.get(id)) {
-      this._savedTiles.set(id, true);
-      this._saveBuffer.set(id, el);
+    if (!this._recentlySavedTileCache.get(id)) {
+      this._recentlySavedTileCache.set(id, true);
+      this._saveBuffer.next({ id, el });
     }
-  }
-
-  shouldProcessOfflineImage(val: boolean) {
-    this._shouldProcessOfflineImages = val;
-  }
-
-  private startProcessingOfflineImageSaveQueue() {
-    const continueProcessing = (timeout?: number) => {
-      this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
-        timeout || settings.map.tiles.cacheSaveBufferThrottleTimeMs);
-    };
-    // this.loggingService.debug(`Start processing offline tiles queue. Size: ${this._saveBuffer.size}`, DEBUG_TAG);
-    this.stopProcessingOfflineImageSaveQueue();
-    if (this._shouldProcessOfflineImages && this._saveBuffer.size > 0) {
-      const latest = this._saveBuffer.newest;
-      if (latest) {
-        const key = latest.key;
-        if (key !== undefined) {
-          this._saveBuffer.remove(key);
-          const currentTile = latest.value;
-          ImageHelper.getImageDataUrlAsObservable(currentTile)
-          .pipe(switchMap((result) => from(this.saveTileDataUrlToDbCache(key, result.dataUrl, result.size))))
-          .subscribe((result) => null, continueProcessing, continueProcessing);
-          return;
-        }
-      }
-    }
-    continueProcessing(settings.map.tiles.cacheSaveBufferIdleInterval);
   }
 
   async saveTileDataUrlToDbCache(id: string, dataUrl: string, size: number) {
@@ -386,10 +356,8 @@ export class OfflineMapService implements OnReset {
   }
 
   appOnReset(): void | Promise<any> {
-    this.stopProcessingOfflineImageSaveQueue();
   }
 
   appOnResetComplete(): void | Promise<any> {
-    this.startProcessingOfflineImageSaveQueue();
   }
 }

@@ -196,12 +196,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onMapMove() {
     this.disableFollowMode();
-    this.offlineMapService.shouldProcessOfflineImage(false);
   }
 
   private onMapMoveEnd() {
     this.updateMapView();
-    this.offlineMapService.shouldProcessOfflineImage(true);
   }
 
   private disableFollowMode() {
