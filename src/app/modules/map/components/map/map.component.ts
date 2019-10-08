@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, NgZone, OnDestroy, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { Platform } from '@ionic/angular';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
-import { take } from 'rxjs/operators';
+import { take, takeWhile, tap } from 'rxjs/operators';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -114,6 +114,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.stopGeoPositionUpdates();
     if (this.map) {
       this.map.remove();
+      this.map = null;
     }
   }
 
@@ -319,12 +320,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   redrawMap() {
-    setTimeout(() => {
-      if (this.map) {
-        this.map.invalidateSize();
-      }
-      window.dispatchEvent(new Event('resize'));
-    }, 50);
+    let counter = 3;
+    timer(500, 50).pipe(
+      takeWhile(() => counter > 0),
+      tap(() => counter--)).subscribe(() => {
+        if (this.map) {
+          this.loggingService.debug('Invalidate size', DEBUG_TAG);
+          this.map.invalidateSize();
+          // window.dispatchEvent(new Event('resize'));
+        } else {
+          this.loggingService.debug('No map to invalidate', DEBUG_TAG);
+        }
+      });
   }
 
   ngAfterViewInit(): void {
