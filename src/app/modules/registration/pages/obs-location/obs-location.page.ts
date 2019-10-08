@@ -30,7 +30,6 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   fullscreen$: Observable<boolean>;
   geoHazard: GeoHazard;
   isSaveDisabled = false;
-  hasSaved = false;
   @ViewChild(SetLocationInMapComponent, { static: false }) setLocationInMapComponent: SetLocationInMapComponent;
 
   private subscription: Subscription;
@@ -99,15 +98,10 @@ export class ObsLocationPage implements OnInit, OnDestroy {
 
   ionViewDidEnter() {
     this.swipeBackService.disableSwipeBack();
-    this.hasSaved = false;
   }
 
   ionViewWillLeave() {
     this.swipeBackService.enableSwipeBack();
-    if (this.registration && this.registration.request && !this.hasSaved && this.setLocationInMapComponent) {
-      const obsLocation = this.setLocationInMapComponent.getLocation();
-      this.setLocationAndSaveRegistration(obsLocation);
-    }
   }
 
   private hasLocation(reg: IRegistration) {
@@ -139,6 +133,5 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     this.registration.request.ObsLocation = loc;
     this.registrationService.saveRegistration(this.registration);
     this.isSaveDisabled = false;
-    this.hasSaved = true;
   }
 }
