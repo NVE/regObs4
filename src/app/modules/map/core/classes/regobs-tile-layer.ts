@@ -87,7 +87,7 @@ export class RegObsTileLayer extends L.TileLayer {
         const opt = (<IRegObsTileLayerOptions>this.options);
         if (opt.saveTilesToCache && opt.saveCacheTileFunc
             && tile && tile.id && tile.id !== '' && tile.src.startsWith('http')) {
-            opt.saveCacheTileFunc(tile.id, tile);
+            opt.saveCacheTileFunc(`${tile.id}`, tile.cloneNode(true) as HTMLImageElement);
         }
         done(null, tile);
     }

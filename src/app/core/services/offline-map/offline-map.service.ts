@@ -19,7 +19,7 @@ import { LogLevel } from '../../../modules/shared/services/logging/log-level.mod
 
 const DEBUG_TAG = 'OfflineMapService';
 const RECENTLY_SAVED_TILE_CACHE_SIZE = 2000;
-const SAVE_TILE_DELAY_BUFFER = 500;
+const SAVE_TILE_DELAY_BUFFER = 1000;
 const MAX_BUFFER_SIZE = 50;
 
 @Injectable({
@@ -44,8 +44,9 @@ export class OfflineMapService implements OnReset {
   private startSavingTiles() {
     zip(this._saveBuffer, this._saveTileBufferTrigger.pipe(delay(SAVE_TILE_DELAY_BUFFER))).pipe(
       map(([tile, _]) => tile),
-      mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el)),
-      tap((_) => {
+      mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el).pipe(map((offlineTile) => ({ tile, offlineTile })))),
+      tap((result) => {
+        result.tile.el = null; // Free up memory
         this._saveBufferSize--;
         this._saveTileBufferTrigger.next(null);
       })
