@@ -12,7 +12,7 @@ import { DataLoadService } from '../../../modules/data-load/services/data-load.s
 import moment from 'moment';
 import { ObservableHelper } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
+import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
 
 const DEBUG_TAG = 'KdvService';
 
@@ -83,13 +83,13 @@ export class KdvService {
   }
 
   private getKdvElementsObservable() {
-    return combineLatest(this.userSettingService.appMode$, this.userSettingService.language$).pipe(
+    return combineLatest([this.userSettingService.appMode$, this.userSettingService.language$]).pipe(
       switchMap(([appMode, langKey]) => this.getKdvElementsFromDbAsStream(appMode, langKey)),
       shareReplay(1));
   }
 
   private getKdvElementsFromDbAsStream(appMode: AppMode, langKey: LangKey) {
-    return NanoSqlObservableHelper.toRxJS<KdvElementsResponseDto[]>(
+    return new NSqlFullUpdateObservable<KdvElementsResponseDto[]>(
       NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode).query('select')
         .where(['langKey', '=', langKey]).listen())
       .pipe(map((val: KdvElementsResponseDto[]) => val.length > 0 ? val[0] : this.getDefaultKdvElements(langKey)));

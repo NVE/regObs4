@@ -3,24 +3,21 @@ import { HttpClient } from '@angular/common/http';
 import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
-import { map, switchMap, catchError, take, shareReplay, combineAll, tap } from 'rxjs/operators';
+import { map, switchMap, catchError, take } from 'rxjs/operators';
 import { Observable, combineLatest, forkJoin, of, Subject } from 'rxjs';
-import { LocationName } from './location-name.model';
 import { ViewInfo } from './view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LangKey } from '../../../../core/models/langKey';
-import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
-import { LocationService, GeoCodeService } from '../../../regobs-api/services';
+import { GeoCodeService } from '../../../regobs-api/services';
 import { NanoSql } from '../../../../../nanosql';
 import { MapSearchHistory } from './map-search-history.model';
 import moment from 'moment';
 import { IMapView } from '../map/map-view.interface';
 import { NorwegianSearchResultModel, NorwegianSearchResultModelStednavn } from './norwegian-search-result.model';
 import { WorldSearchResultModel } from './world-search-result.model';
-import '../../../../core/helpers/nano-sql/nanoObserverToRxjs';
 import { nSQL } from '@nano-sql/core';
-import { NanoSqlObservableHelper } from '../../../../core/helpers/nano-sql/nanoObserverToRxjs';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { NSqlFullUpdateObservable } from '../../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 
 @Injectable({
   providedIn: 'root'
@@ -41,8 +38,7 @@ export class MapSearchService {
   constructor(
     private httpClient: HttpClient,
     private userSettingService: UserSettingService,
-    private geoCodeService: GeoCodeService,
-    private locationService: LocationService) {
+    private geoCodeService: GeoCodeService) {
     this._mapSearchItemClickSubject = new Subject<MapSearchResponse | L.LatLng>();
     this._mapSearchItemClickObservable = this._mapSearchItemClickSubject.asObservable();
     this._mapSearchItemClickObservable.subscribe((item) => {
@@ -55,8 +51,8 @@ export class MapSearchService {
   searchAll(text: string): Observable<MapSearchResponse[]> {
     return this.userSettingService.language$.pipe(
       switchMap((language) =>
-        forkJoin(this.searchNorwegianPlaces(text, language),
-          this.searchWorld(text, language)).pipe(map(([s1, s2]) => [...s1, ...s2]))));
+        forkJoin([this.searchNorwegianPlaces(text, language),
+        this.searchWorld(text, language)]).pipe(map(([s1, s2]) => [...s1, ...s2]))));
   }
 
   searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
@@ -112,7 +108,7 @@ export class MapSearchService {
   getViewInfo(mapView: IMapView, geoHazard = GeoHazard.Dirt): Observable<ViewInfo> {
     const latLng = mapView.center;
     return this.geoCodeService.GeoCodeLocationInfo({ latitude: latLng.lat, longitude: latLng.lng, geoHazardId: geoHazard })
-    .pipe(map((result) => ({
+      .pipe(map((result) => ({
         location: {
           name: result.Name,
           adminName: result.WarningRegionName || result.AdminAreaName
@@ -120,8 +116,8 @@ export class MapSearchService {
         elevation: result.Masl,
         steepness: result.Steepness,
         latLng: latLng,
-    })),
-    catchError(() => of(null)));
+      })),
+        catchError(() => of(null)));
   }
 
   private async saveSearchHistoryToDb(searchResult: MapSearchResponse) {
@@ -134,7 +130,7 @@ export class MapSearchService {
   }
 
   getSearchHistoryAsObservable(): Observable<MapSearchHistory[]> {
-    return NanoSqlObservableHelper.toRxJS<{ id: string, items: MapSearchHistory[] }[]>
+    return new NSqlFullUpdateObservable<{ id: string, items: MapSearchHistory[] }[]>
       (nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('select')
         .listen())
       .pipe(map((val) => val.length > 0 ? val[0].items.reverse() : []));

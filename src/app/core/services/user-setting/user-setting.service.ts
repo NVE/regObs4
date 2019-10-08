@@ -10,10 +10,9 @@ import { map, take, shareReplay, distinctUntilChanged, tap } from 'rxjs/operator
 import { LangKey } from '../../models/langKey';
 import { TopoMap } from '../../models/topo-map.enum';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import '../../helpers/nano-sql/nanoObserverToRxjs';
 import { nSQL } from '@nano-sql/core';
-import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
+import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
 
 const DEBUG_TAG = 'UserSettingService';
 
@@ -173,7 +172,7 @@ export class UserSettingService implements OnReset {
   }
 
   private getUserSettingsFromDbAsObservable(): Observable<UserSetting> {
-    return NanoSqlObservableHelper.toRxJS<UserSetting[]>(
+    return new NSqlFullUpdateObservable<UserSetting[]>(
       nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select')
         .listen()).pipe(
           map((val: UserSetting[]) => val.length > 0 ? val[0] : this.getDefaultSettings()),

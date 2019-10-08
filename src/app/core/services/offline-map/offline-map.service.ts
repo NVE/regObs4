@@ -8,18 +8,19 @@ import { NanoSql } from '../../../../nanosql';
 import { File, Entry } from '@ionic-native/file/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { nSQL } from '@nano-sql/core';
 import { Observable, from, Subject, BehaviorSubject, zip } from 'rxjs';
 import { map, switchMap, delay, tap, mergeMap } from 'rxjs/operators';
-import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 import { LRUCache } from 'lru-fast';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { ImageHelper } from '../../helpers/image.helper';
+import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'OfflineMapService';
 const RECENTLY_SAVED_TILE_CACHE_SIZE = 2000;
 const SAVE_TILE_DELAY_BUFFER = 500;
+const MAX_BUFFER_SIZE = 50;
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,7 @@ export class OfflineMapService implements OnReset {
   private _recentlySavedTileCache: LRUCache<string, boolean>;
   private _saveBuffer: Subject<{ id: string, el: HTMLImageElement }>;
   private _saveTileBufferTrigger = new BehaviorSubject(null);
+  private _saveBufferSize = 0;
 
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
@@ -43,7 +45,10 @@ export class OfflineMapService implements OnReset {
     zip(this._saveBuffer, this._saveTileBufferTrigger.pipe(delay(SAVE_TILE_DELAY_BUFFER))).pipe(
       map(([tile, _]) => tile),
       mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el)),
-      tap((_) => this._saveTileBufferTrigger.next(null))
+      tap((_) => {
+        this._saveBufferSize--;
+        this._saveTileBufferTrigger.next(null);
+      })
     ).subscribe((tile) => {
       this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
     });
@@ -72,7 +77,7 @@ export class OfflineMapService implements OnReset {
   }
 
   getOfflineMapsAsObservable(): Observable<OfflineMap[]> {
-    return NanoSqlObservableHelper.toRxJS<OfflineMap[]>(
+    return new NSqlFullUpdateObservable<OfflineMap[]>(
       nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('select').listen({
         debounce: 500,
       })).pipe(map((x) => this.mergeOfflineMaps(x)));
@@ -116,9 +121,14 @@ export class OfflineMapService implements OnReset {
   }
 
   saveTileToOfflineCache(id: string, el: HTMLImageElement) {
-    if (!this._recentlySavedTileCache.get(id)) {
-      this._recentlySavedTileCache.set(id, true);
-      this._saveBuffer.next({ id, el });
+    if (this._saveBufferSize < MAX_BUFFER_SIZE) {
+      if (!this._recentlySavedTileCache.get(id)) {
+        this._recentlySavedTileCache.set(id, true);
+        this._saveBufferSize++;
+        this._saveBuffer.next({ id, el });
+      }
+    } else {
+      this.loggingService.debug('Max save buffer size reached, skipping', DEBUG_TAG);
     }
   }
 
@@ -205,7 +215,7 @@ export class OfflineMapService implements OnReset {
   }
 
   getFullTilesCacheAsObservable(): Observable<{ count: number, size: number }> {
-    return NanoSqlObservableHelper.toRxJS(nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+    return new NSqlFullUpdateObservable<{ count: number, size: number }[]>(nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
       .query('select', ['COUNT(*) as count', 'SUM(size) as size'])
       .where(['mapName', '=', settings.map.tiles.cacheFolder]).listen({
         debounce: 10000,
@@ -219,7 +229,7 @@ export class OfflineMapService implements OnReset {
   }
 
   getTilesCacheAsObservable(): Observable<{ count: number, size: number }> {
-    return NanoSqlObservableHelper.toRxJS(nSQL(NanoSql.TABLES.OFFLINE_MAP_CACHE_SIZE.name)
+    return new NSqlFullUpdateObservable<{ count: number, size: number }[]>(nSQL(NanoSql.TABLES.OFFLINE_MAP_CACHE_SIZE.name)
       .query('select').where(['id', '=', settings.map.tiles.cacheFolder]).listen())
       .pipe(map((result: { count: number, size: number }[]) => result.length > 0 ? result[0] : { count: 0, size: 0 }));
   }

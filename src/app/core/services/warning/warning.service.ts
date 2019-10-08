@@ -12,7 +12,7 @@ import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
 import { IWarningApiResult } from './warning-api-result.interface';
 import { IAvalancheWarningApiResult } from './avalanche-warning-api-result.interface';
-import { combineLatest, Observable, BehaviorSubject, from, of } from 'rxjs';
+import { combineLatest, Observable, BehaviorSubject, of } from 'rxjs';
 import { IWarningGroupInMapView } from './warninggroup-in-mapview.interface';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { IWarningGroup } from './warning-group.interface';
@@ -24,12 +24,11 @@ import { IMapViewAndArea } from '../../../modules/map/services/map/map-view-and-
 import { ObservableHelper } from '../../helpers/observable-helper';
 import { IAvalancheWarningSimple } from './avalanche-warning-simple.interface';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import '../../helpers/nano-sql/nanoObserverToRxjs';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { nSQL } from '@nano-sql/core';
-import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { UserSetting } from '../../models/user-settings.model';
+import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
 
 const DEBUG_TAG = 'WarningService';
 
@@ -167,7 +166,7 @@ export class WarningService {
 
   getIsFavouriteObservable(groupId: string, geoHazard: GeoHazard): Observable<boolean> {
     const id = `${geoHazard}_${groupId}`;
-    return NanoSqlObservableHelper.toRxJS<{ id: string, groupId: string, geoHazard: GeoHazard }[]>(
+    return new NSqlFullUpdateObservable<{ id: string, groupId: string, geoHazard: GeoHazard }[]>(
       nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('select')
         .where(['id', '=', id]).listen())
       .pipe(map((val) => val.length > 0 ? true : false)
@@ -175,7 +174,7 @@ export class WarningService {
   }
 
   private getOfflineWarningsAsObservable(geoHazard: GeoHazard) {
-    return NanoSqlObservableHelper.toRxJS<IWarningGroup[]>
+    return new NSqlFullUpdateObservable<IWarningGroup[]>
       (nSQL(NanoSql.TABLES.WARNING.name).query('select')
         .listen({
           debounce: 200,
@@ -187,8 +186,8 @@ export class WarningService {
   }
 
   private getWarningsAsObservable(): Observable<IWarningGroup[]> {
-    return combineLatest(
-      this.userSettingService.appModeLanguageAndCurrentGeoHazard$, this.latestWarnings.asObservable())
+    return combineLatest([
+      this.userSettingService.appModeLanguageAndCurrentGeoHazard$, this.latestWarnings.asObservable()])
       .pipe(switchMap(([[_, langKey, __], latestWarnings]) =>
         combineLatest([GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Water, GeoHazard.Dirt].map((geoHazard) =>
           this.getLatestWarningsOrFallbackToOffline(latestWarnings, geoHazard, langKey)))
@@ -273,14 +272,14 @@ export class WarningService {
   }
 
   private getFavouritesAsObservable() {
-    return NanoSqlObservableHelper.toRxJS<{ groupId: string, geoHazard: GeoHazard }[]>(
+    return new NSqlFullUpdateObservable<{ groupId: string, geoHazard: GeoHazard }[]>(
       nSQL(NanoSql.TABLES.WARNING_FAVOURITE.name).query('select').listen());
   }
 
   getWarningGroupFavouritesObservable(): Observable<WarningGroup[]> {
-    return combineLatest(
+    return combineLatest([
       this.getWarningsAsObservable(),
-      this.getFavouritesAsObservable()).pipe(map(([regions, favourites]) =>
+      this.getFavouritesAsObservable()]).pipe(map(([regions, favourites]) =>
         this.mapAndSort(regions.filter((region) =>
           !!favourites.find((x) => x.groupId === region.regionId && x.geoHazard === region.geoHazard)))
       ));
@@ -305,15 +304,15 @@ export class WarningService {
   }
 
   private getWarningsForCurrentLanguageAndCurrentGeoHazard() {
-    return combineLatest(this.getWarningsForCurrentLanguageAsObservable(),
-      this.userSettingService.currentGeoHazardObservable$)
+    return combineLatest([this.getWarningsForCurrentLanguageAsObservable(),
+    this.userSettingService.currentGeoHazardObservable$])
       .pipe(map(([warningGroups, currentGeoHazard]) => {
         return warningGroups.filter((wg) => currentGeoHazard.find((g) => g === wg.key.geoHazard));
       }), shareReplay(1));
   }
 
   private getWarningsForCurrentMapViewAsObservable() {
-    return combineLatest(this.mapService.mapViewAndAreaObservable$, this.getWarningsAsObservable())
+    return combineLatest([this.mapService.mapViewAndAreaObservable$, this.getWarningsAsObservable()])
       .pipe(switchMap(([mapViewArea, _]) =>
         this.getWarningsForCurrentMapView(mapViewArea)),
         map((result) => result),

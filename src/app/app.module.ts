@@ -11,7 +11,6 @@ import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
-import './core/helpers/nano-sql/nanoObserverToRxjs';
 import './core/helpers/ionic/platform-helper';
 import { SharedModule } from './modules/shared/shared.module';
 import { RegistrationModule } from './modules/registration/registration.module';
@@ -66,4 +65,5 @@ export class CustomTranslateLoader implements TranslateLoader {
   providers: APP_PROVIDERS,
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {
+}

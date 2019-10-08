@@ -16,10 +16,9 @@ import { SearchService } from '../../../modules/regobs-api/services';
 import { RegistrationViewModel, ObserverResponseDto } from '../../../modules/regobs-api/models';
 import { ObservableHelper } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import '../../helpers/nano-sql/nanoObserverToRxjs';
 import { DbHelperService } from '../db-helper/db-helper.service';
-import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
+import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
 
 const DEBUG_TAG = 'ObservationService';
 
@@ -272,7 +271,7 @@ export class ObservationService {
   }
 
   private getObservationsAsObservable(): Observable<RegistrationViewModel[]> {
-    return combineLatest(this.getUserSettingsObservableDistinctToChangeObservations(), this.latestObservations.asObservable())
+    return combineLatest([this.getUserSettingsObservableDistinctToChangeObservations(), this.latestObservations.asObservable()])
       .pipe(
         tap((val) => this.loggingService.debug('User settings or latest observations triggered change', DEBUG_TAG, val)),
         switchMap(([userSetting, latestObservations]) => {
@@ -331,7 +330,7 @@ export class ObservationService {
     geoHazards?: GeoHazard[],
     fromDate?: Date,
     observerGuid?: string): Observable<RegistrationViewModel[]> {
-    return NanoSqlObservableHelper.toRxJS<RegistrationViewModel[]>
+    return new NSqlFullUpdateObservable<RegistrationViewModel[]>
       (this.getObservationsByParametersQuery(appMode, langKey, geoHazards, fromDate, observerGuid).listen({
         debounce: 500,
         unique: true,
@@ -363,7 +362,7 @@ export class ObservationService {
   }
 
   getObserableCount(appMode: AppMode): Observable<number> {
-    return NanoSqlObservableHelper.toRxJS<RowCount[]>(
+    return new NSqlFullUpdateObservable<RowCount[]>(
       NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select', ['COUNT(*) as count'])
         .listen({
           debounce: 100,

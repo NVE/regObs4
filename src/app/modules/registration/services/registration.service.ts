@@ -22,9 +22,9 @@ import { UserSetting } from '../../../core/models/user-settings.model';
 import { LoginModalPage } from '../../login/pages/modal-pages/login-modal/login-modal.page';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { ObservationService } from '../../../core/services/observation/observation.service';
-import { NanoSqlObservableHelper } from '../../../core/helpers/nano-sql/nanoObserverToRxjs';
 import * as utils from '@nano-sql/core/lib/utilities';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
+import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -302,7 +302,7 @@ export class RegistrationService {
   }
 
   private getRegistrationsAsObservable(appMode: AppMode) {
-    return NanoSqlObservableHelper.toRxJS<IRegistration[]>(
+    return new NSqlFullUpdateObservable<IRegistration[]>(
       NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('select')
         .listen()).pipe(shareReplay(1));
   }
