@@ -24,8 +24,8 @@ const DEBUG_TAG = 'HomePage';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
-  @ViewChild(MapItemBarComponent, { static : true }) mapItemBar: MapItemBarComponent;
-  @ViewChild(MapComponent, { static : true }) mapComponent: MapComponent;
+  @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
+  @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
   private markerLayer = LeafletClusterHelper.createMarkerClusterGroup({
     spiderfyOnMaxZoom: false,
@@ -62,6 +62,7 @@ export class HomePage implements OnInit, OnDestroy {
       this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((val: NavigationStart) => {
         if (val.url === '/tabs/home' || val.url === '/tabs' || val.url === '/') {
           this.loggingService.debug(`Home page route changed to ${val.url}. Start GeoLocation.`, DEBUG_TAG);
+          this.mapComponent.redrawMap();
           this.mapComponent.startGeoPositionUpdates();
         } else {
           this.loggingService.debug(`Home page route changed to ${val.url}. Stop GeoLocation.`, DEBUG_TAG);
