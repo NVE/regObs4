@@ -6,6 +6,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'ExternalLinkService';
+const VALID_URL_PROTOCOLS = ['http', 'https'];
 
 @Injectable({
   providedIn: 'root'
@@ -19,33 +20,44 @@ export class ExternalLinkService {
     private platform: Platform) { }
 
   async openExternalLink(url: string) {
+    const validatedUrl = this.ensureCorrectUrl(url);
     if (!this.platform.is('cordova')) {
-      this.openExternalLinkFallback(url);
+      this.openExternalLinkFallback(validatedUrl);
       return;
     }
     const available = await this.safariViewController.isAvailable();
     if (!available) {
       this.loggingService.debug('Safari ViewController or Chrome Custom Tabs not available. Fallback to ianAppBrowser.', DEBUG_TAG);
-      this.openExternalLinkFallback(url);
+      this.openExternalLinkFallback(validatedUrl);
       return;
     }
     this.safariViewController.show({
-      url,
+      url: validatedUrl,
       tintColor: '#ffffff',
       barColor: '#044962',
       toolbarColor: '#044962',
       controlTintColor: '#ffffff',
-    }).subscribe((result) => {
+    }).subscribe(() => {
       this.loggingService.debug('External url opened in Safari ViewController or Chrome Custom Tabs', DEBUG_TAG);
     }, (error) => {
       // tslint:disable-next-line:max-line-length
       this.loggingService.log('Could not open external url in Safari ViewController or Chrome Custom Tabs. Fallback to ianAppBrowser.',
         error, LogLevel.Warning, DEBUG_TAG);
-      this.openExternalLinkFallback(url);
+      this.openExternalLinkFallback(validatedUrl);
     });
   }
 
   openExternalLinkFallback(url: string) {
     this.inAppBrowser.create(url, '_system', 'location=yes,hardwareback=yes');
+  }
+
+  private ensureCorrectUrl(url: string) {
+    if (url !== null) {
+      if (VALID_URL_PROTOCOLS.some((validProtocol) => url.toLowerCase().startsWith(validProtocol))) {
+        return url;
+      }
+      return `http://${url}`;
+    }
+    return url;
   }
 }
