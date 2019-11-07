@@ -9,8 +9,8 @@ import { File, Entry } from '@ionic-native/file/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
-import { Observable, from, Subject, BehaviorSubject, zip } from 'rxjs';
-import { map, switchMap, delay, tap, mergeMap } from 'rxjs/operators';
+import { Observable, from, Subject, BehaviorSubject, zip, of } from 'rxjs';
+import { map, delay, tap, mergeMap, concatMap, catchError, take } from 'rxjs/operators';
 import { LRUCache } from 'lru-fast';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { ImageHelper } from '../../helpers/image.helper';
@@ -46,9 +46,15 @@ export class OfflineMapService implements OnReset {
       map(([tile, _]) => tile),
       mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el).pipe(map((offlineTile) => ({ tile, offlineTile })))),
       tap((result) => {
-        result.tile.el = null; // Free up memory
+        if (result && result.tile) {
+          result.tile.el = null; // Free up memory
+        }
         this._saveBufferSize--;
         this._saveTileBufferTrigger.next(null);
+      }),
+      catchError((err) => {
+        this.loggingService.debug('Could not save image to db', err);
+        return of(null);
       })
     ).subscribe((tile) => {
       this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
@@ -56,8 +62,15 @@ export class OfflineMapService implements OnReset {
   }
 
   private saveHtmlImageToDb(id: string, el: HTMLImageElement) {
-    return ImageHelper.getImageDataUrlAsObservable(el)
-      .pipe(switchMap((result) => from(this.saveTileDataUrlToDbCache(id, result.dataUrl, result.size))));
+    // return ImageHelper.getImageDataUrlAsObservable(el)
+    //   .pipe(concatMap((result) => from(this.saveTileDataUrlToDbCache(id, result.dataUrl, result.size))));
+    return from(ImageHelper.getBlobFromImage(el))
+      .pipe(
+        concatMap((result) => from(this.saveTileDataUrlToDbCache(id, null, result, result.size))),
+        catchError(() => {
+          return of(null);
+        })
+      );
   }
 
   // TODO: Implement continue download when app restart
@@ -133,14 +146,15 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  async saveTileDataUrlToDbCache(id: string, dataUrl: string, size: number) {
+  async saveTileDataUrlToDbCache(id: string, dataUrl: string, imageBlob: Blob, size: number) {
     try {
       const tile: OfflineTile = {
         id,
         mapName: settings.map.tiles.cacheFolder,
         lastAccess: moment().unix(),
         size,
-        dataUrl
+        dataUrl,
+        imageBlob
       };
       await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
       return tile;
@@ -155,9 +169,19 @@ export class OfflineMapService implements OnReset {
   }
 
   async getCachedTileDataUrl(tileId: string) {
-    const tileFromDb = await this.getTileFromDb(tileId);
-    if (tileFromDb) {
-      return tileFromDb.dataUrl;
+    try {
+      const tileFromDb = await this.getTileFromDb(tileId);
+      if (tileFromDb) {
+        if (tileFromDb.dataUrl) {
+          return tileFromDb.dataUrl;
+        }
+        if (tileFromDb.imageBlob) {
+          const imageDataUrl = await ImageHelper.getDataUrlFromBlob(tileFromDb.imageBlob).pipe(take(1)).toPromise();
+          return imageDataUrl.dataUrl;
+        }
+      }
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, `Error getting image data from cached tile id: ${tileId}`);
     }
     return undefined;
   }
@@ -168,6 +192,7 @@ export class OfflineMapService implements OnReset {
     if (tiles.length > 0) {
       return tiles[0];
     }
+    return null;
     // return this.dbHelperService.getItemById<OfflineTile>(
     //   NanoSql.TABLES.OFFLINE_MAP_TILES.name, tileId);
   }
