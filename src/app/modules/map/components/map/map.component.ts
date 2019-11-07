@@ -232,7 +232,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
       saveTilesToCache: userSetting.tilesCacheSize > 0,
       saveCacheTileFunc: (id, tile) => this.offlineMapService.saveTileToOfflineCache(id, tile),
-      getCacheTileFunc: (id) => this.offlineMapService.getCachedTileDataUrl(id)
+      getCacheTileFunc: (id) => this.offlineMapService.getCachedTileDataUrl(id),
+      logFunc: this.loggingService.log
     };
   }
 
