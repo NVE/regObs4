@@ -1,6 +1,6 @@
 {
   "name": "regobs4",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "author": "NVE",
   "homepage": "http://www.nve.no",
   "scripts": {
@@ -8,7 +8,7 @@
     "generate-swagger-api-module": "ng-swagger-gen -c ng-swagger-gen.json",
     "start": "ionic serve",
     "prebuild": "npm run create-version-file",
-    "build": "npm run generate-swagger-api-module && ng build",
+    "build": "ng build",
     "test": "ng test --watch=false --browsers=\"ChromeHeadless\" --code-coverage",
     "test-watch": "ng test --watch=true --browsers=\"ChromeHeadless\" --reporters=progress",
     "lint": "ng lint",
