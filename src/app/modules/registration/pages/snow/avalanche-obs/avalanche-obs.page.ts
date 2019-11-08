@@ -6,7 +6,7 @@ import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import * as L from 'leaflet';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
-import * as moment from 'moment';
+import moment from 'moment';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 
 @Component({

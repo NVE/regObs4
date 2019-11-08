@@ -1,13 +1,13 @@
 /* tslint:disable */
 export interface AvalancheActivityObs2Dto {
-  AvalancheExtTID?: number;
   EstimatedNumTID?: number;
+  DtStart?: string;
   DtEnd?: string;
   ValidExposition?: string;
   ExposedHeight1?: number;
   ExposedHeight2?: number;
   ExposedHeightComboTID?: number;
-  DtStart?: string;
+  AvalancheExtTID?: number;
   AvalCauseTID?: number;
   AvalTriggerSimpleTID?: number;
   DestructiveSizeTID?: number;

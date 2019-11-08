@@ -1,5 +1,5 @@
 import { WarningGroupKey } from './warning-group-key.interface';
-import * as moment from 'moment';
+import moment from 'moment';
 import { IWarningGroup } from './warning-group.interface';
 
 export class WarningGroup {

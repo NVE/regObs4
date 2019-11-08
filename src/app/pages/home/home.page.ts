@@ -12,8 +12,9 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
 import { Router, NavigationStart } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { settings } from '../../../settings';
+import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -23,20 +24,22 @@ const DEBUG_TAG = 'HomePage';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
-  @ViewChild(MapItemBarComponent) mapItemBar: MapItemBarComponent;
-  @ViewChild(MapComponent) mapComponent: MapComponent;
+  @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
+  @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
   private markerLayer = LeafletClusterHelper.createMarkerClusterGroup({
     spiderfyOnMaxZoom: false,
     zoomToBoundsOnClick: false
   });
   private subscriptions: Subscription[] = [];
+  private showGeoSelectSubscription: Subscription;
 
   fullscreen$: Observable<boolean>;
   mapItemBarVisible = false;
   // tripLogLayer = L.layerGroup();
   selectedMarker: MapItemMarker;
   showMapCenter: boolean;
+  showGeoSelectInfo = false;
   dataLoadIds: string[] = [];
 
   constructor(
@@ -46,11 +49,12 @@ export class HomePage implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private router: Router,
     private loggingService: LoggingService,
+    private usageAnalyticsConsentService: UsageAnalyticsConsentService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.subscriptions.push(
       // TODO: ionViewDidEnter and ionViewWillLeave is only triggerd between tab changes and not when going
       // to another page (for example settings, my observations etc), so this is a workaround until issue is resolved
@@ -58,10 +62,11 @@ export class HomePage implements OnInit, OnDestroy {
       this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((val: NavigationStart) => {
         if (val.url === '/tabs/home' || val.url === '/tabs' || val.url === '/') {
           this.loggingService.debug(`Home page route changed to ${val.url}. Start GeoLocation.`, DEBUG_TAG);
-          this.mapComponent.activateUpdates();
+          this.mapComponent.redrawMap();
+          this.mapComponent.startGeoPositionUpdates();
         } else {
           this.loggingService.debug(`Home page route changed to ${val.url}. Stop GeoLocation.`, DEBUG_TAG);
-          this.mapComponent.disableUpdates();
+          this.mapComponent.stopGeoPositionUpdates();
         }
       }));
 
@@ -83,6 +88,8 @@ export class HomePage implements OnInit, OnDestroy {
       });
     }));
 
+    this.checkForFirstStartup();
+
     // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
     //   this.tripLogLayer.clearLayers();
     //   const latLngs = tripLogItems.map((tripLogItem) => L.latLng({
@@ -93,8 +100,33 @@ export class HomePage implements OnInit, OnDestroy {
     // });
   }
 
-  async onMapReady(map: L.Map) {
-    this.map = map;
+  async checkForFirstStartup() {
+    const userSettings = await this.userSettingService.getUserSettings();
+    if (userSettings.showGeoSelectInfo) {
+      this.showGeoSelectSubscription = this.userSettingService.userSettingObservable$.pipe(
+        map((us) => us.showGeoSelectInfo),
+        distinctUntilChanged()
+      ).subscribe((showGeoSelectInfo) => {
+        this.ngZone.run(() => {
+          this.showGeoSelectInfo = showGeoSelectInfo;
+          if (!this.showGeoSelectInfo) {
+            if (this.showGeoSelectSubscription) {
+              this.showGeoSelectSubscription.unsubscribe();
+            }
+            this.showUsageAnalyticsDialog();
+          }
+        });
+      });
+    }
+  }
+
+  async showUsageAnalyticsDialog() {
+    await this.usageAnalyticsConsentService.checkUserDataConsentDialog();
+    this.mapComponent.startGeoPositionUpdates();
+  }
+
+  onMapReady(leafletMap: L.Map) {
+    this.map = leafletMap;
     this.markerLayer.addTo(this.map);
     this.markerLayer.on('clusterclick', (a: any) => {
       const groupLatLng: L.LatLng = a.latlng;
@@ -115,20 +147,26 @@ export class HomePage implements OnInit, OnDestroy {
     });
     // TODO: Move this to custom marker layer?
     const observationObservable =
-      combineLatest(this.observationService.observations$, this.userSettingService.showObservations$);
+      combineLatest([this.observationService.observations$, this.userSettingService.showObservations$]);
     this.subscriptions.push(observationObservable.subscribe(([regObservations, showObservations]) => {
       this.redrawObservationMarkers(showObservations ? regObservations : []);
     }));
   }
 
-  ionViewDidEnter() {
-    this.loggingService.debug(`Home page ionViewDidEnter. Activate map updates and GeoLocation`, DEBUG_TAG);
-    this.mapComponent.activateUpdates();
+  async ionViewDidEnter() {
+    this.loggingService.debug(`Home page ionViewDidEnter.`, DEBUG_TAG);
+    const userSettings = await this.userSettingService.getUserSettings();
+    if (userSettings.showGeoSelectInfo) {
+      this.loggingService.debug('Display coachmarks, wait with starting geopostion', DEBUG_TAG);
+      return;
+    }
+    this.loggingService.debug(`Activate map updates and GeoLocation`, DEBUG_TAG);
+    this.mapComponent.startGeoPositionUpdates();
   }
 
   ionViewWillLeave() {
     this.loggingService.debug(`Home page ionViewWillLeave. Disable map updates and GeoLocation.`, DEBUG_TAG);
-    this.mapComponent.disableUpdates();
+    this.mapComponent.stopGeoPositionUpdates();
   }
 
   ngOnDestroy(): void {

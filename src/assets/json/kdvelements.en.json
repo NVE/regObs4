@@ -598,11 +598,6 @@
                 "Description": "Brukes i elrapp"
             },
             {
-                "Id": 6,
-                "Name": "Surface hoar",
-                "Description": null
-            },
-            {
                 "Id": 7,
                 "Name": "Quick temperature change",
                 "Description": null
@@ -1348,8 +1343,23 @@
                 "Description": null
             },
             {
-                "Id": 104,
-                "Name": "Wet loose snow",
+                "Id": 61,
+                "Name": "Rime on a hard surface",
+                "Description": null
+            },
+            {
+                "Id": 62,
+                "Name": "Rime on a soft surface",
+                "Description": null
+            },
+            {
+                "Id": 50,
+                "Name": "Near surface facets",
+                "Description": null
+            },
+            {
+                "Id": 107,
+                "Name": "Crust",
                 "Description": null
             },
             {
@@ -1363,8 +1373,8 @@
                 "Description": null
             },
             {
-                "Id": 107,
-                "Name": "Crust",
+                "Id": 104,
+                "Name": "Wet loose snow",
                 "Description": null
             },
             {
@@ -1478,6 +1488,11 @@
             {
                 "Id": 24,
                 "Name": "ECTX ",
+                "Description": null
+            },
+            {
+                "Id": 5,
+                "Name": "LBT",
                 "Description": null
             },
             {

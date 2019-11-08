@@ -15,7 +15,7 @@
           <div class="card-icon-item">
             <svg-icon class="card-icon-item-icon" [src]="icon" [svgStyle]="{'width.px':15, 'height.px':15  }">
             </svg-icon>
-            {{ geoHazardName }}
+            <app-geo-name [geoHazards]="[geoHazard]"></app-geo-name>
           </div>
           <div class="card-icon-item">
             <svg-icon class="card-icon-item-icon" src="/assets/icon/moh.svg"

@@ -12,8 +12,8 @@ import { settings } from '../../../../../settings';
 export class LoginFormComponent implements OnInit {
 
   loginform: FormGroup;
-  @ViewChild('password') password: Input;
-  @ViewChild('username') username: Input;
+  @ViewChild('password', { static : true }) password: Input;
+  @ViewChild('username', { static : true }) username: Input;
   forgotPasswordUrl: string;
   createUserUrl: string;
   showPassword = false;

@@ -598,11 +598,6 @@
                 "Description": "Brukes i elrapp"
             },
             {
-                "Id": 6,
-                "Name": "Rimkrystaller",
-                "Description": null
-            },
-            {
                 "Id": 7,
                 "Name": "Rask temperaturstigning ",
                 "Description": null
@@ -1348,8 +1343,23 @@
                 "Description": null
             },
             {
-                "Id": 104,
-                "Name": "Våt løssnø",
+                "Id": 61,
+                "Name": "Rim på hardt underlag",
+                "Description": null
+            },
+            {
+                "Id": 62,
+                "Name": "RIm på mykt underlag",
+                "Description": null
+            },
+            {
+                "Id": 50,
+                "Name": "Overflatekantkorn",
+                "Description": null
+            },
+            {
+                "Id": 107,
+                "Name": "Skare",
                 "Description": null
             },
             {
@@ -1363,8 +1373,8 @@
                 "Description": null
             },
             {
-                "Id": 107,
-                "Name": "Skare",
+                "Id": 104,
+                "Name": "Våt løssnø",
                 "Description": null
             },
             {
@@ -1478,6 +1488,11 @@
             {
                 "Id": 24,
                 "Name": "ECTX ",
+                "Description": null
+            },
+            {
+                "Id": 5,
+                "Name": "LBT",
                 "Description": null
             },
             {

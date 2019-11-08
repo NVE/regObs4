@@ -26,7 +26,7 @@ class KdvElementsService extends __BaseService {
    *
    * - `sortOrder`:
    *
-   * - `langkey`:
+   * - `langkey`: 1 = norwegian, 2 = english
    *
    * - `isActive`:
    *
@@ -61,7 +61,7 @@ class KdvElementsService extends __BaseService {
    *
    * - `sortOrder`:
    *
-   * - `langkey`:
+   * - `langkey`: 1 = norwegian, 2 = english
    *
    * - `isActive`:
    *
@@ -81,6 +81,10 @@ module KdvElementsService {
    */
   export interface KdvElementsGetKdvsParams {
     sortOrder?: boolean;
+
+    /**
+     * 1 = norwegian, 2 = english
+     */
     langkey?: number;
     isActive?: boolean;
   }

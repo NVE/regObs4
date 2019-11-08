@@ -1,60 +1,63 @@
 import { Injectable } from '@angular/core';
 import { OfflineMap } from './offline-map.model';
 import { Progress } from './progress.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { OfflineTile } from './offline-tile.model';
 import { NanoSql } from '../../../../nanosql';
 import { File, Entry } from '@ionic-native/file/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { nSQL } from '@nano-sql/core';
-import { Observable, Observer } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
-import { DataUrlHelper } from '../../helpers/data-url.helper';
-import { createWorker } from 'typed-web-workers';
+import { Observable, from, Subject, BehaviorSubject, zip } from 'rxjs';
+import { map, switchMap, delay, tap, mergeMap } from 'rxjs/operators';
 import { LRUCache } from 'lru-fast';
-import { Platform } from '@ionic/angular';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
+import { ImageHelper } from '../../helpers/image.helper';
+import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'OfflineMapService';
+const RECENTLY_SAVED_TILE_CACHE_SIZE = 2000;
+const SAVE_TILE_DELAY_BUFFER = 1000;
+const MAX_BUFFER_SIZE = 50;
 
 @Injectable({
   providedIn: 'root'
 })
 export class OfflineMapService implements OnReset {
-  private _savedTiles: LRUCache<string, boolean>;
-  private _saveBuffer: LRUCache<string, HTMLImageElement>;
-  private _interval: NodeJS.Timeout;
-  private _shouldProcessOfflineImages: boolean;
+  private _recentlySavedTileCache: LRUCache<string, boolean>;
+  private _saveBuffer: Subject<{ id: string, el: HTMLImageElement }>;
+  private _saveTileBufferTrigger = new BehaviorSubject(null);
+  private _saveBufferSize = 0;
 
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
     private file: File,
     private loggingService: LoggingService,
-    private platform: Platform,
   ) {
-    this.init();
+    this._recentlySavedTileCache = new LRUCache(RECENTLY_SAVED_TILE_CACHE_SIZE);
+    this._saveBuffer = new Subject<{ id: string, el: HTMLImageElement }>();
+    this.startSavingTiles();
   }
 
-  private init() {
-    this._savedTiles = new LRUCache(2000);
-    this._saveBuffer = new LRUCache(100);
-    this.platform.pause.subscribe(() => {
-      this.stopProcessingOfflineImageSaveQueue();
+  private startSavingTiles() {
+    zip(this._saveBuffer, this._saveTileBufferTrigger.pipe(delay(SAVE_TILE_DELAY_BUFFER))).pipe(
+      map(([tile, _]) => tile),
+      mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el).pipe(map((offlineTile) => ({ tile, offlineTile })))),
+      tap((result) => {
+        result.tile.el = null; // Free up memory
+        this._saveBufferSize--;
+        this._saveTileBufferTrigger.next(null);
+      })
+    ).subscribe((tile) => {
+      this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
     });
-    this.platform.resume.subscribe(() => {
-      this.startProcessingOfflineImageSaveQueue();
-    });
-    this.startProcessingOfflineImageSaveQueue();
   }
 
-  private stopProcessingOfflineImageSaveQueue() {
-    if (this._interval) {
-      clearTimeout(this._interval);
-    }
+  private saveHtmlImageToDb(id: string, el: HTMLImageElement) {
+    return ImageHelper.getImageDataUrlAsObservable(el)
+      .pipe(switchMap((result) => from(this.saveTileDataUrlToDbCache(id, result.dataUrl, result.size))));
   }
 
   // TODO: Implement continue download when app restart
@@ -75,7 +78,7 @@ export class OfflineMapService implements OnReset {
   }
 
   getOfflineMapsAsObservable(): Observable<OfflineMap[]> {
-    return NanoSqlObservableHelper.toRxJS<OfflineMap[]>(
+    return new NSqlFullUpdateObservable<OfflineMap[]>(
       nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('select').listen({
         debounce: 500,
       })).pipe(map((x) => this.mergeOfflineMaps(x)));
@@ -119,76 +122,15 @@ export class OfflineMapService implements OnReset {
   }
 
   saveTileToOfflineCache(id: string, el: HTMLImageElement) {
-    if (!this._savedTiles.get(id)) {
-      this._savedTiles.set(id, true);
-      this._saveBuffer.set(id, el);
-    }
-  }
-
-  shouldProcessOfflineImage(val: boolean) {
-    this._shouldProcessOfflineImages = val;
-  }
-
-  private startProcessingOfflineImageSaveQueue() {
-    const continueProcessing = (timeout?: number) => {
-      this._interval = setTimeout(() => this.startProcessingOfflineImageSaveQueue(),
-        timeout || settings.map.tiles.cacheSaveBufferThrottleTimeMs);
-    };
-    // this.loggingService.debug(`Start processing offline tiles queue. Size: ${this._saveBuffer.size}`, DEBUG_TAG);
-    this.stopProcessingOfflineImageSaveQueue();
-    if (this._shouldProcessOfflineImages && this._saveBuffer.size > 0) {
-      const latest = this._saveBuffer.newest;
-      this._saveBuffer.remove(latest.key);
-      const currentTile = latest.value;
-      this.getImageDataUrlAsObservable(currentTile).subscribe((result: { dataUrl: string, size: number }) => {
-        if (result && result.dataUrl && result.size > 0) {
-          this.saveTileDataUrlToDbCache(latest.key, result.dataUrl, result.size).then(() => {
-            // this.loggingService.debug(`Saved tile: ${latest.key}`, DEBUG_TAG);
-            continueProcessing();
-          }, continueProcessing);
-        } else {
-          continueProcessing();
-        }
-      }, continueProcessing);
+    if (this._saveBufferSize < MAX_BUFFER_SIZE) {
+      if (!this._recentlySavedTileCache.get(id)) {
+        this._recentlySavedTileCache.set(id, true);
+        this._saveBufferSize++;
+        this._saveBuffer.next({ id, el });
+      }
     } else {
-      continueProcessing(settings.map.tiles.cacheSaveBufferIdleInterval);
+      this.loggingService.debug('Max save buffer size reached, skipping', DEBUG_TAG);
     }
-  }
-
-  private workFunc(input: {
-    blob: Blob,
-  },
-    callback: (_: { dataUrl: string, size: number }) => void) {
-    const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      const dataUrl = (<any>e.target).result as string;
-      if (dataUrl) {
-        callback({ dataUrl, size: input.blob.size });
-      } else {
-        callback(null);
-      }
-    };
-    fileReader.readAsDataURL(input.blob);
-  }
-
-  private getImageDataUrlAsObservable(el: HTMLImageElement, format = 'image/png', quality = 0.5):
-    Observable<{ dataUrl: string, size: number }> {
-    return Observable.create((observer: Observer<{ dataUrl: string, size: number }>) => {
-      const typedWorker = createWorker(this.workFunc, (msg) => {
-        observer.next(msg);
-        observer.complete();
-      });
-      const canvas = DataUrlHelper.getCanvasFromImage(el);
-      if (!canvas) {
-        observer.next(null);
-        observer.complete();
-      } else {
-        canvas.toBlob((blob) => {
-          typedWorker.postMessage({ blob });
-        }, format, quality);
-      }
-      return () => typedWorker ? typedWorker.terminate() : null;
-    });
   }
 
   async saveTileDataUrlToDbCache(id: string, dataUrl: string, size: number) {
@@ -274,7 +216,7 @@ export class OfflineMapService implements OnReset {
   }
 
   getFullTilesCacheAsObservable(): Observable<{ count: number, size: number }> {
-    return NanoSqlObservableHelper.toRxJS(nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+    return new NSqlFullUpdateObservable<{ count: number, size: number }[]>(nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
       .query('select', ['COUNT(*) as count', 'SUM(size) as size'])
       .where(['mapName', '=', settings.map.tiles.cacheFolder]).listen({
         debounce: 10000,
@@ -288,7 +230,7 @@ export class OfflineMapService implements OnReset {
   }
 
   getTilesCacheAsObservable(): Observable<{ count: number, size: number }> {
-    return NanoSqlObservableHelper.toRxJS(nSQL(NanoSql.TABLES.OFFLINE_MAP_CACHE_SIZE.name)
+    return new NSqlFullUpdateObservable<{ count: number, size: number }[]>(nSQL(NanoSql.TABLES.OFFLINE_MAP_CACHE_SIZE.name)
       .query('select').where(['id', '=', settings.map.tiles.cacheFolder]).listen())
       .pipe(map((result: { count: number, size: number }[]) => result.length > 0 ? result[0] : { count: 0, size: 0 }));
   }
@@ -425,10 +367,8 @@ export class OfflineMapService implements OnReset {
   }
 
   appOnReset(): void | Promise<any> {
-    this.stopProcessingOfflineImageSaveQueue();
   }
 
   appOnResetComplete(): void | Promise<any> {
-    this.startProcessingOfflineImageSaveQueue();
   }
 }

@@ -1,5 +1,4 @@
 /* tslint:disable */
-import { CompressionTestViewModel } from './compression-test-view-model';
 import { ObserverViewModel } from './observer-view-model';
 import { ObsLocationViewModel } from './obs-location-view-model';
 import { AttachmentViewModel } from './attachment-view-model';
@@ -10,6 +9,7 @@ import { AvalancheEvalProblem2ViewModel } from './avalanche-eval-problem-2view-m
 import { AvalancheEvaluation3ViewModel } from './avalanche-evaluation-3view-model';
 import { AvalancheEvaluationViewModel } from './avalanche-evaluation-view-model';
 import { AvalancheObsViewModel } from './avalanche-obs-view-model';
+import { CompressionTestViewModel } from './compression-test-view-model';
 import { DangerObsViewModel } from './danger-obs-view-model';
 import { GeneralObservationViewModel } from './general-observation-view-model';
 import { IceCoverViewModel } from './ice-cover-view-model';
@@ -27,8 +27,8 @@ import { DamageObsViewModel } from './damage-obs-view-model';
 import { AvalancheEvaluation2ViewModel } from './avalanche-evaluation-2view-model';
 import { Summary } from './summary';
 export interface RegistrationViewModel {
-  CompressionTest?: Array<CompressionTestViewModel>;
   RegID?: number;
+  GeoHazardTID?: 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 100 | 110 | 200 | 999;
   GeoHazardName?: string;
   LangKey?: number;
   DtObsTime?: string;
@@ -46,7 +46,7 @@ export interface RegistrationViewModel {
   AvalancheEvaluation3?: AvalancheEvaluation3ViewModel;
   AvalancheEvaluation?: AvalancheEvaluationViewModel;
   AvalancheObs?: AvalancheObsViewModel;
-  GeoHazardTID?: 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 100 | 110 | 200 | 999;
+  CompressionTest?: Array<CompressionTestViewModel>;
   DangerObs?: Array<DangerObsViewModel>;
   GeneralObservation?: GeneralObservationViewModel;
   IceCoverObs?: IceCoverViewModel;

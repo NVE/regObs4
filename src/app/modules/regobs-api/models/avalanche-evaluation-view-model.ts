@@ -1,14 +1,14 @@
 /* tslint:disable */
 export interface AvalancheEvaluationViewModel {
-  AvalancheProblemTID1?: number;
   RegID?: number;
+  CanPublish?: boolean;
   AvalancheDangerTID?: number;
   AvalancheDangerName?: string;
   ValidExposition?: string;
   ValidHeightRelative?: string;
   ValidHeightFrom?: number;
   ValidHeigtTo?: number;
-  CanPublish?: boolean;
+  AvalancheProblemTID1?: number;
   AvalancheProblemName1?: string;
   AvalancheProblemTID2?: number;
   AvalancheProblemName2?: string;

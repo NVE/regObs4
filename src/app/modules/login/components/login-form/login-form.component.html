@@ -12,8 +12,8 @@
     </ion-label>
     <ion-input #password [type]="showPassword ? 'text' : 'password'" inputmode="password" formControlName="password"
       name="password" autocomplete="current-password"></ion-input>
-    <ion-button slot="end" fill="clear" (click)="togglePasswordShowHide()">
-      <ion-icon slot="start" [name]="showPassword ? 'eye-off' : 'eye'"></ion-icon>
+    <ion-button slot="end" fill="clear" class="show-password-button" (click)="togglePasswordShowHide()">
+      <ion-icon slot="start" [name]="showPassword ? 'eye' : 'eye-off'"></ion-icon>
     </ion-button>
   </ion-item>
   <ion-button class="login-button" expand="block" type="submit" color="varsom-orange"

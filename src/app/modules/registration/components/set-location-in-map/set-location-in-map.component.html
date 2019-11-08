@@ -58,8 +58,8 @@
                       <ng-container *ngIf="!editLocationName else editLocationTemplate">
                         <ion-row *ngIf="selectedLocation else viewInfoTemplate">
                           <ion-col no-padding>
-                            <ion-label class="detail-obs-info" no-margin>
-                              {{selectedLocation.Name || selectedLocation.LocationDescription}}
+                            <ion-label text-wrap class="detail-obs-info" no-margin>
+                              {{ selectedLocation.Name }}
                             </ion-label>
                           </ion-col>
                         </ion-row>
@@ -109,7 +109,7 @@
     <ion-col no-padding>
       <ng-container *ngIf="!isLoading">
         <ng-container *ngIf="viewInfo && viewInfo.location">
-          <ion-label class="detail-obs-info" no-margin>
+          <ion-label text-wrap class="detail-obs-info" no-margin>
             <span *ngIf="(viewInfo.location.name !== viewInfo.location.adminName)">{{
                       viewInfo.location.name
                       }},&nbsp;</span>{{viewInfo.location.adminName}}&nbsp;

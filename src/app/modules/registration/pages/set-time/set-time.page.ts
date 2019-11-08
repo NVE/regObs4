@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import * as moment from 'moment';
+import moment from 'moment';
 import { NavController } from '@ionic/angular';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';

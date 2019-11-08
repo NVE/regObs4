@@ -1,7 +1,7 @@
 /* tslint:disable */
 export interface AvalancheEvalProblemViewModel {
-  AvalCauseTID?: number;
   AvalancheEvalProblemID?: number;
+  AvalProbabilityTID?: number;
   AvalProbabilityName?: string;
   AvalTriggerSimpleTID?: number;
   AvalTriggerSimpleName?: string;
@@ -9,7 +9,7 @@ export interface AvalancheEvalProblemViewModel {
   DestructiveSizeExtName?: string;
   AvalancheExtTID?: number;
   AvalancheExtName?: string;
-  AvalProbabilityTID?: number;
+  AvalCauseTID?: number;
   AvalCauseName?: string;
   AvalCauseExtTID?: number;
   AvalCauseExtName?: string;

@@ -1,7 +1,7 @@
 /* tslint:disable */
 export interface ObsLocationViewModel {
-  UTMNorth?: number;
   ObsLocationID?: number;
+  ForecastRegionTID?: number;
   ForecastRegionName?: string;
   LocationName?: string;
   Height?: number;
@@ -10,7 +10,7 @@ export interface ObsLocationViewModel {
   CountryId?: number;
   CountryName?: string;
   UTMEast?: number;
-  ForecastRegionTID?: number;
+  UTMNorth?: number;
   UTMZone?: number;
   LocationDescription?: string;
   Latitude?: number;

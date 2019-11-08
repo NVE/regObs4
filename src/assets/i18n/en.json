@@ -7,10 +7,17 @@
   "ALERT": {
     "CANCEL": "Cancel",
     "DEFAULT_HEADER": "Whoops!",
+    "FINE": "Okay",
+    "NO_THANKS": "No thanks",
     "OK": "Ok",
     "PULL_TO_REFRESH": "Pull to refresh...",
     "UNDO": "Undo",
     "WARNING": "Warning"
+  },
+  "COACH_MARKS": {
+    "ADD_OBSERVATIONS": "Add your observations",
+    "SELECT_GEO_HAZARD": "Select geo hazard",
+    "VIEW_WARNINGS": "View warnings from varsom.no"
   },
   "DATA_LOAD": {
     "DATA": "Loading...",
@@ -378,13 +385,13 @@
         "WEAK_LAYER_DEPTH": "Weak layer depth"
       },
       "COMPRESSION_TEST": {
-        "ADD_NEW": "Add new stability test",
+        "ADD_NEW": "Add new test",
         "DISTANCE_FROM_TOP": "Distance from top (cm)",
         "FRACTURE_TYPE": "Fracture type",
         "STABILITY_EVAL": "Stability",
         "TAPS_FRACTURE": "Number of hits",
         "TEST_TYPE": "Test type",
-        "TITLE": "Stability Test"
+        "TITLE": "Tests"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
@@ -462,12 +469,12 @@
         "COMMENT_PLACEHOLDER": "How is the snow distribution generally in relation to elevation and aspect? Are there significant differences in the local region?",
         "HEIGHT_LIMIT_LAYERED_SNOW": "Elevation where layered snow begins (masl)",
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "For snow without hazardous layering",
-        "NEW_SNOW_DEPTH": "New snow depth (cm)",
+        "NEW_SNOW_DEPTH": "New snow 24h (cm)",
         "NEW_SNOW_LINE": "New snow line (masl)",
         "SNOW_DEPTH": "Snow depth (cm)",
         "SNOW_DRIFT": "Snow drift",
         "SNOW_LINE": "Snowline (masl)",
-        "SNOW_SURFACE": "Snow surface hardness",
+        "SNOW_SURFACE": "Snow surface",
         "SURFACE_WATER_CONTENT_REG": "Surface moisture",
         "TITLE": "Snow Surface"
       },
@@ -532,6 +539,9 @@
     }
   },
   "SETTINGS": {
+    "ALLOW_ANALYTICS": "Allow sending app usage data",
+    "ALLOW_ANALYTICS_DESCRIPTION": "Help us improve Varsom Regobs by letting us know how you use the application.",
+    "ALLOW_ANALYTICS_HEADER": "Share usage statistics",
     "APPMODE": "App mode",
     "APP_VERSION": "App version",
     "CONFIRM_RESET": "Are you sure you want to reset app?",
@@ -543,6 +553,7 @@
     "LANGUAGE": "Language",
     "NORWAY_ONLY": "In Norway only",
     "NUMBER_OF_TILES_IN_CACHE": "Offline tiles cache size",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "You can read about our use of data in our privacy policy.",
     "RESET": "Reset app",
     "RESETTING": "App is resetting. Please wait...",
     "SHOW_ADVANCED": "Show advanced settings",

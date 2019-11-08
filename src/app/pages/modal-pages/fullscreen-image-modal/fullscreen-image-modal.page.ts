@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, OnDestroy, NgZone } from '@angular/core';
-import { ModalController, Platform } from '@ionic/angular';
+import { ModalController, Platform, IonSlides } from '@ionic/angular';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
 @Component({
@@ -12,7 +12,6 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   @Input() imgSrc: string;
   @Input() header: string;
   @Input() description: string;
-  @ViewChild('img') img: ElementRef;
 
   constructor(
     private modalController: ModalController,

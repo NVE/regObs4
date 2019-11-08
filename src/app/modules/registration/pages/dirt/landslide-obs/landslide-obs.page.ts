@@ -6,7 +6,7 @@ import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avala
 import * as L from 'leaflet';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import * as moment from 'moment';
+import moment from 'moment';
 import { rhumbDistance } from '@turf/turf';
 
 @Component({

@@ -72,7 +72,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   editLocationName = false;
   locationName: string;
 
-  @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
+  @ViewChild('editLocationNameInput', { static : false }) editLocationNameInput: IonInput;
 
   get canEditLocationName() {
     return this.allowEditLocationName && !(this.selectedLocation && this.selectedLocation.Id);

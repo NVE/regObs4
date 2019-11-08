@@ -1,23 +1,21 @@
 import { Injectable } from '@angular/core';
 import { TripLogItem } from './trip-log-item.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { TripLogState } from './trip-log-state.enum';
 import { TripLogActivity } from './trip-log-activity.model';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, from } from 'rxjs';
 import { TripService } from '../../../modules/regobs-api/services';
 import { CreateTripDto } from '../../../modules/regobs-api/models';
-import { settings } from '../../../../settings';
 import { switchMap, take, map } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { ToastController, AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LegacyTrip } from './legacy-trip.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import '../../helpers/nano-sql/nanoObserverToRxjs';
 import { nSQL } from '@nano-sql/core';
-import { NanoSqlObservableHelper } from '../../helpers/nano-sql/nanoObserverToRxjs';
 import { AppMode } from '../../models/app-mode.enum';
+import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
 
 const DEBUG_TAG = 'TripLoggerService';
 
@@ -46,7 +44,7 @@ export class TripLoggerService {
   }
 
   getTripLogAsObservable(): Observable<TripLogItem[]> {
-    return NanoSqlObservableHelper.toRxJS<TripLogItem[]>(
+    return new NSqlFullUpdateObservable<TripLogItem[]>(
       nSQL(NanoSql.TABLES.TRIP_LOG.name).query('select')
         .listen());
   }
@@ -58,21 +56,21 @@ export class TripLoggerService {
   }
 
   getTripLogStateAsObservable(): Observable<TripLogActivity> {
-    return NanoSqlObservableHelper.toRxJS<TripLogActivity[]>(
+    return new NSqlFullUpdateObservable<TripLogActivity[]>(
       nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select')
         .orderBy(['id: desc']).limit(1).listen({
         })).pipe(map((ta) => ta[0]));
   }
 
   getTripLogActivityAsObservable(): Observable<TripLogActivity[]> {
-    return NanoSqlObservableHelper.toRxJS<TripLogActivity[]>(
+    return new NSqlFullUpdateObservable<TripLogActivity[]>(
       nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select')
         .listen());
   }
 
   getLegacyTripAsObservable(): Observable<LegacyTrip> {
     return this.userSettingService.appMode$.pipe(switchMap((appMode) =>
-      NanoSqlObservableHelper.toRxJS<LegacyTrip[]>(
+      new NSqlFullUpdateObservable<LegacyTrip[]>(
         NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('select')
           .listen()).pipe(map((x) => x[0]))));
   }

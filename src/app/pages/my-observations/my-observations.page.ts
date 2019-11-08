@@ -32,8 +32,8 @@ const numberOfItemsToFetch = 100;
   styleUrls: ['./my-observations.page.scss'],
 })
 export class MyObservationsPage implements OnInit, OnDestroy {
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-  @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
+  @ViewChild(IonInfiniteScroll, { static: true }) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonVirtualScroll, { static: true }) virtualScroll: IonVirtualScroll;
   private registrationSubscription: Subscription;
   private user: ObserverResponseDto;
   loaded = false;

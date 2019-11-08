@@ -9,6 +9,11 @@ const stringify = require('json-stringify-safe');
   providedIn: 'root'
 })
 export class ConsoleLoggingService implements LoggingService {
+  enable() {
+  }
+
+  disable() {
+  }
 
   constructor() {
   }

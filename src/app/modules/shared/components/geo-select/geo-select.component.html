@@ -1,0 +1,29 @@
+<ion-fab *ngIf="userSettings" #geoSelectorFab vertical="top" horizontal="start" slot="fixed">
+  <ion-fab-button class="toggle-button" *ngIf="!isOpen" color="light" (click)="toggle()">
+    <app-geo-icon [geoHazards]="userSettings.currentGeoHazard"></app-geo-icon>
+  </ion-fab-button>
+  <div class="geo-selector-items" *ngIf="isOpen">
+    <div class="geo-selector-wrapper" (click)="toggle()"></div>
+    <ion-list lines="none" no-margin>
+      <ion-item (click)="toggle()">
+        <ion-fab-button slot="start" color="light">
+          <app-geo-icon [geoHazards]="userSettings.currentGeoHazard"></app-geo-icon>
+        </ion-fab-button>
+        <ion-label>
+          <app-geo-name [geoHazards]="userSettings.currentGeoHazard"></app-geo-name>
+        </ion-label>
+      </ion-item>
+      <ng-container *ngFor="let geoHazards of geoHazardTypes">
+        <ion-item *ngIf="(geoHazards.join('-') !== userSettings.currentGeoHazard.join('-'))"
+          (click)="changeGeoHazard(geoHazards)">
+          <ion-fab-button slot="start" color="light">
+            <app-geo-icon [geoHazards]="geoHazards"></app-geo-icon>
+          </ion-fab-button>
+          <ion-label>
+            <app-geo-name [geoHazards]="geoHazards"></app-geo-name>
+          </ion-label>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+  </div>
+</ion-fab>

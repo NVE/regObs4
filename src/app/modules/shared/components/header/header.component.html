@@ -1,0 +1,18 @@
+<ion-header mode="ios" *ngIf="!fullscreenSupport || !(isFullscreen$ | async)">
+  <ion-toolbar class="app-header-color" [ngClass]="headerColor" mode="ios">
+    <ion-buttons slot="start" *ngIf="!showMenuButton">
+      <ion-back-button text="" [defaultHref]="defaultHref"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="showMenuButton">
+      <ion-menu-button color="light" mode="ios"></ion-menu-button>
+    </ion-buttons>
+    <ion-title *ngIf="!tripRunning">
+      {{ title | translate }}
+    </ion-title>
+    <ion-title *ngIf="tripRunning">
+      <ion-button class="stop-trip" size="small" color="success" (click)="endTrip()">
+        {{ 'TRIP.STOP_TRIP' | translate }}
+      </ion-button>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>

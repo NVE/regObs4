@@ -13,7 +13,7 @@ import { ToastController, DomController, IonIcon } from '@ionic/angular';
 export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() key: WarningGroupKey;
-  @ViewChild(IonIcon) ionIcon: IonIcon;
+  @ViewChild(IonIcon, { static : false }) ionIcon: IonIcon;
 
   private warningIsFavouriteSubscription: Subscription;
   isFavourite: boolean;

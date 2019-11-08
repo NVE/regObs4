@@ -11,7 +11,6 @@ import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
-import './core/helpers/nano-sql/nanoObserverToRxjs';
 import './core/helpers/ionic/platform-helper';
 import { SharedModule } from './modules/shared/shared.module';
 import { RegistrationModule } from './modules/registration/registration.module';
@@ -21,9 +20,16 @@ import { MarkdownModule } from 'ngx-markdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SideMenuModule } from './modules/side-menu/side-menu.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { from, Observable } from 'rxjs';
 
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
+// export function HttpLoaderFactory(http: HttpClient) {
+//   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
+// }
+
+export class CustomTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<any> {
+    return from(import(`../assets/i18n/${lang}.json`));
+  }
 }
 
 @NgModule({
@@ -40,8 +46,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
+        useClass: CustomTranslateLoader
       }
     }),
     MarkdownModule.forRoot(),
@@ -60,4 +65,5 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: APP_PROVIDERS,
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {
+}

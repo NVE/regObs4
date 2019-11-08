@@ -3,10 +3,9 @@ import { NanoSql } from '../../../../nanosql';
 import { Observable } from 'rxjs';
 import { IDataLoad } from '../models/data-load.interface';
 import { map, take } from 'rxjs/operators';
-import * as moment from 'moment';
-import '../../../core/helpers/nano-sql/nanoObserverToRxjs';
+import moment from 'moment';
 import { nSQL } from '@nano-sql/core';
-import { NanoSqlObservableHelper } from '../../../core/helpers/nano-sql/nanoObserverToRxjs';
+import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 
 @Injectable({
   providedIn: 'root'
@@ -74,7 +73,7 @@ export class DataLoadService {
   }
 
   getStateAsObservable(id: string): Observable<IDataLoad> {
-    return NanoSqlObservableHelper.toRxJS<IDataLoad[]>(nSQL(NanoSql.TABLES.DATA_LOAD.name)
+    return new NSqlFullUpdateObservable<IDataLoad[]>(nSQL(NanoSql.TABLES.DATA_LOAD.name)
       .query('select')
       .where((x) => x.id === id)
       .listen()).pipe(

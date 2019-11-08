@@ -38,7 +38,7 @@
           {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
         </ion-label>
       </ion-item>
-      <ion-item detail="true" (click)="setAvalanchePosition()">
+      <ion-item (click)="setAvalanchePosition()">
         <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_OBS.POSITION' |
               translate}}</ion-label>
         <ion-text color="medium" align-self-start text-wrap>
@@ -56,6 +56,8 @@
                 }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
           </ng-container>
         </ion-text>
+        <ion-icon slot="end" class="item-detail-icon" name="ios-arrow-forward">
+        </ion-icon>
       </ion-item>
       <ion-item>
         <ion-label color="medium" position="stacked" text-uppercase>{{

@@ -1,3 +1,5 @@
+import { Observable, of } from 'rxjs';
+
 const BASE64_MARKER = ';base64,';
 
 export class DataUrlHelper {
@@ -5,6 +7,11 @@ export class DataUrlHelper {
     static async toDataUrlWithSize(blob: Blob, mimeType: string): Promise<{ dataUrl: string, size: number }> {
         const dataUrl = await this.toDataUrl(blob, mimeType);
         return { size: blob.size, dataUrl };
+    }
+
+    static async toDataUrlWithSizeFromArrayBuffer(buffer: ArrayBuffer, mimeType: string): Promise<{ dataUrl: string, size: number }> {
+        const dataUrl = await this.toDataUrl(new Blob([new Uint8Array(buffer, 0, buffer.byteLength)]), mimeType);
+        return { size: buffer.byteLength, dataUrl };
     }
 
     static getDataUrlFromSrcUrl(src: string, mimeType = 'image/jpeg'): Promise<string> {
@@ -57,47 +64,5 @@ export class DataUrlHelper {
     static getDataUriByteLength(dataUri: string) {
         const blob = this.convertDataURIToBinary(dataUri);
         return blob.length;
-    }
-
-    static getDataUrlFromImageOnLoad(img: HTMLImageElement, format = 'image/jpeg'): Promise<string> {
-        return new Promise((resolve, reject) => {
-            img.crossOrigin = 'anonymous';
-            img.onload = () => {
-                // Get raw image data
-                const result = this.getDataUrlFromImage(img, format);
-                if (result) {
-                    resolve(result);
-                } else {
-                    reject();
-                }
-            };
-            img.onerror = () => reject();
-        });
-    }
-
-    static getDataUrlFromImage(img: HTMLImageElement, format = 'image/jpeg', quality = 0.8): string {
-        const canvas = this.getCanvasFromImage(img);
-        if (!canvas) {
-            return null;
-        }
-        // Get raw image data
-        return canvas.toDataURL(format, quality);
-    }
-
-    static getCanvasFromImage(img: HTMLImageElement): HTMLCanvasElement {
-        if (!img) {
-            return null;
-        }
-        const canvas = document.createElement('canvas');
-        canvas.id = img.id;
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const context = canvas.getContext('2d');
-        if (!context) {
-            return null;
-        }
-        context.drawImage(img, 0, 0);
-        // Get raw image data
-        return canvas;
     }
 }

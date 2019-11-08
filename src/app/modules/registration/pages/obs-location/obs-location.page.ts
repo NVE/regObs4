@@ -13,6 +13,7 @@ import { LoggingService } from '../../../shared/services/logging/logging.service
 import { LoginService } from '../../../login/services/login.service';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 
 const DEBUG_TAG = 'ObsLocationPage';
 
@@ -29,8 +30,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   fullscreen$: Observable<boolean>;
   geoHazard: GeoHazard;
   isSaveDisabled = false;
-  hasSaved = false;
-  @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
+  @ViewChild(SetLocationInMapComponent, { static: false }) setLocationInMapComponent: SetLocationInMapComponent;
 
   private subscription: Subscription;
   private loggedInUser: LoggedInUser;
@@ -44,6 +44,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
     private loginService: LoginService,
+    private userSettingSevice: UserSettingService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -56,6 +57,10 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.geoHazard = this.registration.geoHazard;
     } else if (this.activatedRoute.snapshot.params['geoHazard']) {
       this.geoHazard = parseInt(this.activatedRoute.snapshot.params['geoHazard'], 10);
+    } else {
+      // No geohazard found, use app mode
+      const userSettings = await this.userSettingSevice.getUserSettings();
+      this.geoHazard = userSettings.currentGeoHazard[0];
     }
     if (this.hasLocation(this.registration)) {
       const locationMarkerIcon = L.icon({
@@ -93,15 +98,10 @@ export class ObsLocationPage implements OnInit, OnDestroy {
 
   ionViewDidEnter() {
     this.swipeBackService.disableSwipeBack();
-    this.hasSaved = false;
   }
 
   ionViewWillLeave() {
     this.swipeBackService.enableSwipeBack();
-    if (this.registration && this.registration.request && !this.hasSaved && this.setLocationInMapComponent) {
-      const obsLocation = this.setLocationInMapComponent.getLocation();
-      this.setLocationAndSaveRegistration(obsLocation);
-    }
   }
 
   private hasLocation(reg: IRegistration) {
@@ -133,6 +133,5 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     this.registration.request.ObsLocation = loc;
     this.registrationService.saveRegistration(this.registration);
     this.isSaveDisabled = false;
-    this.hasSaved = true;
   }
 }

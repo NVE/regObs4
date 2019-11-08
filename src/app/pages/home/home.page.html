@@ -1,9 +1,9 @@
 <app-header title="Varsom Regobs" [fullscreenSupport]="true"></app-header>
 <ion-content [ngClass]="{'map-item-bar-open': mapItemBarVisible, 'map-center-info-open': showMapCenter }">
-  <app-map (mapReady)="onMapReady($event)"></app-map>
+  <app-map (mapReady)="onMapReady($event)" [activateGeoLocationOnStart]="false"></app-map>
   <app-map-center-info></app-map-center-info>
   <app-map-item-bar></app-map-item-bar>
-  <app-geo-select slot="fixed"></app-geo-select>
-  <app-add-menu></app-add-menu>
+  <app-geo-fab slot="fixed" *ngIf="showGeoSelectInfo === false"></app-geo-fab>
+  <app-add-menu slot="fixed"></app-add-menu>
   <app-data-load *ngIf="dataLoadIds" [ids]="dataLoadIds" simple="true"></app-data-load>
 </ion-content>

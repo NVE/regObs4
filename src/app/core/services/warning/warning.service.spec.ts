@@ -10,7 +10,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { LangKey } from '../../models/langKey';
-import * as moment from 'moment';
+import moment from 'moment';
 import { IWarningApiResult } from './warning-api-result.interface';
 
 describe('WarningService', () => {

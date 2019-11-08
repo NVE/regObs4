@@ -2,6 +2,8 @@
     width: 100%;
     height: 100%;
     position: inherit !important;
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
 }
 
 app-map-controls {

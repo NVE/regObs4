@@ -96,10 +96,12 @@
     --list-header-font-weight: 600;
     --ion-grid-column-padding: 6px;
     --ion-button-height: 44px;
+    --geo-color: #009FD4;
     --geo-color-ice: #029BB3;
     --geo-color-water: #63CBFF;
     --geo-color-snow: #468EB3;
     --geo-color-dirt: #735E2F;
+    --fab-fullscreen-top: calc(10px + var(--ion-safe-area-top,0px));
 }
 
 .ion-color-varsom-orange {
@@ -183,6 +185,16 @@ ion-item {
             }
         }
     }
+
+    ion-button[slot="end"],  ion-icon[slot="end"] {
+        align-self: center;
+    }
+
+    .item-detail-icon {
+        color: var(--detail-icon-color);
+        font-size: var(--detail-icon-font-size);
+        opacity: var(--detail-icon-opacity);
+    }
 }
 
 ion-list {
@@ -225,6 +237,15 @@ ion-modal {
     ion-backdrop {
         z-index: 0 !important;
         display: block !important;
+    }
+}
+
+ion-alert {
+    button.full-width {
+        width: 100%;
+    }
+    button.normal-weight {
+        font-weight: 400 !important;
     }
 }
 
@@ -365,26 +386,6 @@ app-map, app-map-image, ion-slides {
     }
 }
 
-app-geo-icon {
-    .ice {
-        --geo-color: var(--geo-color-ice);
-    }
-    .water {
-        --geo-color: var(--geo-color-water);
-    }
-    .snow {
-        --geo-color: var(--geo-color-snow);
-    }
-    .dirt {
-        --geo-color: var(--geo-color-dirt);
-    }
-    svg-icon {
-        path, polygon {
-                fill: var(--geo-icon-color, var(--geo-color, #468EB3)), 
-        }
-    }
-}
-
 .geo-icon-circle {
     height: var(--geo-icon-circle-size, 36px);
     width: var(--geo-icon-circle-size, 36px);
@@ -392,10 +393,7 @@ app-geo-icon {
     border-radius: 50%;
     display: flex;
     justify-content: center;
-
-    app-geo-icon {
-        display: flex;
-    }
+    align-items: center;
 }
 
 app-header {

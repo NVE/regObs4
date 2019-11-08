@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, NgZone, OnDestroy, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { Platform } from '@ionic/angular';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
-import { take } from 'rxjs/operators';
+import { take, takeWhile, tap } from 'rxjs/operators';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -32,6 +32,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() showSupportMaps = true;
   @Input() center: L.LatLng;
   @Input() zoom: number;
+  @Input() activateGeoLocationOnStart = true;
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
   @Output() positionChange: EventEmitter<Geoposition> = new EventEmitter();
   loaded = false;
@@ -47,7 +48,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private followMode = true;
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
-  private isActive = false;
+  private isGeoLocationActive = false;
   private isAskingForPermissions = false;
 
   private setHeadingFunc: (event: DeviceOrientationEvent) => void;
@@ -64,6 +65,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private loggingService: LoggingService,
   ) {
     this.setHeadingFunc = this.setHeading.bind(this);
+    // Hack to make sure map pane is set before getPosition
+    L.Map.include({
+      _getMapPanePos: function () {
+        if (this._mapPane === undefined) {
+          return new L.Point(0, 0);
+        }
+        return L.DomUtil.getPosition(this._mapPane) || new L.Point(0, 0);
+      },
+    });
   }
 
   options: L.MapOptions = {
@@ -101,9 +111,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
-    this.stopGeoLocationWatch();
+    this.stopGeoPositionUpdates();
     if (this.map) {
       this.map.remove();
+      this.map = null;
     }
   }
 
@@ -156,10 +167,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.map.on('zoomstart', () => this.onMapMove());
     });
 
-    this.subscriptions.push(this.platform.pause.subscribe(() => this.stopGeoLocationWatch()));
+    this.subscriptions.push(this.platform.pause.subscribe(() => this.stopGeoPositionUpdates()));
     this.subscriptions.push(this.platform.resume.subscribe(() => {
-      if (this.isActive && !this.isAskingForPermissions) {
-        this.startGeoLocationWatch();
+      if (this.isGeoLocationActive && !this.isAskingForPermissions) {
+        this.startGeoPositionUpdates();
       }
     }));
 
@@ -177,33 +188,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     //     event.preventDefault();
     // }, true);
 
-    this.startGeoLocationWatch();
-
+    if (this.activateGeoLocationOnStart) {
+      this.startGeoPositionUpdates();
+    }
     this.map.on('resize', () => this.updateMapView());
-    this.isActive = true;
-    this.redrawMap();
     this.mapReady.emit(this.map);
-  }
-
-  activateUpdates() {
-    this.isActive = true;
-    this.startGeoLocationWatch();
-    this.redrawMap();
-  }
-
-  disableUpdates() {
-    this.isActive = false;
-    this.stopGeoLocationWatch();
   }
 
   private onMapMove() {
     this.disableFollowMode();
-    this.offlineMapService.shouldProcessOfflineImage(false);
   }
 
   private onMapMoveEnd() {
     this.updateMapView();
-    this.offlineMapService.shouldProcessOfflineImage(true);
   }
 
   private disableFollowMode() {
@@ -216,7 +213,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateMapView() {
-    if (this.map && this.isActive) {
+    if (this.map) {
       this.mapService.updateMapView({
         bounds: this.map.getBounds(),
         center: this.map.getCenter(),
@@ -323,23 +320,27 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   redrawMap() {
-    setTimeout(() => {
-      if (this.map) {
-        try {
+    let counter = 3;
+    timer(500, 50).pipe(
+      takeWhile(() => counter > 0),
+      tap(() => counter--)).subscribe(() => {
+        if (this.map) {
+          this.loggingService.debug('Invalidate size', DEBUG_TAG);
           this.map.invalidateSize();
-        } catch (err) {
-          this.loggingService.debug('Could not invalidate map size', DEBUG_TAG);
+          // window.dispatchEvent(new Event('resize'));
+        } else {
+          this.loggingService.debug('No map to invalidate', DEBUG_TAG);
         }
-      }
-      window.dispatchEvent(new Event('resize'));
-    }, 0);
+      });
   }
 
   ngAfterViewInit(): void {
+    this.redrawMap();
   }
 
-  private startGeoLocationWatch() {
+  startGeoPositionUpdates() {
     if (this.showUserLocation && !this.isAskingForPermissions) {
+      this.isGeoLocationActive = true;
       this.loggingService.debug('Start watching location changes', DEBUG_TAG);
       if (this.geoLoactionSubscription === undefined || this.geoLoactionSubscription.closed) {
         this.isAskingForPermissions = true;
@@ -360,6 +361,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  stopGeoPositionUpdates() {
+    this.isGeoLocationActive = false;
+    window.removeEventListener('deviceorientation', this.setHeadingFunc);
+    window.removeEventListener('deviceorientationabsolute', this.setHeadingFunc);
+    if (!this.isAskingForPermissions) {
+      this.loggingService.debug('Stop watching location changes', DEBUG_TAG);
+      if (this.geoLoactionSubscription !== undefined && !this.geoLoactionSubscription.closed) {
+        this.geoLoactionSubscription.unsubscribe();
+      }
+    }
+  }
+
   private setHeading(event: DeviceOrientationEvent) {
     if (this.userMarker) {
       const appleHeading = (<any>event).webkitCompassHeading;
@@ -368,17 +381,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       if (heading !== undefined && heading >= 0 && heading <= 360) {
         this.userMarker.setHeading(heading);
       }
-    }
-  }
-
-  private stopGeoLocationWatch() {
-    if (!this.isAskingForPermissions) {
-      this.loggingService.debug('Stop watching location changes', DEBUG_TAG);
-      if (this.geoLoactionSubscription !== undefined && !this.geoLoactionSubscription.closed) {
-        this.geoLoactionSubscription.unsubscribe();
-      }
-      window.removeEventListener('deviceorientation', this.setHeadingFunc);
-      window.removeEventListener('deviceorientationabsolute', this.setHeadingFunc);
     }
   }
 

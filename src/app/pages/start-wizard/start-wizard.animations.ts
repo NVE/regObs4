@@ -31,7 +31,7 @@ export function getScaleUpAnimation(delay: number) {
             transform: 'scale3d(1, 1, 1)'
         })),
     ];
-};
+}
 
 export function getHeaderAnimation(page: number) {
     return [
@@ -43,7 +43,7 @@ export function getHeaderAnimation(page: number) {
             transform: 'scale3d(1, 1, 1)'
         })),
     ];
-};
+}
 
 export const animations = [
 

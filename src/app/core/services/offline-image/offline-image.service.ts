@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
-import * as moment from 'moment';
+import moment from 'moment';
 import { IOfflineAsset } from './offline-asset.interface';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import '../../helpers/ionic/platform-helper';

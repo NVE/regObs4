@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
 })
 
 export class StartWizardPage implements OnInit, OnDestroy {
-  @ViewChild(IonSlides) slides: IonSlides;
+  @ViewChild(IonSlides, { static: false }) slides: IonSlides;
   GeoHazard = GeoHazard;
   LangKey = LangKey;
   userSettings: UserSetting;
@@ -26,7 +26,8 @@ export class StartWizardPage implements OnInit, OnDestroy {
 
   constructor(private userSetting: UserSettingService,
     private navController: NavController,
-    private ngZone: NgZone) { }
+    private ngZone: NgZone,
+  ) { }
 
   async ngOnInit() {
     this.subscription = this.userSetting.userSettingObservable$.subscribe((val) => {
@@ -57,7 +58,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
       this.userSetting.saveUserSettings(this.userSettings);
       this.navController.navigateRoot('/');
     } else {
-      this.slides.slideTo(4);
+      this.slides.slideTo(4, 200);
     }
   }
 

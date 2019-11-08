@@ -22,7 +22,8 @@ class HelptextService extends __BaseService {
   }
 
   /**
-   * @param langKey undefined
+   * Used by the app and regobs.no web for displaying help texts.
+   * @param langKey Specify 1 for norwegian or 2 for english
    * @return OK
    */
   HelptextGetResponse(langKey: number): __Observable<__StrictHttpResponse<Array<HelptextDto>>> {
@@ -48,7 +49,8 @@ class HelptextService extends __BaseService {
     );
   }
   /**
-   * @param langKey undefined
+   * Used by the app and regobs.no web for displaying help texts.
+   * @param langKey Specify 1 for norwegian or 2 for english
    * @return OK
    */
   HelptextGet(langKey: number): __Observable<Array<HelptextDto>> {

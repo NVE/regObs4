@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AvalancheActivityObs2Dto } from '../../../../../regobs-api/models';
 import { ModalController, AlertController } from '@ionic/angular';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Component({
   selector: 'app-avalanche-activity-modal',

@@ -10,6 +10,7 @@ import { map as __map, filter as __filter } from 'rxjs/operators';
 import { ObserverResponseDto } from '../models/observer-response-dto';
 import { ObserverGroupDto } from '../models/observer-group-dto';
 import { CreateAccountRequest } from '../models/create-account-request';
+import { MyPageData } from '../models/my-page-data';
 @Injectable({
   providedIn: 'root',
 })
@@ -131,9 +132,9 @@ class AccountService extends __BaseService {
 
   /**
    * @param dto undefined
-   * @return Account created
+   * @return OK or Account created
    */
-  AccountCreateAccountResponse(dto: CreateAccountRequest): __Observable<__StrictHttpResponse<ObserverResponseDto>> {
+  AccountCreateAccountResponse(dto: CreateAccountRequest): __Observable<__StrictHttpResponse<{} | ObserverResponseDto>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -151,17 +152,17 @@ class AccountService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<ObserverResponseDto>;
+        return _r as __StrictHttpResponse<{} | ObserverResponseDto>;
       })
     );
   }
   /**
    * @param dto undefined
-   * @return Account created
+   * @return OK or Account created
    */
-  AccountCreateAccount(dto: CreateAccountRequest): __Observable<ObserverResponseDto> {
+  AccountCreateAccount(dto: CreateAccountRequest): __Observable<{} | ObserverResponseDto> {
     return this.AccountCreateAccountResponse(dto).pipe(
-      __map(_r => _r.body as ObserverResponseDto)
+      __map(_r => _r.body as {} | ObserverResponseDto)
     );
   }
 
@@ -169,7 +170,7 @@ class AccountService extends __BaseService {
    * @param langKey undefined
    * @return OK
    */
-  AccountGetMyPageDataResponse(langKey?: 1 | 2): __Observable<__StrictHttpResponse<ObserverResponseDto>> {
+  AccountGetMyPageDataResponse(langKey?: 1 | 2): __Observable<__StrictHttpResponse<MyPageData>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -187,7 +188,7 @@ class AccountService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<ObserverResponseDto>;
+        return _r as __StrictHttpResponse<MyPageData>;
       })
     );
   }
@@ -195,9 +196,9 @@ class AccountService extends __BaseService {
    * @param langKey undefined
    * @return OK
    */
-  AccountGetMyPageData(langKey?: 1 | 2): __Observable<ObserverResponseDto> {
+  AccountGetMyPageData(langKey?: 1 | 2): __Observable<MyPageData> {
     return this.AccountGetMyPageDataResponse(langKey).pipe(
-      __map(_r => _r.body as ObserverResponseDto)
+      __map(_r => _r.body as MyPageData)
     );
   }
 }

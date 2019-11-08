@@ -11,8 +11,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { ObserverResponseDto, ObserverGroupDto } from '../../regobs-api/models';
 import { nSQL } from '@nano-sql/core';
-import { NanoSqlObservableHelper } from '../../../core/helpers/nano-sql/nanoObserverToRxjs';
 import { LoginModalPage } from '../pages/modal-pages/login-modal/login-modal.page';
+import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 
 @Injectable({
   providedIn: 'root'
@@ -33,8 +33,8 @@ export class LoginService {
     private modalController: ModalController,
   ) {
     this._loggedInUserObservable = this.userSettingService.userSettingObservable$.pipe(switchMap((userSetting) =>
-      combineLatest(this.getLoggedUserInAsObservable(userSetting.appMode))
-    ), map(([loggedInUser]) => loggedInUser), shareReplay(1));
+      this.getLoggedUserInAsObservable(userSetting.appMode)
+    ), map((loggedInUser) => loggedInUser), shareReplay(1));
   }
 
   async login(email: string, password: string) {
@@ -135,7 +135,7 @@ export class LoginService {
   }
 
   getLoggedUserInAsObservable(appMode: AppMode): Observable<LoggedInUser> {
-    return NanoSqlObservableHelper.toRxJS<LoggedInUser[]>
+    return new NSqlFullUpdateObservable<LoggedInUser[]>
       (NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('select')
         .listen()).pipe(
           map(([loggedInUser]) => loggedInUser || { isLoggedIn: false })

@@ -4,7 +4,7 @@ import { UserSettingService } from '../../../core/services/user-setting/user-set
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
 import { Subscription } from 'rxjs';
-import { ModalController, Platform } from '@ionic/angular';
+import { ModalController, Platform, NavController } from '@ionic/angular';
 import { LegalTermsModalPage } from '../../../pages/modal-pages/legal-terms-modal/legal-terms-modal.page';
 import { TopoMap } from '../../../core/models/topo-map.enum';
 import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
@@ -33,6 +33,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private appVersionService: AppVersionService,
     private platfrom: Platform,
+    private navController: NavController,
     private ngZone: NgZone) {
   }
 
@@ -72,6 +73,12 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       component: LegalTermsModalPage
     });
     modal.present();
+  }
+
+  openStartWizard() {
+    this.userSettings.showGeoSelectInfo = true;
+    this.userSettingService.saveUserSettings(this.userSettings);
+    this.navController.navigateRoot('start-wizard');
   }
 
   async contactUs() {

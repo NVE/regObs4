@@ -26,6 +26,13 @@
       </ion-label>
       <ion-toggle slot="end" [(ngModel)]="userSettings.emailReceipt" (ngModelChange)="updateSettings()"></ion-toggle>
     </ion-item>
+    <ion-item>
+      <ion-label>
+        {{'SETTINGS.ALLOW_ANALYTICS' | translate}}
+      </ion-label>
+      <ion-toggle slot="end" [(ngModel)]="userSettings.consentForSendingAnalytics" (ngModelChange)="updateSettings()">
+      </ion-toggle>
+    </ion-item>
   </ion-list>
   <ion-button (click)="toggleAdvanced()" fill="clear" expand="full">
     <ion-icon slot="start" [name]="(showAdvanced ? 'ios-arrow-up' : 'ios-arrow-down')"></ion-icon>

@@ -3,7 +3,7 @@ import { settings } from '../../../../settings';
 import { of } from 'rxjs';
 import { booleanContains, bboxPolygon, GeometryObject, booleanWithin, point } from '@turf/turf';
 export const SVALBARD_BOUNDS =
-    L.latLngBounds(settings.map.elevation.svalbard.bbox.map((coordinate) => L.latLng(coordinate[0], coordinate[1])));
+    L.latLngBounds(settings.map.bounds.svalbard.bbox.map((coordinate) => L.latLng(coordinate[0], coordinate[1])));
 export const NORWEGIAN_BOUNDS = require('../../../../assets/json/norway-mainland-simple.json').features[0].geometry;
 // export const NORWEGIAN_LATLNG_BOUNDS = L.geoJSON(NORWEGIAN_BOUNDS);
 

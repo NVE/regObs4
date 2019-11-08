@@ -17,4 +17,6 @@ export interface UserSetting {
     topoMap: TopoMap;
     showGeoSelectInfo: boolean;
     useRetinaMap: boolean;
+    consentForSendingAnalytics: boolean;
+    consentForSendingAnalyticsDialogCompleted: boolean;
 }

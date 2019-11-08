@@ -7,13 +7,11 @@ import { StrictHttpResponse as __StrictHttpResponse } from '../strict-http-respo
 import { Observable as __Observable } from 'rxjs';
 import { map as __map, filter as __filter } from 'rxjs/operators';
 
-import { ObsLocationName } from '../models/obs-location-name';
 import { ObsLocationsResponseDtoV2 } from '../models/obs-locations-response-dto-v2';
 @Injectable({
   providedIn: 'root',
 })
 class LocationService extends __BaseService {
-  static readonly LocationGetNamePath = '/Location/GetName';
   static readonly LocationWithinRadiusPath = '/Location/WithinRadius';
 
   constructor(
@@ -21,58 +19,6 @@ class LocationService extends __BaseService {
     http: HttpClient
   ) {
     super(config, http);
-  }
-
-  /**
-   * @param params The `LocationService.LocationGetNameParams` containing the following parameters:
-   *
-   * - `longitude`:
-   *
-   * - `latitude`:
-   *
-   * - `geoHazardId`:
-   *
-   * @return OK
-   */
-  LocationGetNameResponse(params: LocationService.LocationGetNameParams): __Observable<__StrictHttpResponse<ObsLocationName>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    if (params.longitude != null) __params = __params.set('longitude', params.longitude.toString());
-    if (params.latitude != null) __params = __params.set('latitude', params.latitude.toString());
-    if (params.geoHazardId != null) __params = __params.set('geoHazardId', params.geoHazardId.toString());
-    let req = new HttpRequest<any>(
-      'GET',
-      this.rootUrl + `/Location/GetName`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<ObsLocationName>;
-      })
-    );
-  }
-  /**
-   * @param params The `LocationService.LocationGetNameParams` containing the following parameters:
-   *
-   * - `longitude`:
-   *
-   * - `latitude`:
-   *
-   * - `geoHazardId`:
-   *
-   * @return OK
-   */
-  LocationGetName(params: LocationService.LocationGetNameParams): __Observable<ObsLocationName> {
-    return this.LocationGetNameResponse(params).pipe(
-      __map(_r => _r.body as ObsLocationName)
-    );
   }
 
   /**
@@ -144,15 +90,6 @@ class LocationService extends __BaseService {
 }
 
 module LocationService {
-
-  /**
-   * Parameters for LocationGetName
-   */
-  export interface LocationGetNameParams {
-    longitude: number;
-    latitude: number;
-    geoHazardId: number;
-  }
 
   /**
    * Parameters for LocationWithinRadius

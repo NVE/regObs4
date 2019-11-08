@@ -63,7 +63,7 @@ export class SetAvalanchePositionPage implements OnInit {
 
   fullscreen$: Observable<boolean>;
 
-  @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
+  @ViewChild(SetLocationInMapComponent, { static: false }) setLocationInMapComponent: SetLocationInMapComponent;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -114,7 +114,9 @@ export class SetAvalanchePositionPage implements OnInit {
 
   onMapReady(map: L.Map) {
     this.map = map;
-    this.updateMarkers();
+    setTimeout(() => {
+      this.updateMarkers();
+    });
     this.ngZone.runOutsideAngular(() => {
       this.map.on('drag', () => this.updatePolyline());
       this.updatePolyline();

@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { Subscription } from 'rxjs';
 import { CreateTripDto } from '../../modules/regobs-api/models';
-import * as moment from 'moment';
+import moment from 'moment';
 import { LoginService } from '../../modules/login/services/login.service';
 import { NavController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';

@@ -1,6 +1,44 @@
 import { Animation } from '@ionic/core';
+import { transition, style, animate } from '@angular/animations';
+
+export const DEFAULT_DURATION = 200;
+export const EASE_IN_OUT_BACK = 'cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+export const EASE_IN_OUT = 'ease-in-out';
 
 export class CustomAnimation {
+
+    static createScaleInInitialStyle(fromScale = 0, fromOpacity = 0) {
+        return style({ transform: `scale3d(${fromScale},${fromScale},1)`, opacity: fromOpacity });  // initial
+    }
+
+    static createScaleInAnimation(delay: number = 0, duration: number = DEFAULT_DURATION, easing = EASE_IN_OUT) {
+        return animate(`${duration}ms ${delay}ms ${easing}`, style({ transform: 'scale3d(1,1,1)', opacity: 1 }));
+    }
+
+    static createScaleInTransition(
+        delay: number = 0,
+        duration: number = DEFAULT_DURATION,
+        easing = EASE_IN_OUT,
+        fromScale = 0,
+        fromOpacity = 0,
+    ) {
+        return [
+            CustomAnimation.createScaleInInitialStyle(fromScale, fromOpacity),  // initial
+            CustomAnimation.createScaleInAnimation(delay, duration, easing),
+        ];
+    }
+
+    static createEnterScaleInAnimation(
+        delay: number = 0,
+        duration: number = DEFAULT_DURATION,
+        easing = EASE_IN_OUT,
+        fromScale = 0,
+        fromOpacity = 0,
+    ) {
+        return [
+            transition(':enter', CustomAnimation.createScaleInTransition(delay, duration, easing, fromScale, fromOpacity))
+        ];
+    }
 
     static scaleUpEnter(AnimationC: Animation, baseEl: HTMLElement, opts?: any) {
         const baseAnimation = new AnimationC();
@@ -20,8 +58,8 @@ export class CustomAnimation {
 
         return Promise.resolve(baseAnimation
             .addElement(baseEl)
-            .easing('cubic-bezier(0.68, -0.55, 0.265, 1.55)')
-            .duration(200)
+            .easing(EASE_IN_OUT_BACK)
+            .duration(DEFAULT_DURATION)
             .beforeAddClass('show-modal')
             .add(backdropAnimation)
             .add(wrapperAnimation)
@@ -47,7 +85,7 @@ export class CustomAnimation {
 
         return Promise.resolve(baseAnimation
             .addElement(baseEl)
-            .duration(200)
+            .duration(DEFAULT_DURATION)
             .beforeAddClass('show-modal')
             .add(backdropAnimation)
             .add(wrapperAnimation)
@@ -74,7 +112,7 @@ export class CustomAnimation {
         return Promise.resolve(baseAnimation
             .addElement(baseEl)
             .easing('cubic-bezier(.1, .7, .1, 1)')
-            .duration(200)
+            .duration(DEFAULT_DURATION)
             .add(backdropAnimation)
             .add(wrapperAnimation)
         );
@@ -99,7 +137,7 @@ export class CustomAnimation {
 
         return Promise.resolve(baseAnimation
             .addElement(baseEl)
-            .duration(200)
+            .duration(DEFAULT_DURATION)
             .add(backdropAnimation)
             .add(wrapperAnimation)
         );
@@ -124,7 +162,7 @@ export class CustomAnimation {
         return Promise.resolve(baseAnimation
             .addElement(baseEl)
             .easing('ease-in')
-            .duration(200)
+            .duration(DEFAULT_DURATION)
             .beforeAddClass('show-modal')
             .add(backdropAnimation)
             .add(wrapperAnimation)
@@ -153,7 +191,7 @@ export class CustomAnimation {
         return Promise.resolve(baseAnimation
             .addElement(baseEl)
             .easing('ease-out')
-            .duration(200)
+            .duration(DEFAULT_DURATION)
             .beforeAddClass('show-modal')
             .add(backdropAnimation)
             .add(wrapperAnimation)

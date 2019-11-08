@@ -1,5 +1,9 @@
 <ion-content (click)="closeModal()">
-  <pinch-zoom>
-    <img #img [src]="imgSrc" onerror="this.style.display='none'" />
-  </pinch-zoom>
+  <ion-slides>
+    <ion-slide>
+      <div class="swiper-zoom-container">
+        <img [src]="imgSrc" onerror="this.style.display='none'" />
+      </div>
+    </ion-slide>
+  </ion-slides>
 </ion-content>
