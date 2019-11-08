@@ -74,7 +74,7 @@ export class AddPictureItemComponent implements OnInit {
     }
     const options: CameraOptions = {
       quality: settings.images.quality,
-      destinationType: this.camera.DestinationType.DATA_URL,
+      destinationType: this.camera.DestinationType.NATIVE_URI,
       // NOTE: Base64 encode. If API supports upload image blob later,
       // this should be changed to FILE_URL and uploaded separatly
       sourceType: sourceType,
@@ -86,7 +86,7 @@ export class AddPictureItemComponent implements OnInit {
       saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA,
     };
     const imageUrl = await this.camera.getPicture(options);
-    this.addBase64Image(`${DATA_URL_TAG}${imageUrl}`);
+    this.addBase64Image(imageUrl);
     return true;
   }
 

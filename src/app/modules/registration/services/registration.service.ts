@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
 import { IRegistration } from '../models/registration.model';
-import { Observable } from 'rxjs';
-import { shareReplay, switchMap, map, take } from 'rxjs/operators';
+import { Observable, EMPTY, combineLatest, from, of } from 'rxjs';
+import { shareReplay, switchMap, map, take, catchError, concatMap, tap } from 'rxjs/operators';
 import * as RegobsApi from '../../regobs-api/services';
 import * as RegobsApiModels from '../../regobs-api/models';
-import { settings } from '../../../../settings';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../login/services/login.service';
 import moment from 'moment';
@@ -25,6 +24,7 @@ import { ObservationService } from '../../../core/services/observation/observati
 import * as utils from '@nano-sql/core/lib/utilities';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
 import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
+import { File, FileEntry } from '@ionic-native/file/ngx';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -53,6 +53,8 @@ export class RegistrationService {
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
     private observationService: ObservationService,
+    private attachmentService: RegobsApi.AttachmentService,
+    private file: File,
   ) {
 
     this._registrationsObservable = this.userSettingService.appMode$
@@ -134,13 +136,7 @@ export class RegistrationService {
     if (!reg) {
       return [];
     }
-    const pictures = (reg.request.Picture || []).filter((p) => p.RegistrationTID === registrationTid);
-    if (registrationTid === RegistrationTid.DamageObs) {
-      for (const damageObs of (reg.request.DamageObs || [])) {
-        pictures.push(...(damageObs.Pictures || []));
-      }
-    }
-    return pictures;
+    return this.getAllPictures(reg.request).filter((p) => p.RegistrationTID === registrationTid);
   }
 
   getRegistationProperty(reg: IRegistration, registrationTid: RegistrationTid) {
@@ -249,7 +245,7 @@ export class RegistrationService {
       if (registration.request) {
         this.cleanupRegistration(registration);
         registration.request.Email = userSetting.emailReceipt;
-        const createRegistrationResult = await this.postRegistration(registration.request, cancel);
+        const createRegistrationResult = await this.postRegistration(registration, cancel);
         await this.observationService.updateObservationById(
           createRegistrationResult.RegId,
           userSetting.appMode,
@@ -322,8 +318,66 @@ export class RegistrationService {
       .pipe(map((items) => items.find((x) => x.id === id)));
   }
 
-  private postRegistration(registration: RegobsApiModels.CreateRegistrationRequestDto, cancel?: Promise<void>) {
-    return ObservableHelper.toPromiseWithCancel(this.registrationApiService.RegistrationInsert(registration), cancel);
+  private postRegistration(registration: IRegistration, cancel?: Promise<void>) {
+    const uploadProcess$ = this.uploadAttachments(registration.request).pipe(
+      tap(() => this.loggingService.debug(`Upload attachments complete. Registration is:`, DEBUG_TAG, registration)),
+      concatMap(() => from(this.saveRegistration(registration))), // Save updated picture dtos with attachment id
+      concatMap(() => this.registrationApiService.RegistrationInsert(registration.request)
+      ));
+    return ObservableHelper.toPromiseWithCancel(uploadProcess$, cancel);
+  }
+
+  private uploadAttachments(registration: RegobsApiModels.CreateRegistrationRequestDto) {
+    return combineLatest(this.getAllPictures(registration)
+      .map((p) => this.uploadAttachment(p)
+        .pipe(catchError((err) => {
+          this.loggingService.error(err, DEBUG_TAG, 'Could not upload attachment');
+          return EMPTY;
+        }))));
+  }
+
+  private getAllPictures(registration: RegobsApiModels.CreateRegistrationRequestDto) {
+    const pictures = registration.Picture || [];
+    if (registration.DamageObs && registration.DamageObs.length > 0) {
+      const damageObsPictures = registration.DamageObs.map((val) => val.Pictures || []);
+      pictures.concat(...damageObsPictures);
+    }
+    if (registration.WaterLevel2
+      && registration.WaterLevel2.WaterLevelMeasurement
+      && registration.WaterLevel2.WaterLevelMeasurement.length > 0) {
+      const waterLevelPictures = registration.WaterLevel2.WaterLevelMeasurement.map((val) => val.Pictures || []);
+      pictures.concat(...waterLevelPictures);
+    }
+    return pictures;
+  }
+
+  private async getBlobFromFile(fileUrl: string): Promise<Blob> {
+    const entry = await this.file.resolveLocalFilesystemUrl(fileUrl);
+    if (!entry.isFile) {
+      throw Error(`${fileUrl} is not a file!`);
+    }
+    const fileEntry: FileEntry = entry as FileEntry;
+    return new Promise((resolve, reject) =>
+      fileEntry.file((success) => resolve(success), (error) => reject(error)));
+  }
+
+  private uploadAttachment(pictureRequest: RegobsApiModels.PictureRequestDto): Observable<RegobsApiModels.PictureRequestDto> {
+    const shouldUploadAttachment =
+      !pictureRequest.AttachmentUploadId &&
+      pictureRequest.PictureImageBase64 &&
+      !pictureRequest.PictureImageBase64.startsWith('data:');
+
+    if (shouldUploadAttachment) {
+      const blob$ = from(this.getBlobFromFile(pictureRequest.PictureImageBase64));
+      return blob$.pipe(
+        concatMap((blob) => this.attachmentService.AttachmentPost(blob)),
+        tap((attachmentId) => {
+          pictureRequest.AttachmentUploadId = attachmentId;
+          this.loggingService.debug(`Updated attachment id ${attachmentId} for picture request`, DEBUG_TAG, pictureRequest);
+        }),
+        map(() => pictureRequest));
+    }
+    return of(pictureRequest);
   }
 
   // private async updateLatestUserRegistrations(cancel?: Promise<any>) {
