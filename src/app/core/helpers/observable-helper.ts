@@ -5,8 +5,10 @@ export class ObservableHelper {
         return new Promise<T>((resolve, reject) => {
             const subscription = observable
                 .subscribe((result) => {
+                    subscription.unsubscribe();
                     resolve(result);
                 }, (error) => {
+                    subscription.unsubscribe();
                     reject(error);
                 });
             if (cancel) {

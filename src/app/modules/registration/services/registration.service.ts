@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
 import { IRegistration } from '../models/registration.model';
-import { Observable, EMPTY, combineLatest, from, of } from 'rxjs';
+import { Observable, from, of, combineLatest } from 'rxjs';
 import { shareReplay, switchMap, map, take, catchError, concatMap, tap } from 'rxjs/operators';
 import * as RegobsApi from '../../regobs-api/services';
 import * as RegobsApiModels from '../../regobs-api/models';
@@ -13,7 +13,7 @@ import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
 import { RegistrationTid } from '../models/registrationTid.enum';
 import { DataLoadService } from '../../data-load/services/data-load.service';
 import { RegistrationStatus } from '../models/registrationStatus.enum';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { ObservableHelper } from '../../../core/helpers/observable-helper';
 import { NavController, ModalController } from '@ionic/angular';
@@ -24,7 +24,8 @@ import { ObservationService } from '../../../core/services/observation/observati
 import * as utils from '@nano-sql/core/lib/utilities';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
 import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
-import { File, FileEntry } from '@ionic-native/file/ngx';
+import { File, FileEntry, IFile } from '@ionic-native/file/ngx';
+import { settings } from '../../../../settings';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -54,6 +55,7 @@ export class RegistrationService {
     private loggingService: LoggingService,
     private observationService: ObservationService,
     private attachmentService: RegobsApi.AttachmentService,
+    private httpClient: HttpClient,
     private file: File,
   ) {
 
@@ -329,11 +331,7 @@ export class RegistrationService {
 
   private uploadAttachments(registration: RegobsApiModels.CreateRegistrationRequestDto) {
     return combineLatest(this.getAllPictures(registration)
-      .map((p) => this.uploadAttachment(p)
-        .pipe(catchError((err) => {
-          this.loggingService.error(err, DEBUG_TAG, 'Could not upload attachment');
-          return EMPTY;
-        }))));
+      .map((p) => this.uploadAttachment(p)));
   }
 
   private getAllPictures(registration: RegobsApiModels.CreateRegistrationRequestDto) {
@@ -351,7 +349,7 @@ export class RegistrationService {
     return pictures;
   }
 
-  private async getBlobFromFile(fileUrl: string): Promise<Blob> {
+  private async getFile(fileUrl: string): Promise<IFile> {
     const entry = await this.file.resolveLocalFilesystemUrl(fileUrl);
     if (!entry.isFile) {
       throw Error(`${fileUrl} is not a file!`);
@@ -368,10 +366,12 @@ export class RegistrationService {
       !pictureRequest.PictureImageBase64.startsWith('data:');
 
     if (shouldUploadAttachment) {
-      const blob$ = from(this.getBlobFromFile(pictureRequest.PictureImageBase64));
-      return blob$.pipe(
-        concatMap((blob) => this.attachmentService.AttachmentPost(blob)),
+      const file$ = from(this.getFile(pictureRequest.PictureImageBase64));
+      return file$.pipe(
+        tap((file) => this.loggingService.debug(`Found image file blob`, DEBUG_TAG, file)),
+        concatMap((file) => this.getFormDataAndUploadToApi(file)),
         tap((attachmentId) => {
+          this.loggingService.debug(`Result from upload attachment: ${attachmentId}`, DEBUG_TAG);
           pictureRequest.AttachmentUploadId = attachmentId;
           this.loggingService.debug(`Updated attachment id ${attachmentId} for picture request`, DEBUG_TAG, pictureRequest);
         }),
@@ -379,6 +379,48 @@ export class RegistrationService {
     }
     return of(pictureRequest);
   }
+
+  private getFormDataFromFile(file: IFile) {
+    return from(this.fileToBlob(file)).pipe(map((blob) => {
+      const formData = new FormData();
+      formData.append('file', blob, file.name);
+      return formData;
+    }));
+  }
+
+  private fileToBlob(file: IFile): Promise<Blob> {
+    return new Promise<Blob>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = (evt) => resolve(new Blob([evt.target.result], { type: file.type }));
+      reader.onerror = (e) => {
+        console.log('Failed file read: ' + e.toString());
+        reject(e);
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  private getFormDataAndUploadToApi(file: IFile): Observable<string> {
+    const formData$ = this.getFormDataFromFile(file);
+    return combineLatest([this.userSettingService.appMode$, formData$])
+      .pipe(
+        tap(([appMode, formData]) => this.loggingService.debug(`Got form data`, DEBUG_TAG, appMode, formData)),
+        concatMap(([appMode, formData]) =>
+          this.uploadAttachmentToApi(appMode, formData)
+        ));
+  }
+
+  private uploadAttachmentToApi(appMode: AppMode, data: FormData) {
+    const rootUrl = settings.services.regObs.apiUrl[appMode];
+    return this.httpClient.post<string>(`${rootUrl}/Attachment/Upload`, data);
+  }
+
+  // private replaceIllegalCharactersInGuid(guid: string) {
+  //   if (guid.startsWith('"')) {
+  //     return guid.replace(/"/g, '');
+  //   }
+  //   return guid;
+  // }
 
   // private async updateLatestUserRegistrations(cancel?: Promise<any>) {
   //   const user = await this.loginService.getLoggedInUser();

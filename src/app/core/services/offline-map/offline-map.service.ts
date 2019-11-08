@@ -20,7 +20,7 @@ import { LogLevel } from '../../../modules/shared/services/logging/log-level.mod
 const DEBUG_TAG = 'OfflineMapService';
 const RECENTLY_SAVED_TILE_CACHE_SIZE = 2000;
 const SAVE_TILE_DELAY_BUFFER = 1000;
-const MAX_BUFFER_SIZE = 50;
+const MAX_BUFFER_SIZE = 30;
 
 @Injectable({
   providedIn: 'root'
