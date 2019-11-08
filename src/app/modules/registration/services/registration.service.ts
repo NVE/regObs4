@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
 import { IRegistration } from '../models/registration.model';
-import { Observable } from 'rxjs';
-import { shareReplay, switchMap, map, take } from 'rxjs/operators';
+import { Observable, from, of, combineLatest } from 'rxjs';
+import { shareReplay, switchMap, map, take, catchError, concatMap, tap } from 'rxjs/operators';
 import * as RegobsApi from '../../regobs-api/services';
 import * as RegobsApiModels from '../../regobs-api/models';
-import { settings } from '../../../../settings';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoginService } from '../../login/services/login.service';
 import moment from 'moment';
@@ -14,7 +13,7 @@ import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
 import { RegistrationTid } from '../models/registrationTid.enum';
 import { DataLoadService } from '../../data-load/services/data-load.service';
 import { RegistrationStatus } from '../models/registrationStatus.enum';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { ObservableHelper } from '../../../core/helpers/observable-helper';
 import { NavController, ModalController } from '@ionic/angular';
@@ -25,6 +24,8 @@ import { ObservationService } from '../../../core/services/observation/observati
 import * as utils from '@nano-sql/core/lib/utilities';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
 import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
+import { File, FileEntry, IFile } from '@ionic-native/file/ngx';
+import { settings } from '../../../../settings';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -53,6 +54,9 @@ export class RegistrationService {
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
     private observationService: ObservationService,
+    private attachmentService: RegobsApi.AttachmentService,
+    private httpClient: HttpClient,
+    private file: File,
   ) {
 
     this._registrationsObservable = this.userSettingService.appMode$
@@ -134,13 +138,7 @@ export class RegistrationService {
     if (!reg) {
       return [];
     }
-    const pictures = (reg.request.Picture || []).filter((p) => p.RegistrationTID === registrationTid);
-    if (registrationTid === RegistrationTid.DamageObs) {
-      for (const damageObs of (reg.request.DamageObs || [])) {
-        pictures.push(...(damageObs.Pictures || []));
-      }
-    }
-    return pictures;
+    return this.getAllPictures(reg.request).filter((p) => p.RegistrationTID === registrationTid);
   }
 
   getRegistationProperty(reg: IRegistration, registrationTid: RegistrationTid) {
@@ -249,7 +247,7 @@ export class RegistrationService {
       if (registration.request) {
         this.cleanupRegistration(registration);
         registration.request.Email = userSetting.emailReceipt;
-        const createRegistrationResult = await this.postRegistration(registration.request, cancel);
+        const createRegistrationResult = await this.postRegistration(registration, cancel);
         await this.observationService.updateObservationById(
           createRegistrationResult.RegId,
           userSetting.appMode,
@@ -322,9 +320,107 @@ export class RegistrationService {
       .pipe(map((items) => items.find((x) => x.id === id)));
   }
 
-  private postRegistration(registration: RegobsApiModels.CreateRegistrationRequestDto, cancel?: Promise<void>) {
-    return ObservableHelper.toPromiseWithCancel(this.registrationApiService.RegistrationInsert(registration), cancel);
+  private postRegistration(registration: IRegistration, cancel?: Promise<void>) {
+    const uploadProcess$ = this.uploadAttachments(registration.request).pipe(
+      tap(() => this.loggingService.debug(`Upload attachments complete. Registration is:`, DEBUG_TAG, registration)),
+      concatMap(() => from(this.saveRegistration(registration))), // Save updated picture dtos with attachment id
+      concatMap(() => this.registrationApiService.RegistrationInsert(registration.request)
+      ));
+    return ObservableHelper.toPromiseWithCancel(uploadProcess$, cancel);
   }
+
+  private uploadAttachments(registration: RegobsApiModels.CreateRegistrationRequestDto) {
+    return combineLatest(this.getAllPictures(registration)
+      .map((p) => this.uploadAttachment(p)));
+  }
+
+  private getAllPictures(registration: RegobsApiModels.CreateRegistrationRequestDto) {
+    const pictures = registration.Picture || [];
+    if (registration.DamageObs && registration.DamageObs.length > 0) {
+      const damageObsPictures = registration.DamageObs.map((val) => val.Pictures || []);
+      pictures.concat(...damageObsPictures);
+    }
+    if (registration.WaterLevel2
+      && registration.WaterLevel2.WaterLevelMeasurement
+      && registration.WaterLevel2.WaterLevelMeasurement.length > 0) {
+      const waterLevelPictures = registration.WaterLevel2.WaterLevelMeasurement.map((val) => val.Pictures || []);
+      pictures.concat(...waterLevelPictures);
+    }
+    return pictures;
+  }
+
+  private async getFile(fileUrl: string): Promise<IFile> {
+    const entry = await this.file.resolveLocalFilesystemUrl(fileUrl);
+    if (!entry.isFile) {
+      throw Error(`${fileUrl} is not a file!`);
+    }
+    const fileEntry: FileEntry = entry as FileEntry;
+    return new Promise((resolve, reject) =>
+      fileEntry.file((success) => resolve(success), (error) => reject(error)));
+  }
+
+  private uploadAttachment(pictureRequest: RegobsApiModels.PictureRequestDto): Observable<RegobsApiModels.PictureRequestDto> {
+    const shouldUploadAttachment =
+      !pictureRequest.AttachmentUploadId &&
+      pictureRequest.PictureImageBase64 &&
+      !pictureRequest.PictureImageBase64.startsWith('data:');
+
+    if (shouldUploadAttachment) {
+      const file$ = from(this.getFile(pictureRequest.PictureImageBase64));
+      return file$.pipe(
+        tap((file) => this.loggingService.debug(`Found image file blob`, DEBUG_TAG, file)),
+        concatMap((file) => this.getFormDataAndUploadToApi(file)),
+        tap((attachmentId) => {
+          this.loggingService.debug(`Result from upload attachment: ${attachmentId}`, DEBUG_TAG);
+          pictureRequest.AttachmentUploadId = attachmentId;
+          this.loggingService.debug(`Updated attachment id ${attachmentId} for picture request`, DEBUG_TAG, pictureRequest);
+        }),
+        map(() => pictureRequest));
+    }
+    return of(pictureRequest);
+  }
+
+  private getFormDataFromFile(file: IFile) {
+    return from(this.fileToBlob(file)).pipe(map((blob) => {
+      const formData = new FormData();
+      formData.append('file', blob, file.name);
+      return formData;
+    }));
+  }
+
+  private fileToBlob(file: IFile): Promise<Blob> {
+    return new Promise<Blob>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = (evt) => resolve(new Blob([evt.target.result], { type: file.type }));
+      reader.onerror = (e) => {
+        console.log('Failed file read: ' + e.toString());
+        reject(e);
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  private getFormDataAndUploadToApi(file: IFile): Observable<string> {
+    const formData$ = this.getFormDataFromFile(file);
+    return combineLatest([this.userSettingService.appMode$, formData$])
+      .pipe(
+        tap(([appMode, formData]) => this.loggingService.debug(`Got form data`, DEBUG_TAG, appMode, formData)),
+        concatMap(([appMode, formData]) =>
+          this.uploadAttachmentToApi(appMode, formData)
+        ));
+  }
+
+  private uploadAttachmentToApi(appMode: AppMode, data: FormData) {
+    const rootUrl = settings.services.regObs.apiUrl[appMode];
+    return this.httpClient.post<string>(`${rootUrl}/Attachment/Upload`, data);
+  }
+
+  // private replaceIllegalCharactersInGuid(guid: string) {
+  //   if (guid.startsWith('"')) {
+  //     return guid.replace(/"/g, '');
+  //   }
+  //   return guid;
+  // }
 
   // private async updateLatestUserRegistrations(cancel?: Promise<any>) {
   //   const user = await this.loginService.getLoggedInUser();

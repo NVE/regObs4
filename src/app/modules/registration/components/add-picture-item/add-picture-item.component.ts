@@ -6,6 +6,7 @@ import { settings } from '../../../../../settings';
 import { RegistrationTid } from '../../models/registrationTid.enum';
 import { PictureRequestDto } from '../../../regobs-api/models';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
 
 const DATA_URL_TAG = 'data:image/jpeg;base64,';
 
@@ -34,6 +35,7 @@ export class AddPictureItemComponent implements OnInit {
     private translateService: TranslateService,
     private camera: Camera,
     private platform: Platform,
+    private webView: WebView,
     private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
@@ -74,7 +76,7 @@ export class AddPictureItemComponent implements OnInit {
     }
     const options: CameraOptions = {
       quality: settings.images.quality,
-      destinationType: this.camera.DestinationType.DATA_URL,
+      destinationType: this.camera.DestinationType.NATIVE_URI,
       // NOTE: Base64 encode. If API supports upload image blob later,
       // this should be changed to FILE_URL and uploaded separatly
       sourceType: sourceType,
@@ -86,16 +88,16 @@ export class AddPictureItemComponent implements OnInit {
       saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA,
     };
     const imageUrl = await this.camera.getPicture(options);
-    this.addBase64Image(`${DATA_URL_TAG}${imageUrl}`);
+    this.addImage(imageUrl);
     return true;
   }
 
   private async addDummyImage() {
     const dummyImage = await DataUrlHelper.getDataUrlFromSrcUrl('/assets/images/dummyregobsimage.jpeg');
-    this.addBase64Image(dummyImage);
+    this.addImage(dummyImage);
   }
 
-  addBase64Image(dataUrl: string) {
+  addImage(dataUrl: string) {
     this.images.push({
       PictureImageBase64: dataUrl,
       RegistrationTID: this.registrationTid
@@ -109,5 +111,13 @@ export class AddPictureItemComponent implements OnInit {
       this.images.splice(index, 1);
       this.imagesChange.emit(this.images);
     }
+  }
+
+  isBase64Image(img: string) {
+    return img && img.startsWith('data:image');
+  }
+
+  convertFileSrc(fileUrl: string) {
+    return this.webView.convertFileSrc(fileUrl);
   }
 }

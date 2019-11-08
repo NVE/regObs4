@@ -1,6 +1,8 @@
 <div class="images">
   <div class="image-wrapper" *ngFor="let image of imagesForCurrentRegistrationTid; let i = index">
-    <app-base64-image [base64encodedImage]="image.PictureImageBase64"></app-base64-image>
+    <app-base64-image *ngIf="isBase64Image(image.PictureImageBase64)" [base64encodedImage]="image.PictureImageBase64">
+    </app-base64-image>
+    <img *ngIf="!isBase64Image(image.PictureImageBase64)" [src]="convertFileSrc(image.PictureImageBase64)" />
     <ion-fab no-margin slot="fixed" vertical="top" horizontal="end">
       <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeImage(image)">
         <ion-icon name="close"></ion-icon>

@@ -11,6 +11,10 @@ export interface SearchCriteriaRequestDto {
   GroupId?: number;
   FromDate?: string;
   ToDate?: string;
+  FromDtObsTime?: string;
+  ToDtObsTime?: string;
+  FromDtChangeTime?: string;
+  ToDtChangeTime?: string;
   NumberOfRecords?: number;
   Offset?: number;
   TimeZone?: string;
