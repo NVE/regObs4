@@ -7,6 +7,7 @@ import { RegistrationTid } from '../../models/registrationTid.enum';
 import { PictureRequestDto } from '../../../regobs-api/models';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { DomSanitizer } from '@angular/platform-browser';
 
 const DATA_URL_TAG = 'data:image/jpeg;base64,';
 
@@ -36,6 +37,7 @@ export class AddPictureItemComponent implements OnInit {
     private camera: Camera,
     private platform: Platform,
     private webView: WebView,
+    private domSanitizer: DomSanitizer,
     private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
@@ -76,7 +78,7 @@ export class AddPictureItemComponent implements OnInit {
     }
     const options: CameraOptions = {
       quality: settings.images.quality,
-      destinationType: this.camera.DestinationType.NATIVE_URI,
+      destinationType: this.camera.DestinationType.FILE_URI,
       // NOTE: Base64 encode. If API supports upload image blob later,
       // this should be changed to FILE_URL and uploaded separatly
       sourceType: sourceType,
@@ -118,6 +120,7 @@ export class AddPictureItemComponent implements OnInit {
   }
 
   convertFileSrc(fileUrl: string) {
-    return this.webView.convertFileSrc(fileUrl);
+    return this.domSanitizer.bypassSecurityTrustUrl(
+      this.webView.convertFileSrc(fileUrl));
   }
 }
