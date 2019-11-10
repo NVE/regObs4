@@ -330,21 +330,22 @@ export class RegistrationService {
   }
 
   private uploadAttachments(registration: RegobsApiModels.CreateRegistrationRequestDto) {
+    this.loggingService.debug('Start upload attachments', DEBUG_TAG, registration);
     return combineLatest(this.getAllPictures(registration)
       .map((p) => this.uploadAttachment(p)));
   }
 
   private getAllPictures(registration: RegobsApiModels.CreateRegistrationRequestDto) {
-    const pictures = registration.Picture || [];
+    let pictures = registration.Picture || [];
     if (registration.DamageObs && registration.DamageObs.length > 0) {
       const damageObsPictures = registration.DamageObs.map((val) => val.Pictures || []);
-      pictures.concat(...damageObsPictures);
+      pictures = pictures.concat(...damageObsPictures);
     }
     if (registration.WaterLevel2
       && registration.WaterLevel2.WaterLevelMeasurement
       && registration.WaterLevel2.WaterLevelMeasurement.length > 0) {
       const waterLevelPictures = registration.WaterLevel2.WaterLevelMeasurement.map((val) => val.Pictures || []);
-      pictures.concat(...waterLevelPictures);
+      pictures = pictures.concat(...waterLevelPictures);
     }
     return pictures;
   }
@@ -373,6 +374,7 @@ export class RegistrationService {
         tap((attachmentId) => {
           this.loggingService.debug(`Result from upload attachment: ${attachmentId}`, DEBUG_TAG);
           pictureRequest.AttachmentUploadId = attachmentId;
+          pictureRequest.PictureImageBase64 = undefined; // Attachment upload ok. Clear local file.
           this.loggingService.debug(`Updated attachment id ${attachmentId} for picture request`, DEBUG_TAG, pictureRequest);
         }),
         map(() => pictureRequest));
