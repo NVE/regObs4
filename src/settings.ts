@@ -179,7 +179,7 @@ export const settings = {
         },
         bounds: {
             svalbard: {
-               bbox: [[80.493155, 3.157765], [80.309405, 21.685119], [76.337433, 18.003936], [76.465943, 4.879966]],
+                bbox: [[80.493155, 3.157765], [80.309405, 21.685119], [76.337433, 18.003936], [76.465943, 4.879966]],
             },
         },
         mapSearchZoomToLevel: 14,
@@ -191,10 +191,15 @@ export const settings = {
     cordovaNotAvailable: 'cordova_not_available',
     gps: {
         maximumAge: 180000,
-        currentPositionOptions: {
+        highAccuracyPositionOptions: {
             enableHighAccuracy: true,
             timeout: 20 * 1000, // 20 sec
             maximumAge: 10 * 60 * 1000 // 10 minutes
+        },
+        lowAccuracyPositionOptions: {
+            enableHighAccuracy: false,
+            timeout: 30 * 1000, // 20 sec
+            maximumAge: 30 * 60 * 1000 // 30 minutes
         },
     },
     offlineAssetsFolder: 'assets',

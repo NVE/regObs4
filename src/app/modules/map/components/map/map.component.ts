@@ -2,13 +2,13 @@ import { Component, OnInit, Input, NgZone, OnDestroy, AfterViewInit, Output, Eve
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { Subscription, timer } from 'rxjs';
-import { Platform } from '@ionic/angular';
+import { Platform, AlertController } from '@ionic/angular';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
-import { take, takeWhile, tap } from 'rxjs/operators';
+import { take, takeWhile, tap, pairwise } from 'rxjs/operators';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -17,6 +17,8 @@ import { RegObsTileLayer, IRegObsTileLayerOptions } from '../../core/classes/reg
 import '../../../../core/helpers/ionic/platform-helper';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -50,6 +52,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private firstClickOnZoomToUser = true;
   private isGeoLocationActive = false;
   private isAskingForPermissions = false;
+  private gpsHighAccuracyEnabled = false;
 
   private setHeadingFunc: (event: DeviceOrientationEvent) => void;
 
@@ -63,6 +66,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private geolocation: Geolocation,
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
+    private diagnostic: Diagnostic,
+    private alertController: AlertController,
+    private translateService: TranslateService,
   ) {
     this.setHeadingFunc = this.setHeading.bind(this);
     // Hack to make sure map pane is set before getPosition
@@ -135,6 +141,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.push(this.mapService.followMode$.subscribe((val) => {
       this.followMode = val;
       this.loggingService.debug(`Follow mode changed to: ${this.followMode}`, DEBUG_TAG);
+    }));
+
+    this.subscriptions.push(this.mapService.centerMapToUser$.subscribe(() => {
+      this.checkPermissionsAndStartGeoPositionUpdates();
     }));
 
     this.subscriptions.push(this.mapSearchService.mapSearchClick$.subscribe((item) => {
@@ -346,7 +356,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.geoLoactionSubscription === undefined || this.geoLoactionSubscription.closed) {
         this.isAskingForPermissions = true;
         // TODO: Start with low accuracy and when that is success, start watching high accuracy?
-        this.geoLoactionSubscription = this.geolocation.watchPosition(settings.gps.currentPositionOptions)
+        this.geoLoactionSubscription = this.geolocation.watchPosition(settings.gps.lowAccuracyPositionOptions)
           .subscribe(
             (data) => this.onPositionUpdate(data),
             (error) => this.onPositionError(error)
@@ -360,6 +370,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         window.addEventListener('deviceorientation', this.setHeadingFunc, false);
       }
     }
+  }
+
+  startHighAccuracyPositionUpdates() {
+    this.loggingService.debug('Start high accuracy position updates', DEBUG_TAG);
+    this.gpsHighAccuracyEnabled = true;
+    this.geoLoactionSubscription = this.geolocation.watchPosition(settings.gps.highAccuracyPositionOptions)
+      .subscribe(
+        (data) => this.onPositionUpdate(data),
+        (error) => this.onPositionError(error)
+      );
   }
 
   stopGeoPositionUpdates() {
@@ -387,6 +407,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onPositionUpdate(data: Geoposition) {
     if (data.coords) {
+      if (!this.gpsHighAccuracyEnabled) {
+        this.startHighAccuracyPositionUpdates();
+      }
       this.isAskingForPermissions = false;
       this.positionChange.emit(data);
       this.zone.runOutsideAngular(() => {
@@ -432,5 +455,41 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private onPositionError(error: any) {
     this.isAskingForPermissions = false;
     this.loggingService.error(error, DEBUG_TAG, 'Got error from GeoLoaction watchPosition');
+  }
+
+  private async checkPermissionsAndStartGeoPositionUpdates() {
+    // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
+    this.isAskingForPermissions = false; // reset
+    try {
+      const authorized = await this.diagnostic.isLocationAuthorized();
+      this.loggingService.debug('Location is ' + (authorized ? 'authorized' : 'unauthorized'), DEBUG_TAG);
+      if (!authorized) {
+        // location is not authorized
+        const status = await this.diagnostic.requestLocationAuthorization();
+        this.loggingService.debug(`Request location status`, DEBUG_TAG, status);
+        if (status === this.diagnostic.permissionStatus.DENIED_ONCE ||
+          status === this.diagnostic.permissionStatus.DENIED_ALWAYS) {
+          await this.showPermissionDeniedError();
+          this.mapService.followMode = false;
+          return;
+        }
+      }
+      this.startGeoPositionUpdates();
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, 'Error asking for location permissions');
+    }
+  }
+
+  private async showPermissionDeniedError() {
+    const translations = await this.translateService.get([
+      'ALERT.OK',
+      'PERMISSION.LOCATION_DENIED_HEADER',
+      'PERMISSION.LOCATION_DENIED_MESSAGE']).toPromise();
+    const alert = await this.alertController.create({
+      header: translations['PERMISSION.LOCATION_DENIED_HEADER'],
+      message: translations['PERMISSION.LOCATION_DENIED_MESSAGE'],
+      buttons: translations['ALERT.OK']
+    });
+    await alert.present();
   }
 }

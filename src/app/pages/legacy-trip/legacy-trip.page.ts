@@ -115,7 +115,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
         this.tripDto.GeoHazardID = GeoHazard.Snow;
         this.tripDto.DeviceGuid = utils.uuid();
         try {
-          const currentLocation = await this.geoLocation.getCurrentPosition(settings.gps.currentPositionOptions);
+          const currentLocation = await this.geoLocation.getCurrentPosition(settings.gps.highAccuracyPositionOptions);
           if (currentLocation) {
             this.tripDto.Lat = currentLocation.coords.latitude.toString();
             this.tripDto.Lng = currentLocation.coords.longitude.toString();
