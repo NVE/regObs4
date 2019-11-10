@@ -4,5 +4,5 @@ export interface OfflineTile {
     lastAccess: number;
     size: number;
     dataUrl: string;
-    imageBlob: Blob;
+    mimeType: string;
 }

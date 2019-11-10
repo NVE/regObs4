@@ -92,7 +92,7 @@ export class NanoSql {
                 'lastAccess:number': {},
                 'size:number': {},
                 'dataUrl:string': {},
-                'imageBlob:blob': {},
+                'mimeType:string': {},
             },
             indexes: {
                 'mapName:string': {},

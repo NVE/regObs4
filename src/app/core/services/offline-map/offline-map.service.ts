@@ -5,22 +5,26 @@ import moment from 'moment';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { OfflineTile } from './offline-tile.model';
 import { NanoSql } from '../../../../nanosql';
-import { File, Entry } from '@ionic-native/file/ngx';
+import { File, Entry, FileEntry } from '@ionic-native/file/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
 import { Observable, from, Subject, BehaviorSubject, zip, of } from 'rxjs';
-import { map, delay, tap, mergeMap, concatMap, catchError, take } from 'rxjs/operators';
+import { map, delay, tap, mergeMap, catchError, take } from 'rxjs/operators';
 import { LRUCache } from 'lru-fast';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { ImageHelper } from '../../helpers/image.helper';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
+import { Platform } from '@ionic/angular';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
 
 const DEBUG_TAG = 'OfflineMapService';
 const RECENTLY_SAVED_TILE_CACHE_SIZE = 2000;
-const SAVE_TILE_DELAY_BUFFER = 1000;
-const MAX_BUFFER_SIZE = 30;
+const SAVE_TILE_DELAY_BUFFER = 500;
+const MAX_BUFFER_SIZE = 100;
+const MIME_TYPE = 'image/png';
+const QUALITY = 0.5;
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +38,8 @@ export class OfflineMapService implements OnReset {
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
     private file: File,
+    private platform: Platform,
+    private webview: WebView,
     private loggingService: LoggingService,
   ) {
     this._recentlySavedTileCache = new LRUCache(RECENTLY_SAVED_TILE_CACHE_SIZE);
@@ -44,10 +50,10 @@ export class OfflineMapService implements OnReset {
   private startSavingTiles() {
     zip(this._saveBuffer, this._saveTileBufferTrigger.pipe(delay(SAVE_TILE_DELAY_BUFFER))).pipe(
       map(([tile, _]) => tile),
-      mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el).pipe(map((offlineTile) => ({ tile, offlineTile })))),
+      mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el)),
       tap((result) => {
-        if (result && result.tile) {
-          result.tile.el = null; // Free up memory
+        if (result && result.el) {
+          result.el = null; // Free up memory
         }
         this._saveBufferSize--;
         this._saveTileBufferTrigger.next(null);
@@ -61,17 +67,36 @@ export class OfflineMapService implements OnReset {
     });
   }
 
-  private saveHtmlImageToDb(id: string, el: HTMLImageElement) {
-    // return ImageHelper.getImageDataUrlAsObservable(el)
-    //   .pipe(concatMap((result) => from(this.saveTileDataUrlToDbCache(id, result.dataUrl, result.size))));
-    return from(ImageHelper.getBlobFromImage(el))
-      .pipe(
-        concatMap((result) => from(this.saveTileDataUrlToDbCache(id, null, result, result.size))),
-        catchError(() => {
-          return of(null);
-        })
-      );
+  private saveHtmlImageToDb(id: string, el: HTMLImageElement):
+    Observable<{ id: string, el: HTMLImageElement, offlineTile: OfflineTile }> {
+    return from(ImageHelper.getBlobFromImage(el, MIME_TYPE, QUALITY)).pipe(
+      mergeMap((blob) =>
+        from(this.saveTileToOfflineStorageAndStoreRecordInNanoSQL(
+          id,
+          blob,
+          MIME_TYPE)).pipe(
+            map((offlineTile) => ({ id, el, offlineTile })))),
+      catchError((err) => {
+        this.loggingService.log(`Could not save tile image to offline tile`, err, LogLevel.Warning, DEBUG_TAG);
+        return of(null); // TODO: log error
+      }));
   }
+
+  // private getArrayBufferFromImage(input$: Observable<{id: string, el: HTMLImageElement}>) {
+  //   const offScreenCanvas$ = input$.pipe(map((input) => ImageHelper.getCanvasFromImage(input.el)),
+  //   map((offscreenCanvas) => ({ offscreenCanvas, quality: 0.5, mimeType: 'image/png' })),
+  //   tap((input) => this.loggingService.debug('Input to offscreen canvas web worker', DEBUG_TAG, input)));
+  //   return this.toArrayBufferWithWebWorker(offScreenCanvas$);
+  // }
+
+  // private toArrayBufferWithWebWorker(input$: Observable<{ offscreenCanvas: OffscreenCanvas, quality: number, mimeType: string }>):
+  //       Observable<{  arrayBuffer: ArrayBuffer, mimeType: string }> {
+  //       return fromWorker<{ offscreenCanvas: OffscreenCanvas, quality: number, mimeType: string },
+  //       { arrayBuffer: ArrayBuffer, mimeType: string }>(() =>
+  //           new Worker('../../../workers/offscreen-canvas.worker',
+  //               { type: 'module' }),
+  //           input$, (input) => [<any>input.offscreenCanvas]);
+  //   }
 
   // TODO: Implement continue download when app restart
   private isInQueue(m: OfflineMap) {
@@ -146,21 +171,50 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  async saveTileDataUrlToDbCache(id: string, dataUrl: string, imageBlob: Blob, size: number) {
+  private async saveTileToOfflineStorageAndStoreRecordInNanoSQL(
+    id: string,
+    blob: Blob,
+    mimeType: string) {
+    if (blob === undefined || blob === null || id === undefined || id === null) {
+      this.loggingService.log('Could not tile to offline cache. Blob or id is missing!', null, LogLevel.Warning,
+        DEBUG_TAG, id, blob, mimeType);
+      return null;
+    }
     try {
+      const dataUrl = await this.saveTileToOfflineStorage(id, blob, mimeType);
       const tile: OfflineTile = {
         id,
         mapName: settings.map.tiles.cacheFolder,
         lastAccess: moment().unix(),
-        size,
+        size: blob.size,
         dataUrl,
-        imageBlob
+        mimeType
       };
       await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).query('upsert', tile).exec();
       return tile;
     } catch (err) {
-      this.loggingService.log('Could save offline tile cache', err, LogLevel.Warning, DEBUG_TAG, id);
+      this.loggingService.log('Could not save offline tile cache', err, LogLevel.Warning, DEBUG_TAG, id);
       return null;
+    }
+  }
+
+  private async saveTileToOfflineStorage(id: string,
+    blob: Blob,
+    mimeType: string): Promise<string> {
+    if (this.platform.is('cordova')) {
+      const baseDir = await this.backgroundDownloadService.selectDowloadFolder();
+      const cacheFolder = settings.map.tiles.cacheFolder;
+      const fileName = `${cacheFolder}/${id}.png`;
+      const baseDirEntry = await this.file.resolveDirectoryUrl(baseDir);
+      await this.file.getDirectory(baseDirEntry, cacheFolder, { create: true });
+      this.loggingService.debug(`Save offline tile to file. Save directory is ${baseDir}${fileName}`, DEBUG_TAG);
+      const result: FileEntry = await this.file.writeFile(baseDir, fileName, blob, { replace: true });
+      const url = result.toURL();
+      this.loggingService.debug(`Offline tile saved to url: ${url}`, DEBUG_TAG);
+      return url;
+    } else {
+      const dataUrlResult = await ImageHelper.getDataUrlFromBlob(blob, mimeType).pipe(take(1)).toPromise();
+      return dataUrlResult.dataUrl;
     }
   }
 
@@ -171,14 +225,8 @@ export class OfflineMapService implements OnReset {
   async getCachedTileDataUrl(tileId: string) {
     try {
       const tileFromDb = await this.getTileFromDb(tileId);
-      if (tileFromDb) {
-        if (tileFromDb.dataUrl) {
-          return tileFromDb.dataUrl;
-        }
-        if (tileFromDb.imageBlob) {
-          const imageDataUrl = await ImageHelper.getDataUrlFromBlob(tileFromDb.imageBlob).pipe(take(1)).toPromise();
-          return imageDataUrl.dataUrl;
-        }
+      if (tileFromDb && tileFromDb.dataUrl) {
+        return this.webview.convertFileSrc(tileFromDb.dataUrl);
       }
     } catch (err) {
       this.loggingService.error(err, DEBUG_TAG, `Error getting image data from cached tile id: ${tileId}`);
@@ -210,16 +258,42 @@ export class OfflineMapService implements OnReset {
       .orderBy(['lastAccess: desc']).offset(numberOfItemsToCache).limit(1).exec() as Promise<OfflineTile[]>);
     if (lastTile.length > 0) {
       const maxDate = lastTile[0].lastAccess;
-      return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-        .query('delete').where(['lastAccess', '<=', maxDate])
-        .exec();
+      const tilesToRemove = await (nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+        .query('select').where(['lastAccess', '<=', maxDate])
+        .exec() as Promise<OfflineTile[]>);
+      for (const tile of tilesToRemove) {
+        await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+          .query('delete').where(['id', '=', tile.id]).exec();
+        if (this.platform.is('cordova')) {
+          await this.tryToRemoveFile(tile);
+        }
+      }
     }
   }
 
-  private async getDirectory(folder: string) {
-    const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
-    return this.file.resolveDirectoryUrl(baseFolder + '/' + folder);
+  private async tryToRemoveFile(tile: OfflineTile) {
+    try {
+      const file = await this.file.resolveLocalFilesystemUrl(tile.dataUrl);
+      await new Promise((resolve, reject) => file.remove(() => resolve(), err => reject(err)));
+      this.loggingService.debug(`Deleted tile from disk`, DEBUG_TAG, tile);
+    } catch (err) {
+      this.loggingService.log(`Could not delete offline tile file`, err, LogLevel.Warning, DEBUG_TAG, tile);
+    }
   }
+
+  // private async getDirectory(folder: string, createIfNotExists = true) {
+  //   const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
+  //   const dir = `${baseFolder}${folder}`;
+  //   this.loggingService.debug(`Check if directory exists ${dir}`, DEBUG_TAG);
+  //   if (createIfNotExists) {
+  //     const exists = await this.file.checkDir(baseFolder, folder);
+  //     if (!exists) {
+  //       this.loggingService.debug(`Directory ${dir} does not exist, create`, DEBUG_TAG);
+  //       return await this.file.createDir(baseFolder, folder, false);
+  //     }
+  //   }
+  //   return this.file.resolveDirectoryUrl(dir);
+  // }
 
   private async getFolderSize(folder: string): Promise<number> {
     const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
@@ -268,8 +342,15 @@ export class OfflineMapService implements OnReset {
     }).exec();
   }
 
-  deleteTilesCache() {
-    return nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
+  async deleteTilesCache() {
+    if (this.platform.is('cordova')) {
+      const baseFolder = await this.backgroundDownloadService.selectDowloadFolder();
+      const dir = await this.file.resolveDirectoryUrl(baseFolder);
+      const cacheFolder = await this.file.getDirectory(dir, settings.map.tiles.cacheFolder, { create: true });
+      await new Promise((resolve, reject) => cacheFolder.removeRecursively(() => resolve(),
+        (err) => reject(err)));
+    }
+    await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
       .query('delete').where((x: OfflineTile) => x.mapName === settings.map.tiles.cacheFolder)
       .exec();
   }
