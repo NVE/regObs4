@@ -9,8 +9,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration" [registration]="registration" [registrationTid]="registrationTid"
-    (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="registration" [registration]="registration"
+    [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header text-uppercase>
         <ion-label>
@@ -33,8 +33,9 @@
             {{ 'REGISTRATION.WATER.DAMAGE.WHAT_IS_DAMAGED' | translate }}
           </ion-label>
         </ion-list-header>
-        <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration" [damageTypeId]="damageType.Id"
-          [damageTypeName]="damageType.Name" [registrationTid]="registrationTid">
+        <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration"
+          (registrationChange)="save()" [damageTypeId]="damageType.Id" [damageTypeName]="damageType.Name"
+          [registrationTid]="registrationTid">
         </app-damage-obs>
       </ng-container>
     </ion-list>

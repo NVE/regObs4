@@ -66,6 +66,10 @@ export class DamageObsComponent implements OnInit {
     this.registrationChange.emit(this.registration);
   }
 
+  imagesChanged() {
+    this.registrationChange.emit(this.registration);
+  }
+
   async setDamagePosition() {
     const fromLatLng = this.registration.request.ObsLocation
       ? L.latLng(this.registration.request.ObsLocation.Latitude, this.registration.request.ObsLocation.Longitude) : null;

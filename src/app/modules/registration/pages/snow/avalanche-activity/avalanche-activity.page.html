@@ -9,15 +9,16 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.AvalancheActivityObs2" [registration]="registration"
-    [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="registration && registration.request.AvalancheActivityObs2"
+    [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header text-uppercase>
         <ion-label>
           {{ 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate }}
         </ion-label>
       </ion-list-header>
-      <ion-item detail="true" (click)="addOrEditAvalancheActivity(i)" *ngFor="let avalancheActivity of registration.request.AvalancheActivityObs2; let i = index">
+      <ion-item detail="true" (click)="addOrEditAvalancheActivity(i)"
+        *ngFor="let avalancheActivity of registration.request.AvalancheActivityObs2; let i = index">
         <ion-label>{{ getEstimatedNumber(avalancheActivity) |
           translate }}<span *ngIf="avalancheActivity.EstimatedNumTID !== 1"> {{ getCause(avalancheActivity) | translate
             |
@@ -33,7 +34,8 @@
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"></app-add-picture-item>
+      <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
+        [registrationTid]="registrationTid"></app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

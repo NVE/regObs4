@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DensityProfileDto } from '../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
+import { IRegistration } from '../../../../models/registration.model';
+import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 
 @Component({
   selector: 'app-snow-density',
@@ -10,12 +12,15 @@ import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.pa
 })
 export class SnowDensityComponent implements OnInit {
 
-  @Input() profiles: Array<DensityProfileDto>;
-  @Output() profilesChange = new EventEmitter();
-  private isOpen = false;
+  @Input() reg: IRegistration;
+  private densityModal: HTMLIonModalElement;
+
+  get profiles(): DensityProfileDto[] {
+    return (((this.reg || {}).request || {}).SnowProfile2 || {}).SnowDensity || [];
+  }
 
   get isEmpty() {
-    return !(this.profiles && this.profiles.length > 0 && this.profiles[0].Layers && this.profiles[0].Layers.length > 0);
+    return IsEmptyHelper.isEmpty(this.profiles);
   }
 
   constructor(private modalContoller: ModalController) { }
@@ -24,21 +29,16 @@ export class SnowDensityComponent implements OnInit {
   }
 
   async openModal() {
-    if (!this.isOpen) {
-      this.isOpen = true;
-      const modal = await this.modalContoller.create({
+    if (!this.densityModal) {
+      this.densityModal = await this.modalContoller.create({
         component: SnowDensityModalPage,
         componentProps: {
-          profile: (this.profiles && this.profiles.length > 0) ? { ...this.profiles[0] } : undefined,
+          regId: this.reg.id,
         }
       });
-      modal.present();
-      const result = await modal.onDidDismiss();
-      this.isOpen = false;
-      if (result.data) {
-        this.profiles = [result.data];
-        this.profilesChange.emit(this.profiles);
-      }
+      this.densityModal.present();
+      await this.densityModal.onDidDismiss();
+      this.densityModal = null;
     }
   }
 }

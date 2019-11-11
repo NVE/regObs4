@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
 import { IRegistration } from '../models/registration.model';
-import { Observable, from, of, combineLatest } from 'rxjs';
+import { Observable, from, of, combineLatest, EMPTY } from 'rxjs';
 import { shareReplay, switchMap, map, take, catchError, concatMap, tap } from 'rxjs/operators';
 import * as RegobsApi from '../../regobs-api/services';
 import * as RegobsApiModels from '../../regobs-api/models';
@@ -329,10 +329,13 @@ export class RegistrationService {
     return ObservableHelper.toPromiseWithCancel(uploadProcess$, cancel);
   }
 
-  private uploadAttachments(registration: RegobsApiModels.CreateRegistrationRequestDto) {
+  private uploadAttachments(registration: RegobsApiModels.CreateRegistrationRequestDto): Observable<RegobsApiModels.PictureRequestDto[]> {
     this.loggingService.debug('Start upload attachments', DEBUG_TAG, registration);
-    return combineLatest(this.getAllPictures(registration)
-      .map((p) => this.uploadAttachment(p)));
+    const attachments = this.getAllPictures(registration);
+    if (attachments.length === 0) {
+      return of([]);
+    }
+    return combineLatest(attachments.map((p) => this.uploadAttachment(p)));
   }
 
   private getAllPictures(registration: RegobsApiModels.CreateRegistrationRequestDto) {

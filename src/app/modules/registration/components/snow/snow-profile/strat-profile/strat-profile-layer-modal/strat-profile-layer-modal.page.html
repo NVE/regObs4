@@ -71,7 +71,7 @@
           </ion-button>
         </ion-col>
         <ion-col size="6">
-          <ion-button expand="block" fill="outline" color="primary" (click)="ok(1)">
+          <ion-button [disabled]="!canGoNext" expand="block" fill="outline" color="primary" (click)="ok(1)">
             <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
             <ion-text>{{ 'DIALOGS.NEXT' | translate }}
               {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate | lowercase }}</ion-text>
@@ -85,7 +85,7 @@
           </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="showDelete">
+      <ion-row *ngIf="!addNew">
         <ion-col size="6" offset="3">
           <ion-button (click)="delete()" size="small" fill="clear" expand="block">
             <ion-icon slot="start" name="trash"></ion-icon>

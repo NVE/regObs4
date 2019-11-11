@@ -1,39 +1,74 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DensityProfileDto, DensityProfileLayerDto } from '../../../../../../regobs-api/models';
+import { DensityProfileLayerDto } from '../../../../../../regobs-api/models';
 import { SnowDensityLayerModalPage } from '../snow-density-layer-modal/snow-density-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
+import { RegistrationService } from '../../../../../services/registration.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { IRegistration } from '../../../../../models/registration.model';
+import cloneDeep from 'clone-deep';
 
 @Component({
   selector: 'app-snow-density-modal',
   templateUrl: './snow-density-modal.page.html',
   styleUrls: ['./snow-density-modal.page.scss'],
 })
-export class SnowDensityModalPage implements OnInit {
+export class SnowDensityModalPage implements OnInit, OnDestroy {
 
-  @Input() profile: DensityProfileDto;
+  @Input() regId: string;
   useCylinder = true;
-  private isOpen = false;
+  private layerModal: HTMLIonModalElement;
+  private ngDestroy$ = new Subject();
+  private reg: IRegistration;
+  private initialRegistrationClone: IRegistration;
+
+  get profile() {
+    return ((((this.reg || {}).request || {}).SnowProfile2 || {}).SnowDensity || [])[0] || {};
+  }
 
   get hasLayers() {
     return this.profile && this.profile.Layers && this.profile.Layers.length > 0;
   }
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController, private registrationService: RegistrationService, private ngZone: NgZone) { }
 
   ngOnInit() {
-    if (this.profile === undefined) {
-      this.profile = {};
-    }
+    this.registrationService.getSavedRegistrationByIdObservable(this.regId).pipe(takeUntil(this.ngDestroy$)).subscribe((reg) => {
+      this.ngZone.run(async () => {
+        if (!this.initialRegistrationClone) {
+          this.initialRegistrationClone = cloneDeep(reg);
+        }
+        this.reg = reg;
+        if (!this.reg.request.SnowProfile2) {
+          this.reg.request.SnowProfile2 = {};
+        }
+        if (!this.reg.request.SnowProfile2.SnowDensity) {
+          this.reg.request.SnowProfile2.SnowDensity = [];
+        }
+        if (!this.reg.request.SnowProfile2.SnowDensity[0]) {
+          this.reg.request.SnowProfile2.SnowDensity[0] = {};
+        }
+        if (!this.reg.request.SnowProfile2.SnowDensity[0].Layers) {
+          this.reg.request.SnowProfile2.SnowDensity[0].Layers = [];
+        }
+        this.recalculateLayers();
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.ngDestroy$.next();
   }
 
   ok() {
     this.modalController.dismiss(this.profile);
   }
 
-  cancel() {
+  async cancel() {
+    await this.registrationService.saveRegistration(this.initialRegistrationClone);
     this.modalController.dismiss();
   }
 
@@ -46,69 +81,29 @@ export class SnowDensityModalPage implements OnInit {
   }
 
   async addOrEditLayer(index: number, layer: DensityProfileLayerDto) {
-    if (!this.isOpen) {
-      this.isOpen = true;
-      const add = (layer === undefined);
-      const modal = await this.modalController.create({
+    if (!this.layerModal) {
+      this.layerModal = await this.modalController.create({
         component: SnowDensityLayerModalPage,
         componentProps: {
-          layer: layer !== undefined ? { ...layer } : undefined,
+          reg: this.reg,
+          layer: layer,
           useCylinder: this.useCylinder,
           cylinderDiameterInM: this.profile.CylinderDiameter,
           tareWeight: this.profile.TareWeight,
           index,
         }
       });
-      modal.present();
-      const result = await modal.onDidDismiss();
-      this.isOpen = false;
-      if (result.data) {
-        if (result.data.delete) {
-          this.removeLayer(index);
-        } else {
-          let currentIndex = index;
-          const snowDensityLayer: DensityProfileLayerDto = result.data.layer;
-          const isEmpty = this.isEmpty(snowDensityLayer);
-          if (isEmpty && !add) {
-            this.removeLayer(index);
-            currentIndex--;
-          } else if (!isEmpty) {
-            this.setLayer(index, snowDensityLayer, add);
-          }
-          if (result.data.gotoIndex !== undefined) {
-            const nextIndex = currentIndex + result.data.gotoIndex;
-            const nextLayer = this.hasLayers ? this.profile.Layers[nextIndex] : undefined;
-            this.addOrEditLayer(nextIndex, nextLayer);
-          }
-        }
-      }
+      this.layerModal.present();
+      await this.layerModal.onDidDismiss();
+      this.layerModal = null;
+      this.recalculateLayers();
+      await this.registrationService.saveRegistration(this.reg);
     }
-  }
-
-  private isEmpty(snowDensityLayer: DensityProfileLayerDto) {
-    return this.useCylinder ? (
-      snowDensityLayer.Thickness === undefined &&
-      snowDensityLayer.Weight === undefined) :
-      (snowDensityLayer.Density === undefined);
   }
 
   onLayerReorder(event: CustomEvent<ItemReorderEventDetail>) {
     this.profile.Layers = ArrayHelper.reorderList(this.profile.Layers, event.detail.from, event.detail.to);
     event.detail.complete();
-  }
-
-  private setLayer(index: number, layer: DensityProfileLayerDto, add: boolean) {
-    if (!this.profile) {
-      this.profile = {};
-    }
-    if (this.profile.Layers === undefined) {
-      this.profile.Layers = [];
-    }
-    this.profile.Layers.splice(index, (add ? 0 : 1), layer);
-  }
-
-  private removeLayer(index: number) {
-    this.profile.Layers.splice(index, 1);
   }
 
   recalculateLayers() {
@@ -121,6 +116,11 @@ export class SnowDensityModalPage implements OnInit {
           this.profile.CylinderDiameter);
       });
     }
+  }
+
+  async recalculateLayersAndSave() {
+    this.recalculateLayers();
+    await this.registrationService.saveRegistration(this.reg);
   }
 
   getWaterEquivalent(density: number, depth: number) {

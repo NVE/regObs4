@@ -1,42 +1,72 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { StratProfileDto, StratProfileLayerDto, ObsLocationDto } from '../../../../../../regobs-api/models';
+import { StratProfileDto, StratProfileLayerDto } from '../../../../../../regobs-api/models';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
-import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 import { StratProfileLayerHistoryModalPage } from '../strat-profile-layer-history-modal/strat-profile-layer-history-modal.page';
 import { LoginService } from '../../../../../../login/services/login.service';
+import { IRegistration } from '../../../../../models/registration.model';
+import { RegistrationService } from '../../../../../services/registration.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import cloneDeep from 'clone-deep';
 
 @Component({
   selector: 'app-strat-profile-modal',
   templateUrl: './strat-profile-modal.page.html',
   styleUrls: ['./strat-profile-modal.page.scss'],
 })
-export class StratProfileModalPage implements OnInit {
+export class StratProfileModalPage implements OnInit, OnDestroy {
+  @Input() regId: string;
 
-  @Input() profile: StratProfileDto;
-  @Input() obsLocation: ObsLocationDto;
+  reg: IRegistration;
 
+  private regInitClone: IRegistration;
   totalThickness: number;
 
-  private isOpen = false;
+  private ngDestroy$ = new Subject();
+
+  private layerModal;
 
   get hasLayers() {
-    return this.profile && this.profile.Layers && this.profile.Layers.length > 0;
+    return this.profile.Layers
+      && this.profile.Layers.length > 0;
   }
 
-  constructor(private modalController: ModalController, private loginService: LoginService) { }
+  get profile(): StratProfileDto {
+    return (((this.reg || {}).request || {}).SnowProfile2 || {}).StratProfile || {};
+  }
+
+  constructor(
+    private modalController: ModalController,
+    private loginService: LoginService,
+    private ngZone: NgZone,
+    private registrationService: RegistrationService) { }
 
   ngOnInit() {
-    this.calculate();
+    this.registrationService.getSavedRegistrationByIdObservable(this.regId).pipe(takeUntil(this.ngDestroy$)).subscribe((reg) => {
+      this.ngZone.run(() => {
+        if (!this.regInitClone) {
+          this.regInitClone = cloneDeep(reg);
+        }
+        this.reg = reg;
+        this.calculate();
+      });
+    });
   }
 
-  ok() {
-    this.modalController.dismiss(this.profile);
+  ngOnDestroy(): void {
+    this.ngDestroy$.next();
   }
 
-  cancel() {
+  async ok() {
+    await this.registrationService.saveRegistration(this.reg);
+    this.modalController.dismiss();
+  }
+
+  async cancel() {
+    await this.registrationService.saveRegistration(this.regInitClone); // Reset to inital state
     this.modalController.dismiss();
   }
 
@@ -45,93 +75,59 @@ export class StratProfileModalPage implements OnInit {
   }
 
   addLayerBottom() {
-    this.addOrEditLayer(this.hasLayers ? (this.profile.Layers.length) : 0, undefined);
+    this.addOrEditLayer(this.hasLayers ? (this.reg.request.SnowProfile2.StratProfile.Layers.length) : 0, undefined);
   }
 
 
   onLayerReorder(event: CustomEvent<ItemReorderEventDetail>) {
-    this.profile.Layers = ArrayHelper.reorderList(this.profile.Layers, event.detail.from, event.detail.to);
+    this.reg.request.SnowProfile2.StratProfile.Layers = ArrayHelper.reorderList(
+      this.reg.request.SnowProfile2.StratProfile.Layers, event.detail.from, event.detail.to);
     event.detail.complete();
+    this.registrationService.saveRegistration(this.reg);
   }
 
   async getPrevousUsedLayers() {
     const loggedInUser = await this.loginService.getLoggedInUser(true);
     if (loggedInUser && loggedInUser.isLoggedIn) {
-      if (!this.isOpen) {
-        this.isOpen = true;
-        const modal = await this.modalController.create({
+      if (!this.layerModal) {
+        this.layerModal = await this.modalController.create({
           component: StratProfileLayerHistoryModalPage,
           componentProps: {
-            observerGuid: loggedInUser.user.Guid,
-            obsLocation: this.obsLocation,
+            reg: this.reg,
+            observerGuid: loggedInUser.user.Guid
           }
         });
-        modal.present();
-        const result = await modal.onDidDismiss();
-        this.isOpen = false;
-        if (result.data) {
-          this.profile.Layers = result.data;
-          this.calculate();
-        }
+        this.layerModal.present();
+        await this.layerModal.onDidDismiss();
+        this.layerModal = null;
+        this.calculate();
+        // if (result.data) {
+        //   this.profile.Layers = result.data;
+        //   this.calculate();
+        // }
       }
     }
   }
 
   async addOrEditLayer(index: number, layer: StratProfileLayerDto) {
-    if (!this.isOpen) {
-      this.isOpen = true;
-      const add = (layer === undefined);
-      const modal = await this.modalController.create({
+    if (!this.layerModal) {
+      this.layerModal = await this.modalController.create({
         component: StratProfileLayerModalPage,
         componentProps: {
-          layer: layer === undefined ? undefined : { ...layer },
+          reg: this.reg,
+          layer,
           index,
         }
       });
-      modal.present();
-      const result = await modal.onDidDismiss();
-      this.isOpen = false;
-      if (result.data) {
-        if (result.data.delete) {
-          this.removeLayer(index);
-        } else {
-          let currentIndex = index;
-          const stratProfileLayer: StratProfileLayerDto = result.data.layer;
-          const isEmpty = IsEmptyHelper.isEmpty(stratProfileLayer);
-          if (isEmpty && !add) {
-            this.removeLayer(index);
-            currentIndex--;
-          } else if (!isEmpty) {
-            this.setLayer(index, stratProfileLayer, add);
-          }
-          if (result.data.gotoIndex !== undefined) {
-            const nextIndex = currentIndex + result.data.gotoIndex;
-            const nextLayer = this.hasLayers ? this.profile.Layers[nextIndex] : undefined;
-            this.addOrEditLayer(nextIndex, nextLayer);
-          }
-        }
-      }
+      this.layerModal.present();
+      await this.layerModal.onDidDismiss();
+      this.layerModal = null;
     }
-  }
-
-  private setLayer(index: number, layer: StratProfileLayerDto, add: boolean) {
-    if (!this.profile) {
-      this.profile = {};
-    }
-    if (this.profile.Layers === undefined) {
-      this.profile.Layers = [];
-    }
-    this.profile.Layers.splice(index, (add ? 0 : 1), layer);
-    this.calculate();
-  }
-
-  private removeLayer(index: number) {
-    this.profile.Layers.splice(index, 1);
-    this.calculate();
   }
 
   private calculate() {
-    const layers = ((this.profile || {}).Layers || []);
+    const profile = ((((this.reg || {}).request || {}).SnowProfile2 || {}).StratProfile || {});
+    const layers = profile.Layers || [];
     const sum = layers.filter((x) => x.Thickness !== undefined)
       .map(((layer) => layer.Thickness))
       .reduce((pv, cv) => pv + cv, 0);

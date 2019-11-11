@@ -1,19 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SearchService } from '../../../../../../regobs-api/services';
-import { map, tap, switchMap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import {
   RegistrationViewModel,
   StratProfileLayerViewModel,
   StratProfileLayerDto,
-  ObsLocationDto
 } from '../../../../../../regobs-api/models';
 import { Observable, pipe } from 'rxjs';
 import moment from 'moment';
 import { GeoHazard } from '../../../../../../../core/models/geo-hazard.enum';
 import { RegistrationTid } from '../../../../../models/registrationTid.enum';
-import { UserSettingService } from '../../../../../../../core/services/user-setting/user-setting.service';
-import { settings } from '../../../../../../../../settings';
+import { IRegistration } from '../../../../../models/registration.model';
+import { RegistrationService } from '../../../../../services/registration.service';
 
 @Component({
   selector: 'app-strat-profile-layer-history-modal',
@@ -23,7 +22,7 @@ import { settings } from '../../../../../../../../settings';
 export class StratProfileLayerHistoryModalPage implements OnInit {
 
   @Input() observerGuid: string;
-  @Input() obsLocation: ObsLocationDto;
+  @Input() reg: IRegistration;
 
   isLoading = true;
 
@@ -31,35 +30,47 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
 
   constructor(
     private modalController: ModalController,
-    private searchService: SearchService,
-    private userSettingService: UserSettingService) { }
+    private registrationService: RegistrationService,
+    private searchService: SearchService) { }
 
   ngOnInit() {
-    this.$previousUsedLayers = this.searchService.SearchSearch({
-      ObserverGuid: this.observerGuid,
-      FromDate: moment().subtract(14, 'days').startOf('day').toISOString(),
-      Radius: {
-        Position: {
-          Latitude: this.obsLocation.Latitude,
-          Longitude: this.obsLocation.Longitude,
+    if (this.reg && this.reg.request && this.reg.request.ObsLocation) {
+      this.$previousUsedLayers = this.searchService.SearchSearch({
+        ObserverGuid: this.observerGuid,
+        FromDate: moment().subtract(14, 'days').startOf('day').toISOString(),
+        Radius: {
+          Position: {
+            Latitude: this.reg.request.ObsLocation.Latitude,
+            Longitude: this.reg.request.ObsLocation.Longitude,
+          },
+          Radius: 100000,
         },
-        Radius: 100000,
-      },
-      SelectedGeoHazards: [GeoHazard.Snow],
-      SelectedRegistrationTypes: [{
-        Id: RegistrationTid.SnowProfile2
-      }]
-    }).pipe(map((result) => this.getLayersFromSearchResult(result)), tap(() => {
-      this.isLoading = false;
-    }));
+        SelectedGeoHazards: [GeoHazard.Snow],
+        SelectedRegistrationTypes: [{
+          Id: RegistrationTid.SnowProfile2
+        }]
+      }).pipe(map((result) => this.getLayersFromSearchResult(result)), tap(() => {
+        this.isLoading = false;
+      }));
+    }
   }
 
   cancel() {
     this.modalController.dismiss();
   }
 
-  selectLayer(item: { id: number, date: string, layers: StratProfileLayerViewModel[] }) {
-    this.modalController.dismiss(this.convertToStratProfileLayerDto(item.layers));
+  async selectLayer(item: { id: number, date: string, layers: StratProfileLayerViewModel[] }) {
+    const layers = this.convertToStratProfileLayerDto(item.layers);
+    if (!this.reg.request.SnowProfile2) {
+      this.reg.request.SnowProfile2 = {};
+    }
+
+    if (!this.reg.request.SnowProfile2.StratProfile) {
+      this.reg.request.SnowProfile2.StratProfile = {};
+    }
+    this.reg.request.SnowProfile2.StratProfile.Layers = layers;
+    await this.registrationService.saveRegistration(this.reg);
+    this.modalController.dismiss();
   }
 
   convertToStratProfileLayerDto(layer: StratProfileLayerViewModel[]): StratProfileLayerDto[] {

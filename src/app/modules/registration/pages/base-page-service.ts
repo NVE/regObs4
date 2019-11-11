@@ -69,12 +69,13 @@ export class BasePageService {
     }
 
     async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
-        this.ngZone.run(() => {
+        await this.ngZone.run(async () => {
             if (registrationTid) {
                 registration.request[this.registrationService.getPropertyName(registrationTid)]
                     = this.getDefaultValue(registrationTid);
                 this.resetImages(registration, registrationTid);
             }
+            await this.registrationService.saveRegistration(registration);
             if (onReset) {
                 onReset();
             }

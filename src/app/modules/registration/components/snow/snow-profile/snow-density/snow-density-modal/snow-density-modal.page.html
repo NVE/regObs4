@@ -30,8 +30,8 @@
         </ion-list-header>
         <app-numeric-input [(value)]="profile.CylinderDiameter"
           title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER_DIAMETER" [max]="999" [min]="0" suffix="cm"
-          [decimalPlaces]="2" (valueChange)="recalculateLayers()" [convertRatio]="100"></app-numeric-input>
-        <app-numeric-input [(value)]="profile.TareWeight" (valueChange)="recalculateLayers()"
+          [decimalPlaces]="2" (valueChange)="recalculateLayersAndSave()" [convertRatio]="100"></app-numeric-input>
+        <app-numeric-input [(value)]="profile.TareWeight" (valueChange)="recalculateLayersAndSave()"
           title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TARE_WEIGHT" [max]="999" [min]="0" suffix="g"
           [decimalPlaces]="2" [convertRatio]="1000"></app-numeric-input>
       </ng-container>

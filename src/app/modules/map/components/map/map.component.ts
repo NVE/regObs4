@@ -464,7 +464,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       const authorized = await this.diagnostic.isLocationAuthorized();
       this.loggingService.debug('Location is ' + (authorized ? 'authorized' : 'unauthorized'), DEBUG_TAG);
       if (!authorized) {
-        if(this.platform.is('ios')){
+        if (this.platform.is('ios')) {
           await this.showPermissionDeniedError();
           return;
         }

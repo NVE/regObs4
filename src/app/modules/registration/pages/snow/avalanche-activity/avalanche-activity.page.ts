@@ -32,11 +32,11 @@ export class AvalancheActivityPage extends BasePage {
   }
 
   onInit() {
-    this.kdvSubscription = combineLatest(this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheExtKDV'),
-      this.kdvService.getKdvRepositoryByKeyObservable('Snow_EstimatedNumKDV')).subscribe(([causeKdv, estimatedNumberKdv]) => {
-        this.avalancheCause = causeKdv;
-        this.estimatedNumber = estimatedNumberKdv;
-      });
+    this.kdvSubscription = combineLatest([this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheExtKDV'),
+    this.kdvService.getKdvRepositoryByKeyObservable('Snow_EstimatedNumKDV')]).subscribe(([causeKdv, estimatedNumberKdv]) => {
+      this.avalancheCause = causeKdv;
+      this.estimatedNumber = estimatedNumberKdv;
+    });
   }
 
   onBeforeLeave() {

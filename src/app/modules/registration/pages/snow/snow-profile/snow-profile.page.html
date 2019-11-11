@@ -28,13 +28,10 @@
           {{'REGISTRATION.SNOW.SNOW_PROFILE.SUBFORMS' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-strat-profile [(profile)]="registration.request.SnowProfile2.StratProfile" (profileChange)="save()"
-        [obsLocation]="registration.request.ObsLocation"></app-strat-profile>
-      <app-snow-temp [(tempProfile)]="registration.request.SnowProfile2.SnowTemp" (tempProfileChange)="save()">
-      </app-snow-temp>
-      <app-snow-density [(profiles)]="registration.request.SnowProfile2.SnowDensity" (profilesChange)="save()">
-      </app-snow-density>
-      <app-compression-test [(tests)]="registration.request.CompressionTest" (testsChange)="save()">
+      <app-strat-profile [reg]="registration"></app-strat-profile>
+      <app-snow-temp [reg]="registration"></app-snow-temp>
+      <app-snow-density [reg]="registration"></app-snow-density>
+      <app-compression-test [reg]="registration">
       </app-compression-test>
       <ion-list-header text-uppercase>
         <ion-label>
@@ -50,7 +47,8 @@
           {{'REGISTRATION.IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid">
+      <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
+        [registrationTid]="registrationTid">
       </app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>
