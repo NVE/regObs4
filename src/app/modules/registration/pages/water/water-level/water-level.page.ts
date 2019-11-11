@@ -35,6 +35,7 @@ export class WaterLevelPage extends BasePage {
 
   addWaterLevelMeasurement() {
     this.registration.request.WaterLevel2.WaterLevelMeasurement.push({ DtMeasurementTime: undefined });
+    this.save();
   }
 
   onBeforeLeave() {

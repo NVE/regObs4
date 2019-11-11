@@ -63,10 +63,10 @@ export class DamageObsComponent implements OnInit {
     } else {
       this.registration.request.DamageObs = this.registration.request.DamageObs.filter((x) => x.DamageTypeTID !== this.damageTypeId);
     }
-    this.registrationChange.emit(this.registration);
+    this.triggerChange();
   }
 
-  imagesChanged() {
+  triggerChange() {
     this.registrationChange.emit(this.registration);
   }
 

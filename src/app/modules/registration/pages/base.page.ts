@@ -72,11 +72,11 @@ export abstract class BasePage implements OnInit, OnDestroy {
         if (this.onBeforeLeave) {
             await Promise.resolve(this.onBeforeLeave());
         }
-        this.save();
+        this.save(true);
     }
 
-    save() {
-        this.basePageService.RegistrationService.saveRegistration(this.registration);
+    save(clean = false) {
+        this.basePageService.RegistrationService.saveRegistration(this.registration, clean);
     }
 
     isEmpty() {

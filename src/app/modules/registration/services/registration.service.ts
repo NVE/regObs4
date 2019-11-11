@@ -64,11 +64,13 @@ export class RegistrationService {
     this._draftsObservable = this.registrations$.pipe(map((val) => val.filter((item) => item.status === RegistrationStatus.Draft)));
   }
 
-  async saveRegistration(registration: IRegistration): Promise<string> {
+  async saveRegistration(registration: IRegistration, clean = false): Promise<string> {
     if (!registration) {
       return null;
     }
-    this.cleanupRegistration(registration);
+    if (clean) {
+      this.cleanupRegistration(registration);
+    }
     registration.changed = moment().unix();
     const userSettings = await this.userSettingService.getUserSettings();
     const result = await NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, userSettings.appMode)
