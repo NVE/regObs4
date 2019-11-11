@@ -464,13 +464,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       const authorized = await this.diagnostic.isLocationAuthorized();
       this.loggingService.debug('Location is ' + (authorized ? 'authorized' : 'unauthorized'), DEBUG_TAG);
       if (!authorized) {
-        // location is not authorized
+        if(this.platform.is('ios')){
+          await this.showPermissionDeniedError();
+          return;
+        }
+        // location is not authorized, request new. This only works on Android
         const status = await this.diagnostic.requestLocationAuthorization();
         this.loggingService.debug(`Request location status`, DEBUG_TAG, status);
         if (status === this.diagnostic.permissionStatus.DENIED_ONCE ||
           status === this.diagnostic.permissionStatus.DENIED_ALWAYS) {
           await this.showPermissionDeniedError();
-          this.mapService.followMode = false;
           return;
         }
       }
@@ -488,7 +491,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     const alert = await this.alertController.create({
       header: translations['PERMISSION.LOCATION_DENIED_HEADER'],
       message: translations['PERMISSION.LOCATION_DENIED_MESSAGE'],
-      buttons: translations['ALERT.OK']
+      buttons: [translations['ALERT.OK']]
     });
     await alert.present();
   }
