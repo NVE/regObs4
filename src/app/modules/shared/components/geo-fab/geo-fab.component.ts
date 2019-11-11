@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, NgZone } from '@angular/core';
 import { state, trigger, style, transition, animate, keyframes, stagger, query } from '@angular/animations';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { CustomAnimation, EASE_IN_OUT_BACK, DEFAULT_DURATION, EASE_IN_OUT } from '../../../../core/animations/custom.animation';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-geo-fab',
@@ -28,8 +29,7 @@ import { CustomAnimation, EASE_IN_OUT_BACK, DEFAULT_DURATION, EASE_IN_OUT } from
   ]
 })
 export class GeoFabComponent implements OnInit, OnDestroy {
-
-  fullscreen$: Observable<boolean>;
+  fullscreen: boolean;
   currentGeoHazard: GeoHazard[];
 
   @Input() color = 'light';
@@ -37,6 +37,9 @@ export class GeoFabComponent implements OnInit, OnDestroy {
   @Input() showLabels = true;
   @Output() isOpenChange = new EventEmitter();
   @Input() animateOnEnter = false;
+
+  private ngDestroy$ = new Subject();
+  private animationTimout: NodeJS.Timeout;
 
   animateOnEnterState = 'x';
 
@@ -46,18 +49,25 @@ export class GeoFabComponent implements OnInit, OnDestroy {
     return this.geoHazardTypes.filter((x) => !(this.currentGeoHazard && this.currentGeoHazard.some((c) => x.some((z) => z === c))));
   }
 
-  constructor(private fullscreenService: FullscreenService, private userSettingService: UserSettingService) {
-    this.fullscreen$ = this.fullscreenService.isFullscreen$;
+  constructor(
+    private fullscreenService: FullscreenService,
+    private userSettingService: UserSettingService,
+    private ngZone: NgZone) {
   }
 
-  private geoHazardSubscription: Subscription;
-
   ngOnInit() {
-    this.geoHazardSubscription = this.userSettingService.currentGeoHazardObservable$.subscribe((val) => {
-      this.currentGeoHazard = val;
+    this.userSettingService.currentGeoHazardObservable$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.currentGeoHazard = val;
+      });
+    });
+    this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.fullscreen = val;
+      });
     });
     if (this.animateOnEnter) {
-      setTimeout(() => {
+      this.animationTimout = setTimeout(() => {
         this.animateOnEnterState = 'startAnimated';
       }, 500);
     } else {
@@ -66,9 +76,11 @@ export class GeoFabComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.geoHazardSubscription) {
-      this.geoHazardSubscription.unsubscribe();
+    if (this.animationTimout) {
+      clearTimeout(this.animationTimout);
     }
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
   toggle() {

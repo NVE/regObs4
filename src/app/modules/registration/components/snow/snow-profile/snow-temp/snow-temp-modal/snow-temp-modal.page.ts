@@ -56,6 +56,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
   ok() {

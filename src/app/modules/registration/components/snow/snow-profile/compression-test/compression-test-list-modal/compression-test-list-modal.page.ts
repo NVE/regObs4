@@ -41,6 +41,7 @@ export class CompressionTestListModalPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
   async save() {
