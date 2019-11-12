@@ -364,11 +364,31 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         this.loggingService.debug('Geolocation service allready running', DEBUG_TAG);
       }
-      if ('ondeviceorientationabsolute' in <any>window) {
-        window.addEventListener('deviceorientationabsolute', this.setHeadingFunc, false);
-      } else if ('ondeviceorientation' in <any>window) {
-        window.addEventListener('deviceorientation', this.setHeadingFunc, false);
+      this.startWatchingHeading();
+    }
+  }
+
+  private startWatchingHeading() {
+    this.requestDeviceOrientationPermission().then((granted) => {
+      if (granted) {
+        if ('ondeviceorientationabsolute' in <any>window) {
+          window.addEventListener('deviceorientationabsolute', this.setHeadingFunc, false);
+        } else if ('ondeviceorientation' in <any>window) {
+          window.addEventListener('deviceorientation', this.setHeadingFunc, false);
+        }
       }
+    });
+  }
+
+  private async requestDeviceOrientationPermission(): Promise<boolean> {
+    const doe = <any>DeviceOrientationEvent;
+    if (typeof doe.requestPermission === 'function') {
+      // iOS 13+
+      const response = await doe.requestPermission();
+      return response === 'granted';
+    } else {
+      // non iOS 13+
+      return Promise.resolve(true);
     }
   }
 
