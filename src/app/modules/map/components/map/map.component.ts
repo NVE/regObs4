@@ -177,12 +177,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.map.on('zoomstart', () => this.onMapMove());
     });
 
-    this.subscriptions.push(this.platform.pause.subscribe(() => this.stopGeoPositionUpdates()));
-    this.subscriptions.push(this.platform.resume.subscribe(() => {
-      if (this.isGeoLocationActive && !this.isAskingForPermissions) {
-        this.startGeoPositionUpdates();
-      }
-    }));
+    this.subscriptions.push(this.platform.pause.pipe(tap(() => {
+      this.loggingService.debug('App pause. Stop Geopostioton updates', DEBUG_TAG);
+    })).subscribe(() => this.stopGeoPositionUpdates()));
+    this.subscriptions.push(this.platform.resume.pipe(tap(() => {
+      this.loggingService.debug('App resume. Start Geopostioton updates', DEBUG_TAG);
+    })).subscribe(() => this.startGeoPositionUpdates()));
 
     this.zone.runOutsideAngular(() => {
       this.map.on('moveend', () => this.onMapMoveEnd());
@@ -191,12 +191,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.push(this.fullscreenService.isFullscreen$.subscribe(() => {
       this.redrawMap();
     }));
-
-    // TODO: Implement compass needs calibration alert?
-    //   window.addEventListener('compassneedscalibration', function(event) {
-    //     // ask user to wave device in a figure-eight motion
-    //     event.preventDefault();
-    // }, true);
 
     if (this.activateGeoLocationOnStart) {
       this.startGeoPositionUpdates();
@@ -369,6 +363,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private startWatchingHeading() {
+    // TODO: Implement compass needs calibration alert?
+    //   window.addEventListener('compassneedscalibration', function(event) {
+    //     // ask user to wave device in a figure-eight motion
+    //     event.preventDefault();
+    // }, true);
+
     this.requestDeviceOrientationPermission().then((granted) => {
       if (granted) {
         if ('ondeviceorientationabsolute' in <any>window) {
@@ -380,16 +380,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private async requestDeviceOrientationPermission(): Promise<boolean> {
-    const doe = <any>DeviceOrientationEvent;
-    if (typeof doe.requestPermission === 'function') {
-      // iOS 13+
-      const response = await doe.requestPermission();
-      return response === 'granted';
-    } else {
-      // non iOS 13+
-      return Promise.resolve(true);
-    }
+  private requestDeviceOrientationPermission(): Promise<boolean> {
+    // TODO: iOS 13 ask for permission every time, and from localhost.
+    // this needs to be better supported before turning on
+    // or use another native plugin than depricated
+    // https://github.com/apache/cordova-plugin-device-orientation
+    // https://medium.com/flawless-app-stories/how-to-request-device-motion-and-orientation-permission-in-ios-13-74fc9d6cd140
+
+    // const doe = <any>DeviceOrientationEvent;
+    // if (typeof doe.requestPermission === 'function') {
+    //   // iOS 13+
+    //   const response = await doe.requestPermission();
+    //   return response === 'granted';
+    // } else {
+    //   // non iOS 13+
+    return Promise.resolve(true);
+    // }
   }
 
   startHighAccuracyPositionUpdates() {
