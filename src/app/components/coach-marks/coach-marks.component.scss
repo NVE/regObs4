@@ -48,7 +48,7 @@
         --background-activated: var(--ion-color-varsom-orange-shade);
         --color: var(--ion-color-varsom-orange-contrast);
         --color-activated: var(--ion-color-varsom-orange-contrast);
-        bottom: 60px;
+        bottom: calc(60px + env(safe-area-inset-bottom));
     }
 
     .warning-icon {
@@ -57,12 +57,12 @@
 
     .geo-coachmark {
         position: absolute;
-        top: 40px;
+        top: calc(40px + env(safe-area-inset-top));
         left: 70px;
 
         ion-text {
             position: absolute;
-            top: 31px;
+            top: calc(31px + env(safe-area-inset-top));
             left: 51px;
             transform: rotate(4.28deg);
             width: 112px;
@@ -76,7 +76,7 @@
         right: 70px;
         ion-text {
             position: absolute;
-            bottom: 60px;
+            bottom: calc(60px + env(safe-area-inset-bottom));
             right: -45px;
             width: 180px;
             text-align: center;
@@ -86,12 +86,12 @@
 
     .warning-coachmark {
         position: absolute;
-        bottom: 23px;
+        bottom: calc(23px + env(safe-area-inset-bottom));
         right: calc(50% - 100px);
 
         ion-text {
             position: absolute;
-            bottom: 38px;
+            bottom: calc(38px + env(safe-area-inset-bottom));
             right: 55px;
             width: 183px;
             text-align: center;
