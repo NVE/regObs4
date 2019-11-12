@@ -70,7 +70,7 @@ export const settings = {
                 featureName: 'fylkesnummer',
             },
             Ice: {
-                apiUrl: 'http://www.iskart.no/json/ice_forecast_regions.json',
+                apiUrl: 'https://www.iskart.no/json/ice_forecast_regions.json',
                 featureName: 'fylkesnummer',
             }
         }
