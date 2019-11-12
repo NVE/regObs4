@@ -62,7 +62,7 @@
 
         ion-text {
             position: absolute;
-            top: calc(31px + env(safe-area-inset-top));
+            top: 31px;
             left: 51px;
             transform: rotate(4.28deg);
             width: 112px;
@@ -72,11 +72,11 @@
 
     .add-coachmark {
         position: absolute;
-        bottom: 117px;
+        bottom: calc( 117px + env(safe-area-inset-bottom));
         right: 70px;
         ion-text {
             position: absolute;
-            bottom: calc(60px + env(safe-area-inset-bottom));
+            bottom: 60px;
             right: -45px;
             width: 180px;
             text-align: center;
@@ -91,7 +91,7 @@
 
         ion-text {
             position: absolute;
-            bottom: calc(38px + env(safe-area-inset-bottom));
+            bottom: 38px;
             right: 55px;
             width: 183px;
             text-align: center;
