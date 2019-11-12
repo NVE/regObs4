@@ -11,7 +11,6 @@ import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
 import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../../settings';
-import { RegistrationService } from '../../../../regobs-api/services';
 import { from, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { UserSetting } from '../../../../../core/models/user-settings.model';
@@ -89,8 +88,8 @@ export class SnowProfilePage extends BasePage {
     return this.httpClient.post(`${rootUrl}/Registration/PlotPreviewPng?format=${format}`
       + `&height=${size}&width=${size}&langKey=${userSetting.language}`,
       this.registration.request, {
-        responseType: 'blob',
-      });
+      responseType: 'blob',
+    });
   }
 
   private hasAnyTempLayers() {

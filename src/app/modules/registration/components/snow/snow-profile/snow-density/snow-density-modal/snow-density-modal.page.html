@@ -11,7 +11,7 @@
 <ion-content>
   <form (ngSubmit)="ok()">
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.METHOD' | translate}}
         </ion-label>
@@ -23,7 +23,7 @@
         <ion-toggle slot="end" [(ngModel)]="useCylinder" name="useCylinder"></ion-toggle>
       </ion-item>
       <ng-container *ngIf="useCylinder">
-        <ion-list-header text-uppercase>
+        <ion-list-header class="ion-text-uppercase">
           <ion-label>
             {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.CYLINDER' | translate }}
           </ion-label>
@@ -35,7 +35,7 @@
           title="REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TARE_WEIGHT" [max]="999" [min]="0" suffix="g"
           [decimalPlaces]="2" [convertRatio]="1000"></app-numeric-input>
       </ng-container>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.LAYER' | translate }}
         </ion-label>
@@ -71,7 +71,7 @@
         </ion-item>
       </ng-container>
     </ion-list>
-    <ion-grid no-padding>
+    <ion-grid class="ion-no-padding">
       <ion-row>
         <ion-col size="6" offset="3">
           <ion-button type="submit" expand="block" fill="solid" color="primary">

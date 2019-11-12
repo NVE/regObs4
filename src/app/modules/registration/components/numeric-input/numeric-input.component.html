@@ -1,5 +1,6 @@
 <ion-item tabindex="0" (click)="openPicker()" (keyup.enter)="openPicker()">
-  <ion-label *ngIf="title" color="medium" position="stacked" text-uppercase>{{ title | translate}}</ion-label>
+  <ion-label *ngIf="title" color="medium" position="stacked" class="ion-text-uppercase">{{ title | translate}}
+  </ion-label>
   <ion-text align-self-start *ngIf="displayValue else ph">{{ displayValue }}</ion-text>
 </ion-item>
 <ng-template #ph>

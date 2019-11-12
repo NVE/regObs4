@@ -11,7 +11,7 @@
 
 <ion-content *ngIf="loaded">
   <ion-list lines="full">
-    <ion-list-header text-uppercase>
+    <ion-list-header class="ion-text-uppercase">
       <ion-label>
         {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate}}
       </ion-label>
@@ -24,7 +24,7 @@
       kdvKey="{{ GeoHazardName }}_DangerSignKDV" [(value)]="dangerSignTid">
     </app-kdv-select>
     <ion-item>
-      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.DANGER_OBS.AREA' | translate}}
+      <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.DANGER_OBS.AREA' | translate}}
       </ion-label>
       <app-select title="REGISTRATION.DANGER_OBS.AREA" [(selectedValue)]="tmpArea" [options]="areaArr"></app-select>
     </ion-item>

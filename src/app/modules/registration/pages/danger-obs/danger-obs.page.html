@@ -12,7 +12,7 @@
   <app-registration-content-wrapper *ngIf="registration" [registration]="registration"
     [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate}}
         </ion-label>
@@ -24,7 +24,7 @@
         <ion-icon color="dark" name="add-circle-outline" slot="start"></ion-icon>
         <ion-label>{{ 'REGISTRATION.DANGER_OBS.NEW_DANGER_OBS' | translate }}</ion-label>
       </ion-item>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>

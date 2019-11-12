@@ -13,13 +13,13 @@
   <app-registration-content-wrapper *ngIf="registration && registration.request.LandSlideObs"
     [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE' | translate}}
         </ion-label>
       </ion-list-header>
       <ion-item detail="true" (click)="setLandslidePosition()">
-        <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.DIRT.LAND_SLIDE_OBS.POSITION' |
+        <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.DIRT.LAND_SLIDE_OBS.POSITION' |
               translate}}</ion-label>
         <ion-text align-self-start text-wrap>
           <ion-icon class="position-pin" color="medium" name="pin"></ion-icon>
@@ -38,7 +38,7 @@
       </ion-item>
       <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
         <ion-label [color]="!registration.request.LandSlideObs.DtLandSlideTime ? 'danger' : 'medium'" position="stacked"
-          text-uppercase>{{
+          class="ion-text-uppercase">{{
           'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME' | translate }}</ion-label>
         <ion-datetime color="medium" [max]="maxDateStart" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
           doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
@@ -57,7 +57,7 @@
       </ion-item>
       <ion-item [ngClass]="{'hasWarning': dateEndIsDifferentThanObsTime}">
         <ion-label [color]="!registration.request.LandSlideObs.DtLandSlideTimeEnd ? 'danger' : 'medium'"
-          position="stacked" text-uppercase>{{
+          position="stacked" class="ion-text-uppercase">{{
           'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME_END' | translate }}</ion-label>
         <ion-datetime [min]="minDateEnd" [max]="maxDateEnd" color="medium"
           monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
@@ -87,20 +87,20 @@
         [(value)]="registration.request.LandSlideObs.DamageExtentTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DIRT_FORECAST_ACCURATE" kdvKey="ForecastAccurateKDV"
         [(value)]="registration.request.LandSlideObs.ForecastAccurateTID"></app-kdv-select>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}
         </ion-label>
       </ion-list-header>
       <app-text-comment [(value)]="registration.request.LandSlideObs.Comment"
         placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
       <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid"
-        (imagesChange)="save()">
+        (imagesChange)="save()" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
       <ion-list-header text-uppercase>
         <ion-label>

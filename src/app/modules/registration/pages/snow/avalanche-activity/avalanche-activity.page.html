@@ -12,7 +12,7 @@
   <app-registration-content-wrapper *ngIf="registration && registration.request.AvalancheActivityObs2"
     [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE' | translate }}
         </ion-label>
@@ -29,13 +29,13 @@
         <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
         <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.ADD_NEW' | translate}}</ion-label>
       </ion-item>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
       <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
-        [registrationTid]="registrationTid"></app-add-picture-item>
+        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()"></app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

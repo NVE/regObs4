@@ -9,7 +9,7 @@
 
 <ion-content *ngIf="avalancheEvalProblemCopy">
   <ion-list lines="full">
-    <ion-list-header text-uppercase>
+    <ion-list-header class="ion-text-uppercase">
       <ion-label>
         {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER' | translate}}
       </ion-label>
@@ -28,7 +28,7 @@
         <ion-checkbox mode="md" slot="start" [(ngModel)]="avalancheCauseAttribute.selected"></ion-checkbox>
       </ion-item>
     </ng-container>
-    <ion-list-header text-uppercase>
+    <ion-list-header class="ion-text-uppercase">
       <ion-label>
         {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.AVALANCHE_PROBABILITY' | translate}}
       </ion-label>

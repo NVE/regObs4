@@ -12,7 +12,7 @@
   <app-registration-content-wrapper *ngIf="registration && registration.request.WeatherObservation"
     [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.WEATHER.TITLE' | translate}}
         </ion-label>
@@ -29,12 +29,12 @@
         title="REGISTRATION.SNOW.WEATHER.CLOUD_COVER" [min]="0" [max]="100" suffix="%"
         placeholder="REGISTRATION.SNOW.WEATHER.ONLY_FULL_PERCENTAGE" [decimalPlaces]="0"></app-numeric-input>
       <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SNOW.WEATHER.WIND_DIRECTION'
+        <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{ 'REGISTRATION.SNOW.WEATHER.WIND_DIRECTION'
           | translate}}</ion-label>
         <app-select [(selectedValue)]="registration.request.WeatherObservation.WindDirection"
           [options]="windDirectionOptions" title="REGISTRATION.SNOW.WEATHER.WIND_DIRECTION"></app-select>
       </ion-item>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_HEADER' | translate}}
         </ion-label>
@@ -46,13 +46,13 @@
           {{ 'REGISTRATION.SNOW.WEATHER.COMMENT_PLACEHOLDER' | translate }}
         </ion-label>
       </ion-item-divider>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
       <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
-        [registrationTid]="registrationTid">
+        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>

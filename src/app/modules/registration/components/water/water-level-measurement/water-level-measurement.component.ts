@@ -63,7 +63,6 @@ export class WaterLevelMeasurementComponent implements OnInit {
 
   dtChanged() {
     this.showError();
-    this.triggerChange();
   }
 
   triggerChange() {

@@ -13,7 +13,7 @@
   <app-registration-content-wrapper *ngIf="registration && registration.request.SnowSurfaceObservation"
     [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.SNOW_SURFACE.TITLE' | translate}}
         </ion-label>
@@ -42,7 +42,7 @@
         suffix="{{ 'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate }}"
         placeholder="REGISTRATION.SNOW.SNOW_SURFACE.HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER"></app-numeric-input>
 
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_HEADER' | translate}}
         </ion-label>
@@ -54,13 +54,13 @@
           {{ 'REGISTRATION.SNOW.SNOW_SURFACE.COMMENT_PLACEHOLDER' | translate }}
         </ion-label>
       </ion-item-divider>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
       <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
-        [registrationTid]="registrationTid">
+        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>

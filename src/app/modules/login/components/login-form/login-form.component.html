@@ -1,13 +1,13 @@
 <form novalidate (ngSubmit)="login()" [formGroup]="loginform">
   <ion-item>
-    <ion-label color="medium" position="stacked" text-uppercase>
+    <ion-label color="medium" position="stacked" class="ion-text-uppercase">
       {{ 'LOGIN.EMAIL' | translate }}
     </ion-label>
     <ion-input #username type="text" inputmode="email" formControlName="username" name="username"
       autocomplete="username"></ion-input>
   </ion-item>
   <ion-item>
-    <ion-label color="medium" position="stacked" text-uppercase>
+    <ion-label color="medium" position="stacked" class="ion-text-uppercase">
       {{ 'LOGIN.PASSWORD' | translate }}
     </ion-label>
     <ion-input #password [type]="showPassword ? 'text' : 'password'" inputmode="password" formControlName="password"

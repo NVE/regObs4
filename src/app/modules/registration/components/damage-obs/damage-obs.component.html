@@ -2,9 +2,9 @@
   <ion-checkbox mode="md" slot="start" [(ngModel)]="isSelected" (ionChange)="onCheckedChange()"></ion-checkbox>
   <ion-label>{{ damageTypeName }}</ion-label>
 </ion-item>
-<ion-list lines="none" class="no-border" no-margin *ngIf="isSelected && damageObs">
+<ion-list lines="none" class="no-border ion-no-margin" *ngIf="isSelected && damageObs">
   <ion-item detail="false" (click)="setDamagePosition()">
-    <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.WATER.DAMAGE.WHERE_IS_DAMAGE_LOCATION'
+    <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{ 'REGISTRATION.WATER.DAMAGE.WHERE_IS_DAMAGE_LOCATION'
           | translate }}</ion-label>
     <ion-text align-self-start text-wrap>
       <ion-icon class="add-icon" color="primary" name="pin">
@@ -18,7 +18,7 @@
     </ion-text>
   </ion-item>
   <ion-item class="label-only">
-    <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.WATER.DAMAGE.IMAGE_OF_DAMAGES' |
+    <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.WATER.DAMAGE.IMAGE_OF_DAMAGES' |
       translate}}</ion-label>
   </ion-item>
   <app-add-picture-item iconColor="primary" [(images)]="damageObs.Pictures" [registrationTid]="registrationTid"

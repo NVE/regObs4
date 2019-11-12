@@ -18,7 +18,7 @@
       <app-numeric-input [(value)]="registration.request.IceThickness.SlushSnow"
         title="REGISTRATION.ICE.ICE_THICKNESS.SLUSH_SNOW_BEFORE_DRILL" [min]="0" [max]="999" [decimalPlaces]="2"
         [convertRatio]="100" placeholder="REGISTRATION.IN_CM" suffix="cm"></app-numeric-input>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ICE.ICE_THICKNESS.ICE_LAYER' | translate }}
         </ion-label>
@@ -50,20 +50,20 @@
         [title]="iceHeightAfter === true ? 'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT' : 'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO'"
         [min]="0" [max]="999" [decimalPlaces]="2" [convertRatio]="100" suffix="cm" placeholder="REGISTRATION.IN_CM">
       </app-numeric-input>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}
         </ion-label>
       </ion-list-header>
       <app-text-comment [(value)]="registration.request.IceThickness.Comment"
         placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
       <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
-        [registrationTid]="registrationTid">
+        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>

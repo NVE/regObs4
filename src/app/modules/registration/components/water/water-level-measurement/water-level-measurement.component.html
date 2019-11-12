@@ -6,11 +6,11 @@
   </ion-label>
 </ion-list-header>
 <app-numeric-input *ngIf="waterLevelMethod === 2" [(value)]="waterLevelMeasurement.WaterLevelValue"
-  title="REGISTRATION.WATER.WATER_LEVEL.WATER_LEVEL_METERS" [min]="0" [max]="8848" [decimalPlaces]="3" suffix="m"
-  (valueChange)="triggerChange()">
+  title="REGISTRATION.WATER.WATER_LEVEL.WATER_LEVEL_METERS" [min]="0" [max]="8848" [decimalPlaces]="3" suffix="m">
 </app-numeric-input>
 <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
-  <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SET_TIME.TITLE' | translate }}
+  <ion-label color="medium" position="stacked" class="ion-text-uppercase">
+    {{ 'REGISTRATION.SET_TIME.TITLE' | translate }}
   </ion-label>
   <ion-datetime (ionChange)="dtChanged()" color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
     doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"

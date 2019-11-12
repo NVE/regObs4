@@ -13,7 +13,7 @@
     <app-failed-registration *ngIf="registration.error && registration.status === RegistrationStatus.Sync"
       [registration]="registration"></app-failed-registration>
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{"REGISTRATION.OVERVIEW.MY_OBSERVATION" | translate}}
         </ion-label>

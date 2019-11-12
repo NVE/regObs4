@@ -13,7 +13,7 @@
   <app-registration-content-wrapper *ngIf="registration && registration.request.SnowProfile2"
     [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.SNOW_PROFILE.SUPERIOR' | translate}}
         </ion-label>
@@ -23,7 +23,7 @@
       </app-yes-no-select>
       <app-text-comment title="DIALOGS.COMMENT" [(value)]="registration.request.SnowProfile2.Comment">
       </app-text-comment>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{'REGISTRATION.SNOW.SNOW_PROFILE.SUBFORMS' | translate}}
         </ion-label>
@@ -33,7 +33,7 @@
       <app-snow-density [reg]="registration"></app-snow-density>
       <app-compression-test [reg]="registration">
       </app-compression-test>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{'REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW' | translate}}
         </ion-label>
@@ -42,13 +42,13 @@
         <ion-icon name="eye" color="dark" slot="start"></ion-icon>
         <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW_ITEM' | translate }}</ion-label>
       </ion-item>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{'REGISTRATION.IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
       <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
-        [registrationTid]="registrationTid">
+        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>

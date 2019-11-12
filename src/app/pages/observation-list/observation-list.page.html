@@ -7,7 +7,7 @@
       [items]="observations" [approxItemHeight]="10000" [trackBy]="trackByIdFunc" [footerFn]="footerFn"
       [headerFn]="headerFn">
       <ion-item-divider *virtualHeader="let header">
-        <h3 text-uppercase>{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
       </ion-item-divider>
       <div *virtualItem="let obs">
         <app-observation-list-card [obs]="obs"></app-observation-list-card>
@@ -18,7 +18,7 @@
   </ng-container>
   <div class="loading-sceleton" *ngIf="!loaded">
     <ion-item-divider>
-      <h3 text-uppercase>{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+      <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
     </ion-item-divider>
     <app-observation-skeleton></app-observation-skeleton>
     <app-observation-skeleton></app-observation-skeleton>

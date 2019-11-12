@@ -166,7 +166,7 @@
         <ion-row class="legal-text-row">
           <ion-col align-self-top>
             <h2 [@headerAnimation4]="state">{{'LEGAL_TERMS.HEADER' | translate}}</h2>
-            <h3 text-wrap no-padding>
+            <h3 text-wrap class="ion-no-padding">
               <ul>
                 <li>{{'LEGAL_TERMS.LINE_1' | translate}}</li>
                 <li>{{'LEGAL_TERMS.LINE_2' | translate}}</li>
@@ -181,7 +181,7 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar color="varsom-blue">
-    <ion-button no-margin expand="full" (click)="start()" fill="clear">
+    <ion-button class="ion-no-margin" expand="full" (click)="start()" fill="clear">
       {{ (reachedEnd ?
             'START_WIZARD.I_UNDERSTAND' :
             'START_WIZARD.SKIP_START') |translate}}

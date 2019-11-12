@@ -1,5 +1,5 @@
 <ion-item>
-  <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT_COMBO'
+  <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT_COMBO'
         | translate}}</ion-label>
   <ion-text align-self-start text-wrap margin-bottom>
     <ion-grid class="exposedHight">
@@ -25,13 +25,13 @@
   </ion-text>
 </ion-item>
 <ion-item *ngIf="exposedHeightTop || exposedHeightMiddle || exposedHeightBottom">
-  <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1'
+  <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1'
     | translate}}</ion-label>
   <app-select [(selectedValue)]="exposedHight1" (selectedValueChange)="applyChanges()" [options]="heightArray"
     title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT1"></app-select>
 </ion-item>
 <ion-item *ngIf="sholdUseExposedHight2()">
-  <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2'
+  <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2'
     | translate}}</ion-label>
   <app-select [(selectedValue)]="exposedHight2" (selectedValueChange)="applyChanges()" [options]="lowerHeightArray"
     title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.EXPOSED_HEIGHT2"></app-select>

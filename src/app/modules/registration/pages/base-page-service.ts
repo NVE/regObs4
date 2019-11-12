@@ -4,6 +4,7 @@ import { RegistrationService } from '../services/registration.service';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { IRegistration } from '../models/registration.model';
+import { timingSafeEqual } from 'crypto';
 
 @Injectable({
     providedIn: 'root'
@@ -69,17 +70,17 @@ export class BasePageService {
     }
 
     async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
-        await this.ngZone.run(async () => {
+        this.Zone.run(() => {
             if (registrationTid) {
                 registration.request[this.registrationService.getPropertyName(registrationTid)]
                     = this.getDefaultValue(registrationTid);
                 this.resetImages(registration, registrationTid);
             }
-            await this.registrationService.saveRegistration(registration);
             if (onReset) {
                 onReset();
             }
         });
+        await this.registrationService.saveRegistration(registration);
     }
 
     createDefaultProps(registration: IRegistration, registrationTid: RegistrationTid) {

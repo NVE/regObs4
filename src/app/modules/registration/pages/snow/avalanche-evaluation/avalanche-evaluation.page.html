@@ -12,7 +12,7 @@
   <app-registration-content-wrapper *ngIf="registration && registration.request.AvalancheEvaluation3"
     [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE' | translate }}
         </ion-label>
@@ -27,13 +27,13 @@
         [(value)]="registration.request.AvalancheEvaluation3.ForecastCorrectTID"></app-kdv-select>
       <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_EVALUATION.COMMENT"
         [(value)]="registration.request.AvalancheEvaluation3.ForecastComment"></app-text-comment>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
       <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
-        [registrationTid]="registrationTid">
+        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>

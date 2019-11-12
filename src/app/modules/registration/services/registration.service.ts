@@ -65,6 +65,7 @@ export class RegistrationService {
   }
 
   async saveRegistration(registration: IRegistration, clean = false): Promise<string> {
+    this.loggingService.debug(`Save registration`, DEBUG_TAG, registration, clean);
     if (!registration) {
       return null;
     }

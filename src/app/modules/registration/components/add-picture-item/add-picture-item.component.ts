@@ -27,6 +27,7 @@ export class AddPictureItemComponent implements OnInit {
   @Input() icon = 'camera';
   @Input() showIcon = true;
   @Input() iconColor = 'dark';
+  @Input() onBeforeAdd: () => Promise<void> | void;
 
   get imagesForCurrentRegistrationTid() {
     return this.images ? this.images.filter((image) => image.RegistrationTID === this.registrationTid) : [];
@@ -44,6 +45,9 @@ export class AddPictureItemComponent implements OnInit {
   }
 
   async addClick() {
+    if (this.onBeforeAdd !== undefined) {
+      await Promise.resolve(this.onBeforeAdd());
+    }
     const translations = await this.translateService.get(
       [
         'REGISTRATION.GENERAL_COMMENT.ADD_PICTURE',

@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-list lines="full" no-margin>
+  <ion-list lines="full" class="ion-no-margin">
     <ng-container *ngIf="($previousUsedLayers | async) as previousUsedLayers else loading">
       <ng-container *ngIf="previousUsedLayers.length > 0 else empty">
         <ion-item [detail]="true" *ngFor="let item of previousUsedLayers" tabindex="0" (click)="selectLayer(item)"
@@ -44,7 +44,7 @@
   </ion-item>
 </ng-template>
 <ng-template #empty>
-  <ion-list-header text-uppercase>
+  <ion-list-header class="ion-text-uppercase">
     <ion-label>
       {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.NO_PROFILES_FOUND' | translate }}
     </ion-label>

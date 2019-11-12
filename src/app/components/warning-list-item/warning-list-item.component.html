@@ -1,5 +1,5 @@
 <ion-item-sliding (ionDrag)="onDrag($event)">
-  <ion-item *ngIf="warningGroup.key.geoHazard !== GeoHazard.Ice" no-padding [detail]="false" lines="full">
+  <ion-item *ngIf="warningGroup.key.geoHazard !== GeoHazard.Ice" class="ion-no-padding" [detail]="false" lines="full">
     <div slot="start" class="geo-icon-circle" (click)="navigateToWeb($event, warningGroup)">
       <app-geo-icon [geoHazards]="[warningGroup.key.geoHazard]"></app-geo-icon>
     </div>
@@ -18,7 +18,7 @@
       </ion-row>
     </ion-grid>
   </ion-item>
-  <ion-item *ngIf="warningGroup.key.geoHazard === GeoHazard.Ice" no-padding [detail]="true" lines="full"
+  <ion-item *ngIf="warningGroup.key.geoHazard === GeoHazard.Ice" class="ion-no-padding" [detail]="true" lines="full"
     (click)="navigateToWeb($event, warningGroup)">
     <div slot="start" class="geo-icon-circle">
       <app-geo-icon [geoHazards]="[warningGroup.key.geoHazard]"></app-geo-icon>
