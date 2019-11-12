@@ -1,10 +1,10 @@
 :host {
-    position: absolute;
+    position: fixed;
     top: 0;
     z-index: 999;
 
     ion-fab {
-        top: -25px;
+        top: 19px;
 
         &.fullscreen {
             top: calc(10px + env(safe-area-inset-top));
