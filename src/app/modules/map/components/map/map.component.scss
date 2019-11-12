@@ -4,6 +4,9 @@
     position: inherit !important;
     -webkit-transform: translate3d(0,0,0);
     transform: translate3d(0,0,0);
+
+    --leaflet-bottom: calc(var(--map-center-info-height) + 10px);
+    // --leaflet-control-margin-left: 7px;
 }
 
 app-map-controls {

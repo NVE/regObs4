@@ -345,14 +345,22 @@ ion-toggle {
 .map-item-bar-open {
     --map-item-height: 100px;
 
-    .fab-vertical-bottom {
-        bottom: 114px;
-    }
+    // .fab-vertical-bottom {
+    //     bottom: 114px;
+    // }
 }
 
 .leaflet-bottom {
-    bottom: calc(var(--map-item-height) + var(--map-center-info-height) + 10px) !important;
+    bottom: var(--leaflet-bottom, 0) !important;
     z-index: 800 !important;
+}
+
+.leaflet-left .leaflet-control {
+    margin-left: var(--leaflet-control-margin-left, 10px) !important;
+}
+
+.leaflet-left .leaflet-control-scale {
+    margin-left: var(--leaflet-control-margin-left, 5px) !important;
 }
 
 .leaflet-left {

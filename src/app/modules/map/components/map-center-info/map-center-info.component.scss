@@ -4,7 +4,7 @@
     min-width: 153px;
     background-color: var(--map-faded-overlay-background);
     position: absolute;
-    bottom: calc(var(--map-item-height) + 12px);
+    bottom: 10px;
     left: 11px;
     z-index: var(--z-index-over-map);
     color: #fff;
