@@ -86,7 +86,6 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
       await this.layerModal.onDidDismiss();
       this.layerModal = null;
       this.sortLayers();
-      await this.registrationService.saveRegistration(this.reg);
     }
   }
 

@@ -19,7 +19,7 @@ import cloneDeep from 'clone-deep';
 export class SnowDensityModalPage implements OnInit, OnDestroy {
 
   @Input() regId: string;
-  useCylinder = true;
+  useCylinder: boolean;
   private layerModal: HTMLIonModalElement;
   private ngDestroy$ = new Subject();
   private reg: IRegistration;
@@ -53,6 +53,13 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
         }
         if (!this.reg.request.SnowProfile2.SnowDensity[0].Layers) {
           this.reg.request.SnowProfile2.SnowDensity[0].Layers = [];
+        }
+        if (this.useCylinder === undefined) {
+          this.useCylinder =
+            !!this.reg.request.SnowProfile2.SnowDensity[0].CylinderDiameter ||
+            !!this.reg.request.SnowProfile2.SnowDensity[0].TareWeight ||
+            this.reg.request.SnowProfile2.SnowDensity[0].Layers.length === 0 ||
+            this.reg.request.SnowProfile2.SnowDensity[0].Layers.some((l) => !!l.Weight);
         }
         this.recalculateLayers();
       });
@@ -98,7 +105,6 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
       await this.layerModal.onDidDismiss();
       this.layerModal = null;
       this.recalculateLayers();
-      await this.registrationService.saveRegistration(this.reg);
     }
   }
 
