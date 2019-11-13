@@ -18,12 +18,11 @@
       </ion-row>
     </ion-grid>
   </ion-item>
-  <ion-item *ngIf="warningGroup.key.geoHazard === GeoHazard.Ice" class="ion-no-padding" [detail]="true" lines="full"
-    (click)="navigateToWeb($event, warningGroup)">
-    <div slot="start" class="geo-icon-circle">
+  <ion-item *ngIf="warningGroup.key.geoHazard === GeoHazard.Ice" class="ion-no-padding" [detail]="true" lines="full">
+    <div slot="start" class="geo-icon-circle" (click)="navigateToWeb($event, warningGroup)">
       <app-geo-icon [geoHazards]="[warningGroup.key.geoHazard]"></app-geo-icon>
     </div>
-    <ion-label>
+    <ion-label (click)="navigateToWeb($event, warningGroup)">
       <h2>{{warningGroup.key.groupName}}</h2>
       <p>
         <span *ngIf="warningGroup.validFrom">{{'WARNING_LIST.VALID_FROM' | translate}}: {{warningGroup.validFrom |
