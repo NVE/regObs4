@@ -32,6 +32,7 @@ export class CompressionTestListModalPage implements OnInit, OnDestroy {
         if (!this.initialRegistrationClone) {
           this.initialRegistrationClone = cloneDeep(reg);
         }
+        this.reg = reg;
         if (!this.reg.request.CompressionTest) {
           this.reg.request.CompressionTest = [];
         }
