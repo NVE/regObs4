@@ -25,7 +25,7 @@
           <app-text-comment title="DIALOGS.COMMENT" [disabled]="isRunning || isLoading" [(value)]="tripDto.Comment">
           </app-text-comment>
           <ion-item-divider>
-            <ion-label text-wrap>
+            <ion-label class="ion-text-wrap">
               {{'TRIP.COMMENT_DESCRIPTION' | translate}}
             </ion-label>
           </ion-item-divider>
@@ -36,7 +36,7 @@
       <ion-col class="ion-no-padding">
         <ion-grid class="ion-no-padding">
           <ion-row>
-            <ion-col text-center>
+            <ion-col class="ion-text-center">
               <ion-button (click)="showHelp()" fill="clear">{{'HELP.TITLE' | translate}}</ion-button>
             </ion-col>
           </ion-row>
@@ -53,7 +53,7 @@
             </ion-col>
           </ion-row>
           <ion-row class="white-background" *ngIf="!isEmpty">
-            <ion-col text-center>
+            <ion-col class="ion-text-center">
               <ion-button (click)="clearPage()" [disabled]="isRunning || isLoading" class="reset-button" color="dark"
                 size="small" fill="clear">
                 <svg-icon src="/assets/icon/reset.svg"></svg-icon>

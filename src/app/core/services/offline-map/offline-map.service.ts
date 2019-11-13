@@ -9,8 +9,8 @@ import { File, Entry, FileEntry } from '@ionic-native/file/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
-import { Observable, from, Subject, BehaviorSubject, zip, of } from 'rxjs';
-import { map, delay, tap, mergeMap, catchError, take } from 'rxjs/operators';
+import { Observable, from, Subject, BehaviorSubject, zip, of, NEVER } from 'rxjs';
+import { map, delay, tap, mergeMap, catchError, take, switchMap } from 'rxjs/operators';
 import { LRUCache } from 'lru-fast';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { ImageHelper } from '../../helpers/image.helper';
@@ -34,6 +34,7 @@ export class OfflineMapService implements OnReset {
   private _saveBuffer: Subject<{ id: string, el: HTMLImageElement }>;
   private _saveTileBufferTrigger = new BehaviorSubject(null);
   private _saveBufferSize = 0;
+  private _shouldDownloadTiles = new BehaviorSubject(true);
 
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
@@ -44,27 +45,23 @@ export class OfflineMapService implements OnReset {
   ) {
     this._recentlySavedTileCache = new LRUCache(RECENTLY_SAVED_TILE_CACHE_SIZE);
     this._saveBuffer = new Subject<{ id: string, el: HTMLImageElement }>();
-    this.startSavingTiles();
+    this.initDownloadOfflineTilesObservable();
   }
 
-  private startSavingTiles() {
-    zip(this._saveBuffer, this._saveTileBufferTrigger.pipe(delay(SAVE_TILE_DELAY_BUFFER))).pipe(
-      map(([tile, _]) => tile),
-      mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el)),
-      tap((result) => {
-        if (result && result.el) {
-          result.el = null; // Free up memory
-        }
+  private initDownloadOfflineTilesObservable() {
+    this._shouldDownloadTiles.pipe(switchMap((active) => active ?
+      zip(this._saveBuffer, this._saveTileBufferTrigger.pipe(delay(SAVE_TILE_DELAY_BUFFER))).pipe(
+        map(([tile, _]) => tile),
+        mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el)),
+        catchError((err) => {
+          this.loggingService.debug('Could not save image to db', err);
+          return of(null);
+        })
+      ) : NEVER)).subscribe((tile) => {
+        this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
         this._saveBufferSize--;
         this._saveTileBufferTrigger.next(null);
-      }),
-      catchError((err) => {
-        this.loggingService.debug('Could not save image to db', err);
-        return of(null);
-      })
-    ).subscribe((tile) => {
-      this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
-    });
+      });
   }
 
   private saveHtmlImageToDb(id: string, el: HTMLImageElement):
@@ -78,8 +75,21 @@ export class OfflineMapService implements OnReset {
             map((offlineTile) => ({ id, el, offlineTile })))),
       catchError((err) => {
         this.loggingService.log(`Could not save tile image to offline tile`, err, LogLevel.Warning, DEBUG_TAG);
-        return of(null); // TODO: log error
+        return of(null);
       }));
+  }
+
+  pauseSavingTiles(clearBuffer = true) {
+    this.loggingService.debug('Pasue saving tiles', DEBUG_TAG, clearBuffer);
+    this._shouldDownloadTiles.next(false);
+    if (clearBuffer) {
+      this._saveBuffer = new Subject<{ id: string, el: HTMLImageElement }>();
+    }
+  }
+
+  resumeSavingTiles() {
+    this.loggingService.debug('Resume saving tiles', DEBUG_TAG);
+    this._shouldDownloadTiles.next(true);
   }
 
   // private getArrayBufferFromImage(input$: Observable<{id: string, el: HTMLImageElement}>) {

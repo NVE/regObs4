@@ -24,29 +24,29 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col text-center *ngFor="let i of ['1','2','3']">
+      <ion-col class="ion-text-center" *ngFor="let i of ['1','2','3']">
         <ion-button fill="clear" (click)="pushNumber(i)">{{i}}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col text-center *ngFor="let i of ['4','5','6']">
+      <ion-col class="ion-text-center" *ngFor="let i of ['4','5','6']">
         <ion-button fill="clear" (click)="pushNumber(i)">{{i}}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col text-center *ngFor="let i of ['7','8','9']">
+      <ion-col class="ion-text-center" *ngFor="let i of ['7','8','9']">
         <ion-button fill="clear" (click)="pushNumber(i)">{{i}}</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col text-center>
+      <ion-col class="ion-text-center">
         <ion-button [fill]="isNegative ? 'solid' : 'clear'" *ngIf="min < 0" (click)="toggleNegative()">+ / -
         </ion-button>
       </ion-col>
-      <ion-col text-center>
+      <ion-col class="ion-text-center">
         <ion-button fill="clear" (click)="pushNumber('0')">0</ion-button>
       </ion-col>
-      <ion-col text-center>
+      <ion-col class="ion-text-center">
         <ion-button *ngIf="decimalPlaces > 0" fill="clear" (click)="pushDecimalSeparator()">{{decimalSep}}</ion-button>
       </ion-col>
     </ion-row>

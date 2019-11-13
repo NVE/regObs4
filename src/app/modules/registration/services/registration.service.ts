@@ -341,7 +341,7 @@ export class RegistrationService {
     return combineLatest(attachments.map((p) => this.uploadAttachment(p)));
   }
 
-  private getAllPictures(registration: RegobsApiModels.CreateRegistrationRequestDto) {
+  getAllPictures(registration: RegobsApiModels.CreateRegistrationRequestDto) {
     let pictures = registration.Picture || [];
     if (registration.DamageObs && registration.DamageObs.length > 0) {
       const damageObsPictures = registration.DamageObs.map((val) => val.Pictures || []);

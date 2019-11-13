@@ -58,7 +58,7 @@
             <ion-badge (click)="toggleAllSelected()" [color]="allSelected ? 'medium' : 'light'" [ngClass]="{'outline': !allSelected}">
               {{'OBSERVATION_LIST.ALL_OBSERVATIONS' | translate}}
             </ion-badge>
-            <ion-badge (click)="toggleRegistration(i)" text-wrap [color]="(s.open && (summaries.length <= 1 || !allSelected)) ? 'medium' : 'light'"
+            <ion-badge (click)="toggleRegistration(i)" class="ion-text-wrap" [color]="(s.open && (summaries.length <= 1 || !allSelected)) ? 'medium' : 'light'"
               *ngFor="let s of summaries; let i = index" [ngClass]="{'outline': !(s.open && (summaries.length <= 1 || !allSelected))}">
               {{ s.summary.RegistrationName }}
             </ion-badge>

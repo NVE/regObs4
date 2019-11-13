@@ -24,7 +24,7 @@ export class SetDamageLocationPage implements OnInit {
   locationMarkerIconUrl = '/assets/icon/map/damage-location.svg';
   fullscreen$: Observable<boolean>;
 
-  @ViewChild(SetLocationInMapComponent, { static : false }) setLocationInMapComponent: SetLocationInMapComponent;
+  @ViewChild(SetLocationInMapComponent, { static: false }) setLocationInMapComponent: SetLocationInMapComponent;
 
   constructor(
     private modalController: ModalController,

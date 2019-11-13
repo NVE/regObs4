@@ -4,7 +4,7 @@
     <ion-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
-          <ion-col align-self-center>
+          <ion-col class="ion-align-self-center">
             <div class="animated-element-wrapper">
               <svg-icon class="animated-element eclipse" src="/assets/images/onboarding/eclipse.svg"></svg-icon>
             </div>
@@ -15,7 +15,7 @@
           </ion-col>
         </ion-row>
         <ion-row class="full-grid-row">
-          <ion-col align-self-center>
+          <ion-col class="ion-align-self-center">
             <h2 [@headerAnimation]="state">{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER'|translate}}</h2>
             <h3>{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER_SECONDARY_LANGUAGE'|translate}}</h3>
             <ion-list lines="none">
@@ -39,7 +39,7 @@
     <ion-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
-          <ion-col align-self-center>
+          <ion-col class="ion-align-self-center">
             <div class="animated-element-wrapper">
               <svg-icon class="animated-element line" src="/assets/images/onboarding/line.svg">
               </svg-icon>
@@ -67,9 +67,9 @@
           </ion-col>
         </ion-row>
         <ion-row class="full-grid-row">
-          <ion-col align-self-center>
+          <ion-col class="ion-align-self-center">
             <h2 [@headerAnimation1]="state">{{'START_WIZARD.PAGE_1.HEADER'|translate}}</h2>
-            <h3 text-wrap>
+            <h3 class="ion-text-wrap">
               {{'START_WIZARD.PAGE_1.LINE_1'|translate}}
             </h3>
           </ion-col>
@@ -79,7 +79,7 @@
     <ion-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
-          <ion-col align-self-center>
+          <ion-col class="ion-align-self-center">
             <div class="animated-element-wrapper">
               <svg-icon class="animated-element steepness-background"
                 src="/assets/images/onboarding/steepness-background.svg"></svg-icon>
@@ -99,9 +99,9 @@
           </ion-col>
         </ion-row>
         <ion-row class="full-grid-row">
-          <ion-col align-self-center>
+          <ion-col class="ion-align-self-center">
             <h2 [@headerAnimation2]="state">{{'START_WIZARD.PAGE_2.HEADER'|translate}}</h2>
-            <h3 text-wrap>
+            <h3 class="ion-text-wrap">
               {{'START_WIZARD.PAGE_2.LINE_1'|translate}}
             </h3>
           </ion-col>
@@ -111,7 +111,7 @@
     <ion-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
-          <ion-col align-self-center>
+          <ion-col class="ion-align-self-center">
             <div class="animated-element-wrapper">
               <svg-icon class="animated-element add-observation" [@pulse]="state"
                 src="/assets/images/onboarding/add-observation.svg"></svg-icon>
@@ -146,9 +146,9 @@
           </ion-col>
         </ion-row>
         <ion-row class="full-grid-row">
-          <ion-col align-self-center>
+          <ion-col class="ion-align-self-center">
             <h2 [@headerAnimation3]="state">{{'START_WIZARD.PAGE_3.HEADER'|translate}}</h2>
-            <h3 text-wrap>
+            <h3 class="ion-text-wrap">
               {{'START_WIZARD.PAGE_3.LINE_1'|translate}}
             </h3>
           </ion-col>
@@ -158,7 +158,7 @@
     <ion-slide>
       <ion-grid class="full-grid legal-grid">
         <ion-row class="legal-info-row">
-          <ion-col padding align-self-bottom>
+          <ion-col class="ion-padding ion-align-self-bottom">
             <div class="legal-icon" [ngClass]="{'hide': !showLegalIcon }">&sect;
             </div>
           </ion-col>
@@ -166,7 +166,7 @@
         <ion-row class="legal-text-row">
           <ion-col align-self-top>
             <h2 [@headerAnimation4]="state">{{'LEGAL_TERMS.HEADER' | translate}}</h2>
-            <h3 text-wrap class="ion-no-padding">
+            <h3 class="ion-no-padding ion-text-wrap">
               <ul>
                 <li>{{'LEGAL_TERMS.LINE_1' | translate}}</li>
                 <li>{{'LEGAL_TERMS.LINE_2' | translate}}</li>

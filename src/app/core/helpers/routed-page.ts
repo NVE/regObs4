@@ -6,29 +6,37 @@ import { takeUntil, filter, tap, map, concatMap } from 'rxjs/operators';
 export abstract class RouterPage implements OnDestroy {
 
     public ngUnsubscribe: Subject<void> = new Subject();
+    private isActive = false;
 
-    constructor(router: Router, route: ActivatedRoute) {
+    constructor(private router: Router, private route: ActivatedRoute) {
         router.events.pipe(
             takeUntil(this.ngUnsubscribe),
             filter(event => event instanceof NavigationEnd),
-            map(_ => this._isComponentActive(
-                router.routerState.snapshot.root.pathFromRoot,
-                route.snapshot.component
-            )),
-            concatMap((isActive) => from(Promise.resolve(isActive ? this.onEnter() : this.onLeave())))
+            concatMap(() => from(Promise.resolve(this.detectEnterOrLeave())))
         ).subscribe();
     }
 
-    private _isComponentActive(path: ActivatedRouteSnapshot[], component: any): boolean {
+    private isComponentActive(path: ActivatedRouteSnapshot[], component: any): boolean {
         let isActive = false;
         path.forEach((ss: ActivatedRouteSnapshot) => {
             if (ss.component === component) {
                 isActive = true;
             } else {
-                isActive = this._isComponentActive(ss.children, component);
+                isActive = this.isComponentActive(ss.children, component);
             }
         });
         return isActive;
+    }
+
+    private async detectEnterOrLeave() {
+        const isActiveNow = this.isComponentActive(this.router.routerState.snapshot.root.pathFromRoot, this.route.snapshot.component);
+        if (!this.isActive && isActiveNow) {
+            this.isActive = true;
+            await this.onEnter();
+        } else if (this.isActive && !isActiveNow) {
+            this.isActive = false;
+            await this.onLeave();
+        }
     }
 
     abstract onEnter(): void | Promise<unknown>;

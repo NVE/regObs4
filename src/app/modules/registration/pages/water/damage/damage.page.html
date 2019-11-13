@@ -34,8 +34,7 @@
           </ion-label>
         </ion-list-header>
         <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration"
-          (registrationChange)="save()" [damageTypeId]="damageType.Id" [damageTypeName]="damageType.Name"
-          [registrationTid]="registrationTid">
+          [damageTypeId]="damageType.Id" [damageTypeName]="damageType.Name" [registrationTid]="registrationTid">
         </app-damage-obs>
       </ng-container>
     </ion-list>

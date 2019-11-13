@@ -5,6 +5,7 @@ import { RegistrationTid } from '../../models/registrationTid.enum';
 import * as L from 'leaflet';
 import { SetDamageLocationPage } from '../../pages/set-damage-location/set-damage-location.page';
 import { ObsLocationDto } from '../../../regobs-api/models';
+import { RegistrationService } from '../../services/registration.service';
 
 @Component({
   selector: 'app-damage-obs',
@@ -17,7 +18,6 @@ export class DamageObsComponent implements OnInit {
   @Input() damageTypeName: string;
   @Input() registration: IRegistration;
   @Input() registrationTid: RegistrationTid;
-  @Output() registrationChange = new EventEmitter();
 
   isSelected: boolean;
 
@@ -31,6 +31,7 @@ export class DamageObsComponent implements OnInit {
   constructor(
     private ngZone: NgZone,
     private modalController: ModalController,
+    private registrationService: RegistrationService
   ) {
   }
 
@@ -42,14 +43,11 @@ export class DamageObsComponent implements OnInit {
     }
     if (this.damageObs && this.damageObs.Pictures === undefined) {
       this.damageObs.Pictures = [];
-      this.registrationChange.emit(this.registration);
     }
   }
 
   toggleDamageType() {
-    this.ngZone.run(() => {
-      this.isSelected = !this.isSelected;
-    });
+    this.isSelected = !this.isSelected;
   }
 
   onCheckedChange() {
@@ -63,11 +61,15 @@ export class DamageObsComponent implements OnInit {
     } else {
       this.registration.request.DamageObs = this.registration.request.DamageObs.filter((x) => x.DamageTypeTID !== this.damageTypeId);
     }
-    this.triggerChange();
+    this.save();
   }
 
-  triggerChange() {
-    this.registrationChange.emit(this.registration);
+  save() {
+    return this.registrationService.saveRegistration(this.registration);
+  }
+
+  getSaveFunc() {
+    return () => this.save();
   }
 
   async setDamagePosition() {
@@ -82,9 +84,7 @@ export class DamageObsComponent implements OnInit {
     if (result.data) {
       const obs: ObsLocationDto = result.data;
       this.damageObs.DamagePosition = { Latitude: obs.Latitude, Longitude: obs.Longitude };
-      this.ngZone.run(() => {
-        this.registrationChange.emit(this.registration);
-      });
+      await this.save();
     }
   }
 }

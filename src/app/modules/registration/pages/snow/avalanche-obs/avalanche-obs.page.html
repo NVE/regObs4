@@ -34,14 +34,14 @@
         </ion-button>
       </ion-item>
       <ion-item *ngIf="dateIsDifferentThanObsTime">
-        <ion-label color="danger" text-wrap>
+        <ion-label color="danger" class="ion-text-wrap">
           {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
         </ion-label>
       </ion-item>
       <ion-item (click)="setAvalanchePosition()">
         <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.SNOW.AVALANCHE_OBS.POSITION' |
               translate}}</ion-label>
-        <ion-text color="medium" align-self-start text-wrap>
+        <ion-text color="medium" class="ion-align-self-start ion-text-wrap">
           <ion-icon class="position-pin" color="medium" name="pin"></ion-icon>
           <ng-container *ngIf="registration.request.AvalancheObs.StartLat else noPosition">
             {{
@@ -106,7 +106,7 @@
       <app-kdv-select title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV"
         [(value)]="registration.request.Incident.DamageExtentTID"></app-kdv-select>
       <ion-item-divider>
-        <ion-label text-wrap>
+        <ion-label class="ion-text-wrap">
           {{'REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_PLACEHOLDER' | translate }}
         </ion-label>
       </ion-item-divider>

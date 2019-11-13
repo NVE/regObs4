@@ -150,12 +150,14 @@ export class HomePage extends RouterPage implements OnInit, OnDestroy {
     }
     this.loggingService.debug(`Activate map updates and GeoLocation`, DEBUG_TAG);
     this.mapComponent.startGeoPositionUpdates();
+    this.mapComponent.resumeSavingTiles();
     this.mapComponent.redrawMap();
   }
 
   onLeave() {
     this.loggingService.debug(`Home page onLeave. Disable map updates and GeoLocation`, DEBUG_TAG);
     this.mapComponent.stopGeoPositionUpdates();
+    this.mapComponent.pauseSavingTiles();
   }
 
   // async ionViewDidEnter() {

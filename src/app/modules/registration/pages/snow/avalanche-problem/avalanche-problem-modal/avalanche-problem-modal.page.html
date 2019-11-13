@@ -24,7 +24,7 @@
       <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_PROBLEM.WEAK_LAYER_DEPTH" kdvKey="Snow_AvalCauseDepthKDV"
         [(value)]="avalancheEvalProblemCopy.AvalCauseDepthTID"></app-kdv-select>
       <ion-item *ngFor="let avalancheCauseAttribute of avalancheCauseAttributes">
-        <ion-label text-wrap> {{ avalancheCauseAttribute.kdvElement.Name }}</ion-label>
+        <ion-label class="ion-text-wrap"> {{ avalancheCauseAttribute.kdvElement.Name }}</ion-label>
         <ion-checkbox mode="md" slot="start" [(ngModel)]="avalancheCauseAttribute.selected"></ion-checkbox>
       </ion-item>
     </ng-container>

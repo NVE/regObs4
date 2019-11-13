@@ -1,5 +1,5 @@
 <ion-item tabindex="0" class="summary-item" (click)="openModal()" (keyup.enter)="openModal()">
-  <ion-label padding-vertical padding-end>
+  <ion-label class="ion-padding-vertical ion-padding-end">
     <h2>{{ 'REGISTRATION.SNOW.SNOW_PROFILE.SNOW_DENSITY.TITLE' | translate}}</h2>
     <p>
       <ion-text *ngIf="!isEmpty else empty">{{profiles[0].Layers ? profiles[0].Layers.length : 0 }}

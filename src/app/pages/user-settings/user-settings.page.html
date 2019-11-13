@@ -8,10 +8,11 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content padding *ngIf="userSettings">
+<ion-content class="ion-padding" *ngIf="userSettings">
   <ion-list lines="full">
     <ion-item>
-      <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{ "SETTINGS.LANGUAGE" | translate }}</ion-label>
+      <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{ "SETTINGS.LANGUAGE" | translate }}
+      </ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language"
         interface="action-sheet" (ngModelChange)="updateSettings()">
         <ion-select-option [value]="LangKey.nb">{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN' | translate}}
@@ -41,16 +42,18 @@
   <ng-container *ngIf="showAdvanced">
     <ion-list lines="full">
       <ion-item (click)="versionClick()">
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{'SETTINGS.APP_VERSION' | translate}}</ion-label>
-        <ion-text align-self-start class="build-version">
+        <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{'SETTINGS.APP_VERSION' | translate}}
+        </ion-label>
+        <ion-text class="ion-align-self-start" class="build-version">
           {{version.version }} ({{ version.buildNumber }})
         </ion-text>
-        <ion-text class="build-rev" align-self-start color="medium">
+        <ion-text class="build-rev ion-align-self-start" color="medium">
           {{ version.revision }} - {{ version.date | formatDate | async }}
         </ion-text>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{ "SETTINGS.APPMODE" | translate }}</ion-label>
+        <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{ "SETTINGS.APPMODE" | translate }}
+        </ion-label>
         <app-select [(selectedValue)]="userSettings.appMode" [options]="appModeOptions"
           (selectedValueChange)="updateSettings()" [showReset]="false"> </app-select>
       </ion-item>
@@ -70,14 +73,16 @@
         </ion-range>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{'SETTINGS.TILES_CACHE_SIZE' | translate}}
+        <ion-label position="stacked" color="medium" class="ion-text-uppercase">
+          {{'SETTINGS.TILES_CACHE_SIZE' | translate}}
         </ion-label>
         <ion-input *ngIf="numberOfCacheTiles !== undefined" type="text" readonly="true" [value]="numberOfCacheTiles">
         </ion-input>
         <ion-spinner name="dots" *ngIf="numberOfCacheTiles === undefined"></ion-spinner>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{'SETTINGS.SIZE_OF_TILES_CACHE' | translate}}
+        <ion-label position="stacked" color="medium" class="ion-text-uppercase">
+          {{'SETTINGS.SIZE_OF_TILES_CACHE' | translate}}
         </ion-label>
         <ion-input *ngIf="cacheTilesSize !== undefined" type="text" readonly="true" [value]="cacheTilesSize">
         </ion-input>

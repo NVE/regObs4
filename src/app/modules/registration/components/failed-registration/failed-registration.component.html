@@ -5,13 +5,13 @@
     </ion-label>
   </ion-list-header>
   <ion-item>
-    <ion-label text-wrap *ngIf="registration.error.status === 0">
+    <ion-label class="ion-text-wrap" *ngIf="registration.error.status === 0">
       {{'REGISTRATION.FAILED.SUBTITLE' | translate}}
     </ion-label>
-    <ion-label text-wrap *ngIf="registration.error.status === 400">
+    <ion-label class="ion-text-wrap" *ngIf="registration.error.status === 400">
       {{'REGISTRATION.FAILED.PROBLEM' | translate}}: {{ registration.error.message }}
     </ion-label>
-    <ion-label text-wrap *ngIf="registration.error.status > 400">
+    <ion-label class="ion-text-wrap" *ngIf="registration.error.status > 400">
       {{'REGISTRATION.FAILED.PROBLEM' | translate}}. {{'REGISTRATION.FAILED.LOGGED' | translate}}
       <!-- Ta skjermbilde og
       <app-external-link src="http://www.regobs.no/Home/About">kontakt oss</app-external-link>
@@ -20,19 +20,19 @@
     </ion-label>
   </ion-item>
   <ion-item *ngIf="registration.error.status >= 400">
-    <ion-label text-wrap>
+    <ion-label class="ion-text-wrap">
       {{'REGISTRATION.FAILED.REFERENCE' | translate}} ID: {{ registration.request.Id }}
     </ion-label>
   </ion-item>
   <ion-item (click)="sendEmail()">
     <ion-icon slot="start" name="mail"></ion-icon>
-    <ion-label text-wrap>
+    <ion-label class="ion-text-wrap">
       {{'REGISTRATION.FAILED.SEND_EMAIL' | translate}}
     </ion-label>
   </ion-item>
   <ion-item (click)="openForEdit()">
     <ion-icon slot="start" name="create"></ion-icon>
-    <ion-label text-wrap>
+    <ion-label class="ion-text-wrap">
       {{'REGISTRATION.FAILED.EDIT_OBSERVATION' | translate}}
     </ion-label>
   </ion-item>

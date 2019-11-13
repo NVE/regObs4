@@ -9,19 +9,19 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="ion-padding">
   <ion-list lines="none" *ngIf="isLoggedIn(loggedInUser)">
     <ion-item>
-      <ion-label text-wrap>{{ 'LOGIN.LOGGED_IN_AS' | translate }} {{ loggedInUser.email }}</ion-label>
+      <ion-label class="ion-text-wrap">{{ 'LOGIN.LOGGED_IN_AS' | translate }} {{ loggedInUser.email }}</ion-label>
     </ion-item>
     <ion-button class="logout-button" expand="block" type="submit" color="varsom-orange" (click)="logout()">
       {{ 'LOGIN.LOGOUT' | translate }}</ion-button>
     <ion-grid>
       <ion-row>
-        <ion-col text-center>
+        <ion-col class="ion-text-center">
           <app-external-link [src]="changePasswordUrl">{{'LOGIN.CHANGE_PASSWORD' | translate}}</app-external-link>
         </ion-col>
-        <ion-col text-center>
+        <ion-col class="ion-text-center">
           <app-external-link [src]="userProfileUrl">{{'LOGIN.MY_PROFILE' | translate }}</app-external-link>
         </ion-col>
       </ion-row>

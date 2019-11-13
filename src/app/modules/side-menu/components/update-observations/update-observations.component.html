@@ -1,7 +1,7 @@
 <ion-item (click)="updateOrCancelObservations()">
   <ion-label color="dark" position="stacked">{{'MENU.UPDATE_OBSERVATIONS' | translate}}</ion-label>
   <ng-container *ngIf="!isLoading else isLoadingTemplate">
-    <ion-text align-self-start>
+    <ion-text class="ion-align-self-start">
       <ng-container *ngIf="lastUpdated">
         {{ lastUpdated | date:settings.dateFormats.angular.dateAndTime }}
       </ng-container>

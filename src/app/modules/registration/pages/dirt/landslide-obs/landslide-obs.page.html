@@ -21,7 +21,7 @@
       <ion-item detail="true" (click)="setLandslidePosition()">
         <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.DIRT.LAND_SLIDE_OBS.POSITION' |
               translate}}</ion-label>
-        <ion-text align-self-start text-wrap>
+        <ion-text class="ion-align-self-start ion-text-wrap">
           <ion-icon class="position-pin" color="medium" name="pin"></ion-icon>
           <ng-container *ngIf="registration.request.LandSlideObs.StartLat else noPosition">
             {{ registration.request.LandSlideObs.StartLat |
@@ -51,7 +51,7 @@
         </ion-button>
       </ion-item>
       <ion-item *ngIf="dateIsDifferentThanObsTime">
-        <ion-label color="danger" text-wrap>
+        <ion-label color="danger" class="ion-text-wrap">
           {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
         </ion-label>
       </ion-item>
@@ -70,7 +70,7 @@
         </ion-button>
       </ion-item>
       <ion-item *ngIf="dateEndIsDifferentThanObsTime">
-        <ion-label color="danger" text-wrap>
+        <ion-label color="danger" class="ion-text-wrap">
           {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
         </ion-label>
       </ion-item>

@@ -13,7 +13,7 @@
     <h3 class="ion-text-uppercase">{{ title | translate }}</h3>
   </ion-row>
   <ion-row>
-    <ion-label text-wrap color="medium">
+    <ion-label class="ion-text-wrap" color="medium">
       {{ subTitle | translate }}
     </ion-label>
   </ion-row>
@@ -26,13 +26,13 @@
 <ng-template #dayNames>
   <ion-grid class="dayNames ion-no-padding">
     <ion-row>
-      <ion-col text-center>
+      <ion-col class="ion-text-center">
         {{ getDayName(0) | translate }}
       </ion-col>
-      <ion-col text-center>
+      <ion-col class="ion-text-center">
         {{ getDayName(1) | translate }}
       </ion-col>
-      <ion-col text-center>
+      <ion-col class="ion-text-center">
         {{ getDayName(2) | translate }}
       </ion-col>
     </ion-row>

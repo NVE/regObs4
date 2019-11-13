@@ -51,8 +51,9 @@
       <ion-list lines="full">
         <app-water-level-measurement [measurementNumber]="i+1"
           [waterLevelMethod]="registration.request.WaterLevel2.WaterLevelMethodTID"
-          [waterLevelMeasurement]="measurement" [registrationTid]="registrationTid"
-          [dtObsTime]="registration.request.DtObsTime" (waterLevelMeasurementChange)="save()"
+          [(waterLevelMeasurement)]="registration.request.WaterLevel2.WaterLevelMeasurement[i]"
+          [registrationTid]="registrationTid" [dtObsTime]="registration.request.DtObsTime"
+          (waterLevelMeasurementChange)="save()"
           *ngFor="let measurement of registration.request.WaterLevel2.WaterLevelMeasurement; let i = index">
         </app-water-level-measurement>
       </ion-list>

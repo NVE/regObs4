@@ -22,7 +22,8 @@
         <ion-label>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.OTHER_PROFILE_ITEM_TEXT' | translate }}</ion-label>
       </ion-item>
       <ion-item-divider>
-        <ion-label text-wrap>{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.OTHER_PROFILE_DESCRIPTION' | translate }}
+        <ion-label class="ion-text-wrap">
+          {{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.OTHER_PROFILE_DESCRIPTION' | translate }}
         </ion-label>
       </ion-item-divider>
       <ion-list-header class="ion-text-uppercase">
@@ -72,7 +73,7 @@
         <ion-item>
           <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.TOTAL_THICKNESS'
             | translate}}</ion-label>
-          <ion-text align-self-start text-wrap margin-bottom>
+          <ion-text class="ion-align-self-start ion-text-wrap ion-margin-bottom">
             <p class="ion-no-margin" *ngIf="totalThickness !== undefined">{{ totalThickness | metersToCm }} cm</p>
           </ion-text>
         </ion-item>

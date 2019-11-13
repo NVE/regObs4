@@ -16,7 +16,7 @@
           <h3 class="ion-text-uppercase">{{ header.header | translate }}</h3>
         </ion-row>
         <ion-row *ngIf="header.subtitle">
-          <ion-label text-wrap color="medium">
+          <ion-label class="ion-text-wrap" color="medium">
             {{ header.subtitle | translate }}
           </ion-label>
         </ion-row>
@@ -35,7 +35,7 @@
           <h3 class="ion-text-uppercase">{{ 'MY_OBSERVATIONS.MY_SENT_OBSERVATIONS' | translate }}</h3>
         </ion-row>
         <ion-row>
-          <ion-label text-wrap color="medium">
+          <ion-label class="ion-text-wrap" color="medium">
             {{ 'MY_OBSERVATIONS.SENT_SUBTITLE' | translate }}
           </ion-label>
         </ion-row>
@@ -54,14 +54,14 @@
 <ng-template #empty>
   <ion-grid class="full-grid">
     <ion-row class="full-grid-row">
-      <ion-col align-self-center text-center>
+      <ion-col class="ion-text-center ion-align-self-center">
         <svg-icon src="/assets/images/empty-states/no-my-observations.svg"></svg-icon>
       </ion-col>
     </ion-row>
     <ion-row class="full-grid-row">
-      <ion-col text-center margin-horizontal>
+      <ion-col class="ion-text-center ion-margin-horizontal">
         <h2> {{ 'MY_OBSERVATIONS.NO_OBSERVATIONS' | translate }}</h2>
-        <h3 text-wrap>{{'MY_OBSERVATIONS.NO_OBSERVATIONS_TEXT'|translate}}</h3>
+        <h3 class="ion-text-wrap">{{'MY_OBSERVATIONS.NO_OBSERVATIONS_TEXT'|translate}}</h3>
       </ion-col>
     </ion-row>
   </ion-grid>

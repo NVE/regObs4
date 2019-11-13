@@ -4,6 +4,8 @@ import moment from 'moment';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
 import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
 
+const DEBUG_TAG = 'WaterLevelMeasurementComponent';
+
 @Component({
   selector: 'app-water-level-measurement',
   templateUrl: './water-level-measurement.component.html',
@@ -13,8 +15,8 @@ export class WaterLevelMeasurementComponent implements OnInit {
   @Input() measurementNumber: number;
   @Input() waterLevelMethod: number;
   @Input() registrationTid: RegistrationTid;
-  @Input() waterLevelMeasurement: WaterLevelMeasurementDto;
   @Input() dtObsTime: string;
+  @Input() waterLevelMeasurement: WaterLevelMeasurementDto;
   @Output() waterLevelMeasurementChange = new EventEmitter();
   maxDate: string;
   showDtMeasurementTimeError = false;
@@ -66,6 +68,6 @@ export class WaterLevelMeasurementComponent implements OnInit {
   }
 
   triggerChange() {
-    this.waterLevelMeasurementChange.emit();
+    this.waterLevelMeasurementChange.emit(this.waterLevelMeasurement);
   }
 }

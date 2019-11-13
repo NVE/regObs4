@@ -118,6 +118,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       subscription.unsubscribe();
     }
     this.stopGeoPositionUpdates();
+    this.pauseSavingTiles();
     if (this.map) {
       this.map.remove();
       this.map = null;
@@ -195,8 +196,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.activateGeoLocationOnStart) {
       this.startGeoPositionUpdates();
     }
+
+    this.offlineMapService.resumeSavingTiles();
+
     this.map.on('resize', () => this.updateMapView());
     this.mapReady.emit(this.map);
+  }
+
+  resumeSavingTiles() {
+    this.offlineMapService.resumeSavingTiles();
+  }
+
+  pauseSavingTiles() {
+    this.offlineMapService.pauseSavingTiles();
   }
 
   private onMapMove() {
