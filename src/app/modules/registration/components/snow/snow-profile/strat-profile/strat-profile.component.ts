@@ -25,13 +25,14 @@ export class StratProfileComponent implements OnInit {
     return IsEmptyHelper.isEmpty(this.profile);
   }
 
-  constructor(private modalContoller: ModalController, registrationService: RegistrationService) { }
+  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) { }
 
   ngOnInit() {
   }
 
   async openModal() {
     if (!this.modal) {
+      await this.registrationService.saveRegistration(this.reg); // Save registration before open modal page
       this.modal = await this.modalContoller.create({
         component: StratProfileModalPage,
         componentProps: {

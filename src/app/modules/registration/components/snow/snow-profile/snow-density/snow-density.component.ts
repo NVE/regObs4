@@ -4,6 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
 import { IRegistration } from '../../../../models/registration.model';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
+import { RegistrationService } from '../../../../services/registration.service';
 
 @Component({
   selector: 'app-snow-density',
@@ -23,13 +24,14 @@ export class SnowDensityComponent implements OnInit {
     return IsEmptyHelper.isEmpty(this.profiles);
   }
 
-  constructor(private modalContoller: ModalController) { }
+  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) { }
 
   ngOnInit() {
   }
 
   async openModal() {
     if (!this.densityModal) {
+      await this.registrationService.saveRegistration(this.reg); // Save registration before open modal page
       this.densityModal = await this.modalContoller.create({
         component: SnowDensityModalPage,
         componentProps: {

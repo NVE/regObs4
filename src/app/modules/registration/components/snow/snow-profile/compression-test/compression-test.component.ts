@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CompressionTestListModalPage } from './compression-test-list-modal/compression-test-list-modal.page';
 import { ModalController } from '@ionic/angular';
 import { IRegistration } from '../../../../models/registration.model';
+import { RegistrationService } from '../../../../services/registration.service';
 
 @Component({
   selector: 'app-compression-test',
@@ -25,13 +26,14 @@ export class CompressionTestComponent implements OnInit {
     return this.connectedTests.length === 0;
   }
 
-  constructor(private modalContoller: ModalController) { }
+  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) { }
 
   ngOnInit() {
   }
 
   async openModal() {
     if (!this.compressionTestListModal) {
+      await this.registrationService.saveRegistration(this.reg); // Save registration before open modal page
       this.compressionTestListModal = await this.modalContoller.create({
         component: CompressionTestListModalPage,
         componentProps: {
