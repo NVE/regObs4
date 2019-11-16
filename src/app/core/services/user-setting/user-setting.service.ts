@@ -164,6 +164,8 @@ export class UserSettingService implements OnReset {
       useRetinaMap: false,
       consentForSendingAnalytics: true,
       consentForSendingAnalyticsDialogCompleted: false,
+      featureToggeGpsDebug: false,
+      featureToggleDeveloperMode: false,
     };
   }
 

@@ -36,6 +36,10 @@ export class GeoPositionService {
     return this.currentHeading.pipe(filter((cp) => cp !== null));
   }
 
+  get log$() {
+    return this.gpsPositionLog.asObservable();
+  }
+
   constructor(
     private geolocation: Geolocation,
     private platform: Platform,
