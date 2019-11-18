@@ -68,20 +68,18 @@ export class GeoPositionService {
       })))));
 
     from(this.checkPermissions()).pipe(
-      concatMap((startWatch) => startWatch ? watchObservable : of(null)),
+      concatMap((startWatch) => startWatch ? watchObservable : of((
+        {
+          status: 'PositionError',
+          pos: undefined,
+          err: { code: 0, message: 'Permission denied', PERMISSION_DENIED: 1 },
+        }))),
       takeUntil(this.stopPostionUpdates))
       .subscribe((result: GeoPositionLog) => {
         this.gpsPositionLog.next(result);
         if (result.pos) {
           this.gpsPositionLog.next(({ status: 'PositionUpdate', highAccuracyEnabled: result.highAccuracyEnabled, pos: result.pos }));
           this.currentPosition.next(result.pos);
-          if (
-            !this.hasCompassHeading &&
-            result.pos &&
-            result.pos.coords &&
-            this.isValidHeading(result.pos.coords.heading)) {
-            this.currentHeading.next(result.pos.coords.heading);
-          }
           if (!this.highAccuracyEnabled.value) {
             this.highAccuracyEnabled.next(true);
           }

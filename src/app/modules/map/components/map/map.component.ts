@@ -4,7 +4,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { timer, Subject } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
-import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
+import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
 import { take, takeWhile, tap, takeUntil } from 'rxjs/operators';
@@ -51,7 +51,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private offlineMapService: OfflineMapService,
     private mapSearchService: MapSearchService,
     private zone: NgZone,
-    private geolocation: Geolocation,
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
     private geoPositionService: GeoPositionService,
