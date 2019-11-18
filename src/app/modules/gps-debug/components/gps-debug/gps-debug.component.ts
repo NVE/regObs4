@@ -4,7 +4,7 @@ import { map, distinctUntilChanged, scan, debounceTime, filter, tap } from 'rxjs
 import { GeoPositionService, GeoPositionLog } from '../../../../core/services/geo-position/geo-position.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { enterZone } from '../../../../core/helpers/observable-helper';
-import { IonContent } from '@ionic/angular';
+import { IonContent, Platform } from '@ionic/angular';
 import moment from 'moment';
 
 @Component({
@@ -24,6 +24,7 @@ export class GpsDebugComponent implements OnInit {
   constructor(
     userSettingService: UserSettingService,
     geoPositionService: GeoPositionService,
+    private platform: Platform,
     ngZone: NgZone) {
     this.showLog$ = userSettingService.userSettingObservable$.pipe(map((us) =>
       us.featureToggeGpsDebug), distinctUntilChanged(), enterZone(ngZone));
@@ -52,7 +53,8 @@ export class GpsDebugComponent implements OnInit {
   }
 
   timestampToString(timestamp: number) {
-    return moment.unix(timestamp).format('dd.MM HH:mm:ss.SSS');
+    const unixTimestamp = this.platform.is('ios') ? (timestamp / 1000) : timestamp;
+    return moment.unix(unixTimestamp).local().format('dd.MM HH:mm:ss.SSS');
   }
 
 }

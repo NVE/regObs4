@@ -10,8 +10,8 @@
       <span *ngIf="item.status === 'PositionUpdate'">
         <span *ngIf="item.pos else NoPosition">
           {{ timestampToString(item.pos.timestamp) }} -
-          {{ item.pos.coords.latitude | number:'.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-          {{ item.pos.coords.longitude | number:'.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}},
+          {{ item.pos.coords.latitude | number:'.5' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+          {{ item.pos.coords.longitude | number:'.5' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}},
           {{ item.pos.coords.accuracy }}
         </span>
       </span>

@@ -57,15 +57,14 @@ export class GeoPositionService {
     this.gpsPositionLog.next({ status: 'StartGpsTracking', highAccuracyEnabled: this.highAccuracyEnabled.value });
     this.stopPostionUpdates = new Subject();
 
-    const watchObservable: Observable<GeoPositionLog> = this.highAccuracyEnabled.pipe(switchMap((highAccuracyEnabled) =>
-      this.geolocation.watchPosition(
-        highAccuracyEnabled ? settings.gps.highAccuracyPositionOptions : settings.gps.lowAccuracyPositionOptions
-      ).pipe(filter((result) => result !== null), map((pos) => ({
-        status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
-        pos,
-        highAccuracyEnabled,
-        err: pos.coords === undefined ? (pos as unknown as PositionError) : undefined
-      })))));
+    const watchObservable: Observable<GeoPositionLog> = this.geolocation.watchPosition(
+      settings.gps.highAccuracyPositionOptions
+    ).pipe(filter((result) => result !== null), map((pos) => ({
+      status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
+      pos,
+      highAccuracyEnabled: true,
+      err: pos.coords === undefined ? (pos as unknown as PositionError) : undefined
+    })));
 
     from(this.checkPermissions()).pipe(
       concatMap((startWatch) => startWatch ? watchObservable : of((
@@ -80,9 +79,9 @@ export class GeoPositionService {
         if (result.pos) {
           this.gpsPositionLog.next(({ status: 'PositionUpdate', highAccuracyEnabled: result.highAccuracyEnabled, pos: result.pos }));
           this.currentPosition.next(result.pos);
-          if (!this.highAccuracyEnabled.value) {
-            this.highAccuracyEnabled.next(true);
-          }
+          // if (!this.highAccuracyEnabled.value) {
+          //   this.highAccuracyEnabled.next(true);
+          // }
         }
       });
     this.startWatchingHeading();
@@ -90,11 +89,11 @@ export class GeoPositionService {
   }
 
   stopTracking() {
-    this.gpsPositionLog.next({ status: 'StopGpsTracking', highAccuracyEnabled: this.highAccuracyEnabled.value });
+    this.gpsPositionLog.next({ status: 'StopGpsTracking', highAccuracyEnabled: true });
     this.stopWatchingHeading();
     this.stopPostionUpdates.next();
     this.stopPostionUpdates.complete();
-    this.highAccuracyEnabled.next(false);
+    // this.highAccuracyEnabled.next(false);
   }
 
   private isValidHeading(heading: number) {
