@@ -26,13 +26,10 @@
   }
 }
 
-ion-button {
-  position: absolute;
-  bottom: 350px;
-  left: calc(50% - (54px / 2));
-  transform: translate3d(0px, 299px, 0px);
+ion-fab {
+  transform: translate3d(0px, -124px, 0px);
 
   &.open {
-    transform: translate3d(0px, 0px, 0px);
+    transform: translate3d(0px, -308px, 0px);
   }
 }

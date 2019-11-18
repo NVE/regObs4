@@ -23,7 +23,7 @@ const DEBUG_TAG = 'GeoPositionService';
 export class GeoPositionService {
 
   private stopPostionUpdates: Subject<void> = new Subject();
-  private highAccuracyEnabled = new BehaviorSubject(false);
+  private highAccuracyEnabled = new BehaviorSubject(true);
   private gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
   private currentPosition: BehaviorSubject<Geoposition> = new BehaviorSubject(null);
   private setHeadingFunc: (event: DeviceOrientationEvent) => void;
@@ -103,6 +103,9 @@ export class GeoPositionService {
 
   private async checkPermissions() {
     // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
+    if (this.platform.is('ios')) {
+      return true;
+    }
     try {
       const authorized = await this.diagnostic.isLocationAuthorized();
       this.loggingService.debug('Location is ' + (authorized ? 'authorized' : 'unauthorized'), DEBUG_TAG);

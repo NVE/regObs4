@@ -52,7 +52,7 @@ export class GpsDebugComponent implements OnInit {
   }
 
   timestampToString(timestamp: number) {
-    return moment.unix(timestamp).format('HH:mm:ss.SSS');
+    return moment.unix(timestamp).format('dd.MM HH:mm:ss.SSS');
   }
 
 }
