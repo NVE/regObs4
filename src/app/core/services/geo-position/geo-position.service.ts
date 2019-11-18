@@ -57,7 +57,7 @@ export class GeoPositionService {
     this.gpsPositionLog.next({ status: 'StartGpsTracking', highAccuracyEnabled: this.highAccuracyEnabled.value });
     this.stopPostionUpdates = new Subject();
 
-    const watchObservable: Observable<GeoPositionLog> = this.geolocation.watchPosition(
+    const watchObservable: () => Observable<GeoPositionLog> = () => this.geolocation.watchPosition(
       settings.gps.highAccuracyPositionOptions
     ).pipe(filter((result) => result !== null), map((pos) => ({
       status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
@@ -67,7 +67,7 @@ export class GeoPositionService {
     })));
 
     from(this.checkPermissions()).pipe(
-      concatMap((startWatch) => startWatch ? watchObservable : of((
+      concatMap((startWatch) => startWatch ? watchObservable() : of((
         {
           status: 'PositionError',
           pos: undefined,
