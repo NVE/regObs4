@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, ReplaySubject, from, of } from 'rxjs';
+import { BehaviorSubject, Subject, ReplaySubject, from, of, Observable } from 'rxjs';
 import { switchMap, filter, takeUntil, map, concatMap } from 'rxjs/operators';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../../settings';
@@ -9,9 +9,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 
 export interface GeoPositionLog {
-  status: 'StartGpsTracking' | 'StopGpsTracking' | 'PositionUpdate';
+  status: 'StartGpsTracking' | 'StopGpsTracking' | 'PositionUpdate' | 'PositionError';
   highAccuracyEnabled: boolean;
   pos?: Geoposition;
+  err?: PositionError;
 }
 
 const DEBUG_TAG = 'GeoPositionService';
@@ -27,6 +28,7 @@ export class GeoPositionService {
   private currentPosition: BehaviorSubject<Geoposition> = new BehaviorSubject(null);
   private setHeadingFunc: (event: DeviceOrientationEvent) => void;
   private currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
+  private hasCompassHeading = new BehaviorSubject(false);
 
   get currentPosition$() {
     return this.currentPosition.pipe(filter((cp) => cp !== null));
@@ -55,22 +57,38 @@ export class GeoPositionService {
     this.gpsPositionLog.next({ status: 'StartGpsTracking', highAccuracyEnabled: this.highAccuracyEnabled.value });
     this.stopPostionUpdates = new Subject();
 
-    const watchObservable = this.highAccuracyEnabled.pipe(switchMap((highAccuracyEnabled) =>
+    const watchObservable: Observable<GeoPositionLog> = this.highAccuracyEnabled.pipe(switchMap((highAccuracyEnabled) =>
       this.geolocation.watchPosition(
         highAccuracyEnabled ? settings.gps.highAccuracyPositionOptions : settings.gps.lowAccuracyPositionOptions
-      ).pipe(filter((result) => result !== null), map((pos) => ({ pos, highAccuracyEnabled })))));
+      ).pipe(filter((result) => result !== null), map((pos) => ({
+        status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
+        pos,
+        highAccuracyEnabled,
+        err: pos.coords === undefined ? (pos as unknown as PositionError) : undefined
+      })))));
 
     from(this.checkPermissions()).pipe(
       concatMap((startWatch) => startWatch ? watchObservable : of(null)),
       takeUntil(this.stopPostionUpdates))
-      .subscribe((result) => {
-        this.gpsPositionLog.next(({ status: 'PositionUpdate', highAccuracyEnabled: result.highAccuracyEnabled, pos: result.pos }));
-        this.currentPosition.next(result.pos);
-        if (!this.highAccuracyEnabled) {
-          this.highAccuracyEnabled.next(true);
+      .subscribe((result: GeoPositionLog) => {
+        this.gpsPositionLog.next(result);
+        if (result.pos) {
+          this.gpsPositionLog.next(({ status: 'PositionUpdate', highAccuracyEnabled: result.highAccuracyEnabled, pos: result.pos }));
+          this.currentPosition.next(result.pos);
+          if (
+            !this.hasCompassHeading &&
+            result.pos &&
+            result.pos.coords &&
+            this.isValidHeading(result.pos.coords.heading)) {
+            this.currentHeading.next(result.pos.coords.heading);
+          }
+          if (!this.highAccuracyEnabled.value) {
+            this.highAccuracyEnabled.next(true);
+          }
         }
       });
     this.startWatchingHeading();
+    this.startUpdateHeadingIfValidPositionAndNoCompassHeading();
   }
 
   stopTracking() {
@@ -78,6 +96,11 @@ export class GeoPositionService {
     this.stopWatchingHeading();
     this.stopPostionUpdates.next();
     this.stopPostionUpdates.complete();
+    this.highAccuracyEnabled.next(false);
+  }
+
+  private isValidHeading(heading: number) {
+    return heading >= 0 && heading <= 360;
   }
 
   private async checkPermissions() {
@@ -155,6 +178,16 @@ export class GeoPositionService {
     // }
   }
 
+  private startUpdateHeadingIfValidPositionAndNoCompassHeading() {
+    this.currentPosition$.pipe(filter((pos) =>
+      !this.hasCompassHeading
+      && pos
+      && pos.coords
+      && this.isValidHeading(pos.coords.heading)),
+      takeUntil(this.stopPostionUpdates))
+      .subscribe((pos) => this.currentHeading.next(pos.coords.heading));
+  }
+
   private getAbsoluteHeading(event: DeviceOrientationEvent) {
     return (event.alpha !== undefined && event.absolute) ? (360 - event.alpha) : undefined;
   }
@@ -162,12 +195,14 @@ export class GeoPositionService {
   private setHeading(event: DeviceOrientationEvent) {
     const appleHeading = (<any>event).webkitCompassHeading;
     const heading: number = appleHeading || this.getAbsoluteHeading(event);
-    if (heading !== undefined && heading >= 0 && heading <= 360) {
+    if (this.isValidHeading(heading)) {
+      this.hasCompassHeading.next(true);
       this.currentHeading.next(heading);
     }
   }
 
   private stopWatchingHeading() {
+    this.hasCompassHeading.next(false);
     window.removeEventListener('deviceorientation', this.setHeadingFunc);
     window.removeEventListener('deviceorientationabsolute', this.setHeadingFunc);
   }

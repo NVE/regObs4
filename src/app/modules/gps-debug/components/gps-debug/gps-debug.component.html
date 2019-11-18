@@ -1,0 +1,24 @@
+<div *ngIf="showLog$ | async">
+  <ion-button (click)="toggle()" [ngClass]="{'open': isOpen }">
+    <ion-icon [name]="isOpen ? 'arrow-dropdown' : 'arrow-dropup'"></ion-icon>
+  </ion-button>
+  <ion-content class="gpsLogPanel" [ngClass]="{'open': isOpen, 'tracking': isTracking$ | async }">
+    <div *ngFor="let item of geoPositionLog$ | async">
+      <span *ngIf="item.status !== 'PositionUpdate'">{{item.status}}</span>
+      <span *ngIf="item.status === 'PositionUpdate'">
+        <span *ngIf="item.pos else NoPosition">
+          {{ timestampToString(item.pos.timestamp) }} -
+          {{ item.pos.coords.latitude | number:'.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+          {{ item.pos.coords.longitude | number:'.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}},
+          {{ item.pos.coords.accuracy }}
+        </span>
+      </span>
+      <span *ngIf="item.status === 'PositionError'">Error code: {{ item.err.code }}. Permission Denied:
+        {{ item.err.PERMISSION_DENIED === 1 }}</span>
+      <span *ngIf="item.highAccuracyEnabled">(H)</span>
+    </div>
+  </ion-content>
+</div>
+<ng-template #NoPosition>
+  Empty
+</ng-template>

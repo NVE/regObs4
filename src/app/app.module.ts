@@ -21,7 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SideMenuModule } from './modules/side-menu/side-menu.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { from, Observable } from 'rxjs';
-import { GpsDebugComponent } from './components/gps-debug/gps-debug.component';
+import { GpsDebugModule } from './modules/gps-debug/gps-debug.module';
 
 // export function HttpLoaderFactory(http: HttpClient) {
 //   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -36,7 +36,6 @@ export class CustomTranslateLoader implements TranslateLoader {
 @NgModule({
   declarations: [
     AppComponent,
-    GpsDebugComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,6 +61,7 @@ export class CustomTranslateLoader implements TranslateLoader {
     RegobsApiModule,
     LegalTermsModalPageModule,
     SideMenuModule,
+    GpsDebugModule,
     AnalyticsModule.forRoot(),
   ],
   providers: APP_PROVIDERS,

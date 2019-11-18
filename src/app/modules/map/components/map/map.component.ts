@@ -1,14 +1,13 @@
 import { Component, OnInit, Input, NgZone, OnDestroy, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { Subscription, timer, Subject } from 'rxjs';
-import { Platform, AlertController } from '@ionic/angular';
+import { timer, Subject } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
-import { take, takeWhile, tap, pairwise, takeUntil } from 'rxjs/operators';
+import { take, takeWhile, tap, takeUntil } from 'rxjs/operators';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -17,8 +16,6 @@ import { RegObsTileLayer, IRegObsTileLayerOptions } from '../../core/classes/reg
 import '../../../../core/helpers/ionic/platform-helper';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
-import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { TranslateService } from '@ngx-translate/core';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 
 const DEBUG_TAG = 'MapComponent';
@@ -37,44 +34,28 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() zoom: number;
   @Input() activateGeoLocationOnStart = true;
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
-  // @Output() positionChange: EventEmitter<Geoposition> = new EventEmitter();
-  loaded = false;
 
+  loaded = false;
   private map: L.Map;
   private tilesLayer = L.layerGroup();
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
-
-  // private geoLoactionSubscription: Subscription;
-  // private subscriptions: Subscription[] = [];
-
   private ngDestroy$ = new Subject();
-
   private followMode = true;
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
-  // private isGeoLocationActive = false;
-  // private isAskingForPermissions = false;
-  // private gpsHighAccuracyEnabled = false;
-
-  // private setHeadingFunc: (event: DeviceOrientationEvent) => void;
 
   constructor(
     private userSettingService: UserSettingService,
     private mapService: MapService,
     private offlineMapService: OfflineMapService,
     private mapSearchService: MapSearchService,
-    private platform: Platform,
     private zone: NgZone,
     private geolocation: Geolocation,
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
-    private diagnostic: Diagnostic,
-    private alertController: AlertController,
-    private translateService: TranslateService,
     private geoPositionService: GeoPositionService,
   ) {
-    // this.setHeadingFunc = this.setHeading.bind(this);
     // Hack to make sure map pane is set before getPosition
     L.Map.include({
       _getMapPanePos: function () {
@@ -118,10 +99,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    // for (const subscription of this.subscriptions) {
-    //   subscription.unsubscribe();
-    // }
-    // this.stopGeoPositionUpdates();
+    if (this.activateGeoLocationOnStart) {
+      this.geoPositionService.stopTracking();
+    }
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
     this.pauseSavingTiles();
@@ -151,7 +131,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.mapService.centerMapToUser$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
-      // this.checkPermissionsAndStartGeoPositionUpdates();
       this.geoPositionService.startTracking();
     });
 
@@ -185,13 +164,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.map.on('zoomstart', () => this.onMapMove());
     });
 
-    // this.subscriptions.push(this.platform.pause.pipe(tap(() => {
-    //   this.loggingService.debug('App pause. Stop Geopostioton updates', DEBUG_TAG);
-    // })).subscribe(() => this.stopGeoPositionUpdates()));
-    // this.subscriptions.push(this.platform.resume.pipe(tap(() => {
-    //   this.loggingService.debug('App resume. Start Geopostioton updates', DEBUG_TAG);
-    // })).subscribe(() => this.startGeoPositionUpdates()));
-
     this.zone.runOutsideAngular(() => {
       this.map.on('moveend', () => this.onMapMoveEnd());
     });
@@ -200,9 +172,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.redrawMap();
     });
 
-    // if (this.activateGeoLocationOnStart) {
-    //   this.startGeoPositionUpdates();
-    // }
+    if (this.activateGeoLocationOnStart) {
+      this.geoPositionService.startTracking();
+    }
 
     this.geoPositionService.currentPosition$.pipe(takeUntil(this.ngDestroy$))
       .subscribe((pos) => this.onPositionUpdate(pos));
@@ -361,7 +333,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.map) {
           this.loggingService.debug('Invalidate size', DEBUG_TAG);
           this.map.invalidateSize();
-          // window.dispatchEvent(new Event('resize'));
         } else {
           this.loggingService.debug('No map to invalidate', DEBUG_TAG);
         }
@@ -372,123 +343,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.redrawMap();
   }
 
-  // startGeoPositionUpdates() {
-  //   if (this.showUserLocation && !this.isAskingForPermissions) {
-  //     this.isGeoLocationActive = true;
-  //     this.loggingService.debug('Start watching location changes', DEBUG_TAG);
-  //     if (this.geoLoactionSubscription === undefined || this.geoLoactionSubscription.closed) {
-  //       this.isAskingForPermissions = true;
-  //       // TODO: Start with low accuracy and when that is success, start watching high accuracy?
-  //       this.geoLoactionSubscription = this.geolocation.watchPosition(settings.gps.lowAccuracyPositionOptions)
-  //         .subscribe(
-  //           (data) => this.onPositionUpdate(data),
-  //           (error) => this.onPositionError(error)
-  //         );
-  //     } else {
-  //       this.loggingService.debug('Geolocation service allready running', DEBUG_TAG);
-  //     }
-  //     this.startWatchingHeading();
-  //   }
-  // }
-
-  // private startWatchingHeading() {
-  //   // TODO: Implement compass needs calibration alert?
-  //   //   window.addEventListener('compassneedscalibration', function(event) {
-  //   //     // ask user to wave device in a figure-eight motion
-  //   //     event.preventDefault();
-  //   // }, true);
-
-  //   this.requestDeviceOrientationPermission().then((granted) => {
-  //     if (granted) {
-  //       if ('ondeviceorientationabsolute' in <any>window) {
-  //         window.addEventListener('deviceorientationabsolute', this.setHeadingFunc, false);
-  //       } else if ('ondeviceorientation' in <any>window) {
-  //         window.addEventListener('deviceorientation', this.setHeadingFunc, false);
-  //       }
-  //     }
-  //   });
-  // }
-
-  // private requestDeviceOrientationPermission(): Promise<boolean> {
-  //   // TODO: iOS 13 ask for permission every time, and from localhost.
-  //   // this needs to be better supported before turning on
-  //   // or use another native plugin than depricated
-  //   // https://github.com/apache/cordova-plugin-device-orientation
-  //   // https://medium.com/flawless-app-stories/how-to-request-device-motion-and-orientation-permission-in-ios-13-74fc9d6cd140
-
-  //   // const doe = <any>DeviceOrientationEvent;
-  //   // if (typeof doe.requestPermission === 'function') {
-  //   //   // iOS 13+
-  //   //   const response = await doe.requestPermission();
-  //   //   return response === 'granted';
-  //   // } else {
-  //   //   // non iOS 13+
-  //   return Promise.resolve(true);
-  //   // }
-  // }
-
-  // startHighAccuracyPositionUpdates() {
-  //   this.loggingService.debug('Start high accuracy position updates', DEBUG_TAG);
-  //   this.gpsHighAccuracyEnabled = true;
-  //   this.geoLoactionSubscription = this.geolocation.watchPosition(settings.gps.highAccuracyPositionOptions)
-  //     .subscribe(
-  //       (data) => this.onPositionUpdate(data),
-  //       (error) => this.onPositionError(error)
-  //     );
-  // }
-
-  // stopGeoPositionUpdates() {
-  //   this.isGeoLocationActive = false;
-  //   window.removeEventListener('deviceorientation', this.setHeadingFunc);
-  //   window.removeEventListener('deviceorientationabsolute', this.setHeadingFunc);
-  //   if (!this.isAskingForPermissions) {
-  //     this.loggingService.debug('Stop watching location changes', DEBUG_TAG);
-  //     if (this.geoLoactionSubscription !== undefined && !this.geoLoactionSubscription.closed) {
-  //       this.geoLoactionSubscription.unsubscribe();
-  //     }
-  //   }
-  // }
-
-  // private setHeading(event: DeviceOrientationEvent) {
-  //   if (this.userMarker) {
-  //     const appleHeading = (<any>event).webkitCompassHeading;
-  //     const heading = appleHeading !== undefined ? appleHeading :
-  //       (event.alpha !== undefined && event.absolute ? (360 - event.alpha) : undefined);
-  //     if (heading !== undefined && heading >= 0 && heading <= 360) {
-  //       this.userMarker.setHeading(heading);
-  //     }
-  //   }
-  // }
-
   private onPositionUpdate(data: Geoposition) {
-    // if (data.coords) {
-    //   if (!this.gpsHighAccuracyEnabled) {
-    //     this.startHighAccuracyPositionUpdates();
-    //   }
-    //   this.isAskingForPermissions = false;
-    //   this.positionChange.emit(data);
-    //   this.zone.runOutsideAngular(() => {
-    //     if (this.map) {
-    //       const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
-    //       if (!this.userMarker) {
-    //         this.userMarker = new UserMarker(this.map, data);
-    //       } else {
-    //         this.userMarker.updatePosition(data);
-    //       }
-    //       if (this.followMode && !this.isDoingMoveAction) {
-    //         this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
-    //         this.firstPositionUpdate = false;
-    //       }
-    //     }
-    //   });
-    // } else {
-    //   const error = data as unknown as PositionError;
-    //   if (error && error.PERMISSION_DENIED === 1) {
-    //     this.loggingService.debug('Permission denied for location service', DEBUG_TAG);
-    //   } else {
-    //     this.isAskingForPermissions = false;
-    //   }
-    // }
     this.zone.runOutsideAngular(() => {
       if (this.map) {
         const latLng = L.latLng({ lat: data.coords.latitude, lng: data.coords.longitude });
@@ -520,48 +375,4 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.map.setView(latLng, zoom, { animate: false });
     this.isDoingMoveAction = false;
   }
-
-  // private onPositionError(error: any) {
-  //   this.isAskingForPermissions = false;
-  //   this.loggingService.error(error, DEBUG_TAG, 'Got error from GeoLoaction watchPosition');
-  // }
-
-  // private async checkPermissionsAndStartGeoPositionUpdates() {
-  //   // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
-  //   this.isAskingForPermissions = false; // reset
-  //   try {
-  //     const authorized = await this.diagnostic.isLocationAuthorized();
-  //     this.loggingService.debug('Location is ' + (authorized ? 'authorized' : 'unauthorized'), DEBUG_TAG);
-  //     if (!authorized) {
-  //       if (this.platform.is('ios')) {
-  //         await this.showPermissionDeniedError();
-  //         return;
-  //       }
-  //       // location is not authorized, request new. This only works on Android
-  //       const status = await this.diagnostic.requestLocationAuthorization();
-  //       this.loggingService.debug(`Request location status`, DEBUG_TAG, status);
-  //       if (status === this.diagnostic.permissionStatus.DENIED_ONCE ||
-  //         status === this.diagnostic.permissionStatus.DENIED_ALWAYS) {
-  //         await this.showPermissionDeniedError();
-  //         return;
-  //       }
-  //     }
-  //     this.startGeoPositionUpdates();
-  //   } catch (err) {
-  //     this.loggingService.error(err, DEBUG_TAG, 'Error asking for location permissions');
-  //   }
-  // }
-
-  // private async showPermissionDeniedError() {
-  //   const translations = await this.translateService.get([
-  //     'ALERT.OK',
-  //     'PERMISSION.LOCATION_DENIED_HEADER',
-  //     'PERMISSION.LOCATION_DENIED_MESSAGE']).toPromise();
-  //   const alert = await this.alertController.create({
-  //     header: translations['PERMISSION.LOCATION_DENIED_HEADER'],
-  //     message: translations['PERMISSION.LOCATION_DENIED_MESSAGE'],
-  //     buttons: [translations['ALERT.OK']]
-  //   });
-  //   await alert.present();
-  // }
 }
