@@ -8,13 +8,8 @@ import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
-
-export interface GeoPositionLog {
-  status: 'StartGpsTracking' | 'StopGpsTracking' | 'PositionUpdate' | 'PositionError';
-  highAccuracyEnabled: boolean;
-  pos?: Geoposition;
-  err?: PositionError;
-}
+import { GeoPositionLog } from './geo-position-log.interface';
+import { GeoPositionErrorCode } from './geo-position-error.enum';
 
 const DEBUG_TAG = 'GeoPositionService';
 
@@ -55,11 +50,8 @@ export class GeoPositionService {
 
   private createPositionError(
     message: string,
-    highAccuracyEnabled = true,
-    code: number = 0,
-    PERMISSION_DENIED = 0,
-    POSITION_UNAVAILABLE = 0,
-    TIMEOUT = 0): GeoPositionLog {
+    code: GeoPositionErrorCode = GeoPositionErrorCode.Unknown,
+    highAccuracyEnabled = true): GeoPositionLog {
     return {
       status: 'PositionError',
       pos: undefined,
@@ -67,9 +59,9 @@ export class GeoPositionService {
       err: {
         code,
         message,
-        PERMISSION_DENIED,
-        POSITION_UNAVAILABLE,
-        TIMEOUT,
+        PERMISSION_DENIED: code === GeoPositionErrorCode.PermissionDenied ? 1 : 0,
+        POSITION_UNAVAILABLE: code === GeoPositionErrorCode.PositionUnavailable ? 1 : 0,
+        TIMEOUT: code === GeoPositionErrorCode.Timeout ? 1 : 0,
       },
     };
   }
@@ -103,7 +95,8 @@ export class GeoPositionService {
 
     (forcePermissionDialog ? from(this.checkPermissions()) : of(true)).pipe(
       tap(() => this.loggingService.debug('Before watchPosition', DEBUG_TAG)),
-      concatMap((startWatch) => startWatch ? watchObservable : of(this.createPositionError('Permission denied'))),
+      concatMap((startWatch) => startWatch ? watchObservable : of(
+        this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied))),
       tap((val) => this.loggingService.debug('After watchPosition', DEBUG_TAG, val)),
       takeUntil(this.stopPostionUpdates))
       .subscribe((result: GeoPositionLog) => {
@@ -144,10 +137,10 @@ export class GeoPositionService {
       const authorized = await this.diagnostic.isLocationAuthorized();
       this.loggingService.debug('Location is ' + (authorized ? 'authorized' : 'unauthorized'), DEBUG_TAG);
       if (!authorized) {
-        // if (this.platform.is('ios')) {
-        //   await this.showPermissionDeniedError();
-        //   return false;
-        // }
+        if (this.platform.is('ios')) {
+          await this.showPermissionDeniedError();
+          return false;
+        }
         // location is not authorized, request new. This only works on Android
         const status = await this.diagnostic.requestLocationAuthorization();
         this.loggingService.debug(`Request location status`, DEBUG_TAG, status);

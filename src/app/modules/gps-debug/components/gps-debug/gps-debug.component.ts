@@ -1,11 +1,13 @@
 import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, distinctUntilChanged, scan, debounceTime, filter, tap } from 'rxjs/operators';
-import { GeoPositionService, GeoPositionLog } from '../../../../core/services/geo-position/geo-position.service';
+import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { enterZone } from '../../../../core/helpers/observable-helper';
 import { IonContent, Platform } from '@ionic/angular';
 import moment from 'moment';
+import { GeoPositionLog } from '../../../../core/services/geo-position/geo-position-log.interface';
+import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
 
 @Component({
   selector: 'app-gps-debug',
@@ -55,6 +57,22 @@ export class GpsDebugComponent implements OnInit {
   timestampToString(timestamp: number) {
     const unixTimestamp = this.platform.is('ios') ? (timestamp / 1000) : timestamp;
     return moment.unix(unixTimestamp).local().format('dd.MM HH:mm:ss.SSS');
+  }
+
+  getErrorCodeOrMessage(err: PositionError) {
+    if (!err) {
+      return 'Empty error';
+    }
+    switch (err.code) {
+      case GeoPositionErrorCode.PermissionDenied:
+        return 'Permission denied';
+      case GeoPositionErrorCode.PositionUnavailable:
+        return 'Position unavailable';
+      case GeoPositionErrorCode.Timeout:
+        return 'Timeout';
+      default:
+        return err.message;
+    }
   }
 
 }
