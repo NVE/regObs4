@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { TempObsDto } from '../../../../../regobs-api/models';
+import { Component, OnInit, Input } from '@angular/core';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { ModalController } from '@ionic/angular';
 import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
+import { IRegistration } from '../../../../models/registration.model';
+import { RegistrationService } from '../../../../services/registration.service';
 
 @Component({
   selector: 'app-snow-temp',
@@ -10,36 +11,34 @@ import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
   styleUrls: ['./snow-temp.component.scss']
 })
 export class SnowTempComponent implements OnInit {
+  @Input() reg: IRegistration;
+  private snowTempModal: HTMLIonModalElement;
 
-  @Input() tempProfile: TempObsDto;
-  @Output() tempProfileChange = new EventEmitter();
-  private isOpen = false;
+  get tempProfile() {
+    return (((this.reg || {}).request || {}).SnowProfile2 || {}).SnowTemp || {};
+  }
 
   get isEmpty() {
     return IsEmptyHelper.isEmpty(this.tempProfile);
   }
 
-  constructor(private modalContoller: ModalController) { }
+  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) { }
 
   ngOnInit() {
   }
 
   async openModal() {
-    if (!this.isOpen) {
-      this.isOpen = true;
-      const modal = await this.modalContoller.create({
+    if (!this.snowTempModal) {
+      await this.registrationService.saveRegistration(this.reg); // Save registration before open modal page
+      this.snowTempModal = await this.modalContoller.create({
         component: SnowTempModalPage,
         componentProps: {
-          tempProfile: { ...this.tempProfile },
+          regId: this.reg.id,
         }
       });
-      modal.present();
-      const result = await modal.onDidDismiss();
-      this.isOpen = false;
-      if (result.data) {
-        this.tempProfile = result.data;
-        this.tempProfileChange.emit(this.tempProfile);
-      }
+      this.snowTempModal.present();
+      await this.snowTempModal.onDidDismiss();
+      this.snowTempModal = null;
     }
   }
 }

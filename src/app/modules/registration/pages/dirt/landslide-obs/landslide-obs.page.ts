@@ -45,12 +45,12 @@ export class LandslideObsPage extends BasePage {
       this.registration.request.LandSlideObs.Urls = [];
     }
     if (this.registration.request.LandSlideObs.DtLandSlideTimeEnd) {
-      this.maxDateStart = moment(this.registration.request.LandSlideObs.DtLandSlideTimeEnd).minutes(59).toISOString(true);
+      this.maxDateStart = moment(this.registration.request.LandSlideObs.DtLandSlideTimeEnd).toISOString(true);
     } else {
       this.maxDateStart = this.getMaxDateForNow();
     }
     if (this.registration.request.LandSlideObs.DtLandSlideTime) {
-      this.minDateEnd = moment(this.registration.request.LandSlideObs.DtLandSlideTime).minutes(59).toISOString(true);
+      this.minDateEnd = moment(this.registration.request.LandSlideObs.DtLandSlideTime).toISOString(true);
     }
     this.maxDateEnd = this.getMaxDateForNow();
   }
@@ -58,11 +58,11 @@ export class LandslideObsPage extends BasePage {
   getMaxDateForNow() {
     // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
     // Workaround is to set minutes to 59.
-    return moment().minutes(59).toISOString(true);
+    return moment().toISOString(true);
   }
 
   dtTimeChanged() {
-    this.minDateEnd = moment(this.registration.request.LandSlideObs.DtLandSlideTime).minutes(59).toISOString(true);
+    this.minDateEnd = moment(this.registration.request.LandSlideObs.DtLandSlideTime).toISOString(true);
     if (this.registration.request.LandSlideObs.DtLandSlideTimeEnd
       && moment(this.registration.request.LandSlideObs.DtLandSlideTimeEnd).isBefore(
         moment(this.registration.request.LandSlideObs.DtLandSlideTime))) {
@@ -71,7 +71,7 @@ export class LandslideObsPage extends BasePage {
   }
 
   dtEndTimeChanged() {
-    this.maxDateStart = moment(this.registration.request.LandSlideObs.DtLandSlideTimeEnd).minutes(59).toISOString(true);
+    this.maxDateStart = moment(this.registration.request.LandSlideObs.DtLandSlideTimeEnd).toISOString(true);
     if (this.registration.request.LandSlideObs.DtLandSlideTime
       && moment(this.registration.request.LandSlideObs.DtLandSlideTime).isAfter(
         moment(this.registration.request.LandSlideObs.DtLandSlideTimeEnd))) {

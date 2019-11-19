@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { RegobsApiConfiguration, RegobsApiConfigurationInterface } from './regobs-api-configuration';
 
 import { AccountService } from './services/account.service';
+import { AttachmentService } from './services/attachment.service';
 import { GeneralObsService } from './services/general-obs.service';
 import { GeoCodeService } from './services/geo-code.service';
 import { HelptextService } from './services/helptext.service';
@@ -28,6 +29,7 @@ import { TripService } from './services/trip.service';
   providers: [
     RegobsApiConfiguration,
     AccountService,
+    AttachmentService,
     GeneralObsService,
     GeoCodeService,
     HelptextService,

@@ -1,34 +1,70 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { TempObsDto, TempProfileObsDto } from '../../../../../../regobs-api/models';
+import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
+import { TempProfileObsDto, TempObsDto } from '../../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
-import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
+import { IRegistration } from '../../../../../models/registration.model';
+import { RegistrationService } from '../../../../../services/registration.service';
+import cloneDeep from 'clone-deep';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-snow-temp-modal',
   templateUrl: './snow-temp-modal.page.html',
   styleUrls: ['./snow-temp-modal.page.scss'],
 })
-export class SnowTempModalPage implements OnInit {
+export class SnowTempModalPage implements OnInit, OnDestroy {
 
-  @Input() tempProfile: TempObsDto;
-  private isOpen = false;
+  @Input() regId: string;
+  private layerModal: HTMLIonModalElement;
+  private initialRegistrationClone: IRegistration;
+  private reg: IRegistration;
+
+  private ngDestroy$ = new Subject();
+
+  get tempProfile() {
+    return (((this.reg || {}).request || {}).SnowProfile2 || {}).SnowTemp || {};
+  }
 
   get hasLayers() {
     return this.tempProfile && this.tempProfile.Layers && this.tempProfile.Layers.length > 0;
   }
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController, private registrationService: RegistrationService, private ngZone: NgZone) { }
 
   ngOnInit() {
-    this.sortLayers();
+    this.registrationService.getSavedRegistrationByIdObservable(this.regId).pipe(takeUntil(this.ngDestroy$)).subscribe((reg) => {
+      this.ngZone.run(() => {
+        if (!this.initialRegistrationClone) {
+          this.initialRegistrationClone = cloneDeep(reg);
+        }
+        this.reg = reg;
+        if (!this.reg.request.SnowProfile2) {
+          this.reg.request.SnowProfile2 = {};
+        }
+        if (!this.reg.request.SnowProfile2.SnowTemp) {
+          this.reg.request.SnowProfile2.SnowTemp = {};
+        }
+        if (!this.reg.request.SnowProfile2.SnowTemp.Layers) {
+          this.reg.request.SnowProfile2.SnowTemp.Layers = [];
+        }
+        this.sortLayers();
+      });
+    });
+    this.initialRegistrationClone = cloneDeep(this.reg);
+  }
+
+  ngOnDestroy(): void {
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
   ok() {
     this.modalController.dismiss(this.tempProfile);
   }
 
-  cancel() {
+  async cancel() {
+    await this.registrationService.saveRegistration(this.initialRegistrationClone);
     this.modalController.dismiss();
   }
 
@@ -37,56 +73,20 @@ export class SnowTempModalPage implements OnInit {
   }
 
   async addOrEditLayer(index: number, layer: TempProfileObsDto) {
-    if (!this.isOpen) {
-      this.isOpen = true;
-      const add = (layer === undefined);
-      const modal = await this.modalController.create({
+    if (!this.layerModal) {
+      this.layerModal = await this.modalController.create({
         component: SnowTempLayerModalPage,
         componentProps: {
-          layer: layer === undefined ? undefined : { ...layer },
+          reg: this.reg,
+          layer,
           index,
         }
       });
-      modal.present();
-      const result = await modal.onDidDismiss();
-      this.isOpen = false;
-      if (result.data) {
-        if (result.data.delete) {
-          this.removeLayer(index);
-        } else {
-          let currentIndex = index;
-          const temperatureProfile: TempProfileObsDto = result.data.layer;
-          const isEmpty = IsEmptyHelper.isEmpty(temperatureProfile);
-          if (isEmpty && !add) {
-            this.removeLayer(index);
-            currentIndex--;
-          } else if (!isEmpty) {
-            this.setLayer(index, temperatureProfile, add);
-          }
-          if (result.data.gotoIndex !== undefined) {
-            const nextIndex = currentIndex + result.data.gotoIndex;
-            const nextLayer = this.hasLayers ? this.tempProfile.Layers[nextIndex] : undefined;
-            this.addOrEditLayer(nextIndex, nextLayer);
-          }
-        }
-      }
+      this.layerModal.present();
+      await this.layerModal.onDidDismiss();
+      this.layerModal = null;
+      this.sortLayers();
     }
-  }
-
-  private setLayer(index: number, layer: TempProfileObsDto, add: boolean) {
-    if (!this.tempProfile) {
-      this.tempProfile = {};
-    }
-    if (this.tempProfile.Layers === undefined) {
-      this.tempProfile.Layers = [];
-    }
-    this.tempProfile.Layers.splice(index, (add ? 0 : 1), layer);
-    this.sortLayers();
-  }
-
-  private removeLayer(index: number) {
-    this.tempProfile.Layers.splice(index, 1);
-    this.sortLayers();
   }
 
   private sortLayers() {

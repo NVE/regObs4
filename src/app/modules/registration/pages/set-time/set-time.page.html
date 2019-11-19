@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content>
   <ion-list lines="none">
-    <ion-list-header text-uppercase>
+    <ion-list-header class="ion-text-uppercase">
       <ion-label>
         {{"REGISTRATION.SET_TIME.HEADER" | translate}}
       </ion-label>
@@ -26,8 +26,8 @@
       </ion-button>
     </ion-item>
   </ion-list>
-  <ion-list lines="none" padding>
-    <ion-button [disabled]="!this.registration" class="confirm-time" no-margin expand="block" color="varsom-orange"
+  <ion-list lines="none" class="ion-padding">
+    <ion-button [disabled]="!this.registration" class="confirm-time ion-no-margin" expand="block" color="varsom-orange"
       (click)="confirm()">{{"REGISTRATION.SET_TIME.CONFIRM" |
       translate}}</ion-button>
   </ion-list>

@@ -3,7 +3,7 @@
     <h3 color="medium">{{ header }}</h3>
   </ion-card-header>
   <ion-card-content>
-    <ion-grid no-padding>
+    <ion-grid class="ion-no-padding">
       <ion-row class="row-padding-start">
         <ion-col size="12">
           <div class="card-icon-item">
@@ -46,7 +46,7 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="12" no-padding>
+        <ion-col size="12" class="ion-no-padding">
           <app-img-swiper [location]="location" [imgUrl]="imageUrls" [imgHeaders]="imageHeaders"
             [imgComments]="imageDescriptions" (imgClick)="openImage($event)" (locationClick)="openLocation($event)">
           </app-img-swiper>
@@ -58,7 +58,7 @@
             <ion-badge (click)="toggleAllSelected()" [color]="allSelected ? 'medium' : 'light'" [ngClass]="{'outline': !allSelected}">
               {{'OBSERVATION_LIST.ALL_OBSERVATIONS' | translate}}
             </ion-badge>
-            <ion-badge (click)="toggleRegistration(i)" text-wrap [color]="(s.open && (summaries.length <= 1 || !allSelected)) ? 'medium' : 'light'"
+            <ion-badge (click)="toggleRegistration(i)" class="ion-text-wrap" [color]="(s.open && (summaries.length <= 1 || !allSelected)) ? 'medium' : 'light'"
               *ngFor="let s of summaries; let i = index" [ngClass]="{'outline': !(s.open && (summaries.length <= 1 || !allSelected))}">
               {{ s.summary.RegistrationName }}
             </ion-badge>
@@ -71,7 +71,7 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <ion-item no-padding color="light">
+    <ion-item class="ion-no-padding" color="light">
       <ion-button mode="ios" fill="clear" class="link-title" (click)="openWeb()">
         {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
       </ion-button>

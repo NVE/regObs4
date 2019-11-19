@@ -36,12 +36,14 @@ export class FailedRegistrationComponent implements OnInit {
   async sendEmail() {
     const translations = await this.translateService
       .get(['REGISTRATION.EMAIL.SUBJECT', 'REGISTRATION.EMAIL.BODY']).toPromise();
+    const pictures = this.registrationService.getAllPictures(this.registration.request)
+      .filter((p) => p.PictureImageBase64 && !p.PictureImageBase64.startsWith('data'))
+      .map((p) => p.PictureImageBase64);
     const base64string = btoa(stringify(this.registration));
+    const attachments = ['base64:registration.json//' + base64string].concat(pictures);
     const email: EmailComposerOptions = {
       to: settings.errorEmailAddress,
-      attachments: [
-        'base64:registration.json//' + base64string,
-      ],
+      attachments,
       subject: translations['REGISTRATION.EMAIL.SUBJECT'],
       body: translations['REGISTRATION.EMAIL.BODY'],
       isHtml: true

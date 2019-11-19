@@ -15,7 +15,7 @@
       <app-text-comment title="REGISTRATION.INCIDENT.COMMENT" [(value)]="registration.request.Incident.IncidentText">
       </app-text-comment>
       <ion-item-divider>
-        <ion-label text-wrap>
+        <ion-label class="ion-text-wrap">
           {{'REGISTRATION.INCIDENT.COMMENT_PLACEHOLDER' | translate }}
         </ion-label>
       </ion-item-divider>
@@ -23,14 +23,15 @@
         [(value)]="registration.request.Incident.ActivityInfluencedTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV"
         [(value)]="registration.request.Incident.DamageExtentTID"></app-kdv-select>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid">
+      <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
+        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}
         </ion-label>

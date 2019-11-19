@@ -10,8 +10,8 @@
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
-    <ion-list lines="full" no-margin>
-      <ion-list-header text-uppercase>
+    <ion-list lines="full" class="ion-no-margin">
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate}}
         </ion-label>
@@ -25,7 +25,7 @@
         [(value)]="layer.GrainFormPrimaryTID" [filter]="grainFormFilter" [getIconFunc]="getIconFunc">
       </app-kdv-select>
       <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>
+        <ion-label color="medium" position="stacked" class="ion-text-uppercase">
           {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE' | translate }}</ion-label>
         <app-select [(selectedValue)]="layer.GrainSizeAvg" [options]="grainSizeOptions"
           title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE">
@@ -50,7 +50,7 @@
         kdvKey="Snow_GrainFormKDV" [(value)]="layer.GrainFormSecondaryTID" [getIconFunc]="getIconFunc">
       </app-kdv-select>
       <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>
+        <ion-label color="medium" position="stacked" class="ion-text-uppercase">
           {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE' | translate }}</ion-label>
         <app-select [(selectedValue)]="layer.GrainSizeAvgMax" [options]="grainSizeOptions"
           title="REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.MAX_GRAIN_SIZE">
@@ -61,7 +61,7 @@
       </app-kdv-select>
       <app-text-comment title="DIALOGS.COMMENT" [(value)]="layer.Comment"></app-text-comment>
     </ion-list>
-    <ion-grid no-padding>
+    <ion-grid class="ion-no-padding">
       <ion-row>
         <ion-col size="6">
           <ion-button [disabled]="index === 0" expand="block" fill="outline" color="primary" (click)="ok(-1)">
@@ -71,7 +71,7 @@
           </ion-button>
         </ion-col>
         <ion-col size="6">
-          <ion-button expand="block" fill="outline" color="primary" (click)="ok(1)">
+          <ion-button [disabled]="!canGoNext" expand="block" fill="outline" color="primary" (click)="ok(1)">
             <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
             <ion-text>{{ 'DIALOGS.NEXT' | translate }}
               {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate | lowercase }}</ion-text>
@@ -85,7 +85,7 @@
           </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="showDelete">
+      <ion-row *ngIf="!addNew">
         <ion-col size="6" offset="3">
           <ion-button (click)="delete()" size="small" fill="clear" expand="block">
             <ion-icon slot="start" name="trash"></ion-icon>

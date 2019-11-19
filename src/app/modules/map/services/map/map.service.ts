@@ -125,33 +125,33 @@ export class MapService {
   }
 
   private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
-    const currenteMapViewAndGeoHazards = combineLatest(
+    const currenteMapViewAndGeoHazards = combineLatest([
       this.relevantMapChange$,
-      this.userSettingService.currentGeoHazardObservable$)
+      this.userSettingService.currentGeoHazardObservable$])
       .pipe(
         map(([mapView, geoHazards]) => ({
           mapView,
           bounds: [
-                      mapView.bounds.getSouthWest().lng, // minx
-                      mapView.bounds.getSouthWest().lat, // miny
-                      mapView.bounds.getNorthEast().lng, // maxx
-                      mapView.bounds.getNorthEast().lat, // maxy
-                    ],
-          center: {lat: mapView.center.lat, lng: mapView.center.lng },
+            mapView.bounds.getSouthWest().lng, // minx
+            mapView.bounds.getSouthWest().lat, // miny
+            mapView.bounds.getNorthEast().lng, // maxx
+            mapView.bounds.getNorthEast().lat, // maxy
+          ],
+          center: { lat: mapView.center.lat, lng: mapView.center.lng },
           geoHazards
         }))
       );
 
     return currenteMapViewAndGeoHazards.pipe(
-        switchMap((cvg) => fromWorker<IRegionInViewInput, IRegionInViewOutput>(() =>
-            new Worker('../../web-workers/region-in-view.worker',
-            { type: 'module' }),
-            currenteMapViewAndGeoHazards).pipe(map((result) => ({
-               ...cvg.mapView,
-               ...result
-            })))),
-        tap((val) => this.loggingService.debug('MapViewArea changed', DEBUG_TAG, val)),
-        shareReplay(1)
-      );
+      switchMap((cvg) => fromWorker<IRegionInViewInput, IRegionInViewOutput>(() =>
+        new Worker('../../web-workers/region-in-view.worker',
+          { type: 'module' }),
+        currenteMapViewAndGeoHazards).pipe(map((result) => ({
+          ...cvg.mapView,
+          ...result
+        })))),
+      tap((val) => this.loggingService.debug('MapViewArea changed', DEBUG_TAG, val)),
+      shareReplay(1)
+    );
   }
 }

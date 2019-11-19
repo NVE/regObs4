@@ -19,4 +19,6 @@ export interface UserSetting {
     useRetinaMap: boolean;
     consentForSendingAnalytics: boolean;
     consentForSendingAnalyticsDialogCompleted: boolean;
+    featureToggleDeveloperMode: boolean;
+    featureToggeGpsDebug: boolean;
 }

@@ -1,6 +1,6 @@
 <ion-footer *ngIf="registration">
   <ion-toolbar>
-    <ion-grid no-padding>
+    <ion-grid class="ion-no-padding">
       <ion-row>
         <ion-col class="send-button-col" size="12">
           <ion-button [disabled]="isDisabled" expand="block" color="varsom-orange" (click)="send()">
@@ -10,8 +10,8 @@
           </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row no-padding>
-        <ion-col class="delete-button-col" no-padding text-center>
+      <ion-row class="ion-no-padding">
+        <ion-col class="delete-button-col ion-no-padding ion-text-center">
           <ion-button (click)="delete()" color="dark" size="small" fill="clear">
             <!-- <ion-icon slot="start" name="trash"></ion-icon> -->
             <svg-icon slot="start" src="/assets/icon/delete.svg"></svg-icon>

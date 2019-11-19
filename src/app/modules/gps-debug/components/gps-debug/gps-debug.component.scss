@@ -1,0 +1,35 @@
+.gpsLogPanel {
+  bottom: calc(50px + var(--ion-safe-area-bottom));
+  left: 0;
+  right: 0;
+  position: fixed;
+  z-index: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  height: 300px;
+  padding: 10px;
+  transform: translate3d(0px, 3000px, 0px);
+  --background: var(--ion-color-varsom-blue-light-3);
+  font-size: 12px;
+
+  &.open {
+    transform: translate3d(0px, 0px, 0px);
+  }
+
+  &.tracking {
+    --background: var(--ion-color-success-shade);
+    --color: #fff;
+  }
+
+  .small-text {
+    font-size: 12px;
+  }
+}
+
+ion-fab {
+  transform: translate3d(0px, calc(-124px + var(--ion-safe-area-bottom)), 0px);
+
+  &.open {
+    transform: translate3d(0px, calc(-308px + var(--ion-safe-area-bottom)), 0px);
+  }
+}

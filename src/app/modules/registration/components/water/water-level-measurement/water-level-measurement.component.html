@@ -9,7 +9,8 @@
   title="REGISTRATION.WATER.WATER_LEVEL.WATER_LEVEL_METERS" [min]="0" [max]="8848" [decimalPlaces]="3" suffix="m">
 </app-numeric-input>
 <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
-  <ion-label color="medium" position="stacked" text-uppercase>{{ 'REGISTRATION.SET_TIME.TITLE' | translate }}
+  <ion-label color="medium" position="stacked" class="ion-text-uppercase">
+    {{ 'REGISTRATION.SET_TIME.TITLE' | translate }}
   </ion-label>
   <ion-datetime (ionChange)="dtChanged()" color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
     doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
@@ -20,17 +21,18 @@
   </ion-button>
 </ion-item>
 <ion-item *ngIf="dateIsDifferentThanObsTime">
-  <ion-label color="danger" text-wrap>
+  <ion-label color="danger" class="ion-text-wrap">
     {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
   </ion-label>
 </ion-item>
 <ion-item *ngIf="showDtMeasurementTimeError">
-  <ion-label color="danger" text-wrap>
+  <ion-label color="danger" class="ion-text-wrap">
     {{'REGISTRATION.WATER.WATER_LEVEL.DT_REQUIRED_TEXT' | translate}}
   </ion-label>
 </ion-item>
 <app-add-picture-item iconColor="primary" icon="add-circle-outline" title="{{ 'REGISTRATION.WATER.WATER_LEVEL.ADD_PICTURE' | translate }} {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' :
 'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL') | translate | lowercase }}"
-  [(images)]="waterLevelMeasurement.Pictures" [registrationTid]="registrationTid"></app-add-picture-item>
+  [(images)]="waterLevelMeasurement.Pictures" [registrationTid]="registrationTid" (imagesChange)="triggerChange()">
+</app-add-picture-item>
 <app-text-comment [(value)]="waterLevelMeasurement.Comment" placeholder="{{'REGISTRATION.WATER.WATER_LEVEL.DESCRIBE' | translate }} {{ (waterLevelMethod === 1 ? 'REGISTRATION.WATER.WATER_LEVEL.MARKING_PLURAL' :
 'REGISTRATION.WATER.WATER_LEVEL.MEASURE_PLURAL') | translate | lowercase }}"></app-text-comment>

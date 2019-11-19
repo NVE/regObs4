@@ -3,6 +3,10 @@ import { ModalController } from '@ionic/angular';
 import { StratProfileLayerDto, KdvElement } from '../../../../../../regobs-api/models';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
+import { IRegistration } from '../../../../../models/registration.model';
+import { RegistrationService } from '../../../../../services/registration.service';
+import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
+import cloneDeep from 'clone-deep';
 
 const basicHardnessValues = [2, 6, 10, 14, 18, 21];
 const basicGrainFormValues = [1, 14, 17, 22, 26, 32, 36, 40, 41];
@@ -16,14 +20,35 @@ const basicWetnessValues = [1, 3, 5, 7, 9];
 export class StratProfileLayerModalPage implements OnInit {
 
   @Input() layer: StratProfileLayerDto;
+  @Input() reg: IRegistration;
   @Input() index: number;
 
+  addNew: boolean;
+  private initialRegistationState: IRegistration;
+
   grainSizeInterfaceOptions: any;
-  showDelete = false;
   showMore = false;
   hardnessFilter: (id: number) => boolean;
   grainFormFilter: (id: number) => boolean;
   wetnessFilter: (id: number) => boolean;
+
+
+  get hasLayers() {
+    return this.reg && this.reg.request && this.reg.request.SnowProfile2
+      && this.reg.request.SnowProfile2.StratProfile
+      && this.reg.request.SnowProfile2.StratProfile.Layers
+      && this.reg.request.SnowProfile2.StratProfile.Layers.length > 0;
+  }
+
+  get layerLenght() {
+    return this.hasLayers ? this.reg.request.SnowProfile2.StratProfile.Layers.length : 0;
+  }
+
+  get canGoNext() {
+    return (this.hasLayers && this.index < this.layerLenght)
+      || (this.index === this.layerLenght &&
+        this.addNew && !IsEmptyHelper.isEmpty(this.layer));
+  }
 
   grainSizeOptions: SelectOption[] = [
     { id: .001, text: '.1' },
@@ -46,21 +71,26 @@ export class StratProfileLayerModalPage implements OnInit {
 
   getIconFunc = (kdvElement: KdvElement) => `md-grainform-${((kdvElement || {}).Name || '').toLowerCase()}`;
 
-  constructor(private modalController: ModalController, private translateService: TranslateService) { }
+  constructor(private modalController: ModalController, private translateService: TranslateService, private registrationService:
+    RegistrationService) { }
 
   ngOnInit() {
-    if (this.layer !== undefined) {
-      this.showDelete = true;
-    } else {
-      this.layer = {};
-    }
-    this.showMore = this.hasAnyAdvancedOptions();
-    this.updateFilters();
+    this.initialRegistationState = cloneDeep(this.reg);
+    this.initLayer();
     this.translateService.get('REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SIZE').subscribe((val) => {
       this.grainSizeInterfaceOptions = {
         header: val,
       };
     });
+  }
+
+  private initLayer() {
+    this.addNew = this.layer === undefined;
+    if (this.addNew) {
+      this.layer = {};
+    }
+    this.showMore = this.hasAnyAdvancedOptions();
+    this.updateFilters();
   }
 
   private hasAnyAdvancedOptions() {
@@ -71,16 +101,47 @@ export class StratProfileLayerModalPage implements OnInit {
       || !!this.layer.Comment;
   }
 
-  ok(gotoIndex?: number) {
-    this.modalController.dismiss({ layer: this.layer, gotoIndex });
+  async save() {
+    await this.registrationService.saveRegistration(this.reg);
   }
 
-  cancel() {
+  async ok(gotoIndex?: number) {
+    if (!this.reg.request.SnowProfile2) {
+      this.reg.request.SnowProfile2 = {};
+    }
+    if (!this.reg.request.SnowProfile2.StratProfile) {
+      this.reg.request.SnowProfile2.StratProfile = {};
+    }
+    if (!this.reg.request.SnowProfile2.StratProfile.Layers) {
+      this.reg.request.SnowProfile2.StratProfile.Layers = [];
+    }
+    if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
+      this.reg.request.SnowProfile2.StratProfile.Layers.splice(this.index, 0, this.layer);
+    }
+    await this.save();
+
+    if (gotoIndex !== undefined) {
+      this.index = this.index + (gotoIndex);
+      this.layer = this.reg.request.SnowProfile2.StratProfile.Layers[this.index];
+      this.initLayer();
+    } else {
+      this.modalController.dismiss();
+    }
+  }
+
+  async cancel() {
+    await this.registrationService.saveRegistration(this.initialRegistationState);
     this.modalController.dismiss();
   }
 
-  delete() {
-    this.modalController.dismiss({ delete: true });
+  async delete() {
+    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.StratProfile
+      && this.reg.request.SnowProfile2.StratProfile.Layers && this.reg.request.SnowProfile2.StratProfile.Layers.length > 0) {
+      this.reg.request.SnowProfile2.StratProfile.Layers =
+        this.reg.request.SnowProfile2.StratProfile.Layers.filter((l) => l !== this.layer);
+      await this.save();
+    }
+    this.modalController.dismiss();
   }
 
   toggleShowMore() {

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar mode="ios">
     <form (ngSubmit)="doSearch()">
-      <ion-list lines="none" no-padding no-margin>
+      <ion-list lines="none" class="ion-no-padding ion-no-margin">
         <ion-item>
           <ion-icon slot="start" name="search"></ion-icon>
           <ion-input placeholder="{{'MAP_SEARCH.SEARCH_TEXT'|translate}}" [formControl]="searchField"
@@ -23,7 +23,7 @@
   </ion-list>
   <ng-container *ngIf="searchHistory$ | async as searchHistory">
     <ion-list *ngIf="!hasResults && !loading && searchHistory.length > 0" lines="full" class="search-result">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>{{'MAP_SEARCH.SEARCH_HISTORY_HEADER' | translate}}</ion-label>
       </ion-list-header>
       <ion-item *ngFor="let item of searchHistory" (click)="searchItemClicked(item)">

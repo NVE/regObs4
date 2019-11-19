@@ -34,20 +34,14 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   version: AppVersion;
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
-  private showAppModeTest = false;
 
   get appModeOptions() {
     const options: SelectOption[] = [
       { id: 'PROD', text: 'Regobs' },
       { id: 'DEMO', text: 'Demo Regobs' },
-      { id: 'TEST', text: 'Test Regobs', disabled: !this.showAppModeTest }
+      { id: 'TEST', text: 'Test Regobs', disabled: !this.userSettings.featureToggleDeveloperMode }
     ];
     return options;
-  }
-
-  get appModeTestEnabled() {
-    return ((this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE)
-      || (this.userSettings && this.userSettings.appMode === AppMode.Test));
   }
 
   constructor(
@@ -69,9 +63,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
-        if (this.userSettings.appMode === AppMode.Test) {
-          this.showAppModeTest = true;
-        }
       });
     }));
     this.subscriptions.push(this.offlineMapService.getTilesCacheAsObservable().subscribe((tilesCache) => {
@@ -97,10 +88,11 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     this.subscriptions = [];
   }
 
-  versionClick() {
+  async versionClick() {
     this.versionClicks++;
-    if (this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE) {
-      this.showAppModeTest = true;
+    if (this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE && !this.userSettings.featureToggleDeveloperMode) {
+      this.userSettings.featureToggleDeveloperMode = true;
+      await this.updateSettings();
     }
   }
 

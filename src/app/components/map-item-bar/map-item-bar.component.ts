@@ -1,8 +1,6 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
-import { Observable, Subject, Subscribable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { MapItem } from '../../core/models/map-item.model';
-import moment from 'moment';
-import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,7 +10,8 @@ import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { AppMode } from '../../core/models/app-mode.enum';
 import { settings } from '../../../settings';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { UserSetting } from '../../core/models/user-settings.model';
+import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-map-item-bar',
@@ -44,7 +43,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   // TODO: Rewrite this component to use observable. Maybe put visibleMapItem observable in map service?
 
   constructor(
-    private geolocation: Geolocation,
+    private geoPositionService: GeoPositionService,
     private helper: HelperService,
     private translateService: TranslateService,
     private router: Router,
@@ -122,18 +121,19 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     this.distanceAndType = ''; // set by promise
     const translations = await this.translateService.get(['MAP_ITEM_BAR.OBSERVATION', 'MAP_ITEM_BAR.AWAY']).toPromise();
     try {
-      const currentPosition = await this.geolocation.getCurrentPosition(
-        {
-          enableHighAccuracy: true,
-          timeout: 20 * 1000,
-          maximumAge: 10 * 60 * 1000
+      const currentPosition = await this.geoPositionService.currentPosition$.pipe(take(1)).toPromise();
+      if (currentPosition) {
+        const distance = L.latLng(item.ObsLocation.Latitude, item.ObsLocation.Longitude)
+          .distanceTo(L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude));
+        this.zone.run(() => {
+          this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()} `
+            + `${this.helper.getDistanceText(distance)} ${translations['MAP_ITEM_BAR.AWAY'].toLowerCase()}`;
         });
-      const distance = L.latLng(item.ObsLocation.Latitude, item.ObsLocation.Longitude)
-        .distanceTo(L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude));
-      this.zone.run(() => {
-        this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()} `
-          + `${this.helper.getDistanceText(distance)} ${translations['MAP_ITEM_BAR.AWAY'].toLowerCase()}`;
-      });
+      } else {
+        this.zone.run(() => {
+          this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
+        });
+      }
     } catch {
       this.zone.run(() => {
         this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;

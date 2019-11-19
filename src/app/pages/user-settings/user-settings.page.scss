@@ -11,7 +11,7 @@ ion-item {
 
     &.item-label {
         ion-text {
-            &[align-self-start] {
+            &.ion-align-self-start {
                &.build-version {
                     margin-top: 5px;
                     margin-bottom: 5px;

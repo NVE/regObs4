@@ -1,12 +1,16 @@
 <ion-item class="summary-item" (click)="navigate()" [detail]="!readonly" *ngIf="!(readonly && !item.hasData)">
-  <ion-label padding-vertical padding-end>
+  <ion-label class="ion-padding-vertical ion-padding-end">
     <h2>{{ item.title | translate}}</h2>
     <p *ngIf="item.subTitle">
       {{ item.subTitle | translate }}
     </p>
     <p class="images" *ngIf="item.images">
-      <app-base64-image [base64encodedImage]="image.PictureImageBase64" *ngFor="let image of item.images">
-      </app-base64-image>
+      <ng-container *ngFor="let image of item.images">
+        <app-base64-image *ngIf="isBase64Image(image.PictureImageBase64)"
+          [base64encodedImage]="image.PictureImageBase64">
+        </app-base64-image>
+        <img [src]="convertFileSrc(image.PictureImageBase64)" *ngIf="!isBase64Image(image.PictureImageBase64)">
+      </ng-container>
     </p>
   </ion-label>
   <ion-icon *ngIf="item.hasData && !readonly" slot="end" color="success" name="checkmark-circle"></ion-icon>

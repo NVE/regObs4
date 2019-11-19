@@ -42,6 +42,11 @@ export interface PictureRequestDto {
   PictureImageBase64?: string;
 
   /**
+   * If attachment is uploaded before sending registration, set AttachmentUploadId
+   */
+  AttachmentUploadId?: string;
+
+  /**
    * Om bildet skal vises først i registreringen, eller ikke
    */
   IsMainAttachment?: boolean;

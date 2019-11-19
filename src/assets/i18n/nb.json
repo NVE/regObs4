@@ -170,6 +170,10 @@
   "OFFLINE_MAP": {
     "TITLE": "Offline kart"
   },
+  "PERMISSION": {
+    "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
+    "LOCATION_DENIED_MESSAGE": "Kan ikke vise posisjonen din i kartet uten app-godkjenning for bruk av lokasjon."
+  },
   "REGISTRATION": {
     "ADD_IMAGES": "Legg til bilder",
     "ADD_WEB_URL": {

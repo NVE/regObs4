@@ -1,6 +1,9 @@
 import * as L from 'leaflet';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { GeometryObject } from '@turf/turf';
+import { LogLevel } from '../../../shared/services/logging/log-level.model';
+
+const DEBUG_TAG = 'RegObsTileLayer';
 
 export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
     edgeBufferTiles?: number;
@@ -8,6 +11,7 @@ export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
     saveTilesToCache?: boolean;
     saveCacheTileFunc?: (id: string, tile: HTMLImageElement) => void | Promise<any>;
     getCacheTileFunc?: (id: string) => Promise<string>;
+    logFunc?: (message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) => void;
 }
 
 interface ExtendedCoords extends L.Coords {
@@ -59,14 +63,23 @@ export class RegObsTileLayer extends L.TileLayer {
         return `${this.name}_${coords.z}_${coords.x}_${coords.y}`;
     }
 
+    private debug(msg: string, ...optionalParams: any[]) {
+        const opt = (<IRegObsTileLayerOptions>this.options);
+        if (opt.logFunc) {
+            opt.logFunc(msg, null, LogLevel.Debug, DEBUG_TAG, optionalParams);
+        }
+    }
+
     _tileOnError(done: L.DoneCallback, tile: RegObsTile, e: Error) {
         const opt = (<IRegObsTileLayerOptions>this.options);
         if (!tile.hasTriedOffline && tile.id && tile.id !== '' && opt.getCacheTileFunc) {
+            this.debug(`Error loading tile ${tile.id}. Try to get cached tile...`, tile);
             opt.getCacheTileFunc(tile.id).then((result) => {
                 tile.hasTriedOffline = true;
                 if (result) {
                     const oldSrc = tile.src;
                     tile.src = result;
+                    this.debug(`Found cached tile ${tile.id}. Return dataUrl.`, result);
                     this.fire('tilefallback',
                         {
                             tile: tile,
@@ -75,6 +88,7 @@ export class RegObsTileLayer extends L.TileLayer {
                             urlFallback: result
                         });
                 } else {
+                    this.debug(`No cached tile found for ${tile.id}. tryScaleImage.`);
                     this.tryScaleImage(done, tile, e);
                 }
             });
@@ -165,7 +179,10 @@ export class RegObsTileLayer extends L.TileLayer {
             style = tile.style;
 
         // Only fallback one zoom level or return error
-        if (fallbackZoom < (originalCoords.z - 1)) {
+        const diff = originalCoords.z - fallbackZoom;
+        const diffLimit = 2;
+        if (diff > diffLimit) {
+            this.debug(`Fallback zoom ${fallbackZoom}. Original zoom: ${originalCoords.z}. Diff ${diff} is greater than ${diffLimit}. Return error`);
             return (<any>L.TileLayer.prototype)._tileOnError.call(this, done, tile, e);
         }
 

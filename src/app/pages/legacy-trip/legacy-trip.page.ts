@@ -7,7 +7,6 @@ import { LoginService } from '../../modules/login/services/login.service';
 import { NavController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../settings';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
 import { LoginModalPage } from '../../modules/login/pages/modal-pages/login-modal/login-modal.page';
@@ -16,6 +15,8 @@ import { LogLevel } from '../../modules/shared/services/logging/log-level.model'
 import * as utils from '@nano-sql/core/lib/utilities';
 import { IsEmptyHelper } from '../../core/helpers/is-empty.helper';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
+import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
+import { take } from 'rxjs/operators';
 
 const DEBUG_TAG = 'LegacyTripPage';
 
@@ -49,7 +50,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private loginService: LoginService,
     private translateService: TranslateService,
-    private geoLocation: Geolocation,
+    private geoPositionService: GeoPositionService,
     private navController: NavController,
     private modalController: ModalController,
     private loggingService: LoggingService,
@@ -115,7 +116,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
         this.tripDto.GeoHazardID = GeoHazard.Snow;
         this.tripDto.DeviceGuid = utils.uuid();
         try {
-          const currentLocation = await this.geoLocation.getCurrentPosition(settings.gps.currentPositionOptions);
+          const currentLocation = await this.geoPositionService.currentPosition$.pipe(take(1)).toPromise();
           if (currentLocation) {
             this.tripDto.Lat = currentLocation.coords.latitude.toString();
             this.tripDto.Lng = currentLocation.coords.longitude.toString();

@@ -170,6 +170,10 @@
   "OFFLINE_MAP": {
     "TITLE": "Offline Map"
   },
+  "PERMISSION": {
+    "LOCATION_DENIED_HEADER": "Permission to location denied",
+    "LOCATION_DENIED_MESSAGE": "Cannot show location in map without permission."
+  },
   "REGISTRATION": {
     "ADD_IMAGES": "Add images",
     "ADD_WEB_URL": {

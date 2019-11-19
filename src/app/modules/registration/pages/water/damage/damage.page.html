@@ -9,10 +9,10 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration" [registration]="registration" [registrationTid]="registrationTid"
-    (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="registration" [registration]="registration"
+    [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.WATER.DAMAGE.CAN_YOU_SEE_DAMAGE' | translate}}
         </ion-label>
@@ -28,13 +28,13 @@
         </ion-item>
       </ion-radio-group>
       <ng-container *ngIf="isChecked && damageTypes">
-        <ion-list-header text-uppercase>
+        <ion-list-header class="ion-text-uppercase">
           <ion-label>
             {{ 'REGISTRATION.WATER.DAMAGE.WHAT_IS_DAMAGED' | translate }}
           </ion-label>
         </ion-list-header>
-        <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration" [damageTypeId]="damageType.Id"
-          [damageTypeName]="damageType.Name" [registrationTid]="registrationTid">
+        <app-damage-obs *ngFor="let damageType of damageTypes" [(registration)]="registration"
+          [damageTypeId]="damageType.Id" [damageTypeName]="damageType.Name" [registrationTid]="registrationTid">
         </app-damage-obs>
       </ng-container>
     </ion-list>

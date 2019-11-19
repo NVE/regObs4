@@ -6,6 +6,8 @@ import { settings } from '../../../../../settings';
 import { RegistrationTid } from '../../models/registrationTid.enum';
 import { PictureRequestDto } from '../../../regobs-api/models';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { DomSanitizer } from '@angular/platform-browser';
 
 const DATA_URL_TAG = 'data:image/jpeg;base64,';
 
@@ -25,6 +27,7 @@ export class AddPictureItemComponent implements OnInit {
   @Input() icon = 'camera';
   @Input() showIcon = true;
   @Input() iconColor = 'dark';
+  @Input() onBeforeAdd: () => Promise<void> | void;
 
   get imagesForCurrentRegistrationTid() {
     return this.images ? this.images.filter((image) => image.RegistrationTID === this.registrationTid) : [];
@@ -34,12 +37,17 @@ export class AddPictureItemComponent implements OnInit {
     private translateService: TranslateService,
     private camera: Camera,
     private platform: Platform,
+    private webView: WebView,
+    private domSanitizer: DomSanitizer,
     private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
   }
 
   async addClick() {
+    if (this.onBeforeAdd !== undefined) {
+      await Promise.resolve(this.onBeforeAdd());
+    }
     const translations = await this.translateService.get(
       [
         'REGISTRATION.GENERAL_COMMENT.ADD_PICTURE',
@@ -74,7 +82,7 @@ export class AddPictureItemComponent implements OnInit {
     }
     const options: CameraOptions = {
       quality: settings.images.quality,
-      destinationType: this.camera.DestinationType.DATA_URL,
+      destinationType: this.camera.DestinationType.FILE_URI,
       // NOTE: Base64 encode. If API supports upload image blob later,
       // this should be changed to FILE_URL and uploaded separatly
       sourceType: sourceType,
@@ -86,16 +94,16 @@ export class AddPictureItemComponent implements OnInit {
       saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA,
     };
     const imageUrl = await this.camera.getPicture(options);
-    this.addBase64Image(`${DATA_URL_TAG}${imageUrl}`);
+    this.addImage(imageUrl);
     return true;
   }
 
   private async addDummyImage() {
     const dummyImage = await DataUrlHelper.getDataUrlFromSrcUrl('/assets/images/dummyregobsimage.jpeg');
-    this.addBase64Image(dummyImage);
+    this.addImage(dummyImage);
   }
 
-  addBase64Image(dataUrl: string) {
+  addImage(dataUrl: string) {
     this.images.push({
       PictureImageBase64: dataUrl,
       RegistrationTID: this.registrationTid
@@ -109,5 +117,14 @@ export class AddPictureItemComponent implements OnInit {
       this.images.splice(index, 1);
       this.imagesChange.emit(this.images);
     }
+  }
+
+  isBase64Image(img: string) {
+    return img && img.startsWith('data:image');
+  }
+
+  convertFileSrc(fileUrl: string) {
+    return this.domSanitizer.bypassSecurityTrustUrl(
+      this.webView.convertFileSrc(fileUrl));
   }
 }

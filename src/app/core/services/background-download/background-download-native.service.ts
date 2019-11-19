@@ -104,15 +104,15 @@ export class BackgroundDownloadNativeService implements BackgroundDownloadServic
         return targetFile.toURL();
     }
 
-    async selectDowloadFolder(): Promise<string> {
-        if (this.platform.is('android')) {
-            const userSettings = await this.userSettingService.getUserSettings();
-            // TODO: Prefer save offline map on SD card?
-            if (false) {
-                return this.file.externalDataDirectory;
-            }
-        }
-        return this.file.dataDirectory;
+    selectDowloadFolder(): Promise<string> {
+        // if (this.platform.is('android')) {
+        //     const userSettings = await this.userSettingService.getUserSettings();
+        //     // TODO: Prefer save offline map on SD card?
+        //     if (false) {
+        //         return this.file.externalDataDirectory;
+        //     }
+        // }
+        return Promise.resolve(this.file.dataDirectory);
     }
 
     async getAllFiles(path: string, dirName: string): Promise<Array<{ directory: string, name: string, url: string, size: number }>> {

@@ -14,14 +14,14 @@
     *ngIf="registration && registration.request.AvalancheObs && registration.request.Incident"
     [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE' | translate}}
         </ion-label>
       </ion-list-header>
       <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
         <ion-label [color]="(!registration.request.AvalancheObs.DtAvalancheTime && showWarning) ? 'danger' : 'medium'"
-          position="stacked" text-uppercase>{{
+          position="stacked" class="ion-text-uppercase">{{
           'REGISTRATION.SNOW.AVALANCHE_OBS.TIME' | translate }}</ion-label>
         <ion-datetime color="medium" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
           doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
@@ -34,14 +34,14 @@
         </ion-button>
       </ion-item>
       <ion-item *ngIf="dateIsDifferentThanObsTime">
-        <ion-label color="danger" text-wrap>
+        <ion-label color="danger" class="ion-text-wrap">
           {{'ALERT.WARNING' | translate}}! {{'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DATE_WARNING' | translate}}
         </ion-label>
       </ion-item>
       <ion-item (click)="setAvalanchePosition()">
-        <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.AVALANCHE_OBS.POSITION' |
+        <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.SNOW.AVALANCHE_OBS.POSITION' |
               translate}}</ion-label>
-        <ion-text color="medium" align-self-start text-wrap>
+        <ion-text color="medium" class="ion-align-self-start ion-text-wrap">
           <ion-icon class="position-pin" color="medium" name="pin"></ion-icon>
           <ng-container *ngIf="registration.request.AvalancheObs.StartLat else noPosition">
             {{
@@ -60,7 +60,7 @@
         </ion-icon>
       </ion-item>
       <ion-item>
-        <ion-label color="medium" position="stacked" text-uppercase>{{
+        <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{
           'REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION'
           | translate}}</ion-label>
         <app-select title="REGISTRATION.SNOW.AVALANCHE_OBS.VALID_EXPOSITION"
@@ -86,14 +86,15 @@
         [(value)]="registration.request.AvalancheObs.Trajectory"></app-text-comment>
       <app-text-comment title="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="registration.request.AvalancheObs.Comment">
       </app-text-comment>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid">
+      <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
+        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_DESCRIPTION' | translate}}
         </ion-label>
@@ -105,11 +106,11 @@
       <app-kdv-select title="REGISTRATION.INCIDENT.DAMAGE_EXTENT" kdvKey="DamageExtentKDV"
         [(value)]="registration.request.Incident.DamageExtentTID"></app-kdv-select>
       <ion-item-divider>
-        <ion-label text-wrap>
+        <ion-label class="ion-text-wrap">
           {{'REGISTRATION.SNOW.AVALANCHE_OBS.INCIDENT_PLACEHOLDER' | translate }}
         </ion-label>
       </ion-item-divider>
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}
         </ion-label>

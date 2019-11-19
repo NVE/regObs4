@@ -5,7 +5,7 @@ import { DataLoadService } from '../../../data-load/services/data-load.service';
 import { AppMode } from '../../../../core/models/app-mode.enum';
 import { LangKey } from '../../../../core/models/langKey';
 import { NanoSql } from '../../../../../nanosql';
-import { ObservableHelper } from '../../../../core/helpers/observable-helper';
+import { toPromiseWithCancel } from '../../../../core/helpers/observable-helper';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { HelptextDto } from '../../../regobs-api/models';
 import { settings } from '../../../../../settings';
@@ -52,7 +52,7 @@ export class HelpTextService {
     const dataLoadId = this.getDataLoadId(appMode, language);
     await this.dataLoadService.startLoading(dataLoadId);
     try {
-      const helpTexts = await ObservableHelper.toPromiseWithCancel(
+      const helpTexts = await toPromiseWithCancel(
         this.helptextApiService.HelptextGet(language), cancel);
       await NanoSql.getInstance(NanoSql.TABLES.HELP_TEXTS.name, appMode)
         .query('upsert', { langKey: language, helpTexts: helpTexts }).exec();

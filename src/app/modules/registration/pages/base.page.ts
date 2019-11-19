@@ -24,19 +24,20 @@ export abstract class BasePage implements OnInit, OnDestroy {
         this.registrationTid = registrationTid;
     }
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit() {
         const id = this.activatedRoute.snapshot.params['id'];
         this.subscription = this.basePageService.RegistrationService
-            .getSavedRegistrationByIdObservable(id).subscribe((val) => {
+            .getSavedRegistrationByIdObservable(id).subscribe(async (val) => {
                 if (val) {
-                    this.basePageService.Zone.run(async () => {
-                        this.registration = val;
-                        if (this.registrationTid) {
-                            this.basePageService.createDefaultProps(this.registration, this.registrationTid);
-                        }
-                        if (this.onInit) {
-                            await Promise.resolve(this.onInit());
-                        }
+                    this.registration = val;
+                    if (this.registrationTid) {
+                        this.basePageService.createDefaultProps(this.registration, this.registrationTid);
+                    }
+                    if (this.onInit) {
+                        await Promise.resolve(this.onInit());
+                    }
+                    this.basePageService.Zone.run(() => {
+                        this.registration = this.registration;
                     });
                 }
             });
@@ -72,11 +73,15 @@ export abstract class BasePage implements OnInit, OnDestroy {
         if (this.onBeforeLeave) {
             await Promise.resolve(this.onBeforeLeave());
         }
-        this.save();
+        this.save(true);
     }
 
-    save() {
-        this.basePageService.RegistrationService.saveRegistration(this.registration);
+    save(clean = false) {
+        return this.basePageService.RegistrationService.saveRegistration(this.registration, clean);
+    }
+
+    getSaveFunc() {
+        return () => this.save();
     }
 
     isEmpty() {

@@ -11,10 +11,12 @@ import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
-import { Router, NavigationStart } from '@angular/router';
-import { filter, map, distinctUntilChanged } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
+import { map, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { settings } from '../../../settings';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
+import { RouterPage } from '../../core/helpers/routed-page';
+import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -23,7 +25,7 @@ const DEBUG_TAG = 'HomePage';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage extends RouterPage implements OnInit, OnDestroy {
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
@@ -31,7 +33,6 @@ export class HomePage implements OnInit, OnDestroy {
     spiderfyOnMaxZoom: false,
     zoomToBoundsOnClick: false
   });
-  private subscriptions: Subscription[] = [];
   private showGeoSelectSubscription: Subscription;
 
   fullscreen$: Observable<boolean>;
@@ -43,50 +44,39 @@ export class HomePage implements OnInit, OnDestroy {
   dataLoadIds: string[] = [];
 
   constructor(
+    router: Router,
+    route: ActivatedRoute,
     private observationService: ObservationService,
     private fullscreenService: FullscreenService,
     private userSettingService: UserSettingService,
     private ngZone: NgZone,
-    private router: Router,
     private loggingService: LoggingService,
     private usageAnalyticsConsentService: UsageAnalyticsConsentService,
+    private geoPostionService: GeoPositionService,
   ) {
+    super(router, route);
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
   ngOnInit() {
-    this.subscriptions.push(
-      // TODO: ionViewDidEnter and ionViewWillLeave is only triggerd between tab changes and not when going
-      // to another page (for example settings, my observations etc), so this is a workaround until issue is resolved
-      // https://github.com/ionic-team/ionic/issues/16834
-      this.router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((val: NavigationStart) => {
-        if (val.url === '/tabs/home' || val.url === '/tabs' || val.url === '/') {
-          this.loggingService.debug(`Home page route changed to ${val.url}. Start GeoLocation.`, DEBUG_TAG);
-          this.mapComponent.redrawMap();
-          this.mapComponent.startGeoPositionUpdates();
-        } else {
-          this.loggingService.debug(`Home page route changed to ${val.url}. Stop GeoLocation.`, DEBUG_TAG);
-          this.mapComponent.stopGeoPositionUpdates();
-        }
-      }));
-
-    this.subscriptions.push(this.userSettingService.showMapCenter$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.showMapCenter = val;
+    this.userSettingService.showMapCenter$.pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((val) => {
+        this.ngZone.run(() => {
+          this.showMapCenter = val;
+        });
       });
-    }));
 
-    this.subscriptions.push(this.mapItemBar.isVisible.subscribe((isVisible) => {
+    this.mapItemBar.isVisible.pipe(takeUntil(this.ngUnsubscribe)).subscribe((isVisible) => {
       this.ngZone.run(() => {
         this.mapItemBarVisible = isVisible;
       });
-    }));
+    });
 
-    this.subscriptions.push(this.observationService.dataLoad$.subscribe((val) => {
+    this.observationService.dataLoad$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => {
       this.ngZone.run(() => {
         this.dataLoadIds = [val];
       });
-    }));
+    });
 
     this.checkForFirstStartup();
 
@@ -122,7 +112,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   async showUsageAnalyticsDialog() {
     await this.usageAnalyticsConsentService.checkUserDataConsentDialog();
-    this.mapComponent.startGeoPositionUpdates();
+    /// this.mapComponent.startGeoPositionUpdates();
+    this.geoPostionService.startTracking();
   }
 
   onMapReady(leafletMap: L.Map) {
@@ -148,12 +139,12 @@ export class HomePage implements OnInit, OnDestroy {
     // TODO: Move this to custom marker layer?
     const observationObservable =
       combineLatest([this.observationService.observations$, this.userSettingService.showObservations$]);
-    this.subscriptions.push(observationObservable.subscribe(([regObservations, showObservations]) => {
+    observationObservable.pipe(takeUntil(this.ngUnsubscribe)).subscribe(([regObservations, showObservations]) => {
       this.redrawObservationMarkers(showObservations ? regObservations : []);
-    }));
+    });
   }
 
-  async ionViewDidEnter() {
+  async onEnter() {
     this.loggingService.debug(`Home page ionViewDidEnter.`, DEBUG_TAG);
     const userSettings = await this.userSettingService.getUserSettings();
     if (userSettings.showGeoSelectInfo) {
@@ -161,19 +152,34 @@ export class HomePage implements OnInit, OnDestroy {
       return;
     }
     this.loggingService.debug(`Activate map updates and GeoLocation`, DEBUG_TAG);
-    this.mapComponent.startGeoPositionUpdates();
+    // this.mapComponent.startGeoPositionUpdates();
+    this.geoPostionService.startTracking();
+    this.mapComponent.resumeSavingTiles();
+    this.mapComponent.redrawMap();
   }
 
-  ionViewWillLeave() {
-    this.loggingService.debug(`Home page ionViewWillLeave. Disable map updates and GeoLocation.`, DEBUG_TAG);
-    this.mapComponent.stopGeoPositionUpdates();
+  onLeave() {
+    this.loggingService.debug(`Home page onLeave. Disable map updates and GeoLocation`, DEBUG_TAG);
+    // this.mapComponent.stopGeoPositionUpdates();
+    this.geoPostionService.stopTracking();
+    this.mapComponent.pauseSavingTiles();
   }
 
-  ngOnDestroy(): void {
-    for (const subscription of this.subscriptions) {
-      subscription.unsubscribe();
-    }
-  }
+  // async ionViewDidEnter() {
+  // Use tab page workaround from:
+  // https://github.com/ionic-team/ionic/issues/15260
+  // }
+
+  // ionViewWillLeave() {
+  //   this.loggingService.debug(`Home page ionViewWillLeave. Disable map updates and GeoLocation.`, DEBUG_TAG);
+  //   this.mapComponent.stopGeoPositionUpdates();
+  // }
+
+  // ngOnDestroy(): void {
+  //   for (const subscription of this.subscriptions) {
+  //     subscription.unsubscribe();
+  //   }
+  // }
 
   private redrawObservationMarkers(regObservations: RegistrationViewModel[]) {
     this.markerLayer.clearLayers();

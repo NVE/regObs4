@@ -7,7 +7,7 @@
       [items]="observations" [approxItemHeight]="10000" [trackBy]="trackByIdFunc" [footerFn]="footerFn"
       [headerFn]="headerFn">
       <ion-item-divider *virtualHeader="let header">
-        <h3 text-uppercase>{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
       </ion-item-divider>
       <div *virtualItem="let obs">
         <app-observation-list-card [obs]="obs"></app-observation-list-card>
@@ -18,7 +18,7 @@
   </ng-container>
   <div class="loading-sceleton" *ngIf="!loaded">
     <ion-item-divider>
-      <h3 text-uppercase>{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+      <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
     </ion-item-divider>
     <app-observation-skeleton></app-observation-skeleton>
     <app-observation-skeleton></app-observation-skeleton>
@@ -30,7 +30,7 @@
 <ng-template #empty>
   <ion-grid *ngIf="loaded" class="full-grid">
     <ion-row class="full-grid-row">
-      <ion-col align-self-center>
+      <ion-col class="ion-align-self-center">
         <div class="center">
           <svg-icon class="rectangle" src="/assets/images/empty-states/rectangle.svg"></svg-icon>
           <svg-icon class="pin1" src="/assets/images/empty-states/pin.svg"></svg-icon>
@@ -40,9 +40,9 @@
       </ion-col>
     </ion-row>
     <ion-row class="full-grid-row">
-      <ion-col text-center margin-horizontal>
+      <ion-col class="ion-text-center ion-margin-horizontal">
         <h2> {{ 'OBSERVATION_LIST.NO_OBSERVATIONS' | translate }}</h2>
-        <h3 text-wrap>{{'OBSERVATION_LIST.NO_OBSERVATIONS_TEXT'|translate}}</h3>
+        <h3 class="ion-text-wrap">{{'OBSERVATION_LIST.NO_OBSERVATIONS_TEXT'|translate}}</h3>
       </ion-col>
     </ion-row>
   </ion-grid>

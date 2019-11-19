@@ -3,7 +3,7 @@
     <ion-icon name="add"></ion-icon>
   </ion-fab-button>
   <ion-fab-list side="top">
-    <ion-list lines="full" no-margin no-padding>
+    <ion-list lines="full" class="ion-no-padding ion-no-margin">
       <ion-item (click)="createRegistration(geoHazard)" *ngFor="let geoHazard of geoHazards">
         <app-geo-icon slot="start" [useGeoColors]="false" [geoHazards]="[geoHazard]"></app-geo-icon>
         <ion-label>{{'ADD_MENU.NEW_OBSERVATION' | translate}} {{ getName(geoHazard) | translate | lowercase }}<span

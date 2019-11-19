@@ -13,12 +13,13 @@
     [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
     <app-compression-test-list [(tests)]="registration.request.CompressionTest"></app-compression-test-list>
     <ion-list lines="full">
-      <ion-list-header text-uppercase>
+      <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" [registrationTid]="registrationTid">
+      <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
+        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>

@@ -18,15 +18,12 @@ import { Zip } from '@ionic-native/zip/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import { WarningService } from './core/services/warning/warning.service';
 import { ErrorHandler, Provider, forwardRef, LOCALE_ID } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
-import { LoginService } from './modules/login/services/login.service';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
-import { MapService } from './modules/map/services/map/map.service';
 import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { StartWizardGuard } from './core/guards/start-wizard.guard';
@@ -34,23 +31,20 @@ import { DataMarshallService } from './core/services/data-marshall/data-marshall
 import { LoginGuard } from './core/guards/login.guard';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';
-import { DbHelperService } from './core/services/db-helper/db-helper.service';
-import { FullscreenService } from './core/services/fullscreen/fullscreen.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { SentryService } from './modules/shared/services/logging/sentry.service';
 import { ConsoleLoggingService } from './modules/shared/services/logging/console-logging.service';
 import { environment } from '../environments/environment';
-import { MapSearchService } from './modules/map/services/map-search/map-search.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
-import { KdvService } from './core/services/kdv/kdv.service';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiConfiguration } from './core/http-interceptor/api-configuration';
 import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configuration';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -98,6 +92,7 @@ export const APP_PROVIDERS = [
     SocialSharing,
     Network,
     ScreenOrientation,
+    Diagnostic,
     API_INTERCEPTOR_PROVIDER,
     { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
     { provide: ErrorHandler, useClass: AppErrorHandler },

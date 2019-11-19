@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { StratProfileDto } from '../../../../../regobs-api/models/strat-profile-dto';
+import { Component, OnInit, Input } from '@angular/core';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { ModalController } from '@ionic/angular';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
-import { ObsLocationDto } from '../../../../../regobs-api/models';
+import { IRegistration } from '../../../../models/registration.model';
+import { RegistrationService } from '../../../../services/registration.service';
+import { StratProfileDto } from '../../../../../regobs-api/models';
 
 @Component({
   selector: 'app-strat-profile',
@@ -12,39 +13,35 @@ import { ObsLocationDto } from '../../../../../regobs-api/models';
 })
 export class StratProfileComponent implements OnInit {
 
-  @Input() profile: StratProfileDto;
-  @Output() profileChange = new EventEmitter();
-  @Input() obsLocation: ObsLocationDto;
+  @Input() reg: IRegistration;
 
-  private isOpen = false;
+  private modal: HTMLIonModalElement;
 
+  get profile(): StratProfileDto {
+    return (((this.reg || {}).request || {}).SnowProfile2 || {}).StratProfile || {};
+  }
 
   get isEmpty() {
     return IsEmptyHelper.isEmpty(this.profile);
   }
 
-  constructor(private modalContoller: ModalController) { }
+  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) { }
 
   ngOnInit() {
   }
 
   async openModal() {
-    if (!this.isOpen) {
-      this.isOpen = true;
-      const modal = await this.modalContoller.create({
+    if (!this.modal) {
+      await this.registrationService.saveRegistration(this.reg); // Save registration before open modal page
+      this.modal = await this.modalContoller.create({
         component: StratProfileModalPage,
         componentProps: {
-          profile: { ...this.profile },
-          obsLocation: this.obsLocation,
+          regId: this.reg.id,
         }
       });
-      modal.present();
-      const result = await modal.onDidDismiss();
-      this.isOpen = false;
-      if (result.data) {
-        this.profile = result.data;
-        this.profileChange.emit(this.profile);
-      }
+      this.modal.present();
+      await this.modal.onDidDismiss();
+      this.modal = null;
     }
   }
 }

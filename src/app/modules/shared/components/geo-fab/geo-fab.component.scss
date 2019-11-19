@@ -1,15 +1,13 @@
 :host {
-    position: fixed;
+    position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
     z-index: 999;
 
     ion-fab {
-        top: 18px;
+        top: -25px;
 
         &.fullscreen {
-            top: calc(10px + var(--ion-safe-area-top,0px));
+            top: calc(10px + env(safe-area-inset-top));
         }
 
         ion-item {

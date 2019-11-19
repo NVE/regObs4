@@ -8,16 +8,16 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid no-padding no-margin class="pull-last-bottom">
+  <ion-grid class="pull-last-bottom ion-no-paddig ion-no-margin">
     <ion-row>
-      <ion-col no-padding>
+      <ion-col class="ion-no-padding">
         <ion-list lines="full">
           <app-kdv-select [labelColor]="(hasClicked && tripDto.TripTypeID === undefined) ? 'danger' : 'medium'"
             [disabled]="isRunning || isLoading" title="TRIP.TRIP_TYPE" kdvKey="TripTypeKDV"
             [(value)]="tripDto.TripTypeID"></app-kdv-select>
           <ion-item>
             <ion-label [color]="(hasClicked && tripDto.ObservationExpectedMinutes === undefined) ? 'danger' : 'medium'"
-              color="medium" position="stacked" text-uppercase>{{'TRIP.TRIP_END_DESCRIPTION'
+              color="medium" position="stacked" class="ion-text-uppercase">{{'TRIP.TRIP_END_DESCRIPTION'
               | translate}}</ion-label>
             <app-select [disabled]="isRunning || isLoading" [(selectedValue)]="tripDto.ObservationExpectedMinutes"
               [options]="minutes" title="TRIP.TRIP_END_DESCRIPTION"></app-select>
@@ -25,7 +25,7 @@
           <app-text-comment title="DIALOGS.COMMENT" [disabled]="isRunning || isLoading" [(value)]="tripDto.Comment">
           </app-text-comment>
           <ion-item-divider>
-            <ion-label text-wrap>
+            <ion-label class="ion-text-wrap">
               {{'TRIP.COMMENT_DESCRIPTION' | translate}}
             </ion-label>
           </ion-item-divider>
@@ -33,10 +33,10 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col no-padding>
-        <ion-grid no-padding>
+      <ion-col class="ion-no-padding">
+        <ion-grid class="ion-no-padding">
           <ion-row>
-            <ion-col text-center>
+            <ion-col class="ion-text-center">
               <ion-button (click)="showHelp()" fill="clear">{{'HELP.TITLE' | translate}}</ion-button>
             </ion-col>
           </ion-row>
@@ -53,7 +53,7 @@
             </ion-col>
           </ion-row>
           <ion-row class="white-background" *ngIf="!isEmpty">
-            <ion-col text-center>
+            <ion-col class="ion-text-center">
               <ion-button (click)="clearPage()" [disabled]="isRunning || isLoading" class="reset-button" color="dark"
                 size="small" fill="clear">
                 <svg-icon src="/assets/icon/reset.svg"></svg-icon>

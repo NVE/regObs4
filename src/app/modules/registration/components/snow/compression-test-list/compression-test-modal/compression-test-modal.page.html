@@ -19,7 +19,7 @@
     <app-kdv-select title="REGISTRATION.SNOW.COMPRESSION_TEST.TEST_TYPE" kdvKey="Snow_PropagationKDV"
       [(value)]="compressionTest.PropagationTID"></app-kdv-select>
     <ion-item *ngIf="tapsFractureVisible()">
-      <ion-label color="medium" position="stacked" text-uppercase>{{'REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE'
+      <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE'
         | translate}}</ion-label>
       <app-select [(selectedValue)]="compressionTest.TapsFracture" [options]="tapsArray"
         title="REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE"></app-select>

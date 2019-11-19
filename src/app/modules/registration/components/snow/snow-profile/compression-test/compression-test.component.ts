@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { CompressionTestDto } from '../../../../../regobs-api/models';
-import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
+import { Component, OnInit, Input } from '@angular/core';
 import { CompressionTestListModalPage } from './compression-test-list-modal/compression-test-list-modal.page';
 import { ModalController } from '@ionic/angular';
+import { IRegistration } from '../../../../models/registration.model';
+import { RegistrationService } from '../../../../services/registration.service';
 
 @Component({
   selector: 'app-compression-test',
@@ -11,39 +11,38 @@ import { ModalController } from '@ionic/angular';
 })
 export class CompressionTestComponent implements OnInit {
 
-  @Input() tests: Array<CompressionTestDto>;
-  @Output() testsChange = new EventEmitter();
-  private isOpen = false;
+  @Input() reg: IRegistration;
+  private compressionTestListModal: HTMLIonModalElement;
 
   get connectedTests() {
-    return (this.tests || []).filter((t) => t.IncludeInSnowProfile === true);
+    return this.tests.filter((t) => t.IncludeInSnowProfile === true);
+  }
+
+  get tests() {
+    return this.reg.request.CompressionTest || [];
   }
 
   get isEmpty() {
     return this.connectedTests.length === 0;
   }
 
-  constructor(private modalContoller: ModalController) { }
+  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) { }
 
   ngOnInit() {
   }
 
   async openModal() {
-    if (!this.isOpen) {
-      this.isOpen = true;
-      const modal = await this.modalContoller.create({
+    if (!this.compressionTestListModal) {
+      await this.registrationService.saveRegistration(this.reg); // Save registration before open modal page
+      this.compressionTestListModal = await this.modalContoller.create({
         component: CompressionTestListModalPage,
         componentProps: {
-          tests: this.tests !== undefined ? [...this.tests] : [],
+          regId: this.reg.id,
         }
       });
-      modal.present();
-      const result = await modal.onDidDismiss();
-      this.isOpen = false;
-      if (result.data) {
-        this.tests = result.data;
-        this.testsChange.emit(this.tests);
-      }
+      this.compressionTestListModal.present();
+      await this.compressionTestListModal.onDidDismiss();
+      this.compressionTestListModal = null;
     }
   }
 
