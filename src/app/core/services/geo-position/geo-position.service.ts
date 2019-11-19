@@ -8,6 +8,7 @@ import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
+import { NumberHelper } from '../../helpers/number-helper';
 
 export interface GeoPositionLog {
   status: 'StartGpsTracking' | 'StopGpsTracking' | 'PositionUpdate' | 'PositionError';
@@ -108,7 +109,7 @@ export class GeoPositionService {
       takeUntil(this.stopPostionUpdates))
       .subscribe((result: GeoPositionLog) => {
         this.gpsPositionLog.next(result);
-        if (result.pos) {
+        if (this.isValidPosition(result.pos)) {
           this.gpsPositionLog.next(({ status: 'PositionUpdate', highAccuracyEnabled: result.highAccuracyEnabled, pos: result.pos }));
           this.currentPosition.next(result.pos);
           // if (!this.highAccuracyEnabled.value) {
@@ -126,6 +127,12 @@ export class GeoPositionService {
     this.stopPostionUpdates.next();
     this.stopPostionUpdates.complete();
     // this.highAccuracyEnabled.next(false);
+  }
+
+  private isValidPosition(pos: Geoposition) {
+    return pos !== undefined && pos !== null && pos.coords !== undefined
+      && pos.coords !== null && pos.coords.latitude >= -90 && pos.coords.latitude <= 90
+      && pos.coords.longitude >= -180 && pos.coords.longitude <= 180;
   }
 
   private isValidHeading(heading: number) {
