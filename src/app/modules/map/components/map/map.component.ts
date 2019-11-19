@@ -130,7 +130,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.mapService.centerMapToUser$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
-      this.geoPositionService.startTracking();
+      this.geoPositionService.startTracking(true);
     });
 
     this.mapSearchService.mapSearchClick$.pipe(takeUntil(this.ngDestroy$)).subscribe((item) => {

@@ -8,7 +8,6 @@ import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
-import { NumberHelper } from '../../helpers/number-helper';
 
 export interface GeoPositionLog {
   status: 'StartGpsTracking' | 'StopGpsTracking' | 'PositionUpdate' | 'PositionError';
@@ -64,7 +63,7 @@ export class GeoPositionService {
     return {
       status: 'PositionError',
       pos: undefined,
-      highAccuracyEnabled: true,
+      highAccuracyEnabled,
       err: {
         code,
         message,
@@ -88,7 +87,7 @@ export class GeoPositionService {
   }
 
 
-  startTracking() {
+  startTracking(forcePermissionDialog = false) {
     this.gpsPositionLog.next({ status: 'StartGpsTracking', highAccuracyEnabled: this.highAccuracyEnabled.value });
     this.stopPostionUpdates = new Subject();
 
@@ -102,7 +101,7 @@ export class GeoPositionService {
         return of(this.createPositionError('Unknown error'));
       }));
 
-    from(this.checkPermissions()).pipe(
+    (forcePermissionDialog ? from(this.checkPermissions()) : of(true)).pipe(
       tap(() => this.loggingService.debug('Before watchPosition', DEBUG_TAG)),
       concatMap((startWatch) => startWatch ? watchObservable : of(this.createPositionError('Permission denied'))),
       tap((val) => this.loggingService.debug('After watchPosition', DEBUG_TAG, val)),
@@ -141,17 +140,14 @@ export class GeoPositionService {
 
   private async checkPermissions() {
     // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
-    if (this.platform.is('ios')) {
-      return true;
-    }
     try {
       const authorized = await this.diagnostic.isLocationAuthorized();
       this.loggingService.debug('Location is ' + (authorized ? 'authorized' : 'unauthorized'), DEBUG_TAG);
       if (!authorized) {
-        if (this.platform.is('ios')) {
-          await this.showPermissionDeniedError();
-          return false;
-        }
+        // if (this.platform.is('ios')) {
+        //   await this.showPermissionDeniedError();
+        //   return false;
+        // }
         // location is not authorized, request new. This only works on Android
         const status = await this.diagnostic.requestLocationAuthorization();
         this.loggingService.debug(`Request location status`, DEBUG_TAG, status);
