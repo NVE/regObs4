@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject, ReplaySubject, from, of, Observable } from 'rxjs';
-import { switchMap, filter, takeUntil, map, concatMap } from 'rxjs/operators';
+import { filter, takeUntil, map, concatMap, tap, catchError } from 'rxjs/operators';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 
 export interface GeoPositionLog {
   status: 'StartGpsTracking' | 'StopGpsTracking' | 'PositionUpdate' | 'PositionError';
@@ -52,27 +53,58 @@ export class GeoPositionService {
     this.setHeadingFunc = this.setHeading.bind(this);
   }
 
+  private createPositionError(
+    message: string,
+    highAccuracyEnabled = true,
+    code: number = 0,
+    PERMISSION_DENIED = 0,
+    POSITION_UNAVAILABLE = 0,
+    TIMEOUT = 0): GeoPositionLog {
+    return {
+      status: 'PositionError',
+      pos: undefined,
+      highAccuracyEnabled: true,
+      err: {
+        code,
+        message,
+        PERMISSION_DENIED,
+        POSITION_UNAVAILABLE,
+        TIMEOUT,
+      },
+    };
+  }
+
+  private mapPosToLog(): (src: Observable<Geoposition>) => Observable<GeoPositionLog> {
+    return (src: Observable<Geoposition>) => src.pipe(map((pos) => {
+      const log: GeoPositionLog = ({
+        status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
+        pos,
+        highAccuracyEnabled: true,
+        err: pos.coords === undefined ? (pos as unknown as PositionError) : undefined
+      });
+      return log;
+    }));
+  }
+
 
   startTracking() {
     this.gpsPositionLog.next({ status: 'StartGpsTracking', highAccuracyEnabled: this.highAccuracyEnabled.value });
     this.stopPostionUpdates = new Subject();
 
-    const watchObservable: () => Observable<GeoPositionLog> = () => this.geolocation.watchPosition(
+    const watchObservable: Observable<GeoPositionLog> = this.geolocation.watchPosition(
       settings.gps.highAccuracyPositionOptions
-    ).pipe(filter((result) => result !== null), map((pos) => ({
-      status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
-      pos,
-      highAccuracyEnabled: true,
-      err: pos.coords === undefined ? (pos as unknown as PositionError) : undefined
-    })));
+    ).pipe(
+      filter((result) => result !== null),
+      this.mapPosToLog(),
+      catchError((err) => {
+        this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
+        return of(this.createPositionError('Unknown error'));
+      }));
 
     from(this.checkPermissions()).pipe(
-      concatMap((startWatch) => startWatch ? watchObservable() : of((
-        {
-          status: 'PositionError',
-          pos: undefined,
-          err: { code: 0, message: 'Permission denied', PERMISSION_DENIED: 1 },
-        }))),
+      tap(() => this.loggingService.debug('Before watchPosition', DEBUG_TAG)),
+      concatMap((startWatch) => startWatch ? watchObservable : of(this.createPositionError('Permission denied'))),
+      tap((val) => this.loggingService.debug('After watchPosition', DEBUG_TAG, val)),
       takeUntil(this.stopPostionUpdates))
       .subscribe((result: GeoPositionLog) => {
         this.gpsPositionLog.next(result);
