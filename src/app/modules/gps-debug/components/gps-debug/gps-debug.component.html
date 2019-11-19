@@ -6,17 +6,17 @@
   </ion-fab>
   <ion-content class="gpsLogPanel" [ngClass]="{'open': isOpen, 'tracking': isTracking$ | async }">
     <div *ngFor="let item of geoPositionLog$ | async">
-      <span *ngIf="item.status !== 'PositionUpdate'">{{item.status}}&nbsp;</span>
+      {{ timestampToString(item.timestamp) }} -
+      <span *ngIf="item.status !== 'PositionUpdate'">&nbsp;{{item.status}}</span>
       <span *ngIf="item.status === 'PositionUpdate'">
-        <span *ngIf="item.pos else NoPosition">
-          {{ timestampToString(item.pos.timestamp) }} -
+        <span *ngIf="item.pos else NoPosition">&nbsp;
           {{ item.pos.coords.latitude | number:'.5' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
           {{ item.pos.coords.longitude | number:'.5' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}},
           {{ item.pos.coords.accuracy }}
         </span>
       </span>
       <span *ngIf="item.status === 'PositionError'">
-        getErrorCodeOrMessage(item.error);
+        &nbsp;{{getErrorCodeOrMessage(item.err)}}
       </span>
       <span *ngIf="item.highAccuracyEnabled">&nbsp;(H)</span>
     </div>

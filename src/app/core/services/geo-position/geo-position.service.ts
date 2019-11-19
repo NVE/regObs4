@@ -10,6 +10,7 @@ import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { GeoPositionLog } from './geo-position-log.interface';
 import { GeoPositionErrorCode } from './geo-position-error.enum';
+import moment from 'moment';
 
 const DEBUG_TAG = 'GeoPositionService';
 
@@ -53,6 +54,7 @@ export class GeoPositionService {
     code: GeoPositionErrorCode = GeoPositionErrorCode.Unknown,
     highAccuracyEnabled = true): GeoPositionLog {
     return {
+      timestamp: moment().unix(),
       status: 'PositionError',
       pos: undefined,
       highAccuracyEnabled,
@@ -66,11 +68,22 @@ export class GeoPositionService {
     };
   }
 
+  getTimestamp(geopos: Geoposition) {
+    if (geopos && geopos.timestamp > 0) {
+      if (this.platform.is('cordova') && this.platform.is('ios')) {
+        return geopos.timestamp / 1000;
+      }
+      return geopos.timestamp;
+    }
+    return moment().unix();
+  }
+
   private mapPosToLog(): (src: Observable<Geoposition>) => Observable<GeoPositionLog> {
     return (src: Observable<Geoposition>) => src.pipe(map((pos) => {
       const log: GeoPositionLog = ({
+        timestamp: this.getTimestamp(pos),
         status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
-        pos,
+        pos: pos.coords !== undefined ? { ...pos, timestamp: this.getTimestamp(pos) } : undefined,
         highAccuracyEnabled: true,
         err: pos.coords === undefined ? (pos as unknown as PositionError) : undefined
       });
@@ -78,11 +91,19 @@ export class GeoPositionService {
     }));
   }
 
+  private addGpsPositionLog(status: 'StartGpsTracking' | 'StopGpsTracking') {
+    this.gpsPositionLog.next(
+      {
+        timestamp: moment().unix(),
+        status,
+        highAccuracyEnabled: this.highAccuracyEnabled.value
+      });
+  }
+
 
   startTracking(forcePermissionDialog = false) {
-    this.gpsPositionLog.next({ status: 'StartGpsTracking', highAccuracyEnabled: this.highAccuracyEnabled.value });
     this.stopPostionUpdates = new Subject();
-
+    this.addGpsPositionLog('StartGpsTracking');
     const watchObservable: Observable<GeoPositionLog> = this.geolocation.watchPosition(
       settings.gps.highAccuracyPositionOptions
     ).pipe(
@@ -102,7 +123,13 @@ export class GeoPositionService {
       .subscribe((result: GeoPositionLog) => {
         this.gpsPositionLog.next(result);
         if (this.isValidPosition(result.pos)) {
-          this.gpsPositionLog.next(({ status: 'PositionUpdate', highAccuracyEnabled: result.highAccuracyEnabled, pos: result.pos }));
+          this.gpsPositionLog.next(({
+            timestamp: result.pos.timestamp,
+            status: 'PositionUpdate',
+            highAccuracyEnabled:
+              result.highAccuracyEnabled,
+            pos: result.pos
+          }));
           this.currentPosition.next(result.pos);
           // if (!this.highAccuracyEnabled.value) {
           //   this.highAccuracyEnabled.next(true);
@@ -114,7 +141,7 @@ export class GeoPositionService {
   }
 
   stopTracking() {
-    this.gpsPositionLog.next({ status: 'StopGpsTracking', highAccuracyEnabled: true });
+    this.addGpsPositionLog('StopGpsTracking');
     this.stopWatchingHeading();
     this.stopPostionUpdates.next();
     this.stopPostionUpdates.complete();

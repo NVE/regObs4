@@ -55,8 +55,7 @@ export class GpsDebugComponent implements OnInit {
   }
 
   timestampToString(timestamp: number) {
-    const unixTimestamp = this.platform.is('ios') ? (timestamp / 1000) : timestamp;
-    return moment.unix(unixTimestamp).local().format('dd.MM HH:mm:ss.SSS');
+    return moment.unix(timestamp).local().format('dd.MM HH:mm:ss.SSS');
   }
 
   getErrorCodeOrMessage(err: PositionError) {

@@ -190,17 +190,16 @@ export const settings = {
     snowRegionsGeoJsonName: 'omradeNavn',
     cordovaNotAvailable: 'cordova_not_available',
     gps: {
-        maximumAge: 180000,
         highAccuracyPositionOptions: {
             enableHighAccuracy: true,
             timeout: 20 * 1000, // 20 sec
-            maximumAge: 10 * 60 * 1000 // 10 minutes
+            maximumAge: Infinity // Start with latest cached value
         },
-        lowAccuracyPositionOptions: {
-            enableHighAccuracy: false,
-            timeout: 30 * 1000, // 20 sec
-            maximumAge: 30 * 60 * 1000 // 30 minutes
-        },
+        // lowAccuracyPositionOptions: {
+        //     enableHighAccuracy: false,
+        //     timeout: 30 * 1000, // 20 sec
+        //     maximumAge: 30 * 60 * 1000 // 30 minutes
+        // },
     },
     offlineAssetsFolder: 'assets',
     dateFormats: {
