@@ -103,20 +103,21 @@ export class GeoPositionService {
 
   startTracking(forcePermissionDialog = false) {
     this.addGpsPositionLog('StartGpsTracking');
-    const watchObservable: Observable<GeoPositionLog> = this.geolocation.watchPosition(
-      settings.gps.highAccuracyPositionOptions
-    ).pipe(
-      filter((result) => result !== null),
-      this.mapPosToLog(),
-      catchError((err) => {
-        this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
-        return of(this.createPositionError('Unknown error'));
-      }));
-
+    if (this.positionSubscription) {
+      this.positionSubscription.unsubscribe();
+    }
     this.positionSubscription = (forcePermissionDialog ? from(this.checkPermissions()) : of(true)).pipe(
       tap(() => this.loggingService.debug('Before watchPosition', DEBUG_TAG)),
-      concatMap((startWatch) => startWatch ? watchObservable : of(
-        this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied))),
+      concatMap((startWatch) => startWatch ? this.geolocation.watchPosition(
+        settings.gps.highAccuracyPositionOptions
+      ).pipe(
+        filter((result) => result !== null),
+        this.mapPosToLog(),
+        catchError((err) => {
+          this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
+          return of(this.createPositionError('Unknown error'));
+        })) : of(
+          this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied))),
       tap((val) => this.loggingService.debug('After watchPosition', DEBUG_TAG, val)))
       .subscribe((result: GeoPositionLog) => {
         this.gpsPositionLog.next(result);
