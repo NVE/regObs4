@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, ReplaySubject, from, of, Observable } from 'rxjs';
+import { BehaviorSubject, Subject, ReplaySubject, from, of, Observable, Subscription } from 'rxjs';
 import { filter, takeUntil, map, concatMap, tap, catchError } from 'rxjs/operators';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../../settings';
@@ -18,14 +18,14 @@ const DEBUG_TAG = 'GeoPositionService';
   providedIn: 'root'
 })
 export class GeoPositionService {
-
-  private stopPostionUpdates: Subject<void> = new Subject();
   private highAccuracyEnabled = new BehaviorSubject(true);
   private gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
   private currentPosition: BehaviorSubject<Geoposition> = new BehaviorSubject(null);
   private setHeadingFunc: (event: DeviceOrientationEvent) => void;
   private currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
   private hasCompassHeading = new BehaviorSubject(false);
+  private positionSubscription: Subscription;
+  private updateHeadingSubscription: Subscription;
 
   get currentPosition$() {
     return this.currentPosition.pipe(filter((cp) => cp !== null));
@@ -102,7 +102,6 @@ export class GeoPositionService {
 
 
   startTracking(forcePermissionDialog = false) {
-    this.stopPostionUpdates = new Subject();
     this.addGpsPositionLog('StartGpsTracking');
     const watchObservable: Observable<GeoPositionLog> = this.geolocation.watchPosition(
       settings.gps.highAccuracyPositionOptions
@@ -114,12 +113,11 @@ export class GeoPositionService {
         return of(this.createPositionError('Unknown error'));
       }));
 
-    (forcePermissionDialog ? from(this.checkPermissions()) : of(true)).pipe(
+    this.positionSubscription = (forcePermissionDialog ? from(this.checkPermissions()) : of(true)).pipe(
       tap(() => this.loggingService.debug('Before watchPosition', DEBUG_TAG)),
       concatMap((startWatch) => startWatch ? watchObservable : of(
         this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied))),
-      tap((val) => this.loggingService.debug('After watchPosition', DEBUG_TAG, val)),
-      takeUntil(this.stopPostionUpdates))
+      tap((val) => this.loggingService.debug('After watchPosition', DEBUG_TAG, val)))
       .subscribe((result: GeoPositionLog) => {
         this.gpsPositionLog.next(result);
         if (this.isValidPosition(result.pos)) {
@@ -143,9 +141,13 @@ export class GeoPositionService {
   stopTracking() {
     this.addGpsPositionLog('StopGpsTracking');
     this.stopWatchingHeading();
-    this.stopPostionUpdates.next();
-    this.stopPostionUpdates.complete();
     // this.highAccuracyEnabled.next(false);
+    if (this.updateHeadingSubscription) {
+      this.updateHeadingSubscription.unsubscribe();
+    }
+    if (this.positionSubscription) {
+      this.positionSubscription.unsubscribe();
+    }
   }
 
   private isValidPosition(pos: Geoposition) {
@@ -234,12 +236,11 @@ export class GeoPositionService {
   }
 
   private startUpdateHeadingIfValidPositionAndNoCompassHeading() {
-    this.currentPosition$.pipe(filter((pos) =>
+    this.updateHeadingSubscription = this.currentPosition$.pipe(filter((pos) =>
       !this.hasCompassHeading
       && pos
       && pos.coords
-      && this.isValidHeading(pos.coords.heading)),
-      takeUntil(this.stopPostionUpdates))
+      && this.isValidHeading(pos.coords.heading)))
       .subscribe((pos) => this.currentHeading.next(pos.coords.heading));
   }
 
