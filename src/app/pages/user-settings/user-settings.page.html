@@ -88,7 +88,7 @@
         </ion-input>
         <ion-spinner name="dots" *ngIf="cacheTilesSize === undefined"></ion-spinner>
       </ion-item>
-      <ion-item>
+      <ion-item *ngIf="userSettings.featureToggleDeveloperMode">
         <ion-label>
           GPS debug
         </ion-label>

@@ -44,11 +44,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     return options;
   }
 
-  get appModeTestEnabled() {
-    return ((this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE)
-      || (this.userSettings && this.userSettings.appMode === AppMode.Test));
-  }
-
   constructor(
     private userSettingService: UserSettingService,
     private offlineMapService: OfflineMapService,
