@@ -1,5 +1,5 @@
 .gpsLogPanel {
-  bottom: 50px;
+  bottom: calc(50px + var(--ion-safe-area-bottom));
   left: 0;
   right: 0;
   position: fixed;
@@ -27,9 +27,9 @@
 }
 
 ion-fab {
-  transform: translate3d(0px, -124px, 0px);
+  transform: translate3d(0px, calc(-124px + var(--ion-safe-area-bottom)), 0px);
 
   &.open {
-    transform: translate3d(0px, -308px, 0px);
+    transform: translate3d(0px, calc(-308px + var(--ion-safe-area-bottom)), 0px);
   }
 }

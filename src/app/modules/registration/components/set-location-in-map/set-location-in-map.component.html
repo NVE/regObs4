@@ -1,6 +1,6 @@
 <div [ngClass]="{'open': showDetails, 'details-small':!showFromMarkerInDetails }">
   <app-map *ngIf="locationMarker" [showSupportMaps]="false" (mapReady)="onMapReady($event)"
-    (positionChange)="positionChange($event)" [center]="locationMarker.getLatLng()"></app-map>
+    [center]="locationMarker.getLatLng()"></app-map>
   <ion-grid class="bottom-info ion-no-padding">
     <ion-row>
       <ion-col class="confirm-button-col">

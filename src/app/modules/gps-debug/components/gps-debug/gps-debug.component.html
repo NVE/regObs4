@@ -4,8 +4,8 @@
       <ion-icon [name]="isOpen ? 'arrow-dropdown' : 'arrow-dropup'"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  <ion-content class="gpsLogPanel" [ngClass]="{'open': isOpen, 'tracking': isTracking$ | async }">
-    <div *ngFor="let item of geoPositionLog$ | async">
+  <ion-content #GpsLogPanel class="gpsLogPanel" [ngClass]="{'open': isOpen, 'tracking': isTracking }">
+    <div *ngFor="let item of geoPositionLog">
       {{ timestampToString(item.timestamp) }} -
       <span *ngIf="item.status !== 'PositionUpdate'">&nbsp;{{item.status}}</span>
       <span *ngIf="item.status === 'PositionUpdate'">

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, ReplaySubject, from, of, Observable, Subscription } from 'rxjs';
-import { filter, takeUntil, map, concatMap, tap, catchError } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, from, of, Observable, Subscription } from 'rxjs';
+import { filter, map, concatMap, tap, catchError } from 'rxjs/operators';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
@@ -83,7 +83,7 @@ export class GeoPositionService {
       const log: GeoPositionLog = ({
         timestamp: this.getTimestamp(pos),
         status: (pos.coords === undefined ? 'PositionError' : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
-        pos: pos.coords !== undefined ? { ...pos, timestamp: this.getTimestamp(pos) } : undefined,
+        pos,
         highAccuracyEnabled: true,
         err: pos.coords === undefined ? (pos as unknown as PositionError) : undefined
       });

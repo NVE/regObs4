@@ -1,6 +1,6 @@
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, distinctUntilChanged, scan, debounceTime, filter, tap } from 'rxjs/operators';
+import { Component, OnInit, NgZone, ViewChild, OnDestroy } from '@angular/core';
+import { Observable, Subject, of } from 'rxjs';
+import { map, distinctUntilChanged, scan, filter, tap, throttleTime, takeUntil, switchMap } from 'rxjs/operators';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { enterZone } from '../../../../core/helpers/observable-helper';
@@ -14,35 +14,55 @@ import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo
   templateUrl: './gps-debug.component.html',
   styleUrls: ['./gps-debug.component.scss'],
 })
-export class GpsDebugComponent implements OnInit {
+export class GpsDebugComponent implements OnInit, OnDestroy {
 
   showLog$: Observable<boolean>;
-  geoPositionLog$: Observable<GeoPositionLog[]>;
-  isOpen = true;
-  isTracking$: Observable<boolean>;
+  geoPositionLog: GeoPositionLog[];
+  isOpen: boolean;
+  isTracking: boolean;
+  private ngDestroy$ = new Subject();
 
-  @ViewChild(IonContent, { static: false }) panel: IonContent;
+  @ViewChild('GpsLogPanel', { static: false }) panel: IonContent;
 
   constructor(
-    userSettingService: UserSettingService,
-    geoPositionService: GeoPositionService,
-    private platform: Platform,
-    ngZone: NgZone) {
-    this.showLog$ = userSettingService.userSettingObservable$.pipe(map((us) =>
-      us.featureToggeGpsDebug), distinctUntilChanged(), enterZone(ngZone));
-    this.geoPositionLog$ = geoPositionService.log$.pipe(
+    private userSettingService: UserSettingService,
+    private geoPositionService: GeoPositionService,
+    private ngZone: NgZone) {
+  }
+
+  ngOnInit() {
+    this.isOpen = false;
+    this.isTracking = false;
+    this.showLog$ = this.userSettingService.userSettingObservable$.pipe(map((us) =>
+      us.featureToggeGpsDebug), distinctUntilChanged(), enterZone(this.ngZone));
+    this.showLog$.pipe(switchMap((show) => show ? this.geoPositionService.log$.pipe(
       scan((acc: GeoPositionLog[], val) => {
         acc.push(val);
         return acc.slice(-50);
-      }, []), debounceTime(100), tap(() => this.scrollToBottom()));
-    this.isTracking$ = geoPositionService.log$.pipe(
+      }, []), throttleTime(100)) : of([])), takeUntil(this.ngDestroy$)).subscribe((val) => {
+        this.ngZone.run(() => {
+          this.geoPositionLog = val;
+        });
+        this.ngZone.run(() => {
+          this.scrollToBottom();
+        });
+      });
+    this.geoPositionService.log$.pipe(
       filter((log) => log.status === 'StartGpsTracking' || log.status === 'StopGpsTracking'),
       map((log) => log.status === 'StartGpsTracking' ? true : false),
-      distinctUntilChanged()
-    );
+      distinctUntilChanged(),
+      takeUntil(this.ngDestroy$)
+    ).subscribe((val) => {
+      setTimeout(() => {
+        this.isTracking = val;
+      });
+    });
   }
 
-  ngOnInit() { }
+  ngOnDestroy() {
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
+  }
 
   toggle() {
     this.isOpen = !this.isOpen;
