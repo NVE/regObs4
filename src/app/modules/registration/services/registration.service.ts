@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { NanoSql } from '../../../../nanosql';
 import { IRegistration } from '../models/registration.model';
-import { Observable, from, of, combineLatest, EMPTY } from 'rxjs';
-import { shareReplay, switchMap, map, take, catchError, concatMap, tap } from 'rxjs/operators';
+import { Observable, from, of, combineLatest } from 'rxjs';
+import { shareReplay, switchMap, map, take, concatMap, tap } from 'rxjs/operators';
 import * as RegobsApi from '../../regobs-api/services';
 import * as RegobsApiModels from '../../regobs-api/models';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
@@ -15,7 +15,7 @@ import { DataLoadService } from '../../data-load/services/data-load.service';
 import { RegistrationStatus } from '../models/registrationStatus.enum';
 import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
-import { ObservableHelper } from '../../../core/helpers/observable-helper';
+import { toPromiseWithCancel } from '../../../core/helpers/observable-helper';
 import { NavController, ModalController } from '@ionic/angular';
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { LoginModalPage } from '../../login/pages/modal-pages/login-modal/login-modal.page';
@@ -329,7 +329,7 @@ export class RegistrationService {
       concatMap(() => from(this.saveRegistration(registration))), // Save updated picture dtos with attachment id
       concatMap(() => this.registrationApiService.RegistrationInsert(registration.request)
       ));
-    return ObservableHelper.toPromiseWithCancel(uploadProcess$, cancel);
+    return toPromiseWithCancel(uploadProcess$, cancel);
   }
 
   private uploadAttachments(registration: RegobsApiModels.CreateRegistrationRequestDto): Observable<RegobsApiModels.PictureRequestDto[]> {

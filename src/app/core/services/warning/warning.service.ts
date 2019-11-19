@@ -21,7 +21,7 @@ import { Platform } from '@ionic/angular';
 import { HTTP } from '@ionic-native/http/ngx';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import { IMapViewAndArea } from '../../../modules/map/services/map/map-view-and-area.interface';
-import { ObservableHelper } from '../../helpers/observable-helper';
+import { toPromiseWithCancel } from '../../helpers/observable-helper';
 import { IAvalancheWarningSimple } from './avalanche-warning-simple.interface';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { DbHelperService } from '../db-helper/db-helper.service';
@@ -374,7 +374,7 @@ export class WarningService {
       + `/${dateRange.from.format(settings.services.warning.dateFormat)}`
       + `/${dateRange.to.format(settings.services.warning.dateFormat)}`;
     try {
-      const warningsresult = await ObservableHelper.toPromiseWithCancel(
+      const warningsresult = await toPromiseWithCancel(
         this.httpClient.get<IWarningApiResult[]>(url), cancelPromise);
       const regions = this.aggregateWarningRegions(warningsresult, geoHazard, language, moment());
       this.updateLatestWarnings(geoHazard, language, regions);
@@ -496,7 +496,7 @@ export class WarningService {
       + `/${dateRange.from.format(settings.services.warning.dateFormat)}`
       + `/${dateRange.to.format(settings.services.warning.dateFormat)}`;
     try {
-      const warningsresult = await ObservableHelper.toPromiseWithCancel(
+      const warningsresult = await toPromiseWithCancel(
         this.httpClient.get<IAvalancheWarningApiResult[]>(url), cancelPromise);
       if (!cancelled) {
         const regionResult: IWarningGroup[] = warningsresult.map((region, index) => ({

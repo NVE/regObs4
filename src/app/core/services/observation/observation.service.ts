@@ -14,7 +14,7 @@ import { UserSetting } from '../../models/user-settings.model';
 import { LangKey } from '../../models/langKey';
 import { SearchService } from '../../../modules/regobs-api/services';
 import { RegistrationViewModel, ObserverResponseDto } from '../../../modules/regobs-api/models';
-import { ObservableHelper } from '../../helpers/observable-helper';
+import { toPromiseWithCancel } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
@@ -131,7 +131,7 @@ export class ObservationService {
       });
     }
     try {
-      const searchResult = await ObservableHelper.toPromiseWithCancel(this.searchService.SearchSearch({
+      const searchResult = await toPromiseWithCancel(this.searchService.SearchSearch({
         FromDate: fromDate.toISOString(),
         SelectedGeoHazards: geoHazards,
         NumberOfRecords: settings.observations.maxObservationsToFetch,

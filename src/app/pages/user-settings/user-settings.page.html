@@ -88,6 +88,13 @@
         </ion-input>
         <ion-spinner name="dots" *ngIf="cacheTilesSize === undefined"></ion-spinner>
       </ion-item>
+      <ion-item>
+        <ion-label>
+          GPS debug
+        </ion-label>
+        <ion-toggle slot="end" [(ngModel)]="userSettings.featureToggeGpsDebug" (ngModelChange)="updateSettings()">
+        </ion-toggle>
+      </ion-item>
     </ion-list>
     <ion-list lines="none">
       <ion-button expand="block" [disabled]="isUpdating" (click)="updateDropdowns()">

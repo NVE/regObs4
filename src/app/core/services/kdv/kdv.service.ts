@@ -10,7 +10,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { switchMap, map, shareReplay } from 'rxjs/operators';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import moment from 'moment';
-import { ObservableHelper } from '../../helpers/observable-helper';
+import { toPromiseWithCancel } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
 
@@ -62,7 +62,7 @@ export class KdvService {
     const dataLoadId = this.getDataLoadId(appMode, language);
     await this.dataLoadService.startLoading(dataLoadId);
     try {
-      const kdvElements = await ObservableHelper.toPromiseWithCancel(
+      const kdvElements = await toPromiseWithCancel(
         this.kdvApiService.KdvElementsGetKdvs({ langkey: language }), cancel);
       await NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode)
         .query('upsert', { langKey: language, ...kdvElements }).exec();
