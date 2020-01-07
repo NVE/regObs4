@@ -288,6 +288,7 @@
       "IMAGE_PLACEHOLDER": "+ Add image description",
       "TITLE": "Accident / Incident"
     },
+    "INVALID_IMAGE": "Sorry, this is an invalid image",
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
     "NONE": "Not selected",

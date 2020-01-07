@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ActionSheetController, Platform } from '@ionic/angular';
+import { ActionSheetController, Platform, ToastController } from '@ionic/angular';
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
 import { settings } from '../../../../../settings';
 import { RegistrationTid } from '../../models/registrationTid.enum';
@@ -8,8 +8,12 @@ import { PictureRequestDto } from '../../../regobs-api/models';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { DomSanitizer } from '@angular/platform-browser';
+import { File, DirectoryEntry, Entry } from '@ionic-native/file/ngx';
+import { LoggingService } from '../../../shared/services/logging/logging.service';
+import { LogLevel } from '../../../shared/services/logging/log-level.model';
 
-const DATA_URL_TAG = 'data:image/jpeg;base64,';
+// const DATA_URL_TAG = 'data:image/jpeg;base64,';
+const DEBUG_TAG = 'AddPictureItemComponent';
 
 @Component({
   selector: 'app-add-picture-item',
@@ -37,7 +41,10 @@ export class AddPictureItemComponent implements OnInit {
     private translateService: TranslateService,
     private camera: Camera,
     private platform: Platform,
+    private file: File,
+    private logger: LoggingService,
     private webView: WebView,
+    private toastController: ToastController,
     private domSanitizer: DomSanitizer,
     private actionSheetController: ActionSheetController) { }
 
@@ -80,22 +87,77 @@ export class AddPictureItemComponent implements OnInit {
       await this.addDummyImage();
       return true;
     }
-    const options: CameraOptions = {
-      quality: settings.images.quality,
-      destinationType: this.camera.DestinationType.FILE_URI,
-      // NOTE: Base64 encode. If API supports upload image blob later,
-      // this should be changed to FILE_URL and uploaded separatly
-      sourceType: sourceType,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
-      targetHeight: settings.images.size,
-      targetWidth: settings.images.size,
-      correctOrientation: true,
-      saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA,
-    };
-    const imageUrl = await this.camera.getPicture(options);
-    this.addImage(imageUrl);
+    try {
+      const options: CameraOptions = {
+        quality: settings.images.quality,
+        destinationType: this.camera.DestinationType.FILE_URI,
+        // NOTE: Base64 encode. If API supports upload image blob later,
+        // this should be changed to FILE_URL and uploaded separatly
+        sourceType: sourceType,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE,
+        targetHeight: settings.images.size,
+        targetWidth: settings.images.size,
+        correctOrientation: true,
+        saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA,
+      };
+      const imageUrl = await this.camera.getPicture(options);
+      if (await !this.validateImage(imageUrl)) {
+        this.showErrorToast();
+        return true;
+      }
+
+      this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
+      const permanentUrl = await this.moveImageToPermanentStorage(imageUrl);
+      this.logger.debug(`Image moved to permanent image url: ${permanentUrl}`, DEBUG_TAG);
+      this.addImage(permanentUrl);
+    } catch (err) {
+      this.logger.error(err, DEBUG_TAG, 'Error when adding image');
+      this.showErrorToast();
+    }
     return true;
+  }
+
+  private async validateImage(src: string) {
+    if (src) {
+      const entry = await this.file.resolveLocalFilesystemUrl(src);
+      return entry.name.endsWith('jpg');
+    }
+    return false;
+  }
+
+  showErrorToast() {
+    this.translateService.
+      get('REGISTRATION.INVALID_IMAGE')
+      .subscribe(async (translation) => {
+        const toast = await this.toastController.create({
+          message: translation,
+          mode: 'md',
+          duration: 4000
+        });
+        toast.present();
+      });
+  }
+
+  private async moveImageToPermanentStorage(src: string): Promise<string> {
+    const entry = await this.file.resolveLocalFilesystemUrl(src);
+    const rootDir = await this.file.resolveDirectoryUrl(this.file.dataDirectory);
+    const obsImgFolder = await this.file.getDirectory(rootDir, 'obsimages', { create: true });
+    const newSrc = await this.moveFile(entry, obsImgFolder);
+    return newSrc;
+  }
+
+  private moveFile(file: Entry, directory: DirectoryEntry): Promise<string> {
+    return new Promise((resolve, reject) => file.moveTo(directory, null, entry => resolve(entry.toURL()), err => reject(err)));
+  }
+
+  private async deleteFile(src: string) {
+    try {
+      const entry = await this.file.resolveLocalFilesystemUrl(src);
+      await new Promise((resolve, reject) => entry.remove(resolve, reject));
+    } catch (err) {
+      this.logger.log('Could not delete image', err, LogLevel.Warning, DEBUG_TAG);
+    }
   }
 
   private async addDummyImage() {
@@ -114,8 +176,12 @@ export class AddPictureItemComponent implements OnInit {
   removeImage(image: PictureRequestDto) {
     const index = this.images.indexOf(image);
     if (index >= 0) {
+      const imgSrc = image.PictureImageBase64;
       this.images.splice(index, 1);
       this.imagesChange.emit(this.images);
+      if (!this.isBase64Image(imgSrc)) {
+        this.deleteFile(imgSrc);
+      }
     }
   }
 
