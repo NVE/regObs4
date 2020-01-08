@@ -384,7 +384,7 @@
         "PROPAGATION": "Spatial distribution",
         "TITLE": "Avalanche Problem",
         "TOP": "Top",
-        "UNKNOWN_TYPE": "Unknown avalanche cause",
+        "UNKNOWN_TYPE": "Unknown weak layer",
         "VALID_EXPOSITION": "Aspect",
         "WEAK_LAYER": "Weak layer",
         "WEAK_LAYER_DEPTH": "Weak layer depth"
