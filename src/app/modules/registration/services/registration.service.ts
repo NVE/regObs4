@@ -111,6 +111,9 @@ export class RegistrationService {
           reg.request[key] = undefined;
         }
       }
+      if (!reg.request.DtObsTime) {
+        reg.request.DtObsTime = moment().toISOString(true);
+      }
     }
     return reg;
   }
