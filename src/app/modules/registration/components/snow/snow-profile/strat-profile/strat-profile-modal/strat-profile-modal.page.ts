@@ -35,7 +35,10 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   }
 
   get profile(): StratProfileDto {
-    return (((this.reg || {}).request || {}).SnowProfile2 || {}).StratProfile || {};
+    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.StratProfile) {
+      return this.reg.request.SnowProfile2.StratProfile;
+    }
+    return {};
   }
 
   constructor(
@@ -127,8 +130,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   }
 
   private calculate() {
-    const profile = ((((this.reg || {}).request || {}).SnowProfile2 || {}).StratProfile || {});
-    const layers = profile.Layers || [];
+    const layers = this.profile.Layers || [];
     const sum = layers.filter((x) => x.Thickness !== undefined)
       .map(((layer) => layer.Thickness))
       .reduce((pv, cv) => pv + cv, 0);

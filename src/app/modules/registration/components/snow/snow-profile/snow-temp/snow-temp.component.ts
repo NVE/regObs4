@@ -15,7 +15,10 @@ export class SnowTempComponent implements OnInit {
   private snowTempModal: HTMLIonModalElement;
 
   get tempProfile() {
-    return (((this.reg || {}).request || {}).SnowProfile2 || {}).SnowTemp || {};
+    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.SnowTemp) {
+      return this.reg.request.SnowProfile2.SnowTemp;
+    }
+    return {};
   }
 
   get isEmpty() {

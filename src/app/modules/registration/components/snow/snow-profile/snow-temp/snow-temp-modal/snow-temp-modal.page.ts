@@ -7,6 +7,7 @@ import { RegistrationService } from '../../../../../services/registration.servic
 import cloneDeep from 'clone-deep';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-snow-temp-modal',
@@ -23,7 +24,11 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   private ngDestroy$ = new Subject();
 
   get tempProfile() {
-    return (((this.reg || {}).request || {}).SnowProfile2 || {}).SnowTemp || {};
+    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.SnowTemp) {
+      return this.reg.request.SnowProfile2.SnowTemp;
+    }
+
+    return {};
   }
 
   get hasLayers() {

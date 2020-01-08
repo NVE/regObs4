@@ -17,7 +17,14 @@ export class SnowDensityComponent implements OnInit {
   private densityModal: HTMLIonModalElement;
 
   get profiles(): DensityProfileDto[] {
-    return (((this.reg || {}).request || {}).SnowProfile2 || {}).SnowDensity || [];
+    if (this.reg
+      && this.reg.request
+      && this.reg.request.SnowProfile2
+      && this.reg.request.SnowProfile2.SnowDensity
+      && this.reg.request.SnowProfile2.SnowDensity.length > 0) {
+      return this.reg.request.SnowProfile2.SnowDensity;
+    }
+    return [];
   }
 
   get isEmpty() {

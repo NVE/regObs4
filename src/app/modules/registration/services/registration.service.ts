@@ -414,11 +414,8 @@ export class RegistrationService {
   private fileToBlob(file: IFile): Promise<Blob> {
     return new Promise<Blob>((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = (evt) => resolve(new Blob([evt.target.result], { type: file.type }));
-      reader.onerror = (e) => {
-        console.log('Failed file read: ' + e.toString());
-        reject(e);
-      };
+      reader.onloadend = () => resolve(new Blob([reader.result], { type: file.type }));
+      reader.onerror = (e) => reject(e);
       reader.readAsArrayBuffer(file);
     });
   }
