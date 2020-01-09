@@ -1,23 +1,23 @@
-<div class="slides-wrapper" *ngIf="show"
-  [ngClass]="{'animated-background': (showSlider && !swiperLoaded), 'loaded': loaded }">
-  <ion-slides *ngIf="showSlider && !recreateSwiper" [options]="slideOptions" [pager]="false"
-    [ngClass]="{'loaded': loaded}" (ionSlideTransitionEnd)="onSlideTransitionEnd()"
-    (ionSlidesDidLoad)="slidesLoaded($event)">
-    <ion-slide *ngIf="location">
-      <app-map-image [location]="location" (click)="onLocationClick()"></app-map-image>
-    </ion-slide>
-    <ion-slide *ngFor="let url of imgUrl; let i = index">
-      <app-offline-image [src]="url" (click)="onImageClick(i, url)"></app-offline-image>
+<div class="slides-wrapper" *ngIf="!isEmpty" [ngClass]="{'animated-background': isSwiper, 'loaded': isSwiperLoaded }">
+  <ion-slides *ngIf="isSwiper" [options]="slideOptions" [pager]="false" [ngClass]="{'loaded': isSwiperLoaded}"
+    (ionSlideTransitionEnd)="onSlideTransitionEnd()" (ionSlidesDidLoad)="slidesLoaded($event)"
+    (ionSlideTouchStart)="onSlideTouchStart()">
+    <ion-slide *ngFor="let slide of slides; let i = index" [ngSwitch]="slide.type">
+      <app-offline-image *ngSwitchCase="'image'" [src]="slide.img" (click)="onImageClick(slide.img)">
+      </app-offline-image>
+      <app-map-image *ngSwitchCase="'location'" [location]="slide.img" (click)="onLocationClick()"></app-map-image>
     </ion-slide>
   </ion-slides>
-  <app-offline-image *ngIf="showSingleImage" class="single" (click)="onImageClick(0, imgUrl[0])" [src]="imgUrl[0]">
+  <app-offline-image *ngIf="isSingleImage" class="single" (click)="onImageClick(0, imgUrl[0])" [src]="imgUrl[0]">
   </app-offline-image>
-  <app-map-image *ngIf="showSingleMap" class="single" [location]="location" (click)="onLocationClick()"></app-map-image>
-  <ion-label *ngIf="showLabels" [ngClass]="{'loaded': loaded}">
-    <span class="img-comment-header" *ngIf="showImageIndex">{{imageIndex}}/{{totalImages}}&nbsp;</span>
-    <span [ngClass]="{'img-comment-header': comment }" *ngIf="header">{{ header | translate }}<ng-container
-        *ngIf="comment">:&nbsp;
+  <app-map-image *ngIf="isSingleMap" class="single" [location]="location" (click)="onLocationClick()">
+  </app-map-image>
+  <ion-label *ngIf="showLabel" [ngClass]="{'loaded': isLoaded}">
+    <span class="img-comment-header" *ngIf="showIndex">{{imageIndex + 1}}/{{imageLength}}&nbsp;</span>
+    <span [ngClass]="{'img-comment-header': slides[activeIndex].description }"
+      *ngIf="slides[activeIndex].header">{{ slides[activeIndex].header | translate }}<ng-container
+        *ngIf="slides[activeIndex].description">:&nbsp;
       </ng-container></span>
-    <ng-container *ngIf="comment">{{ comment }}</ng-container>
+    <ng-container *ngIf="slides[activeIndex].description">{{ slides[activeIndex].description }}</ng-container>
   </ion-label>
 </div>

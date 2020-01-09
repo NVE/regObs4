@@ -13,6 +13,9 @@ import {
 import { IonSlides } from '@ionic/angular';
 import * as L from 'leaflet';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { ImgSwiperSlide } from './img-swiper-slide';
+import { Subject, interval, race } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-img-swiper',
@@ -34,48 +37,68 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   slideOptions = {
     autoplay: false,
     slidesPerView: 'auto',
-    zoom: false,
+    zoom: false
   };
 
-  comment: string;
-  header: string;
-  imageIndex: number;
-  loadedWithMap: boolean;
   swiper: any;
-  loaded = false;
-  recreateSwiper = false;
+  state: 'loading' | 'empty' | 'singleimage' | 'singlemap' | 'loading-swiper' | 'swiper-ready' = 'loading';
+  slides: ImgSwiperSlide[];
+  activeIndex = 0;
 
-  @ViewChild(IonSlides, { static : false }) slider: IonSlides;
+  private ngDestroy$ = new Subject();
+  private touchStart$ = new Subject();
 
-  get totalImages() {
-    return this.imgUrl.length;
+  @ViewChild(IonSlides, { static: false }) slider: IonSlides;
+
+  get isEmpty() {
+    return this.state === 'empty';
   }
 
-  get showSingleImage() {
-    return this.totalImages === 1 && !this.location;
+  get isLoaded() {
+    return this.state !== 'loading' && this.state !== 'loading-swiper';
   }
 
-  get showSingleMap() {
-    return this.location && this.totalImages === 0;
+  get isSwiperLoaded() {
+    return this.state === 'swiper-ready';
   }
 
-  get showSlider() {
-    return !this.showSingleImage && !this.showSingleMap;
+  get isSwiper() {
+    return this.state === 'swiper-ready' || this.state === 'loading-swiper';
   }
 
-  get show() {
-    return this.location || this.totalImages > 0;
+  get isSingleImage() {
+    return this.state === 'singleimage';
   }
 
-  get showImageIndex() {
-    return this.imageIndex !== undefined && this.totalImages > 1;
+  get isSingleMap() {
+    return this.state === 'singlemap';
   }
 
-  get shouldShowLabel() {
-    if (!this.showLabels) {
-      return false;
+  get showLabel() {
+    return this.slides && this.slides[this.activeIndex] &&
+      (this.slides[this.activeIndex].header || this.slides[this.activeIndex].description);
+  }
+
+  get shouldMoveMap() {
+    return this.location && this.imgUrl && this.imgUrl.length > 0;
+  }
+
+  get imageLength() {
+    return this.imgUrl ? this.imgUrl.length : 0;
+  }
+
+  get imageIndex() {
+    if (this.slides[this.activeIndex] && this.slides[this.activeIndex].type === 'image') {
+      return this.getImageIndex(this.slides[this.activeIndex].img as string);
     }
-    return this.header !== undefined || this.comment !== undefined;
+    return 0;
+  }
+
+  get showIndex() {
+    if (this.imgUrl && this.imgUrl.length > 1) {
+      return this.location ? (this.activeIndex > 0) : true;
+    }
+    return false;
   }
 
   constructor(private cdr: ChangeDetectorRef) { }
@@ -85,40 +108,71 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   slidesLoaded(el: any) {
     this.swiper = el.target.swiper;
-    this.initSwiper();
-    this.setImgHeaderAndComment(1);
+    if (this.shouldMoveMap) {
+      this.activeIndex = 1;
+      interval(100).pipe(takeUntil(race(this.ngDestroy$, this.touchStart$))).subscribe(() => {
+        this.moveMapInSwiperToLeftOutsideView();
+      });
+    }
+    this.state = 'swiper-ready';
+    this.cdr.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.loaded = false;
-    if (this.showSlider) {
-      this.reloadSwiper();
-    } else {
-      this.setImgHeaderAndComment(0);
+    this.state = 'loading';
+    if (this.swiper) {
+      this.swiper.destroy();
+      this.swiper = undefined;
     }
+    this.cdr.detectChanges();
+    setTimeout(() => this.init(), 0);
   }
 
-  private reloadSwiper() {
-    setTimeout(() => {
-      this.recreateSwiper = true;
-      this.cdr.markForCheck();
-      setTimeout(() => {
-        this.recreateSwiper = false;
-        this.cdr.markForCheck();
-      });
-    });
-  }
-
-  private initSwiper() {
+  private init() {
+    this.slides = [];
     if (this.location) {
-      if (this.swiper) {
-        this.swiper.on('imagesReady', () => {
-          this.moveMapInSwiperToLeftOutsideView();
-        });
-      }
-      this.moveMapInSwiperToLeftOutsideView();
+      this.slides.push({
+        type: 'location',
+        img: this.location,
+        header: 'REGISTRATION.OBS_LOCATION.TITLE'
+      });
     }
-    this.cdr.markForCheck();
+    this.slides = [
+      ...this.getLocationSlides(),
+      ...this.getImageSlides(),
+    ];
+    this.activeIndex = 0;
+    this.state = this.calculateNewState();
+    this.cdr.detectChanges();
+  }
+
+  private calculateNewState() {
+    if (this.location && (!this.imgUrl || this.imgUrl.length === 0)) {
+      return 'singlemap';
+    } else if (!this.location && this.imgUrl && this.imgUrl.length === 1) {
+      return 'singleimage';
+    } else if (!this.location && (!this.imgUrl || this.imgUrl.length === 0)) {
+      return 'empty';
+    } else {
+      return 'loading-swiper';
+    }
+  }
+
+  private getLocationSlides(): ImgSwiperSlide[] {
+    return this.location ? [{
+      type: 'location',
+      img: this.location,
+      header: 'REGISTRATION.OBS_LOCATION.TITLE'
+    }] : [];
+  }
+
+  private getImageSlides(): ImgSwiperSlide[] {
+    return (this.imgUrl || []).map((img, index) => ({
+      type: 'image',
+      img,
+      header: this.imgHeaders[index],
+      description: this.imgComments[index],
+    }));
   }
 
   private moveMapInSwiperToLeftOutsideView() {
@@ -127,52 +181,36 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
     }
   }
 
-  private resetImageHeaderAndComment() {
-    this.comment = undefined;
-    this.header = undefined;
-    this.imageIndex = undefined;
+  getImageIndex(src: string) {
+    return (this.imgUrl && this.imgUrl.length > 0) ? this.imgUrl.indexOf(src) : -1;
   }
 
-  private setImgHeaderAndComment(index: number) {
-    if (this.showLabels) {
-      this.resetImageHeaderAndComment();
-      const i = this.getImageIndex(index) - 1;
-      if (this.location && index === 0) {
-        this.header = 'REGISTRATION.OBS_LOCATION.TITLE';
-      } else {
-        if (i < this.imgComments.length) {
-          this.comment = this.imgComments[i];
-        }
-        if (i < this.imgHeaders.length) {
-          this.header = this.imgHeaders[i];
-        }
-        this.imageIndex = this.getImageIndex(index);
-      }
+  onImageClick(imgUrlSrc: string) {
+    const index = this.getImageIndex(imgUrlSrc);
+    if (index >= 0) {
+      this.imgClick.emit({ index, imgUrl: imgUrlSrc });
     }
-    this.loaded = true;
-    this.cdr.markForCheck();
-  }
-
-  private getImageIndex(index: number) {
-    return (this.location ? (index - 1) : index) + 1;
-  }
-
-  onImageClick(index: number, imgUrl: string) {
-    this.imgClick.emit({ index, imgUrl });
   }
 
   onLocationClick() {
     this.locationClick.emit(this.location);
   }
 
+  onSlideTouchStart() {
+    this.touchStart$.next();
+  }
+
   async getSwiperIndex() {
-    const index = await (this.slider ? this.slider.getActiveIndex() : Promise.resolve(0));
-    const isEnd = await (this.slider ? this.slider.isEnd() : Promise.resolve(false));
-    return isEnd ? (this.imgUrl.length - 1 + (this.location ? 1 : 0)) : index;
+    if (this.slider) {
+      const index = await this.slider.getActiveIndex();
+      const isEnd = await this.slider.isEnd();
+      return isEnd ? (this.slides.length - 1) : index;
+    }
+    return 0;
   }
 
   async onSlideTransitionEnd() {
-    const index = await this.getSwiperIndex();
-    this.setImgHeaderAndComment(index);
+    this.activeIndex = await this.getSwiperIndex();
+    this.cdr.detectChanges();
   }
 }

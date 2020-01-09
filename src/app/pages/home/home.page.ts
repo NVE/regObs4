@@ -25,7 +25,7 @@ const DEBUG_TAG = 'HomePage';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage extends RouterPage implements OnInit, OnDestroy {
+export class HomePage extends RouterPage implements OnInit {
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
@@ -95,7 +95,8 @@ export class HomePage extends RouterPage implements OnInit, OnDestroy {
     if (userSettings.showGeoSelectInfo) {
       this.showGeoSelectSubscription = this.userSettingService.userSettingObservable$.pipe(
         map((us) => us.showGeoSelectInfo),
-        distinctUntilChanged()
+        distinctUntilChanged(),
+        takeUntil(this.ngUnsubscribe)
       ).subscribe((showGeoSelectInfo) => {
         this.ngZone.run(() => {
           this.showGeoSelectInfo = showGeoSelectInfo;
