@@ -236,7 +236,10 @@ export class OfflineMapService implements OnReset {
     try {
       const tileFromDb = await this.getTileFromDb(tileId);
       if (tileFromDb && tileFromDb.dataUrl) {
-        return this.webview.convertFileSrc(tileFromDb.dataUrl);
+        if (this.platform.is('cordova')) {
+          return this.webview.convertFileSrc(tileFromDb.dataUrl);
+        }
+        return tileFromDb.dataUrl;
       }
     } catch (err) {
       this.loggingService.error(err, DEBUG_TAG, `Error getting image data from cached tile id: ${tileId}`);

@@ -145,8 +145,8 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     }
   }
 
-  async stopTrip() {
-    await this.tripLoggerService.stopLegacyTrip();
+  stopTrip() {
+    this.tripLoggerService.stopLegacyTrip();
   }
 
 

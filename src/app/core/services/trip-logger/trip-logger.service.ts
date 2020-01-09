@@ -7,14 +7,13 @@ import { NanoSql } from '../../../../nanosql';
 import { Observable, from } from 'rxjs';
 import { TripService } from '../../../modules/regobs-api/services';
 import { CreateTripDto } from '../../../modules/regobs-api/models';
-import { switchMap, take, map } from 'rxjs/operators';
+import { switchMap, take, map, concatMap, filter } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { ToastController, AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LegacyTrip } from './legacy-trip.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
-import { AppMode } from '../../models/app-mode.enum';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
 
 const DEBUG_TAG = 'TripLoggerService';
@@ -89,9 +88,9 @@ export class TripLoggerService {
 
   stopLegacyTrip(showConfirm = true) {
     if (showConfirm) {
-      return this.confirmStopTrip();
+      this.confirmStopTrip();
     } else {
-      return this.callStopLegacyTripApiAndDeleteFromDb();
+      this.callStopLegacyTripApiAndDeleteFromDb();
     }
   }
 
@@ -138,32 +137,31 @@ export class TripLoggerService {
     await alert.present();
   }
 
-  private async callStopLegacyTripApiAndDeleteFromDb() {
-    const userSetting = await this.userSettingService.getUserSettings();
-    const currentTrip = await this.getLegacyTripAsObservable().pipe(take(1)).toPromise();
-    if (currentTrip) {
-      try {
-        await this.tripService.TripPut({ DeviceGuid: currentTrip.request.DeviceGuid }).toPromise();
-        await this.infoMessage(false).toPromise();
-      } catch (error) {
+  private callStopLegacyTripApiAndDeleteFromDb() {
+    this.getLegacyTripAsObservable().pipe(
+      take(1),
+      filter((trip) => !!trip),
+      concatMap(((trip) => this.tripService.TripPut({ DeviceGuid: trip.request.DeviceGuid }))),
+      concatMap(() => this.deleteLegacyTripsFromDb()),
+      concatMap(() => this.infoMessage(false)))
+      .subscribe(() => {
+      }, async (error) => {
         this.loggingService.error(error, DEBUG_TAG, 'Could not stop trip');
-        // this.showTripErrorMessage(false);
-      }
-      await this.deleteLegacyTripsFromDb(userSetting.appMode);
-    }
+        await this.showTripErrorMessage(false);
+      });
   }
 
-  private deleteLegacyTripsFromDb(appMode: AppMode) {
-    return NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('delete').exec();
+  private deleteLegacyTripsFromDb() {
+    return this.userSettingService.appMode$.pipe(concatMap((appMode) =>
+      from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('delete').exec())));
   }
 
-  async cleanupOldLegacyTrip() {
-    const limit = moment().startOf('day').unix();
-    const currentTrip = await this.getLegacyTripAsObservable().pipe(take(1)).toPromise();
-    const userSetting = await this.userSettingService.getUserSettings();
-    if (currentTrip && (currentTrip.timestamp < limit)) {
-      await this.deleteLegacyTripsFromDb(userSetting.appMode);
-    }
+  cleanupOldLegacyTrip() {
+    return this.getLegacyTripAsObservable().pipe(
+      filter((trip) => trip && (trip.timestamp < moment().startOf('day').unix())),
+      concatMap(() => this.deleteLegacyTripsFromDb()),
+      take(1)
+    ).toPromise();
   }
 
   private infoMessage(started: boolean) {
