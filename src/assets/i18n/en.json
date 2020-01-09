@@ -546,6 +546,7 @@
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Allow sending app usage data",
     "ALLOW_ANALYTICS_DESCRIPTION": "Help us improve Varsom Regobs by letting us know how you use the application.",
+    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "This data is anonymous and cannot be linked to you personally.",
     "ALLOW_ANALYTICS_HEADER": "Share usage statistics",
     "APPMODE": "App mode",
     "APP_VERSION": "App version",
