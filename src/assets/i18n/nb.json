@@ -592,6 +592,10 @@
       "NORWEGIAN": "Norsk",
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian"
     },
+    "COMPETENCE_PAGE": {
+      "HEADER": "Bruk Regobs fornuftig!",
+      "LINE_1": "Bruk informasjonen i appen, men gjør også dine egne vurderinger. Se observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
+    },
     "I_UNDERSTAND": "Ok, jeg forstår",
     "PAGE_1": {
       "HEADER": "Planlegg trygge turer!",

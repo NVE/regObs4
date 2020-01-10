@@ -592,6 +592,10 @@
       "NORWEGIAN": "Norwegian",
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norsk"
     },
+    "COMPETENCE_PAGE": {
+      "HEADER": "Use Regobs wisely!",
+      "LINE_1": "Use the information in the app, but also make your own judgments. View the observations in context of the observer's competence that appears as stars by the name."
+    },
     "I_UNDERSTAND": "Ok, I understand",
     "PAGE_1": {
       "HEADER": "Plan safe trips!",

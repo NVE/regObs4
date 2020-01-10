@@ -150,4 +150,7 @@ export const animations = [
 
     // Page 4 animations
     trigger('headerAnimation4', getHeaderAnimation(4)),
+
+    // Page 5 animations
+    trigger('headerAnimation5', getHeaderAnimation(5)),
 ];

@@ -1,272 +1,340 @@
 ion-footer {
-    ion-toolbar {
-        ion-button {
-            color: #fff;
-            text-transform: initial;
-        }
+  ion-toolbar {
+    ion-button {
+      color: #fff;
+      text-transform: initial;
     }
+  }
 }
-  
+
 @keyframes usermarker-pulsate {
-    from {
-        width: 40px;
-        height: 40px;
-        opacity: 0.5;
-        top: 1px;
-        left: 0px;
-    }
-    to {
-      width: 80px;
-      height: 80px;
-      transform: translate3d(-19px, -19px, 0px);
-      opacity: 0; 
-    } 
+  from {
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
+    top: 1px;
+    left: 0px;
+  }
+  to {
+    width: 80px;
+    height: 80px;
+    transform: translate3d(-19px, -19px, 0px);
+    opacity: 0;
+  }
 }
 
 @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(-360deg); }
+  from {
+    transform: rotate(0deg);
   }
+  to {
+    transform: rotate(-360deg);
+  }
+}
 
 @-webkit-keyframes rotate {
-    from { -webkit-transform: rotate(0deg); }
-    to { -webkit-transform: rotate(-360deg); }
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(-360deg);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@-webkit-keyframes float {
+  0% {
+    -webkit-transform: translateY(0px);
+  }
+  50% {
+    -webkit-transform: translateY(-15px);
+  }
+  100% {
+    -webkit-transform: translateY(0px);
+  }
+}
+
+.float {
+  -webkit-animation: rotate 1.5s ease-in-out infinite;
+  animation: float 1.5s ease-in-out infinite;
 }
 
 ion-content {
-    --ion-background-color: #fff;
+  --ion-background-color: #fff;
 
-    ion-slides {
-        height: 100%;
+  ion-slides {
+    height: 100%;
 
-        .full-grid {
-            padding-left: 6vw;
-            padding-right: 6vw;
+    .full-grid {
+      padding-left: 6vw;
+      padding-right: 6vw;
+    }
+
+    .legal-grid {
+      margin-top: auto;
+      padding-bottom: 12vh;
+      height: auto;
+    }
+
+    .legal-info-row {
+      height: 20vh;
+    }
+
+    .legal-text-row {
+      ul {
+        padding-left: 18px;
+        li {
+          text-align: left;
+          padding-bottom: 5px;
+          font-size: 4vw;
         }
-
-        .legal-grid {
-            margin-top: auto;
-            padding-bottom: 12vh;
-            height: auto;
-        }
-
-        .legal-info-row {
-            height: 20vh;
-        }
-
-        .legal-text-row {
-            ul {
-                padding-left: 18px;
-                li {
-                    text-align: left;
-                    padding-bottom: 5px;
-                    font-size: 4vw;
-                }
-                @media screen and (min-width: 768px) {
-                    li {
-                       font-size: 18px;
-                    }
-                  }
-            }
-        }
-
-        ion-slide{
-            overflow: hidden;
-        }
-
-        h2 {
-            margin-top: 0px;
-            font-size: 24px;
-            font-weight: bold;
-            --ion-text-color-heading : var(--ion-text-color-heading-white-pages);
-            transform-origin: bottom;
-        }
-
-        h3 {
+        @media screen and (min-width: 768px) {
+          li {
             font-size: 18px;
-            transform-origin: bottom;
+          }
+        }
+      }
+    }
+
+    ion-slide {
+      overflow: hidden;
+    }
+
+    h2 {
+      margin-top: 0px;
+      font-size: 24px;
+      font-weight: bold;
+      --ion-text-color-heading: var(--ion-text-color-heading-white-pages);
+      transform-origin: bottom;
+    }
+
+    h3 {
+      font-size: 18px;
+      transform-origin: bottom;
+    }
+
+    .dark-color {
+      color: var(--ion-text-color);
+    }
+
+    ion-list {
+      margin-top: 16px;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    // ion-radio-group {
+    //     ion-item {
+    //         height: 36px;
+    //     }
+    // }
+
+    ion-card {
+      --inner-border-width: 0 0 0 0;
+    }
+
+    .legal-icon {
+      font-size: 36px;
+      border-radius: 50%;
+      color: #fff;
+      background-color: var(--ion-color-varsom-blue-tint);
+      width: 70px;
+      height: 70px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+
+      &.hide {
+        display: none;
+      }
+
+      &:before {
+        content: "";
+        width: 120px;
+        height: 120px;
+        background-image: url("/assets/images/onboarding/legal-spinner.png");
+        -webkit-animation: rotate 3s linear infinite;
+        animation: rotate 3s linear infinite;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        opacity: 0.5;
+        display: block;
+        position: absolute;
+      }
+    }
+
+    .animated-element-wrapper {
+      position: relative;
+      top: 50%;
+      left: 50%;
+
+      .animated-element {
+        display: block;
+        position: absolute;
+
+        &.eclipse {
+          left: -46px;
+          top: -58px;
+        }
+        &.bubble {
+          left: -100px;
+          top: 20px;
         }
 
-        .dark-color {
-            color: var(--ion-text-color);
+        &.line {
+          left: -188px;
         }
 
-        ion-list {
-            margin-top: 16px;
-            margin-left: 20px;
-            margin-right: 20px;
+        &.warning {
+          left: 58px;
+          top: 54px;
+          transform-origin: bottom;
         }
 
-        // ion-radio-group {
-        //     ion-item {
-        //         height: 36px;
-        //     }
-        // }
-
-        ion-card {
-            --inner-border-width: 0 0 0 0;
+        &.pin-ice {
+          top: 115px;
+          left: -50px;
+          transform-origin: bottom;
         }
 
-        .legal-icon {
-            font-size: 36px;
-            border-radius: 50%;
-            color: #fff;
-            background-color: var(--ion-color-varsom-blue-tint);
-            width: 70px;
-            height: 70px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 30px;
-
-            &.hide {
-             display: none;
-            }
-
-            &:before {
-                content: "";
-                width: 120px;
-                height: 120px;
-                background-image: url('/assets/images/onboarding/legal-spinner.png');
-                -webkit-animation: rotate 3s linear infinite;
-                animation: rotate 3s linear infinite;
-                background-position: center;
-                background-repeat: no-repeat;
-                background-size: cover;
-                opacity: 0.5;
-                display: block;
-                position: absolute;
-            }
+        &.pin-dirt {
+          top: -101px;
+          left: 83px;
+          transform-origin: bottom;
         }
 
-        .animated-element-wrapper {
-            position: relative;
-            top:50%;
-            left: 50%;
+        &.pin-snow {
+          top: -69px;
+          left: -57px;
+          transform-origin: bottom;
+        }
 
-        .animated-element {
+        &.pin-water {
+          left: -150px;
+          top: 20px;
+          transform-origin: bottom;
+        }
+
+        &.steepness-background {
+          top: -160px;
+          left: -193px;
+        }
+
+        &.danger-map {
+          left: -187px;
+          top: -113px;
+        }
+
+        &.user-location {
+          left: 53px;
+          top: 74px;
+
+          &:before {
+            content: "";
             display: block;
+            animation: usermarker-pulsate 1.5s ease-in-out infinite;
+            border: 5px solid #6996a3;
+            background-color: #fff;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
             position: absolute;
-
-            &.eclipse {
-                left: -46px;
-                top: -58px;
-            }
-            &.bubble {
-                left: -100px;
-                top: 20px;
-            }
-
-            &.line {
-                left: -188px;
-            }
-    
-            &.warning {
-                left: 58px;
-                top: 54px;
-                transform-origin: bottom;
-            }
-    
-            &.pin-ice {
-                top: 115px;
-                left: -50px;
-                transform-origin: bottom;
-            }
-    
-            &.pin-dirt {
-                top: -101px;
-                left: 83px;
-                transform-origin: bottom;
-            }
-    
-            &.pin-snow {
-                top: -69px;
-                left: -57px;
-                transform-origin: bottom;
-            }
-
-            &.pin-water {
-                left: -150px;
-                top: 20px;
-                transform-origin: bottom;
-            }
-
-            &.steepness-background {
-                top: -160px;
-                left: -193px;
-            }
-
-            &.danger-map {
-                left: -187px;
-                top: -113px;
-            }
-
-            &.user-location {
-                left: 53px;
-                top: 74px;
-
-                &:before {
-                        content: "";
-                        display: block;
-                        animation: usermarker-pulsate 1.5s ease-in-out infinite;
-                        border: 5px solid #6996A3;
-                        background-color: #fff;
-                        border-radius: 50%;
-                        height: 40px;
-                        width: 40px;
-                        position: absolute;
-                        top: 1px;
-                        z-index: -1;
-                }
-            }
-
-            &.exclamation-mark {
-                left: -70px;
-                 top: -7px;
-            }
-
-            &.add-observation {
-                left: -35px;
-                top: 50px;
-            }
-
-            &.photos {
-                left: -125px;
-                top: 16px;
-            }
-
-            &.pin {
-                left: -70px;
-                top: -53px;
-            }
-
-            &.ruler {
-                left: -125px;
-                top: -94px;
-            }
-
-            &.document {
-                left: 1px;
-                top: -36px;
-            }
-
-            &.path {
-                left: 58px;
-                top: -100px;
-            }
-
-            &.eye {
-                left: 64px;
-                top: 16px;
-            }
-
-            &.text {
-                left: -78px;
-                top: 131px;
-                color: var(--ion-color-varsom-orange);
-                font-size: 24px;
-            }
+            top: 1px;
+            z-index: -1;
+          }
         }
+
+        &.exclamation-mark {
+          left: -70px;
+          top: -7px;
+        }
+
+        &.add-observation {
+          left: -35px;
+          top: 50px;
+        }
+
+        &.competence-finger {
+          left: -35px;
+          top: 20px;
+        }
+
+        &.star {
+          width: 40px;
+          height: 40px;
+          top: 90px;
+        }
+
+        &.star1 {
+          left: -115px;
+        }
+
+        &.star2 {
+          left: -65px;
+        }
+
+        &.star3 {
+          left: -15px;
+        }
+
+        &.star4 {
+          left: 35px;
+        }
+
+        &.star5 {
+          left: 85px;
+        }
+
+        &.photos {
+          left: -125px;
+          top: 16px;
+        }
+
+        &.pin {
+          left: -70px;
+          top: -53px;
+        }
+
+        &.ruler {
+          left: -125px;
+          top: -94px;
+        }
+
+        &.document {
+          left: 1px;
+          top: -36px;
+        }
+
+        &.path {
+          left: 58px;
+          top: -100px;
+        }
+
+        &.eye {
+          left: 64px;
+          top: 16px;
+        }
+
+        &.text {
+          left: -78px;
+          top: 131px;
+          color: var(--ion-color-varsom-orange);
+          font-size: 24px;
+        }
+      }
     }
-    }
+  }
 }
