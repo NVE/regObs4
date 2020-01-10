@@ -68,3 +68,19 @@ Download new regions from [https://nedlasting.nve.no/gis/#].
 - Area: "Landsdekkende"
 
 Overwrite /assets/json/varslingsomraader.json
+
+## Update counties (Fylkesgrenser) boarders
+The boarders are used to show warinings in current map view
+Download "Administrative enheter fylker (gjeldende)" area from [https://kartkatalog.geonorge.no/nedlasting]
+- Select "Hele landet"
+- Projection "UTM sone 33"
+- Format GEOJSON
+
+The file need to be simplified and converted to wgs84:
+- Download mapshaper: npm install -g mapshaper
+- Edit json file and remove all features except Fylker
+- Simplify: mapshaper Basisdata-fylker.json -simplify 15% -o Basisdata-fylker-simple.json
+- Reproject: mapshaper Basisdata-fylker-simple.json -proj from=EPSG:25833 wgs84 -o regions-simple-polygons.json
+
+The json file will now be around 700KB and in wgs84 projection.
+Overwrite /assets/json/regions-simple-polygons.json
