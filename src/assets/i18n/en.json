@@ -1,4 +1,10 @@
 {
+  "ABONNER_BANNER": {
+    "BANNER_TEXT_LINE_1": "Get alerts from Varsom sent to SMS or e-mail.",
+    "BANNER_TEXT_LINE_2": "Set up or manage your alerts here.",
+    "LINK_TEXT": "Go to abonner.varsom.no",
+    "TITLE": "Varsom Abonner"
+  },
   "ADD_MENU": {
     "DRAFT": "Draft",
     "NEW_OBSERVATION": "New",

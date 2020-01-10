@@ -1,6 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { Platform } from '@ionic/angular';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
 
 @Component({

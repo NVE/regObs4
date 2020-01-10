@@ -27,6 +27,7 @@ export class WarningListPage implements OnInit, OnDestroy {
   noRelevant = false;
   trackByFunc = this.trackByInternal.bind(this);
   loaded = false;
+  myFooterFn = this.footerFn.bind(this);
 
   get showNoFavourites() {
     return this.selectedTab === 'favourites' && this.noFavourites;
@@ -190,8 +191,8 @@ export class WarningListPage implements OnInit, OnDestroy {
     } : null;
   }
 
-  footerFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
-    if (index === (items.length - 1)) {
+  private footerFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
+    if (this.selectedTab !== 'inMapView' && index === (items.length - 1)) {
       return 'footer';
     }
   }

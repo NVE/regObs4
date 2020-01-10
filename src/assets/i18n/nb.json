@@ -1,4 +1,10 @@
 {
+  "ABONNER_BANNER": {
+    "BANNER_TEXT_LINE_1": "Naturfarevarsler fra Varsom på SMS eller e-post.",
+    "BANNER_TEXT_LINE_2": "Sett opp eller administrer dine varsler her.",
+    "LINK_TEXT": "Gå til abonner.varsom.no",
+    "TITLE": "Varsom Abonner"
+  },
   "ADD_MENU": {
     "DRAFT": "Kladd",
     "NEW_OBSERVATION": "Ny",
