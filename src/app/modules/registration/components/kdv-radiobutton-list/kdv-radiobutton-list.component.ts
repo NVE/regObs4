@@ -1,15 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
 import { KdvElement } from '../../../regobs-api/models';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { enterZone } from '../../../../core/helpers/observable-helper';
 
 @Component({
   selector: 'app-kdv-radiobutton-list',
   templateUrl: './kdv-radiobutton-list.component.html',
-  styleUrls: ['./kdv-radiobutton-list.component.scss']
+  styleUrls: ['./kdv-radiobutton-list.component.scss'],
 })
-export class KdvRadiobuttonListComponent implements OnInit, OnDestroy {
-
+export class KdvRadiobuttonListComponent implements OnInit {
   @Input() title: string;
   @Input() kdvKey: string;
   @Input() value: number;
@@ -17,9 +17,7 @@ export class KdvRadiobuttonListComponent implements OnInit, OnDestroy {
   @Input() showZeroValues = false;
   @Output() valueChange = new EventEmitter();
 
-  kdvelements: KdvElement[];
-
-  private subscription: Subscription;
+  kdvelements$: Observable<KdvElement[]>;
 
   constructor(
     private kdvService: KdvService,
@@ -27,30 +25,11 @@ export class KdvRadiobuttonListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.subscription = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.kdvelements = val;
-      });
-    });
+    this.kdvelements$ = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).pipe(enterZone(this.ngZone));
   }
 
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
-
-  onChange() {
-    this.ngZone.run(() => {
-      this.valueChange.emit(this.value);
-    });
-  }
-
-  setSelected(value: number) {
-    this.ngZone.run(() => {
-      this.value = value;
-      this.valueChange.emit(this.value);
-    });
+  onChange(value: number) {
+    this.valueChange.emit(value);
   }
 
   isVisible(item: KdvElement) {
