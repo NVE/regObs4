@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, NgZone, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import * as L from 'leaflet';
-import { Subject, of } from 'rxjs';
-import { map, switchMap, take, takeUntil, concatMap, delay, debounce, debounceTime } from 'rxjs/operators';
+import { Subject, timer } from 'rxjs';
+import { map, take, takeUntil, concatMap, debounceTime } from 'rxjs/operators';
 import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
@@ -44,7 +44,6 @@ export class ObservationListPage implements OnInit, OnDestroy {
         private observationService: ObservationService,
         private dataMarshallService: DataMarshallService,
         // private obsCardHeightService: ObsCardHeightService,
-        private ngZone: NgZone,
         private cdr: ChangeDetectorRef,
         private loggingService: LoggingService,
         private mapService: MapService) {
@@ -58,38 +57,43 @@ export class ObservationListPage implements OnInit, OnDestroy {
         await this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
         // TODO: Shouldn't this allways use the same cancel subject?
         this.loaded = false;
-        this.cdr.detectChanges();
+        this.updateUi();
         this.loadObservations();
     }
 
-    ionViewDidEnter() {
+    private updateUi() {
+        if (!this.cdr['destroyed']) {
+            this.cdr.detectChanges();
+        }
+    }
+
+    ionViewWillEnter() {
+        this.loaded = false;
         this.ngDestroy$ = new Subject();
         this.loadObservations();
+        this.updateUi();
     }
 
     ionViewWillLeave() {
-        this.loaded = false;
-        this.observations = undefined;
         this.ngDestroy$.next();
         this.ngDestroy$.complete();
-        this.cdr.detectChanges();
     }
 
     private loadObservations() {
+        this.content.scrollToTop();
         this.observations$.subscribe((observations) => {
             this.observations = observations;
             this.fadeIn(observations.length > 0);
-            this.cdr.detectChanges();
+            this.updateUi();
         }, (err) => {
             this.loggingService.log('Could not load observations', err, LogLevel.Warning, DEBUG_TAG);
         });
     }
 
-    private fadeIn(short = false) {
-        of(null).pipe(takeUntil(this.ngDestroy$), delay(short ? 200 : 1500)).subscribe(() => {
-            this.content.scrollToTop();
+    private fadeIn(longDelay = false) {
+        timer(longDelay ? 1500 : 200).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
             this.loaded = true;
-            this.cdr.detectChanges();
+            this.updateUi();
         });
     }
 
