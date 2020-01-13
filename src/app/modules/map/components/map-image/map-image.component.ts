@@ -2,8 +2,16 @@ import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy, OnChanges
 import { settings } from '../../../../../settings';
 import * as L from 'leaflet';
 import { RegobsGeoHazardMarker } from '../../core/classes/regobs-geohazard-marker';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
+import { ImageLocation } from '../../../../components/img-swiper/image-location.model';
+import { BehaviorSubject, Subject, timer } from 'rxjs';
+import { SmartChanges } from '../../../../core/helpers/simple-changes.helper';
+import { takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+
+const START_ICON = '/assets/icon/map/GPS_start.svg';
+const END_ICON = '/assets/icon/map/GPS_stop.svg';
+const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
 
 @Component({
   selector: 'app-map-image',
@@ -12,12 +20,12 @@ import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
-
-  @Input() location: { latLng: L.LatLng, geoHazard: GeoHazard };
+  @Input() location: ImageLocation;
   @Input() allowZoom: boolean;
 
   private map: L.Map;
-  recreateMap = false;
+  private mapCenterSubject: BehaviorSubject<ImageLocation>;
+  private ngDestroy$: Subject<void>;
 
   constructor(private cdr: ChangeDetectorRef) { }
 
@@ -34,28 +42,41 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     center: L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
   };
 
+  private getStartStopIcon(start = false) {
+    return L.icon({
+      iconUrl: start ? START_ICON : END_ICON,
+      iconSize: [27, 42],
+      iconAnchor: [13.5, 41],
+      shadowUrl: 'leaflet/marker-shadow.png',
+      shadowSize: [41, 41],
+    });
+  }
+
+  private getDamageIcon() {
+    return L.icon({
+      iconUrl: DAMAGE_ICON,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      shadowUrl: 'leaflet/marker-shadow.png',
+      shadowSize: [41, 41],
+    });
+  }
+
   ngOnInit() {
+    this.mapCenterSubject = new BehaviorSubject(this.location);
+    this.ngDestroy$ = new Subject();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.location && this.location.latLng) {
-      this.options.center = this.location.latLng;
+  ngOnChanges(changes: SimpleChanges & SmartChanges<this>): void {
+    if (!this.mapCenterSubject) {
+      this.mapCenterSubject = new BehaviorSubject(this.location);
     }
-    this.initMap();
-  }
-
-  private initMap() {
-    setTimeout(() => {
-      this.recreateMap = true;
-      this.cdr.markForCheck();
-      setTimeout(() => {
-        this.recreateMap = false;
-        this.cdr.markForCheck();
-      }, 0);
-    }, 0);
+    this.mapCenterSubject.next(changes.location.currentValue);
   }
 
   ngOnDestroy(): void {
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
     this.destroyMap();
   }
 
@@ -68,6 +89,22 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
 
   onLeafletMapReady(map: L.Map) {
     this.map = map;
+    this.mapCenterSubject.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
+      if (this.map) {
+        this.map.eachLayer((layer) => layer.remove());
+      }
+      this.addTileLayers();
+      if (val && val.latLng) {
+        this.map.setView(val.latLng, this.options.zoom);
+        this.setMarker(val.latLng, val.geoHazard);
+      }
+      if (val && val.startStopLocation) {
+        this.setStartStopLocation(val.startStopLocation.start, val.startStopLocation.stop);
+      }
+      if (val && val.damageLocations && val.damageLocations.length > 0) {
+        this.setDamageLocations(val.damageLocations);
+      }
+    });
     if (!this.allowZoom) {
       if (this.map.tap) {
         this.map.tap.disable();
@@ -79,28 +116,19 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
       this.map.scrollWheelZoom.disable();
       this.map.boxZoom.disable();
     }
-    this.map.eachLayer((layer) => layer.remove());
-    this.addTileLayers();
-    this.addMarker();
-    this.resize();
+    this.redrawMap();
   }
 
-  private resize() {
-    setTimeout(() => {
-      this.resizeInternal();
-      setTimeout(() => {
-        this.resizeInternal();
-      }, 200);
-    }, 200);
-  }
-
-  private resizeInternal() {
-    if (this.map) {
-      try {
-        this.map.invalidateSize();
-      } catch (err) {
-      }
-    }
+  redrawMap() {
+    let counter = 3;
+    timer(500, 50).pipe(
+      takeUntil(this.ngDestroy$),
+      takeWhile(() => counter > 0),
+      tap(() => counter--)).subscribe(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+        }
+      });
   }
 
   private isInNorway() {
@@ -121,13 +149,39 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     ).addTo(this.map);
   }
 
-  private addMarker() {
-    if (this.location && this.location.latLng) {
-      const marker = L.marker(this.location.latLng, {
-        icon: new RegobsGeoHazardMarker(this.location.geoHazard),
+  private setMarker(latLng: L.LatLng, geoHazard: GeoHazard) {
+    L.marker(latLng, {
+      icon: new RegobsGeoHazardMarker(geoHazard),
+      interactive: false,
+    }).addTo(this.map);
+  }
+
+  private setStartStopLocation(start: L.LatLng, stop: L.LatLng) {
+    if (start) {
+      L.marker(start, {
+        icon: this.getStartStopIcon(true),
         interactive: false,
-      });
-      marker.addTo(this.map);
+      }).addTo(this.map);
+    }
+    if (stop) {
+      L.marker(stop, {
+        icon: this.getStartStopIcon(false),
+        interactive: false,
+      }).addTo(this.map);
+    }
+    if (start && stop) {
+      L.polyline([start, stop], { color: 'red', weight: 6, opacity: .9 }).addTo(this.map);
+    }
+  }
+
+  private setDamageLocations(locations: L.LatLng[]) {
+    if (locations && locations.length > 0) {
+      for (const location of locations) {
+        L.marker(location, {
+          icon: this.getDamageIcon(),
+          interactive: false,
+        }).addTo(this.map);
+      }
     }
   }
 

@@ -12,11 +12,10 @@ import {
   OnDestroy
 } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
-import * as L from 'leaflet';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { ImgSwiperSlide } from './img-swiper-slide';
 import { Subject, interval, race } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ImageLocation } from './image-location.model';
 
 @Component({
   selector: 'app-img-swiper',
@@ -33,8 +32,8 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   @Input() imgComments: string[] = [];
   @Input() imgHeaders: string[] = [];
   @Output() imgClick: EventEmitter<{ index: number, imgUrl: string }> = new EventEmitter();
-  @Input() location: { latLng: L.LatLng, geoHazard: GeoHazard };
-  @Output() locationClick: EventEmitter<{ latLng: L.LatLng, geoHazard: GeoHazard }> = new EventEmitter();
+  @Input() location: ImageLocation;
+  @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
 
   slideOptions = {
     autoplay: false,
