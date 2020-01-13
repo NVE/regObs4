@@ -37,12 +37,9 @@ export class HomePage extends RouterPage implements OnInit {
   private geoCoachMarksClosedSubject = new Subject();
 
   fullscreen$: Observable<boolean>;
-  mapItemBarVisible = false;
-  // tripLogLayer = L.layerGroup();
   selectedMarker: MapItemMarker;
-  showMapCenter: boolean;
   showGeoSelectInfo = false;
-  dataLoadIds: string[] = [];
+  dataLoadIds$: Observable<string[]>;
 
   constructor(
     router: Router,
@@ -56,39 +53,12 @@ export class HomePage extends RouterPage implements OnInit {
     private geoPostionService: GeoPositionService,
   ) {
     super(router, route);
-    this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
   ngOnInit() {
-    this.userSettingService.showMapCenter$.pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((val) => {
-        this.ngZone.run(() => {
-          this.showMapCenter = val;
-        });
-      });
-
-    this.mapItemBar.isVisible.pipe(takeUntil(this.ngUnsubscribe)).subscribe((isVisible) => {
-      this.ngZone.run(() => {
-        this.mapItemBarVisible = isVisible;
-      });
-    });
-
-    this.observationService.dataLoad$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.dataLoadIds = [val];
-      });
-    });
-
+    this.fullscreen$ = this.fullscreenService.isFullscreen$;
+    this.dataLoadIds$ = this.observationService.dataLoad$.pipe(map((val) => [val]), enterZone(this.ngZone));
     this.checkForFirstStartup();
-
-    // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
-    //   this.tripLogLayer.clearLayers();
-    //   const latLngs = tripLogItems.map((tripLogItem) => L.latLng({
-    //     lat: tripLogItem.latitude,
-    //     lng: tripLogItem.longitude
-    //   }));
-    //   L.polyline(latLngs, { color: 'red', weight: 3 }).addTo(this.tripLogLayer);
-    // });
   }
 
   checkForFirstStartup() {
