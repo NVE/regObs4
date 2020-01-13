@@ -23,6 +23,22 @@ ion-footer {
   }
 }
 
+@-webkit-keyframes usermarker-pulsate {
+  from {
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
+    top: 1px;
+    left: 0px;
+  }
+  to {
+    width: 80px;
+    height: 80px;
+    -webkit-transform: translate3d(-19px, -19px, 0px);
+    opacity: 0;
+  }
+}
+
 @keyframes rotate {
   from {
     transform: rotate(0deg);
@@ -46,7 +62,7 @@ ion-footer {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-15px);
+    transform: translateY(-10px);
   }
   100% {
     transform: translateY(0px);
@@ -58,16 +74,158 @@ ion-footer {
     -webkit-transform: translateY(0px);
   }
   50% {
-    -webkit-transform: translateY(-15px);
+    -webkit-transform: translateY(-10px);
   }
   100% {
     -webkit-transform: translateY(0px);
   }
 }
 
+@keyframes activate-star {
+  0% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  20% {
+    color: var(--ion-color-varsom-blue-light-1);
+  }
+  100% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+}
+
+@-webkit-keyframes activate-star {
+  0% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  20% {
+    color: var(--ion-color-varsom-blue-light-1);
+  }
+  100% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+}
+
+@keyframes activate-star-2 {
+  0% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  25% {
+    color: var(--ion-color-varsom-blue-light-1);
+  }
+  95% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  100% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+}
+@-webkit-keyframes activate-star-2 {
+  0% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  25% {
+    color: var(--ion-color-varsom-blue-light-1);
+  }
+  95% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  100% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+}
+
+@keyframes activate-star-3 {
+  0% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  30% {
+    color: var(--ion-color-varsom-blue-light-1);
+  }
+  90% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  100% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+}
+@-webkit-keyframes activate-star-3 {
+  0% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  30% {
+    color: var(--ion-color-varsom-blue-light-1);
+  }
+  90% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  100% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+}
+
+@keyframes activate-star-4 {
+  0% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  35% {
+    color: var(--ion-color-varsom-blue-light-1);
+  }
+  85% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  100% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+}
+
+@-webkit-keyframes activate-star-4 {
+  0% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  35% {
+    color: var(--ion-color-varsom-blue-light-1);
+  }
+  85% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  100% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+}
+
+@keyframes activate-star-5 {
+  0% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  40% {
+    color: var(--ion-color-varsom-blue-light-1);
+  }
+  80% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  100% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+}
+
+@-webkit-keyframes activate-star-5 {
+  0% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  40% {
+    color: var(--ion-color-varsom-blue-light-1);
+  }
+  80% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+  100% {
+    color: var(--ion-color-varsom-blue-light-3);
+  }
+}
+
 .float {
-  -webkit-animation: rotate 1.5s ease-in-out infinite;
-  animation: float 1.5s ease-in-out infinite;
+  -webkit-animation: float 2s ease-in-out infinite;
+  animation: float 2s ease-in-out infinite;
 }
 
 ion-content {
@@ -116,11 +274,13 @@ ion-content {
       font-size: 24px;
       font-weight: bold;
       --ion-text-color-heading: var(--ion-text-color-heading-white-pages);
+      --webkit-transform-origin: bottom;
       transform-origin: bottom;
     }
 
     h3 {
       font-size: 18px;
+      --webkit-transform-origin: bottom;
       transform-origin: bottom;
     }
 
@@ -201,30 +361,35 @@ ion-content {
         &.warning {
           left: 58px;
           top: 54px;
+          --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
         &.pin-ice {
           top: 115px;
           left: -50px;
+          --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
         &.pin-dirt {
           top: -101px;
           left: 83px;
+          --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
         &.pin-snow {
           top: -69px;
           left: -57px;
+          --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
         &.pin-water {
           left: -150px;
           top: 20px;
+          --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
@@ -245,6 +410,7 @@ ion-content {
           &:before {
             content: "";
             display: block;
+            -webkit-animation: usermarker-pulsate 1.5s ease-in-out infinite;
             animation: usermarker-pulsate 1.5s ease-in-out infinite;
             border: 5px solid #6996a3;
             background-color: #fff;
@@ -275,7 +441,13 @@ ion-content {
         &.star {
           width: 40px;
           height: 40px;
-          top: 90px;
+          top: -97px;
+          color: var(--ion-color-varsom-blue-light-3);
+
+          &.animated {
+            -webkit-animation: activate-star 6s step-end infinite;
+            animation: activate-star 6s step-end infinite;
+          }
         }
 
         &.star1 {
@@ -284,18 +456,34 @@ ion-content {
 
         &.star2 {
           left: -65px;
+          &.animated {
+            animation-name: activate-star-2;
+            -webkit-animation-name: activate-star-2;
+          }
         }
 
         &.star3 {
           left: -15px;
+          &.animated {
+            animation-name: activate-star-3;
+            -webkit-animation-name: activate-star-3;
+          }
         }
 
         &.star4 {
           left: 35px;
+          &.animated {
+            animation-name: activate-star-4;
+            -webkit-animation-name: activate-star-4;
+          }
         }
 
         &.star5 {
           left: 85px;
+          &.animated {
+            animation-name: activate-star-5;
+            -webkit-animation-name: activate-star-5;
+          }
         }
 
         &.photos {

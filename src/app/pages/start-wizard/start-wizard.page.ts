@@ -58,7 +58,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
       this.userSetting.saveUserSettings(this.userSettings);
       this.navController.navigateRoot('/');
     } else {
-      this.slides.slideTo(4, 200);
+      this.slides.slideTo(5, 200);
     }
   }
 

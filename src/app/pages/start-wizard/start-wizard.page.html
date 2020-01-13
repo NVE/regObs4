@@ -160,11 +160,16 @@
         <ion-row class="full-grid-row">
           <ion-col class="ion-align-self-center">
             <div class="animated-element-wrapper">
-              <ion-icon class="animated-element star star1" name="star"></ion-icon>
-              <ion-icon class="animated-element star star2" name="star"></ion-icon>
-              <ion-icon class="animated-element star star3" name="star"></ion-icon>
-              <ion-icon class="animated-element star star4" name="star"></ion-icon>
-              <ion-icon class="animated-element star star5" name="star"></ion-icon>
+              <ion-icon class="animated-element star star1" name="star" [ngClass]="{'animated': state === 'page_4'}">
+              </ion-icon>
+              <ion-icon class="animated-element star star2" name="star" [ngClass]="{'animated': state === 'page_4'}">
+              </ion-icon>
+              <ion-icon class="animated-element star star3" name="star" [ngClass]="{'animated': state === 'page_4'}">
+              </ion-icon>
+              <ion-icon class="animated-element star star4" name="star" [ngClass]="{'animated': state === 'page_4'}">
+              </ion-icon>
+              <ion-icon class="animated-element star star5" name="star" [ngClass]="{'animated': state === 'page_4'}">
+              </ion-icon>
               <svg-icon class="animated-element competence-finger float"
                 src="/assets/images/onboarding/competence-finger.svg"></svg-icon>
             </div>
