@@ -8,7 +8,8 @@ import {
   OnChanges,
   SimpleChanges,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  OnDestroy
 } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
 import * as L from 'leaflet';
@@ -24,7 +25,8 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class ImgSwiperComponent implements OnInit, OnChanges {
+export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
+
 
   @Input() imgUrl: string[] = [];
   @Input() showLabels = true;
@@ -106,6 +108,10 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
 
+  ngOnDestroy(): void {
+    this.cdr.detach();
+  }
+
   slidesLoaded(el: any) {
     this.swiper = el.target.swiper;
     if (this.shouldMoveMap) {
@@ -115,7 +121,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
       });
     }
     this.state = 'swiper-ready';
-    this.cdr.detectChanges();
+    this.updateUi();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -124,7 +130,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
       this.swiper.destroy();
       this.swiper = undefined;
     }
-    this.cdr.detectChanges();
+    this.updateUi();
     setTimeout(() => this.init(), 0);
   }
 
@@ -143,7 +149,13 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
     ];
     this.activeIndex = 0;
     this.state = this.calculateNewState();
-    this.cdr.detectChanges();
+    this.updateUi();
+  }
+
+  private updateUi() {
+    if (!this.cdr['destroyed']) {
+      this.cdr.detectChanges();
+    }
   }
 
   private calculateNewState() {
@@ -211,6 +223,6 @@ export class ImgSwiperComponent implements OnInit, OnChanges {
 
   async onSlideTransitionEnd() {
     this.activeIndex = await this.getSwiperIndex();
-    this.cdr.detectChanges();
+    this.updateUi();
   }
 }
