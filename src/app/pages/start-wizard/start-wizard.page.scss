@@ -3,6 +3,7 @@ ion-footer {
     ion-button {
       color: #fff;
       text-transform: initial;
+      height: 56px;
     }
   }
 }
@@ -81,148 +82,6 @@ ion-footer {
   }
 }
 
-@keyframes activate-star {
-  0% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  20% {
-    color: var(--ion-color-varsom-blue-light-1);
-  }
-  100% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-}
-
-@-webkit-keyframes activate-star {
-  0% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  20% {
-    color: var(--ion-color-varsom-blue-light-1);
-  }
-  100% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-}
-
-@keyframes activate-star-2 {
-  0% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  25% {
-    color: var(--ion-color-varsom-blue-light-1);
-  }
-  95% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  100% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-}
-@-webkit-keyframes activate-star-2 {
-  0% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  25% {
-    color: var(--ion-color-varsom-blue-light-1);
-  }
-  95% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  100% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-}
-
-@keyframes activate-star-3 {
-  0% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  30% {
-    color: var(--ion-color-varsom-blue-light-1);
-  }
-  90% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  100% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-}
-@-webkit-keyframes activate-star-3 {
-  0% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  30% {
-    color: var(--ion-color-varsom-blue-light-1);
-  }
-  90% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  100% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-}
-
-@keyframes activate-star-4 {
-  0% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  35% {
-    color: var(--ion-color-varsom-blue-light-1);
-  }
-  85% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  100% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-}
-
-@-webkit-keyframes activate-star-4 {
-  0% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  35% {
-    color: var(--ion-color-varsom-blue-light-1);
-  }
-  85% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  100% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-}
-
-@keyframes activate-star-5 {
-  0% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  40% {
-    color: var(--ion-color-varsom-blue-light-1);
-  }
-  80% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  100% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-}
-
-@-webkit-keyframes activate-star-5 {
-  0% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  40% {
-    color: var(--ion-color-varsom-blue-light-1);
-  }
-  80% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-  100% {
-    color: var(--ion-color-varsom-blue-light-3);
-  }
-}
-
 .float {
   -webkit-animation: float 2s ease-in-out infinite;
   animation: float 2s ease-in-out infinite;
@@ -293,12 +152,6 @@ ion-content {
       margin-left: 20px;
       margin-right: 20px;
     }
-
-    // ion-radio-group {
-    //     ion-item {
-    //         height: 36px;
-    //     }
-    // }
 
     ion-card {
       --inner-border-width: 0 0 0 0;
@@ -444,9 +297,13 @@ ion-content {
           top: -97px;
           color: var(--ion-color-varsom-blue-light-3);
 
-          &.animated {
-            -webkit-animation: activate-star 6s step-end infinite;
-            animation: activate-star 6s step-end infinite;
+          &.dark {
+            color: var(--ion-color-varsom-blue-light-1);
+            -webkit-transition: color 200ms ease-in;
+            -moz-transition: color 200ms ease-in;
+            -o-transition: color 200ms ease-in;
+            -ms-transition: color 200ms ease-in;
+            transition: color 200ms ease-in;
           }
         }
 
