@@ -142,7 +142,7 @@ export class UserSettingService implements OnReset {
         distinctUntilChanged(), shareReplay(1));
   }
 
-  private getDefaultSettings(): UserSetting {
+  getDefaultSettings(): UserSetting {
     return {
       appMode: AppMode.Prod,
       language: LangKey.nb,

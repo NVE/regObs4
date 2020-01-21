@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterContentChecked } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IonSlides, NavController } from '@ionic/angular';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
@@ -27,6 +27,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
   private activeIndex = new Subject<number>();
   visibleStarNumber = -1;
   private isIncreasing = true;
+  recreate = true;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -34,11 +35,15 @@ export class StartWizardPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.recreate = true;
     this.userSettingService.userSettingObservable$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
       this.userSettings = val;
     });
-    this.initStarIndexCounter();
-    this.setPageIndex(0);
+    setTimeout(() => {
+      this.recreate = false; // Hack to get ion-slides working after app reset
+      this.initStarIndexCounter();
+      this.setPageIndex(0);
+    });
   }
 
   private setPageIndex(index: number) {
@@ -57,6 +62,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
+    this.recreate = true;
   }
 
   slideNext() {
@@ -69,6 +75,10 @@ export class StartWizardPage implements OnInit, OnDestroy {
 
   start() {
     if (this.reachedEnd) {
+      if (!this.userSettings) {
+        this.userSettings = this.userSettingService.getDefaultSettings();
+      }
+
       this.userSettings.completedStartWizard = true;
       this.userSettingService.saveUserSettings(this.userSettings);
       this.navController.navigateRoot('/');
