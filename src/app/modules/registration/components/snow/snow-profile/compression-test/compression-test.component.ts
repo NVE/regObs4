@@ -33,7 +33,7 @@ export class CompressionTestComponent implements OnInit {
 
   async openModal() {
     if (!this.compressionTestListModal) {
-      await this.registrationService.saveRegistration(this.reg); // Save registration before open modal page
+      await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
       this.compressionTestListModal = await this.modalContoller.create({
         component: CompressionTestListModalPage,
         componentProps: {

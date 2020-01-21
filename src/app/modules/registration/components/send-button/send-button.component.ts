@@ -40,11 +40,11 @@ export class SendButtonComponent implements OnInit, OnDestroy {
   }
 
   async send() {
-    const canSend = !this.isSending;
-    if (canSend) {
+    if (!this.isSending) {
       this.isSending = true;
       try {
-        await this.registrationService.sendRegistration(this.registration);
+        const userSetting = await this.userSettingService.getUserSettings();
+        await this.registrationService.sendRegistration(userSetting.appMode, this.registration);
       } finally {
         this.ngZone.run(() => {
           this.isSending = false;

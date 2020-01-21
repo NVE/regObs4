@@ -32,7 +32,7 @@ export class SnowTempComponent implements OnInit {
 
   async openModal() {
     if (!this.snowTempModal) {
-      await this.registrationService.saveRegistration(this.reg); // Save registration before open modal page
+      await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
       this.snowTempModal = await this.modalContoller.create({
         component: SnowTempModalPage,
         componentProps: {

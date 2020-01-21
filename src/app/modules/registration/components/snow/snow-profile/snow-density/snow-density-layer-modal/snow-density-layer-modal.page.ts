@@ -75,7 +75,7 @@ export class SnowDensityLayerModalPage implements OnInit {
     if (this.addNew && !this.isEmpty(this.layer)) {
       this.reg.request.SnowProfile2.SnowDensity[0].Layers.splice(this.index, 0, this.layer);
     }
-    await this.registrationService.saveRegistration(this.reg);
+    await this.registrationService.saveRegistrationAsync(this.reg);
 
     if (gotoIndex !== undefined) {
       this.index = this.index + (gotoIndex);
@@ -87,7 +87,7 @@ export class SnowDensityLayerModalPage implements OnInit {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistration(this.initialRegistrationState);
+    await this.registrationService.saveRegistrationAsync(this.initialRegistrationState);
     this.modalController.dismiss();
   }
 
@@ -98,7 +98,7 @@ export class SnowDensityLayerModalPage implements OnInit {
       && this.reg.request.SnowProfile2.SnowDensity[0].Layers.length > 0) {
       this.reg.request.SnowProfile2.SnowDensity[0].Layers =
         this.reg.request.SnowProfile2.SnowDensity[0].Layers.filter((l) => l !== this.layer);
-      await this.registrationService.saveRegistration(this.reg);
+      await this.registrationService.saveRegistrationAsync(this.reg);
     }
     this.modalController.dismiss();
   }

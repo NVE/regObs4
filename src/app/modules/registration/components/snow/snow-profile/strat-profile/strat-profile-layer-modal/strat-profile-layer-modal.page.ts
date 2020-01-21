@@ -102,7 +102,7 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   async save() {
-    await this.registrationService.saveRegistration(this.reg);
+    await this.registrationService.saveRegistrationAsync(this.reg);
   }
 
   async ok(gotoIndex?: number) {
@@ -130,7 +130,7 @@ export class StratProfileLayerModalPage implements OnInit {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistration(this.initialRegistationState);
+    await this.registrationService.saveRegistrationAsync(this.initialRegistationState);
     this.modalController.dismiss();
   }
 

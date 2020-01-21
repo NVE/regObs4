@@ -65,12 +65,12 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   }
 
   async ok() {
-    await this.registrationService.saveRegistration(this.reg);
+    await this.registrationService.saveRegistrationAsync(this.reg);
     this.modalController.dismiss();
   }
 
   async cancel() {
-    await this.registrationService.saveRegistration(this.regInitClone); // Reset to inital state
+    await this.registrationService.saveRegistrationAsync(this.regInitClone); // Reset to inital state
     this.modalController.dismiss();
   }
 
@@ -87,7 +87,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     this.reg.request.SnowProfile2.StratProfile.Layers = ArrayHelper.reorderList(
       this.reg.request.SnowProfile2.StratProfile.Layers, event.detail.from, event.detail.to);
     event.detail.complete();
-    this.registrationService.saveRegistration(this.reg);
+    this.registrationService.saveRegistrationAsync(this.reg);
   }
 
   async getPrevousUsedLayers() {

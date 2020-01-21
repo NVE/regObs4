@@ -69,7 +69,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
       this.reg.request.SnowProfile2.StratProfile = {};
     }
     this.reg.request.SnowProfile2.StratProfile.Layers = layers;
-    await this.registrationService.saveRegistration(this.reg);
+    await this.registrationService.saveRegistrationAsync(this.reg);
     this.modalController.dismiss();
   }
 

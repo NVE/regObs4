@@ -1,4 +1,4 @@
-import { Injectable, ApplicationRef, NgZone } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { RegistrationTid } from '../models/registrationTid.enum';
 import { RegistrationService } from '../services/registration.service';
 import { AlertController } from '@ionic/angular';
@@ -80,7 +80,7 @@ export class BasePageService {
                 onReset();
             }
         });
-        await this.registrationService.saveRegistration(registration);
+        await this.registrationService.saveRegistrationAsync(registration);
     }
 
     createDefaultProps(registration: IRegistration, registrationTid: RegistrationTid) {

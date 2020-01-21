@@ -131,7 +131,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       return;
     }
     this.registration.request.ObsLocation = loc;
-    this.registrationService.saveRegistration(this.registration);
+    this.registrationService.saveRegistrationAsync(this.registration);
     this.isSaveDisabled = false;
   }
 }

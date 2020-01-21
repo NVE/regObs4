@@ -65,7 +65,7 @@ export class DamageObsComponent implements OnInit {
   }
 
   save() {
-    return this.registrationService.saveRegistration(this.registration);
+    return this.registrationService.saveRegistrationAsync(this.registration);
   }
 
   getSaveFunc() {
