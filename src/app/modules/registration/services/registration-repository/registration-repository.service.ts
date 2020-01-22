@@ -8,14 +8,14 @@ import { switchMap, map, shareReplay, takeUntil, concatMap, tap, take, catchErro
 import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
+import { OnReset } from '../../../shared/interfaces/on-reset.interface';
 
 const DEBUG_TAG = 'RegistrationRepositoryService';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RegistrationRepositoryService extends NgDestoryBase {
-
+export class RegistrationRepositoryService extends NgDestoryBase implements OnReset {
   public readonly registrations$: Observable<IRegistration[]>;
   private readonly inMemoryRegistrations = new BehaviorSubject<{ [appMode: string]: IRegistration[] }>({});
 
@@ -96,5 +96,11 @@ export class RegistrationRepositoryService extends NgDestoryBase {
         this.loggingService.log('Could not save registrations to offline db', err, LogLevel.Warning, DEBUG_TAG);
         return of([]);
       }));
+  }
+
+  appOnReset() {
+  }
+  appOnResetComplete() {
+    this.inMemoryRegistrations.next({});
   }
 }

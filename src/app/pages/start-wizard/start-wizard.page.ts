@@ -34,7 +34,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
     private navController: NavController,
   ) { }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.recreate = true;
     this.state = 'x';
     setTimeout(() => { // Hack to get ion-slides working after app reset
@@ -43,6 +43,9 @@ export class StartWizardPage implements OnInit, OnDestroy {
       this.initStarIndexCounter();
       this.setPageIndex(0);
     });
+  }
+
+  ngOnInit() {
   }
 
   saveLanguage() {

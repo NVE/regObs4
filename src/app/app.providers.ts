@@ -45,6 +45,7 @@ import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configur
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { RegistrationRepositoryService } from './modules/registration/services/registration-repository/registration-repository.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
     provide: HTTP_INTERCEPTORS,
@@ -99,9 +100,10 @@ export const APP_PROVIDERS = [
     { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
 
     // Interface implementations
-    { provide: 'OnReset', useClass: DataMarshallService, multi: true },
-    { provide: 'OnReset', useClass: UserSettingService, multi: true },
-    { provide: 'OnReset', useClass: OfflineMapService, multi: true },
+    { provide: 'OnReset', useExisting: DataMarshallService, multi: true },
+    { provide: 'OnReset', useExisting: UserSettingService, multi: true },
+    { provide: 'OnReset', useExisting: OfflineMapService, multi: true },
+    { provide: 'OnReset', useExisting: RegistrationRepositoryService, multi: true },
 
     // Custom native/web providers
     {

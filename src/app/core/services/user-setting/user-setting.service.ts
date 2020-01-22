@@ -47,7 +47,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   get currentSettings() {
-    return this.userSettingInMemory.value;
+    return this.userSettingInMemory.getValue();
   }
 
   set currentSettings(val: UserSetting) {
@@ -162,12 +162,12 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       }));
   }
 
-  appOnReset(): void | Promise<any> {
+  appOnReset() {
   }
 
-  appOnResetComplete(): Promise<void | Promise<any>> {
+  appOnResetComplete() {
     this.loggingService.debug(`App reset complete. Re-init observables.`, DEBUG_TAG);
-    this.saveUserSettings(DEFAULT_USER_SETTINGS());
-    return Promise.resolve();
+    const defaultSettings = DEFAULT_USER_SETTINGS();
+    this.saveUserSettings(defaultSettings);
   }
 }
