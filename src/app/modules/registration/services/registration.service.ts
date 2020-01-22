@@ -26,6 +26,7 @@ import { LoggedInUser } from '../../login/models/logged-in-user.model';
 import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 import { File, FileEntry, IFile } from '@ionic-native/file/ngx';
 import { settings } from '../../../../settings';
+import { LogLevel } from '../../shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -109,6 +110,9 @@ export class RegistrationService {
         if (reg.request[key] && this.isEmpty(reg, registrationTid)) {
           reg.request[key] = undefined;
         }
+      }
+      if (!reg.request.DtObsTime) {
+        reg.request.DtObsTime = moment().toISOString(true);
       }
     }
     return reg;
@@ -377,15 +381,29 @@ export class RegistrationService {
       return file$.pipe(
         tap((file) => this.loggingService.debug(`Found image file blob`, DEBUG_TAG, file)),
         concatMap((file) => this.getFormDataAndUploadToApi(file)),
-        tap((attachmentId) => {
+        map((attachmentId) => {
           this.loggingService.debug(`Result from upload attachment: ${attachmentId}`, DEBUG_TAG);
           pictureRequest.AttachmentUploadId = attachmentId;
-          pictureRequest.PictureImageBase64 = undefined; // Attachment upload ok. Clear local file.
           this.loggingService.debug(`Updated attachment id ${attachmentId} for picture request`, DEBUG_TAG, pictureRequest);
+          return pictureRequest;
         }),
-        map(() => pictureRequest));
+        concatMap(() => from(this.deleteFile(pictureRequest.PictureImageBase64))),
+        map(() => {
+          pictureRequest.PictureImageBase64 = undefined; // Attachment upload ok. Clear local file.
+          return pictureRequest;
+        }));
     }
     return of(pictureRequest);
+  }
+
+  private async deleteFile(src: string) {
+    try {
+      const entry = await this.file.resolveLocalFilesystemUrl(src);
+      await new Promise((resolve, reject) => entry.remove(resolve, reject));
+      this.loggingService.debug(`Observation image deleted from presistant app storage: ${src}`, DEBUG_TAG);
+    } catch (err) {
+      this.loggingService.log('Could not delete image', err, LogLevel.Warning, DEBUG_TAG);
+    }
   }
 
   private getFormDataFromFile(file: IFile) {
@@ -399,11 +417,8 @@ export class RegistrationService {
   private fileToBlob(file: IFile): Promise<Blob> {
     return new Promise<Blob>((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = (evt) => resolve(new Blob([evt.target.result], { type: file.type }));
-      reader.onerror = (e) => {
-        console.log('Failed file read: ' + e.toString());
-        reject(e);
-      };
+      reader.onloadend = () => resolve(new Blob([reader.result], { type: file.type }));
+      reader.onerror = (e) => reject(e);
       reader.readAsArrayBuffer(file);
     });
   }

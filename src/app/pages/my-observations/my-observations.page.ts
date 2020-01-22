@@ -104,7 +104,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   private getVirtualScrollItemsObservable() {
     return this.getSyncItemsObservable().pipe(
       switchMap((syncItems) =>
-        combineLatest(of(syncItems), this.getDraftObservable(), this.getMyRegistrationsObservable(0))
+        combineLatest([of(syncItems), this.getDraftObservable(), this.getMyRegistrationsObservable(0)])
       ), map(([syncIntems, drafts, registrations]) => [...syncIntems, ...drafts, ...registrations]));
   }
 

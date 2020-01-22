@@ -1,11 +1,12 @@
-import { Component, OnInit, ViewChild, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IonSlides, NavController } from '@ionic/angular';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { LangKey } from '../../core/models/langKey';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { animations } from './start-wizard.animations';
-import { Subscription } from 'rxjs';
+import { Subject, timer, interval } from 'rxjs';
+import { takeUntil, skipWhile, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-start-wizard',
@@ -22,55 +23,67 @@ export class StartWizardPage implements OnInit, OnDestroy {
   state = 'x';
   reachedEnd = false;
   showLegalIcon = false;
-  private subscription: Subscription;
+  private ngDestroy$ = new Subject();
+  private activeIndex = new Subject<number>();
+  visibleStarNumber = -1;
+  private isIncreasing = true;
 
-  constructor(private userSetting: UserSettingService,
+  constructor(
+    private userSettingService: UserSettingService,
     private navController: NavController,
-    private ngZone: NgZone,
   ) { }
 
-  async ngOnInit() {
-    this.subscription = this.userSetting.userSettingObservable$.subscribe((val) => {
+  ngOnInit() {
+    this.userSettingService.userSettingObservable$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
       this.userSettings = val;
     });
+    this.initStarIndexCounter();
+    this.setPageIndex(0);
+  }
+
+  private setPageIndex(index: number) {
     setTimeout(() => {
-      this.state = 'page_0';
+      this.resetVisibleStars();
+      this.state = `page_${index}`;
+      this.activeIndex.next(index);
     }, 0);
   }
 
+  private resetVisibleStars() {
+    this.visibleStarNumber = -1;
+    this.isIncreasing = true;
+  }
+
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
   slideNext() {
-    setTimeout(() => {
+    timer(700).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       if (this.slides) {
         this.slides.slideNext();
       }
-    }, 700);
+    });
   }
 
-  async start() {
+  start() {
     if (this.reachedEnd) {
       this.userSettings.completedStartWizard = true;
-      this.userSetting.saveUserSettings(this.userSettings);
+      this.userSettingService.saveUserSettings(this.userSettings);
       this.navController.navigateRoot('/');
     } else {
-      this.slides.slideTo(4, 200);
+      this.slides.slideTo(5, 200);
     }
   }
 
   saveUserSettings() {
-    this.userSetting.saveUserSettings(this.userSettings);
+    return this.userSettingService.saveUserSettings(this.userSettings);
   }
 
   async ionSlideTransitionStart() {
     const index = await this.slides.getActiveIndex();
-    this.ngZone.run(() => {
-      this.state = `page_${index}`;
-    });
+    this.setPageIndex(index);
   }
 
   ionSlideReachEnd() {
@@ -83,5 +96,25 @@ export class StartWizardPage implements OnInit, OnDestroy {
 
   ionSlidePrevStart() {
     this.reachedEnd = false;
+  }
+
+  private initStarIndexCounter() {
+    this.activeIndex.pipe(
+      switchMap((index) =>
+        interval(700).pipe(
+          skipWhile(() => index !== 4))),
+      takeUntil(this.ngDestroy$)).subscribe(() => {
+        if (this.isIncreasing && this.visibleStarNumber >= 6) { // Count to 6 to add an extra pause on the end
+          this.isIncreasing = false;
+        }
+        if (!this.isIncreasing && this.visibleStarNumber < 0) { // Count to -1 to add an extra pause on the start
+          this.isIncreasing = true;
+        }
+        if (this.isIncreasing) {
+          this.visibleStarNumber++;
+        } else {
+          this.visibleStarNumber--;
+        }
+      });
   }
 }

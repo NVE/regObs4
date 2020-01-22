@@ -18,7 +18,10 @@ export class StratProfileComponent implements OnInit {
   private modal: HTMLIonModalElement;
 
   get profile(): StratProfileDto {
-    return (((this.reg || {}).request || {}).SnowProfile2 || {}).StratProfile || {};
+    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.StratProfile) {
+      return this.reg.request.SnowProfile2.StratProfile;
+    }
+    return {};
   }
 
   get isEmpty() {

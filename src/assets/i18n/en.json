@@ -1,4 +1,10 @@
 {
+  "ABONNER_BANNER": {
+    "BANNER_TEXT_LINE_1": "Get alerts from Varsom sent to SMS or e-mail.",
+    "BANNER_TEXT_LINE_2": "Set up or manage your alerts here.",
+    "LINK_TEXT": "Go to abonner.varsom.no",
+    "TITLE": "Varsom Abonner"
+  },
   "ADD_MENU": {
     "DRAFT": "Draft",
     "NEW_OBSERVATION": "New",
@@ -288,6 +294,7 @@
       "IMAGE_PLACEHOLDER": "+ Add image description",
       "TITLE": "Accident / Incident"
     },
+    "INVALID_IMAGE": "Sorry, this is an invalid image",
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
     "NONE": "Not selected",
@@ -383,7 +390,7 @@
         "PROPAGATION": "Spatial distribution",
         "TITLE": "Avalanche Problem",
         "TOP": "Top",
-        "UNKNOWN_TYPE": "Unknown avalanche cause",
+        "UNKNOWN_TYPE": "Unknown weak layer",
         "VALID_EXPOSITION": "Aspect",
         "WEAK_LAYER": "Weak layer",
         "WEAK_LAYER_DEPTH": "Weak layer depth"
@@ -545,6 +552,7 @@
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Allow sending app usage data",
     "ALLOW_ANALYTICS_DESCRIPTION": "Help us improve Varsom Regobs by letting us know how you use the application.",
+    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "This data is anonymous and cannot be linked to you personally.",
     "ALLOW_ANALYTICS_HEADER": "Share usage statistics",
     "APPMODE": "App mode",
     "APP_VERSION": "App version",
@@ -584,6 +592,10 @@
       "NORWEGIAN": "Norwegian",
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norsk"
     },
+    "COMPETENCE_PAGE": {
+      "HEADER": "Use Regobs wisely!",
+      "LINE_1": "Use the information in the app, but also make your own judgments. View the observations in context of the observer's competence that appears as stars by the name."
+    },
     "I_UNDERSTAND": "Ok, I understand",
     "PAGE_1": {
       "HEADER": "Plan safe trips!",
@@ -606,13 +618,13 @@
   },
   "SUPPORT_MAP": {
     "CAUTION_AREA": "Caution area",
-    "CLAY_DANGER_ZONE": "Danger level",
+    "CLAY_DANGER_ZONE": "Danger level for clay zone",
     "CLAY_LEGEND_TEXT_1": "Quick clay point (SVV)",
     "CLAY_LEGEND_TEXT_2": "Quick clay area (SVV)",
     "CLAY_LEGEND_TEXT_3": "Map fully or partially mapped",
-    "CLAY_LEGEND_TEXT_4": "Sea border",
-    "CLAY_LEGEND_TEXT_5": "Area above sea border",
-    "CLAY_LEGEND_TEXT_6": "Area below sea border",
+    "CLAY_LEGEND_TEXT_4": "Marine boundary",
+    "CLAY_LEGEND_TEXT_5": "Area above marine boundary",
+    "CLAY_LEGEND_TEXT_6": "Area below marine boundary",
     "CLAY_LEGEND_TEXT_7": "Little / no marine impact",
     "CLAY_LEGEND_TEXT_8": "Discharge area",
     "CLAY_LEGEND_TEXT_9": "Potential avalanche danger",
@@ -630,7 +642,7 @@
     "FLOOD_LEGEND_TEXT_7": "20-year flood",
     "FLOOD_LEGEND_TEXT_8": "50-year flood",
     "FLOOD_LEGEND_TEXT_9": "100-year flood",
-    "FLOOD_LEGEND_TEXT_YEAR": "Flooded low point at",
+    "FLOOD_LEGEND_TEXT_YEAR": "Flooded at",
     "FLOOD_ZONES_MAP_DESCRIPTION": "Flood zones",
     "HIGH": "High",
     "ICE_LEGEND_TEXT_1": "Fractured ice along the shore",

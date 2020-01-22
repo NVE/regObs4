@@ -327,6 +327,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   redrawMap() {
     let counter = 3;
     timer(500, 50).pipe(
+      takeUntil(this.ngDestroy$),
       takeWhile(() => counter > 0),
       tap(() => counter--)).subscribe(() => {
         if (this.map) {

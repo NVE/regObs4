@@ -33,6 +33,26 @@ export function getScaleUpAnimation(delay: number) {
     ];
 }
 
+export function getFadeInAnimation(page: number, delay: number) {
+    return [
+        state('*', style({
+            opacity: 0,
+        })),
+        // http://cubic-bezier.com/#.64,.1,.57,1.53
+        transition(`* => page_${page}`, animate(`500ms ${delay}ms ease-out`, keyframes([
+            style({ opacity: 0, offset: 0 }),
+            style({ opacity: 1, offset: 1 }),
+        ]))),
+        transition(`page_${page} => *`, animate(`500ms ease-out`, keyframes([
+            style({ opacity: 1, offset: 0 }),
+            style({ opacity: 0, offset: 1 }),
+        ]))),
+        state(`page_${page}`, style({
+            opacity: 1
+        })),
+    ];
+}
+
 export function getHeaderAnimation(page: number) {
     return [
         state('*', style({
@@ -150,4 +170,10 @@ export const animations = [
 
     // Page 4 animations
     trigger('headerAnimation4', getHeaderAnimation(4)),
+
+    // Page 5 animations
+    trigger('headerAnimation5', getHeaderAnimation(5)),
+    trigger('legalText1', getFadeInAnimation(5, 1000)),
+    trigger('legalText2', getFadeInAnimation(5, 2000)),
+    trigger('legalText3', getFadeInAnimation(5, 3000))
 ];

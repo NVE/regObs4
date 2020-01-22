@@ -26,7 +26,14 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   private initialRegistrationClone: IRegistration;
 
   get profile() {
-    return ((((this.reg || {}).request || {}).SnowProfile2 || {}).SnowDensity || [])[0] || {};
+    if (this.reg
+      && this.reg.request
+      && this.reg.request.SnowProfile2
+      && this.reg.request.SnowProfile2.SnowDensity
+      && this.reg.request.SnowProfile2.SnowDensity.length > 0) {
+      return this.reg.request.SnowProfile2.SnowDensity[0];
+    }
+    return {};
   }
 
   get hasLayers() {

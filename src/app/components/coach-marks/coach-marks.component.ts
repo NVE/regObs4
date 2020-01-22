@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { Subscription } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { Observable, Subject, from, merge } from 'rxjs';
+import { map, distinctUntilChanged, concatMap, take, takeUntil, filter, delay } from 'rxjs/operators';
+import { trigger } from '@angular/animations';
 import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../core/animations/custom.animation';
+import { enterZone } from '../../core/helpers/observable-helper';
 
 @Component({
   selector: 'app-coach-marks',
@@ -17,32 +18,42 @@ import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../core/anima
     trigger('warning-coachmark-animation', CustomAnimation.createEnterScaleInAnimation(6000, 500, EASE_IN_OUT, 0.9)),
   ]
 })
-export class CoachMarksComponent implements OnInit {
-
-  showCoachMarks = false;
-  private subscription: Subscription;
+export class CoachMarksComponent implements OnInit, OnDestroy {
+  showCoachMarks$: Observable<boolean>;
   isOpen = false;
+  ngDestroy$ = new Subject();
+  hideSubject = new Subject<boolean>();
 
-  constructor(private userSettingService: UserSettingService) { }
+  constructor(private userSettingService: UserSettingService, private ngZone: NgZone) { }
 
   ngOnInit() {
-    this.subscription = this.userSettingService.userSettingObservable$
+    this.showCoachMarks$ = merge(this.getShowGeoSelectObservable(), this.hideSubject).pipe(enterZone(this.ngZone));
+    this.getShowGeoSelectObservable().pipe(
+      takeUntil(this.ngDestroy$),
+      filter((val) => val),
+      delay(2000),
+      enterZone(this.ngZone)).subscribe(() => {
+        this.isOpen = true;
+      });
+  }
+
+  private getShowGeoSelectObservable() {
+    return this.userSettingService.userSettingObservable$
       .pipe(
         map((us) => us.showGeoSelectInfo),
-        distinctUntilChanged()
-      ).subscribe((showGeoSelectInfo) => {
-        this.showCoachMarks = showGeoSelectInfo;
-      });
-    setTimeout(() => {
-      this.isOpen = true;
-    }, 2000);
+        distinctUntilChanged());
   }
 
-  async hide() {
-    this.showCoachMarks = false;
-    const userSettings = await this.userSettingService.getUserSettings();
-    userSettings.showGeoSelectInfo = false;
-    this.userSettingService.saveUserSettings(userSettings);
+  hide() {
+    this.hideSubject.next(false);
+    this.userSettingService.userSettingObservable$.pipe(take(1), concatMap((settings) => {
+      settings.showGeoSelectInfo = false;
+      return from(this.userSettingService.saveUserSettings(settings));
+    })).subscribe();
   }
 
+  ngOnDestroy(): void {
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
+  }
 }

@@ -1,4 +1,4 @@
-<div class="coachmark-backdrop" *ngIf="showCoachMarks" (click)="hide()">
+<div class="coachmark-backdrop" *ngIf="showCoachMarks$ | async" (click)="hide()">
   <app-geo-fab [isOpen]="isOpen" [showLabels]="false" [animateOnEnter]="true"></app-geo-fab>
   <div class="geo-coachmark" @geo-coachmark-animation>
     <svg width="65" height="76" viewBox="0 0 65 76" fill="none" xmlns="http://www.w3.org/2000/svg">

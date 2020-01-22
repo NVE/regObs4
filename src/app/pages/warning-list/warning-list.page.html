@@ -13,7 +13,7 @@
 <ion-content>
   <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <ion-virtual-scroll *ngIf="!showEmptyState else empty" [ngClass]="{'loaded': loaded}" [items]="warningGroups"
-    [headerFn]="myHeaderFn" [footerFn]="footerFn" [approxItemHeight]="49" [approxHeaderHeight]="38"
+    [headerFn]="myHeaderFn" [footerFn]="myFooterFn" [approxItemHeight]="49" [approxHeaderHeight]="38"
     [trackBy]="trackByFunc">
     <ion-item-divider *virtualHeader="let header">
       <app-warning-list-header [title]="header.header" [subTitle]="header.infoText"
@@ -25,6 +25,9 @@
     <ion-item-divider class="virtual-list-footer" *virtualFooter="let footer">
     </ion-item-divider>
   </ion-virtual-scroll>
+  <div id="abonner-banner" *ngIf="selectedTab === 'inMapView'" class="ion-margin" [ngClass]="{'loaded': loaded}">
+    <app-abonner-banner></app-abonner-banner>
+  </div>
 </ion-content>
 <app-add-menu slot="fixed"></app-add-menu>
 <app-geo-select slot="fixed"></app-geo-select>

@@ -44,7 +44,7 @@ export class SetTimePage extends BasePage {
 
   confirm() {
     if (this.registration) {
-      this.registration.request.DtObsTime = this.localDate;
+      this.registration.request.DtObsTime = (this.localDate || moment().toISOString(true));
       this.navController.navigateRoot('registration/edit/' + this.registration.id);
     }
   }

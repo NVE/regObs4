@@ -1,4 +1,10 @@
 {
+  "ABONNER_BANNER": {
+    "BANNER_TEXT_LINE_1": "Naturfarevarsler fra Varsom på SMS eller e-post.",
+    "BANNER_TEXT_LINE_2": "Sett opp eller administrer dine varsler her.",
+    "LINK_TEXT": "Gå til abonner.varsom.no",
+    "TITLE": "Varsom Abonner"
+  },
   "ADD_MENU": {
     "DRAFT": "Kladd",
     "NEW_OBSERVATION": "Ny",
@@ -288,6 +294,7 @@
       "IMAGE_PLACEHOLDER": "+ Legg til en beskrivelse av bildet",
       "TITLE": "Ulykke / hendelse"
     },
+    "INVALID_IMAGE": "Beklager, ugyldig bildeformat",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hele centimeter",
     "NONE": "Ingen valgt",
@@ -383,7 +390,7 @@
         "PROPAGATION": "Utbredelse",
         "TITLE": "Skredproblem",
         "TOP": "Øverst",
-        "UNKNOWN_TYPE": "Ukjent skredårsak",
+        "UNKNOWN_TYPE": "Ukjent svakt lag",
         "VALID_EXPOSITION": "Eksposisjon",
         "WEAK_LAYER": "Svakt lag",
         "WEAK_LAYER_DEPTH": "Svakt lags dybde"
@@ -545,6 +552,7 @@
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
     "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å forbedre Varsom Regobs ved å la oss se hvordan du bruker applikasjonen.",
+    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Denne dataen er anonym og kan ikke knyttes til deg personlig.",
     "ALLOW_ANALYTICS_HEADER": "Del bruksstatistikk",
     "APPMODE": "Appmodus",
     "APP_VERSION": "App versjon",
@@ -584,6 +592,10 @@
       "NORWEGIAN": "Norsk",
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian"
     },
+    "COMPETENCE_PAGE": {
+      "HEADER": "Bruk Regobs fornuftig!",
+      "LINE_1": "Bruk informasjonen i appen, men gjør også dine egne vurderinger. Se observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
+    },
     "I_UNDERSTAND": "Ok, jeg forstår",
     "PAGE_1": {
       "HEADER": "Planlegg trygge turer!",
@@ -606,16 +618,16 @@
   },
   "SUPPORT_MAP": {
     "CAUTION_AREA": "Aktsomhetsområde",
-    "CLAY_DANGER_ZONE": "Faregrad",
+    "CLAY_DANGER_ZONE": "Faregrad for kvikkleiresone",
     "CLAY_LEGEND_TEXT_1": "Kvikkleirepunkt (SVV)",
     "CLAY_LEGEND_TEXT_2": "Kvikkleireområde (SVV)",
     "CLAY_LEGEND_TEXT_3": "Kartblad helt eller delvis kartlagt",
-    "CLAY_LEGEND_TEXT_4": "Maritim grense",
+    "CLAY_LEGEND_TEXT_4": "Marin grense",
     "CLAY_LEGEND_TEXT_5": "Areal over marin grense",
     "CLAY_LEGEND_TEXT_6": "Areal under marin grense",
     "CLAY_LEGEND_TEXT_7": "Lite/ingen marin påvirkning",
     "CLAY_LEGEND_TEXT_8": "Utløpsområde",
-    "CLAY_LEGEND_TEXT_9": "Potensielt skredfare",
+    "CLAY_LEGEND_TEXT_9": "Potensiell skredfare",
     "CLAY_ZONES_MAP_DESCRIPTION": "Kvikkleire/Jordskred",
     "FLOOD_LEGEND_TEXT_1": "Gjeldende",
     "FLOOD_LEGEND_TEXT_10": "200-årsflom",
@@ -630,7 +642,7 @@
     "FLOOD_LEGEND_TEXT_7": "20-årsflom",
     "FLOOD_LEGEND_TEXT_8": "50-årsflom",
     "FLOOD_LEGEND_TEXT_9": "100-årsflom",
-    "FLOOD_LEGEND_TEXT_YEAR": "Flomutsatt lavpunkt ved",
+    "FLOOD_LEGEND_TEXT_YEAR": "Flomutsatt ved",
     "FLOOD_ZONES_MAP_DESCRIPTION": "Flomsoner",
     "HIGH": "Høy",
     "ICE_LEGEND_TEXT_1": "Oppsprukket is langs land",

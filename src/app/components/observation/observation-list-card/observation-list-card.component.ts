@@ -25,7 +25,9 @@ import { ModalMapImagePage } from '../../../modules/map/pages/modal-map-image/mo
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
 import { AppEventCategory } from '../../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../../modules/analytics/enums/app-event-action.enum';
+import { ImageLocation } from '../../img-swiper/image-location.model';
 // import { ObsCardHeightService } from '../../../core/services/obs-card-height/obs-card-height.service';
+import 'leaflet.utm';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -55,7 +57,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   imageUrls: string[] = [];
   imageHeaders: string[] = [];
   imageDescriptions: string[] = [];
-  location: { latLng: L.LatLng, geoHazard: GeoHazard };
+  location: ImageLocation;
 
   constructor(
     private translateService: TranslateService,
@@ -78,10 +80,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
 
     this.header = this.obs.ObsLocation.Title;
-    this.location = {
-      latLng: L.latLng(this.obs.ObsLocation.Latitude, this.obs.ObsLocation.Longitude),
-      geoHazard: this.geoHazard
-    };
+    this.location = this.getLocation(this.obs);
     this.dtObsDate = this.obs.DtObsTime;
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
     this.summaries = this.obs.Summaries;
@@ -94,6 +93,55 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     this.loaded = true;
 
     this.cdr.markForCheck();
+  }
+
+  private getLocation(obs: RegistrationViewModel): ImageLocation {
+    return {
+      latLng: L.latLng(this.obs.ObsLocation.Latitude, this.obs.ObsLocation.Longitude),
+      geoHazard: this.geoHazard,
+      startStopLocation: this.getStartStopLocation(obs),
+      damageLocations: this.getDamagePositions(obs)
+    };
+  }
+
+  private getStartStopLocation(obs: RegistrationViewModel): { start?: L.LatLng, stop?: L.LatLng } {
+    if (obs.AvalancheObs) {
+      return {
+        start: (obs.AvalancheObs.StartLat && obs.AvalancheObs.StartLong)
+          ? L.latLng(obs.AvalancheObs.StartLat, obs.AvalancheObs.StartLong) : undefined,
+        stop: (obs.AvalancheObs.StopLong && obs.AvalancheObs.StopLong)
+          ? L.latLng(obs.AvalancheObs.StopLat, obs.AvalancheObs.StopLong) : undefined
+      };
+    }
+    if (obs.LandSlideObs) {
+      return {
+        start: (obs.LandSlideObs.UTMEastStart && obs.LandSlideObs.UTMNorthStart) ?
+          L.utm({
+            y: obs.LandSlideObs.UTMNorthStart,
+            x: obs.LandSlideObs.UTMEastStart,
+            zone: obs.LandSlideObs.UTMZoneStart > 0 ? obs.LandSlideObs.UTMZoneStart : 33,
+            band: 'W',
+            southHemi: false
+          }).latLng() : undefined,
+        stop: (obs.LandSlideObs.UTMEastStop && obs.LandSlideObs.UTMNorthStop) ?
+          L.utm({
+            y: obs.LandSlideObs.UTMNorthStop,
+            x: obs.LandSlideObs.UTMEastStop,
+            zone: obs.LandSlideObs.UTMZoneStart > 0 ? obs.LandSlideObs.UTMZoneStart : 33, // TODO: Bug, UTMZoneStop is 0
+            band: 'W',
+            southHemi: false
+          }).latLng() : undefined,
+      };
+    }
+    return undefined;
+  }
+
+  private getDamagePositions(obs: RegistrationViewModel) {
+    if (obs && obs.DamageObs && obs.DamageObs.some((d) => d.DamagePosition)) {
+      return obs.DamageObs.filter((d) => d.DamagePosition && d.DamagePosition.Latitude && d.DamagePosition.Longitude)
+        .map((d) => L.latLng(d.DamagePosition.Latitude, d.DamagePosition.Longitude));
+    }
+    return undefined;
   }
 
   ngOnChanges(changes: SimpleChanges) {

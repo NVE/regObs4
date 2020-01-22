@@ -1,14 +1,15 @@
-import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import * as L from 'leaflet';
-import { Subscription, Subject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Subject, timer } from 'rxjs';
+import { map, take, takeUntil, concatMap, debounceTime } from 'rxjs/operators';
 import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
-import { IonVirtualScroll, IonRefresher, IonContent } from '@ionic/angular';
+import { IonContent } from '@ionic/angular';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
+import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 // import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
 
 const DEBUG_TAG = 'ObservationListPage';
@@ -17,33 +18,33 @@ const DEBUG_TAG = 'ObservationListPage';
     selector: 'app-observation-list',
     templateUrl: './observation-list.page.html',
     styleUrls: ['./observation-list.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObservationListPage implements OnInit, OnDestroy {
     observations: RegistrationViewModel[];
     loaded = false;
-    private subscription: Subscription;
     cancelSubject: Subject<any>;
+    private ngDestroy$ = new Subject();
 
-    // @ViewChild(IonVirtualScroll) virtualScroll: IonVirtualScroll;
-    // @ViewChild(IonRefresher) refresher: IonRefresher;
-    // @ViewChild(IonContent) content: IonContent;
+    @ViewChild(IonContent, { static: true }) content: IonContent;
 
     trackByIdFunc = this.trackByIdFuncInternal.bind(this);
     refreshFunc = this.refresh.bind(this);
 
     get observations$() {
-        return this.mapService.mapView$.pipe(switchMap((mapView: IMapView) =>
+        return this.mapService.mapView$.pipe(debounceTime(200), concatMap((mapView: IMapView) =>
             this.observationService.observations$.pipe(map((observations) =>
-                this.filterObservationsWithinViewBounds(observations, mapView))
-            )
-        ));
+                this.filterObservationsWithinViewBounds(observations, mapView)))),
+            take(1),
+            takeUntil(this.ngDestroy$)
+        );
     }
 
     constructor(
         private observationService: ObservationService,
         private dataMarshallService: DataMarshallService,
         // private obsCardHeightService: ObsCardHeightService,
-        private ngZone: NgZone,
+        private cdr: ChangeDetectorRef,
         private loggingService: LoggingService,
         private mapService: MapService) {
     }
@@ -52,40 +53,48 @@ export class ObservationListPage implements OnInit, OnDestroy {
         this.cancelSubject = this.dataMarshallService.observableCancelSubject;
     }
 
-    refresh(cancelPromise: Promise<any>) {
-        return this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
+    async refresh(cancelPromise: Promise<any>) {
+        await this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
+        // TODO: Shouldn't this allways use the same cancel subject?
+        this.loaded = false;
+        this.updateUi();
+        this.loadObservations();
     }
 
-    ionViewDidEnter() {
-        this.startSubscription();
+    private updateUi() {
+        if (!this.cdr['destroyed']) {
+            this.cdr.detectChanges();
+        }
+    }
+
+    ionViewWillEnter() {
+        this.loaded = false;
+        this.ngDestroy$ = new Subject();
+        this.loadObservations();
+        this.updateUi();
     }
 
     ionViewWillLeave() {
-        this.loaded = false;
-        this.observations = undefined;
-        this.stopSubscription();
+        this.ngDestroy$.next();
+        this.ngDestroy$.complete();
     }
 
-    private reloadVirtualList(observations: RegistrationViewModel[]) {
-        if (!this.loaded) {
-            setTimeout(() => {
-                this.loaded = true;
-            }, observations.length > 0 ? 2000 : 500);
-            this.ngZone.run(() => {
-                // Only load observation list one time per page load.
-                this.observations = observations;
-            });
-        }
+    private loadObservations() {
+        this.content.scrollToTop();
+        this.observations$.subscribe((observations) => {
+            this.observations = observations;
+            this.fadeIn(observations.length > 0);
+            this.updateUi();
+        }, (err) => {
+            this.loggingService.log('Could not load observations', err, LogLevel.Warning, DEBUG_TAG);
+        });
     }
 
-    startSubscription() {
-        this.subscription = this.observations$.subscribe((val) => this.reloadVirtualList(val));
-    }
-
-    stopSubscription() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
+    private fadeIn(longDelay = false) {
+        timer(longDelay ? 1500 : 200).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+            this.loaded = true;
+            this.updateUi();
+        });
     }
 
     ngOnDestroy() {

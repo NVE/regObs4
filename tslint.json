@@ -6,12 +6,6 @@
     "node_modules/codelyzer"
   ],
   "rules": {
-    "rxjs-add": {
-      "severity": "error"
-    },
-    "rxjs-no-unused-add": {
-      "severity": "error"
-    },
     "rxjs-no-compat": true,
     "arrow-return-shorthand": true,
     "callable-types": true,

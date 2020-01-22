@@ -26,13 +26,13 @@
         kdvKey="Snow_SurfaceWaterContentKDV"
         [(value)]="registration.request.SnowSurfaceObservation.SurfaceWaterContentTID"></app-kdv-select>
       <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.NewSnowDepth24"
-        title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH" [min]="0" [max]="999" [decimalPlaces]="2"
+        title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_DEPTH" [min]="0" [max]="999" [decimalPlaces]="0"
         [convertRatio]="100" suffix="cm"></app-numeric-input>
       <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.NewSnowLine"
         title="REGISTRATION.SNOW.SNOW_SURFACE.NEW_SNOW_LINE" [min]="0" [max]="8848" [decimalPlaces]="0"
         suffix="{{ 'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate }}"></app-numeric-input>
       <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.SnowDepth"
-        title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH" [min]="0" [max]="9999" [decimalPlaces]="2"
+        title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_DEPTH" [min]="0" [max]="9999" [decimalPlaces]="0"
         [convertRatio]="100" suffix="cm"></app-numeric-input>
       <app-numeric-input [(value)]="registration.request.SnowSurfaceObservation.SnowLine"
         title="REGISTRATION.SNOW.SNOW_SURFACE.SNOW_LINE" [min]="0" [max]="8848" [decimalPlaces]="0"

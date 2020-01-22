@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { Subscription, combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, Subject, race } from 'rxjs';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.component';
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
@@ -12,11 +12,12 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
 import { Router, ActivatedRoute } from '@angular/router';
-import { map, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { map, distinctUntilChanged, takeUntil, tap } from 'rxjs/operators';
 import { settings } from '../../../settings';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { RouterPage } from '../../core/helpers/routed-page';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
+import { enterZone } from '../../core/helpers/observable-helper';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -25,7 +26,7 @@ const DEBUG_TAG = 'HomePage';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage extends RouterPage implements OnInit, OnDestroy {
+export class HomePage extends RouterPage implements OnInit {
   @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
@@ -33,15 +34,12 @@ export class HomePage extends RouterPage implements OnInit, OnDestroy {
     spiderfyOnMaxZoom: false,
     zoomToBoundsOnClick: false
   });
-  private showGeoSelectSubscription: Subscription;
+  private geoCoachMarksClosedSubject = new Subject();
 
   fullscreen$: Observable<boolean>;
-  mapItemBarVisible = false;
-  // tripLogLayer = L.layerGroup();
   selectedMarker: MapItemMarker;
-  showMapCenter: boolean;
   showGeoSelectInfo = false;
-  dataLoadIds: string[] = [];
+  dataLoadIds$: Observable<string[]>;
 
   constructor(
     router: Router,
@@ -55,64 +53,31 @@ export class HomePage extends RouterPage implements OnInit, OnDestroy {
     private geoPostionService: GeoPositionService,
   ) {
     super(router, route);
-    this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
   ngOnInit() {
-    this.userSettingService.showMapCenter$.pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((val) => {
-        this.ngZone.run(() => {
-          this.showMapCenter = val;
-        });
-      });
-
-    this.mapItemBar.isVisible.pipe(takeUntil(this.ngUnsubscribe)).subscribe((isVisible) => {
-      this.ngZone.run(() => {
-        this.mapItemBarVisible = isVisible;
-      });
-    });
-
-    this.observationService.dataLoad$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.dataLoadIds = [val];
-      });
-    });
-
+    this.fullscreen$ = this.fullscreenService.isFullscreen$;
+    this.dataLoadIds$ = this.observationService.dataLoad$.pipe(map((val) => [val]), enterZone(this.ngZone));
     this.checkForFirstStartup();
-
-    // this.tripLoggerService.getTripLogAsObservable().subscribe((tripLogItems) => {
-    //   this.tripLogLayer.clearLayers();
-    //   const latLngs = tripLogItems.map((tripLogItem) => L.latLng({
-    //     lat: tripLogItem.latitude,
-    //     lng: tripLogItem.longitude
-    //   }));
-    //   L.polyline(latLngs, { color: 'red', weight: 3 }).addTo(this.tripLogLayer);
-    // });
   }
 
-  async checkForFirstStartup() {
-    const userSettings = await this.userSettingService.getUserSettings();
-    if (userSettings.showGeoSelectInfo) {
-      this.showGeoSelectSubscription = this.userSettingService.userSettingObservable$.pipe(
-        map((us) => us.showGeoSelectInfo),
-        distinctUntilChanged()
-      ).subscribe((showGeoSelectInfo) => {
-        this.ngZone.run(() => {
-          this.showGeoSelectInfo = showGeoSelectInfo;
-          if (!this.showGeoSelectInfo) {
-            if (this.showGeoSelectSubscription) {
-              this.showGeoSelectSubscription.unsubscribe();
-            }
-            this.showUsageAnalyticsDialog();
-          }
-        });
+  checkForFirstStartup() {
+    this.userSettingService.userSettingObservable$.pipe(
+      map((us) => us.showGeoSelectInfo),
+      distinctUntilChanged(),
+      takeUntil(race(this.ngUnsubscribe, this.geoCoachMarksClosedSubject)),
+      enterZone(this.ngZone)).subscribe((showGeoSelectInfo) => {
+        this.showGeoSelectInfo = showGeoSelectInfo;
+        if (!showGeoSelectInfo) {
+          this.geoCoachMarksClosedSubject.next();
+          this.geoCoachMarksClosedSubject.complete();
+          this.showUsageAnalyticsDialog();
+        }
       });
-    }
   }
 
   async showUsageAnalyticsDialog() {
     await this.usageAnalyticsConsentService.checkUserDataConsentDialog();
-    /// this.mapComponent.startGeoPositionUpdates();
     this.geoPostionService.startTracking();
   }
 
@@ -152,7 +117,6 @@ export class HomePage extends RouterPage implements OnInit, OnDestroy {
       return;
     }
     this.loggingService.debug(`Activate map updates and GeoLocation`, DEBUG_TAG);
-    // this.mapComponent.startGeoPositionUpdates();
     this.geoPostionService.startTracking();
     this.mapComponent.resumeSavingTiles();
     this.mapComponent.redrawMap();
@@ -160,7 +124,6 @@ export class HomePage extends RouterPage implements OnInit, OnDestroy {
 
   onLeave() {
     this.loggingService.debug(`Home page onLeave. Disable map updates and GeoLocation`, DEBUG_TAG);
-    // this.mapComponent.stopGeoPositionUpdates();
     this.geoPostionService.stopTracking();
     this.mapComponent.pauseSavingTiles();
   }
@@ -173,12 +136,6 @@ export class HomePage extends RouterPage implements OnInit, OnDestroy {
   // ionViewWillLeave() {
   //   this.loggingService.debug(`Home page ionViewWillLeave. Disable map updates and GeoLocation.`, DEBUG_TAG);
   //   this.mapComponent.stopGeoPositionUpdates();
-  // }
-
-  // ngOnDestroy(): void {
-  //   for (const subscription of this.subscriptions) {
-  //     subscription.unsubscribe();
-  //   }
   // }
 
   private redrawObservationMarkers(regObservations: RegistrationViewModel[]) {
