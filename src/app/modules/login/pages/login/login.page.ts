@@ -1,20 +1,21 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { timer } from 'rxjs';
 import { LoggedInUser } from '../../models/logged-in-user.model';
 import { LoginService } from '../../services/login.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../settings';
 import { NavController } from '@ionic/angular';
+import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
+import { takeUntil, switchMap, map } from 'rxjs/operators';
+import { AppMode } from '../../../../core/models/app-mode.enum';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit, OnDestroy {
+export class LoginPage extends NgDestoryBase implements OnInit {
   loggedInUser: LoggedInUser;
-
-  private subscription: Subscription;
   userProfileUrl: string;
   changePasswordUrl: string;
 
@@ -22,33 +23,28 @@ export class LoginPage implements OnInit, OnDestroy {
     private loginService: LoginService,
     private userSettingService: UserSettingService,
     private navController: NavController,
-    private ngZone: NgZone) { }
+    private ngZone: NgZone) {
+    super();
+  }
 
   ngOnInit() {
-    this.subscription = this.loginService.loggedInUser$.subscribe((loggedInUser) => {
-      this.ngZone.run(() => {
-        this.loggedInUser = loggedInUser;
-        this.setUrls();
+    this.userSettingService.appMode$.pipe(
+      switchMap((appMode) =>
+        this.loginService.loggedInUser$.pipe(map((loggedInUser) => ({ appMode, loggedInUser })))),
+      takeUntil(this.ngDestroy$)).subscribe((result) => {
+        this.ngZone.run(() => {
+          this.loggedInUser = result.loggedInUser;
+          this.setUrls(result.appMode, result.loggedInUser);
+        });
       });
-    });
-    this.setUrls();
   }
 
-  private async setUrls() {
-    const userSettings = await this.userSettingService.getUserSettings();
-    const serviceBaseUrl = settings.services.regObs.serviceUrl[userSettings.appMode];
-    const webBaseUrl = settings.services.regObs.webUrl[userSettings.appMode];
-    this.ngZone.run(() => {
-      this.changePasswordUrl = `${serviceBaseUrl}${settings.services.regObs
-        .changePasswordUrl.replace('{email}', this.loggedInUser ? this.loggedInUser.email : '')}`;
-      this.userProfileUrl = `${webBaseUrl}${settings.services.regObs.viewProfileUrl}`;
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+  private setUrls(appMode: AppMode, loggedInUser: LoggedInUser) {
+    const serviceBaseUrl = settings.services.regObs.serviceUrl[appMode];
+    const webBaseUrl = settings.services.regObs.webUrl[appMode];
+    this.changePasswordUrl = `${serviceBaseUrl}${settings.services.regObs
+      .changePasswordUrl.replace('{email}', this.loggedInUser ? this.loggedInUser.email : '')}`;
+    this.userProfileUrl = `${webBaseUrl}${settings.services.regObs.viewProfileUrl}`;
   }
 
   isLoggedIn(loggedInUser: LoggedInUser) {
@@ -60,9 +56,9 @@ export class LoginPage implements OnInit, OnDestroy {
   }
 
   onLoginSuccess() {
-    setTimeout(() => {
+    timer(1000).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.navController.navigateRoot('/');
-    }, 1000);
+    });
   }
 
 }

@@ -43,8 +43,8 @@ export class SendButtonComponent implements OnInit, OnDestroy {
     if (!this.isSending) {
       this.isSending = true;
       try {
-        const userSetting = await this.userSettingService.getUserSettings();
-        await this.registrationService.sendRegistration(userSetting.appMode, this.registration);
+        const userSettings = this.userSettingService.currentSettings;
+        await this.registrationService.sendRegistration(userSettings.appMode, this.registration);
       } finally {
         this.ngZone.run(() => {
           this.isSending = false;
@@ -54,7 +54,7 @@ export class SendButtonComponent implements OnInit, OnDestroy {
   }
 
   async delete() {
-    const userSetting = await this.userSettingService.getUserSettings();
+    const userSettings = this.userSettingService.currentSettings;
     const translations = await this.translateService
       .get(['REGISTRATION.DELETE', 'REGISTRATION.DELETE_CONFIRM', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
     const alert = await this.alertController.create({
@@ -69,7 +69,7 @@ export class SendButtonComponent implements OnInit, OnDestroy {
         {
           text: translations['ALERT.OK'],
           handler: async () => {
-            await this.registrationService.deleteRegistrationById(userSetting.appMode, this.registration.id);
+            await this.registrationService.deleteRegistrationById(userSettings.appMode, this.registration.id);
             this.navController.navigateRoot('');
           }
         }

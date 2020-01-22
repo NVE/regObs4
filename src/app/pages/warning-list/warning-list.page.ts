@@ -55,7 +55,7 @@ export class WarningListPage implements OnInit, OnDestroy {
 
   ionViewDidEnter() {
     this.loaded = false;
-    this.subscription = combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazardObservable$])
+    this.subscription = combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazard$])
       .pipe(
         switchMap(([segment, currentGeoHazard]) => this.getWarningGroupObservable(segment, currentGeoHazard)),
       ).subscribe((warningGroups) => {
@@ -64,7 +64,7 @@ export class WarningListPage implements OnInit, OnDestroy {
           this.hackToShowVirtualScrollItemsThatIsNotVisibleAtFirstLoad();
         });
       });
-    this.titleSubscription = combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazardObservable$])
+    this.titleSubscription = combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazard$])
       .subscribe(([selectedTab, currentGeoHazard]) => {
         this.ngZone.run(() => {
           this.setTitle(selectedTab, currentGeoHazard);

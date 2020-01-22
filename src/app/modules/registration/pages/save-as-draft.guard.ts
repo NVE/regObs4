@@ -26,8 +26,8 @@ export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLo
             if (reg && reg.status === RegistrationStatus.Draft) {
                 const save = await this.createAlert();
                 if (!save) {
-                    const userSettings = await this.userSettingService.getUserSettings();
-                    await this.registrationService.deleteRegistrationById(userSettings.appMode, component.registration.id);
+                    await this.registrationService.deleteRegistrationById(
+                        this.userSettingService.currentSettings.appMode, component.registration.id);
                 }
             }
         }

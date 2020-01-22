@@ -44,7 +44,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
     private loginService: LoginService,
-    private userSettingSevice: UserSettingService,
+    private userSettingService: UserSettingService,
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -59,7 +59,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.geoHazard = parseInt(this.activatedRoute.snapshot.params['geoHazard'], 10);
     } else {
       // No geohazard found, use app mode
-      const userSettings = await this.userSettingSevice.getUserSettings();
+      const userSettings = this.userSettingService.currentSettings;
       this.geoHazard = userSettings.currentGeoHazard[0];
     }
     if (this.hasLocation(this.registration)) {

@@ -20,9 +20,9 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   constructor(private userSettingService: UserSettingService, private zone: NgZone, private loggingService: LoggingService) { }
 
   ngOnInit() {
-    this.subscription = combineLatest(
+    this.subscription = combineLatest([
       this.userSettingService.daysBack$,
-      this.userSettingService.currentGeoHazardObservable$,
+      this.userSettingService.currentGeoHazard$]
     ).subscribe(([daysBack, currentGeoHazard]) => {
       const geoHazard = currentGeoHazard[0];
       this.zone.run(() => {
@@ -47,7 +47,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   }
 
   async save() {
-    const userSetting = await this.userSettingService.getUserSettings();
+    const userSetting = this.userSettingService.currentSettings;
     let changed = false;
     for (const geoHazard of userSetting.currentGeoHazard) {
       const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === geoHazard);
@@ -57,7 +57,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
       }
     }
     if (changed) {
-      await this.userSettingService.saveUserSettings(userSetting);
+      this.userSettingService.currentSettings = userSetting;
     }
   }
 }

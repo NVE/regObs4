@@ -1,43 +1,26 @@
-import { Component, OnInit, OnDestroy, Input, NgZone } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
-import { trigger, state, transition, animate, keyframes, style } from '@angular/animations';
-import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-geo-select',
   templateUrl: './geo-select.component.html',
   styleUrls: ['./geo-select.component.scss'],
 })
-export class GeoSelectComponent implements OnInit, OnDestroy {
+export class GeoSelectComponent implements OnInit {
 
   geoHazardTypes: Array<GeoHazard[]>;
   isOpen = false;
+  userSettings$: Observable<UserSetting>;
 
-  private geoHazardSubscription: Subscription;
-  userSettings: UserSetting;
-
-  constructor(
-    private userSettingService: UserSettingService,
-    private fullscreenService: FullscreenService,
-    private ngZone: NgZone) {
+  constructor(private userSettingService: UserSettingService) {
   }
 
   ngOnInit() {
     this.geoHazardTypes = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Dirt]];
-    this.geoHazardSubscription = this.userSettingService.userSettingObservable$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.userSettings = val;
-      });
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.geoHazardSubscription) {
-      this.geoHazardSubscription.unsubscribe();
-    }
+    this.userSettings$ = this.userSettingService.userSetting$;
   }
 
   toggle() {
@@ -46,7 +29,9 @@ export class GeoSelectComponent implements OnInit, OnDestroy {
 
   changeGeoHazard(geoHazards: GeoHazard[]) {
     this.isOpen = false;
-    this.userSettings.currentGeoHazard = geoHazards;
-    this.userSettingService.saveUserSettings(this.userSettings);
+    this.userSettingService.currentSettings = {
+      ...this.userSettingService.currentSettings,
+      currentGeoHazard: geoHazards,
+    };
   }
 }

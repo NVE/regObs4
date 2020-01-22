@@ -1,12 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, NgZone } from '@angular/core';
-import { state, trigger, style, transition, animate, keyframes, stagger, query } from '@angular/animations';
+import { state, trigger, style, transition, animate, stagger, query } from '@angular/animations';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
-import { Observable, Subscription, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { CustomAnimation, EASE_IN_OUT_BACK, DEFAULT_DURATION, EASE_IN_OUT } from '../../../../core/animations/custom.animation';
-import { takeUntil } from 'rxjs/operators';
+import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../../core/animations/custom.animation';
+import { takeUntil, map } from 'rxjs/operators';
 
+const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Dirt]];
 @Component({
   selector: 'app-geo-fab',
   templateUrl: './geo-fab.component.html',
@@ -29,8 +30,9 @@ import { takeUntil } from 'rxjs/operators';
   ]
 })
 export class GeoFabComponent implements OnInit, OnDestroy {
-  fullscreen: boolean;
-  currentGeoHazard: GeoHazard[];
+  fullscreen$: Observable<boolean>;
+  currentGeoHazard$: Observable<GeoHazard[]>;
+  selectableGeoHazards$: Observable<GeoHazard[][]>;
 
   @Input() color = 'light';
   @Input() isOpen = false;
@@ -43,11 +45,9 @@ export class GeoFabComponent implements OnInit, OnDestroy {
 
   animateOnEnterState = 'x';
 
-  geoHazardTypes = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Dirt]];
-
-  get selectableGeoHazards() {
-    return this.geoHazardTypes.filter((x) => !(this.currentGeoHazard && this.currentGeoHazard.some((c) => x.some((z) => z === c))));
-  }
+  // get selectableGeoHazards() {
+  //   return this.geoHazardTypes.filter((x) => !(this.currentGeoHazard && this.currentGeoHazard.some((c) => x.some((z) => z === c))));
+  // }
 
   constructor(
     private fullscreenService: FullscreenService,
@@ -56,16 +56,10 @@ export class GeoFabComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.userSettingService.currentGeoHazardObservable$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.currentGeoHazard = val;
-      });
-    });
-    this.fullscreenService.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.fullscreen = val;
-      });
-    });
+    this.currentGeoHazard$ = this.userSettingService.currentGeoHazard$;
+    this.selectableGeoHazards$ = this.currentGeoHazard$.pipe(
+      map((currentGeoHazard) => GEOHAZARD_TYPES.filter((t) => !currentGeoHazard.some((c) => t.some((z) => z === c)))));
+    this.fullscreen$ = this.fullscreenService.isFullscreen$;
     if (this.animateOnEnter) {
       this.animationTimout = setTimeout(() => {
         this.animateOnEnterState = 'startAnimated';
@@ -103,11 +97,11 @@ export class GeoFabComponent implements OnInit, OnDestroy {
     }
   }
 
-  async setCurrentGeoHazard(geoHazards: GeoHazard[]) {
+  setCurrentGeoHazard(geoHazards: GeoHazard[]) {
     this.close();
-    this.currentGeoHazard = geoHazards;
-    const userSettings = await this.userSettingService.getUserSettings();
-    userSettings.currentGeoHazard = geoHazards;
-    this.userSettingService.saveUserSettings(userSettings);
+    this.userSettingService.currentSettings = {
+      ...this.userSettingService.currentSettings,
+      currentGeoHazard: geoHazards,
+    };
   }
 }

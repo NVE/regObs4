@@ -117,7 +117,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.tilesLayer.addTo(this.map);
 
-    this.userSettingService.userSettingObservable$.pipe(takeUntil(this.ngDestroy$)).subscribe((userSetting) => {
+    this.userSettingService.userSetting$.pipe(takeUntil(this.ngDestroy$)).subscribe((userSetting) => {
       this.configureTileLayers(userSetting);
       if (userSetting.showMapCenter) {
         this.updateMapView();

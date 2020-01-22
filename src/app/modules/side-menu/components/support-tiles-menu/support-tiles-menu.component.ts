@@ -13,10 +13,10 @@ import { settings } from '../../../../../settings';
 export class SupportTilesMenuComponent implements OnInit, OnDestroy {
 
   @Input() userSetting: UserSetting;
-  @ViewChild('steepness', { static : true }) steepness;
-  @ViewChild('weakenedice', { static : true }) weakenedice;
-  @ViewChild('floodzoones', { static : true }) floodzoones;
-  @ViewChild('clayzones', { static : true }) clayzones;
+  @ViewChild('steepness', { static: true }) steepness;
+  @ViewChild('weakenedice', { static: true }) weakenedice;
+  @ViewChild('floodzoones', { static: true }) floodzoones;
+  @ViewChild('clayzones', { static: true }) clayzones;
 
   get currentGeoHazards(): GeoHazard[] {
     return this.userSetting ? this.userSetting.currentGeoHazard : [];
@@ -61,7 +61,7 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
   async ngOnInit() {
   }
 
-  async onTileChanged(supportTile: SupportTile) {
+  onTileChanged(supportTile: SupportTile) {
     const currentUserSettingTile = this.userSetting.supportTiles.find((x) => x.name === supportTile.name);
     if (currentUserSettingTile) {
       currentUserSettingTile.enabled = supportTile.enabled;
@@ -69,7 +69,7 @@ export class SupportTilesMenuComponent implements OnInit, OnDestroy {
     } else {
       this.userSetting.supportTiles.push({ name: supportTile.name, enabled: supportTile.enabled, opacity: supportTile.opacity });
     }
-    await this.userSettingService.saveUserSettings(this.userSetting);
+    this.userSettingService.currentSettings = this.userSetting;
   }
 
   ngOnDestroy(): void {

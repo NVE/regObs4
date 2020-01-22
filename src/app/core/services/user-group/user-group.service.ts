@@ -24,10 +24,9 @@ export class UserGroupService {
   ) { }
 
   async updateUserGroups() {
-    const userSetting = await this.userSettingService.getUserSettings();
     const loggedInUser = await this.loginService.getLoggedInUser();
     if (loggedInUser.isLoggedIn) {
-      await this.checkLastUpdatedAndUpdateDataIfNeeded(userSetting.appMode, loggedInUser.user);
+      await this.checkLastUpdatedAndUpdateDataIfNeeded(this.userSettingService.currentSettings.appMode, loggedInUser.user);
     }
   }
 
@@ -54,7 +53,7 @@ export class UserGroupService {
   }
 
   getUserGroupsAsObservable(): Observable<ObserverGroupDto[]> {
-    return combineLatest(this.loginService.loggedInUser$, this.userSettingService.appMode$).pipe(
+    return combineLatest([this.loginService.loggedInUser$, this.userSettingService.appMode$]).pipe(
       switchMap(([loggedInUser, appMode]) =>
         loggedInUser.isLoggedIn ? from(this.getUserGroupsFromDb(appMode, loggedInUser.user)) : from(Promise.resolve([]))));
   }

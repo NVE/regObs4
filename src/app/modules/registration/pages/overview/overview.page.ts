@@ -46,8 +46,8 @@ export class OverviewPage implements OnInit, OnDestroy {
       });
     });
     this.summarySubscription = combineLatest(
-      this.regiatration$,
-      this.userGroupService.getUserGroupsAsObservable()
+      [this.regiatration$,
+      this.userGroupService.getUserGroupsAsObservable()]
     ).pipe(switchMap(([registration, userGroups]) =>
       from(this.summaryItemService.getSummaryItems(registration, userGroups))
     )).subscribe((summaryItems) => {

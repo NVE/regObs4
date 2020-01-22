@@ -92,7 +92,7 @@ export class WarningService {
       });
     }
     this.loggingService.debug('Updating warnings by priority', DEBUG_TAG);
-    const userSettings = await this.userSettingService.getUserSettings();
+    const userSettings = this.userSettingService.currentSettings;
     const geoHazards = await this.getGeoHazardsToUpdate(userSettings);
     for (const geoHazard of geoHazards) {
       if (!cancelled) {
@@ -109,7 +109,7 @@ export class WarningService {
         cancelled = true;
       });
     }
-    const userSettings = await this.userSettingService.getUserSettings();
+    const userSettings = this.userSettingService.currentSettings;
     const geoHazards = await this.getGeoHazardsToUpdate(userSettings);
     for (const geoHazard of geoHazards) {
       if (!cancelled) {
@@ -305,7 +305,7 @@ export class WarningService {
 
   private getWarningsForCurrentLanguageAndCurrentGeoHazard() {
     return combineLatest([this.getWarningsForCurrentLanguageAsObservable(),
-    this.userSettingService.currentGeoHazardObservable$])
+    this.userSettingService.currentGeoHazard$])
       .pipe(map(([warningGroups, currentGeoHazard]) => {
         return warningGroups.filter((wg) => currentGeoHazard.find((g) => g === wg.key.geoHazard));
       }), shareReplay(1));

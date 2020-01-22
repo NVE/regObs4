@@ -32,13 +32,13 @@ export class LoginService {
     private translateService: TranslateService,
     private modalController: ModalController,
   ) {
-    this._loggedInUserObservable = this.userSettingService.userSettingObservable$.pipe(switchMap((userSetting) =>
+    this._loggedInUserObservable = this.userSettingService.userSetting$.pipe(switchMap((userSetting) =>
       this.getLoggedUserInAsObservable(userSetting.appMode)
     ), map((loggedInUser) => loggedInUser), shareReplay(1));
   }
 
   async login(email: string, password: string) {
-    const userSettings = await this.userSettingService.getUserSettings();
+    const userSettings = this.userSettingService.currentSettings;
     const baseUrl = settings.services.regObs.apiUrl[userSettings.appMode];
     const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
     if (!apiKey) {
@@ -60,7 +60,7 @@ export class LoginService {
   }
 
   async logout() {
-    const userSettings = await this.userSettingService.getUserSettings();
+    const userSettings = this.userSettingService.currentSettings;
     const existingUser = await this.getLoggedInUser();
     return NanoSql.getInstance(NanoSql.TABLES.USER.name, userSettings.appMode).query('upsert',
       {

@@ -44,7 +44,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
           this.lastUpdated = val;
         });
       });
-    this.userSettingSubscription = this.userSettingService.userSettingObservable$.subscribe((val) => {
+    this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
       });
@@ -52,7 +52,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   saveUserSettings() {
-    this.userSettingService.saveUserSettings(this.userSettings);
+    this.userSettingService.currentSettings = this.userSettings;
   }
 
   ngOnDestroy(): void {
@@ -77,7 +77,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   openStartWizard() {
     this.userSettings.showGeoSelectInfo = true;
-    this.userSettingService.saveUserSettings(this.userSettings);
+    this.saveUserSettings();
     this.navController.navigateRoot('start-wizard');
   }
 

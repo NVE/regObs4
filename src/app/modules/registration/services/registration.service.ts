@@ -199,7 +199,7 @@ export class RegistrationService {
   }
 
   getDataLoadState() {
-    return this.userSettingService.userSettingObservable$.pipe(switchMap((userSetting) =>
+    return this.userSettingService.userSetting$.pipe(switchMap((userSetting) =>
       this.dataLoadService.getStateAsObservable(this.getDataLoadId(userSetting.appMode))));
   }
 
@@ -210,7 +210,7 @@ export class RegistrationService {
         cancelled = true;
       });
     }
-    const userSettings = await this.userSettingService.getUserSettings();
+    const userSettings = this.userSettingService.currentSettings;
     const appMode = userSettings.appMode;
     const dataLoadId = this.getDataLoadId(appMode);
     const dataLoad = await this.dataLoadService.getState(dataLoadId);

@@ -38,7 +38,7 @@ export class CoachMarksComponent implements OnInit, OnDestroy {
   }
 
   private getShowGeoSelectObservable() {
-    return this.userSettingService.userSettingObservable$
+    return this.userSettingService.userSetting$
       .pipe(
         map((us) => us.showGeoSelectInfo),
         distinctUntilChanged());
@@ -46,10 +46,10 @@ export class CoachMarksComponent implements OnInit, OnDestroy {
 
   hide() {
     this.hideSubject.next(false);
-    this.userSettingService.userSettingObservable$.pipe(take(1), concatMap((settings) => {
-      settings.showGeoSelectInfo = false;
-      return from(this.userSettingService.saveUserSettings(settings));
-    })).subscribe();
+    this.userSettingService.currentSettings = {
+      ...this.userSettingService.currentSettings,
+      showGeoSelectInfo: false
+    };
   }
 
   ngOnDestroy(): void {

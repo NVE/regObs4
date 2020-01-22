@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterContentChecked } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IonSlides, NavController } from '@ionic/angular';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { LangKey } from '../../core/models/langKey';
-import { UserSetting } from '../../core/models/user-settings.model';
 import { animations } from './start-wizard.animations';
 import { Subject, timer, interval } from 'rxjs';
 import { takeUntil, skipWhile, switchMap } from 'rxjs/operators';
@@ -19,15 +18,16 @@ export class StartWizardPage implements OnInit, OnDestroy {
   @ViewChild(IonSlides, { static: false }) slides: IonSlides;
   GeoHazard = GeoHazard;
   LangKey = LangKey;
-  userSettings: UserSetting;
-  state = 'x';
+  state: string;
   reachedEnd = false;
   showLegalIcon = false;
+  visibleStarNumber = -1;
+  recreate = true;
+  language: LangKey;
+
   private ngDestroy$ = new Subject();
   private activeIndex = new Subject<number>();
-  visibleStarNumber = -1;
   private isIncreasing = true;
-  recreate = true;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -36,14 +36,20 @@ export class StartWizardPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.recreate = true;
-    this.userSettingService.userSettingObservable$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
-      this.userSettings = val;
-    });
-    setTimeout(() => {
-      this.recreate = false; // Hack to get ion-slides working after app reset
+    this.state = 'x';
+    setTimeout(() => { // Hack to get ion-slides working after app reset
+      this.language = this.userSettingService.currentSettings.language;
+      this.recreate = false;
       this.initStarIndexCounter();
       this.setPageIndex(0);
     });
+  }
+
+  saveLanguage() {
+    this.userSettingService.currentSettings = {
+      ...this.userSettingService.currentSettings,
+      language: this.language,
+    };
   }
 
   private setPageIndex(index: number) {
@@ -75,20 +81,14 @@ export class StartWizardPage implements OnInit, OnDestroy {
 
   start() {
     if (this.reachedEnd) {
-      if (!this.userSettings) {
-        this.userSettings = this.userSettingService.getDefaultSettings();
-      }
-
-      this.userSettings.completedStartWizard = true;
-      this.userSettingService.saveUserSettings(this.userSettings);
+      this.userSettingService.currentSettings = {
+        ...this.userSettingService.currentSettings,
+        completedStartWizard: true,
+      };
       this.navController.navigateRoot('/');
     } else {
       this.slides.slideTo(5, 200);
     }
-  }
-
-  saveUserSettings() {
-    return this.userSettingService.saveUserSettings(this.userSettings);
   }
 
   async ionSlideTransitionStart() {

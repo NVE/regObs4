@@ -21,7 +21,7 @@ export class ViewObservationPage implements OnInit {
 
   async ngOnInit() {
     const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
-    const userSetting = await this.userSettingService.getUserSettings();
+    const userSetting = this.userSettingService.currentSettings;
     const observation = await this.observationService.getObservationById(id, userSetting.appMode, userSetting.language);
     this.ngZone.run(() => {
       this.obs = observation;

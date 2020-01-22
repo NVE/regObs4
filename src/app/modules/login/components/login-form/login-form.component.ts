@@ -12,8 +12,8 @@ import { settings } from '../../../../../settings';
 export class LoginFormComponent implements OnInit {
 
   loginform: FormGroup;
-  @ViewChild('password', { static : true }) password: Input;
-  @ViewChild('username', { static : true }) username: Input;
+  @ViewChild('password', { static: true }) password: Input;
+  @ViewChild('username', { static: true }) username: Input;
   forgotPasswordUrl: string;
   createUserUrl: string;
   showPassword = false;
@@ -42,7 +42,6 @@ export class LoginFormComponent implements OnInit {
       username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
     });
-    const userSettings = await this.userSettingsService.getUserSettings();
     const loggedInUser = await this.loginService.getLoggedInUser();
     if (loggedInUser && loggedInUser.email) {
       this.loginFormUsername = loggedInUser.email;
@@ -54,6 +53,8 @@ export class LoginFormComponent implements OnInit {
         (<any>this.username).setFocus();
       }, 500);
     }
+    await this.userSettingsService.userSettingsReadyAsync();
+    const userSettings = this.userSettingsService.currentSettings;
     const baseUrl = settings.services.regObs.serviceUrl[userSettings.appMode];
     this.forgotPasswordUrl = `${baseUrl}${settings.services.regObs.passwordRecoveryUrl}`;
     this.createUserUrl = `${baseUrl}${settings.services.regObs.createUserUrl}`;
