@@ -26,6 +26,7 @@ import { File, FileEntry, IFile } from '@ionic-native/file/ngx';
 import { settings } from '../../../../settings';
 import { LogLevel } from '../../shared/services/logging/log-level.model';
 import { RegistrationRepositoryService } from './registration-repository/registration-repository.service';
+import { asyncFilter } from '../../../core/helpers/async-filter';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -53,13 +54,10 @@ export class RegistrationService {
     this.drafts$ = this.registrations$.pipe(map((val) => val.filter((item) => item.status === RegistrationStatus.Draft)));
   }
 
-  saveRegistration(appMode: AppMode, registration: IRegistration, clean = false) {
-    this.loggingService.debug(`Save registration`, DEBUG_TAG, registration, clean);
+  saveRegistration(appMode: AppMode, registration: IRegistration) {
+    this.loggingService.debug(`Save registration`, DEBUG_TAG, registration);
     if (!registration) {
       return;
-    }
-    if (clean) {
-      this.cleanupRegistration(registration);
     }
     registration.changed = moment().unix();
     this.registrationRepositoryService.saveRegistration(appMode, registration);
@@ -67,7 +65,10 @@ export class RegistrationService {
 
   async saveRegistrationAsync(registration: IRegistration, clean = false) {
     const appMode = await this.userSettingService.appMode$.pipe(take(1)).toPromise();
-    this.saveRegistration(appMode, registration, clean);
+    if (clean) {
+      await this.cleanupRegistration(registration);
+    }
+    this.saveRegistration(appMode, registration);
   }
 
   createNewRegistration(geoHazard: GeoHazard, loggedInUser: LoggedInUser) {
@@ -92,7 +93,7 @@ export class RegistrationService {
       .map((key) => RegistrationTid[key]).filter((val: RegistrationTid) => typeof (val) !== 'string');
   }
 
-  private cleanupRegistration(reg: IRegistration) {
+  private async cleanupRegistration(reg: IRegistration) {
     if (reg && reg.request) {
       const registrationTids = this.getRegistrationTids();
       for (const registrationTid of registrationTids) {
@@ -104,8 +105,36 @@ export class RegistrationService {
       if (!reg.request.DtObsTime) {
         reg.request.DtObsTime = moment().toISOString(true);
       }
+      await this.cleanupImages(reg.request);
     }
     return reg;
+  }
+
+  private async cleanupImages(request: RegobsApiModels.CreateRegistrationRequestDto) {
+    try {
+      if (!request) {
+        return;
+      }
+      if (request.Picture && request.Picture.length > 0) {
+        request.Picture = await asyncFilter(request.Picture, (p) => this.isValidPicture(p));
+      }
+      if (request.DamageObs && request.DamageObs.length > 0) {
+        request.DamageObs = (await Promise.all(request.DamageObs.map(async dto => ({
+          ...dto,
+          Pictures: await asyncFilter(dto.Pictures, (p) => this.isValidPicture(p)),
+        }))));
+      }
+      if (request.WaterLevel2
+        && request.WaterLevel2.WaterLevelMeasurement
+        && request.WaterLevel2.WaterLevelMeasurement.length > 0) {
+        request.WaterLevel2.WaterLevelMeasurement = (await Promise.all(request.WaterLevel2.WaterLevelMeasurement.map(async dto => ({
+          ...dto,
+          Pictures: await asyncFilter(dto.Pictures, (p) => this.isValidPicture(p)),
+        }))));
+      }
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, 'Could not cleanup images');
+    }
   }
 
   isEmpty(reg: IRegistration, registrationTid: RegistrationTid) {
@@ -244,7 +273,7 @@ export class RegistrationService {
   private async syncRegistration(registration: IRegistration, userSetting: UserSetting, cancel?: Promise<void>) {
     try {
       if (registration.request) {
-        this.cleanupRegistration(registration);
+        await this.cleanupRegistration(registration);
         registration.request.Email = userSetting.emailReceipt;
         const createRegistrationResult = await this.postRegistration(userSetting.appMode, registration, cancel);
         await this.observationService.updateObservationById(
@@ -355,11 +384,31 @@ export class RegistrationService {
       fileEntry.file((success) => resolve(success), (error) => reject(error)));
   }
 
+  private isBase64Picture(pictureRequest: RegobsApiModels.PictureRequestDto) {
+    return pictureRequest && pictureRequest.PictureImageBase64 &&
+      pictureRequest.PictureImageBase64.startsWith('data:');
+  }
+
+  private async isValidPicture(pictureRequest: RegobsApiModels.PictureRequestDto): Promise<boolean> {
+    if (pictureRequest) {
+      if (pictureRequest.AttachmentUploadId || this.isBase64Picture(pictureRequest)) {
+        return true;
+      }
+      try {
+        const file = await this.getFile(pictureRequest.PictureImageBase64);
+        return !!file;
+      } catch (err) {
+        this.loggingService.log('Picture request has a file that is missing. Skip this picture.', err, LogLevel.Error, DEBUG_TAG);
+      }
+    }
+    return false;
+  }
+
   private uploadAttachment(pictureRequest: RegobsApiModels.PictureRequestDto): Observable<RegobsApiModels.PictureRequestDto> {
     const shouldUploadAttachment =
       !pictureRequest.AttachmentUploadId &&
       pictureRequest.PictureImageBase64 &&
-      !pictureRequest.PictureImageBase64.startsWith('data:');
+      !this.isBase64Picture(pictureRequest);
 
     if (shouldUploadAttachment) {
       const file$ = from(this.getFile(pictureRequest.PictureImageBase64));
