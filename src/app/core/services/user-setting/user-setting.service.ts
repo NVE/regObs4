@@ -6,7 +6,7 @@ import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, combineLatest, BehaviorSubject, from, of } from 'rxjs';
-import { map, take, shareReplay, distinctUntilChanged, tap, takeUntil, catchError, filter, debounceTime, switchMap } from 'rxjs/operators';
+import { map, take, shareReplay, distinctUntilChanged, tap, takeUntil, catchError, debounceTime, switchMap, skipWhile } from 'rxjs/operators';
 import { LangKey } from '../../models/langKey';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
@@ -34,16 +34,13 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   public readonly language$: Observable<LangKey>;
   public readonly daysBack$: Observable<{ geoHazard: GeoHazard, daysBack: number }[]>;
   public readonly showObservations$: Observable<boolean>;
+  public readonly userSetting$: Observable<UserSetting>;
 
-  private userSettingInMemory = new BehaviorSubject<UserSetting>(DEFAULT_USER_SETTINGS());
+  private userSettingInMemory = new BehaviorSubject<UserSetting>(null);
   private userSettingsReady = new BehaviorSubject(false);
 
   get userSettingsReady$() {
     return this.userSettingsReady.asObservable();
-  }
-
-  get userSetting$() {
-    return this.userSettingInMemory.asObservable();
   }
 
   get currentSettings() {
@@ -61,14 +58,20 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
   constructor(private translate: TranslateService, private loggingService: LoggingService) {
     super();
-
+    this.userSetting$ = this.userSettingInMemory.asObservable().pipe(
+      skipWhile((val) => val === null),
+      tap((val) => {
+        this.loggingService.debug('User settings is: ', DEBUG_TAG, val);
+      }), shareReplay(1));
     this.currentGeoHazard$ = this.userSetting$.pipe(
       map((val) => val.currentGeoHazard),
       distinctUntilChanged(equal),
       tap((val) => this.loggingService.debug(`Current geohazard changed to: ${val.join(',')}`, DEBUG_TAG)),
       shareReplay(1));
 
-    this.appMode$ = this.userSetting$.pipe(map((val) => val.appMode), distinctUntilChanged(), shareReplay(1));
+    this.appMode$ = this.userSetting$.pipe(map((val) => val.appMode), distinctUntilChanged(), tap((val) => {
+      this.loggingService.debug('App mode is: ', DEBUG_TAG, val);
+    }), shareReplay(1));
 
     this.showMapCenter$ = this.userSetting$.pipe(map((val) => val.showMapCenter), distinctUntilChanged(), shareReplay(1));
 
@@ -110,6 +113,9 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       if (result) {
         this.loggingService.debug('Init user settings from offline db', DEBUG_TAG, result);
         this.saveUserSettings(result);
+      } else {
+        this.loggingService.debug('Init with default user settings', DEBUG_TAG, result);
+        this.saveUserSettings(DEFAULT_USER_SETTINGS());
       }
       this.userSettingsReady.next(true);
     });
@@ -125,7 +131,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   }
 
   userSettingsReadyAsync() {
-    return this.userSettingsReady$.pipe(take(1)).toPromise();
+    return this.userSettingsReady$.pipe(skipWhile((val) => !val), take(1)).toPromise();
   }
 
   saveUserSettings(userSetting: UserSetting) {
