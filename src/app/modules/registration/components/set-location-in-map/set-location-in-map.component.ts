@@ -3,9 +3,9 @@ import * as L from 'leaflet';
 import { MapService } from '../../../map/services/map/map.service';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
-import { debounceTime, take, switchMap, filter, takeUntil } from 'rxjs/operators';
+import { take, switchMap, filter, takeUntil } from 'rxjs/operators';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
 import { ObsLocationsResponseDtoV2, ObsLocationDto } from '../../../regobs-api/models';
 import { LocationService } from '../../../../core/services/location/location.service';
@@ -298,11 +298,12 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       Uncertainty: 0,
       UTMSourceTID: UtmSource.SelectedInMap,
     };
-    if (this.selectedLocation) {
+    if (this.editLocationName && this.locationName && this.locationName.length > 0) {
+      obsLocation.ObsLocationID = undefined;
+      obsLocation.LocationName = this.locationName.substring(0, 60);
+    } else if (this.selectedLocation) {
       obsLocation.ObsLocationID = this.selectedLocation.Id;
       obsLocation.LocationName = this.selectedLocation.Name;
-    } else if (this.editLocationName && this.locationName && this.locationName.length > 0) {
-      obsLocation.LocationName = this.locationName.substring(0, 60);
     }
     if (this.viewInfo && this.viewInfo.location) {
       obsLocation.LocationDescription = this.getLocationName(this.viewInfo.location);
