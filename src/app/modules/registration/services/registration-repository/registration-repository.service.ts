@@ -28,7 +28,7 @@ export class RegistrationRepositoryService extends NgDestoryBase implements OnRe
   }
 
   public saveRegistration(appMode: AppMode, reg: IRegistration) {
-    const currentRegistrations = this.inMemoryRegistrations[appMode];
+    const currentRegistrations = this.getCurrentInMemoryRegistrations(appMode);
     const mergedResult = this.mergeRegistrationsBasedOnId([reg], currentRegistrations);
     this.loggingService.debug('Saving registration to inMemory', DEBUG_TAG,
       ({ appMode, regToSave: reg, currentRegistrations, mergedResult }));
@@ -38,7 +38,7 @@ export class RegistrationRepositoryService extends NgDestoryBase implements OnRe
   async deleteRegistrationById(appMode: AppMode, id: string) {
     await NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
       .query('delete').where(['id', '=', id]).exec();
-    const newInMemoryRegistrations = (this.inMemoryRegistrations.value[appMode] || []).filter((reg) => reg.id !== id);
+    const newInMemoryRegistrations = this.getCurrentInMemoryRegistrations(appMode).filter((reg) => reg.id !== id);
     this.saveInMemoryRegistrations(appMode, newInMemoryRegistrations);
   }
 
@@ -51,13 +51,18 @@ export class RegistrationRepositoryService extends NgDestoryBase implements OnRe
     this.userSettingService.appMode$.pipe(
       switchMap((appMode) =>
         combineLatest([this.getInMemoryRegistrationsForAppMode(appMode).pipe(take(1)), this.getRegistrationsFromDb(appMode), of(appMode)])),
-      concatMap(([inMemoryRegistrations, dbRegistrations, appMode]) =>
-        of(this.mergeRegistrationsBasedOnId(inMemoryRegistrations, dbRegistrations)).pipe(map((result) => ({ appMode, result })))),
+      concatMap(([imr, dbRegistrations, appMode]) =>
+        of(this.mergeRegistrationsBasedOnId(imr, dbRegistrations)).pipe(map((result) => ({ appMode, result })))),
       takeUntil(this.ngDestroy$),
     ).subscribe((result) => {
       this.loggingService.debug('Merged existing registrations from database.', DEBUG_TAG, result);
       this.saveInMemoryRegistrations(result.appMode, result.result);
     });
+  }
+
+  private getCurrentInMemoryRegistrations(appMode: AppMode) {
+    const currentVal = this.inMemoryRegistrations.value;
+    return currentVal[appMode] || [];
   }
 
   private createSaveToDbOnChangeListener() {
