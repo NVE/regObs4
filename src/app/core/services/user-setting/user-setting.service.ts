@@ -5,78 +5,137 @@ import { GeoHazard } from '../../models/geo-hazard.enum';
 import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
 import { NanoSql } from '../../../../nanosql';
-import { Observable, combineLatest } from 'rxjs';
-import { map, take, shareReplay, distinctUntilChanged, tap } from 'rxjs/operators';
+import { Observable, combineLatest, BehaviorSubject, from, of } from 'rxjs';
+import { map, take, shareReplay, distinctUntilChanged, tap, takeUntil, catchError, debounceTime, switchMap, skipWhile } from 'rxjs/operators';
 import { LangKey } from '../../models/langKey';
-import { TopoMap } from '../../models/topo-map.enum';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
-import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
+import equal from 'fast-deep-equal';
+import { NgDestoryBase } from '../../helpers/observable-helper';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
+import { DEFAULT_USER_SETTINGS } from './user-settings.default';
 
 const DEBUG_TAG = 'UserSettingService';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserSettingService implements OnReset {
+export class UserSettingService extends NgDestoryBase implements OnReset {
 
   // Setting this observable to be a shared instance since
   // UserSettingService is a singleton service.
   // The observable will be shared with many services
-  private _userSettingObservable: Observable<UserSetting>;
-  private _currentGeoHazardObservable: Observable<GeoHazard[]>;
-  private _appModeObservable: Observable<AppMode>;
-  private _showMapCenter: Observable<boolean>;
-  private _appModeAndLanguageObservable: Observable<[AppMode, LangKey]>;
-  private _appModeLanguageAndCurrentGeoHazardObservable: Observable<[AppMode, LangKey, GeoHazard[]]>;
-  private _languageObservable: Observable<LangKey>;
-  private _daysBackObservable: Observable<{ geoHazard: GeoHazard, daysBack: number }[]>;
-  private _showObservationsObservable: Observable<boolean>;
+  public readonly currentGeoHazard$: Observable<GeoHazard[]>;
+  public readonly appMode$: Observable<AppMode>;
+  public readonly showMapCenter$: Observable<boolean>;
+  public readonly appModeAndLanguage$: Observable<[AppMode, LangKey]>;
+  public readonly appModeLanguageAndCurrentGeoHazard$: Observable<[AppMode, LangKey, GeoHazard[]]>;
+  public readonly language$: Observable<LangKey>;
+  public readonly daysBack$: Observable<{ geoHazard: GeoHazard, daysBack: number }[]>;
+  public readonly showObservations$: Observable<boolean>;
+  public readonly userSetting$: Observable<UserSetting>;
 
-  get userSettingObservable$() {
-    return this._userSettingObservable;
+  private userSettingInMemory = new BehaviorSubject<UserSetting>(null);
+  private userSettingsReady = new BehaviorSubject(false);
+
+  get userSettingsReady$() {
+    return this.userSettingsReady.asObservable();
   }
 
-  get currentGeoHazardObservable$() {
-    return this._currentGeoHazardObservable;
+  get currentSettings() {
+    return this.userSettingInMemory.getValue();
   }
 
-  get appMode$() {
-    return this._appModeObservable;
-  }
-
-  get appModeAndLanguage$() {
-    return this._appModeAndLanguageObservable;
-  }
-
-  get appModeLanguageAndCurrentGeoHazard$() {
-    return this._appModeLanguageAndCurrentGeoHazardObservable;
-  }
-
-  get language$() {
-    return this._languageObservable;
-  }
-
-  get showMapCenter$() {
-    return this._showMapCenter;
-  }
-
-  get daysBack$() {
-    return this._daysBackObservable;
-  }
-
-  get showObservations$() {
-    return this._showObservationsObservable;
+  set currentSettings(val: UserSetting) {
+    this.saveUserSettings(val);
   }
 
   get supportTiles$() {
-    return this.userSettingObservable$
+    return this.userSetting$
       .pipe(map((us) => this.getSupportTilesOptions(us)));
   }
 
   constructor(private translate: TranslateService, private loggingService: LoggingService) {
-    this.initObservables();
+    super();
+    this.userSetting$ = this.userSettingInMemory.asObservable().pipe(
+      skipWhile((val) => val === null),
+      tap((val) => {
+        this.loggingService.debug('User settings is: ', DEBUG_TAG, val);
+      }), shareReplay(1));
+    this.currentGeoHazard$ = this.userSetting$.pipe(
+      map((val) => val.currentGeoHazard),
+      distinctUntilChanged(equal),
+      tap((val) => this.loggingService.debug(`Current geohazard changed to: ${val.join(',')}`, DEBUG_TAG)),
+      shareReplay(1));
+
+    this.appMode$ = this.userSetting$.pipe(map((val) => val.appMode), distinctUntilChanged(), tap((val) => {
+      this.loggingService.debug('App mode is: ', DEBUG_TAG, val);
+    }), shareReplay(1));
+
+    this.showMapCenter$ = this.userSetting$.pipe(map((val) => val.showMapCenter), distinctUntilChanged(), shareReplay(1));
+
+    this.language$ = this.userSetting$.pipe(map((val) => val.language), distinctUntilChanged(), shareReplay(1));
+
+    this.appModeAndLanguage$ = combineLatest([this.appMode$, this.language$]).pipe(shareReplay(1));
+
+    this.appModeLanguageAndCurrentGeoHazard$ = combineLatest([
+      this.appMode$, this.language$, this.currentGeoHazard$])
+      .pipe(shareReplay(1));
+
+    this.daysBack$ = this.userSetting$
+      .pipe(
+        map((val) => val.observationDaysBack),
+        distinctUntilChanged(equal),
+        tap((val) => this.loggingService.debug(`Days back changed to:`, DEBUG_TAG, val)),
+        shareReplay(1));
+
+    this.showObservations$ = this.userSetting$.pipe(map((val) => val.showObservations), distinctUntilChanged(), shareReplay(1));
+
+    this.initSubscriptions();
+  }
+
+  private initSubscriptions() {
+    this.createLanguageChangeListener();
+    this.updateInMemoryRegistrationsFromDb();
+    this.createSaveToDbOnChangeListener();
+  }
+
+  private createLanguageChangeListener() {
+    // TODO: Move to app init
+    this.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((language) => {
+      this.translate.use(LangKey[language]);
+    });
+  }
+
+  private updateInMemoryRegistrationsFromDb() {
+    this.getUserSettingsFromDb().subscribe((result) => {
+      if (result) {
+        this.loggingService.debug('Init user settings from offline db', DEBUG_TAG, result);
+        this.saveUserSettings(result);
+      } else {
+        this.loggingService.debug('Init with default user settings', DEBUG_TAG, result);
+        this.saveUserSettings(DEFAULT_USER_SETTINGS());
+      }
+      this.userSettingsReady.next(true);
+    });
+  }
+
+  private createSaveToDbOnChangeListener() {
+    this.userSetting$.pipe(
+      debounceTime(200),
+      tap((result) => this.loggingService.debug('InMemory user settings changed. Saving to db: ', DEBUG_TAG, result)),
+      switchMap((result) => this.saveUserSettingsToDb(result)),
+      takeUntil(this.ngDestroy$)
+    ).subscribe();
+  }
+
+  userSettingsReadyAsync() {
+    return this.userSettingsReady$.pipe(skipWhile((val) => !val), take(1)).toPromise();
+  }
+
+  saveUserSettings(userSetting: UserSetting) {
+    this.userSettingInMemory.next(userSetting);
   }
 
   getSupportTilesOptions(us: UserSetting) {
@@ -95,102 +154,26 @@ export class UserSettingService implements OnReset {
     });
   }
 
-  initObservables() {
-    this._userSettingObservable = this.getUserSettingsFromDbAsObservable();
-    this._currentGeoHazardObservable = this._userSettingObservable.pipe(
-      map((val) => val.currentGeoHazard),
-      distinctUntilChanged<GeoHazard[], string>((a, b) => a.localeCompare(b) === 0, (keySelector) => keySelector.join(',')),
-      tap((val) => this.loggingService.debug(`Current geohazard changed to: ${val.join(',')}`, DEBUG_TAG)),
-      shareReplay(1));
-
-    this.userSettingObservable$.subscribe((userSetting) => {
-      this.translate.use(LangKey[userSetting.language]);
-    });
-    this._appModeObservable = this.userSettingObservable$
-      .pipe(
-        map((val) => val.appMode),
-        distinctUntilChanged(), shareReplay(1));
-
-    this._languageObservable = this.userSettingObservable$
-      .pipe(
-        map((val) => val.language),
-        distinctUntilChanged(), shareReplay(1));
-
-    this._daysBackObservable = this.userSettingObservable$
-      .pipe(
-        map((val) => val.observationDaysBack),
-        distinctUntilChanged<{ geoHazard: GeoHazard, daysBack: number }[], string>(
-          (a, b) => a.localeCompare(b) === 0, (keySelector) => JSON.stringify(keySelector)),
-        tap((val) => this.loggingService.debug(`Days back changed to:`, DEBUG_TAG, val)),
-        shareReplay(1));
-
-    this._appModeAndLanguageObservable = combineLatest([this.appMode$, this.language$])
-      .pipe(shareReplay(1));
-
-    this._appModeLanguageAndCurrentGeoHazardObservable = combineLatest([
-      this.appMode$, this.language$, this.currentGeoHazardObservable$])
-      .pipe(shareReplay(1));
-
-    this._showMapCenter = this.userSettingObservable$
-      .pipe(
-        map((val) => val.showMapCenter),
-        distinctUntilChanged(), shareReplay(1));
-
-    this._showObservationsObservable = this.userSettingObservable$
-      .pipe(
-        map((val) => val.showObservations),
-        distinctUntilChanged(), shareReplay(1));
+  private getUserSettingsFromDb(): Observable<UserSetting> {
+    return from(nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select').exec() as Promise<UserSetting[]>)
+      .pipe((map((result) => result[0])));
   }
 
-  private getDefaultSettings(): UserSetting {
-    return {
-      appMode: AppMode.Prod,
-      language: LangKey.nb,
-      currentGeoHazard: [GeoHazard.Snow],
-      observationDaysBack: [
-        { geoHazard: GeoHazard.Snow, daysBack: 2 },
-        { geoHazard: GeoHazard.Ice, daysBack: 7 },
-        { geoHazard: GeoHazard.Dirt, daysBack: 3 },
-        { geoHazard: GeoHazard.Water, daysBack: 3 },
-      ],
-      completedStartWizard: false,
-      supportTiles: [],
-      showMapCenter: false,
-      tilesCacheSize: settings.map.tiles.cacheSize,
-      showObservations: true,
-      emailReceipt: true,
-      topoMap: TopoMap.mixArcGisOnline,
-      showGeoSelectInfo: true,
-      useRetinaMap: false,
-      consentForSendingAnalytics: true,
-      consentForSendingAnalyticsDialogCompleted: false,
-      featureToggeGpsDebug: false,
-      featureToggleDeveloperMode: false,
-    };
+  private saveUserSettingsToDb(userSetting: UserSetting): Observable<UserSetting[]> {
+    return from(nSQL(NanoSql.TABLES.USER_SETTINGS.name)
+      .query('upsert', { id: 'usersettings', ...userSetting }).exec() as Promise<UserSetting[]>)
+      .pipe(catchError((err) => {
+        this.loggingService.log('Could not save user settings to offline db', err, LogLevel.Warning, DEBUG_TAG);
+        return of(null);
+      }));
   }
 
-  getUserSettings(): Promise<UserSetting> {
-    return this.userSettingObservable$.pipe(take(1)).toPromise();
+  appOnReset() {
   }
 
-  private getUserSettingsFromDbAsObservable(): Observable<UserSetting> {
-    return new NSqlFullUpdateObservable<UserSetting[]>(
-      nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select')
-        .listen()).pipe(
-          map((val: UserSetting[]) => val.length > 0 ? val[0] : this.getDefaultSettings()),
-          shareReplay(1),
-        );
-  }
-
-  async saveUserSettings(userSetting: UserSetting) {
-    await nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('upsert', { id: 'usersettings', ...userSetting }).exec();
-  }
-
-  appOnReset(): void | Promise<any> {
-  }
-
-  appOnResetComplete(): Promise<void | Promise<any>> {
+  appOnResetComplete() {
     this.loggingService.debug(`App reset complete. Re-init observables.`, DEBUG_TAG);
-    return this.saveUserSettings(this.getDefaultSettings());
+    const defaultSettings = DEFAULT_USER_SETTINGS();
+    this.saveUserSettings(defaultSettings);
   }
 }

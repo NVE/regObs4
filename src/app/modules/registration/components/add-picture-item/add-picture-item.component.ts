@@ -11,6 +11,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { File, DirectoryEntry, Entry } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
+import * as utils from '@nano-sql/core/lib/utilities';
 
 // const DATA_URL_TAG = 'data:image/jpeg;base64,';
 const DEBUG_TAG = 'AddPictureItemComponent';
@@ -148,7 +149,8 @@ export class AddPictureItemComponent implements OnInit {
   }
 
   private moveFile(file: Entry, directory: DirectoryEntry): Promise<string> {
-    return new Promise((resolve, reject) => file.moveTo(directory, null, entry => resolve(entry.toURL()), err => reject(err)));
+    const newName = `${utils.uuid()}.jpg`;
+    return new Promise((resolve, reject) => file.moveTo(directory, newName, entry => resolve(entry.toURL()), err => reject(err)));
   }
 
   private async deleteFile(src: string) {

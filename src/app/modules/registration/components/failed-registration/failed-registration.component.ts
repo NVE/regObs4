@@ -27,7 +27,7 @@ export class FailedRegistrationComponent implements OnInit {
 
   async openForEdit() {
     this.registration.status = RegistrationStatus.Draft;
-    await this.registrationService.saveRegistration(this.registration);
+    await this.registrationService.saveRegistrationAsync(this.registration);
     this.ngZone.run(() => {
       this.registrationChange.emit(this.registration);
     });

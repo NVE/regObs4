@@ -38,7 +38,7 @@ export class SnowDensityComponent implements OnInit {
 
   async openModal() {
     if (!this.densityModal) {
-      await this.registrationService.saveRegistration(this.reg); // Save registration before open modal page
+      await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
       this.densityModal = await this.modalContoller.create({
         component: SnowDensityModalPage,
         componentProps: {

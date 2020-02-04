@@ -25,7 +25,7 @@ export class HelpTextComponent implements OnInit {
     private ngZone: NgZone) { }
 
   async ngOnInit() {
-    const userSetting = await this.userSettingService.getUserSettings();
+    const userSetting = this.userSettingService.currentSettings;
     this.helpText = await this.helpTextService.getHelpTextByKey(
       userSetting.language,
       userSetting.appMode,

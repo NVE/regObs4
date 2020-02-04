@@ -69,7 +69,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistration(this.initialRegistrationClone);
+    await this.registrationService.saveRegistrationAsync(this.initialRegistrationClone);
     this.modalController.dismiss();
   }
 

@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs';
-import { NgZone } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { NgZone, OnDestroy, OnInit } from '@angular/core';
 
 export function toPromiseWithCancel<T>(observable: Observable<T>, cancel?: Promise<void>) {
     return new Promise<T>((resolve, reject) => {
@@ -29,4 +29,15 @@ export function enterZone(zone: NgZone) {
                 complete: () => observer.complete()
             })
         );
+}
+
+export class NgDestoryBase implements OnDestroy {
+    protected readonly ngDestroy$: Subject<void>;
+    constructor() {
+        this.ngDestroy$ = new Subject();
+    }
+    ngOnDestroy(): void {
+        this.ngDestroy$.next();
+        this.ngDestroy$.complete();
+    }
 }

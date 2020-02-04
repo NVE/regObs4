@@ -13,11 +13,11 @@ export class StartWizardGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Promise<boolean> {
 
-    const userSettings = await this.userSettingService.getUserSettings();
-    if (!userSettings.completedStartWizard) {
+    await this.userSettingService.userSettingsReadyAsync();
+    if (!this.userSettingService.currentSettings.completedStartWizard) {
       this.router.navigate(['start-wizard']);
     }
 
-    return userSettings.completedStartWizard;
+    return this.userSettingService.currentSettings.completedStartWizard;
   }
 }

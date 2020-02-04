@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ViewChild, Renderer2, Inject, OnChanges, SimpleChanges } from '@angular/core';
-import { IonItemSliding, DomController, IonItemOption } from '@ionic/angular';
+import { Component, OnInit, Input, ViewChild, Renderer2 } from '@angular/core';
+import { IonItemSliding, DomController } from '@ionic/angular';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
@@ -11,40 +11,64 @@ import { WarningGroupFavouriteToggleComponent } from '../warning-group-favourite
 import { AnalyticService } from '../../modules/analytics/services/analytic.service';
 import { AppEventCategory } from '../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../modules/analytics/enums/app-event-action.enum';
+import { from, of, Subject } from 'rxjs';
+import { map, catchError, takeUntil, debounceTime, switchMap } from 'rxjs/operators';
+import { NgDestoryBase } from '../../core/helpers/observable-helper';
 
 @Component({
   selector: 'app-warning-list-item',
   templateUrl: './warning-list-item.component.html',
   styleUrls: ['./warning-list-item.component.scss']
 })
-export class WarningListItemComponent implements OnInit {
+export class WarningListItemComponent extends NgDestoryBase implements OnInit {
 
   @Input() warningGroup: WarningGroup;
   GeoHazard = GeoHazard;
 
-  @ViewChild(IonItemSliding, { static : false }) itemSlide: IonItemSliding;
-  @ViewChild(WarningGroupFavouriteToggleComponent, { static : false }) favouriteToggle: WarningGroupFavouriteToggleComponent;
+  @ViewChild(IonItemSliding, { static: true }) itemSlide: IonItemSliding;
+  @ViewChild(WarningGroupFavouriteToggleComponent, { static: true }) favouriteToggle: WarningGroupFavouriteToggleComponent;
+  private dragSubject = new Subject();
 
   constructor(
     private externalLinkService: ExternalLinkService,
     private userSettingService: UserSettingService,
     private domCtrl: DomController,
     private analyticService: AnalyticService,
-    private renderer: Renderer2) { }
-
-  ngOnInit() {
-
+    private renderer: Renderer2) {
+    super();
   }
 
-  async onDrag(event: Event) {
-    const slider: IonItemSliding = <any>event.srcElement;
-    const openAmount = (await slider.getOpenAmount()) / 100.0;
-    const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
-    const color = `rgba(186,196,204,${opacity})`;
-    this.favouriteToggle.setOpen(opacity);
-    this.domCtrl.write(() => {
-      this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
-    });
+  ngOnInit() {
+    this.dragSubject.pipe(
+      debounceTime(10),
+      takeUntil(this.ngDestroy$),
+      switchMap(() => this.getOpenAmount())).subscribe((openAmount) => {
+        const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
+        const color = `rgba(186,196,204,${opacity})`;
+        this.favouriteToggle.setOpen(opacity);
+        this.domCtrl.write(() => {
+          this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
+        });
+      });
+  }
+
+  onDrag(event: Event) {
+    this.dragSubject.next();
+    // const slider: IonItemSliding = event.target as unknown as IonItemSliding;
+    // const openAmount = (await slider.getOpenAmount()) / 100.0;
+    // const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
+    // const color = `rgba(186,196,204,${opacity})`;
+    // this.favouriteToggle.setOpen(opacity);
+    // this.domCtrl.write(() => {
+    //   this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
+    // });
+  }
+
+  private getOpenAmount() {
+    return from(this.itemSlide.getOpenAmount())
+      .pipe(
+        catchError(() => of(0)),
+        map((val) => val > 0 ? val / 100.0 : 0));
   }
 
   toggleFavourite() {
@@ -64,8 +88,8 @@ export class WarningListItemComponent implements OnInit {
     if (group.url) {
       return group.url;
     } else {
-      const userSettings = await this.userSettingService.getUserSettings();
-      const url = settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl[LangKey[userSettings.language]];
+      const url = settings.services.warning[GeoHazard[group.key.geoHazard]]
+        .webUrl[LangKey[this.userSettingService.currentSettings.language]];
       if (url) {
         return url
           .replace('{regionName}', group.key.groupName)

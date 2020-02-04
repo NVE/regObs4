@@ -77,7 +77,7 @@ export class DataMarshallService implements OnReset {
         this.updateObservations();
         this.warningService.updateWarnings();
       }));
-      this.subscriptions.push(this.userSettingService.userSettingObservable$
+      this.subscriptions.push(this.userSettingService.userSetting$
         .pipe(map((userSetting) => userSetting.consentForSendingAnalytics), distinctUntilChanged()).subscribe((consent) => {
           if (consent) {
             this.analyticService.enable();
@@ -92,7 +92,7 @@ export class DataMarshallService implements OnReset {
       this.subscriptions.push(this.userSettingService.showMapCenter$.subscribe((showMapCenter) => {
         this.analyticService.trackDimension(AppCustomDimension.showMapCenter, showMapCenter.toString());
       }));
-      this.subscriptions.push(this.userSettingService.userSettingObservable$
+      this.subscriptions.push(this.userSettingService.userSetting$
         .pipe(map((userSetting) => userSetting.topoMap), distinctUntilChanged()).subscribe((topoMap) => {
           this.analyticService.trackDimension(AppCustomDimension.topoMap, topoMap);
         }));
@@ -107,7 +107,7 @@ export class DataMarshallService implements OnReset {
       this.subscriptions.push(this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {
         this.offlineMapService.updateTilesCacheSizeTable(val.count, val.size);
       }));
-      this.subscriptions.push(this.userSettingService.userSettingObservable$.pipe(map((val) => val.tilesCacheSize),
+      this.subscriptions.push(this.userSettingService.userSetting$.pipe(map((val) => val.tilesCacheSize),
         distinctUntilChanged(), debounceTime(1000)).subscribe((val) => {
           this.loggingService.debug(`Tiles cahce size changed to ${val}`, DEBUG_TAG);
           this.offlineMapService.cleanupTilesCache(val);
@@ -153,7 +153,7 @@ export class DataMarshallService implements OnReset {
    * Emits only when days back has changed to a larger value for current geoHazard
    */
   private hasDaysBackChangedToLargerValue() {
-    return this.userSettingService.currentGeoHazardObservable$.pipe(
+    return this.userSettingService.currentGeoHazard$.pipe(
       switchMap((currentGeoHazard) => this.userSettingService.daysBack$.pipe(
         map((val) => val.find((x) => x.geoHazard === currentGeoHazard[0]).daysBack),
         distinctUntilChanged(),

@@ -77,7 +77,7 @@ export abstract class BasePage implements OnInit, OnDestroy {
     }
 
     save(clean = false) {
-        return this.basePageService.RegistrationService.saveRegistration(this.registration, clean);
+        return this.basePageService.RegistrationService.saveRegistrationAsync(this.registration, clean);
     }
 
     getSaveFunc() {

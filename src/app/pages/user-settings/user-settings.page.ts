@@ -60,7 +60,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.versionClicks = 0;
-    this.subscriptions.push(this.userSettingService.userSettingObservable$.subscribe((val) => {
+    this.subscriptions.push(this.userSettingService.userSetting$.subscribe((val) => {
       this.ngZone.run(() => {
         this.userSettings = val;
       });
@@ -88,16 +88,16 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     this.subscriptions = [];
   }
 
-  async versionClick() {
+  versionClick() {
     this.versionClicks++;
     if (this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE && !this.userSettings.featureToggleDeveloperMode) {
       this.userSettings.featureToggleDeveloperMode = true;
-      await this.updateSettings();
+      this.updateSettings();
     }
   }
 
-  async updateSettings() {
-    await this.userSettingService.saveUserSettings(this.userSettings);
+  updateSettings() {
+    this.userSettingService.currentSettings = this.userSettings;
   }
 
   async toggleAdvanced() {

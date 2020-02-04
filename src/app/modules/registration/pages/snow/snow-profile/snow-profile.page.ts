@@ -55,7 +55,7 @@ export class SnowProfilePage extends BasePage {
         backdropDismiss: true, // enable cancel
       });
       await loader.present();
-      const userSetting = await this.userSettingService.getUserSettings();
+      const userSetting = this.userSettingService.currentSettings;
       const format = 5; // Mobile profile plot
       const size = 400;
       const subscription = this.getPlotFromApiWithFallback(userSetting, format, size).subscribe((result) => {

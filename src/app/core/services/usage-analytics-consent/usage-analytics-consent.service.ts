@@ -22,8 +22,7 @@ export class UsageAnalyticsConsentService {
   }
 
   async checkUserDataConsentDialog() {
-    const userSettings = await this.userSettingService.getUserSettings();
-    if (!userSettings.consentForSendingAnalyticsDialogCompleted) {
+    if (!this.userSettingService.currentSettings.consentForSendingAnalyticsDialogCompleted) {
       await this.showConsentForSendingAnalyticsDialog();
     }
   }
@@ -41,16 +40,16 @@ export class UsageAnalyticsConsentService {
       const buttonOK = {
         cssClass,
         text: translations[OK],
-        handler: async () => {
-          await this.saveSettings(true);
+        handler: () => {
+          this.saveSettings(true);
           resolve();
         }
       };
       const buttonNo = {
         cssClass,
         text: translations[NO_THANKS],
-        handler: async () => {
-          await this.saveSettings(false);
+        handler: () => {
+          this.saveSettings(false);
           resolve();
         }
       };
@@ -65,10 +64,11 @@ export class UsageAnalyticsConsentService {
     });
   }
 
-  async saveSettings(accepted: boolean) {
-    const userSettings = await this.userSettingService.getUserSettings();
-    userSettings.consentForSendingAnalytics = accepted;
-    userSettings.consentForSendingAnalyticsDialogCompleted = true;
-    this.userSettingService.saveUserSettings(userSettings);
+  saveSettings(accepted: boolean) {
+    this.userSettingService.currentSettings = {
+      ...this.userSettingService.currentSettings,
+      consentForSendingAnalytics: accepted,
+      consentForSendingAnalyticsDialogCompleted: true,
+    };
   }
 }

@@ -127,7 +127,7 @@ export class MapService {
   private getMapViewAreaObservable(): Observable<IMapViewAndArea> {
     const currenteMapViewAndGeoHazards = combineLatest([
       this.relevantMapChange$,
-      this.userSettingService.currentGeoHazardObservable$])
+      this.userSettingService.currentGeoHazard$])
       .pipe(
         map(([mapView, geoHazards]) => ({
           mapView,

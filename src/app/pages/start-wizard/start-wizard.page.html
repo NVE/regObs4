@@ -1,6 +1,7 @@
-<ion-content *ngIf="userSettings">
-  <ion-slides class="onboarding" [options]="{autoplay:false}" pager="true" (ionSlideReachEnd)="ionSlideReachEnd()"
-    (ionSlidePrevStart)="ionSlidePrevStart()" (ionSlideTransitionStart)="ionSlideTransitionStart()">
+<ion-content>
+  <ion-slides *ngIf="!recreate" class="onboarding" [options]="{autoplay:false}" pager="true"
+    (ionSlideReachEnd)="ionSlideReachEnd()" (ionSlidePrevStart)="ionSlidePrevStart()"
+    (ionSlideTransitionStart)="ionSlideTransitionStart()">
     <ion-slide>
       <ion-grid class="full-grid">
         <ion-row class="full-grid-row">
@@ -19,7 +20,7 @@
             <h2 [@headerAnimation]="state">{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER'|translate}}</h2>
             <h3>{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER_SECONDARY_LANGUAGE'|translate}}</h3>
             <ion-list lines="none">
-              <ion-radio-group class="dark-color" [(ngModel)]="userSettings.language" (ionChange)="saveUserSettings()">
+              <ion-radio-group class="dark-color" [(ngModel)]="language" (ngModelChange)="saveLanguage()">
                 <ion-item (click)="slideNext()">
                   <ion-radio mode="md" slot="start" [value]="LangKey.nb"></ion-radio>
                   <ion-label>{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN'|translate}}

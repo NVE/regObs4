@@ -1,4 +1,4 @@
-<ion-fab *ngIf="userSettings" #geoSelectorFab vertical="top" horizontal="start" slot="fixed">
+<ion-fab *ngIf="(userSettings$ | async) as userSettings" #geoSelectorFab vertical="top" horizontal="start" slot="fixed">
   <ion-fab-button class="toggle-button" *ngIf="!isOpen" color="light" (click)="toggle()">
     <app-geo-icon [geoHazards]="userSettings.currentGeoHazard"></app-geo-icon>
   </ion-fab-button>

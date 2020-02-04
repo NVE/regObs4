@@ -59,7 +59,7 @@ export class ObservationService {
         cancelled = true;
       });
     }
-    const userSettings = await this.userSettingService.getUserSettings();
+    const userSettings = this.userSettingService.currentSettings;
     if (!cancelled) {
       return this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.currentGeoHazard, userSettings, cancel);
     } else {
@@ -109,7 +109,7 @@ export class ObservationService {
   }
 
   async forceUpdateObservationsForCurrentGeoHazard(cancel?: Promise<any>) {
-    const userSettings = await this.userSettingService.getUserSettings();
+    const userSettings = this.userSettingService.currentSettings;
     return this.updateObservationsForGeoHazard(userSettings.currentGeoHazard, userSettings, cancel);
   }
 
@@ -257,7 +257,7 @@ export class ObservationService {
   }
 
   private getUserSettingsObservableDistinctToChangeObservations() {
-    return this.userSettingService.userSettingObservable$.pipe(
+    return this.userSettingService.userSetting$.pipe(
       distinctUntilChanged<UserSetting, string>((x, y) => x.localeCompare(y) === 0,
         (x) => this.getDistinctUserSettingsToChangeObservations(x)));
   }

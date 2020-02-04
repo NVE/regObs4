@@ -35,7 +35,7 @@ export class StratProfileComponent implements OnInit {
 
   async openModal() {
     if (!this.modal) {
-      await this.registrationService.saveRegistration(this.reg); // Save registration before open modal page
+      await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
       this.modal = await this.modalContoller.create({
         component: StratProfileModalPage,
         componentProps: {

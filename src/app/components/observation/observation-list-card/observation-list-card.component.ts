@@ -15,7 +15,6 @@ import { settings } from '../../../../settings';
 import { RegistrationViewModel, Summary } from '../../../modules/regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
-import { UserSetting } from '../../../core/models/user-settings.model';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
@@ -45,7 +44,6 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   settings = settings;
   header: string;
   summaries: Summary[] = [];
-  private userSetting: UserSetting;
   allSelected = true;
   loaded = false;
   imageHeader = '';
@@ -60,7 +58,6 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   location: ImageLocation;
 
   constructor(
-    private translateService: TranslateService,
     private modalController: ModalController,
     private externalLinkService: ExternalLinkService,
     private userSettingService: UserSettingService,
@@ -74,9 +71,6 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   private async load() {
-    if (!this.userSetting) {
-      this.userSetting = await this.userSettingService.getUserSettings();
-    }
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
 
     this.header = this.obs.ObsLocation.Title;
@@ -183,7 +177,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   getImageUrl(filename: string, size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'large') {
-    return `${settings.services.regObs.webUrl[this.userSetting.appMode]}/Attachments/${size}/${filename}`;
+    return `${settings.services.regObs.webUrl[this.userSettingService.currentSettings.appMode]}/Attachments/${size}/${filename}`;
   }
 
   getRegistrationNames() {
@@ -230,7 +224,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   // }
 
   private getRegistrationUrl() {
-    return `${settings.services.regObs.webUrl[this.userSetting.appMode]}/Registration/${this.obs.RegID}`;
+    return `${settings.services.regObs.webUrl[this.userSettingService.currentSettings.appMode]}/Registration/${this.obs.RegID}`;
   }
 
   async openWeb() {

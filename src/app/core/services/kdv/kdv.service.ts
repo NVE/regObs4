@@ -37,7 +37,8 @@ export class KdvService {
   }
 
   async updateKdvElements(cancel?: Promise<void>) {
-    const userSetting = await this.userSettingService.getUserSettings();
+    await this.userSettingService.userSettingsReadyAsync();
+    const userSetting = this.userSettingService.currentSettings;
     await this.checkLastUpdatedAndUpdateDataIfNeeded(userSetting.appMode, userSetting.language, cancel);
   }
 

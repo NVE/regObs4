@@ -83,7 +83,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistration(this.initialRegistrationClone);
+    await this.registrationService.saveRegistrationAsync(this.initialRegistrationClone);
     this.modalController.dismiss();
   }
 
@@ -134,7 +134,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
 
   async recalculateLayersAndSave() {
     this.recalculateLayers();
-    await this.registrationService.saveRegistration(this.reg);
+    await this.registrationService.saveRegistrationAsync(this.reg);
   }
 
   getWaterEquivalent(density: number, depth: number) {

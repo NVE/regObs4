@@ -64,9 +64,9 @@ export class AppComponent {
       }
       this.initDeepLinks();
       await this.dbHelperService.init();
-      const userSettings = await this.userSettings.getUserSettings();
-      this.loggingService.configureLogging(userSettings.appMode);
-      this.translate.use(LangKey[userSettings.language]);
+      await this.userSettings.userSettingsReadyAsync();
+      this.loggingService.configureLogging(this.userSettings.currentSettings.appMode);
+      this.translate.use(LangKey[this.userSettings.currentSettings.language]);
       this.statusBar.styleLightContent();
       this.statusBar.backgroundColorByHexString('#99044962');
       // this.statusBar.overlaysWebView(this.platform.is('ios'));

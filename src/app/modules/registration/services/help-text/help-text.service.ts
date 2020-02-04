@@ -27,7 +27,8 @@ export class HelpTextService {
   ) { }
 
   async updateHelpTexts(cancel?: Promise<void>) {
-    const userSetting = await this.userSettingService.getUserSettings();
+    await this.userSettingService.userSettingsReadyAsync();
+    const userSetting = this.userSettingService.currentSettings;
     await this.checkLastUpdatedAndUpdateDataIfNeeded(userSetting.appMode, userSetting.language, cancel);
   }
 

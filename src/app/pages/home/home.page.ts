@@ -62,7 +62,7 @@ export class HomePage extends RouterPage implements OnInit {
   }
 
   checkForFirstStartup() {
-    this.userSettingService.userSettingObservable$.pipe(
+    this.userSettingService.userSetting$.pipe(
       map((us) => us.showGeoSelectInfo),
       distinctUntilChanged(),
       takeUntil(race(this.ngUnsubscribe, this.geoCoachMarksClosedSubject)),
@@ -109,9 +109,9 @@ export class HomePage extends RouterPage implements OnInit {
     });
   }
 
-  async onEnter() {
+  onEnter() {
     this.loggingService.debug(`Home page ionViewDidEnter.`, DEBUG_TAG);
-    const userSettings = await this.userSettingService.getUserSettings();
+    const userSettings = this.userSettingService.currentSettings;
     if (userSettings.showGeoSelectInfo) {
       this.loggingService.debug('Display coachmarks, wait with starting geopostion', DEBUG_TAG);
       return;

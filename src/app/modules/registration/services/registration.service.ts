@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { NanoSql } from '../../../../nanosql';
 import { IRegistration } from '../models/registration.model';
 import { Observable, from, of, combineLatest } from 'rxjs';
-import { shareReplay, switchMap, map, take, concatMap, tap } from 'rxjs/operators';
+import { switchMap, map, take, concatMap, tap } from 'rxjs/operators';
 import * as RegobsApi from '../../regobs-api/services';
 import * as RegobsApiModels from '../../regobs-api/models';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
@@ -23,10 +22,11 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { ObservationService } from '../../../core/services/observation/observation.service';
 import * as utils from '@nano-sql/core/lib/utilities';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
-import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 import { File, FileEntry, IFile } from '@ionic-native/file/ngx';
 import { settings } from '../../../../settings';
 import { LogLevel } from '../../shared/services/logging/log-level.model';
+import { RegistrationRepositoryService } from './registration-repository/registration-repository.service';
+import { asyncFilter } from '../../../core/helpers/async-filter';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -34,17 +34,8 @@ const DEBUG_TAG = 'RegistrationService';
   providedIn: 'root'
 })
 export class RegistrationService {
-
-  private _registrationsObservable: Observable<IRegistration[]>;
-  private _draftsObservable: Observable<IRegistration[]>;
-
-  get registrations$() {
-    return this._registrationsObservable;
-  }
-
-  get drafts$() {
-    return this._draftsObservable;
-  }
+  public readonly drafts$: Observable<IRegistration[]>;
+  public readonly registrations$: Observable<IRegistration[]>;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -55,29 +46,29 @@ export class RegistrationService {
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
     private observationService: ObservationService,
-    private attachmentService: RegobsApi.AttachmentService,
+    private registrationRepositoryService: RegistrationRepositoryService,
     private httpClient: HttpClient,
     private file: File,
   ) {
-
-    this._registrationsObservable = this.userSettingService.appMode$
-      .pipe(switchMap((appMode) => this.getRegistrationsAsObservable(appMode)));
-    this._draftsObservable = this.registrations$.pipe(map((val) => val.filter((item) => item.status === RegistrationStatus.Draft)));
+    this.registrations$ = this.registrationRepositoryService.registrations$;
+    this.drafts$ = this.registrations$.pipe(map((val) => val.filter((item) => item.status === RegistrationStatus.Draft)));
   }
 
-  async saveRegistration(registration: IRegistration, clean = false): Promise<string> {
-    this.loggingService.debug(`Save registration`, DEBUG_TAG, registration, clean);
+  saveRegistration(appMode: AppMode, registration: IRegistration) {
+    this.loggingService.debug(`Save registration`, DEBUG_TAG, registration);
     if (!registration) {
-      return null;
-    }
-    if (clean) {
-      this.cleanupRegistration(registration);
+      return;
     }
     registration.changed = moment().unix();
-    const userSettings = await this.userSettingService.getUserSettings();
-    const result = await NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, userSettings.appMode)
-      .query('upsert', registration).exec();
-    return (result[0] as IRegistration).id;
+    this.registrationRepositoryService.saveRegistration(appMode, registration);
+  }
+
+  async saveRegistrationAsync(registration: IRegistration, clean = false) {
+    const appMode = await this.userSettingService.appMode$.pipe(take(1)).toPromise();
+    if (clean) {
+      await this.cleanupRegistration(registration);
+    }
+    this.saveRegistration(appMode, registration);
   }
 
   createNewRegistration(geoHazard: GeoHazard, loggedInUser: LoggedInUser) {
@@ -97,12 +88,12 @@ export class RegistrationService {
     return reg;
   }
 
-  getRegistrationTids(): RegistrationTid[] {
+  private getRegistrationTids(): RegistrationTid[] {
     return Object.keys(RegistrationTid)
       .map((key) => RegistrationTid[key]).filter((val: RegistrationTid) => typeof (val) !== 'string');
   }
 
-  cleanupRegistration(reg: IRegistration) {
+  private async cleanupRegistration(reg: IRegistration) {
     if (reg && reg.request) {
       const registrationTids = this.getRegistrationTids();
       for (const registrationTid of registrationTids) {
@@ -114,8 +105,36 @@ export class RegistrationService {
       if (!reg.request.DtObsTime) {
         reg.request.DtObsTime = moment().toISOString(true);
       }
+      await this.cleanupImages(reg.request);
     }
     return reg;
+  }
+
+  private async cleanupImages(request: RegobsApiModels.CreateRegistrationRequestDto) {
+    try {
+      if (!request) {
+        return;
+      }
+      if (request.Picture && request.Picture.length > 0) {
+        request.Picture = await asyncFilter(request.Picture, (p) => this.isValidPicture(p));
+      }
+      if (request.DamageObs && request.DamageObs.length > 0) {
+        request.DamageObs = (await Promise.all(request.DamageObs.map(async dto => ({
+          ...dto,
+          Pictures: await asyncFilter(dto.Pictures, (p) => this.isValidPicture(p)),
+        }))));
+      }
+      if (request.WaterLevel2
+        && request.WaterLevel2.WaterLevelMeasurement
+        && request.WaterLevel2.WaterLevelMeasurement.length > 0) {
+        request.WaterLevel2.WaterLevelMeasurement = (await Promise.all(request.WaterLevel2.WaterLevelMeasurement.map(async dto => ({
+          ...dto,
+          Pictures: await asyncFilter(dto.Pictures, (p) => this.isValidPicture(p)),
+        }))));
+      }
+    } catch (err) {
+      this.loggingService.error(err, DEBUG_TAG, 'Could not cleanup images');
+    }
   }
 
   isEmpty(reg: IRegistration, registrationTid: RegistrationTid) {
@@ -173,6 +192,7 @@ export class RegistrationService {
     return arrays.indexOf(registrationTid) >= 0 ? 'array' : 'object';
   }
 
+  // TODO: Move this to login service
   private async getLoggedInUser() {
     const loggedInUser = await this.loginService.getLoggedInUser();
     if (loggedInUser && !loggedInUser.isLoggedIn) {
@@ -192,12 +212,13 @@ export class RegistrationService {
     }
   }
 
-  async sendRegistration(reg: IRegistration) {
+  async sendRegistration(appMode: AppMode, reg: IRegistration) {
     const loggedInUser = await this.getLoggedInUser();
     if (loggedInUser) {
       reg.request.ObserverGuid = loggedInUser.Guid;
       reg.status = RegistrationStatus.Sync;
-      this.saveRegistration(reg).then(() => this.syncRegistrations());
+      this.saveRegistration(appMode, reg);
+      this.syncRegistrations();
       this.navController.navigateRoot('my-observations');
     }
   }
@@ -207,7 +228,7 @@ export class RegistrationService {
   }
 
   getDataLoadState() {
-    return this.userSettingService.userSettingObservable$.pipe(switchMap((userSetting) =>
+    return this.userSettingService.userSetting$.pipe(switchMap((userSetting) =>
       this.dataLoadService.getStateAsObservable(this.getDataLoadId(userSetting.appMode))));
   }
 
@@ -218,7 +239,7 @@ export class RegistrationService {
         cancelled = true;
       });
     }
-    const userSettings = await this.userSettingService.getUserSettings();
+    const userSettings = this.userSettingService.currentSettings;
     const appMode = userSettings.appMode;
     const dataLoadId = this.getDataLoadId(appMode);
     const dataLoad = await this.dataLoadService.getState(dataLoadId);
@@ -252,9 +273,9 @@ export class RegistrationService {
   private async syncRegistration(registration: IRegistration, userSetting: UserSetting, cancel?: Promise<void>) {
     try {
       if (registration.request) {
-        this.cleanupRegistration(registration);
+        await this.cleanupRegistration(registration);
         registration.request.Email = userSetting.emailReceipt;
-        const createRegistrationResult = await this.postRegistration(registration, cancel);
+        const createRegistrationResult = await this.postRegistration(userSetting.appMode, registration, cancel);
         await this.observationService.updateObservationById(
           createRegistrationResult.RegId,
           userSetting.appMode,
@@ -273,17 +294,17 @@ export class RegistrationService {
           // Model error, something is not correct from app. Please review ModelState error!
           this.loggingService.error(ex, 'Got 400 BadRequest when sending registration', DEBUG_TAG, registration);
           registration.error = { status: httpError.status, message: this.getErrorsFromBadRequest(httpError) };
-          await this.saveRegistration(registration);
+          this.saveRegistration(userSetting.appMode, registration);
         } else {
           this.loggingService.error(ex, 'Got ${httpError.status} when sending registration', DEBUG_TAG, registration);
           registration.error = { status: httpError.status, message: httpError.statusText };
-          await this.saveRegistration(registration);
+          this.saveRegistration(userSetting.appMode, registration);
         }
       } else {
         // Another unknown error
         this.loggingService.error(ex, 'Error when sending registration', DEBUG_TAG, registration);
         registration.error = { status: 500, message: ex.message || '' };
-        await this.saveRegistration(registration);
+        this.saveRegistration(userSetting.appMode, registration);
       }
     }
   }
@@ -302,14 +323,7 @@ export class RegistrationService {
   }
 
   deleteRegistrationById(appMode: AppMode, id: string) {
-    return NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
-      .query('delete').where(['id', '=', id]).exec();
-  }
-
-  private getRegistrationsAsObservable(appMode: AppMode) {
-    return new NSqlFullUpdateObservable<IRegistration[]>(
-      NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode).query('select')
-        .listen()).pipe(shareReplay(1));
+    return this.registrationRepositoryService.deleteRegistrationById(appMode, id);
   }
 
   getRegistrationsToSync() {
@@ -327,10 +341,10 @@ export class RegistrationService {
       .pipe(map((items) => items.find((x) => x.id === id)));
   }
 
-  private postRegistration(registration: IRegistration, cancel?: Promise<void>) {
+  private postRegistration(appMode: AppMode, registration: IRegistration, cancel?: Promise<void>) {
     const uploadProcess$ = this.uploadAttachments(registration.request).pipe(
       tap(() => this.loggingService.debug(`Upload attachments complete. Registration is:`, DEBUG_TAG, registration)),
-      concatMap(() => from(this.saveRegistration(registration))), // Save updated picture dtos with attachment id
+      concatMap(() => of(this.saveRegistration(appMode, registration))), // Save updated picture dtos with attachment id
       concatMap(() => this.registrationApiService.RegistrationInsert(registration.request)
       ));
     return toPromiseWithCancel(uploadProcess$, cancel);
@@ -370,11 +384,31 @@ export class RegistrationService {
       fileEntry.file((success) => resolve(success), (error) => reject(error)));
   }
 
+  private isBase64Picture(pictureRequest: RegobsApiModels.PictureRequestDto) {
+    return pictureRequest && pictureRequest.PictureImageBase64 &&
+      pictureRequest.PictureImageBase64.startsWith('data:');
+  }
+
+  private async isValidPicture(pictureRequest: RegobsApiModels.PictureRequestDto): Promise<boolean> {
+    if (pictureRequest) {
+      if (pictureRequest.AttachmentUploadId || this.isBase64Picture(pictureRequest)) {
+        return true;
+      }
+      try {
+        const file = await this.getFile(pictureRequest.PictureImageBase64);
+        return !!file;
+      } catch (err) {
+        this.loggingService.log('Picture request has a file that is missing. Skip this picture.', err, LogLevel.Error, DEBUG_TAG);
+      }
+    }
+    return false;
+  }
+
   private uploadAttachment(pictureRequest: RegobsApiModels.PictureRequestDto): Observable<RegobsApiModels.PictureRequestDto> {
     const shouldUploadAttachment =
       !pictureRequest.AttachmentUploadId &&
       pictureRequest.PictureImageBase64 &&
-      !pictureRequest.PictureImageBase64.startsWith('data:');
+      !this.isBase64Picture(pictureRequest);
 
     if (shouldUploadAttachment) {
       const file$ = from(this.getFile(pictureRequest.PictureImageBase64));
@@ -437,19 +471,4 @@ export class RegistrationService {
     const rootUrl = settings.services.regObs.apiUrl[appMode];
     return this.httpClient.post<string>(`${rootUrl}/Attachment/Upload`, data);
   }
-
-  // private replaceIllegalCharactersInGuid(guid: string) {
-  //   if (guid.startsWith('"')) {
-  //     return guid.replace(/"/g, '');
-  //   }
-  //   return guid;
-  // }
-
-  // private async updateLatestUserRegistrations(cancel?: Promise<any>) {
-  //   const user = await this.loginService.getLoggedInUser();
-  //   if (user.isLoggedIn) {
-  //     const userSettings = await this.userSettingService.getUserSettings();
-  //     return this.observationService.updateObservationsForCurrentUser(userSettings.appMode, user.user, userSettings.language, 0, cancel);
-  //   }
-  // }
 }

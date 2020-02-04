@@ -33,7 +33,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isOpen = false;
     this.isTracking = false;
-    this.showLog$ = this.userSettingService.userSettingObservable$.pipe(map((us) =>
+    this.showLog$ = this.userSettingService.userSetting$.pipe(map((us) =>
       us.featureToggeGpsDebug), distinctUntilChanged(), enterZone(this.ngZone));
     this.showLog$.pipe(switchMap((show) => show ? this.geoPositionService.log$.pipe(
       scan((acc: GeoPositionLog[], val) => {

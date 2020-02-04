@@ -64,7 +64,7 @@ export class SnowTempLayerModalPage implements OnInit {
     if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
       this.reg.request.SnowProfile2.SnowTemp.Layers.splice(this.index, 0, this.layer);
     }
-    await this.registrationService.saveRegistration(this.reg);
+    await this.registrationService.saveRegistrationAsync(this.reg);
 
     if (gotoIndex !== undefined) {
       this.index = this.index + (gotoIndex);
@@ -76,7 +76,7 @@ export class SnowTempLayerModalPage implements OnInit {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistration(this.initialRegistrationState);
+    await this.registrationService.saveRegistrationAsync(this.initialRegistrationState);
     this.modalController.dismiss();
   }
 
@@ -85,7 +85,7 @@ export class SnowTempLayerModalPage implements OnInit {
       && this.reg.request.SnowProfile2.SnowTemp.Layers && this.reg.request.SnowProfile2.SnowTemp.Layers.length > 0) {
       this.reg.request.SnowProfile2.SnowTemp.Layers =
         this.reg.request.SnowProfile2.SnowTemp.Layers.filter((l) => l !== this.layer);
-      await this.registrationService.saveRegistration(this.reg);
+      await this.registrationService.saveRegistrationAsync(this.reg);
     }
     this.modalController.dismiss({ delete: true });
   }
