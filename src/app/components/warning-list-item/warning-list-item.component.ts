@@ -11,7 +11,7 @@ import { WarningGroupFavouriteToggleComponent } from '../warning-group-favourite
 import { AnalyticService } from '../../modules/analytics/services/analytic.service';
 import { AppEventCategory } from '../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../modules/analytics/enums/app-event-action.enum';
-import { from, of, Subject } from 'rxjs';
+import { from, of, Subject, timer } from 'rxjs';
 import { map, catchError, takeUntil, debounceTime, switchMap } from 'rxjs/operators';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 
@@ -49,6 +49,15 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
           this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
         });
       });
+    this.ngDestroy$.subscribe(() => {
+      this.close();
+    });
+  }
+
+  close() {
+    if (this.itemSlide) {
+      this.itemSlide.close();
+    }
   }
 
   onDrag(event: Event) {
@@ -72,48 +81,48 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
 
   toggleFavourite() {
     this.favouriteToggle.toggle();
-    setTimeout(() => {
+    timer(2000).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       if (this.itemSlide) {
         this.itemSlide.close();
       }
-    }, 2000);
+    });
   }
 
   itemSwiped() {
     this.toggleFavourite();
   }
 
-  async getUrl(group: WarningGroup, day: string = '') {
+  getUrl(group: WarningGroup, day: string = ''): string {
     if (group.url) {
       return group.url;
     } else {
-      const url = settings.services.warning[GeoHazard[group.key.geoHazard]]
+      const url: string = settings.services.warning[GeoHazard[group.key.geoHazard]]
         .webUrl[LangKey[this.userSettingService.currentSettings.language]];
       if (url) {
-        return url
+        return encodeURI(url
           .replace('{regionName}', group.key.groupName)
           .replace('{regionId}', group.key.groupId)
-          .replace('{day}', day);
+          .replace('{day}', day));
       } else {
         return null;
       }
     }
   }
 
-  async navigateToWeb(event: Event, group: WarningGroup) {
+  navigateToWeb(event: Event, group: WarningGroup) {
     event.preventDefault();
-    const url = await this.getUrl(group);
+    const url = this.getUrl(group);
     if (url) {
       this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
       this.externalLinkService.openExternalLink(url);
     }
   }
 
-  async navigateToWebByDay(event: Event, group: WarningGroup, day: number) {
+  navigateToWebByDay(event: Event, group: WarningGroup, day: number) {
     event.preventDefault();
     const dateString = moment().startOf('day').add(day, 'days')
       .format(settings.services.warning.dateFormat);
-    const url = await this.getUrl(group, dateString);
+    const url = this.getUrl(group, dateString);
     if (url) {
       this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
       this.externalLinkService.openExternalLink(url);

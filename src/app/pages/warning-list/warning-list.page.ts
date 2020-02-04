@@ -1,11 +1,12 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChildren, QueryList } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
-import { Observable, BehaviorSubject, Subscription, combineLatest } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { map, switchMap, tap, takeUntil } from 'rxjs/operators';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { WarningListItemComponent } from '../../components/warning-list-item/warning-list-item.component';
 
 type SelectedTab = 'inMapView' | 'all' | 'favourites';
 
@@ -14,13 +15,12 @@ type SelectedTab = 'inMapView' | 'all' | 'favourites';
   templateUrl: './warning-list.page.html',
   styleUrls: ['./warning-list.page.scss'],
 })
-export class WarningListPage implements OnInit, OnDestroy {
+export class WarningListPage implements OnInit {
   selectedTab: SelectedTab;
   warningGroups: IVirtualScrollItem<WarningGroup>[] = [];
   private segmentPageSubject: BehaviorSubject<SelectedTab>;
   private segmentPageObservable: Observable<SelectedTab>;
-  private subscription: Subscription;
-  private titleSubscription: Subscription;
+  private ngDestroySubject: Subject<void>;
   refreshFunc = this.refresh.bind(this);
   title = 'WARNING_LIST.TITLE';
   noFavourites = false;
@@ -28,6 +28,9 @@ export class WarningListPage implements OnInit, OnDestroy {
   trackByFunc = this.trackByInternal.bind(this);
   loaded = false;
   myFooterFn = this.footerFn.bind(this);
+
+  @ViewChildren(WarningListItemComponent) warningListItems: QueryList<WarningListItemComponent>;
+
 
   get showNoFavourites() {
     return this.selectedTab === 'favourites' && this.noFavourites;
@@ -53,18 +56,30 @@ export class WarningListPage implements OnInit, OnDestroy {
     this.segmentPageObservable = this.segmentPageSubject.asObservable();
   }
 
+  closeAllOpen() {
+    if (this.warningListItems) {
+      for (const item of this.warningListItems.toArray()) {
+        item.close();
+      }
+    }
+  }
+
   ionViewDidEnter() {
+    this.ngDestroySubject = new Subject();
     this.loaded = false;
-    this.subscription = combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazard$])
+    combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazard$])
       .pipe(
         switchMap(([segment, currentGeoHazard]) => this.getWarningGroupObservable(segment, currentGeoHazard)),
+        takeUntil(this.ngDestroySubject)
       ).subscribe((warningGroups) => {
         this.ngZone.run(() => {
+          this.closeAllOpen();
           this.warningGroups = warningGroups;
           this.hackToShowVirtualScrollItemsThatIsNotVisibleAtFirstLoad();
         });
       });
-    this.titleSubscription = combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazard$])
+    combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazard$])
+      .pipe(takeUntil(this.ngDestroySubject))
       .subscribe(([selectedTab, currentGeoHazard]) => {
         this.ngZone.run(() => {
           this.setTitle(selectedTab, currentGeoHazard);
@@ -202,19 +217,12 @@ export class WarningListPage implements OnInit, OnDestroy {
   }
 
   ionViewWillLeave() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-    if (this.titleSubscription) {
-      this.titleSubscription.unsubscribe();
-    }
+    this.closeAllOpen();
+    this.ngDestroySubject.next();
+    this.ngDestroySubject.complete();
   }
 
   onSegmentChange() {
     this.segmentPageSubject.next(this.selectedTab);
-  }
-
-  ngOnDestroy(): void {
-
   }
 }
