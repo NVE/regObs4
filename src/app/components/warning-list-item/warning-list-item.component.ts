@@ -40,7 +40,6 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
 
   ngOnInit() {
     this.dragSubject.pipe(
-      debounceTime(10),
       takeUntil(this.ngDestroy$),
       switchMap(() => this.getOpenAmount())).subscribe((openAmount) => {
         const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
