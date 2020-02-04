@@ -51,6 +51,12 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
       });
   }
 
+  close() {
+    if (this.itemSlide) {
+      this.itemSlide.close();
+    }
+  }
+
   onDrag(event: Event) {
     this.dragSubject.next();
     // const slider: IonItemSliding = event.target as unknown as IonItemSliding;
