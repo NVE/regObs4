@@ -49,6 +49,9 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
           this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
         });
       });
+    this.ngDestroy$.subscribe(() => {
+      this.close();
+    });
   }
 
   close() {
