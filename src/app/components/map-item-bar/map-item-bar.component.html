@@ -26,15 +26,8 @@
             [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
           <ion-label>{{name}}</ion-label>
         </div>
-        <div class="card-icon-item" *ngIf="!hasNoStars">
-          <div class="card-icon-item-icon stars">
-            <ng-container *ngFor="let star of stars">
-              <svg-icon *ngIf="star.full" src="/assets/icon/star-selected.svg"
-                [svgStyle]="{'width.px':12, 'height.px':12  }"></svg-icon>
-              <svg-icon *ngIf="!star.full" src="/assets/icon/star-empty.svg"
-                [svgStyle]="{'width.px':12, 'height.px':12  }"></svg-icon>
-            </ng-container>
-          </div>
+        <div class="card-icon-item">
+          <app-competence [competenceLevel]="competenceLevel"></app-competence>
         </div>
       </ion-col>
     </ion-row>

@@ -25,6 +25,9 @@
     "SELECT_GEO_HAZARD": "Select geo hazard",
     "VIEW_WARNINGS": "View warnings from varsom.no"
   },
+  "COMPETENCE": {
+    "UNKNOWN": "Competence unknown"
+  },
   "DATA_LOAD": {
     "DATA": "Loading...",
     "LOADING": "Loading"

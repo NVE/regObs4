@@ -25,6 +25,9 @@
     "SELECT_GEO_HAZARD": "Velg naturfare",
     "VIEW_WARNINGS": "Se varsler fra varsom.no"
   },
+  "COMPETENCE": {
+    "UNKNOWN": "Ukjent kompetanse"
+  },
   "DATA_LOAD": {
     "DATA": "Laster data...",
     "LOADING": "Laster"

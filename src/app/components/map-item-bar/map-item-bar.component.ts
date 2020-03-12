@@ -12,6 +12,7 @@ import { settings } from '../../../settings';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { take } from 'rxjs/operators';
+import { getStarCount } from '../../core/helpers/competence-helper';
 
 @Component({
   selector: 'app-map-item-bar',
@@ -29,8 +30,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   geoHazard: GeoHazard;
   imageUrls: string[] = [];
   masl: number;
-  stars: { full: boolean }[] = [];
-  hasNoStars: boolean;
+  competenceLevel: number;
 
   private subscription: Subscription;
   private _isVisible: Subject<boolean>;
@@ -80,11 +80,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.topHeader = item.DtObsTime;
       this.title = this.getTitle(item);
       this.name = item.Observer.NickName;
-      this.stars = [];
-      for (let i = 0; i < 5; i++) {
-        this.stars.push({ full: (item.Observer.CompetenceLevelName || '')[i] === '*' });
-      }
-      this.hasNoStars = !this.stars.some((x) => x.full);
+      this.competenceLevel = getStarCount(item.Observer.CompetenceLevelName);
       this.geoHazard = item.GeoHazardTID;
       this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
       this.setDistanceAndType(item);
