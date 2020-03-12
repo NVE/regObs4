@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { IonFab, NavController } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { Observable, from, forkJoin } from 'rxjs';
 import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
@@ -10,6 +10,8 @@ import { IRegistration } from '../../../registration/models/registration.model';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { LangKey } from '../../../../core/models/langKey';
 import { RegistrationService } from '../../../registration/services/registration.service';
+import { map, concatMap } from 'rxjs/operators';
+import { enterZone } from '../../../../core/helpers/observable-helper';
 
 @Component({
   selector: 'app-add-menu',
@@ -19,15 +21,10 @@ import { RegistrationService } from '../../../registration/services/registration
 export class AddMenuComponent implements OnInit, OnDestroy {
   @ViewChild('menuFab', { static: false }) menuFab: IonFab;
 
-  private subscriptions: Subscription[] = [];
-
-  drafts: IRegistration[] = [];
-  draftDates: string[] = [];
-  geoHazards: GeoHazard[] = [];
-  showTrip = false;
-  tripStarted = false;
-  langKey = LangKey.nb;
-  LangKey = LangKey;
+  drafts$: Observable<{ id: string, geoHazard: GeoHazard, date: string }[]>;
+  geoHazardInfo$: Observable<{ geoHazards: GeoHazard[], showSpace: boolean, showTrip: boolean }>;
+  tripStarted$: Observable<boolean>;
+  showSpace$: Observable<boolean>;
 
   constructor(
     private registrationService: RegistrationService,
@@ -40,40 +37,25 @@ export class AddMenuComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.subscriptions.push(this.userSettingService.currentGeoHazard$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.showTrip = val.indexOf(GeoHazard.Snow) >= 0;
-        this.geoHazards = val;
-      });
-    }));
-    this.subscriptions.push(this.userSettingService.language$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.langKey = val;
-      });
-    }));
-    this.subscriptions.push(this.registrationService.drafts$.subscribe(async (val) => {
-      this.ngZone.run(() => {
-        this.drafts = val;
-      });
-      const dates = [];
-      for (const d of this.drafts) {
-        dates.push(await this.getDate(d.changed));
-      }
-      this.ngZone.run(() => {
-        this.draftDates = dates;
-      });
-    }));
-    this.subscriptions.push(this.tripLoggerService.getLegacyTripAsObservable().subscribe((val) => {
-      this.ngZone.run(() => {
-        this.tripStarted = !!val;
-      });
-    }));
+    this.geoHazardInfo$ = this.userSettingService.userSetting$
+      .pipe(
+        map((us) => ({
+          geoHazards: us.currentGeoHazard,
+          showSpace: us.language !== LangKey.nb,
+          showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0,
+        })),
+        enterZone(this.ngZone)
+      );
+    this.drafts$ = this.registrationService.drafts$.pipe(concatMap((drafts) =>
+      forkJoin(drafts.map((draft) => this.convertDraftToDate(draft)))), enterZone(this.ngZone));
+    this.tripStarted$ = this.tripLoggerService.getLegacyTripAsObservable().pipe(map((val) => !!val), enterZone(this.ngZone));
+  }
+
+  private convertDraftToDate(draft: IRegistration): Observable<{ id: string, geoHazard: GeoHazard, date: string }> {
+    return from(this.getDate(draft.changed)).pipe(map((date) => ({ id: draft.id, geoHazard: draft.geoHazard, date })));
   }
 
   ngOnDestroy(): void {
-    for (const subscription of this.subscriptions) {
-      subscription.unsubscribe();
-    }
   }
 
   getName(geoHazard: GeoHazard) {
@@ -85,29 +67,27 @@ export class AddMenuComponent implements OnInit, OnDestroy {
   }
 
   closeAndNavigate(url: string) {
-    this.navController.navigateForward(url);
     setTimeout(() => {
-      this.menuFab.close();
-    }, 20);
+      if (this.menuFab) {
+        this.menuFab.close();
+      }
+    }, 0);
+    this.navController.navigateForward(url);
   }
 
   createRegistration(geoHazard: GeoHazard) {
     this.closeAndNavigate(`registration/new/${geoHazard}`);
   }
 
-  editRegistration(draft: IRegistration) {
-    this.closeAndNavigate(`registration/edit/${draft.id}`);
+  editRegistration(id: string) {
+    this.closeAndNavigate(`registration/edit/${id}`);
   }
 
   closeMenu() {
     this.menuFab.close();
   }
 
-  startOrStopTrip() {
-    if (!this.tripStarted) {
-      this.closeAndNavigate('legacy-trip');
-    } else {
-      this.tripLoggerService.stopLegacyTrip();
-    }
+  startOrStopTrip(tripStarted: boolean) {
+    return tripStarted ? this.tripLoggerService.stopLegacyTrip() : this.closeAndNavigate('legacy-trip');
   }
 }

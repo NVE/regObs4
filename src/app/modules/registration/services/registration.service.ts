@@ -101,6 +101,9 @@ export class RegistrationService {
         if (reg.request[key] && this.isEmpty(reg, registrationTid)) {
           reg.request[key] = undefined;
         }
+        if (reg.request[key] !== undefined && registrationTid === RegistrationTid.WaterLevel2) {
+          this.cleanupWaterLevelMeasurements(reg);
+        }
       }
       if (!reg.request.DtObsTime) {
         reg.request.DtObsTime = moment().toISOString(true);
@@ -108,6 +111,21 @@ export class RegistrationService {
       await this.cleanupImages(reg.request);
     }
     return reg;
+  }
+
+  private cleanupWaterLevelMeasurements(reg: IRegistration) {
+    if (reg && reg.request && reg.request.WaterLevel2 && reg.request.WaterLevel2.WaterLevelMeasurement) {
+      for (const measurement of reg.request.WaterLevel2.WaterLevelMeasurement) {
+        if (!IsEmptyHelper.isEmpty(measurement) && !measurement.DtMeasurementTime) {
+          // Setting to now if DtMeasurementTime is empty
+          measurement.DtMeasurementTime = moment().toISOString(true);
+        }
+      }
+      // Remove array if no elements
+      if (IsEmptyHelper.isEmpty(reg.request.WaterLevel2.WaterLevelMeasurement)) {
+        reg.request.WaterLevel2.WaterLevelMeasurement = undefined;
+      }
+    }
   }
 
   private async cleanupImages(request: RegobsApiModels.CreateRegistrationRequestDto) {

@@ -1,6 +1,6 @@
 <ng-container *ngIf="showMapCenter">
   <img class="center-icon" src="../../../assets/icon/center.png">
-  <div class="map-center-info" (click)="copyToClipboard()" text-nowrap>
+  <div class="map-center-info ion-text-nowrap" (click)="copyToClipboard()">
     <ion-grid>
       <ng-container *ngIf="!isLoading; else loading">
         <ion-row>
