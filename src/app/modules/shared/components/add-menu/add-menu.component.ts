@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { IonFab, NavController } from '@ionic/angular';
-import { Observable, from, forkJoin } from 'rxjs';
+import { Observable, from, forkJoin, combineLatest, of } from 'rxjs';
 import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
@@ -10,8 +10,11 @@ import { IRegistration } from '../../../registration/models/registration.model';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { LangKey } from '../../../../core/models/langKey';
 import { RegistrationService } from '../../../registration/services/registration.service';
-import { map, concatMap } from 'rxjs/operators';
+import { map, concatMap, tap, switchMap, combineAll } from 'rxjs/operators';
 import { enterZone } from '../../../../core/helpers/observable-helper';
+import { LoggingService } from '../../services/logging/logging.service';
+
+const DEBUG_TAG = 'AddMenuComponent';
 
 @Component({
   selector: 'app-add-menu',
@@ -34,6 +37,7 @@ export class AddMenuComponent implements OnInit, OnDestroy {
     private tripLoggerService: TripLoggerService,
     private userSettingService: UserSettingService,
     private geoHelperService: GeoHelperService,
+    private loggingService: LoggingService
   ) { }
 
   ngOnInit() {
@@ -46,8 +50,11 @@ export class AddMenuComponent implements OnInit, OnDestroy {
         })),
         enterZone(this.ngZone)
       );
-    this.drafts$ = this.registrationService.drafts$.pipe(concatMap((drafts) =>
-      forkJoin(drafts.map((draft) => this.convertDraftToDate(draft)))), enterZone(this.ngZone));
+    this.drafts$ = this.registrationService.drafts$.pipe(
+      tap((drafts) => this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)),
+      switchMap((drafts) => drafts.length > 0 ? combineLatest(drafts.map((draft) => this.convertDraftToDate(draft))) : of([])),
+      tap((drafts) => this.loggingService.debug('Converted drafts has changed to', DEBUG_TAG, drafts)),
+      enterZone(this.ngZone));
     this.tripStarted$ = this.tripLoggerService.getLegacyTripAsObservable().pipe(map((val) => !!val), enterZone(this.ngZone));
   }
 
