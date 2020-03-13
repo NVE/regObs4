@@ -11,7 +11,7 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { LangKey } from '../../../../core/models/langKey';
 import { RegistrationService } from '../../../registration/services/registration.service';
 import { map, concatMap, tap, switchMap, combineAll } from 'rxjs/operators';
-import { enterZone } from '../../../../core/helpers/observable-helper';
+import { enterZone, setObservableTimeout } from '../../../../core/helpers/observable-helper';
 import { LoggingService } from '../../services/logging/logging.service';
 
 const DEBUG_TAG = 'AddMenuComponent';
@@ -48,13 +48,13 @@ export class AddMenuComponent implements OnInit, OnDestroy {
           showSpace: us.language !== LangKey.nb,
           showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0,
         })),
-        enterZone(this.ngZone)
+        setObservableTimeout()
       );
     this.drafts$ = this.registrationService.drafts$.pipe(
       tap((drafts) => this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)),
       switchMap((drafts) => drafts.length > 0 ? combineLatest(drafts.map((draft) => this.convertDraftToDate(draft))) : of([])),
       tap((drafts) => this.loggingService.debug('Converted drafts has changed to', DEBUG_TAG, drafts)),
-      enterZone(this.ngZone));
+      setObservableTimeout());
     this.tripStarted$ = this.tripLoggerService.getLegacyTripAsObservable().pipe(map((val) => !!val), enterZone(this.ngZone));
   }
 
