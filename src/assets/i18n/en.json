@@ -663,6 +663,12 @@
     "NO_OPACITY": "Solid",
     "STEEPNESS_COLOR_INFO": "Colors gives the steepness in terrain",
     "STEEPNESS_MAP_DESCRIPTION": "Steepness map",
+    "STEEPNESS_MAP_DISCLAMER": "The map is automatically produced and may contain errors. There may be steep terrain, which is not displayed. Be critical when using the map, which is meant for trip planning only.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Short runouts (50% of the avalanches reach farther)",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medium runouts (25% of the avalanches reach farther)",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Long runouts (5% of the avalanches reach farther)\nSome avalanches may have longer runouts that displayed as runout zones in the map.",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Steepness map with runout zones",
+    "STEEPNESS_OUTLET_MAP_DISCLAMER": "The map is automatically produced and may contain errors. There may be steep terrain and runout zones, which are not displayed. Be critical when using the map, which is meant for trip planning only.",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice"
   },
   "TABS": {

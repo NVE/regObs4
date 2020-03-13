@@ -663,6 +663,12 @@
     "NO_OPACITY": "Heldekkende",
     "STEEPNESS_COLOR_INFO": "Fargene gir brattheten i terrenget",
     "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
+    "STEEPNESS_MAP_DISCLAMER": "Kartet er automatisk generert og kan inneholde feil. Det kan være bratte heng som ikke vises. Vær kritisk til det ved bruk. Kartet er kun ment som hjelp til turplanlegging.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skred stopper innen denne grensen)",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skredene går lenger)",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skredene går lenger)\nNoen skred kan ha utløp som ikke er vist på kartet.",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Bratthetskart med utløp",
+    "STEEPNESS_OUTLET_MAP_DISCLAMER": "Kartet er automatisk generert og kan inneholde feil. Det kan være bratte heng og utløp som ikke vises. Vær kritisk til det ved bruk. Kartet er <i>kun</i> ment som hjelp til turplanlegging.",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart"
   },
   "TABS": {
