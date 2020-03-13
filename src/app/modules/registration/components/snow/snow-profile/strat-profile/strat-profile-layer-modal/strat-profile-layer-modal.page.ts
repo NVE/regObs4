@@ -54,6 +54,7 @@ export class StratProfileLayerModalPage implements OnInit {
     { id: .001, text: '.1' },
     { id: .003, text: '.3' },
     { id: .005, text: '.5' },
+    { id: .007, text: '.7' },
     { id: .01, text: '1' },
     { id: .015, text: '1.5' },
     { id: .02, text: '2' },
