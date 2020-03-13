@@ -31,6 +31,13 @@ import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/
     SteepnessOutletLegendComponent,
     SteepnessCommonLegendComponent
   ],
+  entryComponents: [
+    SteepnessLegendComponent,
+    FloodzonesLegendComponent,
+    ClayzonesLegendComponent,
+    WeakenediceLegendComponent,
+    SteepnessOutletLegendComponent
+  ],
   exports: [
     SideMenuComponent,
   ]
