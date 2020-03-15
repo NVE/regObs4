@@ -1,0 +1,13 @@
+<ion-header>
+  <ion-toolbar appHeaderColor mode="ios">
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">{{ 'DIALOGS.OK' | translate }}</ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'SUPPORT_MAP.ABOUT' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding" [innerHTML]="'SUPPORT_MAP.INFO_PAGE' | translate">
+
+</ion-content>

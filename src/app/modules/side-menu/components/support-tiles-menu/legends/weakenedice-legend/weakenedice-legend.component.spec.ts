@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WeakenediceLegendComponent } from './weakenedice-legend.component';
+import { SharedModule } from '../../../../../shared/shared.module';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { CustomTranslateLoader } from '../../../../../../custom-translate.loader';
 
 describe('WeakenediceLegendComponent', () => {
   let component: WeakenediceLegendComponent;
@@ -8,9 +11,15 @@ describe('WeakenediceLegendComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WeakenediceLegendComponent ]
+      imports: [SharedModule, TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useClass: CustomTranslateLoader
+        }
+      })],
+      declarations: [WeakenediceLegendComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

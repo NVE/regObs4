@@ -1,4 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { SupportMapInfoPage } from '../../../../../map/pages/support-map-info/support-map-info.page';
 
 @Component({
   selector: 'app-steepness-common-legend',
@@ -7,4 +9,14 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SteepnessCommonLegendComponent {
+
+  constructor(private modalController: ModalController) {
+  }
+
+  async openAboutMapsModal() {
+    const modalInfoPage = await this.modalController.create({
+      component: SupportMapInfoPage
+    });
+    modalInfoPage.present();
+  }
 }

@@ -620,6 +620,7 @@
     "SKIP_START": "Hopp over"
   },
   "SUPPORT_MAP": {
+    "ABOUT": "Om kartene",
     "CAUTION_AREA": "Aktsomhetsområde",
     "CLAY_DANGER_ZONE": "Faregrad for kvikkleiresone",
     "CLAY_LEGEND_TEXT_1": "Kvikkleirepunkt (SVV)",
@@ -656,11 +657,13 @@
     "ICE_LEGEND_TEXT_6": "Rørgate",
     "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
     "ICE_MAP_DESCRIPTION": "Støttekartet viser deler av vassdrag som oppfører seg uforutsigbart gjennom vinteren grunnet reguleringer for kraftproduksjon",
+    "INFO_PAGE": "<h1>Om kart med bratthet og utløp</h1>\nKartene er automatisk generert og kan inneholde feil. Det kan eksistere bratte heng som høydemodellen ikke plukker opp og derfor ikke vises på kartet.\nNoen skred kan gå lenger enn det som er markert som utløpsområde i kartet.\n\n<h2>Hvilke hensyn må tas?</h2>\nTilpass egen risiko ved å velge hvor, når og hvordan du ferdes.  Varsom Regobs er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger.\n \n<h2>Når er det trygt?</h2>\nAll ferdsel i snødekt skredterreng er forbundet med risiko. \n\n<h2>Lære mer?</h2>\nDu kan lære mer på skredkurs og Snøskredskolen på Varsom.no.",
     "IN_DEGREES": "I grader er de",
     "LOW": "Lav",
     "MARITINE_BORDER": "Marin grense flate",
     "MIDDLE": "Middels",
     "NO_OPACITY": "Heldekkende",
+    "READ_MORE": "Les mer om støttekart",
     "STEEPNESS_COLOR_INFO": "Fargene gir brattheten i terrenget",
     "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
     "STEEPNESS_MAP_DISCLAMER": "Kartet er automatisk generert og kan inneholde feil. Det kan være bratte heng som ikke vises. Vær kritisk til det ved bruk. Kartet er <i>kun</i> ment som hjelp til turplanlegging.",

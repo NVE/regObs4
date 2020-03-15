@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SteepnessOutletLegendComponent } from './steepness-outlet-legend.component';
+import { SharedModule } from '../../../../../shared/shared.module';
+import { SteepnessCommonLegendComponent } from '../steepness-common-legend/steepness-common-legend.component';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { CustomTranslateLoader } from '../../../../../../custom-translate.loader';
 
 describe('SteepnessOutletLegendComponent', () => {
   let component: SteepnessOutletLegendComponent;
@@ -8,9 +12,15 @@ describe('SteepnessOutletLegendComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SteepnessOutletLegendComponent ]
+      imports: [SharedModule, TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useClass: CustomTranslateLoader
+        }
+      })],
+      declarations: [SteepnessCommonLegendComponent, SteepnessOutletLegendComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
