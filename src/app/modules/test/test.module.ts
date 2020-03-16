@@ -15,15 +15,16 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
     BrowserModule,
     NoopAnimationsModule,
     HttpClientTestingModule,
-    IonicModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useClass: CustomTranslateLoader
       }
     }),
-    AngularSvgIconModule.forRoot(),
     SharedModule,
+  ],
+  exports: [
+    SharedModule
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: initTranslateService, deps: [TranslateService], multi: true },

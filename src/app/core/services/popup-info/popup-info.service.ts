@@ -25,7 +25,21 @@ export class PopupInfoService {
         'POPUP_DISCLAMER.OK_I_UNDERSTAND'
       )),
       switchMap((translations) => from(this.showAlert(translations.header, translations.message, translations.okText))),
-      switchMap(() => of(this.saveInfoAboutObservationsRecievedTimestampimeStamp())));
+      switchMap(() => of(this.saveInfoAboutObservationsRecievedTimestamp())));
+  }
+
+  checkSupportMapInfoPopup(delayMs = 2000) {
+    return this.userSettingService.userSetting$.pipe(
+      take(1),
+      delay(delayMs),
+      filter((us) => this.checkLastTimestamp(settings.popupDisclamerRefreshTimeMs, us.infoAboutSupportMapsRecievedTimestamp)),
+      switchMap(() => this.geAlertTranslations(
+        'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.HEADER',
+        'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.MESSAGE',
+        'POPUP_DISCLAMER.OK_I_UNDERSTAND'
+      )),
+      switchMap((translations) => from(this.showAlert(translations.header, translations.message, translations.okText))),
+      switchMap(() => of(this.saveInfoAboutSupportMapsRecievedTimestamp())));
   }
 
   checkLastTimestamp(limitMs: number, lastTimestamp?: number, showWhenNull = true): boolean {
@@ -55,10 +69,17 @@ export class PopupInfoService {
       })));
   }
 
-  saveInfoAboutObservationsRecievedTimestampimeStamp() {
+  saveInfoAboutObservationsRecievedTimestamp() {
     this.userSettingService.currentSettings = {
       ...this.userSettingService.currentSettings,
       infoAboutObservationsRecievedTimestamp: moment().unix()
-    }
+    };
+  }
+
+  saveInfoAboutSupportMapsRecievedTimestamp() {
+    this.userSettingService.currentSettings = {
+      ...this.userSettingService.currentSettings,
+      infoAboutSupportMapsRecievedTimestamp: moment().unix()
+    };
   }
 }
