@@ -18,7 +18,7 @@ import { Zip } from '@ionic-native/zip/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import { ErrorHandler, Provider, forwardRef, LOCALE_ID } from '@angular/core';
+import { ErrorHandler, Provider, forwardRef, LOCALE_ID, APP_INITIALIZER } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
@@ -46,72 +46,76 @@ import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { RegistrationRepositoryService } from './modules/registration/services/registration-repository/registration-repository.service';
+import { initTranslateService } from './custom-translate.loader';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
-    provide: HTTP_INTERCEPTORS,
-    useExisting: forwardRef(() => ApiInterceptor),
-    multi: true
+  provide: HTTP_INTERCEPTORS,
+  useExisting: forwardRef(() => ApiInterceptor),
+  multi: true
 };
 
 export class DynamicLocaleId extends String {
-    constructor(protected service: TranslateService) {
-        super('');
-    }
-    toString() {
-        return this.service.currentLang;
-    }
+  constructor(protected service: TranslateService) {
+    super('');
+  }
+  toString() {
+    return this.service.currentLang;
+  }
 }
 
 export const APP_PROVIDERS = [
-    StatusBar,
-    SplashScreen,
-    StartWizardGuard,
-    LoginGuard,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    {
-        provide: LOCALE_ID,
-        useClass: DynamicLocaleId,
-        deps: [TranslateService]
-    },
-    Geolocation,
-    Deeplinks,
-    BackgroundFetch,
-    // BackgroundGeolocation,
-    File,
-    AndroidPermissions,
-    Zip,
-    Clipboard,
-    Camera,
-    InAppBrowser,
-    SafariViewController,
-    HTTP,
-    WebView,
-    ApiInterceptor,
-    EmailComposer,
-    Keyboard,
-    SQLite,
-    SocialSharing,
-    Network,
-    ScreenOrientation,
-    Diagnostic,
-    API_INTERCEPTOR_PROVIDER,
-    { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
-    { provide: ErrorHandler, useClass: AppErrorHandler },
-    { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
+  StatusBar,
+  SplashScreen,
+  StartWizardGuard,
+  LoginGuard,
+  { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+  {
+    provide: LOCALE_ID,
+    useClass: DynamicLocaleId,
+    deps: [TranslateService]
+  },
+  Geolocation,
+  Deeplinks,
+  BackgroundFetch,
+  // BackgroundGeolocation,
+  File,
+  AndroidPermissions,
+  Zip,
+  Clipboard,
+  Camera,
+  InAppBrowser,
+  SafariViewController,
+  HTTP,
+  WebView,
+  ApiInterceptor,
+  EmailComposer,
+  Keyboard,
+  SQLite,
+  SocialSharing,
+  Network,
+  ScreenOrientation,
+  Diagnostic,
+  API_INTERCEPTOR_PROVIDER,
+  { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
+  { provide: ErrorHandler, useClass: AppErrorHandler },
+  { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
 
-    // Interface implementations
-    { provide: 'OnReset', useExisting: DataMarshallService, multi: true },
-    { provide: 'OnReset', useExisting: UserSettingService, multi: true },
-    { provide: 'OnReset', useExisting: OfflineMapService, multi: true },
-    { provide: 'OnReset', useExisting: RegistrationRepositoryService, multi: true },
+  // APP initializers
+  { provide: APP_INITIALIZER, useFactory: initTranslateService, deps: [TranslateService], multi: true },
 
-    // Custom native/web providers
-    {
-        provide: BackgroundGeolocationService, useClass: window.hasOwnProperty('cordova') ?
-            BackgroundGeolocationNativeService : BackgroundGeolocationWebService
-    },
-    {
-        provide: BackgroundDownloadService, useClass: window.hasOwnProperty('cordova') ?
-            BackgroundDownloadNativeService : BackgroundDownloadWebService
-    }
+  // Interface implementations
+  { provide: 'OnReset', useExisting: DataMarshallService, multi: true },
+  { provide: 'OnReset', useExisting: UserSettingService, multi: true },
+  { provide: 'OnReset', useExisting: OfflineMapService, multi: true },
+  { provide: 'OnReset', useExisting: RegistrationRepositoryService, multi: true },
+
+  // Custom native/web providers
+  {
+    provide: BackgroundGeolocationService, useClass: window.hasOwnProperty('cordova') ?
+      BackgroundGeolocationNativeService : BackgroundGeolocationWebService
+  },
+  {
+    provide: BackgroundDownloadService, useClass: window.hasOwnProperty('cordova') ?
+      BackgroundDownloadNativeService : BackgroundDownloadWebService
+  }
 ];

@@ -4,18 +4,11 @@ import { ConsoleLoggingService } from '../shared/services/logging/console-loggin
 import { SharedModule } from '../shared/shared.module';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { CustomTranslateLoader } from '../../custom-translate.loader';
+import { CustomTranslateLoader, initTranslateService } from '../../custom-translate.loader';
 import { IonicModule } from '@ionic/angular';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-
-export function initTranslateService(translateService: TranslateService) {
-  return () => {
-    translateService.addLangs(['nb', 'en']);
-    translateService.setDefaultLang('nb');
-  };
-}
 
 @NgModule({
   imports: [

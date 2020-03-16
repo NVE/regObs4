@@ -1,14 +1,11 @@
-import { Component, NgZone } from '@angular/core';
+import { Component } from '@angular/core';
 import { Platform, NavController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
-import { LangKey } from './core/models/langKey';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
-// import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
 import { Observable } from 'rxjs';
@@ -35,7 +32,6 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private translate: TranslateService,
     private userSettings: UserSettingService,
     private navController: NavController,
     private deeplinks: Deeplinks,
@@ -56,8 +52,6 @@ export class AppComponent {
 
   initializeApp() {
     registerLocaleData(localeNb);
-    this.translate.addLangs(['nb', 'en']);
-    this.translate.setDefaultLang('nb');
     this.platform.ready().then(async () => {
       if (this.platform.isAndroidOrIos()) {
         this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
@@ -66,7 +60,6 @@ export class AppComponent {
       await this.dbHelperService.init();
       await this.userSettings.userSettingsReadyAsync();
       this.loggingService.configureLogging(this.userSettings.currentSettings.appMode);
-      this.translate.use(LangKey[this.userSettings.currentSettings.language]);
       this.statusBar.styleLightContent();
       this.statusBar.backgroundColorByHexString('#99044962');
       // this.statusBar.overlaysWebView(this.platform.is('ios'));
