@@ -2,9 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CompetenceComponent } from './competence.component';
 import { SharedModule } from '../../modules/shared/shared.module';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { CustomTranslateLoader } from '../../custom-translate.loader';
-import { HttpClientModule } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+
+import { TestModule } from '../../modules/test/test.module';
 
 describe('CompetenceComponent', () => {
   let component: CompetenceComponent;
@@ -22,17 +22,11 @@ describe('CompetenceComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useClass: CustomTranslateLoader
-        }
-      })]
-    })
-      .compileComponents();
+      imports: [TestModule]
+    }).compileComponents();
     translate = TestBed.get(TranslateService);
-    translate.addLangs(['nb', 'en']);
-    translate.setDefaultLang('nb');
+    // translate.addLangs(['nb', 'en']);
+    // translate.setDefaultLang('nb');
   }));
 
   beforeEach(() => {

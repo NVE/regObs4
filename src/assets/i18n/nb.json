@@ -183,6 +183,13 @@
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
     "LOCATION_DENIED_MESSAGE": "Kan ikke vise posisjonen din i kartet uten app-godkjenning for bruk av lokasjon."
   },
+  "POPUP_DISCLAMER": {
+    "ABOUT_OBSERVATIONS": {
+      "HEADER": "Om observasjoner",
+      "MESSAGE": "Bruk observasjonene på eget ansvar, de produseres av brukerne av Regobs og foreligger «som den er». NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.\nSe observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
+    },
+    "OK_I_UNDERSTAND": "OK, jeg skjønner"
+  },
   "REGISTRATION": {
     "ADD_IMAGES": "Legg til bilder",
     "ADD_WEB_URL": {

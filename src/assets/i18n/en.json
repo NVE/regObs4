@@ -183,6 +183,13 @@
     "LOCATION_DENIED_HEADER": "Permission to location denied",
     "LOCATION_DENIED_MESSAGE": "Cannot show location in map without permission."
   },
+  "POPUP_DISCLAMER": {
+    "ABOUT_OBSERVATIONS": {
+      "HEADER": "About observations",
+      "MESSAGE": "Use observations at your own risk, produced by the users  and is available «as is».\nNVE makes no warranties for errors, omissions and assessments produced by the users.\nConsider the observations in light of the competence of the observer, as shown by stars next to the name."
+    },
+    "OK_I_UNDERSTAND": "OK, I understand"
+  },
   "REGISTRATION": {
     "ADD_IMAGES": "Add images",
     "ADD_WEB_URL": {
