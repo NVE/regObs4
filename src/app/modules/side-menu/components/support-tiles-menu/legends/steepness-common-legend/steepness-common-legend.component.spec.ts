@@ -1,9 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SteepnessCommonLegendComponent } from './steepness-common-legend.component';
-import { SharedModule } from '../../../../../shared/shared.module';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { CustomTranslateLoader } from '../../../../../../custom-translate.loader';
+import { TestModule } from '../../../../../test/test.module';
 
 describe('SteepnessCommonLegendComponent', () => {
   let component: SteepnessCommonLegendComponent;
@@ -11,12 +8,7 @@ describe('SteepnessCommonLegendComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useClass: CustomTranslateLoader
-        }
-      })],
+      imports: [TestModule],
       declarations: [SteepnessCommonLegendComponent]
     })
       .compileComponents();

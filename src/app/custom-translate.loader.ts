@@ -1,5 +1,12 @@
-import { TranslateLoader } from '@ngx-translate/core';
+import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { Observable, from } from 'rxjs';
+
+export function initTranslateService(translateService: TranslateService) {
+  return () => {
+    translateService.addLangs(['nb', 'en']);
+    translateService.setDefaultLang('nb');
+  };
+}
 
 export class CustomTranslateLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<any> {
