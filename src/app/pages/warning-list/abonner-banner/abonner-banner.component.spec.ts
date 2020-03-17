@@ -1,12 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
-
 import { AbonnerBannerComponent } from './abonner-banner.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { ConsoleLoggingService } from '../../../modules/shared/services/logging/console-logging.service';
+import { TestModule } from '../../../modules/test/test.module';
 
 describe('AbonnerBannerComponent', () => {
   let component: AbonnerBannerComponent;
@@ -15,11 +11,10 @@ describe('AbonnerBannerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [AbonnerBannerComponent],
-      imports: [IonicModule.forRoot(), TranslateModule.forRoot()],
+      imports: [TestModule],
       providers: [
         InAppBrowser,
-        SafariViewController,
-        { provide: LoggingService, useClass: ConsoleLoggingService }
+        SafariViewController
       ]
     }).compileComponents();
 

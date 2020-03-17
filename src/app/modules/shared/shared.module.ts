@@ -24,6 +24,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { OfflineImageComponent } from './components/offline-image/offline-image.component';
 import { MapModule } from '../map/map.module';
 import { CompetenceComponent } from '../../components/competence/competence.component';
+import { BrowserModule } from '@angular/platform-browser';
 @NgModule({
   imports: [
     CommonModule,
@@ -33,7 +34,7 @@ import { CompetenceComponent } from '../../components/competence/competence.comp
     AngularSvgIconModule,
     TranslateModule,
     RouterModule,
-    MapModule,
+    MapModule
   ],
   declarations: [
     ShadowCssDirective,

@@ -1,9 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ClayzonesLegendComponent } from './clayzones-legend.component';
-import { SharedModule } from '../../../../../shared/shared.module';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { CustomTranslateLoader } from '../../../../../../custom-translate.loader';
+import { TestModule } from '../../../../../test/test.module';
 
 describe('ClayzonesLegendComponent', () => {
   let component: ClayzonesLegendComponent;
@@ -11,12 +8,7 @@ describe('ClayzonesLegendComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useClass: CustomTranslateLoader
-        }
-      })],
+      imports: [TestModule],
       declarations: [ClayzonesLegendComponent]
     })
       .compileComponents();

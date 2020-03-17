@@ -1,8 +1,10 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SupportTile } from '../../../../core/models/support-tile.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
-import { Observable } from 'rxjs';
+import { setObservableTimeout, NgDestoryBase } from '../../../../core/helpers/observable-helper';
+import { Observable, Subscription } from 'rxjs';
+import { PopupInfoService } from '../../../../core/services/popup-info/popup-info.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-support-tiles-menu',
@@ -10,29 +12,9 @@ import { Observable } from 'rxjs';
   styleUrls: ['./support-tiles-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SupportTilesMenuComponent {
+export class SupportTilesMenuComponent extends NgDestoryBase {
 
-  // @ViewChild('steepness', { static: true }) steepness;
-  // @ViewChild('weakenedice', { static: true }) weakenedice;
-  // @ViewChild('floodzoones', { static: true }) floodzoones;
-  // @ViewChild('clayzones', { static: true }) clayzones;
-
-  // get currentGeoHazards(): GeoHazard[] {
-  //   return this.userSetting ? this.userSetting.currentGeoHazard : [];
-  // }
-  // get supportTiles(): Array<SupportTile> {
-  //   const tiles = settings.map.tiles.supportTiles;
-  //   if (this.userSetting) {
-  //     for (const tile of (this.userSetting.supportTiles || [])) {
-  //       const supportTile = tiles.find((x) => x.name === tile.name);
-  //       if (supportTile) {
-  //         supportTile.enabled = tile.enabled;
-  //         supportTile.opacity = tile.opacity;
-  //       }
-  //     }
-  //   }
-  //   return tiles;
-  // }
+  private checkSupportMapSubscription: Subscription;
 
   opacityValues = [
     { name: 'SUPPORT_MAP.NO_OPACITY', value: 1.0 },
@@ -41,22 +23,10 @@ export class SupportTilesMenuComponent {
     { name: '75%', value: 0.25 },
   ];
 
-  // get legends() {
-  //   return {
-  //     steepness: this.steepness,
-  //     weakenedice: this.weakenedice,
-  //     floodzoones: this.floodzoones,
-  //     clayzones: this.clayzones,
-  //   };
-  // }
-
-  // getGeoHazardName(geoHazard: GeoHazard) {
-  //   return GeoHazard[geoHazard];
-  // }
-
   readonly supportTiles$: Observable<SupportTile[]>;
 
-  constructor(private userSettingService: UserSettingService) {
+  constructor(private userSettingService: UserSettingService, private popupInfoService: PopupInfoService) {
+    super();
     this.supportTiles$ = this.userSettingService.supportTiles$.pipe(setObservableTimeout());
   }
 
@@ -69,6 +39,15 @@ export class SupportTilesMenuComponent {
       ...this.userSettingService.currentSettings,
       supportTiles: this.checkForDisableSupportTiles(supportTile, this.addOrUpdateSupportTileSettings(supportTile, this.userSettingService.currentSettings.supportTiles)),
     };
+  }
+
+  checkForInfoPopup(enabled: boolean) {
+    if (this.checkSupportMapSubscription && !this.checkSupportMapSubscription.closed) {
+      this.checkSupportMapSubscription.unsubscribe();
+    }
+    if (enabled) {
+      this.checkSupportMapSubscription = this.popupInfoService.checkSupportMapInfoPopup().pipe(takeUntil(this.ngDestroy$)).subscribe();
+    }
   }
 
   addOrUpdateSupportTileSettings(supportTile: SupportTile, currentSupportTileSettings: { name: string; enabled: boolean; opacity: number }[]): { name: string; enabled: boolean; opacity: number }[] {
