@@ -1,0 +1,717 @@
+{
+  "ABONNER_BANNER": {
+    "LINK_TEXT": "Gå till abonner.varsom.no",
+    "TITLE": "Varsom Abonner"
+  },
+  "ADD_MENU": {
+    "DRAFT": "Utkast",
+    "NEW_OBSERVATION": "Ny",
+    "NEW_TRIP": "Ny tur"
+  },
+  "ALERT": {
+    "CANCEL": "Avbryt",
+    "DEFAULT_HEADER": "Hoppsan!",
+    "FINE": "Okej",
+    "NO_THANKS": "Nej tack",
+    "OK": "Ok",
+    "PULL_TO_REFRESH": "Dra för att uppdatera ...",
+    "UNDO": "Ångra",
+    "WARNING": "Varning"
+  },
+  "COACH_MARKS": {
+    "ADD_OBSERVATIONS": "Lägg till egna observationer",
+    "SELECT_GEO_HAZARD": "Välj en naturfara",
+    "VIEW_WARNINGS": "Se varningar från lavinprognoser.se"
+  },
+  "COMPETENCE": {
+    "UNKNOWN": "Okänd kompetens"
+  },
+  "DATA_LOAD": {
+    "DATA": "Läser data...",
+    "LOADING": "Läser"
+  },
+  "DATE": "Datum",
+  "DAYS": {
+    "SHORT": {
+      "0": "Sön",
+      "1": "Mån",
+      "2": "Tis",
+      "3": "Ons",
+      "4": "Tor",
+      "5": "Fre",
+      "6": "Lör"
+    }
+  },
+  "DIALOGS": {
+    "ARE_YOU_SURE": "Är du säker?",
+    "CANCEL": "Avbryt",
+    "COMMENT": "Kommentar",
+    "CONFIRM": "Bekräfta",
+    "DELETE": "Radera",
+    "NEXT": "Nästa",
+    "NO": "Nej",
+    "OF": "Av",
+    "OK": "Ok",
+    "OK_BACK": "Okej, tillbaka till översikten",
+    "PREVIOUS": "Föregående",
+    "RESET": "Återställ",
+    "YES": "Ja"
+  },
+  "DIRECTION": {
+    "E": "O",
+    "N": "N",
+    "NE": "NO",
+    "NW": "NV",
+    "S": "S",
+    "SE": "SO",
+    "SW": "SV",
+    "W": "V"
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Registrerar tur"
+  },
+  "GEO_HAZARDS": {
+    "DIRT": "Jord",
+    "ICE": "Is",
+    "SNOW": "Snö",
+    "WATER": "Vatten"
+  },
+  "HELP": {
+    "TITLE": "Hjälp"
+  },
+  "LEGAL_TERMS": {
+    "HEADER": "Om data i Varsom Regobs",
+    "LINE_1": "Använd varningar, observationer och kartor på egen risk. Det kan finnas fel och information kan saknas.",
+    "LINE_2": "En prognos är ett planeringsverktyg och kan skilja sig från den faktiska situationen. Gör alltid din egen utvärdering. Förhållandena kan vara komplexa och skiljer sig från prognosen.",
+    "LINE_3": "Data på Regobs har producerats av användarna och är tillgängliga «som de är». Datan kan innehålla fel och utelämnanden. NVE lämnar inga garanterar för fel och utelämnanden i uppgifterna.",
+    "OK": "Okej, jag accepterar",
+    "TERMS": "Data på Regobs har producerats av användarna och är tillgängliga \"som de är\". Datan kan innehålla fel och utelämnanden. NVE garanterar inte informationens aktualitet och tar inget ansvar för att data kan ge felaktig eller vilseledande information. Antalet stjärnor (1-5) beskriver kompetensnivån för leverantören av observationer. Utan stjärnor är kompetensen okänd eller låg."
+  },
+  "LOGIN": {
+    "CHANGE_PASSWORD": "Ändra lösenord",
+    "CREATE_USER": "Skapa ny användare",
+    "EMAIL": "E-post",
+    "FORGOT_PASSWORD": "Glömt lösenord",
+    "IS_LOGGING_IN": "Loggar in ...",
+    "LOGGED_IN_AS": "Inloggad som",
+    "LOGIN": "Logga in",
+    "LOGOUT": "Logga ut",
+    "MY_PROFILE": "Min profil",
+    "PASSWORD": "lösenord",
+    "SERVICE_UNAVAILABLE": "Fel vid anslutning till tjänsten. Har du mobilnätverk? Vänta några minuter och försök igen.",
+    "TITLE": "Logga in",
+    "UNAUTHORIZED": "Fel användarnamn eller lösenord. Försök igen.",
+    "UNKNOWN_ERROR": "Fel vid inloggning. Meddelande från servern:"
+  },
+  "MAP_CENTER_INFO": {
+    "ABOVE_SEA_LEVEL": "möh",
+    "COPIED_TO_CLIPBOARD": "Kopierade till urklipp",
+    "EAST_SHORT": "O",
+    "NORTH_SHORT": "N"
+  },
+  "MAP_ITEM_BAR": {
+    "AWAY": "Iväg",
+    "OBSERVATION": "Observation"
+  },
+  "MAP_SEARCH": {
+    "SEARCH_HISTORY_HEADER": "Senaste sökningar",
+    "SEARCH_TEXT": "Sök efter plats"
+  },
+  "MENU": {
+    "ABOUT_REGOBS": "Om data i Regobs",
+    "AND": "och",
+    "CONTACT_REGOBS": "Kontakta oss",
+    "CONTACT_REGOBS_ERROR": "Rapportera fel",
+    "CONTACT_SUBJECT": "Kontakta oss från appen",
+    "DAYS_BACK": "Dagar tillbaka",
+    "ERROR_REPORT_DESCRIPTION": "Vänligen beskriv ditt problem nedan. Om du har skärmdumpar vänligen bifoga.",
+    "ERROR_REPORT_SUBJECT": "Felrapport från",
+    "GENERAL": "Generell",
+    "HIDE_OBSERVATIONS": "Dölj observationer",
+    "LAST_UPDATED": "Senast uppdaterad",
+    "MAP": "Karta",
+    "MAP_LEGENDS": "Teckenförklaring för karta",
+    "MAP_SETTINGS": "Kartval",
+    "MAP_SETTINGS_FOR": "Kartval för",
+    "OPACITY": "Genomskinlighet",
+    "OTHER": "Övrig",
+    "SHOW": "Visa",
+    "SHOW_MAP_CENTER": "Visa kartcenter",
+    "SHOW_OBSERVATIONS": "Se observationer",
+    "SHOW_TRIPS": "Visa turer",
+    "START_WIZARD": "Starta guiden",
+    "SUPPORT_MAP_CREDITS": "Supportkartor tillhandahållna av",
+    "TILES": {
+      "ARC_GIS": "ArcGIS (värld)",
+      "KARTVERKET": "Kartverket (Norge)",
+      "ONLY_KARTVERKET": "Kartverket (bara Norge)",
+      "OPEN_TOPO": "OpenTopo (värld)"
+    },
+    "TIME_FRAME": "Period",
+    "TODAYS_OBSERVATIONS": "Endast dagens observationer",
+    "TOPO_MAP_CREDITS": "Topografisk karta tillhandahållen av",
+    "UPDATE_OBSERVATIONS": "Uppdaterad",
+    "USER_SETTINGS": "Valbar",
+    "WEEKS_BACK": "Veckor tillbaka"
+  },
+  "MONTHS": {
+    "SHORT_LIST": "jan, feb, mar, apr, maj, jun, jul, aug, sep, okt, nov, dec"
+  },
+  "MY_OBSERVATIONS": {
+    "LOADING_MORE": "Laddar fler observationer ...",
+    "MY_SENT_OBSERVATIONS": "Mina inskickade observationer",
+    "NO_OBSERVATIONS": "Dela dina observationer!",
+    "NO_OBSERVATIONS_TEXT": "Här hittar du observationer du själv har gjort. Dela dina observationer, bilder och bedömningar med andra på Varsom Regobs.",
+    "SENT_SUBTITLE": "Dessa observationer lämnas in och lagras i Regobs.",
+    "TITLE": "Mina observationer"
+  },
+  "OBSERVATION_LIST": {
+    "ALL_OBSERVATIONS": "Alla observationer",
+    "FORMS": "Formulär",
+    "GO_TO_OBSERVATION": "Gå till observation",
+    "IN_MAP_VIEW": "Observationer i kartavsnittet",
+    "NO_OBSERVATIONS": "Inga observationer",
+    "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
+    "OBSERVATIONS": "Observationer"
+  },
+  "OFFLINE_MAP": {
+    "TITLE": "Offline kartor"
+  },
+  "REGISTRATION": {
+    "ADD_IMAGES": "Lägg till foton",
+    "ADD_WEB_URL": {
+      "TITLE": "Lägg till en webblänk",
+      "URL": "Url"
+    },
+    "BACK_TO_OBSERVATION": "Tillbaka till min observation",
+    "CONFIRM_RESET": "Är du säker på att du vill återställa alla fält?",
+    "DANGER_OBS": {
+      "AREA": "Område",
+      "COMMENT": "Kommentar",
+      "COMMENT_PLACEHOLDER": "Här kan du ge ytterligare beskrivning av tecken på lavinfara",
+      "DESCRIPTION": "Beskrivning",
+      "FOR_MUNICIPAL": "För kommunen",
+      "FOR_REGION": "Län / prognosområde",
+      "GENERAL_ON_MOUNTAIN": "Generellt på fjället",
+      "IN_THE_VALLEY_OR_FJORD": "I dalen / fjorden",
+      "MANY_WATER_NEARBY": "Massor av vatten i närheten",
+      "NEW_DANGER_OBS": "Nytt tecken på lavinfara",
+      "NO_DAMAGE_SIGN": "Inga tecken på lavinfara observerade",
+      "ON_THIS_MOUNTAIN_SIDE": "På den här fjällsidan",
+      "ON_THIS_PLACE": "På den här platsen",
+      "ON_THIS_SIDE_OF_THE_WATER": "På denna sida av sjön",
+      "ON_THIS_WATER": "På denna sjö",
+      "RIGHT_HERE": "Just här",
+      "TITLE": "Tecken på lavinfara"
+    },
+    "DELETE": "Radera observation",
+    "DELETE_CONFIRM": "Är du säker?",
+    "DIRT": {
+      "LAND_SLIDE_OBS": {
+        "AVAL_TRIGGER": "Jordskredet utlöst av",
+        "DAMAGE_EXTENT": "Skada omfattning",
+        "DESTRUCTIVE_SIZE": "Storlek",
+        "DIRT_ACTIVITY_INFLUENCED": "Vad påverkades?",
+        "DIRT_FORECAST_ACCURATE": "Är publicerad fara korrekt?",
+        "DT_LAND_SLIDE_TIME": "När inträffade jordskredet tidigast",
+        "DT_LAND_SLIDE_TIME_END": "När inträffade jordskredet senast",
+        "END_POSITION": "Slutpunkt",
+        "IN_MAP": "i kartan",
+        "LANDSLIDE_TYPE": "Typ av jordskred",
+        "POSITION": "Position för jordskred",
+        "SET_LANDSLIDE_POSITION": "Ange position för jordskredet",
+        "START_POSITION": "Startpunkt",
+        "TITLE": "Jordskredsobservation"
+      }
+    },
+    "DRAFTS": "Utkast",
+    "DRAFTS_DESCRIPTION": "Dessa observationer är under arbete och inte skickas in.",
+    "EMAIL": {
+      "BODY": "Hej! Jag har problem med att skicka in den här registreringen. Kan du hjälpa mig?",
+      "SUBJECT": "Registreringen misslyckades"
+    },
+    "FAILED": {
+      "EDIT_OBSERVATION": "Redigera observation",
+      "LOGGED": "Problemet har registrerats.",
+      "PROBLEM": "Det har uppstått ett problem med din registrering",
+      "PROBLEM_HELP_TEXT": "Observationer med fel lagras i din telefon och när problemet är löst kan du skicka in det igen.",
+      "REFERENCE": "Referens",
+      "SEND_EMAIL": "Skicka till oss via e-post",
+      "SUBTITLE": "Det saknade nätverk eller registreringen tog för lång tid. Vi försöker igen efter ett tag och hoppas att nätverket har förbättrats.",
+      "TITLE": "Registreringen misslyckades"
+    },
+    "GENERAL_COMMENT": {
+      "ADD_NOTES_HEADER": "Anteckningar från observationen",
+      "ADD_PICTURE": "Lägg till en bild",
+      "CHOOSE_FROM_LIBRARY": "Välj från biblioteket",
+      "COMMENT_PLACEHOLDER": "Du kan beskriva mer här",
+      "COMMENT_TITLE": "Beskrivning",
+      "DESCRIPTION": "Du kan ladda upp foton från det område du har observerat eller foton på andra saker som du tycker är relevant.",
+      "SUBTITLE": "Observationsbilder",
+      "TAKE_NEW_PHOTO": "Ta ett nytt foto",
+      "TITLE": "Anteckningar"
+    },
+    "GROUP": {
+      "SUBTITLE": "Dela observation med",
+      "TITLE": "Dela med gruppen"
+    },
+    "ICE": {
+      "ICE_COVER": {
+        "ICE_CAPACITY": "Bärighet",
+        "ICE_COVER": "Istäckning",
+        "ICE_COVER_BEFORE": "Istäckningsgrad efter observation",
+        "ICE_SKATEABILITY": "Åkbarhet",
+        "TITLE": "Istäckningsgrad"
+      },
+      "ICE_THICKNESS": {
+        "ADD_ICE_LAYER": "Lägg till islager",
+        "ADD_ICE_LAYER_TITLE": "Islagrets tjocklek",
+        "DRY_SNOW_BEFORE_DRILL": "Snö före borrning (cm)",
+        "ICE_HEIGHT_AFTER_INPUT": "Ytvattnets tjocklek",
+        "ICE_HEIGHT_AFTER_NO": "Höjd från ytan till vattnet i borrhålet",
+        "ICE_HEIGHT_AFTER_TOGGLE": "Ytvatten efter borrning",
+        "ICE_HEIGHT_BEFORE_INPUT": "Ytvattnets tjocklek",
+        "ICE_HEIGHT_BEFORE_TOGGLE": "Ytvatten före borrning",
+        "ICE_LAYER": "Islag",
+        "ICE_LAYER_THICKNESS": "Islagrets tjocklek (cm)",
+        "ICE_THICKNESS_SUM": "Total istjocklek (cm)",
+        "ICE_TYPE": "Istyp",
+        "SLUSH_SNOW_BEFORE_DRILL": "Slasksnö före borrning (cm)",
+        "TITLE": "Istjocklek"
+      }
+    },
+    "IMAGES": "Bilder",
+    "IMAGE_DESCRIPTION": "Bildbeskrivning",
+    "IMAGE_DESCRIPTION_PLACEHOLDER": "Lägg till en beskrivning till bilden",
+    "INCIDENT": {
+      "ACTIVITY": "Aktivitet",
+      "COMMENT": "Beskrivning",
+      "COMMENT_PLACEHOLDER": "Varför hände det? Gick det bra? Kan situationen ha undvikits?",
+      "DAMAGE_EXTENT": "Skada omfattning",
+      "IMAGE_PLACEHOLDER": "+ Lägg till bildbeskrivning",
+      "TITLE": "Olycka / tillbud"
+    },
+    "IN_CM": "I centimeter",
+    "IN_FULL_CM": "I hela centimeter",
+    "NONE": "Ej vald",
+    "OBS_LOCATION": {
+      "CONFIRM_TEXT": "Bekräfta position",
+      "CURRENT_LOCATION": "Aktuella position",
+      "HIDE_DETAILS": "Dölj detaljer",
+      "SHOW_DETAILS": "Visa detaljer",
+      "TITLE": "Observerad plats"
+    },
+    "OVERVIEW": {
+      "DATE_AND_TIME": "Datum och tid",
+      "MY_OBSERVATION": "Min observation",
+      "SHARE_WITH_GROUP": "Dela med gruppen",
+      "TITLE": "Observation"
+    },
+    "REQUIRED_FIELDS_MISSING": "Vissa fält är ogiltiga. Vill du återställa formuläret och gå tillbaka?",
+    "RESEND": "Försök skicka igen",
+    "RESET": "Återställ",
+    "SAVED_DESCRIPTION": "Dessa synkroniseras när du har nätverksanslutning.",
+    "SAVED_ON_PHONE": "Sparad på telefon",
+    "SAVE_ALERT": {
+      "HEADER": "Spara som utkast?",
+      "MESSAGE": "Du håller på att lämna registreringen utan att skicka in. Vill du spara som utkast?",
+      "NO": "Nej, kassera",
+      "YES": "Ja, spara"
+    },
+    "SEND": "Skicka in",
+    "SET_DAMAGE_LOCATION": {
+      "CONFIRM_TEXT": "Bekräfta skadeplats",
+      "TITLE": "Skadeplats"
+    },
+    "SET_TIME": {
+      "CONFIRM": "Bekräfta datum och tid",
+      "HEADER": "Vilken tid observerade du?",
+      "NOW": "Nu",
+      "TITLE": "Tid"
+    },
+    "SNOW": {
+      "AVALANCHE_ACTIVITY": {
+        "ADD_NEW": "Lägg till ny lavinaktivitet",
+        "COMMENT_PLACEHOLDER": "Ytterligare kommentar",
+        "DATE_WARNING": "Datum skiljer sig från observationstiden",
+        "DURING_THE_DAY": "Under dagen",
+        "ESTIMATED_TIME": "Uppskattad tidsram",
+        "HOW_MANY_AVALANCHES": "Antal laviner",
+        "NO_AVALANCHE_ACTIVITY": "Ingen lavinaktivitet observerad",
+        "TITLE": "Lavinaktivitet",
+        "UNKNOWN_NUMBER": "Okänt antal"
+      },
+      "AVALANCHE_EVALUATION": {
+        "AVALANCHE_DANGER": "Lavinfara",
+        "AVALANCHE_DEVELOPMENT": "Utveckling",
+        "AVALANCHE_DEVEOPMENT_PLACEHOLDER": "Utveckling av lavinfara",
+        "COMMENT": "Kommentar till publicerad lavinfara",
+        "EVALUATION": "Bedömning",
+        "EVALUATION_PLACEHOLDER": "Bedömning av lavinfara",
+        "FORECAST_CORRECT": "Bedömning av publicerad lavinfara på lavinprognoser.se",
+        "TITLE": "Bedömning av lavinfara"
+      },
+      "AVALANCHE_OBS": {
+        "AVALANCHE_TRIGGER": "Lavinen utlöst av",
+        "AVALANCHE_TYPE": "Lavintyp",
+        "AVAL_CAUSE": "Svagt lager",
+        "DESTRUCTIVE_SIZE": "Storlek",
+        "FRACTURE_HEIGTH": "Brottkant höjd(cm)",
+        "FRACTURE_WIDTH": "Brottkant bredd (m)",
+        "INCIDENT_DESCRIPTION": "Olycka eller skada",
+        "INCIDENT_PLACEHOLDER": "Orsakade lavinen till skada, olycka eller nästan olycka? Varför och hur hände det? Kunde situationen ha undvikits?",
+        "POSITION": "Lavinens position ",
+        "SET_AVALANCHE_POSITION": "Välj lavinens position",
+        "TERRAIN_START_ZONE": "Terräng i startzonen",
+        "TIME": "Tid för lavinen (obligatoriskt)",
+        "TITLE": "Lavintillbud",
+        "TRAJECTORY_NAME": "Namn på lavinbana",
+        "VALID_EXPOSITION": "Väderstreck"
+      },
+      "AVALANCHE_PROBLEM": {
+        "ADD_NEW": "Lägg till ett nytt lavinproblem",
+        "ALL": "Alla",
+        "AVALANCHE_DESTRUCTIVE_SIZE": "Förväntad lavinstorlek",
+        "AVALANCHE_PROBABILITY": "Möjlighet för lavin",
+        "AVALANCHE_PROPAGATION_HEADER": "Utbredning av lavinproblemet",
+        "AVALANCHE_TRIGGER_PROBABILITY": "Lavinproblemets känslighet",
+        "AVALANCHE_TYPE": "Lavintyp",
+        "AVAL_PROBABILITY": "Sannolikhet för lavin",
+        "BOTTOM": "Botten",
+        "EXPOSED_HEIGHT1": "Höjd",
+        "EXPOSED_HEIGHT2": "Lägsta höjd",
+        "EXPOSED_HEIGHT_COMBO": "Exponerad höjd",
+        "MIDDLE": "Mitten",
+        "NO_WEAK_LAYERS": "Det finns inga svaga lager",
+        "PROPAGATION": "Utbredning",
+        "TITLE": "Lavinproblem",
+        "TOP": "Toppen",
+        "UNKNOWN_TYPE": "Okänd lavinorsak",
+        "VALID_EXPOSITION": "Vädersträck",
+        "WEAK_LAYER": "Svagt lager",
+        "WEAK_LAYER_DEPTH": "Djup svagt lager"
+      },
+      "COMPRESSION_TEST": {
+        "ADD_NEW": "Lägg till ett nytt stabilitetstest",
+        "DISTANCE_FROM_TOP": "Avstånd från toppen (cm)",
+        "FRACTURE_TYPE": "Brottyp",
+        "STABILITY_EVAL": "Stabilitet",
+        "TAPS_FRACTURE": "Antal slag",
+        "TEST_TYPE": "Testtyp",
+        "TITLE": "Stabilitetstest"
+      },
+      "SNOW_PROFILE": {
+        "COMPRESSION_TEST": {
+          "ATTACHED": "bifogad till profilen",
+          "EMPTY": "Nej",
+          "INCLUDE_IN_SNOW_PROFILE": "Inkludera i snöprofil",
+          "MULTIPLE_TESTS": "tester",
+          "SINGLE_TEST": "test",
+          "TITLE": "Tester"
+        },
+        "GENERATING_PREVIEW": "Genererar förhandsvisning ..",
+        "IS_PROFILE_TO_GROUND": "Är profilen grävd till marken?",
+        "PREVIEW": "Förhandsvisning",
+        "PREVIEW_ERROR": "Det gick inte att generera förhandsvisning",
+        "PREVIEW_ITEM": "Se snöprofil",
+        "SNOW_DENSITY": {
+          "CYLINDER": "Cylinder",
+          "CYLINDER_DIAMETER": "Cylinderdiameter (cm)",
+          "CYLINDER_METHOD": "Använd cylinder",
+          "DENSITY": "Densitet (kg/m³)",
+          "EMPTY": "Ingen densitetsprofil",
+          "HEIGHT": "Höjd (cm)",
+          "LAYER": "Lager",
+          "METHOD": "Metod",
+          "MULTIPLE_LAYERS": "densitetsprofiler",
+          "ONE_LAYER": "densitetsprofiler tillagd",
+          "TARE_WEIGHT": "Vikt av påse och rör (g)",
+          "TITLE": "Densitet",
+          "WATER_EQUIVALENT": "Vattenekvivalent ",
+          "WEIGHT": "Vikt (g)"
+        },
+        "SNOW_PROFILE_HELP_TEXT": "Tyvärr stödjer inte den aktuella versionen av Varsom Regobs-appen formulär för snöprofiler. Men du kan ladda upp en bild av en handritad profil eller en export från en tredjepartsapp som Ullr Labs Avalanche. På regobs.no kan du senare uppdatera observationen med de formulär som finns där.",
+        "SNOW_TEMP": {
+          "ADD_LAYER_BOTTOM": "Lägg till en ny punkt",
+          "DEPTH": "Djup (cm)",
+          "EMPTY": "Inga temperaturpunkter observerade",
+          "MULTIPLE_LAYERS": "observerade temperaturpunkter",
+          "ONE_LAYER": "observerad temperaturpunkt",
+          "POINT": "Temperaturpunkt",
+          "TEMPERATURE": "Temperatur (°C)",
+          "TITLE": "Temperaturprofil"
+        },
+        "STRAT_PROFILE": {
+          "ADD_LAYER": "Lägg till lager",
+          "ADD_LAYER_BOTTOM": "Lägg till lager i botten",
+          "ADD_LAYER_TOP": "Lägg till lager i överst",
+          "CRITICAL_LAYER": "Kritiskt lager",
+          "EMPTY": "Inga lager",
+          "FROM_OTHER_PROFILE": "Lager från annan profil",
+          "GRAIN_FORM": "Kristallform",
+          "GRAIN_FROM_SECONDARY": "Under­ordnad kristallform",
+          "HARDNESS": "Hårdhet",
+          "HARDNESS_BOTTOM": "Under hårdhet",
+          "LAYER": "Lager",
+          "MAX_GRAIN_SIZE": "Max kristallstorlek (mm)",
+          "MULTIPLE_LAYERS": "Lager",
+          "NO_PROFILES_FOUND": "Inga lager från andra profiler hittades",
+          "ONE_LAYER": "Lager",
+          "OTHER_PROFILE_DESCRIPTION": "Du kan välja att kopiera lagren från en tidigare registrerad profil under de senaste 14 dagarna inom 100 km.",
+          "OTHER_PROFILE_ITEM_TEXT": "Hämta lager från annan profil",
+          "SHOW_LESS": "Visa mindre alternativ",
+          "SHOW_MORE": "Visa fler alternativ",
+          "SIZE": "Kristallstorlek (mm)",
+          "THICKNESS": "Tjocklek (cm)",
+          "TITLE": "Lager",
+          "TOTAL_THICKNESS": "Total tjocklek",
+          "WETNESS": "Fuktighet"
+        },
+        "SUBFORMS": "Underformulär ",
+        "SUPERIOR": "Huvudsaklig",
+        "TITLE": "Snöprofil"
+      },
+      "SNOW_SURFACE": {
+        "COMMENT_HEADER": "Beskriv snöytan",
+        "COMMENT_PLACEHOLDER": "Hur är snöfördelningen generellt i förhållande till höjd och väderstäck? Finns det betydande skillnader i regionen?",
+        "HEIGHT_LIMIT_LAYERED_SNOW": "Höjd där skiktad snö börjar (möh)",
+        "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "För snö utan farligt lager",
+        "NEW_SNOW_DEPTH": "Djup nysnö(cm)",
+        "NEW_SNOW_LINE": "Gräns nysnö (möh)",
+        "SNOW_DEPTH": "Snödjup (cm)",
+        "SNOW_DRIFT": "Snödrev",
+        "SNOW_LINE": "Snögräns (möh)",
+        "SNOW_SURFACE": "Hårdhet snöytan",
+        "SURFACE_WATER_CONTENT_REG": "Ytfuktighet",
+        "TITLE": "Snötäcke"
+      },
+      "WEATHER": {
+        "AIR_TEMPERATURE": "Lufttemperatur (C)",
+        "AIR_TEMPERATURE_PLACEHOLDER": "Kan anges med två decimaler",
+        "CLOUD_COVER": "Molntäcke (%)",
+        "COMMENT_HEADER": "Beskriv vädret",
+        "COMMENT_PLACEHOLDER": "Hur har vädret varit det senaste dygnet? Exempel: Har det varit snöfall? Har det skett temperaturförändringar? På vilken höjd har fryspunkten varit?",
+        "FROM_EAST": "O - från ost",
+        "FROM_NORTH": "N - från nord",
+        "FROM_NORTH_WEST": "NV - från nordväst",
+        "FROM_NOTRH_EAST": "No - från nordost",
+        "FROM_SOUTH": "S - från syd",
+        "FROM_SOUTH_EAST": "So - från sydost",
+        "FROM_SOUTH_WEST": "SV - från sydväst",
+        "FROM_WEST": "V - från väst",
+        "NOT_GIVEN": "Ej angivet",
+        "ONLY_FULL_PERCENTAGE": "Endast hela procent",
+        "PRECIPITATION": "Nederbördtyp",
+        "TITLE": "Väder",
+        "WIND_DIRECTION": "Vindriktning",
+        "WIND_SPEED": "Vindhastighet (m/s)"
+      }
+    },
+    "SUMMARY": "Sammanfattning",
+    "WATER": {
+      "DAMAGE": {
+        "ADD_DAMAGE_LOCATION": "Lägg till plats för skadan",
+        "CAN_YOU_SEE_DAMAGE": "Ser du några skador?",
+        "COMMENT": "Beskriv skadan",
+        "COMMENT_PLACEHOLDER": "Här kan du beskriva skadorna ytterligare",
+        "IMAGE_OF_DAMAGES": "Bilder på skadan/skadorna",
+        "TITLE": "Skador",
+        "WHAT_IS_DAMAGED": "Vad är skadat?",
+        "WHERE_IS_DAMAGE_LOCATION": "Var är platsen för skadan?"
+      },
+      "WATER_LEVEL": {
+        "ADD_NEW": "Lägg till ny",
+        "ADD_PICTURE": "Lägg till bild av",
+        "CAN_YOU_SEE_WATER": "Har vattnet lämnat sin normala väg?",
+        "DESCRIBE": "Beskriv",
+        "DESCRIBE_HEIGHT": "Beskriv höjden",
+        "DESCRIBE_SITUATION": "Hur skulle du beskriva situationen?",
+        "DT_REQUIRED_TEXT": "Tid är obligatorisk!",
+        "HOW_DO_YOU_READ": "Hur läser du vattennivån?",
+        "MARKED_WITH": "Jag har markerat vattennivån med",
+        "MARKING": "Märkning",
+        "MARKING_PLURAL": "Märkningar",
+        "MARKING_REFERENCE": "Jag har markerat vattennivån i / på",
+        "MEASURE_PLURAL": "Mätningar",
+        "MEASURING": "Mätning",
+        "MEASURING_TOOL": "Ange mätinstrumentet här",
+        "OBSERVATION_TIMING": "Vad registrerar du?",
+        "REGISTRATION_METHOD": "Hur registrerar du?",
+        "RELATIVE": "Höjden är relativt till",
+        "TITLE": "vattennivån",
+        "WATER_LEVEL_METERS": "Vattennivån i meter",
+        "WATER_MARKING": "Vattennivån märkning",
+        "WATER_MEASUREMENT": "Vattennivån mätning"
+      }
+    }
+  },
+  "SETTINGS": {
+    "APPMODE": "Appläge",
+    "APP_VERSION": "App version",
+    "CONFIRM_RESET": "Är du säker på att du vill återställa appen?",
+    "COUNTRY": "Land",
+    "DROPDOWNS_FAILED": "Det gick inte att uppdatera rullgardinsmenyerna. Kontrollera om du har ett nätverk och försök igen senare.",
+    "DROPDOWNS_UPDATED": "Rullgardinsmenyerna uppdaterade!",
+    "EMAIL_RECEIPT": "Kvitto via e-post",
+    "HIDE_ADVANCED": "Dölj avancerade inställningar",
+    "LANGUAGE": "Språk",
+    "NORWAY_ONLY": "Endast i Norge",
+    "NUMBER_OF_TILES_IN_CACHE": "Maximalt antal kartblad offline",
+    "RESET": "Återställ app",
+    "RESETTING": "App återställs. Vänta ...",
+    "SHOW_ADVANCED": "Visa avancerade inställningar",
+    "SIZE_OF_TILES_CACHE": "Kartbladstorlek lagrad på telefonen",
+    "TILES_CACHE_SIZE": "Antal kartblad lagrade på telefonen",
+    "TITLE": "Inställningar",
+    "UPDATE_DROPDOWNS": "Uppdatera rullgardinsmenyer",
+    "USE_IN_WORLD": "Utanför Norge",
+    "USE_RETINA_MAP": "Använd högupplösta kartor"
+  },
+  "START_WIZARD": {
+    "CHOOSE_COUNTRY": {
+      "HEADER": "Välj land",
+      "NO_NORWAY": "Nej, även i andra länder",
+      "SUBTITLE": "Ska du använda appen bara i Norge?",
+      "YES_NORWAY": "Ja, bara i Norge"
+    },
+    "CHOOSE_INTEREST": "Välj intresseområde",
+    "CHOOSE_LANGUAGE": {
+      "ENGLISH": "Engelska",
+      "ENGLISH_SECONDARY_LANGUAGE": "English",
+      "HEADER": "Välj språk",
+      "HEADER_SECONDARY_LANGUAGE": "Choose language",
+      "NORWEGIAN": "Norska",
+      "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian"
+    },
+    "I_UNDERSTAND": "Okej, jag förstår",
+    "PAGE_1": {
+      "HEADER": "Planera säkra resor!",
+      "LINE_1": "Se färska observationer och naturliga faror när du planerar din resa."
+    },
+    "PAGE_2": {
+      "HEADER": "Förstå terrängen bättre!",
+      "LINE_1": "Se var du befinner dig i förhållande till farozoner i terrängen. Använd supportkartor anpassade till de faror du letar efter."
+    },
+    "PAGE_3": {
+      "BUTTON_TEXT": "Ny observation",
+      "HEADER": "Dela vad du ser med andra!",
+      "LINE_1": "Dela dina observationer och foton med andra."
+    },
+    "PAGE_4": {
+      "HEADER": "Vad och hur?",
+      "LINE_1": "Välj vad du vill se och dela på Regobs. Du kan läsa och dela observationer på varsom.no/snøskredskolen och varsom.no/isskolen"
+    },
+    "SKIP_START": "Hoppa över"
+  },
+  "SUPPORT_MAP": {
+    "CAUTION_AREA": "Varningsområde",
+    "CLAY_DANGER_ZONE": "Faranivå",
+    "CLAY_LEGEND_TEXT_1": "Kvicklera-punkt (SVV)",
+    "CLAY_LEGEND_TEXT_2": "Kvicklera-område (SVV)",
+    "CLAY_LEGEND_TEXT_3": "Kartblad helt eller delvis kartlagt",
+    "CLAY_LEGEND_TEXT_4": "Havsgräns",
+    "CLAY_LEGEND_TEXT_5": "Area ovan havsgräns",
+    "CLAY_LEGEND_TEXT_6": "Area under havsgräns",
+    "CLAY_LEGEND_TEXT_7": "Liten / ingen havs påverkan",
+    "CLAY_LEGEND_TEXT_8": "Utloppsområde",
+    "CLAY_LEGEND_TEXT_9": "Potentiell lavinfara",
+    "CLAY_ZONES_MAP_DESCRIPTION": "Kvicklera/Jordskred",
+    "FLOOD_LEGEND_TEXT_1": "Aktuella",
+    "FLOOD_LEGEND_TEXT_10": "200-årsöversvämning",
+    "FLOOD_LEGEND_TEXT_11": "500-årsöversvämning",
+    "FLOOD_LEGEND_TEXT_12": "1000-årsöversvämning",
+    "FLOOD_LEGEND_TEXT_13": "200-årsöversvämning (klimat)",
+    "FLOOD_LEGEND_TEXT_2": "För omprövning",
+    "FLOOD_LEGEND_TEXT_3": "Registrerad",
+    "FLOOD_LEGEND_TEXT_4": "Under planering",
+    "FLOOD_LEGEND_TEXT_5": "10-årsöversvämning",
+    "FLOOD_LEGEND_TEXT_6": "Flod och vatten 10-årsöversvämning",
+    "FLOOD_LEGEND_TEXT_7": "20-årsöversvämning",
+    "FLOOD_LEGEND_TEXT_8": "50-årsöversvämning",
+    "FLOOD_LEGEND_TEXT_9": "100-årsöversvämning",
+    "FLOOD_LEGEND_TEXT_YEAR": "Översvämning lågpunkt kl",
+    "FLOOD_ZONES_MAP_DESCRIPTION": "Översvämningszoner",
+    "HIGH": "Hög",
+    "ICE_LEGEND_TEXT_1": "Bruten is längs stranden",
+    "ICE_LEGEND_TEXT_2": "Betydligt försvagad is",
+    "ICE_LEGEND_TEXT_3": "Ofta farliga isförhållanden",
+    "ICE_LEGEND_TEXT_4": "Försvagad is",
+    "ICE_LEGEND_TEXT_5": "Kanal",
+    "ICE_LEGEND_TEXT_6": "Rörledning",
+    "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
+    "ICE_MAP_DESCRIPTION": "Stödkarta visar delar av vattendrag som uppför sig oförutsägbart under vintern på grund av reglering vid vattenkraftsproduktion",
+    "IN_DEGREES": "I grader",
+    "LOW": "Låg",
+    "MARITINE_BORDER": "Havsgräns",
+    "MIDDLE": "Medel",
+    "NO_OPACITY": "Solid",
+    "STEEPNESS_COLOR_INFO": "Färger anger branthet i terrängen",
+    "STEEPNESS_MAP_DESCRIPTION": "Lutningskarta",
+    "WEAKENED_ICE_MAP_DESCRIPTION": "Försvagad is"
+  },
+  "TABS": {
+    "LIST": "Lista",
+    "MAP": "Karta",
+    "TRIPS": "Turer",
+    "WARNINGS": "Varningar"
+  },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Här kan du ange vilken tur du går, vad du letar efter, etc.",
+    "END_ERROR": "Det gick inte att avsluta turen. Försök igen senare. Turen avslutas automatiskt vid midnatt.",
+    "ERROR": "Kunde inte starta turen. Försök igen.",
+    "ERROR_POSITION": "Kan inte starta turen utan GPS-position.",
+    "LEGACY_HELP_TEXT": "Här meddelar du att du planerar en tur idag.\n\nDet är användbart för prognosprogrammet att veta om observationer kan förväntas idag. Det är också användbart att veta vilken typ av observationer man kan förvänta sig (vad letar du efter, vart du ska gå) och när förväntar du dig att dessa observationer skickas till Regobs. \n\n Alla betalda observatörer måste registrera vilken typ av tur som planeras: är det en vanlig betald observationstur, eller är detta en ytterligare registrering? Ytterligare registrering är inlämnande av observationer som du har gjort i annat arbete eller på din fritid.",
+    "ONGOING_TRIP": "Tur pågår",
+    "STARTED": "Tur startat",
+    "START_TRIP": "Start tur",
+    "STOPPED": "Tur stoppad",
+    "STOP_TRIP": "Stoppa tur",
+    "TITLE": "Turer",
+    "TRIP": "Tur",
+    "TRIP_END_DESCRIPTION": "Observationer förväntas före kl.",
+    "TRIP_TYPE": "Turtyp"
+  },
+  "TRIP_LOG": {
+    "COMPLETE": "Komplett",
+    "CONTINUE": "Fortsätta",
+    "NOT_STARTED": "Ny tur",
+    "PAUSED": "Pausad",
+    "RUNNING": "GPS-registrering pågår",
+    "START": "Start",
+    "STOP": "Stopp",
+    "STOPPED": "Tur stoppad och slutförd"
+  },
+  "VALIDATION": {
+    "AND": "och",
+    "BETWEEN": "mellan",
+    "CHARACTERS": "tecken",
+    "INTEGER": "ett heltal",
+    "MAX": "under",
+    "MIN": "över",
+    "MUST_BE": "måste vara"
+  },
+  "WARNING_LIST": {
+    "ADDED_TO_FAVOURITES": "läggs till i favoriter",
+    "ALL": "Alla",
+    "ALL_WARNINGS": "Alla varningar",
+    "A_REGIONS": "A - Regioner",
+    "B_REGIONS": "B - Regioner",
+    "B_REGIONS_SUBTITLE": "Varnas endast vid fara 4 och 5",
+    "FAVOURITES": "Favoriter",
+    "IN_MAP_CENTER": "På kartan mitt",
+    "IN_MAP_VIEW": "I kartvy",
+    "MAIN_REGIONS": "Huvudregioner",
+    "NO_FAVOURITES": "Välj dina favoriter",
+    "NO_FAVOURITES_TEXT": "Svep varning du vill spara som favorit åt vänster, så hittar du den här. ",
+    "NO_WARNINGS": "Inga varningar",
+    "NO_WARNINGS_TEXT": "Det finns ingen varning för det område du befinner dig i. När det finns en varning visas de här.",
+    "OTHER_RELEVANT": "Andra relevanta",
+    "RELEVANT": "Aktuella",
+    "REMOVED_FROM_FAVOURITES": "borttagen från favoriter",
+    "TITLE": "Varningar",
+    "TITLE_ICE": "Isvarningar",
+    "TITLE_SNOW": "Lavinvarningar",
+    "TITLE_WATER": "Varning för översvämning och jordskred",
+    "VALID_FROM": "Gäller från"
+  }
+}
