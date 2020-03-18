@@ -17,21 +17,21 @@
         </ion-row>
         <ion-row class="full-grid-row">
           <ion-col class="ion-align-self-center">
-            <h2 [@headerAnimation]="state">{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER'|translate}}</h2>
-            <h3>{{'START_WIZARD.CHOOSE_LANGUAGE.HEADER_SECONDARY_LANGUAGE'|translate}}</h3>
-            <ion-list lines="none">
-              <ion-radio-group class="dark-color" [(ngModel)]="language" (ngModelChange)="saveLanguage()">
-                <ion-item (click)="slideNext()">
-                  <ion-radio mode="md" slot="start" [value]="LangKey.nb"></ion-radio>
-                  <ion-label>{{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN'|translate}}
-                    ({{'START_WIZARD.CHOOSE_LANGUAGE.NORWEGIAN_SECONDARY_LANGUAGE'|translate}})</ion-label>
-                </ion-item>
-                <ion-item (click)="slideNext()">
-                  <ion-radio mode="md" slot="start" [value]="LangKey.en"></ion-radio>
-                  <ion-label>{{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH'|translate}}
-                    ({{'START_WIZARD.CHOOSE_LANGUAGE.ENGLISH_SECONDARY_LANGUAGE'|translate}})</ion-label>
-                </ion-item>
-              </ion-radio-group>
+            <h2 [@headerAnimation]="state">{{ "SETTINGS.LANGUAGE" | translate }}<span *ngIf="language !== LangKey.en"> /
+                Language</span></h2>
+            <ion-list class="language-list">
+              <ion-item class="ion-no-padding">
+                <ion-label position="stacked" color="medium">
+                  {{'START_WIZARD.CHOOSE_LANGUAGE.HEADER'| translate}}<span *ngIf="language !== LangKey.en"> / Choose
+                    language</span>
+                </ion-label>
+                <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="language"
+                  interface="action-sheet" (ngModelChange)="saveLanguage()">
+                  <ion-select-option [value]="lang.langKey" *ngFor="let lang of supportedLanguages">
+                    {{ lang.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
             </ion-list>
           </ion-col>
         </ion-row>

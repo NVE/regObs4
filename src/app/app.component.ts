@@ -14,8 +14,6 @@ import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { LogLevel } from './modules/shared/services/logging/log-level.model';
-import { registerLocaleData } from '@angular/common';
-import localeNb from '@angular/common/locales/nb';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
 
 const DEBUG_TAG = 'AppComponent';
@@ -51,7 +49,6 @@ export class AppComponent {
   }
 
   initializeApp() {
-    registerLocaleData(localeNb);
     this.platform.ready().then(async () => {
       if (this.platform.isAndroidOrIos()) {
         this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);

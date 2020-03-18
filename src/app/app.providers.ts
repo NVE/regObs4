@@ -101,7 +101,7 @@ export const APP_PROVIDERS = [
   { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
 
   // APP initializers
-  { provide: APP_INITIALIZER, useFactory: initTranslateService, deps: [TranslateService], multi: true },
+  { provide: APP_INITIALIZER, useFactory: initTranslateService, deps: [TranslateService, UserSettingService], multi: true },
 
   // Interface implementations
   { provide: 'OnReset', useExisting: DataMarshallService, multi: true },
