@@ -77,7 +77,6 @@
     "cordova-plugin-advanced-http": "^2.4.0",
     "cordova-plugin-android-permissions": "^1.0.2",
     "cordova-plugin-background-download": "git+https://github.com/sgrebnov/cordova-plugin-background-download.git",
-    "cordova-plugin-background-fetch": "^5.6.1",
     "cordova-plugin-camera": "^4.1.0",
     "cordova-plugin-email-composer": "^0.9.2",
     "cordova-plugin-file": "^6.0.2",
@@ -198,7 +197,6 @@
       },
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-android-permissions": {},
-      "cordova-plugin-background-fetch": {},
       "cordova-plugin-ionic-webview": {
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },

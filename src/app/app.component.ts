@@ -4,7 +4,6 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-import { BackgroundFetch } from '@ionic-native/background-fetch/ngx';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
@@ -12,8 +11,6 @@ import { Observable } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
-import { OfflineMapService } from './core/services/offline-map/offline-map.service';
-import { LogLevel } from './modules/shared/services/logging/log-level.model';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
 
 const DEBUG_TAG = 'AppComponent';
@@ -33,11 +30,8 @@ export class AppComponent {
     private userSettings: UserSettingService,
     private navController: NavController,
     private deeplinks: Deeplinks,
-    private backgroundFetch: BackgroundFetch,
     private dataMarshallService: DataMarshallService,
     private offlineImageService: OfflineImageService,
-    private offlineMapService: OfflineMapService,
-    // private keyboard: Keyboard,
     private swipeBackService: SwipeBackService,
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
@@ -59,12 +53,10 @@ export class AppComponent {
       this.loggingService.configureLogging(this.userSettings.currentSettings.appMode);
       this.statusBar.styleLightContent();
       this.statusBar.backgroundColorByHexString('#99044962');
-      // this.statusBar.overlaysWebView(this.platform.is('ios'));
       this.statusBar.overlaysWebView(false);
       // this.keyboard.hideFormAccessoryBar(false);
       this.offlineImageService.cleanupOldItems();
       this.dataMarshallService.init();
-      this.initBackroundUpdates();
       this.shortcutService.init();
       setTimeout(() => {
         this.splashScreen.hide();
@@ -85,34 +77,4 @@ export class AppComponent {
       }, nomatch => this.loggingService.debug('Got a deeplink that didn\'t match', DEBUG_TAG, nomatch));
     }
   }
-
-  initBackroundUpdates() {
-    if (this.platform.is('cordova') && (this.platform.is('ios') || this.platform.is('android'))) {
-      // Be aware. If startOnBoot=true, stopOnTerminate must be false and forceReload must be true.
-      // We don't want to force our app to always be running.
-      // So for Android the app must be running for background fetch to be running.
-      // To be able to fetch without forceReload, we must enable headless java code!
-      // TODO: Write headless java code?
-      // https://github.com/transistorsoft/cordova-plugin-background-fetch
-      const config = {
-        minimumFetchInterval: 15, // <-- default is 15
-        stopOnTerminate: true,    // <-- Android only (when forceReload is false, this needs to be true)
-        startOnBoot: false,       // <-- Android only (when forceReload is false, this needs to be false)
-        forceReload: false        // <-- Android only. We don't want to force our app to always be running.
-      };
-      // ALSO NOTE: Could not get Ionic Native Background fetch to work, so using ((any)window).BackgroundFetch
-      // (direct use of cordova plugin) instead. To test Android:
-      // Open command window with log: adb logcat -s TSBackgroundFetch
-      // Force run in another command window: adb shell cmd jobscheduler run -f no.nve.regobs4 999
-      // Run chrome://inspect to view console.logs from update
-      (<any>window).BackgroundFetch.configure(() => {
-        this.dataMarshallService.backgroundFetchUpdate(this.platform.is('cordova') && this.platform.is('ios'), false)
-          .then(() => (<any>window).BackgroundFetch.finish());
-      }, (error: Error) => {
-        this.loggingService.log('Could not run background fetch!', error, LogLevel.Warning, DEBUG_TAG);
-      }, config);
-    }
-  }
-
-
 }
