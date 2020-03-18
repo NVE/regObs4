@@ -13,8 +13,8 @@ import { OfflineMapService } from '../../core/services/offline-map/offline-map.s
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
-import { AppMode } from '../../core/models/app-mode.enum';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
+import { settings } from '../../../settings';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -34,6 +34,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   version: AppVersion;
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
+  supportedLanguages: { lang: string, name: string, langKey: LangKey }[] =
+    settings.language.supportedLanguages.map((lang) => ({ ...lang, langKey: LangKey[lang.lang] }));
 
   get appModeOptions() {
     const options: SelectOption[] = [

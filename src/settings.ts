@@ -207,12 +207,7 @@ export const settings = {
       enableHighAccuracy: true,
       timeout: 20 * 1000, // 20 sec
       maximumAge: Infinity // Start with latest cached value
-    },
-    // lowAccuracyPositionOptions: {
-    //     enableHighAccuracy: false,
-    //     timeout: 30 * 1000, // 20 sec
-    //     maximumAge: 30 * 60 * 1000 // 30 minutes
-    // },
+    }
   },
   offlineAssetsFolder: 'assets',
   dateFormats: {
@@ -243,5 +238,15 @@ export const settings = {
   googleAnalytics: {
     trackerId: 'UA-32394009-4',
     anonymizeIp: true,
+  },
+  language: {
+    fallbackLang: 'en',
+    supportedLanguages: [
+      { lang: 'nb', name: 'Norsk bokmål' },
+      { lang: 'en', name: 'English' },
+      { lang: 'sv', name: 'Svenska' },
+      { lang: 'de', name: 'Deutsch' },
+      { lang: 'sl', name: 'Slovenski' }
+    ],
   }
 };

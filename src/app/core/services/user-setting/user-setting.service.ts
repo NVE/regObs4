@@ -15,6 +15,12 @@ import equal from 'fast-deep-equal';
 import { NgDestoryBase } from '../../helpers/observable-helper';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { DEFAULT_USER_SETTINGS } from './user-settings.default';
+import { registerLocaleData } from '@angular/common';
+import nbData from '@angular/common/locales/nb';
+import svData from '@angular/common/locales/sv';
+import enData from '@angular/common/locales/en';
+import deData from '@angular/common/locales/de';
+import slData from '@angular/common/locales/sl';
 
 const DEBUG_TAG = 'UserSettingService';
 
@@ -91,22 +97,56 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
         shareReplay(1));
 
     this.showObservations$ = this.userSetting$.pipe(map((val) => val.showObservations), distinctUntilChanged(), shareReplay(1));
-
-    this.initSubscriptions();
   }
 
-  private initSubscriptions() {
+  public init() {
     this.createLanguageChangeListener();
     this.updateInMemoryRegistrationsFromDb();
     this.createSaveToDbOnChangeListener();
   }
 
   private createLanguageChangeListener() {
-    // TODO: Move to app init
-    this.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((language) => {
-      this.translate.use(LangKey[language]);
-    });
+    this.language$.pipe(
+      takeUntil(this.ngDestroy$))
+      .subscribe((langKey) => {
+        const lang = LangKey[langKey];
+        switch (langKey) {
+          case LangKey.nb:
+            registerLocaleData(nbData);
+            break;
+          case LangKey.en:
+            registerLocaleData(enData);
+            break;
+          case LangKey.de:
+            registerLocaleData(deData);
+            break;
+          case LangKey.sv:
+            registerLocaleData(svData);
+            break;
+          case LangKey.sl:
+            registerLocaleData(slData);
+            break;
+        }
+        this.translate.use(lang);
+      });
   }
+
+  // private registerLocaleData(): (src: Observable<LangKey>) => Observable<string> {
+  //   return (src: Observable<LangKey>) =>
+  //     src.pipe(
+  //       switchMap((langKey) => from(this.loadLocaleData(langKey))),
+  //       switchMap((loadedLang) => of(registerLocaleData(loadedLang.data)).pipe(map(() => loadedLang.localeId)))
+  //     );
+  // }
+
+  // private loadLocaleData(langKey: LangKey): Promise<{ localeId: string, data: unknown }> {
+  //   return new Promise((resolve) => {
+  //     const localeId = LangKey[langKey];
+  //     const localeDataImport = `@angular/common/locales/${localeId}`;
+  //     import(/* webpackInclude: /(nb|sv|de|en|sl)\$/ */ localeDataImport).then((localeData) =>
+  //       resolve({ localeId, data: localeData.default }));
+  //   });
+  // }
 
   private updateInMemoryRegistrationsFromDb() {
     this.getUserSettingsFromDb().subscribe((result) => {

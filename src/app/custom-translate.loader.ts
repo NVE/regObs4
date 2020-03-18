@@ -1,10 +1,13 @@
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { Observable, from } from 'rxjs';
+import { settings } from '../settings';
+import { UserSettingService } from './core/services/user-setting/user-setting.service';
 
-export function initTranslateService(translateService: TranslateService) {
+export function initTranslateService(translateService: TranslateService, userSettingService: UserSettingService) {
   return () => {
-    translateService.addLangs(['nb', 'en']);
-    translateService.setDefaultLang('nb');
+    translateService.addLangs(settings.language.supportedLanguages.map((l) => l.lang));
+    translateService.setDefaultLang(settings.language.fallbackLang);
+    userSettingService.init();
   };
 }
 

@@ -8,6 +8,25 @@ ion-footer {
   }
 }
 
+ion-list {
+  margin-top: 16px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.language-list {
+  max-width: 250px;
+  ion-item {
+    --inner-padding-end: 0px;
+  }
+}
+// ion-select {
+//   border-bottom: 1px solid #959595;
+// }
+// .language-item {
+//   --inner-padding-end: 0px;
+// }
+
 @keyframes usermarker-pulsate {
   from {
     width: 40px;
@@ -145,12 +164,6 @@ ion-content {
 
     .dark-color {
       color: var(--ion-text-color);
-    }
-
-    ion-list {
-      margin-top: 16px;
-      margin-left: 20px;
-      margin-right: 20px;
     }
 
     ion-card {
