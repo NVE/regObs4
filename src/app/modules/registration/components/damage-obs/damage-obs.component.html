@@ -7,7 +7,7 @@
     <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{ 'REGISTRATION.WATER.DAMAGE.WHERE_IS_DAMAGE_LOCATION'
           | translate }}</ion-label>
     <ion-text class="ion-align-self-start ion-text-wrap">
-      <ion-icon class="add-icon" color="primary" name="pin">
+      <ion-icon class="add-icon" color="primary" name="location">
       </ion-icon>
       <ng-container *ngIf="damageObs.DamagePosition else noDamagePosition">
         {{ damageObs.DamagePosition.Latitude | number:'0.3'

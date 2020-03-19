@@ -35,7 +35,7 @@
     </ion-item>
   </ion-list>
   <ion-button (click)="toggleAdvanced()" fill="clear" expand="full">
-    <ion-icon slot="start" [name]="(showAdvanced ? 'ios-arrow-up' : 'ios-arrow-down')"></ion-icon>
+    <ion-icon slot="start" [name]="(showAdvanced ? 'chevron-up' : 'chevron-down')"></ion-icon>
     {{( showAdvanced ? 'SETTINGS.HIDE_ADVANCED' : 'SETTINGS.SHOW_ADVANCED') | translate }}
   </ion-button>
   <ng-container *ngIf="showAdvanced">

@@ -202,17 +202,20 @@ ion-item {
 
 ion-list {
   background: var(--ion-background-color);
-  --padding-start: 20px;
 
   ion-list-header {
     &:not(.subheader) {
       font-size: var(--list-header-font-size);
       font-weight: var(--list-header-font-weight);
+      text-transform: uppercase;
     }
     &.subheader {
       text-transform: none;
       color: var(--ion-color-medium);
+    }
+    ion-label {
       margin-bottom: 10px;
+      margin-top: 10px;
     }
   }
 

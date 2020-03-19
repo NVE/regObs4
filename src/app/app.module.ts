@@ -20,6 +20,8 @@ import { SideMenuModule } from './modules/side-menu/side-menu.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GpsDebugModule } from './modules/gps-debug/gps-debug.module';
 import { CustomTranslateLoader } from './custom-translate.loader';
+import { MapModule } from './modules/map/map.module';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 
 
@@ -47,6 +49,8 @@ import { CustomTranslateLoader } from './custom-translate.loader';
     }),
     AngularSvgIconModule.forRoot(),
     SharedModule,
+    MapModule,
+    LeafletModule.forRoot(),
     RegistrationModule,
     RegobsApiModule,
     LegalTermsModalPageModule,

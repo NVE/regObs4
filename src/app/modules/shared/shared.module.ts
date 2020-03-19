@@ -22,9 +22,8 @@ import { ExternalLinkComponent } from './components/external-link/external-link.
 import { RefreshWithCancelComponent } from './components/refresh-with-cancel/refresh-with-cancel.component';
 import { HeaderComponent } from './components/header/header.component';
 import { OfflineImageComponent } from './components/offline-image/offline-image.component';
-import { MapModule } from '../map/map.module';
 import { CompetenceComponent } from '../../components/competence/competence.component';
-import { BrowserModule } from '@angular/platform-browser';
+import { MapImageModule } from '../map-image/map-image.module';
 @NgModule({
   imports: [
     CommonModule,
@@ -34,7 +33,7 @@ import { BrowserModule } from '@angular/platform-browser';
     AngularSvgIconModule,
     TranslateModule,
     RouterModule,
-    MapModule
+    MapImageModule
   ],
   declarations: [
     ShadowCssDirective,
@@ -65,6 +64,7 @@ import { BrowserModule } from '@angular/platform-browser';
     RouterModule,
     ShadowCssDirective,
     AngularSvgIconModule,
+    MapImageModule,
     AddMenuComponent,
     OfflineImageComponent,
     ExternalLinkComponent,

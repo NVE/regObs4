@@ -118,7 +118,7 @@ export class CustomAnimation {
     );
   }
 
-  static scaleUpLeaveV2(AnimationC: Animation, baseEl: HTMLElement, opts?: any) {
+  static scaleUpLeaveV2(baseEl: HTMLElement, opts?: any) {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
@@ -143,7 +143,7 @@ export class CustomAnimation {
     );
   }
 
-  static slideInFromRight(AnimationC: Animation, baseEl: HTMLElement, opts?: any) {
+  static slideInFromRight(baseEl: HTMLElement, opts?: any) {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
@@ -159,17 +159,17 @@ export class CustomAnimation {
       .fromTo('transform', 'translateX(100%)', 'translateX(0)')
       .fromTo('opacity', 0.01, 1);
 
-    return Promise.resolve(baseAnimation
+    return baseAnimation
       .addElement(baseEl)
       .easing('ease-in')
       .duration(DEFAULT_DURATION)
       .beforeAddClass('show-modal')
       .addAnimation(backdropAnimation)
       .addAnimation(wrapperAnimation)
-    );
+      ;
   }
 
-  static slideOutToRight(AnimationC: Animation, baseEl: HTMLElement, opts?: any) {
+  static slideOutToRight(baseEl: HTMLElement, opts?: any) {
     const baseAnimation = createAnimation();
 
     const backdropAnimation = createAnimation();
@@ -188,13 +188,12 @@ export class CustomAnimation {
         parseInt(currentTranslateX, 10) : 0})`, 'translateX(100%)')
       .fromTo('opacity', currentOpacity ? parseInt(currentOpacity, 10) : 0, 0);
 
-    return Promise.resolve(baseAnimation
+    return baseAnimation
       .addElement(baseEl)
       .easing('ease-out')
       .duration(DEFAULT_DURATION)
       .beforeAddClass('show-modal')
       .addAnimation(backdropAnimation)
-      .addAnimation(wrapperAnimation)
-    );
+      .addAnimation(wrapperAnimation);
   }
 }

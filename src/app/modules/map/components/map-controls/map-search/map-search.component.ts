@@ -19,8 +19,8 @@ export class MapSearchComponent implements OnInit {
     const modal = await this.modalController.create({
       component: ModalSearchPage,
       keyboardClose: true,
-      // enterAnimation: CustomAnimation.slideInFromRight,
-      // leaveAnimation: CustomAnimation.slideOutToRight
+      enterAnimation: CustomAnimation.slideInFromRight,
+      leaveAnimation: CustomAnimation.slideOutToRight
     });
     return await modal.present();
   }
