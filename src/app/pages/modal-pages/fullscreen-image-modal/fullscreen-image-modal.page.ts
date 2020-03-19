@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, OnDestroy, NgZone } from '@angular/core';
 import { ModalController, Platform, IonSlides } from '@ionic/angular';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 
 @Component({
   selector: 'app-fullscreen-image-modal',
@@ -20,13 +21,13 @@ export class FullscreenImageModalPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    if (this.platform.isAndroidOrIos()) {
+    if (isAndroidOrIos(this.platform)) {
       this.screenOrientation.unlock();
     }
   }
 
   ngOnDestroy(): void {
-    if (this.platform.isAndroidOrIos()) {
+    if (isAndroidOrIos(this.platform)) {
       this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
     }
   }

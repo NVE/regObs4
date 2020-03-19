@@ -12,11 +12,11 @@
       <ion-col class="show-details-col ion-no-padding ion-text-center">
         <ion-button color="dark" size="small" fill="clear" (click)="toggleDetails()">
           <ng-container *ngIf="!showDetails">
-            <ion-icon slot="start" name="ios-arrow-up"></ion-icon>
+            <ion-icon slot="start" name="chevron-up"></ion-icon>
             {{'REGISTRATION.OBS_LOCATION.SHOW_DETAILS' | translate}}
           </ng-container>
           <ng-container *ngIf="showDetails">
-            <ion-icon slot="start" name="ios-arrow-down"></ion-icon>
+            <ion-icon slot="start" name="chevron-down"></ion-icon>
             {{'REGISTRATION.OBS_LOCATION.HIDE_DETAILS' | translate}}
           </ng-container>
         </ion-button>

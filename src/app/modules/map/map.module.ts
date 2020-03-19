@@ -16,6 +16,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image.module';
+import { SupportMapInfoPageModule } from './pages/support-map-info/support-map-info.module';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image
     LeafletEdgeBufferModule,
     ModalSearchPageModule,
     ModalMapImagePageModule,
+    SupportMapInfoPageModule,
   ],
   declarations: [
     MapComponent,
@@ -50,6 +52,7 @@ import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image
     ModalSearchPageModule,
     MapImageComponent,
     ModalMapImagePageModule,
+    SupportMapInfoPageModule
   ]
 })
 export class MapModule { }

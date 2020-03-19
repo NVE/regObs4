@@ -49,7 +49,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   private ngDestroy$ = new Subject();
   private touchStart$ = new Subject();
 
-  @ViewChild(IonSlides, { static: false }) slider: IonSlides;
+  @ViewChild(IonSlides) slider: IonSlides;
 
   get isEmpty() {
     return this.state === 'empty';

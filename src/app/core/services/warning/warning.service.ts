@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import moment from 'moment';
+import moment, { lang } from 'moment';
 import 'moment-timezone';
 import { LangKey } from '../../models/langKey';
 import { HttpClient } from '@angular/common/http';
@@ -75,7 +75,7 @@ export class WarningService {
   }
 
   private getLatestWarningKey(geoHazard: GeoHazard, langKey: LangKey) {
-    return `${geoHazard}_${langKey}`;
+    return `${geoHazard}_${this.getSupportedLanguage(langKey)}`;
   }
 
   private updateLatestWarnings(geoHazard: GeoHazard, langKey: LangKey, result: IWarningGroup[]) {
@@ -96,7 +96,7 @@ export class WarningService {
     const geoHazards = await this.getGeoHazardsToUpdate(userSettings);
     for (const geoHazard of geoHazards) {
       if (!cancelled) {
-        await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard, userSettings.language, cancel);
+        await this.checkLastUpdatedAndUpdateDataIfNeeded(geoHazard, this.getSupportedLanguage(userSettings.language), cancel);
       }
     }
     this.loggingService.debug('Updating warnings completed', DEBUG_TAG);
@@ -113,7 +113,7 @@ export class WarningService {
     const geoHazards = await this.getGeoHazardsToUpdate(userSettings);
     for (const geoHazard of geoHazards) {
       if (!cancelled) {
-        await this.updateWarningsForGeoHazard(geoHazard, userSettings.language, cancel);
+        await this.updateWarningsForGeoHazard(geoHazard, this.getSupportedLanguage(userSettings.language), cancel);
       }
     }
   }
@@ -480,6 +480,10 @@ export class WarningService {
     }
   }
 
+  private getSupportedLanguage(language: LangKey): LangKey {
+    return language === LangKey.nb ? LangKey.nb : LangKey.en;
+  }
+
   private async updateAvalancheWarnings(language: LangKey, fromDate?: Date, toDate?: Date, cancelPromise?: Promise<void>) {
     this.loggingService.debug(`Updating avalanche warnings`, DEBUG_TAG);
     let cancelled = false;
@@ -488,6 +492,7 @@ export class WarningService {
         cancelled = true;
       });
     }
+    const supportedLang = lang
     const dateRange = this.getDefaultDateRange(fromDate, toDate);
     const dataLoadId = this.getDataLoadId(GeoHazard.Snow, language);
     await this.dataLoadService.startLoading(dataLoadId);

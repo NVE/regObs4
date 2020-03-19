@@ -13,7 +13,7 @@ import { ToastController, DomController, IonIcon } from '@ionic/angular';
 export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() key: WarningGroupKey;
-  @ViewChild(IonIcon, { static : false }) ionIcon: IonIcon;
+  @ViewChild(IonIcon) ionIcon: IonIcon;
 
   private warningIsFavouriteSubscription: Subscription;
   isFavourite: boolean;
@@ -72,7 +72,7 @@ export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, 
     }
   }
 
-  async presentToast(added: boolean) {
+  presentToast(added: boolean) {
     this.translateService.
       get(['WARNING_LIST.ADDED_TO_FAVOURITES', 'WARNING_LIST.REMOVED_FROM_FAVOURITES', 'ALERT.UNDO'])
       .subscribe(async (translation) => {
@@ -80,19 +80,22 @@ export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, 
           message: `${this.key.groupName} ${added ? translation['WARNING_LIST.ADDED_TO_FAVOURITES'] :
             translation['WARNING_LIST.REMOVED_FROM_FAVOURITES']}`,
           mode: 'md',
-          showCloseButton: true,
-          closeButtonText: translation['ALERT.UNDO'],
-          duration: 4000
+          duration: 4000,
+          buttons: [
+            {
+              text: translation['ALERT.UNDO'],
+              role: 'cancel',
+              handler: () => {
+                if (added) {
+                  this.warningService.removeFromFavourite(this.key.groupId, this.key.geoHazard);
+                } else {
+                  this.warningService.addToFavourite(this.key.groupId, this.key.geoHazard);
+                }
+              }
+            }
+          ]
         });
         toast.present();
-        const result = await toast.onDidDismiss();
-        if (result.role === 'cancel') {
-          if (added) {
-            this.warningService.removeFromFavourite(this.key.groupId, this.key.geoHazard);
-          } else {
-            this.warningService.addToFavourite(this.key.groupId, this.key.geoHazard);
-          }
-        }
       });
   }
 }

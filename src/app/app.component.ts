@@ -12,6 +12,7 @@ import { LoggingService } from './modules/shared/services/logging/logging.servic
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
+import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -44,7 +45,7 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(async () => {
-      if (this.platform.isAndroidOrIos()) {
+      if (isAndroidOrIos(this.platform)) {
         this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
       }
       this.initDeepLinks();

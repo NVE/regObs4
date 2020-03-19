@@ -18,7 +18,8 @@ ion-card {
       // margin-bottom: 25px;
       ion-row {
         &.row-padding-start {
-          padding-left: 5px;
+          margin-left: 10px;
+          margin-right: 10px;
         }
         &.row-padding-end {
           padding-bottom: 5px;
@@ -48,7 +49,8 @@ ion-card {
       padding-bottom: 5px;
 
       .card-icon-item-icon {
-        padding-right: 5px;
+        // padding-right: 5px;
+        margin-right: 5px;
       }
       app-competence {
         display: inline-block;

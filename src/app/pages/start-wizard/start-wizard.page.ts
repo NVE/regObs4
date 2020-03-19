@@ -16,7 +16,7 @@ import { settings } from '../../../settings';
 })
 
 export class StartWizardPage implements OnInit, OnDestroy {
-  @ViewChild(IonSlides, { static: false }) slides: IonSlides;
+  @ViewChild(IonSlides) slides: IonSlides;
   GeoHazard = GeoHazard;
   LangKey = LangKey;
   state: string;
