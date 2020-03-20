@@ -180,12 +180,12 @@ export class CustomAnimation {
 
     const wrapperAnimation = createAnimation();
     wrapperAnimation.addElement(modalWrapperElement);
-    const currentTranslateX = modalWrapperElement.getAttribute('data-offset-x');
-    const currentOpacity = modalWrapperElement.getAttribute('data-opacity');
+    const currentTranslateX = baseEl.getAttribute('data-offset-x');
+    const currentOpacity = baseEl.getAttribute('data-opacity');
 
     wrapperAnimation
       .fromTo('transform', `translateX(${currentTranslateX ?
-        parseInt(currentTranslateX, 10) : 0})`, 'translateX(100%)')
+        parseInt(currentTranslateX, 10) : 0}%)`, 'translateX(100%)')
       .fromTo('opacity', currentOpacity ? parseInt(currentOpacity, 10) : 0, 0);
 
     return baseAnimation
