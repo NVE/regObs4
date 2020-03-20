@@ -11,7 +11,7 @@
   </ion-segment-button>
 </ion-segment>
 <ion-content>
-  <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
+  <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <ion-virtual-scroll *ngIf="!showEmptyState else empty" [ngClass]="{'loaded': loaded}" [items]="warningGroups"
     [headerFn]="myHeaderFn" [footerFn]="myFooterFn" [approxItemHeight]="49" [approxHeaderHeight]="38"
     [trackBy]="trackByFunc">
@@ -29,7 +29,7 @@
     <app-abonner-banner></app-abonner-banner>
   </div>
 </ion-content>
-<app-add-menu slot="fixed"></app-add-menu>
+<app-add-menu></app-add-menu>
 <app-geo-select slot="fixed"></app-geo-select>
 <ng-template #empty>
   <ng-container *ngTemplateOutlet="showNoFavourites ? emptyFavourites : emptyRelevant"></ng-container>

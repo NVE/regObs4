@@ -10,7 +10,6 @@ import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
-import './core/helpers/ionic/platform-helper';
 import { SharedModule } from './modules/shared/shared.module';
 import { RegistrationModule } from './modules/registration/registration.module';
 import { RegobsApiModule } from './modules/regobs-api/regobs-api.module';
@@ -21,6 +20,8 @@ import { SideMenuModule } from './modules/side-menu/side-menu.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GpsDebugModule } from './modules/gps-debug/gps-debug.module';
 import { CustomTranslateLoader } from './custom-translate.loader';
+import { MapModule } from './modules/map/map.module';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 
 
@@ -46,8 +47,10 @@ import { CustomTranslateLoader } from './custom-translate.loader';
       name: settings.db.simpleStorage.dbName,
       driverOrder: ['sqlite', 'indexeddb', 'websql'],
     }),
-    AngularSvgIconModule,
+    AngularSvgIconModule.forRoot(),
     SharedModule,
+    MapModule,
+    LeafletModule.forRoot(),
     RegistrationModule,
     RegobsApiModule,
     LegalTermsModalPageModule,

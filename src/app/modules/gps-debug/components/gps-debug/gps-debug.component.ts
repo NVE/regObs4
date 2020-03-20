@@ -22,7 +22,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   isTracking: boolean;
   private ngDestroy$ = new Subject();
 
-  @ViewChild('GpsLogPanel', { static: false }) panel: IonContent;
+  @ViewChild('GpsLogPanel') panel: IonContent;
 
   constructor(
     private userSettingService: UserSettingService,

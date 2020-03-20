@@ -10,7 +10,6 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
-import { TranslateService } from '@ngx-translate/core';
 import { settings } from '../../../../settings';
 import { RegistrationViewModel, Summary } from '../../../modules/regobs-api/models';
 import { ModalController } from '@ionic/angular';

@@ -22,7 +22,7 @@ const DEBUG_TAG = 'AddMenuComponent';
   styleUrls: ['./add-menu.component.scss']
 })
 export class AddMenuComponent implements OnInit, OnDestroy {
-  @ViewChild('menuFab', { static: false }) menuFab: IonFab;
+  @ViewChild('menuFab') menuFab: IonFab;
 
   drafts$: Observable<{ id: string, geoHazard: GeoHazard, date: string }[]>;
   geoHazardInfo$: Observable<{ geoHazards: GeoHazard[], showSpace: boolean, showTrip: boolean }>;

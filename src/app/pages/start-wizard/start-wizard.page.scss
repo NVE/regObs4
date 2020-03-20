@@ -32,8 +32,8 @@ ion-list {
     width: 40px;
     height: 40px;
     opacity: 0.5;
-    top: 1px;
-    left: 0px;
+    left: 23px;
+    top: 28px;
   }
   to {
     width: 80px;
@@ -48,8 +48,8 @@ ion-list {
     width: 40px;
     height: 40px;
     opacity: 0.5;
-    top: 1px;
-    left: 0px;
+    left: 23px;
+    top: 28px;
   }
   to {
     width: 80px;
@@ -212,66 +212,66 @@ ion-content {
         position: absolute;
 
         &.eclipse {
-          left: -46px;
-          top: -58px;
+          left: -15px;
+          top: -45px;
         }
         &.bubble {
-          left: -100px;
-          top: 20px;
+          left: -46px;
+          top: -6px;
         }
 
         &.line {
-          left: -188px;
+          left: -95px;
         }
 
         &.warning {
-          left: 58px;
-          top: 54px;
+          left: 28px;
+          top: 20px;
           --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
         &.pin-ice {
-          top: 115px;
-          left: -50px;
+          top: 62px;
+          left: -26px;
           --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
         &.pin-dirt {
-          top: -101px;
-          left: 83px;
+          top: -48px;
+          left: 44px;
           --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
         &.pin-snow {
-          top: -69px;
-          left: -57px;
+          top: -34px;
+          left: -41px;
           --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
         &.pin-water {
-          left: -150px;
-          top: 20px;
+          left: -76px;
+          top: 15px;
           --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
         &.steepness-background {
-          top: -160px;
-          left: -193px;
+          top: -95px;
+          left: -94px;
         }
 
         &.danger-map {
-          left: -187px;
-          top: -113px;
+          left: -94px;
+          top: -66px;
         }
 
         &.user-location {
-          left: 53px;
-          top: 74px;
+          left: 23px;
+          top: 27px;
 
           &:before {
             content: "";
@@ -284,24 +284,25 @@ ion-content {
             height: 40px;
             width: 40px;
             position: absolute;
-            top: 1px;
+            left: 23px;
+            top: 27px;
             z-index: -1;
           }
         }
 
         &.exclamation-mark {
-          left: -70px;
-          top: -7px;
+          left: -37px;
+          top: -14px;
         }
 
         &.add-observation {
-          left: -35px;
+          left: -20px;
           top: 50px;
         }
 
         &.competence-finger {
-          left: -35px;
-          top: 20px;
+          left: -18px;
+          top: 2px;
         }
 
         &.star {
@@ -357,38 +358,38 @@ ion-content {
         }
 
         &.photos {
-          left: -125px;
-          top: 16px;
+          left: -76px;
+          top: 38px;
         }
 
         &.pin {
-          left: -70px;
-          top: -53px;
+          left: -45px;
+          top: -1px;
         }
 
         &.ruler {
-          left: -125px;
-          top: -94px;
+          left: -73px;
+          top: -26px;
         }
 
         &.document {
-          left: 1px;
-          top: -36px;
+          left: 2px;
+          top: 2px;
         }
 
         &.path {
-          left: 58px;
-          top: -100px;
+          left: 31px;
+          top: -38px;
         }
 
         &.eye {
-          left: 64px;
-          top: 16px;
+          left: 31px;
+          top: 34px;
         }
 
         &.text {
           left: -78px;
-          top: 131px;
+          top: 207px;
           color: var(--ion-color-varsom-orange);
           font-size: 24px;
         }

@@ -73,7 +73,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   editLocationName = false;
   locationName: string;
 
-  @ViewChild('editLocationNameInput', { static: false }) editLocationNameInput: IonInput;
+  @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
 
   get canEditLocationName() {
     return this.allowEditLocationName && !(this.selectedLocation && this.selectedLocation.Id);
@@ -327,7 +327,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   onLocationEditComplete() {
-    if (this.editLocationNameInput.value.length === 0) { // User has deleted all text
+    if (this.editLocationNameInput.value?.toString().length === 0) { // User has deleted all text
       this.editLocationName = false;
       this.updateMapViewInfo();
     }

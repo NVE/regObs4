@@ -19,7 +19,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../home/home.module#HomePageModule'
+            loadChildren: () => import('../home/home.module').then(m => m.HomePageModule)
           }
         ]
       },
@@ -28,7 +28,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../trip/trip.module#TripPageModule'
+            loadChildren: () => import('../trip/trip.module').then(m => m.TripPageModule)
           }
         ]
       },
@@ -37,7 +37,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../observation-list/observation-list.module#ObservationListPageModule'
+            loadChildren: () => import('../observation-list/observation-list.module').then(m => m.ObservationListPageModule)
           }
         ]
       },
@@ -46,7 +46,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../warning-list/warning-list.module#WarningListPageModule'
+            loadChildren: () => import('../warning-list/warning-list.module').then(m => m.WarningListPageModule)
           }
         ]
       },

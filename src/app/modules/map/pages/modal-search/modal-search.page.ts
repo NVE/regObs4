@@ -5,11 +5,11 @@ import { Observable } from 'rxjs';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
-import 'hammerjs';
 import * as L from 'leaflet';
 import { NumberHelper } from '../../../../core/helpers/number-helper';
+import { createGesture, GestureDetail, Gesture } from '@ionic/core';
 
-const SWIPE_BOUNDRY = 0.25; // More than 20% swipe to right will close modal
+const SWIPE_BOUNDRY = 0.30; // More than 30% swipe to right will close modal
 
 @Component({
   selector: 'app-modal-search',
@@ -29,6 +29,7 @@ export class ModalSearchPage implements OnInit, OnDestroy {
   private modalTop: HTMLIonModalElement;
   private swipeOffset = 0;
   private swipePercentage = 0;
+  private gesture: Gesture;
 
   constructor(private modalController: ModalController,
     private mapSearchService: MapSearchService,
@@ -76,19 +77,20 @@ export class ModalSearchPage implements OnInit, OnDestroy {
 
   private async createGesture() {
     this.modalTop = await this.modalController.getTop();
-    this.modalPageWrapper = this.modalTop.getElementsByClassName('modal-wrapper')[0];
-
-    const hammerManager = new Hammer.Manager(this.modalPageWrapper, {
-      touchAction: 'auto',
-      recognizers: [
-        [Hammer.Pan, { direction: Hammer.DIRECTION_HORIZONTAL }],
-      ]
+    this.gesture = createGesture({
+      el: this.modalTop,
+      gestureName: 'swipe-to-close',
+      direction: 'x',
+      disableScroll: true,
+      onMove: (ev) => this.onMoveHandler(ev),
+      onEnd: (ev) => this.onPanend(),
     });
-    hammerManager.on('panright', (event) => this.onPan(event));
-    hammerManager.on('panend', () => this.onPanend());
+
+    this.gesture.enable();
   }
 
   ngOnDestroy(): void {
+    this.gesture.destroy();
   }
 
   isValidLatLng(searchValue: string) {
@@ -143,10 +145,10 @@ export class ModalSearchPage implements OnInit, OnDestroy {
     this.closeModal();
   }
 
-  async onPan(event: HammerInput) {
+  onMoveHandler(ev: GestureDetail): boolean | void {
     const width = this.modalTop.offsetWidth;
     if (width > 0) {
-      this.swipeOffset = Math.max(event.deltaX, 0);
+      this.swipeOffset = Math.max(ev.deltaX, 0);
       this.swipePercentage = this.swipeOffset / width;
       if (this.swipePercentage < SWIPE_BOUNDRY) {
         this.setPageSwipeAttributes();
@@ -156,13 +158,16 @@ export class ModalSearchPage implements OnInit, OnDestroy {
     }
   }
 
+
+
   setPageSwipeAttributes() {
-    if (this.modalPageWrapper) {
+    if (this.modalTop) {
       this.domCtrl.write(() => {
-        this.renderer.setAttribute(this.modalPageWrapper, 'data-offset-x', this.swipeOffset.toString());
-        this.renderer.setAttribute(this.modalPageWrapper, 'data-opacity', `${1.0 - this.swipePercentage}`);
-        this.renderer.setStyle(this.modalPageWrapper, 'transform', `translateX(${this.swipeOffset}px)`);
-        this.renderer.setStyle(this.modalPageWrapper, 'opacity', `${1.0 - this.swipePercentage}`);
+        const opacity = (1.0 - this.swipePercentage);
+        this.renderer.setAttribute(this.modalTop, 'data-offset-x', this.swipeOffset.toString());
+        this.renderer.setAttribute(this.modalTop, 'data-opacity', `${opacity}`);
+        this.renderer.setStyle(this.modalTop, 'transform', `translateX(${this.swipeOffset}px)`);
+        this.renderer.setStyle(this.modalTop, 'opacity', `${opacity}`);
       });
     }
   }

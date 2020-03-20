@@ -11,7 +11,7 @@
           'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}</ion-label>
       </ion-item>
       <ion-item *ngFor="let draft of drafts$ | async" (click)="editRegistration(draft.id)">
-        <ion-icon slot="start" name="md-create"></ion-icon>
+        <ion-icon slot="start" name="create"></ion-icon>
         <ion-label>{{'ADD_MENU.DRAFT' | translate}}:
           {{ getName(draft.geoHazard) | translate }}<span
             *ngIf="geoHazardInfo.showSpace">&nbsp;</span>{{ 'MAP_ITEM_BAR.OBSERVATION' | translate | lowercase }}

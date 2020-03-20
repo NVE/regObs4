@@ -1,12 +1,10 @@
+import { MapImageComponent } from './map-image.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { ModalMapImagePage } from './modal-map-image.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { MapImageModule } from '../../../map-image/map-image.module';
-
 
 @NgModule({
   imports: [
@@ -14,10 +12,9 @@ import { MapImageModule } from '../../../map-image/map-image.module';
     FormsModule,
     IonicModule,
     TranslateModule,
-    LeafletModule,
-    MapImageModule,
+    LeafletModule
   ],
-  declarations: [ModalMapImagePage],
-  entryComponents: [ModalMapImagePage]
+  declarations: [MapImageComponent],
+  exports: [MapImageComponent]
 })
-export class ModalMapImagePageModule { }
+export class MapImageModule { }

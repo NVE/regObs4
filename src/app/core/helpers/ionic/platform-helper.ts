@@ -1,13 +1,5 @@
 import { Platform } from '@ionic/angular';
 
-declare module '@ionic/angular/dist/providers/platform' {
-    interface Platform {
-        isAndroidOrIos(this: Platform): boolean;
-    }
+export function isAndroidOrIos(platform: Platform): boolean {
+  return platform.is('cordova') && (platform.is('android') || platform.is('ios'));
 }
-
-function isAndroidOrIos(this: Platform): boolean {
-    return this.is('cordova') && (this.is('android') || this.is('ios'));
-}
-
-Platform.prototype.isAndroidOrIos = isAndroidOrIos;

@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { NgDestoryBase } from '../../helpers/observable-helper';
 import { Platform } from '@ionic/angular';
+import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class FullscreenService extends NgDestoryBase {
   constructor(private statusBar: StatusBar, private platform: Platform) {
     super();
     this._subject = new BehaviorSubject(false);
-    if (this.platform.isAndroidOrIos()) {
+    if (isAndroidOrIos(this.platform)) {
       this.platform.ready().then(() => {
         this.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
           if (val) {

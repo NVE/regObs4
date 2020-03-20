@@ -30,7 +30,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   fullscreen$: Observable<boolean>;
   geoHazard: GeoHazard;
   isSaveDisabled = false;
-  @ViewChild(SetLocationInMapComponent, { static: false }) setLocationInMapComponent: SetLocationInMapComponent;
+  @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
 
   private subscription: Subscription;
   private loggedInUser: LoggedInUser;

@@ -1,13 +1,21 @@
 ion-grid {
-    --ion-grid-padding: 10px;
+  --ion-grid-padding: 10px;
 }
 
 ion-button {
-    height: var(--ion-button-height);
-    ion-text {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 25px;
-    }
+  height: var(--ion-button-height);
+  ion-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 25px;
+  }
+
+  &.left-button {
+    margin-right: 5px;
+  }
+
+  &.right-button {
+    margin-left: 5px;
+  }
 }

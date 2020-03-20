@@ -42,7 +42,7 @@
         <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.SNOW.AVALANCHE_OBS.POSITION' |
               translate}}</ion-label>
         <ion-text color="medium" class="ion-align-self-start ion-text-wrap">
-          <ion-icon class="position-pin" color="medium" name="pin"></ion-icon>
+          <ion-icon class="position-pin" color="medium" name="location"></ion-icon>
           <ng-container *ngIf="registration.request.AvalancheObs.StartLat else noPosition">
             {{
                 registration.request.AvalancheObs.StartLat |
@@ -56,7 +56,7 @@
                 }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
           </ng-container>
         </ion-text>
-        <ion-icon slot="end" class="item-detail-icon" name="ios-arrow-forward">
+        <ion-icon slot="end" class="item-detail-icon" name="chevron-forward">
         </ion-icon>
       </ion-item>
       <ion-item>
