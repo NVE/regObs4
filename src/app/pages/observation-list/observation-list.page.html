@@ -1,6 +1,6 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
 <ion-content>
-  <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
+  <app-refresh-with-cancel [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
   </app-refresh-with-cancel>
   <ng-container *ngIf="observations !== undefined">
     <ion-virtual-scroll [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty"
