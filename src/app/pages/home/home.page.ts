@@ -78,7 +78,7 @@ export class HomePage extends RouterPage implements OnInit {
 
   async showUsageAnalyticsDialog() {
     await this.usageAnalyticsConsentService.checkUserDataConsentDialog();
-    this.geoPostionService.startTracking();
+    await this.geoPostionService.startTrackingComponent(DEBUG_TAG);
   }
 
   onMapReady(leafletMap: L.Map) {
@@ -117,14 +117,14 @@ export class HomePage extends RouterPage implements OnInit {
       return;
     }
     this.loggingService.debug(`Activate map updates and GeoLocation`, DEBUG_TAG);
-    this.geoPostionService.startTracking();
+    this.geoPostionService.startTrackingComponent(DEBUG_TAG);
     this.mapComponent.resumeSavingTiles();
     this.mapComponent.redrawMap();
   }
 
   onLeave() {
     this.loggingService.debug(`Home page onLeave. Disable map updates and GeoLocation`, DEBUG_TAG);
-    this.geoPostionService.stopTracking();
+    this.geoPostionService.stopTrackingComponent(DEBUG_TAG);
     this.mapComponent.pauseSavingTiles();
   }
 

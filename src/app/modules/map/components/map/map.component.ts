@@ -1,19 +1,18 @@
 import { Component, OnInit, Input, NgZone, OnDestroy, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { timer, Subject } from 'rxjs';
+import { timer, Subject, from } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
-import { take, takeWhile, tap, takeUntil } from 'rxjs/operators';
+import { take, takeWhile, tap, takeUntil, switchMap } from 'rxjs/operators';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
 import { RegObsTileLayer, IRegObsTileLayerOptions } from '../../core/classes/regobs-tile-layer';
-import '../../../../core/helpers/ionic/platform-helper';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
@@ -98,9 +97,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    if (this.activateGeoLocationOnStart) {
-      this.geoPositionService.stopTracking();
-    }
+    this.geoPositionService.stopTrackingComponent(DEBUG_TAG);
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
     this.pauseSavingTiles();
@@ -129,9 +126,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.loggingService.debug(`Follow mode changed to: ${this.followMode}`, DEBUG_TAG);
     });
 
-    this.mapService.centerMapToUser$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
-      this.geoPositionService.startTracking(true);
-    });
+    this.mapService.centerMapToUser$.pipe(
+      takeUntil(this.ngDestroy$),
+      switchMap(() => from(this.geoPositionService.startTrackingComponent(DEBUG_TAG, true)))).subscribe();
 
     this.mapSearchService.mapSearchClick$.pipe(takeUntil(this.ngDestroy$)).subscribe((item) => {
       this.disableFollowMode();
@@ -172,7 +169,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     if (this.activateGeoLocationOnStart) {
-      this.geoPositionService.startTracking();
+      this.geoPositionService.startTrackingComponent(DEBUG_TAG);
     }
 
     this.geoPositionService.currentPosition$.pipe(takeUntil(this.ngDestroy$))

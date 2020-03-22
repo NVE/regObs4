@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, ReplaySubject, from, of, Observable, Subscription } from 'rxjs';
-import { filter, map, concatMap, tap, catchError } from 'rxjs/operators';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, ReplaySubject, from, of, Observable, Subscription, combineLatest, merge, fromEvent } from 'rxjs';
+import { filter, map, catchError, distinctUntilChanged, startWith } from 'rxjs/operators';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
@@ -11,21 +11,26 @@ import { LogLevel } from '../../../modules/shared/services/logging/log-level.mod
 import { GeoPositionLog } from './geo-position-log.interface';
 import { GeoPositionErrorCode } from './geo-position-error.enum';
 import moment from 'moment';
+import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 
 const DEBUG_TAG = 'GeoPositionService';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GeoPositionService {
+export class GeoPositionService implements OnDestroy {
   private highAccuracyEnabled = new BehaviorSubject(true);
   private gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
   private currentPosition: BehaviorSubject<Geoposition> = new BehaviorSubject(null);
-  private setHeadingFunc: (event: DeviceOrientationEvent) => void;
   private currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
   private hasCompassHeading = new BehaviorSubject(false);
+
+  private readonly trackingComponents = new BehaviorSubject<string[]>([]);
+
+  // Subscriptions
   private positionSubscription: Subscription;
   private updateHeadingSubscription: Subscription;
+  private headingSubscription: Subscription;
 
   get currentPosition$() {
     return this.currentPosition.pipe(filter((cp) => cp !== null));
@@ -46,7 +51,32 @@ export class GeoPositionService {
     private diagnostic: Diagnostic,
     private alertController: AlertController,
     private translateService: TranslateService) {
-    this.setHeadingFunc = this.setHeading.bind(this);
+    this.startGeolocationTrackingSubscription();
+  }
+
+  ngOnDestroy(): void {
+    this.stopSubscriptions();
+  }
+
+
+  private startGeolocationTrackingSubscription() {
+    const anyComponentsTracking = this.trackingComponents.pipe(map((val) => val.length > 0), distinctUntilChanged());
+    combineLatest([this.getPlatformIsActiveObservable(), anyComponentsTracking]).pipe(
+      map(([platformIsActive, anyComponentsTracking]) => (platformIsActive && anyComponentsTracking) ? true : false))
+      .subscribe((activate) => {
+        if (activate) {
+          this.startSubscriptions();
+        } else {
+          this.stopSubscriptions();
+        }
+      });
+  }
+
+  private getPlatformIsActiveObservable() {
+    if (isAndroidOrIos(this.platform)) {
+      return merge(this.platform.resume.pipe(map(() => true)), this.platform.pause.pipe(map(() => false))).pipe(startWith(true));
+    }
+    return of(true);
   }
 
   private createPositionError(
@@ -100,26 +130,65 @@ export class GeoPositionService {
       });
   }
 
+  public async startTrackingComponent(name: string, forcePermissionDialog = false) {
+    if (forcePermissionDialog) {
+      const valid = await this.checkPermissions();
+      if (!valid) {
+        this.gpsPositionLog.next(this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied));
+        return;
+      }
+    }
+    this.trackingComponents.next([...this.getTrackingComponentsExcludeByName(name), name]);
+  }
 
-  startTracking(forcePermissionDialog = false) {
-    this.addGpsPositionLog('StartGpsTracking');
-    if (this.positionSubscription) {
+  public stopTrackingComponent(name: string) {
+    this.trackingComponents.next([...this.getTrackingComponentsExcludeByName(name)]);
+  }
+
+  private getTrackingComponentsExcludeByName(name: string) {
+    return this.trackingComponents.value.filter((x) => x !== name);
+  }
+
+
+  private startSubscriptions() {
+    this.startWatchingPosition();
+    this.startWatchingHeading();
+    this.startUpdateHeadingIfValidPositionAndNoCompassHeading();
+  }
+
+  private stopSubscriptions() {
+    this.stopWatchingHeading();
+    this.stopWatchingUpdateHeading();
+    this.stopWatchingPosition();
+  }
+
+  private stopWatchingPosition() {
+    if (this.positionSubscription && !this.positionSubscription.closed) {
+      this.addGpsPositionLog('StopGpsTracking');
       this.positionSubscription.unsubscribe();
     }
-    this.positionSubscription = (forcePermissionDialog ? from(this.checkPermissions()) : of(true)).pipe(
-      tap(() => this.loggingService.debug('Before watchPosition', DEBUG_TAG)),
-      concatMap((startWatch) => startWatch ? this.geolocation.watchPosition(
-        settings.gps.highAccuracyPositionOptions
-      ).pipe(
-        filter((result) => result !== null),
-        this.mapPosToLog(),
-        catchError((err) => {
-          this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
-          return of(this.createPositionError('Unknown error'));
-        })) : of(
-          this.createPositionError('Permission denied', GeoPositionErrorCode.PermissionDenied))),
-      tap((val) => this.loggingService.debug('After watchPosition', DEBUG_TAG, val)))
-      .subscribe((result: GeoPositionLog) => {
+  }
+
+  private stopWatchingUpdateHeading() {
+    if (this.updateHeadingSubscription && !this.updateHeadingSubscription.closed) {
+      this.updateHeadingSubscription.unsubscribe();
+    }
+  }
+
+  private startWatchingPosition() {
+    this.addGpsPositionLog('StartGpsTracking');
+    if (this.positionSubscription && !this.positionSubscription.closed) {
+      this.positionSubscription.unsubscribe();
+    }
+    this.positionSubscription = this.geolocation.watchPosition(
+      settings.gps.highAccuracyPositionOptions
+    ).pipe(
+      filter((result) => result !== null),
+      this.mapPosToLog(),
+      catchError((err) => {
+        this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
+        return of(this.createPositionError('Unknown error'));
+      })).subscribe((result: GeoPositionLog) => {
         this.gpsPositionLog.next(result);
         if (this.isValidPosition(result.pos)) {
           this.gpsPositionLog.next(({
@@ -130,25 +199,8 @@ export class GeoPositionService {
             pos: result.pos
           }));
           this.currentPosition.next(result.pos);
-          // if (!this.highAccuracyEnabled.value) {
-          //   this.highAccuracyEnabled.next(true);
-          // }
         }
       });
-    this.startWatchingHeading();
-    this.startUpdateHeadingIfValidPositionAndNoCompassHeading();
-  }
-
-  stopTracking() {
-    this.addGpsPositionLog('StopGpsTracking');
-    this.stopWatchingHeading();
-    // this.highAccuracyEnabled.next(false);
-    if (this.updateHeadingSubscription) {
-      this.updateHeadingSubscription.unsubscribe();
-    }
-    if (this.positionSubscription) {
-      this.positionSubscription.unsubscribe();
-    }
   }
 
   private isValidPosition(pos: Geoposition) {
@@ -201,40 +253,50 @@ export class GeoPositionService {
   }
 
   private startWatchingHeading() {
+    if (this.headingSubscription && !this.headingSubscription.closed) {
+      this.headingSubscription.unsubscribe();
+    }
+
+    this.headingSubscription = merge(
+      fromEvent((<any>window), 'deviceorientationabsolute'),
+      fromEvent((<any>window), 'deviceorientation'))
+      .subscribe((event: DeviceOrientationEvent) => this.setHeading(event));
+
     // TODO: Implement compass needs calibration alert?
     //   window.addEventListener('compassneedscalibration', function(event) {
     //     // ask user to wave device in a figure-eight motion
     //     event.preventDefault();
     // }, true);
 
-    this.requestDeviceOrientationPermission().then((granted) => {
-      if (granted) {
-        if ('ondeviceorientationabsolute' in <any>window) {
-          window.addEventListener('deviceorientationabsolute', this.setHeadingFunc, false);
-        } else if ('ondeviceorientation' in <any>window) {
-          window.addEventListener('deviceorientation', this.setHeadingFunc, false);
-        }
-      }
-    });
+    // this.requestDeviceOrientationPermission().then((granted) => {
+    //   if (granted) {
+    //     if ('ondeviceorientationabsolute' in <any>window) {
+    //       window.addEventListener('deviceorientationabsolute', this.setHeadingFunc, false);
+    //     } else if ('ondeviceorientation' in <any>window) {
+    //       window.addEventListener('deviceorientation', this.setHeadingFunc, false);
+    //     }
+    //   }
+    // });
+
   }
 
-  private requestDeviceOrientationPermission(): Promise<boolean> {
-    // TODO: iOS 13 ask for permission every time, and from localhost.
-    // this needs to be better supported before turning on
-    // or use another native plugin than depricated
-    // https://github.com/apache/cordova-plugin-device-orientation
-    // https://medium.com/flawless-app-stories/how-to-request-device-motion-and-orientation-permission-in-ios-13-74fc9d6cd140
+  // private requestDeviceOrientationPermission(): Promise<boolean> {
+  // TODO: iOS 13 ask for permission every time, and from localhost.
+  // this needs to be better supported before turning on
+  // or use another native plugin than depricated
+  // https://github.com/apache/cordova-plugin-device-orientation
+  // https://medium.com/flawless-app-stories/how-to-request-device-motion-and-orientation-permission-in-ios-13-74fc9d6cd140
 
-    // const doe = <any>DeviceOrientationEvent;
-    // if (typeof doe.requestPermission === 'function') {
-    //   // iOS 13+
-    //   const response = await doe.requestPermission();
-    //   return response === 'granted';
-    // } else {
-    //   // non iOS 13+
-    return Promise.resolve(true);
-    // }
-  }
+  // const doe = <any>DeviceOrientationEvent;
+  // if (typeof doe.requestPermission === 'function') {
+  //   // iOS 13+
+  //   const response = await doe.requestPermission();
+  //   return response === 'granted';
+  // } else {
+  //   // non iOS 13+
+  // return Promise.resolve(true);
+  // }
+  // }
 
   private startUpdateHeadingIfValidPositionAndNoCompassHeading() {
     this.updateHeadingSubscription = this.currentPosition$.pipe(filter((pos) =>
@@ -260,7 +322,8 @@ export class GeoPositionService {
 
   private stopWatchingHeading() {
     this.hasCompassHeading.next(false);
-    window.removeEventListener('deviceorientation', this.setHeadingFunc);
-    window.removeEventListener('deviceorientationabsolute', this.setHeadingFunc);
+    if (this.headingSubscription && !this.headingSubscription.closed) {
+      this.headingSubscription.unsubscribe();
+    }
   }
 }
