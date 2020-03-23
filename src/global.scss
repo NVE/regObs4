@@ -232,6 +232,10 @@ ion-list {
   /* https://github.com/ionic-team/ionic/issues/17233 */
   overflow-y: scroll !important;
 }
+.sc-ion-action-sheet-ios-h,
+.sc-ion-action-sheet-md-h {
+  --ion-background-color: var(--ion-item-background);
+}
 
 ion-menu {
   ion-content {
