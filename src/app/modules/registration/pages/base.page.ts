@@ -1,109 +1,105 @@
-import { OnInit, OnDestroy } from '@angular/core';
+import { OnInit } from '@angular/core';
 import { RegistrationTid } from '../models/registrationTid.enum';
-import { Subscription } from 'rxjs';
+import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
 import { IRegistration } from '../models/registration.model';
 import { ActivatedRoute } from '@angular/router';
+import { take, takeUntil, map, switchMap, tap } from 'rxjs/operators';
+import { NgDestoryBase } from '../../../core/helpers/observable-helper';
 
-export abstract class BasePage implements OnInit, OnDestroy {
+export abstract class BasePage extends NgDestoryBase implements OnInit {
 
-    registration: IRegistration;
-    basePageService: BasePageService;
-    registrationTid: RegistrationTid;
-    activatedRoute: ActivatedRoute;
+  registration: IRegistration;
+  basePageService: BasePageService;
+  registrationTid: RegistrationTid;
+  activatedRoute: ActivatedRoute;
 
-    private subscription: Subscription;
 
-    constructor(
-        registrationTid: RegistrationTid,
-        basePageService: BasePageService,
-        activatedRoute: ActivatedRoute,
-    ) {
-        this.basePageService = basePageService;
-        this.activatedRoute = activatedRoute;
-        this.registrationTid = registrationTid;
+  constructor(
+    registrationTid: RegistrationTid,
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute,
+  ) {
+    super();
+    this.basePageService = basePageService;
+    this.activatedRoute = activatedRoute;
+    this.registrationTid = registrationTid;
+  }
+
+  ngOnInit() {
+    const id = this.activatedRoute.snapshot.params['id'];
+    this.basePageService.RegistrationService.getSavedRegistrationByIdObservable(id).pipe(
+      take(1), map((reg) => {
+        this.basePageService.createDefaultProps(reg, this.registrationTid);
+        return reg;
+      }), tap((reg) => {
+        this.registration = reg;
+      }), switchMap(() => this.createInitObservable()), takeUntil(this.ngDestroy$)
+    ).subscribe();
+  }
+
+  onInit?(): void | Promise<any>;
+
+  onBeforeLeave?(): void | Promise<any>;
+
+  onReset?(): void;
+
+  isValid?(): boolean | Promise<boolean>;
+
+  // NOTE: Remember to add canDeactivate: [CanDeactivateRouteGuard] in page module
+  async canLeave() {
+    // Check if implementation page has implemented custom isValid logic
+    const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
+    // Only return alert if page is not empty and invalid
+    if (!this.isEmpty() && !valid) {
+      return this.basePageService.confirmLeave(this.registration, this.registrationTid,
+        () => this.onReset ? this.onReset() : null);
     }
+    return true;
+  }
 
-    ngOnInit() {
-        const id = this.activatedRoute.snapshot.params['id'];
-        this.subscription = this.basePageService.RegistrationService
-            .getSavedRegistrationByIdObservable(id).subscribe(async (val) => {
-                if (val) {
-                    this.registration = val;
-                    if (this.registrationTid) {
-                        this.basePageService.createDefaultProps(this.registration, this.registrationTid);
-                    }
-                    if (this.onInit) {
-                        await Promise.resolve(this.onInit());
-                    }
-                    this.basePageService.Zone.run(() => {
-                        this.registration = this.registration;
-                    });
-                }
-            });
+  private createInitObservable() {
+    if (this.onInit) {
+      return from(Promise.resolve(this.onInit()));
     }
+    return of({});
+  }
 
-    ngOnDestroy() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
+  async ionViewDidLeave() {
+    if (this.onBeforeLeave) {
+      await Promise.resolve(this.onBeforeLeave());
     }
+    this.save(true);
+  }
 
-    onInit?(): void | Promise<any>;
+  save(clean = false) {
+    return this.basePageService.RegistrationService.saveRegistrationAsync(this.registration, clean);
+  }
 
-    onBeforeLeave?(): void | Promise<any>;
+  getSaveFunc() {
+    return () => this.save();
+  }
 
-    onReset?(): void;
+  isEmpty() {
+    return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid);
+  }
 
-    isValid?(): boolean | Promise<boolean>;
+  reset() {
+    return this.basePageService.confirmReset(this.registration, this.registrationTid, () => this.onReset ? this.onReset() : null);
+  }
 
-    // NOTE: Remember to add canDeactivate: [CanDeactivateRouteGuard] in page module
-    async canLeave() {
-        // Check if implementation page has implemented custom isValid logic
-        const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
-        // Only return alert if page is not empty and invalid
-        if (!this.isEmpty() && !valid) {
-            return this.basePageService.confirmLeave(this.registration, this.registrationTid,
-                () => this.onReset ? this.onReset() : null);
-        }
-        return true;
-    }
+  getResolvedUrl(): string {
+    return '/' + this.activatedRoute.snapshot.pathFromRoot
+      .map(v => v.url.map(segment => segment.toString()).join('/'))
+      .filter((path) => !!path)
+      .join('/');
+  }
 
-    async ionViewDidLeave() {
-        if (this.onBeforeLeave) {
-            await Promise.resolve(this.onBeforeLeave());
-        }
-        this.save(true);
-    }
-
-    save(clean = false) {
-        return this.basePageService.RegistrationService.saveRegistrationAsync(this.registration, clean);
-    }
-
-    getSaveFunc() {
-        return () => this.save();
-    }
-
-    isEmpty() {
-        return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid);
-    }
-
-    reset() {
-        return this.basePageService.confirmReset(this.registration, this.registrationTid, () => this.onReset ? this.onReset() : null);
-    }
-
-    getResolvedUrl(): string {
-        return '/' + this.activatedRoute.snapshot.pathFromRoot
-            .map(v => v.url.map(segment => segment.toString()).join('/'))
-            .filter((path) => !!path)
-            .join('/');
-    }
-
-    // getConfiguredUrl(): string {
-    //     return '/' + this.activatedRoute.snapshot.pathFromRoot
-    //         .filter(v => v.routeConfig)
-    //         .map(v => v.routeConfig.path)
-    //         .join('/');
-    // }
+  // getConfiguredUrl(): string {
+  //     return '/' + this.activatedRoute.snapshot.pathFromRoot
+  //         .filter(v => v.routeConfig)
+  //         .map(v => v.routeConfig.path)
+  //         .join('/');
+  // }
 
 }
