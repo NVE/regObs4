@@ -8,6 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
         useClass: CustomTranslateLoader
       }
     }),
+    AngularSvgIconModule.forRoot(),
     SharedModule,
   ],
   exports: [
