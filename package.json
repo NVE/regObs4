@@ -43,7 +43,7 @@
     "@ionic-native/clipboard": "^5.22.0",
     "@ionic-native/core": "^5.22.0",
     "@ionic-native/deeplinks": "^5.22.0",
-    "@ionic-native/device-orientation": "^5.22.0",
+    "@ionic-native/device-orientation": "^5.23.0",
     "@ionic-native/diagnostic": "^5.22.0",
     "@ionic-native/email-composer": "^5.22.0",
     "@ionic-native/file": "^5.22.0",
@@ -79,6 +79,7 @@
     "cordova-plugin-android-permissions": "^1.0.2",
     "cordova-plugin-background-download": "git+https://github.com/sgrebnov/cordova-plugin-background-download.git",
     "cordova-plugin-camera": "^4.1.0",
+    "cordova-plugin-device-orientation": "^2.0.1",
     "cordova-plugin-email-composer": "^0.9.2",
     "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-geolocation": "^4.0.2",
@@ -217,7 +218,8 @@
       },
       "cordova-plugin-x-socialsharing": {
         "ANDROID_SUPPORT_V4_VERSION": "24.1.1+"
-      }
+      },
+      "cordova-plugin-device-orientation": {}
     },
     "platforms": [
       "android",

@@ -47,6 +47,7 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { RegistrationRepositoryService } from './modules/registration/services/registration-repository/registration-repository.service';
 import { initTranslateService } from './custom-translate.loader';
+import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -75,6 +76,7 @@ export const APP_PROVIDERS = [
     deps: [TranslateService]
   },
   Geolocation,
+  DeviceOrientation,
   Deeplinks,
   BackgroundFetch,
   // BackgroundGeolocation,

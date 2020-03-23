@@ -12,6 +12,7 @@ import { GeoPositionLog } from './geo-position-log.interface';
 import { GeoPositionErrorCode } from './geo-position-error.enum';
 import moment from 'moment';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
+import { DeviceOrientation, DeviceOrientationCompassHeading } from '@ionic-native/device-orientation/ngx';
 
 const DEBUG_TAG = 'GeoPositionService';
 
@@ -23,13 +24,11 @@ export class GeoPositionService implements OnDestroy {
   private gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
   private currentPosition: BehaviorSubject<Geoposition> = new BehaviorSubject(null);
   private currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
-  private hasCompassHeading = new BehaviorSubject(false);
 
   private readonly trackingComponents = new BehaviorSubject<string[]>([]);
 
   // Subscriptions
   private positionSubscription: Subscription;
-  private updateHeadingSubscription: Subscription;
   private headingSubscription: Subscription;
 
   get currentPosition$() {
@@ -46,6 +45,7 @@ export class GeoPositionService implements OnDestroy {
 
   constructor(
     private geolocation: Geolocation,
+    private deviceOrientation: DeviceOrientation,
     private platform: Platform,
     private loggingService: LoggingService,
     private diagnostic: Diagnostic,
@@ -153,12 +153,10 @@ export class GeoPositionService implements OnDestroy {
   private startSubscriptions() {
     this.startWatchingPosition();
     this.startWatchingHeading();
-    this.startUpdateHeadingIfValidPositionAndNoCompassHeading();
   }
 
   private stopSubscriptions() {
     this.stopWatchingHeading();
-    this.stopWatchingUpdateHeading();
     this.stopWatchingPosition();
   }
 
@@ -166,12 +164,6 @@ export class GeoPositionService implements OnDestroy {
     if (this.positionSubscription && !this.positionSubscription.closed) {
       this.addGpsPositionLog('StopGpsTracking');
       this.positionSubscription.unsubscribe();
-    }
-  }
-
-  private stopWatchingUpdateHeading() {
-    if (this.updateHeadingSubscription && !this.updateHeadingSubscription.closed) {
-      this.updateHeadingSubscription.unsubscribe();
     }
   }
 
@@ -256,28 +248,29 @@ export class GeoPositionService implements OnDestroy {
     if (this.headingSubscription && !this.headingSubscription.closed) {
       this.headingSubscription.unsubscribe();
     }
+    // NOTE! Because of issues with show heading with W3C Devece Orientation API in iOS 13, the depricated
+    // plugin cordova-plugin-device-orientation is used instead on ios
+    // https://github.com/apache/cordova-plugin-device-orientation/issues/52
+    this.headingSubscription = (this.shouldUseNativePlugin() ? this.getHeadingNative() : this.getWebHeadingObservable())
+      .subscribe((heading: number) => this.validateAndSetHeading(heading));
+  }
 
-    this.headingSubscription = merge(
+  private shouldUseNativePlugin(): boolean {
+    return this.platform.is('cordova') && this.platform.is('ios');
+  }
+
+  private getHeadingNative() {
+    return this.deviceOrientation.watchHeading().pipe(map((val) => val?.magneticHeading));
+  }
+
+  private getWebHeadingObservable() {
+    return merge(
       fromEvent((<any>window), 'deviceorientationabsolute'),
-      fromEvent((<any>window), 'deviceorientation'))
-      .subscribe((event: DeviceOrientationEvent) => this.setHeading(event));
-
-    // TODO: Implement compass needs calibration alert?
-    //   window.addEventListener('compassneedscalibration', function(event) {
-    //     // ask user to wave device in a figure-eight motion
-    //     event.preventDefault();
-    // }, true);
-
-    // this.requestDeviceOrientationPermission().then((granted) => {
-    //   if (granted) {
-    //     if ('ondeviceorientationabsolute' in <any>window) {
-    //       window.addEventListener('deviceorientationabsolute', this.setHeadingFunc, false);
-    //     } else if ('ondeviceorientation' in <any>window) {
-    //       window.addEventListener('deviceorientation', this.setHeadingFunc, false);
-    //     }
-    //   }
-    // });
-
+      fromEvent((<any>window), 'deviceorientation')).pipe(map((event: DeviceOrientationEvent) => {
+        const appleHeading = (<any>event).webkitCompassHeading;
+        const heading: number = appleHeading || this.getAbsoluteHeading(event);
+        return heading;
+      }));
   }
 
   // private requestDeviceOrientationPermission(): Promise<boolean> {
@@ -286,6 +279,7 @@ export class GeoPositionService implements OnDestroy {
   // or use another native plugin than depricated
   // https://github.com/apache/cordova-plugin-device-orientation
   // https://medium.com/flawless-app-stories/how-to-request-device-motion-and-orientation-permission-in-ios-13-74fc9d6cd140
+  // https://github.com/apache/cordova-plugin-device-orientation/issues/52
 
   // const doe = <any>DeviceOrientationEvent;
   // if (typeof doe.requestPermission === 'function') {
@@ -298,30 +292,18 @@ export class GeoPositionService implements OnDestroy {
   // }
   // }
 
-  private startUpdateHeadingIfValidPositionAndNoCompassHeading() {
-    this.updateHeadingSubscription = this.currentPosition$.pipe(filter((pos) =>
-      !this.hasCompassHeading
-      && pos
-      && pos.coords
-      && this.isValidHeading(pos.coords.heading)))
-      .subscribe((pos) => this.currentHeading.next(pos.coords.heading));
-  }
-
   private getAbsoluteHeading(event: DeviceOrientationEvent) {
     return (event.alpha !== undefined && event.absolute) ? (360 - event.alpha) : undefined;
   }
 
-  private setHeading(event: DeviceOrientationEvent) {
-    const appleHeading = (<any>event).webkitCompassHeading;
-    const heading: number = appleHeading || this.getAbsoluteHeading(event);
+
+  private validateAndSetHeading(heading: number) {
     if (this.isValidHeading(heading)) {
-      this.hasCompassHeading.next(true);
       this.currentHeading.next(heading);
     }
   }
 
   private stopWatchingHeading() {
-    this.hasCompassHeading.next(false);
     if (this.headingSubscription && !this.headingSubscription.closed) {
       this.headingSubscription.unsubscribe();
     }
