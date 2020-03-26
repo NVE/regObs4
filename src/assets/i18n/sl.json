@@ -640,12 +640,11 @@
     "ICE_LEGEND_TEXT_6": "Plinovod",
     "ICE_LEGEND_TEXT_7": "Predor elektrarne",
     "ICE_MAP_DESCRIPTION": "Podporni zemljevid prikazuje dele vodotokov, ki se zaradi predpisov o proizvodnji električne energije pozimi obnašajo nepredvidljivo",
-    "IN_DEGREES": "V stopinjah",
     "LOW": "Nizko",
     "MARITINE_BORDER": "Meja morja",
     "MIDDLE": "Sredinsko",
     "NO_OPACITY": "Neprosojno",
-    "STEEPNESS_COLOR_INFO": "Barve označujejo naklon terena",
+    "STEEPNESS_COLOR_INFO": "Barve označujejo naklon terena v stopinjah:",
     "STEEPNESS_MAP_DESCRIPTION": "Zemljevid naklona",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Zemljevid oslabitve ledu"
   },

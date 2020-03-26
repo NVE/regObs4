@@ -640,12 +640,11 @@
     "ICE_LEGEND_TEXT_6": "Rohrleitung",
     "ICE_LEGEND_TEXT_7": "Kraftwerkstunnel",
     "ICE_MAP_DESCRIPTION": "Die Unterstützungskarte zeigt Teile von Wasserläufen, die sich aufgrund von Vorschriften zur Stromerzeugung den ganzen Winter über unvorhersehbar verhalten",
-    "IN_DEGREES": "In Grad",
     "LOW": "Tief",
     "MARITINE_BORDER": "Seegrenze",
     "MIDDLE": "Mittel",
     "NO_OPACITY": "Solid",
-    "STEEPNESS_COLOR_INFO": "Farben geben die Steilheit im Gelände wieder",
+    "STEEPNESS_COLOR_INFO": "Farben geben die Steilheit im Gelände wieder in Grad:",
     "STEEPNESS_MAP_DESCRIPTION": "Neigungskarte",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Geschwächtes Eis"
   },

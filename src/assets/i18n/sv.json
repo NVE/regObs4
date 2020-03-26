@@ -640,12 +640,11 @@
     "ICE_LEGEND_TEXT_6": "Rörledning",
     "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
     "ICE_MAP_DESCRIPTION": "Stödkarta visar delar av vattendrag som uppför sig oförutsägbart under vintern på grund av reglering vid vattenkraftsproduktion",
-    "IN_DEGREES": "I grader",
     "LOW": "Låg",
     "MARITINE_BORDER": "Havsgräns",
     "MIDDLE": "Medel",
     "NO_OPACITY": "Solid",
-    "STEEPNESS_COLOR_INFO": "Färger anger branthet i terrängen",
+    "STEEPNESS_COLOR_INFO": "Färger anger branthet i terrängen i grader:",
     "STEEPNESS_MAP_DESCRIPTION": "Lutningskarta",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Försvagad is"
   },

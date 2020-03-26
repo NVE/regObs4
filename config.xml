@@ -28,6 +28,7 @@
     <preference name="KeyboardResizeMode" value="ionic" />
     <preference name="HideKeyboardFormAccessoryBar" value="false" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+    <preference name="WKWebViewOnly" value="true" />
     <platform name="android">
         <allow-navigation href="http://localhost:8080/*" />
         <allow-intent href="market:*" />
