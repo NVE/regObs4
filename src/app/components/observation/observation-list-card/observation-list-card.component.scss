@@ -13,7 +13,7 @@ ion-card {
   }
   ion-card-content {
     padding: 0px;
-    font-size: 12px;
+    font-size: 16px;
     ion-grid {
       // margin-bottom: 25px;
       ion-row {
@@ -51,6 +51,7 @@ ion-card {
       .card-icon-item-icon {
         // padding-right: 5px;
         margin-right: 5px;
+        margin-top: 2px;
       }
       app-competence {
         display: inline-block;
