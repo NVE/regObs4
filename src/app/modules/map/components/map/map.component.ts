@@ -62,6 +62,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         return L.DomUtil.getPosition(this._mapPane) || new L.Point(0, 0);
       },
+      _rawPanBy: function (offset) {
+        if (this._mapPane) {
+          L.DomUtil.setPosition(this._mapPane, this._getMapPanePos().subtract(offset));
+        }
+      }
     });
   }
 
@@ -183,6 +188,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
     this.offlineMapService.resumeSavingTiles();
+
+    this.startInvalidateSizeMapTimer();
 
     this.map.on('resize', () => this.updateMapView());
     this.mapReady.emit(this.map);
@@ -321,19 +328,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  // Force redraw map size on interval to make sure tiles are displayed
+  private startInvalidateSizeMapTimer() {
+    timer(2000, 5000).pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.redrawMap());
+  }
+
   redrawMap() {
-    let counter = 3;
-    timer(500, 50).pipe(
-      takeUntil(this.ngDestroy$),
-      takeWhile(() => counter > 0),
-      tap(() => counter--)).subscribe(() => {
-        if (this.map) {
-          this.loggingService.debug('Invalidate size', DEBUG_TAG);
-          this.map.invalidateSize();
-        } else {
-          this.loggingService.debug('No map to invalidate', DEBUG_TAG);
-        }
-      });
+    if (this.map) {
+      this.map.invalidateSize();
+    }
+    window.dispatchEvent(new Event('resize'));
   }
 
   ngAfterViewInit(): void {
