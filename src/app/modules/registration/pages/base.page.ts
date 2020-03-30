@@ -27,6 +27,10 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
   }
 
   ngOnInit() {
+
+  }
+
+  ionViewDidEnter() {
     const id = this.activatedRoute.snapshot.params['id'];
     this.basePageService.RegistrationService.getSavedRegistrationByIdObservable(id).pipe(
       take(1), map((reg) => {
@@ -65,11 +69,11 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
     return of({});
   }
 
-  async ionViewDidLeave() {
+  async ionViewWillLeave() {
     if (this.onBeforeLeave) {
       await Promise.resolve(this.onBeforeLeave());
     }
-    this.save(true);
+    await this.save(true);
   }
 
   save(clean = false) {
