@@ -29,7 +29,7 @@ function deleteSourceMaps() {
   console.log('deleteing source map files ');
   console.log('===========================');
 
-  fs.readdirSync(TARGET_DIR).filter(f => f.extname(f) === '.map').forEach(file => {
+  fs.readdirSync(TARGET_DIR).filter(f => path.extname(f) === '.map').forEach(file => {
     fs.unlinkSync(file);
   });
 }
