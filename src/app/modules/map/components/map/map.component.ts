@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, NgZone, OnDestroy, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { timer, Subject, from } from 'rxjs';
+import { timer, Subject, from, BehaviorSubject } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
-import { take, takeWhile, tap, takeUntil, switchMap } from 'rxjs/operators';
+import { take, takeUntil, switchMap, distinctUntilChanged, withLatestFrom, filter } from 'rxjs/operators';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -31,8 +31,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() showSupportMaps = true;
   @Input() center: L.LatLng;
   @Input() zoom: number;
-  @Input() activateGeoLocationOnStart = true;
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
+  @Input() autoActivate = true;
+  @Input() geoTag = DEBUG_TAG;
 
   loaded = false;
   private map: L.Map;
@@ -43,6 +44,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private followMode = true;
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
+
+  private isActive: BehaviorSubject<boolean>;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -62,6 +65,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         return L.DomUtil.getPosition(this._mapPane) || new L.Point(0, 0);
       },
+      _rawPanBy: function (offset) {
+        if (this._mapPane) {
+          L.DomUtil.setPosition(this._mapPane, this._getMapPanePos().subtract(offset));
+        }
+      }
     });
   }
 
@@ -78,6 +86,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   async ngOnInit() {
+    this.isActive = new BehaviorSubject(this.autoActivate);
     try {
       if (this.center === undefined || this.zoom === undefined) {
         const currentView = await this.mapService.mapView$.pipe(take(1)).toPromise();
@@ -100,11 +109,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.geoPositionService.stopTrackingComponent(DEBUG_TAG);
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
-    this.pauseSavingTiles();
     if (this.map) {
       this.map.remove();
       this.map = null;
     }
+  }
+
+  componentIsActive(isActive: boolean) {
+    this.isActive.next(isActive);
   }
 
   onLeafletMapReady(map: L.Map) {
@@ -168,10 +180,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.redrawMap();
     });
 
-    if (this.activateGeoLocationOnStart) {
-      this.geoPositionService.startTrackingComponent(DEBUG_TAG);
-    }
-
     this.geoPositionService.currentPosition$.pipe(takeUntil(this.ngDestroy$))
       .subscribe((pos) => this.onPositionUpdate(pos));
 
@@ -182,18 +190,25 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
 
-    this.offlineMapService.resumeSavingTiles();
+    this.startActiveSubscriptions();
+
+    this.startInvalidateSizeMapTimer();
 
     this.map.on('resize', () => this.updateMapView());
     this.mapReady.emit(this.map);
   }
 
-  resumeSavingTiles() {
-    this.offlineMapService.resumeSavingTiles();
-  }
-
-  pauseSavingTiles() {
-    this.offlineMapService.pauseSavingTiles();
+  private startActiveSubscriptions() {
+    this.isActive.pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$)).subscribe((active) => {
+      if (active) {
+        this.offlineMapService.resumeSavingTiles();
+        this.geoPositionService.startTrackingComponent(this.geoTag);
+        this.redrawMap();
+      } else {
+        this.offlineMapService.pauseSavingTiles();
+        this.geoPositionService.stopTrackingComponent(this.geoTag);
+      }
+    });
   }
 
   private onMapMove() {
@@ -321,19 +336,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  // Force redraw map size on interval to make sure tiles are displayed
+  private startInvalidateSizeMapTimer() {
+    timer(2000, 5000).pipe(withLatestFrom(this.isActive), filter(([timer, active]) => active), takeUntil(this.ngDestroy$)).subscribe(() => this.redrawMap());
+  }
+
   redrawMap() {
-    let counter = 3;
-    timer(500, 50).pipe(
-      takeUntil(this.ngDestroy$),
-      takeWhile(() => counter > 0),
-      tap(() => counter--)).subscribe(() => {
-        if (this.map) {
-          this.loggingService.debug('Invalidate size', DEBUG_TAG);
-          this.map.invalidateSize();
-        } else {
-          this.loggingService.debug('No map to invalidate', DEBUG_TAG);
-        }
-      });
+    if (this.map) {
+      this.map.invalidateSize();
+    }
+    window.dispatchEvent(new Event('resize'));
   }
 
   ngAfterViewInit(): void {

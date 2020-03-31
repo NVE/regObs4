@@ -124,8 +124,8 @@ export class MapSearchService {
     const existingHistory = (await this.getSearchHistoryAsObservable().pipe(take(1)).toPromise()
     ).filter((item) =>
       !(item.latlng.lat === searchResult.latlng.lat && item.latlng.lng === searchResult.latlng.lng));
-    existingHistory.push({ timestamp: moment().unix(), ...searchResult });
-    const items = existingHistory.slice(-(settings.map.search.searchHistorySize)); // Keep only last 5 items
+    existingHistory.splice(0, 0, { timestamp: moment().unix(), ...searchResult }); // Insert new search item at index 0
+    const items = existingHistory.slice(0, settings.map.search.searchHistorySize); // Keep only last 5 items
     await nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('upsert', { id: 'searchresults', items }).exec();
   }
 
@@ -133,6 +133,6 @@ export class MapSearchService {
     return new NSqlFullUpdateObservable<{ id: string, items: MapSearchHistory[] }[]>
       (nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('select')
         .listen())
-      .pipe(map((val) => val.length > 0 ? val[0].items.reverse() : []));
+      .pipe(map((val) => val.length > 0 ? val[0].items : []));
   }
 }
