@@ -24,26 +24,19 @@ function addBase64SourceMaps() {
   });
 }
 
-function stripSourceMaps() {
+function deleteSourceMaps() {
   console.log('===========================');
-  console.log('stripping sourceMappingURL ');
+  console.log('deleteing source map files ');
   console.log('===========================');
 
-  getFiles().forEach(file => {
-    let mapFile = path.join(TARGET_DIR, file + '.map');
-    let targetFile = path.join(TARGET_DIR, file);
-    if (path.extname(file) === '.js' && fs.existsSync(mapFile)) {
-      let bufFile = fs.readFileSync(targetFile, "utf8");
-      let result = bufFile.replace('//# sourceMappingURL=' + file + '.map', '');
-      fs.writeFileSync(targetFile, result);
-      fs.unlinkSync(mapFile); // Delete .map file
-    }
+  fs.readdirSync(TARGET_DIR).filter(f => f.extname(f) === '.map').forEach(file => {
+    fs.unlinkSync(file);
   });
 }
 
 module.exports = function (ctx) {
   if (ctx.argv.includes('--release')) {
-    stripSourceMaps();
+    deleteSourceMaps();
   } else {
     addBase64SourceMaps();
   }
