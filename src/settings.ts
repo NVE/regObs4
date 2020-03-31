@@ -121,7 +121,7 @@ export const settings = {
         {
           name: 'steepness-outlet',
           description: 'STEEPNESS_OUTLET_MAP_DESCRIPTION',
-          url: 'http://gis3.nve.no/arcgis/rest/services/wmts/Kast/MapServer/tile/{z}/{y}/{x}',
+          url: 'http://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
           enabled: false,
           opacity: 0.5,
           geoHazardId: 10,
