@@ -24,7 +24,7 @@ function addBase64SourceMaps() {
   });
 }
 
-function stripSourceMappingUrl() {
+function stripSourceMaps() {
   console.log('===========================');
   console.log('stripping sourceMappingURL ');
   console.log('===========================');
@@ -36,13 +36,14 @@ function stripSourceMappingUrl() {
       let bufFile = fs.readFileSync(targetFile, "utf8");
       let result = bufFile.replace('//# sourceMappingURL=' + file + '.map', '');
       fs.writeFileSync(targetFile, result);
+      fs.unlinkSync(mapFile); // Delete .map file
     }
   });
 }
 
 module.exports = function (ctx) {
   if (ctx.argv.includes('--release')) {
-    stripSourceMappingUrl();
+    stripSourceMaps();
   } else {
     addBase64SourceMaps();
   }
