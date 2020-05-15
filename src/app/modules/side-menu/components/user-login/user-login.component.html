@@ -1,6 +1,6 @@
 <ng-container *ngIf="($loggedInUser | async) as loggedInUser">
   <ion-item routerLink="/login" routerDirection="forward" detail="true">
-    <ion-icon slot="start" name="contact" color="varsom-blue"></ion-icon>
+    <ion-icon slot="start" name="person-circle" color="varsom-blue"></ion-icon>
     <ion-label *ngIf="loggedInUser.isLoggedIn" class="menu-label">
       {{ loggedInUser.email }}
     </ion-label>

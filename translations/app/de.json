@@ -1,0 +1,9 @@
+{
+    "config_ios": {
+        "NSLocationWhenInUseUsageDescription": "Der Standort wird verwendet, um Ihre Position auf der Karte anzuzeigen und die Anfangsposition bei der Dokumentation der Beobachtung festzulegen",
+        "NSLocationAlwaysUsageDescription": "Der Standort wird verwendet, um Ihre Position auf der Karte anzuzeigen und die Anfangsposition bei der Dokumentation der Beobachtung festzulegen",
+        "NSPhotoLibraryUsageDescription": "Füge Bilder zu Beobachtung hinzu",
+        "NSPhotoLibraryAddUsageDescription": "Füge Bilder zu Beobachtung hinzu",
+        "NSCameraUsageDescription": "Füge Bilder zu Beobachtung hinzu"
+    }
+}

@@ -8,39 +8,31 @@
         <ion-col size="12">
           <div class="card-icon-item">
             <svg-icon class="card-icon-item-icon" src="/assets/icon/time.svg"
-              [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+              [svgStyle]="{'width.px':16, 'height.px':16  }"></svg-icon>
             {{
             dtObsDate | formatDate | async }}
           </div>
           <div class="card-icon-item">
-            <svg-icon class="card-icon-item-icon" [src]="icon" [svgStyle]="{'width.px':15, 'height.px':15  }">
+            <svg-icon class="card-icon-item-icon" [src]="icon" [svgStyle]="{'width.px':16, 'height.px':16  }">
             </svg-icon>
             <app-geo-name [geoHazards]="[geoHazard]"></app-geo-name>
           </div>
           <div class="card-icon-item">
             <svg-icon class="card-icon-item-icon" src="/assets/icon/moh.svg"
-              [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+              [svgStyle]="{'width.px':16, 'height.px':16  }"></svg-icon>
             {{
             obs.ObsLocation.Height }}
             {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL' | translate}}
           </div>
           <div class="card-icon-item">
             <svg-icon class="card-icon-item-icon" src="/assets/icon/user.svg"
-              [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+              [svgStyle]="{'width.px':16, 'height.px':16  }"></svg-icon>
             {{obs.Observer.NickName}}
-            <!-- <ion-icon [name]="star.full ? 'star' : 'star-outline'" *ngFor="let star of stars"></ion-icon> -->
-            <div class="stars" *ngIf="!hasNoStars">
-              <ng-container *ngFor="let star of stars">
-                <svg-icon *ngIf="star.full" src="/assets/icon/star-selected.svg"
-                  [svgStyle]="{'width.px':8.34, 'height.px':8  }"></svg-icon>
-                <svg-icon *ngIf="!star.full" src="/assets/icon/star-empty.svg"
-                  [svgStyle]="{'width.px':8.34, 'height.px':8  }"></svg-icon>
-              </ng-container>
-            </div>
+            <app-competence [competenceLevel]="competenceLevel"></app-competence>
           </div>
           <div class="card-icon-item" *ngIf="obs.Observer.ObserverGroupName">
             <svg-icon class="card-icon-item-icon" src="/assets/icon/usergroup.svg"
-              [svgStyle]="{'width.px':15, 'height.px':15  }"></svg-icon>
+              [svgStyle]="{'width.px':16, 'height.px':16  }"></svg-icon>
             {{obs.Observer.ObserverGroupName}}
           </div>
         </ion-col>
@@ -77,7 +69,7 @@
       </ion-button>
       <ion-button mode="ios" fill="clear" class="reg-id" slot="end" (click)="share()">
         ID: {{ obs.RegID }}
-        <ion-icon slot="end" class="share-icon" name="md-share"></ion-icon>
+        <ion-icon slot="end" class="share-icon" name="share-social"></ion-icon>
       </ion-button>
     </ion-item>
   </ion-card-content>

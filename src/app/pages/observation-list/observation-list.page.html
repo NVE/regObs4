@@ -1,6 +1,6 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
 <ion-content>
-  <app-refresh-with-cancel slot="fixed" [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
+  <app-refresh-with-cancel [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
   </app-refresh-with-cancel>
   <ng-container *ngIf="observations !== undefined">
     <ion-virtual-scroll [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty"
@@ -25,8 +25,8 @@
     <app-observation-skeleton></app-observation-skeleton>
   </div>
   <app-geo-fab slot="fixed"></app-geo-fab>
-  <app-add-menu slot="fixed"></app-add-menu>
 </ion-content>
+<app-add-menu></app-add-menu>
 <ng-template #empty>
   <ion-grid *ngIf="loaded" class="full-grid">
     <ion-row class="full-grid-row">

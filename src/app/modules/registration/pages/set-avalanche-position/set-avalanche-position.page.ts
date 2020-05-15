@@ -63,7 +63,7 @@ export class SetAvalanchePositionPage implements OnInit {
 
   fullscreen$: Observable<boolean>;
 
-  @ViewChild(SetLocationInMapComponent, { static: false }) setLocationInMapComponent: SetLocationInMapComponent;
+  @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
 
   constructor(
     private cdr: ChangeDetectorRef,

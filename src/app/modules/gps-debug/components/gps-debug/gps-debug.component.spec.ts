@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
-
 import { GpsDebugComponent } from './gps-debug.component';
+import { TestModule } from '../../../test/test.module';
 
 xdescribe('GpsDebugComponent', () => {
   let component: GpsDebugComponent;
@@ -10,7 +9,7 @@ xdescribe('GpsDebugComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [GpsDebugComponent],
-      imports: [IonicModule.forRoot()]
+      imports: [TestModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(GpsDebugComponent);

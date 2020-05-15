@@ -1,65 +1,56 @@
 .map-item-bar {
-    --img-wrapper-height: 22vh;
-    --img-wrapper-width: 30vh;
+  --img-wrapper-height: 22vh;
+  --img-wrapper-width: 30vh;
 
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  z-index: var(--z-index-over-map);
+
+  h5 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-icon-item {
+    display: inline-block;
+    padding-right: 16px;
+    line-height: normal;
+
+    ion-label,
+    app-competence {
+      position: relative;
+      bottom: 2px;
+    }
+
+    .card-icon-item-icon {
+      margin-right: 5px;
+    }
+  }
+
+  .img-wrapper {
     position: absolute;
-    left:0;
-    right: 0;
-    bottom: 0;
-    background-color: #fff;
-    z-index: var(--z-index-over-map);
+    left: 0px;
+    width: var(--img-wrapper-width);
+    height: var(--img-wrapper-height);
+    top: calc(var(--img-wrapper-height) * -1);
+    display: flex;
+    justify-content: center;
 
-    h5 {
-        overflow: hidden;
-        text-overflow: ellipsis;
+    &.full {
+      width: 100%;
+      max-width: none;
     }
 
-    .card-icon-item {
-        display: inline-block;
-        padding-right: 16px;
-        line-height: normal;
-
-        ion-label {
-            position: relative;
-            bottom: 2px;
-        }
-
-        .card-icon-item-icon {
-            padding-right: 5px;
-
-            &.stars {
-                position: relative;
-                bottom: 1px;
-
-                .empty-stars {
-                    font-size: 12px;
-                    margin-left: 3px;
-                }
-            }
-        }
+    app-img-swiper {
+      display: flex;
+      flex: 1;
+      flex-direction: row;
+      justify-content: left;
+      width: 100%;
+      height: 100%;
     }
-
-    .img-wrapper {
-        position: absolute;
-        left: 0px;
-        width: var(--img-wrapper-width);
-        height: var(--img-wrapper-height);
-        top: calc(var(--img-wrapper-height) * -1);
-        display: flex;
-        justify-content: center;
-
-        &.full {
-            width: 100%;
-            max-width: none;
-        }
-
-        app-img-swiper {
-            display: flex;
-            flex: 1;
-            flex-direction: row;
-            justify-content: left;
-            width: 100%;
-            height: 100%;
-        }
-    }
+  }
 }

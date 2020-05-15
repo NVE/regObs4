@@ -1,101 +1,102 @@
 @font-face {
-    font-family: 'Shadows Into Light';
-    font-style: normal;
-    font-weight: 400;
-    src: url('/assets/fonts/shadows-into-light-v8-latin-regular.eot'); /* IE9 Compat Modes */
-    src: local('Shadows Into Light'), local('ShadowsIntoLight'),
-         url('/assets/fonts/shadows-into-light-v8-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-         url('/assets/fonts/shadows-into-light-v8-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-         url('/assets/fonts/shadows-into-light-v8-latin-regular.woff') format('woff'), /* Modern Browsers */
-         url('/assets/fonts/shadows-into-light-v8-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-         url('/assets/fonts/shadows-into-light-v8-latin-regular.svg#ShadowsIntoLight') format('svg'); /* Legacy iOS */
-  }
+  font-family: "Shadows Into Light";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/assets/fonts/shadows-into-light-v8-latin-regular.eot"); /* IE9 Compat Modes */
+  src: local("Shadows Into Light"), local("ShadowsIntoLight"),
+    url("/assets/fonts/shadows-into-light-v8-latin-regular.eot?#iefix") format("embedded-opentype"),
+    /* IE6-IE8 */ url("/assets/fonts/shadows-into-light-v8-latin-regular.woff2") format("woff2"),
+    /* Super Modern Browsers */ url("/assets/fonts/shadows-into-light-v8-latin-regular.woff") format("woff"),
+    /* Modern Browsers */ url("/assets/fonts/shadows-into-light-v8-latin-regular.ttf") format("truetype"),
+    /* Safari, Android, iOS */ url("/assets/fonts/shadows-into-light-v8-latin-regular.svg#ShadowsIntoLight")
+      format("svg"); /* Legacy iOS */
+}
 
 .coachmark-backdrop {
-    background: var(--backdrop-background);
+  background: var(--backdrop-background);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+
+  app-geo-fab {
     position: absolute;
-    top: 0;
+    top: calc(44px + env(safe-area-inset-top));
+  }
+
+  ion-tab-bar {
+    --ion-tab-bar-background: #010f14;
+    --ion-tab-bar-background-focused: #010f14;
+    position: absolute;
+    bottom: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    z-index: 1000;
-    
+    z-index: -1;
+  }
 
-    app-geo-fab {
-       position: absolute;
-       top: calc(44px + env(safe-area-inset-top));
+  .coachmark-text {
+    color: #fff;
+    font-family: "Shadows Into Light", "Source Sans Pro";
+    font-size: 32px;
+    line-height: 130%;
+  }
+
+  .add-fab {
+    --ion-color-primary: var(--ion-color-varsom-orange);
+    --background-activated: var(--ion-color-varsom-orange-shade);
+    --color: var(--ion-color-varsom-orange-contrast);
+    --color-activated: var(--ion-color-varsom-orange-contrast);
+    bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+
+  .warning-icon {
+    color: #fff;
+  }
+
+  .geo-coachmark {
+    position: absolute;
+    top: calc(40px + env(safe-area-inset-top));
+    left: 70px;
+
+    ion-text {
+      position: absolute;
+      top: 31px;
+      left: 51px;
+      transform: rotate(4.28deg);
+      width: 112px;
+      text-align: center;
     }
+  }
 
-    ion-tab-bar {
-        --ion-tab-bar-background: #010F14;
-        --ion-tab-bar-background-focused: #010F14;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: -1;
+  .add-coachmark {
+    position: absolute;
+    bottom: calc(117px + env(safe-area-inset-bottom));
+    right: 70px;
+    ion-text {
+      position: absolute;
+      bottom: 60px;
+      right: -45px;
+      width: 180px;
+      text-align: center;
+      transform: rotate(-6.98deg);
     }
+  }
 
-    .coachmark-text {
-        color: #fff;
-        font-family: 'Shadows Into Light', 'Source Sans Pro';
-        font-size: 32px;
-        line-height: 130%;
+  .warning-coachmark {
+    position: absolute;
+    bottom: calc(23px + env(safe-area-inset-bottom));
+    right: calc(50% - 100px);
+
+    ion-text {
+      position: absolute;
+      bottom: 57px;
+      right: 55px;
+      width: 183px;
+      text-align: center;
+      transform: rotate(-16.77deg);
+      font-size: 25px;
     }
-
-    .add-fab {
-        --ion-color-primary: var(--ion-color-varsom-orange);
-        --background-activated: var(--ion-color-varsom-orange-shade);
-        --color: var(--ion-color-varsom-orange-contrast);
-        --color-activated: var(--ion-color-varsom-orange-contrast);
-        bottom: calc(60px + env(safe-area-inset-bottom));
-    }
-
-    .warning-icon {
-        color: #fff;
-    }
-
-    .geo-coachmark {
-        position: absolute;
-        top: calc(40px + env(safe-area-inset-top));
-        left: 70px;
-
-        ion-text {
-            position: absolute;
-            top: 31px;
-            left: 51px;
-            transform: rotate(4.28deg);
-            width: 112px;
-            text-align: center;
-        }
-    }
-
-    .add-coachmark {
-        position: absolute;
-        bottom: calc( 117px + env(safe-area-inset-bottom));
-        right: 70px;
-        ion-text {
-            position: absolute;
-            bottom: 60px;
-            right: -45px;
-            width: 180px;
-            text-align: center;
-            transform: rotate(-6.98deg);
-        }
-    }
-
-    .warning-coachmark {
-        position: absolute;
-        bottom: calc(23px + env(safe-area-inset-bottom));
-        right: calc(50% - 100px);
-
-        ion-text {
-            position: absolute;
-            bottom: 38px;
-            right: 55px;
-            width: 183px;
-            text-align: center;
-            transform: rotate(-16.77deg);
-        }
-    }
+  }
 }

@@ -4,7 +4,7 @@
       <ion-row>
         <ion-col class="send-button-col" size="12">
           <ion-button [disabled]="isDisabled" expand="block" color="varsom-orange" (click)="send()">
-            <ion-icon slot="start" name="md-send"></ion-icon>
+            <ion-icon slot="start" name="send"></ion-icon>
             <span *ngIf="registration.error">{{"REGISTRATION.RESEND" | translate}}</span>
             <span *ngIf="!registration.error">{{"REGISTRATION.SEND" | translate}}</span>
           </ion-button>

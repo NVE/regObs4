@@ -12,7 +12,7 @@ import { AnalyticService } from '../../modules/analytics/services/analytic.servi
 import { AppEventCategory } from '../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../modules/analytics/enums/app-event-action.enum';
 import { from, of, Subject, timer } from 'rxjs';
-import { map, catchError, takeUntil, debounceTime, switchMap } from 'rxjs/operators';
+import { map, catchError, takeUntil, switchMap } from 'rxjs/operators';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 
 @Component({
@@ -60,16 +60,8 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     }
   }
 
-  onDrag(event: Event) {
+  onDrag() {
     this.dragSubject.next();
-    // const slider: IonItemSliding = event.target as unknown as IonItemSliding;
-    // const openAmount = (await slider.getOpenAmount()) / 100.0;
-    // const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
-    // const color = `rgba(186,196,204,${opacity})`;
-    // this.favouriteToggle.setOpen(opacity);
-    // this.domCtrl.write(() => {
-    //   this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
-    // });
   }
 
   private getOpenAmount() {
@@ -96,8 +88,9 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     if (group.url) {
       return group.url;
     } else {
+      const supportedLang = this.getSupportedLangOrFallbackToEn(this.userSettingService.currentSettings.language);
       const url: string = settings.services.warning[GeoHazard[group.key.geoHazard]]
-        .webUrl[LangKey[this.userSettingService.currentSettings.language]];
+        .webUrl[LangKey[supportedLang]];
       if (url) {
         return encodeURI(url
           .replace('{regionName}', group.key.groupName)
@@ -107,6 +100,13 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
         return null;
       }
     }
+  }
+
+  getSupportedLangOrFallbackToEn(lang: LangKey) {
+    if (lang === LangKey.nb) {
+      return lang;
+    }
+    return LangKey.en;
   }
 
   navigateToWeb(event: Event, group: WarningGroup) {

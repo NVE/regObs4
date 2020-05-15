@@ -16,6 +16,7 @@ export class CompressionTestModalPage implements OnInit {
 
   showDelete = false;
   tapsArray: SelectOption[] = [];
+  includeInSnowProfileDisabled = false;
 
   get isValid() {
     const clone = { ...this.compressionTest };
@@ -40,6 +41,16 @@ export class CompressionTestModalPage implements OnInit {
     } else {
       this.showDelete = true;
     }
+    this.checkIfIncludeInSnowProfileShouldBeDisabled();
+  }
+
+  checkIfIncludeInSnowProfileShouldBeDisabled() {
+    if (this.isLBT()) {
+      this.compressionTest.IncludeInSnowProfile = false;
+      this.includeInSnowProfileDisabled = true;
+      return;
+    }
+    this.includeInSnowProfileDisabled = false;
   }
 
   tapsFractureVisible() {

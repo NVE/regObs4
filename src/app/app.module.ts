@@ -4,14 +4,12 @@ import { IonicModule } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClientModule } from '@angular/common/http';
 import { APP_PROVIDERS } from './app.providers';
 import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
-import './core/helpers/ionic/platform-helper';
 import { SharedModule } from './modules/shared/shared.module';
 import { RegistrationModule } from './modules/registration/registration.module';
 import { RegobsApiModule } from './modules/regobs-api/regobs-api.module';
@@ -20,22 +18,16 @@ import { MarkdownModule } from 'ngx-markdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SideMenuModule } from './modules/side-menu/side-menu.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
-import { from, Observable } from 'rxjs';
 import { GpsDebugModule } from './modules/gps-debug/gps-debug.module';
+import { CustomTranslateLoader } from './custom-translate.loader';
+import { MapModule } from './modules/map/map.module';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
-// export function HttpLoaderFactory(http: HttpClient) {
-//   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
-// }
 
-export class CustomTranslateLoader implements TranslateLoader {
-  getTranslation(lang: string): Observable<any> {
-    return from(import(`../assets/i18n/${lang}.json`));
-  }
-}
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -55,8 +47,10 @@ export class CustomTranslateLoader implements TranslateLoader {
       name: settings.db.simpleStorage.dbName,
       driverOrder: ['sqlite', 'indexeddb', 'websql'],
     }),
-    AngularSvgIconModule,
+    AngularSvgIconModule.forRoot(),
     SharedModule,
+    MapModule,
+    LeafletModule.forRoot(),
     RegistrationModule,
     RegobsApiModule,
     LegalTermsModalPageModule,

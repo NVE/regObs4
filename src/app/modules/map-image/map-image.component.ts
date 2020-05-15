@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
-import { settings } from '../../../../../settings';
 import * as L from 'leaflet';
-import { RegobsGeoHazardMarker } from '../../core/classes/regobs-geohazard-marker';
-import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
-import { ImageLocation } from '../../../../components/img-swiper/image-location.model';
 import { BehaviorSubject, Subject, timer } from 'rxjs';
-import { SmartChanges } from '../../../../core/helpers/simple-changes.helper';
 import { takeUntil, takeWhile, tap } from 'rxjs/operators';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { ImageLocation } from '../../components/img-swiper/image-location.model';
+import { settings } from '../../../settings';
+import { SmartChanges } from '../../core/helpers/simple-changes.helper';
+import { BorderHelper } from '../../core/helpers/leaflet/border-helper';
+import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
+import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';
 const END_ICON = '/assets/icon/map/GPS_stop.svg';

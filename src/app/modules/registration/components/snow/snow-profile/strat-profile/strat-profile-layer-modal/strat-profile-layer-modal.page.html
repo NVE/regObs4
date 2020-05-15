@@ -36,7 +36,7 @@
       </app-kdv-select>
     </ion-list>
     <ion-button (click)="toggleShowMore()" fill="clear" expand="full">
-      <ion-icon slot="start" [name]="showMore ? 'ios-arrow-up' : 'ios-arrow-down'"></ion-icon>
+      <ion-icon slot="start" [name]="showMore ? 'chevron-up' : 'chevron-down'"></ion-icon>
       <ng-container *ngIf="showMore">{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_LESS' | translate  }}
       </ng-container>
       <ng-container *ngIf="!showMore">{{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE' | translate  }}
@@ -65,14 +65,14 @@
       <ion-row>
         <ion-col size="6">
           <ion-button [disabled]="index === 0" expand="block" fill="outline" color="primary" (click)="ok(-1)">
-            <ion-icon slot="start" name="arrow-round-back"></ion-icon>
+            <ion-icon slot="start" name="arrow-back"></ion-icon>
             <ion-text>{{ 'DIALOGS.PREVIOUS' | translate }}
               {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate | lowercase }} </ion-text>
           </ion-button>
         </ion-col>
         <ion-col size="6">
           <ion-button [disabled]="!canGoNext" expand="block" fill="outline" color="primary" (click)="ok(1)">
-            <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
+            <ion-icon slot="end" name="arrow-forward"></ion-icon>
             <ion-text>{{ 'DIALOGS.NEXT' | translate }}
               {{ 'REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.LAYER' | translate | lowercase }}</ion-text>
           </ion-button>

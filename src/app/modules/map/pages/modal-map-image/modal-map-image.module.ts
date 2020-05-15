@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { ModalMapImagePage } from './modal-map-image.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { MapImageComponent } from '../../components/map-image/map-image.component';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { MapImageModule } from '../../../map-image/map-image.module';
 
 
 @NgModule({
@@ -15,9 +15,9 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     IonicModule,
     TranslateModule,
     LeafletModule,
+    MapImageModule,
   ],
-  declarations: [ModalMapImagePage, MapImageComponent],
-  entryComponents: [ModalMapImagePage],
-  exports: [MapImageComponent],
+  declarations: [ModalMapImagePage],
+  entryComponents: [ModalMapImagePage]
 })
 export class ModalMapImagePageModule { }

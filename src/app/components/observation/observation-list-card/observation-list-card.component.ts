@@ -10,7 +10,6 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
-import { TranslateService } from '@ngx-translate/core';
 import { settings } from '../../../../settings';
 import { RegistrationViewModel, Summary } from '../../../modules/regobs-api/models';
 import { ModalController } from '@ionic/angular';
@@ -27,6 +26,7 @@ import { AppEventAction } from '../../../modules/analytics/enums/app-event-actio
 import { ImageLocation } from '../../img-swiper/image-location.model';
 // import { ObsCardHeightService } from '../../../core/services/obs-card-height/obs-card-height.service';
 import 'leaflet.utm';
+import { getStarCount } from '../../../core/helpers/competence-helper';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -48,8 +48,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   loaded = false;
   imageHeader = '';
   imageDecription = '';
-  stars: { full: boolean }[] = [];
-  hasNoStars: boolean;
+  competenceLevel: number;
   geoHazard: GeoHazard;
 
   imageUrls: string[] = [];
@@ -72,17 +71,12 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
 
   private async load() {
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
-
     this.header = this.obs.ObsLocation.Title;
     this.location = this.getLocation(this.obs);
     this.dtObsDate = this.obs.DtObsTime;
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
     this.summaries = this.obs.Summaries;
-    this.stars = [];
-    for (let i = 0; i < 5; i++) {
-      this.stars.push({ full: (this.obs.Observer.CompetenceLevelName || '')[i] === '*' });
-    }
-    this.hasNoStars = !this.stars.some((x) => x.full);
+    this.competenceLevel = getStarCount(this.obs.Observer.CompetenceLevelName);
     this.updateImages();
     this.loaded = true;
 

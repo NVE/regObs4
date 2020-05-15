@@ -49,7 +49,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   private ngDestroy$ = new Subject();
   private touchStart$ = new Subject();
 
-  @ViewChild(IonSlides, { static: false }) slider: IonSlides;
+  @ViewChild(IonSlides) slider: IonSlides;
 
   get isEmpty() {
     return this.state === 'empty';
@@ -212,12 +212,9 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   async getSwiperIndex() {
-    if (this.slider) {
-      const index = await this.slider.getActiveIndex();
-      const isEnd = await this.slider.isEnd();
-      return isEnd ? (this.slides.length - 1) : index;
-    }
-    return 0;
+    const index = await (this.slider ? this.slider.getActiveIndex() : 0);
+    const isEnd = await (this.slider ? this.slider.isEnd() : Promise.resolve(false));
+    return isEnd ? (this.slides ? (this.slides.length - 1) : 0) : index;
   }
 
   async onSlideTransitionEnd() {

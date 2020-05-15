@@ -6,6 +6,7 @@ import { LangKey } from '../../core/models/langKey';
 import { animations } from './start-wizard.animations';
 import { Subject, timer, interval } from 'rxjs';
 import { takeUntil, skipWhile, switchMap } from 'rxjs/operators';
+import { settings } from '../../../settings';
 
 @Component({
   selector: 'app-start-wizard',
@@ -15,7 +16,7 @@ import { takeUntil, skipWhile, switchMap } from 'rxjs/operators';
 })
 
 export class StartWizardPage implements OnInit, OnDestroy {
-  @ViewChild(IonSlides, { static: false }) slides: IonSlides;
+  @ViewChild(IonSlides) slides: IonSlides;
   GeoHazard = GeoHazard;
   LangKey = LangKey;
   state: string;
@@ -24,6 +25,9 @@ export class StartWizardPage implements OnInit, OnDestroy {
   visibleStarNumber = -1;
   recreate = true;
   language: LangKey;
+  supportedLanguages: { lang: string, name: string, langKey: LangKey }[] =
+    settings.language.supportedLanguages.map((lang) => ({ ...lang, langKey: LangKey[lang.lang] }));
+
 
   private ngDestroy$ = new Subject();
   private activeIndex = new Subject<number>();

@@ -13,11 +13,13 @@
       <ion-label>
         {{'REGISTRATION.SNOW.SNOW_PROFILE.COMPRESSION_TEST.INCLUDE_IN_SNOW_PROFILE' | translate}}
       </ion-label>
-      <ion-toggle slot="end" [(ngModel)]="compressionTest.IncludeInSnowProfile" name="IncludeInSnowProfile">
+      <ion-toggle [disabled]="includeInSnowProfileDisabled" slot="end"
+        [(ngModel)]="compressionTest.IncludeInSnowProfile" name="IncludeInSnowProfile">
       </ion-toggle>
     </ion-item>
     <app-kdv-select title="REGISTRATION.SNOW.COMPRESSION_TEST.TEST_TYPE" kdvKey="Snow_PropagationKDV"
-      [(value)]="compressionTest.PropagationTID"></app-kdv-select>
+      [(value)]="compressionTest.PropagationTID" (valueChange)="checkIfIncludeInSnowProfileShouldBeDisabled()">
+    </app-kdv-select>
     <ion-item *ngIf="tapsFractureVisible()">
       <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.SNOW.COMPRESSION_TEST.TAPS_FRACTURE'
         | translate}}</ion-label>

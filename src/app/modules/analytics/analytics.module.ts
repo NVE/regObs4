@@ -21,7 +21,7 @@ import { AnalyticService } from './services/analytic.service';
     ]
 })
 export class AnalyticsModule {
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<AnalyticsModule> {
         return {
             ngModule: AnalyticsModule,
         };

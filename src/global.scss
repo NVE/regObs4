@@ -202,17 +202,20 @@ ion-item {
 
 ion-list {
   background: var(--ion-background-color);
-  --padding-start: 20px;
 
   ion-list-header {
     &:not(.subheader) {
       font-size: var(--list-header-font-size);
       font-weight: var(--list-header-font-weight);
+      text-transform: uppercase;
     }
     &.subheader {
       text-transform: none;
       color: var(--ion-color-medium);
+    }
+    ion-label {
       margin-bottom: 10px;
+      margin-top: 10px;
     }
   }
 
@@ -228,6 +231,10 @@ ion-list {
 .action-sheet-group.sc-ion-action-sheet-ios {
   /* https://github.com/ionic-team/ionic/issues/17233 */
   overflow-y: scroll !important;
+}
+.sc-ion-action-sheet-ios-h,
+.sc-ion-action-sheet-md-h {
+  --ion-background-color: var(--ion-item-background);
 }
 
 ion-menu {
@@ -498,4 +505,14 @@ ion-toast {
       line-height: 23px;
     }
   }
+}
+
+.tile-legend-row {
+  line-height: 19px;
+  margin-bottom: 8px;
+}
+
+.tile-legend-image {
+  float: left;
+  margin-right: 8px;
 }

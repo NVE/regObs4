@@ -13,7 +13,7 @@ export class RefreshWithCancelComponent implements OnInit {
   showCancel = false;
 
   // @Output() refresh: EventEmitter<Promise<boolean>> = new EventEmitter();
-  @ViewChild(IonRefresher, { static : false }) refresher: IonRefresher;
+  @ViewChild(IonRefresher) refresher: IonRefresher;
   @Input() refreshFunc: (cancelPromise: Promise<boolean>) => Promise<any>;
   @Input() cancelSubject: Subject<any>;
 

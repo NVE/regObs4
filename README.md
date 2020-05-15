@@ -29,6 +29,12 @@ Use npm to make a release build:
 npm run build --production --device
 ```
 
+TIP! if you run into "ERROR maximum call stack size exceeded" it's most probably a circular module dependency.
+If you build without aot, you might get a better error message:
+```
+ng build --aot=false
+```
+
 NOTE! Continous build is set up in Azure.
 Creates release builds and uploads .ipa to TestFlight when code are committed to /release branch.
 Upload .apk to Google Play store manually. The .apk is in build output resources.

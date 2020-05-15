@@ -16,7 +16,6 @@ import { map, distinctUntilChanged, takeUntil, tap } from 'rxjs/operators';
 import { settings } from '../../../settings';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { RouterPage } from '../../core/helpers/routed-page';
-import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { enterZone } from '../../core/helpers/observable-helper';
 
 const DEBUG_TAG = 'HomePage';
@@ -49,8 +48,7 @@ export class HomePage extends RouterPage implements OnInit {
     private userSettingService: UserSettingService,
     private ngZone: NgZone,
     private loggingService: LoggingService,
-    private usageAnalyticsConsentService: UsageAnalyticsConsentService,
-    private geoPostionService: GeoPositionService,
+    private usageAnalyticsConsentService: UsageAnalyticsConsentService
   ) {
     super(router, route);
   }
@@ -78,7 +76,7 @@ export class HomePage extends RouterPage implements OnInit {
 
   async showUsageAnalyticsDialog() {
     await this.usageAnalyticsConsentService.checkUserDataConsentDialog();
-    this.geoPostionService.startTracking();
+    this.mapComponent.componentIsActive(true);
   }
 
   onMapReady(leafletMap: L.Map) {
@@ -117,15 +115,12 @@ export class HomePage extends RouterPage implements OnInit {
       return;
     }
     this.loggingService.debug(`Activate map updates and GeoLocation`, DEBUG_TAG);
-    this.geoPostionService.startTracking();
-    this.mapComponent.resumeSavingTiles();
-    this.mapComponent.redrawMap();
+    this.mapComponent.componentIsActive(true);
   }
 
   onLeave() {
     this.loggingService.debug(`Home page onLeave. Disable map updates and GeoLocation`, DEBUG_TAG);
-    this.geoPostionService.stopTracking();
-    this.mapComponent.pauseSavingTiles();
+    this.mapComponent.componentIsActive(false);
   }
 
   // async ionViewDidEnter() {

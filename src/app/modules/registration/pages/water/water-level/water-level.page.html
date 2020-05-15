@@ -57,7 +57,7 @@
           *ngFor="let measurement of registration.request.WaterLevel2.WaterLevelMeasurement; let i = index">
         </app-water-level-measurement>
       </ion-list>
-      <ion-list lines="full">
+      <ion-list class="ion-margin-top" lines="full">
         <ion-item (click)="addWaterLevelMeasurement()">
           <ion-icon slot="start" color="primary" name="add-circle"></ion-icon>
           <ion-label>{{'REGISTRATION.WATER.WATER_LEVEL.ADD_NEW' | translate}}

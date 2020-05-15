@@ -25,6 +25,9 @@
     "SELECT_GEO_HAZARD": "Velg naturfare",
     "VIEW_WARNINGS": "Se varsler fra varsom.no"
   },
+  "COMPETENCE": {
+    "UNKNOWN": "Ukjent kompetanse"
+  },
   "DATA_LOAD": {
     "DATA": "Laster data...",
     "LOADING": "Laster"
@@ -82,7 +85,7 @@
     "HEADER": "Om data i Varsom Regobs",
     "LINE_1": "Bruk varslene, observasjonene og kartene på eget ansvar. Det kan forekomme feil og mangler.",
     "LINE_2": "Husk at varselet er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger. Lokale forhold der du er, kan være mer komplekse og avvike fra det som er varslet.",
-    "LINE_3": "Data på Regobs produseres av brukerne av Regobs og foreligger «som den er». Den kan inneholde feil og utelatelser. NVE gir ikke garantier for feil og mangler i denne data.",
+    "LINE_3": "Data på Regobs produseres av brukerne av Regobs og foreligger «som den er». Den kan inneholde feil og utelatelser. NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.",
     "OK": "Ok, jeg aksepterer",
     "TERMS": "Data på Varsom Regobs produseres av brukerne av Regobs og foreligger \"som den er\". Den kan inneholde feil og utelatelser. NVE gir ingen garantier for informasjonens aktualitet og tar ikke ansvar for at data kan gi feil eller villedende informasjon. Antall stjerner (1-5) beskriver kompetansenivået til den som leverer observasjoner. Uten stjerner er kompetansen ukjent eller lav."
   },
@@ -179,6 +182,17 @@
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
     "LOCATION_DENIED_MESSAGE": "Kan ikke vise posisjonen din i kartet uten app-godkjenning for bruk av lokasjon."
+  },
+  "POPUP_DISCLAMER": {
+    "ABOUT_OBSERVATIONS": {
+      "HEADER": "Om observasjoner",
+      "MESSAGE": "Bruk observasjonene på eget ansvar, de produseres av brukerne av Regobs og foreligger «som den er». NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.\nSe observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
+    },
+    "ABOUT_SUPPORT_MAPS": {
+      "HEADER": "Om kart",
+      "MESSAGE": "Bruk kartene på eget ansvar og gjør alltid dine egne vurderinger. Kartene kan inneholde feil og mangler."
+    },
+    "OK_I_UNDERSTAND": "OK, jeg skjønner"
   },
   "REGISTRATION": {
     "ADD_IMAGES": "Legg til bilder",
@@ -617,6 +631,7 @@
     "SKIP_START": "Hopp over"
   },
   "SUPPORT_MAP": {
+    "ABOUT": "Om kartene",
     "CAUTION_AREA": "Aktsomhetsområde",
     "CLAY_DANGER_ZONE": "Faregrad for kvikkleiresone",
     "CLAY_LEGEND_TEXT_1": "Kvikkleirepunkt (SVV)",
@@ -653,13 +668,20 @@
     "ICE_LEGEND_TEXT_6": "Rørgate",
     "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
     "ICE_MAP_DESCRIPTION": "Støttekartet viser deler av vassdrag som oppfører seg uforutsigbart gjennom vinteren grunnet reguleringer for kraftproduksjon",
-    "IN_DEGREES": "I grader er de",
+    "INFO_PAGE": "<h1>Om kart med bratthet og utløp</h1>\nKartene er automatisk generert og kan inneholde feil. Det kan eksistere bratte heng som høydemodellen ikke plukker opp og derfor ikke vises på kartet.\nNoen skred kan gå lenger enn det som er markert som utløpsområde i kartet.\n\n<h2>Hvilke hensyn må tas?</h2>\nTilpass egen risiko ved å velge hvor, når og hvordan du ferdes.  Varsom Regobs er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger.\n \n<h2>Når er det trygt?</h2>\nAll ferdsel i snødekt skredterreng er forbundet med risiko. \n\n<h2>Lære mer?</h2>\nDu kan lære mer på skredkurs og Snøskredskolen på Varsom.no.",
     "LOW": "Lav",
     "MARITINE_BORDER": "Marin grense flate",
     "MIDDLE": "Middels",
     "NO_OPACITY": "Heldekkende",
-    "STEEPNESS_COLOR_INFO": "Fargene gir brattheten i terrenget",
+    "READ_MORE": "Les mer om støttekart",
+    "STEEPNESS_COLOR_INFO": "Farger på terrengets bratthet i grader:",
     "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
+    "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, f.eks. bratte heng som ikke vises.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skred stopper innen denne grensen)",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skredene går lenger)",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skredene går lenger)\nNoen skred kan ha utløp som ikke er vist på kartet.",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Bratthetskart med utløp",
+    "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Kun</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, f.eks. bratte heng og utløp som ikke vises.\n<br/>\n<br/>\nFarger på utløp for snøskred:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart"
   },
   "TABS": {

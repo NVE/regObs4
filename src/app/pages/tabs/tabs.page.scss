@@ -1,37 +1,41 @@
+:host {
+  --ion-tab-bar-background: var(--ion-color-varsom-blue);
+  --ion-tab-bar-background-focused: var(--ion-color-varsom-blue-shade);
+  --ion-tab-bar-color: var(--ion-color-varsom-blue-contrast);
+  --ion-tab-bar-color-activated: var(--ion-color-varsom-blue-contrast);
+  --color-selected: var(--ion-tab-bar-color-selected);
+  --ion-tab-bar-color-selected: var(--ion-color-varsom-blue-contrast);
+}
+
 ion-tab-button {
-    ion-badge {
-        border-radius: 0px;
-    }
+  ion-badge {
+    border-radius: 0px;
+  }
 }
 
 ion-tabs {
-    --ion-tab-bar-background: var(--ion-color-varsom-blue);
-    --ion-tab-bar-background-focused: var(--ion-color-varsom-blue-shade);
-    --ion-tab-bar-color: var(--ion-color-varsom-blue-contrast);
-    --ion-tab-bar-color-activated: var(--ion-color-varsom-blue-contrast);
+  ion-tab-button {
+    opacity: 0.8;
+    &.tab-selected {
+      opacity: 1;
+      background-color: var(--ion-color-varsom-blue-shade);
+      color: var(--ion-tab-bar-color-selected);
+    }
+  }
 
+  &.md {
     ion-tab-button {
-        opacity: 0.8;
-        &.tab-selected {
-            opacity: 1.0;
-            background-color:  var(--ion-color-varsom-blue-shade);
-            // border-top: 2px solid #fff;
-        }
+      ion-badge {
+        margin-top: -3px;
+      }
     }
+  }
 
-    &.md {
-        ion-tab-button {
-            ion-badge {
-                margin-top: -3px;
-            }
-        }
+  &.ios {
+    ion-tab-button {
+      ion-badge {
+        margin-top: 3px;
+      }
     }
-
-    &.ios {
-        ion-tab-button {
-            ion-badge {
-                margin-top: 3px;
-            }
-        }
-    }
+  }
 }

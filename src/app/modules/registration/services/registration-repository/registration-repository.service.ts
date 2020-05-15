@@ -23,6 +23,7 @@ export class RegistrationRepositoryService extends NgDestoryBase implements OnRe
     super();
     this.registrations$ = this.userSettingService.appMode$.pipe(
       switchMap((appMode) => this.getInMemoryRegistrationsForAppMode(appMode)),
+      tap((registrations) => this.loggingService.debug('Registrations from repository is', DEBUG_TAG, registrations)),
       shareReplay(1));
     this.init();
   }
@@ -66,8 +67,8 @@ export class RegistrationRepositoryService extends NgDestoryBase implements OnRe
   }
 
   private createSaveToDbOnChangeListener() {
-    this.registrations$.pipe(debounceTime(200), switchMap((registrations) =>
-      this.userSettingService.appMode$.pipe(map((appMode) => ({ appMode, registrations })))),
+    this.userSettingService.appMode$.pipe(switchMap((appMode) =>
+      this.registrations$.pipe(debounceTime(200), map((registrations) => ({ appMode, registrations })))),
       tap((result) => this.loggingService.debug('InMemory registrations changed. Saving to db: ', DEBUG_TAG, result)),
       concatMap((result) => this.saveRegistrationsToDb(result.appMode, result.registrations)),
       takeUntil(this.ngDestroy$)).subscribe();
@@ -90,6 +91,7 @@ export class RegistrationRepositoryService extends NgDestoryBase implements OnRe
   }
 
   private getInMemoryRegistrationsForAppMode(appMode: AppMode): Observable<IRegistration[]> {
+    this.loggingService.debug(`Get inMemory registrations for app mode: ${appMode}`, DEBUG_TAG);
     return this.inMemoryRegistrations.pipe(map((inMemoryReg) => inMemoryReg[appMode] || []));
   }
 
