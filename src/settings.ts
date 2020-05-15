@@ -244,9 +244,9 @@ export const settings = {
     supportedLanguages: [
       { lang: 'nb', name: 'Norsk bokmål' },
       { lang: 'en', name: 'English' },
-      // { lang: 'sv', name: 'Svenska' },
-      // { lang: 'de', name: 'Deutsch' },
-      // { lang: 'sl', name: 'Slovenski' }
+      { lang: 'sv', name: 'Svenska' },
+      { lang: 'de', name: 'Deutsch' },
+      { lang: 'sl', name: 'Slovenski' }
     ],
   }
 };

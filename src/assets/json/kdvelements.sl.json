@@ -1,0 +1,3050 @@
+{
+  "KdvRepositories": {
+      "Dirt_DangerSignKDV": [
+          {
+              "Id": 200,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 201,
+              "Name": "Ni znakov nevarnosti",
+              "Description": null
+          },
+          {
+              "Id": 202,
+              "Name": "Močne padavine",
+              "Description": null
+          },
+          {
+              "Id": 203,
+              "Name": "Intenzivno taljenje snega",
+              "Description": null
+          },
+          {
+              "Id": 212,
+              "Name": "Snežna odeja z veliko vode",
+              "Description": null
+          },
+          {
+              "Id": 206,
+              "Name": "Velik pretok v potokih/rekah",
+              "Description": null
+          },
+          {
+              "Id": 207,
+              "Name": "Rjavo obarvani potoki/reke",
+              "Description": null
+          },
+          {
+              "Id": 230,
+              "Name": "Erozija ob potokih/rekah",
+              "Description": null
+          },
+          {
+              "Id": 214,
+              "Name": "Potoki najdejo nove poti",
+              "Description": null
+          },
+          {
+              "Id": 204,
+              "Name": "Površinski odtok",
+              "Description": null
+          },
+          {
+              "Id": 205,
+              "Name": "Nezadostno odvodnjavanje",
+              "Description": null
+          },
+          {
+              "Id": 208,
+              "Name": "Razpoke/drobir na terenu",
+              "Description": null
+          },
+          {
+              "Id": 209,
+              "Name": "Opažen zemeljski plaz",
+              "Description": null
+          },
+          {
+              "Id": 222,
+              "Name": "Gibanje po odlomnem robu plazu",
+              "Description": null
+          },
+          {
+              "Id": 223,
+              "Name": "Nagib dreves",
+              "Description": null
+          },
+          {
+              "Id": 299,
+              "Name": "Drugi znaki nevarnosti-kateri",
+              "Description": null
+          }
+      ],
+      "Dirt_ActivityInfluencedKDV": [
+          {
+              "Id": 200,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 220,
+              "Name": "Ceste",
+              "Description": null
+          },
+          {
+              "Id": 240,
+              "Name": "Železniške proge",
+              "Description": null
+          },
+          {
+              "Id": 260,
+              "Name": "Zgradbe",
+              "Description": null
+          },
+          {
+              "Id": 211,
+              "Name": "Ljudje",
+              "Description": null
+          },
+          {
+              "Id": 251,
+              "Name": "Kmetijske površine",
+              "Description": null
+          },
+          {
+              "Id": 290,
+              "Name": "Drugo",
+              "Description": null
+          }
+      ],
+      "Dirt_LandSlideKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Usad",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Skalni podor",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "Drobirski tok",
+              "Description": null
+          },
+          {
+              "Id": 11,
+              "Name": "Kamniti plaz",
+              "Description": null
+          },
+          {
+              "Id": 6,
+              "Name": "Padanje kamnov",
+              "Description": null
+          },
+          {
+              "Id": 7,
+              "Name": "Tekoči snežni plaz",
+              "Description": null
+          },
+          {
+              "Id": 8,
+              "Name": "Blatni plaz",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Blatni tok",
+              "Description": null
+          }
+      ],
+      "Dirt_LandSlideTriggerKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Spontano sproženo",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Izkopavanje na območju",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Težave pri odvodnjavanju",
+              "Description": null
+          },
+          {
+              "Id": 9,
+              "Name": "Drugo (navedite v komentarju)",
+              "Description": null
+          }
+      ],
+      "Dirt_LandSlideSizeKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "< 100 m3",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "100 - 10000 m3",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "> 10000 m3",
+              "Description": null
+          },
+          {
+              "Id": 9,
+              "Name": "Drugo (prosimo, navedite)",
+              "Description": null
+          }
+      ],
+      "Ice_DangerSignKDV": [
+          {
+              "Id": 700,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 701,
+              "Name": "Ni znakov nevarnosti",
+              "Description": null
+          },
+          {
+              "Id": 705,
+              "Name": "Tanka plast ledu",
+              "Description": null
+          },
+          {
+              "Id": 711,
+              "Name": "Odlom ledu od obale",
+              "Description": null
+          },
+          {
+              "Id": 712,
+              "Name": "Dotok ni zaledenel",
+              "Description": null
+          },
+          {
+              "Id": 713,
+              "Name": "Izliv ni zaledenel",
+              "Description": null
+          },
+          {
+              "Id": 714,
+              "Name": "Velike razpoke/odprti kanali",
+              "Description": null
+          },
+          {
+              "Id": 720,
+              "Name": "Veliko vode",
+              "Description": null
+          },
+          {
+              "Id": 730,
+              "Name": "Povečan pretok",
+              "Description": null
+          },
+          {
+              "Id": 799,
+              "Name": "Drugo (navedite v komentarju)",
+              "Description": null
+          }
+      ],
+      "Ice_ActivityInfluencedKDV": [
+          {
+              "Id": 700,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 710,
+              "Name": "Hoja",
+              "Description": null
+          },
+          {
+              "Id": 711,
+              "Name": "Drsanje",
+              "Description": null
+          },
+          {
+              "Id": 712,
+              "Name": "Tek na smučeh",
+              "Description": ""
+          },
+          {
+              "Id": 713,
+              "Name": "Kajtanje na snegu",
+              "Description": null
+          },
+          {
+              "Id": 720,
+              "Name": "Motorne sani na ledu",
+              "Description": null
+          },
+          {
+              "Id": 722,
+              "Name": "ATV",
+              "Description": "Terensko vozilo"
+          },
+          {
+              "Id": 721,
+              "Name": "Avto na ledu",
+              "Description": null
+          },
+          {
+              "Id": 730,
+              "Name": "Traktor na ledu",
+              "Description": null
+          },
+          {
+              "Id": 731,
+              "Name": "Bager na ledu",
+              "Description": null
+          },
+          {
+              "Id": 732,
+              "Name": "Teptalec snega",
+              "Description": null
+          },
+          {
+              "Id": 772,
+              "Name": "Drsenje po ledu",
+              "Description": null
+          },
+          {
+              "Id": 773,
+              "Name": "Zaledenela površina",
+              "Description": null
+          },
+          {
+              "Id": 774,
+              "Name": "Plavajoči led",
+              "Description": null
+          },
+          {
+              "Id": 790,
+              "Name": "Drugo",
+              "Description": null
+          }
+      ],
+      "Ice_IceCoverKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Lokacija je brez ledu",
+              "Description": null
+          },
+          {
+              "Id": 11,
+              "Name": "Zaledenela obala",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Lokacija je delno zaledenela",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Lokacija je zaledenela",
+              "Description": null
+          },
+          {
+              "Id": 21,
+              "Name": "Zaledenelo jezero",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Lomljenje ledu ob obali",
+              "Description": null
+          },
+          {
+              "Id": 20,
+              "Name": "Jezero brez ledu",
+              "Description": null
+          },
+          {
+              "Id": 41,
+              "Name": "Plavajoči ledeni kosi na reki",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "Tok ledu po reki",
+              "Description": null
+          },
+          {
+              "Id": 99,
+              "Name": "Neznano",
+              "Description": null
+          }
+      ],
+      "Ice_IceCoverBeforeKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Brez ledu, prvič led na obali",
+              "Description": "Pred današnjim dnem ob obali ni bilo ledu."
+          },
+          {
+              "Id": 1,
+              "Name": "Brez ledu, prvič opažen led",
+              "Description": "Pred današnjim dnem na območju opazovanja ni bilo ledu. Led je morda bil ob obali. \"Območje opazovanja\" je v splošnem navidezna točka na jezeru, ki ni ob obali."
+          },
+          {
+              "Id": 3,
+              "Name": "Brez ledu, tudi danes",
+              "Description": "Brez ledu v tekoči zimski sezoni, vključno z današnjim dnem."
+          },
+          {
+              "Id": 10,
+              "Name": "Opazovanje veljavno do včeraj",
+              "Description": "Kontinuirana opazovanja. Lahko sklepamo, da je obseg ledene površine s prejšnjega opazovanja veljaven do včerajšnjega dne. Danes je lahko vrednost drugačna (ali pa enaka)."
+          },
+          {
+              "Id": 99,
+              "Name": "Napaka - neznana vednost",
+              "Description": "Napaka pri meritvah. Opažen obseg ledene površine s prejšnjega opazovanja verjetno ne predstavlja dejanskega stanja do včeraj."
+          }
+      ],
+      "Ice_IceLayerKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Poledica",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Zamrznjen sneg",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "Voda/plundra (vmesna faza)",
+              "Description": null
+          },
+          {
+              "Id": 7,
+              "Name": "Verj. zamrznjen sneg+poledica",
+              "Description": null
+          },
+          {
+              "Id": 9,
+              "Name": "Ledeni kristali",
+              "Description": null
+          },
+          {
+              "Id": 11,
+              "Name": "Poledica se zmanjšuje",
+              "Description": null
+          },
+          {
+              "Id": 13,
+              "Name": "Zamrznjen sneg se zmanjšuje",
+              "Description": null
+          },
+          {
+              "Id": 14,
+              "Name": "Stolpičasti led (spomladi)",
+              "Description": null
+          },
+          {
+              "Id": 99,
+              "Name": "Drugo (navedite)",
+              "Description": null
+          }
+      ],
+      "Ice_IceSkateabilityKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Ni primerno za drsanje",
+              "Description": null
+          },
+          {
+              "Id": 20,
+              "Name": "Morda ni primerno za drsanje",
+              "Description": null
+          },
+          {
+              "Id": 30,
+              "Name": "Primerno za drsanje",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "Zelo primerno za drsanje",
+              "Description": null
+          },
+          {
+              "Id": 50,
+              "Name": "Sanjsko",
+              "Description": null
+          }
+      ],
+      "Ice_IceCapacityKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Majhna nevarnost pri prehodu",
+              "Description": null
+          },
+          {
+              "Id": 20,
+              "Name": "Običajna nevarnost pri prehodu",
+              "Description": null
+          },
+          {
+              "Id": 30,
+              "Name": "Velika nevarnost pri prehodu",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "Led ne bo zdržal človeka",
+              "Description": null
+          }
+      ],
+      "Ice_IceProblemKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Plavajoči led / ledeni zamašek",
+              "Description": null
+          },
+          {
+              "Id": 20,
+              "Name": "Razsuti led",
+              "Description": null
+          },
+          {
+              "Id": 30,
+              "Name": "Zajezitev z zasidranim ledom",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "Led na dovodni loputi",
+              "Description": null
+          },
+          {
+              "Id": 50,
+              "Name": "Zamašitev zaradi ledu v kanalu",
+              "Description": null
+          },
+          {
+              "Id": 99,
+              "Name": "Drugo (uporabi komentar)",
+              "Description": null
+          }
+      ],
+      "Snow_DangerSignKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Ni opaznih znakov nevarnosti",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Sveži plazovi",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Whumpf zvok",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "Sveže razpoke",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "Obilno sneženje",
+              "Description": "Uporabljeno v norveški aplikaciji elrapp"
+          },
+          {
+              "Id": 7,
+              "Name": "Hitra temperaturna sprememba",
+              "Description": null
+          },
+          {
+              "Id": 8,
+              "Name": "Velika vsebnost vode v snegu",
+              "Description": null
+          },
+          {
+              "Id": 9,
+              "Name": "Svež snežni zamet",
+              "Description": null
+          },
+          {
+              "Id": 99,
+              "Name": "Drugi znaki nevarnosti(navedi)",
+              "Description": null
+          }
+      ],
+      "Snow_ActivityInfluencedKDV": [
+          {
+              "Id": 100,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 111,
+              "Name": "Turno smučanje",
+              "Description": null
+          },
+          {
+              "Id": 113,
+              "Name": "Smučanje izven urejenih prog",
+              "Description": null
+          },
+          {
+              "Id": 112,
+              "Name": "Smučišče",
+              "Description": null
+          },
+          {
+              "Id": 114,
+              "Name": "Nordijsko smučanje",
+              "Description": null
+          },
+          {
+              "Id": 115,
+              "Name": "Tek na smučeh",
+              "Description": null
+          },
+          {
+              "Id": 116,
+              "Name": "Športno plezanje",
+              "Description": null
+          },
+          {
+              "Id": 117,
+              "Name": "Pohodništvo",
+              "Description": null
+          },
+          {
+              "Id": 130,
+              "Name": "Motorne sani",
+              "Description": null
+          },
+          {
+              "Id": 120,
+              "Name": "Cesta",
+              "Description": null
+          },
+          {
+              "Id": 140,
+              "Name": "Železnica",
+              "Description": null
+          },
+          {
+              "Id": 160,
+              "Name": "Zgradba",
+              "Description": null
+          },
+          {
+              "Id": 190,
+              "Name": "Drugo",
+              "Description": null
+          }
+      ],
+      "Snow_AvalancheKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 12,
+              "Name": "Plaz suhega nesprijetega snega",
+              "Description": null
+          },
+          {
+              "Id": 11,
+              "Name": "Plaz mokrega snega",
+              "Description": null
+          },
+          {
+              "Id": 22,
+              "Name": "Suh kložast plaz",
+              "Description": null
+          },
+          {
+              "Id": 21,
+              "Name": "Moker kložast plaz",
+              "Description": null
+          },
+          {
+              "Id": 27,
+              "Name": "Zdrsni plaz (največkrat talni)",
+              "Description": null
+          },
+          {
+              "Id": 30,
+              "Name": "Tok plundre",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "Rušenje opasti",
+              "Description": null
+          },
+          {
+              "Id": 99,
+              "Name": "Neznano",
+              "Description": null
+          }
+      ],
+      "Snow_AvalancheDangerKDV": [
+          {
+              "Id": 0,
+              "Name": "0 Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "1 Majhna",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "2 Zmerna",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "3 Znatna",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "4 Velika",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "5 Zelo velika",
+              "Description": null
+          }
+      ],
+      "Snow_AvalancheExtKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Plaz suhega nesprijetega snega",
+              "Description": null
+          },
+          {
+              "Id": 15,
+              "Name": "Plaz mokrega snega",
+              "Description": null
+          },
+          {
+              "Id": 20,
+              "Name": "Suh kložast plaz",
+              "Description": null
+          },
+          {
+              "Id": 25,
+              "Name": "Moker kložast plaz",
+              "Description": null
+          },
+          {
+              "Id": 27,
+              "Name": "Zdrsni plaz (največkrat talni)",
+              "Description": null
+          },
+          {
+              "Id": 30,
+              "Name": "Plaz plundre",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "Opasti",
+              "Description": null
+          }
+      ],
+      "Snow_AvalCauseKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": "Ni določeno"
+          },
+          {
+              "Id": 10,
+              "Name": "Šibka plast novega snega",
+              "Description": "Šibka plast novega snega"
+          },
+          {
+              "Id": 11,
+              "Name": "Šibka plast površinskega sreža",
+              "Description": "Šibka plast površinskega sreža"
+          },
+          {
+              "Id": 13,
+              "Name": "Šibka plast sreža",
+              "Description": "Šibka plast sreža"
+          },
+          {
+              "Id": 14,
+              "Name": "Slaba povezanost s skorjo",
+              "Description": "Slaba povezanost s skorjo"
+          },
+          {
+              "Id": 15,
+              "Name": "Slabo povezan vetrni nanos",
+              "Description": "Slabo povezan vetrni nanos"
+          },
+          {
+              "Id": 16,
+              "Name": "Srež blizu tal",
+              "Description": "Srež blizu tal"
+          },
+          {
+              "Id": 19,
+              "Name": "Srež pod skorjo",
+              "Description": "Srež pod skorjo"
+          },
+          {
+              "Id": 18,
+              "Name": "Srež nad skorjo",
+              "Description": "Srež nad skorjo"
+          },
+          {
+              "Id": 22,
+              "Name": "Luže nad snežnimi plastmi",
+              "Description": "Luže nad snežnimi plastmi"
+          },
+          {
+              "Id": 20,
+              "Name": "Taljenje blizu tal",
+              "Description": "Taljenje blizu tal"
+          },
+          {
+              "Id": 24,
+              "Name": "Nesprijet sneg",
+              "Description": "Nesprijet sneg"
+          }
+      ],
+      "Snow_AvalCauseDepthKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "V pol metra",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "V enem metru",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Več kot en meter",
+              "Description": null
+          }
+      ],
+      "Snow_AvalCauseAttributeFlags": [
+          {
+              "Id": 1,
+              "Name": "Šibka plast se zruši enostavno in čisto (enostavno širjenje).",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Zrušena šibka plast je tanjša od 3 cm.",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "Prekrivajoča kloža je mehka.",
+              "Description": null
+          },
+          {
+              "Id": 8,
+              "Name": "Veliki, prepoznavni kristali v šibki plasti.",
+              "Description": null
+          }
+      ],
+      "Snow_AvalProbabilityKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Malo verjetno",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Mogoče",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "Verjetno",
+              "Description": null
+          },
+          {
+              "Id": 7,
+              "Name": "Zelo verjetno",
+              "Description": null
+          }
+      ],
+      "Snow_AvalPropagationKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Posamezna strma pobočja",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Specifična strma pobočja",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Številna strma pobočja",
+              "Description": null
+          }
+      ],
+      "Snow_AvalReleaseHeightKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "V novem snegu",
+              "Description": "Plazovi se bodo sprožali v novem snegu."
+          },
+          {
+              "Id": 2,
+              "Name": "Med starim in novim snegom",
+              "Description": "Plazovi se bodo sprožali med starim in novim snegom."
+          },
+          {
+              "Id": 3,
+              "Name": "Pri tleh",
+              "Description": "Plazovi se bodo sprožali pri tleh."
+          },
+          {
+              "Id": 4,
+              "Name": "V starem snegu",
+              "Description": "Plazovi se bodo sprožali v starem snegu."
+          },
+          {
+              "Id": 6,
+              "Name": "Snežna odeja je vlažna",
+              "Description": "Celotna snežna odeja je vlažna in nestabilna."
+          },
+          {
+              "Id": 7,
+              "Name": "Zasičena z vodo",
+              "Description": "Celotna snežna odeja je prenasičena z vodo in nestabilna."
+          },
+          {
+              "Id": 8,
+              "Name": "Samo star sneg",
+              "Description": "Plazovi se bodo sprožali samo v starem snegu."
+          }
+      ],
+      "Snow_AvalTriggerSimpleKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 30,
+              "Name": "Zelo težko sprožiti",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "Težko sprožiti",
+              "Description": null
+          },
+          {
+              "Id": 50,
+              "Name": "Lahko sprožiti",
+              "Description": null
+          },
+          {
+              "Id": 60,
+              "Name": "Zelo lahko sprožiti",
+              "Description": null
+          },
+          {
+              "Id": 22,
+              "Name": "Spontano proženje",
+              "Description": null
+          }
+      ],
+      "Snow_DestructiveSizeKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "1 - Majhna",
+              "Description": "Majhna nevarnost zasutja (nevarnost padca)"
+          },
+          {
+              "Id": 2,
+              "Name": "2 - Srednja",
+              "Description": "Lahko zasuje, poškoduje ali ubije človeka."
+          },
+          {
+              "Id": 3,
+              "Name": "3 - Velika",
+              "Description": "Lahko zasuje in uniči avto, poškoduje tovornjak; uniči majhen objekt ali polomi nekaj dreves."
+          },
+          {
+              "Id": 4,
+              "Name": "4 - Zelo velika",
+              "Description": "Lahko zasuje in uniči vagon, velik tovornjak, več objektov ali del gozda."
+          },
+          {
+              "Id": 5,
+              "Name": "5 - Ekstremno velika",
+              "Description": "Potencial za ogromno škodo. Lahko spremeni pokrajino, uniči zgradbe in gozdove."
+          },
+          {
+              "Id": 9,
+              "Name": "Neznano",
+              "Description": null
+          }
+      ],
+      "Snow_SnowDriftKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni opaziti",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Ni napihanega snega",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Nekaj napihanega snega",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Znatno napihanega snega",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "Veliko napihanega snega",
+              "Description": null
+          }
+      ],
+      "Snow_EstimatedNumKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Ni plazovne aktivnosti",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Eden (1)",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Nekaj (2-5)",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "Več (6-10)",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "Številni (10 ali več)",
+              "Description": null
+          }
+      ],
+      "Snow_ExposedHeightComboKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Spodaj belo",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Spodaj črno",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Sredina bela",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "Sredina črna",
+              "Description": null
+          }
+      ],
+      "Snow_ForecastCorrectKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Napoved pravilna",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Napoved prenizka",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Napoved previsoka",
+              "Description": null
+          }
+      ],
+      "Snow_PrecipitationKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni opaziti",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Ni padavin",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Rosenje",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Dež",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "Zmrznjen dež",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "Sneg",
+              "Description": null
+          },
+          {
+              "Id": 6,
+              "Name": "Toča",
+              "Description": null
+          },
+          {
+              "Id": 8,
+              "Name": "Žled",
+              "Description": null
+          }
+      ],
+      "Snow_AvalancheTriggerKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Spontano sproženje",
+              "Description": null
+          },
+          {
+              "Id": 26,
+              "Name": "Sprožil človek",
+              "Description": null
+          },
+          {
+              "Id": 27,
+              "Name": "Sprožile snežne sani",
+              "Description": null
+          },
+          {
+              "Id": 22,
+              "Name": "Oddaljeno sproženje",
+              "Description": null
+          },
+          {
+              "Id": 23,
+              "Name": "Umetno sproženo-testno pobočje",
+              "Description": null
+          },
+          {
+              "Id": 25,
+              "Name": "Sproženo z eksplozivom",
+              "Description": null
+          },
+          {
+              "Id": 99,
+              "Name": "Neznano",
+              "Description": null
+          }
+      ],
+      "Snow_TerrainStartZoneKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Strmo pobočje",
+              "Description": null
+          },
+          {
+              "Id": 20,
+              "Name": "Zavetrna stran",
+              "Description": null
+          },
+          {
+              "Id": 30,
+              "Name": "Blizu grebena",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "V žlebu ali konkavni površini",
+              "Description": null
+          },
+          {
+              "Id": 50,
+              "Name": "Kloža",
+              "Description": null
+          },
+          {
+              "Id": 60,
+              "Name": "Krnica",
+              "Description": null
+          },
+          {
+              "Id": 70,
+              "Name": "Gozd",
+              "Description": null
+          },
+          {
+              "Id": 75,
+              "Name": "Območje poseke",
+              "Description": null
+          },
+          {
+              "Id": 95,
+              "Name": "Povsod",
+              "Description": null
+          },
+          {
+              "Id": 99,
+              "Name": "Neznano",
+              "Description": null
+          }
+      ],
+      "Snow_SnowSurfaceKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni opaziti",
+              "Description": null
+          },
+          {
+              "Id": 101,
+              "Name": "Ogromno nesprijetega snega (>30cm)",
+              "Description": null
+          },
+          {
+              "Id": 102,
+              "Name": "Veliko nesprijetega snega (10-30cm)",
+              "Description": null
+          },
+          {
+              "Id": 103,
+              "Name": "Nekaj nesprijetega snega (1-10cm)",
+              "Description": null
+          },
+          {
+              "Id": 61,
+              "Name": "Površinski srež na trdi podlagi",
+              "Description": null
+          },
+          {
+              "Id": 62,
+              "Name": "Površinski srež na mehki podlagi",
+              "Description": null
+          },
+          {
+              "Id": 50,
+              "Name": "Plast oglatih kristalov blizu površja snežne odeje",
+              "Description": null
+          },
+          {
+              "Id": 107,
+              "Name": "Skorja",
+              "Description": null
+          },
+          {
+              "Id": 105,
+              "Name": "Vetrna kloža (trda kloža)",
+              "Description": null
+          },
+          {
+              "Id": 106,
+              "Name": "Nevihtna kloža (mehka kloža)",
+              "Description": null
+          },
+          {
+              "Id": 104,
+              "Name": "Moker nesprijet sneg",
+              "Description": null
+          },
+          {
+              "Id": 108,
+              "Name": "Drugo",
+              "Description": null
+          }
+      ],
+      "Snow_SurfaceWaterContentKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni opaziti",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Brez snega",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Suh",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Vlažen",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "Moker",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "Zelo moker",
+              "Description": null
+          },
+          {
+              "Id": 6,
+              "Name": "Plundra",
+              "Description": null
+          }
+      ],
+      "Snow_StabilityEvalKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Dobro",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Srednje",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Slabo",
+              "Description": null
+          }
+      ],
+      "Snow_ComprTestFractureKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Q1",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Q2",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Q3",
+              "Description": null
+          }
+      ],
+      "Snow_PropagationKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 21,
+              "Name": "ECTPV",
+              "Description": null
+          },
+          {
+              "Id": 22,
+              "Name": "ECTP",
+              "Description": null
+          },
+          {
+              "Id": 23,
+              "Name": "ECTN",
+              "Description": null
+          },
+          {
+              "Id": 24,
+              "Name": "ECTX",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "Preizkus majhne klade (KBT)",
+              "Description": null
+          },
+          {
+              "Id": 11,
+              "Name": "CTV",
+              "Description": null
+          },
+          {
+              "Id": 12,
+              "Name": "CTE",
+              "Description": null
+          },
+          {
+              "Id": 13,
+              "Name": "CTM",
+              "Description": null
+          },
+          {
+              "Id": 14,
+              "Name": "CTH",
+              "Description": null
+          },
+          {
+              "Id": 15,
+              "Name": "CTN",
+              "Description": null
+          }
+      ],
+      "Snow_WetnessKDV": [
+          {
+              "Id": 0,
+              "Name": " - ",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "D",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "D-M",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "M",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "M-W",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "W",
+              "Description": null
+          },
+          {
+              "Id": 6,
+              "Name": "W-V",
+              "Description": null
+          },
+          {
+              "Id": 7,
+              "Name": "V",
+              "Description": null
+          },
+          {
+              "Id": 8,
+              "Name": "V-S",
+              "Description": null
+          },
+          {
+              "Id": 9,
+              "Name": "S",
+              "Description": null
+          }
+      ],
+      "Snow_HardnessKDV": [
+          {
+              "Id": 0,
+              "Name": " - ",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "F-",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "F",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "F+",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": " F-4F",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "4F-",
+              "Description": null
+          },
+          {
+              "Id": 6,
+              "Name": "4F",
+              "Description": null
+          },
+          {
+              "Id": 7,
+              "Name": "4F+",
+              "Description": null
+          },
+          {
+              "Id": 8,
+              "Name": "4F-1F",
+              "Description": null
+          },
+          {
+              "Id": 9,
+              "Name": "1F-",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "1F",
+              "Description": null
+          },
+          {
+              "Id": 11,
+              "Name": "1F+",
+              "Description": null
+          },
+          {
+              "Id": 12,
+              "Name": "1F-P",
+              "Description": null
+          },
+          {
+              "Id": 13,
+              "Name": "P-",
+              "Description": null
+          },
+          {
+              "Id": 14,
+              "Name": "P",
+              "Description": null
+          },
+          {
+              "Id": 15,
+              "Name": "P+",
+              "Description": null
+          },
+          {
+              "Id": 16,
+              "Name": "P-K",
+              "Description": null
+          },
+          {
+              "Id": 17,
+              "Name": "K-",
+              "Description": null
+          },
+          {
+              "Id": 18,
+              "Name": "K",
+              "Description": null
+          },
+          {
+              "Id": 19,
+              "Name": "K+",
+              "Description": null
+          },
+          {
+              "Id": 20,
+              "Name": "K-I",
+              "Description": null
+          },
+          {
+              "Id": 21,
+              "Name": "I",
+              "Description": null
+          }
+      ],
+      "Snow_GrainFormKDV": [
+          {
+              "Id": 0,
+              "Name": " - ",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "PP",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "PPco",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "PPnd",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "PPpl",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "PPsd",
+              "Description": null
+          },
+          {
+              "Id": 6,
+              "Name": "PPir",
+              "Description": null
+          },
+          {
+              "Id": 7,
+              "Name": "PPgp",
+              "Description": null
+          },
+          {
+              "Id": 8,
+              "Name": "PPhl",
+              "Description": null
+          },
+          {
+              "Id": 9,
+              "Name": "PPip",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "PPrm",
+              "Description": null
+          },
+          {
+              "Id": 11,
+              "Name": "MM",
+              "Description": null
+          },
+          {
+              "Id": 12,
+              "Name": "MMrp",
+              "Description": null
+          },
+          {
+              "Id": 13,
+              "Name": "MMci",
+              "Description": null
+          },
+          {
+              "Id": 14,
+              "Name": "DF",
+              "Description": null
+          },
+          {
+              "Id": 15,
+              "Name": "DFdc",
+              "Description": null
+          },
+          {
+              "Id": 16,
+              "Name": "DFbk",
+              "Description": null
+          },
+          {
+              "Id": 17,
+              "Name": "RG",
+              "Description": null
+          },
+          {
+              "Id": 18,
+              "Name": "RGsr",
+              "Description": null
+          },
+          {
+              "Id": 19,
+              "Name": "RGlr",
+              "Description": null
+          },
+          {
+              "Id": 20,
+              "Name": "RGwp",
+              "Description": null
+          },
+          {
+              "Id": 21,
+              "Name": "RGxf",
+              "Description": null
+          },
+          {
+              "Id": 22,
+              "Name": "FC",
+              "Description": null
+          },
+          {
+              "Id": 23,
+              "Name": "FCso",
+              "Description": null
+          },
+          {
+              "Id": 24,
+              "Name": "FCsf",
+              "Description": null
+          },
+          {
+              "Id": 25,
+              "Name": "FCxr",
+              "Description": null
+          },
+          {
+              "Id": 26,
+              "Name": "DH",
+              "Description": null
+          },
+          {
+              "Id": 27,
+              "Name": "DHcp",
+              "Description": null
+          },
+          {
+              "Id": 28,
+              "Name": "DHpr",
+              "Description": null
+          },
+          {
+              "Id": 29,
+              "Name": "DHch",
+              "Description": null
+          },
+          {
+              "Id": 30,
+              "Name": "DHla",
+              "Description": null
+          },
+          {
+              "Id": 31,
+              "Name": "DHxr",
+              "Description": null
+          },
+          {
+              "Id": 32,
+              "Name": "SH",
+              "Description": null
+          },
+          {
+              "Id": 33,
+              "Name": "SHsu",
+              "Description": null
+          },
+          {
+              "Id": 34,
+              "Name": "SHcv",
+              "Description": null
+          },
+          {
+              "Id": 35,
+              "Name": "SHxr",
+              "Description": null
+          },
+          {
+              "Id": 36,
+              "Name": "MF",
+              "Description": null
+          },
+          {
+              "Id": 37,
+              "Name": "MFcl",
+              "Description": null
+          },
+          {
+              "Id": 38,
+              "Name": "MFpc",
+              "Description": null
+          },
+          {
+              "Id": 39,
+              "Name": "MFsl",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "MFcr",
+              "Description": null
+          },
+          {
+              "Id": 41,
+              "Name": "IF",
+              "Description": null
+          },
+          {
+              "Id": 42,
+              "Name": "IFil",
+              "Description": null
+          },
+          {
+              "Id": 43,
+              "Name": "IFic",
+              "Description": null
+          },
+          {
+              "Id": 44,
+              "Name": "IFbi",
+              "Description": null
+          },
+          {
+              "Id": 45,
+              "Name": "IFrc",
+              "Description": null
+          },
+          {
+              "Id": 46,
+              "Name": "IFsc",
+              "Description": null
+          }
+      ],
+      "Snow_CriticalLayerKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 11,
+              "Name": "Zgornji del",
+              "Description": null
+          },
+          {
+              "Id": 12,
+              "Name": "Spodnji del",
+              "Description": null
+          },
+          {
+              "Id": 13,
+              "Name": "Celotna plast",
+              "Description": null
+          }
+      ],
+      "Water_DangerSignKDV": [
+          {
+              "Id": 600,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 601,
+              "Name": "Ni opaznih znakov nevarnosti",
+              "Description": null
+          },
+          {
+              "Id": 611,
+              "Name": "Zamašen vodotok zaradi ledu",
+              "Description": null
+          },
+          {
+              "Id": 612,
+              "Name": "Zamašen vodotok zaradi usedlin",
+              "Description": null
+          },
+          {
+              "Id": 621,
+              "Name": "Znatno povečan vodostaj",
+              "Description": null
+          },
+          {
+              "Id": 622,
+              "Name": "Nenadoma povečan vodostaj",
+              "Description": null
+          },
+          {
+              "Id": 623,
+              "Name": "Visok vodostaj. Poplavljanje.",
+              "Description": null
+          },
+          {
+              "Id": 699,
+              "Name": "Drugo (navedite v komentarju)",
+              "Description": null
+          }
+      ],
+      "Water_ActivityInfluencedKDV": [
+          {
+              "Id": 600,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 610,
+              "Name": "Rekreativna aktivnost",
+              "Description": null
+          },
+          {
+              "Id": 615,
+              "Name": "Merilna oprema",
+              "Description": null
+          },
+          {
+              "Id": 620,
+              "Name": "Ceste",
+              "Description": null
+          },
+          {
+              "Id": 640,
+              "Name": "Železnice",
+              "Description": null
+          },
+          {
+              "Id": 660,
+              "Name": "Zgradbe",
+              "Description": null
+          },
+          {
+              "Id": 690,
+              "Name": "Drugo",
+              "Description": null
+          }
+      ],
+      "Water_WaterLevelRefKDV": [
+          {
+              "Id": 100,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 110,
+              "Name": "Skala na merilniku vodostaja",
+              "Description": null
+          },
+          {
+              "Id": 120,
+              "Name": "Dobro znan mejnik",
+              "Description": null
+          },
+          {
+              "Id": 130,
+              "Name": "Poplavni obelisk",
+              "Description": null
+          },
+          {
+              "Id": 140,
+              "Name": "Kot prikazano na fotografiji",
+              "Description": null
+          },
+          {
+              "Id": 200,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 210,
+              "Name": "Skala na merilniku vodostaja",
+              "Description": null
+          },
+          {
+              "Id": 211,
+              "Name": "Merilo",
+              "Description": null
+          },
+          {
+              "Id": 212,
+              "Name": "Max/min oznaka za regulacijo",
+              "Description": null
+          },
+          {
+              "Id": 220,
+              "Name": "Dobro znan mejnik",
+              "Description": null
+          },
+          {
+              "Id": 221,
+              "Name": "Poplavni obelisk",
+              "Description": null
+          },
+          {
+              "Id": 240,
+              "Name": "Kot prikazano na fotografiji",
+              "Description": null
+          }
+      ],
+      "Water_WaterLevelStateKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": "Neznan vodostaj"
+          },
+          {
+              "Id": 1,
+              "Name": "Vodostaj upada",
+              "Description": "Vodostaj upada"
+          },
+          {
+              "Id": 2,
+              "Name": "Vodostaj narašča",
+              "Description": "Vodostaj narašča"
+          },
+          {
+              "Id": 3,
+              "Name": "Vodostaj je stabilen",
+              "Description": "Vodostaj je stabilen"
+          },
+          {
+              "Id": 4,
+              "Name": "Vodostaja se ne da določiti",
+              "Description": "Vodostaja se ne da določiti"
+          }
+      ],
+      "Water_WaterAstrayKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": "Neznano"
+          },
+          {
+              "Id": 1,
+              "Name": "Da",
+              "Description": "Da"
+          },
+          {
+              "Id": 2,
+              "Name": "Ne",
+              "Description": "Ne"
+          }
+      ],
+      "Water_ObservationTimingKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": "Neznano"
+          },
+          {
+              "Id": 1,
+              "Name": "Sled preteklega vodostaja",
+              "Description": "Sled preteklega vodostaja"
+          },
+          {
+              "Id": 2,
+              "Name": "Trenutni vodostaj",
+              "Description": "Trenutni vodostaj"
+          }
+      ],
+      "Water_WaterLevelMethodKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": "Neznano"
+          },
+          {
+              "Id": 1,
+              "Name": "Oznaka vodostaja",
+              "Description": "Oznaka vodostaja"
+          },
+          {
+              "Id": 2,
+              "Name": "Meritev vodostaja",
+              "Description": "Meritev vodostaja"
+          }
+      ],
+      "Water_MeasurementTypeKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": "Neznano"
+          },
+          {
+              "Id": 1,
+              "Name": "Glede na oznako",
+              "Description": "Glede na oznako"
+          },
+          {
+              "Id": 2,
+              "Name": "Merilna palica",
+              "Description": "Merilna palica"
+          },
+          {
+              "Id": 3,
+              "Name": "Merilno orodje",
+              "Description": "Merilno orodje"
+          }
+      ],
+      "Water_MeasurementReferenceKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": "Neznano"
+          },
+          {
+              "Id": 1,
+              "Name": "Tla",
+              "Description": "Tla"
+          },
+          {
+              "Id": 2,
+              "Name": "Poplavni nasip",
+              "Description": "Poplavni nasip"
+          },
+          {
+              "Id": 3,
+              "Name": "Na poplavnem obelisku",
+              "Description": "Na poplavnem obelisku"
+          },
+          {
+              "Id": 4,
+              "Name": "Most",
+              "Description": "Most"
+          },
+          {
+              "Id": 5,
+              "Name": "Drugo",
+              "Description": "Drugo"
+          }
+      ],
+      "Water_MarkingReferenceKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": "Neznano"
+          },
+          {
+              "Id": 1,
+              "Name": "na tleh",
+              "Description": "Tla"
+          },
+          {
+              "Id": 2,
+              "Name": "na mostu",
+              "Description": "Most"
+          },
+          {
+              "Id": 3,
+              "Name": "na poplavnem obelisku",
+              "Description": "Poplavni obelisk"
+          },
+          {
+              "Id": 4,
+              "Name": "Na zgradbi",
+              "Description": "Zgradba"
+          },
+          {
+              "Id": 5,
+              "Name": "Drog",
+              "Description": "Drog"
+          },
+          {
+              "Id": 6,
+              "Name": "drugo",
+              "Description": "drugo"
+          }
+      ],
+      "Water_MarkingTypeKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": "Neznano"
+          },
+          {
+              "Id": 1,
+              "Name": "Razpršilo",
+              "Description": "Razpršilo"
+          },
+          {
+              "Id": 2,
+              "Name": "Znak",
+              "Description": "Znak"
+          },
+          {
+              "Id": 3,
+              "Name": "Žebelj",
+              "Description": "Žebelj"
+          },
+          {
+              "Id": 4,
+              "Name": "Klesanje",
+              "Description": "Klesanje"
+          },
+          {
+              "Id": 5,
+              "Name": "Drugo",
+              "Description": "Drugo"
+          }
+      ],
+      "Water_DamageTypeKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Zgradbe in lastnina",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Infrastruktura",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Obdelane površine",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "Neobdelane površine",
+              "Description": null
+          },
+          {
+              "Id": 5,
+              "Name": "Človek/Ljudje",
+              "Description": null
+          },
+          {
+              "Id": 6,
+              "Name": "Drugo",
+              "Description": null
+          },
+          {
+              "Id": 7,
+              "Name": "Ni opažene škode",
+              "Description": null
+          }
+      ],
+      "AnticipatedObservationTimeKDV": [
+          {
+              "Id": 0,
+              "Name": "0",
+              "Description": "Ni podano"
+          },
+          {
+              "Id": 10,
+              "Name": "480",
+              "Description": "08:00"
+          },
+          {
+              "Id": 20,
+              "Name": "540",
+              "Description": "09:00"
+          },
+          {
+              "Id": 30,
+              "Name": "600",
+              "Description": "10:00"
+          },
+          {
+              "Id": 40,
+              "Name": "660",
+              "Description": "11:00"
+          },
+          {
+              "Id": 50,
+              "Name": "720",
+              "Description": "12:00"
+          },
+          {
+              "Id": 60,
+              "Name": "780",
+              "Description": "13:00"
+          },
+          {
+              "Id": 70,
+              "Name": "840",
+              "Description": "14:00"
+          },
+          {
+              "Id": 80,
+              "Name": "900",
+              "Description": "15:00"
+          },
+          {
+              "Id": 90,
+              "Name": "960",
+              "Description": "16:00"
+          },
+          {
+              "Id": 100,
+              "Name": "1080",
+              "Description": "18:00"
+          },
+          {
+              "Id": 110,
+              "Name": "1200",
+              "Description": "20:00"
+          },
+          {
+              "Id": 120,
+              "Name": "1320",
+              "Description": "22:00"
+          }
+      ],
+      "ForecastAccurateKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Opozorilo ni izdano",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Prenizka stopnja opozorila",
+              "Description": null
+          },
+          {
+              "Id": 3,
+              "Name": "Pravilna stopnja opozorila",
+              "Description": null
+          },
+          {
+              "Id": 4,
+              "Name": "Previsoka stopnja opozorila",
+              "Description": null
+          },
+          {
+              "Id": 9,
+              "Name": "Neznana stopnja opozorila",
+              "Description": null
+          }
+      ],
+      "DamageExtentKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Brez vpliva",
+              "Description": null
+          },
+          {
+              "Id": 13,
+              "Name": "Začeto iskanje in reševanje",
+              "Description": null
+          },
+          {
+              "Id": 15,
+              "Name": "Zaustavitev prometa",
+              "Description": null
+          },
+          {
+              "Id": 25,
+              "Name": "Evakuacija",
+              "Description": null
+          },
+          {
+              "Id": 20,
+              "Name": "Le materialna škoda",
+              "Description": null
+          },
+          {
+              "Id": 27,
+              "Name": "Nihče zasut, a je bilo blizu",
+              "Description": null
+          },
+          {
+              "Id": 28,
+              "Name": "Zasuta oseba, a brez poškodb",
+              "Description": null
+          },
+          {
+              "Id": 30,
+              "Name": "Ranjeni ljudje",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "Smrtne žrtve",
+              "Description": null
+          },
+          {
+              "Id": 99,
+              "Name": "Drugo",
+              "Description": null
+          }
+      ],
+      "CompetenceLevelKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": "Pomanjkanje kompetenc."
+          },
+          {
+              "Id": 100,
+              "Name": "-",
+              "Description": "Pomanjkanje kompetenc za sneg."
+          },
+          {
+              "Id": 110,
+              "Name": "*",
+              "Description": "Opazovalec ima osnovna znanja za oceno nevarnosti snežnih plazov, nima pa izobrazbe glede načina komunikacije nevarnosti snežnih plazov v okviru regObs in Varsom."
+          },
+          {
+              "Id": 115,
+              "Name": "**",
+              "Description": "Opazovalec je izkušen, a nima izobrazbe glede načina komunikacije nevarnosti snežnih plazov v okviru regObs in Varsom."
+          },
+          {
+              "Id": 120,
+              "Name": "***",
+              "Description": "Opazovalec je izobražen in ima napredna znanja za oceno nevarnosti snežnih plazov. Deležen je bil osnovnega izobraževanja glede načina komunikacije nevarnosti snežnih plazov v okviru regObs in Varsom."
+          },
+          {
+              "Id": 130,
+              "Name": "****",
+              "Description": "Opazovalec je izobražen in ima napredna znanja za oceno nevarnosti snežnih plazov. Deležen je bil naprednega izobraževanja glede načina komunikacije nevarnosti snežnih plazov v okviru regObs in Varsom."
+          },
+          {
+              "Id": 150,
+              "Name": "*****",
+              "Description": "Opazovalec je prognostik v plazovni službi."
+          },
+          {
+              "Id": 105,
+              "Name": "A",
+              "Description": "Samodejna storitev"
+          },
+          {
+              "Id": 200,
+              "Name": "-",
+              "Description": "Pomanjkanje kompetenc."
+          },
+          {
+              "Id": 210,
+              "Name": "*",
+              "Description": "Opazovalec je oddal relevantno opazovanje."
+          },
+          {
+              "Id": 220,
+              "Name": "**",
+              "Description": "Opazovalec je oddal relevantno opazovanje s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 230,
+              "Name": "***",
+              "Description": "Strokovnjak z več relevantnimi opazovanji."
+          },
+          {
+              "Id": 240,
+              "Name": "****",
+              "Description": "Izkušen strokovnjak z več relevantnimi opazovanji, oddanimi s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 250,
+              "Name": "*****",
+              "Description": "Strokovnjak z NVE z več relevantnimi opazovanji, oddanimi s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 300,
+              "Name": "-",
+              "Description": "Pomanjkanje kompetenc."
+          },
+          {
+              "Id": 310,
+              "Name": "*",
+              "Description": "Opazovalec je oddal relevantna opazovanja."
+          },
+          {
+              "Id": 320,
+              "Name": "**",
+              "Description": "Opazovalec je oddal relevantno opazovanje s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 330,
+              "Name": "***",
+              "Description": "Strokovnjak z več relevantnimi opazovanji."
+          },
+          {
+              "Id": 340,
+              "Name": "****",
+              "Description": "Izkušen strokovnjak z več relevantnimi opazovanji, oddanimi s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 350,
+              "Name": "*****",
+              "Description": "Strokovnjak z NVE z več relevantnimi opazovanji, oddanimi s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 400,
+              "Name": "-",
+              "Description": "Pomanjkanje kompetenc."
+          },
+          {
+              "Id": 410,
+              "Name": "*",
+              "Description": "Opazovalec je oddal relevantna opazovanja."
+          },
+          {
+              "Id": 420,
+              "Name": "**",
+              "Description": "Opazovalec je oddal relevantno opazovanje s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 430,
+              "Name": "***",
+              "Description": "Strokovnjak z več relevantnimi opazovanji."
+          },
+          {
+              "Id": 440,
+              "Name": "****",
+              "Description": "Izkušen strokovnjak z več relevantnimi opazovanji, oddanimi s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 450,
+              "Name": "*****",
+              "Description": "Strokovnjak z NVE z več relevantnimi opazovanji, oddanimi s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 600,
+              "Name": "-",
+              "Description": "Pomanjkanje kompetenc."
+          },
+          {
+              "Id": 610,
+              "Name": "*",
+              "Description": "Opazovalec je oddal relevantna opazovanja."
+          },
+          {
+              "Id": 620,
+              "Name": "**",
+              "Description": "Opazovalec je oddal relevantno opazovanje s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 630,
+              "Name": "***",
+              "Description": "Strokovnjak z več relevantnimi opazovanji."
+          },
+          {
+              "Id": 640,
+              "Name": "****",
+              "Description": "Izkušen strokovnjak z več relevantnimi opazovanji, oddanimi s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 650,
+              "Name": "*****",
+              "Description": "Strokovnjak z NVE z več relevantnimi opazovanji, oddanimi s pravilno uporabo obrazcev Regobs."
+          },
+          {
+              "Id": 700,
+              "Name": "-",
+              "Description": "Pomanjkanje kompetenc za led."
+          },
+          {
+              "Id": 710,
+              "Name": "*",
+              "Description": "Začetnik."
+          },
+          {
+              "Id": 720,
+              "Name": "**",
+              "Description": "Izkušen opazovalec."
+          },
+          {
+              "Id": 730,
+              "Name": "***",
+              "Description": "Izkušen opazovalec z izkušnjami s terena."
+          },
+          {
+              "Id": 740,
+              "Name": "****",
+              "Description": "Usposobljeno osebje."
+          },
+          {
+              "Id": 750,
+              "Name": "*****",
+              "Description": "Osebje, usposobljeno v NVE ali podobno."
+          }
+      ],
+      "UTMSourceKDV": [
+          {
+              "Id": 0,
+              "Name": null,
+              "Description": "Neznano"
+          },
+          {
+              "Id": 10,
+              "Name": null,
+              "Description": "Preberi iz GPS"
+          },
+          {
+              "Id": 20,
+              "Name": null,
+              "Description": "Preberi iz zemljevida"
+          },
+          {
+              "Id": 30,
+              "Name": null,
+              "Description": "Klikni na zemljevid v regObs"
+          },
+          {
+              "Id": 35,
+              "Name": null,
+              "Description": "Klikni na zemljevid v regObs-app"
+          },
+          {
+              "Id": 40,
+              "Name": null,
+              "Description": "GPS v pametnem telefonu"
+          },
+          {
+              "Id": 45,
+              "Name": "Položaj iz pomnilnika pametnega telefona. Uporablja se, kadar trenutni položaj ni na voljo.",
+              "Description": "Stari položaj iz pametnega telefona"
+          },
+          {
+              "Id": 50,
+              "Name": "Banka podatkov o državnih cestah",
+              "Description": "NVDB"
+          },
+          {
+              "Id": 60,
+              "Name": null,
+              "Description": "HydraII"
+          }
+      ],
+      "TripTypeKDV": [
+          {
+              "Id": 0,
+              "Name": "Neznano",
+              "Description": null
+          },
+          {
+              "Id": 60,
+              "Name": "Zasebno",
+              "Description": null
+          },
+          {
+              "Id": 55,
+              "Name": "Izobraževalna pot",
+              "Description": null
+          },
+          {
+              "Id": 50,
+              "Name": "Zaposleni",
+              "Description": null
+          },
+          {
+              "Id": 20,
+              "Name": "Vrednost ni določena",
+              "Description": null
+          },
+          {
+              "Id": 30,
+              "Name": "Vrednost ni določena",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "Vrednost ni določena",
+              "Description": null
+          }
+      ],
+      "GeoHazardKDV": [
+          {
+              "Id": 0,
+              "Name": "Ni določeno",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Sneg",
+              "Description": "Snežni plaz"
+          },
+          {
+              "Id": 20,
+              "Name": "Zemlja",
+              "Description": "Zemeljski plaz"
+          },
+          {
+              "Id": 30,
+              "Name": "Mokra zemlja",
+              "Description": "Poplavni plaz"
+          },
+          {
+              "Id": 33,
+              "Name": "Glina",
+              "Description": null
+          },
+          {
+              "Id": 36,
+              "Name": "Plundra",
+              "Description": null
+          },
+          {
+              "Id": 40,
+              "Name": "Skala",
+              "Description": "Skalni podor"
+          },
+          {
+              "Id": 50,
+              "Name": "Podor ledu",
+              "Description": null
+          },
+          {
+              "Id": 60,
+              "Name": "Voda",
+              "Description": "Poplava"
+          },
+          {
+              "Id": 70,
+              "Name": "Led",
+              "Description": "Šibak led"
+          },
+          {
+              "Id": 100,
+              "Name": "Dogodek na ledeniku",
+              "Description": null
+          },
+          {
+              "Id": 110,
+              "Name": "Poplava izpod ledenika",
+              "Description": null
+          },
+          {
+              "Id": 200,
+              "Name": "Suša",
+              "Description": null
+          },
+          {
+              "Id": 999,
+              "Name": "Neznano",
+              "Description": null
+          }
+      ],
+      "UsageFlagKDV": [
+          {
+              "Id": 0,
+              "Name": "Nobena oznaka ni dana",
+              "Description": null
+          },
+          {
+              "Id": 1,
+              "Name": "Pripravljeno za zgodovinsko db",
+              "Description": null
+          },
+          {
+              "Id": 2,
+              "Name": "Posredovano zgodovinski db",
+              "Description": null
+          },
+          {
+              "Id": 10,
+              "Name": "Odobril skrbnik podatkov",
+              "Description": null
+          },
+          {
+              "Id": 51,
+              "Name": "Izbrisal uporabnik",
+              "Description": null
+          },
+          {
+              "Id": 61,
+              "Name": "Zavrnil skrbnik podatkov",
+              "Description": null
+          },
+          {
+              "Id": 52,
+              "Name": "Izbrisal skrbnik podatkov",
+              "Description": null
+          },
+          {
+              "Id": 101,
+              "Name": "Za administrativne namene",
+              "Description": "To opažanje ali skupina ima skrbniško funkcijo. Sicer je skrita, kot bi bila izbrisana."
+          }
+      ]
+  },
+  "ViewRepositories": {
+      "AvalancheProblemMenu3V": [
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 0
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 10
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 11
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 13
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 14
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 15
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 16
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 18
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 19
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 20
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 22
+          },
+          {
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 24
+          },
+          {
+              "AvalancheExtTID": 10,
+              "AvalCauseTID": 0
+          },
+          {
+              "AvalancheExtTID": 10,
+              "AvalCauseTID": 24
+          },
+          {
+              "AvalancheExtTID": 15,
+              "AvalCauseTID": 0
+          },
+          {
+              "AvalancheExtTID": 15,
+              "AvalCauseTID": 20
+          },
+          {
+              "AvalancheExtTID": 15,
+              "AvalCauseTID": 24
+          },
+          {
+              "AvalancheExtTID": 20,
+              "AvalCauseTID": 0
+          },
+          {
+              "AvalancheExtTID": 20,
+              "AvalCauseTID": 10
+          },
+          {
+              "AvalancheExtTID": 20,
+              "AvalCauseTID": 11
+          },
+          {
+              "AvalancheExtTID": 20,
+              "AvalCauseTID": 13
+          },
+          {
+              "AvalancheExtTID": 20,
+              "AvalCauseTID": 14
+          },
+          {
+              "AvalancheExtTID": 20,
+              "AvalCauseTID": 15
+          },
+          {
+              "AvalancheExtTID": 20,
+              "AvalCauseTID": 16
+          },
+          {
+              "AvalancheExtTID": 20,
+              "AvalCauseTID": 18
+          },
+          {
+              "AvalancheExtTID": 20,
+              "AvalCauseTID": 19
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 0
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 10
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 11
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 13
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 14
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 15
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 16
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 18
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 19
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 20
+          },
+          {
+              "AvalancheExtTID": 25,
+              "AvalCauseTID": 22
+          }
+      ]
+  }
+}

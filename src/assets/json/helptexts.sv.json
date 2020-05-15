@@ -1,0 +1,200 @@
+[
+  {
+      "RegistrationTID": 0,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Hjälptext saknas."
+  },
+  {
+      "RegistrationTID": 0,
+      "GeoHazardTID": 20,
+      "LangKey": 5,
+      "Text": "Hjälptext saknas."
+  },
+  {
+      "RegistrationTID": 0,
+      "GeoHazardTID": 60,
+      "LangKey": 5,
+      "Text": "Hjälptext saknas."
+  },
+  {
+      "RegistrationTID": 0,
+      "GeoHazardTID": 70,
+      "LangKey": 5,
+      "Text": "Hjälptext saknas."
+  },
+  {
+      "RegistrationTID": 10,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Vill du dela något, men inte hittar ett formulär som passar riktigt bra? Använd den här! Bifoga ett foto och en informativ text som beskriver vad du ser."
+  },
+  {
+      "RegistrationTID": 10,
+      "GeoHazardTID": 20,
+      "LangKey": 5,
+      "Text": "Vill du dela något, men inte hittar ett formulär som passar riktigt bra? Använd den här! Bifoga ett foto och en informativ text som beskriver vad du ser."
+  },
+  {
+      "RegistrationTID": 10,
+      "GeoHazardTID": 60,
+      "LangKey": 5,
+      "Text": "Vill du dela något, men inte hittar ett formulär som passar riktigt bra? Använd den här! Bifoga ett foto och en informativ text som beskriver vad du ser."
+  },
+  {
+      "RegistrationTID": 10,
+      "GeoHazardTID": 70,
+      "LangKey": 5,
+      "Text": "Lägg till webblänkar. Använd helst kommentarsfälten tillhörande de andra ämnena, men om mer plats behövs kan du också skriva till mer text här."
+  },
+  {
+      "RegistrationTID": 11,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Vi vill samla in så mycket information som möjligt om olyckor, tillbud och andra händelser som skett i samband med laviner. Detta kommer att vara en del av det förebyggande arbetet för att undvika lavinolyckor i framtiden.\n  \nDu kan registrera fakta om lavinen, om orsaken och förloppet, samt reflektioner om hur lavinen kunde undvikits. Hur mycket information som du vill lämna är upp till dig.  Vänligen fyll i så många av de andra regobs formulären som möjligt så att vi får så bra information om förhållandena som möjligt. Kom ihåg att fokusera på lärande och fakta, inte spekulation eller skuld. \n\n#### Även om du inte kan mycket om snön är ett foto av lavinen mycket användbart för oss.\n Du kan skicka en observation bara med ett foto om så önskas.\n Om det finns fler val som är relevanta under \"skadeomfång\"bör du välja det som har den största konsekvens.\n"
+  },
+  {
+      "RegistrationTID": 11,
+      "GeoHazardTID": 20,
+      "LangKey": 5,
+      "Text": "Vilken sorts jordskred har du sett? För de som jobbar med jordskredsvarningar och -prognoser är det här väldigt användbar information som hjälper till att förbättra verksamheten.<br><br>\nÄr det jordskred (har inte följt bäckar), skred till följd av översvämning (följer bäckar), stenras (huvudsakligen sten), lerskred (skred av fint sediment), slasklaviner (laviner av väldigt blöt snö, blandad med rasmassor) eller något annat? Det är också väldigt viktigt att rapportera ungefär när jordskredet skedde, även om det kan vara svårt att uppskatta om du inte var på platsen vid tillfället.<br><br>\nVilka konsekvenser har jordskredet du observerar? Är hus, vägar eller annan infrastruktur skadad? Har det påverkat människor, djur eller trafik? Dämmer det upp flödet i bäckar eller älvar?<br><br>\nFöreställ dig vad du skulle vilja kommunicera till andra i samma område om konsekvenserna av det du observerar."
+  },
+  {
+      "RegistrationTID": 11,
+      "GeoHazardTID": 60,
+      "LangKey": 5,
+      "Text": "Vad är konsekvenserna av informationen som det du registrerar? Tar vattnet nya vägar som påverkar eller skadat väg, järnväg, hus eller mätstationer? Är någon skadad till följd av detta? Föreställ dig att du vill informera andra som rör sig i området om konsekvenserna av att det finns mycket (eller lite?) vatten i bäckar/älvar."
+  },
+  {
+      "RegistrationTID": 11,
+      "GeoHazardTID": 70,
+      "LangKey": 5,
+      "Text": "Vi och alla andra vill lära av dina misstag. Om du lämnar information när något händer kan alla lära sig av olyckan och det kan få en förebyggande effekt. <br> <br> \nKännedom om olyckor och mönsterigenkänning gör att vi kan göra isvarningen mer relevant för att förhindra liknande olyckor. <br> <br> \n Bra information om hur ofta olika typer av olyckor eller tillbud inträffar ger även en grund för ett förebygga arbete med utbildning och information, till exempel genom Isskolen på Varsom"
+  },
+  {
+      "RegistrationTID": 13,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Här kan du registrera tecken på lavinfara som du sett eller lagt märke till. Om du har varit på tur och inte sett något så är även det en värdefull observation, registrerar en observation med \"*Inga tecken på lavinfara*\". Att lära sig känna igen tecken på lavinfara är mycket nyttigt för att kunna göra egna värderingar av lavinfaran.\n\nTecken på lavinfara som du kan registrera är: <br>\n**Färska laviner ** - Laviner som går medan du är på tur eller som har gått det senaste dygnet räknas som färska. Detta är det tydligaste tecknet på risk för laviner föreligger. <br>\n**Whumpf-ljud i snön ** - Whumpf-ljud i snön är ett tecken på att det finns svaga lager som kollapsar i snötäcket. <br>\n** Färska sprickor ** - När snön spricker runt dig, är det tecken på att det finns ett flak med ett svagt skikt under som kan påverkas.<br>\n**Kraftigt snöfall ** - över 30 cm per dag räknas som kraftigt snöfall.<br>\n** Rimfrostkristaller i ytan ** - är inte farliga när de är i ytan, men kan bli ett problem i framtiden om de snöar.<br>\n** Snabb temperaturökning ** - Mer än 5 gr C på 3 timmar. <br>\n**Mycket vatten i snön ** - regn kommer både att öka snödäckets vikt och försvaga bindningarna i snödäcket. <br>\n**Ny drevsnö ** - Finns det områden där vinden just har lämnat snö? Denna behöver tid för att stabilisera sig.<br>\n\nAnge också information om det ungefär området observationen gäller för. (t.ex.: över en viss höjd eller i ett visst vädersteck etc.)"
+  },
+  {
+      "RegistrationTID": 13,
+      "GeoHazardTID": 20,
+      "LangKey": 5,
+      "Text": "Ett registrerat ** tecken på fara för jordskred ** ger varningstjänsten ett intryck av hur situationen är i terrängen med de aktuella väderförhållandena. Detta ger användbar ytterligare information för dem som överväger risknivån för området. \n\n Använd kommentarsrutan om den fördefinierade informationen inte helt passar in på det du vill rapportera eller för att beskriva omfattningen av det du rapporterar."
+  },
+  {
+      "RegistrationTID": 13,
+      "GeoHazardTID": 60,
+      "LangKey": 5,
+      "Text": "Risk för översvämning: \n* Kan du se att det rinner vatten där det inte är tänkt, och kan du ange orsaken till det?\n* Kan du se igensatta dräneringsvägar?\n* Kan du se is i bäckar eller kulvertar som tvingar vattnet att ta andra vägar? \n* Kan du observera vattennivåer som stiger alarmerande snabbt?\n<br>\nDenna typ av information kan hjälpa varningstjänsten och andra att bättre förstå effekterna av en regn- och snösmältningen. Eller kanske den ansvariga beredskapspersonalen får ett tips om var deras handlingar behövs?"
+  },
+  {
+      "RegistrationTID": 13,
+      "GeoHazardTID": 70,
+      "LangKey": 5,
+      "Text": "**Tecken på svag is ** man kan använda för att bedöma hur säker isen är:\n\n* Kanske finns det saker du har lagt märke till som inte är så lätt att veta? Kanske vet du att vattenflödet har ökat och att isen eroderas från undersidan?\n* Kanske borde människor hålla sig borta från inloppet eftersom isen är svag där?\n* Eller helt enkelt, du har borrat och vet att det bara finns 5 cm is under snön. \n\n Det finns några kanske i texten ovan, men det kan vara en del av den stora bilden. Det är indikatorer, men som är mycket användbara som ytterligare information när du färdas på isen.\n\n Använd kommentarrutan för att så bra som möjligt beskriva farorna och omfattningen."
+  },
+  {
+      "RegistrationTID": 14,
+      "GeoHazardTID": 60,
+      "LangKey": 5,
+      "Text": "* Kan du se några skador orsakade av hög vattennivå?\n* Kan du se några skador på vägar, järnvägar, hus eller en vattennivåmätare?<br>\nFundera på vad du skulle vilja kommunicera till andra i samma område om konsekvenserna av vattennivån du observerar.<br>\nOm observationen placeras korrekt på kartan kommer den vara mer användbar för anda senare, som dokumentation av händelsen eller för att dra lärdom om vilka skador som kan uppstå i liknande situationer."
+  },
+  {
+      "RegistrationTID": 21,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Väderobservationen är mest användbar när det säger något om vädret i området den senaste dagen. En väderobservation görs med bilder och bildtexter. En bra observation täcker: \n*Typ av nederbörd? När på dagen?\n*Vad är medeltemperaturen? Max och min temperatur?\n*Vindhastighet och riktning, har det varierat under dagen?\n*Hur är molntäcket? \n*I kommentarfältet kan du beskriva hur vädret har varierat. Till exempel: Finns det avvikelser från väderprognosen? Trenden med temperaturförändringar? Var är noll isotermen?"
+  },
+  {
+      "RegistrationTID": 22,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Detta är en uppskattning för området. \n\n De ** viktigaste ** du registrerar dig är:\n* Snödrev: Transporterar vinden snön?\n* Snöhårdhet: Vad vi främst vill veta är om det  om det finns lös snö tillgängligt för vindtransport.\n* Ytfuktighet: Är snöytan torr eller blöt eller något däremellan?\n* Foto: Ett foto som beskriver snötäcket.\n\n Du kan också rapportera om:\n\n*Snödjup: Mät det totala snödjupet med sonden. Gör tre mätningar inom en radie av några meter runt dig och beräkna / registrera genomsnittet för dessa tre mätningar.\n*Gräns för nysnö: Hur mycket snö har fallit de senaste 24 timmarna?\n*Ny snöhöjd: På vilken höjd faller nederbörden som snö?\n*Snögräns: Var är gränsen mellan snötäcke och barmark?\n*Begränsat med lager i snö: Lägsta höjd för där det finns svaga lager i snötäcket. Milt väder i låglandet kan förstöra svaga lager i snötäcket. Utan svaga lager kan vi bara ha ett skredproblem: lös snö.\n* Kommentar: Hur är snöfördelningen i området, i förhållande till höjd och väderstreck finns det skillnader i regionen? \n"
+  },
+  {
+      "RegistrationTID": 23,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Platsen för snöprofilens måste vara representativ för de lavinproblem som ska bedömas. \n  \n Snöprofilen utförs i skuggsidan av gropen för att undvika direkt solljus på snöprofilen. Kontrollera även snön vid marken. \n Om du har några tvivel om vilken typ av snökristaller du hittar i profilen kan denna tabell vara till din hjälp:\n\n![Symboler i snöprofil.](http://www.varsom.no/media/2098/kornform-og-hardhet.jpg \"Kornform og hardhet\")\n\n![Symboler i snöprofil.](https://www.regobs.no/Attachments/raw/72851.jpg \"Symbol i snøprofil.\")\n\n\n<a target=\"_blank\" href=\"http://www.varsom.no/snoskredskolen/del-informasjon/fullstendig-observasjon/\">I Lavinskolan kan du läsa mer om snöprofiler</a>."
+  },
+  {
+      "RegistrationTID": 25,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Här anger du resultaten av de stabilitetstester du har gjort. Testen som kan anges i fältet är utökat kompressionstest (ECT) och kompressionstest (CT). Utför testet i ett område som är representativt för det lavinproblem du vill undersöka. Utgångspunkten för val av plats bör alltid ske med tanke på säkerheten för den som utför testet.\n\nKoderna för ECT är\n* ECTPV - brottet sprider sig i hela kolumnen under friläggningen. <br>\n* ECTP## brottet sprider sig i hela kolumnen efter ## antal slag. Maximalt antalet slag är 30. \n* ECTN ## - brott utan spridning i hela kolumnen efter ## antal slag.\n* ECTX - Inga brott under testet (efter 30 slag). \n\nExempel: ECTP12 @ 85cm - betyder att kolonnen fick ett brott med en jämn och ren sprick med genom hela kolumnen efter 12 slag 85 cm ned från ytan. \n\n\n För <a target=\"_blank\" href=\"http://www.varsom.no/media/1175/feltbok-nve-forsvaret-nov2012-1.pdf#page=14\"> beskrivning av testet se vår fältbok </a>.\n\n Ta gärna två test på samma plats för att jämföra resultaten.\n\n"
+  },
+  {
+      "RegistrationTID": 26,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Vi vill samla in så mycket information som möjligt om olyckor, tillbud och andra incidenter relaterade till laviner. Detta kommer att vara en del av det förebyggande arbetet för att undvika lavinincidenter i framtiden.\n  \n Du kan registrera fakta om själva lavinen, om orsaken och förloppet samt reflektioner om hur lavinen kunde ha undvikits? Hur mycket information du vill dela är upp till dig. Fyll i så mycket av de andra formulären i regobs som möjligt så att vi får bra information om förhållandena runt lavinen. Kom ihåg att fokusera på lärande och fakta, inte spekulation eller skuld. Du kan skriva mer djupgående i vår <a target=\"_blank \"http://www.varsom.no/ulykker/snoskredulykker-og-hendelser/\"> spørreskjema</a>.\n\n Om det finns flera val som är relevanta under \"omfattningen av skada\", välj det som har den största påverkan. .\n\n**NB**: Om du vill vara anonym kan du skicka oss en sammanfattning av händelsen (försök att ta med punkter som begärs i regobs), så kan vi publicera den på regObs för dig. Skicka till snoskredvarsling@nve.no"
+  },
+  {
+      "RegistrationTID": 26,
+      "GeoHazardTID": 20,
+      "LangKey": 5,
+      "Text": "Vilken typ av jordskred har du observerat? För varningstjänsten är detta användbar information för att göra varningen bättre.\n  \n Är det jordskred (har det följt bäckar), det är skred till följd av översvämning (i bäckar), stensprång (mestadels stenar), lerskred (glider i fina massor) eller något annat? Det är också mycket viktigt att registrera när du bedömer att jordskredet har gått, även om det kan vara svårt att uppskatta om du inte var närvarande när det hände.\n\n Vilka är konsekvenserna av skredet du har observerat? Finns det skador på hus, vägar eller annan infrastruktur? Har det påverkat människor, djur eller trafik? Däms vattendrag eller älvar av jordskredet?\n  \n Skriv som att du informerar andra som rör sig i området om konsekvenserna av jordskredet."
+  },
+  {
+      "RegistrationTID": 31,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "En **bedömning av lavinfara** kan ses som en sammanfattning och slutsats av alla tester och observationer du har skickat in. \n  \n Bedömningar att göra är: \n* Bedömning av snötäcket. Hur är det strukturerad (gynnsamt / ogynnsamt)? Snögräns?\n* Skriv något om förväntad utveckling (och skäl till det). \n* Använd lavinskalan som referens. \n* Skriv också något om bedömningen av den publicerade lavinfara. Detta är en bra feedback till prognostjänsten om den stämmer. \n\n\n Vi använder ADAM matrisen for å komma fram till lavinfaran:\n\n![ADAM](http://www.varsom.no/media/2001/adamnov18.jpg \"\")"
+  },
+  {
+      "RegistrationTID": 32,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Formuläret för **Lavinproblem** följer arbetsmönstret för det *<a target=\"_blank\" href=\"http://www.varsom.no/media/1190/faktaark-1-2015-systematisk-sn%C3%B8dekkeunders%C3%B8kelse.pdf\">systematiske snødekkeundersøkelsen</a>* och består av tre huvuddelar: :\n1. bedömning av det svaga laget\n2. sannolikheten för laviner\n3. lavinproblemets utbredningen\n\n \n**Möjligheten att lösa ut en lavin definieras: ** <br>\n* ** Mycket svårt ** (att utlösa) Det finns inget eller bara ett mindre lavinproblem. Snötäcket har inga tydligt svaga lager. Brott är svåra att initiera och / eller inte sprider sig.* Typiska observationer: Lös torr / våt snö; hård och kompakt snö; inga tecken på lavinfara (t.ex. Whumpf, sprickor); stabilitetstester indikerar stabilitet (t.ex. EXTX / ECTN> 20).* \n*** Svårt ** (att utlösa) Det finns ett lavinproblem, men det är inte särskilt välutvecklat . Det finns minst ett svagt skikt i snötäcket, men antingen har det dålig spridningsförmåga för sprickor eller så ligger under ett tjockt och hårt skikt. Stora belastning, som en grupp skidåkare eller en snöskoter, för att initiera ett brott. * Typiska observationer: Få tecken på lavinfara (t.ex. Whumpf, sprickor); Stabilitetstester visar inga tydliga tecken på stabilitet eller instabilitet (t.ex. ECTN / ECTP> 20) .*\n* ** Lätt ** (att utlösa) Det finns minst ett lavinproblem. Ett eller flera svaga lager är väl utvecklade. Brott kan påbörjas vid liten extra belastning från en person / skidåkare, men sprickutbredning är ofta begränsad. * Typiska observationer: Vissa tecken på lavinfara (t.ex. Whumpf, sprickor); stabilitetstester indikerar instabilitet (t.ex. ECTP <20).*\n* ** Mycket lätt ** (att utlösa) Det finns minst ett lavinproblem. Ett eller flera svaga lager är väl utvecklade och finns i snötäckets översta meter. Brott kan initieras av en liten extra belastning, t.ex. från en person / skidåkare och sprider sig väl. Fjärrutlösning av laviner av vanligt. * Typiska observationer: Ofta många och uppenbara tecken på lavinfara (t.ex. Whumpf, sprickor); stabilitetstester indikerar instabilitet och bra spridningsförökning (t.ex. ECTP <10).*\n\n**Utbredning**** <br>\n\n Få branta sluttningar: ** Lavinproblemet finns endast i mycket få områden och ger få och sällsynta tecken på lavinfara. <br>\n** Några branta sluttningar: ** Lavinproblemet finns i delar av terrängen, men begränsas ofta av terrängformationer som bakom åsar, rännor osv. Tecken på lavinfara förekommer, men är inte alltid uppenbara. <br>\n** Många branta sluttningar: ** Lavinproblemet finns över stora delar av terrängen, det finns uppenbara och många tecken på lavinfara. Lavinproblemet är så utbrett att man inte kan specificera riskområden. <br>\n  \n Du kan lägga till upp till tre lavinproblem. \n\n För att komma från lavinproblem till lavinfara använder vi ADAM-matrisen: <br>\n![ADAM](http://www.varsom.no/media/2001/adamnov18.jpg  \"\")\n Läs mer om hur du lägger till ett lavinproblem  <a target=\"_blank\" href=\"http://www.varsom.no/snoskredskolen/del-informasjon/fullstendig-observasjon#skredproblem\">Lavinskolan</a>."
+  },
+  {
+      "RegistrationTID": 33,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Formuläret för **Lavinaktivet** du använder när det finns (ingen, ingen eller många) laviner i ett område och du vill förmedla detta för att belysa lavinproblemet i ditt område. \n  \n Lavinaktivitet avser vad som händer under dagen. Om du är osäker, lämna en kommentar. Kom också ihåg att med mycket stor osäkerhet (flera dagar) förlorar observationen värde eftersom det är lavinaktivitet jämfört med aktuella lavinproblem som är mest användbart.\n  \n Om det finns gått flera typer av laviner i ett område kan fler laviner registreras. Till exempel skall torra flake-laviner på nordliga sluttningar och våta lösa laviner på solutsatta sydsluttningar rapporteras som två separata lavinaktiviteter.\n  \n I formuläret för lavinaktivitet förväntas du att göra vissa bedömningar som kan vara svåra. Vi vill till exempel att du bedömer höjdintervall för lavinen eller att du tar hänsyn till omfattningen av lavinaktiviteten i förhållande till hela terrängen. Om du kan lämna så korrekta uppgifter som möjligt blir observationerna bättre i för jämförelse med prognostiserade lavinproblem. \n  \n Om det inte gått några laviner på en dag, är det mycket användbart om du förmedlar * ingen lavinaktivitet observerad *."
+  },
+  {
+      "RegistrationTID": 36,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Se till att du arbetar på ett säkert ställe. Platsen för profilen bör vara representativ för de lavinproblem som ska bedömas. \n\n Arbeta på skuggsidan av gropen för att förhindra att solljus påverkar snön som skall bedömas. De lager som är mest sannolikt att du kommer påverka är de övre. Om snödjupet är stort bör du koncentrera dig på den översta en och en halv meter när du gräver snöprofilen.\n\nFör att ** registrera lagerindelning ** väljer du underkategorin *Lager* och sedan * Lägg till nytt lager. * <br>\nAnge tjockleken på lager, hårdhet, kristallform, storlek och fuktighet. Om du inte får med det du vill, tryck på * Visa fler alternativ i det här lagret * Du kommer då att ha fler val (inklusive alla underkategorier för kristallform) i alla rullgardinsmenyer, och du har också möjlighet att ange sekundär kristallstorlek och maximal kristallstorlek i lagret. Obs: du får inte bara fler rullgardinsmenyer, utan du får också fler val i de menyer du redan ser. n <br><br>\n När du är klar med ett lager väljer du antingen \"nästa lager\" som låter dig börja arbeta på lagret nedan, eller \"Ok, tillbaka till snöytan\"\n När du är på översiktsvyn kan du lägga till nya lager längst upp och i botten. Om du har glömt ett lager lägger du till det längst upp eller längst ner och \"dra\" det till rätt plats.\n\n I temperaturprofilen är 0 cm snöyta. Ange sedan djupet (avståndet från ytan) med positiva tal och tillhörande temperatur. <br><br>\n\nSom utgångspunkt för vilken snökristaller du kan hitta kan vara den här tabellen, här ser du också förhållandet mellan symbolen och bokstavskoderna för de vanligaste kristallformerna: <br>\n![Symbol i snöprofil.](http://www.varsom.no/media/2098/kornform-og-hardhet.jpg \"Symbol i snøprofil.\") \n\n<a target=\"_blank\" href=\"http://www.varsom.no/snoskredskolen/del-informasjon/fullstendig-observasjon/\">På lavinskolan kan du läsa mer om snöprofiler</a>.\n\n"
+  },
+  {
+      "RegistrationTID": 37,
+      "GeoHazardTID": 10,
+      "LangKey": 5,
+      "Text": "Ange lagrets tjocklek, hårdhet, kristallform, storlek och fuktighet<br>\nOm du inte får med det du vill, tryck på * Visa fler alternativ för det här lagret* Du kommer då att ha fler val (inklusive alla underkategorier för kristallform) i alla rullgardinsmenyer, och du har också möjlighet att ange sekundär kristallstorlek och maximal kristallstorlek i lagret. Obs: du får inte bara fler rullgardinsmenyer, utan du får också fler val i de menyer du redan ser. n <br><br>\n När du är klar med ett lager väljer du antingen \"nästa lager\" som låter dig börja arbeta på lagret nedan, eller \"Ok, tillbaka till snöytan\"\n När du är på översiktsvyn kan du lägga till nya lager längst upp och i botten. Om du har glömt ett lager lägger du till det längst upp eller längst ner och \"dra\" det till rätt plats. En utgångspunkt för vilken snökristaller du kan hitta kan vara den här tabellen, här ser du också förhållandet mellan symbolen och bokstavskoderna för de vanligaste kristallformerna: \nSom utgångspunkt för vilken snökristaller du kan hitta kan vara den här tabellen, här ser du också förhållandet mellan symbolen och bokstavskoderna för de vanligaste kristallformerna: <br>\n![Symbol i snöprofil.](http://www.varsom.no/media/2098/kornform-og-hardhet.jpg \"Symbol i snøprofil.\") \n\n<a target=\"_blank\" href=\"http://www.varsom.no/snoskredskolen/del-informasjon/fullstendig-observasjon/\">På lavinskolan kan du läsa mer om snöprofiler</a>.\n"
+  },
+  {
+      "RegistrationTID": 50,
+      "GeoHazardTID": 70,
+      "LangKey": 5,
+      "Text": "Innan du börjar borrning ska du hitta en plats som är representativ, och helst minst 50 m från stranden, men kontrollera naturligtvis att isen är tjock nog för att göra det säkert. <br><br>\n Gräv bort snön och mät snötäckets tjocklek. Om snöns nedre del är blöt, registreras det som *slask*. Snön ovan kallas *torr* även om den kan vara fuktig. Du registrerar en islager i taget uppifrån och ner. Även eventuella mellanliggande vattenskikt registreras som ett islager, sedan av typen * Vatten/slask (mellanlager)*. * Total istjocklek * beräknas av regObs och är avståndet från toppen av det översta islagret till botten av det nedre islagret. <br><br>\nI Fyll gärna i kommentarerna text om skridskoförhållanden och säkerhet, om du inte redan har gjort det under *Istäckninggrad*."
+  },
+  {
+      "RegistrationTID": 51,
+      "GeoHazardTID": 70,
+      "LangKey": 5,
+      "Text": "Istäckningsgrad: visar isförhållandena just nu. <br>\n** Isförhållandena före observation**<br>\n  - Använd ’Bruten’ om du inte vet något om isförhållandena sedan föregående observation. \n  - Använd 'Föregående obs gäller till igår' om det tidigare information om isförhållandena är giltigt tills igår. Idag är isförhållandena ändrade eller oförändrade.\n  - Använd 'Isfri, första is på mätplatsen ' om detta är den första isen vid mätplatsen i vinter. \n Bruk 'Isfritt, första is längs land ' om detta är den första isen längs land denna vinter.\n  - Använd 'Isfritt, också isfritt nu' om det inte är is, och det inte har varit is hittills denna vinter.<br>\n\n**Isen kapacitet:** Finns det en risk att gå genom isen som ensam person på den?<br>\n**Åkbarhet** Hur bra är isen för skridskoåkning? ?<br>\n\n**Kommentar: ** Text som kompletterar information om skridskoåkning och säkerhet är bra, och kanske uppskattningar av is tjockleken (om du inte har rapporterat  istjocklek). Beskriv så detaljerat som möjligt var du har varit och om informationen är en skattning eller en mätning. Kom ihåg att läsaren behöver tydlig information för att undvika de farliga områdena.\n\n"
+  },
+  {
+      "RegistrationTID": 61,
+      "GeoHazardTID": 60,
+      "LangKey": 5,
+      "Text": "Här kan du registrera den observerade vattennivån i förhållande till en känd skala eller annan referenspunkt. Finns det vatten upp till dörren? Ta ett foto och hänvisa till fotot med en kommentar här."
+  },
+  {
+      "RegistrationTID": 62,
+      "GeoHazardTID": 60,
+      "LangKey": 5,
+      "Text": "Finns det vatten upp till dörren? Här kan du registrera uppmätta eller markerade vattennivåer i förhållande till en känd skala eller annan referenspunkt.\n\nVänligen skriv var och när du gjorde observationen. En bild är alltid mycket användbar."
+  },
+  {
+      "RegistrationTID": 71,
+      "GeoHazardTID": 20,
+      "LangKey": 5,
+      "Text": "Vilken typ av jordskred har du observerat? För varningstjänsten är detta användbar information för att göra varningen bättre. .\n\nÄr det jordskred (har det följt bäckar), det är skred till följd av översvämning (i bäckar), stensprång (mestadels stenar), lerskred (glider i fina massor) eller något annat? Det är också mycket viktigt att registrera när du bedömer att jordskredet har gått, även om det kan vara svårt att uppskatta om du inte var närvarande när det hände.\n\n Vilka är konsekvenserna av skredet du har observerat? Finns det skador på hus, vägar eller annan infrastruktur? Har det påverkat människor, djur eller trafik? Däms vattendrag eller älvar av jordskredet? \n\n Skriv som att du informerar andra som rör sig i området om konsekvenserna av jordskredet."
+  }
+]
