@@ -13,36 +13,31 @@ function addBase64SourceMaps() {
   console.log('===========================');
 
   getFiles().forEach(file => {
-    let mapFile = path.join(TARGET_DIR, file + '.map');
-    let targetFile = path.join(TARGET_DIR, file);
+    const mapFile = path.join(TARGET_DIR, file + '.map');
+    const targetFile = path.join(TARGET_DIR, file);
     if (path.extname(file) === '.js' && fs.existsSync(mapFile)) {
-      let bufMap = fs.readFileSync(mapFile).toString('base64');
-      let bufFile = fs.readFileSync(targetFile, "utf8");
-      let result = bufFile.replace('sourceMappingURL=' + file + '.map', 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + bufMap);
+      const bufMap = fs.readFileSync(mapFile).toString('base64');
+      const bufFile = fs.readFileSync(targetFile, "utf8");
+      const result = bufFile.replace('sourceMappingURL=' + file + '.map', 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + bufMap);
       fs.writeFileSync(targetFile, result);
     }
   });
 }
 
-function stripSourceMappingUrl() {
+function deleteSourceMaps() {
   console.log('===========================');
-  console.log('stripping sourceMappingURL ');
+  console.log('deleteing source map files ');
   console.log('===========================');
 
-  getFiles().forEach(file => {
-    let mapFile = path.join(TARGET_DIR, file + '.map');
-    let targetFile = path.join(TARGET_DIR, file);
-    if (path.extname(file) === '.js' && fs.existsSync(mapFile)) {
-      let bufFile = fs.readFileSync(targetFile, "utf8");
-      let result = bufFile.replace('//# sourceMappingURL=' + file + '.map', '');
-      fs.writeFileSync(targetFile, result);
-    }
+  fs.readdirSync(TARGET_DIR).filter(f => path.extname(f) === '.map').forEach((file) => {
+    const targetFile = path.join(TARGET_DIR, file);
+    fs.unlinkSync(targetFile);
   });
 }
 
 module.exports = function (ctx) {
   if (ctx.argv.includes('--release')) {
-    stripSourceMappingUrl();
+    deleteSourceMaps();
   } else {
     addBase64SourceMaps();
   }
