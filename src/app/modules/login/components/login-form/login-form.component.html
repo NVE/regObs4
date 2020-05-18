@@ -11,7 +11,7 @@
       {{ 'LOGIN.PASSWORD' | translate }}
     </ion-label>
     <ion-input #password [type]="showPassword ? 'text' : 'password'" inputmode="password" formControlName="password"
-      name="password" autocomplete="current-password" (onLoad)="autofocus()"></ion-input>
+      name="password" autocomplete="current-password"></ion-input>
     <ion-button slot="end" fill="clear" class="show-password-button" (click)="togglePasswordShowHide()">
       <ion-icon slot="start" [name]="showPassword ? 'eye' : 'eye-off'"></ion-icon>
     </ion-button>
