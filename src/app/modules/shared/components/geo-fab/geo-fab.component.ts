@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { CustomAnimation, EASE_IN_OUT_BACK, EASE_IN_OUT } from '../../../../core/animations/custom.animation';
-import { takeUntil, map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 const GEOHAZARD_TYPES = [[GeoHazard.Snow], [GeoHazard.Ice], [GeoHazard.Water, GeoHazard.Dirt]];
 @Component({
@@ -97,11 +97,12 @@ export class GeoFabComponent implements OnInit, OnDestroy {
     }
   }
 
-  setCurrentGeoHazard(geoHazards: GeoHazard[]) {
+  async setCurrentGeoHazard(geoHazards: GeoHazard[]) {
     this.close();
-    this.userSettingService.currentSettings = {
-      ...this.userSettingService.currentSettings,
+    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    this.userSettingService.saveUserSettings({
+      ...currentSettings,
       currentGeoHazard: geoHazards,
-    };
+    });
   }
 }

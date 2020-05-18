@@ -6,7 +6,7 @@ import { GeoHazard } from '../../models/geo-hazard.enum';
 import moment from 'moment';
 import 'moment-timezone';
 import { NanoSql } from '../../../../nanosql';
-import { map, distinctUntilChanged, switchMap, shareReplay, tap, catchError } from 'rxjs/operators';
+import { map, distinctUntilChanged, switchMap, shareReplay, tap, catchError, take } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { AppMode } from '../../models/app-mode.enum';
@@ -59,9 +59,10 @@ export class ObservationService {
         cancelled = true;
       });
     }
-    const userSettings = this.userSettingService.currentSettings;
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     if (!cancelled) {
-      return this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.currentGeoHazard, userSettings, cancel);
+      const result = await this.checkLastUpdatedAndUpdateDataIfNeeded(userSettings.currentGeoHazard, userSettings, cancel);
+      return result;
     } else {
       return 0;
     }
@@ -109,7 +110,7 @@ export class ObservationService {
   }
 
   async forceUpdateObservationsForCurrentGeoHazard(cancel?: Promise<any>) {
-    const userSettings = this.userSettingService.currentSettings;
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     return this.updateObservationsForGeoHazard(userSettings.currentGeoHazard, userSettings, cancel);
   }
 

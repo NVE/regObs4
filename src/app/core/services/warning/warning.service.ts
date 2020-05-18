@@ -92,7 +92,7 @@ export class WarningService {
       });
     }
     this.loggingService.debug('Updating warnings by priority', DEBUG_TAG);
-    const userSettings = this.userSettingService.currentSettings;
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     const geoHazards = await this.getGeoHazardsToUpdate(userSettings);
     for (const geoHazard of geoHazards) {
       if (!cancelled) {
@@ -109,7 +109,7 @@ export class WarningService {
         cancelled = true;
       });
     }
-    const userSettings = this.userSettingService.currentSettings;
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     const geoHazards = await this.getGeoHazardsToUpdate(userSettings);
     for (const geoHazard of geoHazards) {
       if (!cancelled) {

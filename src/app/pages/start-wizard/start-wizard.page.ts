@@ -5,7 +5,7 @@ import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { LangKey } from '../../core/models/langKey';
 import { animations } from './start-wizard.animations';
 import { Subject, timer, interval } from 'rxjs';
-import { takeUntil, skipWhile, switchMap } from 'rxjs/operators';
+import { takeUntil, skipWhile, switchMap, take } from 'rxjs/operators';
 import { settings } from '../../../settings';
 
 @Component({
@@ -41,8 +41,8 @@ export class StartWizardPage implements OnInit, OnDestroy {
   ionViewWillEnter() {
     this.recreate = true;
     this.state = 'x';
-    setTimeout(() => { // Hack to get ion-slides working after app reset
-      this.language = this.userSettingService.currentSettings.language;
+    this.userSettingService.userSetting$.pipe(take(1)).subscribe((us) => {
+      this.language = us.language;
       this.recreate = false;
       this.initStarIndexCounter();
       this.setPageIndex(0);
@@ -52,11 +52,12 @@ export class StartWizardPage implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  saveLanguage() {
-    this.userSettingService.currentSettings = {
-      ...this.userSettingService.currentSettings,
+  async saveLanguage() {
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    this.userSettingService.saveUserSettings({
+      ...userSettings,
       language: this.language,
-    };
+    });
   }
 
   private setPageIndex(index: number) {
@@ -86,12 +87,13 @@ export class StartWizardPage implements OnInit, OnDestroy {
     });
   }
 
-  start() {
+  async start() {
     if (this.reachedEnd) {
-      this.userSettingService.currentSettings = {
-        ...this.userSettingService.currentSettings,
+      const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+      this.userSettingService.saveUserSettings({
+        ...userSettings,
         completedStartWizard: true,
-      };
+      });
       this.navController.navigateRoot('/');
     } else {
       this.slides.slideTo(5, 200);

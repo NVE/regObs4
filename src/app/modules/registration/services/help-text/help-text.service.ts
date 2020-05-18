@@ -11,6 +11,7 @@ import { HelptextDto } from '../../../regobs-api/models';
 import { settings } from '../../../../../settings';
 import { HelptextService } from '../../../regobs-api/services';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
+import { take } from 'rxjs/operators';
 
 const DEBUG_TAG = 'HelpTextService';
 
@@ -27,8 +28,7 @@ export class HelpTextService {
   ) { }
 
   async updateHelpTexts(cancel?: Promise<void>) {
-    await this.userSettingService.userSettingsReadyAsync();
-    const userSetting = this.userSettingService.currentSettings;
+    const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     await this.checkLastUpdatedAndUpdateDataIfNeeded(userSetting.appMode, userSetting.language, cancel);
   }
 

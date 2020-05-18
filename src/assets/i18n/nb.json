@@ -145,8 +145,9 @@
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
     "TILES": {
       "ARC_GIS": "ArcGIS (verden)",
+      "GEODATA_LANDSKAP": "Geodata Landskap (Norge)",
       "KARTVERKET": "Kartverket (Norge)",
-      "ONLY_KARTVERKET": "Kartverket (bare Norge)",
+      "ONLY_KARTVERKET": "Kartverket (Norge)",
       "OPEN_TOPO": "OpenTopo (verden)"
     },
     "TIME_FRAME": "Tidsrom",

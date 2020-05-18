@@ -1,19 +1,24 @@
-import { Component, OnInit, ViewChild, Input, NgZone, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, NgZone, Output, EventEmitter, AfterViewChecked, AfterContentInit, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { LoginService } from '../../services/login.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../settings';
+import { Observable, combineLatest } from 'rxjs';
+import { UserSetting } from '../../../../core/models/user-settings.model';
+import { withLatestFrom, take } from 'rxjs/operators';
+import { LoggedInUser } from '../../models/logged-in-user.model';
+import { type } from 'os';
 
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.scss']
 })
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent implements OnInit, AfterViewInit {
 
   loginform: FormGroup;
-  @ViewChild('password', { static: true }) password: Input;
-  @ViewChild('username', { static: true }) username: Input;
+  @ViewChild('password', { static: false }) password: Input;
+  @ViewChild('username', { static: false }) username: Input;
   forgotPasswordUrl: string;
   createUserUrl: string;
   showPassword = false;
@@ -36,28 +41,42 @@ export class LoginFormComponent implements OnInit {
     private userSettingsService: UserSettingService,
     private ngZone: NgZone) {
   }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.setAutoFocus();
+    }, 200);
+  }
 
-  async ngOnInit() {
-    this.loginform = this.formBuilder.group({
-      username: new FormControl('', [Validators.required]),
-      password: new FormControl('', [Validators.required]),
+  ngOnInit() {
+    this.getLoggedInUserAndUserSettingObservable().subscribe(([loggedInUser, userSettings]) => {
+      this.init(loggedInUser, userSettings);
     });
-    const loggedInUser = await this.loginService.getLoggedInUser();
-    if (loggedInUser && loggedInUser.email) {
-      this.loginFormUsername = loggedInUser.email;
-      setTimeout(() => {
-        (<any>this.password).setFocus();
-      }, 500);
-    } else {
-      setTimeout(() => {
-        (<any>this.username).setFocus();
-      }, 500);
-    }
-    await this.userSettingsService.userSettingsReadyAsync();
-    const userSettings = this.userSettingsService.currentSettings;
-    const baseUrl = settings.services.regObs.serviceUrl[userSettings.appMode];
+  }
+
+  private getLoggedInUserAndUserSettingObservable() {
+    return combineLatest([this.loginService.loggedInUser$.pipe(take(1)), this.userSettingsService.userSetting$.pipe(take(1))]);
+  }
+
+  private init(loggedInUser: LoggedInUser, userSetting: UserSetting) {
+    const baseUrl = settings.services.regObs.serviceUrl[userSetting.appMode];
     this.forgotPasswordUrl = `${baseUrl}${settings.services.regObs.passwordRecoveryUrl}`;
     this.createUserUrl = `${baseUrl}${settings.services.regObs.createUserUrl}`;
+
+    this.createForm(loggedInUser);
+  }
+
+  private setAutoFocus() {
+    const input = (this.loginFormUsername ? this.password : this.username) as any;
+    if (input && typeof (input.setFocus) === 'function') {
+      input.setFocus();
+    }
+  }
+
+  private createForm(loggedInUser: LoggedInUser) {
+    this.loginform = this.formBuilder.group({
+      username: new FormControl(loggedInUser ? loggedInUser.email : '', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
+    });
   }
 
   async login() {

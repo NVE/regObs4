@@ -38,8 +38,14 @@
   </div>
   <ion-item>
     <ion-label position="stacked" color="dark" class="stacked-label">{{ 'MENU.MAP' | translate }}</ion-label>
-    <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap"
-      interface="action-sheet" (ngModelChange)="saveUserSettings()">
+    <ion-select
+      placeholder="{{ ((userSettings.topoMap === TopoMap.default && userSettings.language ===  LangKey.nb) ? 'MENU.TILES.GEODATA_LANDSKAP' : 'MENU.TILES.ARC_GIS')  | translate}}"
+      cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap" interface="action-sheet"
+      (ngModelChange)="saveUserSettings()">
+      <ion-select-option [value]="TopoMap.geoDataLandskap">{{ 'MENU.TILES.GEODATA_LANDSKAP' | translate }}
+      </ion-select-option>
+      <ion-select-option [value]="TopoMap.mixGeoDataLandskap">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{
+       'Geodata Landskap' }}</ion-select-option>
       <ion-select-option [value]="TopoMap.mixArcGisOnline">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{
         'MENU.TILES.KARTVERKET' | translate }}</ion-select-option>
       <ion-select-option [value]="TopoMap.mixOpenTopo">{{ 'MENU.TILES.OPEN_TOPO' | translate }} + {{
@@ -78,7 +84,8 @@
     <ion-label class="ion-text-wrap">
       {{'MENU.TOPO_MAP_CREDITS' | translate}} <app-external-link src="https://www.kartverket.no/">Kartverket
       </app-external-link>,
-      <app-external-link src="https://www.esri.com/">Esri</app-external-link>
+      <app-external-link src="https://www.esri.com/">Esri</app-external-link>, <app-external-link
+        src="https://www.geodata.no/">Geodata</app-external-link>
       {{'MENU.AND' | translate}}
       <app-external-link src="https://opentopomap.org/">OpenTopoMap</app-external-link>.
       {{'MENU.SUPPORT_MAP_CREDITS' | translate}} <app-external-link src="https://www.nve.no/">NVE</app-external-link>

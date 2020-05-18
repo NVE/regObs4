@@ -7,7 +7,7 @@ import { AppMode } from '../../models/app-mode.enum';
 import { NanoSql } from '../../../../nanosql';
 import { KdvElementsResponseDto } from '../../../modules/regobs-api/models';
 import { combineLatest, Observable } from 'rxjs';
-import { switchMap, map, shareReplay } from 'rxjs/operators';
+import { switchMap, map, shareReplay, take } from 'rxjs/operators';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import moment from 'moment';
 import { toPromiseWithCancel } from '../../helpers/observable-helper';
@@ -37,8 +37,7 @@ export class KdvService {
   }
 
   async updateKdvElements(cancel?: Promise<void>) {
-    await this.userSettingService.userSettingsReadyAsync();
-    const userSetting = this.userSettingService.currentSettings;
+    const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     await this.checkLastUpdatedAndUpdateDataIfNeeded(userSetting.appMode, userSetting.language, cancel);
   }
 

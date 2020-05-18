@@ -12,7 +12,7 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
 import { Router, ActivatedRoute } from '@angular/router';
-import { map, distinctUntilChanged, takeUntil, tap } from 'rxjs/operators';
+import { map, distinctUntilChanged, takeUntil, tap, take } from 'rxjs/operators';
 import { settings } from '../../../settings';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { RouterPage } from '../../core/helpers/routed-page';
@@ -107,9 +107,9 @@ export class HomePage extends RouterPage implements OnInit {
     });
   }
 
-  onEnter() {
+  async onEnter() {
     this.loggingService.debug(`Home page ionViewDidEnter.`, DEBUG_TAG);
-    const userSettings = this.userSettingService.currentSettings;
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     if (userSettings.showGeoSelectInfo) {
       this.loggingService.debug('Display coachmarks, wait with starting geopostion', DEBUG_TAG);
       return;

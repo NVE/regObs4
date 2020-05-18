@@ -12,7 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../../settings';
 import { from, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, take } from 'rxjs/operators';
 import { UserSetting } from '../../../../../core/models/user-settings.model';
 import { LoggingService } from '../../../../shared/services/logging/logging.service';
 
@@ -55,7 +55,7 @@ export class SnowProfilePage extends BasePage {
         backdropDismiss: true, // enable cancel
       });
       await loader.present();
-      const userSetting = this.userSettingService.currentSettings;
+      const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
       const format = 5; // Mobile profile plot
       const size = 400;
       const subscription = this.getPlotFromApiWithFallback(userSetting, format, size).subscribe((result) => {

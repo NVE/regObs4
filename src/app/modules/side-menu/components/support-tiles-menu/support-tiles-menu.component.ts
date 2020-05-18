@@ -4,7 +4,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { setObservableTimeout, NgDestoryBase } from '../../../../core/helpers/observable-helper';
 import { Observable, Subscription } from 'rxjs';
 import { PopupInfoService } from '../../../../core/services/popup-info/popup-info.service';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-support-tiles-menu',
@@ -34,11 +34,12 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     return el.name;
   }
 
-  onTileChanged(supportTile: SupportTile) {
-    this.userSettingService.currentSettings = {
-      ...this.userSettingService.currentSettings,
-      supportTiles: this.checkForDisableSupportTiles(supportTile, this.addOrUpdateSupportTileSettings(supportTile, this.userSettingService.currentSettings.supportTiles)),
-    };
+  async onTileChanged(supportTile: SupportTile) {
+    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    this.userSettingService.saveUserSettings({
+      ...currentSettings,
+      supportTiles: this.checkForDisableSupportTiles(supportTile, this.addOrUpdateSupportTileSettings(supportTile, currentSettings.supportTiles)),
+    });
   }
 
   checkForInfoPopup(enabled: boolean) {

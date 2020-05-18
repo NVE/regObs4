@@ -16,6 +16,7 @@ import { RegObsTileLayer, IRegObsTileLayerOptions } from '../../core/classes/reg
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
+import { LangKey } from '../../../../core/models/langKey';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -257,7 +258,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.zone.runOutsideAngular(() => {
       this.tilesLayer.clearLayers();
       this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
-      const mapOptions = this.getMapOptions(userSetting.topoMap);
+      const mapOptions = this.getMapOptions(userSetting.topoMap, userSetting.language);
       for (const topoMap of mapOptions) {
         const topoTilesLayer = new RegObsTileLayer(
           topoMap.name,
@@ -296,7 +297,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     return (detectRetina && L.Browser.retina) ? (settings.map.tiles.maxZoom + 2) : settings.map.tiles.maxZoom;
   }
 
-  private getMapOptions(topoMap: TopoMap) {
+  private getMapOptions(topoMap: TopoMap, langKey: LangKey) {
     const norwegianMixedMap = {
       name: TopoMap.statensKartverk,
       url: settings.map.tiles.statensKartverkMapUrl,
@@ -315,13 +316,25 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       bounds: null,
       notInsideBounds: null,
     };
+    const geoDataLandskapMap = {
+      name: TopoMap.geoDataLandskap,
+      url: settings.map.tiles.geoDataLandskapMapUrl,
+      bounds: null,
+      notInsideBounds: null,
+    };
+    const geoDataLandskapMixMap = {
+      name: TopoMap.geoDataLandskap,
+      url: settings.map.tiles.geoDataLandskapMapUrl,
+      bounds: <any>settings.map.tiles.supportTilesBounds,
+      notInsideBounds: null,
+    };
     switch (topoMap) {
       case TopoMap.statensKartverk:
         return [
           {
             name: TopoMap.statensKartverk,
             url: settings.map.tiles.statensKartverkMapUrl,
-            bounds: null,
+            bounds: <any>settings.map.tiles.supportTilesBounds,
             notInsideBounds: null,
           }
         ];
@@ -333,6 +346,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         return [{ ...openTopoMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
       case TopoMap.mixArcGisOnline:
         return [{ ...arcGisOnlineMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
+      case TopoMap.geoDataLandskap:
+        return [geoDataLandskapMap];
+      case TopoMap.mixGeoDataLandskap:
+        return [{ ...arcGisOnlineMap, notInsideBounds: NORWEGIAN_BOUNDS }, geoDataLandskapMixMap];
+      default:
+        return langKey === LangKey.nb ? [geoDataLandskapMap] : [arcGisOnlineMap];
     }
   }
 

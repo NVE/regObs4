@@ -27,6 +27,7 @@ import { ImageLocation } from '../../img-swiper/image-location.model';
 // import { ObsCardHeightService } from '../../../core/services/obs-card-height/obs-card-height.service';
 import 'leaflet.utm';
 import { getStarCount } from '../../../core/helpers/competence-helper';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -70,6 +71,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   }
 
   private async load() {
+    const baseUrl = await this.getBaseUrl();
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
     this.header = this.obs.ObsLocation.Title;
     this.location = this.getLocation(this.obs);
@@ -77,7 +79,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
     this.summaries = this.obs.Summaries;
     this.competenceLevel = getStarCount(this.obs.Observer.CompetenceLevelName);
-    this.updateImages();
+    this.updateImages(baseUrl);
     this.loaded = true;
 
     this.cdr.markForCheck();
@@ -155,7 +157,7 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   ngOnDestroy(): void {
   }
 
-  updateImages() {
+  updateImages(baseUrl: string) {
     const openImages = this.obs.Attachments.filter((a) => {
       return true;
       // const summary = this.summaries.find((s) => s.RegistrationTID === a.RegistrationTID);
@@ -167,11 +169,11 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     });
     this.imageHeaders = openImages.map((x) => x.RegistrationName);
     this.imageDescriptions = openImages.map((x) => x.Comment);
-    this.imageUrls = openImages.map((x) => this.getImageUrl(x.AttachmentFileName));
+    this.imageUrls = openImages.map((x) => this.getImageUrl(baseUrl, x.AttachmentFileName));
   }
 
-  getImageUrl(filename: string, size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'large') {
-    return `${settings.services.regObs.webUrl[this.userSettingService.currentSettings.appMode]}/Attachments/${size}/${filename}`;
+  getImageUrl(baseUrl: string, filename: string, size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'large') {
+    return `${baseUrl}/Attachments/${size}/${filename}`;
   }
 
   getRegistrationNames() {
@@ -201,6 +203,11 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
     modal.present();
   }
 
+  private async getBaseUrl() {
+    const userSetings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    return settings.services.regObs.webUrl[userSetings.appMode];
+  }
+
   // toggleAllSelected() {
   //   this.allSelected = !this.allSelected;
   //   for (const s of this.summaries) {
@@ -217,18 +224,20 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
   //   this.updateImages();
   // }
 
-  private getRegistrationUrl() {
-    return `${settings.services.regObs.webUrl[this.userSettingService.currentSettings.appMode]}/Registration/${this.obs.RegID}`;
+  private getRegistrationUrl(baseUrl: string) {
+    return `${baseUrl}/Registration/${this.obs.RegID}`;
   }
 
   async openWeb() {
-    const url = this.getRegistrationUrl();
+    const baseUrl = await this.getBaseUrl();
+    const url = this.getRegistrationUrl(baseUrl);
     this.analyticService.trackEvent(AppEventCategory.Observations, AppEventAction.Click, url, this.obs.RegID);
     this.externalLinkService.openExternalLink(url);
   }
 
   async share() {
-    const url = this.getRegistrationUrl();
+    const baseUrl = await this.getBaseUrl();
+    const url = this.getRegistrationUrl(baseUrl);
     this.analyticService.trackEvent(AppEventCategory.Observations, AppEventAction.Share, url, this.obs.RegID);
     this.socialSharing.share(null, null, null, url);
   }

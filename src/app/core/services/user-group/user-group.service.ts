@@ -26,7 +26,8 @@ export class UserGroupService {
   async updateUserGroups() {
     const loggedInUser = await this.loginService.getLoggedInUser();
     if (loggedInUser.isLoggedIn) {
-      await this.checkLastUpdatedAndUpdateDataIfNeeded(this.userSettingService.currentSettings.appMode, loggedInUser.user);
+      const appMode = await this.userSettingService.appMode$.pipe(take(1)).toPromise();
+      await this.checkLastUpdatedAndUpdateDataIfNeeded(appMode, loggedInUser.user);
     }
   }
 

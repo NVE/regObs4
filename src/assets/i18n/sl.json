@@ -144,7 +144,7 @@
     "TILES": {
       "ARC_GIS": "ArcGIS (svet)",
       "KARTVERKET": "Kartverket (Norveška)",
-      "ONLY_KARTVERKET": "Kartverket (samo Norveška)",
+      "ONLY_KARTVERKET": "Kartverket (Norveška)",
       "OPEN_TOPO": "OpenTopo (svet)"
     },
     "TIME_FRAME": "Obdobje",

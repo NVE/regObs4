@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Subscription, combineLatest } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, take } from 'rxjs/operators';
 import { IonSelect } from '@ionic/angular';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
@@ -47,7 +47,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   }
 
   async save() {
-    const userSetting = this.userSettingService.currentSettings;
+    const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     let changed = false;
     for (const geoHazard of userSetting.currentGeoHazard) {
       const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === geoHazard);
@@ -57,7 +57,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
       }
     }
     if (changed) {
-      this.userSettingService.currentSettings = userSetting;
+      this.userSettingService.saveUserSettings(userSetting);
     }
   }
 }

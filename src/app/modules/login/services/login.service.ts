@@ -38,7 +38,7 @@ export class LoginService {
   }
 
   async login(email: string, password: string) {
-    const userSettings = this.userSettingService.currentSettings;
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     const baseUrl = settings.services.regObs.apiUrl[userSettings.appMode];
     const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
     if (!apiKey) {
@@ -60,7 +60,7 @@ export class LoginService {
   }
 
   async logout() {
-    const userSettings = this.userSettingService.currentSettings;
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     const existingUser = await this.getLoggedInUser();
     return NanoSql.getInstance(NanoSql.TABLES.USER.name, userSettings.appMode).query('upsert',
       {

@@ -4,6 +4,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { IRegistration } from '../../models/registration.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-send-button',
@@ -43,7 +44,7 @@ export class SendButtonComponent implements OnInit, OnDestroy {
     if (!this.isSending) {
       this.isSending = true;
       try {
-        const userSettings = this.userSettingService.currentSettings;
+        const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
         await this.registrationService.sendRegistration(userSettings.appMode, this.registration);
       } finally {
         this.ngZone.run(() => {
@@ -54,7 +55,7 @@ export class SendButtonComponent implements OnInit, OnDestroy {
   }
 
   async delete() {
-    const userSettings = this.userSettingService.currentSettings;
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     const translations = await this.translateService
       .get(['REGISTRATION.DELETE', 'REGISTRATION.DELETE_CONFIRM', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
     const alert = await this.alertController.create({

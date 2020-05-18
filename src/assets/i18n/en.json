@@ -145,8 +145,9 @@
     "SUPPORT_MAP_CREDITS": "Support maps provided by",
     "TILES": {
       "ARC_GIS": "ArcGIS (world)",
+      "GEODATA_LANDSKAP": "Geodata Topo (Norway)",
       "KARTVERKET": "Kartverket (Norway)",
-      "ONLY_KARTVERKET": "Kartverket (only Norway)",
+      "ONLY_KARTVERKET": "Kartverket (Norway)",
       "OPEN_TOPO": "OpenTopo (world)"
     },
     "TIME_FRAME": "Period",
