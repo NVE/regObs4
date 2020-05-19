@@ -182,10 +182,11 @@ export class ObservationListCardComponent implements OnInit, OnDestroy, AfterVie
 
   async openImage(event: { index: number, imgUrl: string }) {
     const image = this.obs.Attachments[event.index];
+    const baseUrl = await this.getBaseUrl();
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
-        imgSrc: `${this.getImageUrl(image.AttachmentFileName, 'original')}?r=${utils.uuid()}`,
+        imgSrc: `${this.getImageUrl(baseUrl, image.AttachmentFileName, 'original')}?r=${utils.uuid()}`,
         header: this.obs.Attachments[event.index].RegistrationName,
         description: this.obs.Attachments[event.index].Comment,
       },
