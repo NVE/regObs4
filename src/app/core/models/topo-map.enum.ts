@@ -1,10 +1,10 @@
 export enum TopoMap {
-  default = 'mixOpenTopo',
+  default = 'mixArcGisOnline',
   openTopo = 'openTopo',
   arcGisOnline = 'arcGisOnline',
   statensKartverk = 'statensKartverk',
-  mixArcGisOnline = 'mixArcGisOnline',
-  mixOpenTopo = 'mixOpenTopoV2',
+  mixArcGisOnline = 'mixArcGisOnlineV2',
+  mixOpenTopo = 'mixOpenTopo',
   geoDataLandskap = 'geoDataLandskap',
   mixGeoDataLandskap = 'mixGeoDataLandskap',
 }
