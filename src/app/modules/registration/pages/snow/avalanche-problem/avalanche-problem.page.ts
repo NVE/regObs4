@@ -44,26 +44,30 @@ export class AvalancheProblemPage extends BasePage {
   }
 
   async addOrEditAvalancheProblem(index?: number) {
-    const modal = await this.modalController.create({
-      component: AvalancheProblemModalPage,
-      componentProps: { avalancheEvalProblem: this.registration.request.AvalancheEvalProblem2[index] },
-    });
-    modal.present();
-    const result = await modal.onDidDismiss();
-    this.ngZone.run(() => {
-      if (result.data) {
-        if (result.data.delete) {
-          this.registration.request.AvalancheEvalProblem2.splice(index, 1);
-        } else {
-          const avalancheEvalProblem: AvalancheEvalProblem2Dto = result.data;
-          if (index !== undefined) {
-            this.registration.request.AvalancheEvalProblem2[index] = avalancheEvalProblem;
-          } else {
-            this.registration.request.AvalancheEvalProblem2.push(avalancheEvalProblem);
+    if (this.registration && this.registration.request && this.registration.request.AvalancheEvalProblem2) {
+      const modal = await this.modalController.create({
+        component: AvalancheProblemModalPage,
+        componentProps: { avalancheEvalProblem: this.registration.request.AvalancheEvalProblem2[index] },
+      });
+      modal.present();
+      const result = await modal.onDidDismiss();
+      this.ngZone.run(() => {
+        if (this.registration && this.registration.request && this.registration.request.AvalancheEvalProblem2) {
+          if (result.data) {
+            if (result.data.delete) {
+              this.registration.request.AvalancheEvalProblem2.splice(index, 1);
+            } else {
+              const avalancheEvalProblem: AvalancheEvalProblem2Dto = result.data;
+              if (index !== undefined) {
+                this.registration.request.AvalancheEvalProblem2[index] = avalancheEvalProblem;
+              } else {
+                this.registration.request.AvalancheEvalProblem2.push(avalancheEvalProblem);
+              }
+            }
           }
         }
-      }
-    });
+      });
+    }
   }
 
   getDescription(avalancheEvalProblem: AvalancheEvalProblem2Dto) {
