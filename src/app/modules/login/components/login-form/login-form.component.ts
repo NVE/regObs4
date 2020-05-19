@@ -1,24 +1,27 @@
-import { Component, OnInit, ViewChild, Input, NgZone, Output, EventEmitter, AfterViewChecked, AfterContentInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { LoginService } from '../../services/login.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../settings';
-import { Observable, combineLatest } from 'rxjs';
+import { combineLatest, timer, from } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
-import { withLatestFrom, take } from 'rxjs/operators';
+import { take, takeUntil, switchMap } from 'rxjs/operators';
 import { LoggedInUser } from '../../models/logged-in-user.model';
-import { type } from 'os';
+import { IonInput } from '@ionic/angular';
+import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
+
+const AUTOFOCUS_DELAY = 500;
 
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.scss']
 })
-export class LoginFormComponent implements OnInit, AfterViewInit {
+export class LoginFormComponent extends NgDestoryBase implements OnInit {
 
   loginform: FormGroup;
-  @ViewChild('password', { static: false }) password: Input;
-  @ViewChild('username', { static: false }) username: Input;
+  @ViewChild('password', { static: false }) password: IonInput;
+  @ViewChild('username', { static: false }) username: IonInput;
   forgotPasswordUrl: string;
   createUserUrl: string;
   showPassword = false;
@@ -40,11 +43,7 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
     private loginService: LoginService,
     private userSettingsService: UserSettingService,
     private ngZone: NgZone) {
-  }
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.setAutoFocus();
-    }, 200);
+    super();
   }
 
   ngOnInit() {
@@ -63,12 +62,13 @@ export class LoginFormComponent implements OnInit, AfterViewInit {
     this.createUserUrl = `${baseUrl}${settings.services.regObs.createUserUrl}`;
 
     this.createForm(loggedInUser);
+    timer(AUTOFOCUS_DELAY).pipe(switchMap(() => from(this.setAutoFocus())), takeUntil(this.ngDestroy$)).subscribe();
   }
 
-  private setAutoFocus() {
-    const input = (this.loginFormUsername ? this.password : this.username) as any;
-    if (input && typeof (input.setFocus) === 'function') {
-      input.setFocus();
+  private async setAutoFocus() {
+    const input = (this.loginFormUsername ? this.password : this.username);
+    if (input) {
+      await input.setFocus();
     }
   }
 
