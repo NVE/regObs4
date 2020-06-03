@@ -1,5 +1,7 @@
 {
   "ABONNER_BANNER": {
+    "BANNER_TEXT_LINE_1": "Få varningar från Varsom skickat till SMS eller e-post.",
+    "BANNER_TEXT_LINE_2": "Ställ in eller hantera dina varningar här",
     "LINK_TEXT": "Gå till abonner.varsom.no",
     "TITLE": "Varsom Abonner"
   },
@@ -21,7 +23,7 @@
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Lägg till egna observationer",
     "SELECT_GEO_HAZARD": "Välj en naturfara",
-    "VIEW_WARNINGS": "Se varningar från lavinprognoser.se"
+    "VIEW_WARNINGS": "Se varningar från varsom.no"
   },
   "COMPETENCE": {
     "UNKNOWN": "Okänd kompetens"
@@ -142,10 +144,10 @@
     "START_WIZARD": "Starta guiden",
     "SUPPORT_MAP_CREDITS": "Supportkartor tillhandahållna av",
     "TILES": {
-      "ARC_GIS": "ArcGIS (värld)",
+      "ARC_GIS": "ESRI World Topo (värld)",
+      "GEODATA_LANDSKAP": "Geodata Landskap (Norge)",
       "KARTVERKET": "Kartverket (Norge)",
-      "ONLY_KARTVERKET": "Kartverket (Norge)",
-      "OPEN_TOPO": "OpenTopo (värld)"
+      "OPEN_TOPO": "OpenTopoMap (värld)"
     },
     "TIME_FRAME": "Period",
     "TODAYS_OBSERVATIONS": "Endast dagens observationer",
@@ -176,6 +178,21 @@
   },
   "OFFLINE_MAP": {
     "TITLE": "Offline kartor"
+  },
+  "PERMISSION": {
+    "LOCATION_DENIED_HEADER": "Tillstånd till plats nekas",
+    "LOCATION_DENIED_MESSAGE": "Det går inte att visa plats på kartan utan tillstånd."
+  },
+  "POPUP_DISCLAMER": {
+    "ABOUT_OBSERVATIONS": {
+      "HEADER": "Om observationer",
+      "MESSAGE": "Använd observationer på egen risk, dom är producerade av användarna och är tillgängliga «som det är». \nNVE ger inga garantier för fel, utelämnanden och bedömningar som producerats av användarna. \nBedöm observationerna mot bakgrund av observatörens kompetens, som visas av stjärnor bredvid namnet."
+    },
+    "ABOUT_SUPPORT_MAPS": {
+      "HEADER": "Om kartor",
+      "MESSAGE": "Använd kartorna på egen risk och gör alltid din egen utvärdering. Kartorna kan innehålla fel och utelämnanden."
+    },
+    "OK_I_UNDERSTAND": "OK, jag förstår"
   },
   "REGISTRATION": {
     "ADD_IMAGES": "Lägg till foton",
@@ -209,7 +226,7 @@
     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AVAL_TRIGGER": "Jordskredet utlöst av",
-        "DAMAGE_EXTENT": "Skada omfattning",
+        "DAMAGE_EXTENT": "Skadeomfattning",
         "DESTRUCTIVE_SIZE": "Storlek",
         "DIRT_ACTIVITY_INFLUENCED": "Vad påverkades?",
         "DIRT_FORECAST_ACCURATE": "Är publicerad fara korrekt?",
@@ -225,7 +242,7 @@
       }
     },
     "DRAFTS": "Utkast",
-    "DRAFTS_DESCRIPTION": "Dessa observationer är under arbete och inte skickas in.",
+    "DRAFTS_DESCRIPTION": "Dessa observationer är under arbete och har inte skickas in.",
     "EMAIL": {
       "BODY": "Hej! Jag har problem med att skicka in den här registreringen. Kan du hjälpa mig?",
       "SUBJECT": "Registreringen misslyckades"
@@ -237,7 +254,7 @@
       "PROBLEM_HELP_TEXT": "Observationer med fel lagras i din telefon och när problemet är löst kan du skicka in det igen.",
       "REFERENCE": "Referens",
       "SEND_EMAIL": "Skicka till oss via e-post",
-      "SUBTITLE": "Det saknade nätverk eller registreringen tog för lång tid. Vi försöker igen efter ett tag och hoppas att nätverket har förbättrats.",
+      "SUBTITLE": "Det saknas nätverk eller registreringen tog för lång tid. Vi försöker igen efter ett tag och hoppas att nätverket har förbättrats.",
       "TITLE": "Registreringen misslyckades"
     },
     "GENERAL_COMMENT": {
@@ -291,6 +308,7 @@
       "IMAGE_PLACEHOLDER": "+ Lägg till bildbeskrivning",
       "TITLE": "Olycka / tillbud"
     },
+    "INVALID_IMAGE": "Tyvärr, ogiltig bildformat",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hela centimeter",
     "NONE": "Ej vald",
@@ -348,7 +366,7 @@
         "COMMENT": "Kommentar till publicerad lavinfara",
         "EVALUATION": "Bedömning",
         "EVALUATION_PLACEHOLDER": "Bedömning av lavinfara",
-        "FORECAST_CORRECT": "Bedömning av publicerad lavinfara på lavinprognoser.se",
+        "FORECAST_CORRECT": "Bedömning av publicerad lavinfara på varsom.no",
         "TITLE": "Bedömning av lavinfara"
       },
       "AVALANCHE_OBS": {
@@ -356,7 +374,7 @@
         "AVALANCHE_TYPE": "Lavintyp",
         "AVAL_CAUSE": "Svagt lager",
         "DESTRUCTIVE_SIZE": "Storlek",
-        "FRACTURE_HEIGTH": "Brottkant höjd(cm)",
+        "FRACTURE_HEIGTH": "Brottkant höjd (cm)",
         "FRACTURE_WIDTH": "Brottkant bredd (m)",
         "INCIDENT_DESCRIPTION": "Olycka eller skada",
         "INCIDENT_PLACEHOLDER": "Orsakade lavinen till skada, olycka eller nästan olycka? Varför och hur hände det? Kunde situationen ha undvikits?",
@@ -392,13 +410,13 @@
         "WEAK_LAYER_DEPTH": "Djup svagt lager"
       },
       "COMPRESSION_TEST": {
-        "ADD_NEW": "Lägg till ett nytt stabilitetstest",
+        "ADD_NEW": "Lägg till nytt test",
         "DISTANCE_FROM_TOP": "Avstånd från toppen (cm)",
         "FRACTURE_TYPE": "Brottyp",
         "STABILITY_EVAL": "Stabilitet",
         "TAPS_FRACTURE": "Antal slag",
         "TEST_TYPE": "Testtyp",
-        "TITLE": "Stabilitetstest"
+        "TITLE": "Test"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
@@ -476,12 +494,12 @@
         "COMMENT_PLACEHOLDER": "Hur är snöfördelningen generellt i förhållande till höjd och väderstäck? Finns det betydande skillnader i regionen?",
         "HEIGHT_LIMIT_LAYERED_SNOW": "Höjd där skiktad snö börjar (möh)",
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "För snö utan farligt lager",
-        "NEW_SNOW_DEPTH": "Djup nysnö(cm)",
+        "NEW_SNOW_DEPTH": "Nysnö 24H (cm)",
         "NEW_SNOW_LINE": "Gräns nysnö (möh)",
         "SNOW_DEPTH": "Snödjup (cm)",
         "SNOW_DRIFT": "Snödrev",
         "SNOW_LINE": "Snögräns (möh)",
-        "SNOW_SURFACE": "Hårdhet snöytan",
+        "SNOW_SURFACE": "Snöytan",
         "SURFACE_WATER_CONTENT_REG": "Ytfuktighet",
         "TITLE": "Snötäcke"
       },
@@ -546,6 +564,10 @@
     }
   },
   "SETTINGS": {
+    "ALLOW_ANALYTICS": "Tillåt att skicka användningsdata",
+    "ALLOW_ANALYTICS_DESCRIPTION": "Hjälp oss att förbättra Varsom Regobs genom att låta oss veta hur du använder applikationen.",
+    "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Denna information är anonym och kan inte kopplas till dig personligen.",
+    "ALLOW_ANALYTICS_HEADER": "Dela användningsstatistik",
     "APPMODE": "Appläge",
     "APP_VERSION": "App version",
     "CONFIRM_RESET": "Är du säker på att du vill återställa appen?",
@@ -557,6 +579,7 @@
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Endast i Norge",
     "NUMBER_OF_TILES_IN_CACHE": "Maximalt antal kartblad offline",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan läsa om vår användning av data i vår sekretesspolicy.",
     "RESET": "Återställ app",
     "RESETTING": "App återställs. Vänta ...",
     "SHOW_ADVANCED": "Visa avancerade inställningar",
@@ -583,6 +606,10 @@
       "NORWEGIAN": "Norska",
       "NORWEGIAN_SECONDARY_LANGUAGE": "Norwegian"
     },
+    "COMPETENCE_PAGE": {
+      "HEADER": "Använd Regobs klokt!",
+      "LINE_1": "Använd informationen i appen, men gör också egna bedömningar. Använd observationerna utifrån observatörens kompetens, som visas som stjärnor med namnet."
+    },
     "I_UNDERSTAND": "Okej, jag förstår",
     "PAGE_1": {
       "HEADER": "Planera säkra resor!",
@@ -604,8 +631,9 @@
     "SKIP_START": "Hoppa över"
   },
   "SUPPORT_MAP": {
+    "ABOUT": "Om kartorna",
     "CAUTION_AREA": "Varningsområde",
-    "CLAY_DANGER_ZONE": "Faranivå",
+    "CLAY_DANGER_ZONE": "Faranivå för lerområden",
     "CLAY_LEGEND_TEXT_1": "Kvicklera-punkt (SVV)",
     "CLAY_LEGEND_TEXT_2": "Kvicklera-område (SVV)",
     "CLAY_LEGEND_TEXT_3": "Kartblad helt eller delvis kartlagt",
@@ -625,7 +653,7 @@
     "FLOOD_LEGEND_TEXT_3": "Registrerad",
     "FLOOD_LEGEND_TEXT_4": "Under planering",
     "FLOOD_LEGEND_TEXT_5": "10-årsöversvämning",
-    "FLOOD_LEGEND_TEXT_6": "Flod och vatten 10-årsöversvämning",
+    "FLOOD_LEGEND_TEXT_6": "Flod och sjö 10-årsöversvämning",
     "FLOOD_LEGEND_TEXT_7": "20-årsöversvämning",
     "FLOOD_LEGEND_TEXT_8": "50-årsöversvämning",
     "FLOOD_LEGEND_TEXT_9": "100-årsöversvämning",
@@ -640,12 +668,20 @@
     "ICE_LEGEND_TEXT_6": "Rörledning",
     "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
     "ICE_MAP_DESCRIPTION": "Stödkarta visar delar av vattendrag som uppför sig oförutsägbart under vintern på grund av reglering vid vattenkraftsproduktion",
+    "INFO_PAGE": "<h1>Om kartor med lutningsgrad och utloppszoner</h1>\nKartorna produceras automatiskt och kan innehålla fel. Det kan finnas brant terräng, som inte representeras i höjdmodellen och därmed inte visas på kartorna.\nVissa laviner kan ha längre utloppzoner än vad som visas som visas på kartorna.\n\n<h2> Vad ska man beakta?</h2>\nVälj vilken risk du vill utsätta dig för genom att välja var, när och hur du åker. Varsom Regobs är ett planeringsverktyg och dess data kan skilja sig från den faktiska situationen. Gör alltid din egen utvärdering.\n\n<h2> När är det säkert?</h2>\nAlla vistelse i snötäckt lavinterräng har ett inslag av risk.\n\n<h2> Vill du lära dig mer?</h2>\nDu kan lära dig mer genom att gå en Lavinkurs eller läsa mer på Snøskredskolen på Varsom.no.\",",
     "LOW": "Låg",
     "MARITINE_BORDER": "Havsgräns",
     "MIDDLE": "Medel",
     "NO_OPACITY": "Solid",
-    "STEEPNESS_COLOR_INFO": "Färger anger branthet i terrängen i grader:",
+    "READ_MORE": "Lär mer om kartorna",
+    "STEEPNESS_COLOR_INFO": "Färger anger branthet i terrängen",
     "STEEPNESS_MAP_DESCRIPTION": "Lutningskarta",
+    "STEEPNESS_MAP_DISCLAMER": "<i>Endast</i> för turplanering. Kartan produceras automatiskt och kan ha fel och information kan saknas, t.ex. brant terräng visas inte.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Kort utloppszon (50% av lavinerna når längre)",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medel utloppszon (25% oav lavinerna når längre)",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lång utloppszon (5% av lavinerna når längre)\nVissa laviner kan ha längre utloppszon än vad som visas på kartan.",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Lutningskarta med utloppszoner",
+    "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Endast</i> för turplanering. Kartan produceras automatiskt och kan ha fel och information kan saknas, t.ex. brant terräng eller utloppszoner visas inte.\n<br/>\n<br/>\nFärger anger utloppszoner för laviner:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Försvagad is"
   },
   "TABS": {
@@ -659,7 +695,7 @@
     "END_ERROR": "Det gick inte att avsluta turen. Försök igen senare. Turen avslutas automatiskt vid midnatt.",
     "ERROR": "Kunde inte starta turen. Försök igen.",
     "ERROR_POSITION": "Kan inte starta turen utan GPS-position.",
-    "LEGACY_HELP_TEXT": "Här meddelar du att du planerar en tur idag.\n\nDet är användbart för prognosprogrammet att veta om observationer kan förväntas idag. Det är också användbart att veta vilken typ av observationer man kan förvänta sig (vad letar du efter, vart du ska gå) och när förväntar du dig att dessa observationer skickas till Regobs. \n\n Alla betalda observatörer måste registrera vilken typ av tur som planeras: är det en vanlig betald observationstur, eller är detta en ytterligare registrering? Ytterligare registrering är inlämnande av observationer som du har gjort i annat arbete eller på din fritid.",
+    "LEGACY_HELP_TEXT": "Här meddelar du att du planerar en tur idag.\n\nDet är användbart för prognosprogrammet att veta om observationer kan förväntas idag. Det är också användbart att veta vilken typ av observationer man kan förvänta sig (vad letar du efter, vart du ska gå) och när förväntar du dig att dessa observationer skickas till Regobs. \n\nAlla betalda observatörer måste registrera vilken typ av tur som planeras: är det en vanlig betald observationstur, eller är detta en ytterligare registrering? Ytterligare registrering är inlämnande av observationer som du har gjort i annat arbete eller på din fritid.",
     "ONGOING_TRIP": "Tur pågår",
     "STARTED": "Tur startat",
     "START_TRIP": "Start tur",
