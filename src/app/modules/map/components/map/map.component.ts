@@ -322,22 +322,26 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       name: TopoMap.geoDataLandskap,
       url: settings.map.tiles.geoDataLandskapMapUrl,
     };
-    const geoDataLandskapMixMap: MapOptionsWithBounds = {
-      name: TopoMap.geoDataLandskap,
-      url: settings.map.tiles.geoDataLandskapMapUrl,
-      bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral,
-      excludeBounds: BorderHelper.getSvalbardPolygon().geometry
-    };
-    const svalbard: MapOptionsWithBounds = {
-      name: TopoMap.statensKartverk,
-      url: settings.map.tiles.statensKartverkMapUrl,
-      bounds: settings.map.bounds.svalbard.bbox as L.LatLngBoundsLiteral,
-    }
-    const mixGeoDataLandskap = [
+    const arGisOnlineMixMap = [
       { ...arcGisOnlineMap, excludeBounds: NORWEGIAN_BOUNDS },
-      geoDataLandskapMixMap,
-      svalbard
+      norwegianMixedMap
     ];
+    // const geoDataLandskapMixMap: MapOptionsWithBounds = {
+    //   name: TopoMap.geoDataLandskap,
+    //   url: settings.map.tiles.geoDataLandskapMapUrl,
+    //   bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral,
+    //   excludeBounds: BorderHelper.getSvalbardPolygon().geometry
+    // };
+    // const svalbard: MapOptionsWithBounds = {
+    //   name: TopoMap.statensKartverk,
+    //   url: settings.map.tiles.statensKartverkMapUrl,
+    //   bounds: settings.map.bounds.svalbard.bbox as L.LatLngBoundsLiteral,
+    // }
+    // const mixGeoDataLandskap = [
+    //   { ...arcGisOnlineMap, excludeBounds: NORWEGIAN_BOUNDS },
+    //   geoDataLandskapMixMap,
+    //   svalbard
+    // ];
 
     switch (topoMap) {
       case TopoMap.statensKartverk:
@@ -351,11 +355,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       case TopoMap.mixOpenTopo:
         return [{ ...openTopoMap, excludeBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
       case TopoMap.mixArcGisOnline:
-        return [{ ...arcGisOnlineMap, excludeBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
-      case TopoMap.mixGeoDataLandskap:
-        return mixGeoDataLandskap;
+        return arGisOnlineMixMap;
+      // case TopoMap.mixGeoDataLandskap:
+      //   return mixGeoDataLandskap;
+      // default:
+      //   return langKey === LangKey.nb ? mixGeoDataLandskap : [arcGisOnlineMap];
       default:
-        return langKey === LangKey.nb ? mixGeoDataLandskap : [arcGisOnlineMap];
+        return langKey === LangKey.nb ? [statensKartverk] : [arcGisOnlineMap];
     }
   }
 
