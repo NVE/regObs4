@@ -13,12 +13,15 @@ import { LoggingService } from '../../../shared/services/logging/logging.service
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
 import { RegObsTileLayer, IRegObsTileLayerOptions } from '../../core/classes/regobs-tile-layer';
-import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
+import { NORWEGIAN_BOUNDS, BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { LangKey } from '../../../../core/models/langKey';
+import { GeometryObject } from '@turf/turf';
 
 const DEBUG_TAG = 'MapComponent';
+
+interface MapOptionsWithBounds { name: string; url: string; bounds?: L.LatLngBoundsExpression, excludeBounds?: GeometryObject }
 
 @Component({
   selector: 'app-map',
@@ -266,7 +269,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           {
             ...this.getTileLayerDefaultOptions(userSetting),
             bounds: topoMap.bounds,
-            excludeBounds: topoMap.notInsideBounds,
+            excludeBounds: topoMap.excludeBounds,
           }
         );
         topoTilesLayer.addTo(this.tilesLayer);
@@ -297,61 +300,62 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     return (detectRetina && L.Browser.retina) ? (settings.map.tiles.maxZoom + 2) : settings.map.tiles.maxZoom;
   }
 
-  private getMapOptions(topoMap: TopoMap, langKey: LangKey) {
-    const norwegianMixedMap = {
+  private getMapOptions(topoMap: TopoMap, langKey: LangKey): MapOptionsWithBounds[] {
+    const norwegianMixedMap: MapOptionsWithBounds = {
       name: TopoMap.statensKartverk,
       url: settings.map.tiles.statensKartverkMapUrl,
-      bounds: <any>settings.map.tiles.supportTilesBounds,
-      notInsideBounds: null,
+      bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral,
     };
-    const openTopoMap = {
+    const openTopoMap: MapOptionsWithBounds = {
       name: TopoMap.openTopo,
       url: settings.map.tiles.openTopoMapUrl,
-      bounds: null,
-      notInsideBounds: null,
     };
-    const arcGisOnlineMap = {
+    const statensKartverk: MapOptionsWithBounds = {
+      name: TopoMap.statensKartverk,
+      url: settings.map.tiles.statensKartverkMapUrl
+    };
+    const arcGisOnlineMap: MapOptionsWithBounds = {
       name: TopoMap.arcGisOnline,
       url: settings.map.tiles.arcGisOnlineTopoMapUrl,
-      bounds: null,
-      notInsideBounds: null,
     };
-    const geoDataLandskapMap = {
+    const geoDataLandskapMap: MapOptionsWithBounds = {
       name: TopoMap.geoDataLandskap,
       url: settings.map.tiles.geoDataLandskapMapUrl,
-      bounds: null,
-      notInsideBounds: null,
     };
-    const geoDataLandskapMixMap = {
+    const geoDataLandskapMixMap: MapOptionsWithBounds = {
       name: TopoMap.geoDataLandskap,
       url: settings.map.tiles.geoDataLandskapMapUrl,
-      bounds: <any>settings.map.tiles.supportTilesBounds,
-      notInsideBounds: null,
+      bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral,
+      excludeBounds: BorderHelper.getSvalbardPolygon().geometry
     };
+    const svalbard: MapOptionsWithBounds = {
+      name: TopoMap.statensKartverk,
+      url: settings.map.tiles.statensKartverkMapUrl,
+      bounds: settings.map.bounds.svalbard.bbox as L.LatLngBoundsLiteral,
+    }
+    const mixGeoDataLandskap = [
+      { ...arcGisOnlineMap, excludeBounds: NORWEGIAN_BOUNDS },
+      geoDataLandskapMixMap,
+      svalbard
+    ];
+
     switch (topoMap) {
       case TopoMap.statensKartverk:
-        return [
-          {
-            name: TopoMap.statensKartverk,
-            url: settings.map.tiles.statensKartverkMapUrl,
-            bounds: <any>settings.map.tiles.supportTilesBounds,
-            notInsideBounds: null,
-          }
-        ];
+        return [statensKartverk];
       case TopoMap.openTopo:
         return [openTopoMap];
       case TopoMap.arcGisOnline:
         return [arcGisOnlineMap];
-      case TopoMap.mixOpenTopo:
-        return [{ ...openTopoMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
-      case TopoMap.mixArcGisOnline:
-        return [{ ...arcGisOnlineMap, notInsideBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
       case TopoMap.geoDataLandskap:
         return [geoDataLandskapMap];
+      case TopoMap.mixOpenTopo:
+        return [{ ...openTopoMap, excludeBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
+      case TopoMap.mixArcGisOnline:
+        return [{ ...arcGisOnlineMap, excludeBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
       case TopoMap.mixGeoDataLandskap:
-        return [{ ...arcGisOnlineMap, notInsideBounds: NORWEGIAN_BOUNDS }, geoDataLandskapMixMap];
+        return mixGeoDataLandskap;
       default:
-        return langKey === LangKey.nb ? [geoDataLandskapMap] : [arcGisOnlineMap];
+        return langKey === LangKey.nb ? mixGeoDataLandskap : [arcGisOnlineMap];
     }
   }
 
