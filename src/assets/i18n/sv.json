@@ -69,14 +69,14 @@
     "SW": "SV",
     "W": "V"
   },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Registrerar tur"
-  },
   "GEO_HAZARDS": {
     "DIRT": "Jord",
     "ICE": "Is",
     "SNOW": "Snö",
     "WATER": "Vatten"
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Registrerar tur"
   },
   "HELP": {
     "TITLE": "Hjälp"
@@ -205,21 +205,21 @@
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",
-      "COMMENT_PLACEHOLDER": "Här kan du ge ytterligare beskrivning av tecken på lavinfara",
+      "COMMENT_PLACEHOLDER": "Här kan du ge ytterligare beskrivning av faratecknet",
       "DESCRIPTION": "Beskrivning",
       "FOR_MUNICIPAL": "För kommunen",
       "FOR_REGION": "Län / prognosområde",
       "GENERAL_ON_MOUNTAIN": "Generellt på fjället",
       "IN_THE_VALLEY_OR_FJORD": "I dalen / fjorden",
       "MANY_WATER_NEARBY": "Massor av vatten i närheten",
-      "NEW_DANGER_OBS": "Nytt tecken på lavinfara",
-      "NO_DAMAGE_SIGN": "Inga tecken på lavinfara observerade",
+      "NEW_DANGER_OBS": "Nytt tecken på fara",
+      "NO_DAMAGE_SIGN": "Inga tecken på fara observerade",
       "ON_THIS_MOUNTAIN_SIDE": "På den här fjällsidan",
       "ON_THIS_PLACE": "På den här platsen",
       "ON_THIS_SIDE_OF_THE_WATER": "På denna sida av sjön",
       "ON_THIS_WATER": "På denna sjö",
       "RIGHT_HERE": "Just här",
-      "TITLE": "Tecken på lavinfara"
+      "TITLE": "Tecken på fara"
     },
     "DELETE": "Radera observation",
     "DELETE_CONFIRM": "Är du säker?",
@@ -297,9 +297,11 @@
         "TITLE": "Istjocklek"
       }
     },
-    "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Bildbeskrivning",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Lägg till en beskrivning till bilden",
+    "IMAGES": "Bilder",
+    "IN_CM": "I centimeter",
+    "IN_FULL_CM": "I hela centimeter",
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Beskrivning",
@@ -309,8 +311,6 @@
       "TITLE": "Olycka / tillbud"
     },
     "INVALID_IMAGE": "Tyvärr, ogiltig bildformat",
-    "IN_CM": "I centimeter",
-    "IN_FULL_CM": "I hela centimeter",
     "NONE": "Ej vald",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekräfta position",
@@ -328,14 +328,14 @@
     "REQUIRED_FIELDS_MISSING": "Vissa fält är ogiltiga. Vill du återställa formuläret och gå tillbaka?",
     "RESEND": "Försök skicka igen",
     "RESET": "Återställ",
-    "SAVED_DESCRIPTION": "Dessa synkroniseras när du har nätverksanslutning.",
-    "SAVED_ON_PHONE": "Sparad på telefon",
     "SAVE_ALERT": {
       "HEADER": "Spara som utkast?",
       "MESSAGE": "Du håller på att lämna registreringen utan att skicka in. Vill du spara som utkast?",
       "NO": "Nej, kassera",
       "YES": "Ja, spara"
     },
+    "SAVED_DESCRIPTION": "Dessa synkroniseras när du har nätverksanslutning.",
+    "SAVED_ON_PHONE": "Sparad på telefon",
     "SEND": "Skicka in",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bekräfta skadeplats",
@@ -370,9 +370,9 @@
         "TITLE": "Bedömning av lavinfara"
       },
       "AVALANCHE_OBS": {
+        "AVAL_CAUSE": "Svagt lager",
         "AVALANCHE_TRIGGER": "Lavinen utlöst av",
         "AVALANCHE_TYPE": "Lavintyp",
-        "AVAL_CAUSE": "Svagt lager",
         "DESTRUCTIVE_SIZE": "Storlek",
         "FRACTURE_HEIGTH": "Brottkant höjd (cm)",
         "FRACTURE_WIDTH": "Brottkant bredd (m)",
@@ -389,16 +389,16 @@
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Lägg till ett nytt lavinproblem",
         "ALL": "Alla",
+        "AVAL_PROBABILITY": "Sannolikhet för lavin",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Förväntad lavinstorlek",
         "AVALANCHE_PROBABILITY": "Möjlighet för lavin",
         "AVALANCHE_PROPAGATION_HEADER": "Utbredning av lavinproblemet",
         "AVALANCHE_TRIGGER_PROBABILITY": "Lavinproblemets känslighet",
         "AVALANCHE_TYPE": "Lavintyp",
-        "AVAL_PROBABILITY": "Sannolikhet för lavin",
         "BOTTOM": "Botten",
+        "EXPOSED_HEIGHT_COMBO": "Exponerad höjd",
         "EXPOSED_HEIGHT1": "Höjd",
         "EXPOSED_HEIGHT2": "Lägsta höjd",
-        "EXPOSED_HEIGHT_COMBO": "Exponerad höjd",
         "MIDDLE": "Mitten",
         "NO_WEAK_LAYERS": "Det finns inga svaga lager",
         "PROPAGATION": "Utbredning",
@@ -556,7 +556,7 @@
         "OBSERVATION_TIMING": "Vad registrerar du?",
         "REGISTRATION_METHOD": "Hur registrerar du?",
         "RELATIVE": "Höjden är relativt till",
-        "TITLE": "vattennivån",
+        "TITLE": "Vattennivån",
         "WATER_LEVEL_METERS": "Vattennivån i meter",
         "WATER_MARKING": "Vattennivån märkning",
         "WATER_MEASUREMENT": "Vattennivån mätning"
@@ -568,8 +568,8 @@
     "ALLOW_ANALYTICS_DESCRIPTION": "Hjälp oss att förbättra Varsom Regobs genom att låta oss veta hur du använder applikationen.",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Denna information är anonym och kan inte kopplas till dig personligen.",
     "ALLOW_ANALYTICS_HEADER": "Dela användningsstatistik",
-    "APPMODE": "Appläge",
     "APP_VERSION": "App version",
+    "APPMODE": "Appläge",
     "CONFIRM_RESET": "Är du säker på att du vill återställa appen?",
     "COUNTRY": "Land",
     "DROPDOWNS_FAILED": "Det gick inte att uppdatera rullgardinsmenyerna. Kontrollera om du har ett nätverk och försök igen senare.",
@@ -690,22 +690,6 @@
     "TRIPS": "Turer",
     "WARNINGS": "Varningar"
   },
-  "TRIP": {
-    "COMMENT_DESCRIPTION": "Här kan du ange vilken tur du går, vad du letar efter, etc.",
-    "END_ERROR": "Det gick inte att avsluta turen. Försök igen senare. Turen avslutas automatiskt vid midnatt.",
-    "ERROR": "Kunde inte starta turen. Försök igen.",
-    "ERROR_POSITION": "Kan inte starta turen utan GPS-position.",
-    "LEGACY_HELP_TEXT": "Här meddelar du att du planerar en tur idag.\n\nDet är användbart för prognosprogrammet att veta om observationer kan förväntas idag. Det är också användbart att veta vilken typ av observationer man kan förvänta sig (vad letar du efter, vart du ska gå) och när förväntar du dig att dessa observationer skickas till Regobs. \n\nAlla betalda observatörer måste registrera vilken typ av tur som planeras: är det en vanlig betald observationstur, eller är detta en ytterligare registrering? Ytterligare registrering är inlämnande av observationer som du har gjort i annat arbete eller på din fritid.",
-    "ONGOING_TRIP": "Tur pågår",
-    "STARTED": "Tur startat",
-    "START_TRIP": "Start tur",
-    "STOPPED": "Tur stoppad",
-    "STOP_TRIP": "Stoppa tur",
-    "TITLE": "Turer",
-    "TRIP": "Tur",
-    "TRIP_END_DESCRIPTION": "Observationer förväntas före kl.",
-    "TRIP_TYPE": "Turtyp"
-  },
   "TRIP_LOG": {
     "COMPLETE": "Komplett",
     "CONTINUE": "Fortsätta",
@@ -715,6 +699,22 @@
     "START": "Start",
     "STOP": "Stopp",
     "STOPPED": "Tur stoppad och slutförd"
+  },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Här kan du ange vilken tur du går, vad du letar efter, etc.",
+    "END_ERROR": "Det gick inte att avsluta turen. Försök igen senare. Turen avslutas automatiskt vid midnatt.",
+    "ERROR": "Kunde inte starta turen. Försök igen.",
+    "ERROR_POSITION": "Kan inte starta turen utan GPS-position.",
+    "LEGACY_HELP_TEXT": "Här meddelar du att du planerar en tur idag.\n\nDet är användbart för prognosprogrammet att veta om observationer kan förväntas idag. Det är också användbart att veta vilken typ av observationer man kan förvänta sig (vad letar du efter, vart du ska gå) och när förväntar du dig att dessa observationer skickas till Regobs. \n\nAlla betalda observatörer måste registrera vilken typ av tur som planeras: är det en vanlig betald observationstur, eller är detta en ytterligare registrering? Ytterligare registrering är inlämnande av observationer som du har gjort i annat arbete eller på din fritid.",
+    "ONGOING_TRIP": "Tur pågår",
+    "START_TRIP": "Start tur",
+    "STARTED": "Tur startat",
+    "STOP_TRIP": "Stoppa tur",
+    "STOPPED": "Tur stoppad",
+    "TITLE": "Turer",
+    "TRIP": "Tur",
+    "TRIP_END_DESCRIPTION": "Observationer förväntas före kl.",
+    "TRIP_TYPE": "Turtyp"
   },
   "VALIDATION": {
     "AND": "och",
@@ -726,10 +726,10 @@
     "MUST_BE": "måste vara"
   },
   "WARNING_LIST": {
+    "A_REGIONS": "A - Regioner",
     "ADDED_TO_FAVOURITES": "läggs till i favoriter",
     "ALL": "Alla",
     "ALL_WARNINGS": "Alla varningar",
-    "A_REGIONS": "A - Regioner",
     "B_REGIONS": "B - Regioner",
     "B_REGIONS_SUBTITLE": "Varnas endast vid fara 4 och 5",
     "FAVOURITES": "Favoriter",
