@@ -99,7 +99,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   updateSettings() {
-    this.userSettingService.currentSettings = this.userSettings;
+    this.userSettingService.saveUserSettings(this.userSettings);
   }
 
   async toggleAdvanced() {

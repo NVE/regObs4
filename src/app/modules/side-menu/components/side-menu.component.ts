@@ -10,6 +10,7 @@ import { TopoMap } from '../../../core/models/topo-map.enum';
 import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../../core/services/app-version/app-version.service';
+import { LangKey } from '../../../core/models/langKey';
 
 @Component({
   selector: 'app-side-menu',
@@ -21,6 +22,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   lastUpdated: Date;
   settings = settings;
   TopoMap = TopoMap;
+  LangKey = LangKey;
 
   private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
@@ -52,7 +54,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   saveUserSettings() {
-    this.userSettingService.currentSettings = this.userSettings;
+    this.userSettingService.saveUserSettings(this.userSettings);
   }
 
   ngOnDestroy(): void {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { UserSettingService } from '../services/user-setting/user-setting.service';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,11 @@ export class StartWizardGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Promise<boolean> {
 
-    await this.userSettingService.userSettingsReadyAsync();
-    if (!this.userSettingService.currentSettings.completedStartWizard) {
+    const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    if (!userSetting.completedStartWizard) {
       this.router.navigate(['start-wizard']);
     }
 
-    return this.userSettingService.currentSettings.completedStartWizard;
+    return userSetting.completedStartWizard;
   }
 }

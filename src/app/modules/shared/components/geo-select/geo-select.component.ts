@@ -3,6 +3,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-geo-select',
@@ -27,11 +28,12 @@ export class GeoSelectComponent implements OnInit {
     this.isOpen = !this.isOpen;
   }
 
-  changeGeoHazard(geoHazards: GeoHazard[]) {
+  async changeGeoHazard(geoHazards: GeoHazard[]) {
     this.isOpen = false;
-    this.userSettingService.currentSettings = {
-      ...this.userSettingService.currentSettings,
+    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    this.userSettingService.saveUserSettings({
+      ...currentSettings,
       currentGeoHazard: geoHazards,
-    };
+    });
   }
 }

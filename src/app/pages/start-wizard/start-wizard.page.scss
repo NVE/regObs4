@@ -20,41 +20,17 @@ ion-list {
     --inner-padding-end: 0px;
   }
 }
-// ion-select {
-//   border-bottom: 1px solid #959595;
-// }
-// .language-item {
-//   --inner-padding-end: 0px;
-// }
 
 @keyframes usermarker-pulsate {
   from {
     width: 40px;
     height: 40px;
     opacity: 0.5;
-    left: 23px;
-    top: 28px;
   }
   to {
     width: 80px;
     height: 80px;
     transform: translate3d(-19px, -19px, 0px);
-    opacity: 0;
-  }
-}
-
-@-webkit-keyframes usermarker-pulsate {
-  from {
-    width: 40px;
-    height: 40px;
-    opacity: 0.5;
-    left: 23px;
-    top: 28px;
-  }
-  to {
-    width: 80px;
-    height: 80px;
-    -webkit-transform: translate3d(-19px, -19px, 0px);
     opacity: 0;
   }
 }
@@ -65,15 +41,6 @@ ion-list {
   }
   to {
     transform: rotate(-360deg);
-  }
-}
-
-@-webkit-keyframes rotate {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(-360deg);
   }
 }
 
@@ -89,20 +56,7 @@ ion-list {
   }
 }
 
-@-webkit-keyframes float {
-  0% {
-    -webkit-transform: translateY(0px);
-  }
-  50% {
-    -webkit-transform: translateY(-10px);
-  }
-  100% {
-    -webkit-transform: translateY(0px);
-  }
-}
-
 .float {
-  -webkit-animation: float 2s ease-in-out infinite;
   animation: float 2s ease-in-out infinite;
 }
 
@@ -152,13 +106,11 @@ ion-content {
       font-size: 24px;
       font-weight: bold;
       --ion-text-color-heading: var(--ion-text-color-heading-white-pages);
-      --webkit-transform-origin: bottom;
       transform-origin: bottom;
     }
 
     h3 {
       font-size: 18px;
-      --webkit-transform-origin: bottom;
       transform-origin: bottom;
     }
 
@@ -191,7 +143,6 @@ ion-content {
         width: 120px;
         height: 120px;
         background-image: url("/assets/images/onboarding/legal-spinner.png");
-        -webkit-animation: rotate 3s linear infinite;
         animation: rotate 3s linear infinite;
         background-position: center;
         background-repeat: no-repeat;
@@ -212,71 +163,65 @@ ion-content {
         position: absolute;
 
         &.eclipse {
-          left: -15px;
-          top: -45px;
+          left: -41px;
+          top: -85px;
         }
         &.bubble {
-          left: -46px;
-          top: -6px;
+          left: -100px;
+          top: 30px;
         }
 
         &.line {
-          left: -95px;
+          left: -182px;
         }
 
         &.warning {
-          left: 28px;
-          top: 20px;
-          --webkit-transform-origin: bottom;
+          left: 50px;
+          top: 40px;
           transform-origin: bottom;
         }
 
         &.pin-ice {
-          top: 62px;
+          top: 111px;
           left: -26px;
-          --webkit-transform-origin: bottom;
           transform-origin: bottom;
         }
 
         &.pin-dirt {
-          top: -48px;
-          left: 44px;
-          --webkit-transform-origin: bottom;
+          top: -80px;
+          left: 84px;
           transform-origin: bottom;
         }
 
         &.pin-snow {
-          top: -34px;
-          left: -41px;
-          --webkit-transform-origin: bottom;
+          top: -58px;
+          left: -44px;
           transform-origin: bottom;
         }
 
         &.pin-water {
-          left: -76px;
-          top: 15px;
-          --webkit-transform-origin: bottom;
+          left: -133px;
+          top: 26px;
           transform-origin: bottom;
         }
 
         &.steepness-background {
-          top: -95px;
-          left: -94px;
+          top: -190px;
+          left: -188px;
         }
 
         &.danger-map {
-          left: -94px;
-          top: -66px;
+          left: -190px;
+          top: -136px;
         }
 
         &.user-location {
-          left: 23px;
-          top: 27px;
+          left: 42px;
+          top: 81px;
 
           &:before {
             content: "";
             display: block;
-            -webkit-animation: usermarker-pulsate 1.5s ease-in-out infinite;
             animation: usermarker-pulsate 1.5s ease-in-out infinite;
             border: 5px solid #6996a3;
             background-color: #fff;
@@ -284,24 +229,22 @@ ion-content {
             height: 40px;
             width: 40px;
             position: absolute;
-            left: 23px;
-            top: 27px;
             z-index: -1;
           }
         }
 
         &.exclamation-mark {
-          left: -37px;
-          top: -14px;
+          left: -72px;
+          top: -34px;
         }
 
         &.add-observation {
-          left: -20px;
+          left: -37px;
           top: 50px;
         }
 
         &.competence-finger {
-          left: -18px;
+          left: -49px;
           top: 2px;
         }
 
@@ -313,10 +256,6 @@ ion-content {
 
           &.dark {
             color: var(--ion-color-varsom-blue-light-1);
-            -webkit-transition: color 200ms ease-in;
-            -moz-transition: color 200ms ease-in;
-            -o-transition: color 200ms ease-in;
-            -ms-transition: color 200ms ease-in;
             transition: color 200ms ease-in;
           }
         }
@@ -329,7 +268,6 @@ ion-content {
           left: -65px;
           &.animated {
             animation-name: activate-star-2;
-            -webkit-animation-name: activate-star-2;
           }
         }
 
@@ -337,7 +275,6 @@ ion-content {
           left: -15px;
           &.animated {
             animation-name: activate-star-3;
-            -webkit-animation-name: activate-star-3;
           }
         }
 
@@ -345,7 +282,6 @@ ion-content {
           left: 35px;
           &.animated {
             animation-name: activate-star-4;
-            -webkit-animation-name: activate-star-4;
           }
         }
 
@@ -353,37 +289,36 @@ ion-content {
           left: 85px;
           &.animated {
             animation-name: activate-star-5;
-            -webkit-animation-name: activate-star-5;
           }
         }
 
         &.photos {
-          left: -76px;
+          left: -131px;
           top: 38px;
         }
 
         &.pin {
-          left: -45px;
-          top: -1px;
-        }
-
-        &.ruler {
-          left: -73px;
-          top: -26px;
-        }
-
-        &.document {
-          left: 2px;
-          top: 2px;
-        }
-
-        &.path {
-          left: 31px;
+          left: -68px;
           top: -38px;
         }
 
+        &.ruler {
+          left: -119px;
+          top: -72px;
+        }
+
+        &.document {
+          left: 9px;
+          top: -30px;
+        }
+
+        &.path {
+          left: 63px;
+          top: -97px;
+        }
+
         &.eye {
-          left: 31px;
+          left: 49px;
           top: 34px;
         }
 

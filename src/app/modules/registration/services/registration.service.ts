@@ -257,9 +257,8 @@ export class RegistrationService {
         cancelled = true;
       });
     }
-    const userSettings = this.userSettingService.currentSettings;
-    const appMode = userSettings.appMode;
-    const dataLoadId = this.getDataLoadId(appMode);
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const dataLoadId = this.getDataLoadId(userSettings.appMode);
     const dataLoad = await this.dataLoadService.getState(dataLoadId);
     const isLoadingTimeout = moment().subtract(30, 'seconds');
     if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {

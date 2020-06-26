@@ -44,12 +44,13 @@ export class CoachMarksComponent implements OnInit, OnDestroy {
         distinctUntilChanged());
   }
 
-  hide() {
+  async hide() {
     this.hideSubject.next(false);
-    this.userSettingService.currentSettings = {
-      ...this.userSettingService.currentSettings,
+    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    this.userSettingService.saveUserSettings({
+      ...currentSettings,
       showGeoSelectInfo: false
-    };
+    });
   }
 
   ngOnDestroy(): void {

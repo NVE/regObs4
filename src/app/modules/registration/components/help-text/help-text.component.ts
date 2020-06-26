@@ -5,6 +5,7 @@ import { HelpTextService } from '../../services/help-text/help-text.service';
 import { HelptextDto } from '../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { HelpModalPage } from '../../pages/modal-pages/help-modal/help-modal.page';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-help-text',
@@ -25,7 +26,7 @@ export class HelpTextComponent implements OnInit {
     private ngZone: NgZone) { }
 
   async ngOnInit() {
-    const userSetting = this.userSettingService.currentSettings;
+    const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     this.helpText = await this.helpTextService.getHelpTextByKey(
       userSetting.language,
       userSetting.appMode,

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { take } from 'rxjs/operators';
 
 const ALLOW_ANALYTICS_HEADER = 'SETTINGS.ALLOW_ANALYTICS_HEADER';
 const ALLOW_ANALYTICS_DESCRIPTION = 'SETTINGS.ALLOW_ANALYTICS_DESCRIPTION';
@@ -22,7 +23,8 @@ export class UsageAnalyticsConsentService {
   }
 
   async checkUserDataConsentDialog() {
-    if (!this.userSettingService.currentSettings.consentForSendingAnalyticsDialogCompleted) {
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    if (!userSettings.consentForSendingAnalyticsDialogCompleted) {
       await this.showConsentForSendingAnalyticsDialog();
     }
   }
@@ -40,18 +42,12 @@ export class UsageAnalyticsConsentService {
       const buttonOK = {
         cssClass,
         text: translations[OK],
-        handler: () => {
-          this.saveSettings(true);
-          resolve();
-        }
+        handler: () => this.saveSettings(true).then(() => resolve())
       };
       const buttonNo = {
         cssClass,
         text: translations[NO_THANKS],
-        handler: () => {
-          this.saveSettings(false);
-          resolve();
-        }
+        handler: () => this.saveSettings(false).then(() => resolve())
       };
       const buttons = this.platform.is('ios') ? [buttonOK, buttonNo] : [buttonNo, buttonOK];
       const alert = await this.alertController.create({
@@ -64,11 +60,12 @@ export class UsageAnalyticsConsentService {
     });
   }
 
-  saveSettings(accepted: boolean) {
-    this.userSettingService.currentSettings = {
-      ...this.userSettingService.currentSettings,
+  async saveSettings(accepted: boolean) {
+    const currentSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    this.userSettingService.saveUserSettings({
+      ...currentSettings,
       consentForSendingAnalytics: accepted,
       consentForSendingAnalyticsDialogCompleted: true,
-    };
+    });
   }
 }

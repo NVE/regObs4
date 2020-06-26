@@ -14,6 +14,7 @@ import { LoginService } from '../../../login/services/login.service';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { take } from 'rxjs/operators';
 
 const DEBUG_TAG = 'ObsLocationPage';
 
@@ -59,7 +60,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.geoHazard = parseInt(this.activatedRoute.snapshot.params['geoHazard'], 10);
     } else {
       // No geohazard found, use app mode
-      const userSettings = this.userSettingService.currentSettings;
+      const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
       this.geoHazard = userSettings.currentGeoHazard[0];
     }
     if (this.hasLocation(this.registration)) {

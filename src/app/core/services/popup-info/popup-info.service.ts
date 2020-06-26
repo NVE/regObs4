@@ -25,7 +25,7 @@ export class PopupInfoService {
         'POPUP_DISCLAMER.OK_I_UNDERSTAND'
       )),
       switchMap((translations) => from(this.showAlert(translations.header, translations.message, translations.okText))),
-      switchMap(() => of(this.saveInfoAboutObservationsRecievedTimestamp())));
+      switchMap(() => from(this.saveInfoAboutObservationsRecievedTimestamp())));
   }
 
   checkSupportMapInfoPopup(delayMs = 2000) {
@@ -39,7 +39,7 @@ export class PopupInfoService {
         'POPUP_DISCLAMER.OK_I_UNDERSTAND'
       )),
       switchMap((translations) => from(this.showAlert(translations.header, translations.message, translations.okText))),
-      switchMap(() => of(this.saveInfoAboutSupportMapsRecievedTimestamp())));
+      switchMap(() => from(this.saveInfoAboutSupportMapsRecievedTimestamp())));
   }
 
   checkLastTimestamp(limitMs: number, lastTimestamp?: number, showWhenNull = true): boolean {
@@ -69,17 +69,19 @@ export class PopupInfoService {
       })));
   }
 
-  saveInfoAboutObservationsRecievedTimestamp() {
-    this.userSettingService.currentSettings = {
-      ...this.userSettingService.currentSettings,
+  async saveInfoAboutObservationsRecievedTimestamp() {
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    this.userSettingService.saveUserSettings({
+      ...userSettings,
       infoAboutObservationsRecievedTimestamp: moment().unix()
-    };
+    });
   }
 
-  saveInfoAboutSupportMapsRecievedTimestamp() {
-    this.userSettingService.currentSettings = {
-      ...this.userSettingService.currentSettings,
+  async saveInfoAboutSupportMapsRecievedTimestamp() {
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    this.userSettingService.saveUserSettings({
+      ...userSettings,
       infoAboutSupportMapsRecievedTimestamp: moment().unix()
-    };
+    });
   }
 }

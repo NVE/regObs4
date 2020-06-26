@@ -144,10 +144,10 @@
     "START_WIZARD": "Start veiviseren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
     "TILES": {
-      "ARC_GIS": "ArcGIS (verden)",
+      "ARC_GIS": "ESRI World Topo (verden)",
+      "GEODATA_LANDSKAP": "Geodata Landskap (Norge)",
       "KARTVERKET": "Kartverket (Norge)",
-      "ONLY_KARTVERKET": "Kartverket (bare Norge)",
-      "OPEN_TOPO": "OpenTopo (verden)"
+      "OPEN_TOPO": "OpenTopoMap (verden)"
     },
     "TIME_FRAME": "Tidsrom",
     "TODAYS_OBSERVATIONS": "Kun dagens observasjoner",
@@ -668,7 +668,7 @@
     "ICE_LEGEND_TEXT_6": "Rørgate",
     "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
     "ICE_MAP_DESCRIPTION": "Støttekartet viser deler av vassdrag som oppfører seg uforutsigbart gjennom vinteren grunnet reguleringer for kraftproduksjon",
-    "INFO_PAGE": "<h1>Om kart med bratthet og utløp</h1>\nKartene er automatisk generert og kan inneholde feil. Det kan eksistere bratte heng som høydemodellen ikke plukker opp og derfor ikke vises på kartet.\nNoen skred kan gå lenger enn det som er markert som utløpsområde i kartet.\n\n<h2>Hvilke hensyn må tas?</h2>\nTilpass egen risiko ved å velge hvor, når og hvordan du ferdes.  Varsom Regobs er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger.\n \n<h2>Når er det trygt?</h2>\nAll ferdsel i snødekt skredterreng er forbundet med risiko. \n\n<h2>Lære mer?</h2>\nDu kan lære mer på skredkurs og Snøskredskolen på Varsom.no.",
+    "INFO_PAGE": "<h1>Om kart med bratthet og utløp</h1>\nKartene er automatisk generert og kan inneholde feil. Det kan eksistere bratte heng som høydemodellen ikke plukker opp og derfor ikke vises på kartet.\nNoen skred kan gå lenger enn det som er markert som utløpsområde i kartet.\n\n<h2>Hvilke hensyn må tas?</h2>\nTilpass egen risiko ved å velge hvor, når og hvordan du ferdes. Varsom Regobs er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger.\n\n<h2>Når er det trygt?</h2>\nAll ferdsel i snødekt skredterreng er forbundet med risiko. \n\n<h2>Lære mer?</h2>\nDu kan lære mer på skredkurs og Snøskredskolen på Varsom.no.",
     "LOW": "Lav",
     "MARITINE_BORDER": "Marin grense flate",
     "MIDDLE": "Middels",

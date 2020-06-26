@@ -35,7 +35,7 @@
         <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
         <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER' | translate}}</ion-label>
       </ion-item>
-      <app-numeric-input [(value)]="registration.request.IceThickness.IceThicknessSum"
+      <app-numeric-input [readonly]="true" [(value)]="registration.request.IceThickness.IceThicknessSum"
         title="REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM" [min]="0" [max]="999" [decimalPlaces]="2"
         [convertRatio]="100" suffix="cm"></app-numeric-input>
       <app-yes-no-select [(value)]="iceHeightBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE">

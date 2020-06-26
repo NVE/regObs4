@@ -6,7 +6,7 @@ import { AppMode } from '../../models/app-mode.enum';
 import { settings } from '../../../../settings';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, combineLatest, BehaviorSubject, from, of } from 'rxjs';
-import { map, take, shareReplay, distinctUntilChanged, tap, takeUntil, catchError, debounceTime, switchMap, skipWhile } from 'rxjs/operators';
+import { map, shareReplay, distinctUntilChanged, tap, takeUntil, catchError, debounceTime, switchMap, concatMap, filter } from 'rxjs/operators';
 import { LangKey } from '../../models/langKey';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
@@ -43,19 +43,19 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   public readonly userSetting$: Observable<UserSetting>;
 
   private userSettingInMemory = new BehaviorSubject<UserSetting>(null);
-  private userSettingsReady = new BehaviorSubject(false);
+  // private userSettingsReady = new BehaviorSubject(false);
 
-  get userSettingsReady$() {
-    return this.userSettingsReady.asObservable();
-  }
+  // get userSettingsReady$() {
+  //   return this.userSettingsReady.asObservable();
+  // }
 
-  get currentSettings() {
-    return this.userSettingInMemory.getValue();
-  }
+  // get currentSettings() {
+  //   return this.userSettingInMemory.getValue();
+  // }
 
-  set currentSettings(val: UserSetting) {
-    this.saveUserSettings(val);
-  }
+  // set currentSettings(val: UserSetting) {
+  //   this.saveUserSettings(val);
+  // }
 
   get supportTiles$() {
     return this.userSetting$
@@ -65,7 +65,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   constructor(private translate: TranslateService, private loggingService: LoggingService) {
     super();
     this.userSetting$ = this.userSettingInMemory.asObservable().pipe(
-      skipWhile((val) => val === null),
+      concatMap((val) => val ? of(val) : this.getUserSettingsFromDbOrDefaultSettings()),
       tap((val) => {
         this.loggingService.debug('User settings is: ', DEBUG_TAG, val);
       }), shareReplay(1));
@@ -101,7 +101,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
   public init() {
     this.createLanguageChangeListener();
-    this.updateInMemoryRegistrationsFromDb();
+    // this.updateInMemoryRegistrationsFromDb();
     this.createSaveToDbOnChangeListener();
   }
 
@@ -131,47 +131,14 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       });
   }
 
-  // private registerLocaleData(): (src: Observable<LangKey>) => Observable<string> {
-  //   return (src: Observable<LangKey>) =>
-  //     src.pipe(
-  //       switchMap((langKey) => from(this.loadLocaleData(langKey))),
-  //       switchMap((loadedLang) => of(registerLocaleData(loadedLang.data)).pipe(map(() => loadedLang.localeId)))
-  //     );
-  // }
-
-  // private loadLocaleData(langKey: LangKey): Promise<{ localeId: string, data: unknown }> {
-  //   return new Promise((resolve) => {
-  //     const localeId = LangKey[langKey];
-  //     const localeDataImport = `@angular/common/locales/${localeId}`;
-  //     import(/* webpackInclude: /(nb|sv|de|en|sl)\$/ */ localeDataImport).then((localeData) =>
-  //       resolve({ localeId, data: localeData.default }));
-  //   });
-  // }
-
-  private updateInMemoryRegistrationsFromDb() {
-    this.getUserSettingsFromDb().subscribe((result) => {
-      if (result) {
-        this.loggingService.debug('Init user settings from offline db', DEBUG_TAG, result);
-        this.saveUserSettings(result);
-      } else {
-        this.loggingService.debug('Init with default user settings', DEBUG_TAG, result);
-        this.saveUserSettings(DEFAULT_USER_SETTINGS());
-      }
-      this.userSettingsReady.next(true);
-    });
-  }
-
   private createSaveToDbOnChangeListener() {
-    this.userSetting$.pipe(
+    this.userSettingInMemory.pipe(
+      filter((result) => !!result),
       debounceTime(200),
       tap((result) => this.loggingService.debug('InMemory user settings changed. Saving to db: ', DEBUG_TAG, result)),
       switchMap((result) => this.saveUserSettingsToDb(result)),
       takeUntil(this.ngDestroy$)
     ).subscribe();
-  }
-
-  userSettingsReadyAsync() {
-    return this.userSettingsReady$.pipe(skipWhile((val) => !val), take(1)).toPromise();
   }
 
   saveUserSettings(userSetting: UserSetting) {
@@ -194,6 +161,11 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     });
   }
 
+  private getUserSettingsFromDbOrDefaultSettings(): Observable<UserSetting> {
+    return this.getUserSettingsFromDb().pipe(
+      map((result) => result ? result : DEFAULT_USER_SETTINGS(null)));
+  }
+
   private getUserSettingsFromDb(): Observable<UserSetting> {
     return from(nSQL(NanoSql.TABLES.USER_SETTINGS.name).query('select').exec() as Promise<UserSetting[]>)
       .pipe((map((result) => result[0])));
@@ -213,7 +185,8 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
   appOnResetComplete() {
     this.loggingService.debug(`App reset complete. Re-init observables.`, DEBUG_TAG);
-    const defaultSettings = DEFAULT_USER_SETTINGS();
-    this.saveUserSettings(defaultSettings);
+    // const defaultSettings = DEFAULT_USER_SETTINGS(null);
+    // this.saveUserSettings(defaultSettings);
+    this.userSettingInMemory.next(null); // Reset in memory observable
   }
 }

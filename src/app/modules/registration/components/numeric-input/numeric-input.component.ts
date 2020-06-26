@@ -18,6 +18,7 @@ export class NumericInputComponent implements OnInit {
   @Input() title: string;
   @Input() placeholder: string;
   @Input() convertRatio: number;
+  @Input() readonly = false;
 
   private isOpen = false;
 
@@ -35,7 +36,7 @@ export class NumericInputComponent implements OnInit {
   }
 
   async openPicker() {
-    if (!this.isOpen) {
+    if (!this.isOpen && !this.readonly) {
       this.isOpen = true;
       const modal = await this.modalController.create({
         component: NumericInputModalPage,

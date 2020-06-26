@@ -50,7 +50,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     AngularSvgIconModule.forRoot(),
     SharedModule,
     MapModule,
-    LeafletModule.forRoot(),
+    LeafletModule,
     RegistrationModule,
     RegobsApiModule,
     LegalTermsModalPageModule,

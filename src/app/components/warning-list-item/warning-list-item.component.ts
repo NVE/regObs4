@@ -12,7 +12,7 @@ import { AnalyticService } from '../../modules/analytics/services/analytic.servi
 import { AppEventCategory } from '../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../modules/analytics/enums/app-event-action.enum';
 import { from, of, Subject, timer } from 'rxjs';
-import { map, catchError, takeUntil, switchMap } from 'rxjs/operators';
+import { map, catchError, takeUntil, switchMap, take } from 'rxjs/operators';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 
 @Component({
@@ -84,11 +84,12 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     this.toggleFavourite();
   }
 
-  getUrl(group: WarningGroup, day: string = ''): string {
+  async getUrl(group: WarningGroup, day: string = ''): Promise<string> {
     if (group.url) {
       return group.url;
     } else {
-      const supportedLang = this.getSupportedLangOrFallbackToEn(this.userSettingService.currentSettings.language);
+      const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
+      const supportedLang = this.getSupportedLangOrFallbackToEn(currentLang);
       const url: string = settings.services.warning[GeoHazard[group.key.geoHazard]]
         .webUrl[LangKey[supportedLang]];
       if (url) {
@@ -109,20 +110,20 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     return LangKey.en;
   }
 
-  navigateToWeb(event: Event, group: WarningGroup) {
+  async navigateToWeb(event: Event, group: WarningGroup) {
     event.preventDefault();
-    const url = this.getUrl(group);
+    const url = await this.getUrl(group);
     if (url) {
       this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
       this.externalLinkService.openExternalLink(url);
     }
   }
 
-  navigateToWebByDay(event: Event, group: WarningGroup, day: number) {
+  async navigateToWebByDay(event: Event, group: WarningGroup, day: number) {
     event.preventDefault();
     const dateString = moment().startOf('day').add(day, 'days')
       .format(settings.services.warning.dateFormat);
-    const url = this.getUrl(group, dateString);
+    const url = await this.getUrl(group, dateString);
     if (url) {
       this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
       this.externalLinkService.openExternalLink(url);

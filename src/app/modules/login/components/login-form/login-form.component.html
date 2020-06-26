@@ -1,4 +1,4 @@
-<form novalidate (ngSubmit)="login()" [formGroup]="loginform">
+<form novalidate (ngSubmit)="login()" [formGroup]="loginform" *ngIf="loginform">
   <ion-item>
     <ion-label color="medium" position="stacked" class="ion-text-uppercase">
       {{ 'LOGIN.EMAIL' | translate }}
