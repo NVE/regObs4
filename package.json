@@ -3,9 +3,6 @@
   "version": "4.3.1",
   "author": "NVE",
   "homepage": "http://www.nve.no",
-  "browserslist": [
-    "last 2 Chrome versions"
-  ],
   "scripts": {
     "ng": "ng",
     "generate-swagger-api-module": "ng-swagger-gen -c ng-swagger-gen.json",
