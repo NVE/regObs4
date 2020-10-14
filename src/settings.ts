@@ -1,4 +1,14 @@
 export const settings = {
+  authConfig: {
+    'TEST': {
+      client_id: '13270815-7def-4800-8fc9-178dd517f574',
+      server_host: 'https://nveb2c01test.b2clogin.com/nveb2c01test.onmicrosoft.com/oauth2/v2.0',
+      redirect_url: 'regobs://callback',
+      end_session_redirect_url: 'regobs://endsession',
+      scopes: 'openid offline_access',
+      pkce: true
+    },
+  },
   observations: {
     maxObservationsToFetch: 5000,
     daysBack: {

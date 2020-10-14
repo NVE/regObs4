@@ -3,11 +3,10 @@ import { Platform, NavController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
 import { SwipeBackService } from './core/services/swipe-back/swipe-back.service';
-import { Observable, from, forkJoin, of, timer } from 'rxjs';
+import { Observable, from, forkJoin, of } from 'rxjs';
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
@@ -31,8 +30,6 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private userSettings: UserSettingService,
-    private navController: NavController,
-    private deeplinks: Deeplinks,
     private dataMarshallService: DataMarshallService,
     private offlineImageService: OfflineImageService,
     private swipeBackService: SwipeBackService,
@@ -60,7 +57,6 @@ export class AppComponent {
   private initServices(): (src: Observable<any>) => Observable<any> {
     return (src: Observable<UserSetting>) => src.pipe(concatMap((userSettings) => forkJoin([
       of(this.lockScreenOrientation()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not lock lockScreenOrientation'))),
-      of(this.initDeepLinks()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init deeplinks'))),
       from(this.dbHelperService.init()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))),
       of(this.loggingService.configureLogging(userSettings.appMode)).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not configure loggine'))),
       of(this.statusBar.styleLightContent()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not set styleLightContent'))),
@@ -76,17 +72,17 @@ export class AppComponent {
     return from(this.platform.ready()).pipe(switchMap(() => this.userSettings.userSetting$.pipe(take(1))));
   }
 
-  initDeepLinks() {
-    if (this.platform.is('cordova') && this.platform.is('android')) {
-      this.deeplinks.route({
-        '/registration/new/:geoHazard': 'New registration',
-      }).subscribe(match => {
-        // match.$route - the route we matched, which is the matched entry from the arguments to route()
-        // match.$args - the args passed in the link
-        // match.$link - the full link data
-        this.loggingService.debug('Successfully matched route', DEBUG_TAG, match);
-        this.navController.navigateForward(match.$link.path);
-      }, nomatch => this.loggingService.debug('Got a deeplink that didn\'t match', DEBUG_TAG, nomatch));
-    }
-  }
+  // initDeepLinks() {
+  //   if (this.platform.is('cordova') && this.platform.is('android')) {
+  //     this.deeplinks.route({
+  //       '/registration/new/:geoHazard': 'New registration',
+  //     }).subscribe(match => {
+  //       // match.$route - the route we matched, which is the matched entry from the arguments to route()
+  //       // match.$args - the args passed in the link
+  //       // match.$link - the full link data
+  //       this.loggingService.debug('Successfully matched route', DEBUG_TAG, match);
+  //       this.navController.navigateForward(match.$link.path);
+  //     }, nomatch => this.loggingService.debug('Got a deeplink that didn\'t match', DEBUG_TAG, nomatch));
+  //   }
+  // }
 }

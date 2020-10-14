@@ -19,12 +19,12 @@ const routes: Routes = [
   { path: 'view-observation/:id', loadChildren: () => import('./pages/view-observation/view-observation.module').then(m => m.ViewObservationPageModule) },
   { path: 'observation-list', loadChildren: () => import('./pages/observation-list/observation-list.module').then(m => m.ObservationListPageModule) },
   { path: 'offline-map', loadChildren: () => import('./pages/offline-map/offline-map.module').then(m => m.OfflineMapPageModule) },
-  { path: 'login', loadChildren: () => import('app/modules/login/login.module').then(m => m.LoginModule) },
+  { path: 'login', loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule) },
   {
     path: 'registration',
-    loadChildren: () => import('app/modules/registration/registration.module').then(m => m.RegistrationModule)
+    loadChildren: () => import('./modules/registration/registration.module').then(m => m.RegistrationModule)
   },
-  { path: 'legacy-trip', loadChildren: () => import('./pages/legacy-trip/legacy-trip.module').then(m => m.LegacyTripPageModule) },
+  { path: 'legacy-trip', loadChildren: () => import('./pages/legacy-trip/legacy-trip.module').then(m => m.LegacyTripPageModule) }
 ];
 
 @NgModule({

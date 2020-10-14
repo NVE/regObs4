@@ -29,6 +29,7 @@
   <preference name="HideKeyboardFormAccessoryBar" value="false"/>
   <preference name="AndroidPersistentFileLocation" value="Compatibility"/>
   <preference name="WKWebViewOnly" value="true"/>
+  <preference name="android-usesCleartextTraffic" value="true"/>
   <platform name="android">
     <allow-navigation href="http://localhost:8080/*"/>
     <allow-intent href="market:*"/>
@@ -36,7 +37,13 @@
       <application android:allowBackup="false"/>
       <application android:fullBackupContent="false"/>
       <application android:usesCleartextTraffic="true"/>
+      <application android:networkSecurityConfig="@xml/network_security_config"/>
     </edit-config>
+    <resource-file src="resources/android/xml/network_security_config.xml" target="app/src/main/res/xml/network_security_config.xml"/>
+    <resource-file src="resources/android/shortcuts/ic_snow.xml" target="res/drawable/ic_snow.xml"/>
+    <resource-file src="resources/android/shortcuts/ic_ice.xml" target="res/drawable/ic_ice.xml"/>
+    <resource-file src="resources/android/shortcuts/ic_dirt.xml" target="res/drawable/ic_dirt.xml"/>
+    <resource-file src="resources/android/shortcuts/ic_water.xml" target="res/drawable/ic_water.xml"/>
     <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png"/>
     <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png"/>
     <icon density="hdpi" src="resources/android/icon/drawable-hdpi-icon.png"/>
@@ -61,10 +68,6 @@
     <splash density="xhdpi" src="resources/android/splash/drawable-port-xhdpi-screen.png"/>
     <splash density="xxhdpi" src="resources/android/splash/drawable-port-xxhdpi-screen.png"/>
     <splash density="xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png"/>
-    <resource-file src="resources/android/shortcuts/ic_snow.xml" target="res/drawable/ic_snow.xml"/>
-    <resource-file src="resources/android/shortcuts/ic_ice.xml" target="res/drawable/ic_ice.xml"/>
-    <resource-file src="resources/android/shortcuts/ic_dirt.xml" target="res/drawable/ic_dirt.xml"/>
-    <resource-file src="resources/android/shortcuts/ic_water.xml" target="res/drawable/ic_water.xml"/>
   </platform>
   <platform name="ios">
     <allow-navigation href="ionic://localhost:8080/*"/>
