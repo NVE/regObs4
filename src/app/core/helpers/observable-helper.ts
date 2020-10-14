@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs';
-import { NgZone, OnDestroy, OnInit } from '@angular/core';
+import { NgZone, OnDestroy, Injectable } from '@angular/core';
 
 export function toPromiseWithCancel<T>(observable: Observable<T>, cancel?: Promise<void>) {
   return new Promise<T>((resolve, reject) => {
@@ -42,6 +42,7 @@ export function setObservableTimeout() {
     );
 }
 
+@Injectable()
 export class NgDestoryBase implements OnDestroy {
   protected readonly ngDestroy$: Subject<void>;
   constructor() {

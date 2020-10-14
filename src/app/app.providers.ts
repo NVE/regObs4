@@ -43,7 +43,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApiConfiguration } from './core/http-interceptor/api-configuration';
 import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configuration';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { RegistrationRepositoryService } from './modules/registration/services/registration-repository/registration-repository.service';
 import { initTranslateService } from './custom-translate.loader';
@@ -77,7 +76,6 @@ export const APP_PROVIDERS = [
   },
   Geolocation,
   DeviceOrientation,
-  Deeplinks,
   BackgroundFetch,
   // BackgroundGeolocation,
   File,
