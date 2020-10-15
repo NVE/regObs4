@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'ionic-appauth';
 import { Observable } from 'rxjs';
+import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
-import { LoginService } from '../../../login/services/login.service';
 
 @Component({
   selector: 'app-user-login',
@@ -13,14 +12,14 @@ export class UserLoginComponent implements OnInit {
 
   $loggedInUser: Observable<LoggedInUser>;
 
-  constructor(private loginService: LoginService, private authService: AuthService) { }
+  constructor(private regobsauthService: RegobsAuthService) { }
 
   ngOnInit() {
-    this.$loggedInUser = this.loginService.loggedInUser$;
+    this.$loggedInUser = this.regobsauthService.loggedInUser$;
   }
 
   login() {
-    this.authService.signIn();
+    this.regobsauthService.signIn();
   }
 
 }

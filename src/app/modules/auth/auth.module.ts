@@ -1,4 +1,4 @@
-import { NgModule, NgZone } from '@angular/core';
+import { APP_INITIALIZER, NgModule, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Requestor, StorageBackend } from '@openid/appauth';
 import { AuthRoutingModule } from './auth-routing.module';
@@ -9,7 +9,8 @@ import { Platform } from '@ionic/angular';
 import { httpFactory } from './factories/http-factory';
 import { HttpClient } from '@angular/common/http';
 import { storageFactory } from './factories/storage-factory';
-
+import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
+import { RegobsAuthService } from './services/regobs-auth.service';
 
 @NgModule({
   declarations: [],
@@ -36,7 +37,7 @@ import { storageFactory } from './factories/storage-factory';
     {
       provide: AuthService,
       useFactory: authFactory,
-      deps: [Platform, NgZone, Requestor, Browser, StorageBackend]
+      deps: [Platform, NgZone, Requestor, Browser, StorageBackend, UserSettingService]
     }
   ]
 })

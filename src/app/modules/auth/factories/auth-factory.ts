@@ -13,13 +13,11 @@ export let authFactory = (platform: Platform, ngZone: NgZone,
 
   userSettingService.appMode$.subscribe((appMode: AppMode) => {
     authService.authConfig = settings.authConfig[appMode];
+    if (!platform.is('cordova')) {
+      authService.authConfig.redirect_url = window.location.origin + '/auth/callback';
+      authService.authConfig.end_session_redirect_url = window.location.origin + '/auth/endsession';
+    }
   });
-
-
-  if (!platform.is('cordova')) {
-    authService.authConfig.redirect_url = window.location.origin + '/auth/callback';
-    authService.authConfig.end_session_redirect_url = window.location.origin + '/auth/endsession';
-  }
 
   if (platform.is('cordova')) {
     (window as any).handleOpenURL = (callbackUrl) => {

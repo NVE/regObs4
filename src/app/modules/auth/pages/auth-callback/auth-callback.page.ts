@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
-import { AuthActions, AuthObserver, AuthService, IAuthAction } from 'ionic-appauth';
+import { AuthObserver, AuthService } from 'ionic-appauth';
+import { RegobsAuthService, RETURN_URL_KEY } from '../../services/regobs-auth.service';
 
 @Component({
   selector: 'app-auth-callback',
@@ -14,27 +14,16 @@ export class AuthCallbackPage implements OnInit {
 
   constructor(
     private auth: AuthService,
-    private navCtrl: NavController,
+    private regobsAuthService: RegobsAuthService,
     private router: Router
   ) { }
 
   ngOnInit() {
-    this.observer = this.auth.addActionListener((action) => this.postCallback(action));
+    this.observer = this.auth.addActionListener((action) => this.regobsAuthService.onSignInCallback(action));
     this.auth.authorizationCallback(window.location.origin + this.router.url);
   }
 
   ngOnDestroy() {
     this.auth.removeActionObserver(this.observer);
   }
-
-  postCallback(action: IAuthAction) {
-    if (action.action === AuthActions.SignInSuccess) {
-      this.navCtrl.navigateRoot('');
-    }
-
-    if (action.action === AuthActions.SignInFailed) {
-      this.navCtrl.navigateRoot('');
-    }
-  }
-
 }

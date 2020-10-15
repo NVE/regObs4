@@ -1,0 +1,11 @@
+ion-content {
+  --ion-background-color: var(--ion-color-varsom-blue);
+  ion-spinner {
+    color: #fff;
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    top: calc(50% - 35px);
+    left: calc(50% - 35px);
+  }
+}

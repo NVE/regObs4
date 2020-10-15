@@ -5,7 +5,6 @@ import { switchMap, map, take, concatMap, tap } from 'rxjs/operators';
 import * as RegobsApi from '../../regobs-api/services';
 import * as RegobsApiModels from '../../regobs-api/models';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
-import { LoginService } from '../../login/services/login.service';
 import moment from 'moment';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
@@ -17,8 +16,6 @@ import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { toPromiseWithCancel } from '../../../core/helpers/observable-helper';
 import { NavController, ModalController } from '@ionic/angular';
 import { UserSetting } from '../../../core/models/user-settings.model';
-import { LoginModalPage } from '../../login/pages/modal-pages/login-modal/login-modal.page';
-import { LoggingService } from '../../shared/services/logging/logging.service';
 import { ObservationService } from '../../../core/services/observation/observation.service';
 import * as utils from '@nano-sql/core/lib/utilities';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
@@ -27,6 +24,8 @@ import { settings } from '../../../../settings';
 import { LogLevel } from '../../shared/services/logging/log-level.model';
 import { RegistrationRepositoryService } from './registration-repository/registration-repository.service';
 import { asyncFilter } from '../../../core/helpers/async-filter';
+import { LoggingService } from '../../shared/services/logging/logging.service';
+import { RegobsAuthService } from '../../auth/services/regobs-auth.service';
 
 const DEBUG_TAG = 'RegistrationService';
 
@@ -38,11 +37,10 @@ export class RegistrationService {
   public readonly registrations$: Observable<IRegistration[]>;
 
   constructor(
+    private regobsAuthService: RegobsAuthService,
     private userSettingService: UserSettingService,
-    private loginService: LoginService,
     private registrationApiService: RegobsApi.RegistrationService,
     private navController: NavController,
-    private modalController: ModalController,
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
     private observationService: ObservationService,
@@ -211,34 +209,36 @@ export class RegistrationService {
   }
 
   // TODO: Move this to login service
-  private async getLoggedInUser() {
-    const loggedInUser = await this.loginService.getLoggedInUser();
-    if (loggedInUser && !loggedInUser.isLoggedIn) {
-      const loginModal = await this.modalController.create({
-        component: LoginModalPage
-      });
-      loginModal.present();
-      const result = await loginModal.onDidDismiss();
-      if (result.data) {
-        const loggedInUserAfterModal = await this.loginService.getLoggedInUser();
-        return loggedInUserAfterModal.user;
-      } else {
-        return null;
-      }
-    } else {
-      return loggedInUser.user;
-    }
-  }
+  // private async getLoggedInUser() {
+  //   const loggedInUser = await this.loginService.getLoggedInUser();
+  //   if (loggedInUser && !loggedInUser.isLoggedIn) {
+  //     const loginModal = await this.modalController.create({
+  //       component: LoginModalPage
+  //     });
+  //     loginModal.present();
+  //     const result = await loginModal.onDidDismiss();
+  //     if (result.data) {
+  //       const loggedInUserAfterModal = await this.loginService.getLoggedInUser();
+  //       return loggedInUserAfterModal.user;
+  //     } else {
+  //       return null;
+  //     }
+  //   } else {
+  //     return loggedInUser.user;
+  //   }
+  // }
 
   async sendRegistration(appMode: AppMode, reg: IRegistration) {
-    const loggedInUser = await this.getLoggedInUser();
-    if (loggedInUser) {
-      reg.request.ObserverGuid = loggedInUser.Guid;
-      reg.status = RegistrationStatus.Sync;
-      this.saveRegistration(appMode, reg);
-      this.syncRegistrations();
-      this.navController.navigateRoot('my-observations');
+    const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
+    if (!loggedInUser.isLoggedIn) {
+      this.regobsAuthService.signIn();
+      return;
     }
+    reg.request.ObserverGuid = loggedInUser.user.Guid;
+    reg.status = RegistrationStatus.Sync;
+    this.saveRegistration(appMode, reg);
+    this.syncRegistrations();
+    this.navController.navigateRoot('my-observations');
   }
 
   private getDataLoadId(appMode: AppMode) {

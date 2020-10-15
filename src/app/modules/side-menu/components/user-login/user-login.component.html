@@ -1,5 +1,5 @@
 <ng-container *ngIf="($loggedInUser | async) as loggedInUser">
-  <ion-item *ngIf="loggedInUser.isLoggedIn" (click)="login()" detail="true">
+  <ion-item *ngIf="!loggedInUser.isLoggedIn" (click)="login()" detail="true">
     <ion-icon slot="start" name="person-circle" color="varsom-blue"></ion-icon>
     <ion-label class="menu-label">
       {{'LOGIN.TITLE' | translate}}
