@@ -1,5 +1,7 @@
+import { Injectable } from '@angular/core';
 import { Progress } from '../offline-map/progress.model';
 
+@Injectable()
 export abstract class BackgroundDownloadService {
   abstract downloadFile(
     path: string,

@@ -68,11 +68,12 @@
     "@turf/turf": "^5.1.6",
     "angular-svg-icon": "^10.0.0",
     "clone-deep": "^4.0.1",
-    "cordova-android": "^8.1.0",
+    "cordova-android": "^9.0.0",
     "cordova-clipboard": "^1.3.0",
     "cordova-ios": "6.1.1",
     "cordova-plugin-advanced-http": "^3.0.1",
     "cordova-plugin-android-permissions": "^1.1.0",
+    "cordova-plugin-androidx-adapter": "^1.1.1",
     "cordova-plugin-background-download": "git+https://github.com/sgrebnov/cordova-plugin-background-download.git",
     "cordova-plugin-camera": "^5.0.0",
     "cordova-plugin-customurlscheme": "^5.0.2",
@@ -84,7 +85,7 @@
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^5.0.0",
     "cordova-plugin-localization-strings": "^3.2.1",
-    "cordova-plugin-safariviewcontroller": "1.6.0",
+    "cordova-plugin-safariviewcontroller": "^1.6.0",
     "cordova-plugin-screen-orientation": "^3.0.2",
     "cordova-plugin-shortcuts-android": "^0.1.1",
     "cordova-plugin-splashscreen": "^6.0.0",
@@ -163,7 +164,6 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "@nano-sql/adapter-sqlite-cordova": {},
-      "cordova-plugin-safariviewcontroller": {},
       "cordova-clipboard": {},
       "cordova-plugin-file": {},
       "cordova-plugin-geolocation": {},
@@ -197,10 +197,13 @@
         "ANDROID_SCHEME": " ",
         "ANDROID_HOST": " ",
         "ANDROID_PATHPREFIX": "/"
-      }
+      },
+      "cordova-plugin-androidx-adapter": {},
+      "cordova-plugin-safariviewcontroller": {}
     },
     "platforms": [
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }
