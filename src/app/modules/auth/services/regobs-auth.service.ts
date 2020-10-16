@@ -17,6 +17,7 @@ import { LoggedInUser } from '../../login/models/logged-in-user.model';
 import { ObserverGroupDto, ObserverResponseDto } from '../../regobs-api/models';
 import { LogLevel } from '../../shared/services/logging/log-level.model';
 import { LoggingService } from '../../shared/services/logging/logging.service';
+import { Location } from '@angular/common'
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -43,6 +44,7 @@ export class RegobsAuthService {
     private alertController: AlertController,
     private router: Router,
     private navCtrl: NavController,
+    private location: Location,
   ) {
     this._loggedInUser$ = this.getLoggedInUser$().pipe(shareReplay(1));
   }
@@ -92,6 +94,7 @@ export class RegobsAuthService {
     }
     const returnUrl = localStorage.getItem(RETURN_URL_KEY);
     if (returnUrl) {
+      this.location.replaceState(this.router.serializeUrl(this.router.createUrlTree([''])));
       this.navCtrl.navigateForward(returnUrl);
     } else {
       this.navCtrl.navigateRoot('');

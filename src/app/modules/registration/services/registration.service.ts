@@ -208,26 +208,6 @@ export class RegistrationService {
     return arrays.indexOf(registrationTid) >= 0 ? 'array' : 'object';
   }
 
-  // TODO: Move this to login service
-  // private async getLoggedInUser() {
-  //   const loggedInUser = await this.loginService.getLoggedInUser();
-  //   if (loggedInUser && !loggedInUser.isLoggedIn) {
-  //     const loginModal = await this.modalController.create({
-  //       component: LoginModalPage
-  //     });
-  //     loginModal.present();
-  //     const result = await loginModal.onDidDismiss();
-  //     if (result.data) {
-  //       const loggedInUserAfterModal = await this.loginService.getLoggedInUser();
-  //       return loggedInUserAfterModal.user;
-  //     } else {
-  //       return null;
-  //     }
-  //   } else {
-  //     return loggedInUser.user;
-  //   }
-  // }
-
   async sendRegistration(appMode: AppMode, reg: IRegistration) {
     const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
     if (!loggedInUser.isLoggedIn) {

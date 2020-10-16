@@ -24,7 +24,11 @@ const routes: Routes = [
     path: 'registration',
     loadChildren: () => import('./modules/registration/registration.module').then(m => m.RegistrationModule)
   },
-  { path: 'legacy-trip', loadChildren: () => import('./pages/legacy-trip/legacy-trip.module').then(m => m.LegacyTripPageModule) }
+  {
+    path: 'legacy-trip',
+    loadChildren: () => import('./pages/legacy-trip/legacy-trip.module').then(m => m.LegacyTripPageModule),
+
+  }
 ];
 
 @NgModule({

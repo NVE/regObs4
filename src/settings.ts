@@ -7,8 +7,29 @@ export const settings = {
       end_session_redirect_url: 'regobs://endsession',
       scopes: 'openid offline_access',
       pkce: true,
-      getObserverUrl: 'https://test-api.regobs.no/v5/Account/GetObserver'
+      getObserverUrl: 'https://test-api.regobs.no/v5/Account/GetObserver',
+      myPageUrl: 'https://tst-h-web03.nve.no/NveB2CApiTest/User',
     },
+    'DEMO': {
+      client_id: '13270815-7def-4800-8fc9-178dd517f574',
+      server_host: 'https://nveb2c01test.b2clogin.com/nveb2c01test.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      redirect_url: 'regobs://callback',
+      end_session_redirect_url: 'regobs://endsession',
+      scopes: 'openid offline_access',
+      pkce: true,
+      getObserverUrl: 'https://demo-api.regobs.no/v5/Account/GetObserver',
+      myPageUrl: 'https://demo-konto.nve.no',
+    },
+    'PROD': {
+      client_id: '13270815-7def-4800-8fc9-178dd517f574',
+      server_host: 'https://nveb2c01test.b2clogin.com/nveb2c01test.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      redirect_url: 'regobs://callback',
+      end_session_redirect_url: 'regobs://endsession',
+      scopes: 'openid offline_access',
+      pkce: true,
+      getObserverUrl: 'https://api.regobs.no/v5/Account/GetObserver',
+      myPageUrl: 'https://konto.nve.no',
+    }
   },
   observations: {
     maxObservationsToFetch: 5000,
