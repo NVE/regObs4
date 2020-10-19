@@ -3,13 +3,10 @@ import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.s
 import { Subscription } from 'rxjs';
 import { CreateTripDto } from '../../modules/regobs-api/models';
 import moment from 'moment';
-import { LoginService } from '../../modules/login/services/login.service';
 import { NavController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { settings } from '../../../settings';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
-import { LoginModalPage } from '../../modules/login/pages/modal-pages/login-modal/login-modal.page';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import * as utils from '@nano-sql/core/lib/utilities';
@@ -17,6 +14,7 @@ import { IsEmptyHelper } from '../../core/helpers/is-empty.helper';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { take } from 'rxjs/operators';
+import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
 
 const DEBUG_TAG = 'LegacyTripPage';
 
@@ -48,7 +46,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   constructor(
     private tripLoggerService: TripLoggerService,
     private ngZone: NgZone,
-    private loginService: LoginService,
+    private regobsAuthService: RegobsAuthService,
     private translateService: TranslateService,
     private geoPositionService: GeoPositionService,
     private navController: NavController,
@@ -85,34 +83,15 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     }
   }
 
-  private async getLoggedInUser() {
-    const loggedInUser = await this.loginService.getLoggedInUser();
-    if (loggedInUser && !loggedInUser.isLoggedIn) {
-      const loginModal = await this.modalController.create({
-        component: LoginModalPage
-      });
-      loginModal.present();
-      const result = await loginModal.onDidDismiss();
-      if (result.data) {
-        const loggedInUserAfterModal = await this.loginService.getLoggedInUser();
-        return loggedInUserAfterModal.user;
-      } else {
-        return null;
-      }
-    } else {
-      return loggedInUser.user;
-    }
-  }
-
   async startTrip() {
     if (!this.isValid) {
       this.hasClicked = true;
       return;
     } else {
-      const loggedInUser = await this.getLoggedInUser();
-      if (loggedInUser) {
+      const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
+      if (loggedInUser && loggedInUser.isLoggedIn && loggedInUser.user) {
         this.isLoading = true;
-        this.tripDto.ObserverGuid = loggedInUser.Guid;
+        this.tripDto.ObserverGuid = loggedInUser.user.Guid;
         this.tripDto.GeoHazardID = GeoHazard.Snow;
         this.tripDto.DeviceGuid = utils.uuid();
         try {

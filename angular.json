@@ -70,7 +70,6 @@
             "scripts": [
               "node_modules/marked/lib/marked.js"
             ],
-            "es5BrowserSupport": true,
             "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {

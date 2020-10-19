@@ -61,7 +61,7 @@ export class ShortcutService {
 
     return geoHazards.map((geoHazard) => ({
       id: `regobs_shortcut_new_registration_${geoHazard}`,
-      url: `regobs://app/registration/new/${geoHazard}`,
+      url: `regobs://registration/new/${geoHazard}`,
       shortLabel: getShortLabel(translations[this.geoHelperService.getTranslationKey(geoHazard)]),
       longLabel: getLongLabelTranslation(translations[this.geoHelperService.getTranslationKey(geoHazard)]),
       iconFromResource: this.getImage(geoHazard),

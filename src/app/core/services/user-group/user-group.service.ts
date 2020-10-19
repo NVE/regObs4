@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { LoginService } from '../../../modules/login/services/login.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import * as RegobsApi from '../../../modules/regobs-api/services';
 import { NanoSql } from '../../../../nanosql';
 import { AppMode } from '../../models/app-mode.enum';
-import { settings } from '../../../../settings';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { ObserverGroupDto, ObserverResponseDto } from '../../../modules/regobs-api/models';
 import moment from 'moment';
 import { from, combineLatest, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
+import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,14 +16,14 @@ import { switchMap, take } from 'rxjs/operators';
 export class UserGroupService {
 
   constructor(
-    private loginService: LoginService,
+    private regobsAuthService: RegobsAuthService,
     private userSettingService: UserSettingService,
     private accountApiService: RegobsApi.AccountService,
     private dataLoadService: DataLoadService,
   ) { }
 
   async updateUserGroups() {
-    const loggedInUser = await this.loginService.getLoggedInUser();
+    const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
     if (loggedInUser.isLoggedIn) {
       const appMode = await this.userSettingService.appMode$.pipe(take(1)).toPromise();
       await this.checkLastUpdatedAndUpdateDataIfNeeded(appMode, loggedInUser.user);
@@ -45,7 +44,7 @@ export class UserGroupService {
     const dataLoadId = this.getDataLoadId(appMode, user);
     await this.dataLoadService.startLoading(dataLoadId);
     const result = await this.accountApiService.AccountGetObserverGroups(user.Guid).toPromise();
-    this.loginService.saveUserGroups(appMode, user, result);
+    this.regobsAuthService.saveUserGroups(appMode, user, result);
     await this.dataLoadService.loadingCompleted(dataLoadId, result.length);
   }
 
@@ -54,7 +53,7 @@ export class UserGroupService {
   }
 
   getUserGroupsAsObservable(): Observable<ObserverGroupDto[]> {
-    return combineLatest([this.loginService.loggedInUser$, this.userSettingService.appMode$]).pipe(
+    return combineLatest([this.regobsAuthService.loggedInUser$, this.userSettingService.appMode$]).pipe(
       switchMap(([loggedInUser, appMode]) =>
         loggedInUser.isLoggedIn ? from(this.getUserGroupsFromDb(appMode, loggedInUser.user)) : from(Promise.resolve([]))));
   }

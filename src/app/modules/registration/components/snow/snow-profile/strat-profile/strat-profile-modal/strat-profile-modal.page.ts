@@ -5,12 +5,12 @@ import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-p
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 import { StratProfileLayerHistoryModalPage } from '../strat-profile-layer-history-modal/strat-profile-layer-history-modal.page';
-import { LoginService } from '../../../../../../login/services/login.service';
 import { IRegistration } from '../../../../../models/registration.model';
 import { RegistrationService } from '../../../../../services/registration.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import cloneDeep from 'clone-deep';
+import { RegobsAuthService } from '../../../../../../auth/services/regobs-auth.service';
 
 @Component({
   selector: 'app-strat-profile-modal',
@@ -43,7 +43,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
 
   constructor(
     private modalController: ModalController,
-    private loginService: LoginService,
+    private regobsAuthService: RegobsAuthService,
     private ngZone: NgZone,
     private registrationService: RegistrationService) { }
 
@@ -91,7 +91,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   }
 
   async getPrevousUsedLayers() {
-    const loggedInUser = await this.loginService.getLoggedInUser(true);
+    const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
     if (loggedInUser && loggedInUser.isLoggedIn) {
       if (!this.layerModal) {
         this.layerModal = await this.modalController.create({
@@ -105,11 +105,9 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
         await this.layerModal.onDidDismiss();
         this.layerModal = null;
         this.calculate();
-        // if (result.data) {
-        //   this.profile.Layers = result.data;
-        //   this.calculate();
-        // }
       }
+    } else {
+      this.regobsAuthService.signIn();
     }
   }
 
