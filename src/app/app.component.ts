@@ -71,18 +71,4 @@ export class AppComponent {
   private getUserSettings() {
     return from(this.platform.ready()).pipe(switchMap(() => this.userSettings.userSetting$.pipe(take(1))));
   }
-
-  // initDeepLinks() {
-  //   if (this.platform.is('cordova') && this.platform.is('android')) {
-  //     this.deeplinks.route({
-  //       '/registration/new/:geoHazard': 'New registration',
-  //     }).subscribe(match => {
-  //       // match.$route - the route we matched, which is the matched entry from the arguments to route()
-  //       // match.$args - the args passed in the link
-  //       // match.$link - the full link data
-  //       this.loggingService.debug('Successfully matched route', DEBUG_TAG, match);
-  //       this.navController.navigateForward(match.$link.path);
-  //     }, nomatch => this.loggingService.debug('Got a deeplink that didn\'t match', DEBUG_TAG, nomatch));
-  //   }
-  // }
 }

@@ -369,32 +369,33 @@ export class OfflineMapService implements OnReset {
   }
 
   async downloadMap(m: OfflineMap) {
-    try {
-      const path = await this.backgroundDownloadService.selectDowloadFolder();
-      if (path.length > 0) {
-        const mapToSave = {
-          ...m,
-          filePath: path,
-          downloadStart: moment().unix(),
-          downloaded: 0,
-          progress: 0,
-          downloadComplete: null,
-        };
-        await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
-          .query('upsert', mapToSave)
-          .exec();
+    // try {
+    //   const path = await this.backgroundDownloadService.selectDowloadFolder();
+    //   if (path.length > 0) {
+    //     const mapToSave = {
+    //       ...m,
+    //       filePath: path,
+    //       downloadStart: moment().unix(),
+    //       downloaded: 0,
+    //       progress: 0,
+    //       downloadComplete: null,
+    //     };
+    //     await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
+    //       .query('upsert', mapToSave)
+    //       .exec();
 
-        await this.backgroundDownloadService.downloadFile(
-          path,
-          m.filename,
-          m.url,
-          async () => await this.onComplete(m.name),
-          async (progress) => await this.onProgress(m.name, progress),
-          async (error) => await this.onError(m.name, error));
-      }
-    } catch (error) {
-      await this.onError(m.name, error);
-    }
+    //     await this.backgroundDownloadService.downloadFile(
+    //       path,
+    //       m.filename,
+    //       m.url,
+    //       async () => await this.onComplete(m.name),
+    //       async (progress) => await this.onProgress(m.name, progress),
+    //       async (error) => await this.onError(m.name, error));
+    //   }
+    // } catch (error) {
+    //   await this.onError(m.name, error);
+    // }
+    throw new Error('Not implemented');
   }
 
   private async getSavedMap(name: string): Promise<OfflineMap> {
@@ -411,13 +412,15 @@ export class OfflineMapService implements OnReset {
   }
 
   async remove(m: OfflineMap) {
-    await this.backgroundDownloadService.deleteFolder(m.filePath, m.name);
-    await this.deleteMapFromDb(m.name);
+    // await this.backgroundDownloadService.deleteFolder(m.filePath, m.name);
+    // await this.deleteMapFromDb(m.name);
+    throw Error('Not implemented');
   }
 
   async cancelDownload(m: OfflineMap) {
-    this.backgroundDownloadService.cancelDownload(m.filename);
-    await this.remove(m);
+    // this.backgroundDownloadService.cancelDownload(m.filename);
+    // await this.remove(m);
+    throw Error('Not implemented');
   }
 
   private async onProgress(name: string, progress: Progress) {

@@ -18,15 +18,5 @@ export let authFactory = (platform: Platform, ngZone: NgZone,
       authService.authConfig.end_session_redirect_url = window.location.origin + '/auth/endsession';
     }
   });
-
-  if (platform.is('cordova')) {
-    (window as any).handleOpenURL = (callbackUrl) => {
-      ngZone.run(() => {
-        authService.authorizationCallback(callbackUrl);
-      });
-    };
-  }
-
-  authService.addActionObserver(new ConsoleLogObserver());
   return authService;
 };

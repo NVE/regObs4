@@ -11,6 +11,8 @@ import { HttpClient } from '@angular/common/http';
 import { storageFactory } from './factories/storage-factory';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from './services/regobs-auth.service';
+import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
   declarations: [],
@@ -32,7 +34,7 @@ import { RegobsAuthService } from './services/regobs-auth.service';
     {
       provide: Browser,
       useFactory: browserFactory,
-      deps: [Platform]
+      deps: [Platform, SafariViewController, InAppBrowser]
     },
     {
       provide: AuthService,

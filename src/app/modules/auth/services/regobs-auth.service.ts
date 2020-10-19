@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
 import { nSQL } from '@nano-sql/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthActions, AuthService, IAuthAction } from 'ionic-appauth';
+import { AuthActions, AuthObserver, AuthService, IAuthAction } from 'ionic-appauth';
 import { from, Observable } from 'rxjs';
 import { map, shareReplay, switchMap, take } from 'rxjs/operators';
 import { NanoSql } from '../../../../nanosql';
@@ -29,6 +29,7 @@ export class RegobsAuthService {
 
 
   private _loggedInUser$: Observable<LoggedInUser>;
+  private observer: AuthObserver;
 
   get loggedInUser$() {
     return this._loggedInUser$;
@@ -47,6 +48,7 @@ export class RegobsAuthService {
     private location: Location,
   ) {
     this._loggedInUser$ = this.getLoggedInUser$().pipe(shareReplay(1));
+    this.observer = this.authService.addActionListener((action) => this.onSignInCallback(action));
   }
 
   public async signIn() {
