@@ -590,6 +590,7 @@
     "USE_IN_WORLD": "Fuori di Norvegia",
     "USE_RETINA_MAP": "Usa mappe ad alta resoluzione"
   },
+  "SET_NICK_ALERT": {},
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
       "HEADER": "Scelgli paese",

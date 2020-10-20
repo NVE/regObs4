@@ -58,7 +58,7 @@ export class OfflineMapService implements OnReset {
           return of(null);
         })
       ) : NEVER)).subscribe((tile) => {
-        this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
+        // this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
         this._saveBufferSize--;
         this._saveTileBufferTrigger.next(null);
       });

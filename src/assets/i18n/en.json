@@ -590,6 +590,12 @@
     "USE_IN_WORLD": "Outside Norway",
     "USE_RETINA_MAP": "Use high resolution maps"
   },
+  "SET_NICK_ALERT": {
+    "ERROR": "Couldn't save nickname. Please try later.",
+    "HELP_TEXT": "You need a nickname to use Varsom Regobs. The nickname is shown on your observations.",
+    "INPUT_TEXT": "Please type nickname",
+    "NICK": "Nick"
+  },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
       "HEADER": "Choose Country",
@@ -668,7 +674,7 @@
     "ICE_LEGEND_TEXT_6": "Pipeline",
     "ICE_LEGEND_TEXT_7": "Power plant tunnel",
     "ICE_MAP_DESCRIPTION": "The support map shows parts of watercourses that behave unpredictably throughout the winter due to regulations for power generation",
-    "INFO_PAGE": "<h1>About maps with slope angle and runout zones</h1>\nThe maps are automatically produced and may contain errors. There may be steep terrain, which is not represented in the elevation model and thus not displayed in the maps.\nSome avalanches may have longer runouts that what is displayed as runout zones in the maps.\n\n<h2>What consideration to take?</h2>\nAdjust your risk by choosing where, when and how you travel. Varsom Regobs is a planning tool and its data may differ from the actual situation. Always make your own evaluation.\n \n<h2>When is it safe?</h2>\nAll travel in snow covered avalanche terrain has an element of risk.\n\n<h2>Want to learn more?</h2>\nYou may learn more by taking an avalanche safety course and on Snøskredskolen on Varsom.no.",
+    "INFO_PAGE": "<h1>About maps with slope angle and runout zones</h1>\nThe maps are automatically produced and may contain errors. There may be steep terrain, which is not represented in the elevation model and thus not displayed in the maps.\nSome avalanches may have longer runouts than what is displayed as runout zones in the maps.\n\n<h2>What consideration to take?</h2>\nAdjust your risk by choosing where, when and how you travel. Varsom Regobs is a planning tool and its data may differ from the actual situation. Always make your own evaluation.\n \n<h2>When is it safe?</h2>\nAll travel in snow covered avalanche terrain has an element of risk.\n\n<h2>Want to learn more?</h2>\nYou may learn more by taking an avalanche safety course and on Snøskredskolen on Varsom.no.",
     "LOW": "Low",
     "MARITINE_BORDER": "Sea border",
     "MIDDLE": "Middle",
@@ -679,7 +685,7 @@
     "STEEPNESS_MAP_DISCLAMER": "For trip planning <i>only</i>. The map is automatically produced and may have errors and omissions, e.g. steep terrain not displayed.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Short runouts (50% of the avalanches reach farther)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medium runouts (25% of the avalanches reach farther)",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Long runouts (5% of the avalanches reach farther)\nSome avalanches may have longer runouts that displayed as runout zones in the map.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Long runouts (5% of the avalanches reach farther)\nSome avalanches may have longer runouts than displayed as runout zones in the map.",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Slope angle shading map with runout zones",
     "STEEPNESS_OUTLET_MAP_DISCLAMER": "For trip planning <i>only</i>. The map is automatically produced and may have errors and omissions, e.g. steep terrain or runouts not displayed.\n<br/>\n<br/>\nColours give runout zones for avalanches:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice"

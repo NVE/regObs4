@@ -12,13 +12,15 @@
 <ion-content class="ion-padding" *ngIf="loggedInUser$ | async as loggedInUser">
   <ion-list lines="none" *ngIf="loggedInUser.isLoggedIn else login">
     <ion-item>
-      <ion-label class="ion-text-wrap">{{ 'LOGIN.LOGGED_IN_AS' | translate }} {{ loggedInUser.email }}</ion-label>
+      <ion-label class="ion-text-wrap">{{ 'LOGIN.LOGGED_IN_AS' | translate }} {{ loggedInUser.email }}
+      </ion-label>
     </ion-item>
+    <ion-button type="button" fill="outline" expand="block" (click)="openMyPage()">
+      <ion-icon slot="start" name="push-outline"></ion-icon>
+      {{'LOGIN.MY_PROFILE' | translate }}
+    </ion-button>
     <ion-button class="logout-button" expand="block" type="submit" color="varsom-orange" (click)="logout()">
       {{ 'LOGIN.LOGOUT' | translate }}</ion-button>
-    <ion-item>
-      <app-external-link [src]="myPageUrl$ | async">{{'LOGIN.MY_PROFILE' | translate }}</app-external-link>
-    </ion-item>
   </ion-list>
 </ion-content>
 <ng-template #login>

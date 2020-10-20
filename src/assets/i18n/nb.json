@@ -590,6 +590,12 @@
     "USE_IN_WORLD": "Utenfor Norge",
     "USE_RETINA_MAP": "Bruk høy oppløsning på kart"
   },
+  "SET_NICK_ALERT": {
+    "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",
+    "HELP_TEXT": "Du må legge til et kallenavn for å bruke Varsom Regobs. Kallenavnet vises når du gjør observasjoner.",
+    "INPUT_TEXT": "Skriv inn kallenavn",
+    "NICK": "Kallenavn"
+  },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
       "HEADER": "Velg land",

@@ -51,6 +51,10 @@ export class RegobsAuthService {
     this.observer = this.authService.addActionListener((action) => this.onSignInCallback(action));
   }
 
+  public authorizationCallback(url: string) {
+    this.authService.authorizationCallback(url);
+  }
+
   public async signIn() {
     const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
     localStorage.setItem(RETURN_URL_KEY, this.router.url);
@@ -78,12 +82,72 @@ export class RegobsAuthService {
         await this.showErrorMessage(500, '');
         return;
       }
+      const resultWithNick = await this.checkAndSetNickIfNickIsNull(result, idToken);
       const claims = this.parseJwt(idToken);
       const appMode = await this.userSettingService.appMode$.pipe(take(1)).toPromise();
-      await this.saveLoggedInUserToDb(appMode, claims.email, true, result);
+      await this.saveLoggedInUserToDb(appMode, claims.email, true, resultWithNick);
     } catch (err) {
       await this.showErrorMessage(err.status, err.message);
     }
+  }
+
+  private async checkAndSetNickIfNickIsNull(user: ObserverResponseDto, idToken: string): Promise<ObserverResponseDto> {
+    if (user && user.Nick != null && user.Nick != '') {
+      return user;
+    }
+    try {
+      const nick = await this.showSetNickDialog();
+      await this.callApiUpdateNick(nick, idToken);
+      return { ...user, Nick: nick };
+    } catch (err) {
+      this.logger.error(err, DEBUG_TAG, 'Could not save nick');
+      return user;
+    }
+  }
+
+  private async callApiUpdateNick(nick: string, idToken: string): Promise<void> {
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const updateObserverUrl = settings.authConfig[userSettings.appMode].updateObserverUrl;
+    const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
+    if (!apiKey) {
+      throw new Error('apiKey.json not found in assets folder!');
+    }
+    const headers = new HttpHeaders({
+      regObs_apptoken: apiKey.apiKey,
+      ApiJsonVersion: settings.services.regObs.apiJsonVersion,
+      Authorization: `Bearer ${idToken}`,
+    });
+    return this.httpClient.put<void>(updateObserverUrl, { Nick: nick }, { headers }).toPromise();
+  }
+
+  private async showSetNickDialog(): Promise<string> {
+    const headerTextKey = 'SET_NICK_ALERT.INPUT_TEXT';
+    const messageTextKey = 'SET_NICK_ALERT.HELP_TEXT';
+    const okTextKey = 'DIALOGS.OK';
+    const translations = await this.translateService.get([headerTextKey, messageTextKey, okTextKey]).toPromise();
+    const alert = await this.alertController.create({
+      header: translations[headerTextKey],
+      message: translations[messageTextKey],
+      backdropDismiss: false,
+      inputs: [
+        {
+          name: 'nick',
+          type: 'text',
+        },
+      ],
+      buttons: [
+        {
+          text: translations[okTextKey],
+          handler: (data: { nick: string }) => {
+            return data && data.nick != null && data.nick != '';
+          }
+        }
+      ]
+    });
+    alert.present();
+
+    const result = ((await alert.onDidDismiss()) as { data: { values: { nick: string } } });
+    return result?.data?.values?.nick;
   }
 
   public getLoggedInUserAsPromise() {
