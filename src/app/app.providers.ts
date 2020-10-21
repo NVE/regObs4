@@ -1,6 +1,6 @@
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { Router, RouteReuseStrategy, Routes } from '@angular/router';
+import { Router, RouteReuseStrategy } from '@angular/router';
 import { IonicRouteStrategy, NavController, Platform } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
