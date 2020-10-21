@@ -133,6 +133,7 @@ export class RegobsAuthService {
         {
           name: 'nick',
           type: 'text',
+          max: 24,
         },
       ],
       buttons: [
