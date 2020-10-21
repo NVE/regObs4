@@ -8,7 +8,7 @@ export const settings = {
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://test-api.regobs.no/v5/Account/GetObserver',
-      myPageUrl: 'https://test-konto.nve.no',
+      myPageUrl: 'https://test-konto.nve.no/User',
       updateObserverUrl: 'https://test-api.regobs.no/v5/Account/UpdateObserver',
     },
     'DEMO': {
@@ -19,7 +19,7 @@ export const settings = {
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://demo-api.regobs.no/v5/Account/GetObserver',
-      myPageUrl: 'https://demo-konto.nve.no',
+      myPageUrl: 'https://demo-konto.nve.no/User',
       updateObserverUrl: 'https://demo-api.regobs.no/v5/Account/UpdateObserver',
     },
     'PROD': {
@@ -30,7 +30,7 @@ export const settings = {
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://api.regobs.no/v5/Account/GetObserver',
-      myPageUrl: 'https://konto.nve.no',
+      myPageUrl: 'https://konto.nve.no/User',
       updateObserverUrl: 'https://api.regobs.no/v5/Account/UpdateObserver',
     }
   },
