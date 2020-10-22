@@ -69,14 +69,14 @@
     "SW": "JZ",
     "W": "Z"
   },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Beleženje poti"
-  },
   "GEO_HAZARDS": {
     "DIRT": "Zemlja",
     "ICE": "Led",
     "SNOW": "Sneg",
     "WATER": "Voda"
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Beleženje poti"
   },
   "HELP": {
     "TITLE": "Pomoč"
@@ -297,9 +297,11 @@
         "TITLE": "Debelina ledu"
       }
     },
-    "IMAGES": "Slike",
     "IMAGE_DESCRIPTION": "Opis slike",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Tu lahko dodate opis slike",
+    "IMAGES": "Slike",
+    "IN_CM": "V centimetrih",
+    "IN_FULL_CM": "V centimetrih brez decimalk",
     "INCIDENT": {
       "ACTIVITY": "Dejavnost",
       "COMMENT": "Opis",
@@ -309,8 +311,6 @@
       "TITLE": "Nesreča / incident"
     },
     "INVALID_IMAGE": "Neveljavna oblika slike",
-    "IN_CM": "V centimetrih",
-    "IN_FULL_CM": "V centimetrih brez decimalk",
     "NONE": "Ni izbrano",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Potrdi lokacijo",
@@ -328,14 +328,14 @@
     "REQUIRED_FIELDS_MISSING": "Neveljavna oblika. Ali želite ponastaviti obrazec in se vrniti nazaj?",
     "RESEND": "Poskusite ponovno oddati",
     "RESET": "Ponastavi",
-    "SAVED_DESCRIPTION": "Vsebina se bo vsebina sinhronizirala ob vzpostavitvi povezave z omrežjem.",
-    "SAVED_ON_PHONE": "Shranjeno na telefon",
     "SAVE_ALERT": {
       "HEADER": "Shraniti kot osnutek?",
       "MESSAGE": "Registracijo boste zapustili brez oddaje. Ali želite shraniti kot osnutek?",
       "NO": "Ne, opusti.",
       "YES": "Ja, shrani."
     },
+    "SAVED_DESCRIPTION": "Vsebina se bo vsebina sinhronizirala ob vzpostavitvi povezave z omrežjem.",
+    "SAVED_ON_PHONE": "Shranjeno na telefon",
     "SEND": "Pošlji.",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Potrdi lokacijo škode",
@@ -370,9 +370,9 @@
         "TITLE": "Ocena plazovne nevarnosti"
       },
       "AVALANCHE_OBS": {
+        "AVAL_CAUSE": "Šibka plast",
         "AVALANCHE_TRIGGER": "Sprožilec plazu",
         "AVALANCHE_TYPE": "Tip plazu",
-        "AVAL_CAUSE": "Šibka plast",
         "DESTRUCTIVE_SIZE": "Velikost",
         "FRACTURE_HEIGTH": "Višina napoke (cm)",
         "FRACTURE_WIDTH": "Širina napoke (cm)",
@@ -389,16 +389,16 @@
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Dodaj nov plazovni problem",
         "ALL": "Vsi",
+        "AVAL_PROBABILITY": "Verjetnost proženja snežnih plazov",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Pričakovana velikost plazu",
         "AVALANCHE_PROBABILITY": "Možnost proženja snežnih plazov",
         "AVALANCHE_PROPAGATION_HEADER": "Prostorska porazdelitev plazovnega problema",
         "AVALANCHE_TRIGGER_PROBABILITY": "Stabilnost snežne odeje",
         "AVALANCHE_TYPE": "Tip plazu",
-        "AVAL_PROBABILITY": "Verjetnost proženja snežnih plazov",
         "BOTTOM": "Na dnu",
+        "EXPOSED_HEIGHT_COMBO": "Izpostavljena višina",
         "EXPOSED_HEIGHT1": "Višina",
         "EXPOSED_HEIGHT2": "Spodnja višina",
-        "EXPOSED_HEIGHT_COMBO": "Izpostavljena višina",
         "MIDDLE": "V sredini",
         "NO_WEAK_LAYERS": "Ni šibkih plasti",
         "PROPAGATION": "Prostorska porazdelitev",
@@ -568,8 +568,8 @@
     "ALLOW_ANALYTICS_DESCRIPTION": "Pokažite nam, kako uporabljate Varsom Regobs in nam pomagajte izboljšati aplikacijo.",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Ti podatki so anonimni in jih ni mogoče povezati z vami osebno.",
     "ALLOW_ANALYTICS_HEADER": "Deli statistiko uporabe",
-    "APPMODE": "Način aplikacije",
     "APP_VERSION": "Različica aplikacije",
+    "APPMODE": "Način aplikacije",
     "CONFIRM_RESET": "Ali ste prepričani, da želite ponastaviti aplikacijo?",
     "COUNTRY": "Država",
     "DROPDOWNS_FAILED": "Spustnih menijev ni bilo mogoče posodobiti. Preverite omrežne nastavitve in poskusite pozneje.",
@@ -590,7 +590,6 @@
     "USE_IN_WORLD": "Izven Norveške",
     "USE_RETINA_MAP": "Uporabi visoko ločljive zemljevide"
   },
-  "SET_NICK_ALERT": {},
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
       "HEADER": "Izberite državo",
@@ -691,22 +690,6 @@
     "TRIPS": "Poti",
     "WARNINGS": "Opozorila"
   },
-  "TRIP": {
-    "COMMENT_DESCRIPTION": "Opišite, na kakšno pot greste, kaj iščete itd.",
-    "END_ERROR": "Poti ni bilo mogoče ustaviti. Poskusite ponovno pozneje. Pot se samodejno ustavi ob polnoči.",
-    "ERROR": "Poti ni bilo mogoče začeti. Poskusite ponovno.",
-    "ERROR_POSITION": "Poti ni mogoče začeti brez položaja GPS.",
-    "LEGACY_HELP_TEXT": "S tem obrazcem lahko sporočite, da danes načrtujete pot.\n\nZa plazovno službo je koristna informacija, ali lahko danes pričakujejo opažanja. Koristno je tudi vedeti, kakšna opažanja lahko pričakujejo (kaj iščete, kam greste) in kdaj približno jih boste vnesli v Regobs.\n\nVsi plačani opazovalci morajo poročati, kakšne tipe poti z opažanji načrtujejo: ali gre za običajno plačano pot z opažanji ali je to dodatno vnašanje razmer? Dodatno vnašanje je poročanje opažanj, ki ste jih izvedli med drugim delom ali v prostem času.",
-    "ONGOING_TRIP": "Pot še poteka",
-    "STARTED": "Pot se je začela",
-    "START_TRIP": "Začni pot",
-    "STOPPED": "Pot je ustavljena",
-    "STOP_TRIP": "Ustavi pot",
-    "TITLE": "Poti",
-    "TRIP": "Pot",
-    "TRIP_END_DESCRIPTION": "Opažanje se pričakuje pred ...",
-    "TRIP_TYPE": "Vrsta poti"
-  },
   "TRIP_LOG": {
     "COMPLETE": "Zaključi",
     "CONTINUE": "Nadaljuj",
@@ -716,6 +699,22 @@
     "START": "Začni",
     "STOP": "Ustavi",
     "STOPPED": "Beleženje poti končano"
+  },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Opišite, na kakšno pot greste, kaj iščete itd.",
+    "END_ERROR": "Poti ni bilo mogoče ustaviti. Poskusite ponovno pozneje. Pot se samodejno ustavi ob polnoči.",
+    "ERROR": "Poti ni bilo mogoče začeti. Poskusite ponovno.",
+    "ERROR_POSITION": "Poti ni mogoče začeti brez položaja GPS.",
+    "LEGACY_HELP_TEXT": "S tem obrazcem lahko sporočite, da danes načrtujete pot.\n\nZa plazovno službo je koristna informacija, ali lahko danes pričakujejo opažanja. Koristno je tudi vedeti, kakšna opažanja lahko pričakujejo (kaj iščete, kam greste) in kdaj približno jih boste vnesli v Regobs.\n\nVsi plačani opazovalci morajo poročati, kakšne tipe poti z opažanji načrtujejo: ali gre za običajno plačano pot z opažanji ali je to dodatno vnašanje razmer? Dodatno vnašanje je poročanje opažanj, ki ste jih izvedli med drugim delom ali v prostem času.",
+    "ONGOING_TRIP": "Pot še poteka",
+    "START_TRIP": "Začni pot",
+    "STARTED": "Pot se je začela",
+    "STOP_TRIP": "Ustavi pot",
+    "STOPPED": "Pot je ustavljena",
+    "TITLE": "Poti",
+    "TRIP": "Pot",
+    "TRIP_END_DESCRIPTION": "Opažanje se pričakuje pred ...",
+    "TRIP_TYPE": "Vrsta poti"
   },
   "VALIDATION": {
     "AND": "in",
@@ -727,10 +726,10 @@
     "MUST_BE": "mora biti"
   },
   "WARNING_LIST": {
+    "A_REGIONS": "A - območja",
     "ADDED_TO_FAVOURITES": "dodano med priljubljene",
     "ALL": "Vse",
     "ALL_WARNINGS": "Vsa opozorila",
-    "A_REGIONS": "A - območja",
     "B_REGIONS": "B - območja",
     "B_REGIONS_SUBTITLE": "Opozorila samo za stopnji nevarnosti 4 in 5",
     "FAVOURITES": "Priljubljene",

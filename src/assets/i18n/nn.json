@@ -69,14 +69,14 @@
     "SW": "SV",
     "W": "V"
   },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Tur føregår"
-  },
   "GEO_HAZARDS": {
     "DIRT": "Jord",
     "ICE": "Is",
     "SNOW": "Snø",
     "WATER": "Vatn"
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Tur føregår"
   },
   "HELP": {
     "TITLE": "Hjelp"
@@ -297,9 +297,11 @@
         "TITLE": "Istjukkleik"
       }
     },
-    "IMAGES": "Bilete",
     "IMAGE_DESCRIPTION": "Skildring av bilete",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi ei skildring av bilete",
+    "IMAGES": "Bilete",
+    "IN_CM": "I centimeter",
+    "IN_FULL_CM": "I heile centimeter",
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Skildring",
@@ -309,8 +311,6 @@
       "TITLE": "Ulykke/hending"
     },
     "INVALID_IMAGE": "Ugyldig biletformat",
-    "IN_CM": "I centimeter",
-    "IN_FULL_CM": "I heile centimeter",
     "NONE": "Ingen valt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Stadfest observasjonspunkt",
@@ -328,14 +328,14 @@
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
     "RESEND": "Prøv å sende på nytt",
     "RESET": "Nullstill denne sida",
-    "SAVED_DESCRIPTION": "Disse er under innsending og blir synkronisert når du har nettverk.",
-    "SAVED_ON_PHONE": "Lagra på telefonen",
     "SAVE_ALERT": {
       "HEADER": "Lagre som kladd?",
       "MESSAGE": "Du held på å forlata registreringa utan å sende inn. Vil du lagre som kladd?",
       "NO": "Nei, forkast",
       "YES": "Ja, lagre"
     },
+    "SAVED_DESCRIPTION": "Disse er under innsending og blir synkronisert når du har nettverk.",
+    "SAVED_ON_PHONE": "Lagra på telefonen",
     "SEND": "Send inn",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Stadfest skadepunkt",
@@ -370,9 +370,9 @@
         "TITLE": "Skredfarevurdering"
       },
       "AVALANCHE_OBS": {
+        "AVAL_CAUSE": "Svakt lag",
         "AVALANCHE_TRIGGER": "Skredutløysar",
         "AVALANCHE_TYPE": "Skredtype",
-        "AVAL_CAUSE": "Svakt lag",
         "DESTRUCTIVE_SIZE": "Storleik",
         "FRACTURE_HEIGTH": "Brothøyde (cm)",
         "FRACTURE_WIDTH": "Brotbredde (m)",
@@ -389,16 +389,16 @@
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Legg til nytt skredproblem",
         "ALL": "Alle",
+        "AVAL_PROBABILITY": "Sannsyn for skred",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Storleik på venta skred",
         "AVALANCHE_PROBABILITY": "Moglegheit for skred",
         "AVALANCHE_PROPAGATION_HEADER": "Utbreiing av skredproblemet",
         "AVALANCHE_TRIGGER_PROBABILITY": "Utløysbarheit",
         "AVALANCHE_TYPE": "Skredtype",
-        "AVAL_PROBABILITY": "Sannsyn for skred",
         "BOTTOM": "Nedst",
+        "EXPOSED_HEIGHT_COMBO": "Utsett høgde",
         "EXPOSED_HEIGHT1": "Høgde",
         "EXPOSED_HEIGHT2": "Nedre høgde",
-        "EXPOSED_HEIGHT_COMBO": "Utsett høgde",
         "MIDDLE": "i midten",
         "NO_WEAK_LAYERS": "Det finnast ikkje svake lag",
         "PROPAGATION": "Utbreiing",
@@ -568,8 +568,8 @@
     "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å gjere Varsom RegObs betre med å la oss sjå korleis du bruker applikasjonen. ",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Denne dataen er anonym og kan ikkje knyttast til deg personleg.",
     "ALLOW_ANALYTICS_HEADER": "Del bruksstatistikk",
-    "APPMODE": "App-modus",
     "APP_VERSION": "App-versjon",
+    "APPMODE": "App-modus",
     "CONFIRM_RESET": "Er du sikker på at du vil resetje app?",
     "COUNTRY": "Land",
     "DROPDOWNS_FAILED": "Klarte ikkje å oppdatere nedtrekksmenyar. Vennlegast sjekk om du har nettverk og prøv igjen litt seinare.",
@@ -591,8 +591,8 @@
     "USE_RETINA_MAP": "Bruk høg oppløysing på kart"
   },
   "SET_NICK_ALERT": {
-    "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",
-    "HELP_TEXT": "Du må legge til et kallenavn for å bruke Varsom Regobs. Kallenavnet vises når du gjør observasjoner.",
+    "ERROR": "Klarte ikkje lagre kallenavn. Ver vennleg og prøv igjen seinare.",
+    "HELP_TEXT": "Du må legge til eit kallenavn for å bruke Varsom Regobs. Kallenavnet blir vist når du gjer observasjonar.",
     "INPUT_TEXT": "Skriv inn kallenavn",
     "NICK": "Kallenavn"
   },
@@ -696,22 +696,6 @@
     "TRIPS": "Turar",
     "WARNINGS": "Varslar"
   },
-  "TRIP": {
-    "COMMENT_DESCRIPTION": "Her kand u skrive kva obstur du skal på, kva du ser etter, osb. ",
-    "END_ERROR": "Klarte ikkje å stoppe tur. Vennlegast prøv igjen seinare. Turen blir automatisk stoppa med midnatt. ",
-    "ERROR": "Klarte ikkje starte tur. Vennlegast prøv igjen.",
-    "ERROR_POSITION": "Kan ikkje starte tur utan GPS-posisjon.",
-    "LEGACY_HELP_TEXT": "Her melder du frå om du planlegg tur i dag. \n\nDet er nyttig for snøskredvarslinga å vite om og ev. når det kan ventast observasjonar, samt kvar du er på tur, og kva du ser etter.\n\nBetalte observatørar skal registrere kva slags tur dei planlegg. Er det ein ordinær betalt observasjonstur, eller er det ei tilleggsregistrering (gjort i anna arbeid eller på fritida)?",
-    "ONGOING_TRIP": "Tur føregår",
-    "STARTED": "Tur starta",
-    "START_TRIP": "Start tur",
-    "STOPPED": "Tur stoppa",
-    "STOP_TRIP": "Avslutt tur",
-    "TITLE": "Turar",
-    "TRIP": "Tur",
-    "TRIP_END_DESCRIPTION": "Observasjonar ventast før kl.",
-    "TRIP_TYPE": "Turtype"
-  },
   "TRIP_LOG": {
     "COMPLETE": "Ferdig",
     "CONTINUE": "Hald fram",
@@ -721,6 +705,22 @@
     "START": "Start",
     "STOP": "Stopp",
     "STOPPED": "Tur stoppa og fullført"
+  },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Her kand u skrive kva obstur du skal på, kva du ser etter, osb. ",
+    "END_ERROR": "Klarte ikkje å stoppe tur. Vennlegast prøv igjen seinare. Turen blir automatisk stoppa med midnatt. ",
+    "ERROR": "Klarte ikkje starte tur. Vennlegast prøv igjen.",
+    "ERROR_POSITION": "Kan ikkje starte tur utan GPS-posisjon.",
+    "LEGACY_HELP_TEXT": "Her melder du frå om du planlegg tur i dag. \n\nDet er nyttig for snøskredvarslinga å vite om og ev. når det kan ventast observasjonar, samt kvar du er på tur, og kva du ser etter.\n\nBetalte observatørar skal registrere kva slags tur dei planlegg. Er det ein ordinær betalt observasjonstur, eller er det ei tilleggsregistrering (gjort i anna arbeid eller på fritida)?",
+    "ONGOING_TRIP": "Tur føregår",
+    "START_TRIP": "Start tur",
+    "STARTED": "Tur starta",
+    "STOP_TRIP": "Avslutt tur",
+    "STOPPED": "Tur stoppa",
+    "TITLE": "Turar",
+    "TRIP": "Tur",
+    "TRIP_END_DESCRIPTION": "Observasjonar ventast før kl.",
+    "TRIP_TYPE": "Turtype"
   },
   "VALIDATION": {
     "AND": "og",
@@ -732,10 +732,10 @@
     "MUST_BE": "må vere"
   },
   "WARNING_LIST": {
+    "A_REGIONS": "A-regionar",
     "ADDED_TO_FAVOURITES": "lagt til i favorittar",
     "ALL": "Alle",
     "ALL_WARNINGS": "Alle varsel",
-    "A_REGIONS": "A-regionar",
     "B_REGIONS": "B-regionar",
     "B_REGIONS_SUBTITLE": "Varslast kun på faregrad 4 og 5",
     "FAVOURITES": "Favorittar",

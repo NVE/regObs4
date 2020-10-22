@@ -69,14 +69,14 @@
     "SW": "SW",
     "W": "W"
   },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Logging trip"
-  },
   "GEO_HAZARDS": {
     "DIRT": "Soil",
     "ICE": "Ice",
     "SNOW": "Snow",
     "WATER": "Water"
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Logging trip"
   },
   "HELP": {
     "TITLE": "Help"
@@ -297,9 +297,11 @@
         "TITLE": "Ice Thickness"
       }
     },
-    "IMAGES": "Images",
     "IMAGE_DESCRIPTION": "Image description",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
+    "IMAGES": "Images",
+    "IN_CM": "In centimeter",
+    "IN_FULL_CM": "In centimeters without decimals",
     "INCIDENT": {
       "ACTIVITY": "Activity",
       "COMMENT": "Description",
@@ -309,8 +311,6 @@
       "TITLE": "Accident / Incident"
     },
     "INVALID_IMAGE": "Sorry, this is an invalid image",
-    "IN_CM": "In centimeter",
-    "IN_FULL_CM": "In centimeters without decimals",
     "NONE": "Not selected",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location",
@@ -328,14 +328,14 @@
     "REQUIRED_FIELDS_MISSING": "Some fields are invalid. Do you want to reset form and go back?",
     "RESEND": "Try to send again",
     "RESET": "Reset",
-    "SAVED_DESCRIPTION": "These will be synchronized when you have network connection.",
-    "SAVED_ON_PHONE": "Saved on phone",
     "SAVE_ALERT": {
       "HEADER": "Save as draft?",
       "MESSAGE": "You are about to leave the registration without submitting. Do you want to save as draft?",
       "NO": "No, discard",
       "YES": "Yes, save"
     },
+    "SAVED_DESCRIPTION": "These will be synchronized when you have network connection.",
+    "SAVED_ON_PHONE": "Saved on phone",
     "SEND": "Submit",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Confirm damage location",
@@ -370,9 +370,9 @@
         "TITLE": "Avalanche Danger Assessment"
       },
       "AVALANCHE_OBS": {
+        "AVAL_CAUSE": "Weak layer",
         "AVALANCHE_TRIGGER": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
-        "AVAL_CAUSE": "Weak layer",
         "DESTRUCTIVE_SIZE": "Size",
         "FRACTURE_HEIGTH": "Fracture height (cm)",
         "FRACTURE_WIDTH": "Fracture width (m)",
@@ -389,16 +389,16 @@
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Add new avalanche problem",
         "ALL": "All",
+        "AVAL_PROBABILITY": "Probability for avalanche",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Size of expected avalanche",
         "AVALANCHE_PROBABILITY": "The possibility of avalanches",
         "AVALANCHE_PROPAGATION_HEADER": "Avalanche spatial distribution",
         "AVALANCHE_TRIGGER_PROBABILITY": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
-        "AVAL_PROBABILITY": "Probability for avalanche",
         "BOTTOM": "Bottom",
+        "EXPOSED_HEIGHT_COMBO": "Elevation",
         "EXPOSED_HEIGHT1": "Height",
         "EXPOSED_HEIGHT2": "Lower height",
-        "EXPOSED_HEIGHT_COMBO": "Elevation",
         "MIDDLE": "Middle",
         "NO_WEAK_LAYERS": "There are no weak layers",
         "PROPAGATION": "Spatial distribution",
@@ -568,8 +568,8 @@
     "ALLOW_ANALYTICS_DESCRIPTION": "Help us improve Varsom Regobs by letting us know how you use the application.",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "This data is anonymous and cannot be linked to you personally.",
     "ALLOW_ANALYTICS_HEADER": "Share usage statistics",
-    "APPMODE": "App mode",
     "APP_VERSION": "App version",
+    "APPMODE": "App mode",
     "CONFIRM_RESET": "Are you sure you want to reset app?",
     "COUNTRY": "Country",
     "DROPDOWNS_FAILED": "Could not update dropdowns. Please check network settings and try again later.",
@@ -696,22 +696,6 @@
     "TRIPS": "Trips",
     "WARNINGS": "Warnings"
   },
-  "TRIP": {
-    "COMMENT_DESCRIPTION": "Describe what kind of trip you are going and what you are looking for, etc.",
-    "END_ERROR": "Could not stop trip. Please try again later. The trip will stop automatically by midnight.",
-    "ERROR": "Error while starting trip. Please try again.",
-    "ERROR_POSITION": "Cannot start trip without GPS position.",
-    "LEGACY_HELP_TEXT": "You can use this form to report that you are planning a trip today.\n\nIt is useful for the forecaster team to know if observations can be expected today. It is also useful to know what kind of observations can be expected (what are you looking for, where are you going on a trip) and when do you expect these to be submitted to Regobs.\n\nAll paid observers must record what types of obs-tour are being planned: is it an ordinary paid observation trip, or is this an additional registration? Additional registration is the submission of observations you have made during other work or in your spare time.",
-    "ONGOING_TRIP": "Trip in progress",
-    "STARTED": "Trip started",
-    "START_TRIP": "Start trip",
-    "STOPPED": "Trip stopped",
-    "STOP_TRIP": "Stop trip",
-    "TITLE": "Trips",
-    "TRIP": "Trip",
-    "TRIP_END_DESCRIPTION": "Observations is expected before",
-    "TRIP_TYPE": "Trip type"
-  },
   "TRIP_LOG": {
     "COMPLETE": "Complete",
     "CONTINUE": "Continue",
@@ -721,6 +705,22 @@
     "START": "Start",
     "STOP": "Stop",
     "STOPPED": "Trip log completed"
+  },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Describe what kind of trip you are going and what you are looking for, etc.",
+    "END_ERROR": "Could not stop trip. Please try again later. The trip will stop automatically by midnight.",
+    "ERROR": "Error while starting trip. Please try again.",
+    "ERROR_POSITION": "Cannot start trip without GPS position.",
+    "LEGACY_HELP_TEXT": "You can use this form to report that you are planning a trip today.\n\nIt is useful for the forecaster team to know if observations can be expected today. It is also useful to know what kind of observations can be expected (what are you looking for, where are you going on a trip) and when do you expect these to be submitted to Regobs.\n\nAll paid observers must record what types of obs-tour are being planned: is it an ordinary paid observation trip, or is this an additional registration? Additional registration is the submission of observations you have made during other work or in your spare time.",
+    "ONGOING_TRIP": "Trip in progress",
+    "START_TRIP": "Start trip",
+    "STARTED": "Trip started",
+    "STOP_TRIP": "Stop trip",
+    "STOPPED": "Trip stopped",
+    "TITLE": "Trips",
+    "TRIP": "Trip",
+    "TRIP_END_DESCRIPTION": "Observations is expected before",
+    "TRIP_TYPE": "Trip type"
   },
   "VALIDATION": {
     "AND": "and",
@@ -732,10 +732,10 @@
     "MUST_BE": "must be"
   },
   "WARNING_LIST": {
+    "A_REGIONS": "A - Regions",
     "ADDED_TO_FAVOURITES": "added to favourites",
     "ALL": "All",
     "ALL_WARNINGS": "All warnings",
-    "A_REGIONS": "A - Regions",
     "B_REGIONS": "B - Regions",
     "B_REGIONS_SUBTITLE": "Warnings only for danger level 4 and 5",
     "FAVOURITES": "Favourites",

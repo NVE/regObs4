@@ -1,0 +1,9 @@
+{
+  "config_ios": {
+    "NSCameraUsageDescription": "Aggiungi immagini all'osservazione",
+    "NSLocationAlwaysUsageDescription": "Posizione è utilizzata per mostrare la tua posizione nella mappa e per registrare la posizione della osservazione.",
+    "NSLocationWhenInUseUsageDescription": "Posizione è utilizzata per mostrare la tua posizione nella mappa e per registrare la posizione della osservazione.",
+    "NSPhotoLibraryAddUsageDescription": "Aggiungi immagini all'osservazione",
+    "NSPhotoLibraryUsageDescription": "Aggiungi immagini all'osservazione"
+  }
+}
