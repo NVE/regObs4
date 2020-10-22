@@ -279,10 +279,11 @@ export const settings = {
     fallbackLang: 'en',
     supportedLanguages: [
       { lang: 'nb', name: 'Norsk bokmål' },
+      { lang: 'nn', name: 'Nynorsk' },
       { lang: 'en', name: 'English' },
       { lang: 'sv', name: 'Svenska' },
       { lang: 'de', name: 'Deutsch' },
-      { lang: 'sl', name: 'Slovenski' }
+      { lang: 'sl', name: 'Slovenski' },
     ],
   }
 };
