@@ -74,12 +74,17 @@ export class RegobsAuthService {
             new AppAuthError(tokenError.error, new TokenError(tokenError)));
         }
       }, (error) => {
-        const tokenErrorJson: TokenErrorJson = error.error;
+        let tokenErrorJson: TokenErrorJson = error.error;
+        if (!tokenErrorJson.error_description) {
+          tokenErrorJson = JSON.parse(<any>tokenErrorJson);
+        }
         // HACK to detect change password
         if (tokenErrorJson && tokenErrorJson.error_description
           && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
-          this.signIn(false);
-          return;
+          return this.signIn(false).then(
+            () =>
+              new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson)) as any
+          );
         }
 
         return Promise.reject<TokenResponse>(
