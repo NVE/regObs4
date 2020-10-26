@@ -682,12 +682,12 @@
     "READ_MORE": "Les meir om støttekart",
     "STEEPNESS_COLOR_INFO": "Fargar gir brattheiten til terrenget (grader):",
     "STEEPNESS_MAP_DESCRIPTION": "Brattheitskart",
-    "STEEPNESS_MAP_DISCLAMER": "1Berre1 for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, t.d.bratte heng som ikkje visast.",
+    "STEEPNESS_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, t.d.bratte heng som ikkje visast.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skreda stoppar innanfor denne grensa)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skreda går lenger)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lenger)\nNokre skred kan ha utløp som ikkje er vist på kartet.",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Brattheitskart med utløp",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "1Berre1 for turplanlegging. Kartet er automatisk generert og kan ha feil og manglar, t.d. bratte heng og utløp som ikkje visast.\n2\n2\nFargar på utløp for snøskred:",
+    "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og manglar, t.d. bratte heng og utløp som ikkje visast.\n<br/>\n<br/>\nFargar på utløp for snøskred:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Kart over svekka is"
   },
   "TABS": {

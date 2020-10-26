@@ -17,7 +17,8 @@ import { LoggedInUser } from '../../login/models/logged-in-user.model';
 import { ObserverGroupDto, ObserverResponseDto } from '../../regobs-api/models';
 import { LogLevel } from '../../shared/services/logging/log-level.model';
 import { LoggingService } from '../../shared/services/logging/logging.service';
-import { Location } from '@angular/common'
+import { Location } from '@angular/common';
+import { AppAuthError, AuthorizationServiceConfiguration, Requestor, TokenError, TokenErrorJson, TokenRequest, TokenResponse, TokenResponseJson } from '@openid/appauth';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -46,21 +47,67 @@ export class RegobsAuthService {
     private router: Router,
     private navCtrl: NavController,
     private location: Location,
+    private requestor: Requestor,
   ) {
+    this.setupDetectPasswordReset();
     this._loggedInUser$ = this.getLoggedInUser$().pipe(shareReplay(1));
     this.observer = this.authService.addActionListener((action) => this.onSignInCallback(action));
   }
 
-  public authorizationCallback(url: string) {
-    this.authService.authorizationCallback(url);
+  private setupDetectPasswordReset() {
+    (<any>this.authService).tokenHandler.performTokenRequest = (configuration: AuthorizationServiceConfiguration, request: TokenRequest):
+      Promise<TokenResponse> => {
+      let tokenResponse = this.requestor.xhr<TokenResponseJson | TokenErrorJson>({
+        url: configuration.tokenEndpoint,
+        method: 'POST',
+        dataType: 'json',  // adding implicit dataType
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        data: (<any>this.authService).tokenHandler.utils.stringify(request.toStringMap())
+      });
+
+      return tokenResponse.then((response) => {
+        if ((<any>this.authService).tokenHandler.isTokenResponse(response)) {
+          return new TokenResponse(response as TokenResponseJson);
+        } else {
+          const tokenError = response as TokenErrorJson;
+          return Promise.reject<TokenResponse>(
+            new AppAuthError(tokenError.error, new TokenError(tokenError)));
+        }
+      }, (error) => {
+        const tokenErrorJson: TokenErrorJson = error.error;
+        // HACK to detect change password
+        if (tokenErrorJson && tokenErrorJson.error_description
+          && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
+          this.signIn(false);
+          return;
+        }
+
+        return Promise.reject<TokenResponse>(
+          new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson)));
+      });
+    };
   }
 
-  public async signIn() {
+  public authorizationCallback(url: string) {
+    try {
+      this.authService.authorizationCallback(url);
+    } catch (err) {
+      this.logger.error(err, DEBUG_TAG, 'Could not call authorizationCallback');
+    }
+  }
+
+  public async signIn(setReturnUrl = true) {
     const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
-    localStorage.setItem(RETURN_URL_KEY, this.router.url);
-    return this.authService.signIn({
-      'ui_locales': this.getSupportedLoginLocales(currentLang)
-    });
+    if (setReturnUrl) {
+      localStorage.setItem(RETURN_URL_KEY, this.router.url);
+    }
+    try {
+      await this.authService.signIn({
+        'ui_locales': this.getSupportedLoginLocales(currentLang)
+      });
+    } catch (err) {
+      this.logger.error(err, DEBUG_TAG, 'Could signIn');
+    }
   }
 
   public async logout() {
@@ -72,6 +119,7 @@ export class RegobsAuthService {
           isLoggedIn: false,
           user: null,
         }).exec()))).toPromise();
+    await this.authService.signOut();
   }
 
   public async getAndSaveObserver(idToken: string) {
@@ -161,6 +209,7 @@ export class RegobsAuthService {
     }
     const returnUrl = localStorage.getItem(RETURN_URL_KEY);
     if (returnUrl) {
+      localStorage.removeItem(RETURN_URL_KEY);
       this.location.replaceState(this.router.serializeUrl(this.router.createUrlTree([''])));
       this.navCtrl.navigateForward(returnUrl);
     } else {
@@ -209,7 +258,7 @@ export class RegobsAuthService {
   }
 
   private getSupportedLoginLocales(langKey: LangKey) {
-    if (langKey === LangKey.nb) {
+    if (langKey === LangKey.nb || langKey === LangKey.nn) {
       return 'nb-NO';
     }
     return 'en';
