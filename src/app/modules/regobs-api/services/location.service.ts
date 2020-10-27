@@ -40,17 +40,17 @@ class LocationService extends __BaseService {
    */
   LocationWithinRadiusResponse(params: LocationService.LocationWithinRadiusParams): __Observable<__StrictHttpResponse<Array<ObsLocationsResponseDtoV2>>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    if (params.radius != null) __params = __params.set('radius', params.radius.toString());
-    if (params.longitude != null) __params = __params.set('longitude', params.longitude.toString());
-    if (params.latitude != null) __params = __params.set('latitude', params.latitude.toString());
-    if (params.returnCount != null) __params = __params.set('returnCount', params.returnCount.toString());
-    if (params.observerGuid != null) __params = __params.set('observerGuid', params.observerGuid.toString());
-    (params.geoHazardTypeIds || []).forEach(val => {if (val != null) __params = __params.append('geoHazardTypeIds', val.toString())});
-    let req = new HttpRequest<any>(
+    const __headers = new HttpHeaders();
+    const __body: any = null;
+    if (params.radius != null) {__params = __params.set('radius', params.radius.toString());}
+    if (params.longitude != null) {__params = __params.set('longitude', params.longitude.toString());}
+    if (params.latitude != null) {__params = __params.set('latitude', params.latitude.toString());}
+    if (params.returnCount != null) {__params = __params.set('returnCount', params.returnCount.toString());}
+    if (params.observerGuid != null) {__params = __params.set('observerGuid', params.observerGuid.toString());}
+    (params.geoHazardTypeIds || []).forEach(val => {if (val != null) {__params = __params.append('geoHazardTypeIds', val.toString());}});
+    const req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Location/WithinRadius`,
+      this.rootUrl + '/Location/WithinRadius',
       __body,
       {
         headers: __headers,
@@ -89,7 +89,7 @@ class LocationService extends __BaseService {
   }
 }
 
-module LocationService {
+namespace LocationService {
 
   /**
    * Parameters for LocationWithinRadius
@@ -104,4 +104,4 @@ module LocationService {
   }
 }
 
-export { LocationService }
+export { LocationService };

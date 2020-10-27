@@ -98,8 +98,8 @@ export class DataMarshallService implements OnReset {
       this.subscriptions.push(this.userSettingService.supportTiles$
         .pipe(map((st) => st.filter((x) => x.enabled).map((x) => x.name).join(','))
           , distinctUntilChanged()).subscribe((supportMap) => {
-            this.analyticService.trackDimension(AppCustomDimension.supportMap, supportMap);
-          }));
+          this.analyticService.trackDimension(AppCustomDimension.supportMap, supportMap);
+        }));
       this.subscriptions.push(this.regobsAuthService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user)));
       this.subscriptions.push(this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode)));
 
@@ -108,9 +108,9 @@ export class DataMarshallService implements OnReset {
       }));
       this.subscriptions.push(this.userSettingService.userSetting$.pipe(map((val) => val.tilesCacheSize),
         distinctUntilChanged(), debounceTime(1000)).subscribe((val) => {
-          this.loggingService.debug(`Tiles cahce size changed to ${val}`, DEBUG_TAG);
-          this.offlineMapService.cleanupTilesCache(val);
-        }));
+        this.loggingService.debug(`Tiles cahce size changed to ${val}`, DEBUG_TAG);
+        this.offlineMapService.cleanupTilesCache(val);
+      }));
       this.subscriptions.push(this.platform.pause.subscribe(() => {
         this.loggingService.debug('App paused. Stop foreground updates.', DEBUG_TAG);
         this.stopForegroundUpdate();

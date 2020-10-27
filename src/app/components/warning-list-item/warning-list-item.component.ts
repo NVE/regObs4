@@ -42,13 +42,13 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     this.dragSubject.pipe(
       takeUntil(this.ngDestroy$),
       switchMap(() => this.getOpenAmount())).subscribe((openAmount) => {
-        const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
-        const color = `rgba(186,196,204,${opacity})`;
-        this.favouriteToggle.setOpen(opacity);
-        this.domCtrl.write(() => {
-          this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
-        });
+      const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
+      const color = `rgba(186,196,204,${opacity})`;
+      this.favouriteToggle.setOpen(opacity);
+      this.domCtrl.write(() => {
+        this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
       });
+    });
     this.ngDestroy$.subscribe(() => {
       this.close();
     });
@@ -84,7 +84,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     this.toggleFavourite();
   }
 
-  async getUrl(group: WarningGroup, day: string = ''): Promise<string> {
+  async getUrl(group: WarningGroup, day = ''): Promise<string> {
     if (group.url) {
       return group.url;
     } else {

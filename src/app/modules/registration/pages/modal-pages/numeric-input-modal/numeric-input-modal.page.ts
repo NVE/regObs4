@@ -17,7 +17,6 @@ export class NumericInputModalPage implements OnInit {
   @Input() decimalSeparator;
   @Input() title: string;
 
-
   decimalSep = '.';
   isNegative = false;
   private numbers: Array<string> = [];

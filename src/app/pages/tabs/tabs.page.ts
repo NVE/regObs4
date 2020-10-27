@@ -34,7 +34,6 @@ export class TabsPage implements OnInit, OnDestroy {
     return `${this.warningsInView.maxWarning}${this.warningsInView.hasEmergencyWarning ? '!' : ''}`;
   }
 
-
   // @ViewChild(IonTabs) private tabs: IonTabs;
   constructor(
     private fullscreenService: FullscreenService,

@@ -31,7 +31,6 @@ export class WarningListPage implements OnInit {
 
   @ViewChildren(WarningListItemComponent) warningListItems: QueryList<WarningListItemComponent>;
 
-
   get showNoFavourites() {
     return this.selectedTab === 'favourites' && this.noFavourites;
   }
@@ -115,12 +114,12 @@ export class WarningListPage implements OnInit {
   private getWarningGroupObservable(segment: SelectedTab, currentGeoHazard: GeoHazard[])
     : Observable<IVirtualScrollItem<WarningGroup>[]> {
     switch (segment) {
-      case 'inMapView':
-        return this.getWarningsInMapView();
-      case 'all':
-        return this.getAllWarnings(currentGeoHazard);
-      case 'favourites':
-        return this.getFavouritesObservable();
+    case 'inMapView':
+      return this.getWarningsInMapView();
+    case 'all':
+      return this.getAllWarnings(currentGeoHazard);
+    case 'favourites':
+      return this.getFavouritesObservable();
     }
   }
 

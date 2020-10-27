@@ -35,10 +35,10 @@ export class UpdateObservationsComponent implements OnInit, OnDestroy {
       switchMap((id) => this.dataLoadService.getStateAsObservable(id)),
       map((state) => state.isLoading),
       distinctUntilChanged()).subscribe((val) => {
-        this.ngZone.run(() => {
-          this.isLoading = val;
-        });
-      }));
+      this.ngZone.run(() => {
+        this.isLoading = val;
+      });
+    }));
   }
   ngOnDestroy(): void {
     for (const subscription of this.subscriptions) {

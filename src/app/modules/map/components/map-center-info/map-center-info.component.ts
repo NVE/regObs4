@@ -48,20 +48,20 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       showMapCenterObservable.pipe(switchMap((showMapCenter) =>
         showMapCenter ? this.mapService.mapView$ : of(null))
-        , filter((val) => !!val)).subscribe((mapView) => {
-          this.ngZone.run(() => {
-            this.mapView = mapView;
-            this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
-          });
-        }));
+      , filter((val) => !!val)).subscribe((mapView) => {
+        this.ngZone.run(() => {
+          this.mapView = mapView;
+          this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
+        });
+      }));
     this.subscriptions.push(
       showMapCenterObservable.pipe(switchMap((showMapCenter) =>
         showMapCenter ? this.mapService.relevantMapChange$ : of(null))
-        , filter((val) => !!val), tap(() => {
-          this.ngZone.run(() => {
-            this.isLoading = true;
-          });
-        }), switchMap((val: IMapView) => this.mapSerachService.getViewInfo(val)))
+      , filter((val) => !!val), tap(() => {
+        this.ngZone.run(() => {
+          this.isLoading = true;
+        });
+      }), switchMap((val: IMapView) => this.mapSerachService.getViewInfo(val)))
         .subscribe((viewInfo) => {
           this.ngZone.run(() => {
             this.viewInfo = viewInfo;

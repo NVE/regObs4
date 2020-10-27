@@ -32,12 +32,12 @@ class AccountService extends __BaseService {
    * @return OK
    */
   AccountLoginResponse(): __Observable<__StrictHttpResponse<ObserverResponseDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    let req = new HttpRequest<any>(
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
+    const req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Account/Login`,
+      this.rootUrl + '/Account/Login',
       __body,
       {
         headers: __headers,
@@ -65,12 +65,12 @@ class AccountService extends __BaseService {
    * @return OK
    */
   AccountGetObserverResponse(): __Observable<__StrictHttpResponse<ObserverResponseDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    let req = new HttpRequest<any>(
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
+    const req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Account/GetObserver`,
+      this.rootUrl + '/Account/GetObserver',
       __body,
       {
         headers: __headers,
@@ -99,11 +99,11 @@ class AccountService extends __BaseService {
    * @return Observer Groups
    */
   AccountGetObserverGroupsResponse(guid: string): __Observable<__StrictHttpResponse<Array<ObserverGroupDto>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
 
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'GET',
       this.rootUrl + `/Account/Groups/${guid}`,
       __body,
@@ -135,13 +135,13 @@ class AccountService extends __BaseService {
    * @return OK or Account created
    */
   AccountCreateAccountResponse(dto: CreateAccountRequest): __Observable<__StrictHttpResponse<{} | ObserverResponseDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = dto;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Account/Create`,
+      this.rootUrl + '/Account/Create',
       __body,
       {
         headers: __headers,
@@ -172,12 +172,12 @@ class AccountService extends __BaseService {
    */
   AccountGetMyPageDataResponse(langKey?: 1 | 2): __Observable<__StrictHttpResponse<MyPageData>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    if (langKey != null) __params = __params.set('langKey', langKey.toString());
-    let req = new HttpRequest<any>(
+    const __headers = new HttpHeaders();
+    const __body: any = null;
+    if (langKey != null) {__params = __params.set('langKey', langKey.toString());}
+    const req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/Account/Mypage`,
+      this.rootUrl + '/Account/Mypage',
       __body,
       {
         headers: __headers,
@@ -203,7 +203,7 @@ class AccountService extends __BaseService {
   }
 }
 
-module AccountService {
+namespace AccountService {
 }
 
-export { AccountService }
+export { AccountService };

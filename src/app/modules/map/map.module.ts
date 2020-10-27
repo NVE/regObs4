@@ -18,7 +18,6 @@ import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image
 import { SupportMapInfoPageModule } from './pages/support-map-info/support-map-info.module';
 import { MapImageModule } from '../map-image/map-image.module';
 
-
 @NgModule({
   imports: [
     CommonModule,

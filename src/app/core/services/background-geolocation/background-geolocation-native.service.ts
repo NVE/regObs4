@@ -21,17 +21,17 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
         private geolocation: Geolocation,
         private loggingService: LoggingService,
     ) {
-        this.platform.ready().then(() => {
-            this.backgroundGeolocation = (<any>window).BackgroundGeolocation;
-        });
+      this.platform.ready().then(() => {
+        this.backgroundGeolocation = (<any>window).BackgroundGeolocation;
+      });
     }
 
     private async configureBackgroundGeoLocation() {
-        await this.platform.ready();
-        const translations = await this.translateService.get(
-            ['GEOLOCATION_SERVICE.NOTIFICATION_TITLE',
-                'GEOLOCATION_SERVICE.NOTIFICATION_TEXT']
-        ).toPromise();
+      await this.platform.ready();
+      const translations = await this.translateService.get(
+        ['GEOLOCATION_SERVICE.NOTIFICATION_TITLE',
+          'GEOLOCATION_SERVICE.NOTIFICATION_TEXT']
+      ).toPromise();
         // const config: BackgroundGeolocationConfig = {
         //     locationProvider: this.backgroundGeolocation.DISTANCE_FILTER_PROVIDER, // ANDROID_DISTANCE_FILTER_PROVIDER
         //     desiredAccuracy: this.backgroundGeolocation.LOW_ACCURACY, // Low
@@ -65,83 +65,83 @@ export class BackgroundGeolocationNativeService implements BackgroundGeolocation
     // }
 
     async start() {
-        // await this.tripLogger.updateState(TripLogState.Running);
-        // await this.configureBackgroundGeoLocation();
-        // this.backgroundGeolocation.on('location', (location: BackgroundGeolocationResponse) => {
-        //     // handle your locations here
-        //     // to perform long running operation on iOS
-        //     // you need to create background task
-        //     this.backgroundGeolocation.startTask(async (taskKey) => {
-        //         // execute long running task
-        //         // eg. ajax post location
-        //         // IMPORTANT: task has to be ended by endTask
-        //         try {
-        //             await this.savePositionUpdate(location);
-        //         } catch (error) {
-        //             this.loggingService.error(error, DEBUG_TAG, 'Error saving position update!');
-        //         } finally {
-        //             this.backgroundGeolocation.endTask(taskKey);
-        //         }
-        //     });
-        // });
-        // this.backgroundGeolocation.on('error', async (error) => {
-        //     this.loggingService.error(
-        //         new Error(`Error code: ${error.code}. Message:${error.message}`),
-        //         DEBUG_TAG, 'Error in background geolocation!');
-        //     await this.tripLogger.updateState(TripLogState.Paused);
-        // });
-        // this.backgroundGeolocation.on('start', () => {
-        //     this.loggingService.debug('BackgroundGeolocation service has been started', DEBUG_TAG);
-        // });
-        // this.backgroundGeolocation.on('stop', () => {
-        //     this.loggingService.debug('BackgroundGeolocation service has been stopped', DEBUG_TAG);
-        // });
-        // this.backgroundGeolocation.on('authorization', (status) => {
-        //     this.loggingService.debug('BackgroundGeolocation authorization status', DEBUG_TAG, status);
-        //     if (status !== this.backgroundGeolocation.AUTHORIZED) {
-        //         return this.backgroundGeolocation.showAppSettings();
-        //     }
-        // });
-        // this.backgroundGeolocation.checkStatus((status) => {
-        //     this.loggingService.debug('BackgroundGeolocation service status', DEBUG_TAG, status);
-        //     // you don't need to check status before start (this is just the example)
-        //     if (!status.isRunning) {
-        //         this.backgroundGeolocation.start(); // triggers start on start event
-        //     }
-        // });
+      // await this.tripLogger.updateState(TripLogState.Running);
+      // await this.configureBackgroundGeoLocation();
+      // this.backgroundGeolocation.on('location', (location: BackgroundGeolocationResponse) => {
+      //     // handle your locations here
+      //     // to perform long running operation on iOS
+      //     // you need to create background task
+      //     this.backgroundGeolocation.startTask(async (taskKey) => {
+      //         // execute long running task
+      //         // eg. ajax post location
+      //         // IMPORTANT: task has to be ended by endTask
+      //         try {
+      //             await this.savePositionUpdate(location);
+      //         } catch (error) {
+      //             this.loggingService.error(error, DEBUG_TAG, 'Error saving position update!');
+      //         } finally {
+      //             this.backgroundGeolocation.endTask(taskKey);
+      //         }
+      //     });
+      // });
+      // this.backgroundGeolocation.on('error', async (error) => {
+      //     this.loggingService.error(
+      //         new Error(`Error code: ${error.code}. Message:${error.message}`),
+      //         DEBUG_TAG, 'Error in background geolocation!');
+      //     await this.tripLogger.updateState(TripLogState.Paused);
+      // });
+      // this.backgroundGeolocation.on('start', () => {
+      //     this.loggingService.debug('BackgroundGeolocation service has been started', DEBUG_TAG);
+      // });
+      // this.backgroundGeolocation.on('stop', () => {
+      //     this.loggingService.debug('BackgroundGeolocation service has been stopped', DEBUG_TAG);
+      // });
+      // this.backgroundGeolocation.on('authorization', (status) => {
+      //     this.loggingService.debug('BackgroundGeolocation authorization status', DEBUG_TAG, status);
+      //     if (status !== this.backgroundGeolocation.AUTHORIZED) {
+      //         return this.backgroundGeolocation.showAppSettings();
+      //     }
+      // });
+      // this.backgroundGeolocation.checkStatus((status) => {
+      //     this.loggingService.debug('BackgroundGeolocation service status', DEBUG_TAG, status);
+      //     // you don't need to check status before start (this is just the example)
+      //     if (!status.isRunning) {
+      //         this.backgroundGeolocation.start(); // triggers start on start event
+      //     }
+      // });
     }
 
     async stop() {
-        // await this.platform.ready();
-        // await this.tripLogger.updateState(TripLogState.Paused);
-        // this.backgroundGeolocation.stop();
-        // const lastPosition = await this.geolocation.getCurrentPosition({
-        //     enableHighAccuracy: true,
-        //     maximumAge: 60 * 1000,
-        // });
-        // if (lastPosition.coords) {
-        //     await this.tripLogger.saveTripLogItem({
-        //         latitude: lastPosition.coords.latitude,
-        //         longitude: lastPosition.coords.longitude,
-        //         accuracy: lastPosition.coords.accuracy,
-        //         altitude: lastPosition.coords.altitude,
-        //         speed: lastPosition.coords.speed,
-        //         timestamp: lastPosition.timestamp,
-        //         heading: lastPosition.coords.heading,
-        //     });
-        // }
-        // this.tripLogger.updateState(TripLogState.Paused);
-        // for (const event of this.backgroundGeolocation.events) {
-        //     return this.backgroundGeolocation.removeAllListeners(event);
-        // }
+      // await this.platform.ready();
+      // await this.tripLogger.updateState(TripLogState.Paused);
+      // this.backgroundGeolocation.stop();
+      // const lastPosition = await this.geolocation.getCurrentPosition({
+      //     enableHighAccuracy: true,
+      //     maximumAge: 60 * 1000,
+      // });
+      // if (lastPosition.coords) {
+      //     await this.tripLogger.saveTripLogItem({
+      //         latitude: lastPosition.coords.latitude,
+      //         longitude: lastPosition.coords.longitude,
+      //         accuracy: lastPosition.coords.accuracy,
+      //         altitude: lastPosition.coords.altitude,
+      //         speed: lastPosition.coords.speed,
+      //         timestamp: lastPosition.timestamp,
+      //         heading: lastPosition.coords.heading,
+      //     });
+      // }
+      // this.tripLogger.updateState(TripLogState.Paused);
+      // for (const event of this.backgroundGeolocation.events) {
+      //     return this.backgroundGeolocation.removeAllListeners(event);
+      // }
     }
 
     isRunning(): Promise<boolean> {
-        return Promise.resolve(false);
-        // return new Promise((resolve) => {
-        //     this.backgroundGeolocation.checkStatus((status) => {
-        //         resolve(status.isRunning);
-        //     });
-        // });
+      return Promise.resolve(false);
+      // return new Promise((resolve) => {
+      //     this.backgroundGeolocation.checkStatus((status) => {
+      //         resolve(status.isRunning);
+      //     });
+      // });
     }
 }

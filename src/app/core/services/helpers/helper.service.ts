@@ -16,7 +16,7 @@ export class HelperService {
     }
   }
 
-  formatMsToTime(duration: number, showMilliseconds: boolean = false) {
+  formatMsToTime(duration: number, showMilliseconds = false) {
     const milliseconds = Math.floor((duration % 1000) / 100);
     const seconds = Math.floor((duration / 1000) % 60);
     const minutes = Math.floor((duration / (1000 * 60)) % 60);
@@ -28,7 +28,7 @@ export class HelperService {
       + (showMilliseconds ? `.${milliseconds}` : '');
   }
 
-  humanReadableByteSize(bytes: number, si: boolean = true) {
+  humanReadableByteSize(bytes: number, si = true) {
     const thresh = si ? 1000 : 1024;
     if (Math.abs(bytes) < thresh) {
       return bytes + ' B';

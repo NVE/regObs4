@@ -107,19 +107,19 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       .pipe(switchMap(([[appMode, langKey], loggedInUser]) =>
         !loggedInUser.isLoggedIn ? of([]) :
           this.observationService.getObservationsForCurrentUser(appMode, loggedInUser.user, langKey, pageNumber, numberOfItemsToFetch).pipe(
-            map((val) => val.map((item) => ({ type: <'sent'>'sent', id: item.RegID.toString(), item }))))
+            map((val) => val.map((item) => ({ type: <const>'sent', id: item.RegID.toString(), item }))))
       ));
   }
   private getDraftObservable(): Observable<MyVirtualScrollItem[]> {
     return this.registrationService.drafts$.pipe(
-      map((val) => val.map((item) => ({ type: <'draft'>'draft', id: item.id, item }))));
+      map((val) => val.map((item) => ({ type: <const>'draft', id: item.id, item }))));
   }
 
   private getSyncItemsObservable(): Observable<MyVirtualScrollItem[]> {
     return this.registrationService.getRegistrationsToSync().pipe(
       distinctUntilChanged<IRegistration[], string>((a, b) => a.localeCompare(b) === 0,
         (keySelector) => this.getDistinctSyncItemList(keySelector)),
-      map((val) => val.map((item) => ({ type: <'sync'>'sync', id: item.id, item }))));
+      map((val) => val.map((item) => ({ type: <const>'sync', id: item.id, item }))));
   }
 
   getDistinctRegistrationList(arr: RegistrationViewModel[]) {

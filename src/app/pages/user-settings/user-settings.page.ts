@@ -156,7 +156,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     try {
       await this.doReset();
     } catch (err) {
-      this.loggingService.log(`Could not reset db`, err, LogLevel.Warning, DEBUG_TAG);
+      this.loggingService.log('Could not reset db', err, LogLevel.Warning, DEBUG_TAG);
     }
     this.ngZone.run(() => {
       this.isUpdating = false;

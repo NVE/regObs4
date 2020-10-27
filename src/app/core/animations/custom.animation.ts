@@ -11,12 +11,12 @@ export class CustomAnimation {
     return style({ transform: `scale3d(${fromScale},${fromScale},1)`, opacity: fromOpacity });  // initial
   }
 
-  static createScaleInAnimation(delay: number = 0, duration: number = DEFAULT_DURATION, easing = EASE_IN_OUT) {
+  static createScaleInAnimation(delay = 0, duration: number = DEFAULT_DURATION, easing = EASE_IN_OUT) {
     return animate(`${duration}ms ${delay}ms ${easing}`, style({ transform: 'scale3d(1,1,1)', opacity: 1 }));
   }
 
   static createScaleInTransition(
-    delay: number = 0,
+    delay = 0,
     duration: number = DEFAULT_DURATION,
     easing = EASE_IN_OUT,
     fromScale = 0,
@@ -29,7 +29,7 @@ export class CustomAnimation {
   }
 
   static createEnterScaleInAnimation(
-    delay: number = 0,
+    delay = 0,
     duration: number = DEFAULT_DURATION,
     easing = EASE_IN_OUT,
     fromScale = 0,
@@ -65,7 +65,6 @@ export class CustomAnimation {
       .addAnimation(wrapperAnimation)
     );
   }
-
 
   static scaleUpEnterV2(baseEl: HTMLElement, opts?: any) {
     const baseAnimation = createAnimation();
@@ -166,7 +165,7 @@ export class CustomAnimation {
       .beforeAddClass('show-modal')
       .addAnimation(backdropAnimation)
       .addAnimation(wrapperAnimation)
-      ;
+    ;
   }
 
   static slideOutToRight(baseEl: HTMLElement, opts?: any) {

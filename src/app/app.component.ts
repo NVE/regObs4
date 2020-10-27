@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Platform, NavController } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
@@ -42,7 +42,7 @@ export class AppComponent {
     this.initializeApp();
   }
 
-  initializeApp() {
+  initializeApp(): void {
     this.getUserSettings()
       .pipe(this.initServices(), delay(200))
       .subscribe(() => this.splashScreen.hide());
@@ -54,7 +54,7 @@ export class AppComponent {
     }
   }
 
-  private initServices(): (src: Observable<any>) => Observable<any> {
+  private initServices(): (src: Observable<unknown>) => Observable<unknown> {
     return (src: Observable<UserSetting>) => src.pipe(concatMap((userSettings) => forkJoin([
       of(this.lockScreenOrientation()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not lock lockScreenOrientation'))),
       from(this.dbHelperService.init()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))),

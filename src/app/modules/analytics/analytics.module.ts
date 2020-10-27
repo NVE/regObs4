@@ -2,32 +2,32 @@ import { NgModule, ModuleWithProviders, APP_INITIALIZER, Injector } from '@angul
 import { AnalyticService } from './services/analytic.service';
 
 @NgModule({
-    imports: [
-    ],
-    declarations: [
+  imports: [
+  ],
+  declarations: [
 
-    ],
-    exports: [
+  ],
+  exports: [
 
-    ],
-    providers: [
-        AnalyticService,
-        {
-            provide: APP_INITIALIZER,
-            useFactory: initializeAnalyticService,
-            multi: true,
-            deps: [AnalyticService]
-        },
-    ]
+  ],
+  providers: [
+    AnalyticService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAnalyticService,
+      multi: true,
+      deps: [AnalyticService]
+    },
+  ]
 })
 export class AnalyticsModule {
-    static forRoot(): ModuleWithProviders<AnalyticsModule> {
-        return {
-            ngModule: AnalyticsModule,
-        };
-    }
+  static forRoot(): ModuleWithProviders<AnalyticsModule> {
+    return {
+      ngModule: AnalyticsModule,
+    };
+  }
 }
 
 export function initializeAnalyticService(analyticService: AnalyticService) {
-    return () => analyticService.init();
+  return () => analyticService.init();
 }

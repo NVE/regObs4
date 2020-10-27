@@ -34,14 +34,14 @@ class KdvElementsService extends __BaseService {
    */
   KdvElementsGetKdvsResponse(params: KdvElementsService.KdvElementsGetKdvsParams): __Observable<__StrictHttpResponse<KdvElementsResponseDto>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    if (params.sortOrder != null) __params = __params.set('sortOrder', params.sortOrder.toString());
-    if (params.langkey != null) __params = __params.set('langkey', params.langkey.toString());
-    if (params.isActive != null) __params = __params.set('isActive', params.isActive.toString());
-    let req = new HttpRequest<any>(
+    const __headers = new HttpHeaders();
+    const __body: any = null;
+    if (params.sortOrder != null) {__params = __params.set('sortOrder', params.sortOrder.toString());}
+    if (params.langkey != null) {__params = __params.set('langkey', params.langkey.toString());}
+    if (params.isActive != null) {__params = __params.set('isActive', params.isActive.toString());}
+    const req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/KdvElements`,
+      this.rootUrl + '/KdvElements',
       __body,
       {
         headers: __headers,
@@ -74,7 +74,7 @@ class KdvElementsService extends __BaseService {
   }
 }
 
-module KdvElementsService {
+namespace KdvElementsService {
 
   /**
    * Parameters for KdvElementsGetKdvs
@@ -90,4 +90,4 @@ module KdvElementsService {
   }
 }
 
-export { KdvElementsService }
+export { KdvElementsService };

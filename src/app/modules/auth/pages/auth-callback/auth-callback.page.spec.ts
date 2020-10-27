@@ -14,9 +14,7 @@ import { AuthCallbackPage } from './auth-callback.page';
 describe('AuthCallbackPage', () => {
   let component: AuthCallbackPage;
   let fixture: ComponentFixture<AuthCallbackPage>;
-  let regobsAuthServiceSpy: jasmine.SpyObj<RegobsAuthService>;
   let loggingSpy: jasmine.SpyObj<LoggingService>;
-  let userSettingService: jasmine.SpyObj<UserSettingService>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,9 +23,9 @@ describe('AuthCallbackPage', () => {
       imports: [SharedModule, HttpClientModule, TranslateModule.forRoot(), RouterModule.forRoot([])]
     }).compileComponents();
 
-    userSettingService = TestBed.inject(UserSettingService) as jasmine.SpyObj<UserSettingService>;
+    TestBed.inject(UserSettingService) as jasmine.SpyObj<UserSettingService>;
     loggingSpy = TestBed.inject(LoggingService) as jasmine.SpyObj<LoggingService>;
-    regobsAuthServiceSpy = TestBed.inject(RegobsAuthService) as jasmine.SpyObj<RegobsAuthService>;
+    TestBed.inject(RegobsAuthService) as jasmine.SpyObj<RegobsAuthService>;
 
     fixture = TestBed.createComponent(AuthCallbackPage);
     component = fixture.componentInstance;

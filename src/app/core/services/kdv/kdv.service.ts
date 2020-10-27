@@ -49,7 +49,7 @@ export class KdvService {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(appMode, language));
     const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
     if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
-      this.loggingService.debug(`Kdv elements is allready being updated.`, DEBUG_TAG);
+      this.loggingService.debug('Kdv elements is allready being updated.', DEBUG_TAG);
     } else {
       const lastUpdateLimit = moment().subtract(settings.kdvElements.daysBeforeUpdate, 'day');
       if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {

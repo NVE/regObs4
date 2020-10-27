@@ -34,14 +34,14 @@ class GeoCodeService extends __BaseService {
    */
   GeoCodeLocationInfoResponse(params: GeoCodeService.GeoCodeLocationInfoParams): __Observable<__StrictHttpResponse<GeoLocationInfo>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    if (params.longitude != null) __params = __params.set('longitude', params.longitude.toString());
-    if (params.latitude != null) __params = __params.set('latitude', params.latitude.toString());
-    if (params.geoHazardId != null) __params = __params.set('geoHazardId', params.geoHazardId.toString());
-    let req = new HttpRequest<any>(
+    const __headers = new HttpHeaders();
+    const __body: any = null;
+    if (params.longitude != null) {__params = __params.set('longitude', params.longitude.toString());}
+    if (params.latitude != null) {__params = __params.set('latitude', params.latitude.toString());}
+    if (params.geoHazardId != null) {__params = __params.set('geoHazardId', params.geoHazardId.toString());}
+    const req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/GeoCode/LocationInfo`,
+      this.rootUrl + '/GeoCode/LocationInfo',
       __body,
       {
         headers: __headers,
@@ -74,7 +74,7 @@ class GeoCodeService extends __BaseService {
   }
 }
 
-module GeoCodeService {
+namespace GeoCodeService {
 
   /**
    * Parameters for GeoCodeLocationInfo
@@ -86,4 +86,4 @@ module GeoCodeService {
   }
 }
 
-export { GeoCodeService }
+export { GeoCodeService };

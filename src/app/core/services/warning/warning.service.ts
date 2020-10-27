@@ -131,7 +131,7 @@ export class WarningService {
     const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(geoHazard, langKey));
     const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
     if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
-      this.loggingService.debug(`Warnings is allready being updated.`, DEBUG_TAG);
+      this.loggingService.debug('Warnings is allready being updated.', DEBUG_TAG);
     } else {
       const lastUpdateLimit = moment().subtract(1, 'hour');
       if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
@@ -175,14 +175,14 @@ export class WarningService {
 
   private getOfflineWarningsAsObservable(geoHazard: GeoHazard) {
     return new NSqlFullUpdateObservable<IWarningGroup[]>
-      (nSQL(NanoSql.TABLES.WARNING.name).query('select')
-        .listen({
-          debounce: 200,
-        })).pipe(
-          map((warningGroups) => warningGroups.filter((wg) => wg.geoHazard === geoHazard)),
-          map((warningGroups) => warningGroups.length === 0 ?
-            this.getDefaultWarningGroups(geoHazard) : warningGroups),
-        );
+    (nSQL(NanoSql.TABLES.WARNING.name).query('select')
+      .listen({
+        debounce: 200,
+      })).pipe(
+      map((warningGroups) => warningGroups.filter((wg) => wg.geoHazard === geoHazard)),
+      map((warningGroups) => warningGroups.length === 0 ?
+        this.getDefaultWarningGroups(geoHazard) : warningGroups),
+    );
   }
 
   private getWarningsAsObservable(): Observable<IWarningGroup[]> {
@@ -192,7 +192,7 @@ export class WarningService {
         combineLatest([GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Water, GeoHazard.Dirt].map((geoHazard) =>
           this.getLatestWarningsOrFallbackToOffline(latestWarnings, geoHazard, langKey)))
           .pipe(map((result) => [].concat(...result)))),
-        tap((result) => this.loggingService.debug('Warnings observable changed', DEBUG_TAG, result)));
+      tap((result) => this.loggingService.debug('Warnings observable changed', DEBUG_TAG, result)));
   }
 
   private getLatestWarningsOrFallbackToOffline(
@@ -207,12 +207,12 @@ export class WarningService {
 
   private getDefaultWarningGroups(geoHazard: GeoHazard) {
     switch (geoHazard) {
-      case GeoHazard.Snow:
-        return this.getDefaultAvalancheWarningGroups();
-      case GeoHazard.Ice:
-        return this.getDefaultIceWarningGroups();
-      default:
-        return this.getCountyWarningGroups(geoHazard);
+    case GeoHazard.Snow:
+      return this.getDefaultAvalancheWarningGroups();
+    case GeoHazard.Ice:
+      return this.getDefaultIceWarningGroups();
+    default:
+      return this.getCountyWarningGroups(geoHazard);
     }
   }
 
@@ -280,9 +280,9 @@ export class WarningService {
     return combineLatest([
       this.getWarningsAsObservable(),
       this.getFavouritesAsObservable()]).pipe(map(([regions, favourites]) =>
-        this.mapAndSort(regions.filter((region) =>
-          !!favourites.find((x) => x.groupId === region.regionId && x.geoHazard === region.geoHazard)))
-      ));
+      this.mapAndSort(regions.filter((region) =>
+        !!favourites.find((x) => x.groupId === region.regionId && x.geoHazard === region.geoHazard)))
+    ));
   }
 
   private mapAndSort(waringGroup: IWarningGroup[]): WarningGroup[] {
@@ -305,7 +305,7 @@ export class WarningService {
 
   private getWarningsForCurrentLanguageAndCurrentGeoHazard() {
     return combineLatest([this.getWarningsForCurrentLanguageAsObservable(),
-    this.userSettingService.currentGeoHazard$])
+      this.userSettingService.currentGeoHazard$])
       .pipe(map(([warningGroups, currentGeoHazard]) => {
         return warningGroups.filter((wg) => currentGeoHazard.find((g) => g === wg.key.geoHazard));
       }), shareReplay(1));
@@ -315,11 +315,11 @@ export class WarningService {
     return combineLatest([this.mapService.mapViewAndAreaObservable$, this.getWarningsAsObservable()])
       .pipe(switchMap(([mapViewArea, _]) =>
         this.getWarningsForCurrentMapView(mapViewArea)),
-        map((result) => result),
-        tap((val) => {
-          this.loggingService.debug(`getWarningsForCurrentMapViewAsObservable changed`, DEBUG_TAG, val);
-        }),
-        shareReplay(1));
+      map((result) => result),
+      tap((val) => {
+        this.loggingService.debug('getWarningsForCurrentMapViewAsObservable changed', DEBUG_TAG, val);
+      }),
+      shareReplay(1));
   }
 
   private groupIsInRegion(warningGroup: WarningGroup, regionId: string) {
@@ -485,14 +485,14 @@ export class WarningService {
   }
 
   private async updateAvalancheWarnings(language: LangKey, fromDate?: Date, toDate?: Date, cancelPromise?: Promise<void>) {
-    this.loggingService.debug(`Updating avalanche warnings`, DEBUG_TAG);
+    this.loggingService.debug('Updating avalanche warnings', DEBUG_TAG);
     let cancelled = false;
     if (cancelPromise) {
       cancelPromise.then(() => {
         cancelled = true;
       });
     }
-    const supportedLang = lang
+    const supportedLang = lang;
     const dateRange = this.getDefaultDateRange(fromDate, toDate);
     const dataLoadId = this.getDataLoadId(GeoHazard.Snow, language);
     await this.dataLoadService.startLoading(dataLoadId);
@@ -543,12 +543,12 @@ export class WarningService {
       const ids = regions.map((r) => r.id);
       const deleteResult = await nSQL(NanoSql.TABLES.WARNING.name)
         .query('delete').where((dbItem: IWarningGroup) => dbItem.geoHazard === geoHazard && ids.indexOf(dbItem.id) < 0).exec();
-      this.loggingService.debug(`Deleted regions no longer in result:`, DEBUG_TAG, deleteResult);
+      this.loggingService.debug('Deleted regions no longer in result:', DEBUG_TAG, deleteResult);
     }
   }
 
   private async updateIceWarnings(language: LangKey) {
-    this.loggingService.debug(`Updating ice warnings`, DEBUG_TAG);
+    this.loggingService.debug('Updating ice warnings', DEBUG_TAG);
     const geoHazard = GeoHazard.Ice;
     const dataLoadId = this.getDataLoadId(geoHazard, language);
     await this.dataLoadService.startLoading(dataLoadId);
@@ -567,7 +567,7 @@ export class WarningService {
         warnings: [],
         sortOrder: index,
       }));
-      this.loggingService.debug(`New updates for ice warnings:`, DEBUG_TAG, regionResult);
+      this.loggingService.debug('New updates for ice warnings:', DEBUG_TAG, regionResult);
 
       this.updateLatestWarnings(geoHazard, language, regionResult);
       await this.dataLoadService.loadingCompleted(dataLoadId, regionResult.length, null, null);
@@ -601,7 +601,6 @@ export class WarningService {
     // NOTE: Mocking ice warnings for web because of missing CORS headers in api (just a static file)
     return require('../../../../assets/json/ice_forecast_regions.json');
   }
-
 
   private getDate(dateString: string) {
     return moment.tz(dateString, settings.services.warning.timezone).toDate();

@@ -10,7 +10,7 @@ describe('SupportTileLegendLoaderComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ SupportTileLegendLoaderComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

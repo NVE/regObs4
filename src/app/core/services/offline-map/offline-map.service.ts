@@ -58,10 +58,10 @@ export class OfflineMapService implements OnReset {
           return of(null);
         })
       ) : NEVER)).subscribe((tile) => {
-        // this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
-        this._saveBufferSize--;
-        this._saveTileBufferTrigger.next(null);
-      });
+      // this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
+      this._saveBufferSize--;
+      this._saveTileBufferTrigger.next(null);
+    });
   }
 
   private saveHtmlImageToDb(id: string, el: HTMLImageElement):
@@ -72,9 +72,9 @@ export class OfflineMapService implements OnReset {
           id,
           blob,
           MIME_TYPE)).pipe(
-            map((offlineTile) => ({ id, el, offlineTile })))),
+          map((offlineTile) => ({ id, el, offlineTile })))),
       catchError((err) => {
-        this.loggingService.log(`Could not save tile image to offline tile`, err, LogLevel.Warning, DEBUG_TAG);
+        this.loggingService.log('Could not save tile image to offline tile', err, LogLevel.Warning, DEBUG_TAG);
         return of(null);
       }));
   }
@@ -288,9 +288,9 @@ export class OfflineMapService implements OnReset {
     try {
       const file = await this.file.resolveLocalFilesystemUrl(tile.dataUrl);
       await new Promise((resolve, reject) => file.remove(() => resolve(), err => reject(err)));
-      this.loggingService.debug(`Deleted tile from disk`, DEBUG_TAG, tile);
+      this.loggingService.debug('Deleted tile from disk', DEBUG_TAG, tile);
     } catch (err) {
-      this.loggingService.log(`Could not delete offline tile file`, err, LogLevel.Warning, DEBUG_TAG, tile);
+      this.loggingService.log('Could not delete offline tile file', err, LogLevel.Warning, DEBUG_TAG, tile);
     }
   }
 

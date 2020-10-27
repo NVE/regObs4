@@ -2,26 +2,25 @@ import { Observable } from 'rxjs';
 import { DoWork, ObservableWorker } from 'observable-webworker';
 import { Feature,
   Polygon,
-   bboxPolygon,
-   intersect,
-   booleanContains,
-    FeatureCollection,
-    Geometry,
-    GeometryCollection,
-    inside,
-    point,
-    MultiPolygon,
-    buffer,
-    BBox,
-    Point,
-    Coord} from '@turf/turf';
+  bboxPolygon,
+  intersect,
+  booleanContains,
+  FeatureCollection,
+  Geometry,
+  GeometryCollection,
+  inside,
+  point,
+  MultiPolygon,
+  buffer,
+  BBox,
+  Point,
+  Coord} from '@turf/turf';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { map } from 'rxjs/operators';
 import { settings } from '../../../../settings';
 import avalancheRegions from './../../../../assets/json/varslingsomraader.json';
 import regions from './../../../../assets/json/regions-simple-polygons.json';
 import { IRegionInViewOutput, IRegionInViewInput } from './region-in-view-models';
-
 
 @ObservableWorker()
 export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInViewOutput> {
@@ -37,7 +36,7 @@ export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInV
 
   private getFeaturesInViewBounds(currentViewAsPolygon: Feature<Polygon>, geoHazards: GeoHazard[]) {
     return this.getRegions(geoHazards).features.filter((f) =>
-        this.isInsideOrIntersects(<Polygon>f.geometry, currentViewAsPolygon.geometry));
+      this.isInsideOrIntersects(<Polygon>f.geometry, currentViewAsPolygon.geometry));
   }
 
   private getFeatureInPoint(coordinates: Coord, featuresInViewBounds: Feature<Geometry | GeometryCollection, {
@@ -45,7 +44,7 @@ export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInV
 }>[]): Feature<Geometry | GeometryCollection, { [name: string]: any}> {
     // Region that center view point is inside
     const firstAndBest = (featuresInViewBounds || [])
-    .find((f) => inside(coordinates, <Feature<Polygon | MultiPolygon> | Polygon | MultiPolygon>f.geometry));
+      .find((f) => inside(coordinates, <Feature<Polygon | MultiPolygon> | Polygon | MultiPolygon>f.geometry));
     return firstAndBest;
   }
 
@@ -61,7 +60,7 @@ export class RegionInViewWorker implements DoWork<IRegionInViewInput, IRegionInV
       const featuresInViewBounds = this.getFeaturesInViewBounds(currentViewAsPolygon, mapView.geoHazards);
 
       const featureName = mapView.geoHazards[0] === GeoHazard.Snow ?
-      settings.services.warning.Snow.featureName : settings.services.warning.Dirt.featureName;
+        settings.services.warning.Snow.featureName : settings.services.warning.Dirt.featureName;
       regionsInViewBounds = featuresInViewBounds
         .map((f) => f.properties[featureName].toString());
 

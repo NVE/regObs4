@@ -25,7 +25,6 @@ const DEBUG_TAG = 'LegacyTripPage';
 })
 export class LegacyTripPage implements OnInit, OnDestroy {
 
-
   private tripLoggerSubscription: Subscription;
 
   isRunning = false;
@@ -127,8 +126,6 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   stopTrip() {
     this.tripLoggerService.stopLegacyTrip();
   }
-
-
 
   async showHelp() {
     const translation = await this.translateService.get('TRIP.LEGACY_HELP_TEXT').toPromise();

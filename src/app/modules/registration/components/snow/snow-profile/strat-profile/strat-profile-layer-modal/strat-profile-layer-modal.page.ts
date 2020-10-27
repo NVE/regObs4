@@ -32,7 +32,6 @@ export class StratProfileLayerModalPage implements OnInit {
   grainFormFilter: (id: number) => boolean;
   wetnessFilter: (id: number) => boolean;
 
-
   get hasLayers() {
     return this.reg && this.reg.request && this.reg.request.SnowProfile2
       && this.reg.request.SnowProfile2.StratProfile

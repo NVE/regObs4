@@ -52,28 +52,28 @@ export class MapSearchService {
     return this.userSettingService.language$.pipe(
       switchMap((language) =>
         forkJoin([this.searchNorwegianPlaces(text, language),
-        this.searchWorld(text, language)]).pipe(map(([s1, s2]) => [...s1, ...s2]))));
+          this.searchWorld(text, language)]).pipe(map(([s1, s2]) => [...s1, ...s2]))));
   }
 
   searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
     return this.httpClient.get(`${settings.map.search.no.url}?navn=${text.trim()}*&antPerSide=${settings.map.search.no.maxResults}`
       + `&eksakteForst=${settings.map.search.no.exactFirst}&epsgKode=3395`).pipe(map((data: NorwegianSearchResultModel) => {
-        const hits = parseInt(data.totaltAntallTreff, 10);
-        const resultList = hits === 0 ? [] : (hits === 1 ? [
+      const hits = parseInt(data.totaltAntallTreff, 10);
+      const resultList = hits === 0 ? [] : (hits === 1 ? [
           data.stedsnavn as NorwegianSearchResultModelStednavn] :
           data.stedsnavn as Array<NorwegianSearchResultModelStednavn>);
-        return this.removeDuplicates(resultList).map((item) => {
-          const resp: MapSearchResponse = {
-            name: item.stedsnavn,
-            description: (lang === LangKey.nb ? item.navnetype + ', ' : '')
+      return this.removeDuplicates(resultList).map((item) => {
+        const resp: MapSearchResponse = {
+          name: item.stedsnavn,
+          description: (lang === LangKey.nb ? item.navnetype + ', ' : '')
               + item.kommunenavn + ' (' + item.fylkesnavn + ')',
-            type: item.navnetype,
-            latlng: L.Projection.Mercator.unproject(L.point({ x: item.aust, y: item.nord })),
-          };
-          return resp;
-        });
-      }),
-        catchError(() => of([])));
+          type: item.navnetype,
+          latlng: L.Projection.Mercator.unproject(L.point({ x: item.aust, y: item.nord })),
+        };
+        return resp;
+      });
+    }),
+    catchError(() => of([])));
   }
 
   removeDuplicates(data: NorwegianSearchResultModelStednavn[]) {
@@ -117,7 +117,7 @@ export class MapSearchService {
         steepness: result.Steepness,
         latLng: latLng,
       })),
-        catchError(() => of(null)));
+      catchError(() => of(null)));
   }
 
   private async saveSearchHistoryToDb(searchResult: MapSearchResponse) {
@@ -131,8 +131,8 @@ export class MapSearchService {
 
   getSearchHistoryAsObservable(): Observable<MapSearchHistory[]> {
     return new NSqlFullUpdateObservable<{ id: string, items: MapSearchHistory[] }[]>
-      (nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('select')
-        .listen())
+    (nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('select')
+      .listen())
       .pipe(map((val) => val.length > 0 ? val[0].items : []));
   }
 }

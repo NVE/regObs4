@@ -53,7 +53,7 @@ export class RegistrationService {
   }
 
   saveRegistration(appMode: AppMode, registration: IRegistration) {
-    this.loggingService.debug(`Save registration`, DEBUG_TAG, registration);
+    this.loggingService.debug('Save registration', DEBUG_TAG, registration);
     if (!registration) {
       return;
     }
@@ -340,7 +340,7 @@ export class RegistrationService {
 
   private postRegistration(appMode: AppMode, registration: IRegistration, cancel?: Promise<void>) {
     const uploadProcess$ = this.uploadAttachments(registration.request).pipe(
-      tap(() => this.loggingService.debug(`Upload attachments complete. Registration is:`, DEBUG_TAG, registration)),
+      tap(() => this.loggingService.debug('Upload attachments complete. Registration is:', DEBUG_TAG, registration)),
       concatMap(() => of(this.saveRegistration(appMode, registration))), // Save updated picture dtos with attachment id
       concatMap(() => this.registrationApiService.RegistrationInsert(registration.request)
       ));
@@ -410,7 +410,7 @@ export class RegistrationService {
     if (shouldUploadAttachment) {
       const file$ = from(this.getFile(pictureRequest.PictureImageBase64));
       return file$.pipe(
-        tap((file) => this.loggingService.debug(`Found image file blob`, DEBUG_TAG, file)),
+        tap((file) => this.loggingService.debug('Found image file blob', DEBUG_TAG, file)),
         concatMap((file) => this.getFormDataAndUploadToApi(file)),
         map((attachmentId) => {
           this.loggingService.debug(`Result from upload attachment: ${attachmentId}`, DEBUG_TAG);
@@ -458,7 +458,7 @@ export class RegistrationService {
     const formData$ = this.getFormDataFromFile(file);
     return combineLatest([this.userSettingService.appMode$, formData$])
       .pipe(
-        tap(([appMode, formData]) => this.loggingService.debug(`Got form data`, DEBUG_TAG, appMode, formData)),
+        tap(([appMode, formData]) => this.loggingService.debug('Got form data', DEBUG_TAG, appMode, formData)),
         concatMap(([appMode, formData]) =>
           this.uploadAttachmentToApi(appMode, formData)
         ));

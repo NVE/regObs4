@@ -38,13 +38,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchSearchResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search`,
+      this.rootUrl + '/Search',
       __body,
       {
         headers: __headers,
@@ -78,13 +78,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchCountResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchCountResponseDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search/Count`,
+      this.rootUrl + '/Search/Count',
       __body,
       {
         headers: __headers,
@@ -114,13 +114,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchSearchCriteriaResponse(request: SearchSideBarRequestDto): __Observable<__StrictHttpResponse<SearchSideBarDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = request;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search/SearchCriteria`,
+      this.rootUrl + '/Search/SearchCriteria',
       __body,
       {
         headers: __headers,
@@ -150,13 +150,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchAtAGlanceResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search/AtAGlance`,
+      this.rootUrl + '/Search/AtAGlance',
       __body,
       {
         headers: __headers,
@@ -182,7 +182,7 @@ class SearchService extends __BaseService {
   }
 }
 
-module SearchService {
+namespace SearchService {
 }
 
-export { SearchService }
+export { SearchService };

@@ -37,12 +37,11 @@ class RegistrationService extends __BaseService {
    * @return OK
    */
   RegistrationGetResponse(params: RegistrationService.RegistrationGetParams): __Observable<__StrictHttpResponse<RegistrationViewModel>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
 
-
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'GET',
       this.rootUrl + `/Registration/${params.regId}/${params.langKey}`,
       __body,
@@ -82,11 +81,11 @@ class RegistrationService extends __BaseService {
    * @return OK
    */
   RegistrationGetCaamlResponse(regId: number): __Observable<__StrictHttpResponse<{}>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
 
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'GET',
       this.rootUrl + `/Registration/Caaml/${regId}`,
       __body,
@@ -133,16 +132,16 @@ class RegistrationService extends __BaseService {
    */
   RegistrationPlotPreviewPngResponse(params: RegistrationService.RegistrationPlotPreviewPngParams): __Observable<__StrictHttpResponse<{}>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __headers = new HttpHeaders();
     let __body: any = null;
-    if (params.width != null) __params = __params.set('width', params.width.toString());
+    if (params.width != null) {__params = __params.set('width', params.width.toString());}
     __body = params.registration;
-    if (params.height != null) __params = __params.set('height', params.height.toString());
-    if (params.format != null) __params = __params.set('format', params.format.toString());
-    if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
-    let req = new HttpRequest<any>(
+    if (params.height != null) {__params = __params.set('height', params.height.toString());}
+    if (params.format != null) {__params = __params.set('format', params.format.toString());}
+    if (params.langKey != null) {__params = __params.set('langKey', params.langKey.toString());}
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Registration/PlotPreviewPng`,
+      this.rootUrl + '/Registration/PlotPreviewPng',
       __body,
       {
         headers: __headers,
@@ -183,13 +182,13 @@ class RegistrationService extends __BaseService {
    * @return OK
    */
   RegistrationInsertResponse(registration: CreateRegistrationRequestDto): __Observable<__StrictHttpResponse<CreateRegistrationResponseDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = registration;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Registration`,
+      this.rootUrl + '/Registration',
       __body,
       {
         headers: __headers,
@@ -219,13 +218,13 @@ class RegistrationService extends __BaseService {
    * @return OK
    */
   RegistrationValidateResponse(registration: CreateRegistrationRequestDto): __Observable<__StrictHttpResponse<CreateRegistrationResponseDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = registration;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Registration/Validate`,
+      this.rootUrl + '/Registration/Validate',
       __body,
       {
         headers: __headers,
@@ -251,7 +250,7 @@ class RegistrationService extends __BaseService {
   }
 }
 
-module RegistrationService {
+namespace RegistrationService {
 
   /**
    * Parameters for RegistrationGet
@@ -289,4 +288,4 @@ module RegistrationService {
   }
 }
 
-export { RegistrationService }
+export { RegistrationService };

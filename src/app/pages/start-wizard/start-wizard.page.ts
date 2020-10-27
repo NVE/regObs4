@@ -28,7 +28,6 @@ export class StartWizardPage implements OnInit, OnDestroy {
   supportedLanguages: { lang: string, name: string, langKey: LangKey }[] =
     settings.language.supportedLanguages.map((lang) => ({ ...lang, langKey: LangKey[lang.lang] }));
 
-
   private ngDestroy$ = new Subject();
   private activeIndex = new Subject<number>();
   private isIncreasing = true;
@@ -123,17 +122,17 @@ export class StartWizardPage implements OnInit, OnDestroy {
         interval(700).pipe(
           skipWhile(() => index !== 4))),
       takeUntil(this.ngDestroy$)).subscribe(() => {
-        if (this.isIncreasing && this.visibleStarNumber >= 6) { // Count to 6 to add an extra pause on the end
-          this.isIncreasing = false;
-        }
-        if (!this.isIncreasing && this.visibleStarNumber < 0) { // Count to -1 to add an extra pause on the start
-          this.isIncreasing = true;
-        }
-        if (this.isIncreasing) {
-          this.visibleStarNumber++;
-        } else {
-          this.visibleStarNumber--;
-        }
-      });
+      if (this.isIncreasing && this.visibleStarNumber >= 6) { // Count to 6 to add an extra pause on the end
+        this.isIncreasing = false;
+      }
+      if (!this.isIncreasing && this.visibleStarNumber < 0) { // Count to -1 to add an extra pause on the start
+        this.isIncreasing = true;
+      }
+      if (this.isIncreasing) {
+        this.visibleStarNumber++;
+      } else {
+        this.visibleStarNumber--;
+      }
+    });
   }
 }

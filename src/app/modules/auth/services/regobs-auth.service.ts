@@ -28,14 +28,12 @@ export const RETURN_URL_KEY = 'authreturnurl';
 })
 export class RegobsAuthService {
 
-
   private _loggedInUser$: Observable<LoggedInUser>;
   private observer: AuthObserver;
 
   get loggedInUser$() {
     return this._loggedInUser$;
   }
-
 
   constructor(
     private authService: AuthService,
@@ -57,7 +55,7 @@ export class RegobsAuthService {
   private setupDetectPasswordReset() {
     (<any>this.authService).tokenHandler.performTokenRequest = (configuration: AuthorizationServiceConfiguration, request: TokenRequest):
       Promise<TokenResponse> => {
-      let tokenResponse = this.requestor.xhr<TokenResponseJson | TokenErrorJson>({
+      const tokenResponse = this.requestor.xhr<TokenResponseJson | TokenErrorJson>({
         url: configuration.tokenEndpoint,
         method: 'POST',
         dataType: 'json',  // adding implicit dataType
@@ -280,7 +278,7 @@ export class RegobsAuthService {
     await this.saveUserGroups(appMode, user, user.ObserverGroup);
   }
 
-  async saveUserGroups(appMode: AppMode, user: ObserverResponseDto, observerGroups: ObserverGroupDto[]) {
+  async saveUserGroups(appMode: AppMode, user: ObserverResponseDto, observerGroups: ObserverGroupDto[]): Promise<void> {
     const userGroups = (observerGroups || []).map((val) => {
       return { key: `${user.Guid}_${val.Id}`, userId: user.Guid, Id: val.Id, Name: val.Name };
     });
@@ -290,18 +288,18 @@ export class RegobsAuthService {
   }
 
   private async deleteUserGroupsNoLongerInResult(appMode: AppMode, ids: string[]) {
-    const deleteResult = await NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
+    await NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
       .query('delete').where((dbGroup: { key: string, userId: string, Id: number, Name: string }) =>
         ids.indexOf(dbGroup.key) < 0
       ).exec();
   }
 
   private parseJwt(token: string) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
       return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
     return JSON.parse(jsonPayload);
-  };
+  }
 }

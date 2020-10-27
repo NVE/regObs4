@@ -26,7 +26,6 @@ import { ImageLocation } from './image-location.model';
 
 export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
 
-
   @Input() imgUrl: string[] = [];
   @Input() showLabels = true;
   @Input() imgComments: string[] = [];

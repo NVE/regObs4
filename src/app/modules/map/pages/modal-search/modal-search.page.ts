@@ -158,8 +158,6 @@ export class ModalSearchPage implements OnInit, OnDestroy {
     }
   }
 
-
-
   setPageSwipeAttributes() {
     if (this.modalTop) {
       this.domCtrl.write(() => {

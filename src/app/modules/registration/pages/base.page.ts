@@ -15,7 +15,6 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
   registrationTid: RegistrationTid;
   activatedRoute: ActivatedRoute;
 
-
   constructor(
     registrationTid: RegistrationTid,
     basePageService: BasePageService,

@@ -7,7 +7,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MapImageModule } from '../../../map-image/map-image.module';
 
-
 @NgModule({
   imports: [
     CommonModule,

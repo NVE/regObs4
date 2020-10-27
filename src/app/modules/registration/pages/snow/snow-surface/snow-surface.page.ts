@@ -19,4 +19,3 @@ export class SnowSurfacePage extends BasePage {
   }
 }
 
-

@@ -12,8 +12,8 @@ describe('CompetenceComponent', () => {
   let translate: TranslateService;
   const unknownCopetenceNO = '(Ukjent kompetanse)';
   const unknownCopetenceEN = '(Competence unknown)';
-  const filledStarSelector = "svg-icon[src='/assets/icon/star-selected.svg']";
-  const emptyStarSelector = "svg-icon[src='/assets/icon/star-empty.svg']";
+  const filledStarSelector = 'svg-icon[src=\'/assets/icon/star-selected.svg\']';
+  const emptyStarSelector = 'svg-icon[src=\'/assets/icon/star-empty.svg\']';
   const smallTextSelector = '.small-text';
 
   function getElementCount(element: HTMLElement, selector: string) {

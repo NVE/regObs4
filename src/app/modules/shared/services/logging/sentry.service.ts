@@ -24,7 +24,6 @@ export class SentryService implements LoggingService {
     this.log(message, null, LogLevel.Debug, tag, ...optionalParams);
   }
 
-
   configureLogging(appMode: AppMode) {
     const appVersion = this.appVersionService.getAppVersion();
     Sentry.init(
