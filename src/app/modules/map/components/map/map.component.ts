@@ -77,19 +77,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  options: L.MapOptions = {
-    zoom: this.zoom !== undefined ? this.zoom : settings.map.tiles.defaultZoom,
-    maxZoom: settings.map.tiles.maxZoom,
-    minZoom: settings.map.tiles.minZoom,
-    center: this.center || L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
-    bounceAtZoomLimits: false,
-    attributionControl: false,
-    zoomControl: false,
-    maxBounds: new L.LatLngBounds(new L.LatLng(90.0, -180.0), new L.LatLng(-90, 180.0)),
-    maxBoundsViscosity: 1.0,
-  };
+  options: L.MapOptions;
 
   async ngOnInit() {
+    this.options = {
+      zoom: this.zoom !== undefined ? this.zoom : settings.map.tiles.defaultZoom,
+      maxZoom: settings.map.tiles.maxZoom,
+      minZoom: settings.map.tiles.minZoom,
+      center: this.center || L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
+      bounceAtZoomLimits: false,
+      attributionControl: false,
+      zoomControl: false,
+      maxBounds: new L.LatLngBounds(new L.LatLng(90.0, -180.0), new L.LatLng(-90, 180.0)),
+      maxBoundsViscosity: 1.0,
+    };
     this.isActive = new BehaviorSubject(this.autoActivate);
     try {
       if (this.center === undefined || this.zoom === undefined) {
@@ -113,10 +114,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.geoPositionService.stopTrackingComponent(DEBUG_TAG);
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
-    if (this.map) {
-      this.map.remove();
-      this.map = null;
-    }
   }
 
   componentIsActive(isActive: boolean) {

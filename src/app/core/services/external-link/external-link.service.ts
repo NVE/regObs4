@@ -7,6 +7,10 @@ import { LogLevel } from '../../../modules/shared/services/logging/log-level.mod
 
 const DEBUG_TAG = 'ExternalLinkService';
 const VALID_URL_PROTOCOLS = ['http', 'https'];
+export const SAFARI_TINT_COLOR = '#ffffff';
+export const SAFARI_BAR_COLOR = '#044962';
+export const SAFARI_TOOLBAR_COLOR = '#044962';
+export const SAFARI_CONTROL_TINT_COLOR = '#ffffff';
 
 @Injectable({
   providedIn: 'root'
@@ -33,10 +37,10 @@ export class ExternalLinkService {
     }
     this.safariViewController.show({
       url: validatedUrl,
-      tintColor: '#ffffff',
-      barColor: '#044962',
-      toolbarColor: '#044962',
-      controlTintColor: '#ffffff',
+      tintColor: SAFARI_TINT_COLOR,
+      barColor: SAFARI_BAR_COLOR,
+      toolbarColor: SAFARI_TOOLBAR_COLOR,
+      controlTintColor: SAFARI_CONTROL_TINT_COLOR,
     }).subscribe(() => {
       this.loggingService.debug('External url opened in Safari ViewController or Chrome Custom Tabs', DEBUG_TAG);
     }, (error) => {

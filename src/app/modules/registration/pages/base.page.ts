@@ -1,4 +1,4 @@
-import { OnInit } from '@angular/core';
+import { Directive, OnInit } from '@angular/core';
 import { RegistrationTid } from '../models/registrationTid.enum';
 import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { take, takeUntil, map, switchMap, tap } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
 
+@Directive()
 export abstract class BasePage extends NgDestoryBase implements OnInit {
 
   registration: IRegistration;

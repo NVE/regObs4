@@ -2,13 +2,15 @@ import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { Subscription, combineLatest, Observable, of } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { LoginService } from '../../modules/login/services/login.service';
-import { IonInfiniteScroll, NavController, IonVirtualScroll } from '@ionic/angular';
+import { IonInfiniteScroll, IonVirtualScroll } from '@ionic/angular';
 import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
 import { map, distinctUntilChanged, switchMap, take } from 'rxjs/operators';
 import { IRegistration } from '../../modules/registration/models/registration.model';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
+import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
+import { AppMode } from '../../core/models/app-mode.enum';
+import { LangKey } from '../../core/models/langKey';
 
 interface MyVirtualScrollItem {
   type: 'draft' | 'sync' | 'sent';
@@ -35,7 +37,6 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll, { static: true }) infiniteScroll: IonInfiniteScroll;
   @ViewChild(IonVirtualScroll, { static: true }) virtualScroll: IonVirtualScroll;
   private registrationSubscription: Subscription;
-  private user: ObserverResponseDto;
   loaded = false;
   disableInfiniteScroll = true;
   refreshFunc = this.refresh.bind(this);
@@ -49,10 +50,9 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     private observationService: ObservationService,
     private ngZone: NgZone,
     private userSettingService: UserSettingService,
-    private navContoller: NavController,
     private registrationService: RegistrationService,
     private loggingService: LoggingService,
-    private loginService: LoginService) {
+    private regobsAuthService: RegobsAuthService) {
   }
 
   async refresh(cancelPromise: Promise<any>) {
@@ -60,13 +60,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     this.initRegistrationSubscription();
   }
 
-  async ngOnInit() {
-    const loggedInUser = await this.loginService.getLoggedInUser();
-    if (!loggedInUser.isLoggedIn) {
-      this.navContoller.navigateRoot('/');
-    } else {
-      this.user = loggedInUser.user;
-    }
+  ngOnInit() {
     this.initRegistrationSubscription();
   }
 
@@ -109,12 +103,13 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   private getMyRegistrationsObservable(pageNumber: number): Observable<MyVirtualScrollItem[]> {
-    return this.userSettingService.appModeAndLanguage$.pipe(switchMap(([appMode, langKey]) =>
-      this.observationService.getObservationsForCurrentUser(appMode, this.user, langKey, pageNumber, numberOfItemsToFetch).pipe(
-        map((val) => val.map((item) => ({ type: <'sent'>'sent', id: item.RegID.toString(), item }))))
-    ));
+    return combineLatest([this.userSettingService.appModeAndLanguage$, this.regobsAuthService.loggedInUser$])
+      .pipe(switchMap(([[appMode, langKey], loggedInUser]) =>
+        !loggedInUser.isLoggedIn ? of([]) :
+          this.observationService.getObservationsForCurrentUser(appMode, loggedInUser.user, langKey, pageNumber, numberOfItemsToFetch).pipe(
+            map((val) => val.map((item) => ({ type: <'sent'>'sent', id: item.RegID.toString(), item }))))
+      ));
   }
-
   private getDraftObservable(): Observable<MyVirtualScrollItem[]> {
     return this.registrationService.drafts$.pipe(
       map((val) => val.map((item) => ({ type: <'draft'>'draft', id: item.id, item }))));

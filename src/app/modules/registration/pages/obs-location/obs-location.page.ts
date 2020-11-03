@@ -9,12 +9,11 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { Observable, Subscription } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
-import { LoggingService } from '../../../shared/services/logging/logging.service';
-import { LoginService } from '../../../login/services/login.service';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { take } from 'rxjs/operators';
+import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 
 const DEBUG_TAG = 'ObsLocationPage';
 
@@ -43,9 +42,8 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     private navController: NavController,
     private fullscreenService: FullscreenService,
     private swipeBackService: SwipeBackService,
-    private loggingService: LoggingService,
-    private loginService: LoginService,
     private userSettingService: UserSettingService,
+    private regobsAuthService: RegobsAuthService
   ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
@@ -82,7 +80,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
         Id: this.registration.request.ObsLocation.ObsLocationID,
       };
     }
-    this.subscription = this.loginService.loggedInUser$.subscribe((val) => {
+    this.subscription = this.regobsAuthService.loggedInUser$.subscribe((val) => {
       this.loggedInUser = val;
     });
 

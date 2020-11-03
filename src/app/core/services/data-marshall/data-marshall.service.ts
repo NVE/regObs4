@@ -4,7 +4,6 @@ import { ObservationService } from '../observation/observation.service';
 import { KdvService } from '../kdv/kdv.service';
 import { CancelPromiseTimer } from '../../helpers/cancel-promise-timer';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { LoginService } from '../../../modules/login/services/login.service';
 import { settings } from '../../../../settings';
 import { Platform } from '@ionic/angular';
 import { RegistrationService } from '../../../modules/registration/services/registration.service';
@@ -18,8 +17,8 @@ import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
 import { LangKey } from '../../models/langKey';
 import { GeoHazard } from '../../models/geo-hazard.enum';
-
 import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
+import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
 const DEBUG_TAG = 'DataMarshallService';
 
 @Injectable({
@@ -46,7 +45,7 @@ export class DataMarshallService implements OnReset {
     private kdvService: KdvService,
     private helpTextService: HelpTextService,
     private userSettingService: UserSettingService,
-    private loginService: LoginService,
+    private regobsAuthService: RegobsAuthService,
     private platform: Platform,
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
@@ -101,7 +100,7 @@ export class DataMarshallService implements OnReset {
           , distinctUntilChanged()).subscribe((supportMap) => {
             this.analyticService.trackDimension(AppCustomDimension.supportMap, supportMap);
           }));
-      this.subscriptions.push(this.loginService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user)));
+      this.subscriptions.push(this.regobsAuthService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user)));
       this.subscriptions.push(this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode)));
 
       this.subscriptions.push(this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {

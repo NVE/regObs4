@@ -24,6 +24,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { OfflineImageComponent } from './components/offline-image/offline-image.component';
 import { CompetenceComponent } from '../../components/competence/competence.component';
 import { MapImageModule } from '../map-image/map-image.module';
+import { AuthModule } from './../auth/auth.module';
 @NgModule({
   imports: [
     CommonModule,
@@ -33,7 +34,8 @@ import { MapImageModule } from '../map-image/map-image.module';
     AngularSvgIconModule,
     TranslateModule,
     RouterModule,
-    MapImageModule
+    MapImageModule,
+    AuthModule
   ],
   declarations: [
     ShadowCssDirective,
@@ -80,7 +82,8 @@ import { MapImageModule } from '../map-image/map-image.module';
     HeaderColorDirective,
     SelectComponent,
     GeoFabComponent,
-    CompetenceComponent
+    CompetenceComponent,
+    AuthModule
   ]
 })
 export class SharedModule { }

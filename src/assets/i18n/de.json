@@ -7,7 +7,7 @@
   },
   "ADD_MENU": {
     "DRAFT": "Entwurf",
-    "NEW_OBSERVATION": "Neu",
+    "NEW_OBSERVATION": "Neue",
     "NEW_TRIP": "Neue Tour"
   },
   "ALERT": {
@@ -69,14 +69,14 @@
     "SW": "SW",
     "W": "W"
   },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Tour wird aufgezeichnet"
-  },
   "GEO_HAZARDS": {
     "DIRT": "Boden",
     "ICE": "Eis",
     "SNOW": "Schnee",
     "WATER": "Wasser"
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Tour wird aufgezeichnet"
   },
   "HELP": {
     "TITLE": "Hilfe"
@@ -211,7 +211,7 @@
       "FOR_REGION": "Land/Warnregion",
       "GENERAL_ON_MOUNTAIN": "Generell in den Bergen",
       "IN_THE_VALLEY_OR_FJORD": "Im Tal/Fjord",
-      "MANY_WATER_NEARBY": "Viele nahe gelegene Seen",
+      "MANY_WATER_NEARBY": "Viele nahegelegene Seen",
       "NEW_DANGER_OBS": "Fügen Sie ein Gefahrenzeichen hinzu",
       "NO_DAMAGE_SIGN": "Keine Gefahrenzeichen",
       "ON_THIS_MOUNTAIN_SIDE": "Auf dieser Seite des Berges",
@@ -297,9 +297,11 @@
         "TITLE": "Eisdicke"
       }
     },
-    "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Bildbeschreibung",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Fügen Sie eine Bildbeschreibung hinzu",
+    "IMAGES": "Bilder",
+    "IN_CM": "In Zentimeter",
+    "IN_FULL_CM": "In Zentimetern ohne Dezimalstellen",
     "INCIDENT": {
       "ACTIVITY": "Aktivität",
       "COMMENT": "Beschreibung",
@@ -309,8 +311,6 @@
       "TITLE": "Unfall / Vorfall"
     },
     "INVALID_IMAGE": "Sorry, das ist ein ungültiges Bild",
-    "IN_CM": "In Zentimeter",
-    "IN_FULL_CM": "In Zentimetern ohne Dezimalstellen",
     "NONE": "Nicht ausgewählt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Standort bestätigen",
@@ -328,14 +328,14 @@
     "REQUIRED_FIELDS_MISSING": "Einige Felder sind ungültig. Möchten Sie das Formular zurücksetzen und zurückgehen?",
     "RESEND": "Versuchen Sie erneut zu senden",
     "RESET": "Zurücksetzen",
-    "SAVED_DESCRIPTION": "Die Syncronisation erfolgt bei bestehender Netzwerkverbindung.",
-    "SAVED_ON_PHONE": "Am Telefon gespeichert",
     "SAVE_ALERT": {
       "HEADER": "Als Entwurf speichern?",
       "MESSAGE": "Sie sind dabei, die Registrierung ohne Absenden zu verlassen. Möchten Sie sie als Entwurf speichern?",
       "NO": "Nein, verwerfen",
       "YES": "Ja, speichern"
     },
+    "SAVED_DESCRIPTION": "Die Syncronisation erfolgt bei bestehender Netzwerkverbindung.",
+    "SAVED_ON_PHONE": "Am Telefon gespeichert",
     "SEND": "Absenden",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bestätigen Sie die Schadensstelle",
@@ -370,9 +370,9 @@
         "TITLE": "Beurteilung der Lawinengefahr"
       },
       "AVALANCHE_OBS": {
+        "AVAL_CAUSE": "Schwachschicht",
         "AVALANCHE_TRIGGER": "Auslöseempfindlichkeit",
         "AVALANCHE_TYPE": "Lawinenart",
-        "AVAL_CAUSE": "Schwachschicht",
         "DESTRUCTIVE_SIZE": "Größe",
         "FRACTURE_HEIGTH": "Anrisshöhe (cm)",
         "FRACTURE_WIDTH": "Anrissbreite (m)",
@@ -389,16 +389,16 @@
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Neues Lawinenproblem hinzufügen",
         "ALL": "Alle",
+        "AVAL_PROBABILITY": "Lawinenwahrscheinlichkeit",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Größe der zu erwartenden Lawine",
         "AVALANCHE_PROBABILITY": "Die Möglichkeit von Lawinen",
         "AVALANCHE_PROPAGATION_HEADER": "Räumliche Lawinenverteilung",
         "AVALANCHE_TRIGGER_PROBABILITY": "Auslöseempfindlichkeit",
         "AVALANCHE_TYPE": "Lawinenart",
-        "AVAL_PROBABILITY": "Lawinenwahrscheinlichkeit",
         "BOTTOM": "Boden",
+        "EXPOSED_HEIGHT_COMBO": "Höhe",
         "EXPOSED_HEIGHT1": "Höhe",
         "EXPOSED_HEIGHT2": "Niedrigere Höhe",
-        "EXPOSED_HEIGHT_COMBO": "Höhe",
         "MIDDLE": "Mitte",
         "NO_WEAK_LAYERS": "Es gibt keine Schwachschichten",
         "PROPAGATION": "Räumliche Verteilung",
@@ -518,7 +518,7 @@
         "FROM_SOUTH_WEST": "SW - von Südwesten",
         "FROM_WEST": "W - von Westen",
         "NOT_GIVEN": "Keine Angabe",
-        "ONLY_FULL_PERCENTAGE": "Prozentsatz ohn Dezimalstellen",
+        "ONLY_FULL_PERCENTAGE": "Prozentsatz ohne Dezimalstellen",
         "PRECIPITATION": "Niederschlag",
         "TITLE": "Wetter",
         "WIND_DIRECTION": "Windrichtung",
@@ -568,8 +568,8 @@
     "ALLOW_ANALYTICS_DESCRIPTION": "Helfen Sie uns, Varsom Regobs zu verbessern, indem Sie uns mitteilen, wie Sie die Anwendung verwenden.",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Diese Daten sind anonym und können nicht persönlich mit Ihnen verknüpft werden.",
     "ALLOW_ANALYTICS_HEADER": "Nutzungsstatistiken freigeben",
-    "APPMODE": "App-Modus",
     "APP_VERSION": "App Version",
+    "APPMODE": "App-Modus",
     "CONFIRM_RESET": "Möchten Sie die App wirklich zurücksetzen?",
     "COUNTRY": "Land",
     "DROPDOWNS_FAILED": "Dropdowns konnten nicht aktualisiert werden. Bitte überprüfen Sie die Netzwerkeinstellungen und versuchen Sie es später erneut.",
@@ -690,22 +690,6 @@
     "TRIPS": "Routen",
     "WARNINGS": "Warnungen"
   },
-  "TRIP": {
-    "COMMENT_DESCRIPTION": "Beschreiben Sie, welche Art von Route Sie unternehmen und wonach Sie suchen usw.",
-    "END_ERROR": "Konnte Routenaufzeichnung nicht stoppen. Bitte versuchen Sie es später noch einmal. Die Routenaufzeichnung stoppt automatisch um Mitternacht.",
-    "ERROR": "Fehler beim Starten der Routenaufzeichnung. Bitte versuche es erneut.",
-    "ERROR_POSITION": "Routenaufzeichnung konnte ohne GPS-Position nicht gestartet werden.",
-    "LEGACY_HELP_TEXT": "Mit diesem Formular können Sie mitteilen, dass Sie heute eine Route planen.\n\nEs ist für das Warndienstteam hilfreich zu wissen, ob heute mit Beobachtungen zu rechnen ist. Es ist auch hilfreich zu wissen, welche Art von Beobachtungen zu erwarten sind (wonach Sie suchen, wohin Sie gehen) und wann Sie damit rechnen, dass diese bei Regobs eingereicht werden.\n\nAlle bezahlten Beobachter müssen aufzeichnen, welche Arten von Beobachtungstouren sind geplant: ist es eine gewöhnliche bezahlte Beobachtungstour oder ist dies eine zusätzliche Meldung? Eine zusätzliche Meldung ist die Übermittlung von Beobachtungen, die Sie während anderer Arbeiten oder in Ihrer Freizeit gemacht haben.",
-    "ONGOING_TRIP": "Routenaufzeichnung läuft",
-    "STARTED": "Tour wurde gestartet",
-    "START_TRIP": "Starte Tour",
-    "STOPPED": "Tour wurde gestoppt",
-    "STOP_TRIP": "Route stoppen",
-    "TITLE": "Routen",
-    "TRIP": "Route",
-    "TRIP_END_DESCRIPTION": "Beobachtungen werden erwartet",
-    "TRIP_TYPE": "Routenart"
-  },
   "TRIP_LOG": {
     "COMPLETE": "Vollständig",
     "CONTINUE": "Fortsetzen",
@@ -715,6 +699,22 @@
     "START": "Start",
     "STOP": "Stop",
     "STOPPED": "Routenaufzeichnung abgeschlossen"
+  },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Beschreiben Sie, welche Art von Route Sie unternehmen und wonach Sie suchen usw.",
+    "END_ERROR": "Konnte Routenaufzeichnung nicht stoppen. Bitte versuchen Sie es später noch einmal. Die Routenaufzeichnung stoppt automatisch um Mitternacht.",
+    "ERROR": "Fehler beim Starten der Routenaufzeichnung. Bitte versuche es erneut.",
+    "ERROR_POSITION": "Routenaufzeichnung konnte ohne GPS-Position nicht gestartet werden.",
+    "LEGACY_HELP_TEXT": "Mit diesem Formular können Sie mitteilen, dass Sie heute eine Route planen.\n\nEs ist für das Warndienstteam hilfreich zu wissen, ob heute mit Beobachtungen zu rechnen ist. Es ist auch hilfreich zu wissen, welche Art von Beobachtungen zu erwarten sind (wonach Sie suchen, wohin Sie gehen) und wann Sie damit rechnen, dass diese bei Regobs eingereicht werden.\n\nAlle bezahlten Beobachter müssen aufzeichnen, welche Arten von Beobachtungstouren sind geplant: ist es eine gewöhnliche bezahlte Beobachtungstour oder ist dies eine zusätzliche Meldung? Eine zusätzliche Meldung ist die Übermittlung von Beobachtungen, die Sie während anderer Arbeiten oder in Ihrer Freizeit gemacht haben.",
+    "ONGOING_TRIP": "Routenaufzeichnung läuft",
+    "START_TRIP": "Starte Tour",
+    "STARTED": "Tour wurde gestartet",
+    "STOP_TRIP": "Route stoppen",
+    "STOPPED": "Tour wurde gestoppt",
+    "TITLE": "Routen",
+    "TRIP": "Route",
+    "TRIP_END_DESCRIPTION": "Beobachtungen werden erwartet",
+    "TRIP_TYPE": "Routenart"
   },
   "VALIDATION": {
     "AND": "und",
@@ -726,10 +726,10 @@
     "MUST_BE": "muss sein"
   },
   "WARNING_LIST": {
+    "A_REGIONS": "A - Regionen",
     "ADDED_TO_FAVOURITES": "zu Favoriten hinzugefügt",
     "ALL": "Alles",
     "ALL_WARNINGS": "Alle Warnungen",
-    "A_REGIONS": "A - Regionen",
     "B_REGIONS": "B - Regionen",
     "B_REGIONS_SUBTITLE": "Warnungen nur für Gefahrenstufe 4 und 5",
     "FAVOURITES": "Favoriten",

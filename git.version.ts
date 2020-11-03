@@ -1,9 +1,9 @@
 import { writeFileSync, readFileSync } from 'fs';
 import { AppVersion } from './src/app/core/models/app-version.model';
-const cordovaSetVersion = require('cordova-set-version');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const prettifyXml = require('prettify-xml');
+import * as cordovaSetVersion from 'cordova-set-version';
 
 async function getVersion(): Promise<AppVersion> {
   const revision = (await exec('git rev-parse --short HEAD')).stdout.toString().trim();
@@ -34,8 +34,12 @@ async function updateVersion() {
     branch: '${version.branch}'`);
 
   writeFileSync('src/environments/version.json', JSON.stringify(version), { encoding: 'utf8' });
-  const configPath = 'config.xml';
-  cordovaSetVersion(configPath, version.version, version.buildNumber);
+  const configPath = './config.xml';
+  try {
+    await cordovaSetVersion({ configPath: configPath, version: version.version, buildNumber: version.buildNumber });
+  } catch (err) {
+    console.error('Could not update config.xml version number', err);
+  }
   prettify(configPath);
 }
 

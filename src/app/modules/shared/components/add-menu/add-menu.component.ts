@@ -45,7 +45,7 @@ export class AddMenuComponent implements OnInit, OnDestroy {
       .pipe(
         map((us) => ({
           geoHazards: us.currentGeoHazard,
-          showSpace: us.language !== LangKey.nb,
+          showSpace: us.language !== LangKey.nb && us.language !== LangKey.nn,
           showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0,
         })),
         setObservableTimeout()

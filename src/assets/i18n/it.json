@@ -69,14 +69,14 @@
     "SW": "SO",
     "W": "O"
   },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Registrando percorso"
-  },
   "GEO_HAZARDS": {
     "DIRT": "Suolo",
     "ICE": "Ghiaccio",
     "SNOW": "Neve",
     "WATER": "Acqua"
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Registrando percorso"
   },
   "HELP": {
     "TITLE": "Aiuto"
@@ -297,9 +297,11 @@
         "TITLE": "Altezza di ghiaccio"
       }
     },
-    "IMAGES": "Immagini",
     "IMAGE_DESCRIPTION": "Descrizione dell'imagine",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Aggiungi una descrizione all'immagine",
+    "IMAGES": "Immagini",
+    "IN_CM": "In centimetri",
+    "IN_FULL_CM": "In centimetri senza cifre decimali",
     "INCIDENT": {
       "ACTIVITY": "Attività",
       "COMMENT": "Commento",
@@ -309,8 +311,6 @@
       "TITLE": "Incidente"
     },
     "INVALID_IMAGE": "Questa immagine è  invalia.",
-    "IN_CM": "In centimetri",
-    "IN_FULL_CM": "In centimetri senza cifre decimali",
     "NONE": "Nessuno selettato",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Conferma locazione",
@@ -328,14 +328,14 @@
     "REQUIRED_FIELDS_MISSING": "Ci sono campi invalide. Voui resettare la forma e andare indietro?",
     "RESEND": "Prova a inviare di nuovo",
     "RESET": "Resetta",
-    "SAVED_DESCRIPTION": "Questi venno sincronizzati quendo hai rete.",
-    "SAVED_ON_PHONE": "Salvati sul telefono.",
     "SAVE_ALERT": {
       "HEADER": "Salva come bozza?",
       "MESSAGE": "Stai uscieno dalla registrazione senza inviare. Voui salvare come bozza?",
       "NO": "No, scarta.",
       "YES": "Si, salva"
     },
+    "SAVED_DESCRIPTION": "Questi venno sincronizzati quendo hai rete.",
+    "SAVED_ON_PHONE": "Salvati sul telefono.",
     "SEND": "Invia",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Conferma locazione di danni",
@@ -370,9 +370,9 @@
         "TITLE": "Evaluazione del pericolo valanghivo"
       },
       "AVALANCHE_OBS": {
+        "AVAL_CAUSE": "Strato debole",
         "AVALANCHE_TRIGGER": "Sensitività",
         "AVALANCHE_TYPE": "Tipo di valanga",
-        "AVAL_CAUSE": "Strato debole",
         "DESTRUCTIVE_SIZE": "Dimensioni",
         "FRACTURE_HEIGTH": "Spessore (cm)",
         "FRACTURE_WIDTH": "Larghezza",
@@ -389,16 +389,16 @@
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Aggiungi un nouvo situzione tipica",
         "ALL": "Tutti",
+        "AVAL_PROBABILITY": "Probabilità di distacco",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Dimensione aspettata",
         "AVALANCHE_PROBABILITY": "La possibilitá di valanghe",
         "AVALANCHE_PROPAGATION_HEADER": "Distribuzione spaziale della situazione tipica",
         "AVALANCHE_TRIGGER_PROBABILITY": "Sensibilità a distacco",
         "AVALANCHE_TYPE": "Tipo di valanga",
-        "AVAL_PROBABILITY": "Probabilità di distacco",
         "BOTTOM": "fondo",
+        "EXPOSED_HEIGHT_COMBO": "Quota",
         "EXPOSED_HEIGHT1": "Quota",
         "EXPOSED_HEIGHT2": "Quota inferiore",
-        "EXPOSED_HEIGHT_COMBO": "Quota",
         "MIDDLE": "Intermedio",
         "NO_WEAK_LAYERS": "Non ci sono strati deboli",
         "PROPAGATION": "Distribuzione spaziale",
@@ -568,8 +568,8 @@
     "ALLOW_ANALYTICS_DESCRIPTION": "Facci sapere come usi l'app per aiutarci a migliorare Varsom Regobs",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Le data sono anonimi e non possone essere connette ad un individuo.",
     "ALLOW_ANALYTICS_HEADER": "Condividi statisiche di uso",
-    "APPMODE": "Modo di app",
     "APP_VERSION": "Versione",
+    "APPMODE": "Modo di app",
     "CONFIRM_RESET": "Sei sicuro che voui fare is reset?",
     "COUNTRY": "Paese",
     "DROPDOWNS_FAILED": "Aggiorno dei menu è fallito. Prega controllare impostazioni di rete e riprovare più tardi.",
@@ -690,22 +690,6 @@
     "TRIPS": "Escursioni",
     "WARNINGS": "Avvertenze"
   },
-  "TRIP": {
-    "COMMENT_DESCRIPTION": "Descrivi la tua escursione, obiettivi di osservazione ecc.",
-    "END_ERROR": "Sosta escursione non possibile. Prega riprovare in due minuti. La escurzione sarà sostata automaticamente a mezzanotte.",
-    "ERROR": "Avvio escursione non possibile. Prega riprovare.",
-    "ERROR_POSITION": "Avvio escursione non è possibile senza posizione GPS.",
-    "LEGACY_HELP_TEXT": "Puoi usare questa forma per communicare che hai pianeggiato una escursione oggi.\n\nÈ utile per i previsori a sapere se possono aspettare osservazioni oggi. È anche utile sapere che forma di osservazioni possona aspettare (cosa cerchi, dove vai) e quando credi di subire le osservazioni a Regobs.\n\nTutti gli osservatori pagati devono registrare che tipo di uscita osservatoria faranno: è una uscita ordinaria pagata, o è una registrazione supplementare. Registrazioni supplementari sono le registrazioni che fai durante il corso di altro lavoro o tempo libero.",
-    "ONGOING_TRIP": "Uscita in corso",
-    "STARTED": "Uscita iniziata",
-    "START_TRIP": "Inizia uscita",
-    "STOPPED": "Uscita fermata",
-    "STOP_TRIP": "Ferma uscita",
-    "TITLE": "Uscite",
-    "TRIP": "Uscita",
-    "TRIP_END_DESCRIPTION": "Osservazioni aspettate prima di",
-    "TRIP_TYPE": "Tipo di uscita"
-  },
   "TRIP_LOG": {
     "COMPLETE": "Completo",
     "CONTINUE": "Continua",
@@ -715,6 +699,22 @@
     "START": "Avvia",
     "STOP": "Ferma",
     "STOPPED": "Uscita fermata e completa"
+  },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Descrivi la tua escursione, obiettivi di osservazione ecc.",
+    "END_ERROR": "Sosta escursione non possibile. Prega riprovare in due minuti. La escurzione sarà sostata automaticamente a mezzanotte.",
+    "ERROR": "Avvio escursione non possibile. Prega riprovare.",
+    "ERROR_POSITION": "Avvio escursione non è possibile senza posizione GPS.",
+    "LEGACY_HELP_TEXT": "Puoi usare questa forma per communicare che hai pianeggiato una escursione oggi.\n\nÈ utile per i previsori a sapere se possono aspettare osservazioni oggi. È anche utile sapere che forma di osservazioni possona aspettare (cosa cerchi, dove vai) e quando credi di subire le osservazioni a Regobs.\n\nTutti gli osservatori pagati devono registrare che tipo di uscita osservatoria faranno: è una uscita ordinaria pagata, o è una registrazione supplementare. Registrazioni supplementari sono le registrazioni che fai durante il corso di altro lavoro o tempo libero.",
+    "ONGOING_TRIP": "Uscita in corso",
+    "START_TRIP": "Inizia uscita",
+    "STARTED": "Uscita iniziata",
+    "STOP_TRIP": "Ferma uscita",
+    "STOPPED": "Uscita fermata",
+    "TITLE": "Uscite",
+    "TRIP": "Uscita",
+    "TRIP_END_DESCRIPTION": "Osservazioni aspettate prima di",
+    "TRIP_TYPE": "Tipo di uscita"
   },
   "VALIDATION": {
     "AND": "e",
@@ -726,10 +726,10 @@
     "MUST_BE": "deve essere"
   },
   "WARNING_LIST": {
+    "A_REGIONS": "A - Regioni",
     "ADDED_TO_FAVOURITES": "aggiunto ai preferiti",
     "ALL": "Tutti",
     "ALL_WARNINGS": "Tutte le previsioni",
-    "A_REGIONS": "A - Regioni",
     "B_REGIONS": "B- Regioni",
     "B_REGIONS_SUBTITLE": "Bollettino solo su livello pericolo 4 o 5",
     "FAVOURITES": "Preferiti",

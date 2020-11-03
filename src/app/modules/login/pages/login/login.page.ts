@@ -1,64 +1,37 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { timer } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { LoggedInUser } from '../../models/logged-in-user.model';
-import { LoginService } from '../../services/login.service';
+import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../settings';
-import { NavController } from '@ionic/angular';
-import { NgDestoryBase } from '../../../../core/helpers/observable-helper';
-import { takeUntil, switchMap, map } from 'rxjs/operators';
-import { AppMode } from '../../../../core/models/app-mode.enum';
+import { map, take } from 'rxjs/operators';
+import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage extends NgDestoryBase implements OnInit {
-  loggedInUser: LoggedInUser;
-  userProfileUrl: string;
-  changePasswordUrl: string;
+export class LoginPage implements OnInit {
+  loggedInUser$: Observable<LoggedInUser>;
 
-  constructor(
-    private loginService: LoginService,
-    private userSettingService: UserSettingService,
-    private navController: NavController,
-    private ngZone: NgZone) {
-    super();
+  constructor(private regobsAuthService: RegobsAuthService, private userSettingService: UserSettingService, private externalLinkService: ExternalLinkService) {
   }
 
   ngOnInit() {
-    this.userSettingService.appMode$.pipe(
-      switchMap((appMode) =>
-        this.loginService.loggedInUser$.pipe(map((loggedInUser) => ({ appMode, loggedInUser })))),
-      takeUntil(this.ngDestroy$)).subscribe((result) => {
-        this.ngZone.run(() => {
-          this.loggedInUser = result.loggedInUser;
-          this.setUrls(result.appMode, result.loggedInUser);
-        });
-      });
+    this.loggedInUser$ = this.regobsAuthService.loggedInUser$;
   }
 
-  private setUrls(appMode: AppMode, loggedInUser: LoggedInUser) {
-    const serviceBaseUrl = settings.services.regObs.serviceUrl[appMode];
-    const webBaseUrl = settings.services.regObs.webUrl[appMode];
-    this.changePasswordUrl = `${serviceBaseUrl}${settings.services.regObs
-      .changePasswordUrl.replace('{email}', this.loggedInUser ? this.loggedInUser.email : '')}`;
-    this.userProfileUrl = `${webBaseUrl}${settings.services.regObs.viewProfileUrl}`;
+  signIn(): Promise<void> {
+    return this.regobsAuthService.signIn();
   }
 
-  isLoggedIn(loggedInUser: LoggedInUser) {
-    return loggedInUser && loggedInUser.isLoggedIn;
+  logout(): Promise<void> {
+    return this.regobsAuthService.logout();
   }
 
-  logout() {
-    return this.loginService.logout();
+  async openMyPage() {
+    const myPageUrl = await this.userSettingService.appMode$.pipe(map((appMode) => settings.authConfig[appMode].myPageUrl), take(1)).toPromise();
+    this.externalLinkService.openExternalLink(myPageUrl);
   }
-
-  onLoginSuccess() {
-    timer(1000).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
-      this.navController.navigateRoot('/');
-    });
-  }
-
 }

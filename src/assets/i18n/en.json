@@ -69,14 +69,14 @@
     "SW": "SW",
     "W": "W"
   },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Logging trip"
-  },
   "GEO_HAZARDS": {
     "DIRT": "Soil",
     "ICE": "Ice",
     "SNOW": "Snow",
     "WATER": "Water"
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Logging trip"
   },
   "HELP": {
     "TITLE": "Help"
@@ -297,9 +297,11 @@
         "TITLE": "Ice Thickness"
       }
     },
-    "IMAGES": "Images",
     "IMAGE_DESCRIPTION": "Image description",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Add a description to the image",
+    "IMAGES": "Images",
+    "IN_CM": "In centimeter",
+    "IN_FULL_CM": "In centimeters without decimals",
     "INCIDENT": {
       "ACTIVITY": "Activity",
       "COMMENT": "Description",
@@ -309,8 +311,6 @@
       "TITLE": "Accident / Incident"
     },
     "INVALID_IMAGE": "Sorry, this is an invalid image",
-    "IN_CM": "In centimeter",
-    "IN_FULL_CM": "In centimeters without decimals",
     "NONE": "Not selected",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Confirm location",
@@ -328,14 +328,14 @@
     "REQUIRED_FIELDS_MISSING": "Some fields are invalid. Do you want to reset form and go back?",
     "RESEND": "Try to send again",
     "RESET": "Reset",
-    "SAVED_DESCRIPTION": "These will be synchronized when you have network connection.",
-    "SAVED_ON_PHONE": "Saved on phone",
     "SAVE_ALERT": {
       "HEADER": "Save as draft?",
       "MESSAGE": "You are about to leave the registration without submitting. Do you want to save as draft?",
       "NO": "No, discard",
       "YES": "Yes, save"
     },
+    "SAVED_DESCRIPTION": "These will be synchronized when you have network connection.",
+    "SAVED_ON_PHONE": "Saved on phone",
     "SEND": "Submit",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Confirm damage location",
@@ -370,9 +370,9 @@
         "TITLE": "Avalanche Danger Assessment"
       },
       "AVALANCHE_OBS": {
+        "AVAL_CAUSE": "Weak layer",
         "AVALANCHE_TRIGGER": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
-        "AVAL_CAUSE": "Weak layer",
         "DESTRUCTIVE_SIZE": "Size",
         "FRACTURE_HEIGTH": "Fracture height (cm)",
         "FRACTURE_WIDTH": "Fracture width (m)",
@@ -389,16 +389,16 @@
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Add new avalanche problem",
         "ALL": "All",
+        "AVAL_PROBABILITY": "Probability for avalanche",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Size of expected avalanche",
         "AVALANCHE_PROBABILITY": "The possibility of avalanches",
         "AVALANCHE_PROPAGATION_HEADER": "Avalanche spatial distribution",
         "AVALANCHE_TRIGGER_PROBABILITY": "Sensitivity to triggers",
         "AVALANCHE_TYPE": "Avalanche type",
-        "AVAL_PROBABILITY": "Probability for avalanche",
         "BOTTOM": "Bottom",
+        "EXPOSED_HEIGHT_COMBO": "Elevation",
         "EXPOSED_HEIGHT1": "Height",
         "EXPOSED_HEIGHT2": "Lower height",
-        "EXPOSED_HEIGHT_COMBO": "Elevation",
         "MIDDLE": "Middle",
         "NO_WEAK_LAYERS": "There are no weak layers",
         "PROPAGATION": "Spatial distribution",
@@ -568,8 +568,8 @@
     "ALLOW_ANALYTICS_DESCRIPTION": "Help us improve Varsom Regobs by letting us know how you use the application.",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "This data is anonymous and cannot be linked to you personally.",
     "ALLOW_ANALYTICS_HEADER": "Share usage statistics",
-    "APPMODE": "App mode",
     "APP_VERSION": "App version",
+    "APPMODE": "App mode",
     "CONFIRM_RESET": "Are you sure you want to reset app?",
     "COUNTRY": "Country",
     "DROPDOWNS_FAILED": "Could not update dropdowns. Please check network settings and try again later.",
@@ -589,6 +589,12 @@
     "UPDATE_DROPDOWNS": "Update dropdowns",
     "USE_IN_WORLD": "Outside Norway",
     "USE_RETINA_MAP": "Use high resolution maps"
+  },
+  "SET_NICK_ALERT": {
+    "ERROR": "Couldn't save nickname. Please try later.",
+    "HELP_TEXT": "You need a nickname to use Varsom Regobs. The nickname is shown on your observations.",
+    "INPUT_TEXT": "Please type nickname",
+    "NICK": "Nick"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
@@ -668,7 +674,7 @@
     "ICE_LEGEND_TEXT_6": "Pipeline",
     "ICE_LEGEND_TEXT_7": "Power plant tunnel",
     "ICE_MAP_DESCRIPTION": "The support map shows parts of watercourses that behave unpredictably throughout the winter due to regulations for power generation",
-    "INFO_PAGE": "<h1>About maps with slope angle and runout zones</h1>\nThe maps are automatically produced and may contain errors. There may be steep terrain, which is not represented in the elevation model and thus not displayed in the maps.\nSome avalanches may have longer runouts that what is displayed as runout zones in the maps.\n\n<h2>What consideration to take?</h2>\nAdjust your risk by choosing where, when and how you travel. Varsom Regobs is a planning tool and its data may differ from the actual situation. Always make your own evaluation.\n \n<h2>When is it safe?</h2>\nAll travel in snow covered avalanche terrain has an element of risk.\n\n<h2>Want to learn more?</h2>\nYou may learn more by taking an avalanche safety course and on Snøskredskolen on Varsom.no.",
+    "INFO_PAGE": "<h1>About maps with slope angle and runout zones</h1>\nThe maps are automatically produced and may contain errors. There may be steep terrain, which is not represented in the elevation model and thus not displayed in the maps.\nSome avalanches may have longer runouts than what is displayed as runout zones in the maps.\n\n<h2>What consideration to take?</h2>\nAdjust your risk by choosing where, when and how you travel. Varsom Regobs is a planning tool and its data may differ from the actual situation. Always make your own evaluation.\n \n<h2>When is it safe?</h2>\nAll travel in snow covered avalanche terrain has an element of risk.\n\n<h2>Want to learn more?</h2>\nYou may learn more by taking an avalanche safety course and on Snøskredskolen on Varsom.no.",
     "LOW": "Low",
     "MARITINE_BORDER": "Sea border",
     "MIDDLE": "Middle",
@@ -679,7 +685,7 @@
     "STEEPNESS_MAP_DISCLAMER": "For trip planning <i>only</i>. The map is automatically produced and may have errors and omissions, e.g. steep terrain not displayed.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Short runouts (50% of the avalanches reach farther)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medium runouts (25% of the avalanches reach farther)",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Long runouts (5% of the avalanches reach farther)\nSome avalanches may have longer runouts that displayed as runout zones in the map.",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Long runouts (5% of the avalanches reach farther)\nSome avalanches may have longer runouts than displayed as runout zones in the map.",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Slope angle shading map with runout zones",
     "STEEPNESS_OUTLET_MAP_DISCLAMER": "For trip planning <i>only</i>. The map is automatically produced and may have errors and omissions, e.g. steep terrain or runouts not displayed.\n<br/>\n<br/>\nColours give runout zones for avalanches:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice"
@@ -689,22 +695,6 @@
     "MAP": "Map",
     "TRIPS": "Trips",
     "WARNINGS": "Warnings"
-  },
-  "TRIP": {
-    "COMMENT_DESCRIPTION": "Describe what kind of trip you are going and what you are looking for, etc.",
-    "END_ERROR": "Could not stop trip. Please try again later. The trip will stop automatically by midnight.",
-    "ERROR": "Error while starting trip. Please try again.",
-    "ERROR_POSITION": "Cannot start trip without GPS position.",
-    "LEGACY_HELP_TEXT": "You can use this form to report that you are planning a trip today.\n\nIt is useful for the forecaster team to know if observations can be expected today. It is also useful to know what kind of observations can be expected (what are you looking for, where are you going on a trip) and when do you expect these to be submitted to Regobs.\n\nAll paid observers must record what types of obs-tour are being planned: is it an ordinary paid observation trip, or is this an additional registration? Additional registration is the submission of observations you have made during other work or in your spare time.",
-    "ONGOING_TRIP": "Trip in progress",
-    "STARTED": "Trip started",
-    "START_TRIP": "Start trip",
-    "STOPPED": "Trip stopped",
-    "STOP_TRIP": "Stop trip",
-    "TITLE": "Trips",
-    "TRIP": "Trip",
-    "TRIP_END_DESCRIPTION": "Observations is expected before",
-    "TRIP_TYPE": "Trip type"
   },
   "TRIP_LOG": {
     "COMPLETE": "Complete",
@@ -716,6 +706,22 @@
     "STOP": "Stop",
     "STOPPED": "Trip log completed"
   },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Describe what kind of trip you are going and what you are looking for, etc.",
+    "END_ERROR": "Could not stop trip. Please try again later. The trip will stop automatically by midnight.",
+    "ERROR": "Error while starting trip. Please try again.",
+    "ERROR_POSITION": "Cannot start trip without GPS position.",
+    "LEGACY_HELP_TEXT": "You can use this form to report that you are planning a trip today.\n\nIt is useful for the forecaster team to know if observations can be expected today. It is also useful to know what kind of observations can be expected (what are you looking for, where are you going on a trip) and when do you expect these to be submitted to Regobs.\n\nAll paid observers must record what types of obs-tour are being planned: is it an ordinary paid observation trip, or is this an additional registration? Additional registration is the submission of observations you have made during other work or in your spare time.",
+    "ONGOING_TRIP": "Trip in progress",
+    "START_TRIP": "Start trip",
+    "STARTED": "Trip started",
+    "STOP_TRIP": "Stop trip",
+    "STOPPED": "Trip stopped",
+    "TITLE": "Trips",
+    "TRIP": "Trip",
+    "TRIP_END_DESCRIPTION": "Observations is expected before",
+    "TRIP_TYPE": "Trip type"
+  },
   "VALIDATION": {
     "AND": "and",
     "BETWEEN": "between",
@@ -726,10 +732,10 @@
     "MUST_BE": "must be"
   },
   "WARNING_LIST": {
+    "A_REGIONS": "A - Regions",
     "ADDED_TO_FAVOURITES": "added to favourites",
     "ALL": "All",
     "ALL_WARNINGS": "All warnings",
-    "A_REGIONS": "A - Regions",
     "B_REGIONS": "B - Regions",
     "B_REGIONS_SUBTITLE": "Warnings only for danger level 4 and 5",
     "FAVOURITES": "Favourites",

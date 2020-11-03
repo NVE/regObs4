@@ -1,4 +1,39 @@
 export const settings = {
+  authConfig: {
+    'TEST': {
+      client_id: '13270815-7def-4800-8fc9-178dd517f574',
+      server_host: 'https://nveb2c01test.b2clogin.com/nveb2c01test.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      redirect_url: 'regobs://callback',
+      end_session_redirect_url: 'regobs://callback',
+      scopes: 'openid offline_access',
+      pkce: true,
+      getObserverUrl: 'https://test-api.regobs.no/v5/Account/GetObserver',
+      myPageUrl: 'https://test-konto.nve.no/User',
+      updateObserverUrl: 'https://test-api.regobs.no/v5/Account/UpdateObserver',
+    },
+    'DEMO': {
+      client_id: '7149f248-5e18-4feb-8a0c-e988dc021977',
+      server_host: 'https://nveb2c01staging.b2clogin.com/nveb2c01staging.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      redirect_url: 'regobs://callback',
+      end_session_redirect_url: 'regobs://callback',
+      scopes: 'openid offline_access',
+      pkce: true,
+      getObserverUrl: 'https://demo-api.regobs.no/v5/Account/GetObserver',
+      myPageUrl: 'https://demo-konto.nve.no/User',
+      updateObserverUrl: 'https://demo-api.regobs.no/v5/Account/UpdateObserver',
+    },
+    'PROD': {
+      client_id: 'a0b10e50-f942-4619-a9ab-cf5c900a98d5',
+      server_host: 'https://nveb2c.b2clogin.com/nveb2c.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      redirect_url: 'regobs://callback',
+      end_session_redirect_url: 'regobs://callback',
+      scopes: 'openid offline_access',
+      pkce: true,
+      getObserverUrl: 'https://api.regobs.no/v5/Account/GetObserver',
+      myPageUrl: 'https://konto.nve.no/User',
+      updateObserverUrl: 'https://api.regobs.no/v5/Account/UpdateObserver',
+    }
+  },
   observations: {
     maxObservationsToFetch: 5000,
     daysBack: {
@@ -244,10 +279,11 @@ export const settings = {
     fallbackLang: 'en',
     supportedLanguages: [
       { lang: 'nb', name: 'Norsk bokmål' },
+      { lang: 'nn', name: 'Norsk nynorsk' },
       { lang: 'en', name: 'English' },
       { lang: 'sv', name: 'Svenska' },
       { lang: 'de', name: 'Deutsch' },
-      { lang: 'sl', name: 'Slovenski' }
+      { lang: 'sl', name: 'Slovenski' },
     ],
   }
 };
