@@ -563,6 +563,12 @@
       }
     }
   },
+  "SET_NICK_ALERT": {
+    "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",
+    "HELP_TEXT": "Du må legge til et kallenavn for å bruke Varsom Regobs. Kallenavnet blir vist i dine observasjoner.",
+    "INPUT_TEXT": "Skriv inn kallenavn",
+    "NICK": "Kallenavn"
+  },
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
     "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å forbedre Varsom Regobs ved å la oss se hvordan du bruker applikasjonen.",
@@ -589,12 +595,6 @@
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyer",
     "USE_IN_WORLD": "Utenfor Norge",
     "USE_RETINA_MAP": "Bruk høy oppløsning på kart"
-  },
-  "SET_NICK_ALERT": {
-    "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",
-    "HELP_TEXT": "Du må legge til et kallenavn for å bruke Varsom Regobs. Kallenavnet vises når du gjør observasjoner.",
-    "INPUT_TEXT": "Skriv inn kallenavn",
-    "NICK": "Kallenavn"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {

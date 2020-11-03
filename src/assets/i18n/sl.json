@@ -164,7 +164,7 @@
     "MY_SENT_OBSERVATIONS": "Moja poslana opažanja",
     "NO_OBSERVATIONS": "Delite svoja opažanja!",
     "NO_OBSERVATIONS_TEXT": "Tu boste našli opažanja, ki ste jih naredili sami. Delite svoja opažanja, slike in ocene z ostalimi na Varsom Regobs.",
-    "SENT_SUBTITLE": "Naslednja opažanja so bila poslana in so shranjena v Regobs.",
+    "SENT_SUBTITLE": "Naslednja opažanja so bila oddana in so shranjena v Regobs.",
     "TITLE": "Moja opažanja"
   },
   "OBSERVATION_LIST": {
@@ -244,17 +244,17 @@
     "DRAFTS": "Moji osnutki",
     "DRAFTS_DESCRIPTION": "Ta opažanja so v pripravi in še niso bila oddana.",
     "EMAIL": {
-      "BODY": "Zdravo! Imam težave pri oddaji te registracije. Mi lahko pomagate?",
-      "SUBJECT": "Neuspešna registracija"
+      "BODY": "Pozdravljeni! Imam težave pri oddaji tega vnosa. Mi lahko pomagate?",
+      "SUBJECT": "Neuspešen vnos"
     },
     "FAILED": {
       "EDIT_OBSERVATION": "Popravi opažanje",
       "LOGGED": "Težava je bila zabeležena.",
-      "PROBLEM": "Pri registraciji je prišlo do težave.",
+      "PROBLEM": "Pri vnosu je prišlo do težave.",
       "PROBLEM_HELP_TEXT": "Neuspešno oddana opažanja so shranjena v vašem telefonu in bodo lahko ponovno oddana, ko bo težava rešena.",
       "REFERENCE": "Opomba",
       "SEND_EMAIL": "Pošljite nam e-pošto",
-      "SUBTITLE": "Ni povezave z omrežjem ali pa je oddaja trajala predolgo. Čez nekaj časa bomo ponovno poskusili in upamo, da se je povezava izboljšala.",
+      "SUBTITLE": "Ni povezave z omrežjem ali pa je oddaja trajala predolgo. Čez nekaj časa bomo ponovno poskusili in upali, da se je povezava izboljšala.",
       "TITLE": "Neuspešna oddaja"
     },
     "GENERAL_COMMENT": {
@@ -330,13 +330,13 @@
     "RESET": "Ponastavi",
     "SAVE_ALERT": {
       "HEADER": "Shraniti kot osnutek?",
-      "MESSAGE": "Registracijo boste zapustili brez oddaje. Ali želite shraniti kot osnutek?",
+      "MESSAGE": "Vnos boste zapustili brez oddaje. Ali želite shraniti kot osnutek?",
       "NO": "Ne, opusti.",
       "YES": "Ja, shrani."
     },
     "SAVED_DESCRIPTION": "Vsebina se bo vsebina sinhronizirala ob vzpostavitvi povezave z omrežjem.",
     "SAVED_ON_PHONE": "Shranjeno na telefon",
-    "SEND": "Pošlji.",
+    "SEND": "Oddaj.",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Potrdi lokacijo škode",
       "TITLE": "Lokacija škode"
@@ -420,7 +420,7 @@
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
-          "ATTACHED": "povezano s profilom",
+          "ATTACHED": "povezani s profilom",
           "EMPTY": "Ne",
           "INCLUDE_IN_SNOW_PROFILE": "Dodaj k snežnemu profilu",
           "MULTIPLE_TESTS": "testi",
@@ -452,9 +452,9 @@
         "SNOW_TEMP": {
           "ADD_LAYER_BOTTOM": "Dodaj novo točko",
           "DEPTH": "Globina (cm)",
-          "EMPTY": "Brez opaženih temperatur v točkah",
-          "MULTIPLE_LAYERS": "opažene temperature v točkah",
-          "ONE_LAYER": "opažena temperatura v točki",
+          "EMPTY": "Brez izmerjenih temperatur v točkah",
+          "MULTIPLE_LAYERS": "izmerjene temperature v točkah",
+          "ONE_LAYER": "izmerjena temperatura v točki",
           "POINT": "Temperatura v točki",
           "TEMPERATURE": "Temperatura (°C)",
           "TITLE": "Temperaturni profil"
@@ -468,14 +468,14 @@
           "FROM_OTHER_PROFILE": "Plast iz drugega profila",
           "GRAIN_FORM": "Oblika kristalov",
           "GRAIN_FROM_SECONDARY": "Sekundarna oblika kristalov",
-          "HARDNESS": "Trdota",
-          "HARDNESS_BOTTOM": "Trdota na dnu",
+          "HARDNESS": "Trdnost",
+          "HARDNESS_BOTTOM": "Trdnost na dnu",
           "LAYER": "Plast",
           "MAX_GRAIN_SIZE": "Največja velikost kristalov (mm)",
           "MULTIPLE_LAYERS": "opaženo plastenje",
           "NO_PROFILES_FOUND": "Ni najdenih plasti iz drugih profilov",
           "ONE_LAYER": "opažena plast",
-          "OTHER_PROFILE_DESCRIPTION": "Lahko kopirate plast iz katerega izmed prejšnjih profilov, ki je bil registriran v preteklih 14 dneh v radiju 100 km.",
+          "OTHER_PROFILE_DESCRIPTION": "Lahko kopirate plast iz katerega izmed prejšnjih profilov, ki je bil vnešen v preteklih 14 dneh v radiju 100 km.",
           "OTHER_PROFILE_ITEM_TEXT": "Pridobi plasti iz drugih profilov",
           "SHOW_LESS": "Pokaži manj možnosti",
           "SHOW_MORE": "Pokaži več možnosti",
@@ -498,8 +498,8 @@
         "NEW_SNOW_LINE": "Meja novega snega (m.n.v.)",
         "SNOW_DEPTH": "Višina snežne odeje (cm)",
         "SNOW_DRIFT": "Napihan sneg",
-        "SNOW_LINE": "Snežna meja (m.n.v.)",
-        "SNOW_SURFACE": "Trdota snežne odeje",
+        "SNOW_LINE": "Meja snega (m.n.v.)",
+        "SNOW_SURFACE": "Trdnost snežne odeje",
         "SURFACE_WATER_CONTENT_REG": "Vlažnost snežne odeje",
         "TITLE": "Površina snežne odeje"
       },
@@ -711,7 +711,7 @@
     "END_ERROR": "Poti ni bilo mogoče ustaviti. Poskusite ponovno pozneje. Pot se samodejno ustavi ob polnoči.",
     "ERROR": "Poti ni bilo mogoče začeti. Poskusite ponovno.",
     "ERROR_POSITION": "Poti ni mogoče začeti brez položaja GPS.",
-    "LEGACY_HELP_TEXT": "S tem obrazcem lahko sporočite, da danes načrtujete pot.\n\nZa plazovno službo je koristna informacija, ali lahko danes pričakujejo opažanja. Koristno je tudi vedeti, kakšna opažanja lahko pričakujejo (kaj iščete, kam greste) in kdaj približno jih boste vnesli v Regobs.\n\nVsi plačani opazovalci morajo poročati, kakšne tipe poti z opažanji načrtujejo: ali gre za običajno plačano pot z opažanji ali je to dodatno vnašanje razmer? Dodatno vnašanje je poročanje opažanj, ki ste jih izvedli med drugim delom ali v prostem času.",
+    "LEGACY_HELP_TEXT": "S tem obrazcem lahko sporočite, da danes načrtujete pot.\n\nZa plazovno službo je koristna informacija, ali lahko danes pričakujejo opažanja. Koristno je tudi vedeti, kakšna opažanja lahko pričakujejo (kaj iščete, kam greste) in kdaj približno jih boste oddali v Regobs.\n\nVsi plačani opazovalci morajo poročati, kakšne tipe poti z opažanji načrtujejo: ali gre za običajno plačano pot z opažanji ali je to dodatno vnašanje razmer? Dodatno vnašanje je poročanje opažanj, ki ste jih izvedli med drugim delom ali v prostem času.",
     "ONGOING_TRIP": "Pot še poteka",
     "START_TRIP": "Začni pot",
     "STARTED": "Pot se je začela",

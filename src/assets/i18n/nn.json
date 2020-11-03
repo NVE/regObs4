@@ -540,10 +540,10 @@
       "WATER_LEVEL": {
         "ADD_NEW": "Legg til ny",
         "ADD_PICTURE": "Legg til bilete av",
-        "CAN_YOU_SEE_WATER": "Kan du sjå varn på avveie?",
+        "CAN_YOU_SEE_WATER": "Kan du sjå vatn på avveie?",
         "DESCRIBE": "Skildr",
         "DESCRIBE_HEIGHT": "Skildr høgde",
-        "DESCRIBE_SITUATION": "Korleis vil di skildre situasjonen?",
+        "DESCRIBE_SITUATION": "Korleis vil du skildre situasjonen?",
         "DT_REQUIRED_TEXT": "Tidspunkt er obligatorisk!",
         "HOW_DO_YOU_READ": "Korleis les du av vasstanden?",
         "MARKED_WITH": "Eg har markert vasstanden med",
