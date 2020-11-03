@@ -17,7 +17,7 @@
     "update-packages": "ncu -u & npm install",
     "create-version-file": "ts-node --project tsconfig.npm-script.json git.version.ts",
     "strip-source-map-url": "ts-node --project tsconfig.npm-script.json strip-source-map-urls.ts",
-    "sentry:upload-sourcemaps": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases files $npm_package_version upload-sourcemaps www -x .js -x .map --validate --verbose --rewrite --url-prefix=~",
+    "sentry:upload-sourcemaps": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases files $npm_package_version upload-sourcemaps www -x .js -x .map --validate --verbose --rewrite --strip-common-prefix --url-prefix=~",
     "sentry:upload-elease-and-commits": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases new $npm_package_version && sentry-cli releases set-commits --auto $npm_package_version",
     "sentry:create-release": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases new $npm_package_version",
     "sentry:finalize-release": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases finalize $npm_package_version",

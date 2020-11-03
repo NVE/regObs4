@@ -53,6 +53,7 @@ export class RegobsAuthService {
   }
 
   private setupDetectPasswordReset() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (<any>this.authService).tokenHandler.performTokenRequest = (configuration: AuthorizationServiceConfiguration, request: TokenRequest):
       Promise<TokenResponse> => {
       const tokenResponse = this.requestor.xhr<TokenResponseJson | TokenErrorJson>({
@@ -60,20 +61,23 @@ export class RegobsAuthService {
         method: 'POST',
         dataType: 'json',  // adding implicit dataType
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         data: (<any>this.authService).tokenHandler.utils.stringify(request.toStringMap())
       });
 
       return tokenResponse.then((response) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if ((<any>this.authService).tokenHandler.isTokenResponse(response)) {
           return new TokenResponse(response as TokenResponseJson);
         } else {
           const tokenError = response as TokenErrorJson;
           return Promise.reject<TokenResponse>(
-            new AppAuthError(tokenError.error, new TokenError(tokenError)));
+            new AppAuthError(tokenError.error, new TokenError(tokenError || { error: 'invalid_request' })));
         }
       }, (error) => {
         let tokenErrorJson: TokenErrorJson = error.error;
-        if (!tokenErrorJson.error_description) {
+        if (tokenErrorJson && !tokenErrorJson.error_description) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           tokenErrorJson = JSON.parse(<any>tokenErrorJson);
         }
         // HACK to detect change password
@@ -81,17 +85,18 @@ export class RegobsAuthService {
           && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
           return this.signIn(false).then(
             () =>
-              new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson)) as any
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson || { error: 'invalid_request' })) as any
           );
         }
 
         return Promise.reject<TokenResponse>(
-          new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson)));
+          new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson || { error: 'invalid_request' })));
       });
     };
   }
 
-  public authorizationCallback(url: string) {
+  public authorizationCallback(url: string): void {
     try {
       this.authService.authorizationCallback(url);
     } catch (err) {
@@ -99,7 +104,7 @@ export class RegobsAuthService {
     }
   }
 
-  public async signIn(setReturnUrl = true) {
+  public async signIn(setReturnUrl = true): Promise<void> {
     const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
     if (setReturnUrl) {
       localStorage.setItem(RETURN_URL_KEY, this.router.url);
