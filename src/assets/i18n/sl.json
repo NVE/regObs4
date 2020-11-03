@@ -26,7 +26,7 @@
     "VIEW_WARNINGS": "Poglejte opozorila iz varsom.no"
   },
   "COMPETENCE": {
-    "UNKNOWN": "Kompetence niso znane"
+    "UNKNOWN": "Neznana usposobljenost"
   },
   "DATA_LOAD": {
     "DATA": "Nalaganje...",
@@ -351,7 +351,7 @@
       "AVALANCHE_ACTIVITY": {
         "ADD_NEW": "Dodajte novo plazovno aktivnost",
         "COMMENT_PLACEHOLDER": "Dodaten komentar",
-        "DATE_WARNING": "Datum se razlikuje od časa opazovanja",
+        "DATE_WARNING": "Datum se razlikuje od časa opažanja",
         "DURING_THE_DAY": "Čez dan",
         "ESTIMATED_TIME": "Ocenjen časovni okvir",
         "HOW_MANY_AVALANCHES": "Število plazov",
@@ -364,7 +364,7 @@
         "AVALANCHE_DEVELOPMENT": "Razvoj",
         "AVALANCHE_DEVEOPMENT_PLACEHOLDER": "Razvoj plazovne nevarnosti",
         "COMMENT": "Komentar plazovne napovedi",
-        "EVALUATION": "Ocena",
+        "EVALUATION": "Ocena nevarnosti",
         "EVALUATION_PLACEHOLDER": "Ocena plazovne nevarnosti",
         "FORECAST_CORRECT": "Ocena plazovne napovedi na varsom.no",
         "TITLE": "Ocena plazovne nevarnosti"
@@ -491,7 +491,7 @@
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Opišite površino snežne odeje",
-        "COMMENT_PLACEHOLDER": "Kakšna je na splošno porazdelitev snega glede na višino in usmerjenost terena? Ali so opazne velike razlike na območju?",
+        "COMMENT_PLACEHOLDER": "Kakšna je na splošno porazdelitev snega glede na višino in usmerjenost pobočij? Ali so opazne velike razlike na območju?",
         "HEIGHT_LIMIT_LAYERED_SNOW": "Višina, kjer se začne sneg v plasteh (m.n.v.)",
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "Do kod sega snežna odeja brez nevarnega plastenja",
         "NEW_SNOW_DEPTH": "Nov sneg v 24h (cm)",
@@ -554,7 +554,7 @@
         "MEASURING": "Meritev",
         "MEASURING_TOOL": "Vnesite merilni inštrument / pripomoček",
         "OBSERVATION_TIMING": "Kaj opazujete?",
-        "REGISTRATION_METHOD": "Na kakšen način določate vodostaj?",
+        "REGISTRATION_METHOD": "Kako opazujete?",
         "RELATIVE": "Vodostaj je relativen glede na",
         "TITLE": "Vodostaj",
         "WATER_LEVEL_METERS": "Vodostaj v metrih",
@@ -562,6 +562,12 @@
         "WATER_MEASUREMENT": "Meritev vodostaja"
       }
     }
+  },
+  "SET_NICK_ALERT": {
+    "ERROR": "Uporabniškega imena ni bilo mogoče shraniti. Poskusite pozneje.",
+    "HELP_TEXT": "Za uporabo Varsom Regobs potrebujete uporabniško ime. Uporabniško ime je prikazano na vaših opažanjih.",
+    "INPUT_TEXT": "Prosimo vnesite uporabniško ime",
+    "NICK": "Vzdevek"
   },
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Dovoli pošiljanje podatkov o uporabi",
@@ -668,7 +674,7 @@
     "ICE_LEGEND_TEXT_6": "Plinovod",
     "ICE_LEGEND_TEXT_7": "Predor elektrarne",
     "ICE_MAP_DESCRIPTION": "Podporni zemljevid prikazuje dele vodotokov, ki se zaradi predpisov o proizvodnji električne energije pozimi obnašajo nepredvidljivo",
-    "INFO_PAGE": "<h1> O zemljevidih z nakloni površja in območji izteka </h1>\nZemljevidi se ustvarijo samodejno in lahko vsebujejo napake. Možen je obstoj strmih pobočij, ki niso zajeta v višinski model in se zato ne prikažejo na zemljevidu.\nNekateri plazovi lahko imajo obsežnejše območje izteka, kot je označeno na zemljevidih.\n\n<h2> Kaj je potrebno upoštevati? </h2>\nPrilagodite svoje tveganje s tem, da izberete kam, kdaj in kako potujete. Varsom Regobs je orodje za načrtovanje in podatki v aplikaciji se lahko razlikujejo od realnega stanja. Vedno naredite svojo oceno.\n\n<h2> Kdaj je varno? </h2>\nVse aktivnosti na s snegom pokritih plazovnih območjih so povezane s tveganjem .\n\n<h2> Želite vedeti več o tem? </h2>\nVeč se lahko naučite na tečajih varstva pred snežnimi plazovi.",
+    "INFO_PAGE": "<h1> O zemljevidih z nakloni površja in območji izteka </h1>\nZemljevidi se ustvarijo samodejno in lahko vsebujejo napake. Možen je obstoj strmih pobočij, ki niso zajeta v višinski model in se zato ne prikažejo na zemljevidu.\nNekateri plazovi lahko imajo obsežnejše območje izteka, kot je označeno na zemljevidih.\n\n<h2> Kaj je potrebno upoštevati? </h2>\nPrilagodite svoje tveganje s tem, da izberete kam, kdaj in kako potujete. Varsom Regobs je orodje za načrtovanje in podatki v aplikaciji se lahko razlikujejo od realnega stanja. Vedno naredite svojo oceno.\n\n<h2> Kdaj je varno? </h2>\nVse aktivnosti na s snegom pokritih plazovnih območjih so povezane s tveganjem.\n\n<h2> Želite vedeti več o tem? </h2>\nVeč se lahko naučite na tečajih varstva pred snežnimi plazovi.",
     "LOW": "Nizko",
     "MARITINE_BORDER": "Meja morja",
     "MIDDLE": "Sredinsko",

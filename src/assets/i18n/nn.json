@@ -1,6 +1,6 @@
 {
   "ABONNER_BANNER": {
-    "BANNER_TEXT_LINE_1": "Naturfarevarsler frå Varsom på SMS eller e-post.",
+    "BANNER_TEXT_LINE_1": "Naturfarevarsel frå Varsom på SMS eller e-post.",
     "BANNER_TEXT_LINE_2": "Sett opp eller administrer varsla dine her.",
     "LINK_TEXT": "Gå til abonner.varsom.no",
     "TITLE": "Varsom Abonner"
@@ -60,12 +60,12 @@
     "YES": "Ja"
   },
   "DIRECTION": {
-    "E": "A",
+    "E": "Ø",
     "N": "N",
-    "NE": "NA",
+    "NE": "NØ",
     "NW": "NV",
     "S": "S",
-    "SE": "SA",
+    "SE": "SØ",
     "SW": "SV",
     "W": "V"
   },
@@ -100,7 +100,7 @@
     "LOGOUT": "Logg ut",
     "MY_PROFILE": "Min profil",
     "PASSWORD": "Passord",
-    "SERVICE_UNAVAILABLE": "Det er problem med å nå tjenesten.Har du nett? Det kan hende at serverapplikasjonen må vakne og treng ein sterk kopp kaffe først. Gi den nokre minutt å prøv igjen.",
+    "SERVICE_UNAVAILABLE": "Det er problem med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må vakne og treng ein sterk kopp kaffe først. Gi den nokre minutt å prøv igjen.",
     "TITLE": "Logg inn",
     "UNAUTHORIZED": "Feil brukernavn eller passord. Fyll inn felta på nytt og prøv igjen.",
     "UNKNOWN_ERROR": "Det oppsto ein feil under innlogging. Melding frå server:"
@@ -205,7 +205,7 @@
     "DANGER_OBS": {
       "AREA": "Område",
       "COMMENT": "Kommentar",
-      "COMMENT_PLACEHOLDER": "Her kan du gi ytlegare skilding av fareteiknet",
+      "COMMENT_PLACEHOLDER": "Her kan du gje ei utvida skildring av fareteiknet",
       "DESCRIPTION": "Skildring",
       "FOR_MUNICIPAL": "For kommunen",
       "FOR_REGION": "Fylket/varslingsregionen",
@@ -261,7 +261,7 @@
       "ADD_NOTES_HEADER": "Notat frå observasjonen",
       "ADD_PICTURE": "Legg til eit bilete",
       "CHOOSE_FROM_LIBRARY": "Vel frå bibliotek",
-      "COMMENT_PLACEHOLDER": "Her kan du skildre ytlegare",
+      "COMMENT_PLACEHOLDER": "Her kan du gje ei utvida skildring",
       "COMMENT_TITLE": "Skildring",
       "DESCRIPTION": "Her kan du laste opp bilete av område eller andre relevante observasjonar,",
       "SUBTITLE": "Bilete av observasjonen",
@@ -563,6 +563,12 @@
       }
     }
   },
+  "SET_NICK_ALERT": {
+    "ERROR": "Klarte ikkje lagre kallenavn. Ver venleg og prøv igjen seinare.",
+    "HELP_TEXT": "Du må legge til eit kallenamn for å bruke Varsom Regobs. Kallenamnet vert vist i dine observasjonar.",
+    "INPUT_TEXT": "Skriv inn kallenamn",
+    "NICK": "Kallenamn"
+  },
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
     "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å gjere Varsom RegObs betre med å la oss sjå korleis du bruker applikasjonen. ",
@@ -590,17 +596,11 @@
     "USE_IN_WORLD": "Utanfor Noreg",
     "USE_RETINA_MAP": "Bruk høg oppløysing på kart"
   },
-  "SET_NICK_ALERT": {
-    "ERROR": "Klarte ikkje lagre kallenavn. Ver vennleg og prøv igjen seinare.",
-    "HELP_TEXT": "Du må legge til eit kallenavn for å bruke Varsom Regobs. Kallenavnet blir vist når du gjer observasjonar.",
-    "INPUT_TEXT": "Skriv inn kallenavn",
-    "NICK": "Kallenavn"
-  },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
       "HEADER": "Vel land",
       "NO_NORWAY": "Nei, i andre land også",
-      "SUBTITLE": "Kjem du berre tiø å bruke appen i Noreg?",
+      "SUBTITLE": "Kjem du berre til å bruke appen i Noreg?",
       "YES_NORWAY": "Ja, berre i Norge"
     },
     "CHOOSE_INTEREST": "Vel naturfara du er interessert i",
@@ -674,19 +674,19 @@
     "ICE_LEGEND_TEXT_6": "Røyrgate",
     "ICE_LEGEND_TEXT_7": "Kraftverkstunnel",
     "ICE_MAP_DESCRIPTION": "Støttekartet viser delar av vassdrag som oppfører seg uforutsigbart gjennom vinteren grunna reguleringar for kraftproduksjon",
-    "INFO_PAGE": "1Om kart med brattheit og utløp1\nKarta er automatisk generert og kan innehalde feil. Det kan eksistere bratte heng som høgdemodellen ikkje får meg seg og derfor ikke visast på kartet.\nNokre skred kan gå lenger enn det som er markert som utløpsområde i kartet.\n\n2Hvilke omsyn må takast?2\nTilpass eigen risiko med å velje, når og korleis du ferdast. Varsom Regobs er eit hjelpemiddel, ikkje ein fasit. Gjer alltid eigne vurderingar. \n\n2Når er det trygt?2\nDet er ein viss risiko med all ferdsel i snødekt skredterreng.\n\n2Lære meir?2\nDu kan lære meir på skredkurs og Snøskredskolen på Varsom.no.",
+    "INFO_PAGE": "<h1>Om kart med helling og utløp</h1>\nKarta er automatisk generert og kan innehalde feil. Det kan eksistere bratte heng som høgdemodellen ikkje får med seg og derfor ikke visast på kartet.\nNokre skred kan gå lenger enn det som er markert som utløpsområde i kartet.\n\n<h2>Kva omsyn må takast?</h2>\nTilpass eigen risiko med å velje, når og korleis du ferdast. Varsom Regobs er eit hjelpemiddel, ikkje ein fasit. Gjer alltid eigne vurderingar. \n\n<h2>Når er det trygt?</h2>\nDet er ein viss risiko med all ferdsel i snødekt skredterreng.\n\n<h2>Lære meir?</h2>\nDu kan lære meir på skredkurs og Snøskredskulen på Varsom.no.",
     "LOW": "Låg",
     "MARITINE_BORDER": "Marin grense flate",
     "MIDDLE": "Middels",
     "NO_OPACITY": "Heildekkande",
     "READ_MORE": "Les meir om støttekart",
-    "STEEPNESS_COLOR_INFO": "Fargar gir brattheiten til terrenget (grader):",
-    "STEEPNESS_MAP_DESCRIPTION": "Brattheitskart",
+    "STEEPNESS_COLOR_INFO": "Fargar gir hellingen til terrenget (grader):",
+    "STEEPNESS_MAP_DESCRIPTION": "Hellingskart",
     "STEEPNESS_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, t.d.bratte heng som ikkje visast.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skreda stoppar innanfor denne grensa)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skreda går lenger)",
-    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lenger)\nNokre skred kan ha utløp som ikkje er vist på kartet.",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Brattheitskart med utløp",
+    "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lengre)\nNokre skred kan ha lengre utløp som ikkje er vist på kartet.",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Hellingskart med utløp",
     "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og manglar, t.d. bratte heng og utløp som ikkje visast.\n<br/>\n<br/>\nFargar på utløp for snøskred:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Kart over svekka is"
   },
