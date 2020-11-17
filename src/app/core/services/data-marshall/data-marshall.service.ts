@@ -30,11 +30,11 @@ export class DataMarshallService implements OnReset {
   private cancelUpdateObservationsSubject: Subject<boolean>;
   private subscriptions: Subscription[] = [];
 
-  get observableCancelSubject() {
+  get observableCancelSubject(): Subject<boolean> {
     return this.cancelUpdateObservationsSubject;
   }
 
-  get cancelObservationsPromise() {
+  get cancelObservationsPromise(): Promise<boolean> {
     return this.cancelUpdateObservationsSubject.asObservable().pipe(take(1)).toPromise();
   }
 
@@ -56,7 +56,7 @@ export class DataMarshallService implements OnReset {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
   }
 
-  init() {
+  init(): void {
     this.ngZone.runOutsideAngular(() => {
       this.subscriptions.push(this.hasDaysBackChangedToLargerValue().subscribe(() => {
         this.loggingService.debug('DaysBack has changed to a larger value. Update observations.', DEBUG_TAG);
@@ -98,19 +98,19 @@ export class DataMarshallService implements OnReset {
       this.subscriptions.push(this.userSettingService.supportTiles$
         .pipe(map((st) => st.filter((x) => x.enabled).map((x) => x.name).join(','))
           , distinctUntilChanged()).subscribe((supportMap) => {
-          this.analyticService.trackDimension(AppCustomDimension.supportMap, supportMap);
-        }));
+            this.analyticService.trackDimension(AppCustomDimension.supportMap, supportMap);
+          }));
       this.subscriptions.push(this.regobsAuthService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user)));
       this.subscriptions.push(this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode)));
 
       this.subscriptions.push(this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {
         this.offlineMapService.updateTilesCacheSizeTable(val.count, val.size);
       }));
-      this.subscriptions.push(this.userSettingService.userSetting$.pipe(map((val) => val.tilesCacheSize),
+      this.subscriptions.push(this.userSettingService.userSetting$.pipe(map((val) => val.tilesCacheSizev2 != null ? val.tilesCacheSizev2 : settings.map.tiles.cacheSize),
         distinctUntilChanged(), debounceTime(1000)).subscribe((val) => {
-        this.loggingService.debug(`Tiles cahce size changed to ${val}`, DEBUG_TAG);
-        this.offlineMapService.cleanupTilesCache(val);
-      }));
+          this.loggingService.debug(`Tiles cahce size changed to ${val}`, DEBUG_TAG);
+          this.offlineMapService.cleanupTilesCache(val);
+        }));
       this.subscriptions.push(this.platform.pause.subscribe(() => {
         this.loggingService.debug('App paused. Stop foreground updates.', DEBUG_TAG);
         this.stopForegroundUpdate();
@@ -140,11 +140,11 @@ export class DataMarshallService implements OnReset {
     this.subscriptions = [];
   }
 
-  cancelUpdateObservations() {
+  cancelUpdateObservations(): void {
     this.cancelUpdateObservationsSubject.next(true);
   }
 
-  updateObservations() {
+  updateObservations(): void {
     this.observationService.updateObservations(this.cancelObservationsPromise);
   }
 
@@ -161,7 +161,7 @@ export class DataMarshallService implements OnReset {
       )));
   }
 
-  startForegroundUpdate() {
+  startForegroundUpdate(): void {
     if (this.foregroundUpdateInterval) {
       this.stopForegroundUpdate();
     }
@@ -171,11 +171,11 @@ export class DataMarshallService implements OnReset {
     this.backgroundFetchUpdate(); // Update on resume
   }
 
-  stopForegroundUpdate() {
+  stopForegroundUpdate(): void {
     clearTimeout(this.foregroundUpdateInterval);
   }
 
-  backgroundFetchUpdate(useTimeout = false, showNotification = false) {
+  backgroundFetchUpdate(useTimeout = false): Promise<void> {
     return this.ngZone.runOutsideAngular(async () => {
       const cancelTimer = useTimeout
         ? CancelPromiseTimer.createCancelPromiseTimer(settings.backgroundFetchTimeout) : null;
@@ -183,7 +183,7 @@ export class DataMarshallService implements OnReset {
       await this.registrationService.syncRegistrations(cancelTimer);
       const cancelPromiseForObservations = cancelTimer ?
         Promise.race([this.cancelObservationsPromise, cancelTimer]) : this.cancelObservationsPromise;
-      const observationsUpdated = await this.observationService.updateObservations(cancelPromiseForObservations);
+      await this.observationService.updateObservations(cancelPromiseForObservations);
       await this.warningService.updateWarnings(cancelTimer);
       await this.kdvService.updateKdvElements(cancelTimer);
       await this.helpTextService.updateHelpTexts(cancelTimer);

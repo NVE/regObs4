@@ -66,8 +66,8 @@
       <ion-item>
         <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{'SETTINGS.NUMBER_OF_TILES_IN_CACHE' |
           translate}}: {{
-          userSettings.tilesCacheSize }}</ion-label>
-        <ion-range min="0" max="20000" step="5000" color="secondary" [(ngModel)]="userSettings.tilesCacheSize"
+          userSettings.tilesCacheSizev2 }}</ion-label>
+        <ion-range min="0" max="20000" step="5000" color="secondary" [(ngModel)]="userSettings.tilesCacheSizev2"
           (ngModelChange)="updateSettings()">
         </ion-range>
       </ion-item>
