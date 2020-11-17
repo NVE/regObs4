@@ -70,9 +70,10 @@ export class RegobsAuthService {
         if ((<any>this.authService).tokenHandler.isTokenResponse(response)) {
           return new TokenResponse(response as TokenResponseJson);
         } else {
+          this.logger.error(new Error('Unable to login user'), DEBUG_TAG, `Auth response: ${response ? JSON.stringify(response) : ''}`);
           const tokenError = response as TokenErrorJson;
           return Promise.reject<TokenResponse>(
-            new AppAuthError(tokenError.error, new TokenError(tokenError || { error: 'invalid_request' })));
+            new AppAuthError(tokenError?.error || 'Unknown error', new TokenError(tokenError || { error: 'invalid_request' })));
         }
       }, (error) => {
         let tokenErrorJson: TokenErrorJson = error.error;
@@ -85,11 +86,10 @@ export class RegobsAuthService {
           && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
           return this.signIn(false).then(
             () =>
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson || { error: 'invalid_request' })) as any
+              null
           );
         }
-
+        this.logger.error(new Error('Unable to login user'), DEBUG_TAG, `Auth response: ${error ? JSON.stringify(error) : ''}`);
         return Promise.reject<TokenResponse>(
           new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson || { error: 'invalid_request' })));
       });
