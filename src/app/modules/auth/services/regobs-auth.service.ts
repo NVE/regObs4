@@ -28,14 +28,12 @@ export const RETURN_URL_KEY = 'authreturnurl';
 })
 export class RegobsAuthService {
 
-
   private _loggedInUser$: Observable<LoggedInUser>;
   private observer: AuthObserver;
 
   get loggedInUser$() {
     return this._loggedInUser$;
   }
-
 
   constructor(
     private authService: AuthService,
@@ -55,27 +53,31 @@ export class RegobsAuthService {
   }
 
   private setupDetectPasswordReset() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (<any>this.authService).tokenHandler.performTokenRequest = (configuration: AuthorizationServiceConfiguration, request: TokenRequest):
       Promise<TokenResponse> => {
-      let tokenResponse = this.requestor.xhr<TokenResponseJson | TokenErrorJson>({
+      const tokenResponse = this.requestor.xhr<TokenResponseJson | TokenErrorJson>({
         url: configuration.tokenEndpoint,
         method: 'POST',
         dataType: 'json',  // adding implicit dataType
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         data: (<any>this.authService).tokenHandler.utils.stringify(request.toStringMap())
       });
 
       return tokenResponse.then((response) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if ((<any>this.authService).tokenHandler.isTokenResponse(response)) {
           return new TokenResponse(response as TokenResponseJson);
         } else {
           const tokenError = response as TokenErrorJson;
           return Promise.reject<TokenResponse>(
-            new AppAuthError(tokenError.error, new TokenError(tokenError)));
+            new AppAuthError(tokenError.error, new TokenError(tokenError || { error: 'invalid_request' })));
         }
       }, (error) => {
         let tokenErrorJson: TokenErrorJson = error.error;
-        if (!tokenErrorJson.error_description) {
+        if (tokenErrorJson && !tokenErrorJson.error_description) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           tokenErrorJson = JSON.parse(<any>tokenErrorJson);
         }
         // HACK to detect change password
@@ -83,17 +85,18 @@ export class RegobsAuthService {
           && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
           return this.signIn(false).then(
             () =>
-              new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson)) as any
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson || { error: 'invalid_request' })) as any
           );
         }
 
         return Promise.reject<TokenResponse>(
-          new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson)));
+          new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson || { error: 'invalid_request' })));
       });
     };
   }
 
-  public authorizationCallback(url: string) {
+  public authorizationCallback(url: string): void {
     try {
       this.authService.authorizationCallback(url);
     } catch (err) {
@@ -101,7 +104,7 @@ export class RegobsAuthService {
     }
   }
 
-  public async signIn(setReturnUrl = true) {
+  public async signIn(setReturnUrl = true): Promise<void> {
     const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
     if (setReturnUrl) {
       localStorage.setItem(RETURN_URL_KEY, this.router.url);
@@ -280,7 +283,7 @@ export class RegobsAuthService {
     await this.saveUserGroups(appMode, user, user.ObserverGroup);
   }
 
-  async saveUserGroups(appMode: AppMode, user: ObserverResponseDto, observerGroups: ObserverGroupDto[]) {
+  async saveUserGroups(appMode: AppMode, user: ObserverResponseDto, observerGroups: ObserverGroupDto[]): Promise<void> {
     const userGroups = (observerGroups || []).map((val) => {
       return { key: `${user.Guid}_${val.Id}`, userId: user.Guid, Id: val.Id, Name: val.Name };
     });
@@ -290,18 +293,18 @@ export class RegobsAuthService {
   }
 
   private async deleteUserGroupsNoLongerInResult(appMode: AppMode, ids: string[]) {
-    const deleteResult = await NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
+    await NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
       .query('delete').where((dbGroup: { key: string, userId: string, Id: number, Name: string }) =>
         ids.indexOf(dbGroup.key) < 0
       ).exec();
   }
 
   private parseJwt(token: string) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
       return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
     return JSON.parse(jsonPayload);
-  };
+  }
 }

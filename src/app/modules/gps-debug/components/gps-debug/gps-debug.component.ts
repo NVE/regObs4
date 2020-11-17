@@ -40,13 +40,13 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
         acc.push(val);
         return acc.slice(-50);
       }, []), throttleTime(100)) : of([])), takeUntil(this.ngDestroy$)).subscribe((val) => {
-        this.ngZone.run(() => {
-          this.geoPositionLog = val;
-        });
-        this.ngZone.run(() => {
-          this.scrollToBottom();
-        });
+      this.ngZone.run(() => {
+        this.geoPositionLog = val;
       });
+      this.ngZone.run(() => {
+        this.scrollToBottom();
+      });
+    });
     this.geoPositionService.log$.pipe(
       filter((log) => log.status === 'StartGpsTracking' || log.status === 'StopGpsTracking'),
       map((log) => log.status === 'StartGpsTracking' ? true : false),
@@ -83,14 +83,14 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
       return 'Empty error';
     }
     switch (err.code) {
-      case GeoPositionErrorCode.PermissionDenied:
-        return 'Permission denied';
-      case GeoPositionErrorCode.PositionUnavailable:
-        return 'Position unavailable';
-      case GeoPositionErrorCode.Timeout:
-        return 'Timeout';
-      default:
-        return err.message;
+    case GeoPositionErrorCode.PermissionDenied:
+      return 'Permission denied';
+    case GeoPositionErrorCode.PositionUnavailable:
+      return 'Position unavailable';
+    case GeoPositionErrorCode.Timeout:
+      return 'Timeout';
+    default:
+      return err.message;
     }
   }
 

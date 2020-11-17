@@ -14,7 +14,6 @@ export class DataLoadService {
 
   constructor() {
 
-
   }
 
   async startLoading(id: string, totalItems?: number) {
@@ -77,8 +76,8 @@ export class DataLoadService {
       .query('select')
       .where((x) => x.id === id)
       .listen()).pipe(
-        map((val: IDataLoad[]) => val.length > 0 ? val[0] :
-          { id, completed: null, lastUpdated: null, isLoading: false, started: null })
-      );
+      map((val: IDataLoad[]) => val.length > 0 ? val[0] :
+        { id, completed: null, lastUpdated: null, isLoading: false, started: null })
+    );
   }
 }

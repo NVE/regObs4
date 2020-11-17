@@ -116,10 +116,10 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
       takeUntil(this.ngDestroy$),
       takeWhile(() => counter > 0),
       tap(() => counter--)).subscribe(() => {
-        if (this.map) {
-          this.map.invalidateSize();
-        }
-      });
+      if (this.map) {
+        this.map.invalidateSize();
+      }
+    });
   }
 
   private isInNorway() {

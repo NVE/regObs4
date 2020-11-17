@@ -82,7 +82,6 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     this.addOrEditLayer(this.hasLayers ? (this.reg.request.SnowProfile2.StratProfile.Layers.length) : 0, undefined);
   }
 
-
   onLayerReorder(event: CustomEvent<ItemReorderEventDetail>) {
     this.reg.request.SnowProfile2.StratProfile.Layers = ArrayHelper.reorderList(
       this.reg.request.SnowProfile2.StratProfile.Layers, event.detail.from, event.detail.to);

@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { IonFab, NavController } from '@ionic/angular';
-import { Observable, from, forkJoin, combineLatest, of } from 'rxjs';
+import { Observable, from, combineLatest, of } from 'rxjs';
 import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
@@ -10,7 +10,7 @@ import { IRegistration } from '../../../registration/models/registration.model';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { LangKey } from '../../../../core/models/langKey';
 import { RegistrationService } from '../../../registration/services/registration.service';
-import { map, concatMap, tap, switchMap, combineAll } from 'rxjs/operators';
+import { map, tap, switchMap } from 'rxjs/operators';
 import { enterZone, setObservableTimeout } from '../../../../core/helpers/observable-helper';
 import { LoggingService } from '../../services/logging/logging.service';
 
@@ -21,7 +21,7 @@ const DEBUG_TAG = 'AddMenuComponent';
   templateUrl: './add-menu.component.html',
   styleUrls: ['./add-menu.component.scss']
 })
-export class AddMenuComponent implements OnInit, OnDestroy {
+export class AddMenuComponent implements OnInit {
   @ViewChild('menuFab') menuFab: IonFab;
 
   drafts$: Observable<{ id: string, geoHazard: GeoHazard, date: string }[]>;
@@ -40,7 +40,7 @@ export class AddMenuComponent implements OnInit, OnDestroy {
     private loggingService: LoggingService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.geoHazardInfo$ = this.userSettingService.userSetting$
       .pipe(
         map((us) => ({
@@ -62,18 +62,15 @@ export class AddMenuComponent implements OnInit, OnDestroy {
     return from(this.getDate(draft.changed)).pipe(map((date) => ({ id: draft.id, geoHazard: draft.geoHazard, date })));
   }
 
-  ngOnDestroy(): void {
-  }
-
-  getName(geoHazard: GeoHazard) {
+  getName(geoHazard: GeoHazard): string {
     return this.geoHelperService.getTranslationKey(geoHazard);
   }
 
-  getDate(timestamp: number) {
+  getDate(timestamp: number): Promise<string> {
     return this.dateHelperService.formatDate(moment.unix(timestamp));
   }
 
-  closeAndNavigate(url: string) {
+  closeAndNavigate(url: string): void {
     setTimeout(() => {
       if (this.menuFab) {
         this.menuFab.close();
@@ -82,19 +79,19 @@ export class AddMenuComponent implements OnInit, OnDestroy {
     this.navController.navigateForward(url);
   }
 
-  createRegistration(geoHazard: GeoHazard) {
+  createRegistration(geoHazard: GeoHazard): void {
     this.closeAndNavigate(`registration/new/${geoHazard}`);
   }
 
-  editRegistration(id: string) {
+  editRegistration(id: string): void {
     this.closeAndNavigate(`registration/edit/${id}`);
   }
 
-  closeMenu() {
+  closeMenu(): void {
     this.menuFab.close();
   }
 
-  startOrStopTrip(tripStarted: boolean) {
+  startOrStopTrip(tripStarted: boolean): void {
     return tripStarted ? this.tripLoggerService.stopLegacyTrip() : this.closeAndNavigate('legacy-trip');
   }
 }

@@ -25,7 +25,6 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     super();
   }
 
-
   async ngOnInit() {
     this.popupInfoService.checkObservationInfoPopup().pipe(takeUntil(this.ngDestroy$)).subscribe();
     const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);

@@ -87,7 +87,7 @@ export class SnowProfilePage extends BasePage {
     const rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
     return this.httpClient.post(`${rootUrl}/Registration/PlotPreviewPng?format=${format}`
       + `&height=${size}&width=${size}&langKey=${userSetting.language}`,
-      this.registration.request, {
+    this.registration.request, {
       responseType: 'blob',
     });
   }

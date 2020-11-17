@@ -6,6 +6,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { settings } from '../../../../../settings';
 import { map, take } from 'rxjs/operators';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
+import { LangKey } from '../../../../core/models/langKey';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginPage implements OnInit {
   constructor(private regobsAuthService: RegobsAuthService, private userSettingService: UserSettingService, private externalLinkService: ExternalLinkService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loggedInUser$ = this.regobsAuthService.loggedInUser$;
   }
 
@@ -30,8 +31,16 @@ export class LoginPage implements OnInit {
     return this.regobsAuthService.logout();
   }
 
-  async openMyPage() {
+  async openMyPage(): Promise<void> {
     const myPageUrl = await this.userSettingService.appMode$.pipe(map((appMode) => settings.authConfig[appMode].myPageUrl), take(1)).toPromise();
-    this.externalLinkService.openExternalLink(myPageUrl);
+    const currentLangKey = await this.userSettingService.language$.pipe(take(1)).toPromise();
+    this.externalLinkService.openExternalLink(`${myPageUrl}?Culture=${this.getSupportedMyPageLocales(currentLangKey)}`);
+  }
+
+  private getSupportedMyPageLocales(langKey: LangKey) {
+    if (langKey === LangKey.nb || langKey === LangKey.nn) {
+      return 'nb-NO';
+    }
+    return 'en';
   }
 }

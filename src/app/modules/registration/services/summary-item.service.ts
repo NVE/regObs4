@@ -31,7 +31,7 @@ export class SummaryItemService {
     const summaryItems: ISummaryItem[] = [
       {
         id: registration.id,
-        href: `/registration/obs-location`,
+        href: '/registration/obs-location',
         queryParams: { geoHazard: registration.geoHazard },
         title: 'REGISTRATION.OBS_LOCATION.TITLE',
         subTitle: registration.request.ObsLocation ? (registration.request.ObsLocation.LocationName
@@ -114,14 +114,14 @@ export class SummaryItemService {
 
   private getGeoHazardItems(registration: IRegistration) {
     switch (registration.geoHazard) {
-      case GeoHazard.Water:
-        return this.getWaterItems(registration);
-      case GeoHazard.Ice:
-        return this.getIceItems(registration);
-      case GeoHazard.Dirt:
-        return this.getDirtItems(registration);
-      case GeoHazard.Snow:
-        return this.getSnowItems(registration);
+    case GeoHazard.Water:
+      return this.getWaterItems(registration);
+    case GeoHazard.Ice:
+      return this.getIceItems(registration);
+    case GeoHazard.Dirt:
+      return this.getDirtItems(registration);
+    case GeoHazard.Snow:
+      return this.getSnowItems(registration);
     }
   }
 

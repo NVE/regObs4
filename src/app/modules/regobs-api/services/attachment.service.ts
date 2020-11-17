@@ -25,15 +25,15 @@ class AttachmentService extends __BaseService {
    * @return OK
    */
   AttachmentPostResponse(file: Blob): __Observable<__StrictHttpResponse<string>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
-    let __formData = new FormData();
+    const __formData = new FormData();
     __body = __formData;
     if (file != null) { __formData.append('file', file as string | Blob);}
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Upload`,
+      this.rootUrl + '/Upload',
       __body,
       {
         headers: __headers,
@@ -59,7 +59,7 @@ class AttachmentService extends __BaseService {
   }
 }
 
-module AttachmentService {
+namespace AttachmentService {
 }
 
-export { AttachmentService }
+export { AttachmentService };

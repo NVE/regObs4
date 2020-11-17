@@ -7,23 +7,23 @@ import { settings } from '../../../settings';
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
 
-    private isRegObsApi(url: string) {
-        return url.startsWith(settings.services.regObs.apiUrl['TEST'])
+  private isRegObsApi(url: string) {
+    return url.startsWith(settings.services.regObs.apiUrl['TEST'])
             || url.startsWith(settings.services.regObs.apiUrl['DEMO'])
             || url.startsWith(settings.services.regObs.apiUrl['PROD']);
-    }
+  }
 
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        // Apply the headers
-        if (this.isRegObsApi(req.url)) {
-            req = req.clone({
-                setHeaders: {
-                    regObs_apptoken: require('../../../assets/apiKey.json').apiKey,
-                    ApiJsonVersion: settings.services.regObs.apiJsonVersion
-                }
-            });
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // Apply the headers
+    if (this.isRegObsApi(req.url)) {
+      req = req.clone({
+        setHeaders: {
+          regObs_apptoken: require('../../../assets/apiKey.json').apiKey,
+          ApiJsonVersion: settings.services.regObs.apiJsonVersion
         }
-
-        return next.handle(req);
+      });
     }
+
+    return next.handle(req);
+  }
 }

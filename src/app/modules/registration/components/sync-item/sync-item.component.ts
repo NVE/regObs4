@@ -11,7 +11,6 @@ import { map, filter } from 'rxjs/operators';
 })
 export class SyncItemComponent implements OnInit, OnDestroy {
 
-
   @Input() registration: IRegistration;
   @Input() refresh: boolean;
   private subscriptions: Subscription[] = [];

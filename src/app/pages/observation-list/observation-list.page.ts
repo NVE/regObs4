@@ -15,10 +15,10 @@ import { LogLevel } from '../../modules/shared/services/logging/log-level.model'
 const DEBUG_TAG = 'ObservationListPage';
 
 @Component({
-    selector: 'app-observation-list',
-    templateUrl: './observation-list.page.html',
-    styleUrls: ['./observation-list.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-observation-list',
+  templateUrl: './observation-list.page.html',
+  styleUrls: ['./observation-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObservationListPage implements OnInit, OnDestroy {
     observations: RegistrationViewModel[];
@@ -32,12 +32,12 @@ export class ObservationListPage implements OnInit, OnDestroy {
     refreshFunc = this.refresh.bind(this);
 
     get observations$() {
-        return this.mapService.mapView$.pipe(debounceTime(200), concatMap((mapView: IMapView) =>
-            this.observationService.observations$.pipe(map((observations) =>
-                this.filterObservationsWithinViewBounds(observations, mapView)))),
-            take(1),
-            takeUntil(this.ngDestroy$)
-        );
+      return this.mapService.mapView$.pipe(debounceTime(200), concatMap((mapView: IMapView) =>
+        this.observationService.observations$.pipe(map((observations) =>
+          this.filterObservationsWithinViewBounds(observations, mapView)))),
+      take(1),
+      takeUntil(this.ngDestroy$)
+      );
     }
 
     constructor(
@@ -50,78 +50,78 @@ export class ObservationListPage implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.cancelSubject = this.dataMarshallService.observableCancelSubject;
+      this.cancelSubject = this.dataMarshallService.observableCancelSubject;
     }
 
     async refresh(cancelPromise: Promise<any>) {
-        await this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
-        // TODO: Shouldn't this allways use the same cancel subject?
-        this.loaded = false;
-        this.updateUi();
-        this.loadObservations();
+      await this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
+      // TODO: Shouldn't this allways use the same cancel subject?
+      this.loaded = false;
+      this.updateUi();
+      this.loadObservations();
     }
 
     private updateUi() {
-        if (!this.cdr['destroyed']) {
-            this.cdr.detectChanges();
-        }
+      if (!this.cdr['destroyed']) {
+        this.cdr.detectChanges();
+      }
     }
 
     ionViewWillEnter() {
-        this.loaded = false;
-        this.ngDestroy$ = new Subject();
-        this.loadObservations();
-        this.updateUi();
+      this.loaded = false;
+      this.ngDestroy$ = new Subject();
+      this.loadObservations();
+      this.updateUi();
     }
 
     ionViewWillLeave() {
-        this.ngDestroy$.next();
-        this.ngDestroy$.complete();
+      this.ngDestroy$.next();
+      this.ngDestroy$.complete();
     }
 
     private loadObservations() {
-        this.content.scrollToTop();
-        this.observations$.subscribe((observations) => {
-            this.observations = observations;
-            this.fadeIn(observations.length > 0);
-            this.updateUi();
-        }, (err) => {
-            this.loggingService.log('Could not load observations', err, LogLevel.Warning, DEBUG_TAG);
-        });
+      this.content.scrollToTop();
+      this.observations$.subscribe((observations) => {
+        this.observations = observations;
+        this.fadeIn(observations.length > 0);
+        this.updateUi();
+      }, (err) => {
+        this.loggingService.log('Could not load observations', err, LogLevel.Warning, DEBUG_TAG);
+      });
     }
 
     private fadeIn(longDelay = false) {
-        timer(longDelay ? 1500 : 200).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
-            this.loaded = true;
-            this.updateUi();
-        });
+      timer(longDelay ? 1500 : 200).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+        this.loaded = true;
+        this.updateUi();
+      });
     }
 
     ngOnDestroy() {
     }
 
     private filterObservationsWithinViewBounds(observations: RegistrationViewModel[], view: IMapView) {
-        return observations.filter((observation) => !view ||
+      return observations.filter((observation) => !view ||
             view.bounds.contains(L.latLng(observation.ObsLocation.Latitude, observation.ObsLocation.Longitude)));
     }
 
     private trackByIdFuncInternal(_, obs: RegistrationViewModel) {
-        return this.observationService.uniqueObservation(obs);
+      return this.observationService.uniqueObservation(obs);
     }
 
     footerFn(item: RegistrationViewModel, index: number, items: RegistrationViewModel[]) {
-        if (index === (items.length - 1)) {
-            return 'footer';
-        }
+      if (index === (items.length - 1)) {
+        return 'footer';
+      }
     }
 
     headerFn(item: RegistrationViewModel, index: number, items: RegistrationViewModel[]) {
-        if (index === 0) {
-            return 'header';
-        }
+      if (index === 0) {
+        return 'header';
+      }
     }
 
-    // getItemHeight(item: RegistrationViewModel, index: number) {
-    //     return this.obsCardHeightService.getHeight(item.RegID);
-    // }
+  // getItemHeight(item: RegistrationViewModel, index: number) {
+  //     return this.obsCardHeightService.getHeight(item.RegID);
+  // }
 }

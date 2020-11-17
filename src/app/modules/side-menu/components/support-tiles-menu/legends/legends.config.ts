@@ -10,4 +10,4 @@ export const legendsConfig = {
   'clayzones': ClayzonesLegendComponent,
   'weakenedice': WeakenediceLegendComponent,
   'steepness-outlet': SteepnessOutletLegendComponent
-}
+};

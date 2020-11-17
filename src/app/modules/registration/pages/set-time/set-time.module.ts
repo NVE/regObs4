@@ -4,7 +4,6 @@ import { SetTimePage } from './set-time.page';
 import { SharedModule } from '../../../shared/shared.module';
 import { CanDeactivateToObsLocationRouteGuard } from './can-deactivate-to-obs-location.guard';
 
-
 const routes: Routes = [
   {
     path: '',

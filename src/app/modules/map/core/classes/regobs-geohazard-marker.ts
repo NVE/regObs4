@@ -6,33 +6,33 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
     private _geoHazard: GeoHazard;
 
     constructor(geoHazard: GeoHazard, isSelected = false) {
-        super({
-            html: RegobsGeoHazardMarker.getIconSvg(geoHazard, isSelected),
-            className: 'obs-marker',
-            iconSize: [30, 40],
-            iconAnchor: [15, 40],
-        });
-        this._selected = isSelected;
-        this._geoHazard = geoHazard;
+      super({
+        html: RegobsGeoHazardMarker.getIconSvg(geoHazard, isSelected),
+        className: 'obs-marker',
+        iconSize: [30, 40],
+        iconAnchor: [15, 40],
+      });
+      this._selected = isSelected;
+      this._geoHazard = geoHazard;
     }
 
     static getIconSvg(geoHazard: GeoHazard, isSelected: boolean) {
-        switch (geoHazard) {
-            case GeoHazard.Snow:
-                return this.getSnowSvg(isSelected);
-            case GeoHazard.Water:
-                return this.getWaterSvg(isSelected);
-            case GeoHazard.Dirt:
-                return this.getDirtSvg(isSelected);
-            case GeoHazard.Ice:
-                return this.getIceSvg(isSelected);
-            default:
-                return '';
-        }
+      switch (geoHazard) {
+      case GeoHazard.Snow:
+        return this.getSnowSvg(isSelected);
+      case GeoHazard.Water:
+        return this.getWaterSvg(isSelected);
+      case GeoHazard.Dirt:
+        return this.getDirtSvg(isSelected);
+      case GeoHazard.Ice:
+        return this.getIceSvg(isSelected);
+      default:
+        return '';
+      }
     }
 
     static getDirtSvg(isSelected: boolean) {
-        return `<svg width="44" height="49" viewBox="0 0 44 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+      return `<svg width="44" height="49" viewBox="0 0 44 49" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g filter="url(#filter0_f)">
         <ellipse cx="22.6509" cy="30.7147" rx="11.7128" ry="5.55783" transform="rotate(-22 22.6509 30.7147)"
         fill="#222222" fill-opacity="0.5"/>
@@ -70,7 +70,7 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
     }
 
     static getIceSvg(isSelected: boolean) {
-        return `<svg width="44" height="49" viewBox="0 0 44 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+      return `<svg width="44" height="49" viewBox="0 0 44 49" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g filter="url(#filter0_f)">
         <ellipse cx="22.6509" cy="30.7147" rx="11.7128" ry="5.55783" transform="rotate(-22 22.6509 30.7147)"
         fill="#222222" fill-opacity="0.5"/>
@@ -98,7 +98,7 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
     }
 
     static getWaterSvg(isSelected: boolean) {
-        return `<svg width="44" height="49" viewBox="0 0 44 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+      return `<svg width="44" height="49" viewBox="0 0 44 49" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g filter="url(#filter0_f)">
         <ellipse cx="22.6509" cy="30.7147" rx="11.7128" ry="5.55783" transform="rotate(-22 22.6509 30.7147)"
          fill="#222222" fill-opacity="0.5"/>
@@ -147,7 +147,7 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
     }
 
     static getSnowSvg(isSelected: boolean) {
-        return `<svg width="44" height="49" viewBox="0 0 44 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+      return `<svg width="44" height="49" viewBox="0 0 44 49" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g filter="url(#filter0_f)">
         <ellipse cx="22.6509" cy="30.7147" rx="11.7128" ry="5.55783" transform="rotate(-22 22.6509 30.7147)"
         fill="#222222" fill-opacity="0.5"/>
@@ -212,16 +212,16 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
     }
 
     redraw() {
-        this.options.html = RegobsGeoHazardMarker.getIconSvg(this._geoHazard, this._selected);
+      this.options.html = RegobsGeoHazardMarker.getIconSvg(this._geoHazard, this._selected);
     }
 
     setGeoHazard(geoHazard: GeoHazard) {
-        this._geoHazard = geoHazard;
-        this.redraw();
+      this._geoHazard = geoHazard;
+      this.redraw();
     }
 
     setSelected(selected: boolean) {
-        this._selected = selected;
-        this.redraw();
+      this._selected = selected;
+      this.redraw();
     }
 }

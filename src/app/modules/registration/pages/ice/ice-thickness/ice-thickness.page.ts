@@ -62,7 +62,6 @@ export class IceThicknessPage extends BasePage {
     }
   }
 
-
   isEmpty() {
     return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid) &&
       this.iceHeightAfter === undefined && this.iceHeightBefore === undefined;

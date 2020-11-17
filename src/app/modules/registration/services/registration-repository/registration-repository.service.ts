@@ -69,9 +69,9 @@ export class RegistrationRepositoryService extends NgDestoryBase implements OnRe
   private createSaveToDbOnChangeListener() {
     this.userSettingService.appMode$.pipe(switchMap((appMode) =>
       this.registrations$.pipe(debounceTime(200), map((registrations) => ({ appMode, registrations })))),
-      tap((result) => this.loggingService.debug('InMemory registrations changed. Saving to db: ', DEBUG_TAG, result)),
-      concatMap((result) => this.saveRegistrationsToDb(result.appMode, result.registrations)),
-      takeUntil(this.ngDestroy$)).subscribe();
+    tap((result) => this.loggingService.debug('InMemory registrations changed. Saving to db: ', DEBUG_TAG, result)),
+    concatMap((result) => this.saveRegistrationsToDb(result.appMode, result.registrations)),
+    takeUntil(this.ngDestroy$)).subscribe();
   }
 
   private saveInMemoryRegistrations(appMode: AppMode, registrations: IRegistration[]) {
@@ -98,11 +98,11 @@ export class RegistrationRepositoryService extends NgDestoryBase implements OnRe
   private saveRegistrationsToDb(appMode: AppMode, registrations: IRegistration[]): Observable<IRegistration[]> {
     return from(NanoSql.getInstance(NanoSql.TABLES.REGISTRATION.name, appMode)
       .query('upsert', registrations).exec() as Promise<IRegistration[]>).pipe(tap((result) => {
-        this.loggingService.debug('Result from save to db is', DEBUG_TAG, result);
-      }), catchError((err) => {
-        this.loggingService.log('Could not save registrations to offline db', err, LogLevel.Warning, DEBUG_TAG);
-        return of([]);
-      }));
+      this.loggingService.debug('Result from save to db is', DEBUG_TAG, result);
+    }), catchError((err) => {
+      this.loggingService.log('Could not save registrations to offline db', err, LogLevel.Warning, DEBUG_TAG);
+      return of([]);
+    }));
   }
 
   appOnReset() {

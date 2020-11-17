@@ -28,11 +28,11 @@ class GeneralObsService extends __BaseService {
    * @param regId undefined
    */
   GetGeneralObsResponse(regId: number): __Observable<__StrictHttpResponse<null>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
 
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'GET',
       this.rootUrl + `/GeneralObs/${regId}`,
       __body,
@@ -66,12 +66,12 @@ class GeneralObsService extends __BaseService {
    * - `dto`:
    */
   PutGeneralObsResponse(params: GeneralObsService.PutGeneralObsParams): __Observable<__StrictHttpResponse<null>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
 
     __body = params.dto;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'PUT',
       this.rootUrl + `/GeneralObs/${params.regId}`,
       __body,
@@ -111,12 +111,12 @@ class GeneralObsService extends __BaseService {
    * @return OK
    */
   PostGeneralObsResponse(params: GeneralObsService.PostGeneralObsParams): __Observable<__StrictHttpResponse<{}>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
 
     __body = params.dto;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
       this.rootUrl + `/GeneralObs/${params.regId}`,
       __body,
@@ -153,11 +153,11 @@ class GeneralObsService extends __BaseService {
    * @return OK
    */
   DeleteGeneralObsResponse(regId: number): __Observable<__StrictHttpResponse<{}>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
 
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'DELETE',
       this.rootUrl + `/GeneralObs/${regId}`,
       __body,
@@ -185,7 +185,7 @@ class GeneralObsService extends __BaseService {
   }
 }
 
-module GeneralObsService {
+namespace GeneralObsService {
 
   /**
    * Parameters for PutGeneralObs
@@ -204,4 +204,4 @@ module GeneralObsService {
   }
 }
 
-export { GeneralObsService }
+export { GeneralObsService };

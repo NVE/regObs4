@@ -27,13 +27,13 @@ class TokenService extends __BaseService {
    * @return OK
    */
   TokenGetResponse(dto: GetTokenRequestDto): __Observable<__StrictHttpResponse<GetTokenResponseDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = dto;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Token/Get`,
+      this.rootUrl + '/Token/Get',
       __body,
       {
         headers: __headers,
@@ -59,7 +59,7 @@ class TokenService extends __BaseService {
   }
 }
 
-module TokenService {
+namespace TokenService {
 }
 
-export { TokenService }
+export { TokenService };

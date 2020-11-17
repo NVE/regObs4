@@ -23,8 +23,6 @@ import { CustomTranslateLoader } from './custom-translate.loader';
 import { MapModule } from './modules/map/map.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
-
-
 @NgModule({
   declarations: [
     AppComponent

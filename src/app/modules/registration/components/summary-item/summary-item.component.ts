@@ -15,10 +15,10 @@ export class SummaryItemComponent implements OnInit {
   @Input() readonly = false;
 
   constructor(
-    private navController: NavController, 
+    private navController: NavController,
     private webView: WebView,
     private domSanitizer: DomSanitizer
-    ) { }
+  ) { }
 
   async ngOnInit() {
 

@@ -9,7 +9,6 @@ import { map, tap } from 'rxjs/operators';
 })
 export class AboutObservationsPopupGuard implements CanActivate {
 
-
   constructor(private userSettingService: UserSettingService) {
   }
 

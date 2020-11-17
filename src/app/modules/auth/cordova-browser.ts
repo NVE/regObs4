@@ -1,5 +1,5 @@
-import { SafariViewController } from '@ionic-native/safari-view-controller/ngx'
-import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser/ngx'
+import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
+import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser/ngx';
 import { Browser } from 'ionic-appauth';
 import { Platform } from '@ionic/angular';
 import { SAFARI_TINT_COLOR, SAFARI_BAR_COLOR, SAFARI_TOOLBAR_COLOR, SAFARI_CONTROL_TINT_COLOR } from '../../core/services/external-link/external-link.service';
@@ -26,13 +26,13 @@ export class CordovaBrowser extends Browser {
       this.safariViewController.hide();
     } else {
       if (this.inAppBrowserRef != undefined)
-        this.inAppBrowserRef.close();
+      {this.inAppBrowserRef.close();}
     }
   }
 
   public async showWindow(url: string): Promise<string | undefined> {
     if (this.useSafariViewController()) {
-      let optionSafari: any = {
+      const optionSafari: any = {
         url: url,
         showDefaultShareMenuItem: false,
         tintColor: SAFARI_TINT_COLOR,
@@ -46,21 +46,20 @@ export class CordovaBrowser extends Browser {
         }
       });
     } else {
-      let options: any = {
+      const options: any = {
         location: 'no',
         zoom: 'no',
         clearcache: 'yes',
         clearsessioncache: 'yes',
-      }
+      };
 
       this.inAppBrowserRef = this.inAppBrowser.create(url, '_self', options);
 
       if (this.inAppBrowserRef != undefined)
-        this.inAppBrowserRef.on('exit').subscribe(() => this.onCloseFunction());
+      {this.inAppBrowserRef.on('exit').subscribe(() => this.onCloseFunction());}
 
     }
     return;
   }
-
 
 }

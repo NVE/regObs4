@@ -7,14 +7,14 @@ import { IonicModule } from '@ionic/angular';
 import { StartsWithHighlightPipe } from '../../pipes/starts-with-highlight.pipe';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        IonicModule,
-        TranslateModule,
-    ],
-    declarations: [ModalSearchPage, StartsWithHighlightPipe],
-    entryComponents: [ModalSearchPage],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    IonicModule,
+    TranslateModule,
+  ],
+  declarations: [ModalSearchPage, StartsWithHighlightPipe],
+  entryComponents: [ModalSearchPage],
 })
 export class ModalSearchPageModule { }

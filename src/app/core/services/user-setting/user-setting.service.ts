@@ -94,7 +94,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       .pipe(
         map((val) => val.observationDaysBack),
         distinctUntilChanged(equal),
-        tap((val) => this.loggingService.debug(`Days back changed to:`, DEBUG_TAG, val)),
+        tap((val) => this.loggingService.debug('Days back changed to:', DEBUG_TAG, val)),
         shareReplay(1));
 
     this.showObservations$ = this.userSetting$.pipe(map((val) => val.showObservations), distinctUntilChanged(), shareReplay(1));
@@ -184,11 +184,12 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       }));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   appOnReset() {
   }
 
   appOnResetComplete() {
-    this.loggingService.debug(`App reset complete. Re-init observables.`, DEBUG_TAG);
+    this.loggingService.debug('App reset complete. Re-init observables.', DEBUG_TAG);
     // const defaultSettings = DEFAULT_USER_SETTINGS(null);
     // this.saveUserSettings(defaultSettings);
     this.userSettingInMemory.next(null); // Reset in memory observable

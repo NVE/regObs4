@@ -35,14 +35,14 @@ export class ShortcutService {
 
   private getImage(geoHazard: GeoHazard) {
     switch (geoHazard) {
-      case GeoHazard.Snow:
-        return 'ic_snow';
-      case GeoHazard.Dirt:
-        return 'ic_dirt';
-      case GeoHazard.Ice:
-        return 'ic_ice';
-      case GeoHazard.Water:
-        return 'ic_water';
+    case GeoHazard.Snow:
+      return 'ic_snow';
+    case GeoHazard.Dirt:
+      return 'ic_dirt';
+    case GeoHazard.Ice:
+      return 'ic_ice';
+    case GeoHazard.Water:
+      return 'ic_water';
     }
   }
 
@@ -67,7 +67,6 @@ export class ShortcutService {
       iconFromResource: this.getImage(geoHazard),
     }));
   }
-
 
   private initAndroidShortcusts() {
     this.loggingService.debug('Initializing dynamic shortcuts for Android', DEBUG_TAG);

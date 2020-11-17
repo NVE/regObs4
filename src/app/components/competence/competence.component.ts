@@ -9,7 +9,7 @@ export class CompetenceComponent implements OnInit {
 
   readonly maxCompetenceLevel = 5;
 
-  @Input() competenceLevel: number = 0;
+  @Input() competenceLevel = 0;
 
   constructor() { }
 

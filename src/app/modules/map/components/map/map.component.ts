@@ -341,24 +341,24 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     // ];
 
     switch (topoMap) {
-      case TopoMap.statensKartverk:
-        return [statensKartverk];
-      case TopoMap.openTopo:
-        return [openTopoMap];
-      case TopoMap.arcGisOnline:
-        return [arcGisOnlineMap];
-      case TopoMap.geoDataLandskap:
-        return [geoDataLandskapMap];
-      case TopoMap.mixOpenTopo:
-        return [{ ...openTopoMap, excludeBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
-      case TopoMap.mixArcGisOnline:
-        return arGisOnlineMixMap;
+    case TopoMap.statensKartverk:
+      return [statensKartverk];
+    case TopoMap.openTopo:
+      return [openTopoMap];
+    case TopoMap.arcGisOnline:
+      return [arcGisOnlineMap];
+    case TopoMap.geoDataLandskap:
+      return [geoDataLandskapMap];
+    case TopoMap.mixOpenTopo:
+      return [{ ...openTopoMap, excludeBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
+    case TopoMap.mixArcGisOnline:
+      return arGisOnlineMixMap;
       // case TopoMap.mixGeoDataLandskap:
       //   return mixGeoDataLandskap;
       // default:
       //   return langKey === LangKey.nb ? mixGeoDataLandskap : [arcGisOnlineMap];
-      default:
-        return langKey === LangKey.nb ? [statensKartverk] : [arcGisOnlineMap];
+    default:
+      return langKey === LangKey.nb ? [statensKartverk] : [arcGisOnlineMap];
     }
   }
 

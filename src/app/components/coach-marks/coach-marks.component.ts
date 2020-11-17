@@ -33,8 +33,8 @@ export class CoachMarksComponent implements OnInit, OnDestroy {
       filter((val) => val),
       delay(2000),
       enterZone(this.ngZone)).subscribe(() => {
-        this.isOpen = true;
-      });
+      this.isOpen = true;
+    });
   }
 
   private getShowGeoSelectObservable() {

@@ -106,15 +106,14 @@ export class MapService {
       scan((acc, val) => acc + val, 0));
   }
 
-
-  private triggerWhenMetersReached(metersBuffer: number = 10) {
+  private triggerWhenMetersReached(metersBuffer = 10) {
     return this.getMapMetersChanged()
       .pipe(skipWhile((val) => {
         return val < metersBuffer;
       }));
   }
 
-  private getMapViewThatHasRelevantChange(metersBuffer: number = 10) {
+  private getMapViewThatHasRelevantChange(metersBuffer = 10) {
     return this.mapView$.pipe(
       bufferWhen(() => this.triggerWhenMetersReached(metersBuffer)),
       switchMap((buffer) => (buffer.length > 0 && !!buffer[buffer.length - 1]) ?
@@ -146,10 +145,10 @@ export class MapService {
       switchMap((cvg) => fromWorker<IRegionInViewInput, IRegionInViewOutput>(() =>
         new Worker('../../web-workers/region-in-view.worker',
           { type: 'module' }),
-        currenteMapViewAndGeoHazards).pipe(map((result) => ({
-          ...cvg.mapView,
-          ...result
-        })))),
+      currenteMapViewAndGeoHazards).pipe(map((result) => ({
+        ...cvg.mapView,
+        ...result
+      })))),
       tap((val) => this.loggingService.debug('MapViewArea changed', DEBUG_TAG, val)),
       shareReplay(1)
     );

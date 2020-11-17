@@ -64,10 +64,10 @@ export class DbHelperService {
       //   await nSQL(tableName).query('rebuild indexes').exec();
       // };
       try {
-        await this.sqliteobj.executeSql(`CREATE TABLE IF NOT EXISTS "_ai" (id TEXT PRIMARY KEY UNIQUE, inc BIGINT)`);
+        await this.sqliteobj.executeSql('CREATE TABLE IF NOT EXISTS "_ai" (id TEXT PRIMARY KEY UNIQUE, inc BIGINT)');
       } catch (err) {
         if (onError) {
-          onError(`Could not create _ai table`, err);
+          onError('Could not create _ai table', err);
         }
       }
     }

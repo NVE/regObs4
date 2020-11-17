@@ -28,12 +28,12 @@ class HelptextService extends __BaseService {
    */
   HelptextGetResponse(langKey: number): __Observable<__StrictHttpResponse<Array<HelptextDto>>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    if (langKey != null) __params = __params.set('langKey', langKey.toString());
-    let req = new HttpRequest<any>(
+    const __headers = new HttpHeaders();
+    const __body: any = null;
+    if (langKey != null) {__params = __params.set('langKey', langKey.toString());}
+    const req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/HelpText`,
+      this.rootUrl + '/HelpText',
       __body,
       {
         headers: __headers,
@@ -60,7 +60,7 @@ class HelptextService extends __BaseService {
   }
 }
 
-module HelptextService {
+namespace HelptextService {
 }
 
-export { HelptextService }
+export { HelptextService };

@@ -10,7 +10,6 @@ import { Subscription } from 'rxjs';
 })
 export class GpsCenterComponent implements OnInit, OnDestroy, AfterContentInit {
 
-
   followMode: boolean;
 
   private subscription: Subscription;

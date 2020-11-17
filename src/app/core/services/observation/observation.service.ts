@@ -50,8 +50,6 @@ export class ObservationService {
     this._dataLoadObservable = this.getDataLoadObservable();
   }
 
-
-
   async updateObservations(cancel?: Promise<any>) {
     let cancelled = false;
     if (cancel) {
@@ -85,7 +83,7 @@ export class ObservationService {
     const dataLoad = await this.dataLoadService.getState(dataLoadId);
     const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
     if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
-      this.loggingService.debug(`Observations is already loading.`, DEBUG_TAG);
+      this.loggingService.debug('Observations is already loading.', DEBUG_TAG);
       return 0;
     } else {
       const lastUpdateLimit = moment().subtract(15, 'minutes');
@@ -146,15 +144,15 @@ export class ObservationService {
         this.saveAndClenupOfflineObservations(fromDate, geoHazards, userSetting, searchResult);
         return searchResult.length;
       } else {
-        this.loggingService.debug(`Operation cancelled. Saving load error.`, DEBUG_TAG);
+        this.loggingService.debug('Operation cancelled. Saving load error.', DEBUG_TAG);
         await this.dataLoadService.loadingError(dataLoadId, 'Operation cancelled');
         return 0;
       }
     } catch (err) {
       if (isCanceled) {
-        this.loggingService.debug(err, DEBUG_TAG, `Operation cancelled`);
+        this.loggingService.debug(err, DEBUG_TAG, 'Operation cancelled');
       } else {
-        this.loggingService.log(`Loading error. Is network available?`, err, LogLevel.Warning);
+        this.loggingService.log('Loading error. Is network available?', err, LogLevel.Warning);
       }
       await this.dataLoadService.loadingError(dataLoadId, err.message);
       return 0;
@@ -178,7 +176,7 @@ export class ObservationService {
     await this.dbHelperService.fastInsert(instanceName, result, (data) => data.RegID);
     this.loggingService.debug(`fastInsert took ${new Date().getTime() - now.getTime()} ms`, DEBUG_TAG);
     const deleteResult = await this.deleteObservationNoLongerInResult(userSetting.appMode, geoHazards, fromDate, result);
-    this.loggingService.debug(`Deleted items no longer in updated result`, DEBUG_TAG, deleteResult);
+    this.loggingService.debug('Deleted items no longer in updated result', DEBUG_TAG, deleteResult);
     await this.deleteOldObservations(userSetting.appMode, geoHazards);
   }
 
@@ -187,7 +185,7 @@ export class ObservationService {
     user: ObserverResponseDto,
     langKey: LangKey,
     pageNr?: number,
-    numberOfRecords: number = 10): Observable<RegistrationViewModel[]> {
+    numberOfRecords = 10): Observable<RegistrationViewModel[]> {
     return this.searchService.SearchSearch({
       NumberOfRecords: numberOfRecords,
       LangKey: langKey,
@@ -332,13 +330,13 @@ export class ObservationService {
     fromDate?: Date,
     observerGuid?: string): Observable<RegistrationViewModel[]> {
     return new NSqlFullUpdateObservable<RegistrationViewModel[]>
-      (this.getObservationsByParametersQuery(appMode, langKey, geoHazards, fromDate, observerGuid).listen({
-        debounce: 500,
-        unique: true,
-        compareFn: (a, b) => this.isDifferent(a, b),
-      })).pipe(
-        map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
-        tap((items) => this.loggingService.debug('Observations observable change feed', DEBUG_TAG, items)));
+    (this.getObservationsByParametersQuery(appMode, langKey, geoHazards, fromDate, observerGuid).listen({
+      debounce: 500,
+      unique: true,
+      compareFn: (a, b) => this.isDifferent(a, b),
+    })).pipe(
+      map((items) => items.sort((a, b) => moment(b.DtObsTime).diff(moment(a.DtObsTime)))),
+      tap((items) => this.loggingService.debug('Observations observable change feed', DEBUG_TAG, items)));
   }
 
   isDifferent(rowsA: RegistrationViewModel[], rowsB: RegistrationViewModel[]) {

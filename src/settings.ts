@@ -24,7 +24,7 @@ export const settings = {
     },
     'PROD': {
       client_id: 'a0b10e50-f942-4619-a9ab-cf5c900a98d5',
-      server_host: 'https://nveb2c.b2clogin.com/nveb2c.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      server_host: 'https://nveb2c01prod.b2clogin.com/nveb2c01prod.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
       end_session_redirect_url: 'regobs://callback',
       scopes: 'openid offline_access',

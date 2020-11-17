@@ -14,7 +14,6 @@ const NO_WEAK_LAYER_KDV_VALUE = 24;
 })
 export class AvalancheProblemModalPage implements OnInit, OnDestroy {
 
-
   @Input() avalancheEvalProblem: AvalancheEvalProblem2Dto;
   avalancheEvalProblemCopy: AvalancheEvalProblem2Dto;
   isNew = false;

@@ -65,13 +65,13 @@ export class HomePage extends RouterPage implements OnInit {
       distinctUntilChanged(),
       takeUntil(race(this.ngUnsubscribe, this.geoCoachMarksClosedSubject)),
       enterZone(this.ngZone)).subscribe((showGeoSelectInfo) => {
-        this.showGeoSelectInfo = showGeoSelectInfo;
-        if (!showGeoSelectInfo) {
-          this.geoCoachMarksClosedSubject.next();
-          this.geoCoachMarksClosedSubject.complete();
-          this.showUsageAnalyticsDialog();
-        }
-      });
+      this.showGeoSelectInfo = showGeoSelectInfo;
+      if (!showGeoSelectInfo) {
+        this.geoCoachMarksClosedSubject.next();
+        this.geoCoachMarksClosedSubject.complete();
+        this.showUsageAnalyticsDialog();
+      }
+    });
   }
 
   async showUsageAnalyticsDialog() {
@@ -108,18 +108,18 @@ export class HomePage extends RouterPage implements OnInit {
   }
 
   async onEnter() {
-    this.loggingService.debug(`Home page ionViewDidEnter.`, DEBUG_TAG);
+    this.loggingService.debug('Home page ionViewDidEnter.', DEBUG_TAG);
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     if (userSettings.showGeoSelectInfo) {
       this.loggingService.debug('Display coachmarks, wait with starting geopostion', DEBUG_TAG);
       return;
     }
-    this.loggingService.debug(`Activate map updates and GeoLocation`, DEBUG_TAG);
+    this.loggingService.debug('Activate map updates and GeoLocation', DEBUG_TAG);
     this.mapComponent.componentIsActive(true);
   }
 
   onLeave() {
-    this.loggingService.debug(`Home page onLeave. Disable map updates and GeoLocation`, DEBUG_TAG);
+    this.loggingService.debug('Home page onLeave. Disable map updates and GeoLocation', DEBUG_TAG);
     this.mapComponent.componentIsActive(false);
   }
 

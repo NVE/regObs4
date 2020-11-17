@@ -6,7 +6,7 @@ import { NumberHelper } from '../../../core/helpers/number-helper';
 })
 export class MetersToCmPipe implements PipeTransform {
 
-  transform(value: any, decimalPlaces: number = 2): any {
+  transform(value: any, decimalPlaces = 2): any {
     if (value === undefined || value === null) {
       return value;
     }
