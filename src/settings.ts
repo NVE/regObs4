@@ -121,7 +121,7 @@ export const settings = {
   map: {
     tiles: {
       cacheFolder: 'tilescache',
-      cacheSize: 5000,
+      cacheSize: 0,
       cacheSaveBufferThrottleTimeMs: 50,
       cacheSaveBufferIdleInterval: 2000,
       tileImageFormat: 'image/png',

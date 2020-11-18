@@ -13,7 +13,7 @@ import { LoggingService } from '../../../shared/services/logging/logging.service
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
 import { RegObsTileLayer, IRegObsTileLayerOptions } from '../../core/classes/regobs-tile-layer';
-import { NORWEGIAN_BOUNDS, BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
+import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { LangKey } from '../../../../core/models/langKey';
@@ -247,7 +247,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       detectRetina: userSetting.useRetinaMap,
       updateWhenIdle: settings.map.tiles.updateWhenIdle,
       edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
-      saveTilesToCache: userSetting.tilesCacheSize > 0,
+      saveTilesToCache: userSetting.tilesCacheSizev2 > 0,
       saveCacheTileFunc: (id, tile) => this.offlineMapService.saveTileToOfflineCache(id, tile),
       getCacheTileFunc: (id) => this.offlineMapService.getCachedTileDataUrl(id),
       logFunc: this.loggingService.log
@@ -341,24 +341,24 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     // ];
 
     switch (topoMap) {
-    case TopoMap.statensKartverk:
-      return [statensKartverk];
-    case TopoMap.openTopo:
-      return [openTopoMap];
-    case TopoMap.arcGisOnline:
-      return [arcGisOnlineMap];
-    case TopoMap.geoDataLandskap:
-      return [geoDataLandskapMap];
-    case TopoMap.mixOpenTopo:
-      return [{ ...openTopoMap, excludeBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
-    case TopoMap.mixArcGisOnline:
-      return arGisOnlineMixMap;
+      case TopoMap.statensKartverk:
+        return [statensKartverk];
+      case TopoMap.openTopo:
+        return [openTopoMap];
+      case TopoMap.arcGisOnline:
+        return [arcGisOnlineMap];
+      case TopoMap.geoDataLandskap:
+        return [geoDataLandskapMap];
+      case TopoMap.mixOpenTopo:
+        return [{ ...openTopoMap, excludeBounds: NORWEGIAN_BOUNDS }, norwegianMixedMap];
+      case TopoMap.mixArcGisOnline:
+        return arGisOnlineMixMap;
       // case TopoMap.mixGeoDataLandskap:
       //   return mixGeoDataLandskap;
       // default:
       //   return langKey === LangKey.nb ? mixGeoDataLandskap : [arcGisOnlineMap];
-    default:
-      return langKey === LangKey.nb ? [statensKartverk] : [arcGisOnlineMap];
+      default:
+        return langKey === LangKey.nb ? [statensKartverk] : [arcGisOnlineMap];
     }
   }
 
