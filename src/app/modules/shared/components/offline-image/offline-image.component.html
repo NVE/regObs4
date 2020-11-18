@@ -1,7 +1,7 @@
 <div class="offline-image-wrapper">
-    <ion-img class="real-image" [ngClass]="{ 'loaded': loaded, 'error': hasError }" [src]="src"
-        (ionImgDidLoad)="onLoaded($event)" (ionError)="onError()"></ion-img>
-    <div class="animated-background" [ngClass]="{ 'loaded': loaded, 'error': hasError }">
-        <ion-icon name="flash-off"></ion-icon>
-    </div>
+  <ion-img class="real-image" [ngClass]="{ 'loaded': loaded, 'error': hasError }" [src]="_srcInternal"
+    (ionImgDidLoad)="onLoaded()" (ionError)="onError()"></ion-img>
+  <div class="animated-background" [ngClass]="{ 'loaded': loaded, 'error': hasError }">
+    <ion-icon name="flash-off"></ion-icon>
+  </div>
 </div>
