@@ -4,12 +4,11 @@ import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
 import { nSQL } from '@nano-sql/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthActions, AuthObserver, AuthService, IAuthAction } from 'ionic-appauth';
-import { from, Observable } from 'rxjs';
-import { map, shareReplay, switchMap, take } from 'rxjs/operators';
+import { AuthActions, AuthService, IAuthAction } from 'ionic-appauth';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
 import { NanoSql } from '../../../../nanosql';
 import { settings } from '../../../../settings';
-import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 import { AppMode } from '../../../core/models/app-mode.enum';
 import { LangKey } from '../../../core/models/langKey';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
@@ -28,11 +27,10 @@ export const RETURN_URL_KEY = 'authreturnurl';
 })
 export class RegobsAuthService {
 
-  private _loggedInUser$: Observable<LoggedInUser>;
-  private observer: AuthObserver;
+  private _loggedInUserSubject: BehaviorSubject<LoggedInUser> = new BehaviorSubject({ isLoggedIn: false });
 
-  get loggedInUser$() {
-    return this._loggedInUser$;
+  get loggedInUser$(): Observable<LoggedInUser> {
+    return this._loggedInUserSubject.asObservable();
   }
 
   constructor(
@@ -48,8 +46,11 @@ export class RegobsAuthService {
     private requestor: Requestor,
   ) {
     this.setupDetectPasswordReset();
-    this._loggedInUser$ = this.getLoggedInUser$().pipe(shareReplay(1));
-    this.observer = this.authService.addActionListener((action) => this.onSignInCallback(action));
+    this.authService.addActionListener((action) => this.onSignInCallback(action));
+    this.userSettingService.appMode$.subscribe(async (appMode) => {
+      const loggedInUser = await this.getLoggedInUserForAppMode(appMode);
+      this._loggedInUserSubject.next(loggedInUser);
+    });
   }
 
   private setupDetectPasswordReset() {
@@ -118,7 +119,8 @@ export class RegobsAuthService {
     }
   }
 
-  public async logout() {
+  public async logout(): Promise<void> {
+    this._loggedInUserSubject.next({ isLoggedIn: false });
     await this.userSettingService.appMode$.pipe(take(1),
       switchMap((appMode) => from(NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('upsert',
         {
@@ -130,7 +132,7 @@ export class RegobsAuthService {
     await this.authService.signOut();
   }
 
-  public async getAndSaveObserver(idToken: string) {
+  public async getAndSaveObserver(idToken: string): Promise<void> {
     try {
       const result = await this.getObserverFromApi(idToken);
       if (!result) {
@@ -140,8 +142,12 @@ export class RegobsAuthService {
       }
       const resultWithNick = await this.checkAndSetNickIfNickIsNull(result, idToken);
       const claims = this.parseJwt(idToken);
-      const appMode = await this.userSettingService.appMode$.pipe(take(1)).toPromise();
-      await this.saveLoggedInUserToDb(appMode, claims.email, true, resultWithNick);
+      this._loggedInUserSubject.next({
+        email: claims.email,
+        isLoggedIn: true,
+        user: resultWithNick
+      });
+      setTimeout(() => this.saveLoggedInUserToDb(claims.email, true, resultWithNick), 20);
     } catch (err) {
       await this.showErrorMessage(err.status, err.message);
     }
@@ -164,6 +170,7 @@ export class RegobsAuthService {
   private async callApiUpdateNick(nick: string, idToken: string): Promise<void> {
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     const updateObserverUrl = settings.authConfig[userSettings.appMode].updateObserverUrl;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
     if (!apiKey) {
       throw new Error('apiKey.json not found in assets folder!');
@@ -207,7 +214,7 @@ export class RegobsAuthService {
     return result?.data?.values?.nick;
   }
 
-  public getLoggedInUserAsPromise() {
+  public getLoggedInUserAsPromise(): Promise<LoggedInUser> {
     return this.loggedInUser$.pipe(take(1)).toPromise();
   }
 
@@ -225,16 +232,9 @@ export class RegobsAuthService {
     }
   }
 
-  private getLoggedInUser$(): Observable<LoggedInUser> {
-    return this.userSettingService.appMode$.pipe(switchMap((appMode) => this.getLoggedInUserForAppMode$(appMode)));
-  }
-
-  private getLoggedInUserForAppMode$(appMode: AppMode): Observable<LoggedInUser> {
-    return new NSqlFullUpdateObservable<LoggedInUser[]>
-      (NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('select')
-        .listen()).pipe(
-          map(([loggedInUser]) => loggedInUser || { isLoggedIn: false })
-        );
+  private async getLoggedInUserForAppMode(appMode: AppMode): Promise<LoggedInUser> {
+    const result = await (NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('select').exec() as Promise<LoggedInUser[]>);
+    return result[0] || { isLoggedIn: false };
   }
 
   private async showErrorMessage(status: number, message: string) {
@@ -253,6 +253,7 @@ export class RegobsAuthService {
   private async getObserverFromApi(idToken: string): Promise<ObserverResponseDto> {
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     const getObserverUrl = settings.authConfig[userSettings.appMode].getObserverUrl;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
     if (!apiKey) {
       throw new Error('apiKey.json not found in assets folder!');
@@ -272,15 +273,18 @@ export class RegobsAuthService {
     return 'en';
   }
 
-  private async saveLoggedInUserToDb(appMode: AppMode, email: string, isLoggedIn: boolean, user: ObserverResponseDto) {
-    await NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('upsert',
-      {
-        id: 'user',
-        email,
-        isLoggedIn,
-        user
-      }).exec();
-    await this.saveUserGroups(appMode, user, user.ObserverGroup);
+  private saveLoggedInUserToDb(email: string, isLoggedIn: boolean, user: ObserverResponseDto): void {
+    this.userSettingService.appMode$.pipe(take(1), switchMap((appMode) =>
+      from(NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('upsert',
+        {
+          id: 'user',
+          email,
+          isLoggedIn,
+          user
+        }).exec()).pipe(switchMap(() => from(this.saveUserGroups(appMode, user, user.ObserverGroup))))))
+      .subscribe(() => { this.logger.debug('User saved to db', DEBUG_TAG); }, (err) => {
+        this.logger.error(err, DEBUG_TAG, 'Could not save logged in user to db');
+      });
   }
 
   async saveUserGroups(appMode: AppMode, user: ObserverResponseDto, observerGroups: ObserverGroupDto[]): Promise<void> {

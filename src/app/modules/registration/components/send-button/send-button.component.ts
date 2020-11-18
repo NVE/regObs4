@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,15 +11,15 @@ import { take } from 'rxjs/operators';
   templateUrl: './send-button.component.html',
   styleUrls: ['./send-button.component.scss'],
 })
-export class SendButtonComponent implements OnInit, OnDestroy {
+export class SendButtonComponent implements OnInit {
 
   @Input() registration: IRegistration;
 
-  get isEmpty() {
+  get isEmpty(): boolean {
     return this.registrationService.isRegistrationEmpty(this.registration);
   }
 
-  get isDisabled() {
+  get isDisabled(): boolean {
     return this.isEmpty || this.isSending;
   }
 
@@ -33,28 +33,27 @@ export class SendButtonComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private navController: NavController) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.isSending = false;
   }
 
-  ngOnDestroy(): void {
-  }
-
-  async send() {
+  send(): void {
     if (!this.isSending) {
       this.isSending = true;
-      try {
-        const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-        await this.registrationService.sendRegistration(userSettings.appMode, this.registration);
-      } finally {
-        this.ngZone.run(() => {
-          this.isSending = false;
-        });
-      }
+      setTimeout(async () => {
+        try {
+          const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+          await this.registrationService.sendRegistration(userSettings.appMode, this.registration);
+        } finally {
+          this.ngZone.run(() => {
+            this.isSending = false;
+          });
+        }
+      }, 200);
     }
   }
 
-  async delete() {
+  async delete(): Promise<void> {
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     const translations = await this.translateService
       .get(['REGISTRATION.DELETE', 'REGISTRATION.DELETE_CONFIRM', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
