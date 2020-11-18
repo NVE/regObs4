@@ -113,7 +113,7 @@ export class AddPictureItemComponent implements OnInit {
       this.logger.debug(`Image moved to permanent image url: ${permanentUrl}`, DEBUG_TAG);
       this.addImage(permanentUrl);
     } catch (err) {
-      this.logger.error(err, DEBUG_TAG, 'Error when adding image');
+      this.logger.log('User could not add image, most likely no access or invalid image', err, LogLevel.Warning, DEBUG_TAG);
       this.showErrorToast();
     }
     return true;

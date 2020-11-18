@@ -104,7 +104,9 @@ export class DataMarshallService implements OnReset {
       this.subscriptions.push(this.userSettingService.appMode$.subscribe((appMode) => this.loggingService.configureLogging(appMode)));
 
       this.subscriptions.push(this.offlineMapService.getFullTilesCacheAsObservable().subscribe((val) => {
-        this.offlineMapService.updateTilesCacheSizeTable(val.count, val.size);
+        if(val) {
+          this.offlineMapService.updateTilesCacheSizeTable(val.count ?? 0, val.size ?? 0);
+        }
       }));
       this.subscriptions.push(this.userSettingService.userSetting$.pipe(map((val) => val.tilesCacheSizev2 != null ? val.tilesCacheSizev2 : settings.map.tiles.cacheSize),
         distinctUntilChanged(), debounceTime(1000)).subscribe((val) => {
