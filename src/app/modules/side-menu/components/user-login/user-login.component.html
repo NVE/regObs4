@@ -1,23 +1,20 @@
-<ng-container *ngIf="($loggedInUser | async) as loggedInUser">
-  <ion-item *ngIf="!loggedInUser.isLoggedIn" (click)="login()" detail="true">
+<ion-item *ngIf="!loggedInUser.isLoggedIn" (click)="login()" detail="true">
+  <ion-icon slot="start" name="person-circle" color="varsom-blue"></ion-icon>
+  <ion-label class="menu-label">
+    {{'LOGIN.TITLE' | translate}}
+  </ion-label>
+</ion-item>
+<ng-container *ngIf="loggedInUser.isLoggedIn">
+  <ion-item routerLink="/login" routerDirection="forward" detail="true">
     <ion-icon slot="start" name="person-circle" color="varsom-blue"></ion-icon>
     <ion-label class="menu-label">
-      {{'LOGIN.TITLE' | translate}}
+      {{ loggedInUser.email }}
     </ion-label>
   </ion-item>
-  <ng-container *ngIf="loggedInUser.isLoggedIn">
-    <ion-item routerLink="/login" routerDirection="forward" detail="true">
-      <ion-icon slot="start" name="person-circle" color="varsom-blue"></ion-icon>
-      <ion-label class="menu-label">
-        {{ loggedInUser.email }}
-      </ion-label>
-    </ion-item>
-    <ion-item routerLink="/my-observations" routerDirection="forward" detail="true">
-      <ion-icon slot="start" name="eye" color="varsom-blue"></ion-icon>
-      <ion-label class="menu-label">
-        {{'MY_OBSERVATIONS.TITLE' | translate}}
-      </ion-label>
-    </ion-item>
-  </ng-container>
-
+  <ion-item routerLink="/my-observations" routerDirection="forward" detail="true">
+    <ion-icon slot="start" name="eye" color="varsom-blue"></ion-icon>
+    <ion-label class="menu-label">
+      {{'MY_OBSERVATIONS.TITLE' | translate}}
+    </ion-label>
+  </ion-item>
 </ng-container>

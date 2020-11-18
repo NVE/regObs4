@@ -100,7 +100,8 @@ export class AddPictureItemComponent implements OnInit {
         targetHeight: settings.images.size,
         targetWidth: settings.images.size,
         correctOrientation: true,
-        saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA,
+        saveToPhotoAlbum: false, // sourceType === PictureSourceType.CAMERA,
+        // NOTE: saveToPhotoAlbum=true causes a bug in latest cordova cameraplugin
       };
       const imageUrl = await this.camera.getPicture(options);
       if (await !this.validateImage(imageUrl)) {
