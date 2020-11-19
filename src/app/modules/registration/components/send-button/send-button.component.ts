@@ -1,17 +1,19 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { IRegistration } from '../../models/registration.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
+import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-send-button',
   templateUrl: './send-button.component.html',
   styleUrls: ['./send-button.component.scss'],
 })
-export class SendButtonComponent implements OnInit {
+export class SendButtonComponent implements OnInit, OnDestroy {
 
   @Input() registration: IRegistration;
 
@@ -20,10 +22,13 @@ export class SendButtonComponent implements OnInit {
   }
 
   get isDisabled(): boolean {
-    return this.isEmpty || this.isSending;
+    return this.isEmpty || this.isSending || this.isLoggingIn;
   }
 
   isSending = false;
+  isLoggingIn = false;
+
+  private ngOnDestroy$ = new Subject();
 
   constructor(
     private registrationService: RegistrationService,
@@ -31,10 +36,23 @@ export class SendButtonComponent implements OnInit {
     private userSettingService: UserSettingService,
     private translateService: TranslateService,
     private ngZone: NgZone,
-    private navController: NavController) { }
+    private navController: NavController,
+    private regobsAuthService: RegobsAuthService
+  ) { }
 
   ngOnInit(): void {
     this.isSending = false;
+    this.isLoggingIn = false;
+    this.regobsAuthService.isLoggingIn$.pipe(takeUntil(this.ngOnDestroy$)).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.isLoggingIn = val;
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.ngOnDestroy$.next();
+    this.ngOnDestroy$.complete();
   }
 
   send(): void {
