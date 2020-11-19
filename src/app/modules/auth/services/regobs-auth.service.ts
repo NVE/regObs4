@@ -28,9 +28,14 @@ export const RETURN_URL_KEY = 'authreturnurl';
 export class RegobsAuthService {
 
   private _loggedInUserSubject: BehaviorSubject<LoggedInUser> = new BehaviorSubject({ isLoggedIn: false });
+  private _isLoggingInSubject = new BehaviorSubject<boolean>(false);
 
   get loggedInUser$(): Observable<LoggedInUser> {
     return this._loggedInUserSubject.asObservable();
+  }
+
+  get isLoggingIn$(): Observable<boolean> {
+    return this._isLoggingInSubject.asObservable();
   }
 
   constructor(
@@ -85,10 +90,9 @@ export class RegobsAuthService {
         // HACK to detect change password
         if (tokenErrorJson && tokenErrorJson.error_description
           && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
-          return this.signIn(false).then(
-            () =>
-              null
-          );
+          return this.signIn(false).then(() => {
+            throw new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson || { error: 'invalid_request' }));
+          });
         }
         this.logger.error(new Error('Unable to login user'), DEBUG_TAG, `Auth response: ${error ? JSON.stringify(error) : ''}`);
         return Promise.reject<TokenResponse>(
@@ -134,6 +138,7 @@ export class RegobsAuthService {
 
   public async getAndSaveObserver(idToken: string): Promise<void> {
     try {
+      this._isLoggingInSubject.next(true);
       const result = await this.getObserverFromApi(idToken);
       if (!result) {
         this.logger.log('Could not get observer after sign in success', null, LogLevel.Warning, DEBUG_TAG, idToken);
@@ -150,6 +155,8 @@ export class RegobsAuthService {
       setTimeout(() => this.saveLoggedInUserToDb(claims.email, true, resultWithNick), 20);
     } catch (err) {
       await this.showErrorMessage(err.status, err.message);
+    } finally {
+      this._isLoggingInSubject.next(false);
     }
   }
 
