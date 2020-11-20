@@ -238,7 +238,7 @@ export class RegobsAuthService {
   public async onSignInCallback(action: IAuthAction): Promise<void> {
     if (action.tokenResponse?.idToken) {
       await this.getAndSaveObserver(action.tokenResponse?.idToken);
-    } else if (action.action === AuthActions.SignInFailed) {
+    } else if (action.action === AuthActions.SignInFailed && action.error !== 'Handle Not Available') {
       await this.showErrorMessage(500, action.error);
     }
     this.redirectToReturnUrl();
