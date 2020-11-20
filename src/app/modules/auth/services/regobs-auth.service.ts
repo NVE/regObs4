@@ -17,7 +17,7 @@ import { ObserverGroupDto, ObserverResponseDto } from '../../regobs-api/models';
 import { LogLevel } from '../../shared/services/logging/log-level.model';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
-import { AppAuthError, AuthorizationServiceConfiguration, Requestor, TokenError, TokenErrorJson, TokenRequest, TokenResponse, TokenResponseJson } from '@openid/appauth';
+import { AppAuthError, AuthorizationServiceConfiguration, Requestor, StorageBackend, TokenError, TokenErrorJson, TokenRequest, TokenResponse, TokenResponseJson } from '@openid/appauth';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -49,6 +49,7 @@ export class RegobsAuthService {
     private navCtrl: NavController,
     private location: Location,
     private requestor: Requestor,
+    private storageBackend: StorageBackend,
   ) {
     this.setupDetectPasswordReset();
     this.authService.addActionListener((action) => this.onSignInCallback(action));
@@ -76,13 +77,15 @@ export class RegobsAuthService {
         if ((<any>this.authService).tokenHandler.isTokenResponse(response)) {
           return new TokenResponse(response as TokenResponseJson);
         } else {
-          this.logger.error(new Error('Unable to login user'), DEBUG_TAG, `Auth response: ${response ? JSON.stringify(response) : ''}`);
+          this.logger.error(new Error(`Unable to login user. Auth response: ${response ? JSON.stringify(response) : ''}`),
+            DEBUG_TAG, `Auth response: ${response ? JSON.stringify(response) : ''}`);
           const tokenError = response as TokenErrorJson;
           return Promise.reject<TokenResponse>(
             new AppAuthError(tokenError?.error || 'Unknown error', new TokenError(tokenError || { error: 'invalid_request' })));
         }
       }, (error) => {
-        let tokenErrorJson: TokenErrorJson = error.error;
+        this.logger.log(`Error getting tokenResponse, maybe coming from password change? ${error ? JSON.stringify(error) : ''}`, null, LogLevel.Warning, DEBUG_TAG);
+        let tokenErrorJson: TokenErrorJson = error?.error;
         if (tokenErrorJson && !tokenErrorJson.error_description) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           tokenErrorJson = JSON.parse(<any>tokenErrorJson);
@@ -90,13 +93,20 @@ export class RegobsAuthService {
         // HACK to detect change password
         if (tokenErrorJson && tokenErrorJson.error_description
           && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
-          return this.signIn(false).then(() => {
-            throw new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson || { error: 'invalid_request' }));
+          this.signIn(false).then(() => {
+            throw new AppAuthError(tokenErrorJson?.error || 'Unknown error', new TokenError(tokenErrorJson || { error: 'invalid_request' }));
           });
         }
-        this.logger.error(new Error('Unable to login user'), DEBUG_TAG, `Auth response: ${error ? JSON.stringify(error) : ''}`);
+        this.logger.error(new Error('Unable to login user. Clear storage and let user try again.'), DEBUG_TAG, `Auth response: ${error ? JSON.stringify(error) : ''}`);
+        try {
+          return this.storageBackend.clear().then(() => {
+            throw new AppAuthError(tokenErrorJson?.error || 'Unknown error', new TokenError(tokenErrorJson || { error: 'invalid_request' }));
+          });
+        } catch (err) {
+          this.logger.error(err, DEBUG_TAG, 'Unable to clear storage and retry login');
+        }
         return Promise.reject<TokenResponse>(
-          new AppAuthError(tokenErrorJson.error, new TokenError(tokenErrorJson || { error: 'invalid_request' })));
+          new AppAuthError(tokenErrorJson?.error || 'Unknown error', new TokenError(tokenErrorJson || { error: 'invalid_request' })));
       });
     };
   }
@@ -226,16 +236,24 @@ export class RegobsAuthService {
   }
 
   public async onSignInCallback(action: IAuthAction): Promise<void> {
-    if (action.action === AuthActions.SignInSuccess) {
+    if (action.tokenResponse?.idToken) {
       await this.getAndSaveObserver(action.tokenResponse?.idToken);
+    } else if (action.action === AuthActions.SignInFailed) {
+      await this.showErrorMessage(500, action.error);
     }
-    const returnUrl = localStorage.getItem(RETURN_URL_KEY);
-    if (returnUrl) {
-      localStorage.removeItem(RETURN_URL_KEY);
-      this.location.replaceState(this.router.serializeUrl(this.router.createUrlTree([''])));
-      this.navCtrl.navigateForward(returnUrl);
-    } else {
-      this.navCtrl.navigateRoot('');
+    this.redirectToReturnUrl();
+  }
+
+  private redirectToReturnUrl() {
+    if (this.location.path().indexOf('auth/callback') >= 0) {
+      const returnUrl = localStorage.getItem(RETURN_URL_KEY);
+      if (returnUrl) {
+        localStorage.removeItem(RETURN_URL_KEY);
+        this.location.replaceState(this.router.serializeUrl(this.router.createUrlTree([''])));
+        this.navCtrl.navigateForward(returnUrl);
+      } else {
+        this.navCtrl.navigateRoot('');
+      }
     }
   }
 
