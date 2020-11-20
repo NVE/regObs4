@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
 import { nSQL } from '@nano-sql/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthService, IAuthAction } from 'ionic-appauth';
+import { AuthActions, AuthService, IAuthAction } from 'ionic-appauth';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { NanoSql } from '../../../../nanosql';
@@ -238,7 +238,7 @@ export class RegobsAuthService {
   public async onSignInCallback(action: IAuthAction): Promise<void> {
     if (action.tokenResponse?.idToken) {
       await this.getAndSaveObserver(action.tokenResponse?.idToken);
-    } else if (action.error) {
+    } else if (action.action === AuthActions.SignInFailed) {
       await this.showErrorMessage(500, action.error);
     }
     this.redirectToReturnUrl();
