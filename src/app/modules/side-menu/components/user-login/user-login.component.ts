@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 
@@ -8,18 +9,34 @@ import { LoggedInUser } from '../../../login/models/logged-in-user.model';
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.scss']
 })
-export class UserLoginComponent implements OnInit {
+export class UserLoginComponent implements OnInit, OnDestroy {
 
-  $loggedInUser: Observable<LoggedInUser>;
+  loggedInUser: LoggedInUser = { isLoggedIn: false };
+  private ngDestroy$ = new Subject();
+  isLoggingIn = false;
 
-  constructor(private regobsauthService: RegobsAuthService) { }
+  constructor(private regobsauthService: RegobsAuthService, private ngZone: NgZone) { }
 
-  ngOnInit() {
-    this.$loggedInUser = this.regobsauthService.loggedInUser$;
+  ngOnInit(): void {
+    this.regobsauthService.loggedInUser$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.loggedInUser = val;
+      });
+    });
+    this.regobsauthService.isLoggingIn$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.isLoggingIn = val;
+      });
+    });
   }
 
-  login() {
+  login(): void {
     this.regobsauthService.signIn();
+  }
+
+  ngOnDestroy(): void {
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
 }

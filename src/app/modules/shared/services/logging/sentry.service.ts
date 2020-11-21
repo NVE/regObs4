@@ -60,16 +60,15 @@ export class SentryService implements LoggingService {
   }
 
   log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    // Skipping other log levels than Error for performance, so we are not sending a lot of debug messages over the network
-    if (level === LogLevel.Error) {
-      if (message) {
-        Sentry.addBreadcrumb({
-          category: tag,
-          data: optionalParams,
-          message,
-          level: <any>level,
-        });
-      }
+    if (message && (level === LogLevel.Warning || level === LogLevel.Info || level === LogLevel.Error)) {
+      Sentry.addBreadcrumb({
+        category: tag,
+        data: optionalParams,
+        message,
+        level: level as unknown as Sentry.Severity,
+      });
+    }
+    if (error && level === LogLevel.Error) {
       if (error) {
         Sentry.captureException(error);
       }

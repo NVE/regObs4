@@ -1,4 +1,4 @@
-<ng-container *ngIf="($loggedInUser | async) as loggedInUser">
+<ng-container *ngIf="!isLoggingIn else spinner">
   <ion-item *ngIf="!loggedInUser.isLoggedIn" (click)="login()" detail="true">
     <ion-icon slot="start" name="person-circle" color="varsom-blue"></ion-icon>
     <ion-label class="menu-label">
@@ -19,5 +19,11 @@
       </ion-label>
     </ion-item>
   </ng-container>
-
 </ng-container>
+<ng-template #spinner>
+  <ion-item>
+    <ion-text>
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-text>
+  </ion-item>
+</ng-template>

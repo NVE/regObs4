@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { IRegistration } from '../../models/registration.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
+import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-send-button',
@@ -15,15 +17,18 @@ export class SendButtonComponent implements OnInit, OnDestroy {
 
   @Input() registration: IRegistration;
 
-  get isEmpty() {
+  get isEmpty(): boolean {
     return this.registrationService.isRegistrationEmpty(this.registration);
   }
 
-  get isDisabled() {
-    return this.isEmpty || this.isSending;
+  get isDisabled(): boolean {
+    return this.isEmpty || this.isSending || this.isLoggingIn;
   }
 
   isSending = false;
+  isLoggingIn = false;
+
+  private ngOnDestroy$ = new Subject();
 
   constructor(
     private registrationService: RegistrationService,
@@ -31,30 +36,42 @@ export class SendButtonComponent implements OnInit, OnDestroy {
     private userSettingService: UserSettingService,
     private translateService: TranslateService,
     private ngZone: NgZone,
-    private navController: NavController) { }
+    private navController: NavController,
+    private regobsAuthService: RegobsAuthService
+  ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.isSending = false;
+    this.isLoggingIn = false;
+    this.regobsAuthService.isLoggingIn$.pipe(takeUntil(this.ngOnDestroy$)).subscribe((val) => {
+      this.ngZone.run(() => {
+        this.isLoggingIn = val;
+      });
+    });
   }
 
   ngOnDestroy(): void {
+    this.ngOnDestroy$.next();
+    this.ngOnDestroy$.complete();
   }
 
-  async send() {
+  send(): void {
     if (!this.isSending) {
       this.isSending = true;
-      try {
-        const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-        await this.registrationService.sendRegistration(userSettings.appMode, this.registration);
-      } finally {
-        this.ngZone.run(() => {
-          this.isSending = false;
-        });
-      }
+      setTimeout(async () => {
+        try {
+          const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+          await this.registrationService.sendRegistration(userSettings.appMode, this.registration);
+        } finally {
+          this.ngZone.run(() => {
+            this.isSending = false;
+          });
+        }
+      }, 200);
     }
   }
 
-  async delete() {
+  async delete(): Promise<void> {
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     const translations = await this.translateService
       .get(['REGISTRATION.DELETE', 'REGISTRATION.DELETE_CONFIRM', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();

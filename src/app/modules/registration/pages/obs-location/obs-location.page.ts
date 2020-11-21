@@ -53,10 +53,11 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     if (id) {
       this.registration =
         await this.registrationService.getSavedRegistrationById(id);
-      this.geoHazard = this.registration.geoHazard;
+      this.geoHazard = this.registration?.geoHazard;
     } else if (this.activatedRoute.snapshot.params['geoHazard']) {
       this.geoHazard = parseInt(this.activatedRoute.snapshot.params['geoHazard'], 10);
-    } else {
+    }
+    if(this.geoHazard == null){
       // No geohazard found, use app mode
       const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
       this.geoHazard = userSettings.currentGeoHazard[0];

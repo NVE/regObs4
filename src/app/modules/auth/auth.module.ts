@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule, NgZone } from '@angular/core';
+import { NgModule, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Requestor, StorageBackend } from '@openid/appauth';
 import { AuthRoutingModule } from './auth-routing.module';
@@ -10,7 +10,6 @@ import { httpFactory } from './factories/http-factory';
 import { HttpClient } from '@angular/common/http';
 import { storageFactory } from './factories/storage-factory';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { RegobsAuthService } from './services/regobs-auth.service';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 

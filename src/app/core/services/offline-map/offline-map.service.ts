@@ -10,7 +10,7 @@ import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
 import { Observable, from, Subject, BehaviorSubject, zip, of, NEVER } from 'rxjs';
-import { map, delay, tap, mergeMap, catchError, take, switchMap } from 'rxjs/operators';
+import { map, delay, mergeMap, catchError, take, switchMap } from 'rxjs/operators';
 import { LRUCache } from 'lru-fast';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { ImageHelper } from '../../helpers/image.helper';
@@ -58,10 +58,10 @@ export class OfflineMapService implements OnReset {
           return of(null);
         })
       ) : NEVER)).subscribe((tile) => {
-      // this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
-      this._saveBufferSize--;
-      this._saveTileBufferTrigger.next(null);
-    });
+        // this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
+        this._saveBufferSize--;
+        this._saveTileBufferTrigger.next(null);
+      });
   }
 
   private saveHtmlImageToDb(id: string, el: HTMLImageElement):
@@ -72,7 +72,7 @@ export class OfflineMapService implements OnReset {
           id,
           blob,
           MIME_TYPE)).pipe(
-          map((offlineTile) => ({ id, el, offlineTile })))),
+            map((offlineTile) => ({ id, el, offlineTile })))),
       catchError((err) => {
         this.loggingService.log('Could not save tile image to offline tile', err, LogLevel.Warning, DEBUG_TAG);
         return of(null);

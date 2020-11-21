@@ -5,7 +5,6 @@ import { ModalController } from '@ionic/angular';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { DangerObsDto, KdvElement } from '../../../regobs-api/models';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
-import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
@@ -27,7 +26,6 @@ export class DangerObsPage extends BasePage {
     private modalController: ModalController,
     private zone: NgZone,
     private kdvService: KdvService,
-    private userSettingService: UserSettingService,
   ) {
     super(RegistrationTid.DangerObs, basePageService, activatedRoute);
   }
@@ -70,18 +68,27 @@ export class DangerObsPage extends BasePage {
 
   setDangerObs(index: number, dangerObs: DangerObsDto) {
     this.zone.run(() => {
+      if(!this.registration.request.DangerObs) {
+        this.registration.request.DangerObs = [];
+      }
       this.registration.request.DangerObs[index] = dangerObs;
     });
   }
 
   addDangerObs(dangerObs: DangerObsDto) {
     this.zone.run(() => {
+      if(!this.registration.request.DangerObs) {
+        this.registration.request.DangerObs = [];
+      }
       this.registration.request.DangerObs.push(dangerObs);
     });
   }
 
   removeAtIndex(index: number) {
     this.zone.run(() => {
+      if(!this.registration.request.DangerObs) {
+        this.registration.request.DangerObs = [];
+      }
       if (this.registration.request.DangerObs.length > 0) {
         this.registration.request.DangerObs.splice(index, 1);
       }

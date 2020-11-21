@@ -18,7 +18,7 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (langKey
   completedStartWizard: false,
   supportTiles: [],
   showMapCenter: false,
-  tilesCacheSize: settings.map.tiles.cacheSize,
+  tilesCacheSizev2: settings.map.tiles.cacheSize,
   showObservations: true,
   emailReceipt: true,
   topoMap: TopoMap.default,
