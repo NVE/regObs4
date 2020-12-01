@@ -59,10 +59,6 @@ export class DbHelperService {
 
   async resetDb(onError?: (tableName: string, ex: Error) => void) {
     if (this.sqliteobj) {
-      // const dropTableFunc = async (tableName) => {
-      //   await this.sqliteobj.executeSql(`DROP TABLE ${tableName}`)
-      //   await nSQL(tableName).query('rebuild indexes').exec();
-      // };
       try {
         await this.sqliteobj.executeSql('CREATE TABLE IF NOT EXISTS "_ai" (id TEXT PRIMARY KEY UNIQUE, inc BIGINT)');
       } catch (err) {
@@ -71,7 +67,8 @@ export class DbHelperService {
         }
       }
     }
-    return NanoSql.resetDb(onError);
+    await NanoSql.resetDb(onError);
+    await this.init();
   }
 
   private async getItemByIdSqlLite<T>(table: string, id: string | number, idColumn = 'id'): Promise<T> {

@@ -275,34 +275,47 @@ export class NanoSql {
   }
 
   static async resetDb(onError?: (tableName: string, ex: Error) => void) {
-    // try {
-    //     const tmpName = `${settings.db.nanoSql.dbName}Tmp`;
-    //     await this.init(tmpName);
-    //     nSQL().useDatabase(tmpName);
-    //     await nSQL().dropDatabase(settings.db.nanoSql.dbName);
-    //     await this.init();
-    //     nSQL().useDatabase(settings.db.nanoSql.dbName);
-    // } catch (err) {
-    //     console.log(err);
-    // }
-    return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig, onError)));
+    try {
+        await nSQL().dropDatabase(settings.db.nanoSql.dbName);
+        await this.init();
+    } catch (err) {
+        console.log(err);
+    }
+    // return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig, onError)));
   }
 
-  static async resetTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
-    try {
-      await nSQL(tableConfig.name).query('drop').exec();
-    } catch (ex) {
-      if (onError) {
-        onError(tableConfig.name, ex);
-      }
-    }
-    try {
-      await nSQL().query('create table', tableConfig).exec();
-    } catch (ex) {
-      if (onError) {
-        onError(tableConfig.name, ex);
-      }
-    }
-    // await nSQL(tableConfig.name).query('delete').exec();
-  }
+  // static async resetTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
+  //   if(tableConfig.name === 'offlinemaptiles') {
+  //     await this.dropAndRecreateTable(tableConfig, onError);
+  //   }else{
+  //     await this.deleteAllRowsInTable(tableConfig, onError);
+  //   }
+  // }
+
+  // private static async deleteAllRowsInTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
+  //   try{
+  //     await nSQL(tableConfig.name).query('delete').exec();
+  //   } catch (ex) {
+  //     if (onError) {
+  //       onError(tableConfig.name, ex);
+  //     }
+  //   }
+  // }
+
+  // private static async dropAndRecreateTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
+  //   try {
+  //     await nSQL(tableConfig.name).query('drop').exec();
+  //   } catch (ex) {
+  //     if (onError) {
+  //       onError(tableConfig.name, ex);
+  //     }
+  //   }
+  //   try {
+  //     await nSQL().query('create table', tableConfig).exec();
+  //   } catch (ex) {
+  //     if (onError) {
+  //       onError(tableConfig.name, ex);
+  //     }
+  //   }
+  // }
 }
