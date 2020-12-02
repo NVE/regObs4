@@ -68,7 +68,7 @@ export class DbHelperService {
       }
     }
     await NanoSql.resetDb(onError);
-    await this.init();
+    // await this.init();
   }
 
   private async getItemByIdSqlLite<T>(table: string, id: string | number, idColumn = 'id'): Promise<T> {
