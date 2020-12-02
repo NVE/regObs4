@@ -20,7 +20,7 @@ describe('AuthCallbackPage', () => {
     TestBed.configureTestingModule({
       declarations: [AuthCallbackPage],
       providers: [{ provide: LoggingService, useClass: loggingSpy }, SafariViewController, InAppBrowser, Location],
-      imports: [SharedModule, HttpClientModule, TranslateModule.forRoot(), RouterModule.forRoot([])]
+      imports: [SharedModule, HttpClientModule, TranslateModule.forRoot(), RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })]
     }).compileComponents();
 
     TestBed.inject(UserSettingService) as jasmine.SpyObj<UserSettingService>;

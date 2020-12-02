@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CompetenceComponent } from './competence.component';
 import { SharedModule } from '../../modules/shared/shared.module';
@@ -20,7 +20,7 @@ describe('CompetenceComponent', () => {
     return element.querySelectorAll(selector).length;
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [TestModule]
     }).compileComponents();

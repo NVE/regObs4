@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GeoIconComponent } from './geo-icon.component';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
@@ -8,7 +8,7 @@ describe('GeoIconComponent', () => {
   let component: GeoIconComponent;
   let fixture: ComponentFixture<GeoIconComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [IonicModule],
       declarations: [GeoIconComponent]
