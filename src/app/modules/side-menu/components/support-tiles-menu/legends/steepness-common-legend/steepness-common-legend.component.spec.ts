@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SteepnessCommonLegendComponent } from './steepness-common-legend.component';
 import { TestModule } from '../../../../../test/test.module';
 
@@ -6,7 +6,7 @@ describe('SteepnessCommonLegendComponent', () => {
   let component: SteepnessCommonLegendComponent;
   let fixture: ComponentFixture<SteepnessCommonLegendComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [TestModule],
       declarations: [SteepnessCommonLegendComponent]

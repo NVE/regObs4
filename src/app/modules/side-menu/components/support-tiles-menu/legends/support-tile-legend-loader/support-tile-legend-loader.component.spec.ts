@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SupportTileLegendLoaderComponent } from './support-tile-legend-loader.component';
 
@@ -6,7 +6,7 @@ describe('SupportTileLegendLoaderComponent', () => {
   let component: SupportTileLegendLoaderComponent;
   let fixture: ComponentFixture<SupportTileLegendLoaderComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SupportTileLegendLoaderComponent ]
     })
