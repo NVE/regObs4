@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonFab, NavController } from '@ionic/angular';
 import { Observable, from, combineLatest, of } from 'rxjs';
 import moment from 'moment';
@@ -11,7 +11,7 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { LangKey } from '../../../../core/models/langKey';
 import { RegistrationService } from '../../../registration/services/registration.service';
 import { map, tap, switchMap } from 'rxjs/operators';
-import { enterZone, setObservableTimeout } from '../../../../core/helpers/observable-helper';
+import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
 import { LoggingService } from '../../services/logging/logging.service';
 
 const DEBUG_TAG = 'AddMenuComponent';
@@ -31,7 +31,6 @@ export class AddMenuComponent implements OnInit {
 
   constructor(
     private registrationService: RegistrationService,
-    private ngZone: NgZone,
     private navController: NavController,
     private dateHelperService: DateHelperService,
     private tripLoggerService: TripLoggerService,
@@ -55,7 +54,7 @@ export class AddMenuComponent implements OnInit {
       switchMap((drafts) => drafts.length > 0 ? combineLatest(drafts.map((draft) => this.convertDraftToDate(draft))) : of([])),
       tap((drafts) => this.loggingService.debug('Converted drafts has changed to', DEBUG_TAG, drafts)),
       setObservableTimeout());
-    this.tripStarted$ = this.tripLoggerService.getLegacyTripAsObservable().pipe(map((val) => !!val), enterZone(this.ngZone));
+    this.tripStarted$ = this.tripLoggerService.isTripRunning$;
   }
 
   private convertDraftToDate(draft: IRegistration): Observable<{ id: string, geoHazard: GeoHazard, date: string }> {

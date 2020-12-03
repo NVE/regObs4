@@ -13,8 +13,8 @@ import * as utils from '@nano-sql/core/lib/utilities';
 import { IsEmptyHelper } from '../../core/helpers/is-empty.helper';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
-import { take } from 'rxjs/operators';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
+import { Geoposition } from '@ionic-native/geolocation/ngx';
 
 const DEBUG_TAG = 'LegacyTripPage';
 
@@ -32,13 +32,18 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   minutes: SelectOption[];
   isLoading = false;
   hasClicked = false;
+  isLoadingCurrentPosition = false;
+  currentPosition: Geoposition;
 
-  get isValid() {
+  private startTripSubscription: Subscription;
+
+  get isValid(): boolean {
     return this.tripDto.ObservationExpectedMinutes !== undefined
-      && this.tripDto.TripTypeID !== undefined;
+      && this.tripDto.TripTypeID !== undefined
+      && this.currentPosition != null;
   }
 
-  get isEmpty() {
+  get isEmpty(): boolean {
     return IsEmptyHelper.isEmpty(this.tripDto);
   }
 
@@ -55,7 +60,8 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     this.tripDto = {};
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.isLoading = false;
     this.setHoursToMidnight();
     this.tripLoggerSubscription = this.tripLoggerService.getLegacyTripAsObservable().subscribe((val) => {
       this.ngZone.run(() => {
@@ -67,6 +73,24 @@ export class LegacyTripPage implements OnInit, OnDestroy {
         }
       });
     });
+    this.initCurrentPosition();
+  }
+
+  private async initCurrentPosition(): Promise<void> {
+    this.isLoadingCurrentPosition = true;
+    try {
+      this.currentPosition = await this.geoPositionService.getSingleCurrentPosition();
+      if (this.currentPosition == null) {
+        this.tripLoggerService.showTripNoPositionErrorMessage();
+      }
+    } catch (error) {
+      this.loggingService.log('Could not get geolocation', error, LogLevel.Warning, DEBUG_TAG);
+      this.tripLoggerService.showTripNoPositionErrorMessage();
+    } finally {
+      this.ngZone.run(() => {
+        this.isLoadingCurrentPosition = false;
+      });
+    }
   }
 
   private setHoursToMidnight() {
@@ -82,7 +106,8 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     }
   }
 
-  async startTrip() {
+  async startTrip(): Promise<void> {
+    this.cancel();
     if (!this.isValid) {
       this.hasClicked = true;
       return;
@@ -94,22 +119,20 @@ export class LegacyTripPage implements OnInit, OnDestroy {
         this.tripDto.GeoHazardID = GeoHazard.Snow;
         this.tripDto.DeviceGuid = utils.uuid();
         try {
-          const currentLocation = await this.geoPositionService.currentPosition$.pipe(take(1)).toPromise();
-          if (currentLocation) {
-            this.tripDto.Lat = currentLocation.coords.latitude.toString();
-            this.tripDto.Lng = currentLocation.coords.longitude.toString();
-            this.tripLoggerService.startLegacyTrip(this.tripDto).subscribe(() => {
-              this.ngZone.run(() => {
-                this.isLoading = false;
-                this.navController.back();
-              });
-            }, (error) => {
-              this.loggingService.error(error, 'Error when starting trip', DEBUG_TAG);
-              this.ngZone.run(() => {
-                this.isLoading = false;
+          if (this.currentPosition && this.currentPosition.coords) {
+            this.tripDto.Lat = this.currentPosition.coords.latitude.toString();
+            this.tripDto.Lng = this.currentPosition.coords.longitude.toString();
+            this.startTripSubscription = this.tripLoggerService.startLegacyTrip(this.tripDto).subscribe(
+              () => this.navController.navigateRoot('/'),
+              (error) => {
+                this.loggingService.error(error, 'Error when starting trip', DEBUG_TAG);
                 this.tripLoggerService.showTripErrorMessage(true);
-              });
-            });
+              }, () => {
+                this.ngZone.run(() => {
+                  this.isLoading = false;
+                });
+              }
+            );
           } else {
             this.isLoading = false;
             this.tripLoggerService.showTripNoPositionErrorMessage();
@@ -123,11 +146,20 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     }
   }
 
-  stopTrip() {
+  cancel(): void {
+    if (this.startTripSubscription && !this.startTripSubscription.closed) {
+      this.startTripSubscription.unsubscribe();
+      this.startTripSubscription = undefined;
+    }
+    this.isLoading = false;
+  }
+
+  stopTrip(): void {
+    this.cancel();
     this.tripLoggerService.stopLegacyTrip();
   }
 
-  async showHelp() {
+  async showHelp(): Promise<void> {
     const translation = await this.translateService.get('TRIP.LEGACY_HELP_TEXT').toPromise();
     const modal = await this.modalController.create({
       component: HelpModalPage,
@@ -138,7 +170,8 @@ export class LegacyTripPage implements OnInit, OnDestroy {
     modal.present();
   }
 
-  clearPage() {
+  clearPage(): void {
     this.tripDto = {};
+    this.initCurrentPosition();
   }
 }
