@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, ReplaySubject, from, of, Observable, Subscription, combineLatest, merge, fromEvent } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, of, Observable, Subscription, combineLatest, merge, fromEvent } from 'rxjs';
 import { filter, map, catchError, distinctUntilChanged, startWith } from 'rxjs/operators';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../../settings';
@@ -12,7 +12,7 @@ import { GeoPositionLog } from './geo-position-log.interface';
 import { GeoPositionErrorCode } from './geo-position-error.enum';
 import moment from 'moment';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
-import { DeviceOrientation, DeviceOrientationCompassHeading } from '@ionic-native/device-orientation/ngx';
+import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 
 const DEBUG_TAG = 'GeoPositionService';
 
@@ -31,15 +31,15 @@ export class GeoPositionService implements OnDestroy {
   private positionSubscription: Subscription;
   private headingSubscription: Subscription;
 
-  get currentPosition$() {
+  get currentPosition$(): Observable<Geoposition> {
     return this.currentPosition.pipe(filter((cp) => cp !== null));
   }
 
-  get currentHeading$() {
+  get currentHeading$(): Observable<number> {
     return this.currentHeading.pipe(filter((cp) => cp !== null));
   }
 
-  get log$() {
+  get log$(): Observable<GeoPositionLog> {
     return this.gpsPositionLog.asObservable();
   }
 
@@ -56,6 +56,10 @@ export class GeoPositionService implements OnDestroy {
 
   ngOnDestroy(): void {
     this.stopSubscriptions();
+  }
+
+  getSingleCurrentPosition(): Promise<Geoposition> {
+    return this.geolocation.getCurrentPosition(settings.gps.highAccuracyPositionOptions);
   }
 
   private startGeolocationTrackingSubscription() {
@@ -179,18 +183,18 @@ export class GeoPositionService implements OnDestroy {
         this.loggingService.log('Error when watchPosition', err, LogLevel.Warning, DEBUG_TAG, err);
         return of(this.createPositionError('Unknown error'));
       })).subscribe((result: GeoPositionLog) => {
-      this.gpsPositionLog.next(result);
-      if (this.isValidPosition(result.pos)) {
-        this.gpsPositionLog.next(({
-          timestamp: result.pos.timestamp,
-          status: 'PositionUpdate',
-          highAccuracyEnabled:
+        this.gpsPositionLog.next(result);
+        if (this.isValidPosition(result.pos)) {
+          this.gpsPositionLog.next(({
+            timestamp: result.pos.timestamp,
+            status: 'PositionUpdate',
+            highAccuracyEnabled:
               result.highAccuracyEnabled,
-          pos: result.pos
-        }));
-        this.currentPosition.next(result.pos);
-      }
-    });
+            pos: result.pos
+          }));
+          this.currentPosition.next(result.pos);
+        }
+      });
   }
 
   private isValidPosition(pos: Geoposition) {
@@ -265,10 +269,10 @@ export class GeoPositionService implements OnDestroy {
     return merge(
       fromEvent((<any>window), 'deviceorientationabsolute'),
       fromEvent((<any>window), 'deviceorientation')).pipe(map((event: DeviceOrientationEvent) => {
-      const appleHeading = (<any>event).webkitCompassHeading;
-      const heading: number = appleHeading || this.getAbsoluteHeading(event);
-      return heading;
-    }));
+        const appleHeading = (<any>event).webkitCompassHeading;
+        const heading: number = appleHeading || this.getAbsoluteHeading(event);
+        return heading;
+      }));
   }
 
   // private requestDeviceOrientationPermission(): Promise<boolean> {
