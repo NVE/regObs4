@@ -1,0 +1,151 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- release/*
+
+pool:
+  name: Hosted macOS
+  demands: xcode
+
+variables:
+  cert.password: 'pasta8#lager'
+
+steps:
+#- script: '/bin/bash -c "sudo xcode-select -s /Applications/Xcode_11.2.1.app/Contents/Developer"'
+#  displayName: 'Set Xcode version 11.2.1'
+#  enabled: false
+
+- task: InstallAppleCertificate@2
+  displayName: 'Install Apple development certificate'
+  inputs:
+    certSecureFile: '64189289-3c4e-46b9-8628-ab3f170fe3b8'
+    certPwd: '$(cert.password)'
+
+- task: InstallAppleCertificate@2
+  displayName: 'Install Apple App Store distribution certificate'
+  inputs:
+    certSecureFile: '157e8091-2fcc-4dfb-b06f-1fa63e24cf18'
+    certPwd: '$(cert.password)'
+
+- task: InstallAppleProvisioningProfile@1
+  displayName: 'Install an Apple App Store distribution provisioning profile'
+  inputs:
+    provProfileSecureFile: 'c2190d51-17a1-423b-a6c9-79029e97ff6a'
+
+- task: InstallAppleProvisioningProfile@1
+  displayName: 'Install an Apple Development provisioning profile'
+  inputs:
+    provProfileSecureFile: 'c72d2dec-35b3-4566-a822-6cf9894bd00e'
+
+- task: NodeTool@0
+  displayName: 'Use Node 14.x'
+  inputs:
+    versionSpec: 14.x
+    checkLatest: true
+
+- task: DownloadSecureFile@1
+  displayName: 'Download secure file: nve.keystore'
+  inputs:
+    secureFile: '3a7f7301-2d1f-419c-b23b-2b72418bc324'
+    retryCount: 5
+
+- task: DownloadSecureFile@1
+  displayName: 'Download secure file: build.json'
+  inputs:
+    secureFile: 'ef4779f9-a984-473f-ac17-9eb1ab2d8ad7'
+    retryCount: 5
+
+- task: DownloadSecureFile@1
+  displayName: 'Download secure file: apikey.json'
+  inputs:
+    secureFile: '8a4eb7ac-653f-40c8-a421-d0a145352828'
+    retryCount: 5
+
+- task: DownloadSecureFile@1
+  displayName: 'Download secure file sentry.properties'
+  inputs:
+    secureFile: '683ad87f-0bf5-482f-b962-c0fbd2a04a4a'
+    retryCount: 5
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: ./'
+  inputs:
+    SourceFolder: '$(Agent.TempDirectory)'
+    Contents: |
+     nve.keystore
+     build.json
+     sentry.properties
+    TargetFolder: ./
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: ./src/assets'
+  inputs:
+    SourceFolder: '$(Agent.TempDirectory)'
+    Contents: apikey.json
+    TargetFolder: ./src/assets
+
+#- script: 'echo "##vso[task.setvariable variable=NODE_OPTIONS]--max_old_space_size=8048"'
+#  displayName: 'Set NODE_OPTIONS=--max_old_space_size=8048'
+
+- task: Npm@1
+  displayName: 'npm install'
+  inputs:
+    verbose: false
+
+- task: Npm@1
+  displayName: 'npm create release and upload sourcemaps to Sentry'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run sentry:create-release-and-upload-sourcemaps'
+
+- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
+  displayName: 'Ionic Cordova Build iOS'
+  inputs:
+    ionicCommand: 'cordova build ios'
+    ionicArgs: '--release --prod --device'
+
+- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
+  displayName: 'Ionic Cordova Build Android'
+  inputs:
+    ionicCommand: 'cordova build android'
+    ionicArgs: '--release --prod'
+
+- script: |
+   cd platforms/android
+   ls
+   ./gradlew bundleRelease
+  displayName: 'Create Android app bundle'
+
+- script: |
+   cd platforms/ios/build/device
+   ls
+   find . ! -name '*.ipa' -delete
+   ls
+  displayName: 'Cleanup ios build folder'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactStagingDirectory)'
+  inputs:
+    Contents: |
+     platforms/ios/build/device/*.ipa
+     platforms/android/app/build/outputs/apk/release/app-release.apk
+     platforms/android/app/build/outputs/bundle/release/*.aab
+    TargetFolder: '$(build.artifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+
+- task: ms-vsclient.app-store.app-store-release.AppStoreRelease@1
+  displayName: 'Publish to the App Store TestFlight track'
+  inputs:
+    serviceEndpoint: 'Apple App Store'
+    appIdentifier: no.nve.regobs4
+    shouldSkipWaitingForProcessing: true
+    teamName: 'Norges Vassdrags- og Energidirektorat'
+    fastlaneArguments: '--verbose'
+  continueOnError: true
+  timeoutInMinutes: 15
