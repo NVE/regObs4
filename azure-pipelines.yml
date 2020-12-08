@@ -26,7 +26,7 @@ steps:
   displayName: 'Copy Files to: ./src/assets'
   inputs:
     SourceFolder: '$(Agent.TempDirectory)'
-    Contents: apiKey.json
+    Contents: apikey.json
     TargetFolder: ./src/assets
 
 - task: Npm@1
