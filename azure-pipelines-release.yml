@@ -106,13 +106,13 @@ steps:
   displayName: 'Ionic Cordova Build iOS'
   inputs:
     ionicCommand: 'cordova build ios'
-    ionicArgs: '--release --no-build --device'
+    ionicArgs: '--release --prod --device'
 
 - task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
   displayName: 'Ionic Cordova Build Android'
   inputs:
     ionicCommand: 'cordova build android'
-    ionicArgs: '--release --no-build'
+    ionicArgs: '--release --prod'
 
 - script: |
    cd platforms/android
