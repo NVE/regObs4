@@ -202,7 +202,7 @@ export class RegobsAuthService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
     if (!apiKey) {
-      throw new Error('apiKey.json not found in assets folder!');
+      throw new Error('apikey.json not found in assets folder!');
     }
     const headers = new HttpHeaders({
       regObs_apptoken: apiKey.apiKey,
