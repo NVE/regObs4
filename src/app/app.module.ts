@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicModule } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_PROVIDERS } from './app.providers';
 import { IonicStorageModule } from '@ionic/storage';
@@ -19,7 +19,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SideMenuModule } from './modules/side-menu/side-menu.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GpsDebugModule } from './modules/gps-debug/gps-debug.module';
-import { CustomTranslateLoader } from './custom-translate.loader';
 import { MapModule } from './modules/map/map.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
@@ -34,12 +33,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     FormsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useClass: CustomTranslateLoader
-      }
-    }),
+    TranslateModule.forRoot(),
     MarkdownModule.forRoot(),
     IonicStorageModule.forRoot({
       name: settings.db.simpleStorage.dbName,
