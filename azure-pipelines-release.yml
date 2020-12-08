@@ -55,7 +55,7 @@ steps:
 - task: DownloadSecureFile@1
   displayName: 'Download secure file: build.json'
   inputs:
-    secureFile: 'ef4779f9-a984-473f-ac17-9eb1ab2d8ad7'
+    secureFile: 'c5491b5c-2fb9-4018-b1b5-aedbc42c4cf3'
     retryCount: 5
 
 - task: DownloadSecureFile@1
