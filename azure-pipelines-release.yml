@@ -142,6 +142,7 @@ steps:
 - task: AppStoreRelease@1
   displayName: 'Publish to the App Store TestFlight track'
   inputs:
+    serviceEndpoint: 'App Store'
     appIdentifier: 'no.nve.regobs4'
     appType: 'iOS'
     releaseTrack: 'TestFlight'
