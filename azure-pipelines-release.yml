@@ -81,7 +81,7 @@ steps:
     TargetFolder: ./
 
 - task: CopyFiles@2
-  displayName: 'Copy Files to: ./src/assets'
+  displayName: 'Copy apikey.json to: ./src/assets'
   inputs:
     SourceFolder: '$(Agent.TempDirectory)'
     Contents: apikey.json
