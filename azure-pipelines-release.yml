@@ -106,13 +106,13 @@ steps:
   displayName: 'Ionic Cordova Build iOS'
   inputs:
     ionicCommand: 'cordova build ios'
-    ionicArgs: '--release --prod --device'
+    ionicArgs: '--release --no-build --device'
 
 - task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
   displayName: 'Ionic Cordova Build Android'
   inputs:
     ionicCommand: 'cordova build android'
-    ionicArgs: '--release --prod'
+    ionicArgs: '--release --no-build'
 
 - script: |
    cd platforms/android
@@ -139,13 +139,14 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
 
-- task: ms-vsclient.app-store.app-store-release.AppStoreRelease@1
+- task: AppStoreRelease@1
   displayName: 'Publish to the App Store TestFlight track'
   inputs:
-    serviceEndpoint: 'Apple App Store'
-    appIdentifier: no.nve.regobs4
+    appIdentifier: 'no.nve.regobs4'
+    appType: 'iOS'
+    releaseTrack: 'TestFlight'
     shouldSkipWaitingForProcessing: true
     teamName: 'Norges Vassdrags- og Energidirektorat'
-    fastlaneArguments: '--verbose'
+    appSpecificId: '1450501601'
   continueOnError: true
-  timeoutInMinutes: 15
+  timeoutInMinutes: 60
