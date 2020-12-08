@@ -139,21 +139,14 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
 
-#- task: ms-vsclient.app-store.app-store-release.AppStoreRelease@1
-#  displayName: 'Publish to the App Store TestFlight track'
-#  inputs:
-#    serviceEndpoint: 'Apple App Store'
-#    appIdentifier: no.nve.regobs4
-#    shouldSkipWaitingForProcessing: true
-#    teamName: 'Norges Vassdrags- og Energidirektorat'
-#    fastlaneArguments: '--verbose'
 - task: AppStoreRelease@1
   displayName: 'Publish to the App Store TestFlight track'
   inputs:
     appIdentifier: 'no.nve.regobs4'
     appType: 'iOS'
     releaseTrack: 'TestFlight'
-    appSpecificId: '1450501601'
+    shouldSkipWaitingForProcessing: true
     teamName: 'Norges Vassdrags- og Energidirektorat'
+    appSpecificId: '1450501601'
   continueOnError: true
   timeoutInMinutes: 60
