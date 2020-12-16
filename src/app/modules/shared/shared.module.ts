@@ -25,6 +25,7 @@ import { OfflineImageComponent } from './components/offline-image/offline-image.
 import { CompetenceComponent } from '../../components/competence/competence.component';
 import { MapImageModule } from '../map-image/map-image.module';
 import { AuthModule } from './../auth/auth.module';
+import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 @NgModule({
   imports: [
     CommonModule,
@@ -35,7 +36,8 @@ import { AuthModule } from './../auth/auth.module';
     TranslateModule,
     RouterModule,
     MapImageModule,
-    AuthModule
+    AuthModule,
+    VirtualScrollerModule,
   ],
   declarations: [
     ShadowCssDirective,
@@ -83,7 +85,8 @@ import { AuthModule } from './../auth/auth.module';
     SelectComponent,
     GeoFabComponent,
     CompetenceComponent,
-    AuthModule
+    AuthModule,
+    VirtualScrollerModule
   ]
 })
 export class SharedModule { }

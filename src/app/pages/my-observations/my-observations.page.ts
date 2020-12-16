@@ -2,15 +2,13 @@ import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { Subscription, combineLatest, Observable, of } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { IonInfiniteScroll, IonVirtualScroll } from '@ionic/angular';
-import { ObserverResponseDto, RegistrationViewModel } from '../../modules/regobs-api/models';
+import { IonInfiniteScroll } from '@ionic/angular';
+import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
 import { map, distinctUntilChanged, switchMap, take } from 'rxjs/operators';
 import { IRegistration } from '../../modules/registration/models/registration.model';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
-import { AppMode } from '../../core/models/app-mode.enum';
-import { LangKey } from '../../core/models/langKey';
 
 interface MyVirtualScrollItem {
   type: 'draft' | 'sync' | 'sent';
@@ -26,7 +24,7 @@ const LIST_HEADERS = {
 
 const DEBUG_TAG = 'MyObservationsPage';
 
-const numberOfItemsToFetch = 100;
+const numberOfItemsToFetch = 10;
 
 @Component({
   selector: 'app-my-observations',
@@ -35,7 +33,7 @@ const numberOfItemsToFetch = 100;
 })
 export class MyObservationsPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll, { static: true }) infiniteScroll: IonInfiniteScroll;
-  @ViewChild(IonVirtualScroll, { static: true }) virtualScroll: IonVirtualScroll;
+  // @ViewChild(IonVirtualScroll, { static: true }) virtualScroll: IonVirtualScroll;
   private registrationSubscription: Subscription;
   loaded = false;
   disableInfiniteScroll = true;
@@ -69,17 +67,19 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   private updateVirtualItems(virtualItems: MyVirtualScrollItem[]) {
-    const loadTimeout = virtualItems.length > 0 ? 2000 : 0;
-    setTimeout(() => {
-      this.ngZone.run(() => {
-        this.loaded = true;
-        if (virtualItems.length === numberOfItemsToFetch) {
-          this.enableInfiniteScroll();
-        }
-      });
-    }, loadTimeout);
+    // const loadTimeout = virtualItems.length > 0 ? 2000 : 0;
+    // setTimeout(() => {
+    //   this.ngZone.run(() => {
+    //     this.loaded = true;
+    //     if (virtualItems.length === numberOfItemsToFetch) {
+    //       this.enableInfiniteScroll();
+    //     }
+    //   });
+    // }, loadTimeout);
     this.ngZone.run(() => {
       this.virtualItems = virtualItems;
+      this.loaded = true;
+      this.enableInfiniteScroll();
     });
   }
 
@@ -146,7 +146,6 @@ export class MyObservationsPage implements OnInit, OnDestroy {
       this.setInfiniteScrollComplete();
       this.ngZone.run(() => {
         this.virtualItems.push(...nextPage);
-        this.virtualScroll.checkEnd();
       });
       if (hasMoreDataToLoad) {
         this.enableInfiniteScroll();

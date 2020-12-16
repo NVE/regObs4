@@ -10,13 +10,18 @@ ion-refresher {
     }
 }
 
-ion-virtual-scroll {
-    opacity: 0;
-    transition: opacity 1s linear;
+// ion-virtual-scroll {
+//     opacity: 0;
+//     transition: opacity 1s linear;
 
-    &.loaded {
-        opacity: 1;
-    }
+//     &.loaded {
+//         opacity: 1;
+//     }
+// }
+
+virtual-scroller {
+    width: 100%;
+    height: 100%;
 }
 
 ion-item-divider {
