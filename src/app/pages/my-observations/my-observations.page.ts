@@ -2,13 +2,13 @@ import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { Subscription, combineLatest, Observable, of } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { IonInfiniteScroll } from '@ionic/angular';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
-import { map, distinctUntilChanged, switchMap, take } from 'rxjs/operators';
+import { map, distinctUntilChanged, switchMap, take, finalize, concatMap } from 'rxjs/operators';
 import { IRegistration } from '../../modules/registration/models/registration.model';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
+import { IPageInfo } from 'ngx-virtual-scroller';
 
 interface MyVirtualScrollItem {
   type: 'draft' | 'sync' | 'sent';
@@ -32,13 +32,11 @@ const numberOfItemsToFetch = 10;
   styleUrls: ['./my-observations.page.scss'],
 })
 export class MyObservationsPage implements OnInit, OnDestroy {
-  @ViewChild(IonInfiniteScroll, { static: true }) infiniteScroll: IonInfiniteScroll;
-  // @ViewChild(IonVirtualScroll, { static: true }) virtualScroll: IonVirtualScroll;
   private registrationSubscription: Subscription;
   loaded = false;
-  disableInfiniteScroll = true;
   refreshFunc = this.refresh.bind(this);
   virtualItems: MyVirtualScrollItem[] = [];
+  loadingMore = false;
 
   get showEmptyState() {
     return this.loaded && this.virtualItems.length === 0;
@@ -63,36 +61,10 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   private initRegistrationSubscription() {
-    this.registrationSubscription = this.getVirtualScrollItemsObservable().subscribe((val) => this.updateVirtualItems(val));
-  }
-
-  private updateVirtualItems(virtualItems: MyVirtualScrollItem[]) {
-    // const loadTimeout = virtualItems.length > 0 ? 2000 : 0;
-    // setTimeout(() => {
-    //   this.ngZone.run(() => {
-    //     this.loaded = true;
-    //     if (virtualItems.length === numberOfItemsToFetch) {
-    //       this.enableInfiniteScroll();
-    //     }
-    //   });
-    // }, loadTimeout);
-    this.ngZone.run(() => {
-      this.virtualItems = virtualItems;
+    this.registrationSubscription = this.getVirtualScrollItemsObservable().subscribe((result) => {
+      this.virtualItems = result;
       this.loaded = true;
-      this.enableInfiniteScroll();
     });
-  }
-
-  myHeaderFn(record: MyVirtualScrollItem, index: number, items: MyVirtualScrollItem[]) {
-    if (index <= 0) {
-      return LIST_HEADERS[record.type];
-    } else {
-      const prev = items[index - 1];
-      if (prev.type !== record.type) {
-        return LIST_HEADERS[record.type];
-      }
-    }
-    return null;
   }
 
   private getVirtualScrollItemsObservable() {
@@ -136,37 +108,26 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     }
   }
 
-  async loadMoreData() {
-    try {
-      this.disableInfiniteScroll = true; // Disable while adding items to virtual scroll
+  async loadMoreData(event: IPageInfo) {
+      if(!this.loaded || this.loadingMore) {
+        return;
+      }
+      if(event.endIndex <= 0) {
+        return;
+      }
+      if(event.maxScrollPosition <= 0) {
+        return;
+      }
+      if (event.endIndex !== this.virtualItems.length-1){
+        return;
+      }
+      this.loadingMore = true;
       const currentLength = this.virtualItems.filter((x) => x.type === 'sent').length;
       const pageNumber = Math.floor(currentLength / numberOfItemsToFetch);
-      const nextPage = await this.getMyRegistrationsObservable(pageNumber).pipe(take(1)).toPromise();
-      const hasMoreDataToLoad = nextPage.length === numberOfItemsToFetch;
-      this.setInfiniteScrollComplete();
-      this.ngZone.run(() => {
-        this.virtualItems.push(...nextPage);
-      });
-      if (hasMoreDataToLoad) {
-        this.enableInfiniteScroll();
-      }
-    } catch (err) {
-      this.setInfiniteScrollComplete();
-      this.loggingService.error(err, DEBUG_TAG, 'Could not load more data');
+      this.getMyRegistrationsObservable(pageNumber).pipe(take(1), finalize(() => {
+        this.loadingMore = false;
+      })).subscribe((nextPage) => this.virtualItems = this.virtualItems.concat(nextPage));
     }
-  }
-
-  private setInfiniteScrollComplete() {
-    this.ngZone.run(() => {
-      this.infiniteScroll.complete();
-    });
-  }
-
-  private enableInfiniteScroll() {
-    setTimeout(() => {
-      this.disableInfiniteScroll = false;
-    }, 1000);
-  }
 
   trackById(index: number, item: MyVirtualScrollItem) {
     return item ? `${item.type}_${item.id}` : undefined;
