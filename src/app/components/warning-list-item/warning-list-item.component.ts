@@ -104,8 +104,8 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   }
 
   getSupportedLangOrFallbackToEn(lang: LangKey) {
-    if (lang === LangKey.nb) {
-      return lang;
+    if (lang === LangKey.nb || lang === LangKey.nn) {
+      return LangKey.nb;
     }
     return LangKey.en;
   }
