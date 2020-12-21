@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { Subscription, combineLatest, Observable, of } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
-import { map, distinctUntilChanged, switchMap, take, finalize, concatMap } from 'rxjs/operators';
+import { map, distinctUntilChanged, switchMap, take, finalize, tap } from 'rxjs/operators';
 import { IRegistration } from '../../modules/registration/models/registration.model';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
@@ -37,6 +37,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   refreshFunc = this.refresh.bind(this);
   virtualItems: MyVirtualScrollItem[] = [];
   loadingMore = false;
+  private lastPageLoaded = false;
 
   get showEmptyState() {
     return this.loaded && this.virtualItems.length === 0;
@@ -76,11 +77,18 @@ export class MyObservationsPage implements OnInit, OnDestroy {
 
   private getMyRegistrationsObservable(pageNumber: number): Observable<MyVirtualScrollItem[]> {
     return combineLatest([this.userSettingService.appModeAndLanguage$, this.regobsAuthService.loggedInUser$])
-      .pipe(switchMap(([[appMode, langKey], loggedInUser]) =>
-        !loggedInUser.isLoggedIn ? of([]) :
-          this.observationService.getObservationsForCurrentUser(appMode, loggedInUser.user, langKey, pageNumber, numberOfItemsToFetch).pipe(
-            map((val) => val.map((item) => ({ type: <const>'sent', id: item.RegID.toString(), item }))))
-      ));
+      .pipe(
+        switchMap(([[appMode, langKey], loggedInUser]) =>
+          !loggedInUser.isLoggedIn ? of([]) :
+            this.observationService.getObservationsForCurrentUser(appMode, loggedInUser.user, langKey, pageNumber, numberOfItemsToFetch).pipe(
+              map((val) => val.map((item) => ({ type: <const>'sent', id: item.RegID.toString(), item }))))
+        ),
+        tap((result) => {
+          if(result.length < numberOfItemsToFetch) {
+            this.lastPageLoaded = true;
+          }
+        })
+      );
   }
   private getDraftObservable(): Observable<MyVirtualScrollItem[]> {
     return this.registrationService.drafts$.pipe(
@@ -109,25 +117,28 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   async loadMoreData(event: IPageInfo) {
-      if(!this.loaded || this.loadingMore) {
-        return;
-      }
-      if(event.endIndex <= 0) {
-        return;
-      }
-      if(event.maxScrollPosition <= 0) {
-        return;
-      }
-      if (event.endIndex !== this.virtualItems.length-1){
-        return;
-      }
-      this.loadingMore = true;
-      const currentLength = this.virtualItems.filter((x) => x.type === 'sent').length;
-      const pageNumber = Math.floor(currentLength / numberOfItemsToFetch);
-      this.getMyRegistrationsObservable(pageNumber).pipe(take(1), finalize(() => {
-        this.loadingMore = false;
-      })).subscribe((nextPage) => this.virtualItems = this.virtualItems.concat(nextPage));
+    if(!this.loaded || this.loadingMore) {
+      return;
     }
+    if (this.lastPageLoaded) {
+      return;
+    }
+    if(event.endIndex <= 0) {
+      return;
+    }
+    if(event.maxScrollPosition <= 0) {
+      return;
+    }
+    if (event.endIndex !== this.virtualItems.length-1){
+      return;
+    }
+    this.loadingMore = true;
+    const currentLength = this.virtualItems.filter((x) => x.type === 'sent').length;
+    const pageNumber = Math.floor(currentLength / numberOfItemsToFetch);
+    this.getMyRegistrationsObservable(pageNumber).pipe(take(1), finalize(() => {
+      this.loadingMore = false;
+    })).subscribe((nextPage) => this.virtualItems = this.virtualItems.concat(nextPage));
+  }
 
   trackById(index: number, item: MyVirtualScrollItem) {
     return item ? `${item.type}_${item.id}` : undefined;
