@@ -1,21 +1,7 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
 <ion-content #content>
-  <app-refresh-with-cancel [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
+  <app-refresh-with-cancel [disabled]="pullToRefreshDisabled" [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
   </app-refresh-with-cancel>
-  <div *ngIf="observations !== undefined">
-    <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" 
-     #scroll [items]="observations" 
-     [enableUnequalChildrenSizes]="true" 
-     [executeRefreshOutsideAngularZone]="true"
-     [compareItems]="compareFunc"
-     (vsUpdate)="updateUi()"
-     [parentScroll]="scrollContainer">
-     <ion-item-divider>
-      <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
-    </ion-item-divider>   
-    <app-observation-list-card *ngFor="let item of scroll.viewPortItems; trackBy: trackByIdFunc" [obs]="item"></app-observation-list-card>
-  </virtual-scroller>
-  </div>
   <div class="loading-sceleton" *ngIf="!loaded">
     <ion-item-divider>
       <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
@@ -24,6 +10,16 @@
     <app-observation-skeleton></app-observation-skeleton>
     <app-observation-skeleton></app-observation-skeleton>
   </div>
+  <ng-container *ngIf="observations !== undefined">
+    <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" 
+     #scroll [items]="observations" 
+     [enableUnequalChildrenSizes]="true" (vsEnd)="onEnd($event)">
+     <ion-item-divider>
+      <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+    </ion-item-divider>   
+    <app-observation-list-card *ngFor="let item of scroll.viewPortItems; trackBy: trackByIdFunc" [obs]="item"></app-observation-list-card>
+  </virtual-scroller>
+  </ng-container>
   <app-geo-fab slot="fixed"></app-geo-fab>
 </ion-content>
 <app-add-menu></app-add-menu>

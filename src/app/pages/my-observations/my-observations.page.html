@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
+  <app-refresh-with-cancel [refreshFunc]="refreshFunc" [disabled]="pullToRefreshDisabled"></app-refresh-with-cancel>
   <div class="loading-sceleton" *ngIf="!loaded">
     <ion-item-divider no-border>
       <ion-grid class="ion-no-padding ion-no-margin">

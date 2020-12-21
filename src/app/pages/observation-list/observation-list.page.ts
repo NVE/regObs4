@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy, Chang
 import { ObservationService } from '../../core/services/observation/observation.service';
 import * as L from 'leaflet';
 import { Subject, timer } from 'rxjs';
-import { map, take, takeUntil, concatMap, debounceTime } from 'rxjs/operators';
+import { map, take, takeUntil, concatMap, debounceTime, switchMap } from 'rxjs/operators';
 import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
@@ -10,7 +10,7 @@ import { IonContent } from '@ionic/angular';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
-import { VirtualScrollerComponent } from 'ngx-virtual-scroller';
+import { IPageInfo, VirtualScrollerComponent } from 'ngx-virtual-scroller';
 
 const DEBUG_TAG = 'ObservationListPage';
 
@@ -18,15 +18,12 @@ const DEBUG_TAG = 'ObservationListPage';
   selector: 'app-observation-list',
   templateUrl: './observation-list.page.html',
   styleUrls: ['./observation-list.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObservationListPage implements OnInit, OnDestroy {
     observations: RegistrationViewModel[];
     loaded = false;
     cancelSubject: Subject<any>;
-    private ngDestroy$ = new Subject();
-    
-    scrollContainer: HTMLElement;
+    pullToRefreshDisabled = false;
 
     @ViewChild(IonContent, { static: true }) content: IonContent;
     @ViewChild(VirtualScrollerComponent, { static: false }) scroll: VirtualScrollerComponent;
@@ -35,11 +32,10 @@ export class ObservationListPage implements OnInit, OnDestroy {
     refreshFunc = this.refresh.bind(this);
 
     get observations$() {
-      return this.mapService.mapView$.pipe(debounceTime(200), concatMap((mapView: IMapView) =>
+      return this.mapService.mapView$.pipe(switchMap((mapView: IMapView) =>
         this.observationService.observations$.pipe(map((observations) =>
           this.filterObservationsWithinViewBounds(observations, mapView)))),
-      take(1),
-      takeUntil(this.ngDestroy$)
+        take(1),
       );
     }
 
@@ -51,42 +47,27 @@ export class ObservationListPage implements OnInit, OnDestroy {
         private mapService: MapService) {
     }
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
       this.cancelSubject = this.dataMarshallService.observableCancelSubject;
-      this.scrollContainer = await this.content.getScrollElement();
     }
 
     async refresh(cancelPromise: Promise<any>) {
+      this.loaded = false;
+      this.observations = undefined;
       await this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
       // TODO: Shouldn't this allways use the same cancel subject?
-      this.loaded = false;
-      this.updateUi();
       this.loadObservations();
     }
 
-    updateUi() {
-      if (!this.cdr['destroyed']) {
-        this.cdr.detectChanges();
-      }
-    }
-
-    async ionViewWillEnter() {
+    ionViewWillEnter() {
       this.loaded = false;
-      this.ngDestroy$ = new Subject();
       this.loadObservations();
-      this.updateUi();
-    }
-
-    ionViewWillLeave() {
-      this.ngDestroy$.next();
-      this.ngDestroy$.complete();
     }
 
     private loadObservations() {
       this.observations$.subscribe((observations) => {
         this.observations = observations;
         this.loaded = true;
-        this.updateUi();
         setTimeout(() => {
           if(this.scroll) {
             this.scroll.scrollToPosition(0);
@@ -100,6 +81,10 @@ export class ObservationListPage implements OnInit, OnDestroy {
     ngOnDestroy() {
     }
 
+    onEnd(pageInfo: IPageInfo) {
+      this.pullToRefreshDisabled = (pageInfo.startIndex > 1);
+    }
+
     private filterObservationsWithinViewBounds(observations: RegistrationViewModel[], view: IMapView) {
       return observations.filter((observation) => !view ||
             view.bounds.contains(L.latLng(observation.ObsLocation.Latitude, observation.ObsLocation.Longitude)));
@@ -107,9 +92,5 @@ export class ObservationListPage implements OnInit, OnDestroy {
 
     private trackByIdFuncInternal(_, obs: RegistrationViewModel) {
       return this.observationService.uniqueObservation(obs);
-    }
-
-    compareFunc(a: RegistrationViewModel, b: RegistrationViewModel) {
-      return a?.RegID !== b?.RegID;
     }
 }

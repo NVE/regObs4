@@ -16,6 +16,7 @@ export class RefreshWithCancelComponent implements OnInit {
   @ViewChild(IonRefresher) refresher: IonRefresher;
   @Input() refreshFunc: (cancelPromise: Promise<boolean>) => Promise<any>;
   @Input() cancelSubject: Subject<any>;
+  @Input() disabled = false;
 
   spinner: string;
 

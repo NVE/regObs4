@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { Subscription, combineLatest, Observable, of } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
@@ -6,7 +6,6 @@ import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { RegistrationService } from '../../modules/registration/services/registration.service';
 import { map, distinctUntilChanged, switchMap, take, finalize, tap } from 'rxjs/operators';
 import { IRegistration } from '../../modules/registration/models/registration.model';
-import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
 import { IPageInfo } from 'ngx-virtual-scroller';
 
@@ -37,6 +36,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   refreshFunc = this.refresh.bind(this);
   virtualItems: MyVirtualScrollItem[] = [];
   loadingMore = false;
+  pullToRefreshDisabled = false;
   private lastPageLoaded = false;
 
   get showEmptyState() {
@@ -45,10 +45,8 @@ export class MyObservationsPage implements OnInit, OnDestroy {
 
   constructor(
     private observationService: ObservationService,
-    private ngZone: NgZone,
     private userSettingService: UserSettingService,
     private registrationService: RegistrationService,
-    private loggingService: LoggingService,
     private regobsAuthService: RegobsAuthService) {
   }
 
@@ -117,6 +115,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   async loadMoreData(event: IPageInfo) {
+    this.pullToRefreshDisabled = (event.startIndex > 0);
     if(!this.loaded || this.loadingMore) {
       return;
     }
