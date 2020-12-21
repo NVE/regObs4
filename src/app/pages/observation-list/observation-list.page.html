@@ -1,16 +1,21 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
-<ion-content>
+<ion-content #content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
   </app-refresh-with-cancel>
-  <ng-container *ngIf="observations !== undefined">
+  <div *ngIf="observations !== undefined">
     <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" 
-     #scroll [items]="observations" [enableUnequalChildrenSizes]="true" [executeRefreshOutsideAngularZone]="true">
+     #scroll [items]="observations" 
+     [enableUnequalChildrenSizes]="true" 
+     [executeRefreshOutsideAngularZone]="true"
+     [compareItems]="compareFunc"
+     (vsUpdate)="updateUi()"
+     [parentScroll]="scrollContainer">
      <ion-item-divider>
       <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
     </ion-item-divider>   
     <app-observation-list-card *ngFor="let item of scroll.viewPortItems; trackBy: trackByIdFunc" [obs]="item"></app-observation-list-card>
   </virtual-scroller>
-  </ng-container>
+  </div>
   <div class="loading-sceleton" *ngIf="!loaded">
     <ion-item-divider>
       <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>

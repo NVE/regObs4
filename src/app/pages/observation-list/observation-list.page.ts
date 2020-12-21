@@ -26,6 +26,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
     cancelSubject: Subject<any>;
     private ngDestroy$ = new Subject();
     
+    scrollContainer: HTMLElement;
 
     @ViewChild(IonContent, { static: true }) content: IonContent;
     @ViewChild(VirtualScrollerComponent, { static: false }) scroll: VirtualScrollerComponent;
@@ -50,8 +51,9 @@ export class ObservationListPage implements OnInit, OnDestroy {
         private mapService: MapService) {
     }
 
-    ngOnInit() {
+    async ngOnInit(): Promise<void> {
       this.cancelSubject = this.dataMarshallService.observableCancelSubject;
+      this.scrollContainer = await this.content.getScrollElement();
     }
 
     async refresh(cancelPromise: Promise<any>) {
@@ -62,7 +64,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
       this.loadObservations();
     }
 
-    private updateUi() {
+    updateUi() {
       if (!this.cdr['destroyed']) {
         this.cdr.detectChanges();
       }
@@ -105,5 +107,9 @@ export class ObservationListPage implements OnInit, OnDestroy {
 
     private trackByIdFuncInternal(_, obs: RegistrationViewModel) {
       return this.observationService.uniqueObservation(obs);
+    }
+
+    compareFunc(a: RegistrationViewModel, b: RegistrationViewModel) {
+      return a?.RegID !== b?.RegID;
     }
 }
