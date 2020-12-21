@@ -112,7 +112,7 @@ export class RegobsAuthService {
         return this.authService.getValidToken(1).catch(() => this.customTokenRequestHandler(configuration, request));
       }
       const message = tokenErrorJson?.error || 'Unknown error';
-      return this.showErrorMessage(500, message).then(() => this.storageBackend.clear()).then(() => this.authService.signOut())
+      return this.showErrorMessage(500, message).then(() => this.authService.endSessionCallback())
         .then(() => {
           throw new AppAuthError(message, new TokenError(tokenErrorJson || { error: 'invalid_request' }));
         });
@@ -157,7 +157,7 @@ export class RegobsAuthService {
           isLoggedIn: false,
           user: null,
         }).exec()))).toPromise();
-    await this.authService.signOut();
+    this.authService.endSessionCallback();
   }
 
   public async getAndSaveObserver(idToken: string): Promise<void> {
