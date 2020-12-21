@@ -10,7 +10,7 @@ import { IonContent } from '@ionic/angular';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
-// import { ObsCardHeightService } from '../../core/services/obs-card-height/obs-card-height.service';
+import { VirtualScrollerComponent } from 'ngx-virtual-scroller';
 
 const DEBUG_TAG = 'ObservationListPage';
 
@@ -25,8 +25,10 @@ export class ObservationListPage implements OnInit, OnDestroy {
     loaded = false;
     cancelSubject: Subject<any>;
     private ngDestroy$ = new Subject();
+    
 
     @ViewChild(IonContent, { static: true }) content: IonContent;
+    @ViewChild(VirtualScrollerComponent, { static: false }) scroll: VirtualScrollerComponent;
 
     trackByIdFunc = this.trackByIdFuncInternal.bind(this);
     refreshFunc = this.refresh.bind(this);
@@ -43,7 +45,6 @@ export class ObservationListPage implements OnInit, OnDestroy {
     constructor(
         private observationService: ObservationService,
         private dataMarshallService: DataMarshallService,
-        // private obsCardHeightService: ObsCardHeightService,
         private cdr: ChangeDetectorRef,
         private loggingService: LoggingService,
         private mapService: MapService) {
@@ -67,7 +68,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
       }
     }
 
-    ionViewWillEnter() {
+    async ionViewWillEnter() {
       this.loaded = false;
       this.ngDestroy$ = new Subject();
       this.loadObservations();
@@ -80,20 +81,17 @@ export class ObservationListPage implements OnInit, OnDestroy {
     }
 
     private loadObservations() {
-      this.content.scrollToTop();
       this.observations$.subscribe((observations) => {
         this.observations = observations;
-        this.fadeIn(observations.length > 0);
-        this.updateUi();
-      }, (err) => {
-        this.loggingService.log('Could not load observations', err, LogLevel.Warning, DEBUG_TAG);
-      });
-    }
-
-    private fadeIn(longDelay = false) {
-      timer(longDelay ? 1500 : 200).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
         this.loaded = true;
         this.updateUi();
+        setTimeout(() => {
+          if(this.scroll) {
+            this.scroll.scrollToPosition(0);
+          }
+        });
+      }, (err) => {
+        this.loggingService.log('Could not load observations', err, LogLevel.Warning, DEBUG_TAG);
       });
     }
 
@@ -108,20 +106,4 @@ export class ObservationListPage implements OnInit, OnDestroy {
     private trackByIdFuncInternal(_, obs: RegistrationViewModel) {
       return this.observationService.uniqueObservation(obs);
     }
-
-    footerFn(item: RegistrationViewModel, index: number, items: RegistrationViewModel[]) {
-      if (index === (items.length - 1)) {
-        return 'footer';
-      }
-    }
-
-    headerFn(item: RegistrationViewModel, index: number, items: RegistrationViewModel[]) {
-      if (index === 0) {
-        return 'header';
-      }
-    }
-
-  // getItemHeight(item: RegistrationViewModel, index: number) {
-  //     return this.obsCardHeightService.getHeight(item.RegID);
-  // }
 }

@@ -8,16 +8,9 @@
     </h2>
     <p class="ion-text-wrap">
       <ion-icon name="calendar"></ion-icon> {{ registration.request.DtObsTime | formatDate | async }}
+      <span *ngIf="!refresh"> - {{ 'ADD_MENU.DRAFT' | translate }}</span>
     </p>
-    <!-- <p class="observation-types">
-      <ion-badge>
-         {{ getRegistrationNames() }}
-      </ion-badge>
-    </p> -->
   </ion-label>
-  <!-- <ion-thumbnail slot="end">
-    <ion-img *ngIf="hasImage" [src]="imgSrc"></ion-img>
-  </ion-thumbnail> -->
   <ion-icon *ngIf="!loading && registration.error" slot="end" name="warning">
   </ion-icon>
   <ion-spinner *ngIf="loading" slot="end"></ion-spinner>

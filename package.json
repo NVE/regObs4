@@ -84,6 +84,7 @@
     "moment-timezone": "^0.5.32",
     "ngx-leaflet-edgebuffer": "^1.0.6",
     "ngx-markdown": "^11.0.0",
+    "ngx-virtual-scroller": "^4.0.3",
     "observable-webworker": "^3.2.6",
     "rxjs": "^6.6.3",
     "source-sans-pro": "^3.6.0",
