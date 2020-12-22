@@ -140,7 +140,8 @@ export class RegobsAuthService {
     }
     try {
       await this.authService.signIn({
-        'ui_locales': this.getSupportedLoginLocales(currentLang)
+        'ui_locales': this.getSupportedLoginLocales(currentLang),
+        'prompt': 'login' // Force login screen
       });
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Could signIn');
