@@ -42,7 +42,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
 
-  get showEmptyState() {
+  get showEmptyState(): boolean {
     return this.loaded && this.virtualItems.length === 0;
   }
 
@@ -86,7 +86,7 @@ export class MyObservationsPage implements OnInit, OnDestroy {
               map((val) => val.map((item) => ({ type: <const>'sent', id: item.RegID.toString(), item }))))
         ),
         tap((result) => {
-          if(result.length < numberOfItemsToFetch) {
+          if (result.length < numberOfItemsToFetch) {
             this.lastPageLoaded = true;
           }
         })
@@ -119,19 +119,19 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   async loadMoreData(event: IPageInfo) {
-    if(!this.loaded || this.loadingMore) {
+    if (!this.loaded || this.loadingMore) {
       return;
     }
     if (this.lastPageLoaded) {
       return;
     }
-    if(event.endIndex <= 0) {
+    if (event.endIndex <= 0) {
       return;
     }
-    if(event.maxScrollPosition <= 0) {
+    if (event.maxScrollPosition <= 0) {
       return;
     }
-    if (event.endIndex !== this.virtualItems.length-1){
+    if (event.endIndex !== this.virtualItems.length - 1) {
       return;
     }
     this.loadingMore = true;
