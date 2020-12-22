@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { Subscription, combineLatest, Observable, of } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
@@ -8,6 +8,7 @@ import { map, distinctUntilChanged, switchMap, take, finalize, tap } from 'rxjs/
 import { IRegistration } from '../../modules/registration/models/registration.model';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
 import { IPageInfo } from 'ngx-virtual-scroller';
+import { IonContent } from '@ionic/angular';
 
 interface MyVirtualScrollItem {
   type: 'draft' | 'sync' | 'sent';
@@ -36,8 +37,10 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   refreshFunc = this.refresh.bind(this);
   virtualItems: MyVirtualScrollItem[] = [];
   loadingMore = false;
-  pullToRefreshDisabled = false;
+  parentScrollElement: HTMLElement;
   private lastPageLoaded = false;
+
+  @ViewChild(IonContent, { static: true }) content: IonContent;
 
   get showEmptyState() {
     return this.loaded && this.virtualItems.length === 0;
@@ -50,12 +53,13 @@ export class MyObservationsPage implements OnInit, OnDestroy {
     private regobsAuthService: RegobsAuthService) {
   }
 
-  async refresh(cancelPromise: Promise<any>) {
+  async refresh(cancelPromise: Promise<any>): Promise<void> {
     await this.registrationService.syncRegistrations(cancelPromise);
     this.initRegistrationSubscription();
   }
 
-  ngOnInit() {
+  async ngOnInit(): Promise<void> {
+    this.parentScrollElement = await this.content.getScrollElement();
     this.initRegistrationSubscription();
   }
 
@@ -115,7 +119,6 @@ export class MyObservationsPage implements OnInit, OnDestroy {
   }
 
   async loadMoreData(event: IPageInfo) {
-    this.pullToRefreshDisabled = (event.startIndex > 0);
     if(!this.loaded || this.loadingMore) {
       return;
     }

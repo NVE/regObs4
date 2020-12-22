@@ -10,7 +10,7 @@ import { IonContent } from '@ionic/angular';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
-import { IPageInfo, VirtualScrollerComponent } from 'ngx-virtual-scroller';
+import { VirtualScrollerComponent } from 'ngx-virtual-scroller';
 
 const DEBUG_TAG = 'ObservationListPage';
 
@@ -18,12 +18,12 @@ const DEBUG_TAG = 'ObservationListPage';
   selector: 'app-observation-list',
   templateUrl: './observation-list.page.html',
   styleUrls: ['./observation-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObservationListPage implements OnInit, OnDestroy {
     observations: RegistrationViewModel[];
     loaded = false;
     cancelSubject: Subject<any>;
-    pullToRefreshDisabled = false;
     parentScrollElement: HTMLElement;
 
     @ViewChild(IonContent, { static: true }) content: IonContent;
@@ -53,34 +53,49 @@ export class ObservationListPage implements OnInit, OnDestroy {
       this.parentScrollElement = await this.content.getScrollElement();
     }
 
-    async refresh(cancelPromise: Promise<any>) {
-      this.loaded = false;
-      this.observations = undefined;
-      await this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
-      // TODO: Shouldn't this allways use the same cancel subject?
-      this.loadObservations();
+    refresh(cancelPromise: Promise<any>) {
+      this.resetAndLoadObservations(true, cancelPromise);
     }
 
     ionViewWillEnter() {
+      this.content.scrollToTop();
+      this.resetAndLoadObservations();
+    }
+
+    ionViewWillLeave() {
       this.loaded = false;
+      this.observations = undefined;
+    }
+
+    private async resetAndLoadObservations(forceUpdate = false, cancelPromise: Promise<any> = undefined): Promise<void> {
+      this.loaded = false;
+      this.observations = undefined;
+      this.cdr.detectChanges();
+      if(forceUpdate) {
+        await this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
+      }
       this.loadObservations();
     }
 
     private loadObservations() {
       this.observations$.subscribe((observations) => {
         this.observations = observations;
-        this.loaded = true;
+        this.cdr.detectChanges();
         setTimeout(() => {
-          if(this.scroll) {
-            this.scroll.scrollToPosition(0);
-          }
-        });
+          this.loaded = true;
+          this.content.scrollToTop();
+          this.cdr.detectChanges();
+        }, 200);
       }, (err) => {
         this.loggingService.log('Could not load observations', err, LogLevel.Warning, DEBUG_TAG);
       });
     }
 
     ngOnDestroy() {
+    }
+
+    compareItems(a: RegistrationViewModel, b: RegistrationViewModel) {
+      return a?.RegID === b?.RegID;
     }
 
     private filterObservationsWithinViewBounds(observations: RegistrationViewModel[], view: IMapView) {

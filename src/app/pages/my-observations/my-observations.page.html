@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-refresh-with-cancel [refreshFunc]="refreshFunc" [disabled]="pullToRefreshDisabled"></app-refresh-with-cancel>
+  <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <div class="loading-sceleton" *ngIf="!loaded">
     <ion-item-divider no-border>
       <ion-grid class="ion-no-padding ion-no-margin">
@@ -26,7 +26,11 @@
     <app-observation-skeleton></app-observation-skeleton>
   </div>
   <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="!showEmptyState else empty" 
-     #scroll [items]="virtualItems" [enableUnequalChildrenSizes]="true" (vsEnd)="loadMoreData($event)">   
+     #scroll [items]="virtualItems" 
+     [checkResizeInterval]="0" 
+     [enableUnequalChildrenSizes]="true" 
+     [parentScroll]="parentScrollElement" 
+     (vsEnd)="loadMoreData($event)">
     <ng-container *ngFor="let item of scroll.viewPortItems; trackBy: trackById">
       <app-observation-list-card *ngIf="item.type === 'sent'" [obs]="item.item"></app-observation-list-card>
       <app-sync-item *ngIf="item.type === 'draft'" [registration]="item.item"></app-sync-item>

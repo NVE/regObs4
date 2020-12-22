@@ -1,6 +1,6 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
-<ion-content #content>
-  <app-refresh-with-cancel [disabled]="pullToRefreshDisabled" [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
+<ion-content>
+  <app-refresh-with-cancel [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
   </app-refresh-with-cancel>
   <div class="loading-sceleton" *ngIf="!loaded">
     <ion-item-divider>
@@ -12,13 +12,17 @@
   </div>
   <ng-container *ngIf="observations !== undefined">
     <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" 
-     #scroll [items]="observations" 
+     #scroll [items]="observations" [checkResizeInterval]="0"
      [enableUnequalChildrenSizes]="true"
-     [parentScroll]="parentScrollElement">
-     <ion-item-divider>
-      <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
-    </ion-item-divider>   
-    <app-observation-list-card *ngFor="let item of scroll.viewPortItems; trackBy: trackByIdFunc" [obs]="item"></app-observation-list-card>
+     [parentScroll]="parentScrollElement"
+     [compareItems]="compareItems"
+     [modifyOverflowStyleOfParentScroll]="false" >
+    <div *ngFor="let item of scroll.viewPortItems; let i = index; trackBy: trackByIdFunc;">
+      <ion-item-divider *ngIf="(i === 0)">
+        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+      </ion-item-divider>
+      <app-observation-list-card [obs]="item"></app-observation-list-card>
+    </div>
   </virtual-scroller>
   </ng-container>
   <app-geo-fab slot="fixed"></app-geo-fab>
