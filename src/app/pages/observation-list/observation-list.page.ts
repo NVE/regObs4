@@ -24,6 +24,7 @@ export class ObservationListPage implements OnInit, OnDestroy {
     loaded = false;
     cancelSubject: Subject<any>;
     pullToRefreshDisabled = false;
+    parentScrollElement: HTMLElement;
 
     @ViewChild(IonContent, { static: true }) content: IonContent;
     @ViewChild(VirtualScrollerComponent, { static: false }) scroll: VirtualScrollerComponent;
@@ -47,8 +48,9 @@ export class ObservationListPage implements OnInit, OnDestroy {
         private mapService: MapService) {
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
       this.cancelSubject = this.dataMarshallService.observableCancelSubject;
+      this.parentScrollElement = await this.content.getScrollElement();
     }
 
     async refresh(cancelPromise: Promise<any>) {
@@ -79,10 +81,6 @@ export class ObservationListPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-    }
-
-    onEnd(pageInfo: IPageInfo) {
-      this.pullToRefreshDisabled = (pageInfo.startIndex > 1);
     }
 
     private filterObservationsWithinViewBounds(observations: RegistrationViewModel[], view: IMapView) {

@@ -13,7 +13,8 @@
   <ng-container *ngIf="observations !== undefined">
     <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" 
      #scroll [items]="observations" 
-     [enableUnequalChildrenSizes]="true" (vsEnd)="onEnd($event)">
+     [enableUnequalChildrenSizes]="true"
+     [parentScroll]="parentScrollElement">
      <ion-item-divider>
       <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
     </ion-item-divider>   
