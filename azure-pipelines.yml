@@ -19,7 +19,7 @@ steps:
 - task: DownloadSecureFile@1
   displayName: 'Download secure file'
   inputs:
-    secureFile: 'bf4aef9c-41b6-4b88-b86b-134deaa331a1'
+    secureFile: '8a4eb7ac-653f-40c8-a421-d0a145352828'
     retryCount: 5
 
 - task: CopyFiles@2

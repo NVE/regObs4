@@ -19,7 +19,7 @@ import { ErrorHandler, Provider, forwardRef, LOCALE_ID, APP_INITIALIZER, NgZone 
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
@@ -36,7 +36,7 @@ import { ConsoleLoggingService } from './modules/shared/services/logging/console
 import { environment } from '../environments/environment';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { ApiConfiguration } from './core/http-interceptor/api-configuration';
 import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configuration';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
@@ -46,6 +46,7 @@ import { initTranslateService } from './custom-translate.loader';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AuthService } from 'ionic-appauth';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -60,6 +61,10 @@ export class DynamicLocaleId extends String {
   toString(): string {
     return this.service.currentLang;
   }
+}
+
+function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
 
 export const APP_PROVIDERS = [
@@ -96,6 +101,7 @@ export const APP_PROVIDERS = [
   { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
   { provide: ErrorHandler, useClass: AppErrorHandler },
   { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
+  { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
 
   // APP initializers
   { provide: APP_INITIALIZER, useFactory: initTranslateService, deps: [TranslateService, UserSettingService], multi: true },

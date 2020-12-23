@@ -16,7 +16,7 @@ describe('RegobsAuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientModule, TranslateModule.forRoot(), RouterModule.forRoot([])],
+      imports: [SharedModule, HttpClientModule, TranslateModule.forRoot(), RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })],
       providers: [{ provide: LoggingService, useClass: logger }, SafariViewController, InAppBrowser]
     });
     TestBed.inject(UserSettingService) as jasmine.SpyObj<UserSettingService>;

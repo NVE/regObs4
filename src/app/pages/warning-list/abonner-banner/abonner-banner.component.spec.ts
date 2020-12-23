@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AbonnerBannerComponent } from './abonner-banner.component';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
@@ -8,7 +8,7 @@ describe('AbonnerBannerComponent', () => {
   let component: AbonnerBannerComponent;
   let fixture: ComponentFixture<AbonnerBannerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [AbonnerBannerComponent],
       imports: [TestModule],

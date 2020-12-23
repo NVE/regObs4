@@ -17,7 +17,7 @@ import { ObserverGroupDto, ObserverResponseDto } from '../../regobs-api/models';
 import { LogLevel } from '../../shared/services/logging/log-level.model';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
-import { AppAuthError, AuthorizationServiceConfiguration, Requestor, StorageBackend, TokenError, TokenErrorJson, TokenRequest, TokenResponse, TokenResponseJson } from '@openid/appauth';
+import { AppAuthError, AuthorizationServiceConfiguration, BaseTokenRequestHandler, Requestor, StorageBackend, TokenError, TokenErrorJson, TokenRequest, TokenResponse, TokenResponseJson } from '@openid/appauth';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -38,6 +38,13 @@ export class RegobsAuthService {
     return this._isLoggingInSubject.asObservable();
   }
 
+  get tokenHandler(): BaseTokenRequestHandler {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (<any>this.authService).tokenHandler;
+  }
+
+  private maxRetryAttempts = 3;
+
   constructor(
     private authService: AuthService,
     private userSettingService: UserSettingService,
@@ -51,7 +58,7 @@ export class RegobsAuthService {
     private requestor: Requestor,
     private storageBackend: StorageBackend,
   ) {
-    this.setupDetectPasswordReset();
+    this.setupCustomTokenRequestHandler();
     this.authService.addActionListener((action) => this.onSignInCallback(action));
     this.userSettingService.appMode$.subscribe(async (appMode) => {
       const loggedInUser = await this.getLoggedInUserForAppMode(appMode);
@@ -59,56 +66,60 @@ export class RegobsAuthService {
     });
   }
 
-  private setupDetectPasswordReset() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (<any>this.authService).tokenHandler.performTokenRequest = (configuration: AuthorizationServiceConfiguration, request: TokenRequest):
-      Promise<TokenResponse> => {
-      const tokenResponse = this.requestor.xhr<TokenResponseJson | TokenErrorJson>({
-        url: configuration.tokenEndpoint,
-        method: 'POST',
-        dataType: 'json',  // adding implicit dataType
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data: (<any>this.authService).tokenHandler.utils.stringify(request.toStringMap())
-      });
+  private customTokenRequestHandler(configuration: AuthorizationServiceConfiguration, request: TokenRequest): Promise<TokenResponse> {
+    const data = this.tokenHandler.utils.stringify(request.toStringMap());
+    const postData = {
+      url: configuration.tokenEndpoint,
+      method: 'POST',
+      dataType: 'json',  // adding implicit dataType
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      data,
+    };
+    const tokenResponse = this.requestor.xhr<TokenResponseJson | TokenErrorJson>(postData);
 
-      return tokenResponse.then((response) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if ((<any>this.authService).tokenHandler.isTokenResponse(response)) {
-          return new TokenResponse(response as TokenResponseJson);
-        } else {
-          this.logger.error(new Error(`Unable to login user. Auth response: ${response ? JSON.stringify(response) : ''}`),
-            DEBUG_TAG, `Auth response: ${response ? JSON.stringify(response) : ''}`);
-          const tokenError = response as TokenErrorJson;
-          return Promise.reject<TokenResponse>(
-            new AppAuthError(tokenError?.error || 'Unknown error', new TokenError(tokenError || { error: 'invalid_request' })));
-        }
-      }, (error) => {
-        this.logger.log(`Error getting tokenResponse, maybe coming from password change? ${error ? JSON.stringify(error) : ''}`, null, LogLevel.Warning, DEBUG_TAG);
-        let tokenErrorJson: TokenErrorJson = error?.error;
-        if (tokenErrorJson && !tokenErrorJson.error_description) {
+    return tokenResponse.then((response) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((<any>this.authService).tokenHandler.isTokenResponse(response)) {
+        return new TokenResponse(response as TokenResponseJson);
+      } else {
+        this.logger.error(new Error('Invalid tokenResponse'),
+          DEBUG_TAG, `Token request: ${JSON.stringify(postData)} Auth response: ${response ? JSON.stringify(response) : ''}`);
+        const tokenError = response as TokenErrorJson;
+        return Promise.reject<TokenResponse>(
+          new AppAuthError(tokenError?.error || 'Unknown error', new TokenError(tokenError || { error: 'invalid_request' })));
+      }
+    }, (error) => {
+      this.logger.log(`Error getting tokenResponse, maybe coming from password change? ${error ? JSON.stringify(error) : ''}`, null, LogLevel.Warning, DEBUG_TAG);
+      this.logger.log(`Token request was: ${JSON.stringify(postData)}`, null, LogLevel.Warning, DEBUG_TAG);
+      let tokenErrorJson: TokenErrorJson = error?.error;
+      if (tokenErrorJson && !tokenErrorJson.error_description) {
+        try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           tokenErrorJson = JSON.parse(<any>tokenErrorJson);
-        }
-        // HACK to detect change password
-        if (tokenErrorJson && tokenErrorJson.error_description
-          && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
-          this.signIn(false).then(() => {
-            throw new AppAuthError(tokenErrorJson?.error || 'Unknown error', new TokenError(tokenErrorJson || { error: 'invalid_request' }));
-          });
-        }
-        this.logger.error(new Error('Unable to login user. Clear storage and let user try again.'), DEBUG_TAG, `Auth response: ${error ? JSON.stringify(error) : ''}`);
-        try {
-          return this.storageBackend.clear().then(() => {
-            throw new AppAuthError(tokenErrorJson?.error || 'Unknown error', new TokenError(tokenErrorJson || { error: 'invalid_request' }));
-          });
         } catch (err) {
-          this.logger.error(err, DEBUG_TAG, 'Unable to clear storage and retry login');
+          this.logger.debug(`Could not parse tokenErrorJson ${tokenErrorJson}`, DEBUG_TAG);
         }
-        return Promise.reject<TokenResponse>(
-          new AppAuthError(tokenErrorJson?.error || 'Unknown error', new TokenError(tokenErrorJson || { error: 'invalid_request' })));
-      });
-    };
+      }
+      // HACK to detect change password
+      if (tokenErrorJson && tokenErrorJson.error_description
+        && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
+        return this.signIn(false).then(() => undefined);
+      }
+      if (this.maxRetryAttempts > 0) {
+        this.maxRetryAttempts--;
+        return this.authService.getValidToken().catch(() => this.customTokenRequestHandler(configuration, request));
+      }
+      const message = tokenErrorJson?.error || 'Unknown error';
+      return this.showErrorMessage(500, message).then(() => this.storageBackend.clear()).then(() => this.authService.signOut())
+        .then(() => {
+          throw new AppAuthError(message, new TokenError(tokenErrorJson || { error: 'invalid_request' }));
+        });
+    });
+  }
+
+  private setupCustomTokenRequestHandler() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.tokenHandler.performTokenRequest = (config, request) => this.customTokenRequestHandler(config, request);
   }
 
   public authorizationCallback(url: string): void {
@@ -120,6 +131,7 @@ export class RegobsAuthService {
   }
 
   public async signIn(setReturnUrl = true): Promise<void> {
+    this.maxRetryAttempts = 3;
     const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
     if (setReturnUrl) {
       localStorage.setItem(RETURN_URL_KEY, this.router.url);
@@ -190,7 +202,7 @@ export class RegobsAuthService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
     if (!apiKey) {
-      throw new Error('apiKey.json not found in assets folder!');
+      throw new Error('apikey.json not found in assets folder!');
     }
     const headers = new HttpHeaders({
       regObs_apptoken: apiKey.apiKey,

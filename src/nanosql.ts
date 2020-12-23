@@ -6,7 +6,8 @@ import {
   InanoSQLTableConfig,
   InanoSQLTable, InanoSQLQuery,
   InanoSQLDataModel,
-  InanoSQLTableIndexConfig
+  InanoSQLTableIndexConfig,
+  InanoSQLInstance
 } from '@nano-sql/core/lib/interfaces';
 
 export class NanoSql {
@@ -204,11 +205,11 @@ export class NanoSql {
     return result;
   }
 
-  static getInstanceName(name: string, appMode: AppMode) {
+  static getInstanceName(name: string, appMode: AppMode): string {
     return `${name}_${appMode}`;
   }
 
-  static getTableModels() {
+  static getTableModels(): InanoSQLTableConfig[] {
     const tables: InanoSQLTableConfig[] = [];
     for (const table of NanoSql.getTables()) {
       if (table.instancePerAppMode) {
@@ -238,7 +239,7 @@ export class NanoSql {
     return tables;
   }
 
-  static async init(dbName: string = settings.db.nanoSql.dbName, dbMode?: string) {
+  static async init(dbName: string = settings.db.nanoSql.dbName, dbMode?: string): Promise<void> {
     await nSQL().createDatabase({
       id: dbName,
       mode: dbMode || getMode(),
@@ -257,7 +258,7 @@ export class NanoSql {
             {
               name: 'configTableSystem',
               priority: 1000,
-              call: (inputArgs: { res: InanoSQLTable, query: InanoSQLQuery }, complete, cancel) => {
+              call: (inputArgs: { res: InanoSQLTable, query: InanoSQLQuery }, complete) => {
                 inputArgs.res.id = inputArgs.res.name;
                 complete(inputArgs);
               }
@@ -270,25 +271,39 @@ export class NanoSql {
     // See: https://github.com/ClickSimply/Nano-SQL/issues/70
   }
 
-  static getInstance(name: string, appMode: AppMode) {
+  static getInstance(name: string, appMode: AppMode): InanoSQLInstance {
     return nSQL(`${name}_${appMode}`);
   }
 
-  static async resetDb(onError?: (tableName: string, ex: Error) => void) {
+  static async resetDb(onError?: (tableName: string, ex: Error) => void): Promise<void[]> {
     // try {
-    //     const tmpName = `${settings.db.nanoSql.dbName}Tmp`;
-    //     await this.init(tmpName);
-    //     nSQL().useDatabase(tmpName);
     //     await nSQL().dropDatabase(settings.db.nanoSql.dbName);
     //     await this.init();
-    //     nSQL().useDatabase(settings.db.nanoSql.dbName);
     // } catch (err) {
     //     console.log(err);
     // }
     return Promise.all(NanoSql.getTableModels().map((tableConfig) => this.resetTable(tableConfig, onError)));
   }
 
-  static async resetTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
+  static async resetTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void): Promise<void> {
+    if (tableConfig.name === 'offlinemaptiles') {
+      await this.dropAndRecreateTable(tableConfig, onError);
+    } else {
+      await this.deleteAllRowsInTable(tableConfig, onError);
+    }
+  }
+
+  private static async deleteAllRowsInTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
+    try {
+      await nSQL(tableConfig.name).query('delete').exec();
+    } catch (ex) {
+      if (onError) {
+        onError(tableConfig.name, ex);
+      }
+    }
+  }
+
+  private static async dropAndRecreateTable(tableConfig: InanoSQLTableConfig, onError?: (tableName: string, ex: Error) => void) {
     try {
       await nSQL(tableConfig.name).query('drop').exec();
     } catch (ex) {
@@ -303,6 +318,5 @@ export class NanoSql {
         onError(tableConfig.name, ex);
       }
     }
-    // await nSQL(tableConfig.name).query('delete').exec();
   }
 }

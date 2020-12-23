@@ -18,7 +18,7 @@ export class ApiInterceptor implements HttpInterceptor {
     if (this.isRegObsApi(req.url)) {
       req = req.clone({
         setHeaders: {
-          regObs_apptoken: require('../../../assets/apiKey.json').apiKey,
+          regObs_apptoken: require('../../../assets/apikey.json').apiKey,
           ApiJsonVersion: settings.services.regObs.apiJsonVersion
         }
       });

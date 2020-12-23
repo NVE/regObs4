@@ -55,7 +55,7 @@ steps:
 - task: DownloadSecureFile@1
   displayName: 'Download secure file: build.json'
   inputs:
-    secureFile: 'ef4779f9-a984-473f-ac17-9eb1ab2d8ad7'
+    secureFile: 'c5491b5c-2fb9-4018-b1b5-aedbc42c4cf3'
     retryCount: 5
 
 - task: DownloadSecureFile@1
@@ -81,7 +81,7 @@ steps:
     TargetFolder: ./
 
 - task: CopyFiles@2
-  displayName: 'Copy Files to: ./src/assets'
+  displayName: 'Copy apikey.json to: ./src/assets'
   inputs:
     SourceFolder: '$(Agent.TempDirectory)'
     Contents: apikey.json
@@ -106,13 +106,13 @@ steps:
   displayName: 'Ionic Cordova Build iOS'
   inputs:
     ionicCommand: 'cordova build ios'
-    ionicArgs: '--release --no-build --device'
+    ionicArgs: '--release --prod --device'
 
 - task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
   displayName: 'Ionic Cordova Build Android'
   inputs:
     ionicCommand: 'cordova build android'
-    ionicArgs: '--release --no-build'
+    ionicArgs: '--release --prod'
 
 - script: |
    cd platforms/android
@@ -142,6 +142,7 @@ steps:
 - task: AppStoreRelease@1
   displayName: 'Publish to the App Store TestFlight track'
   inputs:
+    serviceEndpoint: 'App Store'
     appIdentifier: 'no.nve.regobs4'
     appType: 'iOS'
     releaseTrack: 'TestFlight'
