@@ -35,6 +35,14 @@ If you build without aot, you might get a better error message:
 ng build --aot=false
 ```
 
+Create release branch:
+Example: 
+```
+git flow release start v4.4.3 develop
+```
+Update version number in package.json
+Push relase-branch
+
 NOTE! Continous build is set up in Azure.
 Creates release builds and uploads .ipa to TestFlight when code are committed to /release branch.
 Upload .apk to Google Play store manually. The .apk is in build output resources.
@@ -75,11 +83,11 @@ Download new regions from [https://nedlasting.nve.no/gis/#].
 
 Overwrite /assets/json/varslingsomraader.json
 
-## Update Fylker and kommuner
+## Update counties and municipalities
 Download new json from [https://api01.nve.no/hydrology/forecast/landslide/test/api/Region/]
 Overwrite /assets/json/regions.json
 
-## Update counties (Fylkesgrenser) boarders
+## Update county boarders (fylkesgrenser)
 The boarders are used to show warinings in current map view
 Download "Administrative enheter fylker (gjeldende)" area from [https://kartkatalog.geonorge.no/nedlasting]
 - Select "Hele landet"
