@@ -45,6 +45,11 @@
                 "glob": "*.min.js",
                 "input": "./node_modules/@turf/turf/",
                 "output": "turf/"
+              },
+              {
+                "glob": "**/*.json",
+                "input": "node_modules/@varsom-regobs-common/translations/app/i18n",
+                "output": "assets/i18n"
               }
             ],
             "styles": [
@@ -150,6 +155,11 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "/assets"
+              },
+              {
+                "glob": "**/*.json",
+                "input": "node_modules/@varsom-regobs-common/translations/app/i18n",
+                "output": "assets/i18n"
               }
             ]
           },

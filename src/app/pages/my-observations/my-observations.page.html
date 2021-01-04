@@ -8,26 +8,6 @@
 </ion-header>
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <ion-virtual-scroll *ngIf="!showEmptyState else empty" [ngClass]="{ loaded: loaded }" [headerFn]="myHeaderFn"
-    [items]="virtualItems" [trackBy]="trackById" [approxItemHeight]="10000">
-    <ion-item-divider no-border *virtualHeader="let header">
-      <ion-grid class="ion-no-padding ion-no-margin">
-        <ion-row>
-          <h3 class="ion-text-uppercase">{{ header.header | translate }}</h3>
-        </ion-row>
-        <ion-row *ngIf="header.subtitle">
-          <ion-label class="ion-text-wrap" color="medium">
-            {{ header.subtitle | translate }}
-          </ion-label>
-        </ion-row>
-      </ion-grid>
-    </ion-item-divider>
-    <div *virtualItem="let item">
-      <app-observation-list-card *ngIf="item.type === 'sent'" [obs]="item.item"></app-observation-list-card>
-      <app-sync-item *ngIf="item.type === 'draft'" [registration]="item.item"></app-sync-item>
-      <app-sync-item *ngIf="item.type === 'sync'" [registration]="item.item" [refresh]="true"></app-sync-item>
-    </div>
-  </ion-virtual-scroll>
   <div class="loading-sceleton" *ngIf="!loaded">
     <ion-item-divider no-border>
       <ion-grid class="ion-no-padding ion-no-margin">
@@ -45,10 +25,19 @@
     <app-observation-skeleton></app-observation-skeleton>
     <app-observation-skeleton></app-observation-skeleton>
   </div>
-  <ion-infinite-scroll [disabled]="disableInfiniteScroll" threshold="100px" (ionInfinite)="loadMoreData()">
-    <ion-infinite-scroll-content loadingText="{{'MY_OBSERVATIONS.LOADING_MORE' | translate}}">
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="!showEmptyState else empty" 
+     #scroll [items]="virtualItems" 
+     [checkResizeInterval]="0" 
+     [enableUnequalChildrenSizes]="true" 
+     [parentScroll]="parentScrollElement" 
+     (vsEnd)="loadMoreData($event)">
+    <ng-container *ngFor="let item of scroll.viewPortItems; trackBy: trackById">
+      <app-observation-list-card *ngIf="item.type === 'sent'" [obs]="item.item"></app-observation-list-card>
+      <app-sync-item *ngIf="item.type === 'draft'" [registration]="item.item"></app-sync-item>
+      <app-sync-item *ngIf="item.type === 'sync'" [registration]="item.item" [refresh]="true"></app-sync-item>
+    </ng-container>
+    <ion-spinner *ngIf="loadingMore"></ion-spinner>
+  </virtual-scroller>
 </ion-content>
 <app-add-menu></app-add-menu>
 <ng-template #empty>

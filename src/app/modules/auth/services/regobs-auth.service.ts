@@ -107,10 +107,12 @@ export class RegobsAuthService {
       }
       if (this.maxRetryAttempts > 0) {
         this.maxRetryAttempts--;
-        return this.authService.getValidToken().catch(() => this.customTokenRequestHandler(configuration, request));
+        // https://github.com/wi3land/ionic-appauth/issues/33
+        // buffer=1 forces refresh token
+        return this.authService.getValidToken(1).catch(() => this.customTokenRequestHandler(configuration, request));
       }
       const message = tokenErrorJson?.error || 'Unknown error';
-      return this.showErrorMessage(500, message).then(() => this.storageBackend.clear()).then(() => this.authService.signOut())
+      return this.showErrorMessage(500, message).then(() => this.authService.endSessionCallback())
         .then(() => {
           throw new AppAuthError(message, new TokenError(tokenErrorJson || { error: 'invalid_request' }));
         });
@@ -138,7 +140,8 @@ export class RegobsAuthService {
     }
     try {
       await this.authService.signIn({
-        'ui_locales': this.getSupportedLoginLocales(currentLang)
+        'ui_locales': this.getSupportedLoginLocales(currentLang),
+        'prompt': 'login' // Force login screen
       });
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Could signIn');
@@ -155,7 +158,7 @@ export class RegobsAuthService {
           isLoggedIn: false,
           user: null,
         }).exec()))).toPromise();
-    await this.authService.signOut();
+    this.authService.endSessionCallback();
   }
 
   public async getAndSaveObserver(idToken: string): Promise<void> {
@@ -202,7 +205,7 @@ export class RegobsAuthService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
     if (!apiKey) {
-      throw new Error('apiKey.json not found in assets folder!');
+      throw new Error('apikey.json not found in assets folder!');
     }
     const headers = new HttpHeaders({
       regObs_apptoken: apiKey.apiKey,
