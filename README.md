@@ -9,22 +9,40 @@ Ionic 4 uses Angular 8 and TypeScript, so all pages and components have been rew
    npm install
    ```
 
-## Debugging
+## Debug and test on device
 Run app in browser:
 ```
 ionic serve
 ```
 [More info](https://ionicframework.com/docs/building/running)
 
-To debug app on device:
+To debug app on Android device:
 ```
 ionic cordova run android
 ```
 [More info](https://ionicframework.com/docs/building/android)
+A few tips on development environment setup on Windows:
+- Android SDK and Gradle cache may give you authorization trouble if installed in your user profile folder.
+- JDK is included with Android Studio, but you need to set JDK_HOME to the JDK folder location. 
+- An example of environment variables you need:
+```
+ANDROID_SDK_ROOT=C:\android\sdk
+JDK_HOME=C:\Program Files\Android\Android Studio\jre
+GRADLE_USER_HOME=C:\gradle\cache
+```
+- An example of search path that may work:
+```
+C:\android\sdk\tools\bin
+C:\android\sdk\platform-tools
+C:\android\sdk\emulator
+C:\Program Files\Android\Android Studio\jre\bin
+C:\gradle\gradle-6.7.1\bin
+```
+- You have to uninstall the regular RegObs app from your phone in order to debug
+- This may be helpful for device connection problmems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
 
 ## Build and release
 Use npm to make a release build:
-
 ```
 npm run build --production --device
 ```
