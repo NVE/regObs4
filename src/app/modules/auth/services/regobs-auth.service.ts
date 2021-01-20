@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
@@ -21,6 +21,7 @@ import { AppAuthError, AuthorizationServiceConfiguration, BaseTokenRequestHandle
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
+const TOKEN_RESPONSE_KEY = "token_response";
 
 @Injectable({
   providedIn: 'root'
@@ -42,8 +43,6 @@ export class RegobsAuthService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (<any>this.authService).tokenHandler;
   }
-
-  private maxRetryAttempts = 3;
 
   constructor(
     private authService: AuthService,
@@ -89,32 +88,34 @@ export class RegobsAuthService {
           new AppAuthError(tokenError?.error || 'Unknown error', new TokenError(tokenError || { error: 'invalid_request' })));
       }
     }, (error) => {
-      this.logger.log(`Error getting tokenResponse, maybe coming from password change? ${error ? JSON.stringify(error) : ''}`, null, LogLevel.Warning, DEBUG_TAG);
-      this.logger.log(`Token request was: ${JSON.stringify(postData)}`, null, LogLevel.Warning, DEBUG_TAG);
-      let tokenErrorJson: TokenErrorJson = error?.error;
-      if (tokenErrorJson && !tokenErrorJson.error_description) {
-        try {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          tokenErrorJson = JSON.parse(<any>tokenErrorJson);
-        } catch (err) {
-          this.logger.debug(`Could not parse tokenErrorJson ${tokenErrorJson}`, DEBUG_TAG);
+      let message = undefined;
+      if(error.error && error.error.error_description) {
+        // HttpError response containes detailed error message response
+        const tokenErrorJson: TokenErrorJson = error?.error
+        // HACK to detect change password
+        if (tokenErrorJson && tokenErrorJson.error_description
+          && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
+          return this.signIn(false).then(() => undefined);
+        }
+        message = tokenErrorJson.error_description;
+        this.logger.error(error, DEBUG_TAG, `Error getting tokenResponse, Response message: ${message}`);
+      }
+      if(message === undefined && error instanceof HttpErrorResponse) {
+        this.logger.error(error, DEBUG_TAG, `Error getting tokenResponse, http status code ${error.status}. Message: ${error.message}`);
+        if(error.status === 0) {
+          message = this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE');
+        }else{
+          message = error.message;
         }
       }
-      // HACK to detect change password
-      if (tokenErrorJson && tokenErrorJson.error_description
-        && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
-        return this.signIn(false).then(() => undefined);
-      }
-      if (this.maxRetryAttempts > 0) {
-        this.maxRetryAttempts--;
-        // https://github.com/wi3land/ionic-appauth/issues/33
-        // buffer=1 forces refresh token
-        return this.authService.getValidToken(1).catch(() => this.customTokenRequestHandler(configuration, request));
-      }
-      const message = tokenErrorJson?.error || 'Unknown error';
-      return this.showErrorMessage(500, message).then(() => this.authService.endSessionCallback())
+      
+      this.logger.log(`Token request was: ${JSON.stringify(postData)}`, null, LogLevel.Warning, DEBUG_TAG);
+
+       // Clear session storage token and show error message. User has to retry login.
+       this.storageBackend.removeItem(TOKEN_RESPONSE_KEY);
+      return this.showErrorMessage(500, message)
         .then(() => {
-          throw new AppAuthError(message, new TokenError(tokenErrorJson || { error: 'invalid_request' }));
+          throw new AppAuthError(message, new TokenError(error?.error || { error: 'invalid_request' }));
         });
     });
   }
@@ -133,7 +134,6 @@ export class RegobsAuthService {
   }
 
   public async signIn(setReturnUrl = true): Promise<void> {
-    this.maxRetryAttempts = 3;
     const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
     if (setReturnUrl) {
       localStorage.setItem(RETURN_URL_KEY, this.router.url);
