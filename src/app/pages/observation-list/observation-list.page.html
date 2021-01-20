@@ -1,20 +1,16 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
 <ion-content>
-  <app-refresh-with-cancel [refreshFunc]="refreshFunc" [cancelSubject]="cancelSubject">
-  </app-refresh-with-cancel>
   <ng-container *ngIf="observations !== undefined">
-    <ion-virtual-scroll [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty"
-      [items]="observations" [approxItemHeight]="10000" [trackBy]="trackByIdFunc" [footerFn]="footerFn"
-      [headerFn]="headerFn">
-      <ion-item-divider *virtualHeader="let header">
-        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
-      </ion-item-divider>
-      <div *virtualItem="let obs">
-        <app-observation-list-card [obs]="obs"></app-observation-list-card>
+    <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" #scroll
+      [items]="observations" [checkResizeInterval]="0" [enableUnequalChildrenSizes]="true"
+      [parentScroll]="parentScrollElement" [compareItems]="compareItems" [modifyOverflowStyleOfParentScroll]="false">
+      <div *ngFor="let item of scroll.viewPortItems; let i = index; trackBy: trackByIdFunc;">
+        <ion-item-divider *ngIf="(i === 0)">
+          <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+        </ion-item-divider>
+        <app-observation-list-card [obs]="item"></app-observation-list-card>
       </div>
-      <ion-item-divider class="virtual-list-footer" no-border *virtualFooter="let footer">
-      </ion-item-divider>
-    </ion-virtual-scroll>
+    </virtual-scroller>
   </ng-container>
   <div class="loading-sceleton" *ngIf="!loaded">
     <ion-item-divider>
