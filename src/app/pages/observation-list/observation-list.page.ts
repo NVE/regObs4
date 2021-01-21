@@ -83,6 +83,7 @@ export class ObservationListPage implements OnInit {
       this.cdr.detectChanges();
       setTimeout(() => {
         this.loaded = true;
+        // this.scroll.refresh();
         this.content.scrollToTop();
         this.cdr.detectChanges();
       }, 200);
