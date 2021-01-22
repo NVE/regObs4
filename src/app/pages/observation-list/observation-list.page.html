@@ -2,16 +2,6 @@
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
   <ng-container *ngIf="visibleObservations !== undefined">
-    <!-- <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" #scroll
-      [items]="observations" [checkResizeInterval]="0" [enableUnequalChildrenSizes]="true"
-      [parentScroll]="parentScrollElement" [compareItems]="compareItems" [bufferAmount]="observations.length" [scrollDebounceTime]="500" [modifyOverflowStyleOfParentScroll]="false">
-      <div *ngFor="let item of scroll.viewPortItems; let i = index; trackBy: trackByIdFunc;">
-        <ion-item-divider *ngIf="(i === 0)">
-          <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
-        </ion-item-divider>
-        <app-observation-list-card [obs]="item"></app-observation-list-card>
-      </div>
-    </virtual-scroller> -->
     <ion-list [ngClass]="{ loaded: loaded }" *ngIf="(visibleObservations.length > 0) else empty">
       <ion-item-divider>
         <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
