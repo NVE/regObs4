@@ -17,9 +17,10 @@ ion-item-divider {
   }
 }
 
-virtual-scroller {
-  width: 100%;
-  height: 100%;
+virtual-scroller,
+ion-list {
+  // width: 100%;
+  // height: 100%;
   opacity: 0;
   transition: opacity 1s linear;
 
