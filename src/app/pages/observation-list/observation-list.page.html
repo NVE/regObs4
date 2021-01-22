@@ -1,6 +1,7 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
 <ion-content>
-  <ng-container *ngIf="observations !== undefined">
+  <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
+  <ng-container *ngIf="visibleObservations !== undefined">
     <!-- <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" #scroll
       [items]="observations" [checkResizeInterval]="0" [enableUnequalChildrenSizes]="true"
       [parentScroll]="parentScrollElement" [compareItems]="compareItems" [bufferAmount]="observations.length" [scrollDebounceTime]="500" [modifyOverflowStyleOfParentScroll]="false">
@@ -11,11 +12,11 @@
         <app-observation-list-card [obs]="item"></app-observation-list-card>
       </div>
     </virtual-scroller> -->
-    <ion-list [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty">
+    <ion-list [ngClass]="{ loaded: loaded }" *ngIf="(visibleObservations.length > 0) else empty">
       <ion-item-divider>
         <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
       </ion-item-divider>
-      <app-observation-list-card *ngFor="let obs of observations; trackBy: trackByIdFunc;" [obs]="obs">
+      <app-observation-list-card *ngFor="let obs of visibleObservations; trackBy: trackByIdFunc;" [obs]="obs">
       </app-observation-list-card>
     </ion-list>
     <ion-infinite-scroll (ionInfinite)="loadNextPage($event)">
