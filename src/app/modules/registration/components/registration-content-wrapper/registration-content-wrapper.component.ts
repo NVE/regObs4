@@ -13,13 +13,11 @@ export class RegistrationContentWrapperComponent implements OnInit {
   @Output() reset = new EventEmitter();
   @Input() isEmpty: boolean;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   emitReset() {
     this.reset.emit();
   }
-
 }

@@ -19,4 +19,4 @@ const routes: Routes = [
   ],
   declarations: [GeneralCommentPage]
 })
-export class GeneralCommentPageModule { }
+export class GeneralCommentPageModule {}

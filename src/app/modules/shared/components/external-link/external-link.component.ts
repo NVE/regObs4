@@ -7,17 +7,14 @@ import { ExternalLinkService } from '../../../../core/services/external-link/ext
   styleUrls: ['./external-link.component.scss']
 })
 export class ExternalLinkComponent implements OnInit {
-
   @Input() src: string;
 
-  constructor(private externalLinkService: ExternalLinkService) { }
+  constructor(private externalLinkService: ExternalLinkService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   openLink(event: Event) {
     event.preventDefault();
     this.externalLinkService.openExternalLink(this.src);
   }
-
 }

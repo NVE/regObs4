@@ -19,8 +19,8 @@ const routes: Routes = [
     SharedModule,
     SharedComponentsModule,
     FullscreenImageModalPageModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes)
   ],
   declarations: [MyObservationsPage]
 })
-export class MyObservationsPageModule { }
+export class MyObservationsPageModule {}

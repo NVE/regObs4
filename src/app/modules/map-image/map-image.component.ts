@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ChangeDetectionStrategy,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef
+} from '@angular/core';
 import * as L from 'leaflet';
 import { BehaviorSubject, Subject, timer } from 'rxjs';
 import { takeUntil, takeWhile, tap } from 'rxjs/operators';
@@ -27,7 +36,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   private mapCenterSubject: BehaviorSubject<ImageLocation>;
   private ngDestroy$: Subject<void>;
 
-  constructor(private cdr: ChangeDetectorRef) { }
+  constructor(private cdr: ChangeDetectorRef) {}
 
   options: L.MapOptions = {
     zoom: settings.map.tiles.zoomLevelObservationList,
@@ -39,7 +48,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     scrollWheelZoom: 'center', // zoom to center regardless where mouse is
     touchZoom: 'center',
     trackResize: false,
-    center: L.latLng(settings.map.unknownMapCenter as L.LatLngTuple),
+    center: L.latLng(settings.map.unknownMapCenter as L.LatLngTuple)
   };
 
   private getStartStopIcon(start = false) {
@@ -48,7 +57,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
       iconSize: [27, 42],
       iconAnchor: [13.5, 41],
       shadowUrl: 'leaflet/marker-shadow.png',
-      shadowSize: [41, 41],
+      shadowSize: [41, 41]
     });
   }
 
@@ -58,7 +67,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
       shadowUrl: 'leaflet/marker-shadow.png',
-      shadowSize: [41, 41],
+      shadowSize: [41, 41]
     });
   }
 
@@ -90,7 +99,10 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
         this.setMarker(val.latLng, val.geoHazard);
       }
       if (val && val.startStopLocation) {
-        this.setStartStopLocation(val.startStopLocation.start, val.startStopLocation.stop);
+        this.setStartStopLocation(
+          val.startStopLocation.start,
+          val.startStopLocation.stop
+        );
       }
       if (val && val.damageLocations && val.damageLocations.length > 0) {
         this.setDamageLocations(val.damageLocations);
@@ -112,38 +124,43 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
 
   redrawMap() {
     let counter = 3;
-    timer(500, 50).pipe(
-      takeUntil(this.ngDestroy$),
-      takeWhile(() => counter > 0),
-      tap(() => counter--)).subscribe(() => {
-      if (this.map) {
-        this.map.invalidateSize();
-      }
-    });
+    timer(500, 50)
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        takeWhile(() => counter > 0),
+        tap(() => counter--)
+      )
+      .subscribe(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+        }
+      });
   }
 
   private isInNorway() {
     if (this.location && this.location.latLng) {
-      return BorderHelper.isInNorway(this.location.latLng) || BorderHelper.isInSvalbard(this.location.latLng);
+      return (
+        BorderHelper.isInNorway(this.location.latLng) ||
+        BorderHelper.isInSvalbard(this.location.latLng)
+      );
     }
     return false;
   }
 
   private addTileLayers() {
-    const url = this.isInNorway() ? settings.map.tiles.statensKartverkMapUrl : settings.map.tiles.arcGisOnlineTopoMapUrl;
-    L.tileLayer(
-      url,
-      {
-        updateWhenIdle: true,
-        keepBuffer: 0,
-      }
-    ).addTo(this.map);
+    const url = this.isInNorway()
+      ? settings.map.tiles.statensKartverkMapUrl
+      : settings.map.tiles.arcGisOnlineTopoMapUrl;
+    L.tileLayer(url, {
+      updateWhenIdle: true,
+      keepBuffer: 0
+    }).addTo(this.map);
   }
 
   private setMarker(latLng: L.LatLng, geoHazard: GeoHazard) {
     L.marker(latLng, {
       icon: new RegobsGeoHazardMarker(geoHazard),
-      interactive: false,
+      interactive: false
     }).addTo(this.map);
   }
 
@@ -151,17 +168,21 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     if (start) {
       L.marker(start, {
         icon: this.getStartStopIcon(true),
-        interactive: false,
+        interactive: false
       }).addTo(this.map);
     }
     if (stop) {
       L.marker(stop, {
         icon: this.getStartStopIcon(false),
-        interactive: false,
+        interactive: false
       }).addTo(this.map);
     }
     if (start && stop) {
-      L.polyline([start, stop], { color: 'red', weight: 6, opacity: .9 }).addTo(this.map);
+      L.polyline([start, stop], {
+        color: 'red',
+        weight: 6,
+        opacity: 0.9
+      }).addTo(this.map);
     }
   }
 
@@ -170,10 +191,9 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
       for (const location of locations) {
         L.marker(location, {
           icon: this.getDamageIcon(),
-          interactive: false,
+          interactive: false
         }).addTo(this.map);
       }
     }
   }
-
 }

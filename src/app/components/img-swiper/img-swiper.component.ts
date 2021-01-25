@@ -21,16 +21,17 @@ import { ImageLocation } from './image-location.model';
   selector: 'app-img-swiper',
   templateUrl: './img-swiper.component.html',
   styleUrls: ['./img-swiper.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
-
   @Input() imgUrl: string[] = [];
   @Input() showLabels = true;
   @Input() imgComments: string[] = [];
   @Input() imgHeaders: string[] = [];
-  @Output() imgClick: EventEmitter<{ index: number, imgUrl: string }> = new EventEmitter();
+  @Output() imgClick: EventEmitter<{
+    index: number;
+    imgUrl: string;
+  }> = new EventEmitter();
   @Input() location: ImageLocation;
   @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
 
@@ -41,7 +42,13 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   };
 
   swiper: any;
-  state: 'loading' | 'empty' | 'singleimage' | 'singlemap' | 'loading-swiper' | 'swiper-ready' = 'loading';
+  state:
+    | 'loading'
+    | 'empty'
+    | 'singleimage'
+    | 'singlemap'
+    | 'loading-swiper'
+    | 'swiper-ready' = 'loading';
   slides: ImgSwiperSlide[];
   activeIndex = 0;
 
@@ -75,8 +82,12 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get showLabel() {
-    return this.slides && this.slides[this.activeIndex] &&
-      (this.slides[this.activeIndex].header || this.slides[this.activeIndex].description);
+    return (
+      this.slides &&
+      this.slides[this.activeIndex] &&
+      (this.slides[this.activeIndex].header ||
+        this.slides[this.activeIndex].description)
+    );
   }
 
   get shouldMoveMap() {
@@ -88,7 +99,10 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get imageIndex() {
-    if (this.slides[this.activeIndex] && this.slides[this.activeIndex].type === 'image') {
+    if (
+      this.slides[this.activeIndex] &&
+      this.slides[this.activeIndex].type === 'image'
+    ) {
       return this.getImageIndex(this.slides[this.activeIndex].img as string);
     }
     return 0;
@@ -96,15 +110,14 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
 
   get showIndex() {
     if (this.imgUrl && this.imgUrl.length > 1) {
-      return this.location ? (this.activeIndex > 0) : true;
+      return this.location ? this.activeIndex > 0 : true;
     }
     return false;
   }
 
-  constructor(private cdr: ChangeDetectorRef) { }
+  constructor(private cdr: ChangeDetectorRef) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.cdr.detach();
@@ -114,9 +127,11 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
     this.swiper = el.target.swiper;
     if (this.shouldMoveMap) {
       this.activeIndex = 1;
-      interval(100).pipe(takeUntil(race(this.ngDestroy$, this.touchStart$))).subscribe(() => {
-        this.moveMapInSwiperToLeftOutsideView();
-      });
+      interval(100)
+        .pipe(takeUntil(race(this.ngDestroy$, this.touchStart$)))
+        .subscribe(() => {
+          this.moveMapInSwiperToLeftOutsideView();
+        });
     }
     this.state = 'swiper-ready';
     this.updateUi();
@@ -141,10 +156,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
         header: 'REGISTRATION.OBS_LOCATION.TITLE'
       });
     }
-    this.slides = [
-      ...this.getLocationSlides(),
-      ...this.getImageSlides(),
-    ];
+    this.slides = [...this.getLocationSlides(), ...this.getImageSlides()];
     this.activeIndex = 0;
     this.state = this.calculateNewState();
     this.updateUi();
@@ -169,11 +181,15 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getLocationSlides(): ImgSwiperSlide[] {
-    return this.location ? [{
-      type: 'location',
-      img: this.location,
-      header: 'REGISTRATION.OBS_LOCATION.TITLE'
-    }] : [];
+    return this.location
+      ? [
+          {
+            type: 'location',
+            img: this.location,
+            header: 'REGISTRATION.OBS_LOCATION.TITLE'
+          }
+        ]
+      : [];
   }
 
   private getImageSlides(): ImgSwiperSlide[] {
@@ -181,7 +197,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
       type: 'image',
       img,
       header: this.imgHeaders[index],
-      description: this.imgComments[index],
+      description: this.imgComments[index]
     }));
   }
 
@@ -192,7 +208,9 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getImageIndex(src: string) {
-    return (this.imgUrl && this.imgUrl.length > 0) ? this.imgUrl.indexOf(src) : -1;
+    return this.imgUrl && this.imgUrl.length > 0
+      ? this.imgUrl.indexOf(src)
+      : -1;
   }
 
   onImageClick(imgUrlSrc: string) {
@@ -212,8 +230,10 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
 
   async getSwiperIndex() {
     const index = await (this.slider ? this.slider.getActiveIndex() : 0);
-    const isEnd = await (this.slider ? this.slider.isEnd() : Promise.resolve(false));
-    return isEnd ? (this.slides ? (this.slides.length - 1) : 0) : index;
+    const isEnd = await (this.slider
+      ? this.slider.isEnd()
+      : Promise.resolve(false));
+    return isEnd ? (this.slides ? this.slides.length - 1 : 0) : index;
   }
 
   async onSlideTransitionEnd() {

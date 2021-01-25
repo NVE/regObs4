@@ -1,4 +1,8 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
@@ -17,18 +21,30 @@ import { ObserverGroupDto, ObserverResponseDto } from '../../regobs-api/models';
 import { LogLevel } from '../../shared/services/logging/log-level.model';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
-import { AppAuthError, AuthorizationServiceConfiguration, BaseTokenRequestHandler, Requestor, StorageBackend, TokenError, TokenErrorJson, TokenRequest, TokenResponse, TokenResponseJson } from '@openid/appauth';
+import {
+  AppAuthError,
+  AuthorizationServiceConfiguration,
+  BaseTokenRequestHandler,
+  Requestor,
+  StorageBackend,
+  TokenError,
+  TokenErrorJson,
+  TokenRequest,
+  TokenResponse,
+  TokenResponseJson
+} from '@openid/appauth';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
-const TOKEN_RESPONSE_KEY = "token_response";
+const TOKEN_RESPONSE_KEY = 'token_response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegobsAuthService {
-
-  private _loggedInUserSubject: BehaviorSubject<LoggedInUser> = new BehaviorSubject({ isLoggedIn: false });
+  private _loggedInUserSubject: BehaviorSubject<LoggedInUser> = new BehaviorSubject(
+    { isLoggedIn: false }
+  );
   private _isLoggingInSubject = new BehaviorSubject<boolean>(false);
 
   get loggedInUser$(): Observable<LoggedInUser> {
@@ -55,74 +71,114 @@ export class RegobsAuthService {
     private navCtrl: NavController,
     private location: Location,
     private requestor: Requestor,
-    private storageBackend: StorageBackend,
+    private storageBackend: StorageBackend
   ) {
     this.setupCustomTokenRequestHandler();
-    this.authService.addActionListener((action) => this.onSignInCallback(action));
+    this.authService.addActionListener((action) =>
+      this.onSignInCallback(action)
+    );
     this.userSettingService.appMode$.subscribe(async (appMode) => {
       const loggedInUser = await this.getLoggedInUserForAppMode(appMode);
       this._loggedInUserSubject.next(loggedInUser);
     });
   }
 
-  private customTokenRequestHandler(configuration: AuthorizationServiceConfiguration, request: TokenRequest): Promise<TokenResponse> {
+  private customTokenRequestHandler(
+    configuration: AuthorizationServiceConfiguration,
+    request: TokenRequest
+  ): Promise<TokenResponse> {
     const data = this.tokenHandler.utils.stringify(request.toStringMap());
     const postData = {
       url: configuration.tokenEndpoint,
       method: 'POST',
-      dataType: 'json',  // adding implicit dataType
+      dataType: 'json', // adding implicit dataType
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      data,
+      data
     };
-    const tokenResponse = this.requestor.xhr<TokenResponseJson | TokenErrorJson>(postData);
+    const tokenResponse = this.requestor.xhr<
+      TokenResponseJson | TokenErrorJson
+    >(postData);
 
-    return tokenResponse.then((response) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((<any>this.authService).tokenHandler.isTokenResponse(response)) {
-        return new TokenResponse(response as TokenResponseJson);
-      } else {
-        this.logger.error(new Error('Invalid tokenResponse'),
-          DEBUG_TAG, `Token request: ${JSON.stringify(postData)} Auth response: ${response ? JSON.stringify(response) : ''}`);
-        const tokenError = response as TokenErrorJson;
-        return Promise.reject<TokenResponse>(
-          new AppAuthError(tokenError?.error || 'Unknown error', new TokenError(tokenError || { error: 'invalid_request' })));
-      }
-    }, (error) => {
-      let message = undefined;
-      if(error.error && error.error.error_description) {
-        // HttpError response containes detailed error message response
-        const tokenErrorJson: TokenErrorJson = error?.error
-        // HACK to detect change password
-        if (tokenErrorJson && tokenErrorJson.error_description
-          && tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0) {
-          return this.signIn(false).then(() => undefined);
+    return tokenResponse.then(
+      (response) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((<any>this.authService).tokenHandler.isTokenResponse(response)) {
+          return new TokenResponse(response as TokenResponseJson);
+        } else {
+          this.logger.error(
+            new Error('Invalid tokenResponse'),
+            DEBUG_TAG,
+            `Token request: ${JSON.stringify(postData)} Auth response: ${
+              response ? JSON.stringify(response) : ''
+            }`
+          );
+          const tokenError = response as TokenErrorJson;
+          return Promise.reject<TokenResponse>(
+            new AppAuthError(
+              tokenError?.error || 'Unknown error',
+              new TokenError(tokenError || { error: 'invalid_request' })
+            )
+          );
         }
-        message = tokenErrorJson.error_description;
-        this.logger.error(error, DEBUG_TAG, `Error getting tokenResponse, Response message: ${message}`);
-      }
-      if(message === undefined && error instanceof HttpErrorResponse) {
-        this.logger.error(error, DEBUG_TAG, `Error getting tokenResponse, http status code ${error.status}. Message: ${error.message}`);
-        if(error.status === 0) {
-          message = this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE');
-        }else{
-          message = error.message;
+      },
+      (error) => {
+        let message = undefined;
+        if (error.error && error.error.error_description) {
+          // HttpError response containes detailed error message response
+          const tokenErrorJson: TokenErrorJson = error?.error;
+          // HACK to detect change password
+          if (
+            tokenErrorJson &&
+            tokenErrorJson.error_description &&
+            tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0
+          ) {
+            return this.signIn(false).then(() => undefined);
+          }
+          message = tokenErrorJson.error_description;
+          this.logger.error(
+            error,
+            DEBUG_TAG,
+            `Error getting tokenResponse, Response message: ${message}`
+          );
         }
-      }
-      
-      this.logger.log(`Token request was: ${JSON.stringify(postData)}`, null, LogLevel.Warning, DEBUG_TAG);
+        if (message === undefined && error instanceof HttpErrorResponse) {
+          this.logger.error(
+            error,
+            DEBUG_TAG,
+            `Error getting tokenResponse, http status code ${error.status}. Message: ${error.message}`
+          );
+          if (error.status === 0) {
+            message = this.translateService.instant(
+              'LOGIN.SERVICE_UNAVAILABLE'
+            );
+          } else {
+            message = error.message;
+          }
+        }
 
-       // Clear session storage token and show error message. User has to retry login.
-       this.storageBackend.removeItem(TOKEN_RESPONSE_KEY);
-      return this.showErrorMessage(500, message)
-        .then(() => {
-          throw new AppAuthError(message, new TokenError(error?.error || { error: 'invalid_request' }));
+        this.logger.log(
+          `Token request was: ${JSON.stringify(postData)}`,
+          null,
+          LogLevel.Warning,
+          DEBUG_TAG
+        );
+
+        // Clear session storage token and show error message. User has to retry login.
+        this.storageBackend.removeItem(TOKEN_RESPONSE_KEY);
+        return this.showErrorMessage(500, message).then(() => {
+          throw new AppAuthError(
+            message,
+            new TokenError(error?.error || { error: 'invalid_request' })
+          );
         });
-    });
+      }
+    );
   }
 
   private setupCustomTokenRequestHandler() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.tokenHandler.performTokenRequest = (config, request) => this.customTokenRequestHandler(config, request);
+    this.tokenHandler.performTokenRequest = (config, request) =>
+      this.customTokenRequestHandler(config, request);
   }
 
   public authorizationCallback(url: string): void {
@@ -134,14 +190,16 @@ export class RegobsAuthService {
   }
 
   public async signIn(setReturnUrl = true): Promise<void> {
-    const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
+    const currentLang = await this.userSettingService.language$
+      .pipe(take(1))
+      .toPromise();
     if (setReturnUrl) {
       localStorage.setItem(RETURN_URL_KEY, this.router.url);
     }
     try {
       await this.authService.signIn({
-        'ui_locales': this.getSupportedLoginLocales(currentLang),
-        'prompt': 'login' // Force login screen
+        ui_locales: this.getSupportedLoginLocales(currentLang),
+        prompt: 'login' // Force login screen
       });
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Could signIn');
@@ -150,14 +208,23 @@ export class RegobsAuthService {
 
   public async logout(): Promise<void> {
     this._loggedInUserSubject.next({ isLoggedIn: false });
-    await this.userSettingService.appMode$.pipe(take(1),
-      switchMap((appMode) => from(NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('upsert',
-        {
-          id: 'user',
-          email: null,
-          isLoggedIn: false,
-          user: null,
-        }).exec()))).toPromise();
+    await this.userSettingService.appMode$
+      .pipe(
+        take(1),
+        switchMap((appMode) =>
+          from(
+            NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode)
+              .query('upsert', {
+                id: 'user',
+                email: null,
+                isLoggedIn: false,
+                user: null
+              })
+              .exec()
+          )
+        )
+      )
+      .toPromise();
     this.authService.endSessionCallback();
   }
 
@@ -166,18 +233,30 @@ export class RegobsAuthService {
       this._isLoggingInSubject.next(true);
       const result = await this.getObserverFromApi(idToken);
       if (!result) {
-        this.logger.log('Could not get observer after sign in success', null, LogLevel.Warning, DEBUG_TAG, idToken);
+        this.logger.log(
+          'Could not get observer after sign in success',
+          null,
+          LogLevel.Warning,
+          DEBUG_TAG,
+          idToken
+        );
         await this.showErrorMessage(500, '');
         return;
       }
-      const resultWithNick = await this.checkAndSetNickIfNickIsNull(result, idToken);
+      const resultWithNick = await this.checkAndSetNickIfNickIsNull(
+        result,
+        idToken
+      );
       const claims = this.parseJwt(idToken);
       this._loggedInUserSubject.next({
         email: claims.email,
         isLoggedIn: true,
         user: resultWithNick
       });
-      setTimeout(() => this.saveLoggedInUserToDb(claims.email, true, resultWithNick), 20);
+      setTimeout(
+        () => this.saveLoggedInUserToDb(claims.email, true, resultWithNick),
+        20
+      );
     } catch (err) {
       await this.showErrorMessage(err.status, err.message);
     } finally {
@@ -185,7 +264,10 @@ export class RegobsAuthService {
     }
   }
 
-  private async checkAndSetNickIfNickIsNull(user: ObserverResponseDto, idToken: string): Promise<ObserverResponseDto> {
+  private async checkAndSetNickIfNickIsNull(
+    user: ObserverResponseDto,
+    idToken: string
+  ): Promise<ObserverResponseDto> {
     if (user && user.Nick != null && user.Nick != '') {
       return user;
     }
@@ -199,27 +281,39 @@ export class RegobsAuthService {
     }
   }
 
-  private async callApiUpdateNick(nick: string, idToken: string): Promise<void> {
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    const updateObserverUrl = settings.authConfig[userSettings.appMode].updateObserverUrl;
+  private async callApiUpdateNick(
+    nick: string,
+    idToken: string
+  ): Promise<void> {
+    const userSettings = await this.userSettingService.userSetting$
+      .pipe(take(1))
+      .toPromise();
+    const updateObserverUrl =
+      settings.authConfig[userSettings.appMode].updateObserverUrl;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
+    const apiKey: any = await this.httpClient
+      .get('/assets/apikey.json')
+      .toPromise();
     if (!apiKey) {
       throw new Error('apikey.json not found in assets folder!');
     }
     const headers = new HttpHeaders({
       regObs_apptoken: apiKey.apiKey,
       ApiJsonVersion: settings.services.regObs.apiJsonVersion,
-      Authorization: `Bearer ${idToken}`,
+      Authorization: `Bearer ${idToken}`
     });
-    return this.httpClient.put<void>(updateObserverUrl, { Nick: nick }, { headers }).toPromise();
+    return this.httpClient
+      .put<void>(updateObserverUrl, { Nick: nick }, { headers })
+      .toPromise();
   }
 
   private async showSetNickDialog(): Promise<string> {
     const headerTextKey = 'SET_NICK_ALERT.INPUT_TEXT';
     const messageTextKey = 'SET_NICK_ALERT.HELP_TEXT';
     const okTextKey = 'DIALOGS.OK';
-    const translations = await this.translateService.get([headerTextKey, messageTextKey, okTextKey]).toPromise();
+    const translations = await this.translateService
+      .get([headerTextKey, messageTextKey, okTextKey])
+      .toPromise();
     const alert = await this.alertController.create({
       header: translations[headerTextKey],
       message: translations[messageTextKey],
@@ -228,8 +322,8 @@ export class RegobsAuthService {
         {
           name: 'nick',
           type: 'text',
-          max: 24,
-        },
+          max: 24
+        }
       ],
       buttons: [
         {
@@ -242,7 +336,9 @@ export class RegobsAuthService {
     });
     alert.present();
 
-    const result = ((await alert.onDidDismiss()) as { data: { values: { nick: string } } });
+    const result = (await alert.onDidDismiss()) as {
+      data: { values: { nick: string } };
+    };
     return result?.data?.values?.nick;
   }
 
@@ -253,7 +349,10 @@ export class RegobsAuthService {
   public async onSignInCallback(action: IAuthAction): Promise<void> {
     if (action.tokenResponse?.idToken) {
       await this.getAndSaveObserver(action.tokenResponse?.idToken);
-    } else if (action.action === AuthActions.SignInFailed && action.error !== 'Handle Not Available') {
+    } else if (
+      action.action === AuthActions.SignInFailed &&
+      action.error !== 'Handle Not Available'
+    ) {
       await this.showErrorMessage(500, action.error);
     }
     this.redirectToReturnUrl();
@@ -264,7 +363,9 @@ export class RegobsAuthService {
       const returnUrl = localStorage.getItem(RETURN_URL_KEY);
       if (returnUrl) {
         localStorage.removeItem(RETURN_URL_KEY);
-        this.location.replaceState(this.router.serializeUrl(this.router.createUrlTree([''])));
+        this.location.replaceState(
+          this.router.serializeUrl(this.router.createUrlTree(['']))
+        );
         this.navCtrl.navigateForward(returnUrl);
       } else {
         this.navCtrl.navigateRoot('');
@@ -272,16 +373,27 @@ export class RegobsAuthService {
     }
   }
 
-  private async getLoggedInUserForAppMode(appMode: AppMode): Promise<LoggedInUser> {
-    const result = await (NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('select').exec() as Promise<LoggedInUser[]>);
+  private async getLoggedInUserForAppMode(
+    appMode: AppMode
+  ): Promise<LoggedInUser> {
+    const result = await (NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode)
+      .query('select')
+      .exec() as Promise<LoggedInUser[]>);
     return result[0] || { isLoggedIn: false };
   }
 
   private async showErrorMessage(status: number, message: string) {
-    const text = status === 401 ? 'UNAUTHORIZED' : (status <= 0 ? 'SERVICE_UNAVAILABLE' : 'UNKNOWN_ERROR');
+    const text =
+      status === 401
+        ? 'UNAUTHORIZED'
+        : status <= 0
+        ? 'SERVICE_UNAVAILABLE'
+        : 'UNKNOWN_ERROR';
     const messageText = `LOGIN.${text}`;
     const extraMessage = text === 'UNKNOWN_ERROR' ? ` ${message}` : '';
-    const translations = await this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageText]).toPromise();
+    const translations = await this.translateService
+      .get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageText])
+      .toPromise();
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
       message: `${translations[messageText]}${extraMessage}`,
@@ -290,20 +402,29 @@ export class RegobsAuthService {
     await alert.present();
   }
 
-  private async getObserverFromApi(idToken: string): Promise<ObserverResponseDto> {
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    const getObserverUrl = settings.authConfig[userSettings.appMode].getObserverUrl;
+  private async getObserverFromApi(
+    idToken: string
+  ): Promise<ObserverResponseDto> {
+    const userSettings = await this.userSettingService.userSetting$
+      .pipe(take(1))
+      .toPromise();
+    const getObserverUrl =
+      settings.authConfig[userSettings.appMode].getObserverUrl;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const apiKey: any = await this.httpClient.get('/assets/apikey.json').toPromise();
+    const apiKey: any = await this.httpClient
+      .get('/assets/apikey.json')
+      .toPromise();
     if (!apiKey) {
       throw new Error('apiKey.json not found in assets folder!');
     }
     const headers = new HttpHeaders({
       regObs_apptoken: apiKey.apiKey,
       ApiJsonVersion: settings.services.regObs.apiJsonVersion,
-      Authorization: `Bearer ${idToken}`,
+      Authorization: `Bearer ${idToken}`
     });
-    return this.httpClient.get<ObserverResponseDto>(getObserverUrl, { headers }).toPromise();
+    return this.httpClient
+      .get<ObserverResponseDto>(getObserverUrl, { headers })
+      .toPromise();
   }
 
   private getSupportedLoginLocales(langKey: LangKey) {
@@ -313,42 +434,93 @@ export class RegobsAuthService {
     return 'en';
   }
 
-  private saveLoggedInUserToDb(email: string, isLoggedIn: boolean, user: ObserverResponseDto): void {
-    this.userSettingService.appMode$.pipe(take(1), switchMap((appMode) =>
-      from(NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode).query('upsert',
-        {
-          id: 'user',
-          email,
-          isLoggedIn,
-          user
-        }).exec()).pipe(switchMap(() => from(this.saveUserGroups(appMode, user, user.ObserverGroup))))))
-      .subscribe(() => { this.logger.debug('User saved to db', DEBUG_TAG); }, (err) => {
-        this.logger.error(err, DEBUG_TAG, 'Could not save logged in user to db');
-      });
+  private saveLoggedInUserToDb(
+    email: string,
+    isLoggedIn: boolean,
+    user: ObserverResponseDto
+  ): void {
+    this.userSettingService.appMode$
+      .pipe(
+        take(1),
+        switchMap((appMode) =>
+          from(
+            NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode)
+              .query('upsert', {
+                id: 'user',
+                email,
+                isLoggedIn,
+                user
+              })
+              .exec()
+          ).pipe(
+            switchMap(() =>
+              from(this.saveUserGroups(appMode, user, user.ObserverGroup))
+            )
+          )
+        )
+      )
+      .subscribe(
+        () => {
+          this.logger.debug('User saved to db', DEBUG_TAG);
+        },
+        (err) => {
+          this.logger.error(
+            err,
+            DEBUG_TAG,
+            'Could not save logged in user to db'
+          );
+        }
+      );
   }
 
-  async saveUserGroups(appMode: AppMode, user: ObserverResponseDto, observerGroups: ObserverGroupDto[]): Promise<void> {
+  async saveUserGroups(
+    appMode: AppMode,
+    user: ObserverResponseDto,
+    observerGroups: ObserverGroupDto[]
+  ): Promise<void> {
     const userGroups = (observerGroups || []).map((val) => {
-      return { key: `${user.Guid}_${val.Id}`, userId: user.Guid, Id: val.Id, Name: val.Name };
+      return {
+        key: `${user.Guid}_${val.Id}`,
+        userId: user.Guid,
+        Id: val.Id,
+        Name: val.Name
+      };
     });
-    const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
+    const instanceName = NanoSql.getInstanceName(
+      NanoSql.TABLES.OBSERVER_GROUPS.name,
+      appMode
+    );
     await nSQL(instanceName).loadJS(userGroups);
-    await this.deleteUserGroupsNoLongerInResult(appMode, userGroups.map((ug) => ug.key));
+    await this.deleteUserGroupsNoLongerInResult(
+      appMode,
+      userGroups.map((ug) => ug.key)
+    );
   }
 
-  private async deleteUserGroupsNoLongerInResult(appMode: AppMode, ids: string[]) {
+  private async deleteUserGroupsNoLongerInResult(
+    appMode: AppMode,
+    ids: string[]
+  ) {
     await NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
-      .query('delete').where((dbGroup: { key: string, userId: string, Id: number, Name: string }) =>
-        ids.indexOf(dbGroup.key) < 0
-      ).exec();
+      .query('delete')
+      .where(
+        (dbGroup: { key: string; userId: string; Id: number; Name: string }) =>
+          ids.indexOf(dbGroup.key) < 0
+      )
+      .exec();
   }
 
   private parseJwt(token: string) {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join('')
+    );
     return JSON.parse(jsonPayload);
   }
 }

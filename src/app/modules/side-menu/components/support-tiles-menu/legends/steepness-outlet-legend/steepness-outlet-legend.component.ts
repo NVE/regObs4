@@ -6,5 +6,4 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./steepness-outlet-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SteepnessOutletLegendComponent {
-}
+export class SteepnessOutletLegendComponent {}

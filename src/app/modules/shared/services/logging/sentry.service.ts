@@ -12,11 +12,14 @@ import { LogLevel } from './log-level.model';
   providedIn: 'root'
 })
 export class SentryService implements LoggingService {
+  constructor(private appVersionService: AppVersionService) {}
 
-  constructor(private appVersionService: AppVersionService) {
-  }
-
-  error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
+  error(
+    error: Error,
+    tag?: string,
+    message?: string,
+    ...optionalParams: any[]
+  ) {
     this.log(message, error, LogLevel.Error, tag, ...optionalParams);
   }
 
@@ -26,15 +29,19 @@ export class SentryService implements LoggingService {
 
   configureLogging(appMode: AppMode) {
     const appVersion = this.appVersionService.getAppVersion();
-    Sentry.init(
-      {
-        dsn: environment.production ? settings.sentryDsn : null,
-        transport: Sentry.Transports.FetchTransport,
-        environment: appMode === AppMode.Prod ? 'regObs' : (appMode === AppMode.Demo ? 'demo regObs' : 'test regObs'),
-        enabled: environment.production,
-        release: appVersion.version,
-        dist: appVersion.revision
-      });
+    Sentry.init({
+      dsn: environment.production ? settings.sentryDsn : null,
+      transport: Sentry.Transports.FetchTransport,
+      environment:
+        appMode === AppMode.Prod
+          ? 'regObs'
+          : appMode === AppMode.Demo
+          ? 'demo regObs'
+          : 'test regObs',
+      enabled: environment.production,
+      release: appVersion.version,
+      dist: appVersion.revision
+    });
   }
 
   enable() {
@@ -59,13 +66,24 @@ export class SentryService implements LoggingService {
     }
   }
 
-  log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    if (message && (level === LogLevel.Warning || level === LogLevel.Info || level === LogLevel.Error)) {
+  log(
+    message?: string,
+    error?: Error,
+    level?: LogLevel,
+    tag?: string,
+    ...optionalParams: any[]
+  ) {
+    if (
+      message &&
+      (level === LogLevel.Warning ||
+        level === LogLevel.Info ||
+        level === LogLevel.Error)
+    ) {
       Sentry.addBreadcrumb({
         category: tag,
         data: optionalParams,
         message,
-        level: level as unknown as Sentry.Severity,
+        level: (level as unknown) as Sentry.Severity
       });
     }
     if (error && level === LogLevel.Error) {

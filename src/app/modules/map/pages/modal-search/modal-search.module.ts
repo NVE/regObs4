@@ -12,9 +12,9 @@ import { StartsWithHighlightPipe } from '../../pipes/starts-with-highlight.pipe'
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    TranslateModule,
+    TranslateModule
   ],
   declarations: [ModalSearchPage, StartsWithHighlightPipe],
-  entryComponents: [ModalSearchPage],
+  entryComponents: [ModalSearchPage]
 })
-export class ModalSearchPageModule { }
+export class ModalSearchPageModule {}

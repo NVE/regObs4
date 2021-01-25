@@ -1,6 +1,5 @@
 /* tslint:disable */
 export interface PictureRequestDto {
-
   /**
    * Navn på fotograf.
    */

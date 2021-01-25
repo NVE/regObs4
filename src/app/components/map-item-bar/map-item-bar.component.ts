@@ -20,7 +20,6 @@ import { getStarCount } from '../../core/helpers/competence-helper';
   styleUrls: ['./map-item-bar.component.scss']
 })
 export class MapItemBarComponent implements OnInit, OnDestroy {
-
   visible: boolean;
   topHeader: string;
   title: string;
@@ -55,10 +54,12 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscription = this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, _, __]) => {
-      this.appMode = appMode;
-      this.hide();
-    });
+    this.subscription = this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(
+      ([appMode, _, __]) => {
+        this.appMode = appMode;
+        this.hide();
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -68,13 +69,14 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   }
 
   getTitle(item: RegistrationViewModel) {
-    const allRegistrationNames: Array<string> = (item.Summaries || []).map((registration) => registration.RegistrationName);
+    const allRegistrationNames: Array<string> = (item.Summaries || []).map(
+      (registration) => registration.RegistrationName
+    );
     const uniqueValues = Array.from(new Set(allRegistrationNames));
     return uniqueValues.join(', ');
   }
 
   show(item: MapItem) {
-
     this.zone.run(() => {
       this.id = item.RegID;
       this.topHeader = item.DtObsTime;
@@ -86,8 +88,13 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.setDistanceAndType(item);
       this.imageUrls = [];
       if (this.appMode && item.Attachments && item.Attachments.length > 0) {
-        this.imageUrls = item.Attachments.map(
-          (attachment) => this.getImageUrl(this.appMode, attachment.AttachmentFileName, 'medium'));
+        this.imageUrls = item.Attachments.map((attachment) =>
+          this.getImageUrl(
+            this.appMode,
+            attachment.AttachmentFileName,
+            'medium'
+          )
+        );
       }
       this.visible = true;
       this.publishChange();
@@ -101,7 +108,11 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     });
   }
 
-  getImageUrl(appMode: AppMode, filename: string, size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'medium') {
+  getImageUrl(
+    appMode: AppMode,
+    filename: string,
+    size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'medium'
+  ) {
     return `${settings.services.regObs.webUrl[appMode]}/Attachments/${size}/${filename}`;
   }
 
@@ -115,24 +126,44 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
 
   private async setDistanceAndType(item: MapItem) {
     this.distanceAndType = ''; // set by promise
-    const translations = await this.translateService.get(['MAP_ITEM_BAR.OBSERVATION', 'MAP_ITEM_BAR.AWAY']).toPromise();
+    const translations = await this.translateService
+      .get(['MAP_ITEM_BAR.OBSERVATION', 'MAP_ITEM_BAR.AWAY'])
+      .toPromise();
     try {
-      const currentPosition = await this.geoPositionService.currentPosition$.pipe(take(1)).toPromise();
+      const currentPosition = await this.geoPositionService.currentPosition$
+        .pipe(take(1))
+        .toPromise();
       if (currentPosition) {
-        const distance = L.latLng(item.ObsLocation.Latitude, item.ObsLocation.Longitude)
-          .distanceTo(L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude));
+        const distance = L.latLng(
+          item.ObsLocation.Latitude,
+          item.ObsLocation.Longitude
+        ).distanceTo(
+          L.latLng(
+            currentPosition.coords.latitude,
+            currentPosition.coords.longitude
+          )
+        );
         this.zone.run(() => {
-          this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()} `
-            + `${this.helper.getDistanceText(distance)} ${translations['MAP_ITEM_BAR.AWAY'].toLowerCase()}`;
+          this.distanceAndType =
+            `${item.GeoHazardName}${translations[
+              'MAP_ITEM_BAR.OBSERVATION'
+            ].toLowerCase()} ` +
+            `${this.helper.getDistanceText(distance)} ${translations[
+              'MAP_ITEM_BAR.AWAY'
+            ].toLowerCase()}`;
         });
       } else {
         this.zone.run(() => {
-          this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
+          this.distanceAndType = `${item.GeoHazardName}${translations[
+            'MAP_ITEM_BAR.OBSERVATION'
+          ].toLowerCase()}`;
         });
       }
     } catch {
       this.zone.run(() => {
-        this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
+        this.distanceAndType = `${item.GeoHazardName}${translations[
+          'MAP_ITEM_BAR.OBSERVATION'
+        ].toLowerCase()}`;
       });
     }
   }

@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
  * Global configuration for regobsApi services
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class RegobsApiConfiguration {
   rootUrl = 'http://localhost:40001';

@@ -13,11 +13,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    SharedModule,
-    RouterModule.forChild(routes)
-  ],
+  imports: [SharedModule, RouterModule.forChild(routes)],
   declarations: [SetTimePage],
   providers: [CanDeactivateToObsLocationRouteGuard]
 })
-export class SetTimePageModule { }
+export class SetTimePageModule {}

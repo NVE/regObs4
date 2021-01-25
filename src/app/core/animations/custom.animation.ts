@@ -6,13 +6,22 @@ export const EASE_IN_OUT_BACK = 'cubic-bezier(0.68, -0.55, 0.265, 1.55)';
 export const EASE_IN_OUT = 'ease-in-out';
 
 export class CustomAnimation {
-
   static createScaleInInitialStyle(fromScale = 0, fromOpacity = 0) {
-    return style({ transform: `scale3d(${fromScale},${fromScale},1)`, opacity: fromOpacity });  // initial
+    return style({
+      transform: `scale3d(${fromScale},${fromScale},1)`,
+      opacity: fromOpacity
+    }); // initial
   }
 
-  static createScaleInAnimation(delay = 0, duration: number = DEFAULT_DURATION, easing = EASE_IN_OUT) {
-    return animate(`${duration}ms ${delay}ms ${easing}`, style({ transform: 'scale3d(1,1,1)', opacity: 1 }));
+  static createScaleInAnimation(
+    delay = 0,
+    duration: number = DEFAULT_DURATION,
+    easing = EASE_IN_OUT
+  ) {
+    return animate(
+      `${duration}ms ${delay}ms ${easing}`,
+      style({ transform: 'scale3d(1,1,1)', opacity: 1 })
+    );
   }
 
   static createScaleInTransition(
@@ -20,11 +29,11 @@ export class CustomAnimation {
     duration: number = DEFAULT_DURATION,
     easing = EASE_IN_OUT,
     fromScale = 0,
-    fromOpacity = 0,
+    fromOpacity = 0
   ) {
     return [
-      CustomAnimation.createScaleInInitialStyle(fromScale, fromOpacity),  // initial
-      CustomAnimation.createScaleInAnimation(delay, duration, easing),
+      CustomAnimation.createScaleInInitialStyle(fromScale, fromOpacity), // initial
+      CustomAnimation.createScaleInAnimation(delay, duration, easing)
     ];
   }
 
@@ -33,10 +42,19 @@ export class CustomAnimation {
     duration: number = DEFAULT_DURATION,
     easing = EASE_IN_OUT,
     fromScale = 0,
-    fromOpacity = 0,
+    fromOpacity = 0
   ) {
     return [
-      transition(':enter', CustomAnimation.createScaleInTransition(delay, duration, easing, fromScale, fromOpacity))
+      transition(
+        ':enter',
+        CustomAnimation.createScaleInTransition(
+          delay,
+          duration,
+          easing,
+          fromScale,
+          fromOpacity
+        )
+      )
     ];
   }
 
@@ -52,17 +70,18 @@ export class CustomAnimation {
     wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
 
     wrapperAnimation
-      .beforeStyles({ 'transform': 'scale3d(0.7,0.7,0.7)', 'opacity': 0.01 })
+      .beforeStyles({ transform: 'scale3d(0.7,0.7,0.7)', opacity: 0.01 })
       .fromTo('transform', 'scale3d(0.7,0.7,0.7)', 'scale3d(1,1,1)')
       .fromTo('opacity', 0.01, 1);
 
-    return Promise.resolve(baseAnimation
-      .addElement(baseEl)
-      .easing(EASE_IN_OUT_BACK)
-      .duration(DEFAULT_DURATION)
-      .beforeAddClass('show-modal')
-      .addAnimation(backdropAnimation)
-      .addAnimation(wrapperAnimation)
+    return Promise.resolve(
+      baseAnimation
+        .addElement(baseEl)
+        .easing(EASE_IN_OUT_BACK)
+        .duration(DEFAULT_DURATION)
+        .beforeAddClass('show-modal')
+        .addAnimation(backdropAnimation)
+        .addAnimation(wrapperAnimation)
     );
   }
 
@@ -78,16 +97,17 @@ export class CustomAnimation {
     wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
 
     wrapperAnimation
-      .beforeStyles({ 'transform': 'scale3d(0.7,1,0.7)', 'opacity': 0 })
+      .beforeStyles({ transform: 'scale3d(0.7,1,0.7)', opacity: 0 })
       .fromTo('transform', 'scale3d(0.7,1,0.7)', 'scale3d(1,1,1)')
       .fromTo('opacity', 0, 1);
 
-    return Promise.resolve(baseAnimation
-      .addElement(baseEl)
-      .duration(DEFAULT_DURATION)
-      .beforeAddClass('show-modal')
-      .addAnimation(backdropAnimation)
-      .addAnimation(wrapperAnimation)
+    return Promise.resolve(
+      baseAnimation
+        .addElement(baseEl)
+        .duration(DEFAULT_DURATION)
+        .beforeAddClass('show-modal')
+        .addAnimation(backdropAnimation)
+        .addAnimation(wrapperAnimation)
     );
   }
 
@@ -104,16 +124,17 @@ export class CustomAnimation {
 
     wrapperAnimation
       .addElement(baseEl.querySelector('.modal-wrapper'))
-      .beforeStyles({ 'transform': 'scale3d(1,1,1)', 'opacity': 1 })
+      .beforeStyles({ transform: 'scale3d(1,1,1)', opacity: 1 })
       .fromTo('transform', 'scale3d(1,1,1)', 'scale3d(0.6,0.6,0.6)')
       .fromTo('opacity', 1, 0);
 
-    return Promise.resolve(baseAnimation
-      .addElement(baseEl)
-      .easing('cubic-bezier(.1, .7, .1, 1)')
-      .duration(DEFAULT_DURATION)
-      .addAnimation(backdropAnimation)
-      .addAnimation(wrapperAnimation)
+    return Promise.resolve(
+      baseAnimation
+        .addElement(baseEl)
+        .easing('cubic-bezier(.1, .7, .1, 1)')
+        .duration(DEFAULT_DURATION)
+        .addAnimation(backdropAnimation)
+        .addAnimation(wrapperAnimation)
     );
   }
 
@@ -130,15 +151,16 @@ export class CustomAnimation {
 
     wrapperAnimation
       .addElement(baseEl.querySelector('.modal-wrapper'))
-      .beforeStyles({ 'transform': 'scale3d(1,1,1)', 'opacity': 1 })
+      .beforeStyles({ transform: 'scale3d(1,1,1)', opacity: 1 })
       .fromTo('transform', 'scale3d(1,1,1)', 'scale3d(0.6,1,0.6)')
       .fromTo('opacity', 1, 0);
 
-    return Promise.resolve(baseAnimation
-      .addElement(baseEl)
-      .duration(DEFAULT_DURATION)
-      .addAnimation(backdropAnimation)
-      .addAnimation(wrapperAnimation)
+    return Promise.resolve(
+      baseAnimation
+        .addElement(baseEl)
+        .duration(DEFAULT_DURATION)
+        .addAnimation(backdropAnimation)
+        .addAnimation(wrapperAnimation)
     );
   }
 
@@ -154,7 +176,7 @@ export class CustomAnimation {
     wrapperAnimation.addElement(baseEl.querySelector('.modal-wrapper'));
 
     wrapperAnimation
-      .beforeStyles({ 'transform': 'translateX(100%)', 'opacity': 0.01 })
+      .beforeStyles({ transform: 'translateX(100%)', opacity: 0.01 })
       .fromTo('transform', 'translateX(100%)', 'translateX(0)')
       .fromTo('opacity', 0.01, 1);
 
@@ -164,8 +186,7 @@ export class CustomAnimation {
       .duration(DEFAULT_DURATION)
       .beforeAddClass('show-modal')
       .addAnimation(backdropAnimation)
-      .addAnimation(wrapperAnimation)
-    ;
+      .addAnimation(wrapperAnimation);
   }
 
   static slideOutToRight(baseEl: HTMLElement, opts?: any) {
@@ -183,8 +204,13 @@ export class CustomAnimation {
     const currentOpacity = baseEl.getAttribute('data-opacity');
 
     wrapperAnimation
-      .fromTo('transform', `translateX(${currentTranslateX ?
-        parseInt(currentTranslateX, 10) : 0}%)`, 'translateX(100%)')
+      .fromTo(
+        'transform',
+        `translateX(${
+          currentTranslateX ? parseInt(currentTranslateX, 10) : 0
+        }%)`,
+        'translateX(100%)'
+      )
       .fromTo('opacity', currentOpacity ? parseInt(currentOpacity, 10) : 0, 0);
 
     return baseAnimation

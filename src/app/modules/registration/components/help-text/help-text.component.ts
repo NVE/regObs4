@@ -23,15 +23,19 @@ export class HelpTextComponent implements OnInit {
     private helpTextService: HelpTextService,
     private userSettingService: UserSettingService,
     private modalController: ModalController,
-    private ngZone: NgZone) { }
+    private ngZone: NgZone
+  ) {}
 
   async ngOnInit() {
-    const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const userSetting = await this.userSettingService.userSetting$
+      .pipe(take(1))
+      .toPromise();
     this.helpText = await this.helpTextService.getHelpTextByKey(
       userSetting.language,
       userSetting.appMode,
       this.geoHazard,
-      this.registrationTid);
+      this.registrationTid
+    );
     if (this.helpText) {
       this.ngZone.run(() => {
         this.isVisible = true;
@@ -43,8 +47,8 @@ export class HelpTextComponent implements OnInit {
     const modal = await this.modalController.create({
       component: HelpModalPage,
       componentProps: {
-        helpText: this.helpText.Text,
-      },
+        helpText: this.helpText.Text
+      }
     });
     modal.present();
   }

@@ -1,6 +1,5 @@
 /* tslint:disable */
 export interface AvalancheEvaluation3Dto {
-
   /**
    * Faregrad. The AvalancheDangerKD unique identifier
    */

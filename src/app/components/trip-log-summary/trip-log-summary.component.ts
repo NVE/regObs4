@@ -24,19 +24,25 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
 
   constructor(
     private tripLoggerService: TripLoggerService,
-    private helperService: HelperService) { }
+    private helperService: HelperService
+  ) {}
 
   ngOnInit() {
-    this.tripLogSubscription = this.tripLoggerService.getTripLogAsObservable().subscribe((tripLog) => {
-      this.tripLog = tripLog;
-    });
-    this.tripLogActivitySubscription = this.tripLoggerService.getTripLogActivityAsObservable()
+    this.tripLogSubscription = this.tripLoggerService
+      .getTripLogAsObservable()
+      .subscribe((tripLog) => {
+        this.tripLog = tripLog;
+      });
+    this.tripLogActivitySubscription = this.tripLoggerService
+      .getTripLogActivityAsObservable()
       .subscribe((tripLogActivity) => {
         this.tripLogActivity = tripLogActivity;
       });
 
     this.interval = setInterval(async () => {
-      const lengthMs = this.calculateTimeFromTripLogActivity(this.tripLogActivity);
+      const lengthMs = this.calculateTimeFromTripLogActivity(
+        this.tripLogActivity
+      );
       this.lengthString = this.helperService.formatMsToTime(lengthMs);
     }, 1000);
   }
@@ -47,7 +53,9 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
       let lastItem: TripLogActivity = null;
       for (const item of tripLogActivity) {
         if (item.state === TripLogState.Paused) {
-          lengthMs += moment.unix(item.timestamp).diff(moment.unix(lastItem.timestamp));
+          lengthMs += moment
+            .unix(item.timestamp)
+            .diff(moment.unix(lastItem.timestamp));
         }
         lastItem = item;
       }
@@ -63,5 +71,4 @@ export class TripLogSummaryComponent implements OnInit, OnDestroy {
     this.tripLogActivitySubscription.unsubscribe();
     clearInterval(this.interval);
   }
-
 }

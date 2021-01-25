@@ -1,5 +1,8 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { AvalancheEvalProblem2Dto, KdvElement } from '../../../../../regobs-api/models';
+import {
+  AvalancheEvalProblem2Dto,
+  KdvElement
+} from '../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { KdvService } from '../../../../../../core/services/kdv/kdv.service';
@@ -10,25 +13,28 @@ const NO_WEAK_LAYER_KDV_VALUE = 24;
 @Component({
   selector: 'app-avalanche-problem-modal',
   templateUrl: './avalanche-problem-modal.page.html',
-  styleUrls: ['./avalanche-problem-modal.page.scss'],
+  styleUrls: ['./avalanche-problem-modal.page.scss']
 })
 export class AvalancheProblemModalPage implements OnInit, OnDestroy {
-
   @Input() avalancheEvalProblem: AvalancheEvalProblem2Dto;
   avalancheEvalProblemCopy: AvalancheEvalProblem2Dto;
   isNew = false;
   avalancheExtKdvFilter: Function;
 
   get noWeakLayers() {
-    return this.avalancheEvalProblemCopy.AvalCauseTID === NO_WEAK_LAYER_KDV_VALUE;
+    return (
+      this.avalancheEvalProblemCopy.AvalCauseTID === NO_WEAK_LAYER_KDV_VALUE
+    );
   }
 
   set noWeakLayers(val: boolean) {
-    this.avalancheEvalProblemCopy.AvalCauseTID = val ? NO_WEAK_LAYER_KDV_VALUE : undefined;
+    this.avalancheEvalProblemCopy.AvalCauseTID = val
+      ? NO_WEAK_LAYER_KDV_VALUE
+      : undefined;
   }
 
-  avalancheProblemView: { AvalancheExtTID: number, AvalCauseTID: number }[];
-  avalancheCauseAttributes: { kdvElement: KdvElement, selected: boolean }[];
+  avalancheProblemView: { AvalancheExtTID: number; AvalCauseTID: number }[];
+  avalancheCauseAttributes: { kdvElement: KdvElement; selected: boolean }[];
   exposition: number[];
 
   private viewSubscription: Subscription;
@@ -36,7 +42,7 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
   constructor(
     private modalController: ModalController,
     private kdvService: KdvService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.avalancheExtKdvFilter = this.internalAvalancheExtKdvFilter.bind(this);
@@ -49,12 +55,16 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
     }
 
     this.viewSubscription = combineLatest(
-      this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalCauseAttributeFlags'),
-      this.kdvService.getViewRepositoryByKeyObservable('AvalancheProblemMenu3V'),
+      this.kdvService.getKdvRepositoryByKeyObservable(
+        'Snow_AvalCauseAttributeFlags'
+      ),
+      this.kdvService.getViewRepositoryByKeyObservable('AvalancheProblemMenu3V')
     ).subscribe(([snowCauseAttributesKdvElements, avalancheProblemView]) => {
       this.avalancheProblemView = avalancheProblemView;
-      this.avalancheCauseAttributes =
-        this.getAvalancheCauseAttributes(this.avalancheEvalProblemCopy.AvalCauseAttributes, snowCauseAttributesKdvElements);
+      this.avalancheCauseAttributes = this.getAvalancheCauseAttributes(
+        this.avalancheEvalProblemCopy.AvalCauseAttributes,
+        snowCauseAttributesKdvElements
+      );
     });
   }
 
@@ -66,15 +76,22 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
 
   internalAvalancheExtKdvFilter(id: number) {
     const avalCauseTid = this.avalancheEvalProblemCopy.AvalCauseTID || 0;
-    const views = this.avalancheProblemView.filter((v) => v.AvalCauseTID === avalCauseTid)
+    const views = this.avalancheProblemView
+      .filter((v) => v.AvalCauseTID === avalCauseTid)
       .map((v) => v.AvalancheExtTID);
     return views.indexOf(id) >= 0;
   }
 
-  getAvalancheCauseAttributes(avalancheCauseAttribute: number, kdvElements: KdvElement[]) {
-    const avalancheCauseAttributes: { kdvElement: KdvElement, selected: boolean }[] = [];
+  getAvalancheCauseAttributes(
+    avalancheCauseAttribute: number,
+    kdvElements: KdvElement[]
+  ) {
+    const avalancheCauseAttributes: {
+      kdvElement: KdvElement;
+      selected: boolean;
+    }[] = [];
     let attr = avalancheCauseAttribute || 0;
-    for (let i = kdvElements.length; i--;) {
+    for (let i = kdvElements.length; i--; ) {
       let selected = false;
       if (kdvElements[i].Id <= attr) {
         selected = true;
@@ -89,11 +106,12 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
     this.modalController.dismiss();
   }
 
-  getAvalacheCauseAttributeValue(avalancheCauseAttributes: { kdvElement: KdvElement, selected: boolean }[]) {
-    return avalancheCauseAttributes
-      .reduce(function (prevVal, curVal) {
-        return prevVal + (curVal.selected ? curVal.kdvElement.Id : 0);
-      }, 0);
+  getAvalacheCauseAttributeValue(
+    avalancheCauseAttributes: { kdvElement: KdvElement; selected: boolean }[]
+  ) {
+    return avalancheCauseAttributes.reduce(function (prevVal, curVal) {
+      return prevVal + (curVal.selected ? curVal.kdvElement.Id : 0);
+    }, 0);
   }
 
   resetAvalancheCauseFields() {
@@ -105,8 +123,11 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
     if (this.noWeakLayers) {
       this.resetAvalancheCauseFields();
     } else {
-      const causeAttribute = this.getAvalacheCauseAttributeValue(this.avalancheCauseAttributes);
-      this.avalancheEvalProblemCopy.AvalCauseAttributes = causeAttribute > 0 ? causeAttribute : undefined;
+      const causeAttribute = this.getAvalacheCauseAttributeValue(
+        this.avalancheCauseAttributes
+      );
+      this.avalancheEvalProblemCopy.AvalCauseAttributes =
+        causeAttribute > 0 ? causeAttribute : undefined;
     }
     if (IsEmptyHelper.isEmpty(this.avalancheEvalProblemCopy)) {
       this.modalController.dismiss({ delete: true });

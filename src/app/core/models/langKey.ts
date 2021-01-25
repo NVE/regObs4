@@ -5,5 +5,5 @@ export enum LangKey {
   sl = 4,
   sv = 5,
   it = 6,
-  nn = 7,
+  nn = 7
 }

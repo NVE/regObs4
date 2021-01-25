@@ -1,6 +1,5 @@
 /* tslint:disable */
 export interface AvalancheEvalProblem2Dto {
-
   /**
    * Unik id på denne tabellen da flere er mulig pr RegID.
    */

@@ -3,10 +3,8 @@ import { StratProfileLayerModalPage } from './strat-profile-layer-modal.page';
 import { SharedComponentsModule } from '../../../../../shared-components.module';
 
 @NgModule({
-  imports: [
-    SharedComponentsModule
-  ],
+  imports: [SharedComponentsModule],
   declarations: [StratProfileLayerModalPage],
-  entryComponents: [StratProfileLayerModalPage],
+  entryComponents: [StratProfileLayerModalPage]
 })
-export class StratProfileLayerModalPageModule { }
+export class StratProfileLayerModalPageModule {}

@@ -5,9 +5,9 @@ import { WeakenediceLegendComponent } from './weakenedice-legend/weakenedice-leg
 import { SteepnessOutletLegendComponent } from './steepness-outlet-legend/steepness-outlet-legend.component';
 
 export const legendsConfig = {
-  'steepness': SteepnessLegendComponent,
-  'floodzoones': FloodzonesLegendComponent,
-  'clayzones': ClayzonesLegendComponent,
-  'weakenedice': WeakenediceLegendComponent,
+  steepness: SteepnessLegendComponent,
+  floodzoones: FloodzonesLegendComponent,
+  clayzones: ClayzonesLegendComponent,
+  weakenedice: WeakenediceLegendComponent,
   'steepness-outlet': SteepnessOutletLegendComponent
 };

@@ -1,7 +1,6 @@
 /* tslint:disable */
 import { IceThicknessLayerDto } from './ice-thickness-layer-dto';
 export interface IceThicknessDto {
-
   /**
    * Mengden tørr snø oppå isen. Verdi i meter [m].
    */

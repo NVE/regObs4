@@ -10,7 +10,6 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./summary-item.component.scss']
 })
 export class SummaryItemComponent implements OnInit {
-
   @Input() item: ISummaryItem;
   @Input() readonly = false;
 
@@ -18,11 +17,9 @@ export class SummaryItemComponent implements OnInit {
     private navController: NavController,
     private webView: WebView,
     private domSanitizer: DomSanitizer
-  ) { }
+  ) {}
 
-  async ngOnInit() {
-
-  }
+  async ngOnInit() {}
 
   isBase64Image(img: string) {
     return img && img.startsWith('data:image');
@@ -30,7 +27,8 @@ export class SummaryItemComponent implements OnInit {
 
   convertFileSrc(fileUrl: string) {
     return this.domSanitizer.bypassSecurityTrustUrl(
-      this.webView.convertFileSrc(fileUrl));
+      this.webView.convertFileSrc(fileUrl)
+    );
   }
 
   navigate(event: CustomEvent) {

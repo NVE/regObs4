@@ -1,4 +1,14 @@
-import { Component, OnInit, Input, NgZone, OnDestroy, Renderer2, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  NgZone,
+  OnDestroy,
+  Renderer2,
+  ViewChild,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Subscription } from 'rxjs';
 import { WarningGroupKey } from '../../core/services/warning/warning-group-key.interface';
@@ -10,8 +20,8 @@ import { ToastController, DomController, IonIcon } from '@ionic/angular';
   templateUrl: './warning-group-favourite-toggle.component.html',
   styleUrls: ['./warning-group-favourite-toggle.component.scss']
 })
-export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, OnChanges {
-
+export class WarningGroupFavouriteToggleComponent
+  implements OnInit, OnDestroy, OnChanges {
   @Input() key: WarningGroupKey;
   @ViewChild(IonIcon) ionIcon: IonIcon;
 
@@ -25,31 +35,31 @@ export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, 
     private ngZone: NgZone,
     private domCtrl: DomController,
     private renderer: Renderer2,
-    private toastController: ToastController) { }
+    private toastController: ToastController
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges): void {
     const currentKey: WarningGroupKey = changes.key.currentValue;
-    if (!this._lastKey || (this._lastKey.groupId !== currentKey.groupId)) {
+    if (!this._lastKey || this._lastKey.groupId !== currentKey.groupId) {
       this._lastKey = currentKey;
       this.startSubscription(currentKey);
     }
   }
 
   startSubscription(key: WarningGroupKey) {
-    this.warningIsFavouriteSubscription =
-      this.warningService.getIsFavouriteObservable(key.groupId, key.geoHazard)
-        .subscribe((val) => {
-          this.ngZone.run(() => {
-            this.isFavourite = val;
-          });
+    this.warningIsFavouriteSubscription = this.warningService
+      .getIsFavouriteObservable(key.groupId, key.geoHazard)
+      .subscribe((val) => {
+        this.ngZone.run(() => {
+          this.isFavourite = val;
         });
+      });
   }
 
   setOpen(openAmount: number) {
-    const scaleAmount = 1 + (openAmount / 2.0);
+    const scaleAmount = 1 + openAmount / 2.0;
     const scale = `scale3d(${scaleAmount},${scaleAmount},1)`;
     this.domCtrl.write(() => {
       this.renderer.setStyle((<any>this.ionIcon).el, 'transform', scale);
@@ -64,21 +74,30 @@ export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, 
 
   toggle() {
     if (this.isFavourite) {
-      this.warningService.removeFromFavourite(this.key.groupId, this.key.geoHazard)
+      this.warningService
+        .removeFromFavourite(this.key.groupId, this.key.geoHazard)
         .then(() => this.presentToast(false));
     } else {
-      this.warningService.addToFavourite(this.key.groupId, this.key.geoHazard)
+      this.warningService
+        .addToFavourite(this.key.groupId, this.key.geoHazard)
         .then(() => this.presentToast(true));
     }
   }
 
   presentToast(added: boolean) {
-    this.translateService.
-      get(['WARNING_LIST.ADDED_TO_FAVOURITES', 'WARNING_LIST.REMOVED_FROM_FAVOURITES', 'ALERT.UNDO'])
+    this.translateService
+      .get([
+        'WARNING_LIST.ADDED_TO_FAVOURITES',
+        'WARNING_LIST.REMOVED_FROM_FAVOURITES',
+        'ALERT.UNDO'
+      ])
       .subscribe(async (translation) => {
         const toast = await this.toastController.create({
-          message: `${this.key.groupName} ${added ? translation['WARNING_LIST.ADDED_TO_FAVOURITES'] :
-            translation['WARNING_LIST.REMOVED_FROM_FAVOURITES']}`,
+          message: `${this.key.groupName} ${
+            added
+              ? translation['WARNING_LIST.ADDED_TO_FAVOURITES']
+              : translation['WARNING_LIST.REMOVED_FROM_FAVOURITES']
+          }`,
           mode: 'md',
           duration: 4000,
           buttons: [
@@ -87,9 +106,15 @@ export class WarningGroupFavouriteToggleComponent implements OnInit, OnDestroy, 
               role: 'cancel',
               handler: () => {
                 if (added) {
-                  this.warningService.removeFromFavourite(this.key.groupId, this.key.geoHazard);
+                  this.warningService.removeFromFavourite(
+                    this.key.groupId,
+                    this.key.geoHazard
+                  );
                 } else {
-                  this.warningService.addToFavourite(this.key.groupId, this.key.geoHazard);
+                  this.warningService.addToFavourite(
+                    this.key.groupId,
+                    this.key.geoHazard
+                  );
                 }
               }
             }

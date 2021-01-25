@@ -7,15 +7,17 @@ import { RegistrationTid } from '../../../models/registrationTid.enum';
 @Component({
   selector: 'app-snow-surface',
   templateUrl: './snow-surface.page.html',
-  styleUrls: ['./snow-surface.page.scss'],
+  styleUrls: ['./snow-surface.page.scss']
 })
 export class SnowSurfacePage extends BasePage {
-
   constructor(
     basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
+    activatedRoute: ActivatedRoute
   ) {
-    super(RegistrationTid.SnowSurfaceObservation, basePageService, activatedRoute);
+    super(
+      RegistrationTid.SnowSurfaceObservation,
+      basePageService,
+      activatedRoute
+    );
   }
 }
-

@@ -3,7 +3,13 @@ import { Router } from '@angular/router';
 import { NavController, Platform } from '@ionic/angular';
 import { AuthService } from 'ionic-appauth';
 
-export function initDeepLinks(platform: Platform, ngZone: NgZone, authService: AuthService, navController: NavController, router: Router) {
+export function initDeepLinks(
+  platform: Platform,
+  ngZone: NgZone,
+  authService: AuthService,
+  navController: NavController,
+  router: Router
+) {
   return () => {
     if (platform.is('cordova')) {
       (window as any).handleOpenURL = (callbackUrl: string) => {
@@ -11,7 +17,9 @@ export function initDeepLinks(platform: Platform, ngZone: NgZone, authService: A
           if (callbackUrl.indexOf('regobs://callback') >= 0) {
             authService.authorizationCallback(callbackUrl);
           } else {
-            const deepLinkRoute = router.createUrlTree([callbackUrl.replace('regobs://', '')]);
+            const deepLinkRoute = router.createUrlTree([
+              callbackUrl.replace('regobs://', '')
+            ]);
             navController.navigateForward(deepLinkRoute);
           }
         });

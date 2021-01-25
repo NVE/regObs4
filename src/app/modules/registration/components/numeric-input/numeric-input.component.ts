@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges
+} from '@angular/core';
 import { NumericInputModalPage } from '../../pages/modal-pages/numeric-input-modal/numeric-input-modal.page';
 import { ModalController } from '@ionic/angular';
 
@@ -30,10 +37,9 @@ export class NumericInputComponent implements OnInit {
     return undefined;
   }
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async openPicker() {
     if (!this.isOpen && !this.readonly) {
@@ -48,8 +54,8 @@ export class NumericInputComponent implements OnInit {
           max: this.max,
           suffix: this.suffix,
           decimalSeparator: this.decimalSeparator,
-          title: this.title,
-        },
+          title: this.title
+        }
       });
       modal.present();
       const result = await modal.onDidDismiss();
@@ -62,9 +68,16 @@ export class NumericInputComponent implements OnInit {
   }
 
   private convert(val: number, direction: 'from' | 'to') {
-    if (val === undefined || val === null || val === 0 || this.convertRatio === undefined) {
+    if (
+      val === undefined ||
+      val === null ||
+      val === 0 ||
+      this.convertRatio === undefined
+    ) {
       return val;
     }
-    return (direction === 'from') ? (val * this.convertRatio) : (val / this.convertRatio);
+    return direction === 'from'
+      ? val * this.convertRatio
+      : val / this.convertRatio;
   }
 }

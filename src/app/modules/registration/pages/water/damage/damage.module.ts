@@ -20,4 +20,4 @@ const routes: Routes = [
   ],
   declarations: [DamagePage, DamageObsComponent]
 })
-export class DamagePageModule { }
+export class DamagePageModule {}

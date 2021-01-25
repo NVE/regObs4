@@ -19,12 +19,24 @@ describe('AuthCallbackPage', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [AuthCallbackPage],
-      providers: [{ provide: LoggingService, useClass: loggingSpy }, SafariViewController, InAppBrowser, Location],
-      imports: [SharedModule, HttpClientModule, TranslateModule.forRoot(), RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })]
+      providers: [
+        { provide: LoggingService, useClass: loggingSpy },
+        SafariViewController,
+        InAppBrowser,
+        Location
+      ],
+      imports: [
+        SharedModule,
+        HttpClientModule,
+        TranslateModule.forRoot(),
+        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })
+      ]
     }).compileComponents();
 
     TestBed.inject(UserSettingService) as jasmine.SpyObj<UserSettingService>;
-    loggingSpy = TestBed.inject(LoggingService) as jasmine.SpyObj<LoggingService>;
+    loggingSpy = TestBed.inject(
+      LoggingService
+    ) as jasmine.SpyObj<LoggingService>;
     TestBed.inject(RegobsAuthService) as jasmine.SpyObj<RegobsAuthService>;
 
     fixture = TestBed.createComponent(AuthCallbackPage);

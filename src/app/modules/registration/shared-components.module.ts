@@ -29,7 +29,7 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     SharedModule,
     MapModule,
     HelpModalPageModule,
-    NumericInputModalPageModule,
+    NumericInputModalPageModule
   ],
   exports: [
     SharedModule,
@@ -55,7 +55,7 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     NumericInputComponent,
     NumericInputModalPageModule,
     CompressionTestListComponent,
-    KdvSelectComponent,
+    KdvSelectComponent
   ],
   declarations: [
     SaveAndGoBackButtonComponent,
@@ -77,7 +77,7 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     YesNoSelectComponent,
     NumericInputComponent,
     CompressionTestListComponent,
-    KdvSelectComponent,
-  ],
+    KdvSelectComponent
+  ]
 })
-export class SharedComponentsModule { }
+export class SharedComponentsModule {}

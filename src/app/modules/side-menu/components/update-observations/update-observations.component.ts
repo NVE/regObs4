@@ -12,7 +12,6 @@ import { DataLoadService } from '../../../data-load/services/data-load.service';
   styleUrls: ['./update-observations.component.scss']
 })
 export class UpdateObservationsComponent implements OnInit, OnDestroy {
-
   lastUpdated: Date;
   settings = settings;
   isLoading: boolean;
@@ -22,23 +21,32 @@ export class UpdateObservationsComponent implements OnInit, OnDestroy {
     private observationService: ObservationService,
     private dataMarshallService: DataMarshallService,
     private ngZone: NgZone,
-    private dataLoadService: DataLoadService) { }
+    private dataLoadService: DataLoadService
+  ) {}
 
   ngOnInit() {
-    this.subscriptions.push(this.observationService.getLastUpdatedForCurrentGeoHazardAsObservable()
-      .subscribe((val) => {
-        this.ngZone.run(() => {
-          this.lastUpdated = val;
-        });
-      }));
-    this.subscriptions.push(this.observationService.dataLoad$.pipe(
-      switchMap((id) => this.dataLoadService.getStateAsObservable(id)),
-      map((state) => state.isLoading),
-      distinctUntilChanged()).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.isLoading = val;
-      });
-    }));
+    this.subscriptions.push(
+      this.observationService
+        .getLastUpdatedForCurrentGeoHazardAsObservable()
+        .subscribe((val) => {
+          this.ngZone.run(() => {
+            this.lastUpdated = val;
+          });
+        })
+    );
+    this.subscriptions.push(
+      this.observationService.dataLoad$
+        .pipe(
+          switchMap((id) => this.dataLoadService.getStateAsObservable(id)),
+          map((state) => state.isLoading),
+          distinctUntilChanged()
+        )
+        .subscribe((val) => {
+          this.ngZone.run(() => {
+            this.isLoading = val;
+          });
+        })
+    );
   }
   ngOnDestroy(): void {
     for (const subscription of this.subscriptions) {
@@ -59,5 +67,4 @@ export class UpdateObservationsComponent implements OnInit, OnDestroy {
       }, 500);
     }
   }
-
 }

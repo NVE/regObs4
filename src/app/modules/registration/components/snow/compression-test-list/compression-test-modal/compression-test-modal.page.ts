@@ -7,10 +7,9 @@ import { SelectOption } from '../../../../../shared/components/input/select/sele
 @Component({
   selector: 'app-compression-test-modal',
   templateUrl: './compression-test-modal.page.html',
-  styleUrls: ['./compression-test-modal.page.scss'],
+  styleUrls: ['./compression-test-modal.page.scss']
 })
 export class CompressionTestModalPage implements OnInit {
-
   @Input() compressionTest: CompressionTestDto;
   @Input() includeInSnowProfileAsDefault = false;
 
@@ -24,13 +23,13 @@ export class CompressionTestModalPage implements OnInit {
     return !IsEmptyHelper.isEmpty(clone);
   }
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController) {}
 
   ngOnInit() {
     for (let i = 1; i <= 30; i++) {
       this.tapsArray.push({
         id: i,
-        text: i.toString(),
+        text: i.toString()
       });
     }
     if (!this.compressionTest) {
@@ -58,11 +57,17 @@ export class CompressionTestModalPage implements OnInit {
   }
 
   isCTNorECTX() {
-    return this.compressionTest.PropagationTID === 15 || this.compressionTest.PropagationTID === 24;
+    return (
+      this.compressionTest.PropagationTID === 15 ||
+      this.compressionTest.PropagationTID === 24
+    );
   }
 
   isCTVorECTV() {
-    return this.compressionTest.PropagationTID === 11 || this.compressionTest.PropagationTID === 21;
+    return (
+      this.compressionTest.PropagationTID === 11 ||
+      this.compressionTest.PropagationTID === 21
+    );
   }
 
   isLBT() {
@@ -80,5 +85,4 @@ export class CompressionTestModalPage implements OnInit {
   delete() {
     this.modalController.dismiss({ delete: true });
   }
-
 }

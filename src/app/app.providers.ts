@@ -15,7 +15,14 @@ import { Zip } from '@ionic-native/zip/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import { ErrorHandler, Provider, forwardRef, LOCALE_ID, APP_INITIALIZER, NgZone } from '@angular/core';
+import {
+  ErrorHandler,
+  Provider,
+  forwardRef,
+  LOCALE_ID,
+  APP_INITIALIZER,
+  NgZone
+} from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
@@ -100,26 +107,51 @@ export const APP_PROVIDERS = [
   API_INTERCEPTOR_PROVIDER,
   { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
   { provide: ErrorHandler, useClass: AppErrorHandler },
-  { provide: LoggingService, useClass: environment.production ? SentryService : ConsoleLoggingService },
-  { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
+  {
+    provide: LoggingService,
+    useClass: environment.production ? SentryService : ConsoleLoggingService
+  },
+  {
+    provide: TranslateLoader,
+    useFactory: createTranslateLoader,
+    deps: [HttpClient]
+  },
 
   // APP initializers
-  { provide: APP_INITIALIZER, useFactory: initTranslateService, deps: [TranslateService, UserSettingService], multi: true },
-  { provide: APP_INITIALIZER, useFactory: initDeepLinks, deps: [Platform, NgZone, AuthService, NavController, Router], multi: true },
+  {
+    provide: APP_INITIALIZER,
+    useFactory: initTranslateService,
+    deps: [TranslateService, UserSettingService],
+    multi: true
+  },
+  {
+    provide: APP_INITIALIZER,
+    useFactory: initDeepLinks,
+    deps: [Platform, NgZone, AuthService, NavController, Router],
+    multi: true
+  },
 
   // Interface implementations
   { provide: 'OnReset', useExisting: DataMarshallService, multi: true },
   { provide: 'OnReset', useExisting: UserSettingService, multi: true },
   { provide: 'OnReset', useExisting: OfflineMapService, multi: true },
-  { provide: 'OnReset', useExisting: RegistrationRepositoryService, multi: true },
+  {
+    provide: 'OnReset',
+    useExisting: RegistrationRepositoryService,
+    multi: true
+  },
 
   // Custom native/web providers
   {
-    provide: BackgroundGeolocationService, useClass: window.hasOwnProperty('cordova') ?
-      BackgroundGeolocationNativeService : BackgroundGeolocationWebService
+    provide: BackgroundGeolocationService,
+    useClass: window.hasOwnProperty('cordova')
+      ? BackgroundGeolocationNativeService
+      : BackgroundGeolocationWebService
   },
   {
-    provide: BackgroundDownloadService, useClass: window.hasOwnProperty('cordova') ?
-      BackgroundDownloadNativeService : BackgroundDownloadWebService
+    provide: BackgroundDownloadService,
+    useClass: window.hasOwnProperty('cordova')
+      ? BackgroundDownloadNativeService
+      : BackgroundDownloadWebService
   }
 ];

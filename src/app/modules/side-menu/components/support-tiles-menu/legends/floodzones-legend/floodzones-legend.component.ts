@@ -6,5 +6,4 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./floodzones-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FloodzonesLegendComponent {
-}
+export class FloodzonesLegendComponent {}

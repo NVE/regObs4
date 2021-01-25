@@ -21,8 +21,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    TranslateModule,
+    TranslateModule
   ],
   declarations: [TripPage]
 })
-export class TripPageModule { }
+export class TripPageModule {}

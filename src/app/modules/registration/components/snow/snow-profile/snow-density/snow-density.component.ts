@@ -12,16 +12,17 @@ import { RegistrationService } from '../../../../services/registration.service';
   styleUrls: ['./snow-density.component.scss']
 })
 export class SnowDensityComponent implements OnInit {
-
   @Input() reg: IRegistration;
   private densityModal: HTMLIonModalElement;
 
   get profiles(): DensityProfileDto[] {
-    if (this.reg
-      && this.reg.request
-      && this.reg.request.SnowProfile2
-      && this.reg.request.SnowProfile2.SnowDensity
-      && this.reg.request.SnowProfile2.SnowDensity.length > 0) {
+    if (
+      this.reg &&
+      this.reg.request &&
+      this.reg.request.SnowProfile2 &&
+      this.reg.request.SnowProfile2.SnowDensity &&
+      this.reg.request.SnowProfile2.SnowDensity.length > 0
+    ) {
       return this.reg.request.SnowProfile2.SnowDensity;
     }
     return [];
@@ -31,10 +32,12 @@ export class SnowDensityComponent implements OnInit {
     return IsEmptyHelper.isEmpty(this.profiles);
   }
 
-  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) { }
+  constructor(
+    private modalContoller: ModalController,
+    private registrationService: RegistrationService
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async openModal() {
     if (!this.densityModal) {
@@ -42,7 +45,7 @@ export class SnowDensityComponent implements OnInit {
       this.densityModal = await this.modalContoller.create({
         component: SnowDensityModalPage,
         componentProps: {
-          regId: this.reg.id,
+          regId: this.reg.id
         }
       });
       this.densityModal.present();

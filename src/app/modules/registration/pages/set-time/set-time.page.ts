@@ -9,7 +9,7 @@ import { IRegistration } from '../../models/registration.model';
 @Component({
   selector: 'app-set-time',
   templateUrl: './set-time.page.html',
-  styleUrls: ['./set-time.page.scss'],
+  styleUrls: ['./set-time.page.scss']
 })
 export class SetTimePage extends BasePage {
   maxDate: string;
@@ -19,7 +19,7 @@ export class SetTimePage extends BasePage {
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
-    private navController: NavController,
+    private navController: NavController
   ) {
     super(null, basePageService, activatedRoute);
     this.setToNow();
@@ -44,8 +44,11 @@ export class SetTimePage extends BasePage {
 
   confirm() {
     if (this.registration) {
-      this.registration.request.DtObsTime = (this.localDate || moment().toISOString(true));
-      this.navController.navigateRoot('registration/edit/' + this.registration.id);
+      this.registration.request.DtObsTime =
+        this.localDate || moment().toISOString(true);
+      this.navController.navigateRoot(
+        'registration/edit/' + this.registration.id
+      );
     }
   }
 }

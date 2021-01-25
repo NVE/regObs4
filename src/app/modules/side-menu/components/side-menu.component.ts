@@ -7,7 +7,10 @@ import { Subscription } from 'rxjs';
 import { ModalController, Platform, NavController } from '@ionic/angular';
 import { LegalTermsModalPage } from '../../../pages/modal-pages/legal-terms-modal/legal-terms-modal.page';
 import { TopoMap } from '../../../core/models/topo-map.enum';
-import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
+import {
+  EmailComposer,
+  EmailComposerOptions
+} from '@ionic-native/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../../core/services/app-version/app-version.service';
 import { LangKey } from '../../../core/models/langKey';
@@ -36,21 +39,24 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private appVersionService: AppVersionService,
     private platfrom: Platform,
     private navController: NavController,
-    private ngZone: NgZone) {
-  }
+    private ngZone: NgZone
+  ) {}
 
   async ngOnInit() {
-    this.lastUpdateSubscription = this.observationService.getLastUpdatedForCurrentGeoHazardAsObservable()
+    this.lastUpdateSubscription = this.observationService
+      .getLastUpdatedForCurrentGeoHazardAsObservable()
       .subscribe((val) => {
         this.ngZone.run(() => {
           this.lastUpdated = val;
         });
       });
-    this.userSettingSubscription = this.userSettingService.userSetting$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.userSettings = val;
-      });
-    });
+    this.userSettingSubscription = this.userSettingService.userSetting$.subscribe(
+      (val) => {
+        this.ngZone.run(() => {
+          this.userSettings = val;
+        });
+      }
+    );
   }
 
   saveUserSettings() {
@@ -85,7 +91,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   async contactUs() {
     const translations = await this.translateService
-      .get('MENU.CONTACT_SUBJECT').toPromise();
+      .get('MENU.CONTACT_SUBJECT')
+      .toPromise();
     const email: EmailComposerOptions = {
       to: settings.errorEmailAddress,
       subject: translations,
@@ -96,13 +103,17 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   async contactError() {
     const translations = await this.translateService
-      .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR']).toPromise();
+      .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'])
+      .toPromise();
     const appVersion = await this.appVersionService.getAppVersion();
     const email: EmailComposerOptions = {
       to: settings.errorEmailAddress,
-      subject: `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${this.platfrom.is('ios') ? 'ios' : ''}`
-        + `${this.platfrom.is('android') ? 'android' : ''}`
-        + ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
+      subject:
+        `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${
+          this.platfrom.is('ios') ? 'ios' : ''
+        }` +
+        `${this.platfrom.is('android') ? 'android' : ''}` +
+        ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
       body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
       isHtml: true
     };

@@ -1,6 +1,11 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpRequest,
+  HttpResponse,
+  HttpHeaders
+} from '@angular/common/http';
 import { BaseService as __BaseService } from '../base-service';
 import { RegobsApiConfiguration as __Configuration } from '../regobs-api-configuration';
 import { StrictHttpResponse as __StrictHttpResponse } from '../strict-http-response';
@@ -9,15 +14,12 @@ import { map as __map, filter as __filter } from 'rxjs/operators';
 
 import { GeoLocationInfo } from '../models/geo-location-info';
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 class GeoCodeService extends __BaseService {
   static readonly GeoCodeLocationInfoPath = '/GeoCode/LocationInfo';
 
-  constructor(
-    config: __Configuration,
-    http: HttpClient
-  ) {
+  constructor(config: __Configuration, http: HttpClient) {
     super(config, http);
   }
 
@@ -32,13 +34,21 @@ class GeoCodeService extends __BaseService {
    *
    * @return OK
    */
-  GeoCodeLocationInfoResponse(params: GeoCodeService.GeoCodeLocationInfoParams): __Observable<__StrictHttpResponse<GeoLocationInfo>> {
+  GeoCodeLocationInfoResponse(
+    params: GeoCodeService.GeoCodeLocationInfoParams
+  ): __Observable<__StrictHttpResponse<GeoLocationInfo>> {
     let __params = this.newParams();
     const __headers = new HttpHeaders();
     const __body: any = null;
-    if (params.longitude != null) {__params = __params.set('longitude', params.longitude.toString());}
-    if (params.latitude != null) {__params = __params.set('latitude', params.latitude.toString());}
-    if (params.geoHazardId != null) {__params = __params.set('geoHazardId', params.geoHazardId.toString());}
+    if (params.longitude != null) {
+      __params = __params.set('longitude', params.longitude.toString());
+    }
+    if (params.latitude != null) {
+      __params = __params.set('latitude', params.latitude.toString());
+    }
+    if (params.geoHazardId != null) {
+      __params = __params.set('geoHazardId', params.geoHazardId.toString());
+    }
     const req = new HttpRequest<any>(
       'GET',
       this.rootUrl + '/GeoCode/LocationInfo',
@@ -47,10 +57,11 @@ class GeoCodeService extends __BaseService {
         headers: __headers,
         params: __params,
         responseType: 'json'
-      });
+      }
+    );
 
     return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
+      __filter((_r) => _r instanceof HttpResponse),
       __map((_r) => {
         return _r as __StrictHttpResponse<GeoLocationInfo>;
       })
@@ -67,15 +78,16 @@ class GeoCodeService extends __BaseService {
    *
    * @return OK
    */
-  GeoCodeLocationInfo(params: GeoCodeService.GeoCodeLocationInfoParams): __Observable<GeoLocationInfo> {
+  GeoCodeLocationInfo(
+    params: GeoCodeService.GeoCodeLocationInfoParams
+  ): __Observable<GeoLocationInfo> {
     return this.GeoCodeLocationInfoResponse(params).pipe(
-      __map(_r => _r.body as GeoLocationInfo)
+      __map((_r) => _r.body as GeoLocationInfo)
     );
   }
 }
 
 namespace GeoCodeService {
-
   /**
    * Parameters for GeoCodeLocationInfo
    */
