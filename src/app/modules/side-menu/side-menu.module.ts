@@ -14,9 +14,7 @@ import { SteepnessOutletLegendComponent } from './components/support-tiles-menu/
 import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/legends/steepness-common-legend/steepness-common-legend.component';
 
 @NgModule({
-  imports: [
-    SharedModule,
-  ],
+  imports: [SharedModule],
   declarations: [
     SideMenuComponent,
     SupportTilesMenuComponent,
@@ -38,8 +36,6 @@ import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/
     WeakenediceLegendComponent,
     SteepnessOutletLegendComponent
   ],
-  exports: [
-    SideMenuComponent,
-  ]
+  exports: [SideMenuComponent]
 })
-export class SideMenuModule { }
+export class SideMenuModule {}

@@ -6,6 +6,19 @@ export interface AreasDto {
   CountryName?: string;
   CountryDescription?: string;
   SortOrder?: number;
-  ForecastRegions?: {NotSpecified?: Array<ForecastRegionDto>, Avalanche?: Array<ForecastRegionDto>, EarthFlow?: Array<ForecastRegionDto>, LandSlide?: Array<ForecastRegionDto>, RockFall?: Array<ForecastRegionDto>, IceFall?: Array<ForecastRegionDto>, Flooding?: Array<ForecastRegionDto>, Ice?: Array<ForecastRegionDto>, EventOnGlacier?: Array<ForecastRegionDto>, Jøkulhaup?: Array<ForecastRegionDto>, Drought?: Array<ForecastRegionDto>, Unknown?: Array<ForecastRegionDto>};
+  ForecastRegions?: {
+    NotSpecified?: Array<ForecastRegionDto>;
+    Avalanche?: Array<ForecastRegionDto>;
+    EarthFlow?: Array<ForecastRegionDto>;
+    LandSlide?: Array<ForecastRegionDto>;
+    RockFall?: Array<ForecastRegionDto>;
+    IceFall?: Array<ForecastRegionDto>;
+    Flooding?: Array<ForecastRegionDto>;
+    Ice?: Array<ForecastRegionDto>;
+    EventOnGlacier?: Array<ForecastRegionDto>;
+    Jøkulhaup?: Array<ForecastRegionDto>;
+    Drought?: Array<ForecastRegionDto>;
+    Unknown?: Array<ForecastRegionDto>;
+  };
   Counties?: Array<CountyDto>;
 }

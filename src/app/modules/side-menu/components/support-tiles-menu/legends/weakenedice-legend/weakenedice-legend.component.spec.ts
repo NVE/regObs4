@@ -6,13 +6,14 @@ describe('WeakenediceLegendComponent', () => {
   let component: WeakenediceLegendComponent;
   let fixture: ComponentFixture<WeakenediceLegendComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [TestModule],
-      declarations: [WeakenediceLegendComponent]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [TestModule],
+        declarations: [WeakenediceLegendComponent]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(WeakenediceLegendComponent);

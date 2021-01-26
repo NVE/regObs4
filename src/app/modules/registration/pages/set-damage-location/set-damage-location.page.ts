@@ -12,10 +12,9 @@ import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-bac
 @Component({
   selector: 'app-set-damage-location',
   templateUrl: './set-damage-location.page.html',
-  styleUrls: ['./set-damage-location.page.scss'],
+  styleUrls: ['./set-damage-location.page.scss']
 })
 export class SetDamageLocationPage implements OnInit {
-
   @Input() damageObs: DamageObsDto;
   @Input() geoHazard: GeoHazard;
   @Input() fromLatLng: L.LatLng;
@@ -24,12 +23,14 @@ export class SetDamageLocationPage implements OnInit {
   locationMarkerIconUrl = '/assets/icon/map/damage-location.svg';
   fullscreen$: Observable<boolean>;
 
-  @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
+  @ViewChild(SetLocationInMapComponent)
+  setLocationInMapComponent: SetLocationInMapComponent;
 
   constructor(
     private modalController: ModalController,
     private swipeBackService: SwipeBackService,
-    private fullscreenService: FullscreenService) {
+    private fullscreenService: FullscreenService
+  ) {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
@@ -40,18 +41,24 @@ export class SetDamageLocationPage implements OnInit {
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         shadowUrl: 'leaflet/marker-shadow.png',
-        shadowSize: [41, 41],
+        shadowSize: [41, 41]
       });
       this.fromMarker = L.marker(this.fromLatLng, { icon: obsLocationIcon });
     }
-    if (this.damageObs && !IsEmptyHelper.isEmpty(this.damageObs.DamagePosition)) {
-      const latLng = L.latLng(this.damageObs.DamagePosition.Latitude, this.damageObs.DamagePosition.Longitude);
+    if (
+      this.damageObs &&
+      !IsEmptyHelper.isEmpty(this.damageObs.DamagePosition)
+    ) {
+      const latLng = L.latLng(
+        this.damageObs.DamagePosition.Latitude,
+        this.damageObs.DamagePosition.Longitude
+      );
       const damageLocationIcon = L.icon({
         iconUrl: this.locationMarkerIconUrl,
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         shadowUrl: 'leaflet/marker-shadow.png',
-        shadowSize: [41, 41],
+        shadowSize: [41, 41]
       });
       this.locationMarker = L.marker(latLng, { icon: damageLocationIcon });
     }

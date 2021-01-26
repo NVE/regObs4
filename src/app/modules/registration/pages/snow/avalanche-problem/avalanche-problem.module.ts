@@ -19,4 +19,4 @@ const routes: Routes = [
   ],
   declarations: [AvalancheProblemPage]
 })
-export class AvalancheProblemPageModule { }
+export class AvalancheProblemPageModule {}

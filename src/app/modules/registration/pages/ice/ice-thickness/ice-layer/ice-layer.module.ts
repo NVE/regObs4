@@ -3,10 +3,8 @@ import { SharedComponentsModule } from '../../../../shared-components.module';
 import { IceLayerPage } from './ice-layer.page';
 
 @NgModule({
-  imports: [
-    SharedComponentsModule,
-  ],
+  imports: [SharedComponentsModule],
   declarations: [IceLayerPage],
-  entryComponents: [IceLayerPage],
+  entryComponents: [IceLayerPage]
 })
-export class IceLayerPageModule { }
+export class IceLayerPageModule {}

@@ -5,10 +5,9 @@ import { NumberHelper } from '../../../../../core/helpers/number-helper';
 @Component({
   selector: 'app-numeric-input-modal',
   templateUrl: './numeric-input-modal.page.html',
-  styleUrls: ['./numeric-input-modal.page.scss'],
+  styleUrls: ['./numeric-input-modal.page.scss']
 })
 export class NumericInputModalPage implements OnInit {
-
   @Input() value: number;
   @Input() suffix: string;
   @Input() min = -100000;
@@ -37,7 +36,7 @@ export class NumericInputModalPage implements OnInit {
     return parseFloat(this.textVal) * (this.isNegative ? -1 : 1);
   }
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController) {}
 
   @HostListener('window:keyup', ['$event']) keyEvent(event: KeyboardEvent) {
     if (event.key.match('[0-9]')) {
@@ -46,10 +45,12 @@ export class NumericInputModalPage implements OnInit {
     if (event.key.match('[,.]')) {
       this.pushDecimalSeparator();
     }
-    if (event.keyCode === 13) { // Enter click
+    if (event.keyCode === 13) {
+      // Enter click
       this.done();
     }
-    if (event.keyCode === 8) { // Backspace
+    if (event.keyCode === 8) {
+      // Backspace
       this.clear();
     }
   }
@@ -58,16 +59,24 @@ export class NumericInputModalPage implements OnInit {
     if (this.value !== undefined) {
       this.isNegative = this.value < 0;
       const positiveValue = this.value * (this.isNegative ? -1 : 1);
-      this.numbers = NumberHelper.setDecimalPlaces(positiveValue, this.decimalPlaces).toString(10).split('');
+      this.numbers = NumberHelper.setDecimalPlaces(
+        positiveValue,
+        this.decimalPlaces
+      )
+        .toString(10)
+        .split('');
     }
     if (this.max !== undefined && this.max <= 0) {
       this.isNegative = true;
     }
-    this.decimalSep = this.decimalSeparator !== undefined ? this.decimalSeparator : this.getDecimalSeparatorForBrowser();
+    this.decimalSep =
+      this.decimalSeparator !== undefined
+        ? this.decimalSeparator
+        : this.getDecimalSeparatorForBrowser();
   }
 
   private getDecimalSeparatorForBrowser() {
-    return 1.1.toLocaleString().substring(1, 2);
+    return (1.1).toLocaleString().substring(1, 2);
   }
 
   cancel() {
@@ -77,7 +86,7 @@ export class NumericInputModalPage implements OnInit {
   done() {
     this.modalController.dismiss({
       ok: true,
-      value: this.numberVal,
+      value: this.numberVal
     });
   }
 
@@ -104,13 +113,18 @@ export class NumericInputModalPage implements OnInit {
   }
 
   pushNumber(val: string) {
-    if (this.decimalPlaces > 0 && this.getNumberOfDecimals() >= this.decimalPlaces) {
+    if (
+      this.decimalPlaces > 0 &&
+      this.getNumberOfDecimals() >= this.decimalPlaces
+    ) {
       return;
     }
 
     this.numbers.push(val);
-    if ((this.max !== undefined && this.numberVal > this.max)
-      || (this.min !== undefined && this.numberVal < this.min)) {
+    if (
+      (this.max !== undefined && this.numberVal > this.max) ||
+      (this.min !== undefined && this.numberVal < this.min)
+    ) {
       this.numbers.pop();
     }
   }
@@ -124,5 +138,4 @@ export class NumericInputModalPage implements OnInit {
   clear() {
     this.numbers.pop();
   }
-
 }

@@ -26,13 +26,14 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     TranslateModule,
-    SharedModule,
+    SharedModule
   ],
   declarations: [
     WarningListPage,
     WarningListHeaderComponent,
     WarningListItemComponent,
     WarningGroupFavouriteToggleComponent,
-    AbonnerBannerComponent]
+    AbonnerBannerComponent
+  ]
 })
-export class WarningListPageModule { }
+export class WarningListPageModule {}

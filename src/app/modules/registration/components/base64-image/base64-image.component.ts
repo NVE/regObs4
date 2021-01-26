@@ -6,16 +6,16 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
   styleUrls: ['./base64-image.component.scss']
 })
 export class Base64ImageComponent implements OnInit {
-
   @Input() base64encodedImage: string;
   @Input() dataUrlTag = 'data:image/jpeg;base64,';
   imgSrc: SafeUrl;
 
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
     const applyImageUrlTag = !this.base64encodedImage.startsWith('data:image');
-    this.imgSrc = this.sanitizer.bypassSecurityTrustUrl((applyImageUrlTag ? this.dataUrlTag : '') + this.base64encodedImage);
+    this.imgSrc = this.sanitizer.bypassSecurityTrustUrl(
+      (applyImageUrlTag ? this.dataUrlTag : '') + this.base64encodedImage
+    );
   }
-
 }

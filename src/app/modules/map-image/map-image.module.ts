@@ -17,4 +17,4 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
   declarations: [MapImageComponent],
   exports: [MapImageComponent]
 })
-export class MapImageModule { }
+export class MapImageModule {}

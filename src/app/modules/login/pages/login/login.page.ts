@@ -11,13 +11,16 @@ import { LangKey } from '../../../../core/models/langKey';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  styleUrls: ['./login.page.scss']
 })
 export class LoginPage implements OnInit {
   loggedInUser$: Observable<LoggedInUser>;
 
-  constructor(private regobsAuthService: RegobsAuthService, private userSettingService: UserSettingService, private externalLinkService: ExternalLinkService) {
-  }
+  constructor(
+    private regobsAuthService: RegobsAuthService,
+    private userSettingService: UserSettingService,
+    private externalLinkService: ExternalLinkService
+  ) {}
 
   ngOnInit(): void {
     this.loggedInUser$ = this.regobsAuthService.loggedInUser$;
@@ -32,9 +35,18 @@ export class LoginPage implements OnInit {
   }
 
   async openMyPage(): Promise<void> {
-    const myPageUrl = await this.userSettingService.appMode$.pipe(map((appMode) => settings.authConfig[appMode].myPageUrl), take(1)).toPromise();
-    const currentLangKey = await this.userSettingService.language$.pipe(take(1)).toPromise();
-    this.externalLinkService.openExternalLink(`${myPageUrl}?Culture=${this.getSupportedMyPageLocales(currentLangKey)}`);
+    const myPageUrl = await this.userSettingService.appMode$
+      .pipe(
+        map((appMode) => settings.authConfig[appMode].myPageUrl),
+        take(1)
+      )
+      .toPromise();
+    const currentLangKey = await this.userSettingService.language$
+      .pipe(take(1))
+      .toPromise();
+    this.externalLinkService.openExternalLink(
+      `${myPageUrl}?Culture=${this.getSupportedMyPageLocales(currentLangKey)}`
+    );
   }
 
   private getSupportedMyPageLocales(langKey: LangKey) {

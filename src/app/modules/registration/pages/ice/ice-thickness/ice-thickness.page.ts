@@ -11,10 +11,9 @@ import { NumberHelper } from '../../../../../core/helpers/number-helper';
 @Component({
   selector: 'app-ice-thickness',
   templateUrl: './ice-thickness.page.html',
-  styleUrls: ['./ice-thickness.page.scss'],
+  styleUrls: ['./ice-thickness.page.scss']
 })
 export class IceThicknessPage extends BasePage {
-
   iceHeightBefore: boolean = undefined;
   iceHeightAfter: boolean = undefined;
 
@@ -22,7 +21,7 @@ export class IceThicknessPage extends BasePage {
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
     private modalController: ModalController,
-    private ngZone: NgZone,
+    private ngZone: NgZone
   ) {
     super(RegistrationTid.IceThickness, basePageService, activatedRoute);
   }
@@ -32,7 +31,8 @@ export class IceThicknessPage extends BasePage {
       this.registration.request.IceThickness.IceThicknessLayer = [];
     }
     if (this.registration.request.IceThickness.IceHeightBefore < 0) {
-      this.registration.request.IceThickness.IceHeightBefore = this.registration.request.IceThickness.IceHeightBefore * -1;
+      this.registration.request.IceThickness.IceHeightBefore =
+        this.registration.request.IceThickness.IceHeightBefore * -1;
       this.iceHeightBefore = true;
     } else if (this.registration.request.IceThickness.IceHeightBefore === 0) {
       this.iceHeightBefore = false;
@@ -40,7 +40,8 @@ export class IceThicknessPage extends BasePage {
     if (this.registration.request.IceThickness.IceHeightAfter > 0) {
       this.iceHeightAfter = false;
     } else if (this.registration.request.IceThickness.IceHeightAfter < 0) {
-      this.registration.request.IceThickness.IceHeightAfter = this.registration.request.IceThickness.IceHeightAfter * -1;
+      this.registration.request.IceThickness.IceHeightAfter =
+        this.registration.request.IceThickness.IceHeightAfter * -1;
       this.iceHeightAfter = true;
     }
   }
@@ -50,21 +51,34 @@ export class IceThicknessPage extends BasePage {
       if (this.iceHeightBefore === undefined) {
         this.registration.request.IceThickness.IceHeightBefore = undefined;
       } else if (this.registration.request.IceThickness.IceHeightBefore > 0) {
-        this.registration.request.IceThickness.IceHeightBefore = this.registration.request.IceThickness.IceHeightBefore * -1;
+        this.registration.request.IceThickness.IceHeightBefore =
+          this.registration.request.IceThickness.IceHeightBefore * -1;
       } else {
         this.registration.request.IceThickness.IceHeightBefore = 0;
       }
       if (this.iceHeightAfter === undefined) {
         this.registration.request.IceThickness.IceHeightAfter = undefined;
-      } else if (this.iceHeightAfter === true && NumberHelper.isNumeric(this.registration.request.IceThickness.IceHeightAfter)) {
-        this.registration.request.IceThickness.IceHeightAfter = this.registration.request.IceThickness.IceHeightAfter * -1;
+      } else if (
+        this.iceHeightAfter === true &&
+        NumberHelper.isNumeric(
+          this.registration.request.IceThickness.IceHeightAfter
+        )
+      ) {
+        this.registration.request.IceThickness.IceHeightAfter =
+          this.registration.request.IceThickness.IceHeightAfter * -1;
       }
     }
   }
 
   isEmpty() {
-    return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid) &&
-      this.iceHeightAfter === undefined && this.iceHeightBefore === undefined;
+    return (
+      this.basePageService.RegistrationService.isEmpty(
+        this.registration,
+        this.registrationTid
+      ) &&
+      this.iceHeightAfter === undefined &&
+      this.iceHeightBefore === undefined
+    );
   }
 
   onReset() {
@@ -76,7 +90,10 @@ export class IceThicknessPage extends BasePage {
   async addOrEditThicknessLayer(index?: number) {
     const modal = await this.modalController.create({
       component: IceLayerPage,
-      componentProps: { iceThicknessLayer: this.registration.request.IceThickness.IceThicknessLayer[index] },
+      componentProps: {
+        iceThicknessLayer: this.registration.request.IceThickness
+          .IceThicknessLayer[index]
+      }
     });
     modal.present();
     const result = await modal.onDidDismiss();
@@ -96,7 +113,11 @@ export class IceThicknessPage extends BasePage {
 
   onIceThicknessReorder(event: CustomEvent) {
     this.ngZone.run(() => {
-      this.reorderList(this.registration.request.IceThickness.IceThicknessLayer, event.detail.from, event.detail.to);
+      this.reorderList(
+        this.registration.request.IceThickness.IceThicknessLayer,
+        event.detail.from,
+        event.detail.to
+      );
     });
     event.detail.complete();
   }
@@ -107,21 +128,26 @@ export class IceThicknessPage extends BasePage {
 
   setIceThicknessLayer(index: number, iceThicknessLayer: IceThicknessLayerDto) {
     this.ngZone.run(() => {
-      this.registration.request.IceThickness.IceThicknessLayer[index] = iceThicknessLayer;
+      this.registration.request.IceThickness.IceThicknessLayer[
+        index
+      ] = iceThicknessLayer;
     });
     this.calculateIceThicknessSum();
   }
 
   addIceThicknessLayer(iceThicknessLayer: IceThicknessLayerDto) {
     this.ngZone.run(() => {
-      this.registration.request.IceThickness.IceThicknessLayer.push(iceThicknessLayer);
+      this.registration.request.IceThickness.IceThicknessLayer.push(
+        iceThicknessLayer
+      );
     });
     this.calculateIceThicknessSum();
   }
 
   calculateIceThicknessSum() {
-    const newSum = (this.registration.request.IceThickness.IceThicknessLayer || [])
-      .reduce((p, c) => p + (c.IceLayerThickness || 0), 0);
+    const newSum = (
+      this.registration.request.IceThickness.IceThicknessLayer || []
+    ).reduce((p, c) => p + (c.IceLayerThickness || 0), 0);
     this.ngZone.run(() => {
       this.registration.request.IceThickness.IceThicknessSum = newSum;
     });

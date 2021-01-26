@@ -5,12 +5,8 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    TranslateModule,
-  ],
+  imports: [CommonModule, IonicModule, TranslateModule],
   declarations: [DataLoadComponent],
-  exports: [DataLoadComponent],
+  exports: [DataLoadComponent]
 })
-export class DataLoadModule { }
+export class DataLoadModule {}

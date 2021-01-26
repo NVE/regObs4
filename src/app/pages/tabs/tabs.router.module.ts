@@ -19,7 +19,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../home/home.module').then(m => m.HomePageModule)
+            loadChildren: () =>
+              import('../home/home.module').then((m) => m.HomePageModule)
           }
         ]
       },
@@ -28,7 +29,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../trip/trip.module').then(m => m.TripPageModule)
+            loadChildren: () =>
+              import('../trip/trip.module').then((m) => m.TripPageModule)
           }
         ]
       },
@@ -37,7 +39,10 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../observation-list/observation-list.module').then(m => m.ObservationListPageModule)
+            loadChildren: () =>
+              import('../observation-list/observation-list.module').then(
+                (m) => m.ObservationListPageModule
+              )
           }
         ]
       },
@@ -46,21 +51,24 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../warning-list/warning-list.module').then(m => m.WarningListPageModule)
+            loadChildren: () =>
+              import('../warning-list/warning-list.module').then(
+                (m) => m.WarningListPageModule
+              )
           }
         ]
-      },
+      }
     ]
   },
   {
     path: '',
     redirectTo: '/tabs/home',
     pathMatch: 'full'
-  },
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TabsPageRoutingModule { }
+export class TabsPageRoutingModule {}

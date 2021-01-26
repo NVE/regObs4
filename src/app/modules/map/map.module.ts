@@ -40,7 +40,7 @@ import { MapImageModule } from '../map-image/map-image.module';
     MapSearchComponent,
     FullscreenToggleComponent,
     GpsCenterComponent,
-    MapCenterInfoComponent,
+    MapCenterInfoComponent
   ],
   exports: [
     MapComponent,
@@ -51,7 +51,7 @@ import { MapImageModule } from '../map-image/map-image.module';
     MapCenterInfoComponent,
     ModalSearchPageModule,
     ModalMapImagePageModule,
-    SupportMapInfoPageModule,
+    SupportMapInfoPageModule
   ]
 })
-export class MapModule { }
+export class MapModule {}

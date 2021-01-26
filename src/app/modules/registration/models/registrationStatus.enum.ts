@@ -1,4 +1,4 @@
 export enum RegistrationStatus {
-    Draft = 0,
-    Sync = 1,
+  Draft = 0,
+  Sync = 1
 }

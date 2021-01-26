@@ -10,10 +10,9 @@ import cloneDeep from 'clone-deep';
 @Component({
   selector: 'app-compression-test-list-modal',
   templateUrl: './compression-test-list-modal.page.html',
-  styleUrls: ['./compression-test-list-modal.page.scss'],
+  styleUrls: ['./compression-test-list-modal.page.scss']
 })
 export class CompressionTestListModalPage implements OnInit, OnDestroy {
-
   @Input() regId: string;
 
   private ngDestroy$ = new Subject();
@@ -24,20 +23,27 @@ export class CompressionTestListModalPage implements OnInit, OnDestroy {
     this.reg.request.CompressionTest = val;
   }
 
-  constructor(private modalController: ModalController, private registrationService: RegistrationService, private ngZone: NgZone) { }
+  constructor(
+    private modalController: ModalController,
+    private registrationService: RegistrationService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
-    this.registrationService.getSavedRegistrationByIdObservable(this.regId).pipe(takeUntil(this.ngDestroy$)).subscribe((reg) => {
-      this.ngZone.run(async () => {
-        if (!this.initialRegistrationClone) {
-          this.initialRegistrationClone = cloneDeep(reg);
-        }
-        this.reg = reg;
-        if (!this.reg.request.CompressionTest) {
-          this.reg.request.CompressionTest = [];
-        }
+    this.registrationService
+      .getSavedRegistrationByIdObservable(this.regId)
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((reg) => {
+        this.ngZone.run(async () => {
+          if (!this.initialRegistrationClone) {
+            this.initialRegistrationClone = cloneDeep(reg);
+          }
+          this.reg = reg;
+          if (!this.reg.request.CompressionTest) {
+            this.reg.request.CompressionTest = [];
+          }
+        });
       });
-    });
   }
 
   ngOnDestroy(): void {
@@ -54,8 +60,9 @@ export class CompressionTestListModalPage implements OnInit, OnDestroy {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistrationAsync(this.initialRegistrationClone);
+    await this.registrationService.saveRegistrationAsync(
+      this.initialRegistrationClone
+    );
     this.modalController.dismiss();
   }
-
 }

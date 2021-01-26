@@ -14,9 +14,9 @@ import { MapImageModule } from '../../../map-image/map-image.module';
     IonicModule,
     TranslateModule,
     LeafletModule,
-    MapImageModule,
+    MapImageModule
   ],
   declarations: [ModalMapImagePage],
   entryComponents: [ModalMapImagePage]
 })
-export class ModalMapImagePageModule { }
+export class ModalMapImagePageModule {}

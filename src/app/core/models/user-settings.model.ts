@@ -7,7 +7,7 @@ export interface UserSetting {
   appMode: AppMode;
   language: LangKey;
   currentGeoHazard: Array<GeoHazard>;
-  observationDaysBack: Array<{ geoHazard: GeoHazard, daysBack: number }>;
+  observationDaysBack: Array<{ geoHazard: GeoHazard; daysBack: number }>;
   completedStartWizard: boolean;
   supportTiles: Array<{ name: string; enabled: boolean; opacity: number }>;
   showMapCenter: boolean;

@@ -23,9 +23,7 @@ import { MapModule } from './modules/map/map.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -37,7 +35,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     MarkdownModule.forRoot(),
     IonicStorageModule.forRoot({
       name: settings.db.simpleStorage.dbName,
-      driverOrder: ['sqlite', 'indexeddb', 'websql'],
+      driverOrder: ['sqlite', 'indexeddb', 'websql']
     }),
     AngularSvgIconModule.forRoot(),
     SharedModule,
@@ -48,10 +46,9 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     LegalTermsModalPageModule,
     SideMenuModule,
     GpsDebugModule,
-    AnalyticsModule.forRoot(),
+    AnalyticsModule.forRoot()
   ],
   providers: APP_PROVIDERS,
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

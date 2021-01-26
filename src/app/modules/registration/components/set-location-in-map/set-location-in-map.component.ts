@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, EventEmitter, Output, OnDestroy, NgZone, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  OnDestroy,
+  NgZone,
+  ViewChild
+} from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from '../../../map/services/map/map.service';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
@@ -7,7 +16,10 @@ import { take, switchMap, filter, takeUntil } from 'rxjs/operators';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { Subject } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
-import { ObsLocationsResponseDtoV2, ObsLocationDto } from '../../../regobs-api/models';
+import {
+  ObsLocationsResponseDtoV2,
+  ObsLocationDto
+} from '../../../regobs-api/models';
 import { LocationService } from '../../../../core/services/location/location.service';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { ViewInfo } from '../../../map/services/map-search/view-info.model';
@@ -23,7 +35,7 @@ const defaultIcon = L.icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   tooltipAnchor: [16, -28],
-  shadowSize: [41, 41],
+  shadowSize: [41, 41]
 });
 
 const previousUsedPlaceIcon = L.icon({
@@ -31,7 +43,7 @@ const previousUsedPlaceIcon = L.icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   shadowUrl: 'leaflet/marker-shadow.png',
-  shadowSize: [41, 41],
+  shadowSize: [41, 41]
 });
 
 @Component({
@@ -76,7 +88,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
 
   get canEditLocationName() {
-    return this.allowEditLocationName && !(this.selectedLocation && this.selectedLocation.Id);
+    return (
+      this.allowEditLocationName &&
+      !(this.selectedLocation && this.selectedLocation.Id)
+    );
   }
 
   constructor(
@@ -85,7 +100,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private mapSearchService: MapSearchService,
     private geoPositionService: GeoPositionService,
-    private locationService: LocationService) { }
+    private locationService: LocationService
+  ) {}
 
   async ngOnInit() {
     L.Marker.prototype.options.icon = defaultIcon;
@@ -95,19 +111,27 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
       shadowUrl: 'leaflet/marker-shadow.png',
-      shadowSize: [41, 41],
+      shadowSize: [41, 41]
     });
     this.followMode = !this.locationMarker && !this.fromMarker;
     this.mapService.followMode = this.followMode;
     if (!this.locationMarker) {
       if (this.fromMarker) {
-        this.locationMarker = L.marker(this.fromMarker.getLatLng(), { icon: locationMarkerIcon });
+        this.locationMarker = L.marker(this.fromMarker.getLatLng(), {
+          icon: locationMarkerIcon
+        });
       } else {
-        const lastView = await this.mapService.mapView$.pipe(take(1)).toPromise();
+        const lastView = await this.mapService.mapView$
+          .pipe(take(1))
+          .toPromise();
         if (lastView) {
-          this.locationMarker = L.marker(lastView.center, { icon: locationMarkerIcon });
+          this.locationMarker = L.marker(lastView.center, {
+            icon: locationMarkerIcon
+          });
         } else {
-          this.locationMarker = L.marker(L.latLng(59.1, 10.3), { icon: locationMarkerIcon });
+          this.locationMarker = L.marker(L.latLng(59.1, 10.3), {
+            icon: locationMarkerIcon
+          });
         }
       }
     }
@@ -120,23 +144,36 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   private getLocationsObservable() {
-    return this.mapService.mapView$
-      .pipe(filter((mapView) => mapView && mapView.center !== undefined && mapView.bounds !== undefined),
-        switchMap((mapView) => this.locationService.getLocationWithinRadiusObservable(
+    return this.mapService.mapView$.pipe(
+      filter(
+        (mapView) =>
+          mapView &&
+          mapView.center !== undefined &&
+          mapView.bounds !== undefined
+      ),
+      switchMap((mapView) =>
+        this.locationService.getLocationWithinRadiusObservable(
           this.geoHazard,
           mapView.center.lat,
           mapView.center.lng,
-          Math.round(mapView.bounds.getNorthWest().distanceTo(mapView.bounds.getSouthEast()) / 2),
-        )));
+          Math.round(
+            mapView.bounds
+              .getNorthWest()
+              .distanceTo(mapView.bounds.getSouthEast()) / 2
+          )
+        )
+      )
+    );
   }
 
   private addLocationIfNotExists(loc: ObsLocationsResponseDtoV2) {
     const existing = this.locations.some((location) => loc.Id === location.Id);
     if (!existing) {
       this.locations.push(loc);
-      const marker = L.marker(L.latLng(loc.LatLngObject.Latitude, loc.LatLngObject.Longitude),
-        { icon: previousUsedPlaceIcon })
-        .addTo(this.locationGroup);
+      const marker = L.marker(
+        L.latLng(loc.LatLngObject.Latitude, loc.LatLngObject.Longitude),
+        { icon: previousUsedPlaceIcon }
+      ).addTo(this.locationGroup);
       marker.on('click', () => this.setToPrevouslyUsedLocation(loc));
     }
   }
@@ -157,29 +194,35 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.map.on('drag', () => this.moveLocationMarkerToCenter());
 
     if (this.showPreviousUsedLocations) {
-      this.getLocationsObservable().pipe(takeUntil(this.ngDestroy$))
+      this.getLocationsObservable()
+        .pipe(takeUntil(this.ngDestroy$))
         .subscribe((locations) => {
           locations.forEach((loc) => this.addLocationIfNotExists(loc));
         });
     }
 
-    this.mapService.followMode$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
-      this.followMode = val;
-      if (this.followMode && this.userposition) {
-        this.setLocationMarkerLatLng({
-          lat: this.userposition.coords.latitude,
-          lng: this.userposition.coords.longitude
-        });
-      }
-    });
+    this.mapService.followMode$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((val) => {
+        this.followMode = val;
+        if (this.followMode && this.userposition) {
+          this.setLocationMarkerLatLng({
+            lat: this.userposition.coords.latitude,
+            lng: this.userposition.coords.longitude
+          });
+        }
+      });
 
-    this.mapSearchService.mapSearchClick$.pipe(takeUntil(this.ngDestroy$)).subscribe((item) => {
-      const latLng = item instanceof L.LatLng ? item : item.latlng;
-      this.setLocationMarkerLatLng(latLng);
-    });
+    this.mapSearchService.mapSearchClick$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((item) => {
+        const latLng = item instanceof L.LatLng ? item : item.latlng;
+        this.setLocationMarkerLatLng(latLng);
+      });
 
-    this.geoPositionService.currentPosition$.pipe(takeUntil(this.ngDestroy$)).subscribe((pos) =>
-      this.positionChange(pos));
+    this.geoPositionService.currentPosition$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((pos) => this.positionChange(pos));
 
     if (!this.followMode) {
       this.map.setView(this.locationMarker.getLatLng(), 15);
@@ -199,8 +242,12 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.ngZone.run(() => {
       this.mapService.followMode = false;
       this.selectedLocation = location;
-      this.setLocationMarkerLatLng(L.latLng(location.LatLngObject.Latitude,
-        location.LatLngObject.Longitude));
+      this.setLocationMarkerLatLng(
+        L.latLng(
+          location.LatLngObject.Latitude,
+          location.LatLngObject.Longitude
+        )
+      );
       this.map.panTo(this.locationMarker.getLatLng());
       this.showDetails = true;
     });
@@ -216,20 +263,22 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   private updateMapViewInfo() {
     const latLng = this.locationMarker.getLatLng();
-    this.mapSearchService.getViewInfo(
-      { center: latLng, bounds: null, zoom: 0 },
-      this.geoHazard
-    ).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.viewInfo = val;
-        this.isLoading = false;
-      });
-    }, (_) => {
-      this.ngZone.run(() => {
-        this.viewInfo = null;
-        this.isLoading = false;
-      });
-    });
+    this.mapSearchService
+      .getViewInfo({ center: latLng, bounds: null, zoom: 0 }, this.geoHazard)
+      .subscribe(
+        (val) => {
+          this.ngZone.run(() => {
+            this.viewInfo = val;
+            this.isLoading = false;
+          });
+        },
+        (_) => {
+          this.ngZone.run(() => {
+            this.viewInfo = null;
+            this.isLoading = false;
+          });
+        }
+      );
   }
 
   private positionChange(position: Geoposition) {
@@ -245,13 +294,24 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   updatePathAndDistance() {
-    const from = this.fromMarker ? this.fromMarker.getLatLng() : (this.userposition ?
-      L.latLng(this.userposition.coords.latitude, this.userposition.coords.longitude) : this.locationMarker.getLatLng());
+    const from = this.fromMarker
+      ? this.fromMarker.getLatLng()
+      : this.userposition
+      ? L.latLng(
+          this.userposition.coords.latitude,
+          this.userposition.coords.longitude
+        )
+      : this.locationMarker.getLatLng();
     const locationMarkerLatLng = this.locationMarker.getLatLng();
     const path = [locationMarkerLatLng, from];
     if (this.map) {
       if (!this.pathLine) {
-        this.pathLine = L.polyline(path, { color: 'black', weight: 6, opacity: .9, dashArray: '1,12' });
+        this.pathLine = L.polyline(path, {
+          color: 'black',
+          weight: 6,
+          opacity: 0.9,
+          dashArray: '1,12'
+        });
         if (this.showPolyline) {
           this.pathLine.addTo(this.map);
         }
@@ -259,7 +319,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         this.pathLine.setLatLngs(path);
       }
       if (this.fromMarker) {
-        if (this.fromMarker.getLatLng().equals(this.locationMarker.getLatLng())) {
+        if (
+          this.fromMarker.getLatLng().equals(this.locationMarker.getLatLng())
+        ) {
           this.fromMarker.setOpacity(0);
           this.pathLine.setStyle({ opacity: 0 });
         } else {
@@ -269,7 +331,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       }
     }
     this.ngZone.run(() => {
-      this.distanceToObservationText = this.helperService.getDistanceText(locationMarkerLatLng.distanceTo(from));
+      this.distanceToObservationText = this.helperService.getDistanceText(
+        locationMarkerLatLng.distanceTo(from)
+      );
     });
   }
 
@@ -281,7 +345,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   getLocationName(location: LocationName) {
     if (location) {
-      return location.adminName !== location.name ? `${location.name} / ${location.adminName}` : location.name;
+      return location.adminName !== location.name
+        ? `${location.name} / ${location.adminName}`
+        : location.name;
     }
     return '';
   }
@@ -296,9 +362,13 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       Latitude: this.locationMarker.getLatLng().lat,
       Longitude: this.locationMarker.getLatLng().lng,
       Uncertainty: 0,
-      UTMSourceTID: UtmSource.SelectedInMap,
+      UTMSourceTID: UtmSource.SelectedInMap
     };
-    if (this.editLocationName && this.locationName && this.locationName.length > 0) {
+    if (
+      this.editLocationName &&
+      this.locationName &&
+      this.locationName.length > 0
+    ) {
       obsLocation.ObsLocationID = undefined;
       obsLocation.LocationName = this.locationName.substring(0, 60);
     } else if (this.selectedLocation) {
@@ -306,7 +376,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       obsLocation.LocationName = this.selectedLocation.Name;
     }
     if (this.viewInfo && this.viewInfo.location) {
-      obsLocation.LocationDescription = this.getLocationName(this.viewInfo.location);
+      obsLocation.LocationDescription = this.getLocationName(
+        this.viewInfo.location
+      );
     }
     if (this.followMode && this.userposition) {
       obsLocation.UTMSourceTID = UtmSource.GPS;
@@ -327,10 +399,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   onLocationEditComplete() {
-    if (this.editLocationNameInput.value?.toString().length === 0) { // User has deleted all text
+    if (this.editLocationNameInput.value?.toString().length === 0) {
+      // User has deleted all text
       this.editLocationName = false;
       this.updateMapViewInfo();
     }
   }
-
 }

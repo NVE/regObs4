@@ -9,10 +9,9 @@ import cloneDeep from 'clone-deep';
 @Component({
   selector: 'app-snow-temp-layer-modal',
   templateUrl: './snow-temp-layer-modal.page.html',
-  styleUrls: ['./snow-temp-layer-modal.page.scss'],
+  styleUrls: ['./snow-temp-layer-modal.page.scss']
 })
 export class SnowTempLayerModalPage implements OnInit {
-
   @Input() layer: TempProfileObsDto;
   @Input() index: number;
   @Input() reg: IRegistration;
@@ -20,7 +19,10 @@ export class SnowTempLayerModalPage implements OnInit {
 
   private initialRegistrationState: IRegistration;
 
-  constructor(private modalController: ModalController, private registrationService: RegistrationService) { }
+  constructor(
+    private modalController: ModalController,
+    private registrationService: RegistrationService
+  ) {}
 
   ngOnInit() {
     this.initialRegistrationState = cloneDeep(this.reg);
@@ -35,20 +37,29 @@ export class SnowTempLayerModalPage implements OnInit {
   }
 
   get hasLayers() {
-    return this.reg && this.reg.request && this.reg.request.SnowProfile2
-      && this.reg.request.SnowProfile2.SnowTemp
-      && this.reg.request.SnowProfile2.SnowTemp.Layers
-      && this.reg.request.SnowProfile2.SnowTemp.Layers.length > 0;
+    return (
+      this.reg &&
+      this.reg.request &&
+      this.reg.request.SnowProfile2 &&
+      this.reg.request.SnowProfile2.SnowTemp &&
+      this.reg.request.SnowProfile2.SnowTemp.Layers &&
+      this.reg.request.SnowProfile2.SnowTemp.Layers.length > 0
+    );
   }
 
   get layerLenght() {
-    return this.hasLayers ? this.reg.request.SnowProfile2.SnowTemp.Layers.length : 0;
+    return this.hasLayers
+      ? this.reg.request.SnowProfile2.SnowTemp.Layers.length
+      : 0;
   }
 
   get canGoNext() {
-    return (this.hasLayers && this.index < this.layerLenght)
-      || (this.index === this.layerLenght &&
-        this.addNew && !IsEmptyHelper.isEmpty(this.layer));
+    return (
+      (this.hasLayers && this.index < this.layerLenght) ||
+      (this.index === this.layerLenght &&
+        this.addNew &&
+        !IsEmptyHelper.isEmpty(this.layer))
+    );
   }
 
   async ok(gotoIndex?: number) {
@@ -62,12 +73,16 @@ export class SnowTempLayerModalPage implements OnInit {
       this.reg.request.SnowProfile2.SnowTemp.Layers = [];
     }
     if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
-      this.reg.request.SnowProfile2.SnowTemp.Layers.splice(this.index, 0, this.layer);
+      this.reg.request.SnowProfile2.SnowTemp.Layers.splice(
+        this.index,
+        0,
+        this.layer
+      );
     }
     await this.registrationService.saveRegistrationAsync(this.reg);
 
     if (gotoIndex !== undefined) {
-      this.index = this.index + (gotoIndex);
+      this.index = this.index + gotoIndex;
       this.layer = this.reg.request.SnowProfile2.SnowTemp.Layers[this.index];
       this.initLayer();
     } else {
@@ -76,18 +91,26 @@ export class SnowTempLayerModalPage implements OnInit {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistrationAsync(this.initialRegistrationState);
+    await this.registrationService.saveRegistrationAsync(
+      this.initialRegistrationState
+    );
     this.modalController.dismiss();
   }
 
   async delete() {
-    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.SnowTemp
-      && this.reg.request.SnowProfile2.SnowTemp.Layers && this.reg.request.SnowProfile2.SnowTemp.Layers.length > 0) {
-      this.reg.request.SnowProfile2.SnowTemp.Layers =
-        this.reg.request.SnowProfile2.SnowTemp.Layers.filter((l) => l !== this.layer);
+    if (
+      this.reg &&
+      this.reg.request &&
+      this.reg.request.SnowProfile2 &&
+      this.reg.request.SnowProfile2.SnowTemp &&
+      this.reg.request.SnowProfile2.SnowTemp.Layers &&
+      this.reg.request.SnowProfile2.SnowTemp.Layers.length > 0
+    ) {
+      this.reg.request.SnowProfile2.SnowTemp.Layers = this.reg.request.SnowProfile2.SnowTemp.Layers.filter(
+        (l) => l !== this.layer
+      );
       await this.registrationService.saveRegistrationAsync(this.reg);
     }
     this.modalController.dismiss({ delete: true });
   }
-
 }

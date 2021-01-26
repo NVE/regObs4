@@ -19,17 +19,19 @@ export class SaveAndGoBackButtonComponent implements OnInit {
     if (this.isEmpty !== undefined) {
       return this.isEmpty;
     } else {
-      return this.registrationService.isEmpty(this.registration, this.registrationTid);
+      return this.registrationService.isEmpty(
+        this.registration,
+        this.registrationTid
+      );
     }
   }
 
   constructor(
     private navContoller: NavController,
-    private registrationService: RegistrationService,
-  ) { }
+    private registrationService: RegistrationService
+  ) {}
 
-  async ngOnInit() {
-  }
+  async ngOnInit() {}
 
   async goBack() {
     this.navContoller.navigateBack('registration/edit/' + this.registration.id);

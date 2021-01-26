@@ -9,7 +9,6 @@ import { SelectOption } from '../../../shared/components/input/select/select-opt
   styleUrls: ['./yes-no-select.component.scss']
 })
 export class YesNoSelectComponent {
-
   @Input() value: boolean;
   @Input() labelColor = 'medium';
   @Input() title: string;
@@ -17,8 +16,8 @@ export class YesNoSelectComponent {
 
   options: SelectOption[] = [
     { id: true, text: 'DIALOGS.YES' },
-    { id: false, text: 'DIALOGS.NO' },
+    { id: false, text: 'DIALOGS.NO' }
   ];
 
-  constructor() { }
+  constructor() {}
 }

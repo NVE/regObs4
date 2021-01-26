@@ -1,6 +1,5 @@
 /* tslint:disable */
 export interface WaterLevelDto {
-
   /**
    * Felt for å beskrive vannstanden. Feks relativt et hus eller mot andre faste ting i terrenget. Verdi i meter [m].
    */

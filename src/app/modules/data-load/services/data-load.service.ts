@@ -11,10 +11,7 @@ import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFul
   providedIn: 'root'
 })
 export class DataLoadService {
-
-  constructor() {
-
-  }
+  constructor() {}
 
   async startLoading(id: string, totalItems?: number) {
     const existingItem = await this.getState(id);
@@ -30,7 +27,12 @@ export class DataLoadService {
     return this.saveDataLoadItem(existingItem);
   }
 
-  async updateProgress(id: string, itemsComplete: number, totalItems: number, status?: string) {
+  async updateProgress(
+    id: string,
+    itemsComplete: number,
+    totalItems: number,
+    status?: string
+  ) {
     const existingItem = await this.getState(id);
     existingItem.itemsComplete = itemsComplete;
     existingItem.totalItems = totalItems;
@@ -39,7 +41,12 @@ export class DataLoadService {
     return this.saveDataLoadItem(existingItem);
   }
 
-  async loadingCompleted(id: string, totalItems?: number, itemsFromDate?: Date, itemsToDate?: Date) {
+  async loadingCompleted(
+    id: string,
+    totalItems?: number,
+    itemsFromDate?: Date,
+    itemsToDate?: Date
+  ) {
     const existingItem = await this.getState(id);
     existingItem.isLoading = false;
     existingItem.completedDate = moment().toISOString();
@@ -72,12 +79,23 @@ export class DataLoadService {
   }
 
   getStateAsObservable(id: string): Observable<IDataLoad> {
-    return new NSqlFullUpdateObservable<IDataLoad[]>(nSQL(NanoSql.TABLES.DATA_LOAD.name)
-      .query('select')
-      .where((x) => x.id === id)
-      .listen()).pipe(
-      map((val: IDataLoad[]) => val.length > 0 ? val[0] :
-        { id, completed: null, lastUpdated: null, isLoading: false, started: null })
+    return new NSqlFullUpdateObservable<IDataLoad[]>(
+      nSQL(NanoSql.TABLES.DATA_LOAD.name)
+        .query('select')
+        .where((x) => x.id === id)
+        .listen()
+    ).pipe(
+      map((val: IDataLoad[]) =>
+        val.length > 0
+          ? val[0]
+          : {
+              id,
+              completed: null,
+              lastUpdated: null,
+              isLoading: false,
+              started: null
+            }
+      )
     );
   }
 }

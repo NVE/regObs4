@@ -8,14 +8,11 @@ import { Observable } from 'rxjs';
   styleUrls: ['./map-controls.component.scss']
 })
 export class MapControlsComponent implements OnInit {
-
   fullscreen$: Observable<boolean>;
 
   constructor(private fullscreenService: FullscreenService) {
     this.fullscreen$ = fullscreenService.isFullscreen$;
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

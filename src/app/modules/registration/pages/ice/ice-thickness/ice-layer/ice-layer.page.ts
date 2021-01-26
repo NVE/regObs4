@@ -5,7 +5,7 @@ import { IceThicknessLayerDto } from '../../../../../regobs-api/models';
 @Component({
   selector: 'app-ice-layer',
   templateUrl: './ice-layer.page.html',
-  styleUrls: ['./ice-layer.page.scss'],
+  styleUrls: ['./ice-layer.page.scss']
 })
 export class IceLayerPage implements OnInit {
   @Input() iceThicknessLayer: IceThicknessLayerDto;
@@ -17,7 +17,10 @@ export class IceLayerPage implements OnInit {
 
   layerCopy: IceThicknessLayerDto; // Using object copy so cancel does not change input object
 
-  constructor(private modalController: ModalController, private ngZone: NgZone) { }
+  constructor(
+    private modalController: ModalController,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
     if (!this.iceThicknessLayer) {
@@ -39,5 +42,4 @@ export class IceLayerPage implements OnInit {
   delete() {
     this.modalController.dismiss({ delete: true });
   }
-
 }

@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  NgZone,
+  OnDestroy
+} from '@angular/core';
 import { KdvElement } from '../../../regobs-api/models/kdv-element';
 import { Subscription } from 'rxjs';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
@@ -10,7 +18,6 @@ import { SelectOption } from '../../../shared/components/input/select/select-opt
   styleUrls: ['./kdv-select.component.scss']
 })
 export class KdvSelectComponent implements OnInit, OnDestroy {
-
   @Input() title: string;
   @Input() kdvKey: string;
   @Input() value: number;
@@ -32,18 +39,20 @@ export class KdvSelectComponent implements OnInit, OnDestroy {
       id: el.Id,
       text: this.useDescription ? el.Description : el.Name,
       disabled: !this.isVisible(el),
-      icon: this.getIconFunc ? this.getIconFunc(el) : undefined,
+      icon: this.getIconFunc ? this.getIconFunc(el) : undefined
     }));
   }
 
-  constructor(private kdvService: KdvService, private ngZone: NgZone) { }
+  constructor(private kdvService: KdvService, private ngZone: NgZone) {}
 
   ngOnInit() {
-    this.subscription = this.kdvService.getKdvRepositoryByKeyObservable(this.kdvKey).subscribe((kdvelements) => {
-      this.ngZone.run(() => {
-        this.kdvelements = kdvelements;
+    this.subscription = this.kdvService
+      .getKdvRepositoryByKeyObservable(this.kdvKey)
+      .subscribe((kdvelements) => {
+        this.ngZone.run(() => {
+          this.kdvelements = kdvelements;
+        });
       });
-    });
   }
 
   ngOnDestroy(): void {

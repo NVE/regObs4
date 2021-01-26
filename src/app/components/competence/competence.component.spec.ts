@@ -18,14 +18,16 @@ xdescribe('CompetenceComponent', () => {
     return element.querySelectorAll(selector).length;
   }
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [TestModule]
-    }).compileComponents();
-    translate = TestBed.get(TranslateService);
-    // translate.addLangs(['nb', 'en']);
-    // translate.setDefaultLang('nb');
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [TestModule]
+      }).compileComponents();
+      translate = TestBed.get(TranslateService);
+      // translate.addLangs(['nb', 'en']);
+      // translate.setDefaultLang('nb');
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CompetenceComponent);

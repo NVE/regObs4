@@ -10,7 +10,6 @@ import { RegistrationService } from '../../../../services/registration.service';
   styleUrls: ['./compression-test.component.scss']
 })
 export class CompressionTestComponent implements OnInit {
-
   @Input() reg: IRegistration;
   private compressionTestListModal: HTMLIonModalElement;
 
@@ -26,10 +25,12 @@ export class CompressionTestComponent implements OnInit {
     return this.connectedTests.length === 0;
   }
 
-  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) { }
+  constructor(
+    private modalContoller: ModalController,
+    private registrationService: RegistrationService
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async openModal() {
     if (!this.compressionTestListModal) {
@@ -37,7 +38,7 @@ export class CompressionTestComponent implements OnInit {
       this.compressionTestListModal = await this.modalContoller.create({
         component: CompressionTestListModalPage,
         componentProps: {
-          regId: this.reg.id,
+          regId: this.reg.id
         }
       });
       this.compressionTestListModal.present();
@@ -45,5 +46,4 @@ export class CompressionTestComponent implements OnInit {
       this.compressionTestListModal = null;
     }
   }
-
 }

@@ -3,11 +3,11 @@ import { WarningGroupKey } from './warning-group-key.interface';
 import { LangKey } from '../../models/langKey';
 
 export interface IWarning {
-    warningLevel: number;
-    publishTime: Date;
-    validFrom: Date;
-    validTo: Date;
-    mainText: string;
-    language: LangKey;
-    emergencyWarning?: string;
+  warningLevel: number;
+  publishTime: Date;
+  validFrom: Date;
+  validTo: Date;
+  mainText: string;
+  language: LangKey;
+  emergencyWarning?: string;
 }

@@ -5,15 +5,20 @@ import { AppVersion } from '../../models/app-version.model';
   providedIn: 'root'
 })
 export class AppVersionService {
-
-  constructor() { }
+  constructor() {}
 
   getAppVersion(): AppVersion {
     try {
       // tslint:disable-next-line:no-var-requires
       return require('../../../../environments/version.json');
     } catch {
-      return { version: '0.0.0', buildNumber: 0, revision: '', branch: '', date: new Date().toISOString() };
+      return {
+        version: '0.0.0',
+        buildNumber: 0,
+        revision: '',
+        branch: '',
+        date: new Date().toISOString()
+      };
     }
   }
 }

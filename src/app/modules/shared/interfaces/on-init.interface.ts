@@ -1,4 +1,4 @@
 export interface OnInit {
-    appOnInit(): void | Promise<any>;
-    appOnInitComplete?(): void | Promise<any>;
+  appOnInit(): void | Promise<any>;
+  appOnInitComplete?(): void | Promise<any>;
 }

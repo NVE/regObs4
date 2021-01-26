@@ -4,16 +4,14 @@ import { ExternalLinkService } from '../../../core/services/external-link/extern
 @Component({
   selector: 'app-abonner-banner',
   templateUrl: './abonner-banner.component.html',
-  styleUrls: ['./abonner-banner.component.scss'],
+  styleUrls: ['./abonner-banner.component.scss']
 })
 export class AbonnerBannerComponent implements OnInit {
+  constructor(private externalLinkService: ExternalLinkService) {}
 
-  constructor(private externalLinkService: ExternalLinkService) { }
-
-  ngOnInit() { }
+  ngOnInit() {}
 
   buttonClicked() {
     this.externalLinkService.openExternalLink('https://abonner.varsom.no');
   }
-
 }

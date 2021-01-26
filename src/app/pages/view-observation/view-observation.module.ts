@@ -19,4 +19,4 @@ const routes: Routes = [
   ],
   declarations: [ViewObservationPage]
 })
-export class ViewObservationPageModule { }
+export class ViewObservationPageModule {}

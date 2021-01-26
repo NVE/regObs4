@@ -1,6 +1,11 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpRequest,
+  HttpResponse,
+  HttpHeaders
+} from '@angular/common/http';
 import { BaseService as __BaseService } from '../base-service';
 import { RegobsApiConfiguration as __Configuration } from '../regobs-api-configuration';
 import { StrictHttpResponse as __StrictHttpResponse } from '../strict-http-response';
@@ -9,7 +14,7 @@ import { map as __map, filter as __filter } from 'rxjs/operators';
 
 import { GeneralObservationEditModel } from '../models/general-observation-edit-model';
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 class GeneralObsService extends __BaseService {
   static readonly GetGeneralObsPath = '/GeneralObs/{regId}';
@@ -17,17 +22,16 @@ class GeneralObsService extends __BaseService {
   static readonly PostGeneralObsPath = '/GeneralObs/{regId}';
   static readonly DeleteGeneralObsPath = '/GeneralObs/{regId}';
 
-  constructor(
-    config: __Configuration,
-    http: HttpClient
-  ) {
+  constructor(config: __Configuration, http: HttpClient) {
     super(config, http);
   }
 
   /**
    * @param regId undefined
    */
-  GetGeneralObsResponse(regId: number): __Observable<__StrictHttpResponse<null>> {
+  GetGeneralObsResponse(
+    regId: number
+  ): __Observable<__StrictHttpResponse<null>> {
     const __params = this.newParams();
     const __headers = new HttpHeaders();
     const __body: any = null;
@@ -40,10 +44,11 @@ class GeneralObsService extends __BaseService {
         headers: __headers,
         params: __params,
         responseType: 'json'
-      });
+      }
+    );
 
     return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
+      __filter((_r) => _r instanceof HttpResponse),
       __map((_r) => {
         return _r as __StrictHttpResponse<null>;
       })
@@ -54,7 +59,7 @@ class GeneralObsService extends __BaseService {
    */
   GetGeneralObs(regId: number): __Observable<null> {
     return this.GetGeneralObsResponse(regId).pipe(
-      __map(_r => _r.body as null)
+      __map((_r) => _r.body as null)
     );
   }
 
@@ -65,7 +70,9 @@ class GeneralObsService extends __BaseService {
    *
    * - `dto`:
    */
-  PutGeneralObsResponse(params: GeneralObsService.PutGeneralObsParams): __Observable<__StrictHttpResponse<null>> {
+  PutGeneralObsResponse(
+    params: GeneralObsService.PutGeneralObsParams
+  ): __Observable<__StrictHttpResponse<null>> {
     const __params = this.newParams();
     const __headers = new HttpHeaders();
     let __body: any = null;
@@ -79,10 +86,11 @@ class GeneralObsService extends __BaseService {
         headers: __headers,
         params: __params,
         responseType: 'json'
-      });
+      }
+    );
 
     return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
+      __filter((_r) => _r instanceof HttpResponse),
       __map((_r) => {
         return _r as __StrictHttpResponse<null>;
       })
@@ -95,9 +103,11 @@ class GeneralObsService extends __BaseService {
    *
    * - `dto`:
    */
-  PutGeneralObs(params: GeneralObsService.PutGeneralObsParams): __Observable<null> {
+  PutGeneralObs(
+    params: GeneralObsService.PutGeneralObsParams
+  ): __Observable<null> {
     return this.PutGeneralObsResponse(params).pipe(
-      __map(_r => _r.body as null)
+      __map((_r) => _r.body as null)
     );
   }
 
@@ -110,7 +120,9 @@ class GeneralObsService extends __BaseService {
    *
    * @return OK
    */
-  PostGeneralObsResponse(params: GeneralObsService.PostGeneralObsParams): __Observable<__StrictHttpResponse<{}>> {
+  PostGeneralObsResponse(
+    params: GeneralObsService.PostGeneralObsParams
+  ): __Observable<__StrictHttpResponse<{}>> {
     const __params = this.newParams();
     const __headers = new HttpHeaders();
     let __body: any = null;
@@ -124,10 +136,11 @@ class GeneralObsService extends __BaseService {
         headers: __headers,
         params: __params,
         responseType: 'json'
-      });
+      }
+    );
 
     return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
+      __filter((_r) => _r instanceof HttpResponse),
       __map((_r) => {
         return _r as __StrictHttpResponse<{}>;
       })
@@ -142,9 +155,11 @@ class GeneralObsService extends __BaseService {
    *
    * @return OK
    */
-  PostGeneralObs(params: GeneralObsService.PostGeneralObsParams): __Observable<{}> {
+  PostGeneralObs(
+    params: GeneralObsService.PostGeneralObsParams
+  ): __Observable<{}> {
     return this.PostGeneralObsResponse(params).pipe(
-      __map(_r => _r.body as {})
+      __map((_r) => _r.body as {})
     );
   }
 
@@ -152,7 +167,9 @@ class GeneralObsService extends __BaseService {
    * @param regId undefined
    * @return OK
    */
-  DeleteGeneralObsResponse(regId: number): __Observable<__StrictHttpResponse<{}>> {
+  DeleteGeneralObsResponse(
+    regId: number
+  ): __Observable<__StrictHttpResponse<{}>> {
     const __params = this.newParams();
     const __headers = new HttpHeaders();
     const __body: any = null;
@@ -165,10 +182,11 @@ class GeneralObsService extends __BaseService {
         headers: __headers,
         params: __params,
         responseType: 'json'
-      });
+      }
+    );
 
     return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
+      __filter((_r) => _r instanceof HttpResponse),
       __map((_r) => {
         return _r as __StrictHttpResponse<{}>;
       })
@@ -180,13 +198,12 @@ class GeneralObsService extends __BaseService {
    */
   DeleteGeneralObs(regId: number): __Observable<{}> {
     return this.DeleteGeneralObsResponse(regId).pipe(
-      __map(_r => _r.body as {})
+      __map((_r) => _r.body as {})
     );
   }
 }
 
 namespace GeneralObsService {
-
   /**
    * Parameters for PutGeneralObs
    */

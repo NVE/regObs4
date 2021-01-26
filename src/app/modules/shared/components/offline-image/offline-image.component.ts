@@ -5,7 +5,6 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./offline-image.component.scss']
 })
 export class OfflineImageComponent implements OnInit {
-
   @Input() src: string;
 
   loaded = false;
@@ -32,7 +31,9 @@ export class OfflineImageComponent implements OnInit {
 
   private tryFallbackImage() {
     if (this.src && this.src.indexOf('regobs.no/Attachment') > 0) {
-      this._srcInternal = this.src.replace(/large/g, 'raw').replace(/medium/g, 'raw');
+      this._srcInternal = this.src
+        .replace(/large/g, 'raw')
+        .replace(/medium/g, 'raw');
     } else {
       this.loaded = true;
       this.hasError = true;

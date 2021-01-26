@@ -1,6 +1,5 @@
 /* tslint:disable */
 export interface SnowCoverObsDto {
-
   /**
    * DepthHoarThickness
    */

@@ -1,6 +1,5 @@
 /* tslint:disable */
 export interface CompressionTestDto {
-
   /**
    * The CompressionTestKDV unique identifier
    */

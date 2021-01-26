@@ -4,7 +4,6 @@
  * Provide description for AvalancheDangerObs
  */
 export interface AvalancheDangerObsDto {
-
   /**
    * The AvalancheDangerObsID id
    */

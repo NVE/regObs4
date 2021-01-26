@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, EventEmitter, Output, NgZone } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  NgZone
+} from '@angular/core';
 
 const EMPTY_EXPOSITION = '00000000';
 const ALL_EXPOSITION = '11111111';
@@ -9,13 +16,12 @@ const ALL_EXPOSITION = '11111111';
   styleUrls: ['./valid-exposition.component.scss']
 })
 export class ValidExpositionComponent implements OnInit {
-
   @Input() validExposition: string;
   @Output() validExpositionChange = new EventEmitter();
 
   validExpositionCopy: string;
 
-  constructor(private ngZone: NgZone) { }
+  constructor(private ngZone: NgZone) {}
 
   ngOnInit() {
     if (!this.validExposition) {
@@ -29,14 +35,17 @@ export class ValidExpositionComponent implements OnInit {
     const existingValue = this.validExpositionCopy.substr(index, 1);
     const newValue = existingValue === '1' ? '0' : '1';
     this.validExpositionCopy =
-      (this.validExpositionCopy.substr(0, index)
-        + newValue + this.validExpositionCopy.substr(index + 1));
+      this.validExpositionCopy.substr(0, index) +
+      newValue +
+      this.validExpositionCopy.substr(index + 1);
     this.applyChanges();
   }
 
   toggleAllExpositions() {
     this.validExpositionCopy =
-      this.validExpositionCopy === ALL_EXPOSITION ? EMPTY_EXPOSITION : ALL_EXPOSITION;
+      this.validExpositionCopy === ALL_EXPOSITION
+        ? EMPTY_EXPOSITION
+        : ALL_EXPOSITION;
     this.applyChanges();
   }
 
@@ -50,5 +59,4 @@ export class ValidExpositionComponent implements OnInit {
       this.validExpositionChange.emit(this.validExposition);
     });
   }
-
 }

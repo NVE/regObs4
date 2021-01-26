@@ -24,8 +24,12 @@ const DEBUG_TAG = 'AddMenuComponent';
 export class AddMenuComponent implements OnInit {
   @ViewChild('menuFab') menuFab: IonFab;
 
-  drafts$: Observable<{ id: string, geoHazard: GeoHazard, date: string }[]>;
-  geoHazardInfo$: Observable<{ geoHazards: GeoHazard[], showSpace: boolean, showTrip: boolean }>;
+  drafts$: Observable<{ id: string; geoHazard: GeoHazard; date: string }[]>;
+  geoHazardInfo$: Observable<{
+    geoHazards: GeoHazard[];
+    showSpace: boolean;
+    showTrip: boolean;
+  }>;
   tripStarted$: Observable<boolean>;
   showSpace$: Observable<boolean>;
 
@@ -37,28 +41,44 @@ export class AddMenuComponent implements OnInit {
     private userSettingService: UserSettingService,
     private geoHelperService: GeoHelperService,
     private loggingService: LoggingService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.geoHazardInfo$ = this.userSettingService.userSetting$
-      .pipe(
-        map((us) => ({
-          geoHazards: us.currentGeoHazard,
-          showSpace: us.language !== LangKey.nb && us.language !== LangKey.nn,
-          showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0,
-        })),
-        setObservableTimeout()
-      );
+    this.geoHazardInfo$ = this.userSettingService.userSetting$.pipe(
+      map((us) => ({
+        geoHazards: us.currentGeoHazard,
+        showSpace: us.language !== LangKey.nb && us.language !== LangKey.nn,
+        showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0
+      })),
+      setObservableTimeout()
+    );
     this.drafts$ = this.registrationService.drafts$.pipe(
-      tap((drafts) => this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)),
-      switchMap((drafts) => drafts.length > 0 ? combineLatest(drafts.map((draft) => this.convertDraftToDate(draft))) : of([])),
-      tap((drafts) => this.loggingService.debug('Converted drafts has changed to', DEBUG_TAG, drafts)),
-      setObservableTimeout());
+      tap((drafts) =>
+        this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)
+      ),
+      switchMap((drafts) =>
+        drafts.length > 0
+          ? combineLatest(drafts.map((draft) => this.convertDraftToDate(draft)))
+          : of([])
+      ),
+      tap((drafts) =>
+        this.loggingService.debug(
+          'Converted drafts has changed to',
+          DEBUG_TAG,
+          drafts
+        )
+      ),
+      setObservableTimeout()
+    );
     this.tripStarted$ = this.tripLoggerService.isTripRunning$;
   }
 
-  private convertDraftToDate(draft: IRegistration): Observable<{ id: string, geoHazard: GeoHazard, date: string }> {
-    return from(this.getDate(draft.changed)).pipe(map((date) => ({ id: draft.id, geoHazard: draft.geoHazard, date })));
+  private convertDraftToDate(
+    draft: IRegistration
+  ): Observable<{ id: string; geoHazard: GeoHazard; date: string }> {
+    return from(this.getDate(draft.changed)).pipe(
+      map((date) => ({ id: draft.id, geoHazard: draft.geoHazard, date }))
+    );
   }
 
   getName(geoHazard: GeoHazard): string {
@@ -91,6 +111,8 @@ export class AddMenuComponent implements OnInit {
   }
 
   startOrStopTrip(tripStarted: boolean): void {
-    return tripStarted ? this.tripLoggerService.stopLegacyTrip() : this.closeAndNavigate('legacy-trip');
+    return tripStarted
+      ? this.tripLoggerService.stopLegacyTrip()
+      : this.closeAndNavigate('legacy-trip');
   }
 }

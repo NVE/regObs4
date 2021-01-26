@@ -12,9 +12,8 @@ import { settings } from '../../../settings';
   selector: 'app-start-wizard',
   templateUrl: './start-wizard.page.html',
   styleUrls: ['./start-wizard.page.scss'],
-  animations: animations,
+  animations: animations
 })
-
 export class StartWizardPage implements OnInit, OnDestroy {
   @ViewChild(IonSlides) slides: IonSlides;
   GeoHazard = GeoHazard;
@@ -25,8 +24,14 @@ export class StartWizardPage implements OnInit, OnDestroy {
   visibleStarNumber = -1;
   recreate = true;
   language: LangKey;
-  supportedLanguages: { lang: string, name: string, langKey: LangKey }[] =
-    settings.language.supportedLanguages.map((lang) => ({ ...lang, langKey: LangKey[lang.lang] }));
+  supportedLanguages: {
+    lang: string;
+    name: string;
+    langKey: LangKey;
+  }[] = settings.language.supportedLanguages.map((lang) => ({
+    ...lang,
+    langKey: LangKey[lang.lang]
+  }));
 
   private ngDestroy$ = new Subject();
   private activeIndex = new Subject<number>();
@@ -34,8 +39,8 @@ export class StartWizardPage implements OnInit, OnDestroy {
 
   constructor(
     private userSettingService: UserSettingService,
-    private navController: NavController,
-  ) { }
+    private navController: NavController
+  ) {}
 
   ionViewWillEnter() {
     this.recreate = true;
@@ -48,14 +53,15 @@ export class StartWizardPage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async saveLanguage() {
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const userSettings = await this.userSettingService.userSetting$
+      .pipe(take(1))
+      .toPromise();
     this.userSettingService.saveUserSettings({
       ...userSettings,
-      language: this.language,
+      language: this.language
     });
   }
 
@@ -79,19 +85,23 @@ export class StartWizardPage implements OnInit, OnDestroy {
   }
 
   slideNext() {
-    timer(700).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
-      if (this.slides) {
-        this.slides.slideNext();
-      }
-    });
+    timer(700)
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(() => {
+        if (this.slides) {
+          this.slides.slideNext();
+        }
+      });
   }
 
   async start() {
     if (this.reachedEnd) {
-      const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+      const userSettings = await this.userSettingService.userSetting$
+        .pipe(take(1))
+        .toPromise();
       this.userSettingService.saveUserSettings({
         ...userSettings,
-        completedStartWizard: true,
+        completedStartWizard: true
       });
       this.navController.navigateRoot('/');
     } else {
@@ -117,22 +127,25 @@ export class StartWizardPage implements OnInit, OnDestroy {
   }
 
   private initStarIndexCounter() {
-    this.activeIndex.pipe(
-      switchMap((index) =>
-        interval(700).pipe(
-          skipWhile(() => index !== 4))),
-      takeUntil(this.ngDestroy$)).subscribe(() => {
-      if (this.isIncreasing && this.visibleStarNumber >= 6) { // Count to 6 to add an extra pause on the end
-        this.isIncreasing = false;
-      }
-      if (!this.isIncreasing && this.visibleStarNumber < 0) { // Count to -1 to add an extra pause on the start
-        this.isIncreasing = true;
-      }
-      if (this.isIncreasing) {
-        this.visibleStarNumber++;
-      } else {
-        this.visibleStarNumber--;
-      }
-    });
+    this.activeIndex
+      .pipe(
+        switchMap((index) => interval(700).pipe(skipWhile(() => index !== 4))),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe(() => {
+        if (this.isIncreasing && this.visibleStarNumber >= 6) {
+          // Count to 6 to add an extra pause on the end
+          this.isIncreasing = false;
+        }
+        if (!this.isIncreasing && this.visibleStarNumber < 0) {
+          // Count to -1 to add an extra pause on the start
+          this.isIncreasing = true;
+        }
+        if (this.isIncreasing) {
+          this.visibleStarNumber++;
+        } else {
+          this.visibleStarNumber--;
+        }
+      });
   }
 }

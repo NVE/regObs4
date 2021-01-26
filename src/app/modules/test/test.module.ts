@@ -2,7 +2,11 @@ import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { LoggingService } from '../shared/services/logging/logging.service';
 import { ConsoleLoggingService } from '../shared/services/logging/console-logging.service';
 import { SharedModule } from '../shared/shared.module';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateLoader,
+  TranslateService
+} from '@ngx-translate/core';
 import { initTranslateService } from '../../custom-translate.loader';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
@@ -22,15 +26,22 @@ function createTranslateLoader(http: HttpClient) {
     HttpClientTestingModule,
     TranslateModule.forRoot(),
     AngularSvgIconModule.forRoot(),
-    SharedModule,
-  ],
-  exports: [
     SharedModule
   ],
+  exports: [SharedModule],
   providers: [
-    { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
-    { provide: APP_INITIALIZER, useFactory: initTranslateService, deps: [TranslateService, UserSettingService], multi: true },
+    {
+      provide: TranslateLoader,
+      useFactory: createTranslateLoader,
+      deps: [HttpClient]
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initTranslateService,
+      deps: [TranslateService, UserSettingService],
+      multi: true
+    },
     { provide: LoggingService, useClass: ConsoleLoggingService }
-  ],
+  ]
 })
-export class TestModule { }
+export class TestModule {}

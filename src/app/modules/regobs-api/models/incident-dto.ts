@@ -1,7 +1,6 @@
 /* tslint:disable */
 import { IncidentUrlsDto } from './incident-urls-dto';
 export interface IncidentDto {
-
   /**
    * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is).
    */

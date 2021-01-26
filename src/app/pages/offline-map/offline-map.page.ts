@@ -9,19 +9,16 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-offline-map',
   templateUrl: './offline-map.page.html',
-  styleUrls: ['./offline-map.page.scss'],
+  styleUrls: ['./offline-map.page.scss']
 })
 export class OfflineMapPage implements OnInit {
-
   offlineMaps$: Observable<OfflineMap[]>;
 
   constructor(
     private offlineMapService: OfflineMapService,
     private helperService: HelperService,
-    private actionSheetController: ActionSheetController,
-  ) {
-
-  }
+    private actionSheetController: ActionSheetController
+  ) {}
 
   ngOnInit() {
     this.offlineMaps$ = this.offlineMapService.getOfflineMapsAsObservable();
@@ -36,7 +33,10 @@ export class OfflineMapPage implements OnInit {
   }
 
   getPercentage(map: OfflineMap) {
-    return Math.round(((map.progress && map.progress.percentage) ? map.progress.percentage : 0) * 100);
+    return Math.round(
+      (map.progress && map.progress.percentage ? map.progress.percentage : 0) *
+        100
+    );
   }
 
   deleteMap(map: OfflineMap) {
@@ -92,7 +92,7 @@ export class OfflineMapPage implements OnInit {
 
     buttons.push({
       text: 'Lukk',
-      role: 'cancel',
+      role: 'cancel'
     });
 
     const actionSheet = await this.actionSheetController.create({

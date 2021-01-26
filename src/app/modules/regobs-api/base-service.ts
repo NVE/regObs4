@@ -1,5 +1,9 @@
 /* tslint:disable */
-import { HttpClient, HttpParameterCodec, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpParameterCodec,
+  HttpParams
+} from '@angular/common/http';
 import { RegobsApiConfiguration } from './regobs-api-configuration';
 
 /**
@@ -32,8 +36,7 @@ export class BaseService {
   constructor(
     protected config: RegobsApiConfiguration,
     protected http: HttpClient
-  ) {
-  }
+  ) {}
 
   private _rootUrl = '';
 
