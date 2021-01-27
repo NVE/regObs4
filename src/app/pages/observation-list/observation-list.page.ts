@@ -11,7 +11,7 @@ import { LoggingService } from '../../modules/shared/services/logging/logging.se
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 
 const PAGE_SIZE = 10;
-const MAX_OBSERVATION_COUNT = 100;
+const MAX_OBSERVATION_COUNT = 20; //TODO
 
 @Component({
   selector: 'app-observation-list',
@@ -103,6 +103,14 @@ export class ObservationListPage implements OnInit {
     if (this.visibleObservations.length >= this.total) {
       target.disabled = true; //we have reached the end, so no need to load more pages from now
     }
+  }
+
+  get maxCountReached(): boolean {
+    return this.total >= MAX_OBSERVATION_COUNT;
+  }
+
+  get maxCount(): number {
+    return MAX_OBSERVATION_COUNT;
   }
 
   private filterObservationsWithinViewBounds(observations: RegistrationViewModel[], view: IMapView) {

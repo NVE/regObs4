@@ -1,47 +1,17 @@
+<!-- shows lists of all registrations created: Drafts, registrations in sync and published registrations -->
 <ion-header>
   <ion-toolbar appHeaderColor mode="ios">
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{"MY_OBSERVATIONS.TITLE" | translate}}</ion-title>
+    <ion-title>{{ 'MY_OBSERVATIONS.TITLE' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
-  <div class="loading-sceleton" *ngIf="!loaded">
-    <ion-item-divider no-border>
-      <ion-grid class="ion-no-padding ion-no-margin">
-        <ion-row>
-          <h3 class="ion-text-uppercase">{{ 'MY_OBSERVATIONS.MY_SENT_OBSERVATIONS' | translate }}</h3>
-        </ion-row>
-        <ion-row>
-          <ion-label class="ion-text-wrap" color="medium">
-            {{ 'MY_OBSERVATIONS.SENT_SUBTITLE' | translate }}
-          </ion-label>
-        </ion-row>
-      </ion-grid>
-    </ion-item-divider>
-    <app-observation-skeleton></app-observation-skeleton>
-    <app-observation-skeleton></app-observation-skeleton>
-    <app-observation-skeleton></app-observation-skeleton>
-  </div>
-  <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="!showEmptyState else empty" 
-     #scroll [items]="virtualItems" 
-     [checkResizeInterval]="0" 
-     [enableUnequalChildrenSizes]="true" 
-     [parentScroll]="parentScrollElement" 
-     (vsEnd)="loadMoreData($event)">
-    <ng-container *ngFor="let item of scroll.viewPortItems; trackBy: trackById">
-      <app-observation-list-card *ngIf="item.type === 'sent'" [obs]="item.item"></app-observation-list-card>
-      <app-sync-item *ngIf="item.type === 'draft'" [registration]="item.item"></app-sync-item>
-      <app-sync-item *ngIf="item.type === 'sync'" [registration]="item.item" [refresh]="true"></app-sync-item>
-    </ng-container>
-    <ion-spinner *ngIf="loadingMore"></ion-spinner>
-  </virtual-scroller>
-</ion-content>
-<app-add-menu></app-add-menu>
-<ng-template #empty>
-  <ion-grid class="full-grid">
+  <app-draft-list (isEmpty)="refreshDraftEmptyState($event)"></app-draft-list>
+  <app-sent-list (isEmpty)="refreshSentEmptyState($event)"></app-sent-list>
+  <ion-grid *ngIf="draftIsEmpty && sentRegistrationsIsEmpty" class="full-grid">
     <ion-row class="full-grid-row">
       <ion-col class="ion-text-center ion-align-self-center">
         <svg-icon src="/assets/images/empty-states/no-my-observations.svg"></svg-icon>
@@ -54,4 +24,5 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-</ng-template>
+</ion-content>
+<app-add-menu></app-add-menu>

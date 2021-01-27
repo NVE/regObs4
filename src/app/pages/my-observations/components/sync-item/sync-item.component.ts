@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
-import { IRegistration } from '../../models/registration.model';
+import { IRegistration } from '../../../../modules/registration/models/registration.model';
 import { Subscription } from 'rxjs';
-import { RegistrationService } from '../../services/registration.service';
+import { RegistrationService } from '../../../../modules/registration/services/registration.service';
 import { map, filter } from 'rxjs/operators';
 
 @Component({
