@@ -1,4 +1,4 @@
-import { Geoposition } from '@ionic-native/geolocation/ngx';
+import { Geoposition, PositionError } from '@ionic-native/geolocation/ngx';
 
 export interface GeoPositionLog {
   timestamp: number;
