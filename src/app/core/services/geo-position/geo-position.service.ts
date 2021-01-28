@@ -16,7 +16,11 @@ import {
   distinctUntilChanged,
   startWith
 } from 'rxjs/operators';
-import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
+import {
+  Geolocation,
+  Geoposition,
+  PositionError
+} from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { AlertController, Platform } from '@ionic/angular';
@@ -124,12 +128,7 @@ export class GeoPositionService implements OnDestroy {
       highAccuracyEnabled,
       err: {
         code,
-        message,
-        PERMISSION_DENIED:
-          code === GeoPositionErrorCode.PermissionDenied ? 1 : 0,
-        POSITION_UNAVAILABLE:
-          code === GeoPositionErrorCode.PositionUnavailable ? 1 : 0,
-        TIMEOUT: code === GeoPositionErrorCode.Timeout ? 1 : 0
+        message
       }
     };
   }

@@ -5,7 +5,6 @@ import {
   distinctUntilChanged,
   scan,
   filter,
-  tap,
   throttleTime,
   takeUntil,
   switchMap
@@ -13,10 +12,11 @@ import {
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { enterZone } from '../../../../core/helpers/observable-helper';
-import { IonContent, Platform } from '@ionic/angular';
+import { IonContent } from '@ionic/angular';
 import moment from 'moment';
 import { GeoPositionLog } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
+import { PositionError } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: 'app-gps-debug',
