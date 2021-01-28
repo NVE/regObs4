@@ -11,7 +11,7 @@ import { RegistrationViewModel } from 'src/app/modules/regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 const PAGE_SIZE = 10;
-const MAX_REGISTRATIONS_COUNT = 20; //TODO
+const MAX_REGISTRATIONS_COUNT = 100;
 
 @Component({
   selector: 'app-sent-list',

@@ -7,11 +7,10 @@ import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
-import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
 
 const PAGE_SIZE = 10;
-const MAX_OBSERVATION_COUNT = 20; //TODO
+const MAX_OBSERVATION_COUNT = 100;
 
 @Component({
   selector: 'app-observation-list',
@@ -37,7 +36,6 @@ export class ObservationListPage implements OnInit {
     private observationService: ObservationService,
     private dataMarshallService: DataMarshallService,
     private cdr: ChangeDetectorRef,
-    private loggingService: LoggingService,
     private mapService: MapService) {
   }
 
@@ -106,7 +104,7 @@ export class ObservationListPage implements OnInit {
   }
 
   get maxCountReached(): boolean {
-    return this.total >= MAX_OBSERVATION_COUNT;
+    return this.visibleObservations.length >= MAX_OBSERVATION_COUNT;
   }
 
   get maxCount(): number {
