@@ -1,16 +1,24 @@
 <app-header title="{{ 'OBSERVATION_LIST.OBSERVATIONS' | translate }}"></app-header>
 <ion-content>
-  <ng-container *ngIf="observations !== undefined">
-    <virtual-scroller [ngClass]="{ loaded: loaded }" *ngIf="(observations.length > 0) else empty" #scroll
-      [items]="observations" [checkResizeInterval]="0" [enableUnequalChildrenSizes]="true"
-      [parentScroll]="parentScrollElement" [compareItems]="compareItems" [modifyOverflowStyleOfParentScroll]="false">
-      <div *ngFor="let item of scroll.viewPortItems; let i = index; trackBy: trackByIdFunc;">
-        <ion-item-divider *ngIf="(i === 0)">
-          <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
-        </ion-item-divider>
-        <app-observation-list-card [obs]="item"></app-observation-list-card>
-      </div>
-    </virtual-scroller>
+  <app-refresh-with-cancel [refreshFunc]="refreshFunc"></app-refresh-with-cancel>
+  <ng-container *ngIf="visibleObservations !== undefined">
+    <ion-list [ngClass]="{ loaded: loaded }" *ngIf="(visibleObservations.length > 0) else empty">
+      <ion-item-divider>
+        <h3 class="ion-text-uppercase">{{'OBSERVATION_LIST.IN_MAP_VIEW' | translate }}</h3>
+      </ion-item-divider>
+      <app-observation-list-card *ngFor="let obs of visibleObservations; trackBy: trackByIdFunc;" [obs]="obs">
+      </app-observation-list-card>
+    </ion-list>
+    <ion-infinite-scroll (ionInfinite)="loadNextPage($event)" >
+      <ion-infinite-scroll-content>
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <ion-row *ngIf="maxCountReached" class="full-grid-row max-count-reached">
+      <ion-col class="ion-text-center ion-margin-horizontal">
+        <h2>{{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_HEADER' | translate }}</h2>
+        <h3 class="ion-text-wrap"> {{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_TEXT' | translate: {maxCount: maxCount} }}</h3>
+      </ion-col>
+    </ion-row>
   </ng-container>
   <div class="loading-sceleton" *ngIf="!loaded">
     <ion-item-divider>

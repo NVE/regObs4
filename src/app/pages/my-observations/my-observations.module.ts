@@ -5,6 +5,9 @@ import { SharedModule } from '../../modules/shared/shared.module';
 import { SharedComponentsModule } from '../../modules/registration/shared-components.module';
 import { FullscreenImageModalPageModule } from '../modal-pages/fullscreen-image-modal/fullscreen-image-modal.module';
 import { AuthGuard } from '../../core/guards/auth.guard';
+import { SyncItemComponent } from './components/sync-item/sync-item.component';
+import { DraftListComponent } from './components/draft-list/draft-list.component';
+import { SentListComponent } from './components/sent-list/sent-list.component';
 
 const routes: Routes = [
   {
@@ -21,6 +24,11 @@ const routes: Routes = [
     FullscreenImageModalPageModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [MyObservationsPage]
+  declarations: [
+    MyObservationsPage,
+    SyncItemComponent,
+    DraftListComponent,
+    SentListComponent
+  ]
 })
 export class MyObservationsPageModule {}

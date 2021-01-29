@@ -1,0 +1,18 @@
+<!-- shows list of registrations not saved on server (both drafts and registrations in sync)-->
+<div *ngIf="registrations$ | async as registrations">
+  <ion-item-divider *ngIf="registrations?.length > 0" no-border>
+    <ion-grid class="ion-no-padding ion-no-margin">
+      <ion-row>
+        <h3 class="ion-text-uppercase">{{ 'REGISTRATION.DRAFTS' | translate }}</h3>
+      </ion-row>
+      <ion-row>
+        <ion-label class="ion-text-wrap" color="medium">
+          {{ 'REGISTRATION.DRAFTS_DESCRIPTION' | translate }}
+        </ion-label>
+      </ion-row>
+    </ion-grid>
+  </ion-item-divider>
+  <ion-list>
+    <app-sync-item *ngFor="let reg of registrations; trackBy: trackByIdFunc" [registration]="reg"></app-sync-item>
+  </ion-list>
+</div>
