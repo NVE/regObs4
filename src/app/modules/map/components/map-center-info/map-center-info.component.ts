@@ -4,7 +4,13 @@ import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, of } from 'rxjs';
-import { switchMap, tap, filter, distinctUntilChanged, map } from 'rxjs/operators';
+import {
+  switchMap,
+  tap,
+  filter,
+  distinctUntilChanged,
+  map
+} from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -35,43 +41,64 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private platform: Platform,
     private ngZone: NgZone,
-    @Inject(DOCUMENT) private document: Document) {
-  }
+    @Inject(DOCUMENT) private document: Document
+  ) {}
 
   async ngOnInit() {
-    const showMapCenterObservable = this.userSettingService.showMapCenter$.pipe(tap((showMapCenter) => {
-      this.ngZone.run(() => {
-        this.showMapCenter = showMapCenter;
-        this.document.documentElement.style.setProperty('--map-center-info-height', showMapCenter ? '72px' : '0px');
-      });
-    }));
-    this.subscriptions.push(
-      showMapCenterObservable.pipe(switchMap((showMapCenter) =>
-        showMapCenter ? this.mapService.mapView$ : of(null))
-      , filter((val) => !!val)).subscribe((mapView) => {
+    const showMapCenterObservable = this.userSettingService.showMapCenter$.pipe(
+      tap((showMapCenter) => {
         this.ngZone.run(() => {
-          this.mapView = mapView;
-          this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
+          this.showMapCenter = showMapCenter;
+          this.document.documentElement.style.setProperty(
+            '--map-center-info-height',
+            showMapCenter ? '72px' : '0px'
+          );
         });
-      }));
+      })
+    );
     this.subscriptions.push(
-      showMapCenterObservable.pipe(switchMap((showMapCenter) =>
-        showMapCenter ? this.mapService.relevantMapChange$ : of(null))
-      , filter((val) => !!val), tap(() => {
-        this.ngZone.run(() => {
-          this.isLoading = true;
-        });
-      }), switchMap((val: IMapView) => this.mapSerachService.getViewInfo(val)))
-        .subscribe((viewInfo) => {
+      showMapCenterObservable
+        .pipe(
+          switchMap((showMapCenter) =>
+            showMapCenter ? this.mapService.mapView$ : of(null)
+          ),
+          filter((val) => !!val)
+        )
+        .subscribe((mapView) => {
           this.ngZone.run(() => {
-            this.viewInfo = viewInfo;
-            this.isLoading = false;
+            this.mapView = mapView;
+            this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
           });
-        }, (_) => {
-          this.ngZone.run(() => {
-            this.isLoading = false;
-          });
-        }));
+        })
+    );
+    this.subscriptions.push(
+      showMapCenterObservable
+        .pipe(
+          switchMap((showMapCenter) =>
+            showMapCenter ? this.mapService.relevantMapChange$ : of(null)
+          ),
+          filter((val) => !!val),
+          tap(() => {
+            this.ngZone.run(() => {
+              this.isLoading = true;
+            });
+          }),
+          switchMap((val: IMapView) => this.mapSerachService.getViewInfo(val))
+        )
+        .subscribe(
+          (viewInfo) => {
+            this.ngZone.run(() => {
+              this.viewInfo = viewInfo;
+              this.isLoading = false;
+            });
+          },
+          (_) => {
+            this.ngZone.run(() => {
+              this.isLoading = false;
+            });
+          }
+        )
+    );
   }
 
   ngOnDestroy(): void {
@@ -81,7 +108,10 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   }
 
   private useNativeClipboardPlugin() {
-    return this.platform.is('cordova') && (this.platform.is('android') || this.platform.is('ios'));
+    return (
+      this.platform.is('cordova') &&
+      (this.platform.is('android') || this.platform.is('ios'))
+    );
   }
 
   async copyToClipboard() {
@@ -90,11 +120,13 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     } else {
       this.copyToClipBoardWeb(this.textToCopy);
     }
-    const toastText = await this.translateService.get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD').toPromise();
+    const toastText = await this.translateService
+      .get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD')
+      .toPromise();
     const toast = await this.toastController.create({
       message: toastText,
       mode: 'md',
-      duration: 2000,
+      duration: 2000
     });
     toast.present();
   }

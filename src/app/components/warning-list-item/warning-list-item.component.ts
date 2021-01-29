@@ -21,12 +21,12 @@ import { NgDestoryBase } from '../../core/helpers/observable-helper';
   styleUrls: ['./warning-list-item.component.scss']
 })
 export class WarningListItemComponent extends NgDestoryBase implements OnInit {
-
   @Input() warningGroup: WarningGroup;
   GeoHazard = GeoHazard;
 
   @ViewChild(IonItemSliding, { static: true }) itemSlide: IonItemSliding;
-  @ViewChild(WarningGroupFavouriteToggleComponent, { static: true }) favouriteToggle: WarningGroupFavouriteToggleComponent;
+  @ViewChild(WarningGroupFavouriteToggleComponent, { static: true })
+  favouriteToggle: WarningGroupFavouriteToggleComponent;
   private dragSubject = new Subject();
 
   constructor(
@@ -34,21 +34,29 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     private userSettingService: UserSettingService,
     private domCtrl: DomController,
     private analyticService: AnalyticService,
-    private renderer: Renderer2) {
+    private renderer: Renderer2
+  ) {
     super();
   }
 
   ngOnInit() {
-    this.dragSubject.pipe(
-      takeUntil(this.ngDestroy$),
-      switchMap(() => this.getOpenAmount())).subscribe((openAmount) => {
-      const opacity = openAmount > 1 ? 1 : (openAmount > 0 ? openAmount : 0);
-      const color = `rgba(186,196,204,${opacity})`;
-      this.favouriteToggle.setOpen(opacity);
-      this.domCtrl.write(() => {
-        this.renderer.setStyle((<any>this.itemSlide).el, 'background-color', color);
+    this.dragSubject
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        switchMap(() => this.getOpenAmount())
+      )
+      .subscribe((openAmount) => {
+        const opacity = openAmount > 1 ? 1 : openAmount > 0 ? openAmount : 0;
+        const color = `rgba(186,196,204,${opacity})`;
+        this.favouriteToggle.setOpen(opacity);
+        this.domCtrl.write(() => {
+          this.renderer.setStyle(
+            (<any>this.itemSlide).el,
+            'background-color',
+            color
+          );
+        });
       });
-    });
     this.ngDestroy$.subscribe(() => {
       this.close();
     });
@@ -65,19 +73,21 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   }
 
   private getOpenAmount() {
-    return from(this.itemSlide.getOpenAmount())
-      .pipe(
-        catchError(() => of(0)),
-        map((val) => val > 0 ? val / 100.0 : 0));
+    return from(this.itemSlide.getOpenAmount()).pipe(
+      catchError(() => of(0)),
+      map((val) => (val > 0 ? val / 100.0 : 0))
+    );
   }
 
   toggleFavourite() {
     this.favouriteToggle.toggle();
-    timer(2000).pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
-      if (this.itemSlide) {
-        this.itemSlide.close();
-      }
-    });
+    timer(2000)
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(() => {
+        if (this.itemSlide) {
+          this.itemSlide.close();
+        }
+      });
   }
 
   itemSwiped() {
@@ -88,15 +98,21 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     if (group.url) {
       return group.url;
     } else {
-      const currentLang = await this.userSettingService.language$.pipe(take(1)).toPromise();
+      const currentLang = await this.userSettingService.language$
+        .pipe(take(1))
+        .toPromise();
       const supportedLang = this.getSupportedLangOrFallbackToEn(currentLang);
-      const url: string = settings.services.warning[GeoHazard[group.key.geoHazard]]
-        .webUrl[LangKey[supportedLang]];
+      const url: string =
+        settings.services.warning[GeoHazard[group.key.geoHazard]].webUrl[
+          LangKey[supportedLang]
+        ];
       if (url) {
-        return encodeURI(url
-          .replace('{regionName}', group.key.groupName)
-          .replace('{regionId}', group.key.groupId)
-          .replace('{day}', day));
+        return encodeURI(
+          url
+            .replace('{regionName}', group.key.groupName)
+            .replace('{regionId}', group.key.groupId)
+            .replace('{day}', day)
+        );
       } else {
         return null;
       }
@@ -114,20 +130,29 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     event.preventDefault();
     const url = await this.getUrl(group);
     if (url) {
-      this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
+      this.analyticService.trackEvent(
+        AppEventCategory.Warnings,
+        AppEventAction.Click,
+        group.getKeyAsString()
+      );
       this.externalLinkService.openExternalLink(url);
     }
   }
 
   async navigateToWebByDay(event: Event, group: WarningGroup, day: number) {
     event.preventDefault();
-    const dateString = moment().startOf('day').add(day, 'days')
+    const dateString = moment()
+      .startOf('day')
+      .add(day, 'days')
       .format(settings.services.warning.dateFormat);
     const url = await this.getUrl(group, dateString);
     if (url) {
-      this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
+      this.analyticService.trackEvent(
+        AppEventCategory.Warnings,
+        AppEventAction.Click,
+        group.getKeyAsString()
+      );
       this.externalLinkService.openExternalLink(url);
     }
   }
-
 }

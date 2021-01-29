@@ -9,7 +9,6 @@ import { IRegistration } from '../models/registration.model';
   providedIn: 'root'
 })
 export class BasePageService {
-
   get Zone() {
     return this.ngZone;
   }
@@ -30,33 +29,60 @@ export class BasePageService {
     private registrationService: RegistrationService,
     private ngZone: NgZone,
     private alertController: AlertController,
-    private translateService: TranslateService) {
-  }
+    private translateService: TranslateService
+  ) {}
 
-  async confirmLeave(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+  async confirmLeave(
+    registration: IRegistration,
+    registrationTid: RegistrationTid,
+    onReset?: () => void
+  ) {
     const leaveText = await this.translateService
-      .get('REGISTRATION.REQUIRED_FIELDS_MISSING').toPromise();
-    return this.createResetDialog(leaveText, registration, registrationTid, onReset);
+      .get('REGISTRATION.REQUIRED_FIELDS_MISSING')
+      .toPromise();
+    return this.createResetDialog(
+      leaveText,
+      registration,
+      registrationTid,
+      onReset
+    );
   }
 
-  async confirmReset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+  async confirmReset(
+    registration: IRegistration,
+    registrationTid: RegistrationTid,
+    onReset?: () => void
+  ) {
     const leaveText = await this.translateService
-      .get('REGISTRATION.CONFIRM_RESET').toPromise();
-    return this.createResetDialog(leaveText, registration, registrationTid, onReset);
+      .get('REGISTRATION.CONFIRM_RESET')
+      .toPromise();
+    return this.createResetDialog(
+      leaveText,
+      registration,
+      registrationTid,
+      onReset
+    );
   }
 
-  private async createResetDialog(message: string, registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
-    const translations = await this.translateService.get(['DIALOGS.CANCEL', 'DIALOGS.YES']).toPromise();
+  private async createResetDialog(
+    message: string,
+    registration: IRegistration,
+    registrationTid: RegistrationTid,
+    onReset?: () => void
+  ) {
+    const translations = await this.translateService
+      .get(['DIALOGS.CANCEL', 'DIALOGS.YES'])
+      .toPromise();
     const alert = await this.alertController.create({
       message,
       buttons: [
         {
           text: translations['DIALOGS.CANCEL'],
-          role: 'cancel',
+          role: 'cancel'
         },
         {
-          text: translations['DIALOGS.YES'],
-        },
+          text: translations['DIALOGS.YES']
+        }
       ]
     });
     await alert.present();
@@ -68,11 +94,16 @@ export class BasePageService {
     return reset;
   }
 
-  async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+  async reset(
+    registration: IRegistration,
+    registrationTid: RegistrationTid,
+    onReset?: () => void
+  ) {
     this.Zone.run(() => {
       if (registrationTid) {
-        registration.request[this.registrationService.getPropertyName(registrationTid)]
-          = this.getDefaultValue(registrationTid);
+        registration.request[
+          this.registrationService.getPropertyName(registrationTid)
+        ] = this.getDefaultValue(registrationTid);
         this.resetImages(registration, registrationTid);
       }
       if (onReset) {
@@ -82,15 +113,18 @@ export class BasePageService {
     await this.registrationService.saveRegistrationAsync(registration);
   }
 
-  createDefaultProps(registration: IRegistration, registrationTid: RegistrationTid) {
+  createDefaultProps(
+    registration: IRegistration,
+    registrationTid: RegistrationTid
+  ) {
     const propName = this.registrationService.getPropertyName(registrationTid);
-    if (!registration.request[propName]) { // Init to new object if null
+    if (!registration.request[propName]) {
+      // Init to new object if null
       registration.request[propName] = this.getDefaultValue(registrationTid);
     }
     if (!registration.request.Picture) {
       registration.request.Picture = [];
     }
-
   }
 
   getDefaultValue(registrationTid: RegistrationTid) {
@@ -102,12 +136,20 @@ export class BasePageService {
   }
 
   resetImages(registration: IRegistration, registrationTid: RegistrationTid) {
-    if (registration.request.Picture && registration.request.Picture.length > 0) {
-      registration.request.Picture = registration.request.Picture.filter((p) => p.RegistrationTID !== registrationTid);
+    if (
+      registration.request.Picture &&
+      registration.request.Picture.length > 0
+    ) {
+      registration.request.Picture = registration.request.Picture.filter(
+        (p) => p.RegistrationTID !== registrationTid
+      );
     }
   }
 
   hasImages(registration: IRegistration, registrationTid: RegistrationTid) {
-    return this.registrationService.getImages(registration, registrationTid).length > 0;
+    return (
+      this.registrationService.getImages(registration, registrationTid).length >
+      0
+    );
   }
 }

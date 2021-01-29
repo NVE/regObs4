@@ -15,10 +15,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    AuthRoutingModule
-  ],
+  imports: [CommonModule, AuthRoutingModule],
   providers: [
     {
       provide: StorageBackend,
@@ -38,8 +35,15 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
     {
       provide: AuthService,
       useFactory: authFactory,
-      deps: [Platform, NgZone, Requestor, Browser, StorageBackend, UserSettingService]
+      deps: [
+        Platform,
+        NgZone,
+        Requestor,
+        Browser,
+        StorageBackend,
+        UserSettingService
+      ]
     }
   ]
 })
-export class AuthModule { }
+export class AuthModule {}

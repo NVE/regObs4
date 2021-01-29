@@ -1,4 +1,4 @@
 export enum AppEventCategory {
-    Observations = 'observations',
-    Warnings = 'warnings',
+  Observations = 'observations',
+  Warnings = 'warnings'
 }

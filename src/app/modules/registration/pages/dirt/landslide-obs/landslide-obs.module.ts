@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: '',
     component: LandslideObsPage,
-    canDeactivate: [CanDeactivateRouteGuard],
+    canDeactivate: [CanDeactivateRouteGuard]
   }
 ];
 
@@ -23,4 +23,4 @@ const routes: Routes = [
   ],
   declarations: [LandslideObsPage]
 })
-export class LandslideObsPageModule { }
+export class LandslideObsPageModule {}

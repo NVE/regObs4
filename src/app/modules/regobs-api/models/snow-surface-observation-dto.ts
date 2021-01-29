@@ -1,6 +1,5 @@
 /* tslint:disable */
 export interface SnowSurfaceObservationDto {
-
   /**
    * Total snødybde i cm. Vi ønsker et gjennomsnitt for området.
    */

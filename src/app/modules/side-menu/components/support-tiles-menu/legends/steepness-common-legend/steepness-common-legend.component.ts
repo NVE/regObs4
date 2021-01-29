@@ -9,9 +9,7 @@ import { SupportMapInfoPage } from '../../../../../map/pages/support-map-info/su
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SteepnessCommonLegendComponent {
-
-  constructor(private modalController: ModalController) {
-  }
+  constructor(private modalController: ModalController) {}
 
   async openAboutMapsModal() {
     const modalInfoPage = await this.modalController.create({

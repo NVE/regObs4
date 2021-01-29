@@ -1,4 +1,11 @@
-import { ComponentFixture, TestBed, flush, fakeAsync, flushMicrotasks, waitForAsync } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  flush,
+  fakeAsync,
+  flushMicrotasks,
+  waitForAsync
+} from '@angular/core/testing';
 import { GeoNameComponent } from './geo-name.component';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
 import { Spied, provideMock } from '../../../../core/helpers/spied';
@@ -9,14 +16,16 @@ describe('GeoNameComponent', () => {
   let fixture: ComponentFixture<GeoNameComponent>;
   let geoHelperService: Spied<GeoHelperService>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [GeoNameComponent],
-      providers: [GeoHelperService, provideMock(GeoHelperService)]
-    });
-    geoHelperService = TestBed.get(GeoHelperService);
-    TestBed.compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [GeoNameComponent],
+        providers: [GeoHelperService, provideMock(GeoHelperService)]
+      });
+      geoHelperService = TestBed.get(GeoHelperService);
+      TestBed.compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GeoNameComponent);

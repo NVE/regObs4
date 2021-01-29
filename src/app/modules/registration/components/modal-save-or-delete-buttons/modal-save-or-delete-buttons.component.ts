@@ -8,7 +8,6 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./modal-save-or-delete-buttons.component.scss']
 })
 export class ModalSaveOrDeleteButtonsComponent implements OnInit {
-
   @Input() saveText = 'DIALOGS.OK';
   @Input() saveDisabled = false;
   @Output() saveClicked = new EventEmitter();
@@ -17,10 +16,12 @@ export class ModalSaveOrDeleteButtonsComponent implements OnInit {
   @Input() alertTitle = 'DIALOGS.ARE_YOU_SURE';
   @Input() alertMessage = '';
 
-  constructor(private translateService: TranslateService, private alertController: AlertController) { }
+  constructor(
+    private translateService: TranslateService,
+    private alertController: AlertController
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ok() {
     this.saveClicked.emit();
@@ -31,7 +32,9 @@ export class ModalSaveOrDeleteButtonsComponent implements OnInit {
     if (this.alertMessage) {
       toTranslate.push(this.alertMessage);
     }
-    const translations = await this.translateService.get(toTranslate).toPromise();
+    const translations = await this.translateService
+      .get(toTranslate)
+      .toPromise();
     const alert = await this.alertController.create({
       header: translations[this.alertTitle],
       message: this.alertMessage ? translations[this.alertMessage] : undefined,
@@ -44,11 +47,10 @@ export class ModalSaveOrDeleteButtonsComponent implements OnInit {
           text: translations['DIALOGS.OK'],
           handler: () => {
             this.deleteClicked.emit();
-          },
+          }
         }
       ]
     });
     alert.present();
   }
-
 }

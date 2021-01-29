@@ -3,7 +3,10 @@ import * as L from 'leaflet';
 import { IRegistration } from '../../models/registration.model';
 import { RegistrationService } from '../../services/registration.service';
 import { NavController } from '@ionic/angular';
-import { ObsLocationsResponseDtoV2, ObsLocationDto } from '../../../regobs-api/models';
+import {
+  ObsLocationsResponseDtoV2,
+  ObsLocationDto
+} from '../../../regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { Observable, Subscription } from 'rxjs';
@@ -20,7 +23,7 @@ const DEBUG_TAG = 'ObsLocationPage';
 @Component({
   selector: 'app-obs-location',
   templateUrl: './obs-location.page.html',
-  styleUrls: ['./obs-location.page.scss'],
+  styleUrls: ['./obs-location.page.scss']
 })
 export class ObsLocationPage implements OnInit, OnDestroy {
   locationMarker: L.Marker;
@@ -30,7 +33,8 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   fullscreen$: Observable<boolean>;
   geoHazard: GeoHazard;
   isSaveDisabled = false;
-  @ViewChild(SetLocationInMapComponent) setLocationInMapComponent: SetLocationInMapComponent;
+  @ViewChild(SetLocationInMapComponent)
+  setLocationInMapComponent: SetLocationInMapComponent;
 
   private subscription: Subscription;
   private loggedInUser: LoggedInUser;
@@ -51,15 +55,21 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   async ngOnInit() {
     const id = this.activatedRoute.snapshot.params['id'];
     if (id) {
-      this.registration =
-        await this.registrationService.getSavedRegistrationById(id);
+      this.registration = await this.registrationService.getSavedRegistrationById(
+        id
+      );
       this.geoHazard = this.registration?.geoHazard;
     } else if (this.activatedRoute.snapshot.params['geoHazard']) {
-      this.geoHazard = parseInt(this.activatedRoute.snapshot.params['geoHazard'], 10);
+      this.geoHazard = parseInt(
+        this.activatedRoute.snapshot.params['geoHazard'],
+        10
+      );
     }
-    if(this.geoHazard == null){
+    if (this.geoHazard == null) {
       // No geohazard found, use app mode
-      const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+      const userSettings = await this.userSettingService.userSetting$
+        .pipe(take(1))
+        .toPromise();
       this.geoHazard = userSettings.currentGeoHazard[0];
     }
     if (this.hasLocation(this.registration)) {
@@ -68,22 +78,27 @@ export class ObsLocationPage implements OnInit, OnDestroy {
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         shadowUrl: 'leaflet/marker-shadow.png',
-        shadowSize: [41, 41],
+        shadowSize: [41, 41]
       });
       this.locationMarker = L.marker(
         {
           lat: this.registration.request.ObsLocation.Latitude,
           lng: this.registration.request.ObsLocation.Longitude
-        }, { icon: locationMarkerIcon }
+        },
+        { icon: locationMarkerIcon }
       );
       this.selectedLocation = {
-        Name: this.registration.request.ObsLocation.LocationName || this.registration.request.ObsLocation.LocationDescription,
-        Id: this.registration.request.ObsLocation.ObsLocationID,
+        Name:
+          this.registration.request.ObsLocation.LocationName ||
+          this.registration.request.ObsLocation.LocationDescription,
+        Id: this.registration.request.ObsLocation.ObsLocationID
       };
     }
-    this.subscription = this.regobsAuthService.loggedInUser$.subscribe((val) => {
-      this.loggedInUser = val;
-    });
+    this.subscription = this.regobsAuthService.loggedInUser$.subscribe(
+      (val) => {
+        this.loggedInUser = val;
+      }
+    );
 
     this.ngZone.run(() => {
       this.isLoaded = true;
@@ -105,10 +120,12 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   }
 
   private hasLocation(reg: IRegistration) {
-    return reg
-      && reg.request.ObsLocation
-      && reg.request.ObsLocation.Latitude
-      && reg.request.ObsLocation.Longitude;
+    return (
+      reg &&
+      reg.request.ObsLocation &&
+      reg.request.ObsLocation.Latitude &&
+      reg.request.ObsLocation.Longitude
+    );
   }
 
   onLocationSet(event: ObsLocationDto) {
@@ -116,13 +133,20 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.isSaveDisabled = true;
     });
     if (!this.registration) {
-      this.registration = this.registrationService.createNewRegistration(this.geoHazard, this.loggedInUser);
+      this.registration = this.registrationService.createNewRegistration(
+        this.geoHazard,
+        this.loggedInUser
+      );
     }
     this.setLocationAndSaveRegistration(event);
     if (this.registration.request.DtObsTime) {
-      this.navController.navigateForward('registration/edit/' + this.registration.id);
+      this.navController.navigateForward(
+        'registration/edit/' + this.registration.id
+      );
     } else {
-      this.navController.navigateForward('registration/set-time/' + this.registration.id);
+      this.navController.navigateForward(
+        'registration/set-time/' + this.registration.id
+      );
     }
   }
 

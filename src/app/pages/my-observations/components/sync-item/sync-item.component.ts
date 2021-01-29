@@ -10,7 +10,6 @@ import { map, filter } from 'rxjs/operators';
   styleUrls: ['./sync-item.component.scss']
 })
 export class SyncItemComponent implements OnInit, OnDestroy {
-
   @Input() registration: IRegistration;
   @Input() refresh: boolean;
   private subscriptions: Subscription[] = [];
@@ -18,24 +17,33 @@ export class SyncItemComponent implements OnInit, OnDestroy {
 
   constructor(
     private registrationService: RegistrationService,
-    private ngZone: NgZone) { }
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
     if (this.refresh) {
-      this.subscriptions.push(this.registrationService.getRegistrationsToSync().pipe(
-        map((val: IRegistration[]) =>
-          val.find((item) => item.id === this.registration.id)),
-        filter((x) => !!x)
-      ).subscribe((val) => {
-        this.ngZone.run(() => {
-          this.registration = val;
-        });
-      }));
-      this.subscriptions.push(this.registrationService.getDataLoadState().subscribe((val) => {
-        this.ngZone.run(() => {
-          this.loading = val.isLoading;
-        });
-      }));
+      this.subscriptions.push(
+        this.registrationService
+          .getRegistrationsToSync()
+          .pipe(
+            map((val: IRegistration[]) =>
+              val.find((item) => item.id === this.registration.id)
+            ),
+            filter((x) => !!x)
+          )
+          .subscribe((val) => {
+            this.ngZone.run(() => {
+              this.registration = val;
+            });
+          })
+      );
+      this.subscriptions.push(
+        this.registrationService.getDataLoadState().subscribe((val) => {
+          this.ngZone.run(() => {
+            this.loading = val.isLoading;
+          });
+        })
+      );
     }
   }
 
@@ -46,8 +54,9 @@ export class SyncItemComponent implements OnInit, OnDestroy {
   }
 
   getLocationName(reg: IRegistration) {
-    return reg.request.ObsLocation ? (reg.request.ObsLocation.LocationName
-      || reg.request.ObsLocation.LocationDescription) : '';
+    return reg.request.ObsLocation
+      ? reg.request.ObsLocation.LocationName ||
+          reg.request.ObsLocation.LocationDescription
+      : '';
   }
-
 }

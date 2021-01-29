@@ -8,13 +8,17 @@ describe('SteepnessOutletLegendComponent', () => {
   let component: SteepnessOutletLegendComponent;
   let fixture: ComponentFixture<SteepnessOutletLegendComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [SharedModule, TranslateModule.forRoot()],
-      declarations: [SteepnessCommonLegendComponent, SteepnessOutletLegendComponent]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [SharedModule, TranslateModule.forRoot()],
+        declarations: [
+          SteepnessCommonLegendComponent,
+          SteepnessOutletLegendComponent
+        ]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SteepnessOutletLegendComponent);

@@ -22,7 +22,7 @@ const routes: Routes = [
     SharedModule,
     SharedComponentsModule,
     FullscreenImageModalPageModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes)
   ],
   declarations: [
     MyObservationsPage,
@@ -31,4 +31,4 @@ const routes: Routes = [
     SentListComponent
   ]
 })
-export class MyObservationsPageModule { }
+export class MyObservationsPageModule {}

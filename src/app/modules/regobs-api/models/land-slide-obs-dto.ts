@@ -1,7 +1,6 @@
 /* tslint:disable */
 import { UrlViewModel } from './url-view-model';
 export interface LandSlideObsDto {
-
   /**
    * Latitude start posisjon
    */

@@ -9,7 +9,7 @@ import { SelectOption } from '../../../../shared/components/input/select/select-
 @Component({
   selector: 'app-weather',
   templateUrl: './weather.page.html',
-  styleUrls: ['./weather.page.scss'],
+  styleUrls: ['./weather.page.scss']
 })
 export class WeatherPage extends BasePage {
   windDirectionOptions: SelectOption[] = [
@@ -25,7 +25,7 @@ export class WeatherPage extends BasePage {
 
   constructor(
     basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
+    activatedRoute: ActivatedRoute
   ) {
     super(RegistrationTid.WeatherObservation, basePageService, activatedRoute);
   }

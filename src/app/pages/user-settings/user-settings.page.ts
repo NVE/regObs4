@@ -1,7 +1,11 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import { NavController, AlertController, LoadingController } from '@ionic/angular';
+import {
+  NavController,
+  AlertController,
+  LoadingController
+} from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
 import { KdvService } from '../../core/services/kdv/kdv.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -22,7 +26,7 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
 @Component({
   selector: 'app-user-settings',
   templateUrl: './user-settings.page.html',
-  styleUrls: ['./user-settings.page.scss'],
+  styleUrls: ['./user-settings.page.scss']
 })
 export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;
@@ -34,14 +38,24 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   version: AppVersion;
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
-  supportedLanguages: { lang: string, name: string, langKey: LangKey }[] =
-    settings.language.supportedLanguages.map((lang) => ({ ...lang, langKey: LangKey[lang.lang] }));
+  supportedLanguages: {
+    lang: string;
+    name: string;
+    langKey: LangKey;
+  }[] = settings.language.supportedLanguages.map((lang) => ({
+    ...lang,
+    langKey: LangKey[lang.lang]
+  }));
 
   get appModeOptions() {
     const options: SelectOption[] = [
       { id: 'PROD', text: 'Regobs' },
       { id: 'DEMO', text: 'Demo Regobs' },
-      { id: 'TEST', text: 'Test Regobs', disabled: !this.userSettings.featureToggleDeveloperMode }
+      {
+        id: 'TEST',
+        text: 'Test Regobs',
+        disabled: !this.userSettings.featureToggleDeveloperMode
+      }
     ];
     return options;
   }
@@ -58,21 +72,30 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private appVersionService: AppVersionService,
     private loadingController: LoadingController,
     private appResetService: AppResetService,
-    private navController: NavController) { }
+    private navController: NavController
+  ) {}
 
   async ngOnInit() {
     this.versionClicks = 0;
-    this.subscriptions.push(this.userSettingService.userSetting$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.userSettings = val;
-      });
-    }));
-    this.subscriptions.push(this.offlineMapService.getTilesCacheAsObservable().subscribe((tilesCache) => {
-      this.ngZone.run(() => {
-        this.numberOfCacheTiles = tilesCache?.count ?? 0;
-        this.cacheTilesSize = this.helperService.humanReadableByteSize(tilesCache?.size ?? 0);
-      });
-    }));
+    this.subscriptions.push(
+      this.userSettingService.userSetting$.subscribe((val) => {
+        this.ngZone.run(() => {
+          this.userSettings = val;
+        });
+      })
+    );
+    this.subscriptions.push(
+      this.offlineMapService
+        .getTilesCacheAsObservable()
+        .subscribe((tilesCache) => {
+          this.ngZone.run(() => {
+            this.numberOfCacheTiles = tilesCache?.count ?? 0;
+            this.cacheTilesSize = this.helperService.humanReadableByteSize(
+              tilesCache?.size ?? 0
+            );
+          });
+        })
+    );
     const appver = await this.appVersionService.getAppVersion();
     this.ngZone.run(() => {
       this.version = appver;
@@ -92,7 +115,10 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   versionClick() {
     this.versionClicks++;
-    if (this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE && !this.userSettings.featureToggleDeveloperMode) {
+    if (
+      this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE &&
+      !this.userSettings.featureToggleDeveloperMode
+    ) {
       this.userSettings.featureToggleDeveloperMode = true;
       this.updateSettings();
     }
@@ -109,7 +135,10 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   async updateDropdowns() {
     this.isUpdating = true;
     // TODO: Show loading with cancel
-    const updated = await this.kdvService.updateKdvElementsForLanguage(this.userSettings.appMode, this.userSettings.language);
+    const updated = await this.kdvService.updateKdvElementsForLanguage(
+      this.userSettings.appMode,
+      this.userSettings.language
+    );
     await this.showKdvElementsUpdated(updated);
     this.ngZone.run(() => {
       this.isUpdating = false;
@@ -117,10 +146,17 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   async showKdvElementsUpdated(ok: boolean) {
-    const translations = await this.translateService.get(
-      ['SETTINGS.DROPDOWNS_UPDATED', 'SETTINGS.DROPDOWNS_FAILED', 'ALERT.OK']).toPromise();
+    const translations = await this.translateService
+      .get([
+        'SETTINGS.DROPDOWNS_UPDATED',
+        'SETTINGS.DROPDOWNS_FAILED',
+        'ALERT.OK'
+      ])
+      .toPromise();
     const alert = await this.alertController.create({
-      message: ok ? translations['SETTINGS.DROPDOWNS_UPDATED'] : translations['SETTINGS.DROPDOWNS_FAILED'],
+      message: ok
+        ? translations['SETTINGS.DROPDOWNS_UPDATED']
+        : translations['SETTINGS.DROPDOWNS_FAILED'],
       buttons: [translations['ALERT.OK']]
     });
     alert.present();
@@ -128,27 +164,31 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   async confirmReset() {
-    const translations = await this.translateService.get(
-      ['SETTINGS.CONFIRM_RESET', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
+    const translations = await this.translateService
+      .get(['SETTINGS.CONFIRM_RESET', 'ALERT.OK', 'ALERT.CANCEL'])
+      .toPromise();
     const alert = await this.alertController.create({
       message: translations['SETTINGS.CONFIRM_RESET'],
-      buttons: [{
-        text: translations['ALERT.OK'],
-        handler: () => this.reset(),
-      },
-      {
-        text: translations['ALERT.CANCEL'],
-        role: 'cancel',
-      }
+      buttons: [
+        {
+          text: translations['ALERT.OK'],
+          handler: () => this.reset()
+        },
+        {
+          text: translations['ALERT.CANCEL'],
+          role: 'cancel'
+        }
       ]
     });
     alert.present();
   }
 
   async reset() {
-    const message = await this.translateService.get('SETTINGS.RESETTING').toPromise();
+    const message = await this.translateService
+      .get('SETTINGS.RESETTING')
+      .toPromise();
     const loading = await this.loadingController.create({
-      message,
+      message
     });
     loading.present();
     this.isUpdating = true;
@@ -156,7 +196,12 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     try {
       await this.doReset();
     } catch (err) {
-      this.loggingService.log('Could not reset db', err, LogLevel.Warning, DEBUG_TAG);
+      this.loggingService.log(
+        'Could not reset db',
+        err,
+        LogLevel.Warning,
+        DEBUG_TAG
+      );
     }
     this.ngZone.run(() => {
       this.isUpdating = false;

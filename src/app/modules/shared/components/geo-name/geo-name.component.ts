@@ -9,14 +9,11 @@ import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
   styleUrls: ['./geo-name.component.scss']
 })
 export class GeoNameComponent implements OnInit {
-
   @Input() geoHazards: GeoHazard[];
 
   name$: Observable<string>;
 
-  constructor(private geoHelperService: GeoHelperService) {
-
-  }
+  constructor(private geoHelperService: GeoHelperService) {}
 
   ngOnInit() {
     this.name$ = this.geoHelperService.getName(this.geoHazards);

@@ -8,19 +8,17 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 @Component({
   selector: 'app-incident',
   templateUrl: './incident.page.html',
-  styleUrls: ['./incident.page.scss'],
+  styleUrls: ['./incident.page.scss']
 })
 export class IncidentPage extends BasePage {
-
   get geoHazardName() {
     return GeoHazard[this.registration.geoHazard];
   }
 
   constructor(
     basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
+    activatedRoute: ActivatedRoute
   ) {
     super(RegistrationTid.Incident, basePageService, activatedRoute);
   }
-
 }

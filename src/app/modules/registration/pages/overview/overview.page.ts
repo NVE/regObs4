@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, NgZone } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  OnDestroy,
+  NgZone
+} from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { Subscription, combineLatest, of, from } from 'rxjs';
 import { IRegistration } from '../../models/registration.model';
@@ -15,7 +21,7 @@ import { switchMap } from 'rxjs/operators';
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.page.html',
-  styleUrls: ['./overview.page.scss'],
+  styleUrls: ['./overview.page.scss']
 })
 export class OverviewPage implements OnInit, OnDestroy {
   registration: IRegistration;
@@ -36,25 +42,33 @@ export class OverviewPage implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private activatedRoute: ActivatedRoute,
     private summaryItemService: SummaryItemService,
-    private userGroupService: UserGroupService) {
-  }
+    private userGroupService: UserGroupService
+  ) {}
 
   ngOnInit() {
-    this.registrationSubscription = this.regiatration$.subscribe((registration) => {
-      this.ngZone.run(() => {
-        this.registration = registration;
+    this.registrationSubscription = this.regiatration$.subscribe(
+      (registration) => {
+        this.ngZone.run(() => {
+          this.registration = registration;
+        });
+      }
+    );
+    this.summarySubscription = combineLatest([
+      this.regiatration$,
+      this.userGroupService.getUserGroupsAsObservable()
+    ])
+      .pipe(
+        switchMap(([registration, userGroups]) =>
+          from(
+            this.summaryItemService.getSummaryItems(registration, userGroups)
+          )
+        )
+      )
+      .subscribe((summaryItems) => {
+        this.ngZone.run(() => {
+          this.summaryItems = summaryItems;
+        });
       });
-    });
-    this.summarySubscription = combineLatest(
-      [this.regiatration$,
-        this.userGroupService.getUserGroupsAsObservable()]
-    ).pipe(switchMap(([registration, userGroups]) =>
-      from(this.summaryItemService.getSummaryItems(registration, userGroups))
-    )).subscribe((summaryItems) => {
-      this.ngZone.run(() => {
-        this.summaryItems = summaryItems;
-      });
-    });
     this.userGroupService.updateUserGroups();
   }
 

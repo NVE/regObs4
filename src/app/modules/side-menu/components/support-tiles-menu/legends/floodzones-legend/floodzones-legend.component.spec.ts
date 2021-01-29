@@ -6,13 +6,14 @@ describe('FloodzonesLegendComponent', () => {
   let component: FloodzonesLegendComponent;
   let fixture: ComponentFixture<FloodzonesLegendComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [TestModule],
-      declarations: [FloodzonesLegendComponent]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [TestModule],
+        declarations: [FloodzonesLegendComponent]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FloodzonesLegendComponent);

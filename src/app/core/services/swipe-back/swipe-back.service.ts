@@ -6,7 +6,6 @@ import { shareReplay } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class SwipeBackService {
-
   private _subject: Subject<boolean>;
 
   swipeBackEnabled$: Observable<boolean>;

@@ -1,5 +1,8 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
-import { TempProfileObsDto, TempObsDto } from '../../../../../../regobs-api/models';
+import {
+  TempProfileObsDto,
+  TempObsDto
+} from '../../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
 import { IRegistration } from '../../../../../models/registration.model';
@@ -12,10 +15,9 @@ import { ThrowStmt } from '@angular/compiler';
 @Component({
   selector: 'app-snow-temp-modal',
   templateUrl: './snow-temp-modal.page.html',
-  styleUrls: ['./snow-temp-modal.page.scss'],
+  styleUrls: ['./snow-temp-modal.page.scss']
 })
 export class SnowTempModalPage implements OnInit, OnDestroy {
-
   @Input() regId: string;
   private layerModal: HTMLIonModalElement;
   private initialRegistrationClone: IRegistration;
@@ -24,7 +26,12 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   private ngDestroy$ = new Subject();
 
   get tempProfile() {
-    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.SnowTemp) {
+    if (
+      this.reg &&
+      this.reg.request &&
+      this.reg.request.SnowProfile2 &&
+      this.reg.request.SnowProfile2.SnowTemp
+    ) {
       return this.reg.request.SnowProfile2.SnowTemp;
     }
 
@@ -32,30 +39,41 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   }
 
   get hasLayers() {
-    return this.tempProfile && this.tempProfile.Layers && this.tempProfile.Layers.length > 0;
+    return (
+      this.tempProfile &&
+      this.tempProfile.Layers &&
+      this.tempProfile.Layers.length > 0
+    );
   }
 
-  constructor(private modalController: ModalController, private registrationService: RegistrationService, private ngZone: NgZone) { }
+  constructor(
+    private modalController: ModalController,
+    private registrationService: RegistrationService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
-    this.registrationService.getSavedRegistrationByIdObservable(this.regId).pipe(takeUntil(this.ngDestroy$)).subscribe((reg) => {
-      this.ngZone.run(() => {
-        if (!this.initialRegistrationClone) {
-          this.initialRegistrationClone = cloneDeep(reg);
-        }
-        this.reg = reg;
-        if (!this.reg.request.SnowProfile2) {
-          this.reg.request.SnowProfile2 = {};
-        }
-        if (!this.reg.request.SnowProfile2.SnowTemp) {
-          this.reg.request.SnowProfile2.SnowTemp = {};
-        }
-        if (!this.reg.request.SnowProfile2.SnowTemp.Layers) {
-          this.reg.request.SnowProfile2.SnowTemp.Layers = [];
-        }
-        this.sortLayers();
+    this.registrationService
+      .getSavedRegistrationByIdObservable(this.regId)
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((reg) => {
+        this.ngZone.run(() => {
+          if (!this.initialRegistrationClone) {
+            this.initialRegistrationClone = cloneDeep(reg);
+          }
+          this.reg = reg;
+          if (!this.reg.request.SnowProfile2) {
+            this.reg.request.SnowProfile2 = {};
+          }
+          if (!this.reg.request.SnowProfile2.SnowTemp) {
+            this.reg.request.SnowProfile2.SnowTemp = {};
+          }
+          if (!this.reg.request.SnowProfile2.SnowTemp.Layers) {
+            this.reg.request.SnowProfile2.SnowTemp.Layers = [];
+          }
+          this.sortLayers();
+        });
       });
-    });
     this.initialRegistrationClone = cloneDeep(this.reg);
   }
 
@@ -69,12 +87,17 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistrationAsync(this.initialRegistrationClone);
+    await this.registrationService.saveRegistrationAsync(
+      this.initialRegistrationClone
+    );
     this.modalController.dismiss();
   }
 
   addLayerBottom() {
-    this.addOrEditLayer(this.hasLayers ? (this.tempProfile.Layers.length) : 0, undefined);
+    this.addOrEditLayer(
+      this.hasLayers ? this.tempProfile.Layers.length : 0,
+      undefined
+    );
   }
 
   async addOrEditLayer(index: number, layer: TempProfileObsDto) {
@@ -84,7 +107,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
         componentProps: {
           reg: this.reg,
           layer,
-          index,
+          index
         }
       });
       this.layerModal.present();
@@ -96,8 +119,9 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
 
   private sortLayers() {
     if (this.tempProfile && this.tempProfile.Layers) {
-      this.tempProfile.Layers = this.tempProfile.Layers.sort((a, b) => a.Depth - b.Depth);
+      this.tempProfile.Layers = this.tempProfile.Layers.sort(
+        (a, b) => a.Depth - b.Depth
+      );
     }
   }
-
 }

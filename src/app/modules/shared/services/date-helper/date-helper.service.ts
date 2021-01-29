@@ -6,16 +6,31 @@ import moment from 'moment';
   providedIn: 'root'
 })
 export class DateHelperService {
+  constructor(private translateService: TranslateService) {}
 
-  constructor(private translateService: TranslateService) {
-
+  formatDateString(
+    dateString: string,
+    showMonthNames = true,
+    showYear = true,
+    showTime = true,
+    currentTimeZone: string = null
+  ) {
+    return this.formatDate(
+      moment.parseZone(dateString),
+      showMonthNames,
+      showYear,
+      showTime,
+      currentTimeZone
+    );
   }
 
-  formatDateString(dateString: string, showMonthNames = true, showYear = true, showTime = true, currentTimeZone: string = null) {
-    return this.formatDate(moment.parseZone(dateString), showMonthNames, showYear, showTime, currentTimeZone);
-  }
-
-  async formatDate(date: moment.Moment, showMonthNames = true, showYear = true, showTime = true, currentTimeZone: string = null) {
+  async formatDate(
+    date: moment.Moment,
+    showMonthNames = true,
+    showYear = true,
+    showTime = true,
+    currentTimeZone: string = null
+  ) {
     const timezone = currentTimeZone || moment().format('Z');
     if (!date.isValid()) {
       return '';
@@ -23,7 +38,9 @@ export class DateHelperService {
     const parts = [];
     let dateAndMonth = date.format('DD/MM');
     if (showMonthNames) {
-      const monthNames = await this.translateService.get('MONTHS.SHORT_LIST').toPromise();
+      const monthNames = await this.translateService
+        .get('MONTHS.SHORT_LIST')
+        .toPromise();
       const monthName = monthNames.split(',')[date.month()].trim();
       dateAndMonth = `${date.format('D')}. ${monthName}`;
     }

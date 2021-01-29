@@ -3,10 +3,8 @@ import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal.page
 import { SharedComponentsModule } from '../../../shared-components.module';
 
 @NgModule({
-  imports: [
-    SharedComponentsModule,
-  ],
+  imports: [SharedComponentsModule],
   declarations: [AddOrEditDangerObsModalPage],
-  entryComponents: [AddOrEditDangerObsModalPage],
+  entryComponents: [AddOrEditDangerObsModalPage]
 })
-export class AddOrEditDangerObsModalPageModule { }
+export class AddOrEditDangerObsModalPageModule {}

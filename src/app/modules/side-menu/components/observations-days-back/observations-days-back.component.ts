@@ -14,20 +14,26 @@ import { settings } from '../../../../../settings';
 })
 export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   selectedDaysBack: number;
-  daysBackOptions: { val: number, text: string }[];
+  daysBackOptions: { val: number; text: string }[];
   subscription: Subscription;
 
-  constructor(private userSettingService: UserSettingService, private zone: NgZone, private loggingService: LoggingService) { }
+  constructor(
+    private userSettingService: UserSettingService,
+    private zone: NgZone,
+    private loggingService: LoggingService
+  ) {}
 
   ngOnInit() {
     this.subscription = combineLatest([
       this.userSettingService.daysBack$,
-      this.userSettingService.currentGeoHazard$]
-    ).subscribe(([daysBack, currentGeoHazard]) => {
+      this.userSettingService.currentGeoHazard$
+    ]).subscribe(([daysBack, currentGeoHazard]) => {
       const geoHazard = currentGeoHazard[0];
       this.zone.run(() => {
         this.daysBackOptions = this.getDaysBackArray(geoHazard);
-        const daysBackForCurrentGeoHazard = daysBack.find((x) => x.geoHazard === geoHazard);
+        const daysBackForCurrentGeoHazard = daysBack.find(
+          (x) => x.geoHazard === geoHazard
+        );
         if (daysBackForCurrentGeoHazard) {
           this.selectedDaysBack = daysBackForCurrentGeoHazard.daysBack;
         }
@@ -40,17 +46,23 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   }
 
   getDaysBackArray(geoHazard: GeoHazard) {
-    return settings.observations.daysBack[GeoHazard[geoHazard]].map((val: number) => ({
-      val: val,
-      text: val === 0 ? 'MENU.TODAYS_OBSERVATIONS' : undefined,
-    }));
+    return settings.observations.daysBack[GeoHazard[geoHazard]].map(
+      (val: number) => ({
+        val: val,
+        text: val === 0 ? 'MENU.TODAYS_OBSERVATIONS' : undefined
+      })
+    );
   }
 
   async save() {
-    const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const userSetting = await this.userSettingService.userSetting$
+      .pipe(take(1))
+      .toPromise();
     let changed = false;
     for (const geoHazard of userSetting.currentGeoHazard) {
-      const existingValue = userSetting.observationDaysBack.find((x) => x.geoHazard === geoHazard);
+      const existingValue = userSetting.observationDaysBack.find(
+        (x) => x.geoHazard === geoHazard
+      );
       if (existingValue.daysBack !== this.selectedDaysBack) {
         existingValue.daysBack = this.selectedDaysBack;
         changed = true;

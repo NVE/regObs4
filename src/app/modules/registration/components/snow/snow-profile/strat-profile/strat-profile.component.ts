@@ -12,13 +12,17 @@ import { StratProfileDto } from '../../../../../regobs-api/models';
   styleUrls: ['./strat-profile.component.scss']
 })
 export class StratProfileComponent implements OnInit {
-
   @Input() reg: IRegistration;
 
   private modal: HTMLIonModalElement;
 
   get profile(): StratProfileDto {
-    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.StratProfile) {
+    if (
+      this.reg &&
+      this.reg.request &&
+      this.reg.request.SnowProfile2 &&
+      this.reg.request.SnowProfile2.StratProfile
+    ) {
       return this.reg.request.SnowProfile2.StratProfile;
     }
     return {};
@@ -28,10 +32,12 @@ export class StratProfileComponent implements OnInit {
     return IsEmptyHelper.isEmpty(this.profile);
   }
 
-  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) { }
+  constructor(
+    private modalContoller: ModalController,
+    private registrationService: RegistrationService
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async openModal() {
     if (!this.modal) {
@@ -39,7 +45,7 @@ export class StratProfileComponent implements OnInit {
       this.modal = await this.modalContoller.create({
         component: StratProfileModalPage,
         componentProps: {
-          regId: this.reg.id,
+          regId: this.reg.id
         }
       });
       this.modal.present();

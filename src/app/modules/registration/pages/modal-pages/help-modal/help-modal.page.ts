@@ -4,19 +4,16 @@ import { ModalController } from '@ionic/angular';
 @Component({
   selector: 'app-help-modal',
   templateUrl: './help-modal.page.html',
-  styleUrls: ['./help-modal.page.scss'],
+  styleUrls: ['./help-modal.page.scss']
 })
 export class HelpModalPage implements OnInit {
-
   @Input() helpText: string;
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   close() {
     this.modalController.dismiss();
   }
-
 }

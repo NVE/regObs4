@@ -7,10 +7,9 @@ import moment from 'moment';
 @Component({
   selector: 'app-avalanche-activity-modal',
   templateUrl: './avalanche-activity-modal.page.html',
-  styleUrls: ['./avalanche-activity-modal.page.scss'],
+  styleUrls: ['./avalanche-activity-modal.page.scss']
 })
 export class AvalancheActivityModalPage implements OnInit {
-
   @Input() avalancheActivity: AvalancheActivityObs2Dto;
   @Input() dtObsTime: string;
 
@@ -31,7 +30,12 @@ export class AvalancheActivityModalPage implements OnInit {
   }
 
   get dateIsDifferentThanObsTime() {
-    return this.startDate && !moment(this.startDate).startOf('day').isSame(moment(this.dtObsTime).startOf('day'));
+    return (
+      this.startDate &&
+      !moment(this.startDate)
+        .startOf('day')
+        .isSame(moment(this.dtObsTime).startOf('day'))
+    );
   }
 
   timeFrames = [
@@ -39,13 +43,13 @@ export class AvalancheActivityModalPage implements OnInit {
       id: 1,
       start: { h: 0, m: 0 },
       end: { h: 23, m: 59 },
-      text: 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DURING_THE_DAY',
+      text: 'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.DURING_THE_DAY'
     },
     {
       id: 2,
       start: { h: 0, m: 0 },
       end: { h: 6, m: 0 },
-      text: '0-6',
+      text: '0-6'
     },
     {
       id: 3,
@@ -70,9 +74,7 @@ export class AvalancheActivityModalPage implements OnInit {
   selectedTimeFrame = 1;
   startDate: string;
 
-  constructor(
-    private modalController: ModalController
-  ) { }
+  constructor(private modalController: ModalController) {}
 
   async ngOnInit() {
     this.maxDate = this.getMaxDateForNow();
@@ -82,12 +84,22 @@ export class AvalancheActivityModalPage implements OnInit {
       this.avalancheActivityCopy = {};
       this.isNew = true;
     }
-    if (this.avalancheActivityCopy.DtStart && this.avalancheActivityCopy.DtEnd) {
+    if (
+      this.avalancheActivityCopy.DtStart &&
+      this.avalancheActivityCopy.DtEnd
+    ) {
       const start = moment(this.avalancheActivityCopy.DtStart);
       const end = moment(this.avalancheActivityCopy.DtEnd);
-      this.startDate = moment(this.avalancheActivityCopy.DtStart).startOf('day').toISOString(true);
-      const timeFrame = this.timeFrames.find((tf) => tf.start.h === start.hours() && tf.end.h === end.hours()
-        && tf.start.m === start.minutes() && tf.end.m === end.minutes());
+      this.startDate = moment(this.avalancheActivityCopy.DtStart)
+        .startOf('day')
+        .toISOString(true);
+      const timeFrame = this.timeFrames.find(
+        (tf) =>
+          tf.start.h === start.hours() &&
+          tf.end.h === end.hours() &&
+          tf.start.m === start.minutes() &&
+          tf.end.m === end.minutes()
+      );
       if (timeFrame) {
         this.selectedTimeFrame = timeFrame.id;
       }
@@ -121,10 +133,18 @@ export class AvalancheActivityModalPage implements OnInit {
     if (this.avalancheActivityCopy.EstimatedNumTID === 1) {
       this.resetWhenNoActivityFields();
     }
-    const timeFrame = this.timeFrames.find((tf) => tf.id === this.selectedTimeFrame);
+    const timeFrame = this.timeFrames.find(
+      (tf) => tf.id === this.selectedTimeFrame
+    );
     if (this.startDate && timeFrame) {
-      this.avalancheActivityCopy.DtStart = moment(this.startDate).hours(timeFrame.start.h).minutes(timeFrame.start.m).toISOString(true);
-      this.avalancheActivityCopy.DtEnd = moment(this.startDate).hours(timeFrame.end.h).minutes(timeFrame.end.m).toISOString(true);
+      this.avalancheActivityCopy.DtStart = moment(this.startDate)
+        .hours(timeFrame.start.h)
+        .minutes(timeFrame.start.m)
+        .toISOString(true);
+      this.avalancheActivityCopy.DtEnd = moment(this.startDate)
+        .hours(timeFrame.end.h)
+        .minutes(timeFrame.end.m)
+        .toISOString(true);
     }
     if (this.isNew && IsEmptyHelper.isEmpty(this.avalancheActivityCopy)) {
       this.modalController.dismiss(null);

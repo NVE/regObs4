@@ -13,10 +13,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    SharedComponentsModule,
-    RouterModule.forChild(routes)
-  ],
+  imports: [SharedComponentsModule, RouterModule.forChild(routes)],
   declarations: [WeatherPage]
 })
-export class WeatherPageModule { }
+export class WeatherPageModule {}

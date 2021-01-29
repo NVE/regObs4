@@ -1,7 +1,7 @@
 import { CreateTripDto } from '../../../modules/regobs-api/models';
 
 export interface LegacyTrip {
-    id: string;
-    timestamp: number;
-    request: CreateTripDto;
+  id: string;
+  timestamp: number;
+  request: CreateTripDto;
 }

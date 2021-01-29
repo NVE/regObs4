@@ -11,10 +11,9 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'app-send-button',
   templateUrl: './send-button.component.html',
-  styleUrls: ['./send-button.component.scss'],
+  styleUrls: ['./send-button.component.scss']
 })
 export class SendButtonComponent implements OnInit, OnDestroy {
-
   @Input() registration: IRegistration;
 
   get isEmpty(): boolean {
@@ -38,16 +37,18 @@ export class SendButtonComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private navController: NavController,
     private regobsAuthService: RegobsAuthService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.isSending = false;
     this.isLoggingIn = false;
-    this.regobsAuthService.isLoggingIn$.pipe(takeUntil(this.ngOnDestroy$)).subscribe((val) => {
-      this.ngZone.run(() => {
-        this.isLoggingIn = val;
+    this.regobsAuthService.isLoggingIn$
+      .pipe(takeUntil(this.ngOnDestroy$))
+      .subscribe((val) => {
+        this.ngZone.run(() => {
+          this.isLoggingIn = val;
+        });
       });
-    });
   }
 
   ngOnDestroy(): void {
@@ -60,8 +61,13 @@ export class SendButtonComponent implements OnInit, OnDestroy {
       this.isSending = true;
       setTimeout(async () => {
         try {
-          const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-          await this.registrationService.sendRegistration(userSettings.appMode, this.registration);
+          const userSettings = await this.userSettingService.userSetting$
+            .pipe(take(1))
+            .toPromise();
+          await this.registrationService.sendRegistration(
+            userSettings.appMode,
+            this.registration
+          );
         } finally {
           this.ngZone.run(() => {
             this.isSending = false;
@@ -72,9 +78,17 @@ export class SendButtonComponent implements OnInit, OnDestroy {
   }
 
   async delete(): Promise<void> {
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const userSettings = await this.userSettingService.userSetting$
+      .pipe(take(1))
+      .toPromise();
     const translations = await this.translateService
-      .get(['REGISTRATION.DELETE', 'REGISTRATION.DELETE_CONFIRM', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
+      .get([
+        'REGISTRATION.DELETE',
+        'REGISTRATION.DELETE_CONFIRM',
+        'ALERT.OK',
+        'ALERT.CANCEL'
+      ])
+      .toPromise();
     const alert = await this.alertController.create({
       header: translations['REGISTRATION.DELETE'],
       message: translations['REGISTRATION.DELETE_CONFIRM'],
@@ -82,12 +96,15 @@ export class SendButtonComponent implements OnInit, OnDestroy {
         {
           text: translations['ALERT.CANCEL'],
           role: 'cancel',
-          cssClass: 'secondary',
+          cssClass: 'secondary'
         },
         {
           text: translations['ALERT.OK'],
           handler: async () => {
-            await this.registrationService.deleteRegistrationById(userSettings.appMode, this.registration.id);
+            await this.registrationService.deleteRegistrationById(
+              userSettings.appMode,
+              this.registration.id
+            );
             this.navController.navigateRoot('');
           }
         }
@@ -95,5 +112,4 @@ export class SendButtonComponent implements OnInit, OnDestroy {
     });
     await alert.present();
   }
-
 }

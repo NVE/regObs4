@@ -3,10 +3,8 @@ import { SnowDensityLayerModalPage } from './snow-density-layer-modal.page';
 import { SharedComponentsModule } from '../../../../../shared-components.module';
 
 @NgModule({
-  imports: [
-    SharedComponentsModule,
-  ],
+  imports: [SharedComponentsModule],
   declarations: [SnowDensityLayerModalPage],
   entryComponents: [SnowDensityLayerModalPage]
 })
-export class SnowDensityLayerModalPageModule { }
+export class SnowDensityLayerModalPageModule {}

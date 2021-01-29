@@ -1,26 +1,30 @@
 import { Injectable } from '@angular/core';
 import { BackgroundGeolocationService } from './background-geolocation.service';
 import { Subscription } from 'rxjs';
-import { Geoposition, Geolocation, PositionError } from '@ionic-native/geolocation/ngx';
+import {
+  Geoposition,
+  Geolocation,
+  PositionError
+} from '@ionic-native/geolocation/ngx';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { TripLogState } from '../trip-logger/trip-log-state.enum';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 
 @Injectable()
-export class BackgroundGeolocationWebService implements BackgroundGeolocationService {
+export class BackgroundGeolocationWebService
+  implements BackgroundGeolocationService {
   watchSubscription?: Subscription;
 
   constructor(
     private geolocation: Geolocation,
     private tripLogger: TripLoggerService,
-    private loggingService: LoggingService) {
-  }
+    private loggingService: LoggingService
+  ) {}
 
   async start() {
     await this.tripLogger.updateState(TripLogState.Running);
-    this.watchSubscription = this.geolocation.watchPosition(
-      { maximumAge: 60000, enableHighAccuracy: true }
-    )
+    this.watchSubscription = this.geolocation
+      .watchPosition({ maximumAge: 60000, enableHighAccuracy: true })
       .subscribe(
         (data) => this.onPositionUpdate(data),
         (error) => this.onPositionError(error)
@@ -40,7 +44,7 @@ export class BackgroundGeolocationWebService implements BackgroundGeolocationSer
         altitude: pos.coords.altitude,
         speed: pos.coords.speed,
         timestamp: pos.timestamp,
-        heading: pos.coords.heading,
+        heading: pos.coords.heading
       });
     }
   }

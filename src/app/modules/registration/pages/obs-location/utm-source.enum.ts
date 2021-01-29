@@ -1,4 +1,4 @@
 export enum UtmSource {
-    SelectedInMap = 35,
-    GPS = 40,
+  SelectedInMap = 35,
+  GPS = 40
 }

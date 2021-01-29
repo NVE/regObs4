@@ -5,19 +5,17 @@ import { CompressionTestModalPage } from './compression-test-modal/compression-t
 @Component({
   selector: 'app-compression-test-list',
   templateUrl: './compression-test-list.component.html',
-  styleUrls: ['./compression-test-list.component.scss'],
+  styleUrls: ['./compression-test-list.component.scss']
 })
 export class CompressionTestListComponent implements OnInit {
-
   @Input() tests: Array<CompressionTestDto>;
   @Input() includeInSnowProfileAsDefault = false;
   @Output() testsChange = new EventEmitter();
   private isOpen = false;
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async addOrEditCompressionTest(index?: number) {
     if (!this.isOpen) {
@@ -27,8 +25,8 @@ export class CompressionTestListComponent implements OnInit {
         component: CompressionTestModalPage,
         componentProps: {
           compressionTest: add ? undefined : (this.tests || [])[index],
-          includeInSnowProfileAsDefault: this.includeInSnowProfileAsDefault,
-        },
+          includeInSnowProfileAsDefault: this.includeInSnowProfileAsDefault
+        }
       });
       modal.present();
       const result = await modal.onDidDismiss();
@@ -57,5 +55,4 @@ export class CompressionTestListComponent implements OnInit {
       this.tests.splice(index, 1);
     }
   }
-
 }

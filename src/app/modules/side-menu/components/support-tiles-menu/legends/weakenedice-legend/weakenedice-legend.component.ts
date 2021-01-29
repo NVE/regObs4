@@ -6,5 +6,4 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./weakenedice-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WeakenediceLegendComponent {
-}
+export class WeakenediceLegendComponent {}

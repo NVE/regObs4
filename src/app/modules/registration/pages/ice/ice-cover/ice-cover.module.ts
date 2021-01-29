@@ -11,10 +11,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    SharedComponentsModule,
-    RouterModule.forChild(routes)
-  ],
+  imports: [SharedComponentsModule, RouterModule.forChild(routes)],
   declarations: [IceCoverPage]
 })
-export class IceCoverPageModule { }
+export class IceCoverPageModule {}

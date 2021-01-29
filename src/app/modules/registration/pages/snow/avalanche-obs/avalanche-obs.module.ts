@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: '',
     component: AvalancheObsPage,
-    canDeactivate: [CanDeactivateRouteGuard],
+    canDeactivate: [CanDeactivateRouteGuard]
   }
 ];
 
@@ -23,4 +23,4 @@ const routes: Routes = [
   ],
   declarations: [AvalancheObsPage]
 })
-export class AvalancheObsPageModule { }
+export class AvalancheObsPageModule {}

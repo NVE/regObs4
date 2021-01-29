@@ -15,7 +15,12 @@ export class SnowTempComponent implements OnInit {
   private snowTempModal: HTMLIonModalElement;
 
   get tempProfile() {
-    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.SnowTemp) {
+    if (
+      this.reg &&
+      this.reg.request &&
+      this.reg.request.SnowProfile2 &&
+      this.reg.request.SnowProfile2.SnowTemp
+    ) {
       return this.reg.request.SnowProfile2.SnowTemp;
     }
     return {};
@@ -25,10 +30,12 @@ export class SnowTempComponent implements OnInit {
     return IsEmptyHelper.isEmpty(this.tempProfile);
   }
 
-  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) { }
+  constructor(
+    private modalContoller: ModalController,
+    private registrationService: RegistrationService
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async openModal() {
     if (!this.snowTempModal) {
@@ -36,7 +43,7 @@ export class SnowTempComponent implements OnInit {
       this.snowTempModal = await this.modalContoller.create({
         component: SnowTempModalPage,
         componentProps: {
-          regId: this.reg.id,
+          regId: this.reg.id
         }
       });
       this.snowTempModal.present();

@@ -3,10 +3,8 @@ import { AvalancheProblemModalPage } from './avalanche-problem-modal.page';
 import { SharedComponentsModule } from '../../../../shared-components.module';
 
 @NgModule({
-  imports: [
-    SharedComponentsModule
-  ],
+  imports: [SharedComponentsModule],
   declarations: [AvalancheProblemModalPage],
   entryComponents: [AvalancheProblemModalPage]
 })
-export class AvalancheProblemModalPageModule { }
+export class AvalancheProblemModalPageModule {}

@@ -7,12 +7,13 @@ import { SentListComponent } from './components/sent-list/sent-list.component';
   selector: 'app-my-observations',
   templateUrl: './my-observations.page.html',
   styleUrls: ['./my-observations.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MyObservationsPage {
   @ViewChild(IonContent, { static: true }) content: IonContent;
-  @ViewChild(IonInfiniteScroll, { static: false}) scroll: IonInfiniteScroll;
-  @ViewChild(SentListComponent, { static: false}) sentListComponent: SentListComponent;
+  @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
+  @ViewChild(SentListComponent, { static: false })
+  sentListComponent: SentListComponent;
 
   refreshFunc = this.refresh.bind(this);
   draftIsEmpty = false;

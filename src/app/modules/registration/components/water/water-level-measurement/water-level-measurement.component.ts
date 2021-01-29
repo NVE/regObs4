@@ -22,9 +22,12 @@ export class WaterLevelMeasurementComponent implements OnInit {
   showDtMeasurementTimeError = false;
 
   get dateIsDifferentThanObsTime() {
-    return this.waterLevelMeasurement.DtMeasurementTime
-      && !moment(this.waterLevelMeasurement.DtMeasurementTime)
-        .startOf('day').isSame(moment(this.dtObsTime).startOf('day'));
+    return (
+      this.waterLevelMeasurement.DtMeasurementTime &&
+      !moment(this.waterLevelMeasurement.DtMeasurementTime)
+        .startOf('day')
+        .isSame(moment(this.dtObsTime).startOf('day'))
+    );
   }
 
   get isValid() {
@@ -34,7 +37,7 @@ export class WaterLevelMeasurementComponent implements OnInit {
     return this.waterLevelMeasurement.DtMeasurementTime;
   }
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.maxDate = this.getMaxDateForNow();
@@ -56,7 +59,10 @@ export class WaterLevelMeasurementComponent implements OnInit {
   }
 
   showError() {
-    if (!IsEmptyHelper.isEmpty(this.waterLevelMeasurement) && !this.waterLevelMeasurement.DtMeasurementTime) {
+    if (
+      !IsEmptyHelper.isEmpty(this.waterLevelMeasurement) &&
+      !this.waterLevelMeasurement.DtMeasurementTime
+    ) {
       this.showDtMeasurementTimeError = true;
     } else {
       this.showDtMeasurementTimeError = false;

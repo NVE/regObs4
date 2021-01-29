@@ -5,8 +5,7 @@ import { GeoHazard } from '../../models/geo-hazard.enum';
   providedIn: 'root'
 })
 export class HelperService {
-
-  constructor() { }
+  constructor() {}
 
   getDistanceText(distanceInMeter: number): string {
     if (distanceInMeter > 1000) {
@@ -22,10 +21,12 @@ export class HelperService {
     const minutes = Math.floor((duration / (1000 * 60)) % 60);
     const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-    return `${(hours < 10) ? '0' + hours : hours}`
-      + `:${(minutes < 10) ? '0' + minutes : minutes}`
-      + `:${(seconds < 10) ? '0' + seconds : seconds}`
-      + (showMilliseconds ? `.${milliseconds}` : '');
+    return (
+      `${hours < 10 ? '0' + hours : hours}` +
+      `:${minutes < 10 ? '0' + minutes : minutes}` +
+      `:${seconds < 10 ? '0' + seconds : seconds}` +
+      (showMilliseconds ? `.${milliseconds}` : '')
+    );
   }
 
   humanReadableByteSize(bytes: number, si = true) {

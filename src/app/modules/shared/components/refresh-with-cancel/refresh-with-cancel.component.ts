@@ -1,4 +1,12 @@
-import { Component, OnInit, EventEmitter, Output, NgZone, ViewChild, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  NgZone,
+  ViewChild,
+  Input
+} from '@angular/core';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { IonRefresher, Platform } from '@ionic/angular';
@@ -9,7 +17,6 @@ import { IonRefresher, Platform } from '@ionic/angular';
   styleUrls: ['./refresh-with-cancel.component.scss']
 })
 export class RefreshWithCancelComponent implements OnInit {
-
   showCancel = false;
 
   // @Output() refresh: EventEmitter<Promise<boolean>> = new EventEmitter();
@@ -20,7 +27,7 @@ export class RefreshWithCancelComponent implements OnInit {
 
   spinner: string;
 
-  constructor(private ngZone: NgZone, private platform: Platform) { }
+  constructor(private ngZone: NgZone, private platform: Platform) {}
 
   ngOnInit() {
     this.spinner = this.platform.is('android') ? 'crescent' : 'lines';
@@ -61,5 +68,4 @@ export class RefreshWithCancelComponent implements OnInit {
       this.showCancel = false;
     });
   }
-
 }

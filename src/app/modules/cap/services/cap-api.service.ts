@@ -12,10 +12,7 @@ const knownArrayFields = ['items'];
   providedIn: 'root'
 })
 export class CapApiService {
-
-  constructor(private httpClient: HttpClient) {
-
-  }
+  constructor(private httpClient: HttpClient) {}
 
   getFeed(url: string) {
     return this.getApiCall<CapFeed>(url);
@@ -26,12 +23,15 @@ export class CapApiService {
   }
 
   getApiCall<T>(url: string) {
-    return this.httpClient.get(url, { responseType: 'text' })
+    return this.httpClient
+      .get(url, { responseType: 'text' })
       .pipe(switchMap((res) => this.getObservableFromXmlResult<T>(res)));
   }
 
   getObservableFromXmlResult<T>(xml: string): Observable<T> {
     const parser = new Parser({ explicitArray: false, ignoreAttrs: true });
-    return bindNodeCallback(parser.parseString)(xml).pipe(map((val) => (<any>val) as T));
+    return bindNodeCallback(parser.parseString)(xml).pipe(
+      map((val) => (<any>val) as T)
+    );
   }
 }

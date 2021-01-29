@@ -3,93 +3,99 @@ import moment from 'moment';
 import { IWarningGroup } from './warning-group.interface';
 
 export class WarningGroup {
-    private _warningGroup: IWarningGroup;
+  private _warningGroup: IWarningGroup;
 
-    get key(): WarningGroupKey {
-      return {
-        geoHazard: this._warningGroup.geoHazard,
-        groupId: this._warningGroup.regionId,
-        groupName: this._warningGroup.regionName
-      };
+  get key(): WarningGroupKey {
+    return {
+      geoHazard: this._warningGroup.geoHazard,
+      groupId: this._warningGroup.regionId,
+      groupName: this._warningGroup.regionName
+    };
+  }
+
+  get warnings() {
+    return this._warningGroup.warnings;
+  }
+
+  get groupType() {
+    return this._warningGroup.regionType;
+  }
+
+  get url() {
+    return this._warningGroup.url;
+  }
+
+  get counties() {
+    return this._warningGroup.counties;
+  }
+
+  get validFrom() {
+    return this._warningGroup.validFrom;
+  }
+
+  get validTo() {
+    return this._warningGroup.validTo;
+  }
+
+  get sortOrder() {
+    return this._warningGroup.sortOrder;
+  }
+
+  getWarningForDay(date: Date) {
+    const warningsForDay = this._warningGroup.warnings.filter((x) =>
+      moment(date).isBetween(x.validFrom, x.validTo, null, '[]')
+    );
+    if (warningsForDay.length > 0) {
+      return warningsForDay.reduce((pv, v) => {
+        if (pv && pv.warningLevel < v.warningLevel) {
+          return pv;
+        } else {
+          return v;
+        }
+      });
+    } else {
+      return warningsForDay[0];
     }
+  }
 
-    get warnings() {
-      return this._warningGroup.warnings;
-    }
+  getDayWarning(daysToAdd: number) {
+    const day = this.getMomentAtNoon(moment().add(daysToAdd, 'days'));
+    return this.getWarningForDay(day.toDate());
+  }
 
-    get groupType() {
-      return this._warningGroup.regionType;
-    }
+  private getMomentAtNoon(m: moment.Moment) {
+    return m.clone().hours(12).minutes(0).seconds(0);
+  }
 
-    get url() {
-      return this._warningGroup.url;
-    }
+  hasAnyWarnings(daysAhead = 2) {
+    return this.getMaxWarning(daysAhead).max > 0;
+  }
 
-    get counties() {
-      return this._warningGroup.counties;
-    }
-
-    get validFrom() {
-      return this._warningGroup.validFrom;
-    }
-
-    get validTo() {
-      return this._warningGroup.validTo;
-    }
-
-    get sortOrder() {
-      return this._warningGroup.sortOrder;
-    }
-
-    getWarningForDay(date: Date) {
-      const warningsForDay = this._warningGroup.warnings.filter((x) => moment(date).isBetween(x.validFrom, x.validTo, null, '[]'));
-      if (warningsForDay.length > 0) {
-        return warningsForDay.reduce((pv, v) => {
-          if (pv && pv.warningLevel < v.warningLevel) {
-            return pv;
-          } else {
-            return v;
-          }
-        });
-      } else {
-        return warningsForDay[0];
+  getMaxWarning(daysAhead = 2) {
+    let max = 0;
+    let hasWarning = false;
+    for (let i = 0; i <= daysAhead; i++) {
+      const dayWarning = this.getDayWarning(i);
+      if (dayWarning && dayWarning.warningLevel > max) {
+        max = dayWarning.warningLevel;
+        hasWarning = false;
+      }
+      if (
+        dayWarning &&
+        dayWarning.warningLevel === max &&
+        dayWarning.emergencyWarning
+      ) {
+        hasWarning = true;
       }
     }
+    return { max, hasWarning };
+  }
 
-    getDayWarning(daysToAdd: number) {
-      const day = this.getMomentAtNoon(moment().add(daysToAdd, 'days'));
-      return this.getWarningForDay(day.toDate());
-    }
+  getKeyAsString() {
+    return `${this._warningGroup.geoHazard}_${this._warningGroup.regionId}_${this._warningGroup.regionName}`;
+  }
 
-    private getMomentAtNoon(m: moment.Moment) {
-      return m.clone().hours(12).minutes(0).seconds(0);
-    }
-
-    hasAnyWarnings(daysAhead = 2) {
-      return this.getMaxWarning(daysAhead).max > 0;
-    }
-
-    getMaxWarning(daysAhead = 2) {
-      let max = 0;
-      let hasWarning = false;
-      for (let i = 0; i <= daysAhead; i++) {
-        const dayWarning = this.getDayWarning(i);
-        if (dayWarning && dayWarning.warningLevel > max) {
-          max = dayWarning.warningLevel;
-          hasWarning = false;
-        }
-        if (dayWarning && dayWarning.warningLevel === max && dayWarning.emergencyWarning) {
-          hasWarning = true;
-        }
-      }
-      return { max, hasWarning };
-    }
-
-    getKeyAsString() {
-      return `${this._warningGroup.geoHazard}_${this._warningGroup.regionId}_${this._warningGroup.regionName}`;
-    }
-
-    constructor(group: IWarningGroup) {
-      this._warningGroup = group;
-    }
+  constructor(group: IWarningGroup) {
+    this._warningGroup = group;
+  }
 }

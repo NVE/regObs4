@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { StratProfileDto, StratProfileLayerDto } from '../../../../../../regobs-api/models';
+import {
+  StratProfileDto,
+  StratProfileLayerDto
+} from '../../../../../../regobs-api/models';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
@@ -15,7 +18,7 @@ import { RegobsAuthService } from '../../../../../../auth/services/regobs-auth.s
 @Component({
   selector: 'app-strat-profile-modal',
   templateUrl: './strat-profile-modal.page.html',
-  styleUrls: ['./strat-profile-modal.page.scss'],
+  styleUrls: ['./strat-profile-modal.page.scss']
 })
 export class StratProfileModalPage implements OnInit, OnDestroy {
   @Input() regId: string;
@@ -30,12 +33,16 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   private layerModal;
 
   get hasLayers() {
-    return this.profile.Layers
-      && this.profile.Layers.length > 0;
+    return this.profile.Layers && this.profile.Layers.length > 0;
   }
 
   get profile(): StratProfileDto {
-    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.StratProfile) {
+    if (
+      this.reg &&
+      this.reg.request &&
+      this.reg.request.SnowProfile2 &&
+      this.reg.request.SnowProfile2.StratProfile
+    ) {
       return this.reg.request.SnowProfile2.StratProfile;
     }
     return {};
@@ -45,18 +52,22 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private regobsAuthService: RegobsAuthService,
     private ngZone: NgZone,
-    private registrationService: RegistrationService) { }
+    private registrationService: RegistrationService
+  ) {}
 
   ngOnInit() {
-    this.registrationService.getSavedRegistrationByIdObservable(this.regId).pipe(takeUntil(this.ngDestroy$)).subscribe((reg) => {
-      this.ngZone.run(() => {
-        if (!this.regInitClone) {
-          this.regInitClone = cloneDeep(reg);
-        }
-        this.reg = reg;
-        this.calculate();
+    this.registrationService
+      .getSavedRegistrationByIdObservable(this.regId)
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((reg) => {
+        this.ngZone.run(() => {
+          if (!this.regInitClone) {
+            this.regInitClone = cloneDeep(reg);
+          }
+          this.reg = reg;
+          this.calculate();
+        });
       });
-    });
   }
 
   ngOnDestroy(): void {
@@ -79,12 +90,20 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   }
 
   addLayerBottom() {
-    this.addOrEditLayer(this.hasLayers ? (this.reg.request.SnowProfile2.StratProfile.Layers.length) : 0, undefined);
+    this.addOrEditLayer(
+      this.hasLayers
+        ? this.reg.request.SnowProfile2.StratProfile.Layers.length
+        : 0,
+      undefined
+    );
   }
 
   onLayerReorder(event: CustomEvent<ItemReorderEventDetail>) {
     this.reg.request.SnowProfile2.StratProfile.Layers = ArrayHelper.reorderList(
-      this.reg.request.SnowProfile2.StratProfile.Layers, event.detail.from, event.detail.to);
+      this.reg.request.SnowProfile2.StratProfile.Layers,
+      event.detail.from,
+      event.detail.to
+    );
     event.detail.complete();
     this.registrationService.saveRegistrationAsync(this.reg);
   }
@@ -117,7 +136,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
         componentProps: {
           reg: this.reg,
           layer,
-          index,
+          index
         }
       });
       this.layerModal.present();
@@ -128,8 +147,9 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
 
   private calculate() {
     const layers = this.profile.Layers || [];
-    const sum = layers.filter((x) => x.Thickness !== undefined)
-      .map(((layer) => layer.Thickness))
+    const sum = layers
+      .filter((x) => x.Thickness !== undefined)
+      .map((layer) => layer.Thickness)
       .reduce((pv, cv) => pv + cv, 0);
     this.totalThickness = sum;
   }

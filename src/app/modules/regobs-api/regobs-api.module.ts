@@ -1,7 +1,10 @@
 /* tslint:disable */
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { RegobsApiConfiguration, RegobsApiConfigurationInterface } from './regobs-api-configuration';
+import {
+  RegobsApiConfiguration,
+  RegobsApiConfigurationInterface
+} from './regobs-api-configuration';
 
 import { AccountService } from './services/account.service';
 import { AttachmentService } from './services/attachment.service';
@@ -19,12 +22,8 @@ import { TripService } from './services/trip.service';
  * Provider for all regobsApi services, plus RegobsApiConfiguration
  */
 @NgModule({
-  imports: [
-    HttpClientModule
-  ],
-  exports: [
-    HttpClientModule
-  ],
+  imports: [HttpClientModule],
+  exports: [HttpClientModule],
   declarations: [],
   providers: [
     RegobsApiConfiguration,
@@ -39,16 +38,18 @@ import { TripService } from './services/trip.service';
     SearchService,
     TokenService,
     TripService
-  ],
+  ]
 })
 export class RegobsApiModule {
-  static forRoot(customParams: RegobsApiConfigurationInterface): ModuleWithProviders<RegobsApiModule> {
+  static forRoot(
+    customParams: RegobsApiConfigurationInterface
+  ): ModuleWithProviders<RegobsApiModule> {
     return {
       ngModule: RegobsApiModule,
       providers: [
         {
           provide: RegobsApiConfiguration,
-          useValue: {rootUrl: customParams.rootUrl}
+          useValue: { rootUrl: customParams.rootUrl }
         }
       ]
     };

@@ -14,10 +14,9 @@ import cloneDeep from 'clone-deep';
 @Component({
   selector: 'app-snow-density-modal',
   templateUrl: './snow-density-modal.page.html',
-  styleUrls: ['./snow-density-modal.page.scss'],
+  styleUrls: ['./snow-density-modal.page.scss']
 })
 export class SnowDensityModalPage implements OnInit, OnDestroy {
-
   @Input() regId: string;
   useCylinder: boolean;
   private layerModal: HTMLIonModalElement;
@@ -26,51 +25,65 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   private initialRegistrationClone: IRegistration;
 
   get profile() {
-    if (this.reg
-      && this.reg.request
-      && this.reg.request.SnowProfile2
-      && this.reg.request.SnowProfile2.SnowDensity
-      && this.reg.request.SnowProfile2.SnowDensity.length > 0) {
+    if (
+      this.reg &&
+      this.reg.request &&
+      this.reg.request.SnowProfile2 &&
+      this.reg.request.SnowProfile2.SnowDensity &&
+      this.reg.request.SnowProfile2.SnowDensity.length > 0
+    ) {
       return this.reg.request.SnowProfile2.SnowDensity[0];
     }
     return {};
   }
 
   get hasLayers() {
-    return this.profile && this.profile.Layers && this.profile.Layers.length > 0;
+    return (
+      this.profile && this.profile.Layers && this.profile.Layers.length > 0
+    );
   }
 
-  constructor(private modalController: ModalController, private registrationService: RegistrationService, private ngZone: NgZone) { }
+  constructor(
+    private modalController: ModalController,
+    private registrationService: RegistrationService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
-    this.registrationService.getSavedRegistrationByIdObservable(this.regId).pipe(takeUntil(this.ngDestroy$)).subscribe((reg) => {
-      this.ngZone.run(async () => {
-        if (!this.initialRegistrationClone) {
-          this.initialRegistrationClone = cloneDeep(reg);
-        }
-        this.reg = reg;
-        if (!this.reg.request.SnowProfile2) {
-          this.reg.request.SnowProfile2 = {};
-        }
-        if (!this.reg.request.SnowProfile2.SnowDensity) {
-          this.reg.request.SnowProfile2.SnowDensity = [];
-        }
-        if (!this.reg.request.SnowProfile2.SnowDensity[0]) {
-          this.reg.request.SnowProfile2.SnowDensity[0] = {};
-        }
-        if (!this.reg.request.SnowProfile2.SnowDensity[0].Layers) {
-          this.reg.request.SnowProfile2.SnowDensity[0].Layers = [];
-        }
-        if (this.useCylinder === undefined) {
-          this.useCylinder =
-            !!this.reg.request.SnowProfile2.SnowDensity[0].CylinderDiameter ||
-            !!this.reg.request.SnowProfile2.SnowDensity[0].TareWeight ||
-            this.reg.request.SnowProfile2.SnowDensity[0].Layers.length === 0 ||
-            this.reg.request.SnowProfile2.SnowDensity[0].Layers.some((l) => !!l.Weight);
-        }
-        this.recalculateLayers();
+    this.registrationService
+      .getSavedRegistrationByIdObservable(this.regId)
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((reg) => {
+        this.ngZone.run(async () => {
+          if (!this.initialRegistrationClone) {
+            this.initialRegistrationClone = cloneDeep(reg);
+          }
+          this.reg = reg;
+          if (!this.reg.request.SnowProfile2) {
+            this.reg.request.SnowProfile2 = {};
+          }
+          if (!this.reg.request.SnowProfile2.SnowDensity) {
+            this.reg.request.SnowProfile2.SnowDensity = [];
+          }
+          if (!this.reg.request.SnowProfile2.SnowDensity[0]) {
+            this.reg.request.SnowProfile2.SnowDensity[0] = {};
+          }
+          if (!this.reg.request.SnowProfile2.SnowDensity[0].Layers) {
+            this.reg.request.SnowProfile2.SnowDensity[0].Layers = [];
+          }
+          if (this.useCylinder === undefined) {
+            this.useCylinder =
+              !!this.reg.request.SnowProfile2.SnowDensity[0].CylinderDiameter ||
+              !!this.reg.request.SnowProfile2.SnowDensity[0].TareWeight ||
+              this.reg.request.SnowProfile2.SnowDensity[0].Layers.length ===
+                0 ||
+              this.reg.request.SnowProfile2.SnowDensity[0].Layers.some(
+                (l) => !!l.Weight
+              );
+          }
+          this.recalculateLayers();
+        });
       });
-    });
   }
 
   ngOnDestroy(): void {
@@ -83,7 +96,9 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistrationAsync(this.initialRegistrationClone);
+    await this.registrationService.saveRegistrationAsync(
+      this.initialRegistrationClone
+    );
     this.modalController.dismiss();
   }
 
@@ -92,7 +107,10 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   }
 
   addLayerBottom() {
-    this.addOrEditLayer(this.hasLayers ? (this.profile.Layers.length) : 0, undefined);
+    this.addOrEditLayer(
+      this.hasLayers ? this.profile.Layers.length : 0,
+      undefined
+    );
   }
 
   async addOrEditLayer(index: number, layer: DensityProfileLayerDto) {
@@ -105,7 +123,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
           useCylinder: this.useCylinder,
           cylinderDiameterInM: this.profile.CylinderDiameter,
           tareWeight: this.profile.TareWeight,
-          index,
+          index
         }
       });
       this.layerModal.present();
@@ -116,7 +134,11 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   }
 
   onLayerReorder(event: CustomEvent<ItemReorderEventDetail>) {
-    this.profile.Layers = ArrayHelper.reorderList(this.profile.Layers, event.detail.from, event.detail.to);
+    this.profile.Layers = ArrayHelper.reorderList(
+      this.profile.Layers,
+      event.detail.from,
+      event.detail.to
+    );
     event.detail.complete();
   }
 
@@ -127,7 +149,8 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
           layer.Weight,
           layer.Thickness,
           this.profile.TareWeight,
-          this.profile.CylinderDiameter);
+          this.profile.CylinderDiameter
+        );
       });
     }
   }
@@ -140,5 +163,4 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   getWaterEquivalent(density: number, depth: number) {
     return HydrologyHelper.calculateWaterEquivalent(density, depth);
   }
-
 }

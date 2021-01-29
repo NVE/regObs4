@@ -8,15 +8,12 @@ import { SummaryType } from '../../../core/models/summmary-type.enum';
   styleUrls: ['./summary.component.scss']
 })
 export class SummaryComponent implements OnInit {
-
   @Input() summaries: Summary[];
   @Input() showHeaders = true;
 
   SummaryType = SummaryType;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

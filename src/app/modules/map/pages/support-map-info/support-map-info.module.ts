@@ -8,4 +8,4 @@ import { SharedModule } from '../../../shared/shared.module';
   entryComponents: [SupportMapInfoPage],
   exports: [SupportMapInfoPage]
 })
-export class SupportMapInfoPageModule { }
+export class SupportMapInfoPageModule {}

@@ -20,4 +20,4 @@ const routes: Routes = [
   ],
   declarations: [CompressionTestPage]
 })
-export class CompressionTestPageModule { }
+export class CompressionTestPageModule {}

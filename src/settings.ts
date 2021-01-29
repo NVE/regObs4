@@ -1,37 +1,40 @@
 export const settings = {
   authConfig: {
-    'TEST': {
+    TEST: {
       client_id: '13270815-7def-4800-8fc9-178dd517f574',
-      server_host: 'https://nveb2c01test.b2clogin.com/nveb2c01test.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      server_host:
+        'https://nveb2c01test.b2clogin.com/nveb2c01test.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
       end_session_redirect_url: 'regobs://callback',
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://test-api.regobs.no/v5/Account/GetObserver',
       myPageUrl: 'https://test-konto.nve.no/User',
-      updateObserverUrl: 'https://test-api.regobs.no/v5/Account/UpdateObserver',
+      updateObserverUrl: 'https://test-api.regobs.no/v5/Account/UpdateObserver'
     },
-    'DEMO': {
+    DEMO: {
       client_id: '7149f248-5e18-4feb-8a0c-e988dc021977',
-      server_host: 'https://nveb2c01staging.b2clogin.com/nveb2c01staging.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      server_host:
+        'https://nveb2c01staging.b2clogin.com/nveb2c01staging.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
       end_session_redirect_url: 'regobs://callback',
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://demo-api.regobs.no/v5/Account/GetObserver',
       myPageUrl: 'https://demo-konto.nve.no/User',
-      updateObserverUrl: 'https://demo-api.regobs.no/v5/Account/UpdateObserver',
+      updateObserverUrl: 'https://demo-api.regobs.no/v5/Account/UpdateObserver'
     },
-    'PROD': {
+    PROD: {
       client_id: 'a0b10e50-f942-4619-a9ab-cf5c900a98d5',
-      server_host: 'https://nveb2c01prod.b2clogin.com/nveb2c01prod.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      server_host:
+        'https://nveb2c01prod.b2clogin.com/nveb2c01prod.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
       end_session_redirect_url: 'regobs://callback',
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://api.regobs.no/v5/Account/GetObserver',
       myPageUrl: 'https://konto.nve.no/User',
-      updateObserverUrl: 'https://api.regobs.no/v5/Account/UpdateObserver',
+      updateObserverUrl: 'https://api.regobs.no/v5/Account/UpdateObserver'
     }
   },
   observations: {
@@ -40,33 +43,33 @@ export const settings = {
       Snow: [0, 1, 2, 3, 7, 7 * 2],
       Ice: [0, 1, 2, 7, 7 * 4, 7 * 12],
       Water: [0, 1, 2, 3, 7, 7 * 2],
-      Dirt: [0, 1, 2, 3, 7, 7 * 2],
+      Dirt: [0, 1, 2, 3, 7, 7 * 2]
     },
     timeZone: 'Europe/Oslo'
   },
   services: {
     regObs: {
       apiUrl: {
-        'PROD': 'https://api.regobs.no/app_v4',
-        'DEMO': 'https://demo-api.regobs.no/app_v4',
-        'TEST': 'https://test-api.regobs.no/app_v4'
+        PROD: 'https://api.regobs.no/app_v4',
+        DEMO: 'https://demo-api.regobs.no/app_v4',
+        TEST: 'https://test-api.regobs.no/app_v4'
         // 'TEST': 'http://localhost:40001'
       },
       serviceUrl: {
-        'PROD': 'https://api.nve.no/hydrology/regobs/v3.5.0',
-        'DEMO': 'http://stg-h-web03.nve.no/RegObsServices',
-        'TEST': 'http://tst-h-web03.nve.no/regobsservices_test'
+        PROD: 'https://api.nve.no/hydrology/regobs/v3.5.0',
+        DEMO: 'http://stg-h-web03.nve.no/RegObsServices',
+        TEST: 'http://tst-h-web03.nve.no/regobsservices_test'
       },
       webUrl: {
-        'PROD': 'https://www.regobs.no',
-        'DEMO': 'https://demo.regobs.no',
-        'TEST': 'https://test.regobs.no'
+        PROD: 'https://www.regobs.no',
+        DEMO: 'https://demo.regobs.no',
+        TEST: 'https://test.regobs.no'
       },
       createUserUrl: '/Account/Register?c=Home',
       passwordRecoveryUrl: '/Account/PasswordRecovery?c=Home',
       changePasswordUrl: '/Account/ChangePassword?email={email}&c=Home',
       viewProfileUrl: '/Account/MyPage',
-      apiJsonVersion: '4.0.0',
+      apiJsonVersion: '4.0.0'
     },
     warning: {
       defaultWarningDaysAhead: 2,
@@ -77,35 +80,41 @@ export const settings = {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
         webUrl: {
           // tslint:disable-next-line:max-line-length
-          nb: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
+          nb:
+            'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
           // tslint:disable-next-line:max-line-length
-          en: 'http://www.varsom.no/en/avalanche-bulletins/forecast/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
+          en:
+            'http://www.varsom.no/en/avalanche-bulletins/forecast/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche'
         },
-        featureName: 'omradeID',
+        featureName: 'omradeID'
       },
       Dirt: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.6/api',
         webUrl: {
           // tslint:disable-next-line:max-line-length
-          nb: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
+          nb:
+            'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
           // tslint:disable-next-line:max-line-length
-          en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
+          en:
+            'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide'
         },
-        featureName: 'fylkesnummer',
+        featureName: 'fylkesnummer'
       },
       Water: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api',
         webUrl: {
           // tslint:disable-next-line:max-line-length
-          nb: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
+          nb:
+            'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
           // tslint:disable-next-line:max-line-length
-          en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
+          en:
+            'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood'
         },
-        featureName: 'fylkesnummer',
+        featureName: 'fylkesnummer'
       },
       Ice: {
         apiUrl: 'https://www.iskart.no/json/ice_forecast_regions.json',
-        featureName: 'fylkesnummer',
+        featureName: 'fylkesnummer'
       }
     }
   },
@@ -115,7 +124,7 @@ export const settings = {
       location: 'default'
     },
     nanoSql: {
-      dbName: 'regobs',
+      dbName: 'regobs'
     }
   },
   map: {
@@ -138,37 +147,39 @@ export const settings = {
       detectRetina: false,
       updateWhenIdle: false,
       // tslint:disable-next-line:max-line-length
-      statensKartverkMapUrl: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
-      geoDataLandskapMapUrl: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
+      statensKartverkMapUrl:
+        'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
+      geoDataLandskapMapUrl:
+        'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
       openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-      arcGisOnlineTopoMapUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      arcGisOnlineTopoMapUrl:
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
       supportTiles: [
         {
           name: 'steepness',
           description: 'STEEPNESS_MAP_DESCRIPTION',
-          url: 'http://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
+          url:
+            'http://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
           geoHazardId: 10,
-          disableWhenEnabled: [
-            'steepness-outlet'
-          ],
+          disableWhenEnabled: ['steepness-outlet']
         },
         {
           name: 'steepness-outlet',
           description: 'STEEPNESS_OUTLET_MAP_DESCRIPTION',
-          url: 'http://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
+          url:
+            'http://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
           enabled: false,
           opacity: 0.5,
           geoHazardId: 10,
-          disableWhenEnabled: [
-            'steepness'
-          ]
+          disableWhenEnabled: ['steepness']
         },
         {
           name: 'clayzones',
           description: 'CLAY_ZONES_MAP_DESCRIPTION',
-          url: 'http://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
+          url:
+            'http://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
           geoHazardId: 20
@@ -176,7 +187,8 @@ export const settings = {
         {
           name: 'floodzoones',
           description: 'FLOOD_ZONES_MAP_DESCRIPTION',
-          url: 'http://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
+          url:
+            'http://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
           geoHazardId: 60
@@ -184,57 +196,48 @@ export const settings = {
         {
           name: 'weakenedice',
           description: 'WEAKENED_ICE_MAP_DESCRIPTION',
-          url: 'http://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}',
+          url:
+            'http://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
           geoHazardId: 70
         }
       ],
       supportTilesBounds: [
-        [
-          57.136239319177434,
-          -0.17578125
-        ],
-        [
-          57.136239319177434,
-          36.03515625
-        ],
-        [
-          81.36128726057069,
-          36.03515625
-        ],
-        [
-          81.36128726057069,
-          -0.17578125
-        ],
-        [
-          57.136239319177434,
-          -0.17578125
-        ]
-      ],
+        [57.136239319177434, -0.17578125],
+        [57.136239319177434, 36.03515625],
+        [81.36128726057069, 36.03515625],
+        [81.36128726057069, -0.17578125],
+        [57.136239319177434, -0.17578125]
+      ]
     },
     search: {
       no: {
         url: 'https://ws.geonorge.no/SKWS3Index/ssr/sok',
         maxResults: 20,
-        exactFirst: true,
+        exactFirst: true
       },
       geonames: {
         url: 'https://secure.geonames.org',
         maxResults: 20,
-        username: 'regobs',
+        username: 'regobs'
       },
-      searchHistorySize: 5,
+      searchHistorySize: 5
     },
     bounds: {
       svalbard: {
-        bbox: [[80.493155, 3.157765], [80.309405, 21.685119], [76.337433, 18.003936], [76.465943, 4.879966]],
-      },
+        bbox: [
+          [80.493155, 3.157765],
+          [80.309405, 21.685119],
+          [76.337433, 18.003936],
+          [76.465943, 4.879966]
+        ]
+      }
     },
     mapSearchZoomToLevel: 14,
     unknownMapCenter: [59.911197, 10.741059],
     flyToOnGpsZoom: 14,
-    maxClusterRadius: 60, // 30,
+    maxClusterRadius: 60 // 30,
   },
   snowRegionsGeoJsonName: 'omradeNavn',
   cordovaNotAvailable: 'cordova_not_available',
@@ -249,22 +252,22 @@ export const settings = {
   dateFormats: {
     angular: {
       date: 'dd.MM.yyyy',
-      dateAndTime: 'dd.MM.yyyy HH:mm',
+      dateAndTime: 'dd.MM.yyyy HH:mm'
     },
     moment: {
       date: 'DD.MM.YYYY',
-      dateAndTime: 'DD.MM.YYYY HH:mm',
+      dateAndTime: 'DD.MM.YYYY HH:mm'
     }
   },
   kdvElements: {
-    daysBeforeUpdate: 1,
+    daysBeforeUpdate: 1
   },
   helpTexts: {
-    daysBeforeUpdate: 1,
+    daysBeforeUpdate: 1
   },
   images: {
     size: 1800,
-    quality: 50,
+    quality: 50
   },
   sentryDsn: 'https://2e07df8503a34dc9973eedd05e7a0f49@sentry.io/170000',
   errorEmailAddress: 'regobs@nve.no',
@@ -273,7 +276,7 @@ export const settings = {
   popupDisclamerRefreshTimeMs: 1000 * 60 * 60 * 24 * 30, // 30 days
   googleAnalytics: {
     trackerId: 'UA-32394009-4',
-    anonymizeIp: true,
+    anonymizeIp: true
   },
   language: {
     fallbackLang: 'en',
@@ -283,7 +286,7 @@ export const settings = {
       { lang: 'en', name: 'English' },
       { lang: 'sv', name: 'Svenska' },
       { lang: 'de', name: 'Deutsch' },
-      { lang: 'sl', name: 'Slovenski' },
-    ],
+      { lang: 'sl', name: 'Slovenski' }
+    ]
   }
 };

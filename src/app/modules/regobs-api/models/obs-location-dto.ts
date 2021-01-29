@@ -1,6 +1,5 @@
 /* tslint:disable */
 export interface ObsLocationDto {
-
   /**
    * Latitude
    */

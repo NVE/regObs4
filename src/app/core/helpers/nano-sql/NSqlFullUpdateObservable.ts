@@ -8,7 +8,7 @@ export class NSqlFullUpdateObservable<T> extends Observable<T> {
         if (err) {
           observer.error(err);
         } else {
-          observer.next(val as unknown as T);
+          observer.next((val as unknown) as T);
         }
       });
       return () => query.unsubscribe();

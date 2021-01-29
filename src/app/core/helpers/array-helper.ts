@@ -10,12 +10,16 @@ export class ArrayHelper {
   }
 
   /**
-     * @param array Array
-     * @param fromIndex Reorder item from index
-     * @param toIndex Reorder item to index
-     * @returns New reordered array
-     */
-  static reorderList<T>(array: Array<T>, fromIndex: number, toIndex: number): Array<T> {
+   * @param array Array
+   * @param fromIndex Reorder item from index
+   * @param toIndex Reorder item to index
+   * @returns New reordered array
+   */
+  static reorderList<T>(
+    array: Array<T>,
+    fromIndex: number,
+    toIndex: number
+  ): Array<T> {
     if (!array || array.length === 0) {
       return array;
     }

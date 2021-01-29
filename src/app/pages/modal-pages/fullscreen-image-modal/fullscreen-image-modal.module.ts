@@ -9,4 +9,4 @@ import { FullscreenImageModalPage } from './fullscreen-image-modal.page';
   declarations: [FullscreenImageModalPage],
   entryComponents: [FullscreenImageModalPage]
 })
-export class FullscreenImageModalPageModule { }
+export class FullscreenImageModalPageModule {}

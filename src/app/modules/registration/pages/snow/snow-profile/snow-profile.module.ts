@@ -37,7 +37,7 @@ const routes: Routes = [
     CompressionTestComponent,
     SnowDensityComponent,
     SnowTempComponent,
-    StratProfileComponent,
+    StratProfileComponent
   ]
 })
-export class SnowProfilePageModule { }
+export class SnowProfilePageModule {}

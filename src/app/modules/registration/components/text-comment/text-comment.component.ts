@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, EventEmitter, Output, NgZone } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  NgZone
+} from '@angular/core';
 
 @Component({
   selector: 'app-text-comment',
@@ -6,7 +13,6 @@ import { Component, OnInit, Input, EventEmitter, Output, NgZone } from '@angular
   styleUrls: ['./text-comment.component.scss']
 })
 export class TextCommentComponent implements OnInit {
-
   @Input() title: string;
   @Input() placeholder: string;
   @Input() value: string;
@@ -15,10 +21,9 @@ export class TextCommentComponent implements OnInit {
   @Input() disabled = false;
   @Input() max = 1024;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onBlur() {
     if (this.value) {

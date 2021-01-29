@@ -1,6 +1,5 @@
 /* tslint:disable */
 export interface DangerObsDto {
-
   /**
    * Settes av systemet. Teller fra 0 og opp pr RegID
    */

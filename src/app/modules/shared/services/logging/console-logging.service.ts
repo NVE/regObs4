@@ -9,20 +9,22 @@ const stringify = require('json-stringify-safe');
   providedIn: 'root'
 })
 export class ConsoleLoggingService implements LoggingService {
-  enable() {
-  }
+  enable() {}
 
-  disable() {
-  }
+  disable() {}
 
-  constructor() {
-  }
+  constructor() {}
 
-  configureLogging(appMode: AppMode) { }
+  configureLogging(appMode: AppMode) {}
 
-  setUser(user: LoggedInUser) { }
+  setUser(user: LoggedInUser) {}
 
-  error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
+  error(
+    error: Error,
+    tag?: string,
+    message?: string,
+    ...optionalParams: any[]
+  ) {
     this.log(message, error, LogLevel.Error, tag, ...optionalParams);
   }
 
@@ -30,9 +32,19 @@ export class ConsoleLoggingService implements LoggingService {
     this.log(message, null, LogLevel.Debug, tag, ...optionalParams);
   }
 
-  log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    const msg = `[${level.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
-    optionalParams.length > 0 ? console.log(msg, optionalParams) : console.log(msg);
+  log(
+    message?: string,
+    error?: Error,
+    level?: LogLevel,
+    tag?: string,
+    ...optionalParams: any[]
+  ) {
+    const msg = `[${level.toUpperCase()}]${
+      tag ? '[' + tag + ']' : ''
+    } ${message}`;
+    optionalParams.length > 0
+      ? console.log(msg, optionalParams)
+      : console.log(msg);
     if (error) {
       console.error(error);
     }
