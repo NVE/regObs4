@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import * as L from 'leaflet';
 import { Subject } from 'rxjs';
@@ -27,7 +33,7 @@ export class ObservationListPage implements OnInit {
   private total: number;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
-  @ViewChild(IonInfiniteScroll, { static: false}) scroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
 
   trackByIdFunc = this.trackByIdFuncInternal.bind(this);
   refreshFunc = this.refresh.bind(this);
@@ -36,8 +42,8 @@ export class ObservationListPage implements OnInit {
     private observationService: ObservationService,
     private dataMarshallService: DataMarshallService,
     private cdr: ChangeDetectorRef,
-    private mapService: MapService) {
-  }
+    private mapService: MapService
+  ) {}
 
   ngOnInit(): void {
     this.cancelSubject = this.dataMarshallService.observableCancelSubject;
@@ -57,12 +63,17 @@ export class ObservationListPage implements OnInit {
     this.visibleObservations = undefined;
   }
 
-  private async resetAndLoadObservations(forceUpdate = false, cancelPromise: Promise<unknown> = undefined): Promise<void> {
+  private async resetAndLoadObservations(
+    forceUpdate = false,
+    cancelPromise: Promise<unknown> = undefined
+  ): Promise<void> {
     this.loaded = false;
     this.visibleObservations = undefined;
     this.cdr.detectChanges();
     if (forceUpdate) {
-      await this.observationService.forceUpdateObservationsForCurrentGeoHazard(cancelPromise);
+      await this.observationService.forceUpdateObservationsForCurrentGeoHazard(
+        cancelPromise
+      );
     }
     this.loadObservations();
   }
@@ -82,21 +93,29 @@ export class ObservationListPage implements OnInit {
   }
 
   private getObservationsInMap(): Promise<RegistrationViewModel[]> {
-    return this.mapService.mapView$.pipe(switchMap((mapView: IMapView) =>
-      this.observationService.observations$.pipe(
-        map((observations) => this.filterObservationsWithinViewBounds(observations, mapView)),
-        map((observations) => observations.slice(0, MAX_OBSERVATION_COUNT))
-      )),
-    take(1)
-    ).toPromise();
+    return this.mapService.mapView$
+      .pipe(
+        switchMap((mapView: IMapView) =>
+          this.observationService.observations$.pipe(
+            map((observations) =>
+              this.filterObservationsWithinViewBounds(observations, mapView)
+            ),
+            map((observations) => observations.slice(0, MAX_OBSERVATION_COUNT))
+          )
+        ),
+        take(1)
+      )
+      .toPromise();
   }
 
   loadNextPage(event: CustomEvent<IonInfiniteScroll>): void {
     this.pageIndex += 1;
     const startIndex = this.pageIndex * PAGE_SIZE;
-    this.visibleObservations.push(...this.allObservations.slice(startIndex, startIndex + PAGE_SIZE));
+    this.visibleObservations.push(
+      ...this.allObservations.slice(startIndex, startIndex + PAGE_SIZE)
+    );
 
-    const target: IonInfiniteScroll = event.target as unknown as IonInfiniteScroll;
+    const target: IonInfiniteScroll = (event.target as unknown) as IonInfiniteScroll;
     target.complete();
     if (this.visibleObservations.length >= this.total) {
       target.disabled = true; //we have reached the end, so no need to load more pages from now
@@ -111,9 +130,20 @@ export class ObservationListPage implements OnInit {
     return MAX_OBSERVATION_COUNT;
   }
 
-  private filterObservationsWithinViewBounds(observations: RegistrationViewModel[], view: IMapView) {
-    return observations.filter((observation) => !view ||
-      view.bounds.contains(L.latLng(observation.ObsLocation.Latitude, observation.ObsLocation.Longitude)));
+  private filterObservationsWithinViewBounds(
+    observations: RegistrationViewModel[],
+    view: IMapView
+  ) {
+    return observations.filter(
+      (observation) =>
+        !view ||
+        view.bounds.contains(
+          L.latLng(
+            observation.ObsLocation.Latitude,
+            observation.ObsLocation.Longitude
+          )
+        )
+    );
   }
 
   private trackByIdFuncInternal(_, obs: RegistrationViewModel) {

@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output
+} from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { IRegistration } from 'src/app/modules/registration/models/registration.model';
@@ -8,17 +14,14 @@ import { RegistrationService } from 'src/app/modules/registration/services/regis
   selector: 'app-draft-list',
   templateUrl: './draft-list.component.html',
   styleUrls: ['./draft-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DraftListComponent implements OnInit {
-
   @Output() isEmpty = new EventEmitter<boolean>();
   registrations$: Observable<IRegistration[]>;
   private ngDestroy$: Subject<void>;
 
-  constructor(
-    private registrationService: RegistrationService
-  ) { }
+  constructor(private registrationService: RegistrationService) {}
 
   ngOnInit(): void {
     this.ngDestroy$ = new Subject();
@@ -32,7 +35,7 @@ export class DraftListComponent implements OnInit {
 
   private createRegistration$(): Observable<IRegistration[]> {
     return this.registrationService.registrations$.pipe(
-      tap(regs => this.isEmpty.emit(regs.length === 0)),
+      tap((regs) => this.isEmpty.emit(regs.length === 0))
     );
   }
 

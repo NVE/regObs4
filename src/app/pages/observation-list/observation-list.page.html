@@ -13,7 +13,7 @@
       <ion-infinite-scroll-content>
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
-    <ion-row *ngIf="maxCountReached" class="full-grid-row">
+    <ion-row *ngIf="maxCountReached" class="full-grid-row max-count-reached">
       <ion-col class="ion-text-center ion-margin-horizontal">
         <h2>{{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_HEADER' | translate }}</h2>
         <h3 class="ion-text-wrap"> {{ 'OBSERVATION_LIST.MAX_COUNT_REACHED_TEXT' | translate: {maxCount: maxCount} }}</h3>
