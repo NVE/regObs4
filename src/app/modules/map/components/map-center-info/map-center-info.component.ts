@@ -3,20 +3,20 @@ import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, of } from 'rxjs';
-import {
-  switchMap,
-  tap,
-  filter,
-  distinctUntilChanged,
-  map
-} from 'rxjs/operators';
+import { Subscription, of, Observable } from 'rxjs';
+import { switchMap, tap, filter, map } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
-import { UserSetting } from '../../../../core/models/user-settings.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { IMapView } from '../../services/map/map-view.interface';
 import { MapService } from '../../services/map/map.service';
+import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
+import { Geoposition } from '@ionic-native/geolocation/ngx';
+
+interface ViewInfoWithDistance extends ViewInfo {
+  horizontalDistanceFromGpsPos?: number;
+  heightDifferenceFromGpsPos?: number; //if < 0 = map center is below GPS position
+}
 
 @Component({
   selector: 'app-map-center-info',
@@ -24,7 +24,7 @@ import { MapService } from '../../services/map/map.service';
   styleUrls: ['./map-center-info.component.scss']
 })
 export class MapCenterInfoComponent implements OnInit, OnDestroy {
-  viewInfo: ViewInfo;
+  viewInfo: ViewInfoWithDistance;
   mapView: IMapView;
   showMapCenter: boolean;
   isLoading: boolean;
@@ -35,12 +35,13 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   constructor(
     private userSettingService: UserSettingService,
     private mapService: MapService,
-    private mapSerachService: MapSearchService,
+    private mapSearchService: MapSearchService,
     private clipboard: Clipboard,
     private toastController: ToastController,
     private translateService: TranslateService,
     private platform: Platform,
     private ngZone: NgZone,
+    private geoPositionService: GeoPositionService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -51,7 +52,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
           this.showMapCenter = showMapCenter;
           this.document.documentElement.style.setProperty(
             '--map-center-info-height',
-            showMapCenter ? '72px' : '0px'
+            showMapCenter ? '89px' : '0px'
           );
         });
       })
@@ -83,7 +84,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
               this.isLoading = true;
             });
           }),
-          switchMap((val: IMapView) => this.mapSerachService.getViewInfo(val))
+          switchMap((val: IMapView) => this.getViewInfo(val))
         )
         .subscribe(
           (viewInfo) => {
@@ -99,6 +100,51 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
           }
         )
     );
+  }
+
+  private getViewInfo(mapView: IMapView): Observable<ViewInfoWithDistance> {
+    return this.mapSearchService
+      .getViewInfo(mapView)
+      .pipe(
+        switchMap((viewInfo) =>
+          this.geoPositionService.currentPosition$.pipe(
+            map((gpsPos) => this.createViewInfoWithDistance(viewInfo, gpsPos))
+          )
+        )
+      );
+  }
+
+  private createViewInfoWithDistance(
+    viewInfo: ViewInfo,
+    gpsPos: Geoposition
+  ): ViewInfoWithDistance {
+    if (viewInfo) {
+      let horizontalDistance = undefined;
+      let heightDifference = undefined;
+      if (gpsPos) {
+        if (gpsPos.coords) {
+          horizontalDistance = viewInfo.latLng
+            .distanceTo([gpsPos.coords.latitude, gpsPos.coords.longitude])
+            .toFixed();
+          if (gpsPos.coords.altitude) {
+            heightDifference = (
+              viewInfo.elevation - gpsPos.coords.altitude
+            ).toFixed();
+          }
+          heightDifference = -100;
+        }
+      }
+      return {
+        location: viewInfo.location,
+        elevation: viewInfo.elevation,
+        steepness: viewInfo.steepness,
+        latLng: viewInfo.latLng,
+        horizontalDistanceFromGpsPos: horizontalDistance,
+        heightDifferenceFromGpsPos: heightDifference
+      };
+    } else {
+      return null;
+    }
   }
 
   ngOnDestroy(): void {

@@ -33,8 +33,21 @@
       </ng-container> -->
       <ion-row>
         <ng-container *ngIf="mapView && mapView.center">
-          {{ mapView.center.lat | number:'.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
+          {{ mapView.center.lat | number:'.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}}, 
           {{ mapView.center.lng | number:'.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
+        </ng-container>
+      </ion-row>
+      <ion-row>
+        <ng-container *ngIf="viewInfo">
+          <ng-container *ngIf="viewInfo.horizontalDistanceFromGpsPos">
+            <ion-icon name="arrow-back"></ion-icon><ion-icon name="arrow-forward"></ion-icon>  
+            {{ viewInfo.horizontalDistanceFromGpsPos | number }}m
+          </ng-container>
+          <ng-container *ngIf="viewInfo.heightDifferenceFromGpsPos && viewInfo.heightDifferenceFromGpsPos != 0">
+            <ion-icon *ngIf="viewInfo.heightDifferenceFromGpsPos > 0" name="arrow-up"></ion-icon>
+            <ion-icon *ngIf="viewInfo.heightDifferenceFromGpsPos < 0" name="arrow-down"></ion-icon>  
+            {{ viewInfo.heightDifferenceFromGpsPos | number }}m
+          </ng-container>         
         </ng-container>
       </ion-row>
     </ion-grid>
