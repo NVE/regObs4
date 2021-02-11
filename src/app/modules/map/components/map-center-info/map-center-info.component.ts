@@ -4,7 +4,7 @@ import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, of, Observable } from 'rxjs';
-import { switchMap, tap, filter, map } from 'rxjs/operators';
+import { switchMap, tap, filter, map, startWith } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -12,10 +12,13 @@ import { IMapView } from '../../services/map/map-view.interface';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
+import { HelperService } from 'src/app/core/services/helpers/helper.service';
+import { LatLng } from 'leaflet';
 
 interface ViewInfoWithDistance extends ViewInfo {
-  horizontalDistanceFromGpsPos?: number;
-  heightDifferenceFromGpsPos?: number; //if < 0 = map center is below GPS position
+  horizontalDistanceFromGpsPos?: string; //including unit (m or km)
+  heightDifferenceFromGpsPos?: string; //including unit (m)
+  gpsPosIsBelowMapCenter?: boolean;
 }
 
 @Component({
@@ -42,6 +45,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private platform: Platform,
     private ngZone: NgZone,
     private geoPositionService: GeoPositionService,
+    private helperService: HelperService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -50,10 +54,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
       tap((showMapCenter) => {
         this.ngZone.run(() => {
           this.showMapCenter = showMapCenter;
-          this.document.documentElement.style.setProperty(
-            '--map-center-info-height',
-            showMapCenter ? '89px' : '0px'
-          );
+          this.setHeightStyle(showMapCenter ? 1 : 0);
         });
       })
     );
@@ -102,45 +103,84 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     );
   }
 
+  private setHeightStyle(numRows: number): void {
+    const padding = numRows > 0 ? 20 : 0;
+    this.document.documentElement.style.setProperty(
+      '--map-center-info-height',
+      `${padding + numRows * 17}px`
+    );
+  }
+
   private getViewInfo(mapView: IMapView): Observable<ViewInfoWithDistance> {
-    return this.mapSearchService
-      .getViewInfo(mapView)
-      .pipe(
-        switchMap((viewInfo) =>
-          this.geoPositionService.currentPosition$.pipe(
-            map((gpsPos) => this.createViewInfoWithDistance(viewInfo, gpsPos))
+    return this.mapSearchService.getViewInfo(mapView).pipe(
+      switchMap((viewInfo) =>
+        this.geoPositionService.currentPosition$.pipe(
+          startWith(null as Geoposition),
+          map((gpsPos) => this.createViewInfoWithDistance(viewInfo, gpsPos)),
+          tap((viewInfoWithDistance) =>
+            this.computeHeight(viewInfoWithDistance)
           )
         )
-      );
+      )
+    );
+  }
+
+  private computeHeight(viewInfo: ViewInfoWithDistance): void {
+    let rows = 0;
+    if (this.mapView.center) {
+      rows++;
+    }
+    if (viewInfo) {
+      if (viewInfo?.location) {
+        rows++;
+      }
+      if (viewInfo?.elevation != null || viewInfo?.steepness != null) {
+        rows++;
+      }
+      if (
+        viewInfo.horizontalDistanceFromGpsPos ||
+        viewInfo.heightDifferenceFromGpsPos
+      ) {
+        rows++;
+      }
+    }
+    this.setHeightStyle(rows);
   }
 
   private createViewInfoWithDistance(
     viewInfo: ViewInfo,
     gpsPos: Geoposition
   ): ViewInfoWithDistance {
-    if (viewInfo) {
-      let horizontalDistance = undefined;
-      let heightDifference = undefined;
-      if (gpsPos) {
-        if (gpsPos.coords) {
-          horizontalDistance = viewInfo.latLng
-            .distanceTo([gpsPos.coords.latitude, gpsPos.coords.longitude])
-            .toFixed();
-          if (gpsPos.coords.altitude) {
-            heightDifference = (
-              viewInfo.elevation - gpsPos.coords.altitude
-            ).toFixed();
-          }
-          heightDifference = -100;
+    let horizontalDistance = undefined;
+    let heightDifference = undefined;
+    let gpsPosIsBelowMapCenter = undefined;
+    if (this.mapView.center && gpsPos?.coords) {
+      horizontalDistance = this.helperService.getDistanceText(
+        this.mapView.center.distanceTo([
+          gpsPos.coords.latitude,
+          gpsPos.coords.longitude
+        ])
+      );
+      if (viewInfo && viewInfo.elevation && gpsPos.coords.altitude) {
+        heightDifference =
+          Math.abs(viewInfo.elevation - gpsPos.coords.altitude).toFixed() +
+          ' m';
+        if (gpsPos.coords.altitude < viewInfo.elevation) {
+          gpsPosIsBelowMapCenter = true;
+        } else if (gpsPos.coords.altitude > viewInfo.elevation) {
+          gpsPosIsBelowMapCenter = false;
+        } else {
+          heightDifference = '';
         }
       }
       return {
-        location: viewInfo.location,
-        elevation: viewInfo.elevation,
-        steepness: viewInfo.steepness,
-        latLng: viewInfo.latLng,
+        location: viewInfo?.location,
+        elevation: viewInfo?.elevation,
+        steepness: viewInfo?.steepness,
+        latLng: this.mapView.center,
         horizontalDistanceFromGpsPos: horizontalDistance,
-        heightDifferenceFromGpsPos: heightDifference
+        heightDifferenceFromGpsPos: heightDifference,
+        gpsPosIsBelowMapCenter: gpsPosIsBelowMapCenter
       };
     } else {
       return null;
