@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { GeoHazard } from '../../models/geo-hazard.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -7,9 +6,16 @@ import { GeoHazard } from '../../models/geo-hazard.enum';
 export class HelperService {
   constructor() {}
 
-  getDistanceText(distanceInMeter: number): string {
+  getDistanceText(distanceInMeter: number, numDecimals = 1): string {
+    const options = {
+      minimumFractionDigits: numDecimals,
+      maximumFractionDigits: numDecimals
+    };
     if (distanceInMeter > 1000) {
-      return `${(distanceInMeter / 1000).toFixed(1)}  km`;
+      return `${(distanceInMeter / 1000).toLocaleString(
+        undefined,
+        options
+      )}  km`;
     } else {
       return `${(distanceInMeter || 0).toFixed(0)} m`;
     }
