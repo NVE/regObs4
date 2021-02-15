@@ -1,23 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
 import { Injectable } from '@angular/core';
 import { LogLevel } from './log-level.model';
 import { LoggingService } from './logging.service';
 import { AppMode } from '../../../../core/models/app-mode.enum';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
-const stringify = require('json-stringify-safe');
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsoleLoggingService implements LoggingService {
-  enable() {}
+  enable(): void {}
 
-  disable() {}
+  disable(): void {}
 
-  constructor() {}
+  configureLogging(appMode: AppMode): void {}
 
-  configureLogging(appMode: AppMode) {}
-
-  setUser(user: LoggedInUser) {}
+  setUser(user: LoggedInUser): void {}
 
   error(
     error: Error,

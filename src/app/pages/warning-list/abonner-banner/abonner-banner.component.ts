@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 
 @Component({
@@ -6,12 +6,10 @@ import { ExternalLinkService } from '../../../core/services/external-link/extern
   templateUrl: './abonner-banner.component.html',
   styleUrls: ['./abonner-banner.component.scss']
 })
-export class AbonnerBannerComponent implements OnInit {
+export class AbonnerBannerComponent {
   constructor(private externalLinkService: ExternalLinkService) {}
 
-  ngOnInit() {}
-
-  buttonClicked() {
+  buttonClicked(): void {
     this.externalLinkService.openExternalLink('https://abonner.varsom.no');
   }
 }

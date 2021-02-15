@@ -1,9 +1,6 @@
 import {
   Component,
-  OnInit,
   Input,
-  AfterViewInit,
-  OnDestroy,
   OnChanges,
   SimpleChanges,
   ChangeDetectionStrategy,
@@ -27,10 +24,10 @@ import { AnalyticService } from '../../../modules/analytics/services/analytic.se
 import { AppEventCategory } from '../../../modules/analytics/enums/app-event-category.enum';
 import { AppEventAction } from '../../../modules/analytics/enums/app-event-action.enum';
 import { ImageLocation } from '../../img-swiper/image-location.model';
-// import { ObsCardHeightService } from '../../../core/services/obs-card-height/obs-card-height.service';
 import 'leaflet.utm';
 import { getStarCount } from '../../../core/helpers/competence-helper';
 import { take } from 'rxjs/operators';
+import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -38,8 +35,7 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./observation-list-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ObservationListCardComponent
-  implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+export class ObservationListCardComponent implements OnChanges {
   @Input() obs: RegistrationViewModel;
 
   dtObsDate: string;
@@ -65,10 +61,9 @@ export class ObservationListCardComponent
     private userSettingService: UserSettingService,
     private socialSharing: SocialSharing,
     private cdr: ChangeDetectorRef,
-    private analyticService: AnalyticService
+    private analyticService: AnalyticService,
+    private regobsAuthService: RegobsAuthService
   ) {}
-
-  async ngOnInit() {}
 
   private async load() {
     const baseUrl = await this.getBaseUrl();
@@ -159,11 +154,11 @@ export class ObservationListCardComponent
     return undefined;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(): void {
     this.load();
   }
 
-  getGeoHazardCircleIcon(geoHazard: GeoHazard) {
+  getGeoHazardCircleIcon(geoHazard: GeoHazard): string {
     switch (geoHazard) {
       case GeoHazard.Dirt:
         return '/assets/icon/dirt_circle.svg';
@@ -176,23 +171,10 @@ export class ObservationListCardComponent
     }
   }
 
-  ngAfterViewInit(): void {}
-
-  ngOnDestroy(): void {}
-
-  updateImages(baseUrl: string) {
-    const openImages = this.obs.Attachments.filter((a) => {
-      return true;
-      // const summary = this.summaries.find((s) => s.RegistrationTID === a.RegistrationTID);
-      // if (!summary) {
-      //   return true;
-      // } else {
-      //   return summary.open;
-      // }
-    });
-    this.imageHeaders = openImages.map((x) => x.RegistrationName);
-    this.imageDescriptions = openImages.map((x) => x.Comment);
-    this.imageUrls = openImages.map((x) =>
+  updateImages(baseUrl: string): void {
+    this.imageHeaders = this.obs.Attachments.map((x) => x.RegistrationName);
+    this.imageDescriptions = this.obs.Attachments.map((x) => x.Comment);
+    this.imageUrls = this.obs.Attachments.map((x) =>
       this.getImageUrl(baseUrl, x.AttachmentFileName)
     );
   }
@@ -201,15 +183,15 @@ export class ObservationListCardComponent
     baseUrl: string,
     filename: string,
     size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'large'
-  ) {
+  ): string {
     return `${baseUrl}/Attachments/${size}/${filename}`;
   }
 
-  getRegistrationNames() {
+  getRegistrationNames(): string {
     return this.obs.Summaries.map((reg) => reg.RegistrationName).join(', ');
   }
 
-  async openImage(event: { index: number; imgUrl: string }) {
+  async openImage(event: { index: number; imgUrl: string }): Promise<void> {
     const image = this.obs.Attachments[event.index];
     const baseUrl = await this.getBaseUrl();
     const modal = await this.modalController.create({
@@ -227,7 +209,10 @@ export class ObservationListCardComponent
     modal.present();
   }
 
-  async openLocation(location: { latLng: L.LatLng; geoHazard: GeoHazard }) {
+  async openLocation(location: {
+    latLng: L.LatLng;
+    geoHazard: GeoHazard;
+  }): Promise<void> {
     const modal = await this.modalController.create({
       component: ModalMapImagePage,
       componentProps: {
@@ -244,29 +229,16 @@ export class ObservationListCardComponent
     return settings.services.regObs.webUrl[userSetings.appMode];
   }
 
-  // toggleAllSelected() {
-  //   this.allSelected = !this.allSelected;
-  //   for (const s of this.summaries) {
-  //     s.open = this.allSelected;
-  //   }
-  //   this.updateImages();
-  // }
-
-  // toggleRegistration(index: number) {
-  //   if (this.allSelected) {
-  //     this.toggleAllSelected();
-  //   }
-  //   this.summaries[index].open = !this.summaries[index].open;
-  //   this.updateImages();
-  // }
-
-  private getRegistrationUrl(baseUrl: string) {
-    return `${baseUrl}/Registration/${this.obs.RegID}`;
+  private getRegistrationUrl(baseUrl: string, loginHint?: string) {
+    return `${baseUrl}/Registration/${this.obs.RegID}${
+      loginHint ? `?login_hint=${loginHint}` : ''
+    }`;
   }
 
-  async openWeb() {
+  async openWeb(): Promise<void> {
     const baseUrl = await this.getBaseUrl();
-    const url = this.getRegistrationUrl(baseUrl);
+    const user = await this.regobsAuthService.getLoggedInUserAsPromise();
+    const url = this.getRegistrationUrl(baseUrl, user.email);
     this.analyticService.trackEvent(
       AppEventCategory.Observations,
       AppEventAction.Click,
@@ -276,7 +248,7 @@ export class ObservationListCardComponent
     this.externalLinkService.openExternalLink(url);
   }
 
-  async share() {
+  async share(): Promise<void> {
     const baseUrl = await this.getBaseUrl();
     const url = this.getRegistrationUrl(baseUrl);
     this.analyticService.trackEvent(

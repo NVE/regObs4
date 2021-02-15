@@ -4,7 +4,6 @@ import { AppResetService } from './app-reset.service';
 import { DbHelperService } from '../../../../core/services/db-helper/db-helper.service';
 import { LoggingService } from '../logging/logging.service';
 import { OnReset } from '../../interfaces/on-reset.interface';
-import { LogLevel } from '../logging/log-level.model';
 
 describe('AppResetService', () => {
   let dbHelperService: DbHelperService;
@@ -18,13 +17,7 @@ describe('AppResetService', () => {
       resetDb: () => Promise.resolve()
     });
     loggingService = jasmine.createSpyObj('LoggingService', {
-      log: (
-        message?: string,
-        error?: Error,
-        level?: LogLevel,
-        tag?: string,
-        ...optionalParams: any[]
-      ) => {
+      log: () => {
         return;
       }
     });

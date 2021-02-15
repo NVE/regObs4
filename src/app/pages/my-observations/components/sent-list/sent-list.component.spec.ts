@@ -8,9 +8,8 @@ describe('SentListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SentListComponent ]
-    })
-    .compileComponents();
+      declarations: [SentListComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
