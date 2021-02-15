@@ -1,6 +1,6 @@
 import { ObservableWorker, DoWork } from 'observable-webworker';
 import { Observable, from } from 'rxjs';
-import { map, concatMap, tap } from 'rxjs/operators';
+import { map, concatMap } from 'rxjs/operators';
 
 @ObservableWorker()
 export class OffscreenCanvasToArrayBuffer
@@ -17,7 +17,6 @@ export class OffscreenCanvasToArrayBuffer
     }>
   ): Observable<{ arrayBuffer: ArrayBuffer; mimeType: string }> {
     return input$.pipe(
-      tap((input) => console.log('Input to Offscreen Canvas', input)),
       concatMap((input) =>
         from(
           input.offscreenCanvas.convertToBlob({

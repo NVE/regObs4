@@ -4,10 +4,8 @@ import {
   ChangeDetectionStrategy,
   Input,
   ComponentFactoryResolver,
-  Type,
   ViewChild,
-  ViewContainerRef,
-  AfterViewInit
+  ViewContainerRef
 } from '@angular/core';
 import { legendsConfig } from '../legends.config';
 
@@ -24,11 +22,11 @@ export class SupportTileLegendLoaderComponent implements OnInit {
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadComponent();
   }
 
-  loadComponent() {
+  loadComponent(): void {
     if (this.name && legendsConfig[this.name]) {
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
         legendsConfig[this.name]

@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Subscription, combineLatest } from 'rxjs';
-import { map, tap, take } from 'rxjs/operators';
-import { IonSelect } from '@ionic/angular';
+import { take } from 'rxjs/operators';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
@@ -23,7 +22,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
     private loggingService: LoggingService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.subscription = combineLatest([
       this.userSettingService.daysBack$,
       this.userSettingService.currentGeoHazard$
@@ -54,7 +53,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
     );
   }
 
-  async save() {
+  async save(): Promise<void> {
     const userSetting = await this.userSettingService.userSetting$
       .pipe(take(1))
       .toPromise();

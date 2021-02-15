@@ -23,7 +23,6 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-unused-vars": "error", // TODO Ubrukte funksjoner?
     "curly": "error",
-    "indent": ["warn", 2],
     "@typescript-eslint/interface-name-prefix": "off",
     "max-len": [
       "error",

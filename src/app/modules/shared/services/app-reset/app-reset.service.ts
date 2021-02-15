@@ -16,11 +16,11 @@ export class AppResetService {
     private loggingService: LoggingService
   ) {}
 
-  async resetApp() {
+  async resetApp(): Promise<void> {
     await Promise.all(
       this.services.map((s) => Promise.resolve(s.appOnReset()))
     );
-    await this.dbHelperService.resetDb((table, _) => {
+    await this.dbHelperService.resetDb((table) => {
       this.loggingService.log(
         `Error reset table ${table}`,
         null,
