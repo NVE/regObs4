@@ -10,11 +10,16 @@ import {
 import { IonInfiniteScroll } from '@ionic/angular';
 import { combineLatest, Observable, of } from 'rxjs';
 import {
+  debounceTime,
   distinctUntilChanged,
+  filter,
   finalize,
   map,
+  pairwise,
+  skip,
   switchMap,
-  take
+  take,
+  tap
 } from 'rxjs/operators';
 import {
   enterZone,
@@ -60,6 +65,16 @@ export class SentListComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.initRegistrationSubscription();
+    this.registrationService.registrations$
+      .pipe(
+        map((regs) => regs.length),
+        pairwise(),
+        map(([lastCount, newCount]) => newCount - lastCount),
+        distinctUntilChanged(),
+        filter((diff) => diff < 0), //only fetch observations when num drafts decrease
+        debounceTime(500) //wait a bit in case multiple observations were shipped
+      )
+      .subscribe(() => this.initRegistrationSubscription());
   }
 
   async refresh(cancelPromise: Promise<void>): Promise<void> {

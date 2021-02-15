@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
@@ -17,7 +17,7 @@ export class GeoSelectComponent implements OnInit {
 
   constructor(private userSettingService: UserSettingService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.geoHazardTypes = [
       [GeoHazard.Snow],
       [GeoHazard.Ice],
@@ -26,11 +26,11 @@ export class GeoSelectComponent implements OnInit {
     this.userSettings$ = this.userSettingService.userSetting$;
   }
 
-  toggle() {
+  toggle(): void {
     this.isOpen = !this.isOpen;
   }
 
-  async changeGeoHazard(geoHazards: GeoHazard[]) {
+  async changeGeoHazard(geoHazards: GeoHazard[]): Promise<void> {
     this.isOpen = false;
     const currentSettings = await this.userSettingService.userSetting$
       .pipe(take(1))

@@ -1,6 +1,6 @@
 import { ObservableWorker, DoWork } from 'observable-webworker';
 import { Observable, from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { DataUrlHelper } from '../core/helpers/data-url.helper';
 
 @ObservableWorker()

@@ -1,5 +1,5 @@
-import { Component, ViewChild, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { IonTabs, Platform } from '@ionic/angular';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { Subscription, Observable } from 'rxjs';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { map } from 'rxjs/operators';
@@ -27,21 +27,20 @@ export class TabsPage implements OnInit, OnDestroy {
   fullscreen$: Observable<boolean>;
   showTrips = false;
 
-  get showBadge() {
+  get showBadge(): boolean {
     return this.warningsInView && this.warningsInView.maxWarning > 0;
   }
 
-  get badgeColor() {
+  get badgeColor(): string {
     return 'warninglevel-' + this.warningsInView.maxWarning;
   }
 
-  get badgeText() {
+  get badgeText(): string {
     return `${this.warningsInView.maxWarning}${
       this.warningsInView.hasEmergencyWarning ? '!' : ''
     }`;
   }
 
-  // @ViewChild(IonTabs) private tabs: IonTabs;
   constructor(
     private fullscreenService: FullscreenService,
     private platform: Platform,
