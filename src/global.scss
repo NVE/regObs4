@@ -1,24 +1,25 @@
 // http://ionicframework.com/docs/theming/
-@import "~@ionic/angular/css/normalize.css";
-@import "~@ionic/angular/css/structure.css";
-@import "~@ionic/angular/css/typography.css";
-@import "~@ionic/angular/css/core.css";
+@import '~@ionic/angular/css/normalize.css';
+@import '~@ionic/angular/css/structure.css';
+@import '~@ionic/angular/css/typography.css';
+@import '~@ionic/angular/css/core.css';
 
-@import "~@ionic/angular/css/padding.css";
-@import "~@ionic/angular/css/float-elements.css";
-@import "~@ionic/angular/css/text-alignment.css";
-@import "~@ionic/angular/css/text-transformation.css";
-@import "~@ionic/angular/css/flex-utils.css";
+@import '~@ionic/angular/css/padding.css';
+@import '~@ionic/angular/css/float-elements.css';
+@import '~@ionic/angular/css/text-alignment.css';
+@import '~@ionic/angular/css/text-transformation.css';
+@import '~@ionic/angular/css/flex-utils.css';
 
-@import "app/core/helpers/leaflet/user-marker/user-marker.scss";
+@import 'app/core/helpers/leaflet/user-marker/user-marker.scss';
 
 /* Font for arrows */
 @font-face {
-  font-family: "Custom Arrows";
+  font-family: 'Custom Arrows';
   font-style: normal;
   font-weight: 400;
-  src: url("/assets/fonts/Calibri.woff") format("woff2"), url("/assets/fonts/Calibri.woff") format("woff"),
-    url("/assets/fonts/Calibri.ttf") format("truetype"); /* Safari, Android, iOS */
+  src: url('/assets/fonts/Calibri.woff') format('woff2'),
+    url('/assets/fonts/Calibri.woff') format('woff'),
+    url('/assets/fonts/Calibri.ttf') format('truetype'); /* Safari, Android, iOS */
   unicode-range: U+2190-2199, U+2B08, U+2B09, U+2B0A, U+2B0B;
 }
 
@@ -85,7 +86,7 @@
   --ion-text-color-heading: #222222;
   --ion-text-color-heading-white-pages: var(--ion-color-varsom-blue-dark-2);
   --ion-color-step-600: var(--ion-text-color-heading);
-  --ion-font-family: "Custom Arrows", "Source Sans Pro";
+  --ion-font-family: 'Custom Arrows', 'Source Sans Pro';
   --ion-color-varsom-test-header: #700cef;
   --ion-color-varsom-demo-header: var(--ion-color-danger);
   --background-color-menu: #f7f7f7;
@@ -188,8 +189,8 @@ ion-item {
     }
   }
 
-  ion-button[slot="end"],
-  ion-icon[slot="end"] {
+  ion-button[slot='end'],
+  ion-icon[slot='end'] {
     align-self: center;
   }
 
@@ -264,7 +265,7 @@ ion-radio-group {
     margin: 10px 8px 10px 0;
   }
 
-  .in-item[slot="start"] {
+  .in-item[slot='start'] {
     margin-right: 20px;
   }
 
@@ -442,10 +443,10 @@ ion-toast {
 .shadow-marker {
   // filter: drop-shadow(5px 0px 5px #000);
   &:after {
-    content: "";
+    content: '';
     width: 42px;
     height: 42px;
-    background: url("/leaflet/marker-shadow.png") no-repeat;
+    background: url('/leaflet/marker-shadow.png') no-repeat;
     background-size: 100%;
     top: 0px;
     right: -9px;
@@ -516,3 +517,33 @@ ion-toast {
   float: left;
   margin-right: 8px;
 }
+
+@media only screen and (min-width: 700px) {
+  ion-card {
+    max-width: 900px;
+    border-radius: 16px !important;
+    width: 70%;
+    margin: 0 auto !important;
+    margin-bottom: 16px !important;
+  }
+
+  ion-slides {
+    max-height: 250px;
+  }
+
+  ion-item-divider {
+    width: 70%;
+    margin: 0 auto;
+    margin-bottom: 8px;
+  }
+
+  .action-sheet-wrapper.sc-ion-action-sheet-md {
+    left: 50%;
+    right: 50%;
+    transform: translate(-50%, calc(-50% + 182px)) !important;
+  }
+}
+
+/* .desktop-action-sheet {
+  background-color: tomato;
+} */

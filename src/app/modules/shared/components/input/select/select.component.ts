@@ -3,6 +3,7 @@ import { ActionSheetController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService } from '@ngx-translate/core';
+import { Platform } from '@ionic/angular';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
@@ -39,7 +40,8 @@ export class SelectComponent implements OnInit {
 
   constructor(
     private actionSheetController: ActionSheetController,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    public platform: Platform
   ) {}
 
   ngOnInit() {}
@@ -98,11 +100,15 @@ export class SelectComponent implements OnInit {
 
   async openSelect() {
     if (!this.disabled) {
+      const cssClass = this.platform.is('desktop')
+        ? 'desktop-action-sheet'
+        : null;
       const translations = await this.getTitleTranslations();
       const buttons = await this.getActionSheetButtons();
       const actionSheet = await this.actionSheetController.create({
         header: translations.titleTextTranslated,
         subHeader: translations.subTitleTextTranslated,
+        cssClass,
         buttons
       });
       await actionSheet.present();
