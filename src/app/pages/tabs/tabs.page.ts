@@ -26,6 +26,7 @@ export class TabsPage implements OnInit, OnDestroy {
   isAndroid: boolean;
   fullscreen$: Observable<boolean>;
   showTrips = false;
+  slot = 'bottom';
 
   get showBadge(): boolean {
     return this.warningsInView && this.warningsInView.maxWarning > 0;
@@ -73,11 +74,18 @@ export class TabsPage implements OnInit, OnDestroy {
         });
       });
 
-    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazard$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.showTrips = val.indexOf(GeoHazard.Snow) >= 0;
-      });
-    });
+    if (this.platform.is('desktop')) {
+      this.slot = 'top';
+      console.log(this.slot);
+    }
+
+    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazard$.subscribe(
+      (val) => {
+        this.ngZone.run(() => {
+          this.showTrips = val.indexOf(GeoHazard.Snow) >= 0;
+        });
+      }
+    );
   }
 
   ngOnDestroy(): void {
