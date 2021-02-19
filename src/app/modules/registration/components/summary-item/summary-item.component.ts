@@ -56,6 +56,15 @@ export class SummaryItemComponent implements OnChanges, OnInit {
     }
   }
 
+  // TODO: Delete if not needed
+  // convertFileSrc(fileUrl: string): SafeUrl {
+  //   return this.domSanitizer.bypassSecurityTrustUrl(
+  //     fileUrl.startsWith('blob')
+  //       ? fileUrl
+  //       : this.webView.convertFileSrc(fileUrl)
+  //   );
+  // }
+
   navigate() {
     if (!this.readonly) {
       this.navController.navigateForward([this.item.href, this.item.uuid], {
