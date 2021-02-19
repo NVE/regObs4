@@ -1,12 +1,14 @@
-.leaflet-container {
-    width: 100%;
-    height: 100%;
-    position: inherit !important;
-    -webkit-transform: translate3d(0,0,0);
-    transform: translate3d(0,0,0);
-
-    --leaflet-bottom: calc(var(--map-center-info-height) + 10px);
-    // --leaflet-control-margin-left: 7px;
+.esri-view {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+#mapViewNode {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
 }
 
 app-map-controls {

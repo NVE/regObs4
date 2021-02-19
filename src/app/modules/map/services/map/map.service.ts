@@ -105,7 +105,7 @@ export class MapService {
         if (!prev) {
           return 9999;
         }
-        return prev.center.distanceTo(next.center);
+        return prev.center.distance(next.center);
       }),
       scan((acc, val) => acc + val, 0)
     );
@@ -146,12 +146,12 @@ export class MapService {
       map(([mapView, geoHazards]) => ({
         mapView,
         bounds: [
-          mapView.bounds.getSouthWest().lng, // minx
-          mapView.bounds.getSouthWest().lat, // miny
-          mapView.bounds.getNorthEast().lng, // maxx
-          mapView.bounds.getNorthEast().lat // maxy
+          mapView.bounds.xmin,
+          mapView.bounds.ymin,
+          mapView.bounds.xmax,
+          mapView.bounds.ymax
         ],
-        center: { lat: mapView.center.lat, lng: mapView.center.lng },
+        center: mapView.center,
         geoHazards
       }))
     );

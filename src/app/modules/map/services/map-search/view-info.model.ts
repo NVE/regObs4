@@ -1,9 +1,9 @@
 import { LocationName } from './location-name.model';
-import * as L from 'leaflet';
+import { Point } from '@arcgis/core/geometry';
 
 export interface ViewInfo {
   location?: LocationName;
   elevation?: number;
   steepness?: number;
-  latLng: L.LatLng;
+  latLng: Point;
 }

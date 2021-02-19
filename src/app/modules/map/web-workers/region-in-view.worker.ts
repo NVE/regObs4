@@ -14,9 +14,8 @@ import {
   MultiPolygon,
   buffer,
   BBox,
-  Point,
   Coord
-} from '@turf/turf';
+} from '@turf/turf'; //TODO: May be replaced by arcgis
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
 import { map } from 'rxjs/operators';
 import { settings } from '../../../../settings';
@@ -103,7 +102,7 @@ export class RegionInViewWorker
         );
 
         const featureInCenter = this.getFeatureInPoint(
-          point([mapView.center.lng, mapView.center.lat]),
+          point([mapView.center.longitude, mapView.center.latitude]),
           featuresInViewBounds
         );
         regionInCenter = featureInCenter
@@ -112,7 +111,7 @@ export class RegionInViewWorker
 
         // Geojson features that intersects or is inside a buffer of 150 km
         const buff = buffer(
-          point([mapView.center.lng, mapView.center.lat]),
+          point([mapView.center.longitude, mapView.center.latitude]),
           150,
           { units: 'kilometers' }
         );

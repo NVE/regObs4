@@ -154,8 +154,8 @@ export class MapSearchService {
     const latLng = mapView.center;
     return this.geoCodeService
       .GeoCodeLocationInfo({
-        latitude: latLng.lat,
-        longitude: latLng.lng,
+        latitude: latLng.latitude,
+        longitude: latLng.longitude,
         geoHazardId: geoHazard
       })
       .pipe(

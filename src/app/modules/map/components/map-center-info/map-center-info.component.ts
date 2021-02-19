@@ -13,7 +13,7 @@ import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { HelperService } from 'src/app/core/services/helpers/helper.service';
-import { LatLng } from 'leaflet';
+import { Point } from '@arcgis/core/geometry';
 
 interface ViewInfoWithDistance extends ViewInfo {
   horizontalDistanceFromGpsPos?: string; //including unit (m or km)
@@ -155,11 +155,12 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     let heightDifference = undefined;
     let gpsPosIsBelowMapCenter = undefined;
     if (this.mapView.center && gpsPos?.coords) {
+      const gpsPosPoint = new Point({
+        latitude: gpsPos.coords.latitude,
+        longitude: gpsPos.coords.longitude
+      });
       horizontalDistance = this.helperService.getDistanceText(
-        this.mapView.center.distanceTo([
-          gpsPos.coords.latitude,
-          gpsPos.coords.longitude
-        ])
+        this.mapView.center.distance(gpsPosPoint)
       );
       if (viewInfo && viewInfo.elevation && gpsPos.coords.altitude) {
         heightDifference =

@@ -1,3 +1,4 @@
+//TODO: Remove Leaflet usage
 import {
   Component,
   OnInit,
@@ -27,6 +28,7 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { IonInput } from '@ionic/angular';
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
+import { Point } from 'src/app/modules/map/services/map/map-view.interface';
 
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
@@ -125,9 +127,12 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           .pipe(take(1))
           .toPromise();
         if (lastView) {
-          this.locationMarker = L.marker(lastView.center, {
-            icon: locationMarkerIcon
-          });
+          this.locationMarker = L.marker(
+            { lat: lastView.center.latitude, lng: lastView.center.longitude },
+            {
+              icon: locationMarkerIcon
+            }
+          );
         } else {
           this.locationMarker = L.marker(L.latLng(59.1, 10.3), {
             icon: locationMarkerIcon
@@ -151,18 +156,17 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           mapView.center !== undefined &&
           mapView.bounds !== undefined
       ),
-      switchMap((mapView) =>
-        this.locationService.getLocationWithinRadiusObservable(
+      switchMap((mapView) => {
+        const nwCorner = new Point(mapView.bounds.xmin, mapView.bounds.ymin);
+        const seCorner = new Point(mapView.bounds.xmax, mapView.bounds.ymax);
+        const radius = Math.round(nwCorner.distanceTo(seCorner)) / 2;
+        return this.locationService.getLocationWithinRadiusObservable(
           this.geoHazard,
-          mapView.center.lat,
-          mapView.center.lng,
-          Math.round(
-            mapView.bounds
-              .getNorthWest()
-              .distanceTo(mapView.bounds.getSouthEast()) / 2
-          )
-        )
-      )
+          mapView.center.latitude,
+          mapView.center.longitude,
+          radius
+        );
+      })
     );
   }
 
@@ -262,9 +266,12 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   private updateMapViewInfo() {
-    const latLng = this.locationMarker.getLatLng();
+    const point = new Point(
+      this.locationMarker.getLatLng().lat,
+      this.locationMarker.getLatLng().lng
+    );
     this.mapSearchService
-      .getViewInfo({ center: latLng, bounds: null, zoom: 0 }, this.geoHazard)
+      .getViewInfo({ center: point, bounds: null, zoom: 0 }, this.geoHazard)
       .subscribe(
         (val) => {
           this.ngZone.run(() => {

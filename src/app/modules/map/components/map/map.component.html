@@ -1,3 +1,4 @@
-<div *ngIf="loaded" leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)">
-</div>
-<app-map-controls *ngIf="showMapControls"></app-map-controls>
+<!--div *ngIf="loaded" leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)">
+</div-->
+<div #mapViewNode></div>
+<!--app-map-controls *ngIf="showMapControls"></app-map-controls-->
