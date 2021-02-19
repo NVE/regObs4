@@ -12,6 +12,11 @@ import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
+import {
+  ALLOWED_ATTACHMENT_FILE_TYPES,
+  DropZoneService
+} from './drop-zone.service';
+import { NgxFileDropEntry } from 'ngx-file-drop';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -38,6 +43,10 @@ export class EditImagesComponent implements OnInit {
   @Input() attachmentType: AttachmentType = 'Attachment';
   @Input() ref?: string;
 
+  isHybrid: boolean;
+  accept = ALLOWED_ATTACHMENT_FILE_TYPES;
+  selectedFile: Blob = null;
+
   newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
 
   get filteredExistingImages(): RemoteOrLocalAttachmentEditModel[] {
@@ -57,9 +66,12 @@ export class EditImagesComponent implements OnInit {
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private newAttachmentService: NewAttachmentService,
+    private dropZoneService: DropZoneService
   ) {}
 
   ngOnInit() {
+    this.isHybrid = this.platform.is('hybrid');
+
     this.newAttachments$ = this.newAttachmentService.getAttachmentsWithBlob(
       this.draftUuid,
       { ref: this.ref, type: this.attachmentType, registrationTid: this.registrationTid }
@@ -105,7 +117,8 @@ export class EditImagesComponent implements OnInit {
 
   async getPicture(sourceType: PictureSourceType) {
     if (!this.platform.is('hybrid')) {
-      await this.addDummyImage();
+      // await this.addDummyImage();
+      //TODO: Gjøre som vi gjør på web for å hente bilde enten fra kamera eller album
       return true;
     }
     try {
@@ -203,5 +216,37 @@ export class EditImagesComponent implements OnInit {
 
   trackNew(index: number, attachment: AttachmentUploadEditModelWithBlob) {
     return attachment.id;
+  }
+
+  async dropped(droppedFiles: NgxFileDropEntry[]): Promise<void> {
+    for (const droppedFile of droppedFiles) {
+      try {
+        const file = await this.dropZoneService.getFile(droppedFile);
+        // const url = window.URL.createObjectURL(file);
+        // this.logger.debug('Dropped file', DEBUG_TAG, file);
+        // this.addImage(url);
+        this.addImage(file, MIME_TYPE);
+      } catch (err) {
+        this.logger.error(err, 'Could not add attachment');
+        //TODO: this.showInvalidAttachmentTypeSnackError();
+      }
+    }
+  }
+
+  onFileSelect(event) {
+    this.selectedFile = event.target.files[0];
+  }
+
+  async onUpload(): Promise<void> {
+    if (this.file != null) {
+      try {
+        // const url = window.URL.createObjectURL(this.selectedFile);
+        // this.logger.debug('Selected file', DEBUG_TAG, this.selectedFile);
+        await this.addImage(this.selectedFile, MIME_TYPE);
+      } catch (err) {
+        this.logger.error(err, 'Could not add attachment');
+        //TODO: this.showInvalidAttachmentTypeSnackError();
+      }
+    }
   }
 }

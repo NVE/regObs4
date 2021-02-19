@@ -9,8 +9,12 @@
         <ion-icon name="close"></ion-icon>
       </ion-fab-button>
     </ion-fab>
-    <app-text-comment [(value)]="attachment.Comment" title="{{ pictureCommentText | translate}}" rows="2"
-      placeholder="{{ pictureCommentPlaceholder | translate }}"></app-text-comment>
+    <app-text-comment
+      [(value)]="attachment.Comment"
+      title="{{ pictureCommentText | translate}}"
+      rows="2"
+      placeholder="{{ pictureCommentPlaceholder | translate }}"
+    ></app-text-comment>
   </div>
 
   <!-- New attachments -->
@@ -33,7 +37,23 @@
   </div>
 
 </div>
-<ion-item (click)="addClick()">
+
+
+<ion-item *ngIf="isHybrid" (click)="addClick()">
   <ion-icon [color]="iconColor" [name]="icon" slot="start"></ion-icon>
   <ion-label>{{ title | translate }}</ion-label>
 </ion-item>
+
+<div *ngIf="!isHybrid">
+  <input class="form-control" type="file" (change)="onFileSelect($event)"/>
+  <button (click)="onUpload()">TODO: Last opp</button> 
+</div>
+
+<div class="file-drop" *ngIf="!isHybrid">
+  <ngx-file-drop dropZoneLabel="Drop files here" [accept]="accept" dropZoneClassName="drop-zone" (onFileDrop)="dropped($event)">
+    <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+        TODO: Legg filer her
+      <button type="button" (click)="openFileSelector()"></button> 
+    </ng-template>
+  </ngx-file-drop>
+</div>

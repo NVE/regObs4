@@ -23,13 +23,15 @@ import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
 import { CompressionTestListComponent } from './components/snow/compression-test-list/compression-test-list.component';
 import { KdvSelectComponent } from './components/kdv-select/kdv-select.component';
 import { BlobImageComponent } from './components/blob-image/blob-image.component';
+import { NgxFileDropModule } from 'ngx-file-drop';
 
 @NgModule({
   imports: [
     SharedModule,
     MapModule,
     HelpModalPageModule,
-    NumericInputModalPageModule
+    NumericInputModalPageModule,
+    NgxFileDropModule
   ],
   exports: [
     SharedModule,
