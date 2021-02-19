@@ -16,21 +16,9 @@
   <ion-icon [color]="iconColor" [name]="icon" slot="start"></ion-icon>
   <ion-label>{{ title | translate }}</ion-label>
 </ion-item>
-
-<div *ngIf="!isCordova">
-  <input class="form-control" type="file" (change)="onFileSelect($event)"/>
-  <button (click)="onUpload()" class="btn btn-success">TODO: Last opp</button> 
-</div>
-
-<p *ngIf="!isCordova">Ikke mobil</p>
-
 <ngx-file-drop *ngIf="!isCordova" dropZoneLabel="Drop files here" [accept]="accept" dropZoneClassName="drop-zone"  (onFileDrop)="dropped($event)">
   <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-      <!--ion-icon [color]="iconColor" [name]="icon" slot="start"></ion-icon-->
-      TODO: Legg filer her
-      <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeImage(image)">
-        <ion-icon name="close"></ion-icon>
-      </ion-fab-button>
+      Dra inn filer her
     <button type="button" (click)="openFileSelector()"></button> 
   </ng-template>
 </ngx-file-drop>

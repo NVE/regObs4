@@ -16,7 +16,7 @@ import { PictureRequestDto } from '../../../regobs-api/models';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { DomSanitizer } from '@angular/platform-browser';
-import { File, DirectoryEntry, Entry } from '@ionic-native/file/ngx';
+import { File, DirectoryEntry, Entry, IFile } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import * as utils from '@nano-sql/core/lib/utilities';
@@ -25,6 +25,7 @@ import {
   DropZoneService
 } from './drop-zone.service';
 import { NgxFileDropEntry } from 'ngx-file-drop';
+import { RegistrationService } from '../../services/registration.service';
 
 // const DATA_URL_TAG = 'data:image/jpeg;base64,';
 const DEBUG_TAG = 'AddPictureItemComponent';
@@ -68,7 +69,8 @@ export class AddPictureItemComponent implements OnInit {
     private toastController: ToastController,
     private domSanitizer: DomSanitizer,
     private actionSheetController: ActionSheetController,
-    private dropZoneService: DropZoneService
+    private dropZoneService: DropZoneService,
+    private registrationService: RegistrationService
   ) {}
 
   ngOnInit() {
@@ -256,7 +258,7 @@ export class AddPictureItemComponent implements OnInit {
 
   convertFileSrc(fileUrl: string) {
     return this.domSanitizer.bypassSecurityTrustUrl(
-      this.webView.convertFileSrc(fileUrl)
+      this.isCordova ? this.webView.convertFileSrc(fileUrl) : fileUrl
     );
   }
 
@@ -266,6 +268,7 @@ export class AddPictureItemComponent implements OnInit {
         const file = await this.dropZoneService.getFile(droppedFile);
         const url = window.URL.createObjectURL(file);
         this.logger.debug('Dropped file', DEBUG_TAG, file);
+        this.registrationService.addFileToUpload(url, file as IFile);
         this.addImage(url);
       } catch (err) {
         this.logger.error(err, 'Could not add attachment');
