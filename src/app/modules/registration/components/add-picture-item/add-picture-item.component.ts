@@ -272,24 +272,7 @@ export class AddPictureItemComponent implements OnInit {
         this.addImage(url);
       } catch (err) {
         this.logger.error(err, 'Could not add attachment');
-        //TODO: this.showInvalidAttachmentTypeSnackError();
-      }
-    }
-  }
-
-  onFileSelect(event) {
-    this.selectedFile = event.target.files[0];
-  }
-
-  onUpload(): void {
-    if (this.file != null) {
-      try {
-        const url = window.URL.createObjectURL(this.selectedFile);
-        this.logger.debug('Selected file', DEBUG_TAG, this.selectedFile);
-        this.addImage(url);
-      } catch (err) {
-        this.logger.error(err, 'Could not add attachment');
-        //TODO: this.showInvalidAttachmentTypeSnackError();
+        this.showErrorToast();
       }
     }
   }
