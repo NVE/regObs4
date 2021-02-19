@@ -222,31 +222,12 @@ export class EditImagesComponent implements OnInit {
     for (const droppedFile of droppedFiles) {
       try {
         const file = await this.dropZoneService.getFile(droppedFile);
-        // const url = window.URL.createObjectURL(file);
-        // this.logger.debug('Dropped file', DEBUG_TAG, file);
-        // this.addImage(url);
         this.addImage(file, MIME_TYPE);
       } catch (err) {
         this.logger.error(err, 'Could not add attachment');
-        //TODO: this.showInvalidAttachmentTypeSnackError();
+        this.showErrorToast('Could not add image');  // TODO: Add better error message
       }
     }
   }
 
-  onFileSelect(event) {
-    this.selectedFile = event.target.files[0];
-  }
-
-  async onUpload(): Promise<void> {
-    if (this.file != null) {
-      try {
-        // const url = window.URL.createObjectURL(this.selectedFile);
-        // this.logger.debug('Selected file', DEBUG_TAG, this.selectedFile);
-        await this.addImage(this.selectedFile, MIME_TYPE);
-      } catch (err) {
-        this.logger.error(err, 'Could not add attachment');
-        //TODO: this.showInvalidAttachmentTypeSnackError();
-      }
-    }
-  }
 }
