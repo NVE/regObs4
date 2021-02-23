@@ -8,9 +8,12 @@ Ionic 4 uses Angular 8 and TypeScript, so all pages and components have been rew
 1. Clone repo
 2. Install packages
    ```
-   npm install
+   npm install 
    ```
-
+*Hvis du har npm versjon 7 eller nyere, må du bruke:* 
+```
+npm install --legacy-peer-deps
+```
 ## Debug and test on device
 
 Run app in browser:
