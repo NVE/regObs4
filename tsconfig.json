@@ -4,7 +4,7 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "esnext",
+    "module": "es2020",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -18,17 +18,9 @@
     ],
     "lib": [
       "es2018",
-      "dom"
+      "dom",
     ],
     "baseUrl": "./",
-    "paths": {
-      "core-js/es7/reflect": [
-        "../node_modules/core-js/proposals/reflect-metadata"
-      ],
-      "core-js/es6/*": [
-        "../node_modules/core-js/es/*"
-      ]
-    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": false,
