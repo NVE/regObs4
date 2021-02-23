@@ -79,8 +79,28 @@ Update version number in package.json
 Push relase-branch
 
 NOTE! Continous build is set up in Azure.
-Creates release builds and uploads .ipa to TestFlight when code are committed to /release branch.
-Upload .apk to Google Play store manually. The .apk is in build output resources.
+App blir automatisk publisert til intern testing når man pusher til ny release-branch.
+
+## Beta-testing
+Vi har et åpent beta-test-program hvor eksterne testere kan melde seg inn ved å følge en link.
+
+### Starte beta-testing i Google Play
+- For å rulle videre fra intern testing til beta, logg på https://play.google.com/console/
+- Siste versjon av appen finner du under "Tester/Intern testing"
+- Registrere release notes. Dette kan vi automatisere på sikt.
+- Velg "Kopier utganven til et annet spor"
+- Velg spor "Åpen testing" 
+- Gå gjennom evt. advarsler (da vi publiserte 4.4.6 var det 3 advarsler som vi ignorerte)
+- Fullfør publisering
+
+### Starte beta-testing på Apple App Store
+- For å rulle videre fra intern testing til beta, logg på https://appstoreconnect.apple.com/
+- Velg Varsom Regobs under My Apps
+- Velg TestFlight
+- Under "Test information", legg inn release notes på begge språk
+- Velg External Groups / Beta Testers
+- Trykk på + under Builds, velg riktig versjon/build og Next
+- Velg Submit for Review
 
 ## Plugins and other custom features
 
