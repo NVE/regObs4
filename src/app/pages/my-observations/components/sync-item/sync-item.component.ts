@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, OnDestroy, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { IRegistration } from '../../../../modules/registration/models/registration.model';
+import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
+import { IRegistration, ProgressService } from '@varsom-regobs-common/registration';
 import { Subscription } from 'rxjs';
 import { RegistrationService } from '../../../../modules/registration/services/registration.service';
 import { map, filter } from 'rxjs/operators';
@@ -18,26 +18,32 @@ export class SyncItemComponent implements OnInit, OnDestroy {
 
   constructor(
     private registrationService: RegistrationService,
-    private cdr: ChangeDetectorRef,
+    private progressService: ProgressService,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit() {
-
-    this.isDraft = this.registration.status === RegistrationStatus.Draft;
-    this.loading = !this.isDraft;
-    this.subscriptions.push(
-      this.registrationService
-        .getRegistrationsToSync()
-        .pipe(
-          map((val: IRegistration[]) =>
-            val.find((item) => item.id === this.registration.id)
-          ),
-          filter((x) => !!x)
-        )
-        .subscribe((val) => {
-          this.registration = val;
-          this.isDraft = this.registration.status === RegistrationStatus.Draft;
-          this.cdr.detectChanges();
+    if (this.refresh) {
+      this.subscriptions.push(
+        this.registrationService
+          .getRegistrationsToSync()
+          .pipe(
+            map((val: IRegistration[]) =>
+              val.find((item) => item.id === this.registration.id)
+            ),
+            filter((x) => !!x)
+          )
+          .subscribe((val) => {
+            this.ngZone.run(() => {
+              this.registration = val;
+            });
+          })
+      );
+      this.subscriptions.push(
+        this.progressService.registrationSyncProgress$.subscribe((val) => {
+          this.ngZone.run(() => {
+            this.loading = val.inProgress;
+          });
         })
     );
     this.subscriptions.push(
