@@ -1,7 +1,7 @@
-# RegObs app v4 (Ionic 4)
+# RegObs app v4 (Ionic 5)
 
-This is the regObs app versoin 4. It is based on code from app v3, but rewritten to Ionic 4.
-Ionic 4 uses Angular 8 and TypeScript, so all pages and components have been rewritten.
+This is the regObs app versoin 4. It is based on code from app v3, but rewritten to Ionic 4/5.
+Ionic 5 uses Angular 9+ and TypeScript, so all pages and components have been rewritten.
 
 ## Installation
 
@@ -142,6 +142,12 @@ NOTE! Cordova plugins must be updated by removing and re-adding plugin:
 ```
 ionic cordova plugin rm cordova-plugin-name
 ionic cordova plugin add cordova-plugin-name
+```
+
+To update Angular, use ng update to better migrate code changes:
+Follow this guide: https://update.angular.io/
+```
+ng update
 ```
 
 # How to update models from Regobs API
