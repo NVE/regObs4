@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
-import { IRegistration } from '../../../../modules/registration/models/registration.model';
+import { IRegistration, ProgressService } from '@varsom-regobs-common/registration';
 import { Subscription } from 'rxjs';
 import { RegistrationService } from '../../../../modules/registration/services/registration.service';
 import { map, filter } from 'rxjs/operators';
@@ -17,6 +17,7 @@ export class SyncItemComponent implements OnInit, OnDestroy {
 
   constructor(
     private registrationService: RegistrationService,
+    private progressService: ProgressService,
     private ngZone: NgZone
   ) {}
 
@@ -38,9 +39,9 @@ export class SyncItemComponent implements OnInit, OnDestroy {
           })
       );
       this.subscriptions.push(
-        this.registrationService.getDataLoadState().subscribe((val) => {
+        this.progressService.registrationSyncProgress$.subscribe((val) => {
           this.ngZone.run(() => {
-            this.loading = val.isLoading;
+            this.loading = val.inProgress;
           });
         })
       );

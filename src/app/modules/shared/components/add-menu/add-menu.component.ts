@@ -6,9 +6,8 @@ import { DateHelperService } from '../../services/date-helper/date-helper.servic
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
-import { IRegistration } from '../../../registration/models/registration.model';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
-import { LangKey } from '../../../../core/models/langKey';
+import { IRegistration } from '@varsom-regobs-common/registration';
+import { GeoHazard, LangKey } from '@varsom-regobs-common/core';
 import { RegistrationService } from '../../../registration/services/registration.service';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
@@ -47,7 +46,7 @@ export class AddMenuComponent implements OnInit {
     this.geoHazardInfo$ = this.userSettingService.userSetting$.pipe(
       map((us) => ({
         geoHazards: us.currentGeoHazard,
-        showSpace: us.language !== LangKey.nb && us.language !== LangKey.nn,
+        showSpace: us.language !== LangKey.no && us.language !== LangKey.nn,
         showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0
       })),
       setObservableTimeout()

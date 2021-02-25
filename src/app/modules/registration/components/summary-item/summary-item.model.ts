@@ -1,4 +1,4 @@
-import { PictureRequestDto } from '../../../regobs-api/models';
+import { ExistingOrNewAttachment } from '@varsom-regobs-common/registration';
 
 export interface ISummaryItem {
   id: string;
@@ -7,5 +7,5 @@ export interface ISummaryItem {
   title: string;
   subTitle?: string;
   hasData?: boolean;
-  images?: PictureRequestDto[];
+  attachments?: ExistingOrNewAttachment[];
 }

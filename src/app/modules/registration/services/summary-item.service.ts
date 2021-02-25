@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { RegistrationService } from './registration.service';
-import { IRegistration } from '../models/registration.model';
-import { IsEmptyHelper } from '../../../core/helpers/is-empty.helper';
+import { IRegistration, RegistrationService } from '@varsom-regobs-common/registration';
 import { DateHelperService } from '../../shared/services/date-helper/date-helper.service';
-import { RegistrationTid } from '../models/registrationTid.enum';
-import { GeoHazard } from '../../../core/models/geo-hazard.enum';
+import { RegistrationTid } from '@varsom-regobs-common/registration';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { ISummaryItem } from '../components/summary-item/summary-item.model';
 import { UserGroupService } from '../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto } from '../../regobs-api/models';
 import { NavController } from '@ionic/angular';
 import { RouterDirection } from '@ionic/core';
+import { isEmpty } from '@varsom-regobs-common/core';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +42,7 @@ export class SummaryItemService {
           ? registration.request.ObsLocation.LocationName ||
             registration.request.ObsLocation.LocationDescription
           : '',
-        hasData: !IsEmptyHelper.isEmpty(registration.request.ObsLocation)
+        hasData: !isEmpty(registration.request.ObsLocation)
       },
       {
         id: registration.id,
@@ -66,10 +66,10 @@ export class SummaryItemService {
       });
     }
 
-    summaryItems.push(...this.getGeoHazardItems(registration));
+    summaryItems.push(... await this.getGeoHazardItems(registration));
 
     summaryItems.push(
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/general-comment',
         'REGISTRATION.GENERAL_COMMENT.TITLE',
@@ -146,16 +146,16 @@ export class SummaryItemService {
         return this.getWaterItems(registration);
       case GeoHazard.Ice:
         return this.getIceItems(registration);
-      case GeoHazard.Dirt:
+      case GeoHazard.Soil:
         return this.getDirtItems(registration);
       case GeoHazard.Snow:
         return this.getSnowItems(registration);
     }
   }
 
-  private getWaterItems(registration: IRegistration) {
+  private async getWaterItems(registration: IRegistration) {
     return [
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/water/water-level',
         'REGISTRATION.WATER.WATER_LEVEL.TITLE',
@@ -164,7 +164,7 @@ export class SummaryItemService {
           : '',
         RegistrationTid.WaterLevel2
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/water/damage',
         'REGISTRATION.WATER.DAMAGE.TITLE',
@@ -174,33 +174,33 @@ export class SummaryItemService {
     ];
   }
 
-  private getRegItem(
+  private async getRegItem(
     registration: IRegistration,
     href: string,
     title: string,
     subTitle: string,
     registrationTid: RegistrationTid
-  ): ISummaryItem {
+  ): Promise<ISummaryItem> {
     return {
       id: registration.id,
       href,
       title,
       subTitle,
-      hasData: !this.registrationService.isEmpty(registration, registrationTid),
-      images: this.registrationService.getImages(registration, registrationTid)
+      hasData: await this.registrationService.hasAnyDataToShowInRegistrationTypes(registration, registrationTid).pipe(take(1)).toPromise(),
+      attachments: await this.registrationService.getAllAttachmentsForRegistrationTid$(registration.id, registrationTid).pipe(take(1)).toPromise()
     };
   }
 
-  private getDirtItems(registration: IRegistration) {
+  private async getDirtItems(registration: IRegistration) {
     return [
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/danger-obs',
         'REGISTRATION.DANGER_OBS.TITLE',
         '',
         RegistrationTid.DangerObs
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/dirt/landslide-obs',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE',
@@ -212,9 +212,9 @@ export class SummaryItemService {
     ];
   }
 
-  private getIceItems(registration: IRegistration) {
+  private async getIceItems(registration: IRegistration) {
     return [
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/ice/ice-cover',
         'REGISTRATION.ICE.ICE_COVER.TITLE',
@@ -223,7 +223,7 @@ export class SummaryItemService {
           : '',
         RegistrationTid.IceCoverObs
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/ice/ice-thickness',
         'REGISTRATION.ICE.ICE_THICKNESS.TITLE',
@@ -232,14 +232,14 @@ export class SummaryItemService {
           : '',
         RegistrationTid.IceThickness
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/danger-obs',
         'REGISTRATION.DANGER_OBS.TITLE',
         '',
         RegistrationTid.DangerObs
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/incident',
         'REGISTRATION.INCIDENT.TITLE',
@@ -249,44 +249,44 @@ export class SummaryItemService {
     ];
   }
 
-  private getSnowItems(registration: IRegistration) {
+  private async getSnowItems(registration: IRegistration) {
     return [
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/danger-obs',
         'REGISTRATION.DANGER_OBS.TITLE',
         '',
         RegistrationTid.DangerObs
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/snow/avalanche-obs',
         'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE',
         '',
         RegistrationTid.AvalancheObs
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/snow/avalanche-activity',
         'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE',
         '',
         RegistrationTid.AvalancheActivityObs2
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/snow/weather',
         'REGISTRATION.SNOW.WEATHER.TITLE',
         '',
         RegistrationTid.WeatherObservation
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/snow/snow-surface',
         'REGISTRATION.SNOW.SNOW_SURFACE.TITLE',
         '',
         RegistrationTid.SnowSurfaceObservation
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/snow/compression-test',
         'REGISTRATION.SNOW.COMPRESSION_TEST.TITLE',
@@ -299,27 +299,27 @@ export class SummaryItemService {
         title: 'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
         subTitle: '',
         hasData:
-          !this.registrationService.isEmpty(
+          await this.registrationService.hasAnyDataToShowInRegistrationTypes(
             registration,
             RegistrationTid.SnowProfile2
-          ) ||
+          ).pipe(take(1)).toPromise() ||
           (registration.request.CompressionTest &&
             registration.request.CompressionTest.some(
               (x) => x.IncludeInSnowProfile === true
             )),
-        images: this.registrationService.getImages(
-          registration,
+        attachments: await this.registrationService.getAllAttachmentsForRegistrationTid$(
+          registration.id,
           RegistrationTid.SnowProfile2
-        )
+        ).pipe(take(1)).toPromise()
       },
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/snow/avalanche-problem',
         'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE',
         '',
         RegistrationTid.AvalancheEvalProblem2
       ),
-      this.getRegItem(
+      await this.getRegItem(
         registration,
         '/registration/snow/avalanche-evaluation',
         'REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE',
