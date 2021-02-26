@@ -5,6 +5,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { settings } from '../../../../../settings';
+import { SelectInterface } from '@ionic/core';
 
 @Component({
   selector: 'app-observations-days-back',

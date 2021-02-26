@@ -12,7 +12,7 @@
       <span *ngIf="!refresh"> - {{ 'ADD_MENU.DRAFT' | translate }}</span>
     </p>
   </ion-label>
-  <ion-icon *ngIf="!loading && registration.error" slot="end" name="warning">
+  <ion-icon *ngIf="!loading && registration.syncError" slot="end" name="warning">
   </ion-icon>
   <ion-spinner *ngIf="loading" slot="end"></ion-spinner>
 </ion-item>

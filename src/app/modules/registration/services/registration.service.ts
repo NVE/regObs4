@@ -443,11 +443,9 @@ export class RegistrationService {
     );
   }
 
-  // getSavedRegistrationById(id: string) {
-  //   return this.getSavedRegistrationByIdObservable(id)
-  //     .pipe(take(1))
-  //     .toPromise();
-  // }
+  getSavedRegistrationById(id: string): Promise<IRegistration> {
+    return this.commonRegistrationService.getRegistrationById(id);
+  }
 
   // getSavedRegistrationByIdObservable(id: string) {
   //   return this.registrations$.pipe(

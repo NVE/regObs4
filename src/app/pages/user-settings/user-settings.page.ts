@@ -7,7 +7,7 @@ import {
   LoadingController
 } from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
-import { KdvService } from '../../core/services/kdv/kdv.service';
+import { KdvService } from '@varsom-regobs-common/registration';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
 import { AppVersion } from '../../core/models/app-version.model';
@@ -134,12 +134,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   async updateDropdowns() {
     this.isUpdating = true;
-    // TODO: Show loading with cancel
-    const updated = await this.kdvService.updateKdvElementsForLanguage(
-      this.userSettings.appMode,
-      this.userSettings.language
-    );
-    await this.showKdvElementsUpdated(updated);
+    this.kdvService.update();
+    await this.showKdvElementsUpdated(true);
     this.ngZone.run(() => {
       this.isUpdating = false;
     });
