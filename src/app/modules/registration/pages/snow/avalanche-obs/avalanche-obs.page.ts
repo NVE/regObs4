@@ -8,6 +8,7 @@ import * as L from 'leaflet';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import moment from 'moment';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-avalanche-obs',
@@ -97,17 +98,16 @@ export class AvalancheObsPage extends BasePage {
     return !!this.registration.request.AvalancheObs.DtAvalancheTime;
   }
 
-  isEmpty() {
-    return (
-      this.basePageService.RegistrationService.isEmpty(
-        this.registration,
-        this.registrationTid
-      ) &&
-      this.basePageService.RegistrationService.isEmpty(
+  async isEmpty(): Promise<boolean> {
+    const isEmpty = !await this.basePageService.RegistrationService.hasAnyDataToShowInRegistrationTypes(
+      this.registration,
+      this.registrationTid
+    ).pipe(take(1)).toPromise();
+    const isIncidentEmpty = !await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
         this.registration,
         RegistrationTid.Incident
-      )
-    );
+      ).pipe(take(1)).toPromise();
+    return isEmpty && isIncidentEmpty;
   }
 
   setAvalancheTimeTimeToNow() {

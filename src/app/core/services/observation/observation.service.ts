@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
 import { RowCount } from '../../models/row-count.model';
 import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs';
-import { GeoHazard } from '../../models/geo-hazard.enum';
 import moment from 'moment';
 import 'moment-timezone';
 import { NanoSql } from '../../../../nanosql';
@@ -19,7 +18,7 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { AppMode } from '../../models/app-mode.enum';
 import { UserSetting } from '../../models/user-settings.model';
-import { LangKey } from '../../models/langKey';
+import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
 import { SearchService } from '../../../modules/regobs-api/services';
 import {
   RegistrationViewModel,

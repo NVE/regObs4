@@ -60,7 +60,8 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
     // Check if implementation page has implemented custom isValid logic
     const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
     // Only return alert if page is not empty and invalid
-    if (!this.isEmpty() && !valid) {
+    const isEmpty = await Promise.resolve(this.isEmpty());
+    if (!isEmpty && !valid) {
       return this.basePageService.confirmLeave(
         this.registration,
         this.registrationTid,
@@ -95,11 +96,11 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
     return () => this.save();
   }
 
-  isEmpty() {
-    return this.basePageService.RegistrationService.isEmpty(
+  async isEmpty(): Promise<boolean> {
+    return !await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
       this.registration,
       this.registrationTid
-    );
+    ).pipe(take(1)).toPromise();
   }
 
   reset() {

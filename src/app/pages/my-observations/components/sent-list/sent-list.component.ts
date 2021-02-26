@@ -16,10 +16,8 @@ import {
   finalize,
   map,
   pairwise,
-  skip,
   switchMap,
   take,
-  tap
 } from 'rxjs/operators';
 import {
   enterZone,

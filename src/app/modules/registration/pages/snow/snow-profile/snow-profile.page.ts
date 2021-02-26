@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { BasePage } from '../../base.page';
 import { HttpClient } from '@angular/common/http';
 import {
