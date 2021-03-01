@@ -5,6 +5,9 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../../settings';
+import { Platform } from '@ionic/angular';
+import { SelectInterface } from '@ionic/core';
+import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 
 @Component({
   selector: 'app-observations-days-back',
@@ -15,14 +18,17 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   selectedDaysBack: number;
   daysBackOptions: { val: number; text: string }[];
   subscription: Subscription;
+  popupType: SelectInterface;
 
   constructor(
     private userSettingService: UserSettingService,
     private zone: NgZone,
+    private platform: Platform,
     private loggingService: LoggingService
   ) {}
 
   ngOnInit(): void {
+    this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.subscription = combineLatest([
       this.userSettingService.daysBack$,
       this.userSettingService.currentGeoHazard$

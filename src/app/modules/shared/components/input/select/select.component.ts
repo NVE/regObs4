@@ -4,6 +4,7 @@ import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular';
+import { firstValueFrom } from 'rxjs';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
@@ -47,9 +48,8 @@ export class SelectComponent {
   private async getActionSheetButtons() {
     const buttons: ActionSheetButton[] = [];
     for (const option of (this.options || []).filter((x) => !x.disabled)) {
-      const translatedText = await this.translateService
-        .get(option.text)
-        .toPromise();
+      const translatedText = await firstValueFrom(this.translateService
+        .get(option.text));
       buttons.push({
         text: translatedText,
         icon: option.icon,
@@ -58,18 +58,16 @@ export class SelectComponent {
       });
     }
     if (this.selectedValue !== undefined && this.showReset) {
-      const resetTextTranslated = await this.translateService
-        .get(TRANSLATION_KEY_RESET)
-        .toPromise();
+      const resetTextTranslated = await firstValueFrom(this.translateService
+        .get(TRANSLATION_KEY_RESET));
       buttons.splice(0, 0, {
         text: resetTextTranslated,
         handler: () => this.setSelectedValue(undefined),
         role: 'destructive'
       });
     }
-    const cancelTextTranslated = await this.translateService
-      .get(TRANSLATION_KEY_CANCEL)
-      .toPromise();
+    const cancelTextTranslated = await firstValueFrom(this.translateService
+      .get(TRANSLATION_KEY_CANCEL));
     buttons.push({
       text: cancelTextTranslated,
       role: 'cancel'
@@ -80,15 +78,13 @@ export class SelectComponent {
   async getTitleTranslations() {
     let titleTextTranslated: string;
     if (this.title) {
-      titleTextTranslated = await this.translateService
-        .get(this.title)
-        .toPromise();
+      titleTextTranslated = await firstValueFrom(this.translateService
+        .get(this.title));
     }
     let subTitleTextTranslated: string;
     if (this.subTitle) {
-      subTitleTextTranslated = await this.translateService
-        .get(this.subTitle)
-        .toPromise();
+      subTitleTextTranslated = await firstValueFrom(this.translateService
+        .get(this.subTitle));
     }
     return {
       titleTextTranslated,
@@ -100,7 +96,7 @@ export class SelectComponent {
     if (!this.disabled) {
       const cssClass = this.platform.is('desktop')
         ? 'desktop-action-sheet'
-        : null;
+        : '';
       const translations = await this.getTitleTranslations();
       const buttons = await this.getActionSheetButtons();
       const actionSheet = await this.actionSheetController.create({

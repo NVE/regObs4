@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
@@ -19,6 +19,7 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 import { NavigationError, Router, RouterEvent } from '@angular/router';
 import { removeOauthTokenFromUrl } from './modules/shared/services/logging/url-utils';
 import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
+import { BreakpointService } from './core/services/breakpoint.service';
 
 const DEBUG_TAG = 'AppComponent';
 const ROUTER_DEBUG_TAG = 'Router';
@@ -29,6 +30,7 @@ const ROUTER_DEBUG_TAG = 'Router';
 })
 export class AppComponent {
   swipeBackEnabled$: Observable<boolean>;
+  isDesktop: boolean;
 
   constructor(
     private platform: Platform,
@@ -43,13 +45,21 @@ export class AppComponent {
     private fileLoggingService: FileLoggingService,
     private auth: AuthService,
     private router: Router,
-    private draftToRegService: DraftToRegistrationService
+    private draftToRegService: DraftToRegistrationService,
+    private breakpointService: BreakpointService
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
   }
 
   initializeApp(): void {
+    this.platform.ready().then(() => {
+      this.breakpointService.onResize(this.platform.width());
+    });
+
     from(this.fileLoggingService.init({})).pipe(switchMap(() =>
       this.getUserSettings()
         .pipe(this.initServices())))
@@ -64,6 +74,11 @@ export class AppComponent {
 
   private afterAppInitialized() {
     SplashScreen.hide();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  private onResize(event) {
+    this.breakpointService.onResize(event.target.innerWidth);
   }
 
   private lockScreenOrientation() {

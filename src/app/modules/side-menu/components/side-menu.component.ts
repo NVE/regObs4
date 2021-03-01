@@ -17,6 +17,7 @@ import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { DataMarshallService } from 'src/app/core/services/data-marshall/data-marshall.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
+import { SelectInterface } from '@ionic/core';
 
 @Component({
   selector: 'app-side-menu',
@@ -39,6 +40,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     ...lang,
     langKey: LangKey[lang.lang]
   }));
+  popupType: SelectInterface;
 
   private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
@@ -58,6 +60,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
+    this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.lastUpdateSubscription = this.observationService
       .getLastUpdatedForCurrentGeoHazardAsObservable()
       .subscribe((val) => {
@@ -100,7 +103,11 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   openStartWizard() {
     this.userSettings.showGeoSelectInfo = true;
     this.saveUserSettings();
-    this.navController.navigateRoot('start-wizard');
+    if (isAndroidOrIos(this.platform)) {
+      this.navController.navigateRoot('start-wizard');
+    } else {
+      this.navController.navigateRoot('coach-marks');
+    }
   }
 
   async contactUs() {

@@ -16,6 +16,7 @@ import { Subject, interval, race } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ImageLocation } from './image-location.model';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
+import { BreakpointService } from '../../core/services/breakpoint.service';
 
 @Component({
   selector: 'app-img-swiper',
@@ -27,19 +28,22 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   @Input() attachments: AttachmentViewModel[] = [];
   @Input() showLabels = true;
   @Input() location: ImageLocation;
-  @Input() withFallbackText: boolean = true;
-  @Input() small: boolean = false;
+  @Input() withFallbackText = true;
+  @Input() small = false;
   @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
   @Output() imgClick: EventEmitter<{
     index: number;
     imgUrl: string;
   }> = new EventEmitter();
+  isDesktop: boolean;
 
   slideOptions = {
     autoplay: false,
     slidesPerView: 'auto',
     zoom: false
   };
+
+  onlyMap: boolean;
 
   swiper: any;
   state:
@@ -115,7 +119,19 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
     return false;
   }
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private breakpointService: BreakpointService
+  ) {}
+
+  ngOnInit() {
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
+    if (this.isDesktop) {
+      this.checkOnlyMapOrPicture();
+    }
+  }
 
   ngOnDestroy(): void {
     this.cdr.detach();
@@ -123,14 +139,15 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
 
   slidesLoaded(el: any) {
     this.swiper = el.target.swiper;
-    if (this.shouldMoveMap) {
-      this.activeIndex = 1;
-      interval(100)
-        .pipe(takeUntil(race(this.ngDestroy$, this.touchStart$)))
-        .subscribe(() => {
-          this.moveMapInSwiperToLeftOutsideView();
-        });
-    }
+    // TODO: Dette (tror jeg) fører til at img-swiperen ikke fungerer
+    // if (this.shouldMoveMap) {
+    //   this.activeIndex = 1;
+    //   interval(100)
+    //     .pipe(takeUntil(race(this.ngDestroy$, this.touchStart$)))
+    //     .subscribe(() => {
+    //       this.moveMapInSwiperToLeftOutsideView();
+    //     });
+    // }
     this.state = 'swiper-ready';
     this.updateUi();
   }
@@ -207,9 +224,9 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
 
   getImageIndex(img: AttachmentViewModel) {
     if (this.attachments) {
-      return this.attachments.indexOf(img)
+      return this.attachments.indexOf(img);
     } else {
-      return -1
+      return -1;
     }
   }
 
@@ -239,5 +256,25 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   async onSlideTransitionEnd() {
     this.activeIndex = await this.getSwiperIndex();
     this.updateUi();
+  }
+
+  next() {
+    this.slider.slideNext();
+    this.updateUi();
+  }
+
+  prev() {
+    this.slider.slidePrev();
+    this.updateUi();
+  }
+
+  checkOnlyMapOrPicture() {
+    if (this.location && (!this.attachments || this.attachments.length === 0)) {
+      this.onlyMap = true;
+    } else if (!this.location && this.attachments.length === 1) {
+      this.onlyMap = true;
+    } else {
+      this.onlyMap = false;
+    }
   }
 }
