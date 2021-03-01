@@ -6,7 +6,7 @@ import {
 } from '../../../../../../regobs-api/models';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
-import { IRegistration } from '../../../../../models/registration.model';
+import { IRegistration } from '@varsom-regobs-common/registration';
 import { RegistrationService } from '../../../../../services/registration.service';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 import cloneDeep from 'clone-deep';

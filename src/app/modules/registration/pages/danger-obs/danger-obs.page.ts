@@ -1,11 +1,11 @@
 import { Component, NgZone } from '@angular/core';
-import { RegistrationTid } from '../../models/registrationTid.enum';
+import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { BasePage } from '../base.page';
 import { ModalController } from '@ionic/angular';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { DangerObsDto, KdvElement } from '../../../regobs-api/models';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';

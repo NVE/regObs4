@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LocationService as RegobsApiLocationService } from '../../../modules/regobs-api/services';
-import { GeoHazard } from '../../models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { switchMap } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
 

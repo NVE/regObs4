@@ -4,7 +4,7 @@ import { NavController } from '@ionic/angular';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute, Route } from '@angular/router';
-import { IRegistration } from '../../models/registration.model';
+import { IRegistration } from '@varsom-regobs-common/registration';
 
 @Component({
   selector: 'app-set-time',

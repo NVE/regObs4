@@ -1,8 +1,7 @@
 import { Directive, OnInit } from '@angular/core';
-import { RegistrationTid } from '../models/registrationTid.enum';
 import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
-import { IRegistration } from '../models/registration.model';
+import { IRegistration, RegistrationTid } from '@varsom-regobs-common/registration';
 import { ActivatedRoute } from '@angular/router';
 import { take, takeUntil, map, switchMap, tap } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
@@ -29,7 +28,7 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
 
   ionViewDidEnter() {
     const id = this.activatedRoute.snapshot.params['id'];
-    this.basePageService.RegistrationService.getSavedRegistrationByIdObservable(
+    this.basePageService.CommonRegistrationService.getRegistrationByIdShared$(
       id
     )
       .pipe(

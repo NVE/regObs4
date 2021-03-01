@@ -4,7 +4,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import { TranslateService } from '@ngx-translate/core';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { GeoHelperService } from '../../../modules/shared/services/geo-helper/geo-helper.service';
-import { GeoHazard } from '../../models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 
 const DEBUG_TAG = 'ShortcutService';
 const FLAG_ACTIVITY_CLEAR_TOP = 67108864;

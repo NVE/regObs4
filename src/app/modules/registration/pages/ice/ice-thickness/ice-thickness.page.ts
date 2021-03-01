@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { BasePage } from '../../base.page';
 import { ModalController } from '@ionic/angular';
 import { IceLayerPage } from './ice-layer/ice-layer.page';
@@ -27,8 +27,8 @@ export class IceThicknessPage extends BasePage {
   }
 
   onInit() {
-    if (!this.registration.request.IceThickness.IceThicknessLayer) {
-      this.registration.request.IceThickness.IceThicknessLayer = [];
+    if (!this.registration.request.IceThickness.IceThicknessLayers) {
+      this.registration.request.IceThickness.IceThicknessLayers = [];
     }
     if (this.registration.request.IceThickness.IceHeightBefore < 0) {
       this.registration.request.IceThickness.IceHeightBefore =
@@ -70,21 +70,21 @@ export class IceThicknessPage extends BasePage {
     }
   }
 
-  isEmpty() {
-    return (
-      this.basePageService.RegistrationService.isEmpty(
+  async isEmpty() {
+    const isEmptyResult = 
+      (!await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
         this.registration,
         this.registrationTid
-      ) &&
+      )) &&
       this.iceHeightAfter === undefined &&
-      this.iceHeightBefore === undefined
-    );
+      this.iceHeightBefore === undefined;
+    return isEmptyResult;
   }
 
   onReset() {
     this.iceHeightAfter = undefined;
     this.iceHeightBefore = undefined;
-    this.registration.request.IceThickness.IceThicknessLayer = [];
+    this.registration.request.IceThickness.IceThicknessLayers = [];
   }
 
   async addOrEditThicknessLayer(index?: number) {
@@ -92,7 +92,7 @@ export class IceThicknessPage extends BasePage {
       component: IceLayerPage,
       componentProps: {
         iceThicknessLayer: this.registration.request.IceThickness
-          .IceThicknessLayer[index]
+          .IceThicknessLayers[index]
       }
     });
     modal.present();
@@ -114,7 +114,7 @@ export class IceThicknessPage extends BasePage {
   onIceThicknessReorder(event: CustomEvent) {
     this.ngZone.run(() => {
       this.reorderList(
-        this.registration.request.IceThickness.IceThicknessLayer,
+        this.registration.request.IceThickness.IceThicknessLayers,
         event.detail.from,
         event.detail.to
       );
@@ -128,7 +128,7 @@ export class IceThicknessPage extends BasePage {
 
   setIceThicknessLayer(index: number, iceThicknessLayer: IceThicknessLayerDto) {
     this.ngZone.run(() => {
-      this.registration.request.IceThickness.IceThicknessLayer[
+      this.registration.request.IceThickness.IceThicknessLayers[
         index
       ] = iceThicknessLayer;
     });
@@ -137,7 +137,7 @@ export class IceThicknessPage extends BasePage {
 
   addIceThicknessLayer(iceThicknessLayer: IceThicknessLayerDto) {
     this.ngZone.run(() => {
-      this.registration.request.IceThickness.IceThicknessLayer.push(
+      this.registration.request.IceThickness.IceThicknessLayers.push(
         iceThicknessLayer
       );
     });
@@ -146,7 +146,7 @@ export class IceThicknessPage extends BasePage {
 
   calculateIceThicknessSum() {
     const newSum = (
-      this.registration.request.IceThickness.IceThicknessLayer || []
+      this.registration.request.IceThickness.IceThicknessLayers || []
     ).reduce((p, c) => p + (c.IceLayerThickness || 0), 0);
     this.ngZone.run(() => {
       this.registration.request.IceThickness.IceThicknessSum = newSum;
@@ -155,7 +155,7 @@ export class IceThicknessPage extends BasePage {
 
   removeLayerAtIndex(index: number) {
     this.ngZone.run(() => {
-      this.registration.request.IceThickness.IceThicknessLayer.splice(index, 1);
+      this.registration.request.IceThickness.IceThicknessLayers.splice(index, 1);
     });
     this.calculateIceThicknessSum();
   }

@@ -14,10 +14,9 @@ import {
   MultiPolygon,
   buffer,
   BBox,
-  Point,
   Coord
 } from '@turf/turf';
-import { GeoHazard } from '../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { map } from 'rxjs/operators';
 import { settings } from '../../../../settings';
 import avalancheRegions from './../../../../assets/json/varslingsomraader.json';

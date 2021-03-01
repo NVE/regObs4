@@ -9,9 +9,8 @@ import {
 } from '../../../../../../regobs-api/models';
 import { Observable, pipe } from 'rxjs';
 import moment from 'moment';
-import { GeoHazard } from '../../../../../../../core/models/geo-hazard.enum';
-import { RegistrationTid } from '../../../../../models/registrationTid.enum';
-import { IRegistration } from '../../../../../models/registration.model';
+import { GeoHazard } from '@varsom-regobs-common/core';
+import { RegistrationTid, IRegistration } from '@varsom-regobs-common/registration';
 import { RegistrationService } from '../../../../../services/registration.service';
 
 @Component({

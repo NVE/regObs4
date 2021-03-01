@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePageService } from '../../base-page-service';
 import { BasePage } from '../../base.page';
 import { ActivatedRoute } from '@angular/router';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { NumericInputComponent } from '../../../components/numeric-input/numeric-input.component';
+import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 
 @Component({

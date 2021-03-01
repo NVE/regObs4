@@ -1,4 +1,4 @@
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import * as L from 'leaflet';
 
 export interface ImageLocation {

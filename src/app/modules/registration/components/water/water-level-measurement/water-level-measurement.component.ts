@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WaterLevelMeasurementDto } from '../../../../regobs-api/models';
 import moment from 'moment';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
+import { RegistrationTid } from '@varsom-regobs-common/registration';
+import { isEmpty } from '@varsom-regobs-common/core';
 
 const DEBUG_TAG = 'WaterLevelMeasurementComponent';
 
@@ -31,7 +31,7 @@ export class WaterLevelMeasurementComponent implements OnInit {
   }
 
   get isValid() {
-    if (IsEmptyHelper.isEmpty(this.waterLevelMeasurement)) {
+    if (isEmpty(this.waterLevelMeasurement)) {
       return true;
     }
     return this.waterLevelMeasurement.DtMeasurementTime;

@@ -13,7 +13,7 @@ import {
 } from '@ionic-native/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../../core/services/app-version/app-version.service';
-import { LangKey } from '../../../core/models/langKey';
+import { LangKey } from '@varsom-regobs-common/core';
 
 @Component({
   selector: 'app-side-menu',
