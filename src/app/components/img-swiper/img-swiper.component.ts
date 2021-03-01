@@ -16,6 +16,7 @@ import { ImgSwiperSlide } from './img-swiper-slide';
 import { Subject, interval, race } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ImageLocation } from './image-location.model';
+import { BreakpointService } from '../../core/services/breakpoint.service';
 
 @Component({
   selector: 'app-img-swiper',
@@ -34,12 +35,15 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }> = new EventEmitter();
   @Input() location: ImageLocation;
   @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
+  isDesktop: boolean;
 
   slideOptions = {
     autoplay: false,
     slidesPerView: 'auto',
     zoom: false
   };
+
+  onlyMap: boolean;
 
   swiper: any;
   state:
@@ -115,9 +119,19 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
     return false;
   }
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private breakpointService: BreakpointService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
+    if (this.isDesktop) {
+      this.checkOnlyMapOrPicture();
+    }
+  }
 
   ngOnDestroy(): void {
     this.cdr.detach();
@@ -239,5 +253,25 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   async onSlideTransitionEnd() {
     this.activeIndex = await this.getSwiperIndex();
     this.updateUi();
+  }
+
+  next() {
+    this.slider.slideNext();
+    this.updateUi();
+  }
+
+  prev() {
+    this.slider.slidePrev();
+    this.updateUi();
+  }
+
+  checkOnlyMapOrPicture() {
+    if (this.location && (!this.imgUrl || this.imgUrl.length === 0)) {
+      this.onlyMap = true;
+    } else if (!this.location && this.imgUrl.length === 1) {
+      this.onlyMap = true;
+    } else {
+      this.onlyMap = false;
+    }
   }
 }

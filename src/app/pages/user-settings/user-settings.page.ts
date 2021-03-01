@@ -19,6 +19,7 @@ import { LogLevel } from '../../modules/shared/services/logging/log-level.model'
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { settings } from '../../../settings';
+import { BreakpointService } from '../../core/services/breakpoint.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -46,6 +47,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     ...lang,
     langKey: LangKey[lang.lang]
   }));
+  isDesktop: boolean;
 
   get appModeOptions() {
     const options: SelectOption[] = [
@@ -72,10 +74,14 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private appVersionService: AppVersionService,
     private loadingController: LoadingController,
     private appResetService: AppResetService,
-    private navController: NavController
+    private navController: NavController,
+    private breakpointService: BreakpointService
   ) {}
 
   async ngOnInit() {
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
     this.versionClicks = 0;
     this.subscriptions.push(
       this.userSettingService.userSetting$.subscribe((val) => {
