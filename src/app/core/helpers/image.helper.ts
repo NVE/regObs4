@@ -28,7 +28,11 @@ export class ImageHelper {
   //     return canvas.toDataURL(format, quality);
   // }
 
-  static getBlobFromImage(el: HTMLImageElement, format = 'image/png', quality = 0.5) {
+  static getBlobFromImage(
+    el: HTMLImageElement,
+    format = 'image/png',
+    quality = 0.5
+  ) {
     return new Promise<Blob>((resolve, reject) => {
       const canvas = ImageHelper.getCanvasFromImage(el);
       if (canvas) {
@@ -39,31 +43,47 @@ export class ImageHelper {
     });
   }
 
-  static async getArrayBufferFromImage(el: HTMLImageElement, format = 'image/png', quality = 0.5) {
+  static async getArrayBufferFromImage(
+    el: HTMLImageElement,
+    format = 'image/png',
+    quality = 0.5
+  ) {
     const blob = await this.getBlobFromImage(el, format, quality);
     return await new Response(blob).arrayBuffer();
   }
 
-  static toDataUrlWithWebWorker(input$: Observable<{ blob: ArrayBuffer, mimeType: string }>):
-        Observable<{ dataUrl: string, size: number }> {
-    return fromWorker<{ blob: ArrayBuffer, mimeType: string }, { dataUrl: string, size: number }>(() =>
-      new Worker('../../workers/blob-to-dataurl.worker',
-        { type: 'module' }),
-    input$, input => [input.blob]);
+  static toDataUrlWithWebWorker(
+    input$: Observable<{ blob: ArrayBuffer; mimeType: string }>
+  ): Observable<{ dataUrl: string; size: number }> {
+    return fromWorker<
+      { blob: ArrayBuffer; mimeType: string },
+      { dataUrl: string; size: number }
+    >(
+      () =>
+        new Worker('../../workers/blob-to-dataurl.worker', { type: 'module' }),
+      input$,
+      (input) => [input.blob]
+    );
   }
 
-  static getImageDataUrlAsObservable(el: HTMLImageElement, mimeType = 'image/png', quality = 0.5):
-        Observable<{ dataUrl: string, size: number }> {
-    const blobAndMimeType$ = from(this.getBlobFromImage(el, mimeType, quality))
-      .pipe(
-        switchMap((b) => from(new Response(b).arrayBuffer())),
-        map((b) => ({ blob: b, mimeType: mimeType })));
+  static getImageDataUrlAsObservable(
+    el: HTMLImageElement,
+    mimeType = 'image/png',
+    quality = 0.5
+  ): Observable<{ dataUrl: string; size: number }> {
+    const blobAndMimeType$ = from(
+      this.getBlobFromImage(el, mimeType, quality)
+    ).pipe(
+      switchMap((b) => from(new Response(b).arrayBuffer())),
+      map((b) => ({ blob: b, mimeType: mimeType }))
+    );
     return this.toDataUrlWithWebWorker(blobAndMimeType$);
   }
 
   static getDataUrlFromBlob(blob: Blob, mimeType: string = null) {
     const blobAndMimeType$ = from(new Response(blob).arrayBuffer()).pipe(
-      map((b) => ({ blob: b, mimeType: mimeType ? mimeType : blob.type })));
+      map((b) => ({ blob: b, mimeType: mimeType ? mimeType : blob.type }))
+    );
     return this.toDataUrlWithWebWorker(blobAndMimeType$);
   }
 

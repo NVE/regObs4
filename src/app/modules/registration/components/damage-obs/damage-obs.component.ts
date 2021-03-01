@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  NgZone,
+  ChangeDetectorRef
+} from '@angular/core';
 import { IRegistration } from '../../models/registration.model';
 import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from '../../models/registrationTid.enum';
@@ -13,7 +21,6 @@ import { RegistrationService } from '../../services/registration.service';
   styleUrls: ['./damage-obs.component.scss']
 })
 export class DamageObsComponent implements OnInit {
-
   @Input() damageTypeId: number;
   @Input() damageTypeName: string;
   @Input() registration: IRegistration;
@@ -22,8 +29,14 @@ export class DamageObsComponent implements OnInit {
   isSelected: boolean;
 
   get damageObs() {
-    if (this.registration && this.registration.request && this.registration.request.DamageObs) {
-      return this.registration.request.DamageObs.find((x) => x.DamageTypeTID === this.damageTypeId);
+    if (
+      this.registration &&
+      this.registration.request &&
+      this.registration.request.DamageObs
+    ) {
+      return this.registration.request.DamageObs.find(
+        (x) => x.DamageTypeTID === this.damageTypeId
+      );
     }
     return undefined;
   }
@@ -32,8 +45,7 @@ export class DamageObsComponent implements OnInit {
     private ngZone: NgZone,
     private modalController: ModalController,
     private registrationService: RegistrationService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     if (this.damageObs) {
@@ -55,11 +67,13 @@ export class DamageObsComponent implements OnInit {
       if (!this.damageObs) {
         this.registration.request.DamageObs.push({
           DamageTypeTID: this.damageTypeId,
-          Pictures: [],
+          Pictures: []
         });
       }
     } else {
-      this.registration.request.DamageObs = this.registration.request.DamageObs.filter((x) => x.DamageTypeTID !== this.damageTypeId);
+      this.registration.request.DamageObs = this.registration.request.DamageObs.filter(
+        (x) => x.DamageTypeTID !== this.damageTypeId
+      );
     }
     this.save();
   }
@@ -74,16 +88,27 @@ export class DamageObsComponent implements OnInit {
 
   async setDamagePosition() {
     const fromLatLng = this.registration.request.ObsLocation
-      ? L.latLng(this.registration.request.ObsLocation.Latitude, this.registration.request.ObsLocation.Longitude) : null;
+      ? L.latLng(
+          this.registration.request.ObsLocation.Latitude,
+          this.registration.request.ObsLocation.Longitude
+        )
+      : null;
     const modal = await this.modalController.create({
       component: SetDamageLocationPage,
-      componentProps: { fromLatLng, damageObs: this.damageObs, geoHazard: this.registration.geoHazard },
+      componentProps: {
+        fromLatLng,
+        damageObs: this.damageObs,
+        geoHazard: this.registration.geoHazard
+      }
     });
     modal.present();
     const result = await modal.onDidDismiss();
     if (result.data) {
       const obs: ObsLocationDto = result.data;
-      this.damageObs.DamagePosition = { Latitude: obs.Latitude, Longitude: obs.Longitude };
+      this.damageObs.DamagePosition = {
+        Latitude: obs.Latitude,
+        Longitude: obs.Longitude
+      };
       await this.save();
     }
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, NgZone, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, Input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { IonRefresher, Platform } from '@ionic/angular';
@@ -9,7 +9,6 @@ import { IonRefresher, Platform } from '@ionic/angular';
   styleUrls: ['./refresh-with-cancel.component.scss']
 })
 export class RefreshWithCancelComponent implements OnInit {
-
   showCancel = false;
 
   // @Output() refresh: EventEmitter<Promise<boolean>> = new EventEmitter();
@@ -20,16 +19,16 @@ export class RefreshWithCancelComponent implements OnInit {
 
   spinner: string;
 
-  constructor(private ngZone: NgZone, private platform: Platform) { }
+  constructor(private ngZone: NgZone, private platform: Platform) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.spinner = this.platform.is('android') ? 'crescent' : 'lines';
     if (!this.cancelSubject) {
       this.cancelSubject = new Subject<boolean>();
     }
   }
 
-  cancel() {
+  cancel(): void {
     this.cancelSubject.next(true);
   }
 
@@ -37,7 +36,7 @@ export class RefreshWithCancelComponent implements OnInit {
     return this.cancelSubject.asObservable().pipe(take(1)).toPromise();
   }
 
-  async doRefresh() {
+  async doRefresh(): Promise<void> {
     if (this.refreshFunc) {
       const cancelPromise = this.getCancelPromise();
       cancelPromise.then(() => this.complete());
@@ -61,5 +60,4 @@ export class RefreshWithCancelComponent implements OnInit {
       this.showCancel = false;
     });
   }
-
 }

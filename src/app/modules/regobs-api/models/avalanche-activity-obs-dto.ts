@@ -4,7 +4,6 @@
  * Skredaktivitet.
  */
 export interface AvalancheActivityObsDto {
-
   /**
    * Unik id på denne tabellen da flere er mulig pr RegID.
    */

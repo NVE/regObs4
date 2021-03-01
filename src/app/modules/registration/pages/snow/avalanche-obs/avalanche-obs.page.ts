@@ -12,10 +12,9 @@ import { SelectOption } from '../../../../shared/components/input/select/select-
 @Component({
   selector: 'app-avalanche-obs',
   templateUrl: './avalanche-obs.page.html',
-  styleUrls: ['./avalanche-obs.page.scss'],
+  styleUrls: ['./avalanche-obs.page.scss']
 })
 export class AvalancheObsPage extends BasePage {
-
   expoArray: SelectOption[] = [
     {
       text: 'DIRECTION.N',
@@ -55,9 +54,12 @@ export class AvalancheObsPage extends BasePage {
   maxDate: string;
 
   get dateIsDifferentThanObsTime() {
-    return this.registration.request.AvalancheObs.DtAvalancheTime
-      && !moment(this.registration.request.AvalancheObs.DtAvalancheTime)
-        .startOf('day').isSame(moment(this.registration.request.DtObsTime).startOf('day'));
+    return (
+      this.registration.request.AvalancheObs.DtAvalancheTime &&
+      !moment(this.registration.request.AvalancheObs.DtAvalancheTime)
+        .startOf('day')
+        .isSame(moment(this.registration.request.DtObsTime).startOf('day'))
+    );
   }
 
   constructor(
@@ -84,7 +86,10 @@ export class AvalancheObsPage extends BasePage {
   async onReset() {
     this.showWarning = false;
     // Also reset Incident when Avalanche obs is reset.
-    await this.basePageService.reset(this.registration, RegistrationTid.Incident);
+    await this.basePageService.reset(
+      this.registration,
+      RegistrationTid.Incident
+    );
   }
 
   isValid() {
@@ -93,24 +98,55 @@ export class AvalancheObsPage extends BasePage {
   }
 
   isEmpty() {
-    return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid)
-      && this.basePageService.RegistrationService.isEmpty(this.registration, RegistrationTid.Incident);
+    return (
+      this.basePageService.RegistrationService.isEmpty(
+        this.registration,
+        this.registrationTid
+      ) &&
+      this.basePageService.RegistrationService.isEmpty(
+        this.registration,
+        RegistrationTid.Incident
+      )
+    );
   }
 
   setAvalancheTimeTimeToNow() {
-    this.registration.request.AvalancheObs.DtAvalancheTime = moment().toISOString(true);
+    this.registration.request.AvalancheObs.DtAvalancheTime = moment().toISOString(
+      true
+    );
   }
 
   async setAvalanchePosition() {
     const relativeToLatLng = this.registration.request.ObsLocation
-      ? L.latLng(this.registration.request.ObsLocation.Latitude, this.registration.request.ObsLocation.Longitude) : null;
-    const startLatLng = this.registration.request.AvalancheObs.StartLat && this.registration.request.AvalancheObs.StartLong ?
-      L.latLng(this.registration.request.AvalancheObs.StartLat, this.registration.request.AvalancheObs.StartLong) : null;
-    const endLatLng = this.registration.request.AvalancheObs.StopLat && this.registration.request.AvalancheObs.StopLong ?
-      L.latLng(this.registration.request.AvalancheObs.StopLat, this.registration.request.AvalancheObs.StopLong) : null;
+      ? L.latLng(
+          this.registration.request.ObsLocation.Latitude,
+          this.registration.request.ObsLocation.Longitude
+        )
+      : null;
+    const startLatLng =
+      this.registration.request.AvalancheObs.StartLat &&
+      this.registration.request.AvalancheObs.StartLong
+        ? L.latLng(
+            this.registration.request.AvalancheObs.StartLat,
+            this.registration.request.AvalancheObs.StartLong
+          )
+        : null;
+    const endLatLng =
+      this.registration.request.AvalancheObs.StopLat &&
+      this.registration.request.AvalancheObs.StopLong
+        ? L.latLng(
+            this.registration.request.AvalancheObs.StopLat,
+            this.registration.request.AvalancheObs.StopLong
+          )
+        : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,
-      componentProps: { relativeToLatLng, startLatLng, endLatLng, geoHazard: this.registration.geoHazard },
+      componentProps: {
+        relativeToLatLng,
+        startLatLng,
+        endLatLng,
+        geoHazard: this.registration.geoHazard
+      }
     });
     modal.present();
     const result = await modal.onDidDismiss();
@@ -123,5 +159,4 @@ export class AvalancheObsPage extends BasePage {
       this.registration.request.AvalancheObs.StopLong = end.lng;
     }
   }
-
 }

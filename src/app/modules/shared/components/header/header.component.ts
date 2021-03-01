@@ -39,24 +39,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private fullscreenService: FullscreenService,
     private tripLoggerService: TripLoggerService,
     private userSettingService: UserSettingService,
-    private ngZone: NgZone,
-  ) {
-
-  }
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
     this.isFullscreen$ = this.fullscreenService.isFullscreen$;
-    this.subscriptions.push(this.tripLoggerService.isTripRunning$.subscribe((val) => {
-      this.ngZone.run(() => {
-        this.tripRunning = val;
-      });
-    }));
-    this.subscriptions.push(this.userSettingService.appMode$
-      .subscribe((appMode) => {
+    this.subscriptions.push(
+      this.tripLoggerService.isTripRunning$.subscribe((val) => {
+        this.ngZone.run(() => {
+          this.tripRunning = val;
+        });
+      })
+    );
+    this.subscriptions.push(
+      this.userSettingService.appMode$.subscribe((appMode) => {
         this.ngZone.run(() => {
           this.appMode = appMode;
         });
-      }));
+      })
+    );
   }
 
   ngOnDestroy(): void {

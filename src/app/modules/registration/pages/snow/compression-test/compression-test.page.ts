@@ -7,12 +7,12 @@ import { RegistrationTid } from '../../../models/registrationTid.enum';
 @Component({
   selector: 'app-compression-test',
   templateUrl: './compression-test.page.html',
-  styleUrls: ['./compression-test.page.scss'],
+  styleUrls: ['./compression-test.page.scss']
 })
 export class CompressionTestPage extends BasePage {
   constructor(
     basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
+    activatedRoute: ActivatedRoute
   ) {
     super(RegistrationTid.CompressionTest, basePageService, activatedRoute);
   }

@@ -6,7 +6,9 @@ xdescribe('RegistrationRepositoryService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: RegistrationRepositoryService = TestBed.get(RegistrationRepositoryService);
+    const service: RegistrationRepositoryService = TestBed.get(
+      RegistrationRepositoryService
+    );
     expect(service).toBeTruthy();
   });
 });

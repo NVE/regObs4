@@ -1,6 +1,5 @@
 /* tslint:disable */
 export interface AvalancheObsDto {
-
   /**
    * Tid da skredet gikk. DtAvalancheTime
    */

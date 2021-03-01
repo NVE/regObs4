@@ -8,8 +8,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class GeoHelperService {
-
-  constructor(private translateService: TranslateService) { }
+  constructor(private translateService: TranslateService) {}
 
   getTranslationKey(geoHazard: GeoHazard) {
     return `GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase();
@@ -24,10 +23,14 @@ export class GeoHelperService {
 
   getName(geoHazards: GeoHazard[]): Observable<string> {
     const keys = this.getTranslationKeys(geoHazards);
-    return this.translateService.get(keys).pipe(map((val) => keys.map((k) => val[k]).join(' / ')));
+    return this.translateService
+      .get(keys)
+      .pipe(map((val) => keys.map((k) => val[k]).join(' / ')));
   }
 
   getAllGeoHazards(): GeoHazard[] {
-    return Object.keys(GeoHazard).filter((key) => typeof GeoHazard[key] === 'number').map(key => GeoHazard[key]);
+    return Object.keys(GeoHazard)
+      .filter((key) => typeof GeoHazard[key] === 'number')
+      .map((key) => GeoHazard[key]);
   }
 }

@@ -15,8 +15,8 @@ import { CoachMarksComponent } from '../../components/coach-marks/coach-marks.co
     TripPageModule,
     WarningListPageModule,
     ObservationListPageModule,
-    SharedModule,
+    SharedModule
   ],
   declarations: [TabsPage, CoachMarksComponent]
 })
-export class TabsPageModule { }
+export class TabsPageModule {}

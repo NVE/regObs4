@@ -6,14 +6,9 @@ import { CanDeactivateRouteGuard } from './pages/can-deactivate-route.guard';
 import { SaveAsDraftRouteGuard } from './pages/save-as-draft.guard';
 
 @NgModule({
-  imports: [
-    RegistrationRoutingModule,
-    RegobsApiModule,
-    SharedModule,
-  ],
-  exports: [
-  ],
+  imports: [RegistrationRoutingModule, RegobsApiModule, SharedModule],
+  exports: [],
   declarations: [],
   providers: [CanDeactivateRouteGuard, SaveAsDraftRouteGuard]
 })
-export class RegistrationModule { }
+export class RegistrationModule {}

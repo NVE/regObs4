@@ -8,7 +8,6 @@ import { NavigationButtonsComponent } from './components/navigation-buttons/navi
 import { SetLocationInMapComponent } from './components/set-location-in-map/set-location-in-map.component';
 import { MapModule } from '../map/map.module';
 import { Base64ImageComponent } from './components/base64-image/base64-image.component';
-import { SyncItemComponent } from './components/sync-item/sync-item.component';
 import { KdvDescriptionPipe } from './pipes/kdv-description.pipe';
 import { AddWebUrlItemComponent } from './components/add-web-url-item/add-web-url-item.component';
 import { ModalSaveOrDeleteButtonsComponent } from './components/modal-save-or-delete-buttons/modal-save-or-delete-buttons.component';
@@ -29,7 +28,7 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     SharedModule,
     MapModule,
     HelpModalPageModule,
-    NumericInputModalPageModule,
+    NumericInputModalPageModule
   ],
   exports: [
     SharedModule,
@@ -41,7 +40,6 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     NavigationButtonsComponent,
     SetLocationInMapComponent,
     Base64ImageComponent,
-    SyncItemComponent,
     KdvDescriptionPipe,
     MetersToCmPipe,
     AddWebUrlItemComponent,
@@ -55,7 +53,7 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     NumericInputComponent,
     NumericInputModalPageModule,
     CompressionTestListComponent,
-    KdvSelectComponent,
+    KdvSelectComponent
   ],
   declarations: [
     SaveAndGoBackButtonComponent,
@@ -65,7 +63,6 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     NavigationButtonsComponent,
     SetLocationInMapComponent,
     Base64ImageComponent,
-    SyncItemComponent,
     KdvDescriptionPipe,
     MetersToCmPipe,
     AddWebUrlItemComponent,
@@ -77,7 +74,7 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     YesNoSelectComponent,
     NumericInputComponent,
     CompressionTestListComponent,
-    KdvSelectComponent,
-  ],
+    KdvSelectComponent
+  ]
 })
-export class SharedComponentsModule { }
+export class SharedComponentsModule {}

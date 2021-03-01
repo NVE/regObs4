@@ -8,7 +8,6 @@ import { Platform } from '@ionic/angular';
   styleUrls: ['./warning-list-header.component.scss']
 })
 export class WarningListHeaderComponent implements OnInit {
-
   @Input() title: string;
   @Input() subTitle: string;
   @Input() showDayNames: boolean;
@@ -17,13 +16,11 @@ export class WarningListHeaderComponent implements OnInit {
     return this.platform.is('ios');
   }
 
-  constructor(private platform: Platform) { }
+  constructor(private platform: Platform) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   getDayName(daysToAdd: number) {
     return `DAYS.SHORT.${moment().add(daysToAdd, 'days').day()}`;
   }
-
 }

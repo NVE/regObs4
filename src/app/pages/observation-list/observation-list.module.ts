@@ -19,4 +19,4 @@ const routes: Routes = [
   ],
   declarations: [ObservationListPage]
 })
-export class ObservationListPageModule { }
+export class ObservationListPageModule {}

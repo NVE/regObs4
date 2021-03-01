@@ -6,5 +6,5 @@ export enum TopoMap {
   mixArcGisOnline = 'mixArcGisOnlineV2',
   mixOpenTopo = 'mixOpenTopo',
   geoDataLandskap = 'geoDataLandskap',
-  mixGeoDataLandskap = 'mixGeoDataLandskap',
+  mixGeoDataLandskap = 'mixGeoDataLandskap'
 }

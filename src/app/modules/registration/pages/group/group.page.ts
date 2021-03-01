@@ -9,10 +9,9 @@ import { IonCheckbox } from '@ionic/angular';
 @Component({
   selector: 'app-group',
   templateUrl: './group.page.html',
-  styleUrls: ['./group.page.scss'],
+  styleUrls: ['./group.page.scss']
 })
 export class GroupPage extends BasePage {
-
   groups: ObserverGroupDto[] = [];
 
   get firstGroup() {
@@ -20,14 +19,17 @@ export class GroupPage extends BasePage {
   }
 
   get isSelected() {
-    return this.groups.length > 0 && this.groups[0].Id === this.registration.request.ObserverGroupID;
+    return (
+      this.groups.length > 0 &&
+      this.groups[0].Id === this.registration.request.ObserverGroupID
+    );
   }
 
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
     private userGroupService: UserGroupService,
-    private ngZone: NgZone,
+    private ngZone: NgZone
   ) {
     super(null, basePageService, activatedRoute);
   }
@@ -46,7 +48,7 @@ export class GroupPage extends BasePage {
   }
 
   checkedChanged(event: CustomEvent) {
-    const checkBox = <any>event.target as IonCheckbox;
+    const checkBox = (<any>event.target) as IonCheckbox;
     if (checkBox.checked) {
       this.registration.request.ObserverGroupID = this.firstGroup.Id;
     } else {
@@ -55,8 +57,10 @@ export class GroupPage extends BasePage {
   }
 
   isEmpty() {
-    return this.registration &&
-      (this.registration.request.ObserverGroupID === undefined || this.registration.request.ObserverGroupID === null);
+    return (
+      this.registration &&
+      (this.registration.request.ObserverGroupID === undefined ||
+        this.registration.request.ObserverGroupID === null)
+    );
   }
-
 }

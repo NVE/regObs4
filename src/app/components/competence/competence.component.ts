@@ -6,14 +6,11 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./competence.component.scss']
 })
 export class CompetenceComponent implements OnInit {
-
   readonly maxCompetenceLevel = 5;
 
   @Input() competenceLevel = 0;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

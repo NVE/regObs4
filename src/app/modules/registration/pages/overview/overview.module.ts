@@ -16,10 +16,12 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    SharedComponentsModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [OverviewPage, SendButtonComponent, SummaryItemComponent, FailedRegistrationComponent]
+  imports: [SharedComponentsModule, RouterModule.forChild(routes)],
+  declarations: [
+    OverviewPage,
+    SendButtonComponent,
+    SummaryItemComponent,
+    FailedRegistrationComponent
+  ]
 })
-export class OverviewPageModule { }
+export class OverviewPageModule {}

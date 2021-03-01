@@ -37,7 +37,7 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     RouterModule,
     MapImageModule,
     AuthModule,
-    VirtualScrollerModule,
+    VirtualScrollerModule
   ],
   declarations: [
     ShadowCssDirective,
@@ -57,7 +57,7 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     SelectComponent,
     GeoFabComponent,
     GeoNameComponent,
-    CompetenceComponent,
+    CompetenceComponent
   ],
   exports: [
     CommonModule,
@@ -89,4 +89,4 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     VirtualScrollerModule
   ]
 })
-export class SharedModule { }
+export class SharedModule {}

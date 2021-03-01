@@ -7,8 +7,12 @@ export class NumberHelper {
     if (this.isNumeric(n)) {
       // return parseFloat(n.toFixed(decimalPlaces));
       const sign = n >= 0 ? 1 : -1;
-      return parseFloat((Math.round((n * Math.pow(10, decimalPlaces)) + (sign * 0.0001)) / Math.pow(10, decimalPlaces))
-        .toFixed(decimalPlaces));
+      return parseFloat(
+        (
+          Math.round(n * Math.pow(10, decimalPlaces) + sign * 0.0001) /
+          Math.pow(10, decimalPlaces)
+        ).toFixed(decimalPlaces)
+      );
     } else {
       return n;
     }
@@ -18,7 +22,13 @@ export class NumberHelper {
     return n === undefined || n === null || n === '';
   }
 
-  static isValid(n: any, min?: number, max?: number, required = false, integer = false) {
+  static isValid(
+    n: any,
+    min?: number,
+    max?: number,
+    required = false,
+    integer = false
+  ) {
     if (required && this.isNullOrEmpty(n)) {
       return false;
     }

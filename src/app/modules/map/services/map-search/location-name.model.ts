@@ -1,4 +1,4 @@
 export interface LocationName {
-    name: string;
-    adminName: string;
+  name: string;
+  adminName: string;
 }

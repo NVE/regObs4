@@ -8,20 +8,19 @@ describe('AbonnerBannerComponent', () => {
   let component: AbonnerBannerComponent;
   let fixture: ComponentFixture<AbonnerBannerComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [AbonnerBannerComponent],
-      imports: [TestModule],
-      providers: [
-        InAppBrowser,
-        SafariViewController
-      ]
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [AbonnerBannerComponent],
+        imports: [TestModule],
+        providers: [InAppBrowser, SafariViewController]
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(AbonnerBannerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(AbonnerBannerComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    })
+  );
 
   it('should create', () => {
     expect(component).toBeTruthy();

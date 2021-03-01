@@ -3,10 +3,8 @@ import { SharedComponentsModule } from '../../shared-components.module';
 import { AddWebUrlModalPage } from './add-web-url-modal.page';
 
 @NgModule({
-  imports: [
-    SharedComponentsModule,
-  ],
+  imports: [SharedComponentsModule],
   declarations: [AddWebUrlModalPage],
-  entryComponents: [AddWebUrlModalPage],
+  entryComponents: [AddWebUrlModalPage]
 })
-export class AddWebUrlModalPageModule { }
+export class AddWebUrlModalPageModule {}

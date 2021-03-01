@@ -4,12 +4,11 @@ import { CancelPromise } from './cancel-promise.model';
 import { BackgroundDownloadService } from './background-download.service';
 
 @Injectable()
-export class BackgroundDownloadNativeService implements BackgroundDownloadService {
-
+export class BackgroundDownloadNativeService
+  implements BackgroundDownloadService {
   currentDownloads: Map<string, CancelPromise>;
 
-  constructor(
-    private file: File) {
+  constructor(private file: File) {
     this.currentDownloads = new Map();
   }
 

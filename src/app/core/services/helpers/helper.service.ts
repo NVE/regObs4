@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
-import { GeoHazard } from '../../models/geo-hazard.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HelperService {
+  constructor() {}
 
-  constructor() { }
-
-  getDistanceText(distanceInMeter: number): string {
+  getDistanceText(distanceInMeter: number, numDecimals = 1): string {
+    const options = {
+      minimumFractionDigits: numDecimals,
+      maximumFractionDigits: numDecimals
+    };
     if (distanceInMeter > 1000) {
-      return `${(distanceInMeter / 1000).toFixed(1)}  km`;
+      return `${(distanceInMeter / 1000).toLocaleString(
+        undefined,
+        options
+      )}  km`;
     } else {
       return `${(distanceInMeter || 0).toFixed(0)} m`;
     }
@@ -22,10 +27,12 @@ export class HelperService {
     const minutes = Math.floor((duration / (1000 * 60)) % 60);
     const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-    return `${(hours < 10) ? '0' + hours : hours}`
-      + `:${(minutes < 10) ? '0' + minutes : minutes}`
-      + `:${(seconds < 10) ? '0' + seconds : seconds}`
-      + (showMilliseconds ? `.${milliseconds}` : '');
+    return (
+      `${hours < 10 ? '0' + hours : hours}` +
+      `:${minutes < 10 ? '0' + minutes : minutes}` +
+      `:${seconds < 10 ? '0' + seconds : seconds}` +
+      (showMilliseconds ? `.${milliseconds}` : '')
+    );
   }
 
   humanReadableByteSize(bytes: number, si = true) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-weakenedice-legend',
@@ -6,5 +6,4 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./weakenedice-legend.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WeakenediceLegendComponent {
-}
+export class WeakenediceLegendComponent {}

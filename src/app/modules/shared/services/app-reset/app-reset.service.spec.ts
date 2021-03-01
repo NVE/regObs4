@@ -4,10 +4,8 @@ import { AppResetService } from './app-reset.service';
 import { DbHelperService } from '../../../../core/services/db-helper/db-helper.service';
 import { LoggingService } from '../logging/logging.service';
 import { OnReset } from '../../interfaces/on-reset.interface';
-import { LogLevel } from '../logging/log-level.model';
 
 describe('AppResetService', () => {
-
   let dbHelperService: DbHelperService;
   let loggingService: LoggingService;
   let firstResetService: OnReset;
@@ -15,22 +13,29 @@ describe('AppResetService', () => {
   let service: AppResetService;
 
   beforeEach(() => {
-    dbHelperService = jasmine.createSpyObj('DbHelperService', { resetDb: () => Promise.resolve() });
-    loggingService = jasmine.createSpyObj('LoggingService', {
-      log:
-        (message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) => {
-          return;
-        }
+    dbHelperService = jasmine.createSpyObj('DbHelperService', {
+      resetDb: () => Promise.resolve()
     });
-    firstResetService = jasmine.createSpyObj('OnReset', ['appOnReset', 'appOnResetComplete']);
-    secondResetService = jasmine.createSpyObj('OnReset', ['appOnReset', 'appOnResetComplete']);
+    loggingService = jasmine.createSpyObj('LoggingService', {
+      log: () => {
+        return;
+      }
+    });
+    firstResetService = jasmine.createSpyObj('OnReset', [
+      'appOnReset',
+      'appOnResetComplete'
+    ]);
+    secondResetService = jasmine.createSpyObj('OnReset', [
+      'appOnReset',
+      'appOnResetComplete'
+    ]);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: DbHelperService, useValue: dbHelperService },
         { provide: LoggingService, useValue: loggingService },
         { provide: 'OnReset', useValue: firstResetService, multi: true },
-        { provide: 'OnReset', useValue: secondResetService, multi: true },
+        { provide: 'OnReset', useValue: secondResetService, multi: true }
       ]
     });
   });

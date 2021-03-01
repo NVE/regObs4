@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, NgZone, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  NgZone,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AddWebUrlModalPage } from '../../pages/add-web-url-modal/add-web-url-modal.page';
 import { UrlViewModel } from '../../../regobs-api/models';
@@ -9,23 +16,21 @@ import { UrlViewModel } from '../../../regobs-api/models';
   styleUrls: ['./add-web-url-item.component.scss']
 })
 export class AddWebUrlItemComponent implements OnInit {
-
   @Input() title = 'REGISTRATION.ADD_WEB_URL.TITLE';
   @Input() weburls: UrlViewModel[];
   @Output() weburlsChange = new EventEmitter();
   @Input() icon = 'add-circle-outline';
   @Input() iconColor = 'dark';
 
-  constructor(private modalController: ModalController, private zone: NgZone) { }
+  constructor(private modalController: ModalController, private zone: NgZone) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async addOrEdit(index?: number) {
     const weburl = index !== undefined ? this.weburls[index] : undefined;
     const modal = await this.modalController.create({
       component: AddWebUrlModalPage,
-      componentProps: { weburl },
+      componentProps: { weburl }
     });
     modal.present();
     const result = await modal.onDidDismiss();

@@ -10,18 +10,22 @@ import { ISummaryItem } from '../summary-item/summary-item.model';
   styleUrls: ['./navigation-buttons.component.scss']
 })
 export class NavigationButtonsComponent implements OnInit {
-
   @Input() registration: IRegistration;
   next: ISummaryItem;
   previous: ISummaryItem;
 
   constructor(
     private summaryItemService: SummaryItemService,
-    private router: Router, private ngZone: NgZone) { }
+    private router: Router,
+    private ngZone: NgZone
+  ) {}
 
   async ngOnInit() {
     const currentUrl = this.router.url;
-    const prevAndNext = await this.summaryItemService.getPreviousAndNext(this.registration, currentUrl);
+    const prevAndNext = await this.summaryItemService.getPreviousAndNext(
+      this.registration,
+      currentUrl
+    );
     this.ngZone.run(() => {
       if (prevAndNext.next) {
         this.next = prevAndNext.next;
@@ -33,7 +37,11 @@ export class NavigationButtonsComponent implements OnInit {
   }
 
   goBack() {
-    this.summaryItemService.navigateTo(this.registration, this.previous, 'back');
+    this.summaryItemService.navigateTo(
+      this.registration,
+      this.previous,
+      'back'
+    );
   }
 
   goForward() {

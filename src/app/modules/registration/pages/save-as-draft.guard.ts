@@ -1,4 +1,8 @@
-import { CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import {
+  CanDeactivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot
+} from '@angular/router';
 import { Injectable } from '@angular/core';
 import { OverviewPage } from './overview/overview.page';
 import { AlertController } from '@ionic/angular';
@@ -10,25 +14,39 @@ import { RegistrationStatus } from '../models/registrationStatus.enum';
 import { take } from 'rxjs/operators';
 
 @Injectable()
-export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLocationPage> {
+export class SaveAsDraftRouteGuard
+  implements CanDeactivate<OverviewPage | ObsLocationPage> {
   constructor(
     private alertController: AlertController,
     private registrationService: RegistrationService,
     private userSettingService: UserSettingService,
-    private translateService: TranslateService) {
-  }
+    private translateService: TranslateService
+  ) {}
 
-  async canDeactivate(component: OverviewPage,
+  async canDeactivate(
+    component: OverviewPage,
     _: ActivatedRouteSnapshot,
     __: RouterStateSnapshot,
-    nextState?: RouterStateSnapshot) {
-    if (nextState && !this.isInWhitelist(nextState.url) && component.registration) {
-      const reg = await this.registrationService.getSavedRegistrationById(component.registration.id);
+    nextState?: RouterStateSnapshot
+  ) {
+    if (
+      nextState &&
+      !this.isInWhitelist(nextState.url) &&
+      component.registration
+    ) {
+      const reg = await this.registrationService.getSavedRegistrationById(
+        component.registration.id
+      );
       if (reg && reg.status === RegistrationStatus.Draft) {
         const save = await this.createAlert();
         if (!save) {
-          const appMode = await this.userSettingService.appMode$.pipe(take(1)).toPromise();
-          await this.registrationService.deleteRegistrationById(appMode, component.registration.id);
+          const appMode = await this.userSettingService.appMode$
+            .pipe(take(1))
+            .toPromise();
+          await this.registrationService.deleteRegistrationById(
+            appMode,
+            component.registration.id
+          );
         }
       }
     }
@@ -41,12 +59,14 @@ export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLo
   }
 
   async createAlert() {
-    const translations = await this.translateService.get([
-      'REGISTRATION.SAVE_ALERT.HEADER',
-      'REGISTRATION.SAVE_ALERT.MESSAGE',
-      'REGISTRATION.SAVE_ALERT.NO',
-      'REGISTRATION.SAVE_ALERT.YES',
-    ]).toPromise();
+    const translations = await this.translateService
+      .get([
+        'REGISTRATION.SAVE_ALERT.HEADER',
+        'REGISTRATION.SAVE_ALERT.MESSAGE',
+        'REGISTRATION.SAVE_ALERT.NO',
+        'REGISTRATION.SAVE_ALERT.YES'
+      ])
+      .toPromise();
     const alert = await this.alertController.create({
       header: translations['REGISTRATION.SAVE_ALERT.HEADER'],
       message: translations['REGISTRATION.SAVE_ALERT.MESSAGE'],
@@ -56,7 +76,7 @@ export class SaveAsDraftRouteGuard implements CanDeactivate<OverviewPage | ObsLo
           role: 'cancel'
         },
         {
-          text: translations['REGISTRATION.SAVE_ALERT.YES'],
+          text: translations['REGISTRATION.SAVE_ALERT.YES']
         }
       ]
     });

@@ -8,9 +8,9 @@ import { StratProfileLayerHistoryModalPageModule } from '../strat-profile-layer-
   imports: [
     SharedComponentsModule,
     StratProfileLayerModalPageModule,
-    StratProfileLayerHistoryModalPageModule,
+    StratProfileLayerHistoryModalPageModule
   ],
   declarations: [StratProfileModalPage],
-  entryComponents: [StratProfileModalPage],
+  entryComponents: [StratProfileModalPage]
 })
-export class StratProfileModalPageModule { }
+export class StratProfileModalPageModule {}

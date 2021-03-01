@@ -1,28 +1,32 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
 import { Injectable } from '@angular/core';
 import { LogLevel } from './log-level.model';
 import { LoggingService } from './logging.service';
 import { AppMode } from '../../../../core/models/app-mode.enum';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
-const stringify = require('json-stringify-safe');
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsoleLoggingService implements LoggingService {
-  enable() {
-  }
+  enable(): void {}
 
-  disable() {
-  }
+  disable(): void {}
 
-  constructor() {
-  }
+  configureLogging(appMode: AppMode): void {}
 
-  configureLogging(appMode: AppMode) { }
+  setUser(user: LoggedInUser): void {}
 
-  setUser(user: LoggedInUser) { }
-
-  error(error: Error, tag?: string, message?: string, ...optionalParams: any[]) {
+  error(
+    error: Error,
+    tag?: string,
+    message?: string,
+    ...optionalParams: any[]
+  ) {
     this.log(message, error, LogLevel.Error, tag, ...optionalParams);
   }
 
@@ -30,9 +34,19 @@ export class ConsoleLoggingService implements LoggingService {
     this.log(message, null, LogLevel.Debug, tag, ...optionalParams);
   }
 
-  log(message?: string, error?: Error, level?: LogLevel, tag?: string, ...optionalParams: any[]) {
-    const msg = `[${level.toUpperCase()}]${tag ? '[' + tag + ']' : ''} ${message}`;
-    optionalParams.length > 0 ? console.log(msg, optionalParams) : console.log(msg);
+  log(
+    message?: string,
+    error?: Error,
+    level?: LogLevel,
+    tag?: string,
+    ...optionalParams: any[]
+  ) {
+    const msg = `[${level.toUpperCase()}]${
+      tag ? '[' + tag + ']' : ''
+    } ${message}`;
+    optionalParams.length > 0
+      ? console.log(msg, optionalParams)
+      : console.log(msg);
     if (error) {
       console.error(error);
     }

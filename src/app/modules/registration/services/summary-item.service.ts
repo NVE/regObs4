@@ -15,36 +15,46 @@ import { RouterDirection } from '@ionic/core';
   providedIn: 'root'
 })
 export class SummaryItemService {
-
   constructor(
     private registrationService: RegistrationService,
     private dateHelperService: DateHelperService,
     private userGroupService: UserGroupService,
-    private navController: NavController,
-  ) { }
+    private navController: NavController
+  ) {}
 
-  async getSummaryItems(registration: IRegistration, userGroups?: ObserverGroupDto[]) {
+  async getSummaryItems(
+    registration: IRegistration,
+    userGroups?: ObserverGroupDto[]
+  ) {
     if (!registration) {
       return [];
     }
-    const userGroupsToUse = userGroups ? userGroups : await this.userGroupService.getUserGroups();
+    const userGroupsToUse = userGroups
+      ? userGroups
+      : await this.userGroupService.getUserGroups();
     const summaryItems: ISummaryItem[] = [
       {
         id: registration.id,
         href: '/registration/obs-location',
         queryParams: { geoHazard: registration.geoHazard },
         title: 'REGISTRATION.OBS_LOCATION.TITLE',
-        subTitle: registration.request.ObsLocation ? (registration.request.ObsLocation.LocationName
-          || registration.request.ObsLocation.LocationDescription) : '',
-        hasData: !IsEmptyHelper.isEmpty(registration.request.ObsLocation),
+        subTitle: registration.request.ObsLocation
+          ? registration.request.ObsLocation.LocationName ||
+            registration.request.ObsLocation.LocationDescription
+          : '',
+        hasData: !IsEmptyHelper.isEmpty(registration.request.ObsLocation)
       },
       {
         id: registration.id,
         href: '/registration/set-time',
         title: 'REGISTRATION.OVERVIEW.DATE_AND_TIME',
-        subTitle: registration.request.DtObsTime ? (await this.dateHelperService.formatDateString(registration.request.DtObsTime)) : '',
-        hasData: !!registration.request.DtObsTime,
-      },
+        subTitle: registration.request.DtObsTime
+          ? await this.dateHelperService.formatDateString(
+              registration.request.DtObsTime
+            )
+          : '',
+        hasData: !!registration.request.DtObsTime
+      }
     ];
     if (userGroupsToUse.length > 0) {
       summaryItems.push({
@@ -52,7 +62,7 @@ export class SummaryItemService {
         href: '/registration/group',
         title: 'REGISTRATION.OVERVIEW.SHARE_WITH_GROUP',
         subTitle: this.getObservationGroupName(registration, userGroupsToUse),
-        hasData: !!registration.request.ObserverGroupID,
+        hasData: !!registration.request.ObserverGroupID
       });
     }
 
@@ -63,15 +73,20 @@ export class SummaryItemService {
         registration,
         '/registration/general-comment',
         'REGISTRATION.GENERAL_COMMENT.TITLE',
-        registration.request.GeneralObservation ? registration.request.GeneralObservation.ObsComment : '',
+        registration.request.GeneralObservation
+          ? registration.request.GeneralObservation.ObsComment
+          : '',
         RegistrationTid.GeneralObservation
-      ));
+      )
+    );
 
     return summaryItems;
   }
 
-  async getPreviousAndNext(registration: IRegistration, url: string):
-    Promise<{ previous: ISummaryItem, next: ISummaryItem }> {
+  async getPreviousAndNext(
+    registration: IRegistration,
+    url: string
+  ): Promise<{ previous: ISummaryItem; next: ISummaryItem }> {
     const summaryItems = await this.getSummaryItems(registration);
     const currentItem = summaryItems.find((x) => url.indexOf(x.href) >= 0);
     const result = { previous: undefined, next: undefined };
@@ -88,9 +103,15 @@ export class SummaryItemService {
     return result;
   }
 
-  navigateTo(registration: IRegistration, summaryItem: ISummaryItem, direction: RouterDirection = 'forward') {
+  navigateTo(
+    registration: IRegistration,
+    summaryItem: ISummaryItem,
+    direction: RouterDirection = 'forward'
+  ) {
     const url = `${summaryItem.href}/${registration.id}`;
-    return direction === 'forward' ? this.navController.navigateForward(url) : this.navController.navigateBack(url);
+    return direction === 'forward'
+      ? this.navController.navigateForward(url)
+      : this.navController.navigateBack(url);
   }
 
   async navigateForward(registration: IRegistration, url: string) {
@@ -98,13 +119,20 @@ export class SummaryItemService {
     if (prevAndNext.next) {
       return this.navigateTo(registration, prevAndNext.next, 'forward');
     } else {
-      return this.navController.navigateRoot(`/registration/edit/${registration.id}`);
+      return this.navController.navigateRoot(
+        `/registration/edit/${registration.id}`
+      );
     }
   }
 
-  private getObservationGroupName(registration: IRegistration, userGroups: ObserverGroupDto[]) {
+  private getObservationGroupName(
+    registration: IRegistration,
+    userGroups: ObserverGroupDto[]
+  ) {
     if (registration && registration.request.ObserverGroupID && userGroups) {
-      const selectedGroup = userGroups.find((x) => x.Id === registration.request.ObserverGroupID);
+      const selectedGroup = userGroups.find(
+        (x) => x.Id === registration.request.ObserverGroupID
+      );
       if (selectedGroup) {
         return selectedGroup.Name;
       }
@@ -114,14 +142,14 @@ export class SummaryItemService {
 
   private getGeoHazardItems(registration: IRegistration) {
     switch (registration.geoHazard) {
-    case GeoHazard.Water:
-      return this.getWaterItems(registration);
-    case GeoHazard.Ice:
-      return this.getIceItems(registration);
-    case GeoHazard.Dirt:
-      return this.getDirtItems(registration);
-    case GeoHazard.Snow:
-      return this.getSnowItems(registration);
+      case GeoHazard.Water:
+        return this.getWaterItems(registration);
+      case GeoHazard.Ice:
+        return this.getIceItems(registration);
+      case GeoHazard.Dirt:
+        return this.getDirtItems(registration);
+      case GeoHazard.Snow:
+        return this.getSnowItems(registration);
     }
   }
 
@@ -131,7 +159,9 @@ export class SummaryItemService {
         registration,
         '/registration/water/water-level',
         'REGISTRATION.WATER.WATER_LEVEL.TITLE',
-        registration.request.WaterLevel2 ? registration.request.WaterLevel2.Comment : '',
+        registration.request.WaterLevel2
+          ? registration.request.WaterLevel2.Comment
+          : '',
         RegistrationTid.WaterLevel2
       ),
       this.getRegItem(
@@ -139,8 +169,8 @@ export class SummaryItemService {
         '/registration/water/damage',
         'REGISTRATION.WATER.DAMAGE.TITLE',
         '', // this.registration.DamageObs ? this.registration.DamageObs.map((x) => x.Comment).join() : '',
-        RegistrationTid.DamageObs,
-      ),
+        RegistrationTid.DamageObs
+      )
     ];
   }
 
@@ -149,14 +179,15 @@ export class SummaryItemService {
     href: string,
     title: string,
     subTitle: string,
-    registrationTid: RegistrationTid): ISummaryItem {
+    registrationTid: RegistrationTid
+  ): ISummaryItem {
     return {
       id: registration.id,
       href,
       title,
       subTitle,
       hasData: !this.registrationService.isEmpty(registration, registrationTid),
-      images: this.registrationService.getImages(registration, registrationTid),
+      images: this.registrationService.getImages(registration, registrationTid)
     };
   }
 
@@ -173,9 +204,11 @@ export class SummaryItemService {
         registration,
         '/registration/dirt/landslide-obs',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE',
-        registration.request.LandSlideObs ? registration.request.LandSlideObs.Comment : '',
+        registration.request.LandSlideObs
+          ? registration.request.LandSlideObs.Comment
+          : '',
         RegistrationTid.LandSlideObs
-      ),
+      )
     ];
   }
 
@@ -185,14 +218,18 @@ export class SummaryItemService {
         registration,
         '/registration/ice/ice-cover',
         'REGISTRATION.ICE.ICE_COVER.TITLE',
-        registration.request.IceCoverObs ? registration.request.IceCoverObs.Comment : '',
+        registration.request.IceCoverObs
+          ? registration.request.IceCoverObs.Comment
+          : '',
         RegistrationTid.IceCoverObs
       ),
       this.getRegItem(
         registration,
         '/registration/ice/ice-thickness',
         'REGISTRATION.ICE.ICE_THICKNESS.TITLE',
-        registration.request.IceThickness ? registration.request.IceThickness.Comment : '',
+        registration.request.IceThickness
+          ? registration.request.IceThickness.Comment
+          : '',
         RegistrationTid.IceThickness
       ),
       this.getRegItem(
@@ -208,7 +245,7 @@ export class SummaryItemService {
         'REGISTRATION.INCIDENT.TITLE',
         '',
         RegistrationTid.Incident
-      ),
+      )
     ];
   }
 
@@ -261,10 +298,19 @@ export class SummaryItemService {
         href: '/registration/snow/snow-profile',
         title: 'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
         subTitle: '',
-        hasData: !this.registrationService.isEmpty(registration, RegistrationTid.SnowProfile2)
-          || (registration.request.CompressionTest
-            && registration.request.CompressionTest.some((x) => x.IncludeInSnowProfile === true)),
-        images: this.registrationService.getImages(registration, RegistrationTid.SnowProfile2),
+        hasData:
+          !this.registrationService.isEmpty(
+            registration,
+            RegistrationTid.SnowProfile2
+          ) ||
+          (registration.request.CompressionTest &&
+            registration.request.CompressionTest.some(
+              (x) => x.IncludeInSnowProfile === true
+            )),
+        images: this.registrationService.getImages(
+          registration,
+          RegistrationTid.SnowProfile2
+        )
       },
       this.getRegItem(
         registration,

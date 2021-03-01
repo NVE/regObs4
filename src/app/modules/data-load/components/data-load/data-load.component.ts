@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, NgZone, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
 import { IDataLoad } from '../../models/data-load.interface';
 import { combineLatest, Subscription } from 'rxjs';
 import { DataLoadService } from '../../services/data-load.service';
@@ -6,7 +14,7 @@ import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-data-load',
   templateUrl: './data-load.component.html',
-  styleUrls: ['./data-load.component.scss'],
+  styleUrls: ['./data-load.component.scss']
 })
 export class DataLoadComponent implements OnInit, OnDestroy, OnChanges {
   dataLoad: IDataLoad[] = [];
@@ -18,16 +26,20 @@ export class DataLoadComponent implements OnInit, OnDestroy, OnChanges {
   ids: string[];
   @Input()
   simple: boolean;
-  constructor(private dataLoadService: DataLoadService, private ngZone: NgZone) {
-  }
-  ngOnInit() {
-  }
+  constructor(
+    private dataLoadService: DataLoadService,
+    private ngZone: NgZone
+  ) {}
+  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges) {
     const ids = changes.ids.currentValue as string[];
     if (ids && ids.length > 0) {
-      this.subscription = combineLatest(ids.map((id) => this.dataLoadService.getStateAsObservable(id)))
-        .pipe(map((val) => val.filter((item) => item.isLoading))).subscribe((val) => {
+      this.subscription = combineLatest(
+        ids.map((id) => this.dataLoadService.getStateAsObservable(id))
+      )
+        .pipe(map((val) => val.filter((item) => item.isLoading)))
+        .subscribe((val) => {
           this.ngZone.run(() => {
             this.dataLoad = val;
           });

@@ -96,10 +96,7 @@ ion-card {
 }
 
 app-img-swiper {
-  height: 40vh;
+  height: auto;
   width: 100%;
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: left;
+  display: block;
 }

@@ -13,10 +13,9 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-danger-obs',
   templateUrl: './danger-obs.page.html',
-  styleUrls: ['./danger-obs.page.scss'],
+  styleUrls: ['./danger-obs.page.scss']
 })
 export class DangerObsPage extends BasePage {
-
   private dangerSignKdv: KdvElement[];
   private dangerSignKdvSubscription: Subscription;
 
@@ -25,7 +24,7 @@ export class DangerObsPage extends BasePage {
     activatedRoute: ActivatedRoute,
     private modalController: ModalController,
     private zone: NgZone,
-    private kdvService: KdvService,
+    private kdvService: KdvService
   ) {
     super(RegistrationTid.DangerObs, basePageService, activatedRoute);
   }
@@ -38,18 +37,23 @@ export class DangerObsPage extends BasePage {
 
   onInit() {
     const kdvKey = `${GeoHazard[this.registration.geoHazard]}_DangerSignKDV`;
-    this.dangerSignKdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(kdvKey).subscribe((val) => {
-      this.zone.run(() => {
-        this.dangerSignKdv = val;
+    this.dangerSignKdvSubscription = this.kdvService
+      .getKdvRepositoryByKeyObservable(kdvKey)
+      .subscribe((val) => {
+        this.zone.run(() => {
+          this.dangerSignKdv = val;
+        });
       });
-    });
   }
 
   async addOrEdit(index: number) {
-    const dangerObs = index !== undefined ? this.registration.request.DangerObs[index] : undefined;
+    const dangerObs =
+      index !== undefined
+        ? this.registration.request.DangerObs[index]
+        : undefined;
     const modal = await this.modalController.create({
       component: AddOrEditDangerObsModalPage,
-      componentProps: { dangerObs, geoHazard: this.registration.geoHazard },
+      componentProps: { dangerObs, geoHazard: this.registration.geoHazard }
     });
     modal.present();
     const result = await modal.onDidDismiss();
@@ -68,7 +72,7 @@ export class DangerObsPage extends BasePage {
 
   setDangerObs(index: number, dangerObs: DangerObsDto) {
     this.zone.run(() => {
-      if(!this.registration.request.DangerObs) {
+      if (!this.registration.request.DangerObs) {
         this.registration.request.DangerObs = [];
       }
       this.registration.request.DangerObs[index] = dangerObs;
@@ -77,7 +81,7 @@ export class DangerObsPage extends BasePage {
 
   addDangerObs(dangerObs: DangerObsDto) {
     this.zone.run(() => {
-      if(!this.registration.request.DangerObs) {
+      if (!this.registration.request.DangerObs) {
         this.registration.request.DangerObs = [];
       }
       this.registration.request.DangerObs.push(dangerObs);
@@ -86,7 +90,7 @@ export class DangerObsPage extends BasePage {
 
   removeAtIndex(index: number) {
     this.zone.run(() => {
-      if(!this.registration.request.DangerObs) {
+      if (!this.registration.request.DangerObs) {
         this.registration.request.DangerObs = [];
       }
       if (this.registration.request.DangerObs.length > 0) {
@@ -98,7 +102,9 @@ export class DangerObsPage extends BasePage {
   getSummaryText(dangerObs: DangerObsDto) {
     const text = [];
     if (dangerObs.DangerSignTID % 100 !== 0 && this.dangerSignKdv) {
-      const kdvElement = this.dangerSignKdv.find((x) => x.Id === dangerObs.DangerSignTID);
+      const kdvElement = this.dangerSignKdv.find(
+        (x) => x.Id === dangerObs.DangerSignTID
+      );
       if (kdvElement) {
         text.push(kdvElement.Name.trim());
       }
@@ -109,4 +115,3 @@ export class DangerObsPage extends BasePage {
     return text.join(', ');
   }
 }
-

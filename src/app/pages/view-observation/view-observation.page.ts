@@ -13,7 +13,6 @@ import { takeUntil, take } from 'rxjs/operators';
   styleUrls: ['./view-observation.page.scss']
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
-
   obs: RegistrationViewModel;
 
   constructor(
@@ -21,15 +20,25 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
     private popupInfoService: PopupInfoService,
-    private ngZone: NgZone) {
+    private ngZone: NgZone
+  ) {
     super();
   }
 
   async ngOnInit() {
-    this.popupInfoService.checkObservationInfoPopup().pipe(takeUntil(this.ngDestroy$)).subscribe();
+    this.popupInfoService
+      .checkObservationInfoPopup()
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe();
     const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
-    const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
-    const observation = await this.observationService.getObservationById(id, userSetting.appMode, userSetting.language);
+    const userSetting = await this.userSettingService.userSetting$
+      .pipe(take(1))
+      .toPromise();
+    const observation = await this.observationService.getObservationById(
+      id,
+      userSetting.appMode,
+      userSetting.language
+    );
     this.ngZone.run(() => {
       this.obs = observation;
     });

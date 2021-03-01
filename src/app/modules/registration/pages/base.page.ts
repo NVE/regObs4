@@ -9,7 +9,6 @@ import { NgDestoryBase } from '../../../core/helpers/observable-helper';
 
 @Directive()
 export abstract class BasePage extends NgDestoryBase implements OnInit {
-
   registration: IRegistration;
   basePageService: BasePageService;
   registrationTid: RegistrationTid;
@@ -18,7 +17,7 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
   constructor(
     registrationTid: RegistrationTid,
     basePageService: BasePageService,
-    activatedRoute: ActivatedRoute,
+    activatedRoute: ActivatedRoute
   ) {
     super();
     this.basePageService = basePageService;
@@ -26,20 +25,26 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
     this.registrationTid = registrationTid;
   }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   ionViewDidEnter() {
     const id = this.activatedRoute.snapshot.params['id'];
-    this.basePageService.RegistrationService.getSavedRegistrationByIdObservable(id).pipe(
-      take(1), map((reg) => {
-        this.basePageService.createDefaultProps(reg, this.registrationTid);
-        return reg;
-      }), tap((reg) => {
-        this.registration = reg;
-      }), switchMap(() => this.createInitObservable()), takeUntil(this.ngDestroy$)
-    ).subscribe();
+    this.basePageService.RegistrationService.getSavedRegistrationByIdObservable(
+      id
+    )
+      .pipe(
+        take(1),
+        map((reg) => {
+          this.basePageService.createDefaultProps(reg, this.registrationTid);
+          return reg;
+        }),
+        tap((reg) => {
+          this.registration = reg;
+        }),
+        switchMap(() => this.createInitObservable()),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe();
   }
 
   onInit?(): void | Promise<any>;
@@ -56,8 +61,11 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
     const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
     // Only return alert if page is not empty and invalid
     if (!this.isEmpty() && !valid) {
-      return this.basePageService.confirmLeave(this.registration, this.registrationTid,
-        () => this.onReset ? this.onReset() : null);
+      return this.basePageService.confirmLeave(
+        this.registration,
+        this.registrationTid,
+        () => (this.onReset ? this.onReset() : null)
+      );
     }
     return true;
   }
@@ -77,7 +85,10 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
   }
 
   save(clean = false) {
-    return this.basePageService.RegistrationService.saveRegistrationAsync(this.registration, clean);
+    return this.basePageService.RegistrationService.saveRegistrationAsync(
+      this.registration,
+      clean
+    );
   }
 
   getSaveFunc() {
@@ -85,18 +96,28 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
   }
 
   isEmpty() {
-    return this.basePageService.RegistrationService.isEmpty(this.registration, this.registrationTid);
+    return this.basePageService.RegistrationService.isEmpty(
+      this.registration,
+      this.registrationTid
+    );
   }
 
   reset() {
-    return this.basePageService.confirmReset(this.registration, this.registrationTid, () => this.onReset ? this.onReset() : null);
+    return this.basePageService.confirmReset(
+      this.registration,
+      this.registrationTid,
+      () => (this.onReset ? this.onReset() : null)
+    );
   }
 
   getResolvedUrl(): string {
-    return '/' + this.activatedRoute.snapshot.pathFromRoot
-      .map(v => v.url.map(segment => segment.toString()).join('/'))
-      .filter((path) => !!path)
-      .join('/');
+    return (
+      '/' +
+      this.activatedRoute.snapshot.pathFromRoot
+        .map((v) => v.url.map((segment) => segment.toString()).join('/'))
+        .filter((path) => !!path)
+        .join('/')
+    );
   }
 
   // getConfiguredUrl(): string {
@@ -105,5 +126,4 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
   //         .map(v => v.routeConfig.path)
   //         .join('/');
   // }
-
 }

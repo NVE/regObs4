@@ -19,4 +19,4 @@ const routes: Routes = [
   ],
   declarations: [IncidentPage]
 })
-export class IncidentPageModule { }
+export class IncidentPageModule {}

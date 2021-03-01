@@ -3,10 +3,8 @@ import { SharedComponentsModule } from '../../shared-components.module';
 import { SetAvalanchePositionPage } from './set-avalanche-position.page';
 
 @NgModule({
-  imports: [
-    SharedComponentsModule,
-  ],
+  imports: [SharedComponentsModule],
   declarations: [SetAvalanchePositionPage],
-  entryComponents: [SetAvalanchePositionPage],
+  entryComponents: [SetAvalanchePositionPage]
 })
-export class SetAvalanchePositionPageModule { }
+export class SetAvalanchePositionPageModule {}

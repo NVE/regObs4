@@ -19,4 +19,4 @@ const routes: Routes = [
   ],
   declarations: [DangerObsPage]
 })
-export class DangerObsPageModule { }
+export class DangerObsPageModule {}

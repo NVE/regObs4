@@ -22,7 +22,6 @@ const DEBUG_TAG = 'AppComponent';
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
-
   swipeBackEnabled$: Observable<boolean>;
 
   constructor(
@@ -36,7 +35,7 @@ export class AppComponent {
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
-    private shortcutService: ShortcutService,
+    private shortcutService: ShortcutService
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -55,20 +54,95 @@ export class AppComponent {
   }
 
   private initServices(): (src: Observable<unknown>) => Observable<unknown> {
-    return (src: Observable<UserSetting>) => src.pipe(concatMap((userSettings) => forkJoin([
-      of(this.lockScreenOrientation()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not lock lockScreenOrientation'))),
-      from(this.dbHelperService.init()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))),
-      of(this.loggingService.configureLogging(userSettings.appMode)).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not configure loggine'))),
-      of(this.statusBar.styleLightContent()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not set styleLightContent'))),
-      of(this.statusBar.backgroundColorByHexString('#99044962')).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not set backgroundColorByHexString'))),
-      of(this.statusBar.overlaysWebView(false)).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not set overlaysWebView'))),
-      of(this.offlineImageService.cleanupOldItems()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not cleanup old items'))),
-      of(this.dataMarshallService.init()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init dataMarshallService'))),
-      of(this.shortcutService.init()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init shortcutService'))),
-    ])));
+    return (src: Observable<UserSetting>) =>
+      src.pipe(
+        concatMap((userSettings) =>
+          forkJoin([
+            of(this.lockScreenOrientation()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not lock lockScreenOrientation'
+                )
+              )
+            ),
+            from(this.dbHelperService.init()).pipe(
+              catchError((err) =>
+                this.loggingService.error(err, DEBUG_TAG, 'Could not init db')
+              )
+            ),
+            of(this.loggingService.configureLogging(userSettings.appMode)).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not configure loggine'
+                )
+              )
+            ),
+            of(this.statusBar.styleLightContent()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not set styleLightContent'
+                )
+              )
+            ),
+            of(this.statusBar.backgroundColorByHexString('#99044962')).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not set backgroundColorByHexString'
+                )
+              )
+            ),
+            of(this.statusBar.overlaysWebView(false)).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not set overlaysWebView'
+                )
+              )
+            ),
+            of(this.offlineImageService.cleanupOldItems()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not cleanup old items'
+                )
+              )
+            ),
+            of(this.dataMarshallService.init()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not init dataMarshallService'
+                )
+              )
+            ),
+            of(this.shortcutService.init()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not init shortcutService'
+                )
+              )
+            )
+          ])
+        )
+      );
   }
 
   private getUserSettings() {
-    return from(this.platform.ready()).pipe(switchMap(() => this.userSettings.userSetting$.pipe(take(1))));
+    return from(this.platform.ready()).pipe(
+      switchMap(() => this.userSettings.userSetting$.pipe(take(1)))
+    );
   }
 }

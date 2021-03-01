@@ -9,11 +9,9 @@ import { ModalSearchPage } from '../../../pages/modal-search/modal-search.page';
   styleUrls: ['./map-search.component.scss']
 })
 export class MapSearchComponent implements OnInit {
+  constructor(private modalController: ModalController) {}
 
-  constructor(private modalController: ModalController) { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async presentModal() {
     const modal = await this.modalController.create({
@@ -24,5 +22,4 @@ export class MapSearchComponent implements OnInit {
     });
     return await modal.present();
   }
-
 }

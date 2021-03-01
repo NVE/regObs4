@@ -3,7 +3,6 @@ import { BackgroundDownloadService } from './background-download.service';
 
 @Injectable()
 export class BackgroundDownloadWebService implements BackgroundDownloadService {
-
   // downloadFile(
   //     path: string,
   //     filename: string,
@@ -92,5 +91,4 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
   //     }).toPromise();
   //     return DataUrlHelper.toDataUrlWithSize(blob, type);
   // }
-
 }

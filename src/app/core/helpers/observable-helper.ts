@@ -1,16 +1,21 @@
 import { Observable, Subject } from 'rxjs';
 import { NgZone, OnDestroy, Injectable } from '@angular/core';
 
-export function toPromiseWithCancel<T>(observable: Observable<T>, cancel?: Promise<void>) {
+export function toPromiseWithCancel<T>(
+  observable: Observable<T>,
+  cancel?: Promise<void>
+) {
   return new Promise<T>((resolve, reject) => {
-    const subscription = observable
-      .subscribe((result) => {
+    const subscription = observable.subscribe(
+      (result) => {
         subscription.unsubscribe();
         resolve(result);
-      }, (error) => {
+      },
+      (error) => {
         subscription.unsubscribe();
         reject(error);
-      });
+      }
+    );
     if (cancel) {
       cancel.then(() => {
         subscription.unsubscribe();
@@ -22,7 +27,7 @@ export function toPromiseWithCancel<T>(observable: Observable<T>, cancel?: Promi
 
 export function enterZone(zone: NgZone) {
   return <T>(source: Observable<T>) =>
-    new Observable<T>(observer =>
+    new Observable<T>((observer) =>
       source.subscribe({
         next: (x) => zone.run(() => observer.next(x)),
         error: (err) => observer.error(err),
@@ -33,7 +38,7 @@ export function enterZone(zone: NgZone) {
 
 export function setObservableTimeout() {
   return <T>(source: Observable<T>) =>
-    new Observable<T>(observer =>
+    new Observable<T>((observer) =>
       source.subscribe({
         next: (x) => setTimeout(() => observer.next(x)),
         error: (err) => observer.error(err),

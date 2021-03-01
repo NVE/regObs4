@@ -15,7 +15,6 @@ const DEBUG_TAG = 'AnalyticService';
   providedIn: 'root'
 })
 export class AnalyticService {
-
   get router() {
     return this.injector.get(Router);
   }
@@ -23,9 +22,8 @@ export class AnalyticService {
   constructor(
     private injector: Injector,
     private loggingService: LoggingService,
-    private appVersionService: AppVersionService,
-  ) {
-  }
+    private appVersionService: AppVersionService
+  ) {}
 
   trackView(url: string) {
     if (ga) {
@@ -35,18 +33,32 @@ export class AnalyticService {
     }
   }
 
-  trackDimension(dimension: AppCustomDimension, value: string | number | boolean) {
+  trackDimension(
+    dimension: AppCustomDimension,
+    value: string | number | boolean
+  ) {
     if (ga) {
-      this.loggingService.debug(`Tracking dimension ${dimension}: ${value}`, DEBUG_TAG);
+      this.loggingService.debug(
+        `Tracking dimension ${dimension}: ${value}`,
+        DEBUG_TAG
+      );
       ga('set', dimension, value);
       ga('send', 'pageview');
     }
   }
 
-  trackEvent(eventCategory: AppEventCategory, eventAction: AppEventAction, eventLabel?: string, eventValue?: number) {
+  trackEvent(
+    eventCategory: AppEventCategory,
+    eventAction: AppEventAction,
+    eventLabel?: string,
+    eventValue?: number
+  ) {
     if (ga) {
-      this.loggingService.debug(`Tracking event eventCategory:${eventCategory}, eventAction:${eventAction},`
-        + ` eventLabel:${eventLabel || ''}, eventValue: ${eventValue || ''}`, DEBUG_TAG);
+      this.loggingService.debug(
+        `Tracking event eventCategory:${eventCategory}, eventAction:${eventAction},` +
+          ` eventLabel:${eventLabel || ''}, eventValue: ${eventValue || ''}`,
+        DEBUG_TAG
+      );
       ga('send', 'event', {
         eventCategory,
         eventAction,
@@ -62,8 +74,14 @@ export class AnalyticService {
   }
 
   enable() {
-    this.loggingService.debug(`Enable Google Analytics ${(
-      environment.production ? '' : '(DEV-MODE! Analytics data is not sent to server!)')}`, DEBUG_TAG);
+    this.loggingService.debug(
+      `Enable Google Analytics ${
+        environment.production
+          ? ''
+          : '(DEV-MODE! Analytics data is not sent to server!)'
+      }`,
+      DEBUG_TAG
+    );
     if (environment.production) {
       window[`ga-disable-${settings.googleAnalytics.trackerId}`] = false;
     }
@@ -71,11 +89,22 @@ export class AnalyticService {
 
   init() {
     if (!ga) {
-      this.loggingService.log('Could not load Google Analytics script. Probably ad blocker installed.', null, LogLevel.Warning, DEBUG_TAG);
+      this.loggingService.log(
+        'Could not load Google Analytics script. Probably ad blocker installed.',
+        null,
+        LogLevel.Warning,
+        DEBUG_TAG
+      );
       return;
     }
-    this.loggingService.debug(`Init Google Analytics ${(
-      environment.production ? '' : '(DEV-MODE! Analytics data is not sent to server!)')}`, DEBUG_TAG);
+    this.loggingService.debug(
+      `Init Google Analytics ${
+        environment.production
+          ? ''
+          : '(DEV-MODE! Analytics data is not sent to server!)'
+      }`,
+      DEBUG_TAG
+    );
     if (!environment.production) {
       // Disable sending events unless production build
       this.disable();
@@ -84,8 +113,8 @@ export class AnalyticService {
     this.loggingService.debug('Loading google analytics', DEBUG_TAG);
     if (window.localStorage) {
       ga('create', settings.googleAnalytics.trackerId, 'auto', {
-        'storage': 'none',
-        'clientId': window.localStorage.getItem('ga_clientId')
+        storage: 'none',
+        clientId: window.localStorage.getItem('ga_clientId')
       });
       ga('set', 'checkProtocolTask', null);
       ga(function (tracker) {
@@ -106,8 +135,12 @@ export class AnalyticService {
   }
 
   private startTrackingPageViews() {
-    this.router.events.pipe(filter((event) => event instanceof NavigationEnd))
-      .pipe(map((val: NavigationEnd) => val.urlAfterRedirects), distinctUntilChanged())
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(
+        map((val: NavigationEnd) => val.urlAfterRedirects),
+        distinctUntilChanged()
+      )
       .subscribe((url: string) => {
         this.trackView(url);
       });

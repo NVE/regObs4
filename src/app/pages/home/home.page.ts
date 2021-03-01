@@ -12,7 +12,13 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';
 import { Router, ActivatedRoute } from '@angular/router';
-import { map, distinctUntilChanged, takeUntil, tap, take } from 'rxjs/operators';
+import {
+  map,
+  distinctUntilChanged,
+  takeUntil,
+  tap,
+  take
+} from 'rxjs/operators';
 import { settings } from '../../../settings';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { RouterPage } from '../../core/helpers/routed-page';
@@ -23,10 +29,11 @@ const DEBUG_TAG = 'HomePage';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  styleUrls: ['home.page.scss']
 })
 export class HomePage extends RouterPage implements OnInit {
-  @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
+  @ViewChild(MapItemBarComponent, { static: true })
+  mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
   private markerLayer = LeafletClusterHelper.createMarkerClusterGroup({
@@ -55,23 +62,29 @@ export class HomePage extends RouterPage implements OnInit {
 
   ngOnInit() {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
-    this.dataLoadIds$ = this.observationService.dataLoad$.pipe(map((val) => [val]), enterZone(this.ngZone));
+    this.dataLoadIds$ = this.observationService.dataLoad$.pipe(
+      map((val) => [val]),
+      enterZone(this.ngZone)
+    );
     this.checkForFirstStartup();
   }
 
   checkForFirstStartup() {
-    this.userSettingService.userSetting$.pipe(
-      map((us) => us.showGeoSelectInfo),
-      distinctUntilChanged(),
-      takeUntil(race(this.ngUnsubscribe, this.geoCoachMarksClosedSubject)),
-      enterZone(this.ngZone)).subscribe((showGeoSelectInfo) => {
-      this.showGeoSelectInfo = showGeoSelectInfo;
-      if (!showGeoSelectInfo) {
-        this.geoCoachMarksClosedSubject.next();
-        this.geoCoachMarksClosedSubject.complete();
-        this.showUsageAnalyticsDialog();
-      }
-    });
+    this.userSettingService.userSetting$
+      .pipe(
+        map((us) => us.showGeoSelectInfo),
+        distinctUntilChanged(),
+        takeUntil(race(this.ngUnsubscribe, this.geoCoachMarksClosedSubject)),
+        enterZone(this.ngZone)
+      )
+      .subscribe((showGeoSelectInfo) => {
+        this.showGeoSelectInfo = showGeoSelectInfo;
+        if (!showGeoSelectInfo) {
+          this.geoCoachMarksClosedSubject.next();
+          this.geoCoachMarksClosedSubject.complete();
+          this.showUsageAnalyticsDialog();
+        }
+      });
   }
 
   async showUsageAnalyticsDialog() {
@@ -89,7 +102,10 @@ export class HomePage extends RouterPage implements OnInit {
       if (newZoom >= settings.map.tiles.maxZoom) {
         a.layer.spiderfy();
       } else {
-        this.map.setView(groupLatLng, Math.min(newZoom, settings.map.tiles.maxZoom));
+        this.map.setView(
+          groupLatLng,
+          Math.min(newZoom, settings.map.tiles.maxZoom)
+        );
       }
     });
     this.map.on('click', () => {
@@ -100,26 +116,41 @@ export class HomePage extends RouterPage implements OnInit {
       this.mapItemBar.hide();
     });
     // TODO: Move this to custom marker layer?
-    const observationObservable =
-      combineLatest([this.observationService.observations$, this.userSettingService.showObservations$]);
-    observationObservable.pipe(takeUntil(this.ngUnsubscribe)).subscribe(([regObservations, showObservations]) => {
-      this.redrawObservationMarkers(showObservations ? regObservations : []);
-    });
+    const observationObservable = combineLatest([
+      this.observationService.observations$,
+      this.userSettingService.showObservations$
+    ]);
+    observationObservable
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(([regObservations, showObservations]) => {
+        this.redrawObservationMarkers(showObservations ? regObservations : []);
+      });
   }
 
   async onEnter() {
     this.loggingService.debug('Home page ionViewDidEnter.', DEBUG_TAG);
-    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    const userSettings = await this.userSettingService.userSetting$
+      .pipe(take(1))
+      .toPromise();
     if (userSettings.showGeoSelectInfo) {
-      this.loggingService.debug('Display coachmarks, wait with starting geopostion', DEBUG_TAG);
+      this.loggingService.debug(
+        'Display coachmarks, wait with starting geopostion',
+        DEBUG_TAG
+      );
       return;
     }
-    this.loggingService.debug('Activate map updates and GeoLocation', DEBUG_TAG);
+    this.loggingService.debug(
+      'Activate map updates and GeoLocation',
+      DEBUG_TAG
+    );
     this.mapComponent.componentIsActive(true);
   }
 
   onLeave() {
-    this.loggingService.debug('Home page onLeave. Disable map updates and GeoLocation', DEBUG_TAG);
+    this.loggingService.debug(
+      'Home page onLeave. Disable map updates and GeoLocation',
+      DEBUG_TAG
+    );
     this.mapComponent.componentIsActive(false);
   }
 
@@ -136,7 +167,10 @@ export class HomePage extends RouterPage implements OnInit {
   private redrawObservationMarkers(regObservations: RegistrationViewModel[]) {
     this.markerLayer.clearLayers();
     for (const regObservation of regObservations) {
-      const latLng = L.latLng(regObservation.ObsLocation.Latitude, regObservation.ObsLocation.Longitude);
+      const latLng = L.latLng(
+        regObservation.ObsLocation.Latitude,
+        regObservation.ObsLocation.Longitude
+      );
       const marker = new MapItemMarker(regObservation, latLng, {});
       marker.on('click', (event: L.LeafletEvent) => {
         const m: MapItemMarker = event.target;

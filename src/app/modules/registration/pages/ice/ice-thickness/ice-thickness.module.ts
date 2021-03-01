@@ -21,4 +21,4 @@ const routes: Routes = [
   ],
   declarations: [IceThicknessPage]
 })
-export class IceThicknessPageModule { }
+export class IceThicknessPageModule {}

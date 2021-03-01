@@ -1,6 +1,11 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpRequest,
+  HttpResponse,
+  HttpHeaders
+} from '@angular/common/http';
 import { BaseService as __BaseService } from '../base-service';
 import { RegobsApiConfiguration as __Configuration } from '../regobs-api-configuration';
 import { StrictHttpResponse as __StrictHttpResponse } from '../strict-http-response';
@@ -14,7 +19,7 @@ import { SearchSideBarDto } from '../models/search-side-bar-dto';
 import { SearchSideBarRequestDto } from '../models/search-side-bar-request-dto';
 import { AtAGlanceViewModel } from '../models/at-aglance-view-model';
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 class SearchService extends __BaseService {
   static readonly SearchSearchPath = '/Search';
@@ -22,10 +27,7 @@ class SearchService extends __BaseService {
   static readonly SearchSearchCriteriaPath = '/Search/SearchCriteria';
   static readonly SearchAtAGlancePath = '/Search/AtAGlance';
 
-  constructor(
-    config: __Configuration,
-    http: HttpClient
-  ) {
+  constructor(config: __Configuration, http: HttpClient) {
     super(config, http);
   }
 
@@ -37,23 +39,21 @@ class SearchService extends __BaseService {
    * @param criteria Search criteria.
    * @return OK
    */
-  SearchSearchResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
+  SearchSearchResponse(
+    criteria: SearchCriteriaRequestDto
+  ): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
     const __params = this.newParams();
     const __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    const req = new HttpRequest<any>(
-      'POST',
-      this.rootUrl + '/Search',
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
+    const req = new HttpRequest<any>('POST', this.rootUrl + '/Search', __body, {
+      headers: __headers,
+      params: __params,
+      responseType: 'json'
+    });
 
     return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
+      __filter((_r) => _r instanceof HttpResponse),
       __map((_r) => {
         return _r as __StrictHttpResponse<Array<RegistrationViewModel>>;
       })
@@ -67,9 +67,11 @@ class SearchService extends __BaseService {
    * @param criteria Search criteria.
    * @return OK
    */
-  SearchSearch(criteria: SearchCriteriaRequestDto): __Observable<Array<RegistrationViewModel>> {
+  SearchSearch(
+    criteria: SearchCriteriaRequestDto
+  ): __Observable<Array<RegistrationViewModel>> {
     return this.SearchSearchResponse(criteria).pipe(
-      __map(_r => _r.body as Array<RegistrationViewModel>)
+      __map((_r) => _r.body as Array<RegistrationViewModel>)
     );
   }
 
@@ -77,7 +79,9 @@ class SearchService extends __BaseService {
    * @param criteria Search criteria
    * @return OK
    */
-  SearchCountResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchCountResponseDto>> {
+  SearchCountResponse(
+    criteria: SearchCriteriaRequestDto
+  ): __Observable<__StrictHttpResponse<SearchCountResponseDto>> {
     const __params = this.newParams();
     const __headers = new HttpHeaders();
     let __body: any = null;
@@ -90,10 +94,11 @@ class SearchService extends __BaseService {
         headers: __headers,
         params: __params,
         responseType: 'json'
-      });
+      }
+    );
 
     return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
+      __filter((_r) => _r instanceof HttpResponse),
       __map((_r) => {
         return _r as __StrictHttpResponse<SearchCountResponseDto>;
       })
@@ -103,9 +108,11 @@ class SearchService extends __BaseService {
    * @param criteria Search criteria
    * @return OK
    */
-  SearchCount(criteria: SearchCriteriaRequestDto): __Observable<SearchCountResponseDto> {
+  SearchCount(
+    criteria: SearchCriteriaRequestDto
+  ): __Observable<SearchCountResponseDto> {
     return this.SearchCountResponse(criteria).pipe(
-      __map(_r => _r.body as SearchCountResponseDto)
+      __map((_r) => _r.body as SearchCountResponseDto)
     );
   }
 
@@ -113,7 +120,9 @@ class SearchService extends __BaseService {
    * @param request
    * @return OK
    */
-  SearchSearchCriteriaResponse(request: SearchSideBarRequestDto): __Observable<__StrictHttpResponse<SearchSideBarDto>> {
+  SearchSearchCriteriaResponse(
+    request: SearchSideBarRequestDto
+  ): __Observable<__StrictHttpResponse<SearchSideBarDto>> {
     const __params = this.newParams();
     const __headers = new HttpHeaders();
     let __body: any = null;
@@ -126,10 +135,11 @@ class SearchService extends __BaseService {
         headers: __headers,
         params: __params,
         responseType: 'json'
-      });
+      }
+    );
 
     return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
+      __filter((_r) => _r instanceof HttpResponse),
       __map((_r) => {
         return _r as __StrictHttpResponse<SearchSideBarDto>;
       })
@@ -139,9 +149,11 @@ class SearchService extends __BaseService {
    * @param request
    * @return OK
    */
-  SearchSearchCriteria(request: SearchSideBarRequestDto): __Observable<SearchSideBarDto> {
+  SearchSearchCriteria(
+    request: SearchSideBarRequestDto
+  ): __Observable<SearchSideBarDto> {
     return this.SearchSearchCriteriaResponse(request).pipe(
-      __map(_r => _r.body as SearchSideBarDto)
+      __map((_r) => _r.body as SearchSideBarDto)
     );
   }
 
@@ -149,7 +161,9 @@ class SearchService extends __BaseService {
    * @param criteria Search criteria
    * @return OK
    */
-  SearchAtAGlanceResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
+  SearchAtAGlanceResponse(
+    criteria: SearchCriteriaRequestDto
+  ): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
     const __params = this.newParams();
     const __headers = new HttpHeaders();
     let __body: any = null;
@@ -162,10 +176,11 @@ class SearchService extends __BaseService {
         headers: __headers,
         params: __params,
         responseType: 'json'
-      });
+      }
+    );
 
     return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
+      __filter((_r) => _r instanceof HttpResponse),
       __map((_r) => {
         return _r as __StrictHttpResponse<Array<AtAGlanceViewModel>>;
       })
@@ -175,14 +190,15 @@ class SearchService extends __BaseService {
    * @param criteria Search criteria
    * @return OK
    */
-  SearchAtAGlance(criteria: SearchCriteriaRequestDto): __Observable<Array<AtAGlanceViewModel>> {
+  SearchAtAGlance(
+    criteria: SearchCriteriaRequestDto
+  ): __Observable<Array<AtAGlanceViewModel>> {
     return this.SearchAtAGlanceResponse(criteria).pipe(
-      __map(_r => _r.body as Array<AtAGlanceViewModel>)
+      __map((_r) => _r.body as Array<AtAGlanceViewModel>)
     );
   }
 }
 
-namespace SearchService {
-}
+namespace SearchService {}
 
 export { SearchService };

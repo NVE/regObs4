@@ -7,6 +7,6 @@ import { LegalTermsComponent } from '../../../components/legal-terms/legal-terms
   imports: [SharedModule],
   declarations: [LegalTermsModalPage, LegalTermsComponent],
   entryComponents: [LegalTermsModalPage],
-  exports: [LegalTermsModalPage],
+  exports: [LegalTermsModalPage]
 })
-export class LegalTermsModalPageModule { }
+export class LegalTermsModalPageModule {}

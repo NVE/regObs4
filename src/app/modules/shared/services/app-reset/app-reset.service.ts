@@ -10,18 +10,28 @@ const DEBUG_TAG = 'AppResetService';
   providedIn: 'root'
 })
 export class AppResetService {
-
   constructor(
     @Inject('OnReset') private services: OnReset[],
     private dbHelperService: DbHelperService,
-    private loggingService: LoggingService,
-  ) { }
+    private loggingService: LoggingService
+  ) {}
 
-  async resetApp() {
-    await Promise.all(this.services.map(s => Promise.resolve(s.appOnReset())));
-    await this.dbHelperService.resetDb((table, _) => {
-      this.loggingService.log(`Error reset table ${table}`, null, LogLevel.Warning, DEBUG_TAG);
+  async resetApp(): Promise<void> {
+    await Promise.all(
+      this.services.map((s) => Promise.resolve(s.appOnReset()))
+    );
+    await this.dbHelperService.resetDb((table) => {
+      this.loggingService.log(
+        `Error reset table ${table}`,
+        null,
+        LogLevel.Warning,
+        DEBUG_TAG
+      );
     });
-    await Promise.all(this.services.map(s => Promise.resolve((s.appOnResetComplete ? s.appOnResetComplete() : true))));
+    await Promise.all(
+      this.services.map((s) =>
+        Promise.resolve(s.appOnResetComplete ? s.appOnResetComplete() : true)
+      )
+    );
   }
 }

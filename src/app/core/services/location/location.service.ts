@@ -10,18 +10,26 @@ import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.se
 export class LocationService {
   constructor(
     private regobsAuthService: RegobsAuthService,
-    private apiLocationService: RegobsApiLocationService) {
-  }
+    private apiLocationService: RegobsApiLocationService
+  ) {}
 
-  getLocationWithinRadiusObservable(geoHazard: GeoHazard, lat: number, lng: number, radius: number) {
-    return this.regobsAuthService.loggedInUser$
-      .pipe(switchMap((loggedInUser) => this.apiLocationService.LocationWithinRadius({
-        geoHazardTypeIds: [geoHazard],
-        radius,
-        latitude: lat,
-        longitude: lng,
-        observerGuid: loggedInUser.isLoggedIn ? loggedInUser.user.Guid : null,
-        returnCount: 100,
-      })));
+  getLocationWithinRadiusObservable(
+    geoHazard: GeoHazard,
+    lat: number,
+    lng: number,
+    radius: number
+  ) {
+    return this.regobsAuthService.loggedInUser$.pipe(
+      switchMap((loggedInUser) =>
+        this.apiLocationService.LocationWithinRadius({
+          geoHazardTypeIds: [geoHazard],
+          radius,
+          latitude: lat,
+          longitude: lng,
+          observerGuid: loggedInUser.isLoggedIn ? loggedInUser.user.Guid : null,
+          returnCount: 100
+        })
+      )
+    );
   }
 }

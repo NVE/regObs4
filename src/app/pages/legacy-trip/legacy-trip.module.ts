@@ -17,8 +17,8 @@ const routes: Routes = [
   imports: [
     SharedModule,
     SharedComponentsModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes)
   ],
   declarations: [LegacyTripPage]
 })
-export class LegacyTripPageModule { }
+export class LegacyTripPageModule {}

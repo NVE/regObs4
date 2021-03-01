@@ -1,0 +1,33 @@
+<!-- A list of observations sent to server -->
+<ion-item-divider no-border>
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <h3 class="ion-text-uppercase">{{ 'MY_OBSERVATIONS.MY_SENT_OBSERVATIONS' | translate }}</h3>
+    </ion-row>
+    <ion-row>
+      <ion-label class="ion-text-wrap" color="medium">
+        {{ 'MY_OBSERVATIONS.SENT_SUBTITLE' | translate }}
+      </ion-label>
+    </ion-row>
+  </ion-grid>
+</ion-item-divider>
+<div class="loading-sceleton" *ngIf="!loaded">
+  <app-observation-skeleton></app-observation-skeleton>
+  <app-observation-skeleton></app-observation-skeleton>
+  <app-observation-skeleton></app-observation-skeleton>
+</div>
+<ng-container *ngIf="loadedRegistrations !== undefined">
+  <ion-list [ngClass]="{ loaded: loaded }" *ngIf="(loadedRegistrations.length > 0)">
+    <app-observation-list-card *ngFor="let reg of loadedRegistrations; trackBy: trackByIdFunc" [obs]="reg"></app-observation-list-card>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="loadNextPage($event)" >
+    <ion-infinite-scroll-content>
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-row *ngIf="maxCountReached" class="full-grid-row max-count-reached">
+    <ion-col class="ion-text-center ion-margin-horizontal">
+      <h2>{{ 'MY_OBSERVATIONS.MAX_COUNT_REACHED_HEADER' | translate }}</h2>
+      <h3 class="ion-text-wrap" [innerHTML]="'MY_OBSERVATIONS.MAX_COUNT_REACHED_TEXT' | translate: {maxCount: maxCount, myObservationsUrl: myObservationsUrl$ | async}"></h3>
+    </ion-col>
+  </ion-row>
+</ng-container>

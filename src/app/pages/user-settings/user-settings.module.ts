@@ -11,10 +11,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    SharedModule,
-    RouterModule.forChild(routes),
-  ],
+  imports: [SharedModule, RouterModule.forChild(routes)],
   declarations: [UserSettingsPage]
 })
-export class UserSettingsPageModule { }
+export class UserSettingsPageModule {}

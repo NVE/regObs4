@@ -14,20 +14,27 @@ const NO_DAMAGE_VISIBLE = 7;
 @Component({
   selector: 'app-damage',
   templateUrl: './damage.page.html',
-  styleUrls: ['./damage.page.scss'],
+  styleUrls: ['./damage.page.scss']
 })
 export class DamagePage extends BasePage {
   damageTypes: KdvElement[];
   checked: boolean;
 
   get isChecked() {
-    if (!this.registration
-      || !this.registration.request
-      || !this.registration.request.DamageObs
-      || this.registration.request.DamageObs.length === 0) {
+    if (
+      !this.registration ||
+      !this.registration.request ||
+      !this.registration.request.DamageObs ||
+      this.registration.request.DamageObs.length === 0
+    ) {
       return this.checked;
     }
-    return this.registration && this.registration.request.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE).length > 0;
+    return (
+      this.registration &&
+      this.registration.request.DamageObs.filter(
+        (x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE
+      ).length > 0
+    );
   }
 
   set isChecked(val: boolean) {
@@ -39,7 +46,9 @@ export class DamagePage extends BasePage {
         }
       ];
     } else {
-      this.registration.request.DamageObs = this.registration.request.DamageObs.filter((x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE);
+      this.registration.request.DamageObs = this.registration.request.DamageObs.filter(
+        (x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE
+      );
     }
   }
 
@@ -49,14 +58,15 @@ export class DamagePage extends BasePage {
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
     private kdvService: KdvService,
-    private ngZone: NgZone,
+    private ngZone: NgZone
   ) {
     super(RegistrationTid.DamageObs, basePageService, activatedRoute);
   }
 
   onInit() {
     const geoHazardName = GeoHazard[this.registration.geoHazard];
-    this.kdvSubscription = this.kdvService.getKdvRepositoryByKeyObservable(`${geoHazardName}_DamageTypeKDV`)
+    this.kdvSubscription = this.kdvService
+      .getKdvRepositoryByKeyObservable(`${geoHazardName}_DamageTypeKDV`)
       .pipe(map((val) => val.filter((x) => x.Id !== NO_DAMAGE_VISIBLE)))
       .subscribe((kdvElements) => {
         this.ngZone.run(() => {
