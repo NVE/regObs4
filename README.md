@@ -105,6 +105,33 @@ Vi har et åpent beta-test-program hvor eksterne testere kan melde seg inn ved �
 - Trykk på + under Builds, velg riktig versjon/build og Next
 - Velg Submit for Review
 
+## Produksjonssetting
+
+Appene må produksjonssettes manuelt i i App Store og i Google Play
+
+### Produksjonssette på Apple App Store
+
+- Gå til https://appstoreconnect.apple.com/
+- Bruk + øverst til venstre for "Opprett ny utgave". Det kan ta et par dager før du får godkjent den nye versjonen.
+- Når versjonen er godkjent, kan du sende den til produksjon
+
+### Produksjonssette på Google Play
+
+- For å rulle videre fra beta til produksjon, logg på https://play.google.com/console/
+- Siste versjon av appen finner du under "Tester/Åpen testing"
+- Velg "Kopier utgaven til et annet spor"
+- Pass på at 100% av brukerne får tilgang. Mulig du må endre andelen fra 20 til 100% etterpå.
+
+### Flette inn release-greina
+
+Etter produksjonssetting, må release-greina flettes inn:
+```
+git flow release finish 'release/vX.Y.Z'
+git push origin --tags
+git push develop
+git push master
+```
+
 ## Plugins and other custom features
 
 # How to run lint and format on save using vscode
