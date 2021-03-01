@@ -3,9 +3,8 @@ import { Subscription, combineLatest } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { settings } from '../../../../../settings';
-import { SelectInterface } from '@ionic/core';
 
 @Component({
   selector: 'app-observations-days-back',

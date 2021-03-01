@@ -3,7 +3,7 @@ import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { RegistrationTid } from '@varsom-regobs-common/registration';
 import * as L from 'leaflet';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import moment from 'moment';
@@ -99,7 +99,7 @@ export class AvalancheObsPage extends BasePage {
   }
 
   async isEmpty(): Promise<boolean> {
-    const isEmpty = !await this.basePageService.RegistrationService.hasAnyDataToShowInRegistrationTypes(
+    const isEmpty = !await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
       this.registration,
       this.registrationTid
     ).pipe(take(1)).toPromise();

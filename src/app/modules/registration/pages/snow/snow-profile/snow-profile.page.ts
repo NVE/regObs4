@@ -19,7 +19,7 @@ import { from, of } from 'rxjs';
 import { catchError, switchMap, take } from 'rxjs/operators';
 import { UserSetting } from '../../../../../core/models/user-settings.model';
 import { LoggingService } from '../../../../shared/services/logging/logging.service';
-import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
+import { isEmpty } from '@varsom-regobs-common/core';
 
 const DEBUG_TAG = 'SnowProfilePage';
 
@@ -57,12 +57,12 @@ export class SnowProfilePage extends BasePage {
   onInit() {}
 
   isEmpty() {
-    return (
-      IsEmptyHelper.isEmpty(this.registration.request.SnowProfile2) &&
+    const isEmptyResult =
+     isEmpty(this.registration.request.SnowProfile2) &&
       !(this.registration.request.CompressionTest || []).some(
         (ct) => ct.IncludeInSnowProfile === true
-      )
-    );
+      );
+    return Promise.resolve(isEmptyResult);
   }
 
   async openPreview() {

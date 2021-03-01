@@ -5,7 +5,7 @@ import * as L from 'leaflet';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { AppMode } from '../../core/models/app-mode.enum';
 import { settings } from '../../../settings';

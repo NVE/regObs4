@@ -1,5 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { Component, NgZone } from '@angular/core';
+import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { ActivatedRoute } from '@angular/router';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';

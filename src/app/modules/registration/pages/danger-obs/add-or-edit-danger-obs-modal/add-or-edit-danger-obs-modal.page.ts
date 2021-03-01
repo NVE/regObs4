@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { DangerObsDto } from '../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
-import { GeoHazard } from '../../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 

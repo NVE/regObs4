@@ -21,7 +21,7 @@ export class GeoSelectComponent implements OnInit {
     this.geoHazardTypes = [
       [GeoHazard.Snow],
       [GeoHazard.Ice],
-      [GeoHazard.Water, GeoHazard.Dirt]
+      [GeoHazard.Water, GeoHazard.Soil]
     ];
     this.userSettings$ = this.userSettingService.userSetting$;
   }

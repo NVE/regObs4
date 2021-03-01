@@ -2,11 +2,10 @@ import {
   Component,
   Input,
   OnChanges,
-  SimpleChanges,
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
-import { GeoHazard } from '../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { settings } from '../../../../settings';
 import {
   RegistrationViewModel,
@@ -160,7 +159,7 @@ export class ObservationListCardComponent implements OnChanges {
 
   getGeoHazardCircleIcon(geoHazard: GeoHazard): string {
     switch (geoHazard) {
-    case GeoHazard.Dirt:
+    case GeoHazard.Soil:
       return '/assets/icon/dirt_circle.svg';
     case GeoHazard.Ice:
       return '/assets/icon/ice_circle.svg';

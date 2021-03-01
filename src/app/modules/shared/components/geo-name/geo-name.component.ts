@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { Observable } from 'rxjs';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
 

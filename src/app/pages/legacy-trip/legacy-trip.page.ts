@@ -5,7 +5,7 @@ import { CreateTripDto } from '../../modules/regobs-api/models';
 import moment from 'moment';
 import { NavController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
