@@ -28,7 +28,7 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { IonInput } from '@ionic/angular';
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
-import { Point } from 'src/app/modules/map/services/map/map-view.interface';
+import { Point } from '@arcgis/core/geometry';
 
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
@@ -157,9 +157,15 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
           mapView.bounds !== undefined
       ),
       switchMap((mapView) => {
-        const nwCorner = new Point(mapView.bounds.xmin, mapView.bounds.ymin);
-        const seCorner = new Point(mapView.bounds.xmax, mapView.bounds.ymax);
-        const radius = Math.round(nwCorner.distanceTo(seCorner)) / 2;
+        const nwCorner = new Point({
+          latitude: mapView.bounds.xmin,
+          longitude: mapView.bounds.ymin
+        });
+        const seCorner = new Point({
+          latitude: mapView.bounds.xmax,
+          longitude: mapView.bounds.ymax
+        });
+        const radius = Math.round(nwCorner.distance(seCorner)) / 2;
         return this.locationService.getLocationWithinRadiusObservable(
           this.geoHazard,
           mapView.center.latitude,
@@ -266,10 +272,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   private updateMapViewInfo() {
-    const point = new Point(
-      this.locationMarker.getLatLng().lat,
-      this.locationMarker.getLatLng().lng
-    );
+    const point = new Point({
+      latitude: this.locationMarker.getLatLng().lat,
+      longitude: this.locationMarker.getLatLng().lng
+    });
     this.mapSearchService
       .getViewInfo({ center: point, bounds: null, zoom: 0 }, this.geoHazard)
       .subscribe(

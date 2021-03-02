@@ -74,7 +74,7 @@ export class MapComponent implements OnInit {
       baseLayers: [
         new VectorTileLayer({
           url:
-            'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis/VectorTileServer'
+            'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasisTerreng/VectorTileServer'
         })
       ],
       id: 'vektorkart'
@@ -112,6 +112,7 @@ export class MapComponent implements OnInit {
     this.mapView
       .when(() => {
         this.loading = false;
+        this.mapReady.emit(null);
       })
       .catch((reason) => {
         this.logger.log(`Error in initializeMap due to ${reason}`);
