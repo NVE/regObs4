@@ -3,6 +3,7 @@ import { IRegistration } from '../../../../modules/registration/models/registrat
 import { Subscription } from 'rxjs';
 import { RegistrationService } from '../../../../modules/registration/services/registration.service';
 import { map, filter } from 'rxjs/operators';
+import { RegistrationStatus } from 'src/app/modules/registration/models/registrationStatus.enum';
 
 @Component({
   selector: 'app-sync-item',
@@ -11,9 +12,9 @@ import { map, filter } from 'rxjs/operators';
 })
 export class SyncItemComponent implements OnInit, OnDestroy {
   @Input() registration: IRegistration;
-  @Input() refresh: boolean;
   private subscriptions: Subscription[] = [];
   loading: boolean;
+  isDraft = false;
 
   constructor(
     private registrationService: RegistrationService,
@@ -21,7 +22,7 @@ export class SyncItemComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (this.refresh) {
+    this.isDraft = this.registration.status === RegistrationStatus.Draft;
       this.subscriptions.push(
         this.registrationService
           .getRegistrationsToSync()
@@ -34,6 +35,7 @@ export class SyncItemComponent implements OnInit, OnDestroy {
           .subscribe((val) => {
             this.ngZone.run(() => {
               this.registration = val;
+              this.isDraft = this.registration.status === RegistrationStatus.Draft;
             });
           })
       );
@@ -44,7 +46,6 @@ export class SyncItemComponent implements OnInit, OnDestroy {
           });
         })
       );
-    }
   }
 
   ngOnDestroy(): void {
