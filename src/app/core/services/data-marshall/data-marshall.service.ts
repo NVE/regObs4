@@ -23,8 +23,7 @@ import {
 import { OfflineMapService } from '../offline-map/offline-map.service';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
-import { LangKey } from '../../models/langKey';
-import { GeoHazard } from '../../models/geo-hazard.enum';
+import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
 import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
 const DEBUG_TAG = 'DataMarshallService';

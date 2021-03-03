@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 
 export class RegobsGeoHazardMarker extends L.DivIcon {
   private _selected: boolean;
@@ -22,7 +22,7 @@ export class RegobsGeoHazardMarker extends L.DivIcon {
         return this.getSnowSvg(isSelected);
       case GeoHazard.Water:
         return this.getWaterSvg(isSelected);
-      case GeoHazard.Dirt:
+      case GeoHazard.Soil:
         return this.getDirtSvg(isSelected);
       case GeoHazard.Ice:
         return this.getIceSvg(isSelected);

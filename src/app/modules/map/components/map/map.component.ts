@@ -35,7 +35,7 @@ import {
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
-import { LangKey } from '../../../../core/models/langKey';
+import { LangKey } from '@varsom-regobs-common/core';
 import { Feature, GeometryObject } from '@turf/turf';
 
 const DEBUG_TAG = 'MapComponent';

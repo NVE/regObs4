@@ -2,7 +2,7 @@ import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { IRegistration } from '../../models/registration.model';
+import { IRegistration } from '@varsom-regobs-common/registration';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';

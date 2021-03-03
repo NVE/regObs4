@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TempProfileObsDto } from '../../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
-import { IRegistration } from '../../../../../models/registration.model';
+import { IRegistration } from '@varsom-regobs-common/registration';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 import { RegistrationService } from '../../../../../services/registration.service';
 import cloneDeep from 'clone-deep';

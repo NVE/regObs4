@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { DensityProfileLayerDto } from '../../../../../../regobs-api/models';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
-import { IRegistration } from '../../../../../models/registration.model';
+import { IRegistration } from '@varsom-regobs-common/registration';
 import cloneDeep from 'clone-deep';
 import { RegistrationService } from '../../../../../services/registration.service';
 

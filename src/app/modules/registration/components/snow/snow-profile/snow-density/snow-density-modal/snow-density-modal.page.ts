@@ -8,7 +8,7 @@ import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-hel
 import { RegistrationService } from '../../../../../services/registration.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { IRegistration } from '../../../../../models/registration.model';
+import { IRegistration } from '@varsom-regobs-common/registration';
 import cloneDeep from 'clone-deep';
 
 @Component({

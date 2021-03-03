@@ -6,7 +6,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { settings } from '../../../../../settings';
 import { map, take } from 'rxjs/operators';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
-import { LangKey } from '../../../../core/models/langKey';
+import { LangKey } from '@varsom-regobs-common/core';
 
 @Component({
   selector: 'app-login',

@@ -14,11 +14,11 @@ import { IonCheckbox } from '@ionic/angular';
 export class GroupPage extends BasePage {
   groups: ObserverGroupDto[] = [];
 
-  get firstGroup() {
+  get firstGroup(): ObserverGroupDto {
     return this.groups[0];
   }
 
-  get isSelected() {
+  get isSelected(): boolean {
     return (
       this.groups.length > 0 &&
       this.groups[0].Id === this.registration.request.ObserverGroupID
@@ -34,20 +34,20 @@ export class GroupPage extends BasePage {
     super(null, basePageService, activatedRoute);
   }
 
-  async onInit() {
+  async onInit(): Promise<void> {
     const groups = await this.userGroupService.getUserGroups();
     this.ngZone.run(() => {
       this.groups = groups;
     });
   }
 
-  onReset() {
+  onReset(): void {
     this.ngZone.run(() => {
       this.registration.request.ObserverGroupID = undefined;
     });
   }
 
-  checkedChanged(event: CustomEvent) {
+  checkedChanged(event: CustomEvent): void {
     const checkBox = (<any>event.target) as IonCheckbox;
     if (checkBox.checked) {
       this.registration.request.ObserverGroupID = this.firstGroup.Id;
@@ -56,8 +56,8 @@ export class GroupPage extends BasePage {
     }
   }
 
-  isEmpty() {
-    return (
+  isEmpty(): Promise<boolean> {
+    return Promise.resolve(
       this.registration &&
       (this.registration.request.ObserverGroupID === undefined ||
         this.registration.request.ObserverGroupID === null)

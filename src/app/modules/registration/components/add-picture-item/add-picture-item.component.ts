@@ -11,7 +11,7 @@ import {
   PictureSourceType
 } from '@ionic-native/camera/ngx';
 import { settings } from '../../../../../settings';
-import { RegistrationTid } from '../../models/registrationTid.enum';
+import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { PictureRequestDto } from '../../../regobs-api/models';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { WebView } from '@ionic-native/ionic-webview/ngx';

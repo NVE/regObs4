@@ -38,7 +38,7 @@ export class ShortcutService {
     switch (geoHazard) {
       case GeoHazard.Snow:
         return 'ic_snow';
-      case GeoHazard.Dirt:
+      case GeoHazard.Soil:
         return 'ic_dirt';
       case GeoHazard.Ice:
         return 'ic_ice';

@@ -1,27 +1,28 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CompressionTestListModalPage } from './compression-test-list-modal/compression-test-list-modal.page';
 import { ModalController } from '@ionic/angular';
-import { IRegistration } from '../../../../models/registration.model';
+import { IRegistration } from '@varsom-regobs-common/registration';
 import { RegistrationService } from '../../../../services/registration.service';
+import { CompressionTestEditModel } from '@varsom-regobs-common/regobs-api';
 
 @Component({
   selector: 'app-compression-test',
   templateUrl: './compression-test.component.html',
   styleUrls: ['./compression-test.component.scss']
 })
-export class CompressionTestComponent implements OnInit {
+export class CompressionTestComponent {
   @Input() reg: IRegistration;
   private compressionTestListModal: HTMLIonModalElement;
 
-  get connectedTests() {
+  get connectedTests(): CompressionTestEditModel[] {
     return this.tests.filter((t) => t.IncludeInSnowProfile === true);
   }
 
-  get tests() {
+  get tests(): CompressionTestEditModel[] {
     return this.reg.request.CompressionTest || [];
   }
 
-  get isEmpty() {
+  get isEmpty(): boolean {
     return this.connectedTests.length === 0;
   }
 
@@ -30,9 +31,7 @@ export class CompressionTestComponent implements OnInit {
     private registrationService: RegistrationService
   ) {}
 
-  ngOnInit() {}
-
-  async openModal() {
+  async openModal(): Promise<void> {
     if (!this.compressionTestListModal) {
       await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
       this.compressionTestListModal = await this.modalContoller.create({

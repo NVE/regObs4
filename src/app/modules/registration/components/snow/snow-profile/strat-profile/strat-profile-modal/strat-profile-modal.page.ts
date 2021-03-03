@@ -8,7 +8,7 @@ import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-p
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 import { StratProfileLayerHistoryModalPage } from '../strat-profile-layer-history-modal/strat-profile-layer-history-modal.page';
-import { IRegistration } from '../../../../../models/registration.model';
+import { IRegistration, RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
 import { RegistrationService } from '../../../../../services/registration.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -30,9 +30,9 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
 
   private ngDestroy$ = new Subject();
 
-  private layerModal;
+  private layerModal: HTMLIonModalElement;
 
-  get hasLayers() {
+  get hasLayers(): boolean {
     return this.profile.Layers && this.profile.Layers.length > 0;
   }
 
@@ -52,12 +52,13 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private regobsAuthService: RegobsAuthService,
     private ngZone: NgZone,
-    private registrationService: RegistrationService
+    private registrationService: RegistrationService,
+    private commonRegistrationService: CommonRegistrationService,
   ) {}
 
-  ngOnInit() {
-    this.registrationService
-      .getSavedRegistrationByIdObservable(this.regId)
+  ngOnInit(): void {
+    this.commonRegistrationService
+      .getRegistrationByIdShared$(this.regId)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((reg) => {
         this.ngZone.run(() => {
@@ -75,21 +76,21 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     this.ngDestroy$.complete();
   }
 
-  async ok() {
+  async ok(): Promise<void> {
     await this.registrationService.saveRegistrationAsync(this.reg);
     this.modalController.dismiss();
   }
 
-  async cancel() {
+  async cancel(): Promise<void> {
     await this.registrationService.saveRegistrationAsync(this.regInitClone); // Reset to inital state
     this.modalController.dismiss();
   }
 
-  addLayerTop() {
+  addLayerTop(): void {
     this.addOrEditLayer(0, undefined);
   }
 
-  addLayerBottom() {
+  addLayerBottom(): void {
     this.addOrEditLayer(
       this.hasLayers
         ? this.reg.request.SnowProfile2.StratProfile.Layers.length
@@ -98,7 +99,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     );
   }
 
-  onLayerReorder(event: CustomEvent<ItemReorderEventDetail>) {
+  onLayerReorder(event: CustomEvent<ItemReorderEventDetail>): void {
     this.reg.request.SnowProfile2.StratProfile.Layers = ArrayHelper.reorderList(
       this.reg.request.SnowProfile2.StratProfile.Layers,
       event.detail.from,
@@ -108,7 +109,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     this.registrationService.saveRegistrationAsync(this.reg);
   }
 
-  async getPrevousUsedLayers() {
+  async getPrevousUsedLayers(): Promise<void> {
     const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
     if (loggedInUser && loggedInUser.isLoggedIn) {
       if (!this.layerModal) {
@@ -129,7 +130,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     }
   }
 
-  async addOrEditLayer(index: number, layer: StratProfileLayerDto) {
+  async addOrEditLayer(index: number, layer: StratProfileLayerDto): Promise<void> {
     if (!this.layerModal) {
       this.layerModal = await this.modalController.create({
         component: StratProfileLayerModalPage,
@@ -145,7 +146,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     }
   }
 
-  private calculate() {
+  private calculate(): void {
     const layers = this.profile.Layers || [];
     const sum = layers
       .filter((x) => x.Thickness !== undefined)
