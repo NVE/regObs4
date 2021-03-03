@@ -3,7 +3,7 @@ import { CompressionTestDto } from '../../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { RegistrationService } from '../../../../../services/registration.service';
 import { Subject } from 'rxjs';
-import { IRegistration } from '../../../../../models/registration.model';
+import { IRegistration } from '@varsom-regobs-common/registration';
 import { takeUntil } from 'rxjs/operators';
 import cloneDeep from 'clone-deep';
 

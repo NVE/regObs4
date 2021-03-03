@@ -1,9 +1,8 @@
 import { UserSetting } from '../../models/user-settings.model';
 import { AppMode } from '../../models/app-mode.enum';
-import { GeoHazard } from '../../models/geo-hazard.enum';
+import { GeoHazard, LangKey } from '@varsom-regobs-common/core';
 import { settings } from '../../../../settings';
 import { TopoMap } from '../../models/topo-map.enum';
-import { LangKey } from '../../models/langKey';
 
 export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (
   langKey: LangKey
@@ -14,7 +13,7 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (
   observationDaysBack: [
     { geoHazard: GeoHazard.Snow, daysBack: 2 },
     { geoHazard: GeoHazard.Ice, daysBack: 7 },
-    { geoHazard: GeoHazard.Dirt, daysBack: 3 },
+    { geoHazard: GeoHazard.Soil, daysBack: 3 },
     { geoHazard: GeoHazard.Water, daysBack: 3 }
   ],
   completedStartWizard: false,

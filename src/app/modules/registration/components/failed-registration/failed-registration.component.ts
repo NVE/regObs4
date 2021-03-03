@@ -6,8 +6,7 @@ import {
   EventEmitter,
   NgZone
 } from '@angular/core';
-import { IRegistration } from '../../models/registration.model';
-import { RegistrationStatus } from '../../models/registrationStatus.enum';
+import { IRegistration, SyncStatus } from '@varsom-regobs-common/registration';
 import { RegistrationService } from '../../services/registration.service';
 import {
   EmailComposer,
@@ -30,13 +29,13 @@ export class FailedRegistrationComponent implements OnInit {
     private registrationService: RegistrationService,
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
   ) {}
 
   ngOnInit() {}
 
   async openForEdit() {
-    this.registration.status = RegistrationStatus.Draft;
+    this.registration.syncStatus = SyncStatus.Draft;
     await this.registrationService.saveRegistrationAsync(this.registration);
     this.ngZone.run(() => {
       this.registrationChange.emit(this.registration);

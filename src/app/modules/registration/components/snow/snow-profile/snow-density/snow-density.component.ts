@@ -1,17 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DensityProfileDto } from '../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
-import { IRegistration } from '../../../../models/registration.model';
-import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
+import { IRegistration } from '@varsom-regobs-common/registration';
 import { RegistrationService } from '../../../../services/registration.service';
+import { isEmpty } from '@varsom-regobs-common/core';
 
 @Component({
   selector: 'app-snow-density',
   templateUrl: './snow-density.component.html',
   styleUrls: ['./snow-density.component.scss']
 })
-export class SnowDensityComponent implements OnInit {
+export class SnowDensityComponent {
   @Input() reg: IRegistration;
   private densityModal: HTMLIonModalElement;
 
@@ -28,8 +28,8 @@ export class SnowDensityComponent implements OnInit {
     return [];
   }
 
-  get isEmpty() {
-    return IsEmptyHelper.isEmpty(this.profiles);
+  get isEmpty(): boolean {
+    return isEmpty(this.profiles);
   }
 
   constructor(
@@ -37,9 +37,7 @@ export class SnowDensityComponent implements OnInit {
     private registrationService: RegistrationService
   ) {}
 
-  ngOnInit() {}
-
-  async openModal() {
+  async openModal(): Promise<void> {
     if (!this.densityModal) {
       await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
       this.densityModal = await this.modalContoller.create({

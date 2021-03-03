@@ -14,7 +14,7 @@ import { switchMap, take } from 'rxjs/operators';
 import { NanoSql } from '../../../../nanosql';
 import { settings } from '../../../../settings';
 import { AppMode } from '../../../core/models/app-mode.enum';
-import { LangKey } from '../../../core/models/langKey';
+import { LangKey } from '@varsom-regobs-common/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
 import { ObserverGroupDto, ObserverResponseDto } from '../../regobs-api/models';

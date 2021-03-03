@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as RegobsApi from '../../../modules/regobs-api/services';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { LangKey } from '../../models/langKey';
+import { LangKey } from '@varsom-regobs-common/core';
 import { AppMode } from '../../models/app-mode.enum';
 import { NanoSql } from '../../../../nanosql';
 import { KdvElementsResponseDto } from '../../../modules/regobs-api/models';

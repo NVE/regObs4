@@ -4,8 +4,6 @@ import moment from 'moment';
 import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { isEmpty } from '@varsom-regobs-common/core';
 
-const DEBUG_TAG = 'WaterLevelMeasurementComponent';
-
 @Component({
   selector: 'app-water-level-measurement',
   templateUrl: './water-level-measurement.component.html',
@@ -60,7 +58,7 @@ export class WaterLevelMeasurementComponent implements OnInit {
 
   showError() {
     if (
-      !IsEmptyHelper.isEmpty(this.waterLevelMeasurement) &&
+      !isEmpty(this.waterLevelMeasurement) &&
       !this.waterLevelMeasurement.DtMeasurementTime
     ) {
       this.showDtMeasurementTimeError = true;

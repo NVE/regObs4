@@ -1,5 +1,4 @@
-import { SupportTileLegendLoaderComponent } from 'src/app/modules/side-menu/components/support-tiles-menu/legends/support-tile-legend-loader/support-tile-legend-loader.component';
-import { GeoHazard } from './geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 
 export interface SupportTile extends SubTile {
   opacity: number;

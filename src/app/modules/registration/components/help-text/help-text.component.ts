@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { HelpTextService } from '../../services/help-text/help-text.service';
 import { HelptextDto } from '../../../regobs-api/models';

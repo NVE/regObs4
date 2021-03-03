@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { IRegistration } from '../../models/registration.model';
-import { RegistrationTid } from '../../models/registrationTid.enum';
+import { IRegistration, RegistrationTid } from '@varsom-regobs-common/registration;
 import { RegistrationService } from '../../services/registration.service';
 
 @Component({

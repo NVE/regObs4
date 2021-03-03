@@ -7,7 +7,7 @@ import { map, switchMap, catchError, take } from 'rxjs/operators';
 import { Observable, forkJoin, of, Subject } from 'rxjs';
 import { ViewInfo } from './view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { LangKey } from '../../../../core/models/langKey';
+import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
 import { GeoCodeService } from '../../../regobs-api/services';
 import { NanoSql } from '../../../../../nanosql';
 import { MapSearchHistory } from './map-search-history.model';
@@ -16,7 +16,6 @@ import { IMapView } from '../map/map-view.interface';
 import { Navn, ReturSkrivemate } from './norwegian-search-result.model';
 import { WorldSearchResultModel } from './world-search-result.model';
 import { nSQL } from '@nano-sql/core';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { NSqlFullUpdateObservable } from '../../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 
 @Injectable({
@@ -161,7 +160,7 @@ export class MapSearchService {
 
   getViewInfo(
     mapView: IMapView,
-    geoHazard = GeoHazard.Dirt
+    geoHazard = GeoHazard.Soil
   ): Observable<ViewInfo> {
     const latLng = mapView.center;
     return this.geoCodeService
