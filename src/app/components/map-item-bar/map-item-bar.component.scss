@@ -1,6 +1,7 @@
 .map-item-bar {
   --img-wrapper-height: 22vh;
   --img-wrapper-width: 30vh;
+  --img-wrapper-height-desktop: 18vh;
 
   position: absolute;
   left: 0;
@@ -51,6 +52,21 @@
       justify-content: left;
       width: 100%;
       height: 100%;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .map-item-bar {
+    max-width: 300px;
+
+    .img-wrapper {
+      height: var(--img-wrapper-height-desktop);
+      top: calc(var(--img-wrapper-height-desktop) * -1);
+      max-width: 300px;
+      &.full {
+        max-width: 300px;
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -14,6 +14,7 @@ import { ShortcutService } from './core/services/shortcut/shortcut.service';
 import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
 import { switchMap, take, concatMap, delay, catchError } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
+import { BreakpointService } from './core/services/breakpoint.service';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -23,6 +24,7 @@ const DEBUG_TAG = 'AppComponent';
 })
 export class AppComponent {
   swipeBackEnabled$: Observable<boolean>;
+  isDesktop: boolean;
 
   constructor(
     private platform: Platform,
@@ -35,16 +37,28 @@ export class AppComponent {
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
-    private shortcutService: ShortcutService
+    private shortcutService: ShortcutService,
+    private breakpointService: BreakpointService
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
   }
 
   initializeApp(): void {
+    this.platform.ready().then(() => {
+      this.breakpointService.onResize(this.platform.width());
+    });
     this.getUserSettings()
       .pipe(this.initServices(), delay(200))
       .subscribe(() => this.splashScreen.hide());
+  }
+
+  @HostListener('window:resize', ['$event'])
+  private onResize(event) {
+    this.breakpointService.onResize(event.target.innerWidth);
   }
 
   private lockScreenOrientation() {

@@ -39,7 +39,7 @@
   <ion-item>
     <ion-label position="stacked" color="dark" class="stacked-label">{{ 'MENU.MAP' | translate }}</ion-label>
     <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap"
-      interface="action-sheet" (ngModelChange)="saveUserSettings()">
+      [interface]="popupType" (ngModelChange)="saveUserSettings()">
       <!-- <ion-select-option [value]="TopoMap.mixGeoDataLandskap">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{
        'Geodata Landskap' }}</ion-select-option> -->
       <ion-select-option [value]="TopoMap.mixArcGisOnline">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{

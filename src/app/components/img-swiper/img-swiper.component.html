@@ -1,5 +1,5 @@
 <div class="slides-wrapper" *ngIf="!isEmpty" [ngClass]="{'animated-background': isSwiper, 'loaded': isSwiperLoaded }">
-  <ion-slides *ngIf="isSwiper" [options]="slideOptions" [pager]="false" [ngClass]="{'loaded': isSwiperLoaded}"
+  <ion-slides #slider *ngIf="isSwiper" [options]="slideOptions" [pager]="false" [ngClass]="{'loaded': isSwiperLoaded}"
     (ionSlideTransitionEnd)="onSlideTransitionEnd()" (ionSlidesDidLoad)="slidesLoaded($event)"
     (ionSlideTouchStart)="onSlideTouchStart()">
     <ion-slide *ngFor="let slide of slides; let i = index" [ngSwitch]="slide.type">
@@ -8,6 +8,13 @@
       <app-map-image *ngSwitchCase="'location'" [location]="slide.img" (click)="onLocationClick()"></app-map-image>
     </ion-slide>
   </ion-slides>
+  
+  <ng-container *ngIf="!onlyMap && isDesktop">
+    <div class="swiper-button-prev" (click)="prev()"></div>
+    <div class="swiper-button-next" (click)="next()">
+    </div>
+  </ng-container>
+
   <app-offline-image *ngIf="isSingleImage" class="single" (click)="onImageClick(0, imgUrl[0])" [src]="imgUrl[0]">
   </app-offline-image>
   <app-map-image *ngIf="isSingleMap" class="single" [location]="location" (click)="onLocationClick()">
