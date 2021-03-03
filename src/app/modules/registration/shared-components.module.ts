@@ -22,13 +22,15 @@ import { NumericInputModalPageModule } from './pages/modal-pages/numeric-input-m
 import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
 import { CompressionTestListComponent } from './components/snow/compression-test-list/compression-test-list.component';
 import { KdvSelectComponent } from './components/kdv-select/kdv-select.component';
+import { NgxFileDropModule } from 'ngx-file-drop';
 
 @NgModule({
   imports: [
     SharedModule,
     MapModule,
     HelpModalPageModule,
-    NumericInputModalPageModule
+    NumericInputModalPageModule,
+    NgxFileDropModule
   ],
   exports: [
     SharedModule,
@@ -53,7 +55,8 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     NumericInputComponent,
     NumericInputModalPageModule,
     CompressionTestListComponent,
-    KdvSelectComponent
+    KdvSelectComponent,
+    NgxFileDropModule
   ],
   declarations: [
     SaveAndGoBackButtonComponent,
