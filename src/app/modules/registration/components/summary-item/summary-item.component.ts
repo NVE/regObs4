@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ISummaryItem } from './summary-item.model';
 import { NavController } from '@ionic/angular';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-summary-item',
@@ -25,9 +25,11 @@ export class SummaryItemComponent implements OnInit {
     return img && img.startsWith('data:image');
   }
 
-  convertFileSrc(fileUrl: string) {
+  convertFileSrc(fileUrl: string): SafeUrl {
     return this.domSanitizer.bypassSecurityTrustUrl(
-      this.webView.convertFileSrc(fileUrl)
+      fileUrl.startsWith('blob')
+        ? fileUrl
+        : this.webView.convertFileSrc(fileUrl)
     );
   }
 
