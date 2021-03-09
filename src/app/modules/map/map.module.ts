@@ -17,6 +17,7 @@ import { RouterModule } from '@angular/router';
 import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image.module';
 import { SupportMapInfoPageModule } from './pages/support-map-info/support-map-info.module';
 import { MapImageModule } from '../map-image/map-image.module';
+import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
 
 @NgModule({
   imports: [
@@ -32,7 +33,10 @@ import { MapImageModule } from '../map-image/map-image.module';
     ModalSearchPageModule,
     ModalMapImagePageModule,
     SupportMapInfoPageModule,
-    MapImageModule
+    MapImageModule,
+    NgxMapboxGLModule.withConfig({
+      accessToken: 'pk.eyJ1IjoiaW5nbGpvIiwiYSI6ImNrbTIxOTg0dDF5ZDcybnJ6ZXV0b2toZmkifQ.Y49aH4i3sTIqkLbrrFuWSw'
+    }),
   ],
   declarations: [
     MapComponent,

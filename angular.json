@@ -70,6 +70,9 @@
               },
               {
                 "input": "node_modules/source-sans-pro/source-sans-pro.css"
+              },
+              {
+                "input": "node_modules/mapbox-gl/dist/mapbox-gl.css"
               }
             ],
             "scripts": [

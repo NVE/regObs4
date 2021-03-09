@@ -1,3 +1,23 @@
-<div *ngIf="loaded" leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)">
+<!-- <div *ngIf="loaded" leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)">
 </div>
-<app-map-controls *ngIf="showMapControls"></app-map-controls>
+<app-map-controls *ngIf="showMapControls"></app-map-controls> -->
+<mgl-map
+      [style]="'https://basemaps-api.arcgis.com/arcgis/rest/services/styles/ArcGIS:Topographic?type=style&apiKey=AAPK57f56bb43b1e44b693802c046ed8d959BXZ9BoH_D4UPYZHp_h_PRVR09NmVdpGqCosRf8zPVzs7Z9tY4vG-k0rnuM8mo46I'"
+      [zoom]="[9]"
+      [center]="this.options.center"
+      [trackResize]="true"
+      [attributionControl]="false"
+      (load)="onMapLoaded($event)"
+      [transformRequest]="transformRequest"
+    >
+    <mgl-raster-source [id]="'steepness'" [tiles]="['http://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}']"></mgl-raster-source>
+    <mgl-layer [paint]="{ 'raster-opacity': 0.5 }" [id]="'steepnesslayer'" [type]="'raster'" [source]="'steepness'"></mgl-layer>
+    <mgl-control
+     mglNavigation
+   ></mgl-control>
+   <mgl-control
+     mglScale
+     unit="metric"
+     position="bottom-left"
+   ></mgl-control>
+    </mgl-map>

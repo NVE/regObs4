@@ -37,6 +37,7 @@ import { OfflineMapService } from '../../../../core/services/offline-map/offline
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { LangKey } from '../../../../core/models/langKey';
 import { Feature, GeometryObject } from '@turf/turf';
+import { Map } from 'mapbox-gl';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -64,7 +65,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() geoTag = DEBUG_TAG;
 
   loaded = false;
-  private map: L.Map;
+  // private map: L.Map;
+  private map: Map;
   private tilesLayer = L.layerGroup();
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
@@ -74,6 +76,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private firstClickOnZoomToUser = true;
 
   private isActive: BehaviorSubject<boolean>;
+
+  transformRequest = (url, resourceType)  => {
+    console.log('transform url: ' +url +' Resource type', resourceType, this);
+  }
 
   constructor(
     private userSettingService: UserSettingService,
@@ -144,6 +150,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  
+
+  onMapLoaded(map: Map) {
+    this.map = map;
+    this.map.resize();
+  }
+
   ngOnDestroy(): void {
     this.geoPositionService.stopTrackingComponent(DEBUG_TAG);
     this.ngDestroy$.next();
@@ -154,107 +167,107 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isActive.next(isActive);
   }
 
-  onLeafletMapReady(map: L.Map) {
-    this.map = map;
-    if (this.showScale) {
-      L.control.scale({ imperial: false }).addTo(map);
-    }
-    this.tilesLayer.addTo(this.map);
+  // onLeafletMapReady(map: L.Map) {
+  //   this.map = map;
+  //   if (this.showScale) {
+  //     L.control.scale({ imperial: false }).addTo(map);
+  //   }
+  //   this.tilesLayer.addTo(this.map);
 
-    this.userSettingService.userSetting$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((userSetting) => {
-        this.configureTileLayers(userSetting);
-        if (userSetting.showMapCenter) {
-          this.updateMapView();
-        }
-      });
+  //   this.userSettingService.userSetting$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe((userSetting) => {
+  //       this.configureTileLayers(userSetting);
+  //       if (userSetting.showMapCenter) {
+  //         this.updateMapView();
+  //       }
+  //     });
 
-    this.mapService.followMode$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((val) => {
-        this.followMode = val;
-        this.loggingService.debug(
-          `Follow mode changed to: ${this.followMode}`,
-          DEBUG_TAG
-        );
-      });
+  //   this.mapService.followMode$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe((val) => {
+  //       this.followMode = val;
+  //       this.loggingService.debug(
+  //         `Follow mode changed to: ${this.followMode}`,
+  //         DEBUG_TAG
+  //       );
+  //     });
 
-    this.mapService.centerMapToUser$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        switchMap(() =>
-          from(this.geoPositionService.startTrackingComponent(DEBUG_TAG, true))
-        )
-      )
-      .subscribe();
+  //   this.mapService.centerMapToUser$
+  //     .pipe(
+  //       takeUntil(this.ngDestroy$),
+  //       switchMap(() =>
+  //         from(this.geoPositionService.startTrackingComponent(DEBUG_TAG, true))
+  //       )
+  //     )
+  //     .subscribe();
 
-    this.mapSearchService.mapSearchClick$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((item) => {
-        this.disableFollowMode();
-        this.zone.runOutsideAngular(() => {
-          const latLng = item instanceof L.LatLng ? item : item.latlng;
-          this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
-        });
-      });
+  //   this.mapSearchService.mapSearchClick$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe((item) => {
+  //       this.disableFollowMode();
+  //       this.zone.runOutsideAngular(() => {
+  //         const latLng = item instanceof L.LatLng ? item : item.latlng;
+  //         this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
+  //       });
+  //     });
 
-    this.mapService.centerMapToUser$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => {
-        this.zone.runOutsideAngular(() => {
-          if (this.userMarker) {
-            const currentPosition = this.userMarker.getPosition();
-            const latLng = L.latLng(
-              currentPosition.coords.latitude,
-              currentPosition.coords.longitude
-            );
-            if (this.followMode || this.firstClickOnZoomToUser) {
-              // Follow mode is allready true or first click, zoom in
-              this.flyToMaxZoom(latLng);
-            } else {
-              // Use existing zoom
-              this.flyTo(latLng, this.map.getZoom(), true);
-            }
-            this.firstClickOnZoomToUser = false;
-          }
-        });
-      });
+  //   this.mapService.centerMapToUser$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe(() => {
+  //       this.zone.runOutsideAngular(() => {
+  //         if (this.userMarker) {
+  //           const currentPosition = this.userMarker.getPosition();
+  //           const latLng = L.latLng(
+  //             currentPosition.coords.latitude,
+  //             currentPosition.coords.longitude
+  //           );
+  //           if (this.followMode || this.firstClickOnZoomToUser) {
+  //             // Follow mode is allready true or first click, zoom in
+  //             this.flyToMaxZoom(latLng);
+  //           } else {
+  //             // Use existing zoom
+  //             this.flyTo(latLng, this.map.getZoom(), true);
+  //           }
+  //           this.firstClickOnZoomToUser = false;
+  //         }
+  //       });
+  //     });
 
-    this.zone.runOutsideAngular(() => {
-      this.map.on('movestart', () => this.onMapMove());
-      this.map.on('zoomstart', () => this.onMapMove());
-    });
+  //   this.zone.runOutsideAngular(() => {
+  //     this.map.on('movestart', () => this.onMapMove());
+  //     this.map.on('zoomstart', () => this.onMapMove());
+  //   });
 
-    this.zone.runOutsideAngular(() => {
-      this.map.on('moveend', () => this.onMapMoveEnd());
-    });
+  //   this.zone.runOutsideAngular(() => {
+  //     this.map.on('moveend', () => this.onMapMoveEnd());
+  //   });
 
-    this.fullscreenService.isFullscreen$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => {
-        this.redrawMap();
-      });
+  //   this.fullscreenService.isFullscreen$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe(() => {
+  //       this.redrawMap();
+  //     });
 
-    this.geoPositionService.currentPosition$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((pos) => this.onPositionUpdate(pos));
+  //   this.geoPositionService.currentPosition$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe((pos) => this.onPositionUpdate(pos));
 
-    this.geoPositionService.currentHeading$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((heading) => {
-        if (this.userMarker) {
-          this.userMarker.setHeading(heading);
-        }
-      });
+  //   this.geoPositionService.currentHeading$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe((heading) => {
+  //       if (this.userMarker) {
+  //         this.userMarker.setHeading(heading);
+  //       }
+  //     });
 
-    this.startActiveSubscriptions();
+  //   this.startActiveSubscriptions();
 
-    this.startInvalidateSizeMapTimer();
+  //   this.startInvalidateSizeMapTimer();
 
-    this.map.on('resize', () => this.updateMapView());
-    this.mapReady.emit(this.map);
-  }
+  //   this.map.on('resize', () => this.updateMapView());
+  //   this.mapReady.emit(this.map);
+  // }
 
   private startActiveSubscriptions() {
     this.isActive
@@ -271,13 +284,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  private onMapMove() {
-    this.disableFollowMode();
-  }
+  // private onMapMove() {
+  //   this.disableFollowMode();
+  // }
 
-  private onMapMoveEnd() {
-    this.updateMapView();
-  }
+  // private onMapMoveEnd() {
+  //   this.updateMapView();
+  // }
 
   private disableFollowMode() {
     if (!this.isDoingMoveAction) {
@@ -291,15 +304,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private updateMapView() {
-    if (this.map) {
-      this.mapService.updateMapView({
-        bounds: this.map.getBounds(),
-        center: this.map.getCenter(),
-        zoom: this.map.getZoom()
-      });
-    }
-  }
+  // private updateMapView() {
+  //   if (this.map) {
+  //     this.mapService.updateMapView({
+  //       bounds: this.map.getBounds(),
+  //       center: this.map.getCenter(),
+  //       zoom: this.map.getZoom()
+  //     });
+  //   }
+  // }
 
   private getTileLayerDefaultOptions(
     userSetting: UserSetting
@@ -448,53 +461,53 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   redrawMap() {
-    if (this.map) {
-      this.map.invalidateSize();
-    }
-    window.dispatchEvent(new Event('resize'));
+    // if (this.map) {
+    //   this.map.invalidateSize();
+    // }
+    // window.dispatchEvent(new Event('resize'));
   }
 
   ngAfterViewInit(): void {
     this.redrawMap();
   }
 
-  private onPositionUpdate(data: Geoposition) {
-    this.zone.runOutsideAngular(() => {
-      if (this.map) {
-        const latLng = L.latLng({
-          lat: data.coords.latitude,
-          lng: data.coords.longitude
-        });
-        if (!this.userMarker) {
-          this.userMarker = new UserMarker(this.map, data);
-        } else {
-          this.userMarker.updatePosition(data);
-        }
-        if (this.followMode && !this.isDoingMoveAction) {
-          this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
-          this.firstPositionUpdate = false;
-        }
-      }
-    });
-  }
+  // private onPositionUpdate(data: Geoposition) {
+  //   this.zone.runOutsideAngular(() => {
+  //     if (this.map) {
+  //       const latLng = L.latLng({
+  //         lat: data.coords.latitude,
+  //         lng: data.coords.longitude
+  //       });
+  //       if (!this.userMarker) {
+  //         this.userMarker = new UserMarker(this.map, data);
+  //       } else {
+  //         this.userMarker.updatePosition(data);
+  //       }
+  //       if (this.followMode && !this.isDoingMoveAction) {
+  //         this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
+  //         this.firstPositionUpdate = false;
+  //       }
+  //     }
+  //   });
+  // }
 
-  private flyToMaxZoom(latLng: L.LatLng, usePan = false) {
-    this.flyTo(
-      latLng,
-      Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()),
-      usePan
-    );
-  }
+  // private flyToMaxZoom(latLng: L.LatLng, usePan = false) {
+  //   this.flyTo(
+  //     latLng,
+  //     Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()),
+  //     usePan
+  //   );
+  // }
 
-  private flyTo(latLng: L.LatLng, zoom: number, usePan = false) {
-    this.isDoingMoveAction = true;
-    // if (usePan) {
-    //   this.map.panTo(latLng);
-    // } else {
-    //   this.map.flyTo(latLng, zoom);
-    // }
-    // Note: Poor performance on flyTo effect, so using setView without animate instead.
-    this.map.setView(latLng, zoom, { animate: false });
-    this.isDoingMoveAction = false;
-  }
+  // private flyTo(latLng: L.LatLng, zoom: number, usePan = false) {
+  //   this.isDoingMoveAction = true;
+  //   // if (usePan) {
+  //   //   this.map.panTo(latLng);
+  //   // } else {
+  //   //   this.map.flyTo(latLng, zoom);
+  //   // }
+  //   // Note: Poor performance on flyTo effect, so using setView without animate instead.
+  //   this.map.setView(latLng, zoom, { animate: false });
+  //   this.isDoingMoveAction = false;
+  // }
 }
