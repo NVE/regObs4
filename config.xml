@@ -75,7 +75,7 @@
     </platform>
     <platform name="ios">
         <edit-config file="*-Info.plist" mode="add" target="ITSAppUsesNonExemptEncryption">
-            <false/>
+            <false />
         </edit-config>
         <allow-navigation href="ionic://localhost:8080/*" />
         <allow-intent href="itms:*" />
