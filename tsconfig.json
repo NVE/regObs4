@@ -28,10 +28,12 @@
       "core-js/es6/*": [
         "../node_modules/core-js/es/*"
       ]
-    }
+    },
+    "skipLibCheck": true, // Skip lib check until issue is resolved: https://github.com/Turfjs/turf/issues/2017
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": false,
-    "strictInjectionParameters": true
+    "strictInjectionParameters": true,
+    "enableIvy": true,
   }
 }
