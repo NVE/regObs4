@@ -180,9 +180,30 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onMapLoaded(map: Map) {
     this.map = map;
-    const style = this.map.getStyle();
-    style.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf';
-    this.map.setStyle(style);
+    // const style = this.map.getStyle();
+    // style.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf';
+    // this.map.setStyle(style);
+
+    map.addSource('mapbox-dem', {
+      'type': 'raster-dem',
+      'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+      'tileSize': 512,
+      'maxzoom': 14
+      });
+      // add the DEM source as a terrain layer with exaggerated height
+      map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+       
+      // add a sky layer that will show when the map is highly pitched
+      map.addLayer({
+      'id': 'sky',
+      'type': 'sky',
+      'paint': {
+      'sky-type': 'atmosphere',
+      'sky-atmosphere-sun': [0.0, 0.0],
+      'sky-atmosphere-sun-intensity': 15
+      }
+      });
+
     this.map.resize();
     this.mapLoaded.emit(map);
   }
