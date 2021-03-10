@@ -1,6 +1,17 @@
 <!-- <div *ngIf="loaded" leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)">
 </div>
 <app-map-controls *ngIf="showMapControls"></app-map-controls> -->
+
+<!--mgl-map
+      [style]="'http://localhost:8100/assets/offlinemap/vang_kommune_n50_vtpk_indexed/p12/root.json'"
+      [zoom]="[9]"
+      [center]="this.options.center"
+      [trackResize]="true"
+      [attributionControl]="false"
+      (load)="onMapLoaded($event)"
+      [transformRequest]="transformRequest"
+-->
+
 <mgl-map
       [style]="'https://basemaps-api.arcgis.com/arcgis/rest/services/styles/ArcGIS:Topographic?type=style&apiKey=AAPK57f56bb43b1e44b693802c046ed8d959BXZ9BoH_D4UPYZHp_h_PRVR09NmVdpGqCosRf8zPVzs7Z9tY4vG-k0rnuM8mo46I'"
       [zoom]="[9]"

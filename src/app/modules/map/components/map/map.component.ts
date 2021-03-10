@@ -37,7 +37,8 @@ import { OfflineMapService } from '../../../../core/services/offline-map/offline
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { LangKey } from '../../../../core/models/langKey';
 import { Feature, GeometryObject } from '@turf/turf';
-import { Map } from 'mapbox-gl';
+import { Map, RequestParameters, ResourceType } from 'mapbox-gl';
+import  tilemap from 'src/assets/offlinemap/vang_kommune_n50_vtpk_indexed/p12/tilemap/root.json';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -78,8 +79,29 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private isActive: BehaviorSubject<boolean>;
 
-  transformRequest = (url, resourceType)  => {
-    console.log('transform url: ' +url +' Resource type', resourceType, this);
+  transformRequest: (url: string, resourceType: ResourceType) => RequestParameters = (url: string, resourceType: ResourceType)  => {
+    // console.log('transform url: ' +url +' Resource type', resourceType);
+    // if(resourceType === 'Tile') {
+    //   const search = 'https://basemaps-api.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/tile/';
+    //   const start = url.indexOf(search);
+    //   if(start >= 0) {
+    //     const end = url.indexOf('.pbf');
+    //     const tileString = url.substring(start + search.length, end);
+    //     console.log('tile: ' +tileString);
+    //     const tileCoordinates = tileString.split('/');
+    //     const z = parseInt(tileCoordinates[0]);
+    //     const x = parseInt(tileCoordinates[1]);
+    //     const y = parseInt(tileCoordinates[2]);
+    //     if(z === 13) {
+    //       return {
+    //         url: document.baseURI + `assets/offlinemap/vang_kommune_n50_vtpk_indexed/p12/tile/${z}/${x}/${y}.pbf`
+    //       }
+    //     }
+    //   }
+    // }
+    return {
+      url
+    }
   }
 
   constructor(
@@ -92,6 +114,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private loggingService: LoggingService,
     private geoPositionService: GeoPositionService
   ) {
+
+    console.log('TileMap is: ', tilemap);
+
     // Hack to make sure map pane is set before getPosition
     L.Map.include({
       _getMapPanePos: function () {

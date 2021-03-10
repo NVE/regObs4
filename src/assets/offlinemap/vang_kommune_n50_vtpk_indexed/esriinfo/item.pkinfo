@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet type="text/xsl" href="http://www.arcgisonline.com/home/pkinfostylesheet.xsl"?>
+<pkinfo Culture='nb-NO'>
+<ID>11F79D2A-3C10-4040-9543-53191F098D12</ID>
+<name>vang_kommune_n50_indexed</name>
+<version>11.2</version>
+<size>-1</size>
+<created></created>
+<type>Vector Tile Package</type>
+<servable>false</servable>
+<packagelocation></packagelocation>
+<pkinfolocation></pkinfolocation>
+<documenttypes>
+<documenttype>Lyr</documenttype>
+</documenttypes>
+</pkinfo>

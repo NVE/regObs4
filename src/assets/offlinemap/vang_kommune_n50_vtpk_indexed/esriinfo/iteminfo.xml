@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ESRI_ItemInformation Culture='nb-NO'>
+<name>vang_kommune_n50_indexed</name>
+<guid>11F79D2A-3C10-4040-9543-53191F098D12</guid>
+<version>1.0</version>
+<created></created>
+<modified></modified>
+<catalogpath></catalogpath>
+<snippet>Kart over vang kommune</snippet>
+<description>&lt;DIV STYLE=&quot;text-align:Left;font-size:12pt&quot;&gt;&lt;P&gt;&lt;SPAN&gt;Kart over Vang kommune&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;</description>
+<summary>Kart over vang kommune</summary>
+<title>Map</title>
+<tags>keyword, keyword</tags>
+<type>Vector Tile Package</type>
+<typekeywords>
+<typekeyword>Data</typekeyword>
+<typekeyword>Vector Tile Package</typekeyword>
+<typekeyword>vtpk</typekeyword>
+</typekeywords>
+<thumbnail>thumbnail/thumbnail.png</thumbnail>
+<documentation></documentation>
+<url></url>
+<extent>
+<xmin>-179.999988600592</xmin>
+<ymin>-85.0511277912625</ymin>
+<xmax>179.999988540844</xmax>
+<ymax>85.0511277912625</ymax>
+</extent>
+<spatialreference>WGS_1984_Web_Mercator_Auxiliary_Sphere</spatialreference>
+<minScale>295828763.7957775</minScale>
+<maxScale>564.24858800000004</maxScale>
+<datalastModifiedTime></datalastModifiedTime>
+<accessinformation></accessinformation>
+<licenseinfo></licenseinfo>
+</ESRI_ItemInformation>
