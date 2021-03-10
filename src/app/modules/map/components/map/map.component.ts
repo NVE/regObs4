@@ -63,6 +63,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
   @Input() autoActivate = true;
   @Input() geoTag = DEBUG_TAG;
+  @Output() mapLoaded: EventEmitter<Map> = new EventEmitter();
 
   loaded = false;
   // private map: L.Map;
@@ -154,7 +155,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onMapLoaded(map: Map) {
     this.map = map;
+    const style = this.map.getStyle();
+    style.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf';
+    this.map.setStyle(style);
     this.map.resize();
+    this.mapLoaded.emit(map);
   }
 
   ngOnDestroy(): void {
