@@ -13,8 +13,6 @@ import { AppVersionService } from '../../core/services/app-version/app-version.s
 import { AppVersion } from '../../core/models/app-version.model';
 import { Subscription } from 'rxjs';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
-import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
-import { HelperService } from '../../core/services/helpers/helper.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
@@ -32,8 +30,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;
   LangKey = LangKey;
   showAdvanced = false;
-  numberOfCacheTiles: number;
-  cacheTilesSize: string;
   isUpdating = false;
   version: AppVersion;
   private subscriptions: Subscription[] = [];
@@ -62,8 +58,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   constructor(
     private userSettingService: UserSettingService,
-    private offlineMapService: OfflineMapService,
-    private helperService: HelperService,
     private kdvService: KdvService,
     private ngZone: NgZone,
     private loggingService: LoggingService,
@@ -83,18 +77,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
           this.userSettings = val;
         });
       })
-    );
-    this.subscriptions.push(
-      this.offlineMapService
-        .getTilesCacheAsObservable()
-        .subscribe((tilesCache) => {
-          this.ngZone.run(() => {
-            this.numberOfCacheTiles = tilesCache?.count ?? 0;
-            this.cacheTilesSize = this.helperService.humanReadableByteSize(
-              tilesCache?.size ?? 0
-            );
-          });
-        })
     );
     const appver = await this.appVersionService.getAppVersion();
     this.ngZone.run(() => {

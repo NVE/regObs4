@@ -4,7 +4,7 @@ import { OfflineMap } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { ActionSheetController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-offline-map',
@@ -21,7 +21,7 @@ export class OfflineMapPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.offlineMaps$ = this.offlineMapService.getOfflineMapsAsObservable();
+    this.offlineMaps$ = of([]);
   }
 
   humanReadableByteSize(bytes) {
