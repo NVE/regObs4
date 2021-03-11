@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AppMode } from '../../../../core/models/app-mode.enum';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from 'sentry-cordova';
 import { AppVersionService } from '../../../../core/services/app-version/app-version.service';
 import { settings } from '../../../../../settings';
 import { environment } from '../../../../../environments/environment';
@@ -31,7 +31,6 @@ export class SentryService implements LoggingService {
     const appVersion = this.appVersionService.getAppVersion();
     Sentry.init({
       dsn: environment.production ? settings.sentryDsn : null,
-      transport: Sentry.Transports.FetchTransport,
       environment:
         appMode === AppMode.Prod
           ? 'regObs'
