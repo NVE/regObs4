@@ -66,7 +66,7 @@ mv "$FRAMEWORK_EXECUTABLE_PATH-merged" "$FRAMEWORK_EXECUTABLE_PATH"
 done
 `;
 
-function removeUnwantedArchitectures() {
+function removeUnwantedArchitectures(context) {
   const projectDir = path.resolve(context.opts.projectRoot, 'platforms/ios');
     if ( !fs.existsSync(projectDir) ) {
         console.warn(
@@ -113,7 +113,7 @@ function removeUnwantedArchitectures() {
 module.exports = function (ctx) {
   if (ctx.argv.includes('--release')) {
     // deleteSourceMaps();
-    removeUnwantedArchitectures();
+    removeUnwantedArchitectures(ctx);
   } else {
     addBase64SourceMaps();
   }
