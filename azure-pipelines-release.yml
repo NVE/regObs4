@@ -6,6 +6,9 @@
 trigger:
 - release/*
 
+variables:
+- group: regobs
+
 pool:
   name: Hosted macOS
   demands: xcode
