@@ -67,7 +67,7 @@ done
 `;
 
 function removeUnwantedArchitectures() {
-  const projectDir = path.resolve(context.opts.projectRoot, 'platforms/ios');
+  const projectDir = path.resolve('platforms/ios');
     if ( !fs.existsSync(projectDir) ) {
         console.warn(
             `\nDirectory ${projectDir} does not exist, skipping removal of unwanted ios architectures.\n\n Did you run 'ionic cordova platform add ios'?`
