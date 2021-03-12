@@ -211,8 +211,7 @@
       "cordova-plugin-x-socialsharing": {},
       "cordova.plugins.diagnostic": {
         "ANDROIDX_VERSION": "1.+"
-      },
-      "sentry-cordova": {}
+      }
     },
     "platforms": [
       "ios",
