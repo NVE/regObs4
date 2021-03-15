@@ -41,7 +41,6 @@ import { GeoPositionService } from '../../../../core/services/geo-position/geo-p
 import { LangKey } from '../../../../core/models/langKey';
 import { Feature, GeometryObject } from '@turf/turf';
 import Map from "ol/Map";
-import olms from "ol-mapbox-style";
 import View from "ol/View";
 import {fromLonLat} from 'ol/proj';
 import MVT from 'ol/format/MVT';
@@ -58,8 +57,7 @@ import {
 } from "ol/interaction";
 
 const DEBUG_TAG = 'MapComponent';
-const GEOCACHE_BASIS_WM_STYLES = require('/src/assets/json/geocache-basis-wm-styles.json')
-//const GEOCACHE_BASIS_TERRENG_WM_STYLES = require('/src/assets/json/geocache-basis-terreng-wm-styles.json')
+const GEOCACHE_BASIS_TERRENG_WM_STYLES = require('/src/assets/json/geocache-basis-terreng-wm-styles.json')
 
 interface MapOptionsWithBounds {
   name: string;
@@ -182,21 +180,44 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       tileSize: 512,
     });
 
-    const vTileLayer = new VectorTileLayer({
+    const baseLayer = new VectorTileLayer({
       source: new VectorTileSource({
-      format: new MVT(),
-      url:
-      "https://cache.services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer/tile/{z}/{y}/{x}.pbf",
-      maxZoom: 25,
-      // tileSize: 512,
-      //maxResolution: 156543.03392800014,
-      tileGrid: tileGrid,
-      declutter: true
+        format: new MVT(),
+        url:
+        "https://cache.services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        maxZoom: 25,
+        // tileSize: 512,
+        //maxResolution: 156543.03392800014,
+        tileGrid: tileGrid,
+        declutter: true
       }),
-     });
-     applyStyle(vTileLayer, GEOCACHE_BASIS_WM_STYLES, "esri");
+    });
+    const curvesLayer = new VectorTileLayer({
+      source: new VectorTileSource({
+        format: new MVT(),
+        url:
+        "https://cache.services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheHoydekurver_WM/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        maxZoom: 25,
+        tileGrid: tileGrid,
+        declutter: true
+      }),
+    });
+    const hillshadeLayer = new VectorTileLayer({
+      source: new VectorTileSource({
+        format: new MVT(),
+        url:
+        "https://cache.services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheRelieff_WM/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        maxZoom: 25,
+        tileGrid: tileGrid,
+        declutter: true
+      }),
+    });
+    
+    applyStyle(baseLayer, GEOCACHE_BASIS_TERRENG_WM_STYLES, "esri");
+    applyStyle(curvesLayer, GEOCACHE_BASIS_TERRENG_WM_STYLES, "curves");
+    applyStyle(hillshadeLayer, GEOCACHE_BASIS_TERRENG_WM_STYLES, "hillshade");
      
-    const vectorMap = new Map({
+    this.map = new Map({
       target: "map", //this.mapElementRef.nativeElement
       view: new View({
         center: fromLonLat([8.47, 61.0]),
@@ -206,23 +227,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         new TileLayer({
           source: new OSM(),
         }),
-        vTileLayer,
+        baseLayer,
+        curvesLayer,
+//        hillshadeLayer,
         new TileLayer({
           source: new TileDebug({
             tileGrid,
           }),
-        }),
-        // new TileLayer({
-        //   source: new TileDebug(),
-        // }),
+        })
         ],
       interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
-    });
-
-    this.map = new Map({
-      target: this.mapElementRef.nativeElement,
-      interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
-      view
     });
   }
 
