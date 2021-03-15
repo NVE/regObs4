@@ -8,7 +8,8 @@ import {
   Output,
   EventEmitter,
   ViewChild,
-  ElementRef
+  ElementRef,
+  ɵclearResolutionOfComponentResourcesQueue
 } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -43,12 +44,21 @@ import Map from "ol/Map";
 import olms from "ol-mapbox-style";
 import View from "ol/View";
 import {fromLonLat} from 'ol/proj';
+import MVT from 'ol/format/MVT';
+import TileLayer from 'ol/layer/Tile';
+import TileDebug from 'ol/source/TileDebug';
+import VectorTileLayer from 'ol/layer/VectorTile';
+import VectorTileSource from 'ol/source/VectorTile';
+import {applyStyle} from 'ol-mapbox-style';
+import OSM from 'ol/source/OSM';
 import {
   DragRotateAndZoom,
   defaults as defaultInteractions
 } from "ol/interaction";
 
 const DEBUG_TAG = 'MapComponent';
+const GEOCACHE_BASIS_WM_STYLES = require('/src/assets/json/geocache-basis-wm-styles.json')
+//const GEOCACHE_BASIS_TERRENG_WM_STYLES = require('/src/assets/json/geocache-basis-terreng-wm-styles.json')
 
 interface MapOptionsWithBounds {
   name: string;
@@ -147,42 +157,54 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async createMap(): Promise<void> {
-    const GEODATA_STYLE_URL =
-    'https://cache.services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer/resources/styles';
+    // const GEODATA_STYLE_URL =
+    // 'https://cache.services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasisTerreng_WM/VectorTileServer/resources/styles';
+    // 'https://cache.services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer/resources/styles';
+    // 'https://basemaps-api.arcgis.com/arcgis/rest/services/styles/ArcGIS:Topographic?type=style&apiKey=AAPK57f56bb43b1e44b693802c046ed8d959BXZ9BoH_D4UPYZHp_h_PRVR09NmVdpGqCosRf8zPVzs7Z9tY4vG-k0rnuM8mo46I';
   
-  const view = new View({
-    center: fromLonLat([8.47, 61.0]),
-    zoom: 5,
-    projection: 'EPSG:3857'
-  });
-  
-  // view.on("change:center", (change) => {
-  //   console.log(change.target.getCenter());
-  // });
-  
-  this.map = new Map({
-    target: this.mapElementRef.nativeElement,
-    interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
-    view
-  });
-  
-  olms(this.map, GEODATA_STYLE_URL).then((m) => {
-    // const layer = m.getLayers().getArray()[0];
-    // // console.log(m.getLayers().getArray());
-    // const source = layer.getSource();
-    // const originalFunc = source.tileUrlFunction;
-    // source.tileUrlFunction = function (tileCoord, pixelRatio, projection) {
-    //   console.log("tileCoord", tileCoord);
-    //   // if (tileCoord[0] <= 2) {
-    //   //   console.log("Go offline!");
-    //   //   const offlineUrl = `/offlinemap/${tileCoord[0]}/${tileCoord[1]}/${tileCoord[2]}.pbf`;
-    //   //   return offlineUrl;
-    //   // }
-    //   const originalResult = originalFunc.apply(this, arguments);
-    //   // console.log("originalResult", originalResult);
-    //   return originalResult;
-    // };
-  });
+    const view = new View({
+      //center: fromLonLat([8.47, 61.0]),
+      //zoom: 5,
+      projection: 'EPSG:3857',
+      //resolution: 78271.51696402048
+    });
+
+    const vTileLayer = new VectorTileLayer({
+      source: new VectorTileSource({
+      format: new MVT(),
+      url:
+      "https://cache.services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+      maxZoom: 25,
+      // tileSize: 512,
+      maxResolution: 156543.03392800014,
+      declutter: true
+      }),
+     });
+     applyStyle(vTileLayer, GEOCACHE_BASIS_WM_STYLES, "esri");
+     
+    const vectorMap = new Map({
+      target: "map", //this.mapElementRef.nativeElement
+      view: new View({
+        center: fromLonLat([8.47, 61.0]),
+        zoom: 5,
+      }),
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+        new TileLayer({
+          source: new TileDebug(),
+        }),
+        vTileLayer,
+        ],
+      interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
+    });
+
+    this.map = new Map({
+      target: this.mapElementRef.nativeElement,
+      interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
+      view
+    });
   }
 
   componentIsActive(isActive: boolean) {
@@ -512,3 +534,4 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   //   this.isDoingMoveAction = false;
   // }
 }
+
