@@ -51,6 +51,7 @@ import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorTileSource from 'ol/source/VectorTile';
 import {applyStyle} from 'ol-mapbox-style';
 import OSM from 'ol/source/OSM';
+import { createXYZ } from "ol/tilegrid";
 import {
   DragRotateAndZoom,
   defaults as defaultInteractions
@@ -169,6 +170,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       //resolution: 78271.51696402048
     });
 
+    const tileGrid = createXYZ({
+      extent: [
+        -20037507.842788246,
+        -20037508.342787,
+        20037508.342787,
+        20037507.842788246,
+      ],
+      maxResolution: 156543.03392800014,
+      maxZoom: 15,
+      tileSize: 512,
+    });
+
     const vTileLayer = new VectorTileLayer({
       source: new VectorTileSource({
       format: new MVT(),
@@ -176,7 +189,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       "https://cache.services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       maxZoom: 25,
       // tileSize: 512,
-      maxResolution: 156543.03392800014,
+      //maxResolution: 156543.03392800014,
+      tileGrid: tileGrid,
       declutter: true
       }),
      });
@@ -192,10 +206,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         new TileLayer({
           source: new OSM(),
         }),
-        new TileLayer({
-          source: new TileDebug(),
-        }),
         vTileLayer,
+        new TileLayer({
+          source: new TileDebug({
+            tileGrid,
+          }),
+        }),
+        // new TileLayer({
+        //   source: new TileDebug(),
+        // }),
         ],
       interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
     });
