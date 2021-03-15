@@ -6,7 +6,9 @@ import {
   OnDestroy,
   AfterViewInit,
   Output,
-  EventEmitter
+  EventEmitter,
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -37,6 +39,14 @@ import { OfflineMapService } from '../../../../core/services/offline-map/offline
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { LangKey } from '../../../../core/models/langKey';
 import { Feature, GeometryObject } from '@turf/turf';
+import Map from "ol/Map";
+import olms from "ol-mapbox-style";
+import View from "ol/View";
+import {fromLonLat} from 'ol/proj';
+import {
+  DragRotateAndZoom,
+  defaults as defaultInteractions
+} from "ol/interaction";
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -64,7 +74,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() geoTag = DEBUG_TAG;
 
   loaded = false;
-  private map: L.Map;
+  private map: Map;
   private tilesLayer = L.layerGroup();
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
@@ -74,6 +84,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private firstClickOnZoomToUser = true;
 
   private isActive: BehaviorSubject<boolean>;
+  @ViewChild('map') mapElementRef: ElementRef;
 
   constructor(
     private userSettingService: UserSettingService,
@@ -84,23 +95,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private loggingService: LoggingService,
     private geoPositionService: GeoPositionService
   ) {
-    // Hack to make sure map pane is set before getPosition
-    L.Map.include({
-      _getMapPanePos: function () {
-        if (this._mapPane === undefined) {
-          return new L.Point(0, 0);
-        }
-        return L.DomUtil.getPosition(this._mapPane) || new L.Point(0, 0);
-      },
-      _rawPanBy: function (offset) {
-        if (this._mapPane) {
-          L.DomUtil.setPosition(
-            this._mapPane,
-            this._getMapPanePos().subtract(offset)
-          );
-        }
-      }
-    });
+  }
+  ngAfterViewInit(): void {
   }
 
   options: L.MapOptions;
@@ -140,6 +136,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     } finally {
       this.loaded = true;
+      this.createMap();
     }
   }
 
@@ -149,111 +146,150 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ngDestroy$.complete();
   }
 
+  async createMap(): Promise<void> {
+    const GEODATA_STYLE_URL =
+    'https://cache.services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer/resources/styles';
+  
+  const view = new View({
+    center: fromLonLat([8.47, 61.0]),
+    zoom: 5,
+    projection: 'EPSG:3857'
+  });
+  
+  // view.on("change:center", (change) => {
+  //   console.log(change.target.getCenter());
+  // });
+  
+  this.map = new Map({
+    target: this.mapElementRef.nativeElement,
+    interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
+    view
+  });
+  
+  olms(this.map, GEODATA_STYLE_URL).then((m) => {
+    // const layer = m.getLayers().getArray()[0];
+    // // console.log(m.getLayers().getArray());
+    // const source = layer.getSource();
+    // const originalFunc = source.tileUrlFunction;
+    // source.tileUrlFunction = function (tileCoord, pixelRatio, projection) {
+    //   console.log("tileCoord", tileCoord);
+    //   // if (tileCoord[0] <= 2) {
+    //   //   console.log("Go offline!");
+    //   //   const offlineUrl = `/offlinemap/${tileCoord[0]}/${tileCoord[1]}/${tileCoord[2]}.pbf`;
+    //   //   return offlineUrl;
+    //   // }
+    //   const originalResult = originalFunc.apply(this, arguments);
+    //   // console.log("originalResult", originalResult);
+    //   return originalResult;
+    // };
+  });
+  }
+
   componentIsActive(isActive: boolean) {
     this.isActive.next(isActive);
   }
 
-  onLeafletMapReady(map: L.Map) {
-    this.map = map;
-    if (this.showScale) {
-      L.control.scale({ imperial: false }).addTo(map);
-    }
-    this.tilesLayer.addTo(this.map);
+  // onLeafletMapReady(map: L.Map) {
+  //   this.map = map;
+  //   if (this.showScale) {
+  //     L.control.scale({ imperial: false }).addTo(map);
+  //   }
+  //   this.tilesLayer.addTo(this.map);
 
-    this.userSettingService.userSetting$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((userSetting) => {
-        this.configureTileLayers(userSetting);
-        if (userSetting.showMapCenter) {
-          this.updateMapView();
-        }
-      });
+  //   this.userSettingService.userSetting$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe((userSetting) => {
+  //       this.configureTileLayers(userSetting);
+  //       if (userSetting.showMapCenter) {
+  //         this.updateMapView();
+  //       }
+  //     });
 
-    this.mapService.followMode$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((val) => {
-        this.followMode = val;
-        this.loggingService.debug(
-          `Follow mode changed to: ${this.followMode}`,
-          DEBUG_TAG
-        );
-      });
+  //   this.mapService.followMode$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe((val) => {
+  //       this.followMode = val;
+  //       this.loggingService.debug(
+  //         `Follow mode changed to: ${this.followMode}`,
+  //         DEBUG_TAG
+  //       );
+  //     });
 
-    this.mapService.centerMapToUser$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        switchMap(() =>
-          from(this.geoPositionService.startTrackingComponent(DEBUG_TAG, true))
-        )
-      )
-      .subscribe();
+  //   this.mapService.centerMapToUser$
+  //     .pipe(
+  //       takeUntil(this.ngDestroy$),
+  //       switchMap(() =>
+  //         from(this.geoPositionService.startTrackingComponent(DEBUG_TAG, true))
+  //       )
+  //     )
+  //     .subscribe();
 
-    this.mapSearchService.mapSearchClick$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((item) => {
-        this.disableFollowMode();
-        this.zone.runOutsideAngular(() => {
-          const latLng = item instanceof L.LatLng ? item : item.latlng;
-          this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
-        });
-      });
+  //   this.mapSearchService.mapSearchClick$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe((item) => {
+  //       this.disableFollowMode();
+  //       this.zone.runOutsideAngular(() => {
+  //         const latLng = item instanceof L.LatLng ? item : item.latlng;
+  //         this.flyTo(latLng, settings.map.mapSearchZoomToLevel);
+  //       });
+  //     });
 
-    this.mapService.centerMapToUser$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => {
-        this.zone.runOutsideAngular(() => {
-          if (this.userMarker) {
-            const currentPosition = this.userMarker.getPosition();
-            const latLng = L.latLng(
-              currentPosition.coords.latitude,
-              currentPosition.coords.longitude
-            );
-            if (this.followMode || this.firstClickOnZoomToUser) {
-              // Follow mode is allready true or first click, zoom in
-              this.flyToMaxZoom(latLng);
-            } else {
-              // Use existing zoom
-              this.flyTo(latLng, this.map.getZoom(), true);
-            }
-            this.firstClickOnZoomToUser = false;
-          }
-        });
-      });
+  //   this.mapService.centerMapToUser$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe(() => {
+  //       this.zone.runOutsideAngular(() => {
+  //         if (this.userMarker) {
+  //           const currentPosition = this.userMarker.getPosition();
+  //           const latLng = L.latLng(
+  //             currentPosition.coords.latitude,
+  //             currentPosition.coords.longitude
+  //           );
+  //           if (this.followMode || this.firstClickOnZoomToUser) {
+  //             // Follow mode is allready true or first click, zoom in
+  //             this.flyToMaxZoom(latLng);
+  //           } else {
+  //             // Use existing zoom
+  //             this.flyTo(latLng, this.map.getZoom(), true);
+  //           }
+  //           this.firstClickOnZoomToUser = false;
+  //         }
+  //       });
+  //     });
 
-    this.zone.runOutsideAngular(() => {
-      this.map.on('movestart', () => this.onMapMove());
-      this.map.on('zoomstart', () => this.onMapMove());
-    });
+  //   this.zone.runOutsideAngular(() => {
+  //     this.map.on('movestart', () => this.onMapMove());
+  //     this.map.on('zoomstart', () => this.onMapMove());
+  //   });
 
-    this.zone.runOutsideAngular(() => {
-      this.map.on('moveend', () => this.onMapMoveEnd());
-    });
+  //   this.zone.runOutsideAngular(() => {
+  //     this.map.on('moveend', () => this.onMapMoveEnd());
+  //   });
 
-    this.fullscreenService.isFullscreen$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => {
-        this.redrawMap();
-      });
+  //   this.fullscreenService.isFullscreen$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe(() => {
+  //       this.redrawMap();
+  //     });
 
-    this.geoPositionService.currentPosition$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((pos) => this.onPositionUpdate(pos));
+  //   this.geoPositionService.currentPosition$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe((pos) => this.onPositionUpdate(pos));
 
-    this.geoPositionService.currentHeading$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((heading) => {
-        if (this.userMarker) {
-          this.userMarker.setHeading(heading);
-        }
-      });
+  //   this.geoPositionService.currentHeading$
+  //     .pipe(takeUntil(this.ngDestroy$))
+  //     .subscribe((heading) => {
+  //       if (this.userMarker) {
+  //         this.userMarker.setHeading(heading);
+  //       }
+  //     });
 
-    this.startActiveSubscriptions();
+  //   this.startActiveSubscriptions();
 
-    this.startInvalidateSizeMapTimer();
+  //   this.startInvalidateSizeMapTimer();
 
-    this.map.on('resize', () => this.updateMapView());
-    this.mapReady.emit(this.map);
-  }
+  //   this.map.on('resize', () => this.updateMapView());
+  //   this.mapReady.emit(this.map);
+  // }
 
   private startActiveSubscriptions() {
     this.isActive
@@ -261,7 +297,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe((active) => {
         if (active) {
           this.geoPositionService.startTrackingComponent(this.geoTag);
-          this.redrawMap();
+          // this.redrawMap();
         } else {
           this.geoPositionService.stopTrackingComponent(this.geoTag);
         }
@@ -272,9 +308,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.disableFollowMode();
   }
 
-  private onMapMoveEnd() {
-    this.updateMapView();
-  }
+  // private onMapMoveEnd() {
+  //   this.updateMapView();
+  // }
 
   private disableFollowMode() {
     if (!this.isDoingMoveAction) {
@@ -288,15 +324,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private updateMapView() {
-    if (this.map) {
-      this.mapService.updateMapView({
-        bounds: this.map.getBounds(),
-        center: this.map.getCenter(),
-        zoom: this.map.getZoom()
-      });
-    }
-  }
+  // private updateMapView() {
+  //   if (this.map) {
+  //     this.mapService.updateMapView({
+  //       bounds: this.map.getBounds(),
+  //       center: this.map.getCenter(),
+  //       zoom: this.map.getZoom()
+  //     });
+  //   }
+  // }
 
   private getTileLayerDefaultOptions(
     userSetting: UserSetting
@@ -311,48 +347,48 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     };
   }
 
-  configureTileLayers(userSetting: UserSetting) {
-    this.zone.runOutsideAngular(() => {
-      this.tilesLayer.clearLayers();
-      this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
-      const mapOptions = this.getMapOptions(
-        userSetting.topoMap,
-        userSetting.language
-      );
-      for (const topoMap of mapOptions) {
+  // configureTileLayers(userSetting: UserSetting) {
+  //   this.zone.runOutsideAngular(() => {
+  //     this.tilesLayer.clearLayers();
+  //     this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
+  //     const mapOptions = this.getMapOptions(
+  //       userSetting.topoMap,
+  //       userSetting.language
+  //     );
+  //     for (const topoMap of mapOptions) {
 
-        const topoTilesLayer = topoMap.excludeBounds ? new RegObsTileLayer(topoMap.url, {
-          ...this.getTileLayerDefaultOptions(userSetting),
-          bounds: topoMap.bounds,
-          excludeBounds: topoMap.excludeBounds
-        }) : L.tileLayer(topoMap.url, {
-          ...this.getTileLayerDefaultOptions(userSetting),
-          bounds: topoMap.bounds,
-        });
-        topoTilesLayer.addTo(this.tilesLayer);
-      }
+  //       const topoTilesLayer = topoMap.excludeBounds ? new RegObsTileLayer(topoMap.url, {
+  //         ...this.getTileLayerDefaultOptions(userSetting),
+  //         bounds: topoMap.bounds,
+  //         excludeBounds: topoMap.excludeBounds
+  //       }) : L.tileLayer(topoMap.url, {
+  //         ...this.getTileLayerDefaultOptions(userSetting),
+  //         bounds: topoMap.bounds,
+  //       });
+  //       topoTilesLayer.addTo(this.tilesLayer);
+  //     }
 
-      for (const supportTile of this.userSettingService.getSupportTilesOptions(
-        userSetting
-      )) {
-        if (supportTile.enabled) {
-          const supportMapTileLayer = L.tileLayer(
-            supportTile.url,
-            {
-              ...this.getTileLayerDefaultOptions(userSetting),
-              updateInterval: 600,
-              keepBuffer: 0,
-              updateWhenIdle: true,
-              minZoom: settings.map.tiles.minZoomSupportMaps,
-              bounds: <any>settings.map.tiles.supportTilesBounds
-            }
-          );
-          supportMapTileLayer.setOpacity(supportTile.opacity);
-          supportMapTileLayer.addTo(this.tilesLayer);
-        }
-      }
-    });
-  }
+  //     for (const supportTile of this.userSettingService.getSupportTilesOptions(
+  //       userSetting
+  //     )) {
+  //       if (supportTile.enabled) {
+  //         const supportMapTileLayer = L.tileLayer(
+  //           supportTile.url,
+  //           {
+  //             ...this.getTileLayerDefaultOptions(userSetting),
+  //             updateInterval: 600,
+  //             keepBuffer: 0,
+  //             updateWhenIdle: true,
+  //             minZoom: settings.map.tiles.minZoomSupportMaps,
+  //             bounds: <any>settings.map.tiles.supportTilesBounds
+  //           }
+  //         );
+  //         supportMapTileLayer.setOpacity(supportTile.opacity);
+  //         supportMapTileLayer.addTo(this.tilesLayer);
+  //       }
+  //     }
+  //   });
+  // }
 
   private getMaxZoom(detectRetina: boolean) {
     return detectRetina && L.Browser.retina
@@ -412,64 +448,67 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // Force redraw map size on interval to make sure tiles are displayed
-  private startInvalidateSizeMapTimer() {
-    timer(2000, 5000)
-      .pipe(
-        withLatestFrom(this.isActive),
-        filter(([timer, active]) => active),
-        takeUntil(this.ngDestroy$)
-      )
-      .subscribe(() => this.redrawMap());
-  }
+  // private startInvalidateSizeMapTimer() {
+  //   timer(2000, 5000)
+  //     .pipe(
+  //       withLatestFrom(this.isActive),
+  //       filter(([timer, active]) => active),
+  //       takeUntil(this.ngDestroy$)
+  //     )
+  //     .subscribe(() => this.redrawMap());
+  // }
 
   redrawMap() {
-    if (this.map) {
-      this.map.invalidateSize();
-    }
-    window.dispatchEvent(new Event('resize'));
-  }
-
-  ngAfterViewInit(): void {
-    this.redrawMap();
-  }
-
-  private onPositionUpdate(data: Geoposition) {
-    this.zone.runOutsideAngular(() => {
-      if (this.map) {
-        const latLng = L.latLng({
-          lat: data.coords.latitude,
-          lng: data.coords.longitude
-        });
-        if (!this.userMarker) {
-          this.userMarker = new UserMarker(this.map, data);
-        } else {
-          this.userMarker.updatePosition(data);
-        }
-        if (this.followMode && !this.isDoingMoveAction) {
-          this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
-          this.firstPositionUpdate = false;
-        }
-      }
-    });
-  }
-
-  private flyToMaxZoom(latLng: L.LatLng, usePan = false) {
-    this.flyTo(
-      latLng,
-      Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()),
-      usePan
-    );
-  }
-
-  private flyTo(latLng: L.LatLng, zoom: number, usePan = false) {
-    this.isDoingMoveAction = true;
-    // if (usePan) {
-    //   this.map.panTo(latLng);
-    // } else {
-    //   this.map.flyTo(latLng, zoom);
+    // if (this.map) {
+    //   this.map.invalidateSize();
     // }
-    // Note: Poor performance on flyTo effect, so using setView without animate instead.
-    this.map.setView(latLng, zoom, { animate: false });
-    this.isDoingMoveAction = false;
+    // window.dispatchEvent(new Event('resize'));
+    if (this.map) {
+      this.map.updateSize();
+    }
   }
+
+  // ngAfterViewInit(): void {
+  //   this.redrawMap();
+  // }
+
+  // private onPositionUpdate(data: Geoposition) {
+  //   this.zone.runOutsideAngular(() => {
+  //     if (this.map) {
+  //       const latLng = L.latLng({
+  //         lat: data.coords.latitude,
+  //         lng: data.coords.longitude
+  //       });
+  //       if (!this.userMarker) {
+  //         this.userMarker = new UserMarker(this.map, data);
+  //       } else {
+  //         this.userMarker.updatePosition(data);
+  //       }
+  //       if (this.followMode && !this.isDoingMoveAction) {
+  //         this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
+  //         this.firstPositionUpdate = false;
+  //       }
+  //     }
+  //   });
+  // }
+
+  // private flyToMaxZoom(latLng: L.LatLng, usePan = false) {
+  //   this.flyTo(
+  //     latLng,
+  //     Math.max(settings.map.flyToOnGpsZoom, this.map.getZoom()),
+  //     usePan
+  //   );
+  // }
+
+  // private flyTo(latLng: L.LatLng, zoom: number, usePan = false) {
+  //   this.isDoingMoveAction = true;
+  //   // if (usePan) {
+  //   //   this.map.panTo(latLng);
+  //   // } else {
+  //   //   this.map.flyTo(latLng, zoom);
+  //   // }
+  //   // Note: Poor performance on flyTo effect, so using setView without animate instead.
+  //   this.map.setView(latLng, zoom, { animate: false });
+  //   this.isDoingMoveAction = false;
+  // }
 }

@@ -87,6 +87,8 @@
     "ngx-markdown": "^11.1.2",
     "ngx-virtual-scroller": "^4.0.3",
     "observable-webworker": "^3.2.6",
+    "ol": "^6.5.0",
+    "ol-mapbox-style": "^6.3.2",
     "rxjs": "^6.6.6",
     "source-sans-pro": "^3.6.0",
     "tslib": "^2.1.0",
