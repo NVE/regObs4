@@ -20,7 +20,6 @@ import {
   take,
   debounceTime
 } from 'rxjs/operators';
-import { OfflineMapService } from '../offline-map/offline-map.service';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
 import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
@@ -59,7 +58,6 @@ export class DataMarshallService implements OnReset {
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
-    private offlineMapService: OfflineMapService,
     private analyticService: AnalyticService
   ) {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
@@ -184,38 +182,7 @@ export class DataMarshallService implements OnReset {
           this.loggingService.configureLogging(appMode)
         )
       );
-
-      this.subscriptions.push(
-        this.offlineMapService
-          .getFullTilesCacheAsObservable()
-          .subscribe((val) => {
-            if (val) {
-              this.offlineMapService.updateTilesCacheSizeTable(
-                val.count ?? 0,
-                val.size ?? 0
-              );
-            }
-          })
-      );
-      this.subscriptions.push(
-        this.userSettingService.userSetting$
-          .pipe(
-            map((val) =>
-              val.tilesCacheSizev2 != null
-                ? val.tilesCacheSizev2
-                : settings.map.tiles.cacheSize
-            ),
-            distinctUntilChanged(),
-            debounceTime(1000)
-          )
-          .subscribe((val) => {
-            this.loggingService.debug(
-              `Tiles cahce size changed to ${val}`,
-              DEBUG_TAG
-            );
-            this.offlineMapService.cleanupTilesCache(val);
-          })
-      );
+      
       this.subscriptions.push(
         this.platform.pause.subscribe(() => {
           this.loggingService.debug(

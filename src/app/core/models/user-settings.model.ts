@@ -9,7 +9,6 @@ export interface UserSetting {
   completedStartWizard: boolean;
   supportTiles: Array<{ name: string; enabled: boolean; opacity: number }>;
   showMapCenter: boolean;
-  tilesCacheSizev2: number;
   showObservations: boolean;
   emailReceipt: boolean;
   topoMap: TopoMap;

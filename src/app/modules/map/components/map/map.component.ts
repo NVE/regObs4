@@ -78,7 +78,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private userSettingService: UserSettingService,
     private mapService: MapService,
-    private offlineMapService: OfflineMapService,
     private mapSearchService: MapSearchService,
     private zone: NgZone,
     private fullscreenService: FullscreenService,
@@ -261,11 +260,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$))
       .subscribe((active) => {
         if (active) {
-          this.offlineMapService.resumeSavingTiles();
           this.geoPositionService.startTrackingComponent(this.geoTag);
           this.redrawMap();
         } else {
-          this.offlineMapService.pauseSavingTiles();
           this.geoPositionService.stopTrackingComponent(this.geoTag);
         }
       });
@@ -311,11 +308,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       detectRetina: userSetting.useRetinaMap,
       updateWhenIdle: settings.map.tiles.updateWhenIdle,
       edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
-      saveTilesToCache: userSetting.tilesCacheSizev2 > 0,
-      saveCacheTileFunc: (id, tile) =>
-        this.offlineMapService.saveTileToOfflineCache(id, tile),
-      getCacheTileFunc: (id) => this.offlineMapService.getCachedTileDataUrl(id),
-      logFunc: this.loggingService.log
     };
   }
 
@@ -328,10 +320,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         userSetting.language
       );
       for (const topoMap of mapOptions) {
-        const topoTilesLayer = new RegObsTileLayer(topoMap.name, topoMap.url, {
+
+        const topoTilesLayer = topoMap.excludeBounds ? new RegObsTileLayer(topoMap.url, {
           ...this.getTileLayerDefaultOptions(userSetting),
           bounds: topoMap.bounds,
           excludeBounds: topoMap.excludeBounds
+        }) : L.tileLayer(topoMap.url, {
+          ...this.getTileLayerDefaultOptions(userSetting),
+          bounds: topoMap.bounds,
         });
         topoTilesLayer.addTo(this.tilesLayer);
       }
@@ -340,8 +336,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         userSetting
       )) {
         if (supportTile.enabled) {
-          const supportMapTileLayer = new RegObsTileLayer(
-            supportTile.name,
+          const supportMapTileLayer = L.tileLayer(
             supportTile.url,
             {
               ...this.getTileLayerDefaultOptions(userSetting),
@@ -394,22 +389,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       { ...arcGisOnlineMap, excludeBounds: NORWEGIAN_BOUNDS },
       norwegianMixedMap
     ];
-    // const geoDataLandskapMixMap: MapOptionsWithBounds = {
-    //   name: TopoMap.geoDataLandskap,
-    //   url: settings.map.tiles.geoDataLandskapMapUrl,
-    //   bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral,
-    //   excludeBounds: BorderHelper.getSvalbardPolygon().geometry
-    // };
-    // const svalbard: MapOptionsWithBounds = {
-    //   name: TopoMap.statensKartverk,
-    //   url: settings.map.tiles.statensKartverkMapUrl,
-    //   bounds: settings.map.bounds.svalbard.bbox as L.LatLngBoundsLiteral,
-    // }
-    // const mixGeoDataLandskap = [
-    //   { ...arcGisOnlineMap, excludeBounds: NORWEGIAN_BOUNDS },
-    //   geoDataLandskapMixMap,
-    //   svalbard
-    // ];
 
     switch (topoMap) {
       case TopoMap.statensKartverk:
@@ -427,10 +406,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         ];
       case TopoMap.mixArcGisOnline:
         return arGisOnlineMixMap;
-      // case TopoMap.mixGeoDataLandskap:
-      //   return mixGeoDataLandskap;
-      // default:
-      //   return langKey === LangKey.nb ? mixGeoDataLandskap : [arcGisOnlineMap];
       default:
         return langKey === LangKey.nb ? [statensKartverk] : [arcGisOnlineMap];
     }

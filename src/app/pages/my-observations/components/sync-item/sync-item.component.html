@@ -9,7 +9,7 @@
     </h2>
     <p class="ion-text-wrap">
       <ion-icon name="calendar"></ion-icon> {{ registration.request.DtObsTime | formatDate | async }}
-      <span *ngIf="!refresh"> - {{ 'ADD_MENU.DRAFT' | translate }}</span>
+      <span *ngIf="isDraft"> - {{ 'ADD_MENU.DRAFT' | translate }}</span>
     </p>
   </ion-label>
   <ion-icon *ngIf="!loading && registration.syncError" slot="end" name="warning">

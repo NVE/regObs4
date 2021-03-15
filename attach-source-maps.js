@@ -35,6 +35,7 @@ function deleteSourceMaps() {
   });
 }
 
+
 module.exports = function (ctx) {
   if (ctx.argv.includes('--release')) {
     deleteSourceMaps();
