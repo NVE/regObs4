@@ -29,7 +29,6 @@ export class KdvSelectComponent implements OnInit, OnDestroy {
   @Input() useDescription: boolean;
   @Input() filter: (number) => boolean;
   @Input() getIconFunc: (kdvElement: KdvElement) => string;
-
   private kdvelements: KdvElement[] = [];
 
   private subscription: Subscription;

@@ -1,16 +1,19 @@
-# RegObs app v4 (Ionic 4)
+# RegObs app v4 (Ionic 5)
 
-This is the regObs app versoin 4. It is based on code from app v3, but rewritten to Ionic 4.
-Ionic 4 uses Angular 8 and TypeScript, so all pages and components have been rewritten.
+This is the regObs app versoin 4. It is based on code from app v3, but rewritten to Ionic 4/5.
+Ionic 5 uses Angular 9+ and TypeScript, so all pages and components have been rewritten.
 
 ## Installation
 
 1. Clone repo
 2. Install packages
    ```
-   npm install
+   npm install 
    ```
-
+*Hvis du har npm versjon 7 eller nyere, må du bruke:* 
+```
+npm install --legacy-peer-deps
+```
 ## Debug and test on device
 
 Run app in browser:
@@ -79,8 +82,55 @@ Update version number in package.json
 Push relase-branch
 
 NOTE! Continous build is set up in Azure.
-Creates release builds and uploads .ipa to TestFlight when code are committed to /release branch.
-Upload .apk to Google Play store manually. The .apk is in build output resources.
+App blir automatisk publisert til intern testing når man pusher til ny release-branch.
+
+## Beta-testing
+Vi har et åpent beta-test-program hvor eksterne testere kan melde seg inn ved å følge en link.
+
+### Starte beta-testing i Google Play
+- For å rulle videre fra intern testing til beta, logg på https://play.google.com/console/
+- Siste versjon av appen finner du under "Tester/Intern testing"
+- Registrere release notes. Dette kan vi automatisere på sikt.
+- Velg "Kopier utganven til et annet spor"
+- Velg spor "Åpen testing" 
+- Gå gjennom evt. advarsler (da vi publiserte 4.4.6 var det 3 advarsler som vi ignorerte)
+- Fullfør publisering
+
+### Starte beta-testing på Apple App Store
+- For å rulle videre fra intern testing til beta, logg på https://appstoreconnect.apple.com/
+- Velg Varsom Regobs under My Apps
+- Velg TestFlight
+- Under "Test information", legg inn release notes på begge språk
+- Velg External Groups / Beta Testers
+- Trykk på + under Builds, velg riktig versjon/build og Next
+- Velg Submit for Review
+
+## Produksjonssetting
+
+Appene må produksjonssettes manuelt i i App Store og i Google Play
+
+### Produksjonssette på Apple App Store
+
+- Gå til https://appstoreconnect.apple.com/
+- Bruk + øverst til venstre for "Opprett ny utgave". Det kan ta et par dager før du får godkjent den nye versjonen.
+- Når versjonen er godkjent, kan du sende den til produksjon
+
+### Produksjonssette på Google Play
+
+- For å rulle videre fra beta til produksjon, logg på https://play.google.com/console/
+- Siste versjon av appen finner du under "Tester/Åpen testing"
+- Velg "Kopier utgaven til et annet spor"
+- Pass på at 100% av brukerne får tilgang. Mulig du må endre andelen fra 20 til 100% etterpå.
+
+### Flette inn release-greina
+
+Etter produksjonssetting, må release-greina flettes inn:
+```
+git flow release finish 'release/vX.Y.Z'
+git push origin --tags
+git push develop
+git push master
+```
 
 ## Plugins and other custom features
 
@@ -119,6 +169,12 @@ NOTE! Cordova plugins must be updated by removing and re-adding plugin:
 ```
 ionic cordova plugin rm cordova-plugin-name
 ionic cordova plugin add cordova-plugin-name
+```
+
+To update Angular, use ng update to better migrate code changes:
+Follow this guide: https://update.angular.io/
+```
+ng update
 ```
 
 # How to update models from Regobs API

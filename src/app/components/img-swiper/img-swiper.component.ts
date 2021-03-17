@@ -36,14 +36,29 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   @Input() location: ImageLocation;
   @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
   isDesktop: boolean;
+  slideOptions;
 
-  slideOptions = {
-    autoplay: false,
-    slidesPerView: 'auto',
-    zoom: false
-  };
+  ngOnInit() {
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
+    this.slideOptions = {
+      autoplay: false,
+      slidesPerView: 'auto',
+      zoom: false,
+      breakpoints: {
+        800: {
+          slidesPerView: this.checkAmountOfPictures(),
+          spaceBetween: 0
+        }
+      },
+      keyboard: {
+        enabled: true
+      }
+    };
+  }
 
-  onlyMap: boolean;
+  moreThanFourPics = false;
 
   swiper: any;
   state:
@@ -95,7 +110,9 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get shouldMoveMap() {
-    return this.location && this.imgUrl && this.imgUrl.length > 0;
+    return (
+      this.location && this.imgUrl && this.imgUrl.length > 0 && !this.isDesktop
+    );
   }
 
   get imageLength() {
@@ -124,17 +141,19 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
     private breakpointService: BreakpointService
   ) {}
 
-  ngOnInit() {
-    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
-      this.isDesktop = isDesktop;
-    });
-    if (this.isDesktop) {
-      this.checkOnlyMapOrPicture();
-    }
-  }
-
   ngOnDestroy(): void {
     this.cdr.detach();
+  }
+
+  checkAmountOfPictures(): number {
+    if (this.imgUrl.length >= 3) {
+      this.moreThanFourPics = true;
+      return 3;
+    }
+    if (this.imgUrl.length === 1) {
+      return 2;
+    }
+    return 1;
   }
 
   slidesLoaded(el: any) {
@@ -263,15 +282,5 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   prev() {
     this.slider.slidePrev();
     this.updateUi();
-  }
-
-  checkOnlyMapOrPicture() {
-    if (this.location && (!this.imgUrl || this.imgUrl.length === 0)) {
-      this.onlyMap = true;
-    } else if (!this.location && this.imgUrl.length === 1) {
-      this.onlyMap = true;
-    } else {
-      this.onlyMap = false;
-    }
   }
 }

@@ -1,8 +1,18 @@
-<ion-button role="combobox" aria-expanded="false" aria-haspopup="dialog" expand="full" type="button" fill="clear"
-  (click)="openSelect()">
-</ion-button>
-<ion-icon class="value-icon" *ngIf="valueIcon" [name]="valueIcon"></ion-icon>
-<ion-text>
-  {{ valueText | translate }}
-</ion-text>
-<ion-icon class="select-icon" slot="end" name="caret-down-sharp"></ion-icon>
+<ng-container *ngIf="isApp; else popover">
+    <ion-button role="combobox" aria-expanded="false" aria-haspopup="dialog" expand="full" type="button" fill="clear"
+    (click)="openSelect()">
+    </ion-button>
+  <ion-icon class="value-icon" *ngIf="valueIcon" [name]="valueIcon"></ion-icon>
+  <ion-text>
+    {{ valueText | translate }}
+  </ion-text>
+  <ion-icon class="select-icon" slot="end" name="caret-down-sharp"></ion-icon>
+</ng-container>
+
+<ng-template #popover>
+  <ion-select (ionChange)="selectedValueChange.emit($event)" [disabled]="disabled" cancelText="{{'DIALOGS.CANCEL' | translate}}" interface="popover" [placeholder]="title | translate">
+    <ion-select-option *ngFor="let option of options" [value]="option.id">
+      {{option.text | translate }}
+    </ion-select-option>
+  </ion-select>
+</ng-template>

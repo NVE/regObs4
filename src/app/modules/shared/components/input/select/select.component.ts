@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, PopoverController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular';
+import { isAndroidOrIos } from '../../../../../core/helpers/ionic/platform-helper';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
@@ -21,6 +22,7 @@ export class SelectComponent implements OnInit {
   @Input() options: Array<SelectOption> = [];
   @Input() showReset = true;
   @Input() disabled = false;
+  isApp: boolean;
 
   get valueText() {
     const item = (this.options || []).find((x) => x.id === this.selectedValue);
@@ -40,11 +42,14 @@ export class SelectComponent implements OnInit {
 
   constructor(
     private actionSheetController: ActionSheetController,
+    private popoverController: PopoverController,
     private translateService: TranslateService,
     public platform: Platform
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.isApp = isAndroidOrIos(this.platform);
+  }
 
   private async getActionSheetButtons() {
     const buttons: ActionSheetButton[] = [];
@@ -100,15 +105,11 @@ export class SelectComponent implements OnInit {
 
   async openSelect() {
     if (!this.disabled) {
-      const cssClass = this.platform.is('desktop')
-        ? 'desktop-action-sheet'
-        : null;
       const translations = await this.getTitleTranslations();
       const buttons = await this.getActionSheetButtons();
       const actionSheet = await this.actionSheetController.create({
         header: translations.titleTextTranslated,
         subHeader: translations.subTitleTextTranslated,
-        cssClass,
         buttons
       });
       await actionSheet.present();
