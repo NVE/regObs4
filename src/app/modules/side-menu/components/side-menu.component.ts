@@ -41,6 +41,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     langKey: LangKey[lang.lang]
   }));
   popupType: SelectInterface;
+  isIosOrAndroid: boolean;
 
   private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
@@ -61,6 +62,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
+    this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.lastUpdateSubscription = this.observationService
       .getLastUpdatedForCurrentGeoHazardAsObservable()
       .subscribe((val) => {

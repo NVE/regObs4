@@ -17,9 +17,16 @@
       <ion-label position="stacked" color="medium" class="ion-text-uppercase">
         {{ "SETTINGS.LANGUAGE" | translate }}<span *ngIf="userSettings.language !== LangKey.en"> / Language</span>
       </ion-label>
-      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language"
-        interface="action-sheet" (ngModelChange)="changeLanguage()">
-        <ion-select-option [value]="lang.langKey" *ngFor="let lang of supportedLanguages">
+      <ion-select
+        cancelText="{{'DIALOGS.CANCEL' | translate}}"
+        [(ngModel)]="userSettings.language"
+        [interface]="popupType"
+        (ngModelChange)="changeLanguage()"
+      >
+        <ion-select-option
+          *ngFor="let lang of supportedLanguages"
+          [value]="lang.langKey"
+        >
           {{ lang.name }}
         </ion-select-option>
       </ion-select>
@@ -91,19 +98,19 @@
     </ion-label>
   </ion-list-header>
   <ion-menu-toggle auto-hide="false">
-    <ion-item (click)="showLegalTerms()" detail="true">
+    <ion-item (click)="showLegalTerms()" detail="true" button="true">
       <ion-icon slot="start" name="information-circle-outline" color="varsom-blue"></ion-icon>
       <ion-label class="menu-label">{{'MENU.ABOUT_REGOBS' | translate}}</ion-label>
     </ion-item>
-    <ion-item (click)="openStartWizard()" detail="true">
+    <ion-item (click)="openStartWizard()" detail="true" button="true">
       <svg-icon slot="start" src="/assets/icon/start-wizard.svg"></svg-icon>
       <ion-label class="menu-label">{{'MENU.START_WIZARD' | translate}}</ion-label>
     </ion-item>
-    <ion-item (click)="contactError()" detail="true">
+    <ion-item (click)="contactError()" detail="true" button="true">
       <svg-icon slot="start" src="/assets/icon/error.svg"></svg-icon>
       <ion-label class="menu-label">{{'MENU.CONTACT_REGOBS_ERROR' | translate}}</ion-label>
     </ion-item>
-    <ion-item (click)="contactUs()" detail="true">
+    <ion-item (click)="contactUs()" detail="true" button="true">
       <ion-icon slot="start" name="mail" color="varsom-blue"></ion-icon>
       <ion-label class="menu-label">{{'MENU.CONTACT_REGOBS' | translate}}</ion-label>
     </ion-item>

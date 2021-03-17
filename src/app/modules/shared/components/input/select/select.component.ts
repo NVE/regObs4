@@ -1,10 +1,11 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
-import { ActionSheetController } from '@ionic/angular';
+import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
+import { ActionSheetController, PopoverController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Platform } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
+import { isAndroidOrIos } from '../../../../../core/helpers/ionic/platform-helper';
 
 const TRANSLATION_KEY_CANCEL = 'DIALOGS.CANCEL';
 const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
@@ -14,7 +15,7 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss']
 })
-export class SelectComponent {
+export class SelectComponent implements OnInit {
   @Input() title: string;
   @Input() subTitle: string;
   @Input() selectedValue: number | string;
@@ -22,6 +23,7 @@ export class SelectComponent {
   @Input() options: Array<SelectOption> = [];
   @Input() showReset = true;
   @Input() disabled = false;
+  isApp: boolean;
 
   get valueText() {
     const item = (this.options || []).find((x) => x.id === this.selectedValue);
@@ -41,9 +43,15 @@ export class SelectComponent {
 
   constructor(
     private actionSheetController: ActionSheetController,
+    // TODO: What is popoverController used for? Delete if not in use
+    private popoverController: PopoverController,
     private translateService: TranslateService,
     public platform: Platform
   ) {}
+
+  ngOnInit() {
+    this.isApp = isAndroidOrIos(this.platform);
+  }
 
   private async getActionSheetButtons() {
     const buttons: ActionSheetButton[] = [];
@@ -94,15 +102,11 @@ export class SelectComponent {
 
   async openSelect() {
     if (!this.disabled) {
-      const cssClass = this.platform.is('desktop')
-        ? 'desktop-action-sheet'
-        : '';
       const translations = await this.getTitleTranslations();
       const buttons = await this.getActionSheetButtons();
       const actionSheet = await this.actionSheetController.create({
         header: translations.titleTextTranslated,
         subHeader: translations.subTitleTextTranslated,
-        cssClass,
         buttons
       });
       await actionSheet.present();

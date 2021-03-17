@@ -18,8 +18,8 @@
   .swiper-button-prev {
     transform: translateZ(1px);
     background-color: var(--ion-item-background);
-    width: 26px;
-    height: 26px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background-size: 10px 40px;
   }
@@ -143,11 +143,15 @@
   }
 }
 
-@media (min-width: 768px) {
+@media screen and (min-width: 800px) {
   .slides-wrapper {
     app-map-image {
-      &.single {
-        height: 20vw;
+      max-height: 400px;
+    }
+    ion-slides {
+      height: 30vh;
+      .swiper-slide {
+        height: auto;
       }
     }
   }
