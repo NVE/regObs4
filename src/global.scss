@@ -518,29 +518,17 @@ ion-toast {
   margin-right: 8px;
 }
 
-@media only screen and (min-width: 700px) {
+@media only screen and (min-width: 950px) {
   ion-card {
-    max-width: 900px;
+    max-width: 1000px;
     border-radius: 16px !important;
-    width: 70%;
-    margin: 0 auto !important;
-    margin-bottom: 16px !important;
-  }
-
-  ion-slides {
-    max-height: 250px;
+    margin: 16px auto 0 !important;
   }
 
   ion-item-divider {
-    width: 70%;
+    max-width: 1000px;
     margin: 0 auto;
     margin-bottom: 8px;
-  }
-
-  .action-sheet-wrapper.sc-ion-action-sheet-md {
-    left: 50%;
-    right: 50%;
-    transform: translate(-50%, calc(-50% + 182px)) !important;
   }
 }
 
@@ -581,5 +569,22 @@ ion-toast {
     &:hover {
       cursor: pointer;
     }
+  }
+}
+
+ion-select-popover ion-list ion-item ion-radio {
+  --color: transparent;
+  --color-checked: transparent;
+}
+
+@media only screen and (min-width: 768px) {
+  .sc-ion-modal-md-h {
+    --width: 800px;
+    --height: 800px;
+  }
+
+  ion-item {
+    --background-hover: var(--ion-color-varsom-blue-light-2);
+    --background-hover-opacity: 0.5;
   }
 }

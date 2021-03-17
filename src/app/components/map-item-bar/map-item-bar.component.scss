@@ -55,18 +55,3 @@
     }
   }
 }
-
-@media (min-width: 768px) {
-  .map-item-bar {
-    max-width: 300px;
-
-    .img-wrapper {
-      height: var(--img-wrapper-height-desktop);
-      top: calc(var(--img-wrapper-height-desktop) * -1);
-      max-width: 300px;
-      &.full {
-        max-width: 300px;
-      }
-    }
-  }
-}

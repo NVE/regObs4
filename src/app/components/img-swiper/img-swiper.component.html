@@ -9,7 +9,7 @@
     </ion-slide>
   </ion-slides>
   
-  <ng-container *ngIf="!onlyMap && isDesktop">
+  <ng-container *ngIf="isDesktop && moreThanFourPics">
     <div class="swiper-button-prev" (click)="prev()"></div>
     <div class="swiper-button-next" (click)="next()">
     </div>
@@ -19,12 +19,12 @@
   </app-offline-image>
   <app-map-image *ngIf="isSingleMap" class="single" [location]="location" (click)="onLocationClick()">
   </app-map-image>
-  <ion-label *ngIf="showLabel" [ngClass]="{'loaded': isLoaded}">
-    <span class="img-comment-header" *ngIf="showIndex">{{imageIndex + 1}}/{{imageLength}}&nbsp;</span>
-    <span [ngClass]="{'img-comment-header': slides[activeIndex].description }"
-      *ngIf="slides[activeIndex].header">{{ slides[activeIndex].header | translate }}<ng-container
-        *ngIf="slides[activeIndex].description">:&nbsp;
-      </ng-container></span>
-    <ng-container *ngIf="slides[activeIndex].description">{{ slides[activeIndex].description }}</ng-container>
-  </ion-label>
+    <ion-label *ngIf="showLabel" [ngClass]="{'loaded': isLoaded}">
+      <span class="img-comment-header" *ngIf="showIndex">{{imageIndex + 1}}/{{imageLength}}&nbsp;</span>
+      <span [ngClass]="{'img-comment-header': slides[activeIndex].description }"
+        *ngIf="slides[activeIndex].header">{{ slides[activeIndex].header | translate }}<ng-container
+          *ngIf="slides[activeIndex].description">:&nbsp;
+        </ng-container></span>
+      <ng-container *ngIf="slides[activeIndex].description">{{ slides[activeIndex].description }}</ng-container>
+    </ion-label>
 </div>

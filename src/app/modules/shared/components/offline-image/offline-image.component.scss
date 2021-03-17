@@ -81,18 +81,15 @@ ion-img {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 800px) {
   ion-img {
-    width: auto;
-    height: auto;
     img {
       max-height: 220px;
     }
   }
 
   ion-img::part(image) {
-    background-color: var(--ion-color-varsom-blue-light-3);
-    max-height: 225px;
+    max-height: 350px;
     object-fit: contain;
   }
 }
