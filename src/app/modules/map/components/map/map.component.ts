@@ -176,7 +176,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         20037507.842788246,
       ],
       maxResolution: 156543.03392800014,
-      maxZoom: 15,
+      maxZoom: 25,
       tileSize: 512,
     });
 
@@ -192,6 +192,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         declutter: true
       }),
     });
+    
+    // TODO: Kan brukes for å overstyre hvor tiles hentes fra
+    // const source = baseLayer.getSource();
+    // const originalFunc = source.tileUrlFunction;
+    // source.tileUrlFunction = function (tileCoord, pixelRatio, projection) {
+    //   console.log("tileCoord", tileCoord);
+    //   const originalResult = originalFunc.apply(this, arguments);
+    //   console.log("originalResult", originalResult);
+    //   return originalResult;
+    // };
+
     const curvesLayer = new VectorTileLayer({
       source: new VectorTileSource({
         format: new MVT(),
@@ -200,6 +211,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         maxZoom: 25,
         tileGrid: tileGrid,
         declutter: true
+        //renderMode: 'hybrid',
       }),
     });
     const hillshadeLayer = new VectorTileLayer({
@@ -224,17 +236,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         zoom: 5,
       }),
       layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
+        // new TileLayer({
+        //   source: new OSM(),
+        // }),
         baseLayer,
         curvesLayer,
-//        hillshadeLayer,
-        new TileLayer({
-          source: new TileDebug({
-            tileGrid,
-          }),
-        })
+        hillshadeLayer,
+        // new TileLayer({
+        //   source: new TileDebug({
+        //     tileGrid,
+        //   }),
+        // })
         ],
       interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
     });
