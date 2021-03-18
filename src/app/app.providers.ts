@@ -83,6 +83,11 @@ function createTranslateLoader(http: HttpClient) {
 export function initCommonApiKey(): IRegobsApiKeyProvider {
   return { apiKey: require('../assets/apikey.json').apiKey };
 }
+
+export function initAppModeService(userSettingService: UserSettingService): any {
+  return { appMode$: userSettingService.appMode$  };
+}
+
 // export function initCommonApiOptions(
 //   appConfig: IAppConfig
 // ): RegobsApiConfigurationInterface {
@@ -103,6 +108,12 @@ export function initDb(dbService: OfflineDbService) {
     return import('pouchdb-adapter-idb').then(addRxPlugin).then(() => dbService.initDatabase('idb'));
   };
 }
+
+// export function initAppMode(userSettings: UserSettingService, appModeService: AppModeService){
+//   return () => {
+//     userSettings.appMode$.subscribe((appMode) => appModeService.setAppMode(appMode));
+//   }
+// }
 
 export const APP_PROVIDERS = [
   StartWizardGuard,
@@ -162,7 +173,11 @@ export const APP_PROVIDERS = [
   {
     provide: API_KEY_TOKEN,
     useFactory: initCommonApiKey,
-    deps: [AppModeService]
+  },
+  {
+    provide: AppModeService,
+    useFactory: initAppModeService,
+    deps: [UserSettingService]
   },
   // {
   //   provide: FOR_ROOT_OPTIONS_TOKEN,
@@ -180,6 +195,12 @@ export const APP_PROVIDERS = [
     multi: true,
     deps: [OfflineDbService]
   },
+  // {
+  //   provide: APP_INITIALIZER,
+  //   useFactory: initAppMode,
+  //   multi: true,
+  //   deps: [UserSettingService, AppModeService]
+  // },
 
   // Interface implementations
   { provide: 'OnReset', useExisting: DataMarshallService, multi: true },

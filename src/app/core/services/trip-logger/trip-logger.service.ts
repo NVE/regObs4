@@ -23,7 +23,7 @@ import { LegacyTrip } from './legacy-trip.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
-import { AppMode } from '../../models/app-mode.enum';
+import { AppMode } from '@varsom-regobs-common/core';
 
 const DEBUG_TAG = 'TripLoggerService';
 
