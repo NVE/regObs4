@@ -18,11 +18,11 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import { UserSetting } from '../../models/user-settings.model';
 import { LangKey, GeoHazard, AppMode } from '@varsom-regobs-common/core';
-import { SearchService } from '../../../modules/regobs-api/services';
+import { SearchService } from '@varsom-regobs-common/regobs-api';
 import {
   RegistrationViewModel,
   ObserverResponseDto
-} from '../../../modules/regobs-api/models';
+} from '@varsom-regobs-common/regobs-api';
 import { toPromiseWithCancel } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { DbHelperService } from '../db-helper/db-helper.service';
@@ -213,7 +213,7 @@ export class ObservationService {
     try {
       const searchResult = await toPromiseWithCancel(
         this.searchService.SearchSearch({
-          FromDate: fromDate.toISOString(),
+          FromDtObsTime: fromDate.toISOString(),
           SelectedGeoHazards: geoHazards,
           NumberOfRecords: settings.observations.maxObservationsToFetch,
           LangKey: userSetting.language,
@@ -299,7 +299,7 @@ export class ObservationService {
     await this.dbHelperService.fastInsert(
       instanceName,
       result,
-      (data) => data.RegID
+      (data) => data.RegId
     );
     this.loggingService.debug(
       `fastInsert took ${new Date().getTime() - now.getTime()} ms`,
@@ -408,7 +408,7 @@ export class ObservationService {
           reg &&
           geoHazards.indexOf(reg.GeoHazardTID) >= 0 &&
           moment(reg.DtObsTime).isSameOrAfter(fromDate) &&
-          !items.find((item) => item.RegID === reg.RegID)
+          !items.find((item) => item.RegId === reg.RegId)
         );
       })
       .exec();
@@ -516,7 +516,6 @@ export class ObservationService {
     langKey: LangKey,
     geoHazards?: GeoHazard[],
     fromDate?: Date,
-    observerGuid?: string
   ) {
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
       .query('select')
@@ -526,7 +525,6 @@ export class ObservationService {
           langKey,
           geoHazards,
           fromDate,
-          observerGuid
         )
       );
   }
@@ -541,9 +539,7 @@ export class ObservationService {
     return (
       !!reg &&
       (geoHazards ? geoHazards.indexOf(reg.GeoHazardTID) >= 0 : true) &&
-      reg.LangKey === langKey &&
-      (fromDate ? moment(reg.DtObsTime).isAfter(fromDate) : true) &&
-      (observerGuid ? reg.Observer.ObserverGUID === observerGuid : true)
+      (fromDate ? moment(reg.DtObsTime).isAfter(fromDate) : true)
     );
   }
 
@@ -560,7 +556,6 @@ export class ObservationService {
     langKey: LangKey,
     geoHazards?: GeoHazard[],
     fromDate?: Date,
-    observerGuid?: string
   ): Observable<RegistrationViewModel[]> {
     return new NSqlFullUpdateObservable<RegistrationViewModel[]>(
       this.getObservationsByParametersQuery(
@@ -568,11 +563,10 @@ export class ObservationService {
         langKey,
         geoHazards,
         fromDate,
-        observerGuid
       ).listen({
         debounce: 500,
         unique: true,
-        compareFn: (a, b) => this.isDifferent(a, b)
+        compareFn: (a, b) => this.isDifferent(a, b, langKey)
       })
     ).pipe(
       map((items) =>
@@ -588,21 +582,21 @@ export class ObservationService {
     );
   }
 
-  isDifferent(rowsA: RegistrationViewModel[], rowsB: RegistrationViewModel[]) {
+  isDifferent(rowsA: RegistrationViewModel[], rowsB: RegistrationViewModel[], langKey: LangKey) {
     return (
-      this.getUniqueObservations(rowsA) !== this.getUniqueObservations(rowsB)
+      this.getUniqueObservations(rowsA, langKey) !== this.getUniqueObservations(rowsB, langKey)
     );
   }
 
-  uniqueObservation(obs: RegistrationViewModel) {
-    return `${obs.RegID}_${obs.LangKey}_${obs.DtChangeTime}`;
+  uniqueObservation(obs: RegistrationViewModel, langKey: LangKey) {
+    return `${obs.RegId}_${langKey}_${obs.DtChangeTime}`;
   }
 
-  getUniqueObservations(rows: RegistrationViewModel[]) {
+  getUniqueObservations(rows: RegistrationViewModel[], langKey: LangKey) {
     if (!rows) {
       return '';
     }
-    return rows.map((x) => this.uniqueObservation(x)).join('#');
+    return rows.map((x) => this.uniqueObservation(x, langKey)).join('#');
   }
 
   async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {

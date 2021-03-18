@@ -5,7 +5,7 @@ import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { GeoHazard } from '@varsom-regobs-common/core';
 import { ISummaryItem } from '../components/summary-item/summary-item.model';
 import { UserGroupService } from '../../../core/services/user-group/user-group.service';
-import { ObserverGroupDto } from '../../regobs-api/models';
+import { ObserverGroupDto } from '@varsom-regobs-common/regobs-api';
 import { NavController } from '@ionic/angular';
 import { RouterDirection } from '@ionic/core';
 import { isEmpty } from '@varsom-regobs-common/core';

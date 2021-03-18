@@ -5,8 +5,8 @@ import { RegistrationService } from '../../services/registration.service';
 import { NavController } from '@ionic/angular';
 import {
   ObsLocationsResponseDtoV2,
-  ObsLocationDto
-} from '../../../regobs-api/models';
+  ObsLocationEditModel
+} from '@varsom-regobs-common/regobs-api';
 import { ActivatedRoute } from '@angular/router';
 import { GeoHazard } from '@varsom-regobs-common/core';
 import { Observable, Subscription } from 'rxjs';
@@ -128,7 +128,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     );
   }
 
-  async onLocationSet(event: ObsLocationDto) {
+  async onLocationSet(event: ObsLocationEditModel) {
     this.ngZone.run(() => {
       this.isSaveDisabled = true;
     });
@@ -149,7 +149,7 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     }
   }
 
-  private async setLocationAndSaveRegistration(loc: ObsLocationDto) {
+  private async setLocationAndSaveRegistration(loc: ObsLocationEditModel) {
     if (loc === undefined || this.registration === undefined) {
       return;
     }

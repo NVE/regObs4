@@ -12,7 +12,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from './modules/shared/shared.module';
 import { RegistrationModule } from './modules/registration/registration.module';
-import { RegobsApiModule } from './modules/regobs-api/regobs-api.module';
 import { LegalTermsModalPageModule } from './pages/modal-pages/legal-terms-modal/legal-terms-modal.module';
 import { MarkdownModule } from 'ngx-markdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -48,7 +47,6 @@ import {
     MapModule,
     LeafletModule,
     RegistrationModule,
-    RegobsApiModule,
     LegalTermsModalPageModule,
     SideMenuModule,
     GpsDebugModule,

@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import {
-  StratProfileDto,
-  StratProfileLayerDto
-} from '../../../../../../regobs-api/models';
+  StratProfileEditModel,
+  StratProfileLayerEditModel
+} from '@varsom-regobs-common/regobs-api';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
@@ -36,7 +36,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     return this.profile.Layers && this.profile.Layers.length > 0;
   }
 
-  get profile(): StratProfileDto {
+  get profile(): StratProfileEditModel {
     if (
       this.reg &&
       this.reg.request &&
@@ -130,7 +130,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
     }
   }
 
-  async addOrEditLayer(index: number, layer: StratProfileLayerDto): Promise<void> {
+  async addOrEditLayer(index: number, layer: StratProfileLayerEditModel): Promise<void> {
     if (!this.layerModal) {
       this.layerModal = await this.modalController.create({
         component: StratProfileLayerModalPage,

@@ -5,9 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from '@varsom-regobs-common/registration';
 import {
-  AvalancheEvalProblem2Dto,
+  AvalancheEvalProblem2EditModel,
   KdvElement
-} from '../../../../regobs-api/models';
+} from '@varsom-regobs-common/regobs-api';
 import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-problem-modal.page';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { Subscription } from 'rxjs';
@@ -76,7 +76,7 @@ export class AvalancheProblemPage extends BasePage {
             if (result.data.delete) {
               this.registration.request.AvalancheEvalProblem2.splice(index, 1);
             } else {
-              const avalancheEvalProblem: AvalancheEvalProblem2Dto =
+              const avalancheEvalProblem: AvalancheEvalProblem2EditModel =
                 result.data;
               if (index !== undefined) {
                 this.registration.request.AvalancheEvalProblem2[
@@ -94,7 +94,7 @@ export class AvalancheProblemPage extends BasePage {
     }
   }
 
-  getDescription(avalancheEvalProblem: AvalancheEvalProblem2Dto) {
+  getDescription(avalancheEvalProblem: AvalancheEvalProblem2EditModel) {
     const cause = this.avalancheCause.find(
       (c) => c.Id === avalancheEvalProblem.AvalCauseTID
     );

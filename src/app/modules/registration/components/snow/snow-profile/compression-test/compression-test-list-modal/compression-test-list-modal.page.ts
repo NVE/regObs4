@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
-import { CompressionTestDto } from '../../../../../../regobs-api/models';
+import { CompressionTestEditModel } from '@varsom-regobs-common/regobs-api';
 import { ModalController } from '@ionic/angular';
 import { RegistrationService } from '../../../../../services/registration.service';
 import { Subject } from 'rxjs';
@@ -19,7 +19,7 @@ export class CompressionTestListModalPage implements OnInit, OnDestroy {
   private initialRegistrationClone: IRegistration;
   reg: IRegistration;
 
-  set tests(val: CompressionTestDto[]) {
+  set tests(val: CompressionTestEditModel[]) {
     this.reg.request.CompressionTest = val;
   }
 

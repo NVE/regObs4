@@ -1,4 +1,4 @@
-import { CreateTripDto } from '../../../modules/regobs-api/models';
+import { CreateTripDto } from '@varsom-regobs-common/regobs-api';
 
 export interface LegacyTrip {
   id: string;

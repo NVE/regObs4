@@ -1,6 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
-import { ObserverGroupDto } from '../../../regobs-api/models';
+import { ObserverGroupDto } from '@varsom-regobs-common/regobs-api';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';

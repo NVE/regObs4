@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { TempProfileObsDto } from '../../../../../../regobs-api/models';
+import { SnowTempObsModel } from '@varsom-regobs-common/regobs-api';
 import { ModalController } from '@ionic/angular';
 import { IRegistration } from '@varsom-regobs-common/registration';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
@@ -12,7 +12,7 @@ import cloneDeep from 'clone-deep';
   styleUrls: ['./snow-temp-layer-modal.page.scss']
 })
 export class SnowTempLayerModalPage implements OnInit {
-  @Input() layer: TempProfileObsDto;
+  @Input() layer: SnowTempObsModel;
   @Input() index: number;
   @Input() reg: IRegistration;
   addNew: boolean;

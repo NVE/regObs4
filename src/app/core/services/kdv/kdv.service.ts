@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import * as RegobsApi from '../../../modules/regobs-api/services';
+import * as RegobsApi from '@varsom-regobs-common/regobs-api';
 import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { LangKey, AppMode } from '@varsom-regobs-common/core';
 import { NanoSql } from '../../../../nanosql';
-import { KdvElementsResponseDto } from '../../../modules/regobs-api/models';
+import { KdvElementsResponseDto } from '@varsom-regobs-common/regobs-api';
 import { combineLatest, Observable } from 'rxjs';
 import { switchMap, map, shareReplay, take } from 'rxjs/operators';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';

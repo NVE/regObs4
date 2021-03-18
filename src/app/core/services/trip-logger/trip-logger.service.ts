@@ -5,8 +5,7 @@ import { TripLogState } from './trip-log-state.enum';
 import { TripLogActivity } from './trip-log-activity.model';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, from, BehaviorSubject, throwError } from 'rxjs';
-import { TripService } from '../../../modules/regobs-api/services';
-import { CreateTripDto } from '../../../modules/regobs-api/models';
+import { CreateTripDto, TripService } from '@varsom-regobs-common/regobs-api';
 import {
   switchMap,
   take,

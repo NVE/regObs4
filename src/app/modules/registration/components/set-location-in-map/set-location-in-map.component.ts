@@ -18,8 +18,8 @@ import { Observable, Subject } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
 import {
   ObsLocationsResponseDtoV2,
-  ObsLocationDto
-} from '../../../regobs-api/models';
+  ObsLocationEditModel
+} from '@varsom-regobs-common/regobs-api';
 import { LocationService } from '../../../../core/services/location/location.service';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { ViewInfo } from '../../../map/services/map-search/view-info.model';
@@ -57,7 +57,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Input() locationMarker: L.Marker;
   @Input() locationMarkerIconUrl = '/assets/icon/map/obs-location.svg';
-  @Output() locationSet = new EventEmitter<ObsLocationDto>();
+  @Output() locationSet = new EventEmitter<ObsLocationEditModel>();
   @Input() showPreviousUsedLocations = true;
   @Input() showUserPosition = true;
   @Input() confirmLocationText = 'REGISTRATION.OBS_LOCATION.CONFIRM_TEXT';
@@ -357,8 +357,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.locationSet.emit(obsLocation);
   }
 
-  getLocation(): ObsLocationDto {
-    const obsLocation: ObsLocationDto = {
+  getLocation(): ObsLocationEditModel {
+    const obsLocation: ObsLocationEditModel = {
       Latitude: this.locationMarker.getLatLng().lat,
       Longitude: this.locationMarker.getLatLng().lng,
       Uncertainty: 0,

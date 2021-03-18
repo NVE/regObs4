@@ -3,7 +3,7 @@ import { BasePage } from '../../base.page';
 import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { GeoHazard } from '@varsom-regobs-common/core';
-import { KdvElement } from '../../../../regobs-api/models';
+import { KdvElement } from '@varsom-regobs-common/regobs-api';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';

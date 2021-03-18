@@ -6,9 +6,9 @@ import { BasePageService } from '../../base-page-service';
 import { ModalController } from '@ionic/angular';
 import { AvalancheActivityModalPage } from './avalanche-activity-modal/avalanche-activity-modal.page';
 import {
-  AvalancheActivityObs2Dto,
+  AvalancheActivityObs2EditModel,
   KdvElement
-} from '../../../../regobs-api/models';
+} from '@varsom-regobs-common/regobs-api';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { Subscription, combineLatest } from 'rxjs';
 
@@ -71,7 +71,7 @@ export class AvalancheActivityPage extends BasePage {
         if (result.data.delete) {
           this.registration.request.AvalancheActivityObs2.splice(index, 1);
         } else {
-          const avalancheActivityObs: AvalancheActivityObs2Dto = result.data;
+          const avalancheActivityObs: AvalancheActivityObs2EditModel = result.data;
           if (index !== undefined) {
             this.registration.request.AvalancheActivityObs2[
               index
@@ -86,7 +86,7 @@ export class AvalancheActivityPage extends BasePage {
     });
   }
 
-  getCause(avalancheActivityObs: AvalancheActivityObs2Dto) {
+  getCause(avalancheActivityObs: AvalancheActivityObs2EditModel) {
     const cause = this.avalancheCause.find(
       (c) => c.Id === avalancheActivityObs.AvalancheExtTID
     );
@@ -97,7 +97,7 @@ export class AvalancheActivityPage extends BasePage {
     }
   }
 
-  getEstimatedNumber(avalancheActivityObs: AvalancheActivityObs2Dto) {
+  getEstimatedNumber(avalancheActivityObs: AvalancheActivityObs2EditModel) {
     const kdvalue = this.estimatedNumber.find(
       (c) => c.Id === avalancheActivityObs.EstimatedNumTID
     );
