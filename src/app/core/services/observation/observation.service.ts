@@ -16,9 +16,8 @@ import {
 } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
-import { AppMode } from '../../models/app-mode.enum';
 import { UserSetting } from '../../models/user-settings.model';
-import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
+import { LangKey, GeoHazard, AppMode } from '@varsom-regobs-common/core';
 import { SearchService } from '../../../modules/regobs-api/services';
 import {
   RegistrationViewModel,

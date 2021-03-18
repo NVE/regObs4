@@ -4,7 +4,7 @@ import { AuthService, Browser } from 'ionic-appauth';
 import { NgZone } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../settings';
-import { AppMode } from '../../../core/models/app-mode.enum';
+import { AppMode } from '@varsom-regobs-common/core';
 
 export const authFactory = (
   platform: Platform,

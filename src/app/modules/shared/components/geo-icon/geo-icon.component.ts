@@ -15,7 +15,7 @@ export class GeoIconComponent implements OnInit {
   get geoClass() {
     if (this.geoHazards && this.geoHazards.length > 0) {
       return this.geoHazards
-        .map((geoHazard) => (<string>GeoHazard[geoHazard]).toLowerCase())
+        .map((geoHazard) => geoHazard !== GeoHazard.Soil ? (<string>GeoHazard[geoHazard]).toLowerCase() : 'dirt')
         .join('-');
     }
     return '';

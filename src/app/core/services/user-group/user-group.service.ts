@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import * as RegobsApi from '../../../modules/regobs-api/services';
 import { NanoSql } from '../../../../nanosql';
-import { AppMode } from '../../models/app-mode.enum';
+import { AppMode } from '@varsom-regobs-common/core';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import {
   ObserverGroupDto,

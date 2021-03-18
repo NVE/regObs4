@@ -1,5 +1,5 @@
 import { settings } from './settings';
-import { AppMode } from './app/core/models/app-mode.enum';
+import { AppMode } from '@varsom-regobs-common/core';
 import { nSQL } from '@nano-sql/core';
 import { getMode } from '@nano-sql/adapter-sqlite-cordova';
 import {
