@@ -53,12 +53,20 @@ import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AuthService } from 'ionic-appauth';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { API_KEY_TOKEN, FOR_ROOT_OPTIONS_TOKEN, IRegobsApiKeyProvider, RegobsApiConfigurationInterface } from '@varsom-regobs-common/regobs-api';
+import {
+  IRegistrationModuleOptions,
+  FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
+  OfflineDbService
+} from '@varsom-regobs-common/registration';
+import { AppModeService } from '@varsom-regobs-common/core';
+import { addRxPlugin } from 'rxdb';
 
-export const API_INTERCEPTOR_PROVIDER: Provider = {
-  provide: HTTP_INTERCEPTORS,
-  useExisting: forwardRef(() => ApiInterceptor),
-  multi: true
-};
+// export const API_INTERCEPTOR_PROVIDER: Provider = {
+//   provide: HTTP_INTERCEPTORS,
+//   useExisting: forwardRef(() => ApiInterceptor),
+//   multi: true
+// };
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -71,6 +79,30 @@ export class DynamicLocaleId extends String {
 
 function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
+}
+
+export function initCommonApiKey(): IRegobsApiKeyProvider {
+  return { apiKey: require('../assets/apikey.json').apiKey };
+}
+// export function initCommonApiOptions(
+//   appConfig: IAppConfig
+// ): RegobsApiConfigurationInterface {
+//   return { rootUrl: appConfig.api.baseUrl };
+// }
+export function initCommonRegistrationOptions(
+): IRegistrationModuleOptions {
+  const options = {
+    autoSync: false,
+    adapter: 'idb',
+    attachmentsSupported: false
+  };
+  return options;
+}
+
+export function initDb(dbService: OfflineDbService) {
+  return (): Promise<void> =>  {
+    return import('pouchdb-adapter-idb').then(addRxPlugin).then(() => dbService.initDatabase('idb'));
+  };
 }
 
 export const APP_PROVIDERS = [
@@ -103,8 +135,8 @@ export const APP_PROVIDERS = [
   Network,
   ScreenOrientation,
   Diagnostic,
-  API_INTERCEPTOR_PROVIDER,
-  { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
+  // API_INTERCEPTOR_PROVIDER,
+  // { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
   { provide: ErrorHandler, useClass: AppErrorHandler },
   {
     provide: LoggingService,
@@ -128,6 +160,29 @@ export const APP_PROVIDERS = [
     useFactory: initDeepLinks,
     deps: [Platform, NgZone, AuthService, NavController, Router],
     multi: true
+  },
+
+  // @varsom-regobs-common providers
+  {
+    provide: API_KEY_TOKEN,
+    useFactory: initCommonApiKey,
+    deps: [AppModeService]
+  },
+  // {
+  //   provide: FOR_ROOT_OPTIONS_TOKEN,
+  //   useFactory: initCommonApiOptions,
+  //   deps: [APP_CONFIG]
+  // },
+  {
+    provide: COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
+    useFactory: initCommonRegistrationOptions,
+    deps: []
+  },
+  {
+    provide: APP_INITIALIZER,
+    useFactory: initDb,
+    multi: true,
+    deps: [OfflineDbService]
   },
 
   // Interface implementations

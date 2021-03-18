@@ -46,7 +46,7 @@ export class DangerObsPage extends BasePage {
       });
   }
 
-  async addOrEdit(index: number) {
+  async addOrEdit(index?: number) {
     const dangerObs =
       index !== undefined
         ? this.registration.request.DangerObs[index]

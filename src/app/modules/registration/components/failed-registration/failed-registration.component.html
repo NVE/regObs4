@@ -5,13 +5,13 @@
     </ion-label>
   </ion-list-header>
   <ion-item>
-    <ion-label class="ion-text-wrap" *ngIf="registration.error.status === 0">
+    <ion-label class="ion-text-wrap" *ngIf="registration.syncStatusCode === 0">
       {{'REGISTRATION.FAILED.SUBTITLE' | translate}}
     </ion-label>
-    <ion-label class="ion-text-wrap" *ngIf="registration.error.status === 400">
-      {{'REGISTRATION.FAILED.PROBLEM' | translate}}: {{ registration.error.message }}
+    <ion-label class="ion-text-wrap" *ngIf="registration.syncStatusCode === 400">
+      {{'REGISTRATION.FAILED.PROBLEM' | translate}}: {{ registration.syncError }}
     </ion-label>
-    <ion-label class="ion-text-wrap" *ngIf="registration.error.status > 400">
+    <ion-label class="ion-text-wrap" *ngIf="registration.syncStatusCode > 400">
       {{'REGISTRATION.FAILED.PROBLEM' | translate}}. {{'REGISTRATION.FAILED.LOGGED' | translate}}
       <!-- Ta skjermbilde og
       <app-external-link src="http://www.regobs.no/Home/About">kontakt oss</app-external-link>
@@ -19,9 +19,9 @@
       {{'REGISTRATION.FAILED.PROBLEM_HELP_TEXT' | translate}}
     </ion-label>
   </ion-item>
-  <ion-item *ngIf="registration.error.status >= 400">
+  <ion-item *ngIf="registration.syncStatusCode >= 400">
     <ion-label class="ion-text-wrap">
-      {{'REGISTRATION.FAILED.REFERENCE' | translate}} ID: {{ registration.request.Id }}
+      {{'REGISTRATION.FAILED.REFERENCE' | translate}} ID: {{ registration.id }}
     </ion-label>
   </ion-item>
   <ion-item (click)="sendEmail()">

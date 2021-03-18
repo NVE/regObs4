@@ -18,7 +18,7 @@
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
+      <app-add-picture-item [(images)]="registration.request.Attachments" (imagesChange)="save()"
         [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>

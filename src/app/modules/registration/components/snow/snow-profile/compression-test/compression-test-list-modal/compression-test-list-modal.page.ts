@@ -3,9 +3,9 @@ import { CompressionTestDto } from '../../../../../../regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { RegistrationService } from '../../../../../services/registration.service';
 import { Subject } from 'rxjs';
-import { IRegistration } from '@varsom-regobs-common/registration';
 import { takeUntil } from 'rxjs/operators';
 import cloneDeep from 'clone-deep';
+import { IRegistration, RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
 
 @Component({
   selector: 'app-compression-test-list-modal',
@@ -26,12 +26,13 @@ export class CompressionTestListModalPage implements OnInit, OnDestroy {
   constructor(
     private modalController: ModalController,
     private registrationService: RegistrationService,
+    private commonRegistrationService: CommonRegistrationService,
     private ngZone: NgZone
   ) {}
 
   ngOnInit() {
-    this.registrationService
-      .getSavedRegistrationByIdObservable(this.regId)
+    this.commonRegistrationService
+      .getRegistrationByIdShared$(this.regId)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((reg) => {
         this.ngZone.run(async () => {

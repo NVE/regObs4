@@ -159,7 +159,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     this.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
       const lang = LangKey[langKey];
       switch (langKey) {
-        case LangKey.no:
+        case LangKey.nb:
           registerLocaleData(nbData);
           break;
         case LangKey.en:

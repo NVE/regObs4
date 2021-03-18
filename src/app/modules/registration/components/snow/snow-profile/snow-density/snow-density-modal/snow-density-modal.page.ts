@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { IRegistration } from '@varsom-regobs-common/registration';
 import cloneDeep from 'clone-deep';
+import { RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
 
 @Component({
   selector: 'app-snow-density-modal',
@@ -46,12 +47,13 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   constructor(
     private modalController: ModalController,
     private registrationService: RegistrationService,
+    private commonRegistrationService: CommonRegistrationService,
     private ngZone: NgZone
   ) {}
 
-  ngOnInit() {
-    this.registrationService
-      .getSavedRegistrationByIdObservable(this.regId)
+  async ngOnInit() {
+    this.commonRegistrationService
+      .getRegistrationByIdShared$(this.regId)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((reg) => {
         this.ngZone.run(async () => {

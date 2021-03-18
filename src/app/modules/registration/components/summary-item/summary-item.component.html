@@ -4,8 +4,8 @@
     <p *ngIf="item.subTitle">
       {{ item.subTitle | translate }}
     </p>
-    <p class="images" *ngIf="item.images">
-      <ng-container *ngFor="let image of item.images">
+    <p class="images" *ngIf="item.attachments">
+      <ng-container *ngFor="let image of item.attachments">
         <app-base64-image *ngIf="isBase64Image(image.PictureImageBase64)"
           [base64encodedImage]="image.PictureImageBase64">
         </app-base64-image>
