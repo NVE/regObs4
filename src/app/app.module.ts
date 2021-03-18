@@ -20,6 +20,12 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GpsDebugModule } from './modules/gps-debug/gps-debug.module';
 import { MapModule } from './modules/map/map.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import {
+  RegistrationModule as CommonRegistrationModule,
+} from '@varsom-regobs-common/registration';
+import {
+  RegobsApiModuleWithConfig,
+} from '@varsom-regobs-common/regobs-api';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,7 +47,9 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     LegalTermsModalPageModule,
     SideMenuModule,
     GpsDebugModule,
-    AnalyticsModule.forRoot()
+    AnalyticsModule.forRoot(),
+    RegobsApiModuleWithConfig.forRoot(),
+    CommonRegistrationModule.forRoot(),
   ],
   providers: APP_PROVIDERS,
   bootstrap: [AppComponent]

@@ -45,6 +45,7 @@ export class AddMenuComponent implements OnInit {
     this.geoHazardInfo$ = this.userSettingService.userSetting$.pipe(
       map((us) => ({
         geoHazards: us.currentGeoHazard,
+        showSpace: us.language !== LangKey.nb && us.language !== LangKey.nn,
         showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0
       })),
       setObservableTimeout()

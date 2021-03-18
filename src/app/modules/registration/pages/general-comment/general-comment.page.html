@@ -25,7 +25,7 @@
           {{"REGISTRATION.GENERAL_COMMENT.SUBTITLE" | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item *ngIf="registration.request.Picture" [(images)]="registration.request.Picture"
+      <app-add-picture-item *ngIf="registration.request.Attachments" [(images)]="registration.request.Attachments"
         [registrationTid]="registrationTid" (imagesChange)="save()" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
       <ion-item-divider>

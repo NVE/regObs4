@@ -80,3 +80,5 @@ class FileReaderA extends window.FileReader {
 }
 
 window.FileReader = FileReaderA;
+import 'zone.js/dist/zone-patch-rxjs';
+(window as any).global = window;

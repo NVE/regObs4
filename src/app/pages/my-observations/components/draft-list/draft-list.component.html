@@ -13,6 +13,6 @@
     </ion-grid>
   </ion-item-divider>
   <ion-list>
-    <app-sync-item *ngFor="let reg of registrations; trackBy: trackByIdFunc" [registration]="reg" [refresh]="reg.syncStatus === 'sync'"></app-sync-item>
+    <app-sync-item *ngFor="let reg of registrations; trackBy: trackByIdFunc" [registration]="reg"></app-sync-item>
   </ion-list>
 </div>

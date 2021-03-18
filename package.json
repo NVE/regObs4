@@ -23,11 +23,7 @@
     "sentry:upload-elease-and-commits": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases new $npm_package_version && sentry-cli releases set-commits --auto $npm_package_version",
     "sentry:create-release": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases new $npm_package_version",
     "sentry:finalize-release": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases finalize $npm_package_version",
-    "sentry:create-release-and-upload-sourcemaps": "npm run sentry:create-release && npm run sentry:upload-sourcemaps && npm run sentry:finalize-release",
-    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
-    "translations:upload": "ts-node --project tsconfig.npm-script.json translations/upload.ts",
-    "translations:download": "ts-node --project tsconfig.npm-script.json translations/download.ts",
-    "translations:sort": "ts-node --project tsconfig.npm-script.json translations/sortTranslations.ts"
+    "sentry:create-release-and-upload-sourcemaps": "npm run create-version-file && ng build --prod && npm run sentry:create-release && npm run sentry:upload-sourcemaps && npm run sentry:finalize-release"
   },
   "private": true,
   "dependencies": {
@@ -79,9 +75,9 @@
     "@turf/turf": "^6.5.0",
     "@varsom-regobs-common/translations": "^1.0.186",
     "angular-svg-icon": "^12.0.0",
-    "@varsom-regobs-common/core": "^3.0.18",
-    "@varsom-regobs-common/registration": "^3.0.18",
-    "@varsom-regobs-common/regobs-api": "^3.0.18",
+    "@varsom-regobs-common/core": "^3.0.20",
+    "@varsom-regobs-common/registration": "^3.0.20",
+    "@varsom-regobs-common/regobs-api": "^3.0.20",
     "clone-deep": "^4.0.1",
     "cordova-plugin-device": "^2.0.3",
     "cordova-sqlite-storage": "^6.0.0",
@@ -105,6 +101,7 @@
     "ngx-virtual-scroller": "^4.0.3",
     "observable-webworker": "^3.4.0",
     "rxjs": "^7.3.0",
+    "pouchdb-adapter-idb": "^7.2.2",
     "rxdb": "^9.15.0",
     "source-sans-pro": "^3.6.0",
     "tslib": "^2.3.1",

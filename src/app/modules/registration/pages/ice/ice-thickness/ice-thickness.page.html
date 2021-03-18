@@ -25,7 +25,7 @@
       </ion-list-header>
       <ion-reorder-group disabled="false" (ionItemReorder)="onIceThicknessReorder($event)">
         <ion-item (click)="addOrEditThicknessLayer(i)"
-          *ngFor="let layer of registration.request.IceThickness.IceThicknessLayer; let i = index">
+          *ngFor="let layer of registration.request.IceThickness.IceThicknessLayers; let i = index">
           <ion-label> {{ layer.IceLayerTID | kdvDescription:'Ice_IceLayerKDV' | async }} -
             {{ layer.IceLayerThickness | metersToCm }} cm</ion-label>
           <ion-reorder slot="end"></ion-reorder>
@@ -62,7 +62,7 @@
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Picture" (imagesChange)="save()"
+      <app-add-picture-item [(images)]="registration.request.Attachments" (imagesChange)="save()"
         [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>
