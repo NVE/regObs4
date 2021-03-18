@@ -5,9 +5,8 @@ import { DataLoadService } from '../../../data-load/services/data-load.service';
 import { NanoSql } from '../../../../../nanosql';
 import { toPromiseWithCancel } from '../../../../core/helpers/observable-helper';
 import { GeoHazard, LangKey, AppMode } from '@varsom-regobs-common/core';
-import { HelptextDto } from '../../../regobs-api/models';
 import { settings } from '../../../../../settings';
-import { HelptextService } from '../../../regobs-api/services';
+import { HelptextService, HelptextDto } from '@varsom-regobs-common/regobs-api';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { take } from 'rxjs/operators';
 

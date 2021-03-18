@@ -24,7 +24,6 @@ import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { StartWizardGuard } from './core/guards/start-wizard.guard';
@@ -41,8 +40,6 @@ import { environment } from '../environments/environment';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { ApiConfiguration } from './core/http-interceptor/api-configuration';
-import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configuration';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { RegistrationRepositoryService } from './modules/registration/services/registration-repository/registration-repository.service';
@@ -60,6 +57,7 @@ import {
 } from '@varsom-regobs-common/registration';
 import { AppModeService } from '@varsom-regobs-common/core';
 import { addRxPlugin } from 'rxdb';
+import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 
 // export const API_INTERCEPTOR_PROVIDER: Provider = {
 //   provide: HTTP_INTERCEPTORS,
@@ -134,7 +132,6 @@ export const APP_PROVIDERS = [
   SafariViewController,
   HTTP,
   WebView,
-  ApiInterceptor,
   EmailComposer,
   Keyboard,
   SQLite,
@@ -142,8 +139,14 @@ export const APP_PROVIDERS = [
   Network,
   ScreenOrientation,
   Diagnostic,
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: ApiInterceptor, // TODO: Move to auth module
+    multi: true
+  },
   // API_INTERCEPTOR_PROVIDER,
   // { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
+
   { provide: ErrorHandler, useClass: AppErrorHandler },
   {
     provide: LoggingService,

@@ -3,7 +3,7 @@ import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { BasePage } from '../../base.page';
 import { ModalController } from '@ionic/angular';
 import { IceLayerPage } from './ice-layer/ice-layer.page';
-import { IceThicknessLayerDto } from '../../../../regobs-api/models';
+import { IceThicknessLayerEditModel } from '@varsom-regobs-common/regobs-api';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { NumberHelper } from '../../../../../core/helpers/number-helper';
@@ -101,7 +101,7 @@ export class IceThicknessPage extends BasePage {
       if (result.data.delete) {
         this.removeLayerAtIndex(index);
       } else {
-        const iceThicknessLayerCopy: IceThicknessLayerDto = result.data;
+        const iceThicknessLayerCopy: IceThicknessLayerEditModel = result.data;
         if (index !== undefined) {
           this.setIceThicknessLayer(index, iceThicknessLayerCopy);
         } else {
@@ -126,7 +126,7 @@ export class IceThicknessPage extends BasePage {
     array.splice(toIndex, 0, array.splice(fromIndex, 1)[0]);
   }
 
-  setIceThicknessLayer(index: number, iceThicknessLayer: IceThicknessLayerDto) {
+  setIceThicknessLayer(index: number, iceThicknessLayer: IceThicknessLayerEditModel) {
     this.ngZone.run(() => {
       this.registration.request.IceThickness.IceThicknessLayers[
         index
@@ -135,7 +135,7 @@ export class IceThicknessPage extends BasePage {
     this.calculateIceThicknessSum();
   }
 
-  addIceThicknessLayer(iceThicknessLayer: IceThicknessLayerDto) {
+  addIceThicknessLayer(iceThicknessLayer: IceThicknessLayerEditModel) {
     this.ngZone.run(() => {
       this.registration.request.IceThickness.IceThicknessLayers.push(
         iceThicknessLayer

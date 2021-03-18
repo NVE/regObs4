@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DensityProfileDto } from '../../../../../regobs-api/models';
+import { SnowDensityModel } from '@varsom-regobs-common/regobs-api';
 import { ModalController } from '@ionic/angular';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
 import { IRegistration } from '@varsom-regobs-common/registration';
@@ -15,7 +15,7 @@ export class SnowDensityComponent {
   @Input() reg: IRegistration;
   private densityModal: HTMLIonModalElement;
 
-  get profiles(): DensityProfileDto[] {
+  get profiles(): SnowDensityModel[] {
     if (
       this.reg &&
       this.reg.request &&

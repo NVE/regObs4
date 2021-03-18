@@ -8,7 +8,7 @@ import { Observable, forkJoin, of, Subject } from 'rxjs';
 import { ViewInfo } from './view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
-import { GeoCodeService } from '../../../regobs-api/services';
+import { GeoCodeService } from '@varsom-regobs-common/regobs-api';
 import { NanoSql } from '../../../../../nanosql';
 import { MapSearchHistory } from './map-search-history.model';
 import moment from 'moment';

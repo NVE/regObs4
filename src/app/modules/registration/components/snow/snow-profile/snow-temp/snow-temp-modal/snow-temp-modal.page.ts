@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import {
-  TempProfileObsDto,
-} from '../../../../../../regobs-api/models';
+  SnowTempObsModel,
+} from '@varsom-regobs-common/regobs-api';
 import { ModalController } from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
 import { IRegistration } from '@varsom-regobs-common/registration';
@@ -100,7 +100,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
     );
   }
 
-  async addOrEditLayer(index: number, layer: TempProfileObsDto) {
+  async addOrEditLayer(index: number, layer: SnowTempObsModel) {
     if (!this.layerModal) {
       this.layerModal = await this.modalController.create({
         component: SnowTempLayerModalPage,

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import * as RegobsApi from '../../../modules/regobs-api/services';
 import { NanoSql } from '../../../../nanosql';
 import { AppMode } from '@varsom-regobs-common/core';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import {
   ObserverGroupDto,
-  ObserverResponseDto
-} from '../../../modules/regobs-api/models';
+  ObserverResponseDto,
+  AccountService as RegobsApiAccountService
+} from '@varsom-regobs-common/regobs-api';
 import moment from 'moment';
 import { from, combineLatest, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
@@ -20,7 +20,7 @@ export class UserGroupService {
   constructor(
     private regobsAuthService: RegobsAuthService,
     private userSettingService: UserSettingService,
-    private accountApiService: RegobsApi.AccountService,
+    private accountApiService: RegobsApiAccountService,
     private dataLoadService: DataLoadService
   ) {}
 
@@ -56,7 +56,7 @@ export class UserGroupService {
     const dataLoadId = this.getDataLoadId(appMode, user);
     await this.dataLoadService.startLoading(dataLoadId);
     const result = await this.accountApiService
-      .AccountGetObserverGroups(user.Guid)
+      .AccountGetObserverGroups()
       .toPromise();
     this.regobsAuthService.saveUserGroups(appMode, user, result);
     await this.dataLoadService.loadingCompleted(dataLoadId, result.length);

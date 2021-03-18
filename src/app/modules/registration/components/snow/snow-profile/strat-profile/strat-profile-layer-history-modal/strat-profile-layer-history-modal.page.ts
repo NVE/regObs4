@@ -1,12 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { SearchService } from '../../../../../../regobs-api/services';
 import { map, tap } from 'rxjs/operators';
 import {
   RegistrationViewModel,
   StratProfileLayerViewModel,
-  StratProfileLayerDto
-} from '../../../../../../regobs-api/models';
+  SearchService
+} from '@varsom-regobs-common/regobs-api';
 import { Observable, pipe } from 'rxjs';
 import moment from 'moment';
 import { GeoHazard } from '@varsom-regobs-common/core';
@@ -39,7 +38,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
       this.$previousUsedLayers = this.searchService
         .SearchSearch({
           ObserverGuid: this.observerGuid,
-          FromDate: moment().subtract(14, 'days').startOf('day').toISOString(),
+          FromDtObsTime: moment().subtract(14, 'days').startOf('day').toISOString(),
           Radius: {
             Position: {
               Latitude: this.reg.request.ObsLocation.Latitude,
@@ -72,7 +71,6 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
     date: string;
     layers: StratProfileLayerViewModel[];
   }) {
-    const layers = this.convertToStratProfileLayerDto(item.layers);
     if (!this.reg.request.SnowProfile2) {
       this.reg.request.SnowProfile2 = {};
     }
@@ -80,29 +78,9 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
     if (!this.reg.request.SnowProfile2.StratProfile) {
       this.reg.request.SnowProfile2.StratProfile = {};
     }
-    this.reg.request.SnowProfile2.StratProfile.Layers = layers;
+    this.reg.request.SnowProfile2.StratProfile.Layers = item.layers;
     await this.registrationService.saveRegistrationAsync(this.reg);
     this.modalController.dismiss();
-  }
-
-  convertToStratProfileLayerDto(
-    layer: StratProfileLayerViewModel[]
-  ): StratProfileLayerDto[] {
-    if (!layer) {
-      return [];
-    }
-    return layer.map((vm) => ({
-      GrainSizeAvg: vm.GrainSizeAvg,
-      HardnessTID: vm.HardnessTID,
-      GrainFormPrimaryTID: vm.GrainFormPrimaryTID,
-      GrainFormSecondaryTID: vm.GrainFormSecondaryTID,
-      Thickness: vm.Thickness,
-      GrainSizeAvgMax: vm.GrainSizeAvgMax,
-      HardnessBottomTID: vm.HardnessBottomTID,
-      WetnessTID: vm.WetnessTID,
-      CriticalLayerTID: vm.CriticalLayerTID,
-      Comment: vm.Comment
-    }));
   }
 
   private getLayersFromSearchResult(
@@ -119,7 +97,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
           reg.SnowProfile2.StratProfile.Layers.length > 0
         ) {
           return {
-            id: reg.RegID,
+            id: reg.RegId,
             date: reg.DtObsTime,
             layers: reg.SnowProfile2.StratProfile.Layers
           };

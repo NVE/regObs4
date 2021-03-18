@@ -30,10 +30,10 @@
             {{obs.Observer.NickName}}
             <app-competence [competenceLevel]="competenceLevel"></app-competence>
           </div>
-          <div class="card-icon-item" *ngIf="obs.Observer.ObserverGroupName">
+          <div class="card-icon-item" *ngIf="obs.ObserverGroupName">
             <svg-icon class="card-icon-item-icon" src="/assets/icon/usergroup.svg"
               [svgStyle]="{'width.px':16, 'height.px':16  }"></svg-icon>
-            {{obs.Observer.ObserverGroupName}}
+            {{obs.ObserverGroupName }}
           </div>
         </ion-col>
       </ion-row>
@@ -68,7 +68,7 @@
         {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
       </ion-button>
       <ion-button mode="ios" fill="clear" class="reg-id" slot="end" (click)="share()">
-        ID: {{ obs.RegID }}
+        ID: {{ obs.RegId }}
         <ion-icon slot="end" class="share-icon" name="share-social"></ion-icon>
       </ion-button>
     </ion-item>

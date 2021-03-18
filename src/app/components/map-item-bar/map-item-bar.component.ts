@@ -6,8 +6,7 @@ import { HelperService } from '../../core/services/helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { GeoHazard, AppMode } from '@varsom-regobs-common/core';
-import { RegistrationViewModel } from '../../modules/regobs-api/models';
-import { settings } from '../../../settings';
+import { AttachmentViewModel, RegistrationViewModel } from '@varsom-regobs-common/regobs-api';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { take } from 'rxjs/operators';
@@ -77,7 +76,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
 
   show(item: MapItem) {
     this.zone.run(() => {
-      this.id = item.RegID;
+      this.id = item.RegId;
       this.topHeader = item.DtObsTime;
       this.title = this.getTitle(item);
       this.name = item.Observer.NickName;
@@ -89,9 +88,8 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       if (this.appMode && item.Attachments && item.Attachments.length > 0) {
         this.imageUrls = item.Attachments.map((attachment) =>
           this.getImageUrl(
-            this.appMode,
-            attachment.AttachmentFileName,
-            'medium'
+            attachment,
+            'Medium'
           )
         );
       }
@@ -108,11 +106,10 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   }
 
   getImageUrl(
-    appMode: AppMode,
-    filename: string,
-    size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'medium'
+    attachment: AttachmentViewModel,
+    size: 'Thumbnail' | 'Medium' | 'Large' | 'Original' | 'Raw' = 'Medium'
   ) {
-    return `${settings.services.regObs.webUrl[appMode]}/Attachments/${size}/${filename}`;
+    return attachment.UrlFormats[size];
   }
 
   navigateToItem() {

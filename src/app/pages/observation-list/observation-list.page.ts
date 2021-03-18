@@ -8,12 +8,15 @@ import {
 import { ObservationService } from '../../core/services/observation/observation.service';
 import * as L from 'leaflet';
 import { Subject } from 'rxjs';
-import { map, take, switchMap } from 'rxjs/operators';
+import { map, take, switchMap, takeUntil } from 'rxjs/operators';
 import { MapService } from '../../modules/map/services/map/map.service';
 import { IMapView } from '../../modules/map/services/map/map-view.interface';
-import { RegistrationViewModel } from '../../modules/regobs-api/models';
+import { RegistrationViewModel } from '@varsom-regobs-common/regobs-api';
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import { LangKey } from '@varsom-regobs-common/core';
 
 const PAGE_SIZE = 10;
 const MAX_OBSERVATION_COUNT = 100;
@@ -24,13 +27,14 @@ const MAX_OBSERVATION_COUNT = 100;
   styleUrls: ['./observation-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ObservationListPage implements OnInit {
+export class ObservationListPage extends NgDestoryBase implements OnInit {
   visibleObservations: RegistrationViewModel[];
   allObservations: RegistrationViewModel[];
   loaded = false;
   cancelSubject: Subject<unknown>;
   private pageIndex = 0;
   private total: number;
+  private langKey: LangKey;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
   @ViewChild(IonInfiniteScroll, { static: false }) scroll: IonInfiniteScroll;
@@ -42,11 +46,17 @@ export class ObservationListPage implements OnInit {
     private observationService: ObservationService,
     private dataMarshallService: DataMarshallService,
     private cdr: ChangeDetectorRef,
-    private mapService: MapService
-  ) {}
+    private mapService: MapService,
+    private userSettingService: UserSettingService,
+  ) {
+    super()
+  }
 
   ngOnInit(): void {
     this.cancelSubject = this.dataMarshallService.observableCancelSubject;
+    this.userSettingService.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
+      this.langKey = langKey;
+    })
   }
 
   refresh(cancelPromise: Promise<unknown>): void {
@@ -147,6 +157,6 @@ export class ObservationListPage implements OnInit {
   }
 
   private trackByIdFuncInternal(_, obs: RegistrationViewModel) {
-    return obs ? this.observationService.uniqueObservation(obs) : undefined;
+    return obs ? this.observationService.uniqueObservation(obs, this.langKey) : undefined;
   }
 }

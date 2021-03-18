@@ -12,7 +12,7 @@ import {
 } from '@ionic-native/camera/ngx';
 import { settings } from '../../../../../settings';
 import { RegistrationTid } from '@varsom-regobs-common/registration';
-import { PictureRequestDto } from '../../../regobs-api/models';
+import { AttachmentEditModel } from '@varsom-regobs-common/regobs-api';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -30,7 +30,7 @@ const DEBUG_TAG = 'AddPictureItemComponent';
   styleUrls: ['./add-picture-item.component.scss']
 })
 export class AddPictureItemComponent implements OnInit {
-  @Input() images: PictureRequestDto[];
+  @Input() images: AttachmentEditModel[];
   @Input() registrationTid: RegistrationTid;
   @Output() imagesChange = new EventEmitter();
   @Input() title = 'REGISTRATION.ADD_IMAGES';
@@ -215,23 +215,24 @@ export class AddPictureItemComponent implements OnInit {
   }
 
   addImage(dataUrl: string) {
-    this.images.push({
-      PictureImageBase64: dataUrl,
-      RegistrationTID: this.registrationTid
-    });
+    // this.images.push({
+    //   PictureImageBase64: dataUrl, 
+    //   RegistrationTID: this.registrationTid
+    // });
+    // TODO: Use new attachment service instead
     this.imagesChange.emit(this.images);
   }
 
-  removeImage(image: PictureRequestDto) {
+  removeImage(image: AttachmentEditModel) {
     const index = this.images.indexOf(image);
-    if (index >= 0) {
-      const imgSrc = image.PictureImageBase64;
-      this.images.splice(index, 1);
-      this.imagesChange.emit(this.images);
-      if (!this.isBase64Image(imgSrc)) {
-        this.deleteFile(imgSrc);
-      }
-    }
+    // if (index >= 0) {
+    //   const imgSrc = image.PictureImageBase64;
+    //   this.images.splice(index, 1);
+    //   this.imagesChange.emit(this.images);
+    //   if (!this.isBase64Image(imgSrc)) {
+    //     this.deleteFile(imgSrc);
+    //   }
+    // }
   }
 
   isBase64Image(img: string) {

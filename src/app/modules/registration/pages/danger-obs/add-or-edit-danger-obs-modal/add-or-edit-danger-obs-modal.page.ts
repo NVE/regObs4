@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
-import { DangerObsDto } from '../../../../regobs-api/models';
+import { DangerObsEditModel } from '@varsom-regobs-common/regobs-api';
 import { ModalController } from '@ionic/angular';
 import { GeoHazard } from '@varsom-regobs-common/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ const COMMENT_SEPARATOR = ': ';
   styleUrls: ['./add-or-edit-danger-obs-modal.page.scss']
 })
 export class AddOrEditDangerObsModalPage implements OnInit {
-  @Input() dangerObs: DangerObsDto;
+  @Input() dangerObs: DangerObsEditModel;
   @Input() geoHazard: GeoHazard;
   noDangerObs = false;
   areaArr: SelectOption[];
@@ -132,7 +132,7 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   }
 
   ok() {
-    const dangerObsToSave: DangerObsDto = {
+    const dangerObsToSave: DangerObsEditModel = {
       GeoHazardTID: this.geoHazard,
       DangerSignTID: this.noDangerObs
         ? this.getNoDangerSignTid()

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { CompressionTestDto } from '../../../../regobs-api/models';
+import { CompressionTestEditModel } from '@varsom-regobs-common/regobs-api';
 import { ModalController } from '@ionic/angular';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
 @Component({
@@ -8,7 +8,7 @@ import { CompressionTestModalPage } from './compression-test-modal/compression-t
   styleUrls: ['./compression-test-list.component.scss']
 })
 export class CompressionTestListComponent implements OnInit {
-  @Input() tests: Array<CompressionTestDto>;
+  @Input() tests: Array<CompressionTestEditModel>;
   @Input() includeInSnowProfileAsDefault = false;
   @Output() testsChange = new EventEmitter();
   private isOpen = false;
@@ -35,7 +35,7 @@ export class CompressionTestListComponent implements OnInit {
         if (result.data.delete) {
           this.removeTest(index);
         } else {
-          const compressionTest: CompressionTestDto = result.data;
+          const compressionTest: CompressionTestEditModel = result.data;
           if (this.tests === undefined) {
             this.tests = [];
           }

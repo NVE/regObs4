@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { WaterLevelMeasurementDto } from '../../../../regobs-api/models';
+import { WaterLevelMeasurementEditModel } from '@varsom-regobs-common/regobs-api';
 import moment from 'moment';
 import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { isEmpty } from '@varsom-regobs-common/core';
@@ -14,7 +14,7 @@ export class WaterLevelMeasurementComponent implements OnInit {
   @Input() waterLevelMethod: number;
   @Input() registrationTid: RegistrationTid;
   @Input() dtObsTime: string;
-  @Input() waterLevelMeasurement: WaterLevelMeasurementDto;
+  @Input() waterLevelMeasurement: WaterLevelMeasurementEditModel;
   @Output() waterLevelMeasurementChange = new EventEmitter();
   maxDate: string;
   showDtMeasurementTimeError = false;
@@ -39,8 +39,8 @@ export class WaterLevelMeasurementComponent implements OnInit {
 
   ngOnInit() {
     this.maxDate = this.getMaxDateForNow();
-    if (!this.waterLevelMeasurement.Pictures) {
-      this.waterLevelMeasurement.Pictures = [];
+    if (!this.waterLevelMeasurement.Attachments) {
+      this.waterLevelMeasurement.Attachments = [];
     }
   }
 

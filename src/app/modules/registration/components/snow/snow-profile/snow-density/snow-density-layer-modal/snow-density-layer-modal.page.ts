@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DensityProfileLayerDto } from '../../../../../../regobs-api/models';
+import { SnowDensityLayerModel } from '@varsom-regobs-common/regobs-api';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
 import { IRegistration } from '@varsom-regobs-common/registration';
 import cloneDeep from 'clone-deep';
@@ -13,7 +13,7 @@ import { RegistrationService } from '../../../../../services/registration.servic
 })
 export class SnowDensityLayerModalPage implements OnInit {
   @Input() reg: IRegistration;
-  @Input() layer: DensityProfileLayerDto;
+  @Input() layer: SnowDensityLayerModel;
   @Input() useCylinder = true;
   @Input() cylinderDiameterInM: number;
   @Input() tareWeight: number;
@@ -66,7 +66,7 @@ export class SnowDensityLayerModalPage implements OnInit {
     );
   }
 
-  private isEmpty(snowDensityLayer: DensityProfileLayerDto) {
+  private isEmpty(snowDensityLayer: SnowDensityLayerModel) {
     return this.useCylinder
       ? snowDensityLayer.Thickness === undefined &&
           snowDensityLayer.Weight === undefined

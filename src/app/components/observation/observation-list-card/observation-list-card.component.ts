@@ -8,9 +8,10 @@ import {
 import { GeoHazard } from '@varsom-regobs-common/core';
 import { settings } from '../../../../settings';
 import {
+  AttachmentViewModel,
   RegistrationViewModel,
   Summary
-} from '../../../modules/regobs-api/models';
+} from '@varsom-regobs-common/regobs-api';
 import { ModalController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';
@@ -109,30 +110,12 @@ export class ObservationListCardComponent implements OnChanges {
     if (obs.LandSlideObs) {
       return {
         start:
-          obs.LandSlideObs.UTMEastStart && obs.LandSlideObs.UTMNorthStart
-            ? L.utm({
-              y: obs.LandSlideObs.UTMNorthStart,
-              x: obs.LandSlideObs.UTMEastStart,
-              zone:
-                  obs.LandSlideObs.UTMZoneStart > 0
-                    ? obs.LandSlideObs.UTMZoneStart
-                    : 33,
-              band: 'W',
-              southHemi: false
-            }).latLng()
+          obs.LandSlideObs.StartLat && obs.LandSlideObs.StartLong
+            ? L.latLng(obs.LandSlideObs.StartLat, obs.LandSlideObs.StartLong)
             : undefined,
         stop:
-          obs.LandSlideObs.UTMEastStop && obs.LandSlideObs.UTMNorthStop
-            ? L.utm({
-              y: obs.LandSlideObs.UTMNorthStop,
-              x: obs.LandSlideObs.UTMEastStop,
-              zone:
-                  obs.LandSlideObs.UTMZoneStart > 0
-                    ? obs.LandSlideObs.UTMZoneStart
-                    : 33, // TODO: Bug, UTMZoneStop is 0
-              band: 'W',
-              southHemi: false
-            }).latLng()
+          obs.LandSlideObs.StopLat && obs.LandSlideObs.StopLong
+            ? L.latLng(obs.LandSlideObs.StopLat, obs.LandSlideObs.StopLong)
             : undefined
       };
     }
@@ -174,16 +157,15 @@ export class ObservationListCardComponent implements OnChanges {
     this.imageHeaders = this.obs.Attachments.map((x) => x.RegistrationName);
     this.imageDescriptions = this.obs.Attachments.map((x) => x.Comment);
     this.imageUrls = this.obs.Attachments.map((x) =>
-      this.getImageUrl(baseUrl, x.AttachmentFileName)
+      this.getImageUrl(x)
     );
   }
 
   getImageUrl(
-    baseUrl: string,
-    filename: string,
-    size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'large'
+    attachment: AttachmentViewModel,
+    size: 'Thumbnail' | 'Medium' | 'Large' | 'Original' | 'Raw' = 'Large'
   ): string {
-    return `${baseUrl}/Attachments/${size}/${filename}`;
+    return attachment.UrlFormats[size] || attachment.Url;
   }
 
   getRegistrationNames(): string {
@@ -192,14 +174,12 @@ export class ObservationListCardComponent implements OnChanges {
 
   async openImage(event: { index: number; imgUrl: string }): Promise<void> {
     const image = this.obs.Attachments[event.index];
-    const baseUrl = await this.getBaseUrl();
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
         imgSrc: `${this.getImageUrl(
-          baseUrl,
-          image.AttachmentFileName,
-          'original'
+          image,
+          'Original'
         )}?r=${utils.uuid()}`,
         header: this.obs.Attachments[event.index].RegistrationName,
         description: this.obs.Attachments[event.index].Comment
@@ -229,7 +209,7 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   private getRegistrationUrl(baseUrl: string, loginHint?: string) {
-    return `${baseUrl}/Registration/${this.obs.RegID}${
+    return `${baseUrl}/Registration/${this.obs.RegId}${
       loginHint ? `?login_hint=${loginHint}` : ''
     }`;
   }
@@ -242,7 +222,7 @@ export class ObservationListCardComponent implements OnChanges {
       AppEventCategory.Observations,
       AppEventAction.Click,
       url,
-      this.obs.RegID
+      this.obs.RegId
     );
     this.externalLinkService.openExternalLink(url);
   }
@@ -254,7 +234,7 @@ export class ObservationListCardComponent implements OnChanges {
       AppEventCategory.Observations,
       AppEventAction.Share,
       url,
-      this.obs.RegID
+      this.obs.RegId
     );
     this.socialSharing.share(null, null, null, url);
   }

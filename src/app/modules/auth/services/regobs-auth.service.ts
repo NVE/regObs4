@@ -16,7 +16,7 @@ import { settings } from '../../../../settings';
 import { LangKey, AppMode } from '@varsom-regobs-common/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
-import { ObserverGroupDto, ObserverResponseDto } from '../../regobs-api/models';
+import { ObserverGroupDto, ObserverResponseDto } from '@varsom-regobs-common/regobs-api';
 import { LogLevel } from '../../shared/services/logging/log-level.model';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
@@ -190,6 +190,10 @@ export class RegobsAuthService {
     }
   }
 
+  public getValidToken(): Promise<TokenResponse> {
+    return this.authService.getValidToken();
+  }
+
   public async signIn(setReturnUrl = true): Promise<void> {
     const currentLang = await firstValueFrom(this.userSettingService.language$.pipe(take(1)));
     if (setReturnUrl) {
@@ -287,6 +291,7 @@ export class RegobsAuthService {
     }
   }
 
+  // TODO: Rewrite to @varsom-regobs-common/regobs-api call
   private async callApiUpdateNick(
     nick: string,
     idToken: string
@@ -413,6 +418,7 @@ export class RegobsAuthService {
     await alert.present();
   }
 
+  // TODO: Rewrite to @varsom-regobs-common/regobs-api call
   private async getObserverFromApi(
     idToken: string
   ): Promise<ObserverResponseDto> {

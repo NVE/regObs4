@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DensityProfileLayerDto } from '../../../../../../regobs-api/models';
+import { SnowDensityLayerModel } from '@varsom-regobs-common/regobs-api';
 import { SnowDensityLayerModalPage } from '../snow-density-layer-modal/snow-density-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
@@ -115,7 +115,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
     );
   }
 
-  async addOrEditLayer(index: number, layer: DensityProfileLayerDto) {
+  async addOrEditLayer(index: number, layer: SnowDensityLayerModel) {
     if (!this.layerModal) {
       this.layerModal = await this.modalController.create({
         component: SnowDensityLayerModalPage,
@@ -146,7 +146,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
 
   recalculateLayers() {
     if (this.useCylinder && this.hasLayers) {
-      this.profile.Layers.forEach((layer: DensityProfileLayerDto) => {
+      this.profile.Layers.forEach((layer: SnowDensityLayerModel) => {
         layer.Density = HydrologyHelper.calculateDensity(
           layer.Weight,
           layer.Thickness,

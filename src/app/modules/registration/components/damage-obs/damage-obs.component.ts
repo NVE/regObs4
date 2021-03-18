@@ -8,7 +8,7 @@ import { IRegistration, RegistrationTid } from '@varsom-regobs-common/registrati
 import { ModalController } from '@ionic/angular';
 import * as L from 'leaflet';
 import { SetDamageLocationPage } from '../../pages/set-damage-location/set-damage-location.page';
-import { ObsLocationDto } from '../../../regobs-api/models';
+import { ObsLocationEditModel } from '@varsom-regobs-common/regobs-api';
 import { RegistrationService } from '../../services/registration.service';
 
 @Component({
@@ -100,7 +100,7 @@ export class DamageObsComponent implements OnInit {
     modal.present();
     const result = await modal.onDidDismiss();
     if (result.data) {
-      const obs: ObsLocationDto = result.data;
+      const obs: ObsLocationEditModel = result.data;
       this.damageObs.DamagePosition = {
         Latitude: obs.Latitude,
         Longitude: obs.Longitude
