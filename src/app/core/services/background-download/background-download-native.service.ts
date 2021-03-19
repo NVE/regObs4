@@ -3,25 +3,19 @@ import { File } from '@ionic-native/file/ngx';
 import { BackgroundDownloadService } from './background-download.service';
 import { Progress } from '../offline-map/progress.model';
 import { ProgressStep } from '../offline-map/progress-step.model';
-import {
-  FileTransfer,
-  FileTransferObject
-} from '@ionic-native/file-transfer/ngx';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { Zip } from '@ionic-native/zip/ngx';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class BackgroundDownloadNativeService
   implements BackgroundDownloadService {
-  private fileTransfer: FileTransferObject;
   constructor(
     private file: File,
-    private transfer: FileTransfer,
     private zip: Zip,
-    private logger: LoggingService
-  ) {
-    this.fileTransfer = this.transfer.create();
-  }
+    private logger: LoggingService,
+    private httpClient: HttpClient
+  ) {}
 
   async downloadFile(
     path: string,
@@ -63,21 +57,23 @@ export class BackgroundDownloadNativeService
     //     });
     //   }
     // );
-    this.fileTransfer.onProgress((ev) =>
-      onProgress({
-        percentage: ev.loaded / ev.total,
-        step: ProgressStep.download,
-        description: 'Downloading'
-      })
-    );
     try {
-      await this.fileTransfer.download(url, `${path}${filename}`, true);
-      await this.nativeOnComplete(
-        path,
-        filename,
-        onComplete,
-        onProgress,
-        onError
+      const offlinePackage = await this.httpClient
+        .get(url, { responseType: 'blob' })
+        .toPromise();
+      const file = await this.file.createFile(path, filename, true);
+      file.createWriter(
+        async (writer) => {
+          writer.write(offlinePackage);
+          await this.nativeOnComplete(
+            path,
+            filename,
+            onComplete,
+            onProgress,
+            onError
+          );
+        },
+        (err) => onError(new Error(`${err.code} - ${err.message}`))
       );
     } catch (err) {
       onError(err);

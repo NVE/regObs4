@@ -84,18 +84,6 @@ export class UserSettingsPage implements OnInit, OnDestroy {
         });
       })
     );
-    this.subscriptions.push(
-      this.offlineMapService
-        .getTilesCacheAsObservable()
-        .subscribe((tilesCache) => {
-          this.ngZone.run(() => {
-            this.numberOfCacheTiles = tilesCache?.count ?? 0;
-            this.cacheTilesSize = this.helperService.humanReadableByteSize(
-              tilesCache?.size ?? 0
-            );
-          });
-        })
-    );
     const appver = await this.appVersionService.getAppVersion();
     this.ngZone.run(() => {
       this.version = appver;

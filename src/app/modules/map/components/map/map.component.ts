@@ -135,7 +135,7 @@ export class MapComponent implements OnInit {
 
   private initOfflineMaps() {
     this.offlineMapService
-      .getOfflineMapsAsObservable()
+      .createDownloadedOfflineMaps$()
       .pipe(take(1)) // TODO: Listen for changes and apply offline map layer when changes in offline maps
       .subscribe((offlineMaps) => {
         for (const offlineMap of offlineMaps) {
