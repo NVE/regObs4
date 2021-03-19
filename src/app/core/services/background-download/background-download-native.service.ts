@@ -1,77 +1,129 @@
 import { Injectable } from '@angular/core';
 import { File } from '@ionic-native/file/ngx';
-import { CancelPromise } from './cancel-promise.model';
 import { BackgroundDownloadService } from './background-download.service';
+import { Progress } from '../offline-map/progress.model';
+import { ProgressStep } from '../offline-map/progress-step.model';
+import {
+  FileTransfer,
+  FileTransferObject
+} from '@ionic-native/file-transfer/ngx';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { Zip } from '@ionic-native/zip/ngx';
 
 @Injectable()
 export class BackgroundDownloadNativeService
   implements BackgroundDownloadService {
-  currentDownloads: Map<string, CancelPromise>;
-
-  constructor(private file: File) {
-    this.currentDownloads = new Map();
+  private fileTransfer: FileTransferObject;
+  constructor(
+    private file: File,
+    private transfer: FileTransfer,
+    private zip: Zip,
+    private logger: LoggingService
+  ) {
+    this.fileTransfer = this.transfer.create();
   }
 
-  // async downloadFile(
-  //     path: string,
-  //     filename: string,
-  //     url: string,
-  //     onComplete: () => void,
-  //     onProgress: (progress: Progress) => void,
-  //     onError: (error: Error) => void,
-  //     skipLocationSelector?: boolean
-  // ): Promise<void> {
-  //     const directoryEntry = await this.file.resolveDirectoryUrl(path);
-  //     const targetFile = await this.file.getFile(directoryEntry, filename, { create: true });
-  //     const downloader = new (<any>window).BackgroundTransfer.BackgroundDownloader();
-  //     const download = downloader.createDownload(url, targetFile, filename);
-  //     const promise = download.startAsync().then(async () => {
-  //         await this.nativeOnComplete(path, filename, onComplete, onProgress, onError);
-  //     }, (error) => {
-  //         this.currentDownloads.delete(filename);
-  //         onError(Error(error));
-  //     }, (progress) => {
-  //         onProgress(
-  //             {
-  //                 percentage: (progress.bytesReceived / progress.totalBytesToRecieve),
-  //                 step: ProgressStep.download,
-  //                 description: 'Downloading'
-  //             });
-  //     });
-  //     this.currentDownloads.set(filename, promise);
-  // }
+  async downloadFile(
+    path: string,
+    filename: string,
+    url: string,
+    onComplete: () => void,
+    onProgress: (progress: Progress) => void,
+    onError: (error: Error) => void
+  ): Promise<void> {
+    // TODO: Background download plugin should be used to get proper Download manager that can run in backround
+    // but this plugin is not maintained https://github.com/sgrebnov/cordova-plugin-background-download
+    // const directoryEntry = await this.file.resolveDirectoryUrl(path);
+    // const targetFile = await this.file.getFile(directoryEntry, filename, {
+    //   create: true
+    // });
+    // const downloader = new (<any>(
+    //   window
+    // )).BackgroundTransfer.BackgroundDownloader();
+    // const download = downloader.createDownload(url, targetFile, filename);
+    // const promise = download.startAsync().then(
+    //   async () => {
+    //     await this.nativeOnComplete(
+    //       path,
+    //       filename,
+    //       onComplete,
+    //       onProgress,
+    //       onError
+    //     );
+    //   },
+    //   (error) => {
+    //     this.currentDownloads.delete(filename);
+    //     onError(Error(error));
+    //   },
+    //   (progress) => {
+    //     onProgress({
+    //       percentage: progress.bytesReceived / progress.totalBytesToRecieve,
+    //       step: ProgressStep.download,
+    //       description: 'Downloading'
+    //     });
+    //   }
+    // );
+    this.fileTransfer.onProgress((ev) =>
+      onProgress({
+        percentage: ev.loaded / ev.total,
+        step: ProgressStep.download,
+        description: 'Downloading'
+      })
+    );
+    try {
+      await this.fileTransfer.download(url, `${path}${filename}`, true);
+      await this.nativeOnComplete(
+        path,
+        filename,
+        onComplete,
+        onProgress,
+        onError
+      );
+    } catch (err) {
+      onError(err);
+    }
+  }
 
-  // private async nativeOnComplete(
-  //     directory: string,
-  //     filename: string,
-  //     onComplete: () => void,
-  //     onProgress: (progress: Progress) => void,
-  //     onError: (error: Error) => void
-  // ) {
-  //     this.currentDownloads.delete(filename);
-  //     await this.unzipFiles(directory, filename, onComplete, onProgress, onError);
-  // }
+  private async nativeOnComplete(
+    directory: string,
+    filename: string,
+    onComplete: () => void,
+    onProgress: (progress: Progress) => void,
+    onError: (error: Error) => void
+  ) {
+    await this.unzipFiles(directory, filename, onComplete, onProgress, onError);
+  }
 
-  // private async unzipFiles(path: string,
-  //     filename: string,
-  //     onComplete: () => void,
-  //     onProgress: (progress: Progress) => void,
-  //     onError: (error: Error) => void) {
-  //     const fullpath = path + '/' + filename;
-  //     const folder = fullpath.replace('.zip', '');
-  //     // console.log(`Unzipping file ${fullpath} to ${folder}`);
-  //     const result = await this.zip.unzip(fullpath, folder, (progress) => {
-  //         onProgress({ percentage: (progress.loaded / progress.total), step: ProgressStep.extractZip, description: 'Unzip files' });
-  //     });
-  //     if (result === 0) {
-  //         // console.log(`Unzip complete. Deleting zip file.`);
-  //         await this.file.removeFile(path, filename);
-  //         // console.log(`Zip file deleted. Returning.`);
-  //         onComplete();
-  //     } else {
-  //         onError(Error('Could not extract files!'));
-  //     }
-  // }
+  private async unzipFiles(
+    path: string,
+    filename: string,
+    onComplete: () => void,
+    onProgress: (progress: Progress) => void,
+    onError: (error: Error) => void
+  ) {
+    const fullpath = path + '/' + filename;
+    const folder = fullpath.replace('.zip', '');
+    // console.log(`Unzipping file ${fullpath} to ${folder}`);
+    const result = await this.zip.unzip(fullpath, folder, (progress) => {
+      onProgress({
+        percentage: progress.loaded / progress.total,
+        step: ProgressStep.extractZip,
+        description: 'Unzip files'
+      });
+    });
+    if (result === 0) {
+      // console.log(`Unzip complete. Deleting zip file.`);
+      this.logger.debug(
+        'Unzip complete. Deleting zip file.',
+        'bacground-download-native'
+      );
+      await this.file.removeFile(path, filename);
+      this.logger.debug('Zip file deleted', 'bacground-download-native');
+      onComplete();
+    } else {
+      onError(Error('Could not extract files!'));
+    }
+  }
 
   // cancelDownload(filename: string) {
   //     const promise = this.currentDownloads.get(filename);
@@ -94,7 +146,7 @@ export class BackgroundDownloadNativeService
   selectDowloadFolder(): Promise<string> {
     // if (this.platform.is('android')) {
     //     const userSettings = await this.userSettingService.getUserSettings();
-    //     // TODO: Prefer save offline map on SD card?
+    //     // TODO: Prefer save offline map on SD card? Show a dialog to ask if user wants to save on external directory?
     //     if (false) {
     //         return this.file.externalDataDirectory;
     //     }

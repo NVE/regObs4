@@ -1,8 +1,19 @@
 import { Injectable } from '@angular/core';
+import { Progress } from '../offline-map/progress.model';
 import { BackgroundDownloadService } from './background-download.service';
 
 @Injectable()
 export class BackgroundDownloadWebService implements BackgroundDownloadService {
+  downloadFile(
+    path: string,
+    filename: string,
+    url: string,
+    onComplete: () => void,
+    onProgress: (progress: Progress) => void,
+    onError: (error: Error) => void
+  ): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
   // downloadFile(
   //     path: string,
   //     filename: string,

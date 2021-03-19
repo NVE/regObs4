@@ -57,80 +57,7 @@ export class OfflineMapService implements OnReset {
     private platform: Platform,
     private webview: WebView,
     private loggingService: LoggingService
-  ) {
-    this._recentlySavedTileCache = new LRUCache(RECENTLY_SAVED_TILE_CACHE_SIZE);
-    this._saveBuffer = new Subject<{ id: string; el: HTMLImageElement }>();
-    this.initDownloadOfflineTilesObservable();
-  }
-
-  private initDownloadOfflineTilesObservable() {
-    this._shouldDownloadTiles
-      .pipe(
-        switchMap((active) =>
-          active
-            ? zip(
-                this._saveBuffer,
-                this._saveTileBufferTrigger.pipe(delay(SAVE_TILE_DELAY_BUFFER))
-              ).pipe(
-                map(([tile, _]) => tile),
-                mergeMap((tile) => this.saveHtmlImageToDb(tile.id, tile.el)),
-                catchError((err) => {
-                  this.loggingService.debug('Could not save image to db', err);
-                  return of(null);
-                })
-              )
-            : NEVER
-        )
-      )
-      .subscribe((tile) => {
-        // this.loggingService.debug('Tile saved to offlince cache', DEBUG_TAG, tile);
-        this._saveBufferSize--;
-        this._saveTileBufferTrigger.next(null);
-      });
-  }
-
-  private saveHtmlImageToDb(
-    id: string,
-    el: HTMLImageElement
-  ): Observable<{
-    id: string;
-    el: HTMLImageElement;
-    offlineTile: OfflineTile;
-  }> {
-    return from(ImageHelper.getBlobFromImage(el, MIME_TYPE, QUALITY)).pipe(
-      mergeMap((blob) =>
-        from(
-          this.saveTileToOfflineStorageAndStoreRecordInNanoSQL(
-            id,
-            blob,
-            MIME_TYPE
-          )
-        ).pipe(map((offlineTile) => ({ id, el, offlineTile })))
-      ),
-      catchError((err) => {
-        this.loggingService.log(
-          'Could not save tile image to offline tile',
-          err,
-          LogLevel.Warning,
-          DEBUG_TAG
-        );
-        return of(null);
-      })
-    );
-  }
-
-  pauseSavingTiles(clearBuffer = true) {
-    this.loggingService.debug('Pasue saving tiles', DEBUG_TAG, clearBuffer);
-    this._shouldDownloadTiles.next(false);
-    if (clearBuffer) {
-      this._saveBuffer = new Subject<{ id: string; el: HTMLImageElement }>();
-    }
-  }
-
-  resumeSavingTiles() {
-    this.loggingService.debug('Resume saving tiles', DEBUG_TAG);
-    this._shouldDownloadTiles.next(true);
-  }
+  ) {}
 
   // private getArrayBufferFromImage(input$: Observable<{id: string, el: HTMLImageElement}>) {
   //   const offScreenCanvas$ = input$.pipe(map((input) => ImageHelper.getCanvasFromImage(input.el)),
@@ -178,25 +105,10 @@ export class OfflineMapService implements OnReset {
   mergeOfflineMaps(savedMaps: OfflineMap[]) {
     const availableMaps: OfflineMap[] = [
       {
-        name: 'Kautokeino',
-        url:
-          'https://offlinetiles.blob.core.windows.net/offline-tiles/Kautokeino.zip',
+        name: 'Vank kommune',
+        url: 'assets/offlinemap/vang_kommune_n50.vtpk',
         size: 1597336931,
-        filename: 'Kautokeino.zip'
-      },
-      {
-        name: 'Luster',
-        url:
-          'https://offlinetiles.blob.core.windows.net/offline-tiles/Luster.zip',
-        size: 1199225911,
-        filename: 'Luster.zip'
-      },
-      {
-        name: 'Small-test',
-        url:
-          'https://offlinetiles.blob.core.windows.net/offline-tiles/Small-test.zip',
-        size: 19296,
-        filename: 'Small-test.zip'
+        filename: 'vang_kommune_n50.vtpk'
       }
     ];
     return availableMaps.map((m) => {
@@ -508,33 +420,33 @@ export class OfflineMapService implements OnReset {
   }
 
   async downloadMap(m: OfflineMap) {
-    // try {
-    //   const path = await this.backgroundDownloadService.selectDowloadFolder();
-    //   if (path.length > 0) {
-    //     const mapToSave = {
-    //       ...m,
-    //       filePath: path,
-    //       downloadStart: moment().unix(),
-    //       downloaded: 0,
-    //       progress: 0,
-    //       downloadComplete: null,
-    //     };
-    //     await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
-    //       .query('upsert', mapToSave)
-    //       .exec();
+    try {
+      const path = await this.backgroundDownloadService.selectDowloadFolder();
+      if (path.length > 0) {
+        const mapToSave = {
+          ...m,
+          filePath: path,
+          downloadStart: moment().unix(),
+          downloaded: 0,
+          progress: 0,
+          downloadComplete: null
+        };
+        await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
+          .query('upsert', mapToSave)
+          .exec();
 
-    //     await this.backgroundDownloadService.downloadFile(
-    //       path,
-    //       m.filename,
-    //       m.url,
-    //       async () => await this.onComplete(m.name),
-    //       async (progress) => await this.onProgress(m.name, progress),
-    //       async (error) => await this.onError(m.name, error));
-    //   }
-    // } catch (error) {
-    //   await this.onError(m.name, error);
-    // }
-    throw new Error('Not implemented');
+        await this.backgroundDownloadService.downloadFile(
+          path,
+          m.filename,
+          m.url,
+          async () => await this.onComplete(m.name),
+          async (progress) => await this.onProgress(m.name, progress),
+          async (error) => await this.onError(m.name, error)
+        );
+      }
+    } catch (error) {
+      await this.onError(m.name, error);
+    }
   }
 
   private async getSavedMap(name: string): Promise<OfflineMap> {
