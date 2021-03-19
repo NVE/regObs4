@@ -21,6 +21,7 @@
       "dom",
     ],
     "baseUrl": "./",
+    "skipLibCheck": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": false,
