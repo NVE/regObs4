@@ -137,11 +137,13 @@ export class BackgroundDownloadNativeService
   //     await this.file.removeRecursively(path, dirName);
   // }
 
-  // async getFileUrl(path: string, filename: string): Promise<string> {
-  //     const directoryEntry = await this.file.resolveDirectoryUrl(path);
-  //     const targetFile = await this.file.getFile(directoryEntry, filename, { create: false });
-  //     return targetFile.toURL();
-  // }
+  async getFileUrl(path: string, filename: string): Promise<string> {
+    const directoryEntry = await this.file.resolveDirectoryUrl(path);
+    const targetFile = await this.file.getFile(directoryEntry, filename, {
+      create: false
+    });
+    return targetFile.toURL();
+  }
 
   selectDowloadFolder(): Promise<string> {
     // if (this.platform.is('android')) {

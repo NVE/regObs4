@@ -4,6 +4,9 @@ import { BackgroundDownloadService } from './background-download.service';
 
 @Injectable()
 export class BackgroundDownloadWebService implements BackgroundDownloadService {
+  getFileUrl(path: string, filename: string): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
   downloadFile(
     path: string,
     filename: string,

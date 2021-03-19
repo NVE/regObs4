@@ -15,6 +15,9 @@ import MapView from '@arcgis/core/views/MapView';
 import config from '@arcgis/core/config.js';
 import { BehaviorSubject } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
+import { OfflineMap } from 'src/app/core/services/offline-map/offline-map.model';
+import { take } from 'rxjs/operators';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -37,11 +40,16 @@ export class MapComponent implements OnInit {
   loading: boolean;
   private isActive: BehaviorSubject<boolean>;
   private view: any = null;
+  private map: Map;
 
   // The <div> where we will place the map
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
 
-  constructor(private zone: NgZone, private logger: LoggingService) {}
+  constructor(
+    private zone: NgZone,
+    private logger: LoggingService,
+    private offlineMapService: OfflineMapService
+  ) {}
 
   ngOnInit(): void {
     config.assetsPath = 'assets/';
@@ -80,7 +88,7 @@ export class MapComponent implements OnInit {
       id: 'vektorkart'
     });
 
-    const map = new Map({
+    this.map = new Map({
       basemap: basemap
       // layers: layers
     });
@@ -92,7 +100,7 @@ export class MapComponent implements OnInit {
     // });
 
     const view = new MapView({
-      map,
+      map: this.map,
       container
       // center: initialView.target, //TODO: Get from URL
       // zoom: initialView.zoom, //TODO: Get from URL
@@ -113,6 +121,8 @@ export class MapComponent implements OnInit {
       .when(() => {
         this.loading = false;
         this.mapReady.emit(null);
+
+        this.initOfflineMaps();
       })
       .catch((reason) => {
         this.logger.log(`Error in initializeMap due to ${reason}`);
@@ -121,5 +131,24 @@ export class MapComponent implements OnInit {
 
   componentIsActive(isActive: boolean) {
     this.isActive.next(isActive);
+  }
+
+  private initOfflineMaps() {
+    this.offlineMapService
+      .getOfflineMapsAsObservable()
+      .pipe(take(1)) // TODO: Listen for changes and apply offline map layer when changes in offline maps
+      .subscribe((offlineMaps) => {
+        for (const offlineMap of offlineMaps) {
+          if (offlineMap.downloadComplete) {
+            this.addOfflineLayer(offlineMap);
+          }
+        }
+      });
+  }
+
+  private async addOfflineLayer(offlineMap: OfflineMap) {
+    const style = await this.offlineMapService.getStyleJson(offlineMap);
+    const vLayer = new VectorTileLayer({ style });
+    this.map.layers.add(vLayer);
   }
 }

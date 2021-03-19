@@ -13,7 +13,7 @@ export abstract class BackgroundDownloadService {
   ): Promise<void>;
   // abstract cancelDownload(filename: string);
   // abstract deleteFolder(path: string, dirName: string): Promise<void>;
-  // abstract getFileUrl(path: string, filename: string): Promise<string>;
+  abstract getFileUrl(path: string, filename: string): Promise<string>;
   abstract selectDowloadFolder(): Promise<string>;
   // abstract getAllFiles(path: string, dirName: string): Promise<{ directory: string, name: string, url: string, size: number }[]>;
   // abstract downloadToDataUrl(url: string, type: string): Promise<{ dataUrl: string, size: number }>;

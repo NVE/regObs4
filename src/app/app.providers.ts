@@ -54,6 +54,7 @@ import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AuthService } from 'ionic-appauth';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { FileTransfer } from '@ionic-native/file-transfer';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -88,6 +89,7 @@ export const APP_PROVIDERS = [
   Geolocation,
   DeviceOrientation,
   File,
+  FileTransfer,
   AndroidPermissions,
   Zip,
   Clipboard,

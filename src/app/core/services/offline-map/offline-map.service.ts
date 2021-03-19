@@ -33,6 +33,7 @@ import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateO
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { Platform } from '@ionic/angular';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { HttpClient } from '@angular/common/http';
 
 const DEBUG_TAG = 'OfflineMapService';
 const RECENTLY_SAVED_TILE_CACHE_SIZE = 2000;
@@ -56,7 +57,8 @@ export class OfflineMapService implements OnReset {
     private file: File,
     private platform: Platform,
     private webview: WebView,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
+    private httpClient: HttpClient
   ) {}
 
   // private getArrayBufferFromImage(input$: Observable<{id: string, el: HTMLImageElement}>) {
@@ -105,7 +107,7 @@ export class OfflineMapService implements OnReset {
   mergeOfflineMaps(savedMaps: OfflineMap[]) {
     const availableMaps: OfflineMap[] = [
       {
-        name: 'Vank kommune',
+        name: 'vang_kommune_n50',
         url: 'assets/offlinemap/vang_kommune_n50.vtpk',
         size: 1597336931,
         filename: 'vang_kommune_n50.vtpk'
@@ -455,6 +457,29 @@ export class OfflineMapService implements OnReset {
       .where((m: OfflineMap) => m.name === name)
       .exec()) as OfflineMap[];
     return result[0];
+  }
+
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  public async getStyleJson(offlineMap: OfflineMap): Promise<Object> {
+    const path = await this.backgroundDownloadService.selectDowloadFolder();
+    const url = await this.backgroundDownloadService.getFileUrl(
+      path,
+      `${offlineMap.name}/p12/resources/styles/root.json`
+    );
+    const tilePath = this.webview.convertFileSrc(
+      `${path}/p12/tile/{z}/{y}/{x}.pbf`
+    );
+    const styleJson = await this.httpClient.get(url).toPromise();
+    return {
+      ...styleJson,
+      sources: {
+        esri: {
+          tilejson: '2.2.0',
+          type: 'vector',
+          tiles: [tilePath]
+        }
+      }
+    };
   }
 
   private async deleteMapFromDb(name: string) {
