@@ -5,42 +5,18 @@ import moment from 'moment';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { OfflineTile } from './offline-tile.model';
 import { NanoSql } from '../../../../nanosql';
-import { File, Entry, FileEntry } from '@ionic-native/file/ngx';
-import { settings } from '../../../../settings';
+import { File, Entry } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
-import {
-  Observable,
-  from,
-  Subject,
-  BehaviorSubject,
-  zip,
-  of,
-  NEVER
-} from 'rxjs';
-import {
-  map,
-  delay,
-  mergeMap,
-  catchError,
-  take,
-  switchMap
-} from 'rxjs/operators';
-import { LRUCache } from 'lru-fast';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
-import { ImageHelper } from '../../helpers/image.helper';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
-import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { Platform } from '@ionic/angular';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HttpClient } from '@angular/common/http';
 
 const DEBUG_TAG = 'OfflineMapService';
-const RECENTLY_SAVED_TILE_CACHE_SIZE = 2000;
-const SAVE_TILE_DELAY_BUFFER = 500;
-const MAX_BUFFER_SIZE = 100;
-const MIME_TYPE = 'image/png';
-const QUALITY = 0.5;
 
 @Injectable({
   providedIn: 'root'
@@ -98,7 +74,7 @@ export class OfflineMapService implements OnReset {
     avalable: OfflineMap[],
     downloaded: OfflineMap[]
   ): OfflineMap[] {
-    return avalable.filter((a) => downloaded.find((d) => d.name !== a.name));
+    return avalable.filter((a) => !downloaded.find((d) => d.name === a.name));
   }
 
   getDownloadableOfflineMaps(): OfflineMap[] {
@@ -106,7 +82,7 @@ export class OfflineMapService implements OnReset {
       {
         name: 'vang_kommune_n50',
         url: 'assets/offlinemap/vang_kommune_n50.vtpk',
-        size: 1597336931,
+        size: 4239189,
         filename: 'vang_kommune_n50.vtpk'
       }
     ];
@@ -146,6 +122,7 @@ export class OfflineMapService implements OnReset {
           path,
           m.filename,
           m.url,
+          m.name,
           async () => await this.onComplete(m.name),
           async (progress) => await this.onProgress(m.name, progress),
           async (error) => await this.onError(m.name, error)
@@ -171,17 +148,19 @@ export class OfflineMapService implements OnReset {
       path,
       `${offlineMap.name}/p12/resources/styles/root.json`
     );
-    const tilePath = this.webview.convertFileSrc(
-      `${path}/p12/tile/{z}/{y}/{x}.pbf`
+    const webUrl = this.webview.convertFileSrc(url);
+    const tileUrl = webUrl.replace(
+      'p12/resources/styles/root.json',
+      'p12/tile/{z}/{y}/{x}.pbf'
     );
-    const styleJson = await this.httpClient.get(url).toPromise();
+    const styleJson = await this.httpClient.get(webUrl).toPromise();
     return {
       ...styleJson,
       sources: {
         esri: {
           tilejson: '2.2.0',
           type: 'vector',
-          tiles: [tilePath]
+          tiles: [tileUrl]
         }
       }
     };
@@ -234,36 +213,9 @@ export class OfflineMapService implements OnReset {
     await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
   }
 
-  private async saveMetaData(_: OfflineMap) {
-    // TODO: Read metadata from json instead!
-    // const tiles = (await this.backgroundDownloadService.getAllFiles(map.filePath, map.name)).map((file) =>
-    //   this.getOfflineTileFromFile(map.name, file.directory, file.name, file.url, file.size)
-    // );
-    // await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name).loadJS(tiles);
+  private saveMetaData(m: OfflineMap) {
+    // TODO: Read metadata from offline package!
   }
-
-  // Assumes map directory: /{mapName}/{tileName}/{z}/
-  // filename: tile_{x}_{y}.png
-  // private getOfflineTileFromFile(mapName: string, directory: string, filename: string, url: string, size: number): OfflineTile {
-  //   const index = directory.indexOf(mapName) + mapName.length + 1;
-  //   const tileRest = directory.substr(index);
-  //   const tileName = tileRest.substr(0, tileRest.indexOf('/')); // topo, clayzones, etc
-  //   const zRest = tileRest.substr(tileRest.indexOf(tileName) + tileName.length + 1);
-  //   const z = zRest.substr(0, zRest.indexOf('/'));
-  //   const xRest = filename.substr(filename.indexOf('_') + 1);
-  //   const x = xRest.substr(0, xRest.indexOf('_'));
-  //   const yRest = xRest.substr(xRest.indexOf(x) + 2);
-  //   const y = yRest.substr(0, yRest.indexOf('.'));
-  //   const tileId = `${tileName}_${z}_${x}_${y}`;
-  //   return {
-  //     id: tileId, // NOTE: This overrides other downloaded maps, so when delete this map other maps can have the same tileId...
-  //     // but using id as pk because of performance bug in nanoSQL https://github.com/ClickSimply/Nano-SQL/issues/94
-  //     url: url,
-  //     mapName: mapName,
-  //     lastAccess: moment().unix(),
-  //     size,
-  //   };
-  // }
 
   appOnReset(): void | Promise<any> {}
 

@@ -7,6 +7,7 @@ export abstract class BackgroundDownloadService {
     path: string,
     filename: string,
     url: string,
+    folder: string,
     onComplete: () => void,
     onProgress: (progress: Progress) => void,
     onError: (error: Error) => void

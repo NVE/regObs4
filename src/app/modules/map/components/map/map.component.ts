@@ -17,7 +17,6 @@ import { BehaviorSubject } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
 import { OfflineMap } from 'src/app/core/services/offline-map/offline-map.model';
-import { take } from 'rxjs/operators';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -52,7 +51,7 @@ export class MapComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    config.assetsPath = 'assets/';
+    config.assetsPath = 'assets';
 
     this.zone.runOutsideAngular(() => {
       // Initialize MapView and return an instance of MapView
@@ -82,7 +81,7 @@ export class MapComponent implements OnInit {
       baseLayers: [
         new VectorTileLayer({
           url:
-            'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasisTerreng/VectorTileServer'
+            'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer'
         })
       ],
       id: 'vektorkart'
@@ -101,7 +100,9 @@ export class MapComponent implements OnInit {
 
     const view = new MapView({
       map: this.map,
-      container
+      container,
+      zoom: 7,
+      center: [10.5, 60]
       // center: initialView.target, //TODO: Get from URL
       // zoom: initialView.zoom, //TODO: Get from URL
       // constraints: {
@@ -116,13 +117,13 @@ export class MapComponent implements OnInit {
       // }
     });
 
+    this.initOfflineMaps();
+
     this.mapView = view;
     this.mapView
       .when(() => {
         this.loading = false;
         this.mapReady.emit(null);
-
-        this.initOfflineMaps();
       })
       .catch((reason) => {
         this.logger.log(`Error in initializeMap due to ${reason}`);
@@ -136,7 +137,6 @@ export class MapComponent implements OnInit {
   private initOfflineMaps() {
     this.offlineMapService
       .createDownloadedOfflineMaps$()
-      .pipe(take(1)) // TODO: Listen for changes and apply offline map layer when changes in offline maps
       .subscribe((offlineMaps) => {
         for (const offlineMap of offlineMaps) {
           if (offlineMap.downloadComplete) {

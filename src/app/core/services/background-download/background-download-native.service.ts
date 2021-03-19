@@ -6,6 +6,7 @@ import { ProgressStep } from '../offline-map/progress-step.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { Zip } from '@ionic-native/zip/ngx';
 import { HttpClient } from '@angular/common/http';
+import JSZip from 'jszip';
 
 @Injectable()
 export class BackgroundDownloadNativeService
@@ -21,6 +22,7 @@ export class BackgroundDownloadNativeService
     path: string,
     filename: string,
     url: string,
+    folder: string,
     onComplete: () => void,
     onProgress: (progress: Progress) => void,
     onError: (error: Error) => void
@@ -61,20 +63,51 @@ export class BackgroundDownloadNativeService
       const offlinePackage = await this.httpClient
         .get(url, { responseType: 'blob' })
         .toPromise();
-      const file = await this.file.createFile(path, filename, true);
-      file.createWriter(
-        async (writer) => {
-          writer.write(offlinePackage);
-          await this.nativeOnComplete(
-            path,
-            filename,
-            onComplete,
-            onProgress,
-            onError
-          );
-        },
-        (err) => onError(new Error(`${err.code} - ${err.message}`))
-      );
+      try {
+        const zip = new JSZip();
+        const content = await zip.loadAsync(offlinePackage, {
+          createFolders: true
+        });
+        const zipEntries = Object.keys(content.files);
+        this.logger.debug(
+          'zip entries',
+          'background download native',
+          zipEntries
+        );
+        const directories = zipEntries.filter(
+          (name) => content.files[name].dir
+        );
+        await this.file.createDir(path, folder, true);
+        for (const dir of directories) {
+          await this.file.createDir(path + folder, dir, true);
+        }
+        for (const entry of zipEntries.filter(
+          (name) => !content.files[name].dir
+        )) {
+          const fileContent = await zip.file(entry).async('arraybuffer');
+          await this.file.writeFile(path + folder, entry, fileContent, {
+            replace: true
+          });
+        }
+        onComplete();
+      } catch (err) {
+        onError(err);
+      }
+      // const file = await this.file.createFile(path, filename, true);
+      // file.createWriter(
+      //   async (writer) => {
+      //     writer.write(offlinePackage);
+      //     await this.nativeOnComplete(
+      //       path,
+      //       filename,
+      //       folder,
+      //       onComplete,
+      //       onProgress,
+      //       onError
+      //     );
+      //   },
+      //   (err) => onError(new Error(`${err.code} - ${err.message}`))
+      // );
     } catch (err) {
       onError(err);
     }
@@ -83,41 +116,93 @@ export class BackgroundDownloadNativeService
   private async nativeOnComplete(
     directory: string,
     filename: string,
+    folder: string,
     onComplete: () => void,
     onProgress: (progress: Progress) => void,
     onError: (error: Error) => void
   ) {
-    await this.unzipFiles(directory, filename, onComplete, onProgress, onError);
+    await this.unzipFiles(
+      directory,
+      filename,
+      folder,
+      onComplete,
+      onProgress,
+      onError
+    );
   }
 
   private async unzipFiles(
     path: string,
     filename: string,
+    folder: string,
     onComplete: () => void,
     onProgress: (progress: Progress) => void,
     onError: (error: Error) => void
   ) {
-    const fullpath = path + '/' + filename;
-    const folder = fullpath.replace('.zip', '');
+    const folderToExtract = path + folder;
+
+    // There is a problem with zip plugin as well, so using JSZip instead
+    // https://github.com/MobileChromeApps/cordova-plugin-zip/issues/89
+
     // console.log(`Unzipping file ${fullpath} to ${folder}`);
-    const result = await this.zip.unzip(fullpath, folder, (progress) => {
-      onProgress({
-        percentage: progress.loaded / progress.total,
-        step: ProgressStep.extractZip,
-        description: 'Unzip files'
-      });
-    });
-    if (result === 0) {
-      // console.log(`Unzip complete. Deleting zip file.`);
+    // const result = await this.zip.unzip(
+    //   fullpathToZip,
+    //   folderToExtract,
+    //   (progress) => {
+    //     onProgress({
+    //       percentage: progress.loaded / progress.total,
+    //       step: ProgressStep.extractZip,
+    //       description: 'Unzip files'
+    //     });
+    //   }
+    // );
+    // if (result === 0) {
+    //   // console.log(`Unzip complete. Deleting zip file.`);
+    //   this.logger.debug(
+    //     'Unzip complete. Deleting zip file.',
+    //     'bacground-download-native'
+    //   );
+    //   await this.file.removeFile(path, filename);
+    //   this.logger.debug('Zip file deleted', 'bacground-download-native');
+    //   onComplete();
+    // } else {
+    //   onError(Error('Could not extract files!'));
+    // }
+
+    try {
+      const zip = new JSZip();
+      const fileData = await this.file.readAsBinaryString(path, filename);
+      const content = await zip.loadAsync(fileData, { createFolders: true });
+      const zipEntries = Object.keys(content.files);
       this.logger.debug(
-        'Unzip complete. Deleting zip file.',
-        'bacground-download-native'
+        'zip entries',
+        'background download native',
+        zipEntries
       );
-      await this.file.removeFile(path, filename);
-      this.logger.debug('Zip file deleted', 'bacground-download-native');
+      const directories = zipEntries.filter((name) => content.files[name].dir);
+      const zipFileEntries = zipEntries.filter(
+        (name) => !content.files[name].dir
+      );
+      await this.file.createDir(path, folder, true);
+      for (const dir of directories) {
+        await this.file.createDir(folderToExtract, dir, true);
+      }
+      let i = 0;
+      for (const entry of zipFileEntries) {
+        const fileContent = await zip.file(entry).async('arraybuffer');
+        await this.file.writeFile(folderToExtract, entry, fileContent, {
+          replace: true
+        });
+        i++;
+        onProgress({
+          percentage: i / zipFileEntries.length,
+          step: ProgressStep.extractZip,
+          description: 'Unzip files'
+        });
+      }
       onComplete();
-    } else {
-      onError(Error('Could not extract files!'));
+    } catch (err) {
+      onError(err);
     }
   }
 
