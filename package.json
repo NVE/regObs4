@@ -46,7 +46,6 @@
     "@ionic-native/diagnostic": "^5.31.1",
     "@ionic-native/email-composer": "^5.31.1",
     "@ionic-native/file": "^5.31.1",
-    "@ionic-native/file-transfer": "^5.31.1",
     "@ionic-native/geolocation": "^5.31.1",
     "@ionic-native/http": "^5.31.1",
     "@ionic-native/in-app-browser": "^5.31.1",
@@ -218,8 +217,7 @@
       "cordova-plugin-x-socialsharing": {},
       "cordova.plugins.diagnostic": {
         "ANDROIDX_VERSION": "1.+"
-      },
-      "cordova-plugin-file-transfer": {}
+      }
     },
     "platforms": [
       "ios",
