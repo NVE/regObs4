@@ -146,8 +146,15 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   checkAmountOfPictures(): number {
+    if (this.imgUrl.length === 3 && !this.location) {
+      this.moreThanFourPics = false;
+      return 3;
+    }
     if (this.imgUrl.length >= 3) {
       this.moreThanFourPics = true;
+      return 3;
+    }
+    if (this.imgUrl.length === 2) {
       return 3;
     }
     if (this.imgUrl.length === 1) {
@@ -282,5 +289,19 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   prev() {
     this.slider.slidePrev();
     this.updateUi();
+  }
+
+  isPreviousImgAvailable(): boolean {
+    if (this.location) {
+      return this.activeIndex >= 1;
+    }
+    return this.activeIndex >= 1;
+  }
+
+  isNextImgAvailable() {
+    if (this.location) {
+      return this.activeIndex + 1 < this.imgUrl.length;
+    }
+    return this.activeIndex + 2 < this.imgUrl.length;
   }
 }

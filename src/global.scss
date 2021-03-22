@@ -588,3 +588,15 @@ ion-select-popover ion-list ion-item ion-radio {
     --background-hover-opacity: 0.5;
   }
 }
+
+.textOverlay {
+  bottom: 0;
+  width: 100%;
+  text-align: left;
+  display: flex;
+}
+
+.sc-ion-popover-md-h {
+  --width: 350px;
+  --backdrop-opacity: var(--ion-backdrop-opacity, 0);
+}
