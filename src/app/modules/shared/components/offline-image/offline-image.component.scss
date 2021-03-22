@@ -91,5 +91,6 @@ ion-img {
   ion-img::part(image) {
     max-height: 350px;
     object-fit: contain;
+    background: #fafafa;
   }
 }
