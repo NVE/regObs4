@@ -47,7 +47,7 @@
           {{'REGISTRATION.IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [(images)]="registration.request.Attachments" (imagesChange)="save()"
+      <app-add-picture-item [geoHazard]="registration.geoHazard" [registrationId]="registration.id"
         [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>
