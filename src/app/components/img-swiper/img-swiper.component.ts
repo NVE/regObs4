@@ -144,8 +144,15 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   checkAmountOfPictures(): number {
+    if (this.attachments.length === 3 && !this.location) {
+      this.moreThanFourPics = false;
+      return 3;
+    }
     if (this.attachments.length >= 3) {
       this.moreThanFourPics = true;
+      return 3;
+    }
+    if (this.attachments.length === 2) {
       return 3;
     }
     if (this.attachments.length === 1) {
@@ -283,5 +290,19 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   prev() {
     this.slider.slidePrev();
     this.updateUi();
+  }
+
+  isPreviousImgAvailable(): boolean {
+    if (this.location) {
+      return this.activeIndex >= 1;
+    }
+    return this.activeIndex >= 1;
+  }
+
+  isNextImgAvailable() {
+    if (this.location) {
+      return this.activeIndex + 1 < this.attachments.length;
+    }
+    return this.activeIndex + 2 < this.attachments.length;
   }
 }

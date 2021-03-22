@@ -16,6 +16,8 @@
 
   .swiper-button-next,
   .swiper-button-prev {
+    position: absolute;
+    z-index: 1;
     transform: translateZ(1px);
     background-color: var(--ion-item-background);
     width: 36px;
@@ -26,6 +28,7 @@
 
   .swiper-button-next::after,
   .swiper-button-prev::after {
+    z-index: 1;
     font-weight: bold;
     color: #959595;
     font-size: 14px;
@@ -148,11 +151,22 @@
     app-map-image {
       max-height: 400px;
     }
+    app-offline-image {
+      max-height: 350px;
+    }
     ion-slides {
-      height: 30vh;
+      height: auto;
       .swiper-slide {
+        min-height: 30vh;
         height: auto;
       }
     }
   }
+}
+
+.slideGrid {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(230px, auto) minmax(min-content, 10%);
+  gap: 4px 0px;
 }
