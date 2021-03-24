@@ -12,7 +12,8 @@ import { Observable } from 'rxjs';
   styleUrls: ['./offline-map.page.scss']
 })
 export class OfflineMapPage implements OnInit {
-  offlineMaps$: Observable<OfflineMap[]>;
+  availableMapsToDownload$: Observable<OfflineMap[]>;
+  downloadedMaps$: Observable<OfflineMap[]>;
 
   constructor(
     private offlineMapService: OfflineMapService,
@@ -20,42 +21,43 @@ export class OfflineMapPage implements OnInit {
     private actionSheetController: ActionSheetController
   ) {}
 
-  ngOnInit() {
-    this.offlineMaps$ = this.offlineMapService.getOfflineMapsAsObservable();
+  ngOnInit(): void {
+    this.availableMapsToDownload$ = this.offlineMapService.createAvailableOfflineMapsToDownload$();
+    this.downloadedMaps$ = this.offlineMapService.createDownloadedOfflineMaps$();
   }
 
-  humanReadableByteSize(bytes) {
+  humanReadableByteSize(bytes: number): string {
     return this.helperService.humanReadableByteSize(bytes);
   }
 
-  async downloadMap(map: OfflineMap) {
+  async downloadMap(map: OfflineMap): Promise<void> {
     await this.offlineMapService.downloadMap(map);
   }
 
-  getPercentage(map: OfflineMap) {
+  getPercentage(map: OfflineMap): number {
     return Math.round(
       (map.progress && map.progress.percentage ? map.progress.percentage : 0) *
         100
     );
   }
 
-  deleteMap(map: OfflineMap) {
-    this.offlineMapService.remove(map);
+  deleteMap(map: OfflineMap): Promise<void> {
+    return this.offlineMapService.remove(map);
   }
 
-  async cancelDownload(map: OfflineMap) {
+  async cancelDownload(map: OfflineMap): Promise<void> {
     await this.offlineMapService.cancelDownload(map);
   }
 
-  isDownloading(map: OfflineMap) {
+  isDownloading(map: OfflineMap): boolean {
     return map.downloadStart && !map.downloadComplete;
   }
 
-  isDownloaded(map: OfflineMap) {
+  isDownloaded(map: OfflineMap): boolean {
     return !!map.downloadComplete;
   }
 
-  async presentActionSheet(map: OfflineMap) {
+  async presentActionSheet(map: OfflineMap): Promise<void> {
     const header = map.name;
     const subHeader = this.humanReadableByteSize(map.size);
     const buttons: ActionSheetButton[] = [];

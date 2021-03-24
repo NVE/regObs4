@@ -1,8 +1,23 @@
 import { Injectable } from '@angular/core';
+import { Progress } from '../offline-map/progress.model';
 import { BackgroundDownloadService } from './background-download.service';
 
 @Injectable()
 export class BackgroundDownloadWebService implements BackgroundDownloadService {
+  getFileUrl(path: string, filename: string): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+  downloadFile(
+    path: string,
+    filename: string,
+    url: string,
+    folder: string,
+    onComplete: () => void,
+    onProgress: (progress: Progress) => void,
+    onError: (error: Error) => void
+  ): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
   // downloadFile(
   //     path: string,
   //     filename: string,
@@ -77,7 +92,7 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
   // }
 
   selectDowloadFolder() {
-    return Promise.resolve('');
+    return Promise.reject('Not implemented');
   }
 
   // getAllFiles(path: string, dirName: string): Promise<{ directory: string, name: string, url: string, size: number }[]> {

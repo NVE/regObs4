@@ -15,6 +15,8 @@ import MapView from '@arcgis/core/views/MapView';
 import config from '@arcgis/core/config.js';
 import { BehaviorSubject } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
+import { OfflineMap } from 'src/app/core/services/offline-map/offline-map.model';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -37,14 +39,19 @@ export class MapComponent implements OnInit {
   loading: boolean;
   private isActive: BehaviorSubject<boolean>;
   private view: any = null;
+  private map: Map;
 
   // The <div> where we will place the map
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
 
-  constructor(private zone: NgZone, private logger: LoggingService) {}
+  constructor(
+    private zone: NgZone,
+    private logger: LoggingService,
+    private offlineMapService: OfflineMapService
+  ) {}
 
   ngOnInit(): void {
-    config.assetsPath = 'assets/';
+    config.assetsPath = 'assets';
 
     this.zone.runOutsideAngular(() => {
       // Initialize MapView and return an instance of MapView
@@ -74,13 +81,13 @@ export class MapComponent implements OnInit {
       baseLayers: [
         new VectorTileLayer({
           url:
-            'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasisTerreng/VectorTileServer'
+            'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer'
         })
       ],
       id: 'vektorkart'
     });
 
-    const map = new Map({
+    this.map = new Map({
       basemap: basemap
       // layers: layers
     });
@@ -92,8 +99,10 @@ export class MapComponent implements OnInit {
     // });
 
     const view = new MapView({
-      map,
-      container
+      map: this.map,
+      container,
+      zoom: 7,
+      center: [10.5, 60]
       // center: initialView.target, //TODO: Get from URL
       // zoom: initialView.zoom, //TODO: Get from URL
       // constraints: {
@@ -108,6 +117,8 @@ export class MapComponent implements OnInit {
       // }
     });
 
+    this.initOfflineMaps();
+
     this.mapView = view;
     this.mapView
       .when(() => {
@@ -121,5 +132,23 @@ export class MapComponent implements OnInit {
 
   componentIsActive(isActive: boolean) {
     this.isActive.next(isActive);
+  }
+
+  private initOfflineMaps() {
+    this.offlineMapService
+      .createDownloadedOfflineMaps$()
+      .subscribe((offlineMaps) => {
+        for (const offlineMap of offlineMaps) {
+          if (offlineMap.downloadComplete) {
+            this.addOfflineLayer(offlineMap);
+          }
+        }
+      });
+  }
+
+  private async addOfflineLayer(offlineMap: OfflineMap) {
+    const style = await this.offlineMapService.getStyleJson(offlineMap);
+    const vLayer = new VectorTileLayer({ style });
+    this.map.layers.add(vLayer);
   }
 }

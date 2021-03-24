@@ -187,37 +187,6 @@ export class DataMarshallService implements OnReset {
       );
 
       this.subscriptions.push(
-        this.offlineMapService
-          .getFullTilesCacheAsObservable()
-          .subscribe((val) => {
-            if (val) {
-              this.offlineMapService.updateTilesCacheSizeTable(
-                val.count ?? 0,
-                val.size ?? 0
-              );
-            }
-          })
-      );
-      this.subscriptions.push(
-        this.userSettingService.userSetting$
-          .pipe(
-            map((val) =>
-              val.tilesCacheSizev2 != null
-                ? val.tilesCacheSizev2
-                : settings.map.tiles.cacheSize
-            ),
-            distinctUntilChanged(),
-            debounceTime(1000)
-          )
-          .subscribe((val) => {
-            this.loggingService.debug(
-              `Tiles cahce size changed to ${val}`,
-              DEBUG_TAG
-            );
-            this.offlineMapService.cleanupTilesCache(val);
-          })
-      );
-      this.subscriptions.push(
         this.platform.pause.subscribe(() => {
           this.loggingService.debug(
             'App paused. Stop foreground updates.',
