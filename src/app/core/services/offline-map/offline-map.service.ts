@@ -86,10 +86,16 @@ export class OfflineMapService implements OnReset {
         filename: 'vang_kommune_n50.vtpk'
       },
       {
-        name: 'Sogn',
-        url: 'assets/offlinemap/Sogn_ca_extent.zip',
+        name: 'Sogn_ca_extentMedZoomLevelFiks',
+        url: 'assets/offlinemap/Sogn_ca_extentMedZoomLevelFiks.zip',
         size: 26558000,
-        filename: 'Sogn_ca_extent.zip'
+        filename: 'Sogn_ca_extentMedZoomLevelFiks.zip'
+      },
+      {
+        name: 'Sogn-mini',
+        url: 'assets/offlinemap/Sogn-mini.zip',
+        size: 4239189,
+        filename: 'Sogn-mini.zip'
       }
     ];
     return availableMaps;
@@ -150,26 +156,45 @@ export class OfflineMapService implements OnReset {
   // eslint-disable-next-line @typescript-eslint/ban-types
   public async getStyleJson(offlineMap: OfflineMap): Promise<Object> {
     const path = await this.backgroundDownloadService.selectDowloadFolder();
+    this.loggingService.debug('download folder', DEBUG_TAG, path);
     const url = await this.backgroundDownloadService.getFileUrl(
-      path,
-      `${offlineMap.name}/p12/resources/styles/root.json`
+      `${path}${offlineMap.name}/resources/styles/`,
+      'root.json'
     );
+    this.loggingService.debug('style url', DEBUG_TAG, url);
+    // const rootUrl = await this.backgroundDownloadService.getFileUrl(
+    //   path,
+    //   `${offlineMap.name}/root.json`
+    // );
     const webUrl = this.webview.convertFileSrc(url);
+    //const rootWebUrl = this.webview.convertFileSrc(rootUrl);
+    this.loggingService.debug('web url', DEBUG_TAG, webUrl);
     const tileUrl = webUrl.replace(
-      'p12/resources/styles/root.json',
-      'p12/tile/{z}/{y}/{x}.pbf'
+      'resources/styles/root.json',
+      'tile/{z}/{y}/{x}.pbf'
     );
     const styleJson = await this.httpClient.get(webUrl).toPromise();
+    this.loggingService.debug('loaded styleJson', DEBUG_TAG, styleJson);
     return {
       ...styleJson,
       sources: {
         esri: {
           tilejson: '2.2.0',
           type: 'vector',
+          // url: rootWebUrl,
           tiles: [tileUrl]
         }
       }
     };
+  }
+
+  public async getRootJsonUrl(offlineMap: OfflineMap): Promise<string> {
+    const path = await this.backgroundDownloadService.selectDowloadFolder();
+    const url = await this.backgroundDownloadService.getFileUrl(
+      path,
+      `${offlineMap.name}/root.json`
+    );
+    return this.webview.convertFileSrc(url);
   }
 
   private async deleteMapFromDb(name: string) {

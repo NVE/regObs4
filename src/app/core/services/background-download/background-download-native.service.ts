@@ -80,13 +80,31 @@ export class BackgroundDownloadNativeService
         await this.file.createDir(path, folder, true);
         for (const dir of directories) {
           await this.file.createDir(path + folder, dir, true);
+          this.logger.debug(
+            'created folder',
+            'background download native',
+            path + folder + dir
+          );
         }
+        let i = 0;
+        const numFiles = zipEntries.length;
         for (const entry of zipEntries.filter(
           (name) => !content.files[name].dir
         )) {
           const fileContent = await zip.file(entry).async('arraybuffer');
           await this.file.writeFile(path + folder, entry, fileContent, {
             replace: true
+          });
+          this.logger.debug(
+            'unzipped and saved file',
+            'background download native',
+            path + folder + entry
+          );
+          i++;
+          onProgress({
+            percentage: i / numFiles,
+            step: ProgressStep.extractZip,
+            description: 'Unzip files'
           });
         }
         onComplete();
@@ -219,10 +237,13 @@ export class BackgroundDownloadNativeService
   // }
 
   async getFileUrl(path: string, filename: string): Promise<string> {
+    console.log(`getFileUrl, path = ${path}, filename = ${filename}`);
     const directoryEntry = await this.file.resolveDirectoryUrl(path);
+    console.log(`getFileUrl, directoryEntry = ${directoryEntry.toURL}`);
     const targetFile = await this.file.getFile(directoryEntry, filename, {
       create: false
     });
+    console.log(`getFileUrl, targetFile = ${targetFile.toURL}`);
     return targetFile.toURL();
   }
 
