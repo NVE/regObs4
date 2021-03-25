@@ -113,34 +113,44 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   async contactUs() {
-    const translations = await this.translateService
-      .get('MENU.CONTACT_SUBJECT')
-      .toPromise();
-    const email: EmailComposerOptions = {
-      to: settings.errorEmailAddress,
-      subject: translations,
-      isHtml: true
-    };
-    this.emailComposer.open(email);
+    if (isAndroidOrIos(this.platform)) {
+      const translations = await this.translateService
+        .get('MENU.CONTACT_SUBJECT')
+        .toPromise();
+      const email: EmailComposerOptions = {
+        to: settings.errorEmailAddress,
+        subject: translations,
+        isHtml: true
+      };
+      this.emailComposer.open(email);
+    } else {
+      window.location.href = 'mailto:regobs@nve.no';
+    }
   }
 
   async contactError() {
-    const translations = await this.translateService
-      .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'])
-      .toPromise();
-    const appVersion = await this.appVersionService.getAppVersion();
-    const email: EmailComposerOptions = {
-      to: settings.errorEmailAddress,
-      subject:
-        `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${
-          this.platform.is('ios') ? 'ios' : ''
-        }` +
-        `${this.platform.is('android') ? 'android' : ''}` +
-        ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
-      body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
-      isHtml: true
-    };
-    this.emailComposer.open(email);
+    if (isAndroidOrIos(this.platform)) {
+      const translations = await this.translateService
+        .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'])
+        .toPromise();
+      const appVersion = await this.appVersionService.getAppVersion();
+      const email: EmailComposerOptions = {
+        to: settings.errorEmailAddress,
+        subject:
+          `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${
+            this.platform.is('ios') ? 'ios' : ''
+          }` +
+          `${this.platform.is('android') ? 'android' : ''}` +
+          ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
+        body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
+        isHtml: true
+      };
+      this.emailComposer.open(email);
+    } else {
+      window.open(
+        'https://forms.office.com/Pages/ResponsePage.aspx?id=DYSNvMlgC0G0-xG4aAZ4DNWEVVcEorZHtmeqQxJTsoVUQ001UkpYUlU0SEwySEpQRkdZMVJDUU1VOCQlQCN0PWcu'
+      );
+    }
   }
 
   changeLanguage() {

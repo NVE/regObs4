@@ -4,6 +4,7 @@ import { FullscreenService } from '../../../../core/services/fullscreen/fullscre
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { AppMode } from 'src/app/modules/common-core/models';
+import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media';
 
 @Component({
   selector: 'app-header',
@@ -67,5 +68,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   endTrip() {
     this.tripLoggerService.stopLegacyTrip();
+  }
+
+  toggleMenu(): void {
+    const splitPane = document.querySelector('ion-split-pane');
+    if (
+      window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches
+    ) {
+      splitPane.classList.toggle('split-pane-visible');
+    }
   }
 }
