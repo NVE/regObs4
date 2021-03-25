@@ -84,6 +84,12 @@ export class OfflineMapService implements OnReset {
         url: 'assets/offlinemap/vang_kommune_n50.vtpk',
         size: 4239189,
         filename: 'vang_kommune_n50.vtpk'
+      },
+      {
+        name: 'Sogn',
+        url: 'assets/offlinemap/Sogn_ca_extent.zip',
+        size: 26558000,
+        filename: 'Sogn_ca_extent.zip'
       }
     ];
     return availableMaps;

@@ -81,7 +81,7 @@ export class MapComponent implements OnInit {
       baseLayers: [
         new VectorTileLayer({
           url:
-            'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer'
+            'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheGraatoneTerreng_WM/VectorTileServer'
         })
       ],
       id: 'vektorkart'
