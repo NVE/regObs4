@@ -600,3 +600,7 @@ ion-select-popover ion-list ion-item ion-radio {
   --width: 350px;
   --backdrop-opacity: var(--ion-backdrop-opacity, 0);
 }
+
+ion-split-pane {
+  --side-max-width: 400px;
+}
