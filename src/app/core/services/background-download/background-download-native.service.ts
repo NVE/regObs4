@@ -98,11 +98,11 @@ export class BackgroundDownloadNativeService
           this.logger.debug(
             'unzipped and saved file',
             'background download native',
-            path + folder + entry
+            path + folder + '/' + entry
           );
           i++;
           onProgress({
-            percentage: i / numFiles,
+            percentage: i / numFiles, //TODO: report on file size will give better progress estimate
             step: ProgressStep.extractZip,
             description: 'Unzip files'
           });
@@ -237,13 +237,13 @@ export class BackgroundDownloadNativeService
   // }
 
   async getFileUrl(path: string, filename: string): Promise<string> {
-    console.log(`getFileUrl, path = ${path}, filename = ${filename}`);
+    this.logger.debug(`getFileUrl, path = ${path}, filename = ${filename}`);
     const directoryEntry = await this.file.resolveDirectoryUrl(path);
-    console.log(`getFileUrl, directoryEntry = ${directoryEntry.toURL}`);
+    this.logger.debug(`getFileUrl, directoryEntry = ${directoryEntry.toURL}`);
     const targetFile = await this.file.getFile(directoryEntry, filename, {
       create: false
     });
-    console.log(`getFileUrl, targetFile = ${targetFile.toURL}`);
+    this.logger.debug(`getFileUrl, targetFile = ${targetFile.toURL}`);
     return targetFile.toURL();
   }
 

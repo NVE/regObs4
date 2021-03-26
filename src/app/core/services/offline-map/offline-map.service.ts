@@ -86,16 +86,16 @@ export class OfflineMapService implements OnReset {
         filename: 'vang_kommune_n50.vtpk'
       },
       {
-        name: 'Sogn_ca_extentMedZoomLevelFiks',
-        url: 'assets/offlinemap/Sogn_ca_extentMedZoomLevelFiks.zip',
-        size: 26558000,
-        filename: 'Sogn_ca_extentMedZoomLevelFiks.zip'
+        name: 'SognCaExtentEttLevelNed',
+        url: 'assets/offlinemap/SognCaExtentEttLevelNed.zip',
+        size: 57884672,
+        filename: 'SognCaExtentEttLevelNed.zip'
       },
       {
-        name: 'Sogn-mini',
-        url: 'assets/offlinemap/Sogn-mini.zip',
-        size: 4239189,
-        filename: 'Sogn-mini.zip'
+        name: 'SognCaExtentEttLevelNedMini',
+        url: 'assets/offlinemap/SognCaExtentEttLevelNedMini.zip',
+        size: 10704896,
+        filename: 'SognCaExtentEttLevelNedMini.zip'
       }
     ];
     return availableMaps;
