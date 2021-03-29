@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { AppMode } from '../../../../core/models/app-mode.enum';
+import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media';
 
 @Component({
   selector: 'app-header',
@@ -68,5 +68,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   endTrip() {
     this.tripLoggerService.stopLegacyTrip();
+  }
+
+  toggleMenu(): void {
+    const splitPane = document.querySelector('ion-split-pane');
+    if (
+      window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches
+    ) {
+      splitPane.classList.toggle('split-pane-visible');
+    }
   }
 }
