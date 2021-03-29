@@ -120,4 +120,9 @@ export class SelectComponent implements OnInit {
     this.selectedValue = id;
     this.selectedValueChange.emit(id);
   }
+
+  onChange(event) {
+    this.selectedValue = event.target.value;
+    this.selectedValueChange.emit(this.selectedValue);
+  }
 }
