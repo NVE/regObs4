@@ -205,18 +205,21 @@ export class OfflineMapService implements OnReset {
       .query('delete')
       .where((x: OfflineTile) => x.mapName === name)
       .exec();
+    this.loggingService.debug(
+      'removed map metadata from db for: ' + name,
+      DEBUG_TAG
+    );
   }
 
   async remove(m: OfflineMap) {
-    // await this.backgroundDownloadService.deleteFolder(m.filePath, m.name);
-    // await this.deleteMapFromDb(m.name);
-    throw Error('Not implemented');
+    await this.backgroundDownloadService.deleteFolder(m.filePath, m.name);
+    await this.deleteMapFromDb(m.name);
   }
 
   async cancelDownload(m: OfflineMap) {
     // this.backgroundDownloadService.cancelDownload(m.filename);
-    // await this.remove(m);
-    throw Error('Not implemented');
+    await this.remove(m);
+    // throw Error('Not implemented');
   }
 
   private async onProgress(name: string, progress: Progress) {
@@ -242,6 +245,18 @@ export class OfflineMapService implements OnReset {
     m.downloadComplete = moment().unix();
     m.progress = { percentage: 1.0 };
     await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
+    const secondsSpent = m.downloadComplete - m.downloadStart;
+    const rate = m.size / 1024 / secondsSpent;
+    this.loggingService.debug(
+      'Unzip of ' +
+        m.name +
+        ' finished in ' +
+        secondsSpent +
+        ' seconds. Speed: ' +
+        rate +
+        'kB/s',
+      DEBUG_TAG
+    );
   }
 
   private saveMetaData(m: OfflineMap) {

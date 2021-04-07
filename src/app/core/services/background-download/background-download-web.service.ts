@@ -87,9 +87,9 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
   //     }
   // }
 
-  // deleteFolder(path: string, dirName: string): Promise<void> {
-  //     return Promise.resolve();
-  // }
+  deleteFolder(path: string, dirName: string): Promise<void> {
+    return Promise.resolve();
+  }
 
   selectDowloadFolder() {
     return Promise.reject('Not implemented');

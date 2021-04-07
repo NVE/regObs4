@@ -80,11 +80,11 @@ export class BackgroundDownloadNativeService
         await this.file.createDir(path, folder, true);
         for (const dir of directories) {
           await this.file.createDir(path + folder, dir, true);
-          this.logger.debug(
-            'created folder',
-            'background download native',
-            path + folder + dir
-          );
+          // this.logger.debug(
+          //   'created folder',
+          //   'background download native',
+          //   path + folder + dir
+          // );
         }
         let i = 0;
         const numFiles = zipEntries.length;
@@ -95,11 +95,11 @@ export class BackgroundDownloadNativeService
           await this.file.writeFile(path + folder, entry, fileContent, {
             replace: true
           });
-          this.logger.debug(
-            'unzipped and saved file',
-            'background download native',
-            path + folder + '/' + entry
-          );
+          // this.logger.debug(
+          //   'unzipped and saved file',
+          //   'background download native',
+          //   path + folder + '/' + entry
+          // );
           i++;
           onProgress({
             percentage: i / numFiles, //TODO: report on file size will give better progress estimate
@@ -232,9 +232,20 @@ export class BackgroundDownloadNativeService
   //     this.currentDownloads.delete(filename);
   // }
 
-  // async deleteFolder(path: string, dirName: string): Promise<void> {
-  //     await this.file.removeRecursively(path, dirName);
-  // }
+  async deleteFolder(path: string, dirName: string): Promise<void> {
+    await this.file
+      .removeRecursively(path, dirName)
+      .then(() => {
+        this.logger.debug(`removed folder: ${path}${dirName}`);
+      })
+      .catch((err) => {
+        this.logger.error(
+          err,
+          'background download native',
+          `remove folder failed: ${path}${dirName}`
+        );
+      });
+  }
 
   async getFileUrl(path: string, filename: string): Promise<string> {
     this.logger.debug(`getFileUrl, path = ${path}, filename = ${filename}`);
@@ -255,7 +266,7 @@ export class BackgroundDownloadNativeService
     //         return this.file.externalDataDirectory;
     //     }
     // }
-    return Promise.resolve(this.file.dataDirectory);
+    return Promise.resolve(this.file.externalDataDirectory);
   }
 
   // async getAllFiles(path: string, dirName: string): Promise<Array<{ directory: string, name: string, url: string, size: number }>> {
