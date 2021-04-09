@@ -15,6 +15,7 @@ import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateO
 import { Platform } from '@ionic/angular';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HttpClient } from '@angular/common/http';
+import { WebServer, Response } from '@ionic-native/web-server/ngx';
 
 const DEBUG_TAG = 'OfflineMapService';
 
@@ -22,15 +23,67 @@ const DEBUG_TAG = 'OfflineMapService';
   providedIn: 'root'
 })
 export class OfflineMapService implements OnReset {
+  private webServerStarted = false;
+
   constructor(
     private backgroundDownloadService: BackgroundDownloadService,
     private file: File,
     private platform: Platform,
     private webview: WebView,
     private loggingService: LoggingService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private webServer: WebServer
   ) {}
 
+  async initWebServer(): Promise<void> {
+    if (!this.webServerStarted) {
+      const rootFilePath = await this.backgroundDownloadService.selectDowloadFolder();
+      const webServerRootPath = rootFilePath
+        .substring(0, rootFilePath.length - 1) //remove last /
+        .replace('file://', '');
+      this.webServer.onRequest().subscribe((request) => {
+        let contentType = '';
+        if (request.query && request.query.includes('f=json')) {
+          contentType = 'application/json';
+        }
+        let path = webServerRootPath + request.path; //se https://github.com/bykof/cordova-plugin-webserver/issues/59
+        if (request.path.endsWith('SognCaExtentEttLevelNedMini')) {
+          //TODO: Fjern hardkoding!
+          path = `${request.path}/root.json`;
+        }
+        const response: Response = {
+          status: 200,
+          path: path,
+          // body: '<html>Hello World</html>',
+          headers: {
+            'Content-Type': contentType,
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers':
+              'Origin, X-Requested-With, Content-Type, Accept"'
+          }
+        };
+        this.loggingService.debug('webServer.onRequest():', DEBUG_TAG, [
+          request,
+          response
+        ]);
+        this.webServer
+          .sendResponse(request.requestId, response)
+          .catch((error: Error) =>
+            this.loggingService.error(error, DEBUG_TAG, 'web server')
+          );
+      });
+
+      this.webServer
+        .start(8080)
+        .then(() => {
+          this.webServerStarted = true;
+          this.loggingService.debug('web server started', DEBUG_TAG);
+        })
+        .catch((error: Error) =>
+          this.loggingService.error(error, DEBUG_TAG, 'web server')
+        );
+    }
+  }
   // TODO: Implement continue download when app restart
   private isInQueue(m: OfflineMap) {
     return m.downloadStart && !m.downloadComplete;
@@ -156,7 +209,6 @@ export class OfflineMapService implements OnReset {
   // eslint-disable-next-line @typescript-eslint/ban-types
   public async getStyleJson(offlineMap: OfflineMap): Promise<Object> {
     const path = await this.backgroundDownloadService.selectDowloadFolder();
-    this.loggingService.debug('download folder', DEBUG_TAG, path);
     const url = await this.backgroundDownloadService.getFileUrl(
       `${path}${offlineMap.name}/resources/styles/`,
       'root.json'

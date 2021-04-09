@@ -139,6 +139,7 @@ export class MapComponent implements OnInit {
 
   private initOfflineMaps() {
     this.logger.debug('initOfflineMaps(): ', DEBUG_TAG);
+    this.offlineMapService.initWebServer();
     this.offlineMapService
       .createDownloadedOfflineMaps$()
       .subscribe((offlineMaps) => {
@@ -151,11 +152,11 @@ export class MapComponent implements OnInit {
   }
 
   private async addOfflineLayer(offlineMap: OfflineMap) {
-    const style = await this.offlineMapService.getStyleJson(offlineMap);
+    // const style = await this.offlineMapService.getStyleJson(offlineMap);
     // const url = await this.offlineMapService.getRootJsonUrl(offlineMap);
-    console.log(`laster offline kartlag: ${offlineMap.name}`);
+    this.logger.debug(`laster offline kartlag: ${offlineMap.name}`);
     const vLayer = new VectorTileLayer({
-      style
+      url: `http://localhost:8080/${offlineMap.name}/resources/styles/root.json`
     });
     // vLayer.tileInfo = new TileInfo({
     //   dpi: 96,
