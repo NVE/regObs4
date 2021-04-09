@@ -41,15 +41,18 @@ export class OfflineMapService implements OnReset {
       const webServerRootPath = rootFilePath
         .substring(0, rootFilePath.length - 1) //remove last /
         .replace('file://', '');
+
       this.webServer.onRequest().subscribe((request) => {
         let contentType = '';
-        if (request.query && request.query.includes('f=json')) {
-          contentType = 'application/json';
-        }
         let path = webServerRootPath + request.path; //se https://github.com/bykof/cordova-plugin-webserver/issues/59
-        if (request.path.endsWith('SognCaExtentEttLevelNedMini')) {
-          //TODO: Fjern hardkoding!
-          path = `${request.path}/root.json`;
+        if (
+          request.path.endsWith('tilemap') ||
+          (request.query && request.query.includes('f=json'))
+        ) {
+          contentType = 'application/json; charset=utf-8';
+          if (!path.endsWith('.json')) {
+            path = `${path}/root.json`;
+          }
         }
         const response: Response = {
           status: 200,
@@ -57,9 +60,10 @@ export class OfflineMapService implements OnReset {
           // body: '<html>Hello World</html>',
           headers: {
             'Content-Type': contentType,
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers':
-              'Origin, X-Requested-With, Content-Type, Accept"'
+            'Access-Control-Allow-Origin': 'http://localhost'
+            // 'content-encoding': 'gzip'
+            // 'Access-Control-Allow-Headers':
+            //   'Origin, X-Requested-With, Content-Type, Accept"'
           }
         };
         this.loggingService.debug('webServer.onRequest():', DEBUG_TAG, [
@@ -149,6 +153,12 @@ export class OfflineMapService implements OnReset {
         url: 'assets/offlinemap/SognCaExtentEttLevelNedMini.zip',
         size: 10704896,
         filename: 'SognCaExtentEttLevelNedMini.zip'
+      },
+      {
+        name: 'SognCaExtent',
+        url: 'assets/offlinemap/Sogn_ca_extent.zip',
+        size: 57884672,
+        filename: 'Sogn_ca_extent.zip'
       }
     ];
     return availableMaps;
