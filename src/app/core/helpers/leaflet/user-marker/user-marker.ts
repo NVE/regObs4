@@ -27,7 +27,7 @@ export class UserMarker {
     this.userMarkerIcon = L.divIcon({
       className: 'leaflet-usermarker',
       iconSize: [18, 18],
-      html: '<div class=\'heading\'></div><i class=\'pulse\'></i>'
+      html: "<div class='heading'></div><i class='pulse'></i>"
     });
     const latLng = {
       lat: position.coords.latitude,
@@ -35,7 +35,24 @@ export class UserMarker {
     };
     this.userMarker = L.marker(latLng, { icon: this.userMarkerIcon });
     this.userMarker.addTo(this.map);
-    this.setAccuracy(position);
+
+    this.accuracyMarker = L.circle(
+      latLng,
+      position.coords.accuracy,
+      this.accuracyCircleStyle
+    );
+    this.accuracyMarker.addTo(this.map);
+
+    // NOTE: Leaflet doesn't handle rescaling the CircleMarker while the zoom
+    // is triggering repaints. This results in the accuracy circle drifting
+    // around the map in strange ways. Until this is resolved, simply hide the
+    // circle during the zoom operations.
+    //
+    // For more info: https://github.com/Leaflet/Leaflet/issues/5321
+    this.map.on('doubletapdragstart', () => this.onMapZoomStart());
+    this.map.on('doubletapdragend', () => this.onMapZoomEnd());
+
+    this.setAccuracy(latLng, position.coords.accuracy);
   }
 
   getPosition(): Position {
@@ -49,7 +66,7 @@ export class UserMarker {
       lng: position.coords.longitude
     };
     this.userMarker.setLatLng(latLng);
-    this.setAccuracy(position);
+    this.setAccuracy(latLng, position.coords.accuracy);
     // if (position.coords.heading !== null) {
     //     this.setHeading(position.coords.heading);
     // }
@@ -65,21 +82,16 @@ export class UserMarker {
     element.style.display = 'block';
   }
 
-  private setAccuracy(position: Position) {
-    const latLng = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude
-    };
-    if (!this.accuracyMarker) {
-      this.accuracyMarker = L.circle(
-        latLng,
-        position.coords.accuracy,
-        this.accuracyCircleStyle
-      );
-      this.accuracyMarker.addTo(this.map);
-    } else {
-      this.accuracyMarker.setRadius(position.coords.accuracy);
-      this.accuracyMarker.setLatLng(latLng);
-    }
+  private setAccuracy(latLng: L.LatLngExpression, accuracy: number) {
+    this.accuracyMarker.setRadius(accuracy);
+    this.accuracyMarker.setLatLng(latLng);
+  }
+
+  private onMapZoomStart() {
+    this.accuracyMarker.removeFrom(this.map);
+  }
+
+  private onMapZoomEnd() {
+    this.accuracyMarker.addTo(this.map);
   }
 }
