@@ -9,6 +9,8 @@ import {
   EventEmitter
 } from '@angular/core';
 import * as L from 'leaflet';
+import 'leaflet-doubletapdrag';
+import 'leaflet-doubletapdragzoom';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { timer, Subject, from, BehaviorSubject } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
@@ -104,7 +106,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  options: L.MapOptions;
+  options: L.MapOptions & {
+    doubleTapDragZoom?: L.MapOptions['doubleClickZoom'],
+    doubleTapDragZoomOptions?: {
+      reverse: boolean,
+    }
+  };
 
   async ngOnInit() {
     this.options = {
@@ -121,7 +128,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         new L.LatLng(90.0, -180.0),
         new L.LatLng(-90, 180.0)
       ),
-      maxBoundsViscosity: 1.0
+      maxBoundsViscosity: 1.0,
+      doubleTapDragZoom: 'center',
+      doubleTapDragZoomOptions: {
+        reverse: true,
+      },
     };
     this.isActive = new BehaviorSubject(this.autoActivate);
     try {
