@@ -4,7 +4,8 @@ import { UserSetting } from '../../core/models/user-settings.model';
 import {
   NavController,
   AlertController,
-  LoadingController
+  LoadingController,
+  Platform
 } from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
 import { KdvService } from '../../core/services/kdv/kdv.service';
@@ -48,6 +49,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     langKey: LangKey[lang.lang]
   }));
   isDesktop: boolean;
+  computer: boolean;
 
   get appModeOptions() {
     const options: SelectOption[] = [
@@ -75,10 +77,14 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private loadingController: LoadingController,
     private appResetService: AppResetService,
     private navController: NavController,
-    private breakpointService: BreakpointService
+    private breakpointService: BreakpointService,
+    private platform: Platform
   ) {}
 
   async ngOnInit() {
+    if (this.platform.is('desktop')) {
+      this.computer = true;
+    }
     this.breakpointService.isDesktopView().subscribe((isDesktop) => {
       this.isDesktop = isDesktop;
     });

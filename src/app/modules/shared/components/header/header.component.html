@@ -6,7 +6,8 @@
     <ion-buttons slot="end" *ngIf="showMenuButton">
       <ion-menu-toggle autoHide="false">
         <ion-button (click)="toggleMenu()">
-          <ion-icon name="menu" slot="icon-only"></ion-icon>
+          <svg-icon *ngIf="splitPaneClosed || !isDesktop" src="/assets/icon/menuanimation.svg"></svg-icon>
+          <svg-icon *ngIf="!splitPaneClosed && isDesktop" [ngClass]="'transition'" src="/assets/icon/menuarrow.svg"></svg-icon>
         </ion-button>
       </ion-menu-toggle>
       <ion-menu-button *ngIf="false" color="light" mode="ios"></ion-menu-button>

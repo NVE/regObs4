@@ -604,3 +604,29 @@ ion-select-popover ion-list ion-item ion-radio {
 ion-split-pane {
   --side-max-width: 400px;
 }
+
+.slide-in {
+  animation: slide-in 0.3s forwards;
+}
+
+.slide-out {
+  animation: slide-out 0.3s forwards;
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
