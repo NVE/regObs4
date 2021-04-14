@@ -5,6 +5,7 @@ import { TripLoggerService } from '../../../../core/services/trip-logger/trip-lo
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { AppMode } from '../../../../core/models/app-mode.enum';
 import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media';
+import { BreakpointService } from '../../../../core/services/breakpoint.service';
 
 @Component({
   selector: 'app-header',
@@ -23,6 +24,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isFullscreen$: Observable<boolean>;
   private subscriptions: Subscription[] = [];
 
+  splitPaneClosed = true;
+  isDesktop: boolean;
+
   get tripRunning$() {
     return this.tripLoggerService.getLegacyTripAsObservable();
   }
@@ -39,11 +43,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private fullscreenService: FullscreenService,
     private tripLoggerService: TripLoggerService,
     private userSettingService: UserSettingService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private breakpointService: BreakpointService
   ) {}
 
   ngOnInit() {
+    const splitPane = document.querySelector('ion-split-pane');
+    if (splitPane.classList.contains('split-pane-visible')) {
+      splitPane.classList.remove('split-pane-visible');
+      this.splitPaneClosed = true;
+    }
     this.isFullscreen$ = this.fullscreenService.isFullscreen$;
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
     this.subscriptions.push(
       this.tripLoggerService.isTripRunning$.subscribe((val) => {
         this.ngZone.run(() => {
@@ -72,10 +85,22 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   toggleMenu(): void {
     const splitPane = document.querySelector('ion-split-pane');
+    const menu = document.querySelector('ion-menu');
+    if (splitPane.classList.contains('split-pane-visible')) {
+      this.splitPaneClosed = true;
+      menu.classList.remove('slide-in');
+      menu.classList.add('slide-out');
+    } else {
+      this.splitPaneClosed = false;
+      menu.classList.remove('slide-out');
+      menu.classList.add('slide-in', 'transition');
+    }
     if (
       window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches
     ) {
-      splitPane.classList.toggle('split-pane-visible');
+      setTimeout(() => {
+        splitPane.classList.toggle('split-pane-visible');
+      }, 250);
     }
   }
 }

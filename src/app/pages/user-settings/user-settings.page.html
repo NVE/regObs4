@@ -14,7 +14,7 @@
       <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{ "SETTINGS.LANGUAGE" | translate }}
       </ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language"
-        interface="action-sheet" (ngModelChange)="updateSettings()">
+        [interface]="(isDesktop || computer) ? 'popover' : 'action-sheet'" (ngModelChange)="updateSettings()">
         <ion-select-option [value]="lang.langKey" *ngFor="let lang of supportedLanguages">
           {{ lang.name }}
         </ion-select-option>
