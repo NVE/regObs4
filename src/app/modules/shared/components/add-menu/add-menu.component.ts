@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonFab, NavController } from '@ionic/angular';
+import { IonFab, NavController, Platform } from '@ionic/angular';
 import { Observable, from, combineLatest, of } from 'rxjs';
 import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
@@ -12,6 +12,7 @@ import { setObservableTimeout } from '../../../../core/helpers/observable-helper
 import { LoggingService } from '../../services/logging/logging.service';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 
 const DEBUG_TAG = 'AddMenuComponent';
 
@@ -30,6 +31,7 @@ export class AddMenuComponent implements OnInit {
   }>;
   tripStarted$: Observable<boolean>;
   showSpace$: Observable<boolean>;
+  isIosOrAndroid: boolean;
 
   constructor(
     private draftService: DraftRepositoryService,
@@ -37,10 +39,12 @@ export class AddMenuComponent implements OnInit {
     private dateHelperService: DateHelperService,
     private tripLoggerService: TripLoggerService,
     private userSettingService: UserSettingService,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
+    private platform: Platform
   ) {}
 
   ngOnInit(): void {
+    this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.geoHazardInfo$ = this.userSettingService.userSetting$.pipe(
       map((us) => ({
         geoHazards: us.currentGeoHazard,

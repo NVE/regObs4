@@ -128,8 +128,8 @@ export class AddOrEditDangerObsModalPage implements OnInit {
     return this.dangerSignTid !== undefined
       ? this.dangerSignTid
       : this.geoHazard !== GeoHazard.Snow
-        ? this.geoHazard * 10
-        : 0;
+      ? this.geoHazard * 10
+      : 0;
   }
 
   ok() {
@@ -173,23 +173,23 @@ export class AddOrEditDangerObsModalPage implements OnInit {
 
   getAreaArray() {
     switch (this.geoHazard) {
-    case GeoHazard.Ice: {
-      return [
-        'REGISTRATION.DANGER_OBS.RIGHT_HERE',
-        'REGISTRATION.DANGER_OBS.ON_THIS_SIDE_OF_THE_WATER',
-        'REGISTRATION.DANGER_OBS.ON_THIS_WATER',
-        'REGISTRATION.DANGER_OBS.MANY_WATER_NEARBY'
-      ];
-    }
-    default:
-      return [
-        'REGISTRATION.DANGER_OBS.ON_THIS_PLACE',
-        'REGISTRATION.DANGER_OBS.ON_THIS_MOUNTAIN_SIDE',
-        'REGISTRATION.DANGER_OBS.GENERAL_ON_MOUNTAIN',
-        'REGISTRATION.DANGER_OBS.IN_THE_VALLEY_OR_FJORD',
-        'REGISTRATION.DANGER_OBS.FOR_MUNICIPAL',
-        'REGISTRATION.DANGER_OBS.FOR_REGION'
-      ];
+      case GeoHazard.Ice: {
+        return [
+          'REGISTRATION.DANGER_OBS.RIGHT_HERE',
+          'REGISTRATION.DANGER_OBS.ON_THIS_SIDE_OF_THE_WATER',
+          'REGISTRATION.DANGER_OBS.ON_THIS_WATER',
+          'REGISTRATION.DANGER_OBS.MANY_WATER_NEARBY'
+        ];
+      }
+      default:
+        return [
+          'REGISTRATION.DANGER_OBS.ON_THIS_PLACE',
+          'REGISTRATION.DANGER_OBS.ON_THIS_MOUNTAIN_SIDE',
+          'REGISTRATION.DANGER_OBS.GENERAL_ON_MOUNTAIN',
+          'REGISTRATION.DANGER_OBS.IN_THE_VALLEY_OR_FJORD',
+          'REGISTRATION.DANGER_OBS.FOR_MUNICIPAL',
+          'REGISTRATION.DANGER_OBS.FOR_REGION'
+        ];
     }
   }
 }

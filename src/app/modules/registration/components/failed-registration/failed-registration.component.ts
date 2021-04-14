@@ -12,6 +12,8 @@ import stringify from 'json-stringify-safe';
 import { RegistrationDraft, RegistrationDraftErrorCode } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { firstValueFrom } from 'rxjs';
+import { Platform } from '@ionic/angular';
+import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 
 @Component({
   selector: 'app-failed-registration',
@@ -25,6 +27,7 @@ export class FailedRegistrationComponent {
     private draftService: DraftRepositoryService,
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
+    private platform: Platform
   ) {}
 
   get networkError() {
@@ -59,29 +62,33 @@ export class FailedRegistrationComponent {
   }
 
   async sendEmail() {
-    const translations = await firstValueFrom(this.translateService.get([
-      'REGISTRATION.EMAIL.SUBJECT',
-      'REGISTRATION.EMAIL.BODY'
-    ]));
-    // const pictures = this.registrationService
-    //   .getAllPictures(this.registration.request)
-    //   .filter(
-    //     (p) => p.PictureImageBase64 && !p.PictureImageBase64.startsWith('data')
-    //   )
-    //   .map((p) => p.PictureImageBase64);
-    const base64string = btoa(stringify(this.draft));
-    const attachments = ['base64:registration.json//' + base64string];
-    // const attachments = ['base64:registration.json//' + base64string].concat(
-    //   pictures
-    // );
-    const email: EmailComposerOptions = {
-      to: settings.errorEmailAddress,
-      attachments,
-      subject: translations['REGISTRATION.EMAIL.SUBJECT'],
-      body: translations['REGISTRATION.EMAIL.BODY'],
-      isHtml: true
-    };
-    this.emailComposer.open(email);
+    if (isAndroidOrIos(this.platform)) {
+      const translations = await firstValueFrom(this.translateService.get([
+        'REGISTRATION.EMAIL.SUBJECT',
+        'REGISTRATION.EMAIL.BODY'
+      ]));
+      // const pictures = this.registrationService
+      //   .getAllPictures(this.registration.request)
+      //   .filter(
+      //     (p) => p.PictureImageBase64 && !p.PictureImageBase64.startsWith('data')
+      //   )
+      //   .map((p) => p.PictureImageBase64);
+      const base64string = btoa(stringify(this.draft));
+      const attachments = ['base64:registration.json//' + base64string];
+      // const attachments = ['base64:registration.json//' + base64string].concat(
+      //   pictures
+      // );
+      const email: EmailComposerOptions = {
+        to: settings.errorEmailAddress,
+        attachments,
+        subject: translations['REGISTRATION.EMAIL.SUBJECT'],
+        body: translations['REGISTRATION.EMAIL.BODY'],
+        isHtml: true
+      };
+      this.emailComposer.open(email);
+    } else {
+      window.location.href = 'mailto:regobs@nve.no';
+    }
   }
 
   // private async getEmailAddress() {

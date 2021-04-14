@@ -9,7 +9,7 @@ export class BreakpointService {
   private isDesktop = new BehaviorSubject(false);
 
   onResize(size: number): void {
-    if (size < 700) {
+    if (size < 900) {
       this.isDesktop.next(false);
     } else {
       this.isDesktop.next(true);

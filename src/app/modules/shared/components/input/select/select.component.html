@@ -10,7 +10,7 @@
 </ng-container>
 
 <ng-template #popover>
-  <ion-select (ionChange)="onChange($event)" [disabled]="disabled" cancelText="{{'DIALOGS.CANCEL' | translate}}" interface="popover" [placeholder]="title | translate">
+  <ion-select *ngIf="options && options.length" (ionChange)="onChange($event)" [disabled]="disabled" cancelText="{{'DIALOGS.CANCEL' | translate}}" interface="popover" [(ngModel)]="selectedValue">
     <ion-select-option *ngFor="let option of options" [value]="option.id">
       {{option.text | translate }}
     </ion-select-option>
