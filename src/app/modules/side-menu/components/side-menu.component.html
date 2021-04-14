@@ -1,4 +1,4 @@
-<ion-list lines="full" class="ion-no-margin" *ngIf="userSettings">
+<ion-list [ngClass]="{'scrollDesktop': !isIosOrAndroid }" lines="full" class="ion-no-margin" *ngIf="userSettings">
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label class="list-header-label">
       {{'MENU.USER_SETTINGS' | translate}}

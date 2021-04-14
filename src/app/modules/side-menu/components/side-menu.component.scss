@@ -43,9 +43,7 @@ ion-list {
   margin-bottom: 0px;
 }
 
-@media only screen and (min-width: 1000px) {
-  ion-list {
-    max-height: 100vh;
-    overflow: auto;
-  }
+.scrollDesktop {
+  max-height: 100vh;
+  overflow: auto;
 }
