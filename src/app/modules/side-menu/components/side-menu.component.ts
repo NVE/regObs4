@@ -42,6 +42,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }));
   popupType: SelectInterface;
   isIosOrAndroid: boolean;
+  isMobileWeb: boolean;
 
   private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
@@ -63,6 +64,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
+    this.isMobileWeb = this.platform.is('mobileweb');
     this.lastUpdateSubscription = this.observationService
       .getLastUpdatedForCurrentGeoHazardAsObservable()
       .subscribe((val) => {
