@@ -266,7 +266,7 @@ export class BackgroundDownloadNativeService
     //         return this.file.externalDataDirectory;
     //     }
     // }
-    return Promise.resolve(this.file.externalDataDirectory);
+    return Promise.resolve(this.file.dataDirectory);
   }
 
   // async getAllFiles(path: string, dirName: string): Promise<Array<{ directory: string, name: string, url: string, size: number }>> {

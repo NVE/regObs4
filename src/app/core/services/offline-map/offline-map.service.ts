@@ -60,7 +60,8 @@ export class OfflineMapService implements OnReset {
           // body: '<html>Hello World</html>',
           headers: {
             'Content-Type': contentType,
-            'Access-Control-Allow-Origin': 'http://localhost'
+            // TODO: Use http://localhost for prod
+            'Access-Control-Allow-Origin': '*'
             // 'content-encoding': 'gzip'
             // 'Access-Control-Allow-Headers':
             //   'Origin, X-Requested-With, Content-Type, Accept"'
@@ -141,6 +142,12 @@ export class OfflineMapService implements OnReset {
         url: 'assets/offlinemap/vang_kommune_n50.vtpk',
         size: 4239189,
         filename: 'vang_kommune_n50.vtpk'
+      },
+      {
+        name: '532_288_10',
+        url: 'assets/offlinemap/532_288_10.zip',
+        size: 12704896,
+        filename: '532_288_10.zip'
       },
       {
         name: 'Sogn_ca_extent_mini',

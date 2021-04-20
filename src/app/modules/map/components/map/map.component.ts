@@ -156,7 +156,7 @@ export class MapComponent implements OnInit {
     // const url = await this.offlineMapService.getRootJsonUrl(offlineMap);
     this.logger.debug(`laster offline kartlag: ${offlineMap.name}`);
     const vLayer = new VectorTileLayer({
-      url: `http://localhost:8080/${offlineMap.name}/resources/styles/root.json`
+      url: `http://localhost:8080/${offlineMap.name}/root.json`
     });
     // vLayer.tileInfo = new TileInfo({
     //   dpi: 96,
