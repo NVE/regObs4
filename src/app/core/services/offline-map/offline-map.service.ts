@@ -154,6 +154,12 @@ export class OfflineMapService implements OnReset {
         url: 'assets/offlinemap/Sogn_ca_extent_mini.zip',
         size: 10704896,
         filename: 'Sogn_ca_extent_mini.zip'
+      },
+      {
+        name: 'indre_sogn',
+        url: 'assets/offlinemap/Indre_Sogn.zip',
+        size: 10704896,
+        filename: 'Indre_Sogn.zip'
       }
     ];
     return availableMaps;

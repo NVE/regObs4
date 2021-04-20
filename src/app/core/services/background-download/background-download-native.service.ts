@@ -4,16 +4,19 @@ import { BackgroundDownloadService } from './background-download.service';
 import { Progress } from '../offline-map/progress.model';
 import { ProgressStep } from '../offline-map/progress-step.model';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { Zip } from '@ionic-native/zip/ngx';
+// Zip did not work
+// import { Zip } from '@ionic-native/zip/ngx';
 import { HttpClient } from '@angular/common/http';
 import JSZip from 'jszip';
+import { from } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 @Injectable()
 export class BackgroundDownloadNativeService
   implements BackgroundDownloadService {
   constructor(
     private file: File,
-    private zip: Zip,
+    // private zip: Zip,
     private logger: LoggingService,
     private httpClient: HttpClient
   ) {}
@@ -77,6 +80,8 @@ export class BackgroundDownloadNativeService
         const directories = zipEntries.filter(
           (name) => content.files[name].dir
         );
+
+        this.logger.debug('Creating directories')
         await this.file.createDir(path, folder, true);
         for (const dir of directories) {
           await this.file.createDir(path + folder, dir, true);
@@ -86,27 +91,35 @@ export class BackgroundDownloadNativeService
           //   path + folder + dir
           // );
         }
+
         let i = 0;
-        const numFiles = zipEntries.length;
-        for (const entry of zipEntries.filter(
+        const files = zipEntries.filter(
           (name) => !content.files[name].dir
-        )) {
-          const fileContent = await zip.file(entry).async('arraybuffer');
-          await this.file.writeFile(path + folder, entry, fileContent, {
+        );
+        const mod = Math.floor(files.length / 100);
+
+        const unzipFile = async (fileName: string) => {
+          const zippedFile: JSZip.JSZipObject = content.files[fileName];
+          const buffer = await zippedFile.async('arraybuffer');
+          await this.file.writeFile(path + folder, fileName, buffer, {
             replace: true
           });
-          // this.logger.debug(
-          //   'unzipped and saved file',
-          //   'background download native',
-          //   path + folder + '/' + entry
-          // );
+
           i++;
-          onProgress({
-            percentage: i / numFiles, //TODO: report on file size will give better progress estimate
-            step: ProgressStep.extractZip,
-            description: 'Unzip files'
-          });
+          if (i % mod === 0) {
+            await onProgress({
+              percentage: i / files.length, //TODO: report on file size will give better progress estimate
+              step: ProgressStep.extractZip,
+              description: 'Unzip files'
+            });
+          }
         }
+        
+        this.logger.debug("Unzipping files");
+        await from(files).pipe(
+          mergeMap(file => unzipFile(file), 10)
+        ).toPromise();
+
         onComplete();
       } catch (err) {
         onError(err);
