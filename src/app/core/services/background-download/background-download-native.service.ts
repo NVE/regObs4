@@ -81,7 +81,7 @@ export class BackgroundDownloadNativeService
           (name) => content.files[name].dir
         );
 
-        this.logger.debug('Creating directories')
+        this.logger.debug('Creating directories');
         await this.file.createDir(path, folder, true);
         for (const dir of directories) {
           await this.file.createDir(path + folder, dir, true);
@@ -93,9 +93,7 @@ export class BackgroundDownloadNativeService
         }
 
         let i = 0;
-        const files = zipEntries.filter(
-          (name) => !content.files[name].dir
-        );
+        const files = zipEntries.filter((name) => !content.files[name].dir);
         const mod = Math.floor(files.length / 100);
 
         const unzipFile = async (fileName: string) => {
@@ -113,12 +111,12 @@ export class BackgroundDownloadNativeService
               description: 'Unzip files'
             });
           }
-        }
-        
-        this.logger.debug("Unzipping files");
-        await from(files).pipe(
-          mergeMap(file => unzipFile(file), 10)
-        ).toPromise();
+        };
+
+        this.logger.debug('Unzipping files');
+        await from(files)
+          .pipe(mergeMap((file) => unzipFile(file), 10))
+          .toPromise();
 
         onComplete();
       } catch (err) {

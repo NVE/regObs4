@@ -12,8 +12,8 @@ import { Observable } from 'rxjs';
   styleUrls: ['./offline-map.page.scss']
 })
 export class OfflineMapPage implements OnInit {
-  availableMapsToDownload$: Observable<OfflineMap[]>;
   downloadedMaps$: Observable<OfflineMap[]>;
+  unzipStatus$: Observable<OfflineMap>;
 
   constructor(
     private offlineMapService: OfflineMapService,
@@ -22,7 +22,6 @@ export class OfflineMapPage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.availableMapsToDownload$ = this.offlineMapService.createAvailableOfflineMapsToDownload$();
     this.downloadedMaps$ = this.offlineMapService.createDownloadedOfflineMaps$();
   }
 
@@ -30,23 +29,17 @@ export class OfflineMapPage implements OnInit {
     return this.helperService.humanReadableByteSize(bytes);
   }
 
-  async downloadMap(map: OfflineMap): Promise<void> {
-    await this.offlineMapService.downloadMap(map);
-  }
-
   getPercentage(map: OfflineMap): number {
-    return Math.round(
-      (map.progress && map.progress.percentage ? map.progress.percentage : 0) *
-        100
-    );
+    const progress = this.offlineMapService.getUnzipProgress(map.name);
+    return Math.round((progress ? progress : 0) * 100);
   }
 
   deleteMap(map: OfflineMap): Promise<void> {
-    return this.offlineMapService.remove(map);
+    return this.offlineMapService.removeMap(map);
   }
 
-  async cancelDownload(map: OfflineMap): Promise<void> {
-    await this.offlineMapService.cancelDownload(map);
+  async cancelUnzip(map: OfflineMap): Promise<void> {
+    await this.offlineMapService.removeMap(map);
   }
 
   isDownloading(map: OfflineMap): boolean {
@@ -55,6 +48,13 @@ export class OfflineMapPage implements OnInit {
 
   isDownloaded(map: OfflineMap): boolean {
     return !!map.downloadComplete;
+  }
+
+  async loadFile(files: FileList): Promise<void> {
+    const file = files[0];
+    if (file) {
+      await this.offlineMapService.registerMapPackage(file, file.name);
+    }
   }
 
   async presentActionSheet(map: OfflineMap): Promise<void> {
@@ -67,7 +67,7 @@ export class OfflineMapPage implements OnInit {
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.offlineMapService.remove(map).then(() => {
+          this.offlineMapService.removeMap(map).then(() => {
             // console.log('map deleted');
           });
         }
@@ -77,17 +77,7 @@ export class OfflineMapPage implements OnInit {
         text: 'Avbryt',
         icon: 'close',
         handler: () => {
-          this.cancelDownload(map);
-        }
-      });
-    } else {
-      buttons.push({
-        text: 'Download',
-        icon: 'download',
-        handler: () => {
-          this.downloadMap(map).then(() => {
-            // console.log('Start downloading map');
-          });
+          this.cancelUnzip(map);
         }
       });
     }

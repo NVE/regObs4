@@ -7,17 +7,18 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
+  <ion-button expand="full">
+    <ion-icon lazy="true" slot="start" name="image"></ion-icon>
+    <ion-label slot="end">Registrer kartpakke</ion-label>
+    <input type="file" (change)="loadFile($event.target.files)" id="file-input"
+      accept="application/zip">
+  </ion-button>
   <ion-list>
     <ion-list-header>
       <ion-label>Kartpakke</ion-label>
       <ion-label>Størrelse</ion-label>
       <ion-label></ion-label>
     </ion-list-header>
-    <ion-item (click)="presentActionSheet(item)" *ngFor="let item of availableMapsToDownload$ | async">
-      <ion-label>{{ item.name }}</ion-label>
-      <ion-label>{{ humanReadableByteSize(item.size) }}</ion-label>
-      <ion-icon slot="end" name="download"></ion-icon>
-    </ion-item>
     <ion-item (click)="presentActionSheet(item)" *ngFor="let item of downloadedMaps$ | async">
       <ion-label>{{ item.name }}</ion-label>
       <ion-label *ngIf="isDownloading(item)">
