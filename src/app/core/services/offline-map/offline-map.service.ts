@@ -2,20 +2,20 @@ import { Injectable } from '@angular/core';
 import { OfflineMap } from './offline-map.model';
 import { Progress } from './progress.model';
 import moment from 'moment';
-import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { OfflineTile } from './offline-tile.model';
 import { NanoSql } from '../../../../nanosql';
-import { File, Entry } from '@ionic-native/file/ngx';
+import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
-import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
-import { Platform } from '@ionic/angular';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HttpClient } from '@angular/common/http';
 import { WebServer, Response } from '@ionic-native/web-server/ngx';
+import JSZip from 'jszip';
+import { ProgressStep } from './progress-step.model';
 
 const DEBUG_TAG = 'OfflineMapService';
 
@@ -24,11 +24,10 @@ const DEBUG_TAG = 'OfflineMapService';
 })
 export class OfflineMapService implements OnReset {
   private webServerStarted = false;
+  unzipProgress = new Map<string, number>();
 
   constructor(
-    private backgroundDownloadService: BackgroundDownloadService,
     private file: File,
-    private platform: Platform,
     private webview: WebView,
     private loggingService: LoggingService,
     private httpClient: HttpClient,
@@ -37,7 +36,7 @@ export class OfflineMapService implements OnReset {
 
   async initWebServer(): Promise<void> {
     if (!this.webServerStarted) {
-      const rootFilePath = await this.backgroundDownloadService.selectDowloadFolder();
+      const rootFilePath = await this.selectOfflineMapsFolder();
       const webServerRootPath = rootFilePath
         .substring(0, rootFilePath.length - 1) //remove last /
         .replace('file://', '');
@@ -94,14 +93,6 @@ export class OfflineMapService implements OnReset {
     return m.downloadStart && !m.downloadComplete;
   }
 
-  async continueDownload(): Promise<void> {
-    const offlineMaps = await this.getDownloadedOfflineMaps();
-    const mapsToDownload = offlineMaps.filter((x) => this.isInQueue(x));
-    for (const m of mapsToDownload) {
-      await this.downloadMap(m);
-    }
-  }
-
   getDownloadedOfflineMaps(): Promise<OfflineMap[]> {
     return nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
       .query('select')
@@ -116,18 +107,6 @@ export class OfflineMapService implements OnReset {
     );
   }
 
-  createAvailableOfflineMapsToDownload$(): Observable<OfflineMap[]> {
-    return of(this.getDownloadableOfflineMaps()).pipe(
-      switchMap((offlinemaps) =>
-        this.createDownloadedOfflineMaps$().pipe(
-          map((downloadedMaps) =>
-            this.filterDownloadedMaps(offlinemaps, downloadedMaps)
-          )
-        )
-      )
-    );
-  }
-
   filterDownloadedMaps(
     avalable: OfflineMap[],
     downloaded: OfflineMap[]
@@ -135,77 +114,113 @@ export class OfflineMapService implements OnReset {
     return avalable.filter((a) => !downloaded.find((d) => d.name === a.name));
   }
 
-  getDownloadableOfflineMaps(): OfflineMap[] {
-    const availableMaps: OfflineMap[] = [
-      {
-        name: 'vang_kommune_n50',
-        url: 'assets/offlinemap/vang_kommune_n50.vtpk',
-        size: 4239189,
-        filename: 'vang_kommune_n50.vtpk'
-      },
-      {
-        name: '532_288_10',
-        url: 'assets/offlinemap/532_288_10.zip',
-        size: 12704896,
-        filename: '532_288_10.zip'
-      },
-      {
-        name: 'Sogn_ca_extent_mini',
-        url: 'assets/offlinemap/Sogn_ca_extent_mini.zip',
-        size: 10704896,
-        filename: 'Sogn_ca_extent_mini.zip'
-      },
-      {
-        name: 'indre_sogn',
-        url: 'assets/offlinemap/Indre_Sogn.zip',
-        size: 10704896,
-        filename: 'Indre_Sogn.zip'
-      }
-    ];
-    return availableMaps;
+  getUnzipProgress(filename: string): number {
+    return this.unzipProgress.get(filename);
   }
 
-  private getFileSize(file: Entry) {
-    if (!file) {
-      return 0;
-    } else {
-      return new Promise<number>((resolve) =>
-        file.getMetadata(
-          (success) => resolve(success.size),
-          (_) => resolve(0)
-        )
-      );
-    }
-  }
-
-  async downloadMap(m: OfflineMap): Promise<void> {
+  async registerMapPackage(file: Blob, filename: string): Promise<void> {
     try {
-      const path = await this.backgroundDownloadService.selectDowloadFolder();
+      const path = await this.selectOfflineMapsFolder();
       if (path.length > 0) {
-        const mapToSave = {
-          ...m,
+        const metadata: OfflineMap = {
+          name: filename,
+          url: 'TODO: Trenger vi denne?',
+          size: file.size,
+          filename: filename,
           filePath: path,
           downloadStart: moment().unix(),
-          downloaded: 0,
-          progress: 0,
+          progress: { percentage: 0 },
           downloadComplete: null
         };
         await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
-          .query('upsert', mapToSave)
+          .query('upsert', metadata)
           .exec();
 
-        await this.backgroundDownloadService.downloadFile(
+        await this.unzipFile(
+          file,
           path,
-          m.filename,
-          m.url,
-          m.name,
-          async () => await this.onComplete(m.name),
-          async (progress) => await this.onProgress(m.name, progress),
-          async (error) => await this.onError(m.name, error)
+          filename,
+          async () => await this.onComplete(filename),
+          async (progress) => await this.onProgress(metadata, progress),
+          async (error) => await this.onError(filename, error)
         );
       }
     } catch (error) {
-      await this.onError(m.name, error);
+      await this.onError(filename, error);
+    }
+  }
+
+  async unzipFile(
+    zipFile: Blob,
+    path: string,
+    folder: string,
+    onComplete: () => void,
+    onProgress: (progress: Progress) => void,
+    onError: (error: Error) => void
+  ): Promise<void> {
+    try {
+      const zip = new JSZip();
+      const content = await zip.loadAsync(zipFile, {
+        createFolders: true
+      });
+      const zipEntries = Object.keys(content.files);
+      this.loggingService.debug(
+        'zip entries',
+        'background download native',
+        zipEntries
+      );
+      const directories = zipEntries.filter((name) => content.files[name].dir);
+
+      this.loggingService.debug('Creating directories');
+      await this.file.createDir(path, folder, true);
+      for (const dir of directories) {
+        await this.file.createDir(path + folder, dir, true);
+        // this.loggingService.debug(
+        //   'created folder',
+        //   'background download native',
+        //   path + folder + dir
+        // );
+      }
+
+      let i = 0;
+      const files = zipEntries.filter((name) => !content.files[name].dir);
+      const mod = Math.floor(files.length / 100);
+
+      const unzipFile = async (fileName: string) => {
+        const zippedFile: JSZip.JSZipObject = content.files[fileName];
+        const buffer = await zippedFile.async('arraybuffer');
+        await this.file.writeFile(path + folder, fileName, buffer, {
+          replace: true
+        });
+
+        i++;
+        if (i % mod === 0) {
+          this.loggingService.debug(
+            'Har pakket ut ' +
+              i +
+              ' av ' +
+              files.length +
+              ' filer. ' +
+              i / files.length +
+              '%'
+          );
+
+          await onProgress({
+            percentage: i / files.length, //TODO: report on file size will give better progress estimate
+            step: ProgressStep.extractZip,
+            description: 'Unzip files'
+          });
+        }
+      };
+
+      this.loggingService.debug('Unzipping files');
+      await from(files)
+        .pipe(mergeMap((file) => unzipFile(file), 10))
+        .toPromise();
+
+      onComplete();
+    } catch (err) {
+      onError(err);
     }
   }
 
@@ -219,8 +234,8 @@ export class OfflineMapService implements OnReset {
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   public async getStyleJson(offlineMap: OfflineMap): Promise<Object> {
-    const path = await this.backgroundDownloadService.selectDowloadFolder();
-    const url = await this.backgroundDownloadService.getFileUrl(
+    const path = await this.selectOfflineMapsFolder();
+    const url = await this.getFileUrl(
       `${path}${offlineMap.name}/resources/styles/`,
       'root.json'
     );
@@ -252,11 +267,8 @@ export class OfflineMapService implements OnReset {
   }
 
   public async getRootJsonUrl(offlineMap: OfflineMap): Promise<string> {
-    const path = await this.backgroundDownloadService.selectDowloadFolder();
-    const url = await this.backgroundDownloadService.getFileUrl(
-      path,
-      `${offlineMap.name}/root.json`
-    );
+    const path = await this.selectOfflineMapsFolder();
+    const url = await this.getFileUrl(path, `${offlineMap.name}/root.json`);
     return this.webview.convertFileSrc(url);
   }
 
@@ -274,22 +286,17 @@ export class OfflineMapService implements OnReset {
     );
   }
 
-  async remove(m: OfflineMap) {
-    await this.backgroundDownloadService.deleteFolder(m.filePath, m.name);
+  async removeMap(m: OfflineMap): Promise<void> {
+    await this.deleteFolder(m.filePath, m.name);
     await this.deleteMapFromDb(m.name);
   }
 
-  async cancelDownload(m: OfflineMap) {
-    // this.backgroundDownloadService.cancelDownload(m.filename);
-    await this.remove(m);
-    // throw Error('Not implemented');
-  }
+  private onProgress(metadata: OfflineMap, progress: Progress) {
+    this.unzipProgress.set(metadata.name, progress.percentage);
+    // const m = await this.getSavedMap(name);
+    // m.progress = progress;
 
-  private async onProgress(name: string, progress: Progress) {
-    const m = await this.getSavedMap(name);
-    m.progress = progress;
-
-    await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
+    // await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
   }
 
   private async onError(name: string, error: Error) {
@@ -304,7 +311,6 @@ export class OfflineMapService implements OnReset {
 
   private async onComplete(name: string) {
     const m = await this.getSavedMap(name);
-    await this.saveMetaData(m);
     m.downloadComplete = moment().unix();
     m.progress = { percentage: 1.0 };
     await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
@@ -322,11 +328,41 @@ export class OfflineMapService implements OnReset {
     );
   }
 
-  private saveMetaData(m: OfflineMap) {
-    // TODO: Read metadata from offline package!
+  private async selectOfflineMapsFolder(): Promise<string> {
+    // if (this.platform.is('android')) {
+    //     const userSettings = await this.userSettingService.getUserSettings();
+    //     // TODO: Prefer save offline map on SD card? Show a dialog to ask if user wants to save on external directory?
+    //     if (false) {
+    //         return this.file.externalDataDirectory;
+    //     }
+    // }
+    return Promise.resolve(this.file.dataDirectory);
   }
 
-  appOnReset(): void | Promise<any> {}
+  private async getFileUrl(path: string, filename: string): Promise<string> {
+    const directoryEntry = await this.file.resolveDirectoryUrl(path);
+    const targetFile = await this.file.getFile(directoryEntry, filename, {
+      create: false
+    });
+    return targetFile.toURL();
+  }
 
+  private async deleteFolder(path: string, dirName: string): Promise<void> {
+    await this.file
+      .removeRecursively(path, dirName)
+      .then(() => {
+        this.loggingService.debug(`removed folder: ${path}${dirName}`);
+      })
+      .catch((err) => {
+        this.loggingService.error(
+          err,
+          'background download native',
+          `remove folder failed: ${path}${dirName}`
+        );
+      });
+  }
+
+  //TODO: Kan vi bruke disse til noe?
+  appOnReset(): void | Promise<any> {}
   appOnResetComplete(): void | Promise<any> {}
 }
