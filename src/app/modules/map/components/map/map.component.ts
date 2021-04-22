@@ -137,18 +137,18 @@ export class MapComponent implements OnInit {
     this.isActive.next(isActive);
   }
 
-  private initOfflineMaps() {
+  private async initOfflineMaps() {
     this.logger.debug('initOfflineMaps(): ', DEBUG_TAG);
     this.offlineMapService.initWebServer();
-    this.offlineMapService
-      .createDownloadedOfflineMaps$()
-      .subscribe((offlineMaps) => {
+    (await this.offlineMapService.getOfflineMaps$()).subscribe(
+      (offlineMaps) => {
         for (const offlineMap of offlineMaps) {
           if (offlineMap.downloadComplete) {
             this.addOfflineLayer(offlineMap);
           }
         }
-      });
+      }
+    );
   }
 
   private async addOfflineLayer(offlineMap: OfflineMap) {
@@ -158,6 +158,6 @@ export class MapComponent implements OnInit {
     });
     this.map.layers.add(vLayer);
     const constraints = this.mapView.constraints;
-    constraints.maxZoom = 13;
+    constraints.maxZoom = 14;
   }
 }

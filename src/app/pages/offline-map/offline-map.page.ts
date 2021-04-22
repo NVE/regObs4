@@ -21,8 +21,8 @@ export class OfflineMapPage implements OnInit {
     private actionSheetController: ActionSheetController
   ) {}
 
-  ngOnInit(): void {
-    this.downloadedMaps$ = this.offlineMapService.createDownloadedOfflineMaps$();
+  async ngOnInit(): Promise<void> {
+    this.downloadedMaps$ = await this.offlineMapService.getOfflineMaps$();
   }
 
   humanReadableByteSize(bytes: number): string {
