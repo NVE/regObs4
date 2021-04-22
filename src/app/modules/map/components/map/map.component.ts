@@ -152,45 +152,12 @@ export class MapComponent implements OnInit {
   }
 
   private async addOfflineLayer(offlineMap: OfflineMap) {
-    // const style = await this.offlineMapService.getStyleJson(offlineMap);
-    // const url = await this.offlineMapService.getRootJsonUrl(offlineMap);
     this.logger.debug(`laster offline kartlag: ${offlineMap.name}`);
     const vLayer = new VectorTileLayer({
       url: `http://localhost:8080/${offlineMap.name}/root.json`
     });
-    // vLayer.tileInfo = new TileInfo({
-    //   dpi: 96,
-    //   // format: 'pbf',
-    //   origin: new Point({
-    //     x: -20037508.34278700128,
-    //     y: 20037508.34278700128,
-    //     spatialReference: { wkid: 102100 }
-    //   }),
-    //   // spatialReference: { wkid: 102100, latestWkid: 3857 },
-    //   lods: [
-    //     { level: 0, resolution: 156543.0339280001353, scale: 591396864 },
-    //     { level: 1, resolution: 78271.51696399993671, scale: 295698432 },
-    //     { level: 2, resolution: 39135.758482000092, scale: 147849216 },
-    //     { level: 3, resolution: 19567.87924099991869, scale: 73924608 },
-    //     { level: 4, resolution: 9783.939620499959346, scale: 36962304 },
-    //     { level: 5, resolution: 4891.969810249979673, scale: 18481152 },
-    //     { level: 6, resolution: 2445.984905124989837, scale: 9240576 },
-    //     { level: 7, resolution: 1222.992452562494918, scale: 4620288 },
-    //     { level: 8, resolution: 611.4962262813796769, scale: 2310144 },
-    //     { level: 9, resolution: 305.7481131405575638, scale: 1155072 },
-    //     { level: 10, resolution: 152.8740565704110566, scale: 577536 },
-    //     { level: 11, resolution: 76.43702828507323943, scale: 288768 },
-    //     { level: 12, resolution: 38.21851414253662, scale: 144384 },
-    //     { level: 13, resolution: 19.10925707126831, scale: 72192 },
-    //     { level: 14, resolution: 9.5546285356341549, scale: 36096 },
-    //     { level: 15, resolution: 4.7773142679493699, scale: 18048 },
-    //     { level: 16, resolution: 2.3886571339746849, scale: 9024 },
-    //     { level: 17, resolution: 1.1943285668550503, scale: 4512 },
-    //     { level: 18, resolution: 0.59716428355981721, scale: 2256 }
-    //   ],
-    //   size: [512, 512]
-    // });
-
     this.map.layers.add(vLayer);
+    const constraints = this.mapView.constraints;
+    constraints.maxZoom = 13;
   }
 }
