@@ -22,8 +22,8 @@
         </ion-row>
       </ng-container>
       <ion-row *ngIf="mapView?.center">
-        {{ mapView.center.lat | number:'.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}}, 
-        {{ mapView.center.lng | number:'.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
+        {{ mapView.center.latitude | number:'.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}}, 
+        {{ mapView.center.longitude | number:'.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
       </ion-row>
       <ion-row *ngIf="viewInfo?.horizontalDistanceFromGpsPos" class="ion-no-padding, ion-align-items-start">
         <ng-container *ngIf="viewInfo.horizontalDistanceFromGpsPos">

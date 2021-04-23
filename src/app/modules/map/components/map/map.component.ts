@@ -15,7 +15,7 @@ import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import LOD from '@arcgis/core/layers/support/LOD';
 import MapView from '@arcgis/core/views/MapView';
 import config from '@arcgis/core/config.js';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, from, of, Subject } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
 import { OfflineMap } from 'src/app/core/services/offline-map/offline-map.model';
@@ -23,6 +23,9 @@ import { Point, SpatialReference } from '@arcgis/core/geometry';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { MapService } from '../../services/map/map.service';
+import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -46,6 +49,8 @@ export class MapComponent implements OnInit {
   private isActive: BehaviorSubject<boolean>;
   private view: any = null;
   private map: Map;
+  private ngDestroy$ = new Subject();
+  private followMode = true;
 
   // The <div> where we will place the map
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
@@ -53,8 +58,10 @@ export class MapComponent implements OnInit {
   constructor(
     private zone: NgZone,
     private logger: LoggingService,
+    private mapService: MapService,
     private offlineMapService: OfflineMapService,
-    private platform: Platform
+    private platform: Platform,
+    private geoPositionService: GeoPositionService
   ) {}
 
   ngOnInit(): void {
@@ -87,12 +94,34 @@ export class MapComponent implements OnInit {
         position: 'bottom-left'
       });
     }
+
+    this.mapService.followMode$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((mode: boolean) => {
+        this.followMode = mode;
+        this.logger.debug(
+          `Follow mode changed to: ${this.followMode}`,
+          DEBUG_TAG
+        );
+      });
+
+    this.mapService.centerMapToUser$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        switchMap(() =>
+          from(this.geoPositionService.startTrackingComponent(DEBUG_TAG, true))
+        )
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
     if (this.view) {
       this.view.destroy(); // destroy the map view
     }
+    this.geoPositionService.stopTrackingComponent(DEBUG_TAG);
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
   async initializeMap(): Promise<void> {
@@ -145,12 +174,28 @@ export class MapComponent implements OnInit {
     this.mapView = view;
     this.mapView
       .when(() => {
+        this.createExtentWatcher(view);
         this.loading = false;
         this.mapReady.emit(null);
       })
       .catch((reason) => {
         this.logger.log(`Error in initializeMap due to ${reason}`);
       });
+  }
+
+  private createExtentWatcher(view: MapView) {
+    view.watch('stationary', (isStationary: boolean) => {
+      if (isStationary) {
+        //if the panning or zooming has stopped, update url
+        if (view) {
+          this.mapService.updateMapView({
+            bounds: this.mapView.extent,
+            center: this.mapView.center,
+            zoom: this.mapView.zoom
+          });
+        }
+      }
+    });
   }
 
   componentIsActive(isActive: boolean) {
