@@ -158,6 +158,6 @@ export class MapComponent implements OnInit {
     });
     this.map.layers.add(vLayer);
     const constraints = this.mapView.constraints;
-    constraints.maxZoom = 14;
+    constraints.maxZoom = 13;
   }
 }
