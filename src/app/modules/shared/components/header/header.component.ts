@@ -48,11 +48,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    const splitPane = document.querySelector('ion-split-pane');
-    if (splitPane.classList.contains('split-pane-visible')) {
-      splitPane.classList.remove('split-pane-visible');
-      this.splitPaneClosed = true;
-    }
     this.isFullscreen$ = this.fullscreenService.isFullscreen$;
     this.breakpointService.isDesktopView().subscribe((isDesktop) => {
       this.isDesktop = isDesktop;
@@ -81,26 +76,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   endTrip() {
     this.tripLoggerService.stopLegacyTrip();
-  }
-
-  toggleMenu(): void {
-    const splitPane = document.querySelector('ion-split-pane');
-    const menu = document.querySelector('ion-menu');
-    if (splitPane.classList.contains('split-pane-visible')) {
-      this.splitPaneClosed = true;
-      menu.classList.remove('slide-in');
-      menu.classList.add('slide-out');
-    } else {
-      this.splitPaneClosed = false;
-      menu.classList.remove('slide-out');
-      menu.classList.add('slide-in', 'transition');
-    }
-    if (
-      window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches
-    ) {
-      setTimeout(() => {
-        splitPane.classList.toggle('split-pane-visible');
-      }, 250);
-    }
   }
 }

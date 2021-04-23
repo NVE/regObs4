@@ -4,13 +4,7 @@
       <ion-back-button text="" [defaultHref]="defaultHref"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end" *ngIf="showMenuButton">
-      <ion-menu-toggle autoHide="false">
-        <ion-button (click)="toggleMenu()">
-          <svg-icon *ngIf="splitPaneClosed || !isDesktop" src="/assets/icon/menuanimation.svg"></svg-icon>
-          <svg-icon *ngIf="!splitPaneClosed && isDesktop" [ngClass]="'transition'" src="/assets/icon/menuarrow.svg"></svg-icon>
-        </ion-button>
-      </ion-menu-toggle>
-      <ion-menu-button *ngIf="false" color="light" mode="ios"></ion-menu-button>
+      <ion-menu-button color="light" mode="ios"></ion-menu-button>
     </ion-buttons>
     <ion-title *ngIf="!tripRunning">
       {{ title | translate }}

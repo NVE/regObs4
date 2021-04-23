@@ -1,6 +1,11 @@
 <ion-content>
-  <ion-slides *ngIf="!recreate" class="onboarding" [options]="{autoplay:false}" pager="true"
-    (ionSlideReachEnd)="ionSlideReachEnd()" (ionSlidePrevStart)="ionSlidePrevStart()"
+  <ng-container *ngIf="!isIosOrAndroid">
+    <div *ngIf="!reachedStart" class="swiper-button-prev" (click)="slidePrev()"></div>
+    <div *ngIf="!reachedEnd" class="swiper-button-next" (click)="slideNext()">
+    </div>
+  </ng-container>
+  <ion-slides *ngIf="!recreate" class="onboarding" [options]="{autoplay:false}" pager="true" 
+    (ionSlideReachEnd)="ionSlideReachEnd()" (ionSlidePrevStart)="ionSlidePrevStart()" (ionSlideReachStart)="ionSlideReachStart()"
     (ionSlideTransitionStart)="ionSlideTransitionStart()">
     <ion-slide>
       <ion-grid class="full-grid">
@@ -26,7 +31,7 @@
                     language</span>
                 </ion-label>
                 <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="language"
-                  interface="action-sheet" (ngModelChange)="saveLanguage()">
+                  [interface]="!isDesktop ? 'action-sheet' : 'popover'" (ngModelChange)="saveLanguage()">
                   <ion-select-option [value]="lang.langKey" *ngFor="let lang of supportedLanguages">
                     {{ lang.name }}
                   </ion-select-option>

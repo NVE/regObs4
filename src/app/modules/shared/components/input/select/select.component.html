@@ -10,8 +10,8 @@
 </ng-container>
 
 <ng-template #popover>
-  <ion-select *ngIf="options && options.length" (ionChange)="onChange($event)" [disabled]="disabled" cancelText="{{'DIALOGS.CANCEL' | translate}}" interface="popover" [(ngModel)]="selectedValue">
-    <ion-select-option *ngFor="let option of options" [value]="option.id">
+  <ion-select *ngIf="options && options.length" (click)="getFilteredOptions()" (ionChange)="onChange($event)" [disabled]="disabled" cancelText="{{'DIALOGS.CANCEL' | translate}}" interface="popover" [(ngModel)]="selectedValue">
+    <ion-select-option *ngFor="let option of filteredOptions" [value]="option.id">
       {{option.text | translate }}
     </ion-select-option>
   </ion-select>
