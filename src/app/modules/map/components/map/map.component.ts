@@ -20,6 +20,9 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
 import { OfflineMap } from 'src/app/core/services/offline-map/offline-map.model';
 import { Point, SpatialReference } from '@arcgis/core/geometry';
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { Platform } from '@ionic/angular';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -50,7 +53,8 @@ export class MapComponent implements OnInit {
   constructor(
     private zone: NgZone,
     private logger: LoggingService,
-    private offlineMapService: OfflineMapService
+    private offlineMapService: OfflineMapService,
+    private platform: Platform
   ) {}
 
   ngOnInit(): void {
@@ -65,10 +69,24 @@ export class MapComponent implements OnInit {
           this.logger.debug(
             'Map loaded in ' + (performance.now() - start) + ' ms'
           );
+          this.onMapReady();
         });
       });
     });
     this.isActive = new BehaviorSubject(this.autoActivate);
+  }
+
+  private onMapReady(): void {
+    if (this.showScale) {
+      const scaleBar = new ScaleBar({
+        view: this.mapView,
+        unit: 'metric'
+      });
+      // Add the widget to the bottom left corner of the view
+      this.mapView.ui.add(scaleBar, {
+        position: 'bottom-left'
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -120,7 +138,9 @@ export class MapComponent implements OnInit {
       // }
     });
 
-    this.initOfflineMaps();
+    if (isAndroidOrIos(this.platform)) {
+      this.initOfflineMaps();
+    }
 
     this.mapView = view;
     this.mapView
