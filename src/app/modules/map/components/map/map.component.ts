@@ -26,6 +26,7 @@ import { Platform } from '@ionic/angular';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
+import esriConfig from '@arcgis/core/config.js';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -62,11 +63,11 @@ export class MapComponent implements OnInit {
     private offlineMapService: OfflineMapService,
     private platform: Platform,
     private geoPositionService: GeoPositionService
-  ) {}
+  ) {
+    esriConfig.assetsPath = './assets';
+  }
 
   ngOnInit(): void {
-    config.assetsPath = 'assets';
-
     this.zone.runOutsideAngular(() => {
       // Initialize MapView and return an instance of MapView
       const start = performance.now();
