@@ -25,6 +25,8 @@ export class SelectComponent implements OnInit {
   @Input() disabled = false;
   isApp: boolean;
 
+  filteredOptions: Array<SelectOption> = [];
+
   get valueText() {
     const item = (this.options || []).find((x) => x.id === this.selectedValue);
     if (item) {
@@ -51,6 +53,11 @@ export class SelectComponent implements OnInit {
 
   ngOnInit() {
     this.isApp = isAndroidOrIos(this.platform);
+    this.getFilteredOptions();
+  }
+
+  getFilteredOptions(): Array<SelectOption> {
+    return (this.filteredOptions = this.options.filter((x) => !x.disabled));
   }
 
   private async getActionSheetButtons() {

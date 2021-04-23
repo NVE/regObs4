@@ -520,13 +520,12 @@ ion-toast {
 
 @media only screen and (min-width: 950px) {
   ion-card {
-    max-width: 1000px;
+    max-width: 1200px;
     border-radius: 16px !important;
     margin: 16px auto 0 !important;
   }
 
   ion-item-divider {
-    max-width: 1000px;
     margin: 0 auto;
     margin-bottom: 8px;
   }
@@ -599,34 +598,4 @@ ion-select-popover ion-list ion-item ion-radio {
 .sc-ion-popover-md-h {
   --width: 350px;
   --backdrop-opacity: var(--ion-backdrop-opacity, 0);
-}
-
-ion-split-pane {
-  --side-max-width: 400px;
-}
-
-.slide-in {
-  animation: slide-in 0.3s forwards;
-}
-
-.slide-out {
-  animation: slide-out 0.3s forwards;
-}
-
-@keyframes slide-in {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
-
-@keyframes slide-out {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
 }
