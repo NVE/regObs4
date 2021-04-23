@@ -3,13 +3,11 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title> Offline kart</ion-title>
+    <ion-title> Offline-kart</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <ion-button expand="full">
-    <ion-icon lazy="true" slot="start" name="image"></ion-icon>
-    <ion-label slot="end">Registrer kartpakke</ion-label>
     <input type="file" (change)="loadFile($event.target.files)" id="file-input"
       accept="application/zip">
   </ion-button>
