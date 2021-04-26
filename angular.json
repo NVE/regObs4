@@ -41,8 +41,8 @@
               },
               {
                 "glob": "**/*",
-                "input": "node_modules/@arcgis/core/assets/",
-                "output": "/assets"
+                "input": "node_modules/@arcgis/core/assets",
+                "output": "/assets/"
               },
               {
                 "glob": "*.min.js",
