@@ -42,12 +42,7 @@
               {
                 "glob": "**/*",
                 "input": "node_modules/@arcgis/core/assets",
-                "output": "assets"
-              },
-              {
-                "glob": "**/*.json",
-                "input": "node_modules/@arcgis/core/assets",
-                "output": "tabs/assets"
+                "output": "/assets"
               },
               {
                 "glob": "*.min.js",

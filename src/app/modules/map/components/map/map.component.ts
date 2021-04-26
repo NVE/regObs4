@@ -63,11 +63,10 @@ export class MapComponent implements OnInit {
     private offlineMapService: OfflineMapService,
     private platform: Platform,
     private geoPositionService: GeoPositionService
-  ) {
-    esriConfig.assetsPath = './assets';
-  }
+  ) {}
 
   ngOnInit(): void {
+    esriConfig.assetsPath = '/assets';
     this.zone.runOutsideAngular(() => {
       // Initialize MapView and return an instance of MapView
       const start = performance.now();
