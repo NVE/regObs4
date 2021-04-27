@@ -1,9 +1,7 @@
 <ion-app>
-  <ion-split-pane contentId="main-content">
     <ion-menu contentId="main-content" type="overlay" side="end" maxEdgeStart="0">
       <app-side-menu></app-side-menu>
     </ion-menu>
     <ion-router-outlet id="main-content" [swipeGesture]="swipeBackEnabled$ | async"></ion-router-outlet>
-</ion-split-pane>
 <app-gps-debug></app-gps-debug>
 </ion-app>
