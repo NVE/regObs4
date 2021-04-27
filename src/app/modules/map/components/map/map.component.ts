@@ -8,27 +8,45 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import Map from '@arcgis/core/Map';
 import Basemap from '@arcgis/core/Basemap';
-import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
-import TileInfo from '@arcgis/core/layers/support/TileInfo';
-import LOD from '@arcgis/core/layers/support/LOD';
-import MapView from '@arcgis/core/views/MapView';
-import config from '@arcgis/core/config.js';
-import { BehaviorSubject, from, of, Subject } from 'rxjs';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
-import { OfflineMap } from 'src/app/core/services/offline-map/offline-map.model';
-import { Point, SpatialReference } from '@arcgis/core/geometry';
-import ScaleBar from '@arcgis/core/widgets/ScaleBar';
-import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
-import { Platform } from '@ionic/angular';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { MapService } from '../../services/map/map.service';
-import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
 import esriConfig from '@arcgis/core/config.js';
+import Layer from '@arcgis/core/layers/Layer';
+import WebTileLayer from '@arcgis/core/layers/WebTileLayer';
+import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
+import Map from '@arcgis/core/Map';
+import MapView from '@arcgis/core/views/MapView';
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import { Platform } from '@ionic/angular';
+import { Feature, GeometryObject } from '@turf/turf';
+import L from 'leaflet';
+import { BehaviorSubject, from, Subject } from 'rxjs';
+import { switchMap, take, takeUntil } from 'rxjs/operators';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { NORWEGIAN_BOUNDS } from 'src/app/core/helpers/leaflet/border-helper';
+import { LangKey } from 'src/app/core/models/langKey';
+import { TopoMap } from 'src/app/core/models/topo-map.enum';
+import { UserSetting } from 'src/app/core/models/user-settings.model';
+import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
+import { OfflineMap } from 'src/app/core/services/offline-map/offline-map.model';
+import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { settings } from 'src/settings';
+import { IRegObsTileLayerOptions } from '../../core/classes/regobs-tile-layer';
+import { MapService } from '../../services/map/map.service';
+import { Point } from '@arcgis/core/geometry';
+import { UserMarker } from 'src/app/core/helpers/leaflet/user-marker/user-marker';
+import { Geoposition } from '@ionic-native/geolocation/ngx';
 
 const DEBUG_TAG = 'MapComponent';
+
+interface MapOptionsWithBounds {
+  name: string;
+  url: string;
+  bounds?: L.LatLngBoundsExpression;
+  excludeBounds?: Feature<GeometryObject>;
+  vector?: boolean;
+}
 
 @Component({
   selector: 'app-map',
@@ -40,18 +58,21 @@ export class MapComponent implements OnInit {
   @Input() showUserLocation = true;
   @Input() showScale = true;
   @Input() showSupportMaps = true;
-  @Input() center: L.LatLng;
+  @Input() center: L.LatLng; //TODO
   @Input() zoom: number;
-  @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
+  @Output() mapReady: EventEmitter<L.Map> = new EventEmitter(); //TODO: Trenger den å sende fra seg kartet? I tilfelle må vi gjøre noe
   @Input() autoActivate = true;
   @Input() geoTag = DEBUG_TAG;
-  mapView: MapView;
-  loading: boolean;
-  private isActive: BehaviorSubject<boolean>;
-  private view: any = null;
-  private map: Map;
+
+  private view: MapView;
+  private loading: boolean; //TODO: Trenger vi denne?
+  private userMarker: UserMarker; //TODO: Tilpass denne
+  private firstPositionUpdate = true;
   private ngDestroy$ = new Subject();
   private followMode = true;
+  private isDoingMoveAction = false;
+  private firstClickOnZoomToUser = true;
+  private isActive: BehaviorSubject<boolean>;
 
   // The <div> where we will place the map
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
@@ -62,16 +83,32 @@ export class MapComponent implements OnInit {
     private mapService: MapService,
     private offlineMapService: OfflineMapService,
     private platform: Platform,
-    private geoPositionService: GeoPositionService
+    private geoPositionService: GeoPositionService,
+    private userSettingService: UserSettingService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     esriConfig.assetsPath = '/assets';
     this.zone.runOutsideAngular(() => {
-      // Initialize MapView and return an instance of MapView
       const start = performance.now();
       this.initializeMap().then(() => {
-        // The map has been initialized
+        this.logger.debug(`center = ${this.center}`);
+        if (this.center) {
+          this.view.center = new Point({
+            latitude: this.center.lat,
+            longitude: this.center.lng
+          });
+        }
+
+        this.userSettingService.userSetting$
+          .pipe(takeUntil(this.ngDestroy$))
+          .subscribe((userSetting) => {
+            this.configureTileLayers(userSetting);
+            // if (userSetting.showMapCenter) {
+            //   this.updateMapView(); //TODO
+            // }
+          });
+
         this.zone.run(() => {
           this.logger.debug(
             'Map loaded in ' + (performance.now() - start) + ' ms'
@@ -81,16 +118,34 @@ export class MapComponent implements OnInit {
       });
     });
     this.isActive = new BehaviorSubject(this.autoActivate);
+    try {
+      if (this.center === undefined || this.zoom === undefined) {
+        const currentView = await this.mapService.mapView$
+          .pipe(take(1))
+          .toPromise();
+        if (currentView && currentView.center) {
+          this.firstPositionUpdate = false;
+          if (this.center === undefined) {
+            this.view.center = currentView.center;
+          }
+          if (this.zoom === undefined) {
+            this.view.zoom = currentView.zoom;
+          }
+        }
+      }
+    } finally {
+      this.loading = false;
+    }
   }
 
   private onMapReady(): void {
     if (this.showScale) {
       const scaleBar = new ScaleBar({
-        view: this.mapView,
+        view: this.view,
         unit: 'metric'
       });
       // Add the widget to the bottom left corner of the view
-      this.mapView.ui.add(scaleBar, {
+      this.view.ui.add(scaleBar, {
         position: 'bottom-left'
       });
     }
@@ -113,6 +168,40 @@ export class MapComponent implements OnInit {
         )
       )
       .subscribe();
+
+    this.mapService.centerMapToUser$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(() => {
+        this.zone.runOutsideAngular(() => {
+          if (this.userMarker) {
+            const currentPosition = this.userMarker.getPosition();
+            const latLng = L.latLng(
+              currentPosition.coords.latitude,
+              currentPosition.coords.longitude
+            );
+            if (this.followMode || this.firstClickOnZoomToUser) {
+              // Follow mode is allready true or first click, zoom in
+              this.flyToMaxZoom(latLng);
+            } else {
+              // Use existing zoom
+              this.flyTo(latLng, this.view.zoom, true);
+            }
+            this.firstClickOnZoomToUser = false;
+          }
+        });
+      });
+
+    this.geoPositionService.currentPosition$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((pos) => this.onPositionUpdate(pos));
+
+    this.geoPositionService.currentHeading$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((heading) => {
+        if (this.userMarker) {
+          this.userMarker.setHeading(heading);
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -124,21 +213,176 @@ export class MapComponent implements OnInit {
     this.ngDestroy$.complete();
   }
 
+  private getMaxZoom(detectRetina: boolean) {
+    return detectRetina && L.Browser.retina
+      ? settings.map.tiles.maxZoom + 2
+      : settings.map.tiles.maxZoom;
+  }
+
+  private setZoom(minZoom: number, maxZoom: number): void {
+    const constraints = this.view.constraints;
+    constraints.minZoom = minZoom ? minZoom : settings.map.tiles.minZoom;
+    constraints.maxZoom = maxZoom ? maxZoom : settings.map.tiles.maxZoom;
+  }
+
+  private getTileLayerDefaultOptions(
+    userSetting: UserSetting
+  ): IRegObsTileLayerOptions {
+    return {
+      minZoom: settings.map.tiles.minZoom,
+      maxZoom: this.getMaxZoom(userSetting.useRetinaMap),
+      maxNativeZoom: settings.map.tiles.maxZoom,
+      detectRetina: userSetting.useRetinaMap,
+      updateWhenIdle: settings.map.tiles.updateWhenIdle,
+      edgeBufferTiles: settings.map.tiles.edgeBufferTiles
+    };
+  }
+
+  configureTileLayers(userSetting: UserSetting) {
+    this.zone.runOutsideAngular(() => {
+      // this.tilesLayer.clearLayers();
+      this.setZoom(null, this.getMaxZoom(userSetting.useRetinaMap));
+      const mapOptions = this.getMapOptions(
+        userSetting.topoMap,
+        userSetting.language
+      );
+      const layers: Layer[] = [];
+
+      for (const topoMap of mapOptions) {
+        // const topoTilesLayer = topoMap.excludeBounds
+        //   ? new RegObsTileLayer(topoMap.url, {
+        //       ...this.getTileLayerDefaultOptions(userSetting),
+        //       bounds: topoMap.bounds,
+        //       excludeBounds: topoMap.excludeBounds
+        //     })
+        //   : L.tileLayer(topoMap.url, {
+        //       ...this.getTileLayerDefaultOptions(userSetting),
+        //       bounds: topoMap.bounds
+        //     });
+        let layer: Layer;
+        if (topoMap.vector) {
+          layer = new VectorTileLayer({
+            id: topoMap.name,
+            url: topoMap.url
+            //TODO: Støtt excludeBounds, så lag ikke overlapper
+          });
+        } else {
+          layer = new WebTileLayer({
+            id: topoMap.name,
+            urlTemplate: topoMap.url
+          });
+        }
+        //TODO: Legg på "sub-lag" for observasjoner
+        layers.push(layer);
+      }
+      const basemap = new Basemap({
+        baseLayers: layers,
+        id: mapOptions.map((m) => m.name).join(',')
+      });
+      this.view.map.basemap = basemap;
+
+      this.view.map.layers.removeAll();
+      for (const supportTile of this.userSettingService.getSupportTilesOptions(
+        userSetting
+      )) {
+        if (supportTile.enabled) {
+          const layer = new WebTileLayer({
+            id: supportTile.name,
+            urlTemplate: supportTile.url,
+            opacity: supportTile.opacity
+          });
+          //TODO: Flere valg for støttekart
+          // const supportMapTileLayer = L.tileLayer(supportTile.url, {
+          //   ...this.getTileLayerDefaultOptions(userSetting),
+          //   updateInterval: 600,
+          //   keepBuffer: 0,
+          //   updateWhenIdle: true,
+          //   minZoom: settings.map.tiles.minZoomSupportMaps,
+          //   bounds: <any>settings.map.tiles.supportTilesBounds
+          // });
+          // supportMapTileLayer.setOpacity(supportTile.opacity);
+          // supportMapTileLayer.addTo(this.tilesLayer);
+          this.view.map.layers.add(layer);
+        }
+      }
+    });
+  }
+
+  private getMapOptions(
+    topoMap: TopoMap,
+    langKey: LangKey
+  ): MapOptionsWithBounds[] {
+    const norwegianMixedMap: MapOptionsWithBounds = {
+      name: TopoMap.statensKartverk,
+      url: settings.map.tiles.statensKartverkMapUrl,
+      bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
+    };
+    const openTopoMap: MapOptionsWithBounds = {
+      name: TopoMap.openTopo,
+      url: settings.map.tiles.openTopoMapUrl
+    };
+    const statensKartverk: MapOptionsWithBounds = {
+      name: TopoMap.statensKartverk,
+      url: settings.map.tiles.statensKartverkMapUrl
+    };
+    const arcGisOnlineMap: MapOptionsWithBounds = {
+      name: TopoMap.arcGisOnline,
+      url: settings.map.tiles.arcGisOnlineTopoMapUrl
+    };
+    const geoDataLandskapMap: MapOptionsWithBounds = {
+      name: TopoMap.geoDataLandskap,
+      url: settings.map.tiles.geoDataLandskapMapUrl
+    };
+    const arGisOnlineMixMap = [
+      { ...arcGisOnlineMap, excludeBounds: NORWEGIAN_BOUNDS },
+      norwegianMixedMap
+    ];
+    const geoDataTerrengVector: MapOptionsWithBounds = {
+      name: TopoMap.geoDataTerrengVector,
+      url: settings.map.tiles.geoDataTerrengVectorMapUrl,
+      vector: true
+    };
+
+    //TODO: Kan vi forenkle dette, f.eks. ved å legge alle kartvalgene i en Map nøkla på TopoMap enum?
+    switch (topoMap) {
+      case TopoMap.statensKartverk:
+        return [statensKartverk];
+      case TopoMap.openTopo:
+        return [openTopoMap];
+      case TopoMap.arcGisOnline:
+        return [arcGisOnlineMap];
+      case TopoMap.geoDataLandskap:
+        return [geoDataLandskapMap];
+      case TopoMap.mixOpenTopo: //TODO: Hvorfor har man ikke definert denne lenger opp slik som for arGisOnlineMixMap?
+        return [
+          { ...openTopoMap, excludeBounds: NORWEGIAN_BOUNDS },
+          norwegianMixedMap
+        ];
+      case TopoMap.mixArcGisOnline:
+        return arGisOnlineMixMap;
+      case TopoMap.geoDataTerrengVector:
+        return [geoDataTerrengVector];
+      default:
+        return langKey === LangKey.nb ? [statensKartverk] : [arcGisOnlineMap];
+    }
+  }
+
   async initializeMap(): Promise<void> {
     const container = this.mapViewEl.nativeElement;
 
-    const basemap = new Basemap({
-      baseLayers: [
-        new VectorTileLayer({
-          url:
-            'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheGraatoneTerreng_WM/VectorTileServer'
-        })
-      ],
-      id: 'vektorkart'
-    });
+    //TODO: Fjern hardkoda basemap
+    // const basemap = new Basemap({
+    //   baseLayers: [
+    //     new VectorTileLayer({
+    //       url:
+    //         'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheGraatoneTerreng_WM/VectorTileServer'
+    //     })
+    //   ],
+    //   id: 'vektorkart'
+    // });
 
-    this.map = new Map({
-      basemap: basemap
+    const map = new Map({
+      // basemap: basemap
       // layers: layers
     });
 
@@ -148,8 +392,8 @@ export class MapComponent implements OnInit {
     //   }
     // });
 
-    const view = new MapView({
-      map: this.map,
+    this.view = new MapView({
+      map: map,
       container,
       zoom: 7,
       center: [10.5, 60]
@@ -171,10 +415,9 @@ export class MapComponent implements OnInit {
       this.initOfflineMaps();
     }
 
-    this.mapView = view;
-    this.mapView
+    this.view
       .when(() => {
-        this.createExtentWatcher(view);
+        this.createExtentWatcher(this.view);
         this.loading = false;
         this.mapReady.emit(null);
       })
@@ -189,9 +432,9 @@ export class MapComponent implements OnInit {
         //if the panning or zooming has stopped, update url
         if (view) {
           this.mapService.updateMapView({
-            bounds: this.mapView.extent,
-            center: this.mapView.center,
-            zoom: this.mapView.zoom
+            bounds: this.view.extent,
+            center: this.view.center,
+            zoom: this.view.zoom
           });
         }
       }
@@ -221,8 +464,53 @@ export class MapComponent implements OnInit {
     const vLayer = new VectorTileLayer({
       url: `http://localhost:8080/${offlineMap.name}/root.json`
     });
-    this.map.layers.add(vLayer);
-    const constraints = this.mapView.constraints;
+    this.view.map.layers.add(vLayer); //TODO: Trenger map å være global?
+    const constraints = this.view.constraints;
     constraints.maxZoom = 13;
+  }
+
+  private onPositionUpdate(data: Geoposition) {
+    this.zone.runOutsideAngular(() => {
+      if (this.view) {
+        const latLng = L.latLng({
+          lat: data.coords.latitude,
+          lng: data.coords.longitude
+        });
+        if (!this.userMarker) {
+          this.userMarker = new UserMarker(this.view, data);
+        } else {
+          this.userMarker.updatePosition(data);
+        }
+        if (this.followMode && !this.isDoingMoveAction) {
+          this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
+          this.firstPositionUpdate = false;
+        }
+      }
+    });
+  }
+
+  private flyToMaxZoom(latLng: L.LatLng, usePan = false) {
+    this.flyTo(
+      latLng,
+      Math.max(settings.map.flyToOnGpsZoom, this.view.zoom),
+      usePan
+    );
+  }
+
+  private flyTo(latLng: L.LatLng, zoom: number, usePan = false) {
+    this.isDoingMoveAction = true;
+    // if (usePan) {
+    //   this.map.panTo(latLng);
+    // } else {
+    //   this.map.flyTo(latLng, zoom);
+    // }
+    this.view.goTo(
+      new Point({
+        latitude: latLng.lat,
+        longitude: latLng.lng,
+        spatialReference: { wkid: 25833 }
+      })
+    );
+    this.isDoingMoveAction = false;
   }
 }

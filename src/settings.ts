@@ -151,9 +151,11 @@ export const settings = {
         'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
       geoDataLandskapMapUrl:
         'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
-      openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      openTopoMapUrl: 'https://tile.opentopomap.org/{z}/{x}/{y}.png',
       arcGisOnlineTopoMapUrl:
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      geoDataTerrengVectorMapUrl:
+        'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheGraatoneTerreng_WM/VectorTileServer',
       supportTiles: [
         {
           name: 'steepness',

@@ -9,7 +9,7 @@ export interface UserSetting {
   currentGeoHazard: Array<GeoHazard>;
   observationDaysBack: Array<{ geoHazard: GeoHazard; daysBack: number }>;
   completedStartWizard: boolean;
-  supportTiles: Array<{ name: string; enabled: boolean; opacity: number }>;
+  supportTiles: Array<{ name: string; enabled: boolean; opacity: number }>; //TODO: Lage en egen type for dette?
   showMapCenter: boolean;
   tilesCacheSizev2: number;
   showObservations: boolean;

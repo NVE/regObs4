@@ -40,8 +40,9 @@
     <ion-label position="stacked" color="dark" class="stacked-label">{{ 'MENU.MAP' | translate }}</ion-label>
     <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap"
       interface="action-sheet" (ngModelChange)="saveUserSettings()">
-      <!-- <ion-select-option [value]="TopoMap.mixGeoDataLandskap">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{
-       'Geodata Landskap' }}</ion-select-option> -->
+      <!-- TODO: Ikke hardkode hvilke kart vi tilbyr her, kartvalg burde ligge i en felles config-fil -->
+      <ion-select-option [value]="TopoMap.geoDataTerrengVector">{{
+       'Geodata Terreng (vektor)' }}</ion-select-option>
       <ion-select-option [value]="TopoMap.mixArcGisOnline">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{
         'MENU.TILES.KARTVERKET' | translate }}</ion-select-option>
       <ion-select-option [value]="TopoMap.mixOpenTopo">{{ 'MENU.TILES.OPEN_TOPO' | translate }} + {{
