@@ -13,6 +13,7 @@ import esriConfig from '@arcgis/core/config.js';
 import Layer from '@arcgis/core/layers/Layer';
 import WebTileLayer from '@arcgis/core/layers/WebTileLayer';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
+import GroupLayer from '@arcgis/core/layers/GroupLayer';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
@@ -39,6 +40,7 @@ import { UserMarker } from 'src/app/core/helpers/leaflet/user-marker/user-marker
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 
 const DEBUG_TAG = 'MapComponent';
+const OFFLINE_LAYER = 'OfflineLayer';
 
 interface MapOptionsWithBounds {
   name: string;
@@ -144,7 +146,6 @@ export class MapComponent implements OnInit {
         view: this.view,
         unit: 'metric'
       });
-      // Add the widget to the bottom left corner of the view
       this.view.ui.add(scaleBar, {
         position: 'bottom-left'
       });
@@ -382,29 +383,7 @@ export class MapComponent implements OnInit {
 
   async initializeMap(): Promise<void> {
     const container = this.mapViewEl.nativeElement;
-
-    //TODO: Fjern hardkoda basemap
-    // const basemap = new Basemap({
-    //   baseLayers: [
-    //     new VectorTileLayer({
-    //       url:
-    //         'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheGraatoneTerreng_WM/VectorTileServer'
-    //     })
-    //   ],
-    //   id: 'vektorkart'
-    // });
-
-    const map = new Map({
-      // basemap: basemap
-      // layers: layers
-    });
-
-    // const map = new WebMap({
-    //   portalItem: {
-    //     id: 'aa1d3f80270146208328cf66d022e09c'
-    //   }
-    // });
-
+    const map = new Map();
     this.view = new MapView({
       map: map,
       container,
@@ -454,7 +433,7 @@ export class MapComponent implements OnInit {
     });
   }
 
-  componentIsActive(isActive: boolean) {
+  componentIsActive(isActive: boolean): void {
     this.isActive.next(isActive);
   }
 
@@ -474,12 +453,24 @@ export class MapComponent implements OnInit {
 
   private async addOfflineLayer(offlineMap: OfflineMap) {
     this.logger.debug(`laster offline kartlag: ${offlineMap.name}`);
-    const vLayer = new VectorTileLayer({
+    const layer = new VectorTileLayer({
+      id: offlineMap.name,
       url: `http://localhost:8080/${offlineMap.name}/root.json`
     });
-    this.view.map.layers.add(vLayer);
+    let offlineGroupLayer: GroupLayer = this.view.map.layers.find(
+      (layer: Layer) => layer.id === OFFLINE_LAYER
+    ) as GroupLayer;
+    if (!offlineGroupLayer) {
+      offlineGroupLayer = new GroupLayer({ visibilityMode: 'inherited' });
+      this.view.map.layers.add(offlineGroupLayer, 0); //put it below observations icon layer
+    } else {
+      offlineGroupLayer.layers
+        .find((layer: Layer) => layer.id === offlineMap.name)
+        ?.destroy(); //remove previous versjon of layer if any
+    }
+    offlineGroupLayer.add(layer);
     const constraints = this.view.constraints;
-    constraints.maxZoom = 13;
+    constraints.maxZoom = 14;
   }
 
   private onPositionUpdate(data: Geoposition) {
