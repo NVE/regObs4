@@ -60,7 +60,7 @@ export class MapComponent implements OnInit {
   @Input() showSupportMaps = true;
   @Input() center: L.LatLng; //TODO
   @Input() zoom: number;
-  @Output() mapReady: EventEmitter<L.Map> = new EventEmitter(); //TODO: Trenger den å sende fra seg kartet? I tilfelle må vi gjøre noe
+  @Output() mapReady: EventEmitter<MapView> = new EventEmitter();
   @Input() autoActivate = true;
   @Input() geoTag = DEBUG_TAG;
 
@@ -138,7 +138,7 @@ export class MapComponent implements OnInit {
     }
   }
 
-  private onMapReady(): void {
+  onMapReady(): void {
     if (this.showScale) {
       const scaleBar = new ScaleBar({
         view: this.view,
@@ -238,74 +238,87 @@ export class MapComponent implements OnInit {
     };
   }
 
-  configureTileLayers(userSetting: UserSetting) {
+  private configureTileLayers(userSetting: UserSetting): void {
     this.zone.runOutsideAngular(() => {
       // this.tilesLayer.clearLayers();
       this.setZoom(null, this.getMaxZoom(userSetting.useRetinaMap));
-      const mapOptions = this.getMapOptions(
-        userSetting.topoMap,
-        userSetting.language
-      );
-      const layers: Layer[] = [];
+      this.view.map.basemap = this.createBaseMap(userSetting);
+      this.applySupportMaps(userSetting, this.view.map);
+    });
+  }
 
-      for (const topoMap of mapOptions) {
-        // const topoTilesLayer = topoMap.excludeBounds
-        //   ? new RegObsTileLayer(topoMap.url, {
-        //       ...this.getTileLayerDefaultOptions(userSetting),
-        //       bounds: topoMap.bounds,
-        //       excludeBounds: topoMap.excludeBounds
-        //     })
-        //   : L.tileLayer(topoMap.url, {
-        //       ...this.getTileLayerDefaultOptions(userSetting),
-        //       bounds: topoMap.bounds
-        //     });
-        let layer: Layer;
-        if (topoMap.vector) {
-          layer = new VectorTileLayer({
-            id: topoMap.name,
-            url: topoMap.url
-            //TODO: Støtt excludeBounds, så lag ikke overlapper
-          });
-        } else {
-          layer = new WebTileLayer({
-            id: topoMap.name,
-            urlTemplate: topoMap.url
-          });
-        }
-        //TODO: Legg på "sub-lag" for observasjoner
-        layers.push(layer);
+  private createBaseMap(userSetting: UserSetting): Basemap {
+    const mapOptions = this.getMapOptions(
+      userSetting.topoMap,
+      userSetting.language
+    );
+    const baseLayers: Layer[] = [];
+
+    for (const topoMap of mapOptions) {
+      // const topoTilesLayer = topoMap.excludeBounds
+      //   ? new RegObsTileLayer(topoMap.url, {
+      //       ...this.getTileLayerDefaultOptions(userSetting),
+      //       bounds: topoMap.bounds,
+      //       excludeBounds: topoMap.excludeBounds
+      //     })
+      //   : L.tileLayer(topoMap.url, {
+      //       ...this.getTileLayerDefaultOptions(userSetting),
+      //       bounds: topoMap.bounds
+      //     });
+      let layer: Layer;
+      if (topoMap.vector) {
+        layer = new VectorTileLayer({
+          id: topoMap.name,
+          url: topoMap.url
+          //TODO: Støtt excludeBounds, så lag ikke overlapper
+        });
+      } else {
+        layer = new WebTileLayer({
+          id: topoMap.name,
+          urlTemplate: topoMap.url
+        });
       }
-      const basemap = new Basemap({
-        baseLayers: layers,
-        id: mapOptions.map((m) => m.name).join(',')
-      });
-      this.view.map.basemap = basemap;
+      baseLayers.push(layer);
+    }
+    return new Basemap({
+      baseLayers: baseLayers,
+      id: mapOptions.map((m) => m.name).join(',')
+    });
+  }
 
-      this.view.map.layers.removeAll();
-      for (const supportTile of this.userSettingService.getSupportTilesOptions(
-        userSetting
-      )) {
-        if (supportTile.enabled) {
-          const layer = new WebTileLayer({
-            id: supportTile.name,
-            urlTemplate: supportTile.url,
-            opacity: supportTile.opacity
-          });
-          //TODO: Flere valg for støttekart
-          // const supportMapTileLayer = L.tileLayer(supportTile.url, {
-          //   ...this.getTileLayerDefaultOptions(userSetting),
-          //   updateInterval: 600,
-          //   keepBuffer: 0,
-          //   updateWhenIdle: true,
-          //   minZoom: settings.map.tiles.minZoomSupportMaps,
-          //   bounds: <any>settings.map.tiles.supportTilesBounds
-          // });
-          // supportMapTileLayer.setOpacity(supportTile.opacity);
-          // supportMapTileLayer.addTo(this.tilesLayer);
-          this.view.map.layers.add(layer);
-        }
+  private applySupportMaps(userSetting: UserSetting, map: Map): void {
+    const layersToRemove: Layer[] = [];
+    map.layers.forEach((layer) => {
+      if (layer instanceof WebTileLayer) {
+        layersToRemove.push(layer);
       }
     });
+    map.layers.removeMany(layersToRemove);
+
+    for (const supportTile of this.userSettingService.getSupportTilesOptions(
+      userSetting
+    )) {
+      if (supportTile.enabled) {
+        const layer = new WebTileLayer({
+          id: supportTile.name,
+          urlTemplate: supportTile.url,
+          opacity: supportTile.opacity
+        });
+
+        //TODO: Flere valg for støttekart
+        // const supportMapTileLayer = L.tileLayer(supportTile.url, {
+        //   ...this.getTileLayerDefaultOptions(userSetting),
+        //   updateInterval: 600,
+        //   keepBuffer: 0,
+        //   updateWhenIdle: true,
+        //   minZoom: settings.map.tiles.minZoomSupportMaps,
+        //   bounds: <any>settings.map.tiles.supportTilesBounds
+        // });
+        // supportMapTileLayer.setOpacity(supportTile.opacity);
+        // supportMapTileLayer.addTo(this.tilesLayer);
+        map.layers.add(layer);
+      }
+    }
   }
 
   private getMapOptions(
@@ -419,7 +432,7 @@ export class MapComponent implements OnInit {
       .when(() => {
         this.createExtentWatcher(this.view);
         this.loading = false;
-        this.mapReady.emit(null);
+        this.mapReady.emit(this.view);
       })
       .catch((reason) => {
         this.logger.log(`Error in initializeMap due to ${reason}`);
@@ -464,7 +477,7 @@ export class MapComponent implements OnInit {
     const vLayer = new VectorTileLayer({
       url: `http://localhost:8080/${offlineMap.name}/root.json`
     });
-    this.view.map.layers.add(vLayer); //TODO: Trenger map å være global?
+    this.view.map.layers.add(vLayer);
     const constraints = this.view.constraints;
     constraints.maxZoom = 13;
   }

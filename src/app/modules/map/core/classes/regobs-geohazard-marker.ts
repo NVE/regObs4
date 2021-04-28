@@ -1,6 +1,9 @@
 import * as L from 'leaflet';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
+/**
+ * TODO: Should we use a map service to show observations instead of using this?
+ */
 export class RegobsGeoHazardMarker extends L.DivIcon {
   private _selected: boolean;
   private _geoHazard: GeoHazard;

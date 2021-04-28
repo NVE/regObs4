@@ -1,6 +1,6 @@
 <app-header title="Varsom Regobs" [fullscreenSupport]="true"></app-header>
 <ion-content>
-  <app-map [autoActivate]="false" [geoTag]="'HomePage'"></app-map>
+  <app-map (mapReady)="onMapReady($event)" [autoActivate]="false" [geoTag]="'HomePage'"></app-map>
   <app-map-center-info></app-map-center-info>
   <app-map-item-bar></app-map-item-bar>
   <app-geo-fab slot="fixed" *ngIf="showGeoSelectInfo === false"></app-geo-fab>
