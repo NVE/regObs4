@@ -127,13 +127,15 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     //   shadowUrl: 'leaflet/marker-shadow.png',
     //   shadowSize: [41, 41]
     // });
+    if (this.fromMarker) {
+      this.fromMarker = this.convertFromLeafletMarkerToArcgisMarkerIfNeeded(
+        this.fromMarker
+      );
+    }
     this.followMode = !this.locationMarker && !this.fromMarker;
     this.mapService.followMode = this.followMode;
     if (!this.locationMarker) {
       if (this.fromMarker) {
-        this.fromMarker = this.convertFromLeafletMarkerToArcgisMarkerIfNeeded(
-          this.fromMarker
-        );
         this.locationMarker = this.createMarker(
           this.fromMarker.geometry as Point, //TODO: Er dette trygt?
           this.locationMarkerIconUrl
@@ -155,7 +157,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         }
       }
     } else {
-      //TODO: Remove this when we get ArcGis Geometry from outside
+      //TODO: Remove this when input markers are based on ArcGis
       this.locationMarker = this.convertFromLeafletMarkerToArcgisMarkerIfNeeded(
         this.locationMarker
       );
@@ -171,7 +173,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.updateMapViewInfo();
   }
 
-  //TODO: Remove this when we get ArcGis Geometry from outside
+  //TODO: Remove this when input markers are based on ArcGis
   private convertFromLeafletMarkerToArcgisMarkerIfNeeded(
     marker: L.Marker | Graphic
   ): Graphic {

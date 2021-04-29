@@ -157,7 +157,8 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     if (this.mapView.center && gpsPos?.coords) {
       const gpsPosPoint = new Point({
         latitude: gpsPos.coords.latitude,
-        longitude: gpsPos.coords.longitude
+        longitude: gpsPos.coords.longitude,
+        spatialReference: this.mapView.center.spatialReference
       });
       horizontalDistance = this.helperService.getDistanceText(
         this.mapView.center.distance(gpsPosPoint)
