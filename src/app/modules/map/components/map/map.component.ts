@@ -60,7 +60,7 @@ export class MapComponent implements OnInit {
   @Input() showUserLocation = true;
   @Input() showScale = true;
   @Input() showSupportMaps = true;
-  @Input() center: L.LatLng; //TODO
+  @Input() center: Point;
   @Input() zoom: number;
   @Output() mapReady: EventEmitter<MapView> = new EventEmitter();
   @Input() autoActivate = true;
@@ -96,10 +96,7 @@ export class MapComponent implements OnInit {
       this.initializeMap().then(() => {
         this.logger.debug(`center = ${this.center}`);
         if (this.center) {
-          this.view.center = new Point({
-            latitude: this.center.lat,
-            longitude: this.center.lng
-          });
+          this.view.center = this.center;
         }
 
         this.userSettingService.userSetting$
@@ -447,6 +444,7 @@ export class MapComponent implements OnInit {
             this.addOfflineLayer(offlineMap);
           }
         }
+        //TODO: Delete layers that were removed
       }
     );
   }

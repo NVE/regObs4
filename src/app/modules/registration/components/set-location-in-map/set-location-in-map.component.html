@@ -1,6 +1,6 @@
 <div [ngClass]="{'open': showDetails, 'details-small':!showFromMarkerInDetails }">
   <app-map *ngIf="locationMarker" [showSupportMaps]="false" (mapReady)="onMapReady($event)"
-    [center]="locationMarker.getLatLng()"></app-map>
+    [center]="locationMarker.geometry"></app-map>
   <ion-grid class="bottom-info ion-no-padding">
     <ion-row>
       <ion-col class="confirm-button-col">
@@ -67,9 +67,9 @@
                       <ion-row>
                         <ion-col class="ion-no-padding">
                           <ion-label class="small-text ion-no-margin">
-                            <span>{{ locationMarker.getLatLng().lat | number:'0.3'
+                            <span>{{ locationMarker.geometry.latitude | number:'0.3'
                               }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-                              {{ locationMarker.getLatLng().lng | number:'0.3'
+                              {{ locationMarker.geometry.latitude | number:'0.3'
                               }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</span>
                             <span *ngIf="!isLoading && viewInfo && viewInfo.elevation !== null">, {{ viewInfo.elevation
                               }}
