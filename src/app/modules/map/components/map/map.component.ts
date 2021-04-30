@@ -394,7 +394,10 @@ export class MapComponent implements OnInit {
       map: map,
       container,
       zoom: 7,
-      center: [10.5, 60]
+      center: [10.5, 60],
+      ui: {
+        components: []
+      }
       // center: initialView.target, //TODO: Get from URL
       // zoom: initialView.zoom, //TODO: Get from URL
       // constraints: {
