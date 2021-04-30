@@ -17,3 +17,19 @@ app-map-controls {
     right: 0px;
     width: 60px;
 }
+
+.map-debug-container {
+  margin-top: 8px;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+
+  .map-debug {
+    padding: 4px;
+    border: 1px solid red;
+    background-color: white;
+  }
+}

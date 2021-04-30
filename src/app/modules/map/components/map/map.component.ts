@@ -20,7 +20,7 @@ import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import { Platform } from '@ionic/angular';
 import { Feature, GeometryObject } from '@turf/turf';
 import L from 'leaflet';
-import { BehaviorSubject, from, Subject } from 'rxjs';
+import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { NORWEGIAN_BOUNDS } from 'src/app/core/helpers/leaflet/border-helper';
@@ -65,6 +65,7 @@ export class MapComponent implements OnInit {
   @Output() mapReady: EventEmitter<MapView> = new EventEmitter();
   @Input() autoActivate = true;
   @Input() geoTag = DEBUG_TAG;
+  @Input() debug = true;
 
   private view: MapView;
   private loading: boolean; //TODO: Trenger vi denne?
@@ -78,6 +79,10 @@ export class MapComponent implements OnInit {
 
   // The <div> where we will place the map
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
+
+  // Zoom level debug
+  @ViewChild('zoomLevelNode', { static: true }) private zoomLevelNode: ElementRef;
+  private zlWatcher: { remove(): void };
 
   constructor(
     private zone: NgZone,
@@ -209,6 +214,10 @@ export class MapComponent implements OnInit {
     this.geoPositionService.stopTrackingComponent(DEBUG_TAG);
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
+
+    if (this.zlWatcher) {
+      this.zlWatcher.remove();
+    }
   }
 
   private getMaxZoom(detectRetina: boolean) {
@@ -399,6 +408,13 @@ export class MapComponent implements OnInit {
       //   })
       // }
     });
+
+    // Zoom level debug
+    if (this.debug) {
+      this.zlWatcher = this.view.watch('zoom', zoom => {
+        this.zoomLevelNode.nativeElement.innerText = zoom;
+      });
+    }
 
     if (isAndroidOrIos(this.platform)) {
       this.initOfflineMaps();
