@@ -2,8 +2,8 @@
 </div-->
 <div #mapViewNode></div>
 <app-map-controls *ngIf="showMapControls" (mapReady)="onMapReady($event)"></app-map-controls>
-<div class="map-debug-container" *ngIf="debug">
+<div class="map-debug-container" [hidden]="!debug">
     <div class="map-debug">
-        Zoom level: <strong #zoomLevelNode></strong>
+        Zoom level: <strong #zoomLevelNode>{{ zoom }}</strong>
     </div>
 </div>
