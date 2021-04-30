@@ -7,10 +7,32 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-button expand="full">
-    <input type="file" (change)="loadFile($event.target.files)" id="file-input"
-      accept="application/zip">
-  </ion-button>
+  <div class="desc">
+    <div>
+      <ion-text color="primary">
+        <h1>Nedlastning av kartpakker</h1>
+        <p>Nedlastning av kartpakker foregår i to trinn:</p>
+        <ol>
+          <li>Gå inn på nedlastningssiden og last ned kartpakke til telefonen.</li>
+          <li>Trykk på "Velg fil"-knappen nedenfor og velg nedlastet zip-fil for å installere kartpakken.</li>
+        </ol>
+      </ion-text>
+    </div>
+
+    <div>
+      <a href="https://testregobs.z1.web.core.windows.net/">Gå til nedlastningsside</a>
+    </div>
+
+    <div>
+      <input
+        type="file"
+        (change)="loadFile($event.target.files)"
+        id="file-input"
+        accept="application/zip"
+      >
+    </div>
+  </div> 
+
   <ion-list>
     <ion-list-header>
       <ion-label>Kartpakke</ion-label>
