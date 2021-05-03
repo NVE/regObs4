@@ -486,8 +486,6 @@ export class MapComponent implements OnInit {
         ?.destroy(); //remove previous versjon of layer if any
     }
     offlineGroupLayer.add(layer);
-    const constraints = this.view.constraints;
-    constraints.maxZoom = 14;
   }
 
   private getOfflineGroupLayer(): GroupLayer {
