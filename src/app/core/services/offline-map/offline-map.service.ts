@@ -4,7 +4,7 @@ import { Progress } from './progress.model';
 import moment from 'moment';
 import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
@@ -23,6 +23,8 @@ export class OfflineMapService implements OnReset {
   private webServerStarted = false;
   private mapsFolder = 'NOT_READY';
   unzipProgress = new Map<string, number>();
+  private mapAdded = new Subject<OfflineMap>();
+  private mapRemoved = new Subject<OfflineMap>();
 
   constructor(
     private file: File,
@@ -42,9 +44,9 @@ export class OfflineMapService implements OnReset {
 
       this.webServer.onRequest().subscribe((request) => {
         let contentType = 'application/x-protobuf';
-        
+
         let path = webServerRootPath + request.path; //se https://github.com/bykof/cordova-plugin-webserver/issues/59
-        
+
         if (
           request.path.endsWith('tilemap') ||
           (request.query && request.query.includes('f=json'))
@@ -60,13 +62,13 @@ export class OfflineMapService implements OnReset {
           path: path,
           headers: {
             'Content-Type': contentType,
-            
+
             // Allows caching for up to 4 hours
             'Cache-Control': 'public, max-age=14400, immutable',
-            
+
             // TODO: Use http://localhost for prod
             'Access-Control-Allow-Origin': '*'
-            
+
             // 'content-encoding': 'gzip'
             // 'Access-Control-Allow-Headers':
             //   'Origin, X-Requested-With, Content-Type, Accept"'
@@ -97,6 +99,20 @@ export class OfflineMapService implements OnReset {
   // TODO: Implement continue download when app restart
   private isInQueue(m: OfflineMap) {
     return m.downloadStart && !m.downloadComplete;
+  }
+
+  /**
+   * Will post info when a new map package is unzipped and ready to load
+   */
+  mapAdded$(): Observable<OfflineMap> {
+    return this.mapAdded.asObservable();
+  }
+
+  /**
+   * Will post info when a map removed by the user
+   */
+  mapRemoved$(): Observable<OfflineMap> {
+    return this.mapRemoved.asObservable();
   }
 
   async getOfflineMaps$(): Promise<Observable<OfflineMap[]>> {
@@ -132,14 +148,13 @@ export class OfflineMapService implements OnReset {
       .map((directoryEntry) => directoryEntry.name);
     const end = moment().unix();
     this.loggingService.debug(
-      'listOfflineMapNames took ' + (end - start),
-      DEBUG_TAG,
-      directories
+      `listOfflineMapNames took ${end - start}ms`,
+      DEBUG_TAG
     );
     return directories;
   }
 
-  private async listOfflineMaps(): Promise<OfflineMap[]> {
+  async listOfflineMaps(): Promise<OfflineMap[]> {
     const maps: OfflineMap[] = [];
     (await this.listOfflineMapNames()).forEach(
       (name) =>
@@ -151,13 +166,6 @@ export class OfflineMapService implements OnReset {
       //TODO: We can add size and created if needed
     );
     return maps;
-  }
-
-  filterDownloadedMaps(
-    avalable: OfflineMap[],
-    downloaded: OfflineMap[]
-  ): OfflineMap[] {
-    return avalable.filter((a) => !downloaded.find((d) => d.name === a.name));
   }
 
   getUnzipProgress(filename: string): number {
@@ -339,6 +347,7 @@ export class OfflineMapService implements OnReset {
       (await this.getDataFolder()) + (await this.getMapsFolder());
     await this.deleteFolder(rootFolder, m.name);
     this.listOfflineMapsAndNotify();
+    this.mapRemoved.next(m);
     // await this.deleteMapFromDb(m.name);
   }
 
@@ -366,9 +375,7 @@ export class OfflineMapService implements OnReset {
     this.offlineMaps.next(maps); //tell clients that we have a new map
   }
 
-  private async onComplete(map: OfflineMap) {
-    this.listOfflineMapsAndNotify();
-
+  private onComplete(map: OfflineMap) {
     // const m = await this.getSavedMap(name);
     // await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
     map.downloadComplete = moment().unix();
@@ -385,6 +392,9 @@ export class OfflineMapService implements OnReset {
         'kB/s',
       DEBUG_TAG
     );
+    setTimeout(() => {
+      this.mapAdded.next(map);
+    }, 5000);
   }
 
   //return absolute path to root folder for application data (with trailing /)
@@ -422,7 +432,7 @@ export class OfflineMapService implements OnReset {
     await this.file
       .removeRecursively(path, dirName)
       .then(() => {
-        this.loggingService.debug(`removed folder: ${path}${dirName}`);
+        this.loggingService.debug(`removed folder: ${path}/${dirName}`);
       })
       .catch((err) => {
         this.loggingService.error(

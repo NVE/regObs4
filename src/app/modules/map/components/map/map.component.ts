@@ -456,18 +456,27 @@ export class MapComponent implements OnInit {
 
   private async initOfflineMaps() {
     this.logger.debug('initOfflineMaps(): ', DEBUG_TAG);
-    this.offlineMapService.initWebServer();
-    (await this.offlineMapService.getOfflineMaps$()).subscribe(
-      (mapPackages) => {
-        //TODO: We also get notified when we start to unzip a new package. Find a way to ignore this to avoid unneccessary creation of layers that were not updated
-        this.removeOfflineLayersIfPackageWasRemoved(mapPackages);
-        for (const mapPackage of mapPackages) {
-          if (mapPackage.downloadComplete) {
-            this.addOfflineLayer(mapPackage);
-          }
-        }
-      }
-    );
+    await this.offlineMapService.initWebServer();
+
+    this.offlineMapService.mapAdded$().subscribe((mapPackage) => {
+      this.logger.debug(
+        `Nytt kart pakket ut og klar for lasting: ${mapPackage.name}`
+      );
+      this.addOfflineLayer(mapPackage); //add new maps when they are available
+    });
+
+    this.offlineMapService.mapRemoved$().subscribe((mapPackage) => {
+      this.logger.debug(
+        `Kartpakke slettet av bruker, vil fjerne kartlag: ${mapPackage.name}`
+      );
+      this.removeOfflineLayer(mapPackage); //remove map layer when the user removes a package
+    });
+
+    for (const mapPackage of await this.offlineMapService.listOfflineMaps()) {
+      //TODO: We also get notified when we start to unzip a new package. Find a way to ignore this to avoid unneccessary creation of layers that were not updated
+      // this.removeOfflineLayersIfPackageWasRemoved(mapPackages);
+      this.addOfflineLayer(mapPackage); //add maps already on disk
+    }
   }
 
   private async addOfflineLayer(offlineMap: OfflineMap) {
@@ -481,11 +490,10 @@ export class MapComponent implements OnInit {
       offlineGroupLayer = new GroupLayer({ id: OFFLINE_LAYER });
       this.view.map.layers.add(offlineGroupLayer, 0); //put it below observations icon layer
     } else {
-      offlineGroupLayer.layers
-        .find((layer: Layer) => layer.id === offlineMap.name)
-        ?.destroy(); //remove previous versjon of layer if any
+      this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
     }
     offlineGroupLayer.add(layer);
+    this.logger.debug(`Nytt kartlag lagt til: ${offlineMap.name}`);
   }
 
   private getOfflineGroupLayer(): GroupLayer {
@@ -494,17 +502,18 @@ export class MapComponent implements OnInit {
     ) as GroupLayer;
   }
 
-  private removeOfflineLayersIfPackageWasRemoved(
-    mapPackages: OfflineMap[]
+  private removeOfflineLayer(
+    mapPackage: OfflineMap,
+    offlineGroupLayer?: GroupLayer
   ): void {
-    const offlineGroupLayer = this.getOfflineGroupLayer();
+    if (!offlineGroupLayer) {
+      offlineGroupLayer = this.getOfflineGroupLayer();
+    }
     if (offlineGroupLayer) {
       offlineGroupLayer.layers.forEach((layer) => {
-        if (!mapPackages.find((mapPackage) => mapPackage.name === layer.id)) {
+        if (mapPackage.name === layer.id) {
           layer.destroy();
-          this.logger.debug(
-            `Offline layer '${layer.id}' destroyed, since the package was removed`
-          );
+          this.logger.debug(`Offline layer '${layer.id}' destroyed`);
         }
       });
     }
