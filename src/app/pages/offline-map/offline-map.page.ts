@@ -26,6 +26,9 @@ export class OfflineMapPage implements OnInit {
   }
 
   humanReadableByteSize(bytes: number): string {
+    if (isNaN(bytes)) {
+      return '';
+    }
     return this.helperService.humanReadableByteSize(bytes);
   }
 
