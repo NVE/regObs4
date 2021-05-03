@@ -81,7 +81,8 @@ export class MapComponent implements OnInit {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
 
   // Zoom level debug
-  @ViewChild('zoomLevelNode', { static: true }) private zoomLevelNode: ElementRef;
+  @ViewChild('zoomLevelNode', { static: true })
+  private zoomLevelNode: ElementRef;
   private zlWatcher: { remove(): void };
 
   constructor(
@@ -414,7 +415,7 @@ export class MapComponent implements OnInit {
 
     // Zoom level debug
     if (this.debug) {
-      this.zlWatcher = this.view.watch('zoom', zoom => {
+      this.zlWatcher = this.view.watch('zoom', (zoom) => {
         this.zoomLevelNode.nativeElement.innerText = zoom;
       });
     }
@@ -457,13 +458,14 @@ export class MapComponent implements OnInit {
     this.logger.debug('initOfflineMaps(): ', DEBUG_TAG);
     this.offlineMapService.initWebServer();
     (await this.offlineMapService.getOfflineMaps$()).subscribe(
-      (offlineMaps) => {
-        for (const offlineMap of offlineMaps) {
-          if (offlineMap.downloadComplete) {
-            this.addOfflineLayer(offlineMap);
+      (mapPackages) => {
+        //TODO: We also get notified when we start to unzip a new package. Find a way to ignore this to avoid unneccessary creation of layers that were not updated
+        this.removeOfflineLayersIfPackageWasRemoved(mapPackages);
+        for (const mapPackage of mapPackages) {
+          if (mapPackage.downloadComplete) {
+            this.addOfflineLayer(mapPackage);
           }
         }
-        //TODO: Delete layers that were removed
       }
     );
   }
@@ -474,11 +476,9 @@ export class MapComponent implements OnInit {
       id: offlineMap.name,
       url: `http://localhost:8080/${offlineMap.name}/root.json`
     });
-    let offlineGroupLayer: GroupLayer = this.view.map.layers.find(
-      (layer: Layer) => layer.id === OFFLINE_LAYER
-    ) as GroupLayer;
+    let offlineGroupLayer = this.getOfflineGroupLayer();
     if (!offlineGroupLayer) {
-      offlineGroupLayer = new GroupLayer({ visibilityMode: 'inherited' });
+      offlineGroupLayer = new GroupLayer({ id: OFFLINE_LAYER });
       this.view.map.layers.add(offlineGroupLayer, 0); //put it below observations icon layer
     } else {
       offlineGroupLayer.layers
@@ -488,6 +488,28 @@ export class MapComponent implements OnInit {
     offlineGroupLayer.add(layer);
     const constraints = this.view.constraints;
     constraints.maxZoom = 14;
+  }
+
+  private getOfflineGroupLayer(): GroupLayer {
+    return this.view.map.layers.find(
+      (layer: Layer) => layer.id === OFFLINE_LAYER
+    ) as GroupLayer;
+  }
+
+  private removeOfflineLayersIfPackageWasRemoved(
+    mapPackages: OfflineMap[]
+  ): void {
+    const offlineGroupLayer = this.getOfflineGroupLayer();
+    if (offlineGroupLayer) {
+      offlineGroupLayer.layers.forEach((layer) => {
+        if (!mapPackages.find((mapPackage) => mapPackage.name === layer.id)) {
+          layer.destroy();
+          this.logger.debug(
+            `Offline layer '${layer.id}' destroyed, since the package was removed`
+          );
+        }
+      });
+    }
   }
 
   private onPositionUpdate(data: Geoposition) {
