@@ -41,8 +41,10 @@ export class OfflineMapService implements OnReset {
       // .substring(0, rootFilePath.length - 1) //remove last /
 
       this.webServer.onRequest().subscribe((request) => {
-        let contentType = '';
+        let contentType = 'application/x-protobuf';
+        
         let path = webServerRootPath + request.path; //se https://github.com/bykof/cordova-plugin-webserver/issues/59
+        
         if (
           request.path.endsWith('tilemap') ||
           (request.query && request.query.includes('f=json'))
@@ -52,14 +54,19 @@ export class OfflineMapService implements OnReset {
             path = `${path}/root.json`;
           }
         }
+
         const response: Response = {
           status: 200,
           path: path,
-          // body: '<html>Hello World</html>',
           headers: {
             'Content-Type': contentType,
+            
+            // Allows caching for up to 4 hours
+            'Cache-Control': 'public, max-age=14400, immutable',
+            
             // TODO: Use http://localhost for prod
             'Access-Control-Allow-Origin': '*'
+            
             // 'content-encoding': 'gzip'
             // 'Access-Control-Allow-Headers':
             //   'Origin, X-Requested-With, Content-Type, Accept"'
