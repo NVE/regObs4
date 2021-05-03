@@ -147,6 +147,7 @@ export const settings = {
       detectRetina: false,
       updateWhenIdle: false,
       // tslint:disable-next-line:max-line-length
+      noOnlineMapUrl: '/assets/json/norway_burn-8.json',
       statensKartverkMapUrl:
         'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
       geoDataLandskapMapUrl:

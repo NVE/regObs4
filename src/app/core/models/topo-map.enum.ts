@@ -1,4 +1,5 @@
 export enum TopoMap {
+  noOnlineMap = 'noOnlineMap',
   default = 'mixArcGisOnline',
   openTopo = 'openTopo',
   arcGisOnline = 'arcGisOnline',

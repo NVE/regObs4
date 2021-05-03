@@ -13,6 +13,7 @@ import esriConfig from '@arcgis/core/config.js';
 import Layer from '@arcgis/core/layers/Layer';
 import WebTileLayer from '@arcgis/core/layers/WebTileLayer';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
+import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import GroupLayer from '@arcgis/core/layers/GroupLayer';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
@@ -20,7 +21,7 @@ import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import { Platform } from '@ionic/angular';
 import { Feature, GeometryObject } from '@turf/turf';
 import L from 'leaflet';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, from, Subject } from 'rxjs';
 import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { NORWEGIAN_BOUNDS } from 'src/app/core/helpers/leaflet/border-helper';
@@ -42,12 +43,17 @@ import { Geoposition } from '@ionic-native/geolocation/ngx';
 const DEBUG_TAG = 'MapComponent';
 const OFFLINE_LAYER = 'OfflineLayer';
 
+enum BasemapType {
+  RASTER,
+  VECTOR,
+  GEO_JSON
+}
 interface MapOptionsWithBounds {
   name: string;
   url: string;
   bounds?: L.LatLngBoundsExpression;
   excludeBounds?: Feature<GeometryObject>;
-  vector?: boolean;
+  type?: BasemapType;
 }
 
 @Component({
@@ -262,7 +268,7 @@ export class MapComponent implements OnInit {
     );
     const baseLayers: Layer[] = [];
 
-    for (const topoMap of mapOptions) {
+    for (const mapOption of mapOptions) {
       // const topoTilesLayer = topoMap.excludeBounds
       //   ? new RegObsTileLayer(topoMap.url, {
       //       ...this.getTileLayerDefaultOptions(userSetting),
@@ -273,25 +279,34 @@ export class MapComponent implements OnInit {
       //       ...this.getTileLayerDefaultOptions(userSetting),
       //       bounds: topoMap.bounds
       //     });
-      let layer: Layer;
-      if (topoMap.vector) {
-        layer = new VectorTileLayer({
-          id: topoMap.name,
-          url: topoMap.url
-          //TODO: Støtt excludeBounds, så lag ikke overlapper
-        });
-      } else {
-        layer = new WebTileLayer({
-          id: topoMap.name,
-          urlTemplate: topoMap.url
-        });
-      }
-      baseLayers.push(layer);
+      baseLayers.push(this.createBaselayer(mapOption));
     }
     return new Basemap({
       baseLayers: baseLayers,
       id: mapOptions.map((m) => m.name).join(',')
     });
+  }
+
+  private createBaselayer(options: MapOptionsWithBounds): Layer {
+    switch (options.type) {
+      case BasemapType.GEO_JSON:
+        return new GeoJSONLayer({
+          id: options.name,
+          url: options.url
+        });
+      case BasemapType.VECTOR:
+        return new VectorTileLayer({
+          id: options.name,
+          url: options.url
+          //TODO: Støtt excludeBounds, så lag ikke overlapper
+        });
+      default: {
+        return new WebTileLayer({
+          id: options.name,
+          urlTemplate: options.url
+        });
+      }
+    }
   }
 
   private applySupportMaps(userSetting: UserSetting, map: Map): void {
@@ -333,6 +348,11 @@ export class MapComponent implements OnInit {
     topoMap: TopoMap,
     langKey: LangKey
   ): MapOptionsWithBounds[] {
+    const noOnlineMap: MapOptionsWithBounds = {
+      name: TopoMap.noOnlineMap,
+      url: settings.map.tiles.noOnlineMapUrl,
+      type: BasemapType.GEO_JSON
+    };
     const norwegianMixedMap: MapOptionsWithBounds = {
       name: TopoMap.statensKartverk,
       url: settings.map.tiles.statensKartverkMapUrl,
@@ -361,11 +381,13 @@ export class MapComponent implements OnInit {
     const geoDataTerrengVector: MapOptionsWithBounds = {
       name: TopoMap.geoDataTerrengVector,
       url: settings.map.tiles.geoDataTerrengVectorMapUrl,
-      vector: true
+      type: BasemapType.VECTOR
     };
 
     //TODO: Kan vi forenkle dette, f.eks. ved å legge alle kartvalgene i en Map nøkla på TopoMap enum?
     switch (topoMap) {
+      case TopoMap.noOnlineMap:
+        return [noOnlineMap];
       case TopoMap.statensKartverk:
         return [statensKartverk];
       case TopoMap.openTopo:
@@ -395,6 +417,9 @@ export class MapComponent implements OnInit {
       map: map,
       container,
       zoom: 7,
+      spatialReference: {
+        wkid: 3857
+      },
       center: [10.5, 60],
       ui: {
         components: []
