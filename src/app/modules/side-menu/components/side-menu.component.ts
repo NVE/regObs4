@@ -14,6 +14,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../../core/services/app-version/app-version.service';
 import { LangKey } from '../../../core/models/langKey';
+import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 
 @Component({
   selector: 'app-side-menu',
@@ -26,7 +27,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   settings = settings;
   TopoMap = TopoMap;
   LangKey = LangKey;
-
+  offlineMapsAvailable = false;
   private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
 
@@ -37,7 +38,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
     private appVersionService: AppVersionService,
-    private platfrom: Platform,
+    private platform: Platform,
     private navController: NavController,
     private ngZone: NgZone
   ) {}
@@ -57,6 +58,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
         });
       }
     );
+    this.offlineMapsAvailable = isAndroidOrIos(this.platform);
   }
 
   saveUserSettings() {
@@ -110,9 +112,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       to: settings.errorEmailAddress,
       subject:
         `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${
-          this.platfrom.is('ios') ? 'ios' : ''
+          this.platform.is('ios') ? 'ios' : ''
         }` +
-        `${this.platfrom.is('android') ? 'android' : ''}` +
+        `${this.platform.is('android') ? 'android' : ''}` +
         ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
       body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
       isHtml: true

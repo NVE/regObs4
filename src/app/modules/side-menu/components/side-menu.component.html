@@ -42,7 +42,7 @@
       interface="action-sheet" (ngModelChange)="saveUserSettings()">
       <!-- TODO: Ikke hardkode hvilke kart vi tilbyr her, kartvalg burde ligge i en felles config-fil -->
       <ion-select-option *ngIf="offlineMapsAvailable" [value]="TopoMap.noOnlineMap">{{
-        'Kun offlinekart' }}</ion-select-option>
+        'Kun offline-kart' }}</ion-select-option>
       <ion-select-option [value]="TopoMap.geoDataTerrengVector">{{
        'Geodata Terreng (vektor)' }}</ion-select-option>
       <ion-select-option [value]="TopoMap.mixArcGisOnline">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{
