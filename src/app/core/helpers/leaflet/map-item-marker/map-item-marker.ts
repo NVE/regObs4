@@ -1,8 +1,10 @@
 import { MapItem } from '../../../models/map-item.model';
 import { Point } from '@arcgis/core/geometry';
 import Graphic from '@arcgis/core/Graphic';
-import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import { RegobsGeoHazardMarker } from '../../../../modules/map/core/classes/regobs-geohazard-marker';
 
 /**
  * An icon representation of an observation location. Use this to show obserations on the map
@@ -52,9 +54,6 @@ export class MapItemMarker extends Graphic {
     const outline = this.isSelected
       ? new SimpleLineSymbol({ color: 'black', width: 2 })
       : null;
-    this.symbol = new SimpleMarkerSymbol({
-      color: '#ee7b04',
-      outline: outline
-    });
+    this.symbol = RegobsGeoHazardMarker.getIconSvg(this._item.GeoHazardTID);
   }
 }

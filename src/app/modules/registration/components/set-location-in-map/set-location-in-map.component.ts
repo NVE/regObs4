@@ -29,7 +29,7 @@ import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { Point, Polyline } from '@arcgis/core/geometry';
 import MapView from '@arcgis/core/views/MapView';
-import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import Graphic from '@arcgis/core/Graphic';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
@@ -197,7 +197,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return new Graphic({
       geometry: point,
       //TODO: Få SVG-til å virke! symbol: new SimpleMarkerSymbol({ path: symbolPath })
-      symbol: new SimpleMarkerSymbol()
+      symbol: new PictureMarkerSymbol({
+        url: '/assets/icon/map/obs-location.svg',
+        width: '18',
+        height: '28'
+      })
     });
   }
 

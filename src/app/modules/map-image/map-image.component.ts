@@ -159,7 +159,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
 
   private setMarker(latLng: L.LatLng, geoHazard: GeoHazard) {
     L.marker(latLng, {
-      icon: new RegobsGeoHazardMarker(geoHazard),
+      //icon: new RegobsGeoHazardMarker(geoHazard),
       interactive: false
     }).addTo(this.map);
   }
