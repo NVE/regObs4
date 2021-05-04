@@ -431,7 +431,7 @@ export class MapComponent implements OnInit {
         this.mapReady.emit(this.view);
       })
       .catch((reason) => {
-        this.logger.log(`Error in initializeMap due to ${reason}`);
+        this.logger.error(reason, 'Error in initializeMap');
       });
   }
 
@@ -473,8 +473,6 @@ export class MapComponent implements OnInit {
     });
 
     for (const mapPackage of await this.offlineMapService.listOfflineMaps()) {
-      //TODO: We also get notified when we start to unzip a new package. Find a way to ignore this to avoid unneccessary creation of layers that were not updated
-      // this.removeOfflineLayersIfPackageWasRemoved(mapPackages);
       this.addOfflineLayer(mapPackage); //add maps already on disk
     }
   }
@@ -487,6 +485,7 @@ export class MapComponent implements OnInit {
     });
     let offlineGroupLayer = this.getOfflineGroupLayer();
     if (!offlineGroupLayer) {
+      //we create a separate layer group for offline map layers
       offlineGroupLayer = new GroupLayer({ id: OFFLINE_LAYER });
       this.view.map.layers.add(offlineGroupLayer, 0); //put it below observations icon layer
     } else {

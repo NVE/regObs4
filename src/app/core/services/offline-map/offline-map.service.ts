@@ -392,6 +392,7 @@ export class OfflineMapService implements OnReset {
         'kB/s',
       DEBUG_TAG
     );
+    //TODO: Tmp fix for RO-1220: We wait a bit before yelling because sometimes ArcGis couldn't load one of then root.json files when we started to load the map immediately
     setTimeout(() => {
       this.mapAdded.next(map);
     }, 5000);
