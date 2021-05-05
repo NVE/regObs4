@@ -107,6 +107,7 @@ export class MapComponent implements OnInit {
       const start = performance.now();
       this.initializeMap().then(() => {
         this.logger.debug(`center = ${this.center}`);
+        //TODO: SJekk om dette kallet bør være her
         if (this.center) {
           this.view.center = this.center;
         }
@@ -481,7 +482,7 @@ export class MapComponent implements OnInit {
 
   private async initOfflineMaps() {
     this.logger.debug('initOfflineMaps(): ', DEBUG_TAG);
-    await this.offlineMapService.initWebServer();
+    this.offlineMapService.initWebServer();
 
     this.offlineMapService.mapAdded$().subscribe((mapPackage) => {
       this.logger.debug(
@@ -581,10 +582,10 @@ export class MapComponent implements OnInit {
     this.view.goTo(
       new Point({
         latitude: latLng.lat,
-        longitude: latLng.lng,
-        spatialReference: { wkid: 25833 }
+        longitude: latLng.lng
       })
     );
+    //TODO: Set zoom
     this.isDoingMoveAction = false;
   }
 }
