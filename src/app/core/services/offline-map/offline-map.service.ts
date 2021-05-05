@@ -12,6 +12,8 @@ import { HttpClient } from '@angular/common/http';
 import { WebServer, Response } from '@ionic-native/web-server/ngx';
 import JSZip from 'jszip';
 import { ProgressStep } from './progress-step.model';
+import { Platform } from '@ionic/angular';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 
 const DEBUG_TAG = 'OfflineMapService';
 
@@ -31,11 +33,33 @@ export class OfflineMapService implements OnReset {
     private webview: WebView,
     private loggingService: LoggingService,
     private httpClient: HttpClient,
-    private webServer: WebServer
+    private webServer: WebServer,
+    private platform: Platform
   ) {}
 
   async initWebServer(): Promise<void> {
     if (!this.webServerStarted) {
+      this.platform.pause.subscribe(() => {
+        this.webServer?.stop();
+        this.loggingService.debug(
+          'Applikasjonen tok en pause, så stoppet webserver'
+        );
+      });
+      this.platform.resume.subscribe(() => {
+        if (this.webServer) {
+          this.webServer.start();
+          this.loggingService.debug(
+            'Applikasjonen er ferdig med pausen, starter webserver igjen'
+          );
+        } else {
+          this.loggingService.log(
+            'Fikk ikke til å starte webserver etter at applikasjonen var ferdig med pausen',
+            null,
+            LogLevel.Error
+          );
+        }
+      });
+
       const rootFilePath = await this.getDataFolder();
       const mapsFolder = await this.getMapsFolder();
       const webServerRootPath =
