@@ -18,6 +18,7 @@ import GroupLayer from '@arcgis/core/layers/GroupLayer';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import { Platform } from '@ionic/angular';
 import { Feature, GeometryObject } from '@turf/turf';
 import L from 'leaflet';
@@ -420,6 +421,12 @@ export class MapComponent implements OnInit {
       spatialReference: {
         wkid: 3857
       },
+      constraints: {
+        // If not specified, lods is read from the Map/MapLayers.
+        // As we start the map with no layers loaded we should specify
+        // the lods. Not specifying can lead to zoom = -1.
+        lods: TileInfo.create().lods
+      },
       center: [10.5, 60],
       ui: {
         components: []
@@ -437,13 +444,6 @@ export class MapComponent implements OnInit {
       //   })
       // }
     });
-
-    // Zoom level debug
-    if (this.debug) {
-      this.zlWatcher = this.view.watch('zoom', (zoom) => {
-        this.zoomLevelNode.nativeElement.innerText = zoom;
-      });
-    }
 
     if (isAndroidOrIos(this.platform)) {
       this.initOfflineMaps();
@@ -470,6 +470,15 @@ export class MapComponent implements OnInit {
             center: this.view.center,
             zoom: this.view.zoom
           });
+
+          // Zoom level debug
+          if (this.debug) {
+            let zoom = "Ikke gitt";
+            try {
+              zoom = this.view.zoom.toFixed(3);
+            } catch (error) {}
+            this.zoomLevelNode.nativeElement.innerText = zoom;
+          }
         }
       }
     });
