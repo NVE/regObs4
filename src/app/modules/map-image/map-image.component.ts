@@ -15,7 +15,6 @@ import { ImageLocation } from '../../components/img-swiper/image-location.model'
 import { settings } from '../../../settings';
 import { SmartChanges } from '../../core/helpers/simple-changes.helper';
 import { BorderHelper } from '../../core/helpers/leaflet/border-helper';
-import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';
@@ -159,7 +158,8 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
 
   private setMarker(latLng: L.LatLng, geoHazard: GeoHazard) {
     L.marker(latLng, {
-      icon: new RegobsGeoHazardMarker(geoHazard),
+      //TODO - RegObsGeoHazarsMarker finnes ikke lenger ettersom alt finnes nå i map-item-marker.ts
+      //icon: new RegobsGeoHazardMarker(geoHazard),
       interactive: false
     }).addTo(this.map);
   }
