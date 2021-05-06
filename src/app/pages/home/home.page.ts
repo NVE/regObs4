@@ -190,6 +190,9 @@ export class HomePage extends RouterPage implements OnInit {
                 self.mapItemBar.show(marker.item);
               }
             }
+          } else {
+            this.selectedMarker?.deselect();
+            self.mapItemBar.hide();
           }
         })
         .catch((err) => {

@@ -2,9 +2,7 @@ import { MapItem } from '../../../models/map-item.model';
 import { Point } from '@arcgis/core/geometry';
 import Graphic from '@arcgis/core/Graphic';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
-import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
-import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
-import { RegobsGeoHazardMarker } from '../../../../modules/map/core/classes/regobs-geohazard-marker';
+import { GeoHazard } from '../../../models/geo-hazard.enum';
 
 /**
  * An icon representation of an observation location. Use this to show obserations on the map
@@ -46,14 +44,35 @@ export class MapItemMarker extends Graphic {
   }
 
   private updateIcon() {
-    //TODO: Fix svg icon instead og using the tmp symbol below
-    // this.symbol = new RegobsGeoHazardMarker(
-    //   this._item.GeoHazardTID,
-    //   this._isSelected
-    // );
-    const outline = this.isSelected
-      ? new SimpleLineSymbol({ color: 'black', width: 2 })
-      : null;
-    this.symbol = RegobsGeoHazardMarker.getIconSvg(this._item.GeoHazardTID);
+    this.symbol = this.getIconSvg(this._item.GeoHazardTID, this._isSelected);
+  }
+
+  private getSvg(geohazard: string, isSelected: boolean): PictureMarkerSymbol {
+    return new PictureMarkerSymbol({
+      url: isSelected
+        ? `/assets/icon/map/pin-${geohazard}-outline.svg`
+        : `/assets/icon/map/pin-${geohazard}.svg`,
+      width: '27',
+      height: '30',
+      yoffset: 15
+    });
+  }
+
+  private getIconSvg(
+    geoHazard: GeoHazard,
+    isSelected: boolean
+  ): PictureMarkerSymbol {
+    switch (geoHazard) {
+      case GeoHazard.Snow:
+        return this.getSvg('snow', isSelected);
+      case GeoHazard.Water:
+        return this.getSvg('water', isSelected);
+      case GeoHazard.Dirt:
+        return this.getSvg('dirt', isSelected);
+      case GeoHazard.Ice:
+        return this.getSvg('ice', isSelected);
+      default:
+        return null;
+    }
   }
 }
