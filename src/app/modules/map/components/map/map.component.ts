@@ -474,7 +474,7 @@ export class MapComponent implements OnInit {
 
           // Zoom level debug
           if (this.debug) {
-            let zoom = "Ikke gitt";
+            let zoom = 'Ikke gitt';
             try {
               zoom = this.view.zoom.toFixed(3);
             } catch (error) {}
