@@ -15,6 +15,11 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { Observable } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
+import MapView from '@arcgis/core/views/MapView';
+import Graphic from '@arcgis/core/Graphic';
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
+import { Point, Polyline } from '@arcgis/core/geometry';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 @Component({
   selector: 'app-set-avalanche-position',
@@ -30,44 +35,23 @@ export class SetAvalanchePositionPage implements OnInit {
 
   GeoHazard = GeoHazard;
 
-  start: L.LatLng;
-  end: L.LatLng;
-  private map: L.Map;
-  private pathLine: L.Polyline;
+  private start: Point;
+  private end: Point;
+  private mapView: MapView;
+  private pathLine: Graphic;
 
-  fromMarker: L.Marker;
-  locationMarker: L.Marker;
+  fromMarker: Graphic;
+  locationMarker: Graphic;
   confirmLocationText = '';
   locationText = '';
   startImageUrl = '/assets/icon/map/GPS_start.svg';
-  private startIcon = L.icon({
-    iconUrl: this.startImageUrl,
-    iconSize: [27, 42],
-    iconAnchor: [13.5, 41],
-    shadowUrl: 'leaflet/marker-shadow.png',
-    shadowSize: [41, 41]
-  });
   endImageUrl = '/assets/icon/map/GPS_stop.svg';
-  private endIcon = L.icon({
-    iconUrl: this.endImageUrl,
-    iconSize: [27, 42],
-    iconAnchor: [13.5, 41],
-    shadowUrl: 'leaflet/marker-shadow.png',
-    shadowSize: [41, 41]
-  });
-  locationMarkerIcon = L.icon({
-    iconUrl: '/assets/icon/map/obs-location.svg',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    shadowUrl: 'leaflet/marker-shadow.png',
-    shadowSize: [41, 41]
-  });
-  private startMarker: L.Marker;
-  private endMarker: L.Marker;
+  private startMarker: Graphic;
+  private endMarker: Graphic;
+  private markerLayer: GraphicsLayer;
   private translations;
   private startIsActive = true;
   locationMarkerIconUrl = this.startImageUrl;
-
   fullscreen$: Observable<boolean>;
 
   @ViewChild(SetLocationInMapComponent)
@@ -84,7 +68,7 @@ export class SetAvalanchePositionPage implements OnInit {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
     this.translations = await this.translateService
       .get([
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.START_POSITION',
@@ -94,55 +78,95 @@ export class SetAvalanchePositionPage implements OnInit {
       .toPromise();
     const fallbackLatlng = L.latLng(59.1, 10.3);
     if (this.startLatLng) {
-      this.start = L.latLng(this.startLatLng.lat, this.startLatLng.lng);
+      this.start = new Point({
+        latitude: this.startLatLng.lat,
+        longitude: this.startLatLng.lng
+      });
     }
     if (this.endLatLng) {
-      this.end = L.latLng(this.endLatLng.lat, this.endLatLng.lng);
-    }
-    this.locationMarker = L.marker(this.relativeToLatLng || fallbackLatlng, {
-      icon: this.startIcon
-    });
-    this.startMarker = L.marker(this.locationMarker.getLatLng(), {
-      icon: this.startIcon
-    }).on('click', () => {
-      if (!this.startIsActive) {
-        this.end = this.locationMarker.getLatLng();
-      }
-      this.startIsActive = true;
-      this.updateMarkers();
-    });
-    this.endMarker = L.marker(this.locationMarker.getLatLng(), {
-      icon: this.endIcon
-    }).on('click', () => {
-      if (this.startIsActive) {
-        this.start = this.locationMarker.getLatLng();
-      }
-      this.startIsActive = false;
-      this.updateMarkers();
-    });
-    if (this.relativeToLatLng) {
-      this.fromMarker = L.marker(this.relativeToLatLng, {
-        icon: this.locationMarkerIcon
+      this.end = new Point({
+        latitude: this.endLatLng.lat,
+        longitude: this.endLatLng.lng
       });
+    }
+    this.locationMarker = this.createMarkerFromLeafletLatLng(
+      this.relativeToLatLng || fallbackLatlng,
+      this.startImageUrl
+    );
+    this.startMarker = this.createMarker(
+      this.locationMarker.geometry as Point,
+      this.startImageUrl
+    );
+    //TODO: Support click on marker to move it
+    // .on('click', () => {
+    //   if (!this.startIsActive) {
+    //     this.end = this.locationMarker.geometry as Point;
+    //   }
+    //   this.startIsActive = true;
+    //   this.updateMarkers();
+    // });
+    this.endMarker = this.createMarker(
+      this.locationMarker.geometry as Point,
+      this.endImageUrl
+    );
+    //TODO: Support click on marker to move it
+    // .on('click', () => {
+    //   if (this.startIsActive) {
+    //     this.start = this.locationMarker.geometry as Point;
+    //   }
+    //   this.startIsActive = false;
+    //   this.updateMarkers();
+    // });
+    if (this.relativeToLatLng) {
+      this.fromMarker = this.createMarkerFromLeafletLatLng(
+        this.relativeToLatLng,
+        this.locationMarkerIconUrl
+      );
     }
   }
 
-  onMapReady(map: L.Map) {
-    this.map = map;
+  onMapReady(mapView: MapView): void {
+    this.mapView = mapView;
+  }
+
+  onMarkerLayerReady(markerLayer: GraphicsLayer): void {
+    this.markerLayer = markerLayer;
     setTimeout(() => {
       this.updateMarkers();
     });
     this.ngZone.runOutsideAngular(() => {
-      this.map.on('drag', () => this.updatePolyline());
+      this.mapView.on('drag', () => this.updatePolyline());
       this.updatePolyline();
     });
   }
 
-  ionViewDidEnter() {
+  private createMarker(point: Point, symbolPath?: string): Graphic {
+    return new Graphic({
+      geometry: point,
+      symbol: new PictureMarkerSymbol({
+        url: symbolPath ? symbolPath : this.locationMarkerIconUrl,
+        width: '25px',
+        height: '41px',
+        yoffset: '15px'
+      })
+    });
+  }
+
+  private createMarkerFromLeafletLatLng(
+    latLng: L.LatLng,
+    symbolPath: string
+  ): Graphic {
+    return this.createMarker(
+      new Point({ latitude: latLng.lat, longitude: latLng.lng }),
+      symbolPath
+    );
+  }
+
+  ionViewDidEnter(): void {
     this.swipeBackService.disableSwipeBack();
   }
 
-  ionViewWillLeave() {
+  ionViewWillLeave(): void {
     this.swipeBackService.enableSwipeBack();
   }
 
@@ -170,72 +194,93 @@ export class SetAvalanchePositionPage implements OnInit {
     this.locationMarkerIconUrl = this.endImageUrl;
   }
 
+  private setMarkerSymbol(marker: Graphic, imageUrl: string): void {
+    const symbol = marker.symbol as PictureMarkerSymbol;
+    symbol.url = imageUrl;
+  }
+
   private updateMarkers() {
-    this.startMarker.remove();
-    this.endMarker.remove();
+    this.startMarker.destroy();
+    this.endMarker.destroy();
     if (!this.start) {
-      this.locationMarker.setIcon(this.startIcon);
+      this.setMarkerSymbol(this.locationMarker, this.startImageUrl);
       this.setStartLocationText();
     } else {
       if (this.startIsActive) {
-        this.locationMarker.setIcon(this.startIcon);
-        this.locationMarker.setLatLng(this.start);
+        this.setMarkerSymbol(this.locationMarker, this.startImageUrl);
+        this.locationMarker.geometry = this.start;
         this.setStartLocationText();
         if (this.end) {
-          this.endMarker.setLatLng(this.end);
-          this.endMarker.addTo(this.map);
+          this.endMarker.geometry = this.end;
+          this.markerLayer.add(this.endMarker);
         }
       } else {
-        this.locationMarker.setIcon(this.endIcon);
-        this.locationMarker.setLatLng(this.end || this.start);
+        this.setMarkerSymbol(this.locationMarker, this.endImageUrl);
+        this.locationMarker.geometry = this.end || this.start;
         this.setEndLocationText();
-        this.startMarker.setLatLng(this.start);
-        this.startMarker.addTo(this.map);
+        this.startMarker.geometry = this.start;
+        this.markerLayer.add(this.startMarker);
       }
     }
-    this.map.panTo(this.locationMarker.getLatLng());
+    this.mapView.goTo(this.locationMarker.geometry);
     this.cdr.detectChanges();
   }
 
-  updatePolyline() {
+  updatePolyline(): void {
     if (this.end || this.start) {
       const path = [
-        this.locationMarker.getLatLng(),
+        this.locationMarker.geometry as Point,
         this.startIsActive ? this.end : this.start
       ];
       if (!this.pathLine) {
-        this.pathLine = L.polyline(path, {
-          color: 'red',
-          weight: 6,
-          opacity: 0.9
-        }).addTo(this.map);
+        this.pathLine = new Graphic();
+        this.pathLine.geometry = new Polyline();
+        //TODO: Trenger vi å gjøre streken finere?
+        // this.pathLine = L.polyline(path, {
+        //   color: 'red',
+        //   weight: 6,
+        //   opacity: 0.9
+        // }).addTo(this.map);
+        this.markerLayer.add(this.pathLine);
       } else {
-        this.pathLine.setLatLngs(path);
+        const polyLine = this.pathLine.geometry as Polyline;
+        polyLine.removePath(0);
       }
+      const polyLine = this.pathLine.geometry as Polyline;
+      polyLine.addPath(path);
     }
   }
 
-  async onLocationSet(event: ObsLocationDto) {
+  async onLocationSet(event: ObsLocationDto): Promise<void> {
     if (this.startIsActive) {
-      this.start = L.latLng(event.Latitude, event.Longitude);
+      this.start = new Point({
+        latitude: event.Latitude,
+        longitude: event.Longitude
+      });
       if (this.end) {
-        this.map.panTo(this.end);
+        this.mapView.goTo(this.end);
       } else {
-        this.end = L.latLng(event.Latitude, event.Longitude);
+        this.end = new Point({
+          latitude: event.Latitude,
+          longitude: event.Longitude
+        });
       }
       this.startIsActive = false;
       this.updateMarkers();
     } else {
-      this.end = L.latLng(event.Latitude, event.Longitude);
+      this.end = new Point({
+        latitude: event.Latitude,
+        longitude: event.Longitude
+      });
       this.modalController.dismiss({ start: this.start, end: this.end });
     }
   }
 
-  cancel() {
+  cancel(): void {
     this.modalController.dismiss();
   }
 
-  ok() {
+  ok(): void {
     this.setLocationInMapComponent.confirmLocation();
   }
 }

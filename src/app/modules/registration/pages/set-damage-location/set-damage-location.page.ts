@@ -8,6 +8,9 @@ import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable } from 'rxjs';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
+import Graphic from '@arcgis/core/Graphic';
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
+import { Point } from '@arcgis/core/geometry';
 
 @Component({
   selector: 'app-set-damage-location',
@@ -17,9 +20,9 @@ import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-bac
 export class SetDamageLocationPage implements OnInit {
   @Input() damageObs: DamageObsDto;
   @Input() geoHazard: GeoHazard;
-  @Input() fromLatLng: L.LatLng;
-  fromMarker: L.Marker;
-  locationMarker: L.Marker;
+  @Input() fromLatLng: L.LatLng; //TODO
+  fromMarker: Graphic;
+  location: Point;
   locationMarkerIconUrl = '/assets/icon/map/damage-location.svg';
   fullscreen$: Observable<boolean>;
 
@@ -34,53 +37,63 @@ export class SetDamageLocationPage implements OnInit {
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
   }
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
     if (this.fromLatLng) {
-      const obsLocationIcon = L.icon({
-        iconUrl: '/assets/icon/map/obs-location.svg',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        shadowUrl: 'leaflet/marker-shadow.png',
-        shadowSize: [41, 41]
-      });
-      this.fromMarker = L.marker(this.fromLatLng, { icon: obsLocationIcon });
+      this.fromMarker = this.createMarkerFromLeafletLatLng(
+        this.fromLatLng,
+        '/assets/icon/map/obs-location.svg'
+      );
     }
     if (
       this.damageObs &&
       !IsEmptyHelper.isEmpty(this.damageObs.DamagePosition)
     ) {
-      const latLng = L.latLng(
-        this.damageObs.DamagePosition.Latitude,
-        this.damageObs.DamagePosition.Longitude
-      );
-      const damageLocationIcon = L.icon({
-        iconUrl: this.locationMarkerIconUrl,
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        shadowUrl: 'leaflet/marker-shadow.png',
-        shadowSize: [41, 41]
+      this.location = new Point({
+        latitude: this.damageObs.DamagePosition.Latitude,
+        longitude: this.damageObs.DamagePosition.Longitude
       });
-      this.locationMarker = L.marker(latLng, { icon: damageLocationIcon });
     }
   }
 
-  ionViewDidEnter() {
+  private createMarker(point: Point, symbolPath?: string): Graphic {
+    return new Graphic({
+      geometry: point,
+      symbol: new PictureMarkerSymbol({
+        url: symbolPath ? symbolPath : this.locationMarkerIconUrl,
+        width: '25px',
+        height: '41px',
+        yoffset: '15px'
+      })
+    });
+  }
+
+  private createMarkerFromLeafletLatLng(
+    latLng: L.LatLng,
+    symbolPath: string
+  ): Graphic {
+    return this.createMarker(
+      new Point({ latitude: latLng.lat, longitude: latLng.lng }),
+      symbolPath
+    );
+  }
+
+  ionViewDidEnter(): void {
     this.swipeBackService.disableSwipeBack();
   }
 
-  ionViewWillLeave() {
+  ionViewWillLeave(): void {
     this.swipeBackService.enableSwipeBack();
   }
 
-  async onLocationSet(event: ObsLocationDto) {
+  async onLocationSet(event: ObsLocationDto): Promise<void> {
     this.modalController.dismiss(event);
   }
 
-  cancel() {
+  cancel(): void {
     this.modalController.dismiss();
   }
 
-  ok() {
+  ok(): void {
     this.setLocationInMapComponent.confirmLocation();
   }
 }

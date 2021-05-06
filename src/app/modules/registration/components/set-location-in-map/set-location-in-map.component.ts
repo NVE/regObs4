@@ -1,4 +1,3 @@
-//TODO: Remove Leaflet usage
 import {
   Component,
   OnInit,
@@ -29,11 +28,11 @@ import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { Point, Polyline } from '@arcgis/core/geometry';
 import MapView from '@arcgis/core/views/MapView';
-import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import Graphic from '@arcgis/core/Graphic';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
-import L from 'leaflet';
+import L from 'leaflet'; //TODO: Remove Leaflet usage
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 
 //TODO: Sjekk om vi trenger dette:
 // const defaultIcon = L.icon({
@@ -65,7 +64,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() geoHazard: GeoHazard;
   @Input() fromMarker: Graphic;
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
-  @Input() locationMarker: Graphic;
+  @Input() location: Point;
+  @Input() locationMarker: Graphic; //TODO: Can we have position instead of marker?
   @Input() locationMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Output() locationSet = new EventEmitter<ObsLocationDto>();
   @Input() showPreviousUsedLocations = true;
@@ -79,11 +79,12 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() showFromMarkerInDetails = true;
   @Input() allowEditLocationName = false;
   @Input() isSaveDisabled = false;
+  @Output() markerLayerReady = new EventEmitter<GraphicsLayer>();
 
-  private mapView: MapView; //TODO: Vurder om denne trenger å være global
+  private mapView: MapView;
   private markerLayer = new GraphicsLayer({
     id: 'LOCATIONS-FOR-SINGLE-OBSERVATION'
-  }); //TODO: Vurder om denne trenger å være global
+  });
   followMode = false;
   private userposition: Geoposition;
   private pathLine: Graphic;
@@ -94,7 +95,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locations: ObsLocationsResponseDtoV2[] = [];
   private ngDestroy$ = new Subject();
 
-  private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
+  private locationGroup = LeafletClusterHelper.createMarkerClusterGroup(); //TODO: Support clustering
   editLocationName = false;
   locationName: string;
 
@@ -127,65 +128,50 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     //   shadowUrl: 'leaflet/marker-shadow.png',
     //   shadowSize: [41, 41]
     // });
-    if (this.fromMarker) {
-      this.fromMarker = this.convertFromLeafletMarkerToArcgisMarkerIfNeeded(
-        this.fromMarker
-      );
-    }
     this.followMode = !this.locationMarker && !this.fromMarker;
     this.mapService.followMode = this.followMode;
     if (!this.locationMarker) {
       if (this.fromMarker) {
         this.locationMarker = this.createMarker(
-          this.fromMarker.geometry as Point, //TODO: Er dette trygt?
-          this.locationMarkerIconUrl
+          this.fromMarker.geometry as Point //TODO: Er dette trygt?
         );
       } else {
-        const lastView = await this.mapService.mapView$
-          .pipe(take(1))
-          .toPromise();
-        if (lastView) {
+        if (this.location) {
+          //we got a location from outside
           this.locationMarker = this.createMarker(
-            lastView.center,
+            this.location,
             this.locationMarkerIconUrl
           );
         } else {
-          this.locationMarker = this.createMarker(
-            new Point({ latitude: 59.1, longitude: 10.3 }),
-            this.locationMarkerIconUrl
-          );
+          const lastView = await this.mapService.mapView$
+            .pipe(take(1))
+            .toPromise();
+          if (lastView) {
+            this.locationMarker = this.createMarker(lastView.center);
+          } else {
+            this.locationMarker = this.createMarkerFromLatLng(59.1, 10.3);
+          }
         }
       }
-    } else {
-      //TODO: Remove this when input markers are based on ArcGis
-      this.locationMarker = this.convertFromLeafletMarkerToArcgisMarkerIfNeeded(
-        this.locationMarker
-      );
-      // if (this.locationMarker instanceof L.Marker) {
-      //   const leafletMarker = this.locationMarker as L.Marker;
-      //   const latLng = leafletMarker.getLatLng();
-      //   this.locationMarker = this.createMarker(
-      //     new Point({ latitude: latLng.lat, longitude: latLng.lng }),
-      //     this.locationMarkerIconUrl
-      //   );
-      // }
     }
-    this.updateMapViewInfo();
-  }
 
-  //TODO: Remove this when input markers are based on ArcGis
-  private convertFromLeafletMarkerToArcgisMarkerIfNeeded(
-    marker: L.Marker | Graphic
-  ): Graphic {
-    if (marker instanceof L.Marker) {
-      const leafletMarker = marker as L.Marker;
-      const latLng = leafletMarker.getLatLng();
-      return this.createMarker(
-        new Point({ latitude: latLng.lat, longitude: latLng.lng }),
-        this.locationMarkerIconUrl
-      );
-    }
-    return marker as Graphic;
+    this.mapService.followMode$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((mode) => {
+        this.followMode = mode;
+        if (this.followMode && this.userposition) {
+          this.setLocationMarkerLatLng(
+            this.userposition.coords.latitude,
+            this.userposition.coords.longitude
+          );
+        }
+      });
+
+    this.geoPositionService.currentPosition$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((pos) => this.positionChange(pos));
+
+    this.updateMapViewInfo();
   }
 
   ngOnDestroy(): void {
@@ -193,28 +179,29 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.ngDestroy$.complete();
   }
 
-  private createMarker(point: Point, symbolPath: string): Graphic {
+  private createMarker(point: Point, symbolPath?: string): Graphic {
     return new Graphic({
       geometry: point,
-      //TODO: Få SVG-til å virke! symbol: new SimpleMarkerSymbol({ path: symbolPath })
       symbol: new PictureMarkerSymbol({
-        url: '/assets/icon/map/obs-location.svg',
-        width: '18',
-        height: '28'
+        url: symbolPath ? symbolPath : this.locationMarkerIconUrl,
+        width: '25px',
+        height: '41px',
+        yoffset: '15px'
       })
     });
   }
 
-  //TODO: Trenger vi denne?
-  // private createMarker(lat: number, lng: number, symbolPath: string): Graphic {
-  //   return new Graphic({
-  //     geometry: new Point({
-  //       latitude: lat,
-  //       longitude: lng
-  //     }),
-  //     symbol: new SimpleMarkerSymbol({ path: symbolPath })
-  //   });
-  // }
+  private createMarkerFromLatLng(
+    lat: number,
+    lng: number,
+    symbolPath?: string
+  ): Graphic {
+    const point = new Point({
+      latitude: lat,
+      longitude: lng
+    });
+    return this.createMarker(point, symbolPath);
+  }
 
   private getLocationsObservable() {
     return this.mapService.mapView$.pipe(
@@ -244,24 +231,20 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     );
   }
 
-  private addLocationIfNotExists(loc: ObsLocationsResponseDtoV2) {
+  private addLocationIfNotExists(
+    loc: ObsLocationsResponseDtoV2,
+    layer: GraphicsLayer
+  ) {
     const existing = this.locations.some((location) => loc.Id === location.Id);
     if (!existing) {
       this.locations.push(loc);
-      const marker = this.createMarker(
-        new Point({
-          latitude: loc.LatLngObject.Latitude,
-          longitude: loc.LatLngObject.Longitude
-        }),
+      const marker = this.createMarkerFromLatLng(
+        loc.LatLngObject.Latitude,
+        loc.LatLngObject.Longitude,
         previousUsedPlaceIconUrl
       );
-      this.markerLayer.add(marker);
-      //TODO: Sjekk om vi kan slette dette
-      // const marker = L.marker(
-      //   L.latLng(loc.LatLngObject.Latitude, loc.LatLngObject.Longitude),
-      //   { icon: previousUsedPlaceIcon }
-      // ).addTo(this.locationGroup);
-
+      layer.add(marker);
+      //TODO: Få tidligere brukte lokasjoner til å legge seg under lokasjonen man jobber med
       //TODO: Handle click on previously used location marker.on('click', () => this.setToPrevouslyUsedLocation(loc));
     }
   }
@@ -290,24 +273,16 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.mapView.on('drag', () => this.moveLocationMarkerToCenter());
 
     if (this.showPreviousUsedLocations) {
+      const layer = new GraphicsLayer({
+        id: 'PREVIOUSLY-USED-LOCATIONS'
+      });
+      this.mapView.map.add(layer); //put it below markerLayer
       this.getLocationsObservable()
         .pipe(takeUntil(this.ngDestroy$))
         .subscribe((locations) => {
-          locations.forEach((loc) => this.addLocationIfNotExists(loc));
+          locations.forEach((loc) => this.addLocationIfNotExists(loc, layer));
         });
     }
-
-    this.mapService.followMode$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((val) => {
-        this.followMode = val;
-        if (this.followMode && this.userposition) {
-          this.setLocationMarkerLatLng(
-            this.userposition.coords.latitude,
-            this.userposition.coords.longitude
-          );
-        }
-      });
 
     this.mapSearchService.mapSearchClick$
       .pipe(takeUntil(this.ngDestroy$))
@@ -316,16 +291,13 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         this.setLocationMarkerLatLng(latLng.lat, latLng.lng);
       });
 
-    this.geoPositionService.currentPosition$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((pos) => this.positionChange(pos));
-
     if (!this.followMode) {
-      // this.map.setView(this.locationMarker.getLatLng(), 15); //TODO: Check what 15 was used for
       this.mapView.goTo(this.locationMarker.geometry);
+      this.mapView.zoom = 15;
     }
 
     this.mapReady.emit(this.mapView);
+    this.markerLayerReady.emit(this.markerLayer);
     this.updatePathAndDistance();
   }
 
@@ -357,6 +329,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   }
 
   private updateMapViewInfo() {
+    //TODO: Hvorfor gjør man dette?
     const center = this.locationMarker.geometry as Point; //TODO: Is this safe
     this.mapSearchService
       .getViewInfo(
