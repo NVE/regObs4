@@ -11,11 +11,11 @@ import {
 import * as L from 'leaflet';
 import { BehaviorSubject, Subject, timer } from 'rxjs';
 import { takeUntil, takeWhile, tap } from 'rxjs/operators';
-import { ImageLocation } from '../../components/img-swiper/image-location.model';
-import { settings } from '../../../settings';
-import { SmartChanges } from '../../core/helpers/simple-changes.helper';
-import { BorderHelper } from '../../core/helpers/leaflet/border-helper';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { ImageLocation } from '../../../../components/img-swiper/image-location.model';
+import { settings } from '../../../../../settings';
+import { SmartChanges } from '../../../../core/helpers/simple-changes.helper';
+import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';
 const END_ICON = '/assets/icon/map/GPS_stop.svg';
