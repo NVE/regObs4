@@ -52,9 +52,10 @@ export class MapItemMarker extends Graphic {
       url: this._isSelected
         ? `/assets/icon/map/pin-${geohazard}-outline.svg`
         : `/assets/icon/map/pin-${geohazard}.svg`,
-      width: '27',
-      height: '30',
-      yoffset: 15
+      width: '36px',
+      height: '41px',
+      yoffset: '20px',
+      xoffset: '3px'
     });
   }
 
