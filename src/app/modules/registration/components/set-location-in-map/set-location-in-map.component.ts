@@ -147,9 +147,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
             .pipe(take(1))
             .toPromise();
           if (lastView) {
-            this.locationMarker = this.createMarker(lastView.center);
+            this.locationMarker = this.createMarker(lastView.center); //set marker in map center
           } else {
-            this.locationMarker = this.createMarkerFromLatLng(59.1, 10.3);
+            this.locationMarker = this.createMarkerFromLatLng(59.1, 10.3); //mark a default/fallback location
           }
         }
       }
@@ -186,7 +186,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         url: symbolPath ? symbolPath : this.locationMarkerIconUrl,
         width: '25px',
         height: '41px',
-        yoffset: '15px'
+        yoffset: '20px',
+        xoffset: '3px'
       })
     });
   }
@@ -246,6 +247,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       layer.add(marker);
       //TODO: Få tidligere brukte lokasjoner til å legge seg under lokasjonen man jobber med
       //TODO: Handle click on previously used location marker.on('click', () => this.setToPrevouslyUsedLocation(loc));
+      //TODO: Fjern lokasjoner som ikke er innenfor utsnittet lengre, for å unngå minnelekkasje
     }
   }
 
@@ -259,7 +261,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     if (this.fromMarker) {
       this.markerLayer.add(this.fromMarker);
     }
-    // this.locationGroup.addTo(this.map); //TODO: Cluster
     this.mapView.on('drag', () => {
       this.ngZone.run(() => {
         this.isLoading = true;
@@ -328,8 +329,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.updatePathAndDistance();
   }
 
+  //fetch height, steepness and name for current location
   private updateMapViewInfo() {
-    //TODO: Hvorfor gjør man dette?
     const center = this.locationMarker.geometry as Point; //TODO: Is this safe
     this.mapSearchService
       .getViewInfo(
@@ -411,13 +412,9 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         ) {
           this.fromMarker.visible = false;
           this.pathLine.visible = false;
-          // this.fromMarker.setOpacity(0);
-          // this.pathLine.setStyle({ opacity: 0 });
         } else {
           this.fromMarker.visible = true;
           this.pathLine.visible = true;
-          // this.fromMarker.setOpacity(1);
-          // this.pathLine.setStyle({ opacity: 0.9 }); TODO: Sjekk om vi må ha dette
         }
       }
     }
