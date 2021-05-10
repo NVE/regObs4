@@ -25,6 +25,7 @@ import { OfflineImageComponent } from './components/offline-image/offline-image.
 import { CompetenceComponent } from '../../components/competence/competence.component';
 import { AuthModule } from './../auth/auth.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
+import { MapComponentModule } from '../map/components/map-component.module';
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     TranslateModule,
     RouterModule,
     AuthModule,
-    VirtualScrollerModule
+    VirtualScrollerModule,
+    MapComponentModule
   ],
   declarations: [
     ShadowCssDirective,

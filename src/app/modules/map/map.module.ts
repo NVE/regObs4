@@ -13,7 +13,6 @@ import { GpsCenterComponent } from './components/map-controls/gps-center/gps-cen
 import { MapControlsComponent } from './components/map-controls/map-controls.component';
 import { MapSearchComponent } from './components/map-controls/map-search/map-search.component';
 import { MapImageComponent } from './components/map-image/map-image.component';
-import { MapImageModule } from './components/map-image/map-image.module';
 import { MapComponentModule } from './components/map-component.module';
 import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image.module';
 import { ModalSearchPageModule } from './pages/modal-search/modal-search.module';
@@ -34,13 +33,12 @@ import { MapControlsModule } from './components/map-controls/map-controls.module
     ModalSearchPageModule,
     MapComponentModule,
     ModalMapImagePageModule,
-    SupportMapInfoPageModule,
-    MapImageModule
+    SupportMapInfoPageModule
   ],
   declarations: [MapCenterInfoComponent],
   exports: [
+    MapImageComponent,
     MapComponentModule,
-    MapImageModule,
     MapControlsModule,
     MapCenterInfoComponent,
     ModalSearchPageModule,

@@ -5,7 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { ModalMapImagePage } from './modal-map-image.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { MapImageModule } from '../../components/map-image/map-image.module';
+import { MapComponentModule } from '../../components/map-component.module';
 
 @NgModule({
   imports: [
@@ -14,7 +14,7 @@ import { MapImageModule } from '../../components/map-image/map-image.module';
     IonicModule,
     TranslateModule,
     LeafletModule,
-    MapImageModule
+    MapComponentModule
   ],
   declarations: [ModalMapImagePage],
   entryComponents: [ModalMapImagePage]
