@@ -93,6 +93,10 @@ export class UserMarker {
   }
 
   private setAccuracy(position: Geoposition) {
+    // TODO: Fix accuracy symbol
+    // We should use a circle geometry with radius in metres.
+    // A circle will auto scale while zooming in/out.
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Circle.html#radiusUnit
     const symbol = this.accuracyGraphic.symbol as SimpleMarkerSymbol;
     symbol.size = position.coords.accuracy * 2; //TODO: convert from meters to points
   }
