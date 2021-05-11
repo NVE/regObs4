@@ -92,7 +92,7 @@ export class MapService {
    * Called when clicking the position button on the map
    */
   centerMapToUser(): void {
-    this.loggingService.debug('centerMapToUser');
+    this.loggingService.debug('Center map to user, followMode=true', DEBUG_TAG);
     this.followMode = true;
     this.geoPositionService.startTrackingComponent(DEBUG_TAG, true);
     this._centerMapToUserSubject.next();
