@@ -530,7 +530,7 @@ export class MapComponent implements OnInit {
       });
   }
 
-  private goToUserPosition(pos: Geoposition) {
+  private goToPosition(pos: Geoposition) {
     return this.view.goTo(
       {
         center: [pos.coords.longitude, pos.coords.latitude],
@@ -578,7 +578,7 @@ export class MapComponent implements OnInit {
         // When we have both an updated marker, and followMode = true,
         // we should go to the user position.
         filter(([, fm]) => fm === true),
-        switchMap(([pos]) => this.goToUserPosition(pos)),
+        switchMap(([pos]) => this.goToPosition(pos)),
         switchMap(() => this.stopFollowModeOnDrag$())
       )
       .subscribe();
