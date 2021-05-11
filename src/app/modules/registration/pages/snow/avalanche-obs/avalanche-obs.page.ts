@@ -8,6 +8,7 @@ import * as L from 'leaflet';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import moment from 'moment';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
+import { Point } from '@arcgis/core/geometry';
 
 @Component({
   selector: 'app-avalanche-obs',
@@ -151,12 +152,12 @@ export class AvalancheObsPage extends BasePage {
     modal.present();
     const result = await modal.onDidDismiss();
     if (result.data) {
-      const start: L.LatLng = result.data.start;
-      const end: L.LatLng = result.data.end;
-      this.registration.request.AvalancheObs.StartLat = start.lat;
-      this.registration.request.AvalancheObs.StartLong = start.lng;
-      this.registration.request.AvalancheObs.StopLat = end.lat;
-      this.registration.request.AvalancheObs.StopLong = end.lng;
+      const start: Point = result.data.start;
+      const end: Point = result.data.end;
+      this.registration.request.AvalancheObs.StartLat = start.latitude;
+      this.registration.request.AvalancheObs.StartLong = start.longitude;
+      this.registration.request.AvalancheObs.StopLat = end.latitude;
+      this.registration.request.AvalancheObs.StopLong = end.longitude;
     }
   }
 }

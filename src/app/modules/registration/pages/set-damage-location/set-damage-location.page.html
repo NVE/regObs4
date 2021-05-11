@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-set-location-in-map *ngIf="fromMarker" [geoHazard]="geoHazard" [fromMarker]="fromMarker" [locationMarker]="locationMarker"
+  <app-set-location-in-map *ngIf="fromMarker" [geoHazard]="geoHazard" [fromMarker]="fromMarker" [location]="location"
     [locationMarkerIconUrl]="locationMarkerIconUrl" (locationSet)="onLocationSet($event)" confirmLocationText="REGISTRATION.SET_DAMAGE_LOCATION.CONFIRM_TEXT"
     fromLocationText="REGISTRATION.OBS_LOCATION.TITLE" [showPreviousUsedLocations]="false" locationTitle="REGISTRATION.SET_DAMAGE_LOCATION.TITLE">
   </app-set-location-in-map>
