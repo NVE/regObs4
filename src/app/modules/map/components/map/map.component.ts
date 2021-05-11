@@ -22,8 +22,21 @@ import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import { Platform } from '@ionic/angular';
 import { Feature, GeometryObject } from '@turf/turf';
 import L from 'leaflet';
-import { BehaviorSubject, from, Subject } from 'rxjs';
-import { switchMap, take, takeUntil } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Subject,
+  fromEventPattern
+} from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+  throttleTime
+} from 'rxjs/operators';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { NORWEGIAN_BOUNDS } from 'src/app/core/helpers/leaflet/border-helper';
 import { LangKey } from 'src/app/core/models/langKey';
@@ -75,12 +88,16 @@ export class MapComponent implements OnInit {
   @Input() debug = true;
   @Input() isStatic = false;
 
+  private drag$ = fromEventPattern(
+    (handler) => this.view.on('drag', handler),
+    (handler, eventListener) => eventListener.remove()
+  );
+
   private view: MapView;
   private loading: boolean; //TODO: Trenger vi denne?
   private userMarker: UserMarker; //TODO: Tilpass denne
   private firstPositionUpdate = true;
   private ngDestroy$ = new Subject();
-  private followMode = true;
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
   private isActive: BehaviorSubject<boolean>;
@@ -108,6 +125,11 @@ export class MapComponent implements OnInit {
     this.zone.runOutsideAngular(() => {
       const start = performance.now();
       this.initializeMap().then(() => {
+        // Setup user location marker and tracking
+        if (this.showUserLocation) {
+          this.initTrackUserPositionMarker();
+        }
+
         this.logger.debug(`center = ${this.center}`);
         //TODO: SJekk om dette kallet bør være her
         if (this.center) {
@@ -162,59 +184,6 @@ export class MapComponent implements OnInit {
         position: 'bottom-left'
       });
     }
-
-    this.mapService.followMode$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((mode: boolean) => {
-        this.followMode = mode;
-        this.logger.debug(
-          `Follow mode changed to: ${this.followMode}`,
-          DEBUG_TAG
-        );
-      });
-
-    this.mapService.centerMapToUser$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        switchMap(() =>
-          from(this.geoPositionService.startTrackingComponent(DEBUG_TAG, true))
-        )
-      )
-      .subscribe();
-
-    this.mapService.centerMapToUser$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => {
-        this.zone.runOutsideAngular(() => {
-          if (this.userMarker) {
-            const currentPosition = this.userMarker.getPosition();
-            const latLng = L.latLng(
-              currentPosition.coords.latitude,
-              currentPosition.coords.longitude
-            );
-            if (this.followMode || this.firstClickOnZoomToUser) {
-              // Follow mode is allready true or first click, zoom in
-              this.flyToMaxZoom(latLng);
-            } else {
-              // Use existing zoom
-              this.flyTo(latLng, this.view.zoom, true);
-            }
-            this.firstClickOnZoomToUser = false;
-          }
-        });
-      });
-
-    this.geoPositionService.currentPosition$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((pos) => this.onPositionUpdate(pos));
-
-    this.geoPositionService.currentHeading$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((heading) => {
-        if (this.userMarker) {
-          this.userMarker.setHeading(heading);
-        }
-      });
   }
 
   ngOnDestroy(): void {
@@ -413,7 +382,7 @@ export class MapComponent implements OnInit {
     }
   }
 
-  async initializeMap(): Promise<void> {
+  initializeMap(): Promise<unknown> {
     const container = this.mapViewEl.nativeElement;
     const map = new Map();
     this.view = new MapView({
@@ -476,7 +445,7 @@ export class MapComponent implements OnInit {
       this.initOfflineMaps();
     }
 
-    this.view
+    return this.view
       .when(() => {
         this.createExtentWatcher(this.view);
         this.loading = false;
@@ -579,48 +548,92 @@ export class MapComponent implements OnInit {
     }
   }
 
-  private onPositionUpdate(data: Geoposition) {
-    this.zone.runOutsideAngular(() => {
-      if (this.view) {
-        const latLng = L.latLng({
-          lat: data.coords.latitude,
-          lng: data.coords.longitude
-        });
-        if (!this.userMarker) {
-          this.userMarker = new UserMarker(this.view, data);
-        } else {
-          this.userMarker.updatePosition(data);
-        }
-        if (this.followMode && !this.isDoingMoveAction) {
-          this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
-          this.firstPositionUpdate = false;
-        }
-      }
-    });
+  private initHeadingTracking() {
+    this.geoPositionService.currentHeading$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((heading) => {
+        this.userMarker.setHeading(heading);
+      });
   }
 
-  private flyToMaxZoom(latLng: L.LatLng, usePan = false) {
-    this.flyTo(
-      latLng,
-      Math.max(settings.map.flyToOnGpsZoom, this.view.zoom),
-      usePan
+  private goToPosition(pos: Geoposition) {
+    return this.view.goTo(
+      {
+        center: [pos.coords.longitude, pos.coords.latitude],
+        zoom: Math.max(settings.map.flyToOnGpsZoom, this.view.zoom)
+      },
+      { animate: true, duration: 200 }
     );
   }
 
-  private flyTo(latLng: L.LatLng, zoom: number, usePan = false) {
-    this.isDoingMoveAction = true;
-    // if (usePan) {
-    //   this.map.panTo(latLng);
-    // } else {
-    //   this.map.flyTo(latLng, zoom);
-    // }
-    this.view.goTo(
-      new Point({
-        latitude: latLng.lat,
-        longitude: latLng.lng
+  private createOrUpdateUserMarker(pos: Geoposition) {
+    if (this.userMarker == null) {
+      this.userMarker = new UserMarker(this.view, pos);
+      this.initHeadingTracking();
+    } else {
+      this.userMarker.updatePosition(pos);
+    }
+  }
+
+  /**
+   * When the gelocation observable emits a new value the user position should change.
+   * If followMode is activated, the map should follow the user position.
+   *
+   * Geolocation itself are not triggered by this component.
+   * It can be triggered by two things:
+   *   - Clicking on the "position" button
+   *   - Having the mapcenter box visible
+   */
+  private initTrackUserPositionMarker() {
+    combineLatest([
+      this.geoPositionService.currentPosition$.pipe(
+        // Skip unchanged positions
+        distinctUntilChanged((x, y) => x.timestamp === y.timestamp),
+        // Only get new positions every 250 ms.
+        // Without this, the goTo animation failed when the position
+        // was changed during an animation. The throttle time should
+        // probably be a bit more than the animation time to let the
+        // animation finish before the next position is updated.
+        throttleTime(250),
+        tap((pos) => this.createOrUpdateUserMarker(pos))
+      ),
+      this.mapService.followMode$
+    ])
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        // When we have both an updated marker, and followMode = true,
+        // we should go to the user position.
+        filter(([, fm]) => fm === true),
+        switchMap(([pos]) => this.goToPosition(pos)),
+        switchMap(() => this.stopFollowModeOnDrag$())
+      )
+      .subscribe();
+  }
+
+  /**
+   * Listen to map 'drag' events and set followMode to false
+   * when the event fires.
+   *
+   * We may need to listen to other events as well;
+   * the scroll event does not cancel the followMode.
+   */
+  private stopFollowModeOnDrag$() {
+    return this.drag$.pipe(
+      take(1),
+      tap(() => {
+        this.logger.debug('User dragged map, stopping followMode', DEBUG_TAG);
+        this.mapService.followMode = false;
       })
     );
-    //TODO: Set zoom
-    this.isDoingMoveAction = false;
+  }
+
+  private flyTo(pos: Geoposition, zoom: number, opts = {}) {
+    this.view.goTo(
+      {
+        center: [pos.coords.longitude, pos.coords.latitude],
+        zoom
+      },
+      opts
+    );
   }
 }

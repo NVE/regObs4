@@ -22,6 +22,7 @@ import {
   IRegionInViewInput,
   IRegionInViewOutput
 } from '../../web-workers/region-in-view-models';
+import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
 
 const DEBUG_TAG = 'MapService';
 
@@ -64,7 +65,8 @@ export class MapService {
 
   constructor(
     private userSettingService: UserSettingService,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
+    private geoPositionService: GeoPositionService
   ) {
     this._followModeSubject = new BehaviorSubject<boolean>(true);
     this._followModeObservable = this._followModeSubject
@@ -86,8 +88,13 @@ export class MapService {
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
   }
 
+  /**
+   * Called when clicking the position button on the map
+   */
   centerMapToUser(): void {
+    this.loggingService.debug('Center map to user, followMode=true', DEBUG_TAG);
     this.followMode = true;
+    this.geoPositionService.startTrackingComponent(DEBUG_TAG, true);
     this._centerMapToUserSubject.next();
   }
 
