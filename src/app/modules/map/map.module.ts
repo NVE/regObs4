@@ -1,22 +1,18 @@
-import { NgModule } from '@angular/core';
-import { MapComponent } from './components/map/map.component';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { MapControlsComponent } from './components/map-controls/map-controls.component';
-import { MapSearchComponent } from './components/map-controls/map-search/map-search.component';
-import { FullscreenToggleComponent } from './components/map-controls/fullscreen-toggle/fullscreen-toggle.component';
-import { GpsCenterComponent } from './components/map-controls/gps-center/gps-center.component';
-import { MapCenterInfoComponent } from './components/map-center-info/map-center-info.component';
-import { ModalSearchPageModule } from './pages/modal-search/modal-search.module';
-import { LeafletEdgeBufferModule } from 'ngx-leaflet-edgebuffer';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { LeafletEdgeBufferModule } from 'ngx-leaflet-edgebuffer';
+import { MapCenterInfoComponent } from './components/map-center-info/map-center-info.component';
+import { MapImageComponent } from './components/map-image/map-image.component';
+import { MapComponentModule } from './components/map-component.module';
 import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image.module';
+import { ModalSearchPageModule } from './pages/modal-search/modal-search.module';
 import { SupportMapInfoPageModule } from './pages/support-map-info/support-map-info.module';
-import { MapImageModule } from '../map-image/map-image.module';
 
 @NgModule({
   imports: [
@@ -30,24 +26,14 @@ import { MapImageModule } from '../map-image/map-image.module';
     LeafletModule,
     LeafletEdgeBufferModule,
     ModalSearchPageModule,
+    MapComponentModule,
     ModalMapImagePageModule,
-    SupportMapInfoPageModule,
-    MapImageModule
+    SupportMapInfoPageModule
   ],
-  declarations: [
-    MapComponent,
-    MapControlsComponent,
-    MapSearchComponent,
-    FullscreenToggleComponent,
-    GpsCenterComponent,
-    MapCenterInfoComponent
-  ],
+  declarations: [MapCenterInfoComponent],
   exports: [
-    MapComponent,
-    MapControlsComponent,
-    MapSearchComponent,
-    FullscreenToggleComponent,
-    GpsCenterComponent,
+    MapImageComponent,
+    MapComponentModule,
     MapCenterInfoComponent,
     ModalSearchPageModule,
     ModalMapImagePageModule,

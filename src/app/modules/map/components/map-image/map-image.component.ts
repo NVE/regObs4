@@ -11,11 +11,15 @@ import {
 import * as L from 'leaflet';
 import { BehaviorSubject, Subject, timer } from 'rxjs';
 import { takeUntil, takeWhile, tap } from 'rxjs/operators';
-import { ImageLocation } from '../../components/img-swiper/image-location.model';
-import { settings } from '../../../settings';
-import { SmartChanges } from '../../core/helpers/simple-changes.helper';
-import { BorderHelper } from '../../core/helpers/leaflet/border-helper';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { ImageLocation } from '../../../../components/img-swiper/image-location.model';
+import { settings } from '../../../../../settings';
+import { SmartChanges } from '../../../../core/helpers/simple-changes.helper';
+import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
+import MapView from '@arcgis/core/views/MapView';
+import { Point } from '@arcgis/core/geometry';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import Graphic from '@arcgis/core/Graphic';
+import { MarkerHelper } from '../../../../core/helpers/arcgis/markerHelper';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';
 const END_ICON = '/assets/icon/map/GPS_stop.svg';
@@ -32,8 +36,11 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   @Input() allowZoom: boolean;
 
   private map: L.Map;
+  private mapView: MapView;
   private mapCenterSubject: BehaviorSubject<ImageLocation>;
+  centerLocation: Point;
   private ngDestroy$: Subject<void>;
+  private markerLayer = new GraphicsLayer({ id: 'MARKERS' });
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -72,6 +79,10 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.mapCenterSubject = new BehaviorSubject(this.location);
+    this.centerLocation = new Point({
+      latitude: this.location.latLng.lat,
+      longitude: this.location.latLng.lng
+    });
     this.ngDestroy$ = new Subject();
   }
 
@@ -86,9 +97,21 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }
+
+  onMapReady(map: MapView) {
+    this.mapView = map;
+    const symbol = MarkerHelper.getIconSvg(this.location.geoHazard);
+    const marker = new Graphic({
+      geometry: this.centerLocation,
+      symbol: symbol
+    });
+    this.markerLayer.add(marker);
+    this.mapView.map.add(this.markerLayer);
+  }
+
   onLeafletMapReady(map: L.Map) {
     this.map = map;
-    this.mapCenterSubject.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
+    /* this.mapCenterSubject.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
       if (this.map) {
         this.map.eachLayer((layer) => layer.remove());
       }
@@ -117,7 +140,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
       this.map.touchZoom.disable();
       this.map.scrollWheelZoom.disable();
       this.map.boxZoom.disable();
-    }
+    } */
     this.redrawMap();
   }
 
@@ -153,14 +176,6 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     L.tileLayer(url, {
       updateWhenIdle: true,
       keepBuffer: 0
-    }).addTo(this.map);
-  }
-
-  private setMarker(latLng: L.LatLng, geoHazard: GeoHazard) {
-    L.marker(latLng, {
-      //TODO - RegObsGeoHazarsMarker finnes ikke lenger ettersom alt finnes nå i map-item-marker.ts
-      //icon: new RegobsGeoHazardMarker(geoHazard),
-      interactive: false
     }).addTo(this.map);
   }
 

@@ -73,6 +73,7 @@ export class MapComponent implements OnInit {
   @Input() autoActivate = true;
   @Input() geoTag = DEBUG_TAG;
   @Input() debug = true;
+  @Input() isStatic = false;
 
   private view: MapView;
   private loading: boolean; //TODO: Trenger vi denne?
@@ -445,6 +446,31 @@ export class MapComponent implements OnInit {
       //   })
       // }
     });
+
+    if (this.isStatic) {
+      this.view.navigation.mouseWheelZoomEnabled = false;
+      this.view.navigation.browserTouchPanEnabled = false;
+      //Disable the default +/- key-down gestures
+      this.view.on('key-down', function (event) {
+        const prohibitedKeys = ['+', '-', 'Shift', '_', '='];
+        const keyPressed = event.key;
+        if (prohibitedKeys.indexOf(keyPressed) !== -1) {
+          event.stopPropagation();
+        }
+      });
+      //Disable the default mouse-wheel behavior
+      this.view.on('mouse-wheel', function (event) {
+        event.stopPropagation();
+      });
+      //Disable zooming via double-click
+      this.view.on('double-click', function (event) {
+        event.stopPropagation();
+      });
+      //Disable pinch zoom and panning
+      this.view.on('drag', function (event) {
+        event.stopPropagation();
+      });
+    }
 
     if (isAndroidOrIos(this.platform)) {
       this.initOfflineMaps();

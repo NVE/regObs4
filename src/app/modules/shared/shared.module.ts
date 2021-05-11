@@ -23,9 +23,10 @@ import { RefreshWithCancelComponent } from './components/refresh-with-cancel/ref
 import { HeaderComponent } from './components/header/header.component';
 import { OfflineImageComponent } from './components/offline-image/offline-image.component';
 import { CompetenceComponent } from '../../components/competence/competence.component';
-import { MapImageModule } from '../map-image/map-image.module';
 import { AuthModule } from './../auth/auth.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
+import { MapComponentModule } from '../map/components/map-component.module';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -35,9 +36,9 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     AngularSvgIconModule,
     TranslateModule,
     RouterModule,
-    MapImageModule,
     AuthModule,
-    VirtualScrollerModule
+    VirtualScrollerModule,
+    MapComponentModule
   ],
   declarations: [
     ShadowCssDirective,
@@ -68,7 +69,6 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     RouterModule,
     ShadowCssDirective,
     AngularSvgIconModule,
-    MapImageModule,
     AddMenuComponent,
     OfflineImageComponent,
     ExternalLinkComponent,

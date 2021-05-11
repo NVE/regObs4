@@ -1,0 +1,3 @@
+<!--div leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)">
+</div-->
+<app-map [isStatic]="true" [showMapControls]="false" [center]="centerLocation" [showSupportMaps]="false" (mapReady)="onMapReady($event)"></app-map>
