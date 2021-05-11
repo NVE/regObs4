@@ -73,6 +73,13 @@ Then, in xcode, select a target simulator or device and click the play button.
 
 [More info in Ionic docs on iOS development](https://ionicframework.com/docs/developing/ios)
 
+### Running tests on MacOS
+
+If you have trouble running tests, try specifying the `CHROME_BIN` environment variable:
+
+```
+CHROME_BIN = /Path/To/Google Chrome.app/Contents/MacOS/Google Chrome
+```
 
 ## Build and release
 
