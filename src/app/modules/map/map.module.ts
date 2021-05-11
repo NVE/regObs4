@@ -8,16 +8,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { LeafletEdgeBufferModule } from 'ngx-leaflet-edgebuffer';
 import { MapCenterInfoComponent } from './components/map-center-info/map-center-info.component';
-import { FullscreenToggleComponent } from './components/map-controls/fullscreen-toggle/fullscreen-toggle.component';
-import { GpsCenterComponent } from './components/map-controls/gps-center/gps-center.component';
-import { MapControlsComponent } from './components/map-controls/map-controls.component';
-import { MapSearchComponent } from './components/map-controls/map-search/map-search.component';
 import { MapImageComponent } from './components/map-image/map-image.component';
 import { MapComponentModule } from './components/map-component.module';
 import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image.module';
 import { ModalSearchPageModule } from './pages/modal-search/modal-search.module';
 import { SupportMapInfoPageModule } from './pages/support-map-info/support-map-info.module';
-import { MapControlsModule } from './components/map-controls/map-controls.module';
 
 @NgModule({
   imports: [
@@ -39,7 +34,6 @@ import { MapControlsModule } from './components/map-controls/map-controls.module
   exports: [
     MapImageComponent,
     MapComponentModule,
-    MapControlsModule,
     MapCenterInfoComponent,
     ModalSearchPageModule,
     ModalMapImagePageModule,
