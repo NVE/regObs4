@@ -26,7 +26,8 @@ import {
   BehaviorSubject,
   combineLatest,
   Subject,
-  fromEventPattern
+  fromEventPattern,
+  Observable
 } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -92,6 +93,11 @@ export class MapComponent implements OnInit {
     (handler, eventListener) => eventListener.remove()
   );
 
+  private stationary$: Observable<boolean> = fromEventPattern(
+    (handler) => this.view.watch('stationary', handler),
+    (handler, eventListener) => eventListener.remove()
+  );
+
   private view: MapView;
   private loading: boolean; //TODO: Trenger vi denne?
   private userMarker: UserMarker; //TODO: Tilpass denne
@@ -121,68 +127,35 @@ export class MapComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     esriConfig.assetsPath = '/assets';
+
     this.zone.runOutsideAngular(() => {
       const start = performance.now();
       this.initializeMap().then(() => {
-        // Setup user location marker and tracking
-        if (this.showUserLocation) {
-          this.initTrackUserPositionMarker();
-        }
-
-        this.logger.debug(`center = ${this.center}`);
-        //TODO: SJekk om dette kallet bør være her
-        if (this.center) {
-          this.view.center = this.center;
-        }
-
-        this.userSettingService.userSetting$
-          .pipe(takeUntil(this.ngDestroy$))
-          .subscribe((userSetting) => {
-            this.configureTileLayers(userSetting);
-            // if (userSetting.showMapCenter) {
-            //   this.updateMapView(); //TODO
-            // }
-          });
-
-        this.zone.run(() => {
-          this.logger.debug(
-            'Map loaded in ' + (performance.now() - start) + ' ms'
-          );
-          this.onMapReady();
-        });
+        this.logger.debug(`Map view ready in ${performance.now() - start}ms`);
       });
     });
-    this.isActive = new BehaviorSubject(this.autoActivate);
-    try {
-      if (this.center === undefined || this.zoom === undefined) {
-        const currentView = await this.mapService.mapView$
-          .pipe(take(1))
-          .toPromise();
-        if (currentView && currentView.center) {
-          this.firstPositionUpdate = false;
-          if (this.center === undefined) {
-            this.view.center = currentView.center;
-          }
-          if (this.zoom === undefined) {
-            this.view.zoom = currentView.zoom;
-          }
-        }
-      }
-    } finally {
-      this.loading = false;
-    }
-  }
 
-  onMapReady(): void {
-    if (this.showScale) {
-      const scaleBar = new ScaleBar({
-        view: this.view,
-        unit: 'metric'
-      });
-      this.view.ui.add(scaleBar, {
-        position: 'bottom-left'
-      });
-    }
+    // TODO: What is this?
+    this.isActive = new BehaviorSubject(this.autoActivate);
+
+    // try {
+    //   if (this.center === undefined || this.zoom === undefined) {
+    //     const currentView = await this.mapService.mapView$
+    //       .pipe(take(1))
+    //       .toPromise();
+    //     if (currentView && currentView.center) {
+    //       this.firstPositionUpdate = false;
+    //       if (this.center === undefined) {
+    //         this.view.center = currentView.center;
+    //       }
+    //       if (this.zoom === undefined) {
+    //         this.view.zoom = currentView.zoom;
+    //       }
+    //     }
+    //   }
+    // } finally {
+    //   this.loading = false;
+    // }
   }
 
   ngOnDestroy(): void {
@@ -195,6 +168,52 @@ export class MapComponent implements OnInit {
 
     if (this.zlWatcher) {
       this.zlWatcher.remove();
+    }
+  }
+
+  // TODO: This should be moved to map.service.ts
+  // NB: This method is sync, and async operations will not be awaited
+  private onMapReady(map: Map) {
+    // Configure map layers
+    this.userSettingService.userSetting$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((userSetting) => {
+        this.configureTileLayers(userSetting, map);
+        // if (userSetting.showMapCenter) {
+        //   this.updateMapView(); //TODO
+        // }
+      });
+  }
+
+  // NB: This method is sync and async operations will not be awaited
+  private onMapViewReady(view: MapView) {
+    this.userSettingService.userSetting$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((userSetting) => {
+        this.setZoom(null, this.getMaxZoom(userSetting.useRetinaMap));
+      });
+
+    this.createExtentWatcher(view);
+
+    // Setup user location marker and tracking
+    if (this.showUserLocation) {
+      this.initTrackUserPositionMarker();
+    }
+
+    if (this.showScale) {
+      const scaleBar = new ScaleBar({
+        view,
+        unit: 'metric'
+      });
+      view.ui.add(scaleBar, {
+        position: 'bottom-left'
+      });
+    }
+
+    this.logger.debug(`center = ${this.center}`);
+    //TODO: SJekk om dette kallet bør være her
+    if (this.center) {
+      view.center = this.center;
     }
   }
 
@@ -223,12 +242,10 @@ export class MapComponent implements OnInit {
     };
   }
 
-  private configureTileLayers(userSetting: UserSetting): void {
+  private configureTileLayers(userSetting: UserSetting, map: Map): void {
     this.zone.runOutsideAngular(() => {
-      // this.tilesLayer.clearLayers();
-      this.setZoom(null, this.getMaxZoom(userSetting.useRetinaMap));
-      this.view.map.basemap = this.createBaseMap(userSetting);
-      this.applySupportMaps(userSetting, this.view.map);
+      map.basemap = this.createBaseMap(userSetting);
+      this.applySupportMaps(userSetting, map);
     });
   }
 
@@ -289,10 +306,10 @@ export class MapComponent implements OnInit {
     });
     map.layers.removeMany(layersToRemove);
 
-    for (const supportTile of this.userSettingService.getSupportTilesOptions(
-      userSetting
-    )) {
-      if (supportTile.enabled) {
+    this.userSettingService
+      .getSupportTilesOptions(userSetting)
+      .filter((supportTile) => supportTile.enabled)
+      .forEach((supportTile, index) => {
         const layer = new WebTileLayer({
           id: supportTile.name,
           urlTemplate: supportTile.url,
@@ -310,9 +327,8 @@ export class MapComponent implements OnInit {
         // });
         // supportMapTileLayer.setOpacity(supportTile.opacity);
         // supportMapTileLayer.addTo(this.tilesLayer);
-        map.layers.add(layer);
-      }
-    }
+        map.layers.add(layer, index);
+      });
   }
 
   private getMapOptions(
@@ -381,9 +397,15 @@ export class MapComponent implements OnInit {
     }
   }
 
-  initializeMap(): Promise<unknown> {
-    const container = this.mapViewEl.nativeElement;
+  async initializeMap(): Promise<void> {
+    // Create map and add map layers
+    // TODO: Move to map.service.ts
     const map = new Map();
+    // (window as any).regobsMap = map;
+    this.onMapReady(map);
+
+    // Create the map view
+    const container = this.mapViewEl.nativeElement;
     this.view = new MapView({
       map: map,
       container,
@@ -414,44 +436,46 @@ export class MapComponent implements OnInit {
       //   })
       // }
     });
+    // (window as any).regobsMapView = this.view;
+    try {
+      await this.view.when();
+      this.onMapViewReady(this.view);
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Error in initializeMap');
+    }
 
     if (isAndroidOrIos(this.platform)) {
       this.initOfflineMaps();
     }
 
-    return this.view
-      .when(() => {
-        this.createExtentWatcher(this.view);
-        this.loading = false;
-        this.mapReady.emit(this.view);
-      })
-      .catch((reason) => {
-        this.logger.error(reason, 'Error in initializeMap');
-      });
+    this.loading = false;
+    this.mapReady.emit(this.view);
   }
 
   private createExtentWatcher(view: MapView) {
-    view.watch('stationary', (isStationary: boolean) => {
-      if (isStationary) {
-        //if the panning or zooming has stopped, update url
-        if (view) {
-          this.mapService.updateMapView({
-            bounds: this.view.extent,
-            center: this.view.center,
-            zoom: this.view.zoom
-          });
+    this.stationary$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((isStationary: boolean) => {
+        if (isStationary) {
+          //if the panning or zooming has stopped, update url
+          if (view) {
+            this.mapService.updateMapView({
+              bounds: this.view.extent,
+              center: this.view.center,
+              zoom: this.view.zoom
+            });
 
-          // Zoom level debug
-          if (this.debug) {
-            let zoom = 'Ikke gitt';
-            try {
-              zoom = this.view.zoom.toFixed(3);
-            } catch (error) {}
-            this.zoomLevelNode.nativeElement.innerText = zoom;
+            // Zoom level debug
+            if (this.debug) {
+              let zoom = 'Ikke gitt';
+              try {
+                zoom = this.view.zoom.toFixed(3);
+              } catch (error) {}
+              this.zoomLevelNode.nativeElement.innerText = zoom;
+            }
           }
         }
-      }
-    });
+      });
   }
 
   componentIsActive(isActive: boolean): void {
