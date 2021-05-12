@@ -6,12 +6,12 @@
 trigger:
 - release/*
 
+variables:
+- group: regobs
+
 pool:
   name: Hosted macOS
   demands: xcode
-
-variables:
-  cert.password: 'pasta8#lager'
 
 steps:
 #- script: '/bin/bash -c "sudo xcode-select -s /Applications/Xcode_11.2.1.app/Contents/Developer"'
@@ -89,6 +89,11 @@ steps:
 
 #- script: 'echo "##vso[task.setvariable variable=NODE_OPTIONS]--max_old_space_size=8048"'
 #  displayName: 'Set NODE_OPTIONS=--max_old_space_size=8048'
+- script: 'echo "##vso[task.setvariable variable=SENTRY_SKIP_WIZARD]true"'
+  displayName: 'Set SENTRY_SKIP_WIZARD=true'
+  
+- script: 'echo "##vso[task.setvariable variable=SENTRY_SKIP_AUTO_RELEASE]true"'
+  displayName: 'Set SENTRY_SKIP_AUTO_RELEASE=true'
 
 - task: Npm@1
   displayName: 'npm install'
