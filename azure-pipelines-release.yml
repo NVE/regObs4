@@ -7,7 +7,7 @@ trigger:
 - release/*
 
 pool:
-  name: Hosted macOS
+  vmImage: 'macOS-latest'
   demands: xcode
 
 variables:
