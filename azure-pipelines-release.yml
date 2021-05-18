@@ -10,7 +10,7 @@ variables:
 - group: regobs
 
 pool:
-  name: Hosted macOS
+  vmImage: 'macOS-latest'
   demands: xcode
 
 steps:
