@@ -11,7 +11,6 @@ export interface UserSetting {
   completedStartWizard: boolean;
   supportTiles: Array<{ name: string; enabled: boolean; opacity: number }>; //TODO: Lage en egen type for dette?
   showMapCenter: boolean;
-  tilesCacheSizev2: number;
   showObservations: boolean;
   emailReceipt: boolean;
   topoMap: TopoMap;

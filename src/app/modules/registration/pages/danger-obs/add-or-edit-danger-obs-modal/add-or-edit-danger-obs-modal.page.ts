@@ -21,6 +21,8 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   comment: string;
   loaded = false;
   commentTranslations: string[];
+  showDangerSignSelect = true;
+  showDangerSignCheckbox = false;
 
   interfaceOptions = {};
 
@@ -35,6 +37,8 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.showDangerSignCheckbox = this.geoHazard != GeoHazard.Ice;
+
     const tranlations = await this.translateService
       .get(this.getAreaArray())
       .toPromise();
@@ -75,20 +79,39 @@ export class AddOrEditDangerObsModalPage implements OnInit {
       }
       if (this.dangerObs.DangerSignTID === this.getNoDangerSignTid()) {
         this.noDangerObs = true;
-      } else {
-        this.dangerSignTid = this.dangerObs.DangerSignTID;
       }
+      this.dangerSignTid = this.dangerObs.DangerSignTID;
+      this.updateDangerSignSelectVisibilty();
     }
     this.loaded = true;
   }
 
-  toggleDangerObs() {
+  updateDangerSignSelectVisibilty() {
+    if (this.geoHazard === GeoHazard.Ice) {
+      this.showDangerSignSelect = true;
+    } else {
+      this.showDangerSignSelect = !this.noDangerObs;
+    }
+  }
+
+  toggleDangerObs(): void {
     this.noDangerObs = !this.noDangerObs;
+    if (this.noDangerObs) {
+      this.dangerSignTid = this.getDangerSignTidOrFallback();
+    }
+    this.updateDangerSignSelectVisibilty();
+  }
+
+  checkBoxChanged(): void {
+    this.updateDangerSignSelectVisibilty();
   }
 
   dropdownChanged(val: number) {
     if (val === this.getNoDangerSignTid()) {
       this.noDangerObs = true;
+      this.updateDangerSignSelectVisibilty();
+    } else {
+      this.noDangerObs = false;
     }
   }
 
@@ -104,8 +127,8 @@ export class AddOrEditDangerObsModalPage implements OnInit {
     return this.dangerSignTid !== undefined
       ? this.dangerSignTid
       : this.geoHazard !== GeoHazard.Snow
-      ? this.geoHazard * 10
-      : 0;
+        ? this.geoHazard * 10
+        : 0;
   }
 
   ok() {
@@ -149,23 +172,23 @@ export class AddOrEditDangerObsModalPage implements OnInit {
 
   getAreaArray() {
     switch (this.geoHazard) {
-      case GeoHazard.Ice: {
-        return [
-          'REGISTRATION.DANGER_OBS.RIGHT_HERE',
-          'REGISTRATION.DANGER_OBS.ON_THIS_SIDE_OF_THE_WATER',
-          'REGISTRATION.DANGER_OBS.ON_THIS_WATER',
-          'REGISTRATION.DANGER_OBS.MANY_WATER_NEARBY'
-        ];
-      }
-      default:
-        return [
-          'REGISTRATION.DANGER_OBS.ON_THIS_PLACE',
-          'REGISTRATION.DANGER_OBS.ON_THIS_MOUNTAIN_SIDE',
-          'REGISTRATION.DANGER_OBS.GENERAL_ON_MOUNTAIN',
-          'REGISTRATION.DANGER_OBS.IN_THE_VALLEY_OR_FJORD',
-          'REGISTRATION.DANGER_OBS.FOR_MUNICIPAL',
-          'REGISTRATION.DANGER_OBS.FOR_REGION'
-        ];
+    case GeoHazard.Ice: {
+      return [
+        'REGISTRATION.DANGER_OBS.RIGHT_HERE',
+        'REGISTRATION.DANGER_OBS.ON_THIS_SIDE_OF_THE_WATER',
+        'REGISTRATION.DANGER_OBS.ON_THIS_WATER',
+        'REGISTRATION.DANGER_OBS.MANY_WATER_NEARBY'
+      ];
+    }
+    default:
+      return [
+        'REGISTRATION.DANGER_OBS.ON_THIS_PLACE',
+        'REGISTRATION.DANGER_OBS.ON_THIS_MOUNTAIN_SIDE',
+        'REGISTRATION.DANGER_OBS.GENERAL_ON_MOUNTAIN',
+        'REGISTRATION.DANGER_OBS.IN_THE_VALLEY_OR_FJORD',
+        'REGISTRATION.DANGER_OBS.FOR_MUNICIPAL',
+        'REGISTRATION.DANGER_OBS.FOR_REGION'
+      ];
     }
   }
 }

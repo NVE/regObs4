@@ -74,6 +74,9 @@
         <splash density="xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
+        <edit-config file="*-Info.plist" mode="add" target="ITSAppUsesNonExemptEncryption">
+            <false />
+        </edit-config>
         <allow-navigation href="ionic://localhost:8080/*" />
         <allow-navigation href="http://localhost:8080/*" />
         <allow-intent href="itms:*" />

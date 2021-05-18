@@ -20,7 +20,6 @@ import {
   take,
   debounceTime
 } from 'rxjs/operators';
-import { OfflineMapService } from '../offline-map/offline-map.service';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
 import { LangKey } from '../../models/langKey';
@@ -60,7 +59,6 @@ export class DataMarshallService implements OnReset {
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
-    private offlineMapService: OfflineMapService,
     private analyticService: AnalyticService
   ) {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
@@ -185,7 +183,6 @@ export class DataMarshallService implements OnReset {
           this.loggingService.configureLogging(appMode)
         )
       );
-
       this.subscriptions.push(
         this.platform.pause.subscribe(() => {
           this.loggingService.debug(
