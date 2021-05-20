@@ -45,7 +45,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
 
   imgUrl: string;
   iconUrl: string;
-
+  
   constructor(private cdr: ChangeDetectorRef) {}
 
   options: L.MapOptions = {
