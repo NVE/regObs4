@@ -20,6 +20,7 @@ import { Point } from '@arcgis/core/geometry';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Graphic from '@arcgis/core/Graphic';
 import { MarkerHelper } from '../../../../core/helpers/arcgis/markerHelper';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';
 const END_ICON = '/assets/icon/map/GPS_stop.svg';
@@ -42,6 +43,9 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   private ngDestroy$: Subject<void>;
   private markerLayer = new GraphicsLayer({ id: 'MARKERS' });
 
+  imgUrl: string;
+  iconUrl: string;
+  
   constructor(private cdr: ChangeDetectorRef) {}
 
   options: L.MapOptions = {
@@ -78,12 +82,37 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit() {
+    this.imgUrl = this.createImageUrl();
+    this.iconUrl = this.createIcon(this.location.geoHazard);
     this.mapCenterSubject = new BehaviorSubject(this.location);
     this.centerLocation = new Point({
       latitude: this.location.latLng.lat,
       longitude: this.location.latLng.lng
     });
     this.ngDestroy$ = new Subject();
+  }
+
+  createImageUrl() : string {
+    const limit = 0.02;
+    const boundingBox = `${this.location.latLng.lng - limit},${this.location.latLng.lat - limit},${this.location.latLng.lng + limit},${this.location.latLng.lat + limit}`
+    return `https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/export?bbox=${boundingBox}&bboxSR=%7B%22wkid%22%3A4326%7D&layers=&layerDefs=&size=600%2C600&format=png&f=image`
+  }
+
+  createIcon(geoHazard: GeoHazard) : string {
+    switch(geoHazard) {
+      case GeoHazard.Snow:
+        return this.getIconUrl('snow');
+      case GeoHazard.Ice:
+        return this.getIconUrl('ice');
+      case GeoHazard.Dirt:
+        return this.getIconUrl('dirt');
+      case GeoHazard.Water:
+        return this.getIconUrl('water');
+    }
+  }
+
+  getIconUrl(geohazard: string) : string {
+    return `/assets/icon/map/pin-${geohazard}.svg`;
   }
 
   ngOnChanges(changes: SimpleChanges & SmartChanges<this>): void {
@@ -108,6 +137,8 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     this.markerLayer.add(marker);
     this.mapView.map.add(this.markerLayer);
   }
+
+
 
   onLeafletMapReady(map: L.Map) {
     this.map = map;
