@@ -26,7 +26,8 @@ import {
   BehaviorSubject,
   combineLatest,
   Subject,
-  fromEventPattern
+  fromEventPattern,
+  Observable
 } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -53,9 +54,9 @@ import { MapService } from '../../services/map/map.service';
 import { Point } from '@arcgis/core/geometry';
 import { UserMarker } from 'src/app/core/helpers/leaflet/user-marker/user-marker';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
+import Graphic from '@arcgis/core/Graphic';
 
 const DEBUG_TAG = 'MapComponent';
-const OFFLINE_LAYER = 'OfflineLayer';
 
 enum BasemapType {
   RASTER,
@@ -70,6 +71,31 @@ interface MapOptionsWithBounds {
   type?: BasemapType;
 }
 
+/**
+ * Appearance of layer types, from bottom to top.
+ * Each of them have their own layer group (GroupLayer in ArcGis).
+ * Think of them as a slots you can add layers in
+ */
+ export enum MapLayerType {
+  BASE_MAP_OFFLINE,
+  BASE_MAP_ONLINE,
+  SUPPORT_MAP,
+  OBSERVATIONS,
+  PREVIOUSLY_USED_LOCATIONS,
+  LOCALIZING, //use this to place observations on map, register avalanche start/stop, etc.
+  POSITION //GPS positioning marker
+}
+
+/**
+ * Callback for click events
+ */
+export interface ClickEventHandler {
+  /**
+   * If undefined, we didn't hit any graphic in the layer of interest
+   */
+  (graphic: Graphic | undefined): void;
+}
+
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -81,14 +107,14 @@ export class MapComponent implements OnInit {
   @Input() showScale = true;
   @Input() showSupportMaps = true;
   @Input() center: Point;
-  @Input() zoom: number;
-  @Output() mapReady: EventEmitter<MapView> = new EventEmitter();
+  @Input() zoom: number = 7;
+  @Output() mapReady: EventEmitter<MapComponent> = new EventEmitter();
   @Input() autoActivate = true;
   @Input() geoTag = DEBUG_TAG;
   @Input() debug = true;
   @Input() isStatic = false;
 
-  private drag$ = fromEventPattern(
+  drag$: Observable<__esri.MapViewDragEvent> = fromEventPattern(
     (handler) => this.view.on('drag', handler),
     (handler, eventListener) => eventListener.remove()
   );
@@ -139,7 +165,7 @@ export class MapComponent implements OnInit {
         this.userSettingService.userSetting$
           .pipe(takeUntil(this.ngDestroy$))
           .subscribe((userSetting) => {
-            this.configureTileLayers(userSetting);
+            this.updateLayers(userSetting);
             // if (userSetting.showMapCenter) {
             //   this.updateMapView(); //TODO
             // }
@@ -224,12 +250,12 @@ export class MapComponent implements OnInit {
     };
   }
 
-  private configureTileLayers(userSetting: UserSetting): void {
+  private updateLayers(userSetting: UserSetting): void {
     this.zone.runOutsideAngular(() => {
-      // this.tilesLayer.clearLayers();
       this.setZoom(null, this.getMaxZoom(userSetting.useRetinaMap));
       this.view.map.basemap = this.createBaseMap(userSetting);
-      this.applySupportMaps(userSetting, this.view.map);
+      this.applySupportMaps(userSetting);
+      this.mapReady.emit(this);
     });
   }
 
@@ -241,6 +267,7 @@ export class MapComponent implements OnInit {
     const baseLayers: Layer[] = [];
 
     for (const mapOption of mapOptions) {
+      // TODO: Handle overlapping basemap layers (excludeBounds)
       // const topoTilesLayer = topoMap.excludeBounds
       //   ? new RegObsTileLayer(topoMap.url, {
       //       ...this.getTileLayerDefaultOptions(userSetting),
@@ -253,14 +280,44 @@ export class MapComponent implements OnInit {
       //     });
       baseLayers.push(this.createBaselayer(mapOption));
     }
-    return new Basemap({
-      baseLayers: baseLayers,
+    
+    const map = new Basemap({
+      baseLayers: this.createLayerGroups(),
       id: mapOptions.map((m) => m.name).join(',')
     });
+    const onlineBaseMapLayerGroup = this.getLayerGroup(MapLayerType.BASE_MAP_ONLINE, map);
+    onlineBaseMapLayerGroup.addMany(baseLayers);
+    return map;
+  }
+
+  //creates a layer group for each layer type we support, to ensure the right appearance of different layer types
+  private createLayerGroups(): GroupLayer[] {
+    const layerGroups: GroupLayer[] = [];
+    for (const layerType in MapLayerType) {
+      const id = MapLayerType[layerType];
+      layerGroups.push(new GroupLayer({ id: id}))
+    }
+    return layerGroups;
+  }
+
+  getLayerGroup(type: MapLayerType, map?: Basemap): GroupLayer {
+    const id = MapLayerType[type];
+    if (!map) {
+      map = this.view.map.basemap;
+    }
+    return map.baseLayers.find(
+      (layer: Layer) => layer.id === id
+    ) as GroupLayer;
+  }
+
+  addLayer(layer: Layer, type: MapLayerType): void {
+    const group = this.getLayerGroup(type);
+    group.layers.add(layer);
   }
 
   private createBaselayer(options: MapOptionsWithBounds): Layer {
-    switch (options.type) {
+      //TODO: Støtt excludeBounds, så lag ikke overlapper
+      switch (options.type) {
       case BasemapType.GEO_JSON:
         return new GeoJSONLayer({
           id: options.name,
@@ -270,7 +327,6 @@ export class MapComponent implements OnInit {
         return new VectorTileLayer({
           id: options.name,
           url: options.url
-          //TODO: Støtt excludeBounds, så lag ikke overlapper
         });
       default: {
         return new WebTileLayer({
@@ -281,14 +337,9 @@ export class MapComponent implements OnInit {
     }
   }
 
-  private applySupportMaps(userSetting: UserSetting, map: Map): void {
-    const layersToRemove: Layer[] = [];
-    map.layers.forEach((layer) => {
-      if (layer instanceof WebTileLayer) {
-        layersToRemove.push(layer);
-      }
-    });
-    map.layers.removeMany(layersToRemove);
+  private applySupportMaps(userSetting: UserSetting): void {
+    const group = this.getLayerGroup(MapLayerType.SUPPORT_MAP);
+    group.removeAll()
 
     for (const supportTile of this.userSettingService.getSupportTilesOptions(
       userSetting
@@ -311,7 +362,7 @@ export class MapComponent implements OnInit {
         // });
         // supportMapTileLayer.setOpacity(supportTile.opacity);
         // supportMapTileLayer.addTo(this.tilesLayer);
-        map.layers.add(layer);
+        group.add(layer);
       }
     }
   }
@@ -388,7 +439,7 @@ export class MapComponent implements OnInit {
     this.view = new MapView({
       map: map,
       container,
-      zoom: 7,
+      zoom: this.zoom,
       spatialReference: {
         wkid: 3857
       },
@@ -449,7 +500,6 @@ export class MapComponent implements OnInit {
       .when(() => {
         this.createExtentWatcher(this.view);
         this.loading = false;
-        this.mapReady.emit(this.view);
       })
       .catch((reason) => {
         this.logger.error(reason, 'Error in initializeMap');
@@ -509,37 +559,22 @@ export class MapComponent implements OnInit {
 
   private async addOfflineLayer(offlineMap: OfflineMap) {
     this.logger.debug(`laster offline kartlag: ${offlineMap.name}`);
+    this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
     const layer = new VectorTileLayer({
       id: offlineMap.name,
       url: `http://localhost:8080/${offlineMap.name}/root.json`
     });
-    let offlineGroupLayer = this.getOfflineGroupLayer();
-    if (!offlineGroupLayer) {
-      //we create a separate layer group for offline map layers
-      offlineGroupLayer = new GroupLayer({ id: OFFLINE_LAYER });
-      this.view.map.layers.add(offlineGroupLayer, 0); //put it below observations icon layer
-    } else {
-      this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
-    }
+    let offlineGroupLayer = this.getLayerGroup(MapLayerType.BASE_MAP_OFFLINE);
     offlineGroupLayer.add(layer);
     this.logger.debug(`Nytt kartlag lagt til: ${offlineMap.name}`);
   }
 
-  private getOfflineGroupLayer(): GroupLayer {
-    return this.view.map.layers.find(
-      (layer: Layer) => layer.id === OFFLINE_LAYER
-    ) as GroupLayer;
-  }
-
   private removeOfflineLayer(
-    mapPackage: OfflineMap,
-    offlineGroupLayer?: GroupLayer
+    mapPackage: OfflineMap
   ): void {
-    if (!offlineGroupLayer) {
-      offlineGroupLayer = this.getOfflineGroupLayer();
-    }
-    if (offlineGroupLayer) {
-      offlineGroupLayer.layers.forEach((layer) => {
+    const offlineLayerGroup = this.getLayerGroup(MapLayerType.BASE_MAP_OFFLINE);
+    if (offlineLayerGroup) {
+      offlineLayerGroup.layers.forEach((layer) => {
         if (mapPackage.name === layer.id) {
           layer.destroy();
           this.logger.debug(`Offline layer '${layer.id}' destroyed`);
@@ -556,14 +591,18 @@ export class MapComponent implements OnInit {
       });
   }
 
-  private goToPosition(pos: Geoposition) {
+  goToPoint(point: Point) {
     return this.view.goTo(
       {
-        center: [pos.coords.longitude, pos.coords.latitude],
+        center: point,
         zoom: Math.max(settings.map.flyToOnGpsZoom, this.view.zoom)
       },
       { animate: true, duration: 200 }
     );
+  }
+
+  private goToPosition(pos: Geoposition) {
+    return this.goToPoint(new Point({latitude: pos.coords.latitude, longitude: pos.coords.longitude}));
   }
 
   private createOrUpdateUserMarker(pos: Geoposition) {
@@ -635,5 +674,43 @@ export class MapComponent implements OnInit {
       },
       opts
     );
+  }
+
+  /**
+   * Listen for click events on graphics on a specific layer
+   * @param layer the layer of interest
+   * @param eventHandler if map was clicked we will call back to you through this
+   */
+  createClickEventHandler(layer: Layer, eventHandler: ClickEventHandler) {
+    this.view.on('click', (event) => {
+      const screenPoint = {
+        x: event.x,
+        y: event.y
+      };
+      // Search for graphics at the clicked location
+      this.view
+        .hitTest(screenPoint, { include: [layer] })
+        .then((response) => {
+          if (response.results.length) {
+            const graphic = response.results.filter((result) => {
+              return result.graphic.layer === layer; // check if the graphic belongs to the layer of interest
+            })[0].graphic;
+            eventHandler(graphic); //we hit a graphic on this layer
+          } else {
+            eventHandler(undefined); //we didn't hit anything
+          }
+        })
+        .catch((err) => {
+          this.logger.error(
+            err,
+            DEBUG_TAG,
+            `Click event failed: ${err}`
+          );
+        });
+    });
+  }
+
+  getCenter(): Point {
+    return this.view.center;
   }
 }
