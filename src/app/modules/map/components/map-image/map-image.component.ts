@@ -18,8 +18,6 @@ import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import MapView from '@arcgis/core/views/MapView';
 import { Point } from '@arcgis/core/geometry';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import Graphic from '@arcgis/core/Graphic';
-import { MarkerHelper } from '../../../../core/helpers/arcgis/markerHelper';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';
@@ -37,7 +35,6 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   @Input() allowZoom: boolean;
 
   private map: L.Map;
-  private mapView: MapView;
   private mapCenterSubject: BehaviorSubject<ImageLocation>;
   centerLocation: Point;
   private ngDestroy$: Subject<void>;
@@ -85,15 +82,12 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     this.imgUrl = this.createImageUrl();
     this.iconUrl = this.createIcon(this.location.geoHazard);
     this.mapCenterSubject = new BehaviorSubject(this.location);
-    this.centerLocation = new Point({
-      latitude: this.location.latLng.lat,
-      longitude: this.location.latLng.lng
-    });
     this.ngDestroy$ = new Subject();
   }
 
   createImageUrl() : string {
     const limit = 0.02;
+    //spørre om mer enn 1 tile - gjøre om fra lng til lat, x, y, finn ut hvilken tile vi er i.
     const boundingBox = `${this.location.latLng.lng - limit},${this.location.latLng.lat - limit},${this.location.latLng.lng + limit},${this.location.latLng.lat + limit}`
     return `https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/export?bbox=${boundingBox}&bboxSR=%7B%22wkid%22%3A4326%7D&layers=&layerDefs=&size=600%2C600&format=png&f=image`
   }
@@ -126,19 +120,6 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }
-
-  onMapReady(map: MapView) {
-    this.mapView = map;
-    const symbol = MarkerHelper.getIconSvg(this.location.geoHazard);
-    const marker = new Graphic({
-      geometry: this.centerLocation,
-      symbol: symbol
-    });
-    this.markerLayer.add(marker);
-    this.mapView.map.add(this.markerLayer);
-  }
-
-
 
   onLeafletMapReady(map: L.Map) {
     this.map = map;
