@@ -12,14 +12,15 @@ import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
-import MapView from '@arcgis/core/views/MapView';
 import Graphic from '@arcgis/core/Graphic';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import { Point, Polyline } from '@arcgis/core/geometry';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import { MapComponent } from 'src/app/modules/map/components/map/map.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-set-avalanche-position',
@@ -37,7 +38,7 @@ export class SetAvalanchePositionPage implements OnInit {
 
   private start: Point;
   private end: Point;
-  private mapView: MapView;
+  private mapComponent: MapComponent;
   private pathLine: Graphic;
 
   fromMarker: Graphic;
@@ -56,6 +57,7 @@ export class SetAvalanchePositionPage implements OnInit {
 
   @ViewChild(SetLocationInMapComponent)
   setLocationInMapComponent: SetLocationInMapComponent;
+  private ngDestroy$ = new Subject();
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -125,8 +127,8 @@ export class SetAvalanchePositionPage implements OnInit {
     }
   }
 
-  onMapReady(mapView: MapView): void {
-    this.mapView = mapView;
+  onMapReady(mapComponent: MapComponent): void {
+    this.mapComponent = mapComponent;
   }
 
   onMarkerLayerReady(markerLayer: GraphicsLayer): void {
@@ -135,8 +137,11 @@ export class SetAvalanchePositionPage implements OnInit {
       this.updateMarkers();
     });
     this.ngZone.runOutsideAngular(() => {
-      this.mapView.on('drag', () => this.updatePolyline());
-      this.updatePolyline();
+      this.mapComponent.drag$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(() => 
+        this.updatePolyline()
+      );
     });
   }
 
@@ -222,7 +227,7 @@ export class SetAvalanchePositionPage implements OnInit {
         this.markerLayer.add(this.startMarker);
       }
     }
-    this.mapView.goTo(this.locationMarker.geometry);
+    this.mapComponent.goToPoint(this.locationMarker.geometry as Point);
     this.cdr.detectChanges();
   }
 
@@ -258,7 +263,7 @@ export class SetAvalanchePositionPage implements OnInit {
         longitude: event.Longitude
       });
       if (this.end) {
-        this.mapView.goTo(this.end);
+        this.mapComponent.goToPoint(this.end);
       } else {
         this.end = new Point({
           latitude: event.Latitude,
@@ -282,5 +287,10 @@ export class SetAvalanchePositionPage implements OnInit {
 
   ok(): void {
     this.setLocationInMapComponent.confirmLocation();
+  }
+
+  ngOnDestroy(): void {
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 }

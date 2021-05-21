@@ -21,6 +21,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Graphic from '@arcgis/core/Graphic';
 import { MarkerHelper } from '../../../../core/helpers/arcgis/markerHelper';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { MapComponent } from '../map/map.component';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';
 const END_ICON = '/assets/icon/map/GPS_stop.svg';
@@ -37,7 +38,6 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   @Input() allowZoom: boolean;
 
   private map: L.Map;
-  private mapView: MapView;
   private mapCenterSubject: BehaviorSubject<ImageLocation>;
   centerLocation: Point;
   private ngDestroy$: Subject<void>;
@@ -127,15 +127,14 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
     this.ngDestroy$.complete();
   }
 
-  onMapReady(map: MapView) {
-    this.mapView = map;
+  onMapReady(mapComponent: MapComponent) {
     const symbol = MarkerHelper.getIconSvg(this.location.geoHazard);
     const marker = new Graphic({
       geometry: this.centerLocation,
       symbol: symbol
     });
     this.markerLayer.add(marker);
-    this.mapView.map.add(this.markerLayer);
+//TODO: VI trenger ikke dette    this.mapView.map.add(this.markerLayer);
   }
 
 

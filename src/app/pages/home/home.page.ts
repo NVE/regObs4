@@ -13,7 +13,7 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { MapComponent } from '../../modules/map/components/map/map.component';
+import { MapComponent, MapLayerType } from '../../modules/map/components/map/map.component';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 
@@ -87,10 +87,12 @@ export class HomePage extends RouterPage implements OnInit {
     this.mapComponent.componentIsActive(true);
   }
 
-  onMapReady(mapView: MapView): void {
-    mapView.map.add(this.markerLayer);
-    this.createClickEventHandler(mapView, this);
-    // TODO: Move this to custom marker layer?
+  onMapReady(mapComponent: MapComponent): void {
+    const observationsLayerGroup = mapComponent.getLayerGroup(MapLayerType.OBSERVATIONS);
+    observationsLayerGroup.add(this.markerLayer);
+    
+    this.createClickEventHandler(mapComponent, this.markerLayer, this.mapItemBar);
+
     const observationObservable = combineLatest([
       this.observationService.observations$,
       this.userSettingService.showObservations$
@@ -147,7 +149,7 @@ export class HomePage extends RouterPage implements OnInit {
     }
   }
 
-  private createClickEventHandler(mapView: MapView, self: HomePage): void {
+  private createClickEventHandler(mapComponent: MapComponent, layer: GraphicsLayer, mapItemBar: MapItemBarComponent): void {
     //TODO: Handle click on registration cluster
     // this.markerLayer.on('clusterclick', (a: any) => {
     //   const groupLatLng: L.LatLng = a.latlng;
@@ -162,46 +164,25 @@ export class HomePage extends RouterPage implements OnInit {
     //     );
     //   }
     // });
-    mapView.popup.autoOpenEnabled = false;
-    mapView.on('click', (event) => {
-      const screenPoint = {
-        x: event.x,
-        y: event.y
-      };
-      // Search for graphics at the clicked location
-      mapView
-        .hitTest(screenPoint, { include: [self.markerLayer] })
-        .then((response) => {
-          if (response.results.length) {
-            const graphic = response.results.filter((result) => {
-              // check if the graphic belongs to the layer of interest
-              return result.graphic.layer === self.markerLayer;
-            })[0].graphic;
-            //We found an observation
-            if (graphic instanceof MapItemMarker) {
-              const marker = graphic as MapItemMarker;
-              if (marker.isSelected) {
-                marker.deselect();
-                self.mapItemBar.hide();
-              } else {
-                this.selectedMarker?.deselect(); //deselect last marker
-                marker.setSelected();
-                this.selectedMarker = marker;
-                self.mapItemBar.show(marker.item);
-              }
-            }
+    mapComponent.createClickEventHandler(layer, (graphic) => {
+      if (graphic) {
+        if (graphic instanceof MapItemMarker) {
+          const marker = graphic as MapItemMarker;
+          if (marker.isSelected) {
+            marker.deselect();
+            mapItemBar.hide();
           } else {
-            this.selectedMarker?.deselect();
-            self.mapItemBar.hide();
+            this.selectedMarker?.deselect(); //deselect last marker
+            marker.setSelected();
+            this.selectedMarker = marker;
+            mapItemBar.show(marker.item);
           }
-        })
-        .catch((err) => {
-          this.loggingService.error(
-            err,
-            DEBUG_TAG,
-            `Click event failed: ${err}`
-          );
-        });
+        }
+      } else {
+        //click outside of graphic
+        this.selectedMarker?.deselect();
+        mapItemBar.hide();
+      }
     });
   }
 }
