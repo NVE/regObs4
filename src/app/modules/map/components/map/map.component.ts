@@ -127,6 +127,8 @@ export class MapComponent implements OnInit {
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
   private isActive: BehaviorSubject<boolean>;
+  private clickEvent: Subject<Graphic|undefined> = new Subject(); //a click event
+  private clickSubscriptions: IHandle[] = [];
 
   // The <div> where we will place the map
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
@@ -213,10 +215,12 @@ export class MapComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+    this.clickSubscriptions.forEach(subscription => subscription.remove);
     if (this.view) {
       this.view.destroy(); // destroy the map view
     }
     this.geoPositionService.stopTrackingComponent(DEBUG_TAG);
+    
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
 
@@ -677,12 +681,13 @@ export class MapComponent implements OnInit {
   }
 
   /**
-   * Listen for click events on graphics on a specific layer
+   * Listen for click events on graphics on a specific layer.
    * @param layer the layer of interest
-   * @param eventHandler if map was clicked we will call back to you through this
+   * @return a stream of click events. Contains the graphics that was hit. If no hit, the event will contain an undefined object
    */
-  createClickEventHandler(layer: Layer, eventHandler: ClickEventHandler) {
-    this.view.on('click', (event) => {
+  createClickEventHandler(layer: Layer): Observable<Graphic|undefined> {
+    this.view.popup.autoOpenEnabled = false;
+    this.clickSubscriptions.push(this.view.on('click', (event) => {
       const screenPoint = {
         x: event.x,
         y: event.y
@@ -695,9 +700,9 @@ export class MapComponent implements OnInit {
             const graphic = response.results.filter((result) => {
               return result.graphic.layer === layer; // check if the graphic belongs to the layer of interest
             })[0].graphic;
-            eventHandler(graphic); //we hit a graphic on this layer
+            this.clickEvent.next(graphic); //we hit a graphic on this layer
           } else {
-            eventHandler(undefined); //we didn't hit anything
+            this.clickEvent.next(undefined); //we didn't hit anything
           }
         })
         .catch((err) => {
@@ -707,7 +712,8 @@ export class MapComponent implements OnInit {
             `Click event failed: ${err}`
           );
         });
-    });
+    }));
+    return this.clickEvent.asObservable();
   }
 
   getCenter(): Point {

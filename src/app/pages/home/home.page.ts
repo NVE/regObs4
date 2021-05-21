@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import MapView from '@arcgis/core/views/MapView';
+import { MapComponent, MapLayerType } from '../../modules/map/components/map/map.component';
 import 'leaflet.markercluster';
 import { combineLatest, Observable, race, Subject } from 'rxjs';
 import { distinctUntilChanged, map, take, takeUntil } from 'rxjs/operators';
@@ -13,7 +13,6 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { MapComponent, MapLayerType } from '../../modules/map/components/map/map.component';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 
@@ -41,6 +40,8 @@ export class HomePage extends RouterPage implements OnInit {
   private selectedMarker: MapItemMarker;
   showGeoSelectInfo = false;
   dataLoadIds$: Observable<string[]>;
+  private ngDestroy$ = new Subject();
+  private clickSubscription: IHandle;
 
   constructor(
     router: Router,
@@ -164,10 +165,13 @@ export class HomePage extends RouterPage implements OnInit {
     //     );
     //   }
     // });
-    mapComponent.createClickEventHandler(layer, (graphic) => {
-      if (graphic) {
-        if (graphic instanceof MapItemMarker) {
-          const marker = graphic as MapItemMarker;
+
+    mapComponent.createClickEventHandler(layer)
+    .pipe(takeUntil(this.ngDestroy$))
+    .subscribe((clickOnGraphic) => {
+      if (clickOnGraphic) {
+        if (clickOnGraphic instanceof MapItemMarker) {
+          const marker = clickOnGraphic as MapItemMarker;
           if (marker.isSelected) {
             marker.deselect();
             mapItemBar.hide();
@@ -184,5 +188,11 @@ export class HomePage extends RouterPage implements OnInit {
         mapItemBar.hide();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.clickSubscription?.remove();
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 }
