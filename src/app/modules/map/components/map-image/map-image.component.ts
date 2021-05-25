@@ -4,13 +4,10 @@ import {
   Input,
   ChangeDetectionStrategy,
   OnDestroy,
-  OnChanges,
-  SimpleChanges,
   ChangeDetectorRef
 } from '@angular/core';
-import { BehaviorSubject, Subject, timer } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ImageLocation } from '../../../../components/img-swiper/image-location.model';
-import { SmartChanges } from '../../../../core/helpers/simple-changes.helper';
 import { Point } from '@arcgis/core/geometry';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 
