@@ -69,6 +69,7 @@ interface MapOptionsWithBounds {
   bounds?: L.LatLngBoundsExpression;
   excludeBounds?: Feature<GeometryObject>;
   type?: BasemapType;
+  layerType?: MapLayerType; //use this if you like to put this map in a specific layer
 }
 
 /**
@@ -77,6 +78,7 @@ interface MapOptionsWithBounds {
  * Think of them as a slots you can add layers in
  */
  export enum MapLayerType {
+  GRID_OFFLINE, //use this to put a 'background' below the offline maps
   BASE_MAP_OFFLINE,
   BASE_MAP_ONLINE,
   SUPPORT_MAP,
@@ -257,18 +259,21 @@ export class MapComponent implements OnInit {
   private updateLayers(userSetting: UserSetting): void {
     this.zone.runOutsideAngular(() => {
       this.setZoom(null, this.getMaxZoom(userSetting.useRetinaMap));
-      this.view.map.basemap = this.createBaseMap(userSetting);
+      this.applyBasemap(userSetting);
       this.applySupportMaps(userSetting);
       this.mapReady.emit(this);
     });
   }
 
-  private createBaseMap(userSetting: UserSetting): Basemap {
+  private applyBasemap(userSetting: UserSetting): void {
     const mapOptions = this.getMapOptions(
       userSetting.topoMap,
       userSetting.language
     );
-    const baseLayers: Layer[] = [];
+    
+    //cleanup all layers in these two groups
+    this.getLayerGroup(MapLayerType.BASE_MAP_ONLINE).removeAll();
+    this.getLayerGroup(MapLayerType.GRID_OFFLINE).removeAll();
 
     for (const mapOption of mapOptions) {
       // TODO: Handle overlapping basemap layers (excludeBounds)
@@ -282,16 +287,9 @@ export class MapComponent implements OnInit {
       //       ...this.getTileLayerDefaultOptions(userSetting),
       //       bounds: topoMap.bounds
       //     });
-      baseLayers.push(this.createBaselayer(mapOption));
+      const type = mapOption.layerType ?? MapLayerType.BASE_MAP_ONLINE
+      this.addLayer(this.createBaselayer(mapOption), type)
     }
-    
-    const map = new Basemap({
-      baseLayers: this.createLayerGroups(),
-      id: mapOptions.map((m) => m.name).join(',')
-    });
-    const onlineBaseMapLayerGroup = this.getLayerGroup(MapLayerType.BASE_MAP_ONLINE, map);
-    onlineBaseMapLayerGroup.addMany(baseLayers);
-    return map;
   }
 
   //creates a layer group for each layer type we support, to ensure the right appearance of different layer types
@@ -299,17 +297,16 @@ export class MapComponent implements OnInit {
     const layerGroups: GroupLayer[] = [];
     for (const layerType in MapLayerType) {
       const id = MapLayerType[layerType];
-      layerGroups.push(new GroupLayer({ id: id}))
+      const groupLayer = new GroupLayer({ id: id});
+      groupLayer.layers.on('after-add', (event) => this.logLayerAppearance(`Layer '${event?.item?.id}' added in group '${groupLayer.id}'. `));
+      layerGroups.push(groupLayer);
     }
     return layerGroups;
   }
 
-  getLayerGroup(type: MapLayerType, map?: Basemap): GroupLayer {
+  getLayerGroup(type: MapLayerType): GroupLayer {
     const id = MapLayerType[type];
-    if (!map) {
-      map = this.view.map.basemap;
-    }
-    return map.baseLayers.find(
+    return this.view.map.basemap.baseLayers.find(
       (layer: Layer) => layer.id === id
     ) as GroupLayer;
   }
@@ -317,6 +314,19 @@ export class MapComponent implements OnInit {
   addLayer(layer: Layer, type: MapLayerType): void {
     const group = this.getLayerGroup(type);
     group.layers.add(layer);
+  }
+
+  private logLayerAppearance(prefix: string = ''): void {
+    let message = `${prefix}Layer appearance: `;
+    this.view.map.basemap.baseLayers.forEach(baseLayer => {
+      message += `${baseLayer.id}: `
+      if (baseLayer instanceof GroupLayer) {
+        const groupLayer: GroupLayer = baseLayer;
+        message += groupLayer.layers.map(layer => layer.id).join(",");
+      }
+      message += `, `
+    });
+    this.logger.debug(message, DEBUG_TAG, this.view.map.basemap.baseLayers);
   }
 
   private createBaselayer(options: MapOptionsWithBounds): Layer {
@@ -333,10 +343,14 @@ export class MapComponent implements OnInit {
           url: options.url
         });
       default: {
-        return new WebTileLayer({
+        const layer: any = new WebTileLayer({
           id: options.name,
           urlTemplate: options.url
         });
+        if (this.isOfflineMapsAvailable()) {
+          layer.resampling = false; //see this.disableResamplingOfOnlineBasemap()
+        }
+        return layer;
       }
     }
   }
@@ -378,7 +392,8 @@ export class MapComponent implements OnInit {
     const noOnlineMap: MapOptionsWithBounds = {
       name: TopoMap.noOnlineMap,
       url: settings.map.tiles.noOnlineMapUrl,
-      type: BasemapType.GEO_JSON
+      type: BasemapType.GEO_JSON,
+      layerType: MapLayerType.GRID_OFFLINE
     };
     const norwegianMixedMap: MapOptionsWithBounds = {
       name: TopoMap.statensKartverk,
@@ -440,6 +455,10 @@ export class MapComponent implements OnInit {
   initializeMap(): Promise<unknown> {
     const container = this.mapViewEl.nativeElement;
     const map = new Map();
+    map.basemap = new Basemap({
+      baseLayers: this.createLayerGroups(),
+      id: 'BASEMAP'
+    });
     this.view = new MapView({
       map: map,
       container,
@@ -510,6 +529,24 @@ export class MapComponent implements OnInit {
       });
   }
 
+  /**
+   * This will ensure that the offline map appear when the online map tiles dosn't load.
+   * If we don't disable resampling, the online tiles will only enlarge when you zoom in and cover the offline map underneath
+   */
+  private disableResamplingOfOnlineBasemap(): void {
+    const layerGroup = this.getLayerGroup(MapLayerType.BASE_MAP_ONLINE);
+    layerGroup.layers.forEach((layer) => {
+      if (layer instanceof WebTileLayer) {
+        const tileLayer: any = layer; //hack because compiler doesn't allow resampling on WebTileLayer, but the API supports it
+        tileLayer.resampling = false;
+      }
+    });
+  }
+
+  private isOfflineMapsAvailable(): boolean {
+    return this.getLayerGroup(MapLayerType.BASE_MAP_OFFLINE).layers.length > 0
+  }
+
   private createExtentWatcher(view: MapView) {
     view.watch('stationary', (isStationary: boolean) => {
       if (isStationary) {
@@ -568,9 +605,8 @@ export class MapComponent implements OnInit {
       id: offlineMap.name,
       url: `http://localhost:8080/${offlineMap.name}/root.json`
     });
-    let offlineGroupLayer = this.getLayerGroup(MapLayerType.BASE_MAP_OFFLINE);
-    offlineGroupLayer.add(layer);
-    this.logger.debug(`Nytt kartlag lagt til: ${offlineMap.name}`);
+    this.addLayer(layer, MapLayerType.BASE_MAP_OFFLINE);
+    this.disableResamplingOfOnlineBasemap();
   }
 
   private removeOfflineLayer(
