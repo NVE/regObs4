@@ -1,3 +1,3 @@
 <ion-content (click)="close()">
-  <app-map-image [location]="location" [allowZoom]="true"></app-map-image>
+  <app-map (mapReady)="onMapReady($event)" [center]="centerLocation" [showMapControls]="false" [showSupportMaps]="false" [zoom]="12"></app-map>
 </ion-content>

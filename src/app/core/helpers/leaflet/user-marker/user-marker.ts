@@ -4,7 +4,8 @@ import MapView from '@arcgis/core/views/MapView';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import { Point } from '@arcgis/core/geometry';
 import Graphic from '@arcgis/core/Graphic';
-
+import Circle  from '@arcgis/core/geometry/Circle';
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 export class UserMarker {
   private positionGraphic: Graphic;
   private accuracyGraphic: Graphic;
@@ -40,27 +41,42 @@ export class UserMarker {
     });
     const accuracySymbol = new SimpleMarkerSymbol({
       style: 'circle',
-      color: [0, 0, 0, 0], //transparent
+      size: "8px",
+      color: [30, 144, 255, 0.2],
       outline: {
         color: 'white',
         width: 1
       }
     });
+
     const point = new Point({
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     });
+
+    const circle = new Circle({
+      center: point,
+      radius: 100,
+      radiusUnit: "meters"
+    })
+
+    const animatedGif = new PictureMarkerSymbol( {
+      url: '/assets/bluedot-unscreen.gif',
+      width: '80px',
+      height: '80px'
+    })
+
     this.positionGraphic = new Graphic({
       geometry: point,
-      symbol: positionSymbol
+      symbol: animatedGif
     });
     this.accuracyGraphic = new Graphic({
-      geometry: point,
+      geometry: circle,
       symbol: accuracySymbol
     });
 
     this.setAccuracy(position);
-    view.graphics.addMany([this.positionGraphic, this.accuracyGraphic]);
+    view.graphics.add(this.positionGraphic);
   }
 
   getPosition(): Geoposition {
