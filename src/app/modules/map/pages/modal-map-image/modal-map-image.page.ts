@@ -30,7 +30,7 @@ export class ModalMapImagePage implements OnInit {
 
   onMapReady(map: MapView) {
     this.mapView = map;
-    const symbol = MarkerHelper.getIconSvg(this.location.geoHazard);
+    const symbol = MarkerHelper.getGeoHazardSvg(this.location.geoHazard);
     const marker = new Graphic({
       geometry: this.centerLocation,
       symbol: symbol
