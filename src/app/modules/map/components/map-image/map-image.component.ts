@@ -15,7 +15,6 @@ import { ImageLocation } from '../../../../components/img-swiper/image-location.
 import { settings } from '../../../../../settings';
 import { SmartChanges } from '../../../../core/helpers/simple-changes.helper';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
-import MapView from '@arcgis/core/views/MapView';
 import { Point } from '@arcgis/core/geometry';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Graphic from '@arcgis/core/Graphic';
@@ -134,7 +133,6 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
       symbol: symbol
     });
     this.markerLayer.add(marker);
-//TODO: VI trenger ikke dette    this.mapView.map.add(this.markerLayer);
   }
 
 

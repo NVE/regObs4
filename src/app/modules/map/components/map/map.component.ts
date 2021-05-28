@@ -69,18 +69,26 @@ interface MapOptionsWithBounds {
   bounds?: L.LatLngBoundsExpression;
   excludeBounds?: Feature<GeometryObject>;
   type?: BasemapType;
-  layerType?: MapLayerType; //use this if you like to put this map in a specific layer
+  layerType?: BasemapLayerType; //use this if you like to put this map in a specific layer
 }
 
 /**
- * Appearance of layer types, from bottom to top.
+ * Appearance of background map layer types, from bottom to top.
  * Each of them have their own layer group (GroupLayer in ArcGis).
  * Think of them as a slots you can add layers in
  */
- export enum MapLayerType {
-  GRID_OFFLINE, //use this to put a 'background' below the offline maps
-  BASE_MAP_OFFLINE,
-  BASE_MAP_ONLINE,
+ export enum BasemapLayerType {
+  OFFLINE_GRID, //use this to put a 'background' below the offline maps
+  OFFLINE,
+  ONLINE,
+}
+
+/**
+ * Appearance of feature layer types, from bottom to top.
+ * Each of them have their own layer group (GroupLayer in ArcGis).
+ * Think of them as a slots you can add layers in
+ */
+ export enum FeatureLayerType {
   SUPPORT_MAP,
   OBSERVATIONS,
   PREVIOUSLY_USED_LOCATIONS,
@@ -243,6 +251,7 @@ export class MapComponent implements OnInit {
     constraints.maxZoom = maxZoom ? maxZoom : settings.map.tiles.maxZoom;
   }
 
+  //TODO: Fjern når vi er sikre på at vi har med denne funksjonaliteten
   private getTileLayerDefaultOptions(
     userSetting: UserSetting
   ): IRegObsTileLayerOptions {
@@ -259,21 +268,21 @@ export class MapComponent implements OnInit {
   private updateLayers(userSetting: UserSetting): void {
     this.zone.runOutsideAngular(() => {
       this.setZoom(null, this.getMaxZoom(userSetting.useRetinaMap));
-      this.applyBasemap(userSetting);
-      this.applySupportMaps(userSetting);
+      this.createBasemap(userSetting);
+      this.createSupportMaps(userSetting);
       this.mapReady.emit(this);
     });
   }
 
-  private applyBasemap(userSetting: UserSetting): void {
+  private createBasemap(userSetting: UserSetting): void {
     const mapOptions = this.getMapOptions(
       userSetting.topoMap,
       userSetting.language
     );
     
     //cleanup all layers in these two groups
-    this.getLayerGroup(MapLayerType.BASE_MAP_ONLINE).removeAll();
-    this.getLayerGroup(MapLayerType.GRID_OFFLINE).removeAll();
+    this.getBasemapLayerGroup(BasemapLayerType.ONLINE).removeAll();
+    this.getBasemapLayerGroup(BasemapLayerType.OFFLINE_GRID).removeAll();
 
     for (const mapOption of mapOptions) {
       // TODO: Handle overlapping basemap layers (excludeBounds)
@@ -287,16 +296,16 @@ export class MapComponent implements OnInit {
       //       ...this.getTileLayerDefaultOptions(userSetting),
       //       bounds: topoMap.bounds
       //     });
-      const type = mapOption.layerType ?? MapLayerType.BASE_MAP_ONLINE
-      this.addLayer(this.createBaselayer(mapOption), type)
+      const type = mapOption.layerType ?? BasemapLayerType.ONLINE
+      this.addBasemapLayer(this.createBaselayer(mapOption), type)
     }
   }
 
   //creates a layer group for each layer type we support, to ensure the right appearance of different layer types
-  private createLayerGroups(): GroupLayer[] {
+  private createLayerGroups(layerType: typeof BasemapLayerType | typeof FeatureLayerType): GroupLayer[] {
     const layerGroups: GroupLayer[] = [];
-    for (const layerType in MapLayerType) {
-      const id = MapLayerType[layerType];
+    for (const type in layerType) {
+      const id = layerType[type];
       const groupLayer = new GroupLayer({ id: id});
       groupLayer.layers.on('after-add', (event) => this.logLayerAppearance(`Layer '${event?.item?.id}' added in group '${groupLayer.id}'. `));
       layerGroups.push(groupLayer);
@@ -304,29 +313,47 @@ export class MapComponent implements OnInit {
     return layerGroups;
   }
 
-  getLayerGroup(type: MapLayerType): GroupLayer {
-    const id = MapLayerType[type];
+  getFeatureLayerGroup(type: FeatureLayerType): GroupLayer {
+    const id = FeatureLayerType[type];
+    return this.view.map.findLayerById(id) as GroupLayer;
+  }
+
+  addFeatureLayer(layer: Layer, type: FeatureLayerType): void {
+    const group = this.getFeatureLayerGroup(type);
+    group.layers.add(layer);
+  }
+
+  private getBasemapLayerGroup(type: BasemapLayerType): GroupLayer {
+    const id = BasemapLayerType[type];
     return this.view.map.basemap.baseLayers.find(
       (layer: Layer) => layer.id === id
     ) as GroupLayer;
   }
 
-  addLayer(layer: Layer, type: MapLayerType): void {
-    const group = this.getLayerGroup(type);
+  private addBasemapLayer(layer: Layer, type: BasemapLayerType): void {
+    const group = this.getBasemapLayerGroup(type);
     group.layers.add(layer);
   }
 
   private logLayerAppearance(prefix: string = ''): void {
     let message = `${prefix}Layer appearance: `;
-    this.view.map.basemap.baseLayers.forEach(baseLayer => {
-      message += `${baseLayer.id}: `
-      if (baseLayer instanceof GroupLayer) {
-        const groupLayer: GroupLayer = baseLayer;
-        message += groupLayer.layers.map(layer => layer.id).join(",");
-      }
-      message += `, `
+    const layerInfo : string[] = [];
+    this.view.map.basemap.baseLayers.forEach(layer => {
+      layerInfo.push(this.logSubLayerAppearance(layer));
     });
-    this.logger.debug(message, DEBUG_TAG, this.view.map.basemap.baseLayers);
+    this.view.map.layers.forEach(layer => {
+      layerInfo.push(this.logSubLayerAppearance(layer));
+    });
+    this.logger.debug(message + layerInfo.join(', '), DEBUG_TAG, this.view.map.basemap.baseLayers, this.view.map.layers);
+  }
+
+  private logSubLayerAppearance(layer: Layer): string {
+    let message = `${layer.id}: `;
+    if (layer instanceof GroupLayer) {
+      const groupLayer: GroupLayer = layer;
+      message += groupLayer.layers.map(layer => layer.id).join(",");
+    }
+    return message;
   }
 
   private createBaselayer(options: MapOptionsWithBounds): Layer {
@@ -355,8 +382,8 @@ export class MapComponent implements OnInit {
     }
   }
 
-  private applySupportMaps(userSetting: UserSetting): void {
-    const group = this.getLayerGroup(MapLayerType.SUPPORT_MAP);
+  private createSupportMaps(userSetting: UserSetting): void {
+    const group = this.getFeatureLayerGroup(FeatureLayerType.SUPPORT_MAP);
     group.removeAll()
 
     for (const supportTile of this.userSettingService.getSupportTilesOptions(
@@ -393,7 +420,7 @@ export class MapComponent implements OnInit {
       name: TopoMap.noOnlineMap,
       url: settings.map.tiles.noOnlineMapUrl,
       type: BasemapType.GEO_JSON,
-      layerType: MapLayerType.GRID_OFFLINE
+      layerType: BasemapLayerType.OFFLINE_GRID
     };
     const norwegianMixedMap: MapOptionsWithBounds = {
       name: TopoMap.statensKartverk,
@@ -454,11 +481,14 @@ export class MapComponent implements OnInit {
 
   initializeMap(): Promise<unknown> {
     const container = this.mapViewEl.nativeElement;
+    
     const map = new Map();
     map.basemap = new Basemap({
-      baseLayers: this.createLayerGroups(),
+      baseLayers: this.createLayerGroups(BasemapLayerType),
       id: 'BASEMAP'
     });
+    map.addMany(this.createLayerGroups(FeatureLayerType));
+
     this.view = new MapView({
       map: map,
       container,
@@ -534,7 +564,7 @@ export class MapComponent implements OnInit {
    * If we don't disable resampling, the online tiles will only enlarge when you zoom in and cover the offline map underneath
    */
   private disableResamplingOfOnlineBasemap(): void {
-    const layerGroup = this.getLayerGroup(MapLayerType.BASE_MAP_ONLINE);
+    const layerGroup = this.getBasemapLayerGroup(BasemapLayerType.ONLINE);
     layerGroup.layers.forEach((layer) => {
       if (layer instanceof WebTileLayer) {
         const tileLayer: any = layer; //hack because compiler doesn't allow resampling on WebTileLayer, but the API supports it
@@ -544,7 +574,7 @@ export class MapComponent implements OnInit {
   }
 
   private isOfflineMapsAvailable(): boolean {
-    return this.getLayerGroup(MapLayerType.BASE_MAP_OFFLINE).layers.length > 0
+    return this.getBasemapLayerGroup(BasemapLayerType.OFFLINE).layers.length > 0
   }
 
   private createExtentWatcher(view: MapView) {
@@ -605,14 +635,14 @@ export class MapComponent implements OnInit {
       id: offlineMap.name,
       url: `http://localhost:8080/${offlineMap.name}/root.json`
     });
-    this.addLayer(layer, MapLayerType.BASE_MAP_OFFLINE);
+    this.addBasemapLayer(layer, BasemapLayerType.OFFLINE);
     this.disableResamplingOfOnlineBasemap();
   }
 
   private removeOfflineLayer(
     mapPackage: OfflineMap
   ): void {
-    const offlineLayerGroup = this.getLayerGroup(MapLayerType.BASE_MAP_OFFLINE);
+    const offlineLayerGroup = this.getBasemapLayerGroup(BasemapLayerType.OFFLINE);
     if (offlineLayerGroup) {
       offlineLayerGroup.layers.forEach((layer) => {
         if (mapPackage.name === layer.id) {

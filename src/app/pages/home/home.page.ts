@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import { MapComponent, MapLayerType } from '../../modules/map/components/map/map.component';
+import { MapComponent, FeatureLayerType } from '../../modules/map/components/map/map.component';
 import 'leaflet.markercluster';
 import { combineLatest, Observable, race, Subject } from 'rxjs';
 import { distinctUntilChanged, map, take, takeUntil } from 'rxjs/operators';
@@ -89,8 +89,7 @@ export class HomePage extends RouterPage implements OnInit {
   }
 
   onMapReady(mapComponent: MapComponent): void {
-    const observationsLayerGroup = mapComponent.getLayerGroup(MapLayerType.OBSERVATIONS);
-    observationsLayerGroup.add(this.markerLayer);
+    mapComponent.addFeatureLayer(this.markerLayer, FeatureLayerType.OBSERVATIONS);
     
     this.createClickEventHandler(mapComponent, this.markerLayer, this.mapItemBar);
 

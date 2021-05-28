@@ -32,7 +32,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import L from 'leaflet'; //TODO: Remove Leaflet usage
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
-import { MapComponent, MapLayerType } from 'src/app/modules/map/components/map/map.component';
+import { MapComponent, FeatureLayerType } from 'src/app/modules/map/components/map/map.component';
 
 //TODO: Sjekk om vi trenger dette:
 // const defaultIcon = L.icon({
@@ -259,7 +259,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.mapComponent = mapComponent;
 
     this.markerLayer.removeAll(); //TODO: Trenger vi denne?
-    mapComponent.addLayer(this.markerLayer, MapLayerType.LOCALIZING);
+    mapComponent.addFeatureLayer(this.markerLayer, FeatureLayerType.LOCALIZING);
 
     // this.locationMarker.setZIndexOffset(100).addTo(this.markerLayer); //TODO: Kræsjer når man skal velge posisjon for observasjon
     this.markerLayer.add(this.locationMarker);
@@ -285,7 +285,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       const layer = new GraphicsLayer({
         id: 'PREVIOUSLY-USED-LOCATIONS'
       });
-      mapComponent.addLayer(layer, MapLayerType.PREVIOUSLY_USED_LOCATIONS);
+      mapComponent.addFeatureLayer(layer, FeatureLayerType.PREVIOUSLY_USED_LOCATIONS);
       this.getLocationsObservable()
         .pipe(takeUntil(this.ngDestroy$))
         .subscribe((locations) => {
