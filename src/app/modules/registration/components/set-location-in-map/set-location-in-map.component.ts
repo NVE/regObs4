@@ -27,12 +27,12 @@ import { IonInput } from '@ionic/angular';
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { Point, Polyline } from '@arcgis/core/geometry';
-import MapView from '@arcgis/core/views/MapView';
 import Graphic from '@arcgis/core/Graphic';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import L from 'leaflet'; //TODO: Remove Leaflet usage
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
+import { MapComponent, FeatureLayerType } from 'src/app/modules/map/components/map/map.component';
 
 //TODO: Sjekk om vi trenger dette:
 // const defaultIcon = L.icon({
@@ -74,14 +74,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() fromLocationText = 'REGISTRATION.OBS_LOCATION.CURRENT_LOCATION';
   @Input() locationTitle = 'REGISTRATION.OBS_LOCATION.TITLE';
   @Input() selectedLocation: ObsLocationsResponseDtoV2;
-  @Output() mapReady = new EventEmitter<MapView>();
+  @Output() mapReady = new EventEmitter<MapComponent>();
   @Input() showPolyline = true;
   @Input() showFromMarkerInDetails = true;
   @Input() allowEditLocationName = false;
   @Input() isSaveDisabled = false;
   @Output() markerLayerReady = new EventEmitter<GraphicsLayer>();
 
-  private mapView: MapView;
+  private mapComponent: MapComponent;
   private markerLayer = new GraphicsLayer({
     id: 'LOCATIONS-FOR-SINGLE-OBSERVATION'
   });
@@ -98,7 +98,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup(); //TODO: Support clustering
   editLocationName = false;
   locationName: string;
-
+  
   @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
 
   get canEditLocationName(): boolean {
@@ -128,6 +128,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     //   shadowUrl: 'leaflet/marker-shadow.png',
     //   shadowSize: [41, 41]
     // });
+    
+    //TODO: Rydd opp i hvordan vi bestemmer followMode
     this.followMode = !this.locationMarker && !this.fromMarker;
     this.mapService.followMode = this.followMode;
     if (!this.locationMarker) {
@@ -138,6 +140,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       } else {
         if (this.location) {
           //we got a location from outside
+          this.followMode = false;
+          this.mapService.followMode = this.followMode;
           this.locationMarker = this.createMarker(
             this.location,
             this.locationMarkerIconUrl
@@ -251,33 +255,37 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMapReady(mapView: MapView): void {
-    this.mapView = mapView;
+  onMapReady(mapComponent: MapComponent): void {
+    this.mapComponent = mapComponent;
+
     this.markerLayer.removeAll(); //TODO: Trenger vi denne?
-    this.mapView.map.add(this.markerLayer);
+    mapComponent.addFeatureLayer(this.markerLayer, FeatureLayerType.LOCALIZING);
 
     // this.locationMarker.setZIndexOffset(100).addTo(this.markerLayer); //TODO: Kræsjer når man skal velge posisjon for observasjon
     this.markerLayer.add(this.locationMarker);
     if (this.fromMarker) {
       this.markerLayer.add(this.fromMarker);
     }
-    this.mapView.on('drag', () => {
-      this.ngZone.run(() => {
-        this.isLoading = true;
+
+    mapComponent.drag$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((event) => {
+        this.ngZone.run(() => {
+          this.isLoading = true;
+        });
+        
+        this.moveLocationMarkerToCenter();
+
+        if (event && event.action && event.action === 'end') {
+          this.updateMapViewInfo();  
+        }
       });
-    });
-    this.mapView.on('drag', (event) => {
-      if (event.action === 'end') {
-        this.updateMapViewInfo();
-      }
-    });
-    this.mapView.on('drag', () => this.moveLocationMarkerToCenter());
 
     if (this.showPreviousUsedLocations) {
       const layer = new GraphicsLayer({
         id: 'PREVIOUSLY-USED-LOCATIONS'
       });
-      this.mapView.map.add(layer); //put it below markerLayer
+      mapComponent.addFeatureLayer(layer, FeatureLayerType.PREVIOUSLY_USED_LOCATIONS);
       this.getLocationsObservable()
         .pipe(takeUntil(this.ngDestroy$))
         .subscribe((locations) => {
@@ -293,11 +301,10 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       });
 
     if (!this.followMode) {
-      this.mapView.goTo(this.locationMarker.geometry);
-      this.mapView.zoom = 15;
+      mapComponent.goToPoint(this.locationMarker.geometry as Point)
     }
 
-    this.mapReady.emit(this.mapView);
+    this.mapReady.emit(mapComponent);
     this.markerLayerReady.emit(this.markerLayer);
     this.updatePathAndDistance();
   }
@@ -316,7 +323,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         location.LatLngObject.Latitude,
         location.LatLngObject.Longitude
       );
-      this.mapView.goTo(this.locationMarker.geometry);
+      this.mapComponent.goToPoint(this.locationMarker.geometry as Point);
       this.showDetails = true;
     });
   }
@@ -324,7 +331,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private moveLocationMarkerToCenter() {
     this.mapService.followMode = false;
     this.selectedLocation = null;
-    const center = this.mapView.center;
+    const center = this.mapComponent.getCenter();
     this.locationMarker.geometry = center;
     this.updatePathAndDistance();
   }
@@ -385,37 +392,35 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   updatePathAndDistance(): void {
     const start = this.locationMarker.geometry as Point;
     const stop = this.getFromPosition();
-    if (this.mapView) {
-      const path = [
-        [start.latitude, start.longitude],
-        [stop.latitude, stop.longitude]
-      ];
-      const line = new Polyline({ paths: [path] });
-      if (!this.pathLine) {
-        this.pathLine = new Graphic(
-          { geometry: line, symbol: new SimpleLineSymbol() }
-          //TODO: gjøre streken penere:
-          // color: 'black',
-          // weight: 6,
-          // opacity: 0.9,
-          // dashArray: '1,12'
-        );
-        if (this.showPolyline) {
-          this.markerLayer.add(this.pathLine);
-        }
-      } else {
-        this.pathLine.geometry = line;
+    const path = [
+      [start.latitude, start.longitude],
+      [stop.latitude, stop.longitude]
+    ];
+    const line = new Polyline({ paths: [path] });
+    if (!this.pathLine) {
+      this.pathLine = new Graphic(
+        { geometry: line, symbol: new SimpleLineSymbol() }
+        //TODO: gjøre streken penere:
+        // color: 'black',
+        // weight: 6,
+        // opacity: 0.9,
+        // dashArray: '1,12'
+      );
+      if (this.showPolyline) {
+        this.markerLayer.add(this.pathLine);
       }
-      if (this.fromMarker) {
-        if (
-          this.fromMarker.geometry === this.locationMarker.geometry //TODO: Check if this is possible
-        ) {
-          this.fromMarker.visible = false;
-          this.pathLine.visible = false;
-        } else {
-          this.fromMarker.visible = true;
-          this.pathLine.visible = true;
-        }
+    } else {
+      this.pathLine.geometry = line;
+    }
+    if (this.fromMarker) {
+      if (
+        this.fromMarker.geometry === this.locationMarker.geometry //TODO: Check if this is possible
+      ) {
+        this.fromMarker.visible = false;
+        this.pathLine.visible = false;
+      } else {
+        this.fromMarker.visible = true;
+        this.pathLine.visible = true;
       }
     }
     this.ngZone.run(() => {

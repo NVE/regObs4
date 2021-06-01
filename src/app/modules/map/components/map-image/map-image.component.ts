@@ -8,8 +8,12 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ImageLocation } from '../../../../components/img-swiper/image-location.model';
+import { settings } from '../../../../../settings';
+import { SmartChanges } from '../../../../core/helpers/simple-changes.helper';
+import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { Point } from '@arcgis/core/geometry';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { MapComponent } from '../map/map.component';
 
 @Component({
   selector: 'app-map-image',

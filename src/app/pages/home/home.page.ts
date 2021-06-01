@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import MapView from '@arcgis/core/views/MapView';
+import { MapComponent, FeatureLayerType } from '../../modules/map/components/map/map.component';
 import 'leaflet.markercluster';
 import { combineLatest, Observable, race, Subject } from 'rxjs';
 import { distinctUntilChanged, map, take, takeUntil } from 'rxjs/operators';
@@ -13,7 +13,6 @@ import { FullscreenService } from '../../core/services/fullscreen/fullscreen.ser
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { MapComponent } from '../../modules/map/components/map/map.component';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 
@@ -41,6 +40,8 @@ export class HomePage extends RouterPage implements OnInit {
   private selectedMarker: MapItemMarker;
   showGeoSelectInfo = false;
   dataLoadIds$: Observable<string[]>;
+  private ngDestroy$ = new Subject();
+  private clickSubscription: IHandle;
 
   constructor(
     router: Router,
@@ -87,10 +88,11 @@ export class HomePage extends RouterPage implements OnInit {
     this.mapComponent.componentIsActive(true);
   }
 
-  onMapReady(mapView: MapView): void {
-    mapView.map.add(this.markerLayer);
-    this.createClickEventHandler(mapView, this);
-    // TODO: Move this to custom marker layer?
+  onMapReady(mapComponent: MapComponent): void {
+    mapComponent.addFeatureLayer(this.markerLayer, FeatureLayerType.OBSERVATIONS);
+    
+    this.createClickEventHandler(mapComponent, this.markerLayer, this.mapItemBar);
+
     const observationObservable = combineLatest([
       this.observationService.observations$,
       this.userSettingService.showObservations$
@@ -147,7 +149,7 @@ export class HomePage extends RouterPage implements OnInit {
     }
   }
 
-  private createClickEventHandler(mapView: MapView, self: HomePage): void {
+  private createClickEventHandler(mapComponent: MapComponent, layer: GraphicsLayer, mapItemBar: MapItemBarComponent): void {
     //TODO: Handle click on registration cluster
     // this.markerLayer.on('clusterclick', (a: any) => {
     //   const groupLatLng: L.LatLng = a.latlng;
@@ -162,46 +164,34 @@ export class HomePage extends RouterPage implements OnInit {
     //     );
     //   }
     // });
-    mapView.popup.autoOpenEnabled = false;
-    mapView.on('click', (event) => {
-      const screenPoint = {
-        x: event.x,
-        y: event.y
-      };
-      // Search for graphics at the clicked location
-      mapView
-        .hitTest(screenPoint, { include: [self.markerLayer] })
-        .then((response) => {
-          if (response.results.length) {
-            const graphic = response.results.filter((result) => {
-              // check if the graphic belongs to the layer of interest
-              return result.graphic.layer === self.markerLayer;
-            })[0].graphic;
-            //We found an observation
-            if (graphic instanceof MapItemMarker) {
-              const marker = graphic as MapItemMarker;
-              if (marker.isSelected) {
-                marker.deselect();
-                self.mapItemBar.hide();
-              } else {
-                this.selectedMarker?.deselect(); //deselect last marker
-                marker.setSelected();
-                this.selectedMarker = marker;
-                self.mapItemBar.show(marker.item);
-              }
-            }
+
+    mapComponent.createClickEventHandler(layer)
+    .pipe(takeUntil(this.ngDestroy$))
+    .subscribe((clickOnGraphic) => {
+      if (clickOnGraphic) {
+        if (clickOnGraphic instanceof MapItemMarker) {
+          const marker = clickOnGraphic as MapItemMarker;
+          if (marker.isSelected) {
+            marker.deselect();
+            mapItemBar.hide();
           } else {
-            this.selectedMarker?.deselect();
-            self.mapItemBar.hide();
+            this.selectedMarker?.deselect(); //deselect last marker
+            marker.setSelected();
+            this.selectedMarker = marker;
+            mapItemBar.show(marker.item);
           }
-        })
-        .catch((err) => {
-          this.loggingService.error(
-            err,
-            DEBUG_TAG,
-            `Click event failed: ${err}`
-          );
-        });
+        }
+      } else {
+        //click outside of graphic
+        this.selectedMarker?.deselect();
+        mapItemBar.hide();
+      }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.clickSubscription?.remove();
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 }
