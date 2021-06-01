@@ -43,7 +43,7 @@ export class MapItemMarker extends Graphic {
   }
 
   private updateIcon() {
-    this.symbol = MarkerHelper.getIconSvg(
+    this.symbol = MarkerHelper.getGeoHazardSvg(
       this._item.GeoHazardTID,
       this._isSelected
     );
