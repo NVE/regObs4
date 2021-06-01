@@ -2,10 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { ModalController } from '@ionic/angular';
 import { Point } from '@arcgis/core/geometry';
-import MapView from '@arcgis/core/views/MapView';
 import Graphic from '@arcgis/core/Graphic';
 import { MarkerHelper } from '../../../../core/helpers/arcgis/markerHelper';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import { FeatureLayerType, MapComponent } from '../../components/map/map.component';
 
 @Component({
   selector: 'app-modal-map-image',
@@ -15,8 +15,6 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 export class ModalMapImagePage implements OnInit {
   @Input() location: { latLng: L.LatLng; geoHazard: GeoHazard };
   centerLocation: Point;
-
-  private mapView: MapView;
   private markerLayer = new GraphicsLayer({ id: 'MARKERS' });
 
   constructor(private modalController: ModalController) {}
@@ -28,15 +26,14 @@ export class ModalMapImagePage implements OnInit {
     });
   }
 
-  onMapReady(map: MapView) {
-    this.mapView = map;
+  onMapReady(mapComponent: MapComponent) {
     const symbol = MarkerHelper.getGeoHazardSvg(this.location.geoHazard);
     const marker = new Graphic({
       geometry: this.centerLocation,
       symbol: symbol
     });
     this.markerLayer.add(marker);
-    this.mapView.map.add(this.markerLayer);
+    mapComponent.addFeatureLayer(this.markerLayer, FeatureLayerType.OBSERVATIONS);
   }
 
   close() {
