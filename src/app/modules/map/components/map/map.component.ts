@@ -386,28 +386,30 @@ export class MapComponent implements OnInit {
     const group = this.getFeatureLayerGroup(FeatureLayerType.SUPPORT_MAP);
     group.removeAll()
 
-    for (const supportTile of this.userSettingService.getSupportTilesOptions(
-      userSetting
-    )) {
-      if (supportTile.enabled) {
-        const layer = new WebTileLayer({
-          id: supportTile.name,
-          urlTemplate: supportTile.url,
-          opacity: supportTile.opacity
-        });
+    if (this.showSupportMaps) {
+      for (const supportTile of this.userSettingService.getSupportTilesOptions(
+        userSetting
+      )) {
+        if (supportTile.enabled) {
+          const layer = new WebTileLayer({
+            id: supportTile.name,
+            urlTemplate: supportTile.url,
+            opacity: supportTile.opacity
+          });
 
-        //TODO: Flere valg for støttekart
-        // const supportMapTileLayer = L.tileLayer(supportTile.url, {
-        //   ...this.getTileLayerDefaultOptions(userSetting),
-        //   updateInterval: 600,
-        //   keepBuffer: 0,
-        //   updateWhenIdle: true,
-        //   minZoom: settings.map.tiles.minZoomSupportMaps,
-        //   bounds: <any>settings.map.tiles.supportTilesBounds
-        // });
-        // supportMapTileLayer.setOpacity(supportTile.opacity);
-        // supportMapTileLayer.addTo(this.tilesLayer);
-        group.add(layer);
+          //TODO: Flere valg for støttekart
+          // const supportMapTileLayer = L.tileLayer(supportTile.url, {
+          //   ...this.getTileLayerDefaultOptions(userSetting),
+          //   updateInterval: 600,
+          //   keepBuffer: 0,
+          //   updateWhenIdle: true,
+          //   minZoom: settings.map.tiles.minZoomSupportMaps,
+          //   bounds: <any>settings.map.tiles.supportTilesBounds
+          // });
+          // supportMapTileLayer.setOpacity(supportTile.opacity);
+          // supportMapTileLayer.addTo(this.tilesLayer);
+          group.add(layer);
+        }
       }
     }
   }
