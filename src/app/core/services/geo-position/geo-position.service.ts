@@ -278,28 +278,45 @@ export class GeoPositionService implements OnDestroy {
   private async checkPermissions() {
     // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
     try {
-      const authorized = await this.diagnostic.isLocationAuthorized();
-      this.loggingService.debug(
-        'Location is ' + (authorized ? 'authorized' : 'unauthorized'),
-        DEBUG_TAG
-      );
-      if (!authorized) {
-        if (this.platform.is('ios')) {
-          await this.showPermissionDeniedError();
-          return false;
+      if (isAndroidOrIos(this.platform)) {
+        const authorized = await this.diagnostic.isLocationAuthorized();
+        this.loggingService.debug(
+          'Location is ' + (authorized ? 'authorized' : 'unauthorized'),
+          DEBUG_TAG
+        );
+        if (!authorized) {
+          if (this.platform.is('ios')) {
+            await this.showPermissionDeniedError();
+            return false;
+          }
+          // location is not authorized, request new. This only works on Android
+          const status = await this.diagnostic.requestLocationAuthorization();
+          this.loggingService.debug(
+            'Request location status',
+            DEBUG_TAG,
+            status
+          );
+          if (
+            status === this.diagnostic.permissionStatus.DENIED_ONCE ||
+            status === this.diagnostic.permissionStatus.DENIED_ALWAYS
+          ) {
+            await this.showPermissionDeniedError();
+            return false;
+          }
         }
-        // location is not authorized, request new. This only works on Android
-        const status = await this.diagnostic.requestLocationAuthorization();
-        this.loggingService.debug('Request location status', DEBUG_TAG, status);
-        if (
-          status === this.diagnostic.permissionStatus.DENIED_ONCE ||
-          status === this.diagnostic.permissionStatus.DENIED_ALWAYS
-        ) {
-          await this.showPermissionDeniedError();
-          return false;
-        }
+        return true;
       }
-      return true;
+      if (!isAndroidOrIos(this.platform)) {
+        await navigator.permissions
+          .query({
+            name: 'geolocation'
+          })
+          .then((res) => {
+            if (res.state === 'denied') {
+              this.showPermissionDeniedError();
+            }
+          });
+      }
     } catch (err) {
       this.loggingService.error(
         err,

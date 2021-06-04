@@ -23,7 +23,7 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (
   tilesCacheSizev2: settings.map.tiles.cacheSize,
   showObservations: true,
   emailReceipt: true,
-  topoMap: TopoMap.default,
+  topoMap: TopoMap.mixArcGisOnline,
   showGeoSelectInfo: true,
   useRetinaMap: false,
   consentForSendingAnalytics: true,

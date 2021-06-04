@@ -226,6 +226,7 @@ export class RegobsAuthService {
       )
       .toPromise();
     this.authService.endSessionCallback();
+    this.router.navigateByUrl(`tabs/home`);
   }
 
   public async getAndSaveObserver(idToken: string): Promise<void> {

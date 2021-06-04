@@ -1,23 +1,34 @@
 <div class="slides-wrapper" *ngIf="!isEmpty" [ngClass]="{'animated-background': isSwiper, 'loaded': isSwiperLoaded }">
-  <ion-slides *ngIf="isSwiper" [options]="slideOptions" [pager]="false" [ngClass]="{'loaded': isSwiperLoaded}"
+  <ion-slides #slider *ngIf="isSwiper" [options]="slideOptions" [pager]="false" [ngClass]="{'loaded': isSwiperLoaded}"
     (ionSlideTransitionEnd)="onSlideTransitionEnd()" (ionSlidesDidLoad)="slidesLoaded($event)"
     (ionSlideTouchStart)="onSlideTouchStart()">
-    <ion-slide *ngFor="let slide of slides; let i = index" [ngSwitch]="slide.type">
+    <ion-slide class="slideGrid" *ngFor="let slide of slides; let i = index" [ngSwitch]="slide.type">
       <app-offline-image *ngSwitchCase="'image'" [src]="slide.img" (click)="onImageClick(slide.img)">
       </app-offline-image>
-      <app-map-image *ngSwitchCase="'location'" [location]="slide.img" (click)="onLocationClick()" ></app-map-image> 
-      </ion-slide>
+      <app-map-image *ngSwitchCase="'location'" [location]="slide.img" (click)="onLocationClick()"></app-map-image>
+      <div *ngIf="isDesktop" class="textOverlay">
+          <p class="img-comment-header"><strong>{{slide.header | translate}}</strong>&nbsp;{{slide.description | translate}}</p>     
+      </div>
+     </ion-slide>
   </ion-slides>
+  
+  <ng-container *ngIf="isDesktop && moreThanFourPics">
+    <div *ngIf="isPreviousImgAvailable()" class="swiper-button-prev" (click)="prev();$event.stopPropagation()
+    "></div>
+    <div *ngIf="isNextImgAvailable()" class="swiper-button-next" (click)="next();$event.stopPropagation()">
+    </div>
+  </ng-container>
+
   <app-offline-image *ngIf="isSingleImage" class="single" (click)="onImageClick(0, imgUrl[0])" [src]="imgUrl[0]">
   </app-offline-image>
   <app-map-image *ngIf="isSingleMap" class="single" [location]="location" (click)="onLocationClick()">
   </app-map-image>
-  <ion-label *ngIf="showLabel" [ngClass]="{'loaded': isLoaded}">
-    <span class="img-comment-header" *ngIf="showIndex">{{imageIndex + 1}}/{{imageLength}}&nbsp;</span>
-    <span [ngClass]="{'img-comment-header': slides[activeIndex].description }"
-      *ngIf="slides[activeIndex].header">{{ slides[activeIndex].header | translate }}<ng-container
-        *ngIf="slides[activeIndex].description">:&nbsp;
-      </ng-container></span>
-    <ng-container *ngIf="slides[activeIndex].description">{{ slides[activeIndex].description }}</ng-container>
-  </ion-label>
+    <ion-label *ngIf="showLabel && !isDesktop" [ngClass]="{'loaded': isLoaded}">
+      <span class="img-comment-header" *ngIf="showIndex">{{imageIndex + 1}}/{{imageLength}}&nbsp;</span>
+      <span [ngClass]="{'img-comment-header': slides[activeIndex].description }"
+        *ngIf="slides[activeIndex].header">{{ slides[activeIndex].header | translate }}<ng-container
+          *ngIf="slides[activeIndex].description">:&nbsp;
+        </ng-container></span>
+      <ng-container *ngIf="slides[activeIndex].description">{{ slides[activeIndex].description }}</ng-container>
+    </ion-label>
 </div>

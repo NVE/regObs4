@@ -4,7 +4,8 @@ import { UserSetting } from '../../core/models/user-settings.model';
 import {
   NavController,
   AlertController,
-  LoadingController
+  LoadingController,
+  Platform
 } from '@ionic/angular';
 import { LangKey } from '../../core/models/langKey';
 import { KdvService } from '../../core/services/kdv/kdv.service';
@@ -17,6 +18,7 @@ import { LogLevel } from '../../modules/shared/services/logging/log-level.model'
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { settings } from '../../../settings';
+import { BreakpointService } from '../../core/services/breakpoint.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -42,6 +44,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     ...lang,
     langKey: LangKey[lang.lang]
   }));
+  isDesktop: boolean;
+  computer: boolean;
 
   get appModeOptions() {
     const options: SelectOption[] = [
@@ -66,10 +70,18 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private appVersionService: AppVersionService,
     private loadingController: LoadingController,
     private appResetService: AppResetService,
-    private navController: NavController
+    private navController: NavController,
+    private breakpointService: BreakpointService,
+    private platform: Platform
   ) {}
 
   async ngOnInit() {
+    if (this.platform.is('desktop')) {
+      this.computer = true;
+    }
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
     this.versionClicks = 0;
     this.subscriptions.push(
       this.userSettingService.userSetting$.subscribe((val) => {

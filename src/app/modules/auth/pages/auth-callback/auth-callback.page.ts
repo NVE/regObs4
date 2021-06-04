@@ -15,7 +15,7 @@ export class AuthCallbackPage implements OnInit {
 
   ngOnInit() {
     this.regobsAuthService.authorizationCallback(
-      window.location.origin + this.router.url
-    );
+      window.location.origin + this.router.url 
+    );  
   }
 }
