@@ -55,6 +55,7 @@ import { Point } from '@arcgis/core/geometry';
 import { UserMarker } from 'src/app/core/helpers/leaflet/user-marker/user-marker';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import Graphic from '@arcgis/core/Graphic';
+import { IceLayerPage } from 'src/app/modules/registration/pages/ice/ice-thickness/ice-layer/ice-layer.page';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -181,6 +182,7 @@ export class MapComponent implements OnInit {
             // if (userSetting.showMapCenter) {
             //   this.updateMapView(); //TODO
             // }
+            this.setRequestTimeout(userSetting.onlineMapTileRequestTimeout);
           });
 
         this.zone.run(() => {
@@ -236,6 +238,14 @@ export class MapComponent implements OnInit {
 
     if (this.zlWatcher) {
       this.zlWatcher.remove();
+    }
+  }
+
+  private setRequestTimeout(timeout: number) {
+    if (timeout) {
+      esriConfig.request.timeout = timeout * 1000;
+    } else {
+      esriConfig.request.timeout = undefined;
     }
   }
 
@@ -376,6 +386,7 @@ export class MapComponent implements OnInit {
         });
         if (this.isOfflineMapsAvailable()) {
           layer.resampling = false; //see this.disableResamplingOfOnlineBasemap()
+          this.logger.debug(`deaktiverer resampling av fliser i lag '${layer.id}'`);
         }
         return layer;
       }
@@ -571,11 +582,13 @@ export class MapComponent implements OnInit {
       if (layer instanceof WebTileLayer) {
         const tileLayer: any = layer; //hack because compiler doesn't allow resampling on WebTileLayer, but the API supports it
         tileLayer.resampling = false;
+        this.logger.debug(`deaktiverer resampling av fliser i lag '${layer.id}'`);
       }
     });
   }
 
   private isOfflineMapsAvailable(): boolean {
+    //TODO: Denne burde ta hensyn til utsnittet vi viser, for nå vet vi ikke om vi har offline-kart for aktuelt utsnitt
     return this.getBasemapLayerGroup(BasemapLayerType.OFFLINE).layers.length > 0
   }
 
