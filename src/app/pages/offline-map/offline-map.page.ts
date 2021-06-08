@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMap } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { ActionSheetController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { UserSetting } from 'src/app/core/models/user-settings.model';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-offline-map',
@@ -14,15 +17,36 @@ import { Observable } from 'rxjs';
 export class OfflineMapPage implements OnInit {
   downloadedMaps$: Observable<OfflineMap[]>;
   unzipStatus$: Observable<OfflineMap>;
+  userSettings: UserSetting;
+  private ngDestroy$ = new Subject();
 
   constructor(
     private offlineMapService: OfflineMapService,
     private helperService: HelperService,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private userSettingService: UserSettingService,
+    private ngZone: NgZone
   ) {}
 
   async ngOnInit(): Promise<void> {
+    this.userSettingService.userSetting$
+    .pipe(takeUntil(this.ngDestroy$))
+    .subscribe((settings) => {
+      this.ngZone.run(() => {
+        this.userSettings = settings;
+      });
+    });
+
     this.downloadedMaps$ = await this.offlineMapService.getOfflineMaps$();
+  }
+
+  saveUserSettings() {
+    this.userSettingService.saveUserSettings(this.userSettings);
+  }
+
+  ngOnDestroy() {
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
   humanReadableByteSize(bytes: number): string {

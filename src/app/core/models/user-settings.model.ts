@@ -22,4 +22,9 @@ export interface UserSetting {
   featureToggeGpsDebug: boolean;
   infoAboutObservationsRecievedTimestamp?: number;
   infoAboutSupportMapsRecievedTimestamp?: number;
+
+  /**
+   * How many seconds we wait for online map requests before we cancel them 
+   */
+  onlineMapTileRequestTimeout?: number
 }

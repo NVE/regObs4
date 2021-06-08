@@ -29,5 +29,6 @@ export const DEFAULT_USER_SETTINGS: (langKey: LangKey) => UserSetting = (
   consentForSendingAnalytics: true,
   consentForSendingAnalyticsDialogCompleted: false,
   featureToggeGpsDebug: false,
-  featureToggleDeveloperMode: false
+  featureToggleDeveloperMode: false,
+  onlineMapTileRequestTimeout: 3
 });

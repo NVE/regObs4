@@ -32,7 +32,13 @@
       >
     </div>
   </div> 
-
+  
+  <ion-item *ngIf="userSettings">
+    <ion-label>Ventetid (s) på online-kart</ion-label>
+    <ion-input [(ngModel)]="userSettings.onlineMapTileRequestTimeout" (ngModelChange)="saveUserSettings()" type="number" min="1" max="60" inputmode="number">
+    </ion-input>
+  </ion-item>
+  
   <ion-list>
     <ion-list-header>
       <ion-label>Kartpakke</ion-label>
