@@ -242,10 +242,10 @@ export class MapComponent implements OnInit {
   }
 
   private setRequestTimeout(timeout: number) {
-    if (timeout) {
+    if (timeout && this.isOfflineMapsAvailable()) {
       esriConfig.request.timeout = timeout * 1000;
     } else {
-      esriConfig.request.timeout = undefined;
+      esriConfig.request.timeout = 60000; //this is the default Esri timeout
     }
   }
 
