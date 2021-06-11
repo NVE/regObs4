@@ -235,12 +235,12 @@ export class GeoPositionService implements OnDestroy {
       }
       if (key) {
         const errorMessage: string = this.translateService.instant(
-          `GeoLocation.PositionError.${key}`
+          `GEOLOCATION.POSITION_ERROR.${key}`
         );
         this.createPositionError(errorMessage, error.code);
         const toast = await this.toastController.create({
           message: errorMessage,
-          duration: 10000
+          duration: 6000
         });
         await toast.present();
       }
