@@ -22,7 +22,7 @@ import {
   Geolocation, Position, WatchPositionCallback,
 } from '@capacitor/geolocation';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { AlertController, Platform } from '@ionic/angular';
+import { AlertController, ToastController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { GeoPositionLog, PositionError } from './geo-position-log.interface';
@@ -79,11 +79,17 @@ export class GeoPositionService implements OnDestroy {
     return this.gpsPositionLog.asObservable();
   }
 
+  get geoLocationSupported(): boolean {
+    const locationSupport = !!(navigator && navigator.geolocation && navigator.geolocation.watchPosition);
+    return locationSupport;
+  }
+
   constructor(
     private deviceOrientation: DeviceOrientation,
     private platform: Platform,
     private loggingService: LoggingService,
     private alertController: AlertController,
+    private toastController: ToastController,
     private translateService: TranslateService
   ) {
     this.startGeolocationTrackingSubscription();
@@ -181,6 +187,67 @@ export class GeoPositionService implements OnDestroy {
       status,
       highAccuracyEnabled: this.highAccuracyEnabled.value
     });
+  }
+
+  public async choosePositionMethod(nameForTrackingComponent: string) : Promise<void> {
+    if (isAndroidOrIos(this.platform)) {
+      this.startTrackingComponent(nameForTrackingComponent, true);
+    } else {
+      try {
+        this.requestPositionFromBrowser();
+      } catch (err) {
+        this.createPositionError('PermissionDenied', GeoPositionErrorCode.PermissionDenied);
+      }
+    }
+  }
+
+  public async requestPositionFromBrowser() : Promise<void> {
+    if (!this.geoLocationSupported) {
+      console.log('Geolocation not supported');
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          if (pos && pos.coords) {
+            this.currentPosition.next(pos);
+          } else {
+            console.log('Invalid geoposition');
+          }
+        },
+        (err) => {
+          this.geolocationError(err);
+          //this.showPermissionDeniedError();
+          //reject(err);
+        },
+        POSITION_OPTIONS_DEFAULT
+      );
+    }
+  }
+
+
+  private async geolocationError( error: PositionError) {
+    let key: string;
+    switch (error.code) {
+    case GeoPositionErrorCode.PermissionDenied:
+      key = 'PermissionDenied';
+      break;
+    case GeoPositionErrorCode.Timeout:
+      key = 'Timeout';
+      break;
+    default:
+      key = 'PositionUnavailable';
+    }
+    if (key) {
+      // TODO: Check that keys exists in translations
+      const errorMessage: string = this.translateService.instant(
+        `GeoLocation.PositionError.${key}`
+      );
+      this.createPositionError(errorMessage, error.code);
+      const toast = await this.toastController.create({
+        message: errorMessage,
+        duration: 10000
+      });
+      await toast.present();
+    }
   }
 
   public async startTrackingComponent(
@@ -310,44 +377,11 @@ export class GeoPositionService implements OnDestroy {
     return heading >= 0 && heading <= 360;
   }
 
-  // TODO: Create helper methods for some of the logic here
-  //   and check if building web platform can help
-  private async checkPermissions(): Promise<boolean> {
-    // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
+  private async checkPermissions() : Promise<boolean> {
+    // TODO: https://www.devhybrid.com/ionic-4-requesting-user-permissions/ - UPDATE - Link is broken
     try {
       if (isAndroidOrIos(this.platform)) {
-        const currentPermissions = await Geolocation.checkPermissions();
-        this.loggingService.debug('Geolocation permissions', DEBUG_TAG, currentPermissions);
-        const authorized = currentPermissions.location === 'granted';
-        if (!authorized) {
-          if (this.platform.is('ios')) {
-            await this.showPermissionDeniedError();
-            return false;
-          }
-          // location is not authorized, request new. This only works on Android
-          const newPermissionsAfterRequest = await Geolocation.requestPermissions();
-          this.loggingService.debug('Geolocation permissions after new request', DEBUG_TAG, newPermissionsAfterRequest);
-          if (newPermissionsAfterRequest?.location === 'denied') {
-            await this.showPermissionDeniedError();
-            return false;
-          }
-          return true;
-        }
-        return true;
-      } else {
-        await navigator.permissions
-          .query({
-            name: 'geolocation'
-          })
-          .then((res) => {
-            if (res.state === 'denied') {
-              this.showPermissionDeniedError();
-              return false;
-            } else if (res.state === 'prompt') {
-              this.currentPosition;
-            }
-          });
-        return true;
+        this.checkPermissionsApp();
       }
     } catch (err) {
       this.loggingService.error(
@@ -355,8 +389,28 @@ export class GeoPositionService implements OnDestroy {
         DEBUG_TAG,
         'Error asking for location permissions'
       );
-      return true; // continute anyway on error
+      return true; // continue anyway on error
     }
+  }
+
+  private async checkPermissionsApp() : Promise<boolean> {
+    const currentPermissions = await Geolocation.checkPermissions();
+    this.loggingService.debug('Geolocation permissions', DEBUG_TAG, currentPermissions);
+    const authorized = currentPermissions.location === 'granted';
+    if (!authorized) {
+      if (this.platform.is('ios')) {
+        await this.showPermissionDeniedError();
+        return false;
+      }
+      // location is not authorized, request new. This only works on Android
+      const newPermissionsAfterRequest = await Geolocation.requestPermissions();
+      this.loggingService.debug('Geolocation permissions after new request', DEBUG_TAG, newPermissionsAfterRequest);
+      if (newPermissionsAfterRequest?.location === 'denied') {
+        await this.showPermissionDeniedError();
+        return false;
+      }
+    }
+    return true;
   }
 
   private async showPermissionDeniedError() {
