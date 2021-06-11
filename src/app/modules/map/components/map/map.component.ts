@@ -184,7 +184,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(
         takeUntil(this.ngDestroy$),
         switchMap(() =>
-          from(this.geoPositionService.startTrackingComponent(DEBUG_TAG, true))
+          from(this.geoPositionService.choosePositionMethod())
         )
       )
       .subscribe();

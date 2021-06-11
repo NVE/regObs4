@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, Component } from '@angular/core';
 import {
   BehaviorSubject,
   ReplaySubject,
@@ -23,7 +23,7 @@ import {
 } from '@ionic-native/geolocation/ngx';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { AlertController, Platform } from '@ionic/angular';
+import { AlertController, ToastController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
@@ -34,6 +34,11 @@ import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 
 const DEBUG_TAG = 'GeoPositionService';
+
+const DEFAULT_GEO_LOCATION_OPTIONS: PositionOptions = {
+  maximumAge: 5 * 60 * 1000,
+  timeout: 5000
+};
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +69,11 @@ export class GeoPositionService implements OnDestroy {
     return this.gpsPositionLog.asObservable();
   }
 
+  get geoLocationSupported(): boolean {
+    const locationSupport = !!(navigator && navigator.geolocation && navigator.geolocation.watchPosition);
+    return locationSupport;
+  }
+
   constructor(
     private geolocation: Geolocation,
     private deviceOrientation: DeviceOrientation,
@@ -71,6 +81,7 @@ export class GeoPositionService implements OnDestroy {
     private loggingService: LoggingService,
     private diagnostic: Diagnostic,
     private alertController: AlertController,
+    private toastController: ToastController,
     private translateService: TranslateService
   ) {
     this.startGeolocationTrackingSubscription();
@@ -174,6 +185,67 @@ export class GeoPositionService implements OnDestroy {
     });
   }
 
+
+  public async choosePositionMethod() : Promise<void> {
+    if (isAndroidOrIos(this.platform)) {
+      this.startTrackingComponent('MapComponent', true);
+    } else {
+      try {
+        this.requestPositionFromBrowser();
+      } catch (err) {
+        this.createPositionError('PermissionDenied', GeoPositionErrorCode.PermissionDenied);
+      } 
+    }
+  }
+
+  public async requestPositionFromBrowser() : Promise<void> {
+      if (!this.geoLocationSupported) {
+        console.log('Geolocation not supported');
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            if (pos && pos.coords) {
+              this.currentPosition.next(pos);
+            } else {
+              console.log('Invalid geoposition');
+            }
+          },
+          (err) => {
+            this.geolocationError(err);
+            //this.showPermissionDeniedError();
+            //reject(err);
+          },
+          DEFAULT_GEO_LOCATION_OPTIONS
+        );
+      }
+  }
+
+
+  private async geolocationError( error: PositionError) {
+    let key: string;
+    switch (error.code) {
+      case GeoPositionErrorCode.PermissionDenied:
+        key = 'PermissionDenied';
+        break;
+        case GeoPositionErrorCode.Timeout:
+          key = 'Timeout';
+          break;
+        default:
+          key = 'PositionUnavailable';
+      }
+      if (key) {
+        const errorMessage: string = this.translateService.instant(
+          `GeoLocation.PositionError.${key}`
+        );
+        this.createPositionError(errorMessage, error.code);
+        const toast = await this.toastController.create({
+          message: errorMessage,
+          duration: 10000
+        });
+        await toast.present();
+      }
+    }
+
   public async startTrackingComponent(
     name: string,
     forcePermissionDialog = false
@@ -275,11 +347,24 @@ export class GeoPositionService implements OnDestroy {
     return heading >= 0 && heading <= 360;
   }
 
-  private async checkPermissions() {
-    // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
+  private async checkPermissions() : Promise<boolean> {
+    // https://www.devhybrid.com/ionic-4-requesting-user-permissions/ - UPDATE - Link is broken
     try {
       if (isAndroidOrIos(this.platform)) {
-        const authorized = await this.diagnostic.isLocationAuthorized();
+        this.checkPermissionsApp()
+      }
+    } catch (err) {
+      this.loggingService.error(
+        err,
+        DEBUG_TAG,
+        'Error asking for location permissions'
+      );
+      return true; // continue anyway on error
+    }
+  }
+
+  private async checkPermissionsApp() : Promise<boolean> {
+    const authorized = await this.diagnostic.isLocationAuthorized();
         this.loggingService.debug(
           'Location is ' + (authorized ? 'authorized' : 'unauthorized'),
           DEBUG_TAG
@@ -305,30 +390,6 @@ export class GeoPositionService implements OnDestroy {
           }
         }
         return true;
-      }
-      else {
-        await navigator.permissions
-          .query({
-            name: 'geolocation'
-          })
-          .then((res) => {
-            if (res.state === 'denied') {
-              this.showPermissionDeniedError();
-              return false;
-            } else if (res.state === 'prompt') {
-              this.currentPosition;
-            }
-          });
-          return true;
-      }
-    } catch (err) {
-      this.loggingService.error(
-        err,
-        DEBUG_TAG,
-        'Error asking for location permissions'
-      );
-      return true; // continute anyway on error
-    }
   }
 
   private async showPermissionDeniedError() {
