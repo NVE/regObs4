@@ -5,7 +5,6 @@ export class MarkerHelper {
 
   static getGeoHazardSvg(geoHazard: GeoHazard, isSelected?: boolean): PictureMarkerSymbol {
     const geoHazardName = GeoHazard[geoHazard];
-    console.log('WHAT', geoHazardName);
     return new PictureMarkerSymbol({
       url: isSelected
         ? `/assets/icon/map/pin-${geoHazardName.toLowerCase()}-outline.svg`

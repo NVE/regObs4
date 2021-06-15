@@ -15,7 +15,7 @@ export class UserMarker {
   accuracyCircleStyle = {
     stroke: true,
     color: '#03f',
-    weight: 3,
+    weight: 2,
     opacity: 0.5,
     fillOpacity: 0.15,
     fillColor: '#03f',
@@ -30,18 +30,10 @@ export class UserMarker {
     //   iconSize: [18, 18],
     //   html: '<div class=\'heading\'></div><i class=\'pulse\'></i>'
     // });
-    const positionSymbol = new SimpleMarkerSymbol({
-      style: 'circle',
-      color: '#4286f4',
-      size: 14,
-      outline: {
-        color: 'white',
-        width: 1
-      }
-    });
+    
     const accuracySymbol = new SimpleMarkerSymbol({
       style: 'circle',
-      size: "8px",
+      size: "1px",
       color: [30, 144, 255, 0.2],
       outline: {
         color: 'white',
@@ -56,14 +48,14 @@ export class UserMarker {
 
     const circle = new Circle({
       center: point,
-      radius: 100,
+      radius: 50,
       radiusUnit: "meters"
     })
 
     const animatedGif = new PictureMarkerSymbol( {
-      url: '/assets/bluedot-unscreen.gif',
-      width: '80px',
-      height: '80px'
+      url: '/assets/location-marker.gif',
+      width: '36px',
+      height: '36px'
     })
 
     this.positionGraphic = new Graphic({

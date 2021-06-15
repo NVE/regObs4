@@ -314,8 +314,13 @@ export class GeoPositionService implements OnDestroy {
           .then((res) => {
             if (res.state === 'denied') {
               this.showPermissionDeniedError();
+              return false;
+            }
+            if (res.state === 'prompt'){
+              this.currentPosition;
             }
           });
+          return true;
       }
     } catch (err) {
       this.loggingService.error(
