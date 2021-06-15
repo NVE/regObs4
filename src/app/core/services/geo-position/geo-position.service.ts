@@ -203,26 +203,23 @@ export class GeoPositionService implements OnDestroy {
 
   public async requestPositionFromBrowser() : Promise<void> {
     if (!this.geoLocationSupported) {
-      console.log('Geolocation not supported');
+      this.createPositionError('Geoposition not supported');
     } else {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           if (pos && pos.coords) {
             this.currentPosition.next(pos);
           } else {
-            console.log('Invalid geoposition');
+            this.createPositionError('Invalid Geoposition');
           }
         },
         (err) => {
           this.geolocationError(err);
-          //this.showPermissionDeniedError();
-          //reject(err);
         },
         POSITION_OPTIONS_DEFAULT
       );
     }
   }
-
 
   private async geolocationError( error: PositionError) {
     let key: string;
