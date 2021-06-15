@@ -27,7 +27,8 @@ import {
   combineLatest,
   Subject,
   fromEventPattern,
-  Observable
+  Observable,
+  from
 } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -237,6 +238,15 @@ export class MapComponent implements OnInit {
     if (this.zlWatcher) {
       this.zlWatcher.remove();
     }
+
+    this.mapService.centerMapToUser$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        switchMap(() =>
+          from(this.geoPositionService.choosePositionMethod())
+        )
+      )
+      .subscribe();
   }
 
   private getMaxZoom(detectRetina: boolean) {
