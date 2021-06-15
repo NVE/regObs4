@@ -20,7 +20,7 @@ jobs:
           submodules: true
       - name: Create apiKey.json file
         env:
-          REGOBS_API_KEY: ${{REGOBS_APPTOKEN}}
+          REGOBS_API_KEY: ${{secrets.REGOBS_APPTOKEN}}
         shell: bash
         run: |
           echo "{\"apiKey\":\"$REGOBS_API_KEY\"}" > ./src/assets/apiKey.json
