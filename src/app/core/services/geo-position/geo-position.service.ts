@@ -193,21 +193,23 @@ export class GeoPositionService implements OnDestroy {
       try {
         this.requestPositionFromBrowser();
       } catch (err) {
-        this.createPositionError('PermissionDenied', GeoPositionErrorCode.PermissionDenied);
+        this.gpsPositionLog.next(this.createPositionError('PermissionDenied', GeoPositionErrorCode.PermissionDenied));
       } 
     }
   }
 
   public async requestPositionFromBrowser() : Promise<void> {
       if (!this.geoLocationSupported) {
-        this.createPositionError('Geoposition not supported');
+        this.gpsPositionLog.next(this.createPositionError('Geoposition is not supported'));
+        this.createToast('Geoposition is not supported');
       } else {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
             if (pos && pos.coords) {
               this.currentPosition.next(pos);
             } else {
-              this.createPositionError('Invalid Geoposition');
+              this.gpsPositionLog.next(this.createPositionError('Invalid Geoposition'));
+              this.createToast('Invalid geoposition');
             }
           },
           (err) => {
@@ -218,6 +220,13 @@ export class GeoPositionService implements OnDestroy {
       }
   }
 
+  private async createToast( message?: string){
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 6000
+    })
+    await toast.present();
+  }
 
   private async geolocationError( error: PositionError) {
     let key: string;
@@ -235,12 +244,8 @@ export class GeoPositionService implements OnDestroy {
         const errorMessage: string = this.translateService.instant(
           `GEOLOCATION.POSITION_ERROR.${key}`
         );
-        this.createPositionError(errorMessage, error.code);
-        const toast = await this.toastController.create({
-          message: errorMessage,
-          duration: 6000
-        });
-        await toast.present();
+        this.gpsPositionLog.next(this.createPositionError(errorMessage, error.code));
+        this.createToast(errorMessage);
       }
     }
 
