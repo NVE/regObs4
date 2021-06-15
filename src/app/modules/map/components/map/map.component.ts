@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -106,12 +107,14 @@ export interface ClickEventHandler {
   (graphic: Graphic | undefined): void;
 }
 
+esriConfig.assetsPath = '/assets';
+
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements AfterViewInit {
   @Input() showMapControls = true;
   @Input() showUserLocation = true;
   @Input() showScale = true;
@@ -158,8 +161,9 @@ export class MapComponent implements OnInit {
     private userSettingService: UserSettingService
   ) {}
 
-  async ngOnInit(): Promise<void> {
-    esriConfig.assetsPath = '/assets';
+  async ngAfterViewInit(): Promise<void> {
+    const start = performance.now();
+    this.logger.debug('i ngAfterViewInit()', DEBUG_TAG);
     this.zone.runOutsideAngular(() => {
       const start = performance.now();
       this.initializeMap().then(() => {

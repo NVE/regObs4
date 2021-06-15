@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import { MapComponent, FeatureLayerType } from '../../modules/map/components/map/map.component';
@@ -23,7 +23,7 @@ const DEBUG_TAG = 'HomePage';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss']
 })
-export class HomePage extends RouterPage implements OnInit {
+export class HomePage extends RouterPage implements AfterViewInit {
   @ViewChild(MapItemBarComponent, { static: true })
   mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
@@ -56,13 +56,15 @@ export class HomePage extends RouterPage implements OnInit {
     super(router, route);
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
+    this.loggingService.debug('ngAfterViewInit()...', DEBUG_TAG)
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.dataLoadIds$ = this.observationService.dataLoad$.pipe(
       map((val) => [val]),
       enterZone(this.ngZone)
     );
     this.checkForFirstStartup();
+    this.loggingService.debug('ngAfterViewInit() ferdig', DEBUG_TAG)
   }
 
   checkForFirstStartup() {
