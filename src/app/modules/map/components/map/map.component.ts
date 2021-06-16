@@ -165,6 +165,8 @@ export class MapComponent implements OnInit {
     esriConfig.assetsPath = '/assets';
     this.zone.runOutsideAngular(() => {
       this.initializeMap().then(() => {
+        this.logger.debug("In ngOnInit initializeMap clb", DEBUG_TAG);
+
         // Setup user location marker and tracking
         if (this.showUserLocation) {
           this.initTrackUserPositionMarker();
@@ -278,6 +280,7 @@ export class MapComponent implements OnInit {
   }
 
   private createBasemap(userSetting: UserSetting): void {
+    this.logger.debug("createBasemap", DEBUG_TAG);
     const mapOptions = this.getMapOptions(
       userSetting.topoMap,
       userSetting.language
@@ -389,6 +392,7 @@ export class MapComponent implements OnInit {
   }
 
   private createSupportMaps(userSetting: UserSetting): void {
+    this.logger.debug("createSupportMaps", DEBUG_TAG);
     const group = this.getFeatureLayerGroup(FeatureLayerType.SUPPORT_MAP);
     group.removeAll()
 
@@ -498,8 +502,8 @@ export class MapComponent implements OnInit {
     });
     this.logger.debug('initializeMap(): bakgrunnskart ferdig, legger til lag oppå bakgrunnskart...', DEBUG_TAG);
     map.addMany(this.createLayerGroups(FeatureLayerType));
-    this.logger.debug('initializeMap(): feature-lag er lagt til bakgrunnskart, starter å lage mapView...', DEBUG_TAG);
 
+    this.logger.debug('initializeMap(): Oppretter MapView', DEBUG_TAG);
     this.view = new MapView({
       map: map,
       container,
@@ -530,7 +534,6 @@ export class MapComponent implements OnInit {
       //   })
       // }
     });
-    this.logger.debug('initializeMap(): MapView er opprettet', DEBUG_TAG);
 
     if (this.isStatic) {
       this.logger.debug('initializeMap(): Deaktiverer mus-hendelser for statisk kart...', DEBUG_TAG);
@@ -565,9 +568,9 @@ export class MapComponent implements OnInit {
 
     return this.view
       .when(() => {
+        this.logger.debug('initializeMap().when(): MapView er opprettet', DEBUG_TAG);
         this.createExtentWatcher(this.view);
         this.loading = false;
-        this.logger.debug('initOfflineMaps() ferdig', DEBUG_TAG);
       })
       .catch((reason) => {
         this.logger.error(reason, 'Error in initializeMap');
@@ -626,28 +629,24 @@ export class MapComponent implements OnInit {
     this.offlineMapService.initWebServer();
 
     this.offlineMapService.mapAdded$().subscribe((mapPackage) => {
-      this.logger.debug(
-        `Nytt kart pakket ut og klar for lasting: ${mapPackage.name}`
-      );
+      this.logger.debug(`Nytt kart pakket ut og klar for lasting: ${mapPackage.name}`, DEBUG_TAG);
       this.addOfflineLayer(mapPackage); //add new maps when they are available
     });
 
     this.offlineMapService.mapRemoved$().subscribe((mapPackage) => {
-      this.logger.debug(
-        `Kartpakke slettet av bruker, vil fjerne kartlag: ${mapPackage.name}`
-      );
+      this.logger.debug(`Kartpakke slettet av bruker, vil fjerne kartlag: ${mapPackage.name}`, DEBUG_TAG);
       this.removeOfflineLayer(mapPackage); //remove map layer when the user removes a package
     });
 
     for (const mapPackage of await this.offlineMapService.listOfflineMaps()) {
       this.addOfflineLayer(mapPackage); //add maps already on disk
     }
-    this.logger.debug('initOfflineMaps() ferdig', DEBUG_TAG);
   }
 
   private async addOfflineLayer(offlineMap: OfflineMap) {
-    this.logger.debug(`laster offline kartlag: ${offlineMap.name}`);
+    this.logger.debug(`laster offline kartlag: ${offlineMap.name}`, DEBUG_TAG);
     this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
+    this.logger.debug('Lager VectorTileLayer', DEBUG_TAG);
     const layer = new VectorTileLayer({
       id: offlineMap.name,
       url: `http://localhost:8080/${offlineMap.name}/root.json`

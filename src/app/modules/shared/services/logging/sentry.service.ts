@@ -31,6 +31,14 @@ export class SentryService implements LoggingService {
   configureLogging(appMode: AppMode) {
     const appVersion = this.appVersionService.getAppVersion();
     Sentry.init({
+      beforeSend: (event, hint) => {
+        try {
+          if (this.fileLoggingService.isReady()) {
+            this.fileLoggingService.log('Sentry beforeSend', null, LogLevel.Debug, null, event, hint);        
+          }
+        } catch (error) {}
+        return event
+      },
       dsn: environment.production ? settings.sentryDsn : null,
       transport: Sentry.Transports.FetchTransport,
       environment:
