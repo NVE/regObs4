@@ -183,6 +183,14 @@ export class MapComponent implements OnInit {
             //   this.updateMapView(); //TODO
             // }
           });
+        
+        this.mapService.centerMapToUser$
+          .pipe(takeUntil(this.ngDestroy$),
+            switchMap(() =>
+            from(this.geoPositionService.choosePositionMethod())
+          )
+        )
+          .subscribe();
 
         this.zone.run(() => {
           this.logger.debug(
@@ -238,15 +246,6 @@ export class MapComponent implements OnInit {
     if (this.zlWatcher) {
       this.zlWatcher.remove();
     }
-
-    this.mapService.centerMapToUser$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        switchMap(() =>
-          from(this.geoPositionService.choosePositionMethod())
-        )
-      )
-      .subscribe();
   }
 
   private getMaxZoom(detectRetina: boolean) {
