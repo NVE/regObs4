@@ -19,6 +19,7 @@ import { AppResetService } from '../../modules/shared/services/app-reset/app-res
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { settings } from '../../../settings';
 import { BreakpointService } from '../../core/services/breakpoint.service';
+import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -72,7 +73,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private appResetService: AppResetService,
     private navController: NavController,
     private breakpointService: BreakpointService,
-    private platform: Platform
+    private platform: Platform,
+    private fileLoggingService: FileLoggingService
   ) {}
 
   async ngOnInit() {
@@ -137,6 +139,10 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     this.ngZone.run(() => {
       this.isUpdating = false;
     });
+  }
+
+  async sendLogs() {
+    this.fileLoggingService.sendLogsByEmail();
   }
 
   async showKdvElementsUpdated(ok: boolean) {
