@@ -17,6 +17,7 @@ import { LogLevel } from '../../modules/shared/services/logging/log-level.model'
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { settings } from '../../../settings';
+import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
 const TAPS_TO_ENABLE_TEST_MODE = 7;
@@ -66,7 +67,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     private appVersionService: AppVersionService,
     private loadingController: LoadingController,
     private appResetService: AppResetService,
-    private navController: NavController
+    private navController: NavController,
+    private fileLoggingService: FileLoggingService
   ) {}
 
   async ngOnInit() {
@@ -125,6 +127,10 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     this.ngZone.run(() => {
       this.isUpdating = false;
     });
+  }
+
+  async sendLogs() {
+    this.fileLoggingService.sendLogsByEmail();
   }
 
   async showKdvElementsUpdated(ok: boolean) {
