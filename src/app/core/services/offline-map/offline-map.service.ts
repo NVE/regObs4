@@ -179,6 +179,7 @@ export class OfflineMapService implements OnReset {
   }
 
   async listOfflineMaps(): Promise<OfflineMap[]> {
+    this.loggingService.debug('listOfflineMaps()', DEBUG_TAG);
     const maps: OfflineMap[] = [];
     (await this.listOfflineMapNames()).forEach(
       (name) =>

@@ -30,15 +30,8 @@ export class UserMarker {
     //   iconSize: [18, 18],
     //   html: '<div class=\'heading\'></div><i class=\'pulse\'></i>'
     // });
-    const positionSymbol = new SimpleMarkerSymbol({
-      style: 'circle',
-      color: '#4286f4',
-      size: 14,
-      outline: {
-        color: 'white',
-        width: 1
-      }
-    });
+    
+    //TODO- decide if we want accuracy circle - it's too big on desktop
     const accuracySymbol = new SimpleMarkerSymbol({
       style: 'circle',
       size: "8px",
@@ -61,9 +54,9 @@ export class UserMarker {
     })
 
     const animatedGif = new PictureMarkerSymbol( {
-      url: '/assets/bluedot-unscreen.gif',
-      width: '80px',
-      height: '80px'
+      url: '/assets/icon/map/location-marker.gif',
+      width: '36px',
+      height: '36px'
     })
 
     this.positionGraphic = new Graphic({

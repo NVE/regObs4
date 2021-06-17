@@ -53,6 +53,11 @@
                 "glob": "**/*.json",
                 "input": "node_modules/@varsom-regobs-common/translations/app/i18n",
                 "output": "assets/i18n"
+              },
+              {
+                "glob": "_redirects",
+                "input": "src",
+                "output": "/"
               }
             ],
             "styles": [

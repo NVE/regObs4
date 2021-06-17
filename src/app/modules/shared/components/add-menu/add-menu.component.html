@@ -28,7 +28,7 @@
     <div class="backdrop" click="closeMenu()"></div>
   </ion-fab-list>
 </ion-fab>
-<ng-template #startTrip>
+<ng-template #startTrip *ngIf="isIosOrAndroid">
   <ion-item (click)="startOrStopTrip(false)">
     <ion-icon slot="start" src="/assets/icon/man.svg"></ion-icon>
     <ion-label>{{'TRIP.START_TRIP' | translate }}</ion-label>

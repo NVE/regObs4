@@ -27,7 +27,8 @@ import {
   combineLatest,
   Subject,
   fromEventPattern,
-  Observable
+  Observable,
+  from
 } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -55,6 +56,7 @@ import { Point } from '@arcgis/core/geometry';
 import { UserMarker } from 'src/app/core/helpers/leaflet/user-marker/user-marker';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import Graphic from '@arcgis/core/Graphic';
+import { ThrowStmt } from '@angular/compiler';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -159,17 +161,19 @@ export class MapComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
+    const start = performance.now();
+    this.logger.debug('i ngOnInit()', DEBUG_TAG);
     esriConfig.assetsPath = '/assets';
     this.zone.runOutsideAngular(() => {
-      const start = performance.now();
       this.initializeMap().then(() => {
+        this.logger.debug("In ngOnInit initializeMap clb", DEBUG_TAG);
+
         // Setup user location marker and tracking
         if (this.showUserLocation) {
           this.initTrackUserPositionMarker();
         }
 
-        this.logger.debug(`center = ${this.center}`);
-        //TODO: SJekk om dette kallet bør være her
+        //TODO: Sjekk om dette kallet bør være her
         if (this.center) {
           this.view.center = this.center;
         }
@@ -185,7 +189,7 @@ export class MapComponent implements OnInit {
 
         this.zone.run(() => {
           this.logger.debug(
-            'Map loaded in ' + (performance.now() - start) + ' ms'
+            'Map loaded in ' + (performance.now() - start) + ' ms', DEBUG_TAG
           );
           this.onMapReady();
         });
@@ -266,15 +270,18 @@ export class MapComponent implements OnInit {
   }
 
   private updateLayers(userSetting: UserSetting): void {
+    this.logger.debug('updateLayers(): UserSetting changed, updating layers...', DEBUG_TAG)
     this.zone.runOutsideAngular(() => {
       this.setZoom(null, this.getMaxZoom(userSetting.useRetinaMap));
       this.createBasemap(userSetting);
       this.createSupportMaps(userSetting);
       this.mapReady.emit(this);
     });
+    this.logger.debug('updateLayers(): Finished updating layers', DEBUG_TAG)
   }
 
   private createBasemap(userSetting: UserSetting): void {
+    this.logger.debug("createBasemap", DEBUG_TAG);
     const mapOptions = this.getMapOptions(
       userSetting.topoMap,
       userSetting.language
@@ -303,13 +310,16 @@ export class MapComponent implements OnInit {
 
   //creates a layer group for each layer type we support, to ensure the right appearance of different layer types
   private createLayerGroups(layerType: typeof BasemapLayerType | typeof FeatureLayerType): GroupLayer[] {
+    this.logger.debug(`createLayerGroups(): type lag = ${layerType}`, DEBUG_TAG);
     const layerGroups: GroupLayer[] = [];
     for (const type in layerType) {
       const id = layerType[type];
+      this.logger.debug(`createLayerGroups(): oppretter grouplayer med id = ${id}`, DEBUG_TAG);
       const groupLayer = new GroupLayer({ id: id});
       groupLayer.layers.on('after-add', (event) => this.logLayerAppearance(`Layer '${event?.item?.id}' added in group '${groupLayer.id}'. `));
       layerGroups.push(groupLayer);
     }
+    this.logger.debug(`createLayerGroups(): ferdig med lage grouplayers`, DEBUG_TAG);
     return layerGroups;
   }
 
@@ -383,6 +393,7 @@ export class MapComponent implements OnInit {
   }
 
   private createSupportMaps(userSetting: UserSetting): void {
+    this.logger.debug("createSupportMaps", DEBUG_TAG);
     const group = this.getFeatureLayerGroup(FeatureLayerType.SUPPORT_MAP);
     group.removeAll()
 
@@ -484,13 +495,16 @@ export class MapComponent implements OnInit {
   initializeMap(): Promise<unknown> {
     const container = this.mapViewEl.nativeElement;
     
+    this.logger.debug('initializeMap(): oppretter kart...', DEBUG_TAG);
     const map = new Map();
     map.basemap = new Basemap({
       baseLayers: this.createLayerGroups(BasemapLayerType),
       id: 'BASEMAP'
     });
+    this.logger.debug('initializeMap(): bakgrunnskart ferdig, legger til lag oppå bakgrunnskart...', DEBUG_TAG);
     map.addMany(this.createLayerGroups(FeatureLayerType));
 
+    this.logger.debug('initializeMap(): Oppretter MapView', DEBUG_TAG);
     this.view = new MapView({
       map: map,
       container,
@@ -523,6 +537,8 @@ export class MapComponent implements OnInit {
     });
 
     if (this.isStatic) {
+      this.logger.debug('initializeMap(): Deaktiverer mus-hendelser for statisk kart...', DEBUG_TAG);
+
       this.view.navigation.mouseWheelZoomEnabled = false;
       this.view.navigation.browserTouchPanEnabled = false;
       //Disable the default +/- key-down gestures
@@ -553,6 +569,7 @@ export class MapComponent implements OnInit {
 
     return this.view
       .when(() => {
+        this.logger.debug('initializeMap().when(): MapView er opprettet', DEBUG_TAG);
         this.createExtentWatcher(this.view);
         this.loading = false;
       })
@@ -580,6 +597,7 @@ export class MapComponent implements OnInit {
   }
 
   private createExtentWatcher(view: MapView) {
+    this.logger.debug('createExtentWatcher()... ', DEBUG_TAG);
     view.watch('stationary', (isStationary: boolean) => {
       if (isStationary) {
         //if the panning or zooming has stopped, update url
@@ -608,20 +626,16 @@ export class MapComponent implements OnInit {
   }
 
   private async initOfflineMaps() {
-    this.logger.debug('initOfflineMaps(): ', DEBUG_TAG);
+    this.logger.debug('initOfflineMaps()... ', DEBUG_TAG);
     this.offlineMapService.initWebServer();
 
     this.offlineMapService.mapAdded$().subscribe((mapPackage) => {
-      this.logger.debug(
-        `Nytt kart pakket ut og klar for lasting: ${mapPackage.name}`
-      );
+      this.logger.debug(`Nytt kart pakket ut og klar for lasting: ${mapPackage.name}`, DEBUG_TAG);
       this.addOfflineLayer(mapPackage); //add new maps when they are available
     });
 
     this.offlineMapService.mapRemoved$().subscribe((mapPackage) => {
-      this.logger.debug(
-        `Kartpakke slettet av bruker, vil fjerne kartlag: ${mapPackage.name}`
-      );
+      this.logger.debug(`Kartpakke slettet av bruker, vil fjerne kartlag: ${mapPackage.name}`, DEBUG_TAG);
       this.removeOfflineLayer(mapPackage); //remove map layer when the user removes a package
     });
 
@@ -631,8 +645,9 @@ export class MapComponent implements OnInit {
   }
 
   private async addOfflineLayer(offlineMap: OfflineMap) {
-    this.logger.debug(`laster offline kartlag: ${offlineMap.name}`);
+    this.logger.debug(`laster offline kartlag: ${offlineMap.name}`, DEBUG_TAG);
     this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
+    this.logger.debug('Lager VectorTileLayer', DEBUG_TAG);
     const layer = new VectorTileLayer({
       id: offlineMap.name,
       url: `http://localhost:8080/${offlineMap.name}/root.json`
@@ -696,6 +711,7 @@ export class MapComponent implements OnInit {
    *   - Having the mapcenter box visible
    */
   private initTrackUserPositionMarker() {
+    this.logger.debug('initTrackUserPositionMarker()', DEBUG_TAG)
     combineLatest([
       this.geoPositionService.currentPosition$.pipe(
         // Skip unchanged positions

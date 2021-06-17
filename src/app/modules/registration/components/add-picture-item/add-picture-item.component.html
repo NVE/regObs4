@@ -12,7 +12,13 @@
       placeholder="{{ pictureCommentPlaceholder | translate }}"></app-text-comment>
   </div>
 </div>
-<ion-item (click)="addClick()">
+<ion-item *ngIf="isCordova" (click)="addClick()">
   <ion-icon [color]="iconColor" [name]="icon" slot="start"></ion-icon>
   <ion-label>{{ title | translate }}</ion-label>
 </ion-item>
+<ngx-file-drop *ngIf="!isCordova" dropZoneLabel="Drop files here" [accept]="accept" dropZoneClassName="drop-zone"  (onFileDrop)="dropped($event)">
+  <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+      Dra inn filer her
+    <button type="button" (click)="openFileSelector()"></button> 
+  </ng-template>
+</ngx-file-drop>

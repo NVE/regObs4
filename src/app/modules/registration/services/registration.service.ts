@@ -35,6 +35,7 @@ const DEBUG_TAG = 'RegistrationService';
 export class RegistrationService {
   public readonly drafts$: Observable<IRegistration[]>;
   public readonly registrations$: Observable<IRegistration[]>;
+  public readonly files: Map<string, IFile>;
 
   constructor(
     private regobsAuthService: RegobsAuthService,
@@ -48,12 +49,17 @@ export class RegistrationService {
     private httpClient: HttpClient,
     private file: File
   ) {
+    this.files = new Map();
     this.registrations$ = this.registrationRepositoryService.registrations$;
     this.drafts$ = this.registrations$.pipe(
       map((val) =>
         val.filter((item) => item.status === RegistrationStatus.Draft)
       )
     );
+  }
+
+  addFileToUpload(url: string, file: IFile): void {
+    this.files.set(url, file);
   }
 
   saveRegistration(appMode: AppMode, registration: IRegistration) {
@@ -503,6 +509,15 @@ export class RegistrationService {
   }
 
   private async getFile(fileUrl: string): Promise<IFile> {
+    if (fileUrl.startsWith('blob')) {
+      const file = this.files.get(fileUrl);
+      if (file) {
+        return Promise.resolve(file);
+      } else {
+        return Promise.reject('Cannot find file to upload');
+      }
+    }
+
     const entry = await this.file.resolveLocalFilesystemUrl(fileUrl);
     if (!entry.isFile) {
       throw Error(`${fileUrl} is not a file!`);
@@ -589,8 +604,13 @@ export class RegistrationService {
     return of(pictureRequest);
   }
 
-  private async deleteFile(src: string) {
+  private async deleteFile(src: string): Promise<void> {
     try {
+      if (src.startsWith('blob')) {
+        this.files.delete(src);
+        return Promise.resolve();
+      }
+
       const entry = await this.file.resolveLocalFilesystemUrl(src);
       await new Promise<void>((resolve, reject) =>
         entry.remove(resolve, reject)

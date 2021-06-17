@@ -15,6 +15,8 @@ import {
 } from '@ionic-native/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { settings } from '../../../../../settings';
+import { Platform } from '@ionic/angular';
+import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 const stringify = require('json-stringify-safe');
 
 @Component({
@@ -30,7 +32,8 @@ export class FailedRegistrationComponent implements OnInit {
     private registrationService: RegistrationService,
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private platform: Platform
   ) {}
 
   ngOnInit() {}
@@ -44,27 +47,32 @@ export class FailedRegistrationComponent implements OnInit {
   }
 
   async sendEmail() {
-    const translations = await this.translateService
-      .get(['REGISTRATION.EMAIL.SUBJECT', 'REGISTRATION.EMAIL.BODY'])
-      .toPromise();
-    const pictures = this.registrationService
-      .getAllPictures(this.registration.request)
-      .filter(
-        (p) => p.PictureImageBase64 && !p.PictureImageBase64.startsWith('data')
-      )
-      .map((p) => p.PictureImageBase64);
-    const base64string = btoa(stringify(this.registration));
-    const attachments = ['base64:registration.json//' + base64string].concat(
-      pictures
-    );
-    const email: EmailComposerOptions = {
-      to: settings.errorEmailAddress,
-      attachments,
-      subject: translations['REGISTRATION.EMAIL.SUBJECT'],
-      body: translations['REGISTRATION.EMAIL.BODY'],
-      isHtml: true
-    };
-    this.emailComposer.open(email);
+    if (isAndroidOrIos(this.platform)) {
+      const translations = await this.translateService
+        .get(['REGISTRATION.EMAIL.SUBJECT', 'REGISTRATION.EMAIL.BODY'])
+        .toPromise();
+      const pictures = this.registrationService
+        .getAllPictures(this.registration.request)
+        .filter(
+          (p) =>
+            p.PictureImageBase64 && !p.PictureImageBase64.startsWith('data')
+        )
+        .map((p) => p.PictureImageBase64);
+      const base64string = btoa(stringify(this.registration));
+      const attachments = ['base64:registration.json//' + base64string].concat(
+        pictures
+      );
+      const email: EmailComposerOptions = {
+        to: settings.errorEmailAddress,
+        attachments,
+        subject: translations['REGISTRATION.EMAIL.SUBJECT'],
+        body: translations['REGISTRATION.EMAIL.BODY'],
+        isHtml: true
+      };
+      this.emailComposer.open(email);
+    } else {
+      window.location.href = 'mailto:regobs@nve.no';
+    }
   }
 
   // private async getEmailAddress() {
