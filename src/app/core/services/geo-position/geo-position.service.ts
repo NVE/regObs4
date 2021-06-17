@@ -188,7 +188,7 @@ export class GeoPositionService implements OnDestroy {
 
   public async startTrackingOnAppOrRequestBrowserPosition() : Promise<void> {
     if (isAndroidOrIos(this.platform)) {
-      this.startTrackingComponent('MapComponent', true);
+      this.startTrackingComponent(DEBUG_TAG, true);
     } else {
       try {
         this.requestPositionFromBrowser();
@@ -354,7 +354,7 @@ export class GeoPositionService implements OnDestroy {
     // https://www.devhybrid.com/ionic-4-requesting-user-permissions/ - UPDATE - Link is broken
     try {
       if (isAndroidOrIos(this.platform)) {
-        this.checkPermissionsApp()
+        return this.checkPermissionsApp()
       }
     } catch (err) {
       this.loggingService.error(
