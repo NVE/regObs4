@@ -186,9 +186,9 @@ export class GeoPositionService implements OnDestroy {
   }
 
 
-  public async choosePositionMethod() : Promise<void> {
+  public async startTrackingOnAppOrRequestBrowserPosition() : Promise<void> {
     if (isAndroidOrIos(this.platform)) {
-      this.startTrackingComponent('MapComponent', true);
+      this.startTrackingComponent(DEBUG_TAG, true);
     } else {
       try {
         this.requestPositionFromBrowser();
@@ -198,7 +198,7 @@ export class GeoPositionService implements OnDestroy {
     }
   }
 
-  public async requestPositionFromBrowser() : Promise<void> {
+  private async requestPositionFromBrowser() : Promise<void> {
       if (!this.geoLocationSupported) {
         this.gpsPositionLog.next(this.createPositionError('Geoposition is not supported'));
         this.createToast('Geoposition is not supported');
@@ -249,12 +249,12 @@ export class GeoPositionService implements OnDestroy {
       }
     }
 
-  public async startTrackingComponent(
+  private async startTrackingComponent(
     name: string,
     forcePermissionDialog = false
   ) {
     if (forcePermissionDialog) {
-      const valid = await this.checkPermissions();
+      const valid = await this.checkAppPermissions();
       if (!valid) {
         this.gpsPositionLog.next(
           this.createPositionError(
@@ -350,49 +350,39 @@ export class GeoPositionService implements OnDestroy {
     return heading >= 0 && heading <= 360;
   }
 
-  private async checkPermissions() : Promise<boolean> {
-    // https://www.devhybrid.com/ionic-4-requesting-user-permissions/ - UPDATE - Link is broken
+  private async checkAppPermissions() : Promise<boolean> {
+    // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
     try {
-      if (isAndroidOrIos(this.platform)) {
-        this.checkPermissionsApp()
+      const authorized = await this.diagnostic.isLocationAuthorized();
+      this.loggingService.debug(
+        'Location is ' + (authorized ? 'authorized' : 'unauthorized'),
+        DEBUG_TAG
+      );
+      if (!authorized) {
+        if (this.platform.is('ios')) {
+          await this.showPermissionDeniedError();
+          return false;
+        }
+        // location is not authorized, request new. This only works on Android
+        const status = await this.diagnostic.requestLocationAuthorization();
+        this.loggingService.debug('Request location status', DEBUG_TAG, status);
+        if (
+          status === this.diagnostic.permissionStatus.DENIED_ONCE ||
+          status === this.diagnostic.permissionStatus.DENIED_ALWAYS
+        ) {
+          await this.showPermissionDeniedError();
+          return false;
+        }
       }
+      return true;
     } catch (err) {
       this.loggingService.error(
         err,
         DEBUG_TAG,
         'Error asking for location permissions'
       );
-      return true; // continue anyway on error
+      return true; // continute anyway on error
     }
-  }
-
-  private async checkPermissionsApp() : Promise<boolean> {
-    const authorized = await this.diagnostic.isLocationAuthorized();
-        this.loggingService.debug(
-          'Location is ' + (authorized ? 'authorized' : 'unauthorized'),
-          DEBUG_TAG
-        );
-        if (!authorized) {
-          if (this.platform.is('ios')) {
-            await this.showPermissionDeniedError();
-            return false;
-          }
-          // location is not authorized, request new. This only works on Android
-          const status = await this.diagnostic.requestLocationAuthorization();
-          this.loggingService.debug(
-            'Request location status',
-            DEBUG_TAG,
-            status
-          );
-          if (
-            status === this.diagnostic.permissionStatus.DENIED_ONCE ||
-            status === this.diagnostic.permissionStatus.DENIED_ALWAYS
-          ) {
-            await this.showPermissionDeniedError();
-            return false;
-          }
-        }
-        return true;
   }
 
   private async showPermissionDeniedError() {

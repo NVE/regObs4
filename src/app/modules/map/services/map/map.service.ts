@@ -94,7 +94,7 @@ export class MapService {
   centerMapToUser(): void {
     this.loggingService.debug('Center map to user, followMode=true', DEBUG_TAG);
     this.followMode = true;
-    this.geoPositionService.startTrackingComponent(DEBUG_TAG, true);
+    this.geoPositionService.startTrackingOnAppOrRequestBrowserPosition();
     this._centerMapToUserSubject.next();
   }
 
