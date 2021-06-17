@@ -61,7 +61,7 @@ export class FileLoggingService {
     private emailComposer: EmailComposer
   ) {
     this.defaultConfig = new LogProviderConfig({
-      enableMetaLogging: true,
+      enableMetaLogging: false,
       logToConsole: false,
       logDateFormat: 'yyyy-MM-dd HH:mm:ss.SSS',
       fileDateFormat: 'yyyy-MM-dd_HH-mm-ss',
