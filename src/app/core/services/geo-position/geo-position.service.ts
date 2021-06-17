@@ -186,7 +186,7 @@ export class GeoPositionService implements OnDestroy {
   }
 
 
-  public async choosePositionMethod() : Promise<void> {
+  public async startTrackingOnAppOrRequestBrowserPosition() : Promise<void> {
     if (isAndroidOrIos(this.platform)) {
       this.startTrackingComponent('MapComponent', true);
     } else {
@@ -198,7 +198,7 @@ export class GeoPositionService implements OnDestroy {
     }
   }
 
-  public async requestPositionFromBrowser() : Promise<void> {
+  private async requestPositionFromBrowser() : Promise<void> {
       if (!this.geoLocationSupported) {
         this.gpsPositionLog.next(this.createPositionError('Geoposition is not supported'));
         this.createToast('Geoposition is not supported');
@@ -249,7 +249,7 @@ export class GeoPositionService implements OnDestroy {
       }
     }
 
-  public async startTrackingComponent(
+  private async startTrackingComponent(
     name: string,
     forcePermissionDialog = false
   ) {

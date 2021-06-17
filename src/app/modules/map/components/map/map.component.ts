@@ -186,14 +186,6 @@ export class MapComponent implements OnInit {
             //   this.updateMapView(); //TODO
             // }
           });
-        
-        this.mapService.centerMapToUser$
-          .pipe(takeUntil(this.ngDestroy$),
-            switchMap(() =>
-            from(this.geoPositionService.choosePositionMethod())
-          )
-        )
-          .subscribe();
 
         this.zone.run(() => {
           this.logger.debug(
