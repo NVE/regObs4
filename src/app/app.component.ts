@@ -15,6 +15,7 @@ import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
 import { switchMap, take, concatMap, delay, catchError } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { BreakpointService } from './core/services/breakpoint.service';
+import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -38,7 +39,8 @@ export class AppComponent {
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
     private shortcutService: ShortcutService,
-    private breakpointService: BreakpointService
+    private breakpointService: BreakpointService,
+    private fileLoggingService: FileLoggingService
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -49,6 +51,7 @@ export class AppComponent {
 
   initializeApp(): void {
     this.platform.ready().then(() => {
+      this.fileLoggingService.init({});
       this.breakpointService.onResize(this.platform.width());
     });
     this.getUserSettings()

@@ -57,12 +57,14 @@ export class HomePage extends RouterPage implements OnInit {
   }
 
   ngOnInit() {
+    this.loggingService.debug('ngOnInit()...', DEBUG_TAG)
     this.fullscreen$ = this.fullscreenService.isFullscreen$;
     this.dataLoadIds$ = this.observationService.dataLoad$.pipe(
       map((val) => [val]),
       enterZone(this.ngZone)
     );
     this.checkForFirstStartup();
+    this.loggingService.debug('ngOnInit() ferdig', DEBUG_TAG)
   }
 
   checkForFirstStartup() {
@@ -89,6 +91,7 @@ export class HomePage extends RouterPage implements OnInit {
   }
 
   onMapReady(mapComponent: MapComponent): void {
+    this.loggingService.debug('onMapReady()...', DEBUG_TAG)
     mapComponent.addFeatureLayer(this.markerLayer, FeatureLayerType.OBSERVATIONS);
     
     this.createClickEventHandler(mapComponent, this.markerLayer, this.mapItemBar);
@@ -102,6 +105,7 @@ export class HomePage extends RouterPage implements OnInit {
       .subscribe(([regObservations, showObservations]) => {
         this.redrawObservationMarkers(showObservations ? regObservations : []);
       });
+    this.loggingService.debug('onMapReady() ferdig', DEBUG_TAG)
   }
 
   async onEnter() {
