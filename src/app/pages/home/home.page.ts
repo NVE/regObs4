@@ -173,7 +173,7 @@ export class HomePage extends RouterPage implements OnInit {
     // });
 
     this.loggingService.debug(`createClickEventHandler for layer ${layer.id}`, DEBUG_TAG);
-    mapComponent.createGraphicClickEventHandler(layer)
+    mapComponent.createClickHandlerForGraphicsLayer(layer)
     .pipe(takeUntil(this.ngDestroy$))
     .subscribe((clickOnGraphic) => {
       if (clickOnGraphic) {

@@ -28,11 +28,11 @@ import {
   Subject,
   fromEventPattern,
   Observable,
-  from
 } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
+  map,
   switchMap,
   take,
   takeUntil,
@@ -56,7 +56,7 @@ import { Point } from '@arcgis/core/geometry';
 import { UserMarker } from 'src/app/core/helpers/leaflet/user-marker/user-marker';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import Graphic from '@arcgis/core/Graphic';
-import { ThrowStmt } from '@angular/compiler';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -131,6 +131,11 @@ export class MapComponent implements OnInit {
     (handler, eventListener) => eventListener.remove()
   );
 
+  click$: Observable<__esri.MapViewClickEvent> = fromEventPattern(
+    (handler) => this.view.on('click', handler),
+    (handler, eventListener) => eventListener.remove()
+  );
+
   private view: MapView;
   private loading: boolean; //TODO: Trenger vi denne?
   private userMarker: UserMarker; //TODO: Tilpass denne
@@ -139,9 +144,6 @@ export class MapComponent implements OnInit {
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
   private isActive: BehaviorSubject<boolean>;
-  private clickEvent: Subject<Graphic|undefined> = new Subject(); //a click event
-  private clickEvent$: Observable<Graphic|undefined> = this.clickEvent.asObservable();
-  private clickSubscriptions: IHandle[] = [];
 
   // The <div> where we will place the map
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
@@ -231,7 +233,6 @@ export class MapComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.removeClickSubscriptions();
     if (this.view) {
       this.view.destroy(); // destroy the map view
     }
@@ -242,12 +243,6 @@ export class MapComponent implements OnInit {
 
     if (this.zlWatcher) {
       this.zlWatcher.remove();
-    }
-  }
-
-  private removeClickSubscriptions(): void {
-    while (this.clickSubscriptions.length > 0) {
-      this.clickSubscriptions.pop().remove();
     }
   }
 
@@ -544,6 +539,9 @@ export class MapComponent implements OnInit {
     });
     this.view.popup.autoOpenEnabled = false;
 
+    // Disable default popups
+    this.view.popup.autoOpenEnabled = false;
+
     if (this.isStatic) {
       this.logger.debug('initializeMap(): Deaktiverer mus-hendelser for statisk kart...', DEBUG_TAG);
 
@@ -775,36 +773,29 @@ export class MapComponent implements OnInit {
   /**
    * Listen for click events on graphics on a specific layer.
    * @param layer the layer of interest
-   * @return a stream of click events. Contains the graphics that was hit. If no hit, the event will contain an undefined object
+   * @return a stream of click events. Contains the graphics that was hit. If no hit, the event will contain null
    */
-  createGraphicClickEventHandler(layer: Layer): Observable<Graphic|undefined> {
-    this.clickSubscriptions.push(this.view.on('click', (event) => {
-      const screenPoint = {
-        x: event.x,
-        y: event.y
-      };
-      // Search for graphics at the clicked location
-      this.view
-        .hitTest(screenPoint, { include: [layer] })
-        .then((response) => {
-          if (response.results.length) {
-            const graphic = response.results.filter((result) => {
-              return result.graphic.layer === layer; // check if the graphic belongs to the layer of interest
-            })[0].graphic;
-            this.clickEvent.next(graphic); //we hit a graphic on this layer
-          } else {
-            this.clickEvent.next(undefined); //we didn't hit anything
-          }
-        })
-        .catch((err) => {
-          this.logger.error(
-            err,
-            DEBUG_TAG,
-            `Click event failed: ${err}`
-          );
-        });
-    }));
-    return this.clickEvent$;
+  createClickHandlerForGraphicsLayer(layer: GraphicsLayer): Observable<Graphic|null> {
+    const getGraphicsAtScreenPoint = p => this.view
+      .hitTest(p, { include: layer })
+      .catch(err => {
+        this.logger.error(err, DEBUG_TAG, 'hitTest failed');
+        return null;
+      });
+
+    const getFirstGraphicOrNull = (response: __esri.HitTestResult) => {
+      try {
+        const [firstHit] = response.results;
+        return firstHit.graphic;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    return this.click$.pipe(
+      switchMap(getGraphicsAtScreenPoint),
+      map(getFirstGraphicOrNull),
+    );
   }
 
   getCenter(): Point {
