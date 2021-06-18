@@ -313,11 +313,13 @@ export class MapComponent implements OnInit {
     this.logger.debug(`createLayerGroups(): type lag = ${layerType}`, DEBUG_TAG);
     const layerGroups: GroupLayer[] = [];
     for (const type in layerType) {
-      const id = layerType[type];
-      this.logger.debug(`createLayerGroups(): oppretter grouplayer med id = ${id}`, DEBUG_TAG);
-      const groupLayer = new GroupLayer({ id: id});
-      groupLayer.layers.on('after-add', (event) => this.logLayerAppearance(`Layer '${event?.item?.id}' added in group '${groupLayer.id}'. `));
-      layerGroups.push(groupLayer);
+      if (!isNaN(Number(type))) { //to avoid that we get double up of enum values
+        const id = layerType[type];
+        this.logger.debug(`createLayerGroups(): oppretter grouplayer med id = ${id}`, DEBUG_TAG);
+        const groupLayer = new GroupLayer({ id: id});
+        groupLayer.layers.on('after-add', (event) => this.logLayerAppearance(`Layer '${event?.item?.id}' added in group '${groupLayer.id}'. `));
+        layerGroups.push(groupLayer);
+      }
     }
     this.logger.debug(`createLayerGroups(): ferdig med lage grouplayers`, DEBUG_TAG);
     return layerGroups;
