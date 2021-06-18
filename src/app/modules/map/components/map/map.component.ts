@@ -537,7 +537,6 @@ export class MapComponent implements OnInit {
       //   })
       // }
     });
-    this.view.popup.autoOpenEnabled = false;
 
     // Disable default popups
     this.view.popup.autoOpenEnabled = false;
