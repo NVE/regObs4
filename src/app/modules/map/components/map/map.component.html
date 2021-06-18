@@ -1,5 +1,3 @@
-<!--div *ngIf="loaded" leaflet [leafletOptions]="options" (leafletMapReady)="onLeafletMapReady($event)">
-</div-->
 <div #mapViewNode></div>
 <app-map-controls *ngIf="showMapControls" (mapReady)="onMapReady($event)"></app-map-controls>
 <div class="map-debug-container" [hidden]="!debug">

@@ -217,7 +217,7 @@ export class MapComponent implements OnInit {
     }
   }
 
-  onMapReady(): void {
+  private onMapReady(): void {
     if (this.showScale) {
       const scaleBar = new ScaleBar({
         view: this.view,
@@ -227,6 +227,7 @@ export class MapComponent implements OnInit {
         position: 'bottom-left'
       });
     }
+    this.mapReady.emit(this);
   }
 
   ngOnDestroy(): void {
@@ -282,7 +283,6 @@ export class MapComponent implements OnInit {
       this.setZoom(null, this.getMaxZoom(userSetting.useRetinaMap));
       this.createBasemap(userSetting);
       this.createSupportMaps(userSetting);
-      this.mapReady.emit(this);
     });
     this.logger.debug('updateLayers(): Finished updating layers', DEBUG_TAG)
   }
@@ -542,6 +542,7 @@ export class MapComponent implements OnInit {
       //   })
       // }
     });
+    this.view.popup.autoOpenEnabled = false;
 
     if (this.isStatic) {
       this.logger.debug('initializeMap(): Deaktiverer mus-hendelser for statisk kart...', DEBUG_TAG);
@@ -776,8 +777,7 @@ export class MapComponent implements OnInit {
    * @param layer the layer of interest
    * @return a stream of click events. Contains the graphics that was hit. If no hit, the event will contain an undefined object
    */
-  createClickEventHandler(layer: Layer): Observable<Graphic|undefined> {
-    this.view.popup.autoOpenEnabled = false;
+  createGraphicClickEventHandler(layer: Layer): Observable<Graphic|undefined> {
     this.clickSubscriptions.push(this.view.on('click', (event) => {
       const screenPoint = {
         x: event.x,
