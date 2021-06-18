@@ -140,6 +140,7 @@ export class MapComponent implements OnInit {
   private firstClickOnZoomToUser = true;
   private isActive: BehaviorSubject<boolean>;
   private clickEvent: Subject<Graphic|undefined> = new Subject(); //a click event
+  private clickEvent$: Observable<Graphic|undefined> = this.clickEvent.asObservable();
   private clickSubscriptions: IHandle[] = [];
 
   // The <div> where we will place the map
@@ -229,7 +230,7 @@ export class MapComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.clickSubscriptions.forEach(subscription => subscription.remove);
+    this.removeClickSubscriptions();
     if (this.view) {
       this.view.destroy(); // destroy the map view
     }
@@ -240,6 +241,12 @@ export class MapComponent implements OnInit {
 
     if (this.zlWatcher) {
       this.zlWatcher.remove();
+    }
+  }
+
+  private removeClickSubscriptions(): void {
+    while (this.clickSubscriptions.length > 0) {
+      this.clickSubscriptions.pop().remove();
     }
   }
 
@@ -797,7 +804,7 @@ export class MapComponent implements OnInit {
           );
         });
     }));
-    return this.clickEvent.asObservable();
+    return this.clickEvent$;
   }
 
   getCenter(): Point {

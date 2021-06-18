@@ -41,7 +41,7 @@ export class HomePage extends RouterPage implements OnInit {
   showGeoSelectInfo = false;
   dataLoadIds$: Observable<string[]>;
   private ngDestroy$ = new Subject();
-  private clickSubscription: IHandle;
+  private mapDataInitialized: boolean;
 
   constructor(
     router: Router,
@@ -91,21 +91,24 @@ export class HomePage extends RouterPage implements OnInit {
   }
 
   onMapReady(mapComponent: MapComponent): void {
-    this.loggingService.debug('onMapReady()...', DEBUG_TAG)
-    mapComponent.addFeatureLayer(this.markerLayer, FeatureLayerType.OBSERVATIONS);
-    
-    this.createClickEventHandler(mapComponent, this.markerLayer, this.mapItemBar);
+    this.loggingService.debug(`onMapReady(). Map data already initialized = ${this.mapDataInitialized}`, DEBUG_TAG)
+    if (!this.mapDataInitialized) {
+      this.mapDataInitialized = true;
+      mapComponent.addFeatureLayer(this.markerLayer, FeatureLayerType.OBSERVATIONS);
+      
+      this.createClickEventHandler(mapComponent, this.markerLayer, this.mapItemBar);
 
-    const observationObservable = combineLatest([
-      this.observationService.observations$,
-      this.userSettingService.showObservations$
-    ]);
-    observationObservable
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(([regObservations, showObservations]) => {
-        this.redrawObservationMarkers(showObservations ? regObservations : []);
-      });
-    this.loggingService.debug('onMapReady() ferdig', DEBUG_TAG)
+      const observationObservable = combineLatest([
+        this.observationService.observations$,
+        this.userSettingService.showObservations$
+      ]);
+      observationObservable
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(([regObservations, showObservations]) => {
+          this.redrawObservationMarkers(showObservations ? regObservations : []);
+        });
+    }
+    this.loggingService.debug(`onMapReady() ferdig. Map data initialized = ${this.mapDataInitialized}`, DEBUG_TAG)
   }
 
   async onEnter() {
@@ -169,12 +172,14 @@ export class HomePage extends RouterPage implements OnInit {
     //   }
     // });
 
+    this.loggingService.debug(`createClickEventHandler for layer ${layer.id}`, DEBUG_TAG);
     mapComponent.createClickEventHandler(layer)
     .pipe(takeUntil(this.ngDestroy$))
     .subscribe((clickOnGraphic) => {
       if (clickOnGraphic) {
         if (clickOnGraphic instanceof MapItemMarker) {
           const marker = clickOnGraphic as MapItemMarker;
+          this.loggingService.debug(`graphic was clicked: layer = ${layer.id}, marker = ${marker.id}`, DEBUG_TAG);
           if (marker.isSelected) {
             marker.deselect();
             mapItemBar.hide();
@@ -194,7 +199,6 @@ export class HomePage extends RouterPage implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.clickSubscription?.remove();
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }
