@@ -183,7 +183,6 @@ export class DataMarshallService implements OnReset {
           this.loggingService.configureLogging(appMode)
         )
       );
-      
       this.subscriptions.push(
         this.platform.pause.subscribe(() => {
           this.loggingService.debug(

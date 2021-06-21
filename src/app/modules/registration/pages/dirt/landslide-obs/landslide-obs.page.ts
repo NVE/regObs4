@@ -7,6 +7,7 @@ import * as L from 'leaflet';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import moment from 'moment';
+import { Point } from '@arcgis/core/geometry';
 
 @Component({
   selector: 'app-landslide-obs',
@@ -153,12 +154,12 @@ export class LandslideObsPage extends BasePage {
     modal.present();
     const result = await modal.onDidDismiss();
     if (result.data) {
-      const start: L.LatLng = result.data.start;
-      const end: L.LatLng = result.data.end;
-      this.registration.request.LandSlideObs.StartLat = start.lat;
-      this.registration.request.LandSlideObs.StartLong = start.lng;
-      this.registration.request.LandSlideObs.StopLat = end.lat;
-      this.registration.request.LandSlideObs.StopLong = end.lng;
+      const start: Point = result.data.start;
+      const end: Point = result.data.end;
+      this.registration.request.LandSlideObs.StartLat = start.latitude;
+      this.registration.request.LandSlideObs.StartLong = start.longitude;
+      this.registration.request.LandSlideObs.StopLat = end.latitude;
+      this.registration.request.LandSlideObs.StopLong = end.longitude;
     }
   }
 }

@@ -147,19 +147,22 @@ export const settings = {
       detectRetina: false,
       updateWhenIdle: false,
       // tslint:disable-next-line:max-line-length
+      noOnlineMapUrl: '/assets/json/norway_burn-8.json',
       statensKartverkMapUrl:
         'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
       geoDataLandskapMapUrl:
         'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
-      openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      openTopoMapUrl: 'https://tile.opentopomap.org/{z}/{x}/{y}.png',
       arcGisOnlineTopoMapUrl:
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      geoDataTerrengVectorMapUrl:
+        'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheGraatoneTerreng_WM/VectorTileServer',
       supportTiles: [
         {
           name: 'steepness',
           description: 'STEEPNESS_MAP_DESCRIPTION',
           url:
-            'http://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
+            'https://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
           geoHazardId: 10,
@@ -169,7 +172,7 @@ export const settings = {
           name: 'steepness-outlet',
           description: 'STEEPNESS_OUTLET_MAP_DESCRIPTION',
           url:
-            'http://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
+            'https://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
           enabled: false,
           opacity: 0.5,
           geoHazardId: 10,
@@ -179,7 +182,7 @@ export const settings = {
           name: 'clayzones',
           description: 'CLAY_ZONES_MAP_DESCRIPTION',
           url:
-            'http://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
+            'https://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
           geoHazardId: 20
@@ -188,7 +191,7 @@ export const settings = {
           name: 'floodzoones',
           description: 'FLOOD_ZONES_MAP_DESCRIPTION',
           url:
-            'http://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
+            'https://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
           geoHazardId: 60
@@ -197,7 +200,7 @@ export const settings = {
           name: 'weakenedice',
           description: 'WEAKENED_ICE_MAP_DESCRIPTION',
           url:
-            'http://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}',
+            'https://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
           geoHazardId: 70

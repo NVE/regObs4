@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonFab, NavController } from '@ionic/angular';
+import { IonFab, NavController, Platform } from '@ionic/angular';
 import { Observable, from, combineLatest, of } from 'rxjs';
 import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
@@ -13,6 +13,7 @@ import { RegistrationService } from '../../../registration/services/registration
 import { map, tap, switchMap } from 'rxjs/operators';
 import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
 import { LoggingService } from '../../services/logging/logging.service';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 
 const DEBUG_TAG = 'AddMenuComponent';
 
@@ -32,6 +33,7 @@ export class AddMenuComponent implements OnInit {
   }>;
   tripStarted$: Observable<boolean>;
   showSpace$: Observable<boolean>;
+  isIosOrAndroid: boolean;
 
   constructor(
     private registrationService: RegistrationService,
@@ -40,10 +42,12 @@ export class AddMenuComponent implements OnInit {
     private tripLoggerService: TripLoggerService,
     private userSettingService: UserSettingService,
     private geoHelperService: GeoHelperService,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
+    private platform: Platform
   ) {}
 
   ngOnInit(): void {
+    this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.geoHazardInfo$ = this.userSettingService.userSetting$.pipe(
       map((us) => ({
         geoHazards: us.currentGeoHazard,

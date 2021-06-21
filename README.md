@@ -24,7 +24,9 @@ ionic serve
 
 [More info](https://ionicframework.com/docs/building/running)
 
-### To debug app on Android device
+### Android
+
+To debug app on Android device:
 
 ```
 ionic cordova run android
@@ -56,6 +58,31 @@ C:\gradle\gradle-6.7.1\bin
 - You have to uninstall the regular RegObs app from your phone in order to debug
 - This may be helpful for device connection problmems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
 
+### iOS
+
+To run the app on an iOS device with live reload:
+
+```
+ionic cordova run ios -l --external
+```
+
+To build using xcode, first sync web the web app to the native project:
+
+```
+ionic cordova prepare ios
+```
+
+Then, in xcode, select a target simulator or device and click the play button.
+
+[More info in Ionic docs on iOS development](https://ionicframework.com/docs/developing/ios)
+
+### Running tests on MacOS
+
+If you have trouble running tests, try specifying the `CHROME_BIN` environment variable:
+
+```
+CHROME_BIN = /Path/To/Google Chrome.app/Contents/MacOS/Google Chrome
+```
 ### Debugge på iPhone/iPad: XCode
 [Mer info](https://ionicframework.com/docs/developing/ios)
 Ikke la Xcode signere provisioning profile automatisk, men last den ned fra developer.apple.com og bruk denne i XCode.

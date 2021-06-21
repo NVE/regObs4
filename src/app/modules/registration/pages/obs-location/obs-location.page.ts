@@ -1,5 +1,4 @@
 import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
-import * as L from 'leaflet';
 import { IRegistration } from '../../models/registration.model';
 import { RegistrationService } from '../../services/registration.service';
 import { NavController } from '@ionic/angular';
@@ -17,6 +16,7 @@ import { SetLocationInMapComponent } from '../../components/set-location-in-map/
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { take } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
+import { Point } from '@arcgis/core/geometry';
 
 const DEBUG_TAG = 'ObsLocationPage';
 
@@ -26,7 +26,7 @@ const DEBUG_TAG = 'ObsLocationPage';
   styleUrls: ['./obs-location.page.scss']
 })
 export class ObsLocationPage implements OnInit, OnDestroy {
-  locationMarker: L.Marker;
+  point: Point;
   isLoaded = false;
   selectedLocation: ObsLocationsResponseDtoV2;
   registration: IRegistration;
@@ -73,20 +73,10 @@ export class ObsLocationPage implements OnInit, OnDestroy {
       this.geoHazard = userSettings.currentGeoHazard[0];
     }
     if (this.hasLocation(this.registration)) {
-      const locationMarkerIcon = L.icon({
-        iconUrl: '/assets/icon/map/obs-location.svg',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        shadowUrl: 'leaflet/marker-shadow.png',
-        shadowSize: [41, 41]
+      this.point = new Point({
+        latitude: this.registration.request.ObsLocation.Latitude,
+        longitude: this.registration.request.ObsLocation.Longitude
       });
-      this.locationMarker = L.marker(
-        {
-          lat: this.registration.request.ObsLocation.Latitude,
-          lng: this.registration.request.ObsLocation.Longitude
-        },
-        { icon: locationMarkerIcon }
-      );
       this.selectedLocation = {
         Name:
           this.registration.request.ObsLocation.LocationName ||

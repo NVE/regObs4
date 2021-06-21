@@ -16,10 +16,16 @@ import { PictureRequestDto } from '../../../regobs-api/models';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { DomSanitizer } from '@angular/platform-browser';
-import { File, DirectoryEntry, Entry } from '@ionic-native/file/ngx';
+import { File, DirectoryEntry, Entry, IFile } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import * as utils from '@nano-sql/core/lib/utilities';
+import {
+  ALLOWED_ATTACHMENT_FILE_TYPES,
+  DropZoneService
+} from './drop-zone.service';
+import { NgxFileDropEntry } from 'ngx-file-drop';
+import { RegistrationService } from '../../services/registration.service';
 
 // const DATA_URL_TAG = 'data:image/jpeg;base64,';
 const DEBUG_TAG = 'AddPictureItemComponent';
@@ -41,6 +47,9 @@ export class AddPictureItemComponent implements OnInit {
   @Input() showIcon = true;
   @Input() iconColor = 'dark';
   @Input() onBeforeAdd: () => Promise<void> | void;
+  isCordova: boolean;
+  accept = ALLOWED_ATTACHMENT_FILE_TYPES;
+  selectedFile: Blob = null;
 
   get imagesForCurrentRegistrationTid() {
     return this.images
@@ -59,10 +68,14 @@ export class AddPictureItemComponent implements OnInit {
     private webView: WebView,
     private toastController: ToastController,
     private domSanitizer: DomSanitizer,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private dropZoneService: DropZoneService,
+    private registrationService: RegistrationService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.isCordova = this.platform.is('cordova');
+  }
 
   async addClick() {
     if (this.onBeforeAdd !== undefined) {
@@ -98,9 +111,14 @@ export class AddPictureItemComponent implements OnInit {
     actionSheet.present();
   }
 
+  isNotCordova(): boolean {
+    return !this.platform.is('cordova');
+  }
+
   async getPicture(sourceType: PictureSourceType) {
-    if (!this.platform.is('cordova')) {
-      await this.addDummyImage();
+    if (!this.isCordova) {
+      //await this.addDummyImage();
+      //TODO: Gjøre som vi gjør på web for å hente bilde enten fra kamera eller album
       return true;
     }
     try {
@@ -240,7 +258,22 @@ export class AddPictureItemComponent implements OnInit {
 
   convertFileSrc(fileUrl: string) {
     return this.domSanitizer.bypassSecurityTrustUrl(
-      this.webView.convertFileSrc(fileUrl)
+      this.isCordova ? this.webView.convertFileSrc(fileUrl) : fileUrl
     );
+  }
+
+  async dropped(droppedFiles: NgxFileDropEntry[]): Promise<void> {
+    for (const droppedFile of droppedFiles) {
+      try {
+        const file = await this.dropZoneService.getFile(droppedFile);
+        const url = window.URL.createObjectURL(file);
+        this.logger.debug('Dropped file', DEBUG_TAG, file);
+        this.registrationService.addFileToUpload(url, file as IFile);
+        this.addImage(url);
+      } catch (err) {
+        this.logger.error(err, 'Could not add attachment');
+        this.showErrorToast();
+      }
+    }
   }
 }

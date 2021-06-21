@@ -14,7 +14,7 @@
       <ion-label position="stacked" color="medium" class="ion-text-uppercase">{{ "SETTINGS.LANGUAGE" | translate }}
       </ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language"
-        interface="action-sheet" (ngModelChange)="updateSettings()">
+        [interface]="(isDesktop || computer) ? 'popover' : 'action-sheet'" (ngModelChange)="updateSettings()">
         <ion-select-option [value]="lang.langKey" *ngFor="let lang of supportedLanguages">
           {{ lang.name }}
         </ion-select-option>
@@ -75,6 +75,10 @@
       <ion-button expand="block" [disabled]="isUpdating" (click)="updateDropdowns()">
         <ion-icon slot="start" name="refresh"></ion-icon>
         {{ "SETTINGS.UPDATE_DROPDOWNS" | translate }}
+      </ion-button>
+      <ion-button expand="block" [disabled]="isUpdating" (click)="sendLogs()">
+        <ion-icon slot="start" name="mail-outline"></ion-icon>
+        Send logger til Regobs Team
       </ion-button>
       <ion-button class="reset-button" color="danger" expand="block" [disabled]="isUpdating" (click)="confirmReset()">
         <ion-icon slot="start" name="medkit"></ion-icon>

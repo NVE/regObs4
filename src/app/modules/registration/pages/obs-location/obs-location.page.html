@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-set-location-in-map *ngIf="isLoaded" [geoHazard]="geoHazard" [locationMarker]="locationMarker"
+  <app-set-location-in-map *ngIf="isLoaded" [geoHazard]="geoHazard" [location]="point"
     (locationSet)="onLocationSet($event)" [selectedLocation]="selectedLocation" [allowEditLocationName]="true"
     [isSaveDisabled]="isSaveDisabled">
   </app-set-location-in-map>

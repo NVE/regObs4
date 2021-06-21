@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { IonSlides, NavController } from '@ionic/angular';
+import { IonSlides, NavController, Platform } from '@ionic/angular';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { LangKey } from '../../core/models/langKey';
 import { animations } from './start-wizard.animations';
 import { Subject, timer, interval } from 'rxjs';
 import { takeUntil, skipWhile, switchMap, take } from 'rxjs/operators';
 import { settings } from '../../../settings';
+import { isAndroidOrIos } from '../../core/helpers/ionic/platform-helper';
 
 @Component({
   selector: 'app-start-wizard',
@@ -20,6 +21,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
   LangKey = LangKey;
   state: string;
   reachedEnd = false;
+  reachedStart = true;
   showLegalIcon = false;
   visibleStarNumber = -1;
   recreate = true;
@@ -32,6 +34,8 @@ export class StartWizardPage implements OnInit, OnDestroy {
     ...lang,
     langKey: LangKey[lang.lang]
   }));
+  isIosOrAndroid: boolean;
+  isDesktop: boolean;
 
   private ngDestroy$ = new Subject();
   private activeIndex = new Subject<number>();
@@ -39,7 +43,8 @@ export class StartWizardPage implements OnInit, OnDestroy {
 
   constructor(
     private userSettingService: UserSettingService,
-    private navController: NavController
+    private navController: NavController,
+    private platform: Platform
   ) {}
 
   ionViewWillEnter() {
@@ -53,7 +58,10 @@ export class StartWizardPage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.isIosOrAndroid = isAndroidOrIos(this.platform);
+    this.isDesktop = this.platform.is('desktop');
+  }
 
   async saveLanguage() {
     const userSettings = await this.userSettingService.userSetting$
@@ -85,13 +93,22 @@ export class StartWizardPage implements OnInit, OnDestroy {
   }
 
   slideNext() {
-    timer(700)
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => {
-        if (this.slides) {
-          this.slides.slideNext();
-        }
-      });
+    this.reachedStart = false;
+    if (!isAndroidOrIos(this.platform)) {
+      this.slides.slideNext();
+    } else {
+      timer(700)
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe(() => {
+          if (this.slides) {
+            this.slides.slideNext();
+          }
+        });
+    }
+  }
+
+  slidePrev() {
+    this.slides.slidePrev();
   }
 
   async start() {
@@ -120,6 +137,10 @@ export class StartWizardPage implements OnInit, OnDestroy {
       this.showLegalIcon = true;
       // Crazy ios bug to get animation on spinner.. :o
     }, 0);
+  }
+
+  ionSlideReachStart() {
+    this.reachedStart = true;
   }
 
   ionSlidePrevStart() {

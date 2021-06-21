@@ -301,5 +301,6 @@ export const animations = [
   trigger('headerAnimation5', getHeaderAnimation(5)),
   trigger('legalText1', getFadeInAnimation(5, 1000)),
   trigger('legalText2', getFadeInAnimation(5, 2000)),
-  trigger('legalText3', getFadeInAnimation(5, 3000))
+  trigger('legalText3', getFadeInAnimation(5, 3000)),
+  trigger('legalText4', getFadeInAnimation(5, 4000))
 ];

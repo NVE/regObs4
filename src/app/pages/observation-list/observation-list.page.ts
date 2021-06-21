@@ -6,7 +6,6 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { ObservationService } from '../../core/services/observation/observation.service';
-import * as L from 'leaflet';
 import { Subject } from 'rxjs';
 import { map, take, switchMap } from 'rxjs/operators';
 import { MapService } from '../../modules/map/services/map/map.service';
@@ -14,7 +13,7 @@ import { IMapView } from '../../modules/map/services/map/map-view.interface';
 import { RegistrationViewModel } from '../../modules/regobs-api/models';
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { DataMarshallService } from '../../core/services/data-marshall/data-marshall.service';
-
+import { Point } from '@arcgis/core/geometry';
 const PAGE_SIZE = 10;
 const MAX_OBSERVATION_COUNT = 100;
 
@@ -138,10 +137,10 @@ export class ObservationListPage implements OnInit {
       (observation) =>
         !view ||
         view.bounds.contains(
-          L.latLng(
-            observation.ObsLocation.Latitude,
-            observation.ObsLocation.Longitude
-          )
+          new Point({
+            latitude: observation.ObsLocation.Latitude,
+            longitude: observation.ObsLocation.Longitude
+          })
         )
     );
   }

@@ -1,4 +1,5 @@
 export enum TopoMap {
+  noOnlineMap = 'noOnlineMap',
   default = 'mixArcGisOnline',
   openTopo = 'openTopo',
   arcGisOnline = 'arcGisOnline',
@@ -6,5 +7,6 @@ export enum TopoMap {
   mixArcGisOnline = 'mixArcGisOnlineV2',
   mixOpenTopo = 'mixOpenTopo',
   geoDataLandskap = 'geoDataLandskap',
-  mixGeoDataLandskap = 'mixGeoDataLandskap'
+  mixGeoDataLandskap = 'mixGeoDataLandskap',
+  geoDataTerrengVector = 'geoDataTerrengVector'
 }

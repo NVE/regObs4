@@ -16,6 +16,7 @@ import { ImgSwiperSlide } from './img-swiper-slide';
 import { Subject, interval, race } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ImageLocation } from './image-location.model';
+import { BreakpointService } from '../../core/services/breakpoint.service';
 
 @Component({
   selector: 'app-img-swiper',
@@ -34,12 +35,30 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }> = new EventEmitter();
   @Input() location: ImageLocation;
   @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
+  isDesktop: boolean;
+  slideOptions;
 
-  slideOptions = {
-    autoplay: false,
-    slidesPerView: 'auto',
-    zoom: false
-  };
+  ngOnInit() {
+    this.breakpointService.isDesktopView().subscribe((isDesktop) => {
+      this.isDesktop = isDesktop;
+    });
+    this.slideOptions = {
+      autoplay: false,
+      slidesPerView: 'auto',
+      zoom: false,
+      breakpoints: {
+        800: {
+          slidesPerView: this.checkAmountOfPictures(),
+          spaceBetween: 0
+        }
+      },
+      keyboard: {
+        enabled: true
+      }
+    };
+  }
+
+  moreThanFourPics = false;
 
   swiper: any;
   state:
@@ -91,7 +110,9 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get shouldMoveMap() {
-    return this.location && this.imgUrl && this.imgUrl.length > 0;
+    return (
+      this.location && this.imgUrl && this.imgUrl.length > 0 && !this.isDesktop
+    );
   }
 
   get imageLength() {
@@ -115,12 +136,31 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
     return false;
   }
 
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  ngOnInit() {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private breakpointService: BreakpointService
+  ) {}
 
   ngOnDestroy(): void {
     this.cdr.detach();
+  }
+
+  checkAmountOfPictures(): number {
+    if (this.imgUrl.length === 3 && !this.location) {
+      this.moreThanFourPics = false;
+      return 3;
+    }
+    if (this.imgUrl.length >= 3) {
+      this.moreThanFourPics = true;
+      return 3;
+    }
+    if (this.imgUrl.length === 2) {
+      return 3;
+    }
+    if (this.imgUrl.length === 1) {
+      return 2;
+    }
+    return 1;
   }
 
   slidesLoaded(el: any) {
@@ -239,5 +279,29 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   async onSlideTransitionEnd() {
     this.activeIndex = await this.getSwiperIndex();
     this.updateUi();
+  }
+
+  next() {
+    this.slider.slideNext();
+    this.updateUi();
+  }
+
+  prev() {
+    this.slider.slidePrev();
+    this.updateUi();
+  }
+
+  isPreviousImgAvailable(): boolean {
+    if (this.location) {
+      return this.activeIndex >= 1;
+    }
+    return this.activeIndex >= 1;
+  }
+
+  isNextImgAvailable() {
+    if (this.location) {
+      return this.activeIndex + 1 < this.imgUrl.length;
+    }
+    return this.activeIndex + 2 < this.imgUrl.length;
   }
 }

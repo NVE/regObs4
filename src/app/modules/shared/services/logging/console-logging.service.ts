@@ -8,11 +8,15 @@ import { LogLevel } from './log-level.model';
 import { LoggingService } from './logging.service';
 import { AppMode } from '../../../../core/models/app-mode.enum';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
+import { FileLoggingService } from './file-logging.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsoleLoggingService implements LoggingService {
+
+  constructor(private fileLoggingService: FileLoggingService) {}
+
   enable(): void {}
 
   disable(): void {}
@@ -41,6 +45,9 @@ export class ConsoleLoggingService implements LoggingService {
     tag?: string,
     ...optionalParams: any[]
   ) {
+    if (this.fileLoggingService.isReady()) {
+      this.fileLoggingService.log(message, error, level, tag, optionalParams, error);        
+    }
     const msg = `[${level.toUpperCase()}]${
       tag ? '[' + tag + ']' : ''
     } ${message}`;

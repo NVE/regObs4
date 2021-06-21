@@ -1,15 +1,16 @@
-import * as L from 'leaflet';
 import { Subscription } from 'rxjs';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
-
+import MapView from '@arcgis/core/views/MapView';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import { Point } from '@arcgis/core/geometry';
+import Graphic from '@arcgis/core/Graphic';
+import Circle  from '@arcgis/core/geometry/Circle';
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 export class UserMarker {
-  userMarker: L.Marker;
-  userMarkerIcon: L.DivIcon;
-  headingSubscription: Subscription;
-  accuracyMarker: L.Circle;
-  map: L.Map;
-  position: Geoposition;
-  watchId: number;
+  private positionGraphic: Graphic;
+  private accuracyGraphic: Graphic;
+  private headingSubscription: Subscription;
+  private position: Geoposition;
 
   accuracyCircleStyle = {
     stroke: true,
@@ -21,65 +22,98 @@ export class UserMarker {
     clickable: false
   };
 
-  constructor(map: L.Map, position: Geoposition) {
-    this.map = map;
+  constructor(view: MapView, position: Geoposition) {
     this.position = position;
-    this.userMarkerIcon = L.divIcon({
-      className: 'leaflet-usermarker',
-      iconSize: [18, 18],
-      html: '<div class=\'heading\'></div><i class=\'pulse\'></i>'
+    //TODO: assign css class to symbol
+    // this.userMarkerIcon = L.divIcon({
+    //   className: 'leaflet-usermarker',
+    //   iconSize: [18, 18],
+    //   html: '<div class=\'heading\'></div><i class=\'pulse\'></i>'
+    // });
+    
+    //TODO- decide if we want accuracy circle - it's too big on desktop
+    const accuracySymbol = new SimpleMarkerSymbol({
+      style: 'circle',
+      size: "8px",
+      color: [30, 144, 255, 0.2],
+      outline: {
+        color: 'white',
+        width: 1
+      }
     });
-    const latLng = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude
-    };
-    this.userMarker = L.marker(latLng, { icon: this.userMarkerIcon });
-    this.userMarker.addTo(this.map);
+
+    const point = new Point({
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude
+    });
+
+    const circle = new Circle({
+      center: point,
+      radius: 100,
+      radiusUnit: "meters"
+    })
+
+    const animatedGif = new PictureMarkerSymbol( {
+      url: '/assets/icon/map/location-marker.gif',
+      width: '36px',
+      height: '36px'
+    })
+
+    this.positionGraphic = new Graphic({
+      geometry: point,
+      symbol: animatedGif
+    });
+    this.accuracyGraphic = new Graphic({
+      geometry: circle,
+      symbol: accuracySymbol
+    });
+
     this.setAccuracy(position);
+    view.graphics.add(this.positionGraphic);
   }
 
   getPosition(): Geoposition {
     return this.position;
   }
 
-  updatePosition(position: Geoposition) {
-    this.position = position;
-    const latLng = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude
-    };
-    this.userMarker.setLatLng(latLng);
+  updatePosition(position: Geoposition): void {
+    const point = this.createPoint(position);
+    this.positionGraphic.geometry = point;
+    this.accuracyGraphic.geometry = point;
     this.setAccuracy(position);
+    this.position = position;
     // if (position.coords.heading !== null) {
     //     this.setHeading(position.coords.heading);
     // }
     // NOTE: This is set by compass instead of gps
   }
 
-  setHeading(degrees: number) {
-    const element: HTMLElement = this.userMarker.getElement()
-      .childNodes[0] as HTMLElement;
-    const rotateZ = degrees - 90;
-    element.style['-webkit-transform'] =
-      'rotate(' + rotateZ + 'deg) translateX(15px)';
-    element.style.display = 'block';
+  setHeading(degrees: number): void {
+    //we try to do this without css
+    const symbol = this.positionGraphic.symbol as SimpleMarkerSymbol;
+    symbol.angle = degrees;
+
+    // const element: HTMLElement = this.userMarker.getElement()
+    //   .childNodes[0] as HTMLElement;
+    // const rotateZ = degrees - 90;
+    // element.style['-webkit-transform'] =
+    //   'rotate(' + rotateZ + 'deg) translateX(15px)';
+    // element.style.display = 'block';
   }
 
   private setAccuracy(position: Geoposition) {
-    const latLng = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude
-    };
-    if (!this.accuracyMarker) {
-      this.accuracyMarker = L.circle(
-        latLng,
-        position.coords.accuracy,
-        this.accuracyCircleStyle
-      );
-      this.accuracyMarker.addTo(this.map);
-    } else {
-      this.accuracyMarker.setRadius(position.coords.accuracy);
-      this.accuracyMarker.setLatLng(latLng);
-    }
+    // TODO: Fix accuracy symbol
+    // We should use a circle geometry with radius in metres.
+    // A circle will auto scale while zooming in/out.
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Circle.html#radiusUnit
+    const symbol = this.accuracyGraphic.symbol as SimpleMarkerSymbol;
+    symbol.size = position.coords.accuracy * 2; //TODO: convert from meters to points
+  }
+
+  private createPoint(position: Geoposition): Point {
+    return new Point({
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude
+    });
   }
 }

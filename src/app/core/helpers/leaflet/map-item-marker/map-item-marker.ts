@@ -1,7 +1,12 @@
-import * as L from 'leaflet';
 import { MapItem } from '../../../models/map-item.model';
-import { RegobsGeoHazardMarker } from '../../../../modules/map/core/classes/regobs-geohazard-marker';
-export class MapItemMarker extends L.Marker {
+import { Point } from '@arcgis/core/geometry';
+import Graphic from '@arcgis/core/Graphic';
+import { MarkerHelper } from '../../arcgis/markerHelper';
+
+/**
+ * An icon representation of an observation location. Use this to show obserations on the map
+ */
+export class MapItemMarker extends Graphic {
   private _item: MapItem;
   private _isSelected: boolean;
 
@@ -17,25 +22,30 @@ export class MapItemMarker extends L.Marker {
     return this._isSelected;
   }
 
-  constructor(item: MapItem, latlng: L.LatLng, options: L.MarkerOptions) {
-    super(latlng, options);
-    this._item = item;
+  constructor(regObservation: MapItem) {
+    super();
+    this.geometry = new Point({
+      latitude: regObservation.ObsLocation.Latitude,
+      longitude: regObservation.ObsLocation.Longitude
+    });
+    this._item = regObservation;
     this.updateIcon();
   }
 
-  setSelected() {
+  setSelected(): void {
     this._isSelected = true;
     this.updateIcon();
   }
 
-  deselect() {
+  deselect(): void {
     this._isSelected = false;
     this.updateIcon();
   }
 
   private updateIcon() {
-    this.setIcon(
-      new RegobsGeoHazardMarker(this._item.GeoHazardTID, this._isSelected)
+    this.symbol = MarkerHelper.getGeoHazardSvg(
+      this._item.GeoHazardTID,
+      this._isSelected
     );
   }
 }

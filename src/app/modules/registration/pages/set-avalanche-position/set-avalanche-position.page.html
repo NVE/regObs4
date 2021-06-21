@@ -13,6 +13,6 @@
   <app-set-location-in-map *ngIf="fromMarker" [geoHazard]="geoHazard" (mapReady)="onMapReady($event)" [fromMarker]="fromMarker"
     [locationMarker]="locationMarker" (locationSet)="onLocationSet($event)" [confirmLocationText]="confirmLocationText"
     fromLocationText="REGISTRATION.OBS_LOCATION.TITLE" [showPreviousUsedLocations]="false" [locationTitle]="locationText"
-    [showPolyline]="false" [showFromMarkerInDetails]="false" [locationMarkerIconUrl]="locationMarkerIconUrl">
+    [showPolyline]="false" [showFromMarkerInDetails]="false" [locationMarkerIconUrl]="locationMarkerIconUrl" (markerLayerReady)="onMarkerLayerReady($event)">
   </app-set-location-in-map>
 </ion-content>

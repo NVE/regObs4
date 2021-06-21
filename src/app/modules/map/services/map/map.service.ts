@@ -22,6 +22,7 @@ import {
   IRegionInViewInput,
   IRegionInViewOutput
 } from '../../web-workers/region-in-view-models';
+import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
 
 const DEBUG_TAG = 'MapService';
 
@@ -64,7 +65,8 @@ export class MapService {
 
   constructor(
     private userSettingService: UserSettingService,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
+    private geoPositionService: GeoPositionService
   ) {
     this._followModeSubject = new BehaviorSubject<boolean>(true);
     this._followModeObservable = this._followModeSubject
@@ -86,8 +88,13 @@ export class MapService {
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
   }
 
+  /**
+   * Called when clicking the position button on the map
+   */
   centerMapToUser(): void {
+    this.loggingService.debug('Center map to user, followMode=true', DEBUG_TAG);
     this.followMode = true;
+    this.geoPositionService.startTrackingOnAppOrRequestBrowserPosition();
     this._centerMapToUserSubject.next();
   }
 
@@ -105,7 +112,7 @@ export class MapService {
         if (!prev) {
           return 9999;
         }
-        return prev.center.distanceTo(next.center);
+        return prev.center.distance(next.center);
       }),
       scan((acc, val) => acc + val, 0)
     );
@@ -146,12 +153,12 @@ export class MapService {
       map(([mapView, geoHazards]) => ({
         mapView,
         bounds: [
-          mapView.bounds.getSouthWest().lng, // minx
-          mapView.bounds.getSouthWest().lat, // miny
-          mapView.bounds.getNorthEast().lng, // maxx
-          mapView.bounds.getNorthEast().lat // maxy
+          mapView.bounds.xmin,
+          mapView.bounds.ymin,
+          mapView.bounds.xmax,
+          mapView.bounds.ymax
         ],
-        center: { lat: mapView.center.lat, lng: mapView.center.lng },
+        center: mapView.center,
         geoHazards
       }))
     );

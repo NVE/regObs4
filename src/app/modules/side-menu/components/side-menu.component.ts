@@ -14,6 +14,8 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../../core/services/app-version/app-version.service';
 import { LangKey } from '../../../core/models/langKey';
+import { SelectInterface } from '@ionic/core';
+import { isAndroidOrIos } from '../../../core/helpers/ionic/platform-helper';
 
 @Component({
   selector: 'app-side-menu',
@@ -26,6 +28,10 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   settings = settings;
   TopoMap = TopoMap;
   LangKey = LangKey;
+  offlineMapsAvailable = false;
+  popupType: SelectInterface;
+  isIosOrAndroid: boolean;
+  isMobileWeb: boolean;
 
   private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
@@ -37,12 +43,15 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
     private appVersionService: AppVersionService,
-    private platfrom: Platform,
+    private platform: Platform,
     private navController: NavController,
     private ngZone: NgZone
   ) {}
 
   async ngOnInit() {
+    this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
+    this.isIosOrAndroid = isAndroidOrIos(this.platform);
+    this.isMobileWeb = this.platform.is('mobileweb');
     this.lastUpdateSubscription = this.observationService
       .getLastUpdatedForCurrentGeoHazardAsObservable()
       .subscribe((val) => {
@@ -57,6 +66,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
         });
       }
     );
+    this.offlineMapsAvailable = isAndroidOrIos(this.platform);
   }
 
   saveUserSettings() {
@@ -86,37 +96,51 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   openStartWizard() {
     this.userSettings.showGeoSelectInfo = true;
     this.saveUserSettings();
-    this.navController.navigateRoot('start-wizard');
+    if (isAndroidOrIos(this.platform)) {
+      this.navController.navigateRoot('start-wizard');
+    } else {
+      this.navController.navigateRoot('coach-marks');
+    }
   }
 
   async contactUs() {
-    const translations = await this.translateService
-      .get('MENU.CONTACT_SUBJECT')
-      .toPromise();
-    const email: EmailComposerOptions = {
-      to: settings.errorEmailAddress,
-      subject: translations,
-      isHtml: true
-    };
-    this.emailComposer.open(email);
+    if (isAndroidOrIos(this.platform)) {
+      const translations = await this.translateService
+        .get('MENU.CONTACT_SUBJECT')
+        .toPromise();
+      const email: EmailComposerOptions = {
+        to: settings.errorEmailAddress,
+        subject: translations,
+        isHtml: true
+      };
+      this.emailComposer.open(email);
+    } else {
+      window.location.href = 'mailto:regobs@nve.no';
+    }
   }
 
   async contactError() {
-    const translations = await this.translateService
-      .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'])
-      .toPromise();
-    const appVersion = await this.appVersionService.getAppVersion();
-    const email: EmailComposerOptions = {
-      to: settings.errorEmailAddress,
-      subject:
-        `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${
-          this.platfrom.is('ios') ? 'ios' : ''
-        }` +
-        `${this.platfrom.is('android') ? 'android' : ''}` +
-        ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
-      body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
-      isHtml: true
-    };
-    this.emailComposer.open(email);
+    if (isAndroidOrIos(this.platform)) {
+      const translations = await this.translateService
+        .get(['MENU.ERROR_REPORT_DESCRIPTION', 'MENU.CONTACT_REGOBS_ERROR'])
+        .toPromise();
+      const appVersion = await this.appVersionService.getAppVersion();
+      const email: EmailComposerOptions = {
+        to: settings.errorEmailAddress,
+        subject:
+          `${translations['MENU.CONTACT_REGOBS_ERROR']}: ${
+            this.platform.is('ios') ? 'ios' : ''
+          }` +
+          `${this.platform.is('android') ? 'android' : ''}` +
+          ` ${appVersion.version} ${appVersion.buildNumber} ${appVersion.revision}`,
+        body: translations['MENU.ERROR_REPORT_DESCRIPTION'],
+        isHtml: true
+      };
+      this.emailComposer.open(email);
+    } else {
+      window.open(
+        'https://forms.office.com/Pages/ResponsePage.aspx?id=DYSNvMlgC0G0-xG4aAZ4DNWEVVcEorZHtmeqQxJTsoVUQ001UkpYUlU0SEwySEpQRkdZMVJDUU1VOCQlQCN0PWcu'
+      );
+    }
   }
 }

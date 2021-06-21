@@ -7,12 +7,13 @@ import { environment } from '../../../../../environments/environment';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 import { LoggingService } from './logging.service';
 import { LogLevel } from './log-level.model';
+import { FileLoggingService } from './file-logging.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SentryService implements LoggingService {
-  constructor(private appVersionService: AppVersionService) {}
+  constructor(private appVersionService: AppVersionService, private fileLoggingService: FileLoggingService) {}
 
   error(
     error: Error,
@@ -30,6 +31,14 @@ export class SentryService implements LoggingService {
   configureLogging(appMode: AppMode) {
     const appVersion = this.appVersionService.getAppVersion();
     Sentry.init({
+      beforeSend: (event, hint) => {
+        try {
+          if (this.fileLoggingService.isReady()) {
+            this.fileLoggingService.log('Sentry beforeSend', null, LogLevel.Debug, null, event, hint);        
+          }
+        } catch (error) {}
+        return event
+      },
       dsn: environment.production ? settings.sentryDsn : null,
       transport: Sentry.Transports.FetchTransport,
       environment:
@@ -73,6 +82,9 @@ export class SentryService implements LoggingService {
     tag?: string,
     ...optionalParams: any[]
   ) {
+    if (this.fileLoggingService.isReady()) {
+      this.fileLoggingService.log(message, error, level, tag, optionalParams, error);        
+    }
     if (
       message &&
       (level === LogLevel.Warning ||
