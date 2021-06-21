@@ -772,28 +772,24 @@ export class MapComponent implements OnInit {
   /**
    * Listen for click events on graphics on a specific layer.
    * @param layer the layer of interest
-   * @return a stream of click events. Contains the graphics that was hit. If no hit, the event will contain null
+   * @return a stream of click events. Contains the graphics that was hit. If no hit, the event will contain undefined
    */
-  createClickHandlerForGraphicsLayer(layer: GraphicsLayer): Observable<Graphic|null> {
-    const getGraphicsAtScreenPoint = p => this.view
-      .hitTest(p, { include: layer })
-      .catch(err => {
+  createClickHandlerForGraphicsLayer(
+    layer: GraphicsLayer
+  ): Observable<Graphic | undefined> {
+
+    const getGraphicsAtScreenPoint = (
+      p: __esri.MapViewClickEvent
+    ): Promise<__esri.HitTestResult | null> =>
+      this.view.hitTest(p, { include: layer }).catch((err) => {
         this.logger.error(err, DEBUG_TAG, 'hitTest failed');
         return null;
       });
 
-    const getFirstGraphicOrNull = (response: __esri.HitTestResult) => {
-      try {
-        const [firstHit] = response.results;
-        return firstHit.graphic;
-      } catch (error) {
-        return null;
-      }
-    }
-
     return this.click$.pipe(
       switchMap(getGraphicsAtScreenPoint),
-      map(getFirstGraphicOrNull),
+      // Return the graphic of the first hit result
+      map((r) => r?.results?.[0]?.graphic)
     );
   }
 
