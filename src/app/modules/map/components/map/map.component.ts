@@ -37,6 +37,7 @@ import { OfflineMapService } from '../../../../core/services/offline-map/offline
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { LangKey } from '../../../../core/models/langKey';
 import { Feature, GeometryObject } from '@turf/turf';
+import { File } from '@ionic-native/file/ngx';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -72,7 +73,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private followMode = true;
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
-
+  private mapsFolder = 'NOT_READY';
   private isActive: BehaviorSubject<boolean>;
 
   constructor(
@@ -82,7 +83,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private zone: NgZone,
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
-    private geoPositionService: GeoPositionService
+    private geoPositionService: GeoPositionService,
+    private file: File
   ) {
     // Hack to make sure map pane is set before getPosition
     L.Map.include({
@@ -351,7 +353,44 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           supportMapTileLayer.addTo(this.tilesLayer);
         }
       }
+      this.configureOfflineLayer();
     });
+  }
+
+  private configureOfflineLayer(): void {
+    throw new Error('Method not implemented.');
+  }
+
+  //returns relative path to root folder for maps (without trailing /)
+  private async getMapsFolder(): Promise<string> {
+    const dirname = 'maps';
+    if (this.mapsFolder === 'NOT_READY') {
+      const dataFolder = await this.getDataFolder();
+      await this.file.createDir(dataFolder, dirname, true);
+      this.mapsFolder = dirname;
+    }
+    return this.mapsFolder;
+  }
+
+    //return absolute path to root folder for application data (with trailing /)
+    private async getDataFolder(): Promise<string> {
+      // if (this.platform.is('android')) {
+      //     const userSettings = await this.userSettingService.getUserSettings();
+      //     // TODO: Prefer save offline map on SD card? Show a dialog to ask if user wants to save on external directory?
+      //     if (false) {
+      //         return this.file.externalDataDirectory;
+      //     }
+      // }
+      return this.file.dataDirectory;
+    }
+  
+
+  private async getFileUrl(path: string, filename: string): Promise<string> {
+    const directoryEntry = await this.file.resolveDirectoryUrl(path);
+    const targetFile = await this.file.getFile(directoryEntry, filename, {
+      create: false
+    });
+    return targetFile.toURL();
   }
 
   private getMaxZoom(detectRetina: boolean) {
