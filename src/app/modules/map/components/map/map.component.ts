@@ -38,6 +38,10 @@ import { GeoPositionService } from '../../../../core/services/geo-position/geo-p
 import { LangKey } from '../../../../core/models/langKey';
 import { Feature, GeometryObject } from '@turf/turf';
 import { File } from '@ionic-native/file/ngx';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { Platform } from '@ionic/angular';
+import { OfflineMap } from 'src/app/core/services/offline-map/offline-map.model';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -67,13 +71,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   loaded = false;
   private map: L.Map;
   private tilesLayer = L.layerGroup();
+  private offlineTilesLayerGroup;
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
   private ngDestroy$ = new Subject();
   private followMode = true;
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
-  private mapsFolder = 'NOT_READY';
   private isActive: BehaviorSubject<boolean>;
 
   constructor(
@@ -84,7 +88,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
     private geoPositionService: GeoPositionService,
-    private file: File
+    private file: File,
+    private platform: Platform,
+    private offlineMapService: OfflineMapService,
+    private webView: WebView
   ) {
     // Hack to make sure map pane is set before getPosition
     L.Map.include({
@@ -156,9 +163,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onLeafletMapReady(map: L.Map) {
+    //TODO: Denne metoden er altfor lang, splitte opp i flere funksjoner!
     this.map = map;
     if (this.showScale) {
       L.control.scale({ imperial: false }).addTo(map);
+    }
+    if (isAndroidOrIos) {
+      this.offlineTilesLayerGroup = L.layerGroup()
+      this.offlineTilesLayerGroup.addTo(this.map);
     }
     this.tilesLayer.addTo(this.map);
 
@@ -254,7 +266,70 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.startInvalidateSizeMapTimer();
 
     this.map.on('resize', () => this.updateMapView());
+
+    if (isAndroidOrIos(this.platform)) {
+      this.initOfflineMaps();
+    }
+
     this.mapReady.emit(this.map);
+  }
+
+  private async initOfflineMaps() {
+    this.loggingService.debug('initOfflineMaps()... ', DEBUG_TAG);
+
+    this.offlineMapService.mapAdded$().subscribe((mapPackage) => {
+      this.loggingService.debug(`Nytt kart pakket ut og klar for lasting: ${mapPackage.name}`, DEBUG_TAG);
+      this.addOfflineLayers(mapPackage); //add new maps when they are available
+    });
+
+    this.offlineMapService.mapRemoved$().subscribe((mapPackage) => {
+      this.loggingService.debug(`Kartpakke slettet av bruker, vil fjerne kartlag: ${mapPackage.name}`, DEBUG_TAG);
+      this.removeOfflineLayer(mapPackage); //remove map layer when the user removes a package
+    });
+
+    for (const mapPackage of await this.offlineMapService.listOfflineMaps()) {
+      this.addOfflineLayers(mapPackage); //add maps already on disk
+    }
+  }
+
+  private async getOfflineMapUrl(mapName: string, isSupportMap = false): Promise<string> {
+    const mapType = isSupportMap ? `${mapName}_bratthet` : mapName;
+    const fileUrl = `${await this.offlineMapService.getMapsFolderUrl()}/${mapName}/${mapType}/{z}/{x}/{y}.png`;
+    return this.webView.convertFileSrc(fileUrl);
+  }
+
+  private async addOfflineLayers(offlineMap: OfflineMap) {
+    const mapName = offlineMap.name;
+    this.loggingService.debug(`laster offline kartpakke: ${mapName}`, DEBUG_TAG);
+    this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
+    const backgroundMapUrl = await this.getOfflineMapUrl(mapName);
+    this.loggingService.debug(`Oppretter kartlag, url = ${backgroundMapUrl}`, DEBUG_TAG);
+    const backgroundLayer = L.tileLayer(
+      backgroundMapUrl,
+      {
+        ...this.getTileLayerDefaultOptions(),
+        //TODO: bounds: <any>settings.map.tiles.supportTilesBounds
+      }
+    );
+    backgroundLayer.addTo(this.offlineTilesLayerGroup);
+
+    //TODO: this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
+    const supportMapUrl = await this.getOfflineMapUrl(mapName, true);
+    this.loggingService.debug(`Oppretter kartlag, url = ${supportMapUrl}`, DEBUG_TAG);
+    const opacity = 50; //TODO: Configurable
+    const supportLayer = this.createSupportMapTileLayer(supportMapUrl, opacity);
+    supportLayer.addTo(this.offlineTilesLayerGroup);
+  }
+
+  private removeOfflineLayer(
+    mapPackage: OfflineMap
+  ): void {
+    this.offlineTilesLayerGroup?.getLayers().forEach((layer) => {
+      if (mapPackage.name === layer.id) { //TODO: Sjekk om dette virker (er i tvil om ID'er blir riktig)
+        layer.destroy(); 
+        this.loggingService.debug(`Offline layer '${layer.id}' destroyed`);
+      }
+    });
   }
 
   private startActiveSubscriptions() {
@@ -301,19 +376,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getTileLayerDefaultOptions(
-    userSetting: UserSetting
+    useRetinaMap = false
   ): IRegObsTileLayerOptions {
     return {
       minZoom: settings.map.tiles.minZoom,
-      maxZoom: this.getMaxZoom(userSetting.useRetinaMap),
+      maxZoom: this.getMaxZoom(useRetinaMap),
       maxNativeZoom: settings.map.tiles.maxZoom,
-      detectRetina: userSetting.useRetinaMap,
+      detectRetina: useRetinaMap,
       updateWhenIdle: settings.map.tiles.updateWhenIdle,
       edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
     };
   }
 
-  configureTileLayers(userSetting: UserSetting) {
+  private configureTileLayers(userSetting: UserSetting) {
     this.zone.runOutsideAngular(() => {
       this.tilesLayer.clearLayers();
       this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
@@ -324,73 +399,42 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       for (const topoMap of mapOptions) {
 
         const topoTilesLayer = topoMap.excludeBounds ? new RegObsTileLayer(topoMap.url, {
-          ...this.getTileLayerDefaultOptions(userSetting),
+          ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
           bounds: topoMap.bounds,
           excludeBounds: topoMap.excludeBounds
         }) : L.tileLayer(topoMap.url, {
-          ...this.getTileLayerDefaultOptions(userSetting),
+          ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
           bounds: topoMap.bounds,
         });
         topoTilesLayer.addTo(this.tilesLayer);
       }
 
-      for (const supportTile of this.userSettingService.getSupportTilesOptions(
+      for (const supportMaps of this.userSettingService.getSupportTilesOptions(
         userSetting
       )) {
-        if (supportTile.enabled) {
-          const supportMapTileLayer = L.tileLayer(
-            supportTile.url,
-            {
-              ...this.getTileLayerDefaultOptions(userSetting),
-              updateInterval: 600,
-              keepBuffer: 0,
-              updateWhenIdle: true,
-              minZoom: settings.map.tiles.minZoomSupportMaps,
-              bounds: <any>settings.map.tiles.supportTilesBounds
-            }
-          );
-          supportMapTileLayer.setOpacity(supportTile.opacity);
-          supportMapTileLayer.addTo(this.tilesLayer);
+        if (supportMaps.enabled) {
+          const supportLayer = this.createSupportMapTileLayer(
+          supportMaps.url, supportMaps.opacity, userSetting.useRetinaMap);
+          supportLayer.addTo(this.tilesLayer);
         }
       }
-      this.configureOfflineLayer();
     });
   }
 
-  private configureOfflineLayer(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  //returns relative path to root folder for maps (without trailing /)
-  private async getMapsFolder(): Promise<string> {
-    const dirname = 'maps';
-    if (this.mapsFolder === 'NOT_READY') {
-      const dataFolder = await this.getDataFolder();
-      await this.file.createDir(dataFolder, dirname, true);
-      this.mapsFolder = dirname;
-    }
-    return this.mapsFolder;
-  }
-
-    //return absolute path to root folder for application data (with trailing /)
-    private async getDataFolder(): Promise<string> {
-      // if (this.platform.is('android')) {
-      //     const userSettings = await this.userSettingService.getUserSettings();
-      //     // TODO: Prefer save offline map on SD card? Show a dialog to ask if user wants to save on external directory?
-      //     if (false) {
-      //         return this.file.externalDataDirectory;
-      //     }
-      // }
-      return this.file.dataDirectory;
-    }
-  
-
-  private async getFileUrl(path: string, filename: string): Promise<string> {
-    const directoryEntry = await this.file.resolveDirectoryUrl(path);
-    const targetFile = await this.file.getFile(directoryEntry, filename, {
-      create: false
-    });
-    return targetFile.toURL();
+  private createSupportMapTileLayer(url: string, opacity: number, useRetinaMap = false): L.TileLayer {
+    const layer = L.tileLayer(
+      url,
+      {
+        ...this.getTileLayerDefaultOptions(useRetinaMap),
+        updateInterval: 600,
+        keepBuffer: 0,
+        updateWhenIdle: true,
+        minZoom: settings.map.tiles.minZoomSupportMaps,
+        bounds: <any>settings.map.tiles.supportTilesBounds
+      }
+    );
+    layer.setOpacity(opacity);
+    return layer;
   }
 
   private getMaxZoom(detectRetina: boolean) {
