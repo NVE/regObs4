@@ -33,6 +33,7 @@ import enData from '@angular/common/locales/en';
 import deData from '@angular/common/locales/de';
 import slData from '@angular/common/locales/sl';
 import nnData from '@angular/common/locales/nn';
+import frData from '@angular/common/locales/fr';
 
 const DEBUG_TAG = 'UserSettingService';
 
@@ -178,6 +179,8 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
         case LangKey.nn:
           registerLocaleData(nnData);
           break;
+        case LangKey.fr:
+          registerLocaleData(frData);
       }
       this.translate.use(lang);
     });

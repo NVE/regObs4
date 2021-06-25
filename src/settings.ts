@@ -286,7 +286,8 @@ export const settings = {
       { lang: 'en', name: 'English' },
       { lang: 'sv', name: 'Svenska' },
       { lang: 'de', name: 'Deutsch' },
-      { lang: 'sl', name: 'Slovenski' }
+      { lang: 'sl', name: 'Slovenski' },
+      { lang: 'fr', name: 'Français' },
     ]
   }
 };
