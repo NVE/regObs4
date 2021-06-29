@@ -72,6 +72,34 @@ export class OfflineMapService implements OnReset {
     return directories;
   }
 
+  private async getOfflineMapFileUrl(mapName: string, isSupportMap = false): Promise<string> {
+    const mapType = isSupportMap ? `${mapName}_bratthet` : mapName;
+    return `${await this.getMapsFolderUrl()}/${mapName}/${mapType}`;
+  }
+
+
+  /**
+   * @returns a key for first tile for given map. Format = <x>_<y>
+   */
+  async getTileKey(mapName: string, isSupportMap = false, minZoomLevel: number): Promise<string> {
+    this.loggingService.debug(`getTileKey(). mapName = ${mapName}, isSupportMap = ${isSupportMap}`, DEBUG_TAG);
+    const mapUrl = await this.getOfflineMapFileUrl(mapName, isSupportMap);
+    const xFolders = await this.file.listDir(mapUrl, minZoomLevel.toString());
+    this.loggingService.debug(`getTileKey(). yFolders.length = ${xFolders.length}, xFolders[0].name = ${xFolders[0].name}`, DEBUG_TAG, xFolders);
+    if (xFolders.length === 1 && xFolders[0].isDirectory) {
+      const x = xFolders[0].name;
+      const yFiles = await this.file.listDir(mapUrl, `${minZoomLevel}/${x}`);
+      this.loggingService.debug(`getTileKey(). xFiles.length = ${yFiles.length}. yFiles[0].name = ${yFiles[0].name}`, DEBUG_TAG, yFiles);
+      if (yFiles.length === 1 && yFiles[0].isFile) {
+        const y = yFiles[0].name.replace('.png', '');
+        this.loggingService.debug(`getTileKey() returns ${x}_${y}`);
+        return `${x}_${y}`;
+      }        
+    }
+    this.loggingService.debug(`Unable to find a single first tile for map = ${mapName}, isSupportMap = ${isSupportMap}`, DEBUG_TAG);
+    return null;
+  }
+
   async listOfflineMaps(): Promise<OfflineMap[]> {
     this.loggingService.debug('listOfflineMaps()', DEBUG_TAG);
     const maps: OfflineMap[] = [];

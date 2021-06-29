@@ -30,7 +30,8 @@ import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
 import {
   RegObsTileLayer,
-  IRegObsTileLayerOptions
+  IRegObsTileLayerOptions,
+  RegObsOfflineAwareTileLayer
 } from '../../core/classes/regobs-tile-layer';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
@@ -44,6 +45,7 @@ import { OfflineMap } from 'src/app/core/services/offline-map/offline-map.model'
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 
 const DEBUG_TAG = 'MapComponent';
+const MIN_OFFLINE_MAP_ZOOM = 8;
 
 interface MapOptionsWithBounds {
   name: string;
@@ -79,6 +81,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
   private isActive: BehaviorSubject<boolean>;
+  private backgroundTileMap = new Map<string, string>();
+  private supportTileMap = new Map<string, string>();
 
   constructor(
     private userSettingService: UserSettingService,
@@ -293,32 +297,41 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private async getOfflineMapUrl(mapName: string, isSupportMap = false): Promise<string> {
-    const mapType = isSupportMap ? `${mapName}_bratthet` : mapName;
-    const fileUrl = `${await this.offlineMapService.getMapsFolderUrl()}/${mapName}/${mapType}/{z}/{x}/{y}.png`;
+    const fileUrl = await this.getOfflineMapFileUrl(mapName, isSupportMap);
     return this.webView.convertFileSrc(fileUrl);
+  }
+
+  private async getOfflineMapFileUrl(mapName: string, isSupportMap = false): Promise<string> {
+    const mapType = isSupportMap ? `${mapName}_bratthet` : mapName;
+    return `${await this.offlineMapService.getMapsFolderUrl()}/${mapName}/${mapType}`;
   }
 
   private async addOfflineLayers(offlineMap: OfflineMap) {
     const mapName = offlineMap.name;
     this.loggingService.debug(`laster offline kartpakke: ${mapName}`, DEBUG_TAG);
-    this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
+    // this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
     const backgroundMapUrl = await this.getOfflineMapUrl(mapName);
-    this.loggingService.debug(`Oppretter kartlag, url = ${backgroundMapUrl}`, DEBUG_TAG);
-    const backgroundLayer = L.tileLayer(
-      backgroundMapUrl,
-      {
-        ...this.getTileLayerDefaultOptions(),
-        //TODO: bounds: <any>settings.map.tiles.supportTilesBounds
-      }
-    );
-    backgroundLayer.addTo(this.offlineTilesLayerGroup);
+    const minZoom = 8;
+    const tileKey = await this.offlineMapService.getTileKey(mapName, false, minZoom);
+    this.backgroundTileMap.set(tileKey, backgroundMapUrl);
+    // this.loggingService.debug(`Oppretter kartlag, url = ${backgroundMapUrl}`, DEBUG_TAG);
+    // const backgroundLayer = L.tileLayer(
+    //   backgroundMapUrl,
+    //   {
+    //     ...this.getTileLayerDefaultOptions(),
+    //     //TODO: bounds: <any>settings.map.tiles.supportTilesBounds
+    //   }
+    // );
+    // backgroundLayer.addTo(this.offlineTilesLayerGroup);
 
     //TODO: this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
     const supportMapUrl = await this.getOfflineMapUrl(mapName, true);
-    this.loggingService.debug(`Oppretter kartlag, url = ${supportMapUrl}`, DEBUG_TAG);
-    const opacity = 50; //TODO: Configurable
-    const supportLayer = this.createSupportMapTileLayer(supportMapUrl, opacity);
-    supportLayer.addTo(this.offlineTilesLayerGroup);
+    const supportMapTileKey = await this.offlineMapService.getTileKey(mapName, true, minZoom);
+    this.supportTileMap.set(supportMapTileKey, supportMapUrl);
+    // this.loggingService.debug(`Oppretter kartlag, url = ${supportMapUrl}`, DEBUG_TAG);
+    // const opacity = 50; //TODO: Configurable
+    // const supportLayer = this.createSupportMapTileLayer(supportMapUrl, opacity);
+    // supportLayer.addTo(this.offlineTilesLayerGroup);
   }
 
   private removeOfflineLayer(
@@ -397,15 +410,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         userSetting.language
       );
       for (const topoMap of mapOptions) {
-
-        const topoTilesLayer = topoMap.excludeBounds ? new RegObsTileLayer(topoMap.url, {
+        const options = {
           ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
           bounds: topoMap.bounds,
           excludeBounds: topoMap.excludeBounds
-        }) : L.tileLayer(topoMap.url, {
-          ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
-          bounds: topoMap.bounds,
-        });
+        };
+        const topoTilesLayer = new RegObsTileLayer(topoMap.url, options, this.backgroundTileMap, MIN_OFFLINE_MAP_ZOOM);
         topoTilesLayer.addTo(this.tilesLayer);
       }
 
@@ -422,7 +432,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private createSupportMapTileLayer(url: string, opacity: number, useRetinaMap = false): L.TileLayer {
-    const layer = L.tileLayer(
+    const layer = new RegObsOfflineAwareTileLayer(
       url,
       {
         ...this.getTileLayerDefaultOptions(useRetinaMap),
@@ -431,7 +441,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         updateWhenIdle: true,
         minZoom: settings.map.tiles.minZoomSupportMaps,
         bounds: <any>settings.map.tiles.supportTilesBounds
-      }
+      },
+      this.supportTileMap, MIN_OFFLINE_MAP_ZOOM
     );
     layer.setOpacity(opacity);
     return layer;
