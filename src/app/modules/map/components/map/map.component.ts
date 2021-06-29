@@ -73,7 +73,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   loaded = false;
   private map: L.Map;
   private tilesLayer = L.layerGroup();
-  private offlineTilesLayerGroup;
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
   private ngDestroy$ = new Subject();
@@ -171,10 +170,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.map = map;
     if (this.showScale) {
       L.control.scale({ imperial: false }).addTo(map);
-    }
-    if (isAndroidOrIos) {
-      this.offlineTilesLayerGroup = L.layerGroup()
-      this.offlineTilesLayerGroup.addTo(this.map);
     }
     this.tilesLayer.addTo(this.map);
 
@@ -283,66 +278,33 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.offlineMapService.mapAdded$().subscribe((mapPackage) => {
       this.loggingService.debug(`Nytt kart pakket ut og klar for lasting: ${mapPackage.name}`, DEBUG_TAG);
-      this.addOfflineLayers(mapPackage); //add new maps when they are available
+      this.registerOfflineMap(mapPackage); //add new maps when they are available
     });
 
     this.offlineMapService.mapRemoved$().subscribe((mapPackage) => {
-      this.loggingService.debug(`Kartpakke slettet av bruker, vil fjerne kartlag: ${mapPackage.name}`, DEBUG_TAG);
-      this.removeOfflineLayer(mapPackage); //remove map layer when the user removes a package
+      this.loggingService.debug(`Kartpakke slettet av bruker: ${mapPackage.name}`, DEBUG_TAG);
+      //todo: Remove tileKeys
     });
 
     for (const mapPackage of await this.offlineMapService.listOfflineMaps()) {
-      this.addOfflineLayers(mapPackage); //add maps already on disk
+      this.registerOfflineMap(mapPackage); //add maps already on disk
     }
   }
 
-  private async getOfflineMapUrl(mapName: string, isSupportMap = false): Promise<string> {
-    const fileUrl = await this.getOfflineMapFileUrl(mapName, isSupportMap);
+  private async getOfflineMapWebUrl(mapName: string, isSupportMap = false): Promise<string> {
+    const fileUrl = await this.offlineMapService.getOfflineMapFileUrl(mapName, isSupportMap);
     return this.webView.convertFileSrc(fileUrl);
   }
 
-  private async getOfflineMapFileUrl(mapName: string, isSupportMap = false): Promise<string> {
-    const mapType = isSupportMap ? `${mapName}_bratthet` : mapName;
-    return `${await this.offlineMapService.getMapsFolderUrl()}/${mapName}/${mapType}`;
-  }
-
-  private async addOfflineLayers(offlineMap: OfflineMap) {
+  private async registerOfflineMap(offlineMap: OfflineMap) {
     const mapName = offlineMap.name;
     this.loggingService.debug(`laster offline kartpakke: ${mapName}`, DEBUG_TAG);
-    // this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
-    const backgroundMapUrl = await this.getOfflineMapUrl(mapName);
-    const minZoom = 8;
-    const tileKey = await this.offlineMapService.getTileKey(mapName, false, minZoom);
+    const backgroundMapUrl = await this.getOfflineMapWebUrl(mapName);
+    const tileKey = await this.offlineMapService.getTileKey(mapName, false, MIN_OFFLINE_MAP_ZOOM);
     this.backgroundTileMap.set(tileKey, backgroundMapUrl);
-    // this.loggingService.debug(`Oppretter kartlag, url = ${backgroundMapUrl}`, DEBUG_TAG);
-    // const backgroundLayer = L.tileLayer(
-    //   backgroundMapUrl,
-    //   {
-    //     ...this.getTileLayerDefaultOptions(),
-    //     //TODO: bounds: <any>settings.map.tiles.supportTilesBounds
-    //   }
-    // );
-    // backgroundLayer.addTo(this.offlineTilesLayerGroup);
-
-    //TODO: this.removeOfflineLayer(offlineMap); //remove previous version of layer if any
-    const supportMapUrl = await this.getOfflineMapUrl(mapName, true);
-    const supportMapTileKey = await this.offlineMapService.getTileKey(mapName, true, minZoom);
+    const supportMapUrl = await this.getOfflineMapWebUrl(mapName, true);
+    const supportMapTileKey = await this.offlineMapService.getTileKey(mapName, true, MIN_OFFLINE_MAP_ZOOM);
     this.supportTileMap.set(supportMapTileKey, supportMapUrl);
-    // this.loggingService.debug(`Oppretter kartlag, url = ${supportMapUrl}`, DEBUG_TAG);
-    // const opacity = 50; //TODO: Configurable
-    // const supportLayer = this.createSupportMapTileLayer(supportMapUrl, opacity);
-    // supportLayer.addTo(this.offlineTilesLayerGroup);
-  }
-
-  private removeOfflineLayer(
-    mapPackage: OfflineMap
-  ): void {
-    this.offlineTilesLayerGroup?.getLayers().forEach((layer) => {
-      if (mapPackage.name === layer.id) { //TODO: Sjekk om dette virker (er i tvil om ID'er blir riktig)
-        layer.destroy(); 
-        this.loggingService.debug(`Offline layer '${layer.id}' destroyed`);
-      }
-    });
   }
 
   private startActiveSubscriptions() {

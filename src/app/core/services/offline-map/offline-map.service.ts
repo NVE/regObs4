@@ -41,7 +41,7 @@ export class OfflineMapService implements OnReset {
   }
 
   /**
-   * Will post info when a map removed by the user
+   * Will post info when a map is removed by the user
    */
   mapRemoved$(): Observable<OfflineMap> {
     return this.mapRemoved.asObservable();
@@ -56,7 +56,6 @@ export class OfflineMapService implements OnReset {
   }
 
   private async listOfflineMapNames(): Promise<string[]> {
-    const start = moment().unix();
     const fileEntries = await this.file.listDir(
       await this.getDataFolder(),
       await this.getMapsFolder()
@@ -64,19 +63,18 @@ export class OfflineMapService implements OnReset {
     const directories = fileEntries
       .filter((entry) => entry.isDirectory)
       .map((directoryEntry) => directoryEntry.name);
-    const end = moment().unix();
-    this.loggingService.debug(
-      `listOfflineMapNames took ${end - start}ms`,
-      DEBUG_TAG
-    );
     return directories;
   }
 
-  private async getOfflineMapFileUrl(mapName: string, isSupportMap = false): Promise<string> {
-    const mapType = isSupportMap ? `${mapName}_bratthet` : mapName;
+  /**
+   * @param mapName name of map package
+   * @param isSupportMap true = support map, false = background map
+   * @returns file:///path/to/offline/tiles/in/this/map
+   */
+  async getOfflineMapFileUrl(mapName: string, isSupportMap = false): Promise<string> {
+    const mapType = isSupportMap ? `${mapName}_bratthet` : mapName; //TODO: Support all relevant supportmaps
     return `${await this.getMapsFolderUrl()}/${mapName}/${mapType}`;
   }
-
 
   /**
    * @returns a key for first tile for given map. Format = <x>_<y>
@@ -228,68 +226,6 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  // private async getSavedMap(name: string): Promise<OfflineMap> {
-  //   // const result = (await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
-  //   //   .query('select')
-  //   //   .where((m: OfflineMap) => m.name === name)
-  //   //   .exec()) as OfflineMap[];
-  //   // return result[0];
-  // }
-
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  // public async getStyleJson(offlineMap: OfflineMap): Promise<Object> {
-  //   const path = await this.getOfflineMapsFolder();
-  //   const url = await this.getFileUrl(
-  //     `${path}${offlineMap.name}/resources/styles/`,
-  //     'root.json'
-  //   );
-  //   this.loggingService.debug('style url', DEBUG_TAG, url);
-  //   // const rootUrl = await this.backgroundDownloadService.getFileUrl(
-  //   //   path,
-  //   //   `${offlineMap.name}/root.json`
-  //   // );
-  //   const webUrl = this.webview.convertFileSrc(url);
-  //   //const rootWebUrl = this.webview.convertFileSrc(rootUrl);
-  //   this.loggingService.debug('web url', DEBUG_TAG, webUrl);
-  //   const tileUrl = webUrl.replace(
-  //     'resources/styles/root.json',
-  //     'tile/{z}/{y}/{x}.pbf'
-  //   );
-  //   const styleJson = await this.httpClient.get(webUrl).toPromise();
-  //   this.loggingService.debug('loaded styleJson', DEBUG_TAG, styleJson);
-  //   return {
-  //     ...styleJson,
-  //     sources: {
-  //       esri: {
-  //         tilejson: '2.2.0',
-  //         type: 'vector',
-  //         // url: rootWebUrl,
-  //         tiles: [tileUrl]
-  //       }
-  //     }
-  //   };
-  // }
-
-  // public async getRootJsonUrl(offlineMap: OfflineMap): Promise<string> {
-  //   const path = await this.getOfflineMapsFolder();
-  //   const url = await this.getFileUrl(path, `${offlineMap.name}/root.json`);
-  //   return this.webview.convertFileSrc(url);
-  // }
-
-  // private async deleteMapFromDb(name: string) {
-  //   await nSQL(NanoSql.TABLES.OFFLINE_MAP.name)
-  //     .query('delete', { name })
-  //     .exec(); // TODO: Check that this works on device, maybe change
-  //   await nSQL(NanoSql.TABLES.OFFLINE_MAP_TILES.name)
-  //     .query('delete')
-  //     .where((x: OfflineTile) => x.mapName === name)
-  //     .exec();
-  //   this.loggingService.debug(
-  //     'removed map metadata from db for: ' + name,
-  //     DEBUG_TAG
-  //   );
-  // }
-
   async removeMap(m: OfflineMap): Promise<void> {
     const rootFolder =
       (await this.getDataFolder()) + (await this.getMapsFolder());
@@ -372,7 +308,7 @@ export class OfflineMapService implements OnReset {
   /**
    * @returns file://<data dir>/<maps root dir>
    */
-  async getMapsFolderUrl(): Promise<string> {
+  private async getMapsFolderUrl(): Promise<string> {
     return `${await this.getDataFolder()}${await this.getMapsFolder()}`;
   }
 
