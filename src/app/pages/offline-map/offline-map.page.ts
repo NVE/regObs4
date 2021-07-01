@@ -4,7 +4,8 @@ import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.m
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { ActionSheetController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-offline-map',
@@ -12,13 +13,18 @@ import { Observable } from 'rxjs';
   styleUrls: ['./offline-map.page.scss']
 })
 export class OfflineMapPage {
-  unzipStatus$: Observable<OfflineMapPackage>;
+  packages$: Observable<OfflineMapPackage[]>;
 
   constructor(
     public offlineMapService: OfflineMapService,
     private helperService: HelperService,
     private actionSheetController: ActionSheetController
-  ) {}
+  ) {
+    this.packages$ = combineLatest([
+      offlineMapService.packages$,
+      offlineMapService.unzipProgress$
+    ]).pipe(map(([packages, unzipping]) => [...packages, ...unzipping]))
+  }
 
   humanReadableByteSize(bytes: number): string {
     if (isNaN(bytes)) {
@@ -28,8 +34,7 @@ export class OfflineMapPage {
   }
 
   getPercentage(map: OfflineMapPackage): number {
-    const progress = this.offlineMapService.getUnzipProgress(map.name);
-    return Math.round((progress ? progress : 0) * 100);
+    return Math.round((map.progress ? map.progress.percentage : 0) * 100);
   }
 
   // TODO: Is this method used?

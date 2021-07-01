@@ -22,7 +22,8 @@ export class OfflineMapService implements OnReset {
   packages$: Observable<OfflineMapPackage[]> = this.packages.asObservable();
 
   private mapsFolder = 'NOT_READY';
-  unzipProgress = new Map<string, number>();
+  private unzipProgress: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
+  unzipProgress$ = this.unzipProgress.asObservable();
 
   constructor(
     private file: File,
@@ -100,10 +101,6 @@ export class OfflineMapService implements OnReset {
     return metadata;
   }
 
-  getUnzipProgress(filename: string): number {
-    return this.unzipProgress.get(filename);
-  }
-
   async registerMapPackage(file: Blob, filename: string): Promise<void> {
     try {
       const root = await this.getRootFileUrl();
@@ -118,6 +115,11 @@ export class OfflineMapService implements OnReset {
         downloadComplete: null,
         maps: {}
       };
+
+      // Start tracking unzip progress
+      const progress = this.unzipProgress.value;
+      progress.push(mapPackage);
+      this.unzipProgress.next(progress);
 
       await this.unzipFile(
         file,
@@ -197,7 +199,12 @@ export class OfflineMapService implements OnReset {
   }
 
   private onUnzipProgress(metadata: OfflineMapPackage, progress: Progress) {
-    this.unzipProgress.set(metadata.name, progress.percentage);
+    metadata.progress = progress;
+    const unzipProgress = this.unzipProgress.value.filter(p => p.name !== metadata.name);
+    this.unzipProgress.next([
+      ...unzipProgress,
+      metadata
+    ]);
     // const m = await this.getSavedMap(name);
     // m.progress = progress;
 
@@ -220,6 +227,11 @@ export class OfflineMapService implements OnReset {
     // await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
     mapPackage.downloadComplete = moment().unix();
     mapPackage.progress = { percentage: 1.0 };
+    
+    // Remove from progress tracking
+    const unzipProgress = this.unzipProgress.value.filter(p => p.name !== mapPackage.name);
+    this.unzipProgress.next(unzipProgress);
+
     const secondsSpent = mapPackage.downloadComplete - mapPackage.downloadStart;
     const rate = mapPackage.size / 1024 / secondsSpent;
     this.loggingService.debug(
