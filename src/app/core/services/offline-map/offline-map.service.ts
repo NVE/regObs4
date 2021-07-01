@@ -44,10 +44,9 @@ export class OfflineMapService implements OnReset {
 
     // Read offline map package names
     const fileEntries = await this.file.listDir(path, mapsDir);
-    // const packageNames = fileEntries
-    //   .filter((entry) => entry.isDirectory)
-    //   .map((directoryEntry) => directoryEntry.name);
-    const packageNames = ['oslo'];
+    const packageNames = fileEntries
+      .filter((entry) => entry.isDirectory)
+      .map((directoryEntry) => directoryEntry.name);
     this.loggingService.debug('packageNames', DEBUG_TAG, packageNames);
     
     // Read all metadata
