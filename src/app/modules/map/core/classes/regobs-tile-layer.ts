@@ -7,56 +7,13 @@ export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
   excludeBounds?: Feature<GeometryObject>;
 }
 
-export class RegObsOfflineAwareTileLayer extends L.TileLayer {
-  private minZoomLevel: number;
-  private tileMap : Map<string, string>;
+export class RegObsTileLayer extends L.TileLayer {
 
   constructor(
     url: string,
     options: IRegObsTileLayerOptions,
-    tileMap: Map<string, string>,
-    minZoomLevel: number
   ) {
     super(url, options);
-    this.minZoomLevel = minZoomLevel;
-    this.tileMap = tileMap;
-  }
-
-  /**
-   * @returns url to an offline tile if available, or else default online tile url
-   */
-  getTileUrl(coords: L.Coords): string {
-    if (coords.z < this.minZoomLevel || this.tileMap?.size === 0) {
-      return super.getTileUrl(coords);
-    }
-
-    //find topmost tile x and y
-    let { x, y, z } = coords;   
-    while (z > this.minZoomLevel) {
-        z--;
-        x = Math.floor(x / 2);
-        y = Math.floor(y / 2);
-    }
-
-    const tileKey = `${x}_${y}`; //TODO: Tilemap should control key format. Maybe hide tilemap in own class?
-    if (this.tileMap.has(tileKey)) {
-        const offlineMapUrl = this.tileMap.get(tileKey);
-        return `${offlineMapUrl}/${coords.z}/${coords.x}/${coords.y}.png`;
-    } else {
-        return super.getTileUrl(coords);
-    }
-  }
-}
-
-export class RegObsTileLayer extends RegObsOfflineAwareTileLayer {
-
-  constructor(
-    url: string,
-    options: IRegObsTileLayerOptions,
-    tileMap: Map<string, string>,
-    minZoomLevel: number
-  ) {
-    super(url, options, tileMap, minZoomLevel);
   }
 
   _isValidTile(coords: L.Coords) {
@@ -75,5 +32,52 @@ export class RegObsTileLayer extends RegObsOfflineAwareTileLayer {
       );
     }
     return true;
+  }
+}
+
+export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
+  private minOfflineZoomLevel = 8;
+  private maxOfflineZoomLevel = 14;
+  private offlineTilesRegistry : Map<string, string>;
+
+  constructor(
+    url: string,
+    options: IRegObsTileLayerOptions,
+    tileMap: Map<string, string>,
+  ) {
+    super(url, options);
+    this.offlineTilesRegistry = tileMap;
+  }
+
+  /**
+   * @returns url to an offline tile if available, or else default online tile url
+   */
+  getTileUrl(coords: L.Coords): string {
+
+    if (coords.z < this.minOfflineZoomLevel || coords.z > this.maxOfflineZoomLevel || this.offlineTilesRegistry?.size === 0) {
+      const url = super.getTileUrl(coords);
+      console.log('Tile url:', coords.x, coords.y, coords.z, url);
+      return url;
+    }
+
+    //find topmost tile x and y
+    let { x, y, z } = coords;   
+    while (z > this.minOfflineZoomLevel) {
+        z--;
+        x = Math.floor(x / 2);
+        y = Math.floor(y / 2);
+    }
+
+    let url: string;
+    const tileKey = `${x}_${y}`; //TODO: Tilemap should control key format. Maybe hide tilemap in own class?
+    if (this.offlineTilesRegistry.has(tileKey)) {
+        const offlineMapUrl = this.offlineTilesRegistry.get(tileKey);
+        url = `${offlineMapUrl}/${coords.z}/${coords.x}/${coords.y}.png`;
+    } else {
+        url = super.getTileUrl(coords);
+    }
+
+    console.log('Tile url:', coords.x, coords.y, coords.z, url);
+    return url;
   }
 }

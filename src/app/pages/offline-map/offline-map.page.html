@@ -40,7 +40,7 @@
       <ion-label>Dato</ion-label>
       <ion-label></ion-label>
     </ion-list-header>
-    <ion-item (click)="presentActionSheet(item)" *ngFor="let item of downloadedMaps$ | async">
+    <ion-item (click)="presentActionSheet(item)" *ngFor="let item of offlineMapService.packages$ | async">
       <ion-label>{{ item.name }}</ion-label>
       <ion-label *ngIf="isDownloading(item)">
         ({{getPercentage(item) +'%' }})</ion-label>

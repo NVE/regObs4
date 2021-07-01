@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
-import { OfflineMap } from '../../core/services/offline-map/offline-map.model';
+import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { ActionSheetController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
@@ -11,19 +11,14 @@ import { Observable } from 'rxjs';
   templateUrl: './offline-map.page.html',
   styleUrls: ['./offline-map.page.scss']
 })
-export class OfflineMapPage implements OnInit {
-  downloadedMaps$: Observable<OfflineMap[]>;
-  unzipStatus$: Observable<OfflineMap>;
+export class OfflineMapPage {
+  unzipStatus$: Observable<OfflineMapPackage>;
 
   constructor(
-    private offlineMapService: OfflineMapService,
+    public offlineMapService: OfflineMapService,
     private helperService: HelperService,
     private actionSheetController: ActionSheetController
   ) {}
-
-  async ngOnInit(): Promise<void> {
-    this.downloadedMaps$ = await this.offlineMapService.getOfflineMaps$();
-  }
 
   humanReadableByteSize(bytes: number): string {
     if (isNaN(bytes)) {
@@ -32,24 +27,25 @@ export class OfflineMapPage implements OnInit {
     return this.helperService.humanReadableByteSize(bytes);
   }
 
-  getPercentage(map: OfflineMap): number {
+  getPercentage(map: OfflineMapPackage): number {
     const progress = this.offlineMapService.getUnzipProgress(map.name);
     return Math.round((progress ? progress : 0) * 100);
   }
 
-  deleteMap(map: OfflineMap): Promise<void> {
-    return this.offlineMapService.removeMap(map);
+  // TODO: Is this method used?
+  deleteMap(map: OfflineMapPackage): Promise<void> {
+    return this.offlineMapService.removeMapPackage(map);
   }
 
-  async cancelUnzip(map: OfflineMap): Promise<void> {
-    await this.offlineMapService.removeMap(map);
+  async cancelUnzip(map: OfflineMapPackage): Promise<void> {
+    await this.offlineMapService.removeMapPackage(map);
   }
 
-  isDownloading(map: OfflineMap): boolean {
+  isDownloading(map: OfflineMapPackage): boolean {
     return map.downloadStart && !map.downloadComplete;
   }
 
-  isDownloaded(map: OfflineMap): boolean {
+  isDownloaded(map: OfflineMapPackage): boolean {
     return !!map.downloadComplete;
   }
 
@@ -60,7 +56,7 @@ export class OfflineMapPage implements OnInit {
     }
   }
 
-  async presentActionSheet(map: OfflineMap): Promise<void> {
+  async presentActionSheet(map: OfflineMapPackage): Promise<void> {
     const header = map.name;
     const subHeader = this.humanReadableByteSize(map.size);
     const buttons: ActionSheetButton[] = [];
@@ -70,9 +66,7 @@ export class OfflineMapPage implements OnInit {
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.offlineMapService.removeMap(map).then(() => {
-            // console.log('map deleted');
-          });
+          this.offlineMapService.removeMapPackage(map);
         }
       });
     } else if (this.isDownloading(map)) {
