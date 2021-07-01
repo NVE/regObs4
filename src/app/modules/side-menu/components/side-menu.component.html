@@ -61,6 +61,14 @@
       <ion-select-option [value]="TopoMap.openTopo">{{ 'MENU.TILES.OPEN_TOPO' | translate }}</ion-select-option>
     </ion-select>
   </ion-item>
+  <ion-menu-toggle auto-hide="false">
+    <ion-item routerLink="/offline-map" routerDirection="forward" detail="true">
+      <ion-icon slot="start" name="download-outline" color="varsom-blue"></ion-icon>
+      <ion-label class="menu-label">
+        Offline-kart
+      </ion-label>
+    </ion-item>
+  </ion-menu-toggle>
   <app-support-tiles-menu></app-support-tiles-menu>
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label class="list-header-label">

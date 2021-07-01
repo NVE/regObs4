@@ -14,6 +14,7 @@ import { ShortcutService } from './core/services/shortcut/shortcut.service';
 import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
 import { switchMap, take, concatMap, delay, catchError } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
+import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -35,13 +36,15 @@ export class AppComponent {
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
-    private shortcutService: ShortcutService
+    private shortcutService: ShortcutService,
+    private fileLoggingService: FileLoggingService
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
   }
 
   initializeApp(): void {
+    this.fileLoggingService.init({});
     this.getUserSettings()
       .pipe(this.initServices(), delay(200))
       .subscribe(() => this.splashScreen.hide());
