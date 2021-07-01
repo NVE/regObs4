@@ -298,6 +298,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         this.registerOfflineMapTiles(p.maps[STEEPNESS_WITH_RUNOUTS_NAME], this.offlineTilesRegistry[STEEPNESS_WITH_RUNOUTS_NAME]);
       }
     });
+
+    this.layerGroup.eachLayer((layer) => {
+      if (layer instanceof RegObsOfflineAwareTileLayer) {
+        layer.redraw();
+      }
+    })
   }
 
   private registerOfflineMapTiles(metadata: OfflineTilesMetadata, registry: Map<string, string>) {
