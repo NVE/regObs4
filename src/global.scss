@@ -101,6 +101,7 @@
   --geo-color-snow: #468eb3;
   --geo-color-dirt: #735e2f;
   --fab-fullscreen-top: calc(10px + var(--ion-safe-area-top, 0px));
+  --border-radius-large: 16px;
 }
 
 .ion-color-varsom-orange {
@@ -521,7 +522,7 @@ ion-toast {
 @media only screen and (min-width: 950px) {
   ion-card {
     max-width: 1200px;
-    border-radius: 16px !important;
+    border-radius: var(--border-radius-large) !important;
     margin: 16px auto 0 !important;
   }
 
@@ -598,4 +599,12 @@ ion-select-popover ion-list ion-item ion-radio {
 .sc-ion-popover-md-h {
   --width: 350px;
   --backdrop-opacity: var(--ion-backdrop-opacity, 0);
+}
+
+.padding-medium {
+  padding-left: 8px;
+}
+
+.no-margin {
+  margin: 0;
 }
