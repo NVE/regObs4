@@ -30,14 +30,14 @@
     </ion-row>
 
     <ion-row>
-      <ion-col size="6" size-sm="5" size-md="4" size-lg="3">
+      <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
         <ion-button class="button ion-text-uppercase" type="button" fill="outline" expand="block" (click)="openMyPage()">
           <ion-icon slot="end" src="./assets/icon/newTab.svg"></ion-icon>
             {{'LOGIN.MY_PROFILE' | translate }}
         </ion-button>
       </ion-col>
       <ion-col size="6" size-sm="5" size-md="4" size-lg="3">
-        <ion-button class="button ion-text-uppercase" type="submit" fill="clear" (click)="logout()">
+        <ion-button class="button ion-text-uppercase logout" type="submit" fill="clear" (click)="logout()">
           {{ 'LOGIN.LOGOUT' | translate }}</ion-button>
       </ion-col>
     </ion-row>
@@ -71,19 +71,19 @@
     <ion-row class="ion-padding-top">
       <ion-col>
         <!-- TODO: Koble Opphavsrett og Fotograf mot PictureRequestDto, Copyright, Photographer -->
-        <div class="flexContainer">
-          <p class="ion-align-self-center no-margin">Opphavsrett: {{loggedInUser.email}}</p>
-          <ion-button class="button ion-padding-start ion-text-uppercase" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
+        <div class="flexContainer max-div-height margin-mobile">
+          <p class="ion-align-self-center no-margin"><strong>Opphavsrett:</strong> {{loggedInUser.email}}</p>
+          <ion-button class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
         </div>
-        <div class="flexContainer">
-          <p class="ion-align-self-center no-margin">Fotograf: {{loggedInUser.email}}</p>
-          <ion-button class="button ion-padding-start ion-text-uppercase" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
+        <div class="flexContainer max-div-height">
+          <p class="ion-align-self-center no-margin"><strong>Fotograf:</strong> {{loggedInUser.email}}</p>
+          <ion-button class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
         </div>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <p class="info-text">Når du publiserer bilder i Regobs aksepterer du at de er lisensiert under NLOD og kan gjenbrukes. Les mer om data</p>
+        <p class="info-text ion-padding-top">Når du publiserer bilder i Regobs aksepterer du at de er lisensiert under NLOD og kan gjenbrukes. Les mer om data</p>
       </ion-col>
     </ion-row>
 
@@ -126,7 +126,7 @@
     <ion-row class="ion-padding-top">
       <ion-col size="12" size-sm="5" size-md="4" size-lg="3">
         <!-- Generere gruppene med å hente de fra API også loope gjennom med ngFor -->
-        <div class="flexContainer">
+        <div class="flexContainer margin-mobile">
           <ion-icon class="ion-align-self-center" src="./assets/icon/group.svg"></ion-icon>
           <p class="padding-medium no-margin">Snøskredvarslingen</p>
         </div>
