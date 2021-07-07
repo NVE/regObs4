@@ -2,12 +2,13 @@
   margin-left: 0px;
   margin-right: 0px;
   height: var(--ion-button-height);
+  max-width: 310px;
 }
 
 .grid-container {
   background: var(--background-color-menu);
   border-radius: var(--border-radius-large);
-  --ion-grid-column-padding: 32px;
+  --ion-grid-padding: 32px;
 }
 
 .profile-icon {
@@ -44,6 +45,7 @@ ion-col {
 .profile-title {
   font-size: 36px;
   margin-bottom: 16px;
+  margin-top: 0;
 }
 
 .stars {
@@ -52,4 +54,22 @@ ion-col {
 
 .star-container {
   padding-top: 2px;
+}
+
+.logout:hover {
+  text-decoration: underline;
+}
+
+.max-div-height {
+  max-height: 40px;
+}
+
+.edit-button {
+  height: auto;
+}
+
+@media only screen and (max-width: 475px) {
+  .margin-mobile {
+    margin-bottom: 8px;
+  }
 }
