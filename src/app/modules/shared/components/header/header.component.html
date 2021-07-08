@@ -6,6 +6,11 @@
     <ion-buttons slot="end" *ngIf="showMenuButton">
       <ion-menu-button color="light" mode="ios"></ion-menu-button>
     </ion-buttons>
+    <ion-buttons slot="start" *ngIf="showMenuButton">
+      <ion-menu-button menu="filter" color="light" mode="ios">
+        <ion-icon src="./assets/icon/filter-menu.svg"></ion-icon>
+      </ion-menu-button>
+    </ion-buttons>
     <ion-title *ngIf="!tripRunning">
       {{ title | translate }}
     </ion-title>

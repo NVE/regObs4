@@ -107,11 +107,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   openStartWizard() {
     this.userSettings.showGeoSelectInfo = true;
     this.saveUserSettings();
-    if (isAndroidOrIos(this.platform)) {
-      this.navController.navigateRoot('start-wizard');
-    } else {
-      this.navController.navigateRoot('coach-marks');
-    }
+    this.navController.navigateRoot('start-wizard');
   }
 
   async contactUs() {
