@@ -18,7 +18,7 @@
     </ion-checkbox>
     <ion-label class="ion-padding-start">Alle</ion-label>
     <ion-button class="toggleAllTypesButton" (click)="toggleAllObservationTypes()" fill="clear">
-      <ion-icon name="chevron-down-circle-outline"></ion-icon>
+      <ion-icon [name]="showObservationTypes ? 'chevron-up-circle-outline' : 'chevron-down-circle-outline' "></ion-icon>
     </ion-button>
   </ion-item>
     <ng-container *ngIf="this.showObservationTypes">
