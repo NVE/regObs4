@@ -599,3 +599,12 @@ ion-select-popover ion-list ion-item ion-radio {
   --width: 350px;
   --backdrop-opacity: var(--ion-backdrop-opacity, 0);
 }
+
+.scrollDesktop {
+  max-height: 100vh;
+  overflow: auto;
+}
+
+.mobilePadding {
+  padding-bottom: 8em;
+}
