@@ -6,8 +6,8 @@ import {
   Output
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { IRegistration } from 'src/app/modules/registration/models/registration.model';
+import { map, tap } from 'rxjs/operators';
+import { IRegistration, SyncStatus } from '@varsom-regobs-common/registration';
 import { RegistrationService } from 'src/app/modules/registration/services/registration.service';
 
 @Component({
@@ -35,6 +35,7 @@ export class DraftListComponent implements OnInit {
 
   private createRegistration$(): Observable<IRegistration[]> {
     return this.registrationService.registrations$.pipe(
+      map((regs) => regs.filter((reg) => reg.syncStatus === SyncStatus.Draft || reg.syncStatus === SyncStatus.Sync)),
       tap((regs) => this.isEmpty.emit(regs.length === 0))
     );
   }

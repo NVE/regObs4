@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { RegistrationViewModel } from '../../modules/regobs-api/models';
+import { RegistrationViewModel } from '@varsom-regobs-common/regobs-api';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { takeUntil, take } from 'rxjs/operators';

@@ -1,10 +1,13 @@
 import { Injectable, NgZone } from '@angular/core';
-import { RegistrationTid } from '../models/registrationTid.enum';
+import { RegistrationTid, IRegistration, getPropertyName, isArrayType, NewAttachmentService, RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
 import { RegistrationService } from '../services/registration.service';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { IRegistration } from '../models/registration.model';
+import { switchMap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { LoggingService } from '../../shared/services/logging/logging.service';
 
+const DEBUG_TAG = 'BasePageService';
 @Injectable({
   providedIn: 'root'
 })
@@ -25,11 +28,18 @@ export class BasePageService {
     return this.translateService;
   }
 
+  get CommonRegistrationService() {
+    return this.commonRegistrationService;
+  }
+
   constructor(
     private registrationService: RegistrationService,
+    private newAttachmentService: NewAttachmentService,
+    private commonRegistrationService: CommonRegistrationService,
     private ngZone: NgZone,
     private alertController: AlertController,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private loggingService: LoggingService,
   ) {}
 
   async confirmLeave(
@@ -102,7 +112,7 @@ export class BasePageService {
     this.Zone.run(() => {
       if (registrationTid) {
         registration.request[
-          this.registrationService.getPropertyName(registrationTid)
+          getPropertyName(registrationTid)
         ] = this.getDefaultValue(registrationTid);
         this.resetImages(registration, registrationTid);
       }
@@ -117,18 +127,15 @@ export class BasePageService {
     registration: IRegistration,
     registrationTid: RegistrationTid
   ) {
-    const propName = this.registrationService.getPropertyName(registrationTid);
+    const propName = getPropertyName(registrationTid);
     if (!registration.request[propName]) {
       // Init to new object if null
       registration.request[propName] = this.getDefaultValue(registrationTid);
     }
-    if (!registration.request.Picture) {
-      registration.request.Picture = [];
-    }
   }
 
   getDefaultValue(registrationTid: RegistrationTid) {
-    if (this.registrationService.getType(registrationTid) === 'array') {
+    if (isArrayType(registrationTid)) {
       return [];
     } else {
       return {};
@@ -136,20 +143,11 @@ export class BasePageService {
   }
 
   resetImages(registration: IRegistration, registrationTid: RegistrationTid) {
-    if (
-      registration.request.Picture &&
-      registration.request.Picture.length > 0
-    ) {
-      registration.request.Picture = registration.request.Picture.filter(
-        (p) => p.RegistrationTID !== registrationTid
-      );
-    }
-  }
-
-  hasImages(registration: IRegistration, registrationTid: RegistrationTid) {
-    return (
-      this.registrationService.getImages(registration, registrationTid).length >
-      0
-    );
+    this.newAttachmentService.getUploadedAttachments(registration.id).pipe(switchMap((attachments) => 
+      forkJoin(attachments.map((a) => this.newAttachmentService.removeAttachment(registration.id, a.id))))).subscribe(() => {
+        this.loggingService.debug('Reset images complete', DEBUG_TAG);
+      }, (error) => {
+        this.loggingService.error(error, DEBUG_TAG, 'Could not reset images');
+      });
   }
 }

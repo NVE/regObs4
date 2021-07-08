@@ -7,7 +7,7 @@ import { MapItemBarComponent } from '../../components/map-item-bar/map-item-bar.
 import { MapItemMarker } from '../../core/helpers/leaflet/map-item-marker/map-item-marker';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { MapComponent } from '../../modules/map/components/map/map.component';
-import { RegistrationViewModel } from '../../modules/regobs-api/models';
+import { RegistrationViewModel } from '@varsom-regobs-common/regobs-api';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LeafletClusterHelper } from '../../modules/map/helpers/leaflet-cluser.helper';

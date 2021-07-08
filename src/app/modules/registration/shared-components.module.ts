@@ -22,6 +22,7 @@ import { NumericInputModalPageModule } from './pages/modal-pages/numeric-input-m
 import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
 import { CompressionTestListComponent } from './components/snow/compression-test-list/compression-test-list.component';
 import { KdvSelectComponent } from './components/kdv-select/kdv-select.component';
+import { BlobImageComponent } from './components/blob-image/blob-image.component';
 
 @NgModule({
   imports: [
@@ -53,7 +54,8 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     NumericInputComponent,
     NumericInputModalPageModule,
     CompressionTestListComponent,
-    KdvSelectComponent
+    KdvSelectComponent,
+    BlobImageComponent,
   ],
   declarations: [
     SaveAndGoBackButtonComponent,
@@ -74,7 +76,8 @@ import { KdvSelectComponent } from './components/kdv-select/kdv-select.component
     YesNoSelectComponent,
     NumericInputComponent,
     CompressionTestListComponent,
-    KdvSelectComponent
+    KdvSelectComponent,
+    BlobImageComponent
   ]
 })
 export class SharedComponentsModule {}

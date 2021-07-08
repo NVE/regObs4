@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Summary } from '../../../modules/regobs-api/models';
+import { Summary } from '@varsom-regobs-common/regobs-api';
 import { SummaryType } from '../../../core/models/summmary-type.enum';
 
 @Component({

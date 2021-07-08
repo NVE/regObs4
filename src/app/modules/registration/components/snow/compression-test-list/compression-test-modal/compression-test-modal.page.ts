@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { CompressionTestDto } from '../../../../../regobs-api/models';
+import { CompressionTestEditModel } from '@varsom-regobs-common/regobs-api';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { SelectOption } from '../../../../../shared/components/input/select/select-option.model';
 
@@ -10,7 +10,7 @@ import { SelectOption } from '../../../../../shared/components/input/select/sele
   styleUrls: ['./compression-test-modal.page.scss']
 })
 export class CompressionTestModalPage implements OnInit {
-  @Input() compressionTest: CompressionTestDto;
+  @Input() compressionTest: CompressionTestEditModel;
   @Input() includeInSnowProfileAsDefault = false;
 
   showDelete = false;

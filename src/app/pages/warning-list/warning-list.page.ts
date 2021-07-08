@@ -11,7 +11,7 @@ import { map, switchMap, tap, takeUntil } from 'rxjs/operators';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { WarningListItemComponent } from '../../components/warning-list-item/warning-list-item.component';
 
 type SelectedTab = 'inMapView' | 'all' | 'favourites';

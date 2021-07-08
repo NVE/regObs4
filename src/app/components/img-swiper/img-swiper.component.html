@@ -8,7 +8,7 @@
       <app-map-image *ngSwitchCase="'location'" [location]="slide.img" (click)="onLocationClick()"></app-map-image>
     </ion-slide>
   </ion-slides>
-  <app-offline-image *ngIf="isSingleImage" class="single" (click)="onImageClick(0, imgUrl[0])" [src]="imgUrl[0]">
+  <app-offline-image *ngIf="isSingleImage" class="single" (click)="onImageClick(imgUrl[0])" [src]="imgUrl[0]">
   </app-offline-image>
   <app-map-image *ngIf="isSingleMap" class="single" [location]="location" (click)="onLocationClick()">
   </app-map-image>

@@ -1,20 +1,17 @@
 import {
   Component,
   OnInit,
-  ChangeDetectorRef,
   OnDestroy,
   NgZone
 } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
-import { Subscription, combineLatest, of, from } from 'rxjs';
-import { IRegistration } from '../../models/registration.model';
+import { RegistrationService as CommonRegistrationService, SyncStatus } from '@varsom-regobs-common/registration';
+import { Subscription, combineLatest, from } from 'rxjs';
+import { IRegistration, RegistrationTid } from '@varsom-regobs-common/registration';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
-import { ObserverGroupDto } from '../../../regobs-api/models';
-import { RegistrationTid } from '../../models/registrationTid.enum';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
 import { ActivatedRoute } from '@angular/router';
-import { RegistrationStatus } from '../../models/registrationStatus.enum';
 import { SummaryItemService } from '../../services/summary-item.service';
 import { switchMap } from 'rxjs/operators';
 
@@ -27,18 +24,19 @@ export class OverviewPage implements OnInit, OnDestroy {
   registration: IRegistration;
   RegistationTid = RegistrationTid;
   GeoHazard = GeoHazard;
-  RegistrationStatus = RegistrationStatus;
+  RegistrationStatus = SyncStatus;
   summaryItems: Array<ISummaryItem> = [];
   private summarySubscription: Subscription;
   private registrationSubscription: Subscription;
 
   get regiatration$() {
     const id = this.activatedRoute.snapshot.params['id'];
-    return this.registrationService.getSavedRegistrationByIdObservable(id);
+    return this.commonRegistrationService.getRegistrationByIdShared$(id);
   }
 
   constructor(
     private registrationService: RegistrationService,
+    private commonRegistrationService: CommonRegistrationService,
     private ngZone: NgZone,
     private activatedRoute: ActivatedRoute,
     private summaryItemService: SummaryItemService,

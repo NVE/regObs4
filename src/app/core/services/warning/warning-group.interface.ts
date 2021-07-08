@@ -1,4 +1,4 @@
-import { GeoHazard } from '../../models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { IWarning } from './warning.interface';
 
 export interface IWarningGroup {

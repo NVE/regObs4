@@ -2,8 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { ModalController } from '@ionic/angular';
 import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
-import { IRegistration } from '../../../../models/registration.model';
+import { IRegistration } from '@varsom-regobs-common/registration';
 import { RegistrationService } from '../../../../services/registration.service';
+import { isEmpty } from '@varsom-regobs-common/core';
 
 @Component({
   selector: 'app-snow-temp',
@@ -27,7 +28,7 @@ export class SnowTempComponent implements OnInit {
   }
 
   get isEmpty() {
-    return IsEmptyHelper.isEmpty(this.tempProfile);
+    return isEmpty(this.tempProfile);
   }
 
   constructor(

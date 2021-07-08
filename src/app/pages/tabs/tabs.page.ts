@@ -5,7 +5,7 @@ import { WarningService } from '../../core/services/warning/warning.service';
 import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 
 @Component({
   selector: 'app-tabs',

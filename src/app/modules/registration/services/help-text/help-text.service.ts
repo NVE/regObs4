@@ -2,14 +2,11 @@ import { Injectable } from '@angular/core';
 import moment from 'moment';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { DataLoadService } from '../../../data-load/services/data-load.service';
-import { AppMode } from '../../../../core/models/app-mode.enum';
-import { LangKey } from '../../../../core/models/langKey';
 import { NanoSql } from '../../../../../nanosql';
 import { toPromiseWithCancel } from '../../../../core/helpers/observable-helper';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
-import { HelptextDto } from '../../../regobs-api/models';
+import { GeoHazard, LangKey, AppMode } from '@varsom-regobs-common/core';
 import { settings } from '../../../../../settings';
-import { HelptextService } from '../../../regobs-api/services';
+import { HelptextService, HelptextDto } from '@varsom-regobs-common/regobs-api';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { take } from 'rxjs/operators';
 

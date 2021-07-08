@@ -31,7 +31,7 @@ export class SummaryItemComponent implements OnInit {
     );
   }
 
-  navigate(event: CustomEvent) {
+  navigate() {
     if (!this.readonly) {
       this.navController.navigateForward([this.item.href, this.item.id], {
         queryParams: this.item.queryParams

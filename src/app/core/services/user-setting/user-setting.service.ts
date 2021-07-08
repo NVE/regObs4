@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserSetting } from '../../models/user-settings.model';
 import { TranslateService } from '@ngx-translate/core';
-import { GeoHazard } from '../../models/geo-hazard.enum';
-import { AppMode } from '../../models/app-mode.enum';
+import { GeoHazard, LangKey, AppMode } from '@varsom-regobs-common/core';
 import { settings } from '../../../../settings';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, combineLatest, BehaviorSubject, from, of } from 'rxjs';
@@ -18,7 +17,6 @@ import {
   concatMap,
   filter
 } from 'rxjs/operators';
-import { LangKey } from '../../models/langKey';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';

@@ -1,8 +1,7 @@
 import { Directive, OnInit } from '@angular/core';
-import { RegistrationTid } from '../models/registrationTid.enum';
 import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
-import { IRegistration } from '../models/registration.model';
+import { IRegistration, RegistrationTid } from '@varsom-regobs-common/registration';
 import { ActivatedRoute } from '@angular/router';
 import { take, takeUntil, map, switchMap, tap } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
@@ -29,7 +28,7 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
 
   ionViewDidEnter() {
     const id = this.activatedRoute.snapshot.params['id'];
-    this.basePageService.RegistrationService.getSavedRegistrationByIdObservable(
+    this.basePageService.CommonRegistrationService.getRegistrationByIdShared$(
       id
     )
       .pipe(
@@ -60,7 +59,8 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
     // Check if implementation page has implemented custom isValid logic
     const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
     // Only return alert if page is not empty and invalid
-    if (!this.isEmpty() && !valid) {
+    const isEmpty = await Promise.resolve(this.isEmpty());
+    if (!isEmpty && !valid) {
       return this.basePageService.confirmLeave(
         this.registration,
         this.registrationTid,
@@ -95,11 +95,11 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
     return () => this.save();
   }
 
-  isEmpty() {
-    return this.basePageService.RegistrationService.isEmpty(
+  async isEmpty(): Promise<boolean> {
+    return !await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
       this.registration,
       this.registrationTid
-    );
+    ).pipe(take(1)).toPromise();
   }
 
   reset() {

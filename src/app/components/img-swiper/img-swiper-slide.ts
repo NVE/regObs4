@@ -1,4 +1,3 @@
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { ImageLocation } from './image-location.model';
 
 export interface ImgSwiperSlide {

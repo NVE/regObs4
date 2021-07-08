@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IonSlides, NavController } from '@ionic/angular';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { LangKey } from '../../core/models/langKey';
+import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
 import { animations } from './start-wizard.animations';
 import { Subject, timer, interval } from 'rxjs';
 import { takeUntil, skipWhile, switchMap, take } from 'rxjs/operators';

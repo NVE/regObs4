@@ -2,9 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { ModalController } from '@ionic/angular';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
-import { IRegistration } from '../../../../models/registration.model';
+import { IRegistration } from '@varsom-regobs-common/registration';
 import { RegistrationService } from '../../../../services/registration.service';
-import { StratProfileDto } from '../../../../../regobs-api/models';
+import { StratProfileEditModel } from '@varsom-regobs-common/regobs-api';
 
 @Component({
   selector: 'app-strat-profile',
@@ -16,7 +16,7 @@ export class StratProfileComponent implements OnInit {
 
   private modal: HTMLIonModalElement;
 
-  get profile(): StratProfileDto {
+  get profile(): StratProfileEditModel {
     if (
       this.reg &&
       this.reg.request &&

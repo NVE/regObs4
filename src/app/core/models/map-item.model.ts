@@ -1,3 +1,3 @@
-import { RegistrationViewModel } from '../../modules/regobs-api/models';
+import { RegistrationViewModel } from '@varsom-regobs-common/regobs-api';
 
 export type MapItem = RegistrationViewModel;

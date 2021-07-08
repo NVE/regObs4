@@ -23,6 +23,7 @@ export class MyObservationsPage {
 
   async refresh(cancelPromise: Promise<void>): Promise<void> {
     await this.registrationService.syncRegistrations(cancelPromise);
+
     await this.sentListComponent.refresh(cancelPromise);
   }
 

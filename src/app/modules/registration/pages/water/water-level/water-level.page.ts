@@ -1,6 +1,6 @@
 import { Component, QueryList, ViewChildren } from '@angular/core';
 import { BasePage } from '../../base.page';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { RegistrationTid } from '@varsom-regobs-common/registration';
 import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';

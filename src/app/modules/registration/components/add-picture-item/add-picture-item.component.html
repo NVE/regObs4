@@ -1,14 +1,13 @@
 <div class="images">
-  <div class="image-wrapper" *ngFor="let image of imagesForCurrentRegistrationTid; let i = index">
-    <app-base64-image *ngIf="isBase64Image(image.PictureImageBase64)" [base64encodedImage]="image.PictureImageBase64">
-    </app-base64-image>
-    <img *ngIf="!isBase64Image(image.PictureImageBase64)" [src]="convertFileSrc(image.PictureImageBase64)" />
+  <div class="image-wrapper" *ngFor="let attachment of attachments; let i = index">
+    <!-- <img [src]="convertFileSrc(image.PictureImageBase64)" /> -->
+    <ro-blob-image [imgBlob]="attachment.blob"></ro-blob-image>
     <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">
-      <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeImage(image)">
+      <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeImage(attachment)">
         <ion-icon name="close"></ion-icon>
       </ion-fab-button>
     </ion-fab>
-    <app-text-comment [(value)]="image.PictureComment" title="{{ pictureCommentText | translate}}" rows="2"
+    <app-text-comment [(value)]="attachment.Comment" title="{{ pictureCommentText | translate}}" rows="2"
       placeholder="{{ pictureCommentPlaceholder | translate }}"></app-text-comment>
   </div>
 </div>

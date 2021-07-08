@@ -1,4 +1,4 @@
-import { GeoHazard } from './geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 
 export interface SupportTile {
   name: string;

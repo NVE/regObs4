@@ -10,7 +10,7 @@
 </ion-header>
 <ng-container *ngIf="registration">
   <ion-content>
-    <app-failed-registration *ngIf="registration.error && registration.status === RegistrationStatus.Sync"
+    <app-failed-registration *ngIf="registration.syncError && registration.syncStatus === RegistrationStatus.Sync"
       [registration]="registration"></app-failed-registration>
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
@@ -18,7 +18,7 @@
           {{"REGISTRATION.OVERVIEW.MY_OBSERVATION" | translate}}
         </ion-label>
       </ion-list-header>
-      <app-summary-item [readonly]="registration.status === RegistrationStatus.Sync"
+      <app-summary-item [readonly]="registration.syncStatus === RegistrationStatus.Sync"
         *ngFor="let item of summaryItems; trackBy: trackByFunction" [item]="item"></app-summary-item>
     </ion-list>
   </ion-content>

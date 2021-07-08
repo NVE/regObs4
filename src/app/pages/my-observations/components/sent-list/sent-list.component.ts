@@ -16,10 +16,8 @@ import {
   finalize,
   map,
   pairwise,
-  skip,
   switchMap,
   take,
-  tap
 } from 'rxjs/operators';
 import {
   enterZone,
@@ -29,7 +27,7 @@ import { ObservationService } from 'src/app/core/services/observation/observatio
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { RegistrationService } from 'src/app/modules/registration/services/registration.service';
-import { RegistrationViewModel } from 'src/app/modules/regobs-api/models';
+import { RegistrationViewModel } from '@varsom-regobs-common/regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
 
@@ -153,7 +151,7 @@ export class SentListComponent implements OnInit {
   }
 
   trackByIdFunc(_: unknown, obs: RegistrationViewModel): string {
-    return obs ? obs.RegID.toString() : undefined;
+    return obs ? obs.RegId.toString() : undefined;
   }
 
   get maxCountReached(): boolean {

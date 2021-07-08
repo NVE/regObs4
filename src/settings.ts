@@ -50,9 +50,9 @@ export const settings = {
   services: {
     regObs: {
       apiUrl: {
-        PROD: 'https://api.regobs.no/app_v4',
-        DEMO: 'https://demo-api.regobs.no/app_v4',
-        TEST: 'https://test-api.regobs.no/app_v4'
+        PROD: 'https://api.regobs.no/v5',
+        DEMO: 'https://demo-api.regobs.no/v5',
+        TEST: 'https://test-api.regobs.no/v5'
         // 'TEST': 'http://localhost:40001'
       },
       serviceUrl: {

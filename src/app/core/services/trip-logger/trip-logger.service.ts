@@ -5,8 +5,7 @@ import { TripLogState } from './trip-log-state.enum';
 import { TripLogActivity } from './trip-log-activity.model';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, from, BehaviorSubject, throwError } from 'rxjs';
-import { TripService } from '../../../modules/regobs-api/services';
-import { CreateTripDto } from '../../../modules/regobs-api/models';
+import { CreateTripDto, TripService } from '@varsom-regobs-common/regobs-api';
 import {
   switchMap,
   take,
@@ -23,7 +22,7 @@ import { LegacyTrip } from './legacy-trip.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
-import { AppMode } from '../../models/app-mode.enum';
+import { AppMode } from '@varsom-regobs-common/core';
 
 const DEBUG_TAG = 'TripLoggerService';
 

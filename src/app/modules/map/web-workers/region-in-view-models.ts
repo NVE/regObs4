@@ -1,4 +1,4 @@
-import { GeoHazard } from '../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 
 export interface IRegionInViewInput {
   bounds: number[];

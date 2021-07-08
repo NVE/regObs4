@@ -27,7 +27,6 @@ import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { StartWizardGuard } from './core/guards/start-wizard.guard';
@@ -44,22 +43,28 @@ import { environment } from '../environments/environment';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { ApiConfiguration } from './core/http-interceptor/api-configuration';
-import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configuration';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { RegistrationRepositoryService } from './modules/registration/services/registration-repository/registration-repository.service';
 import { initTranslateService } from './custom-translate.loader';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AuthService } from 'ionic-appauth';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { API_KEY_TOKEN, IRegobsApiKeyProvider } from '@varsom-regobs-common/regobs-api';
+import {
+  IRegistrationModuleOptions,
+  FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
+  OfflineDbService
+} from '@varsom-regobs-common/registration';
+import { AppModeService } from '@varsom-regobs-common/core';
+import { addRxPlugin } from 'rxdb';
+import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 
-export const API_INTERCEPTOR_PROVIDER: Provider = {
-  provide: HTTP_INTERCEPTORS,
-  useExisting: forwardRef(() => ApiInterceptor),
-  multi: true
-};
+// export const API_INTERCEPTOR_PROVIDER: Provider = {
+//   provide: HTTP_INTERCEPTORS,
+//   useExisting: forwardRef(() => ApiInterceptor),
+//   multi: true
+// };
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -73,6 +78,41 @@ export class DynamicLocaleId extends String {
 function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
+
+export function initCommonApiKey(): IRegobsApiKeyProvider {
+  return { apiKey: require('../assets/apikey.json').apiKey };
+}
+
+export function initAppModeService(userSettingService: UserSettingService): any {
+  return { appMode$: userSettingService.appMode$  };
+}
+
+// export function initCommonApiOptions(
+//   appConfig: IAppConfig
+// ): RegobsApiConfigurationInterface {
+//   return { rootUrl: appConfig.api.baseUrl };
+// }
+export function initCommonRegistrationOptions(
+): IRegistrationModuleOptions {
+  const options = {
+    autoSync: false,
+    adapter: 'idb',
+    attachmentsSupported: false
+  };
+  return options;
+}
+
+export function initDb(dbService: OfflineDbService) {
+  return (): Promise<void> =>  {
+    return import('pouchdb-adapter-idb').then(addRxPlugin).then(() => dbService.initDatabase('idb'));
+  };
+}
+
+// export function initAppMode(userSettings: UserSettingService, appModeService: AppModeService){
+//   return () => {
+//     userSettings.appMode$.subscribe((appMode) => appModeService.setAppMode(appMode));
+//   }
+// }
 
 export const APP_PROVIDERS = [
   StatusBar,
@@ -96,7 +136,6 @@ export const APP_PROVIDERS = [
   SafariViewController,
   HTTP,
   WebView,
-  ApiInterceptor,
   EmailComposer,
   Keyboard,
   SQLite,
@@ -104,8 +143,14 @@ export const APP_PROVIDERS = [
   Network,
   ScreenOrientation,
   Diagnostic,
-  API_INTERCEPTOR_PROVIDER,
-  { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: ApiInterceptor, // TODO: Move to auth module
+    multi: true
+  },
+  // API_INTERCEPTOR_PROVIDER,
+  // { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
+
   { provide: ErrorHandler, useClass: AppErrorHandler },
   {
     provide: LoggingService,
@@ -131,15 +176,43 @@ export const APP_PROVIDERS = [
     multi: true
   },
 
+  // @varsom-regobs-common providers
+  {
+    provide: API_KEY_TOKEN,
+    useFactory: initCommonApiKey,
+  },
+  {
+    provide: AppModeService,
+    useFactory: initAppModeService,
+    deps: [UserSettingService]
+  },
+  // {
+  //   provide: FOR_ROOT_OPTIONS_TOKEN,
+  //   useFactory: initCommonApiOptions,
+  //   deps: [APP_CONFIG]
+  // },
+  {
+    provide: COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
+    useFactory: initCommonRegistrationOptions,
+    deps: []
+  },
+  {
+    provide: APP_INITIALIZER,
+    useFactory: initDb,
+    multi: true,
+    deps: [OfflineDbService]
+  },
+  // {
+  //   provide: APP_INITIALIZER,
+  //   useFactory: initAppMode,
+  //   multi: true,
+  //   deps: [UserSettingService, AppModeService]
+  // },
+
   // Interface implementations
   { provide: 'OnReset', useExisting: DataMarshallService, multi: true },
   { provide: 'OnReset', useExisting: UserSettingService, multi: true },
   { provide: 'OnReset', useExisting: OfflineMapService, multi: true },
-  {
-    provide: 'OnReset',
-    useExisting: RegistrationRepositoryService,
-    multi: true
-  },
 
   // Custom native/web providers
   {
