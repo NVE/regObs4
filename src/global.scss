@@ -586,6 +586,7 @@ ion-select-popover ion-list ion-item ion-radio {
   ion-item {
     --background-hover: var(--ion-color-varsom-blue-light-2);
     --background-hover-opacity: 0.5;
+    cursor: pointer;
   }
 }
 
