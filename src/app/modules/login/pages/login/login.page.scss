@@ -1,6 +1,75 @@
-.logout-button {
-    margin-top: 10px;
-    margin-left: 0px;
-    margin-right: 0px;
-    height: var(--ion-button-height);
+.button {
+  margin-left: 0px;
+  margin-right: 0px;
+  height: var(--ion-button-height);
+  max-width: 310px;
+}
+
+.grid-container {
+  background: var(--background-color-menu);
+  border-radius: var(--border-radius-large);
+  --ion-grid-padding: 32px;
+}
+
+.profile-icon {
+  font-size: 40px;
+}
+
+.flexContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin-bottom: 0;
+}
+
+h2 {
+  margin-top: 32px;
+}
+
+ion-col {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.info-text {
+  color: var(--ion-color-medium);
+  font-size: 14px;
+  margin: 0;
+}
+
+.profile-title {
+  font-size: 36px;
+  margin-bottom: 16px;
+  margin-top: 0;
+}
+
+.stars {
+  margin-top: 2px;
+}
+
+.star-container {
+  padding-top: 2px;
+}
+
+.logout:hover {
+  text-decoration: underline;
+}
+
+.max-div-height {
+  max-height: 40px;
+}
+
+.edit-button {
+  height: auto;
+}
+
+@media only screen and (max-width: 475px) {
+  .margin-mobile {
+    margin-bottom: 8px;
+  }
 }
