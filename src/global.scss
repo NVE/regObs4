@@ -578,8 +578,8 @@ ion-select-popover ion-list ion-item ion-radio {
 
 @media only screen and (min-width: 768px) {
   .sc-ion-modal-md-h {
-    --width: 800px;
-    --height: 800px;
+    --width: 100%;
+    --height: 100%;
   }
 
   ion-item {
