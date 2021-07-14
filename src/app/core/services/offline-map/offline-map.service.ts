@@ -25,6 +25,9 @@ export class OfflineMapService implements OnReset {
   private unzipProgress: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
   unzipProgress$ = this.unzipProgress.asObservable();
 
+  private downloads: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
+  downloads$ = this.downloads.asObservable();
+
   constructor(
     private file: File,
     private loggingService: LoggingService,
@@ -63,6 +66,22 @@ export class OfflineMapService implements OnReset {
     })
 
     return packages;
+  }
+
+  public downloadPackage(name: string, url: string) {
+    // Can we use @ionic-native/file-transfer/ngx ??
+    // console.log("Starting download of", url);
+    // const fileTransfer: FileTransferObject = this.transfer.create();
+    // fileTransfer.download(url, this.file.dataDirectory + name)
+    //   .then((entry) => {
+    //     console.log('download complete: ' + entry.toURL());
+    //     console.log('Reading file as array buffer');
+    //     return this.file.readAsArrayBuffer(this.file.dataDirectory, name)
+    //   })
+    //   .then(ab => {
+    //     console.log("Starting unzip");
+    //     this.registerMapPackage(ab, name);
+    //   })
   }
 
   private addMapPackage(newPackage: OfflineMapPackage) {

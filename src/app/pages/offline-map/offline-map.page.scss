@@ -1,7 +1,30 @@
+.footer {
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
 .desc {
+  font-size: smaller;
   margin: 16px;
 
   div + div {
       margin-top: 32px;
   }
+}
+
+.map-container {
+  height: 100%;
+}
+
+ion-backdrop {
+  opacity: 0.3;
+  z-index: 20;
+}
+
+#tileCard {
+  position: absolute;
+  bottom: 16px;
+  z-index: 21;
+  width: calc(100% - 48px);
+  margin: 0 24px;
 }
