@@ -6,23 +6,35 @@
     <ion-title> Offline-kart</ion-title>
   </ion-toolbar>
 </ion-header>
+
 <ion-content>
-  <div class="desc">
+  <div class="map-container">
+    <app-map
+      (mapReady)="onMapReady($event)"
+      [showScale]="false"
+      [showMapControls]="false"
+      [showUserLocation]="false"
+      [autoActivate]="false"
+      [geoTag]="'package-map'"
+    ></app-map>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <div class="footer">
+    <div class="desc">
+    
     <div>
       <ion-text color="primary">
         <h1>Nedlastning av kartpakker</h1>
         <p>Nedlastning av kartpakker foregår i to trinn:</p>
         <ol>
-          <li>Gå inn på nedlastningssiden og last ned kartpakke til telefonen.</li>
+          <li>Trykk på kartpakke og "last ned"</li>
           <li>Trykk på "Velg fil"-knappen nedenfor og velg nedlastet zip-fil for å installere kartpakken.</li>
         </ol>
       </ion-text>
     </div>
-
-    <div>
-      <a href="https://testregobs.z1.web.core.windows.net/">Gå til nedlastningsside</a>
-    </div>
-
+  
     <div>
       <input
         type="file"
@@ -31,22 +43,76 @@
         accept="application/zip"
       >
     </div>
-  </div> 
+  </div>
+  
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Kartpakke</ion-label>
+        <ion-label>Str</ion-label>
+        <ion-label>Dato</ion-label>
+        <ion-label></ion-label>
+      </ion-list-header>
+      <ion-item (click)="presentActionSheet(item)" *ngFor="let item of packages$ | async">
+        <ion-label>{{ item.name }}</ion-label>
+        <ion-label *ngIf="isDownloading(item)">
+          ({{getPercentage(item) +'%' }})</ion-label>
+        <ion-label *ngIf="!isDownloading(item)">{{ humanReadableByteSize(item.size) }}</ion-label>
+        <ion-label></ion-label>
+        <ion-icon slot="end" *ngIf="!!item.downloadComplete" name="checkmark"></ion-icon>
+      </ion-item>
+    </ion-list>
+  
+      <!-- <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <ion-title>Nedlastinger</ion-title>
+          </ion-col>
+        </ion-row>
+        <ion-row [hidden]="!showDownloads">
+          <ion-col class="ion-text-center">
+            Ingen pågående nedlastinger
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-no-padding">
+          <ion-col class="ion-text-center">
+            <ion-button color="dark" size="small" fill="clear" (click)="toggleDownloads()">
+              <ng-container *ngIf="!showDownloads">
+                <ion-icon slot="start" name="chevron-up"></ion-icon>
+                {{'REGISTRATION.OBS_LOCATION.SHOW_DETAILS' | translate}}
+              </ng-container>
+              <ng-container *ngIf="showDownloads">
+                <ion-icon slot="start" name="chevron-down"></ion-icon>
+                {{'REGISTRATION.OBS_LOCATION.HIDE_DETAILS' | translate}}
+              </ng-container>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid> -->
+  </div>
+</ion-footer> 
 
-  <ion-list>
-    <ion-list-header>
-      <ion-label>Kartpakke</ion-label>
-      <ion-label>Str</ion-label>
-      <ion-label>Dato</ion-label>
-      <ion-label></ion-label>
-    </ion-list-header>
-    <ion-item (click)="presentActionSheet(item)" *ngFor="let item of packages$ | async">
-      <ion-label>{{ item.name }}</ion-label>
-      <ion-label *ngIf="isDownloading(item)">
-        ({{getPercentage(item) +'%' }})</ion-label>
-      <ion-label *ngIf="!isDownloading(item)">{{ humanReadableByteSize(item.size) }}</ion-label>
-      <ion-label></ion-label>
-      <ion-icon slot="end" *ngIf="!!item.downloadComplete" name="checkmark"></ion-icon>
-    </ion-item>
-  </ion-list>
-</ion-content>
+<ion-backdrop 
+  *ngIf="selectedPackage"
+  (ionBackdropTap)="closeTileCard()"
+>
+</ion-backdrop>
+
+<ion-card *ngIf="selectedPackage" id="tileCard">
+  <ion-card-header>
+    <ion-card-subtitle>Kartpakke</ion-card-subtitle>
+    <ion-card-title>{{ selectedPackage.xyz[0] }}-{{ selectedPackage.xyz[1] }}-{{ selectedPackage.xyz[2] }}</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <div>Produsert: {{ selectedPackage.lastModified }}</div>
+    <div>Størrelse: {{ selectedPackage.sizeInMb }}mb</div>
+    <br />
+    <div>
+      <ion-button
+        expand="block"
+        color="varsom-orange"
+        (click)="downloadPackage()"
+      >Last ned</ion-button>
+    </div>
+  </ion-card-content>
+</ion-card>

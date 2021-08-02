@@ -251,20 +251,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(() => {
         this.redrawMap();
       });
+    
+    if (this.showUserLocation) {
+      this.geoPositionService.currentPosition$
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe((pos) => this.onPositionUpdate(pos));
+  
+      this.geoPositionService.currentHeading$
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe((heading) => {
+          if (this.userMarker) {
+            this.userMarker.setHeading(heading);
+          }
+        });
 
-    this.geoPositionService.currentPosition$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((pos) => this.onPositionUpdate(pos));
-
-    this.geoPositionService.currentHeading$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((heading) => {
-        if (this.userMarker) {
-          this.userMarker.setHeading(heading);
-        }
-      });
-
-    this.startActiveSubscriptions();
+        this.startActiveSubscriptions();
+    }
 
     this.startInvalidateSizeMapTimer();
 
