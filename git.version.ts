@@ -8,14 +8,20 @@ import * as cordovaSetVersion from 'cordova-set-version';
 async function getVersion(): Promise<AppVersion> {
   const revision = (await exec('git rev-parse --short HEAD')).stdout.toString().trim();
   const branch = (await exec('git rev-parse --abbrev-ref HEAD')).stdout.toString().trim();
-  const buildNumber = parseInt((await exec('git rev-list --count HEAD')).stdout.toString().trim(), 10);
+  const date = new Date();
+
+  const y = date.getFullYear().toString()[3];
+  const mm = date.getMonth().toLocaleString('no', { minimumIntegerDigits: 2 });
+  const dd = date.getDate().toLocaleString('no', { minimumIntegerDigits: 2 });
+  const time = Math.floor((date.getHours() * 60 + date.getMinutes()) / 2).toLocaleString('no', { minimumIntegerDigits: 3 });
+  const buildNumber = parseInt(y + mm + dd + time, 10);
 
   return {
     version: process.env.npm_package_version,
     revision,
     buildNumber,
     branch,
-    date: new Date().toISOString(),
+    date: date.toISOString(),
   };
 }
 
