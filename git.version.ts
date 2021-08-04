@@ -8,18 +8,12 @@ import * as cordovaSetVersion from 'cordova-set-version';
 async function getVersion(): Promise<AppVersion> {
   const revision = (await exec('git rev-parse --short HEAD')).stdout.toString().trim();
   const branch = (await exec('git rev-parse --abbrev-ref HEAD')).stdout.toString().trim();
-  const buildNumber = parseInt((await exec('git rev-list --count HEAD')).stdout.toString().trim(), 10);
   const date = new Date();
-
-  // NOTE: Since we build the app two times, one for iOS and one for Android, the build number will differ and might confuse
-  // developers. Also, I think build number never can be less than another build, so be sure that this is the format we want.
-  // And what happends after 9 years? The year will start at 0 again and be less than previos builds.
-  //
-  // const y = date.getFullYear().toString()[3];
-  // const mm = date.getMonth().toLocaleString('no', { minimumIntegerDigits: 2 });
-  // const dd = date.getDate().toLocaleString('no', { minimumIntegerDigits: 2 });
-  // const time = Math.floor((date.getHours() * 60 + date.getMinutes()) / 2).toLocaleString('no', { minimumIntegerDigits: 3 });
-  // const buildNumber = parseInt(y + mm + dd + time, 10);
+  const y = date.getFullYear().toString().substr(2);
+  const mm = (date.getMonth()+1).toLocaleString('no', { minimumIntegerDigits: 2 });
+  const dd = date.getDate().toLocaleString('no', { minimumIntegerDigits: 2 });
+  const time = Math.floor((date.getHours() * 60 + date.getMinutes()) / 2).toLocaleString('no', { minimumIntegerDigits: 3 });
+  const buildNumber = parseInt(y + mm + dd + time, 10);
 
   return {
     version: process.env.npm_package_version,
