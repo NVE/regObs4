@@ -114,12 +114,6 @@ steps:
     ionicArgs: '--release --prod --device'
 
 - task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
-  displayName: 'Ionic Cordova Build Android'
-  inputs:
-    ionicCommand: 'cordova build android'
-    ionicArgs: '--release --prod'
-
-- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
   displayName: 'Ionic Cordova Remove Platform Android'
   inputs:
     ionicCommand: 'cordova platform rm android'
@@ -130,6 +124,12 @@ steps:
   inputs:
     ionicCommand: 'cordova platform add android@10'
     ionicArgs: ''
+
+- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
+  displayName: 'Ionic Cordova Build Android'
+  inputs:
+    ionicCommand: 'cordova build android'
+    ionicArgs: '--release --prod'
 
 - script: |
    cd platforms/android
