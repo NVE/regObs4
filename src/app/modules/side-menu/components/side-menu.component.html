@@ -32,10 +32,10 @@
     </ion-label>
     <ion-toggle [(ngModel)]="userSettings.showObservations" (ionChange)="saveUserSettings()"></ion-toggle>
   </ion-item>
-  <div class="inner-list-panel" *ngIf="userSettings.showObservations">
+  <!-- <div class="inner-list-panel" *ngIf="userSettings.showObservations">
     <app-observations-days-back></app-observations-days-back>
     <app-update-observations></app-update-observations>
-  </div>
+  </div> -->
   <ion-item>
     <ion-label position="stacked" color="dark" class="stacked-label">{{ 'MENU.MAP' | translate }}</ion-label>
     <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap"

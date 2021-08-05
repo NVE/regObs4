@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SideMenuComponent } from './components/side-menu.component';
+import { FilterMenuComponent } from './components/filter-menu/filter-menu.component';
 import { SupportTilesMenuComponent } from './components/support-tiles-menu/support-tiles-menu.component';
 import { UserLoginComponent } from './components/user-login/user-login.component';
 import { ObservationsDaysBackComponent } from './components/observations-days-back/observations-days-back.component';
@@ -17,6 +18,7 @@ import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/
   imports: [SharedModule],
   declarations: [
     SideMenuComponent,
+    FilterMenuComponent,
     SupportTilesMenuComponent,
     UserLoginComponent,
     ObservationsDaysBackComponent,
@@ -36,6 +38,6 @@ import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/
     WeakenediceLegendComponent,
     SteepnessOutletLegendComponent
   ],
-  exports: [SideMenuComponent]
+  exports: [SideMenuComponent, FilterMenuComponent]
 })
 export class SideMenuModule {}
