@@ -9,20 +9,14 @@
 
 <ion-content>
   <div class="map-container">
-    <app-map
-      (mapReady)="onMapReady($event)"
-      [showScale]="false"
-      [showMapControls]="false"
-      [showUserLocation]="false"
-      [autoActivate]="false"
-      [geoTag]="'package-map'"
-    ></app-map>
+    <app-map (mapReady)="onMapReady($event)" [showScale]="false" [showMapControls]="false" [showUserLocation]="false"
+      [autoActivate]="false" [geoTag]="'package-map'"></app-map>
   </div>
 </ion-content>
 
 <ion-footer>
   <div class="footer">
-    <div class="desc">
+    <!-- <div class="desc">
     
     <div>
       <ion-text color="primary">
@@ -43,26 +37,25 @@
         accept="application/zip"
       >
     </div>
-  </div>
-  
+  </div> -->
+
     <ion-list>
       <ion-list-header>
         <ion-label>Kartpakke</ion-label>
-        <ion-label>Str</ion-label>
-        <ion-label>Dato</ion-label>
-        <ion-label></ion-label>
       </ion-list-header>
       <ion-item (click)="presentActionSheet(item)" *ngFor="let item of packages$ | async">
         <ion-label>{{ item.name }}</ion-label>
+        <ion-label>{{ humanReadableByteSize(item.size) }}</ion-label>
+        <ion-label>{{ item.progress?.description }}</ion-label>
         <ion-label *ngIf="isDownloading(item)">
           ({{getPercentage(item) +'%' }})</ion-label>
-        <ion-label *ngIf="!isDownloading(item)">{{ humanReadableByteSize(item.size) }}</ion-label>
-        <ion-label></ion-label>
         <ion-icon slot="end" *ngIf="!!item.downloadComplete" name="checkmark"></ion-icon>
+        <ion-icon slot="end" *ngIf="item.progress?.step === 0" name="cloud-download-outline"></ion-icon>
+        <ion-icon slot="end" *ngIf="item.progress?.step === 1" name="sync-circle-outline"></ion-icon>
       </ion-item>
     </ion-list>
-  
-      <!-- <ion-grid>
+
+    <!-- <ion-grid>
         <ion-row>
           <ion-col class="ion-text-center">
             <ion-title>Nedlastinger</ion-title>
@@ -89,18 +82,16 @@
         </ion-row>
       </ion-grid> -->
   </div>
-</ion-footer> 
+</ion-footer>
 
-<ion-backdrop 
-  *ngIf="selectedPackage"
-  (ionBackdropTap)="closeTileCard()"
->
+<!-- <ion-backdrop *ngIf="selectedPackage" (ionBackdropTap)="closeTileCard()">
 </ion-backdrop>
 
 <ion-card *ngIf="selectedPackage" id="tileCard">
   <ion-card-header>
     <ion-card-subtitle>Kartpakke</ion-card-subtitle>
-    <ion-card-title>{{ selectedPackage.xyz[0] }}-{{ selectedPackage.xyz[1] }}-{{ selectedPackage.xyz[2] }}</ion-card-title>
+    <ion-card-title>{{ selectedPackage.xyz[0] }}-{{ selectedPackage.xyz[1] }}-{{ selectedPackage.xyz[2] }}
+    </ion-card-title>
   </ion-card-header>
 
   <ion-card-content>
@@ -108,11 +99,7 @@
     <div>Størrelse: {{ selectedPackage.sizeInMb }}mb</div>
     <br />
     <div>
-      <ion-button
-        expand="block"
-        color="varsom-orange"
-        (click)="downloadPackage()"
-      >Last ned</ion-button>
+      <ion-button expand="block" color="varsom-orange" (click)="downloadPackage()">Last ned</ion-button>
     </div>
   </ion-card-content>
-</ion-card>
+</ion-card> -->

@@ -36,7 +36,6 @@ interface PackageIndex {
 })
 export class OfflineMapPage {
   packages$: Observable<OfflineMapPackage[]>;
-  private offlineMapService: OfflineMapService;
   private packageIndex$: Observable<PackageIndex>;
   selectedPackage: PackageMetadata = null;
   showTileCard = true;
@@ -50,22 +49,23 @@ export class OfflineMapPage {
     private actionSheetController: ActionSheetController,
     private platform: Platform,
     private modalController: ModalController,
+    private offlineMapService: OfflineMapService,
     http: HttpClient,
     injector: Injector,
   ) {
     this.packageIndex$ = http.get<PackageIndex>(PACKAGE_INDEX_URL).pipe(shareReplay());
 
     // TODO: Instead of this, provide another module when in browser?
-    if (isAndroidOrIos(this.platform)) {
-      this.offlineMapService = injector.get(OfflineMapService);
+    // if (isAndroidOrIos(this.platform)) {
+    //   this.offlineMapService = injector.get(OfflineMapService);
 
       this.packages$ = combineLatest([
         this.offlineMapService.packages$,
         this.offlineMapService.unzipProgress$
-      ]).pipe(map(([packages, unzipping]) => [...packages, ...unzipping]))
-    } else {
-      this.packages$ = of([]);
-    }
+      ]).pipe(map(([packages, unzipping]) => [...packages, ...unzipping]));
+    // } else {
+    //   this.packages$ = of([]);
+    // }
     
   }
 
@@ -214,22 +214,22 @@ export class OfflineMapPage {
     return !!map.downloadComplete;
   }
 
-  downloadPackage() {
-    const { name, url } = this.selectedPackage;
-    this.offlineMapService.downloadPackage(name, url);
-    this.selectedPackage = null;
-  }
+  // downloadPackage() {
+  //   const { name, url, sizeInMb } = this.selectedPackage;
+  //   this.offlineMapService.downloadPackage(name, url, sizeInMb);
+  //   this.selectedPackage = null;
+  // }
 
   closeTileCard() {
     this.selectedPackage = null;
   }
 
-  async loadFile(files: FileList): Promise<void> {
-    const file = files[0];
-    if (file) {
-      await this.offlineMapService.registerMapPackage(file, file.name);
-    }
-  }
+  // async loadFile(files: FileList): Promise<void> {
+  //   const file = files[0];
+  //   if (file) {
+  //     await this.offlineMapService.registerMapPackage(file, file.name);
+  //   }
+  // }
 
   async presentActionSheet(map: OfflineMapPackage): Promise<void> {
     const header = map.name;

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { File } from '@ionic-native/file/ngx';
 import { CancelPromise } from './cancel-promise.model';
 import { BackgroundDownloadService } from './background-download.service';
+import { Observable } from 'rxjs';
+import { DownloadProgress } from './download-progress';
 
 @Injectable()
 export class BackgroundDownloadNativeService
@@ -10,6 +12,9 @@ export class BackgroundDownloadNativeService
 
   constructor(private file: File) {
     this.currentDownloads = new Map();
+  }
+  download(url: string): Observable<DownloadProgress> {
+    throw new Error('Method not implemented.');
   }
 
   // async downloadFile(

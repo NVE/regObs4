@@ -10,6 +10,9 @@ import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import JSZip from 'jszip';
 import { ProgressStep } from './progress-step.model';
+import { BackgroundDownloadService } from '../background-download/background-download.service';
+import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
+import { Platform } from '@ionic/angular';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -31,7 +34,9 @@ export class OfflineMapService implements OnReset {
   constructor(
     private file: File,
     private loggingService: LoggingService,
-    private webView: WebView
+    private webView: WebView,
+    private backgroundDownloadService: BackgroundDownloadService,
+    private platform: Platform,
   ) {
     // Start with map packages already downloaded
     this.getMapPackages().then((packages) => {
@@ -42,6 +47,11 @@ export class OfflineMapService implements OnReset {
   }
 
   private async getMapPackages(): Promise<OfflineMapPackage[]> {
+    // TODO: Create own provider for fetching offline packages from storage
+    if(!isAndroidOrIos(this.platform)) {
+      return [];
+    }
+
     const path = await this.getDataDirectoryFileUrl();
     const mapsDir = await this.getRootDirName();
 
@@ -68,7 +78,7 @@ export class OfflineMapService implements OnReset {
     return packages;
   }
 
-  public downloadPackage(name: string, url: string) {
+  public async downloadPackage(filename: string, url: string, sizeInMb: number): Promise<void> {
     // Can we use @ionic-native/file-transfer/ngx ??
     // console.log("Starting download of", url);
     // const fileTransfer: FileTransferObject = this.transfer.create();
@@ -82,6 +92,45 @@ export class OfflineMapService implements OnReset {
     //     console.log("Starting unzip");
     //     this.registerMapPackage(ab, name);
     //   })
+    const name = filename.replace('.zip', '');
+    const mapPackage = await this.registerMapPackage(name, filename, sizeInMb);
+    this.backgroundDownloadService.download(url).subscribe(async (downloadProgress) => {
+      switch(downloadProgress.state) {
+        case 'IN_PROGRESS':
+          if(downloadProgress.total !== mapPackage.size) {
+            mapPackage.size = downloadProgress.total;
+            this.updatePackageMetadata(mapPackage);
+          }
+          this.onProgress(mapPackage, {step: ProgressStep.download,
+            percentage: downloadProgress.progress,
+            description: 'Downloading...'});
+          break;
+        case 'DONE':
+             const file = downloadProgress.content;
+             const root = await this.getRootFileUrl();
+             mapPackage.size = file.size;
+             this.updatePackageMetadata(mapPackage);
+            await this.unzipFile(
+                  file,
+                  root,
+                  name,
+                  () => this.onUnzipComplete(mapPackage),
+                  (progress) => this.onProgress(mapPackage, progress),
+                  (error) => this.onUnzipError(name, error)
+            );
+          break;
+        default:
+          break;
+      }
+    }, (err) => this.onUnzipError(name, err));
+  }
+
+  private updatePackageMetadata(metadata: OfflineMapPackage) {
+    const unzipProgress = this.unzipProgress.value.filter(p => p.name !== metadata.name);
+    this.unzipProgress.next([
+      ...unzipProgress,
+      metadata
+    ]);
   }
 
   private addMapPackage(newPackage: OfflineMapPackage) {
@@ -119,17 +168,17 @@ export class OfflineMapService implements OnReset {
     return metadata;
   }
 
-  async registerMapPackage(file: Blob, filename: string): Promise<void> {
-    try {
-      const root = await this.getRootFileUrl();
-      const name = filename.replace('.zip', '');
-      this.loggingService.debug('Root and name:', DEBUG_TAG, root, name);
+  async registerMapPackage(name: string, filename: string, sizeInMb: number): Promise<OfflineMapPackage> {
+    // try {
+      //const root = await this.getRootFileUrl();
+      // const name = filename.replace('.zip', '');
+      // this.loggingService.debug('Root and name:', DEBUG_TAG, root, name);
       const mapPackage: OfflineMapPackage = {
         name: name,
-        size: file.size,
+        size: sizeInMb * 1000 * 1000,
         filename: filename,
         downloadStart: moment().unix(),
-        progress: { percentage: 0 },
+        progress: { percentage: 0, step: ProgressStep.download, description: 'Downloading...' },
         downloadComplete: null,
         maps: {}
       };
@@ -139,17 +188,18 @@ export class OfflineMapService implements OnReset {
       progress.push(mapPackage);
       this.unzipProgress.next(progress);
 
-      await this.unzipFile(
-        file,
-        root,
-        name,
-        () => this.onUnzipComplete(mapPackage),
-        (progress) => this.onUnzipProgress(mapPackage, progress),
-        (error) => this.onUnzipError(filename, error)
-      );
-    } catch (error) {
-      await this.onUnzipError(filename, error);
-    }
+      // await this.unzipFile(
+      //   file,
+      //   root,
+      //   name,
+      //   () => this.onUnzipComplete(mapPackage),
+      //   (progress) => this.onUnzipProgress(mapPackage, progress),
+      //   (error) => this.onUnzipError(filename, error)
+      // );
+    // } catch (error) {
+    //   await this.onUnzipError(filename, error);
+    // }
+    return mapPackage;
   }
 
   async unzipFile(
@@ -216,7 +266,7 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  private onUnzipProgress(metadata: OfflineMapPackage, progress: Progress) {
+  private onProgress(metadata: OfflineMapPackage, progress: Progress) {
     metadata.progress = progress;
     const unzipProgress = this.unzipProgress.value.filter(p => p.name !== metadata.name);
     this.unzipProgress.next([
@@ -279,9 +329,12 @@ export class OfflineMapService implements OnReset {
     //         return this.file.externalDataDirectory;
     //     }
     // }
-    const fileUrl = this.file.dataDirectory;
-    console.assert(fileUrl.endsWith('/'), 'Data Directory does not end with /.');
-    return fileUrl;
+    if(this.file && this.file.dataDirectory) {
+      const fileUrl = this.file.dataDirectory;
+      console.assert(fileUrl.endsWith('/'), 'Data Directory does not end with /.');
+      return fileUrl;
+    }
+    return undefined;
   }
 
   /**
