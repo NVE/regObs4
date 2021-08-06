@@ -13,6 +13,8 @@ import { ProgressStep } from './progress-step.model';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
+import { HelperService } from '../helpers/helper.service';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -37,6 +39,7 @@ export class OfflineMapService implements OnReset {
     private webView: WebView,
     private backgroundDownloadService: BackgroundDownloadService,
     private platform: Platform,
+    private helperService: HelperService,
   ) {
     // Start with map packages already downloaded
     this.getMapPackages().then((packages) => {
@@ -70,6 +73,7 @@ export class OfflineMapService implements OnReset {
       return {
         name,
         downloadComplete: 1,
+        // TODO: display folder size as well?
         progress: { percentage: 100 },
         maps: metadata[i].maps
       }
@@ -92,6 +96,23 @@ export class OfflineMapService implements OnReset {
     //     console.log("Starting unzip");
     //     this.registerMapPackage(ab, name);
     //   })
+
+    //TODO: Ask user to prefer saving to external SD card if available?
+    if(isAndroidOrIos(this.platform)) {
+      const availableStorageSpace = await this.getDeviceFreeDiskSpace();
+
+      const neededSpace = sizeInMb * 1000 * 1000 * 2; // How well is the compression? Multiplied by 2 to be safe.
+      // Maybe save uncompressed size in package metadata??
+      this.loggingService.debug(`Available storage is ${this.helperService.humanReadableByteSize(availableStorageSpace)}. 
+      Needs ${this.helperService.humanReadableByteSize(neededSpace)}`, DEBUG_TAG);
+      
+      if(availableStorageSpace < neededSpace) {
+        this.loggingService.log('Not enough disk space to save and extract package', null , LogLevel.Warning, DEBUG_TAG);
+        // TODO: Display error to user
+        return;
+      }
+    }
+
     const name = filename.replace('.zip', '');
     const mapPackage = await this.registerMapPackage(name, filename, sizeInMb);
     this.backgroundDownloadService.download(url).subscribe(async (downloadProgress) => {
@@ -131,6 +152,12 @@ export class OfflineMapService implements OnReset {
       ...unzipProgress,
       metadata
     ]);
+  }
+
+  private getDeviceFreeDiskSpace(externalStorage: boolean = false): Promise<number> {
+    return new Promise((resolve, reject) => {
+      (window as any).DiskSpacePlugin.info({ location: externalStorage ? 2 : 1 }, (success) => resolve(success.free), (err) => reject(err));
+    });
   }
 
   private addMapPackage(newPackage: OfflineMapPackage) {
