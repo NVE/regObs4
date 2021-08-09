@@ -76,6 +76,8 @@ export class OfflineMapPage {
   onMapReady(map: L.Map) {
     (window as any).LEAFLET_MAP = map;
 
+    map.setZoom(7);
+
     combineLatest([
       this.packageIndex$,
       this.packages$
