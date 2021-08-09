@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { OfflineMapPackage, OfflinePackageMetadata } from './offline-map.model';
 import { Progress } from './progress.model';
 import moment from 'moment';
-import { File } from '@ionic-native/file/ngx';
+import { DirectoryEntry, File, Metadata, Entry } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
@@ -60,26 +60,36 @@ export class OfflineMapService implements OnReset {
 
     // Read offline map package names
     const fileEntries = await this.file.listDir(path, mapsDir);
-    const packageNames = fileEntries
-      .filter((entry) => entry.isDirectory)
-      .map((directoryEntry) => directoryEntry.name);
+    const folders = fileEntries.filter((entry) => entry.isDirectory);
+    const packageNames = folders
+      .map((directoryEntry: Entry) => directoryEntry.name);
     this.loggingService.debug('packageNames', DEBUG_TAG, packageNames);
     
-    // Read all metadata
+    // Read all folder metadata
+    const folderMetadata = await Promise.all(folders.map((folder) => this.getDirectoryMetadata(folder)));
+
+    // Read all package metadata
     const metadata = await Promise.all(packageNames.map((name) => this.getMetadata(name)));
 
     // Map to map package objects
     const packages = packageNames.map((name, i): OfflineMapPackage => {
       return {
         name,
-        downloadComplete: 1,
-        // TODO: display folder size as well?
+        downloadStart: folderMetadata[i].modificationTime.getTime() / 1000,
+        downloadComplete: folderMetadata[i].modificationTime.getTime() / 1000,
+        size: folderMetadata[i].size,
         progress: { percentage: 100 },
         maps: metadata[i].maps
       }
     })
 
     return packages;
+  }
+
+  private async getDirectoryMetadata(entry: Entry): Promise<Metadata> {
+    return new Promise((resolve, reject) => 
+      entry.getMetadata((metadata) => resolve(metadata)
+    , (error) => reject(error)));
   }
 
   public async downloadPackage(filename: string, url: string, sizeInMb: number): Promise<void> {
