@@ -22,4 +22,6 @@ export interface UserSetting {
   infoAboutObservationsRecievedTimestamps?: {[name: string]: number};
   infoAboutSupportMapsRecievedTimestamps?: {[name: string]: number};
   infoAboutOfflineSupportMapsRecievedTimestamps?: {[name: string]: number};
+  copyright?: string;
+  photographer?: string;
 }

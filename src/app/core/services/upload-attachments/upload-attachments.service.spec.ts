@@ -6,6 +6,7 @@ import { NewAttachmentService } from 'src/app/modules/common-registration/regist
 import { AttachmentService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';
+import { UserSettingService } from '../user-setting/user-setting.service';
 import { UploadAttachmentError, UploadAttachmentsService } from './upload-attachments.service';
 
 describe('UploadAttachmentsService', () => {
@@ -32,7 +33,10 @@ describe('UploadAttachmentsService', () => {
       httpClient,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
-      {} as LoggingService
+      {} as LoggingService,
+      {
+        userSetting$: of({})
+      } as UserSettingService
     );
 
     const draft: RegistrationDraft = {
@@ -98,7 +102,10 @@ describe('UploadAttachmentsService', () => {
       httpClient,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
-      jasmine.createSpyObj('LoggingService', ['debug'])
+      jasmine.createSpyObj('LoggingService', ['debug']),
+      {
+        userSetting$: of({})
+      } as UserSettingService
     );
 
     const draft: RegistrationDraft = {
@@ -188,7 +195,10 @@ describe('UploadAttachmentsService', () => {
       httpClient,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
-      loggingService
+      loggingService,
+      {
+        userSetting$: of({})
+      } as UserSettingService
     );
 
     const regUuid = '12345-abc';

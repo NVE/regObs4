@@ -4,12 +4,14 @@ import { LoggedInUser } from '../../models/logged-in-user.model';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../settings';
-import { map, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { StarRatingHelper } from '../../../../components/competence/star-helper';
 import { AccountService, MyPageData, ObserverGroupDto } from 'src/app/modules/common-regobs-api';
+import { ModalController } from '@ionic/angular';
+import { EditModalComponent } from '../../../edit-modal/edit-modal.component';
 
 @Component({
   selector: 'app-login',
@@ -56,6 +58,8 @@ export class LoginPage implements OnInit {
       GeoHazardName: 'GEO_HAZARDS.ICE'
     },
   ]
+  copyright$: Observable<string>;
+  photographer$: Observable<string>;
 
   constructor(
     private regobsAuthService: RegobsAuthService,
@@ -63,6 +67,7 @@ export class LoginPage implements OnInit {
     private externalLinkService: ExternalLinkService,
     private userGroupService: UserGroupService,
     private accountApiService: AccountService,
+    public modalController: ModalController
   ) {}
 
   ngOnInit(): void {
@@ -72,6 +77,10 @@ export class LoginPage implements OnInit {
     //this.myPage$ = this.accountApiService.AccountGetMyPageData();
     this.myPage$ = of(this.myPageSampleData);
     this.userGroupService.updateUserGroups();
+    this.copyright$ = this.userSettingService.userSetting$.pipe(switchMap((userSetting) => userSetting.copyright ? of(userSetting.copyright)
+      : this.loggedInUser$.pipe(map( (LoggedInUser) => LoggedInUser.email ))));
+    this.photographer$ = this.userSettingService.userSetting$.pipe(switchMap((userSetting) => userSetting.photographer ? of(userSetting.photographer)
+      : this.loggedInUser$.pipe(map((LoggedInUser) => LoggedInUser.email))));
   }
 
   signIn(): Promise<void> {
@@ -114,4 +123,27 @@ export class LoginPage implements OnInit {
     }
   }
 
+  async saveCopyright(copyright: string, photographer: string) {
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    userSettings.copyright = copyright;
+    userSettings.photographer = photographer;
+    this.userSettingService.saveUserSettings(userSettings);
+  }
+
+  async presentModal() {
+    const copyright = await this.copyright$.pipe(take(1)).toPromise();
+    const photographer = await this.photographer$.pipe(take(1)).toPromise();
+    const modal =await this.modalController.create({
+      component: EditModalComponent,
+      componentProps: {
+        copyright: copyright,
+        photographer: photographer
+      }
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data && data.copyright && data.photographer) {
+      await this.saveCopyright(data.copyright, data.photographer);
+    }
+  }
 }
