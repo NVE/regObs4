@@ -72,12 +72,12 @@
       <ion-col>
         <!-- TODO: Koble Opphavsrett og Fotograf mot PictureRequestDto, Copyright, Photographer -->
         <div class="flexContainer max-div-height margin-mobile">
-          <p class="ion-align-self-center no-margin"><strong>Opphavsrett:</strong> {{loggedInUser.email}}</p>
-          <ion-button class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
+          <p class="ion-align-self-center no-margin"><strong>Opphavsrett:</strong> {{copyright$ | async}}</p>
+          <ion-button (click)="presentModal()" class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
         </div>
         <div class="flexContainer max-div-height">
-          <p class="ion-align-self-center no-margin"><strong>Fotograf:</strong> {{loggedInUser.email}}</p>
-          <ion-button class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
+          <p class="ion-align-self-center no-margin"><strong>Fotograf:</strong> {{photographer$ | async}}</p>
+          <ion-button (click)="presentModal()" class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
         </div>
       </ion-col>
     </ion-row>

@@ -1,0 +1,19 @@
+
+    <ion-list>
+      <ion-icon name="close" size="large" (click)="close()"></ion-icon>
+      <ion-item>
+        <!--TODO - Legge inn tekster i Varsom Translations-->
+        <div class="flexContainer margin-mobile">
+          <ion-input [(ngModel)]="copyright" label="Opphavsrett" placeholder="copyright" >Opphavsrett:</ion-input>
+        </div>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]="photographer" placeholder="photographer">Fotograf:</ion-input>
+      </ion-item>
+  <ion-button class="saveButton" (click)="save()">SAVE</ion-button>
+
+    </ion-list> 
+     
+
+
+
