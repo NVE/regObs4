@@ -40,9 +40,10 @@ import { ExternalLinkService } from 'src/app/core/services/external-link/externa
         <ion-row>
           <ion-col>
             <ion-button
+              (click)="startDownload()"
               expand="block"
               color="varsom-orange"
-            ><a [href]="package.properties.url">Last ned</a></ion-button>
+            >Last ned</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -93,11 +94,12 @@ export class OfflinePackageModalComponent implements OnInit {
   }
 
   startDownload() {
-    // this.offlineMapService.downloadPackage(
-    //   this.package.properties.name,
-    //   this.package.properties.url
-    // );
-    // this.dismiss();
+    this.offlineMapService.downloadPackage(
+      this.package.properties.name,
+      this.package.properties.url,
+      this.package.properties.sizeInMb
+    );
+    this.dismiss();
     // window.open(this.package.properties.url, '_blank');
   }
 
