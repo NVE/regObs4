@@ -80,7 +80,8 @@ export class LoginPage implements OnInit {
       componentProps: {
         copyright: copyright,
         photographer: photographer
-      }
+      },
+      cssClass: 'editCopyrightModal'
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();

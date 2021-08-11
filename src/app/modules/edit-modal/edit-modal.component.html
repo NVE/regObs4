@@ -1,16 +1,19 @@
 
     <ion-list>
-      <ion-icon name="close" size="large" (click)="close()"></ion-icon>
+      <ion-item>
+        <h2>{{'MY_PROFILE.MY_PICTURES' | translate}}</h2>
+        <ion-icon name="close" size="large" slot="end" (click)="close()"></ion-icon>
+      </ion-item>
       <ion-item>
         <!--TODO - Legge inn tekster i Varsom Translations-->
         <div class="flexContainer margin-mobile">
-          <ion-input [(ngModel)]="copyright" label="Opphavsrett" placeholder="copyright" >Opphavsrett:</ion-input>
+          <ion-input [(ngModel)]="copyright" placeholder="copyright"><strong>{{'MY_PROFILE.COPYRIGHT' | translate}}:</strong></ion-input>
         </div>
       </ion-item>
       <ion-item>
-        <ion-input [(ngModel)]="photographer" placeholder="photographer">Fotograf:</ion-input>
+        <ion-input [(ngModel)]="photographer" placeholder="photographer"><strong>{{'MY_PROFILE.PHOTOGRAPHER' | translate}}:</strong></ion-input>
       </ion-item>
-  <ion-button class="saveButton" (click)="save()">SAVE</ion-button>
+      <ion-button class="saveButton" (click)="save()">{{'MY_PROFILE.SAVE' | translate}}</ion-button>
 
     </ion-list> 
      
