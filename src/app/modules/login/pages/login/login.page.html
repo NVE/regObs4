@@ -61,18 +61,19 @@
 
     <ion-row>
       <ion-col>
-        <h2>{{'MY_PROFILE.MY_PICTURES' | translate}}</h2>
-      </ion-col>      
+        <div class="flexContainer myPictureContainer">
+          <h2>{{'MY_PROFILE.MY_PICTURES' | translate}}</h2>
+          <ion-button (click)="presentModal()" class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
+        </div>
+      </ion-col>
     </ion-row>
-    <ion-row class="ion-padding-top">
+    <ion-row>
       <ion-col>
         <div class="flexContainer max-div-height margin-mobile">
           <p class="ion-align-self-center no-margin"><strong>{{'MY_PROFILE.COPYRIGHT' | translate}}:</strong> {{copyright$ | async}}</p>
-          <ion-button (click)="presentModal()" class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
         </div>
         <div class="flexContainer max-div-height">
           <p class="ion-align-self-center no-margin"><strong>{{'MY_PROFILE.PHOTOGRAPHER' | translate}}:</strong> {{photographer$ | async}}</p>
-          <ion-button (click)="presentModal()" class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
         </div>
       </ion-col>
     </ion-row>
