@@ -93,20 +93,6 @@ export class OfflineMapService implements OnReset {
   }
 
   public async downloadPackage(filename: string, url: string, sizeInMb: number): Promise<void> {
-    // Can we use @ionic-native/file-transfer/ngx ??
-    // console.log("Starting download of", url);
-    // const fileTransfer: FileTransferObject = this.transfer.create();
-    // fileTransfer.download(url, this.file.dataDirectory + name)
-    //   .then((entry) => {
-    //     console.log('download complete: ' + entry.toURL());
-    //     console.log('Reading file as array buffer');
-    //     return this.file.readAsArrayBuffer(this.file.dataDirectory, name)
-    //   })
-    //   .then(ab => {
-    //     console.log("Starting unzip");
-    //     this.registerMapPackage(ab, name);
-    //   })
-
     //TODO: Ask user to prefer saving to external SD card if available?
     if(isAndroidOrIos(this.platform)) {
       const availableStorageSpace = await this.getDeviceFreeDiskSpace();
@@ -206,36 +192,20 @@ export class OfflineMapService implements OnReset {
   }
 
   async registerMapPackage(name: string, filename: string, sizeInMb: number): Promise<OfflineMapPackage> {
-    // try {
-      //const root = await this.getRootFileUrl();
-      // const name = filename.replace('.zip', '');
-      // this.loggingService.debug('Root and name:', DEBUG_TAG, root, name);
-      const mapPackage: OfflineMapPackage = {
-        name: name,
-        size: sizeInMb * 1000 * 1000,
-        filename: filename,
-        downloadStart: moment().unix(),
-        progress: { percentage: 0, step: ProgressStep.download, description: 'Downloading...' },
-        downloadComplete: null,
-        maps: {}
-      };
+    const mapPackage: OfflineMapPackage = {
+      name: name,
+      size: sizeInMb * 1000 * 1000,
+      filename: filename,
+      downloadStart: moment().unix(),
+      progress: { percentage: 0, step: ProgressStep.download, description: 'Downloading...' },
+      downloadComplete: null,
+      maps: {}
+    };
 
-      // Start tracking unzip progress
-      const progress = this.unzipProgress.value;
-      progress.push(mapPackage);
-      this.unzipProgress.next(progress);
-
-      // await this.unzipFile(
-      //   file,
-      //   root,
-      //   name,
-      //   () => this.onUnzipComplete(mapPackage),
-      //   (progress) => this.onUnzipProgress(mapPackage, progress),
-      //   (error) => this.onUnzipError(filename, error)
-      // );
-    // } catch (error) {
-    //   await this.onUnzipError(filename, error);
-    // }
+    // Start tracking unzip progress
+    const progress = this.unzipProgress.value;
+    progress.push(mapPackage);
+    this.unzipProgress.next(progress);
     return mapPackage;
   }
 
@@ -310,10 +280,6 @@ export class OfflineMapService implements OnReset {
       ...unzipProgress,
       metadata
     ]);
-    // const m = await this.getSavedMap(name);
-    // m.progress = progress;
-
-    // await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
   }
 
   private async onUnzipError(name: string, error: Error) {
@@ -328,8 +294,6 @@ export class OfflineMapService implements OnReset {
   }
 
   private async onUnzipComplete(mapPackage: OfflineMapPackage) {
-    // const m = await this.getSavedMap(name);
-    // await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
     mapPackage.downloadComplete = moment().unix();
     mapPackage.progress = { percentage: 1.0 };
     

@@ -1,12 +1,11 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { ActionSheetController, ModalController, Platform } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { bufferTime, debounceTime, map, shareReplay, throttleTime } from 'rxjs/operators';
-import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { bufferTime, map, shareReplay } from 'rxjs/operators';
 import tiles from "./z8.json";
 import * as L from "leaflet";
 import { GeoJsonObject } from 'geojson';
@@ -51,22 +50,14 @@ export class OfflineMapPage {
     private modalController: ModalController,
     private offlineMapService: OfflineMapService,
     http: HttpClient,
-    injector: Injector,
   ) {
     this.packageIndex$ = http.get<PackageIndex>(PACKAGE_INDEX_URL).pipe(shareReplay());
 
-    // TODO: Instead of this, provide another module when in browser?
-    // if (isAndroidOrIos(this.platform)) {
-    //   this.offlineMapService = injector.get(OfflineMapService);
-
-      this.packages$ = combineLatest([
-        this.offlineMapService.packages$,
-        this.offlineMapService.unzipProgress$
-      ]).pipe(map(([packages, unzipping]) => [...packages, ...unzipping].sort((a, b) => b.downloadStart - a.downloadStart)));
-    // } else {
-    //   this.packages$ = of([]);
-    // }
-    
+    this.packages$ = combineLatest([
+      this.offlineMapService.packages$,
+      this.offlineMapService.unzipProgress$
+    ]).pipe(map(([packages, unzipping]) => [...packages, ...unzipping]
+      .sort((a, b) => b.downloadStart - a.downloadStart)));
   }
 
   toggleDownloads() {
@@ -199,7 +190,6 @@ export class OfflineMapPage {
     return Math.round((map.progress ? map.progress.percentage : 0) * 100);
   }
 
-  // TODO: Is this method used?
   deleteMap(map: OfflineMapPackage): Promise<void> {
     return this.offlineMapService.removeMapPackage(map);
   }
@@ -216,22 +206,9 @@ export class OfflineMapPage {
     return !!map.downloadComplete;
   }
 
-  // downloadPackage() {
-  //   const { name, url, sizeInMb } = this.selectedPackage;
-  //   this.offlineMapService.downloadPackage(name, url, sizeInMb);
-  //   this.selectedPackage = null;
-  // }
-
   closeTileCard() {
     this.selectedPackage = null;
   }
-
-  // async loadFile(files: FileList): Promise<void> {
-  //   const file = files[0];
-  //   if (file) {
-  //     await this.offlineMapService.registerMapPackage(file, file.name);
-  //   }
-  // }
 
   async presentActionSheet(map: OfflineMapPackage): Promise<void> {
     const header = map.name;
