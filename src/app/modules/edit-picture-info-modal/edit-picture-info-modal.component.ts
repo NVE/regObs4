@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-edit-modal',
-  templateUrl: './edit-modal.component.html',
-  styleUrls: ['./edit-modal.component.scss'],
+  selector: 'app-edit-picture-info-modal',
+  templateUrl: './edit-picture-info-modal.component.html',
+  styleUrls: ['./edit-picture-info-modal.component.scss'],
 })
-export class EditModalComponent implements OnInit {
+export class EditPictureInfoModalComponent implements OnInit {
 
   copyright: string;
   photographer: string; 

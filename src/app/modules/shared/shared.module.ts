@@ -26,7 +26,7 @@ import { CompetenceComponent } from '../../components/competence/competence.comp
 import { MapImageModule } from '../map-image/map-image.module';
 import { AuthModule } from './../auth/auth.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
-import { EditModalComponent } from '../edit-modal/edit-modal.component';
+import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-picture-info-modal.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -59,7 +59,7 @@ import { EditModalComponent } from '../edit-modal/edit-modal.component';
     GeoFabComponent,
     GeoNameComponent,
     CompetenceComponent,
-    EditModalComponent
+    EditPictureInfoModalComponent
   ],
   exports: [
     CommonModule,
@@ -89,7 +89,7 @@ import { EditModalComponent } from '../edit-modal/edit-modal.component';
     CompetenceComponent,
     AuthModule,
     VirtualScrollerModule,
-    EditModalComponent
+    EditPictureInfoModalComponent
   ]
 })
 export class SharedModule {}
