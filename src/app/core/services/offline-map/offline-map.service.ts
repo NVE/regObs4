@@ -8,13 +8,14 @@ import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import JSZip from 'jszip';
+// import JSZip from 'jszip';
 import { ProgressStep } from './progress-step.model';
 import { BackgroundDownloadService } from '../background-download/background-download.service';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { HelperService } from '../helpers/helper.service';
+import * as fflate from 'fflate';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -209,6 +210,14 @@ export class OfflineMapService implements OnReset {
     return mapPackage;
   }
 
+  private async createDirectoryIfNotExists(path: string, dirName: string): Promise<void> {
+    if(isAndroidOrIos(this.platform)) {
+      await this.file.createDir(path, dirName, true);
+    }else{
+      return Promise.resolve();
+    }
+  }
+
   async unzipFile(
     zipFile: Blob,
     path: string,
@@ -218,56 +227,115 @@ export class OfflineMapService implements OnReset {
     onError: (error: Error) => void
   ): Promise<void> {
     try {
-      const zip = new JSZip();
-      const content = await zip.loadAsync(zipFile, {
-        createFolders: true
-      });
-      const zipEntries = Object.keys(content.files);
-      this.loggingService.debug(
-        'zip entries',
-        DEBUG_TAG,
-        zipEntries
-      );
-      const directories = zipEntries.filter((name) => content.files[name].dir);
+      // const zip = new JSZip();
+      // const content = await zip.loadAsync(zipFile, {
+      //   createFolders: true
+      // });
+      const unzip = new fflate.Unzip();
+      unzip.onfile = async (file) => {
+          // TODO: Create directory and start write file stream
+          const fullPath = file.name;
+          this.loggingService.debug(`Got new file to unzip: ${fullPath}`, DEBUG_TAG);
+          const directories = fullPath.split('/');
+          const filename = directories.splice(directories.length -  1, 1)[0];
 
-      this.loggingService.debug('Creating directories');
-      await this.file.createDir(path, folder, true);
-      const root = `${path}/${folder}`;
-      for (const dir of directories) {
-        await this.file.createDir(root, dir, true);
+          const directoriesToCreate = directories.map((dir, index) => directories.slice(0, index+1).join('/'));
+          for(let dirToCreate of directoriesToCreate) {
+            this.loggingService.debug(`Create directory if not exists: ${folder}/${dirToCreate}`, DEBUG_TAG);
+            await this.createDirectoryIfNotExists(path, `${folder}/${dirToCreate}`);
+          }
+
+          if(isAndroidOrIos(this.platform)) {
+            this.file.createFile(path, `${folder}/${fullPath}`, true).then((entry) => {
+              entry.createWriter((writer) => {
+                file.ondata = (err, data, final) => {
+                  writer.write(data);
+                };
+                file.start();
+              }, (err) => {
+  
+              });
+            });
+          }else{
+              // Save to index db for web?
+          }
+      };
+      unzip.register(fflate.AsyncUnzipInflate);
+      const stream = zipFile.stream();
+      const reader = stream.getReader();
+
+      let result;
+      let complete = 0;
+      onProgress({ 
+        percentage: complete / zipFile.size,
+        step: ProgressStep.extractZip,
+        description: 'Unzip...'
+      });
+      while (!(result = await reader.read()).done) {
+        const value: Uint8Array =  result.value;
+        complete += value.length;
+        const done: boolean = result.done;
+        this.loggingService.debug(`Read zip file: ${complete}/${zipFile.size} bytes. (${complete / zipFile.size})`, DEBUG_TAG);
+        unzip.push(result.value, done);
+        onProgress({ 
+          percentage: complete / zipFile.size,
+          step: ProgressStep.extractZip,
+          description: 'Unzip...'
+        });
       }
 
-      let i = 0;
-      const files = zipEntries.filter((name) => !content.files[name].dir);
-      const mod = Math.floor(files.length / 100);
-
-      const unzipFile = async (fileName: string) => {
-        const zippedFile: JSZip.JSZipObject = content.files[fileName];
-        const buffer = await zippedFile.async('arraybuffer');
-        await this.file.writeFile(root, fileName, buffer, {
-          replace: true
-        });
-
-        i++;
-        if (i % mod === 0) {
-          this.loggingService.debug(
-            `Har pakket ut ${i} av ${files.length} filer. ${i / files.length}%`,
-            DEBUG_TAG
-          );
-
-          await onProgress({
-            percentage: i / files.length, //TODO: report on file size will give better progress estimate
-            step: ProgressStep.extractZip,
-            description: 'Unzip files'
-          });
-        }
-      };
-
-      this.loggingService.debug('Unzipping files');
-      await from(files)
-        .pipe(mergeMap((file) => unzipFile(file), 10))
-        .toPromise();
       onComplete();
+
+      // const arrBuffer = await zipFile.arrayBuffer();
+      // const terminate = fflate.unzip(new Uint8Array(arrBuffer), (cb) => {
+      //     cb.
+      // });
+      // const zipEntries = Object.keys(content.files);
+      // this.loggingService.debug(
+      //   'zip entries',
+      //   DEBUG_TAG,
+      //   zipEntries
+      // );
+      // const directories = zipEntries.filter((name) => content.files[name].dir);
+
+      // this.loggingService.debug('Creating directories');
+      // await this.file.createDir(path, folder, true);
+      // const root = `${path}/${folder}`;
+      // for (const dir of directories) {
+      //   await this.file.createDir(root, dir, true);
+      // }
+
+      // let i = 0;
+      // const files = zipEntries.filter((name) => !content.files[name].dir);
+      // const mod = Math.floor(files.length / 100);
+
+      // const unzipFile = async (fileName: string) => {
+      //   const zippedFile: JSZip.JSZipObject = content.files[fileName];
+      //   const buffer = await zippedFile.async('arraybuffer');
+      //   await this.file.writeFile(root, fileName, buffer, {
+      //     replace: true
+      //   });
+
+      //   i++;
+      //   if (i % mod === 0) {
+      //     this.loggingService.debug(
+      //       `Har pakket ut ${i} av ${files.length} filer. ${i / files.length}%`,
+      //       DEBUG_TAG
+      //     );
+
+      //     await onProgress({
+      //       percentage: i / files.length, //TODO: report on file size will give better progress estimate
+      //       step: ProgressStep.extractZip,
+      //       description: 'Unzip files'
+      //     });
+      //   }
+      // };
+
+      // this.loggingService.debug('Unzipping files');
+      // await from(files)
+      //   .pipe(mergeMap((file) => unzipFile(file), 10))
+      //   .toPromise();
+      // onComplete();
     } catch (err) {
       onError(err);
     }
