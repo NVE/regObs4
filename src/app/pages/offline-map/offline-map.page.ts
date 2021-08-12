@@ -191,11 +191,11 @@ export class OfflineMapPage {
   }
 
   deleteMap(map: OfflineMapPackage): Promise<void> {
-    return this.offlineMapService.removeMapPackage(map);
+    return this.offlineMapService.removeMapPackageByName(map.name);
   }
 
   async cancelUnzip(map: OfflineMapPackage): Promise<void> {
-    await this.offlineMapService.removeMapPackage(map);
+    await this.offlineMapService.removeMapPackageByName(map.name);
   }
 
   isDownloading(map: OfflineMapPackage): boolean {
@@ -220,7 +220,7 @@ export class OfflineMapPage {
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.offlineMapService.removeMapPackage(map);
+          this.offlineMapService.removeMapPackageByName(map.name);
         }
       });
     } else if (this.isDownloading(map)) {
