@@ -11,14 +11,14 @@ import { UserGroupService } from '../../../../core/services/user-group/user-grou
 import { StarRatingHelper } from '../../../../components/competence/star-helper';
 import { AccountService, MyPageData, ObserverGroupDto } from 'src/app/modules/common-regobs-api';
 import { ModalController } from '@ionic/angular';
-import { EditModalComponent } from '../../../edit-modal/edit-modal.component';
+import { EditPictureInfoModalComponent } from '../../../edit-picture-info-modal/edit-picture-info-modal.component';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss']
+  selector: 'app-user-information',
+  templateUrl: './user-information.html',
+  styleUrls: ['./user-information.scss']
 })
-export class LoginPage implements OnInit {
+export class UserInformation implements OnInit {
   loggedInUser$: Observable<LoggedInUser>;
   userGroups$: Observable<ObserverGroupDto[]>;
   myPage$: Observable<MyPageData>;
@@ -123,7 +123,7 @@ export class LoginPage implements OnInit {
     }
   }
 
-  async saveCopyright(copyright: string, photographer: string) {
+  async saveCopyrightAndPhotographer(copyright: string, photographer: string) {
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     userSettings.copyright = copyright;
     userSettings.photographer = photographer;
@@ -134,7 +134,7 @@ export class LoginPage implements OnInit {
     const copyright = await this.copyright$.pipe(take(1)).toPromise();
     const photographer = await this.photographer$.pipe(take(1)).toPromise();
     const modal =await this.modalController.create({
-      component: EditModalComponent,
+      component: EditPictureInfoModalComponent,
       componentProps: {
         copyright: copyright,
         photographer: photographer
@@ -144,7 +144,7 @@ export class LoginPage implements OnInit {
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (data && data.copyright && data.photographer) {
-      await this.saveCopyright(data.copyright, data.photographer);
+      await this.saveCopyrightAndPhotographer(data.copyright, data.photographer);
     }
   }
 }

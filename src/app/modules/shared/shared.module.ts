@@ -27,7 +27,7 @@ import { AuthModule } from './../auth/auth.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AbsPipe } from './pipes/abs.pipe';
 import { RemoteImageComponent } from './components/remote-image/remote-image.component';
-import { EditModalComponent } from '../edit-modal/edit-modal.component';
+import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-picture-info-modal.component';
 
 @NgModule({
   imports: [
@@ -62,7 +62,7 @@ import { EditModalComponent } from '../edit-modal/edit-modal.component';
     CompetenceComponent,
     AbsPipe,
     RemoteImageComponent,
-    EditModalComponent
+    EditPictureInfoModalComponent
   ],
   exports: [
     CommonModule,
@@ -93,7 +93,7 @@ import { EditModalComponent } from '../edit-modal/edit-modal.component';
     VirtualScrollerModule,
     AbsPipe,
     RemoteImageComponent,
-    EditModalComponent
+    EditPictureInfoModalComponent
   ]
 })
 export class SharedModule {}

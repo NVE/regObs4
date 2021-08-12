@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { EditModalComponent } from './edit-modal.component';
+import { EditPictureInfoModalComponent } from './edit-picture-info-modal.component';
 
 describe('EditModalComponent', () => {
-  let component: EditModalComponent;
-  let fixture: ComponentFixture<EditModalComponent>;
+  let component: EditPictureInfoModalComponent;
+  let fixture: ComponentFixture<EditPictureInfoModalComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditModalComponent ],
+      declarations: [ EditPictureInfoModalComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EditModalComponent);
+    fixture = TestBed.createComponent(EditPictureInfoModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
