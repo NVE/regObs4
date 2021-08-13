@@ -4,7 +4,7 @@
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{ loggedInUser.isLoggedIn ? ('MY_PROFILE.USER' | translate) : ('LOGIN.TITLE' | translate) }}
+      {{ loggedInUser.isLoggedIn ? ('MY_PROFILE.TITLE' | translate) : ('LOGIN.TITLE' | translate) }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -13,7 +13,7 @@
   <ion-grid class="grid-container" *ngIf="loggedInUser.isLoggedIn else login">
     <ion-row>
       <ion-col>
-        <h1 class="profile-title">{{'MY_PROFILE.USER' | translate}}</h1>
+        <h1 class="profile-title">{{'MY_PROFILE.TITLE' | translate}}</h1>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -30,7 +30,7 @@
       <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
         <ion-button class="button ion-text-uppercase" type="button" fill="outline" expand="block" (click)="openMyPage()">
           <ion-icon slot="end" src="./assets/icon/newTab.svg"></ion-icon>
-            {{'LOGIN.MY_PROFILE' | translate }}
+            {{'MY_PROFILE.MY_NVE_ACCOUNT' | translate }}
         </ion-button>
       </ion-col>
       <ion-col size="6" size-sm="5" size-md="4" size-lg="3">
