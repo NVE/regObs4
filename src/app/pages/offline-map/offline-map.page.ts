@@ -112,10 +112,10 @@ export class OfflineMapPage {
             return packageMap.has(feature.id as string);
           },
           onEachFeature: (feature: Feature<Polygon, PackageMetadata>, layer) => {
-            // TODO
-            if (installedPackages.has(feature.id as string)) {
-              return;
-            }
+            // TODO: We now also show modal dialog if package is installed or under downloading
+            // if (installedPackages.has(feature.id as string)) {
+            //   return; 
+            // }
 
             if (packageMap.has(feature.id as string)) {
               layer.on("click", () => {
@@ -171,7 +171,8 @@ export class OfflineMapPage {
     const modal = await this.modalController.create({
       component: OfflinePackageModalComponent,
       componentProps: {
-        package: feature,
+        packageOnServer: feature,
+        packages$: this.packages$
       },
       swipeToClose: true,
       mode: "ios"
