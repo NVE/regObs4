@@ -9,8 +9,8 @@ import { BackgroundGeolocationService } from './core/services/background-geoloca
 import { File } from '@ionic-native/file/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { BackgroundDownloadService } from './core/services/background-download/background-download.service';
-import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
-import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
+// import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
+// import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
 import { Zip } from '@ionic-native/zip/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
@@ -54,6 +54,7 @@ import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AuthService } from 'ionic-appauth';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -150,8 +151,10 @@ export const APP_PROVIDERS = [
   },
   {
     provide: BackgroundDownloadService,
-    useClass: window.hasOwnProperty('cordova')
-      ? BackgroundDownloadNativeService
-      : BackgroundDownloadWebService
+    // useClass: window.hasOwnProperty('cordova')
+    //   ? BackgroundDownloadNativeService
+    //   : BackgroundDownloadWebService
+    // TODO: Implement Download Manager for Android
+    useClass: HttpClientDownloadService
   }
 ];

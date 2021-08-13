@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { OfflineMapPackage, OfflinePackageMetadata } from './offline-map.model';
 import { Progress } from './progress.model';
 import moment from 'moment';
-import { File } from '@ionic-native/file/ngx';
+import { DirectoryEntry, File, Metadata, Entry } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
@@ -10,6 +10,12 @@ import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import JSZip from 'jszip';
 import { ProgressStep } from './progress-step.model';
+import { BackgroundDownloadService } from '../background-download/background-download.service';
+import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
+import { AlertController, Platform } from '@ionic/angular';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
+import { HelperService } from '../helpers/helper.service';
+import { TranslateService } from '@ngx-translate/core';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -28,10 +34,17 @@ export class OfflineMapService implements OnReset {
   private downloads: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
   downloads$ = this.downloads.asObservable();
 
+  private errorOrCancel: string[] = [];
+
   constructor(
     private file: File,
     private loggingService: LoggingService,
-    private webView: WebView
+    private webView: WebView,
+    private backgroundDownloadService: BackgroundDownloadService,
+    private platform: Platform,
+    private helperService: HelperService,
+    private translateService: TranslateService,
+    private alertController: AlertController,
   ) {
     // Start with map packages already downloaded
     this.getMapPackages().then((packages) => {
@@ -42,24 +55,34 @@ export class OfflineMapService implements OnReset {
   }
 
   private async getMapPackages(): Promise<OfflineMapPackage[]> {
+    // TODO: Create own provider for fetching offline packages from storage
+    if(!isAndroidOrIos(this.platform)) {
+      return [];
+    }
+
     const path = await this.getDataDirectoryFileUrl();
     const mapsDir = await this.getRootDirName();
 
     // Read offline map package names
     const fileEntries = await this.file.listDir(path, mapsDir);
-    const packageNames = fileEntries
-      .filter((entry) => entry.isDirectory)
-      .map((directoryEntry) => directoryEntry.name);
+    const folders = fileEntries.filter((entry) => entry.isDirectory);
+    const packageNames = folders
+      .map((directoryEntry: Entry) => directoryEntry.name);
     this.loggingService.debug('packageNames', DEBUG_TAG, packageNames);
     
-    // Read all metadata
+    // Read all folder metadata
+    const folderMetadata = await Promise.all(folders.map((folder) => this.getDirectoryMetadata(folder)));
+
+    // Read all package metadata
     const metadata = await Promise.all(packageNames.map((name) => this.getMetadata(name)));
 
     // Map to map package objects
     const packages = packageNames.map((name, i): OfflineMapPackage => {
       return {
         name,
-        downloadComplete: 1,
+        downloadStart: folderMetadata[i].modificationTime.getTime() / 1000,
+        downloadComplete: folderMetadata[i].modificationTime.getTime() / 1000,
+        size: folderMetadata[i].size,
         progress: { percentage: 100 },
         maps: metadata[i].maps
       }
@@ -68,20 +91,120 @@ export class OfflineMapService implements OnReset {
     return packages;
   }
 
-  public downloadPackage(name: string, url: string) {
-    // Can we use @ionic-native/file-transfer/ngx ??
-    // console.log("Starting download of", url);
-    // const fileTransfer: FileTransferObject = this.transfer.create();
-    // fileTransfer.download(url, this.file.dataDirectory + name)
-    //   .then((entry) => {
-    //     console.log('download complete: ' + entry.toURL());
-    //     console.log('Reading file as array buffer');
-    //     return this.file.readAsArrayBuffer(this.file.dataDirectory, name)
-    //   })
-    //   .then(ab => {
-    //     console.log("Starting unzip");
-    //     this.registerMapPackage(ab, name);
-    //   })
+  private async getDirectoryMetadata(entry: Entry): Promise<Metadata> {
+    return new Promise((resolve, reject) => 
+      entry.getMetadata((metadata) => resolve(metadata)
+    , (error) => reject(error)));
+  }
+
+  private resetErrorOrCancelForPackageName(name: string) {
+    this.errorOrCancel = this.errorOrCancel.filter((list) => list !== name);
+  }
+
+  public async downloadPackage(filename: string, url: string, sizeInMiB: number): Promise<void> {
+    //TODO: Ask user to prefer saving to external SD card if available?
+    const availableSpace = await this.checkAvailableDiskSpace(sizeInMiB);
+    if(!availableSpace) {
+      return;
+    }
+
+    const name = filename.replace('.zip', '');
+    this.resetErrorOrCancelForPackageName(name);
+    
+
+    const mapPackage = await this.registerMapPackage(name, filename, sizeInMiB);
+    this.backgroundDownloadService.download(url).subscribe(async (downloadProgress) => {
+      switch(downloadProgress.state) {
+        case 'IN_PROGRESS':
+          if(downloadProgress.total !== mapPackage.size) {
+            mapPackage.size = downloadProgress.total;
+            this.updatePackageMetadata(mapPackage);
+          }
+          this.onProgress(mapPackage, {step: ProgressStep.download,
+            percentage: downloadProgress.progress,
+            description: 'Downloading...'});
+          break;
+        case 'DONE':
+             const file = downloadProgress.content;
+             const root = await this.getRootFileUrl();
+             mapPackage.size = file.size;
+             this.updatePackageMetadata(mapPackage);
+            await this.unzipFile(
+                  file,
+                  root,
+                  name,
+                  () => this.onUnzipComplete(mapPackage),
+                  (progress) => this.onProgress(mapPackage, progress),
+                  (error) => this.onUnzipError(name, error)
+            );
+          break;
+        default:
+          break;
+      }
+    }, (err) => this.onUnzipError(name, err));
+  }
+
+  private async checkAvailableDiskSpace(sizeInMiB: number): Promise<boolean> {
+    if(isAndroidOrIos(this.platform)) {
+      const availableStorageSpace = await this.getDeviceFreeDiskSpace();
+
+      const neededSpace = sizeInMiB * 1024 * 1024; // How well is the compression?
+      // TODO: Use uncompressed size in package metadata
+      this.loggingService.debug(`Available storage is ${this.helperService.humanReadableByteSize(availableStorageSpace)}. 
+      Needs ${this.helperService.humanReadableByteSize(neededSpace)}`, DEBUG_TAG);
+      
+      if(availableStorageSpace < neededSpace) {
+        this.loggingService.log('Not enough disk space to save and extract package', null , LogLevel.Warning, DEBUG_TAG);
+
+        await this.showNotEnoughDiskSpaceAvailableErrorMessage();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private async showNotEnoughDiskSpaceAvailableErrorMessage() {
+    const translations = await this.translateService
+      .get(['OFFLINE_MAP.DISKSPACE_ERROR_MESSAGE', 'ALERT.OK'])
+      .toPromise();
+    const alert = await this.alertController.create({
+      message: translations['OFFLINE_MAP.DISKSPACE_ERROR_MESSAGE'],
+      buttons: [
+        {
+          text: translations['ALERT.OK'],
+        },
+      ]
+    });
+    alert.present();
+  }
+
+  private async showDownloadOrUnzipErrorMessage() {
+    const translations = await this.translateService
+      .get(['OFFLINE_MAP.UNZIP_ERROR_MESSAGE', 'ALERT.OK'])
+      .toPromise();
+    const alert = await this.alertController.create({
+      message: translations['OFFLINE_MAP.UNZIP_ERROR_MESSAGE'],
+      buttons: [
+        {
+          text: translations['ALERT.OK'],
+        },
+      ]
+    });
+    alert.present();
+  }
+
+  private updatePackageMetadata(metadata: OfflineMapPackage) {
+    const unzipProgress = this.unzipProgress.value.filter(p => p.name !== metadata.name);
+    this.unzipProgress.next([
+      ...unzipProgress,
+      metadata
+    ]);
+  }
+
+  private getDeviceFreeDiskSpace(externalStorage: boolean = false): Promise<number> {
+    return new Promise((resolve, reject) => {
+      (window as any).DiskSpacePlugin.info({ location: externalStorage ? 2 : 1 }, (success) => resolve(success.free), (err) => reject(err));
+    });
   }
 
   private addMapPackage(newPackage: OfflineMapPackage) {
@@ -92,10 +215,10 @@ export class OfflineMapService implements OnReset {
     ]);
   }
 
-  async removeMapPackage(packageToRemove: OfflineMapPackage) {
+  async removeMapPackageByName(packageNameToRemove: string) {
     const root = await this.getRootFileUrl();
-    await this.deleteDirectory(root, packageToRemove.name);
-    const packages = this.packages.value.filter(mapPackage => mapPackage.name !== packageToRemove.name);
+    await this.deleteDirectory(root, packageNameToRemove);
+    const packages = this.packages.value.filter(mapPackage => mapPackage.name !== packageNameToRemove);
     this.packages.next(packages);
   }
 
@@ -119,37 +242,22 @@ export class OfflineMapService implements OnReset {
     return metadata;
   }
 
-  async registerMapPackage(file: Blob, filename: string): Promise<void> {
-    try {
-      const root = await this.getRootFileUrl();
-      const name = filename.replace('.zip', '');
-      this.loggingService.debug('Root and name:', DEBUG_TAG, root, name);
-      const mapPackage: OfflineMapPackage = {
-        name: name,
-        size: file.size,
-        filename: filename,
-        downloadStart: moment().unix(),
-        progress: { percentage: 0 },
-        downloadComplete: null,
-        maps: {}
-      };
+  async registerMapPackage(name: string, filename: string, sizeInMb: number): Promise<OfflineMapPackage> {
+    const mapPackage: OfflineMapPackage = {
+      name: name,
+      size: sizeInMb * 1000 * 1000,
+      filename: filename,
+      downloadStart: moment().unix(),
+      progress: { percentage: 0, step: ProgressStep.download, description: 'Downloading...' },
+      downloadComplete: null,
+      maps: {}
+    };
 
-      // Start tracking unzip progress
-      const progress = this.unzipProgress.value;
-      progress.push(mapPackage);
-      this.unzipProgress.next(progress);
-
-      await this.unzipFile(
-        file,
-        root,
-        name,
-        () => this.onUnzipComplete(mapPackage),
-        (progress) => this.onUnzipProgress(mapPackage, progress),
-        (error) => this.onUnzipError(filename, error)
-      );
-    } catch (error) {
-      await this.onUnzipError(filename, error);
-    }
+    // Start tracking unzip progress
+    const progress = this.unzipProgress.value;
+    progress.push(mapPackage);
+    this.unzipProgress.next(progress);
+    return mapPackage;
   }
 
   async unzipFile(
@@ -173,6 +281,10 @@ export class OfflineMapService implements OnReset {
       );
       const directories = zipEntries.filter((name) => content.files[name].dir);
 
+      if(!isAndroidOrIos(this.platform)) {
+        throw Error('Unzip file not implemented on web!')
+      }
+
       this.loggingService.debug('Creating directories');
       await this.file.createDir(path, folder, true);
       const root = `${path}/${folder}`;
@@ -185,8 +297,12 @@ export class OfflineMapService implements OnReset {
       const mod = Math.floor(files.length / 100);
 
       const unzipFile = async (fileName: string) => {
+        if(this.errorOrCancel.indexOf(folder) >= 0) {
+          return;
+        }
         const zippedFile: JSZip.JSZipObject = content.files[fileName];
         const buffer = await zippedFile.async('arraybuffer');
+
         await this.file.writeFile(root, fileName, buffer, {
           replace: true
         });
@@ -216,17 +332,13 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  private onUnzipProgress(metadata: OfflineMapPackage, progress: Progress) {
+  private onProgress(metadata: OfflineMapPackage, progress: Progress) {
     metadata.progress = progress;
     const unzipProgress = this.unzipProgress.value.filter(p => p.name !== metadata.name);
     this.unzipProgress.next([
       ...unzipProgress,
       metadata
     ]);
-    // const m = await this.getSavedMap(name);
-    // m.progress = progress;
-
-    // await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
   }
 
   private async onUnzipError(name: string, error: Error) {
@@ -235,14 +347,12 @@ export class OfflineMapService implements OnReset {
       DEBUG_TAG,
       `Error downloading map ${name}`
     );
-    //TODO: Delete files?
-    //    await this.deleteMapFromDb(name);
-    // TODO: Mark map with error?
+    this.errorOrCancel.push(name);
+    this.showDownloadOrUnzipErrorMessage();
+    this.removeMapPackageByName(name);
   }
 
   private async onUnzipComplete(mapPackage: OfflineMapPackage) {
-    // const m = await this.getSavedMap(name);
-    // await nSQL(NanoSql.TABLES.OFFLINE_MAP.name).query('upsert', m).exec();
     mapPackage.downloadComplete = moment().unix();
     mapPackage.progress = { percentage: 1.0 };
     
@@ -279,9 +389,12 @@ export class OfflineMapService implements OnReset {
     //         return this.file.externalDataDirectory;
     //     }
     // }
-    const fileUrl = this.file.dataDirectory;
-    console.assert(fileUrl.endsWith('/'), 'Data Directory does not end with /.');
-    return fileUrl;
+    if(this.file && this.file.dataDirectory) {
+      const fileUrl = this.file.dataDirectory;
+      console.assert(fileUrl.endsWith('/'), 'Data Directory does not end with /.');
+      return fileUrl;
+    }
+    return undefined;
   }
 
   /**
