@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { LoggedInUser } from '../../models/logged-in-user.model';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -7,6 +7,9 @@ import { settings } from '../../../../../settings';
 import { map, take } from 'rxjs/operators';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
 import { LangKey } from 'src/app/modules/common-core/models';
+import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
+import { StarRatingHelper } from '../../../../components/competence/star-helper';
+import { AccountService, MyPageData, ObserverGroupDto } from 'src/app/modules/common-regobs-api';
 
 @Component({
   selector: 'app-login',
@@ -15,15 +18,60 @@ import { LangKey } from 'src/app/modules/common-core/models';
 })
 export class LoginPage implements OnInit {
   loggedInUser$: Observable<LoggedInUser>;
+  userGroups$: Observable<ObserverGroupDto[]>;
+  myPage$: Observable<MyPageData>;
+
+  myPageSampleData: MyPageData = {
+    Competence: [
+      {
+        GeohazardTID: 10,
+        CompetenceTID: 310,
+      },
+      {
+        GeohazardTID: 20,
+        CompetenceTID: 420,
+      },
+      {
+        GeohazardTID: 60,
+        CompetenceTID: 610,
+      }
+    ]
+  }
+
+  geoHazards = [
+    {
+      GeoHazardTID: 10,
+      GeoHazardName: 'GEO_HAZARDS.SNOW'
+    },
+    {
+      GeoHazardTID: 20,
+      GeoHazardName: 'GEO_HAZARDS.DIRT'
+    },
+    {
+      GeoHazardTID: 60,
+      GeoHazardName: 'GEO_HAZARDS.WATER'
+    },
+    {
+      GeoHazardTID: 70,
+      GeoHazardName: 'GEO_HAZARDS.ICE'
+    },
+  ]
 
   constructor(
     private regobsAuthService: RegobsAuthService,
     private userSettingService: UserSettingService,
-    private externalLinkService: ExternalLinkService
+    private externalLinkService: ExternalLinkService,
+    private userGroupService: UserGroupService,
+    private accountApiService: AccountService,
   ) {}
 
   ngOnInit(): void {
     this.loggedInUser$ = this.regobsAuthService.loggedInUser$;
+    this.userGroups$ = this.userGroupService.getUserGroupsAsObservable();
+    //TODO - Implement API call for MyPage in api version 5
+    //this.myPage$ = this.accountApiService.AccountGetMyPageData();
+    this.myPage$ = of(this.myPageSampleData);
+    this.userGroupService.updateUserGroups();
   }
 
   signIn(): Promise<void> {
@@ -55,4 +103,15 @@ export class LoginPage implements OnInit {
     }
     return 'en';
   }
+
+  getCompetenceFromGeoHazard(geohazardTID: number) : number {
+    const competence = this.myPageSampleData.Competence.find( x => x.GeohazardTID == geohazardTID);
+    if (competence != null) {
+      return StarRatingHelper.getStarRating(competence.CompetenceTID);
+    }
+    else {
+      return 0;
+    }
+  }
+
 }
