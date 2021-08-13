@@ -113,7 +113,7 @@
       </ion-col>  
     </ion-row>
     <ion-row class="ion-padding-top" *ngIf="userGroups$ | async as userGroups">
-      <ng-container *ngIf="userGroups.length < 0 else noGroups">
+      <ng-container *ngIf="userGroups.length > 0 else noGroups">
         <ion-col size="12" size-sm="5" size-md="4" size-lg="3" *ngFor="let group of userGroups" >
           <div class="flexContainer margin-mobile">
             <ion-icon class="ion-align-self-center" src="./assets/icon/group.svg"></ion-icon>
