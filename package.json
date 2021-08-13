@@ -164,7 +164,7 @@
     "protractor": "~7.0.0",
     "sqli-cordova-disk-space-plugin": "^1.0.3",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.3"
+    "typescript": "4.1.3"
   },
   "description": "Report incidents in nature",
   "cordova": {
