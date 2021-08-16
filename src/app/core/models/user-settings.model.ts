@@ -23,4 +23,6 @@ export interface UserSetting {
   featureToggeGpsDebug: boolean;
   infoAboutObservationsRecievedTimestamp?: number;
   infoAboutSupportMapsRecievedTimestamp?: number;
+  copyright?: string;
+  photographer?: string;   
 }

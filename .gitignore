@@ -37,3 +37,5 @@ nve.keystore
 build.json
 sentry.properties
 src/test-reports/
+.vscode/typings/jquery/jquery.d.ts
+typings/cordova-typings.d.ts

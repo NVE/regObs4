@@ -330,6 +330,20 @@ export class RegistrationService {
     }
   }
 
+  private async setCopyrightAndPhotographer(
+    registration: IRegistration,
+    userSetting: UserSetting
+    ) {
+      for (const picture of this.getAllPictures(registration.request)) {
+        if (userSetting.copyright != null) {
+          picture.Copyright = userSetting.copyright;
+        }   
+        if (userSetting.photographer != null) {
+          picture.Photographer = userSetting.photographer;
+        }   
+      }
+  }
+
   private async syncRegistration(
     registration: IRegistration,
     userSetting: UserSetting,
@@ -339,6 +353,7 @@ export class RegistrationService {
       if (registration.request) {
         await this.cleanupRegistration(registration);
         registration.request.Email = userSetting.emailReceipt;
+        this.setCopyrightAndPhotographer(registration, userSetting);
         const createRegistrationResult = await this.postRegistration(
           userSetting.appMode,
           registration,
