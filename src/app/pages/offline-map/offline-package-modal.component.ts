@@ -32,25 +32,27 @@ import { OfflineMapPackage } from 'src/app/core/services/offline-map/offline-map
       </div>
       <ion-grid>
         <ion-row>
-          <ion-col>Produsert: </ion-col>
+          <ion-col size="4">Produsert:</ion-col>
           <ion-col>{{ packageOnServer.properties.lastModified }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col>Størrelse:</ion-col>
+          <ion-col size="4">Størrelse:</ion-col>
           <ion-col>{{ packageOnServer.properties.sizeInMb }} MB</ion-col>
         </ion-row>
         <div *ngIf="downloadedPackage$ | async as downloadedPackage">
           <ion-row>
-            <ion-col>Status: </ion-col>
+            <ion-col size="4">Status:</ion-col>
             <ion-col>
               {{ downloadedPackage.progress?.description }}
-              <div *ngIf="!downloadedPackage.downloadComplete">({{getPercentage(downloadedPackage) +'%' }})</div>
-              <div *ngIf="!!downloadedPackage.downloadComplete">Lastet ned {{ downloadedPackage.downloadComplete | formatDate:true:false:true | async }} </div>
+              <span *ngIf="!!downloadedPackage.downloadComplete">Lastet ned {{ downloadedPackage.downloadComplete | formatDate:true:false:true | async }} </span>
+              <span *ngIf="!downloadedPackage.downloadComplete">({{getPercentage(downloadedPackage) +'%' }})</span>
+            </ion-col>
+            <ion-col size="1">                  
               <ion-icon *ngIf="!!downloadedPackage.downloadComplete" name="checkmark"></ion-icon>
               <ion-icon *ngIf="downloadedPackage.progress?.step === 0" name="cloud-download-outline"></ion-icon>
               <ion-icon *ngIf="downloadedPackage.progress?.step === 1" name="folder-open-outline"></ion-icon>
             </ion-col>
-          </ion-row>
+          </ion-row>              
           <ion-row *ngIf="!!downloadedPackage.downloadComplete">
             <ion-col>
               <ion-button (click)="delete()" expand="block" color="danger">Slett</ion-button>
