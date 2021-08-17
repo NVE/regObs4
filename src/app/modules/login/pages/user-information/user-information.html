@@ -83,7 +83,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row>
+    <!-- <ion-row>
       <ion-col>
         <h2>
           {{'MY_PROFILE.MY_COMPETENCE' | translate}}
@@ -91,26 +91,20 @@
       </ion-col>
     </ion-row>
     <ion-row class="ion-padding-top">
-      <!-- Generere GeoHazard listen ved å hente de ut -->
+       Generere GeoHazard listen ved å hente de ut 
       <ion-col size="3" size-xs="5" size-sm="3" size-md="2">
-        <p class="no-margin">Snø</p>
-        <p class="no-margin">Is</p>
-        <p class="no-margin">Vann</p>
-        <p class="no-margin">Jord</p>
+        <p class="no-margin" *ngFor="let geoHazard of geoHazards">{{geoHazard.GeoHazardName | translate}}</p>
       </ion-col>
-      <!-- Hente ut kompetansen riktig ved å koble opp mot API -->
+       Hente ut kompetansen riktig ved å koble opp mot API 
       <ion-col class="star-container" size="auto" size-xs="7" size-sm="9" size-md="10" pullMd="1" pullSm="2" pullXs="1">
-        <app-competence class="stars" [competenceLevel]="1"></app-competence>
-        <app-competence class="stars" [competenceLevel]="4"></app-competence>
-        <app-competence class="stars" [competenceLevel]="0"></app-competence>
-        <app-competence class="stars" [competenceLevel]="3"></app-competence>
+        <app-competence class="stars" *ngFor="let geoHazard of geoHazards" [competenceLevel]="getCompetenceFromGeoHazard(geoHazard.GeoHazardTID)"></app-competence>
       </ion-col>
     </ion-row>
     <ion-row class="ion-padding-top">
       <ion-col>
         <p class="info-text" [innerHTML]="'MY_PROFILE.COMPETENCE' | translate"></p>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
 
     <ion-row>
       <ion-col>
@@ -119,20 +113,15 @@
         </h2>
       </ion-col>  
     </ion-row>
-    <ion-row class="ion-padding-top">
-      <ion-col size="12" size-sm="5" size-md="4" size-lg="3">
-        <!-- Generere gruppene med å hente de fra API også loope gjennom med ngFor -->
-        <div class="flexContainer margin-mobile">
-          <ion-icon class="ion-align-self-center" src="./assets/icon/group.svg"></ion-icon>
-          <p class="padding-medium no-margin">Snøskredvarslingen</p>
-        </div>
-      </ion-col>
-      <ion-col>
-        <div class="flexContainer">
-          <ion-icon class="ion-align-self-center" src="./assets/icon/group.svg"></ion-icon>
-          <p class="padding-medium no-margin">Snøskredgerilja</p>
-        </div>
-      </ion-col>
+    <ion-row class="ion-padding-top" *ngIf="userGroups$ | async as userGroups">
+      <ng-container *ngIf="userGroups.length > 0 else noGroups">
+        <ion-col size="12" size-sm="5" size-md="4" size-lg="3" *ngFor="let group of userGroups" >
+          <div class="flexContainer margin-mobile">
+            <ion-icon class="ion-align-self-center" src="./assets/icon/group.svg"></ion-icon>
+            <p class="padding-medium no-margin">{{group.Name}}</p>
+          </div>
+        </ion-col>
+      </ng-container>
     </ion-row>
     <ion-row class="ion-padding-top ion-padding-bottom">
       <ion-col>
@@ -145,4 +134,9 @@
   <ion-button class="logout-button" expand="block" type="submit" color="varsom-orange" (click)="signIn()">
     {{ 'LOGIN.LOGIN' | translate }}
   </ion-button>
+</ng-template>
+<ng-template #noGroups>
+  <ion-col>
+    <p class="info-text">{{'MY_PROFILE.NO_GROUPS' | translate}}</p>
+  </ion-col>
 </ng-template>
