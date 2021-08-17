@@ -10,7 +10,7 @@ import tiles from "./z8.json";
 import * as L from "leaflet";
 import { GeoJsonObject } from 'geojson';
 import { HttpClient } from '@angular/common/http';
-import { OfflinePackageModalComponent } from './offline-package-modal.component';
+import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
 import { PackageMetadata } from './metadata.model';
 import { Polygon, Feature } from 'geojson';
 
