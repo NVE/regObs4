@@ -68,6 +68,19 @@ ion-col {
   height: auto;
 }
 
+.myPictureContainer {
+  margin-top: 32px;
+
+  h2 {
+    margin-top: 0;
+    align-self: center;
+  }
+
+  ion-button {
+    min-height: 44px;
+  }
+}
+
 @media only screen and (max-width: 475px) {
   .margin-mobile {
     margin-bottom: 8px;

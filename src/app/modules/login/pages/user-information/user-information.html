@@ -4,7 +4,7 @@
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{ loggedInUser.isLoggedIn ? ('MY_PROFILE.USER' | translate) : ('LOGIN.TITLE' | translate) }}
+      {{ loggedInUser.isLoggedIn ? ('MY_PROFILE.TITLE' | translate) : ('LOGIN.TITLE' | translate) }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -13,7 +13,7 @@
   <ion-grid class="grid-container" *ngIf="loggedInUser.isLoggedIn else login">
     <ion-row>
       <ion-col>
-        <h1 class="profile-title">{{'MY_PROFILE.USER' | translate}}</h1>
+        <h1 class="profile-title">{{'MY_PROFILE.TITLE' | translate}}</h1>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -30,7 +30,7 @@
       <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
         <ion-button class="button ion-text-uppercase" type="button" fill="outline" expand="block" (click)="openMyPage()">
           <ion-icon slot="end" src="./assets/icon/newTab.svg"></ion-icon>
-            {{'LOGIN.MY_PROFILE' | translate }}
+            {{'MY_PROFILE.MY_NVE_ACCOUNT' | translate }}
         </ion-button>
       </ion-col>
       <ion-col size="6" size-sm="5" size-md="4" size-lg="3">
@@ -61,18 +61,19 @@
 
     <ion-row>
       <ion-col>
-        <h2>{{'MY_PROFILE.MY_PICTURES' | translate}}</h2>
+        <div class="flexContainer myPictureContainer">
+          <h2>{{'MY_PROFILE.MY_PICTURES' | translate}}</h2>
+          <ion-button (click)="presentModal()" class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">{{'MY_PROFILE.EDIT' | translate}} <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
+        </div>
       </ion-col>      
     </ion-row>
-    <ion-row class="ion-padding-top">
+    <ion-row>
       <ion-col>
         <div class="flexContainer max-div-height margin-mobile">
-          <p class="ion-align-self-center no-margin"><strong>{{'MY_PROFILE.COPYRIGHT' | translate}}:</strong> {{loggedInUser.email}}</p>
-          <ion-button class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">{{'MY_PROFILE.EDIT' | translate}} <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
+          <p class="ion-align-self-center no-margin"><strong>{{'MY_PROFILE.COPYRIGHT' | translate}}:</strong> {{copyright$ | async}}</p>
         </div>
         <div class="flexContainer max-div-height">
-          <p class="ion-align-self-center no-margin"><strong>{{'MY_PROFILE.PHOTOGRAPHER' | translate}}:</strong> {{loggedInUser.email}}</p>
-          <ion-button class="button ion-padding-start ion-text-uppercase edit-button" fill="clear" expand="block">Rediger <ion-icon class="padding-medium" src="./assets/icon/pencil.svg"></ion-icon></ion-button>
+          <p class="ion-align-self-center no-margin"><strong>{{'MY_PROFILE.PHOTOGRAPHER' | translate}}:</strong> {{photographer$ | async}}</p>
         </div>
       </ion-col>
     </ion-row>

@@ -583,6 +583,11 @@ ion-select-popover ion-list ion-item ion-radio {
     --height: 100%;
   }
 
+  .editCopyrightModal {
+    --width: 500px;
+    --height: 250px;
+  }
+
   ion-item {
     --background-hover: var(--ion-color-varsom-blue-light-2);
     --background-hover-opacity: 0.5;
@@ -617,4 +622,8 @@ ion-select-popover ion-list ion-item ion-radio {
 
 .no-margin {
   margin: 0;
+}
+
+.native-input.sc-ion-input-md {
+  margin-left: 8px;
 }

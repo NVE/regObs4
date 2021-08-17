@@ -5,7 +5,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./pages/login/login.module').then((m) => m.LoginPageModule)
+      import('./pages/user-information/user-information.module').then((m) => m.UserInformationModule)
   }
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class LoginRoutingModule {}
+export class UserInformationRoutingModule {}
