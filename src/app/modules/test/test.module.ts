@@ -1,6 +1,5 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { LoggingService } from '../shared/services/logging/logging.service';
-import { ConsoleLoggingService } from '../shared/services/logging/console-logging.service';
 import { SharedModule } from '../shared/shared.module';
 import {
   TranslateModule,
@@ -15,6 +14,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TestLoggingService } from '../shared/services/logging/test-logging.service';
 
 function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
@@ -41,7 +41,7 @@ function createTranslateLoader(http: HttpClient) {
       deps: [TranslateService, UserSettingService],
       multi: true
     },
-    { provide: LoggingService, useClass: ConsoleLoggingService }
+    { provide: LoggingService, useClass: TestLoggingService },
   ]
 })
 export class TestModule {}

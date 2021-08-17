@@ -11,7 +11,7 @@ import * as L from "leaflet";
 import { GeoJsonObject } from 'geojson';
 import { HttpClient } from '@angular/common/http';
 import { OfflinePackageModalComponent } from './offline-package-modal.component';
-import { PackageMetadata } from './metadata.model';
+import { PackageMetadata, PackageMetadataCombined } from './metadata.model';
 import { Polygon, Feature } from 'geojson';
 
 const PACKAGE_INDEX_URL = "https://offlinemap.blob.core.windows.net/packages/packageIndex.json";
@@ -26,6 +26,8 @@ interface PackageIndex {
   norgeskart: PackageMetadata[];
   bratthet_med_utlop: PackageMetadata[];
   allInOne: PackageMetadata[];
+  statensKartverk: PackageMetadata[];
+  'steepness-outlet': PackageMetadata[];
 }
 
 @Component({
@@ -36,12 +38,12 @@ interface PackageIndex {
 export class OfflineMapPage {
   packages$: Observable<OfflineMapPackage[]>;
   private packageIndex$: Observable<PackageIndex>;
-  selectedPackage: PackageMetadata = null;
+  selectedPackage: PackageMetadataCombined = null;
   showTileCard = true;
   showDownloads = false;
   tilesLayer: L.GeoJSON;
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
-  showModal = new Subject<Feature<Polygon, PackageMetadata>>();
+  showModal = new Subject<Feature<Polygon, PackageMetadataCombined>>();
 
   constructor(
     private helperService: HelperService,
@@ -64,6 +66,11 @@ export class OfflineMapPage {
     this.showDownloads = !this.showDownloads
   }
 
+  private getIdForPackageMetadata(packageMetadata: PackageMetadata): string {
+    const [x, y, z] = packageMetadata.xyz;
+    return  `(${x}, ${y}, ${z})`;
+  }
+
   onMapReady(map: L.Map) {
     (window as any).LEAFLET_MAP = map;
 
@@ -76,15 +83,22 @@ export class OfflineMapPage {
       try {
         console.log("Packages", JSON.stringify(packages));
 
-        const packageMap = new Map<string, PackageMetadata>();
-        packageIndex.allInOne.forEach(p => {
-          const [x, y, z] = p.xyz;
-          const id = `(${x}, ${y}, ${z})`;
-          packageMap.set(id, p);
+        const packageMap = new Map<string, PackageMetadataCombined>();
+        packageIndex.statensKartverk.forEach(p => {
+          packageMap.set(this.getIdForPackageMetadata(p), ({ ...p, sizeInMib: +p.sizeInMib, packages: [p]  }));
         });
+
+        for(const supportMap of packageIndex['steepness-outlet']) {
+          const [x, y, z] = supportMap.xyz;
+          const id = `(${x}, ${y}, ${z})`;
+          const existingPackage = packageMap.get(id);
+          if(existingPackage) {
+            existingPackage.packages.push(supportMap);
+            existingPackage.sizeInMib += +supportMap.sizeInMib;
+          }
+        }
   
         const installedPackages = new Map<string, OfflineMapPackage>();
-        // installedPackages.set("(133, 73, 8)", {name: "test", maps: {}});
         packages.forEach(installedPackage => {
           const maps = Object.values(installedPackage.maps);
           if (maps.length > 0) {
@@ -111,7 +125,7 @@ export class OfflineMapPage {
           filter: (feature) => {
             return packageMap.has(feature.id as string);
           },
-          onEachFeature: (feature: Feature<Polygon, PackageMetadata>, layer) => {
+          onEachFeature: (feature: Feature<Polygon, PackageMetadataCombined>, layer) => {
             // TODO
             if (installedPackages.has(feature.id as string)) {
               return;
@@ -167,7 +181,7 @@ export class OfflineMapPage {
     });
   }
 
-  async showPackageModal(feature: Feature<Polygon, PackageMetadata>) {
+  async showPackageModal(feature: Feature<Polygon, PackageMetadataCombined>) {
     const modal = await this.modalController.create({
       component: OfflinePackageModalComponent,
       componentProps: {
@@ -183,7 +197,7 @@ export class OfflineMapPage {
     if (isNaN(bytes)) {
       return '';
     }
-    return this.helperService.humanReadableByteSize(bytes);
+    return this.helperService.humanReadableByteSize(bytes, false);
   }
 
   getPercentage(map: OfflineMapPackage): number {

@@ -1,11 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import * as L from 'leaflet';
-import * as turf from '@turf/turf';
 import { Polygon, Feature } from 'geojson';
-import { PackageMetadata } from './metadata.model';
+import { PackageMetadataCombined } from './metadata.model';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
-import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 
 @Component({
   template: `
@@ -29,13 +27,13 @@ import { ExternalLinkService } from 'src/app/core/services/external-link/externa
         ></app-map>
       </div>
       <ion-grid>
-        <ion-row>
+        <!-- <ion-row>
           <ion-col class="right">Produsert:</ion-col>
           <ion-col>{{ package.properties.lastModified }}</ion-col>
-        </ion-row>
+        </ion-row> -->
         <ion-row>
           <ion-col class="right">Størrelse:</ion-col>
-          <ion-col>{{ package.properties.sizeInMb }} MB</ion-col>
+          <ion-col>{{ package.properties.sizeInMib }} MiB</ion-col>
         </ion-row>
         <ion-row>
           <ion-col>
@@ -65,7 +63,7 @@ import { ExternalLinkService } from 'src/app/core/services/external-link/externa
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OfflinePackageModalComponent implements OnInit {
-  @Input() package: Feature<Polygon, PackageMetadata>;
+  @Input() package: Feature<Polygon, PackageMetadataCombined>;
 
   zoom = 13;
   center: number[];
@@ -73,7 +71,6 @@ export class OfflinePackageModalComponent implements OnInit {
 
   constructor(
     private modalController: ModalController,
-    private externalLinkService: ExternalLinkService,
     private offlineMapService: OfflineMapService
   ) { }
 
@@ -95,12 +92,9 @@ export class OfflinePackageModalComponent implements OnInit {
 
   startDownload() {
     this.offlineMapService.downloadPackage(
-      this.package.properties.name,
-      this.package.properties.url,
-      this.package.properties.sizeInMb
+      this.package.properties
     );
     this.dismiss();
-    // window.open(this.package.properties.url, '_blank');
   }
 
   dismiss() {

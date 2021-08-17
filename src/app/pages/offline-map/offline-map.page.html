@@ -23,12 +23,11 @@
       <ion-item (click)="presentActionSheet(item)" *ngFor="let item of packages$ | async">
         <ion-label>{{ item.name }}</ion-label>
         <ion-label>{{ humanReadableByteSize(item.size) }}</ion-label>
-        <ion-label>{{ item.progress?.description }}</ion-label>
+        <!-- <ion-label>{{ item.progress?.description }}</ion-label> -->
         <ion-label *ngIf="isDownloading(item)">
           ({{getPercentage(item) +'%' }})</ion-label>
         <ion-icon slot="end" *ngIf="!!item.downloadComplete" name="checkmark"></ion-icon>
-        <ion-icon slot="end" *ngIf="item.progress?.step === 0" name="cloud-download-outline"></ion-icon>
-        <ion-icon slot="end" *ngIf="item.progress?.step === 1" name="sync-circle-outline"></ion-icon>
+        <ion-icon slot="end" *ngIf="!item.downloadComplete" name="cloud-download-outline"></ion-icon>
       </ion-item>
     </ion-list>
   </div>
