@@ -24,6 +24,6 @@ export interface OfflineMapPackage extends OfflinePackageMetadata {
   filename?: string;
   filePath?: string;
   progress?: Progress;
-  downloadStart?: number;
-  downloadComplete?: number;
+  downloadStart?: number; //in epoch seconds
+  downloadComplete?: number; //in epoch seconds
 }
