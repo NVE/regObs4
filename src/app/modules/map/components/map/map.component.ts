@@ -6,7 +6,8 @@ import {
   OnDestroy,
   AfterViewInit,
   Output,
-  EventEmitter
+  EventEmitter,
+  Injector
 } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -30,22 +31,24 @@ import { MapSearchService } from '../../services/map-search/map-search.service';
 import { TopoMap } from '../../../../core/models/topo-map.enum';
 import {
   RegObsTileLayer,
-  IRegObsTileLayerOptions
+  IRegObsTileLayerOptions,
+  RegObsOfflineAwareTileLayer
 } from '../../core/classes/regobs-tile-layer';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { LangKey } from '../../../../core/models/langKey';
 import { Feature, GeometryObject } from '@turf/turf';
+import { File } from '@ionic-native/file/ngx';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { Platform } from '@ionic/angular';
+import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
 
 const DEBUG_TAG = 'MapComponent';
+const STEEPNESS_WITH_RUNOUTS_NAME = 'steepness-outlet';
 
-interface MapOptionsWithBounds {
-  name: string;
-  url: string;
-  bounds?: L.LatLngBoundsExpression;
-  excludeBounds?: Feature<GeometryObject>;
-}
+type CreateTileLayer = (options: IRegObsTileLayerOptions) => L.TileLayer;
 
 @Component({
   selector: 'app-map',
@@ -65,15 +68,21 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loaded = false;
   private map: L.Map;
-  private tilesLayer = L.layerGroup();
+  private layerGroup = L.layerGroup();
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
   private ngDestroy$ = new Subject();
   private followMode = true;
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
-
   private isActive: BehaviorSubject<boolean>;
+  private offlineMapService: OfflineMapService;
+
+  // Offline map register, one for each type of offline map
+  private offlineTilesRegistry = {
+    [TopoMap.statensKartverk]: new Map<string, string>(),
+    [STEEPNESS_WITH_RUNOUTS_NAME]: new Map<string, string>()
+  };
 
   constructor(
     private userSettingService: UserSettingService,
@@ -82,8 +91,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private zone: NgZone,
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
-    private geoPositionService: GeoPositionService
+    private geoPositionService: GeoPositionService,
+    private file: File,
+    private platform: Platform,
+    injector: Injector
   ) {
+    if (isAndroidOrIos(this.platform)) {
+      this.offlineMapService = injector.get(OfflineMapService);
+    }
+
     // Hack to make sure map pane is set before getPosition
     L.Map.include({
       _getMapPanePos: function () {
@@ -154,11 +170,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onLeafletMapReady(map: L.Map) {
+    //TODO: Denne metoden er altfor lang, splitte opp i flere funksjoner!
     this.map = map;
     if (this.showScale) {
       L.control.scale({ imperial: false }).addTo(map);
     }
-    this.tilesLayer.addTo(this.map);
+    this.layerGroup.addTo(this.map);
 
     this.userSettingService.userSetting$
       .pipe(takeUntil(this.ngDestroy$))
@@ -234,25 +251,66 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(() => {
         this.redrawMap();
       });
+    
+    if (this.showUserLocation) {
+      this.geoPositionService.currentPosition$
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe((pos) => this.onPositionUpdate(pos));
+  
+      this.geoPositionService.currentHeading$
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe((heading) => {
+          if (this.userMarker) {
+            this.userMarker.setHeading(heading);
+          }
+        });
 
-    this.geoPositionService.currentPosition$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((pos) => this.onPositionUpdate(pos));
-
-    this.geoPositionService.currentHeading$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((heading) => {
-        if (this.userMarker) {
-          this.userMarker.setHeading(heading);
-        }
-      });
-
-    this.startActiveSubscriptions();
+        this.startActiveSubscriptions();
+    }
 
     this.startInvalidateSizeMapTimer();
 
     this.map.on('resize', () => this.updateMapView());
+
+    if (isAndroidOrIos(this.platform)) {
+      this.initOfflineMaps();
+    }
+
     this.mapReady.emit(this.map);
+  }
+
+  private async initOfflineMaps() {
+    this.loggingService.debug('initOfflineMaps()... ', DEBUG_TAG);
+    this.offlineMapService.packages$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((mapPackages) => this.registerOfflineMapPackages(mapPackages));
+  }
+
+  private registerOfflineMapPackages(mapPackages: OfflineMapPackage[]) {
+    this.loggingService.debug('registerOfflineMapPackages', DEBUG_TAG);
+
+    this.offlineTilesRegistry[TopoMap.statensKartverk].clear();
+    this.offlineTilesRegistry[STEEPNESS_WITH_RUNOUTS_NAME].clear();
+
+    mapPackages.forEach(p => {
+      if (p.maps[TopoMap.statensKartverk] != null) {
+        this.registerOfflineMapTiles(p.maps[TopoMap.statensKartverk], this.offlineTilesRegistry[TopoMap.statensKartverk]);
+      }
+      if (p.maps[STEEPNESS_WITH_RUNOUTS_NAME] != null) {
+        this.registerOfflineMapTiles(p.maps[STEEPNESS_WITH_RUNOUTS_NAME], this.offlineTilesRegistry[STEEPNESS_WITH_RUNOUTS_NAME]);
+      }
+    });
+
+    this.layerGroup.eachLayer((layer) => {
+      if (layer instanceof RegObsOfflineAwareTileLayer) {
+        layer.redraw();
+      }
+    })
+  }
+
+  private registerOfflineMapTiles(metadata: OfflineTilesMetadata, registry: Map<string, string>) {
+    const key = `${metadata.rootTile.x}_${metadata.rootTile.y}`;
+    registry.set(key, metadata.url);
   }
 
   private startActiveSubscriptions() {
@@ -299,59 +357,72 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getTileLayerDefaultOptions(
-    userSetting: UserSetting
+    useRetinaMap = false
   ): IRegObsTileLayerOptions {
     return {
       minZoom: settings.map.tiles.minZoom,
-      maxZoom: this.getMaxZoom(userSetting.useRetinaMap),
+      maxZoom: this.getMaxZoom(useRetinaMap),
       maxNativeZoom: settings.map.tiles.maxZoom,
-      detectRetina: userSetting.useRetinaMap,
+      detectRetina: useRetinaMap,
       updateWhenIdle: settings.map.tiles.updateWhenIdle,
       edgeBufferTiles: settings.map.tiles.edgeBufferTiles,
     };
   }
 
-  configureTileLayers(userSetting: UserSetting) {
+  private configureTileLayers(userSetting: UserSetting) {
     this.zone.runOutsideAngular(() => {
-      this.tilesLayer.clearLayers();
+      this.layerGroup.clearLayers();
       this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
-      const mapOptions = this.getMapOptions(
+      
+      const createTileLayerFactory = this.getTileLayerFactory(
         userSetting.topoMap,
         userSetting.language
       );
-      for (const topoMap of mapOptions) {
 
-        const topoTilesLayer = topoMap.excludeBounds ? new RegObsTileLayer(topoMap.url, {
-          ...this.getTileLayerDefaultOptions(userSetting),
-          bounds: topoMap.bounds,
-          excludeBounds: topoMap.excludeBounds
-        }) : L.tileLayer(topoMap.url, {
-          ...this.getTileLayerDefaultOptions(userSetting),
-          bounds: topoMap.bounds,
-        });
-        topoTilesLayer.addTo(this.tilesLayer);
+      for (const createTileLayer of createTileLayerFactory) {
+        const options = this.getTileLayerDefaultOptions(userSetting.useRetinaMap);
+        const Layer = createTileLayer(options);
+        Layer.addTo(this.layerGroup);
       }
 
-      for (const supportTile of this.userSettingService.getSupportTilesOptions(
+      for (const supportMaps of this.userSettingService.getSupportTilesOptions(
         userSetting
       )) {
-        if (supportTile.enabled) {
-          const supportMapTileLayer = L.tileLayer(
-            supportTile.url,
-            {
-              ...this.getTileLayerDefaultOptions(userSetting),
-              updateInterval: 600,
-              keepBuffer: 0,
-              updateWhenIdle: true,
-              minZoom: settings.map.tiles.minZoomSupportMaps,
-              bounds: <any>settings.map.tiles.supportTilesBounds
-            }
-          );
-          supportMapTileLayer.setOpacity(supportTile.opacity);
-          supportMapTileLayer.addTo(this.tilesLayer);
+        if (!supportMaps.enabled) {
+          continue;
         }
+
+        const options = {
+          ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
+          updateInterval: 600,
+          keepBuffer: 0,
+          updateWhenIdle: true,
+          minZoom: settings.map.tiles.minZoomSupportMaps,
+          bounds: <any>settings.map.tiles.supportTilesBounds
+        }
+
+        let layer: L.TileLayer;
+        if (supportMaps.name === STEEPNESS_WITH_RUNOUTS_NAME) {
+          layer = this.createSteepnessWithRunoutsTileLayer(supportMaps.url, options);
+        } else {
+          layer = this.createSupportMapTileLayer(supportMaps.url, options)
+        }
+        layer.setOpacity(supportMaps.opacity);
+        layer.addTo(this.layerGroup);
       }
     });
+  }
+
+  private createSupportMapTileLayer(url: string, options: L.TileLayerOptions): L.TileLayer {
+    return new L.TileLayer(url, options);
+  }
+
+  private createSteepnessWithRunoutsTileLayer(url: string, options: L.TileLayerOptions): RegObsOfflineAwareTileLayer {
+    return new RegObsOfflineAwareTileLayer(
+      url,
+      options,
+      this.offlineTilesRegistry[STEEPNESS_WITH_RUNOUTS_NAME]
+    );
   }
 
   private getMaxZoom(detectRetina: boolean) {
@@ -360,54 +431,58 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       : settings.map.tiles.maxZoom;
   }
 
-  private getMapOptions(
+  private getTileLayerFactory(
     topoMap: TopoMap,
     langKey: LangKey
-  ): MapOptionsWithBounds[] {
-    const norwegianMixedMap: MapOptionsWithBounds = {
-      name: TopoMap.statensKartverk,
-      url: settings.map.tiles.statensKartverkMapUrl,
-      bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
-    };
-    const openTopoMap: MapOptionsWithBounds = {
-      name: TopoMap.openTopo,
-      url: settings.map.tiles.openTopoMapUrl
-    };
-    const statensKartverk: MapOptionsWithBounds = {
-      name: TopoMap.statensKartverk,
-      url: settings.map.tiles.statensKartverkMapUrl
-    };
-    const arcGisOnlineMap: MapOptionsWithBounds = {
-      name: TopoMap.arcGisOnline,
-      url: settings.map.tiles.arcGisOnlineTopoMapUrl
-    };
-    const geoDataLandskapMap: MapOptionsWithBounds = {
-      name: TopoMap.geoDataLandskap,
-      url: settings.map.tiles.geoDataLandskapMapUrl
-    };
-    const arGisOnlineMixMap = [
-      { ...arcGisOnlineMap, excludeBounds: NORWEGIAN_BOUNDS },
-      norwegianMixedMap
+  ): CreateTileLayer[] {
+    const createNorwegianMixedMap: CreateTileLayer = (options) => new RegObsOfflineAwareTileLayer(
+        settings.map.tiles.statensKartverkMapUrl,
+        {
+          ...options,
+          bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
+        },
+        this.offlineTilesRegistry[TopoMap.statensKartverk]
+      );
+    const createOpenTopoMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.openTopoMapUrl, options);
+    const createStatensKartverk: CreateTileLayer = (options) => new RegObsOfflineAwareTileLayer(
+        settings.map.tiles.statensKartverkMapUrl,
+        options,
+        this.offlineTilesRegistry[TopoMap.statensKartverk]
+      );
+    const createArcGisOnlineMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.arcGisOnlineTopoMapUrl);
+    const createGeoDataLandskapMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.geoDataLandskapMapUrl);
+    const createArGisOnlineMixMap: CreateTileLayer[] = [
+      (options) => new RegObsTileLayer(
+        settings.map.tiles.arcGisOnlineTopoMapUrl, 
+        {
+          ...options,
+          excludeBounds: NORWEGIAN_BOUNDS
+        },
+      ),
+      createNorwegianMixedMap
     ];
 
     switch (topoMap) {
       case TopoMap.statensKartverk:
-        return [statensKartverk];
+        return [createStatensKartverk];
       case TopoMap.openTopo:
-        return [openTopoMap];
+        return [createOpenTopoMap];
       case TopoMap.arcGisOnline:
-        return [arcGisOnlineMap];
+        return [createArcGisOnlineMap];
       case TopoMap.geoDataLandskap:
-        return [geoDataLandskapMap];
+        return [createGeoDataLandskapMap];
       case TopoMap.mixOpenTopo:
         return [
-          { ...openTopoMap, excludeBounds: NORWEGIAN_BOUNDS },
-          norwegianMixedMap
+          (options) => new RegObsTileLayer(settings.map.tiles.openTopoMapUrl, {
+            ...options,
+            excludeBounds: NORWEGIAN_BOUNDS
+          }),
+          createNorwegianMixedMap
         ];
       case TopoMap.mixArcGisOnline:
-        return arGisOnlineMixMap;
+        return createArGisOnlineMixMap;
       default:
-        return langKey === LangKey.nb ? [statensKartverk] : [arcGisOnlineMap];
+        return langKey === LangKey.nb ? [createStatensKartverk] : [createArcGisOnlineMap];
     }
   }
 

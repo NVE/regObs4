@@ -1,28 +1,34 @@
 <ion-header>
   <ion-toolbar appHeaderColor mode="ios">
     <ion-buttons slot="start">
-      <ion-back-button text=""></ion-back-button>
+      <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>
-      Offline kart
-    </ion-title>
+    <ion-title> Offline-kart</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <ion-list>
-    <ion-list-header>
-      <ion-label>Kommune</ion-label>
-      <ion-label>Størrelse</ion-label>
-      <ion-label></ion-label>
-    </ion-list-header>
-    <ion-item *ngFor="let item of offlineMaps$ | async">
-      <ion-label (click)="presentActionSheet(item)">{{ item.name }}</ion-label>
-      <ion-label *ngIf="isDownloading(item)" (click)="presentActionSheet(item)">
-        ({{getPercentage(item) +'%' }})</ion-label>
-      <ion-label *ngIf="!isDownloading(item)" (click)="presentActionSheet(item)">{{ humanReadableByteSize(item.size) }}</ion-label>
-      <ion-icon slot="end" *ngIf="!item.downloadStart" name="download" (click)="downloadMap(item)"></ion-icon>
-      <ion-icon slot="end" *ngIf="!!item.downloadComplete" name="checkmark" (click)="presentActionSheet(item)"></ion-icon>
 
-    </ion-item>
-  </ion-list>
+<ion-content>
+  <div class="map-container">
+    <app-map (mapReady)="onMapReady($event)" [showScale]="false" [showMapControls]="false" [showUserLocation]="false"
+      [autoActivate]="false" [geoTag]="'package-map'"></app-map>
+  </div>
 </ion-content>
+
+<ion-footer>
+  <div class="footer">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Kartpakke</ion-label>
+      </ion-list-header>
+      <ion-item (click)="presentActionSheet(item)" *ngFor="let item of packages$ | async">
+        <ion-label>{{ item.name }}</ion-label>
+        <ion-label>{{ humanReadableByteSize(item.size) }}</ion-label>
+        <!-- <ion-label>{{ item.progress?.description }}</ion-label> -->
+        <ion-label *ngIf="isDownloading(item)">
+          ({{getPercentage(item) +'%' }})</ion-label>
+        <ion-icon slot="end" *ngIf="!!item.downloadComplete" name="checkmark"></ion-icon>
+        <ion-icon slot="end" *ngIf="!item.downloadComplete" name="cloud-download-outline"></ion-icon>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-footer>
