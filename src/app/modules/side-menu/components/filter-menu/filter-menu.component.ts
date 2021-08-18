@@ -1,7 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
+import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+
+export interface ObservationTypeFilterItem {
+  value: string,
+  geohazardTid: GeoHazard[],
+  isChecked: boolean
+}
 
 @Component({
   selector: 'app-filter-menu',
@@ -17,56 +27,103 @@ export class FilterMenuComponent implements OnInit {
   isIndeterminate: boolean;
   masterCheck: boolean;
 
-  observationTypes = [
+  filteredObservationTypes: ObservationTypeFilterItem[];
+
+  observationTypes : ObservationTypeFilterItem[] = [
     {
       value: "Ulykker",
+      geohazardTid: [GeoHazard.Snow, GeoHazard.Ice],
       isChecked: false
     },
     {
       value: "Skredhendelser",
+      geohazardTid: [GeoHazard.Snow, GeoHazard.Dirt],
+      isChecked: false
+    },
+    {
+      value: "Faretegn",
+      geohazardTid: [GeoHazard.Snow, GeoHazard.Ice, GeoHazard.Dirt],
+      isChecked: false
+    },
+    {
+      value: "Isdekning",
+      geohazardTid: [GeoHazard.Ice],
+      isChecked: false
+    },
+    {
+      value: "Istykkelse",
+      geohazardTid: [GeoHazard.Ice],
       isChecked: false
     },
     {
       value: "Snødekke",
+      geohazardTid: [GeoHazard.Snow],
       isChecked: false
     },
     {
       value: "Skredaktiviter",
+      geohazardTid: [GeoHazard.Snow],
       isChecked: false
     },
     {
       value: "Vær",
+      geohazardTid: [GeoHazard.Snow],
       isChecked: false
     },
     {
       value: "Tester",
+      geohazardTid: [GeoHazard.Snow],
       isChecked: false
     },
     {
       value: "Snøprofil",
+      geohazardTid: [GeoHazard.Snow],
       isChecked: false
     },
     {
       value: "Skredproblem",
+      geohazardTid: [GeoHazard.Snow],
       isChecked: false
     },
     {
       value: "Skredfarevurdering",
+      geohazardTid: [GeoHazard.Snow],
+      isChecked: false
+    },
+    {
+      value: "Vannstand",
+      geohazardTid: [GeoHazard.Water],
+      isChecked: false
+    },
+    {
+      value: "Skader",
+      geohazardTid: [GeoHazard.Water],
       isChecked: false
     },
     {
       value: "Notater",
+      geohazardTid: [GeoHazard.Snow, GeoHazard.Dirt, GeoHazard.Water, GeoHazard.Ice],
       isChecked: false
     }
   ];
 
 
-  constructor(private platform: Platform) { }
+  constructor(private platform: Platform,
+              private userSettingService: UserSettingService) { }
 
   async ngOnInit() {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
     this.isIosOrAndroid = isAndroidOrIos(this.platform);
     this.isMobileWeb = this.platform.is('mobileweb');
+    this.userSettingService.currentGeoHazard$.pipe(
+      switchMap( currentGeoHazard => of(this.filterObservationTypesByGeohazard(currentGeoHazard))))
+      .subscribe(items => this.filteredObservationTypes = items);
+  }
+
+  filterObservationTypesByGeohazard(currentGeoHazard: GeoHazard[]) {
+    return this.observationTypes.filter(
+      observationType => observationType.geohazardTid.some(
+        (observationGeoHazardTid) => currentGeoHazard.indexOf(observationGeoHazardTid) >= 0))
   }
 
   toggleAllObservationTypes() {
