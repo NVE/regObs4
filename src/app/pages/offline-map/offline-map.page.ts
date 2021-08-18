@@ -78,8 +78,6 @@ export class OfflineMapPage {
       this.packages$
     ]).subscribe(([packageIndex, packages]) => {
       try {
-        console.log("Packages", JSON.stringify(packages));
-
         this.packageMap = new Map<string, CompoundPackageMetadata>();
         packageIndex.statensKartverk.forEach(p => {
           const [x, y, z] = p.xyz;

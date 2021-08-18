@@ -33,12 +33,10 @@ export class OfflinePackageModalComponent implements OnInit {
   ngOnInit(): void {
     this.tileLayer = new L.GeoJSON(this.feature);
     const { lat, lng } = this.tileLayer.getBounds().getCenter();
-    this.center = [lat, lng];   
-    this.offlinePackageStatus$ = this.offlinePackageStatus$.pipe(tap(p => console.log('==== offlinePackageStatus: ', p))) 
+    this.center = [lat, lng];
   }
 
   showTileOnMap(map: L.Map) {
-    console.log("showTileOnMap");
     this.tileLayer.addTo(map);
     setTimeout(() => {
       map.fitBounds(this.tileLayer.getBounds(), {
