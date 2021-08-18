@@ -4,7 +4,7 @@ import { Progress } from './progress.model';
 import moment from 'moment';
 import { File, Metadata, Entry } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
@@ -20,6 +20,7 @@ import { PackageMetadataCombined } from '../../../pages/offline-map/metadata.mod
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
+const ROOT_MAP_DIR = 'maps';
 
 @Injectable({
   providedIn: 'root'
@@ -28,15 +29,13 @@ export class OfflineMapService implements OnReset {
   private packages: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
   packages$: Observable<OfflineMapPackage[]> = this.packages.asObservable();
 
-  private mapsFolder = 'NOT_READY';
-  private unzipProgress: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
-  unzipProgress$ = this.unzipProgress.asObservable();
-
-  private downloads: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
-  downloads$ = this.downloads.asObservable();
+  private downloadAndUnzipProgress: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
+  downloadAndUnzipProgress$ = this.downloadAndUnzipProgress.asObservable();
 
   private downloadAndUnzipSubscriptions: Subscription[] = [];
   private cancel = false;
+
+  private hasCreatedRootFolder = false;
 
   constructor(
     private file: File,
@@ -102,12 +101,16 @@ export class OfflineMapService implements OnReset {
 
     const name = this.getNameForPackageMetadata(packageMetadataCombined);
     
+    const mapPackage = this.createOfflineMapPackage(name, packageMetadataCombined.sizeInMib);
 
-    const mapPackage = await this.registerMapPackage(name, packageMetadataCombined.sizeInMib);
+    // Add new map package to progress subject
+    this.downloadAndUnzipProgress.next([...this.downloadAndUnzipProgress.value, mapPackage]);
 
+    // Find all zip-files (urls) to download and unzip
     const urls = packageMetadataCombined.packages.map((p) => p.urls).reduce((a, b) => a.concat(b), []);
     const parts = urls.length;
 
+    // Start recursive download and unzip
     this.downloadAndUnzipPart(name, urls[0], urls, mapPackage, 0, parts);
   }
 
@@ -170,7 +173,7 @@ export class OfflineMapService implements OnReset {
     if(isAndroidOrIos(this.platform)) {
       const availableStorageSpace = await this.getDeviceFreeDiskSpace();
 
-      const neededSpace = sizeInMiB * 1024 * 1024; // How well is the compression?
+      const neededSpace = sizeInMiB * 1024 * 1024 * 1.10; // How well is the compression? Adding 10% margin.
       // TODO: Use uncompressed size in package metadata
       this.loggingService.debug(`Available storage is ${this.helperService.humanReadableByteSize(availableStorageSpace)}. 
       Needs ${this.helperService.humanReadableByteSize(neededSpace)}`, DEBUG_TAG);
@@ -281,21 +284,15 @@ export class OfflineMapService implements OnReset {
     return offlineMapPackage;
   }
 
-  async registerMapPackage(name: string, sizeInMiB: number): Promise<OfflineMapPackage> {
+  private createOfflineMapPackage(name: string, sizeInMiB: number): OfflineMapPackage {
     const mapPackage: OfflineMapPackage = {
       name: name,
       size: sizeInMiB * 1024 * 1024,
-      // filename: name,
       downloadStart: moment().unix(),
       progress: { percentage: 0, step: ProgressStep.download, description: 'Downloading...' },
       downloadComplete: null,
       maps: {}
     };
-
-    // Start tracking unzip progress
-    const progress = this.unzipProgress.value;
-    progress.push(mapPackage);
-    this.unzipProgress.next(progress);
     return mapPackage;
   }
 
@@ -374,8 +371,8 @@ export class OfflineMapService implements OnReset {
 
   private onProgress(metadata: OfflineMapPackage, progress: Progress) {
     metadata.progress = progress;
-    const unzipProgress = this.unzipProgress.value.filter(p => p.name !== metadata.name);
-    this.unzipProgress.next([
+    const unzipProgress = this.downloadAndUnzipProgress.value.filter(p => p.name !== metadata.name);
+    this.downloadAndUnzipProgress.next([
       ...unzipProgress,
       metadata
     ]);
@@ -402,8 +399,8 @@ export class OfflineMapService implements OnReset {
     }
     
     // Remove from progress tracking
-    const unzipProgress = this.unzipProgress.value.filter(p => p.name !== mapPackage.name);
-    this.unzipProgress.next(unzipProgress);
+    const unzipProgress = this.downloadAndUnzipProgress.value.filter(p => p.name !== mapPackage.name);
+    this.downloadAndUnzipProgress.next(unzipProgress);
 
     const secondsSpent = mapPackage.downloadComplete - mapPackage.downloadStart;
     const rate = mapPackage.size / 1024 / secondsSpent;
@@ -448,13 +445,12 @@ export class OfflineMapService implements OnReset {
    * @returns directory name as string
    */
   private async getRootDirName(): Promise<string> {
-    const dirname = 'maps';
-    if (this.mapsFolder === 'NOT_READY') {
+    if(!this.hasCreatedRootFolder) {
       const dataFolder = await this.getDataDirectoryFileUrl();
-      await this.file.createDir(dataFolder, dirname, true);
-      this.mapsFolder = dirname;
+      await this.file.createDir(dataFolder, ROOT_MAP_DIR, true);
+      this.hasCreatedRootFolder = true;
     }
-    return this.mapsFolder;
+    return ROOT_MAP_DIR;
   }
 
   /**
@@ -497,7 +493,7 @@ export class OfflineMapService implements OnReset {
       });
   }
 
-  //TODO: Kan vi bruke disse til noe?
+  //TODO: Kan vi bruke disse til noe? Dette blir kalt når brukeren trykker "resett app" i innstillinger, så her må alle kartpakker slettes fra disk..
   appOnReset(): void | Promise<any> {}
   appOnResetComplete(): void | Promise<any> {}
 }

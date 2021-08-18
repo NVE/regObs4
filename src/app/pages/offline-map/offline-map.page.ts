@@ -58,7 +58,7 @@ export class OfflineMapPage {
 
     this.packages$ = combineLatest([
       this.offlineMapService.packages$,
-      this.offlineMapService.unzipProgress$
+      this.offlineMapService.downloadAndUnzipProgress$
     ]).pipe(map(([packages, unzipping]) => [...packages, ...unzipping]
       .sort((a, b) => b.downloadStart - a.downloadStart)));
   }
