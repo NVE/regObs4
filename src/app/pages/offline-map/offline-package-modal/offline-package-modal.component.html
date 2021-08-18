@@ -1,6 +1,6 @@
 <ion-header translucent>
   <ion-toolbar>
-    <ion-title>Kartpakke {{feature.properties.xyz[0]}}-{{feature.properties.xyz[1]}}-{{feature.properties.xyz[2]}}</ion-title>
+    <ion-title>Kartpakke {{ packageOnServer.getName() }} </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="dismiss()">Lukk</ion-button>
     </ion-buttons>
@@ -26,32 +26,30 @@
       <ion-col size="4">Størrelse:</ion-col>
       <ion-col>{{ packageOnServer.getSizeInMiB() }} MiB</ion-col>
     </ion-row>
-    <div *ngIf="offlinePackageStatus$ | async as packageStatus">
-      <ng-container *ngIf="packageStatus else downloadPackage">
-        <ion-row>
-          <ion-col size="4">Status:</ion-col>
-          <ion-col>
-            {{ packageStatus.progress?.description }}
-            <span *ngIf="!!packageStatus.downloadComplete">Lastet ned {{ packageStatus.downloadComplete * 1000 | date:'short' }} </span>
-            <span *ngIf="!packageStatus.downloadComplete">({{getPercentage(packageStatus) +'%' }})</span>
-          </ion-col>
-          <ion-col size="1">                  
-            <ion-icon *ngIf="!!packageStatus.downloadComplete" name="checkmark"></ion-icon>
-            <ion-icon *ngIf="packageStatus.progress?.step === 0" name="cloud-download-outline"></ion-icon>
-            <ion-icon *ngIf="packageStatus.progress?.step === 1" name="folder-open-outline"></ion-icon>
-          </ion-col>
-        </ion-row>              
-        <ion-row *ngIf="!!packageStatus.downloadComplete">
-          <ion-col>
-            <ion-button (click)="delete()" expand="block" color="danger">Slett</ion-button>
-          </ion-col>
-        </ion-row>
-        <ion-row *ngIf="!packageStatus.downloadComplete">
-          <ion-col>
-            <ion-button expand="block" color="danger">Avbryt nedlasting (TODO)</ion-button>
-          </ion-col>
-        </ion-row>
-      </ng-container>
+    <div *ngIf="offlinePackageStatus$ | async as packageStatus else downloadPackage">
+      <ion-row>
+        <ion-col size="4">Status:</ion-col>
+        <ion-col>
+          {{ packageStatus.progress?.description }}
+          <span *ngIf="!!packageStatus.downloadComplete">Lastet ned {{ packageStatus.downloadComplete * 1000 | date:'short' }} </span>
+          <span *ngIf="!packageStatus.downloadComplete">({{getPercentage(packageStatus) +'%' }})</span>
+        </ion-col>
+        <ion-col size="1">                  
+          <ion-icon *ngIf="!!packageStatus.downloadComplete" name="checkmark"></ion-icon>
+          <ion-icon *ngIf="packageStatus.progress?.step === 0" name="cloud-download-outline"></ion-icon>
+          <ion-icon *ngIf="packageStatus.progress?.step === 1" name="folder-open-outline"></ion-icon>
+        </ion-col>
+      </ion-row>              
+      <ion-row *ngIf="!!packageStatus.downloadComplete">
+        <ion-col>
+          <ion-button (click)="delete()" expand="block" color="danger">Slett</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="!packageStatus.downloadComplete">
+        <ion-col>
+          <ion-button expand="block" color="danger">Avbryt nedlasting (TODO)</ion-button>
+        </ion-col>
+      </ion-row>
     </div>
   </ion-grid>
 </ion-content>

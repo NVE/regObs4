@@ -185,7 +185,7 @@ export class OfflineMapPage {
         feature: feature,
         packageOnServer: this.packageMap.get(feature.id as string),
         offlinePackageStatus$: this.packages$.pipe(
-          map(packages => packages.filter(p => p.name === this.getPackageName(x, y, z)[0])))    
+          map(packages => packages.find(p => p.name === this.getPackageName(x, y, z)))),
       },
       swipeToClose: true,
       mode: "ios"

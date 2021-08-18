@@ -14,10 +14,8 @@ export interface FeatureProperties {
 }
 
 export class CompoundPackageMetadata {
-  name: string;
-  xyz: number[];
-  sizeInMib: number = 0;
-  packages: PackageMetadata[] = [];
+  private xyz: number[];
+  private packages: PackageMetadata[] = [];
 
   constructor(xyz: number[]) {
     this.xyz = xyz;
@@ -37,9 +35,13 @@ export class CompoundPackageMetadata {
   }
 
   getLastModified(): Moment {
-    if (this.packages.length = 0) {
+    if (this.packages.length === 0) {
       return undefined;
     }
     return moment.max(this.packages.map(p => moment(p.lastModified)));
+  }
+
+  getUrls(): string[] {
+    return this.packages.map((p) => p.urls).reduce((a, b) => a.concat(b), []);
   }
 }

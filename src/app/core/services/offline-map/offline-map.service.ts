@@ -89,19 +89,19 @@ export class OfflineMapService implements OnReset {
     this.cancel = false;
 
     //TODO: Ask user to prefer saving to external SD card if available?
-    const availableSpace = await this.checkAvailableDiskSpace(packageMetadataCombined.sizeInMib);
+    const availableSpace = await this.checkAvailableDiskSpace(packageMetadataCombined.getSizeInMiB());
     if(!availableSpace) {
       return;
     }
 
     const name = packageMetadataCombined.getName();
-    const mapPackage = this.createOfflineMapPackage(name, packageMetadataCombined.sizeInMib);
+    const mapPackage = this.createOfflineMapPackage(name, packageMetadataCombined.getSizeInMiB());
 
     // Add new map package to progress subject
     this.downloadAndUnzipProgress.next([...this.downloadAndUnzipProgress.value, mapPackage]);
 
     // Find all zip-files (urls) to download and unzip
-    const urls = packageMetadataCombined.packages.map((p) => p.urls).reduce((a, b) => a.concat(b), []);
+    const urls = packageMetadataCombined.getUrls();
     const parts = urls.length;
 
     // Start recursive download and unzip
