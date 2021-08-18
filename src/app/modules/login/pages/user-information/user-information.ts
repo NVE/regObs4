@@ -134,7 +134,7 @@ export class UserInformation implements OnInit {
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
-    if (data && data.copyright && data.photographer) {
+    if (data != null) {
       await this.saveCopyrightAndPhotographer(data.copyright, data.photographer);
     }
   }
