@@ -4,8 +4,8 @@ import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.m
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { ActionSheetController, ModalController, Platform } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { bufferTime, map, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
+import { bufferTime, debounceTime, filter, map, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 import tiles from "./z8.json";
 import * as L from "leaflet";
 import { GeoJsonObject } from 'geojson';
@@ -44,6 +44,7 @@ export class OfflineMapPage {
   tilesLayer: L.GeoJSON;
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
   showModal = new Subject<Feature<Polygon, PackageMetadataCombined>>();
+  isZooming = new BehaviorSubject<boolean>(false);
 
   constructor(
     private helperService: HelperService,
@@ -162,22 +163,19 @@ export class OfflineMapPage {
       }
     });
 
-    this.showModal.pipe(bufferTime(200)).subscribe(buffer => {
-      if (buffer.length === 1 && buffer[0] != null) {
-        this.showPackageModal(buffer[0]);
-      }
-    });
+    this.showModal.pipe(
+      debounceTime(200), 
+      withLatestFrom(this.isZooming),
+      filter(([_, isZooming]) => !isZooming),
+      switchMap(([feature, _]) => from(this.showPackageModal(feature)))
+    ).subscribe();
 
-    // TODO
-    // Forsøk på å forhindre at pinch-zooming trigger
-    // click event, kombinert med if-setninga over.
-    // Kan sikkert fikses bedre på en annen måte, løste heller
-    // ikke problemet helt.
+    // This is to avoid pinch-zooming on map triggers click event
     map.on("zoomend", () => {
-      this.showModal.next(null);
+      this.isZooming.next(false);
     });
     map.on("zoomstart", () => {
-      this.showModal.next(null);
+      this.isZooming.next(true);
     });
   }
 
