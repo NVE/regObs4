@@ -4,14 +4,14 @@ import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.m
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { ActionSheetController, ModalController, Platform } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { bufferTime, map, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
+import { bufferTime, debounceTime, filter, map, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 import tiles from "./z8.json";
 import * as L from "leaflet";
 import { GeoJsonObject } from 'geojson';
 import { HttpClient } from '@angular/common/http';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
-import { PackageMetadata } from './metadata.model';
+import { CompoundPackageMetadata, FeatureProperties, PackageMetadata } from './metadata.model';
 import { Polygon, Feature } from 'geojson';
 
 const PACKAGE_INDEX_URL = "https://offlinemap.blob.core.windows.net/packages/packageIndex.json";
@@ -26,6 +26,8 @@ interface PackageIndex {
   norgeskart: PackageMetadata[];
   bratthet_med_utlop: PackageMetadata[];
   allInOne: PackageMetadata[];
+  statensKartverk: PackageMetadata[];
+  'steepness-outlet': PackageMetadata[];
 }
 
 @Component({
@@ -36,12 +38,14 @@ interface PackageIndex {
 export class OfflineMapPage {
   packages$: Observable<OfflineMapPackage[]>;
   private packageIndex$: Observable<PackageIndex>;
-  selectedPackage: PackageMetadata = null;
+  selectedPackage: CompoundPackageMetadata = null;
+  packageMap = new Map<string, CompoundPackageMetadata>();
   showTileCard = true;
   showDownloads = false;
   tilesLayer: L.GeoJSON;
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
-  showModal = new Subject<Feature<Polygon, PackageMetadata>>();
+  showModal = new Subject<Feature<Polygon, FeatureProperties>>();
+  isZooming = new BehaviorSubject<boolean>(false);
 
   constructor(
     private helperService: HelperService,
@@ -55,7 +59,7 @@ export class OfflineMapPage {
 
     this.packages$ = combineLatest([
       this.offlineMapService.packages$,
-      this.offlineMapService.unzipProgress$
+      this.offlineMapService.downloadAndUnzipProgress$
     ]).pipe(map(([packages, unzipping]) => [...packages, ...unzipping]
       .sort((a, b) => b.downloadStart - a.downloadStart)));
   }
@@ -76,30 +80,31 @@ export class OfflineMapPage {
       try {
         console.log("Packages", JSON.stringify(packages));
 
-        const packageMap = new Map<string, PackageMetadata>();
-        packageIndex.allInOne.forEach(p => {
+        this.packageMap = new Map<string, CompoundPackageMetadata>();
+        packageIndex.statensKartverk.forEach(p => {
           const [x, y, z] = p.xyz;
-          const id = `(${x}, ${y}, ${z})`;
-          packageMap.set(id, p);
+          const id = this.getFeatureId(x, y, z);
+          const compoundPackage = new CompoundPackageMetadata(p.xyz);
+          compoundPackage.addPackage(p);
+          this.packageMap.set(id, compoundPackage);
         });
+
+        for(const supportMap of packageIndex['steepness-outlet']) {
+          const [x, y, z] = supportMap.xyz;
+          const id = this.getFeatureId(x, y, z);
+          const existingPackage = this.packageMap.get(id);
+          if(existingPackage) {
+            existingPackage.addPackage(supportMap);
+          }
+        }
   
         const installedPackages = new Map<string, OfflineMapPackage>();
-        // installedPackages.set("(133, 73, 8)", {name: "test", maps: {}});
         packages.forEach(installedPackage => {
           const maps = Object.values(installedPackage.maps);
           if (maps.length > 0) {
             const { x, y, z } = Object.values(installedPackage.maps)[0].rootTile;
-            const id = `(${x}, ${y}, ${z})`;
-            installedPackages.set(id, installedPackage);
-          }
-        });
-  
-        tiles.features.forEach(f => {
-          if (packageMap.has(f.id)) {
-            f.properties = {
-              ...f.properties,
-              ...packageMap.get(f.id)
-            }
+            const name = this.getPackageName(x, y, z); //TODO: Heller bruke feature ID her?
+            installedPackages.set(name, installedPackage);
           }
         });
   
@@ -109,15 +114,15 @@ export class OfflineMapPage {
   
         this.tilesLayer = new L.GeoJSON(tiles as GeoJsonObject, {
           filter: (feature) => {
-            return packageMap.has(feature.id as string);
+            return this.packageMap.has(feature.id as string);
           },
-          onEachFeature: (feature: Feature<Polygon, PackageMetadata>, layer) => {
+          onEachFeature: (feature: Feature<Polygon, FeatureProperties>, layer) => {
             // TODO: We now also show modal dialog if package is installed or under downloading
             // if (installedPackages.has(feature.id as string)) {
             //   return; 
             // }
 
-            if (packageMap.has(feature.id as string)) {
+            if (this.packageMap.has(feature.id as string)) {
               layer.on("click", () => {
                 this.showModal.next(feature);
                 // this.showPackageModal(feature);
@@ -148,31 +153,39 @@ export class OfflineMapPage {
       }
     });
 
-    this.showModal.pipe(bufferTime(200)).subscribe(buffer => {
-      if (buffer.length === 1 && buffer[0] != null) {
-        this.showPackageModal(buffer[0]);
-      }
-    });
+    this.showModal.pipe(
+      debounceTime(200), 
+      withLatestFrom(this.isZooming),
+      filter(([_, isZooming]) => !isZooming),
+      switchMap(([feature, _]) => from(this.showPackageModal(feature)))
+    ).subscribe();
 
-    // TODO
-    // Forsøk på å forhindre at pinch-zooming trigger
-    // click event, kombinert med if-setninga over.
-    // Kan sikkert fikses bedre på en annen måte, løste heller
-    // ikke problemet helt.
+    // This is to avoid pinch-zooming on map triggers click event
     map.on("zoomend", () => {
-      this.showModal.next(null);
+      this.isZooming.next(false);
     });
     map.on("zoomstart", () => {
-      this.showModal.next(null);
+      this.isZooming.next(true);
     });
   }
 
-  async showPackageModal(feature: Feature<Polygon, PackageMetadata>) {
+  private getPackageName(x : number, y : number, z : number) {
+    return `${x}-${y}-${z}`;
+  }
+
+  private getFeatureId(x : number, y : number, z : number) {
+    return `(${x}, ${y}, ${z})`;
+  }
+
+  async showPackageModal(feature: Feature<Polygon, FeatureProperties>) {
+    const [x, y, z] = feature.properties.xyz;
     const modal = await this.modalController.create({
       component: OfflinePackageModalComponent,
       componentProps: {
-        packageOnServer: feature,
-        packages$: this.packages$
+        feature: feature,
+        packageOnServer: this.packageMap.get(feature.id as string),
+        offlinePackageStatus$: this.packages$.pipe(
+          map(packages => packages.filter(p => p.name === this.getPackageName(x, y, z)[0])))    
       },
       swipeToClose: true,
       mode: "ios"
@@ -184,7 +197,7 @@ export class OfflineMapPage {
     if (isNaN(bytes)) {
       return '';
     }
-    return this.helperService.humanReadableByteSize(bytes);
+    return this.helperService.humanReadableByteSize(bytes, false);
   }
 
   getPercentage(map: OfflineMapPackage): number {
