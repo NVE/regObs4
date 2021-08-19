@@ -101,8 +101,8 @@ export class OfflineMapPage {
           const maps = Object.values(installedPackage.maps);
           if (maps.length > 0) {
             const { x, y, z } = Object.values(installedPackage.maps)[0].rootTile;
-            const name = this.getPackageName(x, y, z); //TODO: Heller bruke feature ID her?
-            installedPackages.set(name, installedPackage);
+            const id = this.getFeatureId(x, y, z);
+            installedPackages.set(id, installedPackage);
           }
         });
   
