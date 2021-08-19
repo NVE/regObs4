@@ -34,7 +34,7 @@ export class OfflineMapService implements OnReset {
 
 
   private downloadSubscription: Subscription;
-  private stopUnzippingFiles = false;
+  private cancel = false;
 
   private hasCreatedRootFolder = false;
 
@@ -87,8 +87,6 @@ export class OfflineMapService implements OnReset {
   }
 
   public async downloadPackage(packageMetadataCombined: CompoundPackageMetadata): Promise<void> {
-    this.stopUnzippingFiles = false;
-
     //TODO: Ask user to prefer saving to external SD card if available?
     // TODO: When multiple packages are in queue, the disk space required must also take queued packages into account
     const availableSpace = await this.checkAvailableDiskSpace(packageMetadataCombined.getSizeInMiB());
@@ -138,11 +136,8 @@ export class OfflineMapService implements OnReset {
        this.removePackageFromDownloadAndProgress(offlineMapPackage);
     } else if(offlineMapPackage.progress.step === ProgressStep.download || offlineMapPackage.progress.step === ProgressStep.extractZip) {
 
-      this.stopUnzippingFiles = true;
+      this.cancel = true;
       this.downloadSubscription?.unsubscribe();
-      this.downloadSubscription = null;
-
-      this.startDownloadNextItemInQueue();
     }
   }
 
@@ -154,7 +149,7 @@ export class OfflineMapService implements OnReset {
     const subfolder = url.indexOf('steepness-outlet') >= 0 ? 'steepness-outlet' : 'statensKartverk'; // Hack to create subfolders in package name folder. For example package 135_74_8 needs to have folders 135_74_8/statensKartverk and 135_74_8/steepness-outlet
     const folder = `${name}/${subfolder}`;
     this.downloadSubscription = this.backgroundDownloadService.download(url).pipe(finalize(() => {
-      if(this.stopUnzippingFiles) {
+      if(this.cancel) {
         this.onCancelled(mapPackage);
       }
     })).subscribe(async (downloadProgress) => {
@@ -181,11 +176,7 @@ export class OfflineMapService implements OnReset {
         default:
           break;
       }
-    }, (err) => this.onUnzipError(name, err), () => {
-      if(this.stopUnzippingFiles) {
-        this.onCancelled(mapPackage);
-      }
-    });
+    }, (err) => this.onUnzipError(name, err));
   }
 
   public calculateTotalProgress(currentProgress: number, currentPart: number, totalParts: number, partOfStep: 'Downloading' | 'Unzipping') {
@@ -197,7 +188,7 @@ export class OfflineMapService implements OnReset {
   }
 
   private onUnzipStepComplete(name: string, urls: string[], mapPackage: OfflineMapPackage, partNumber: number, totalParts: number) {
-    if(this.stopUnzippingFiles) {
+    if(this.cancel) {
       this.onCancelled(mapPackage);
       return;
     }
@@ -381,7 +372,7 @@ export class OfflineMapService implements OnReset {
       const mod = Math.floor(files.length / 100);
 
       const unzipFile = async (fileName: string) => {
-        if(this.stopUnzippingFiles) {
+        if(this.cancel) {
           return;
         }
         const zippedFile: JSZip.JSZipObject = content.files[fileName];
@@ -447,10 +438,8 @@ export class OfflineMapService implements OnReset {
     const unzipProgress = this.downloadAndUnzipProgress.value.filter(p => p.name !== mapPackage.name);
     this.downloadAndUnzipProgress.next(unzipProgress);
 
-    this.clearCurrentDownloadSubscriptions();
-
     // Start any pending downloads
-    this.startDownloadNextItemInQueue();
+    this.resetCancelAndStartNextItemInQueue();
 
     const secondsSpent = mapPackage.downloadComplete - mapPackage.downloadStart;
     const rate = mapPackage.size / 1024 / secondsSpent;
@@ -468,11 +457,13 @@ export class OfflineMapService implements OnReset {
 
   private onCancelled(mapPackage: OfflineMapPackage) {
     this.removeMapPackageByName(mapPackage.name);
+    this.resetCancelAndStartNextItemInQueue();
   }
 
-
-  private clearCurrentDownloadSubscriptions() {
+  private resetCancelAndStartNextItemInQueue() {
+    this.cancel = false;
     this.downloadSubscription = null;
+    this.startDownloadNextItemInQueue();
   }
 
   //#region Directories and file urls
