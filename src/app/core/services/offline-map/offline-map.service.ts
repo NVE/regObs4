@@ -274,10 +274,13 @@ export class OfflineMapService implements OnReset {
   }
 
   async removeMapPackageByName(packageNameToRemove: string) {
+    // Delete files
     const root = await this.getRootFileUrl();
     await this.deleteDirectory(root, packageNameToRemove);
-    const packages = this.packages.value.filter(mapPackage => mapPackage.name !== packageNameToRemove);
-    this.packages.next(packages);
+    // Remove package from installed packages subject list
+    this.packages.next(this.packages.value.filter(mapPackage => mapPackage.name !== packageNameToRemove));
+    // Also remove any pending / downloading packages in progress
+    this.downloadAndUnzipProgress.next(this.downloadAndUnzipProgress.value.filter(mapPackage => mapPackage.name !== packageNameToRemove));
   }
 
   private async readCompleteFile(packageName: string): Promise<{ size: number, downloadComplete: number }> {
