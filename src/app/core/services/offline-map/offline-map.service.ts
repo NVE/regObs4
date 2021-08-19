@@ -5,7 +5,7 @@ import moment from 'moment';
 import { File, Metadata, Entry } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import JSZip from 'jszip';
@@ -31,6 +31,7 @@ export class OfflineMapService implements OnReset {
 
   private downloadAndUnzipProgress: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
   downloadAndUnzipProgress$ = this.downloadAndUnzipProgress.asObservable();
+
 
   private downloadAndUnzipSubscriptions: Subscription[] = [];
   private cancel = false;
@@ -89,23 +90,46 @@ export class OfflineMapService implements OnReset {
     this.cancel = false;
 
     //TODO: Ask user to prefer saving to external SD card if available?
+    // TODO: When multiple packages are in queue, the disk space required must also take queued packages into account
     const availableSpace = await this.checkAvailableDiskSpace(packageMetadataCombined.getSizeInMiB());
     if(!availableSpace) {
       return;
     }
 
     const name = packageMetadataCombined.getName();
-    const mapPackage = this.createOfflineMapPackage(name, packageMetadataCombined.getSizeInMiB());
+    const mapPackage = this.createOfflineMapPackage(packageMetadataCombined);
 
     // Add new map package to progress subject
-    this.downloadAndUnzipProgress.next([...this.downloadAndUnzipProgress.value, mapPackage]);
+    this.downloadAndUnzipProgress.next([...this.downloadAndUnzipProgress.value,  mapPackage]);
 
-    // Find all zip-files (urls) to download and unzip
-    const urls = packageMetadataCombined.getUrls();
-    const parts = urls.length;
+    if(this.downloadAndUnzipSubscriptions.length === 0) {
+      //Start downlaod if not anyting currently downloading
+      this.startDownloadNextItemInQueue();
+    }
+    
+  }
 
-    // Start recursive download and unzip
-    this.downloadAndUnzipPart(name, urls[0], urls, mapPackage, 0, parts);
+  private startDownloadNextItemInQueue() {
+    const nextInQueue = this.downloadAndUnzipProgress.value.filter((p => 
+        p.progress.step === ProgressStep.pending))[0];
+    if(nextInQueue != null) {
+      this.onProgress(nextInQueue, {
+        step: ProgressStep.download,
+        percentage: 0,
+        description: ''
+      });
+
+      this.startDownloadPackage(nextInQueue);
+    }
+  }
+
+  private startDownloadPackage(offlineMapPackage: OfflineMapPackage) {
+     // Find all zip-files (urls) to download and unzip
+     const urls = offlineMapPackage.compoundPackageMetadata.getUrls();
+     const parts = urls.length;
+
+     // Start recursive download and unzip
+     this.downloadAndUnzipPart(offlineMapPackage.name, urls[0], urls, offlineMapPackage, 0, parts);
   }
 
   private cancelDownloadPackage() {
@@ -278,14 +302,15 @@ export class OfflineMapService implements OnReset {
     return offlineMapPackage;
   }
 
-  private createOfflineMapPackage(name: string, sizeInMiB: number): OfflineMapPackage {
+  private createOfflineMapPackage(compoundPackageMetadata: CompoundPackageMetadata): OfflineMapPackage {
     const mapPackage: OfflineMapPackage = {
-      name: name,
-      size: sizeInMiB * 1024 * 1024,
+      name: compoundPackageMetadata.getName(),
+      size: compoundPackageMetadata.getSizeInMiB() * 1024 * 1024,
       downloadStart: moment().unix(),
-      progress: { percentage: 0, step: ProgressStep.download, description: 'Downloading...' },
+      progress: { percentage: 0, step: ProgressStep.pending, description: 'In queue...' },
       downloadComplete: null,
-      maps: {}
+      maps: {},
+      compoundPackageMetadata,
     };
     return mapPackage;
   }
@@ -396,6 +421,11 @@ export class OfflineMapService implements OnReset {
     const unzipProgress = this.downloadAndUnzipProgress.value.filter(p => p.name !== mapPackage.name);
     this.downloadAndUnzipProgress.next(unzipProgress);
 
+    this.clearCurrentDownloadSubscriptions();
+
+    // Start any pending downloads
+    this.startDownloadNextItemInQueue();
+
     const secondsSpent = mapPackage.downloadComplete - mapPackage.downloadStart;
     const rate = mapPackage.size / 1024 / secondsSpent;
     this.loggingService.debug(
@@ -408,6 +438,10 @@ export class OfflineMapService implements OnReset {
     mapPackage.maps = metadata.maps;
 
     this.addMapPackage(mapPackage);
+  }
+
+  private clearCurrentDownloadSubscriptions() {
+    this.downloadAndUnzipSubscriptions = [];
   }
 
   //#region Directories and file urls
