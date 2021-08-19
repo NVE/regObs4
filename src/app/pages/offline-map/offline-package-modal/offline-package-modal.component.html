@@ -8,14 +8,8 @@
 </ion-header>
 <ion-content>
   <div class="map-container">
-    <app-map
-      [showMapControls]="false"
-      [showUserLocation]="false"
-      [showSupportMaps]="false"
-      [center]="center"
-      [zoom]="zoom"
-      (mapReady)="showTileOnMap($event)"
-    ></app-map>
+    <app-map [showMapControls]="false" [showUserLocation]="false" [showSupportMaps]="false" [center]="center"
+      [zoom]="zoom" (mapReady)="showTileOnMap($event)"></app-map>
   </div>
   <ion-grid>
     <ion-row>
@@ -31,15 +25,17 @@
         <ion-col size="4">Status:</ion-col>
         <ion-col>
           {{ packageStatus.progress?.description }}
-          <span *ngIf="!!packageStatus.downloadComplete">Lastet ned {{ packageStatus.downloadComplete * 1000 | date:'short' }} </span>
+          <span *ngIf="!!packageStatus.downloadComplete">Lastet ned {{ packageStatus.downloadComplete * 1000 |
+            date:'short' }} </span>
           <span *ngIf="!packageStatus.downloadComplete">({{getPercentage(packageStatus) +'%' }})</span>
         </ion-col>
-        <ion-col size="1">                  
+        <ion-col size="1">
           <ion-icon *ngIf="!!packageStatus.downloadComplete" name="checkmark"></ion-icon>
-          <ion-icon *ngIf="packageStatus.progress?.step === 0" name="cloud-download-outline"></ion-icon>
-          <ion-icon *ngIf="packageStatus.progress?.step === 1" name="folder-open-outline"></ion-icon>
+          <ion-icon *ngIf="packageStatus.progress?.step === 0" name="stopwatch-outline"></ion-icon>
+          <ion-icon *ngIf="packageStatus.progress?.step === 1" name="cloud-download-outline"></ion-icon>
+          <ion-icon *ngIf="packageStatus.progress?.step === 2" name="folder-open-outline"></ion-icon>
         </ion-col>
-      </ion-row>              
+      </ion-row>
       <ion-row *ngIf="!!packageStatus.downloadComplete">
         <ion-col>
           <ion-button (click)="delete()" expand="block" color="danger">Slett</ion-button>
@@ -57,11 +53,7 @@
 <ng-template #downloadPackage>
   <ion-row>
     <ion-col>
-      <ion-button
-        (click)="startDownload()"
-        expand="block"
-        color="varsom-orange"
-      >Last ned</ion-button>
+      <ion-button (click)="startDownload()" expand="block" color="varsom-orange">Last ned</ion-button>
     </ion-col>
   </ion-row>
 </ng-template>
