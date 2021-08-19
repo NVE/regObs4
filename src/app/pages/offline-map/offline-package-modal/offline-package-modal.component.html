@@ -43,7 +43,7 @@
       </ion-row>
       <ion-row *ngIf="!packageStatus.downloadComplete">
         <ion-col>
-          <ion-button expand="block" color="danger">Avbryt nedlasting (TODO)</ion-button>
+          <ion-button expand="block" color="danger" (click)="cancel(packageStatus)">Avbryt nedlasting</ion-button>
         </ion-col>
       </ion-row>
     </div>
