@@ -44,4 +44,8 @@ export class CompoundPackageMetadata {
   getUrls(): string[] {
     return this.packages.map((p) => p.urls).reduce((a, b) => a.concat(b), []);
   }
+
+  getXYZ(): number[] {
+    return this.xyz;
+  }
 }
