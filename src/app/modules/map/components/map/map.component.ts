@@ -381,8 +381,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
       for (const createTileLayer of createTileLayerFactory) {
         const options = this.getTileLayerDefaultOptions(userSetting.useRetinaMap);
-        const Layer = createTileLayer(options);
-        Layer.addTo(this.layerGroup);
+        // options.errorTileUrl = '/assets/icon/map/cloud-offline-outline.png'
+        const layer = createTileLayer(options);
+        layer.addTo(this.layerGroup);
+        layer.on('tileerror', (event?: L.TileErrorEvent) => {
+          console.log('******tileerror', event);
+          if (event.coords.z >  14) {
+            layer.options.errorTileUrl = '/assets/icon/map/cloud-offline-outline.png'
+          } else {
+            layer.options.errorTileUrl = undefined;
+          }
+        });
       }
 
       for (const supportMaps of this.userSettingService.getSupportTilesOptions(
