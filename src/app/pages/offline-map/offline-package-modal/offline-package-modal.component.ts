@@ -55,6 +55,10 @@ export class OfflinePackageModalComponent implements OnInit {
     return Math.round((map.progress ? map.progress.percentage : 0) * 100);
   }
 
+  cancel(map: OfflineMapPackage) {
+    this.offlineMapService.cancelDownloadPackage(map);
+  }
+
   delete() {
     this.offlineMapService.removeMapPackageByName(this.packageOnServer.getName());
   }
