@@ -87,7 +87,6 @@ export class OfflineMapPage {
 
       // TODO: Vil ikke dette skje litt vel ofte?? Hver gang en pakke som nedlastes får en endring på progress, så trigges dette...
 
-      try {
         this.packageMap = new Map<string, CompoundPackageMetadata>();
         packageIndex.statensKartverk.forEach(p => {
           const [x, y, z] = p.xyz;
@@ -116,10 +115,14 @@ export class OfflineMapPage {
         //   }
         // });
         const installedPackages = new Map(packages.map((p) => [this.getFeatureIdForPackage(p), p]));
-  
-        if (this.tilesLayer) {
-          map.removeLayer(this.tilesLayer);
-        }
+
+          try{
+            if (this.tilesLayer && map.hasLayer(this.tilesLayer)) {
+              map.removeLayer(this.tilesLayer);
+            }
+          }catch(err) {
+            
+          }
 
         this.featureMap = new Map<string, Feature<Polygon, FeatureProperties>>();
   
@@ -163,13 +166,8 @@ export class OfflineMapPage {
             ...defaultTileStyle,
             fillOpacity: 0.1,
           }
-        })
-  
+        });
         map.addLayer(this.tilesLayer);
-      } catch (error) {
-        console.error("Failed to create offline package map");
-        console.error(error);
-      }
     });
 
     this.showModal.pipe(
