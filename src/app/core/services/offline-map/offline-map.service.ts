@@ -67,12 +67,8 @@ export class OfflineMapService implements OnReset {
 
     // Read offline map package names
     const fileEntries = await this.file.listDir(path, mapsDir);
-    const folders = fileEntries.filter((entry) => entry.isDirectory);
-    const packageNames = (await Promise.all(folders.map((directoryEntry: Entry) => this.hasCompleteFile(directoryEntry.name) ? directoryEntry.name : null))).filter((packageName) => packageName != null);
+    const packageNames = await this.getFolderNameWithCompleteFiles(fileEntries.filter((entry) => entry.isDirectory));
     this.loggingService.debug('packageNames', DEBUG_TAG, packageNames);
-    
-    // Read all folder metadata
-    const folderMetadata = await Promise.all(folders.map((folder) => this.getDirectoryMetadata(folder)));
 
     // Read all package metadata
     const packages = await Promise.all(packageNames.map((name) => this.getMetadata(name)));
@@ -80,10 +76,9 @@ export class OfflineMapService implements OnReset {
     return packages;
   }
 
-  private async getDirectoryMetadata(entry: Entry): Promise<Metadata> {
-    return new Promise((resolve, reject) => 
-      entry.getMetadata((metadata) => resolve(metadata)
-    , (error) => reject(error)));
+  private async getFolderNameWithCompleteFiles(folders: Entry[]) : Promise<string[]> {
+    return (await Promise.all(folders.map((directoryEntry: Entry) => this.hasCompleteFile(directoryEntry.name).then((result) => result ? directoryEntry.name : null))))
+      .filter((packageName) => packageName != null);
   }
 
   public async downloadPackage(packageMetadataCombined: CompoundPackageMetadata): Promise<void> {
@@ -294,8 +289,13 @@ export class OfflineMapService implements OnReset {
   }
 
   private async hasCompleteFile(packageName: string): Promise<boolean> {
+    try{
     const path = await this.getMapPackageFileUrl(packageName);
-    return this.file.checkFile(path, 'COMPLETE');
+    return await this.file.checkFile(`${path}/`, 'COMPLETE');
+    }catch(err) {
+      // throws error if file does not exist
+      return false;
+    }
   }
 
   /**
@@ -319,7 +319,7 @@ export class OfflineMapService implements OnReset {
       this.loggingService.debug('Metadata path:', DEBUG_TAG, metadataPath);
       const data = await this.file.readAsText(metadataPath, METADATA_FILE);
       const metadata = JSON.parse(data) as OfflineTilesMetadata;
-      this.loggingService.debug('Metadata:', DEBUG_TAG, data);
+      this.loggingService.debug('Metadata:', DEBUG_TAG, metadata);
 
       offlineMapPackage.maps[map] = { ...metadata, url: this.webView.convertFileSrc(`${path}/${map}`) };
     }
@@ -471,10 +471,10 @@ export class OfflineMapService implements OnReset {
     );
 
     // Add metadata from map package
-    const metadata = await this.getMetadata(mapPackage.name);
-    mapPackage.maps = metadata.maps;
-
-    this.addMapPackage(mapPackage);
+    const newPackage = await this.getMetadata(mapPackage.name);
+    setTimeout(() => {
+      this.addMapPackage(newPackage);
+    });
   }
 
   private onCancelled(mapPackage: OfflineMapPackage) {
