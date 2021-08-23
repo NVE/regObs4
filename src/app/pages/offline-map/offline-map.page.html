@@ -3,33 +3,32 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title> Offline-kart</ion-title>
+    <ion-title>Offline-kart</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="map-container">
     <app-map (mapReady)="onMapReady($event)" [showScale]="false" [showMapControls]="false" [showUserLocation]="false"
-      [autoActivate]="false" [geoTag]="'package-map'"></app-map>
+      [showSupportMaps]="false" [autoActivate]="false" [geoTag]="'package-map'"></app-map>
   </div>
 </ion-content>
-
-<ion-footer>
-  <div class="footer">
-    <ion-list>
-      <ion-list-header>
-        <ion-label>Kartpakke</ion-label>
-      </ion-list-header>
-      <ion-item (click)="presentActionSheet(item)" *ngFor="let item of packages$ | async">
-        <ion-label>{{ item.name }}</ion-label>
-        <ion-label>{{ humanReadableByteSize(item.size) }}</ion-label>
-        <ion-label>{{ item.progress?.description }}</ion-label>
-        <ion-label *ngIf="isDownloading(item)">
-          ({{getPercentage(item) +'%' }})</ion-label>
-        <ion-icon slot="end" *ngIf="!!item.downloadComplete" name="checkmark"></ion-icon>
-        <ion-icon slot="end" *ngIf="item.progress?.step === 0" name="cloud-download-outline"></ion-icon>
-        <ion-icon slot="end" *ngIf="item.progress?.step === 1" name="sync-circle-outline"></ion-icon>
-      </ion-item>
-    </ion-list>
-  </div>
-</ion-footer>
+<ng-container *ngIf="downloadAndUnzipProgress$ | async as items">
+  <ion-footer *ngIf="items.length > 0">
+    <div class="footer">
+      <ion-list>
+        <ion-list-header>
+          <ion-label>Kartpakke</ion-label>
+        </ion-list-header>
+        <ion-item (click)="showPackageModalForPackage(item)" *ngFor="let item of items">
+          <ion-label>{{ item.name }}</ion-label>
+          <ion-label>{{ humanReadableByteSize(item.size) }}</ion-label>
+          <ion-label *ngIf="isDownloading(item)">
+            ({{getPercentage(item) +'%' }})</ion-label>
+          <ion-icon slot="end" *ngIf="item.error" name="warning-outline"></ion-icon>
+          <ion-icon slot="end" (click)="cancelOrDelete(item, $event)" name="trash-outline"></ion-icon>
+        </ion-item>
+      </ion-list>
+    </div>
+  </ion-footer>
+</ng-container>

@@ -9,7 +9,7 @@ import { OfflineMapPage } from './offline-map.page';
 import { MapModule } from 'src/app/modules/map/map.module';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
-import { OfflinePackageModalComponent } from './offline-package-modal.component';
+import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
 
 const routes: Routes = [
   {

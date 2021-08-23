@@ -2,30 +2,35 @@ import { Component } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
-import { ActionSheetController, ModalController, Platform } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController, Platform } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { bufferTime, map, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
+import { bufferTime, debounceTime, filter, map, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 import tiles from "./z8.json";
 import * as L from "leaflet";
 import { GeoJsonObject } from 'geojson';
 import { HttpClient } from '@angular/common/http';
-import { OfflinePackageModalComponent } from './offline-package-modal.component';
-import { PackageMetadata } from './metadata.model';
+import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
+import { CompoundPackageMetadata, FeatureProperties, PackageMetadata } from './metadata.model';
 import { Polygon, Feature } from 'geojson';
+import { TranslateService } from '@ngx-translate/core';
 
 const PACKAGE_INDEX_URL = "https://offlinemap.blob.core.windows.net/packages/packageIndex.json";
 const documentStyle = getComputedStyle(document.body);
 const defaultTileStyle = {
   color: documentStyle.getPropertyValue("--ion-color-primary")
 };
-
+const errorTileStyle = {
+  color: documentStyle.getPropertyValue("--ion-color-danger")
+};
 
 
 interface PackageIndex {
   norgeskart: PackageMetadata[];
   bratthet_med_utlop: PackageMetadata[];
   allInOne: PackageMetadata[];
+  statensKartverk: PackageMetadata[];
+  'steepness-outlet': PackageMetadata[];
 }
 
 @Component({
@@ -35,13 +40,17 @@ interface PackageIndex {
 })
 export class OfflineMapPage {
   packages$: Observable<OfflineMapPackage[]>;
+  downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
   private packageIndex$: Observable<PackageIndex>;
-  selectedPackage: PackageMetadata = null;
+  selectedPackage: CompoundPackageMetadata = null;
+  packageMap = new Map<string, CompoundPackageMetadata>();
   showTileCard = true;
   showDownloads = false;
   tilesLayer: L.GeoJSON;
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
-  showModal = new Subject<Feature<Polygon, PackageMetadata>>();
+  showModal = new Subject<Feature<Polygon, FeatureProperties>>();
+  isZooming = new BehaviorSubject<boolean>(false);
+  featureMap = new Map<string, Feature<Polygon, FeatureProperties>>();
 
   constructor(
     private helperService: HelperService,
@@ -49,13 +58,15 @@ export class OfflineMapPage {
     private platform: Platform,
     private modalController: ModalController,
     private offlineMapService: OfflineMapService,
+    private alertController: AlertController,
+    private translateService: TranslateService,
     http: HttpClient,
   ) {
     this.packageIndex$ = http.get<PackageIndex>(PACKAGE_INDEX_URL).pipe(shareReplay());
-
+    this.downloadAndUnzipProgress$ = this.offlineMapService.downloadAndUnzipProgress$;
     this.packages$ = combineLatest([
       this.offlineMapService.packages$,
-      this.offlineMapService.unzipProgress$
+      this.offlineMapService.downloadAndUnzipProgress$
     ]).pipe(map(([packages, unzipping]) => [...packages, ...unzipping]
       .sort((a, b) => b.downloadStart - a.downloadStart)));
   }
@@ -73,51 +84,57 @@ export class OfflineMapPage {
       this.packageIndex$,
       this.packages$
     ]).subscribe(([packageIndex, packages]) => {
-      try {
-        console.log("Packages", JSON.stringify(packages));
 
-        const packageMap = new Map<string, PackageMetadata>();
-        packageIndex.allInOne.forEach(p => {
+      // TODO: Vil ikke dette skje litt vel ofte?? Hver gang en pakke som nedlastes får en endring på progress, så trigges dette...
+
+      try {
+        this.packageMap = new Map<string, CompoundPackageMetadata>();
+        packageIndex.statensKartverk.forEach(p => {
           const [x, y, z] = p.xyz;
-          const id = `(${x}, ${y}, ${z})`;
-          packageMap.set(id, p);
+          const id = this.getFeatureId(x, y, z);
+          const compoundPackage = new CompoundPackageMetadata(p.xyz);
+          compoundPackage.addPackage(p);
+          this.packageMap.set(id, compoundPackage);
         });
-  
-        const installedPackages = new Map<string, OfflineMapPackage>();
-        // installedPackages.set("(133, 73, 8)", {name: "test", maps: {}});
-        packages.forEach(installedPackage => {
-          const maps = Object.values(installedPackage.maps);
-          if (maps.length > 0) {
-            const { x, y, z } = Object.values(installedPackage.maps)[0].rootTile;
-            const id = `(${x}, ${y}, ${z})`;
-            installedPackages.set(id, installedPackage);
+
+        for(const supportMap of packageIndex['steepness-outlet']) {
+          const [x, y, z] = supportMap.xyz;
+          const id = this.getFeatureId(x, y, z);
+          const existingPackage = this.packageMap.get(id);
+          if(existingPackage) {
+            existingPackage.addPackage(supportMap);
           }
-        });
+        }
   
-        tiles.features.forEach(f => {
-          if (packageMap.has(f.id)) {
-            f.properties = {
-              ...f.properties,
-              ...packageMap.get(f.id)
-            }
-          }
-        });
+        // const installedPackages = new Map<string, OfflineMapPackage>();
+        // packages.forEach(installedPackage => {
+        //   const maps = Object.values(installedPackage.maps);
+        //   if (maps.length > 0) {
+        //     const { x, y, z } = Object.values(installedPackage.maps)[0].rootTile;
+        //     const id = this.getFeatureId(x, y, z);
+        //     installedPackages.set(id, installedPackage);
+        //   }
+        // });
+        const installedPackages = new Map(packages.map((p) => [this.getFeatureIdForPackage(p), p]));
   
         if (this.tilesLayer) {
           map.removeLayer(this.tilesLayer);
         }
+
+        this.featureMap = new Map<string, Feature<Polygon, FeatureProperties>>();
   
         this.tilesLayer = new L.GeoJSON(tiles as GeoJsonObject, {
           filter: (feature) => {
-            return packageMap.has(feature.id as string);
+            return this.packageMap.has(feature.id as string);
           },
-          onEachFeature: (feature: Feature<Polygon, PackageMetadata>, layer) => {
-            // TODO
-            if (installedPackages.has(feature.id as string)) {
-              return;
-            }
+          onEachFeature: (feature: Feature<Polygon, FeatureProperties>, layer) => {
+            // TODO: We now also show modal dialog if package is installed or under downloading
+            // if (installedPackages.has(feature.id as string)) {
+            //   return; 
+            // }
 
-            if (packageMap.has(feature.id as string)) {
+            if (this.packageMap.has(feature.id as string)) {
+              this.featureMap.set(feature.id as string, feature);
               layer.on("click", () => {
                 this.showModal.next(feature);
                 // this.showPackageModal(feature);
@@ -128,10 +145,17 @@ export class OfflineMapPage {
         });
   
         this.tilesLayer.setStyle(feature => {
-          if (installedPackages.has(feature.id as string)) {
+          const installedPackage = installedPackages.get(feature.id as string); 
+          if (installedPackage != null) {
+            if(installedPackage.error) {
+              return {
+                ...errorTileStyle,
+                fillOpacity:  0.8,
+              }
+            }
             return {
               ...defaultTileStyle,
-              fillOpacity: 0.8,
+              fillOpacity: installedPackage.downloadComplete ?  0.8 : 0.5,
             }
           }
   
@@ -148,30 +172,55 @@ export class OfflineMapPage {
       }
     });
 
-    this.showModal.pipe(bufferTime(200)).subscribe(buffer => {
-      if (buffer.length === 1 && buffer[0] != null) {
-        this.showPackageModal(buffer[0]);
-      }
-    });
+    this.showModal.pipe(
+      debounceTime(200), 
+      withLatestFrom(this.isZooming),
+      filter(([_, isZooming]) => !isZooming),
+      switchMap(([feature, _]) => from(this.showPackageModal(feature)))
+    ).subscribe();
 
-    // TODO
-    // Forsøk på å forhindre at pinch-zooming trigger
-    // click event, kombinert med if-setninga over.
-    // Kan sikkert fikses bedre på en annen måte, løste heller
-    // ikke problemet helt.
+    // This is to avoid pinch-zooming on map triggers click event
     map.on("zoomend", () => {
-      this.showModal.next(null);
+      this.isZooming.next(false);
     });
     map.on("zoomstart", () => {
-      this.showModal.next(null);
+      this.isZooming.next(true);
     });
   }
 
-  async showPackageModal(feature: Feature<Polygon, PackageMetadata>) {
+  private getPackageName(x : number, y : number, z : number) {
+    return `${x}-${y}-${z}`;
+  }
+
+  private getFeatureId(x : number, y : number, z : number) {
+    return `(${x}, ${y}, ${z})`;
+  }
+
+  private getFeatureIdFromXYZ(xyz: number[]) {
+    const [x, y, z] = xyz;
+    return this.getFeatureId(x, y, z);
+  }
+
+  private getFeatureIdForPackage(map: OfflineMapPackage): string {
+    if(map.compoundPackageMetadata) {
+      return this.getFeatureIdFromXYZ(map.compoundPackageMetadata.getXYZ());
+    }
+    if(map.maps['statensKartverk']) {
+      const rootTile = map.maps['statensKartverk'].rootTile;
+      return this.getFeatureId(rootTile.x, rootTile.y, rootTile.z);
+    }
+    return '';
+  }
+
+  async showPackageModal(feature: Feature<Polygon, FeatureProperties>) {
+    const [x, y, z] = feature.properties.xyz;
     const modal = await this.modalController.create({
       component: OfflinePackageModalComponent,
       componentProps: {
-        package: feature,
+        feature: feature,
+        packageOnServer: this.packageMap.get(feature.id as string),
+        offlinePackageStatus$: this.packages$.pipe(
+          map(packages => packages.find(p => p.name === this.getPackageName(x, y, z)))),
       },
       swipeToClose: true,
       mode: "ios"
@@ -179,24 +228,56 @@ export class OfflineMapPage {
     await modal.present();
   }
 
+  showPackageModalForPackage(map: OfflineMapPackage) {
+    const feature = this.featureMap.get(this.getFeatureIdFromXYZ(map.compoundPackageMetadata.getXYZ()));
+    if(feature) {
+      this.showPackageModal(feature);
+    }
+  }
+
   humanReadableByteSize(bytes: number): string {
     if (isNaN(bytes)) {
       return '';
     }
-    return this.helperService.humanReadableByteSize(bytes);
+    return this.helperService.humanReadableByteSize(bytes, false);
   }
 
   getPercentage(map: OfflineMapPackage): number {
     return Math.round((map.progress ? map.progress.percentage : 0) * 100);
   }
 
-  deleteMap(map: OfflineMapPackage): Promise<void> {
-    return this.offlineMapService.removeMapPackageByName(map.name);
+  async cancelOrDelete(map: OfflineMapPackage, event: Event) {
+    event.stopPropagation();
+    if (this.isDownloaded(map)) {
+      // TODO: Are you su
+      const toTranslate = ['DIALOGS.ARE_YOU_SURE', 'DIALOGS.CANCEL', 'DIALOGS.OK'];
+      const translations = await this.translateService
+        .get(toTranslate)
+        .toPromise();
+      const alert = await this.alertController.create({
+        header: translations['DIALOGS.ARE_YOU_SURE'],
+        message: translations['DIALOGS.ARE_YOU_SURE'],
+        buttons: [
+          {
+            text: translations['DIALOGS.CANCEL'],
+            role: 'cancel'
+          },
+          {
+            text: translations['DIALOGS.OK'],
+            handler: () => {
+              this.offlineMapService.removeMapPackageByName(map.name);
+            }
+          }
+        ]
+      });
+      alert.present();
+    }else{
+      this.offlineMapService.cancelDownloadPackage(map);
+    }
   }
 
-  async cancelUnzip(map: OfflineMapPackage): Promise<void> {
-    await this.offlineMapService.removeMapPackageByName(map.name);
-  }
+
+
 
   isDownloading(map: OfflineMapPackage): boolean {
     return map.downloadStart && !map.downloadComplete;
@@ -210,39 +291,39 @@ export class OfflineMapPage {
     this.selectedPackage = null;
   }
 
-  async presentActionSheet(map: OfflineMapPackage): Promise<void> {
-    const header = map.name;
-    const subHeader = this.humanReadableByteSize(map.size);
-    const buttons: ActionSheetButton[] = [];
-    if (this.isDownloaded(map)) {
-      buttons.push({
-        text: 'Delete',
-        role: 'destructive',
-        icon: 'trash',
-        handler: () => {
-          this.offlineMapService.removeMapPackageByName(map.name);
-        }
-      });
-    } else if (this.isDownloading(map)) {
-      buttons.push({
-        text: 'Avbryt',
-        icon: 'close',
-        handler: () => {
-          this.cancelUnzip(map);
-        }
-      });
-    }
+  // async presentActionSheet(map: OfflineMapPackage): Promise<void> {
+  //   const header = map.name;
+  //   const subHeader = this.humanReadableByteSize(map.size);
+  //   const buttons: ActionSheetButton[] = [];
+  //   if (this.isDownloaded(map)) {
+  //     buttons.push({
+  //       text: 'Delete',
+  //       role: 'destructive',
+  //       icon: 'trash',
+  //       handler: () => {
+  //         this.offlineMapService.removeMapPackageByName(map.name);
+  //       }
+  //     });
+  //   } else if (this.isDownloading(map)) {
+  //     buttons.push({
+  //       text: 'Avbryt',
+  //       icon: 'close',
+  //       handler: () => {
+  //         this.cancelUnzip(map);
+  //       }
+  //     });
+  //   }
 
-    buttons.push({
-      text: 'Lukk',
-      role: 'cancel'
-    });
+  //   buttons.push({
+  //     text: 'Lukk',
+  //     role: 'cancel'
+  //   });
 
-    const actionSheet = await this.actionSheetController.create({
-      header,
-      subHeader,
-      buttons
-    });
-    await actionSheet.present();
-  }
+  //   const actionSheet = await this.actionSheetController.create({
+  //     header,
+  //     subHeader,
+  //     buttons
+  //   });
+  //   await actionSheet.present();
+  // }
 }

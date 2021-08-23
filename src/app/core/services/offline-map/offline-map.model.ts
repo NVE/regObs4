@@ -1,14 +1,16 @@
+import { CompoundPackageMetadata } from '../../../pages/offline-map/metadata.model';
 import { Progress } from './progress.model';
 
 export interface OfflineTilesMetadata {
-  path: string,
+  mapId: string,
   rootTile: {
     z: number,
     x: number,
     y: number
   },
   zMax: number,
-  url?: string
+  template: string,
+  url?: string;
 }
 
 export interface OfflinePackageMetadata {
@@ -19,11 +21,10 @@ export interface OfflinePackageMetadata {
 
 export interface OfflineMapPackage extends OfflinePackageMetadata {
   name: string;
-  url?: string;
   size?: number;
-  filename?: string;
-  filePath?: string;
   progress?: Progress;
-  downloadStart?: number;
-  downloadComplete?: number;
+  downloadStart?: number; //in epoch seconds
+  downloadComplete?: number; //in epoch seconds
+  error?: Error; // Error occured when download/unzip
+  compoundPackageMetadata?: CompoundPackageMetadata;
 }
