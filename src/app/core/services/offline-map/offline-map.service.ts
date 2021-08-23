@@ -5,7 +5,7 @@ import moment from 'moment';
 import { File, Metadata, Entry } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
-import { finalize, map, mergeMap } from 'rxjs/operators';
+import { finalize, map, mergeMap, take } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import JSZip from 'jszip';
@@ -88,8 +88,7 @@ export class OfflineMapService implements OnReset {
 
   public async downloadPackage(packageMetadataCombined: CompoundPackageMetadata): Promise<void> {
     //TODO: Ask user to prefer saving to external SD card if available?
-    // TODO: When multiple packages are in queue, the disk space required must also take queued packages into account
-    const availableSpace = await this.checkAvailableDiskSpace(packageMetadataCombined.getSizeInMiB());
+    const availableSpace = await this.checkAvailableDiskSpace(packageMetadataCombined);
     if(!availableSpace) {
       return;
     }
@@ -203,12 +202,12 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  private async checkAvailableDiskSpace(sizeInMiB: number): Promise<boolean> {
+  private async checkAvailableDiskSpace(packageMetadataCombined: CompoundPackageMetadata): Promise<boolean> {
     if(isAndroidOrIos(this.platform)) {
       const availableStorageSpace = await this.getDeviceFreeDiskSpace();
 
-      const neededSpace = sizeInMiB * 1024 * 1024 * 1.10; // How well is the compression? Adding 10% margin.
-      // TODO: Use uncompressed size in package metadata
+      const neededSpace = await this.getNeededDiskSpaceForPackage(packageMetadataCombined);
+
       this.loggingService.debug(`Available storage is ${this.helperService.humanReadableByteSize(availableStorageSpace)}. 
       Needs ${this.helperService.humanReadableByteSize(neededSpace)}`, DEBUG_TAG);
       
@@ -220,6 +219,15 @@ export class OfflineMapService implements OnReset {
       }
     }
     return true;
+  }
+
+  public async getNeededDiskSpaceForPackage(packageMetadataCombined: CompoundPackageMetadata, compressionFactor: number = 1.10) : Promise<number> {
+    const neededSpaceForCurrentPackage = packageMetadataCombined.getSizeInMiB() * 1024 * 1024 * compressionFactor; 
+
+    const neededSpaceForItemsInQueue = await this.downloadAndUnzipProgress$.pipe(take(1), map((items) => items.filter((x) => x.downloadComplete == null && x.error == null)
+                        .reduce((pv, cv) => pv += (cv.size * compressionFactor), 0))).toPromise();
+    
+    return neededSpaceForCurrentPackage + neededSpaceForItemsInQueue;
   }
 
   private async showNotEnoughDiskSpaceAvailableErrorMessage() {

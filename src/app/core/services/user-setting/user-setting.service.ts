@@ -86,7 +86,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
         val ? of(val) : this.getUserSettingsFromDbOrDefaultSettings()
       ),
       tap((val) => {
-        this.loggingService.debug('User settings is: ', DEBUG_TAG, val);
+        this.loggingService?.debug('User settings is: ', DEBUG_TAG, val);
       }),
       shareReplay(1)
     );
@@ -94,7 +94,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       map((val) => val.currentGeoHazard),
       distinctUntilChanged(equal),
       tap((val) =>
-        this.loggingService.debug(
+        this.loggingService?.debug(
           `Current geohazard changed to: ${val.join(',')}`,
           DEBUG_TAG
         )
@@ -106,7 +106,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       map((val) => val.appMode),
       distinctUntilChanged(),
       tap((val) => {
-        this.loggingService.debug('App mode is: ', DEBUG_TAG, val);
+        this.loggingService?.debug('App mode is: ', DEBUG_TAG, val);
       }),
       shareReplay(1)
     );
@@ -138,7 +138,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       map((val) => val.observationDaysBack),
       distinctUntilChanged(equal),
       tap((val) =>
-        this.loggingService.debug('Days back changed to:', DEBUG_TAG, val)
+        this.loggingService?.debug('Days back changed to:', DEBUG_TAG, val)
       ),
       shareReplay(1)
     );
@@ -189,7 +189,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
         filter((result) => !!result),
         debounceTime(200),
         tap((result) =>
-          this.loggingService.debug(
+          this.loggingService?.debug(
             'InMemory user settings changed. Saving to db: ',
             DEBUG_TAG,
             result
@@ -247,7 +247,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
         .exec() as Promise<UserSetting[]>
     ).pipe(
       catchError((err) => {
-        this.loggingService.log(
+        this.loggingService?.log(
           'Could not save user settings to offline db',
           err,
           LogLevel.Warning,
