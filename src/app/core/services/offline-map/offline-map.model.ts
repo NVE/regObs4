@@ -25,5 +25,6 @@ export interface OfflineMapPackage extends OfflinePackageMetadata {
   progress?: Progress;
   downloadStart?: number; //in epoch seconds
   downloadComplete?: number; //in epoch seconds
+  error?: Error; // Error occured when download/unzip
   compoundPackageMetadata?: CompoundPackageMetadata;
 }

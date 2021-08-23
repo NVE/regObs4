@@ -134,6 +134,8 @@ export class OfflineMapService implements OnReset {
 
     if(offlineMapPackage.progress.step === ProgressStep.pending) {
        this.removePackageFromDownloadAndProgress(offlineMapPackage);
+    } else if(offlineMapPackage.error) {
+      this.onCancelled(offlineMapPackage);
     } else if(offlineMapPackage.progress.step === ProgressStep.download || offlineMapPackage.progress.step === ProgressStep.extractZip) {
 
       this.cancel = true;
@@ -170,13 +172,13 @@ export class OfflineMapService implements OnReset {
                   (progress) => this.onProgress(mapPackage, {step: ProgressStep.extractZip,
                     percentage: this.calculateTotalProgress(progress, partNumber, totalParts, 'Unzipping'),
                     description: `Unzip ${partNumber+1}/${totalParts}`}),
-                  (error) => this.onUnzipError(name, error)
+                  (error) => this.onUnzipOrDownloadError(mapPackage, error)
             );
           break;
         default:
           break;
       }
-    }, (err) => this.onUnzipError(name, err));
+    }, (err) => this.onUnzipOrDownloadError(mapPackage, err));
   }
 
   public calculateTotalProgress(currentProgress: number, currentPart: number, totalParts: number, partOfStep: 'Downloading' | 'Unzipping') {
@@ -414,25 +416,37 @@ export class OfflineMapService implements OnReset {
     ]);
   }
 
-  private async onUnzipError(name: string, error: Error) {
+  private async onUnzipOrDownloadError(metadata: OfflineMapPackage, error: Error) {
     this.loggingService.error(
       error,
       DEBUG_TAG,
-      `Error downloading map ${name}`
+      `Error downloading map ${metadata.name}`
     );
+    metadata.error = error || new Error('Unknown error');
+    metadata.progress.description = 'Error';
+    const unzipProgress = this.downloadAndUnzipProgress.value.filter(p => p.name !== metadata.name);
+    this.downloadAndUnzipProgress.next([
+      ...unzipProgress,
+      metadata
+    ]);
+    this.resetCancelAndStartNextItemInQueue();
     this.showDownloadOrUnzipErrorMessage();
-    this.removeMapPackageByName(name);
   }
 
   private async onDownloadAndUnzipComplete(mapPackage: OfflineMapPackage) {
+    if(!isAndroidOrIos(this.platform)) {
+      this.onUnzipOrDownloadError(mapPackage, new Error('Offline maps for web not implemented!'));
+      return;
+    }
+
+
     mapPackage.downloadComplete = moment().unix();
     mapPackage.progress = { percentage: 1.0 };
 
     // Store new combined metadata
-    if(isAndroidOrIos(this.platform)) {
-      const path = await this.getMapPackageFileUrl(mapPackage.name);
-      await this.file.writeFile(path, 'COMPLETE', `${mapPackage.size}`);
-    }
+    const path = await this.getMapPackageFileUrl(mapPackage.name);
+    await this.file.writeFile(path, 'COMPLETE', `${mapPackage.size}`);
+
     
     // Remove from progress tracking
     const unzipProgress = this.downloadAndUnzipProgress.value.filter(p => p.name !== mapPackage.name);
