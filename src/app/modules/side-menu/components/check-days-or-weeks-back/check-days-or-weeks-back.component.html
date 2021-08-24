@@ -1,0 +1,5 @@
+<ng-container *ngIf="daysBack < 28">{{ daysBack }} {{'MENU.DAYS_BACK' | translate | lowercase}}
+</ng-container>
+<ng-container *ngIf="daysBack >= 28">{{ (daysBack / 7) }} {{'MENU.WEEKS_BACK' | translate |
+  lowercase}}</ng-container>
+<!-- <ng-container *ngIf="daysBack === 0">{{ 'MENU.TODAYS_OBSERVATIONS' | translate }}</ng-container> -->

@@ -11,6 +11,8 @@ import { SummaryComponent } from '../../components/observation/summary/summary.c
 import { ObservationSkeletonComponent } from '../../components/observation/observation-skeleton/observation-skeleton.component';
 import { SelectComponent } from './components/input/select/select.component';
 import { GeoFabComponent } from './components/geo-fab/geo-fab.component';
+import { ShowFilterCriteriaComponent } from '../side-menu/components/show-filter-criteria/show-filter-criteria.component';
+import { CheckDaysOrWeeksBackComponent } from '../side-menu/components/check-days-or-weeks-back/check-days-or-weeks-back.component';
 import { GeoNameComponent } from './components/geo-name/geo-name.component';
 import { GeoSelectComponent } from './components/geo-select/geo-select.component';
 import { FormatDatePipe } from './pipes/format-date/format-date.pipe';
@@ -62,7 +64,9 @@ import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-p
     CompetenceComponent,
     AbsPipe,
     RemoteImageComponent,
-    EditPictureInfoModalComponent
+    EditPictureInfoModalComponent,
+    ShowFilterCriteriaComponent,
+    CheckDaysOrWeeksBackComponent
   ],
   exports: [
     CommonModule,
@@ -93,7 +97,9 @@ import { EditPictureInfoModalComponent } from '../edit-picture-info-modal/edit-p
     VirtualScrollerModule,
     AbsPipe,
     RemoteImageComponent,
-    EditPictureInfoModalComponent
+    EditPictureInfoModalComponent,
+    ShowFilterCriteriaComponent,
+    CheckDaysOrWeeksBackComponent
   ]
 })
 export class SharedModule {}

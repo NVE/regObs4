@@ -16,6 +16,8 @@
   
   <app-geo-fab slot="fixed" *ngIf="showGeoSelectInfo === false"></app-geo-fab>
   
+  <app-show-filter-criteria></app-show-filter-criteria>
+
   <app-add-menu></app-add-menu>
   
   <ng-container *ngIf="dataLoadIds$ | async as dataLoadIds">
