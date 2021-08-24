@@ -5,7 +5,7 @@ import { HelperService } from '../../core/services/helpers/helper.service';
 import { ActionSheetController, AlertController, ModalController, Platform } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
 import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
-import { bufferTime, debounceTime, filter, map, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
+import { bufferTime, debounceTime, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 import tiles from "./z8.json";
 import * as L from "leaflet";
 import { GeoJsonObject } from 'geojson';
@@ -14,6 +14,7 @@ import { OfflinePackageModalComponent } from './offline-package-modal/offline-pa
 import { CompoundPackageMetadata, FeatureProperties, PackageMetadata } from './metadata.model';
 import { Polygon, Feature } from 'geojson';
 import { TranslateService } from '@ngx-translate/core';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 const PACKAGE_INDEX_URL = "https://offlinemap.blob.core.windows.net/packages/packageIndex.json";
 const documentStyle = getComputedStyle(document.body);
@@ -38,12 +39,14 @@ interface PackageIndex {
   templateUrl: './offline-map.page.html',
   styleUrls: ['./offline-map.page.scss']
 })
-export class OfflineMapPage {
+export class OfflineMapPage extends NgDestoryBase {
   packages$: Observable<OfflineMapPackage[]>;
   downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
-  private packageIndex$: Observable<PackageIndex>;
+  // private packageIndex$: Observable<PackageIndex>;
+  private packagesOnServer$: Observable<Map<string, CompoundPackageMetadata>>;
+  private packagesOnServer: Map<string, CompoundPackageMetadata> = new Map();
   selectedPackage: CompoundPackageMetadata = null;
-  packageMap = new Map<string, CompoundPackageMetadata>();
+  // packageMap = new Map<string, CompoundPackageMetadata>();
   showTileCard = true;
   showDownloads = false;
   tilesLayer: L.GeoJSON;
@@ -62,7 +65,10 @@ export class OfflineMapPage {
     private translateService: TranslateService,
     http: HttpClient,
   ) {
-    this.packageIndex$ = http.get<PackageIndex>(PACKAGE_INDEX_URL).pipe(shareReplay());
+    super();
+    this.packagesOnServer$ = http.get<PackageIndex>(PACKAGE_INDEX_URL).pipe(
+      this.convertToCompoundPackageMap(),
+      shareReplay());
     this.downloadAndUnzipProgress$ = this.offlineMapService.downloadAndUnzipProgress$;
     this.packages$ = combineLatest([
       this.offlineMapService.packages$,
@@ -80,94 +86,76 @@ export class OfflineMapPage {
 
     map.setZoom(7);
 
-    combineLatest([
-      this.packageIndex$,
-      this.packages$
-    ]).subscribe(([packageIndex, packages]) => {
+    this.tilesLayer = new L.GeoJSON(tiles as GeoJsonObject);
+    // By default, hide all features until packages on server is fetched
+    this.tilesLayer.setStyle(feature => {
+      return {
+        ...defaultTileStyle,
+        fillOpacity: 0.1,
+      }
+    });
 
-      // TODO: Vil ikke dette skje litt vel ofte?? Hver gang en pakke som nedlastes får en endring på progress, så trigges dette...
+    map.addLayer(this.tilesLayer);
+    
+    this.packagesOnServer$.subscribe((packagesOnServer) => {
 
-        this.packageMap = new Map<string, CompoundPackageMetadata>();
-        packageIndex.statensKartverk.forEach(p => {
-          const [x, y, z] = p.xyz;
-          const id = this.getFeatureId(x, y, z);
-          const compoundPackage = new CompoundPackageMetadata(p.xyz);
-          compoundPackage.addPackage(p);
-          this.packageMap.set(id, compoundPackage);
-        });
+        this.packagesOnServer = packagesOnServer;
+        this.updateFeatureFilters();
 
-        for(const supportMap of packageIndex['steepness-outlet']) {
-          const [x, y, z] = supportMap.xyz;
-          const id = this.getFeatureId(x, y, z);
-          const existingPackage = this.packageMap.get(id);
-          if(existingPackage) {
-            existingPackage.addPackage(supportMap);
-          }
-        }
+        // const installedPackages = new Map(packages.map((p) => [this.getFeatureIdForPackage(p), p]));
+
+        //   try{
+        //     if (this.tilesLayer && map.hasLayer(this.tilesLayer)) {
+        //       map.removeLayer(this.tilesLayer);
+        //     }
+        //   }catch(err) {
+            
+        //   }
+
+        // this.featureMap = new Map<string, Feature<Polygon, FeatureProperties>>();
   
-        // const installedPackages = new Map<string, OfflineMapPackage>();
-        // packages.forEach(installedPackage => {
-        //   const maps = Object.values(installedPackage.maps);
-        //   if (maps.length > 0) {
-        //     const { x, y, z } = Object.values(installedPackage.maps)[0].rootTile;
-        //     const id = this.getFeatureId(x, y, z);
-        //     installedPackages.set(id, installedPackage);
+        // this.tilesLayer = new L.GeoJSON(tiles as GeoJsonObject, {
+        //   filter: (feature) => {
+        //     return this.packageMap.has(feature.id as string);
+        //   },
+        //   onEachFeature: (feature: Feature<Polygon, FeatureProperties>, layer) => {
+        //     // TODO: We now also show modal dialog if package is installed or under downloading
+        //     // if (installedPackages.has(feature.id as string)) {
+        //     //   return; 
+        //     // }
+
+        //     if (this.packageMap.has(feature.id as string)) {
+        //       this.featureMap.set(feature.id as string, feature);
+        //       layer.on("click", () => {
+        //         this.showModal.next(feature);
+        //         // this.showPackageModal(feature);
+        //         // this.selectedPackage = feature.properties["package"];
+        //       });
+        //     }
         //   }
         // });
-        const installedPackages = new Map(packages.map((p) => [this.getFeatureIdForPackage(p), p]));
-
-          try{
-            if (this.tilesLayer && map.hasLayer(this.tilesLayer)) {
-              map.removeLayer(this.tilesLayer);
-            }
-          }catch(err) {
-            
-          }
-
-        this.featureMap = new Map<string, Feature<Polygon, FeatureProperties>>();
   
-        this.tilesLayer = new L.GeoJSON(tiles as GeoJsonObject, {
-          filter: (feature) => {
-            return this.packageMap.has(feature.id as string);
-          },
-          onEachFeature: (feature: Feature<Polygon, FeatureProperties>, layer) => {
-            // TODO: We now also show modal dialog if package is installed or under downloading
-            // if (installedPackages.has(feature.id as string)) {
-            //   return; 
-            // }
-
-            if (this.packageMap.has(feature.id as string)) {
-              this.featureMap.set(feature.id as string, feature);
-              layer.on("click", () => {
-                this.showModal.next(feature);
-                // this.showPackageModal(feature);
-                // this.selectedPackage = feature.properties["package"];
-              });
-            }
-          }
-        });
+        // this.tilesLayer.setStyle(feature => {
+        //   const installedPackage = installedPackages.get(feature.id as string); 
+        //   if (installedPackage != null) {
+        //     if(installedPackage.error) {
+        //       return {
+        //         ...errorTileStyle,
+        //         fillOpacity:  0.8,
+        //       }
+        //     }
+        //     return {
+        //       ...defaultTileStyle,
+        //       fillOpacity: installedPackage.downloadComplete ?  0.8 : 0.5,
+        //     }
+        //   }
   
-        this.tilesLayer.setStyle(feature => {
-          const installedPackage = installedPackages.get(feature.id as string); 
-          if (installedPackage != null) {
-            if(installedPackage.error) {
-              return {
-                ...errorTileStyle,
-                fillOpacity:  0.8,
-              }
-            }
-            return {
-              ...defaultTileStyle,
-              fillOpacity: installedPackage.downloadComplete ?  0.8 : 0.5,
-            }
-          }
-  
-          return {
-            ...defaultTileStyle,
-            fillOpacity: 0.1,
-          }
-        });
-        map.addLayer(this.tilesLayer);
+        //   return {
+        //     ...defaultTileStyle,
+        //     fillOpacity: 0.1,
+        //   }
+        // });
+        // map.addLayer(this.tilesLayer);
     });
 
     this.showModal.pipe(
@@ -184,6 +172,20 @@ export class OfflineMapPage {
     map.on("zoomstart", () => {
       this.isZooming.next(true);
     });
+  }
+
+  private updateFeatureFilters() {
+    // Update geojson feature filter to only show packages on server
+    // this.tilesLayer.options.filter = (feature) => this.packagesOnServer.has(feature.id as string);
+
+    // this.tilesLayer.options.onEachFeature = (feature: Feature<Polygon, FeatureProperties>, layer) => {
+    //        if (this.packagesOnServer.has(feature.id as string)) {
+    //         this.featureMap.set(feature.id as string, feature);
+    //         layer.on('click', () => {
+    //           this.showModal.next(feature);
+    //         });
+    //       }
+    // }
   }
 
   private getPackageName(x : number, y : number, z : number) {
@@ -210,13 +212,36 @@ export class OfflineMapPage {
     return '';
   }
 
+  private convertToCompoundPackageMap(): (src: Observable<PackageIndex>) => Observable<Map<string, CompoundPackageMetadata>> {
+    return (src) => src.pipe(map((packageIndex) => {
+       const packageMap = new Map<string, CompoundPackageMetadata>();
+        packageIndex.statensKartverk.forEach(p => {
+          const [x, y, z] = p.xyz;
+          const id = this.getFeatureId(x, y, z);
+          const compoundPackage = new CompoundPackageMetadata(p.xyz);
+          compoundPackage.addPackage(p);
+          packageMap.set(id, compoundPackage);
+        });
+
+        for(const supportMap of packageIndex['steepness-outlet']) {
+          const [x, y, z] = supportMap.xyz;
+          const id = this.getFeatureId(x, y, z);
+          const existingPackage = packageMap.get(id);
+          if(existingPackage) {
+            existingPackage.addPackage(supportMap);
+          }
+        }
+        return packageMap;
+    }));
+  }
+
   async showPackageModal(feature: Feature<Polygon, FeatureProperties>) {
     const [x, y, z] = feature.properties.xyz;
     const modal = await this.modalController.create({
       component: OfflinePackageModalComponent,
       componentProps: {
         feature: feature,
-        packageOnServer: this.packageMap.get(feature.id as string),
+        packageOnServer: this.packagesOnServer.get(feature.id as string),
         offlinePackageStatus$: this.packages$.pipe(
           map(packages => packages.find(p => p.name === this.getPackageName(x, y, z)))),
       },
