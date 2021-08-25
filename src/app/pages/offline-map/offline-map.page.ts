@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
-import { ActionSheetController, AlertController, ModalController, Platform } from '@ionic/angular';
-import { ActionSheetButton } from '@ionic/core';
+import { AlertController, ModalController } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
-import { bufferTime, debounceTime, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 import tiles from "./z8.json";
 import * as L from "leaflet";
 import { GeoJsonObject } from 'geojson';
@@ -17,14 +16,26 @@ import { TranslateService } from '@ngx-translate/core';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 const PACKAGE_INDEX_URL = "https://offlinemap.blob.core.windows.net/packages/packageIndex.json";
+const filledTileOpacity = 0.8;
+const notFilledTileOpacity = 0.1;
 const documentStyle = getComputedStyle(document.body);
 const defaultTileStyle = {
-  color: documentStyle.getPropertyValue("--ion-color-primary")
+  color: documentStyle.getPropertyValue("--ion-color-primary"),
+  opacity: 1,
+  fillOpacity: notFilledTileOpacity
+};
+const downloadedTileStyle = {
+  ...defaultTileStyle,
+  fillOpacity: filledTileOpacity,
 };
 const errorTileStyle = {
-  color: documentStyle.getPropertyValue("--ion-color-danger")
+  ...downloadedTileStyle,
+  color: documentStyle.getPropertyValue("--ion-color-danger"),
 };
-
+const hiddenTileStyle = {
+  opacity: 0,
+  fillOpacity: 0,
+}
 
 interface PackageIndex {
   norgeskart: PackageMetadata[];
@@ -40,41 +51,41 @@ interface PackageIndex {
   styleUrls: ['./offline-map.page.scss']
 })
 export class OfflineMapPage extends NgDestoryBase {
-  packages$: Observable<OfflineMapPackage[]>;
+  private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
+  private installedPackages: Map<string, OfflineMapPackage> = new Map();
   downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
-  // private packageIndex$: Observable<PackageIndex>;
+  private readonly allPackages$: Observable<OfflineMapPackage[]>;
   private packagesOnServer$: Observable<Map<string, CompoundPackageMetadata>>;
   private packagesOnServer: Map<string, CompoundPackageMetadata> = new Map();
   selectedPackage: CompoundPackageMetadata = null;
-  // packageMap = new Map<string, CompoundPackageMetadata>();
   showTileCard = true;
   showDownloads = false;
   tilesLayer: L.GeoJSON;
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
   showModal = new Subject<Feature<Polygon, FeatureProperties>>();
   isZooming = new BehaviorSubject<boolean>(false);
-  featureMap = new Map<string, Feature<Polygon, FeatureProperties>>();
+  featureMap = new Map<string, { feature: Feature<Polygon, FeatureProperties>, layer: L.Layer }>();
 
   constructor(
     private helperService: HelperService,
-    private actionSheetController: ActionSheetController,
-    private platform: Platform,
     private modalController: ModalController,
     private offlineMapService: OfflineMapService,
     private alertController: AlertController,
     private translateService: TranslateService,
+    private zone: NgZone,
     http: HttpClient,
   ) {
     super();
     this.packagesOnServer$ = http.get<PackageIndex>(PACKAGE_INDEX_URL).pipe(
       this.convertToCompoundPackageMap(),
-      shareReplay());
-    this.downloadAndUnzipProgress$ = this.offlineMapService.downloadAndUnzipProgress$;
-    this.packages$ = combineLatest([
-      this.offlineMapService.packages$,
-      this.offlineMapService.downloadAndUnzipProgress$
-    ]).pipe(map(([packages, unzipping]) => [...packages, ...unzipping]
-      .sort((a, b) => b.downloadStart - a.downloadStart)));
+      shareReplay(),
+      takeUntil(this.ngDestroy$));
+    this.downloadAndUnzipProgress$ = this.offlineMapService.downloadAndUnzipProgress$
+      .pipe(map((items) => items.sort(((a, b) => b.downloadStart - a.downloadStart))),
+      takeUntil(this.ngDestroy$));
+    this.installedPackages$ = this.offlineMapService.packages$.pipe(map((downloaded) => new Map(downloaded.map((item) => [this.getFeatureIdForPackage(item), item])), takeUntil(this.ngDestroy$)));
+    this.allPackages$ = combineLatest([this.offlineMapService.downloadAndUnzipProgress$, this.offlineMapService.packages$])
+      .pipe((map(([inProgress, downloaded]) => [...inProgress, ...downloaded])), takeUntil(this.ngDestroy$));
   }
 
   toggleDownloads() {
@@ -86,76 +97,32 @@ export class OfflineMapPage extends NgDestoryBase {
 
     map.setZoom(7);
 
-    this.tilesLayer = new L.GeoJSON(tiles as GeoJsonObject);
-    // By default, hide all features until packages on server is fetched
-    this.tilesLayer.setStyle(feature => {
-      return {
-        ...defaultTileStyle,
-        fillOpacity: 0.1,
+    this.tilesLayer = new L.GeoJSON(tiles as GeoJsonObject, {
+      style: hiddenTileStyle,
+      onEachFeature: (feature: Feature<Polygon, FeatureProperties>, layer) => {
+               this.featureMap.set(feature.id as string, { feature, layer });
+               layer.on("click", () => {
+                  if(this.packagesOnServer.has(feature.id as string) || this.installedPackages.has(feature.id as string)) {
+                    this.showModal.next(feature);
+                  }
+               });
       }
     });
 
     map.addLayer(this.tilesLayer);
-    
-    this.packagesOnServer$.subscribe((packagesOnServer) => {
 
-        this.packagesOnServer = packagesOnServer;
-        this.updateFeatureFilters();
+    combineLatest([this.installedPackages$, this.packagesOnServer$]).subscribe(([installedPackages, packagesOnServer]) => {
+      this.installedPackages = installedPackages;
+      this.packagesOnServer = packagesOnServer;
+      this.setStyleForPackages();
+    });
 
-        // const installedPackages = new Map(packages.map((p) => [this.getFeatureIdForPackage(p), p]));
-
-        //   try{
-        //     if (this.tilesLayer && map.hasLayer(this.tilesLayer)) {
-        //       map.removeLayer(this.tilesLayer);
-        //     }
-        //   }catch(err) {
-            
-        //   }
-
-        // this.featureMap = new Map<string, Feature<Polygon, FeatureProperties>>();
-  
-        // this.tilesLayer = new L.GeoJSON(tiles as GeoJsonObject, {
-        //   filter: (feature) => {
-        //     return this.packageMap.has(feature.id as string);
-        //   },
-        //   onEachFeature: (feature: Feature<Polygon, FeatureProperties>, layer) => {
-        //     // TODO: We now also show modal dialog if package is installed or under downloading
-        //     // if (installedPackages.has(feature.id as string)) {
-        //     //   return; 
-        //     // }
-
-        //     if (this.packageMap.has(feature.id as string)) {
-        //       this.featureMap.set(feature.id as string, feature);
-        //       layer.on("click", () => {
-        //         this.showModal.next(feature);
-        //         // this.showPackageModal(feature);
-        //         // this.selectedPackage = feature.properties["package"];
-        //       });
-        //     }
-        //   }
-        // });
-  
-        // this.tilesLayer.setStyle(feature => {
-        //   const installedPackage = installedPackages.get(feature.id as string); 
-        //   if (installedPackage != null) {
-        //     if(installedPackage.error) {
-        //       return {
-        //         ...errorTileStyle,
-        //         fillOpacity:  0.8,
-        //       }
-        //     }
-        //     return {
-        //       ...defaultTileStyle,
-        //       fillOpacity: installedPackage.downloadComplete ?  0.8 : 0.5,
-        //     }
-        //   }
-  
-        //   return {
-        //     ...defaultTileStyle,
-        //     fillOpacity: 0.1,
-        //   }
-        // });
-        // map.addLayer(this.tilesLayer);
+    this.downloadAndUnzipProgress$.subscribe((itemsWithProgress) => {
+      this.zone.runOutsideAngular(() => {
+        for(let item of itemsWithProgress) {
+          this.setStyleForProgressOrDownloadedPackage(item);
+        }
+      });
     });
 
     this.showModal.pipe(
@@ -166,26 +133,46 @@ export class OfflineMapPage extends NgDestoryBase {
     ).subscribe();
 
     // This is to avoid pinch-zooming on map triggers click event
-    map.on("zoomend", () => {
+    map.on("dragend zoomend", () => {
       this.isZooming.next(false);
     });
-    map.on("zoomstart", () => {
+    map.on("dragstart zoomstart", () => {
       this.isZooming.next(true);
     });
   }
 
-  private updateFeatureFilters() {
-    // Update geojson feature filter to only show packages on server
-    // this.tilesLayer.options.filter = (feature) => this.packagesOnServer.has(feature.id as string);
+  private setStyleForPackages() {
+    for(let [_, item] of this.installedPackages) {
+      this.setStyleForProgressOrDownloadedPackage(item);
+    }
+    for(let [key, _] of this.packagesOnServer) {
+      if(!this.installedPackages.has(key)) {
+        this.setStyleForFeature(key, defaultTileStyle);
+      }
+    }
+  }
 
-    // this.tilesLayer.options.onEachFeature = (feature: Feature<Polygon, FeatureProperties>, layer) => {
-    //        if (this.packagesOnServer.has(feature.id as string)) {
-    //         this.featureMap.set(feature.id as string, feature);
-    //         layer.on('click', () => {
-    //           this.showModal.next(feature);
-    //         });
-    //       }
-    // }
+  private setStyleForFeature(id: string, style: L.PathOptions) {
+    const feature = this.featureMap.get(id);
+    if(feature) {
+      const polyline = (feature.layer as L.Polyline);
+      polyline.setStyle(style);
+    }
+  }
+
+  private setStyleForProgressOrDownloadedPackage(item: OfflineMapPackage) {
+    const id = this.getFeatureIdForPackage(item);
+    if(item.error) {
+      this.setStyleForFeature(id, errorTileStyle);
+    }else{
+      const fillOpacity = item.downloadComplete ? filledTileOpacity : this.getProgressOpacity(item); 
+      this.setStyleForFeature(id, { ...defaultTileStyle, fillOpacity });
+    }
+  }
+
+  private getProgressOpacity(item: OfflineMapPackage) {
+    const progressValue = (item.progress ? (item.progress.percentage / 2.0) : 0) + 0.4;
+    return Math.min(progressValue, filledTileOpacity);
   }
 
   private getPackageName(x : number, y : number, z : number) {
@@ -242,7 +229,7 @@ export class OfflineMapPage extends NgDestoryBase {
       componentProps: {
         feature: feature,
         packageOnServer: this.packagesOnServer.get(feature.id as string),
-        offlinePackageStatus$: this.packages$.pipe(
+        offlinePackageStatus$: this.allPackages$.pipe(
           map(packages => packages.find(p => p.name === this.getPackageName(x, y, z)))),
       },
       swipeToClose: true,
@@ -254,7 +241,7 @@ export class OfflineMapPage extends NgDestoryBase {
   showPackageModalForPackage(map: OfflineMapPackage) {
     const feature = this.featureMap.get(this.getFeatureIdFromXYZ(map.compoundPackageMetadata.getXYZ()));
     if(feature) {
-      this.showPackageModal(feature);
+      this.showPackageModal(feature.feature);
     }
   }
 
@@ -313,40 +300,4 @@ export class OfflineMapPage extends NgDestoryBase {
   closeTileCard() {
     this.selectedPackage = null;
   }
-
-  // async presentActionSheet(map: OfflineMapPackage): Promise<void> {
-  //   const header = map.name;
-  //   const subHeader = this.humanReadableByteSize(map.size);
-  //   const buttons: ActionSheetButton[] = [];
-  //   if (this.isDownloaded(map)) {
-  //     buttons.push({
-  //       text: 'Delete',
-  //       role: 'destructive',
-  //       icon: 'trash',
-  //       handler: () => {
-  //         this.offlineMapService.removeMapPackageByName(map.name);
-  //       }
-  //     });
-  //   } else if (this.isDownloading(map)) {
-  //     buttons.push({
-  //       text: 'Avbryt',
-  //       icon: 'close',
-  //       handler: () => {
-  //         this.cancelUnzip(map);
-  //       }
-  //     });
-  //   }
-
-  //   buttons.push({
-  //     text: 'Lukk',
-  //     role: 'cancel'
-  //   });
-
-  //   const actionSheet = await this.actionSheetController.create({
-  //     header,
-  //     subHeader,
-  //     buttons
-  //   });
-  //   await actionSheet.present();
-  // }
 }
