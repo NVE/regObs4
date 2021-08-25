@@ -5,7 +5,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../../settings';
-import { Platform } from '@ionic/angular';
+import { IonSelect, Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 
@@ -49,7 +49,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
     );
   }
 
-  async save(event): Promise<void> {
+  async save(): Promise<void> {
     const userSetting = await this.userSettingService.userSetting$
       .pipe(take(1))
       .toPromise();
@@ -58,8 +58,8 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
       const existingValue = userSetting.observationDaysBack.find(
         (x) => x.geoHazard === geoHazard
       );
-      if (existingValue.daysBack !== event.target.value) {
-        existingValue.daysBack = event.target.value;
+      if (existingValue.daysBack !== this.selectedDaysBack) {
+        existingValue.daysBack = this.selectedDaysBack;
         changed = true;
       }
     }
