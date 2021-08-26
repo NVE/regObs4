@@ -1,6 +1,6 @@
 <ng-container *ngIf="isDesktop">
   <div class="show-container" *ngIf="daysBack$ | async as daysBack">
-    <span *ngIf="daysBack.value !== 0">{{'Viser observasjoner &nbsp;'}}</span>
+    <span *ngIf="daysBack.value !== 0">{{'MENU.SHOWING_OBSERVATIONS' | translate}}&nbsp;</span>
     <app-check-days-or-weeks-back [daysBack]="daysBack.value"></app-check-days-or-weeks-back>
     <ion-menu-button menu="filter" color="light" mode="ios">
       <a>{{'MY_PROFILE.EDIT' | translate}}</a>
