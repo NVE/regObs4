@@ -78,14 +78,12 @@ export class OfflineMapPage extends NgDestoryBase {
     super();
     this.packagesOnServer$ = http.get<PackageIndex>(PACKAGE_INDEX_URL).pipe(
       this.convertToCompoundPackageMap(),
-      shareReplay(),
-      takeUntil(this.ngDestroy$));
+      shareReplay());
     this.downloadAndUnzipProgress$ = this.offlineMapService.downloadAndUnzipProgress$
-      .pipe(map((items) => items.sort(((a, b) => b.downloadStart - a.downloadStart))),
-      takeUntil(this.ngDestroy$));
-    this.installedPackages$ = this.offlineMapService.packages$.pipe(map((downloaded) => new Map(downloaded.map((item) => [this.getFeatureIdForPackage(item), item])), takeUntil(this.ngDestroy$)));
+      .pipe(map((items) => items.sort(((a, b) => b.downloadStart - a.downloadStart))));
+    this.installedPackages$ = this.offlineMapService.packages$.pipe(map((downloaded) => new Map(downloaded.map((item) => [this.getFeatureIdForPackage(item), item]))));
     this.allPackages$ = combineLatest([this.offlineMapService.downloadAndUnzipProgress$, this.offlineMapService.packages$])
-      .pipe((map(([inProgress, downloaded]) => [...inProgress, ...downloaded])), takeUntil(this.ngDestroy$));
+      .pipe((map(([inProgress, downloaded]) => [...inProgress, ...downloaded])));
   }
 
   toggleDownloads() {
@@ -111,13 +109,13 @@ export class OfflineMapPage extends NgDestoryBase {
 
     map.addLayer(this.tilesLayer);
 
-    combineLatest([this.installedPackages$, this.packagesOnServer$]).subscribe(([installedPackages, packagesOnServer]) => {
+    combineLatest([this.installedPackages$, this.packagesOnServer$]).pipe(takeUntil(this.ngDestroy$)).subscribe(([installedPackages, packagesOnServer]) => {
       this.installedPackages = installedPackages;
       this.packagesOnServer = packagesOnServer;
       this.setStyleForPackages();
     });
 
-    this.downloadAndUnzipProgress$.subscribe((itemsWithProgress) => {
+    this.downloadAndUnzipProgress$.pipe(takeUntil(this.ngDestroy$)).subscribe((itemsWithProgress) => {
       this.zone.runOutsideAngular(() => {
         for(let item of itemsWithProgress) {
           this.setStyleForProgressOrDownloadedPackage(item);
@@ -129,7 +127,8 @@ export class OfflineMapPage extends NgDestoryBase {
       debounceTime(200), 
       withLatestFrom(this.isZooming),
       filter(([_, isZooming]) => !isZooming),
-      switchMap(([feature, _]) => from(this.showPackageModal(feature)))
+      switchMap(([feature, _]) => from(this.showPackageModal(feature))),
+      takeUntil(this.ngDestroy$)
     ).subscribe();
 
     // This is to avoid pinch-zooming on map triggers click event
