@@ -381,8 +381,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
       for (const createTileLayer of createTileLayerFactory) {
         const options = this.getTileLayerDefaultOptions(userSetting.useRetinaMap);
-        const Layer = createTileLayer(options);
-        Layer.addTo(this.layerGroup);
+        const layer = createTileLayer(options);
+        layer.addTo(this.layerGroup);
       }
 
       for (const supportMaps of this.userSettingService.getSupportTilesOptions(
