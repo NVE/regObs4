@@ -5,7 +5,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
 import { settings } from '../../../../../settings';
-import { Platform } from '@ionic/angular';
+import { IonSelect, Platform } from '@ionic/angular';
 import { SelectInterface } from '@ionic/core';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 
@@ -16,7 +16,7 @@ import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 })
 export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   selectedDaysBack: number;
-  daysBackOptions: { val: number; text: string }[];
+  daysBackOptions: { val: number}[];
   subscription: Subscription;
   popupType: SelectInterface;
 
@@ -29,21 +29,12 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.popupType = isAndroidOrIos(this.platform) ? 'action-sheet' : 'popover';
-    this.subscription = combineLatest([
-      this.userSettingService.daysBack$,
-      this.userSettingService.currentGeoHazard$
-    ]).subscribe(([daysBack, currentGeoHazard]) => {
-      const geoHazard = currentGeoHazard[0];
-      this.zone.run(() => {
-        this.daysBackOptions = this.getDaysBackArray(geoHazard);
-        const daysBackForCurrentGeoHazard = daysBack.find(
-          (x) => x.geoHazard === geoHazard
-        );
-        if (daysBackForCurrentGeoHazard) {
-          this.selectedDaysBack = daysBackForCurrentGeoHazard.daysBack;
-        }
-      });
-    });
+    this.userSettingService.currentGeoHazard$.subscribe( currentGeoHazard => {
+      this.daysBackOptions = this.getDaysBackArray(currentGeoHazard[0]);
+    })
+    this.userSettingService.daysBackForCurrentGeoHazard$.subscribe( selectedDaysBack => {
+      this.selectedDaysBack = selectedDaysBack;
+    })
   }
 
   ngOnDestroy(): void {
@@ -53,8 +44,7 @@ export class ObservationsDaysBackComponent implements OnInit, OnDestroy {
   getDaysBackArray(geoHazard: GeoHazard) {
     return settings.observations.daysBack[GeoHazard[geoHazard]].map(
       (val: number) => ({
-        val: val,
-        text: val === 0 ? 'MENU.TODAYS_OBSERVATIONS' : undefined
+        val: val
       })
     );
   }

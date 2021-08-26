@@ -2,20 +2,19 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { TestModule } from '../../../test/test.module';
 
+import { ShowFilterCriteriaComponent } from './show-filter-criteria.component';
 
-import { FilterMenuComponent } from './filter-menu.component';
-
-describe('FilterMenuComponent', () => {
-  let component: FilterMenuComponent;
-  let fixture: ComponentFixture<FilterMenuComponent>;
+describe('ShowFilterCriteriaComponent', () => {
+  let component: ShowFilterCriteriaComponent;
+  let fixture: ComponentFixture<ShowFilterCriteriaComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ FilterMenuComponent ],
+      declarations: [ ShowFilterCriteriaComponent ],
       imports: [IonicModule.forRoot(), TestModule]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FilterMenuComponent);
+    fixture = TestBed.createComponent(ShowFilterCriteriaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

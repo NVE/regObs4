@@ -56,6 +56,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   >;
   public readonly showObservations$: Observable<boolean>;
   public readonly userSetting$: Observable<UserSetting>;
+  public readonly daysBackForCurrentGeoHazard$: Observable<number>;
 
   private userSettingInMemory = new BehaviorSubject<UserSetting>(null);
   // private userSettingsReady = new BehaviorSubject(false);
@@ -136,7 +137,6 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
 
     this.daysBack$ = this.userSetting$.pipe(
       map((val) => val.observationDaysBack),
-      distinctUntilChanged(equal),
       tap((val) =>
         this.loggingService.debug('Days back changed to:', DEBUG_TAG, val)
       ),
@@ -148,6 +148,17 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       distinctUntilChanged(),
       shareReplay(1)
     );
+
+    this.daysBackForCurrentGeoHazard$ = combineLatest([
+      this.daysBack$,
+      this.currentGeoHazard$
+    ]).pipe(map(([daysBack, currentGeoHazard]) => {
+        const geoHazard = currentGeoHazard[0];
+        const daysBackForCurrentGeoHazard = daysBack.find(
+          (x) => x.geoHazard === geoHazard
+        );
+        return daysBackForCurrentGeoHazard?.daysBack;
+    })), tap((val) => this.loggingService.debug('daysBackForCurrentGeoHazard changed to: ', DEBUG_TAG, val));
   }
 
   public init() {
