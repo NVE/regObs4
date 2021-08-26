@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
+import { TestModule } from '../../../test/test.module';
+
 
 import { FilterMenuComponent } from './filter-menu.component';
 
@@ -10,7 +12,7 @@ describe('FilterMenuComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ FilterMenuComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [IonicModule.forRoot(), TestModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FilterMenuComponent);
