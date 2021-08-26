@@ -37,6 +37,13 @@
     <platform name="android">
         <allow-navigation href="http://localhost:8080/*" />
         <allow-intent href="market:*" />
+        <config-file parent="/manifest" target="AndroidManifest.xml">
+            <queries>
+                <intent>
+                    <action android:name="android.support.customtabs.action.CustomTabsService" />
+                </intent>
+            </queries>
+        </config-file>
         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
             <application android:allowBackup="false" />
             <application android:fullBackupContent="false" />
