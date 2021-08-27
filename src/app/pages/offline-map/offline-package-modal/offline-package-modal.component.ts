@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import * as L from 'leaflet';
 import { Polygon, Feature } from 'geojson';
@@ -25,12 +25,18 @@ export class OfflinePackageModalComponent implements OnInit {
   center: number[];
   tileLayer: L.GeoJSON;
 
+  private offlinePackageStatusThatTriggersChangeDetection$: Observable<OfflineMapPackage>;
+
   constructor(
     private modalController: ModalController,
-    private offlineMapService: OfflineMapService
-  ) { }
+    private offlineMapService: OfflineMapService,
+    private cdr: ChangeDetectorRef,
+  ) {
+   }
 
   ngOnInit(): void {
+    this.offlinePackageStatusThatTriggersChangeDetection$ = this.offlinePackageStatus$.pipe(
+      tap(() => this.cdr.detectChanges() ));
     this.tileLayer = new L.GeoJSON(this.feature);
     const { lat, lng } = this.tileLayer.getBounds().getCenter();
     this.center = [lat, lng];

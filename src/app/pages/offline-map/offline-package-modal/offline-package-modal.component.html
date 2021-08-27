@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div class="map-container">
+  <div class="map-container" *ngIf="center">
     <app-map [showMapControls]="false" [showUserLocation]="false" [showSupportMaps]="false" [center]="center"
       [zoom]="zoom" (mapReady)="showTileOnMap($event)"></app-map>
   </div>
