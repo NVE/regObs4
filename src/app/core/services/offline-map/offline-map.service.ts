@@ -81,12 +81,15 @@ export class OfflineMapService implements OnReset {
       .filter((packageName) => packageName != null);
   }
 
-  public async downloadPackage(packageMetadataCombined: CompoundPackageMetadata): Promise<void> {
-    //TODO: Ask user to prefer saving to external SD card if available?
-    const availableSpace = await this.checkAvailableDiskSpace(packageMetadataCombined);
-    if(!availableSpace) {
-      return;
-    }
+  public async downloadPackage(packageMetadataCombined: CompoundPackageMetadata, checkAvailableDiskSpace = false): Promise<void> {
+
+    if(checkAvailableDiskSpace) {
+      //TODO: Ask user to prefer saving to external SD card if available?
+      const availableSpace = await this.checkAvailableDiskSpace(packageMetadataCombined);
+      if(!availableSpace) {
+        return;
+      }
+   }
 
     const name = packageMetadataCombined.getName();
     const mapPackage = this.createOfflineMapPackage(packageMetadataCombined);
@@ -197,7 +200,7 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  private async checkAvailableDiskSpace(packageMetadataCombined: CompoundPackageMetadata): Promise<boolean> {
+  public async checkAvailableDiskSpace(packageMetadataCombined: CompoundPackageMetadata): Promise<boolean> {
     if(isAndroidOrIos(this.platform)) {
       const availableStorageSpace = await this.getDeviceFreeDiskSpace();
 
@@ -212,6 +215,10 @@ export class OfflineMapService implements OnReset {
         await this.showNotEnoughDiskSpaceAvailableErrorMessage();
         return false;
       }
+    }else {
+      return await new Promise((resolve, reject) => {
+        setTimeout(() => resolve(true), 10000)
+      })
     }
     return true;
   }
