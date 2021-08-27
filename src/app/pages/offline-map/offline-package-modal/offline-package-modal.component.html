@@ -20,7 +20,7 @@
       <ion-col size="4">Størrelse:</ion-col>
       <ion-col>{{ packageOnServer.getSizeInMiB() | number: '1.0-1' }} MiB</ion-col>
     </ion-row>
-    <div *ngIf="offlinePackageStatus$ | async as packageStatus else downloadPackage">
+    <div *ngIf="offlinePackageStatusThatTriggersChangeDetection$ | async as packageStatus else downloadPackage">
       <ion-row>
         <ion-col size="4">Status:</ion-col>
         <ion-col>
@@ -60,9 +60,14 @@
 </ion-content>
 
 <ng-template #downloadPackage>
+  <ion-row *ngIf="isCheckingAvailableDiskspace">
+    <ion-col size="4"></ion-col>
+    <ion-col>Sjekker tilgjengelig diskplass...</ion-col>
+  </ion-row>
   <ion-row>
     <ion-col>
-      <ion-button (click)="startDownload()" expand="block" color="varsom-orange">Last ned</ion-button>
+      <ion-button [disabled]="isCheckingAvailableDiskspace" (click)="startDownload()" expand="block"
+        color="varsom-orange">Last ned</ion-button>
     </ion-col>
   </ion-row>
 </ng-template>

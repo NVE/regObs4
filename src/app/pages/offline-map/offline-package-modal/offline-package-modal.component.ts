@@ -24,8 +24,9 @@ export class OfflinePackageModalComponent implements OnInit {
   zoom = 13;
   center: number[];
   tileLayer: L.GeoJSON;
+  isCheckingAvailableDiskspace:boolean;
 
-  private offlinePackageStatusThatTriggersChangeDetection$: Observable<OfflineMapPackage>;
+  offlinePackageStatusThatTriggersChangeDetection$: Observable<OfflineMapPackage>;
 
   constructor(
     private modalController: ModalController,
@@ -35,6 +36,7 @@ export class OfflinePackageModalComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.isCheckingAvailableDiskspace = false;
     this.offlinePackageStatusThatTriggersChangeDetection$ = this.offlinePackageStatus$.pipe(
       tap(() => this.cdr.detectChanges() ));
     this.tileLayer = new L.GeoJSON(this.feature);
@@ -51,8 +53,16 @@ export class OfflinePackageModalComponent implements OnInit {
     }, 50);
   }
 
-  startDownload() {
-    this.offlineMapService.downloadPackage(this.packageOnServer);
+  async startDownload(): Promise<void> {
+    this.isCheckingAvailableDiskspace = true;
+    this.cdr.detectChanges();
+
+    if(await this.offlineMapService.checkAvailableDiskSpace(this.packageOnServer)) {
+      this.offlineMapService.downloadPackage(this.packageOnServer);
+    }
+    this.isCheckingAvailableDiskspace = false;
+    this.cdr.detectChanges();
+
     //this.dismiss(); //TODO: Skal vi lukke denne når vi starter nedlasting?
     // window.open(this.package.properties.url, '_blank');
   }
