@@ -5,7 +5,7 @@ import moment from 'moment';
 import { File, Metadata, Entry } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
-import { finalize, map, mergeMap, take } from 'rxjs/operators';
+import { finalize, map, mergeMap, shareReplay, switchMap, take } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import JSZip from 'jszip';
@@ -32,6 +32,8 @@ export class OfflineMapService implements OnReset {
   private downloadAndUnzipProgress: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
   downloadAndUnzipProgress$ = this.downloadAndUnzipProgress.asObservable();
 
+  availableDiskspace: {available: number, used: number };
+
 
   private downloadSubscription: Subscription;
   private cancel = false;
@@ -54,6 +56,15 @@ export class OfflineMapService implements OnReset {
     }).catch((err) => {
       this.loggingService.error(err, DEBUG_TAG, 'Failed to get map packages');
     });
+    this.packages$.pipe(
+      switchMap((packages) => from(this.getDeviceFreeDiskSpace()).pipe(map((available) => ({ 
+        available, 
+        used: this.calculateTotalOfflinePackagesDiskspaceUsed(packages) 
+    }))))).subscribe((val) => {
+      setTimeout(() => {
+        this.availableDiskspace = val;
+      });
+    })
   }
 
   private async getMapPackages(): Promise<OfflineMapPackage[]> {
@@ -74,6 +85,10 @@ export class OfflineMapService implements OnReset {
     const packages = await Promise.all(packageNames.map((name) => this.getMetadata(name)));
 
     return packages;
+  }
+
+  private calculateTotalOfflinePackagesDiskspaceUsed(packages: OfflineMapPackage[]): number {
+    return packages.reduce((pv, cv) => ((cv.downloadComplete && cv.size != null) ? cv.size : 0) + pv, 0);
   }
 
   private async getFolderNameWithCompleteFiles(folders: Entry[]) : Promise<string[]> {
@@ -169,13 +184,13 @@ export class OfflineMapService implements OnReset {
                   (progress) => this.onProgress(mapPackage, {step: ProgressStep.extractZip,
                     percentage: this.calculateTotalProgress(progress, partNumber, totalParts, 'Unzipping'),
                     description: `Unzip ${partNumber+1}/${totalParts}`}),
-                  (error) => this.onUnzipOrDownloadError(mapPackage, error)
+                  (error) => this.onUnzipOrDownloadError(mapPackage, error, false)
             );
           break;
         default:
           break;
       }
-    }, (err) => this.onUnzipOrDownloadError(mapPackage, err));
+    }, (err) => this.onUnzipOrDownloadError(mapPackage, err, true));
   }
 
   public calculateTotalProgress(currentProgress: number, currentPart: number, totalParts: number, partOfStep: 'Downloading' | 'Unzipping') {
@@ -201,24 +216,21 @@ export class OfflineMapService implements OnReset {
   }
 
   public async checkAvailableDiskSpace(packageMetadataCombined: CompoundPackageMetadata): Promise<boolean> {
-    if(isAndroidOrIos(this.platform)) {
-      const availableStorageSpace = await this.getDeviceFreeDiskSpace();
+    if(isAndroidOrIos(this.platform) && this.availableDiskspace != null) {
 
       const neededSpace = await this.getNeededDiskSpaceForPackage(packageMetadataCombined);
 
-      this.loggingService.debug(`Available storage is ${this.helperService.humanReadableByteSize(availableStorageSpace)}. 
+      this.loggingService.debug(`Available storage is ${this.helperService.humanReadableByteSize(this.availableDiskspace.available)}. 
       Needs ${this.helperService.humanReadableByteSize(neededSpace)}`, DEBUG_TAG);
       
-      if(availableStorageSpace < neededSpace) {
+      if(this.availableDiskspace.available < neededSpace) {
         this.loggingService.log('Not enough disk space to save and extract package', null , LogLevel.Warning, DEBUG_TAG);
 
         await this.showNotEnoughDiskSpaceAvailableErrorMessage();
         return false;
       }
     }else {
-      return await new Promise((resolve, reject) => {
-        setTimeout(() => resolve(true), 10000)
-      })
+      return Promise.resolve(true);
     }
     return true;
   }
@@ -247,12 +259,13 @@ export class OfflineMapService implements OnReset {
     alert.present();
   }
 
-  private async showDownloadOrUnzipErrorMessage() {
+  private async showDownloadOrUnzipErrorMessage(isDownloading: boolean) {
+    const messageKey = isDownloading ? 'OFFLINE_MAP.DOWNLOAD_ERROR_MESSAGE' : 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE'
     const translations = await this.translateService
-      .get(['OFFLINE_MAP.UNZIP_ERROR_MESSAGE', 'ALERT.OK'])
+      .get([messageKey, 'ALERT.OK'])
       .toPromise();
     const alert = await this.alertController.create({
-      message: translations['OFFLINE_MAP.UNZIP_ERROR_MESSAGE'],
+      message: translations[messageKey],
       buttons: [
         {
           text: translations['ALERT.OK'],
@@ -263,6 +276,10 @@ export class OfflineMapService implements OnReset {
   }
 
   private getDeviceFreeDiskSpace(externalStorage: boolean = false): Promise<number> {
+    if(!isAndroidOrIos(this.platform)) {
+      return Promise.resolve(0);
+    }
+
     return new Promise((resolve, reject) => {
       (window as any).DiskSpacePlugin.info({ location: externalStorage ? 2 : 1 }, (success) => resolve(success.free), (err) => reject(err));
     });
@@ -431,7 +448,7 @@ export class OfflineMapService implements OnReset {
     ]);
   }
 
-  private async onUnzipOrDownloadError(metadata: OfflineMapPackage, error: Error) {
+  private async onUnzipOrDownloadError(metadata: OfflineMapPackage, error: Error, isDownloading: boolean) {
     this.loggingService.error(
       error,
       DEBUG_TAG,
@@ -445,12 +462,12 @@ export class OfflineMapService implements OnReset {
       metadata
     ]);
     this.resetCancelAndStartNextItemInQueue();
-    this.showDownloadOrUnzipErrorMessage();
+    this.showDownloadOrUnzipErrorMessage(isDownloading);
   }
 
   private async onDownloadAndUnzipComplete(mapPackage: OfflineMapPackage) {
     if(!isAndroidOrIos(this.platform)) {
-      this.onUnzipOrDownloadError(mapPackage, new Error('Offline maps for web not implemented!'));
+      this.onUnzipOrDownloadError(mapPackage, new Error('Offline maps for web not implemented!'), false);
       return;
     }
 

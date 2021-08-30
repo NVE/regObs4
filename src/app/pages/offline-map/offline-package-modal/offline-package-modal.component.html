@@ -60,10 +60,6 @@
 </ion-content>
 
 <ng-template #downloadPackage>
-  <ion-row *ngIf="isCheckingAvailableDiskspace">
-    <ion-col size="4"></ion-col>
-    <ion-col>Sjekker tilgjengelig diskplass...</ion-col>
-  </ion-row>
   <ion-row>
     <ion-col>
       <ion-button [disabled]="isCheckingAvailableDiskspace" (click)="startDownload()" expand="block"
