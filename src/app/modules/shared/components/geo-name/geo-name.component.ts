@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
@@ -8,14 +8,14 @@ import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
   templateUrl: './geo-name.component.html',
   styleUrls: ['./geo-name.component.scss']
 })
-export class GeoNameComponent implements OnInit {
+export class GeoNameComponent implements OnChanges {
   @Input() geoHazards: GeoHazard[];
 
   name$: Observable<string>;
 
   constructor(private geoHelperService: GeoHelperService) {}
 
-  ngOnInit() {
+  ngOnChanges(): void {
     this.name$ = this.geoHelperService.getName(this.geoHazards);
   }
 }
