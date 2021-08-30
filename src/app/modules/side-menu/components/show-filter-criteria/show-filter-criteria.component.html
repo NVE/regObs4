@@ -1,6 +1,10 @@
 <ng-container *ngIf="isDesktop">
   <div class="show-container" *ngIf="daysBack$ | async as daysBack">
-    <span *ngIf="daysBack.value !== 0">{{'MENU.SHOWING_OBSERVATIONS' | translate}}&nbsp;</span>
+    <ng-container *ngIf="currentGeoHazard$ | async as currentGeoHazard">
+      <app-geo-name [geoHazards]="currentGeoHazard"></app-geo-name>
+    </ng-container>
+    <ng-container *ngIf="language$ | async as language"><span *ngIf="language === 2">&nbsp;</span></ng-container>
+    <span *ngIf="daysBack.value !== 0">{{'MENU.SHOWING_OBSERVATIONS' | translate | lowercase}}&nbsp;</span>
     <app-check-days-or-weeks-back [daysBack]="daysBack.value"></app-check-days-or-weeks-back>
     <ion-menu-button menu="filter" color="light" mode="ios">
       <a>{{'MY_PROFILE.EDIT' | translate}}</a>

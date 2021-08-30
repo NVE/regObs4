@@ -16,6 +16,8 @@ export class EditPictureInfoModalComponent implements OnInit {
   ngOnInit() {}
 
   save(){
+    this.copyright = this.copyright.trim();
+    this.photographer = this.photographer.trim();
     this.modalController.dismiss({copyright: this.copyright, photographer: this.photographer});
   }
 
