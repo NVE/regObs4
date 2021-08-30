@@ -169,13 +169,13 @@ export class OfflineMapService implements OnReset {
                   (progress) => this.onProgress(mapPackage, {step: ProgressStep.extractZip,
                     percentage: this.calculateTotalProgress(progress, partNumber, totalParts, 'Unzipping'),
                     description: `Unzip ${partNumber+1}/${totalParts}`}),
-                  (error) => this.onUnzipOrDownloadError(mapPackage, error)
+                  (error) => this.onUnzipOrDownloadError(mapPackage, error, false)
             );
           break;
         default:
           break;
       }
-    }, (err) => this.onUnzipOrDownloadError(mapPackage, err));
+    }, (err) => this.onUnzipOrDownloadError(mapPackage, err, true));
   }
 
   public calculateTotalProgress(currentProgress: number, currentPart: number, totalParts: number, partOfStep: 'Downloading' | 'Unzipping') {
@@ -247,12 +247,13 @@ export class OfflineMapService implements OnReset {
     alert.present();
   }
 
-  private async showDownloadOrUnzipErrorMessage() {
+  private async showDownloadOrUnzipErrorMessage(isDownloading: boolean) {
+    const messageKey = isDownloading ? 'OFFLINE_MAP.DOWNLOAD_ERROR_MESSAGE' : 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE'
     const translations = await this.translateService
-      .get(['OFFLINE_MAP.UNZIP_ERROR_MESSAGE', 'ALERT.OK'])
+      .get([messageKey, 'ALERT.OK'])
       .toPromise();
     const alert = await this.alertController.create({
-      message: translations['OFFLINE_MAP.UNZIP_ERROR_MESSAGE'],
+      message: translations[messageKey],
       buttons: [
         {
           text: translations['ALERT.OK'],
@@ -431,7 +432,7 @@ export class OfflineMapService implements OnReset {
     ]);
   }
 
-  private async onUnzipOrDownloadError(metadata: OfflineMapPackage, error: Error) {
+  private async onUnzipOrDownloadError(metadata: OfflineMapPackage, error: Error, isDownloading: boolean) {
     this.loggingService.error(
       error,
       DEBUG_TAG,
@@ -445,12 +446,12 @@ export class OfflineMapService implements OnReset {
       metadata
     ]);
     this.resetCancelAndStartNextItemInQueue();
-    this.showDownloadOrUnzipErrorMessage();
+    this.showDownloadOrUnzipErrorMessage(isDownloading);
   }
 
   private async onDownloadAndUnzipComplete(mapPackage: OfflineMapPackage) {
     if(!isAndroidOrIos(this.platform)) {
-      this.onUnzipOrDownloadError(mapPackage, new Error('Offline maps for web not implemented!'));
+      this.onUnzipOrDownloadError(mapPackage, new Error('Offline maps for web not implemented!'), false);
       return;
     }
 
