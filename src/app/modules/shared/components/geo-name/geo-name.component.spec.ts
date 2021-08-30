@@ -39,7 +39,7 @@ describe('GeoNameComponent', () => {
   it('should display observable name from geoHelperService', fakeAsync(() => {
     const dummyname = 'dummyname';
     geoHelperService.getName.and.returnValue(of(dummyname));
-    component.ngOnInit();
+    component.ngOnChanges();
     flushMicrotasks();
     fixture.detectChanges();
     const htmlElement: HTMLElement = fixture.debugElement.nativeElement;
