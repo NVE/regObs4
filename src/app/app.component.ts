@@ -47,7 +47,13 @@ export class AppComponent {
     this.fileLoggingService.init({});
     this.getUserSettings()
       .pipe(this.initServices(), delay(200))
-      .subscribe(() => this.splashScreen.hide());
+      .subscribe(() => {
+        this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
+        this.splashScreen.hide();
+      }, (err) => {
+        this.loggingService.error(err, DEBUG_TAG, 'Error when init app.');
+        this.splashScreen.hide();
+      });
   }
 
   private lockScreenOrientation() {

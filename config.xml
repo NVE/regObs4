@@ -18,11 +18,10 @@
     <preference name="android-targetSdkVersion" value="30" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
-    <preference name="AutoHideSplashScreen" value="false" />
-    <preference name="FadeSplashScreenDuration" value="200" />
+    <preference name="AutoHideSplashScreen" value="true" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
-    <preference name="SplashScreenDelay" value="0" />
+    <preference name="SplashScreenDelay" value="10000" />
     <preference name="AndroidLaunchMode" value="singleTask" />
     <preference name="StatusBarStyle" value="lightcontent" />
     <preference name="StatusBarBackgroundColor" value="#99044962" />
