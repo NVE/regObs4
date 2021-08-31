@@ -463,7 +463,7 @@ export class RegistrationService {
         this.registrationApiService.RegistrationInsert(registration.request)
       )
     );
-    return toPromiseWithCancel(uploadProcess$, cancel);
+    return toPromiseWithCancel(uploadProcess$, cancel, 120000);
   }
 
   private uploadAttachments(

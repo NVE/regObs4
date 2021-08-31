@@ -44,16 +44,25 @@ export class AppComponent {
   }
 
   initializeApp(): void {
-    this.fileLoggingService.init({});
+    from(this.fileLoggingService.init({})).pipe(switchMap(() =>
     this.getUserSettings()
-      .pipe(this.initServices(), delay(200))
+      .pipe(this.initServices())))
       .subscribe(() => {
         this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
-        this.splashScreen.hide();
+        this.afterAppInitialized();
       }, (err) => {
         this.loggingService.error(err, DEBUG_TAG, 'Error when init app.');
-        this.splashScreen.hide();
+        this.afterAppInitialized();
       });
+  }
+
+  afterAppInitialized() {
+    setTimeout(() => {
+      this.splashScreen.hide();
+    }, 300); // Wait 300 ms to hide splashScreen to make sure app has completed navigating to start wizard
+    setTimeout(() => {
+      this.dataMarshallService.init();
+    }, 3000); // Wait a bit before init data marshall service to prevent too many requests at startup
   }
 
   private lockScreenOrientation() {
@@ -126,15 +135,15 @@ export class AppComponent {
                 )
               )
             ),
-            of(this.dataMarshallService.init()).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not init dataMarshallService'
-                )
-              )
-            ),
+            // of(this.dataMarshallService.init()).pipe(
+            //   catchError((err) =>
+            //     this.loggingService.error(
+            //       err,
+            //       DEBUG_TAG,
+            //       'Could not init dataMarshallService'
+            //     )
+            //   )
+            // ),
             of(this.shortcutService.init()).pipe(
               catchError((err) =>
                 this.loggingService.error(
