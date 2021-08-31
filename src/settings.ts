@@ -38,9 +38,9 @@ export const settings = {
     }
   },
   observations: {
-    maxObservationsToFetch: 5000,
+    maxObservationsToFetch: 100000,
     daysBack: {
-      Snow: [0, 1, 2, 3, 7, 7 * 2],
+      Snow: [0, 1, 2, 3, 7, 7 * 2, 365 / 2, 365, 2 * 365, 3 * 365],
       Ice: [0, 1, 2, 7, 7 * 4, 7 * 12],
       Water: [0, 1, 2, 3, 7, 7 * 2],
       Dirt: [0, 1, 2, 3, 7, 7 * 2]
