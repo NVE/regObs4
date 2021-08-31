@@ -9,6 +9,7 @@ import { GeoNameComponent } from './geo-name.component';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
 import { Spied, provideMock } from '../../../../core/helpers/spied';
 import { of } from 'rxjs';
+import { TestModule } from '../../../test/test.module';
 
 describe('GeoNameComponent', () => {
   let component: GeoNameComponent;
@@ -18,6 +19,7 @@ describe('GeoNameComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        imports: [TestModule],
         declarations: [GeoNameComponent],
         providers: [GeoHelperService, provideMock(GeoHelperService)]
       });
