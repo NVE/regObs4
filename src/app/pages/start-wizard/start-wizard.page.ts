@@ -22,7 +22,6 @@ export class StartWizardPage implements OnInit, OnDestroy {
   reachedEnd = false;
   showLegalIcon = false;
   visibleStarNumber = -1;
-  recreate = true;
   language: LangKey;
   supportedLanguages: {
     lang: string;
@@ -43,11 +42,9 @@ export class StartWizardPage implements OnInit, OnDestroy {
   ) {}
 
   ionViewWillEnter() {
-    this.recreate = true;
     this.state = 'x';
     this.userSettingService.userSetting$.pipe(take(1)).subscribe((us) => {
       this.language = us.language;
-      this.recreate = false;
       this.initStarIndexCounter();
       this.setPageIndex(0);
     });
@@ -81,7 +78,6 @@ export class StartWizardPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
-    this.recreate = true;
   }
 
   slideNext() {
