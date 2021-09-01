@@ -135,15 +135,6 @@ export class AppComponent {
                 )
               )
             ),
-            // of(this.dataMarshallService.init()).pipe(
-            //   catchError((err) =>
-            //     this.loggingService.error(
-            //       err,
-            //       DEBUG_TAG,
-            //       'Could not init dataMarshallService'
-            //     )
-            //   )
-            // ),
             of(this.shortcutService.init()).pipe(
               catchError((err) =>
                 this.loggingService.error(
