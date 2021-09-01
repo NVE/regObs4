@@ -85,7 +85,8 @@ export class HelpTextService {
     try {
       const helpTexts = await toPromiseWithCancel(
         this.helptextApiService.HelptextGet(language),
-        cancel
+        cancel,
+        20000
       );
       await NanoSql.getInstance(NanoSql.TABLES.HELP_TEXTS.name, appMode)
         .query('upsert', { langKey: language, helpTexts: helpTexts })

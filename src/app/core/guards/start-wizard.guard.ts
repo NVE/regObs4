@@ -25,7 +25,9 @@ export class StartWizardGuard implements CanActivate {
       .pipe(take(1))
       .toPromise();
     if (!userSetting.completedStartWizard) {
-      this.router.navigate(['start-wizard']);
+      setTimeout(() => {
+        this.router.navigate(['start-wizard']);
+      }, 200); // Added 200ms timeout because of white screen on startup, this seems to help.
     }
 
     return userSetting.completedStartWizard;

@@ -188,7 +188,6 @@
       "cordova-sqlite-storage": {},
       "cordova-plugin-device-orientation": {},
       "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-splashscreen": {},
       "cordova-plugin-customurlscheme": {
         "URL_SCHEME": "regobs",
         "ANDROID_SCHEME": " ",
@@ -212,7 +211,8 @@
       "cordova.plugins.diagnostic": {
         "ANDROIDX_VERSION": "1.+"
       },
-      "sqli-cordova-disk-space-plugin": {}
+      "sqli-cordova-disk-space-plugin": {},
+      "cordova-plugin-splashscreen": {}
     },
     "platforms": [
       "ios",

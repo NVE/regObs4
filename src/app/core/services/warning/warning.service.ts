@@ -539,7 +539,8 @@ export class WarningService {
     try {
       const warningsresult = await toPromiseWithCancel(
         this.httpClient.get<IWarningApiResult[]>(url),
-        cancelPromise
+        cancelPromise,
+        30000
       );
       const regions = this.aggregateWarningRegions(
         warningsresult,
@@ -732,7 +733,8 @@ export class WarningService {
     try {
       const warningsresult = await toPromiseWithCancel(
         this.httpClient.get<IAvalancheWarningApiResult[]>(url),
-        cancelPromise
+        cancelPromise,
+        30000
       );
       if (!cancelled) {
         const regionResult: IWarningGroup[] = warningsresult.map(
