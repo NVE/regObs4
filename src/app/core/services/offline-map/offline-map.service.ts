@@ -16,7 +16,7 @@ import { AlertController, Platform } from '@ionic/angular';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { HelperService } from '../helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CompoundPackageMetadata } from 'src/app/pages/offline-map/metadata.model';
+import { CompoundPackage } from 'src/app/pages/offline-map/metadata.model';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -96,7 +96,7 @@ export class OfflineMapService implements OnReset {
       .filter((packageName) => packageName != null);
   }
 
-  public async downloadPackage(packageMetadataCombined: CompoundPackageMetadata, checkAvailableDiskSpace = false): Promise<void> {
+  public async downloadPackage(packageMetadataCombined: CompoundPackage, checkAvailableDiskSpace = false): Promise<void> {
 
     if(checkAvailableDiskSpace) {
       //TODO: Ask user to prefer saving to external SD card if available?
@@ -215,7 +215,7 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  public async checkAvailableDiskSpace(packageMetadataCombined: CompoundPackageMetadata): Promise<boolean> {
+  public async checkAvailableDiskSpace(packageMetadataCombined: CompoundPackage): Promise<boolean> {
     if(isAndroidOrIos(this.platform) && this.availableDiskspace != null) {
 
       const neededSpace = await this.getNeededDiskSpaceForPackage(packageMetadataCombined);
@@ -235,7 +235,7 @@ export class OfflineMapService implements OnReset {
     return true;
   }
 
-  public async getNeededDiskSpaceForPackage(packageMetadataCombined: CompoundPackageMetadata, compressionFactor: number = 1.10) : Promise<number> {
+  public async getNeededDiskSpaceForPackage(packageMetadataCombined: CompoundPackage, compressionFactor: number = 1.10) : Promise<number> {
     const neededSpaceForCurrentPackage = packageMetadataCombined.getSizeInMiB() * 1024 * 1024 * compressionFactor; 
 
     const neededSpaceForItemsInQueue = await this.downloadAndUnzipProgress$.pipe(take(1), map((items) => items.filter((x) => x.downloadComplete == null && x.error == null)
@@ -353,7 +353,7 @@ export class OfflineMapService implements OnReset {
     return offlineMapPackage;
   }
 
-  private createOfflineMapPackage(compoundPackageMetadata: CompoundPackageMetadata): OfflineMapPackage {
+  private createOfflineMapPackage(compoundPackageMetadata: CompoundPackage): OfflineMapPackage {
     const mapPackage: OfflineMapPackage = {
       name: compoundPackageMetadata.getName(),
       size: compoundPackageMetadata.getSizeInMiB() * 1024 * 1024,
