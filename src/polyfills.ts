@@ -55,6 +55,9 @@
  */
 import './zone-flags.ts';
 import 'zone.js'; // Included with Angular CLI.
+if (window) {
+  (window as any).global = window;
+}
 
 /***************************************************************************************************
  * APPLICATION IMPORTS

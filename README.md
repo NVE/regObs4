@@ -207,7 +207,7 @@ Follow this guide: https://update.angular.io/
 ng update
 ```
 
-Upgrade the rest of the packages.
+At last, upgrade the rest of the packages.
 ```
 ncu -u
 npm install
