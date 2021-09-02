@@ -59,7 +59,6 @@
     "@ionic-native/status-bar": "^5.31.1",
     "@ionic-native/zip": "^5.31.1",
     "@ionic/angular": "^5.6.0",
-    "@ionic/storage": "^2.3.1",
     "@mapbox/leaflet-pip": "^1.1.0",
     "@nano-sql/adapter-sqlite-cordova": "2.1.2",
     "@nano-sql/core": "^2.3.7",
