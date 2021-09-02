@@ -1,51 +1,82 @@
+import type { BBox, Feature, Polygon } from "geojson";
 import moment, { Moment } from "moment";
+
+type XYZ = [number, number, number];
 
 export interface PackageMetadata {
   name: string;
-  lastModified: string; //in UTC
-  xyz: number[];
+  lastModified: string;  // in UTC
   urls: string[];
   sizeInMib: number;
 }
 
-export interface FeatureProperties {
-  title: string;
-  xyz: number[];
+export interface CompoundPackageMetadata {
+  id: string;
+  xyz: XYZ;
+  bbox: BBox;
+  sizeInMib: number;
+  maps: PackageMetadata[]
 }
 
-export class CompoundPackageMetadata {
-  private xyz: number[];
-  private packages: PackageMetadata[] = [];
+export type CompoundPackageFeature = Feature<Polygon, null>;
 
-  constructor(xyz: number[]) {
-    this.xyz = xyz;
-  }
+export class CompoundPackage {
 
-  addPackage(metadata: PackageMetadata): void {
-    this.packages.push(metadata);
-  }
-
-  getSizeInMiB(): number {
-    return this.packages.reduce((sum, p) => sum + (+p.sizeInMib), 0);
-  }
-
-  getName(): string {
-    const [x, y, z] = this.xyz;
+  static GetNameFromXYZ(x: number, y: number, z: number) {
     return `${x}-${y}-${z}`;
   }
 
-  getLastModified(): Moment {
-    if (this.packages.length === 0) {
-      return undefined;
+  static GetFeatureId(x: number, y: number, z: number) {
+    return CompoundPackage.GetNameFromXYZ(x, y, z);
+  }
+
+  private metadata: CompoundPackageMetadata;
+
+  constructor(metadata: CompoundPackageMetadata) {
+    this.metadata = metadata
+  }
+
+  getFeature(): CompoundPackageFeature {
+    const [xMin, yMin, xMax, yMax] = this.metadata.bbox;
+    return {
+      type: 'Feature',
+      geometry: {
+        bbox: this.metadata.bbox,
+        type: 'Polygon',
+        coordinates: [[
+          [xMin, yMin],
+          [xMin, yMax],
+          [xMax, yMax],
+          [xMax, yMin],
+          [xMin, yMin]
+        ]]
+      },
+      properties: null,
+      id: CompoundPackage.GetFeatureId(...this.metadata.xyz)
     }
-    return moment.max(this.packages.map(p => moment(p.lastModified)));
+  }
+
+  getSizeInMiB(): number {
+    return this.metadata.sizeInMib;
+  }
+
+  getName(): string {
+    const [x, y, z] = this.metadata.xyz;
+    return CompoundPackage.GetNameFromXYZ(x, y, z);
+  }
+
+  getLastModified(): Moment {
+    if (this.metadata.maps.length === 0) {
+      return null;
+    }
+    return moment.max(this.metadata.maps.map(p => moment(p.lastModified)));
   }
 
   getUrls(): string[] {
-    return this.packages.map((p) => p.urls).reduce((a, b) => a.concat(b), []);
+    return this.metadata.maps.map((p) => p.urls).reduce((a, b) => a.concat(b), []);
   }
 
-  getXYZ(): number[] {
-    return this.xyz;
+  getXYZ(): XYZ {
+    return this.metadata.xyz;
   }
 }
