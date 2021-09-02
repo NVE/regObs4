@@ -187,25 +187,33 @@ npm run lint:fix
 # How to update all npm packages
 
 Install npm-check-updates globally and check packages.json:
-
 ```
 npm i -g npm-check-updates
-ncu -u
-npm install
+ncu
 ```
 
+Check release notes for packages with breaking changes.
+Upgrade plugins first
 NOTE! Cordova plugins must be updated by removing and re-adding plugin:
-
 ```
 ionic cordova plugin rm cordova-plugin-name
 ionic cordova plugin add cordova-plugin-name
 ```
 
+Then, upgrade Angular, if neccessary.
 To update Angular, use ng update to better migrate code changes:
 Follow this guide: https://update.angular.io/
 ```
 ng update
 ```
+
+Upgrade the rest of the packages.
+```
+ncu -u
+npm install
+```
+
+
 
 # How to update models from Regobs API
 
