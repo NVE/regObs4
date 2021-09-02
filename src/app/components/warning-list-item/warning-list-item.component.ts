@@ -27,7 +27,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   @ViewChild(IonItemSliding, { static: true }) itemSlide: IonItemSliding;
   @ViewChild(WarningGroupFavouriteToggleComponent, { static: true })
   favouriteToggle: WarningGroupFavouriteToggleComponent;
-  private dragSubject = new Subject();
+  private dragSubject = new Subject<boolean>();
 
   constructor(
     private externalLinkService: ExternalLinkService,
@@ -69,7 +69,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   }
 
   onDrag() {
-    this.dragSubject.next();
+    this.dragSubject.next(true);
   }
 
   private getOpenAmount() {

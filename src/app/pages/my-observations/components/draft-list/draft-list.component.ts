@@ -19,7 +19,7 @@ import { RegistrationService } from 'src/app/modules/registration/services/regis
 export class DraftListComponent implements OnInit {
   @Output() isEmpty = new EventEmitter<boolean>();
   registrations$: Observable<IRegistration[]>;
-  private ngDestroy$: Subject<void>;
+  private ngDestroy$: Subject<boolean>;
 
   constructor(private registrationService: RegistrationService) {}
 
@@ -29,7 +29,7 @@ export class DraftListComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next();
+    this.ngDestroy$.next(true);
     this.ngDestroy$.complete();
   }
 

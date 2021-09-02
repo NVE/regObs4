@@ -48,7 +48,7 @@ import { enterZone } from '../../core/helpers/observable-helper';
 export class CoachMarksComponent implements OnInit, OnDestroy {
   showCoachMarks$: Observable<boolean>;
   isOpen = false;
-  ngDestroy$ = new Subject();
+  ngDestroy$ = new Subject<boolean>();
   hideSubject = new Subject<boolean>();
 
   constructor(
@@ -92,7 +92,7 @@ export class CoachMarksComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next();
+    this.ngDestroy$.next(true);
     this.ngDestroy$.complete();
   }
 }

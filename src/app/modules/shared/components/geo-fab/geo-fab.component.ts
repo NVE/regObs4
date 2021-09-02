@@ -86,7 +86,7 @@ export class GeoFabComponent implements OnInit, OnDestroy {
   @Output() isOpenChange = new EventEmitter();
   @Input() animateOnEnter = false;
 
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<boolean>();
   private animationTimout: NodeJS.Timeout;
 
   animateOnEnterState = 'x';
@@ -124,7 +124,7 @@ export class GeoFabComponent implements OnInit, OnDestroy {
     if (this.animationTimout) {
       clearTimeout(this.animationTimout);
     }
-    this.ngDestroy$.next();
+    this.ngDestroy$.next(true);
     this.ngDestroy$.complete();
   }
 

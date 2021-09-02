@@ -28,7 +28,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   geoPositionLog: GeoPositionLog[];
   isOpen: boolean;
   isTracking: boolean;
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<boolean>();
 
   @ViewChild('GpsLogPanel') panel: IonContent;
 
@@ -88,7 +88,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngDestroy$.next();
+    this.ngDestroy$.next(true);
     this.ngDestroy$.complete();
   }
 

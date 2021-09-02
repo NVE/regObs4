@@ -27,7 +27,7 @@ export class SendButtonComponent implements OnInit, OnDestroy {
   isSending = false;
   isLoggingIn = false;
 
-  private ngOnDestroy$ = new Subject();
+  private ngOnDestroy$ = new Subject<boolean>();
 
   constructor(
     private registrationService: RegistrationService,
@@ -52,7 +52,7 @@ export class SendButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ngOnDestroy$.next();
+    this.ngOnDestroy$.next(true);
     this.ngOnDestroy$.complete();
   }
 

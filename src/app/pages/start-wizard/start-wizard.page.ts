@@ -32,7 +32,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
     langKey: LangKey[lang.lang]
   }));
 
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<boolean>();
   private activeIndex = new Subject<number>();
   private isIncreasing = true;
 
@@ -76,7 +76,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next();
+    this.ngDestroy$.next(true);
     this.ngDestroy$.complete();
   }
 

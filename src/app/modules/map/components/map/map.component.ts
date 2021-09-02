@@ -71,7 +71,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private layerGroup = L.layerGroup();
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<boolean>();
   private followMode = true;
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;
@@ -161,7 +161,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.geoPositionService.stopTrackingComponent(DEBUG_TAG);
-    this.ngDestroy$.next();
+    this.ngDestroy$.next(true);
     this.ngDestroy$.complete();
   }
 

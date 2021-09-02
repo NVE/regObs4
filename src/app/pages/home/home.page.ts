@@ -40,7 +40,7 @@ export class HomePage extends RouterPage implements OnInit {
     spiderfyOnMaxZoom: false,
     zoomToBoundsOnClick: false
   });
-  private geoCoachMarksClosedSubject = new Subject();
+  private geoCoachMarksClosedSubject = new Subject<boolean>();
 
   fullscreen$: Observable<boolean>;
   selectedMarker: MapItemMarker;
@@ -80,7 +80,7 @@ export class HomePage extends RouterPage implements OnInit {
       .subscribe((showGeoSelectInfo) => {
         this.showGeoSelectInfo = showGeoSelectInfo;
         if (!showGeoSelectInfo) {
-          this.geoCoachMarksClosedSubject.next();
+          this.geoCoachMarksClosedSubject.next(true);
           this.geoCoachMarksClosedSubject.complete();
           this.showUsageAnalyticsDialog();
         }
