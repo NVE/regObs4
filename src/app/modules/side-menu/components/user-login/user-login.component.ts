@@ -11,7 +11,7 @@ import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
   loggedInUser: LoggedInUser = { isLoggedIn: false };
-  private ngDestroy$ = new Subject<boolean>();
+  private ngDestroy$ = new Subject<void>();
   isLoggingIn = false;
 
   constructor(
@@ -41,7 +41,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next(true);
+    this.ngDestroy$.next(undefined);
     this.ngDestroy$.complete();
   }
 }

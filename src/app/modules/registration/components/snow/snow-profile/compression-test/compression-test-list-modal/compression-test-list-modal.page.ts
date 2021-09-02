@@ -15,7 +15,7 @@ import cloneDeep from 'clone-deep';
 export class CompressionTestListModalPage implements OnInit, OnDestroy {
   @Input() regId: string;
 
-  private ngDestroy$ = new Subject<boolean>();
+  private ngDestroy$ = new Subject<void>();
   private initialRegistrationClone: IRegistration;
   reg: IRegistration;
 
@@ -47,7 +47,7 @@ export class CompressionTestListModalPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next(true);
+    this.ngDestroy$.next(undefined);
     this.ngDestroy$.complete();
   }
 

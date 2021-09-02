@@ -52,12 +52,12 @@ export function setObservableTimeout() {
 
 @Injectable()
 export class NgDestoryBase implements OnDestroy {
-  protected readonly ngDestroy$: Subject<boolean>;
+  protected readonly ngDestroy$: Subject<void>;
   constructor() {
     this.ngDestroy$ = new Subject();
   }
   ngOnDestroy(): void {
-    this.ngDestroy$.next(true);
+    this.ngDestroy$.next(undefined);
     this.ngDestroy$.complete();
   }
 }

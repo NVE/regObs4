@@ -29,7 +29,7 @@ export class DraftListComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next(true);
+    this.ngDestroy$.next(undefined);
     this.ngDestroy$.complete();
   }
 

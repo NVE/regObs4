@@ -52,8 +52,8 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   slides: ImgSwiperSlide[];
   activeIndex = 0;
 
-  private ngDestroy$ = new Subject<boolean>();
-  private touchStart$ = new Subject<boolean>();
+  private ngDestroy$ = new Subject<void>();
+  private touchStart$ = new Subject<void>();
 
   @ViewChild(IonSlides) slider: IonSlides;
 
@@ -225,7 +225,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSlideTouchStart() {
-    this.touchStart$.next(true);
+    this.touchStart$.next(undefined);
   }
 
   async getSwiperIndex() {

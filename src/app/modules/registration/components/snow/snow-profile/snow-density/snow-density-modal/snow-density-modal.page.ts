@@ -20,7 +20,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   @Input() regId: string;
   useCylinder: boolean;
   private layerModal: HTMLIonModalElement;
-  private ngDestroy$ = new Subject<boolean>();
+  private ngDestroy$ = new Subject<void>();
   private reg: IRegistration;
   private initialRegistrationClone: IRegistration;
 
@@ -87,7 +87,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next(true);
+    this.ngDestroy$.next(undefined);
     this.ngDestroy$.complete();
   }
 

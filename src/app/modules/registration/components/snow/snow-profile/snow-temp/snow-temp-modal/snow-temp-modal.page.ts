@@ -23,7 +23,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   private initialRegistrationClone: IRegistration;
   private reg: IRegistration;
 
-  private ngDestroy$ = new Subject<boolean>();
+  private ngDestroy$ = new Subject<void>();
 
   get tempProfile() {
     if (
@@ -78,7 +78,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next(true);
+    this.ngDestroy$.next(undefined);
     this.ngDestroy$.complete();
   }
 

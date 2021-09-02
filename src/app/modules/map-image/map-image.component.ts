@@ -84,7 +84,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next(true);
+    this.ngDestroy$.next(undefined);
     this.ngDestroy$.complete();
   }
   onLeafletMapReady(map: L.Map) {
