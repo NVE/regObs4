@@ -80,7 +80,7 @@ export class HomePage extends RouterPage implements OnInit {
       .subscribe((showGeoSelectInfo) => {
         this.showGeoSelectInfo = showGeoSelectInfo;
         if (!showGeoSelectInfo) {
-          this.geoCoachMarksClosedSubject.next(undefined);
+          this.geoCoachMarksClosedSubject.next();
           this.geoCoachMarksClosedSubject.complete();
           this.showUsageAnalyticsDialog();
         }

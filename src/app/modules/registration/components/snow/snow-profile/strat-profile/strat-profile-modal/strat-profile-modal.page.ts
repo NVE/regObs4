@@ -71,7 +71,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next(undefined);
+    this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }
 

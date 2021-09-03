@@ -34,7 +34,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
 
   private map: L.Map;
   private mapCenterSubject: BehaviorSubject<ImageLocation>;
-  private ngDestroy$: Subject<boolean>;
+  private ngDestroy$: Subject<void>;
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -84,7 +84,7 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
-    this.ngDestroy$.next(undefined);
+    this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }
   onLeafletMapReady(map: L.Map) {

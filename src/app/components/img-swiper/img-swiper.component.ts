@@ -225,7 +225,7 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSlideTouchStart() {
-    this.touchStart$.next(undefined);
+    this.touchStart$.next();
   }
 
   async getSwiperIndex() {

@@ -57,7 +57,7 @@ export class NgDestoryBase implements OnDestroy {
     this.ngDestroy$ = new Subject();
   }
   ngOnDestroy(): void {
-    this.ngDestroy$.next(undefined);
+    this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }
 }

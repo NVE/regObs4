@@ -124,7 +124,7 @@ export class GeoFabComponent implements OnInit, OnDestroy {
     if (this.animationTimout) {
       clearTimeout(this.animationTimout);
     }
-    this.ngDestroy$.next(undefined);
+    this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }
 

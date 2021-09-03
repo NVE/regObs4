@@ -161,7 +161,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.geoPositionService.stopTrackingComponent(DEBUG_TAG);
-    this.ngDestroy$.next(undefined);
+    this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }
 

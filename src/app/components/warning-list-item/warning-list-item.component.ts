@@ -69,7 +69,7 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
   }
 
   onDrag() {
-    this.dragSubject.next(undefined);
+    this.dragSubject.next();
   }
 
   private getOpenAmount() {

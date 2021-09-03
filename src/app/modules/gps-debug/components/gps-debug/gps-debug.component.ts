@@ -88,7 +88,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngDestroy$.next(undefined);
+    this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }
 
