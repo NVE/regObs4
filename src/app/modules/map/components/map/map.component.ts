@@ -42,13 +42,16 @@ import { Feature, GeometryObject } from '@turf/turf';
 import { File } from '@ionic-native/file/ngx';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
-import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
+import { OfflineMapPackage, OfflinePackageMetadata, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { OfflineTilesRegistry } from 'src/app/core/services/offline-map/offline-tiles-registry';
 
 const DEBUG_TAG = 'MapComponent';
 const STEEPNESS_WITH_RUNOUTS_NAME = 'steepness-outlet';
 
 type CreateTileLayer = (options: IRegObsTileLayerOptions) => L.TileLayer;
+
+
 
 @Component({
   selector: 'app-map',
@@ -77,12 +80,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private firstClickOnZoomToUser = true;
   private isActive: BehaviorSubject<boolean>;
   private offlineMapService: OfflineMapService;
-
-  // Offline map register, one for each type of offline map
-  private offlineTilesRegistry = {
-    [TopoMap.statensKartverk]: new Map<string, string>(),
-    [STEEPNESS_WITH_RUNOUTS_NAME]: new Map<string, string>()
-  };
+  private offlineTilesRegistry = new OfflineTilesRegistry();
 
   constructor(
     private userSettingService: UserSettingService,
@@ -289,17 +287,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private registerOfflineMapPackages(mapPackages: OfflineMapPackage[]) {
     this.loggingService.debug('registerOfflineMapPackages', DEBUG_TAG);
 
-    this.offlineTilesRegistry[TopoMap.statensKartverk].clear();
-    this.offlineTilesRegistry[STEEPNESS_WITH_RUNOUTS_NAME].clear();
-
-    mapPackages.forEach(p => {
-      if (p.maps[TopoMap.statensKartverk] != null) {
-        this.registerOfflineMapTiles(p.maps[TopoMap.statensKartverk], this.offlineTilesRegistry[TopoMap.statensKartverk]);
-      }
-      if (p.maps[STEEPNESS_WITH_RUNOUTS_NAME] != null) {
-        this.registerOfflineMapTiles(p.maps[STEEPNESS_WITH_RUNOUTS_NAME], this.offlineTilesRegistry[STEEPNESS_WITH_RUNOUTS_NAME]);
-      }
-    });
+    this.offlineTilesRegistry.clear();
+    for (let mapPackage of mapPackages) {
+      this.offlineTilesRegistry.add(mapPackage);
+    }
 
     this.layerGroup.eachLayer((layer) => {
       if (layer instanceof RegObsOfflineAwareTileLayer) {
@@ -308,12 +299,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     })
   }
 
-  private registerOfflineMapTiles(metadata: OfflineTilesMetadata, registry: Map<string, string>) {
-    const key = `${metadata.rootTile.x}_${metadata.rootTile.y}`;
-    registry.set(key, metadata.url);
-  }
-
-  private startActiveSubscriptions() {
+   private startActiveSubscriptions() {
     this.isActive
       .pipe(distinctUntilChanged(), takeUntil(this.ngDestroy$))
       .subscribe((active) => {
@@ -436,12 +422,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     langKey: LangKey
   ): CreateTileLayer[] {
     const createNorwegianMixedMap: CreateTileLayer = (options) => new RegObsOfflineAwareTileLayer(
+        TopoMap.statensKartverk,
         settings.map.tiles.statensKartverkMapUrl,
         {
           ...options,
           bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
         },
-        this.offlineTilesRegistry[TopoMap.statensKartverk]
+        this.offlineTilesRegistry,
+        
       );
     const createOpenTopoMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.openTopoMapUrl, options);
     const createStatensKartverk: CreateTileLayer = (options) => new RegObsOfflineAwareTileLayer(
