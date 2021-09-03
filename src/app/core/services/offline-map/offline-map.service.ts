@@ -322,6 +322,11 @@ export class OfflineMapService implements OnReset {
     }
   }
 
+  private async getFolderNamesInFolder(path: string): Promise<string[]> {
+    const fileEntries = await this.file.listDir(path, '');
+    return fileEntries.filter((entry) => entry.isDirectory).map((entry) => entry.name);
+  }
+
   /**
    * @returns map package metadata
    */
@@ -337,7 +342,7 @@ export class OfflineMapService implements OnReset {
       maps: {},
     };
 
-    const maps = ['steepness-outlet', 'statensKartverk'];
+    const maps = await this.getFolderNamesInFolder(path);
     for(let map of maps) {
       const metadataPath = `${path}/${map}`;
       this.loggingService.debug('Metadata path:', DEBUG_TAG, metadataPath);

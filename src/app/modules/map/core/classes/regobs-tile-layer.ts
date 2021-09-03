@@ -1,6 +1,10 @@
 import * as L from 'leaflet';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { Feature, GeometryObject } from '@turf/turf';
+import { OfflineTilesRegistry } from 'src/app/core/services/offline-map/offline-tiles-registry';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'RegObsOfflineAwareTileLayer';
 
 export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
   edgeBufferTiles?: number;
@@ -36,26 +40,22 @@ export class RegObsTileLayer extends L.TileLayer {
 }
 
 export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
-  private minOfflineZoomLevel = 8;
-  private maxOfflineZoomLevel = 14;
-  private offlineTilesRegistry : Map<string, string>;
-
   constructor(
+    private mapType: string,
     url: string,
     options: IRegObsTileLayerOptions,
-    tileMap: Map<string, string>
+    private offlineTilesRegistry: OfflineTilesRegistry,
+    private loggingService: LoggingService
   ) {
     super(url, options);
-    this.offlineTilesRegistry = tileMap;
-
+    
     this.on('tileerror', (event?: L.TileErrorEvent) => {
       console.log('tileerror', event);
-      if (event.coords.z > this.maxOfflineZoomLevel) {
+      const { x, y, z } = this.findTopmostTileCoords(event.coords); 
+      const maxZ = this.offlineTilesRegistry.getZmax(this.mapType, x, y, z);
+      if (maxZ && event.coords.z > maxZ) {
         //show error message if we zoom in too much on the offline map
-        const tileKey = this.computeOfflineRootTileKey(event.coords);
-        if (this.offlineTilesRegistry.has(tileKey)) {
-          event.tile.src = '/assets/icon/map/no-tile-here.png'; //TODO: Show error text in current language
-        }
+        event.tile.src = '/assets/icon/map/no-tile-here.png'; //TODO: Show error text in current language
       }
     });
   }
@@ -64,30 +64,25 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
    * @returns url to an offline tile if available, or else default online tile url
    */
   getTileUrl(coords: L.Coords): string {
-    if (coords.z < this.minOfflineZoomLevel || coords.z > this.maxOfflineZoomLevel || this.offlineTilesRegistry?.size === 0) {
-      const url = super.getTileUrl(coords);
-      console.log('Tile url:', coords.x, coords.y, coords.z, url);
-      return url;
-    }
-
+    const { x, y, z } = this.findTopmostTileCoords(coords); 
+    const minZ = this.offlineTilesRegistry.getZmin(this.mapType, x, y, z);
+    const maxZ = this.offlineTilesRegistry.getZmax(this.mapType, x, y, z);
     let url: string;
-    const tileKey = this.computeOfflineRootTileKey(coords);
-    if (this.offlineTilesRegistry.has(tileKey)) {
-        const offlineMapUrl = this.offlineTilesRegistry.get(tileKey);
-        url = `${offlineMapUrl}/${coords.z}/${coords.x}/${coords.y}.png`;
+    if (maxZ != null && minZ != null && coords.z >= minZ && coords.z <= maxZ) {      
+      const offlineMapUrl = this.offlineTilesRegistry.getUrl(this.mapType, x, y, z);
+      url = `${offlineMapUrl}/${coords.z}/${coords.x}/${coords.y}.png`;
     } else {
-        url = super.getTileUrl(coords);
+      url = super.getTileUrl(coords);
     }
-
-    console.log('Tile url:', coords.x, coords.y, coords.z, url);
+    this.loggingService.debug('Tile url:', DEBUG_TAG, x, y, z, url);
     return url;
   }
 
-  private findTopmostTileCoords(coords: L.Coords): { x, y, z} { 
+  private findTopmostTileCoords(coords: L.Coords, minZ: number): { x, y, z} { 
     let { x, y, z } = coords;   
     
     //find topmost tile x and y
-    while (z > this.minOfflineZoomLevel) {
+    while (z > minZ) {
         z--;
         x = Math.floor(x / 2);
         y = Math.floor(y / 2);
@@ -95,8 +90,4 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
     return { x, y, z };
   }
 
-  private computeOfflineRootTileKey(coords: L.Coords): string {
-    const { x, y, z } = this.findTopmostTileCoords(coords);   
-    return `${x}_${y}`; //TODO: Tilemap should control key format. Maybe hide tilemap in own class?
-  }
 }
