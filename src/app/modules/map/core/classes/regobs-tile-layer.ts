@@ -78,11 +78,11 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
     return url;
   }
 
-  private findTopmostTileCoords(coords: L.Coords, minZ: number): { x, y, z} { 
+  private findTopmostTileCoords(coords: L.Coords): { x, y, z} { 
     let { x, y, z } = coords;   
     
     //find topmost tile x and y
-    while (z > minZ) {
+    while (z > (this.offlineTilesRegistry.getZmin(this.mapType, x, y, z) || 0)) {
         z--;
         x = Math.floor(x / 2);
         y = Math.floor(y / 2);

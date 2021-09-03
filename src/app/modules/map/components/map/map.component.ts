@@ -387,27 +387,21 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           bounds: <any>settings.map.tiles.supportTilesBounds
         }
 
-        let layer: L.TileLayer;
-        if (supportMaps.name === STEEPNESS_WITH_RUNOUTS_NAME) {
-          layer = this.createSteepnessWithRunoutsTileLayer(supportMaps.url, options);
-        } else {
-          layer = this.createSupportMapTileLayer(supportMaps.url, options)
-        }
+        const layer = this.createSupportMapTileLayer(supportMaps.name, supportMaps.url, options);
         layer.setOpacity(supportMaps.opacity);
         layer.addTo(this.layerGroup);
       }
     });
   }
 
-  private createSupportMapTileLayer(url: string, options: L.TileLayerOptions): L.TileLayer {
-    return new L.TileLayer(url, options);
-  }
 
-  private createSteepnessWithRunoutsTileLayer(url: string, options: L.TileLayerOptions): RegObsOfflineAwareTileLayer {
+  private createSupportMapTileLayer(name: string, url: string, options: L.TileLayerOptions): RegObsOfflineAwareTileLayer {
     return new RegObsOfflineAwareTileLayer(
+      name,
       url,
       options,
-      this.offlineTilesRegistry[STEEPNESS_WITH_RUNOUTS_NAME]
+      this.offlineTilesRegistry,
+      this.loggingService
     );
   }
 
@@ -429,13 +423,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
         },
         this.offlineTilesRegistry,
-        
+        this.loggingService,
       );
     const createOpenTopoMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.openTopoMapUrl, options);
     const createStatensKartverk: CreateTileLayer = (options) => new RegObsOfflineAwareTileLayer(
+        TopoMap.statensKartverk,
         settings.map.tiles.statensKartverkMapUrl,
         options,
-        this.offlineTilesRegistry[TopoMap.statensKartverk]
+        this.offlineTilesRegistry,
+        this.loggingService,
       );
     const createArcGisOnlineMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.arcGisOnlineTopoMapUrl);
     const createGeoDataLandskapMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.geoDataLandskapMapUrl);
