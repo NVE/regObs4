@@ -174,8 +174,9 @@ export class OfflineMapPage extends NgDestoryBase {
     if(map.compoundPackageMetadata) {
       return this.getFeaturePropertyId(...map.compoundPackageMetadata.getXYZ());
     }
-    if(map.maps['statensKartverk']) {
-      const rootTile = map.maps['statensKartverk'].rootTile;
+    const firstMap = Object.keys(map.maps)[0];
+    if(map.maps[firstMap]) {
+      const rootTile = map.maps[firstMap].rootTile;
       return this.getFeaturePropertyId(rootTile.x, rootTile.y, rootTile.z);
     }
     return '';
