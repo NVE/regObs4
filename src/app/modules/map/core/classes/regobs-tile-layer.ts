@@ -51,8 +51,7 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
     
     this.on('tileerror', (event?: L.TileErrorEvent) => {
       console.log('tileerror', event);
-      const { x, y, z } = this.findTopmostTileCoords(event.coords); 
-      const maxZ = this.offlineTilesRegistry.getZmax(this.mapType, x, y, z);
+      const maxZ = this.offlineTilesRegistry.getZmax(this.mapType, event.coords.x, event.coords.y, event.coords.z);
       if (maxZ && event.coords.z > maxZ) {
         //show error message if we zoom in too much on the offline map
         event.tile.src = '/assets/icon/map/no-tile-here.png'; //TODO: Show error text in current language
@@ -64,30 +63,14 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
    * @returns url to an offline tile if available, or else default online tile url
    */
   getTileUrl(coords: L.Coords): string {
-    const { x, y, z } = this.findTopmostTileCoords(coords); 
-    const minZ = this.offlineTilesRegistry.getZmin(this.mapType, x, y, z);
-    const maxZ = this.offlineTilesRegistry.getZmax(this.mapType, x, y, z);
     let url: string;
-    if (maxZ != null && minZ != null && coords.z >= minZ && coords.z <= maxZ) {      
-      const offlineMapUrl = this.offlineTilesRegistry.getUrl(this.mapType, x, y, z);
+    const offlineMapUrl = this.offlineTilesRegistry.getUrl(this.mapType, coords.x, coords.y, coords.z);
+    if (offlineMapUrl) {
       url = `${offlineMapUrl}/${coords.z}/${coords.x}/${coords.y}.png`;
     } else {
       url = super.getTileUrl(coords);
     }
-    this.loggingService.debug('Tile url:', DEBUG_TAG, x, y, z, url);
+    this.loggingService.debug('Tile url:', DEBUG_TAG, coords.x, coords.y, coords.z, url);
     return url;
   }
-
-  private findTopmostTileCoords(coords: L.Coords): { x, y, z} { 
-    let { x, y, z } = coords;   
-    
-    //find topmost tile x and y
-    while (z > (this.offlineTilesRegistry.getZmin(this.mapType, x, y, z) || 0)) {
-        z--;
-        x = Math.floor(x / 2);
-        y = Math.floor(y / 2);
-    }
-    return { x, y, z };
-  }
-
 }
