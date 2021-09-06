@@ -18,6 +18,11 @@ export interface CompoundPackageMetadata {
   maps: PackageMetadata[]
 }
 
+export interface Part {
+  name: string;
+  url: string;
+}
+
 export type CompoundPackageFeature = Feature<Polygon, null>;
 
 export class CompoundPackage {
@@ -74,6 +79,10 @@ export class CompoundPackage {
 
   getUrls(): string[] {
     return this.metadata.maps.map((p) => p.urls).reduce((a, b) => a.concat(b), []);
+  }
+  
+  getParts(): Part[] {
+    return this.metadata.maps.map((p) => p.urls.map(url => ({name: p.name, url}))).reduce((a, b) => a.concat(b), []);
   }
 
   getXYZ(): XYZ {

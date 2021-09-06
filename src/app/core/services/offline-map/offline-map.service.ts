@@ -16,7 +16,7 @@ import { AlertController, Platform } from '@ionic/angular';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { HelperService } from '../helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CompoundPackage } from 'src/app/pages/offline-map/metadata.model';
+import { CompoundPackage, Part } from 'src/app/pages/offline-map/metadata.model';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -135,11 +135,10 @@ export class OfflineMapService implements OnReset {
 
   private startDownloadPackage(offlineMapPackage: OfflineMapPackage) {
      // Find all zip-files (urls) to download and unzip
-     const urls = offlineMapPackage.compoundPackageMetadata.getUrls();
-     const parts = urls.length;
+     const parts = offlineMapPackage.compoundPackageMetadata.getParts();
 
      // Start recursive download and unzip
-     this.downloadAndUnzipPart(offlineMapPackage.name, urls[0], urls, offlineMapPackage, 0, parts);
+     this.downloadAndUnzipPart(offlineMapPackage.name, parts[0], parts, offlineMapPackage, 0, parts.length);
   }
 
   public cancelDownloadPackage(offlineMapPackage: OfflineMapPackage) {
@@ -159,10 +158,10 @@ export class OfflineMapService implements OnReset {
     this.downloadAndUnzipProgress.next(this.downloadAndUnzipProgress.value.filter(mapPackage => mapPackage.name !== offlineMapPackage.name));
   }
 
-  private downloadAndUnzipPart(name: string, url: string, urls: string[], mapPackage: OfflineMapPackage, partNumber: number, totalParts: number) {
-    const subfolder = url.indexOf('steepness-outlet') >= 0 ? 'steepness-outlet' : 'statensKartverk'; // TODO: Hack to create subfolders in package name folder. For example package 135_74_8 needs to have folders 135_74_8/statensKartverk and 135_74_8/steepness-outlet
+  private downloadAndUnzipPart(name: string, part: Part, parts: Part[], mapPackage: OfflineMapPackage, partNumber: number, totalParts: number) {
+    const subfolder = part.name;
     const folder = `${name}/${subfolder}`;
-    this.downloadSubscription = this.backgroundDownloadService.download(url).pipe(finalize(() => {
+    this.downloadSubscription = this.backgroundDownloadService.download(part.url).pipe(finalize(() => {
       if(this.cancel) {
         this.onCancelled(mapPackage);
       }
@@ -180,7 +179,7 @@ export class OfflineMapService implements OnReset {
                   file,
                   root,
                   folder,
-                  () => this.onUnzipStepComplete(name, urls, mapPackage, partNumber, totalParts),
+                  () => this.onUnzipStepComplete(name, parts, mapPackage, partNumber, totalParts),
                   (progress) => this.onProgress(mapPackage, {step: ProgressStep.extractZip,
                     percentage: this.calculateTotalProgress(progress, partNumber, totalParts, 'Unzipping'),
                     description: `Unzip ${partNumber+1}/${totalParts}`}),
@@ -201,7 +200,7 @@ export class OfflineMapService implements OnReset {
     return progressForTotalParts;
   }
 
-  private onUnzipStepComplete(name: string, urls: string[], mapPackage: OfflineMapPackage, partNumber: number, totalParts: number) {
+  private onUnzipStepComplete(name: string, parts: Part[], mapPackage: OfflineMapPackage, partNumber: number, totalParts: number) {
     if(this.cancel) {
       this.onCancelled(mapPackage);
       return;
@@ -209,7 +208,7 @@ export class OfflineMapService implements OnReset {
 
     const nextPart = partNumber + 1;
     if(nextPart < totalParts) {
-      this.downloadAndUnzipPart(name, urls[nextPart], urls, mapPackage, nextPart, totalParts);
+      this.downloadAndUnzipPart(name, parts[nextPart], parts, mapPackage, nextPart, totalParts);
     }else{
       this.onDownloadAndUnzipComplete(mapPackage);
     }
