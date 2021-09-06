@@ -7,8 +7,9 @@ interface RootTile {url: string; zMin: number; zMax: number}
  */
  export class OfflineTilesRegistry {
   private registry: Map<string, Map<string, RootTile>> = new Map();
-  private lowestZmin: number;
-  private highestZmin: number;
+  private lowestRootTileZ: number;
+  private highestRootTileZ: number;
+  private highestZmax: number = 0;
 
   // statensKartverk
   //   x_y: url + Zmin + Zmax
@@ -26,11 +27,14 @@ interface RootTile {url: string; zMin: number; zMax: number}
       const registryForMapType = this.registry.get(mapType);
       const registryKey = this.getKey(map.rootTile.x, map.rootTile.y);
       registryForMapType.set(registryKey, { url: map.url, zMin: map.rootTile.z, zMax: map.zMax});
-      if (!this.lowestZmin || map.rootTile.z < this.lowestZmin) {
-        this.lowestZmin = map.rootTile.z;
+      if (!this.lowestRootTileZ || map.rootTile.z < this.lowestRootTileZ) {
+        this.lowestRootTileZ = map.rootTile.z;
       }
-      if (!this.highestZmin || map.rootTile.z > this.highestZmin) {
-        this.highestZmin = map.rootTile.z;
+      if (!this.highestRootTileZ || map.rootTile.z > this.highestRootTileZ) {
+        this.highestRootTileZ = map.rootTile.z;
+      }
+      if (map.zMax > this.highestZmax) {
+        this.highestZmax = map.zMax;
       }
     }
   }
@@ -44,42 +48,47 @@ interface RootTile {url: string; zMin: number; zMax: number}
    * @returns TODO!
    */
   getUrl(mapType: string, x: number, y: number, z: number): string {
-    const topMostCoords = this.findTopmostTileCoords(mapType, x, y, z);
-    if (topMostCoords) {
-      const registryKey = this.getKey(topMostCoords.x, topMostCoords.y);
-      return this.registry.get(mapType)?.get(registryKey)?.url;  
+    if (z > this.highestZmax) {
+      return undefined;
+    }
+    const rootTile = this.findRootTile(mapType, x, y, z);
+    if (rootTile && rootTile.zMax >= z) {
+      return rootTile.url;
     }
     return undefined;
   }
 
   getZmax(mapType: string, x: number, y: number, z: number): number {
-    const topMostCoords = this.findTopmostTileCoords(mapType, x, y, z);
-    if (topMostCoords) {
-      const registryKey = this.getKey(topMostCoords.x, topMostCoords.y);
-      return this.registry.get(mapType).get(registryKey)?.zMax;
+    const rootTile = this.findRootTile(mapType, x, y, z);
+    if (rootTile) {
+      return rootTile.zMax;
     }
-    return undefined;
+    return null;
   }
 
-
-  private findTopmostTileCoords(mapType: string, x: number, y: number, z: number): { x: number, y: number, z: number} { 
+  private findRootTile(mapType: string, x: number, y: number, z: number): RootTile { 
     let _x = x;
     let _y = y;
     let _z = z;
     
+    if (!this.registry.has(mapType)) {
+      return undefined;
+    }
+
     //find topmost tile x and y
-    while (_z > this.highestZmin) {
+    while (_z > this.highestRootTileZ) {
         _z--;
         _x = Math.floor(_x / 2);
         _y = Math.floor(_y / 2);
     }
-    while (_z >= this.lowestZmin) {
+    while (_z >= this.lowestRootTileZ) {
       const registryKey = this.getKey(_x, _y);
-      if (this.registry.has(mapType)) {
-        if (this.registry.get(mapType).has(registryKey)) {
-          return { x: _x, y: _y, z: _z };
-        }
+      const rootTileInfo = this.registry.get(mapType).get(registryKey);
+      if (rootTileInfo) {
+        return rootTileInfo;
       }
+      _x = Math.floor(_x / 2);
+      _y = Math.floor(_y / 2);
       _z--;
     }
     return undefined; //we didn't find any topmost tile
