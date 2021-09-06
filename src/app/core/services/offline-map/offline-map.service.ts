@@ -160,7 +160,7 @@ export class OfflineMapService implements OnReset {
   }
 
   private downloadAndUnzipPart(name: string, url: string, urls: string[], mapPackage: OfflineMapPackage, partNumber: number, totalParts: number) {
-    const subfolder = url.indexOf('steepness-outlet') >= 0 ? 'steepness-outlet' : 'statensKartverk'; // Hack to create subfolders in package name folder. For example package 135_74_8 needs to have folders 135_74_8/statensKartverk and 135_74_8/steepness-outlet
+    const subfolder = url.indexOf('steepness-outlet') >= 0 ? 'steepness-outlet' : 'statensKartverk'; // TODO: Hack to create subfolders in package name folder. For example package 135_74_8 needs to have folders 135_74_8/statensKartverk and 135_74_8/steepness-outlet
     const folder = `${name}/${subfolder}`;
     this.downloadSubscription = this.backgroundDownloadService.download(url).pipe(finalize(() => {
       if(this.cancel) {
@@ -322,8 +322,9 @@ export class OfflineMapService implements OnReset {
     }
   }
 
-  private async getFolderNamesInFolder(path: string): Promise<string[]> {
-    const fileEntries = await this.file.listDir(path, '');
+  private async getMapsInPackageFolder(packageName: string): Promise<string[]> {
+    const rootFileUrl = await this.getRootFileUrl();
+    const fileEntries = await this.file.listDir(rootFileUrl, packageName);
     return fileEntries.filter((entry) => entry.isDirectory).map((entry) => entry.name);
   }
 
@@ -342,7 +343,7 @@ export class OfflineMapService implements OnReset {
       maps: {},
     };
 
-    const maps = await this.getFolderNamesInFolder(path);
+    const maps = await this.getMapsInPackageFolder(packageName);
     for(let map of maps) {
       const metadataPath = `${path}/${map}`;
       this.loggingService.debug('Metadata path:', DEBUG_TAG, metadataPath);
