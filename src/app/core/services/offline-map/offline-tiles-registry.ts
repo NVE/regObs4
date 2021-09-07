@@ -5,16 +5,26 @@ type RegisterForMapType = Map<string, RegisteredPackageInfo>;
 
 
 /**
- * Offline map register, one for each type of offline map
+ * Registry structure (map of maps):
+ * 
+ *   statensKartverk       // First map
+ *       152_48_8          // Nested map, x_y_z key (root tile)
+ *         url: "..."
+ *         zMin: 14
+ *         zMax: 8
+ * 
+ *       152_49_8
+ *         ...
+ *
+ *   steepness-outlet
+ *       152_49_8
+ *         ...
  */
  export class OfflineTilesRegistry {
   private registry: Map<string, RegisterForMapType> = new Map();
   private lowestRootTileZ: number;
   private highestRootTileZ: number;
   private highestZmax: number = 0;
-
-  // statensKartverk
-  //   x_y: url + Zmin + Zmax
 
   clear(): void {
     this.registry.clear();
