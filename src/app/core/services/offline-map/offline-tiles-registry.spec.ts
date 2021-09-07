@@ -59,7 +59,7 @@ describe('OfflineTilesRegistry', () => {
     it('does not find old packages after being cleared', () => {
         registry.clear();
         const packageInfo = registry.findRegisteredPackage('map-type-1', 401, 402, 7);
-        expect(packageInfo).toBeUndefined(packageInfo);
+        expect(packageInfo).toBeUndefined();
     });
 
     it('finds the url for innermost zoom level near border', () => {
