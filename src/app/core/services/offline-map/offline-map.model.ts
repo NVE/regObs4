@@ -14,6 +14,8 @@ export interface OfflineTilesMetadata {
 }
 
 export interface OfflinePackageMetadata {
+  // TODO: Do we need ids both here and in OfflineTilesMetadata?
+  // Should this be an array?
   maps: {
     [id: string]: OfflineTilesMetadata
   }

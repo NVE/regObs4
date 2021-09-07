@@ -38,16 +38,11 @@ import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { LangKey } from '../../../../core/models/langKey';
-import { Feature, GeometryObject } from '@turf/turf';
 import { File } from '@ionic-native/file/ngx';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
-import { OfflineMapPackage, OfflinePackageMetadata, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
-import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { OfflineTilesRegistry } from 'src/app/core/services/offline-map/offline-tiles-registry';
 
 const DEBUG_TAG = 'MapComponent';
-const STEEPNESS_WITH_RUNOUTS_NAME = 'steepness-outlet';
 
 type CreateTileLayer = (options: IRegObsTileLayerOptions) => L.TileLayer;
 
@@ -80,7 +75,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private firstClickOnZoomToUser = true;
   private isActive: BehaviorSubject<boolean>;
   private offlineMapService: OfflineMapService;
-  private offlineTilesRegistry = new OfflineTilesRegistry();
 
   constructor(
     private userSettingService: UserSettingService,
@@ -279,19 +273,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private async initOfflineMaps() {
     this.loggingService.debug('initOfflineMaps()... ', DEBUG_TAG);
+
+    // When starting offline, offline map packages are
+    // registered after the map initially loads.
+    // By redrawing here, we can see offline tiles without
+    // zooming in/out etc.
     this.offlineMapService.packages$
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((mapPackages) => this.registerOfflineMapPackages(mapPackages));
+      .subscribe(() => this.redrawOfflineLayers());
   }
 
-  private registerOfflineMapPackages(mapPackages: OfflineMapPackage[]) {
-    this.loggingService.debug('registerOfflineMapPackages', DEBUG_TAG);
-
-    this.offlineTilesRegistry.clear();
-    for (let mapPackage of mapPackages) {
-      this.offlineTilesRegistry.add(mapPackage);
-    }
-
+  private redrawOfflineLayers() {
     this.layerGroup.eachLayer((layer) => {
       if (layer instanceof RegObsOfflineAwareTileLayer) {
         layer.redraw();
@@ -394,13 +386,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-
   private createSupportMapTileLayer(name: string, url: string, options: L.TileLayerOptions): RegObsOfflineAwareTileLayer {
     return new RegObsOfflineAwareTileLayer(
       name,
       url,
       options,
-      this.offlineTilesRegistry,
+      this.offlineMapService.offlineTilesRegistry,
       this.loggingService
     );
   }
@@ -422,7 +413,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           ...options,
           bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
         },
-        this.offlineTilesRegistry,
+        this.offlineMapService.offlineTilesRegistry,
         this.loggingService,
       );
     const createOpenTopoMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.openTopoMapUrl, options);
@@ -430,7 +421,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         TopoMap.statensKartverk,
         settings.map.tiles.statensKartverkMapUrl,
         options,
-        this.offlineTilesRegistry,
+        this.offlineMapService.offlineTilesRegistry,
         this.loggingService,
       );
     const createArcGisOnlineMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.arcGisOnlineTopoMapUrl);

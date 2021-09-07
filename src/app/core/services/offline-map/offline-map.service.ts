@@ -17,6 +17,7 @@ import { LogLevel } from '../../../modules/shared/services/logging/log-level.mod
 import { HelperService } from '../helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CompoundPackage, Part } from 'src/app/pages/offline-map/metadata.model';
+import { OfflineTilesRegistry } from './offline-tiles-registry';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -39,6 +40,7 @@ export class OfflineMapService implements OnReset {
   private cancel = false;
 
   private hasCreatedRootFolder = false;
+  offlineTilesRegistry = new OfflineTilesRegistry();
 
   constructor(
     private file: File,
@@ -65,6 +67,8 @@ export class OfflineMapService implements OnReset {
         this.availableDiskspace = val;
       });
     })
+
+    this.packages$.subscribe((packages) => this.registerOfflineMapPackages(packages));
   }
 
   private async getMapPackages(): Promise<OfflineMapPackage[]> {
@@ -85,6 +89,15 @@ export class OfflineMapService implements OnReset {
     const packages = await Promise.all(packageNames.map((name) => this.getMetadata(name)));
 
     return packages;
+  }
+
+  private registerOfflineMapPackages(mapPackages: OfflineMapPackage[]) {
+    this.loggingService.debug('registerOfflineMapPackages', DEBUG_TAG);
+
+    this.offlineTilesRegistry.clear();
+    for (let mapPackage of mapPackages) {
+      this.offlineTilesRegistry.add(mapPackage);
+    }
   }
 
   private calculateTotalOfflinePackagesDiskspaceUsed(packages: OfflineMapPackage[]): number {

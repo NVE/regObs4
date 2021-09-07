@@ -50,9 +50,13 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
     super(url, options);
     
     this.on('tileerror', (event?: L.TileErrorEvent) => {
-      console.log('tileerror', event);
-      const maxZ = this.offlineTilesRegistry.getZmax(this.mapType, event.coords.x, event.coords.y, event.coords.z);
-      if (maxZ && event.coords.z > maxZ) {
+      // this.loggingService.debug('TileError', 'RegObsOfflineAwareTileLayer', event);
+
+      // Check if there is a registered offline package above
+      // this tile
+      const { x, y, z } = event.coords;
+      const packageInfo = this.offlineTilesRegistry.findRegisteredPackage(this.mapType, x, y, z);
+      if (packageInfo?.zMax < z) {
         //show error message if we zoom in too much on the offline map
         event.tile.src = '/assets/icon/map/no-tile-here.png'; //TODO: Show error text in current language
       }
