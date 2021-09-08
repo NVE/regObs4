@@ -1,6 +1,6 @@
 import { of } from 'rxjs';
 import { TestLoggingService } from '../../../modules/shared/services/logging/test-logging.service';
-import { CompoundPackageMetadata } from '../../../pages/offline-map/metadata.model';
+import { CompoundPackage, CompoundPackageMetadata } from '../../../pages/offline-map/metadata.model';
 import { OfflineMapService } from './offline-map.service';
 import { ProgressStep } from './progress-step.model';
 
@@ -19,19 +19,29 @@ describe('OfflineMapService', () => {
 
   it('get needed diskspace adds compression factor', async () => {
     offlineMapService = new OfflineMapService(null, new TestLoggingService(), null, null, null, null, null, null);
-    const compoundPackage = new CompoundPackageMetadata([1,2,3]);
-    compoundPackage.addPackage({ name: 'test', lastModified: null, xyz: null, urls: [], sizeInMib: 1.0  });
+    const cp = new CompoundPackage({
+      bbox: [1, 2, 3, 4],
+      id: 'test',
+      xyz: [1, 2, 3],
+      sizeInMib: 1.0,
+      maps: []
+    });
     
     const compressionFactor = 1.5;
     const expectedResult = 1.0 * 1024 * 1024 * compressionFactor;
-    const result = await offlineMapService.getNeededDiskSpaceForPackage(compoundPackage, compressionFactor);
+    const result = await offlineMapService.getNeededDiskSpaceForPackage(cp, compressionFactor);
     expect(result).toBe(expectedResult);
   });
 
   it('get needed diskspace also sums up items in queue and currently downloading', async () => {
     offlineMapService = new OfflineMapService(null, new TestLoggingService(), null, null, null, null, null, null);
-    const compoundPackage = new CompoundPackageMetadata([1,2,3]);
-    compoundPackage.addPackage({ name: 'testpackage1-to-check', lastModified: null, xyz: null, urls: [], sizeInMib: 1.0  });
+    const cp = new CompoundPackage({
+      bbox: [1, 2, 3, 4],
+      id: 'test',
+      xyz: [1, 2, 3],
+      sizeInMib: 1.0,
+      maps: []
+    });
 
     offlineMapService.downloadAndUnzipProgress$ = of([ 
       { 
@@ -56,7 +66,7 @@ describe('OfflineMapService', () => {
     
     const compressionFactor = 1.1;
     const expectedResult = 3.0 * 1024 * 1024 * compressionFactor; // Expects 3 packages of each 1.0 MiB to be the sum needed
-    const result = await offlineMapService.getNeededDiskSpaceForPackage(compoundPackage, compressionFactor);
+    const result = await offlineMapService.getNeededDiskSpaceForPackage(cp, compressionFactor);
     expect(result).toBe(expectedResult);
   });
 });

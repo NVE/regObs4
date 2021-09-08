@@ -1,8 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import * as L from 'leaflet';
-import { Polygon, Feature } from 'geojson';
-import { CompoundPackageMetadata, FeatureProperties } from '../metadata.model';
+import { CompoundPackageFeature, CompoundPackage } from '../metadata.model';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
 import { Observable } from 'rxjs';
 import { OfflineMapPackage } from 'src/app/core/services/offline-map/offline-map.model';
@@ -17,8 +16,8 @@ import { tap } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OfflinePackageModalComponent implements OnInit {
-  @Input() feature: Feature<Polygon, FeatureProperties>;
-  @Input() packageOnServer: CompoundPackageMetadata;
+  @Input() feature: CompoundPackageFeature;
+  @Input() packageOnServer: CompoundPackage;
   @Input() offlinePackageStatus$: Observable<OfflineMapPackage>;
 
   zoom = 13;

@@ -1,4 +1,4 @@
-import { CompoundPackageMetadata } from '../../../pages/offline-map/metadata.model';
+import { CompoundPackage } from '../../../pages/offline-map/metadata.model';
 import { Progress } from './progress.model';
 
 export interface OfflineTilesMetadata {
@@ -14,6 +14,8 @@ export interface OfflineTilesMetadata {
 }
 
 export interface OfflinePackageMetadata {
+  // TODO: Do we need ids both here and in OfflineTilesMetadata?
+  // Should this be an array?
   maps: {
     [id: string]: OfflineTilesMetadata
   }
@@ -26,5 +28,5 @@ export interface OfflineMapPackage extends OfflinePackageMetadata {
   downloadStart?: number; //in epoch seconds
   downloadComplete?: number; //in epoch seconds
   error?: Error; // Error occured when download/unzip
-  compoundPackageMetadata?: CompoundPackageMetadata;
+  compoundPackageMetadata?: CompoundPackage;
 }
