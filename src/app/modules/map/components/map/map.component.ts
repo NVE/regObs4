@@ -386,14 +386,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private createSupportMapTileLayer(name: string, url: string, options: L.TileLayerOptions): RegObsOfflineAwareTileLayer {
-    return new RegObsOfflineAwareTileLayer(
-      name,
-      url,
-      options,
-      this.offlineMapService.offlineTilesRegistry,
-      this.loggingService
-    );
+  private createSupportMapTileLayer(name: string, url: string, options: L.TileLayerOptions): RegObsTileLayer {
+    if (isAndroidOrIos(this.platform)) {
+      return new RegObsOfflineAwareTileLayer(
+        name,
+        url,
+        options,
+        this.offlineMapService.offlineTilesRegistry,
+        this.loggingService
+      );
+    } else {
+      return new RegObsTileLayer(url, options);
+    }
   }
 
   private getMaxZoom(detectRetina: boolean) {
@@ -406,24 +410,45 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     topoMap: TopoMap,
     langKey: LangKey
   ): CreateTileLayer[] {
-    const createNorwegianMixedMap: CreateTileLayer = (options) => new RegObsOfflineAwareTileLayer(
-        TopoMap.statensKartverk,
+    let createNorwegianMixedMap: CreateTileLayer;
+    let createStatensKartverk: CreateTileLayer;
+
+    if (isAndroidOrIos(this.platform)) {
+      createNorwegianMixedMap = (options) => new RegObsOfflineAwareTileLayer(
+          TopoMap.statensKartverk,
+          settings.map.tiles.statensKartverkMapUrl,
+          {
+            ...options,
+            bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
+          },
+          this.offlineMapService.offlineTilesRegistry,
+          this.loggingService,
+        );
+      
+      createStatensKartverk = (options) => new RegObsOfflineAwareTileLayer(
+          TopoMap.statensKartverk,
+          settings.map.tiles.statensKartverkMapUrl,
+          options,
+          this.offlineMapService.offlineTilesRegistry,
+          this.loggingService,
+        );
+    } else {
+      createNorwegianMixedMap = (options) => new RegObsTileLayer(
         settings.map.tiles.statensKartverkMapUrl,
         {
           ...options,
           bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
-        },
-        this.offlineMapService.offlineTilesRegistry,
-        this.loggingService,
+        }
       );
-    const createOpenTopoMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.openTopoMapUrl, options);
-    const createStatensKartverk: CreateTileLayer = (options) => new RegObsOfflineAwareTileLayer(
-        TopoMap.statensKartverk,
+
+      createStatensKartverk = (options) => new RegObsTileLayer(
         settings.map.tiles.statensKartverkMapUrl,
-        options,
-        this.offlineMapService.offlineTilesRegistry,
-        this.loggingService,
+        options
       );
+    }
+
+
+    const createOpenTopoMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.openTopoMapUrl, options);
     const createArcGisOnlineMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.arcGisOnlineTopoMapUrl);
     const createGeoDataLandskapMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.geoDataLandskapMapUrl);
     const createArGisOnlineMixMap: CreateTileLayer[] = [
