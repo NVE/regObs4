@@ -76,13 +76,13 @@ export class CompoundPackage {
     }
     return moment.max(this.metadata.maps.map(p => moment(p.lastModified)));
   }
-
-  getUrls(): string[] {
-    return this.metadata.maps.map((p) => p.urls).reduce((a, b) => a.concat(b), []);
-  }
   
   getParts(): Part[] {
-    return this.metadata.maps.map((p) => p.urls.map(url => ({name: p.name, url}))).reduce((a, b) => a.concat(b), []);
+    return this.metadata.maps
+      // Hent name / url for alle pakker
+      .map((p) => p.urls.map(url => ({name: p.name, url})))
+      // Flatten array
+      .reduce((a, b) => a.concat(b), []);
   }
 
   getXYZ(): XYZ {

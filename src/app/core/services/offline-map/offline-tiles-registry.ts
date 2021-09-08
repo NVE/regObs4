@@ -58,13 +58,13 @@ type RegisterForMapType = Map<string, RegisteredPackageInfo>;
    * 
    * @param mapType example: statensKartverk
    */
-  getUrl(mapType: string, x: number, y: number, z: number): string {
+  getUrl(mapType: string, x: number, y: number, z: number): string | undefined {
     if (z > this.highestZmax) {
       return undefined;
     }
-    const rootTile = this.findRegisteredPackage(mapType, x, y, z);
-    if (rootTile && rootTile.zMax >= z) {
-      return rootTile.url;
+    const packageInfo = this.findRegisteredPackage(mapType, x, y, z);
+    if (packageInfo && packageInfo.zMax >= z) {
+      return packageInfo.url;
     }
     return undefined;
   }
@@ -74,13 +74,13 @@ type RegisterForMapType = Map<string, RegisteredPackageInfo>;
    * The returned package does not need to overlap in z axis.
    */
   findRegisteredPackage(mapType: string, x: number, y: number, z: number): RegisteredPackageInfo | undefined { 
-    let _x = x;
-    let _y = y;
-    let _z = z;
-    
     if (!this.registry.has(mapType)) {
       return undefined;
     }
+
+    let _x = x;
+    let _y = y;
+    let _z = z;
 
     //find topmost tile x and y
     while (_z > this.highestRootTileZ) {
