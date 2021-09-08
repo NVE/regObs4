@@ -54,12 +54,12 @@
  * Zone JS is required by Angular itself.
  */
 import './zone-flags.ts';
-import 'zone.js/dist/zone'; // Included with Angular CLI.
+import 'zone.js'; // Included with Angular CLI.
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
-
+import 'src/global-polyfill';
 /**
  * Date, currency, decimal and percent pipes.
  * Needed for: All but Chrome, Firefox, Edge, IE11 and Safari 10

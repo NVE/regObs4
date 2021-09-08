@@ -28,7 +28,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   private regInitClone: IRegistration;
   totalThickness: number;
 
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
 
   private layerModal;
 

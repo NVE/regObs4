@@ -160,7 +160,7 @@ export class MapService {
       switchMap((cvg) =>
         fromWorker<IRegionInViewInput, IRegionInViewOutput>(
           () =>
-            new Worker('../../web-workers/region-in-view.worker', {
+            new Worker(new URL('../../web-workers/region-in-view.worker', import.meta.url), {
               type: 'module'
             }),
           currenteMapViewAndGeoHazards

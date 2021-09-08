@@ -162,8 +162,6 @@ git push develop
 git push master
 ```
 
-## Plugins and other custom features
-
 # How to run lint and format on save using vscode
 
 Guide taken from: https://dev.to/dreiv/using-eslint-and-prettier-with-vscode-in-an-angular-project-42ib
@@ -184,27 +182,28 @@ To run lint manually and autofix, run:
 npm run lint:fix
 ```
 
-# How to update all npm packages
-
-Install npm-check-updates globally and check packages.json:
-
+# Hvordan oppdatere alle npm-pakker
+## 1. Sjekk hvilke pakker som trenger oppdatering
+Installer npm-check-updates globalt og sjekk packages.json:
 ```
 npm i -g npm-check-updates
-ncu -u
-npm install
+ncu
 ```
-
-NOTE! Cordova plugins must be updated by removing and re-adding plugin:
-
+## 2. Sjekk release notes for pakker med store endringer og oppdater disse først
+## 3. Oppgrader plugins
+NB! Cordova plugins må oppdateres ved å først slette dem og legge dem til på nytt:
 ```
 ionic cordova plugin rm cordova-plugin-name
 ionic cordova plugin add cordova-plugin-name
 ```
-
-To update Angular, use ng update to better migrate code changes:
-Follow this guide: https://update.angular.io/
+## 4. Oppgrader Angular, hvis det trengs
+Bruk ng update for enklere migrering, se https://update.angular.io/
 ```
 ng update
+```
+## 5. Oppgrader resten av pakkene
+```
+ncu -u
 ```
 
 # How to update models from Regobs API

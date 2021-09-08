@@ -28,7 +28,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   geoPositionLog: GeoPositionLog[];
   isOpen: boolean;
   isTracking: boolean;
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
 
   @ViewChild('GpsLogPanel') panel: IonContent;
 

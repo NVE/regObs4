@@ -6,7 +6,11 @@
       "es2018",
       "webworker"
     ],
-    "types": []
+    "types": [
+      "node",
+      "google.analytics",
+      "cordova"
+    ]
   },
   "include": [
     "src/**/*.worker.ts"
