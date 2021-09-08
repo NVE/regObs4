@@ -71,7 +71,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private layerGroup = L.layerGroup();
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
   private followMode = true;
   private isDoingMoveAction = false;
   private firstClickOnZoomToUser = true;

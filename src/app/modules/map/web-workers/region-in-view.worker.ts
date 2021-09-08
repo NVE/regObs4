@@ -1,5 +1,6 @@
+import 'src/global-polyfill';
 import { Observable } from 'rxjs';
-import { DoWork, ObservableWorker } from 'observable-webworker';
+import { DoWork, runWorker } from 'observable-webworker';
 import {
   Feature,
   Polygon,
@@ -14,7 +15,6 @@ import {
   MultiPolygon,
   buffer,
   BBox,
-  Point,
   Coord
 } from '@turf/turf';
 import { GeoHazard } from '../../../core/models/geo-hazard.enum';
@@ -27,7 +27,6 @@ import {
   IRegionInViewInput
 } from './region-in-view-models';
 
-@ObservableWorker()
 export class RegionInViewWorker
   implements DoWork<IRegionInViewInput, IRegionInViewOutput> {
   private isInsideOrIntersects(
@@ -128,3 +127,5 @@ export class RegionInViewWorker
     );
   }
 }
+
+runWorker(RegionInViewWorker);
