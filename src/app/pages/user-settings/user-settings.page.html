@@ -76,6 +76,10 @@
         <ion-icon slot="start" name="refresh"></ion-icon>
         {{ "SETTINGS.UPDATE_DROPDOWNS" | translate }}
       </ion-button>
+      <ion-button expand="block" [disabled]="isUpdating" (click)="sendLogs()">
+        <ion-icon slot="start" name="mail-outline"></ion-icon>
+        Send logger til Regobs Team
+      </ion-button>
       <ion-button class="reset-button" color="danger" expand="block" [disabled]="isUpdating" (click)="confirmReset()">
         <ion-icon slot="start" name="medkit"></ion-icon>
         {{ "SETTINGS.RESET" | translate }}

@@ -79,7 +79,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   viewInfo: ViewInfo;
   isLoading = false;
   private locations: ObsLocationsResponseDtoV2[] = [];
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;

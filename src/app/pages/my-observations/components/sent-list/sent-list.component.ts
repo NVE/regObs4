@@ -89,7 +89,8 @@ export class SentListComponent implements OnInit {
     try {
       const result = await toPromiseWithCancel(
         this.getMyRegistrations$(0),
-        cancel
+        cancel,
+        20000
       );
       this.loadedRegistrations = result;
     } catch (error) {

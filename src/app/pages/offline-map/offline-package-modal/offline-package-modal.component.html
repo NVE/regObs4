@@ -1,0 +1,69 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>Kartpakke {{ packageOnServer.getName() }} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Lukk</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="map-container" *ngIf="center">
+    <app-map [showMapControls]="false" [showUserLocation]="false" [showSupportMaps]="false" [center]="center"
+      [zoom]="zoom" (mapReady)="showTileOnMap($event)"></app-map>
+  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="4">Produsert:</ion-col>
+      <ion-col>{{ packageOnServer.getLastModified() | date:'short' }}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="4">Størrelse:</ion-col>
+      <ion-col>{{ packageOnServer.getSizeInMiB() | number: '1.0-1' }} MiB</ion-col>
+    </ion-row>
+    <div *ngIf="offlinePackageStatusThatTriggersChangeDetection$ | async as packageStatus else downloadPackage">
+      <ion-row>
+        <ion-col size="4">Status:</ion-col>
+        <ion-col>
+          {{ packageStatus.progress?.description }}
+          <span *ngIf="!!packageStatus.downloadComplete">Lastet ned {{ packageStatus.downloadComplete * 1000 |
+            date:'short' }} </span>
+          <span *ngIf="!packageStatus.downloadComplete">({{getPercentage(packageStatus) +'%' }})</span>
+        </ion-col>
+        <ion-col size="1">
+          <ion-icon *ngIf="!!packageStatus.downloadComplete" name="checkmark"></ion-icon>
+          <ion-icon *ngIf="!packageStatus.error && packageStatus.progress?.step === 0" name="stopwatch-outline">
+          </ion-icon>
+          <ion-icon *ngIf="!packageStatus.error && packageStatus.progress?.step === 1" name="cloud-download-outline">
+          </ion-icon>
+          <ion-icon *ngIf="!packageStatus.error && packageStatus.progress?.step === 2" name="folder-open-outline">
+          </ion-icon>
+          <ion-icon *ngIf="packageStatus.error" name="warning-outline"></ion-icon>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="!packageStatus.downloadComplete && !packageStatus.error">
+        <ion-col>
+          <ion-button expand="block" color="danger" (click)="cancel(packageStatus)">Avbryt nedlasting</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="packageStatus.error">
+        <ion-col>
+          <ion-button expand="block" color="varsom-orange" (click)="startDownload()">Prøv på nytt</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="!!packageStatus.downloadComplete || packageStatus.error">
+        <ion-col>
+          <ion-button (click)="delete()" expand="block" color="danger">Slett</ion-button>
+        </ion-col>
+      </ion-row>
+    </div>
+  </ion-grid>
+</ion-content>
+
+<ng-template #downloadPackage>
+  <ion-row>
+    <ion-col>
+      <ion-button [disabled]="isCheckingAvailableDiskspace" (click)="startDownload()" expand="block"
+        color="varsom-orange">Last ned</ion-button>
+    </ion-col>
+  </ion-row>
+</ng-template>

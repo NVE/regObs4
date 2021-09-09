@@ -30,7 +30,7 @@ export class SendButtonComponent implements OnInit, OnDestroy {
   isSending = false;
   isLoggingIn = false;
 
-  private ngOnDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
 
   constructor(
     private registrationService: RegistrationService,
@@ -41,17 +41,20 @@ export class SendButtonComponent implements OnInit, OnDestroy {
     private regobsAuthService: RegobsAuthService,
     private commonRegistrationService: CommonRegistrationService,
     private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
   ) {}
 
   ngOnInit(): void {
     this.isSending = false;
     this.isLoggingIn = false;
     this.regobsAuthService.isLoggingIn$
-      .pipe(takeUntil(this.ngOnDestroy$))
-      .subscribe((val) => {     
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((val) => {
+        this.ngZone.run(() => {
           this.isLoggingIn = val;
           this.cdr.detectChanges();
       });
+    });
     this.commonRegistrationService.isEmpty(this.registration).subscribe((empty) => {
       this.isEmpty = empty;
       this.cdr.detectChanges();
@@ -59,8 +62,8 @@ export class SendButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ngOnDestroy$.next();
-    this.ngOnDestroy$.complete();
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
   async send(): Promise<void> {

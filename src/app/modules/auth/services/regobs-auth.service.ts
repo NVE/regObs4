@@ -205,7 +205,7 @@ export class RegobsAuthService {
         prompt: 'login' // Force login screen
       });
     } catch (err) {
-      this.logger.error(err, DEBUG_TAG, 'Could signIn');
+      this.logger.error(err, DEBUG_TAG, 'Could not signIn');
     }
   }
 

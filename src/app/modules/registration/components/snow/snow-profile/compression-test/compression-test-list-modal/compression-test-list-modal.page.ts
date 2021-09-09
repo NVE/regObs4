@@ -15,7 +15,7 @@ import { IRegistration, RegistrationService as CommonRegistrationService } from 
 export class CompressionTestListModalPage implements OnInit, OnDestroy {
   @Input() regId: string;
 
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
   private initialRegistrationClone: IRegistration;
   reg: IRegistration;
 

@@ -22,7 +22,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   private initialRegistrationClone: IRegistration;
   private reg: IRegistration;
 
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
 
   get tempProfile() {
     if (

@@ -424,6 +424,7 @@ export class RegistrationService {
 
   getRegistrationsToSync() {
     return this.registrations$.pipe(
+      // TODO: Why drafts?
       map((items) => items.filter((x) => x.syncStatus === SyncStatus.Draft))
     );
   }

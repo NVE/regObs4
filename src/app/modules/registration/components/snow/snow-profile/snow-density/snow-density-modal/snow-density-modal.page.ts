@@ -21,7 +21,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   @Input() regId: string;
   useCylinder: boolean;
   private layerModal: HTMLIonModalElement;
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
   private reg: IRegistration;
   private initialRegistrationClone: IRegistration;
 

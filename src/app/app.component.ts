@@ -14,6 +14,7 @@ import { ShortcutService } from './core/services/shortcut/shortcut.service';
 import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
 import { switchMap, take, concatMap, delay, catchError } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
+import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -35,16 +36,33 @@ export class AppComponent {
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
-    private shortcutService: ShortcutService
+    private shortcutService: ShortcutService,
+    private fileLoggingService: FileLoggingService
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
   }
 
   initializeApp(): void {
+    from(this.fileLoggingService.init({})).pipe(switchMap(() =>
     this.getUserSettings()
-      .pipe(this.initServices(), delay(200))
-      .subscribe(() => this.splashScreen.hide());
+      .pipe(this.initServices())))
+      .subscribe(() => {
+        this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
+        this.afterAppInitialized();
+      }, (err) => {
+        this.loggingService.error(err, DEBUG_TAG, 'Error when init app.');
+        this.afterAppInitialized();
+      });
+  }
+
+  afterAppInitialized() {
+    setTimeout(() => {
+      this.splashScreen.hide();
+    }, 300); // Wait 300 ms to hide splashScreen to make sure app has completed navigating to start wizard
+    setTimeout(() => {
+      this.dataMarshallService.init();
+    }, 3000); // Wait a bit before init data marshall service to prevent too many requests at startup
   }
 
   private lockScreenOrientation() {
@@ -114,15 +132,6 @@ export class AppComponent {
                   err,
                   DEBUG_TAG,
                   'Could not cleanup old items'
-                )
-              )
-            ),
-            of(this.dataMarshallService.init()).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not init dataMarshallService'
                 )
               )
             ),

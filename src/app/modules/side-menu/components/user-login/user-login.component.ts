@@ -11,7 +11,7 @@ import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
   loggedInUser: LoggedInUser = { isLoggedIn: false };
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
   isLoggingIn = false;
 
   constructor(

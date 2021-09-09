@@ -93,7 +93,8 @@ export class KdvService {
     try {
       const kdvElements = await toPromiseWithCancel(
         this.kdvApiService.KdvElementsGetKdvs({ langkey: language }),
-        cancel
+        cancel,
+        20000
       );
       await NanoSql.getInstance(NanoSql.TABLES.KDV_ELEMENTS.name, appMode)
         .query('upsert', { langKey: language, ...kdvElements })

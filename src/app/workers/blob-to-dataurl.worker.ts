@@ -1,9 +1,8 @@
-import { ObservableWorker, DoWork } from 'observable-webworker';
+import { DoWork, runWorker } from 'observable-webworker';
 import { Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { DataUrlHelper } from '../core/helpers/data-url.helper';
 
-@ObservableWorker()
 export class BlobToDataUrl
   implements
     DoWork<
@@ -25,3 +24,4 @@ export class BlobToDataUrl
     );
   }
 }
+runWorker(BlobToDataUrl);

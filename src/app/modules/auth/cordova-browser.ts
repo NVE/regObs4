@@ -28,8 +28,7 @@ export class CordovaBrowser extends Browser {
   private inAppBrowserRef: InAppBrowserObject | undefined;
 
   private async useSafariViewController(): Promise<boolean> {
-    const isSafariViewControllerAvailable = await this.safariViewController.isAvailable(); // Also returns true for Android chrome custom tabs
-    return this.platform.is('ios') && isSafariViewControllerAvailable;
+    return await this.safariViewController.isAvailable(); // Also returns true for Android chrome custom tabs
   }
 
   public async closeWindow(): Promise<void> {
@@ -43,7 +42,7 @@ export class CordovaBrowser extends Browser {
   }
 
   public async showWindow(url: string): Promise<string | undefined> {
-    if (this.useSafariViewController()) {
+    if (await this.useSafariViewController()) {
       const optionSafari: any = {
         url: url,
         showDefaultShareMenuItem: false,
@@ -65,7 +64,7 @@ export class CordovaBrowser extends Browser {
         clearsessioncache: 'yes'
       };
 
-      this.inAppBrowserRef = this.inAppBrowser.create(url, '_self', options);
+      this.inAppBrowserRef = this.inAppBrowser.create(url, '_system', options);
 
       if (this.inAppBrowserRef != undefined) {
         this.inAppBrowserRef.on('exit').subscribe(() => this.onCloseFunction());
