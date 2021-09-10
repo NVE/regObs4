@@ -606,7 +606,7 @@ export class ObservationService {
       appMode
     )
       .query('select')
-      .where(['RegID', '=', id])
+      .where(['RegId', '=', id])
       .exec();
     return result[0] as RegistrationViewModel;
   }

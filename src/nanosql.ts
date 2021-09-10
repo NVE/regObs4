@@ -14,10 +14,10 @@ import {
 export class NanoSql {
   public static readonly TABLES = {
     OBSERVATION: {
-      name: 'observation',
+      name: 'observationV2',
       instancePerAppMode: true,
       model: {
-        'RegID:int': { pk: true },
+        'RegId:int': { pk: true },
         'GeoHazardTID:int': {},
         'LangKey:int': {},
         '*:any': {}
