@@ -15,13 +15,13 @@ import { AttachmentType, AttachmentUploadEditModel, NewAttachmentService, Regist
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { DomSanitizer } from '@angular/platform-browser';
-import { File, FileEntry } from '@ionic-native/file/ngx';
+import { File, FileEntry, IFile } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import * as utils from '@nano-sql/core/lib/utilities';
 import { GeoHazard } from '@varsom-regobs-common/core';
 import { forkJoin, from, Observable, of } from 'rxjs';
-import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 // const DATA_URL_TAG = 'data:image/jpeg;base64,';
@@ -83,11 +83,12 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
     this.newAttachmentService.getUploadedAttachments(this.registrationId)
       .pipe(
         map((attachments) => attachments.filter((a) => (a.RegistrationTID === this.registrationTid && a.type === this.attachmentType && a.ref === this.ref))),
-        switchMap((attachments) => forkJoin([...attachments.map((a) => this.newAttachmentService.getBlob(this.registrationId, a.id)
-          .pipe(map((blob) => ({ ...a, blob }), catchError((err) => {
+        switchMap((attachments) => forkJoin([...attachments.map((a) =>
+          this.newAttachmentService.getBlob(this.registrationId, a.id).pipe(take(1), map((blob) => ({ ...a, blob })), catchError((err) => {
             this.logger.error(err,  DEBUG_TAG, 'Could not get blob from attachment');
             return of(({ ...a, blob: undefined }));
-          }))))])),
+          })
+          ))])),
         takeUntil(this.ngDestroy$)
       ).subscribe((result) => {
         this.attachments = result;
@@ -178,7 +179,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
     return true;
   }
 
-  private async getFile(fileUrl: string): Promise<globalThis.File> {
+  private async getFile(fileUrl: string): Promise<IFile> {
     const entry = await this.file.resolveLocalFilesystemUrl(fileUrl);
     if (!entry.isFile) {
       throw Error(`${fileUrl} is not a file!`);
@@ -258,7 +259,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
       '/assets/images/dummyregobsimage.jpeg'
     );
     const blob = DataUrlHelper.convertDataURIToBinary(dummyImage);
-    this.addImage(new Blob([dummyImage]), 'image/jpeg');
+    this.addImage(new Blob([blob]), 'image/jpeg');
   }
 
   addImage(data: Blob, mimeType: string) {
