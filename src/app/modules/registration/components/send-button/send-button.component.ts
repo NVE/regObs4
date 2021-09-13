@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -8,6 +8,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { Subject } from 'rxjs';
 import { RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
+import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
 
 @Component({
   selector: 'app-send-button',
@@ -15,7 +16,7 @@ import { RegistrationService as CommonRegistrationService } from '@varsom-regobs
   styleUrls: ['./send-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SendButtonComponent implements OnInit, OnDestroy {
+export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
   @Input() registration: IRegistration;
 
   // get isEmpty(): boolean {
@@ -55,10 +56,15 @@ export class SendButtonComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
       });
     });
-    this.commonRegistrationService.isEmpty(this.registration).subscribe((empty) => {
-      this.isEmpty = empty;
-      this.cdr.detectChanges();
-    });
+  }
+
+  ngOnChanges(changes: SimpleChanges & SmartChanges<this>): void {
+    if (changes.registration?.currentValue) {
+      this.commonRegistrationService.isEmpty(changes.registration.currentValue).then((empty) => {
+        this.isEmpty = empty;
+        this.cdr.detectChanges();
+      });
+    }
   }
 
   ngOnDestroy(): void {
