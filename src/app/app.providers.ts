@@ -54,12 +54,15 @@ import { API_KEY_TOKEN, IRegobsApiKeyProvider } from '@varsom-regobs-common/rego
 import {
   IRegistrationModuleOptions,
   FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
-  OfflineDbService
+  OfflineDbService,
+  NewAttachmentService,
+  OfflineDbNewAttachmentService
 } from '@varsom-regobs-common/registration';
 import { AppModeService } from '@varsom-regobs-common/core';
 import { addRxPlugin } from 'rxdb';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
+import { AttachmentService } from './core/services/attachment/attachment.service';
 
 // export const API_INTERCEPTOR_PROVIDER: Provider = {
 //   provide: HTTP_INTERCEPTORS,
@@ -209,6 +212,11 @@ export const APP_PROVIDERS = [
   //   multi: true,
   //   deps: [UserSettingService, AppModeService]
   // },
+  {
+    provide: NewAttachmentService,
+    // TODO: useClass: window.hasOwnProperty('cordova') ? AttachmentService : OfflineDbNewAttachmentService
+    useClass: AttachmentService
+  },
 
   // Interface implementations
   { provide: 'OnReset', useExisting: DataMarshallService, multi: true },

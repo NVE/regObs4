@@ -546,9 +546,7 @@ export class OfflineMapService implements OnReset {
     //     }
     // }
     if(this.file && this.file.dataDirectory) {
-      const fileUrl = this.file.dataDirectory;
-      console.assert(fileUrl.endsWith('/'), 'Data Directory does not end with /.');
-      return fileUrl;
+      return this.file.dataDirectory;
     }
     return undefined;
   }
