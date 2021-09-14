@@ -76,7 +76,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
     this.newAttachmentService.getUploadedAttachments(this.registrationId)
       .pipe(
           map((attachments) => attachments.filter((a) => (a.RegistrationTID === this.registrationTid && a.type === this.attachmentType && a.ref === this.ref))), 
-          switchMap((attachments) => forkJoin([...attachments.map((a) => 
+          switchMap((attachments) => attachments.length === 0 ? of([]) : forkJoin([...attachments.map((a) => 
             this.newAttachmentService.getBlob(this.registrationId, a.id).pipe(take(1), map((blob) => ({ ...a, blob })), catchError((err) => { 
                   this.logger.error(err,  DEBUG_TAG, 'Could not get blob from attachment');
                   return of(({ ...a, blob: undefined }));
@@ -158,8 +158,8 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
       //   `Image moved to permanent image url: ${permanentUrl}`,
       //   DEBUG_TAG
       // );
-      const blob = await this.getFile(imageUrl);
-      this.addImage(blob, MIME_TYPE);
+      const arrayBuffer = await this.getArrayBuffer(imageUrl);
+      this.addImage(new Blob([arrayBuffer]), MIME_TYPE);
     } catch (err) {
       this.logger.log(
         'User could not add image, most likely no access or invalid image',
@@ -172,18 +172,16 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
     return true;
   }
 
-  private async getFile(fileUrl: string): Promise<IFile> {
+  private async getArrayBuffer(fileUrl: string): Promise<ArrayBuffer> {
     const entry = await this.file.resolveLocalFilesystemUrl(fileUrl);
     if (!entry.isFile) {
       throw Error(`${fileUrl} is not a file!`);
     }
-    const fileEntry: FileEntry = entry as unknown as FileEntry;
-    return new Promise((resolve, reject) =>
-      fileEntry.file(
-        (success) => resolve(success),
-        (error) => reject(error)
-      )
-    );
+    const pathSplitted = entry.nativeURL.split('/');
+    const filename = pathSplitted.pop();
+    const directory = pathSplitted.join('/');
+    const arrayBuffer = await this.file.readAsArrayBuffer(directory, filename);
+    return arrayBuffer;
   }
 
   private async validateImage(src: string) {
