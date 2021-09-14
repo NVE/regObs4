@@ -61,7 +61,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges & SmartChanges<this>): void {
     if (changes.registration?.currentValue) {
-      this.commonRegistrationService.isEmpty(changes.registration.currentValue).subscribe((empty) => {
+      this.commonRegistrationService.isEmpty(changes.registration.currentValue).then((empty) => {
         this.isEmpty = empty;
         this.cdr.detectChanges();
       });
