@@ -25,6 +25,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
   isEmpty: boolean;
 
   get isDisabled(): boolean {
+    // TODO: Hvorfor disabled hvis man holder på å logge inn?
     return this.isEmpty || this.isSending || this.isLoggingIn;
   }
 
