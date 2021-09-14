@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { SnowDensityModel } from '@varsom-regobs-common/regobs-api';
 import { ModalController } from '@ionic/angular';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
-import { IRegistration } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../services/registration.service';
 import { isEmpty } from '@varsom-regobs-common/core';
 

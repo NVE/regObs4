@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, OnDestroy, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { IRegistration, SyncStatus, ProgressService } from '@varsom-regobs-common/registration';
+import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { ProgressService } from 'src/app/modules/common-registration/registration.services';
 import { Subscription } from 'rxjs';
 import { RegistrationService } from '../../../../modules/registration/services/registration.service';
 import { map, filter } from 'rxjs/operators';

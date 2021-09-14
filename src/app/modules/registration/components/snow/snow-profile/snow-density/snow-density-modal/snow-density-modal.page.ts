@@ -8,9 +8,9 @@ import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-hel
 import { RegistrationService } from '../../../../../services/registration.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { IRegistration } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import cloneDeep from 'clone-deep';
-import { RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 
 @Component({
   selector: 'app-snow-density-modal',

@@ -12,7 +12,8 @@ import * as utils from '@nano-sql/core/lib/utilities';
 import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { RegobsAuthService } from '../../auth/services/regobs-auth.service';
-import { IRegistration, SyncStatus, RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
+import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import { GeoHazard, AppMode } from '@varsom-regobs-common/core';
 
 const DEBUG_TAG = 'RegistrationService';

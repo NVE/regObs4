@@ -5,7 +5,8 @@ import { RegistrationService } from '../../../../../services/registration.servic
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import cloneDeep from 'clone-deep';
-import { IRegistration, RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 
 @Component({
   selector: 'app-compression-test-list-modal',

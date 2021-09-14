@@ -8,7 +8,8 @@ import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-p
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 import { StratProfileLayerHistoryModalPage } from '../strat-profile-layer-history-modal/strat-profile-layer-history-modal.page';
-import { IRegistration, RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationService } from '../../../../../services/registration.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

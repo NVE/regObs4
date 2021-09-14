@@ -1,5 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
-import { RegistrationTid, IRegistration, getPropertyName, isArrayType, NewAttachmentService, RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
+import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { getPropertyName, isArrayType } from 'src/app/modules/common-registration/registration.helpers';
+import { NewAttachmentService, RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationService } from '../services/registration.service';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';

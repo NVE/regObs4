@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { BasePageService } from '../../base-page-service';
 import { BasePage } from '../../base.page';
 import { ActivatedRoute } from '@angular/router';
-import { RegistrationTid } from '@varsom-regobs-common/registration';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 
 @Component({

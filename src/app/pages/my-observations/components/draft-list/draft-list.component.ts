@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { IRegistration, SyncStatus } from '@varsom-regobs-common/registration';
+import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from 'src/app/modules/registration/services/registration.service';
 
 @Component({

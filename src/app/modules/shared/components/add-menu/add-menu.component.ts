@@ -6,7 +6,7 @@ import { DateHelperService } from '../../services/date-helper/date-helper.servic
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
-import { IRegistration } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard, LangKey } from '@varsom-regobs-common/core';
 import { RegistrationService } from '../../../registration/services/registration.service';
 import { map, tap, switchMap } from 'rxjs/operators';

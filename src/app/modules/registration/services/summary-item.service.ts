@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { IRegistration, RegistrationService } from '@varsom-regobs-common/registration';
 import { DateHelperService } from '../../shared/services/date-helper/date-helper.service';
-import { RegistrationTid } from '@varsom-regobs-common/registration';
+import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationService } from 'src/app/modules/common-registration/services/registration/registration.service';
 import { GeoHazard } from '@varsom-regobs-common/core';
 import { ISummaryItem } from '../components/summary-item/summary-item.model';
 import { UserGroupService } from '../../../core/services/user-group/user-group.service';

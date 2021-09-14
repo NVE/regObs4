@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { ModalController } from '@ionic/angular';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
-import { IRegistration } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../services/registration.service';
 import { StratProfileEditModel } from '@varsom-regobs-common/regobs-api';
 

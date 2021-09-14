@@ -21,7 +21,7 @@ import { MapModule } from './modules/map/map.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import {
   RegistrationModule as CommonRegistrationModule,
-} from '@varsom-regobs-common/registration';
+} from './modules/common-registration/registration.module';
 import {
   RegobsApiModuleWithConfig,
 } from '@varsom-regobs-common/regobs-api';
@@ -52,4 +52,5 @@ import {
   providers: APP_PROVIDERS,
   bootstrap: [AppComponent]
 })
+
 export class AppModule {}

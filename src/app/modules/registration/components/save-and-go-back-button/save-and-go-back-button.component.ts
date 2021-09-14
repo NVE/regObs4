@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { IRegistration, RegistrationTid } from '@varsom-regobs-common/registration';
-import { RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration'; 
+import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services'; 
 import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
 import { take } from 'rxjs/operators';
 

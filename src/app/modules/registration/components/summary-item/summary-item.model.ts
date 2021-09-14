@@ -1,4 +1,4 @@
-import { ExistingOrNewAttachment } from '@varsom-regobs-common/registration';
+import { ExistingOrNewAttachment } from 'src/app/modules/common-registration/registration.models';
 
 export interface ISummaryItem {
   id: string;

@@ -4,9 +4,9 @@ import {
 } from '@varsom-regobs-common/regobs-api';
 import { ModalController } from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
-import { IRegistration } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../../services/registration.service';
-import { RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import cloneDeep from 'clone-deep';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

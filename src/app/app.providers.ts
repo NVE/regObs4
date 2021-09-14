@@ -54,12 +54,12 @@ import { API_KEY_TOKEN, IRegobsApiKeyProvider } from '@varsom-regobs-common/rego
 import {
   IRegistrationModuleOptions,
   FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
-  OfflineDbService
-} from '@varsom-regobs-common/registration';
+} from './modules/common-registration/module.options';
 import { AppModeService } from '@varsom-regobs-common/core';
 import { addRxPlugin } from 'rxdb';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
+import { OfflineDbService } from './modules/common-registration/registration.services';
 
 // export const API_INTERCEPTOR_PROVIDER: Provider = {
 //   provide: HTTP_INTERCEPTORS,

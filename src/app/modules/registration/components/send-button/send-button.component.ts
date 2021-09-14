@@ -2,12 +2,12 @@ import { Component, OnInit, Input, NgZone, OnDestroy, ChangeDetectionStrategy, C
 import { RegistrationService } from '../../services/registration.service';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { IRegistration } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { Subject } from 'rxjs';
-import { RegistrationService as CommonRegistrationService } from '@varsom-regobs-common/registration';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
 
 @Component({

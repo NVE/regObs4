@@ -9,7 +9,7 @@ import {
 import { Observable, pipe } from 'rxjs';
 import moment from 'moment';
 import { GeoHazard } from '@varsom-regobs-common/core';
-import { RegistrationTid, IRegistration } from '@varsom-regobs-common/registration';
+import { RegistrationTid, IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../../services/registration.service';
 
 @Component({

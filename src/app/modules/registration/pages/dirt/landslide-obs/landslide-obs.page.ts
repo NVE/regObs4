@@ -1,6 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
-import { RegistrationTid } from '@varsom-regobs-common/registration';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ModalController } from '@ionic/angular';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import * as L from 'leaflet';

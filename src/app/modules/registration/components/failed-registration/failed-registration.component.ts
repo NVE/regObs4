@@ -6,7 +6,7 @@ import {
   EventEmitter,
   NgZone
 } from '@angular/core';
-import { IRegistration, SyncStatus } from '@varsom-regobs-common/registration';
+import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../services/registration.service';
 import {
   EmailComposer,

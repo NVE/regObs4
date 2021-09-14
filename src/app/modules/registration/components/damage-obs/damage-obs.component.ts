@@ -4,7 +4,7 @@ import {
   Input,
   NgZone,
 } from '@angular/core';
-import { IRegistration, RegistrationTid } from '@varsom-regobs-common/registration';
+import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ModalController } from '@ionic/angular';
 import * as L from 'leaflet';
 import { SetDamageLocationPage } from '../../pages/set-damage-location/set-damage-location.page';

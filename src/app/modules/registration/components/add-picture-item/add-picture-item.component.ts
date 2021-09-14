@@ -11,7 +11,8 @@ import {
   PictureSourceType
 } from '@ionic-native/camera/ngx';
 import { settings } from '../../../../../settings';
-import { AttachmentType, AttachmentUploadEditModel, NewAttachmentService, RegistrationTid } from '@varsom-regobs-common/registration';
+import { AttachmentType, AttachmentUploadEditModel, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { DomSanitizer } from '@angular/platform-browser';

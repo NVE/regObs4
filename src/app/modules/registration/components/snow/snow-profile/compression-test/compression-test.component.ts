@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CompressionTestListModalPage } from './compression-test-list-modal/compression-test-list-modal.page';
 import { ModalController } from '@ionic/angular';
-import { IRegistration } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../services/registration.service';
 import { CompressionTestEditModel } from '@varsom-regobs-common/regobs-api';
 

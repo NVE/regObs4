@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { RegistrationTid } from '@varsom-regobs-common/registration';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';
 import { ModalController } from '@ionic/angular';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
