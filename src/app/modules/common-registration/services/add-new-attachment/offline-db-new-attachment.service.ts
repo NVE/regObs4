@@ -65,9 +65,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
       filter((doc) => !!doc),
       switchMap((doc) => of(doc.getAttachment(attachmentId))),
       filter((attachment) => !!attachment),
-      switchMap((attachment) => from(attachment.getData())),
-      // TODO: Added this to avoid build error
-      map((blobBuffer) => new Blob([blobBuffer]))
+      switchMap((attachment) => from(attachment.getData() as Promise<Blob>)),
     );
   }
 
