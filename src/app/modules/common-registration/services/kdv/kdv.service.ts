@@ -9,7 +9,7 @@ import { KdvKey } from '../../models/kdv-key.type';
 import { KdvViewRepositoryKey } from '../../models/view-repository-key.type';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
 
-const KDV_ASSETS_FOLDER = '/assets/kdvelements'; // TODO: Add this to module config?
+const KDV_ASSETS_FOLDER = '/assets/json'; // TODO: Add this to module config?
 
 @Injectable({
   providedIn: 'root'

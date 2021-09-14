@@ -15,7 +15,7 @@ import { OfflineDbService } from '../offline-db/offline-db.service';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
 
 const VALID_HELP_TEXT_SECONDS = 73200; // 12 hours
-const HELP_TEXTS_ASSETS_FOLDER = '/assets/helptexts';
+const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
 
 @Injectable({
   providedIn: 'root'
