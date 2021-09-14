@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { RegistrationTid } from '@varsom-regobs-common/registration';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ActivatedRoute } from '@angular/router';
 import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';

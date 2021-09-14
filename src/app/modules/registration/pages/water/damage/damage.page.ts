@@ -1,6 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
-import { RegistrationTid } from '@varsom-regobs-common/registration';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { GeoHazard } from '@varsom-regobs-common/core';
 import { KdvElement } from '@varsom-regobs-common/regobs-api';

@@ -6,7 +6,7 @@ import {
   AlertController,
   LoadingController
 } from '@ionic/angular';
-import { KdvService } from '@varsom-regobs-common/registration';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
 import { AppVersion } from '../../core/models/app-version.model';

@@ -5,9 +5,9 @@ import {
   NgZone
 } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
-import { RegistrationService as CommonRegistrationService, SyncStatus } from '@varsom-regobs-common/registration';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import { Subscription, combineLatest, from } from 'rxjs';
-import { IRegistration, RegistrationTid } from '@varsom-regobs-common/registration';
+import { IRegistration, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { GeoHazard } from '@varsom-regobs-common/core';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';

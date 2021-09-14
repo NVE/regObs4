@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { RegistrationTid, IRegistration } from '@varsom-regobs-common/registration';
+import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 
 @Component({
   selector: 'app-registration-content-wrapper',

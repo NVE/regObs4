@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { SummaryItemService } from '../../services/summary-item.service';
-import { IRegistration } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { Router } from '@angular/router';
 import { ISummaryItem } from '../summary-item/summary-item.model';
 

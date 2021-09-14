@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SnowTempObsModel } from '@varsom-regobs-common/regobs-api';
 import { ModalController } from '@ionic/angular';
-import { IRegistration } from '@varsom-regobs-common/registration';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 import { RegistrationService } from '../../../../../services/registration.service';
 import cloneDeep from 'clone-deep';

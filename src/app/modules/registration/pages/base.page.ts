@@ -1,7 +1,7 @@
 import { Directive, OnInit } from '@angular/core';
 import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
-import { IRegistration, RegistrationTid } from '@varsom-regobs-common/registration';
+import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ActivatedRoute } from '@angular/router';
 import { take, takeUntil, map, switchMap, tap } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';

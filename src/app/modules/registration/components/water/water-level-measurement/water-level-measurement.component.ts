@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WaterLevelMeasurementEditModel } from '@varsom-regobs-common/regobs-api';
 import moment from 'moment';
-import { RegistrationTid } from '@varsom-regobs-common/registration';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard, isEmpty } from '@varsom-regobs-common/core';
 
 @Component({
