@@ -7,14 +7,11 @@ import moment from 'moment';
 describe('PopupInfoService', () => {
   let service: PopupInfoService;
 
-  beforeEach(() =>
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TestModule]
-    })
-  );
-
-  beforeEach(() => {
-    service = TestBed.get(PopupInfoService);
+    });
+    service = TestBed.inject(PopupInfoService);
   });
 
   it('should be created', () => {

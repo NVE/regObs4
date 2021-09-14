@@ -23,7 +23,7 @@ xdescribe('CompetenceComponent', () => {
       TestBed.configureTestingModule({
         imports: [TestModule]
       }).compileComponents();
-      translate = TestBed.get(TranslateService);
+      translate = TestBed.inject(TranslateService);
       // translate.addLangs(['nb', 'en']);
       // translate.setDefaultLang('nb');
     })

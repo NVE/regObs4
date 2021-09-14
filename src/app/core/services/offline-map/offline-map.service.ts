@@ -293,7 +293,7 @@ export class OfflineMapService implements OnReset {
     }
 
     return new Promise((resolve, reject) => {
-      (window as any).DiskSpacePlugin.info({ location: externalStorage ? 2 : 1 }, (success) => resolve(success.free), (err) => reject(err));
+      (window as any)?.DiskSpacePlugin?.info({ location: externalStorage ? 2 : 1 }, (success) => resolve(success.free), (err) => reject(err));
     });
   }
 

@@ -36,7 +36,8 @@
     "types": [
       "node",
       "google.analytics",
-      "cordova"
+      "cordova",
+      "jasmine",
     ]
   },
   "angularCompilerOptions": {
