@@ -15,6 +15,7 @@ import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
 import { switchMap, take, concatMap, delay, catchError } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
+import { AuthService } from 'ionic-appauth';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -37,7 +38,8 @@ export class AppComponent {
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
     private shortcutService: ShortcutService,
-    private fileLoggingService: FileLoggingService
+    private fileLoggingService: FileLoggingService,
+    private auth: AuthService,
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -47,13 +49,13 @@ export class AppComponent {
     from(this.fileLoggingService.init({})).pipe(switchMap(() =>
     this.getUserSettings()
       .pipe(this.initServices())))
-      .subscribe(() => {
+      .subscribe({ next: () => {
         this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
         this.afterAppInitialized();
-      }, (err) => {
+      }, error: (err) => {
         this.loggingService.error(err, DEBUG_TAG, 'Error when init app.');
         this.afterAppInitialized();
-      });
+      }});
   }
 
   afterAppInitialized() {
@@ -141,6 +143,15 @@ export class AppComponent {
                   err,
                   DEBUG_TAG,
                   'Could not init shortcutService'
+                )
+              )
+            ),
+            from(this.auth.init()).pipe(
+              catchError((err) => 
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not init auth service'
                 )
               )
             )
