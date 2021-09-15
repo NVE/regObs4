@@ -84,7 +84,7 @@
     "es6-promise-plugin": "^4.2.2",
     "fast-deep-equal": "^3.1.3",
     "globalthis": "^1.0.2",
-    "ionic-appauth": "^0.7.4",
+    "ionic-appauth": "^0.8.5",
     "json-stringify-safe": "^5.0.1",
     "leaflet": "^1.7.1",
     "leaflet-edgebuffer": "^1.0.6",

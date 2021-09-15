@@ -9,14 +9,14 @@ import { AlertController, NavController } from '@ionic/angular';
 import { nSQL } from '@nano-sql/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService, IAuthAction } from 'ionic-appauth';
-import { BehaviorSubject, firstValueFrom, from, Observable } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { distinctUntilChanged, filter, shareReplay, skip, switchMap, take } from 'rxjs/operators';
 import { NanoSql } from '../../../../nanosql';
 import { settings } from '../../../../settings';
 import { LangKey, AppMode } from '@varsom-regobs-common/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
-import { ObserverGroupDto, ObserverResponseDto } from '@varsom-regobs-common/regobs-api';
+import { AccountService, ObserverGroupDto, ObserverResponseDto } from '@varsom-regobs-common/regobs-api';
 import { LogLevel } from '../../shared/services/logging/log-level.model';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
@@ -72,16 +72,38 @@ export class RegobsAuthService {
     private navCtrl: NavController,
     private location: Location,
     private requestor: Requestor,
-    private storageBackend: StorageBackend
+    private storageBackend: StorageBackend,
+    private accountService: AccountService,
   ) {
     this.setupCustomTokenRequestHandler();
-    this.authService.addActionListener((action) =>
-      this.onSignInCallback(action)
-    );
     this.userSettingService.appMode$.subscribe(async (appMode) => {
       const loggedInUser = await this.getLoggedInUserForAppMode(appMode);
       this._loggedInUserSubject.next(loggedInUser);
     });
+    this.authService.initComplete$.pipe(
+      switchMap(() => this.authService.token$),
+      filter((tokenResponse) => tokenResponse?.idToken != null)
+    ).subscribe(async (tokenResponse) =>  {
+      await this.getAndSaveObserver(tokenResponse.idToken);
+    });
+
+    this.authService.initComplete$.pipe(
+      switchMap(() => this.authService.isAuthenticated$),
+      distinctUntilChanged(),
+      skip(1), //This observable allways starts with false, so we skip this first emit
+      filter((isAuthenticated) => isAuthenticated === false)
+    ).subscribe(async () =>  {
+      await this.clearLoggedInUser();
+    });
+
+    const events$ = this.authService.initComplete$.pipe(
+      switchMap(() => this.authService.events$));
+
+    events$.pipe(filter((action) => action.action === AuthActions.SignInFailed && action.error !== 'Handle Not Available'))
+      .subscribe((action) => this.showErrorMessage(500, action.error));
+
+    events$.pipe(filter((action) => action.action === AuthActions.SignInSuccess))
+      .subscribe(() => this.redirectToReturnUrl());
   }
 
   private customTokenRequestHandler(
@@ -133,7 +155,8 @@ export class RegobsAuthService {
             tokenErrorJson.error_description &&
             tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0
           ) {
-            return this.signIn(false).then(() => undefined);
+            this.signIn(false);
+            return Promise.reject('Get token after reset password is not supported. Redirect to login page.');
           }
           message = tokenErrorJson.error_description;
           this.logger.error(
@@ -212,7 +235,12 @@ export class RegobsAuthService {
   }
 
   public async logout(): Promise<void> {
-    this._loggedInUserSubject.next({ isLoggedIn: false });
+    this.authService.endSessionCallback();
+    await this.clearLoggedInUser();
+  }
+
+  private async clearLoggedInUser(): Promise<void> {
+    await this.storageBackend.removeItem(TOKEN_RESPONSE_KEY);
     await this.userSettingService.appMode$
       .pipe(
         take(1),
@@ -227,10 +255,8 @@ export class RegobsAuthService {
               })
               .exec()
           )
-        )
-      )
-      .toPromise();
-    this.authService.endSessionCallback();
+        )).toPromise();
+    this._loggedInUserSubject.next({ isLoggedIn: false });
   }
 
   public async getAndSaveObserver(idToken: string): Promise<void> {
@@ -249,22 +275,14 @@ export class RegobsAuthService {
         await this.showErrorMessage(500, '');
         return;
       }
-      const resultWithNick = await this.checkAndSetNickIfNickIsNull(
-        result,
-        idToken
-      );
+      const resultWithNick = await this.checkAndSetNickIfNickIsNull(result);
       const claims = this.parseJwt(idToken);
       this._loggedInUserSubject.next({
         email: claims.email,
         isLoggedIn: true,
         user: resultWithNick
       });
-      this.logger.debug('getAndSaveObserver(): Trying to save logged in user to db...', DEBUG_TAG);
-      setTimeout(
-        () => this.saveLoggedInUserToDb(claims.email, true, resultWithNick),
-        20
-      );
-      this.logger.debug('getAndSaveObserver(): Save logged in user to db finished', DEBUG_TAG);
+      this.saveLoggedInUserToDb(claims.email, true, resultWithNick);
     } catch (err) {
       this.logger.debug(`getAndSaveObserver(): Caught error: err.status = ${err.status}, err.message = ${err.message}`, DEBUG_TAG);
       await this.showErrorMessage(err.status, err.message);
@@ -275,47 +293,19 @@ export class RegobsAuthService {
   }
 
   private async checkAndSetNickIfNickIsNull(
-    user: ObserverResponseDto,
-    idToken: string
+    user: ObserverResponseDto
   ): Promise<ObserverResponseDto> {
     if (user && user.Nick != null && user.Nick != '') {
       return user;
     }
     try {
       const nick = await this.showSetNickDialog();
-      await this.callApiUpdateNick(nick, idToken);
+      await this.accountService.AccountUpdateObserver({ Nick: nick }).toPromise();
       return { ...user, Nick: nick };
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Could not save nick');
       return user;
     }
-  }
-
-  // TODO: Rewrite to @varsom-regobs-common/regobs-api call
-  private async callApiUpdateNick(
-    nick: string,
-    idToken: string
-  ): Promise<void> {
-    const userSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
-    const updateObserverUrl =
-      settings.authConfig[userSettings.appMode].updateObserverUrl;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const apiKey: any = await this.httpClient
-      .get('/assets/apikey.json')
-      .toPromise();
-    if (!apiKey) {
-      throw new Error('apikey.json not found in assets folder!');
-    }
-    const headers = new HttpHeaders({
-      regObs_apptoken: apiKey.apiKey,
-      ApiJsonVersion: settings.services.regObs.apiJsonVersion,
-      Authorization: `Bearer ${idToken}`
-    });
-    return this.httpClient
-      .put<void>(updateObserverUrl, { Nick: nick }, { headers })
-      .toPromise();
   }
 
   private async showSetNickDialog(): Promise<string> {
@@ -355,19 +345,6 @@ export class RegobsAuthService {
 
   public getLoggedInUserAsPromise(): Promise<LoggedInUser> {
     return this.loggedInUser$.pipe(take(1)).toPromise();
-  }
-
-  public async onSignInCallback(action: IAuthAction): Promise<void> {
-    this.logger.debug(`onSignInCallback(), action = '${action?.action}', error = '${action?.error}',  user = '${action.user}'`, DEBUG_TAG);
-    if (action.tokenResponse?.idToken) {
-      await this.getAndSaveObserver(action.tokenResponse?.idToken);
-    } else if (
-      action.action === AuthActions.SignInFailed &&
-      action.error !== 'Handle Not Available'
-    ) {
-      await this.showErrorMessage(500, action.error);
-    }
-    this.redirectToReturnUrl();
   }
 
   private redirectToReturnUrl() {

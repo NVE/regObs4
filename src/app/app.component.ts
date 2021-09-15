@@ -17,6 +17,7 @@ import { FileLoggingService } from './modules/shared/services/logging/file-loggi
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { NavigationError, Router, RouterEvent } from '@angular/router';
 import { removeOauthTokenFromUrl } from './modules/shared/services/logging/url-utils';
+import { AuthService } from 'ionic-appauth';
 
 const DEBUG_TAG = 'AppComponent';
 const ROUTER_DEBUG_TAG = 'Router';
@@ -39,7 +40,8 @@ export class AppComponent {
     private screenOrientation: ScreenOrientation,
     private shortcutService: ShortcutService,
     private fileLoggingService: FileLoggingService,
-    private router: Router
+    private router: Router,
+    private auth: AuthService,
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -157,12 +159,21 @@ export class AppComponent {
                 )
               )
             ),
-            of ( this.initRouteNavigationLogger()).pipe(
+            of( this.initRouteNavigationLogger()).pipe(
               catchError((err) =>
                 this.loggingService.error(
                   err,
                   DEBUG_TAG,
                   'Could not init route navigation logging'
+                )
+              )
+            ),
+            from(this.auth.init()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not init auth service'
                 )
               )
             )
