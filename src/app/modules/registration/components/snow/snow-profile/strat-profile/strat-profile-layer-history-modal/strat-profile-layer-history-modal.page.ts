@@ -18,7 +18,6 @@ import { RegistrationService } from '../../../../../services/registration.servic
   styleUrls: ['./strat-profile-layer-history-modal.page.scss']
 })
 export class StratProfileLayerHistoryModalPage implements OnInit {
-  @Input() observerGuid: string;
   @Input() reg: IRegistration;
 
   isLoading = true;
@@ -37,7 +36,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
     if (this.reg && this.reg.request && this.reg.request.ObsLocation) {
       this.$previousUsedLayers = this.searchService
         .SearchSearch({
-          ObserverGuid: this.observerGuid,
+          // ObserverGuid: this.observerGuid, TODO: Call "my obervations" in api instead
           FromDtObsTime: moment().subtract(14, 'days').startOf('day').toISOString(),
           Radius: {
             Position: {

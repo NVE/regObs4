@@ -121,9 +121,9 @@ export class LegacyTripPage implements OnInit, OnDestroy {
       return;
     } else {
       const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
-      if (loggedInUser && loggedInUser.isLoggedIn && loggedInUser.user) {
+      if (loggedInUser && loggedInUser.isLoggedIn) {
         this.isLoading = true;
-        this.tripDto.ObserverGuid = loggedInUser.user.Guid;
+        // this.tripDto.ObserverGuid = loggedInUser.user.Guid; // TODO: Fix api to use access token for this call
         this.tripDto.GeoHazardID = GeoHazard.Snow;
         this.tripDto.DeviceGuid = utils.uuid();
         try {

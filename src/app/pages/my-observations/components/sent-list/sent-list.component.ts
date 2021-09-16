@@ -116,7 +116,7 @@ export class SentListComponent implements OnInit {
         if (loggedInUser.isLoggedIn) {
           return this.observationService.getObservationsForCurrentUser(
             appMode,
-            loggedInUser.user,
+            undefined, // loggedInUser.user, TODO: Fix api to use access token to get "my observations"
             langKey,
             pageNumber,
             PAGE_SIZE
