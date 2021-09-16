@@ -10,7 +10,7 @@ import { nSQL } from '@nano-sql/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService, IAuthAction } from 'ionic-appauth';
 import { BehaviorSubject, from, lastValueFrom, Observable } from 'rxjs';
-import { distinctUntilChanged, filter, shareReplay, skip, switchMap, take } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, shareReplay, skip, switchMap, take, withLatestFrom } from 'rxjs/operators';
 import { NanoSql } from '../../../../nanosql';
 import { settings } from '../../../../settings';
 import { LangKey, AppMode } from '@varsom-regobs-common/core';
@@ -41,13 +41,15 @@ const TOKEN_RESPONSE_KEY = 'token_response';
   providedIn: 'root'
 })
 export class RegobsAuthService {
-  private _loggedInUserSubject: BehaviorSubject<LoggedInUser> = new BehaviorSubject(
-    { isLoggedIn: false }
-  );
+  // private _loggedInUserSubject: BehaviorSubject<LoggedInUser> = new BehaviorSubject(
+  //   { isLoggedIn: false }
+  // );
   private _isLoggingInSubject = new BehaviorSubject<boolean>(false);
 
   get loggedInUser$(): Observable<LoggedInUser> {
-    return this._loggedInUserSubject.asObservable();
+    return this.authService.isAuthenticated$.pipe(withLatestFrom(this.authService.token$))
+            .pipe(map(([isAuthenticated, tokenResponse]) => ({ isLoggedIn: isAuthenticated, 
+                email: isAuthenticated ? this.parseJwt(tokenResponse.idToken).email : undefined })));
   }
 
   get isLoggingIn$(): Observable<boolean> {
@@ -74,37 +76,42 @@ export class RegobsAuthService {
     private accountService: AccountService,
   ) {
     // this.setupCustomTokenRequestHandler();
-    this.userSettingService.appMode$.subscribe(async (appMode) => {
-      const loggedInUser = await this.getLoggedInUserForAppMode(appMode);
-      this._loggedInUserSubject.next(loggedInUser);
-    });
-    this.authService.initComplete$.pipe(
-      switchMap(() => this.authService.token$),
-      filter((tokenResponse) => tokenResponse?.idToken != null)
-    ).subscribe(async (tokenResponse) =>  {
-      await this.getAndSaveObserver(tokenResponse.idToken)
-    });
 
-    this.authService.initComplete$.pipe(
-      switchMap(() => this.authService.isAuthenticated$),
-      distinctUntilChanged(),
-      skip(1), //This observable allways starts with false, so we skip this first emit
-      filter((isAuthenticated) => isAuthenticated === false)
-    ).subscribe(async () =>  {
-      await this.clearLoggedInUser();
-    });
+      // this.authService.initComplete$.pipe(
+      //   switchMap(() => this.authService.token$),
+      //   filter((tokenResponse) => tokenResponse?.idToken != null)
+      // ).subscribe(async (tokenResponse) =>  {
+      //   await this.getAndSaveObserver(tokenResponse.idToken)
+      // });
+  
+  
+      // this.authService.initComplete$.pipe(
+      //   switchMap(() => this.authService.isAuthenticated$),
+      //   distinctUntilChanged(),
+      //   skip(1), //This observable allways starts with false, so we skip this first emit
+      //   filter((isAuthenticated) => isAuthenticated === false)
+      // ).subscribe(async () =>  {
+      //   await this.clearLoggedInUser();
+      // });
+  
+      const events$ = this.authService.initComplete$.pipe(
+        switchMap(() => this.authService.events$));
+  
+      events$.pipe(filter((action) => action.action === AuthActions.SignInFailed && action.error !== 'Handle Not Available'))
+      .subscribe((action) => this.showErrorMessage(500, action.error));
+  
+      events$.pipe(filter((action) => action.action === AuthActions.RefreshFailed && action.error === 'AADB2C90090'))
+      .subscribe(() => this.signIn(false)); // Hack to detect user is coming from reset password flow. Route user back to login.
+  
+      events$.pipe(filter((action) => action.action === AuthActions.SignInSuccess))
+      .subscribe(async (action) => {
+        await this.redirectToReturnUrl();
+        this.getAndSaveObserver(action.tokenResponse?.idToken);    
+      });
 
-    const events$ = this.authService.initComplete$.pipe(
-      switchMap(() => this.authService.events$));
-
-    events$.pipe(filter((action) => action.action === AuthActions.SignInFailed && action.error !== 'Handle Not Available'))
-    .subscribe((action) => this.showErrorMessage(500, action.error));
-
-    events$.pipe(filter((action) => action.action === AuthActions.RefreshFailed && action.error === 'AADB2C90090'))
-    .subscribe(() => this.signIn(false)); // Hack to detect user is coming from reset password flow. Route user back to login.
-
-    events$.pipe(filter((action) => action.action === AuthActions.SignInSuccess))
-    .subscribe(() => this.redirectToReturnUrl());
+      this.userSettingService.appMode$.pipe(skip(1)).subscribe(() => {
+        this.logout(); // When user chang app mode, just logout and force user to login again for the new environment.
+      });
   }
 
   public authorizationCallback(url: string): void {
@@ -138,28 +145,28 @@ export class RegobsAuthService {
 
   public async logout(): Promise<void> { 
     this.authService.endSessionCallback();
-    await this.clearLoggedInUser();
+    // await this.clearLoggedInUser();
   }
 
-  private async clearLoggedInUser(): Promise<void> {
-    await this.storageBackend.removeItem(TOKEN_RESPONSE_KEY);
-    await this.userSettingService.appMode$
-      .pipe(
-        take(1),
-        switchMap((appMode) =>
-          from(
-            NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode)
-              .query('upsert', {
-                id: 'user',
-                email: null,
-                isLoggedIn: false,
-                user: null
-              })
-              .exec()
-          )
-        )).toPromise();
-    this._loggedInUserSubject.next({ isLoggedIn: false });
-  }
+  // private async clearLoggedInUser(): Promise<void> {
+  //   await this.storageBackend.removeItem(TOKEN_RESPONSE_KEY);
+  //   await this.userSettingService.appMode$
+  //     .pipe(
+  //       take(1),
+  //       switchMap((appMode) =>
+  //         from(
+  //           NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode)
+  //             .query('upsert', {
+  //               id: 'user',
+  //               email: null,
+  //               isLoggedIn: false,
+  //               user: null
+  //             })
+  //             .exec()
+  //         )
+  //       )).toPromise();
+  //   this._loggedInUserSubject.next({ isLoggedIn: false });
+  // }
 
   public async getAndSaveObserver(idToken: string): Promise<void> {
     try {
@@ -176,16 +183,17 @@ export class RegobsAuthService {
         await this.showErrorMessage(500, '');
         return;
       }
-      const resultWithNick = await this.checkAndSetNickIfNickIsNull(result);
-      const claims = this.parseJwt(idToken);
-      this._loggedInUserSubject.next({
-        email: claims.email,
-        isLoggedIn: true,
-        user: resultWithNick
-      });
-      this.saveLoggedInUserToDb(claims.email, true, resultWithNick);
+      await this.checkAndSetNickIfNickIsNull(result);
+      // const claims = this.parseJwt(idToken);
+      // this._loggedInUserSubject.next({
+      //   email: claims.email,
+      //   isLoggedIn: true,
+      //   user: resultWithNick
+      // });
+      // this.saveLoggedInUserToDb(claims.email, true, resultWithNick);
     } catch (err) {
-      await this.showErrorMessage(err.status, err.message);
+      // await this.showErrorMessage(err.status, err.message);
+      this.logger.error(err, DEBUG_TAG, 'Could not check if observer has nick');
     } finally {
       this._isLoggingInSubject.next(false);
     }
@@ -246,7 +254,7 @@ export class RegobsAuthService {
     return this.loggedInUser$.pipe(take(1)).toPromise();
   }
 
-  private redirectToReturnUrl() {
+  private async redirectToReturnUrl(): Promise<void> {
     if (this.location.path().indexOf('auth/callback') >= 0) {
       const returnUrl = localStorage.getItem(RETURN_URL_KEY);
       if (returnUrl) {
@@ -254,21 +262,21 @@ export class RegobsAuthService {
         this.location.replaceState(
           this.router.serializeUrl(this.router.createUrlTree(['']))
         );
-        this.navCtrl.navigateForward(returnUrl);
+        await this.navCtrl.navigateForward(returnUrl);
       } else {
-        this.navCtrl.navigateRoot('');
+        await this.navCtrl.navigateRoot('');
       }
     }
   }
 
-  private async getLoggedInUserForAppMode(
-    appMode: AppMode
-  ): Promise<LoggedInUser> {
-    const result = await (NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode)
-      .query('select')
-      .exec() as Promise<LoggedInUser[]>);
-    return result[0] || { isLoggedIn: false };
-  }
+  // private async getLoggedInUserForAppMode(
+  //   appMode: AppMode
+  // ): Promise<LoggedInUser> {
+  //   const result = await (NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode)
+  //     .query('select')
+  //     .exec() as Promise<LoggedInUser[]>);
+  //   return result[0] || { isLoggedIn: false };
+  // }
 
   private async showErrorMessage(status: number, message: string) {
     const text =
@@ -296,54 +304,54 @@ export class RegobsAuthService {
     return 'en';
   }
 
-  private saveLoggedInUserToDb(
-    email: string,
-    isLoggedIn: boolean,
-    user: ObserverResponseDto
-  ): void {
-    this.userSettingService.appMode$
-      .pipe(
-        take(1),
-        switchMap((appMode) =>
-          from(
-            NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode)
-              .query('upsert', {
-                id: 'user',
-                email,
-                isLoggedIn,
-                user
-              })
-              .exec()
-          ).pipe(
-            switchMap(() =>
-              from(this.saveUserGroups(appMode, user, user.ObserverGroup))
-            )
-          )
-        )
-      )
-      .subscribe(
-        () => {
-          this.logger.debug('User saved to db', DEBUG_TAG);
-        },
-        (err) => {
-          this.logger.error(
-            err,
-            DEBUG_TAG,
-            'Could not save logged in user to db'
-          );
-        }
-      );
-  }
+  // private saveLoggedInUserToDb(
+  //   email: string,
+  //   isLoggedIn: boolean,
+  //   user: ObserverResponseDto
+  // ): void {
+  //   this.userSettingService.appMode$
+  //     .pipe(
+  //       take(1),
+  //       switchMap((appMode) =>
+  //         from(
+  //           NanoSql.getInstance(NanoSql.TABLES.USER.name, appMode)
+  //             .query('upsert', {
+  //               id: 'user',
+  //               email,
+  //               isLoggedIn,
+  //               user
+  //             })
+  //             .exec()
+  //         ).pipe(
+  //           switchMap(() =>
+  //             from(this.saveUserGroups(appMode, user, user.ObserverGroup))
+  //           )
+  //         )
+  //       )
+  //     )
+  //     .subscribe(
+  //       () => {
+  //         this.logger.debug('User saved to db', DEBUG_TAG);
+  //       },
+  //       (err) => {
+  //         this.logger.error(
+  //           err,
+  //           DEBUG_TAG,
+  //           'Could not save logged in user to db'
+  //         );
+  //       }
+  //     );
+  // }
 
   async saveUserGroups(
     appMode: AppMode,
-    user: ObserverResponseDto,
+    email: string,
     observerGroups: ObserverGroupDto[]
   ): Promise<void> {
     const userGroups = (observerGroups || []).map((val) => {
       return {
-        key: `${user.Guid}_${val.Id}`,
-        userId: user.Guid,
+        key: `${email}_${val.Id}`,
+        userId: email,
         Id: val.Id,
         Name: val.Name
       };

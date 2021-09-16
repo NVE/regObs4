@@ -117,8 +117,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
         this.layerModal = await this.modalController.create({
           component: StratProfileLayerHistoryModalPage,
           componentProps: {
-            reg: this.reg,
-            observerGuid: loggedInUser.user.Guid
+            reg: this.reg
           }
         });
         this.layerModal.present();

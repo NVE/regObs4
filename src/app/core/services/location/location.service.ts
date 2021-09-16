@@ -26,7 +26,7 @@ export class LocationService {
           radius,
           latitude: lat,
           longitude: lng,
-          observerGuid: loggedInUser.isLoggedIn ? loggedInUser.user.Guid : null,
+          observerGuid: null, // loggedInUser.isLoggedIn ? loggedInUser.user.Guid : null, // TODO: Fix api to use access token if provided
           returnCount: 100
         })
       )

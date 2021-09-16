@@ -5,7 +5,6 @@ import { AppMode } from '@varsom-regobs-common/core';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
 import {
   ObserverGroupDto,
-  ObserverResponseDto,
   AccountService as RegobsApiAccountService
 } from '@varsom-regobs-common/regobs-api';
 import moment from 'moment';
@@ -32,38 +31,38 @@ export class UserGroupService {
         .toPromise();
       await this.checkLastUpdatedAndUpdateDataIfNeeded(
         appMode,
-        loggedInUser.user
+        loggedInUser.email
       );
     }
   }
 
   private async checkLastUpdatedAndUpdateDataIfNeeded(
     appMode: AppMode,
-    user: ObserverResponseDto
+    email: string
   ) {
-    const dataLoadId = this.getDataLoadId(appMode, user);
+    const dataLoadId = this.getDataLoadId(appMode, email);
     const dataLoad = await this.dataLoadService.getState(dataLoadId);
     const lastUpdateLimit = moment().subtract(1, 'hour');
     if (
       !dataLoad.lastUpdated ||
       moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
     ) {
-      await this.updateUserGroupsForUser(appMode, user);
+      await this.updateUserGroupsForUser(appMode, email);
     }
   }
 
-  async updateUserGroupsForUser(appMode: AppMode, user: ObserverResponseDto) {
-    const dataLoadId = this.getDataLoadId(appMode, user);
+  async updateUserGroupsForUser(appMode: AppMode, email: string) {
+    const dataLoadId = this.getDataLoadId(appMode, email);
     await this.dataLoadService.startLoading(dataLoadId);
     const result = await this.accountApiService
       .AccountGetObserverGroups()
       .toPromise();
-    this.regobsAuthService.saveUserGroups(appMode, user, result);
+    this.regobsAuthService.saveUserGroups(appMode, email, result);
     await this.dataLoadService.loadingCompleted(dataLoadId, result.length);
   }
 
-  private getDataLoadId(appMode: AppMode, user: ObserverResponseDto) {
-    return `${NanoSql.TABLES.OBSERVER_GROUPS.name}_${appMode}_${user.Guid}`;
+  private getDataLoadId(appMode: AppMode, email: string) {
+    return `${NanoSql.TABLES.OBSERVER_GROUPS.name}_${appMode}_${email}`;
   }
 
   getUserGroupsAsObservable(): Observable<ObserverGroupDto[]> {
@@ -73,7 +72,7 @@ export class UserGroupService {
     ]).pipe(
       switchMap(([loggedInUser, appMode]) =>
         loggedInUser.isLoggedIn
-          ? from(this.getUserGroupsFromDb(appMode, loggedInUser.user))
+          ? from(this.getUserGroupsFromDb(appMode, loggedInUser.email))
           : from(Promise.resolve([]))
       )
     );
@@ -85,11 +84,11 @@ export class UserGroupService {
 
   private async getUserGroupsFromDb(
     appMode: AppMode,
-    user: ObserverResponseDto
+    email: string
   ): Promise<ObserverGroupDto[]> {
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
       .query('select')
-      .where((x) => x.userId === user.Guid)
+      .where((x) => x.userId === email)
       .exec();
   }
 }
