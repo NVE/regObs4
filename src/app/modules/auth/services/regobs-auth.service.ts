@@ -9,7 +9,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { nSQL } from '@nano-sql/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService, IAuthAction } from 'ionic-appauth';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { BehaviorSubject, from, lastValueFrom, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, shareReplay, skip, switchMap, take } from 'rxjs/operators';
 import { NanoSql } from '../../../../nanosql';
 import { settings } from '../../../../settings';
@@ -56,10 +56,10 @@ export class RegobsAuthService {
     return this._isLoggingInSubject.asObservable();
   }
 
-  get tokenHandler(): BaseTokenRequestHandler {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (<any>this.authService).tokenHandler;
-  }
+  // get tokenHandler(): BaseTokenRequestHandler {
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   return (<any>this.authService).tokenHandler;
+  // }
 
   constructor(
     private authService: AuthService,
@@ -75,7 +75,7 @@ export class RegobsAuthService {
     private storageBackend: StorageBackend,
     private accountService: AccountService,
   ) {
-    this.setupCustomTokenRequestHandler();
+    // this.setupCustomTokenRequestHandler();
     this.userSettingService.appMode$.subscribe(async (appMode) => {
       const loggedInUser = await this.getLoggedInUserForAppMode(appMode);
       this._loggedInUserSubject.next(loggedInUser);
@@ -102,107 +102,11 @@ export class RegobsAuthService {
     events$.pipe(filter((action) => action.action === AuthActions.SignInFailed && action.error !== 'Handle Not Available'))
       .subscribe((action) => this.showErrorMessage(500, action.error));
 
+    events$.pipe(filter((action) => action.action === AuthActions.RefreshFailed && action.error === 'AADB2C90090'))
+    .subscribe(() => this.signIn(false)); // Hack to detect user is coming from reset password flow. Route user back to login.
+
     events$.pipe(filter((action) => action.action === AuthActions.SignInSuccess))
       .subscribe(() => this.redirectToReturnUrl());
-  }
-
-  private customTokenRequestHandler(
-    configuration: AuthorizationServiceConfiguration,
-    request: TokenRequest
-  ): Promise<TokenResponse> {
-    const data = this.tokenHandler.utils.stringify(request.toStringMap());
-    const postData = {
-      url: configuration.tokenEndpoint,
-      method: 'POST',
-      dataType: 'json', // adding implicit dataType
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      data
-    };
-    const tokenResponse = this.requestor.xhr<
-      TokenResponseJson | TokenErrorJson
-    >(postData);
-
-    return tokenResponse.then(
-      (response) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if ((<any>this.authService).tokenHandler.isTokenResponse(response)) {
-          return new TokenResponse(response as TokenResponseJson);
-        } else {
-          this.logger.error(
-            new Error('Invalid tokenResponse'),
-            DEBUG_TAG,
-            `Token request: ${JSON.stringify(postData)} Auth response: ${
-              response ? JSON.stringify(response) : ''
-            }`
-          );
-          const tokenError = response as TokenErrorJson;
-          return Promise.reject<TokenResponse>(
-            new AppAuthError(
-              tokenError?.error || 'Unknown error',
-              new TokenError(tokenError || { error: 'invalid_request' })
-            )
-          );
-        }
-      },
-      (error) => {
-        let message = undefined;
-        if (error.error && error.error.error_description) {
-          // HttpError response containes detailed error message response
-          const tokenErrorJson: TokenErrorJson = error?.error;
-          // HACK to detect change password
-          if (
-            tokenErrorJson &&
-            tokenErrorJson.error_description &&
-            tokenErrorJson.error_description.indexOf('AADB2C90090') >= 0
-          ) {
-            this.signIn(false);
-            return Promise.reject('Get token after reset password is not supported. Redirect to login page.');
-          }
-          message = tokenErrorJson.error_description;
-          this.logger.error(
-            error,
-            DEBUG_TAG,
-            `Error getting tokenResponse, Response message: ${message}`
-          );
-        }
-        if (message === undefined && error instanceof HttpErrorResponse) {
-          this.logger.error(
-            error,
-            DEBUG_TAG,
-            `Error getting tokenResponse, http status code ${error.status}. Message: ${error.message}`
-          );
-          if (error.status === 0) {
-            message = this.translateService.instant(
-              'LOGIN.SERVICE_UNAVAILABLE'
-            );
-          } else {
-            message = error.message;
-          }
-        }
-
-        this.logger.log(
-          `Token request was: ${JSON.stringify(postData)}`,
-          null,
-          LogLevel.Warning,
-          DEBUG_TAG
-        );
-
-        // Clear session storage token and show error message. User has to retry login.
-        this.storageBackend.removeItem(TOKEN_RESPONSE_KEY);
-        return this.showErrorMessage(500, message).then(() => {
-          throw new AppAuthError(
-            message,
-            new TokenError(error?.error || { error: 'invalid_request' })
-          );
-        });
-      }
-    );
-  }
-
-  private setupCustomTokenRequestHandler() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.tokenHandler.performTokenRequest = (config, request) =>
-      this.customTokenRequestHandler(config, request);
   }
 
   public authorizationCallback(url: string): void {
@@ -263,7 +167,7 @@ export class RegobsAuthService {
     this.logger.debug('getAndSaveObserver(): Trying to get observer from API...', DEBUG_TAG);
     try {
       this._isLoggingInSubject.next(true);
-      const result = await this.getObserverFromApi(idToken);
+      const result = await lastValueFrom(this.accountService.AccountGetObserver());
       if (!result) {
         this.logger.log(
           'Could not get observer after sign in success',
@@ -300,7 +204,7 @@ export class RegobsAuthService {
     }
     try {
       const nick = await this.showSetNickDialog();
-      await this.accountService.AccountUpdateObserver({ Nick: nick }).toPromise();
+      await lastValueFrom(this.accountService.AccountUpdateObserver({ Nick: nick }));
       return { ...user, Nick: nick };
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Could not save nick');
@@ -384,41 +288,14 @@ export class RegobsAuthService {
           : 'UNKNOWN_ERROR';
     const messageText = `LOGIN.${text}`;
     const extraMessage = text === 'UNKNOWN_ERROR' ? ` ${message}` : '';
-    const translations = await this.translateService
-      .get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageText])
-      .toPromise();
+    const translations = await lastValueFrom(this.translateService
+      .get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageText]));
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
       message: `${translations[messageText]}${extraMessage}`,
       buttons: [translations['ALERT.OK']]
     });
     await alert.present();
-  }
-
-  // TODO: Rewrite to @varsom-regobs-common/regobs-api call
-  private async getObserverFromApi(
-    idToken: string
-  ): Promise<ObserverResponseDto> {
-    const userSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
-    const getObserverUrl =
-      settings.authConfig[userSettings.appMode].getObserverUrl;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const apiKey: any = await this.httpClient
-      .get('/assets/apikey.json')
-      .toPromise();
-    if (!apiKey) {
-      throw new Error('apiKey.json not found in assets folder!');
-    }
-    const headers = new HttpHeaders({
-      regObs_apptoken: apiKey.apiKey,
-      ApiJsonVersion: settings.services.regObs.apiJsonVersion,
-      Authorization: `Bearer ${idToken}`
-    });
-    return this.httpClient
-      .get<ObserverResponseDto>(getObserverUrl, { headers })
-      .toPromise();
   }
 
   private getSupportedLoginLocales(langKey: LangKey) {

@@ -5,6 +5,7 @@ import { NgZone } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../settings';
 import { AppMode } from '@varsom-regobs-common/core';
+import { RegobsAuthServiceOverride } from '../services/regobs-auth-service-override';
 
 export const AUTH_CALLBACK_PATH = 'auth/callback';
 
@@ -16,7 +17,7 @@ export const authFactory = (
   storage: StorageBackend,
   userSettingService: UserSettingService
 ): AuthService => {
-  const authService = new AuthService(browser, storage, requestor);
+  const authService = new RegobsAuthServiceOverride(browser, storage, requestor);
   userSettingService.appMode$.subscribe((appMode: AppMode) => {
     authService.authConfig = settings.authConfig[appMode];
     if (!platform.is('cordova')) {
