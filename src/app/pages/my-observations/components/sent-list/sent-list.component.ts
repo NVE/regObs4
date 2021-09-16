@@ -93,6 +93,7 @@ export class SentListComponent implements OnInit {
         20000
       );
       this.loadedRegistrations = result;
+      this.isEmpty.emit(result.length === 0);
     } catch (error) {
       this.loggingService.debug(
         'Could not load my registrations',
@@ -116,7 +117,6 @@ export class SentListComponent implements OnInit {
         if (loggedInUser.isLoggedIn) {
           return this.observationService.getObservationsForCurrentUser(
             appMode,
-            undefined, // loggedInUser.user, TODO: Fix api to use access token to get "my observations"
             langKey,
             pageNumber,
             PAGE_SIZE
