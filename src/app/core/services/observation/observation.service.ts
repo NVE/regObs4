@@ -322,7 +322,6 @@ export class ObservationService {
 
   getObservationsForCurrentUser(
     appMode: AppMode,
-    user: ObserverResponseDto,
     langKey: LangKey,
     pageNr?: number,
     numberOfRecords = 10
@@ -332,7 +331,7 @@ export class ObservationService {
         NumberOfRecords: numberOfRecords,
         LangKey: langKey,
         Offset: (pageNr || 0) * numberOfRecords,
-        ObserverGuid: user.Guid,
+        ObserverGuid: 'user.Guid', //TODO: Create call for "My registrations" in api v5
         TimeZone: moment().format('Z')
       })
       .pipe(catchError((err) => of([]))); // Return empty list if http request fails);

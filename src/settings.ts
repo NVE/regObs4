@@ -5,7 +5,7 @@ export const settings = {
       server_host:
         'https://nveb2c01test.b2clogin.com/nveb2c01test.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
-      end_session_redirect_url: 'regobs://callback',
+      end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://test-api.regobs.no/v5/Account/GetObserver',
@@ -17,7 +17,7 @@ export const settings = {
       server_host:
         'https://nveb2c01staging.b2clogin.com/nveb2c01staging.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
-      end_session_redirect_url: 'regobs://callback',
+      end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://demo-api.regobs.no/v5/Account/GetObserver',
@@ -29,7 +29,7 @@ export const settings = {
       server_host:
         'https://nveb2c01prod.b2clogin.com/nveb2c01prod.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
-      end_session_redirect_url: 'regobs://callback',
+      end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
       pkce: true,
       getObserverUrl: 'https://api.regobs.no/v5/Account/GetObserver',

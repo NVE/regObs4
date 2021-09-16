@@ -8,9 +8,10 @@ import {
   AccountService as RegobsApiAccountService
 } from '@varsom-regobs-common/regobs-api';
 import moment from 'moment';
-import { from, combineLatest, Observable } from 'rxjs';
+import { from, combineLatest, Observable, lastValueFrom, firstValueFrom } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
+import { nSQL } from '@nano-sql/core';
 
 @Injectable({
   providedIn: 'root'
@@ -26,9 +27,7 @@ export class UserGroupService {
   async updateUserGroups() {
     const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
     if (loggedInUser.isLoggedIn) {
-      const appMode = await this.userSettingService.appMode$
-        .pipe(take(1))
-        .toPromise();
+      const appMode = await firstValueFrom(this.userSettingService.appMode$);
       await this.checkLastUpdatedAndUpdateDataIfNeeded(
         appMode,
         loggedInUser.email
@@ -54,11 +53,47 @@ export class UserGroupService {
   async updateUserGroupsForUser(appMode: AppMode, email: string) {
     const dataLoadId = this.getDataLoadId(appMode, email);
     await this.dataLoadService.startLoading(dataLoadId);
-    const result = await this.accountApiService
-      .AccountGetObserverGroups()
-      .toPromise();
-    this.regobsAuthService.saveUserGroups(appMode, email, result);
+    const result = await lastValueFrom(this.accountApiService
+      .AccountGetObserverGroups());
+    this.saveUserGroups(appMode, email, result);
     await this.dataLoadService.loadingCompleted(dataLoadId, result.length);
+  }
+
+  async saveUserGroups(
+    appMode: AppMode,
+    email: string,
+    observerGroups: ObserverGroupDto[]
+  ): Promise<void> {
+    const userGroups = (observerGroups || []).map((val) => {
+      return {
+        key: `${email}_${val.Id}`,
+        userId: email,
+        Id: val.Id,
+        Name: val.Name
+      };
+    });
+    const instanceName = NanoSql.getInstanceName(
+      NanoSql.TABLES.OBSERVER_GROUPS.name,
+      appMode
+    );
+    await nSQL(instanceName).loadJS(userGroups);
+    await this.deleteUserGroupsNoLongerInResult(
+      appMode,
+      userGroups.map((ug) => ug.key)
+    );
+  }
+
+  private async deleteUserGroupsNoLongerInResult(
+    appMode: AppMode,
+    ids: string[]
+  ) {
+    await NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
+      .query('delete')
+      .where(
+        (dbGroup: { key: string; userId: string; Id: number; Name: string }) =>
+          ids.indexOf(dbGroup.key) < 0
+      )
+      .exec();
   }
 
   private getDataLoadId(appMode: AppMode, email: string) {
