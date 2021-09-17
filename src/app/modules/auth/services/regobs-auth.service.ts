@@ -4,7 +4,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService } from 'ionic-appauth';
 import { BehaviorSubject, firstValueFrom, lastValueFrom, Observable } from 'rxjs';
-import { filter, map, shareReplay, skip, switchMap } from 'rxjs/operators';
+import { filter, map, shareReplay, skip, switchMap, take, tap } from 'rxjs/operators';
 import { LangKey } from '@varsom-regobs-common/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
@@ -49,6 +49,13 @@ export class RegobsAuthService {
 
       this.loggedInUser$ = this.authService.initComplete$.pipe(
             switchMap(() => tokenWithClaims$),
+            tap((tokenResponseWithClaims) => {
+              const tokenResponse = tokenResponseWithClaims.tokenResponse;
+              const issuedAt = tokenResponseWithClaims.tokenResponse?.issuedAt;
+              const issuedAtNice = issuedAt ? new Date(issuedAt * 1000) : undefined;
+              const gotToken = tokenResponse?.idToken ? 'OK' : 'NO TOKEN'
+              this.logger.debug(`Token: ${gotToken}, issued at: ${issuedAtNice}, expires in: ${tokenResponse?.expiresIn}`, DEBUG_TAG)
+            }),
             map((tokenResponseWithClaims) => 
               ({ 
                 isLoggedIn: tokenResponseWithClaims.tokenResponse != null, 
@@ -72,8 +79,17 @@ export class RegobsAuthService {
       });
 
       this.userSettingService.appMode$.pipe(skip(1)).subscribe(() => {
-        this.logout(); // When user chang app mode, just logout and force user to login again for the new environment.
+        this.logout(); // When user change app mode, just logout and force user to login again for the new environment.
       });
+
+      this.loggedInUser$.pipe(
+        tap((user) =>  this.logger.debug(`User '${user?.email}' logged in?: ${user.isLoggedIn}`, DEBUG_TAG)),
+        filter((user) => user.isLoggedIn),
+        take(1))
+        .subscribe(() => {
+          this.logger.debug(`Try to refresh token...`, DEBUG_TAG);
+          this.authService.refreshToken();
+        });
   }
 
   public authorizationCallback(url: string): void {
