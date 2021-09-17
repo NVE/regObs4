@@ -4,19 +4,18 @@ import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService } from 'ionic-appauth';
 import { BehaviorSubject, firstValueFrom, lastValueFrom, Observable } from 'rxjs';
-import { filter, map, shareReplay, skip, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, shareReplay, skip, switchMap, tap } from 'rxjs/operators';
 import { LangKey } from '@varsom-regobs-common/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
 import { AccountService, ObserverResponseDto } from '@varsom-regobs-common/regobs-api';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
-import { StorageBackend, TokenResponse } from '@openid/appauth';
+import { StorageBackend } from '@openid/appauth';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
 const TOKEN_RESPONSE_KEY = 'token_response';
-const TOKEN_MIN_AGE_TO_REFRESH = 4 * 60; //4 minutter i sekunder
 
 @Injectable({
   providedIn: 'root'
@@ -84,20 +83,6 @@ export class RegobsAuthService {
       this.userSettingService.appMode$.pipe(skip(1)).subscribe(() => {
         this.logout(); // When user change app mode, just logout and force user to login again for the new environment.
       });
-
-      this.loggedInUser$.pipe(
-        tap((user) =>  this.logger.debug(`User '${user?.email}' logged in?: ${user.isLoggedIn}`, DEBUG_TAG)),
-        filter((user) => user.isLoggedIn),
-        take(1))
-        .subscribe((user) => {
-          const now = new Date().getTime() / 1000;
-          if (user.tokenIssuedAt && now - user.tokenIssuedAt < TOKEN_MIN_AGE_TO_REFRESH) {
-            this.logger.debug(`Token is less than ${TOKEN_MIN_AGE_TO_REFRESH}s old, so skip refresh of token`, DEBUG_TAG);
-          } else {
-            this.logger.debug(`Try to refresh token...`, DEBUG_TAG);
-            this.refreshToken();
-          }
-        });
   }
 
   public refreshToken(): Promise<void> {
