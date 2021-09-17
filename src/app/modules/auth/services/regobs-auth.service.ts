@@ -16,6 +16,7 @@ import { StorageBackend, TokenResponse } from '@openid/appauth';
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
 const TOKEN_RESPONSE_KEY = 'token_response';
+const TOKEN_MIN_AGE_TO_REFRESH = 2400; //seconds
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +59,8 @@ export class RegobsAuthService {
       }),
       map((tokenResponseWithClaims) =>
         ({
-          isLoggedIn: tokenResponseWithClaims.tokenResponse != null,
+          isLoggedIn: tokenResponseWithClaims?.tokenResponse != null,
+          tokenIssuedAt: tokenResponseWithClaims?.tokenResponse?.issuedAt,
           email: tokenResponseWithClaims?.claims?.email
         })),
       shareReplay(1));
@@ -86,9 +88,14 @@ export class RegobsAuthService {
       tap((user) =>  this.logger.debug(`User '${user?.email}' logged in?: ${user.isLoggedIn}`, DEBUG_TAG)),
       filter((user) => user.isLoggedIn),
       take(1))
-      .subscribe(() => {
-        this.logger.debug('Try to refresh token...', DEBUG_TAG);
-        this.authService.refreshToken();
+      .subscribe((user) => {
+        const now = new Date().getTime() / 1000;
+        if (user.tokenIssuedAt && now - user.tokenIssuedAt < TOKEN_MIN_AGE_TO_REFRESH) {
+          this.logger.debug(`Token is less than ${TOKEN_MIN_AGE_TO_REFRESH}s old, so skip refresh of token`, DEBUG_TAG);
+        } else {
+          this.logger.debug('Try to refresh token...', DEBUG_TAG);
+          this.authService.refreshToken();
+        }
       });
   }
 
