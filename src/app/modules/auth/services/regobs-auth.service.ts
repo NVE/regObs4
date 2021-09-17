@@ -16,7 +16,7 @@ import { StorageBackend, TokenResponse } from '@openid/appauth';
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
 const TOKEN_RESPONSE_KEY = 'token_response';
-const TOKEN_MIN_AGE_TO_REFRESH = 2400; //seconds
+const TOKEN_MIN_AGE_TO_REFRESH = 4 * 60; //4 minutter i sekunder
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +60,7 @@ export class RegobsAuthService {
       map((tokenResponseWithClaims) =>
         ({
           isLoggedIn: tokenResponseWithClaims?.tokenResponse != null,
+          token: tokenResponseWithClaims?.tokenResponse?.idToken,
           tokenIssuedAt: tokenResponseWithClaims?.tokenResponse?.issuedAt,
           email: tokenResponseWithClaims?.claims?.email
         })),
@@ -94,10 +95,15 @@ export class RegobsAuthService {
           this.logger.debug(`Token is less than ${TOKEN_MIN_AGE_TO_REFRESH}s old, so skip refresh of token`, DEBUG_TAG);
         } else {
           this.logger.debug('Try to refresh token...', DEBUG_TAG);
-          this.authService.refreshToken();
+          this.refreshToken();
         }
       });
   }
+
+  public refreshToken(): Promise<void> {
+    return this.authService.refreshToken();
+  }
+
 
   public authorizationCallback(url: string): void {
     try {
@@ -105,10 +111,6 @@ export class RegobsAuthService {
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Could not call authorizationCallback');
     }
-  }
-
-  public getValidToken(): Promise<TokenResponse> {
-    return this.authService.getValidToken();
   }
 
   public async signIn(setReturnUrl = true): Promise<void> {
