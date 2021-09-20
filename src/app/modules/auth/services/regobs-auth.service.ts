@@ -15,7 +15,9 @@ import { StorageBackend } from '@openid/appauth';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
-const TOKEN_RESPONSE_KEY = 'token_response';
+export const TOKEN_RESPONSE_KEY = 'token_response';
+export const TOKEN_RESPONSE_FULL_KEY = "token_response_full";
+  
 
 @Injectable({
   providedIn: 'root'

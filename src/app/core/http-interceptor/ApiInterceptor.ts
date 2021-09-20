@@ -10,7 +10,7 @@ import { EMPTY, from, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { settings } from '../../../settings';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
+import { RegobsAuthService, TOKEN_RESPONSE_FULL_KEY } from 'src/app/modules/auth/services/regobs-auth.service';
 
 /**
  * Sender innloggings-token med kall til Regobs API der kallene krever at man er logget inn.
@@ -41,7 +41,7 @@ export class ApiInterceptor implements HttpInterceptor {
       return next.handle(req).pipe(
         tap((response) => {
           if (response.type === HttpEventType.Response) {
-            window.localStorage.setItem('token_response_full', JSON.stringify(response.body));
+            window.localStorage.setItem(TOKEN_RESPONSE_FULL_KEY, JSON.stringify(response.body));
           }
         })
       );
@@ -83,3 +83,4 @@ export class ApiInterceptor implements HttpInterceptor {
     throw (error);
   }
 }
+
