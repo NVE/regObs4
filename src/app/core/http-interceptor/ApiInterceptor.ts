@@ -1,9 +1,10 @@
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import {
   HttpRequest,
   HttpInterceptor,
   HttpHandler,
-  HttpEvent
+  HttpEvent,
+  HttpEventType
 } from '@angular/common/http';
 import { EMPTY, from, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -35,6 +36,16 @@ export class ApiInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    // TODO: Lag en "isB2CApi" metode a la den over for å sjekke mot url i settings
+    if (req.url.indexOf("/token") > -1) {
+      return next.handle(req).pipe(
+        tap((response) => {
+          if (response.type === HttpEventType.Response) {
+            window.localStorage.setItem('token_response_full', JSON.stringify(response.body));
+          }
+        })
+      );
+    }
     if (this.isRegObsApi(req.url) && !req.headers.has('Authorization')) {
       return this.addAuthHeader(req).pipe(
         switchMap((requestWithAuthHeader) => {
