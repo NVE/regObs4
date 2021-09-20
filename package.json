@@ -172,6 +172,7 @@
     "manifest-android": "^0.1.1",
     "ng-swagger-gen": "^2.3.1",
     "plist": "^3.0.4",
+    "ngx-translate-testing": "^5.2.0",
     "prettier": "^2.3.2",
     "prettier-eslint": "^13.0.0",
     "protractor": "~7.0.0",
