@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GeoIconComponent } from './geo-icon.component';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from '@varsom-regobs-common/core';
 import { IonicModule } from '@ionic/angular';
 
 describe('GeoIconComponent', () => {
@@ -33,12 +33,12 @@ describe('GeoIconComponent', () => {
   });
 
   it('geoHazard water and dirt should return class name water-dirt', () => {
-    component.geoHazards = [GeoHazard.Water, GeoHazard.Dirt];
+    component.geoHazards = [GeoHazard.Water, GeoHazard.Soil];
     expect(component.geoClass).toEqual('water-dirt');
   });
 
   it('geoHazard water and dirt should return svg src water_dirt.svg', () => {
-    component.geoHazards = [GeoHazard.Water, GeoHazard.Dirt];
+    component.geoHazards = [GeoHazard.Water, GeoHazard.Soil];
     expect(component.iconSrc).toEqual('/assets/icon/water_dirt.svg');
   });
 });

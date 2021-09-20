@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { GeneralObservationSummaryProvider } from './general-observation.summary-provider';
-import NORWEGIAN_TRANSLATIONS from '../../../../assets/i18n/no.json';
-import ENGLISH_TRANSLATIONS from '../../../../assets/i18n/en.json';
+import NORWEGIAN_TRANSLATIONS from '@varsom-regobs-common/translations/api/no.json';
+import ENGLISH_TRANSLATIONS from '@varsom-regobs-common/translations/api/en.json';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { KdvService } from '../../kdv/kdv.service';
