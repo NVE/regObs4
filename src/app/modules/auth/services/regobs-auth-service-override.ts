@@ -71,7 +71,7 @@ export class RegobsAuthServiceOverride extends AuthService {
         return; // Do not clear token from storage if refresh token is still valid
       }
     }
-    this.storage.removeItem(TOKEN_RESPONSE_KEY);
-    this.storage.removeItem(TOKEN_RESPONSE_FULL_KEY);
+    await this.storage.removeItem(TOKEN_RESPONSE_KEY);
+    await this.storage.removeItem(TOKEN_RESPONSE_FULL_KEY);
   }
 }

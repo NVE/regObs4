@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, NavController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService } from 'ionic-appauth';
 import {
   BehaviorSubject,
   firstValueFrom,
+  from,
   lastValueFrom,
   Observable
 } from 'rxjs';
@@ -20,6 +21,7 @@ import {
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
 import { StorageBackend } from '@openid/appauth';
+import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -48,7 +50,8 @@ export class RegobsAuthService {
     private navCtrl: NavController,
     private location: Location,
     private accountService: AccountService,
-    private storage: StorageBackend
+    private storage: StorageBackend,
+    private platform: Platform
   ) {
     const tokenWithClaims$ = this.authService.initComplete$.pipe(
       switchMap(() =>
@@ -71,7 +74,7 @@ export class RegobsAuthService {
         const issuedAtNice = issuedAt ? new Date(issuedAt * 1000) : undefined;
         const gotToken = tokenResponse?.idToken ? 'OK' : 'NO TOKEN';
         this.logger.debug(
-          `Token: ${gotToken}, issued at: ${issuedAtNice}, expires in: ${tokenResponse?.expiresIn}`,
+          `Token: ${gotToken}, issued at: ${issuedAtNice}`,
           DEBUG_TAG
         );
       }),
@@ -118,6 +121,23 @@ export class RegobsAuthService {
     this.userSettingService.appMode$.pipe(skip(1)).subscribe(() => {
       this.logout(); // When user change app mode, just logout and force user to login again for the new environment.
     });
+
+    this.initRefreshTokenOnStartup();
+  }
+
+  private initRefreshTokenOnStartup() {
+    this.authService.initComplete$
+      .pipe(
+        switchMap(() =>
+          isAndroidOrIos(this.platform)
+            ? this.platform.resume
+            : from(this.platform.ready())
+        )
+      )
+      .subscribe(() => {
+        this.logger.debug('App resumed. Refresh token...', DEBUG_TAG);
+        this.refreshToken();
+      });
   }
 
   public refreshToken(): Promise<void> {
