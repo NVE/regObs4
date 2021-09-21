@@ -3,12 +3,20 @@ import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService } from 'ionic-appauth';
-import { BehaviorSubject, firstValueFrom, lastValueFrom, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  lastValueFrom,
+  Observable
+} from 'rxjs';
 import { filter, map, shareReplay, skip, switchMap, tap } from 'rxjs/operators';
 import { LangKey } from '@varsom-regobs-common/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
-import { AccountService, ObserverResponseDto } from '@varsom-regobs-common/regobs-api';
+import {
+  AccountService,
+  ObserverResponseDto
+} from '@varsom-regobs-common/regobs-api';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
 import { StorageBackend } from '@openid/appauth';
@@ -16,14 +24,12 @@ import { StorageBackend } from '@openid/appauth';
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
 export const TOKEN_RESPONSE_KEY = 'token_response';
-export const TOKEN_RESPONSE_FULL_KEY = "token_response_full";
-  
+export const TOKEN_RESPONSE_FULL_KEY = 'token_response_full';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegobsAuthService {
-
   private _isLoggingInSubject = new BehaviorSubject<boolean>(false);
 
   public readonly loggedInUser$: Observable<LoggedInUser>;
@@ -42,55 +48,81 @@ export class RegobsAuthService {
     private navCtrl: NavController,
     private location: Location,
     private accountService: AccountService,
-    private storage: StorageBackend,
+    private storage: StorageBackend
   ) {
-      const tokenWithClaims$ = this.authService.initComplete$.pipe(
-          switchMap(() => this.authService.token$.pipe(map((tokenResponse) => ({ 
-            tokenResponse, 
-            claims: tokenResponse?.idToken ? this.parseJwt(tokenResponse.idToken) : undefined  })))));
+    const tokenWithClaims$ = this.authService.initComplete$.pipe(
+      switchMap(() =>
+        this.authService.token$.pipe(
+          map((tokenResponse) => ({
+            tokenResponse,
+            claims: tokenResponse?.idToken
+              ? this.parseJwt(tokenResponse.idToken)
+              : undefined
+          }))
+        )
+      )
+    );
 
-      this.loggedInUser$ = this.authService.initComplete$.pipe(
-            switchMap(() => tokenWithClaims$),
-            tap((tokenResponseWithClaims) => {
-              const tokenResponse = tokenResponseWithClaims.tokenResponse;
-              const issuedAt = tokenResponseWithClaims.tokenResponse?.issuedAt;
-              const issuedAtNice = issuedAt ? new Date(issuedAt * 1000) : undefined;
-              const gotToken = tokenResponse?.idToken ? 'OK' : 'NO TOKEN'
-              this.logger.debug(`Token: ${gotToken}, issued at: ${issuedAtNice}, expires in: ${tokenResponse?.expiresIn}`, DEBUG_TAG)
-            }),
-            map((tokenResponseWithClaims) => 
-              ({ 
-                isLoggedIn: tokenResponseWithClaims?.tokenResponse != null, 
-                token: tokenResponseWithClaims?.tokenResponse?.idToken,
-                tokenIssuedAt: tokenResponseWithClaims?.tokenResponse?.issuedAt,
-                email: tokenResponseWithClaims?.claims?.email 
-              })), 
-            shareReplay(1));
-  
-      const events$ = this.authService.initComplete$.pipe(
-        switchMap(() => this.authService.events$));
-  
-      events$.pipe(filter((action) => action.action === AuthActions.SignInFailed && action.error !== 'Handle Not Available'))
+    this.loggedInUser$ = this.authService.initComplete$.pipe(
+      switchMap(() => tokenWithClaims$),
+      tap((tokenResponseWithClaims) => {
+        const tokenResponse = tokenResponseWithClaims.tokenResponse;
+        const issuedAt = tokenResponseWithClaims.tokenResponse?.issuedAt;
+        const issuedAtNice = issuedAt ? new Date(issuedAt * 1000) : undefined;
+        const gotToken = tokenResponse?.idToken ? 'OK' : 'NO TOKEN';
+        this.logger.debug(
+          `Token: ${gotToken}, issued at: ${issuedAtNice}, expires in: ${tokenResponse?.expiresIn}`,
+          DEBUG_TAG
+        );
+      }),
+      map((tokenResponseWithClaims) => ({
+        isLoggedIn: tokenResponseWithClaims?.tokenResponse != null,
+        token: tokenResponseWithClaims?.tokenResponse?.idToken,
+        tokenIssuedAt: tokenResponseWithClaims?.tokenResponse?.issuedAt,
+        email: tokenResponseWithClaims?.claims?.email
+      })),
+      shareReplay(1)
+    );
+
+    const events$ = this.authService.initComplete$.pipe(
+      switchMap(() => this.authService.events$)
+    );
+
+    events$
+      .pipe(
+        filter(
+          (action) =>
+            action.action === AuthActions.SignInFailed &&
+            action.error !== 'Handle Not Available'
+        )
+      )
       .subscribe((action) => this.showErrorMessage(500, action.error));
-  
-      events$.pipe(filter((action) => action.action === AuthActions.RefreshFailed && action.error === 'AADB2C90090'))
+
+    events$
+      .pipe(
+        filter(
+          (action) =>
+            action.action === AuthActions.RefreshFailed &&
+            action.error === 'AADB2C90090'
+        )
+      )
       .subscribe(() => this.signIn(false)); // Hack to detect user is coming from reset password flow. Route user back to login.
-  
-      events$.pipe(filter((action) => action.action === AuthActions.SignInSuccess))
+
+    events$
+      .pipe(filter((action) => action.action === AuthActions.SignInSuccess))
       .subscribe(async () => {
         await this.redirectToReturnUrl();
-        await this.checkAndSetNickIfNickIsNull();    
+        await this.checkAndSetNickIfNickIsNull();
       });
 
-      this.userSettingService.appMode$.pipe(skip(1)).subscribe(() => {
-        this.logout(); // When user change app mode, just logout and force user to login again for the new environment.
-      });
+    this.userSettingService.appMode$.pipe(skip(1)).subscribe(() => {
+      this.logout(); // When user change app mode, just logout and force user to login again for the new environment.
+    });
   }
 
   public refreshToken(): Promise<void> {
     return this.authService.refreshToken();
-  }             
-
+  }
 
   public authorizationCallback(url: string): void {
     try {
@@ -115,19 +147,23 @@ export class RegobsAuthService {
     }
   }
 
-  public async logout(): Promise<void> { 
+  public async logout(): Promise<void> {
     await this.storage.removeItem(TOKEN_RESPONSE_KEY);
     this.authService.endSessionCallback();
   }
 
   private async checkAndSetNickIfNickIsNull(): Promise<ObserverResponseDto> {
     try {
-      const user = await lastValueFrom(this.accountService.AccountGetObserver());
+      const user = await lastValueFrom(
+        this.accountService.AccountGetObserver()
+      );
       if (user && user.Nick != null && user.Nick != '') {
         return;
-      } 
+      }
       const nick = await this.showSetNickDialog();
-      await lastValueFrom(this.accountService.AccountUpdateObserver({ Nick: nick }));
+      await lastValueFrom(
+        this.accountService.AccountUpdateObserver({ Nick: nick })
+      );
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Could not save nick');
     }
@@ -137,8 +173,9 @@ export class RegobsAuthService {
     const headerTextKey = 'SET_NICK_ALERT.INPUT_TEXT';
     const messageTextKey = 'SET_NICK_ALERT.HELP_TEXT';
     const okTextKey = 'DIALOGS.OK';
-    const translations = await lastValueFrom(this.translateService
-      .get([headerTextKey, messageTextKey, okTextKey]));
+    const translations = await lastValueFrom(
+      this.translateService.get([headerTextKey, messageTextKey, okTextKey])
+    );
     const alert = await this.alertController.create({
       header: translations[headerTextKey],
       message: translations[messageTextKey],
@@ -195,8 +232,13 @@ export class RegobsAuthService {
         : 'UNKNOWN_ERROR';
     const messageText = `LOGIN.${text}`;
     const extraMessage = text === 'UNKNOWN_ERROR' ? ` ${message}` : '';
-    const translations = await lastValueFrom(this.translateService
-      .get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageText]));
+    const translations = await lastValueFrom(
+      this.translateService.get([
+        'ALERT.DEFAULT_HEADER',
+        'ALERT.OK',
+        messageText
+      ])
+    );
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
       message: `${translations[messageText]}${extraMessage}`,
