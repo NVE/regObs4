@@ -18,8 +18,10 @@
     "sourceType": "module" // Allows for the use of imports
   },
   "plugins": ["@typescript-eslint"],
+  "ignorePatterns": ["src/app/modules/regobs-api/**"],
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-unused-vars": "error", // TODO Ubrukte funksjoner?
     "curly": "error",
     "@typescript-eslint/interface-name-prefix": "off",
