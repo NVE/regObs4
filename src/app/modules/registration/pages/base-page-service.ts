@@ -41,50 +41,21 @@ export class BasePageService {
     private ngZone: NgZone,
     private alertController: AlertController,
     private translateService: TranslateService,
-    private loggingService: LoggingService,
+    private loggingService: LoggingService
   ) {}
 
-  async confirmLeave(
-    registration: IRegistration,
-    registrationTid: RegistrationTid,
-    onReset?: () => void
-  ) {
-    const leaveText = await this.translateService
-      .get('REGISTRATION.REQUIRED_FIELDS_MISSING')
-      .toPromise();
-    return this.createResetDialog(
-      leaveText,
-      registration,
-      registrationTid,
-      onReset
-    );
+  async confirmLeave(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+    const leaveText = await this.translateService.get('REGISTRATION.REQUIRED_FIELDS_MISSING').toPromise();
+    return this.createResetDialog(leaveText, registration, registrationTid, onReset);
   }
 
-  async confirmReset(
-    registration: IRegistration,
-    registrationTid: RegistrationTid,
-    onReset?: () => void
-  ) {
-    const leaveText = await this.translateService
-      .get('REGISTRATION.CONFIRM_RESET')
-      .toPromise();
-    return this.createResetDialog(
-      leaveText,
-      registration,
-      registrationTid,
-      onReset
-    );
+  async confirmReset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+    const leaveText = await this.translateService.get('REGISTRATION.CONFIRM_RESET').toPromise();
+    return this.createResetDialog(leaveText, registration, registrationTid, onReset);
   }
 
-  private async createResetDialog(
-    message: string,
-    registration: IRegistration,
-    registrationTid: RegistrationTid,
-    onReset?: () => void
-  ) {
-    const translations = await this.translateService
-      .get(['DIALOGS.CANCEL', 'DIALOGS.YES'])
-      .toPromise();
+  private async createResetDialog(message: string, registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+    const translations = await this.translateService.get(['DIALOGS.CANCEL', 'DIALOGS.YES']).toPromise();
     const alert = await this.alertController.create({
       message,
       buttons: [
@@ -106,17 +77,11 @@ export class BasePageService {
     return reset;
   }
 
-  async reset(
-    registration: IRegistration,
-    registrationTid: RegistrationTid,
-    onReset?: () => void
-  ) {
+  async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
     this.Zone.run(() => {
       if (registrationTid) {
-        registration.request[
-          getPropertyName(registrationTid)
-        ] = this.getDefaultValue(registrationTid);
-        this.resetImages(registration, registrationTid);
+        registration.request[getPropertyName(registrationTid)] = this.getDefaultValue(registrationTid);
+        this.resetImages(registration);
       }
       if (onReset) {
         onReset();
@@ -125,10 +90,7 @@ export class BasePageService {
     await this.registrationService.saveRegistrationAsync(registration);
   }
 
-  createDefaultProps(
-    registration: IRegistration,
-    registrationTid: RegistrationTid
-  ) {
+  createDefaultProps(registration: IRegistration, registrationTid: RegistrationTid) {
     const propName = getPropertyName(registrationTid);
     if (!registration.request[propName]) {
       // Init to new object if null
@@ -144,12 +106,17 @@ export class BasePageService {
     }
   }
 
-  resetImages(registration: IRegistration, registrationTid: RegistrationTid) {
-    this.newAttachmentService.getUploadedAttachments(registration.id).pipe(switchMap((attachments) => 
-      forkJoin(attachments.map((a) => this.newAttachmentService.removeAttachment(registration.id, a.id))))).subscribe(() => {
-        this.loggingService.debug('Reset images complete', DEBUG_TAG);
-      }, (error) => {
-        this.loggingService.error(error, DEBUG_TAG, 'Could not reset images');
-      });
+  resetImages(registration: IRegistration) {
+    this.newAttachmentService
+      .getAttachments(registration.id)
+      .pipe(switchMap((attachments) => forkJoin(attachments.map((a) => this.newAttachmentService.removeAttachment(registration.id, a.id)))))
+      .subscribe(
+        () => {
+          this.loggingService.debug('Reset images complete', DEBUG_TAG);
+        },
+        (error) => {
+          this.loggingService.error(error, DEBUG_TAG, 'Could not reset images');
+        }
+      );
   }
 }
