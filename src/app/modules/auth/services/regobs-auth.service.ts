@@ -35,6 +35,7 @@ export class RegobsAuthService {
   private _isLoggingInSubject = new BehaviorSubject<boolean>(false);
 
   public readonly loggedInUser$: Observable<LoggedInUser>;
+  private readonly initComplete$: Observable<boolean>;
 
   get isLoggingIn$(): Observable<boolean> {
     return this._isLoggingInSubject.asObservable();
@@ -53,7 +54,12 @@ export class RegobsAuthService {
     private storage: StorageBackend,
     private platform: Platform
   ) {
-    const tokenWithClaims$ = this.authService.initComplete$.pipe(
+    this.initComplete$ = this.authService.initComplete$.pipe(
+      filter((isComplete) => isComplete),
+      shareReplay(1)
+    );
+
+    const tokenWithClaims$ = this.initComplete$.pipe(
       switchMap(() =>
         this.authService.token$.pipe(
           map((tokenResponse) => ({
@@ -66,7 +72,7 @@ export class RegobsAuthService {
       )
     );
 
-    this.loggedInUser$ = this.authService.initComplete$.pipe(
+    this.loggedInUser$ = this.initComplete$.pipe(
       switchMap(() => tokenWithClaims$),
       tap((tokenResponseWithClaims) => {
         const tokenResponse = tokenResponseWithClaims.tokenResponse;
@@ -87,7 +93,7 @@ export class RegobsAuthService {
       shareReplay(1)
     );
 
-    const events$ = this.authService.initComplete$.pipe(
+    const events$ = this.initComplete$.pipe(
       switchMap(() => this.authService.events$)
     );
 
@@ -126,7 +132,7 @@ export class RegobsAuthService {
   }
 
   private initRefreshTokenOnStartup() {
-    this.authService.initComplete$
+    this.initComplete$
       .pipe(
         switchMap(() =>
           isAndroidOrIos(this.platform)

@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   JQueryRequestor,
   LocalStorageBackend,
@@ -53,25 +54,28 @@ export class RegobsAuthServiceOverride extends AuthService {
    * Will only remove cached tokens if refresh token is expired
    */
   public async refreshToken() {
-    await super.requestTokenRefresh().catch((response) => {
-      this.clearTokensIfRefreshTokenIsExpired();
-      this.notifyActionListers(AuthActionBuilder.RefreshFailed(response));
+    await super.requestTokenRefresh().catch((error) => {
+      this.clearTokensIfRefreshTokenIsExpired(error);
     });
   }
 
-  private async clearTokensIfRefreshTokenIsExpired() {
-    const tokenResponseFullString: string | null = await this.storage.getItem(
-      TOKEN_RESPONSE_FULL_KEY
-    );
-    if (tokenResponseFullString != null) {
-      const tokenResponseFull = new TokenResponseFull(
-        JSON.parse(tokenResponseFullString)
+  private async clearTokensIfRefreshTokenIsExpired(error: unknown) {
+    if (error && error instanceof HttpErrorResponse && error.status !== 401) {
+      // Only check if refresh token is valid if not 401 - Unauthorized is returned from token endpoint
+      const tokenResponseFullString: string | null = await this.storage.getItem(
+        TOKEN_RESPONSE_FULL_KEY
       );
-      if (tokenResponseFull.isRefreshTokenValid()) {
-        return; // Do not clear token from storage if refresh token is still valid
+      if (tokenResponseFullString != null) {
+        const tokenResponseFull = new TokenResponseFull(
+          JSON.parse(tokenResponseFullString)
+        );
+        if (tokenResponseFull.isRefreshTokenValid()) {
+          return; // Do not clear token from storage if refresh token is still valid
+        }
       }
     }
     await this.storage.removeItem(TOKEN_RESPONSE_KEY);
     await this.storage.removeItem(TOKEN_RESPONSE_FULL_KEY);
+    this.notifyActionListers(AuthActionBuilder.RefreshFailed(error));
   }
 }
