@@ -28,7 +28,7 @@ export class ApiInterceptor implements HttpInterceptor {
     private storage: StorageBackend
   ) {}
 
-  private isRegObsApi(url: string) {
+  private isRegObsApi(url: string): boolean {
     return (
       url.startsWith(
         `${settings.services.regObs.apiUrl['TEST']}/Registration`
@@ -45,12 +45,15 @@ export class ApiInterceptor implements HttpInterceptor {
     );
   }
 
+  private isB2cApi(url: string): boolean {
+    return url.indexOf('/token') > -1;
+  }
+
   intercept(
-    req: HttpRequest<any>,
+    req: HttpRequest<unknown>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    // TODO: Lag en "isB2CApi" metode a la den over for å sjekke mot url i settings
-    if (req.url.indexOf('/token') > -1) {
+  ): Observable<HttpEvent<unknown>> {
+    if (this.isB2cApi(req.url)) {
       return next.handle(req).pipe(
         tap((response) => {
           if (response.type === HttpEventType.Response) {
@@ -77,8 +80,8 @@ export class ApiInterceptor implements HttpInterceptor {
   }
 
   private addAuthHeader(
-    request: HttpRequest<any>
-  ): Observable<HttpRequest<any>> {
+    request: HttpRequest<unknown>
+  ): Observable<HttpRequest<unknown>> {
     return this.regobsAuthService.loggedInUser$.pipe(
       catchError((err) => {
         this.loggerService.debug(
@@ -103,7 +106,7 @@ export class ApiInterceptor implements HttpInterceptor {
     error,
     request,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<unknown>> {
     if (error.status === 401) {
       // Vi er ikke autorisert, trolig fordi tokenet ikke er gyldig
       this.loggerService.debug(
