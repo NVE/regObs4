@@ -17,8 +17,7 @@ import {
   distinctUntilChanged,
   pairwise,
   filter,
-  take,
-  debounceTime
+  take
 } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
@@ -182,7 +181,7 @@ export class DataMarshallService implements OnReset {
           this.loggingService.configureLogging(appMode)
         )
       );
-      
+
       this.subscriptions.push(
         this.platform.pause.subscribe(() => {
           this.loggingService.debug(

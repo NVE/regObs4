@@ -10,7 +10,15 @@ import {
   lastValueFrom,
   Observable
 } from 'rxjs';
-import { filter, map, shareReplay, skip, switchMap, tap } from 'rxjs/operators';
+import {
+  filter,
+  map,
+  shareReplay,
+  skip,
+  switchMap,
+  tap,
+  withLatestFrom
+} from 'rxjs/operators';
 import { LangKey } from '@varsom-regobs-common/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
@@ -20,7 +28,7 @@ import {
 } from '@varsom-regobs-common/regobs-api';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
-import { StorageBackend } from '@openid/appauth';
+import { nowInSeconds, StorageBackend } from '@openid/appauth';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 
 const DEBUG_TAG = 'RegobsAuthService';
@@ -59,39 +67,7 @@ export class RegobsAuthService {
       shareReplay(1)
     );
 
-    const tokenWithClaims$ = this.initComplete$.pipe(
-      switchMap(() =>
-        this.authService.token$.pipe(
-          map((tokenResponse) => ({
-            tokenResponse,
-            claims: tokenResponse?.idToken
-              ? this.parseJwt(tokenResponse.idToken)
-              : undefined
-          }))
-        )
-      )
-    );
-
-    this.loggedInUser$ = this.initComplete$.pipe(
-      switchMap(() => tokenWithClaims$),
-      tap((tokenResponseWithClaims) => {
-        const tokenResponse = tokenResponseWithClaims.tokenResponse;
-        const issuedAt = tokenResponseWithClaims.tokenResponse?.issuedAt;
-        const issuedAtNice = issuedAt ? new Date(issuedAt * 1000) : undefined;
-        const gotToken = tokenResponse?.idToken ? 'OK' : 'NO TOKEN';
-        this.logger.debug(
-          `Token: ${gotToken}, issued at: ${issuedAtNice}`,
-          DEBUG_TAG
-        );
-      }),
-      map((tokenResponseWithClaims) => ({
-        isLoggedIn: tokenResponseWithClaims?.tokenResponse != null,
-        token: tokenResponseWithClaims?.tokenResponse?.idToken,
-        tokenIssuedAt: tokenResponseWithClaims?.tokenResponse?.issuedAt,
-        email: tokenResponseWithClaims?.claims?.email
-      })),
-      shareReplay(1)
-    );
+    this.loggedInUser$ = this.createLoggedInUser$();
 
     const events$ = this.initComplete$.pipe(
       switchMap(() => this.authService.events$)
@@ -131,6 +107,45 @@ export class RegobsAuthService {
     this.initRefreshTokenOnStartup();
   }
 
+  private createLoggedInUser$(): Observable<LoggedInUser> {
+    const tokenWithClaims$ = this.createTokenWithClaims$();
+    return this.initComplete$.pipe(
+      switchMap(() => tokenWithClaims$),
+      tap((tokenResponseWithClaims) => {
+        const tokenResponse = tokenResponseWithClaims.tokenResponse;
+        const issuedAt = tokenResponseWithClaims.tokenResponse?.issuedAt;
+        const issuedAtNice = issuedAt ? new Date(issuedAt * 1000) : undefined;
+        const gotToken = tokenResponse?.idToken ? 'OK' : 'NO TOKEN';
+        this.logger.debug(
+          `Token: ${gotToken}, issued at: ${issuedAtNice}`,
+          DEBUG_TAG
+        );
+      }),
+      map((tokenResponseWithClaims) => ({
+        isLoggedIn: tokenResponseWithClaims?.tokenResponse != null,
+        token: tokenResponseWithClaims?.tokenResponse?.idToken,
+        tokenIssuedAt: tokenResponseWithClaims?.tokenResponse?.issuedAt,
+        email: tokenResponseWithClaims?.claims?.email
+      })),
+      shareReplay(1)
+    );
+  }
+
+  private createTokenWithClaims$() {
+    return this.initComplete$.pipe(
+      switchMap(() =>
+        this.authService.token$.pipe(
+          map((tokenResponse) => ({
+            tokenResponse,
+            claims: tokenResponse?.idToken
+              ? this.parseJwt(tokenResponse.idToken)
+              : undefined
+          }))
+        )
+      )
+    );
+  }
+
   private initRefreshTokenOnStartup() {
     this.initComplete$
       .pipe(
@@ -138,12 +153,20 @@ export class RegobsAuthService {
           isAndroidOrIos(this.platform)
             ? this.platform.resume
             : from(this.platform.ready())
-        )
+        ),
+        withLatestFrom(this.loggedInUser$)
       )
-      .subscribe(() => {
-        this.logger.debug('App resumed. Refresh token...', DEBUG_TAG);
-        this.refreshToken();
+      .subscribe(([, user]) => {
+        if (user?.token && this.isTokenOlderThan(user?.tokenIssuedAt, 300)) {
+          //token is older than 5 minutes, so refresh
+          this.logger.debug('App resumed. Refresh token...', DEBUG_TAG);
+          this.refreshToken();
+        }
       });
+  }
+
+  isTokenOlderThan(tokenIssuedAt: number, ageInSeconds: number): boolean {
+    return tokenIssuedAt && tokenIssuedAt < nowInSeconds() - ageInSeconds;
   }
 
   public refreshToken(): Promise<void> {
