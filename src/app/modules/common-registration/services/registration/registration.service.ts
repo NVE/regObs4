@@ -99,22 +99,31 @@ export class RegistrationService {
     return this.getRegistrationDbCollectionForAppMode().pipe(
       take(1),
       switchMap((collection) =>
-        collection.findByIds$([reg.id]).pipe(
-          map((result) => result.get(reg.id)),
-          switchMap((doc) => from(this.insertOrUpdate(reg, doc, collection)))
+        from(collection.atomicUpsert(reg)).pipe(
+          switchMap((doc) =>
+            this.getRegistrationObservable().pipe(
+              take(1),
+              map(() => doc)
+            )
+          )
         )
       )
     );
   }
 
-  private insertOrUpdate(reg: IRegistration, doc: RxRegistrationDocument, collection: RxRegistrationCollection): Promise<RxRegistrationDocument> {
-    if (doc) {
-      return doc.update({
-        $set: reg
-      });
-    } else {
-      return collection.insert(reg);
-    }
+  private updateDocInOfflineStorage(doc: RxRegistrationDocument, reg: IRegistration): Promise<RxRegistrationDocument> {
+    // We update doc instead of atomicUpdate, because when we use atomicUpdate attachments get lost...
+    return doc.atomicUpdate((oldData) => {
+      oldData.changed = reg.changed;
+      oldData.syncStatus = reg.syncStatus;
+      oldData.lastSync = reg.lastSync;
+      oldData.syncError = reg.syncError;
+      oldData.syncStatusCode = reg.syncStatusCode;
+      oldData.request = reg.request;
+      oldData.response = reg.response;
+      oldData.changedRegistrationTid = reg.changedRegistrationTid;
+      return oldData;
+    });
   }
 
   public deleteRegistration(id: string): Observable<boolean> {
@@ -486,9 +495,9 @@ export class RegistrationService {
       switchMap((reg: IRegistration) =>
         reg
           ? this.saveRegistrationToOfflineStorage(reg).pipe(
-              switchMap(() => this.newAttachmentService.removeAttachmentsForRegistration$(id)),
-              map(() => true)
-            )
+            switchMap(() => this.newAttachmentService.removeAttachments$(id)),
+            map(() => true)
+          )
           : of(false)
       )
     );
@@ -506,7 +515,7 @@ export class RegistrationService {
   }
 
   public getAllAttachmentsForRegistration$(id: string): Observable<ExistingOrNewAttachment[]> {
-    return combineLatest([this.getRegistrationByIdShared$(id).pipe(map((reg) => getAllAttachments(reg))), this.newAttachmentService.getUploadedAttachments(id)]).pipe(
+    return combineLatest([this.getRegistrationByIdShared$(id).pipe(map((reg) => getAllAttachments(reg))), this.newAttachmentService.getAttachments(id)]).pipe(
       map(([existingAttachments, newAttachments]) => [
         ...existingAttachments.map((a) => ({ type: 'existing' as ExistingAttachmentType, attachment: a })),
         ...newAttachments.map((a) => ({ type: 'new' as NewAttachmentType, attachment: a }))
@@ -519,7 +528,7 @@ export class RegistrationService {
   }
 
   public getNewAttachmentsForRegistrationTid$(id: string, registrationTid: RegistrationTid): Observable<AttachmentUploadEditModel[]> {
-    return this.newAttachmentService.getUploadedAttachments(id).pipe(map((attachments: AttachmentUploadEditModel[]) => attachments.filter((a) => a.RegistrationTID === registrationTid)));
+    return this.newAttachmentService.getAttachments(id).pipe(map((attachments: AttachmentUploadEditModel[]) => attachments.filter((a) => a.RegistrationTID === registrationTid)));
   }
 
   public getAllAttachmentsForRegistrationTid$(id: string, registrationTid: RegistrationTid): Observable<ExistingOrNewAttachment[]> {
@@ -576,7 +585,7 @@ export class RegistrationService {
         records.length > 0
           ? from(Promise.all(records.map((reg) => this.shouldSync(reg, includeThrottle).then((shouldSync) => ({ reg, shouldSync })))))
           : // forkJoin(records.map((reg) => this.shouldSync(reg, includeThrottle).pipe(map((shouldSync) => ({ reg, shouldSync })))))
-            of([])
+          of([])
       ),
       map((result) => result.filter((result) => result.shouldSync).map((result) => result.reg))
     );

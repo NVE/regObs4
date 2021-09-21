@@ -15,6 +15,7 @@ import { RegobsRegistrationPipesModule } from './registration.pipes';
 import { OfflineDbNewAttachmentService } from './services/add-new-attachment/offline-db-new-attachment.service';
 import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions, SUMMARY_PROVIDER_TOKEN } from './module.options';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import FileAttachmentService from './services/add-new-attachment/file-attachment.service';
 
 export function offlineDbServiceOptionsFactory(options?: IRegistrationModuleOptions): OfflineDbServiceOptions {
   const offlineDbServiceOptions = new OfflineDbServiceOptions();
@@ -38,7 +39,7 @@ export function getFakeHelpTextApiService(): unknown {
   return fakeService;
 }
 
-export function createTranslateLoader(http: HttpClient): TranslateHttpLoader  {
+export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
@@ -51,19 +52,13 @@ export const translateModuleForRoot = TranslateModule.forRoot({
 });
 
 @NgModule({
-  imports: [
-    CoreModule,
-    RegobsApiModuleWithConfig,
-    translateModuleForRoot,
-  ],
+  imports: [CoreModule, RegobsApiModuleWithConfig, translateModuleForRoot],
   declarations: [],
-  exports: [
-    RegobsRegistrationPipesModule,
-  ]
+  exports: [RegobsRegistrationPipesModule]
 })
 export class RegistrationModule {
   static forRoot(options?: IRegistrationModuleOptions): ModuleWithProviders<RegistrationModule> {
-    return ({
+    return {
       ngModule: RegistrationModule,
       providers: [
         {
@@ -76,13 +71,18 @@ export class RegistrationModule {
           deps: [FOR_ROOT_OPTIONS_TOKEN]
         },
         {
-          provide: 'OfflineRegistrationSyncService', useClass: RegobsApiSyncCallbackService
+          provide: 'OfflineRegistrationSyncService',
+          useClass: RegobsApiSyncCallbackService
         },
         {
-          provide: SUMMARY_PROVIDER_TOKEN, useClass: GeneralObservationSummaryProvider, multi: true
+          provide: SUMMARY_PROVIDER_TOKEN,
+          useClass: GeneralObservationSummaryProvider,
+          multi: true
         },
         {
-          provide: SUMMARY_PROVIDER_TOKEN, useClass: WeatherSummaryProvider, multi: true
+          provide: SUMMARY_PROVIDER_TOKEN,
+          useClass: WeatherSummaryProvider,
+          multi: true
         },
         {
           provide: HTTP_INTERCEPTORS,
@@ -90,11 +90,12 @@ export class RegistrationModule {
           multi: true
         },
         {
-          provide: NewAttachmentService, useClass: OfflineDbNewAttachmentService
+          provide: NewAttachmentService,
+          useClass: window.hasOwnProperty('cordova') ? FileAttachmentService : OfflineDbNewAttachmentService
         },
-        TranslateService,
+        TranslateService
       ]
-    });
+    };
   }
 
   static forChild(options?: IRegistrationModuleOptions): ModuleWithProviders<RegistrationModule> {
@@ -102,7 +103,7 @@ export class RegistrationModule {
   }
 
   static forTesting(): ModuleWithProviders<RegistrationModule> {
-    return ({
+    return {
       ngModule: RegistrationModule,
       providers: [
         {
@@ -111,23 +112,29 @@ export class RegistrationModule {
         },
         {
           provide: OfflineDbServiceOptions,
-          useValue: { adapter: 'memory' },
+          useValue: { adapter: 'memory' }
         },
         {
-          provide: 'OfflineRegistrationSyncService', useClass: FakeItemSyncCallbackService
+          provide: 'OfflineRegistrationSyncService',
+          useClass: FakeItemSyncCallbackService
         },
         {
-          provide: SUMMARY_PROVIDER_TOKEN, useClass: GeneralObservationSummaryProvider, multi: true
+          provide: SUMMARY_PROVIDER_TOKEN,
+          useClass: GeneralObservationSummaryProvider,
+          multi: true
         },
         {
-          provide: SUMMARY_PROVIDER_TOKEN, useClass: WeatherSummaryProvider, multi: true
+          provide: SUMMARY_PROVIDER_TOKEN,
+          useClass: WeatherSummaryProvider,
+          multi: true
         },
         {
-          provide: NewAttachmentService, useClass: OfflineDbNewAttachmentService
+          provide: NewAttachmentService,
+          useClass: OfflineDbNewAttachmentService
         },
         { provide: KdvElementsService, useFactory: getFakeKdvElementsService },
-        { provide: HelpTextApiService, useFactory: getFakeHelpTextApiService },
+        { provide: HelpTextApiService, useFactory: getFakeHelpTextApiService }
       ]
-    });
+    };
   }
 }

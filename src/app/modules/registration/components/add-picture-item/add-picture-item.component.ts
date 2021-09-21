@@ -1,27 +1,18 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  ActionSheetController,
-  Platform,
-  ToastController
-} from '@ionic/angular';
-import {
-  Camera,
-  CameraOptions,
-  PictureSourceType
-} from '@ionic-native/camera/ngx';
+import { ActionSheetController, Platform, ToastController } from '@ionic/angular';
+import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
 import { settings } from '../../../../../settings';
 import { AttachmentType, AttachmentUploadEditModel, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { DomSanitizer } from '@angular/platform-browser';
-import { File, FileEntry, IFile } from '@ionic-native/file/ngx';
+import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
-import * as utils from '@nano-sql/core/lib/utilities';
 import { GeoHazard } from '@varsom-regobs-common/core';
-import { forkJoin, from, Observable, of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { catchError, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
@@ -46,8 +37,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
   @Output() imagesChange = new EventEmitter();
   @Input() title = 'REGISTRATION.ADD_IMAGES';
   @Input() pictureCommentText = 'REGISTRATION.IMAGE_DESCRIPTION';
-  @Input() pictureCommentPlaceholder =
-    'REGISTRATION.IMAGE_DESCRIPTION_PLACEHOLDER';
+  @Input() pictureCommentPlaceholder = 'REGISTRATION.IMAGE_DESCRIPTION_PLACEHOLDER';
   @Input() icon = 'camera';
   @Input() showIcon = true;
   @Input() iconColor = 'dark';
@@ -75,23 +65,35 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
     private domSanitizer: DomSanitizer,
     private actionSheetController: ActionSheetController,
     private newAttachmentService: NewAttachmentService,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {
     super();
   }
 
   ngOnInit() {
-    this.newAttachmentService.getUploadedAttachments(this.registrationId)
+    this.newAttachmentService
+      .getAttachments(this.registrationId)
       .pipe(
-        map((attachments) => attachments.filter((a) => (a.RegistrationTID === this.registrationTid && a.type === this.attachmentType && a.ref === this.ref))),
-        switchMap((attachments) => attachments.length === 0 ? of([]) : forkJoin([...attachments.map((a) =>
-          this.newAttachmentService.getBlob(this.registrationId, a.id).pipe(take(1), map((blob) => ({ ...a, blob })), catchError((err) => {
-            this.logger.error(err,  DEBUG_TAG, 'Could not get blob from attachment');
-            return of(({ ...a, blob: undefined }));
-          })
-          ))])),
+        map((attachments) => attachments.filter((a) => a.RegistrationTID === this.registrationTid && a.type === this.attachmentType && a.ref === this.ref)),
+        switchMap((attachments) =>
+          attachments.length === 0
+            ? of([])
+            : forkJoin([
+              ...attachments.map((a) =>
+                this.newAttachmentService.getBlob(this.registrationId, a.id).pipe(
+                  take(1),
+                  map((blob) => ({ ...a, blob })),
+                  catchError((err) => {
+                    this.logger.error(err, DEBUG_TAG, 'Could not get blob from attachment');
+                    return of({ ...a, blob: undefined });
+                  })
+                )
+              )
+            ])
+        ),
         takeUntil(this.ngDestroy$)
-      ).subscribe((result) => {
+      )
+      .subscribe((result) => {
         this.attachments = result;
         this.cdr.detectChanges();
       });
@@ -102,12 +104,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
       await Promise.resolve(this.onBeforeAdd());
     }
     const translations = await this.translateService
-      .get([
-        'REGISTRATION.GENERAL_COMMENT.ADD_PICTURE',
-        'REGISTRATION.GENERAL_COMMENT.TAKE_NEW_PHOTO',
-        'REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY',
-        'DIALOGS.CANCEL'
-      ])
+      .get(['REGISTRATION.GENERAL_COMMENT.ADD_PICTURE', 'REGISTRATION.GENERAL_COMMENT.TAKE_NEW_PHOTO', 'REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY', 'DIALOGS.CANCEL'])
       .toPromise();
     const actionSheet = await this.actionSheetController.create({
       header: translations['REGISTRATION.GENERAL_COMMENT.ADD_PICTURE'],
@@ -117,10 +114,8 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
           handler: () => this.getPicture(this.camera.PictureSourceType.CAMERA)
         },
         {
-          text:
-            translations['REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY'],
-          handler: () =>
-            this.getPicture(this.camera.PictureSourceType.PHOTOLIBRARY)
+          text: translations['REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY'],
+          handler: () => this.getPicture(this.camera.PictureSourceType.PHOTOLIBRARY)
         },
         {
           text: translations['DIALOGS.CANCEL'],
@@ -148,7 +143,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
         targetHeight: settings.images.size,
         targetWidth: settings.images.size,
         correctOrientation: true,
-        saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA,
+        saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA
         // NOTE: saveToPhotoAlbum=true causes a bug in latest cordova cameraplugin
       };
       const imageUrl = await this.camera.getPicture(options);
@@ -157,10 +152,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
         return true;
       }
 
-      this.logger.debug(
-        `Got image url from camera plugin: ${imageUrl}`,
-        DEBUG_TAG
-      );
+      this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
       // const permanentUrl = await this.moveImageToPermanentStorage(imageUrl);
       // this.logger.debug(
       //   `Image moved to permanent image url: ${permanentUrl}`,
@@ -169,12 +161,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
       const arrayBuffer = await this.getArrayBuffer(imageUrl);
       this.addImage(new Blob([arrayBuffer]), MIME_TYPE);
     } catch (err) {
-      this.logger.log(
-        'User could not add image, most likely no access or invalid image',
-        err,
-        LogLevel.Warning,
-        DEBUG_TAG
-      );
+      this.logger.log('User could not add image, most likely no access or invalid image', err, LogLevel.Warning, DEBUG_TAG);
       this.showErrorToast();
     }
     return true;
@@ -201,16 +188,14 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
   }
 
   showErrorToast() {
-    this.translateService
-      .get('REGISTRATION.INVALID_IMAGE')
-      .subscribe(async (translation) => {
-        const toast = await this.toastController.create({
-          message: translation,
-          mode: 'md',
-          duration: 4000
-        });
-        toast.present();
+    this.translateService.get('REGISTRATION.INVALID_IMAGE').subscribe(async (translation) => {
+      const toast = await this.toastController.create({
+        message: translation,
+        mode: 'md',
+        duration: 4000
       });
+      toast.present();
+    });
   }
 
   // private async moveImageToPermanentStorage(src: string): Promise<string> {
@@ -254,9 +239,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
   // }
 
   private async addDummyImage() {
-    const dummyImage = await DataUrlHelper.getDataUrlFromSrcUrl(
-      '/assets/images/dummyregobsimage.jpeg'
-    );
+    const dummyImage = await DataUrlHelper.getDataUrlFromSrcUrl('/assets/images/dummyregobsimage.jpeg');
     const blob = DataUrlHelper.convertDataURIToBinary(dummyImage);
     this.addImage(new Blob([blob]), 'image/jpeg');
   }
@@ -268,8 +251,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
     // });
     // TODO: Use new attachment service instead
     // this.imagesChange.emit(this.images);
-    this.newAttachmentService.addAttachment(this.registrationId, data, mimeType, this.geoHazard, this.registrationTid, this.attachmentType,
-      this.ref);
+    this.newAttachmentService.addAttachment(this.registrationId, data, mimeType, this.geoHazard, this.registrationTid, this.attachmentType, this.ref);
   }
 
   removeImage(image: AttachmentUploadEditModel) {
@@ -290,8 +272,6 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
   // }
 
   convertFileSrc(fileUrl: string) {
-    return this.domSanitizer.bypassSecurityTrustUrl(
-      this.webView.convertFileSrc(fileUrl)
-    );
+    return this.domSanitizer.bypassSecurityTrustUrl(this.webView.convertFileSrc(fileUrl));
   }
 }
