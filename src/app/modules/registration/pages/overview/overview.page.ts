@@ -1,6 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { NewAttachmentService, RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
-import { combineLatest, from } from 'rxjs';
+import {
+  NewAttachmentService,
+  RegistrationService as CommonRegistrationService
+} from 'src/app/modules/common-registration/registration.services';
+import { combineLatest, from, Observable } from 'rxjs';
 import { IRegistration, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { GeoHazard } from '@varsom-regobs-common/core';
@@ -23,12 +26,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   GeoHazard = GeoHazard;
   RegistrationStatus = SyncStatus;
   summaryItems: Array<ISummaryItem> = [];
-
-  get regiatration$() {
-    const id = this.activatedRoute.snapshot.params['id'];
-    return this.commonRegistrationService.getRegistrationByIdShared$(id);
-  }
-
+  private registration$: Observable<IRegistration>;
   constructor(
     private commonRegistrationService: CommonRegistrationService,
     private cdr: ChangeDetectorRef,
@@ -41,7 +39,9 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   }
 
   ngOnInit() {
-    this.regiatration$.pipe(takeUntil(this.ngDestroy$)).subscribe((registration) => {
+    const id = this.activatedRoute.snapshot.params['id'];
+    this.registration$ = this.commonRegistrationService.getRegistrationByIdShared$(id);
+    this.registration$.pipe(takeUntil(this.ngDestroy$)).subscribe((registration) => {
       this.registration = registration;
       this.cdr.detectChanges();
     });
@@ -50,10 +50,10 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   }
 
   private initSummaryItemSubscription() {
-    this.regiatration$
+    this.registration$
       .pipe(
         switchMap((reg) =>
-          combineLatest([this.userGroupService.getUserGroupsAsObservable(), this.newAttachmentService.getUploadedAttachments(reg.id)]).pipe(
+          combineLatest([this.userGroupService.getUserGroupsAsObservable(), this.newAttachmentService.getAttachments(reg.id)]).pipe(
             switchMap(([userGroups]) => from(this.summaryItemService.getSummaryItems(reg, userGroups)))
           )
         ),
