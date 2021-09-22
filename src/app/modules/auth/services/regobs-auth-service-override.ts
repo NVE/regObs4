@@ -1,20 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  JQueryRequestor,
-  LocalStorageBackend,
-  Requestor,
-  StorageBackend
-} from '@openid/appauth';
-import {
-  AuthActionBuilder,
-  AuthService,
-  Browser,
-  DefaultBrowser
-} from 'ionic-appauth';
-import {
-  TOKEN_RESPONSE_KEY,
-  TOKEN_RESPONSE_FULL_KEY
-} from 'src/app/modules/auth/services/regobs-auth.service';
+import { JQueryRequestor, LocalStorageBackend, Requestor, StorageBackend } from '@openid/appauth';
+import { AuthActionBuilder, AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
+import { TOKEN_RESPONSE_KEY, TOKEN_RESPONSE_FULL_KEY } from 'src/app/modules/auth/services/regobs-auth.service';
 import { TokenResponseFull } from './token-response-full';
 
 /**
@@ -31,17 +18,13 @@ export class RegobsAuthServiceOverride extends AuthService {
     super(browser, storage, requestor);
   }
 
-  protected async requestAccessToken(
-    code: string,
-    codeVerifier?: string
-  ): Promise<void> {
+  protected async requestAccessToken(code: string, codeVerifier?: string): Promise<void> {
     try {
       await super.requestAccessToken(code, codeVerifier);
     } catch (err) {
       if (err.error?.error_description?.indexOf('AADB2C90090') >= 0) {
-        this.notifyActionListers(
-          AuthActionBuilder.RefreshFailed(new Error('AADB2C90090'))
-        ); // Error in action listeners is only a string (toString)
+        this.notifyActionListers(AuthActionBuilder.RefreshFailed(new Error('AADB2C90090')));
+        // Error in action listeners is only a string (toString)
         // and error_description is not included, so we have to pass this in as a custom Error.
       } else {
         this.notifyActionListers(AuthActionBuilder.RefreshFailed(err));
@@ -60,15 +43,11 @@ export class RegobsAuthServiceOverride extends AuthService {
   }
 
   private async clearTokensIfRefreshTokenIsExpired(error: unknown) {
-    if (error && error instanceof HttpErrorResponse && error.status !== 401) {
-      // Only check if refresh token is valid if not 401 - Unauthorized is returned from token endpoint
-      const tokenResponseFullString: string | null = await this.storage.getItem(
-        TOKEN_RESPONSE_FULL_KEY
-      );
+    if (error && error instanceof HttpErrorResponse && error.status !== 401 && error.status !== 400) {
+      // Only check if refresh token is valid if not 401 - Unauthorized or 400 - Bad request is returned from token endpoint
+      const tokenResponseFullString: string | null = await this.storage.getItem(TOKEN_RESPONSE_FULL_KEY);
       if (tokenResponseFullString != null) {
-        const tokenResponseFull = new TokenResponseFull(
-          JSON.parse(tokenResponseFullString)
-        );
+        const tokenResponseFull = new TokenResponseFull(JSON.parse(tokenResponseFullString));
         if (tokenResponseFull.isRefreshTokenValid()) {
           return; // Do not clear token from storage if refresh token is still valid
         }
