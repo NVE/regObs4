@@ -98,16 +98,23 @@ export class RegistrationService {
   private saveRegistrationToOfflineStorage(reg: IRegistration): Observable<RxRegistrationDocument> {
     return this.getRegistrationDbCollectionForAppMode().pipe(
       take(1),
-      switchMap((collection) => collection.findByIds$([reg.id])),
-      map((result) => result.get(reg.id)),
-      switchMap((doc) =>
-        from(
-          doc.update({
-            $set: reg
-          })
-        ).pipe(map(() => doc))
+      switchMap((collection) =>
+        collection.findByIds$([reg.id]).pipe(
+          map((result) => result.get(reg.id)),
+          switchMap((doc) => from(this.insertOrUpdate(reg, doc, collection)))
+        )
       )
     );
+  }
+
+  private insertOrUpdate(reg: IRegistration, doc: RxRegistrationDocument, collection: RxRegistrationCollection): Promise<RxRegistrationDocument> {
+    if (doc) {
+      return doc.update({
+        $set: reg
+      });
+    } else {
+      return collection.insert(reg);
+    }
   }
 
   public deleteRegistration(id: string): Observable<boolean> {
