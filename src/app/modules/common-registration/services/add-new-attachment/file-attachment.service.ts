@@ -141,11 +141,17 @@ export default class FileAttachmentService implements NewAttachmentService {
   }
 
   private async removeAttachmentInternal(registrationId: string, attachmentId: string): Promise<boolean> {
-    const path = `${await this.getRootPath()}/${registrationId}/`;
+    const rootPath = await this.getRootPath();
+    const path = `${rootPath}/${registrationId}/`;
     const metadataFileName = this.getMetadataFileName(attachmentId);
     const metadata = await this.readMetadataFile(registrationId, metadataFileName);
     await this.file.removeFile(path, metadata.fileName);
     await this.file.removeFile(path, metadataFileName);
+
+    const remainingEntries = await this.file.listDir(rootPath, registrationId);
+    if (remainingEntries.length === 0) {
+      await this.file.removeDir(rootPath, registrationId);
+    }
     this.attachmentsChanged.next();
     return true;
   }
