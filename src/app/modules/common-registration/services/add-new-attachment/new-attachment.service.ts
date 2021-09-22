@@ -6,9 +6,16 @@ import { AttachmentType, AttachmentUploadEditModel, RegistrationTid } from '../.
  * Handle storage of new registration attachments on client before they are sent to server
  */
 export abstract class NewAttachmentService {
-  abstract addAttachment(registrationId: string, data: Blob, mimeType: string, geoHazard: GeoHazard, registrationTid: RegistrationTid, type?: AttachmentType, ref?: string): void;
+  abstract addAttachment(
+    registrationId: string,
+    data: Blob,
+    mimeType: string,
+    geoHazard: GeoHazard,
+    registrationTid: RegistrationTid,
+    type?: AttachmentType,
+    ref?: string
+  ): Promise<void>;
   abstract saveAttachmentMeta$(registrationId: string, meta: AttachmentUploadEditModel): Observable<unknown>;
-  abstract saveAttachmentMeta(registrationId: string, meta: AttachmentUploadEditModel): void;
 
   /**
    * Get list of attachment metadata each time an attachment (or attachment metadata) changes on provided registration

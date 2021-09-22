@@ -1,5 +1,5 @@
 import { GeoHazard, uuidv4 } from '@varsom-regobs-common/core';
-import { filter, from, Observable, Subject, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, from, Observable, switchMap, tap } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { RegistrationTid } from '../../registration.models';
@@ -16,13 +16,21 @@ const ROOT_DIR = 'attachments';
 @Injectable()
 export default class FileAttachmentService implements NewAttachmentService {
   private hasCreatedRootFolder = false;
-  private registrationIdEvents = new Subject<string>(); //get a tick with registrationId each time a registration's attachment changes
+  private attachmentsChanged = new BehaviorSubject<void>(undefined); //get a tick each time a registration's attachment changes
 
   constructor(private file: File, private loggingService: LoggingService) {
-    this.registrationIdEvents.pipe(tap((registrationId) => this.loggingService.debug(`Attachments changed for registrationId ${registrationId}`, DEBUG_TAG)));
+    this.attachmentsChanged.pipe(tap(() => this.loggingService.debug('Attachments changed', DEBUG_TAG)));
   }
 
-  async addAttachment(registrationId: string, data: Blob, mimeType: string, geoHazard: GeoHazard, registrationTid: RegistrationTid, type?: AttachmentType, ref?: string): Promise<void> {
+  async addAttachment(
+    registrationId: string,
+    data: Blob,
+    mimeType: string,
+    geoHazard: GeoHazard,
+    registrationTid: RegistrationTid,
+    type?: AttachmentType,
+    ref?: string
+  ): Promise<void> {
     const rootDir = await this.getRootPath();
     await this.file.createDir(rootDir, registrationId, true);
     const attachmentId = uuidv4();
@@ -41,25 +49,19 @@ export default class FileAttachmentService implements NewAttachmentService {
       ref
     };
     this.loggingService.debug(`Attachment saved in ${rootDir}/${registrationId}/${attachmentFileName}`, DEBUG_TAG, metadata);
-    this.saveAttachmentMeta(registrationId, metadata);
+    await firstValueFrom(this.saveAttachmentMeta$(registrationId, metadata));
   }
 
   saveAttachmentMeta$(registrationId: string, meta: AttachmentUploadEditModel): Observable<unknown> {
-    return from(this.getRootPath().then((rootDir) => this.file.writeFile(`${rootDir}/${registrationId}`, `${meta.id}.json`, JSON.stringify(meta), { replace: true })));
-  }
-
-  saveAttachmentMeta(registrationId: string, meta: AttachmentUploadEditModel): void {
-    this.saveAttachmentMeta$(registrationId, meta)
-      .pipe(tap(() => this.registrationIdEvents.next(registrationId))) //TODO: Dette burde vi gjort i saveAttachmentMeta$() fordi denne kan også kalles direkte
-      .subscribe();
+    return from(
+      this.getRootPath().then((rootDir) =>
+        this.file.writeFile(`${rootDir}/${registrationId}`, `${meta.id}.json`, JSON.stringify(meta), { replace: true })
+      )
+    ).pipe(tap(() => this.attachmentsChanged.next()));
   }
 
   getAttachments(registrationId: string): Observable<AttachmentUploadEditModel[]> {
-    return this.registrationIdEvents.pipe(
-      filter((registrationIdForEvent) => registrationId === registrationIdForEvent),
-      switchMap((registrationId) => from(this.getAttachmentsFromFile(registrationId)))
-    );
-    // return from(this.getAttachmentsFromFile(registrationId)); //TODO: SKal nok være levende, så må poste events hver gang vi legger til fil eller sletter en fil
+    return this.attachmentsChanged.pipe(switchMap(() => from(this.getAttachmentsFromFile(registrationId))));
   }
 
   getBlob(registrationId: string, attachmentId: string): Observable<Blob> {
@@ -76,8 +78,8 @@ export default class FileAttachmentService implements NewAttachmentService {
 
   async removeAttachments(registrationId: string): Promise<void> {
     const path = await this.getRootPath();
-    await this.file.removeDir(path, registrationId);
-    //TODO: Gi beskjed om endringer
+    await this.file.removeDir(`${path}/`, registrationId);
+    this.attachmentsChanged.next();
   }
 
   removeAttachments$(registrationId: string): Observable<void> {
@@ -106,17 +108,27 @@ export default class FileAttachmentService implements NewAttachmentService {
       await this.file.createDir(dataFolder, ROOT_DIR, true);
       this.hasCreatedRootFolder = true;
     }
-    return `${dataFolder}/${ROOT_DIR}`;
+    return `${dataFolder}${ROOT_DIR}`;
   }
 
   private async getAttachmentsFromFile(registrationId: string): Promise<AttachmentUploadEditModel[]> {
     const path = await this.getRootPath();
-    const entries = await this.file.listDir(path, registrationId);
-    return await Promise.all(entries.filter((entry) => entry.isFile).map((entry) => this.readMetadataFile(registrationId, entry.name)));
+    if (await this.directoryForRegistrationExists(registrationId)) {
+      const entries = await this.file.listDir(path, registrationId);
+      return await Promise.all(
+        entries
+          .filter((entry) => entry.isFile && entry.name.endsWith('.json'))
+          .map((entry) => this.readMetadataFile(registrationId, entry.name))
+      );
+    }
+    return [];
   }
 
   private async readMetadataFile(registrationId: string, filename: string): Promise<AttachmentUploadEditModel> {
     const rootDir = await this.getRootPath();
+    if (!(await this.directoryForRegistrationExists(registrationId))) {
+      throw Error(`Directory for registration ${rootDir}/${registrationId} does not exist`);
+    }
     const content = await this.file.readAsText(`${rootDir}/${registrationId}`, filename);
     return JSON.parse(content);
   }
@@ -129,13 +141,13 @@ export default class FileAttachmentService implements NewAttachmentService {
   }
 
   private async removeAttachmentInternal(registrationId: string, attachmentId: string): Promise<boolean> {
-    const rootPath = await this.getRootPath();
+    const path = `${await this.getRootPath()}/${registrationId}/`;
     const metadataFileName = this.getMetadataFileName(attachmentId);
     const metadata = await this.readMetadataFile(registrationId, metadataFileName);
-    await this.file.removeFile(rootPath, metadata.fileName);
-    await this.file.removeFile(rootPath, metadataFileName);
+    await this.file.removeFile(path, metadata.fileName);
+    await this.file.removeFile(path, metadataFileName);
+    this.attachmentsChanged.next();
     return true;
-    //TODO: Gi beskjed om endringer
   }
 
   private getMetadataFileName(attachmentId: string): string {
@@ -150,5 +162,15 @@ export default class FileAttachmentService implements NewAttachmentService {
         return 'png';
     }
     return 'jpg';
+  }
+
+  private async directoryForRegistrationExists(registrationId: string): Promise<boolean> {
+    const path = await this.getRootPath();
+    try {
+      await this.file.checkDir(`${path}/`, registrationId);
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 }

@@ -10,9 +10,21 @@ import { RegistrationTid } from '../../models/registration-tid.enum';
 
 @Injectable()
 export class OfflineDbNewAttachmentService implements NewAttachmentService {
-  constructor(private offlineDbService: OfflineDbService, protected appModeService: AppModeService, protected loggerService: LoggerService) {}
+  constructor(
+    private offlineDbService: OfflineDbService,
+    protected appModeService: AppModeService,
+    protected loggerService: LoggerService
+  ) {}
 
-  addAttachment(registrationId: string, data: Blob, mimeType: string, geoHazard: GeoHazard, registrationTid: RegistrationTid, type?: AttachmentType, ref?: string): void {
+  async addAttachment(
+    registrationId: string,
+    data: Blob,
+    mimeType: string,
+    geoHazard: GeoHazard,
+    registrationTid: RegistrationTid,
+    type?: AttachmentType,
+    ref?: string
+  ): Promise<void> {
     const attachmentId = uuidv4();
     this.getRegistrationOfflineDocumentById(registrationId)
       .pipe(
@@ -40,17 +52,6 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
         ),
         catchError((err) => {
           this.loggerService.error(() => 'Could not add attachment', err);
-          return EMPTY;
-        })
-      )
-      .subscribe();
-  }
-
-  saveAttachmentMeta(registrationId: string, meta: AttachmentUploadEditModel): void {
-    this.saveAttachmentMeta$(registrationId, meta)
-      .pipe(
-        catchError((err) => {
-          this.loggerService.error(() => 'Could not save attachment metadata', err);
           return EMPTY;
         })
       )
@@ -144,7 +145,9 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
   }
 
   private getAttachmentMetaDocument(id: string): Observable<RxAttachmentMetaDocument> {
-    return this.getAttachmentMetaDbCollectionForAppMode().pipe(switchMap((collection) => collection.findByIds$([id]).pipe(map((result) => result.get(id)))));
+    return this.getAttachmentMetaDbCollectionForAppMode().pipe(
+      switchMap((collection) => collection.findByIds$([id]).pipe(map((result) => result.get(id))))
+    );
   }
 
   public saveAttachmentMeta$(registrationId: string, attachmentMetaData: AttachmentUploadEditModel): Observable<RxAttachmentMetaDocument> {
