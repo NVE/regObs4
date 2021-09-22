@@ -3,7 +3,7 @@ import { ExistingOrNewAttachment } from 'src/app/modules/common-registration/reg
 export interface ISummaryItem {
   id: string;
   href: string;
-  queryParams?: any;
+  queryParams?: unknown;
   title: string;
   subTitle?: string;
   hasData?: boolean;
