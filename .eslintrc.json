@@ -29,7 +29,7 @@
       "error",
       {
         "ignorePattern": "^import |// import",
-        "code": 200
+        "code": 140
       }
     ],
     "no-multiple-empty-lines": [
