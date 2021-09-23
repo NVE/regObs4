@@ -98,32 +98,8 @@ export class RegistrationService {
   private saveRegistrationToOfflineStorage(reg: IRegistration): Observable<RxRegistrationDocument> {
     return this.getRegistrationDbCollectionForAppMode().pipe(
       take(1),
-      switchMap((collection) =>
-        from(collection.atomicUpsert(reg)).pipe(
-          switchMap((doc) =>
-            this.getRegistrationObservable().pipe(
-              take(1),
-              map(() => doc)
-            )
-          )
-        )
-      )
+      switchMap((collection) => from(collection.atomicUpsert(reg)))
     );
-  }
-
-  private updateDocInOfflineStorage(doc: RxRegistrationDocument, reg: IRegistration): Promise<RxRegistrationDocument> {
-    // We update doc instead of atomicUpdate, because when we use atomicUpdate attachments get lost...
-    return doc.atomicUpdate((oldData) => {
-      oldData.changed = reg.changed;
-      oldData.syncStatus = reg.syncStatus;
-      oldData.lastSync = reg.lastSync;
-      oldData.syncError = reg.syncError;
-      oldData.syncStatusCode = reg.syncStatusCode;
-      oldData.request = reg.request;
-      oldData.response = reg.response;
-      oldData.changedRegistrationTid = reg.changedRegistrationTid;
-      return oldData;
-    });
   }
 
   public deleteRegistration(id: string): Observable<boolean> {
