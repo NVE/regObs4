@@ -138,7 +138,10 @@ export class RegistrationService {
    * Shared change feed on getRegistrationById. Might have some delay when saving.
    */
   public getRegistrationByIdShared$(id: string): Observable<IRegistration> {
-    return this.registrationStorage$.pipe(map((registrations) => registrations.find((r) => r.id === id)));
+    return this.registrationStorage$.pipe(
+      map((registrations) => registrations.find((r) => r.id === id)),
+      filter((reg) => reg != null)
+    );
   }
 
   public async getRegistrationById(id: string): Promise<IRegistration> {
