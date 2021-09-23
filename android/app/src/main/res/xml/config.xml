@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <access origin="*" />
+  
+  <feature name="Device">
+    <param name="android-package" value="org.apache.cordova.device.Device"/>
+  </feature>
+
+  <feature name="SQLitePlugin">
+    <param name="android-package" value="io.sqlc.SQLitePlugin"/>
+  </feature>
+
+  <feature name="Clipboard">
+    <param name="android-package" value="com.verso.cordova.clipboard.Clipboard"/>
+  </feature>
+
+  <feature name="CordovaHttpPlugin">
+    <param name="android-package" value="com.silkimen.cordovahttp.CordovaHttpPlugin"/>
+  </feature>
+
+  <feature name="Permissions">
+    <param name="android-package" value="com.android.plugins.Permissions"/>
+  </feature>
+
+  <feature name="Camera">
+    <param name="android-package" value="org.apache.cordova.camera.CameraLauncher"/>
+  </feature>
+
+  <feature name="LaunchMyApp">
+    <param name="android-package" value="nl.xservices.plugins.LaunchMyApp"/>
+  </feature>
+
+  <feature name="Compass">
+    <param name="android-package" value="org.apache.cordova.deviceorientation.CompassListener"/>
+  </feature>
+
+  <feature name="EmailComposer">
+    <param name="android-package" value="de.appplant.cordova.emailcomposer.EmailComposer"/>
+  </feature>
+
+  <feature name="File">
+    <param name="android-package" value="org.apache.cordova.file.FileUtils"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="Geolocation">
+    <param name="android-package" value="org.apache.cordova.geolocation.Geolocation"/>
+  </feature>
+
+  <feature name="InAppBrowser">
+    <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser"/>
+  </feature>
+
+  <feature name="SafariViewController">
+    <param name="android-package" value="com.customtabplugin.ChromeCustomTabPlugin"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="CDVOrientation">
+    <param name="android-package" value="cordova.plugins.screenorientation.CDVOrientation"/>
+  </feature>
+
+  <feature name="SecureStorage">
+    <param name="android-package" value="com.crypho.plugins.SecureStorage"/>
+  </feature>
+
+  <feature name="ShortcutsPlugin">
+    <param name="android-package" value="com.plugins.shortcuts.ShortcutsPlugin"/>
+  </feature>
+
+  <feature name="StatusBar">
+    <param name="android-package" value="org.apache.cordova.statusbar.StatusBar"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="SocialSharing">
+    <param name="android-package" value="nl.xservices.plugins.SocialSharing"/>
+  </feature>
+
+  <feature name="Zip">
+    <param name="android-package" value="org.apache.cordova.Zip"/>
+  </feature>
+
+  <feature name="Diagnostic">
+    <param name="android-package" value="cordova.plugins.Diagnostic"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="Diagnostic_Location">
+    <param name="android-package" value="cordova.plugins.Diagnostic_Location"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="Diagnostic_Bluetooth">
+    <param name="android-package" value="cordova.plugins.Diagnostic_Bluetooth"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="Diagnostic_Wifi">
+    <param name="android-package" value="cordova.plugins.Diagnostic_Wifi"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="Diagnostic_Camera">
+    <param name="android-package" value="cordova.plugins.Diagnostic_Camera"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="Diagnostic_Notifications">
+    <param name="android-package" value="cordova.plugins.Diagnostic_Notifications"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="Diagnostic_NFC">
+    <param name="android-package" value="cordova.plugins.Diagnostic_NFC"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="Diagnostic_External_Storage">
+    <param name="android-package" value="cordova.plugins.Diagnostic_External_Storage"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="DiskSpacePlugin">
+    <param name="android-package" value="com.sqli.cordova.diskSpace.DiskSpacePlugin"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  
+  <preference name="ScrollEnabled" value="false" />
+  <preference name="android-minSdkVersion" value="24" />
+  <preference name="android-compileSdkVersion" value="30" />
+  <preference name="android-build-tool" value="30.0.3" />
+  <preference name="android-targetSdkVersion" value="30" />
+  <preference name="BackupWebStorage" value="none" />
+  <preference name="SplashMaintainAspectRatio" value="true" />
+  <preference name="AutoHideSplashScreen" value="true" />
+  <preference name="SplashShowOnlyFirstTime" value="false" />
+  <preference name="SplashScreen" value="screen" />
+  <preference name="SplashScreenDelay" value="3000" />
+  <preference name="FadeSplashScreenDuration" value="300" />
+  <preference name="AndroidLaunchMode" value="singleTask" />
+  <preference name="StatusBarStyle" value="lightcontent" />
+  <preference name="StatusBarBackgroundColor" value="#99044962" />
+  <preference name="KeyboardDisplayRequiresUserAction" value="false" />
+  <preference name="KeyboardResize" value="true" />
+  <preference name="KeyboardResizeMode" value="ionic" />
+  <preference name="HideKeyboardFormAccessoryBar" value="false" />
+  <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+  <preference name="WKWebViewOnly" value="true" />
+  <preference name="ResolveServiceWorkerRequests" value="true" />
+  <preference name="AndroidXEnabled" value="true" />
+</widget>
