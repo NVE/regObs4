@@ -1,7 +1,20 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, from, Subscription, of, concat, forkJoin, timer, merge, combineLatest } from 'rxjs';
 import { GeoHazard, AppMode, LoggerService, AppModeService, uuidv4 } from '@varsom-regobs-common/core';
-import { switchMap, shareReplay, map, tap, catchError, mergeMap, toArray, take, filter, withLatestFrom, distinctUntilChanged, concatMap } from 'rxjs/operators';
+import {
+  switchMap,
+  shareReplay,
+  map,
+  tap,
+  catchError,
+  mergeMap,
+  toArray,
+  take,
+  filter,
+  withLatestFrom,
+  distinctUntilChanged,
+  concatMap
+} from 'rxjs/operators';
 import { IRegistration } from '../../models/registration.interface';
 import { OfflineDbService, TABLE_NAMES } from '../offline-db/offline-db.service';
 import { SyncStatus } from '../../models/sync-status.enum';
@@ -64,7 +77,11 @@ export class RegistrationService {
     this.initAutoSync();
   }
 
-  public saveAndSync(reg: IRegistration, changedRegistrationTid: RegistrationTid = undefined, ignoreVersionCheck = false): Observable<boolean> {
+  public saveAndSync(
+    reg: IRegistration,
+    changedRegistrationTid: RegistrationTid = undefined,
+    ignoreVersionCheck = false
+  ): Observable<boolean> {
     reg.changedRegistrationTid = changedRegistrationTid;
     reg.syncStatus = SyncStatus.Sync;
     return this.saveRegistration(reg, ignoreVersionCheck);
@@ -98,23 +115,8 @@ export class RegistrationService {
   private saveRegistrationToOfflineStorage(reg: IRegistration): Observable<RxRegistrationDocument> {
     return this.getRegistrationDbCollectionForAppMode().pipe(
       take(1),
-      switchMap((collection) =>
-        collection.findByIds$([reg.id]).pipe(
-          map((result) => result.get(reg.id)),
-          switchMap((doc) => from(this.insertOrUpdate(reg, doc, collection)))
-        )
-      )
+      switchMap((collection) => from(collection.atomicUpsert(reg)))
     );
-  }
-
-  private insertOrUpdate(reg: IRegistration, doc: RxRegistrationDocument, collection: RxRegistrationCollection): Promise<RxRegistrationDocument> {
-    if (doc) {
-      return doc.update({
-        $set: reg
-      });
-    } else {
-      return collection.insert(reg);
-    }
   }
 
   public deleteRegistration(id: string): Observable<boolean> {
@@ -188,7 +190,9 @@ export class RegistrationService {
   }
 
   public deleteAllRegistrationsFromOfflineStorage$(geoHazard?: GeoHazard): Observable<unknown> {
-    return this.getAllRegistrations$(geoHazard).pipe(switchMap((regs) => (regs.length > 0 ? forkJoin(regs.map((reg) => this.deleteRegistrationFromOfflineStorage(reg.id))) : of({}))));
+    return this.getAllRegistrations$(geoHazard).pipe(
+      switchMap((regs) => (regs.length > 0 ? forkJoin(regs.map((reg) => this.deleteRegistrationFromOfflineStorage(reg.id))) : of({})))
+    );
   }
 
   public deleteAllRegistrationsFromOfflineStorage(geoHazard?: GeoHazard): void {
@@ -346,7 +350,13 @@ export class RegistrationService {
   getRegistrationTypesWithAnyData(reg: IRegistration): Observable<IRegistrationType[]> {
     return this.getRegistrationTypesForGeoHazard(reg.geoHazard).pipe(
       switchMap((regTypes) =>
-        regTypes.length > 0 ? forkJoin(regTypes.map((regType) => this.hasAnyDataToShowInRegistrationTypes(reg, regType.registrationTid).pipe(map((anyData) => ({ anyData, regType }))))) : of([])
+        regTypes.length > 0
+          ? forkJoin(
+              regTypes.map((regType) =>
+                this.hasAnyDataToShowInRegistrationTypes(reg, regType.registrationTid).pipe(map((anyData) => ({ anyData, regType })))
+              )
+            )
+          : of([])
       ),
       map((result) => result.filter((r) => r.anyData).map((r) => r.regType))
     );
@@ -368,7 +378,9 @@ export class RegistrationService {
       //   return provider.generateSummary(reg);
       // }
       // TODO: Implement all providers to get summaries generated client side before synchronized to API...
-      return this.fallbackSummaryProvider.generateSummary(reg, registrationTid).pipe(tap((genericSummary) => this.loggerService.debug('Generic fallback summary', genericSummary)));
+      return this.fallbackSummaryProvider
+        .generateSummary(reg, registrationTid)
+        .pipe(tap((genericSummary) => this.loggerService.debug('Generic fallback summary', genericSummary)));
     }
     return addIfEmpty ? this.generateEmptySummary(registrationTid).pipe(map((s) => [s])) : of([]);
   }
@@ -387,7 +399,11 @@ export class RegistrationService {
     );
   }
 
-  private getResponseSummaryForRegistrationTid(reg: IRegistration, registrationTid: RegistrationTid, addIfEmpty = true): Observable<Summary[]> {
+  private getResponseSummaryForRegistrationTid(
+    reg: IRegistration,
+    registrationTid: RegistrationTid,
+    addIfEmpty = true
+  ): Observable<Summary[]> {
     if (reg && reg.response && reg.response.Summaries && reg.response.Summaries.length > 0) {
       const summary = reg.response.Summaries.filter((x) => x.RegistrationTID === registrationTid);
       if (summary) {
@@ -482,11 +498,13 @@ export class RegistrationService {
           this.loggerService.warn('No db collection found for appMode when saveRollbackState');
         }
       }),
-      switchMap((collection) => (collection ? from(collection.getLocal(`undo_state_${id}`)).pipe(map((doc) => (doc ? doc.get('reg') : undefined))) : of(undefined))),
+      switchMap((collection) =>
+        collection ? from(collection.getLocal(`undo_state_${id}`)).pipe(map((doc) => (doc ? doc.get('reg') : undefined))) : of(undefined)
+      ),
       switchMap((reg: IRegistration) =>
         reg
           ? this.saveRegistrationToOfflineStorage(reg).pipe(
-              switchMap(() => this.newAttachmentService.removeAttachmentsForRegistration$(id)),
+              switchMap(() => this.newAttachmentService.removeAttachments$(id)),
               map(() => true)
             )
           : of(false)
@@ -506,7 +524,10 @@ export class RegistrationService {
   }
 
   public getAllAttachmentsForRegistration$(id: string): Observable<ExistingOrNewAttachment[]> {
-    return combineLatest([this.getRegistrationByIdShared$(id).pipe(map((reg) => getAllAttachments(reg))), this.newAttachmentService.getUploadedAttachments(id)]).pipe(
+    return combineLatest([
+      this.getRegistrationByIdShared$(id).pipe(map((reg) => getAllAttachments(reg))),
+      this.newAttachmentService.getAttachments(id)
+    ]).pipe(
       map(([existingAttachments, newAttachments]) => [
         ...existingAttachments.map((a) => ({ type: 'existing' as ExistingAttachmentType, attachment: a })),
         ...newAttachments.map((a) => ({ type: 'new' as NewAttachmentType, attachment: a }))
@@ -519,11 +540,16 @@ export class RegistrationService {
   }
 
   public getNewAttachmentsForRegistrationTid$(id: string, registrationTid: RegistrationTid): Observable<AttachmentUploadEditModel[]> {
-    return this.newAttachmentService.getUploadedAttachments(id).pipe(map((attachments: AttachmentUploadEditModel[]) => attachments.filter((a) => a.RegistrationTID === registrationTid)));
+    return this.newAttachmentService
+      .getAttachments(id)
+      .pipe(map((attachments: AttachmentUploadEditModel[]) => attachments.filter((a) => a.RegistrationTID === registrationTid)));
   }
 
   public getAllAttachmentsForRegistrationTid$(id: string, registrationTid: RegistrationTid): Observable<ExistingOrNewAttachment[]> {
-    return combineLatest([this.getExistingAttachmentsForRegistrationTid$(id, registrationTid), this.getNewAttachmentsForRegistrationTid$(id, registrationTid)]).pipe(
+    return combineLatest([
+      this.getExistingAttachmentsForRegistrationTid$(id, registrationTid),
+      this.getNewAttachmentsForRegistrationTid$(id, registrationTid)
+    ]).pipe(
       map(([existingAttachments, newAttachments]) => [
         ...existingAttachments.map((a) => ({ type: 'existing' as ExistingAttachmentType, attachment: a })),
         ...newAttachments.map((a) => ({ type: 'new' as NewAttachmentType, attachment: a }))

@@ -10,15 +10,27 @@ import { RegistrationTid } from '../../models/registration-tid.enum';
 
 @Injectable()
 export class OfflineDbNewAttachmentService implements NewAttachmentService {
-  constructor(private offlineDbService: OfflineDbService, protected appModeService: AppModeService, protected loggerService: LoggerService) {}
+  constructor(
+    private offlineDbService: OfflineDbService,
+    protected appModeService: AppModeService,
+    protected loggerService: LoggerService
+  ) {}
 
-  addAttachment(registrationId: string, data: Blob, mimeType: string, geoHazard: GeoHazard, registrationTid: RegistrationTid, type?: AttachmentType, ref?: string): void {
+  async addAttachment(
+    registrationId: string,
+    data: Blob,
+    mimeType: string,
+    geoHazard: GeoHazard,
+    registrationTid: RegistrationTid,
+    type?: AttachmentType,
+    ref?: string
+  ): Promise<void> {
     const attachmentId = uuidv4();
     this.getRegistrationOfflineDocumentById(registrationId)
       .pipe(
         take(1),
         switchMap((doc) =>
-          this.saveAttachmentMeta$({
+          this.saveAttachmentMeta$(registrationId, {
             id: attachmentId,
             AttachmentMimeType: mimeType,
             GeoHazardTID: geoHazard,
@@ -46,18 +58,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
       .subscribe();
   }
 
-  saveAttachmentMeta(meta: AttachmentUploadEditModel): void {
-    this.saveAttachmentMeta$(meta)
-      .pipe(
-        catchError((err) => {
-          this.loggerService.error(() => 'Could not save attachment metadata', err);
-          return EMPTY;
-        })
-      )
-      .subscribe();
-  }
-
-  getUploadedAttachments(registrationId: string): Observable<AttachmentUploadEditModel[]> {
+  getAttachments(registrationId: string): Observable<AttachmentUploadEditModel[]> {
     return combineLatest([this.getRegistrationOfflineDocumentById(registrationId), this.getAnyChangesToMetaData$()]).pipe(
       switchMap(([doc]) => (doc && doc.allAttachments().length > 0 ? this.getAttachmentMetaFromDocument(doc) : of([])))
     );
@@ -70,8 +71,8 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
     );
   }
 
-  getUploadedAttachment(registrationId: string, attachmentId: string): Observable<AttachmentUploadEditModel> {
-    return this.getUploadedAttachments(registrationId).pipe(map((result) => result.find((a) => a.id === attachmentId)));
+  getAttachment(registrationId: string, attachmentId: string): Observable<AttachmentUploadEditModel> {
+    return this.getAttachments(registrationId).pipe(map((result) => result.find((a) => a.id === attachmentId)));
   }
 
   getBlob(registrationId: string, attachmentId: string): Observable<Blob> {
@@ -87,8 +88,8 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
     this.removeAttachment$(registrationId, attachmentId).subscribe();
   }
 
-  removeAttachmentsForRegistration$(registrationId: string): Observable<void> {
-    return from(this.removeAttachmentsForRegistration(registrationId));
+  removeAttachments$(registrationId: string): Observable<void> {
+    return from(this.removeAttachments(registrationId));
   }
 
   removeAttachment$(registrationId: string, attachmentId: string): Observable<boolean> {
@@ -104,7 +105,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
     );
   }
 
-  async removeAttachmentsForRegistration(registrationId: string): Promise<void> {
+  async removeAttachments(registrationId: string): Promise<void> {
     const regDoc = await this.getRegistrationOfflineDocumentById(registrationId).pipe(take(1)).toPromise();
     if (!regDoc) {
       this.loggerService.debug('No registration document found!');
@@ -144,10 +145,12 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
   }
 
   private getAttachmentMetaDocument(id: string): Observable<RxAttachmentMetaDocument> {
-    return this.getAttachmentMetaDbCollectionForAppMode().pipe(switchMap((collection) => collection.findByIds$([id]).pipe(map((result) => result.get(id)))));
+    return this.getAttachmentMetaDbCollectionForAppMode().pipe(
+      switchMap((collection) => collection.findByIds$([id]).pipe(map((result) => result.get(id))))
+    );
   }
 
-  public saveAttachmentMeta$(attachmentMetaData: AttachmentUploadEditModel): Observable<RxAttachmentMetaDocument> {
+  public saveAttachmentMeta$(registrationId: string, attachmentMetaData: AttachmentUploadEditModel): Observable<RxAttachmentMetaDocument> {
     return this.getAttachmentMetaDbCollectionForAppMode().pipe(
       take(1),
       switchMap((dbCollection) => from(dbCollection.atomicUpsert(attachmentMetaData)))
