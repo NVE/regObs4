@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable, from, Subscription, of, concat, forkJoin, timer, merge, combineLatest } from 'rxjs';
+import { Observable, from, Subscription, of, concat, forkJoin, timer, merge, combineLatest, firstValueFrom } from 'rxjs';
 import { GeoHazard, AppMode, LoggerService, AppModeService, uuidv4 } from '@varsom-regobs-common/core';
 import {
   switchMap,
@@ -245,12 +245,13 @@ export class RegistrationService {
     return draft;
   }
 
-  public editExisingRegistration(registrationViewModel: RegistrationViewModel): IRegistration {
+  public async editExistingRegistrationAndSave(registrationViewModel: RegistrationViewModel): Promise<IRegistration> {
     const reg = this.createNewEmptyDraft(registrationViewModel.GeoHazardTID);
     reg.id = registrationViewModel.ExternalReferenceId || reg.id; // Keep the same id as reference id
     reg.request = cloneDeep(registrationViewModel);
     reg.response = cloneDeep(registrationViewModel);
     reg.syncStatus = SyncStatus.InSync;
+    await firstValueFrom(this.saveRegistration(reg));
     return reg;
   }
 
