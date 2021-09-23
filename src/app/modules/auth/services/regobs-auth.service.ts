@@ -3,29 +3,12 @@ import { Router } from '@angular/router';
 import { AlertController, NavController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService } from 'ionic-appauth';
-import {
-  BehaviorSubject,
-  firstValueFrom,
-  from,
-  lastValueFrom,
-  Observable
-} from 'rxjs';
-import {
-  filter,
-  map,
-  shareReplay,
-  skip,
-  switchMap,
-  tap,
-  withLatestFrom
-} from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, from, lastValueFrom, Observable, of, ReplaySubject } from 'rxjs';
+import { filter, map, shareReplay, skip, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { LangKey } from '@varsom-regobs-common/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { LoggedInUser } from '../../login/models/logged-in-user.model';
-import {
-  AccountService,
-  ObserverResponseDto
-} from '@varsom-regobs-common/regobs-api';
+import { AccountService, MyPageData, ObserverResponseDto } from '@varsom-regobs-common/regobs-api';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { Location } from '@angular/common';
 import { nowInSeconds, StorageBackend } from '@openid/appauth';
@@ -41,9 +24,11 @@ export const TOKEN_RESPONSE_FULL_KEY = 'token_response_full';
 })
 export class RegobsAuthService {
   private _isLoggingInSubject = new BehaviorSubject<boolean>(false);
+  private myPageDataSubject = new ReplaySubject<MyPageData>();
 
   public readonly loggedInUser$: Observable<LoggedInUser>;
   private readonly initComplete$: Observable<boolean>;
+  readonly myPageData$: Observable<MyPageData>;
 
   get isLoggingIn$(): Observable<boolean> {
     return this._isLoggingInSubject.asObservable();
@@ -60,7 +45,8 @@ export class RegobsAuthService {
     private location: Location,
     private accountService: AccountService,
     private storage: StorageBackend,
-    private platform: Platform
+    private platform: Platform,
+    private accountApi: AccountService
   ) {
     this.initComplete$ = this.authService.initComplete$.pipe(
       filter((isComplete) => isComplete),
@@ -69,40 +55,37 @@ export class RegobsAuthService {
 
     this.loggedInUser$ = this.createLoggedInUser$();
 
-    const events$ = this.initComplete$.pipe(
-      switchMap(() => this.authService.events$)
-    );
+    const events$ = this.initComplete$.pipe(switchMap(() => this.authService.events$));
 
     events$
-      .pipe(
-        filter(
-          (action) =>
-            action.action === AuthActions.SignInFailed &&
-            action.error !== 'Handle Not Available'
-        )
-      )
+      .pipe(filter((action) => action.action === AuthActions.SignInFailed && action.error !== 'Handle Not Available'))
       .subscribe((action) => this.showErrorMessage(500, action.error));
 
     events$
-      .pipe(
-        filter(
-          (action) =>
-            action.action === AuthActions.RefreshFailed &&
-            action.error === 'AADB2C90090'
-        )
-      )
+      .pipe(filter((action) => action.action === AuthActions.RefreshFailed && action.error === 'AADB2C90090'))
       .subscribe(() => this.signIn(false)); // Hack to detect user is coming from reset password flow. Route user back to login.
 
-    events$
-      .pipe(filter((action) => action.action === AuthActions.SignInSuccess))
-      .subscribe(async () => {
-        await this.redirectToReturnUrl();
-        await this.checkAndSetNickIfNickIsNull();
-      });
+    events$.pipe(filter((action) => action.action === AuthActions.SignInSuccess)).subscribe(async () => {
+      await this.redirectToReturnUrl();
+      await this.checkAndSetNickIfNickIsNull();
+    });
 
     this.userSettingService.appMode$.pipe(skip(1)).subscribe(() => {
       this.logout(); // When user change app mode, just logout and force user to login again for the new environment.
     });
+
+    // TODO: This could be saved in offline storage if we want to presist
+    // myPage data and the user start app when offline and want to edit registration
+    this.myPageData$ = this.loggedInUser$.pipe(
+      switchMap((loggedInUser) => {
+        if (loggedInUser.isLoggedIn) {
+          return this.accountApi.AccountGetMyPageData();
+        } else {
+          return of(undefined);
+        }
+      }),
+      shareReplay(1)
+    );
 
     this.initRefreshTokenOnStartup();
   }
@@ -116,10 +99,7 @@ export class RegobsAuthService {
         const issuedAt = tokenResponseWithClaims.tokenResponse?.issuedAt;
         const issuedAtNice = issuedAt ? new Date(issuedAt * 1000) : undefined;
         const gotToken = tokenResponse?.idToken ? 'OK' : 'NO TOKEN';
-        this.logger.debug(
-          `Token: ${gotToken}, issued at: ${issuedAtNice}`,
-          DEBUG_TAG
-        );
+        this.logger.debug(`Token: ${gotToken}, issued at: ${issuedAtNice}`, DEBUG_TAG);
       }),
       map((tokenResponseWithClaims) => ({
         isLoggedIn: tokenResponseWithClaims?.tokenResponse != null,
@@ -137,9 +117,7 @@ export class RegobsAuthService {
         this.authService.token$.pipe(
           map((tokenResponse) => ({
             tokenResponse,
-            claims: tokenResponse?.idToken
-              ? this.parseJwt(tokenResponse.idToken)
-              : undefined
+            claims: tokenResponse?.idToken ? this.parseJwt(tokenResponse.idToken) : undefined
           }))
         )
       )
@@ -149,11 +127,7 @@ export class RegobsAuthService {
   private initRefreshTokenOnStartup() {
     this.initComplete$
       .pipe(
-        switchMap(() =>
-          isAndroidOrIos(this.platform)
-            ? this.platform.resume
-            : from(this.platform.ready())
-        ),
+        switchMap(() => (isAndroidOrIos(this.platform) ? this.platform.resume : from(this.platform.ready()))),
         withLatestFrom(this.loggedInUser$)
       )
       .subscribe(([, user]) => {
@@ -203,16 +177,12 @@ export class RegobsAuthService {
 
   private async checkAndSetNickIfNickIsNull(): Promise<ObserverResponseDto> {
     try {
-      const user = await lastValueFrom(
-        this.accountService.AccountGetObserver()
-      );
+      const user = await lastValueFrom(this.accountService.AccountGetObserver());
       if (user && user.Nick != null && user.Nick != '') {
         return;
       }
       const nick = await this.showSetNickDialog();
-      await lastValueFrom(
-        this.accountService.AccountUpdateObserver({ Nick: nick })
-      );
+      await lastValueFrom(this.accountService.AccountUpdateObserver({ Nick: nick }));
     } catch (err) {
       this.logger.error(err, DEBUG_TAG, 'Could not save nick');
     }
@@ -222,9 +192,7 @@ export class RegobsAuthService {
     const headerTextKey = 'SET_NICK_ALERT.INPUT_TEXT';
     const messageTextKey = 'SET_NICK_ALERT.HELP_TEXT';
     const okTextKey = 'DIALOGS.OK';
-    const translations = await lastValueFrom(
-      this.translateService.get([headerTextKey, messageTextKey, okTextKey])
-    );
+    const translations = await lastValueFrom(this.translateService.get([headerTextKey, messageTextKey, okTextKey]));
     const alert = await this.alertController.create({
       header: translations[headerTextKey],
       message: translations[messageTextKey],
@@ -262,9 +230,7 @@ export class RegobsAuthService {
       const returnUrl = localStorage.getItem(RETURN_URL_KEY);
       if (returnUrl) {
         localStorage.removeItem(RETURN_URL_KEY);
-        this.location.replaceState(
-          this.router.serializeUrl(this.router.createUrlTree(['']))
-        );
+        this.location.replaceState(this.router.serializeUrl(this.router.createUrlTree([''])));
         await this.navCtrl.navigateForward(returnUrl);
       } else {
         await this.navCtrl.navigateRoot('');
@@ -273,21 +239,10 @@ export class RegobsAuthService {
   }
 
   private async showErrorMessage(status: number, message: string) {
-    const text =
-      status === 401
-        ? 'UNAUTHORIZED'
-        : status <= 0
-        ? 'SERVICE_UNAVAILABLE'
-        : 'UNKNOWN_ERROR';
+    const text = status === 401 ? 'UNAUTHORIZED' : status <= 0 ? 'SERVICE_UNAVAILABLE' : 'UNKNOWN_ERROR';
     const messageText = `LOGIN.${text}`;
     const extraMessage = text === 'UNKNOWN_ERROR' ? ` ${message}` : '';
-    const translations = await lastValueFrom(
-      this.translateService.get([
-        'ALERT.DEFAULT_HEADER',
-        'ALERT.OK',
-        messageText
-      ])
-    );
+    const translations = await lastValueFrom(this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', messageText]));
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
       message: `${translations[messageText]}${extraMessage}`,
