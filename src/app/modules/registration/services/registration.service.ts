@@ -40,11 +40,7 @@ export class RegistrationService {
   ) {
     // this.registrations$ = this.registrationRepositoryService.registrations$;
     this.registrations$ = this.commonRegistrationService.registrationStorage$;
-    this.drafts$ = this.registrations$.pipe(
-      map((val) =>
-        val.filter((item) => item.syncStatus === SyncStatus.Draft)
-      )
-    );
+    this.drafts$ = this.registrations$.pipe(map((val) => val.filter((item) => item.syncStatus === SyncStatus.Draft)));
   }
 
   // saveRegistration(appMode: AppMode, registration: IRegistration) {
@@ -243,11 +239,9 @@ export class RegistrationService {
       this.regobsAuthService.signIn();
       return;
     }
-    // reg.request.ObserverGuid = loggedInUser.user.Guid;
-    // reg.status = RegistrationStatus.Sync;
-    // this.saveRegistration(appMode, reg);
-    // this.syncRegistrations();
-    this.commonRegistrationService.saveAndSync(reg).subscribe();
+    reg.syncStatus = SyncStatus.Sync;
+    this.commonRegistrationService.saveAndSync(reg, null, true).subscribe();
+    // TODO: Ignore version check is set to true for now
     this.navController.navigateRoot('my-observations');
   }
 
