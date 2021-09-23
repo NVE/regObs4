@@ -1,7 +1,5 @@
-import {
-  RxJsonSchema
-} from 'rxdb';
-export const RegistrationSchema : RxJsonSchema = {
+import { RxJsonSchema } from 'rxdb';
+export const RegistrationSchema: RxJsonSchema = {
   title: 'Registration schema',
   description: 'Registrations',
   version: 0,
@@ -10,38 +8,36 @@ export const RegistrationSchema : RxJsonSchema = {
   properties: {
     id: {
       type: 'string',
-      primary: true,
+      primary: true
     },
     changed: {
-      type: 'number',
+      type: 'number'
     },
     geoHazard: {
-      type: 'number',
+      type: 'number'
     },
     syncStatus: {
-      type: 'string',
+      type: 'string'
     },
     lastSync: {
-      type: 'number',
+      type: 'number'
     },
     syncError: {
-      type: 'string',
+      type: 'string'
     },
     syncStatusCode: {
-      type: 'number',
+      type: 'number'
     },
     request: {
       type: 'object',
-      properties: {
-      }
+      properties: {}
     },
     response: {
       type: 'object',
-      properties: {
-      }
+      properties: {}
     },
     changedRegistrationTid: {
-      type: 'number'
+      type: ['number', 'null']
     }
   },
   required: ['id', 'changed', 'geoHazard', 'syncStatus'],
