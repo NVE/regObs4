@@ -5,6 +5,9 @@ const config: CapacitorConfig = {
   appName: 'Varsom Regobs',
   webDir: 'www',
   bundledWebRuntime: false,
+  server: {
+    iosScheme: 'ionic'
+  },
   cordova: {
     preferences: {
       ScrollEnabled: 'false',
