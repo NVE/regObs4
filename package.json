@@ -7,7 +7,7 @@
     "ng": "ng",
     "generate-swagger-api-module": "ng-swagger-gen -c ng-swagger-gen.json",
     "start": "ionic serve",
-    "build": "ng build",
+    "build": "ionic build",
     "build:prod": "ng build --configuration production",
     "test": "ng test --watch=false --browsers=\"ChromeHeadless\" --code-coverage",
     "test-watch": "ng test --watch=true --browsers=\"ChromeHeadless\" --reporters=progress",

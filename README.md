@@ -27,7 +27,9 @@ ionic serve
 ### To debug app on Android device
 
 ```
-ionic cordova run android
+npm run build (or ionic build)
+npx cap sync
+npx cap run android
 ```
 
 [More info](https://ionicframework.com/docs/building/android)
