@@ -3,6 +3,14 @@
 	"appName": "Varsom Regobs",
 	"webDir": "www",
 	"bundledWebRuntime": false,
+	"server": {
+		"iosScheme": "ionic"
+	},
+	"plugins": {
+		"SplashScreen": {
+			"launchAutoHide": false
+		}
+	},
 	"cordova": {
 		"preferences": {
 			"ScrollEnabled": "false",

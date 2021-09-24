@@ -8,6 +8,11 @@ const config: CapacitorConfig = {
   server: {
     iosScheme: 'ionic'
   },
+  plugins: {
+    'SplashScreen': {
+      'launchAutoHide': false
+    }
+  },
   cordova: {
     preferences: {
       ScrollEnabled: 'false',

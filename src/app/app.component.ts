@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
@@ -27,7 +27,6 @@ export class AppComponent {
 
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private userSettings: UserSettingService,
     private dataMarshallService: DataMarshallService,
@@ -57,12 +56,7 @@ export class AppComponent {
   }
 
   afterAppInitialized() {
-    setTimeout(() => {
-      this.splashScreen.hide();
-    }, 300); // Wait 300 ms to hide splashScreen to make sure app has completed navigating to start wizard
-    setTimeout(() => {
-      this.dataMarshallService.init();
-    }, 3000); // Wait a bit before init data marshall service to prevent too many requests at startup
+    SplashScreen.hide();
   }
 
   private lockScreenOrientation() {
@@ -143,7 +137,16 @@ export class AppComponent {
                   'Could not init shortcutService'
                 )
               )
+            ),
+           of( this.dataMarshallService.init()).pipe(
+            catchError((err) =>
+              this.loggingService.error(
+                err,
+                DEBUG_TAG,
+                'Could not init dataMarshallService'
+              )
             )
+          ),
           ])
         )
       );
