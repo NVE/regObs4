@@ -345,7 +345,7 @@ export class GeoPositionService implements OnDestroy {
 
   private getHeadingNative() {
     return this.deviceOrientation
-      .watchHeading()
+      .watchHeading({filter: 1}) //get notified only if heading changes > 1 degree
       .pipe(map((val) => val?.magneticHeading));
   }
 
