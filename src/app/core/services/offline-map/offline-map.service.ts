@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { OfflineMapPackage, OfflineTilesMetadata } from './offline-map.model';
 import { Progress } from './progress.model';
 import moment from 'moment';
-import { File, Metadata, Entry } from '@ionic-native/file/ngx';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
 import { finalize, map, mergeMap, shareReplay, switchMap, take } from 'rxjs/operators';
@@ -23,6 +23,16 @@ const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
 const ROOT_MAP_DIR = 'maps';
 
+function arrayBufferToBase64(buffer: ArrayBuffer) {
+  var binary = ''
+  var bytes = new Uint8Array(buffer)
+  var len = bytes.byteLength
+  for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -39,11 +49,10 @@ export class OfflineMapService implements OnReset {
   private downloadSubscription: Subscription;
   private cancel = false;
 
-  private hasCreatedRootFolder = false;
+  private rootFileUrl = '';
   offlineTilesRegistry = new OfflineTilesRegistry();
 
   constructor(
-    private file: File,
     private loggingService: LoggingService,
     private webView: WebView,
     private backgroundDownloadService: BackgroundDownloadService,
@@ -77,12 +86,9 @@ export class OfflineMapService implements OnReset {
       return [];
     }
 
-    const path = await this.getDataDirectoryFileUrl();
-    const mapsDir = await this.getRootDirName();
-
     // Read offline map package names
-    const fileEntries = await this.file.listDir(path, mapsDir);
-    const packageNames = await this.getFolderNameWithCompleteFiles(fileEntries.filter((entry) => entry.isDirectory));
+    const readDirResult = await Filesystem.readdir({ path: await this.getRootFileUrl() } );
+    const packageNames = await this.getFolderNameWithCompleteFiles(readDirResult.files);
     this.loggingService.debug('packageNames', DEBUG_TAG, packageNames);
 
     // Read all package metadata
@@ -104,8 +110,8 @@ export class OfflineMapService implements OnReset {
     return packages.reduce((pv, cv) => ((cv.downloadComplete && cv.size != null) ? cv.size : 0) + pv, 0);
   }
 
-  private async getFolderNameWithCompleteFiles(folders: Entry[]) : Promise<string[]> {
-    return (await Promise.all(folders.map((directoryEntry: Entry) => this.hasCompleteFile(directoryEntry.name).then((result) => result ? directoryEntry.name : null))))
+  private async getFolderNameWithCompleteFiles(folders: string[]) : Promise<string[]> {
+    return (await Promise.all(folders.map((folder: string) => this.hasCompleteFile(folder).then((result) => result ? folder : null))))
       .filter((packageName) => packageName != null);
   }
 
@@ -316,28 +322,34 @@ export class OfflineMapService implements OnReset {
   }
 
   private async readCompleteFile(packageName: string): Promise<{ size: number, downloadComplete: number }> {
-    const path = await this.getMapPackageFileUrl(packageName);
-    const completeFile = await this.file.resolveLocalFilesystemUrl(`${path}/COMPLETE`);
-    const doneSize = await this.file.readAsText(path, 'COMPLETE');
-    return new Promise((resolve, reject) => {
-      completeFile.getMetadata((success) => resolve({ size: +doneSize, downloadComplete: success.modificationTime.getTime() / 1000  }), (err) => reject(err));
-    });
+    const path = await this.getCompleteFileUrl(packageName);
+    try {
+      const fileContent = await Filesystem.readFile({ path, encoding: Encoding.ASCII });
+      const fileStat = (await Filesystem.stat({ path }));
+      return { size: +fileContent, downloadComplete: fileStat.mtime / 1000  };
+    } catch(error) {
+      const niceError = new Error(`Couldn't read COMPLETE file: ${path}`);
+      niceError.stack = error.stack;
+      throw niceError;
+    };
   }
 
   private async hasCompleteFile(packageName: string): Promise<boolean> {
-    try{
-    const path = await this.getMapPackageFileUrl(packageName);
-    return await this.file.checkFile(`${path}/`, 'COMPLETE');
-    }catch(err) {
+    try {
+      const path = await this.getCompleteFileUrl(packageName);
+      const uri = (await Filesystem.stat({ path})).uri;
+      this.loggingService.debug(`Package '${packageName}' has complete file: ${uri}`, DEBUG_TAG);
+      return true;
+    } catch(err) {
       // throws error if file does not exist
       return false;
     }
   }
 
   private async getMapsInPackageFolder(packageName: string): Promise<string[]> {
-    const rootFileUrl = await this.getRootFileUrl();
-    const fileEntries = await this.file.listDir(rootFileUrl, packageName);
-    return fileEntries.filter((entry) => entry.isDirectory).map((entry) => entry.name);
+    const path = await this.getMapPackageFileUrl(packageName);
+    const filenames = await (await Filesystem.readdir({ path })).files;
+    return filenames.filter(filename => filename != 'COMPLETE'); //TODO: Hack, assumes that all files in folder is a directory unless it has name 'COMPLETE'
   }
 
   /**
@@ -357,10 +369,10 @@ export class OfflineMapService implements OnReset {
 
     const maps = await this.getMapsInPackageFolder(packageName);
     for(let map of maps) {
-      const metadataPath = `${path}/${map}`;
+      const metadataPath = `${path}/${map}/${METADATA_FILE}`;
       this.loggingService.debug('Metadata path:', DEBUG_TAG, metadataPath);
-      const data = await this.file.readAsText(metadataPath, METADATA_FILE);
-      const metadata = JSON.parse(data) as OfflineTilesMetadata;
+      const readFileResult = await Filesystem.readFile( { path: metadataPath, encoding: Encoding.UTF8 });
+      const metadata = JSON.parse(readFileResult.data) as OfflineTilesMetadata;
       this.loggingService.debug('Metadata:', DEBUG_TAG, metadata);
 
       offlineMapPackage.maps[map] = { ...metadata, url: this.webView.convertFileSrc(`${path}/${map}`) };
@@ -403,22 +415,11 @@ export class OfflineMapService implements OnReset {
         DEBUG_TAG,
         zipEntries
       );
-      const directories = zipEntries.filter((name) => content.files[name].dir);
 
       // if(!isAndroidOrIos(this.platform)) {
       //   throw Error('Unzip file not implemented on web!')
       // }
-
-      this.loggingService.debug(`Creating directories path: ${path}. Folder: ${folder}`);
-      if(folder.indexOf('/') >= 0) {
-        await this.file.createDir(path, folder.split('/')[0], true); //Create package folder (f.eks 135-74-8)
-      }
-      await this.file.createDir(path, folder, true);
       const root = `${path}/${folder}`;
-      for (const dir of directories) {
-        await this.file.createDir(root, dir, true);
-      }
-
       let i = 0;
       const files = zipEntries.filter((name) => !content.files[name].dir);
       const mod = Math.floor(files.length / 100);
@@ -428,11 +429,15 @@ export class OfflineMapService implements OnReset {
           return;
         }
         const zippedFile: JSZip.JSZipObject = content.files[fileName];
-        const buffer = await zippedFile.async('arraybuffer');
+        const blob: Blob = await zippedFile.async('blob');
 
         if(isAndroidOrIos(this.platform)){
-          await this.file.writeFile(root, fileName, buffer, {
-            replace: true
+          const buffer = await blob.arrayBuffer();
+          const base64 = arrayBufferToBase64(buffer);
+          await Filesystem.writeFile({
+            path: `${root}/${fileName}`,
+            data: base64,
+            recursive: true
           });
         }
 
@@ -494,8 +499,8 @@ export class OfflineMapService implements OnReset {
     mapPackage.progress = { percentage: 1.0 };
 
     // Store new combined metadata
-    const path = await this.getMapPackageFileUrl(mapPackage.name);
-    await this.file.writeFile(path, 'COMPLETE', `${mapPackage.size}`);
+    const path = await this.getCompleteFileUrl(mapPackage.name);
+    await Filesystem.writeFile( {path, data: `${mapPackage.size}`, encoding: Encoding.ASCII});
 
     
     // Remove from progress tracking
@@ -537,7 +542,7 @@ export class OfflineMapService implements OnReset {
    * 
    * @returns file url as string, with trailing /
    */
-  private async getDataDirectoryFileUrl(): Promise<string> {
+  private async getDataDirectory(): Promise<Directory.Data> {
     // if (this.platform.is('android')) {
     //     const userSettings = await this.userSettingService.getUserSettings();
     //     // TODO: Prefer save offline map on SD card? Show a dialog to ask if user wants to save on external directory?
@@ -545,26 +550,7 @@ export class OfflineMapService implements OnReset {
     //         return this.file.externalDataDirectory;
     //     }
     // }
-    if(this.file && this.file.dataDirectory) {
-      const fileUrl = this.file.dataDirectory;
-      console.assert(fileUrl.endsWith('/'), 'Data Directory does not end with /.');
-      return fileUrl;
-    }
-    return undefined;
-  }
-
-  /**
-   * Get root directory folder name
-   * 
-   * @returns directory name as string
-   */
-  private async getRootDirName(): Promise<string> {
-    if(!this.hasCreatedRootFolder) {
-      const dataFolder = await this.getDataDirectoryFileUrl();
-      await this.file.createDir(dataFolder, ROOT_MAP_DIR, true);
-      this.hasCreatedRootFolder = true;
-    }
-    return ROOT_MAP_DIR;
+    return Directory.Data;
   }
 
   /**
@@ -574,9 +560,20 @@ export class OfflineMapService implements OnReset {
    * @returns file url as string, without trailing /
    */
   private async getRootFileUrl(): Promise<string> {
-    const dataDir = await this.getDataDirectoryFileUrl();
-    const mapsDir = await this.getRootDirName();
-    return dataDir + mapsDir;
+    if(this.rootFileUrl === '') {
+      const dataDirectory = await this.getDataDirectory();
+      const readDirResult = await Filesystem.readdir({path: '', directory: dataDirectory });
+      if (!readDirResult.files.includes(ROOT_MAP_DIR)) {
+        await Filesystem.mkdir({ path: ROOT_MAP_DIR, directory: dataDirectory });
+      }
+      const uriResult = await Filesystem.getUri({ path: ROOT_MAP_DIR, directory: dataDirectory });
+      this.rootFileUrl = uriResult.uri;
+
+      if (this.rootFileUrl.endsWith('/')) {
+        this.rootFileUrl = this.rootFileUrl.slice(0, -1);
+      }
+    }
+    return this.rootFileUrl;
   }
 
   /**
@@ -590,23 +587,31 @@ export class OfflineMapService implements OnReset {
     return `${root}/${name}`;
   }
 
-  //#endregion
+  /**
+   * Get file url to COMPLETE file in map package
+   * 
+   * @param name - map package name
+   * @returns file url as string
+   */
+   private async getCompleteFileUrl(packageName: string): Promise<string> {
+    const path = await this.getMapPackageFileUrl(packageName);
+    return `${path}/COMPLETE`;
+  }
 
   private async deleteDirectory(path: string, dirName: string): Promise<void> {
     if(!isAndroidOrIos(this.platform)) {
       return;
     }
-
-    await this.file
-      .removeRecursively(path, dirName)
+    const folderUrl = `${path}/${dirName}`;
+    await Filesystem.rmdir({ path: folderUrl, recursive: true})
       .then(() => {
-        this.loggingService.debug(`removed folder: ${path}/${dirName}`);
+        this.loggingService.debug(`removed folder: ${folderUrl}`);
       })
       .catch((err) => {
         this.loggingService.error(
           err,
           'background download native',
-          `remove folder failed: ${path}/${dirName}`
+          `remove folder failed: ${folderUrl}`
         );
       });
   }
