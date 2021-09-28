@@ -25,7 +25,7 @@ export class ExternalLinkService {
 
   async openExternalLink(url: string) {
     const validatedUrl = this.ensureCorrectUrl(url);
-    if (!this.platform.is('cordova')) {
+    if (!this.platform.is('hybrid')) {
       this.openExternalLinkFallback(validatedUrl);
       return;
     }

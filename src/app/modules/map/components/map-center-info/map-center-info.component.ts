@@ -195,7 +195,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
 
   private useNativeClipboardPlugin() {
     return (
-      this.platform.is('cordova') &&
+      this.platform.is('hybrid') &&
       (this.platform.is('android') || this.platform.is('ios'))
     );
   }

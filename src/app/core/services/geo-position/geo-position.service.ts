@@ -135,7 +135,7 @@ export class GeoPositionService implements OnDestroy {
 
   getTimestamp(geopos: Geoposition) {
     if (geopos && geopos.timestamp > 0) {
-      if (this.platform.is('cordova') && this.platform.is('ios')) {
+      if (this.platform.is('hybrid') && this.platform.is('ios')) {
         return geopos.timestamp / 1000;
       }
       return geopos.timestamp;
@@ -340,7 +340,7 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private shouldUseNativePlugin(): boolean {
-    return this.platform.is('cordova') && this.platform.is('ios');
+    return this.platform.is('hybrid') && this.platform.is('ios');
   }
 
   private getHeadingNative() {

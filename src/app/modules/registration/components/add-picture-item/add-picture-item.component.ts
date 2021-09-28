@@ -99,7 +99,7 @@ export class AddPictureItemComponent implements OnInit {
   }
 
   async getPicture(sourceType: PictureSourceType) {
-    if (!this.platform.is('cordova')) {
+    if (!this.platform.is('hybrid')) {
       await this.addDummyImage();
       return true;
     }

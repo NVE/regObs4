@@ -83,7 +83,7 @@ export class FileLoggingService {
                 // Any configuration not specified will take the defaults
                 this.config.merge(this.defaultConfig);
                 if (!this.config.baseDir) {
-                  if (this.platform.is('cordova')) {
+                  if (this.platform.is('hybrid')) {
                     // Can only initialize this after platform is ready
                     this.config.baseDir = this.file.dataDirectory;
                   } else {
@@ -94,7 +94,7 @@ export class FileLoggingService {
                 this.fileLoggerReady = false;
                 this.debug_metaLog('Initializing file logger');
                 this.log('Initializing file logger');
-                if (!this.platform.is('cordova'))
+                if (!this.platform.is('hybrid'))
                 {
                     this.debug_metaLog('Not initialising file logger as the it is not supported by the platform ' + this.platform.url());
                     this.initFailed = true;
