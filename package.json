@@ -75,7 +75,6 @@
     "@turf/turf": "^6.5.0",
     "@varsom-regobs-common/translations": "^1.0.182",
     "angular-svg-icon": "^12.0.0",
-    "capacitor-blob-writer": "^0.2.4",
     "clone-deep": "^4.0.1",
     "cordova-plugin-device": "^2.0.3",
     "cordova-sqlite-storage": "^6.0.0",

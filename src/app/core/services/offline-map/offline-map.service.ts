@@ -3,7 +3,6 @@ import { OfflineMapPackage, OfflineTilesMetadata } from './offline-map.model';
 import { Progress } from './progress.model';
 import moment from 'moment';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
-import { writeFile } from 'capacitor-blob-writer';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
 import { finalize, map, mergeMap, shareReplay, switchMap, take } from 'rxjs/operators';
@@ -23,6 +22,16 @@ import { OfflineTilesRegistry } from './offline-tiles-registry';
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
 const ROOT_MAP_DIR = 'maps';
+
+function arrayBufferToBase64(buffer: ArrayBuffer) {
+  var binary = ''
+  var bytes = new Uint8Array(buffer)
+  var len = bytes.byteLength
+  for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
 
 @Injectable({
   providedIn: 'root'
@@ -420,10 +429,16 @@ export class OfflineMapService implements OnReset {
           return;
         }
         const zippedFile: JSZip.JSZipObject = content.files[fileName];
-        const buffer: Blob = await zippedFile.async('blob');
+        const blob: Blob = await zippedFile.async('blob');
 
         if(isAndroidOrIos(this.platform)){
-          await writeFile( { path: `${root}/${fileName}`, data: buffer, recursive: true});
+          const buffer = await blob.arrayBuffer();
+          const base64 = arrayBufferToBase64(buffer);
+          await Filesystem.writeFile({
+            path: `${root}/${fileName}`,
+            data: base64,
+            recursive: true
+          });
         }
 
         i++;
