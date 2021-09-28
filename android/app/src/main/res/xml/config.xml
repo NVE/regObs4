@@ -26,10 +26,6 @@
     <param name="android-package" value="org.apache.cordova.camera.CameraLauncher"/>
   </feature>
 
-  <feature name="LaunchMyApp">
-    <param name="android-package" value="nl.xservices.plugins.LaunchMyApp"/>
-  </feature>
-
   <feature name="Compass">
     <param name="android-package" value="org.apache.cordova.deviceorientation.CompassListener"/>
   </feature>
