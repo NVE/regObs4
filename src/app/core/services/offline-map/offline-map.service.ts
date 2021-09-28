@@ -568,6 +568,10 @@ export class OfflineMapService implements OnReset {
       }
       const uriResult = await Filesystem.getUri({ path: ROOT_MAP_DIR, directory: dataDirectory });
       this.rootFileUrl = uriResult.uri;
+
+      if (this.rootFileUrl.endsWith('/')) {
+        this.rootFileUrl = this.rootFileUrl.slice(0, -1);
+      }
     }
     return this.rootFileUrl;
   }
