@@ -2,8 +2,7 @@ import { writeFileSync, readFileSync } from 'fs';
 import { AppVersion } from './src/app/core/models/app-version.model';
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const prettifyXml = require('prettify-xml');
-import * as cordovaSetVersion from 'cordova-set-version';
+const AndroidManifest = require('manifest-android');
 
 async function getVersion(): Promise<AppVersion> {
   const revision = (await exec('git rev-parse --short HEAD')).stdout.toString().trim();
@@ -24,10 +23,21 @@ async function getVersion(): Promise<AppVersion> {
   };
 }
 
-function prettify(filePath: string) {
-  const options = { indent: 2, newline: '\n' };
-  const result = prettifyXml(readFileSync(filePath, { encoding: 'utf8' }), options);
-  writeFileSync(filePath, result, { encoding: 'utf8' });
+function updateAndroidManifest(appVersion: AppVersion) {
+  const path = './android/app/src/main/AndroidManifest.xml';
+  const androidManifest = new AndroidManifest();
+  androidManifest.load({ file: path }, (err) => {
+    if(err) {
+      console.error(err);
+      return;
+    }
+    androidManifest.version = `${appVersion.version}.${appVersion.buildNumber}`;
+    androidManifest.save({ file: path }, (err) => {
+      if(err) {
+        console.error(err);
+      }
+    })
+  });
 }
 
 async function updateVersion() {
@@ -39,13 +49,7 @@ async function updateVersion() {
     branch: '${version.branch}'`);
 
   writeFileSync('src/environments/version.json', JSON.stringify(version), { encoding: 'utf8' });
-  const configPath = './config.xml';
-  try {
-    await cordovaSetVersion({ configPath: configPath, version: version.version, buildNumber: version.buildNumber });
-  } catch (err) {
-    console.error('Could not update config.xml version number', err);
-  }
-  prettify(configPath);
+  updateAndroidManifest(version);
 }
 
 updateVersion();
