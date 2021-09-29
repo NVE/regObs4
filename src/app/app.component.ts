@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { OfflineImageService } from './core/services/offline-image/offline-image.service';
@@ -12,9 +11,10 @@ import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
 import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
-import { switchMap, take, concatMap, delay, catchError } from 'rxjs/operators';
+import { switchMap, take, concatMap, catchError } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -27,7 +27,6 @@ export class AppComponent {
 
   constructor(
     private platform: Platform,
-    private statusBar: StatusBar,
     private userSettings: UserSettingService,
     private dataMarshallService: DataMarshallService,
     private offlineImageService: OfflineImageService,
@@ -93,7 +92,7 @@ export class AppComponent {
                 )
               )
             ),
-            of(this.statusBar.styleLightContent()).pipe(
+            from(StatusBar.setStyle({ style: Style.Light })).pipe(
               catchError((err) =>
                 this.loggingService.error(
                   err,
@@ -102,7 +101,7 @@ export class AppComponent {
                 )
               )
             ),
-            of(this.statusBar.backgroundColorByHexString('#99044962')).pipe(
+            from(StatusBar.setBackgroundColor({ color: '#99044962'})).pipe(
               catchError((err) =>
                 this.loggingService.error(
                   err,
@@ -111,7 +110,7 @@ export class AppComponent {
                 )
               )
             ),
-            of(this.statusBar.overlaysWebView(false)).pipe(
+            of(StatusBar.setOverlaysWebView({ overlay: false })).pipe(
               catchError((err) =>
                 this.loggingService.error(
                   err,

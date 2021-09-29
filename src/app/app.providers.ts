@@ -1,4 +1,3 @@
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { IonicRouteStrategy, NavController, Platform } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -75,7 +74,6 @@ function createTranslateLoader(http: HttpClient) {
 }
 
 export const APP_PROVIDERS = [
-  StatusBar,
   StartWizardGuard,
   AuthGuard,
   { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

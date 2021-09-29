@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { BehaviorSubject, from } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { StatusBar } from '@capacitor/status-bar';
 import { NgDestoryBase } from '../../helpers/observable-helper';
 import { Platform } from '@ionic/angular';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
@@ -16,18 +16,15 @@ export class FullscreenService extends NgDestoryBase {
     return this._subject.asObservable();
   }
 
-  constructor(private statusBar: StatusBar, private platform: Platform) {
+  constructor(private platform: Platform) {
     super();
     this._subject = new BehaviorSubject(false);
     if (isAndroidOrIos(this.platform)) {
       this.platform.ready().then(() => {
-        this.isFullscreen$.pipe(takeUntil(this.ngDestroy$)).subscribe((val) => {
-          if (val) {
-            this.statusBar.hide();
-          } else {
-            this.statusBar.show();
-          }
-        });
+        this.isFullscreen$.pipe(
+          switchMap((isFullscreen) => from(isFullscreen ? StatusBar.hide() : StatusBar.show())), 
+          takeUntil(this.ngDestroy$)
+        ).subscribe();
       });
     }
   }
