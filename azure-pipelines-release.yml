@@ -46,17 +46,18 @@ steps:
     versionSpec: 14.x
     checkLatest: true
 
+# Needed to sign Android apk/aab
 - task: DownloadSecureFile@1
   displayName: 'Download secure file: nve.keystore'
   inputs:
     secureFile: '3a7f7301-2d1f-419c-b23b-2b72418bc324'
     retryCount: 5
 
-- task: DownloadSecureFile@1
-  displayName: 'Download secure file: build.json'
-  inputs:
-    secureFile: 'c5491b5c-2fb9-4018-b1b5-aedbc42c4cf3'
-    retryCount: 5
+#- task: DownloadSecureFile@1
+#  displayName: 'Download secure file: build.json'
+#  inputs:
+#    secureFile: 'c5491b5c-2fb9-4018-b1b5-aedbc42c4cf3'
+#    retryCount: 5
 
 - task: DownloadSecureFile@1
   displayName: 'Download secure file: apikey.json'
@@ -98,44 +99,43 @@ steps:
 - task: Npm@1
   displayName: 'npm install'
   inputs:
+    command: install
     verbose: false
 
 - task: Npm@1
-  displayName: 'npm create release and upload sourcemaps to Sentry'
+  displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run create-version-file'
+
+- task: Npm@1
+  displayName: 'npm build production'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run build:prod'
+
+- task: Npm@1
+  displayName: 'Capacitor sync to native folders'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'cap:sync'
+
+- task: Npm@1
+  displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
   inputs:
     command: custom
     verbose: false
     customCommand: 'run sentry:create-release-and-upload-sourcemaps'
 
-- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
-  displayName: 'Ionic Cordova Build iOS'
-  inputs:
-    ionicCommand: 'cordova build ios'
-    ionicArgs: '--release --prod --device'
-
-- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
-  displayName: 'Ionic Cordova Remove Platform Android'
-  inputs:
-    ionicCommand: 'cordova platform rm android'
-    ionicArgs: ''
-
-- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
-  displayName: 'Ionic Cordova Add Platform Android'
-  inputs:
-    ionicCommand: 'cordova platform add android@10'
-    ionicArgs: ''
-
-- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
-  displayName: 'Ionic Cordova Build Android'
-  inputs:
-    ionicCommand: 'cordova build android'
-    ionicArgs: '--release --prod'
-
 - script: |
-   cd platforms/android
-   ls
+   cd android
    ./gradlew bundleRelease
   displayName: 'Create Android app bundle'
+
+# TODO: Create ipa
 
 - script: |
    cd platforms/ios/build/device
