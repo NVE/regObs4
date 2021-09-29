@@ -88,38 +88,45 @@ export class AppComponent {
                 this.loggingService.error(
                   err,
                   DEBUG_TAG,
-                  'Could not configure loggine'
+                  'Could not configure logging'
                 )
               )
             ),
-            from(StatusBar.setStyle({ style: Style.Light })).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not set styleLightContent'
-                )
+            from(StatusBar.setStyle({ style: Style.Dark })).pipe(
+              catchError((err) => {
+                  this.loggingService.error(
+                    err,
+                    DEBUG_TAG,
+                    'Could not set styleLightContent'
+                  );
+                  return of(void null);
+                }
               )
             ),
             from(StatusBar.setBackgroundColor({ color: '#99044962'})).pipe(
-              catchError((err) =>
+              catchError((err) => {
                 this.loggingService.error(
                   err,
                   DEBUG_TAG,
                   'Could not set backgroundColorByHexString'
-                )
+                );
+                return of(void null);
+              }
               )
             ),
-            of(StatusBar.setOverlaysWebView({ overlay: false })).pipe(
+            from(StatusBar.setOverlaysWebView({ overlay: false })).pipe(
               catchError((err) =>
-                this.loggingService.error(
+                {
+                   this.loggingService.error(
                   err,
                   DEBUG_TAG,
                   'Could not set overlaysWebView'
-                )
+                );
+                return of(void null);
+                }
               )
             ),
-            of(this.offlineImageService.cleanupOldItems()).pipe(
+            from(this.offlineImageService.cleanupOldItems()).pipe(
               catchError((err) =>
                 this.loggingService.error(
                   err,
