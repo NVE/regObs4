@@ -3,6 +3,9 @@ import { AppVersion } from './src/app/core/models/app-version.model';
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const AndroidManifest = require('manifest-android');
+const plist = require('plist');
+
+const IOS_PLIST_PATH = 'ios/App/App/Info.plist';
 
 async function getVersion(): Promise<AppVersion> {
   const revision = (await exec('git rev-parse --short HEAD')).stdout.toString().trim();
@@ -40,6 +43,13 @@ function updateAndroidManifest(appVersion: AppVersion) {
   });
 }
 
+function updateIosVersion(version) {
+  const plistJson = plist.parse(readFileSync(IOS_PLIST_PATH, 'utf8'));
+  plistJson.CFBundleVersion = version.buildNumber;
+  plistJson.CFBundleShortVersionString = version.version;
+  writeFileSync(IOS_PLIST_PATH, plist.build(plistJson));
+}
+
 async function updateVersion() {
   const version = await getVersion();
 
@@ -50,6 +60,8 @@ async function updateVersion() {
 
   writeFileSync('src/environments/version.json', JSON.stringify(version), { encoding: 'utf8' });
   updateAndroidManifest(version);
+  updateIosVersion(version);
+
 }
 
 updateVersion();
