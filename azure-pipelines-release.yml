@@ -158,7 +158,9 @@ steps:
     archivePath: '$(system.defaultworkingdirectory)/ios/build/outputs'
     exportPath: 'output/iphoneos/Release'
     signingOption: 'manual'
+    signingIdentity: 'iPhone Distribution'
     provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
+    teamId: '43L5B5X2PE'
 
 
 - task: CopyFiles@2
