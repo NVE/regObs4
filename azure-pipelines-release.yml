@@ -130,10 +130,23 @@ steps:
     verbose: false
     customCommand: 'run sentry:create-release-and-upload-sourcemaps'
 
-- script: |
-   cd android
-   ./gradlew bundleRelease
-  displayName: 'Create Android app bundle'
+#- script: |
+#   cd android
+#   ./gradlew bundleRelease
+#  displayName: 'Create Android app bundle'
+- task: Gradle@2
+  inputs:
+    gradleWrapperFile: 'gradlew'
+    workingDirectory: 'android'
+    tasks: 'buildRelease'
+    publishJUnitResults: false
+    javaHomeOption: 'JDKVersion'
+    sonarQubeRunAnalysis: false
+    spotBugsAnalysis: false
+
+- task: CmdLine@2
+  inputs:
+    script: 'jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore nve.keystore -storepass $(android.keystore.password) -keypass $(android.keystore.password) $(system.defaultworkingdirectory)/android/app/build/outputs/bundle/release/*.aab regobs'
 
 # TODO: Create ipa
 - task: Xcode@5
@@ -142,7 +155,7 @@ steps:
     configuration: 'Release'
     sdk: 'iphoneos'
     packageApp: true
-    archivePath: '$(build.artifactStagingDirectory)'
+    archivePath: '$(system.defaultworkingdirectory)/ios/build/outputs'
     exportPath: 'output/iphoneos/Release'
     signingOption: 'manual'
     provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
@@ -153,6 +166,7 @@ steps:
   inputs:
     Contents: |
      android/app/build/outputs/bundle/release/*.aab
+     ios/build/outputs/*.ipa
     TargetFolder: '$(build.artifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
