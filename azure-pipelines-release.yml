@@ -121,7 +121,7 @@ steps:
   inputs:
     command: custom
     verbose: false
-    customCommand: 'cap:sync'
+    customCommand: 'run cap:sync'
 
 - task: Npm@1
   displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
