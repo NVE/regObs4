@@ -4,6 +4,9 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const prettifyXml = require('prettify-xml');
 import * as cordovaSetVersion from 'cordova-set-version';
+const plist = require('plist');
+
+const IOS_PLIST_PATH = 'ios/App/App/Info.plist';
 
 async function getVersion(): Promise<AppVersion> {
   const revision = (await exec('git rev-parse --short HEAD')).stdout.toString().trim();
@@ -30,6 +33,13 @@ function prettify(filePath: string) {
   writeFileSync(filePath, result, { encoding: 'utf8' });
 }
 
+function updateIosVersion(version) {
+  const plistJson = plist.parse(readFileSync(IOS_PLIST_PATH, 'utf8'));
+  plistJson.CFBundleVersion = version.buildNumber;
+  plistJson.CFBundleShortVersionString = version.version;
+  writeFileSync(IOS_PLIST_PATH, plist.build(plistJson));
+}
+
 async function updateVersion() {
   const version = await getVersion();
 
@@ -39,6 +49,8 @@ async function updateVersion() {
     branch: '${version.branch}'`);
 
   writeFileSync('src/environments/version.json', JSON.stringify(version), { encoding: 'utf8' });
+  updateIosVersion(version);
+
   const configPath = './config.xml';
   try {
     await cordovaSetVersion({ configPath: configPath, version: version.version, buildNumber: version.buildNumber });
