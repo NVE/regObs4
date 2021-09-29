@@ -136,21 +136,23 @@ steps:
   displayName: 'Create Android app bundle'
 
 # TODO: Create ipa
+- task: Xcode@5
+  inputs:
+    actions: 'build'
+    configuration: 'Release'
+    sdk: 'iphoneos'
+    packageApp: true
+    archivePath: '$(build.artifactStagingDirectory)'
+    exportPath: 'output/iphoneos/Release'
+    signingOption: 'manual'
+    provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
 
-- script: |
-   cd platforms/ios/build/device
-   ls
-   find . ! -name '*.ipa' -delete
-   ls
-  displayName: 'Cleanup ios build folder'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactStagingDirectory)'
   inputs:
     Contents: |
-     platforms/ios/build/device/*.ipa
-     platforms/android/app/build/outputs/apk/release/app-release.apk
-     platforms/android/app/build/outputs/bundle/release/*.aab
+     android/app/build/outputs/bundle/release/*.aab
     TargetFolder: '$(build.artifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
