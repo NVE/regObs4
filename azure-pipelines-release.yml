@@ -136,8 +136,8 @@ steps:
 #  displayName: 'Create Android app bundle'
 - task: Gradle@2
   inputs:
-    gradleWrapperFile: 'gradlew'
-    workingDirectory: 'android'
+    gradleWrapperFile: '$(Build.SourcesDirectory)/android/gradlew'
+    workingDirectory: ''
     tasks: 'buildRelease'
     publishJUnitResults: false
     javaHomeOption: 'JDKVersion'
