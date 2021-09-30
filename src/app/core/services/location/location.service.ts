@@ -8,25 +8,16 @@ import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.se
   providedIn: 'root'
 })
 export class LocationService {
-  constructor(
-    private regobsAuthService: RegobsAuthService,
-    private apiLocationService: RegobsApiLocationService
-  ) {}
+  constructor(private regobsAuthService: RegobsAuthService, private apiLocationService: RegobsApiLocationService) {}
 
-  getLocationWithinRadiusObservable(
-    geoHazard: GeoHazard,
-    lat: number,
-    lng: number,
-    radius: number
-  ) {
+  getLocationWithinRadiusObservable(geoHazard: GeoHazard, lat: number, lng: number, radius: number) {
     return this.regobsAuthService.loggedInUser$.pipe(
-      switchMap((loggedInUser) =>
+      switchMap(() =>
         this.apiLocationService.LocationWithinRadius({
           geoHazardTypeIds: [geoHazard],
           radius,
           latitude: lat,
           longitude: lng,
-          observerGuid: null, // loggedInUser.isLoggedIn ? loggedInUser.user.Guid : null, // TODO: Fix api to use access token if provided
           returnCount: 100
         })
       )

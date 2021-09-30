@@ -1,19 +1,10 @@
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import {
-  HttpRequest,
-  HttpInterceptor,
-  HttpHandler,
-  HttpEvent,
-  HttpEventType
-} from '@angular/common/http';
+import { HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpEventType } from '@angular/common/http';
 import { EMPTY, from, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { settings } from '../../../settings';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import {
-  RegobsAuthService,
-  TOKEN_RESPONSE_FULL_KEY
-} from 'src/app/modules/auth/services/regobs-auth.service';
+import { RegobsAuthService, TOKEN_RESPONSE_FULL_KEY } from 'src/app/modules/auth/services/regobs-auth.service';
 import { StorageBackend } from '@openid/appauth';
 
 /**
@@ -22,26 +13,25 @@ import { StorageBackend } from '@openid/appauth';
  */
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
-  constructor(
-    private regobsAuthService: RegobsAuthService,
-    private loggerService: LoggingService,
-    private storage: StorageBackend
-  ) {}
+  constructor(private regobsAuthService: RegobsAuthService, private loggerService: LoggingService, private storage: StorageBackend) {}
 
   private isRegObsApi(url: string): boolean {
     return (
-      url.startsWith(
-        `${settings.services.regObs.apiUrl['TEST']}/Registration`
-      ) ||
-      url.startsWith(
-        `${settings.services.regObs.apiUrl['DEMO']}/Registration`
-      ) ||
-      url.startsWith(
-        `${settings.services.regObs.apiUrl['PROD']}/Registration`
-      ) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['TEST']}/Registration`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['DEMO']}/Registration`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['PROD']}/Registration`) ||
       url.startsWith(`${settings.services.regObs.apiUrl['TEST']}/Account`) ||
       url.startsWith(`${settings.services.regObs.apiUrl['DEMO']}/Account`) ||
-      url.startsWith(`${settings.services.regObs.apiUrl['PROD']}/Account`)
+      url.startsWith(`${settings.services.regObs.apiUrl['PROD']}/Account`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['TEST']}/Location/WithinRadius`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['DEMO']}/Location/WithinRadius`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['PROD']}/Location/WithinRadius`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['TEST']}/Search/MyRegistrations`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['DEMO']}/Search/MyRegistrations`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['PROD']}/Search/MyRegistrations`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['TEST']}/Trip`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['DEMO']}/Trip`) ||
+      url.startsWith(`${settings.services.regObs.apiUrl['PROD']}/Trip`)
     );
   }
 
@@ -49,18 +39,12 @@ export class ApiInterceptor implements HttpInterceptor {
     return url.indexOf('/token') > -1;
   }
 
-  intercept(
-    req: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (this.isB2cApi(req.url)) {
       return next.handle(req).pipe(
         tap((response) => {
           if (response.type === HttpEventType.Response) {
-            this.storage.setItem(
-              TOKEN_RESPONSE_FULL_KEY,
-              JSON.stringify(response.body)
-            );
+            this.storage.setItem(TOKEN_RESPONSE_FULL_KEY, JSON.stringify(response.body));
           }
         })
       );
@@ -79,39 +63,24 @@ export class ApiInterceptor implements HttpInterceptor {
     return next.handle(req);
   }
 
-  private addAuthHeader(
-    request: HttpRequest<unknown>
-  ): Observable<HttpRequest<unknown>> {
+  private addAuthHeader(request: HttpRequest<unknown>): Observable<HttpRequest<unknown>> {
     return this.regobsAuthService.loggedInUser$.pipe(
       catchError((err) => {
-        this.loggerService.debug(
-          'Could not get valid token',
-          'API interceptor',
-          err
-        );
+        this.loggerService.debug('Could not get valid token', 'API interceptor', err);
         this.regobsAuthService.signIn();
         return EMPTY; //TODO: Why this?
       }),
       map((user) => {
-        const headers = request.headers.set(
-          'Authorization',
-          `Bearer ${user.token}`
-        );
+        const headers = request.headers.set('Authorization', `Bearer ${user.token}`);
         return request.clone({ headers });
       })
     );
   }
 
-  private handleResponseError(
-    error,
-    request,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
+  private handleResponseError(error, request, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (error.status === 401) {
       // Vi er ikke autorisert, trolig fordi tokenet ikke er gyldig
-      this.loggerService.debug(
-        'Got 401 from API, trying to refresh token and repeat API-call...'
-      );
+      this.loggerService.debug('Got 401 from API, trying to refresh token and repeat API-call...');
       return from(this.regobsAuthService.refreshToken()).pipe(
         switchMap(() => this.addAuthHeader(request)),
         switchMap((req) => next.handle(req))
