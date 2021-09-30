@@ -137,6 +137,7 @@ steps:
     configuration: 'Release'
     sdk: 'iphoneos'
     packageApp: true
+    xcWorkspacePath: '$(system.defaultworkingdirectory)/ios/App/App.xcworkspace'
     archivePath: '$(system.defaultworkingdirectory)/ios/build/outputs'
     exportPath: 'output/iphoneos/Release'
     signingOption: 'manual'
