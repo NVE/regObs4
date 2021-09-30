@@ -130,6 +130,21 @@ steps:
     verbose: false
     customCommand: 'run sentry:create-release-and-upload-sourcemaps'
 
+# TODO: Create ipa
+- task: Xcode@5
+  inputs:
+    actions: 'build'
+    configuration: 'Release'
+    sdk: 'iphoneos'
+    packageApp: true
+    archivePath: '$(system.defaultworkingdirectory)/ios/build/outputs'
+    exportPath: 'output/iphoneos/Release'
+    signingOption: 'manual'
+    signingIdentity: 'iPhone Distribution'
+    provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
+    teamId: '43L5B5X2PE'
+    scheme: 'App'
+
 #- script: |
 #   cd android
 #   ./gradlew bundleRelease
@@ -147,22 +162,6 @@ steps:
 - task: CmdLine@2
   inputs:
     script: 'jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore nve.keystore -storepass $(android.keystore.password) -keypass $(android.keystore.password) $(system.defaultworkingdirectory)/android/app/build/outputs/bundle/release/*.aab regobs'
-
-# TODO: Create ipa
-- task: Xcode@5
-  inputs:
-    actions: 'build'
-    configuration: 'Release'
-    sdk: 'iphoneos'
-    packageApp: true
-    archivePath: '$(system.defaultworkingdirectory)/ios/build/outputs'
-    exportPath: 'output/iphoneos/Release'
-    signingOption: 'manual'
-    signingIdentity: 'iPhone Distribution'
-    provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
-    teamId: '43L5B5X2PE'
-    scheme: 'App'
-
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactStagingDirectory)'
