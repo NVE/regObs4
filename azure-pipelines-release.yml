@@ -147,33 +147,29 @@ steps:
     provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
     teamId: '43L5B5X2PE'
 
-#- script: |
-# TODO:
-#   cd android
-#   ./gradlew bundleRelease
-#  displayName: 'Create Android app bundle'
-# - task: Gradle@2
-#   inputs:
-#     gradleWrapperFile: 'android/gradlew'
-#     workingDirectory: 'android/'
-#     tasks: 'bundleRelease'
-#     publishJUnitResults: false
-#     javaHomeOption: 'JDKVersion'
-#     sonarQubeRunAnalysis: false
-#     spotBugsAnalysis: false
+- script: |
+  cd android
+  ./gradlew bundleRelease
+ displayName: 'Create Android app bundle'
+- task: Gradle@2
+  inputs:
+    gradleWrapperFile: 'android/gradlew'
+    workingDirectory: 'android/'
+    tasks: 'bundleRelease'
+    publishJUnitResults: false
+    javaHomeOption: 'JDKVersion'
+    sonarQubeRunAnalysis: false
+    spotBugsAnalysis: false
 
-# - task: CmdLine@2
-# TODO:
-#   inputs:
-#     script: 'jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore nve.keystore -storepass $(android.keystore.password) -keypass $(android.keystore.password) $(system.defaultworkingdirectory)/android/app/build/outputs/bundle/release/*.aab regobs'
+- task: CmdLine@2
+  inputs:
+    script: 'jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore nve.keystore -storepass $(android.keystore.password) -keypass $(android.keystore.password) $(system.defaultworkingdirectory)/android/app/build/outputs/bundle/release/*.aab regobs'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactStagingDirectory)'
   inputs:
-    # TODO: Contents: |
-    #  android/app/build/outputs/bundle/release/*.aab
-    #  ios/build/outputs/*.ipa
     Contents: |
+     android/app/build/outputs/bundle/release/*.aab
      ios/build/outputs/*.ipa
     TargetFolder: '$(build.artifactStagingDirectory)'
 
