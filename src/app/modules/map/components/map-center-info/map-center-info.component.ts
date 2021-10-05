@@ -11,9 +11,8 @@ import { MapSearchService } from '../../services/map-search/map-search.service';
 import { IMapView } from '../../services/map/map-view.interface';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
-import { Geoposition } from '@ionic-native/geolocation/ngx';
+import { Position } from '@capacitor/geolocation';
 import { HelperService } from 'src/app/core/services/helpers/helper.service';
-import { LatLng } from 'leaflet';
 
 interface ViewInfoWithDistance extends ViewInfo {
   horizontalDistanceFromGpsPos?: string; //including unit (m or km)
@@ -115,7 +114,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     return this.mapSearchService.getViewInfo(mapView).pipe(
       switchMap((viewInfo) =>
         this.geoPositionService.currentPosition$.pipe(
-          startWith(null as Geoposition),
+          startWith(null as Position),
           map((gpsPos) => this.createViewInfoWithDistance(viewInfo, gpsPos)),
           tap((viewInfoWithDistance) =>
             this.computeHeight(viewInfoWithDistance)
@@ -149,7 +148,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
 
   private createViewInfoWithDistance(
     viewInfo: ViewInfo,
-    gpsPos: Geoposition
+    gpsPos: Position
   ): ViewInfoWithDistance {
     let horizontalDistance = undefined;
     let heightDifference = undefined;

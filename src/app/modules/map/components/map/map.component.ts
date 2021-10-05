@@ -14,7 +14,7 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { timer, Subject, from, BehaviorSubject } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
-import { Geoposition } from '@ionic-native/geolocation/ngx';
+import { Position } from '@capacitor/geolocation';
 import { UserMarker } from '../../../../core/helpers/leaflet/user-marker/user-marker';
 import { MapService } from '../../services/map/map.service';
 import {
@@ -508,7 +508,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.redrawMap();
   }
 
-  private onPositionUpdate(data: Geoposition) {
+  private onPositionUpdate(data: Position) {
     this.zone.runOutsideAngular(() => {
       if (this.map) {
         const latLng = L.latLng({
