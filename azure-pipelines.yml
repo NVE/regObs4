@@ -35,10 +35,6 @@ steps:
     verbose: false
 
 - task: Npm@1
-  displayName: 'Install Ionic CLI'
-  script: npm install -g @ionic/cli
-
-- task: Npm@1
   displayName: 'npm run build'
   inputs:
     command: custom
