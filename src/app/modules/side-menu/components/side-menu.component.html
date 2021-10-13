@@ -40,25 +40,12 @@
     <ion-label position="stacked" color="dark" class="stacked-label">{{ 'MENU.MAP' | translate }}</ion-label>
     <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap"
       interface="action-sheet" (ngModelChange)="saveUserSettings()">
-      <!-- <ion-select-option [value]="TopoMap.mixGeoDataLandskap">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{
-       'Geodata Landskap' }}</ion-select-option> -->
       <ion-select-option [value]="TopoMap.default">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{
         'MENU.TILES.KARTVERKET' | translate }}</ion-select-option>
       <ion-select-option [value]="TopoMap.mixOpenTopo">{{ 'MENU.TILES.OPEN_TOPO' | translate }} + {{
         'MENU.TILES.KARTVERKET' | translate }}</ion-select-option>
-      <!-- <ion-select-option [value]="TopoMap.statensKartverk" *ngIf="userSettings.language !==  LangKey.nb">
-        {{ 'MENU.TILES.KARTVERKET' | translate }}
-      </ion-select-option>
-      <ion-select-option [value]="TopoMap.default" *ngIf="userSettings.language ===  LangKey.nb">
-        {{ 'MENU.TILES.KARTVERKET' | translate }}
-      </ion-select-option> -->
       <ion-select-option [value]="TopoMap.geoDataLandskap">{{ 'MENU.TILES.GEODATA_LANDSKAP' | translate }}
       </ion-select-option>
-      <!-- <ion-select-option [value]="TopoMap.default" *ngIf="userSettings.language !==  LangKey.nb">
-        {{ 'MENU.TILES.ARC_GIS' | translate }}</ion-select-option>
-      <ion-select-option [value]="TopoMap.arcGisOnline" *ngIf="userSettings.language ===  LangKey.nb">
-        {{ 'MENU.TILES.ARC_GIS' | translate }}</ion-select-option>
-      <ion-select-option [value]="TopoMap.openTopo">{{ 'MENU.TILES.OPEN_TOPO' | translate }}</ion-select-option> -->
     </ion-select>
   </ion-item>
   <ion-menu-toggle auto-hide="false">
