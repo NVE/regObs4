@@ -480,9 +480,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           createNorwegianMixedMap
         ];
       case TopoMap.mixArcGisOnline:
-        return createArGisOnlineMixMap;
       default:
-        return langKey === LangKey.nb ? [createStatensKartverk] : [createArcGisOnlineMap];
+        return createArGisOnlineMixMap;
     }
   }
 
