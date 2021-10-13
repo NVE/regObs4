@@ -116,7 +116,6 @@
     "@types/clone-deep": "^4.0.1",
     "@types/cordova": "0.0.34",
     "@types/geojson": "^7946.0.8",
-    "@types/google.analytics": "0.0.42",
     "@types/jasmine": "^3.8.2",
     "@types/jasminewd2": "~2.0.10",
     "@types/leaflet": "^1.7.5",

@@ -8,7 +8,6 @@
     "types": [
       "jasmine",
       "node",
-      "google.analytics"
     ]
   },
   "files": [

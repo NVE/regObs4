@@ -8,9 +8,6 @@ import moment from 'moment';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { LangKey } from '../../core/models/langKey';
 import { WarningGroupFavouriteToggleComponent } from '../warning-group-favourite-toggle/warning-group-favourite-toggle.component';
-import { AnalyticService } from '../../modules/analytics/services/analytic.service';
-import { AppEventCategory } from '../../modules/analytics/enums/app-event-category.enum';
-import { AppEventAction } from '../../modules/analytics/enums/app-event-action.enum';
 import { from, of, Subject, timer } from 'rxjs';
 import { map, catchError, takeUntil, switchMap, take } from 'rxjs/operators';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
@@ -33,7 +30,6 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     private externalLinkService: ExternalLinkService,
     private userSettingService: UserSettingService,
     private domCtrl: DomController,
-    private analyticService: AnalyticService,
     private renderer: Renderer2
   ) {
     super();
@@ -130,11 +126,6 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
     event.preventDefault();
     const url = await this.getUrl(group);
     if (url) {
-      this.analyticService.trackEvent(
-        AppEventCategory.Warnings,
-        AppEventAction.Click,
-        group.getKeyAsString()
-      );
       this.externalLinkService.openExternalLink(url);
     }
   }
@@ -147,11 +138,6 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
       .format(settings.services.warning.dateFormat);
     const url = await this.getUrl(group, dateString);
     if (url) {
-      this.analyticService.trackEvent(
-        AppEventCategory.Warnings,
-        AppEventAction.Click,
-        group.getKeyAsString()
-      );
       this.externalLinkService.openExternalLink(url);
     }
   }

@@ -21,7 +21,6 @@ import {
   debounceTime
 } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
-import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
 import { LangKey } from '../../models/langKey';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
@@ -58,8 +57,7 @@ export class DataMarshallService implements OnReset {
     private platform: Platform,
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
-    private loggingService: LoggingService,
-    private analyticService: AnalyticService
+    private loggingService: LoggingService
   ) {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
   }
@@ -93,18 +91,6 @@ export class DataMarshallService implements OnReset {
               'AppMode, Language or CurrentGeoHazard has changed. Update observations and warnings.',
               DEBUG_TAG
             );
-            this.analyticService.trackDimension(
-              AppCustomDimension.language,
-              LangKey[langKey]
-            );
-            this.analyticService.trackDimension(
-              AppCustomDimension.appMode,
-              appMode
-            );
-            this.analyticService.trackDimension(
-              AppCustomDimension.geoHazard,
-              geoHazards.map((gh) => GeoHazard[gh]).join(',')
-            );
             this.updateObservations();
             this.warningService.updateWarnings();
           }
@@ -118,59 +104,10 @@ export class DataMarshallService implements OnReset {
           )
           .subscribe((consent) => {
             if (consent) {
-              this.analyticService.enable();
               this.loggingService.enable();
-              this.analyticService.trackDimension(
-                AppCustomDimension.enabledAnalytics,
-                consent
-              );
             } else {
-              this.analyticService.trackDimension(
-                AppCustomDimension.enabledAnalytics,
-                consent
-              );
-              this.analyticService.disable();
               this.loggingService.disable();
             }
-          })
-      );
-      this.subscriptions.push(
-        this.userSettingService.showMapCenter$.subscribe((showMapCenter) => {
-          this.analyticService.trackDimension(
-            AppCustomDimension.showMapCenter,
-            showMapCenter.toString()
-          );
-        })
-      );
-      this.subscriptions.push(
-        this.userSettingService.userSetting$
-          .pipe(
-            map((userSetting) => userSetting.topoMap),
-            distinctUntilChanged()
-          )
-          .subscribe((topoMap) => {
-            this.analyticService.trackDimension(
-              AppCustomDimension.topoMap,
-              topoMap
-            );
-          })
-      );
-      this.subscriptions.push(
-        this.userSettingService.supportTiles$
-          .pipe(
-            map((st) =>
-              st
-                .filter((x) => x.enabled)
-                .map((x) => x.name)
-                .join(',')
-            ),
-            distinctUntilChanged()
-          )
-          .subscribe((supportMap) => {
-            this.analyticService.trackDimension(
-              AppCustomDimension.supportMap,
-              supportMap
-            );
           })
       );
       this.subscriptions.push(

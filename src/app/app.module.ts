@@ -16,7 +16,6 @@ import { LegalTermsModalPageModule } from './pages/modal-pages/legal-terms-modal
 import { MarkdownModule } from 'ngx-markdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SideMenuModule } from './modules/side-menu/side-menu.module';
-import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GpsDebugModule } from './modules/gps-debug/gps-debug.module';
 import { MapModule } from './modules/map/map.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
@@ -41,7 +40,6 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     LegalTermsModalPageModule,
     SideMenuModule,
     GpsDebugModule,
-    AnalyticsModule.forRoot()
   ],
   providers: APP_PROVIDERS,
   bootstrap: [AppComponent]

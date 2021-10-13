@@ -8,7 +8,6 @@
     ],
     "types": [
       "node",
-      "google.analytics",
       "cordova"
     ]
   },
