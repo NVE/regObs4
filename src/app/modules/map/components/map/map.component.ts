@@ -41,6 +41,7 @@ import { LangKey } from '../../../../core/models/langKey';
 import { File } from '@ionic-native/file/ngx';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
+import { OfflineMapPackage } from 'src/app/core/services/offline-map/offline-map.model';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -273,17 +274,40 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private async initOfflineMaps() {
     this.loggingService.debug('initOfflineMaps()... ', DEBUG_TAG);
-
     // When starting offline, offline map packages are
     // registered after the map initially loads.
     // By redrawing here, we can see offline tiles without
     // zooming in/out etc.
     this.offlineMapService.packages$
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => this.redrawOfflineLayers());
+      .subscribe((packages) => this.redrawOfflineLayers(packages));
   }
 
-  private redrawOfflineLayers() {
+  private findLayer(id : string): boolean {
+    this.layerGroup.eachLayer((layer) => {
+      if (layer instanceof L.TileLayer) {
+        const tileLayer: L.TileLayer = layer;
+        if (tileLayer.options.id === id) {
+          return true;
+        }
+      }
+    })
+    return false;
+  }
+
+  private redrawOfflineLayers(packages: OfflineMapPackage[]) {
+    packages[0].compoundPackageMetadata.getParts();
+    const layerType = 'statensKartverk'; //TODO: Fjern hardkoding
+    const layerId = `offline-${layerType}`; //TODO: Fjern hardkoding
+    if (!this.findLayer(layerId)) {
+      //create offline background layer first time
+      const options: IRegObsTileLayerOptions = {
+        id: layerId,
+        maxNativeZoom: 14 //TODO: Fjern hardkoding
+      }
+      const layer =  new RegObsOfflineAwareTileLayer(layerType, null, options, this.offlineMapService.offlineTilesRegistry, this.loggingService);
+      this.layerGroup.addLayer
+    }
     this.layerGroup.eachLayer((layer) => {
       if (layer instanceof RegObsOfflineAwareTileLayer) {
         layer.redraw();
@@ -347,11 +371,27 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     };
   }
 
+  private createOfflineTopoLayer(userSetting: UserSetting): L.Layer {
+    const layerType = TopoMap.statensKartverk; //TODO: Fjern hardkoding
+    const layerId = `offline-${layerType}`; //TODO: Fjern hardkoding
+    const options: IRegObsTileLayerOptions = {
+      ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
+      id: layerId,
+      maxNativeZoom: 14 //TODO: Fjern hardkoding
+    }
+    return  new RegObsOfflineAwareTileLayer(layerType, null, options, this.offlineMapService.offlineTilesRegistry, this.loggingService);
+  }
+
   private configureTileLayers(userSetting: UserSetting) {
     this.zone.runOutsideAngular(() => {
       this.layerGroup.clearLayers();
       this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
       
+      if (isAndroidOrIos(this.platform)) {
+        const offlineTopoLayer = this.createOfflineTopoLayer(userSetting);
+        offlineTopoLayer.addTo(this.layerGroup);
+      }
+
       const createTileLayerFactory = this.getTileLayerFactory(
         userSetting.topoMap
       );
@@ -378,25 +418,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           bounds: <any>settings.map.tiles.supportTilesBounds
         }
 
-        const layer = this.createSupportMapTileLayer(supportMaps.name, supportMaps.url, options);
+        const layer = new RegObsTileLayer(supportMaps.url, options);
         layer.setOpacity(supportMaps.opacity);
         layer.addTo(this.layerGroup);
       }
     });
-  }
-
-  private createSupportMapTileLayer(name: string, url: string, options: L.TileLayerOptions): RegObsTileLayer {
-    if (isAndroidOrIos(this.platform)) {
-      return new RegObsOfflineAwareTileLayer(
-        name,
-        url,
-        options,
-        this.offlineMapService.offlineTilesRegistry,
-        this.loggingService
-      );
-    } else {
-      return new RegObsTileLayer(url, options);
-    }
   }
 
   private getMaxZoom(detectRetina: boolean) {
@@ -410,24 +436,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     let createStatensKartverk: CreateTileLayer;
 
     if (isAndroidOrIos(this.platform)) {
-      createNorwegianMixedMap = (options) => new RegObsOfflineAwareTileLayer(
-          TopoMap.statensKartverk,
+      createNorwegianMixedMap = (options) => new RegObsTileLayer(
           settings.map.tiles.statensKartverkMapUrl,
           {
             ...options,
             bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
-          },
-          this.offlineMapService.offlineTilesRegistry,
-          this.loggingService,
+          }
         );
       
-      createStatensKartverk = (options) => new RegObsOfflineAwareTileLayer(
-          TopoMap.statensKartverk,
-          settings.map.tiles.statensKartverkMapUrl,
-          options,
-          this.offlineMapService.offlineTilesRegistry,
-          this.loggingService,
-        );
+      createStatensKartverk = (options) => new RegObsTileLayer(settings.map.tiles.statensKartverkMapUrl, options);
     } else {
       createNorwegianMixedMap = (options) => new RegObsTileLayer(
         settings.map.tiles.statensKartverkMapUrl,
