@@ -167,7 +167,7 @@ steps:
   inputs:
     Contents: |
      android/app/build/outputs/bundle/release/*.aab
-     ios/build/outputs/*.ipa
+     output/iphoneos/Release/*.ipa
     TargetFolder: '$(build.artifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1

@@ -6,8 +6,11 @@ android {
         applicationId "no.nve.regobs4"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        // Removed version variables because they overwrite version tags in AndroidManifest.xml
+        // See https://forum.ionicframework.com/t/where-to-set-the-version-code-in-a-ionic-capacitor-app/192084/2
+        // and https://github.com/ionic-team/capacitor/issues/840#issuecomment-426234086
+        // versionCode 1
+        // versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

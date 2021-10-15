@@ -110,7 +110,7 @@ export class AnalyticService {
       this.disable();
     }
 
-    this.loggingService.debug('Loading google analytics', DEBUG_TAG);
+    this.loggingService.debug('Setup google analytics', DEBUG_TAG);
     if (window.localStorage) {
       ga('create', settings.googleAnalytics.trackerId, 'auto', {
         storage: 'none',
