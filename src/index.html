@@ -24,17 +24,27 @@
 <body>
   <app-root></app-root>
   <script>
-    (function (i, s, o, g, r, a, m) {
-      i['GoogleAnalyticsObject'] = r;
-      i[r] = i[r] || function () {
-        (i[r].q = i[r].q || []).push(arguments)
-      }, i[r].l = 1 * new Date();
-      a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0];
-      a.async = 1;
-      a.src = g;
-      m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+    // Instructs analytics.js to use the name `ga`.
+    window.GoogleAnalyticsObject = 'ga';
+
+    // Creates an initial analytics ga() function.
+    // The queued commands will be executed once analytics.js loads.
+    // This is used later in analytics.service.ts
+    window.ga = window.ga || function() {
+      (ga.q = ga.q || []).push(arguments)
+    };
+
+    // Sets the time (as an integer) this tag was executed.
+    // Used for timing hits.
+    ga.l = +new Date;
+    
+    window.addEventListener("load", function () {
+      console.log("Page loaded. Adding analytics.js script tag to load ga.");
+      var tag = document.createElement("script");
+      tag.async = 1;
+      tag.src = "https://www.google-analytics.com/analytics.js";
+      document.getElementsByTagName("head")[0].appendChild(tag);
+    });
   </script>
 </body>
 
