@@ -45,8 +45,8 @@ function updateAndroidManifest(appVersion: AppVersion) {
 
 function updateIosVersion(version) {
   const plistJson = plist.parse(readFileSync(IOS_PLIST_PATH, 'utf8'));
-  plistJson.CFBundleVersion = version.buildNumber;
-  plistJson.CFBundleShortVersionString = version.version;
+  plistJson.CFBundleVersion = version.buildNumber.toString();
+  plistJson.CFBundleShortVersionString = version.version.toString();
   writeFileSync(IOS_PLIST_PATH, plist.build(plistJson));
 }
 
