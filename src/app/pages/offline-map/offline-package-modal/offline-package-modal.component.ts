@@ -40,7 +40,7 @@ export class OfflinePackageModalComponent implements OnInit {
       tap(() => this.cdr.detectChanges() ));
     this.tileLayer = new L.GeoJSON(this.feature);
     
-    // Set zoom layer from package bounds
+    // Set center from package bounds
     const { lat, lng } = this.tileLayer.getBounds().getCenter();
     this.center = [lat, lng];
 
