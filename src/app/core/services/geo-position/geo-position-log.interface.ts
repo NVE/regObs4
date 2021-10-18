@@ -1,4 +1,4 @@
-import { Geoposition, PositionError } from '@ionic-native/geolocation/ngx';
+import { Position } from '@capacitor/geolocation';
 
 export interface GeoPositionLog {
   timestamp: number;
@@ -8,6 +8,20 @@ export interface GeoPositionLog {
     | 'PositionUpdate'
     | 'PositionError';
   highAccuracyEnabled: boolean;
-  pos?: Geoposition;
+  pos?: Position;
   err?: PositionError;
+}
+
+/**
+ * Copied from @ionic-native/geolocation/ngx
+ */
+export interface PositionError {
+  /**
+   * A code that indicates the error that occurred
+   */
+  code: number;
+  /**
+   * A message that can describe the error that occurred
+   */
+  message: string;
 }

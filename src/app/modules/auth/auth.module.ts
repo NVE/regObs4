@@ -4,14 +4,12 @@ import { Requestor, StorageBackend } from '@openid/appauth';
 import { AuthRoutingModule } from './auth-routing.module';
 import { AuthService, Browser } from 'ionic-appauth';
 import { authFactory } from './factories/auth-factory';
-import { browserFactory } from './factories/browser-factory';
 import { Platform } from '@ionic/angular';
 import { httpFactory } from './factories/http-factory';
 import { HttpClient } from '@angular/common/http';
 import { storageFactory } from './factories/storage-factory';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { CapacitorBrowser } from 'ionic-appauth/lib/capacitor';
 
 @NgModule({
   declarations: [],
@@ -29,8 +27,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
     },
     {
       provide: Browser,
-      useFactory: browserFactory,
-      deps: [Platform, SafariViewController, InAppBrowser]
+      useClass: CapacitorBrowser
     },
     {
       provide: AuthService,
