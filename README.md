@@ -27,7 +27,9 @@ ionic serve
 ### To debug app on Android device
 
 ```
-ionic cordova run android
+npm run build (or ionic build)
+npx cap sync
+npx cap run android
 ```
 
 [More info](https://ionicframework.com/docs/building/android)
@@ -55,6 +57,9 @@ C:\gradle\gradle-6.7.1\bin
 
 - You have to uninstall the regular RegObs app from your phone in order to debug
 - This may be helpful for device connection problmems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
+
+#### Error: package android.support.v4.content does not exist
+[More info] https://github.com/ionic-team/capacitor/issues/2822
 
 ### Debugge på iPhone/iPad: XCode
 [Mer info](https://ionicframework.com/docs/developing/ios)

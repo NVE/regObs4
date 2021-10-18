@@ -14,7 +14,7 @@ describe('OfflineMapService', () => {
     platformMock = jasmine.createSpyObj('Platform', {
       is: (platformName: Platforms) => false
     });
-    offlineMapService = new OfflineMapService(null, new TestLoggingService(), null, null, platformMock, null, null, null);
+    offlineMapService = new OfflineMapService(new TestLoggingService(), null, null, platformMock, null, null, null);
   });
 
   it('progress value for 10% for download step of part 1 of 2 should be 0.10 / 4 =  0.025', () => {  
