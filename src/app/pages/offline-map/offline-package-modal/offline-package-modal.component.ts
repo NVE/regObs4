@@ -20,7 +20,7 @@ export class OfflinePackageModalComponent implements OnInit {
   @Input() packageOnServer: CompoundPackage;
   @Input() offlinePackageStatus$: Observable<OfflineMapPackage>;
 
-  zoom = 13;
+  zoom: number;
   center: number[];
   tileLayer: L.GeoJSON;
   isCheckingAvailableDiskspace:boolean;
@@ -39,17 +39,18 @@ export class OfflinePackageModalComponent implements OnInit {
     this.offlinePackageStatusThatTriggersChangeDetection$ = this.offlinePackageStatus$.pipe(
       tap(() => this.cdr.detectChanges() ));
     this.tileLayer = new L.GeoJSON(this.feature);
+    
+    // Set zoom layer from package bounds
     const { lat, lng } = this.tileLayer.getBounds().getCenter();
     this.center = [lat, lng];
+
+    // Use offline map package root tile as zoom level
+    const [x, y, z] = this.packageOnServer.getXYZ();
+    this.zoom = z;
   }
 
   showTileOnMap(map: L.Map) {
     this.tileLayer.addTo(map);
-    setTimeout(() => {
-      map.fitBounds(this.tileLayer.getBounds(), {
-        padding: [8, 16]
-      });
-    }, 50);
   }
 
   async startDownload(): Promise<void> {
