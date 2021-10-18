@@ -64,15 +64,13 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
   }
 
   /**
-   * @returns url to an offline tile if available, or else default online tile url
+   * @returns url to an offline tile if available
    */
   getTileUrl(coords: L.Coords): string {
     let url: string;
     const offlineMapUrl = this.offlineTilesRegistry.getUrl(this.mapType, coords.x, coords.y, coords.z);
     if (offlineMapUrl) {
       url = `${offlineMapUrl}/${coords.z}/${coords.x}/${coords.y}.png`;
-    } else {
-      url = super.getTileUrl(coords);
     }
     this.loggingService.debug('Tile url:', DEBUG_TAG, coords.x, coords.y, coords.z, url);
     return url;

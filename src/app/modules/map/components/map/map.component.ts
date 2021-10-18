@@ -280,34 +280,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     // zooming in/out etc.
     this.offlineMapService.packages$
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((packages) => this.redrawOfflineLayers(packages));
+      .subscribe(() => this.redrawOfflineLayers());
   }
 
-  private findLayer(id : string): boolean {
-    this.layerGroup.eachLayer((layer) => {
-      if (layer instanceof L.TileLayer) {
-        const tileLayer: L.TileLayer = layer;
-        if (tileLayer.options.id === id) {
-          return true;
-        }
-      }
-    })
-    return false;
-  }
-
-  private redrawOfflineLayers(packages: OfflineMapPackage[]) {
-    packages[0].compoundPackageMetadata.getParts();
-    const layerType = 'statensKartverk'; //TODO: Fjern hardkoding
-    const layerId = `offline-${layerType}`; //TODO: Fjern hardkoding
-    if (!this.findLayer(layerId)) {
-      //create offline background layer first time
-      const options: IRegObsTileLayerOptions = {
-        id: layerId,
-        maxNativeZoom: 14 //TODO: Fjern hardkoding
-      }
-      const layer =  new RegObsOfflineAwareTileLayer(layerType, null, options, this.offlineMapService.offlineTilesRegistry, this.loggingService);
-      this.layerGroup.addLayer
-    }
+  private redrawOfflineLayers() {
     this.layerGroup.eachLayer((layer) => {
       if (layer instanceof RegObsOfflineAwareTileLayer) {
         layer.redraw();
@@ -377,7 +353,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     const options: IRegObsTileLayerOptions = {
       ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
       id: layerId,
-      maxNativeZoom: 14 //TODO: Fjern hardkoding
+      maxNativeZoom: 14 //Tiles from level 14 will be scaled up if we go deeper. TODO: Fjern hardkoding
     }
     return  new RegObsOfflineAwareTileLayer(layerType, null, options, this.offlineMapService.offlineTilesRegistry, this.loggingService);
   }
@@ -389,7 +365,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       
       if (isAndroidOrIos(this.platform)) {
         const offlineTopoLayer = this.createOfflineTopoLayer(userSetting);
-        offlineTopoLayer.addTo(this.layerGroup);
+        offlineTopoLayer.addTo(this.layerGroup); //TODO: Passe på at laget havner underst?
       }
 
       const createTileLayerFactory = this.getTileLayerFactory(
