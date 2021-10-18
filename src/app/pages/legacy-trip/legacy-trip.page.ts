@@ -14,7 +14,7 @@ import { IsEmptyHelper } from '../../core/helpers/is-empty.helper';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
-import { Geoposition } from '@ionic-native/geolocation/ngx';
+import { Position } from '@capacitor/geolocation';
 
 const DEBUG_TAG = 'LegacyTripPage';
 
@@ -32,7 +32,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   isLoading = false;
   hasClicked = false;
   isLoadingCurrentPosition = false;
-  currentPosition: Geoposition;
+  currentPosition: Position;
 
   private startTripSubscription: Subscription;
 

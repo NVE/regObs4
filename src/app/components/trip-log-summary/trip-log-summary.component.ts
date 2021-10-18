@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import moment from 'moment';
-import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { TripLogItem } from '../../core/services/trip-logger/trip-log-item.model';
 import { TripLogActivity } from '../../core/services/trip-logger/trip-log-activity.model';

@@ -853,7 +853,7 @@ export class WarningService {
 
   private getIceWarningsFromApi(url: string) {
     if (
-      this.platform.is('cordova') &&
+      this.platform.is('hybrid') &&
       (this.platform.is('android') || this.platform.is('ios'))
     ) {
       return this.getIceWarningsFromApiNative(url);
