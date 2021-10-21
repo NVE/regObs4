@@ -156,24 +156,24 @@ export const settings = {
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
       supportTiles: [
         {
-          name: 'steepness',
-          description: 'STEEPNESS_MAP_DESCRIPTION',
-          url:
-            'http://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
-          enabled: true,
-          opacity: 0.5,
-          geoHazardId: 10,
-          disableWhenEnabled: ['steepness-outlet']
-        },
-        {
           name: 'steepness-outlet',
           description: 'STEEPNESS_OUTLET_MAP_DESCRIPTION',
           url:
             'http://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
-          enabled: false,
+          enabled: true,
           opacity: 0.5,
           geoHazardId: 10,
           disableWhenEnabled: ['steepness']
+        },
+        {
+          name: 'steepness',
+          description: 'STEEPNESS_MAP_DESCRIPTION',
+          url:
+            'http://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
+          enabled: false,
+          opacity: 0.5,
+          geoHazardId: 10,
+          disableWhenEnabled: ['steepness-outlet']
         },
         {
           name: 'clayzones',
