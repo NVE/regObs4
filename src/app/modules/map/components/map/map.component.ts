@@ -295,6 +295,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       // .subscribe(() => this.redrawOfflineLayers());
   }
 
+  private tileCoordsToBounds({ x, y, z }) {
+    const tileSize = new L.Point(256, 256);
+    const coords = new L.Point(x, y);
+
+    const nwPoint = coords.scaleBy(tileSize);
+    const sePoint = nwPoint.add(tileSize);
+    const nw = this.map.unproject(nwPoint, z);
+		const se = this.map.unproject(sePoint, z);
+    return new L.LatLngBounds(nw, se);
+  }
+
   private createOfflineLayers(packages: OfflineMapPackage[], userSettings: UserSetting) {
     this.offlineTopoLayerGroup.clearLayers();
     this.offlineSupportMapLayerGroup.clearLayers();
@@ -309,21 +320,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       }, new Map());
 
     for (const offlinePackage of packages) {
-      const [lng1, lat1, lng2, lat2] = offlinePackage.compoundPackageMetadata.getBbox();
-      const bbox = L.latLngBounds([lat1, lng1], [lat2, lng2]);
-
       for (const map of Object.values(offlinePackage.maps)) {
         if ((<string[]>Object.values(TopoMap)).includes(map.mapId)) {
-          this.createTopoMapOfflineLayer(map, bbox);
+          this.createTopoMapOfflineLayer(map);
         } else if (enabledSupportMaps.has(map.mapId)) {
           const supportMapSettings = enabledSupportMaps.get(map.mapId);
-          this.createSupportMapOfflineLayer(map, bbox, supportMapSettings.opacity);
+          this.createSupportMapOfflineLayer(map, supportMapSettings.opacity);
         }
       }
     }
   }
 
-  private createTopoMapOfflineLayer(map: OfflineTilesMetadata, bounds: L.LatLngBounds) {
+  private createTopoMapOfflineLayer(map: OfflineTilesMetadata) {
+    const bounds = this.tileCoordsToBounds(map.rootTile)
     const url = `${map.url}/{z}/{x}/{y}.png`;
     const layer = new L.TileLayer(url, {
       bounds,
@@ -333,7 +342,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offlineTopoLayerGroup.addLayer(layer);
   }
 
-  private createSupportMapOfflineLayer(offlinePackage: OfflineTilesMetadata, bounds: L.LatLngBounds, opacity: number) {
+  private createSupportMapOfflineLayer(offlinePackage: OfflineTilesMetadata, opacity: number) {
 
   }
 
