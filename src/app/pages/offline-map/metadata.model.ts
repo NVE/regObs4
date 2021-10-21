@@ -70,6 +70,10 @@ export class CompoundPackage {
     return CompoundPackage.GetNameFromXYZ(x, y, z);
   }
 
+  getBbox(): BBox {
+    return this.metadata.bbox;
+  }
+
   getLastModified(): Moment {
     if (this.metadata.maps.length === 0) {
       return null;

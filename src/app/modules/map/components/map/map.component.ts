@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { timer, Subject, from, BehaviorSubject } from 'rxjs';
+import { timer, Subject, from, BehaviorSubject, combineLatest } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Position } from '@capacitor/geolocation';
@@ -41,6 +41,8 @@ import { LangKey } from '../../../../core/models/langKey';
 import { File } from '@ionic-native/file/ngx';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
+import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
+import { BBox } from 'geojson';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -67,6 +69,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   loaded = false;
   private map: L.Map;
   private layerGroup = L.layerGroup();
+  private offlineTopoLayerGroup = L.layerGroup();
+  private offlineSupportMapLayerGroup = L.layerGroup();
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
   private ngDestroy$ = new Subject<void>();
@@ -167,7 +171,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.showScale) {
       L.control.scale({ imperial: false }).addTo(map);
     }
-    this.layerGroup.addTo(this.map);
+
+    this.offlineTopoLayerGroup.addTo(this.map);
+    this.offlineSupportMapLayerGroup.addTo(this.map);
+
+    // this.layerGroup.addTo(this.map);
 
     this.userSettingService.userSetting$
       .pipe(takeUntil(this.ngDestroy$))
@@ -278,11 +286,58 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     // registered after the map initially loads.
     // By redrawing here, we can see offline tiles without
     // zooming in/out etc.
-    this.offlineMapService.packages$
+    combineLatest([
+      this.offlineMapService.packages$,
+      this.userSettingService.userSetting$
+    ])
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => this.redrawOfflineLayers());
+      .subscribe(([packages, userSettings]) => this.createOfflineLayers(packages, userSettings));
+      // .subscribe(() => this.redrawOfflineLayers());
   }
 
+  private createOfflineLayers(packages: OfflineMapPackage[], userSettings: UserSetting) {
+    this.offlineTopoLayerGroup.clearLayers();
+    this.offlineSupportMapLayerGroup.clearLayers();
+
+    // Create a list of enabled support tiles
+    const enabledSupportMaps = this.userSettingService
+      .getSupportTilesOptions(userSettings)
+      .filter(supportMap => supportMap.enabled)
+      .reduce((map, supportMap) => {
+        map.set(supportMap.name, supportMap);
+        return map;
+      }, new Map());
+
+    for (const offlinePackage of packages) {
+      const [lng1, lat1, lng2, lat2] = offlinePackage.compoundPackageMetadata.getBbox();
+      const bbox = L.latLngBounds([lat1, lng1], [lat2, lng2]);
+
+      for (const map of Object.values(offlinePackage.maps)) {
+        if ((<string[]>Object.values(TopoMap)).includes(map.mapId)) {
+          this.createTopoMapOfflineLayer(map, bbox);
+        } else if (enabledSupportMaps.has(map.mapId)) {
+          const supportMapSettings = enabledSupportMaps.get(map.mapId);
+          this.createSupportMapOfflineLayer(map, bbox, supportMapSettings.opacity);
+        }
+      }
+    }
+  }
+
+  private createTopoMapOfflineLayer(map: OfflineTilesMetadata, bounds: L.LatLngBounds) {
+    const url = `${map.url}/{z}/{x}/{y}.png`;
+    const layer = new L.TileLayer(url, {
+      bounds,
+      maxNativeZoom: map.zMax,
+      minZoom: map.rootTile.z
+    });
+    this.offlineTopoLayerGroup.addLayer(layer);
+  }
+
+  private createSupportMapOfflineLayer(offlinePackage: OfflineTilesMetadata, bounds: L.LatLngBounds, opacity: number) {
+
+  }
+
+  // TODO: Delete
   private redrawOfflineLayers() {
     this.layerGroup.eachLayer((layer) => {
       if (layer instanceof RegObsOfflineAwareTileLayer) {
