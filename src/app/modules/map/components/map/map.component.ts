@@ -297,10 +297,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private async initOfflineMaps() {
     this.loggingService.debug('initOfflineMaps()... ', DEBUG_TAG);
 
-    // When starting offline, offline map packages are
-    // registered after the map initially loads.
-    // By redrawing here, we can see offline tiles without
-    // zooming in/out etc.
     combineLatest([
       this.offlineMapService.packages$,
       this.userSettingService.userSetting$
@@ -308,6 +304,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(([packages, userSettings]) => {
         this.createOfflineLayers(packages, userSettings);
+
+        // When starting offline, offline map packages are
+        // registered after the map initially loads.
+        // By redrawing here, we can see offline tiles without
+        // zooming in/out etc.
         redrawLayersInLayerGroup(this.offlineTopoLayerGroup);
         redrawLayersInLayerGroup(this.offlineSupportMapLayerGroup);
       });
@@ -328,7 +329,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offlineTopoLayerGroup.clearLayers();
     this.offlineSupportMapLayerGroup.clearLayers();
 
-    // Create a list of enabled support tiles
+    // Create a map of enabled support tiles
     const enabledSupportMaps = this.userSettingService
       .getSupportTilesOptions(userSettings)
       .filter(supportMap => supportMap.enabled)
@@ -337,6 +338,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         return map;
       }, new Map());
     
+    // Create offline tile map layers
     for (const offlinePackage of packages) {
       for (const map of Object.values(offlinePackage.maps)) {
         if (isTopoLayer(map.mapId)) {
