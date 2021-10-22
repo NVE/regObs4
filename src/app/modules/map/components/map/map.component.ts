@@ -48,6 +48,7 @@ const DEBUG_TAG = 'MapComponent';
 
 type CreateTileLayer = (options: IRegObsTileLayerOptions) => L.TileLayer;
 
+const isTopoLayer = (mapId: string) => (<string[]>Object.values(TopoMap)).includes(mapId);
 
 
 @Component({
@@ -318,14 +319,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         map.set(supportMap.name, supportMap);
         return map;
       }, new Map());
+    
+    this.loggingService.debug('Enabled supportmaps:', DEBUG_TAG, enabledSupportMaps);
 
     for (const offlinePackage of packages) {
       for (const map of Object.values(offlinePackage.maps)) {
-        if ((<string[]>Object.values(TopoMap)).includes(map.mapId)) {
+        if (isTopoLayer(map.mapId)) {
           this.createTopoMapOfflineLayer(map);
         } else if (enabledSupportMaps.has(map.mapId)) {
-          const supportMapSettings = enabledSupportMaps.get(map.mapId);
-          this.createSupportMapOfflineLayer(map, supportMapSettings.opacity);
+          const { opacity } = enabledSupportMaps.get(map.mapId);
+          this.createSupportMapOfflineLayer(map, opacity);
+        } else {
+          this.loggingService.log(`Warning: Map "${map.mapId}" in offlinepackage unconfigured in app`);
         }
       }
     }
@@ -342,8 +347,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offlineTopoLayerGroup.addLayer(layer);
   }
 
-  private createSupportMapOfflineLayer(offlinePackage: OfflineTilesMetadata, opacity: number) {
-
+  private createSupportMapOfflineLayer(map: OfflineTilesMetadata, opacity: number) {
+    const bounds = this.tileCoordsToBounds(map.rootTile)
+    const url = `${map.url}/{z}/{x}/{y}.png`;
+    const layer = new L.TileLayer(url, {
+      bounds,
+      opacity,
+      maxNativeZoom: map.zMax,
+      minZoom: map.rootTile.z
+    });
+    this.offlineSupportMapLayerGroup.addLayer(layer);
   }
 
   // TODO: Delete
