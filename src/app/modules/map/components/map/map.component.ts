@@ -353,8 +353,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
       
       const createTileLayerFactory = this.getTileLayerFactory(
-        userSetting.topoMap,
-        userSetting.language
+        userSetting.topoMap
       );
 
       for (const createTileLayer of createTileLayerFactory) {
@@ -406,10 +405,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       : settings.map.tiles.maxZoom;
   }
 
-  private getTileLayerFactory(
-    topoMap: TopoMap,
-    langKey: LangKey
-  ): CreateTileLayer[] {
+  private getTileLayerFactory(topoMap: TopoMap): CreateTileLayer[] {
     let createNorwegianMixedMap: CreateTileLayer;
     let createStatensKartverk: CreateTileLayer;
 
@@ -480,9 +476,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           createNorwegianMixedMap
         ];
       case TopoMap.mixArcGisOnline:
-        return createArGisOnlineMixMap;
       default:
-        return langKey === LangKey.nb ? [createStatensKartverk] : [createArcGisOnlineMap];
+        return createArGisOnlineMixMap;
     }
   }
 
