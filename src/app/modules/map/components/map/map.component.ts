@@ -59,11 +59,11 @@ const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
 };
 
 enum MapLayerZIndex {
-  OfflineBackgroundLayer = 0,
-  OnlineMixedBackgroundLayer = 9,
-  OnlineBackgroundLayer = 10,
-  OfflineSupportLayer = 20,
-  OnlineSupportLayer = 30
+  OnlineMixedBackgroundLayer = 0,
+  OfflineBackgroundLayer = 10,
+  OnlineBackgroundLayer = 20,
+  OfflineSupportLayer = 30,
+  OnlineSupportLayer = 40
 }
 
 @Component({
