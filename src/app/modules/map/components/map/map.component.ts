@@ -303,14 +303,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     ])
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(([packages, userSettings]) => {
-        this.createOfflineLayers(packages, userSettings);
+        this.zone.runOutsideAngular(() => {
+          this.createOfflineLayers(packages, userSettings);
 
-        // When starting offline, offline map packages are
-        // registered after the map initially loads.
-        // By redrawing here, we can see offline tiles without
-        // zooming in/out etc.
-        redrawLayersInLayerGroup(this.offlineTopoLayerGroup);
-        redrawLayersInLayerGroup(this.offlineSupportMapLayerGroup);
+          // When starting offline, offline map packages are
+          // registered after the map initially loads.
+          // By redrawing here, we can see offline tiles without
+          // zooming in/out etc.
+          redrawLayersInLayerGroup(this.offlineTopoLayerGroup);
+          redrawLayersInLayerGroup(this.offlineSupportMapLayerGroup);
+        })
       });
   }
 
