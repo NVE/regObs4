@@ -32,7 +32,8 @@ import { TopoMap } from '../../../../core/models/topo-map.enum';
 import {
   RegObsTileLayer,
   IRegObsTileLayerOptions,
-  RegObsOfflineAwareTileLayer
+  RegObsOfflineAwareTileLayer,
+  RegobsOfflineTileLayer
 } from '../../core/classes/regobs-tile-layer';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
@@ -49,7 +50,21 @@ const DEBUG_TAG = 'MapComponent';
 type CreateTileLayer = (options: IRegObsTileLayerOptions) => L.TileLayer;
 
 const isTopoLayer = (mapId: string) => (<string[]>Object.values(TopoMap)).includes(mapId);
+const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
+  layerGroup.eachLayer((layer) => {
+    if (layer instanceof L.TileLayer) {
+      layer.redraw();
+    }
+  })
+};
 
+enum MapLayerZIndex {
+  OfflineBackgroundLayer = 0,
+  OnlineMixedBackgroundLayer = 9,
+  OnlineBackgroundLayer = 10,
+  OfflineSupportLayer = 20,
+  OnlineSupportLayer = 30
+}
 
 @Component({
   selector: 'app-map',
@@ -174,9 +189,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.offlineTopoLayerGroup.addTo(this.map);
+    this.layerGroup.addTo(this.map);
     this.offlineSupportMapLayerGroup.addTo(this.map);
-
-    // this.layerGroup.addTo(this.map);
 
     this.userSettingService.userSetting$
       .pipe(takeUntil(this.ngDestroy$))
@@ -292,8 +306,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.userSettingService.userSetting$
     ])
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(([packages, userSettings]) => this.createOfflineLayers(packages, userSettings));
-      // .subscribe(() => this.redrawOfflineLayers());
+      .subscribe(([packages, userSettings]) => {
+        this.createOfflineLayers(packages, userSettings);
+        redrawLayersInLayerGroup(this.offlineTopoLayerGroup);
+        redrawLayersInLayerGroup(this.offlineSupportMapLayerGroup);
+      });
   }
 
   private tileCoordsToBounds({ x, y, z }) {
@@ -320,8 +337,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         return map;
       }, new Map());
     
-    this.loggingService.debug('Enabled supportmaps:', DEBUG_TAG, [...enabledSupportMaps.entries()]);
-
     for (const offlinePackage of packages) {
       for (const map of Object.values(offlinePackage.maps)) {
         if (isTopoLayer(map.mapId)) {
@@ -339,10 +354,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private createTopoMapOfflineLayer(map: OfflineTilesMetadata) {
     const bounds = this.tileCoordsToBounds(map.rootTile)
     const url = `${map.url}/{z}/{x}/{y}.png`;
-    const layer = new L.TileLayer(url, {
+    const layer = new RegobsOfflineTileLayer(url, {
       bounds,
       maxNativeZoom: map.zMax,
-      minZoom: map.rootTile.z
+      minZoom: map.rootTile.z,
+      zIndex: MapLayerZIndex.OfflineBackgroundLayer
     });
     this.offlineTopoLayerGroup.addLayer(layer);
   }
@@ -350,23 +366,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private createSupportMapOfflineLayer(map: OfflineTilesMetadata, opacity: number) {
     const bounds = this.tileCoordsToBounds(map.rootTile)
     const url = `${map.url}/{z}/{x}/{y}.png`;
-    const layer = new L.TileLayer(url, {
+    const layer = new RegobsOfflineTileLayer(url, {
       bounds,
       opacity,
       maxNativeZoom: map.zMax,
-      minZoom: map.rootTile.z
+      minZoom: map.rootTile.z,
+      zIndex: MapLayerZIndex.OfflineSupportLayer
     });
     this.offlineSupportMapLayerGroup.addLayer(layer);
   }
 
-  // TODO: Delete
-  private redrawOfflineLayers() {
-    this.layerGroup.eachLayer((layer) => {
-      if (layer instanceof RegObsOfflineAwareTileLayer) {
-        layer.redraw();
-      }
-    })
-  }
 
    private startActiveSubscriptions() {
     this.isActive
@@ -434,7 +443,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       );
 
       for (const createTileLayer of createTileLayerFactory) {
-        const options = this.getTileLayerDefaultOptions(userSetting.useRetinaMap);
+        const options = {
+          ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
+          zIndex: MapLayerZIndex.OnlineBackgroundLayer
+        }
         const layer = createTileLayer(options);
         layer.addTo(this.layerGroup);
       }
@@ -448,6 +460,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
         const options = {
           ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
+          zIndex: MapLayerZIndex.OnlineSupportLayer,
           updateInterval: 600,
           keepBuffer: 0,
           updateWhenIdle: true,
@@ -529,6 +542,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         settings.map.tiles.arcGisOnlineTopoMapUrl, 
         {
           ...options,
+          zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
           excludeBounds: NORWEGIAN_BOUNDS
         },
       ),
@@ -548,6 +562,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         return [
           (options) => new RegObsTileLayer(settings.map.tiles.openTopoMapUrl, {
             ...options,
+            zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
             excludeBounds: NORWEGIAN_BOUNDS
           }),
           createNorwegianMixedMap
