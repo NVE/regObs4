@@ -320,7 +320,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         return map;
       }, new Map());
     
-    this.loggingService.debug('Enabled supportmaps:', DEBUG_TAG, enabledSupportMaps);
+    this.loggingService.debug('Enabled supportmaps:', DEBUG_TAG, [...enabledSupportMaps.entries()]);
 
     for (const offlinePackage of packages) {
       for (const map of Object.values(offlinePackage.maps)) {
