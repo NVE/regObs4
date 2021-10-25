@@ -1,7 +1,8 @@
 {
   "name": "regobs4",
-  "version": "4.4.8",
+  "version": "4.6.0",
   "author": "NVE",
+  "license": "NLOD-2.0",
   "homepage": "http://www.nve.no",
   "scripts": {
     "ng": "ng",
