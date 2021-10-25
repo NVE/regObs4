@@ -9,8 +9,16 @@
 
 <ion-content>
   <div class="map-container">
-    <app-map (mapReady)="onMapReady($event)" [showScale]="false" [showMapControls]="false" [showUserLocation]="false"
-      [showSupportMaps]="false" [autoActivate]="false" [geoTag]="'package-map'"></app-map>
+    <app-map
+      (mapReady)="onMapReady($event)"
+      [offlinePackageMode]="true"
+      [showScale]="false"
+      [showMapControls]="false"
+      [showUserLocation]="false"
+      [showSupportMaps]="false"
+      [autoActivate]="false"
+      [geoTag]="'package-map'"
+    ></app-map>
   </div>
 </ion-content>
 <ng-container *ngIf="downloadAndUnzipProgress$ | async as items">

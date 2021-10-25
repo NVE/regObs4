@@ -77,7 +77,8 @@ enum MapLayerZIndex {
   OfflineBackgroundLayer = 10,
   OnlineBackgroundLayer = 20,
   OfflineSupportLayer = 30,
-  OnlineSupportLayer = 40
+  OnlineSupportLayer = 40,
+  Top = 50
 }
 
 @Component({
@@ -95,6 +96,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
   @Input() autoActivate = true;
   @Input() geoTag = DEBUG_TAG;
+  @Input() offlinePackageMode = false;
 
   loaded = false;
   private map: L.Map;
@@ -205,6 +207,24 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offlineTopoLayerGroup.addTo(this.map);
     this.layerGroup.addTo(this.map);
     this.offlineSupportMapLayerGroup.addTo(this.map);
+
+    if (this.offlinePackageMode) {
+      this.map.on('load', () => {
+        this.layerGroup.eachLayer((l: L.TileLayer) => {
+          if (l instanceof L.TileLayer) {
+            l.getContainer().style.filter = "grayscale(100%)";
+          }
+        })
+      });
+
+      this.map.on('layeradd', () => {
+        this.layerGroup.eachLayer((l) => {
+          if (l instanceof L.TileLayer) {
+            l.getContainer().style.filter = "grayscale(100%)";
+          }
+        })
+      })
+    }
 
     this.userSettingService.userSetting$
       .pipe(takeUntil(this.ngDestroy$))
@@ -377,7 +397,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     const layer = new L.TileLayer(url, {
       ...nativeZoomOptions,
       bounds,
-      zIndex: MapLayerZIndex.OfflineBackgroundLayer,
+      zIndex: this.offlinePackageMode ? MapLayerZIndex.Top : MapLayerZIndex.OfflineBackgroundLayer,
       detectRetina
     });
     this.offlineTopoLayerGroup.addLayer(layer);
@@ -391,7 +411,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       ...nativeZoomOptions,
       bounds,
       opacity,
-      zIndex: MapLayerZIndex.OfflineSupportLayer,
+      zIndex: this.offlinePackageMode ? MapLayerZIndex.Top : MapLayerZIndex.OfflineBackgroundLayer,
       detectRetina
     });
     this.offlineSupportMapLayerGroup.addLayer(layer);
