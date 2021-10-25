@@ -349,7 +349,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           const { opacity } = enabledSupportMaps.get(map.mapId);
           this.createSupportMapOfflineLayer(map, opacity);
         } else {
-          this.loggingService.debug(`'${map.mapId}' is disabled, so we create no layer for offline package ${map.url}`, DEBUG_TAG);
+          this.loggingService.debug(`'${map.mapId}' is currently disabled or undefined in map config, no layer created for ${map.url}`, DEBUG_TAG);
         }
       }
     }
