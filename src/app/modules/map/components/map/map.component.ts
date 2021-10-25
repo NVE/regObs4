@@ -316,7 +316,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  private tileCoordsToBounds({ x, y, z }: L.Coords): L.LatLngBounds {
+  private tileCoordsToBounds({ x, y, z }: { x: number, y: number, z: number }): L.LatLngBounds {
     const tileSize = new L.Point(256, 256);
     const coords = new L.Point(x, y);
 
