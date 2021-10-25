@@ -1,12 +1,15 @@
 import { Observable, Subject } from 'rxjs';
 import { NgZone, OnDestroy, Injectable } from '@angular/core';
+import { timeout } from 'rxjs/operators';
 
 export function toPromiseWithCancel<T>(
   observable: Observable<T>,
-  cancel?: Promise<void>
+  cancel?: Promise<void>,
+  timeoutInMs?: number,
 ) {
   return new Promise<T>((resolve, reject) => {
-    const subscription = observable.subscribe(
+    const subscription =  
+    (timeoutInMs != null ? observable.pipe(timeout(timeoutInMs)) : observable).subscribe(
       (result) => {
         subscription.unsubscribe();
         resolve(result);

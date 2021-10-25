@@ -14,9 +14,8 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { enterZone } from '../../../../core/helpers/observable-helper';
 import { IonContent } from '@ionic/angular';
 import moment from 'moment';
-import { GeoPositionLog } from '../../../../core/services/geo-position/geo-position-log.interface';
+import { GeoPositionLog, PositionError } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
-import { PositionError } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: 'app-gps-debug',
@@ -28,7 +27,7 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   geoPositionLog: GeoPositionLog[];
   isOpen: boolean;
   isTracking: boolean;
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
 
   @ViewChild('GpsLogPanel') panel: IonContent;
 

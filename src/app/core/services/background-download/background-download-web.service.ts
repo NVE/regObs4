@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { BackgroundDownloadService } from './background-download.service';
+// import { Injectable } from '@angular/core';
+// import { BackgroundDownloadService } from './background-download.service';
 
-@Injectable()
-export class BackgroundDownloadWebService implements BackgroundDownloadService {
+// @Injectable()
+// export class BackgroundDownloadWebService implements BackgroundDownloadService {
   // downloadFile(
   //     path: string,
   //     filename: string,
@@ -76,9 +76,9 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
   //     return Promise.resolve();
   // }
 
-  selectDowloadFolder() {
-    return Promise.resolve('');
-  }
+  // selectDowloadFolder() {
+  //   return Promise.resolve('');
+  // }
 
   // getAllFiles(path: string, dirName: string): Promise<{ directory: string, name: string, url: string, size: number }[]> {
   //     return Promise.resolve([]);
@@ -91,4 +91,4 @@ export class BackgroundDownloadWebService implements BackgroundDownloadService {
   //     }).toPromise();
   //     return DataUrlHelper.toDataUrlWithSize(blob, type);
   // }
-}
+// }

@@ -30,6 +30,12 @@
       ]
     },
     "skipLibCheck": true, // Skip lib check until issue is resolved: https://github.com/Turfjs/turf/issues/2017
+    "types": [
+      "node",
+      "google.analytics",
+      "cordova",
+      "jasmine",
+    ]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": false,

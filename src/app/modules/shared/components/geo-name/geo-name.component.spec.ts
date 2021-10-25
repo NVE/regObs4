@@ -21,7 +21,7 @@ describe('GeoNameComponent', () => {
         declarations: [GeoNameComponent],
         providers: [GeoHelperService, provideMock(GeoHelperService)]
       });
-      geoHelperService = TestBed.get(GeoHelperService);
+      geoHelperService = TestBed.inject(GeoHelperService) as unknown as Spied<GeoHelperService>;
       TestBed.compileComponents();
     })
   );

@@ -99,7 +99,7 @@ export class AddPictureItemComponent implements OnInit {
   }
 
   async getPicture(sourceType: PictureSourceType) {
-    if (!this.platform.is('cordova')) {
+    if (!this.platform.is('hybrid')) {
       await this.addDummyImage();
       return true;
     }
@@ -115,7 +115,7 @@ export class AddPictureItemComponent implements OnInit {
         targetHeight: settings.images.size,
         targetWidth: settings.images.size,
         correctOrientation: true,
-        saveToPhotoAlbum: false // sourceType === PictureSourceType.CAMERA,
+        saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA,
         // NOTE: saveToPhotoAlbum=true causes a bug in latest cordova cameraplugin
       };
       const imageUrl = await this.camera.getPicture(options);

@@ -60,7 +60,7 @@ export class ImageHelper {
       { dataUrl: string; size: number }
     >(
       () =>
-        new Worker('../../workers/blob-to-dataurl.worker', { type: 'module' }),
+        new Worker(new URL('../../workers/blob-to-dataurl.worker', import.meta.url), { type: 'module' }),
       input$,
       (input) => [input.blob]
     );

@@ -40,7 +40,7 @@ export class HomePage extends RouterPage implements OnInit {
     spiderfyOnMaxZoom: false,
     zoomToBoundsOnClick: false
   });
-  private geoCoachMarksClosedSubject = new Subject();
+  private geoCoachMarksClosedSubject = new Subject<void>();
 
   fullscreen$: Observable<boolean>;
   selectedMarker: MapItemMarker;

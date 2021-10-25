@@ -6,7 +6,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_PROVIDERS } from './app.providers';
-import { IonicStorageModule } from '@ionic/storage';
 import { settings } from '../settings';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
@@ -33,10 +32,6 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     AppRoutingModule,
     TranslateModule.forRoot(),
     MarkdownModule.forRoot(),
-    IonicStorageModule.forRoot({
-      name: settings.db.simpleStorage.dbName,
-      driverOrder: ['sqlite', 'indexeddb', 'websql']
-    }),
     AngularSvgIconModule.forRoot(),
     SharedModule,
     MapModule,

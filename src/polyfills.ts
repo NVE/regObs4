@@ -54,12 +54,12 @@
  * Zone JS is required by Angular itself.
  */
 import './zone-flags.ts';
-import 'zone.js/dist/zone'; // Included with Angular CLI.
+import 'zone.js'; // Included with Angular CLI.
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
-
+import 'src/global-polyfill';
 /**
  * Date, currency, decimal and percent pipes.
  * Needed for: All but Chrome, Firefox, Edge, IE11 and Safari 10
@@ -69,3 +69,14 @@ import 'zone.js/dist/zone'; // Included with Angular CLI.
  * Need to import at least one locale-data with intl.
  */
 // import 'intl/locale-data/jsonp/en';
+
+// https://github.com/ionic-team/capacitor/issues/1564
+class FileReaderA extends window.FileReader {
+	constructor() {
+		super();
+		const zoneOriginalInstance = (this as any)['__zone_symbol__originalInstance'];
+		return zoneOriginalInstance || this;
+	}
+}
+
+window.FileReader = FileReaderA;

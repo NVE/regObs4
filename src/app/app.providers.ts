@@ -1,16 +1,13 @@
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { IonicRouteStrategy, NavController, Platform } from '@ionic/angular';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
 import { BackgroundGeolocationWebService } from './core/services/background-geolocation/background-geolocation-web.service';
 import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
 import { File } from '@ionic-native/file/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { BackgroundDownloadService } from './core/services/background-download/background-download.service';
-import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
-import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
+// import { BackgroundDownloadWebService } from './core/services/background-download/background-download-web.service';
+// import { BackgroundDownloadNativeService } from './core/services/background-download/background-download-native.service';
 import { Zip } from '@ionic-native/zip/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
@@ -54,6 +51,7 @@ import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AuthService } from 'ionic-appauth';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
 
 export const API_INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -75,8 +73,6 @@ function createTranslateLoader(http: HttpClient) {
 }
 
 export const APP_PROVIDERS = [
-  StatusBar,
-  SplashScreen,
   StartWizardGuard,
   AuthGuard,
   { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -85,7 +81,6 @@ export const APP_PROVIDERS = [
     useClass: DynamicLocaleId,
     deps: [TranslateService]
   },
-  Geolocation,
   DeviceOrientation,
   File,
   AndroidPermissions,
@@ -150,8 +145,10 @@ export const APP_PROVIDERS = [
   },
   {
     provide: BackgroundDownloadService,
-    useClass: window.hasOwnProperty('cordova')
-      ? BackgroundDownloadNativeService
-      : BackgroundDownloadWebService
+    // useClass: window.hasOwnProperty('cordova')
+    //   ? BackgroundDownloadNativeService
+    //   : BackgroundDownloadWebService
+    // TODO: Implement Download Manager for Android
+    useClass: HttpClientDownloadService
   }
 ];

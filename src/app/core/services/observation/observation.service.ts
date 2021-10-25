@@ -221,7 +221,8 @@ export class ObservationService {
           LangKey: userSetting.language,
           TimeZone: moment().format('Z')
         }),
-        cancel
+        cancel,
+        60000
       );
       this.loggingService.debug(
         `Got ${

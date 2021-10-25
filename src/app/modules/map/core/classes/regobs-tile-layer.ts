@@ -1,188 +1,23 @@
 import * as L from 'leaflet';
 import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
 import { Feature, GeometryObject } from '@turf/turf';
-import { LogLevel } from '../../../shared/services/logging/log-level.model';
+import { OfflineTilesRegistry } from 'src/app/core/services/offline-map/offline-tiles-registry';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
-const DEBUG_TAG = 'RegObsTileLayer';
+const DEBUG_TAG = 'RegObsOfflineAwareTileLayer';
 
 export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
   edgeBufferTiles?: number;
   excludeBounds?: Feature<GeometryObject>;
-  saveTilesToCache?: boolean;
-  saveCacheTileFunc?: (
-    id: string,
-    tile: HTMLImageElement
-  ) => void | Promise<any>;
-  getCacheTileFunc?: (id: string) => Promise<string>;
-  logFunc?: (
-    message?: string,
-    error?: Error,
-    level?: LogLevel,
-    tag?: string,
-    ...optionalParams: any[]
-  ) => void;
-}
-
-interface ExtendedCoords extends L.Coords {
-  fallback: boolean;
-}
-
-class RegObsTile extends HTMLImageElement {
-  originalCoords?: ExtendedCoords;
-  currentCoords?: ExtendedCoords;
-  originalSrc: string;
-  hasTriedOffline: boolean;
-  fallbackZoom?: number;
-  fallbackScale?: number;
 }
 
 export class RegObsTileLayer extends L.TileLayer {
-  private _url: string;
 
   constructor(
-    private name: string,
     url: string,
     options: IRegObsTileLayerOptions
   ) {
     super(url, options);
-    this._url = url;
-  }
-
-  createTile(coords: ExtendedCoords, done: L.DoneCallback): HTMLElement {
-    const tile = new Image() as RegObsTile;
-
-    L.DomEvent.on(
-      tile,
-      'load',
-      L.Util.bind((<any>this).saveTileOffline, this, done, tile)
-    );
-    L.DomEvent.on(
-      tile,
-      'error',
-      L.Util.bind((<any>this)._tileOnError, this, done, tile)
-    );
-
-    tile.crossOrigin = 'anonymous';
-    tile.alt = '';
-    tile.originalCoords = coords;
-
-    tile.setAttribute('role', 'presentation');
-
-    const url = (<any>this).getTileUrl(coords);
-    tile.src = url;
-    tile.originalSrc = url;
-    tile.id = this.getTileId(coords);
-
-    return tile;
-  }
-
-  private getTileId(coords: ExtendedCoords) {
-    return `${this.name}_${coords.z}_${coords.x}_${coords.y}`;
-  }
-
-  private debug(msg: string, ...optionalParams: any[]) {
-    const opt = <IRegObsTileLayerOptions>this.options;
-    if (opt.logFunc) {
-      opt.logFunc(msg, null, LogLevel.Debug, DEBUG_TAG, optionalParams);
-    }
-  }
-
-  _tileOnError(done: L.DoneCallback, tile: RegObsTile, e: Error) {
-    const opt = <IRegObsTileLayerOptions>this.options;
-    if (
-      !tile.hasTriedOffline &&
-      tile.id &&
-      tile.id !== '' &&
-      opt.getCacheTileFunc
-    ) {
-      this.debug(
-        `Error loading tile ${tile.id}. Try to get cached tile...`,
-        tile
-      );
-      opt.getCacheTileFunc(tile.id).then((result) => {
-        tile.hasTriedOffline = true;
-        if (result) {
-          const oldSrc = tile.src;
-          tile.src = result;
-          this.debug(`Found cached tile ${tile.id}. Return dataUrl.`, result);
-          this.fire('tilefallback', {
-            tile: tile,
-            url: tile.originalSrc,
-            urlMissing: oldSrc,
-            urlFallback: result
-          });
-        } else {
-          this.debug(`No cached tile found for ${tile.id}. tryScaleImage.`);
-          this.tryScaleImage(done, tile, e);
-        }
-      });
-    } else {
-      this.tryScaleImage(done, tile, e);
-    }
-  }
-
-  private saveTileOffline(done: L.DoneCallback, tile: RegObsTile) {
-    const opt = <IRegObsTileLayerOptions>this.options;
-    if (
-      opt.saveTilesToCache &&
-      opt.saveCacheTileFunc &&
-      tile &&
-      tile.id &&
-      tile.id !== '' &&
-      tile.src.startsWith('http')
-    ) {
-      opt.saveCacheTileFunc(
-        `${tile.id}`,
-        tile.cloneNode(true) as HTMLImageElement
-      );
-    }
-    done(null, tile);
-  }
-
-  _pruneTiles() {
-    if (!this._map) {
-      return;
-    }
-
-    let tile;
-
-    if (!this.options.detectRetina) {
-      const zoom = this._map.getZoom();
-      if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
-        (<any>this)._removeAllTiles();
-        return;
-      }
-    }
-
-    // tslint:disable-next-line:forin
-    for (const key in (<any>this)._tiles) {
-      tile = this._tiles[key];
-      tile.retain = tile.current;
-    }
-
-    // tslint:disable-next-line:forin
-    for (const key in (<any>this)._tiles) {
-      tile = (<any>this)._tiles[key];
-      if (tile.current && !tile.active) {
-        const coords = tile.coords;
-        if (
-          !(<any>this)._retainParent(coords.x, coords.y, coords.z, coords.z - 5)
-        ) {
-          (<any>this)._retainChildren(
-            coords.x,
-            coords.y,
-            coords.z,
-            coords.z + 2
-          );
-        }
-      }
-    }
-
-    for (const key in (<any>this)._tiles) {
-      if (!(<any>this)._tiles[key].retain) {
-        (<any>this)._removeTile(key);
-      }
-    }
   }
 
   _isValidTile(coords: L.Coords) {
@@ -202,91 +37,44 @@ export class RegObsTileLayer extends L.TileLayer {
     }
     return true;
   }
+}
 
-  private getNewZoomTileUrl(coords: ExtendedCoords) {
-    const data = {
-      r: L.Browser.retina ? '@2x' : '',
-      s: (<any>L.TileLayer.prototype)._getSubdomain.call(this, coords),
-      x: coords.x,
-      y: coords.y,
-      z: coords.z
-    };
-    return L.Util.template(this._url, L.Util.extend(data, this.options));
-  }
+export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
+  constructor(
+    private mapType: string,
+    url: string,
+    options: IRegObsTileLayerOptions,
+    private offlineTilesRegistry: OfflineTilesRegistry,
+    private loggingService: LoggingService
+  ) {
+    super(url, options);
+    
+    this.on('tileerror', (event?: L.TileErrorEvent) => {
+      // this.loggingService.debug('TileError', 'RegObsOfflineAwareTileLayer', event);
 
-  private tryScaleImage(done: L.DoneCallback, tile: RegObsTile, e: Error) {
-    const originalCoords = tile.originalCoords,
-      currentCoords: ExtendedCoords = (tile.currentCoords =
-        tile.currentCoords || this.createCurrentCoords(originalCoords)),
-      fallbackZoom = (tile.fallbackZoom =
-        (tile.fallbackZoom || originalCoords.z) - 1),
-      scale = (tile.fallbackScale = (tile.fallbackScale || 1) * 2),
-      tileSize = this.getTileSize(),
-      style = tile.style;
-
-    // Only fallback one zoom level or return error
-    const diff = originalCoords.z - fallbackZoom;
-    const diffLimit = 2;
-    if (diff > diffLimit) {
-      this.debug(
-        `Fallback zoom ${fallbackZoom}. Original zoom: ${originalCoords.z}. Diff ${diff} is greater than ${diffLimit}. Return error`
-      );
-      return (<any>L.TileLayer.prototype)._tileOnError.call(
-        this,
-        done,
-        tile,
-        e
-      );
-    }
-
-    // Modify tilePoint for replacement img.
-    currentCoords.z = fallbackZoom;
-    currentCoords.x = Math.floor(currentCoords.x / 2);
-    currentCoords.y = Math.floor(currentCoords.y / 2);
-
-    // Generate new src path.
-    const newUrl = this.getNewZoomTileUrl(currentCoords);
-    // Zoom replacement img.
-    style.width = tileSize.x * scale + 'px';
-    style.height = tileSize.y * scale + 'px';
-
-    // Compute margins to adjust position.
-    const top = (originalCoords.y - currentCoords.y * scale) * tileSize.y;
-    style.marginTop = -top + 'px';
-    const left = (originalCoords.x - currentCoords.x * scale) * tileSize.x;
-    style.marginLeft = -left + 'px';
-
-    // Crop (clip) image.
-    // `clip` is deprecated, but browsers support for `clip-path: inset()` is far behind.
-    // http://caniuse.com/#feat=css-clip-path
-    style.clip =
-      'rect(' +
-      top +
-      'px ' +
-      (left + tileSize.x) +
-      'px ' +
-      (top + tileSize.y) +
-      'px ' +
-      left +
-      'px)';
-
-    tile.src = newUrl;
-    tile.id = this.getTileId(currentCoords);
-    tile.hasTriedOffline = false;
-
-    this.fire('tilefallback', {
-      tile: tile,
-      url: tile.originalSrc,
-      urlMissing: tile.src,
-      urlFallback: newUrl
+      // Check if there is a registered offline package above
+      // this tile
+      const { x, y, z } = event.coords;
+      const packageInfo = this.offlineTilesRegistry.findRegisteredPackage(this.mapType, x, y, z);
+      if (packageInfo?.zMax < z) {
+        //show error message if we zoom in too much on the offline map
+        event.tile.src = '/assets/icon/map/no-tile-here.png'; //TODO: Show error text in current language
+      }
     });
   }
 
-  private createCurrentCoords(originalCoords: L.Coords): ExtendedCoords {
-    const currentCoords: ExtendedCoords = (<any>this)._wrapCoords(
-      originalCoords
-    );
-    currentCoords.fallback = true;
-    return currentCoords;
+  /**
+   * @returns url to an offline tile if available, or else default online tile url
+   */
+  getTileUrl(coords: L.Coords): string {
+    let url: string;
+    const offlineMapUrl = this.offlineTilesRegistry.getUrl(this.mapType, coords.x, coords.y, coords.z);
+    if (offlineMapUrl) {
+      url = `${offlineMapUrl}/${coords.z}/${coords.x}/${coords.y}.png`;
+    } else {
+      url = super.getTileUrl(coords);
+    }
+    this.loggingService.debug('Tile url:', DEBUG_TAG, coords.x, coords.y, coords.z, url);
+    return url;
   }
 }

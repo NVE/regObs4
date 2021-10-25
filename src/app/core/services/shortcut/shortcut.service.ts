@@ -23,7 +23,7 @@ export class ShortcutService {
   init() {
     const w = <any>window;
     if (
-      this.platform.is('cordova') &&
+      this.platform.is('hybrid') &&
       this.platform.is('android') &&
       w.plugins &&
       w.plugins.Shortcuts

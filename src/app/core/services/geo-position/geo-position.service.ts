@@ -12,22 +12,20 @@ import {
 import {
   filter,
   map,
-  catchError,
   distinctUntilChanged,
   startWith
 } from 'rxjs/operators';
 import {
-  Geolocation,
-  Geoposition,
-  PositionError
-} from '@ionic-native/geolocation/ngx';
+  CallbackID,
+  ClearWatchOptions,
+  Geolocation, Position, WatchPositionCallback,
+} from '@capacitor/geolocation';
 import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
-import { GeoPositionLog } from './geo-position-log.interface';
+import { GeoPositionLog, PositionError } from './geo-position-log.interface';
 import { GeoPositionErrorCode } from './geo-position-error.enum';
 import moment from 'moment';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
@@ -35,13 +33,16 @@ import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 
 const DEBUG_TAG = 'GeoPositionService';
 
+/**
+ * Henter posisjon fra GPS og himmelretning fra kompasset
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class GeoPositionService implements OnDestroy {
   private highAccuracyEnabled = new BehaviorSubject(true);
   private gpsPositionLog: ReplaySubject<GeoPositionLog> = new ReplaySubject(20);
-  private currentPosition: BehaviorSubject<Geoposition> = new BehaviorSubject(
+  private currentPosition: BehaviorSubject<Position> = new BehaviorSubject(
     null
   );
   private currentHeading: BehaviorSubject<number> = new BehaviorSubject(null);
@@ -49,10 +50,10 @@ export class GeoPositionService implements OnDestroy {
   private readonly trackingComponents = new BehaviorSubject<string[]>([]);
 
   // Subscriptions
-  private positionSubscription: Subscription;
+  private watchPositionCallbackId: CallbackID = null;
   private headingSubscription: Subscription;
 
-  get currentPosition$(): Observable<Geoposition> {
+  get currentPosition$(): Observable<Position> {
     return this.currentPosition.pipe(filter((cp) => cp !== null));
   }
 
@@ -65,11 +66,9 @@ export class GeoPositionService implements OnDestroy {
   }
 
   constructor(
-    private geolocation: Geolocation,
     private deviceOrientation: DeviceOrientation,
     private platform: Platform,
     private loggingService: LoggingService,
-    private diagnostic: Diagnostic,
     private alertController: AlertController,
     private translateService: TranslateService
   ) {
@@ -80,8 +79,12 @@ export class GeoPositionService implements OnDestroy {
     this.stopSubscriptions();
   }
 
-  getSingleCurrentPosition(): Promise<Geoposition> {
-    return this.geolocation.getCurrentPosition(
+  /**
+   * @returns last known position
+   * @see https://github.com/ionic-team/capacitor/issues/1279
+   */
+  getSingleCurrentPosition(): Promise<Position> {
+    return Geolocation.getCurrentPosition(
       settings.gps.highAccuracyPositionOptions
     );
   }
@@ -133,9 +136,9 @@ export class GeoPositionService implements OnDestroy {
     };
   }
 
-  getTimestamp(geopos: Geoposition) {
+  getTimestamp(geopos: Position) {
     if (geopos && geopos.timestamp > 0) {
-      if (this.platform.is('cordova') && this.platform.is('ios')) {
+      if (this.platform.is('hybrid') && this.platform.is('ios')) {
         return geopos.timestamp / 1000;
       }
       return geopos.timestamp;
@@ -143,30 +146,23 @@ export class GeoPositionService implements OnDestroy {
     return moment().unix();
   }
 
-  private mapPosToLog(): (
-    src: Observable<Geoposition>
-  ) => Observable<GeoPositionLog> {
-    return (src: Observable<Geoposition>) =>
-      src.pipe(
-        map((pos) => {
-          const log: GeoPositionLog = {
-            timestamp: this.getTimestamp(pos),
-            status: (pos.coords === undefined
-              ? 'PositionError'
-              : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
-            pos,
-            highAccuracyEnabled: true,
-            err:
-              pos.coords === undefined
-                ? ((pos as unknown) as PositionError)
-                : undefined
-          };
-          return log;
-        })
-      );
+  private createGpsPositionLogElement(pos: Position): GeoPositionLog {
+    const log: GeoPositionLog = {
+      timestamp: this.getTimestamp(pos),
+      status: (pos.coords === undefined
+        ? 'PositionError'
+        : 'PositionUpdate') as 'PositionError' | 'PositionUpdate',
+      pos,
+      highAccuracyEnabled: true,
+      err:
+        pos.coords === undefined
+          ? ((pos as unknown) as PositionError)
+          : undefined
+    };
+    return log;
   }
 
-  private addGpsPositionLog(status: 'StartGpsTracking' | 'StopGpsTracking') {
+  private addStatusToGpsPositionLog(status: 'StartGpsTracking' | 'StopGpsTracking') {
     this.gpsPositionLog.next({
       timestamp: moment().unix(),
       status,
@@ -217,48 +213,42 @@ export class GeoPositionService implements OnDestroy {
   }
 
   private stopWatchingPosition() {
-    if (this.positionSubscription && !this.positionSubscription.closed) {
-      this.addGpsPositionLog('StopGpsTracking');
-      this.positionSubscription.unsubscribe();
+    if (this.watchPositionCallbackId !== null) {
+      this.loggingService.debug(`Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`, DEBUG_TAG);
+      this.addStatusToGpsPositionLog('StopGpsTracking');
+      const options:  ClearWatchOptions = { id : this.watchPositionCallbackId };
+      Geolocation.clearWatch(options)
+      this.watchPositionCallbackId = null;
     }
   }
 
-  private startWatchingPosition() {
-    this.addGpsPositionLog('StartGpsTracking');
-    if (this.positionSubscription && !this.positionSubscription.closed) {
-      this.positionSubscription.unsubscribe();
-    }
-    this.positionSubscription = this.geolocation
-      .watchPosition(settings.gps.highAccuracyPositionOptions)
-      .pipe(
-        filter((result) => result !== null),
-        this.mapPosToLog(),
-        catchError((err) => {
-          this.loggingService.log(
-            'Error when watchPosition',
-            err,
-            LogLevel.Warning,
-            DEBUG_TAG,
-            err
-          );
-          return of(this.createPositionError('Unknown error'));
-        })
-      )
-      .subscribe((result: GeoPositionLog) => {
-        this.gpsPositionLog.next(result);
-        if (this.isValidPosition(result.pos)) {
-          this.gpsPositionLog.next({
-            timestamp: result.pos.timestamp,
-            status: 'PositionUpdate',
-            highAccuracyEnabled: result.highAccuracyEnabled,
-            pos: result.pos
-          });
-          this.currentPosition.next(result.pos);
+
+  private async startWatchingPosition(): Promise<void> {
+    const watchPositionCallback: WatchPositionCallback = (position: Position, err: any) => {
+      if (err) {
+        this.loggingService.log(
+          'Error when watchPosition',
+          err,
+          LogLevel.Warning,
+          DEBUG_TAG,
+          err
+        );
+        this.gpsPositionLog.next(this.createPositionError('Unknown error'));
+      }
+      if (position !== null) {
+        this.gpsPositionLog.next(this.createGpsPositionLogElement(position));
+        if (this.isValidPosition(position)) {
+          this.currentPosition.next(position);
         }
-      });
+      }
+    }
+    this.addStatusToGpsPositionLog('StartGpsTracking');
+    this.stopWatchingPosition(); //we need to stop current watch of position if any
+    this.watchPositionCallbackId = await Geolocation.watchPosition(settings.gps.highAccuracyPositionOptions, watchPositionCallback)
+    this.loggingService.debug(`Start current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`, DEBUG_TAG);
   }
 
-  private isValidPosition(pos: Geoposition) {
+  private isValidPosition(pos: Position): boolean {
     return (
       pos !== undefined &&
       pos !== null &&
@@ -275,26 +265,22 @@ export class GeoPositionService implements OnDestroy {
     return heading >= 0 && heading <= 360;
   }
 
-  private async checkPermissions() {
+
+  private async checkPermissions(): Promise<boolean> {
     // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
     try {
-      const authorized = await this.diagnostic.isLocationAuthorized();
-      this.loggingService.debug(
-        'Location is ' + (authorized ? 'authorized' : 'unauthorized'),
-        DEBUG_TAG
-      );
+      const currentPermissions = await Geolocation.checkPermissions();
+      this.loggingService.debug(`Geolocation (PermissionState) is ${currentPermissions?.location}`, DEBUG_TAG);
+      const authorized = currentPermissions.location === 'granted';
       if (!authorized) {
         if (this.platform.is('ios')) {
           await this.showPermissionDeniedError();
           return false;
         }
         // location is not authorized, request new. This only works on Android
-        const status = await this.diagnostic.requestLocationAuthorization();
-        this.loggingService.debug('Request location status', DEBUG_TAG, status);
-        if (
-          status === this.diagnostic.permissionStatus.DENIED_ONCE ||
-          status === this.diagnostic.permissionStatus.DENIED_ALWAYS
-        ) {
+        const newPermissionsAfterRequest = await Geolocation.requestPermissions()
+        this.loggingService.debug(`Geolocation (PermissionState) after new request is ${newPermissionsAfterRequest?.location}`, DEBUG_TAG);
+        if (newPermissionsAfterRequest?.location === 'denied') {
           await this.showPermissionDeniedError();
           return false;
         }
@@ -333,19 +319,19 @@ export class GeoPositionService implements OnDestroy {
     // NOTE! Because of issues with show heading with W3C Devece Orientation API in iOS 13, the depricated
     // plugin cordova-plugin-device-orientation is used instead on ios
     // https://github.com/apache/cordova-plugin-device-orientation/issues/52
-    this.headingSubscription = (this.shouldUseNativePlugin()
+    this.headingSubscription = (this.isIos()
       ? this.getHeadingNative()
       : this.getWebHeadingObservable()
     ).subscribe((heading: number) => this.validateAndSetHeading(heading));
   }
 
-  private shouldUseNativePlugin(): boolean {
-    return this.platform.is('cordova') && this.platform.is('ios');
+  private isIos(): boolean {
+    return this.platform.is('hybrid') && this.platform.is('ios');
   }
 
   private getHeadingNative() {
     return this.deviceOrientation
-      .watchHeading()
+      .watchHeading({filter: 1}) //get notified only if heading changes > 1 degree
       .pipe(map((val) => val?.magneticHeading));
   }
 

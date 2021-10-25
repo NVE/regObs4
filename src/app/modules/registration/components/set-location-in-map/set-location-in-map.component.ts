@@ -13,7 +13,7 @@ import { MapService } from '../../../map/services/map/map.service';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
 import { take, switchMap, filter, takeUntil } from 'rxjs/operators';
-import { Geoposition } from '@ionic-native/geolocation/ngx';
+import { Position } from '@capacitor/geolocation';
 import { Subject } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
 import {
@@ -72,14 +72,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   private map: L.Map;
   followMode = false;
-  private userposition: Geoposition;
+  private userposition: Position;
   private pathLine: L.Polyline;
   showDetails = false;
   distanceToObservationText = '';
   viewInfo: ViewInfo;
   isLoading = false;
   private locations: ObsLocationsResponseDtoV2[] = [];
-  private ngDestroy$ = new Subject();
+  private ngDestroy$ = new Subject<void>();
 
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
@@ -281,7 +281,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       );
   }
 
-  private positionChange(position: Geoposition) {
+  private positionChange(position: Position) {
     this.userposition = position;
     if (this.followMode) {
       this.setLocationMarkerLatLng({

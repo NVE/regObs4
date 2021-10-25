@@ -1,0 +1,8 @@
+.map-container {
+  padding: 16px;
+  height: calc(100vw - 32px);
+}
+
+.right {
+  text-align: right;
+}

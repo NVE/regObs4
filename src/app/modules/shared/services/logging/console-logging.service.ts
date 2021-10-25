@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
-import { Injectable } from '@angular/core';
+import { Injectable, Optional } from '@angular/core';
 import { LogLevel } from './log-level.model';
 import { LoggingService } from './logging.service';
 import { AppMode } from '../../../../core/models/app-mode.enum';
@@ -13,6 +13,9 @@ import { LoggedInUser } from '../../../login/models/logged-in-user.model';
   providedIn: 'root'
 })
 export class ConsoleLoggingService implements LoggingService {
+
+  constructor() {}
+
   enable(): void {}
 
   disable(): void {}

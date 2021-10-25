@@ -15,12 +15,14 @@ describe('AbonnerBannerComponent', () => {
         imports: [TestModule],
         providers: [InAppBrowser, SafariViewController]
       }).compileComponents();
-
-      fixture = TestBed.createComponent(AbonnerBannerComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
     })
   );
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AbonnerBannerComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

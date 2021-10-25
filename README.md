@@ -24,10 +24,12 @@ ionic serve
 
 [More info](https://ionicframework.com/docs/building/running)
 
-To debug app on Android device:
+### To debug app on Android device
 
 ```
-ionic cordova run android
+npm run build (or ionic build)
+npx cap sync
+npx cap run android
 ```
 
 [More info](https://ionicframework.com/docs/building/android)
@@ -55,6 +57,39 @@ C:\gradle\gradle-6.7.1\bin
 
 - You have to uninstall the regular RegObs app from your phone in order to debug
 - This may be helpful for device connection problmems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
+
+#### Error: package android.support.v4.content does not exist
+[More info] https://github.com/ionic-team/capacitor/issues/2822
+
+### Debugge på iPhone/iPad: XCode
+[Mer info](https://ionicframework.com/docs/developing/ios)
+Ikke la Xcode signere provisioning profile automatisk, men last den ned fra developer.apple.com og bruk denne i XCode.
+Du må først legge ditt utviklersertifikat inn i Provisioning profile på developer.apple.com.
+Sjekk også at dingsen du skal teste på er registrert i profilen.
+
+Det er bare debug-profil vi trenger i Xcode, fordi release bygges på byggeserver.
+"Active scheme" skal være Varsom Regobs, ikke Cordova.
+Hvis gamle ting henger igjen, kan du slette mappene platforms og plugins.
+
+##### Mac med M1-CPU
+
+M1 er såpass ny at bygging ikke er helt strømlinjeformet ennå.
+
+Fikk trøbbel med npm install: Installering av sharp feila. Fiksa det med å installere vips manuelt:
+```brew install vips```
+[Mer info](https://github.com/lovell/sharp/issues 2460#issuecomment-751491241)
+
+Med webserver-plugin fikk jeg også problemer med pods: 
+Dette fungerte:
+```
+sudo arch -x86_64 gem install ffi
+arch -x86_64 pod install
+```
+[Mer info](https://github.com/CocoaPods/CocoaPods/issues/10220)
+
+Deretter fikk jeg denne feilmeldinga: 'GCDWebServer.h' file not found.
+Hjalp å åpne workspace-fila i stedet for prosjektfila i Xcode.
+[Mer info](https://github.com/bykof/cordova-plugin-webserver/issues/49)
 
 ## Build and release
 
@@ -132,8 +167,6 @@ git push develop
 git push master
 ```
 
-## Plugins and other custom features
-
 # How to run lint and format on save using vscode
 
 Guide taken from: https://dev.to/dreiv/using-eslint-and-prettier-with-vscode-in-an-angular-project-42ib
@@ -154,27 +187,28 @@ To run lint manually and autofix, run:
 npm run lint:fix
 ```
 
-# How to update all npm packages
-
-Install npm-check-updates globally and check packages.json:
-
+# Hvordan oppdatere alle npm-pakker
+## 1. Sjekk hvilke pakker som trenger oppdatering
+Installer npm-check-updates globalt og sjekk packages.json:
 ```
 npm i -g npm-check-updates
-ncu -u
-npm install
+ncu
 ```
-
-NOTE! Cordova plugins must be updated by removing and re-adding plugin:
-
+## 2. Sjekk release notes for pakker med store endringer og oppdater disse først
+## 3. Oppgrader plugins
+NB! Cordova plugins må oppdateres ved å først slette dem og legge dem til på nytt:
 ```
 ionic cordova plugin rm cordova-plugin-name
 ionic cordova plugin add cordova-plugin-name
 ```
-
-To update Angular, use ng update to better migrate code changes:
-Follow this guide: https://update.angular.io/
+## 4. Oppgrader Angular, hvis det trengs
+Bruk ng update for enklere migrering, se https://update.angular.io/
 ```
 ng update
+```
+## 5. Oppgrader resten av pakkene
+```
+ncu -u
 ```
 
 # How to update models from Regobs API
