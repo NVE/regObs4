@@ -23,7 +23,6 @@ export class RegobsOfflineTileLayer extends L.TileLayer {
     this.rootTileZ = minZoom;
   }
 
-  // Requires minZoom to be passed as an option
   getTileSize() {
     const zoom = this._tileZoom;
     const tileSize = super.getTileSize();
