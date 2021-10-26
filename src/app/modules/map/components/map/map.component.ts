@@ -77,7 +77,8 @@ enum MapLayerZIndex {
   OfflineBackgroundLayer = 10,
   OnlineBackgroundLayer = 20,
   OfflineSupportLayer = 30,
-  OnlineSupportLayer = 40
+  OnlineSupportLayer = 40,
+  Top = 50
 }
 
 @Component({
@@ -95,6 +96,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
   @Input() autoActivate = true;
   @Input() geoTag = DEBUG_TAG;
+  @Input() offlinePackageMode = false;
 
   loaded = false;
   private map: L.Map;
@@ -205,6 +207,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offlineTopoLayerGroup.addTo(this.map);
     this.layerGroup.addTo(this.map);
     this.offlineSupportMapLayerGroup.addTo(this.map);
+
+    if (this.offlinePackageMode) {
+      // Style all online maps grayscale.
+      // We need the dom element that contains the layer to use css and add a grayscale filter.
+      // After the load event, getContainer returns the container, earlier, it may return null or undefined.
+      this.map.on('load layeradd', () => {
+        this.layerGroup.eachLayer((l: L.TileLayer) => {
+          if (l instanceof L.TileLayer) {
+            l.getContainer().style.filter = "grayscale(100%)";
+          }
+        });
+      });
+    }
 
     this.userSettingService.userSetting$
       .pipe(takeUntil(this.ngDestroy$))
@@ -377,7 +392,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     const layer = new L.TileLayer(url, {
       ...nativeZoomOptions,
       bounds,
-      zIndex: MapLayerZIndex.OfflineBackgroundLayer,
+      // When in offlinePackageMode / on offline-map.page.ts,
+      // always put offline packages on top so they display above
+      // the grayscale background-map
+      zIndex: this.offlinePackageMode ? MapLayerZIndex.Top : MapLayerZIndex.OfflineBackgroundLayer,
       detectRetina
     });
     this.offlineTopoLayerGroup.addLayer(layer);
@@ -391,7 +409,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       ...nativeZoomOptions,
       bounds,
       opacity,
-      zIndex: MapLayerZIndex.OfflineSupportLayer,
+      // When in offlinePackageMode / on offline-map.page.ts,
+      // always put offline packages on top so they display above
+      // the grayscale background-map
+      zIndex: this.offlinePackageMode ? MapLayerZIndex.Top + 1 : MapLayerZIndex.OfflineSupportLayer,
       detectRetina
     });
     this.offlineSupportMapLayerGroup.addLayer(layer);

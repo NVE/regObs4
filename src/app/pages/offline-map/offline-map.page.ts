@@ -153,10 +153,10 @@ export class OfflineMapPage extends NgDestoryBase {
 
   private setStyleForProgressOrDownloadedPackage(item: OfflineMapPackage) {
     const id = this.getFeatureIdForPackage(item);
-    if(item.error) {
+    if (item.error) {
       this.setStyleForFeature(id, errorTileStyle);
-    }else{
-      const fillOpacity = item.downloadComplete ? filledTileOpacity : this.getProgressOpacity(item); 
+    } else {
+      const fillOpacity = item.downloadComplete ? 0 : this.getProgressOpacity(item);
       this.setStyleForFeature(id, { ...defaultTileStyle, fillOpacity });
     }
   }
