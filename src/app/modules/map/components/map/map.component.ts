@@ -412,7 +412,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       // When in offlinePackageMode / on offline-map.page.ts,
       // always put offline packages on top so they display above
       // the grayscale background-map
-      zIndex: this.offlinePackageMode ? MapLayerZIndex.Top + 1 : MapLayerZIndex.OfflineBackgroundLayer,
+      zIndex: this.offlinePackageMode ? MapLayerZIndex.Top + 1 : MapLayerZIndex.OfflineSupportLayer,
       detectRetina
     });
     this.offlineSupportMapLayerGroup.addLayer(layer);
