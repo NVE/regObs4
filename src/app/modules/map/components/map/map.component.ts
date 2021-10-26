@@ -61,8 +61,8 @@ const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
 const getNativeZoomOptions = (map: OfflineTilesMetadata, detectRetina: boolean): L.TileLayerOptions => {
   if (detectRetina) {
     return {
-      minNativeZoom: map.rootTile.z - 1,
-      maxNativeZoom: map.zMax - 1
+      minNativeZoom: Math.max(0, map.rootTile.z - 1),
+      maxNativeZoom: Math.max(0, map.zMax - 1)
     }
   } else {
     return {
