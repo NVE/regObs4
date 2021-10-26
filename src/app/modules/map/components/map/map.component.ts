@@ -33,7 +33,6 @@ import {
   RegObsTileLayer,
   IRegObsTileLayerOptions,
   RegObsOfflineAwareTileLayer,
-  RegobsOfflineTileLayer
 } from '../../core/classes/regobs-tile-layer';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
@@ -57,6 +56,21 @@ const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
     }
   })
 };
+
+// Bug in leaflet? When using detectRetina, we need to offset native zooms.
+const getNativeZoomOptions = (map: OfflineTilesMetadata, detectRetina: boolean): L.TileLayerOptions => {
+  if (detectRetina) {
+    return {
+      minNativeZoom: map.rootTile.z - 1,
+      maxNativeZoom: map.zMax - 1
+    }
+  } else {
+    return {
+      minNativeZoom: map.rootTile.z,
+      maxNativeZoom: map.zMax
+    }
+  }
+}
 
 enum MapLayerZIndex {
   OnlineMixedBackgroundLayer = 0,
@@ -344,10 +358,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     for (const offlinePackage of packages) {
       for (const map of Object.values(offlinePackage.maps)) {
         if (isTopoLayer(map.mapId)) {
-          this.createTopoMapOfflineLayer(map);
+          this.createTopoMapOfflineLayer(map, userSettings.useRetinaMap);
         } else if (enabledSupportMaps.has(map.mapId)) {
           const { opacity } = enabledSupportMaps.get(map.mapId);
-          this.createSupportMapOfflineLayer(map, opacity);
+          this.createSupportMapOfflineLayer(map, opacity, userSettings.useRetinaMap);
         } else {
           this.loggingService.debug(`'${map.mapId}' is currently disabled or undefined in map config, no layer created for ${map.url}`, DEBUG_TAG);
         }
@@ -355,27 +369,30 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private createTopoMapOfflineLayer(map: OfflineTilesMetadata) {
+  private createTopoMapOfflineLayer(map: OfflineTilesMetadata, detectRetina: boolean) {
     const bounds = this.tileCoordsToBounds(map.rootTile)
     const url = `${map.url}/{z}/{x}/{y}.png`;
-    const layer = new RegobsOfflineTileLayer(url, {
+    const nativeZoomOptions = getNativeZoomOptions(map, detectRetina);
+
+    const layer = new L.TileLayer(url, {
+      ...nativeZoomOptions,
       bounds,
-      maxNativeZoom: map.zMax,
-      minZoom: map.rootTile.z,
-      zIndex: MapLayerZIndex.OfflineBackgroundLayer
+      zIndex: MapLayerZIndex.OfflineBackgroundLayer,
+      detectRetina
     });
     this.offlineTopoLayerGroup.addLayer(layer);
   }
 
-  private createSupportMapOfflineLayer(map: OfflineTilesMetadata, opacity: number) {
+  private createSupportMapOfflineLayer(map: OfflineTilesMetadata, opacity: number, detectRetina: boolean) {
     const bounds = this.tileCoordsToBounds(map.rootTile)
     const url = `${map.url}/{z}/{x}/{y}.png`;
-    const layer = new RegobsOfflineTileLayer(url, {
+    const nativeZoomOptions = getNativeZoomOptions(map, detectRetina);
+    const layer = new L.TileLayer(url, {
+      ...nativeZoomOptions,
       bounds,
       opacity,
-      maxNativeZoom: map.zMax,
-      minZoom: map.rootTile.z,
-      zIndex: MapLayerZIndex.OfflineSupportLayer
+      zIndex: MapLayerZIndex.OfflineSupportLayer,
+      detectRetina
     });
     this.offlineSupportMapLayerGroup.addLayer(layer);
   }
