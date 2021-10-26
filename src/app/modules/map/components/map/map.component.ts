@@ -209,21 +209,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offlineSupportMapLayerGroup.addTo(this.map);
 
     if (this.offlinePackageMode) {
-      this.map.on('load', () => {
+      // Style all online maps grayscale.
+      // We need the dom element that contains the layer to use css and add a grayscale filter.
+      // After the load event, getContainer returns the container, earlier, it may return null or undefined.
+      this.map.on('load layeradd', () => {
         this.layerGroup.eachLayer((l: L.TileLayer) => {
           if (l instanceof L.TileLayer) {
             l.getContainer().style.filter = "grayscale(100%)";
           }
-        })
+        });
       });
-
-      this.map.on('layeradd', () => {
-        this.layerGroup.eachLayer((l) => {
-          if (l instanceof L.TileLayer) {
-            l.getContainer().style.filter = "grayscale(100%)";
-          }
-        })
-      })
     }
 
     this.userSettingService.userSetting$
@@ -397,6 +392,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     const layer = new L.TileLayer(url, {
       ...nativeZoomOptions,
       bounds,
+      // When in offlinePackageMode / on offline-map.page.ts,
+      // always put offline packages on top so they display above
+      // the grayscale background-map
       zIndex: this.offlinePackageMode ? MapLayerZIndex.Top : MapLayerZIndex.OfflineBackgroundLayer,
       detectRetina
     });
@@ -411,7 +409,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       ...nativeZoomOptions,
       bounds,
       opacity,
-      zIndex: this.offlinePackageMode ? MapLayerZIndex.Top : MapLayerZIndex.OfflineBackgroundLayer,
+      // When in offlinePackageMode / on offline-map.page.ts,
+      // always put offline packages on top so they display above
+      // the grayscale background-map
+      zIndex: this.offlinePackageMode ? MapLayerZIndex.Top + 1 : MapLayerZIndex.OfflineBackgroundLayer,
       detectRetina
     });
     this.offlineSupportMapLayerGroup.addLayer(layer);
