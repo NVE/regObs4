@@ -6,7 +6,7 @@
         {{'SUPPORT_MAP.' +supportTile.description | translate }}
       </ion-label>
       <ion-toggle [checked]="supportTile.enabled" [(ngModel)]="supportTile.enabled"
-        (ionChange)="onTileChanged(supportTile)" (click)="checkForInfoPopup(!supportTile.enabled)">
+        (ionChange)="onTileChanged(supportTile)" (click)="checkForInfoPopup(!supportTile.enabled, supportTile)">
       </ion-toggle>
     </ion-item>
     <div class="inner-list-panel" *ngIf="supportTile.enabled">

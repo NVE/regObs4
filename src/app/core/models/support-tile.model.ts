@@ -8,4 +8,5 @@ export interface SupportTile {
   opacity: number;
   geoHazardId: GeoHazard;
   disableWhenEnabled?: string[];
+  availableOffline?: boolean;
 }

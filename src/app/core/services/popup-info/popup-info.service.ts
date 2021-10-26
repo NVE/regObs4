@@ -18,62 +18,33 @@ export class PopupInfoService {
   ) {}
 
   checkObservationInfoPopup(delayMs = 2000) {
-    return this.userSettingService.userSetting$.pipe(
-      take(1),
-      delay(delayMs),
-      filter((us) =>
-        this.checkLastTimestamp(
-          settings.popupDisclamerRefreshTimeMs,
-          us.infoAboutObservationsRecievedTimestamp
-        )
-      ),
-      switchMap(() =>
-        this.geAlertTranslations(
-          'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.HEADER',
-          'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.MESSAGE',
-          'POPUP_DISCLAMER.OK_I_UNDERSTAND'
-        )
-      ),
-      switchMap((translations) =>
-        from(
-          this.showAlert(
-            translations.header,
-            translations.message,
-            translations.okText
-          )
-        )
-      ),
-      switchMap(() => from(this.saveInfoAboutObservationsRecievedTimestamp()))
+    return this.checkInfoPopup(
+      delayMs,
+      "infoAboutObservationsRecievedTimestamp",
+      'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.HEADER',
+      'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.MESSAGE',
+      'POPUP_DISCLAMER.OK_I_UNDERSTAND'
     );
   }
 
   checkSupportMapInfoPopup(delayMs = 2000) {
-    return this.userSettingService.userSetting$.pipe(
-      take(1),
-      delay(delayMs),
-      filter((us) =>
-        this.checkLastTimestamp(
-          settings.popupDisclamerRefreshTimeMs,
-          us.infoAboutSupportMapsRecievedTimestamp
-        )
-      ),
-      switchMap(() =>
-        this.geAlertTranslations(
-          'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.HEADER',
-          'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.MESSAGE',
-          'POPUP_DISCLAMER.OK_I_UNDERSTAND'
-        )
-      ),
-      switchMap((translations) =>
-        from(
-          this.showAlert(
-            translations.header,
-            translations.message,
-            translations.okText
-          )
-        )
-      ),
-      switchMap(() => from(this.saveInfoAboutSupportMapsRecievedTimestamp()))
+    return this.checkInfoPopup(
+      delayMs,
+      "infoAboutSupportMapsRecievedTimestamp",
+      'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.HEADER',
+      'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.MESSAGE',
+      'POPUP_DISCLAMER.OK_I_UNDERSTAND'
+    );
+  }
+
+  checkOfflineSupportMapInfoPopup(delayMs = 2000) {
+    return this.checkInfoPopup(
+      delayMs,
+      "infoAboutOfflineSupportMapsRecievedTimestamp",
+      'POPUP_DISCLAMER.ABOUT_OFFLINE_SUPPORT_MAPS.HEADER',
+      'POPUP_DISCLAMER.ABOUT_OFFLINE_SUPPORT_MAPS.MESSAGE',
+      'POPUP_DISCLAMER.OK_I_UNDERSTAND',
+      0
     );
   }
 
@@ -116,23 +87,45 @@ export class PopupInfoService {
     );
   }
 
-  async saveInfoAboutObservationsRecievedTimestamp() {
-    const userSettings = await this.userSettingService.userSetting$
+  async saveInfoAboutRecievedTimestamp(timestampType: string) {
+    let userSettings = await this.userSettingService.userSetting$
       .pipe(take(1))
       .toPromise();
-    this.userSettingService.saveUserSettings({
-      ...userSettings,
-      infoAboutObservationsRecievedTimestamp: moment().unix()
-    });
+    userSettings = {...userSettings};
+    userSettings[timestampType] = moment().unix();
+    this.userSettingService.saveUserSettings(userSettings);
   }
 
-  async saveInfoAboutSupportMapsRecievedTimestamp() {
-    const userSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
-    this.userSettingService.saveUserSettings({
-      ...userSettings,
-      infoAboutSupportMapsRecievedTimestamp: moment().unix()
-    });
+  private checkInfoPopup(
+    delayMs = 2000,
+    timestampType: string,
+    header: string,
+    msg: string,
+    ok_txt: string,
+    refreshTimeMs: number = settings.popupDisclamerRefreshTimeMs,
+  ) {
+    return this.userSettingService.userSetting$.pipe(
+      take(1),
+      delay(delayMs),
+      filter((us) =>
+        this.checkLastTimestamp(
+          refreshTimeMs,
+          us[timestampType]
+        )
+      ),
+      switchMap(() =>
+        this.geAlertTranslations(header, msg, ok_txt)
+      ),
+      switchMap((translations) =>
+        from(
+          this.showAlert(
+            translations.header,
+            translations.message,
+            translations.okText
+          )
+        )
+      ),
+      switchMap(() => from(this.saveInfoAboutRecievedTimestamp(timestampType)))
+    );
   }
 }

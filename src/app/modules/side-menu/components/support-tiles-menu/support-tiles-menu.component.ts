@@ -9,6 +9,12 @@ import { Observable, Subscription } from 'rxjs';
 import { PopupInfoService } from '../../../../core/services/popup-info/popup-info.service';
 import { takeUntil, take } from 'rxjs/operators';
 
+interface PopupSubscription {
+  subscription: Subscription,
+  checker: () => Observable<void>,
+  condition: (tile: SupportTile) => boolean,
+}
+
 @Component({
   selector: 'app-support-tiles-menu',
   templateUrl: './support-tiles-menu.component.html',
@@ -16,7 +22,8 @@ import { takeUntil, take } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SupportTilesMenuComponent extends NgDestoryBase {
-  private checkSupportMapSubscription: Subscription;
+  private checkSupportMap: PopupSubscription;
+  private checkOfflineSupportMap: PopupSubscription;
 
   opacityValues = [
     { name: 'SUPPORT_MAP.NO_OPACITY', value: 1.0 },
@@ -35,6 +42,17 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     this.supportTiles$ = this.userSettingService.supportTiles$.pipe(
       setObservableTimeout()
     );
+
+    this.checkSupportMap = {
+      subscription: undefined,
+      checker: popupInfoService.checkSupportMapInfoPopup,
+      condition: (_) => true,
+    };
+    this.checkOfflineSupportMap = {
+      subscription: undefined,
+      checker: popupInfoService.checkOfflineSupportMapInfoPopup,
+      condition: (tile) => !tile.availableOffline,
+    };
   }
 
   trackByMethod(index: number, el: SupportTile) {
@@ -57,19 +75,18 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     });
   }
 
-  checkForInfoPopup(enabled: boolean) {
-    if (
-      this.checkSupportMapSubscription &&
-      !this.checkSupportMapSubscription.closed
-    ) {
-      this.checkSupportMapSubscription.unsubscribe();
-    }
-    if (enabled) {
-      this.checkSupportMapSubscription = this.popupInfoService
-        .checkSupportMapInfoPopup()
-        .pipe(takeUntil(this.ngDestroy$))
-        .subscribe();
-    }
+  checkForInfoPopup(enabled: boolean, supportTile: SupportTile = null) {
+    [this.checkSupportMap, this.checkOfflineSupportMap].forEach((checkMap) => {
+      if (checkMap.subscription && !checkMap.subscription.closed) {
+        checkMap.subscription.unsubscribe();
+      }
+      if (enabled && checkMap.condition(supportTile)) {
+        checkMap.subscription = checkMap
+          .checker.bind(this.popupInfoService)()
+          .pipe(takeUntil(this.ngDestroy$))
+          .subscribe();
+      }
+    });
   }
 
   addOrUpdateSupportTileSettings(
