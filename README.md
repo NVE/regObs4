@@ -292,7 +292,7 @@ For å bruke lokalise npm scripts må du lage opprette fila
 6. Sjekk i Lokalise om oppdateringen ser riktig ut. Hvis ikke, bruk snapshop for
    å rulle tilbake.
 
-## Reste opp i Lokalse
+## Rydde opp i Lokalse
 
 For å laste opp språkfiler, og samtidig slette nøkler/tekster som ikke finnes
 lenger, kan denne kommandoen brukes:
