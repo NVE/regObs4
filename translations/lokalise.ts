@@ -107,20 +107,61 @@ export enum Lang {
   Swedish = 'sv'
 }
 
+function flatten(o: object) {
+  const result = {};
+
+  const recurse = (cur, prop) => {
+    if (Object(cur) !== cur) {
+      result[prop] = cur;
+    } else if (Array.isArray(cur)) {
+      for (let i=0, l=cur.length; i<l; i++) {
+        recurse(cur[i], prop + "::" + i);
+      }
+    } else {
+      const notOnlyNumbers = Object.keys(cur).map(i => parseInt(i, 10)).some(isNaN);
+      if (notOnlyNumbers) {
+        for (let p in cur) {
+          recurse(cur[p], prop ? prop+"::"+p : p);
+        }
+      } else {
+        for (let p in cur) {
+          recurse(cur[p], prop ? prop+":::"+p : p);
+        }
+      }
+    }
+  }
+
+  recurse(o, "");
+  return result;
+}
+
 export async function upload(fileType: FileType, lang: Lang, params: Partial<UploadFileParams> = {}) {
   const path = join(filenames.local[fileType], `${lang}.json`);
   let data: string;
   try {
+    // const s = await fs.readFile(path, { encoding: 'utf-8' });
+    // const nestedJson = JSON.parse(s);
+    // const flatJson = flatten(nestedJson);
+    // data = Buffer.from(JSON.stringify(flatJson)).toString("base64");
     data = await fs.readFile(path, { encoding: 'base64' });
   } catch (error) {
     console.log(`Did not upload ${lang}: ${(error as Error).message}`);
     return
   }
+  
+  const snapshot = await api.snapshots().create({
+    title: 'NPM Script Upload'
+  }, { project_id });
+  console.log(`Created snapshot ${snapshot.snapshot_id}`)
+
   console.log(`Uploading ${path}`);
   const upload = await api.files().upload(project_id, {
     data,
-    filename: filenames.lokalise[fileType],
+    filename: filenames.lokalise[fileType].replace(lokaliseLangIso, lang),
     lang_iso: lang,
+    distinguish_by_file: true,
+    apply_tm: false,
+    // use_automations: false,
     tags: ['app'],
     tag_inserted_keys: true,
     tag_updated_keys: true,
