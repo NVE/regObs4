@@ -24,7 +24,9 @@
     "sentry:create-release": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases new $npm_package_version",
     "sentry:finalize-release": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases finalize $npm_package_version",
     "sentry:create-release-and-upload-sourcemaps": "npm run sentry:create-release && npm run sentry:upload-sourcemaps && npm run sentry:finalize-release",
-    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
+    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
+    "lokalise:upload": "ts-node --project tsconfig.npm-script.json translations/upload.ts",
+    "lokalise:download": "ts-node --project tsconfig.npm-script.json translations/download.ts"
   },
   "private": true,
   "dependencies": {
@@ -110,8 +112,9 @@
     "@angular/compiler-cli": "^12.2.4",
     "@angular/language-service": "^12.2.4",
     "@capacitor/cli": "^3.2.3",
-    "@ionic/cli": "^6.17.1",
     "@ionic/angular-toolkit": "^4.0.0",
+    "@ionic/cli": "^6.17.1",
+    "@lokalise/node-api": "^7.0.0",
     "@sentry/cli": "^1.68.0",
     "@sentry/wizard": "^1.2.11",
     "@types/clone-deep": "^4.0.1",
