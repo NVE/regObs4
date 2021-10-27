@@ -156,26 +156,24 @@ export const settings = {
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
       supportTiles: [
         {
-          name: 'steepness-outlet',
-          description: 'STEEPNESS_OUTLET_MAP_DESCRIPTION',
-          url:
-            'https://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
-          enabled: true,
-          opacity: 0.5,
-          geoHazardId: 10,
-          disableWhenEnabled: ['steepness'],
-          availableOffline: true
-        },
-        {
           name: 'steepness',
           description: 'STEEPNESS_MAP_DESCRIPTION',
           url:
             'https://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
           enabled: false,
+          checked: true,
           opacity: 0.5,
           geoHazardId: 10,
-          disableWhenEnabled: ['steepness-outlet'],
-          availableOffline: false
+          availableOffline: false,
+          subTile: {
+            name: 'steepness-outlet',
+            description: 'STEEPNESS_OUTLET_MAP_DESCRIPTION',
+            url:
+              'https://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
+            enabled: true,
+            checked: true,
+            availableOffline: true
+          }
         },
         {
           name: 'clayzones',
@@ -183,6 +181,7 @@ export const settings = {
           url:
             'https://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
+          checked: true,
           opacity: 0.5,
           geoHazardId: 20,
           availableOffline: false
@@ -193,6 +192,7 @@ export const settings = {
           url:
             'https://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
+          checked: true,
           opacity: 0.5,
           geoHazardId: 60,
           availableOffline: false
@@ -203,6 +203,7 @@ export const settings = {
           url:
             'https://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
+          checked: true,
           opacity: 0.5,
           geoHazardId: 70,
           availableOffline: true

@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { SupportTile } from '../../../../core/models/support-tile.model';
+import { SupportTile, SupportTileStore } from '../../../../core/models/support-tile.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import {
   setObservableTimeout,
@@ -55,19 +55,54 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
   }
 
   async onTileChanged(supportTile: SupportTile) {
+    if (supportTile.checked) {
+      this.onSubTileChanged(supportTile);
+    } else {
+      if (supportTile.subTile) {
+        supportTile.subTile.enabled = false;
+      }
+      supportTile.enabled = false;
+      this.saveSettings(supportTile);
+    }
+  }
+
+  async onSubTileChanged(supportTile: SupportTile) {
+    if (supportTile.subTile) {
+      supportTile.subTile.enabled = supportTile.subTile.checked;
+      let subTile = {
+        ...supportTile.subTile,
+        opacity: supportTile.opacity,
+        geoHazardId: supportTile.geoHazardId
+      };
+      this.checkForInfoPopup(supportTile.subTile.enabled, subTile);
+    }
+    supportTile.enabled = !this.isChildActive(supportTile);
+    this.saveSettings(supportTile);
+    this.checkForInfoPopup(supportTile.enabled, supportTile);
+  }
+
+  async saveSettings(supportTile: SupportTile) {
     const currentSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
+    .pipe(take(1))
+    .toPromise();
     this.userSettingService.saveUserSettings({
       ...currentSettings,
-      supportTiles: this.checkForDisableSupportTiles(
+      supportTiles: this.addOrUpdateSupportTileSettings(
         supportTile,
-        this.addOrUpdateSupportTileSettings(
-          supportTile,
-          currentSettings.supportTiles
-        )
+        currentSettings.supportTiles
       )
     });
+  }
+
+  isChildActive(supportTile: SupportTile): boolean {
+    if (supportTile.subTile) {
+      return supportTile.subTile.enabled
+    }
+    return false;
+  }
+
+  isTileActive(supportTile: SupportTile): boolean {
+    return supportTile.enabled || this.isChildActive(supportTile);
   }
 
   checkForInfoPopup(enabled: boolean, supportTile: SupportTile = null) {
@@ -98,38 +133,23 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
       enabled: boolean;
       opacity: number;
     }[]
-  ): { name: string; enabled: boolean; opacity: number }[] {
-    return [
-      ...currentSupportTileSettings.filter((m) => m.name !== supportTile.name),
-      {
-        name: supportTile.name,
-        enabled: supportTile.enabled,
-        opacity: supportTile.opacity
+  ): SupportTileStore[] {
+    let storeTile = {
+      opacity: supportTile.opacity,
+      name: supportTile.name,
+      enabled: supportTile.enabled,
+      checked: supportTile.checked,
+    };
+    if (supportTile.subTile) {
+      storeTile["subTile"] = {
+        name: supportTile.subTile.name,
+        enabled: supportTile.subTile.enabled,
+        checked: supportTile.subTile.checked,
       }
-    ];
-  }
-
-  checkForDisableSupportTiles(
-    supportTile: SupportTile,
-    currentSupportTileSettings: {
-      name: string;
-      enabled: boolean;
-      opacity: number;
-    }[]
-  ): { name: string; enabled: boolean; opacity: number }[] {
-    if (
-      supportTile.enabled &&
-      supportTile.disableWhenEnabled &&
-      supportTile.disableWhenEnabled.length > 0
-    ) {
-      return currentSupportTileSettings.map((t) => ({
-        ...t,
-        enabled:
-          supportTile.disableWhenEnabled.indexOf(t.name) >= 0
-            ? false
-            : t.enabled
-      }));
     }
-    return [...currentSupportTileSettings];
+    return [
+      ...currentSupportTileSettings.filter((m) => m.name !== supportTile.name) as SupportTile[],
+      storeTile,
+    ];
   }
 }

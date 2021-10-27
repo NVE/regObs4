@@ -161,7 +161,9 @@ export class DataMarshallService implements OnReset {
             map((st) =>
               st
                 .filter((x) => x.enabled)
-                .map((x) => x.name)
+                .map((x) => {
+                  x.subTile ? `${x.name},${x.subTile.name}` : x.name
+                })
                 .join(',')
             ),
             distinctUntilChanged()
