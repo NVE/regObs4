@@ -108,7 +108,7 @@
     "LOGOUT": "Logg ut",
     "MY_PROFILE": "Min profil",
     "PASSWORD": "Passord",
-    "SERVICE_UNAVAILABLE": "Det er problemer med å nå tjenesten. Har du nett? Vennligst prøv igjen senere.",
+    "SERVICE_UNAVAILABLE": "Det er problemer med å nå tjenesten. Har du nett? Det kan hende at serverapplikasjonen må våkne og få seg en dugelig sterk kopp med kaffe først. Gi den noen minutter og prøv igjen.",
     "TITLE": "Logg inn",
     "UNAUTHORIZED": "Feil brukernavn eller passord. Vennligst fyll inn på nytt og prøv igjen.",
     "UNKNOWN_ERROR": "Det oppsto en feil ved innlogging. Melding fra server:"
@@ -212,9 +212,8 @@
   "OFFLINE_MAP": {
     "TITLE": "Offline kart",
     "DISKSPACE_ERROR_MESSAGE": "Beklager, du har ikke nok plass tilgjengelig på telefonen til å lagre kartpakken. Vennligst frigjør plass og prøv på nytt.",
-    "TITLE": "Offline kart",
     "UNZIP_ERROR_MESSAGE": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?",
-	"DOWNLOAD_ERROR_MESSAGE": "Klarte ikke laste ned kartpakke. Pass på at du har stabil og god internett-kobling."
+	  "DOWNLOAD_ERROR_MESSAGE": "Klarte ikke laste ned kartpakke. Pass på at du har stabil og god internett-kobling."
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
@@ -338,11 +337,9 @@
         "TITLE": "Istykkelse"
       }
     },
+    "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Beskrivelse av bildet",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Her kan du gi en beskrivelse av bildet",
-    "IMAGES": "Bilder",
-    "IN_CM": "I centimeter",
-    "IN_FULL_CM": "I hele centimeter",
     "INCIDENT": {
       "ACTIVITY": "Aktivitet",
       "COMMENT": "Beskrivelse",
@@ -352,6 +349,8 @@
       "TITLE": "Ulykke / hendelse"
     },
     "INVALID_IMAGE": "Beklager, ugyldig bildeformat",
+    "IN_CM": "I centimeter",
+    "IN_FULL_CM": "I hele centimeter",
     "NONE": "Ingen valgt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Bekreft observasjonspunkt",
@@ -369,14 +368,14 @@
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
     "RESEND": "Prøv å send på nytt",
     "RESET": "Nullstill denne siden",
+    "SAVED_DESCRIPTION": "Disse er under innsending og blir synkronisert når du har nettverk.",
+    "SAVED_ON_PHONE": "Lagret på telefonen",
     "SAVE_ALERT": {
       "HEADER": "Lagre som kladd?",
       "MESSAGE": "Du er på vei til å forlate registreringen uten å sende inn. Vil du lagre som kladd?",
       "NO": "Nei, forkast",
       "YES": "Ja, lagre"
     },
-    "SAVED_DESCRIPTION": "Disse er under innsending blir synkronisert når man har nettverk.",
-    "SAVED_ON_PHONE": "Lagret på telefonen",
     "SEND": "Send inn",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bekreft skadepunkt",
@@ -411,9 +410,9 @@
         "TITLE": "Skredfarevurdering"
       },
       "AVALANCHE_OBS": {
-        "AVAL_CAUSE": "Svakt lag",
         "AVALANCHE_TRIGGER": "Skredutløser",
         "AVALANCHE_TYPE": "Skredtype",
+        "AVAL_CAUSE": "Svakt lag",
         "DESTRUCTIVE_SIZE": "Størrelse",
         "FRACTURE_HEIGTH": "Bruddhøyde (cm)",
         "FRACTURE_WIDTH": "Bruddbredde (m)",
@@ -430,16 +429,16 @@
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Legg til nytt skredproblem",
         "ALL": "Alle",
-        "AVAL_PROBABILITY": "Sannsynlighet for skred",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Størrelse på forventet skred",
         "AVALANCHE_PROBABILITY": "Mulighetene for skred",
         "AVALANCHE_PROPAGATION_HEADER": "Utbredelsen på skredproblemet",
         "AVALANCHE_TRIGGER_PROBABILITY": "Utløsbarhet",
         "AVALANCHE_TYPE": "Skredtype",
+        "AVAL_PROBABILITY": "Sannsynlighet for skred",
         "BOTTOM": "Nederst",
-        "EXPOSED_HEIGHT_COMBO": "Utsatt høyde",
         "EXPOSED_HEIGHT1": "Høyde",
         "EXPOSED_HEIGHT2": "Nedre høyde",
+        "EXPOSED_HEIGHT_COMBO": "Utsatt høyde",
         "MIDDLE": "I midten",
         "NO_WEAK_LAYERS": "Det finnes ikke svake lag",
         "PROPAGATION": "Utbredelse",
@@ -604,19 +603,13 @@
       }
     }
   },
-  "SET_NICK_ALERT": {
-    "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",
-    "HELP_TEXT": "Du må legge til et kallenavn for å bruke Varsom Regobs. Kallenavnet blir vist i dine observasjoner.",
-    "INPUT_TEXT": "Skriv inn kallenavn",
-    "NICK": "Kallenavn"
-  },
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Tillat sending av bruksdata",
     "ALLOW_ANALYTICS_DESCRIPTION": "Hjelp oss å forbedre Varsom Regobs ved å la oss se hvordan du bruker applikasjonen.",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Denne dataen er anonym og kan ikke knyttes til deg personlig.",
     "ALLOW_ANALYTICS_HEADER": "Del bruksstatistikk",
-    "APP_VERSION": "App versjon",
     "APPMODE": "Appmodus",
+    "APP_VERSION": "App versjon",
     "CONFIRM_RESET": "Er du sikker på du vil tilbakestille app?",
     "COUNTRY": "Land",
     "DROPDOWNS_FAILED": "Klarte ikke oppdatere nedtrekksmenyer. Vennligst sjekk om du har nettverk og prøv igjen litt senere.",
@@ -636,6 +629,12 @@
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyer",
     "USE_IN_WORLD": "Utenfor Norge",
     "USE_RETINA_MAP": "Bruk høy oppløsning på kart"
+  },
+  "SET_NICK_ALERT": {
+    "ERROR": "Fikk ikke til å lagre kallenavn. Vennligst prøv igjen senere.",
+    "HELP_TEXT": "Du må legge til et kallenavn for å bruke Varsom Regobs. Kallenavnet blir vist i dine observasjoner.",
+    "INPUT_TEXT": "Skriv inn kallenavn",
+    "NICK": "Kallenavn"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
@@ -739,6 +738,22 @@
     "TRIPS": "Turer",
     "WARNINGS": "Varsler"
   },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Her kan du skrive inn hvilken obstur du skal på, hva du ser etter, osv.",
+    "END_ERROR": "Klarte ikke stoppe tur. Vennligst prøv igjen senere. Turen vil automatisk ble stoppet ved midnatt.",
+    "ERROR": "Klarte ikke starte tur. Vennligs prøv igjen.",
+    "ERROR_POSITION": "Kan ikke starte tur uten GPS posisjon.",
+    "LEGACY_HELP_TEXT": "Her melder du fra om at du planlegger tur i dag.\n\nDet er nyttig for skredvarslingen å vite om det kan ventes observasjoner i dag. Det er også nyttig å vite hva slags observasjoner som kan ventes (hva ser du etter, hvor skal du på tur) og når regner du med at disse sendes inn på Regobs.\n\nAlle betalte observatører skal registrere hva slags obstur som planlegges: er det en ordinær betalt observasjonstur, eller er det en tilleggsregistrering? Tilleggsregistrering er innsending av observasjoner du har gjort i annet arbeid eller på fritiden din.",
+    "ONGOING_TRIP": "Tur pågår",
+    "STARTED": "Tur startet",
+    "START_TRIP": "Start tur",
+    "STOPPED": "Tur stoppet",
+    "STOP_TRIP": "Avslutt tur",
+    "TITLE": "Turer",
+    "TRIP": "Tur",
+    "TRIP_END_DESCRIPTION": "Observasjoner ventes før kl.",
+    "TRIP_TYPE": "Turtype"
+  },
   "TRIP_LOG": {
     "COMPLETE": "Ferdig",
     "CONTINUE": "Fortsett",
@@ -748,22 +763,6 @@
     "START": "Start",
     "STOP": "Stopp",
     "STOPPED": "Tur stoppet og fullført"
-  },
-  "TRIP": {
-    "COMMENT_DESCRIPTION": "Her kan du skrive inn hvilken obstur du skal på, hva du ser etter, osv.",
-    "END_ERROR": "Klarte ikke stoppe tur. Vennligst prøv igjen senere. Turen vil automatisk ble stoppet ved midnatt.",
-    "ERROR": "Klarte ikke starte tur. Vennligs prøv igjen.",
-    "ERROR_POSITION": "Kan ikke starte tur uten GPS posisjon.",
-    "LEGACY_HELP_TEXT": "Her melder du fra om at du planlegger tur i dag.\n\nDet er nyttig for skredvarslingen å vite om det kan ventes observasjoner i dag. Det er også nyttig å vite hva slags observasjoner som kan ventes (hva ser du etter, hvor skal du på tur) og når regner du med at disse sendes inn på Regobs.\n\nAlle betalte observatører skal registrere hva slags obstur som planlegges: er det en ordinær betalt observasjonstur, eller er det en tilleggsregistrering? Tilleggsregistrering er innsending av observasjoner du har gjort i annet arbeid eller på fritiden din.",
-    "ONGOING_TRIP": "Tur pågår",
-    "START_TRIP": "Start tur",
-    "STARTED": "Tur startet",
-    "STOP_TRIP": "Avslutt tur",
-    "STOPPED": "Tur stoppet",
-    "TITLE": "Turer",
-    "TRIP": "Tur",
-    "TRIP_END_DESCRIPTION": "Observasjoner ventes før kl.",
-    "TRIP_TYPE": "Turtype"
   },
   "VALIDATION": {
     "AND": "og",
@@ -775,10 +774,10 @@
     "MUST_BE": "må være"
   },
   "WARNING_LIST": {
-    "A_REGIONS": "A - Regioner",
     "ADDED_TO_FAVOURITES": "lagt til i favoritter",
     "ALL": "Alle",
     "ALL_WARNINGS": "Alle varsler",
+    "A_REGIONS": "A - Regioner",
     "B_REGIONS": "B - Regioner",
     "B_REGIONS_SUBTITLE": "Varsles kun på faregrad 4 og 5",
     "FAVOURITES": "Favoritter",

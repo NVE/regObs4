@@ -69,14 +69,14 @@
     "SW": "SW",
     "W": "W"
   },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Tour wird aufgezeichnet"
+  },
   "GEO_HAZARDS": {
     "DIRT": "Boden",
     "ICE": "Eis",
     "SNOW": "Schnee",
     "WATER": "Wasser"
-  },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Tour wird aufgezeichnet"
   },
   "HELP": {
     "TITLE": "Hilfe"
@@ -297,11 +297,9 @@
         "TITLE": "Eisdicke"
       }
     },
+    "IMAGES": "Bilder",
     "IMAGE_DESCRIPTION": "Bildbeschreibung",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Fügen Sie eine Bildbeschreibung hinzu",
-    "IMAGES": "Bilder",
-    "IN_CM": "In Zentimeter",
-    "IN_FULL_CM": "In Zentimetern ohne Dezimalstellen",
     "INCIDENT": {
       "ACTIVITY": "Aktivität",
       "COMMENT": "Beschreibung",
@@ -311,6 +309,8 @@
       "TITLE": "Unfall / Vorfall"
     },
     "INVALID_IMAGE": "Sorry, das ist ein ungültiges Bild",
+    "IN_CM": "In Zentimeter",
+    "IN_FULL_CM": "In Zentimetern ohne Dezimalstellen",
     "NONE": "Nicht ausgewählt",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Standort bestätigen",
@@ -328,14 +328,14 @@
     "REQUIRED_FIELDS_MISSING": "Einige Felder sind ungültig. Möchten Sie das Formular zurücksetzen und zurückgehen?",
     "RESEND": "Versuchen Sie erneut zu senden",
     "RESET": "Zurücksetzen",
+    "SAVED_DESCRIPTION": "Die Syncronisation erfolgt bei bestehender Netzwerkverbindung.",
+    "SAVED_ON_PHONE": "Am Telefon gespeichert",
     "SAVE_ALERT": {
       "HEADER": "Als Entwurf speichern?",
       "MESSAGE": "Sie sind dabei, die Registrierung ohne Absenden zu verlassen. Möchten Sie sie als Entwurf speichern?",
       "NO": "Nein, verwerfen",
       "YES": "Ja, speichern"
     },
-    "SAVED_DESCRIPTION": "Die Syncronisation erfolgt bei bestehender Netzwerkverbindung.",
-    "SAVED_ON_PHONE": "Am Telefon gespeichert",
     "SEND": "Absenden",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Bestätigen Sie die Schadensstelle",
@@ -370,9 +370,9 @@
         "TITLE": "Beurteilung der Lawinengefahr"
       },
       "AVALANCHE_OBS": {
-        "AVAL_CAUSE": "Schwachschicht",
         "AVALANCHE_TRIGGER": "Auslöseempfindlichkeit",
         "AVALANCHE_TYPE": "Lawinenart",
+        "AVAL_CAUSE": "Schwachschicht",
         "DESTRUCTIVE_SIZE": "Größe",
         "FRACTURE_HEIGTH": "Anrisshöhe (cm)",
         "FRACTURE_WIDTH": "Anrissbreite (m)",
@@ -389,16 +389,16 @@
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Neues Lawinenproblem hinzufügen",
         "ALL": "Alle",
-        "AVAL_PROBABILITY": "Lawinenwahrscheinlichkeit",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Größe der zu erwartenden Lawine",
         "AVALANCHE_PROBABILITY": "Die Möglichkeit von Lawinen",
         "AVALANCHE_PROPAGATION_HEADER": "Räumliche Lawinenverteilung",
         "AVALANCHE_TRIGGER_PROBABILITY": "Auslöseempfindlichkeit",
         "AVALANCHE_TYPE": "Lawinenart",
+        "AVAL_PROBABILITY": "Lawinenwahrscheinlichkeit",
         "BOTTOM": "Boden",
-        "EXPOSED_HEIGHT_COMBO": "Höhe",
         "EXPOSED_HEIGHT1": "Höhe",
         "EXPOSED_HEIGHT2": "Niedrigere Höhe",
+        "EXPOSED_HEIGHT_COMBO": "Höhe",
         "MIDDLE": "Mitte",
         "NO_WEAK_LAYERS": "Es gibt keine Schwachschichten",
         "PROPAGATION": "Räumliche Verteilung",
@@ -568,8 +568,8 @@
     "ALLOW_ANALYTICS_DESCRIPTION": "Helfen Sie uns, Varsom Regobs zu verbessern, indem Sie uns mitteilen, wie Sie die Anwendung verwenden.",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Diese Daten sind anonym und können nicht persönlich mit Ihnen verknüpft werden.",
     "ALLOW_ANALYTICS_HEADER": "Nutzungsstatistiken freigeben",
-    "APP_VERSION": "App Version",
     "APPMODE": "App-Modus",
+    "APP_VERSION": "App Version",
     "CONFIRM_RESET": "Möchten Sie die App wirklich zurücksetzen?",
     "COUNTRY": "Land",
     "DROPDOWNS_FAILED": "Dropdowns konnten nicht aktualisiert werden. Bitte überprüfen Sie die Netzwerkeinstellungen und versuchen Sie es später erneut.",
@@ -589,6 +589,12 @@
     "UPDATE_DROPDOWNS": "Auswahlliste aktualisieren",
     "USE_IN_WORLD": "Außerhalb Norwegens",
     "USE_RETINA_MAP": "Karten mit hoher Auflösung verwenden"
+  },
+  "SET_NICK_ALERT": {
+    "ERROR": "Nickname konnte nicht gespeichert werden. Bitte versuchen Sie es später.",
+    "HELP_TEXT": "Sie benötigen einen Nicknamen, um Varsom Regobs verwenden zu können. Der Nickname wird in Ihren Beobachtungen angezeigt.",
+    "INPUT_TEXT": "Bitte geben Sie den Nicknamen ein",
+    "NICK": "Nick"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
@@ -668,7 +674,7 @@
     "ICE_LEGEND_TEXT_6": "Rohrleitung",
     "ICE_LEGEND_TEXT_7": "Kraftwerkstunnel",
     "ICE_MAP_DESCRIPTION": "Die Unterstützungskarte zeigt Teile von Wasserläufen, die sich aufgrund von Vorschriften zur Stromerzeugung den ganzen Winter über unvorhersehbar verhalten",
-    "INFO_PAGE": "<h1> Über Karten mit Steilheits- und Rundlaufzonen </ h1>\nDie Karten werden automatisch erstellt und können Fehler enthalten. Möglicherweise gibt es steiles Gelände, das im Höhenmodell nicht dargestellt und daher nicht in den Karten angezeigt wird.\nEinige Lawinen haben möglicherweise längere Auslaufzonen als die in den Karten als Auslaufzone angezeigten.\n\n<h2> Welche Überlegungen sind zu beachten? </ h2>\nPassen Sie Ihr Risiko an, indem Sie auswählen, wohin, wann und wie Sie reisen. Varsom Regobs ist ein Planungswerkzeug und seine Daten können von der tatsächlichen Situation abweichen. Machen Sie immer Ihre eigene Bewertung.\n\n<h2> Wann ist es sicher? </ h2>\nJede Tour in schneebedecktem Lawinengelände birgt ein gewisses Risiko.\n\n<h2> Möchten Sie mehr erfahren? </ h2>\nSie können mehr erfahren, indem Sie an einem Lawinensicherheitskurs teilnehmen und auf Snøskredskolen auf Varsom.no.",
+    "INFO_PAGE": "<h1> Über Karten mit Steilheits- und Rundlaufzonen </h1>\nDie Karten werden automatisch erstellt und können Fehler enthalten. Möglicherweise gibt es steiles Gelände, das im Höhenmodell nicht dargestellt und daher nicht in den Karten angezeigt wird.\nEinige Lawinen haben möglicherweise längere Auslaufzonen als die in den Karten als Auslaufzone angezeigten.\n\n<h2> Welche Überlegungen sind zu beachten? </h2>\nPassen Sie Ihr Risiko an, indem Sie auswählen, wohin, wann und wie Sie reisen. Varsom Regobs ist ein Planungswerkzeug und seine Daten können von der tatsächlichen Situation abweichen. Machen Sie immer Ihre eigene Bewertung.\n\n<h2> Wann ist es sicher? </h2>\nJede Tour in schneebedecktem Lawinengelände birgt ein gewisses Risiko.\n\n<h2> Möchten Sie mehr erfahren? </h2>\nSie können mehr erfahren, indem Sie an einem Lawinensicherheitskurs teilnehmen und auf Snøskredskolen auf Varsom.no.",
     "LOW": "Tief",
     "MARITINE_BORDER": "Seegrenze",
     "MIDDLE": "Mittel",
@@ -690,6 +696,22 @@
     "TRIPS": "Routen",
     "WARNINGS": "Warnungen"
   },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Beschreiben Sie, welche Art von Route Sie unternehmen und wonach Sie suchen usw.",
+    "END_ERROR": "Konnte Routenaufzeichnung nicht stoppen. Bitte versuchen Sie es später noch einmal. Die Routenaufzeichnung stoppt automatisch um Mitternacht.",
+    "ERROR": "Fehler beim Starten der Routenaufzeichnung. Bitte versuche es erneut.",
+    "ERROR_POSITION": "Routenaufzeichnung konnte ohne GPS-Position nicht gestartet werden.",
+    "LEGACY_HELP_TEXT": "Mit diesem Formular können Sie mitteilen, dass Sie heute eine Route planen.\n\nEs ist für das Warndienstteam hilfreich zu wissen, ob heute mit Beobachtungen zu rechnen ist. Es ist auch hilfreich zu wissen, welche Art von Beobachtungen zu erwarten sind (wonach Sie suchen, wohin Sie gehen) und wann Sie damit rechnen, dass diese bei Regobs eingereicht werden.\n\nAlle bezahlten Beobachter müssen aufzeichnen, welche Arten von Beobachtungstouren geplant sind: ist es eine gewöhnliche bezahlte Beobachtungstour oder ist dies eine zusätzliche Meldung? Eine zusätzliche Meldung ist die Übermittlung von Beobachtungen, die Sie während anderer Arbeiten oder in Ihrer Freizeit gemacht haben.",
+    "ONGOING_TRIP": "Routenaufzeichnung läuft",
+    "STARTED": "Tour wurde gestartet",
+    "START_TRIP": "Starte Tour",
+    "STOPPED": "Tour wurde gestoppt",
+    "STOP_TRIP": "Route stoppen",
+    "TITLE": "Routen",
+    "TRIP": "Route",
+    "TRIP_END_DESCRIPTION": "Beobachtungen werden erwartet",
+    "TRIP_TYPE": "Routenart"
+  },
   "TRIP_LOG": {
     "COMPLETE": "Vollständig",
     "CONTINUE": "Fortsetzen",
@@ -699,22 +721,6 @@
     "START": "Start",
     "STOP": "Stop",
     "STOPPED": "Routenaufzeichnung abgeschlossen"
-  },
-  "TRIP": {
-    "COMMENT_DESCRIPTION": "Beschreiben Sie, welche Art von Route Sie unternehmen und wonach Sie suchen usw.",
-    "END_ERROR": "Konnte Routenaufzeichnung nicht stoppen. Bitte versuchen Sie es später noch einmal. Die Routenaufzeichnung stoppt automatisch um Mitternacht.",
-    "ERROR": "Fehler beim Starten der Routenaufzeichnung. Bitte versuche es erneut.",
-    "ERROR_POSITION": "Routenaufzeichnung konnte ohne GPS-Position nicht gestartet werden.",
-    "LEGACY_HELP_TEXT": "Mit diesem Formular können Sie mitteilen, dass Sie heute eine Route planen.\n\nEs ist für das Warndienstteam hilfreich zu wissen, ob heute mit Beobachtungen zu rechnen ist. Es ist auch hilfreich zu wissen, welche Art von Beobachtungen zu erwarten sind (wonach Sie suchen, wohin Sie gehen) und wann Sie damit rechnen, dass diese bei Regobs eingereicht werden.\n\nAlle bezahlten Beobachter müssen aufzeichnen, welche Arten von Beobachtungstouren sind geplant: ist es eine gewöhnliche bezahlte Beobachtungstour oder ist dies eine zusätzliche Meldung? Eine zusätzliche Meldung ist die Übermittlung von Beobachtungen, die Sie während anderer Arbeiten oder in Ihrer Freizeit gemacht haben.",
-    "ONGOING_TRIP": "Routenaufzeichnung läuft",
-    "START_TRIP": "Starte Tour",
-    "STARTED": "Tour wurde gestartet",
-    "STOP_TRIP": "Route stoppen",
-    "STOPPED": "Tour wurde gestoppt",
-    "TITLE": "Routen",
-    "TRIP": "Route",
-    "TRIP_END_DESCRIPTION": "Beobachtungen werden erwartet",
-    "TRIP_TYPE": "Routenart"
   },
   "VALIDATION": {
     "AND": "und",
@@ -726,10 +732,10 @@
     "MUST_BE": "muss sein"
   },
   "WARNING_LIST": {
-    "A_REGIONS": "A - Regionen",
     "ADDED_TO_FAVOURITES": "zu Favoriten hinzugefügt",
     "ALL": "Alles",
     "ALL_WARNINGS": "Alle Warnungen",
+    "A_REGIONS": "A - Regionen",
     "B_REGIONS": "B - Regionen",
     "B_REGIONS_SUBTITLE": "Warnungen nur für Gefahrenstufe 4 und 5",
     "FAVOURITES": "Favoriten",

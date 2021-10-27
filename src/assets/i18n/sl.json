@@ -69,14 +69,14 @@
     "SW": "JZ",
     "W": "Z"
   },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Beleženje poti"
+  },
   "GEO_HAZARDS": {
     "DIRT": "Zemlja",
     "ICE": "Led",
     "SNOW": "Sneg",
     "WATER": "Voda"
-  },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Beleženje poti"
   },
   "HELP": {
     "TITLE": "Pomoč"
@@ -85,9 +85,9 @@
     "HEADER": "O podatkih v Varsom Regobs",
     "LINE_1": "Uporaba opozoril, podatkov in zemljevidov na lastno odgovornost. Lahko so prisotne napake in opustitve informacij.",
     "LINE_2": "Opozorila so samo orodje za načrtovanje in se lahko razlikujejo od dejanske situacije. Vedno naredite svojo oceno stanja. Pogoji, v katerih ste, so lahko bolj zapleteni in se lahko razlikujejo od opozoril.",
-    "LINE_3": "Podatki na Regobs so pridobljeni s strani uporabnikov in so dostopni, »takšni, kot so«. Lahko vsebujejo napake in opustitve informacij. NVE ne jamči za pravilnost in popolnost podatkov ter za ocene stanja s strani uporabnikov.",
+    "LINE_3": "Podatki na Regobs so pridobljeni s strani uporabnikov in so dostopni, »takšni, kot so«. Lahko vsebujejo napake in opustitve informacij. NVE (Norwegian Water Resources and Energy Directorate) ne jamči za pravilnost in popolnost podatkov ter za ocene stanja s strani uporabnikov.",
     "OK": "Ok, sprejemam",
-    "TERMS": "Podatki na Varsom Regobs so pridobljeni s strani uporabnikov aplikacije Regobs in so dostopni, »takšni, kot so«. Informacije lahko vsebujejo napake in opustitve. NVE ne jamči za kvaliteto ali točnost informacij, ki so dostopne na Regobs in ne prevzema odgovornosti za podatke, ki so nepravilni ali zavajajoči. Število zvezdic ob uporabniškem imenu (1-5) nakazuje nivo usposobljenosti osebe, ki je prispevala opažanje. Brez zvezdic je nivo usposobljenosti neznan ali nizek."
+    "TERMS": "Podatki na Varsom Regobs so pridobljeni s strani uporabnikov aplikacije Regobs in so dostopni, »takšni, kot so«. Informacije lahko vsebujejo napake in opustitve. NVE (Norwegian Water Resources and Energy Directorate) ne jamči za kvaliteto ali točnost informacij, ki so dostopne na Regobs in ne prevzema odgovornosti za podatke, ki so nepravilni ali zavajajoči. Število zvezdic ob uporabniškem imenu (1-5) nakazuje nivo usposobljenosti osebe, ki je prispevala opažanje. Brez zvezdic je nivo usposobljenosti neznan ali nizek."
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Spremeni geslo",
@@ -186,7 +186,7 @@
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
       "HEADER": "O opažanjih",
-      "MESSAGE": "Uporaba opažanj na lastno odgovornost. Opažanja so pridobljena s strani uporabnikov in dostopna, «takšna, kot so».\nNVE ne jamči za nepravilnosti, opustitve informacij in ocene, ki so pridobljene s strani uporabnikov.\nPri pregledovanju opažanj upoštevajte nivo usposobljenosti avtorja, ki je prikazan s številom zvezdic ob imenu."
+      "MESSAGE": "Uporaba opažanj na lastno odgovornost. Opažanja so pridobljena s strani uporabnikov in dostopna, «takšna, kot so».\nNVE (Norwegian Water Resources and Energy Directorate) ne jamči za nepravilnosti, opustitve informacij in ocene, ki so pridobljene s strani uporabnikov.\nPri pregledovanju opažanj upoštevajte nivo usposobljenosti avtorja, ki je prikazan s številom zvezdic ob imenu."
     },
     "ABOUT_SUPPORT_MAPS": {
       "HEADER": "O zemljevidih",
@@ -207,7 +207,7 @@
       "COMMENT": "Komentar",
       "COMMENT_PLACEHOLDER": "Podajte nadaljnji opis znaka nevarnosti.",
       "DESCRIPTION": "Opis",
-      "FOR_MUNICIPAL": "Za občino",
+      "FOR_MUNICIPAL": "V občini",
       "FOR_REGION": "Regija/Območje opozorila",
       "GENERAL_ON_MOUNTAIN": "Na splošno v gorah",
       "IN_THE_VALLEY_OR_FJORD": "V dolini/fjordu",
@@ -234,11 +234,11 @@
         "DT_LAND_SLIDE_TIME_END": "Kdaj se je plaz ustavil",
         "END_POSITION": "Končna točka",
         "IN_MAP": "na zemljevidu",
-        "LANDSLIDE_TYPE": "Tip plazu",
+        "LANDSLIDE_TYPE": "Vrsta plazu",
         "POSITION": "Lokacija plazu",
-        "SET_LANDSLIDE_POSITION": "Nastavi lokacijo plazu",
+        "SET_LANDSLIDE_POSITION": "Določite lokacijo plazu",
         "START_POSITION": "Začetna točka",
-        "TITLE": "Plazovni incident"
+        "TITLE": "Zemeljski plaz"
       }
     },
     "DRAFTS": "Moji osnutki",
@@ -292,16 +292,14 @@
         "ICE_LAYER": "Ledena plast",
         "ICE_LAYER_THICKNESS": "Debelina ledene plasti (cm)",
         "ICE_THICKNESS_SUM": "Skupna debelina (cm)",
-        "ICE_TYPE": "Tip ledu",
+        "ICE_TYPE": "Vrsta ledu",
         "SLUSH_SNOW_BEFORE_DRILL": "Plundra pred vrtanjem (cm)",
         "TITLE": "Debelina ledu"
       }
     },
+    "IMAGES": "Slike",
     "IMAGE_DESCRIPTION": "Opis slike",
     "IMAGE_DESCRIPTION_PLACEHOLDER": "Tu lahko dodate opis slike",
-    "IMAGES": "Slike",
-    "IN_CM": "V centimetrih",
-    "IN_FULL_CM": "V centimetrih brez decimalk",
     "INCIDENT": {
       "ACTIVITY": "Dejavnost",
       "COMMENT": "Opis",
@@ -311,7 +309,9 @@
       "TITLE": "Nesreča / incident"
     },
     "INVALID_IMAGE": "Neveljavna oblika slike",
-    "NONE": "Ni izbrano",
+    "IN_CM": "V centimetrih",
+    "IN_FULL_CM": "V centimetrih brez decimalk",
+    "NONE": "Ni podano",
     "OBS_LOCATION": {
       "CONFIRM_TEXT": "Potrdi lokacijo",
       "CURRENT_LOCATION": "Trenuten položaj",
@@ -328,14 +328,14 @@
     "REQUIRED_FIELDS_MISSING": "Neveljavna oblika. Ali želite ponastaviti obrazec in se vrniti nazaj?",
     "RESEND": "Poskusite ponovno oddati",
     "RESET": "Ponastavi",
+    "SAVED_DESCRIPTION": "Vsebina se bo vsebina sinhronizirala ob vzpostavitvi povezave z omrežjem.",
+    "SAVED_ON_PHONE": "Shranjeno na telefon",
     "SAVE_ALERT": {
       "HEADER": "Shraniti kot osnutek?",
       "MESSAGE": "Vnos boste zapustili brez oddaje. Ali želite shraniti kot osnutek?",
       "NO": "Ne, opusti.",
       "YES": "Ja, shrani."
     },
-    "SAVED_DESCRIPTION": "Vsebina se bo vsebina sinhronizirala ob vzpostavitvi povezave z omrežjem.",
-    "SAVED_ON_PHONE": "Shranjeno na telefon",
     "SEND": "Oddaj.",
     "SET_DAMAGE_LOCATION": {
       "CONFIRM_TEXT": "Potrdi lokacijo škode",
@@ -366,39 +366,39 @@
         "COMMENT": "Komentar plazovne napovedi",
         "EVALUATION": "Ocena nevarnosti",
         "EVALUATION_PLACEHOLDER": "Ocena plazovne nevarnosti",
-        "FORECAST_CORRECT": "Ocena plazovne napovedi na varsom.no",
+        "FORECAST_CORRECT": "Ocena plazovne napovedi v plazovnem biltenu",
         "TITLE": "Ocena plazovne nevarnosti"
       },
       "AVALANCHE_OBS": {
-        "AVAL_CAUSE": "Šibka plast",
         "AVALANCHE_TRIGGER": "Sprožilec plazu",
-        "AVALANCHE_TYPE": "Tip plazu",
+        "AVALANCHE_TYPE": "Vrsta plazu",
+        "AVAL_CAUSE": "Šibka plast",
         "DESTRUCTIVE_SIZE": "Velikost",
-        "FRACTURE_HEIGTH": "Višina napoke (cm)",
-        "FRACTURE_WIDTH": "Širina napoke (cm)",
+        "FRACTURE_HEIGTH": "Višina razpoke (cm)",
+        "FRACTURE_WIDTH": "Širina razpoke (m)",
         "INCIDENT_DESCRIPTION": "Nesreča ali poškodba",
         "INCIDENT_PLACEHOLDER": "Je plaz povzročil kakšno škodo, nesrečo ali skorajšnjo nesrečo? Zakaj in kako se je zgodil? Se bi bilo situaciji mogoče izogniti?",
         "POSITION": "Lokacija plazu",
-        "SET_AVALANCHE_POSITION": "Nastavi lokacijo plazu",
-        "TERRAIN_START_ZONE": "Tip terena na območju proženja",
+        "SET_AVALANCHE_POSITION": "Določite lokacijo plazu",
+        "TERRAIN_START_ZONE": "Vrsta terena na območju proženja",
         "TIME": "Čas sprožitve (obvezno)",
-        "TITLE": "Plazovni incident",
+        "TITLE": "Snežni plaz",
         "TRAJECTORY_NAME": "Pot plazu",
         "VALID_EXPOSITION": "Usmerjenost pobočja"
       },
       "AVALANCHE_PROBLEM": {
         "ADD_NEW": "Dodaj nov plazovni problem",
         "ALL": "Vsi",
-        "AVAL_PROBABILITY": "Verjetnost proženja snežnih plazov",
         "AVALANCHE_DESTRUCTIVE_SIZE": "Pričakovana velikost plazu",
         "AVALANCHE_PROBABILITY": "Možnost proženja snežnih plazov",
         "AVALANCHE_PROPAGATION_HEADER": "Prostorska porazdelitev plazovnega problema",
         "AVALANCHE_TRIGGER_PROBABILITY": "Stabilnost snežne odeje",
-        "AVALANCHE_TYPE": "Tip plazu",
+        "AVALANCHE_TYPE": "Vrsta plazu",
+        "AVAL_PROBABILITY": "Verjetnost proženja snežnih plazov",
         "BOTTOM": "Na dnu",
-        "EXPOSED_HEIGHT_COMBO": "Izpostavljena višina",
         "EXPOSED_HEIGHT1": "Višina",
         "EXPOSED_HEIGHT2": "Spodnja višina",
+        "EXPOSED_HEIGHT_COMBO": "Izpostavljena višina",
         "MIDDLE": "V sredini",
         "NO_WEAK_LAYERS": "Ni šibkih plasti",
         "PROPAGATION": "Prostorska porazdelitev",
@@ -410,25 +410,25 @@
         "WEAK_LAYER_DEPTH": "Globina šibke plasti"
       },
       "COMPRESSION_TEST": {
-        "ADD_NEW": "Dodaj nov test",
-        "DISTANCE_FROM_TOP": "Razdalja od površja (cm)",
+        "ADD_NEW": "Dodaj nov preizkus",
+        "DISTANCE_FROM_TOP": "Razdalja od površja snežne odeje (cm)",
         "FRACTURE_TYPE": "Vrsta porušitve",
         "STABILITY_EVAL": "Stabilnost",
         "TAPS_FRACTURE": "Število udarcev",
-        "TEST_TYPE": "Tip testa",
-        "TITLE": "Test stabilnosti"
+        "TEST_TYPE": "Vrsta preizkusa",
+        "TITLE": "Preizkusi stabilnosti"
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
           "ATTACHED": "povezani s profilom",
           "EMPTY": "Ne",
           "INCLUDE_IN_SNOW_PROFILE": "Dodaj k snežnemu profilu",
-          "MULTIPLE_TESTS": "testi",
-          "SINGLE_TEST": "test",
-          "TITLE": "Testi"
+          "MULTIPLE_TESTS": "preizkusi",
+          "SINGLE_TEST": "preizkus",
+          "TITLE": "Preizkusi"
         },
         "GENERATING_PREVIEW": "Ustvarjanje predogleda...",
-        "IS_PROFILE_TO_GROUND": "Ali profil sega do tal?",
+        "IS_PROFILE_TO_GROUND": "Je snežni profil izkopan do tal?",
         "PREVIEW": "Predogled",
         "PREVIEW_ERROR": "Predogleda ni bilo mogoče ustvariti",
         "PREVIEW_ITEM": "Pokaži snežni profil",
@@ -466,12 +466,12 @@
           "CRITICAL_LAYER": "Kritična plast",
           "EMPTY": "Brez opaženih plasti",
           "FROM_OTHER_PROFILE": "Plast iz drugega profila",
-          "GRAIN_FORM": "Oblika kristalov",
-          "GRAIN_FROM_SECONDARY": "Sekundarna oblika kristalov",
-          "HARDNESS": "Trdnost",
-          "HARDNESS_BOTTOM": "Trdnost na dnu",
+          "GRAIN_FORM": "Oblika zrn",
+          "GRAIN_FROM_SECONDARY": "Sekundarna oblika zrn",
+          "HARDNESS": "Trdota",
+          "HARDNESS_BOTTOM": "Trdota na dnu",
           "LAYER": "Plast",
-          "MAX_GRAIN_SIZE": "Največja velikost kristalov (mm)",
+          "MAX_GRAIN_SIZE": "Največja velikost zrn (mm)",
           "MULTIPLE_LAYERS": "opaženo plastenje",
           "NO_PROFILES_FOUND": "Ni najdenih plasti iz drugih profilov",
           "ONE_LAYER": "opažena plast",
@@ -479,11 +479,11 @@
           "OTHER_PROFILE_ITEM_TEXT": "Pridobi plasti iz drugih profilov",
           "SHOW_LESS": "Pokaži manj možnosti",
           "SHOW_MORE": "Pokaži več možnosti",
-          "SIZE": "Velikost kristalov (mm)",
+          "SIZE": "Velikost zrn (mm)",
           "THICKNESS": "Debelina (mm)",
           "TITLE": "Plasti",
           "TOTAL_THICKNESS": "Skupna debelina",
-          "WETNESS": "Vodnatost"
+          "WETNESS": "Vlažnost"
         },
         "SUBFORMS": "Podobrazci",
         "SUPERIOR": "Glavno",
@@ -494,12 +494,12 @@
         "COMMENT_PLACEHOLDER": "Kakšna je na splošno porazdelitev snega glede na višino in usmerjenost pobočij? Ali so opazne velike razlike na območju?",
         "HEIGHT_LIMIT_LAYERED_SNOW": "Višina, kjer se začne sneg v plasteh (m.n.v.)",
         "HIGHT_LIMIT_LAYERED_SNOW_PLACEHOLDER": "Do kod sega snežna odeja brez nevarnega plastenja",
-        "NEW_SNOW_DEPTH": "Nov sneg v 24h (cm)",
+        "NEW_SNOW_DEPTH": "Nov sneg v zadnjih 24 urah (cm)",
         "NEW_SNOW_LINE": "Meja novega snega (m.n.v.)",
         "SNOW_DEPTH": "Višina snežne odeje (cm)",
         "SNOW_DRIFT": "Napihan sneg",
         "SNOW_LINE": "Meja snega (m.n.v.)",
-        "SNOW_SURFACE": "Trdnost snežne odeje",
+        "SNOW_SURFACE": "Površje snežne odeje",
         "SURFACE_WATER_CONTENT_REG": "Vlažnost snežne odeje",
         "TITLE": "Snežna odeja"
       },
@@ -517,7 +517,7 @@
         "FROM_SOUTH_EAST": "JV - iz jugovzhoda",
         "FROM_SOUTH_WEST": "JZ - iz jugozahoda",
         "FROM_WEST": "Z - iz zahoda",
-        "NOT_GIVEN": "Ni znano",
+        "NOT_GIVEN": "Ni podano",
         "ONLY_FULL_PERCENTAGE": "Odstotki brez decimalk",
         "PRECIPITATION": "Padavine",
         "TITLE": "Vreme",
@@ -563,19 +563,13 @@
       }
     }
   },
-  "SET_NICK_ALERT": {
-    "ERROR": "Uporabniškega imena ni bilo mogoče shraniti. Poskusite pozneje.",
-    "HELP_TEXT": "Za uporabo Varsom Regobs potrebujete uporabniško ime. Uporabniško ime je prikazano na vaših opažanjih.",
-    "INPUT_TEXT": "Prosimo vnesite uporabniško ime",
-    "NICK": "Vzdevek"
-  },
   "SETTINGS": {
     "ALLOW_ANALYTICS": "Dovoli pošiljanje podatkov o uporabi",
     "ALLOW_ANALYTICS_DESCRIPTION": "Pokažite nam, kako uporabljate Varsom Regobs in nam pomagajte izboljšati aplikacijo.",
     "ALLOW_ANALYTICS_DESCRIPTION_LINE2": "Ti podatki so anonimni in jih ni mogoče povezati z vami osebno.",
     "ALLOW_ANALYTICS_HEADER": "Deli statistiko uporabe",
-    "APP_VERSION": "Različica aplikacije",
     "APPMODE": "Način aplikacije",
+    "APP_VERSION": "Različica aplikacije",
     "CONFIRM_RESET": "Ali ste prepričani, da želite ponastaviti aplikacijo?",
     "COUNTRY": "Država",
     "DROPDOWNS_FAILED": "Spustnih menijev ni bilo mogoče posodobiti. Preverite omrežne nastavitve in poskusite pozneje.",
@@ -595,6 +589,12 @@
     "UPDATE_DROPDOWNS": "Posodobi spustne menije",
     "USE_IN_WORLD": "Izven Norveške",
     "USE_RETINA_MAP": "Uporabi visoko ločljive zemljevide"
+  },
+  "SET_NICK_ALERT": {
+    "ERROR": "Uporabniškega imena ni bilo mogoče shraniti. Poskusite pozneje.",
+    "HELP_TEXT": "Za uporabo Varsom Regobs potrebujete uporabniško ime. Uporabniško ime je prikazano na vaših opažanjih.",
+    "INPUT_TEXT": "Prosimo vnesite uporabniško ime",
+    "NICK": "Vzdevek"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
@@ -682,12 +682,12 @@
     "READ_MORE": "Preberite več o zemljevidih",
     "STEEPNESS_COLOR_INFO": "Barve označujejo naklon površja v stopinjah",
     "STEEPNESS_MAP_DESCRIPTION": "Zemljevid naklona površja",
-    "STEEPNESS_MAP_DISCLAMER": "Namenjeno <i>samo</i> načrtovanju izletov. Ta zemljevid je ustvarjen samodejno in lahko vsebujejo napake. Možen je obstoj strmih pobočij in območij izteka, ki niso prikazana.",
+    "STEEPNESS_MAP_DISCLAMER": "Namenjeno <i>samo</i> načrtovanju poti. Ta zemljevid je ustvarjen samodejno in lahko vsebujejo napake. Možen je obstoj strmih pobočij in območij izteka, ki niso prikazana.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Kratko območje izteka (50% plazov sega dlje)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Srednje dolgo območje izteka (25% plazov sega dlje)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Dolgo območje izteka (5% plazov sega dlje)\nNekateri plazovi lahko imajo obsežnejše območje izteka, kot je označeno na zemljevidih.",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Zemljevid naklona površja in območij izteka",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "Namenjeno <i>samo</i> načrtovanju izletov. Ta zemljevid je ustvarjen samodejno in lahko vsebujejo napake. Možen je obstoj strmih pobočij in območij izteka, ki niso prikazana.\n<br/>\n<br/>\nBarve označujejo območja iztekov plazov:",
+    "STEEPNESS_OUTLET_MAP_DISCLAMER": "Namenjeno <i>samo</i> načrtovanju poti. Ta zemljevid je ustvarjen samodejno in lahko vsebujejo napake. Možen je obstoj strmih pobočij in območij izteka, ki niso prikazana.\n<br/>\n<br/>\nBarve označujejo območja iztekov plazov:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Zemljevid oslabitve ledu"
   },
   "TABS": {
@@ -695,6 +695,22 @@
     "MAP": "Zemljevid",
     "TRIPS": "Poti",
     "WARNINGS": "Opozorila"
+  },
+  "TRIP": {
+    "COMMENT_DESCRIPTION": "Opišite, na kakšno pot greste, kaj iščete itd.",
+    "END_ERROR": "Poti ni bilo mogoče ustaviti. Poskusite ponovno pozneje. Pot se samodejno ustavi ob polnoči.",
+    "ERROR": "Poti ni bilo mogoče začeti. Poskusite ponovno.",
+    "ERROR_POSITION": "Poti ni mogoče začeti brez položaja GPS.",
+    "LEGACY_HELP_TEXT": "S tem obrazcem lahko sporočite, da danes načrtujete pot.\n\nZa plazovno službo je koristna informacija, ali lahko danes pričakujejo opažanja. Koristno je tudi vedeti, kakšna opažanja lahko pričakujejo (kaj iščete, kam greste) in kdaj približno jih boste oddali v Regobs.\n\nVsi plačani opazovalci morajo poročati, kakšne tipe poti z opažanji načrtujejo: ali gre za običajno plačano pot z opažanji ali je to dodatno vnašanje razmer? Dodatno vnašanje je poročanje opažanj, ki ste jih izvedli med drugim delom ali v prostem času.",
+    "ONGOING_TRIP": "Pot še poteka",
+    "STARTED": "Pot se je začela",
+    "START_TRIP": "Začni pot",
+    "STOPPED": "Pot je ustavljena",
+    "STOP_TRIP": "Ustavi pot",
+    "TITLE": "Poti",
+    "TRIP": "Pot",
+    "TRIP_END_DESCRIPTION": "Opažanje se pričakuje pred ...",
+    "TRIP_TYPE": "Vrsta poti"
   },
   "TRIP_LOG": {
     "COMPLETE": "Zaključi",
@@ -706,22 +722,6 @@
     "STOP": "Ustavi",
     "STOPPED": "Beleženje poti končano"
   },
-  "TRIP": {
-    "COMMENT_DESCRIPTION": "Opišite, na kakšno pot greste, kaj iščete itd.",
-    "END_ERROR": "Poti ni bilo mogoče ustaviti. Poskusite ponovno pozneje. Pot se samodejno ustavi ob polnoči.",
-    "ERROR": "Poti ni bilo mogoče začeti. Poskusite ponovno.",
-    "ERROR_POSITION": "Poti ni mogoče začeti brez položaja GPS.",
-    "LEGACY_HELP_TEXT": "S tem obrazcem lahko sporočite, da danes načrtujete pot.\n\nZa plazovno službo je koristna informacija, ali lahko danes pričakujejo opažanja. Koristno je tudi vedeti, kakšna opažanja lahko pričakujejo (kaj iščete, kam greste) in kdaj približno jih boste oddali v Regobs.\n\nVsi plačani opazovalci morajo poročati, kakšne tipe poti z opažanji načrtujejo: ali gre za običajno plačano pot z opažanji ali je to dodatno vnašanje razmer? Dodatno vnašanje je poročanje opažanj, ki ste jih izvedli med drugim delom ali v prostem času.",
-    "ONGOING_TRIP": "Pot še poteka",
-    "START_TRIP": "Začni pot",
-    "STARTED": "Pot se je začela",
-    "STOP_TRIP": "Ustavi pot",
-    "STOPPED": "Pot je ustavljena",
-    "TITLE": "Poti",
-    "TRIP": "Pot",
-    "TRIP_END_DESCRIPTION": "Opažanje se pričakuje pred ...",
-    "TRIP_TYPE": "Vrsta poti"
-  },
   "VALIDATION": {
     "AND": "in",
     "BETWEEN": "med",
@@ -732,10 +732,10 @@
     "MUST_BE": "mora biti"
   },
   "WARNING_LIST": {
-    "A_REGIONS": "A - območja",
     "ADDED_TO_FAVOURITES": "dodano med priljubljene",
     "ALL": "Vse",
     "ALL_WARNINGS": "Vsa opozorila",
+    "A_REGIONS": "A - območja",
     "B_REGIONS": "B - območja",
     "B_REGIONS_SUBTITLE": "Opozorila samo za stopnji nevarnosti 4 in 5",
     "FAVOURITES": "Priljubljene",
