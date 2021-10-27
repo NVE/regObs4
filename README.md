@@ -148,7 +148,7 @@ Appene må produksjonssettes manuelt i i App Store og i Google Play
 
 Etter produksjonssetting, må release-greina flettes inn:
 ```
-git flow release finish 'release/vX.Y.Z'
+git flow release finish 'vX.Y.Z'
 git push origin --tags
 git push develop
 git push master
