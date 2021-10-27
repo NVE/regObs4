@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { timer, Subject, from, BehaviorSubject } from 'rxjs';
+import { timer, Subject, from, BehaviorSubject, combineLatest } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Position } from '@capacitor/geolocation';
@@ -32,7 +32,8 @@ import { TopoMap } from '../../../../core/models/topo-map.enum';
 import {
   RegObsTileLayer,
   IRegObsTileLayerOptions,
-  RegObsOfflineAwareTileLayer
+  RegObsOfflineAwareTileLayer,
+  RegobsOfflineTileLayer
 } from '../../core/classes/regobs-tile-layer';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
@@ -41,12 +42,29 @@ import { LangKey } from '../../../../core/models/langKey';
 import { File } from '@ionic-native/file/ngx';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
+import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
+import { BBox } from 'geojson';
 
 const DEBUG_TAG = 'MapComponent';
 
 type CreateTileLayer = (options: IRegObsTileLayerOptions) => L.TileLayer;
 
+const isTopoLayer = (mapId: string) => (<string[]>Object.values(TopoMap)).includes(mapId);
+const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
+  layerGroup.eachLayer((layer) => {
+    if (layer instanceof L.TileLayer) {
+      layer.redraw();
+    }
+  })
+};
 
+enum MapLayerZIndex {
+  OnlineMixedBackgroundLayer = 0,
+  OfflineBackgroundLayer = 10,
+  OnlineBackgroundLayer = 20,
+  OfflineSupportLayer = 30,
+  OnlineSupportLayer = 40
+}
 
 @Component({
   selector: 'app-map',
@@ -67,6 +85,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   loaded = false;
   private map: L.Map;
   private layerGroup = L.layerGroup();
+  private offlineTopoLayerGroup = L.layerGroup();
+  private offlineSupportMapLayerGroup = L.layerGroup();
   private userMarker: UserMarker;
   private firstPositionUpdate = true;
   private ngDestroy$ = new Subject<void>();
@@ -167,7 +187,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.showScale) {
       L.control.scale({ imperial: false }).addTo(map);
     }
+
+    this.offlineTopoLayerGroup.addTo(this.map);
     this.layerGroup.addTo(this.map);
+    this.offlineSupportMapLayerGroup.addTo(this.map);
 
     this.userSettingService.userSetting$
       .pipe(takeUntil(this.ngDestroy$))
@@ -274,22 +297,89 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private async initOfflineMaps() {
     this.loggingService.debug('initOfflineMaps()... ', DEBUG_TAG);
 
-    // When starting offline, offline map packages are
-    // registered after the map initially loads.
-    // By redrawing here, we can see offline tiles without
-    // zooming in/out etc.
-    this.offlineMapService.packages$
+    combineLatest([
+      this.offlineMapService.packages$,
+      this.userSettingService.userSetting$
+    ])
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(() => this.redrawOfflineLayers());
+      .subscribe(([packages, userSettings]) => {
+        this.zone.runOutsideAngular(() => {
+          this.createOfflineLayers(packages, userSettings);
+
+          // When starting offline, offline map packages are
+          // registered after the map initially loads.
+          // By redrawing here, we can see offline tiles without
+          // zooming in/out etc.
+          redrawLayersInLayerGroup(this.offlineTopoLayerGroup);
+          redrawLayersInLayerGroup(this.offlineSupportMapLayerGroup);
+        })
+      });
   }
 
-  private redrawOfflineLayers() {
-    this.layerGroup.eachLayer((layer) => {
-      if (layer instanceof RegObsOfflineAwareTileLayer) {
-        layer.redraw();
-      }
-    })
+  private tileCoordsToBounds({ x, y, z }: { x: number, y: number, z: number }): L.LatLngBounds {
+    const tileSize = new L.Point(256, 256);
+    const coords = new L.Point(x, y);
+
+    const nwPoint = coords.scaleBy(tileSize);
+    const sePoint = nwPoint.add(tileSize);
+    const nw = this.map.unproject(nwPoint, z);
+		const se = this.map.unproject(sePoint, z);
+    return new L.LatLngBounds(nw, se);
   }
+
+  private createOfflineLayers(packages: OfflineMapPackage[], userSettings: UserSetting) {
+    this.offlineTopoLayerGroup.clearLayers();
+    this.offlineSupportMapLayerGroup.clearLayers();
+
+    // Create a map of enabled support tiles
+    const enabledSupportMaps = this.userSettingService
+      .getSupportTilesOptions(userSettings)
+      .filter(supportMap => supportMap.enabled)
+      .reduce((map, supportMap) => {
+        map.set(supportMap.name, supportMap);
+        return map;
+      }, new Map());
+    
+    // Create offline tile map layers
+    for (const offlinePackage of packages) {
+      for (const map of Object.values(offlinePackage.maps)) {
+        if (isTopoLayer(map.mapId)) {
+          this.createTopoMapOfflineLayer(map);
+        } else if (enabledSupportMaps.has(map.mapId)) {
+          const { opacity } = enabledSupportMaps.get(map.mapId);
+          this.createSupportMapOfflineLayer(map, opacity);
+        } else {
+          this.loggingService.debug(`'${map.mapId}' is currently disabled or undefined in map config, no layer created for ${map.url}`, DEBUG_TAG);
+        }
+      }
+    }
+  }
+
+  private createTopoMapOfflineLayer(map: OfflineTilesMetadata) {
+    const bounds = this.tileCoordsToBounds(map.rootTile)
+    const url = `${map.url}/{z}/{x}/{y}.png`;
+    const layer = new RegobsOfflineTileLayer(url, {
+      bounds,
+      maxNativeZoom: map.zMax,
+      minZoom: map.rootTile.z,
+      zIndex: MapLayerZIndex.OfflineBackgroundLayer
+    });
+    this.offlineTopoLayerGroup.addLayer(layer);
+  }
+
+  private createSupportMapOfflineLayer(map: OfflineTilesMetadata, opacity: number) {
+    const bounds = this.tileCoordsToBounds(map.rootTile)
+    const url = `${map.url}/{z}/{x}/{y}.png`;
+    const layer = new RegobsOfflineTileLayer(url, {
+      bounds,
+      opacity,
+      maxNativeZoom: map.zMax,
+      minZoom: map.rootTile.z,
+      zIndex: MapLayerZIndex.OfflineSupportLayer
+    });
+    this.offlineSupportMapLayerGroup.addLayer(layer);
+  }
+
 
    private startActiveSubscriptions() {
     this.isActive
@@ -357,7 +447,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       );
 
       for (const createTileLayer of createTileLayerFactory) {
-        const options = this.getTileLayerDefaultOptions(userSetting.useRetinaMap);
+        const options = {
+          ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
+          zIndex: MapLayerZIndex.OnlineBackgroundLayer
+        }
         const layer = createTileLayer(options);
         layer.addTo(this.layerGroup);
       }
@@ -371,6 +464,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
         const options = {
           ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
+          zIndex: MapLayerZIndex.OnlineSupportLayer,
           updateInterval: 600,
           keepBuffer: 0,
           updateWhenIdle: true,
@@ -452,6 +546,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         settings.map.tiles.arcGisOnlineTopoMapUrl, 
         {
           ...options,
+          zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
           excludeBounds: NORWEGIAN_BOUNDS
         },
       ),
@@ -471,6 +566,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         return [
           (options) => new RegObsTileLayer(settings.map.tiles.openTopoMapUrl, {
             ...options,
+            zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
             excludeBounds: NORWEGIAN_BOUNDS
           }),
           createNorwegianMixedMap
