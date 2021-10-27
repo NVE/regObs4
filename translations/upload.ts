@@ -13,7 +13,8 @@ async function main() {
         let cleanup_mode = clean;
         if (lang !== Lang.English && lang !== Lang.NorwegianBokmal) {
             // Do not allow cleanup mode for other languages
-            cleanup_mode = false;
+            console.error(`Cleanup mode not allowed for ${lang}`);
+            return
         }
 
         console.log(`Will upload lang "${lang}", cleanup_mode=${cleanup_mode}`);
