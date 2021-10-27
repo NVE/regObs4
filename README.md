@@ -244,3 +244,58 @@ The file need to be simplified and converted to wgs84:
 
 The json file will now be around 700KB and in wgs84 projection.
 Overwrite /assets/json/regions-simple-polygons.json
+
+# Translations
+
+App-spesifikke tekster finnes i `./translations/app`. Disse tekstene
+håndteres via *cordova-plugin-localization-strings*.
+
+Web-tekster finnes i `./translations/web`. Omtrent all regobs-koden er web-kode
+(det som ligger under `./src/`).
+
+Alle tekstene håndteres med json-format.
+
+## Oversettelsesverktøy
+
+Vi bruker [Lokalise](https://lokalise.com/) til å håndtere oversettelser.
+
+For å bruke lokalise npm scripts må du lage opprette fila 
+`translations/lokalise-api-key.json` med innholdet:
+
+```
+{
+    "apiKey": "<din-api-key>"
+}
+```
+
+
+## Hvordan oppdatere / legge til / fjerne tekster
+
+1. Commit endringer du har i språkfilene.
+
+2. Last ned fra Lokalise ved hjelp av npm-script:
+
+   ```
+   npm run lokalise:download
+   ```
+
+3. Se over språkfilene, fix eventuelle feil eller ting som er overskrevet
+
+4. Commit eventuelle endringene
+
+5. Last opp til Lokalise med npm-script:
+
+   ```
+   npm run lokalise:upload -- web <lang>
+   ```
+
+## Reste opp i Lokalse
+
+For å laste opp språkfiler, og samtidig slette nøkler/tekster som ikke finnes
+lenger, kan denne kommandoen brukes:
+
+```
+npm run lokalise:upload -- web <lang> --clean
+```
+
+Dette fungerer kun med `en` og `no`.
