@@ -259,7 +259,7 @@ Alle tekstene håndteres med json-format.
 
 Vi bruker [Lokalise](https://lokalise.com/) til å håndtere oversettelser.
 
-For å bruke lokalise npm scripts må du lage opprette fila 
+For å bruke lokalise npm scripts må du lage fila 
 `translations/lokalise-api-key.json` med innholdet:
 
 ```
@@ -292,7 +292,7 @@ For å bruke lokalise npm scripts må du lage opprette fila
 6. Sjekk i Lokalise om oppdateringen ser riktig ut. Hvis ikke, bruk snapshop for
    å rulle tilbake.
 
-## Rydde opp i Lokalse
+## Rydde opp i Lokalise
 
 For å laste opp språkfiler, og samtidig slette nøkler/tekster som ikke finnes
 lenger, kan denne kommandoen brukes:
