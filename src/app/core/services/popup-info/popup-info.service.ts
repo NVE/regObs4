@@ -17,34 +17,36 @@ export class PopupInfoService {
     private translateService: TranslateService
   ) {}
 
-  checkObservationInfoPopup(delayMs = 2000) {
+  checkObservationInfoPopup(_: string = null, delayMs = 2000) {
     return this.checkInfoPopup(
       delayMs,
-      "infoAboutObservationsRecievedTimestamp",
+      "infoAboutObservationsRecievedTimestamps",
+      "static",
       'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.HEADER',
       'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.MESSAGE',
       'POPUP_DISCLAMER.OK_I_UNDERSTAND'
     );
   }
 
-  checkSupportMapInfoPopup(delayMs = 2000) {
+  checkSupportMapInfoPopup(_: string = null, delayMs = 2000) {
     return this.checkInfoPopup(
       delayMs,
-      "infoAboutSupportMapsRecievedTimestamp",
+      "infoAboutSupportMapsRecievedTimestamps",
+      "static",
       'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.HEADER',
       'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.MESSAGE',
       'POPUP_DISCLAMER.OK_I_UNDERSTAND'
     );
   }
 
-  checkOfflineSupportMapInfoPopup(delayMs = 2000) {
+  checkOfflineSupportMapInfoPopup(name: string, delayMs = 2000) {
     return this.checkInfoPopup(
       delayMs,
-      "infoAboutOfflineSupportMapsRecievedTimestamp",
+      "infoAboutOfflineSupportMapsRecievedTimestamps",
+      name,
       'POPUP_DISCLAMER.ABOUT_OFFLINE_SUPPORT_MAPS.HEADER',
       'POPUP_DISCLAMER.ABOUT_OFFLINE_SUPPORT_MAPS.MESSAGE',
-      'POPUP_DISCLAMER.OK_I_UNDERSTAND',
-      0
+      'POPUP_DISCLAMER.OK_I_UNDERSTAND'
     );
   }
 
@@ -87,18 +89,24 @@ export class PopupInfoService {
     );
   }
 
-  async saveInfoAboutRecievedTimestamp(timestampType: string) {
+  async saveInfoAboutRecievedTimestamp(timestampType: string, timestampName: string) {
     let userSettings = await this.userSettingService.userSetting$
       .pipe(take(1))
       .toPromise();
-    userSettings = {...userSettings};
-    userSettings[timestampType] = moment().unix();
+    userSettings = {
+      ...userSettings,
+      [timestampType]: timestampType in userSettings ? {
+          ...userSettings[timestampType],
+          [timestampName]: moment().unix(),
+        } : {[timestampName]: moment().unix()}
+    };
     this.userSettingService.saveUserSettings(userSettings);
   }
 
   private checkInfoPopup(
     delayMs = 2000,
     timestampType: string,
+    timestampName: string,
     header: string,
     msg: string,
     ok_txt: string,
@@ -110,7 +118,7 @@ export class PopupInfoService {
       filter((us) =>
         this.checkLastTimestamp(
           refreshTimeMs,
-          us[timestampType]
+          timestampType in us ? us[timestampType][timestampName] : null,
         )
       ),
       switchMap(() =>
@@ -125,7 +133,7 @@ export class PopupInfoService {
           )
         )
       ),
-      switchMap(() => from(this.saveInfoAboutRecievedTimestamp(timestampType)))
+      switchMap(() => from(this.saveInfoAboutRecievedTimestamp(timestampType, timestampName)))
     );
   }
 }

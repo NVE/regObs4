@@ -11,7 +11,7 @@ import { takeUntil, take } from 'rxjs/operators';
 
 interface PopupSubscription {
   subscription: Subscription,
-  checker: () => Observable<void>,
+  checker: (name: string) => Observable<void>,
   condition: (tile: SupportTile) => boolean,
 }
 
@@ -23,7 +23,7 @@ interface PopupSubscription {
 })
 export class SupportTilesMenuComponent extends NgDestoryBase {
   private checkSupportMap: PopupSubscription;
-  private checkOfflineSupportMap: PopupSubscription;
+  private checkOfflineSupportMaps: {[mapName: string]: PopupSubscription} = {};
 
   opacityValues = [
     { name: 'SUPPORT_MAP.NO_OPACITY', value: 1.0 },
@@ -48,11 +48,6 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
       checker: popupInfoService.checkSupportMapInfoPopup,
       condition: (_) => true,
     };
-    this.checkOfflineSupportMap = {
-      subscription: undefined,
-      checker: popupInfoService.checkOfflineSupportMapInfoPopup,
-      condition: (tile) => !tile.availableOffline,
-    };
   }
 
   trackByMethod(index: number, el: SupportTile) {
@@ -76,13 +71,20 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
   }
 
   checkForInfoPopup(enabled: boolean, supportTile: SupportTile = null) {
-    [this.checkSupportMap, this.checkOfflineSupportMap].forEach((checkMap) => {
+    if (!(supportTile.name in this.checkOfflineSupportMaps)) {
+      this.checkOfflineSupportMaps[supportTile.name] = {
+        subscription: undefined,
+        checker: this.popupInfoService.checkOfflineSupportMapInfoPopup,
+        condition: (tile) => !tile.availableOffline,
+      }
+    }
+    [this.checkSupportMap, this.checkOfflineSupportMaps[supportTile.name]].forEach((checkMap) => {
       if (checkMap.subscription && !checkMap.subscription.closed) {
         checkMap.subscription.unsubscribe();
-      }
+      } else if (this.checkOfflineSupportMaps)
       if (enabled && checkMap.condition(supportTile)) {
         checkMap.subscription = checkMap
-          .checker.bind(this.popupInfoService)()
+          .checker.bind(this.popupInfoService)(supportTile.name)
           .pipe(takeUntil(this.ngDestroy$))
           .subscribe();
       }
