@@ -75,6 +75,10 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   // }
 
   get supportTiles$() {
+    return this.userSetting$.pipe(map((us) => this.getSupportTilesOptions(us, true)));
+  }
+
+  get supportTilesWithSubTiles$() {
     return this.userSetting$.pipe(map((us) => this.getSupportTilesOptions(us, false)));
   }
 
@@ -232,7 +236,6 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
             ...tile.subTile,
             opacity: tile.opacity,
             geoHazardId: tile.geoHazardId,
-            description: tile.subTile.description,
           });
           delete tile.subTile;
         });

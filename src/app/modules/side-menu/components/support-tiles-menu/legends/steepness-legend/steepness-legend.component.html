@@ -1,5 +1,5 @@
 <p [innerHTML]="'SUPPORT_MAP.STEEPNESS_MAP_DISCLAMER' | translate"></p><br>
-<ng-container *ngIf="supportTiles$ | async as supportTiles">
+<ng-container *ngIf="supportTilesWithSubTiles$ | async as supportTiles">
   <ng-container *ngIf="isOutletsActive(supportTiles)">
     <p [innerHTML]="'SUPPORT_MAP.STEEPNESS_OUTLET_LEGEND_TITLE' | translate"></p>
     <div class="tile-legend-row">

@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { SupportTile, SupportTileStore } from '../../../../core/models/support-tile.model';
+import { SubTile, SupportTile, SupportTileStore } from '../../../../core/models/support-tile.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import {
   setObservableTimeout,
@@ -12,7 +12,7 @@ import { takeUntil, take } from 'rxjs/operators';
 interface PopupSubscription {
   subscription: Subscription,
   checker: (name: string) => Observable<void>,
-  condition: (tile: SupportTile) => boolean,
+  condition: (tile: SubTile) => boolean,
 }
 
 @Component({
@@ -24,6 +24,7 @@ interface PopupSubscription {
 export class SupportTilesMenuComponent extends NgDestoryBase {
   private checkSupportMap: PopupSubscription;
   private checkOfflineSupportMaps: {[mapName: string]: PopupSubscription} = {};
+  private subTileInstantiation: Subscription;
 
   opacityValues = [
     { name: 'SUPPORT_MAP.NO_OPACITY', value: 1.0 },
@@ -32,22 +33,37 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     { name: '75%', value: 0.25 }
   ];
 
-  readonly supportTiles$: Observable<SupportTile[]>;
+  readonly supportTilesWithSubTiles$: Observable<SupportTile[]>;
 
   constructor(
     private userSettingService: UserSettingService,
     private popupInfoService: PopupInfoService
   ) {
     super();
-    this.supportTiles$ = this.userSettingService.supportTiles$.pipe(
+    this.supportTilesWithSubTiles$ = this.userSettingService.supportTilesWithSubTiles$.pipe(
       setObservableTimeout()
     );
+
+    this.subTileInstantiation = this.supportTilesWithSubTiles$.subscribe((supportTiles) => {
+      supportTiles.forEach(
+        (supportTile) => this.onSubTileChanged(supportTile)
+      );
+      this.subTileInstantiation.unsubscribe();
+    });
 
     this.checkSupportMap = {
       subscription: undefined,
       checker: popupInfoService.checkSupportMapInfoPopup,
       condition: (_) => true,
     };
+  }
+
+  ngOnDestroy() {
+    for (let checkMap of Object.values(this.checkOfflineSupportMaps).concat([this.checkSupportMap])) {
+      if (checkMap.subscription && !checkMap.subscription.closed) {
+        checkMap.subscription.unsubscribe();
+      }
+    }
   }
 
   trackByMethod(index: number, el: SupportTile) {
@@ -67,18 +83,15 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
   }
 
   async onSubTileChanged(supportTile: SupportTile) {
-    if (supportTile.subTile) {
+    if (supportTile.subTile?.enabled != supportTile.subTile?.checked) {
       supportTile.subTile.enabled = supportTile.subTile.checked;
-      let subTile = {
-        ...supportTile.subTile,
-        opacity: supportTile.opacity,
-        geoHazardId: supportTile.geoHazardId
-      };
-      this.checkForInfoPopup(supportTile.subTile.enabled, subTile);
+      this.checkForInfoPopup(supportTile.subTile);
     }
-    supportTile.enabled = !this.isChildActive(supportTile);
+    if (supportTile.enabled == this.isChildActive(supportTile)) {
+      supportTile.enabled = !this.isChildActive(supportTile);
+      this.checkForInfoPopup(supportTile);
+    }
     this.saveSettings(supportTile);
-    this.checkForInfoPopup(supportTile.enabled, supportTile);
   }
 
   async saveSettings(supportTile: SupportTile) {
@@ -95,31 +108,28 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
   }
 
   isChildActive(supportTile: SupportTile): boolean {
-    if (supportTile.subTile) {
-      return supportTile.subTile.enabled
-    }
-    return false;
+    return !!supportTile.subTile?.enabled;
   }
 
   isTileActive(supportTile: SupportTile): boolean {
     return supportTile.enabled || this.isChildActive(supportTile);
   }
 
-  checkForInfoPopup(enabled: boolean, supportTile: SupportTile = null) {
-    if (!(supportTile.name in this.checkOfflineSupportMaps)) {
-      this.checkOfflineSupportMaps[supportTile.name] = {
+  checkForInfoPopup(tile: SubTile = null) {
+    if (!(tile.name in this.checkOfflineSupportMaps)) {
+      this.checkOfflineSupportMaps[tile.name] = {
         subscription: undefined,
         checker: this.popupInfoService.checkOfflineSupportMapInfoPopup,
         condition: (tile) => !tile.availableOffline,
       }
     }
-    [this.checkSupportMap, this.checkOfflineSupportMaps[supportTile.name]].forEach((checkMap) => {
+    [this.checkSupportMap, this.checkOfflineSupportMaps[tile.name]].forEach((checkMap) => {
       if (checkMap.subscription && !checkMap.subscription.closed) {
         checkMap.subscription.unsubscribe();
-      } else if (this.checkOfflineSupportMaps)
-      if (enabled && checkMap.condition(supportTile)) {
+      }
+      if (tile.enabled && checkMap.condition(tile)) {
         checkMap.subscription = checkMap
-          .checker.bind(this.popupInfoService)(supportTile.name)
+          .checker.bind(this.popupInfoService)(tile.name)
           .pipe(takeUntil(this.ngDestroy$))
           .subscribe();
       }

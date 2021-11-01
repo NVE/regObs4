@@ -13,12 +13,12 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SteepnessLegendComponent {
-  readonly supportTiles$: Observable<SupportTile[]>;
+  readonly supportTilesWithSubTiles$: Observable<SupportTile[]>;
 
   constructor(
     private userSettingService: UserSettingService,
   ) {
-    this.supportTiles$ = this.userSettingService.supportTiles$.pipe(
+    this.supportTilesWithSubTiles$ = this.userSettingService.supportTilesWithSubTiles$.pipe(
       setObservableTimeout()
     );
   }

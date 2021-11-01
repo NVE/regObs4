@@ -1,4 +1,4 @@
-<ng-container *ngIf="supportTiles$ | async as supportTiles">
+<ng-container *ngIf="supportTilesWithSubTiles$ | async as supportTiles">
   <ng-container *ngFor="let supportTile of supportTiles; trackBy: trackByMethod">
     <ion-item>
       <svg-icon slot="start" src="/assets/icon/map.svg"></svg-icon>
