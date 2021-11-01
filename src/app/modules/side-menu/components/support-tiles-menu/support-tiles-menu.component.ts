@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { SupportTile } from '../../../../core/models/support-tile.model';
+import { SubTile, SupportTile, SupportTileStore } from '../../../../core/models/support-tile.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import {
   setObservableTimeout,
@@ -12,7 +12,7 @@ import { takeUntil, take } from 'rxjs/operators';
 interface PopupSubscription {
   subscription: Subscription,
   checker: (name: string) => Observable<void>,
-  condition: (tile: SupportTile) => boolean,
+  condition: (tile: SubTile) => boolean,
 }
 
 @Component({
@@ -24,6 +24,7 @@ interface PopupSubscription {
 export class SupportTilesMenuComponent extends NgDestoryBase {
   private checkSupportMap: PopupSubscription;
   private checkOfflineSupportMaps: {[mapName: string]: PopupSubscription} = {};
+  private subTileInstantiation: Subscription;
 
   opacityValues = [
     { name: 'SUPPORT_MAP.NO_OPACITY', value: 1.0 },
@@ -32,16 +33,23 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     { name: '75%', value: 0.25 }
   ];
 
-  readonly supportTiles$: Observable<SupportTile[]>;
+  readonly supportTilesWithSubTiles$: Observable<SupportTile[]>;
 
   constructor(
     private userSettingService: UserSettingService,
     private popupInfoService: PopupInfoService
   ) {
     super();
-    this.supportTiles$ = this.userSettingService.supportTiles$.pipe(
+    this.supportTilesWithSubTiles$ = this.userSettingService.supportTilesWithSubTiles$.pipe(
       setObservableTimeout()
     );
+
+    this.subTileInstantiation = this.supportTilesWithSubTiles$.subscribe((supportTiles) => {
+      supportTiles.forEach(
+        (supportTile) => this.onSubTileChanged(supportTile)
+      );
+      this.subTileInstantiation.unsubscribe();
+    });
 
     this.checkSupportMap = {
       subscription: undefined,
@@ -50,41 +58,78 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     };
   }
 
+  ngOnDestroy() {
+    for (let checkMap of Object.values(this.checkOfflineSupportMaps).concat([this.checkSupportMap])) {
+      if (checkMap.subscription && !checkMap.subscription.closed) {
+        checkMap.subscription.unsubscribe();
+      }
+    }
+  }
+
   trackByMethod(index: number, el: SupportTile) {
     return el.name;
   }
 
   async onTileChanged(supportTile: SupportTile) {
+    if (supportTile.checked) {
+      this.onSubTileChanged(supportTile);
+    } else {
+      if (supportTile.subTile) {
+        supportTile.subTile.enabled = false;
+      }
+      supportTile.enabled = false;
+      this.saveSettings(supportTile);
+    }
+  }
+
+  async onSubTileChanged(supportTile: SupportTile) {
+    if (supportTile.subTile?.enabled != supportTile.subTile?.checked) {
+      supportTile.subTile.enabled = supportTile.subTile.checked;
+      this.checkForInfoPopup(supportTile.subTile);
+    }
+    if (supportTile.enabled == this.isChildActive(supportTile)) {
+      supportTile.enabled = !this.isChildActive(supportTile);
+      this.checkForInfoPopup(supportTile);
+    }
+    this.saveSettings(supportTile);
+  }
+
+  async saveSettings(supportTile: SupportTile) {
     const currentSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
+    .pipe(take(1))
+    .toPromise();
     this.userSettingService.saveUserSettings({
       ...currentSettings,
-      supportTiles: this.checkForDisableSupportTiles(
+      supportTiles: this.addOrUpdateSupportTileSettings(
         supportTile,
-        this.addOrUpdateSupportTileSettings(
-          supportTile,
-          currentSettings.supportTiles
-        )
+        currentSettings.supportTiles
       )
     });
   }
 
-  checkForInfoPopup(enabled: boolean, supportTile: SupportTile = null) {
-    if (!(supportTile.name in this.checkOfflineSupportMaps)) {
-      this.checkOfflineSupportMaps[supportTile.name] = {
+  isChildActive(supportTile: SupportTile): boolean {
+    return !!supportTile.subTile?.enabled;
+  }
+
+  isTileActive(supportTile: SupportTile): boolean {
+    return supportTile.enabled || this.isChildActive(supportTile);
+  }
+
+  checkForInfoPopup(tile: SubTile = null) {
+    if (!(tile.name in this.checkOfflineSupportMaps)) {
+      this.checkOfflineSupportMaps[tile.name] = {
         subscription: undefined,
         checker: this.popupInfoService.checkOfflineSupportMapInfoPopup,
         condition: (tile) => !tile.availableOffline,
       }
     }
-    [this.checkSupportMap, this.checkOfflineSupportMaps[supportTile.name]].forEach((checkMap) => {
+    [this.checkSupportMap, this.checkOfflineSupportMaps[tile.name]].forEach((checkMap) => {
       if (checkMap.subscription && !checkMap.subscription.closed) {
         checkMap.subscription.unsubscribe();
-      } else if (this.checkOfflineSupportMaps)
-      if (enabled && checkMap.condition(supportTile)) {
+      }
+      if (tile.enabled && checkMap.condition(tile)) {
         checkMap.subscription = checkMap
-          .checker.bind(this.popupInfoService)(supportTile.name)
+          .checker.bind(this.popupInfoService)(tile.name)
           .pipe(takeUntil(this.ngDestroy$))
           .subscribe();
       }
@@ -98,38 +143,23 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
       enabled: boolean;
       opacity: number;
     }[]
-  ): { name: string; enabled: boolean; opacity: number }[] {
-    return [
-      ...currentSupportTileSettings.filter((m) => m.name !== supportTile.name),
-      {
-        name: supportTile.name,
-        enabled: supportTile.enabled,
-        opacity: supportTile.opacity
+  ): SupportTileStore[] {
+    let storeTile = {
+      opacity: supportTile.opacity,
+      name: supportTile.name,
+      enabled: supportTile.enabled,
+      checked: supportTile.checked,
+    };
+    if (supportTile.subTile) {
+      storeTile["subTile"] = {
+        name: supportTile.subTile.name,
+        enabled: supportTile.subTile.enabled,
+        checked: supportTile.subTile.checked,
       }
-    ];
-  }
-
-  checkForDisableSupportTiles(
-    supportTile: SupportTile,
-    currentSupportTileSettings: {
-      name: string;
-      enabled: boolean;
-      opacity: number;
-    }[]
-  ): { name: string; enabled: boolean; opacity: number }[] {
-    if (
-      supportTile.enabled &&
-      supportTile.disableWhenEnabled &&
-      supportTile.disableWhenEnabled.length > 0
-    ) {
-      return currentSupportTileSettings.map((t) => ({
-        ...t,
-        enabled:
-          supportTile.disableWhenEnabled.indexOf(t.name) >= 0
-            ? false
-            : t.enabled
-      }));
     }
-    return [...currentSupportTileSettings];
+    return [
+      ...currentSupportTileSettings.filter((m) => m.name !== supportTile.name) as SupportTile[],
+      storeTile,
+    ];
   }
 }

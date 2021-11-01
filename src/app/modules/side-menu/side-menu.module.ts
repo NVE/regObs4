@@ -10,7 +10,6 @@ import { SteepnessLegendComponent } from './components/support-tiles-menu/legend
 import { FloodzonesLegendComponent } from './components/support-tiles-menu/legends/floodzones-legend/floodzones-legend.component';
 import { ClayzonesLegendComponent } from './components/support-tiles-menu/legends/clayzones-legend/clayzones-legend.component';
 import { WeakenediceLegendComponent } from './components/support-tiles-menu/legends/weakenedice-legend/weakenedice-legend.component';
-import { SteepnessOutletLegendComponent } from './components/support-tiles-menu/legends/steepness-outlet-legend/steepness-outlet-legend.component';
 import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/legends/steepness-common-legend/steepness-common-legend.component';
 
 @NgModule({
@@ -26,15 +25,13 @@ import { SteepnessCommonLegendComponent } from './components/support-tiles-menu/
     FloodzonesLegendComponent,
     ClayzonesLegendComponent,
     WeakenediceLegendComponent,
-    SteepnessOutletLegendComponent,
     SteepnessCommonLegendComponent
   ],
   entryComponents: [
     SteepnessLegendComponent,
     FloodzonesLegendComponent,
     ClayzonesLegendComponent,
-    WeakenediceLegendComponent,
-    SteepnessOutletLegendComponent
+    WeakenediceLegendComponent
   ],
   exports: [SideMenuComponent]
 })
