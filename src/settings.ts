@@ -163,7 +163,8 @@ export const settings = {
           enabled: true,
           opacity: 0.5,
           geoHazardId: 10,
-          disableWhenEnabled: ['steepness']
+          disableWhenEnabled: ['steepness'],
+          availableOffline: true
         },
         {
           name: 'steepness',
@@ -173,7 +174,8 @@ export const settings = {
           enabled: false,
           opacity: 0.5,
           geoHazardId: 10,
-          disableWhenEnabled: ['steepness-outlet']
+          disableWhenEnabled: ['steepness-outlet'],
+          availableOffline: false
         },
         {
           name: 'clayzones',
@@ -182,7 +184,8 @@ export const settings = {
             'https://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
-          geoHazardId: 20
+          geoHazardId: 20,
+          availableOffline: false
         },
         {
           name: 'floodzoones',
@@ -191,7 +194,8 @@ export const settings = {
             'https://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
-          geoHazardId: 60
+          geoHazardId: 60,
+          availableOffline: false
         },
         {
           name: 'weakenedice',
@@ -200,7 +204,8 @@ export const settings = {
             'https://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
           opacity: 0.5,
-          geoHazardId: 70
+          geoHazardId: 70,
+          availableOffline: true
         }
       ],
       supportTilesBounds: [

@@ -20,6 +20,7 @@ export interface UserSetting {
   consentForSendingAnalyticsDialogCompleted: boolean;
   featureToggleDeveloperMode: boolean;
   featureToggeGpsDebug: boolean;
-  infoAboutObservationsRecievedTimestamp?: number;
-  infoAboutSupportMapsRecievedTimestamp?: number;
+  infoAboutObservationsRecievedTimestamps?: {[name: string]: number};
+  infoAboutSupportMapsRecievedTimestamps?: {[name: string]: number};
+  infoAboutOfflineSupportMapsRecievedTimestamps?: {[name: string]: number};
 }
