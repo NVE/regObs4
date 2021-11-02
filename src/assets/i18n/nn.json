@@ -107,10 +107,10 @@
   },
   "MAP_CENTER_INFO": {
     "ABOVE_SEA_LEVEL": "moh",
+    "AWAY_FROM": "unna",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavla",
     "EAST_SHORT": "A",
-    "NORTH_SHORT": "N",
-    "AWAY_FROM": "unna"
+    "NORTH_SHORT": "N"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Unna",
@@ -140,9 +140,9 @@
     "OPACITY": "Gjennomsiktigheit",
     "OTHER": "Anna",
     "SHOW": "Vis",
+    "SHOWING_OBSERVATIONS": "observasjoner",
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjonar",
-    "SHOWING_OBSERVATIONS": "observasjoner",
     "SHOW_TRIPS": "Vis turar",
     "START_WIZARD": "Start vegvisaren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
@@ -164,42 +164,42 @@
   },
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Last fleire observasjonar...",
+    "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
+    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Du kan sjå fleire på <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">di side på web</a>",
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjonar",
     "NO_OBSERVATIONS": "Del dine observasjonar!",
     "NO_OBSERVATIONS_TEXT": "Her ligg observasjonar du sjølv har gjort. Med Varsom Regobs er det lett å dele observasjonar, bilete og vurderingar med andre. ",
     "SENT_SUBTITLE": "Desse observasjonane er sendt inn og lagra i Regobs. ",
-    "TITLE": "Mine observasjonar",
-    "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
-    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Du kan sjå fleire på <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">di side på web</a>"
+    "TITLE": "Mine observasjonar"
   },
   "MY_PROFILE": {
-    "TITLE": "Min side",
+    "COMPETENCE": "<a href=\"https://varsom.no/regobs/kompetanse/\">Les meir om kompetanse</a>",
+    "COPYRIGHT": "Opphavsrett",
+    "EDIT": "Rediger",
+    "MY_COMPETENCE": "Min kompetanse",
+    "MY_GROUPS": "Mine grupper",
+    "MY_GROUPS_TEXT": "Du kan redigere ein observasjon i ein gruppe 48 timer etter den er innsendt. <a href=\"mailto:regobs@nve.no\">Ta kontakt</a> for å endre gruppenavn, gruppebeskrivelse og medlemmer",
     "MY_NVE_ACCOUNT": "Min NVE-konto",
     "MY_PICTURES": "Mine bilder",
     "NICKNAME": "Mitt kallenavn",
     "NICKNAME_TEXT": "Kallenavn er eit navn som er synlig for alle og vises sammen med observasjonar du gjør",
-    "COPYRIGHT": "Opphavsrett",
+    "NO_GROUPS": "Du er ikkje medlem av noen grupper",
     "PHOTOGRAPHER": "Fotograf",
     "PUBLISH_PHOTOS": "Når du publiserer bilder i Regobs aksepterer du at de er lisensiert under NLOD og kan gjenbrukast. <a href=\"https://data.norge.no/nlod/no/\">Les meir om data</a>",
     "SAVE": "Lagre",
-    "EDIT": "Rediger",
-    "USER": "Brukar",
-    "MY_COMPETENCE": "Min kompetanse",
-    "COMPETENCE": "<a href=\"https://varsom.no/regobs/kompetanse/\">Les meir om kompetanse</a>",
-    "MY_GROUPS": "Mine grupper",
-    "MY_GROUPS_TEXT": "Du kan redigere ein observasjon i ein gruppe 48 timer etter den er innsendt. <a href=\"mailto:regobs@nve.no\">Ta kontakt</a> for å endre gruppenavn, gruppebeskrivelse og medlemmer",
-    "NO_GROUPS": "Du er ikkje medlem av noen grupper"
+    "TITLE": "Min side",
+    "USER": "Brukar"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjonar",
     "FORMS": "Skjema",
     "GO_TO_OBSERVATION": "Gå til observasjon",
     "IN_MAP_VIEW": "Observasjonar i kartutsnittet",
+    "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
+    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Hvis du ikkje fann det du leita etter, prøv å zoome inn i kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjonar",
     "NO_OBSERVATIONS_TEXT": "Det er ingen observasjonar i kartutsnittet. Prøv å endre utsnittet eller forleng perioda du vil sjå observasjonar frå.",
-    "OBSERVATIONS": "Observasjonar",
-    "MAX_COUNT_REACHED_HEADER": "Ingen fleire observasjonar",
-    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjonar her. Hvis du ikkje fann det du leita etter, prøv å zoome inn i kartet eller snevre inn perioden du vil se observasjoner fra."
+    "OBSERVATIONS": "Observasjonar"
   },
   "OFFLINE_MAP": {
     "TITLE": "Offline kart"

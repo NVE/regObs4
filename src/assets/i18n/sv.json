@@ -188,13 +188,13 @@
       "HEADER": "Om observationer",
       "MESSAGE": "Använd observationer på egen risk, dom är producerade av användarna och är tillgängliga «som det är». \nNVE ger inga garantier för fel, utelämnanden och bedömningar som producerats av användarna. \nBedöm observationerna mot bakgrund av observatörens kompetens, som visas av stjärnor bredvid namnet."
     },
-    "ABOUT_SUPPORT_MAPS": {
-      "HEADER": "Om kartor",
-      "MESSAGE": "Använd kartorna på egen risk och gör alltid din egen utvärdering. Kartorna kan innehålla fel och utelämnanden. Endast vissa temakartor är inkluderade i offlinekartorna."
-    },
     "ABOUT_OFFLINE_SUPPORT_MAPS": {
       "HEADER": "Offline-kartor",
       "MESSAGE": "Den valda kartan är endast tillgänglig online och kan fungera dåligt i områden med bristfällig täckning."
+    },
+    "ABOUT_SUPPORT_MAPS": {
+      "HEADER": "Om kartor",
+      "MESSAGE": "Använd kartorna på egen risk och gör alltid din egen utvärdering. Kartorna kan innehålla fel och utelämnanden. Endast vissa temakartor är inkluderade i offlinekartorna."
     },
     "OK_I_UNDERSTAND": "OK, jag förstår"
   },
@@ -637,7 +637,6 @@
   "SUPPORT_MAP": {
     "ABOUT": "Om kartorna",
     "CAUTION_AREA": "Varningsområde",
-    "CLAY_MAP_DISCLAMER": "Den här temakartan saknas i offlinekartorna.",
     "CLAY_DANGER_ZONE": "Faranivå för lerområden",
     "CLAY_LEGEND_TEXT_1": "Kvicklera-punkt (SVV)",
     "CLAY_LEGEND_TEXT_2": "Kvicklera-område (SVV)",
@@ -648,8 +647,8 @@
     "CLAY_LEGEND_TEXT_7": "Liten / ingen havs påverkan",
     "CLAY_LEGEND_TEXT_8": "Utloppsområde",
     "CLAY_LEGEND_TEXT_9": "Potentiell lavinfara",
+    "CLAY_MAP_DISCLAMER": "Den här temakartan saknas i offlinekartorna.",
     "CLAY_ZONES_MAP_DESCRIPTION": "Kvicklera/Jordskred",
-    "FLOOD_MAP_DISCLAMER": "Den här temakartan saknas i offlinekartorna.",
     "FLOOD_LEGEND_TEXT_1": "Aktuella",
     "FLOOD_LEGEND_TEXT_10": "200-årsöversvämning",
     "FLOOD_LEGEND_TEXT_11": "500-årsöversvämning",
@@ -664,6 +663,7 @@
     "FLOOD_LEGEND_TEXT_8": "50-årsöversvämning",
     "FLOOD_LEGEND_TEXT_9": "100-årsöversvämning",
     "FLOOD_LEGEND_TEXT_YEAR": "Översvämning lågpunkt kl",
+    "FLOOD_MAP_DISCLAMER": "Den här temakartan saknas i offlinekartorna.",
     "FLOOD_ZONES_MAP_DESCRIPTION": "Översvämningszoner",
     "HIGH": "Hög",
     "ICE_LEGEND_TEXT_1": "Bruten is längs stranden",

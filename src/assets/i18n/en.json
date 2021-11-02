@@ -69,6 +69,13 @@
     "SW": "SW",
     "W": "W"
   },
+  "GEOLOCATION": {
+    "POSITION_ERROR": {
+      "PermissionDenied": "To fetch your position you need to alter your browser settings",
+      "PositionUnavailable": "Not able fetch your position",
+      "Timeout": "It took to long time to fetch your position"
+    }
+  },
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Logging trip"
   },
@@ -77,13 +84,6 @@
     "ICE": "Ice",
     "SNOW": "Snow",
     "WATER": "Water"
-  },
-  "GEOLOCATION": {
-    "POSITION_ERROR": {
-      "PermissionDenied": "To fetch your position you need to alter your browser settings",
-      "PositionUnavailable": "Not able fetch your position",
-      "Timeout": "It took to long time to fetch your position"
-    }
   },
   "HELP": {
     "TITLE": "Help"
@@ -115,10 +115,10 @@
   },
   "MAP_CENTER_INFO": {
     "ABOVE_SEA_LEVEL": "masl",
+    "AWAY_FROM": "away",
     "COPIED_TO_CLIPBOARD": "Copied to clipboard",
     "EAST_SHORT": "E",
-    "NORTH_SHORT": "N",
-    "AWAY_FROM": "away"
+    "NORTH_SHORT": "N"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Away",
@@ -148,9 +148,9 @@
     "OPACITY": "Transparency",
     "OTHER": "Other",
     "SHOW": "Show",
+    "SHOWING_OBSERVATIONS": "observations",
     "SHOW_MAP_CENTER": "Show map center",
     "SHOW_OBSERVATIONS": "Show observations",
-    "SHOWING_OBSERVATIONS": "observations",
     "SHOW_TRIPS": "Show trips",
     "START_WIZARD": "Start wizard",
     "SUPPORT_MAP_CREDITS": "Support maps provided by",
@@ -172,48 +172,48 @@
   },
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Loading more observations...",
+    "MAX_COUNT_REACHED_HEADER": "No more observations",
+    "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. You may see more at <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">your page on web</a>",
     "MY_SENT_OBSERVATIONS": "My sent observations",
     "NO_OBSERVATIONS": "Share your observations!",
     "NO_OBSERVATIONS_TEXT": "Your observartions will appear here. Share your observations, pictures and assessements with others on Varsom Regobs.",
     "SENT_SUBTITLE": "The following observations have been submitted and are now stored in Regobs.",
-    "TITLE": "My observations",
-    "MAX_COUNT_REACHED_HEADER": "No more observations",
-    "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. You may see more at <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">your page on web</a>"
+    "TITLE": "My observations"
   },
   "MY_PROFILE": {
-    "TITLE": "My profile",
+    "COMPETENCE": "<a href=\"https://varsom.no/regobs/kompetanse/\">Read more about competence</a>",
+    "COPYRIGHT": "Copyright",
+    "EDIT": "Edit",
+    "MY_COMPETENCE": "My competence",
+    "MY_GROUPS": "My groups",
+    "MY_GROUPS_TEXT": "You can edit observations in a group for up to 48 hours after registration. <a href=\"mailto:regobs@nve.no\">Please contact us</a> to change group name, group description and members",
     "MY_NVE_ACCOUNT": "My NVE account",
     "MY_PICTURES": "My photos",
     "NICKNAME": "My nickname",
     "NICKNAME_TEXT": "Your nickname is visible to everyone on the observations you make",
-    "COPYRIGHT": "Copyright",
+    "NO_GROUPS": "You are not part of any groups",
     "PHOTOGRAPHER": "Photographer",
     "PUBLISH_PHOTOS": "All published photos are licensed under NLOD and can be reused. <a href=\"https://data.norge.no/nlod/en/\">Read more about data</a>",
     "SAVE": "Save",
-    "EDIT": "Edit",
-    "USER": "User",
-    "MY_COMPETENCE": "My competence",
-    "COMPETENCE": "<a href=\"https://varsom.no/regobs/kompetanse/\">Read more about competence</a>",
-    "MY_GROUPS": "My groups",
-    "MY_GROUPS_TEXT": "You can edit observations in a group for up to 48 hours after registration. <a href=\"mailto:regobs@nve.no\">Please contact us</a> to change group name, group description and members",
-    "NO_GROUPS": "You are not part of any groups"
+    "TITLE": "My profile",
+    "USER": "User"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "All observations",
     "FORMS": "Forms",
     "GO_TO_OBSERVATION": "Go to observation",
     "IN_MAP_VIEW": "Observations in map view",
+    "MAX_COUNT_REACHED_HEADER": "No more observations",
+    "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
     "NO_OBSERVATIONS": "No observations",
     "NO_OBSERVATIONS_TEXT": "There are no observations in the map section, try to change the view or expand the period you want to see observations from.",
-    "OBSERVATIONS": "Observations",
-    "MAX_COUNT_REACHED_HEADER": "No more observations",
-    "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from."
+    "OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline Map",
     "DISKSPACE_ERROR_MESSAGE": "Not enough disk space available to store offline map package. Please free up some disk space and try again.",
-    "UNZIP_ERROR_MESSAGE": "Could not save map package to disk. Are you sure there is enough disk space?",
-	"DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection."
+    "DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection.",
+    "TITLE": "Offline Map",
+    "UNZIP_ERROR_MESSAGE": "Could not save map package to disk. Are you sure there is enough disk space?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Permission to location denied",
@@ -224,13 +224,13 @@
       "HEADER": "About observations",
       "MESSAGE": "Use observations at your own risk, produced by the users  and is available «as is».\nNVE makes no warranties for errors, omissions and assessments produced by the users.\nConsider the observations in light of the competence of the observer, as shown by stars next to the name."
     },
-    "ABOUT_SUPPORT_MAPS": {
-      "HEADER": "About maps",
-      "MESSAGE": "Use the maps at your own risk and always make your own evaluation. The maps may contain errors and omissions. Not all support maps are included in the offline map packages."
-    },
     "ABOUT_OFFLINE_SUPPORT_MAPS": {
       "HEADER": "Offline maps",
       "MESSAGE": "The chosen support map is only available online and may not work in areas with limited coverage."
+    },
+    "ABOUT_SUPPORT_MAPS": {
+      "HEADER": "About maps",
+      "MESSAGE": "Use the maps at your own risk and always make your own evaluation. The maps may contain errors and omissions. Not all support maps are included in the offline map packages."
     },
     "OK_I_UNDERSTAND": "OK, I understand"
   },
@@ -679,7 +679,6 @@
   "SUPPORT_MAP": {
     "ABOUT": "About maps",
     "CAUTION_AREA": "Caution area",
-    "CLAY_MAP_DISCLAMER": "This map is not downloaded with the offline map packages.",
     "CLAY_DANGER_ZONE": "Danger level for clay zone",
     "CLAY_LEGEND_TEXT_1": "Quick clay point (SVV)",
     "CLAY_LEGEND_TEXT_2": "Quick clay area (SVV)",
@@ -690,8 +689,8 @@
     "CLAY_LEGEND_TEXT_7": "Little / no marine impact",
     "CLAY_LEGEND_TEXT_8": "Discharge area",
     "CLAY_LEGEND_TEXT_9": "Potential avalanche danger",
+    "CLAY_MAP_DISCLAMER": "This map is not downloaded with the offline map packages.",
     "CLAY_ZONES_MAP_DESCRIPTION": "Clay zones",
-    "FLOOD_MAP_DISCLAMER": "This map is not downloaded with the offline map packages.",
     "FLOOD_LEGEND_TEXT_1": "Current",
     "FLOOD_LEGEND_TEXT_10": "200-year flood",
     "FLOOD_LEGEND_TEXT_11": "500-year flood",
@@ -706,6 +705,7 @@
     "FLOOD_LEGEND_TEXT_8": "50-year flood",
     "FLOOD_LEGEND_TEXT_9": "100-year flood",
     "FLOOD_LEGEND_TEXT_YEAR": "Flooded at",
+    "FLOOD_MAP_DISCLAMER": "This map is not downloaded with the offline map packages.",
     "FLOOD_ZONES_MAP_DESCRIPTION": "Flood zones",
     "HIGH": "High",
     "ICE_LEGEND_TEXT_1": "Fractured ice along the shore",

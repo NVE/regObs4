@@ -69,21 +69,21 @@
     "SW": "SV",
     "W": "V"
   },
-  "GEO_HAZARDS": {
-    "DIRT": "Jord",
-    "ICE": "Is",
-    "SNOW": "Snø",
-    "WATER": "Vann"
-  },
-  "GEOLOCATION_SERVICE": {
-    "NOTIFICATION_TITLE": "Tur pågår"
-  },
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "PermissionDenied": "For å hente posisjonen din må du endre innstillinger i nettleseren",
       "PositionUnavailable": "Får ikke tak i posisjonen din",
       "Timeout": "Det tok for lang tid å få tak i posisjonen din"
     }
+  },
+  "GEOLOCATION_SERVICE": {
+    "NOTIFICATION_TITLE": "Tur pågår"
+  },
+  "GEO_HAZARDS": {
+    "DIRT": "Jord",
+    "ICE": "Is",
+    "SNOW": "Snø",
+    "WATER": "Vann"
   },
   "HELP": {
     "TITLE": "Hjelp"
@@ -115,10 +115,10 @@
   },
   "MAP_CENTER_INFO": {
     "ABOVE_SEA_LEVEL": "moh",
+    "AWAY_FROM": "unna",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen",
     "EAST_SHORT": "Ø",
-    "NORTH_SHORT": "N",
-    "AWAY_FROM": "unna"
+    "NORTH_SHORT": "N"
   },
   "MAP_ITEM_BAR": {
     "AWAY": "Unna",
@@ -148,9 +148,9 @@
     "OPACITY": "Gjennomsiktighet",
     "OTHER": "Annet",
     "SHOW": "Vis",
+    "SHOWING_OBSERVATIONS": "observasjoner",
     "SHOW_MAP_CENTER": "Vis kartsenter",
     "SHOW_OBSERVATIONS": "Vis observasjoner",
-    "SHOWING_OBSERVATIONS": "observasjoner",
     "SHOW_TRIPS": "Vis turer",
     "START_WIZARD": "Start veiviseren",
     "SUPPORT_MAP_CREDITS": "Støttekart levert av",
@@ -172,48 +172,48 @@
   },
   "MY_OBSERVATIONS": {
     "LOADING_MORE": "Laster flere observasjoner...",
+    "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
+    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Du kan se flere på <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">din side på web</a>",
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjoner",
     "NO_OBSERVATIONS": "Del dine observasjoner!",
     "NO_OBSERVATIONS_TEXT": "Her vil observasjoner du selv har gjort ligge. Med Varsom Regobs er det lett å dele observasjoner, bilder og vurderinger med andre.",
     "SENT_SUBTITLE": "Disse observasjonene er sendt inn og lagret i Regobs.",
-    "TITLE": "Mine observasjoner",
-    "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
-    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Du kan se flere på <a target=\"_blank\" href=\"{{ myObservationsUrl }}/\">din side på web</a>"
+    "TITLE": "Mine observasjoner"
   },
   "MY_PROFILE": {
-    "TITLE": "Min side",
+    "COMPETENCE": "<a href=\"https://varsom.no/regobs/kompetanse/\">Les mer om kompetanse</a>",
+    "COPYRIGHT": "Opphavsrett",
+    "EDIT": "Rediger",
+    "MY_COMPETENCE": "Min kompetanse",
+    "MY_GROUPS": "Mine grupper",
+    "MY_GROUPS_TEXT": "Du kan redigere en observasjon i en gruppe 48 timer etter den er innsendt. <a href=\"mailto:regobs@nve.no\">Ta kontakt</a> for å endre gruppenavn, gruppebeskrivelse og medlemmer",
     "MY_NVE_ACCOUNT": "Min NVE-konto",
     "MY_PICTURES": "Mine bilder",
     "NICKNAME": "Mitt kallenavn",
     "NICKNAME_TEXT": "Kallenavn er et navn som er synlig for alle og vises sammen med observasjoner du gjør",
-    "COPYRIGHT": "Opphavsrett",
+    "NO_GROUPS": "Du er ikke medlem av noen grupper",
     "PHOTOGRAPHER": "Fotograf",
     "PUBLISH_PHOTOS": "Når du publiserer bilder i Regobs aksepterer du at de er lisensiert under NLOD og kan gjenbrukes. <a href=\"https://data.norge.no/nlod/no/\">Les mer om data</a>",
     "SAVE": "Lagre",
-    "EDIT": "Rediger",
-    "USER": "Bruker",
-    "MY_COMPETENCE": "Min kompetanse",
-    "COMPETENCE": "<a href=\"https://varsom.no/regobs/kompetanse/\">Les mer om kompetanse</a>",
-    "MY_GROUPS": "Mine grupper",
-    "MY_GROUPS_TEXT": "Du kan redigere en observasjon i en gruppe 48 timer etter den er innsendt. <a href=\"mailto:regobs@nve.no\">Ta kontakt</a> for å endre gruppenavn, gruppebeskrivelse og medlemmer",
-    "NO_GROUPS": "Du er ikke medlem av noen grupper"
+    "TITLE": "Min side",
+    "USER": "Bruker"
   },
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjoner",
     "FORMS": "Skjemaer",
     "GO_TO_OBSERVATION": "Gå til observasjon",
     "IN_MAP_VIEW": "Observasjoner i kartutsnittet",
+    "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
+    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
     "NO_OBSERVATIONS": "Ingen observasjoner",
     "NO_OBSERVATIONS_TEXT": "Det er ingen observasjoner i kartutsnittet, forsøk å endre utsnittet eller utvid perioden du vil se observasjoner fra.",
-    "OBSERVATIONS": "Observasjoner",
-    "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
-    "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra."
+    "OBSERVATIONS": "Observasjoner"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline kart",
     "DISKSPACE_ERROR_MESSAGE": "Beklager, du har ikke nok plass tilgjengelig på telefonen til å lagre kartpakken. Vennligst frigjør plass og prøv på nytt.",
-    "UNZIP_ERROR_MESSAGE": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?",
-	  "DOWNLOAD_ERROR_MESSAGE": "Klarte ikke laste ned kartpakke. Pass på at du har stabil og god internett-kobling."
+    "DOWNLOAD_ERROR_MESSAGE": "Klarte ikke laste ned kartpakke. Pass på at du har stabil og god internett-kobling.",
+    "TITLE": "Offline kart",
+    "UNZIP_ERROR_MESSAGE": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
@@ -224,13 +224,13 @@
       "HEADER": "Om observasjoner",
       "MESSAGE": "Bruk observasjonene på eget ansvar, de produseres av brukerne av Regobs og foreligger «som den er». NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.\nSe observasjonene i lys av observatørens kompetanse som vises som stjerner ved navnet."
     },
-    "ABOUT_SUPPORT_MAPS": {
-      "HEADER": "Om kart",
-      "MESSAGE": "Bruk kartene på eget ansvar og gjør alltid dine egne vurderinger. Kartene kan inneholde feil og mangler. Kun enkelte temakart er inkluderte i offline-kartpakkene."
-    },
     "ABOUT_OFFLINE_SUPPORT_MAPS": {
       "HEADER": "Offline-kart",
       "MESSAGE": "Det valgte kartlaget er kun tilgjengelig online og kan fungere dårlig i områden med begrensa dekning."
+    },
+    "ABOUT_SUPPORT_MAPS": {
+      "HEADER": "Om kart",
+      "MESSAGE": "Bruk kartene på eget ansvar og gjør alltid dine egne vurderinger. Kartene kan inneholde feil og mangler. Kun enkelte temakart er inkluderte i offline-kartpakkene."
     },
     "OK_I_UNDERSTAND": "OK, jeg skjønner"
   },
@@ -679,7 +679,6 @@
   "SUPPORT_MAP": {
     "ABOUT": "Om kartene",
     "CAUTION_AREA": "Aktsomhetsområde",
-    "CLAY_MAP_DISCLAMER": "Dette kartlaget er ikke inkludert i offline-kartpakkene.",
     "CLAY_DANGER_ZONE": "Faregrad for kvikkleiresone",
     "CLAY_LEGEND_TEXT_1": "Kvikkleirepunkt (SVV)",
     "CLAY_LEGEND_TEXT_2": "Kvikkleireområde (SVV)",
@@ -690,8 +689,8 @@
     "CLAY_LEGEND_TEXT_7": "Lite/ingen marin påvirkning",
     "CLAY_LEGEND_TEXT_8": "Utløpsområde",
     "CLAY_LEGEND_TEXT_9": "Potensiell skredfare",
+    "CLAY_MAP_DISCLAMER": "Dette kartlaget er ikke inkludert i offline-kartpakkene.",
     "CLAY_ZONES_MAP_DESCRIPTION": "Kvikkleire/Jordskred",
-    "FLOOD_MAP_DISCLAMER": "Dette kartlaget er ikke inkludert i offline-kartpakkene.",
     "FLOOD_LEGEND_TEXT_1": "Gjeldende",
     "FLOOD_LEGEND_TEXT_10": "200-årsflom",
     "FLOOD_LEGEND_TEXT_11": "500-årsflom",
@@ -706,6 +705,7 @@
     "FLOOD_LEGEND_TEXT_8": "50-årsflom",
     "FLOOD_LEGEND_TEXT_9": "100-årsflom",
     "FLOOD_LEGEND_TEXT_YEAR": "Flomutsatt ved",
+    "FLOOD_MAP_DISCLAMER": "Dette kartlaget er ikke inkludert i offline-kartpakkene.",
     "FLOOD_ZONES_MAP_DESCRIPTION": "Flomsoner",
     "HIGH": "Høy",
     "ICE_LEGEND_TEXT_1": "Oppsprukket is langs land",
