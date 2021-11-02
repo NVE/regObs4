@@ -250,7 +250,7 @@ Overwrite /assets/json/regions-simple-polygons.json
 App-spesifikke tekster finnes i `./translations/app`. Disse tekstene
 håndteres via *cordova-plugin-localization-strings*.
 
-Web-tekster finnes i `./translations/web`. Omtrent all regobs-koden er web-kode
+Web-tekster finnes i `./src/assets/i18n`. Omtrent all regobs-koden er web-kode
 (det som ligger under `./src/`).
 
 Alle tekstene håndteres med json-format.
@@ -259,7 +259,24 @@ Alle tekstene håndteres med json-format.
 
 Vi bruker [Lokalise](https://lokalise.com/) til å håndtere oversettelser.
 
-For å bruke lokalise npm scripts må du lage fila 
+## NPM Script
+
+Disse NPM-skriptene eksisterer som hjelp til å håndtere språkfiler:
+
+Script | Beskrivelse
+--- | ---
+`npm run translations:sort` | Sorter nøklene i språkfilene som ligger lokalt fra a - å.
+`npm run translations:upload` | Last opp språkfiler til Lokalise. Overskriver endringer i Lokalse.
+`npm run translations:download` | Last ned språkfiler fra Lokalse. Overskriver lokale endringer.
+
+> **Merk:** `translations:upload` overskriver eventuelle endringer som finnes kun i Lokalise. Det tas derfor en "snapshot" i Lokalse før opplastningen skjer, for at man skal ha muligheten til å reversere endringene. Det er også mulig å reversere endringer direkte på en språknøkkel i Lokalise ved å se på historikken der, om det bare er snakk om et par endrede nøkler. Det kan også skjer at Lokalise parser
+språkfilene feil, og da bør man rulle tilbake og prøve manuell upload.
+
+`translations:sort` sorterer språkfilene med samme algoritme som brukes når nye tekster
+hentes fra Lokalise. Kan brukes hvis man har gjort endringer i språkfilene og
+vil forsikre seg om at sorteringen er riktig.
+
+For å bruke download / upload npm scripts må du lage fila 
 `translations/lokalise-api-key.json` med innholdet:
 
 ```
@@ -268,37 +285,62 @@ For å bruke lokalise npm scripts må du lage fila
 }
 ```
 
+## Hvordan oppdatere / legge til / fjerne tekster og synkronisere med Lokalise
 
-## Hvordan oppdatere / legge til / fjerne tekster
+Når man henter ned tekster fra Lokalise kan det komme med endringer oversetterne
+har gjort som ikke er relevante for PRen man jobber på. Det kan derfor være lurt
+å legge til nye tekster i den engelske språkfila i PRen, og deretter ta en ny PR
+etter at endringene er flettet inn i develop for å synkronisere språk.
 
-1. Commit endringer du har i språkfilene.
+Husk at rene endringer kan tas rett i Lokalise, også for engelsk språk,
+for deretter å hente ned oppdaterte tekster via `lokalse:download`. Dette kan
+være like kjapt som å gjøre endringene lokalt om det ikke er noe forskjel
+mellom Lokalse og lokale språkfiler.
 
-2. Last ned fra Lokalise ved hjelp av npm-script:
+Dette er et forslag til en arbeidsflyt:
 
-   ```
-   npm run lokalise:download
-   ```
+1. Oftest er det som en del av en større endring at man trenger å endre språk.
+   I PRen som angår denne endringen kan man legge til / endre språk i 
+   engelsk fil - `src/assets/i18n/en.json`.
 
-3. Se over språkfilene, fix eventuelle feil eller ting som er overskrevet
+   På dette stadiet kan man godt prøve å hente tekster fra lokalise med 
+   `npm run translations:download` for å se om det finnes tekster som er 
+   opptadert der. Er det ikke det står man fritt til å også endre andre 
+   språkfiler lokalt og hoppe til steg 7 etter at PRen er
+   merget inn.
 
-4. Commit eventuelle endringene
+2. Lag en ny branch for å synkronisere språk basert på develop, etter at PRen
+   er merget inn. Dette er grunnlaget for en ny språk-sync-PR.
 
-5. Last opp til Lokalise med npm-script:
+3. Sorter språkfilene som ligger lokalt i prosjektet med `npm run translations:sort`.
 
-   ```
-   npm run lokalise:upload -- web <lang>
-   ```
+4. Last ned nye språkfiler fra Lokalse med `npm run translations:download`.
 
-6. Sjekk i Lokalise om oppdateringen ser riktig ut. Hvis ikke, bruk snapshop for
+5. Se over språkfilene. 
+
+   > **Merk!** Når språkfiler lastes ned fra Lokalise merges innholdet inn i de
+   > eksisterende språkfilene. **Dette overskriver eventuelle endrede tekster.**
+   > Du må derfor fikse eventuelle endringer som er overskrevet.
+
+   Commit endringene.
+
+6. Legg til eventuelle oversettelser for andre språk enn engelsk. Dette kan også
+   gjøres i Lokalise etter steg 9., men da må du huske å laste ned og sjekke inn 
+   endringene etterpå vha `npm run translations:download`.
+   
+7. Last opp oppdaterte tekster til Lokalise med `npm run translations:upload -- web <lang>`
+
+8. Sjekk i Lokalise om oppdateringen ser riktig ut. Hvis ikke, bruk snapshot for
    å rulle tilbake.
+
 
 ## Rydde opp i Lokalise
 
-For å laste opp språkfiler, og samtidig slette nøkler/tekster som ikke finnes
+For å laste opp språkfiler, og samtidig slette nøkler/tekster i Lokalise som ikke finnes
 lenger, kan denne kommandoen brukes:
 
 ```
-npm run lokalise:upload -- web <lang> --clean
+npm run translations:upload -- web <lang> --clean
 ```
 
-Dette fungerer kun med `en` og `no`.
+Dette fungerer kun med `en` og `no` siden andre språk ofte er ufullstendige.
