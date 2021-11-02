@@ -34,6 +34,12 @@
     <intent>
       <action android:name="android.support.customtabs.action.CustomTabsService" />
     </intent>
+
+    <!-- We need this until this is fixed: https://github.com/katzer/cordova-plugin-email-composer/issues/361 -->
+    <intent>
+      <action android:name="android.intent.action.SENDTO" />
+      <data android:scheme="mailto" />
+    </intent>
   </queries>
   <!-- Permissions -->
 
