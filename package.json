@@ -25,8 +25,9 @@
     "sentry:finalize-release": "cross-env-shell SENTRY_PROPERTIES=sentry.properties sentry-cli releases finalize $npm_package_version",
     "sentry:create-release-and-upload-sourcemaps": "npm run sentry:create-release && npm run sentry:upload-sourcemaps && npm run sentry:finalize-release",
     "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
-    "lokalise:upload": "ts-node --project tsconfig.npm-script.json translations/upload.ts",
-    "lokalise:download": "ts-node --project tsconfig.npm-script.json translations/download.ts"
+    "translations:upload": "ts-node --project tsconfig.npm-script.json translations/upload.ts",
+    "translations:download": "ts-node --project tsconfig.npm-script.json translations/download.ts",
+    "translations:sort": "ts-node --project tsconfig.npm-script.json translations/sortTranslations.ts"
   },
   "private": true,
   "dependencies": {

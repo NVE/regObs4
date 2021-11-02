@@ -1,4 +1,4 @@
-import { upload, FileType, Lang } from './lokalise';
+import { upload, FileType, Lang } from './translations';
 
 async function main() {
     console.log(process.argv);

@@ -4,13 +4,18 @@ import { basename, join } from 'path';
 import { LokaliseApi, UploadFileParams } from '@lokalise/node-api';
 import { apiKey } from './lokalise-api-key.json';
 import * as JSZip from 'JSZip';
+import { EOL } from 'os';
 
 const project_id = '419823565e6f3f0e272628.64744704';
 const api = new LokaliseApi({ apiKey });
 
+// To add indentation to translation files.
+// Should be the same as what is used in src.
+const jsonSpaces = '  ';
+
 export enum FileType {
-  App = "app",
-  Web = "web"
+  App = 'app',
+  Web = 'web'
 }
 
 const lokaliseLangIso = '%LANG_ISO%';
@@ -83,16 +88,93 @@ async function extract(zip: JSZip) {
     console.log(`Extracting ${fileType} files`);
 
     for (const file of zip.file(<RegExp>filenames.regex[fileType])) {
-      await extractFile(file, filenames.local[fileType]);
+      await extractAndMergeFile(file, filenames.local[fileType]);
     }
   }
 }
 
-async function extractFile(file: JSZip.JSZipObject, dir: string) {
+function isObject(item: any): boolean {
+  return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+// Edited version of this SO answer: https://stackoverflow.com/a/34749873 
+// created by "Salakar" and edited by "Rubens Mariuzzo".
+// License: https://creativecommons.org/licenses/by-sa/3.0/.
+function mergeDeep(target: any, source: any) {
+  for (const key in source) {
+    if (isObject(source[key])) {
+      if (!target[key]) {
+        Object.assign(target, { [key]: {} });
+      }
+      mergeDeep(target[key], source[key]);
+    } else {
+      Object.assign(target, { [key]: source[key] });
+    }
+  }
+}
+
+// Edited version of this SO answer: https://stackoverflow.com/a/53593328
+// created by "Jor" and edited by "Michael Geary".
+// License: https://creativecommons.org/licenses/by-sa/4.0/.
+function JSONstringifyOrder(obj: any, space: string) {
+    const allKeys = [];
+    const seen = {};
+    JSON.stringify(obj, (key, value) => {
+        if (!(key in seen)) {
+            allKeys.push(key);
+            seen[key] = null;
+        }
+        return value;
+    });
+    allKeys.sort();
+    return JSON.stringify(obj, allKeys, space);
+}
+
+export async function sortLocalTranslations() {
+  for (const translationFolder of Object.values(filenames.local)) {
+    const files = await fs.readdir(translationFolder, { withFileTypes: true });
+    for (const file of files) {
+      if (file.isFile() && file.name.indexOf('.json') > -1) {
+        const filePath = join(translationFolder, file.name);
+        console.log('Sorting translations', filePath);
+        const content = await fs.readFile(filePath);
+        const translations = JSON.parse(content.toString());
+        const ordered = JSONstringifyOrder(translations, jsonSpaces);
+        await fs.writeFile(filePath, ordered + EOL);
+      }
+    }
+  }
+}
+
+async function extractAndMergeFile(file: JSZip.JSZipObject, dir: string) {
+  // Extract new translation file
   const path = join(dir, basename(file.name));
   console.log(`Unzip ${file.name} -> ${path}`);
-  const content = await file.async('string');
-  await fs.writeFile(path, content);
+  const newTranslations = JSON.parse(await file.async('string'));
+
+  // Read old translations
+  let translations: any;
+  try {
+    const oldContentBuffer = await fs.readFile(path);
+    translations = JSON.parse(oldContentBuffer.toString());
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      // Probably "old" file does not exist
+      console.warn(`Failed to read old content from ${path}, assuming file did not exist.`);
+      translations = {}
+    } else {
+      throw error;
+    }
+  }
+
+  // Merge new content with old content
+  mergeDeep(translations, newTranslations);
+
+  // Sort translations
+  const sortedTranslationContent = JSONstringifyOrder(translations, jsonSpaces);
+
+  // Write new translation file
+  await fs.writeFile(path, sortedTranslationContent + EOL);
 }
 
 export enum Lang {

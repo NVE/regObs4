@@ -1,4 +1,4 @@
-import { createExportBundle, downloadBundle } from './lokalise';
+import { createExportBundle, downloadBundle } from './translations';
 
 async function main() {
     const url = await createExportBundle();
