@@ -724,12 +724,13 @@
     "READ_MORE": "Les mer om støttekart",
     "STEEPNESS_COLOR_INFO": "Farger på terrengets bratthet i grader:",
     "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
-    "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, f.eks. bratte heng som ikke vises. Dette kartlaget er ikke inkludert i offline-kartpakkene.",
+    "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, f.eks. bratte heng og utløp som ikke vises.",
+    "STEEPNESS_OFFLINE_DISCLAMER": "Støttekartet er kun tilgjengelig offline med utløp aktiverte.",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Farger på utløp for snøskred:",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skred stopper innen denne grensen)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skredene går lenger)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skredene går lenger)\nNoen skred kan ha utløp som ikke er vist på kartet.",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Bratthetskart med utløp",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Kun</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, f.eks. bratte heng og utløp som ikke vises.\n<br/>\n<br/>\nFarger på utløp for snøskred:",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsoner for snøskred",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart"
   },
   "TABS": {
