@@ -11,35 +11,6 @@ export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
   excludeBounds?: Feature<GeometryObject>;
 }
 
-export class RegobsOfflineTileLayer extends L.TileLayer {
-  rootTileZ: number;
-
-  constructor(
-    url: string,
-    options: L.TileLayerOptions
-  ) {
-    const { minZoom, ...optionsWithoutMinZoom } = options;
-    super(url, optionsWithoutMinZoom);
-    this.rootTileZ = minZoom;
-  }
-
-  // Requires minZoom to be passed as an option
-  getTileSize() {
-    const zoom = this._tileZoom;
-    const tileSize = super.getTileSize();
-    if (zoom < this.rootTileZ) {
-      const zoomScale = this._map.getZoomScale(this.rootTileZ, zoom);
-      return tileSize.divideBy(zoomScale).round();
-    }
-    return tileSize;
-  }
-
-  _getZoomForUrl() {
-    const zoom = this._tileZoom;
-    return zoom < this.rootTileZ ? this.rootTileZ : zoom;
-  }
-}
-
 export class RegObsTileLayer extends L.TileLayer {
 
   constructor(

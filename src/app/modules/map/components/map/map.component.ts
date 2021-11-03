@@ -33,7 +33,6 @@ import {
   RegObsTileLayer,
   IRegObsTileLayerOptions,
   RegObsOfflineAwareTileLayer,
-  RegobsOfflineTileLayer
 } from '../../core/classes/regobs-tile-layer';
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
@@ -58,12 +57,28 @@ const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
   })
 };
 
+// Bug in leaflet? When using detectRetina, we need to offset native zooms.
+const getNativeZoomOptions = (map: OfflineTilesMetadata, detectRetina: boolean): L.TileLayerOptions => {
+  if (detectRetina) {
+    return {
+      minNativeZoom: Math.max(0, map.rootTile.z - 1),
+      maxNativeZoom: Math.max(0, map.zMax - 1)
+    }
+  } else {
+    return {
+      minNativeZoom: map.rootTile.z,
+      maxNativeZoom: map.zMax
+    }
+  }
+}
+
 enum MapLayerZIndex {
   OnlineMixedBackgroundLayer = 0,
   OfflineBackgroundLayer = 10,
   OnlineBackgroundLayer = 20,
   OfflineSupportLayer = 30,
-  OnlineSupportLayer = 40
+  OnlineSupportLayer = 40,
+  Top = 50
 }
 
 @Component({
@@ -81,6 +96,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() mapReady: EventEmitter<L.Map> = new EventEmitter();
   @Input() autoActivate = true;
   @Input() geoTag = DEBUG_TAG;
+  @Input() offlinePackageMode = false;
 
   loaded = false;
   private map: L.Map;
@@ -191,6 +207,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offlineTopoLayerGroup.addTo(this.map);
     this.layerGroup.addTo(this.map);
     this.offlineSupportMapLayerGroup.addTo(this.map);
+
+    if (this.offlinePackageMode) {
+      // Style all online maps grayscale.
+      // We need the dom element that contains the layer to use css and add a grayscale filter.
+      // After the load event, getContainer returns the container, earlier, it may return null or undefined.
+      this.map.on('load layeradd', () => {
+        this.layerGroup.eachLayer((l: L.TileLayer) => {
+          if (l instanceof L.TileLayer) {
+            l.getContainer().style.filter = "grayscale(100%)";
+          }
+        });
+      });
+    }
 
     this.userSettingService.userSetting$
       .pipe(takeUntil(this.ngDestroy$))
@@ -344,10 +373,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     for (const offlinePackage of packages) {
       for (const map of Object.values(offlinePackage.maps)) {
         if (isTopoLayer(map.mapId)) {
-          this.createTopoMapOfflineLayer(map);
+          this.createTopoMapOfflineLayer(map, userSettings.useRetinaMap);
         } else if (enabledSupportMaps.has(map.mapId)) {
           const { opacity } = enabledSupportMaps.get(map.mapId);
-          this.createSupportMapOfflineLayer(map, opacity);
+          this.createSupportMapOfflineLayer(map, opacity, userSettings.useRetinaMap);
         } else {
           this.loggingService.debug(`'${map.mapId}' is currently disabled or undefined in map config, no layer created for ${map.url}`, DEBUG_TAG);
         }
@@ -355,27 +384,36 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private createTopoMapOfflineLayer(map: OfflineTilesMetadata) {
+  private createTopoMapOfflineLayer(map: OfflineTilesMetadata, detectRetina: boolean) {
     const bounds = this.tileCoordsToBounds(map.rootTile)
     const url = `${map.url}/{z}/{x}/{y}.png`;
-    const layer = new RegobsOfflineTileLayer(url, {
+    const nativeZoomOptions = getNativeZoomOptions(map, detectRetina);
+
+    const layer = new L.TileLayer(url, {
+      ...nativeZoomOptions,
       bounds,
-      maxNativeZoom: map.zMax,
-      minZoom: map.rootTile.z,
-      zIndex: MapLayerZIndex.OfflineBackgroundLayer
+      // When in offlinePackageMode / on offline-map.page.ts,
+      // always put offline packages on top so they display above
+      // the grayscale background-map
+      zIndex: this.offlinePackageMode ? MapLayerZIndex.Top : MapLayerZIndex.OfflineBackgroundLayer,
+      detectRetina
     });
     this.offlineTopoLayerGroup.addLayer(layer);
   }
 
-  private createSupportMapOfflineLayer(map: OfflineTilesMetadata, opacity: number) {
+  private createSupportMapOfflineLayer(map: OfflineTilesMetadata, opacity: number, detectRetina: boolean) {
     const bounds = this.tileCoordsToBounds(map.rootTile)
     const url = `${map.url}/{z}/{x}/{y}.png`;
-    const layer = new RegobsOfflineTileLayer(url, {
+    const nativeZoomOptions = getNativeZoomOptions(map, detectRetina);
+    const layer = new L.TileLayer(url, {
+      ...nativeZoomOptions,
       bounds,
       opacity,
-      maxNativeZoom: map.zMax,
-      minZoom: map.rootTile.z,
-      zIndex: MapLayerZIndex.OfflineSupportLayer
+      // When in offlinePackageMode / on offline-map.page.ts,
+      // always put offline packages on top so they display above
+      // the grayscale background-map
+      zIndex: this.offlinePackageMode ? MapLayerZIndex.Top + 1 : MapLayerZIndex.OfflineSupportLayer,
+      detectRetina
     });
     this.offlineSupportMapLayerGroup.addLayer(layer);
   }
