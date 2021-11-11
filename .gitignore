@@ -40,3 +40,4 @@ src/test-reports/
 .vscode/plugins.json
 .vscode/typings/jquery/jquery.d.ts
 typings/cordova-typings.d.ts
+translations/lokalise-api-key.json

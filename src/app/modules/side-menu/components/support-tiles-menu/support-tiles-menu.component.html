@@ -1,15 +1,20 @@
-<ng-container *ngIf="supportTiles$ | async as supportTiles">
+<ng-container *ngIf="supportTilesWithSubTiles$ | async as supportTiles">
   <ng-container *ngFor="let supportTile of supportTiles; trackBy: trackByMethod">
     <ion-item>
       <svg-icon slot="start" src="/assets/icon/map.svg"></svg-icon>
       <ion-label class="menu-label ion-text-wrap">
         {{'SUPPORT_MAP.' +supportTile.description | translate }}
       </ion-label>
-      <ion-toggle [checked]="supportTile.enabled" [(ngModel)]="supportTile.enabled"
-        (ionChange)="onTileChanged(supportTile)" (click)="checkForInfoPopup(!supportTile.enabled)">
+      <ion-toggle [(ngModel)]="supportTile.checked" (ionChange)="onTileChanged(supportTile)">
       </ion-toggle>
     </ion-item>
-    <div class="inner-list-panel" *ngIf="supportTile.enabled">
+    <div class="inner-list-panel" *ngIf="isTileActive(supportTile)">
+      <ion-item *ngIf="supportTile.subTile">
+        <ion-label class="menu-label ion-text-wrap">
+          {{'SUPPORT_MAP.' +supportTile.subTile.description | translate }}
+        </ion-label>
+        <ion-toggle [(ngModel)]="supportTile.subTile.checked" (ionChange)="onSubTileChanged(supportTile)"></ion-toggle>
+      </ion-item>
       <ion-item>
         <ion-label position="stacked" color="dark" class="stacked-label">{{'MENU.OPACITY' | translate}}</ion-label>
         <ion-select interface="action-sheet" cancelText="{{'DIALOGS.CANCEL' | translate}}"
