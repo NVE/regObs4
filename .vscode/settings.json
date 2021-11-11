@@ -5,21 +5,23 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
     },
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true,
+    "editor.rulers": [120]
   },
   "[typescript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
     },
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true,
+    "editor.rulers": [120]
   },
   "[json]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
     },
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true
 },
 "i18n-ally.keystyle": "nested"
 }
