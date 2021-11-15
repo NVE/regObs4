@@ -114,7 +114,7 @@
     "@angular/language-service": "^12.2.4",
     "@capacitor/cli": "^3.2.3",
     "@ionic/angular-toolkit": "^4.0.0",
-    "@ionic/cli": "^6.17.1",
+    "@ionic/cli": "^6.18.1",
     "@lokalise/node-api": "^7.0.0",
     "@sentry/cli": "^1.68.0",
     "@sentry/wizard": "^1.2.11",
