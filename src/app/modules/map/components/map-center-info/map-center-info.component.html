@@ -25,13 +25,13 @@
         {{ mapView.center.lat | number:'.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}}, 
         {{ mapView.center.lng | number:'.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
       </ion-row>
-      <ion-row *ngIf="viewInfo?.horizontalDistanceFromGpsPos" class="ion-no-padding, ion-align-items-start">
-        <ng-container *ngIf="viewInfo.horizontalDistanceFromGpsPos">
-          {{ viewInfo.horizontalDistanceFromGpsPos }} {{'MAP_CENTER_INFO.AWAY_FROM'|translate}}
+      <ion-row class="ion-no-padding, ion-align-items-start">
+        <ng-container *ngIf="horizontalDistanceFromGpsPos$ | async as horizontalDistance">
+          {{ horizontalDistance }} {{'MAP_CENTER_INFO.AWAY_FROM'|translate}}
         </ng-container>
-        <ng-container *ngIf="viewInfo.heightDifferenceFromGpsPos">
-          <ion-icon *ngIf="viewInfo.gpsPosIsBelowMapCenter === true" name="arrow-up" class="height-difference-icon"></ion-icon>
-          <ion-icon *ngIf="viewInfo.gpsPosIsBelowMapCenter === false" name="arrow-down" class="height-difference-icon"></ion-icon>  
+        <ng-container *ngIf="viewInfo?.heightDifferenceFromGpsPos">
+          <ion-icon *ngIf="viewInfo?.gpsPosIsBelowMapCenter === true" name="arrow-up" class="height-difference-icon"></ion-icon>
+          <ion-icon *ngIf="viewInfo?.gpsPosIsBelowMapCenter === false" name="arrow-down" class="height-difference-icon"></ion-icon>  
           {{ viewInfo.heightDifferenceFromGpsPos }}
         </ng-container>
       </ion-row>
