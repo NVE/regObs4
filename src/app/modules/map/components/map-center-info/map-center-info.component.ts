@@ -3,7 +3,7 @@ import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, of, Observable } from 'rxjs';
+import { Subscription, of, Observable, combineLatest } from 'rxjs';
 import { switchMap, tap, filter, map, startWith } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -15,7 +15,6 @@ import { Position } from '@capacitor/geolocation';
 import { HelperService } from 'src/app/core/services/helpers/helper.service';
 
 interface ViewInfoWithDistance extends ViewInfo {
-  horizontalDistanceFromGpsPos?: string; //including unit (m or km)
   heightDifferenceFromGpsPos?: string; //including unit (m)
   gpsPosIsBelowMapCenter?: boolean;
 }
@@ -30,6 +29,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   mapView: IMapView;
   showMapCenter: boolean;
   isLoading: boolean;
+  horizontalDistanceFromGpsPos$: Observable<string>; //including unit (m or km)
 
   private textToCopy: string;
   private subscriptions: Subscription[] = [];
@@ -100,6 +100,23 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
           }
         )
     );
+    this.horizontalDistanceFromGpsPos$ = this.createHorizontalDistanceFromGpsPos$();
+  }
+
+  private createHorizontalDistanceFromGpsPos$() {
+    return combineLatest(
+      [this.mapService.relevantMapChange$, this.geoPositionService.currentPosition$]).pipe(
+      map(([mapView, gpsPos]) => {
+        if (mapView?.center && gpsPos?.coords) {
+          return this.helperService.getDistanceText(
+            mapView.center.distanceTo([
+              gpsPos.coords.latitude,
+              gpsPos.coords.longitude
+            ])
+          );
+        }
+      })
+    );
   }
 
   private setHeightStyle(numRows: number): void {
@@ -136,10 +153,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
       if (viewInfo?.elevation != null || viewInfo?.steepness != null) {
         rows++;
       }
-      if (
-        viewInfo.horizontalDistanceFromGpsPos ||
-        viewInfo.heightDifferenceFromGpsPos
-      ) {
+      if (viewInfo?.latLng) {
         rows++;
       }
     }
@@ -150,16 +164,9 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     viewInfo: ViewInfo,
     gpsPos: Position
   ): ViewInfoWithDistance {
-    let horizontalDistance = undefined;
     let heightDifference = undefined;
     let gpsPosIsBelowMapCenter = undefined;
     if (this.mapView.center && gpsPos?.coords) {
-      horizontalDistance = this.helperService.getDistanceText(
-        this.mapView.center.distanceTo([
-          gpsPos.coords.latitude,
-          gpsPos.coords.longitude
-        ])
-      );
       if (viewInfo && viewInfo.elevation && gpsPos.coords.altitude) {
         heightDifference =
           Math.abs(viewInfo.elevation - gpsPos.coords.altitude).toFixed() +
@@ -177,7 +184,6 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
         elevation: viewInfo?.elevation,
         steepness: viewInfo?.steepness,
         latLng: this.mapView.center,
-        horizontalDistanceFromGpsPos: horizontalDistance,
         heightDifferenceFromGpsPos: heightDifference,
         gpsPosIsBelowMapCenter: gpsPosIsBelowMapCenter
       };
