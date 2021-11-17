@@ -52,8 +52,8 @@ export class BorderHelper {
 
   static isInside(
     latLngBounds: L.LatLngBounds,
-    geometry: Feature<GeometryObject>
+    geometries: Array<Feature<GeometryObject>>
   ) {
-    return booleanWithin(bboxPolygon(this.toBBox(latLngBounds)), geometry);
+    return geometries.some(geometry => booleanWithin(bboxPolygon(this.toBBox(latLngBounds)), geometry));
   }
 }

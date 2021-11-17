@@ -46,6 +46,62 @@ import { BBox } from 'geojson';
 
 const DEBUG_TAG = 'MapComponent';
 
+const SVALBARD_BOUNDS = {
+  type: 'Polygon',
+  coordinates: [
+    [
+      [
+        33.57421875,
+        80.45222248756414
+      ],
+      [
+        22.543945312499996,
+        80.87282721505686
+      ],
+      [
+        18.6328125,
+        80.86585369109436
+      ],
+      [
+        10.546875,
+        80.14116260879798
+      ],
+      [
+        7.778320312499999,
+        79.28631294293976
+      ],
+      [
+        7.8662109375,
+        77.4850880888233
+      ],
+      [
+        14.809570312499998,
+        76.29995345893326
+      ],
+      [
+        22.148437499999996,
+        76.00547035565366
+      ],
+      [
+        26.806640624999996,
+        76.28954161916205
+      ],
+      [
+        31.069335937499996,
+        78.31385955743478
+      ],
+      [
+        35.2001953125,
+        79.85883334713468
+      ],
+      [
+        33.57421875,
+        80.45222248756414
+      ]
+    ]
+  ]
+};
+
 type CreateTileLayer = (options: IRegObsTileLayerOptions) => L.TileLayer;
 
 const isTopoLayer = (mapId: string) => (<string[]>Object.values(TopoMap)).includes(mapId);
@@ -76,10 +132,21 @@ enum MapLayerZIndex {
   OnlineMixedBackgroundLayer = 0,
   OfflineBackgroundLayer = 10,
   OnlineBackgroundLayer = 20,
+  OnlineBackgroundLayerSvalbard = 21,
   OfflineSupportLayer = 30,
   OnlineSupportLayer = 40,
   Top = 50
 }
+
+const NPOLAR_SETTINGS: L.TileLayerOptions = {
+  minZoom: 6,
+  maxZoom: 13,
+  bounds: [
+    [73.7357239, 7.4670978],
+    [81.1569081, 36.0502348]
+  ],
+  zIndex: MapLayerZIndex.OnlineBackgroundLayerSvalbard
+};
 
 @Component({
   selector: 'app-map',
@@ -543,6 +610,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private getTileLayerFactory(topoMap: TopoMap): CreateTileLayer[] {
     let createNorwegianMixedMap: CreateTileLayer;
     let createStatensKartverk: CreateTileLayer;
+    let createNpolarBasiskart: CreateTileLayer;
 
     if (isAndroidOrIos(this.platform)) {
       createNorwegianMixedMap = (options) => new RegObsOfflineAwareTileLayer(
@@ -563,6 +631,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         this.offlineMapService.offlineTilesRegistry,
         this.loggingService,
       );
+
+      createNpolarBasiskart = (options) => new RegObsOfflineAwareTileLayer(
+        TopoMap.npolarBasiskart,
+        settings.map.tiles.npBasiskartSvalbardWMTS3857MapUrl,
+        {
+          ...options,
+          ...NPOLAR_SETTINGS
+        },
+        this.offlineMapService.offlineTilesRegistry,
+        this.loggingService
+      );
     } else {
       createNorwegianMixedMap = (options) => new RegObsTileLayer(
         settings.map.tiles.statensKartverkMapUrl,
@@ -572,12 +651,19 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       );
 
-      createStatensKartverk = (options) => new RegObsTileLayer(
+      createStatensKartverk = (options) => new L.TileLayer(
         settings.map.tiles.statensKartverkMapUrl,
         options
       );
-    }
 
+      createNpolarBasiskart = (options) => new L.TileLayer(
+        settings.map.tiles.npBasiskartSvalbardWMTS3857MapUrl,
+        {
+          ...options,
+          ...NPOLAR_SETTINGS
+        },
+      );
+    }
 
     const createOpenTopoMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.openTopoMapUrl, options);
     const createArcGisOnlineMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.arcGisOnlineTopoMapUrl, options);
@@ -588,15 +674,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         {
           ...options,
           zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
-          excludeBounds: NORWEGIAN_BOUNDS
+          excludeBounds: [
+            NORWEGIAN_BOUNDS,
+            SVALBARD_BOUNDS
+          ]
         },
       ),
-      createNorwegianMixedMap
+      createNorwegianMixedMap,
+      createNpolarBasiskart
     ];
 
     switch (topoMap) {
     case TopoMap.statensKartverk:
-      return [createStatensKartverk];
+      return [
+        createNpolarBasiskart,
+        createStatensKartverk
+      ];
     case TopoMap.openTopo:
       return [createOpenTopoMap];
     case TopoMap.arcGisOnline:
@@ -608,9 +701,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         (options) => new RegObsTileLayer(settings.map.tiles.openTopoMapUrl, {
           ...options,
           zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
-          excludeBounds: NORWEGIAN_BOUNDS
+          excludeBounds: [
+            NORWEGIAN_BOUNDS,
+            SVALBARD_BOUNDS
+          ]
         }),
-        createNorwegianMixedMap
+        createNorwegianMixedMap,
+        createNpolarBasiskart
       ];
     case TopoMap.mixArcGisOnline:
     default:

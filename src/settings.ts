@@ -136,6 +136,7 @@ export const settings = {
       geoDataLandskapMapUrl: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
       openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
       arcGisOnlineTopoMapUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      npBasiskartSvalbardWMTS3857MapUrl: 'https://geodata.npolar.no/arcgis/rest/services/Basisdata/NP_Basiskart_Svalbard_WMTS_3857/MapServer/tile/{z}/{y}/{x}?blankTile=false',
       supportTiles: [
         {
           name: 'steepness',

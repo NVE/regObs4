@@ -8,7 +8,7 @@ const DEBUG_TAG = 'RegObsOfflineAwareTileLayer';
 
 export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
   edgeBufferTiles?: number;
-  excludeBounds?: Feature<GeometryObject>;
+  excludeBounds?: Array<Feature<GeometryObject>>;
 }
 
 export class RegObsTileLayer extends L.TileLayer {
