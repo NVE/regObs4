@@ -37,8 +37,8 @@ export class SentryService implements LoggingService {
         appMode === AppMode.Prod
           ? 'regObs'
           : appMode === AppMode.Demo
-          ? 'demo regObs'
-          : 'test regObs',
+            ? 'demo regObs'
+            : 'test regObs',
       enabled: environment.production,
       release: appVersion.version,
       dist: appVersion.revision
@@ -75,7 +75,7 @@ export class SentryService implements LoggingService {
     ...optionalParams: any[]
   ) {
     if (this.fileLoggingService.isReady()) {
-      this.fileLoggingService.log(message, error, level, tag, optionalParams, error);        
+      this.fileLoggingService.log(message, error, level, tag, optionalParams, error);
     }
     if (
       message &&

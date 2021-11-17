@@ -9,7 +9,7 @@ import { NavController } from '@ionic/angular';
 
 @Injectable()
 export class CanDeactivateToObsLocationRouteGuard
-  implements CanDeactivate<SetTimePage> {
+implements CanDeactivate<SetTimePage> {
   constructor(private navController: NavController) {}
 
   async canDeactivate(

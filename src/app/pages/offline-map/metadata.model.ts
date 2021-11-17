@@ -1,5 +1,5 @@
-import type { BBox, Feature, Polygon } from "geojson";
-import moment, { Moment } from "moment";
+import type { BBox, Feature, Polygon } from 'geojson';
+import moment, { Moment } from 'moment';
 
 type XYZ = [number, number, number];
 
@@ -38,7 +38,7 @@ export class CompoundPackage {
   private metadata: CompoundPackageMetadata;
 
   constructor(metadata: CompoundPackageMetadata) {
-    this.metadata = metadata
+    this.metadata = metadata;
   }
 
   getFeature(): CompoundPackageFeature {
@@ -58,7 +58,7 @@ export class CompoundPackage {
       },
       properties: null,
       id: CompoundPackage.GetFeatureId(...this.metadata.xyz)
-    }
+    };
   }
 
   getSizeInMiB(): number {
@@ -76,7 +76,7 @@ export class CompoundPackage {
     }
     return moment.max(this.metadata.maps.map(p => moment(p.lastModified)));
   }
-  
+
   getParts(): Part[] {
     return this.metadata.maps
       // Hent name / url for alle pakker

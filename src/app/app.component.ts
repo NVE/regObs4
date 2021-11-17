@@ -43,8 +43,8 @@ export class AppComponent {
 
   initializeApp(): void {
     from(this.fileLoggingService.init({})).pipe(switchMap(() =>
-    this.getUserSettings()
-      .pipe(this.initServices())))
+      this.getUserSettings()
+        .pipe(this.initServices())))
       .subscribe(() => {
         this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
         this.afterAppInitialized();
@@ -94,13 +94,13 @@ export class AppComponent {
             ),
             from(StatusBar.setStyle({ style: Style.Dark })).pipe(
               catchError((err) => {
-                  this.loggingService.error(
-                    err,
-                    DEBUG_TAG,
-                    'Could not set styleLightContent'
-                  );
-                  return of(void null);
-                }
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not set styleLightContent'
+                );
+                return of(void null);
+              }
               )
             ),
             from(StatusBar.setBackgroundColor({ color: '#99044962'})).pipe(
@@ -116,14 +116,14 @@ export class AppComponent {
             ),
             from(StatusBar.setOverlaysWebView({ overlay: false })).pipe(
               catchError((err) =>
-                {
-                   this.loggingService.error(
+              {
+                this.loggingService.error(
                   err,
                   DEBUG_TAG,
                   'Could not set overlaysWebView'
                 );
                 return of(void null);
-                }
+              }
               )
             ),
             from(this.offlineImageService.cleanupOldItems()).pipe(
@@ -144,15 +144,15 @@ export class AppComponent {
                 )
               )
             ),
-           of( this.dataMarshallService.init()).pipe(
-            catchError((err) =>
-              this.loggingService.error(
-                err,
-                DEBUG_TAG,
-                'Could not init dataMarshallService'
+            of( this.dataMarshallService.init()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not init dataMarshallService'
+                )
               )
-            )
-          ),
+            ),
           ])
         )
       );

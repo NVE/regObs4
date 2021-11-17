@@ -61,7 +61,7 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
   }
 
   _isValidTile(coords: L.Coords) {
-    let valid = super._isValidTile(coords);
+    const valid = super._isValidTile(coords);
     if (valid && this.canUseOfflineTiles(coords)) {
       this.loggingService.debug(`Using offline tiles for ${this.mapType} - ${coords.x},${coords.y},${coords.z}`, DEBUG_TAG);
       return false;

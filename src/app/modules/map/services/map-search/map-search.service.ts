@@ -83,8 +83,8 @@ export class MapSearchService {
             hits === 0
               ? []
               : hits === 1
-              ? [data.stedsnavn as NorwegianSearchResultModelStednavn]
-              : (data.stedsnavn as Array<NorwegianSearchResultModelStednavn>);
+                ? [data.stedsnavn as NorwegianSearchResultModelStednavn]
+                : (data.stedsnavn as Array<NorwegianSearchResultModelStednavn>);
           return this.removeDuplicates(resultList).map((item) => {
             const resp: MapSearchResponse = {
               name: item.stedsnavn,

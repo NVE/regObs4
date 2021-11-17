@@ -273,49 +273,49 @@ export class OfflineMapService {
       .subscribe(
         async (downloadProgress) => {
           switch (downloadProgress.state) {
-            case 'IN_PROGRESS':
-              this.onProgress(mapPackage, {
-                step: ProgressStep.download,
-                percentage: this.calculateTotalProgress(
-                  downloadProgress.progress,
+          case 'IN_PROGRESS':
+            this.onProgress(mapPackage, {
+              step: ProgressStep.download,
+              percentage: this.calculateTotalProgress(
+                downloadProgress.progress,
+                partNumber,
+                totalParts,
+                'Downloading'
+              ),
+              description: `Download part ${partNumber + 1}/${totalParts}`
+            });
+            break;
+          case 'DONE':
+            const file = downloadProgress.content;
+            const root = await this.getRootFileUrl();
+            await this.unzipFile(
+              file,
+              root,
+              folder,
+              () =>
+                this.onUnzipStepComplete(
+                  name,
+                  parts,
+                  mapPackage,
                   partNumber,
-                  totalParts,
-                  'Downloading'
+                  totalParts
                 ),
-                description: `Download part ${partNumber + 1}/${totalParts}`
-              });
-              break;
-            case 'DONE':
-              const file = downloadProgress.content;
-              const root = await this.getRootFileUrl();
-              await this.unzipFile(
-                file,
-                root,
-                folder,
-                () =>
-                  this.onUnzipStepComplete(
-                    name,
-                    parts,
-                    mapPackage,
+              (progress) =>
+                this.onProgress(mapPackage, {
+                  step: ProgressStep.extractZip,
+                  percentage: this.calculateTotalProgress(
+                    progress,
                     partNumber,
-                    totalParts
+                    totalParts,
+                    'Unzipping'
                   ),
-                (progress) =>
-                  this.onProgress(mapPackage, {
-                    step: ProgressStep.extractZip,
-                    percentage: this.calculateTotalProgress(
-                      progress,
-                      partNumber,
-                      totalParts,
-                      'Unzipping'
-                    ),
-                    description: `Unzip ${partNumber + 1}/${totalParts}`
-                  }),
-                (error) => this.onUnzipOrDownloadError(mapPackage, error, false)
-              );
-              break;
-            default:
-              break;
+                  description: `Unzip ${partNumber + 1}/${totalParts}`
+                }),
+              (error) => this.onUnzipOrDownloadError(mapPackage, error, false)
+            );
+            break;
+          default:
+            break;
           }
         },
         (err) => this.onUnzipOrDownloadError(mapPackage, err, true)
