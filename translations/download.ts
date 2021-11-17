@@ -1,8 +1,9 @@
+/* eslint-disable no-console */
 import { createExportBundle, downloadBundle } from './translations';
 
 async function main() {
-    const url = await createExportBundle();
-    await downloadBundle(url);
+  const url = await createExportBundle();
+  await downloadBundle(url);
 }
 
 main()

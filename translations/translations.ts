@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as https from 'https';
 import * as fs from 'fs/promises';
 import { basename, join } from 'path';
@@ -65,18 +66,18 @@ export function downloadBundle(url: string) {
     https.get(url, (res) => {
       console.log('Status code:', res.statusCode);
       console.log('Headers:', res.headers);
-  
+
       res.on('data', (chunk) => {
         data.push(chunk);
       });
-  
+
       res.on('end', async () => {
         const buffer = Buffer.concat(data);
         const zip = await JSZip.loadAsync(buffer) as JSZip;
         await extract(zip);
         resolve();
       });
-  
+
     }).on('error', (e) => {
       reject(e);
     });
@@ -97,7 +98,7 @@ function isObject(item: any): boolean {
   return (item && typeof item === 'object' && !Array.isArray(item));
 }
 
-// Edited version of this SO answer: https://stackoverflow.com/a/34749873 
+// Edited version of this SO answer: https://stackoverflow.com/a/34749873
 // created by "Salakar" and edited by "Rubens Mariuzzo".
 // License: https://creativecommons.org/licenses/by-sa/3.0/.
 function mergeDeep(target: any, source: any) {
@@ -117,17 +118,17 @@ function mergeDeep(target: any, source: any) {
 // created by "Jor" and edited by "Michael Geary".
 // License: https://creativecommons.org/licenses/by-sa/4.0/.
 function JSONstringifyOrder(obj: any, space: string) {
-    const allKeys = [];
-    const seen = {};
-    JSON.stringify(obj, (key, value) => {
-        if (!(key in seen)) {
-            allKeys.push(key);
-            seen[key] = null;
-        }
-        return value;
-    });
-    allKeys.sort();
-    return JSON.stringify(obj, allKeys, space);
+  const allKeys = [];
+  const seen = {};
+  JSON.stringify(obj, (key, value) => {
+    if (!(key in seen)) {
+      allKeys.push(key);
+      seen[key] = null;
+    }
+    return value;
+  });
+  allKeys.sort();
+  return JSON.stringify(obj, allKeys, space);
 }
 
 export async function sortLocalTranslations() {
@@ -161,7 +162,7 @@ async function extractAndMergeFile(file: JSZip.JSZipObject, dir: string) {
     if (error.code === 'ENOENT') {
       // Probably "old" file does not exist
       console.warn(`Failed to read old content from ${path}, assuming file did not exist.`);
-      translations = {}
+      translations = {};
     } else {
       throw error;
     }
@@ -197,23 +198,23 @@ function flatten(o: object) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       for (let i=0, l=cur.length; i<l; i++) {
-        recurse(cur[i], prop + "::" + i);
+        recurse(cur[i], prop + '::' + i);
       }
     } else {
       const notOnlyNumbers = Object.keys(cur).map(i => parseInt(i, 10)).some(isNaN);
       if (notOnlyNumbers) {
-        for (let p in cur) {
-          recurse(cur[p], prop ? prop+"::"+p : p);
+        for (const p in cur) {
+          recurse(cur[p], prop ? prop+'::'+p : p);
         }
       } else {
-        for (let p in cur) {
-          recurse(cur[p], prop ? prop+":::"+p : p);
+        for (const p in cur) {
+          recurse(cur[p], prop ? prop+':::'+p : p);
         }
       }
     }
-  }
+  };
 
-  recurse(o, "");
+  recurse(o, '');
   return result;
 }
 
@@ -228,13 +229,13 @@ export async function upload(fileType: FileType, lang: Lang, params: Partial<Upl
     data = await fs.readFile(path, { encoding: 'base64' });
   } catch (error) {
     console.log(`Did not upload ${lang}: ${(error as Error).message}`);
-    return
+    return;
   }
-  
+
   const snapshot = await api.snapshots().create({
     title: 'NPM Script Upload'
   }, { project_id });
-  console.log(`Created snapshot ${snapshot.snapshot_id}`)
+  console.log(`Created snapshot ${snapshot.snapshot_id}`);
 
   console.log(`Uploading ${path}`);
   const upload = await api.files().upload(project_id, {
