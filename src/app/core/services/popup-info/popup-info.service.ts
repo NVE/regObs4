@@ -20,8 +20,8 @@ export class PopupInfoService {
   checkObservationInfoPopup(_: string = null, delayMs = 2000) {
     return this.checkInfoPopup(
       delayMs,
-      "infoAboutObservationsRecievedTimestamps",
-      "static",
+      'infoAboutObservationsRecievedTimestamps',
+      'static',
       'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.HEADER',
       'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.MESSAGE',
       'POPUP_DISCLAMER.OK_I_UNDERSTAND'
@@ -31,8 +31,8 @@ export class PopupInfoService {
   checkSupportMapInfoPopup(_: string = null, delayMs = 2000) {
     return this.checkInfoPopup(
       delayMs,
-      "infoAboutSupportMapsRecievedTimestamps",
-      "static",
+      'infoAboutSupportMapsRecievedTimestamps',
+      'static',
       'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.HEADER',
       'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.MESSAGE',
       'POPUP_DISCLAMER.OK_I_UNDERSTAND'
@@ -42,7 +42,7 @@ export class PopupInfoService {
   checkOfflineSupportMapInfoPopup(name: string, delayMs = 2000) {
     return this.checkInfoPopup(
       delayMs,
-      "infoAboutOfflineSupportMapsRecievedTimestamps",
+      'infoAboutOfflineSupportMapsRecievedTimestamps',
       name,
       'POPUP_DISCLAMER.ABOUT_OFFLINE_SUPPORT_MAPS.HEADER',
       'POPUP_DISCLAMER.ABOUT_OFFLINE_SUPPORT_MAPS.MESSAGE',
@@ -96,9 +96,9 @@ export class PopupInfoService {
     userSettings = {
       ...userSettings,
       [timestampType]: timestampType in userSettings ? {
-          ...userSettings[timestampType],
-          [timestampName]: moment().unix(),
-        } : {[timestampName]: moment().unix()}
+        ...userSettings[timestampType],
+        [timestampName]: moment().unix(),
+      } : {[timestampName]: moment().unix()}
     };
     this.userSettingService.saveUserSettings(userSettings);
   }

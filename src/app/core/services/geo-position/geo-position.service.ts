@@ -217,7 +217,7 @@ export class GeoPositionService implements OnDestroy {
       this.loggingService.debug(`Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`, DEBUG_TAG);
       this.addStatusToGpsPositionLog('StopGpsTracking');
       const options:  ClearWatchOptions = { id : this.watchPositionCallbackId };
-      Geolocation.clearWatch(options)
+      Geolocation.clearWatch(options);
       this.watchPositionCallbackId = null;
     }
   }
@@ -241,10 +241,10 @@ export class GeoPositionService implements OnDestroy {
           this.currentPosition.next(position);
         }
       }
-    }
+    };
     this.addStatusToGpsPositionLog('StartGpsTracking');
     this.stopWatchingPosition(); //we need to stop current watch of position if any
-    this.watchPositionCallbackId = await Geolocation.watchPosition(settings.gps.highAccuracyPositionOptions, watchPositionCallback)
+    this.watchPositionCallbackId = await Geolocation.watchPosition(settings.gps.highAccuracyPositionOptions, watchPositionCallback);
     this.loggingService.debug(`Start current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`, DEBUG_TAG);
   }
 
@@ -278,7 +278,7 @@ export class GeoPositionService implements OnDestroy {
           return false;
         }
         // location is not authorized, request new. This only works on Android
-        const newPermissionsAfterRequest = await Geolocation.requestPermissions()
+        const newPermissionsAfterRequest = await Geolocation.requestPermissions();
         this.loggingService.debug(`Geolocation (PermissionState) after new request is ${newPermissionsAfterRequest?.location}`, DEBUG_TAG);
         if (newPermissionsAfterRequest?.location === 'denied') {
           await this.showPermissionDeniedError();

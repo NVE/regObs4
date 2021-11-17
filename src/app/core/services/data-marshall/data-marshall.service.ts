@@ -183,7 +183,7 @@ export class DataMarshallService implements OnReset {
           this.loggingService.configureLogging(appMode)
         )
       );
-      
+
       this.subscriptions.push(
         this.platform.pause.subscribe(() => {
           this.loggingService.debug(
@@ -268,8 +268,8 @@ export class DataMarshallService implements OnReset {
     return this.ngZone.runOutsideAngular(async () => {
       const cancelTimer = useTimeout
         ? CancelPromiseTimer.createCancelPromiseTimer(
-            settings.backgroundFetchTimeout
-          )
+          settings.backgroundFetchTimeout
+        )
         : null;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
       await this.registrationService.syncRegistrations(cancelTimer);

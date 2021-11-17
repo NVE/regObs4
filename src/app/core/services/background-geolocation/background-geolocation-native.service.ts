@@ -12,7 +12,7 @@ const DEBUG_TAG = 'BackgroundGeolocationNativeService';
 
 @Injectable()
 export class BackgroundGeolocationNativeService
-  implements BackgroundGeolocationService {
+implements BackgroundGeolocationService {
   backgroundGeolocation: any;
 
   constructor(
