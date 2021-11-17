@@ -5,4 +5,6 @@ async function main() {
     await downloadBundle(url);
 }
 
-main().then(() => console.log('Done'));
+main()
+  .then(() => console.log('Done'))
+  .catch(err => console.error(err));
