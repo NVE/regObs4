@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IMapView } from './map-view.interface';
-import { Observable, combineLatest, BehaviorSubject, Subject, of } from 'rxjs';
+import { Observable, combineLatest, BehaviorSubject, Subject, of, concat } from 'rxjs';
 import {
   switchMap,
   shareReplay,
@@ -12,7 +12,8 @@ import {
   bufferWhen,
   scan,
   skipWhile,
-  take
+  take,
+  filter
 } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -48,6 +49,19 @@ export class MapService {
 
   get relevantMapChange$(): Observable<IMapView> {
     return this._relevantMapChange$;
+  }
+
+  /**
+   * @return as relevantMapChange$, but starts with current mapView
+   */
+  get relevantMapChangeWithInitialView$(): Observable<IMapView> {
+    return concat(
+      this._mapView$
+        .pipe(
+          filter((mapView) => mapView !== null))
+        .pipe(
+          take(1)),
+      this._relevantMapChange$);
   }
 
   get followMode$(): Observable<boolean> {
