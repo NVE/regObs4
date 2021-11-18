@@ -3,7 +3,7 @@ import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, of, Observable, combineLatest } from 'rxjs';
+import { Subscription, of, Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { switchMap, tap, filter, map, startWith } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -28,11 +28,13 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   viewInfo: ViewInfoWithDistance;
   mapView: IMapView;
   showMapCenter: boolean;
-  isLoading: boolean;
+  isLoading$: Observable<boolean>;
+  mapCenterCoords$: Observable<L.LatLng>;
   horizontalDistanceFromGpsPos$: Observable<string>; //including unit (m or km)
 
   private textToCopy: string;
   private subscriptions: Subscription[] = [];
+  private isLoading = new BehaviorSubject<boolean>(false);
 
   constructor(
     private userSettingService: UserSettingService,
@@ -46,7 +48,9 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private geoPositionService: GeoPositionService,
     private helperService: HelperService,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+    this.isLoading$ = this.isLoading.asObservable();
+  }
 
   async ngOnInit() {
     const showMapCenterObservable = this.userSettingService.showMapCenter$.pipe(
@@ -80,9 +84,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
           ),
           filter((val) => !!val),
           tap(() => {
-            this.ngZone.run(() => {
-              this.isLoading = true;
-            });
+            this.isLoading.next(true);
           }),
           switchMap((val: IMapView) => this.getViewInfo(val))
         )
@@ -90,30 +92,46 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
           (viewInfo) => {
             this.ngZone.run(() => {
               this.viewInfo = viewInfo;
-              this.isLoading = false;
+              this.isLoading.next(false);
             });
           },
           (_) => {
             this.ngZone.run(() => {
-              this.isLoading = false;
+              this.isLoading.next(false);
             });
           }
         )
     );
+    this.mapCenterCoords$ = this.createMapCenterCoords$();
     this.horizontalDistanceFromGpsPos$ = this.createHorizontalDistanceFromGpsPos$();
   }
 
-  private createHorizontalDistanceFromGpsPos$() {
+  private createMapCenterCoords$(): Observable<L.LatLng> {
     return combineLatest(
-      [this.mapService.relevantMapChange$, this.geoPositionService.currentPosition$]).pipe(
-      map(([mapView, gpsPos]) => {
-        if (mapView?.center && gpsPos?.coords) {
-          return this.helperService.getDistanceText(
+      [this.userSettingService.showMapCenter$, this.mapService.relevantMapChange$]).pipe(
+      tap(([showMapCenter, mapView]) => {console.log(`showMapCenter = ${showMapCenter}, center = ${mapView?.center}`);}),
+      map(([showMapCenter, mapView]) => {
+        if (showMapCenter && mapView?.center) {
+          return mapView.center;
+        }
+      })
+    );
+  }
+
+  private createHorizontalDistanceFromGpsPos$(): Observable<string> {
+    return combineLatest(
+      [this.userSettingService.showMapCenter$, this.mapService.relevantMapChange$, this.geoPositionService.currentPosition$]).pipe(
+      tap(([showMapCenter, mapView, gpsPos]) => {console.log(`showMapCenter = ${showMapCenter}, center = ${mapView?.center}, gpsPos = ${gpsPos?.coords?.longitude},${gpsPos?.coords?.latitude}`);}),
+      map(([showMapCenter, mapView, gpsPos]) => {
+        if (showMapCenter && mapView?.center && gpsPos?.coords) {
+          const dist = this.helperService.getDistanceText(
             mapView.center.distanceTo([
               gpsPos.coords.latitude,
               gpsPos.coords.longitude
             ])
           );
+          console.log(`new horzontal distance = ${dist}`);
+          return dist;
         }
       })
     );
