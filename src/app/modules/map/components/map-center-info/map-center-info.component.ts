@@ -3,8 +3,8 @@ import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, of, Observable, combineLatest, firstValueFrom } from 'rxjs';
-import { switchMap, tap, map } from 'rxjs/operators';
+import { Subscription, of, Observable, combineLatest, firstValueFrom, BehaviorSubject } from 'rxjs';
+import { switchMap, tap, map, filter } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -27,7 +27,7 @@ interface HeightDifference extends ViewInfo {
 })
 export class MapCenterInfoComponent implements OnInit, OnDestroy {
   showMapCenter$: Observable<boolean>;
-  // isLoading$: Observable<boolean>;
+  isLoading$: Observable<boolean>;
   mapCenterCoords$: Observable<L.LatLng>;
   horizontalDistanceFromGpsPos$: Observable<string>; //including unit (m or km)
   heightDifference$: Observable<HeightDifference>;
@@ -35,6 +35,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   mapView$: Observable<IMapView>;
 
   private subscriptions: Subscription[] = [];
+  private isLoading = new BehaviorSubject(false);
 
   constructor(
     private userSettingService: UserSettingService,
@@ -49,7 +50,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private helperService: HelperService,
     @Inject(DOCUMENT) private document: Document
   ) {
-    // this.isLoading$ = this.isLoading.asObservable();
+    this.isLoading$ = this.isLoading.asObservable();
   }
 
   async ngOnInit(): Promise<void> {
@@ -107,7 +108,10 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     this.mapCenterNameAndHeightData$ = this.createMapCenterNameAndHeightData$();
     this.heightDifference$ = this.createHeightDifference$();
 
-    this.mapView$.pipe(tap((mapView => console.log(`mapView.center = ${mapView?.center}`)))).subscribe();
+    this.mapCenterNameAndHeightData$.pipe(
+      tap(() => {
+        // this.isLoading.next(false);
+      })).subscribe();
   }
 
   private createMapView$(): Observable<IMapView> {
@@ -147,6 +151,8 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
       tap(([showMapCenter, mapView]) => {console.log(`createViewInfoWithDistance$(): showMapCenter = ${showMapCenter}, center = ${mapView?.center}`);}),
       switchMap(([showMapCenter, mapView]) => {
         if (showMapCenter && mapView?.center) {
+          // this.isLoading.next(true);
+          console.log('henter lokasjonsdata');
           return this.mapSearchService.getViewInfo(mapView);
         }
         return of(null);
