@@ -1,20 +1,20 @@
-import { Component, OnInit, OnDestroy, Inject, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { ToastController, Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, of, Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import { switchMap, tap, filter, map, startWith } from 'rxjs/operators';
+import { Subscription, of, Observable, combineLatest, firstValueFrom } from 'rxjs';
+import { switchMap, tap, map } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { IMapView } from '../../services/map/map-view.interface';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
-import { Position } from '@capacitor/geolocation';
 import { HelperService } from 'src/app/core/services/helpers/helper.service';
+import L from 'leaflet';
 
-interface ViewInfoWithDistance extends ViewInfo {
+interface HeightDifference extends ViewInfo {
   heightDifferenceFromGpsPos?: string; //including unit (m)
   gpsPosIsBelowMapCenter?: boolean;
 }
@@ -22,19 +22,19 @@ interface ViewInfoWithDistance extends ViewInfo {
 @Component({
   selector: 'app-map-center-info',
   templateUrl: './map-center-info.component.html',
-  styleUrls: ['./map-center-info.component.scss']
+  styleUrls: ['./map-center-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapCenterInfoComponent implements OnInit, OnDestroy {
-  viewInfo: ViewInfoWithDistance;
-  mapView: IMapView;
-  showMapCenter: boolean;
-  isLoading$: Observable<boolean>;
+  showMapCenter$: Observable<boolean>;
+  // isLoading$: Observable<boolean>;
   mapCenterCoords$: Observable<L.LatLng>;
   horizontalDistanceFromGpsPos$: Observable<string>; //including unit (m or km)
+  heightDifference$: Observable<HeightDifference>;
+  mapCenterNameAndHeightData$: Observable<ViewInfo>;
+  mapView$: Observable<IMapView>;
 
-  private textToCopy: string;
   private subscriptions: Subscription[] = [];
-  private isLoading = new BehaviorSubject<boolean>(false);
 
   constructor(
     private userSettingService: UserSettingService,
@@ -49,71 +49,74 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     private helperService: HelperService,
     @Inject(DOCUMENT) private document: Document
   ) {
-    this.isLoading$ = this.isLoading.asObservable();
+    // this.isLoading$ = this.isLoading.asObservable();
   }
 
-  async ngOnInit() {
-    const showMapCenterObservable = this.userSettingService.showMapCenter$.pipe(
-      tap((showMapCenter) => {
+  async ngOnInit(): Promise<void> {
+    this.showMapCenter$ = this.userSettingService.showMapCenter$.pipe(
+      tap(() => {
         this.ngZone.run(() => {
-          this.showMapCenter = showMapCenter;
-          this.setHeightStyle(showMapCenter ? 1 : 0);
+          this.setHeightStyle(5);
+          // this.setHeightStyle(showMapCenter ? 1 : 0);
         });
       })
     );
-    this.subscriptions.push(
-      showMapCenterObservable
-        .pipe(
-          switchMap((showMapCenter) =>
-            showMapCenter ? this.mapService.mapView$ : of(null)
-          ),
-          filter((val) => !!val)
-        )
-        .subscribe((mapView) => {
-          this.ngZone.run(() => {
-            this.mapView = mapView;
-            this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
-          });
-        })
-    );
-    this.subscriptions.push(
-      showMapCenterObservable
-        .pipe(
-          switchMap((showMapCenter) =>
-            showMapCenter ? this.mapService.relevantMapChange$ : of(null)
-          ),
-          filter((val) => !!val),
-          tap(() => {
-            this.isLoading.next(true);
-          }),
-          switchMap((val: IMapView) => this.getViewInfo(val))
-        )
-        .subscribe(
-          (viewInfo) => {
-            this.ngZone.run(() => {
-              this.viewInfo = viewInfo;
-              this.isLoading.next(false);
-            });
-          },
-          (_) => {
-            this.ngZone.run(() => {
-              this.isLoading.next(false);
-            });
-          }
-        )
-    );
-    this.mapCenterCoords$ = this.createMapCenterCoords$();
+    // this.subscriptions.push(
+    //   this.userSettingService.showMapCenter$
+    //     .pipe(
+    //       switchMap((showMapCenter) =>
+    //         showMapCenter ? this.mapService.mapView$ : of(null)
+    //       ),
+    //       filter((val) => !!val)
+    //     )
+    //     .subscribe((mapView) => {
+    //       this.ngZone.run(() => {
+    //         this.mapView = mapView;
+    //         this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
+    //       });
+    //     })
+    // );
+    // this.subscriptions.push(
+    //   this.userSettingService.showMapCenter$
+    //     .pipe(
+    //       switchMap((showMapCenter) =>
+    //         showMapCenter ? this.mapService.relevantMapChange$ : of(null)
+    //       ),
+    //       filter((val) => !!val),
+    //       tap(() => {
+    //         this.isLoading.next(true);
+    //       }),
+    //       switchMap((val: IMapView) => this.getViewInfo(val))
+    //     )
+    //     .subscribe(
+    //       (viewInfo) => {
+    //         this.ngZone.run(() => {
+    //           this.viewInfo = viewInfo;
+    //           this.isLoading.next(false);
+    //         });
+    //       },
+    //       (_) => {
+    //         this.ngZone.run(() => {
+    //           this.isLoading.next(false);
+    //         });
+    //       }
+    //     )
+    // );
+    this.mapView$ = this.createMapView$();
     this.horizontalDistanceFromGpsPos$ = this.createHorizontalDistanceFromGpsPos$();
+    this.mapCenterNameAndHeightData$ = this.createMapCenterNameAndHeightData$();
+    this.heightDifference$ = this.createHeightDifference$();
+
+    this.mapView$.pipe(tap((mapView => console.log(`mapView.center = ${mapView?.center}`)))).subscribe();
   }
 
-  private createMapCenterCoords$(): Observable<L.LatLng> {
-    return combineLatest(
-      [this.userSettingService.showMapCenter$, this.mapService.relevantMapChange$]).pipe(
-      tap(([showMapCenter, mapView]) => {console.log(`showMapCenter = ${showMapCenter}, center = ${mapView?.center}`);}),
-      map(([showMapCenter, mapView]) => {
-        if (showMapCenter && mapView?.center) {
-          return mapView.center;
+  private createMapView$(): Observable<IMapView> {
+    return this.userSettingService.showMapCenter$.pipe(
+      switchMap((showMapCenter) => {
+        if (showMapCenter) {
+          return this.mapService.relevantMapChangeWithInitialView$;
         }
+        return of(null);
       })
     );
   }
@@ -121,7 +124,7 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
   private createHorizontalDistanceFromGpsPos$(): Observable<string> {
     return combineLatest(
       [this.userSettingService.showMapCenter$, this.mapService.relevantMapChange$, this.geoPositionService.currentPosition$]).pipe(
-      tap(([showMapCenter, mapView, gpsPos]) => {console.log(`showMapCenter = ${showMapCenter}, center = ${mapView?.center}, gpsPos = ${gpsPos?.coords?.longitude},${gpsPos?.coords?.latitude}`);}),
+      tap(([showMapCenter, mapView, gpsPos]) => {console.log(`createHorizontalDistanceFromGpsPos$(): showMapCenter = ${showMapCenter}, center = ${mapView?.center}, gpsPos = ${gpsPos?.coords?.longitude},${gpsPos?.coords?.latitude}`);}),
       map(([showMapCenter, mapView, gpsPos]) => {
         if (showMapCenter && mapView?.center && gpsPos?.coords) {
           const dist = this.helperService.getDistanceText(
@@ -130,11 +133,65 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
               gpsPos.coords.longitude
             ])
           );
-          console.log(`new horzontal distance = ${dist}`);
+          console.log(`new horizontal distance = ${dist}`);
           return dist;
+        }
+        of(null);
+      })
+    );
+  }
+
+  private createMapCenterNameAndHeightData$(): Observable<ViewInfo> {
+    return combineLatest(
+      [this.userSettingService.showMapCenter$, this.mapView$]).pipe(
+      tap(([showMapCenter, mapView]) => {console.log(`createViewInfoWithDistance$(): showMapCenter = ${showMapCenter}, center = ${mapView?.center}`);}),
+      switchMap(([showMapCenter, mapView]) => {
+        if (showMapCenter && mapView?.center) {
+          return this.mapSearchService.getViewInfo(mapView);
+        }
+        return of(null);
+      })
+    );
+  }
+
+  private createHeightDifference$(): Observable<HeightDifference> {
+    return combineLatest([this.userSettingService.showMapCenter$, this.mapCenterNameAndHeightData$, this.geoPositionService.currentPosition$]).pipe(
+      tap(([showMapCenter, mapView, gpsPos]) => {console.log(`createHeightDifference$(): showMapCenter = ${showMapCenter}, elevation = ${mapView?.elevation}, gpsPos = ${gpsPos?.coords?.longitude},${gpsPos?.coords?.latitude}`);}),
+      map(([showMapCenter, mapView, gpsPos]) => {
+        const gpsAltitude = gpsPos?.coords?.altitude ? gpsPos?.coords?.altitude : 42;
+        if (showMapCenter && mapView?.elevation && gpsAltitude) {
+          let heightDifference = undefined;
+          let gpsPosIsBelowMapCenter = undefined;
+          heightDifference = Math.abs(mapView.elevation - gpsAltitude).toFixed() + ' m';
+          if (gpsAltitude < mapView.elevation) {
+            gpsPosIsBelowMapCenter = true;
+          } else if (gpsAltitude > mapView.elevation) {
+            gpsPosIsBelowMapCenter = false;
+          } else {
+            heightDifference = '';
+          }
+          return {
+            heightDifferenceFromGpsPos: heightDifference,
+            gpsPosIsBelowMapCenter: gpsPosIsBelowMapCenter
+          } as HeightDifference;
+        } else {
+          return null;
         }
       })
     );
+  }
+
+  ngDoCheck(): void {
+    const rowCount = this.getVisibleRowCount();
+    console.log(`row count (push) = ${rowCount}`);
+    this.ngZone.run(() => {
+      this.setHeightStyle(rowCount);
+    });
+  }
+
+  private getVisibleRowCount(): number {
+    const rows = this.document.getElementsByName('map-center-info-row');
+    return rows.length;
   }
 
   private setHeightStyle(numRows: number): void {
@@ -143,71 +200,6 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
       '--map-center-info-height',
       `${padding + numRows * 17}px`
     );
-  }
-
-  private getViewInfo(mapView: IMapView): Observable<ViewInfoWithDistance> {
-    return this.mapSearchService.getViewInfo(mapView).pipe(
-      switchMap((viewInfo) =>
-        this.geoPositionService.currentPosition$.pipe(
-          startWith(null as Position),
-          map((gpsPos) => this.createViewInfoWithDistance(viewInfo, gpsPos)),
-          tap((viewInfoWithDistance) =>
-            this.computeHeight(viewInfoWithDistance)
-          )
-        )
-      )
-    );
-  }
-
-  private computeHeight(viewInfo: ViewInfoWithDistance): void {
-    let rows = 0;
-    if (this.mapView.center) {
-      rows++;
-    }
-    if (viewInfo) {
-      if (viewInfo?.location) {
-        rows++;
-      }
-      if (viewInfo?.elevation != null || viewInfo?.steepness != null) {
-        rows++;
-      }
-      if (viewInfo?.latLng) {
-        rows++;
-      }
-    }
-    this.setHeightStyle(rows);
-  }
-
-  private createViewInfoWithDistance(
-    viewInfo: ViewInfo,
-    gpsPos: Position
-  ): ViewInfoWithDistance {
-    let heightDifference = undefined;
-    let gpsPosIsBelowMapCenter = undefined;
-    if (this.mapView.center && gpsPos?.coords) {
-      if (viewInfo && viewInfo.elevation && gpsPos.coords.altitude) {
-        heightDifference =
-          Math.abs(viewInfo.elevation - gpsPos.coords.altitude).toFixed() +
-          ' m';
-        if (gpsPos.coords.altitude < viewInfo.elevation) {
-          gpsPosIsBelowMapCenter = true;
-        } else if (gpsPos.coords.altitude > viewInfo.elevation) {
-          gpsPosIsBelowMapCenter = false;
-        } else {
-          heightDifference = '';
-        }
-      }
-      return {
-        location: viewInfo?.location,
-        elevation: viewInfo?.elevation,
-        steepness: viewInfo?.steepness,
-        latLng: this.mapView.center,
-        heightDifferenceFromGpsPos: heightDifference,
-        gpsPosIsBelowMapCenter: gpsPosIsBelowMapCenter
-      };
-    } else {
-      return null;
-    }
   }
 
   ngOnDestroy(): void {
@@ -223,15 +215,15 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     );
   }
 
-  async copyToClipboard() {
+  async copyToClipboard(): Promise<void> {
+    const mapView = await firstValueFrom(this.mapView$);
+    const textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
     if (this.useNativeClipboardPlugin()) {
-      await this.clipboard.copy(this.textToCopy);
+      await this.clipboard.copy(textToCopy);
     } else {
-      this.copyToClipBoardWeb(this.textToCopy);
+      this.copyToClipBoardWeb(textToCopy);
     }
-    const toastText = await this.translateService
-      .get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD')
-      .toPromise();
+    const toastText = await firstValueFrom(this.translateService.get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD'));
     const toast = await this.toastController.create({
       message: toastText,
       mode: 'md',
@@ -255,3 +247,4 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     document.body.removeChild(selBox);
   }
 }
+
