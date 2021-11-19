@@ -7,7 +7,8 @@ import {
   Subscription,
   combineLatest,
   merge,
-  fromEvent
+  fromEvent,
+  firstValueFrom
 } from 'rxjs';
 import {
   filter,
@@ -84,9 +85,8 @@ export class GeoPositionService implements OnDestroy {
    * @see https://github.com/ionic-team/capacitor/issues/1279
    */
   getSingleCurrentPosition(): Promise<Position> {
-    return Geolocation.getCurrentPosition(
-      settings.gps.highAccuracyPositionOptions
-    );
+    // this.currentPosition always returns a value.
+    return firstValueFrom<Position>(this.currentPosition);
   }
 
   private startGeolocationTrackingSubscription() {
