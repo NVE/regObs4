@@ -4,7 +4,7 @@ import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
 import { map, switchMap, catchError, take } from 'rxjs/operators';
-import { Observable, combineLatest, forkJoin, of, Subject } from 'rxjs';
+import { Observable, forkJoin, of, Subject } from 'rxjs';
 import { ViewInfo } from './view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LangKey } from '../../../../core/models/langKey';
@@ -13,10 +13,7 @@ import { NanoSql } from '../../../../../nanosql';
 import { MapSearchHistory } from './map-search-history.model';
 import moment from 'moment';
 import { IMapView } from '../map/map-view.interface';
-import {
-  NorwegianSearchResultModel,
-  NorwegianSearchResultModelStednavn
-} from './norwegian-search-result.model';
+import { Navn, ReturSkrivemate } from './norwegian-search-result.model';
 import { WorldSearchResultModel } from './world-search-result.model';
 import { nSQL } from '@nano-sql/core';
 import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
@@ -27,11 +24,9 @@ import { NSqlFullUpdateObservable } from '../../../../core/helpers/nano-sql/NSql
 })
 export class MapSearchService {
   private _mapSearchItemClickSubject: Subject<MapSearchResponse | L.LatLng>;
-  private _mapSearchItemClickObservable: Observable<
-    MapSearchResponse | L.LatLng
-  >;
+  private _mapSearchItemClickObservable: Observable<MapSearchResponse | L.LatLng>;
 
-  get mapSearchClick$() {
+  get mapSearchClick$(): Observable<MapSearchResponse | L.LatLng> {
     return this._mapSearchItemClickObservable;
   }
 
@@ -72,29 +67,30 @@ export class MapSearchService {
   ): Observable<MapSearchResponse[]> {
     return this.httpClient
       .get(
-        `${settings.map.search.no.url}navn?sok=${text.trim()}*&treffPerSide=${settings.map.search.no.maxResults}`
+        `${settings.map.search.no.url}?sok=${text.trim()}*&treffPerSide=${settings.map.search.no.maxResults}`
         + `&utkoordsys=${settings.map.search.no.coordinateSystem}&filtrer=${settings.map.search.no.resultFields}`
       )
       .pipe(
-        map((data: NorwegianSearchResultModel) => {
-          const hits = parseInt(data.totaltAntallTreff, 10);
+        map((returSted: ReturSkrivemate) => {
+          const hits = returSted.metadata.totaltAntallTreff;
           const resultList =
             hits === 0
               ? []
               : hits === 1
-                ? [data.stedsnavn as NorwegianSearchResultModelStednavn]
-                : (data.stedsnavn as Array<NorwegianSearchResultModelStednavn>);
+                ? [returSted.navn[0] as Navn]
+                : (returSted.navn as Array<Navn>);
+
           return this.removeDuplicates(resultList).map((item) => {
             const resp: MapSearchResponse = {
-              name: item.stedsnavn,
-              description:
-                (lang === LangKey.nb ? item.navnetype + ', ' : '') +
-                item.kommunenavn +
-                ' (' +
-                item.fylkesnavn +
-                ')',
-              type: item.navnetype,
-              latlng: { lat: +item.aust, lng: +item.nord }
+              name: item.skrivemåte,
+              description: this.formatLocationDescription(item, lang),
+              type: item.navneobjekttype,
+              latlng: L.Projection.SphericalMercator.unproject(
+                L.point({
+                  x: item.representasjonspunkt.øst,
+                  y: item.representasjonspunkt.nord
+                })
+              )
             };
             return resp;
           });
@@ -103,10 +99,34 @@ export class MapSearchService {
       );
   }
 
-  removeDuplicates(data: NorwegianSearchResultModelStednavn[]) {
+  formatLocationDescription(item: Navn, lang: LangKey): string {
+    const nameType = item.navneobjekttype;
+    const norwegian = lang === LangKey.nb || lang === LangKey.nn;
+    const county = item.fylker[0]?.fylkesnavn;
+    if (item.kommuner.length !== 1 || nameType === 'Kommune') {
+      if (norwegian) {
+        return `${nameType}, ${county}`;
+      }
+      return county;
+    }
+    if (item.fylker.length !== 1 || nameType === 'Fylke') {
+      if (norwegian) {
+        return `${nameType}`;
+      }
+      return '';
+    }
+    const municipality = item.kommuner[0]?.kommunenavn;
+    if (norwegian) {
+      return `${nameType}, ${municipality} (${county})`;
+    }
+    return `${municipality} (${county})`;
+  }
+
+  private removeDuplicates(data: Navn[]): Navn[] {
     return (data || []).reduce((acc, currentValue) => {
       if (
-        acc.filter((item) => item.ssrId === currentValue.ssrId).length === 0
+        acc.filter((item) => item.stedsnummer === currentValue.stedsnummer)
+          .length === 0
       ) {
         acc.push(currentValue);
       }
