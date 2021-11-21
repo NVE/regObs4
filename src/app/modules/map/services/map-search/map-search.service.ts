@@ -72,9 +72,8 @@ export class MapSearchService {
   ): Observable<MapSearchResponse[]> {
     return this.httpClient
       .get(
-        `${settings.map.search.no.url}?navn=${text.trim()}*&antPerSide=${
-          settings.map.search.no.maxResults
-        }` + `&eksakteForst=${settings.map.search.no.exactFirst}&epsgKode=3395`
+        `${settings.map.search.no.url}navn?sok=${text.trim()}*&treffPerSide=${settings.map.search.no.maxResults}`
+        + `&utkoordsys=${settings.map.search.no.coordinateSystem}&filtrer=${settings.map.search.no.resultFields}`
       )
       .pipe(
         map((data: NorwegianSearchResultModel) => {
@@ -95,9 +94,7 @@ export class MapSearchService {
                 item.fylkesnavn +
                 ')',
               type: item.navnetype,
-              latlng: L.Projection.Mercator.unproject(
-                L.point({ x: item.aust, y: item.nord })
-              )
+              latlng: { lat: +item.aust, lng: +item.nord }
             };
             return resp;
           });

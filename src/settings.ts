@@ -196,9 +196,11 @@ export const settings = {
     },
     search: {
       no: {
-        url: 'https://ws.geonorge.no/SKWS3Index/ssr/sok',
+        url: 'https://ws.geonorge.no/stedsnavn/v1/navn',
         maxResults: 20,
-        exactFirst: true
+        exactFirst: true,
+        coordinateSystem: 3395,
+        resultFields: 'metadata.totaltAntallTreff,navn.skrivemåte,navn.navneobjekttype,navn.stedsnummer,navn.representasjonspunkt.øst,navn.representasjonspunkt.nord,navn.fylker.fylkesnavn,navn.kommuner.kommunenavn'
       },
       geonames: {
         url: 'https://secure.geonames.org',
