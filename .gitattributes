@@ -60,4 +60,4 @@ yarn.lock         text -diff
 *.*ignore         text
 
 # Language files
-src/assets/i18n/*.json            text eol=lf
+/src/assets/i18n/*.json            text eol=lf
