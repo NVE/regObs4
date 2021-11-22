@@ -199,7 +199,7 @@ export const settings = {
         url: 'https://ws.geonorge.no/stedsnavn/v1/navn',
         maxResults: 20,
         exactFirst: true,
-        coordinateSystem: 3857,
+        coordinateSystem: 4326,
         resultFields: 'metadata.totaltAntallTreff,navn.skrivemåte,navn.navneobjekttype,navn.stedsnummer,navn.representasjonspunkt.øst,navn.representasjonspunkt.nord,navn.fylker.fylkesnavn,navn.kommuner.kommunenavn'
       },
       geonames: {

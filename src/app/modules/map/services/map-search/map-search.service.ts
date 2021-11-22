@@ -85,12 +85,7 @@ export class MapSearchService {
               name: item.skrivemåte,
               description: this.formatLocationDescription(item, lang),
               type: item.navneobjekttype,
-              latlng: L.Projection.SphericalMercator.unproject(
-                L.point({
-                  x: item.representasjonspunkt.øst,
-                  y: item.representasjonspunkt.nord
-                })
-              )
+              latlng: L.latLng(item.representasjonspunkt.nord, item.representasjonspunkt.øst)
             };
             return resp;
           });
