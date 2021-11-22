@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Draft",
-    "NEW_OBSERVATION": "New",
-    "NEW_TRIP": "New trip"
+    "DRAFT_TITLE_DIRT": "Draft: Soil observation",
+    "DRAFT_TITLE_ICE": "Draft: Ice observation",
+    "DRAFT_TITLE_SNOW": "Draft: Snow observation",
+    "DRAFT_TITLE_WATER": "Draft: Water observation",
+    "NEW_DIRT_OBSERVATION": "New soil observation",
+    "NEW_ICE_OBSERVATION": "New ice observation",
+    "NEW_SNOW_OBSERVATION": "New snow observation",
+    "NEW_WATER_OBSERVATION": "New water observation"
   },
   "ALERT": {
     "CANCEL": "Cancel",
@@ -69,6 +74,7 @@
     "SW": "SW",
     "W": "W"
   },
+  "DRAFT": "Draft",
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "PermissionDenied": "To fetch your position you need to alter your browser settings",
@@ -726,10 +732,10 @@
     "STEEPNESS_MAP_DESCRIPTION": "Slope angle shading map",
     "STEEPNESS_MAP_DISCLAMER": "For trip planning <i>only</i>. The map is automatically produced and may have errors and omissions, e.g. steep terrain or runouts not displaying correctly.",
     "STEEPNESS_OFFLINE_DISCLAMER": "The map layer is only available offline with avalanche outlets activated.",
-    "STEEPNESS_OUTLET_LEGEND_TITLE": "Colours give runout zones for avalanches:",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Short runouts (50% of the avalanches reach farther)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medium runouts (25% of the avalanches reach farther)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Long runouts (5% of the avalanches reach farther)\nSome avalanches may have longer runouts than displayed as runout zones in the map.",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Colours give runout zones for avalanches:",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Avalanche outlet zones",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice"
   },

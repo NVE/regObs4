@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Kladd",
-    "NEW_OBSERVATION": "Ny",
-    "NEW_TRIP": "Ny tur"
+    "DRAFT_TITLE_DIRT": "Kladd: Jordobservasjon",
+    "DRAFT_TITLE_ICE": "Kladd: Isobservasjon",
+    "DRAFT_TITLE_SNOW": "Kladd: Snøobservasjon",
+    "DRAFT_TITLE_WATER": "Kladd: Vannobservasjon",
+    "NEW_DIRT_OBSERVATION": "Ny jordobservasjon",
+    "NEW_ICE_OBSERVATION": "Ny isobservasjon",
+    "NEW_SNOW_OBSERVATION": "Ny snøobservasjon",
+    "NEW_WATER_OBSERVATION": "Ny vannobservasjon"
   },
   "ALERT": {
     "CANCEL": "Avbryt",
@@ -69,6 +74,7 @@
     "SW": "SV",
     "W": "V"
   },
+  "DRAFT": "Kladd",
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "PermissionDenied": "For å hente posisjonen din må du endre innstillinger i nettleseren",
@@ -726,10 +732,10 @@
     "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
     "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, f.eks. bratte heng og utløp som ikke vises.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Støttekartet er kun tilgjengelig offline med utløp aktiverte.",
-    "STEEPNESS_OUTLET_LEGEND_TITLE": "Farger på utløp for snøskred:",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skred stopper innen denne grensen)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skredene går lenger)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skredene går lenger)\nNoen skred kan ha utløp som ikke er vist på kartet.",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Farger på utløp for snøskred:",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsoner for snøskred",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart"
   },

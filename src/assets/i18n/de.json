@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonnent"
   },
   "ADD_MENU": {
-    "DRAFT": "Entwurf",
-    "NEW_OBSERVATION": "Neue",
-    "NEW_TRIP": "Neue Tour"
+    "DRAFT_TITLE_DIRT": "Entwurf: Boden beobachtung",
+    "DRAFT_TITLE_ICE": "Entwurf: Eis beobachtung",
+    "DRAFT_TITLE_SNOW": "Entwurf: Schnee beobachtung",
+    "DRAFT_TITLE_WATER": "Entwurf: Wasser beobachtung",
+    "NEW_DIRT_OBSERVATION": "Neue boden beobachtung",
+    "NEW_ICE_OBSERVATION": "Neue eis beobachtung",
+    "NEW_SNOW_OBSERVATION": "Neue schnee beobachtung",
+    "NEW_WATER_OBSERVATION": "Neue wasser beobachtung"
   },
   "ALERT": {
     "CANCEL": "Abbruch",
@@ -69,6 +74,7 @@
     "SW": "SW",
     "W": "W"
   },
+  "DRAFT": "Entwurf",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Tour wird aufgezeichnet"
   },
