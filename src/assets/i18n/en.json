@@ -25,6 +25,7 @@
     "UNDO": "Undo",
     "WARNING": "Warning"
   },
+  "CLOSE": "Close",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Add your observations",
     "SELECT_GEO_HAZARD": "Select geo hazard",
@@ -218,25 +219,25 @@
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Not enough disk space available to store offline map package. Please free up some disk space and try again.",
     "DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection.",
-    "UNZIP_ERROR_MESSAGE": "Could not save map package to disk. Are you sure there is enough disk space?",
-    "OFFLINE_MAP_PAGE_TITLE": "Offline map",
     "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Map package",
     "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Cancel download",
+      "DELETE_BUTTON": "Delete",
+      "DOWNLOAD_BUTTON": "Download",
       "HEADER": "Map package {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Downloaded {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
       "PACKAGE_PRODUCED_DATE": "Produced:",
       "PACKAGE_SIZE": "Size:",
       "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
-      "PACKAGE_DOWNLOAD_STATUS": "Status:",
-      "PACKAGE_DOWNLOADED_DATE": "Downloaded {{date}}",
-      "CANCEL_DOWNLOAD_BUTTON": "Cancel download",
-      "TRY_AGAIN_BUTTON": "Try again",
-      "DELETE_BUTTON": "Delete",
-      "DOWNLOAD_BUTTON": "Download"
+      "TRY_AGAIN_BUTTON": "Try again"
     },
+    "OFFLINE_MAP_PAGE_TITLE": "Offline map",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Downloading part {{n}} of {{totalParts}}",
       "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}"
-    }
+    },
+    "UNZIP_ERROR_MESSAGE": "Could not save map package to disk. Are you sure there is enough disk space?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Permission to location denied",
@@ -820,6 +821,5 @@
     "TITLE_SNOW": "Avalanche Forecasts",
     "TITLE_WATER": "Flood and Landslide Forecasts",
     "VALID_FROM": "Valid from"
-  },
-  "CLOSE": "Close"
+  }
 }

@@ -25,6 +25,7 @@
     "UNDO": "Angre",
     "WARNING": "Varsel"
   },
+  "CLOSE": "Lukk",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Legg til eigne observasjonar",
     "SELECT_GEO_HAZARD": "Vel naturfare",
@@ -208,20 +209,20 @@
     "OBSERVATIONS": "Observasjonar"
   },
   "OFFLINE_MAP": {
-    "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
     "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpakke",
     "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Lasted ned {{date}}",
+      "DELETE_BUTTON": "Slett",
+      "DOWNLOAD_BUTTON": "Last ned",
       "HEADER": "Kartpakke {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
       "PACKAGE_PRODUCED_DATE": "Produsert:",
       "PACKAGE_SIZE": "Produsert:",
       "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
-      "PACKAGE_DOWNLOAD_STATUS": "Status:",
-      "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
-      "CANCEL_DOWNLOAD_BUTTON": "Lasted ned {{date}}",
-      "TRY_AGAIN_BUTTON": "Prøv på nytt",
-      "DELETE_BUTTON": "Slett",
-      "DOWNLOAD_BUTTON": "Last ned"
+      "TRY_AGAIN_BUTTON": "Prøv på nytt"
     },
+    "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
       "UNZIP_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}"
@@ -802,6 +803,5 @@
     "TITLE_SNOW": "Snøskredvarsel",
     "TITLE_WATER": "Flaum- og jorskredvarsel",
     "VALID_FROM": "Gyldig frå"
-  },
-  "CLOSE": "Lukk"
+  }
 }

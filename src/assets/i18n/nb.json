@@ -25,6 +25,7 @@
     "UNDO": "Angre",
     "WARNING": "Advarsel"
   },
+  "CLOSE": "Lukk",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Legg til egne observasjoner",
     "SELECT_GEO_HAZARD": "Velg naturfare",
@@ -218,25 +219,25 @@
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Beklager, du har ikke nok plass tilgjengelig på telefonen til å lagre kartpakken. Vennligst frigjør plass og prøv på nytt.",
     "DOWNLOAD_ERROR_MESSAGE": "Klarte ikke laste ned kartpakke. Pass på at du har stabil og god internett-kobling.",
-    "UNZIP_ERROR_MESSAGE": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?",
-    "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
     "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpakke",
     "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedlasting",
+      "DELETE_BUTTON": "Slett",
+      "DOWNLOAD_BUTTON": "Last ned",
       "HEADER": "Kartpakke {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
       "PACKAGE_PRODUCED_DATE": "Produsert:",
       "PACKAGE_SIZE": "Størrelse:",
       "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
-      "PACKAGE_DOWNLOAD_STATUS": "Status:",
-      "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
-      "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedlasting",
-      "TRY_AGAIN_BUTTON": "Prøv på nytt",
-      "DELETE_BUTTON": "Slett",
-      "DOWNLOAD_BUTTON": "Last ned"
+      "TRY_AGAIN_BUTTON": "Prøv på nytt"
     },
+    "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
       "UNZIP_PART_X_OF_Y": "Pakker ut {{n}} av {{totalParts}}"
-    }
+    },
+    "UNZIP_ERROR_MESSAGE": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
@@ -820,6 +821,5 @@
     "TITLE_SNOW": "Snøskredvarsel",
     "TITLE_WATER": "Flom og jordskredvarsel",
     "VALID_FROM": "Gyldig fra"
-  },
-  "CLOSE": "Lukk"
+  }
 }
