@@ -183,7 +183,7 @@
     "OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Carte hors connexion"
+    "OFFLINE_MAP_PAGE_TITLE": "Carte hors connexion"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Autorisation de localisation refusée",

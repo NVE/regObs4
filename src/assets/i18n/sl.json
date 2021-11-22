@@ -183,7 +183,7 @@
     "OBSERVATIONS": "Opažanja"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Zemljevid brez povezave"
+    "OFFLINE_MAP_PAGE_TITLE": "Zemljevid brez povezave"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Dovoljenje za lokacijo zavrnjeno",

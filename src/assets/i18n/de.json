@@ -183,7 +183,7 @@
     "OBSERVATIONS": "Beobachtungen"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline-Karte"
+    "OFFLINE_MAP_PAGE_TITLE": "Offline-Karte"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Standortinformation nicht zugelassen",

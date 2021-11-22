@@ -218,8 +218,25 @@
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Beklager, du har ikke nok plass tilgjengelig på telefonen til å lagre kartpakken. Vennligst frigjør plass og prøv på nytt.",
     "DOWNLOAD_ERROR_MESSAGE": "Klarte ikke laste ned kartpakke. Pass på at du har stabil og god internett-kobling.",
-    "TITLE": "Offline kart",
-    "UNZIP_ERROR_MESSAGE": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
+    "UNZIP_ERROR_MESSAGE": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?",
+    "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
+    "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpakke",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "HEADER": "Kartpakke {{name}}",
+      "PACKAGE_PRODUCED_DATE": "Produsert:",
+      "PACKAGE_SIZE": "Størrelse:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
+      "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedlasting",
+      "TRY_AGAIN_BUTTON": "Prøv på nytt",
+      "DELETE_BUTTON": "Slett",
+      "DOWNLOAD_BUTTON": "Last ned"
+    },
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Pakker ut {{n}} av {{totalParts}}"
+    }
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
@@ -803,5 +820,6 @@
     "TITLE_SNOW": "Snøskredvarsel",
     "TITLE_WATER": "Flom og jordskredvarsel",
     "VALID_FROM": "Gyldig fra"
-  }
+  },
+  "CLOSE": "Lukk"
 }

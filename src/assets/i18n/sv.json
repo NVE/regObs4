@@ -183,7 +183,7 @@
     "OBSERVATIONS": "Observationer"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline kartor"
+    "OFFLINE_MAP_PAGE_TITLE": "Offline kartor"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tillstånd till plats nekas",

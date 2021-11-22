@@ -4,7 +4,7 @@ import { Progress } from './progress.model';
 import moment from 'moment';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, from, Observable, Subscription } from 'rxjs';
 import { finalize, map, mergeMap, switchMap, take } from 'rxjs/operators';
 // import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
@@ -282,7 +282,11 @@ export class OfflineMapService {
                 totalParts,
                 'Downloading'
               ),
-              description: `Download part ${partNumber + 1}/${totalParts}`
+              description: await firstValueFrom(this.translateService.get(
+                'OFFLINE_MAP.STATUS.DOWNLOADING_PART_X_OF_Y', {
+                  n: partNumber + 1,
+                  totalParts
+                }))
             });
             break;
           case 'DONE':
@@ -303,7 +307,7 @@ export class OfflineMapService {
                   partNumber,
                   totalParts
                 ),
-              (progress) =>
+              async (progress) =>
                 this.onProgress(mapPackage, {
                   step: ProgressStep.extractZip,
                   percentage: this.calculateTotalProgress(
@@ -312,7 +316,11 @@ export class OfflineMapService {
                     totalParts,
                     'Unzipping'
                   ),
-                  description: `Unzip ${partNumber + 1}/${totalParts}`
+                  description: await firstValueFrom(this.translateService.get(
+                    'OFFLINE_MAP.STATUS.UNZIP_PART_X_OF_Y', {
+                      n: partNumber + 1,
+                      totalParts
+                    }))
                 }),
               (error) => this.onUnzipOrDownloadError(mapPackage, error, false)
             );

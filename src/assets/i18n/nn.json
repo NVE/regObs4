@@ -208,7 +208,24 @@
     "OBSERVATIONS": "Observasjonar"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline kart"
+    "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
+    "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpakke",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "HEADER": "Kartpakke {{name}}",
+      "PACKAGE_PRODUCED_DATE": "Produsert:",
+      "PACKAGE_SIZE": "Produsert:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
+      "CANCEL_DOWNLOAD_BUTTON": "Lasted ned {{date}}",
+      "TRY_AGAIN_BUTTON": "Prøv på nytt",
+      "DELETE_BUTTON": "Slett",
+      "DOWNLOAD_BUTTON": "Last ned"
+    },
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}"
+    }
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nekta.",
@@ -785,5 +802,6 @@
     "TITLE_SNOW": "Snøskredvarsel",
     "TITLE_WATER": "Flaum- og jorskredvarsel",
     "VALID_FROM": "Gyldig frå"
-  }
+  },
+  "CLOSE": "Lukk"
 }
