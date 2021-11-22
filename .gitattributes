@@ -58,3 +58,6 @@ yarn.lock         text -diff
 
 # Ignore files (like .npmignore or .gitignore)
 *.*ignore         text
+
+# Language files
+src/assets/i18n/*.json            text eol=lf
