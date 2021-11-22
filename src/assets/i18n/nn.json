@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Kladd",
-    "NEW_OBSERVATION": "Ny",
-    "NEW_TRIP": "Ny tur"
+    "DRAFT_TITLE_DIRT": "Kladd: Jordobservasjon",
+    "DRAFT_TITLE_ICE": "Kladd: Isobservasjon",
+    "DRAFT_TITLE_SNOW": "Kladd: Snøobservasjon",
+    "DRAFT_TITLE_WATER": "Kladd: Vatnobservasjon",
+    "NEW_DIRT_OBSERVATION": "Ny jordobservasjon",
+    "NEW_ICE_OBSERVATION": "Ny isobservasjon",
+    "NEW_SNOW_OBSERVATION": "Ny snøobservasjon",
+    "NEW_WATER_OBSERVATION": "Ny vatnobservasjon"
   },
   "ALERT": {
     "CANCEL": "Avbryt",
@@ -69,6 +74,7 @@
     "SW": "SV",
     "W": "V"
   },
+  "DRAFT": "Kladd",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Tur føregår"
   },

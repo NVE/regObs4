@@ -5,11 +5,7 @@
     "LINK_TEXT": "Vai a abonner.varsom.no",
     "TITLE": "Varsom Abonner"
   },
-  "ADD_MENU": {
-    "DRAFT": "Bozza",
-    "NEW_OBSERVATION": "Nouvo",
-    "NEW_TRIP": "Nouova escursione"
-  },
+  "ADD_MENU": {},
   "ALERT": {
     "CANCEL": "Annulla",
     "DEFAULT_HEADER": "Ops!",
@@ -69,6 +65,7 @@
     "SW": "SO",
     "W": "O"
   },
+  "DRAFT": "Bozza",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Registrando percorso"
   },
