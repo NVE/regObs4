@@ -6,7 +6,7 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
 import { finalize, map, mergeMap, switchMap, take } from 'rxjs/operators';
-import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
+// import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import JSZip from 'jszip';
 import { ProgressStep } from './progress-step.model';
@@ -286,7 +286,10 @@ export class OfflineMapService {
             });
             break;
           case 'DONE':
+            // TODO: Move declerations elsewhere
+            // eslint-disable-next-line no-case-declarations
             const file = downloadProgress.content;
+            // eslint-disable-next-line no-case-declarations
             const root = await this.getRootFileUrl();
             await this.unzipFile(
               file,
@@ -459,6 +462,7 @@ export class OfflineMapService {
     }
 
     return new Promise((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any)?.DiskSpacePlugin?.info(
         { location: externalStorage ? 2 : 1 },
         (success) => resolve(success.free),
@@ -526,7 +530,8 @@ export class OfflineMapService {
   private async getMapsInPackageFolder(packageName: string): Promise<string[]> {
     const path = await this.getMapPackageFileUrl(packageName);
     const filenames = await (await Filesystem.readdir({ path })).files;
-    return filenames.filter((filename) => filename != 'COMPLETE'); //TODO: Hack, assumes that all files in folder is a directory unless it has name 'COMPLETE'
+    //TODO: Hack, assumes that all files in folder is a directory unless it has name 'COMPLETE'
+    return filenames.filter((filename) => filename != 'COMPLETE');
   }
 
   /**
@@ -746,11 +751,11 @@ export class OfflineMapService {
    */
   private async getDataDirectory(): Promise<Directory.Data> {
     // if (this.platform.is('android')) {
-    //     const userSettings = await this.userSettingService.getUserSettings();
-    //     // TODO: Prefer save offline map on SD card? Show a dialog to ask if user wants to save on external directory?
-    //     if (false) {
-    //         return this.file.externalDataDirectory;
-    //     }
+    //   const userSettings = await this.userSettingService.getUserSettings();
+    //   // TODO: Prefer save offline map on SD card? Show a dialog to ask if user wants to save on external directory?
+    //   if (false) {
+    //     return this.file.externalDataDirectory;
+    //   }
     // }
     return Directory.Data;
   }
@@ -827,7 +832,8 @@ export class OfflineMapService {
       });
   }
 
-  //TODO: Kan vi bruke disse til noe? Dette blir kalt når brukeren trykker "resett app" i innstillinger, så her må alle kartpakker slettes fra disk..
+  // TODO: Kan vi bruke disse til noe?
+  // Dette blir kalt når brukeren trykker "resett app" i innstillinger, så her må alle kartpakker slettes fra disk..
   // appOnReset(): void | Promise<any> {}
   // appOnResetComplete(): void | Promise<any> {}
 }

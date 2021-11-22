@@ -45,7 +45,7 @@ export class OfflinePackageModalComponent implements OnInit {
     this.center = [lat, lng];
 
     // Use offline map package root tile as zoom level
-    const [x, y, z] = this.packageOnServer.getXYZ();
+    const [, , z] = this.packageOnServer.getXYZ();
     this.zoom = z;
   }
 
