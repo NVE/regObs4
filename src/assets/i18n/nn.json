@@ -218,14 +218,14 @@
       "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
       "PACKAGE_DOWNLOAD_STATUS": "Status:",
       "PACKAGE_PRODUCED_DATE": "Produsert:",
-      "PACKAGE_SIZE": "Produsert:",
+      "PACKAGE_SIZE": "Størrelse:",
       "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
       "TRY_AGAIN_BUTTON": "Prøv på nytt"
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
-      "UNZIP_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}"
+      "UNZIP_PART_X_OF_Y": "Pakker ut {{n}} av {{totalParts}}"
     }
   },
   "PERMISSION": {
