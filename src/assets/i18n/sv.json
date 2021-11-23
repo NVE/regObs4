@@ -25,6 +25,7 @@
     "UNDO": "Ångra",
     "WARNING": "Varning"
   },
+  "CLOSE": "Stäng",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Lägg till egna observationer",
     "SELECT_GEO_HAZARD": "Välj en naturfara",
@@ -183,7 +184,27 @@
     "OBSERVATIONS": "Observationer"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline kartor"
+    "DISKSPACE_ERROR_MESSAGE": "Kvarvarande diskutrymme är mindre än kartans storlek. Gör mer diskutrymme tillgängligt och försök igen.",
+    "DOWNLOAD_ERROR_MESSAGE": "Nedladdningen misslyckades. Är du ansluten till internet?",
+    "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpaket",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedladdning",
+      "DELETE_BUTTON": "Radera",
+      "DOWNLOAD_BUTTON": "Ladda ned",
+      "HEADER": "Kartpaket {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Nedladdat {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_PRODUCED_DATE": "Producerat:",
+      "PACKAGE_SIZE": "Storlek:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Försök igen"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Offlinekartor",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Laddar ner fil {{n}} av {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Packar upp fil {{n}} av {{totalParts}}"
+    },
+    "UNZIP_ERROR_MESSAGE": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tillstånd till plats nekas",

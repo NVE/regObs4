@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>Offline-kart</ion-title>
+    <ion-title>{{ 'OFFLINE_MAP.OFFLINE_MAP_PAGE_TITLE' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -26,7 +26,7 @@
     <div class="footer">
       <ion-list>
         <ion-list-header>
-          <ion-label>Kartpakke</ion-label>
+          <ion-label>{{ 'OFFLINE_MAP.DOWNLOAD_LIST_MAP_PACKAGE_HEADER' | translate }}</ion-label>
         </ion-list-header>
         <ion-item (click)="showPackageModalForPackage(item)" *ngFor="let item of items">
           <ion-label>{{ item.name }}</ion-label>

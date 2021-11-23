@@ -174,7 +174,7 @@
     "OBSERVATIONS": "Osservazioni"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Mappa offline"
+    "OFFLINE_MAP_PAGE_TITLE": "Mappa offline"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Autorizzazione a locazione rifiutata",
