@@ -87,7 +87,9 @@ enum MapLayerZIndex {
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() showMapControls = true;
+  @Input() showMapSearch = true;
+  @Input() showFullscreenToggle = true;
+  @Input() showGpsCenter = true;
   @Input() showUserLocation = true;
   @Input() showScale = true;
   @Input() showSupportMaps = true;
