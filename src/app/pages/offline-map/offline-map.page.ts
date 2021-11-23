@@ -230,7 +230,7 @@ export class OfflineMapPage extends NgDestoryBase {
     if (isNaN(bytes)) {
       return '';
     }
-    return this.helperService.humanReadableByteSize(bytes, false);
+    return this.helperService.humanReadableByteSize(bytes, true);
   }
 
   getPercentage(map: OfflineMapPackage): number {
