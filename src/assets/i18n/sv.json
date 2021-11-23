@@ -25,6 +25,7 @@
     "UNDO": "Ångra",
     "WARNING": "Varning"
   },
+  "CLOSE": "Stäng",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Lägg till egna observationer",
     "SELECT_GEO_HAZARD": "Välj en naturfara",
@@ -181,9 +182,6 @@
     "NO_OBSERVATIONS": "Inga observationer",
     "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
     "OBSERVATIONS": "Observationer"
-  },
-  "OFFLINE_MAP": {
-    "OFFLINE_MAP_PAGE_TITLE": "Offline kartor"
   },
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Kvarvarande diskutrymme är mindre än kartans storlek. Gör mer diskutrymme tillgängligt och försök igen.",
