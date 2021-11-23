@@ -218,7 +218,7 @@
       "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
       "PACKAGE_DOWNLOAD_STATUS": "Status:",
       "PACKAGE_PRODUCED_DATE": "Produsert:",
-      "PACKAGE_SIZE": "Størrelse:",
+      "PACKAGE_SIZE": "Storleik:",
       "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
       "TRY_AGAIN_BUTTON": "Prøv på nytt"
     },
