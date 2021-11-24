@@ -715,7 +715,7 @@
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medel utloppszon (25% oav lavinerna når längre)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lång utloppszon (5% av lavinerna når längre)\nVissa laviner kan ha längre utloppszon än vad som visas på kartan.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Färger anger utloppszoner för laviner:",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utloppszoner för laviner",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utloppszon för laviner",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Försvagad is"
   },
   "TABS": {

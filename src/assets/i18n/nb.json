@@ -754,7 +754,7 @@
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skredene går lenger)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skredene går lenger)\nNoen skred kan ha utløp som ikke er vist på kartet.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Farger på utløp for snøskred:",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsoner for snøskred",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsområder for snøskred",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart"
   },
   "TABS": {
