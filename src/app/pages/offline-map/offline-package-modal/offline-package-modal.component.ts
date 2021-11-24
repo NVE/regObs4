@@ -5,7 +5,8 @@ import { CompoundPackageFeature, CompoundPackage } from '../metadata.model';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
 import { Observable } from 'rxjs';
 import { OfflineMapPackage } from 'src/app/core/services/offline-map/offline-map.model';
-import { tap } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 /**
  * Shows detail info about a specific offline map package. From here you may download or delete the package.
@@ -15,7 +16,7 @@ import { tap } from 'rxjs/operators';
   styleUrls: ['./offline-package-modal.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OfflinePackageModalComponent implements OnInit {
+export class OfflinePackageModalComponent extends NgDestoryBase implements OnInit {
   @Input() feature: CompoundPackageFeature;
   @Input() packageOnServer: CompoundPackage;
   @Input() offlinePackageStatus$: Observable<OfflineMapPackage>;
@@ -32,6 +33,7 @@ export class OfflinePackageModalComponent implements OnInit {
     private offlineMapService: OfflineMapService,
     private cdr: ChangeDetectorRef,
   ) {
+    super();
   }
 
   ngOnInit(): void {
@@ -47,6 +49,13 @@ export class OfflinePackageModalComponent implements OnInit {
     // Use offline map package root tile as zoom level
     const [x, y, z] = this.packageOnServer.getXYZ();
     this.zoom = z;
+
+    this.offlineMapService.finishedPackageIds$.pipe(
+      takeUntil(this.ngDestroy$)).subscribe((packageName) => {
+      if (this.packageOnServer.getName() === packageName) {
+        this.dismiss(); //close when package is unzipped and ready to use
+      }
+    });
   }
 
   showTileOnMap(map: L.Map) {
@@ -62,9 +71,6 @@ export class OfflinePackageModalComponent implements OnInit {
     }
     this.isCheckingAvailableDiskspace = false;
     this.cdr.detectChanges();
-
-    //this.dismiss(); //TODO: Skal vi lukke denne når vi starter nedlasting?
-    // window.open(this.package.properties.url, '_blank');
   }
 
   getPercentage(map: OfflineMapPackage): number {

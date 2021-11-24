@@ -4,9 +4,8 @@ import { Progress } from './progress.model';
 import moment from 'moment';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs';
 import { finalize, map, mergeMap, switchMap, take } from 'rxjs/operators';
-import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import JSZip from 'jszip';
 import { ProgressStep } from './progress-step.model';
@@ -40,6 +39,13 @@ export class OfflineMapService {
     []
   );
   packages$: Observable<OfflineMapPackage[]> = this.packages.asObservable();
+
+  private finishedPackageIds: Subject<string> = new Subject();
+
+  /**
+   * Through this you get name of packages when unpacking is finished and they are ready to use
+   */
+  finishedPackageIds$: Observable<string> = this.finishedPackageIds.asObservable();
 
   private downloadAndUnzipProgress: BehaviorSubject<OfflineMapPackage[]> =
     new BehaviorSubject([]);
@@ -272,6 +278,8 @@ export class OfflineMapService {
       )
       .subscribe(
         async (downloadProgress) => {
+          const file = downloadProgress.content;
+          const root = await this.getRootFileUrl();
           switch (downloadProgress.state) {
           case 'IN_PROGRESS':
             this.onProgress(mapPackage, {
@@ -286,8 +294,6 @@ export class OfflineMapService {
             });
             break;
           case 'DONE':
-            const file = downloadProgress.content;
-            const root = await this.getRootFileUrl();
             await this.unzipFile(
               file,
               root,
@@ -724,6 +730,8 @@ export class OfflineMapService {
     setTimeout(() => {
       this.addMapPackage(newPackage);
     });
+
+    this.finishedPackageIds.next(newPackage.name);
   }
 
   private onCancelled(mapPackage: OfflineMapPackage) {
