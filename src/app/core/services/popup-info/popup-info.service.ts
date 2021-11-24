@@ -17,63 +17,36 @@ export class PopupInfoService {
     private translateService: TranslateService
   ) {}
 
-  checkObservationInfoPopup(delayMs = 2000) {
-    return this.userSettingService.userSetting$.pipe(
-      take(1),
-      delay(delayMs),
-      filter((us) =>
-        this.checkLastTimestamp(
-          settings.popupDisclamerRefreshTimeMs,
-          us.infoAboutObservationsRecievedTimestamp
-        )
-      ),
-      switchMap(() =>
-        this.geAlertTranslations(
-          'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.HEADER',
-          'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.MESSAGE',
-          'POPUP_DISCLAMER.OK_I_UNDERSTAND'
-        )
-      ),
-      switchMap((translations) =>
-        from(
-          this.showAlert(
-            translations.header,
-            translations.message,
-            translations.okText
-          )
-        )
-      ),
-      switchMap(() => from(this.saveInfoAboutObservationsRecievedTimestamp()))
+  checkObservationInfoPopup(_: string = null, delayMs = 2000) {
+    return this.checkInfoPopup(
+      delayMs,
+      "infoAboutObservationsRecievedTimestamps",
+      "static",
+      'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.HEADER',
+      'POPUP_DISCLAMER.ABOUT_OBSERVATIONS.MESSAGE',
+      'POPUP_DISCLAMER.OK_I_UNDERSTAND'
     );
   }
 
-  checkSupportMapInfoPopup(delayMs = 2000) {
-    return this.userSettingService.userSetting$.pipe(
-      take(1),
-      delay(delayMs),
-      filter((us) =>
-        this.checkLastTimestamp(
-          settings.popupDisclamerRefreshTimeMs,
-          us.infoAboutSupportMapsRecievedTimestamp
-        )
-      ),
-      switchMap(() =>
-        this.geAlertTranslations(
-          'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.HEADER',
-          'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.MESSAGE',
-          'POPUP_DISCLAMER.OK_I_UNDERSTAND'
-        )
-      ),
-      switchMap((translations) =>
-        from(
-          this.showAlert(
-            translations.header,
-            translations.message,
-            translations.okText
-          )
-        )
-      ),
-      switchMap(() => from(this.saveInfoAboutSupportMapsRecievedTimestamp()))
+  checkSupportMapInfoPopup(_: string = null, delayMs = 2000) {
+    return this.checkInfoPopup(
+      delayMs,
+      "infoAboutSupportMapsRecievedTimestamps",
+      "static",
+      'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.HEADER',
+      'POPUP_DISCLAMER.ABOUT_SUPPORT_MAPS.MESSAGE',
+      'POPUP_DISCLAMER.OK_I_UNDERSTAND'
+    );
+  }
+
+  checkOfflineSupportMapInfoPopup(name: string, delayMs = 2000) {
+    return this.checkInfoPopup(
+      delayMs,
+      "infoAboutOfflineSupportMapsRecievedTimestamps",
+      name,
+      'POPUP_DISCLAMER.ABOUT_OFFLINE_SUPPORT_MAPS.HEADER',
+      'POPUP_DISCLAMER.ABOUT_OFFLINE_SUPPORT_MAPS.MESSAGE',
+      'POPUP_DISCLAMER.OK_I_UNDERSTAND'
     );
   }
 
@@ -116,23 +89,51 @@ export class PopupInfoService {
     );
   }
 
-  async saveInfoAboutObservationsRecievedTimestamp() {
-    const userSettings = await this.userSettingService.userSetting$
+  async saveInfoAboutRecievedTimestamp(timestampType: string, timestampName: string) {
+    let userSettings = await this.userSettingService.userSetting$
       .pipe(take(1))
       .toPromise();
-    this.userSettingService.saveUserSettings({
+    userSettings = {
       ...userSettings,
-      infoAboutObservationsRecievedTimestamp: moment().unix()
-    });
+      [timestampType]: timestampType in userSettings ? {
+          ...userSettings[timestampType],
+          [timestampName]: moment().unix(),
+        } : {[timestampName]: moment().unix()}
+    };
+    this.userSettingService.saveUserSettings(userSettings);
   }
 
-  async saveInfoAboutSupportMapsRecievedTimestamp() {
-    const userSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
-    this.userSettingService.saveUserSettings({
-      ...userSettings,
-      infoAboutSupportMapsRecievedTimestamp: moment().unix()
-    });
+  private checkInfoPopup(
+    delayMs = 2000,
+    timestampType: string,
+    timestampName: string,
+    header: string,
+    msg: string,
+    ok_txt: string,
+    refreshTimeMs: number = settings.popupDisclamerRefreshTimeMs,
+  ) {
+    return this.userSettingService.userSetting$.pipe(
+      take(1),
+      delay(delayMs),
+      filter((us) =>
+        this.checkLastTimestamp(
+          refreshTimeMs,
+          timestampType in us ? us[timestampType][timestampName] : null,
+        )
+      ),
+      switchMap(() =>
+        this.geAlertTranslations(header, msg, ok_txt)
+      ),
+      switchMap((translations) =>
+        from(
+          this.showAlert(
+            translations.header,
+            translations.message,
+            translations.okText
+          )
+        )
+      ),
+      switchMap(() => from(this.saveInfoAboutRecievedTimestamp(timestampType, timestampName)))
+    );
   }
 }
