@@ -23,6 +23,11 @@
     ></app-map>
   </div>
 </ion-content>
+<ion-footer *ngIf="packageTotals$ | async as packageTotals">
+  <ion-label class="totals">
+    {{ 'OFFLINE_MAP.SPACE_TOTAL_INFO' | translate:{packageCount: packageTotals.numPackages, spaceUsed: packageTotals.spaceUsed, spaceAvailable: getSpaceAvailable() } }}
+  </ion-label>
+</ion-footer>
 <ng-container *ngIf="downloadAndUnzipProgress$ | async as items">
   <ion-footer *ngIf="items.length > 0">
     <div class="footer">

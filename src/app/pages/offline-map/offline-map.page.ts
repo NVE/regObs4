@@ -30,8 +30,12 @@ const errorTileStyle = {
   color: documentStyle.getPropertyValue('--ion-color-danger'),
 };
 
-
 type PackageIndex = CompoundPackageMetadata[];
+
+interface PackageTotals {
+  numPackages: number,
+  spaceUsed: string
+}
 
 @Component({
   selector: 'app-offline-map',
@@ -42,6 +46,7 @@ export class OfflineMapPage extends NgDestoryBase {
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
   private installedPackages: Map<string, OfflineMapPackage> = new Map();
   downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
+  packageTotals$: Observable<PackageTotals>;
   private readonly allPackages$: Observable<OfflineMapPackage[]>;
   private packagesOnServer$: Observable<Map<string, CompoundPackage>>;
   private packagesOnServer: Map<string, CompoundPackage> = new Map();
@@ -84,6 +89,22 @@ export class OfflineMapPage extends NgDestoryBase {
       this.offlineMapService.downloadAndUnzipProgress$,
       this.offlineMapService.packages$
     ]).pipe((map(([inProgress, downloaded]) => [...inProgress, ...downloaded])));
+
+    this.packageTotals$ = this.allPackages$.pipe(
+      map((packages) => {
+        let count = 0;
+        let space = 0;
+        for (const mapPackage of packages) {
+          count += 1;
+          space += mapPackage.size;
+        }
+        let spaceWithUnit = '0 MB';
+        if (space > 0) {
+          spaceWithUnit = this.humanReadableByteSize(space);
+        }
+        return { numPackages: count, spaceUsed: spaceWithUnit };
+      })
+    );
   }
 
   toggleDownloads() {
@@ -274,5 +295,9 @@ export class OfflineMapPage extends NgDestoryBase {
 
   isDownloaded(map: OfflineMapPackage): boolean {
     return !!map.downloadComplete;
+  }
+
+  getSpaceAvailable(): string {
+    return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available);
   }
 }
