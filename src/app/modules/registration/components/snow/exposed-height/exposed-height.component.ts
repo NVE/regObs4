@@ -107,7 +107,7 @@ export class ExposedHeightComponent implements OnInit {
     { id: 200, text: '200' },
     { id: 100, text: '100' },
     { id: 0, text: '0' }
-  ];
+  ].reverse();
 
   get lowerHeightArray() {
     return this.heightArray.filter(
