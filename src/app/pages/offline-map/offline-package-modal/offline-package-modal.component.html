@@ -10,7 +10,9 @@
 <ion-content>
   <div class="map-container" *ngIf="center">
     <app-map
-      [showMapControls]="false"
+      [showMapSearch]=false
+      [showFullscreenToggle]=false
+      [showGpsCenter]=false
       [showUserLocation]="false"
       [showSupportMaps]="false"
       [center]="center"

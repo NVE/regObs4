@@ -13,10 +13,12 @@
       (mapReady)="onMapReady($event)"
       [offlinePackageMode]="true"
       [showScale]="false"
-      [showMapControls]="false"
-      [showUserLocation]="false"
+      [showMapSearch]=false
+      [showFullscreenToggle]=false
+      [showGpsCenter]=true
+      [showUserLocation]="true"
       [showSupportMaps]="false"
-      [autoActivate]="false"
+      [autoActivate]="true"
       [geoTag]="'package-map'"
     ></app-map>
   </div>
