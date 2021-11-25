@@ -33,7 +33,7 @@ steps:
 - task: InstallAppleProvisioningProfile@1
   displayName: 'Install an Apple App Store distribution provisioning profile'
   inputs:
-    provProfileSecureFile: 'c2190d51-17a1-423b-a6c9-79029e97ff6a'
+    provProfileSecureFile: '7b2faf78-ae23-41e5-8a3e-bdea6b9a0e47'
 
 - task: InstallAppleProvisioningProfile@1
   displayName: 'Install an Apple Development provisioning profile'
