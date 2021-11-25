@@ -143,8 +143,9 @@ steps:
     exportPath: 'output/iphoneos/Release'
     exportOptions: 'auto'
     signingOption: 'manual'
-    signingIdentity: 'iPhone Distribution'
-    provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
+    #signingIdentity: 'iPhone Distribution'
+    #provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
+    provisioningProfileName: 'regobs-dist-2022-11-25'
     teamId: '43L5B5X2PE'
 
 - task: Gradle@2
