@@ -1,0 +1,13 @@
+/* 
+  InfoPlist.strings
+  App
+
+  Created by Jørgen Loe Kvalberg on 25/11/2021.
+  
+*/
+NSCameraUsageDescription = "Add images to observations";
+NSLocationAlwaysUsageDescription = "Location is used to show your position in the map and to set initial position when documenting observations";
+NSLocationWhenInUseUsageDescription = "Location is used to show your position in the map and to set initial position when documenting observations";
+NSLocationAlwaysAndWhenInUseUsageDescription = "Location is used to show your position in the map and to set initial position when documenting observations";
+NSPhotoLibraryAddUsageDescription = "Add images to observations";
+NSPhotoLibraryUsageDescription = "Add images to observations";
