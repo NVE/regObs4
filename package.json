@@ -145,7 +145,6 @@
     "cordova-plugin-email-composer": "^0.9.2",
     "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-inappbrowser": "^5.0.0",
-    "cordova-plugin-localization-strings": "^3.2.1",
     "cordova-plugin-safariviewcontroller": "^2.0.0",
     "cordova-plugin-screen-orientation": "^3.0.2",
     "cordova-plugin-secure-storage-echo": "^5.1.1",
