@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  App
+
+  Created by Jørgen Loe Kvalberg on 25/11/2021.
+  
+*/
+NSCameraUsageDescription = "Ajouter des photos aux observations";
+NSLocationAlwaysUsageDescription = "La localisation est utilisée pour indiquer votre position sur la carte et pour documenter le lieu initial des observations.";
+NSLocationWhenInUseUsageDescription = "La localisation est utilisée pour indiquer votre position sur la carte et pour documenter le lieu initial des observations.";
+NSPhotoLibraryAddUsageDescription = "Ajouter des photos aux observations";
+NSPhotoLibraryUsageDescription = "Ajouter des photos aux observations";
