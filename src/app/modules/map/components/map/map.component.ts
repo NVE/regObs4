@@ -436,6 +436,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onMapMove() {
     this.disableFollowMode();
+    this.mapService.sendMapMoveStart();
   }
 
   private onMapMoveEnd() {

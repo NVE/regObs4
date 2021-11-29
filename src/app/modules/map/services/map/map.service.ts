@@ -37,6 +37,8 @@ export class MapService {
   private _centerMapToUserObservable: Observable<void>;
   private _mapViewSubject: Subject<IMapView>;
   private _mapView$: Observable<IMapView>;
+  private _mapMoveStartSubject: any;
+  private _mapMoveStart$: Observable<IMapView>;
   private _relevantMapChange$: Observable<IMapView>;
 
   get mapView$(): Observable<IMapView> {
@@ -49,6 +51,10 @@ export class MapService {
 
   get relevantMapChange$(): Observable<IMapView> {
     return this._relevantMapChange$;
+  }
+
+  get mapMoveStart$(): Observable<IMapView> {
+    return this._mapMoveStart$;
   }
 
   /**
@@ -97,6 +103,8 @@ export class MapService {
       shareReplay(1)
     );
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
+    this._mapMoveStartSubject = new BehaviorSubject<void>(null);
+    this._mapMoveStart$ = this._mapMoveStartSubject.asObservable();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
   }
 
@@ -109,6 +117,10 @@ export class MapService {
     if (mapView) {
       this._mapViewSubject.next(mapView);
     }
+  }
+
+  sendMapMoveStart(): void {
+    this._mapMoveStartSubject.next(null);
   }
 
   private getMapMetersChanged() {
