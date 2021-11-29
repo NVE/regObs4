@@ -122,7 +122,7 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private createHeightDifference(): Observable<HeightDifference> {
     return combineLatest([this.showMapCenter$, this.mapCenterNameAndHeightData$, this.geoPositionService.currentPosition$]).pipe(
       map(([showMapCenter, mapView, gpsPos]) => {
-        const gpsAltitude = gpsPos?.coords?.altitude ? gpsPos?.coords?.altitude : 42;
+        const gpsAltitude = gpsPos?.coords?.altitude ? gpsPos?.coords?.altitude : undefined;
         if (showMapCenter && mapView?.elevation && gpsAltitude) {
           let heightDifference = undefined;
           let gpsPosIsBelowMapCenter = undefined;
