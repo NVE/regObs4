@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { ToastController, Platform } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { of, Observable, combineLatest, firstValueFrom, BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
-import { switchMap, tap, map, filter, timeout } from 'rxjs/operators';
+import { of, Observable, combineLatest, firstValueFrom, BehaviorSubject } from 'rxjs';
+import { switchMap, tap, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { ViewInfo } from '../../services/map-search/view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -11,13 +11,12 @@ import { IMapView } from '../../services/map/map-view.interface';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
 import { HelperService } from 'src/app/core/services/helpers/helper.service';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 interface HeightDifference extends ViewInfo {
   heightDifferenceFromGpsPos?: string; //including unit (m)
   gpsPosIsBelowMapCenter?: boolean;
 }
-
-const DEBUG_TAG = 'MapCenterInfoComponent';
 
 @Component({
   selector: 'app-map-center-info',
@@ -25,13 +24,13 @@ const DEBUG_TAG = 'MapCenterInfoComponent';
   styleUrls: ['./map-center-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapCenterInfoComponent implements OnInit {
+export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   showMapCenter$: Observable<boolean>;
   mapCenterCoords$: Observable<L.LatLng>;
   horizontalDistanceFromGpsPos$: Observable<string>; //including unit (m or km)
   heightDifference$: Observable<HeightDifference>;
-  mapCenterNameAndHeightData$: ReplaySubject<ViewInfo>;
-  mapView$: ReplaySubject<IMapView>;
+  mapCenterNameAndHeightData$: Observable<ViewInfo>;
+  mapView$: Observable<IMapView>;
   isLoading$ = new BehaviorSubject<boolean>(false);
   isLoadingInternal = 0;
   constructedDate = new Date();
@@ -46,42 +45,47 @@ export class MapCenterInfoComponent implements OnInit {
     private platform: Platform,
     private geoPositionService: GeoPositionService,
     private helperService: HelperService,
+    private cdr: ChangeDetectorRef
   ) {
+    super();
   }
 
   async ngOnInit(): Promise<void> {
     this.showMapCenter$ = this.userSettingService.showMapCenter$;
-    this.mapView$ = new ReplaySubject(1);
-    this.mapCenterNameAndHeightData$ = new ReplaySubject(1);
-    this.createMapView();
-    this.createMapCenterNameAndHeightData();
+    this.mapView$ = this.createMapView$();
+    this.mapCenterNameAndHeightData$ = this.createMapCenterNameAndHeightData$();
     this.horizontalDistanceFromGpsPos$ = this.createHorizontalDistanceFromGpsPos();
     this.heightDifference$ = this.createHeightDifference();
 
-    this.mapService.mapMoveStart$.subscribe(() => {
-      if (this.mapService.followMode || new Date().getTime() - this.constructedDate.getTime() < 1000) {
-        return;
+    this.mapService.mapMoveStart$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
+      //trigger loading indicator when we start to pan or zoom
+      const millisSinceStartup = new Date().getTime() - this.constructedDate.getTime();
+      if (this.mapService.followMode || millisSinceStartup < 1000) {
+        return; //to avoid to trigger this before we get GPS position on application startup
       }
       this.isLoading$.next(true);
-      let counter = this.isLoadingInternal;
+      this.cdr.detectChanges();
+      const counter = this.isLoadingInternal;
       setTimeout(async () => {
         if (counter == this.isLoadingInternal) {
           this.isLoading$.next(false);
         }
       }, 5000);
-    })
-  }
-
-  private createMapView(): void {
-    this.mapService.relevantMapChangeWithInitialView$.subscribe((mapView) => {
-      this.isLoadingInternal++;
-      this.isLoading$.next(true);
-      this.mapView$.next(mapView);
     });
   }
 
-  private createMapCenterNameAndHeightData(): void {
-    combineLatest([this.showMapCenter$, this.mapView$]).pipe(
+  private createMapView$(): Observable<IMapView> {
+    return this.mapService.relevantMapChangeWithInitialView$.pipe(
+      tap(() => {
+        this.isLoadingInternal++;
+        this.isLoading$.next(true);
+      }),
+      shareReplay()
+    );
+  }
+
+  private createMapCenterNameAndHeightData$(): Observable<ViewInfo> {
+    return combineLatest([this.showMapCenter$, this.mapView$]).pipe(
       switchMap(([showMapCenter, mapView]) => {
         if (showMapCenter && mapView?.center) {
           return this.mapSearchService.getViewInfo(mapView).pipe(
@@ -93,9 +97,8 @@ export class MapCenterInfoComponent implements OnInit {
         }
         return of(null);
       }),
-    ).subscribe((mapView) => {
-      this.mapCenterNameAndHeightData$.next(mapView);
-    });
+      shareReplay()
+    );
   }
 
   private createHorizontalDistanceFromGpsPos(): Observable<string> {
