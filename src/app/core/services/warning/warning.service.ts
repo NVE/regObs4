@@ -308,12 +308,12 @@ export class WarningService {
 
   private getDefaultWarningGroups(geoHazard: GeoHazard) {
     switch (geoHazard) {
-      case GeoHazard.Snow:
-        return this.getDefaultAvalancheWarningGroups();
-      case GeoHazard.Ice:
-        return this.getDefaultIceWarningGroups();
-      default:
-        return this.getCountyWarningGroups(geoHazard);
+    case GeoHazard.Snow:
+      return this.getDefaultAvalancheWarningGroups();
+    case GeoHazard.Ice:
+      return this.getDefaultIceWarningGroups();
+    default:
+      return this.getCountyWarningGroups(geoHazard);
     }
   }
 
@@ -901,8 +901,8 @@ export class WarningService {
     const toMoment = toDate
       ? moment(toDate)
       : moment()
-          .endOf('day')
-          .add(settings.services.warning.defaultWarningDaysAhead, 'days');
+        .endOf('day')
+        .add(settings.services.warning.defaultWarningDaysAhead, 'days');
     return { from: fromMoment, to: toMoment };
   }
 }

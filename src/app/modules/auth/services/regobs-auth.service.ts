@@ -387,8 +387,8 @@ export class RegobsAuthService {
       status === 401
         ? 'UNAUTHORIZED'
         : status <= 0
-        ? 'SERVICE_UNAVAILABLE'
-        : 'UNKNOWN_ERROR';
+          ? 'SERVICE_UNAVAILABLE'
+          : 'UNKNOWN_ERROR';
     const messageText = `LOGIN.${text}`;
     const extraMessage = text === 'UNKNOWN_ERROR' ? ` ${message}` : '';
     const translations = await this.translateService

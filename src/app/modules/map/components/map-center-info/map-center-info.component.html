@@ -2,7 +2,7 @@
   <img class="center-icon" src="../../../assets/icon/center.png">
   <div class="map-center-info ion-text-nowrap" (click)="copyToClipboard()">
     <ion-grid class="ion-no-padding">
-      <ng-container *ngIf="(!(isLoading$ | async)); else loading">
+      <ng-container *ngIf="!(isLoading$ | async); else loading">
         <ng-container *ngIf="mapCenterNameAndHeightData$ | async as viewInfo">
           <ion-row name="map-center-info-row" *ngIf="viewInfo?.location">
             <span
@@ -41,5 +41,5 @@
   </div>
 </ng-container>
 <ng-template #loading>
-  <ion-spinner color="light" name="dots"></ion-spinner>
+  <ion-spinner name="map-center-info-spinner" color="light" name="dots"></ion-spinner>
 </ng-template>

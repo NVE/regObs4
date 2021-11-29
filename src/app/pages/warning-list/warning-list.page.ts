@@ -137,12 +137,12 @@ export class WarningListPage implements OnInit {
     currentGeoHazard: GeoHazard[]
   ): Observable<IVirtualScrollItem<WarningGroup>[]> {
     switch (segment) {
-      case 'inMapView':
-        return this.getWarningsInMapView();
-      case 'all':
-        return this.getAllWarnings(currentGeoHazard);
-      case 'favourites':
-        return this.getFavouritesObservable();
+    case 'inMapView':
+      return this.getWarningsInMapView();
+    case 'all':
+      return this.getAllWarnings(currentGeoHazard);
+    case 'favourites':
+      return this.getFavouritesObservable();
     }
   }
 
@@ -175,7 +175,7 @@ export class WarningListPage implements OnInit {
 
   private getWarningsInMapViewCenter(): Observable<
     IVirtualScrollItem<WarningGroup>[]
-  > {
+    > {
     return this.warningService.warningGroupInMapViewObservable$.pipe(
       map((val) =>
         this.mapToVirtualScrollItem(val.center, 'WARNING_LIST.IN_MAP_CENTER')
@@ -185,7 +185,7 @@ export class WarningListPage implements OnInit {
 
   private getWarningsInMapViewBounds(): Observable<
     IVirtualScrollItem<WarningGroup>[]
-  > {
+    > {
     return this.warningService.warningGroupInMapViewObservable$.pipe(
       map((val) =>
         this.mapToVirtualScrollItem(val.viewBounds, 'WARNING_LIST.IN_MAP_VIEW')
@@ -195,7 +195,7 @@ export class WarningListPage implements OnInit {
 
   private getWarningsInMapViewBuffer(): Observable<
     IVirtualScrollItem<WarningGroup>[]
-  > {
+    > {
     return this.warningService.warningGroupInMapViewObservable$.pipe(
       map((val) =>
         this.mapToVirtualScrollItem(
@@ -222,7 +222,7 @@ export class WarningListPage implements OnInit {
 
   private getSnowRegionWarnings(): Observable<
     IVirtualScrollItem<WarningGroup>[]
-  > {
+    > {
     return combineLatest([
       this.getARegionWarnings(),
       this.getBRegionWarnings()
@@ -272,12 +272,12 @@ export class WarningListPage implements OnInit {
   ) {
     return item.header
       ? {
-          header: item.header,
-          infoText: item.infoText,
-          showDayNames: items.some(
-            (x) => x.item.key.geoHazard !== GeoHazard.Ice
-          )
-        }
+        header: item.header,
+        infoText: item.infoText,
+        showDayNames: items.some(
+          (x) => x.item.key.geoHazard !== GeoHazard.Ice
+        )
+      }
       : null;
   }
 

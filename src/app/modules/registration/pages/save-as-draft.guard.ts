@@ -15,7 +15,7 @@ import { take } from 'rxjs/operators';
 
 @Injectable()
 export class SaveAsDraftRouteGuard
-  implements CanDeactivate<OverviewPage | ObsLocationPage> {
+implements CanDeactivate<OverviewPage | ObsLocationPage> {
   constructor(
     private alertController: AlertController,
     private registrationService: RegistrationService,

@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Utkast",
-    "NEW_OBSERVATION": "Ny",
-    "NEW_TRIP": "Ny tur"
+    "DRAFT_TITLE_DIRT": "Utkast: Jordobservation",
+    "DRAFT_TITLE_ICE": "Utkast: Isobservation",
+    "DRAFT_TITLE_SNOW": "Utkast: Snöobservation",
+    "DRAFT_TITLE_WATER": "Utkast: Vattenobservation",
+    "NEW_DIRT_OBSERVATION": "Ny jordobservation",
+    "NEW_ICE_OBSERVATION": "Ny isobservation",
+    "NEW_SNOW_OBSERVATION": "Ny snöobservation",
+    "NEW_WATER_OBSERVATION": "Ny vattenobservation"
   },
   "ALERT": {
     "CANCEL": "Avbryt",
@@ -20,6 +25,7 @@
     "UNDO": "Ångra",
     "WARNING": "Varning"
   },
+  "CLOSE": "Stäng",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Lägg till egna observationer",
     "SELECT_GEO_HAZARD": "Välj en naturfara",
@@ -69,6 +75,7 @@
     "SW": "SV",
     "W": "V"
   },
+  "DRAFT": "Utkast",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Registrerar tur"
   },
@@ -177,7 +184,27 @@
     "OBSERVATIONS": "Observationer"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline kartor"
+    "DISKSPACE_ERROR_MESSAGE": "Kvarvarande diskutrymme är mindre än kartans storlek. Gör mer diskutrymme tillgängligt och försök igen.",
+    "DOWNLOAD_ERROR_MESSAGE": "Nedladdningen misslyckades. Är du ansluten till internet?",
+    "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpaket",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedladdning",
+      "DELETE_BUTTON": "Radera",
+      "DOWNLOAD_BUTTON": "Ladda ned",
+      "HEADER": "Kartpaket {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Nedladdat {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_PRODUCED_DATE": "Producerat:",
+      "PACKAGE_SIZE": "Storlek:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Försök igen"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Offlinekartor",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Laddar ner fil {{n}} av {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Packar upp fil {{n}} av {{totalParts}}"
+    },
+    "UNZIP_ERROR_MESSAGE": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tillstånd till plats nekas",
@@ -684,11 +711,11 @@
     "STEEPNESS_MAP_DESCRIPTION": "Lutningskarta",
     "STEEPNESS_MAP_DISCLAMER": "<i>Endast</i> för turplanering. Kartan produceras automatiskt och kan ha fel och information kan saknas, t.ex. brant terräng visas inte.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Temakartan är endast tillgänglig offline med utloppszoner aktiverade.",
-    "STEEPNESS_OUTLET_LEGEND_TITLE": "Färger anger utloppszoner för laviner:",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Kort utloppszon (50% av lavinerna når längre)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medel utloppszon (25% oav lavinerna når längre)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lång utloppszon (5% av lavinerna når längre)\nVissa laviner kan ha längre utloppszon än vad som visas på kartan.",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utloppszoner för laviner",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Färger anger utloppszoner för laviner:",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utloppszon för laviner",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Försvagad is"
   },
   "TABS": {

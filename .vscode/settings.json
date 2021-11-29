@@ -1,5 +1,6 @@
 {
-  "i18n-ally.localesPaths": "node_modules/@varsom-regobs-common/translations/app/i18n",
+  "i18n-ally.localesPaths": "src/assets/i18n",
+  "i18n-ally.keystyle": "nested",
   "[javascript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
@@ -22,6 +23,5 @@
       "source.fixAll.eslint": true
     },
     "editor.formatOnSave": true
-},
-"i18n-ally.keystyle": "nested"
+}
 }
