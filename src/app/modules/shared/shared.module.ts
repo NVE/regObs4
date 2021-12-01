@@ -26,6 +26,7 @@ import { CompetenceComponent } from '../../components/competence/competence.comp
 import { MapImageModule } from '../map-image/map-image.module';
 import { AuthModule } from './../auth/auth.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
+import { AbsPipe } from './pipes/abs.pipe';
 @NgModule({
   imports: [
     CommonModule,
@@ -57,7 +58,8 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     SelectComponent,
     GeoFabComponent,
     GeoNameComponent,
-    CompetenceComponent
+    CompetenceComponent,
+    AbsPipe
   ],
   exports: [
     CommonModule,
@@ -86,7 +88,8 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     GeoFabComponent,
     CompetenceComponent,
     AuthModule,
-    VirtualScrollerModule
+    VirtualScrollerModule,
+    AbsPipe
   ]
 })
 export class SharedModule {}
