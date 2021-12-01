@@ -47,7 +47,7 @@
     <!-- Distance and height difference to gps position -->
     <ion-row name="map-center-info-row" *ngIf="distance != null && distance > 0">
         {{ getHorizontalDifferenceText(distance) }} {{ 'MAP_CENTER_INFO.AWAY_FROM' | translate }}
-        <ng-container *ngIf="!loading">
+        <ng-container *ngIf="!loading && heightDifference != null">
           <ion-icon *ngIf="heightDifference > 0" name="arrow-up" class="height-difference-icon"></ion-icon>
           <ion-icon *ngIf="heightDifference < 0" name="arrow-down" class="height-difference-icon"></ion-icon>
           {{ heightDifference | abs | number: '1.0-0' }} m

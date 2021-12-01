@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, NgZone, AfterViewInit, ElementRef, AfterViewChecked, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone, AfterViewChecked, Inject } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { combineLatest, Observable, Subject, race } from 'rxjs';
@@ -16,8 +16,8 @@ import {
   map,
   distinctUntilChanged,
   takeUntil,
-  tap,
-  take
+  take,
+  debounceTime
 } from 'rxjs/operators';
 import { settings } from '../../../settings';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
@@ -64,9 +64,11 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
   ) {
     super(router, route);
 
-    // Update global css property containing info box height when height changes
+    // Update global css property containing info box height when height changes.
+    // This is used to position map scale above map center info box.
     this.mapCenterInfoHeight.pipe(
       distinctUntilChanged(),
+      debounceTime(500),
       takeUntil(this.ngUnsubscribe)
     ).subscribe((newInfoBoxHeight) => {
       this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
@@ -212,6 +214,8 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
     if (mapCenterElement) {
       const height = mapCenterElement.offsetHeight;
       this.mapCenterInfoHeight.next(height);
+    } else {
+      this.mapCenterInfoHeight.next(0);
     }
   }
 }
