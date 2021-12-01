@@ -62,12 +62,12 @@ export class MapService {
    */
   get relevantMapChangeWithInitialView$(): Observable<IMapView> {
     return concat(
-      this._mapView$
-        .pipe(
-          filter((mapView) => mapView !== null))
-        .pipe(
-          take(1)),
-      this._relevantMapChange$);
+      this._mapView$.pipe(
+        filter((mapView) => mapView !== null),
+        take(1)
+      ),
+      this._relevantMapChange$
+    );
   }
 
   get followMode$(): Observable<boolean> {

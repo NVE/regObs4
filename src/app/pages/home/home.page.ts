@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone, AfterViewInit, ElementRef, AfterViewChecked, OnDestroy, Inject } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { combineLatest, Observable, Subject, race } from 'rxjs';
@@ -23,6 +23,8 @@ import { settings } from '../../../settings';
 import { UsageAnalyticsConsentService } from '../../core/services/usage-analytics-consent/usage-analytics-consent.service';
 import { RouterPage } from '../../core/helpers/routed-page';
 import { enterZone } from '../../core/helpers/observable-helper';
+import { MapCenterInfoComponent } from 'src/app/modules/map/components/map-center-info/map-center-info.component';
+import { DOCUMENT } from '@angular/common';
 
 const DEBUG_TAG = 'HomePage';
 
@@ -31,9 +33,8 @@ const DEBUG_TAG = 'HomePage';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss']
 })
-export class HomePage extends RouterPage implements OnInit {
-  @ViewChild(MapItemBarComponent, { static: true })
-  mapItemBar: MapItemBarComponent;
+export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
+  @ViewChild(MapItemBarComponent, { static: true }) mapItemBar: MapItemBarComponent;
   @ViewChild(MapComponent, { static: true }) mapComponent: MapComponent;
   private map: L.Map;
   private markerLayer = LeafletClusterHelper.createMarkerClusterGroup({
@@ -47,17 +48,35 @@ export class HomePage extends RouterPage implements OnInit {
   showGeoSelectInfo = false;
   dataLoadIds$: Observable<string[]>;
 
+  @ViewChild(MapCenterInfoComponent) mapCenter: MapCenterInfoComponent;
+  private mapCenterInfoHeight = new Subject<number>();
+
   constructor(
     router: Router,
     route: ActivatedRoute,
     private observationService: ObservationService,
     private fullscreenService: FullscreenService,
-    private userSettingService: UserSettingService,
+    public userSettingService: UserSettingService,
     private ngZone: NgZone,
     private loggingService: LoggingService,
-    private usageAnalyticsConsentService: UsageAnalyticsConsentService
+    private usageAnalyticsConsentService: UsageAnalyticsConsentService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super(router, route);
+
+    // Update global css property containing info box height when height changes
+    this.mapCenterInfoHeight.pipe(
+      distinctUntilChanged(),
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe((newInfoBoxHeight) => {
+      // eslint-disable-next-line no-console
+      console.log('NEW MAP CENTER INFO HEIGHT:', newInfoBoxHeight);
+      this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    this.updateInfoBoxHeight();
   }
 
   ngOnInit() {
@@ -144,6 +163,7 @@ export class HomePage extends RouterPage implements OnInit {
       DEBUG_TAG
     );
     this.mapComponent.componentIsActive(true);
+    this.updateInfoBoxHeight();
   }
 
   onLeave() {
@@ -152,6 +172,9 @@ export class HomePage extends RouterPage implements OnInit {
       DEBUG_TAG
     );
     this.mapComponent.componentIsActive(false);
+
+    // As we leave the page, map center info is not visible any more, reset height
+    this.mapCenterInfoHeight.next(0);
   }
 
   // async ionViewDidEnter() {
@@ -183,6 +206,14 @@ export class HomePage extends RouterPage implements OnInit {
         this.mapItemBar.show(m.item);
       });
       marker.addTo(this.markerLayer);
+    }
+  }
+
+  private updateInfoBoxHeight() {
+    const mapCenterElement = this.mapCenter?.nativeElement;
+    if (mapCenterElement) {
+      const height = mapCenterElement.offsetHeight;
+      this.mapCenterInfoHeight.next(height);
     }
   }
 }
