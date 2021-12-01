@@ -69,8 +69,6 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       distinctUntilChanged(),
       takeUntil(this.ngUnsubscribe)
     ).subscribe((newInfoBoxHeight) => {
-      // eslint-disable-next-line no-console
-      console.log('NEW MAP CENTER INFO HEIGHT:', newInfoBoxHeight);
       this.document.documentElement.style.setProperty('--map-center-info-height', `${newInfoBoxHeight}px`);
     });
   }
