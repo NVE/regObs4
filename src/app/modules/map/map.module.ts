@@ -17,6 +17,7 @@ import { RouterModule } from '@angular/router';
 import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image.module';
 import { SupportMapInfoPageModule } from './pages/support-map-info/support-map-info.module';
 import { MapImageModule } from '../map-image/map-image.module';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { MapImageModule } from '../map-image/map-image.module';
     ModalSearchPageModule,
     ModalMapImagePageModule,
     SupportMapInfoPageModule,
-    MapImageModule
+    MapImageModule,
+    SharedModule
   ],
   declarations: [
     MapComponent,
