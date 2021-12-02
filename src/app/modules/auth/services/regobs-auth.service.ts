@@ -229,6 +229,7 @@ export class RegobsAuthService {
   }
 
   public async getAndSaveObserver(idToken: string): Promise<void> {
+    this.logger.debug('getAndSaveObserver(): Trying to get observer from API...', DEBUG_TAG);
     try {
       this._isLoggingInSubject.next(true);
       const result = await this.getObserverFromApi(idToken);
@@ -253,13 +254,17 @@ export class RegobsAuthService {
         isLoggedIn: true,
         user: resultWithNick
       });
+      this.logger.debug('getAndSaveObserver(): Trying to save logged in user to db...', DEBUG_TAG);
       setTimeout(
         () => this.saveLoggedInUserToDb(claims.email, true, resultWithNick),
         20
       );
+      this.logger.debug('getAndSaveObserver(): Save logged in user to db finished', DEBUG_TAG);
     } catch (err) {
+      this.logger.debug(`getAndSaveObserver(): Caught error: err.status = ${err.status}, err.message = ${err.message}`, DEBUG_TAG);
       await this.showErrorMessage(err.status, err.message);
     } finally {
+      this.logger.debug('getAndSaveObserver(): Finish', DEBUG_TAG);
       this._isLoggingInSubject.next(false);
     }
   }
@@ -347,6 +352,7 @@ export class RegobsAuthService {
   }
 
   public async onSignInCallback(action: IAuthAction): Promise<void> {
+    this.logger.debug(`onSignInCallback(), action = '${action?.action}', error = '${action?.error}',  user = '${action.user}'`, DEBUG_TAG);
     if (action.tokenResponse?.idToken) {
       await this.getAndSaveObserver(action.tokenResponse?.idToken);
     } else if (

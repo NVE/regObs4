@@ -11,10 +11,11 @@ import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
 import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
-import { switchMap, take, concatMap, catchError } from 'rxjs/operators';
+import { switchMap, take, concatMap, catchError, filter } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { NavigationEnd, Router } from '@angular/router';
 
 const DEBUG_TAG = 'AppComponent';
 
@@ -35,7 +36,8 @@ export class AppComponent {
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
     private shortcutService: ShortcutService,
-    private fileLoggingService: FileLoggingService
+    private fileLoggingService: FileLoggingService,
+    private router: Router
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -54,7 +56,7 @@ export class AppComponent {
       });
   }
 
-  afterAppInitialized() {
+  private afterAppInitialized() {
     SplashScreen.hide();
   }
 
@@ -153,6 +155,15 @@ export class AppComponent {
                 )
               )
             ),
+            of ( this.initRouteNavigationLogger()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not init route navigation logging'
+                )
+              )
+            )
           ])
         )
       );
@@ -162,5 +173,18 @@ export class AppComponent {
     return from(this.platform.ready()).pipe(
       switchMap(() => this.userSettings.userSetting$.pipe(take(1)))
     );
+  }
+
+  private async initRouteNavigationLogger(): Promise<void> {
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd)
+    ).subscribe((navigationEnd: NavigationEnd) => {
+      this.loggingService.debug(`Navigate to '${this.getPath(navigationEnd.url)}'. 
+        Url after redirects = '${this.getPath(navigationEnd.urlAfterRedirects)}'`, 'Router');
+    });
+  }
+
+  private getPath(url: string): string {
+    return url.split('?')[0];
   }
 }
