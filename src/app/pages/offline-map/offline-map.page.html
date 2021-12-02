@@ -23,19 +23,20 @@
     ></app-map>
   </div>
 </ion-content>
-<ion-footer *ngIf="packageTotals$ | async as packageTotals">
-  <ion-label class="totals">
-    {{ 'OFFLINE_MAP.SPACE_TOTAL_INFO' | translate:{packageCount: packageTotals.numPackages, spaceUsed: packageTotals.spaceUsed, spaceAvailable: getSpaceAvailable() } }}
-  </ion-label>
-</ion-footer>
-<ng-container *ngIf="downloadAndUnzipProgress$ | async as items">
-  <ion-footer *ngIf="items.length > 0">
+<ion-footer>
+  <ion-list>
+    <ion-item *ngIf="packageTotals$ | async as packageTotals" (click)="progressExpanded = !progressExpanded" lines="full">
+      <ion-label class="package-count">{{ 'OFFLINE_MAP.PACKAGE_COUNT' | translate:{packageCount: packageTotals.numPackages} }}</ion-label>
+      <ion-label>
+        <span class="packages-size">{{ packageTotals.spaceUsed }}</span>&nbsp; 
+        <span class="space-available">({{ 'OFFLINE_MAP.SPACE_AVAILABLE' | translate:{spaceAvailable: getSpaceAvailable()} }})</span>
+      </ion-label>
+      <ion-icon *ngIf="isExpandable()" slot="end" name="chevron-up-circle" class="expand-icon"></ion-icon>
+      <ion-icon *ngIf="isCollapsable()" slot="end" name="chevron-down-circle" class="expand-icon"></ion-icon>
+    </ion-item>
     <div class="footer">
-      <ion-list>
-        <ion-list-header>
-          <ion-label>{{ 'OFFLINE_MAP.DOWNLOAD_LIST_MAP_PACKAGE_HEADER' | translate }}</ion-label>
-        </ion-list-header>
-        <ion-item (click)="showPackageModalForPackage(item)" *ngFor="let item of items">
+      <ng-container *ngIf="progressExpanded && downloadAndUnzipProgress$ | async as items">
+        <ion-item (click)="showPackageModalForPackage(item)" *ngFor="let item of items" lines="full">
           <ion-label>{{ item.name }}</ion-label>
           <ion-label>{{ humanReadableByteSize(item.size) }}</ion-label>
           <ion-label *ngIf="isDownloading(item)">
@@ -43,7 +44,7 @@
           <ion-icon slot="end" *ngIf="item.error" name="warning-outline"></ion-icon>
           <ion-icon slot="end" (click)="cancelOrDelete(item, $event)" name="trash-outline"></ion-icon>
         </ion-item>
-      </ion-list>
+      </ng-container>
     </div>
-  </ion-footer>
-</ng-container>
+  </ion-list>
+</ion-footer>

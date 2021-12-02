@@ -29,6 +29,26 @@ ion-backdrop {
   margin: 0 24px;
 }
 
-.totals {
-  margin: 16px;
+.package-count {
+  color: #262626;
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.packages-size {
+  color: #262626;
+  font-weight: 400;
+  font-size: 15px;
+  text-transform: uppercase;
+}
+
+.space-available {
+  color: #757575;
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.expand-icon {
+  color: #262626; 
 }
