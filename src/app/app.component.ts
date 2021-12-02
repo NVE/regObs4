@@ -179,8 +179,9 @@ export class AppComponent {
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd)
     ).subscribe((navigationEnd: NavigationEnd) => {
-      this.loggingService.debug(`Navigate to '${this.getPath(navigationEnd.url)}'. 
-        Url after redirects = '${this.getPath(navigationEnd.urlAfterRedirects)}'`, 'Router');
+      const url = this.getPath(navigationEnd.url);
+      const urlAfterRedirect = this.getPath(navigationEnd.urlAfterRedirects);
+      this.loggingService.debug(`Navigate to '${url}'. Url after redirects = '${urlAfterRedirect}'`, 'Router');
     });
   }
 
