@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { AlertController, ModalController } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
-import { debounceTime, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
@@ -51,14 +51,18 @@ export class OfflineMapPage extends NgDestoryBase {
   private packagesOnServer$: Observable<Map<string, CompoundPackage>>;
   private packagesOnServer: Map<string, CompoundPackage> = new Map();
   showTileCard = true;
-  showDownloads = false;
   tilesLayer: L.GeoJSON;
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
   showModal = new Subject<CompoundPackageFeature>();
   isZooming = new BehaviorSubject<boolean>(false);
   featureMap = new Map<string, { feature: CompoundPackageFeature, layer: L.Layer }>();
-  progressExpanded = false; //list of packages is expanded
-  private downloadOrUnzipInProgressOrFailed = false; //we have packages under download, unzip or that has failed
+
+  expanded = false; //show list of downloads if this is true
+  isExpandable$: Observable<boolean>; //we can expand list of downloads
+  isCollapsible$: Observable<boolean>; //we can collapse list of downloads
+  private expandedToggleIsChanged = new BehaviorSubject(false);
+  private isExpandable = new BehaviorSubject(false);
+  private isCollapsible = new BehaviorSubject(false);
 
   constructor(
     private helperService: HelperService,
@@ -68,7 +72,6 @@ export class OfflineMapPage extends NgDestoryBase {
     private translateService: TranslateService,
     private zone: NgZone,
     http: HttpClient,
-    private cdr: ChangeDetectorRef
   ) {
     super();
     // Download package index from azure
@@ -109,16 +112,24 @@ export class OfflineMapPage extends NgDestoryBase {
       })
     );
 
-    this.downloadAndUnzipProgress$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((packages) => {
-        this.downloadOrUnzipInProgressOrFailed = packages.length > 0;
-        this.cdr.markForCheck();
-      });
+    this.isExpandable$ = this.isExpandable.asObservable();
+    this.isCollapsible$ = this.isCollapsible.asObservable();
   }
 
-  toggleDownloads() {
-    this.showDownloads = !this.showDownloads;
+  ngOnInit(): void {
+    const progressCountChanged$: Observable<number> = this.downloadAndUnzipProgress$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        map((packages: OfflineMapPackage[]) => packages.length),
+        distinctUntilChanged()
+      );
+
+    combineLatest([progressCountChanged$, this.expandedToggleIsChanged])
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(([count, expanded]) => {
+        this.isExpandable.next(count > 0 && !expanded);
+        this.isCollapsible.next(count > 0 && expanded);
+      });
   }
 
   onMapReady(map: L.Map) {
@@ -310,17 +321,8 @@ export class OfflineMapPage extends NgDestoryBase {
     return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available);
   }
 
-  /**
-   * @returns true if we can expand the progress list
-   */
-  isExpandable(): boolean {
-    return this.downloadOrUnzipInProgressOrFailed && !this.progressExpanded;
-  }
-
-  /**
-   * @returns true if we can collaps the progress list
-   */
-  isCollapsable(): boolean {
-    return this.downloadOrUnzipInProgressOrFailed && this.progressExpanded;
+  toggleExpand(): void {
+    this.expanded = !this.expanded;
+    this.expandedToggleIsChanged.next(this.expanded);
   }
 }
