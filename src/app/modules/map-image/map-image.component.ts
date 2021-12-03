@@ -14,13 +14,18 @@ import { takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { ImageLocation } from '../../components/img-swiper/image-location.model';
 import { settings } from '../../../settings';
 import { SmartChanges } from '../../core/helpers/simple-changes.helper';
-import { BorderHelper } from '../../core/helpers/leaflet/border-helper';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { BaseMapLayer } from 'src/app/core/models/basemap-layer.enum';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';
 const END_ICON = '/assets/icon/map/GPS_stop.svg';
 const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
+
+const canUseMap = (layer: BaseMapLayer, location: L.LatLng) => {
+  const bounds = settings.map.tiles.baseMapLayers[layer]?.options?.bounds;
+  return bounds == null || L.latLngBounds(bounds as L.LatLngBoundsLiteral).contains(location);
+};
 
 @Component({
   selector: 'app-map-image',
@@ -137,21 +142,20 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
       });
   }
 
-  private isInNorway() {
-    if (this.location && this.location.latLng) {
-      return (
-        BorderHelper.isInNorway(this.location.latLng) ||
-        BorderHelper.isInSvalbard(this.location.latLng)
-      );
+  private getMatchingBaseLayer() {
+    if (canUseMap(BaseMapLayer.statensKartverk, this.location.latLng)) {
+      return settings.map.tiles.baseMapLayers[BaseMapLayer.statensKartverk];
     }
-    return false;
+    if (canUseMap(BaseMapLayer.npolarBasiskart, this.location.latLng)) {
+      return settings.map.tiles.baseMapLayers[BaseMapLayer.npolarBasiskart];
+    }
+    return settings.map.tiles.baseMapLayers[BaseMapLayer.arcGisOnline];
   }
 
   private addTileLayers() {
-    const url = this.isInNorway()
-      ? settings.map.tiles.statensKartverkMapUrl
-      : settings.map.tiles.arcGisOnlineTopoMapUrl;
-    L.tileLayer(url, {
+    const baseLayer = this.getMatchingBaseLayer();
+    L.tileLayer(baseLayer.url, {
+      ...baseLayer.options,
       updateWhenIdle: true,
       keepBuffer: 0
     }).addTo(this.map);

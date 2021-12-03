@@ -34,77 +34,18 @@ import {
   IRegObsTileLayerOptions,
   RegObsOfflineAwareTileLayer,
 } from '../../core/classes/regobs-tile-layer';
-import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
-import { LangKey } from '../../../../core/models/langKey';
 import { File } from '@ionic-native/file/ngx';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
 import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
-import { BBox } from 'geojson';
+import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
+import { BaseMapLayer } from 'src/app/core/models/basemap-layer.enum';
 
 const DEBUG_TAG = 'MapComponent';
 
-const SVALBARD_BOUNDS = {
-  type: 'Polygon',
-  coordinates: [
-    [
-      [
-        33.57421875,
-        80.45222248756414
-      ],
-      [
-        22.543945312499996,
-        80.87282721505686
-      ],
-      [
-        18.6328125,
-        80.86585369109436
-      ],
-      [
-        10.546875,
-        80.14116260879798
-      ],
-      [
-        7.778320312499999,
-        79.28631294293976
-      ],
-      [
-        7.8662109375,
-        77.4850880888233
-      ],
-      [
-        14.809570312499998,
-        76.29995345893326
-      ],
-      [
-        22.148437499999996,
-        76.00547035565366
-      ],
-      [
-        26.806640624999996,
-        76.28954161916205
-      ],
-      [
-        31.069335937499996,
-        78.31385955743478
-      ],
-      [
-        35.2001953125,
-        79.85883334713468
-      ],
-      [
-        33.57421875,
-        80.45222248756414
-      ]
-    ]
-  ]
-};
-
-type CreateTileLayer = (options: IRegObsTileLayerOptions) => L.TileLayer;
-
-const isTopoLayer = (mapId: string) => (<string[]>Object.values(TopoMap)).includes(mapId);
+const isBaseMapLayer = (mapId: string) => (<string[]>Object.values(BaseMapLayer)).includes(mapId);
 const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
   layerGroup.eachLayer((layer) => {
     if (layer instanceof L.TileLayer) {
@@ -128,25 +69,7 @@ const getNativeZoomOptions = (map: OfflineTilesMetadata, detectRetina: boolean):
   }
 };
 
-enum MapLayerZIndex {
-  OnlineMixedBackgroundLayer = 0,
-  OfflineBackgroundLayer = 10,
-  OnlineBackgroundLayer = 20,
-  OnlineBackgroundLayerSvalbard = 21,
-  OfflineSupportLayer = 30,
-  OnlineSupportLayer = 40,
-  Top = 50
-}
-
-const NPOLAR_SETTINGS: L.TileLayerOptions = {
-  minZoom: 6,
-  maxZoom: 13,
-  bounds: [
-    [73.7357239, 7.4670978],
-    [81.1569081, 36.0502348]
-  ],
-  zIndex: MapLayerZIndex.OnlineBackgroundLayerSvalbard
-};
+const DEFAULT_BASEMAP = settings.map.tiles.baseMaps[TopoMap.default];
 
 @Component({
   selector: 'app-map',
@@ -441,13 +364,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     // Create offline tile map layers
     for (const offlinePackage of packages) {
       for (const map of Object.values(offlinePackage.maps)) {
-        if (isTopoLayer(map.mapId)) {
+        if (isBaseMapLayer(map.mapId)) {
           this.createTopoMapOfflineLayer(map, userSettings.useRetinaMap);
         } else if (enabledSupportMaps.has(map.mapId)) {
           const { opacity } = enabledSupportMaps.get(map.mapId);
           this.createSupportMapOfflineLayer(map, opacity, userSettings.useRetinaMap);
         } else {
-          this.loggingService.debug(`'${map.mapId}' is currently disabled or undefined in map config, no layer created for ${map.url}`, DEBUG_TAG);
+          this.loggingService.debug(
+            `'${map.mapId}' is currently disabled or undefined in map config, no layer created for ${map.url}`,
+            DEBUG_TAG
+          );
         }
       }
     }
@@ -550,16 +476,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.layerGroup.clearLayers();
       this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
 
-      const createTileLayerFactory = this.getTileLayerFactory(
-        userSetting.topoMap
-      );
-
-      for (const createTileLayer of createTileLayerFactory) {
-        const options = {
-          ...this.getTileLayerDefaultOptions(userSetting.useRetinaMap),
-          zIndex: MapLayerZIndex.OnlineBackgroundLayer
-        };
-        const layer = createTileLayer(options);
+      for (const layer of this.getBaseMapLayers(userSetting.topoMap, userSetting.useRetinaMap)) {
         layer.addTo(this.layerGroup);
       }
 
@@ -577,7 +494,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           keepBuffer: 0,
           updateWhenIdle: true,
           minZoom: settings.map.tiles.minZoomSupportMaps,
-          bounds: <any>settings.map.tiles.supportTilesBounds
+          bounds: settings.map.tiles.supportTilesBounds
         };
 
         const layer = this.createSupportMapTileLayer(supportMaps.name, supportMaps.url, options);
@@ -607,111 +524,36 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       : settings.map.tiles.maxZoom;
   }
 
-  private getTileLayerFactory(topoMap: TopoMap): CreateTileLayer[] {
-    let createNorwegianMixedMap: CreateTileLayer;
-    let createStatensKartverk: CreateTileLayer;
-    let createNpolarBasiskart: CreateTileLayer;
+  private *getBaseMapLayers(topoMap: TopoMap, useRetinaMap: boolean) {
+    const baseMapLayers = settings.map.tiles.baseMaps[topoMap] || DEFAULT_BASEMAP;
 
-    if (isAndroidOrIos(this.platform)) {
-      createNorwegianMixedMap = (options) => new RegObsOfflineAwareTileLayer(
-        TopoMap.statensKartverk,
-        settings.map.tiles.statensKartverkMapUrl,
-        {
-          ...options,
-          bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
-        },
-        this.offlineMapService.offlineTilesRegistry,
-        this.loggingService,
-      );
+    for (const baseMapMember of baseMapLayers) {
+      const layerSettings = settings.map.tiles.baseMapLayers[baseMapMember.layer];
+      const options = {
+        ...this.getTileLayerDefaultOptions(useRetinaMap),
+        ...(layerSettings.options || {}),
+        ...(baseMapMember.options || {}),
+      };
 
-      createStatensKartverk = (options) => new RegObsOfflineAwareTileLayer(
-        TopoMap.statensKartverk,
-        settings.map.tiles.statensKartverkMapUrl,
-        options,
-        this.offlineMapService.offlineTilesRegistry,
-        this.loggingService,
-      );
-
-      createNpolarBasiskart = (options) => new RegObsOfflineAwareTileLayer(
-        TopoMap.npolarBasiskart,
-        settings.map.tiles.npBasiskartSvalbardWMTS3857MapUrl,
-        {
-          ...options,
-          ...NPOLAR_SETTINGS
-        },
-        this.offlineMapService.offlineTilesRegistry,
-        this.loggingService
-      );
-    } else {
-      createNorwegianMixedMap = (options) => new RegObsTileLayer(
-        settings.map.tiles.statensKartverkMapUrl,
-        {
-          ...options,
-          bounds: settings.map.tiles.supportTilesBounds as L.LatLngBoundsLiteral
-        }
-      );
-
-      createStatensKartverk = (options) => new L.TileLayer(
-        settings.map.tiles.statensKartverkMapUrl,
-        options
-      );
-
-      createNpolarBasiskart = (options) => new L.TileLayer(
-        settings.map.tiles.npBasiskartSvalbardWMTS3857MapUrl,
-        {
-          ...options,
-          ...NPOLAR_SETTINGS
-        },
-      );
-    }
-
-    const createOpenTopoMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.openTopoMapUrl, options);
-    const createArcGisOnlineMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.arcGisOnlineTopoMapUrl, options);
-    const createGeoDataLandskapMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.geoDataLandskapMapUrl, options);
-    const createArGisOnlineMixMap: CreateTileLayer[] = [
-      (options) => new RegObsTileLayer(
-        settings.map.tiles.arcGisOnlineTopoMapUrl,
-        {
-          ...options,
-          zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
-          excludeBounds: [
-            NORWEGIAN_BOUNDS,
-            SVALBARD_BOUNDS
-          ]
-        },
-      ),
-      createNorwegianMixedMap,
-      createNpolarBasiskart
-    ];
-
-    switch (topoMap) {
-    case TopoMap.statensKartverk:
-      return [
-        createNpolarBasiskart,
-        createStatensKartverk
-      ];
-    case TopoMap.openTopo:
-      return [createOpenTopoMap];
-    case TopoMap.arcGisOnline:
-      return [createArcGisOnlineMap];
-    case TopoMap.geoDataLandskap:
-      return [createGeoDataLandskapMap];
-    case TopoMap.mixOpenTopo:
-      return [
-        (options) => new RegObsTileLayer(settings.map.tiles.openTopoMapUrl, {
-          ...options,
-          zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer,
-          excludeBounds: [
-            NORWEGIAN_BOUNDS,
-            SVALBARD_BOUNDS
-          ]
-        }),
-        createNorwegianMixedMap,
-        createNpolarBasiskart
-      ];
-    case TopoMap.mixArcGisOnline:
-    default:
-      return createArGisOnlineMixMap;
+      if (layerSettings.supportsOffline && isAndroidOrIos(this.platform)) {
+        yield new RegObsOfflineAwareTileLayer(
+          baseMapMember.layer,
+          layerSettings.url,
+          options,
+          this.offlineMapService.offlineTilesRegistry,
+          this.loggingService
+        );
+      } else if (baseMapMember.excludeBounds) {
+        yield new RegObsTileLayer(
+          layerSettings.url,
+          {
+            ...options,
+            excludeBounds: baseMapMember.excludeBounds
+          }
+        );
+      } else {
+        yield new L.TileLayer(layerSettings.url, options);
+      }
     }
   }
 
@@ -720,7 +562,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     timer(2000, 5000)
       .pipe(
         withLatestFrom(this.isActive),
-        filter(([timer, active]) => active),
+        filter(([, active]) => active),
         takeUntil(this.ngDestroy$)
       )
       .subscribe(() => this.redrawMap());
@@ -765,6 +607,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private flyTo(latLng: L.LatLng, zoom: number, usePan = false) {
     this.isDoingMoveAction = true;
     // if (usePan) {

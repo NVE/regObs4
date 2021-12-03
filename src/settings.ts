@@ -1,5 +1,81 @@
 /* eslint-disable max-len */
-export const settings = {
+
+import { Polygon } from 'geojson';
+import * as L from 'leaflet';
+import { NORWAY_BOUNDS } from './app/core/helpers/leaflet/norway-bounds';
+import { SVALBARD_BOUNDS } from './app/core/helpers/leaflet/svalbard-bounds';
+import { BaseMapLayer } from './app/core/models/basemap-layer.enum';
+import { MapLayerZIndex } from './app/core/models/maplayer-zindex.enum';
+import { TopoMap } from './app/core/models/topo-map.enum';
+
+// #region Setting Interfaces
+
+interface IBaseMapLayerOptions {
+  url: string;
+  options?: L.TileLayerOptions;
+  supportsOffline?: boolean
+}
+
+interface IBaseMapLayersSettings {
+  [mapLayer: string]: IBaseMapLayerOptions;
+}
+
+interface IBaseMapSettings {
+  layer: BaseMapLayer;
+  options?: L.TileLayerOptions;
+  excludeBounds?: Polygon[];
+}
+
+interface IBaseMapsSettings {
+  [baseMap: string]: IBaseMapSettings[]
+}
+
+interface IMapTileSettings {
+  defaultZoom: number;
+  minZoom: number;
+  minZoomSupportMaps: number;
+  maxZoom: number;
+  zoomLevelObservationList: number;
+  edgeBufferTiles: number;
+  updateWhenIdle: boolean;
+  baseMapLayers: IBaseMapLayersSettings;
+  baseMaps: IBaseMapsSettings;
+  supportTiles: any;
+  supportTilesBounds: L.LatLngTuple[];
+}
+
+interface IMapSettings {
+  tiles: IMapTileSettings;
+  search: any;
+  mapSearchZoomToLevel: number;
+  unknownMapCenter: L.LatLngTuple;
+  flyToOnGpsZoom: number;
+  maxClusterRadius: number;
+}
+
+interface ISettings {
+  authConfig: any;
+  observations: any;
+  services: any;
+  db: any;
+  map: IMapSettings;
+  gps: any;
+  dateFormats: any;
+  kdvElements: any;
+  helpTexts: any;
+  images: any;
+  sentryDsn: string;
+  errorEmailAddress: string;
+  foregroundUpdateIntervalMs: number;
+  backgroundFetchTimeout: number;
+  popupDisclamerRefreshTimeMs: number;
+  googleAnalytics: any;
+  language: any;
+}
+
+// #endregion Setting Interfaces
+
+export const settings: ISettings = {
   authConfig: {
     TEST: {
       client_id: '13270815-7def-4800-8fc9-178dd517f574',
@@ -115,28 +191,110 @@ export const settings = {
   },
   map: {
     tiles: {
-      cacheFolder: 'tilescache',
-      cacheSize: 0,
-      cacheSaveBufferThrottleTimeMs: 50,
-      cacheSaveBufferIdleInterval: 2000,
-      tileImageFormat: 'image/png',
-      embeddedUrl: '/assets/map/{z}/tile_{x}_{y}.png',
       defaultZoom: 5,
-      embeddedUrlMaxZoomWorld: 0,
-      embeddedUrlMaxZoomNorway: 0,
       minZoom: 2,
       minZoomSupportMaps: 5,
       maxZoom: 18,
-      zoomInPosition: 15,
       zoomLevelObservationList: 12,
       edgeBufferTiles: 0,
-      detectRetina: false,
       updateWhenIdle: false,
-      statensKartverkMapUrl: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
-      geoDataLandskapMapUrl: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
-      openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-      arcGisOnlineTopoMapUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-      npBasiskartSvalbardWMTS3857MapUrl: 'https://geodata.npolar.no/arcgis/rest/services/Basisdata/NP_Basiskart_Svalbard_WMTS_3857/MapServer/tile/{z}/{y}/{x}?blankTile=false',
+
+      /**
+       * Basemap layers used in the app.
+       * See below for how these are used by the different basemap options.
+       */
+      baseMapLayers: {
+        [BaseMapLayer.statensKartverk]: {
+          url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+            bounds: [
+              [57.98808405905049, 4.626617431640625],
+              [71.15939141681443, 30.816650390624996]
+            ]
+          },
+          supportsOffline: true
+        },
+        [BaseMapLayer.npolarBasiskart]: {
+          url: 'https://geodata.npolar.no/arcgis/rest/services/Basisdata/NP_Basiskart_Svalbard_WMTS_3857/MapServer/tile/{z}/{y}/{x}?blankTile=false',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+            bounds: [
+              [73.7357239, 7.4670978],
+              [81.1569081, 36.0502348]
+            ],
+            maxNativeZoom: 13,
+          },
+          supportsOffline: true
+        },
+        [BaseMapLayer.geoDataLandskap]: {
+          url: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+          }
+        },
+        [BaseMapLayer.openTopo]: {
+          url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+            // subdomains: [] ?
+          }
+        },
+        [BaseMapLayer.arcGisOnline]: {
+          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+          options: {
+            zIndex: MapLayerZIndex.OnlineBackgroundLayer,
+          }
+        }
+      },
+
+      /**
+       * This is the selectable basemap options in the app composed of different baselayers.
+       */
+      baseMaps: {
+        [TopoMap.default]: [
+          {
+            layer: BaseMapLayer.arcGisOnline,
+            options: {
+              zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer
+            },
+            excludeBounds: [
+              NORWAY_BOUNDS,
+              SVALBARD_BOUNDS
+            ]
+          },
+          {
+            layer: BaseMapLayer.npolarBasiskart,
+          },
+          {
+            layer: BaseMapLayer.statensKartverk,
+          }
+        ],
+        [TopoMap.mixOpenTopo]: [
+          {
+            layer: BaseMapLayer.openTopo,
+            options: {
+              zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer
+            },
+            excludeBounds: [
+              NORWAY_BOUNDS,
+              SVALBARD_BOUNDS
+            ]
+          },
+          {
+            layer: BaseMapLayer.npolarBasiskart,
+          },
+          {
+            layer: BaseMapLayer.statensKartverk,
+          }
+        ],
+        [TopoMap.geoDataLandskap]: [
+          {
+            layer: BaseMapLayer.geoDataLandskap,
+          }
+        ]
+      },
+
       supportTiles: [
         {
           name: 'steepness',
@@ -210,23 +368,11 @@ export const settings = {
       },
       searchHistorySize: 5
     },
-    bounds: {
-      svalbard: {
-        bbox: [
-          [80.493155, 3.157765],
-          [80.309405, 21.685119],
-          [76.337433, 18.003936],
-          [76.465943, 4.879966]
-        ]
-      }
-    },
-    mapSearchZoomToLevel: 14,
+    mapSearchZoomToLevel: 13,
     unknownMapCenter: [59.911197, 10.741059],
-    flyToOnGpsZoom: 14,
+    flyToOnGpsZoom: 13,
     maxClusterRadius: 60 // 30,
   },
-  snowRegionsGeoJsonName: 'omradeNavn',
-  cordovaNotAvailable: 'cordova_not_available',
   gps: {
     highAccuracyPositionOptions: {
       enableHighAccuracy: true,
@@ -234,7 +380,6 @@ export const settings = {
       maximumAge: Infinity // Start with latest cached value
     }
   },
-  offlineAssetsFolder: 'assets',
   dateFormats: {
     angular: {
       date: 'dd.MM.yyyy',
