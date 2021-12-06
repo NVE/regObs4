@@ -16,6 +16,7 @@ import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { NavigationError, Router, RouterEvent } from '@angular/router';
+import { removeOauthTokenFromUrl } from './modules/shared/services/logging/url-utils';
 
 const DEBUG_TAG = 'AppComponent';
 const ROUTER_DEBUG_TAG = 'Router';
@@ -179,11 +180,13 @@ export class AppComponent {
   private async initRouteNavigationLogger(): Promise<void> {
     this.router.events.pipe(
       filter((e): e is RouterEvent => e instanceof RouterEvent)
-    ).subscribe((navigationEvent) => {
-      if (navigationEvent instanceof NavigationError) {
-        this.loggingService.error(navigationEvent.error, ROUTER_DEBUG_TAG, navigationEvent.toString());
+    ).subscribe((event) => {
+      const url = removeOauthTokenFromUrl(event.url);
+      const type = event.constructor?.name;
+      if (event instanceof NavigationError) {
+        this.loggingService.error(event.error, ROUTER_DEBUG_TAG, `url = '${url}'`);
       } else {
-        this.loggingService.debug(navigationEvent.toString(), ROUTER_DEBUG_TAG);
+        this.loggingService.debug(`RouterEvent type = ${type}, url = '${url}'}`);
       }
     });
   }

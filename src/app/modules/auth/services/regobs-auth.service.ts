@@ -33,6 +33,8 @@ import {
   TokenResponse,
   TokenResponseJson
 } from '@openid/appauth';
+import { AUTH_CALLBACK_PATH } from '../factories/auth-factory';
+import { removeOauthTokenFromUrl } from '../../shared/services/logging/url-utils';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -366,8 +368,9 @@ export class RegobsAuthService {
 
   private redirectToReturnUrl() {
     const path = this.location.path();
-    this.logger.debug(`redirectToReturnUrl: path = '${path}'`, DEBUG_TAG);
-    if (path.indexOf('auth/callback') >= 0) {
+    const safePath = removeOauthTokenFromUrl(path);
+    this.logger.debug(`redirectToReturnUrl: path = '${safePath}'`, DEBUG_TAG);
+    if (path.indexOf(AUTH_CALLBACK_PATH) >= 0) {
       const returnUrl = localStorage.getItem(RETURN_URL_KEY);
       this.logger.debug(`redirectToReturnUrl: returnUrl from localStorage = '${returnUrl}'`, DEBUG_TAG);
       if (returnUrl) {
