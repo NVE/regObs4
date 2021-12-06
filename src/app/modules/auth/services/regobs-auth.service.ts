@@ -365,9 +365,11 @@ export class RegobsAuthService {
   }
 
   private redirectToReturnUrl() {
-    if (this.location.path().indexOf('auth/callback') >= 0) {
+    const path = this.location.path();
+    this.logger.debug(`redirectToReturnUrl: path = '${path}'`, DEBUG_TAG);
+    if (path.indexOf('auth/callback') >= 0) {
       const returnUrl = localStorage.getItem(RETURN_URL_KEY);
-      this.logger.debug(`redirectToReturnUrl: returnUrl = '${returnUrl}'`, DEBUG_TAG);
+      this.logger.debug(`redirectToReturnUrl: returnUrl from localStorage = '${returnUrl}'`, DEBUG_TAG);
       if (returnUrl) {
         localStorage.removeItem(RETURN_URL_KEY);
         this.location.replaceState(
