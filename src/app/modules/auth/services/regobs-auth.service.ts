@@ -9,7 +9,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { nSQL } from '@nano-sql/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService, IAuthAction } from 'ionic-appauth';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, from, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { NanoSql } from '../../../../nanosql';
 import { settings } from '../../../../settings';
@@ -190,11 +190,11 @@ export class RegobsAuthService {
   }
 
   public async signIn(setReturnUrl = true): Promise<void> {
-    const currentLang = await this.userSettingService.language$
-      .pipe(take(1))
-      .toPromise();
+    const currentLang = await firstValueFrom(this.userSettingService.language$.pipe(take(1)));
     if (setReturnUrl) {
-      localStorage.setItem(RETURN_URL_KEY, this.router.url);
+      const url = this.router.url;
+      this.logger.debug(`SignIn: ReturnUrl = '${url}'`, DEBUG_TAG);
+      localStorage.setItem(RETURN_URL_KEY, url);
     }
     try {
       await this.authService.signIn({
@@ -367,6 +367,7 @@ export class RegobsAuthService {
   private redirectToReturnUrl() {
     if (this.location.path().indexOf('auth/callback') >= 0) {
       const returnUrl = localStorage.getItem(RETURN_URL_KEY);
+      this.logger.debug(`redirectToReturnUrl: returnUrl = '${returnUrl}'`, DEBUG_TAG);
       if (returnUrl) {
         localStorage.removeItem(RETURN_URL_KEY);
         this.location.replaceState(
