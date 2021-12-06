@@ -15,9 +15,10 @@ import { switchMap, take, concatMap, catchError, filter } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationError, Router, RouterEvent } from '@angular/router';
 
 const DEBUG_TAG = 'AppComponent';
+const ROUTER_DEBUG_TAG = 'Router';
 
 @Component({
   selector: 'app-root',
@@ -177,11 +178,13 @@ export class AppComponent {
 
   private async initRouteNavigationLogger(): Promise<void> {
     this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd)
-    ).subscribe((navigationEnd: NavigationEnd) => {
-      const url = this.getPath(navigationEnd.url);
-      const urlAfterRedirect = this.getPath(navigationEnd.urlAfterRedirects);
-      this.loggingService.debug(`Navigate to '${url}'. Url after redirects = '${urlAfterRedirect}'`, 'Router');
+      filter((e): e is RouterEvent => e instanceof RouterEvent)
+    ).subscribe((navigationEvent) => {
+      if (navigationEvent instanceof NavigationError) {
+        this.loggingService.error(navigationEvent.error, ROUTER_DEBUG_TAG, navigationEvent.toString());
+      } else {
+        this.loggingService.debug(navigationEvent.toString(), ROUTER_DEBUG_TAG);
+      }
     });
   }
 
