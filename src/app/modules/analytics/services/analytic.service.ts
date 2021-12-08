@@ -28,7 +28,8 @@ export class AnalyticService {
 
   trackView(url: string) {
     if (ga) {
-      this.loggingService.debug(`Tracking pageview ${url}`, DEBUG_TAG);
+      const safeUrl = removeOauthTokenFromUrl(url);
+      this.loggingService.debug(`Tracking pageview ${safeUrl}`, DEBUG_TAG);
       ga('set', 'page', url);
       ga('send', 'pageview');
     }

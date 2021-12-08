@@ -181,12 +181,11 @@ export class AppComponent {
     this.router.events.pipe(
       filter((e): e is RouterEvent => e instanceof RouterEvent)
     ).subscribe((event) => {
-      const url = removeOauthTokenFromUrl(event.url);
-      const type = event.constructor?.name;
+      const eventInfo = removeOauthTokenFromUrl(event.toString());
       if (event instanceof NavigationError) {
-        this.loggingService.error(event.error, ROUTER_DEBUG_TAG, `url = '${url}'`);
+        this.loggingService.error(event.error, ROUTER_DEBUG_TAG, eventInfo);
       } else {
-        this.loggingService.debug(`RouterEvent type = ${type}, url = '${url}'}`);
+        this.loggingService.debug(eventInfo);
       }
     });
   }
