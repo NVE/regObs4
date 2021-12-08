@@ -3,8 +3,8 @@ import { OfflineMapService } from '../../core/services/offline-map/offline-map.s
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { AlertController, ModalController } from '@ionic/angular';
-import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, Subject } from 'rxjs';
+import { debounceTime, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
@@ -56,13 +56,7 @@ export class OfflineMapPage extends NgDestoryBase {
   showModal = new Subject<CompoundPackageFeature>();
   isZooming = new BehaviorSubject<boolean>(false);
   featureMap = new Map<string, { feature: CompoundPackageFeature, layer: L.Layer }>();
-
   expanded = false; //show list of downloads if this is true
-  isExpandable$: Observable<boolean>; //we can expand list of downloads
-  isCollapsible$: Observable<boolean>; //we can collapse list of downloads
-  private expandedToggleIsChanged = new BehaviorSubject(false);
-  private isExpandable = new BehaviorSubject(false);
-  private isCollapsible = new BehaviorSubject(false);
 
   constructor(
     private helperService: HelperService,
@@ -111,25 +105,6 @@ export class OfflineMapPage extends NgDestoryBase {
         return { numPackages: count, spaceUsed: spaceWithUnit };
       })
     );
-
-    this.isExpandable$ = this.isExpandable.asObservable();
-    this.isCollapsible$ = this.isCollapsible.asObservable();
-  }
-
-  ngOnInit(): void {
-    const progressCountChanged$: Observable<number> = this.downloadAndUnzipProgress$
-      .pipe(
-        takeUntil(this.ngDestroy$),
-        map((packages: OfflineMapPackage[]) => packages.length),
-        distinctUntilChanged()
-      );
-
-    combineLatest([progressCountChanged$, this.expandedToggleIsChanged])
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(([count, expanded]) => {
-        this.isExpandable.next(count > 0 && !expanded);
-        this.isCollapsible.next(count > 0 && expanded);
-      });
   }
 
   onMapReady(map: L.Map) {
@@ -282,11 +257,8 @@ export class OfflineMapPage extends NgDestoryBase {
   async cancelOrDelete(map: OfflineMapPackage, event: Event) {
     event.stopPropagation();
     if (this.isDownloaded(map)) {
-      // TODO: Are you su
       const toTranslate = ['DIALOGS.ARE_YOU_SURE', 'DIALOGS.CANCEL', 'DIALOGS.OK'];
-      const translations = await this.translateService
-        .get(toTranslate)
-        .toPromise();
+      const translations = await firstValueFrom(this.translateService.get(toTranslate));
       const alert = await this.alertController.create({
         header: translations['DIALOGS.ARE_YOU_SURE'],
         message: translations['DIALOGS.ARE_YOU_SURE'],
@@ -304,7 +276,7 @@ export class OfflineMapPage extends NgDestoryBase {
         ]
       });
       alert.present();
-    }else{
+    } else {
       this.offlineMapService.cancelDownloadPackage(map);
     }
   }
@@ -319,10 +291,5 @@ export class OfflineMapPage extends NgDestoryBase {
 
   getSpaceAvailable(): string {
     return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available);
-  }
-
-  toggleExpand(): void {
-    this.expanded = !this.expanded;
-    this.expandedToggleIsChanged.next(this.expanded);
   }
 }

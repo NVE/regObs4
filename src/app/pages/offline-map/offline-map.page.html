@@ -25,14 +25,14 @@
 </ion-content>
 <ion-footer>
   <ion-list>
-    <ion-item *ngIf="packageTotals$ | async as packageTotals" (click)="toggleExpand()" lines="full">
+    <ion-item *ngIf="packageTotals$ | async as packageTotals" (click)="expanded = !expanded" lines="full">
       <ion-label class="package-count">{{ 'OFFLINE_MAP.PACKAGE_COUNT' | translate:{packageCount: packageTotals.numPackages} }}</ion-label>
       <ion-label>
         <span class="packages-size">{{ packageTotals.spaceUsed }}</span>&nbsp; 
         <span class="space-available">({{ 'OFFLINE_MAP.SPACE_AVAILABLE' | translate:{spaceAvailable: getSpaceAvailable()} }})</span>
       </ion-label>
-      <ion-icon *ngIf="isExpandable$ | async" slot="end" name="chevron-up-circle" class="expand-icon"></ion-icon>
-      <ion-icon *ngIf="isCollapsible$ | async" slot="end" name="chevron-down-circle" class="expand-icon"></ion-icon>
+      <ion-icon *ngIf="packageTotals.numPackages > 0 && !expanded" slot="end" name="chevron-up-circle" class="expand-icon"></ion-icon>
+      <ion-icon *ngIf="packageTotals.numPackages > 0 && expanded" slot="end" name="chevron-down-circle" class="expand-icon"></ion-icon>
     </ion-item>
     <div class="footer">
       <ng-container *ngIf="expanded && downloadAndUnzipProgress$ | async as items">
