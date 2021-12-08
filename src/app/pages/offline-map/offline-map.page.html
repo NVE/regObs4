@@ -42,7 +42,7 @@
           <ion-label *ngIf="isDownloading(item)">
             ({{getPercentage(item) +'%' }})</ion-label>
           <ion-icon slot="end" *ngIf="item.error" name="warning-outline"></ion-icon>
-          <ion-icon slot="end" (click)="cancelOrDelete(item, $event)" name="trash-outline"></ion-icon>
+          <ion-icon slot="end" *ngIf="!(item.error)" (click)="cancelOrDelete(item, $event)" name="trash-outline"></ion-icon>
         </ion-item>
       </ng-container>
     </div>
