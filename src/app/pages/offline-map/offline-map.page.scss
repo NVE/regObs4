@@ -30,25 +30,23 @@ ion-backdrop {
 }
 
 .package-count {
-  color: #262626;
-  font-weight: 600;
-  font-size: 16px;
+  color: var(--ion-text-color-heading);
+  font-weight: var(--list-header-font-weight);
+  font-size: var(--h3-font-size);
   text-transform: uppercase;
 }
 
 .packages-size {
-  color: #262626;
-  font-weight: 400;
-  font-size: 15px;
+  color: var(--ion-text-color-heading);
+  font-size: var(--list-header-font-size);
   text-transform: uppercase;
 }
 
 .space-available {
-  color: #757575;
-  font-weight: 400;
-  font-size: 15px;
+  color: var(--ion-color-medium);
+  font-size: var(--list-header-font-size);
 }
 
 .expand-icon {
-  color: #262626; 
+  color: var(--ion-text-color-heading);
 }
