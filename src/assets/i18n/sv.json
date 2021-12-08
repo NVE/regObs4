@@ -186,7 +186,6 @@
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Kvarvarande diskutrymme är mindre än kartans storlek. Gör mer diskutrymme tillgängligt och försök igen.",
     "DOWNLOAD_ERROR_MESSAGE": "Nedladdningen misslyckades. Är du ansluten till internet?",
-    "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpaket",
     "MAP_PACKAGE_DETAILS_PAGE": {
       "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedladdning",
       "DELETE_BUTTON": "Radera",
