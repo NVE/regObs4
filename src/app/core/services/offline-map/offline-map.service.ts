@@ -420,10 +420,9 @@ export class OfflineMapService {
     return neededSpaceForCurrentPackage + neededSpaceForItemsInQueue;
   }
 
-  private async getNeededSpaceForItemsInQueue(compressionFactor = 1.1): Promise<number> {
+  private async getNeededSpaceForItemsInQueue(compressionFactor): Promise<number> {
     return firstValueFrom(this.downloadAndUnzipProgress$
       .pipe(
-        take(1),
         map((items) =>
           items
             .filter((x) => x.downloadComplete == null && x.error == null)
