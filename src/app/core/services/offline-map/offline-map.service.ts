@@ -429,13 +429,12 @@ export class OfflineMapService {
     if (isDownloading) {
       messageKey = 'OFFLINE_MAP.DOWNLOAD_ERROR_MESSAGE';
     } else if (this.availableDiskspace?.available > 300000000) {
+      //we have more than 300MB available
       messageKey = 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE_GENERIC';
     } else {
       messageKey = 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT';
     }
-    const translations = await this.translateService
-      .get([messageKey, 'ALERT.OK'])
-      .toPromise();
+    const translations = await firstValueFrom(this.translateService.get([messageKey, 'ALERT.OK']));
     const alert = await this.alertController.create({
       message: translations[messageKey],
       buttons: [
