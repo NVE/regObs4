@@ -21,6 +21,7 @@ import {
   Part
 } from 'src/app/pages/offline-map/metadata.model';
 import { OfflineTilesRegistry } from './offline-tiles-registry';
+import { writeFile } from 'fs';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -447,9 +448,14 @@ export class OfflineMapService {
   }
 
   private async showDownloadOrUnzipErrorMessage(isDownloading: boolean) {
-    const messageKey = isDownloading
-      ? 'OFFLINE_MAP.DOWNLOAD_ERROR_MESSAGE'
-      : 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE';
+    let messageKey = null;
+    if (isDownloading) {
+      messageKey = 'OFFLINE_MAP.DOWNLOAD_ERROR_MESSAGE';
+    } else if (this.availableDiskspace?.available > 300000000) {
+      messageKey = 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE_GENERIC';
+    } else {
+      messageKey = 'OFFLINE_MAP.UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT';
+    }
     const translations = await this.translateService
       .get([messageKey, 'ALERT.OK'])
       .toPromise();
@@ -620,12 +626,8 @@ export class OfflineMapService {
         createFolders: true
       });
       const zipEntries = Object.keys(content.files);
-      this.loggingService.debug('zip entries', DEBUG_TAG, zipEntries);
+      this.loggingService.debug(`Loaded ${zipEntries.length} zip entries`, DEBUG_TAG);
 
-      // if(!isAndroidOrIos(this.platform)) {
-      //   throw Error('Unzip file not implemented on web!')
-      // }
-      const root = `${path}/${folder}`;
       let i = 0;
       const files = zipEntries.filter((name) => !content.files[name].dir);
       const mod = Math.floor(files.length / 100);
@@ -636,16 +638,8 @@ export class OfflineMapService {
         }
         const zippedFile: JSZip.JSZipObject = content.files[fileName];
         const blob: Blob = await zippedFile.async('blob');
-
-        if (isAndroidOrIos(this.platform)) {
-          const buffer = await blob.arrayBuffer();
-          const base64 = arrayBufferToBase64(buffer);
-          await Filesystem.writeFile({
-            path: `${root}/${fileName}`,
-            data: base64,
-            recursive: true
-          });
-        }
+        const fileNameWithPath = `${path}/${folder}/${fileName}`;
+        this.writeFile(blob, fileNameWithPath);
 
         i++;
         if (i % mod === 0) {
@@ -665,6 +659,33 @@ export class OfflineMapService {
       onComplete();
     } catch (err) {
       onError(err);
+    }
+  }
+
+  private async writeFile(blob: Blob, path: string): Promise<void> {
+    if (isAndroidOrIos(this.platform)) {
+      const buffer = await blob.arrayBuffer();
+      const base64 = arrayBufferToBase64(buffer);
+
+      let done = false;
+      let numAttemptsLeft = 3;
+      while (!done && numAttemptsLeft > 0) {
+        try {
+          await Filesystem.writeFile({
+            path,
+            data: base64,
+            recursive: true
+          });
+          done = true;
+        } catch (err) {
+          numAttemptsLeft --;
+          const message = `Write of ${path} failed. ${numAttemptsLeft} attempts left`;
+          this.loggingService.error(err, DEBUG_TAG, `Write of ${path} failed. ${numAttemptsLeft} attempts left`);
+          if (numAttemptsLeft === 0) {
+            throw err;
+          }
+        }
+      }
     }
   }
 
