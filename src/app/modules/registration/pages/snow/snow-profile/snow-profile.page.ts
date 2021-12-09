@@ -19,6 +19,7 @@ import { from, of } from 'rxjs';
 import { catchError, switchMap, take } from 'rxjs/operators';
 import { UserSetting } from '../../../../../core/models/user-settings.model';
 import { LoggingService } from '../../../../shared/services/logging/logging.service';
+import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
 
 const DEBUG_TAG = 'SnowProfilePage';
 
@@ -28,6 +29,17 @@ const DEBUG_TAG = 'SnowProfilePage';
   styleUrls: ['./snow-profile.page.scss']
 })
 export class SnowProfilePage extends BasePage {
+  expositionOptions: SelectOption[] = [
+    { id: 0, text: 'REGISTRATION.SNOW.SNOW_PROFILE.NORTH' },
+    { id: 1, text: 'REGISTRATION.SNOW.SNOW_PROFILE.NORTH_EAST' },
+    { id: 2, text: 'REGISTRATION.SNOW.SNOW_PROFILE.EAST' },
+    { id: 3, text: 'REGISTRATION.SNOW.SNOW_PROFILE.SOUTH_EAST' },
+    { id: 4, text: 'REGISTRATION.SNOW.SNOW_PROFILE.SOUTH' },
+    { id: 5, text: 'REGISTRATION.SNOW.SNOW_PROFILE.SOUTH_WEST' },
+    { id: 6, text: 'REGISTRATION.SNOW.SNOW_PROFILE.WEST' },
+    { id: 7, text: 'REGISTRATION.SNOW.SNOW_PROFILE.NORTH_WEST' }
+  ];
+
   constructor(
     basePageService: BasePageService,
     activatedRoute: ActivatedRoute,
