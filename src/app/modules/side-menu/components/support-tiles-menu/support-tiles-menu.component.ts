@@ -59,7 +59,7 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
   }
 
   ngOnDestroy() {
-    for (let checkMap of Object.values(this.checkOfflineSupportMaps).concat([this.checkSupportMap])) {
+    for (const checkMap of Object.values(this.checkOfflineSupportMaps).concat([this.checkSupportMap])) {
       if (checkMap.subscription && !checkMap.subscription.closed) {
         checkMap.subscription.unsubscribe();
       }
@@ -96,8 +96,8 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
 
   async saveSettings(supportTile: SupportTile) {
     const currentSettings = await this.userSettingService.userSetting$
-    .pipe(take(1))
-    .toPromise();
+      .pipe(take(1))
+      .toPromise();
     this.userSettingService.saveUserSettings({
       ...currentSettings,
       supportTiles: this.addOrUpdateSupportTileSettings(
@@ -121,7 +121,7 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
         subscription: undefined,
         checker: this.popupInfoService.checkOfflineSupportMapInfoPopup,
         condition: (tile) => !tile.availableOffline,
-      }
+      };
     }
     [this.checkSupportMap, this.checkOfflineSupportMaps[tile.name]].forEach((checkMap) => {
       if (checkMap.subscription && !checkMap.subscription.closed) {
@@ -144,18 +144,18 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
       opacity: number;
     }[]
   ): SupportTileStore[] {
-    let storeTile = {
+    const storeTile = {
       opacity: supportTile.opacity,
       name: supportTile.name,
       enabled: supportTile.enabled,
       checked: supportTile.checked,
     };
     if (supportTile.subTile) {
-      storeTile["subTile"] = {
+      storeTile['subTile'] = {
         name: supportTile.subTile.name,
         enabled: supportTile.subTile.enabled,
         checked: supportTile.subTile.checked,
-      }
+      };
     }
     return [
       ...currentSupportTileSettings.filter((m) => m.name !== supportTile.name) as SupportTile[],

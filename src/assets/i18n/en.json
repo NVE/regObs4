@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Draft",
-    "NEW_OBSERVATION": "New",
-    "NEW_TRIP": "New trip"
+    "DRAFT_TITLE_DIRT": "Draft: Soil observation",
+    "DRAFT_TITLE_ICE": "Draft: Ice observation",
+    "DRAFT_TITLE_SNOW": "Draft: Snow observation",
+    "DRAFT_TITLE_WATER": "Draft: Water observation",
+    "NEW_DIRT_OBSERVATION": "New soil observation",
+    "NEW_ICE_OBSERVATION": "New ice observation",
+    "NEW_SNOW_OBSERVATION": "New snow observation",
+    "NEW_WATER_OBSERVATION": "New water observation"
   },
   "ALERT": {
     "CANCEL": "Cancel",
@@ -20,6 +25,7 @@
     "UNDO": "Undo",
     "WARNING": "Warning"
   },
+  "CLOSE": "Close",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Add your observations",
     "SELECT_GEO_HAZARD": "Select geo hazard",
@@ -69,6 +75,7 @@
     "SW": "SW",
     "W": "W"
   },
+  "DRAFT": "Draft",
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "PermissionDenied": "To fetch your position you need to alter your browser settings",
@@ -212,7 +219,24 @@
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Not enough disk space available to store offline map package. Please free up some disk space and try again.",
     "DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection.",
-    "TITLE": "Offline Map",
+    "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Map package",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Cancel download",
+      "DELETE_BUTTON": "Delete",
+      "DOWNLOAD_BUTTON": "Download",
+      "HEADER": "Map package {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Downloaded {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_PRODUCED_DATE": "Produced:",
+      "PACKAGE_SIZE": "Size:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Try again"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Offline map",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Downloading part {{n}} of {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}"
+    },
     "UNZIP_ERROR_MESSAGE": "Could not save map package to disk. Are you sure there is enough disk space?"
   },
   "PERMISSION": {
@@ -723,14 +747,14 @@
     "NO_OPACITY": "Solid",
     "READ_MORE": "Read more about maps",
     "STEEPNESS_COLOR_INFO": "Colors indicate the slope angle of the terrain",
-    "STEEPNESS_MAP_DESCRIPTION": "Slope angle shading map",
+    "STEEPNESS_MAP_DESCRIPTION": "Slope angle map",
     "STEEPNESS_MAP_DISCLAMER": "For trip planning <i>only</i>. The map is automatically produced and may have errors and omissions, e.g. steep terrain or runouts not displaying correctly.",
     "STEEPNESS_OFFLINE_DISCLAMER": "The map layer is only available offline with avalanche outlets activated.",
-    "STEEPNESS_OUTLET_LEGEND_TITLE": "Colours give runout zones for avalanches:",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Short runouts (50% of the avalanches reach farther)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medium runouts (25% of the avalanches reach farther)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Long runouts (5% of the avalanches reach farther)\nSome avalanches may have longer runouts than displayed as runout zones in the map.",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Avalanche outlet zones",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Colours give runout zones for avalanches:",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Avalanche runout zones",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice"
   },
   "TABS": {

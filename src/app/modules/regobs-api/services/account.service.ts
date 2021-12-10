@@ -35,7 +35,7 @@ class AccountService extends __BaseService {
    */
   AccountLoginResponse(): __Observable<
     __StrictHttpResponse<ObserverResponseDto>
-  > {
+    > {
     const __params = this.newParams();
     const __headers = new HttpHeaders();
     const __body: any = null;
@@ -71,7 +71,7 @@ class AccountService extends __BaseService {
    */
   AccountGetObserverResponse(): __Observable<
     __StrictHttpResponse<ObserverResponseDto>
-  > {
+    > {
     const __params = this.newParams();
     const __headers = new HttpHeaders();
     const __body: any = null;

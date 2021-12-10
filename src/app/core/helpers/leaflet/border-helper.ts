@@ -35,8 +35,8 @@ export class BorderHelper {
     return this.isInSvalbard(latLng)
       ? of({ inSvalbard: true, inNorway: true })
       : this.isInNorway(latLng)
-      ? of({ inSvalbard: false, inNorway: true })
-      : of({ inSvalbard: false, inNorway: false });
+        ? of({ inSvalbard: false, inNorway: true })
+        : of({ inSvalbard: false, inNorway: false });
   }
 
   static toBBox(

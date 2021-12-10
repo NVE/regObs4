@@ -45,8 +45,8 @@ export class AddPictureItemComponent implements OnInit {
   get imagesForCurrentRegistrationTid() {
     return this.images
       ? this.images.filter(
-          (image) => image.RegistrationTID === this.registrationTid
-        )
+        (image) => image.RegistrationTID === this.registrationTid
+      )
       : [];
   }
 

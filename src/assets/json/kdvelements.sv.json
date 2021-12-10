@@ -1394,17 +1394,17 @@
       },
       {
         "Id": 101,
-        "Name": "Väldigt mycket lös snö (> 30 cm)",
+        "Name": "Väldigt mycket lössnö (> 30 cm)",
         "Description": null
       },
       {
         "Id": 102,
-        "Name": "Mycket lös snö (10-30 cm)",
+        "Name": "Mycket lössnö (10-30 cm)",
         "Description": null
       },
       {
         "Id": 103,
-        "Name": "Viss lös snö (10-30 cm)",
+        "Name": "Lite lössnö (1-10 cm)",
         "Description": null
       },
       {

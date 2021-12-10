@@ -50,12 +50,12 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
         switchMap((show) =>
           show
             ? this.geoPositionService.log$.pipe(
-                scan((acc: GeoPositionLog[], val) => {
-                  acc.push(val);
-                  return acc.slice(-50);
-                }, []),
-                throttleTime(100)
-              )
+              scan((acc: GeoPositionLog[], val) => {
+                acc.push(val);
+                return acc.slice(-50);
+              }, []),
+              throttleTime(100)
+            )
             : of([])
         ),
         takeUntil(this.ngDestroy$)
@@ -110,14 +110,14 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
       return 'Empty error';
     }
     switch (err.code) {
-      case GeoPositionErrorCode.PermissionDenied:
-        return 'Permission denied';
-      case GeoPositionErrorCode.PositionUnavailable:
-        return 'Position unavailable';
-      case GeoPositionErrorCode.Timeout:
-        return 'Timeout';
-      default:
-        return err.message;
+    case GeoPositionErrorCode.PermissionDenied:
+      return 'Permission denied';
+    case GeoPositionErrorCode.PositionUnavailable:
+      return 'Position unavailable';
+    case GeoPositionErrorCode.Timeout:
+      return 'Timeout';
+    default:
+      return err.message;
     }
   }
 }

@@ -24,8 +24,8 @@ export class SteepnessLegendComponent {
   }
 
   isOutletsActive(supportTiles: SupportTile[]): boolean {
-    let steepness = supportTiles.find((t) => t.name == "steepness")
-    if (steepness && steepness.subTile && steepness.subTile.name == "steepness-outlet") {
+    const steepness = supportTiles.find((t) => t.name == 'steepness');
+    if (steepness && steepness.subTile && steepness.subTile.name == 'steepness-outlet') {
       return steepness.subTile.enabled;
     }
     return false;

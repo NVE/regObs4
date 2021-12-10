@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Kladd",
-    "NEW_OBSERVATION": "Ny",
-    "NEW_TRIP": "Ny tur"
+    "DRAFT_TITLE_DIRT": "Kladd: Jordobservasjon",
+    "DRAFT_TITLE_ICE": "Kladd: Isobservasjon",
+    "DRAFT_TITLE_SNOW": "Kladd: Snøobservasjon",
+    "DRAFT_TITLE_WATER": "Kladd: Vatnobservasjon",
+    "NEW_DIRT_OBSERVATION": "Ny jordobservasjon",
+    "NEW_ICE_OBSERVATION": "Ny isobservasjon",
+    "NEW_SNOW_OBSERVATION": "Ny snøobservasjon",
+    "NEW_WATER_OBSERVATION": "Ny vatnobservasjon"
   },
   "ALERT": {
     "CANCEL": "Avbryt",
@@ -20,6 +25,7 @@
     "UNDO": "Angre",
     "WARNING": "Varsel"
   },
+  "CLOSE": "Lukk",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Legg til eigne observasjonar",
     "SELECT_GEO_HAZARD": "Vel naturfare",
@@ -69,6 +75,7 @@
     "SW": "SV",
     "W": "V"
   },
+  "DRAFT": "Kladd",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Tur føregår"
   },
@@ -202,7 +209,24 @@
     "OBSERVATIONS": "Observasjonar"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline kart"
+    "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpakke",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedlasting",
+      "DELETE_BUTTON": "Slett",
+      "DOWNLOAD_BUTTON": "Last ned",
+      "HEADER": "Kartpakke {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_PRODUCED_DATE": "Produsert:",
+      "PACKAGE_SIZE": "Storleik:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Prøv på nytt"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Pakker ut {{n}} av {{totalParts}}"
+    }
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nekta.",
@@ -711,7 +735,7 @@
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skreda stoppar innanfor denne grensa)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skreda går lenger)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lengre)\nNokre skred kan ha lengre utløp som ikkje er vist på kartet.",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Hellingskart med utløp",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsområde for snøskred",
     "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og manglar, t.d. bratte heng og utløp som ikkje visast.\n<br/>\n<br/>\nFargar på utløp for snøskred:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Kart over svekka is"
   },

@@ -183,12 +183,12 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   private getLocationSlides(): ImgSwiperSlide[] {
     return this.location
       ? [
-          {
-            type: 'location',
-            img: this.location,
-            header: 'REGISTRATION.OBS_LOCATION.TITLE'
-          }
-        ]
+        {
+          type: 'location',
+          img: this.location,
+          header: 'REGISTRATION.OBS_LOCATION.TITLE'
+        }
+      ]
       : [];
   }
 
