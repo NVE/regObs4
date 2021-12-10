@@ -9,7 +9,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { nSQL } from '@nano-sql/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService, IAuthAction } from 'ionic-appauth';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, from, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { NanoSql } from '../../../../nanosql';
 import { settings } from '../../../../settings';
@@ -33,6 +33,8 @@ import {
   TokenResponse,
   TokenResponseJson
 } from '@openid/appauth';
+import { AUTH_CALLBACK_PATH } from '../factories/auth-factory';
+import { removeOauthTokenFromUrl } from '../../shared/services/logging/url-utils';
 
 const DEBUG_TAG = 'RegobsAuthService';
 export const RETURN_URL_KEY = 'authreturnurl';
@@ -190,11 +192,11 @@ export class RegobsAuthService {
   }
 
   public async signIn(setReturnUrl = true): Promise<void> {
-    const currentLang = await this.userSettingService.language$
-      .pipe(take(1))
-      .toPromise();
+    const currentLang = await firstValueFrom(this.userSettingService.language$.pipe(take(1)));
     if (setReturnUrl) {
-      localStorage.setItem(RETURN_URL_KEY, this.router.url);
+      const url = this.router.url;
+      this.logger.debug(`SignIn: ReturnUrl = '${url}'`, DEBUG_TAG);
+      localStorage.setItem(RETURN_URL_KEY, url);
     }
     try {
       await this.authService.signIn({
@@ -229,6 +231,7 @@ export class RegobsAuthService {
   }
 
   public async getAndSaveObserver(idToken: string): Promise<void> {
+    this.logger.debug('getAndSaveObserver(): Trying to get observer from API...', DEBUG_TAG);
     try {
       this._isLoggingInSubject.next(true);
       const result = await this.getObserverFromApi(idToken);
@@ -253,13 +256,17 @@ export class RegobsAuthService {
         isLoggedIn: true,
         user: resultWithNick
       });
+      this.logger.debug('getAndSaveObserver(): Trying to save logged in user to db...', DEBUG_TAG);
       setTimeout(
         () => this.saveLoggedInUserToDb(claims.email, true, resultWithNick),
         20
       );
+      this.logger.debug('getAndSaveObserver(): Save logged in user to db finished', DEBUG_TAG);
     } catch (err) {
+      this.logger.debug(`getAndSaveObserver(): Caught error: err.status = ${err.status}, err.message = ${err.message}`, DEBUG_TAG);
       await this.showErrorMessage(err.status, err.message);
     } finally {
+      this.logger.debug('getAndSaveObserver(): Finish', DEBUG_TAG);
       this._isLoggingInSubject.next(false);
     }
   }
@@ -347,6 +354,7 @@ export class RegobsAuthService {
   }
 
   public async onSignInCallback(action: IAuthAction): Promise<void> {
+    this.logger.debug(`onSignInCallback(), action = '${action?.action}', error = '${action?.error}',  user = '${action.user}'`, DEBUG_TAG);
     if (action.tokenResponse?.idToken) {
       await this.getAndSaveObserver(action.tokenResponse?.idToken);
     } else if (
@@ -359,8 +367,12 @@ export class RegobsAuthService {
   }
 
   private redirectToReturnUrl() {
-    if (this.location.path().indexOf('auth/callback') >= 0) {
+    const path = this.location.path();
+    const safePath = removeOauthTokenFromUrl(path);
+    this.logger.debug(`redirectToReturnUrl: path = '${safePath}'`, DEBUG_TAG);
+    if (path.indexOf(AUTH_CALLBACK_PATH) >= 0) {
       const returnUrl = localStorage.getItem(RETURN_URL_KEY);
+      this.logger.debug(`redirectToReturnUrl: returnUrl from localStorage = '${returnUrl}'`, DEBUG_TAG);
       if (returnUrl) {
         localStorage.removeItem(RETURN_URL_KEY);
         this.location.replaceState(

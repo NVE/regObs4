@@ -9,6 +9,7 @@ import { AppVersionService } from '../../../core/services/app-version/app-versio
 import { AppCustomDimension } from '../enums/app-custom-dimension.enum';
 import { AppEventAction } from '../enums/app-event-action.enum';
 import { AppEventCategory } from '../enums/app-event-category.enum';
+import { removeOauthTokenFromUrl } from '../../shared/services/logging/url-utils';
 
 const DEBUG_TAG = 'AnalyticService';
 @Injectable({
@@ -27,7 +28,8 @@ export class AnalyticService {
 
   trackView(url: string) {
     if (ga) {
-      this.loggingService.debug(`Tracking pageview ${url}`, DEBUG_TAG);
+      const safeUrl = removeOauthTokenFromUrl(url);
+      this.loggingService.debug(`Tracking pageview ${safeUrl}`, DEBUG_TAG);
       ga('set', 'page', url);
       ga('send', 'pageview');
     }
@@ -142,7 +144,8 @@ export class AnalyticService {
         distinctUntilChanged()
       )
       .subscribe((url: string) => {
-        this.trackView(url);
+        const safeUrl = removeOauthTokenFromUrl(url);
+        this.trackView(safeUrl);
       });
   }
 }
