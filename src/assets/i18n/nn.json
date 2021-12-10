@@ -209,7 +209,6 @@
     "OBSERVATIONS": "Observasjonar"
   },
   "OFFLINE_MAP": {
-    "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpakke",
     "MAP_PACKAGE_DETAILS_PAGE": {
       "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedlasting",
       "DELETE_BUTTON": "Slett",

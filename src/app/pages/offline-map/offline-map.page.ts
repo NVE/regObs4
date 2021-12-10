@@ -3,7 +3,7 @@ import { OfflineMapService } from '../../core/services/offline-map/offline-map.s
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { AlertController, ModalController } from '@ionic/angular';
-import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
@@ -30,8 +30,12 @@ const errorTileStyle = {
   color: documentStyle.getPropertyValue('--ion-color-danger'),
 };
 
-
 type PackageIndex = CompoundPackageMetadata[];
+
+interface PackageTotals {
+  numPackages: number,
+  spaceUsed: string
+}
 
 @Component({
   selector: 'app-offline-map',
@@ -42,16 +46,17 @@ export class OfflineMapPage extends NgDestoryBase {
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
   private installedPackages: Map<string, OfflineMapPackage> = new Map();
   downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
+  packageTotals$: Observable<PackageTotals>;
   private readonly allPackages$: Observable<OfflineMapPackage[]>;
   private packagesOnServer$: Observable<Map<string, CompoundPackage>>;
   private packagesOnServer: Map<string, CompoundPackage> = new Map();
   showTileCard = true;
-  showDownloads = false;
   tilesLayer: L.GeoJSON;
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
   showModal = new Subject<CompoundPackageFeature>();
   isZooming = new BehaviorSubject<boolean>(false);
   featureMap = new Map<string, { feature: CompoundPackageFeature, layer: L.Layer }>();
+  expanded = false; //show list of downloads if this is true
 
   constructor(
     private helperService: HelperService,
@@ -84,10 +89,22 @@ export class OfflineMapPage extends NgDestoryBase {
       this.offlineMapService.downloadAndUnzipProgress$,
       this.offlineMapService.packages$
     ]).pipe((map(([inProgress, downloaded]) => [...inProgress, ...downloaded])));
-  }
 
-  toggleDownloads() {
-    this.showDownloads = !this.showDownloads;
+    this.packageTotals$ = this.allPackages$.pipe(
+      map((packages) => {
+        let count = 0;
+        let space = 0;
+        for (const mapPackage of packages) {
+          count += 1;
+          space += mapPackage.size;
+        }
+        let spaceWithUnit = '0 MB';
+        if (space > 0) {
+          spaceWithUnit = this.humanReadableByteSize(space);
+        }
+        return { numPackages: count, spaceUsed: spaceWithUnit };
+      })
+    );
   }
 
   onMapReady(map: L.Map) {
@@ -240,11 +257,8 @@ export class OfflineMapPage extends NgDestoryBase {
   async cancelOrDelete(map: OfflineMapPackage, event: Event) {
     event.stopPropagation();
     if (this.isDownloaded(map)) {
-      // TODO: Are you su
       const toTranslate = ['DIALOGS.ARE_YOU_SURE', 'DIALOGS.CANCEL', 'DIALOGS.OK'];
-      const translations = await this.translateService
-        .get(toTranslate)
-        .toPromise();
+      const translations = await firstValueFrom(this.translateService.get(toTranslate));
       const alert = await this.alertController.create({
         header: translations['DIALOGS.ARE_YOU_SURE'],
         message: translations['DIALOGS.ARE_YOU_SURE'],
@@ -262,11 +276,10 @@ export class OfflineMapPage extends NgDestoryBase {
         ]
       });
       alert.present();
-    }else{
+    } else {
       this.offlineMapService.cancelDownloadPackage(map);
     }
   }
-
 
   isDownloading(map: OfflineMapPackage): boolean {
     return map.downloadStart && !map.downloadComplete;
@@ -274,5 +287,9 @@ export class OfflineMapPage extends NgDestoryBase {
 
   isDownloaded(map: OfflineMapPackage): boolean {
     return !!map.downloadComplete;
+  }
+
+  getSpaceAvailable(): string {
+    return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available);
   }
 }

@@ -5,8 +5,7 @@ import moment from 'moment';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { BehaviorSubject, firstValueFrom, from, Observable, Subscription } from 'rxjs';
-import { finalize, map, mergeMap, switchMap, take } from 'rxjs/operators';
-// import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
+import { finalize, map, mergeMap, switchMap } from 'rxjs/operators';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import JSZip from 'jszip';
 import { ProgressStep } from './progress-step.model';
@@ -394,19 +393,19 @@ export class OfflineMapService {
   ): Promise<number> {
     const neededSpaceForCurrentPackage =
       packageMetadataCombined.getSizeInMiB() * 1024 * 1024 * compressionFactor;
+    const neededSpaceForItemsInQueue = await this.getNeededSpaceForItemsInQueue(compressionFactor);
+    return neededSpaceForCurrentPackage + neededSpaceForItemsInQueue;
+  }
 
-    const neededSpaceForItemsInQueue = await this.downloadAndUnzipProgress$
+  private async getNeededSpaceForItemsInQueue(compressionFactor): Promise<number> {
+    return firstValueFrom(this.downloadAndUnzipProgress$
       .pipe(
-        take(1),
         map((items) =>
           items
             .filter((x) => x.downloadComplete == null && x.error == null)
             .reduce((pv, cv) => (pv += cv.size * compressionFactor), 0)
         )
-      )
-      .toPromise();
-
-    return neededSpaceForCurrentPackage + neededSpaceForItemsInQueue;
+      ));
   }
 
   private async showNotEnoughDiskSpaceAvailableErrorMessage() {
@@ -494,7 +493,7 @@ export class OfflineMapService {
         encoding: Encoding.ASCII
       });
       const fileStat = await Filesystem.stat({ path });
-      return { size: +fileContent, downloadComplete: fileStat.mtime / 1000 };
+      return { size: +fileContent.data, downloadComplete: fileStat.mtime / 1000 };
     } catch (error) {
       const niceError = new Error(`Couldn't read COMPLETE file: ${path}`);
       niceError.stack = error.stack;
