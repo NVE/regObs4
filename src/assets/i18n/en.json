@@ -237,7 +237,8 @@
       "DOWNLOADING_PART_X_OF_Y": "Downloading part {{n}} of {{totalParts}}",
       "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}"
     },
-    "UNZIP_ERROR_MESSAGE": "Could not save map package to disk. Are you sure there is enough disk space?"
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Permission to location denied",

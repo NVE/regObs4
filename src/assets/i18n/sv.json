@@ -204,7 +204,9 @@
       "DOWNLOADING_PART_X_OF_Y": "Laddar ner fil {{n}} av {{totalParts}}",
       "UNZIP_PART_X_OF_Y": "Packar upp fil {{n}} av {{totalParts}}"
     },
-    "UNZIP_ERROR_MESSAGE": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Lyckades ej spara kartpaketet till disk. Vänligen prøva igjen!",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
+
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tillstånd till plats nekas",
