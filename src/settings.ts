@@ -272,7 +272,7 @@ export const settings = {
       { lang: 'sv', name: 'Svenska' },
       { lang: 'de', name: 'Deutsch' },
       { lang: 'sl', name: 'Slovenski' },
-      { lang: 'fr', name: 'Français' },
+      // { lang: 'fr', name: 'Français' }, //TODO: Ta inn denne når synkronisering av språk mot databasen er gjort
     ]
   }
 };
