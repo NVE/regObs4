@@ -261,18 +261,17 @@ export class OfflineMapPage extends NgDestoryBase {
   async cancelOrDelete(map: OfflineMapPackage, event: Event) {
     event.stopPropagation();
     if (this.isDownloaded(map)) {
-      const toTranslate = ['DIALOGS.ARE_YOU_SURE', 'DIALOGS.CANCEL', 'DIALOGS.OK'];
+      const toTranslate = ['OFFLINE_MAP.DELETE_PACKAGE_CONFIRM', 'DIALOGS.CANCEL', 'DIALOGS.DELETE'];
       const translations = await firstValueFrom(this.translateService.get(toTranslate));
       const alert = await this.alertController.create({
-        header: translations['DIALOGS.ARE_YOU_SURE'],
-        message: translations['DIALOGS.ARE_YOU_SURE'],
+        message: translations['OFFLINE_MAP.DELETE_PACKAGE_CONFIRM'],
         buttons: [
           {
             text: translations['DIALOGS.CANCEL'],
             role: 'cancel'
           },
           {
-            text: translations['DIALOGS.OK'],
+            text: translations['DIALOGS.DELETE'],
             handler: () => {
               this.offlineMapService.removeMapPackageByName(map.name);
             }
