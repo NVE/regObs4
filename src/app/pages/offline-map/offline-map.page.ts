@@ -45,9 +45,9 @@ interface PackageTotals {
 export class OfflineMapPage extends NgDestoryBase {
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
   private installedPackages: Map<string, OfflineMapPackage> = new Map();
-  downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
+  private downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
   packageTotals$: Observable<PackageTotals>;
-  private readonly allPackages$: Observable<OfflineMapPackage[]>;
+  readonly allPackages$: Observable<OfflineMapPackage[]>;
   private packagesOnServer$: Observable<Map<string, CompoundPackage>>;
   private packagesOnServer: Map<string, CompoundPackage> = new Map();
   showTileCard = true;
@@ -237,21 +237,25 @@ export class OfflineMapPage extends NgDestoryBase {
   }
 
   showPackageModalForPackage(map: OfflineMapPackage) {
-    const feature = this.featureMap.get(map.compoundPackageMetadata.getName());
-    if(feature) {
+    const feature = this.featureMap.get(map.name);
+    if (feature) {
       this.showPackageModal(feature.feature);
     }
   }
 
-  humanReadableByteSize(bytes: number): string {
+  humanReadableByteSize(bytes: number, fractionDigits = 0): string {
     if (isNaN(bytes)) {
       return '';
     }
-    return this.helperService.humanReadableByteSize(bytes, true);
+    return this.helperService.humanReadableByteSize(bytes, fractionDigits, true);
   }
 
-  getPercentage(map: OfflineMapPackage): number {
-    return Math.round((map.progress ? map.progress.percentage : 0) * 100);
+  formatProgressIfDownloading(map: OfflineMapPackage): string {
+    if (map.downloadStart && !map.downloadComplete) {
+      const value = Math.round((map.progress ? map.progress.percentage : 0) * 100);
+      return `(${value}%)`;
+    }
+    return '';
   }
 
   async cancelOrDelete(map: OfflineMapPackage, event: Event) {
@@ -281,15 +285,11 @@ export class OfflineMapPage extends NgDestoryBase {
     }
   }
 
-  isDownloading(map: OfflineMapPackage): boolean {
-    return map.downloadStart && !map.downloadComplete;
-  }
-
   isDownloaded(map: OfflineMapPackage): boolean {
     return !!map.downloadComplete;
   }
 
   getSpaceAvailable(): string {
-    return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available);
+    return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available, 0);
   }
 }

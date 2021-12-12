@@ -219,7 +219,8 @@
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Not enough disk space available to store offline map package. Please free up some disk space and try again.",
     "DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection.",
-    "PACKAGE_COUNT": "{{packageCount}} map packages",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} package",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} packages",
     "SPACE_AVAILABLE": "{{spaceAvailable}} free",
     "MAP_PACKAGE_DETAILS_PAGE": {
       "CANCEL_DOWNLOAD_BUTTON": "Cancel download",
