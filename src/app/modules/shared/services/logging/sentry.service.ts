@@ -87,9 +87,7 @@ export class SentryService implements LoggingService {
     tag?: string,
     ...optionalParams: any[]
   ) {
-    if (this.fileLoggingService.isReady()) {
-      this.fileLoggingService.log(message, error, level, tag, optionalParams, error);
-    }
+    this.fileLoggingService.log(message, error, level, tag, optionalParams, error);
     if (
       message &&
       (level === LogLevel.Warning ||
