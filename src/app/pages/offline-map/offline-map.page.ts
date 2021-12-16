@@ -4,7 +4,7 @@ import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.m
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { AlertController, ModalController } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, Subject } from 'rxjs';
-import { debounceTime, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, filter, map, shareReplay, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
@@ -45,6 +45,7 @@ interface PackageTotals {
 export class OfflineMapPage extends NgDestoryBase {
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
   private installedPackages: Map<string, OfflineMapPackage> = new Map();
+  private failedPackageIds: string[] = []; //remember failed packages until features are ready for styling
   private downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
   packageTotals$: Observable<PackageTotals>;
   readonly allPackages$: Observable<OfflineMapPackage[]>;
@@ -143,7 +144,11 @@ export class OfflineMapPage extends NgDestoryBase {
         this.setStyleForPackages();
       });
 
-    this.downloadAndUnzipProgress$.pipe(takeUntil(this.ngDestroy$)).subscribe((itemsWithProgress) => {
+    this.downloadAndUnzipProgress$.pipe(takeUntil(this.ngDestroy$)).pipe(
+      tap((itemsWithProgress) => {
+        this.failedPackageIds = itemsWithProgress.filter(item => item.error).map(item => item.name);
+      })
+    ).subscribe((itemsWithProgress) => {
       this.zone.runOutsideAngular(() => {
         for(const item of itemsWithProgress) {
           this.setStyleForProgressOrDownloadedPackage(item);
@@ -173,8 +178,12 @@ export class OfflineMapPage extends NgDestoryBase {
       this.setStyleForProgressOrDownloadedPackage(item);
     }
     for(const [key, ] of this.packagesOnServer) {
+      let style = defaultTileStyle;
       if(!this.installedPackages.has(key)) {
-        this.setStyleForFeature(key, defaultTileStyle);
+        if (this.failedPackageIds.includes(key)) {
+          style = errorTileStyle;
+        }
+        this.setStyleForFeature(key, style);
       }
     }
   }
