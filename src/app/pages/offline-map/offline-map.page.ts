@@ -45,7 +45,7 @@ interface PackageTotals {
 export class OfflineMapPage extends NgDestoryBase {
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
   private installedPackages: Map<string, OfflineMapPackage> = new Map();
-  private failedPackageIds: string[] = [];
+  private failedPackageIds: string[] = []; //remember failed packages next time we open OfflineMapPage
   private downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
   packageTotals$: Observable<PackageTotals>;
   readonly allPackages$: Observable<OfflineMapPackage[]>;
@@ -181,7 +181,6 @@ export class OfflineMapPage extends NgDestoryBase {
       let style = defaultTileStyle;
       if(!this.installedPackages.has(key)) {
         if (this.failedPackageIds.includes(key)) {
-          //we need to mark failed packages when we open modal again if packages failed in a previous session
           style = errorTileStyle;
         }
         this.setStyleForFeature(key, style);
