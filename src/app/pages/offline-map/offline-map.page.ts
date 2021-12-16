@@ -45,7 +45,7 @@ interface PackageTotals {
 export class OfflineMapPage extends NgDestoryBase {
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
   private installedPackages: Map<string, OfflineMapPackage> = new Map();
-  private failedPackageIds: string[] = []; //remember failed packages next time we open OfflineMapPage
+  private failedPackageIds: string[] = []; //remember failed packages until features are ready for styling
   private downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
   packageTotals$: Observable<PackageTotals>;
   readonly allPackages$: Observable<OfflineMapPackage[]>;
