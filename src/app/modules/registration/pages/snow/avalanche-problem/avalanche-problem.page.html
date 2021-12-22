@@ -17,10 +17,13 @@
           {{ 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE' | translate}}
         </ion-label>
       </ion-list-header>
-      <ion-item detail="true" (click)="addOrEditAvalancheProblem(i)"
-        *ngFor="let avalancheEvalProblem of registration.request.AvalancheEvalProblem2; let i = index">
-        <ion-label>{{ getDescription(avalancheEvalProblem) | translate }}</ion-label>
-      </ion-item>
+      <ion-reorder-group disabled="false" (ionItemReorder)="onProblemReorder($event)">
+        <ion-item detail="true" (click)="addOrEditAvalancheProblem(i)"
+          *ngFor="let avalancheEvalProblem of registration.request.AvalancheEvalProblem2; let i = index">
+            <ion-label>{{ getDescription(avalancheEvalProblem) | translate }}</ion-label>
+            <ion-reorder slot="end"></ion-reorder>
+        </ion-item>
+      </ion-reorder-group>
       <ion-item (click)="addOrEditAvalancheProblem()">
         <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
         <ion-label>{{'REGISTRATION.SNOW.AVALANCHE_PROBLEM.ADD_NEW' | translate}}</ion-label>
