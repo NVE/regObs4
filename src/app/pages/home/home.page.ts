@@ -134,6 +134,24 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked {
       this.selectedMarker = null;
       this.mapItemBar.hide();
     });
+
+    // This is a not-so-great workaround to the issue where the double-tap-drag-zoom affordance leaves text selection
+    // sitting around on iOS.This doesn't happen on other platforms, but the fix is harmless on others so it is left
+    // for consistency.
+    //
+    // This does have the side effect where if someone had selected text, and then performed the double-tap-drag-zoom
+    // gesture, then that text will no longer be selected. However, this seems like it would hardly surprise any user
+    // who wound up in that situation.
+    //
+    // This underlying issue is tracked by Leaflet, here: https://github.com/Leaflet/Leaflet/issues/6872
+    this.map.on('doubletapdragend', () => {
+      const selection = window.getSelection();
+      if (selection) {
+      // selection.removeAllRanges();
+        selection.empty();
+      }
+    });
+
     // TODO: Move this to custom marker layer?
     const observationObservable = combineLatest([
       this.observationService.observations$,
