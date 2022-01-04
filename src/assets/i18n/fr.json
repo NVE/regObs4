@@ -218,14 +218,14 @@
       "GENERAL_ON_MOUNTAIN": "En général en montagne",
       "IN_THE_VALLEY_OR_FJORD": "Dans la vallée/le fjord",
       "MANY_WATER_NEARBY": "Nombreux lacs des environs",
-      "NEW_DANGER_OBS": "Ajouter un signe de danger",
-      "NO_DAMAGE_SIGN": "Aucun signe de danger observé",
+      "NEW_DANGER_OBS": "Ajouter un signe d'instabilité",
+      "NO_DAMAGE_SIGN": "Aucune observation d'instabilité",
       "ON_THIS_MOUNTAIN_SIDE": "Dans ce versant de montagne",
       "ON_THIS_PLACE": "À cet endroit",
       "ON_THIS_SIDE_OF_THE_WATER": "De ce côté du lac",
       "ON_THIS_WATER": "Sur ce lac",
       "RIGHT_HERE": "Ici même",
-      "TITLE": "Signes de danger"
+      "TITLE": "Signe d'instabilité"
     },
     "DELETE": "Supprimer l'observation",
     "DELETE_CONFIRM": "Êtes-vous sûr ?",
@@ -629,7 +629,7 @@
     },
     "PAGE_2": {
       "HEADER": "Mieux lire et comprendre le terrain !",
-      "LINE_1": "Situez-vous par rapport aux zones de danger du terrain. Utilisez des cartes et des informations adaptées aux dangers dont vous cherchez à vous protéger."
+      "LINE_1": "Situez-vous par rapport aux zones de risque du terrain. Utilisez des cartes et des informations adaptées aux aléas dont vous cherchez à vous protéger."
     },
     "PAGE_3": {
       "BUTTON_TEXT": "Nouvelle observation",
@@ -645,7 +645,7 @@
   "SUPPORT_MAP": {
     "ABOUT": "À propos des cartes",
     "CAUTION_AREA": "Zone de danger",
-    "CLAY_DANGER_ZONE": "Niveau de danger aux argiles",
+    "CLAY_DANGER_ZONE": "Niveau de risque aux argiles",
     "CLAY_LEGEND_TEXT_1": "Glissement d'argile rapide",
     "CLAY_LEGEND_TEXT_2": "Zone de glissements d'argile rapide",
     "CLAY_LEGEND_TEXT_3": "Entièrement ou partiellement cartographiée",
@@ -742,7 +742,7 @@
     "ALL_WARNINGS": "Tous les avertissements",
     "A_REGIONS": "A - Régions",
     "B_REGIONS": "B - Régions",
-    "B_REGIONS_SUBTITLE": "Avertissements uniquement pour les niveaux de danger 4 et 5",
+    "B_REGIONS_SUBTITLE": "Avertissements uniquement pour les niveaux de risque 4 et 5",
     "FAVOURITES": "Favoris",
     "IN_MAP_CENTER": "Au centre de la carte",
     "IN_MAP_VIEW": "Dans la vue de la carte",
