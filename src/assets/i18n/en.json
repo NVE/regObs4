@@ -495,22 +495,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tests"
         },
+        "EAST": "E",
         "GENERATING_PREVIEW": "Generating preview...",
         "IS_PROFILE_TO_GROUND": "Is the profile dug to the ground?",
-        "SLOPE_ANGLE": "Bratthet",
-        "SLOPE_ANGLE_PLACEHOLDER": "Degrees without decimals",
-        "VALID_EXPOSITION": "Aspect",
-        "EAST": "E",
         "NORTH": "N",
-        "NORTH_WEST": "NW",
         "NORTH_EAST": "NE",
-        "SOUTH": "S",
-        "SOUTH_EAST": "SE",
-        "SOUTH_WEST": "SW",
-        "WEST": "W",
+        "NORTH_WEST": "NW",
         "PREVIEW": "Preview",
         "PREVIEW_ERROR": "Could not create plot preview",
         "PREVIEW_ITEM": "Show Snow Profile",
+        "SLOPE_ANGLE": "Bratthet",
+        "SLOPE_ANGLE_PLACEHOLDER": "Degrees without decimals",
         "SNOW_DENSITY": {
           "CYLINDER": "Cylinder",
           "CYLINDER_DIAMETER": "Cylinder bore diameter (cm)",
@@ -538,6 +533,9 @@
           "TEMPERATURE": "Temperature (°C)",
           "TITLE": "Temperature Profile"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SE",
+        "SOUTH_WEST": "SW",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Add layer",
           "ADD_LAYER_BOTTOM": "Add layer to bottom",
@@ -566,7 +564,9 @@
         },
         "SUBFORMS": "Subforms",
         "SUPERIOR": "Main",
-        "TITLE": "Snow Profile"
+        "TITLE": "Snow Profile",
+        "VALID_EXPOSITION": "Aspect",
+        "WEST": "W"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Describe the snow surface",
@@ -590,8 +590,8 @@
         "COMMENT_PLACEHOLDER": "How has the weather been the last 24 hours? Example: Has there been snowfall? Temperature changes? At what altitude has the freezing point been?",
         "FROM_EAST": "E - from east",
         "FROM_NORTH": "N - from north",
+        "FROM_NORTH_EAST": "NE - from north-east",
         "FROM_NORTH_WEST": "NW - from north-west",
-        "FROM_NOTRH_EAST": "NE - from north-east",
         "FROM_SOUTH": "S - from south",
         "FROM_SOUTH_EAST": "SE - from south-east",
         "FROM_SOUTH_WEST": "SW - from south-west",

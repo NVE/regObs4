@@ -483,17 +483,12 @@
           "SINGLE_TEST": "test",
           "TITLE": "Testar"
         },
+        "EAST": "Ø",
         "GENERATING_PREVIEW": "Genererar førehandvising",
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",
-        "VALID_EXPOSITION": "Eksposisjon",
-        "EAST": "Ø",
         "NORTH": "N",
-        "NORTH_WEST": "NV",
         "NORTH_EAST": "NØ",
-        "SOUTH": "S",
-        "SOUTH_EAST": "SØ",
-        "SOUTH_WEST": "SV",
-        "WEST": "V",
+        "NORTH_WEST": "NV",
         "PREVIEW": "Forhåndsvising",
         "PREVIEW_ERROR": "Klarte ikkje generere førehandsvising",
         "PREVIEW_ITEM": "Sjå snøprofil",
@@ -524,6 +519,9 @@
           "TEMPERATURE": "Temperatur (°C)",
           "TITLE": "Temperaturprofil"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SØ",
+        "SOUTH_WEST": "SV",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Legg til eit nytt lag",
           "ADD_LAYER_BOTTOM": "Legg til eit nytt lag nedst",
@@ -552,7 +550,9 @@
         },
         "SUBFORMS": "Underskjema",
         "SUPERIOR": "Overordna",
-        "TITLE": "Snøprofil"
+        "TITLE": "Snøprofil",
+        "VALID_EXPOSITION": "Eksposisjon",
+        "WEST": "V"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snødekket",
@@ -576,8 +576,8 @@
         "COMMENT_PLACEHOLDER": "Korleis har vêret vore det siste døgnet? T.d.: Har det vore byger? Har det vore temperatuendringar? Kvar går nullisotermen?",
         "FROM_EAST": "Ø - frå aust",
         "FROM_NORTH": "N - frå nord",
-        "FROM_NORTH_WEST": "NV - frå nordvest",
         "FROM_NORTH_EAST": "NØ - frå nordaust",
+        "FROM_NORTH_WEST": "NV - frå nordvest",
         "FROM_SOUTH": "S - frå sør",
         "FROM_SOUTH_EAST": "SØ - frå søraust",
         "FROM_SOUTH_WEST": "SV - frå sørvest",
