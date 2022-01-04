@@ -209,6 +209,9 @@
     "OBSERVATIONS": "Observasjonar"
   },
   "OFFLINE_MAP": {
+    "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
+    "DISKSPACE_ERROR_MESSAGE": "Beklagar, du har ikkje nok plass tilgjengeleg på telefonen til å lagre kartpakka. Frigjer plass og prøv på nytt.",
+    "DOWNLOAD_ERROR_MESSAGE": "Klarte ikkje laste ned kartpakke. Pass på at du har ei stabil og god internett-kobling.",
     "MAP_PACKAGE_DETAILS_PAGE": {
       "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedlasting",
       "DELETE_BUTTON": "Slett",
@@ -222,16 +225,13 @@
       "TRY_AGAIN_BUTTON": "Prøv på nytt"
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} pakkar",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} pakke",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} ledig",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
       "UNZIP_PART_X_OF_Y": "Pakkar ut {{n}} av {{totalParts}}"
     },
-    "SPACE_AVAILABLE": "{{spaceAvailable}} ledig",
-    "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
-    "DISKSPACE_ERROR_MESSAGE": "Beklagar, du har ikkje nok plass tilgjengeleg på telefonen til å lagre kartpakka. Frigjer plass og prøv på nytt.",
-    "DOWNLOAD_ERROR_MESSAGE": "Klarte ikkje laste ned kartpakke. Pass på at du har ei stabil og god internett-kobling.",
-    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} pakkar",
-    "PACKAGE_COUNT_SINGLE": "{{packageCount}} pakke",
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikkje lagre kartpakka på disk. Ver vennleg og prøv igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikkje lagre kartpakka på disk. Er du sikker på at det er nok plass tilgjengeleg?"
   },

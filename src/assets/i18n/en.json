@@ -217,11 +217,9 @@
     "OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {
+    "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
     "DISKSPACE_ERROR_MESSAGE": "Not enough disk space available to store offline map package. Please free up some disk space and try again.",
     "DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection.",
-    "PACKAGE_COUNT_SINGLE": "{{packageCount}} package",
-    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} packages",
-    "SPACE_AVAILABLE": "{{spaceAvailable}} free",
     "MAP_PACKAGE_DETAILS_PAGE": {
       "CANCEL_DOWNLOAD_BUTTON": "Cancel download",
       "DELETE_BUTTON": "Delete",
@@ -235,13 +233,15 @@
       "TRY_AGAIN_BUTTON": "Try again"
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offline map",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} packages",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} package",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} free",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Downloading part {{n}} of {{totalParts}}",
       "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again",
-    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?",
-    "DELETE_PACKAGE_CONFIRM": "Delete this map package?"
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Permission to location denied",
