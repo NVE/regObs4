@@ -495,22 +495,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tester"
         },
+        "EAST": "Ø",
         "GENERATING_PREVIEW": "Genererer forhåndsvisning...",
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",
-        "SLOPE_ANGLE": "Bratthet",
-        "SLOPE_ANGLE_PLACEHOLDER": "Kun hele grader",
-        "VALID_EXPOSITION": "Eksposisjon",
-        "EAST": "Ø",
         "NORTH": "N",
-        "NORTH_WEST": "NV",
         "NORTH_EAST": "NØ",
-        "SOUTH": "S",
-        "SOUTH_EAST": "SØ",
-        "SOUTH_WEST": "SV",
-        "WEST": "V",
+        "NORTH_WEST": "NV",
         "PREVIEW": "Forhåndsvisning",
         "PREVIEW_ERROR": "Klarte ikke generere forhåndsvisning",
         "PREVIEW_ITEM": "Se snøprofil",
+        "SLOPE_ANGLE": "Bratthet",
+        "SLOPE_ANGLE_PLACEHOLDER": "Kun hele grader",
         "SNOW_DENSITY": {
           "CYLINDER": "Sylinder",
           "CYLINDER_DIAMETER": "Sylinderdiameter (cm)",
@@ -538,6 +533,9 @@
           "TEMPERATURE": "Temperatur (°C)",
           "TITLE": "Temperaturprofil"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SØ",
+        "SOUTH_WEST": "SV",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Legg til nytt lag",
           "ADD_LAYER_BOTTOM": "Legg til nytt lag nederst",
@@ -566,7 +564,9 @@
         },
         "SUBFORMS": "Underskjema",
         "SUPERIOR": "Overordnet",
-        "TITLE": "Snøprofil"
+        "TITLE": "Snøprofil",
+        "VALID_EXPOSITION": "Eksposisjon",
+        "WEST": "V"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snødekket",
@@ -590,8 +590,8 @@
         "COMMENT_PLACEHOLDER": "Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor går nullisotermen?",
         "FROM_EAST": "Ø - fra øst",
         "FROM_NORTH": "N - fra nord",
+        "FROM_NORTH_EAST": "NØ - fra nordøst",
         "FROM_NORTH_WEST": "NV - fra nordvest",
-        "FROM_NOTRH_EAST": "NØ - fra nordøst",
         "FROM_SOUTH": "S - fra sør",
         "FROM_SOUTH_EAST": "SØ - fra sørøst",
         "FROM_SOUTH_WEST": "SV - fra sørvest",
