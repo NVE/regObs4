@@ -111,12 +111,12 @@
     "FORGOT_PASSWORD": "Forgot password",
     "IS_LOGGING_IN": "Logging in...",
     "LOGGED_IN_AS": "Logged in as",
-    "LOGIN": "Login",
-    "LOGOUT": "Logout",
+    "LOGIN": "Log in",
+    "LOGOUT": "Log out",
     "MY_PROFILE": "My profile",
     "PASSWORD": "Password",
     "SERVICE_UNAVAILABLE": "Error while connecting to the service. Do you have mobile network? Please wait a few minutes and try again.",
-    "TITLE": "Login",
+    "TITLE": "Log in",
     "UNAUTHORIZED": "Wrong username or password. Please retry.",
     "UNKNOWN_ERROR": "Error while logging in. Message from server:"
   },
@@ -217,11 +217,9 @@
     "OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {
+    "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
     "DISKSPACE_ERROR_MESSAGE": "Not enough disk space available to store offline map package. Please free up some disk space and try again.",
     "DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection.",
-    "PACKAGE_COUNT_SINGLE": "{{packageCount}} package",
-    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} packages",
-    "SPACE_AVAILABLE": "{{spaceAvailable}} free",
     "MAP_PACKAGE_DETAILS_PAGE": {
       "CANCEL_DOWNLOAD_BUTTON": "Cancel download",
       "DELETE_BUTTON": "Delete",
@@ -235,13 +233,15 @@
       "TRY_AGAIN_BUTTON": "Try again"
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offline map",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} packages",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} package",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} free",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Downloading part {{n}} of {{totalParts}}",
       "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again",
-    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?",
-    "DELETE_PACKAGE_CONFIRM": "Delete this map package?"
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Permission to location denied",
@@ -495,22 +495,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tests"
         },
+        "EAST": "E",
         "GENERATING_PREVIEW": "Generating preview...",
         "IS_PROFILE_TO_GROUND": "Is the profile dug to the ground?",
-        "SLOPE_ANGLE": "Bratthet",
-        "SLOPE_ANGLE_PLACEHOLDER": "Degrees without decimals",
-        "VALID_EXPOSITION": "Aspect",
-        "EAST": "E",
         "NORTH": "N",
-        "NORTH_WEST": "NW",
         "NORTH_EAST": "NE",
-        "SOUTH": "S",
-        "SOUTH_EAST": "SE",
-        "SOUTH_WEST": "SW",
-        "WEST": "W",
+        "NORTH_WEST": "NW",
         "PREVIEW": "Preview",
         "PREVIEW_ERROR": "Could not create plot preview",
         "PREVIEW_ITEM": "Show Snow Profile",
+        "SLOPE_ANGLE": "Bratthet",
+        "SLOPE_ANGLE_PLACEHOLDER": "Degrees without decimals",
         "SNOW_DENSITY": {
           "CYLINDER": "Cylinder",
           "CYLINDER_DIAMETER": "Cylinder bore diameter (cm)",
@@ -538,6 +533,9 @@
           "TEMPERATURE": "Temperature (°C)",
           "TITLE": "Temperature Profile"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SE",
+        "SOUTH_WEST": "SW",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Add layer",
           "ADD_LAYER_BOTTOM": "Add layer to bottom",
@@ -566,7 +564,9 @@
         },
         "SUBFORMS": "Subforms",
         "SUPERIOR": "Main",
-        "TITLE": "Snow Profile"
+        "TITLE": "Snow Profile",
+        "VALID_EXPOSITION": "Aspect",
+        "WEST": "W"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Describe the snow surface",
@@ -590,8 +590,8 @@
         "COMMENT_PLACEHOLDER": "How has the weather been the last 24 hours? Example: Has there been snowfall? Temperature changes? At what altitude has the freezing point been?",
         "FROM_EAST": "E - from east",
         "FROM_NORTH": "N - from north",
+        "FROM_NORTH_EAST": "NE - from north-east",
         "FROM_NORTH_WEST": "NW - from north-west",
-        "FROM_NOTRH_EAST": "NE - from north-east",
         "FROM_SOUTH": "S - from south",
         "FROM_SOUTH_EAST": "SE - from south-east",
         "FROM_SOUTH_WEST": "SW - from south-west",

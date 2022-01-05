@@ -205,7 +205,6 @@
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Lyckades ej spara kartpaketet till disk. Vänligen prøva igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
-
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tillstånd till plats nekas",
@@ -459,22 +458,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tester"
         },
+        "EAST": "O",
         "GENERATING_PREVIEW": "Genererar förhandsvisning ..",
         "IS_PROFILE_TO_GROUND": "Är profilen grävd till marken?",
-        "SLOPE_ANGLE": "Lutning",
-        "SLOPE_ANGLE_PLACEHOLDER": "Endast hela grader",
-        "VALID_EXPOSITION": "Väderstreck",
-        "EAST": "O",
         "NORTH": "N",
-        "NORTH_WEST": "NV",
         "NORTH_EAST": "NO",
-        "SOUTH": "S",
-        "SOUTH_EAST": "SO",
-        "SOUTH_WEST": "SV",
-        "WEST": "V",
+        "NORTH_WEST": "NV",
         "PREVIEW": "Förhandsvisning",
         "PREVIEW_ERROR": "Det gick inte att generera förhandsvisning",
         "PREVIEW_ITEM": "Se snöprofil",
+        "SLOPE_ANGLE": "Lutning",
+        "SLOPE_ANGLE_PLACEHOLDER": "Endast hela grader",
         "SNOW_DENSITY": {
           "CYLINDER": "Cylinder",
           "CYLINDER_DIAMETER": "Cylinderdiameter (cm)",
@@ -502,6 +496,9 @@
           "TEMPERATURE": "Temperatur (°C)",
           "TITLE": "Temperaturprofil"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SO",
+        "SOUTH_WEST": "SV",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Lägg till lager",
           "ADD_LAYER_BOTTOM": "Lägg till lager i botten",
@@ -530,7 +527,9 @@
         },
         "SUBFORMS": "Underformulär ",
         "SUPERIOR": "Huvudsaklig",
-        "TITLE": "Snöprofil"
+        "TITLE": "Snöprofil",
+        "VALID_EXPOSITION": "Väderstreck",
+        "WEST": "V"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snöytan",
@@ -554,8 +553,8 @@
         "COMMENT_PLACEHOLDER": "Hur har vädret varit det senaste dygnet? Exempel: Har det varit snöfall? Har det skett temperaturförändringar? På vilken höjd har fryspunkten varit?",
         "FROM_EAST": "O - från ost",
         "FROM_NORTH": "N - från nord",
+        "FROM_NORTH_EAST": "NO - från nordost",
         "FROM_NORTH_WEST": "NV - från nordväst",
-        "FROM_NOTRH_EAST": "NO - från nordost",
         "FROM_SOUTH": "S - från syd",
         "FROM_SOUTH_EAST": "SO - från sydost",
         "FROM_SOUTH_WEST": "SV - från sydväst",
