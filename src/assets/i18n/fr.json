@@ -25,6 +25,7 @@
     "UNDO": "Annuler",
     "WARNING": "Alerte"
   },
+  "CLOSE": "Fermer",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Ajoutez vos observations",
     "SELECT_GEO_HAZARD": "Sélection d'un aléa",
@@ -113,6 +114,7 @@
   },
   "MAP_CENTER_INFO": {
     "ABOVE_SEA_LEVEL": "m (par rapport au niveau de la mer)",
+    "AWAY_FROM": "loin",
     "COPIED_TO_CLIPBOARD": "Copié dans le presse-papier",
     "EAST_SHORT": "E",
     "NORTH_SHORT": "N"
@@ -132,6 +134,7 @@
     "CONTACT_REGOBS_ERROR": "Signaler une erreur",
     "CONTACT_SUBJECT": "Contact depuis l'application",
     "DAYS_BACK": "Passé",
+    "DAY_BACK": "Jour précédent",
     "ERROR_REPORT_DESCRIPTION": "Veuillez décrire votre problème ici. Si vous avez des captures d'écran, veuillez les joindre.",
     "ERROR_REPORT_SUBJECT": "Rapport d'erreur de",
     "GENERAL": "Général",
@@ -144,6 +147,7 @@
     "OPACITY": "Transparence",
     "OTHER": "Autre",
     "SHOW": "Afficher",
+    "SHOWING_OBSERVATIONS": "observations",
     "SHOW_MAP_CENTER": "Pointer le centre de la carte",
     "SHOW_OBSERVATIONS": "Afficher les observations",
     "SHOW_TRIPS": "Afficher les itinéraires des sorties",
@@ -183,7 +187,29 @@
     "OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {
-    "OFFLINE_MAP_PAGE_TITLE": "Carte hors connexion"
+    "DELETE_PACKAGE_CONFIRM": "Supprimer ce jeu de cartes?",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Annuler le téléchargement",
+      "DELETE_BUTTON": "Supprimer",
+      "DOWNLOAD_BUTTON": "Télécharger",
+      "HEADER": "Jeu de cartes {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Téléchargé {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Statut:",
+      "PACKAGE_PRODUCED_DATE": "Créé :",
+      "PACKAGE_SIZE": "Taille:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Essayer à nouveau"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Carte hors connexion",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} Jeux de cartes",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} Jeu",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} libre",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Téléchargement de la partie {{n}} sur {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Décompression de la partie {{n}} sur {{totalParts}}"
+    },
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Impossible de sauvegarder le jeu de carte sur le disque. Veuillez ré-essayer.",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Impossible de sauvegarder le jeu de carte. Y-a-t-il assez d'espace mémoire disponible?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Autorisation de localisation refusée",
@@ -433,11 +459,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tests"
         },
+        "EAST": "E",
         "GENERATING_PREVIEW": "Génération de l'aperçu ...",
         "IS_PROFILE_TO_GROUND": "Le profil va-t-il jusqu'au sol ?",
+        "NORTH": "N",
+        "NORTH_EAST": "NE",
+        "NORTH_WEST": "NW",
         "PREVIEW": "Aperçu",
         "PREVIEW_ERROR": "Impossible de créer l'aperçu du tracé",
         "PREVIEW_ITEM": "Afficher le profil du manteau neigeux",
+        "SLOPE_ANGLE": "Angle de la pente",
+        "SLOPE_ANGLE_PLACEHOLDER": "En degrés, nombre entier sans décimales",
         "SNOW_DENSITY": {
           "CYLINDER": "Carottier",
           "CYLINDER_DIAMETER": "Diamètre du carottier (cm)",
@@ -465,6 +497,9 @@
           "TEMPERATURE": "Température (°C)",
           "TITLE": "Profil de températures"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SE",
+        "SOUTH_WEST": "SO",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Ajouter une couche",
           "ADD_LAYER_BOTTOM": "Ajouter une couche en dessous",
@@ -493,7 +528,9 @@
         },
         "SUBFORMS": "Types de grain (sous-classes)",
         "SUPERIOR": "Types de grains (principaux)",
-        "TITLE": "Profil du manteau neigeux"
+        "TITLE": "Profil du manteau neigeux",
+        "VALID_EXPOSITION": "Orientation",
+        "WEST": "O"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Description de la surface de la neige",
@@ -649,6 +686,7 @@
     "CLAY_LEGEND_TEXT_1": "Glissement d'argile rapide",
     "CLAY_LEGEND_TEXT_2": "Zone de glissements d'argile rapide",
     "CLAY_LEGEND_TEXT_3": "Entièrement ou partiellement cartographiée",
+    "CLAY_LEGEND_TEXT_4": "Limites marines",
     "CLAY_LEGEND_TEXT_5": "Au-dessus de l'aire marine",
     "CLAY_LEGEND_TEXT_6": "En dessous de l'aire marine",
     "CLAY_LEGEND_TEXT_7": "Pas/peu d'impact maritime",
@@ -688,9 +726,11 @@
     "STEEPNESS_COLOR_INFO": "La couleur indique l'inclinaison de pente du terrain",
     "STEEPNESS_MAP_DESCRIPTION": "Carte des pentes",
     "STEEPNESS_MAP_DISCLAMER": "Pour la préparation de course <i>uniquement</i>. La carte est produite automatiquement et peut comporter des erreurs et des omissions, par exemple une portion de pente raide peut ne pas être affichée",
+    "STEEPNESS_OFFLINE_DISCLAMER": "La couche cartographique n'est disponible hors ligne que si l'aléa avalanche est activé.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Emprise médiane de l'écoulement des avalanches (50 % des avalanches iront plus loin).",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Emprise \"normale\" de l'écoulement des avalanches (25 % des avalanches iront plus loin).",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Emprise quasi maximale de l'écoulement des avalanches (5 % des avalanches iront plus loin).\nCertaines avalanches peuvent s'écouler en dehors de l'emprise définie sur cette carte.",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Palette de couleur donnant les zones d'écoulement des avalanches",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Carte des pentes et zones d'écoulement des avalanches",
     "STEEPNESS_OUTLET_MAP_DISCLAMER": "Pour la préparation de course <i>uniquement</i>. La carte est produite automatiquement et peut comporter des erreurs et des omissions, par exemple une portion de pente raide ou des emprises d'avalanche non affichées.\n<br/>\n<br/>\nLes couleurs indiquent les zones d'écoulement pour les avalanches :",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Glace affaiblie"
