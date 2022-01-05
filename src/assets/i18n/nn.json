@@ -229,11 +229,11 @@
     "PACKAGE_COUNT_SINGLE": "{{packageCount}} pakke",
     "SPACE_AVAILABLE": "{{spaceAvailable}} ledig",
     "STATUS": {
-      "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
+      "DOWNLOADING_PART_X_OF_Y": "Lastar ned {{n}} av {{totalParts}}",
       "UNZIP_PART_X_OF_Y": "Pakkar ut {{n}} av {{totalParts}}"
     },
-    "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikkje lagre kartpakka på disk. Ver vennleg og prøv igjen!",
-    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikkje lagre kartpakka på disk. Er du sikker på at det er nok plass tilgjengeleg?"
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikkje å lagre kartpakka på disk. Ver vennleg og prøv igjen!",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikkje å lagre kartpakka på disk. Er du sikker på at det er nok plass tilgjengeleg?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nekta.",
@@ -492,6 +492,8 @@
         "PREVIEW": "Forhåndsvising",
         "PREVIEW_ERROR": "Klarte ikkje generere førehandsvising",
         "PREVIEW_ITEM": "Sjå snøprofil",
+        "SLOPE_ANGLE": "Helning",
+        "SLOPE_ANGLE_PLACEHOLDER": "Kun heile gradar",
         "SNOW_DENSITY": {
           "CYLINDER": "Sylinder",
           "CYLINDER_DIAMETER": "Sylinderdiameter (cm)",
@@ -748,9 +750,11 @@
     "STEEPNESS_COLOR_INFO": "Fargar gir hellingen til terrenget (grader):",
     "STEEPNESS_MAP_DESCRIPTION": "Hellingskart",
     "STEEPNESS_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, t.d.bratte heng som ikkje visast.",
+    "STEEPNESS_OFFLINE_DISCLAMER": "Offline støttekart er berre tilgjengeleg med både helning og utløpsområder.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skreda stoppar innanfor denne grensa)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skreda går lenger)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lengre)\nNokre skred kan ha lengre utløp som ikkje er vist på kartet.",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Fargar på utløp for snøskred:",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsområde for snøskred",
     "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og manglar, t.d. bratte heng og utløp som ikkje visast.\n<br/>\n<br/>\nFargar på utløp for snøskred:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Kart over svekka is"
