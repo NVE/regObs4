@@ -3,8 +3,8 @@ import { OfflineMapService } from '../../core/services/offline-map/offline-map.s
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { AlertController, ModalController } from '@ionic/angular';
-import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
-import { debounceTime, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, Subject } from 'rxjs';
+import { debounceTime, filter, map, shareReplay, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { OfflinePackageModalComponent } from './offline-package-modal/offline-package-modal.component';
@@ -30,8 +30,12 @@ const errorTileStyle = {
   color: documentStyle.getPropertyValue('--ion-color-danger'),
 };
 
-
 type PackageIndex = CompoundPackageMetadata[];
+
+interface PackageTotals {
+  numPackages: number,
+  spaceUsed: string
+}
 
 @Component({
   selector: 'app-offline-map',
@@ -41,17 +45,19 @@ type PackageIndex = CompoundPackageMetadata[];
 export class OfflineMapPage extends NgDestoryBase {
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
   private installedPackages: Map<string, OfflineMapPackage> = new Map();
-  downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
-  private readonly allPackages$: Observable<OfflineMapPackage[]>;
+  private failedPackageIds: string[] = []; //remember failed packages until features are ready for styling
+  private downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
+  packageTotals$: Observable<PackageTotals>;
+  readonly allPackages$: Observable<OfflineMapPackage[]>;
   private packagesOnServer$: Observable<Map<string, CompoundPackage>>;
   private packagesOnServer: Map<string, CompoundPackage> = new Map();
   showTileCard = true;
-  showDownloads = false;
   tilesLayer: L.GeoJSON;
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
   showModal = new Subject<CompoundPackageFeature>();
   isZooming = new BehaviorSubject<boolean>(false);
   featureMap = new Map<string, { feature: CompoundPackageFeature, layer: L.Layer }>();
+  expanded = false; //show list of downloads if this is true
 
   constructor(
     private helperService: HelperService,
@@ -84,10 +90,22 @@ export class OfflineMapPage extends NgDestoryBase {
       this.offlineMapService.downloadAndUnzipProgress$,
       this.offlineMapService.packages$
     ]).pipe((map(([inProgress, downloaded]) => [...inProgress, ...downloaded])));
-  }
 
-  toggleDownloads() {
-    this.showDownloads = !this.showDownloads;
+    this.packageTotals$ = this.allPackages$.pipe(
+      map((packages) => {
+        let count = 0;
+        let space = 0;
+        for (const mapPackage of packages) {
+          count += 1;
+          space += mapPackage.size;
+        }
+        let spaceWithUnit = '0 MB';
+        if (space > 0) {
+          spaceWithUnit = this.humanReadableByteSize(space);
+        }
+        return { numPackages: count, spaceUsed: spaceWithUnit };
+      })
+    );
   }
 
   onMapReady(map: L.Map) {
@@ -126,7 +144,11 @@ export class OfflineMapPage extends NgDestoryBase {
         this.setStyleForPackages();
       });
 
-    this.downloadAndUnzipProgress$.pipe(takeUntil(this.ngDestroy$)).subscribe((itemsWithProgress) => {
+    this.downloadAndUnzipProgress$.pipe(takeUntil(this.ngDestroy$)).pipe(
+      tap((itemsWithProgress) => {
+        this.failedPackageIds = itemsWithProgress.filter(item => item.error).map(item => item.name);
+      })
+    ).subscribe((itemsWithProgress) => {
       this.zone.runOutsideAngular(() => {
         for(const item of itemsWithProgress) {
           this.setStyleForProgressOrDownloadedPackage(item);
@@ -156,8 +178,12 @@ export class OfflineMapPage extends NgDestoryBase {
       this.setStyleForProgressOrDownloadedPackage(item);
     }
     for(const [key, ] of this.packagesOnServer) {
+      let style = defaultTileStyle;
       if(!this.installedPackages.has(key)) {
-        this.setStyleForFeature(key, defaultTileStyle);
+        if (this.failedPackageIds.includes(key)) {
+          style = errorTileStyle;
+        }
+        this.setStyleForFeature(key, style);
       }
     }
   }
@@ -220,41 +246,41 @@ export class OfflineMapPage extends NgDestoryBase {
   }
 
   showPackageModalForPackage(map: OfflineMapPackage) {
-    const feature = this.featureMap.get(map.compoundPackageMetadata.getName());
-    if(feature) {
+    const feature = this.featureMap.get(map.name);
+    if (feature) {
       this.showPackageModal(feature.feature);
     }
   }
 
-  humanReadableByteSize(bytes: number): string {
+  humanReadableByteSize(bytes: number, fractionDigits = 0): string {
     if (isNaN(bytes)) {
       return '';
     }
-    return this.helperService.humanReadableByteSize(bytes, true);
+    return this.helperService.humanReadableByteSize(bytes, fractionDigits, true);
   }
 
-  getPercentage(map: OfflineMapPackage): number {
-    return Math.round((map.progress ? map.progress.percentage : 0) * 100);
+  formatProgressIfDownloading(map: OfflineMapPackage): string {
+    if (map.downloadStart && !map.downloadComplete) {
+      const value = Math.round((map.progress ? map.progress.percentage : 0) * 100);
+      return `(${value}%)`;
+    }
+    return '';
   }
 
   async cancelOrDelete(map: OfflineMapPackage, event: Event) {
     event.stopPropagation();
     if (this.isDownloaded(map)) {
-      // TODO: Are you su
-      const toTranslate = ['DIALOGS.ARE_YOU_SURE', 'DIALOGS.CANCEL', 'DIALOGS.OK'];
-      const translations = await this.translateService
-        .get(toTranslate)
-        .toPromise();
+      const toTranslate = ['OFFLINE_MAP.DELETE_PACKAGE_CONFIRM', 'DIALOGS.CANCEL', 'DIALOGS.DELETE'];
+      const translations = await firstValueFrom(this.translateService.get(toTranslate));
       const alert = await this.alertController.create({
-        header: translations['DIALOGS.ARE_YOU_SURE'],
-        message: translations['DIALOGS.ARE_YOU_SURE'],
+        message: translations['OFFLINE_MAP.DELETE_PACKAGE_CONFIRM'],
         buttons: [
           {
             text: translations['DIALOGS.CANCEL'],
             role: 'cancel'
           },
           {
-            text: translations['DIALOGS.OK'],
+            text: translations['DIALOGS.DELETE'],
             handler: () => {
               this.offlineMapService.removeMapPackageByName(map.name);
             }
@@ -262,17 +288,16 @@ export class OfflineMapPage extends NgDestoryBase {
         ]
       });
       alert.present();
-    }else{
+    } else {
       this.offlineMapService.cancelDownloadPackage(map);
     }
   }
 
-
-  isDownloading(map: OfflineMapPackage): boolean {
-    return map.downloadStart && !map.downloadComplete;
-  }
-
   isDownloaded(map: OfflineMapPackage): boolean {
     return !!map.downloadComplete;
+  }
+
+  getSpaceAvailable(): string {
+    return this.humanReadableByteSize(this.offlineMapService.availableDiskspace?.available, 0);
   }
 }

@@ -10,6 +10,7 @@
 <ion-content>
   <div class="map-container" *ngIf="center">
     <app-map
+      [offlinePackageMode]="true"
       [showMapSearch]=false
       [showFullscreenToggle]=false
       [showGpsCenter]=false

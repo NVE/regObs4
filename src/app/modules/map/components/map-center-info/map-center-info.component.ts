@@ -1,195 +1,127 @@
-import { Component, OnInit, OnDestroy, Inject, NgZone } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { ToastController, Platform } from '@ionic/angular';
-import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, of, Observable } from 'rxjs';
-import { switchMap, tap, filter, map, startWith } from 'rxjs/operators';
-import { ViewInfo } from '../../services/map-search/view-info.model';
-import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
+import { combineLatest, firstValueFrom, of } from 'rxjs';
+import { catchError, takeUntil, timeout } from 'rxjs/operators';
 import { MapSearchService } from '../../services/map-search/map-search.service';
-import { IMapView } from '../../services/map/map-view.interface';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
-import { Position } from '@capacitor/geolocation';
 import { HelperService } from 'src/app/core/services/helpers/helper.service';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import { Position } from '@capacitor/geolocation';
+import { LocationName } from '../../services/map-search/location-name.model';
+import * as L from 'leaflet';
+import { ViewInfo } from '../../services/map-search/view-info.model';
+import { IMapView } from '../../services/map/map-view.interface';
 
-interface ViewInfoWithDistance extends ViewInfo {
-  horizontalDistanceFromGpsPos?: string; //including unit (m or km)
-  heightDifferenceFromGpsPos?: string; //including unit (m)
-  gpsPosIsBelowMapCenter?: boolean;
-}
+const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
+let requestCounter = 0;
 
 @Component({
   selector: 'app-map-center-info',
   templateUrl: './map-center-info.component.html',
-  styleUrls: ['./map-center-info.component.scss']
+  styleUrls: ['./map-center-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapCenterInfoComponent implements OnInit, OnDestroy {
-  viewInfo: ViewInfoWithDistance;
-  mapView: IMapView;
-  showMapCenter: boolean;
-  isLoading: boolean;
+export class MapCenterInfoComponent extends NgDestoryBase {
+  private userPos: Position;  // Caches the gps position for distance and height diff computation
 
-  private textToCopy: string;
-  private subscriptions: Subscription[] = [];
+  // For accessing the info box element from parent views
+  @ViewChild('infoBoxElement') private infoBoxElement: ElementRef;
+
+  get nativeElement(): HTMLElement | null {
+    return this.infoBoxElement?.nativeElement;
+  }
+
+  // Public props we can see in the map center info box
+  mapCenter: L.LatLng;
+  elevation: number;
+  location: LocationName;
+  steepness: number;
+  loading = false;
+
+  get distance(): number {
+    if (this.userPos?.coords && this.mapCenter != null) {
+      return this.mapCenter.distanceTo({
+        lat: this.userPos.coords.latitude,
+        lng: this.userPos.coords.longitude
+      });
+    }
+  }
+
+  get heightDifference(): number {
+    if (this.userPos?.coords?.altitude != null && this.elevation) {
+      return this.elevation - this.userPos.coords.altitude;
+    }
+  }
 
   constructor(
-    private userSettingService: UserSettingService,
-    private mapService: MapService,
+    mapService: MapService,
     private mapSearchService: MapSearchService,
     private clipboard: Clipboard,
     private toastController: ToastController,
     private translateService: TranslateService,
     private platform: Platform,
-    private ngZone: NgZone,
-    private geoPositionService: GeoPositionService,
+    geoPositionService: GeoPositionService,
     private helperService: HelperService,
-    @Inject(DOCUMENT) private document: Document
-  ) {}
+    private cdr: ChangeDetectorRef,
+  ) {
+    super();
 
-  async ngOnInit() {
-    const showMapCenterObservable = this.userSettingService.showMapCenter$.pipe(
-      tap((showMapCenter) => {
-        this.ngZone.run(() => {
-          this.showMapCenter = showMapCenter;
-          this.setHeightStyle(showMapCenter ? 1 : 0);
-        });
-      })
-    );
-    this.subscriptions.push(
-      showMapCenterObservable
-        .pipe(
-          switchMap((showMapCenter) =>
-            showMapCenter ? this.mapService.mapView$ : of(null)
-          ),
-          filter((val) => !!val)
-        )
-        .subscribe((mapView) => {
-          this.ngZone.run(() => {
-            this.mapView = mapView;
-            this.textToCopy = `${mapView.center.lat}, ${mapView.center.lng}`;
-          });
-        })
-    );
-    this.subscriptions.push(
-      showMapCenterObservable
-        .pipe(
-          switchMap((showMapCenter) =>
-            showMapCenter ? this.mapService.relevantMapChange$ : of(null)
-          ),
-          filter((val) => !!val),
-          tap(() => {
-            this.ngZone.run(() => {
-              this.isLoading = true;
-            });
-          }),
-          switchMap((val: IMapView) => this.getViewInfo(val))
-        )
-        .subscribe(
-          (viewInfo) => {
-            this.ngZone.run(() => {
-              this.viewInfo = viewInfo;
-              this.isLoading = false;
-            });
-          },
-          (_) => {
-            this.ngZone.run(() => {
-              this.isLoading = false;
-            });
-          }
-        )
-    );
+    // When we get a new gps position, update cached position.
+    // If followMode is on, we do not need to show distance and relative height.
+    combineLatest([
+      geoPositionService.currentPosition$,
+      mapService.followMode$
+    ])
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(([newPos, followMode]) => {
+        this.userPos = followMode ? null : newPos;
+        this.cdr.markForCheck();
+      });
+
+    mapService.relevantMapChangeWithInitialView$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((newMapView) => {
+        this.mapCenter = newMapView.center;
+        this.location = null;
+        this.elevation = null;
+        this.steepness = null;
+        this.fetchNewLocationInfo(newMapView);
+        this.cdr.markForCheck();
+      });
   }
 
-  private setHeightStyle(numRows: number): void {
-    const padding = numRows > 0 ? 20 : 0;
-    this.document.documentElement.style.setProperty(
-      '--map-center-info-height',
-      `${padding + numRows * 17}px`
-    );
+  getHorizontalDifferenceText(value: number): string {
+    return this.helperService.getDistanceText(value);
   }
 
-  private getViewInfo(mapView: IMapView): Observable<ViewInfoWithDistance> {
-    return this.mapSearchService.getViewInfo(mapView).pipe(
-      switchMap((viewInfo) =>
-        this.geoPositionService.currentPosition$.pipe(
-          startWith(null as Position),
-          map((gpsPos) => this.createViewInfoWithDistance(viewInfo, gpsPos)),
-          tap((viewInfoWithDistance) =>
-            this.computeHeight(viewInfoWithDistance)
-          )
-        )
-      )
-    );
-  }
+  private fetchNewLocationInfo(mapView: IMapView) {
+    this.loading = true;
 
-  private computeHeight(viewInfo: ViewInfoWithDistance): void {
-    let rows = 0;
-    if (this.mapView.center) {
-      rows++;
-    }
-    if (viewInfo) {
-      if (viewInfo?.location) {
-        rows++;
-      }
-      if (viewInfo?.elevation != null || viewInfo?.steepness != null) {
-        rows++;
-      }
-      if (
-        viewInfo.horizontalDistanceFromGpsPos ||
-        viewInfo.heightDifferenceFromGpsPos
-      ) {
-        rows++;
-      }
-    }
-    this.setHeightStyle(rows);
-  }
-
-  private createViewInfoWithDistance(
-    viewInfo: ViewInfo,
-    gpsPos: Position
-  ): ViewInfoWithDistance {
-    let horizontalDistance = undefined;
-    let heightDifference = undefined;
-    let gpsPosIsBelowMapCenter = undefined;
-    if (this.mapView.center && gpsPos?.coords) {
-      horizontalDistance = this.helperService.getDistanceText(
-        this.mapView.center.distanceTo([
-          gpsPos.coords.latitude,
-          gpsPos.coords.longitude
-        ])
+    const locationInfoRequest = this.mapSearchService
+      .getViewInfo(mapView)
+      .pipe(
+        timeout(LOCATION_INFO_REQUEST_TIMEOUT),
+        catchError(() => of({} as ViewInfo)),
       );
-      if (viewInfo && viewInfo.elevation && gpsPos.coords.altitude) {
-        heightDifference =
-          Math.abs(viewInfo.elevation - gpsPos.coords.altitude).toFixed() +
-          ' m';
-        if (gpsPos.coords.altitude < viewInfo.elevation) {
-          gpsPosIsBelowMapCenter = true;
-        } else if (gpsPos.coords.altitude > viewInfo.elevation) {
-          gpsPosIsBelowMapCenter = false;
-        } else {
-          heightDifference = '';
-        }
-      }
-      return {
-        location: viewInfo?.location,
-        elevation: viewInfo?.elevation,
-        steepness: viewInfo?.steepness,
-        latLng: this.mapView.center,
-        horizontalDistanceFromGpsPos: horizontalDistance,
-        heightDifferenceFromGpsPos: heightDifference,
-        gpsPosIsBelowMapCenter: gpsPosIsBelowMapCenter
-      };
-    } else {
-      return null;
-    }
-  }
 
-  ngOnDestroy(): void {
-    for (const subscription of this.subscriptions) {
-      subscription.unsubscribe();
-    }
+    // Track request number, so we only update the view
+    // after the last observable completes.
+    requestCounter++;
+    const requestIndex = requestCounter;
+
+    firstValueFrom(locationInfoRequest)
+      .then(viewInfo => {
+        if (requestIndex < requestCounter) return;
+
+        this.location = viewInfo.location;
+        this.elevation = viewInfo.elevation;
+        this.steepness = viewInfo.steepness;
+        this.loading = false;
+        this.cdr.markForCheck();
+      });
   }
 
   private useNativeClipboardPlugin() {
@@ -199,15 +131,14 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     );
   }
 
-  async copyToClipboard() {
+  async copyToClipboard(): Promise<void> {
+    const textToCopy = `${this.mapCenter.lat}, ${this.mapCenter.lng}`;
     if (this.useNativeClipboardPlugin()) {
-      await this.clipboard.copy(this.textToCopy);
+      await this.clipboard.copy(textToCopy);
     } else {
-      this.copyToClipBoardWeb(this.textToCopy);
+      this.copyToClipBoardWeb(textToCopy);
     }
-    const toastText = await this.translateService
-      .get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD')
-      .toPromise();
+    const toastText = await firstValueFrom(this.translateService.get('MAP_CENTER_INFO.COPIED_TO_CLIPBOARD'));
     const toast = await this.toastController.create({
       message: toastText,
       mode: 'md',
@@ -216,7 +147,6 @@ export class MapCenterInfoComponent implements OnInit, OnDestroy {
     toast.present();
   }
 
-  // TODO: Make service?
   private copyToClipBoardWeb(val: string) {
     const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';

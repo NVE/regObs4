@@ -6,6 +6,8 @@ import { UserSettingService } from '../../../core/services/user-setting/user-set
 import { settings } from '../../../../settings';
 import { AppMode } from '../../../core/models/app-mode.enum';
 
+export const AUTH_CALLBACK_PATH = 'auth/callback';
+
 export const authFactory = (
   platform: Platform,
   ngZone: NgZone,
@@ -18,10 +20,9 @@ export const authFactory = (
   userSettingService.appMode$.subscribe((appMode: AppMode) => {
     authService.authConfig = settings.authConfig[appMode];
     if (!platform.is('cordova')) {
-      authService.authConfig.redirect_url =
-        window.location.origin + '/auth/callback';
-      authService.authConfig.end_session_redirect_url =
-        window.location.origin + '/auth/callback';
+      const url = `${window.location.origin}/${AUTH_CALLBACK_PATH}`;
+      authService.authConfig.redirect_url = url;
+      authService.authConfig.end_session_redirect_url = url;
     }
   });
   return authService;

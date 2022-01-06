@@ -17,8 +17,7 @@ import {
   distinctUntilChanged,
   pairwise,
   filter,
-  take,
-  debounceTime
+  take
 } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
@@ -26,6 +25,7 @@ import { LangKey } from '../../models/langKey';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
+import { Router } from '@angular/router';
 const DEBUG_TAG = 'DataMarshallService';
 
 @Injectable({
@@ -59,7 +59,8 @@ export class DataMarshallService implements OnReset {
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
-    private analyticService: AnalyticService
+    private analyticService: AnalyticService,
+    private router: Router
   ) {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
   }
@@ -196,7 +197,7 @@ export class DataMarshallService implements OnReset {
       this.subscriptions.push(
         this.platform.resume.subscribe(() => {
           this.loggingService.debug(
-            'App resumed. Start foreground updates.',
+            `App resumed. Start foreground updates. Current route is '${this.router.url}'`,
             DEBUG_TAG
           );
           this.startForegroundUpdate();

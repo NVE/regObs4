@@ -186,7 +186,6 @@
   "OFFLINE_MAP": {
     "DISKSPACE_ERROR_MESSAGE": "Kvarvarande diskutrymme är mindre än kartans storlek. Gör mer diskutrymme tillgängligt och försök igen.",
     "DOWNLOAD_ERROR_MESSAGE": "Nedladdningen misslyckades. Är du ansluten till internet?",
-    "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpaket",
     "MAP_PACKAGE_DETAILS_PAGE": {
       "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedladdning",
       "DELETE_BUTTON": "Radera",
@@ -204,7 +203,8 @@
       "DOWNLOADING_PART_X_OF_Y": "Laddar ner fil {{n}} av {{totalParts}}",
       "UNZIP_PART_X_OF_Y": "Packar upp fil {{n}} av {{totalParts}}"
     },
-    "UNZIP_ERROR_MESSAGE": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Lyckades ej spara kartpaketet till disk. Vänligen prøva igjen!",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tillstånd till plats nekas",
@@ -436,7 +436,7 @@
         "TITLE": "Lavinproblem",
         "TOP": "Toppen",
         "UNKNOWN_TYPE": "Okänd lavinorsak",
-        "VALID_EXPOSITION": "Vädersträck",
+        "VALID_EXPOSITION": "Väderstreck",
         "WEAK_LAYER": "Svagt lager",
         "WEAK_LAYER_DEPTH": "Djup svagt lager"
       },
@@ -458,11 +458,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tester"
         },
+        "EAST": "O",
         "GENERATING_PREVIEW": "Genererar förhandsvisning ..",
         "IS_PROFILE_TO_GROUND": "Är profilen grävd till marken?",
+        "NORTH": "N",
+        "NORTH_EAST": "NO",
+        "NORTH_WEST": "NV",
         "PREVIEW": "Förhandsvisning",
         "PREVIEW_ERROR": "Det gick inte att generera förhandsvisning",
         "PREVIEW_ITEM": "Se snöprofil",
+        "SLOPE_ANGLE": "Lutning",
+        "SLOPE_ANGLE_PLACEHOLDER": "Endast hela grader",
         "SNOW_DENSITY": {
           "CYLINDER": "Cylinder",
           "CYLINDER_DIAMETER": "Cylinderdiameter (cm)",
@@ -490,6 +496,9 @@
           "TEMPERATURE": "Temperatur (°C)",
           "TITLE": "Temperaturprofil"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SO",
+        "SOUTH_WEST": "SV",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Lägg till lager",
           "ADD_LAYER_BOTTOM": "Lägg till lager i botten",
@@ -518,7 +527,9 @@
         },
         "SUBFORMS": "Underformulär ",
         "SUPERIOR": "Huvudsaklig",
-        "TITLE": "Snöprofil"
+        "TITLE": "Snöprofil",
+        "VALID_EXPOSITION": "Väderstreck",
+        "WEST": "V"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snöytan",
@@ -542,10 +553,10 @@
         "COMMENT_PLACEHOLDER": "Hur har vädret varit det senaste dygnet? Exempel: Har det varit snöfall? Har det skett temperaturförändringar? På vilken höjd har fryspunkten varit?",
         "FROM_EAST": "O - från ost",
         "FROM_NORTH": "N - från nord",
+        "FROM_NORTH_EAST": "NO - från nordost",
         "FROM_NORTH_WEST": "NV - från nordväst",
-        "FROM_NOTRH_EAST": "No - från nordost",
         "FROM_SOUTH": "S - från syd",
-        "FROM_SOUTH_EAST": "So - från sydost",
+        "FROM_SOUTH_EAST": "SO - från sydost",
         "FROM_SOUTH_WEST": "SV - från sydväst",
         "FROM_WEST": "V - från väst",
         "NOT_GIVEN": "Ej angivet",

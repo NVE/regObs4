@@ -209,7 +209,9 @@
     "OBSERVATIONS": "Observasjonar"
   },
   "OFFLINE_MAP": {
-    "DOWNLOAD_LIST_MAP_PACKAGE_HEADER": "Kartpakke",
+    "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
+    "DISKSPACE_ERROR_MESSAGE": "Beklagar, du har ikkje nok plass tilgjengeleg på telefonen til å lagre kartpakka. Frigjer plass og prøv på nytt.",
+    "DOWNLOAD_ERROR_MESSAGE": "Klarte ikkje laste ned kartpakke. Pass på at du har ei stabil og god internett-kobling.",
     "MAP_PACKAGE_DETAILS_PAGE": {
       "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedlasting",
       "DELETE_BUTTON": "Slett",
@@ -223,10 +225,15 @@
       "TRY_AGAIN_BUTTON": "Prøv på nytt"
     },
     "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} pakkar",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} pakke",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} ledig",
     "STATUS": {
-      "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
-      "UNZIP_PART_X_OF_Y": "Pakker ut {{n}} av {{totalParts}}"
-    }
+      "DOWNLOADING_PART_X_OF_Y": "Lastar ned {{n}} av {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Pakkar ut {{n}} av {{totalParts}}"
+    },
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikkje å lagre kartpakka på disk. Ver vennleg og prøv igjen!",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikkje å lagre kartpakka på disk. Er du sikker på at det er nok plass tilgjengeleg?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nekta.",
@@ -476,11 +483,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Testar"
         },
+        "EAST": "Ø",
         "GENERATING_PREVIEW": "Genererar førehandvising",
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",
+        "NORTH": "N",
+        "NORTH_EAST": "NØ",
+        "NORTH_WEST": "NV",
         "PREVIEW": "Forhåndsvising",
         "PREVIEW_ERROR": "Klarte ikkje generere førehandsvising",
         "PREVIEW_ITEM": "Sjå snøprofil",
+        "SLOPE_ANGLE": "Helning",
+        "SLOPE_ANGLE_PLACEHOLDER": "Kun heile gradar",
         "SNOW_DENSITY": {
           "CYLINDER": "Sylinder",
           "CYLINDER_DIAMETER": "Sylinderdiameter (cm)",
@@ -508,6 +521,9 @@
           "TEMPERATURE": "Temperatur (°C)",
           "TITLE": "Temperaturprofil"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SØ",
+        "SOUTH_WEST": "SV",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Legg til eit nytt lag",
           "ADD_LAYER_BOTTOM": "Legg til eit nytt lag nedst",
@@ -536,7 +552,9 @@
         },
         "SUBFORMS": "Underskjema",
         "SUPERIOR": "Overordna",
-        "TITLE": "Snøprofil"
+        "TITLE": "Snøprofil",
+        "VALID_EXPOSITION": "Eksposisjon",
+        "WEST": "V"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snødekket",
@@ -558,10 +576,10 @@
         "CLOUD_COVER": "Skydekke (%)",
         "COMMENT_HEADER": "Beskriv vêret",
         "COMMENT_PLACEHOLDER": "Korleis har vêret vore det siste døgnet? T.d.: Har det vore byger? Har det vore temperatuendringar? Kvar går nullisotermen?",
-        "FROM_EAST": "A - frå aust",
+        "FROM_EAST": "Ø - frå aust",
         "FROM_NORTH": "N - frå nord",
+        "FROM_NORTH_EAST": "NØ - frå nordaust",
         "FROM_NORTH_WEST": "NV - frå nordvest",
-        "FROM_NOTRH_EAST": "NA - frå nordaust",
         "FROM_SOUTH": "S - frå sør",
         "FROM_SOUTH_EAST": "SØ - frå søraust",
         "FROM_SOUTH_WEST": "SV - frå sørvest",
@@ -732,9 +750,11 @@
     "STEEPNESS_COLOR_INFO": "Fargar gir hellingen til terrenget (grader):",
     "STEEPNESS_MAP_DESCRIPTION": "Hellingskart",
     "STEEPNESS_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, t.d.bratte heng som ikkje visast.",
+    "STEEPNESS_OFFLINE_DISCLAMER": "Offline støttekart er berre tilgjengeleg med både helning og utløpsområder.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skreda stoppar innanfor denne grensa)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skreda går lenger)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lengre)\nNokre skred kan ha lengre utløp som ikkje er vist på kartet.",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Fargar på utløp for snøskred:",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsområde for snøskred",
     "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og manglar, t.d. bratte heng og utløp som ikkje visast.\n<br/>\n<br/>\nFargar på utløp for snøskred:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Kart over svekka is"
