@@ -5,9 +5,10 @@ import {
   setObservableTimeout,
   NgDestoryBase
 } from '../../../../core/helpers/observable-helper';
-import { Observable, Subscription } from 'rxjs';
+import { firstValueFrom, Observable, Subscription } from 'rxjs';
 import { PopupInfoService } from '../../../../core/services/popup-info/popup-info.service';
 import { takeUntil, take } from 'rxjs/operators';
+import { IonCheckbox } from '@ionic/angular';
 
 interface PopupSubscription {
   subscription: Subscription,
@@ -44,12 +45,12 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
       setObservableTimeout()
     );
 
-    this.subTileInstantiation = this.supportTilesWithSubTiles$.subscribe((supportTiles) => {
-      supportTiles.forEach(
-        (supportTile) => this.onSubTileChanged(supportTile)
-      );
-      this.subTileInstantiation.unsubscribe();
-    });
+    // this.subTileInstantiation = this.supportTilesWithSubTiles$.subscribe((supportTiles) => {
+    //   supportTiles.forEach(
+    //     (supportTile) => this.onSubTileChanged(supportTile)
+    //   );
+    //   this.subTileInstantiation.unsubscribe();
+    // });
 
     this.checkSupportMap = {
       subscription: undefined,
@@ -70,34 +71,51 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     return el.name;
   }
 
-  async onTileChanged(supportTile: SupportTile) {
-    if (supportTile.checked) {
-      this.onSubTileChanged(supportTile);
-    } else {
-      if (supportTile.subTile) {
-        supportTile.subTile.enabled = false;
-      }
-      supportTile.enabled = false;
-      this.saveSettings(supportTile);
+  isChecked(layer: SupportTile): boolean {
+    if (layer.enabled || layer.subTile?.enabled) {
+      console.log(`SUPPORTLAYER-MENU: isChecked returns true for ${layer.name} layer.enabled = ${layer.enabled}, layer.subTile.enabled = ${layer.subTile?.enabled}`);
+      return true;
     }
+    console.log(`SUPPORTLAYER-MENU: isChecked returns false for ${layer.name}`);
+    return false;
   }
 
-  async onSubTileChanged(supportTile: SupportTile) {
-    if (supportTile.subTile?.enabled != supportTile.subTile?.checked) {
-      supportTile.subTile.enabled = supportTile.subTile.checked;
-      this.checkForInfoPopup(supportTile.subTile);
+  async onTileChanged(layer: SupportTile, event: CustomEvent) {
+    console.log(`SUPPORTLAYER-MENU: onTileChanged for ${layer.name}. layer.enabled = ${layer.enabled}. New value = ${event.detail.checked}`);
+    const checkBox = (<any>event.target) as IonCheckbox;
+    layer.enabled = checkBox.checked;
+    if (layer.subTile) {
+      console.log(`SUPPORTLAYER-MENU: onTileChanged for ${layer.name}. Disabling sublayer`);
+      layer.subTile.enabled = false;
     }
-    if (supportTile.enabled == this.isChildActive(supportTile)) {
-      supportTile.enabled = !this.isChildActive(supportTile);
-      this.checkForInfoPopup(supportTile);
-    }
-    this.saveSettings(supportTile);
+    this.saveSettings(layer);
   }
+  // async onTileChanged(supportTile: SupportTile, event: CustomEvent) {
+  //   if (supportTile.checked) {
+  //     this.onSubTileChanged(supportTile);
+  //   } else {
+  //     if (supportTile.subTile) {
+  //       supportTile.subTile.enabled = false;
+  //     }
+  //     supportTile.enabled = false;
+  //     this.saveSettings(supportTile);
+  //   }
+  // }
+
+  // async onSubTileChanged(supportTile: SupportTile, event: CustomEvent) {
+  //   if (supportTile.subTile?.enabled != supportTile.subTile?.checked) {
+  //     supportTile.subTile.enabled = supportTile.subTile.checked;
+  //     this.checkForInfoPopup(supportTile.subTile);
+  //   }
+  //   if (supportTile.enabled == this.isChildActive(supportTile)) {
+  //     supportTile.enabled = !this.isChildActive(supportTile);
+  //     this.checkForInfoPopup(supportTile);
+  //   }
+  //   this.saveSettings(supportTile);
+  // }
 
   async saveSettings(supportTile: SupportTile) {
-    const currentSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
+    const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
     this.userSettingService.saveUserSettings({
       ...currentSettings,
       supportTiles: this.addOrUpdateSupportTileSettings(
@@ -115,21 +133,21 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     return supportTile.enabled || this.isChildActive(supportTile);
   }
 
-  checkForInfoPopup(tile: SubTile = null) {
-    if (!(tile.name in this.checkOfflineSupportMaps)) {
-      this.checkOfflineSupportMaps[tile.name] = {
+  checkForInfoPopup(layer: SubTile = null) {
+    if (!(layer.name in this.checkOfflineSupportMaps)) {
+      this.checkOfflineSupportMaps[layer.name] = {
         subscription: undefined,
         checker: this.popupInfoService.checkOfflineSupportMapInfoPopup,
         condition: (tile) => !tile.availableOffline,
       };
     }
-    [this.checkSupportMap, this.checkOfflineSupportMaps[tile.name]].forEach((checkMap) => {
+    [this.checkSupportMap, this.checkOfflineSupportMaps[layer.name]].forEach((checkMap) => {
       if (checkMap.subscription && !checkMap.subscription.closed) {
         checkMap.subscription.unsubscribe();
       }
-      if (tile.enabled && checkMap.condition(tile)) {
+      if (layer.enabled && checkMap.condition(layer)) {
         checkMap.subscription = checkMap
-          .checker.bind(this.popupInfoService)(tile.name)
+          .checker.bind(this.popupInfoService)(layer.name)
           .pipe(takeUntil(this.ngDestroy$))
           .subscribe();
       }
