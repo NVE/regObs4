@@ -23,3 +23,52 @@ export interface SubTileStore {
   enabled: boolean;
   checked: boolean;
 }
+
+// export class SupportTileMenuSelection implements SupportTile {
+//   private enabled: boolean;
+//   private subTile?: SubTile;
+
+//   constructor(tile: SupportTile) {
+//     this.enabled = tile.enabled;
+//     this.subTile = tile.subTile;
+//   }
+
+//   get checked(): boolean {
+//     if (this.enabled || this.subTile?.enabled) {
+//       return true;
+//     }
+//     return false;
+//   }
+
+//   set checked(checked: boolean) {
+//     this.enabled = checked;
+//     if (this.subTile) {
+//       this.subTile.enabled = false;
+//     }
+//   }
+// }
+
+// export class SupportTileMenuSelection2 implements SupportTile {
+//   private enabled: boolean;
+//   private subTile?: SubTile;
+
+//   constructor(tile: SupportTile) {
+//     this.enabled = tile.enabled;
+//     this.subTile = tile.subTile;
+//   }
+
+//   get checked(): boolean {
+//     if (this.enabled || this.subTile?.enabled) {
+//       return true;
+//     }
+//     return false;
+//   }
+
+//   set checked(checked: boolean) {
+//     this.enabled = checked;
+//     if (this.subTile) {
+//       this.subTile.enabled = false;
+//     }
+//   }
+// }
+

@@ -142,7 +142,7 @@ export const settings = {
           description: 'STEEPNESS_MAP_DESCRIPTION',
           url: 'https://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
           enabled: false,
-          checked: true,
+          checked: true, //TODO: Er dette fordi det skal være valgt i menyen som standard?
           opacity: 0.5,
           geoHazardId: 10,
           availableOffline: false,
