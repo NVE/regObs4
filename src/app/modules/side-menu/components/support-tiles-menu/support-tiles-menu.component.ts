@@ -2,12 +2,11 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SubTile, SupportTile, SupportTileStore } from '../../../../core/models/support-tile.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import {
-  setObservableTimeout,
   NgDestoryBase
 } from '../../../../core/helpers/observable-helper';
 import { firstValueFrom, Observable, Subscription } from 'rxjs';
 import { PopupInfoService } from '../../../../core/services/popup-info/popup-info.service';
-import { takeUntil, take } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 import { IonCheckbox } from '@ionic/angular';
 
 interface PopupSubscription {
@@ -25,7 +24,6 @@ interface PopupSubscription {
 export class SupportTilesMenuComponent extends NgDestoryBase {
   private checkSupportMap: PopupSubscription;
   private checkOfflineSupportMaps: {[mapName: string]: PopupSubscription} = {};
-  private subTileInstantiation: Subscription;
 
   opacityValues = [
     { name: 'SUPPORT_MAP.NO_OPACITY', value: 1.0 },
@@ -42,15 +40,9 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
   ) {
     super();
     this.supportTilesWithSubTiles$ = this.userSettingService.supportTilesWithSubTiles$.pipe(
-      setObservableTimeout()
+      tap((layers) => console.log('SUPPORTLAYER-MENU: New settings: ', layers))
+      // setObservableTimeout()
     );
-
-    // this.subTileInstantiation = this.supportTilesWithSubTiles$.subscribe((supportTiles) => {
-    //   supportTiles.forEach(
-    //     (supportTile) => this.onSubTileChanged(supportTile)
-    //   );
-    //   this.subTileInstantiation.unsubscribe();
-    // });
 
     this.checkSupportMap = {
       subscription: undefined,
@@ -81,48 +73,25 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
   }
 
   async onTileChanged(layer: SupportTile, event: CustomEvent) {
+    event.stopPropagation();
     console.log(`SUPPORTLAYER-MENU: onTileChanged for ${layer.name}. layer.enabled = ${layer.enabled}. New value = ${event.detail.checked}`);
     const checkBox = (<any>event.target) as IonCheckbox;
     layer.enabled = checkBox.checked;
-    if (layer.subTile) {
-      console.log(`SUPPORTLAYER-MENU: onTileChanged for ${layer.name}. Disabling sublayer`);
+    this.checkForInfoPopup(layer);
+    if (layer.subTile && !layer.enabled) {
+      console.log(`SUPPORTLAYER-MENU:   onTileChanged for ${layer.name}. Disabling sublayer because layer is disabled`);
       layer.subTile.enabled = false;
     }
     this.saveSettings(layer);
   }
-  // async onTileChanged(supportTile: SupportTile, event: CustomEvent) {
-  //   if (supportTile.checked) {
-  //     this.onSubTileChanged(supportTile);
-  //   } else {
-  //     if (supportTile.subTile) {
-  //       supportTile.subTile.enabled = false;
-  //     }
-  //     supportTile.enabled = false;
-  //     this.saveSettings(supportTile);
-  //   }
-  // }
-
-  // async onSubTileChanged(supportTile: SupportTile, event: CustomEvent) {
-  //   if (supportTile.subTile?.enabled != supportTile.subTile?.checked) {
-  //     supportTile.subTile.enabled = supportTile.subTile.checked;
-  //     this.checkForInfoPopup(supportTile.subTile);
-  //   }
-  //   if (supportTile.enabled == this.isChildActive(supportTile)) {
-  //     supportTile.enabled = !this.isChildActive(supportTile);
-  //     this.checkForInfoPopup(supportTile);
-  //   }
-  //   this.saveSettings(supportTile);
-  // }
 
   async saveSettings(supportTile: SupportTile) {
+    supportTile.checked = supportTile.enabled; //TODO: Remove when we don't save checked anymore
     const currentSettings = await firstValueFrom(this.userSettingService.userSetting$);
-    this.userSettingService.saveUserSettings({
-      ...currentSettings,
-      supportTiles: this.addOrUpdateSupportTileSettings(
-        supportTile,
-        currentSettings.supportTiles
-      )
-    });
+    const currentSupportLayerSettings = currentSettings.supportTiles;
+    const newSupportLayerSettings = [...currentSupportLayerSettings, currentSupportLayerSettings[supportTile.name] = supportTile];
+    console.log('SUPPORTLAYER-MENU: Saving settings', newSupportLayerSettings);
+    this.userSettingService.saveUserSettings({...currentSettings, supportTiles: newSupportLayerSettings});
   }
 
   isChildActive(supportTile: SupportTile): boolean {
