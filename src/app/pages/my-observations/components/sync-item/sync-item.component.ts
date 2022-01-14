@@ -22,30 +22,30 @@ export class SyncItemComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-   
+
     this.isDraft = this.registration.status === RegistrationStatus.Draft;
     this.loading = !this.isDraft;
-      this.subscriptions.push(
-        this.registrationService
-          .getRegistrationsToSync()
-          .pipe(
-            map((val: IRegistration[]) =>
-              val.find((item) => item.id === this.registration.id)
-            ),
-            filter((x) => !!x)
-          )
-          .subscribe((val) => {      
-              this.registration = val;
-              this.isDraft = this.registration.status === RegistrationStatus.Draft;
-              this.cdr.detectChanges();
-          })
-      );
-      this.subscriptions.push(
-        this.registrationService.getDataLoadState().subscribe((val) => {
-            this.loading = val.isLoading;
-            this.cdr.detectChanges();
+    this.subscriptions.push(
+      this.registrationService
+        .getRegistrationsToSync()
+        .pipe(
+          map((val: IRegistration[]) =>
+            val.find((item) => item.id === this.registration.id)
+          ),
+          filter((x) => !!x)
+        )
+        .subscribe((val) => {
+          this.registration = val;
+          this.isDraft = this.registration.status === RegistrationStatus.Draft;
+          this.cdr.detectChanges();
         })
-      );
+    );
+    this.subscriptions.push(
+      this.registrationService.getDataLoadState().subscribe((val) => {
+        this.loading = val.isLoading;
+        this.cdr.detectChanges();
+      })
+    );
   }
 
   ngOnDestroy(): void {

@@ -32,20 +32,20 @@ export class OfflinePackageModalComponent implements OnInit {
     private offlineMapService: OfflineMapService,
     private cdr: ChangeDetectorRef,
   ) {
-   }
+  }
 
   ngOnInit(): void {
     this.isCheckingAvailableDiskspace = false;
     this.offlinePackageStatusThatTriggersChangeDetection$ = this.offlinePackageStatus$.pipe(
       tap(() => this.cdr.detectChanges() ));
     this.tileLayer = new L.GeoJSON(this.feature);
-    
+
     // Set center from package bounds
     const { lat, lng } = this.tileLayer.getBounds().getCenter();
     this.center = [lat, lng];
 
     // Use offline map package root tile as zoom level
-    const [x, y, z] = this.packageOnServer.getXYZ();
+    const [, , z] = this.packageOnServer.getXYZ();
     this.zoom = z;
   }
 
@@ -82,6 +82,6 @@ export class OfflinePackageModalComponent implements OnInit {
   dismiss() {
     this.modalController.dismiss({
       'dismissed': true
-    })
+    });
   }
 }

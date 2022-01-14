@@ -11,12 +11,15 @@ import { DbHelperService } from './core/services/db-helper/db-helper.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { ShortcutService } from './core/services/shortcut/shortcut.service';
 import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
-import { switchMap, take, concatMap, catchError } from 'rxjs/operators';
+import { switchMap, take, concatMap, catchError, filter } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { NavigationError, Router, RouterEvent } from '@angular/router';
+import { removeOauthTokenFromUrl } from './modules/shared/services/logging/url-utils';
 
 const DEBUG_TAG = 'AppComponent';
+const ROUTER_DEBUG_TAG = 'Router';
 
 @Component({
   selector: 'app-root',
@@ -35,7 +38,8 @@ export class AppComponent {
     private dbHelperService: DbHelperService,
     private screenOrientation: ScreenOrientation,
     private shortcutService: ShortcutService,
-    private fileLoggingService: FileLoggingService
+    private fileLoggingService: FileLoggingService,
+    private router: Router
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -43,8 +47,8 @@ export class AppComponent {
 
   initializeApp(): void {
     from(this.fileLoggingService.init({})).pipe(switchMap(() =>
-    this.getUserSettings()
-      .pipe(this.initServices())))
+      this.getUserSettings()
+        .pipe(this.initServices())))
       .subscribe(() => {
         this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
         this.afterAppInitialized();
@@ -54,7 +58,7 @@ export class AppComponent {
       });
   }
 
-  afterAppInitialized() {
+  private afterAppInitialized() {
     SplashScreen.hide();
   }
 
@@ -94,13 +98,13 @@ export class AppComponent {
             ),
             from(StatusBar.setStyle({ style: Style.Dark })).pipe(
               catchError((err) => {
-                  this.loggingService.error(
-                    err,
-                    DEBUG_TAG,
-                    'Could not set styleLightContent'
-                  );
-                  return of(void null);
-                }
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not set styleLightContent'
+                );
+                return of(void null);
+              }
               )
             ),
             from(StatusBar.setBackgroundColor({ color: '#99044962'})).pipe(
@@ -116,14 +120,14 @@ export class AppComponent {
             ),
             from(StatusBar.setOverlaysWebView({ overlay: false })).pipe(
               catchError((err) =>
-                {
-                   this.loggingService.error(
+              {
+                this.loggingService.error(
                   err,
                   DEBUG_TAG,
                   'Could not set overlaysWebView'
                 );
                 return of(void null);
-                }
+              }
               )
             ),
             from(this.offlineImageService.cleanupOldItems()).pipe(
@@ -144,15 +148,24 @@ export class AppComponent {
                 )
               )
             ),
-           of( this.dataMarshallService.init()).pipe(
-            catchError((err) =>
-              this.loggingService.error(
-                err,
-                DEBUG_TAG,
-                'Could not init dataMarshallService'
+            of( this.dataMarshallService.init()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not init dataMarshallService'
+                )
+              )
+            ),
+            of ( this.initRouteNavigationLogger()).pipe(
+              catchError((err) =>
+                this.loggingService.error(
+                  err,
+                  DEBUG_TAG,
+                  'Could not init route navigation logging'
+                )
               )
             )
-          ),
           ])
         )
       );
@@ -162,5 +175,18 @@ export class AppComponent {
     return from(this.platform.ready()).pipe(
       switchMap(() => this.userSettings.userSetting$.pipe(take(1)))
     );
+  }
+
+  private async initRouteNavigationLogger(): Promise<void> {
+    this.router.events.pipe(
+      filter((e): e is RouterEvent => e instanceof RouterEvent)
+    ).subscribe((event) => {
+      const eventInfo = removeOauthTokenFromUrl(event.toString());
+      if (event instanceof NavigationError) {
+        this.loggingService.error(event.error, ROUTER_DEBUG_TAG, eventInfo);
+      } else {
+        this.loggingService.debug(eventInfo);
+      }
+    });
   }
 }

@@ -22,7 +22,7 @@ export class FullscreenService extends NgDestoryBase {
     if (isAndroidOrIos(this.platform)) {
       this.platform.ready().then(() => {
         this.isFullscreen$.pipe(
-          switchMap((isFullscreen) => from(isFullscreen ? StatusBar.hide() : StatusBar.show())), 
+          switchMap((isFullscreen) => from(isFullscreen ? StatusBar.hide() : StatusBar.show())),
           takeUntil(this.ngDestroy$)
         ).subscribe();
       });

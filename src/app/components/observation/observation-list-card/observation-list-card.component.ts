@@ -112,28 +112,28 @@ export class ObservationListCardComponent implements OnChanges {
         start:
           obs.LandSlideObs.UTMEastStart && obs.LandSlideObs.UTMNorthStart
             ? L.utm({
-                y: obs.LandSlideObs.UTMNorthStart,
-                x: obs.LandSlideObs.UTMEastStart,
-                zone:
+              y: obs.LandSlideObs.UTMNorthStart,
+              x: obs.LandSlideObs.UTMEastStart,
+              zone:
                   obs.LandSlideObs.UTMZoneStart > 0
                     ? obs.LandSlideObs.UTMZoneStart
                     : 33,
-                band: 'W',
-                southHemi: false
-              }).latLng()
+              band: 'W',
+              southHemi: false
+            }).latLng()
             : undefined,
         stop:
           obs.LandSlideObs.UTMEastStop && obs.LandSlideObs.UTMNorthStop
             ? L.utm({
-                y: obs.LandSlideObs.UTMNorthStop,
-                x: obs.LandSlideObs.UTMEastStop,
-                zone:
+              y: obs.LandSlideObs.UTMNorthStop,
+              x: obs.LandSlideObs.UTMEastStop,
+              zone:
                   obs.LandSlideObs.UTMZoneStart > 0
                     ? obs.LandSlideObs.UTMZoneStart
                     : 33, // TODO: Bug, UTMZoneStop is 0
-                band: 'W',
-                southHemi: false
-              }).latLng()
+              band: 'W',
+              southHemi: false
+            }).latLng()
             : undefined
       };
     }
@@ -160,14 +160,14 @@ export class ObservationListCardComponent implements OnChanges {
 
   getGeoHazardCircleIcon(geoHazard: GeoHazard): string {
     switch (geoHazard) {
-      case GeoHazard.Dirt:
-        return '/assets/icon/dirt_circle.svg';
-      case GeoHazard.Ice:
-        return '/assets/icon/ice_circle.svg';
-      case GeoHazard.Snow:
-        return '/assets/icon/snow_circle.svg';
-      case GeoHazard.Water:
-        return '/assets/icon/water_circle.svg';
+    case GeoHazard.Dirt:
+      return '/assets/icon/dirt_circle.svg';
+    case GeoHazard.Ice:
+      return '/assets/icon/ice_circle.svg';
+    case GeoHazard.Snow:
+      return '/assets/icon/snow_circle.svg';
+    case GeoHazard.Water:
+      return '/assets/icon/water_circle.svg';
     }
   }
 

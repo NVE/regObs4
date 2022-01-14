@@ -297,11 +297,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const from = this.fromMarker
       ? this.fromMarker.getLatLng()
       : this.userposition
-      ? L.latLng(
+        ? L.latLng(
           this.userposition.coords.latitude,
           this.userposition.coords.longitude
         )
-      : this.locationMarker.getLatLng();
+        : this.locationMarker.getLatLng();
     const locationMarkerLatLng = this.locationMarker.getLatLng();
     const path = [locationMarkerLatLng, from];
     if (this.map) {

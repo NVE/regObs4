@@ -4,6 +4,7 @@ import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { ItemReorderEventDetail } from '@ionic/core';
 import {
   AvalancheEvalProblem2Dto,
   KdvElement
@@ -12,6 +13,7 @@ import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-p
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { Subscription } from 'rxjs';
+import { ArrayHelper } from 'src/app/core/helpers/array-helper';
 
 @Component({
   selector: 'app-avalanche-problem',
@@ -93,6 +95,15 @@ export class AvalancheProblemPage extends BasePage {
         }
       });
     }
+  }
+
+  onProblemReorder(event: CustomEvent<ItemReorderEventDetail>) {
+    this.registration.request.AvalancheEvalProblem2 = ArrayHelper.reorderList(
+      this.registration.request.AvalancheEvalProblem2,
+      event.detail.from,
+      event.detail.to
+    );
+    event.detail.complete();
   }
 
   getDescription(avalancheEvalProblem: AvalancheEvalProblem2Dto) {

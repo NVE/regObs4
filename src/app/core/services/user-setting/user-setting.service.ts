@@ -33,6 +33,7 @@ import enData from '@angular/common/locales/en';
 import deData from '@angular/common/locales/de';
 import slData from '@angular/common/locales/sl';
 import nnData from '@angular/common/locales/nn';
+import frData from '@angular/common/locales/fr';
 import { UserSettingsPage } from 'src/app/pages/user-settings/user-settings.page';
 import { SupportTile } from '../../models/support-tile.model';
 
@@ -166,24 +167,27 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     this.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
       const lang = LangKey[langKey];
       switch (langKey) {
-        case LangKey.nb:
-          registerLocaleData(nbData);
-          break;
-        case LangKey.en:
-          registerLocaleData(enData);
-          break;
-        case LangKey.de:
-          registerLocaleData(deData);
-          break;
-        case LangKey.sv:
-          registerLocaleData(svData);
-          break;
-        case LangKey.sl:
-          registerLocaleData(slData);
-          break;
-        case LangKey.nn:
-          registerLocaleData(nnData);
-          break;
+      case LangKey.nb:
+        registerLocaleData(nbData);
+        break;
+      case LangKey.en:
+        registerLocaleData(enData);
+        break;
+      case LangKey.de:
+        registerLocaleData(deData);
+        break;
+      case LangKey.sv:
+        registerLocaleData(svData);
+        break;
+      case LangKey.sl:
+        registerLocaleData(slData);
+        break;
+      case LangKey.nn:
+        registerLocaleData(nnData);
+        break;
+      case LangKey.fr:
+        registerLocaleData(frData);
+        break;
       }
       this.translate.use(lang);
     });
@@ -211,13 +215,13 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     this.userSettingInMemory.next(userSetting);
   }
 
-  getSupportTilesOptions(us: UserSetting, flat: boolean = true): SupportTile[] {
-    let supportTilesForCurrentGeoHazard: SupportTile[] = settings.map.tiles.supportTiles.filter(
+  getSupportTilesOptions(us: UserSetting, flat = true): SupportTile[] {
+    const supportTilesForCurrentGeoHazard: SupportTile[] = settings.map.tiles.supportTiles.filter(
       (setting) => us.currentGeoHazard.indexOf(setting.geoHazardId) >= 0
     ).map((tile) => {
       const usSupportTile = us.supportTiles.find(
         (usTiles) => usTiles.name === tile.name
-      )
+      );
       let subTile = tile.subTile;
       if (subTile && usSupportTile && usSupportTile.subTile) {
         subTile = {...tile.subTile, ...usSupportTile.subTile};

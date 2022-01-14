@@ -13,7 +13,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 //TODO: Har kommentert ut denne servicen når vi fjernet @ionic-native/geolocation/ngx, siden det later til at den ikke er i bruk. Vurder om vi skal slette servicen!
 @Injectable()
 export class BackgroundGeolocationWebService
-  implements BackgroundGeolocationService {
+implements BackgroundGeolocationService {
   watchSubscription?: Subscription;
 
   constructor(
@@ -62,6 +62,6 @@ export class BackgroundGeolocationWebService
 
   isRunning() {
     return Promise.resolve(false);
-    // return Promise.resolve(!!this.watchSubscription);    
+    // return Promise.resolve(!!this.watchSubscription);
   }
 }

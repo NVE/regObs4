@@ -25,34 +25,13 @@ export class ExposedHeightComponent implements OnInit {
   exposedHeightMiddle: boolean;
   exposedHeightBottom: boolean;
 
-  heightArray: SelectOption[] = [
-    { id: 2500, text: '2500' },
-    { id: 2400, text: '2400' },
-    { id: 2300, text: '2300' },
-    { id: 2200, text: '2200' },
-    { id: 2100, text: '2100' },
-    { id: 2000, text: '2000' },
-    { id: 1900, text: '1900' },
-    { id: 1800, text: '1800' },
-    { id: 1700, text: '1700' },
-    { id: 1600, text: '1600' },
-    { id: 1500, text: '1500' },
-    { id: 1400, text: '1400' },
-    { id: 1300, text: '1300' },
-    { id: 1200, text: '1200' },
-    { id: 1100, text: '1100' },
-    { id: 1000, text: '1000' },
-    { id: 900, text: '900' },
-    { id: 800, text: '800' },
-    { id: 700, text: '700' },
-    { id: 600, text: '600' },
-    { id: 500, text: '500' },
-    { id: 400, text: '400' },
-    { id: 300, text: '300' },
-    { id: 200, text: '200' },
-    { id: 100, text: '100' },
-    { id: 0, text: '0' }
-  ];
+  get heightArray(): SelectOption[] {
+    const options: SelectOption[] = [];
+    for (let id = 0; id <= 8000; id += 100) {
+      options.push({ id, text: `${id} m` });
+    }
+    return options;
+  }
 
   get lowerHeightArray() {
     return this.heightArray.filter(

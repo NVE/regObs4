@@ -17,8 +17,7 @@ import {
   distinctUntilChanged,
   pairwise,
   filter,
-  take,
-  debounceTime
+  take
 } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
@@ -26,6 +25,7 @@ import { LangKey } from '../../models/langKey';
 import { GeoHazard } from '../../models/geo-hazard.enum';
 import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
+import { Router } from '@angular/router';
 const DEBUG_TAG = 'DataMarshallService';
 
 @Injectable({
@@ -59,7 +59,8 @@ export class DataMarshallService implements OnReset {
     private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
-    private analyticService: AnalyticService
+    private analyticService: AnalyticService,
+    private router: Router
   ) {
     this.cancelUpdateObservationsSubject = new Subject<boolean>();
   }
@@ -183,7 +184,7 @@ export class DataMarshallService implements OnReset {
           this.loggingService.configureLogging(appMode)
         )
       );
-      
+
       this.subscriptions.push(
         this.platform.pause.subscribe(() => {
           this.loggingService.debug(
@@ -196,7 +197,7 @@ export class DataMarshallService implements OnReset {
       this.subscriptions.push(
         this.platform.resume.subscribe(() => {
           this.loggingService.debug(
-            'App resumed. Start foreground updates.',
+            `App resumed. Start foreground updates. Current route is '${this.router.url}'`,
             DEBUG_TAG
           );
           this.startForegroundUpdate();
@@ -268,8 +269,8 @@ export class DataMarshallService implements OnReset {
     return this.ngZone.runOutsideAngular(async () => {
       const cancelTimer = useTimeout
         ? CancelPromiseTimer.createCancelPromiseTimer(
-            settings.backgroundFetchTimeout
-          )
+          settings.backgroundFetchTimeout
+        )
         : null;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
       await this.registrationService.syncRegistrations(cancelTimer);

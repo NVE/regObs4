@@ -21,7 +21,7 @@ import { ToastController, DomController, IonIcon } from '@ionic/angular';
   styleUrls: ['./warning-group-favourite-toggle.component.scss']
 })
 export class WarningGroupFavouriteToggleComponent
-  implements OnInit, OnDestroy, OnChanges {
+implements OnInit, OnDestroy, OnChanges {
   @Input() key: WarningGroupKey;
   @ViewChild(IonIcon) ionIcon: IonIcon;
 
