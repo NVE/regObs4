@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Draft",
-    "NEW_OBSERVATION": "New",
-    "NEW_TRIP": "New trip"
+    "DRAFT_TITLE_DIRT": "Draft: Soil observation",
+    "DRAFT_TITLE_ICE": "Draft: Ice observation",
+    "DRAFT_TITLE_SNOW": "Draft: Snow observation",
+    "DRAFT_TITLE_WATER": "Draft: Water observation",
+    "NEW_DIRT_OBSERVATION": "New soil observation",
+    "NEW_ICE_OBSERVATION": "New ice observation",
+    "NEW_SNOW_OBSERVATION": "New snow observation",
+    "NEW_WATER_OBSERVATION": "New water observation"
   },
   "ALERT": {
     "CANCEL": "Cancel",
@@ -20,6 +25,7 @@
     "UNDO": "Undo",
     "WARNING": "Warning"
   },
+  "CLOSE": "Close",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Add your observations",
     "SELECT_GEO_HAZARD": "Select geo hazard",
@@ -69,6 +75,7 @@
     "SW": "SW",
     "W": "W"
   },
+  "DRAFT": "Draft",
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "PermissionDenied": "To fetch your position you need to alter your browser settings",
@@ -104,12 +111,12 @@
     "FORGOT_PASSWORD": "Forgot password",
     "IS_LOGGING_IN": "Logging in...",
     "LOGGED_IN_AS": "Logged in as",
-    "LOGIN": "Login",
-    "LOGOUT": "Logout",
+    "LOGIN": "Log in",
+    "LOGOUT": "Log out",
     "MY_PROFILE": "My profile",
     "PASSWORD": "Password",
     "SERVICE_UNAVAILABLE": "Error while connecting to the service. Do you have mobile network? Please wait a few minutes and try again.",
-    "TITLE": "Login",
+    "TITLE": "Log in",
     "UNAUTHORIZED": "Wrong username or password. Please retry.",
     "UNKNOWN_ERROR": "Error while logging in. Message from server:"
   },
@@ -210,10 +217,31 @@
     "OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {
+    "DELETE_PACKAGE_CONFIRM": "Delete this map package?",
     "DISKSPACE_ERROR_MESSAGE": "Not enough disk space available to store offline map package. Please free up some disk space and try again.",
     "DOWNLOAD_ERROR_MESSAGE": "Could not download map package. Make sure you have a stable internet connection.",
-    "TITLE": "Offline Map",
-    "UNZIP_ERROR_MESSAGE": "Could not save map package to disk. Are you sure there is enough disk space?"
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Cancel download",
+      "DELETE_BUTTON": "Delete",
+      "DOWNLOAD_BUTTON": "Download",
+      "HEADER": "Map package {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Downloaded {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_PRODUCED_DATE": "Produced:",
+      "PACKAGE_SIZE": "Size:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Try again"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Offline map",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} packages",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} package",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} free",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Downloading part {{n}} of {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}"
+    },
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Permission to location denied",
@@ -467,11 +495,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tests"
         },
+        "EAST": "E",
         "GENERATING_PREVIEW": "Generating preview...",
         "IS_PROFILE_TO_GROUND": "Is the profile dug to the ground?",
+        "NORTH": "N",
+        "NORTH_EAST": "NE",
+        "NORTH_WEST": "NW",
         "PREVIEW": "Preview",
         "PREVIEW_ERROR": "Could not create plot preview",
         "PREVIEW_ITEM": "Show Snow Profile",
+        "SLOPE_ANGLE": "Bratthet",
+        "SLOPE_ANGLE_PLACEHOLDER": "Degrees without decimals",
         "SNOW_DENSITY": {
           "CYLINDER": "Cylinder",
           "CYLINDER_DIAMETER": "Cylinder bore diameter (cm)",
@@ -499,6 +533,9 @@
           "TEMPERATURE": "Temperature (°C)",
           "TITLE": "Temperature Profile"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SE",
+        "SOUTH_WEST": "SW",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Add layer",
           "ADD_LAYER_BOTTOM": "Add layer to bottom",
@@ -527,7 +564,9 @@
         },
         "SUBFORMS": "Subforms",
         "SUPERIOR": "Main",
-        "TITLE": "Snow Profile"
+        "TITLE": "Snow Profile",
+        "VALID_EXPOSITION": "Aspect",
+        "WEST": "W"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Describe the snow surface",
@@ -551,8 +590,8 @@
         "COMMENT_PLACEHOLDER": "How has the weather been the last 24 hours? Example: Has there been snowfall? Temperature changes? At what altitude has the freezing point been?",
         "FROM_EAST": "E - from east",
         "FROM_NORTH": "N - from north",
+        "FROM_NORTH_EAST": "NE - from north-east",
         "FROM_NORTH_WEST": "NW - from north-west",
-        "FROM_NOTRH_EAST": "NE - from north-east",
         "FROM_SOUTH": "S - from south",
         "FROM_SOUTH_EAST": "SE - from south-east",
         "FROM_SOUTH_WEST": "SW - from south-west",
@@ -723,14 +762,14 @@
     "NO_OPACITY": "Solid",
     "READ_MORE": "Read more about maps",
     "STEEPNESS_COLOR_INFO": "Colors indicate the slope angle of the terrain",
-    "STEEPNESS_MAP_DESCRIPTION": "Slope angle shading map",
+    "STEEPNESS_MAP_DESCRIPTION": "Slope angle map",
     "STEEPNESS_MAP_DISCLAMER": "For trip planning <i>only</i>. The map is automatically produced and may have errors and omissions, e.g. steep terrain or runouts not displaying correctly.",
     "STEEPNESS_OFFLINE_DISCLAMER": "The map layer is only available offline with avalanche outlets activated.",
-    "STEEPNESS_OUTLET_LEGEND_TITLE": "Colours give runout zones for avalanches:",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Short runouts (50% of the avalanches reach farther)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Medium runouts (25% of the avalanches reach farther)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Long runouts (5% of the avalanches reach farther)\nSome avalanches may have longer runouts than displayed as runout zones in the map.",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Avalanche outlet zones",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Colours give runout zones for avalanches:",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Avalanche runout zones",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice"
   },
   "TABS": {

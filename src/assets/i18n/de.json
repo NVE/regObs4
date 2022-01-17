@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonnent"
   },
   "ADD_MENU": {
-    "DRAFT": "Entwurf",
-    "NEW_OBSERVATION": "Neue",
-    "NEW_TRIP": "Neue Tour"
+    "DRAFT_TITLE_DIRT": "Entwurf: Boden beobachtung",
+    "DRAFT_TITLE_ICE": "Entwurf: Eis beobachtung",
+    "DRAFT_TITLE_SNOW": "Entwurf: Schnee beobachtung",
+    "DRAFT_TITLE_WATER": "Entwurf: Wasser beobachtung",
+    "NEW_DIRT_OBSERVATION": "Neue boden beobachtung",
+    "NEW_ICE_OBSERVATION": "Neue eis beobachtung",
+    "NEW_SNOW_OBSERVATION": "Neue schnee beobachtung",
+    "NEW_WATER_OBSERVATION": "Neue wasser beobachtung"
   },
   "ALERT": {
     "CANCEL": "Abbruch",
@@ -69,6 +74,7 @@
     "SW": "SW",
     "W": "W"
   },
+  "DRAFT": "Entwurf",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Tour wird aufgezeichnet"
   },
@@ -177,7 +183,7 @@
     "OBSERVATIONS": "Beobachtungen"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Offline-Karte"
+    "OFFLINE_MAP_PAGE_TITLE": "Offline-Karte"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Standortinformation nicht zugelassen",
@@ -511,8 +517,8 @@
         "COMMENT_PLACEHOLDER": "Wie war das Wetter in den letzten 24 Stunden? Beispiel: Hat es geschneit? Gab es Temperaturänderungen? In welcher Höhe lag der Gefrierpunkt?",
         "FROM_EAST": "O - von Osten",
         "FROM_NORTH": "N - von Norden",
+        "FROM_NORTH_EAST": "NO - von Nordosten",
         "FROM_NORTH_WEST": "NW - von Nordwesten",
-        "FROM_NOTRH_EAST": "NO - von Nordosten",
         "FROM_SOUTH": "S - von Süden",
         "FROM_SOUTH_EAST": "SO - von Südosten",
         "FROM_SOUTH_WEST": "SW - von Südwesten",

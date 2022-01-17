@@ -47,7 +47,7 @@ export class OfflinePackageModalComponent extends NgDestoryBase implements OnIni
     this.center = [lat, lng];
 
     // Use offline map package root tile as zoom level
-    const [x, y, z] = this.packageOnServer.getXYZ();
+    const [, , z] = this.packageOnServer.getXYZ();
     this.zoom = z;
 
     this.offlineMapService.finishedPackageIds$.pipe(

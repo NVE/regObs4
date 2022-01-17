@@ -1,0 +1,13 @@
+/* 
+  InfoPlist.strings
+  App
+
+  Created by Jørgen Loe Kvalberg on 25/11/2021.
+  
+*/
+NSCameraUsageDescription = "Legge til bilder i observasjonen";
+NSLocationAlwaysUsageDescription = "Posisjonen din brukes til å vise din posisjon i kart og kunne sette observasjonspunkt";
+NSLocationWhenInUseUsageDescription = "Posisjonen din brukes til å vise din posisjon i kart og kunne sette observasjonspunkt";
+NSPhotoLibraryAddUsageDescription = "Lagre bilder du tar med regobs på telefonen";
+NSPhotoLibraryUsageDescription = "Legge til bilder fra bibliotek i observasjonen";
+NSLocationAlwaysAndWhenInUseUsageDescription = "Posisjonen din brukes til å vise din posisjon i kart og kunne sette observasjonspunkt";

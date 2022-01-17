@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Kladd",
-    "NEW_OBSERVATION": "Ny",
-    "NEW_TRIP": "Ny tur"
+    "DRAFT_TITLE_DIRT": "Kladd: Jordobservasjon",
+    "DRAFT_TITLE_ICE": "Kladd: Isobservasjon",
+    "DRAFT_TITLE_SNOW": "Kladd: Snøobservasjon",
+    "DRAFT_TITLE_WATER": "Kladd: Vannobservasjon",
+    "NEW_DIRT_OBSERVATION": "Ny jordobservasjon",
+    "NEW_ICE_OBSERVATION": "Ny isobservasjon",
+    "NEW_SNOW_OBSERVATION": "Ny snøobservasjon",
+    "NEW_WATER_OBSERVATION": "Ny vannobservasjon"
   },
   "ALERT": {
     "CANCEL": "Avbryt",
@@ -20,6 +25,7 @@
     "UNDO": "Angre",
     "WARNING": "Advarsel"
   },
+  "CLOSE": "Lukk",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Legg til egne observasjoner",
     "SELECT_GEO_HAZARD": "Velg naturfare",
@@ -69,6 +75,7 @@
     "SW": "SV",
     "W": "V"
   },
+  "DRAFT": "Kladd",
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "PermissionDenied": "For å hente posisjonen din må du endre innstillinger i nettleseren",
@@ -210,10 +217,31 @@
     "OBSERVATIONS": "Observasjoner"
   },
   "OFFLINE_MAP": {
+    "DELETE_PACKAGE_CONFIRM": "Vil du slette denne kartpakka?",
     "DISKSPACE_ERROR_MESSAGE": "Beklager, du har ikke nok plass tilgjengelig på telefonen til å lagre kartpakken. Vennligst frigjør plass og prøv på nytt.",
     "DOWNLOAD_ERROR_MESSAGE": "Klarte ikke laste ned kartpakke. Pass på at du har stabil og god internett-kobling.",
-    "TITLE": "Offline kart",
-    "UNZIP_ERROR_MESSAGE": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Avbryt nedlasting",
+      "DELETE_BUTTON": "Slett",
+      "DOWNLOAD_BUTTON": "Last ned",
+      "HEADER": "Kartpakke {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Lasted ned {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Status:",
+      "PACKAGE_PRODUCED_DATE": "Produsert:",
+      "PACKAGE_SIZE": "Størrelse:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Prøv på nytt"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Offlinekart",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} pakker",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} pakke",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} ledig",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Laster ned {{n}} av {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Pakker ut {{n}} av {{totalParts}}"
+    },
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikke lagre kartpakke på disk. Vennligst prøv igjen!",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikke lagre kartpakke på disk. Er du sikker på at det er nok plass tilgjengelig?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Tilgang til posisjon nektet",
@@ -467,11 +495,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tester"
         },
+        "EAST": "Ø",
         "GENERATING_PREVIEW": "Genererer forhåndsvisning...",
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",
+        "NORTH": "N",
+        "NORTH_EAST": "NØ",
+        "NORTH_WEST": "NV",
         "PREVIEW": "Forhåndsvisning",
         "PREVIEW_ERROR": "Klarte ikke generere forhåndsvisning",
         "PREVIEW_ITEM": "Se snøprofil",
+        "SLOPE_ANGLE": "Bratthet",
+        "SLOPE_ANGLE_PLACEHOLDER": "Kun hele grader",
         "SNOW_DENSITY": {
           "CYLINDER": "Sylinder",
           "CYLINDER_DIAMETER": "Sylinderdiameter (cm)",
@@ -499,6 +533,9 @@
           "TEMPERATURE": "Temperatur (°C)",
           "TITLE": "Temperaturprofil"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SØ",
+        "SOUTH_WEST": "SV",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Legg til nytt lag",
           "ADD_LAYER_BOTTOM": "Legg til nytt lag nederst",
@@ -527,7 +564,9 @@
         },
         "SUBFORMS": "Underskjema",
         "SUPERIOR": "Overordnet",
-        "TITLE": "Snøprofil"
+        "TITLE": "Snøprofil",
+        "VALID_EXPOSITION": "Eksposisjon",
+        "WEST": "V"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Beskriv snødekket",
@@ -551,8 +590,8 @@
         "COMMENT_PLACEHOLDER": "Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor går nullisotermen?",
         "FROM_EAST": "Ø - fra øst",
         "FROM_NORTH": "N - fra nord",
+        "FROM_NORTH_EAST": "NØ - fra nordøst",
         "FROM_NORTH_WEST": "NV - fra nordvest",
-        "FROM_NOTRH_EAST": "NØ - fra nordøst",
         "FROM_SOUTH": "S - fra sør",
         "FROM_SOUTH_EAST": "SØ - fra sørøst",
         "FROM_SOUTH_WEST": "SV - fra sørvest",
@@ -726,11 +765,11 @@
     "STEEPNESS_MAP_DESCRIPTION": "Bratthetskart",
     "STEEPNESS_MAP_DISCLAMER": "<i>Kun</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og mangler, f.eks. bratte heng og utløp som ikke vises.",
     "STEEPNESS_OFFLINE_DISCLAMER": "Støttekartet er kun tilgjengelig offline med utløp aktiverte.",
-    "STEEPNESS_OUTLET_LEGEND_TITLE": "Farger på utløp for snøskred:",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Korte utløp (50% av skred stopper innen denne grensen)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Middels utløp (25% av skredene går lenger)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skredene går lenger)\nNoen skred kan ha utløp som ikke er vist på kartet.",
-    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsoner for snøskred",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Farger på utløp for snøskred:",
+    "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsområder for snøskred",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart"
   },
   "TABS": {

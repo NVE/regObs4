@@ -5,6 +5,8 @@ import { DensityProfileDto } from './density-profile-dto';
 export interface SnowProfileDto {
   Comment?: string;
   IsProfileToGround?: boolean;
+  Exposition?: number;
+  SlopeAngle?: number;
   SnowTemp?: TempObsDto;
   StratProfile?: StratProfileDto;
   SnowDensity?: Array<DensityProfileDto>;

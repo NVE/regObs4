@@ -8,6 +8,9 @@ import { Observable } from 'rxjs';
   styleUrls: ['./map-controls.component.scss']
 })
 export class MapControlsComponent implements OnInit {
+  @Input() showMapSearch = true;
+  @Input() showFullscreenToggle = true;
+  @Input() showGpsCenter = true;
   fullscreen$: Observable<boolean>;
 
   constructor(private fullscreenService: FullscreenService) {

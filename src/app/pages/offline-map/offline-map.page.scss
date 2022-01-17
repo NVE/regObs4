@@ -28,3 +28,25 @@ ion-backdrop {
   width: calc(100% - 48px);
   margin: 0 24px;
 }
+
+.package-count {
+  color: var(--ion-text-color-heading);
+  font-weight: var(--list-header-font-weight);
+  font-size: var(--h3-font-size);
+  text-transform: uppercase;
+}
+
+.packages-size {
+  color: var(--ion-text-color-heading);
+  font-size: var(--list-header-font-size);
+  text-transform: uppercase;
+}
+
+.space-available {
+  color: var(--ion-color-medium);
+  font-size: var(--list-header-font-size);
+}
+
+.expand-icon {
+  color: var(--ion-text-color-heading);
+}

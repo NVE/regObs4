@@ -87,7 +87,9 @@ enum MapLayerZIndex {
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() showMapControls = true;
+  @Input() showMapSearch = true;
+  @Input() showFullscreenToggle = true;
+  @Input() showGpsCenter = true;
   @Input() showUserLocation = true;
   @Input() showScale = true;
   @Input() showSupportMaps = true;
@@ -434,6 +436,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onMapMove() {
     this.disableFollowMode();
+    this.mapService.sendMapMoveStart();
   }
 
   private onMapMoveEnd() {
@@ -577,8 +580,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     const createOpenTopoMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.openTopoMapUrl, options);
-    const createArcGisOnlineMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.arcGisOnlineTopoMapUrl);
-    const createGeoDataLandskapMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.geoDataLandskapMapUrl);
+    const createArcGisOnlineMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.arcGisOnlineTopoMapUrl, options);
+    const createGeoDataLandskapMap: CreateTileLayer = (options) => new L.TileLayer(settings.map.tiles.geoDataLandskapMapUrl, options);
     const createArGisOnlineMixMap: CreateTileLayer[] = [
       (options) => new RegObsTileLayer(
         settings.map.tiles.arcGisOnlineTopoMapUrl,

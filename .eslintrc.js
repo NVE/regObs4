@@ -17,6 +17,10 @@ module.exports = {
     '@typescript-eslint'
   ],
   'rules': {
+    'no-warning-comments': [
+      'warn',
+      { 'terms': ['todo', 'fixme'], 'location': 'start' }
+    ],
     'no-console': 'error',
     'no-trailing-spaces': ['error'],
     'no-multiple-empty-lines': [

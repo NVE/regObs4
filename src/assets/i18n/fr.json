@@ -6,9 +6,14 @@
     "TITLE": "Abonné à Varsom"
   },
   "ADD_MENU": {
-    "DRAFT": "Brouillon",
-    "NEW_OBSERVATION": "Nouvelle observation",
-    "NEW_TRIP": "Nouvel itinéraire"
+    "DRAFT_TITLE_DIRT": "Brouillon: Observation glissement de terrain",
+    "DRAFT_TITLE_ICE": "Brouillon: Observation glace",
+    "DRAFT_TITLE_SNOW": "Brouillon: Observation neige",
+    "DRAFT_TITLE_WATER": "Brouillon: Observation hydrologie",
+    "NEW_DIRT_OBSERVATION": "Nouvelle observation glissement de terrain",
+    "NEW_ICE_OBSERVATION": "Nouvelle observation glace",
+    "NEW_SNOW_OBSERVATION": "Nouvelle observation neige",
+    "NEW_WATER_OBSERVATION": "Nouvelle observation hydrologie"
   },
   "ALERT": {
     "CANCEL": "Annuler",
@@ -20,6 +25,7 @@
     "UNDO": "Annuler",
     "WARNING": "Alerte"
   },
+  "CLOSE": "Fermer",
   "COACH_MARKS": {
     "ADD_OBSERVATIONS": "Ajoutez vos observations",
     "SELECT_GEO_HAZARD": "Sélection d'un aléa",
@@ -69,6 +75,7 @@
     "SW": "SO",
     "W": "O"
   },
+  "DRAFT": "Brouillon",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Enregistrement de l'itinéraire"
   },
@@ -107,6 +114,7 @@
   },
   "MAP_CENTER_INFO": {
     "ABOVE_SEA_LEVEL": "m (par rapport au niveau de la mer)",
+    "AWAY_FROM": "loin",
     "COPIED_TO_CLIPBOARD": "Copié dans le presse-papier",
     "EAST_SHORT": "E",
     "NORTH_SHORT": "N"
@@ -126,6 +134,7 @@
     "CONTACT_REGOBS_ERROR": "Signaler une erreur",
     "CONTACT_SUBJECT": "Contact depuis l'application",
     "DAYS_BACK": "Passé",
+    "DAY_BACK": "Jour précédent",
     "ERROR_REPORT_DESCRIPTION": "Veuillez décrire votre problème ici. Si vous avez des captures d'écran, veuillez les joindre.",
     "ERROR_REPORT_SUBJECT": "Rapport d'erreur de",
     "GENERAL": "Général",
@@ -138,6 +147,7 @@
     "OPACITY": "Transparence",
     "OTHER": "Autre",
     "SHOW": "Afficher",
+    "SHOWING_OBSERVATIONS": "observations",
     "SHOW_MAP_CENTER": "Pointer le centre de la carte",
     "SHOW_OBSERVATIONS": "Afficher les observations",
     "SHOW_TRIPS": "Afficher les itinéraires des sorties",
@@ -177,7 +187,29 @@
     "OBSERVATIONS": "Observations"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Carte hors connexion"
+    "DELETE_PACKAGE_CONFIRM": "Supprimer ce jeu de cartes?",
+    "MAP_PACKAGE_DETAILS_PAGE": {
+      "CANCEL_DOWNLOAD_BUTTON": "Annuler le téléchargement",
+      "DELETE_BUTTON": "Supprimer",
+      "DOWNLOAD_BUTTON": "Télécharger",
+      "HEADER": "Jeu de cartes {{name}}",
+      "PACKAGE_DOWNLOADED_DATE": "Téléchargé {{date}}",
+      "PACKAGE_DOWNLOAD_STATUS": "Statut:",
+      "PACKAGE_PRODUCED_DATE": "Créé :",
+      "PACKAGE_SIZE": "Taille:",
+      "PACKAGE_SIZE_VALUE_WITH_UNIT": "{{size}} MB",
+      "TRY_AGAIN_BUTTON": "Essayer à nouveau"
+    },
+    "OFFLINE_MAP_PAGE_TITLE": "Carte hors connexion",
+    "PACKAGE_COUNT_MULTIPLE": "{{packageCount}} Jeux de cartes",
+    "PACKAGE_COUNT_SINGLE": "{{packageCount}} Jeu",
+    "SPACE_AVAILABLE": "{{spaceAvailable}} libre",
+    "STATUS": {
+      "DOWNLOADING_PART_X_OF_Y": "Téléchargement de la partie {{n}} sur {{totalParts}}",
+      "UNZIP_PART_X_OF_Y": "Décompression de la partie {{n}} sur {{totalParts}}"
+    },
+    "UNZIP_ERROR_MESSAGE_GENERIC": "Impossible de sauvegarder le jeu de carte sur le disque. Veuillez ré-essayer.",
+    "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Impossible de sauvegarder le jeu de carte. Y-a-t-il assez d'espace mémoire disponible?"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Autorisation de localisation refusée",
@@ -212,14 +244,14 @@
       "GENERAL_ON_MOUNTAIN": "En général en montagne",
       "IN_THE_VALLEY_OR_FJORD": "Dans la vallée/le fjord",
       "MANY_WATER_NEARBY": "Nombreux lacs des environs",
-      "NEW_DANGER_OBS": "Ajouter un signe de danger",
-      "NO_DAMAGE_SIGN": "Aucun signe de danger observé",
+      "NEW_DANGER_OBS": "Ajouter un signe d'instabilité",
+      "NO_DAMAGE_SIGN": "Aucune observation d'instabilité",
       "ON_THIS_MOUNTAIN_SIDE": "Dans ce versant de montagne",
       "ON_THIS_PLACE": "À cet endroit",
       "ON_THIS_SIDE_OF_THE_WATER": "De ce côté du lac",
       "ON_THIS_WATER": "Sur ce lac",
       "RIGHT_HERE": "Ici même",
-      "TITLE": "Signes de danger"
+      "TITLE": "Signe d'instabilité"
     },
     "DELETE": "Supprimer l'observation",
     "DELETE_CONFIRM": "Êtes-vous sûr ?",
@@ -427,11 +459,17 @@
           "SINGLE_TEST": "test",
           "TITLE": "Tests"
         },
+        "EAST": "E",
         "GENERATING_PREVIEW": "Génération de l'aperçu ...",
         "IS_PROFILE_TO_GROUND": "Le profil va-t-il jusqu'au sol ?",
+        "NORTH": "N",
+        "NORTH_EAST": "NE",
+        "NORTH_WEST": "NW",
         "PREVIEW": "Aperçu",
         "PREVIEW_ERROR": "Impossible de créer l'aperçu du tracé",
         "PREVIEW_ITEM": "Afficher le profil du manteau neigeux",
+        "SLOPE_ANGLE": "Angle de la pente",
+        "SLOPE_ANGLE_PLACEHOLDER": "En degrés, nombre entier sans décimales",
         "SNOW_DENSITY": {
           "CYLINDER": "Carottier",
           "CYLINDER_DIAMETER": "Diamètre du carottier (cm)",
@@ -459,6 +497,9 @@
           "TEMPERATURE": "Température (°C)",
           "TITLE": "Profil de températures"
         },
+        "SOUTH": "S",
+        "SOUTH_EAST": "SE",
+        "SOUTH_WEST": "SO",
         "STRAT_PROFILE": {
           "ADD_LAYER": "Ajouter une couche",
           "ADD_LAYER_BOTTOM": "Ajouter une couche en dessous",
@@ -487,7 +528,9 @@
         },
         "SUBFORMS": "Types de grain (sous-classes)",
         "SUPERIOR": "Types de grains (principaux)",
-        "TITLE": "Profil du manteau neigeux"
+        "TITLE": "Profil du manteau neigeux",
+        "VALID_EXPOSITION": "Orientation",
+        "WEST": "O"
       },
       "SNOW_SURFACE": {
         "COMMENT_HEADER": "Description de la surface de la neige",
@@ -511,8 +554,8 @@
         "COMMENT_PLACEHOLDER": "Quel temps a-t-il fait au cours des dernières 24 heures ? Exemples : chutes de neige, fluctuation de la limite pluie-neige, changements de température, couverture nuageuse (nuit claire et dégagée ou nuageuse - estimer le pourcentage)",
         "FROM_EAST": "E - venant de l'est",
         "FROM_NORTH": "N - venant du nord",
+        "FROM_NORTH_EAST": "NE - venant du nord-est",
         "FROM_NORTH_WEST": "NO - venant du nord-ouest",
-        "FROM_NOTRH_EAST": "NE - venant du nord-est",
         "FROM_SOUTH": "S - venant du sud",
         "FROM_SOUTH_EAST": "SE - venant du sud-est",
         "FROM_SOUTH_WEST": "SO - venant du sud-ouest",
@@ -623,7 +666,7 @@
     },
     "PAGE_2": {
       "HEADER": "Mieux lire et comprendre le terrain !",
-      "LINE_1": "Situez-vous par rapport aux zones de danger du terrain. Utilisez des cartes et des informations adaptées aux dangers dont vous cherchez à vous protéger."
+      "LINE_1": "Situez-vous par rapport aux zones de risque du terrain. Utilisez des cartes et des informations adaptées aux aléas dont vous cherchez à vous protéger."
     },
     "PAGE_3": {
       "BUTTON_TEXT": "Nouvelle observation",
@@ -639,10 +682,11 @@
   "SUPPORT_MAP": {
     "ABOUT": "À propos des cartes",
     "CAUTION_AREA": "Zone de danger",
-    "CLAY_DANGER_ZONE": "Niveau de danger aux argiles",
+    "CLAY_DANGER_ZONE": "Niveau de risque aux argiles",
     "CLAY_LEGEND_TEXT_1": "Glissement d'argile rapide",
     "CLAY_LEGEND_TEXT_2": "Zone de glissements d'argile rapide",
     "CLAY_LEGEND_TEXT_3": "Entièrement ou partiellement cartographiée",
+    "CLAY_LEGEND_TEXT_4": "Limites marines",
     "CLAY_LEGEND_TEXT_5": "Au-dessus de l'aire marine",
     "CLAY_LEGEND_TEXT_6": "En dessous de l'aire marine",
     "CLAY_LEGEND_TEXT_7": "Pas/peu d'impact maritime",
@@ -682,9 +726,11 @@
     "STEEPNESS_COLOR_INFO": "La couleur indique l'inclinaison de pente du terrain",
     "STEEPNESS_MAP_DESCRIPTION": "Carte des pentes",
     "STEEPNESS_MAP_DISCLAMER": "Pour la préparation de course <i>uniquement</i>. La carte est produite automatiquement et peut comporter des erreurs et des omissions, par exemple une portion de pente raide peut ne pas être affichée",
+    "STEEPNESS_OFFLINE_DISCLAMER": "La couche cartographique n'est disponible hors ligne que si l'aléa avalanche est activé.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Emprise médiane de l'écoulement des avalanches (50 % des avalanches iront plus loin).",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Emprise \"normale\" de l'écoulement des avalanches (25 % des avalanches iront plus loin).",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Emprise quasi maximale de l'écoulement des avalanches (5 % des avalanches iront plus loin).\nCertaines avalanches peuvent s'écouler en dehors de l'emprise définie sur cette carte.",
+    "STEEPNESS_OUTLET_LEGEND_TITLE": "Palette de couleur donnant les zones d'écoulement des avalanches",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Carte des pentes et zones d'écoulement des avalanches",
     "STEEPNESS_OUTLET_MAP_DISCLAMER": "Pour la préparation de course <i>uniquement</i>. La carte est produite automatiquement et peut comporter des erreurs et des omissions, par exemple une portion de pente raide ou des emprises d'avalanche non affichées.\n<br/>\n<br/>\nLes couleurs indiquent les zones d'écoulement pour les avalanches :",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Glace affaiblie"
@@ -736,7 +782,7 @@
     "ALL_WARNINGS": "Tous les avertissements",
     "A_REGIONS": "A - Régions",
     "B_REGIONS": "B - Régions",
-    "B_REGIONS_SUBTITLE": "Avertissements uniquement pour les niveaux de danger 4 et 5",
+    "B_REGIONS_SUBTITLE": "Avertissements uniquement pour les niveaux de risque 4 et 5",
     "FAVOURITES": "Favoris",
     "IN_MAP_CENTER": "Au centre de la carte",
     "IN_MAP_VIEW": "Dans la vue de la carte",

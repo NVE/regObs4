@@ -6,9 +6,14 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT": "Osnutek",
-    "NEW_OBSERVATION": "Novo",
-    "NEW_TRIP": "Nova pot"
+    "DRAFT_TITLE_DIRT": "Osnutek: Zemlja opažanje",
+    "DRAFT_TITLE_ICE": "Osnutek: Led opažanje",
+    "DRAFT_TITLE_SNOW": "Osnutek: Sneg opažanje",
+    "DRAFT_TITLE_WATER": "Osnutek: Voda opažanje",
+    "NEW_DIRT_OBSERVATION": "Novo zemlja opažanje",
+    "NEW_ICE_OBSERVATION": "Novo led opažanje",
+    "NEW_SNOW_OBSERVATION": "Novo sneg opažanje",
+    "NEW_WATER_OBSERVATION": "Novo voda opažanje"
   },
   "ALERT": {
     "CANCEL": "Prekliči",
@@ -69,6 +74,7 @@
     "SW": "JZ",
     "W": "Z"
   },
+  "DRAFT": "Osnutek",
   "GEOLOCATION_SERVICE": {
     "NOTIFICATION_TITLE": "Beleženje poti"
   },
@@ -177,7 +183,7 @@
     "OBSERVATIONS": "Opažanja"
   },
   "OFFLINE_MAP": {
-    "TITLE": "Zemljevid brez povezave"
+    "OFFLINE_MAP_PAGE_TITLE": "Zemljevid brez povezave"
   },
   "PERMISSION": {
     "LOCATION_DENIED_HEADER": "Dovoljenje za lokacijo zavrnjeno",
@@ -511,8 +517,8 @@
         "COMMENT_PLACEHOLDER": "Kakšno je bilo vreme v preteklih 24 urah? Primer: Je padal sneg? Je bilo opaziti spremembe v temperaturi? Na kateri višini poteka ničelna izoterma?",
         "FROM_EAST": "V - iz vzhoda",
         "FROM_NORTH": "S - iz severa",
+        "FROM_NORTH_EAST": "SV - iz severovzhoda",
         "FROM_NORTH_WEST": "SZ - iz severozahoda",
-        "FROM_NOTRH_EAST": "SV - iz severovzhoda",
         "FROM_SOUTH": "J - iz juga",
         "FROM_SOUTH_EAST": "JV - iz jugovzhoda",
         "FROM_SOUTH_WEST": "JZ - iz jugozahoda",
