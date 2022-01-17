@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
-import { OfflineMapPackage, OfflineTilesMetadata } from './offline-map.model';
-import { Progress } from './progress.model';
-import moment from 'moment';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
-import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { BehaviorSubject, firstValueFrom, from, Observable, Subscription } from 'rxjs';
-import { finalize, map, mergeMap, switchMap } from 'rxjs/operators';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import JSZip from 'jszip';
-import { ProgressStep } from './progress-step.model';
-import { BackgroundDownloadService } from '../background-download/background-download.service';
-import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { AlertController, Platform } from '@ionic/angular';
-import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
-import { HelperService } from '../helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CompoundPackage, Part} from 'src/app/pages/offline-map/metadata.model';
+import JSZip from 'jszip';
+import moment from 'moment';
+import { BehaviorSubject, firstValueFrom, from, Observable, Subject, Subscription } from 'rxjs';
+import { finalize, map, mergeMap, switchMap } from 'rxjs/operators';
+import { CompoundPackage, Part } from 'src/app/pages/offline-map/metadata.model';
+import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
+import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
+import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
+import { BackgroundDownloadService } from '../background-download/background-download.service';
+import { HelperService } from '../helpers/helper.service';
+import { OfflineMapPackage, OfflineTilesMetadata } from './offline-map.model';
 import { OfflineTilesRegistry } from './offline-tiles-registry';
+import { ProgressStep } from './progress-step.model';
+import { Progress } from './progress.model';
 
 const DEBUG_TAG = 'OfflineMapService';
 const METADATA_FILE = 'metadata.json';
@@ -34,6 +34,13 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
 export class OfflineMapService {
   private packages: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
   packages$: Observable<OfflineMapPackage[]> = this.packages.asObservable();
+
+  private finishedPackageIds: Subject<string> = new Subject();
+
+  /**
+   * Through this you get name of packages when unpacking is finished and they are ready to use
+   */
+  finishedPackageIds$: Observable<string> = this.finishedPackageIds.asObservable();
 
   private downloadAndUnzipProgress: BehaviorSubject<OfflineMapPackage[]> = new BehaviorSubject([]);
   downloadAndUnzipProgress$ = this.downloadAndUnzipProgress.asObservable();
@@ -735,6 +742,8 @@ export class OfflineMapService {
     setTimeout(() => {
       this.addMapPackage(newPackage);
     });
+
+    this.finishedPackageIds.next(newPackage.name);
   }
 
   private onCancelled(mapPackage: OfflineMapPackage) {
