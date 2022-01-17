@@ -29,6 +29,15 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   LangKey = LangKey;
   offlineMapsAvailable = false;
 
+  supportedLanguages: {
+    lang: string;
+    name: string;
+    langKey: LangKey;
+  }[] = settings.language.supportedLanguages.map((lang) => ({
+    ...lang,
+    langKey: LangKey[lang.lang]
+  }));
+
   private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
 
@@ -121,5 +130,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       isHtml: true
     };
     this.emailComposer.open(email);
+  }
+
+  updateSettings() {
+    this.userSettingService.saveUserSettings(this.userSettings);
   }
 }
