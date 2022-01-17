@@ -230,7 +230,9 @@
     "SPACE_AVAILABLE": "{{spaceAvailable}} ledig",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Lastar ned {{n}} av {{totalParts}}",
-      "UNZIP_PART_X_OF_Y": "Pakkar ut {{n}} av {{totalParts}}"
+      "UNZIP_PART_X_OF_Y": "Pakkar ut {{n}} av {{totalParts}}",
+      "DOWNLOAD_ERROR": "Nedlasting feilet",
+      "UNZIP_ERROR": "Utpakking feilet"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikkje å lagre kartpakka på disk. Ver vennleg og prøv igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikkje å lagre kartpakka på disk. Er du sikker på at det er nok plass tilgjengeleg?"
