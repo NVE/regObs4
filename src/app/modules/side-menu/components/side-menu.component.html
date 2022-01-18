@@ -18,7 +18,7 @@
         {{ "SETTINGS.LANGUAGE" | translate }}<span *ngIf="userSettings.language !== LangKey.en"> / Language</span>
       </ion-label>
       <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language"
-        interface="action-sheet" (ngModelChange)="updateSettings()">
+        interface="action-sheet" (ngModelChange)="changeLanguage()">
         <ion-select-option [value]="lang.langKey" *ngFor="let lang of supportedLanguages">
           {{ lang.name }}
         </ion-select-option>
