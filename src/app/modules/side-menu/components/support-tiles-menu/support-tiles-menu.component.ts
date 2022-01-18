@@ -46,7 +46,7 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
 
     this.subTileInstantiation = this.supportTilesWithSubTiles$.subscribe((supportTiles) => {
       supportTiles.forEach(
-        (supportTile) => this.onSubTileChanged(supportTile)
+        (supportTile) => supportTile.checked && this.onSubTileChanged(supportTile)
       );
       this.subTileInstantiation.unsubscribe();
     });
