@@ -15,6 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../../core/services/app-version/app-version.service';
 import { LangKey } from '../../../core/models/langKey';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
+import { DataMarshallService } from 'src/app/core/services/data-marshall/data-marshall.service';
 
 @Component({
   selector: 'app-side-menu',
@@ -29,6 +30,15 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   LangKey = LangKey;
   offlineMapsAvailable = false;
 
+  supportedLanguages: {
+    lang: string;
+    name: string;
+    langKey: LangKey;
+  }[] = settings.language.supportedLanguages.map((lang) => ({
+    ...lang,
+    langKey: LangKey[lang.lang]
+  }));
+
   private lastUpdateSubscription: Subscription;
   private userSettingSubscription: Subscription;
 
@@ -41,7 +51,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private appVersionService: AppVersionService,
     private platform: Platform,
     private navController: NavController,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private dataMarshallService: DataMarshallService
   ) {}
 
   async ngOnInit() {
@@ -121,5 +132,15 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       isHtml: true
     };
     this.emailComposer.open(email);
+  }
+
+  changeLanguage() {
+    //save language setting
+    this.userSettingService.saveUserSettings(this.userSettings);
+
+    //load observations from API in new language
+    this.observationService.forceUpdateObservationsForCurrentGeoHazard(
+      this.dataMarshallService.cancelObservationsPromise
+    );
   }
 }
