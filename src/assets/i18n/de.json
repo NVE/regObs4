@@ -153,7 +153,8 @@
       "ARC_GIS": "ESRI World Topo (weltweit)",
       "GEODATA_LANDSKAP": "Geodata Topo (Norway)",
       "KARTVERKET": "Kartverket (Norway)",
-      "OPEN_TOPO": "OpenTopoMap (weltweit)"
+      "OPEN_TOPO": "OpenTopoMap (weltweit)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)"
     },
     "TIME_FRAME": "Zeitraum",
     "TODAYS_OBSERVATIONS": "Nur heute",
