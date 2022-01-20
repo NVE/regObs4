@@ -5,7 +5,19 @@ import { TopoMap } from './app/core/models/topo-map.enum';
 
 interface ITopoMapLayerOptions {
   url: string;
+
+  /**
+   * Default tile layer options.
+   *
+   * NB: map.component.ts also has a getTileLayerDefaultOptions method
+   * that defines some defaults.
+   */
   options?: L.TileLayerOptions;
+
+  /**
+   * Setting this to true will use the RegobsOfflineAwareTileLayer class
+   * when creating the leaflet layer if on a device that supports offline maps.
+   */
   supportsOffline?: boolean;
 }
 
@@ -15,7 +27,21 @@ type TopoMapLayersSettings = {
 
 interface ITopoMapSettings {
   layer: keyof typeof TopoMapLayer;
+
+  /**
+   * TileLayerOptions to override "default" tile layer options
+   * defined for each topo map layer.
+   */
   options?: L.TileLayerOptions;
+
+  /**
+   * Exclude bounds.
+   *
+   * Used by RegobsTileLayer to avoid loading double base map tiles.
+   * Why not just use the bounds defined under topoMapLayers?
+   * Answer: Leaflet needs a rectangular bounding box.
+   * These bounds are much more detailed.
+   */
   excludeBounds?: Polygon[];
 }
 
@@ -31,8 +57,18 @@ interface IMapTileSettings {
   zoomLevelObservationList: number;
   edgeBufferTiles: number;
   updateWhenIdle: boolean;
+
+  /**
+   * Base map layers used in the app.
+   */
   topoMapLayers: TopoMapLayersSettings;
+
+  /**
+   * Selectable maps in the app side menu.
+   * Uses one or more topoMapLayers.
+   */
   topoMaps: TopoMapsSettings;
+
   supportTiles: any;
   supportTilesBounds: L.LatLngTuple[];
 }
