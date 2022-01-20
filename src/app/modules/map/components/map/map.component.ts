@@ -527,8 +527,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private *getBaseMapLayers(topoMap: TopoMap, useRetinaMap: boolean) {
     const baseMapLayers = settings.map.tiles.baseMaps[topoMap] || DEFAULT_BASEMAP;
 
+    // One basemap may use multiple layers, eg. norgeskart + npolar for svalbard
     for (const baseMapMember of baseMapLayers) {
       const layerSettings = settings.map.tiles.baseMapLayers[baseMapMember.layer];
+
       const options = {
         ...this.getTileLayerDefaultOptions(useRetinaMap),
         ...(layerSettings.options || {}),
