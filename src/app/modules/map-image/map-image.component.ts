@@ -16,14 +16,14 @@ import { settings } from '../../../settings';
 import { SmartChanges } from '../../core/helpers/simple-changes.helper';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { BaseMapLayer } from 'src/app/core/models/basemap-layer.enum';
+import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';
 const END_ICON = '/assets/icon/map/GPS_stop.svg';
 const DAMAGE_ICON = '/assets/icon/map/damage-location.svg';
 
-const canUseMap = (layer: BaseMapLayer, location: L.LatLng) => {
-  const bounds = settings.map.tiles.baseMapLayers[layer]?.options?.bounds;
+const canUseMap = (layer: TopoMapLayer, location: L.LatLng) => {
+  const bounds = settings.map.tiles.topoMapLayers[layer]?.options?.bounds;
   return bounds == null || L.latLngBounds(bounds as L.LatLngBoundsLiteral).contains(location);
 };
 
@@ -143,13 +143,13 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private getMatchingBaseLayer() {
-    if (canUseMap(BaseMapLayer.statensKartverk, this.location.latLng)) {
-      return settings.map.tiles.baseMapLayers[BaseMapLayer.statensKartverk];
+    if (canUseMap(TopoMapLayer.statensKartverk, this.location.latLng)) {
+      return settings.map.tiles.topoMapLayers[TopoMapLayer.statensKartverk];
     }
-    if (canUseMap(BaseMapLayer.npolarBasiskart, this.location.latLng)) {
-      return settings.map.tiles.baseMapLayers[BaseMapLayer.npolarBasiskart];
+    if (canUseMap(TopoMapLayer.npolarBasiskart, this.location.latLng)) {
+      return settings.map.tiles.topoMapLayers[TopoMapLayer.npolarBasiskart];
     }
-    return settings.map.tiles.baseMapLayers[BaseMapLayer.arcGisOnline];
+    return settings.map.tiles.topoMapLayers[TopoMapLayer.arcGisOnline];
   }
 
   private addTileLayers() {

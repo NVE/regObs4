@@ -131,10 +131,10 @@ export const settings: ISettings = {
       updateWhenIdle: false,
 
       /**
-       * Basemap layers used in the app.
-       * See below for how these are used by the different basemap options.
+       * Map layers used in the app.
+       * See below for how these are used by the different map options.
        */
-      baseMapLayers: {
+      topoMapLayers: {
         'statensKartverk': {
           url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
           options: {
@@ -180,9 +180,11 @@ export const settings: ISettings = {
       },
 
       /**
-       * This is the selectable basemap options in the app composed of different baselayers.
+       * This is the selectable basemap options in the app composed of different topo map layers.
+       *
+       * Map options defined here will override default options defined above.
        */
-      baseMaps: {
+      topoMaps: {
         'mixArcGisOnline': [
           {
             layer: 'arcGisOnline',

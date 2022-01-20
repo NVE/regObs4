@@ -1,25 +1,25 @@
 import { Polygon } from 'geojson';
-import { BaseMapLayer } from './app/core/models/basemap-layer.enum';
+import { TopoMapLayer } from './app/core/models/topo-map-layer.enum';
 import { TopoMap } from './app/core/models/topo-map.enum';
 
-interface IBaseMapLayerOptions {
+interface ITopoMapLayerOptions {
   url: string;
   options?: L.TileLayerOptions;
   supportsOffline?: boolean;
 }
 
-type IBaseMapLayersSettings = {
-  [mapLayer in BaseMapLayer]: IBaseMapLayerOptions;
+type TopoMapLayersSettings = {
+  [mapLayer in TopoMapLayer]: ITopoMapLayerOptions;
 }
 
-interface IBaseMapSettings {
-  layer: keyof typeof BaseMapLayer;
+interface ITopoMapSettings {
+  layer: keyof typeof TopoMapLayer;
   options?: L.TileLayerOptions;
   excludeBounds?: Polygon[];
 }
 
-type IBaseMapsSettings = {
-  [baseMap in TopoMap]: IBaseMapSettings[]
+type TopoMapsSettings = {
+  [topoMap in TopoMap]: ITopoMapSettings[]
 }
 
 interface IMapTileSettings {
@@ -30,8 +30,8 @@ interface IMapTileSettings {
   zoomLevelObservationList: number;
   edgeBufferTiles: number;
   updateWhenIdle: boolean;
-  baseMapLayers: IBaseMapLayersSettings;
-  baseMaps: IBaseMapsSettings;
+  topoMapLayers: TopoMapLayersSettings;
+  topoMaps: TopoMapsSettings;
   supportTiles: any;
   supportTilesBounds: L.LatLngTuple[];
 }

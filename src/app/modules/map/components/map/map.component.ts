@@ -41,11 +41,11 @@ import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
 import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
-import { BaseMapLayer } from 'src/app/core/models/basemap-layer.enum';
+import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 
 const DEBUG_TAG = 'MapComponent';
 
-const isBaseMapLayer = (mapId: string) => (<string[]>Object.values(BaseMapLayer)).includes(mapId);
+const isTopoMapLayer = (mapId: string) => (<string[]>Object.values(TopoMapLayer)).includes(mapId);
 const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
   layerGroup.eachLayer((layer) => {
     if (layer instanceof L.TileLayer) {
@@ -69,7 +69,7 @@ const getNativeZoomOptions = (map: OfflineTilesMetadata, detectRetina: boolean):
   }
 };
 
-const DEFAULT_BASEMAP = settings.map.tiles.baseMaps[TopoMap.default];
+const DEFAULT_BASEMAP = settings.map.tiles.topoMaps[TopoMap.default];
 
 @Component({
   selector: 'app-map',
@@ -364,7 +364,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     // Create offline tile map layers
     for (const offlinePackage of packages) {
       for (const map of Object.values(offlinePackage.maps)) {
-        if (isBaseMapLayer(map.mapId)) {
+        if (isTopoMapLayer(map.mapId)) {
           this.createTopoMapOfflineLayer(map, userSettings.useRetinaMap);
         } else if (enabledSupportMaps.has(map.mapId)) {
           const { opacity } = enabledSupportMaps.get(map.mapId);
@@ -476,7 +476,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.layerGroup.clearLayers();
       this.map.setMaxZoom(this.getMaxZoom(userSetting.useRetinaMap));
 
-      for (const layer of this.getBaseMapLayers(userSetting.topoMap, userSetting.useRetinaMap)) {
+      for (const layer of this.getTopoMapLayers(userSetting.topoMap, userSetting.useRetinaMap)) {
         layer.addTo(this.layerGroup);
       }
 
@@ -524,37 +524,40 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       : settings.map.tiles.maxZoom;
   }
 
-  private *getBaseMapLayers(topoMap: TopoMap, useRetinaMap: boolean) {
-    const baseMapLayers = settings.map.tiles.baseMaps[topoMap] || DEFAULT_BASEMAP;
+  private *getTopoMapLayers(topoMap: TopoMap, useRetinaMap: boolean) {
+    const topoMapLayers = settings.map.tiles.topoMaps[topoMap] || DEFAULT_BASEMAP;
 
-    // One basemap may use multiple layers, eg. norgeskart + npolar for svalbard
-    for (const baseMapMember of baseMapLayers) {
-      const layerSettings = settings.map.tiles.baseMapLayers[baseMapMember.layer];
+    // One map may use multiple layers, eg. norgeskart + npolar for svalbard
+    for (const layerSettings of topoMapLayers) {
+      // A map layer may have default layer settings as well as
+      // layer settings for this topo map / basemap.
+      // This is useful for overriding z-index etc.
+      const defaultLayerSettings = settings.map.tiles.topoMapLayers[layerSettings.layer];
 
       const options = {
         ...this.getTileLayerDefaultOptions(useRetinaMap),
+        ...(defaultLayerSettings.options || {}),
         ...(layerSettings.options || {}),
-        ...(baseMapMember.options || {}),
       };
 
-      if (layerSettings.supportsOffline && isAndroidOrIos(this.platform)) {
+      if (defaultLayerSettings.supportsOffline && isAndroidOrIos(this.platform)) {
         yield new RegObsOfflineAwareTileLayer(
-          baseMapMember.layer,
-          layerSettings.url,
+          layerSettings.layer,
+          defaultLayerSettings.url,
           options,
           this.offlineMapService.offlineTilesRegistry,
           this.loggingService
         );
-      } else if (baseMapMember.excludeBounds) {
+      } else if (layerSettings.excludeBounds) {
         yield new RegObsTileLayer(
-          layerSettings.url,
+          defaultLayerSettings.url,
           {
             ...options,
-            excludeBounds: baseMapMember.excludeBounds
+            excludeBounds: layerSettings.excludeBounds
           }
         );
       } else {
-        yield new L.TileLayer(layerSettings.url, options);
+        yield new L.TileLayer(defaultLayerSettings.url, options);
       }
     }
   }
