@@ -1,79 +1,10 @@
 /* eslint-disable max-len */
 
-import { Polygon } from 'geojson';
-import * as L from 'leaflet';
 import { NORWAY_BOUNDS } from './app/core/helpers/leaflet/norway-bounds';
 import { SVALBARD_BOUNDS } from './app/core/helpers/leaflet/svalbard-bounds';
-import { BaseMapLayer } from './app/core/models/basemap-layer.enum';
 import { MapLayerZIndex } from './app/core/models/maplayer-zindex.enum';
-import { TopoMap } from './app/core/models/topo-map.enum';
+import { ISettings } from './settings.model';
 
-// #region Setting Interfaces
-
-interface IBaseMapLayerOptions {
-  url: string;
-  options?: L.TileLayerOptions;
-  supportsOffline?: boolean
-}
-
-interface IBaseMapLayersSettings {
-  [mapLayer: string]: IBaseMapLayerOptions;
-}
-
-interface IBaseMapSettings {
-  layer: BaseMapLayer;
-  options?: L.TileLayerOptions;
-  excludeBounds?: Polygon[];
-}
-
-interface IBaseMapsSettings {
-  [baseMap: string]: IBaseMapSettings[]
-}
-
-interface IMapTileSettings {
-  defaultZoom: number;
-  minZoom: number;
-  minZoomSupportMaps: number;
-  maxZoom: number;
-  zoomLevelObservationList: number;
-  edgeBufferTiles: number;
-  updateWhenIdle: boolean;
-  baseMapLayers: IBaseMapLayersSettings;
-  baseMaps: IBaseMapsSettings;
-  supportTiles: any;
-  supportTilesBounds: L.LatLngTuple[];
-}
-
-interface IMapSettings {
-  tiles: IMapTileSettings;
-  search: any;
-  mapSearchZoomToLevel: number;
-  unknownMapCenter: L.LatLngTuple;
-  flyToOnGpsZoom: number;
-  maxClusterRadius: number;
-}
-
-interface ISettings {
-  authConfig: any;
-  observations: any;
-  services: any;
-  db: any;
-  map: IMapSettings;
-  gps: any;
-  dateFormats: any;
-  kdvElements: any;
-  helpTexts: any;
-  images: any;
-  sentryDsn: string;
-  errorEmailAddress: string;
-  foregroundUpdateIntervalMs: number;
-  backgroundFetchTimeout: number;
-  popupDisclamerRefreshTimeMs: number;
-  googleAnalytics: any;
-  language: any;
-}
-
-// #endregion Setting Interfaces
 
 export const settings: ISettings = {
   authConfig: {
@@ -204,7 +135,7 @@ export const settings: ISettings = {
        * See below for how these are used by the different basemap options.
        */
       baseMapLayers: {
-        [BaseMapLayer.statensKartverk]: {
+        'statensKartverk': {
           url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
@@ -215,7 +146,7 @@ export const settings: ISettings = {
           },
           supportsOffline: true
         },
-        [BaseMapLayer.npolarBasiskart]: {
+        'npolarBasiskart': {
           url: 'https://geodata.npolar.no/arcgis/rest/services/Basisdata/NP_Basiskart_Svalbard_WMTS_3857/MapServer/tile/{z}/{y}/{x}?blankTile=false',
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
@@ -227,20 +158,20 @@ export const settings: ISettings = {
           },
           supportsOffline: true
         },
-        [BaseMapLayer.geoDataLandskap]: {
+        'geoDataLandskap': {
           url: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
           }
         },
-        [BaseMapLayer.openTopo]: {
+        'openTopo': {
           url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
             // subdomains: [] ?
           }
         },
-        [BaseMapLayer.arcGisOnline]: {
+        'arcGisOnline': {
           url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
           options: {
             zIndex: MapLayerZIndex.OnlineBackgroundLayer,
@@ -252,9 +183,9 @@ export const settings: ISettings = {
        * This is the selectable basemap options in the app composed of different baselayers.
        */
       baseMaps: {
-        [TopoMap.default]: [
+        'mixArcGisOnline': [
           {
-            layer: BaseMapLayer.arcGisOnline,
+            layer: 'arcGisOnline',
             options: {
               zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer
             },
@@ -264,15 +195,15 @@ export const settings: ISettings = {
             ]
           },
           {
-            layer: BaseMapLayer.npolarBasiskart,
+            layer: 'npolarBasiskart',
           },
           {
-            layer: BaseMapLayer.statensKartverk,
+            layer: 'statensKartverk',
           }
         ],
-        [TopoMap.mixOpenTopo]: [
+        'mixOpenTopo': [
           {
-            layer: BaseMapLayer.openTopo,
+            layer: 'openTopo',
             options: {
               zIndex: MapLayerZIndex.OnlineMixedBackgroundLayer
             },
@@ -282,15 +213,15 @@ export const settings: ISettings = {
             ]
           },
           {
-            layer: BaseMapLayer.npolarBasiskart,
+            layer: 'npolarBasiskart',
           },
           {
-            layer: BaseMapLayer.statensKartverk,
+            layer: 'statensKartverk',
           }
         ],
-        [TopoMap.geoDataLandskap]: [
+        'geoDataLandskap': [
           {
-            layer: BaseMapLayer.geoDataLandskap,
+            layer: 'geoDataLandskap',
           }
         ]
       },
