@@ -18,6 +18,7 @@ import { ModalMapImagePageModule } from './pages/modal-map-image/modal-map-image
 import { SupportMapInfoPageModule } from './pages/support-map-info/support-map-info.module';
 import { MapImageModule } from '../map-image/map-image.module';
 import { SharedModule } from '../shared/shared.module';
+import { MapZoomComponent } from './components/map-controls/map-zoom/map-zoom.component';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { SharedModule } from '../shared/shared.module';
     MapSearchComponent,
     FullscreenToggleComponent,
     GpsCenterComponent,
-    MapCenterInfoComponent
+    MapCenterInfoComponent,
+    MapZoomComponent
   ],
   exports: [
     MapComponent,
@@ -51,6 +53,7 @@ import { SharedModule } from '../shared/shared.module';
     FullscreenToggleComponent,
     GpsCenterComponent,
     MapCenterInfoComponent,
+    MapZoomComponent,
     ModalSearchPageModule,
     ModalMapImagePageModule,
     SupportMapInfoPageModule

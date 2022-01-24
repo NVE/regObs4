@@ -101,7 +101,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() offlinePackageMode = false;
 
   loaded = false;
-  private map: L.Map;
+  map: L.Map;
   private layerGroup = L.layerGroup();
   private offlineTopoLayerGroup = L.layerGroup();
   private offlineSupportMapLayerGroup = L.layerGroup();
