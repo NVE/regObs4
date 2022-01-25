@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { MapZoomService } from '../../../services/map/map-zoom.service';
 
 @Component({
   selector: 'app-map-zoom',
@@ -6,13 +7,14 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./map-zoom.component.scss']
 })
 export class MapZoomComponent {
-  @Input() map: L.Map;
+
+  constructor(private mapZoomService: MapZoomService) { }
 
   zoomIn(): void {
-    this.map?.zoomIn();
+    this.mapZoomService.requestZoomIn();
   }
 
   zoomOut(): void {
-    this.map?.zoomOut();
+    this.mapZoomService.requestZoomOut();
   }
 }

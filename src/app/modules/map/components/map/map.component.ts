@@ -37,12 +37,10 @@ import {
 import { NORWEGIAN_BOUNDS } from '../../../../core/helpers/leaflet/border-helper';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
-import { LangKey } from '../../../../core/models/langKey';
-import { File } from '@ionic-native/file/ngx';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
 import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
-import { BBox } from 'geojson';
+import { MapZoomService } from '../../services/map/map-zoom.service';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -101,7 +99,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() offlinePackageMode = false;
 
   loaded = false;
-  map: L.Map;
+  private map: L.Map;
   private layerGroup = L.layerGroup();
   private offlineTopoLayerGroup = L.layerGroup();
   private offlineSupportMapLayerGroup = L.layerGroup();
@@ -122,8 +120,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
     private geoPositionService: GeoPositionService,
-    private file: File,
     private platform: Platform,
+    private mapZoomService: MapZoomService,
     injector: Injector
   ) {
     if (isAndroidOrIos(this.platform)) {
@@ -313,6 +311,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.startActiveSubscriptions();
     }
+
+    this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
+    this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
 
     this.startInvalidateSizeMapTimer();
 
