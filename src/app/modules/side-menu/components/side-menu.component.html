@@ -12,6 +12,18 @@
         {{'SETTINGS.TITLE' | translate}}
       </ion-label>
     </ion-item>
+    <ion-item>
+      <ion-icon slot="start" name="globe-sharp" color="varsom-blue"></ion-icon>
+      <ion-label position="stacked" color="medium" class="ion-text-uppercase">
+        {{ "SETTINGS.LANGUAGE" | translate }}<span *ngIf="userSettings.language !== LangKey.en"> / Language</span>
+      </ion-label>
+      <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.language"
+        interface="action-sheet" (ngModelChange)="changeLanguage()">
+        <ion-select-option [value]="lang.langKey" *ngFor="let lang of supportedLanguages">
+          {{ lang.name }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
   </ion-menu-toggle>
   <ion-list-header color="varsom-blue" class="ion-no-margin">
     <ion-label class="list-header-label">
