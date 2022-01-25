@@ -2,7 +2,8 @@
   <ion-slides>
     <ion-slide>
       <div class="swiper-zoom-container">
-        <img [src]="imgSrc" onerror="this.style.display='none'" />
+        <a *ngIf="href" [href]="href"><img [src]="imgSrc" onerror="this.style.display='none'" /></a>
+        <img *ngIf="!href" [src]="imgSrc" onerror="this.style.display='none'" />
       </div>
     </ion-slide>
   </ion-slides>
