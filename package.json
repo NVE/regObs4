@@ -102,8 +102,6 @@
     "pouchdb-adapter-idb": "^7.2.2",
     "rxdb": "^9.15.0",
     "rxjs": "^7.3.0",
-    "pouchdb-adapter-idb": "^7.2.2",
-    "rxdb": "^9.15.0",
     "source-sans-pro": "^3.6.0",
     "tslib": "^2.3.1",
     "zone.js": "~0.11.4"
