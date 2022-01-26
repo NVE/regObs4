@@ -43,13 +43,6 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
   @Input() attachmentType: AttachmentType = 'Attachment';
   @Input() ref?: string;
 
-  get imagesForCurrentRegistrationTid() {
-    return this.images
-      ? this.images.filter(
-        (image) => image.RegistrationTID === this.registrationTid
-      )
-      : [];
-  }
   attachments: AttachmentUploadEditModelWithBlob[];
 
   constructor(
@@ -132,7 +125,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
   }
 
   async getPicture(sourceType: PictureSourceType) {
-    if (!this.platform.is('hybrid')) {
+    if (!this.platform.is('cordova')) {
       await this.addDummyImage();
       return true;
     }

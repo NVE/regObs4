@@ -222,7 +222,7 @@ export class RegistrationService {
       request: {
         GeoHazardTID: geoHazard,
         DtObsTime: undefined,
-        ObsLocation: {},
+        ObsLocation: { Latitude: 0, Longitude: 0},
         Attachments: []
       }
     };

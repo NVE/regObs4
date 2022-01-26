@@ -43,6 +43,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     private regobsAuthService: RegobsAuthService,
     private commonRegistrationService: CommonRegistrationService,
     private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
   ) {}
 
   ngOnInit(): void {

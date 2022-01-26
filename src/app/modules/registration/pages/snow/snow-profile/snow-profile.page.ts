@@ -20,6 +20,7 @@ import { catchError, switchMap, take } from 'rxjs/operators';
 import { UserSetting } from '../../../../../core/models/user-settings.model';
 import { LoggingService } from '../../../../shared/services/logging/logging.service';
 import { isEmpty } from '@varsom-regobs-common/core';
+import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
 
 const DEBUG_TAG = 'SnowProfilePage';
 
@@ -53,8 +54,6 @@ export class SnowProfilePage extends BasePage {
   ) {
     super(RegistrationTid.SnowProfile2, basePageService, activatedRoute);
   }
-
-  onInit() {}
 
   isEmpty() {
     const isEmptyResult =

@@ -14,7 +14,6 @@ import { HelperService } from '../../../../core/services/helpers/helper.service'
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
 import { take, switchMap, filter, takeUntil } from 'rxjs/operators';
 import { Position } from '@capacitor/geolocation';
-import { Subject } from 'rxjs';
 import { Observable, Subject } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
 import {

@@ -12,6 +12,7 @@ import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-p
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { Subscription } from 'rxjs';
 import { ArrayHelper } from 'src/app/core/helpers/array-helper';
+import { ItemReorderEventDetail } from '@ionic/core';
 
 @Component({
   selector: 'app-avalanche-problem',

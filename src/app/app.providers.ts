@@ -42,7 +42,6 @@ import { OfflineMapService } from './core/services/offline-map/offline-map.servi
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { RegistrationRepositoryService } from './modules/registration/services/registration-repository/registration-repository.service';
 import { initTranslateService } from './custom-translate.loader';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
@@ -209,11 +208,6 @@ export const APP_PROVIDERS = [
   { provide: 'OnReset', useExisting: DataMarshallService, multi: true },
   { provide: 'OnReset', useExisting: UserSettingService, multi: true },
   { provide: 'OnReset', useExisting: OfflineMapService, multi: true },
-  {
-    provide: 'OnReset',
-    useExisting: RegistrationRepositoryService,
-    multi: true
-  },
 
   // Custom native/web providers
   {
