@@ -18,7 +18,7 @@ import {
 } from '@angular/animations';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable, Subject } from 'rxjs';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import {
   CustomAnimation,

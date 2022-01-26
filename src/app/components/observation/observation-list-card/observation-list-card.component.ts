@@ -5,13 +5,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import {
   AttachmentViewModel,
   RegistrationViewModel,
   Summary
-} from '@varsom-regobs-common/regobs-api';
+} from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { FullscreenImageModalPage } from '../../../pages/modal-pages/fullscreen-image-modal/fullscreen-image-modal.page';

@@ -4,19 +4,16 @@ import { settings } from '../../../../../settings';
 import { MapSearchResponse } from './map-search-response.model';
 import * as L from 'leaflet';
 import { map, switchMap, catchError, take } from 'rxjs/operators';
-import { Observable, combineLatest, forkJoin, of, Subject } from 'rxjs';
+import { Observable, forkJoin, of, Subject } from 'rxjs';
 import { ViewInfo } from './view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
-import { GeoCodeService } from '@varsom-regobs-common/regobs-api';
+import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
+import { GeoCodeService } from 'src/app/modules/common-regobs-api/services';
 import { NanoSql } from '../../../../../nanosql';
 import { MapSearchHistory } from './map-search-history.model';
 import moment from 'moment';
 import { IMapView } from '../map/map-view.interface';
-import {
-  NorwegianSearchResultModel,
-  NorwegianSearchResultModelStednavn
-} from './norwegian-search-result.model';
+import { NorwegianSearchResultModel, NorwegianSearchResultModelStednavn } from './norwegian-search-result.model';
 import { WorldSearchResultModel } from './world-search-result.model';
 import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
@@ -26,9 +23,7 @@ import { NSqlFullUpdateObservable } from '../../../../core/helpers/nano-sql/NSql
 })
 export class MapSearchService {
   private _mapSearchItemClickSubject: Subject<MapSearchResponse | L.LatLng>;
-  private _mapSearchItemClickObservable: Observable<
-    MapSearchResponse | L.LatLng
-  >;
+  private _mapSearchItemClickObservable: Observable<MapSearchResponse | L.LatLng>;
 
   get mapSearchClick$() {
     return this._mapSearchItemClickObservable;
@@ -38,14 +33,8 @@ export class MapSearchService {
     this._mapSearchItemClickSubject.next(item);
   }
 
-  constructor(
-    private httpClient: HttpClient,
-    private userSettingService: UserSettingService,
-    private geoCodeService: GeoCodeService
-  ) {
-    this._mapSearchItemClickSubject = new Subject<
-      MapSearchResponse | L.LatLng
-    >();
+  constructor(private httpClient: HttpClient, private userSettingService: UserSettingService, private geoCodeService: GeoCodeService) {
+    this._mapSearchItemClickSubject = new Subject<MapSearchResponse | L.LatLng>();
     this._mapSearchItemClickObservable = this._mapSearchItemClickSubject.asObservable();
     this._mapSearchItemClickObservable.subscribe((item) => {
       if (!(item instanceof L.LatLng)) {
@@ -57,23 +46,16 @@ export class MapSearchService {
   searchAll(text: string): Observable<MapSearchResponse[]> {
     return this.userSettingService.language$.pipe(
       switchMap((language) =>
-        forkJoin([
-          this.searchNorwegianPlaces(text, language),
-          this.searchWorld(text, language)
-        ]).pipe(map(([s1, s2]) => [...s1, ...s2]))
+        forkJoin([this.searchNorwegianPlaces(text, language), this.searchWorld(text, language)]).pipe(map(([s1, s2]) => [...s1, ...s2]))
       )
     );
   }
 
-  searchNorwegianPlaces(
-    text: string,
-    lang: LangKey
-  ): Observable<MapSearchResponse[]> {
+  searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
     return this.httpClient
       .get(
-        `${settings.map.search.no.url}?navn=${text.trim()}*&antPerSide=${
-          settings.map.search.no.maxResults
-        }` + `&eksakteForst=${settings.map.search.no.exactFirst}&epsgKode=3395`
+        `${settings.map.search.no.url}?navn=${text.trim()}*&antPerSide=${settings.map.search.no.maxResults}` +
+          `&eksakteForst=${settings.map.search.no.exactFirst}&epsgKode=3395`
       )
       .pipe(
         map((data: NorwegianSearchResultModel) => {
@@ -87,16 +69,9 @@ export class MapSearchService {
           return this.removeDuplicates(resultList).map((item) => {
             const resp: MapSearchResponse = {
               name: item.stedsnavn,
-              description:
-                (lang === LangKey.nb ? item.navnetype + ', ' : '') +
-                item.kommunenavn +
-                ' (' +
-                item.fylkesnavn +
-                ')',
+              description: (lang === LangKey.nb ? item.navnetype + ', ' : '') + item.kommunenavn + ' (' + item.fylkesnavn + ')',
               type: item.navnetype,
-              latlng: L.Projection.Mercator.unproject(
-                L.point({ x: item.aust, y: item.nord })
-              )
+              latlng: L.Projection.Mercator.unproject(L.point({ x: item.aust, y: item.nord }))
             };
             return resp;
           });
@@ -107,9 +82,7 @@ export class MapSearchService {
 
   removeDuplicates(data: NorwegianSearchResultModelStednavn[]) {
     return (data || []).reduce((acc, currentValue) => {
-      if (
-        acc.filter((item) => item.ssrId === currentValue.ssrId).length === 0
-      ) {
+      if (acc.filter((item) => item.ssrId === currentValue.ssrId).length === 0) {
         acc.push(currentValue);
       }
       return acc;
@@ -146,10 +119,7 @@ export class MapSearchService {
       );
   }
 
-  getViewInfo(
-    mapView: IMapView,
-    geoHazard = GeoHazard.Soil
-  ): Observable<ViewInfo> {
+  getViewInfo(mapView: IMapView, geoHazard = GeoHazard.Soil): Observable<ViewInfo> {
     const latLng = mapView.center;
     return this.geoCodeService
       .GeoCodeLocationInfo({
@@ -172,32 +142,19 @@ export class MapSearchService {
   }
 
   private async saveSearchHistoryToDb(searchResult: MapSearchResponse) {
-    const existingHistory = (
-      await this.getSearchHistoryAsObservable().pipe(take(1)).toPromise()
-    ).filter(
-      (item) =>
-        !(
-          item.latlng.lat === searchResult.latlng.lat &&
-          item.latlng.lng === searchResult.latlng.lng
-        )
+    const existingHistory = (await this.getSearchHistoryAsObservable().pipe(take(1)).toPromise()).filter(
+      (item) => !(item.latlng.lat === searchResult.latlng.lat && item.latlng.lng === searchResult.latlng.lng)
     );
     existingHistory.splice(0, 0, {
       timestamp: moment().unix(),
       ...searchResult
     }); // Insert new search item at index 0
-    const items = existingHistory.slice(
-      0,
-      settings.map.search.searchHistorySize
-    ); // Keep only last 5 items
-    await nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name)
-      .query('upsert', { id: 'searchresults', items })
-      .exec();
+    const items = existingHistory.slice(0, settings.map.search.searchHistorySize); // Keep only last 5 items
+    await nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('upsert', { id: 'searchresults', items }).exec();
   }
 
   getSearchHistoryAsObservable(): Observable<MapSearchHistory[]> {
-    return new NSqlFullUpdateObservable<
-      { id: string; items: MapSearchHistory[] }[]
-    >(
+    return new NSqlFullUpdateObservable<{ id: string; items: MapSearchHistory[] }[]>(
       nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('select').listen()
     ).pipe(map((val) => (val.length > 0 ? val[0].items : [])));
   }

@@ -6,9 +6,9 @@ import { NavController } from '@ionic/angular';
 import {
   ObsLocationsResponseDtoV2,
   ObsLocationEditModel
-} from '@varsom-regobs-common/regobs-api';
+} from 'src/app/modules/common-regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable, Subscription } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';

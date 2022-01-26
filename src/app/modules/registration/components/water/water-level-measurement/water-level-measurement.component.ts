@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { WaterLevelMeasurementEditModel } from '@varsom-regobs-common/regobs-api';
+import { WaterLevelMeasurementEditModel } from 'src/app/modules/common-regobs-api/models';
 import moment from 'moment';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { GeoHazard, isEmpty } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
 
 @Component({
   selector: 'app-water-level-measurement',
@@ -24,9 +25,7 @@ export class WaterLevelMeasurementComponent implements OnInit {
   get dateIsDifferentThanObsTime() {
     return (
       this.waterLevelMeasurement.DtMeasurementTime &&
-      !moment(this.waterLevelMeasurement.DtMeasurementTime)
-        .startOf('day')
-        .isSame(moment(this.dtObsTime).startOf('day'))
+      !moment(this.waterLevelMeasurement.DtMeasurementTime).startOf('day').isSame(moment(this.dtObsTime).startOf('day'))
     );
   }
 
@@ -36,8 +35,6 @@ export class WaterLevelMeasurementComponent implements OnInit {
     }
     return this.waterLevelMeasurement.DtMeasurementTime;
   }
-
-  constructor() {}
 
   ngOnInit() {
     this.maxDate = this.getMaxDateForNow();
@@ -59,10 +56,7 @@ export class WaterLevelMeasurementComponent implements OnInit {
   }
 
   showError() {
-    if (
-      !isEmpty(this.waterLevelMeasurement) &&
-      !this.waterLevelMeasurement.DtMeasurementTime
-    ) {
+    if (!isEmpty(this.waterLevelMeasurement) && !this.waterLevelMeasurement.DtMeasurementTime) {
       this.showDtMeasurementTimeError = true;
     } else {
       this.showDtMeasurementTimeError = false;

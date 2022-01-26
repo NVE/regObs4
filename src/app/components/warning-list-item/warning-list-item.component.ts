@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, Renderer2 } from '@angular/core';
 import { IonItemSliding, DomController } from '@ionic/angular';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
-import { GeoHazard, LangKey } from '@varsom-regobs-common/core';
+import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { settings } from '../../../settings';
 import moment from 'moment';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';

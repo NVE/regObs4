@@ -3,9 +3,11 @@ import { IRegistration } from '../../models/registration.interface';
 import { Observable, of, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ItemSyncCompleteStatus } from '../../models/item-sync-complete-status.interface';
-import { RegistrationService, AttachmentService as ApiAttachmentService, AttachmentEditModel, RegistrationViewModel } from '@varsom-regobs-common/regobs-api';
+import { AttachmentEditModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { RegistrationService, AttachmentService as ApiAttachmentService } from 'src/app/modules/common-regobs-api/services';
 import { map, catchError, switchMap, tap, filter, take } from 'rxjs/operators';
-import { LanguageService, LangKey, LoggerService } from '@varsom-regobs-common/core';
+import { LangKey } from 'src/app/modules/common-core/models';
+import { LanguageService, LoggerService } from 'src/app/modules/common-core/services';
 import { AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { HttpClient, HttpEventType, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ProgressService } from '../progress/progress.service';
@@ -48,7 +50,9 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
         const uploadSuccess = !uploadAttachmentResult.some((a) => a.error);
         let attachmentStatusCode: number = undefined;
         if (!uploadSuccess) {
-          attachmentStatusCode = uploadAttachmentResult.map((a) => (a.error as HttpErrorResponse).status || 0).reduce((pv, cv) => (cv > pv ? cv : pv), 0);
+          attachmentStatusCode = uploadAttachmentResult
+            .map((a) => (a.error as HttpErrorResponse).status || 0)
+            .reduce((pv, cv) => (cv > pv ? cv : pv), 0);
         }
         // Set request attachments on temporary request item, so it will not be removed / invalid if failure
         const clonedItem = cloneDeep(item);
@@ -136,7 +140,10 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
     );
   }
 
-  uploadAttachmentAndSetAttachmentUploadId(reg: IRegistration, attachmentUpload: AttachmentUploadEditModel): Observable<AttachmentUploadEditModel> {
+  uploadAttachmentAndSetAttachmentUploadId(
+    reg: IRegistration,
+    attachmentUpload: AttachmentUploadEditModel
+  ): Observable<AttachmentUploadEditModel> {
     attachmentUpload.error = undefined;
     return this.newAttachmentService.getBlob(reg.id, attachmentUpload.id).pipe(
       switchMap((blob) =>

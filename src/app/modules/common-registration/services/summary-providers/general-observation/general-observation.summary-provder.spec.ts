@@ -5,8 +5,8 @@ import ENGLISH_TRANSLATIONS from '@varsom-regobs-common/translations/api/en.json
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { KdvService } from '../../kdv/kdv.service';
-import { KdvElement, GeneralObservationEditModel } from '@varsom-regobs-common/regobs-api';
-import { CoreModule } from '@varsom-regobs-common/core';
+import { KdvElement, GeneralObservationEditModel } from 'src/app/modules/common-regobs-api/models';
+import { CoreModule } from 'src/app/modules/common-core/models';
 import { HttpClientModule } from '@angular/common/http';
 import { SummaryKind } from '../../../models/summary/summary-kind.enum';
 import { TranslateTestingModule } from 'ngx-translate-testing';

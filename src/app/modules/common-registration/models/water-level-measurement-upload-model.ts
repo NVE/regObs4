@@ -1,4 +1,4 @@
-import { WaterLevelMeasurementEditModel, AttachmentEditModel } from '@varsom-regobs-common/regobs-api';
+import { WaterLevelMeasurementEditModel, AttachmentEditModel } from 'src/app/modules/common-regobs-api/models';
 
 export interface WaterLevelMeasurementUploadModel extends WaterLevelMeasurementEditModel {
   WaterLevelMeasurementId?: number;
@@ -6,5 +6,5 @@ export interface WaterLevelMeasurementUploadModel extends WaterLevelMeasurementE
   DtMeasurementTime: string;
   Comment?: string;
   Attachments?: Array<AttachmentEditModel>;
-  ref?: string;  // Guid
+  ref?: string; // Guid
 }

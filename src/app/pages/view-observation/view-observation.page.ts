@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { RegistrationViewModel } from '@varsom-regobs-common/regobs-api';
+import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
 import { takeUntil, switchMap, withLatestFrom, tap } from 'rxjs/operators';

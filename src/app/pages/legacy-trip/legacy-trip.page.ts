@@ -1,11 +1,11 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { Subscription } from 'rxjs';
-import { CreateTripDto } from '@varsom-regobs-common/regobs-api';
+import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
 import moment from 'moment';
 import { NavController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';
 import { LoggingService } from '../../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
@@ -37,11 +37,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   private startTripSubscription: Subscription;
 
   get isValid(): boolean {
-    return (
-      this.tripDto.ObservationExpectedMinutes !== undefined &&
-      this.tripDto.TripTypeID !== undefined &&
-      this.currentPosition != null
-    );
+    return this.tripDto.ObservationExpectedMinutes !== undefined && this.tripDto.TripTypeID !== undefined && this.currentPosition != null;
   }
 
   get isEmpty(): boolean {
@@ -64,18 +60,16 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isLoading = false;
     this.setHoursToMidnight();
-    this.tripLoggerSubscription = this.tripLoggerService
-      .getLegacyTripAsObservable()
-      .subscribe((val) => {
-        this.ngZone.run(() => {
-          if (val) {
-            this.tripDto = val.request;
-            this.isRunning = true;
-          } else {
-            this.isRunning = false;
-          }
-        });
+    this.tripLoggerSubscription = this.tripLoggerService.getLegacyTripAsObservable().subscribe((val) => {
+      this.ngZone.run(() => {
+        if (val) {
+          this.tripDto = val.request;
+          this.isRunning = true;
+        } else {
+          this.isRunning = false;
+        }
       });
+    });
     this.initCurrentPosition();
   }
 
@@ -87,12 +81,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
         this.tripLoggerService.showTripNoPositionErrorMessage();
       }
     } catch (error) {
-      this.loggingService.log(
-        'Could not get geolocation',
-        error,
-        LogLevel.Warning,
-        DEBUG_TAG
-      );
+      this.loggingService.log('Could not get geolocation', error, LogLevel.Warning, DEBUG_TAG);
       this.tripLoggerService.showTripNoPositionErrorMessage();
     } finally {
       this.ngZone.run(() => {
@@ -130,36 +119,25 @@ export class LegacyTripPage implements OnInit, OnDestroy {
           if (this.currentPosition && this.currentPosition.coords) {
             this.tripDto.Lat = this.currentPosition.coords.latitude.toString();
             this.tripDto.Lng = this.currentPosition.coords.longitude.toString();
-            this.startTripSubscription = this.tripLoggerService
-              .startLegacyTrip(this.tripDto)
-              .subscribe(
-                () => this.navController.navigateRoot('/'),
-                (error) => {
-                  this.loggingService.error(
-                    error,
-                    'Error when starting trip',
-                    DEBUG_TAG
-                  );
-                  this.tripLoggerService.showTripErrorMessage(true);
-                },
-                () => {
-                  this.ngZone.run(() => {
-                    this.isLoading = false;
-                  });
-                }
-              );
+            this.startTripSubscription = this.tripLoggerService.startLegacyTrip(this.tripDto).subscribe(
+              () => this.navController.navigateRoot('/'),
+              (error) => {
+                this.loggingService.error(error, 'Error when starting trip', DEBUG_TAG);
+                this.tripLoggerService.showTripErrorMessage(true);
+              },
+              () => {
+                this.ngZone.run(() => {
+                  this.isLoading = false;
+                });
+              }
+            );
           } else {
             this.isLoading = false;
             this.tripLoggerService.showTripNoPositionErrorMessage();
           }
         } catch (error) {
           this.isLoading = false;
-          this.loggingService.log(
-            'Could not get geolocation',
-            error,
-            LogLevel.Warning,
-            DEBUG_TAG
-          );
+          this.loggingService.log('Could not get geolocation', error, LogLevel.Warning, DEBUG_TAG);
           this.tripLoggerService.showTripNoPositionErrorMessage();
         }
       }
@@ -180,9 +158,7 @@ export class LegacyTripPage implements OnInit, OnDestroy {
   }
 
   async showHelp(): Promise<void> {
-    const translation = await this.translateService
-      .get('TRIP.LEGACY_HELP_TEXT')
-      .toPromise();
+    const translation = await this.translateService.get('TRIP.LEGACY_HELP_TEXT').toPromise();
     const modal = await this.modalController.create({
       component: HelpModalPage,
       componentProps: {

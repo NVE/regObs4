@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppMode } from '@varsom-regobs-common/core';
+import { AppMode } from 'src/app/modules/common-core/models';
 import * as Sentry from '@sentry/browser';
 import { AppVersionService } from '../../../../core/services/app-version/app-version.service';
 import { settings } from '../../../../../settings';

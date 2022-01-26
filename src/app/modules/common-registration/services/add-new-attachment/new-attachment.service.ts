@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { AttachmentType, AttachmentUploadEditModel, RegistrationTid } from '../../registration.models';
 
 /**

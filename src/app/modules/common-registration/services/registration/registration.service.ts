@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, from, Subscription, of, concat, forkJoin, timer, merge, combineLatest, firstValueFrom } from 'rxjs';
-import { GeoHazard, AppMode, LoggerService, AppModeService, uuidv4 } from '@varsom-regobs-common/core';
+import { GeoHazard, AppMode } from 'src/app/modules/common-core/models';
+import { LoggerService, AppModeService } from 'src/app/modules/common-core/services';
 import {
   switchMap,
   shareReplay,
@@ -22,7 +23,7 @@ import { ItemSyncCompleteStatus } from '../../models/item-sync-complete-status.i
 import { ItemSyncCallbackService } from '../item-sync-callback/item-sync-callback.service';
 import moment from 'moment';
 import { RegistrationTid } from '../../models/registration-tid.enum';
-import { Summary, AttachmentViewModel, RegistrationViewModel, RegistrationEditModel } from '@varsom-regobs-common/regobs-api';
+import { Summary, AttachmentViewModel, RegistrationViewModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   getAllAttachments,
   getPropertyName,
@@ -41,9 +42,14 @@ import { FallbackSummaryProvider } from '../summary-providers/fallback-provider'
 import { RxRegistrationCollection, RxRegistrationDocument } from '../../db/RxDB';
 import { NewAttachmentService } from '../add-new-attachment/new-attachment.service';
 import deepEqual from 'fast-deep-equal';
-import { AttachmentUploadEditModel, ExistingOrNewAttachment } from '../../registration.models';
-import { ExistingAttachmentType, NewAttachmentType } from '../../models/attachment-upload-edit.interface';
+import {
+  ExistingAttachmentType,
+  NewAttachmentType,
+  AttachmentUploadEditModel,
+  ExistingOrNewAttachment
+} from '../../models/attachment-upload-edit.interface';
 import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions } from '../../module.options';
+import { uuidv4 } from 'src/app/modules/common-core/helpers';
 
 const SYNC_TIMER_TRIGGER_MS = 60 * 1000; // try to trigger sync every 60 seconds if nothing has changed to network conditions
 const SYNC_BUFFER_MS = 3 * 1000; // Wait at least 3 seconds before next sync attempt
@@ -241,7 +247,7 @@ export class RegistrationService {
       request: {
         GeoHazardTID: geoHazard,
         DtObsTime: undefined,
-        ObsLocation: {},
+        ObsLocation: { Latitude: 0, Longitude: 0 },
         Attachments: []
       }
     };

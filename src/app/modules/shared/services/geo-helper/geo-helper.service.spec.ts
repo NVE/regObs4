@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { GeoHelperService } from './geo-helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Spied, provideMock } from '../../../../core/helpers/spied';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 describe('GeoHelperService', () => {
   let translateService: Spied<TranslateService>;

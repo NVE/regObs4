@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { UrlEditModel } from '@varsom-regobs-common/regobs-api';
+import { UrlEditModel } from 'src/app/modules/common-regobs-api/models';
 
 @Component({
   selector: 'app-add-web-url-modal',

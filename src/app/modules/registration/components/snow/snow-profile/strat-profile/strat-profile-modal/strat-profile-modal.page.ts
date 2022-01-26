@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import {
   StratProfileEditModel,
   StratProfileLayerEditModel
-} from '@varsom-regobs-common/regobs-api';
+} from 'src/app/modules/common-regobs-api/models';
 import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-profile-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';

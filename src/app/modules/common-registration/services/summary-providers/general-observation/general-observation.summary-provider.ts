@@ -1,5 +1,5 @@
 import { IRegistration, RegistrationTid } from '../../../registration.models';
-import { RegObsGenericValue, GeneralObservationEditModel, Summary } from '@varsom-regobs-common/regobs-api';
+import { RegObsGenericValue, GeneralObservationEditModel, Summary } from 'src/app/modules/common-regobs-api/models';
 import { BaseSummaryProvider } from '../base.summary-provider';
 import { Observable, combineLatest } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';

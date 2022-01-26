@@ -14,7 +14,7 @@ import { LoggingService } from '../../shared/services/logging/logging.service';
 import { RegobsAuthService } from '../../auth/services/regobs-auth.service';
 import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
-import { GeoHazard, AppMode } from '@varsom-regobs-common/core';
+import { GeoHazard, AppMode } from 'src/app/modules/common-core/models';
 
 const DEBUG_TAG = 'RegistrationService';
 

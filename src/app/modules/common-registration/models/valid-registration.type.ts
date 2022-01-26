@@ -17,7 +17,7 @@ import {
   WeatherEditModel,
   Waterlevel2EditModel,
   DamageObsEditModel
-} from '@varsom-regobs-common/regobs-api';
+} from 'src/app/modules/common-regobs-api/models';
 
 export type ValidRegistrationType =
   | Array<AvalancheActivityObs2EditModel>

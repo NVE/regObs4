@@ -1,7 +1,7 @@
 import { RxDocument, RxCollection, RxDatabase } from 'rxdb';
 import { IRegistration } from '../models/registration.interface';
-import { KdvElementsResponseDto } from '@varsom-regobs-common/regobs-api';
-import { HelptextDto } from '@varsom-regobs-common/regobs-api';
+import { KdvElementsResponseDto } from 'src/app/modules/common-regobs-api/models';
+import { HelptextDto } from 'src/app/modules/common-regobs-api/models';
 import { OfflineSyncMeta } from '../models/offline-sync-meta.interface';
 import { ISyncProgressRecord } from '../models/sync-progress-record.interface';
 import { IUplaodProgress } from '../models/upload-progress.interface';

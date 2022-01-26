@@ -1,33 +1,13 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  NgZone,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, NgZone, OnInit, Output } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
 import { combineLatest, Observable, of } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  finalize,
-  map,
-  pairwise,
-  switchMap,
-  take,
-} from 'rxjs/operators';
-import {
-  enterZone,
-  toPromiseWithCancel
-} from 'src/app/core/helpers/observable-helper';
+import { debounceTime, distinctUntilChanged, filter, finalize, map, pairwise, switchMap, take } from 'rxjs/operators';
+import { enterZone, toPromiseWithCancel } from 'src/app/core/helpers/observable-helper';
 import { ObservationService } from 'src/app/core/services/observation/observation.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { RegistrationService } from 'src/app/modules/registration/services/registration.service';
-import { RegistrationViewModel } from '@varsom-regobs-common/regobs-api';
+import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
 
@@ -80,47 +60,27 @@ export class SentListComponent implements OnInit {
     await this.initRegistrationSubscription(cancelPromise);
   }
 
-  private async initRegistrationSubscription(
-    cancel?: Promise<void>
-  ): Promise<void> {
+  private async initRegistrationSubscription(cancel?: Promise<void>): Promise<void> {
     this.loaded = false;
     this.changeDetectorRef.detectChanges();
     this.pageIndex = 0;
     try {
-      const result = await toPromiseWithCancel(
-        this.getMyRegistrations$(0),
-        cancel,
-        20000
-      );
+      const result = await toPromiseWithCancel(this.getMyRegistrations$(0), cancel, 20000);
       this.loadedRegistrations = result;
       this.isEmpty.emit(result.length === 0);
     } catch (error) {
-      this.loggingService.debug(
-        'Could not load my registrations',
-        'SentListComponent.initRegistrationSubscription()',
-        error
-      );
+      this.loggingService.debug('Could not load my registrations', 'SentListComponent.initRegistrationSubscription()', error);
     } finally {
       this.loaded = true;
       this.changeDetectorRef.detectChanges();
     }
   }
 
-  private getMyRegistrations$(
-    pageNumber: number
-  ): Observable<RegistrationViewModel[]> {
-    return combineLatest([
-      this.userSettingService.appModeAndLanguage$,
-      this.regobsAuthService.loggedInUser$
-    ]).pipe(
+  private getMyRegistrations$(pageNumber: number): Observable<RegistrationViewModel[]> {
+    return combineLatest([this.userSettingService.appModeAndLanguage$, this.regobsAuthService.loggedInUser$]).pipe(
       switchMap(([[appMode, langKey], loggedInUser]) => {
         if (loggedInUser.isLoggedIn) {
-          return this.observationService.getObservationsForCurrentUser(
-            appMode,
-            langKey,
-            pageNumber,
-            PAGE_SIZE
-          );
+          return this.observationService.getObservationsForCurrentUser(appMode, langKey, pageNumber, PAGE_SIZE);
         }
         return of([]);
       }),
@@ -142,7 +102,7 @@ export class SentListComponent implements OnInit {
       .subscribe((nextPage) => {
         this.loadedRegistrations = this.loadedRegistrations.concat(nextPage);
         this.pageIndex += 1;
-        const target: IonInfiniteScroll = (event.target as unknown) as IonInfiniteScroll;
+        const target: IonInfiniteScroll = event.target as unknown as IonInfiniteScroll;
         target.complete();
         if (nextPage.length < PAGE_SIZE || this.maxCountReached) {
           target.disabled = true; //we have reached the end, so no need to load more pages from now
@@ -165,9 +125,7 @@ export class SentListComponent implements OnInit {
 
   private createMyObservationsUrl$(): Observable<string> {
     return this.userSettingService.userSetting$.pipe(
-      map(
-        (userSettings) => settings.services.regObs.webUrl[userSettings.appMode]
-      ),
+      map((userSettings) => settings.services.regObs.webUrl[userSettings.appMode]),
       distinctUntilChanged(),
       enterZone(this.ngZone)
     );

@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DamageObsEditModel, ObsLocationEditModel } from '@varsom-regobs-common/regobs-api';
+import { DamageObsEditModel, ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import * as L from 'leaflet';
 import { IsEmptyHelper } from '../../../../core/helpers/is-empty.helper';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { Observable } from 'rxjs';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';

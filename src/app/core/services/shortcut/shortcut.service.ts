@@ -4,7 +4,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import { TranslateService } from '@ngx-translate/core';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { GeoHelperService } from '../../../modules/shared/services/geo-helper/geo-helper.service';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 const DEBUG_TAG = 'ShortcutService';
 const FLAG_ACTIVITY_CLEAR_TOP = 67108864;
@@ -22,12 +22,7 @@ export class ShortcutService {
 
   init() {
     const w = <any>window;
-    if (
-      this.platform.is('cordova') &&
-      this.platform.is('android') &&
-      w.plugins &&
-      w.plugins.Shortcuts
-    ) {
+    if (this.platform.is('cordova') && this.platform.is('android') && w.plugins && w.plugins.Shortcuts) {
       this.initAndroidShortcusts();
       return;
     }
@@ -51,47 +46,29 @@ export class ShortcutService {
     const geoHazards = this.geoHelperService.getAllGeoHazards();
     const geoHazardsKeys = this.geoHelperService.getTranslationKeys(geoHazards);
     const translations = await this.translateService
-      .get([
-        'ADD_MENU.NEW_OBSERVATION',
-        'MAP_ITEM_BAR.OBSERVATION',
-        ...geoHazardsKeys
-      ])
+      .get(['ADD_MENU.NEW_OBSERVATION', 'MAP_ITEM_BAR.OBSERVATION', ...geoHazardsKeys])
       .toPromise();
 
     const getLongLabelTranslation = (geoHazardName: string) =>
-      `${
-        translations['ADD_MENU.NEW_OBSERVATION']
-      } ${geoHazardName.toLowerCase()} ${
-        translations['MAP_ITEM_BAR.OBSERVATION']
-      }`;
+      `${translations['ADD_MENU.NEW_OBSERVATION']} ${geoHazardName.toLowerCase()} ${translations['MAP_ITEM_BAR.OBSERVATION']}`;
     const getShortLabel = (geoHazardName: string) => `+ ${geoHazardName}`;
 
     return geoHazards.map((geoHazard) => ({
       id: `regobs_shortcut_new_registration_${geoHazard}`,
       url: `regobs://registration/new/${geoHazard}`,
-      shortLabel: getShortLabel(
-        translations[this.geoHelperService.getTranslationKey(geoHazard)]
-      ),
-      longLabel: getLongLabelTranslation(
-        translations[this.geoHelperService.getTranslationKey(geoHazard)]
-      ),
+      shortLabel: getShortLabel(translations[this.geoHelperService.getTranslationKey(geoHazard)]),
+      longLabel: getLongLabelTranslation(translations[this.geoHelperService.getTranslationKey(geoHazard)]),
       iconFromResource: this.getImage(geoHazard)
     }));
   }
 
   private initAndroidShortcusts() {
-    this.loggingService.debug(
-      'Initializing dynamic shortcuts for Android',
-      DEBUG_TAG
-    );
+    this.loggingService.debug('Initializing dynamic shortcuts for Android', DEBUG_TAG);
     const w = <any>window;
     w.plugins.Shortcuts.supportsDynamic(
       async (supported) => {
         if (!supported) {
-          this.loggingService.debug(
-            'Dynamic shortcuts not supported',
-            DEBUG_TAG
-          );
+          this.loggingService.debug('Dynamic shortcuts not supported', DEBUG_TAG);
           return;
         }
         const shortcuts = await this.getShortcuts();
@@ -103,36 +80,19 @@ export class ShortcutService {
             data: s.url // Must be a well-formed URI
           }
         }));
-        this.loggingService.debug(
-          'Adding dynamic shortcuts:',
-          DEBUG_TAG,
-          shortcutsFull
-        );
+        this.loggingService.debug('Adding dynamic shortcuts:', DEBUG_TAG, shortcutsFull);
         w.plugins.Shortcuts.setDynamic(
           shortcutsFull,
           () => {
-            this.loggingService.debug(
-              'Shortcuts were applied successfully',
-              DEBUG_TAG
-            );
+            this.loggingService.debug('Shortcuts were applied successfully', DEBUG_TAG);
           },
           (error) => {
-            this.loggingService.log(
-              'Error setting dynamic shortcuts!',
-              error,
-              LogLevel.Warning,
-              DEBUG_TAG
-            );
+            this.loggingService.log('Error setting dynamic shortcuts!', error, LogLevel.Warning, DEBUG_TAG);
           }
         );
       },
       (error) => {
-        this.loggingService.log(
-          'Error when checking support for dynamic shortcuts!',
-          error,
-          LogLevel.Warning,
-          DEBUG_TAG
-        );
+        this.loggingService.log('Error when checking support for dynamic shortcuts!', error, LogLevel.Warning, DEBUG_TAG);
       }
     );
   }

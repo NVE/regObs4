@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import {
   StratProfileLayerEditModel,
   KdvElement
-} from '@varsom-regobs-common/regobs-api';
+} from 'src/app/modules/common-regobs-api/models';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
 import { IRegistration } from 'src/app/modules/common-registration/registration.models';

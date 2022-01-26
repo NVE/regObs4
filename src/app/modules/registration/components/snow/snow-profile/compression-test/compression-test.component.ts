@@ -3,7 +3,7 @@ import { CompressionTestListModalPage } from './compression-test-list-modal/comp
 import { ModalController } from '@ionic/angular';
 import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../services/registration.service';
-import { CompressionTestEditModel } from '@varsom-regobs-common/regobs-api';
+import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 
 @Component({
   selector: 'app-compression-test',

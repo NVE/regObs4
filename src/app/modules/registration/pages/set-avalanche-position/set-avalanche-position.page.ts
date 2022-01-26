@@ -7,11 +7,11 @@ import {
   ViewChild
 } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { ObsLocationEditModel } from '@varsom-regobs-common/regobs-api';
+import { ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';

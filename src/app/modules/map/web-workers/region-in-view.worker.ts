@@ -17,7 +17,7 @@ import {
   BBox,
   Coord
 } from '@turf/turf';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { map } from 'rxjs/operators';
 import { settings } from '../../../../settings';
 import avalancheRegions from './../../../../assets/json/varslingsomraader.json';

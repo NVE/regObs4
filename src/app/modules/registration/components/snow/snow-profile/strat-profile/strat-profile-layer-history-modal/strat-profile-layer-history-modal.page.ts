@@ -1,14 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { map, tap } from 'rxjs/operators';
-import {
-  RegistrationViewModel,
-  StratProfileLayerViewModel,
-  SearchService
-} from '@varsom-regobs-common/regobs-api';
-import { Observable, pipe } from 'rxjs';
+import { RegistrationViewModel, StratProfileLayerViewModel } from 'src/app/modules/common-regobs-api/models';
+import { SearchService } from 'src/app/modules/common-regobs-api/services';
+import { Observable } from 'rxjs';
 import moment from 'moment';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { RegistrationTid, IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../../services/registration.service';
 
@@ -22,9 +19,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
 
   isLoading = true;
 
-  $previousUsedLayers: Observable<
-    { id: number; date: string; layers: StratProfileLayerViewModel[] }[]
-  >;
+  $previousUsedLayers: Observable<{ id: number; date: string; layers: StratProfileLayerViewModel[] }[]>;
 
   constructor(
     private modalController: ModalController,
@@ -65,11 +60,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
     this.modalController.dismiss();
   }
 
-  async selectLayer(item: {
-    id: number;
-    date: string;
-    layers: StratProfileLayerViewModel[];
-  }) {
+  async selectLayer(item: { id: number; date: string; layers: StratProfileLayerViewModel[] }) {
     if (!this.reg.request.SnowProfile2) {
       this.reg.request.SnowProfile2 = {};
     }
@@ -82,9 +73,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
     this.modalController.dismiss();
   }
 
-  private getLayersFromSearchResult(
-    result: RegistrationViewModel[]
-  ): { id: number; date: string; layers: StratProfileLayerViewModel[] }[] {
+  private getLayersFromSearchResult(result: RegistrationViewModel[]): { id: number; date: string; layers: StratProfileLayerViewModel[] }[] {
     return result
       .map((reg) => {
         if (

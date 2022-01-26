@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 export class RegobsGeoHazardMarker extends L.DivIcon {
   private _selected: boolean;

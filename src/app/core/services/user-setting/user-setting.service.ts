@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserSetting } from '../../models/user-settings.model';
 import { TranslateService } from '@ngx-translate/core';
-import { GeoHazard, LangKey, AppMode } from '@varsom-regobs-common/core';
+import { GeoHazard, LangKey, AppMode } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, combineLatest, BehaviorSubject, from, of } from 'rxjs';

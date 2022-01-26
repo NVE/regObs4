@@ -1,4 +1,4 @@
-import { GeoHazard, AppMode, LangKey } from '@varsom-regobs-common/core';
+import { GeoHazard, AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { TopoMap } from './topo-map.enum';
 
 export interface UserSetting {

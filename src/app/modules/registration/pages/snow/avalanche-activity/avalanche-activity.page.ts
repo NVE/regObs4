@@ -8,7 +8,7 @@ import { AvalancheActivityModalPage } from './avalanche-activity-modal/avalanche
 import {
   AvalancheActivityObs2EditModel,
   KdvElement
-} from '@varsom-regobs-common/regobs-api';
+} from 'src/app/modules/common-regobs-api/models';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { Subscription, combineLatest } from 'rxjs';
 

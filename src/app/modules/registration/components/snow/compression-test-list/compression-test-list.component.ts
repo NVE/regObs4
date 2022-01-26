@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { CompressionTestEditModel } from '@varsom-regobs-common/regobs-api';
+import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
 @Component({

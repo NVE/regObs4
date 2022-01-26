@@ -8,7 +8,7 @@ import { Platform } from '@ionic/angular';
 import { HTTP } from '@ionic-native/http/ngx';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { DbHelperService } from '../db-helper/db-helper.service';
-import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
+import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import moment from 'moment';
 import { IWarningApiResult } from './warning-api-result.interface';
 

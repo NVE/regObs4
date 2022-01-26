@@ -1,4 +1,4 @@
-import { LangKey } from '@varsom-regobs-common/core';
+import { LangKey } from 'src/app/modules/common-core/models';
 
 export interface IWarning {
   warningLevel: number;

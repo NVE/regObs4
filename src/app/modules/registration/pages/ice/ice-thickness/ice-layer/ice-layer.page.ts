@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { IceThicknessLayerEditModel } from '@varsom-regobs-common/regobs-api';
+import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 
 @Component({
   selector: 'app-ice-layer',

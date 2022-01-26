@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, EMPTY, forkJoin, from, Observable, of } from 'rxjs';
-import { AppMode, AppModeService, GeoHazard, LoggerService, uuidv4 } from '@varsom-regobs-common/core';
+import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
+import { AppModeService, LoggerService } from 'src/app/modules/common-core/services';
+import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { OfflineDbService, TABLE_NAMES } from '../offline-db/offline-db.service';
 import { NewAttachmentService } from './new-attachment.service';

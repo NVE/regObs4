@@ -6,7 +6,7 @@ import {
 import { combineLatest, from, Observable } from 'rxjs';
 import { IRegistration, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
 import { ActivatedRoute } from '@angular/router';
 import { SummaryItemService } from '../../services/summary-item.service';

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
-import { CompressionTestEditModel } from '@varsom-regobs-common/regobs-api';
+import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { RegistrationService } from '../../../../../services/registration.service';
 import { Subject } from 'rxjs';

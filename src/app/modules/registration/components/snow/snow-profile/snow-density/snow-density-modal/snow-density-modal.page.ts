@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { SnowDensityLayerModel } from '@varsom-regobs-common/regobs-api';
+import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { SnowDensityLayerModalPage } from '../snow-density-layer-modal/snow-density-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';

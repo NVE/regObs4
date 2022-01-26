@@ -1,8 +1,9 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { CoreModule } from '@varsom-regobs-common/core';
+import { CoreModule } from 'src/app/modules/common-core/core.module';
 import { FakeItemSyncCallbackService } from './services/item-sync-callback/fake-item-sync-callback.service';
 import { RegobsApiSyncCallbackService } from './services/item-sync-callback/regobs-api-sync-callback.service';
-import { RegobsApiModuleWithConfig, KdvElementsService, HelptextService as HelpTextApiService } from '@varsom-regobs-common/regobs-api';
+import { RegobsApiModuleWithConfig } from 'src/app/modules/common-regobs-api';
+import { KdvElementsService, HelptextService as HelpTextApiService } from 'src/app/modules/common-regobs-api/services';
 import { OfflineDbServiceOptions } from './services/offline-db/offline-db-service.options';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GeneralObservationSummaryProvider } from './services/summary-providers/general-observation/general-observation.summary-provider';

@@ -7,7 +7,7 @@ import { TripLoggerService } from '../../../../core/services/trip-logger/trip-lo
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHelperService } from '../../services/geo-helper/geo-helper.service';
 import { IRegistration } from 'src/app/modules/common-registration/registration.models';
-import { GeoHazard, LangKey } from '@varsom-regobs-common/core';
+import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { RegistrationService } from '../../../registration/services/registration.service';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { setObservableTimeout } from '../../../../core/helpers/observable-helper';

@@ -1,4 +1,4 @@
-import { RegistrationViewModel, MyPageData } from '@varsom-regobs-common/regobs-api';
+import { RegistrationViewModel, MyPageData } from 'src/app/modules/common-regobs-api/models';
 import { Observable, of, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import moment from 'moment';

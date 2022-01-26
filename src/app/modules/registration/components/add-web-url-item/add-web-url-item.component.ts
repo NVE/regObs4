@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AddWebUrlModalPage } from '../../pages/add-web-url-modal/add-web-url-modal.page';
-import { UrlViewModel } from '@varsom-regobs-common/regobs-api';
+import { UrlViewModel } from 'src/app/modules/common-regobs-api/models';
 
 @Component({
   selector: 'app-add-web-url-item',

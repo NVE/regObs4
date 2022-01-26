@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import {
   SnowTempObsModel,
-} from '@varsom-regobs-common/regobs-api';
+} from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
 import { IRegistration } from 'src/app/modules/common-registration/registration.models';
