@@ -199,14 +199,11 @@ ncu -u
 ```
 
 # How to update models from Regobs API
-
-Models are automatically updated on build.
-To test models from test API, change api endpoint in ng-swagger-gen.json
-npm script generate-swagger-api-module is called from build script.
-
+Check the api endpoint named "swagger" in ng-swagger-gen.json is the endpoint you like to base the models on.
 ```
-npm run build
+npm run generate-swagger-api-module
 ```
+Revert changes in regobs-api.module.ts
 
 # How to update regions and polygons
 
