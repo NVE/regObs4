@@ -42,7 +42,11 @@ export class SummaryItemService {
         id: registration.id,
         href: '/registration/set-time',
         title: 'REGISTRATION.OVERVIEW.DATE_AND_TIME',
-        subTitle: registration.request.DtObsTime ? await this.dateHelperService.formatDateString(registration.request.DtObsTime) : '',
+        subTitle: registration.request.DtObsTime
+          ? await this.dateHelperService.formatDateString(
+            registration.request.DtObsTime
+          )
+          : '',
         hasData: !!registration.request.DtObsTime
       }
     ];
@@ -114,14 +118,14 @@ export class SummaryItemService {
 
   private getGeoHazardItems(registration: IRegistration) {
     switch (registration.geoHazard) {
-      case GeoHazard.Water:
-        return this.getWaterItems(registration);
-      case GeoHazard.Ice:
-        return this.getIceItems(registration);
-      case GeoHazard.Soil:
-        return this.getDirtItems(registration);
-      case GeoHazard.Snow:
-        return this.getSnowItems(registration);
+    case GeoHazard.Water:
+      return this.getWaterItems(registration);
+    case GeoHazard.Ice:
+      return this.getIceItems(registration);
+    case GeoHazard.Soil:
+      return this.getDirtItems(registration);
+    case GeoHazard.Snow:
+      return this.getSnowItems(registration);
     }
   }
 

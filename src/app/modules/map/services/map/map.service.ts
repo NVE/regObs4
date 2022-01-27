@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IMapView } from './map-view.interface';
-import { Observable, combineLatest, BehaviorSubject, Subject, of } from 'rxjs';
+import { Observable, combineLatest, BehaviorSubject, Subject, of, concat } from 'rxjs';
 import {
   switchMap,
   shareReplay,
@@ -12,7 +12,8 @@ import {
   bufferWhen,
   scan,
   skipWhile,
-  take
+  take,
+  filter
 } from 'rxjs/operators';
 import { IMapViewAndArea } from './map-view-and-area.interface';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -36,6 +37,8 @@ export class MapService {
   private _centerMapToUserObservable: Observable<void>;
   private _mapViewSubject: Subject<IMapView>;
   private _mapView$: Observable<IMapView>;
+  private _mapMoveStartSubject: any;
+  private _mapMoveStart$: Observable<IMapView>;
   private _relevantMapChange$: Observable<IMapView>;
 
   get mapView$(): Observable<IMapView> {
@@ -48,6 +51,23 @@ export class MapService {
 
   get relevantMapChange$(): Observable<IMapView> {
     return this._relevantMapChange$;
+  }
+
+  get mapMoveStart$(): Observable<IMapView> {
+    return this._mapMoveStart$;
+  }
+
+  /**
+   * @return as relevantMapChange$, but starts with current mapView
+   */
+  get relevantMapChangeWithInitialView$(): Observable<IMapView> {
+    return concat(
+      this._mapView$.pipe(
+        filter((mapView) => mapView !== null),
+        take(1)
+      ),
+      this._relevantMapChange$
+    );
   }
 
   get followMode$(): Observable<boolean> {
@@ -83,6 +103,8 @@ export class MapService {
       shareReplay(1)
     );
     this._relevantMapChange$ = this.getMapViewThatHasRelevantChange();
+    this._mapMoveStartSubject = new BehaviorSubject<void>(null);
+    this._mapMoveStart$ = this._mapMoveStartSubject.asObservable();
     this._mapViewAndAreaObservable = this.getMapViewAreaObservable();
   }
 
@@ -95,6 +117,10 @@ export class MapService {
     if (mapView) {
       this._mapViewSubject.next(mapView);
     }
+  }
+
+  sendMapMoveStart(): void {
+    this._mapMoveStartSubject.next(null);
   }
 
   private getMapMetersChanged() {

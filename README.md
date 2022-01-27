@@ -27,7 +27,9 @@ ionic serve
 ### To debug app on Android device
 
 ```
-ionic cordova run android
+npm run build (or ionic build)
+npx cap sync android
+npx cap run android
 ```
 
 [More info](https://ionicframework.com/docs/building/android)
@@ -56,7 +58,17 @@ C:\gradle\gradle-6.7.1\bin
 - You have to uninstall the regular RegObs app from your phone in order to debug
 - This may be helpful for device connection problmems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
 
+#### Error: package android.support.v4.content does not exist
+[More info] https://github.com/ionic-team/capacitor/issues/2822
+
 ### Debugge på iPhone/iPad: XCode
+```
+npm run build (or ionic build)
+npx cap sync ios
+npx cap open ios
+```
+npx cap open ios vil åpne prosjektet i Xcode. Kjør appen fra XCode.
+
 [Mer info](https://ionicframework.com/docs/developing/ios)
 Ikke la Xcode signere provisioning profile automatisk, men last den ned fra developer.apple.com og bruk denne i XCode.
 Du må først legge ditt utviklersertifikat inn i Provisioning profile på developer.apple.com.
@@ -65,26 +77,6 @@ Sjekk også at dingsen du skal teste på er registrert i profilen.
 Det er bare debug-profil vi trenger i Xcode, fordi release bygges på byggeserver.
 "Active scheme" skal være Varsom Regobs, ikke Cordova.
 Hvis gamle ting henger igjen, kan du slette mappene platforms og plugins.
-
-##### Mac med M1-CPU
-
-M1 er såpass ny at bygging ikke er helt strømlinjeformet ennå.
-
-Fikk trøbbel med npm install: Installering av sharp feila. Fiksa det med å installere vips manuelt:
-```brew install vips```
-[Mer info](https://github.com/lovell/sharp/issues 2460#issuecomment-751491241)
-
-Med webserver-plugin fikk jeg også problemer med pods: 
-Dette fungerte:
-```
-sudo arch -x86_64 gem install ffi
-arch -x86_64 pod install
-```
-[Mer info](https://github.com/CocoaPods/CocoaPods/issues/10220)
-
-Deretter fikk jeg denne feilmeldinga: 'GCDWebServer.h' file not found.
-Hjalp å åpne workspace-fila i stedet for prosjektfila i Xcode.
-[Mer info](https://github.com/bykof/cordova-plugin-webserver/issues/49)
 
 ## Build and release
 
@@ -156,7 +148,7 @@ Appene må produksjonssettes manuelt i i App Store og i Google Play
 
 Etter produksjonssetting, må release-greina flettes inn:
 ```
-git flow release finish 'release/vX.Y.Z'
+git flow release finish 'vX.Y.Z'
 git push origin --tags
 git push develop
 git push master
@@ -252,3 +244,103 @@ The file need to be simplified and converted to wgs84:
 
 The json file will now be around 700KB and in wgs84 projection.
 Overwrite /assets/json/regions-simple-polygons.json
+
+# Translations
+
+App-spesifikke tekster finnes i `./translations/app`. Disse tekstene
+håndteres via *cordova-plugin-localization-strings*.
+
+Web-tekster finnes i `./src/assets/i18n`. Omtrent all regobs-koden er web-kode
+(det som ligger under `./src/`).
+
+Alle tekstene håndteres med json-format.
+
+## Oversettelsesverktøy
+
+Vi bruker [Lokalise](https://lokalise.com/) til å håndtere oversettelser.
+
+## NPM Script
+
+Disse NPM-skriptene eksisterer som hjelp til å håndtere språkfiler:
+
+Script | Beskrivelse
+--- | ---
+`npm run translations:sort` | Sorter nøklene i språkfilene som ligger lokalt fra a - å.
+`npm run translations:upload` | Last opp språkfiler til Lokalise. Overskriver endringer i Lokalse.
+`npm run translations:download` | Last ned språkfiler fra Lokalse. Overskriver lokale endringer.
+
+> **Merk:** `translations:upload` overskriver eventuelle endringer som finnes kun i Lokalise. Det tas derfor en "snapshot" i Lokalse før opplastningen skjer, for at man skal ha muligheten til å reversere endringene. Det er også mulig å reversere endringer direkte på en språknøkkel i Lokalise ved å se på historikken der, om det bare er snakk om et par endrede nøkler. Det kan også skjer at Lokalise parser
+språkfilene feil, og da bør man rulle tilbake og prøve manuell upload.
+
+`translations:sort` sorterer språkfilene med samme algoritme som brukes når nye tekster
+hentes fra Lokalise. Kan brukes hvis man har gjort endringer i språkfilene og
+vil forsikre seg om at sorteringen er riktig.
+
+For å bruke download / upload npm scripts må du lage fila 
+`translations/lokalise-api-key.json` med innholdet:
+
+```
+{
+    "apiKey": "<din-api-key>"
+}
+```
+
+## Hvordan oppdatere / legge til / fjerne tekster og synkronisere med Lokalise
+
+Når man henter ned tekster fra Lokalise kan det komme med endringer oversetterne
+har gjort som ikke er relevante for PRen man jobber på. Det kan derfor være lurt
+å legge til nye tekster i den engelske språkfila i PRen, og deretter ta en ny PR
+etter at endringene er flettet inn i develop for å synkronisere språk.
+
+Husk at rene endringer kan tas rett i Lokalise, også for engelsk språk,
+for deretter å hente ned oppdaterte tekster via `lokalse:download`. Dette kan
+være like kjapt som å gjøre endringene lokalt om det ikke er noe forskjel
+mellom Lokalse og lokale språkfiler.
+
+Dette er et forslag til en arbeidsflyt:
+
+1. Oftest er det som en del av en større endring at man trenger å endre språk.
+   I PRen som angår denne endringen kan man legge til / endre språk i 
+   engelsk fil - `src/assets/i18n/en.json`.
+
+   På dette stadiet kan man godt prøve å hente tekster fra lokalise med 
+   `npm run translations:download` for å se om det finnes tekster som er 
+   opptadert der. Er det ikke det står man fritt til å også endre andre 
+   språkfiler lokalt og hoppe til steg 7 etter at PRen er
+   merget inn.
+
+2. Lag en ny branch for å synkronisere språk basert på develop, etter at PRen
+   er merget inn. Dette er grunnlaget for en ny språk-sync-PR.
+
+3. Sorter språkfilene som ligger lokalt i prosjektet med `npm run translations:sort`.
+
+4. Last ned nye språkfiler fra Lokalse med `npm run translations:download`.
+
+5. Se over språkfilene. 
+
+   > **Merk!** Når språkfiler lastes ned fra Lokalise merges innholdet inn i de
+   > eksisterende språkfilene. **Dette overskriver eventuelle endrede tekster.**
+   > Du må derfor fikse eventuelle endringer som er overskrevet.
+
+   Commit endringene.
+
+6. Legg til eventuelle oversettelser for andre språk enn engelsk. Dette kan også
+   gjøres i Lokalise etter steg 9., men da må du huske å laste ned og sjekke inn 
+   endringene etterpå vha `npm run translations:download`.
+   
+7. Last opp oppdaterte tekster til Lokalise med `npm run translations:upload -- web <lang>`
+
+8. Sjekk i Lokalise om oppdateringen ser riktig ut. Hvis ikke, bruk snapshot for
+   å rulle tilbake.
+
+
+## Rydde opp i Lokalise
+
+For å laste opp språkfiler, og samtidig slette nøkler/tekster i Lokalise som ikke finnes
+lenger, kan denne kommandoen brukes:
+
+```
+npm run translations:upload -- web <lang> --clean
+```
+
+Dette fungerer kun med `en` og `no` siden andre språk ofte er ufullstendige.

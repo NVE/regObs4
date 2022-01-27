@@ -1,5 +1,6 @@
 import { GeoHazard, AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { TopoMap } from './topo-map.enum';
+import { SupportTileStore, SupportTile } from './support-tile.model';
 
 export interface UserSetting {
   appMode: AppMode;
@@ -7,7 +8,7 @@ export interface UserSetting {
   currentGeoHazard: Array<GeoHazard>;
   observationDaysBack: Array<{ geoHazard: GeoHazard; daysBack: number }>;
   completedStartWizard: boolean;
-  supportTiles: Array<{ name: string; enabled: boolean; opacity: number }>;
+  supportTiles: Array<SupportTileStore>;
   showMapCenter: boolean;
   showObservations: boolean;
   emailReceipt: boolean;
@@ -18,6 +19,7 @@ export interface UserSetting {
   consentForSendingAnalyticsDialogCompleted: boolean;
   featureToggleDeveloperMode: boolean;
   featureToggeGpsDebug: boolean;
-  infoAboutObservationsRecievedTimestamp?: number;
-  infoAboutSupportMapsRecievedTimestamp?: number;
+  infoAboutObservationsRecievedTimestamps?: {[name: string]: number};
+  infoAboutSupportMapsRecievedTimestamps?: {[name: string]: number};
+  infoAboutOfflineSupportMapsRecievedTimestamps?: {[name: string]: number};
 }

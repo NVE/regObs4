@@ -13,7 +13,7 @@ import { NanoSql } from '../../../../../nanosql';
 import { MapSearchHistory } from './map-search-history.model';
 import moment from 'moment';
 import { IMapView } from '../map/map-view.interface';
-import { NorwegianSearchResultModel, NorwegianSearchResultModelStednavn } from './norwegian-search-result.model';
+import { Navn, ReturSkrivemate } from './norwegian-search-result.model';
 import { WorldSearchResultModel } from './world-search-result.model';
 import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
@@ -25,7 +25,7 @@ export class MapSearchService {
   private _mapSearchItemClickSubject: Subject<MapSearchResponse | L.LatLng>;
   private _mapSearchItemClickObservable: Observable<MapSearchResponse | L.LatLng>;
 
-  get mapSearchClick$() {
+  get mapSearchClick$(): Observable<MapSearchResponse | L.LatLng> {
     return this._mapSearchItemClickObservable;
   }
 
@@ -54,24 +54,25 @@ export class MapSearchService {
   searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
     return this.httpClient
       .get(
-        `${settings.map.search.no.url}?navn=${text.trim()}*&antPerSide=${settings.map.search.no.maxResults}` +
-          `&eksakteForst=${settings.map.search.no.exactFirst}&epsgKode=3395`
+        `${settings.map.search.no.url}?sok=${text.trim()}*&treffPerSide=${settings.map.search.no.maxResults}`
+        + `&utkoordsys=${settings.map.search.no.coordinateSystem}&filtrer=${settings.map.search.no.resultFields}`
       )
       .pipe(
-        map((data: NorwegianSearchResultModel) => {
-          const hits = parseInt(data.totaltAntallTreff, 10);
+        map((returSted: ReturSkrivemate) => {
+          const hits = returSted.metadata.totaltAntallTreff;
           const resultList =
             hits === 0
               ? []
               : hits === 1
-              ? [data.stedsnavn as NorwegianSearchResultModelStednavn]
-              : (data.stedsnavn as Array<NorwegianSearchResultModelStednavn>);
+                ? [returSted.navn[0] as Navn]
+                : (returSted.navn as Array<Navn>);
+
           return this.removeDuplicates(resultList).map((item) => {
             const resp: MapSearchResponse = {
-              name: item.stedsnavn,
-              description: (lang === LangKey.nb ? item.navnetype + ', ' : '') + item.kommunenavn + ' (' + item.fylkesnavn + ')',
-              type: item.navnetype,
-              latlng: L.Projection.Mercator.unproject(L.point({ x: item.aust, y: item.nord }))
+              name: item.skrivemåte,
+              description: this.formatLocationDescription(item, lang),
+              type: item.navneobjekttype,
+              latlng: L.latLng(item.representasjonspunkt.nord, item.representasjonspunkt.øst)
             };
             return resp;
           });
@@ -80,9 +81,35 @@ export class MapSearchService {
       );
   }
 
-  removeDuplicates(data: NorwegianSearchResultModelStednavn[]) {
+  formatLocationDescription(item: Navn, lang: LangKey): string {
+    const nameType = item.navneobjekttype;
+    const norwegian = lang === LangKey.nb || lang === LangKey.nn;
+    const county = item.fylker[0]?.fylkesnavn;
+    if (item.kommuner.length !== 1 || nameType === 'Kommune') {
+      if (norwegian) {
+        return `${nameType}, ${county}`;
+      }
+      return county;
+    }
+    if (item.fylker.length !== 1 || nameType === 'Fylke') {
+      if (norwegian) {
+        return `${nameType}`;
+      }
+      return '';
+    }
+    const municipality = item.kommuner[0]?.kommunenavn;
+    if (norwegian) {
+      return `${nameType}, ${municipality} (${county})`;
+    }
+    return `${municipality} (${county})`;
+  }
+
+  private removeDuplicates(data: Navn[]): Navn[] {
     return (data || []).reduce((acc, currentValue) => {
-      if (acc.filter((item) => item.ssrId === currentValue.ssrId).length === 0) {
+      if (
+        acc.filter((item) => item.stedsnummer === currentValue.stedsnummer)
+          .length === 0
+      ) {
         acc.push(currentValue);
       }
       return acc;

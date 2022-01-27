@@ -121,25 +121,25 @@ export class LandslideObsPage extends BasePage {
   async setLandslidePosition() {
     const relativeToLatLng = this.registration.request.ObsLocation
       ? L.latLng(
-          this.registration.request.ObsLocation.Latitude,
-          this.registration.request.ObsLocation.Longitude
-        )
+        this.registration.request.ObsLocation.Latitude,
+        this.registration.request.ObsLocation.Longitude
+      )
       : null;
     const startLatLng =
       this.registration.request.LandSlideObs.StartLat &&
       this.registration.request.LandSlideObs.StartLong
         ? L.latLng(
-            this.registration.request.LandSlideObs.StartLat,
-            this.registration.request.LandSlideObs.StartLong
-          )
+          this.registration.request.LandSlideObs.StartLat,
+          this.registration.request.LandSlideObs.StartLong
+        )
         : null;
     const endLatLng =
       this.registration.request.LandSlideObs.StopLat &&
       this.registration.request.LandSlideObs.StopLong
         ? L.latLng(
-            this.registration.request.LandSlideObs.StopLat,
-            this.registration.request.LandSlideObs.StopLong
-          )
+          this.registration.request.LandSlideObs.StopLat,
+          this.registration.request.LandSlideObs.StopLong
+        )
         : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,

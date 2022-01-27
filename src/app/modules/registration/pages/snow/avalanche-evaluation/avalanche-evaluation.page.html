@@ -21,8 +21,12 @@
         [(value)]="registration.request.AvalancheEvaluation3.AvalancheEvaluation"></app-text-comment>
       <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_EVALUATION.AVALANCHE_DEVELOPMENT" rows="3"
         [(value)]="registration.request.AvalancheEvaluation3.AvalancheDevelopment"></app-text-comment>
-      <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_EVALUATION.AVALANCHE_DANGER" kdvKey="Snow_AvalancheDangerKDV"
-        [(value)]="registration.request.AvalancheEvaluation3.AvalancheDangerTID"></app-kdv-select>
+      <app-kdv-select 
+        title="REGISTRATION.SNOW.AVALANCHE_EVALUATION.AVALANCHE_DANGER"
+        kdvKey="Snow_AvalancheDangerKDV"
+        [showZeroValues]="true"
+        [(value)]="registration.request.AvalancheEvaluation3.AvalancheDangerTID"
+      ></app-kdv-select>
       <app-kdv-select title="REGISTRATION.SNOW.AVALANCHE_EVALUATION.FORECAST_CORRECT" kdvKey="Snow_ForecastCorrectKDV"
         [(value)]="registration.request.AvalancheEvaluation3.ForecastCorrectTID"></app-kdv-select>
       <app-text-comment title="REGISTRATION.SNOW.AVALANCHE_EVALUATION.COMMENT"

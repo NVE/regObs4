@@ -112,12 +112,12 @@ export class WarningListPage implements OnInit {
 
   private getWarningGroupObservable(segment: SelectedTab, currentGeoHazard: GeoHazard[]): Observable<IVirtualScrollItem<WarningGroup>[]> {
     switch (segment) {
-      case 'inMapView':
-        return this.getWarningsInMapView();
-      case 'all':
-        return this.getAllWarnings(currentGeoHazard);
-      case 'favourites':
-        return this.getFavouritesObservable();
+    case 'inMapView':
+      return this.getWarningsInMapView();
+    case 'all':
+      return this.getAllWarnings(currentGeoHazard);
+    case 'favourites':
+      return this.getFavouritesObservable();
     }
   }
 
@@ -174,7 +174,10 @@ export class WarningListPage implements OnInit {
   }
 
   private getSnowRegionWarnings(): Observable<IVirtualScrollItem<WarningGroup>[]> {
-    return combineLatest([this.getARegionWarnings(), this.getBRegionWarnings()]).pipe(map(([a, b]) => [...a, ...b]));
+    return combineLatest([
+      this.getARegionWarnings(),
+      this.getBRegionWarnings()
+    ]).pipe(map(([a, b]) => [...a, ...b]));
   }
 
   private getARegionWarnings(): Observable<IVirtualScrollItem<WarningGroup>[]> {
@@ -214,10 +217,10 @@ export class WarningListPage implements OnInit {
   myHeaderFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
     return item.header
       ? {
-          header: item.header,
-          infoText: item.infoText,
-          showDayNames: items.some((x) => x.item.key.geoHazard !== GeoHazard.Ice)
-        }
+        header: item.header,
+        infoText: item.infoText,
+        showDayNames: items.some((x) => x.item.key.geoHazard !== GeoHazard.Ice)
+      }
       : null;
   }
 

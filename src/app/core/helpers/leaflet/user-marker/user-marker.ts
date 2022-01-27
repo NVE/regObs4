@@ -1,6 +1,6 @@
 import * as L from 'leaflet';
 import { Subscription } from 'rxjs';
-import { Geoposition } from '@ionic-native/geolocation/ngx';
+import { Position } from '@capacitor/geolocation';
 
 export class UserMarker {
   userMarker: L.Marker;
@@ -8,7 +8,7 @@ export class UserMarker {
   headingSubscription: Subscription;
   accuracyMarker: L.Circle;
   map: L.Map;
-  position: Geoposition;
+  position: Position;
   watchId: number;
 
   accuracyCircleStyle = {
@@ -21,7 +21,7 @@ export class UserMarker {
     clickable: false
   };
 
-  constructor(map: L.Map, position: Geoposition) {
+  constructor(map: L.Map, position: Position) {
     this.map = map;
     this.position = position;
     this.userMarkerIcon = L.divIcon({
@@ -38,11 +38,11 @@ export class UserMarker {
     this.setAccuracy(position);
   }
 
-  getPosition(): Geoposition {
+  getPosition(): Position {
     return this.position;
   }
 
-  updatePosition(position: Geoposition) {
+  updatePosition(position: Position) {
     this.position = position;
     const latLng = {
       lat: position.coords.latitude,
@@ -65,7 +65,7 @@ export class UserMarker {
     element.style.display = 'block';
   }
 
-  private setAccuracy(position: Geoposition) {
+  private setAccuracy(position: Position) {
     const latLng = {
       lat: position.coords.latitude,
       lng: position.coords.longitude

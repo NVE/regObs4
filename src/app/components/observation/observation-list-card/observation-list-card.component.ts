@@ -142,14 +142,14 @@ export class ObservationListCardComponent implements OnChanges {
 
   getGeoHazardCircleIcon(geoHazard: GeoHazard): string {
     switch (geoHazard) {
-      case GeoHazard.Soil:
-        return '/assets/icon/dirt_circle.svg';
-      case GeoHazard.Ice:
-        return '/assets/icon/ice_circle.svg';
-      case GeoHazard.Snow:
-        return '/assets/icon/snow_circle.svg';
-      case GeoHazard.Water:
-        return '/assets/icon/water_circle.svg';
+    case GeoHazard.Soil:
+      return '/assets/icon/dirt_circle.svg';
+    case GeoHazard.Ice:
+      return '/assets/icon/ice_circle.svg';
+    case GeoHazard.Snow:
+      return '/assets/icon/snow_circle.svg';
+    case GeoHazard.Water:
+      return '/assets/icon/water_circle.svg';
     }
   }
 

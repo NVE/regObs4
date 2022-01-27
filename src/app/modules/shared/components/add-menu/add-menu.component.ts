@@ -26,7 +26,6 @@ export class AddMenuComponent implements OnInit {
   drafts$: Observable<{ id: string; geoHazard: GeoHazard; date: string }[]>;
   geoHazardInfo$: Observable<{
     geoHazards: GeoHazard[];
-    showSpace: boolean;
     showTrip: boolean;
   }>;
   tripStarted$: Observable<boolean>;
@@ -46,7 +45,6 @@ export class AddMenuComponent implements OnInit {
     this.geoHazardInfo$ = this.userSettingService.userSetting$.pipe(
       map((us) => ({
         geoHazards: us.currentGeoHazard,
-        showSpace: us.language !== LangKey.nb && us.language !== LangKey.nn,
         showTrip: us.currentGeoHazard.indexOf(GeoHazard.Snow) >= 0
       })),
       setObservableTimeout()
@@ -81,7 +79,7 @@ export class AddMenuComponent implements OnInit {
   }
 
   getName(geoHazard: GeoHazard): string {
-    return this.geoHelperService.getTranslationKey(geoHazard);
+    return GeoHazard[geoHazard];
   }
 
   getDate(timestamp: number): Promise<string> {

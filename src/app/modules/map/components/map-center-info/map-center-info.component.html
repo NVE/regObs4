@@ -1,48 +1,62 @@
-<ng-container *ngIf="showMapCenter">
-  <img class="center-icon" src="../../../assets/icon/center.png">
-  <div class="map-center-info ion-text-nowrap" (click)="copyToClipboard()">
-    <ion-grid class="ion-no-padding">
-      <ng-container *ngIf="!isLoading; else loading">
-        <ion-row *ngIf="viewInfo?.location">
-          <span
-            *ngIf="viewInfo.location.name !== viewInfo.location.adminName">{{ viewInfo.location.name }},&nbsp;</span>{{viewInfo.location.adminName}}
-        </ion-row>
-        <ion-row *ngIf="viewInfo?.elevation != null || viewInfo?.steepness != null">
-          <ng-container *ngIf="viewInfo?.elevation != null">
-            {{ viewInfo.elevation }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL'|translate}}
-          </ng-container>
-          <ng-container *ngIf=" viewInfo?.steepness != null">
-            <span *ngIf="viewInfo.elevation !== null">,&nbsp;</span>
-            <span class="steepness-triangle">
-              <span class="steepness-value" [ngStyle]="{ 'transform': 'rotate(' +viewInfo.steepness +'deg)'}">
-              </span>
+<!-- 
+  NB! Root elements in this view has positon: absolute..
+ -->
+
+<!-- Crosshair displayed in map center -->
+<img class="center-icon" src="../../../assets/icon/center.png">
+
+<!-- Map center info box displayed in bottom left corner -->
+<div
+  #infoBoxElement
+  class="map-center-info ion-text-nowrap"
+  (click)="copyToClipboard()"
+>
+  <ion-grid class="ion-no-padding">
+
+    <ng-container *ngIf="!loading; else loadingSpinner">
+
+      <!-- Location name -->
+      <ion-row name="map-center-info-row" *ngIf="location">
+        <span
+          *ngIf="location.name !== location.adminName">{{ location.name }},&nbsp;</span>{{location.adminName}}
+      </ion-row>
+
+      <!-- Height (masl) and steepness -->
+      <ion-row name="map-center-info-row" *ngIf="elevation != null || steepness != null">
+        <ng-container *ngIf="elevation != null">
+          {{ elevation }} {{'MAP_CENTER_INFO.ABOVE_SEA_LEVEL'|translate}}
+        </ng-container>
+        <ng-container *ngIf="steepness != null">
+          <span *ngIf="elevation !== null">,&nbsp;</span>
+          <span class="steepness-triangle">
+            <span class="steepness-value" [ngStyle]="{ 'transform': 'rotate(' +steepness +'deg)'}">
             </span>
-            {{ viewInfo.steepness }}&deg;
-          </ng-container>
-        </ion-row>
-      </ng-container>
-      <ion-row *ngIf="mapView?.center">
-        {{ mapView.center.lat | number:'.3' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}}, 
-        {{ mapView.center.lng | number:'.3' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
-      </ion-row>
-      <ion-row *ngIf="viewInfo?.horizontalDistanceFromGpsPos" class="ion-no-padding, ion-align-items-start">
-        <ng-container *ngIf="viewInfo.horizontalDistanceFromGpsPos">
-          {{ viewInfo.horizontalDistanceFromGpsPos }} {{'MAP_CENTER_INFO.AWAY_FROM'|translate}}
-        </ng-container>
-        <ng-container *ngIf="viewInfo.heightDifferenceFromGpsPos">
-          <ion-icon *ngIf="viewInfo.gpsPosIsBelowMapCenter === true" name="arrow-up" class="height-difference-icon"></ion-icon>
-          <ion-icon *ngIf="viewInfo.gpsPosIsBelowMapCenter === false" name="arrow-down" class="height-difference-icon"></ion-icon>  
-          {{ viewInfo.heightDifferenceFromGpsPos }}
+          </span>
+          {{ steepness }}&deg;
         </ng-container>
       </ion-row>
-    </ion-grid>
-  </div>
-</ng-container>
-<ng-template #emptyRow>
-  <ion-row class="ion-no-margin">
-    &nbsp;
-  </ion-row>
-</ng-template>
-<ng-template #loading>
-  <ion-spinner color="light" name="dots"></ion-spinner>
+
+    </ng-container>
+
+    <!-- Coordinates -->
+    <ion-row name="map-center-info-row" *ngIf="mapCenter">
+      {{ mapCenter.lat | number:'.3' }}&deg;{{ 'MAP_CENTER_INFO.NORTH_SHORT' | translate }}, 
+      {{ mapCenter.lng | number:'.3' }}&deg;{{ 'MAP_CENTER_INFO.EAST_SHORT' | translate }}
+    </ion-row>
+
+    <!-- Distance and height difference to gps position -->
+    <ion-row name="map-center-info-row" *ngIf="distance != null && distance > 0">
+        {{ getHorizontalDifferenceText(distance) }} {{ 'MAP_CENTER_INFO.AWAY_FROM' | translate }}
+        <ng-container *ngIf="!loading && heightDifference != null">
+          <ion-icon *ngIf="heightDifference > 0" name="arrow-up" class="height-difference-icon"></ion-icon>
+          <ion-icon *ngIf="heightDifference < 0" name="arrow-down" class="height-difference-icon"></ion-icon>
+          {{ heightDifference | abs | number: '1.0-0' }} m
+        </ng-container>
+    </ion-row>
+
+  </ion-grid>
+</div>
+
+<ng-template #loadingSpinner>
+  <ion-spinner name="map-center-info-spinner" color="light" name="dots"></ion-spinner>
 </ng-template>

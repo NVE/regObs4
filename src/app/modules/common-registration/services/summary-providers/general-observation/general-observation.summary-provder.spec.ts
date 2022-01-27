@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { KdvService } from '../../kdv/kdv.service';
 import { KdvElement, GeneralObservationEditModel } from 'src/app/modules/common-regobs-api/models';
-import { CoreModule } from 'src/app/modules/common-core/models';
+import { CoreModule } from 'src/app/modules/common-core/core.module';
 import { HttpClientModule } from '@angular/common/http';
 import { SummaryKind } from '../../../models/summary/summary-kind.enum';
 import { TranslateTestingModule } from 'ngx-translate-testing';

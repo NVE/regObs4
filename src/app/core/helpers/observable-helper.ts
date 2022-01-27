@@ -9,8 +9,8 @@ export function toPromiseWithCancel<T>(
 ) {
   return new Promise<T>((resolve, reject) => {
     let subscription: Subscription = undefined;
-    subscription =  
-    (timeoutInMs != null ? observable.pipe(timeout(timeoutInMs)) : observable).subscribe({ 
+    subscription =
+    (timeoutInMs != null ? observable.pipe(timeout(timeoutInMs)) : observable).subscribe({
       next: (result) => {
         if(subscription) {
           subscription.unsubscribe();

@@ -1,3 +1,4 @@
+//TODO: Remove
 // export enum LangKey {
 //   nb = 1,
 //   en = 2,
@@ -5,5 +6,6 @@
 //   sl = 4,
 //   sv = 5,
 //   it = 6,
-//   nn = 7
+//   nn = 7,
+//   fr = 8
 // }

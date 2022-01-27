@@ -14,10 +14,10 @@ describe('OfflineMapService', () => {
     platformMock = jasmine.createSpyObj('Platform', {
       is: (platformName: Platforms) => false
     });
-    offlineMapService = new OfflineMapService(null, new TestLoggingService(), null, null, platformMock, null, null, null);
+    offlineMapService = new OfflineMapService(new TestLoggingService(), null, null, platformMock, null, null, null);
   });
 
-  it('progress value for 10% for download step of part 1 of 2 should be 0.10 / 4 =  0.025', () => {  
+  it('progress value for 10% for download step of part 1 of 2 should be 0.10 / 4 =  0.025', () => {
     expect(offlineMapService.calculateTotalProgress(0.10, 0, 2, 'Downloading')).toBe(0.025);
   });
 
@@ -33,7 +33,7 @@ describe('OfflineMapService', () => {
       sizeInMib: 1.0,
       maps: []
     });
-    
+
     const compressionFactor = 1.5;
     const expectedResult = 1.0 * 1024 * 1024 * compressionFactor;
     const result = await offlineMapService.getNeededDiskSpaceForPackage(cp, compressionFactor);
@@ -49,8 +49,8 @@ describe('OfflineMapService', () => {
       maps: []
     });
 
-    offlineMapService.downloadAndUnzipProgress$ = of([ 
-      { 
+    offlineMapService.downloadAndUnzipProgress$ = of([
+      {
         name: 'testpackage2-in-queue',
         size: 1.0 * 1024 * 1024,
         progress: { step: ProgressStep.pending,  percentage: 0, description: 'test-package in queue'  },
@@ -59,7 +59,7 @@ describe('OfflineMapService', () => {
         error: null,
         maps: {},
       },
-      { 
+      {
         name: 'testpackage3-in-download-progress',
         size: 1.0 * 1024 * 1024,
         progress: { step: ProgressStep.download,  percentage: 0.2, description: 'test-package downloading'  },
@@ -69,7 +69,7 @@ describe('OfflineMapService', () => {
         maps: {},
       }
     ]);
-    
+
     const compressionFactor = 1.1;
     const expectedResult = 3.0 * 1024 * 1024 * compressionFactor; // Expects 3 packages of each 1.0 MiB to be the sum needed
     const result = await offlineMapService.getNeededDiskSpaceForPackage(cp, compressionFactor);

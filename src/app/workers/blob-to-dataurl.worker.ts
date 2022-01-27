@@ -4,7 +4,7 @@ import { switchMap } from 'rxjs/operators';
 import { DataUrlHelper } from '../core/helpers/data-url.helper';
 
 export class BlobToDataUrl
-  implements
+implements
     DoWork<
       { blob: ArrayBuffer; mimeType: string },
       { dataUrl: string; size: number }

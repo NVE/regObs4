@@ -28,7 +28,7 @@ import {
 } from './region-in-view-models';
 
 export class RegionInViewWorker
-  implements DoWork<IRegionInViewInput, IRegionInViewOutput> {
+implements DoWork<IRegionInViewInput, IRegionInViewOutput> {
   private isInsideOrIntersects(
     firstGeometry: Polygon,
     secondGeometry: Polygon

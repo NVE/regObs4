@@ -3,32 +3,45 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>Offline-kart</ion-title>
+    <ion-title>{{ 'OFFLINE_MAP.OFFLINE_MAP_PAGE_TITLE' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="map-container">
-    <app-map (mapReady)="onMapReady($event)" [showScale]="false" [showMapControls]="false" [showUserLocation]="false"
-      [showSupportMaps]="false" [autoActivate]="false" [geoTag]="'package-map'"></app-map>
+    <app-map
+      (mapReady)="onMapReady($event)"
+      [offlinePackageMode]="true"
+      [showScale]="false"
+      [showMapSearch]=false
+      [showFullscreenToggle]=false
+      [showGpsCenter]=true
+      [showUserLocation]="true"
+      [showSupportMaps]="false"
+      [autoActivate]="true"
+      [geoTag]="'package-map'"
+    ></app-map>
   </div>
 </ion-content>
-<ng-container *ngIf="downloadAndUnzipProgress$ | async as items">
-  <ion-footer *ngIf="items.length > 0">
+<ion-footer>
+  <ion-list>
+    <ion-item *ngIf="packageTotals$ | async as packageTotals" (click)="expanded = !expanded" lines="full">
+      <ion-label *ngIf="packageTotals.numPackages === 1" class="package-count">{{ 'OFFLINE_MAP.PACKAGE_COUNT_SINGLE' | translate:{packageCount: packageTotals.numPackages} }}</ion-label>
+      <ion-label *ngIf="packageTotals.numPackages !== 1" class="package-count">{{ 'OFFLINE_MAP.PACKAGE_COUNT_MULTIPLE' | translate:{packageCount: packageTotals.numPackages} }}</ion-label>
+      <ion-label class="packages-size">{{ packageTotals.spaceUsed }}</ion-label>
+      <ion-label class="space-available">({{ 'OFFLINE_MAP.SPACE_AVAILABLE' | translate:{spaceAvailable: getSpaceAvailable()} }})</ion-label>
+      <ion-icon *ngIf="packageTotals.numPackages > 0" slot="end" [name]="expanded ? 'chevron-down-circle' : 'chevron-up-circle'" class="expand-icon"></ion-icon>
+    </ion-item>
     <div class="footer">
-      <ion-list>
-        <ion-list-header>
-          <ion-label>Kartpakke</ion-label>
-        </ion-list-header>
-        <ion-item (click)="showPackageModalForPackage(item)" *ngFor="let item of items">
+      <ng-container *ngIf="expanded && allPackages$ | async as items">
+        <ion-item (click)="showPackageModalForPackage(item)" *ngFor="let item of items" lines="full">
           <ion-label>{{ item.name }}</ion-label>
           <ion-label>{{ humanReadableByteSize(item.size) }}</ion-label>
-          <ion-label *ngIf="isDownloading(item)">
-            ({{getPercentage(item) +'%' }})</ion-label>
+          <ion-label>{{ formatProgressIfDownloading(item) }}</ion-label>
           <ion-icon slot="end" *ngIf="item.error" name="warning-outline"></ion-icon>
-          <ion-icon slot="end" (click)="cancelOrDelete(item, $event)" name="trash-outline"></ion-icon>
+          <ion-icon slot="end" *ngIf="!(item.error)" (click)="cancelOrDelete(item, $event)" name="trash-outline"></ion-icon>
         </ion-item>
-      </ion-list>
+      </ng-container>
     </div>
-  </ion-footer>
-</ng-container>
+  </ion-list>
+</ion-footer>

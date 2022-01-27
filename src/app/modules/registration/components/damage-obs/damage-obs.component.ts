@@ -85,9 +85,9 @@ export class DamageObsComponent implements OnInit {
   async setDamagePosition() {
     const fromLatLng = this.registration.request.ObsLocation
       ? L.latLng(
-          this.registration.request.ObsLocation.Latitude,
-          this.registration.request.ObsLocation.Longitude
-        )
+        this.registration.request.ObsLocation.Latitude,
+        this.registration.request.ObsLocation.Longitude
+      )
       : null;
     const modal = await this.modalController.create({
       component: SetDamageLocationPage,

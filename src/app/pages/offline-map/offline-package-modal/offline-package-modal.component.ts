@@ -5,7 +5,8 @@ import { CompoundPackageFeature, CompoundPackage } from '../metadata.model';
 import { OfflineMapService } from 'src/app/core/services/offline-map/offline-map.service';
 import { Observable } from 'rxjs';
 import { OfflineMapPackage } from 'src/app/core/services/offline-map/offline-map.model';
-import { tap } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 /**
  * Shows detail info about a specific offline map package. From here you may download or delete the package.
@@ -15,12 +16,12 @@ import { tap } from 'rxjs/operators';
   styleUrls: ['./offline-package-modal.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OfflinePackageModalComponent implements OnInit {
+export class OfflinePackageModalComponent extends NgDestoryBase implements OnInit {
   @Input() feature: CompoundPackageFeature;
   @Input() packageOnServer: CompoundPackage;
   @Input() offlinePackageStatus$: Observable<OfflineMapPackage>;
 
-  zoom = 13;
+  zoom: number;
   center: number[];
   tileLayer: L.GeoJSON;
   isCheckingAvailableDiskspace:boolean;
@@ -32,24 +33,33 @@ export class OfflinePackageModalComponent implements OnInit {
     private offlineMapService: OfflineMapService,
     private cdr: ChangeDetectorRef,
   ) {
-   }
+    super();
+  }
 
   ngOnInit(): void {
     this.isCheckingAvailableDiskspace = false;
     this.offlinePackageStatusThatTriggersChangeDetection$ = this.offlinePackageStatus$.pipe(
       tap(() => this.cdr.detectChanges() ));
     this.tileLayer = new L.GeoJSON(this.feature);
+
+    // Set center from package bounds
     const { lat, lng } = this.tileLayer.getBounds().getCenter();
     this.center = [lat, lng];
+
+    // Use offline map package root tile as zoom level
+    const [, , z] = this.packageOnServer.getXYZ();
+    this.zoom = z;
+
+    this.offlineMapService.finishedPackageIds$.pipe(
+      takeUntil(this.ngDestroy$)).subscribe((packageName) => {
+      if (this.packageOnServer.getName() === packageName) {
+        this.dismiss(); //close when package is unzipped and ready to use
+      }
+    });
   }
 
   showTileOnMap(map: L.Map) {
     this.tileLayer.addTo(map);
-    setTimeout(() => {
-      map.fitBounds(this.tileLayer.getBounds(), {
-        padding: [8, 16]
-      });
-    }, 50);
   }
 
   async startDownload(): Promise<void> {
@@ -61,9 +71,6 @@ export class OfflinePackageModalComponent implements OnInit {
     }
     this.isCheckingAvailableDiskspace = false;
     this.cdr.detectChanges();
-
-    //this.dismiss(); //TODO: Skal vi lukke denne når vi starter nedlasting?
-    // window.open(this.package.properties.url, '_blank');
   }
 
   getPercentage(map: OfflineMapPackage): number {
@@ -81,6 +88,6 @@ export class OfflinePackageModalComponent implements OnInit {
   dismiss() {
     this.modalController.dismiss({
       'dismissed': true
-    })
+    });
   }
 }

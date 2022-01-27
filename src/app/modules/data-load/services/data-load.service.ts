@@ -93,12 +93,12 @@ export class DataLoadService {
         val.length > 0
           ? val[0]
           : {
-              id,
-              completed: null,
-              lastUpdated: null,
-              isLoading: false,
-              started: null
-            }
+            id,
+            completed: null,
+            lastUpdated: null,
+            isLoading: false,
+            started: null
+          }
       )
     );
   }

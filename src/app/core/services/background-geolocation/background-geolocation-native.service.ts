@@ -4,7 +4,7 @@ import { BackgroundGeolocationService } from './background-geolocation.service';
 import { Platform } from '@ionic/angular';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Geolocation } from '@capacitor/geolocation';
 import { TripLogState } from '../trip-logger/trip-log-state.enum';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 
@@ -12,7 +12,7 @@ const DEBUG_TAG = 'BackgroundGeolocationNativeService';
 
 @Injectable()
 export class BackgroundGeolocationNativeService
-  implements BackgroundGeolocationService {
+implements BackgroundGeolocationService {
   backgroundGeolocation: any;
 
   constructor(

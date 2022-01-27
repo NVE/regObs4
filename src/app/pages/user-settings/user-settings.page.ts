@@ -2,7 +2,6 @@ import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
 import { NavController, AlertController, LoadingController } from '@ionic/angular';
-import { LangKey } from 'src/app/modules/common-core/models';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
@@ -12,7 +11,6 @@ import { LoggingService } from '../../modules/shared/services/logging/logging.se
 import { LogLevel } from '../../modules/shared/services/logging/log-level.model';
 import { AppResetService } from '../../modules/shared/services/app-reset/app-reset.service';
 import { SelectOption } from '../../modules/shared/components/input/select/select-option.model';
-import { settings } from '../../../settings';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 
 const DEBUG_TAG = 'UserSettingsPage';
@@ -25,20 +23,11 @@ const TAPS_TO_ENABLE_TEST_MODE = 7;
 })
 export class UserSettingsPage implements OnInit, OnDestroy {
   userSettings: UserSetting;
-  LangKey = LangKey;
   showAdvanced = false;
   isUpdating = false;
   version: AppVersion;
   private subscriptions: Subscription[] = [];
   private versionClicks = 0;
-  supportedLanguages: {
-    lang: string;
-    name: string;
-    langKey: LangKey;
-  }[] = settings.language.supportedLanguages.map((lang) => ({
-    ...lang,
-    langKey: LangKey[lang.lang]
-  }));
 
   get appModeOptions() {
     const options: SelectOption[] = [

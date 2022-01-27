@@ -21,6 +21,16 @@
       <app-yes-no-select [(value)]="registration.request.SnowProfile2.IsProfileToGround"
         title="REGISTRATION.SNOW.SNOW_PROFILE.IS_PROFILE_TO_GROUND">
       </app-yes-no-select>
+      <!-- TODO: Ta inn dette når vi er på siste versjon av API'et
+        ion-item>
+        <ion-label color="medium" position="stacked" class="ion-text-uppercase">
+          {{ 'REGISTRATION.SNOW.SNOW_PROFILE.VALID_EXPOSITION' | translate}}</ion-label>
+        <app-select [(selectedValue)]="registration.request.SnowProfile2.Exposition"
+          [options]="expositionOptions" title="REGISTRATION.SNOW.SNOW_PROFILE.VALID_EXPOSITION"></app-select>
+      </ion-item>
+      <app-numeric-input [(value)]="registration.request.SnowProfile2.SlopeAngle"
+      title="REGISTRATION.SNOW.SNOW_PROFILE.SLOPE_ANGLE" [min]="0" [max]="59" suffix="°"
+      placeholder="REGISTRATION.SNOW.SNOW_PROFILE.SLOPE_ANGLE_PLACEHOLDER" [decimalPlaces]="0"></app-numeric-input-->
       <app-text-comment title="DIALOGS.COMMENT" [(value)]="registration.request.SnowProfile2.Comment">
       </app-text-comment>
       <ion-list-header class="ion-text-uppercase">
