@@ -1,9 +1,9 @@
+/* eslint-disable max-len */
 export const settings = {
   authConfig: {
     TEST: {
       client_id: '13270815-7def-4800-8fc9-178dd517f574',
-      server_host:
-        'https://nveb2c01test.b2clogin.com/nveb2c01test.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      server_host: 'https://nveb2c01test.b2clogin.com/nveb2c01test.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
       end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
@@ -14,8 +14,7 @@ export const settings = {
     },
     DEMO: {
       client_id: '7149f248-5e18-4feb-8a0c-e988dc021977',
-      server_host:
-        'https://nveb2c01staging.b2clogin.com/nveb2c01staging.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      server_host: 'https://nveb2c01staging.b2clogin.com/nveb2c01staging.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
       end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
@@ -26,8 +25,7 @@ export const settings = {
     },
     PROD: {
       client_id: 'a0b10e50-f942-4619-a9ab-cf5c900a98d5',
-      server_host:
-        'https://nveb2c01prod.b2clogin.com/nveb2c01prod.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
+      server_host: 'https://nveb2c01prod.b2clogin.com/nveb2c01prod.onmicrosoft.com/B2C_1A_sign_up_sign_in_nve/v2.0',
       redirect_url: 'regobs://callback',
       end_session_redirect_url: undefined,
       scopes: 'openid offline_access',
@@ -79,36 +77,24 @@ export const settings = {
       Snow: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/avalanche/v4.0.2/api',
         webUrl: {
-          // tslint:disable-next-line:max-line-length
-          nb:
-            'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
-          // tslint:disable-next-line:max-line-length
-          en:
-            'http://www.varsom.no/en/avalanche-bulletins/forecast/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche'
+          nb: 'http://www.varsom.no/snoskredvarsling/varsel/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche',
+          en: 'http://www.varsom.no/en/avalanche-bulletins/forecast/{regionName}/{day}?utm_source=regobs&utm_medium=app&utm_campaign=avalanche'
         },
         featureName: 'omradeID'
       },
       Dirt: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.6/api',
         webUrl: {
-          // tslint:disable-next-line:max-line-length
-          nb:
-            'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
-          // tslint:disable-next-line:max-line-length
-          en:
-            'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide'
+          nb: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
+          en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide'
         },
         featureName: 'fylkesnummer'
       },
       Water: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/flood/v1.0.6/api',
         webUrl: {
-          // tslint:disable-next-line:max-line-length
-          nb:
-            'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
-          // tslint:disable-next-line:max-line-length
-          en:
-            'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood'
+          nb: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood',
+          en: 'http://www.varsom.no/en/flood-and-landslide-warning-service/forecast/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=flood'
         },
         featureName: 'fylkesnummer'
       },
@@ -146,61 +132,58 @@ export const settings = {
       edgeBufferTiles: 0,
       detectRetina: false,
       updateWhenIdle: false,
-      // tslint:disable-next-line:max-line-length
-      statensKartverkMapUrl:
-        'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
-      geoDataLandskapMapUrl:
-        'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
+      statensKartverkMapUrl: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
+      geoDataLandskapMapUrl: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheLandskap/MapServer/tile/{z}/{y}/{x}?blankTile=false',
       openTopoMapUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-      arcGisOnlineTopoMapUrl:
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      arcGisOnlineTopoMapUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
       supportTiles: [
         {
           name: 'steepness',
           description: 'STEEPNESS_MAP_DESCRIPTION',
-          url:
-            'http://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
-          enabled: true,
-          opacity: 0.5,
-          geoHazardId: 10,
-          disableWhenEnabled: ['steepness-outlet']
-        },
-        {
-          name: 'steepness-outlet',
-          description: 'STEEPNESS_OUTLET_MAP_DESCRIPTION',
-          url:
-            'http://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
+          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/Bratthet/MapServer/tile/{z}/{y}/{x}',
           enabled: false,
+          checked: true,
           opacity: 0.5,
           geoHazardId: 10,
-          disableWhenEnabled: ['steepness']
+          availableOffline: false,
+          subTile: {
+            name: 'steepness-outlet',
+            description: 'STEEPNESS_OUTLET_MAP_DESCRIPTION',
+            url: 'https://gis3.nve.no/arcgis/rest/services/wmts/KastWMTS/MapServer/tile/{z}/{y}/{x}',
+            enabled: true,
+            checked: true,
+            availableOffline: true
+          }
         },
         {
           name: 'clayzones',
           description: 'CLAY_ZONES_MAP_DESCRIPTION',
-          url:
-            'http://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
+          url: 'https://gis2.nve.no/arcgis/rest/services/wmts/Kvikkleire_Jordskred/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
+          checked: true,
           opacity: 0.5,
-          geoHazardId: 20
+          geoHazardId: 20,
+          availableOffline: false
         },
         {
           name: 'floodzoones',
           description: 'FLOOD_ZONES_MAP_DESCRIPTION',
-          url:
-            'http://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
+          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/Flomsoner1/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
+          checked: true,
           opacity: 0.5,
-          geoHazardId: 60
+          geoHazardId: 60,
+          availableOffline: false
         },
         {
           name: 'weakenedice',
           description: 'WEAKENED_ICE_MAP_DESCRIPTION',
-          url:
-            'http://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}',
+          url: 'https://gis3.nve.no/arcgis/rest/services/wmts/SvekketIs/MapServer/tile/{z}/{y}/{x}',
           enabled: true,
+          checked: true,
           opacity: 0.5,
-          geoHazardId: 70
+          geoHazardId: 70,
+          availableOffline: true
         }
       ],
       supportTilesBounds: [
@@ -213,9 +196,11 @@ export const settings = {
     },
     search: {
       no: {
-        url: 'https://ws.geonorge.no/SKWS3Index/ssr/sok',
+        url: 'https://ws.geonorge.no/stedsnavn/v1/navn',
         maxResults: 20,
-        exactFirst: true
+        exactFirst: true,
+        coordinateSystem: 4326,
+        resultFields: 'metadata.totaltAntallTreff,navn.skrivemåte,navn.navneobjekttype,navn.stedsnummer,navn.representasjonspunkt.øst,navn.representasjonspunkt.nord,navn.fylker.fylkesnavn,navn.kommuner.kommunenavn'
       },
       geonames: {
         url: 'https://secure.geonames.org',
@@ -286,7 +271,8 @@ export const settings = {
       { lang: 'en', name: 'English' },
       { lang: 'sv', name: 'Svenska' },
       { lang: 'de', name: 'Deutsch' },
-      { lang: 'sl', name: 'Slovenski' }
+      { lang: 'sl', name: 'Slovenski' },
+      { lang: 'fr', name: 'Français' },
     ]
   }
 };

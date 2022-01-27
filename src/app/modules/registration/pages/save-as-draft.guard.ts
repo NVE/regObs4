@@ -16,7 +16,7 @@ import { RegistrationService as CommonRegistrationService } from 'src/app/module
 
 @Injectable()
 export class SaveAsDraftRouteGuard
-  implements CanDeactivate<OverviewPage | ObsLocationPage> {
+implements CanDeactivate<OverviewPage | ObsLocationPage> {
   constructor(
     private alertController: AlertController,
     private registrationService: CommonRegistrationService,

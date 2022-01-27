@@ -1,8 +1,5 @@
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { IonicRouteStrategy, NavController, Platform } from '@ionic/angular';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
 import { BackgroundGeolocationWebService } from './core/services/background-geolocation/background-geolocation-web.service';
 import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
@@ -116,8 +113,6 @@ export function initDb(dbService: OfflineDbService) {
 // }
 
 export const APP_PROVIDERS = [
-  StatusBar,
-  SplashScreen,
   StartWizardGuard,
   AuthGuard,
   { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -126,7 +121,6 @@ export const APP_PROVIDERS = [
     useClass: DynamicLocaleId,
     deps: [TranslateService]
   },
-  Geolocation,
   DeviceOrientation,
   File,
   AndroidPermissions,

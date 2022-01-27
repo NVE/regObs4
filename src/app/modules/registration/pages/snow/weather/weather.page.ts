@@ -13,7 +13,7 @@ import { SelectOption } from '../../../../shared/components/input/select/select-
 export class WeatherPage extends BasePage {
   windDirectionOptions: SelectOption[] = [
     { id: 0, text: 'REGISTRATION.SNOW.WEATHER.FROM_NORTH' },
-    { id: 45, text: 'REGISTRATION.SNOW.WEATHER.FROM_NOTRH_EAST' },
+    { id: 45, text: 'REGISTRATION.SNOW.WEATHER.FROM_NORTH_EAST' },
     { id: 90, text: 'REGISTRATION.SNOW.WEATHER.FROM_EAST' },
     { id: 135, text: 'REGISTRATION.SNOW.WEATHER.FROM_SOUTH_EAST' },
     { id: 180, text: 'REGISTRATION.SNOW.WEATHER.FROM_SOUTH' },

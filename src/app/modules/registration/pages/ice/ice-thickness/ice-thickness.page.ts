@@ -48,7 +48,7 @@ export class IceThicknessPage extends BasePage {
 
   onBeforeLeave() {
     if (this.registration) {
-      if (this.iceHeightBefore === undefined) {
+      if (this.iceHeightBefore !== true) {
         this.registration.request.IceThickness.IceHeightBefore = undefined;
       } else if (this.registration.request.IceThickness.IceHeightBefore > 0) {
         this.registration.request.IceThickness.IceHeightBefore =

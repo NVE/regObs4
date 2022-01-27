@@ -10,7 +10,7 @@ variables:
 - group: regobs
 
 pool:
-  name: Hosted macOS
+  vmImage: 'macOS-latest'
   demands: xcode
 
 steps:
@@ -21,19 +21,19 @@ steps:
 - task: InstallAppleCertificate@2
   displayName: 'Install Apple development certificate'
   inputs:
-    certSecureFile: '64189289-3c4e-46b9-8628-ab3f170fe3b8'
-    certPwd: '$(cert.password)'
+    certSecureFile: '97b68192-fb52-4819-91fc-098592a6f406'
+    certPwd: '$(apple_dev_cert)'
 
 - task: InstallAppleCertificate@2
   displayName: 'Install Apple App Store distribution certificate'
   inputs:
-    certSecureFile: '157e8091-2fcc-4dfb-b06f-1fa63e24cf18'
-    certPwd: '$(cert.password)'
+    certSecureFile: '6c79d7b9-e447-4254-b436-e656611b3431'
+    certPwd: '$(apple.dist.cert.password)'
 
 - task: InstallAppleProvisioningProfile@1
   displayName: 'Install an Apple App Store distribution provisioning profile'
   inputs:
-    provProfileSecureFile: 'c2190d51-17a1-423b-a6c9-79029e97ff6a'
+    provProfileSecureFile: '7b2faf78-ae23-41e5-8a3e-bdea6b9a0e47'
 
 - task: InstallAppleProvisioningProfile@1
   displayName: 'Install an Apple Development provisioning profile'
@@ -46,17 +46,18 @@ steps:
     versionSpec: 14.x
     checkLatest: true
 
+# Needed to sign Android apk/aab
 - task: DownloadSecureFile@1
   displayName: 'Download secure file: nve.keystore'
   inputs:
     secureFile: '3a7f7301-2d1f-419c-b23b-2b72418bc324'
     retryCount: 5
 
-- task: DownloadSecureFile@1
-  displayName: 'Download secure file: build.json'
-  inputs:
-    secureFile: 'c5491b5c-2fb9-4018-b1b5-aedbc42c4cf3'
-    retryCount: 5
+#- task: DownloadSecureFile@1
+#  displayName: 'Download secure file: build.json'
+#  inputs:
+#    secureFile: 'c5491b5c-2fb9-4018-b1b5-aedbc42c4cf3'
+#    retryCount: 5
 
 - task: DownloadSecureFile@1
   displayName: 'Download secure file: apikey.json'
@@ -98,59 +99,76 @@ steps:
 - task: Npm@1
   displayName: 'npm install'
   inputs:
+    command: install
     verbose: false
 
 - task: Npm@1
-  displayName: 'npm create release and upload sourcemaps to Sentry'
+  displayName: 'npm create version file and update AndroidManifest.xml and plist.info'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run create-version-file'
+
+- task: Npm@1
+  displayName: 'npm build production'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run build:prod'
+
+- task: Npm@1
+  displayName: 'Capacitor sync to native folders'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run cap:sync'
+
+- task: Npm@1
+  displayName: 'npm create Sentry release and upload sourcemaps to Sentry'
   inputs:
     command: custom
     verbose: false
     customCommand: 'run sentry:create-release-and-upload-sourcemaps'
 
-- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
-  displayName: 'Ionic Cordova Build iOS'
+# TODO: Create ipa
+- task: Xcode@5
   inputs:
-    ionicCommand: 'cordova build ios'
-    ionicArgs: '--release --prod --device'
+    actions: 'build'
+    configuration: 'Release'
+    sdk: 'iphoneos'
+    xcWorkspacePath: '$(system.defaultworkingdirectory)/ios/App/App.xcworkspace'
+    scheme: 'App'
+    packageApp: true
+    archivePath: '$(system.defaultworkingdirectory)/ios/build/outputs'
+    exportPath: 'output/iphoneos/Release'
+    exportOptions: 'auto'
+    signingOption: 'manual'
+    #signingIdentity: 'iPhone Distribution'
+    #provisioningProfileUuid: 'c996749d-5726-486d-b0ad-01937768b6b1'
+    provisioningProfileName: 'regobs-dist-2022-11-25'
+    teamId: '43L5B5X2PE'
 
-- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
-  displayName: 'Ionic Cordova Remove Platform Android'
-  inputs:
-    ionicCommand: 'cordova platform rm android'
-    ionicArgs: ''
-
-- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
-  displayName: 'Ionic Cordova Add Platform Android'
-  inputs:
-    ionicCommand: 'cordova platform add android@10'
-    ionicArgs: ''
-
-- task: ms-vsclient.cordova-extension.ioniccommandtask.IonicCommand@1
-  displayName: 'Ionic Cordova Build Android'
-  inputs:
-    ionicCommand: 'cordova build android'
-    ionicArgs: '--release --prod'
-
-- script: |
-   cd platforms/android
-   ls
-   ./gradlew bundleRelease
+- task: Gradle@2
   displayName: 'Create Android app bundle'
+  inputs:
+    gradleWrapperFile: 'android/gradlew'
+    workingDirectory: 'android/'
+    tasks: 'bundleRelease'
+    publishJUnitResults: false
+    javaHomeOption: 'JDKVersion'
+    sonarQubeRunAnalysis: false
+    spotBugsAnalysis: false
 
-- script: |
-   cd platforms/ios/build/device
-   ls
-   find . ! -name '*.ipa' -delete
-   ls
-  displayName: 'Cleanup ios build folder'
+- task: CmdLine@2
+  inputs:
+    script: 'jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore nve.keystore -storepass $(android.keystore.password) -keypass $(android.keystore.password) $(system.defaultworkingdirectory)/android/app/build/outputs/bundle/release/*.aab regobs'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactStagingDirectory)'
   inputs:
     Contents: |
-     platforms/ios/build/device/*.ipa
-     platforms/android/app/build/outputs/apk/release/app-release.apk
-     platforms/android/app/build/outputs/bundle/release/*.aab
+     android/app/build/outputs/bundle/release/*.aab
+     output/iphoneos/Release/*.ipa
     TargetFolder: '$(build.artifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1

@@ -23,7 +23,7 @@ export class ShortcutService {
   init() {
     const w = <any>window;
     if (
-      this.platform.is('cordova') &&
+      this.platform.is('hybrid') &&
       this.platform.is('android') &&
       w.plugins &&
       w.plugins.Shortcuts
@@ -36,14 +36,14 @@ export class ShortcutService {
 
   private getImage(geoHazard: GeoHazard) {
     switch (geoHazard) {
-      case GeoHazard.Snow:
-        return 'ic_snow';
-      case GeoHazard.Soil:
-        return 'ic_dirt';
-      case GeoHazard.Ice:
-        return 'ic_ice';
-      case GeoHazard.Water:
-        return 'ic_water';
+    case GeoHazard.Snow:
+      return 'ic_snow';
+    case GeoHazard.Soil:
+      return 'ic_dirt';
+    case GeoHazard.Ice:
+      return 'ic_ice';
+    case GeoHazard.Water:
+      return 'ic_water';
     }
   }
 

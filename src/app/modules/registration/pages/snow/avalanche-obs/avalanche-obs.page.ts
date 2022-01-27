@@ -119,25 +119,25 @@ export class AvalancheObsPage extends BasePage {
   async setAvalanchePosition() {
     const relativeToLatLng = this.registration.request.ObsLocation
       ? L.latLng(
-          this.registration.request.ObsLocation.Latitude,
-          this.registration.request.ObsLocation.Longitude
-        )
+        this.registration.request.ObsLocation.Latitude,
+        this.registration.request.ObsLocation.Longitude
+      )
       : null;
     const startLatLng =
       this.registration.request.AvalancheObs.StartLat &&
       this.registration.request.AvalancheObs.StartLong
         ? L.latLng(
-            this.registration.request.AvalancheObs.StartLat,
-            this.registration.request.AvalancheObs.StartLong
-          )
+          this.registration.request.AvalancheObs.StartLat,
+          this.registration.request.AvalancheObs.StartLong
+        )
         : null;
     const endLatLng =
       this.registration.request.AvalancheObs.StopLat &&
       this.registration.request.AvalancheObs.StopLong
         ? L.latLng(
-            this.registration.request.AvalancheObs.StopLat,
-            this.registration.request.AvalancheObs.StopLong
-          )
+          this.registration.request.AvalancheObs.StopLat,
+          this.registration.request.AvalancheObs.StopLong
+        )
         : null;
     const modal = await this.modalController.create({
       component: SetAvalanchePositionPage,

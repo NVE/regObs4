@@ -13,7 +13,7 @@ import { MapService } from '../../../map/services/map/map.service';
 import { HelperService } from '../../../../core/services/helpers/helper.service';
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
 import { take, switchMap, filter, takeUntil } from 'rxjs/operators';
-import { Geoposition } from '@ionic-native/geolocation/ngx';
+import { Position } from '@capacitor/geolocation';
 import { Observable, Subject } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
 import {
@@ -72,7 +72,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
 
   private map: L.Map;
   followMode = false;
-  private userposition: Geoposition;
+  private userposition: Position;
   private pathLine: L.Polyline;
   showDetails = false;
   distanceToObservationText = '';
@@ -281,7 +281,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       );
   }
 
-  private positionChange(position: Geoposition): void {
+  private positionChange(position: Position) {
     this.userposition = position;
     if (this.followMode) {
       this.setLocationMarkerLatLng({
@@ -297,11 +297,11 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     const from = this.fromMarker
       ? this.fromMarker.getLatLng()
       : this.userposition
-      ? L.latLng(
+        ? L.latLng(
           this.userposition.coords.latitude,
           this.userposition.coords.longitude
         )
-      : this.locationMarker.getLatLng();
+        : this.locationMarker.getLatLng();
     const locationMarkerLatLng = this.locationMarker.getLatLng();
     const path = [locationMarkerLatLng, from];
     if (this.map) {

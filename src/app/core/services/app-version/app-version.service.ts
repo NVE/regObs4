@@ -5,8 +5,6 @@ import { AppVersion } from '../../models/app-version.model';
   providedIn: 'root'
 })
 export class AppVersionService {
-  constructor() {}
-
   getAppVersion(): AppVersion {
     try {
       // tslint:disable-next-line:no-var-requires

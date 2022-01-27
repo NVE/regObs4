@@ -14,9 +14,8 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { enterZone } from '../../../../core/helpers/observable-helper';
 import { IonContent } from '@ionic/angular';
 import moment from 'moment';
-import { GeoPositionLog } from '../../../../core/services/geo-position/geo-position-log.interface';
+import { GeoPositionLog, PositionError } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
-import { PositionError } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: 'app-gps-debug',
@@ -51,12 +50,12 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
         switchMap((show) =>
           show
             ? this.geoPositionService.log$.pipe(
-                scan((acc: GeoPositionLog[], val) => {
-                  acc.push(val);
-                  return acc.slice(-50);
-                }, []),
-                throttleTime(100)
-              )
+              scan((acc: GeoPositionLog[], val) => {
+                acc.push(val);
+                return acc.slice(-50);
+              }, []),
+              throttleTime(100)
+            )
             : of([])
         ),
         takeUntil(this.ngDestroy$)
@@ -111,14 +110,14 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
       return 'Empty error';
     }
     switch (err.code) {
-      case GeoPositionErrorCode.PermissionDenied:
-        return 'Permission denied';
-      case GeoPositionErrorCode.PositionUnavailable:
-        return 'Position unavailable';
-      case GeoPositionErrorCode.Timeout:
-        return 'Timeout';
-      default:
-        return err.message;
+    case GeoPositionErrorCode.PermissionDenied:
+      return 'Permission denied';
+    case GeoPositionErrorCode.PositionUnavailable:
+      return 'Position unavailable';
+    case GeoPositionErrorCode.Timeout:
+      return 'Timeout';
+    default:
+      return err.message;
     }
   }
 }

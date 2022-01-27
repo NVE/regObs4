@@ -7,7 +7,7 @@ import { DownloadProgress } from './download-progress';
 
 @Injectable()
 export class BackgroundDownloadNativeService
-  implements BackgroundDownloadService {
+implements BackgroundDownloadService {
   currentDownloads: Map<string, CancelPromise>;
 
   constructor(private file: File) {

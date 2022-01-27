@@ -48,33 +48,24 @@ export class RegObsOfflineAwareTileLayer extends RegObsTileLayer {
     private loggingService: LoggingService
   ) {
     super(url, options);
-    
-    this.on('tileerror', (event?: L.TileErrorEvent) => {
-      // this.loggingService.debug('TileError', 'RegObsOfflineAwareTileLayer', event);
-
-      // Check if there is a registered offline package above
-      // this tile
-      const { x, y, z } = event.coords;
-      const packageInfo = this.offlineTilesRegistry.findRegisteredPackage(this.mapType, x, y, z);
-      if (packageInfo?.zMax < z) {
-        //show error message if we zoom in too much on the offline map
-        event.tile.src = '/assets/icon/map/no-tile-here.png'; //TODO: Show error text in current language
-      }
-    });
   }
 
-  /**
-   * @returns url to an offline tile if available, or else default online tile url
-   */
-  getTileUrl(coords: L.Coords): string {
-    let url: string;
-    const offlineMapUrl = this.offlineTilesRegistry.getUrl(this.mapType, coords.x, coords.y, coords.z);
-    if (offlineMapUrl) {
-      url = `${offlineMapUrl}/${coords.z}/${coords.x}/${coords.y}.png`;
-    } else {
-      url = super.getTileUrl(coords);
+  canUseOfflineTiles(coords: L.Coords) {
+    const offlineTiles = this.offlineTilesRegistry.findRegisteredPackage(this.mapType, coords.x, coords.y, coords.z);
+    if (offlineTiles != null) {
+      if (offlineTiles.zMin <= coords.z && coords.z <= offlineTiles.zMax) {
+        return true;
+      }
     }
-    this.loggingService.debug('Tile url:', DEBUG_TAG, coords.x, coords.y, coords.z, url);
-    return url;
+    return false;
+  }
+
+  _isValidTile(coords: L.Coords) {
+    const valid = super._isValidTile(coords);
+    if (valid && this.canUseOfflineTiles(coords)) {
+      this.loggingService.debug(`Using offline tiles for ${this.mapType} - ${coords.x},${coords.y},${coords.z}`, DEBUG_TAG);
+      return false;
+    }
+    return valid;
   }
 }

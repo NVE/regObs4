@@ -31,6 +31,9 @@ import enData from '@angular/common/locales/en';
 import deData from '@angular/common/locales/de';
 import slData from '@angular/common/locales/sl';
 import nnData from '@angular/common/locales/nn';
+import frData from '@angular/common/locales/fr';
+import { UserSettingsPage } from 'src/app/pages/user-settings/user-settings.page';
+import { SupportTile } from '../../models/support-tile.model';
 
 const DEBUG_TAG = 'UserSettingService';
 
@@ -71,7 +74,11 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
   // }
 
   get supportTiles$() {
-    return this.userSetting$.pipe(map((us) => this.getSupportTilesOptions(us)));
+    return this.userSetting$.pipe(map((us) => this.getSupportTilesOptions(us, true)));
+  }
+
+  get supportTilesWithSubTiles$() {
+    return this.userSetting$.pipe(map((us) => this.getSupportTilesOptions(us, false)));
   }
 
   constructor(
@@ -158,24 +165,28 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     this.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {
       const lang = LangKey[langKey];
       switch (langKey) {
-        case LangKey.nb:
-          registerLocaleData(nbData);
-          break;
-        case LangKey.en:
-          registerLocaleData(enData);
-          break;
-        case LangKey.de:
-          registerLocaleData(deData);
-          break;
-        case LangKey.sv:
-          registerLocaleData(svData);
-          break;
-        case LangKey.sl:
-          registerLocaleData(slData);
-          break;
-        case LangKey.nn:
-          registerLocaleData(nnData);
-          break;
+      case LangKey.nb:
+        registerLocaleData(nbData);
+        break;
+      case LangKey.en:
+        registerLocaleData(enData);
+        break;
+      case LangKey.de:
+        registerLocaleData(deData);
+        break;
+      case LangKey.sv:
+        registerLocaleData(svData);
+        break;
+      case LangKey.sl:
+        registerLocaleData(slData);
+        break;
+      case LangKey.nn:
+        registerLocaleData(nnData);
+        break;
+      //TODO: Ta med denne når API'et støtter fransk
+      // case LangKey.fr:
+      //   registerLocaleData(frData);
+      //   break;
       }
       this.translate.use(lang);
     });
@@ -203,23 +214,37 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     this.userSettingInMemory.next(userSetting);
   }
 
-  getSupportTilesOptions(us: UserSetting) {
-    const supportTilesForCurrentGeoHazard = settings.map.tiles.supportTiles.filter(
+  getSupportTilesOptions(us: UserSetting, flat = true): SupportTile[] {
+    const supportTilesForCurrentGeoHazard: SupportTile[] = settings.map.tiles.supportTiles.filter(
       (setting) => us.currentGeoHazard.indexOf(setting.geoHazardId) >= 0
-    );
-    return supportTilesForCurrentGeoHazard.map((st) => {
+    ).map((tile) => {
       const usSupportTile = us.supportTiles.find(
-        (usTiles) => usTiles.name === st.name
+        (usTiles) => usTiles.name === tile.name
       );
-      if (usSupportTile) {
-        return {
-          ...st,
-          opacity: usSupportTile.opacity,
-          enabled: usSupportTile.enabled
-        };
+      let subTile = tile.subTile;
+      if (subTile && usSupportTile && usSupportTile.subTile) {
+        subTile = {...tile.subTile, ...usSupportTile.subTile};
       }
-      return st;
+      return {
+        ...(usSupportTile ? {...tile, ...usSupportTile} : tile),
+        subTile: subTile,
+      };
     });
+
+    if (flat) {
+      supportTilesForCurrentGeoHazard
+        .filter((tile) => tile.subTile)
+        .forEach((tile) => {
+          supportTilesForCurrentGeoHazard.push({
+            ...tile.subTile,
+            opacity: tile.opacity,
+            geoHazardId: tile.geoHazardId,
+          });
+          delete tile.subTile;
+        });
+    }
+
+    return supportTilesForCurrentGeoHazard;
   }
 
   private getUserSettingsFromDbOrDefaultSettings(): Observable<UserSetting> {

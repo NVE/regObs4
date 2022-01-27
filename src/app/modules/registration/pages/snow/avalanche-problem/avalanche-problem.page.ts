@@ -4,6 +4,7 @@ import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { ItemReorderEventDetail } from '@ionic/core';
 import {
   AvalancheEvalProblem2EditModel,
   KdvElement
@@ -11,6 +12,7 @@ import {
 import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-problem-modal.page';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { Subscription } from 'rxjs';
+import { ArrayHelper } from 'src/app/core/helpers/array-helper';
 
 @Component({
   selector: 'app-avalanche-problem',
@@ -94,7 +96,7 @@ export class AvalancheProblemPage extends BasePage {
     }
   }
 
-  getDescription(avalancheEvalProblem: AvalancheEvalProblem2EditModel) {
+  getDescription(avalancheEvalProblem: AvalancheEvalProblem2EditModel): string {
     const cause = this.avalancheCause.find(
       (c) => c.Id === avalancheEvalProblem.AvalCauseTID
     );
@@ -103,5 +105,14 @@ export class AvalancheProblemPage extends BasePage {
     } else {
       return 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.UNKNOWN_TYPE';
     }
+  }
+
+  onProblemReorder(event: CustomEvent<ItemReorderEventDetail>): void {
+    this.registration.request.AvalancheEvalProblem2 = ArrayHelper.reorderList(
+      this.registration.request.AvalancheEvalProblem2,
+      event.detail.from,
+      event.detail.to
+    );
+    event.detail.complete();
   }
 }

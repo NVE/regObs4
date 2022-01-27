@@ -158,7 +158,9 @@ export class RegobsAuthService {
   public async signIn(setReturnUrl = true): Promise<void> {
     const currentLang = await firstValueFrom(this.userSettingService.language$);
     if (setReturnUrl) {
-      localStorage.setItem(RETURN_URL_KEY, this.router.url);
+      const url = this.router.url;
+      this.logger.debug(`SignIn: ReturnUrl = '${url}'`, DEBUG_TAG);
+      localStorage.setItem(RETURN_URL_KEY, url);
     }
     try {
       await this.authService.signIn({
@@ -228,6 +230,7 @@ export class RegobsAuthService {
   private async redirectToReturnUrl(): Promise<void> {
     if (this.location.path().indexOf('auth/callback') >= 0) {
       const returnUrl = localStorage.getItem(RETURN_URL_KEY);
+      this.logger.debug(`redirectToReturnUrl: returnUrl from localStorage = '${returnUrl}'`, DEBUG_TAG);
       if (returnUrl) {
         localStorage.removeItem(RETURN_URL_KEY);
         this.location.replaceState(this.router.serializeUrl(this.router.createUrlTree([''])));
