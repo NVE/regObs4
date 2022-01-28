@@ -36,10 +36,10 @@ import {
 } from '../../core/classes/regobs-tile-layer';
 import { OfflineMapService } from '../../../../core/services/offline-map/offline-map.service';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
-import { File } from '@ionic-native/file/ngx';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { Platform } from '@ionic/angular';
 import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/offline-map/offline-map.model';
+import { MapZoomService } from '../../services/map/map-zoom.service';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 
@@ -112,8 +112,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private fullscreenService: FullscreenService,
     private loggingService: LoggingService,
     private geoPositionService: GeoPositionService,
-    private file: File,
     private platform: Platform,
+    private mapZoomService: MapZoomService,
     injector: Injector
   ) {
     if (isAndroidOrIos(this.platform)) {
@@ -303,6 +303,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.startActiveSubscriptions();
     }
+
+    this.mapZoomService.zoomInRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomIn());
+    this.mapZoomService.zoomOutRequest$.pipe(takeUntil(this.ngDestroy$)).subscribe(() => this.map?.zoomOut());
 
     this.startInvalidateSizeMapTimer();
 
