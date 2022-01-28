@@ -733,7 +733,6 @@
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Emprise quasi maximale de l'écoulement des avalanches (5 % des avalanches iront plus loin).\nCertaines avalanches peuvent s'écouler en dehors de l'emprise définie sur cette carte.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Palette de couleur donnant les zones d'écoulement des avalanches",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Carte des pentes et zones d'écoulement des avalanches",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "Pour la préparation de course <i>uniquement</i>. La carte est produite automatiquement et peut comporter des erreurs et des omissions, par exemple une portion de pente raide ou des emprises d'avalanche non affichées.\n<br/>\n<br/>\nLes couleurs indiquent les zones d'écoulement pour les avalanches :",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Glace affaiblie"
   },
   "TABS": {

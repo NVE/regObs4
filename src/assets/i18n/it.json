@@ -5,7 +5,6 @@
     "LINK_TEXT": "Vai a abonner.varsom.no",
     "TITLE": "Varsom Abonner"
   },
-  "ADD_MENU": {},
   "ALERT": {
     "CANCEL": "Annulla",
     "DEFAULT_HEADER": "Ops!",
@@ -679,7 +678,6 @@
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Zone di deposito medie (25% di valanghe correranno più lungo)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Zone di deposito lunghe (5% di valanghe correranno più lungo). Valanghe con una zona di deposito ancora più lunga di che è indicato nella mappa sono possibili.",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Mappa con colorazione di inclinazione e zone di deposito",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "La mappa è generata la computer e può contenere errori. Terreno ripido o zone di deposito non incidata sulla mappa può essere presente. La mappa è un stumento per pianeggamento, e deve essere usato con occhio critico.",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Ghiaccio debole"
   },
   "TABS": {
