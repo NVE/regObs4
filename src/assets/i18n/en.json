@@ -165,6 +165,7 @@
       "ARC_GIS": "ESRI World Topo (world)",
       "GEODATA_LANDSKAP": "Geodata Topo (Norway)",
       "KARTVERKET": "Kartverket (Norway)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (world)"
     },
     "TIME_FRAME": "Period",
@@ -238,9 +239,9 @@
     "SPACE_AVAILABLE": "{{spaceAvailable}} free",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Downloading part {{n}} of {{totalParts}}",
-      "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}",
       "DOWNLOAD_ERROR": "Download error",
-      "UNZIP_ERROR": "Unzip error"
+      "UNZIP_ERROR": "Unzip error",
+      "UNZIP_PART_X_OF_Y": "Unzipping part {{n}} of {{totalParts}}"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Could not save map package to disk. Please try again",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Could not save map package to disk. Are you sure there is enough disk space?"
