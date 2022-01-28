@@ -154,7 +154,8 @@
       "ARC_GIS": "ESRI World Topo (värld)",
       "GEODATA_LANDSKAP": "Geodata Landskap (Norge)",
       "KARTVERKET": "Kartverket (Norge)",
-      "OPEN_TOPO": "OpenTopoMap (värld)"
+      "OPEN_TOPO": "OpenTopoMap (värld)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (värld)"
     },
     "TIME_FRAME": "Period",
     "TODAYS_OBSERVATIONS": "Endast dagens observationer",
