@@ -53,10 +53,10 @@
     <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap"
       interface="action-sheet" (ngModelChange)="saveUserSettings()">
       <ion-select-option [value]="TopoMap.default">
-        {{ 'MENU.TILES.ARC_GIS' | translate }}, {{ 'MENU.TILES.KARTVERKET' | translate }}, {{ 'MENU.TILES.NORWEGIAN_POLAR_INSTITUTE' | translate }}
+        {{ 'MENU.TILES.ARC_GIS' | translate }} + {{ 'MENU.TILES.KARTVERKET' | translate }} + {{ 'MENU.TILES.NORWEGIAN_POLAR_INSTITUTE' | translate }}
       </ion-select-option>
       <ion-select-option [value]="TopoMap.mixOpenTopo">
-        {{ 'MENU.TILES.OPEN_TOPO' | translate }} + {{ 'MENU.TILES.KARTVERKET' | translate }}, {{ 'MENU.TILES.NORWEGIAN_POLAR_INSTITUTE' | translate }}
+        {{ 'MENU.TILES.OPEN_TOPO' | translate }} + {{ 'MENU.TILES.KARTVERKET' | translate }} + {{ 'MENU.TILES.NORWEGIAN_POLAR_INSTITUTE' | translate }}
       </ion-select-option>
       <ion-select-option [value]="TopoMap.geoDataLandskap">
         {{ 'MENU.TILES.GEODATA_LANDSKAP' | translate }}
