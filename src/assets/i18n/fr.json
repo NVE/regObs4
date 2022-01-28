@@ -157,8 +157,8 @@
       "ARC_GIS": "ESRI World Topo (monde)",
       "GEODATA_LANDSKAP": "Geodata Topo (données topographiques norvégiennes)",
       "KARTVERKET": "Kartverket (Norvège)",
-      "OPEN_TOPO": "OpenTopoMap (monde)",
-      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)"
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
+      "OPEN_TOPO": "OpenTopoMap (monde)"
     },
     "TIME_FRAME": "Période",
     "TODAYS_OBSERVATIONS": "Uniquement en date d'aujourd'hui",
@@ -727,7 +727,7 @@
     "STEEPNESS_COLOR_INFO": "La couleur indique l'inclinaison de pente du terrain",
     "STEEPNESS_MAP_DESCRIPTION": "Carte des pentes",
     "STEEPNESS_MAP_DISCLAMER": "Pour la préparation de course <i>uniquement</i>. La carte est produite automatiquement et peut comporter des erreurs et des omissions, par exemple une portion de pente raide peut ne pas être affichée",
-    "STEEPNESS_OFFLINE_DISCLAMER": "La couche cartographique n'est disponible hors ligne que si l'aléa avalanche est activé.",
+    "STEEPNESS_OFFLINE_DISCLAMER": "La couche cartographique n'est disponible hors ligne que si l'aléa avalanche a été activé et la couche téléchargée auparavant.",
     "STEEPNESS_OUTLET_LEGEND_TEXT_1": "Emprise médiane de l'écoulement des avalanches (50 % des avalanches iront plus loin).",
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Emprise \"normale\" de l'écoulement des avalanches (25 % des avalanches iront plus loin).",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Emprise quasi maximale de l'écoulement des avalanches (5 % des avalanches iront plus loin).\nCertaines avalanches peuvent s'écouler en dehors de l'emprise définie sur cette carte.",

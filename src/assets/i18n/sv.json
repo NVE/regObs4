@@ -154,8 +154,8 @@
       "ARC_GIS": "ESRI World Topo (värld)",
       "GEODATA_LANDSKAP": "Geodata Landskap (Norge)",
       "KARTVERKET": "Kartverket (Norge)",
-      "OPEN_TOPO": "OpenTopoMap (värld)",
-      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (värld)"
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
+      "OPEN_TOPO": "OpenTopoMap (värld)"
     },
     "TIME_FRAME": "Period",
     "TODAYS_OBSERVATIONS": "Endast dagens observationer",
@@ -202,9 +202,9 @@
     "OFFLINE_MAP_PAGE_TITLE": "Offlinekartor",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Laddar ner fil {{n}} av {{totalParts}}",
-      "UNZIP_PART_X_OF_Y": "Packar upp fil {{n}} av {{totalParts}}",
       "DOWNLOAD_ERROR": "Nedladdningen misslyckades",
-      "UNZIP_ERROR": "Uppackning av filer misslyckades"
+      "UNZIP_ERROR": "Uppackning av filer misslyckades",
+      "UNZIP_PART_X_OF_Y": "Packar upp fil {{n}} av {{totalParts}}"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Lyckades ej spara kartpaketet till disk. Vänligen prøva igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Lyckades ej spara kartpaketet till disk. Har du nog med diskutrymme?"
