@@ -1,14 +1,14 @@
 import * as L from 'leaflet';
-import { BorderHelper } from '../../../../core/helpers/leaflet/border-helper';
-import { Feature, GeometryObject } from '@turf/turf';
 import { OfflineTilesRegistry } from 'src/app/core/services/offline-map/offline-tiles-registry';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { Polygon } from 'geojson';
+import { bboxPolygon, booleanWithin } from '@turf/turf';
 
 const DEBUG_TAG = 'RegObsOfflineAwareTileLayer';
 
 export interface IRegObsTileLayerOptions extends L.TileLayerOptions {
   edgeBufferTiles?: number;
-  excludeBounds?: Feature<GeometryObject>;
+  excludeBounds?: Polygon[];
 }
 
 export class RegObsTileLayer extends L.TileLayer {
@@ -25,15 +25,17 @@ export class RegObsTileLayer extends L.TileLayer {
     if (!valid) {
       return false;
     }
-    if ((<IRegObsTileLayerOptions>this.options).excludeBounds) {
-      const tileBounds = (<any>L.GridLayer.prototype)._tileCoordsToBounds.call(
-        this,
-        coords
-      );
-      return !BorderHelper.isInside(
-        tileBounds,
-        (<IRegObsTileLayerOptions>this.options).excludeBounds
-      );
+
+    const excludeBounds = (<IRegObsTileLayerOptions>this.options).excludeBounds;
+    if (excludeBounds) {
+      const tileBounds: L.LatLngBounds = (<any>L.GridLayer.prototype)._tileCoordsToBounds.call(this, coords);
+      const tileBBox = bboxPolygon([
+        tileBounds.getSouthWest().lng, // minx
+        tileBounds.getSouthWest().lat, // miny
+        tileBounds.getNorthEast().lng, // maxx
+        tileBounds.getNorthEast().lat // maxy
+      ]);
+      return !excludeBounds.some(geometry => booleanWithin(tileBBox, geometry));
     }
     return true;
   }
