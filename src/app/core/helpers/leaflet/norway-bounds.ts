@@ -1,12 +1,17 @@
-{
-  "type": "FeatureCollection",
-  "features": [
+import { FeatureCollection, Polygon } from 'geojson';
+
+// #region Geojson
+
+// NB: Lng Lat in geojson.. Leaflet uses Lat Lng
+const FEATURE_COLLECTION: FeatureCollection = {
+  'type': 'FeatureCollection',
+  'features': [
     {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
+      'type': 'Feature',
+      'properties': {},
+      'geometry': {
+        'type': 'Polygon',
+        'coordinates': [
           [
             [
               30.816650390624996,
@@ -685,4 +690,8 @@
       }
     }
   ]
-}
+};
+
+// #endregion Geojson
+
+export const NORWAY_BOUNDS = FEATURE_COLLECTION.features[0].geometry as Polygon;

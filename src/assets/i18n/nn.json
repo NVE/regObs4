@@ -157,6 +157,7 @@
       "ARC_GIS": "ESRI World Topo (verden)",
       "GEODATA_LANDSKAP": "Geodata Landskap (Norge)",
       "KARTVERKET": "Kartverket (Norge)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (verden)"
     },
     "TIME_FRAME": "Tidsrom",
@@ -230,9 +231,9 @@
     "SPACE_AVAILABLE": "{{spaceAvailable}} ledig",
     "STATUS": {
       "DOWNLOADING_PART_X_OF_Y": "Lastar ned {{n}} av {{totalParts}}",
-      "UNZIP_PART_X_OF_Y": "Pakkar ut {{n}} av {{totalParts}}",
       "DOWNLOAD_ERROR": "Nedlasting feilet",
-      "UNZIP_ERROR": "Utpakking feilet"
+      "UNZIP_ERROR": "Utpakking feilet",
+      "UNZIP_PART_X_OF_Y": "Pakkar ut {{n}} av {{totalParts}}"
     },
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikkje å lagre kartpakka på disk. Ver vennleg og prøv igjen!",
     "UNZIP_ERROR_MESSAGE_NO_SPACE_LEFT": "Klarte ikkje å lagre kartpakka på disk. Er du sikker på at det er nok plass tilgjengeleg?"
@@ -758,7 +759,6 @@
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange utløp (5% av skreda går lengre)\nNokre skred kan ha lengre utløp som ikkje er vist på kartet.",
     "STEEPNESS_OUTLET_LEGEND_TITLE": "Fargar på utløp for snøskred:",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Utløpsområde for snøskred",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Berre</i> for turplanlegging. Kartet er automatisk generert og kan ha feil og manglar, t.d. bratte heng og utløp som ikkje visast.\n<br/>\n<br/>\nFargar på utløp for snøskred:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Kart over svekka is"
   },
   "TABS": {
