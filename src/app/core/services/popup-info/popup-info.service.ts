@@ -55,6 +55,9 @@ export class PopupInfoService {
     lastTimestamp?: number,
     showWhenNull = true
   ): boolean {
+    if (limitMs === 0) {
+      return true;
+    }
     if (lastTimestamp === undefined || lastTimestamp === null) {
       return showWhenNull;
     }
