@@ -7,7 +7,7 @@ import {
   NgZone,
   OnDestroy
 } from '@angular/core';
-import { KdvElement } from '../../../regobs-api/models/kdv-element';
+import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Subscription } from 'rxjs';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
 import { SelectOption } from '../../../shared/components/input/select/select-option.model';

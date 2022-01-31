@@ -7,11 +7,11 @@ import {
   ViewChild
 } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { ObsLocationDto } from '../../../regobs-api/models';
+import { ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import * as L from 'leaflet';
 import { TranslateService } from '@ngx-translate/core';
 import { SetLocationInMapComponent } from '../../components/set-location-in-map/set-location-in-map.component';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
@@ -215,7 +215,7 @@ export class SetAvalanchePositionPage implements OnInit {
     }
   }
 
-  async onLocationSet(event: ObsLocationDto) {
+  async onLocationSet(event: ObsLocationEditModel) {
     if (this.startIsActive) {
       this.start = L.latLng(event.Latitude, event.Longitude);
       if (this.end) {

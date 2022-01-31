@@ -2,17 +2,13 @@ import {
   Component,
   OnInit,
   Input,
-  Output,
-  EventEmitter,
   NgZone,
-  ChangeDetectorRef
 } from '@angular/core';
-import { IRegistration } from '../../models/registration.model';
+import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ModalController } from '@ionic/angular';
-import { RegistrationTid } from '../../models/registrationTid.enum';
 import * as L from 'leaflet';
 import { SetDamageLocationPage } from '../../pages/set-damage-location/set-damage-location.page';
-import { ObsLocationDto } from '../../../regobs-api/models';
+import { ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { RegistrationService } from '../../services/registration.service';
 
 @Component({
@@ -53,8 +49,8 @@ export class DamageObsComponent implements OnInit {
     } else {
       this.isSelected = false;
     }
-    if (this.damageObs && this.damageObs.Pictures === undefined) {
-      this.damageObs.Pictures = [];
+    if (this.damageObs && this.damageObs.Attachments === undefined) {
+      this.damageObs.Attachments = [];
     }
   }
 
@@ -67,7 +63,7 @@ export class DamageObsComponent implements OnInit {
       if (!this.damageObs) {
         this.registration.request.DamageObs.push({
           DamageTypeTID: this.damageTypeId,
-          Pictures: []
+          Attachments: []
         });
       }
     } else {
@@ -104,7 +100,7 @@ export class DamageObsComponent implements OnInit {
     modal.present();
     const result = await modal.onDidDismiss();
     if (result.data) {
-      const obs: ObsLocationDto = result.data;
+      const obs: ObsLocationEditModel = result.data;
       this.damageObs.DamagePosition = {
         Latitude: obs.Latitude,
         Longitude: obs.Longitude

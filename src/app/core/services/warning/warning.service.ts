@@ -3,7 +3,7 @@ import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import moment, { lang } from 'moment';
 import 'moment-timezone';
-import { LangKey } from '../../models/langKey';
+import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
 import {
@@ -14,7 +14,6 @@ import {
   distinctUntilChanged,
   take
 } from 'rxjs/operators';
-import { GeoHazard } from '../../models/geo-hazard.enum';
 import { IWarning } from './warning.interface';
 import { WarningGroup } from './warning-group.model';
 import { IWarningApiResult } from './warning-api-result.interface';
@@ -273,7 +272,7 @@ export class WarningService {
             GeoHazard.Snow,
             GeoHazard.Ice,
             GeoHazard.Water,
-            GeoHazard.Dirt
+            GeoHazard.Soil
           ].map((geoHazard) =>
             this.getLatestWarningsOrFallbackToOffline(
               latestWarnings,

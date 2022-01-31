@@ -3,7 +3,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../../settings';
 
 @Component({

@@ -6,12 +6,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_PROVIDERS } from './app.providers';
-import { settings } from '../settings';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from './modules/shared/shared.module';
 import { RegistrationModule } from './modules/registration/registration.module';
-import { RegobsApiModule } from './modules/regobs-api/regobs-api.module';
 import { LegalTermsModalPageModule } from './pages/modal-pages/legal-terms-modal/legal-terms-modal.module';
 import { MarkdownModule } from 'ngx-markdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,6 +18,8 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GpsDebugModule } from './modules/gps-debug/gps-debug.module';
 import { MapModule } from './modules/map/map.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { RegistrationModule as CommonRegistrationModule } from './modules/common-registration/registration.module';
+import { RegobsApiModuleWithConfig } from 'src/app/modules/common-regobs-api';
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,11 +37,12 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     MapModule,
     LeafletModule,
     RegistrationModule,
-    RegobsApiModule,
     LegalTermsModalPageModule,
     SideMenuModule,
     GpsDebugModule,
-    AnalyticsModule.forRoot()
+    AnalyticsModule.forRoot(),
+    RegobsApiModuleWithConfig.forRoot(),
+    CommonRegistrationModule.forRoot()
   ],
   providers: APP_PROVIDERS,
   bootstrap: [AppComponent]

@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IonSlides, NavController } from '@ionic/angular';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { LangKey } from '../../core/models/langKey';
+import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import { animations } from './start-wizard.animations';
 import { Subject, timer, interval } from 'rxjs';
 import { takeUntil, skipWhile, switchMap, take } from 'rxjs/operators';
@@ -36,10 +35,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
   private activeIndex = new Subject<number>();
   private isIncreasing = true;
 
-  constructor(
-    private userSettingService: UserSettingService,
-    private navController: NavController
-  ) {}
+  constructor(private userSettingService: UserSettingService, private navController: NavController) {}
 
   ionViewWillEnter() {
     this.state = 'x';
@@ -53,9 +49,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
   ngOnInit() {}
 
   async saveLanguage() {
-    const userSettings = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
+    const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
     this.userSettingService.saveUserSettings({
       ...userSettings,
       language: this.language
@@ -92,9 +86,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
 
   async start() {
     if (this.reachedEnd) {
-      const userSettings = await this.userSettingService.userSetting$
-        .pipe(take(1))
-        .toPromise();
+      const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
       this.userSettingService.saveUserSettings({
         ...userSettings,
         completedStartWizard: true

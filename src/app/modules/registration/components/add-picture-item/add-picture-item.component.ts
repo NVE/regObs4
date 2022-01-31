@@ -1,54 +1,49 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  ActionSheetController,
-  Platform,
-  ToastController
-} from '@ionic/angular';
-import {
-  Camera,
-  CameraOptions,
-  PictureSourceType
-} from '@ionic-native/camera/ngx';
+import { ActionSheetController, Platform, ToastController } from '@ionic/angular';
+import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
 import { settings } from '../../../../../settings';
-import { RegistrationTid } from '../../models/registrationTid.enum';
-import { PictureRequestDto } from '../../../regobs-api/models';
+import { AttachmentType, AttachmentUploadEditModel, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { DomSanitizer } from '@angular/platform-browser';
-import { File, DirectoryEntry, Entry } from '@ionic-native/file/ngx';
+import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
-import * as utils from '@nano-sql/core/lib/utilities';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
-// const DATA_URL_TAG = 'data:image/jpeg;base64,';
 const DEBUG_TAG = 'AddPictureItemComponent';
+const MIME_TYPE = 'image/jpeg';
+
+export interface AttachmentUploadEditModelWithBlob extends AttachmentUploadEditModel {
+  blob: Blob;
+}
 
 @Component({
   selector: 'app-add-picture-item',
   templateUrl: './add-picture-item.component.html',
-  styleUrls: ['./add-picture-item.component.scss']
+  styleUrls: ['./add-picture-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddPictureItemComponent implements OnInit {
-  @Input() images: PictureRequestDto[];
+export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
+  @Input() registrationId: string;
   @Input() registrationTid: RegistrationTid;
-  @Output() imagesChange = new EventEmitter();
+  @Input() geoHazard: GeoHazard;
   @Input() title = 'REGISTRATION.ADD_IMAGES';
   @Input() pictureCommentText = 'REGISTRATION.IMAGE_DESCRIPTION';
-  @Input() pictureCommentPlaceholder =
-    'REGISTRATION.IMAGE_DESCRIPTION_PLACEHOLDER';
+  @Input() pictureCommentPlaceholder = 'REGISTRATION.IMAGE_DESCRIPTION_PLACEHOLDER';
   @Input() icon = 'camera';
   @Input() showIcon = true;
   @Input() iconColor = 'dark';
   @Input() onBeforeAdd: () => Promise<void> | void;
+  @Input() attachmentType: AttachmentType = 'Attachment';
+  @Input() ref?: string;
 
-  get imagesForCurrentRegistrationTid() {
-    return this.images
-      ? this.images.filter(
-        (image) => image.RegistrationTID === this.registrationTid
-      )
-      : [];
-  }
+  attachments: AttachmentUploadEditModelWithBlob[];
 
   constructor(
     private translateService: TranslateService,
@@ -59,10 +54,43 @@ export class AddPictureItemComponent implements OnInit {
     private webView: WebView,
     private toastController: ToastController,
     private domSanitizer: DomSanitizer,
-    private actionSheetController: ActionSheetController
-  ) {}
+    private actionSheetController: ActionSheetController,
+    private newAttachmentService: NewAttachmentService,
+    private cdr: ChangeDetectorRef
+  ) {
+    super();
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.newAttachmentService
+      .getAttachments(this.registrationId)
+      .pipe(
+        map((attachments) =>
+          attachments.filter((a) => a.RegistrationTID === this.registrationTid && a.type === this.attachmentType && a.ref === this.ref)
+        ),
+        switchMap((attachments) =>
+          attachments.length === 0
+            ? of([])
+            : forkJoin([
+              ...attachments.map((a) =>
+                this.newAttachmentService.getBlob(this.registrationId, a.id).pipe(
+                  take(1),
+                  map((blob) => ({ ...a, blob })),
+                  catchError((err) => {
+                    this.logger.error(err, DEBUG_TAG, 'Could not get blob from attachment');
+                    return of({ ...a, blob: undefined });
+                  })
+                )
+              )
+            ])
+        ),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe((result) => {
+        this.attachments = result;
+        this.cdr.detectChanges();
+      });
+  }
 
   async addClick() {
     if (this.onBeforeAdd !== undefined) {
@@ -84,10 +112,8 @@ export class AddPictureItemComponent implements OnInit {
           handler: () => this.getPicture(this.camera.PictureSourceType.CAMERA)
         },
         {
-          text:
-            translations['REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY'],
-          handler: () =>
-            this.getPicture(this.camera.PictureSourceType.PHOTOLIBRARY)
+          text: translations['REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY'],
+          handler: () => this.getPicture(this.camera.PictureSourceType.PHOTOLIBRARY)
         },
         {
           text: translations['DIALOGS.CANCEL'],
@@ -107,43 +133,41 @@ export class AddPictureItemComponent implements OnInit {
       const options: CameraOptions = {
         quality: settings.images.quality,
         destinationType: this.camera.DestinationType.FILE_URI,
-        // NOTE: Base64 encode. If API supports upload image blob later,
-        // this should be changed to FILE_URL and uploaded separatly
         sourceType: sourceType,
         encodingType: this.camera.EncodingType.JPEG,
         mediaType: this.camera.MediaType.PICTURE,
         targetHeight: settings.images.size,
         targetWidth: settings.images.size,
         correctOrientation: true,
-        saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA,
+        saveToPhotoAlbum: sourceType === PictureSourceType.CAMERA
         // NOTE: saveToPhotoAlbum=true causes a bug in latest cordova cameraplugin
       };
       const imageUrl = await this.camera.getPicture(options);
-      if (await !this.validateImage(imageUrl)) {
-        this.showErrorToast();
+      if (!(await this.validateImage(imageUrl))) {
+        this.showErrorToast('REGISTRATION.INVALID_IMAGE'); //TODO: Vis bedre feilmelding
         return true;
       }
 
-      this.logger.debug(
-        `Got image url from camera plugin: ${imageUrl}`,
-        DEBUG_TAG
-      );
-      const permanentUrl = await this.moveImageToPermanentStorage(imageUrl);
-      this.logger.debug(
-        `Image moved to permanent image url: ${permanentUrl}`,
-        DEBUG_TAG
-      );
-      this.addImage(permanentUrl);
+      this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
+      const arrayBuffer = await this.getArrayBuffer(imageUrl);
+      await this.addImage(new Blob([arrayBuffer]), MIME_TYPE);
     } catch (err) {
-      this.logger.log(
-        'User could not add image, most likely no access or invalid image',
-        err,
-        LogLevel.Warning,
-        DEBUG_TAG
-      );
-      this.showErrorToast();
+      this.logger.log('User could not add image, most likely no access or invalid image', err, LogLevel.Warning, DEBUG_TAG);
+      this.showErrorToast('Could not save image. Do you have enough space?'); //TODO: Vis bedre feilmelding og på flere språk
     }
     return true;
+  }
+
+  private async getArrayBuffer(fileUrl: string): Promise<ArrayBuffer> {
+    const entry = await this.file.resolveLocalFilesystemUrl(fileUrl);
+    if (!entry.isFile) {
+      throw Error(`${fileUrl} is not a file!`);
+    }
+    const pathSplitted = entry.nativeURL.split('/');
+    const filename = pathSplitted.pop();
+    const directory = pathSplitted.join('/');
+    const arrayBuffer = await this.file.readAsArrayBuffer(directory, filename);
+    return arrayBuffer;
   }
 
   private async validateImage(src: string) {
@@ -154,93 +178,36 @@ export class AddPictureItemComponent implements OnInit {
     return false;
   }
 
-  showErrorToast() {
-    this.translateService
-      .get('REGISTRATION.INVALID_IMAGE')
-      .subscribe(async (translation) => {
-        const toast = await this.toastController.create({
-          message: translation,
-          mode: 'md',
-          duration: 4000
-        });
-        toast.present();
+  showErrorToast(messageKey: string) {
+    this.translateService.get(messageKey).subscribe(async (translation) => {
+      const toast = await this.toastController.create({
+        message: translation,
+        mode: 'md',
+        duration: 4000
       });
-  }
-
-  private async moveImageToPermanentStorage(src: string): Promise<string> {
-    const entry = await this.file.resolveLocalFilesystemUrl(src);
-    const rootDir = await this.file.resolveDirectoryUrl(
-      this.file.dataDirectory
-    );
-    const obsImgFolder = await this.file.getDirectory(rootDir, 'obsimages', {
-      create: true
+      toast.present();
     });
-    const newSrc = await this.moveFile(entry, obsImgFolder);
-    return newSrc;
-  }
-
-  private moveFile(file: Entry, directory: DirectoryEntry): Promise<string> {
-    const newName = `${utils.uuid()}.jpg`;
-    return new Promise((resolve, reject) =>
-      file.moveTo(
-        directory,
-        newName,
-        (entry) => resolve(entry.toURL()),
-        (err) => reject(err)
-      )
-    );
-  }
-
-  private async deleteFile(src: string) {
-    try {
-      const entry = await this.file.resolveLocalFilesystemUrl(src);
-      await new Promise<void>((resolve, reject) =>
-        entry.remove(resolve, reject)
-      );
-    } catch (err) {
-      this.logger.log(
-        'Could not delete image',
-        err,
-        LogLevel.Warning,
-        DEBUG_TAG
-      );
-    }
   }
 
   private async addDummyImage() {
-    const dummyImage = await DataUrlHelper.getDataUrlFromSrcUrl(
-      '/assets/images/dummyregobsimage.jpeg'
+    const dummyImage = await DataUrlHelper.getDataUrlFromSrcUrl('/assets/images/dummyregobsimage.jpeg');
+    const blob = DataUrlHelper.convertDataURIToBinary(dummyImage);
+    await this.addImage(new Blob([blob]), 'image/jpeg');
+  }
+
+  async addImage(data: Blob, mimeType: string) {
+    await this.newAttachmentService.addAttachment(
+      this.registrationId,
+      data,
+      mimeType,
+      this.geoHazard,
+      this.registrationTid,
+      this.attachmentType,
+      this.ref
     );
-    this.addImage(dummyImage);
   }
 
-  addImage(dataUrl: string) {
-    this.images.push({
-      PictureImageBase64: dataUrl,
-      RegistrationTID: this.registrationTid
-    });
-    this.imagesChange.emit(this.images);
-  }
-
-  removeImage(image: PictureRequestDto) {
-    const index = this.images.indexOf(image);
-    if (index >= 0) {
-      const imgSrc = image.PictureImageBase64;
-      this.images.splice(index, 1);
-      this.imagesChange.emit(this.images);
-      if (!this.isBase64Image(imgSrc)) {
-        this.deleteFile(imgSrc);
-      }
-    }
-  }
-
-  isBase64Image(img: string) {
-    return img && img.startsWith('data:image');
-  }
-
-  convertFileSrc(fileUrl: string) {
-    return this.domSanitizer.bypassSecurityTrustUrl(
-      this.webView.convertFileSrc(fileUrl)
-    );
+  removeImage(image: AttachmentUploadEditModel) {
+    this.newAttachmentService.removeAttachment(this.registrationId, image.id);
   }
 }

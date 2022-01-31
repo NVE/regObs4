@@ -3,15 +3,14 @@ import { BasePage } from '../../base.page';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ItemReorderEventDetail } from '@ionic/core';
 import {
-  AvalancheEvalProblem2Dto,
+  AvalancheEvalProblem2EditModel,
   KdvElement
-} from '../../../../regobs-api/models';
+} from 'src/app/modules/common-regobs-api/models';
 import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-problem-modal.page';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
-import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { Subscription } from 'rxjs';
 import { ArrayHelper } from 'src/app/core/helpers/array-helper';
 
@@ -79,7 +78,7 @@ export class AvalancheProblemPage extends BasePage {
             if (result.data.delete) {
               this.registration.request.AvalancheEvalProblem2.splice(index, 1);
             } else {
-              const avalancheEvalProblem: AvalancheEvalProblem2Dto =
+              const avalancheEvalProblem: AvalancheEvalProblem2EditModel =
                 result.data;
               if (index !== undefined) {
                 this.registration.request.AvalancheEvalProblem2[
@@ -97,16 +96,7 @@ export class AvalancheProblemPage extends BasePage {
     }
   }
 
-  onProblemReorder(event: CustomEvent<ItemReorderEventDetail>) {
-    this.registration.request.AvalancheEvalProblem2 = ArrayHelper.reorderList(
-      this.registration.request.AvalancheEvalProblem2,
-      event.detail.from,
-      event.detail.to
-    );
-    event.detail.complete();
-  }
-
-  getDescription(avalancheEvalProblem: AvalancheEvalProblem2Dto) {
+  getDescription(avalancheEvalProblem: AvalancheEvalProblem2EditModel): string {
     const cause = this.avalancheCause.find(
       (c) => c.Id === avalancheEvalProblem.AvalCauseTID
     );
@@ -115,5 +105,14 @@ export class AvalancheProblemPage extends BasePage {
     } else {
       return 'REGISTRATION.SNOW.AVALANCHE_PROBLEM.UNKNOWN_TYPE';
     }
+  }
+
+  onProblemReorder(event: CustomEvent<ItemReorderEventDetail>): void {
+    this.registration.request.AvalancheEvalProblem2 = ArrayHelper.reorderList(
+      this.registration.request.AvalancheEvalProblem2,
+      event.detail.from,
+      event.detail.to
+    );
+    event.detail.complete();
   }
 }

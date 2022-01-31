@@ -1,12 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import {
-  StratProfileLayerDto,
+  StratProfileLayerEditModel,
   KdvElement
-} from '../../../../../../regobs-api/models';
+} from 'src/app/modules/common-regobs-api/models';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';
-import { IRegistration } from '../../../../../models/registration.model';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../../services/registration.service';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
 import cloneDeep from 'clone-deep';
@@ -21,7 +21,7 @@ const basicWetnessValues = [1, 3, 5, 7, 9];
   styleUrls: ['./strat-profile-layer-modal.page.scss']
 })
 export class StratProfileLayerModalPage implements OnInit {
-  @Input() layer: StratProfileLayerDto;
+  @Input() layer: StratProfileLayerEditModel;
   @Input() reg: IRegistration;
   @Input() index: number;
 

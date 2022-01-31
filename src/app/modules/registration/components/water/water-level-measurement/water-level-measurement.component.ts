@@ -1,10 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { WaterLevelMeasurementDto } from '../../../../regobs-api/models';
+import { WaterLevelMeasurementEditModel } from 'src/app/modules/common-regobs-api/models';
 import moment from 'moment';
-import { RegistrationTid } from '../../../models/registrationTid.enum';
-import { IsEmptyHelper } from '../../../../../core/helpers/is-empty.helper';
-
-const DEBUG_TAG = 'WaterLevelMeasurementComponent';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
 
 @Component({
   selector: 'app-water-level-measurement',
@@ -15,8 +14,10 @@ export class WaterLevelMeasurementComponent implements OnInit {
   @Input() measurementNumber: number;
   @Input() waterLevelMethod: number;
   @Input() registrationTid: RegistrationTid;
+  @Input() registrationId: string;
+  @Input() geoHazard: GeoHazard;
   @Input() dtObsTime: string;
-  @Input() waterLevelMeasurement: WaterLevelMeasurementDto;
+  @Input() waterLevelMeasurement: WaterLevelMeasurementEditModel;
   @Output() waterLevelMeasurementChange = new EventEmitter();
   maxDate: string;
   showDtMeasurementTimeError = false;
@@ -24,25 +25,21 @@ export class WaterLevelMeasurementComponent implements OnInit {
   get dateIsDifferentThanObsTime() {
     return (
       this.waterLevelMeasurement.DtMeasurementTime &&
-      !moment(this.waterLevelMeasurement.DtMeasurementTime)
-        .startOf('day')
-        .isSame(moment(this.dtObsTime).startOf('day'))
+      !moment(this.waterLevelMeasurement.DtMeasurementTime).startOf('day').isSame(moment(this.dtObsTime).startOf('day'))
     );
   }
 
   get isValid() {
-    if (IsEmptyHelper.isEmpty(this.waterLevelMeasurement)) {
+    if (isEmpty(this.waterLevelMeasurement)) {
       return true;
     }
     return this.waterLevelMeasurement.DtMeasurementTime;
   }
 
-  constructor() {}
-
   ngOnInit() {
     this.maxDate = this.getMaxDateForNow();
-    if (!this.waterLevelMeasurement.Pictures) {
-      this.waterLevelMeasurement.Pictures = [];
+    if (!this.waterLevelMeasurement.Attachments) {
+      this.waterLevelMeasurement.Attachments = [];
     }
   }
 
@@ -59,10 +56,7 @@ export class WaterLevelMeasurementComponent implements OnInit {
   }
 
   showError() {
-    if (
-      !IsEmptyHelper.isEmpty(this.waterLevelMeasurement) &&
-      !this.waterLevelMeasurement.DtMeasurementTime
-    ) {
+    if (!isEmpty(this.waterLevelMeasurement) && !this.waterLevelMeasurement.DtMeasurementTime) {
       this.showDtMeasurementTimeError = true;
     } else {
       this.showDtMeasurementTimeError = false;
@@ -73,7 +67,7 @@ export class WaterLevelMeasurementComponent implements OnInit {
     this.showError();
   }
 
-  triggerChange() {
-    this.waterLevelMeasurementChange.emit(this.waterLevelMeasurement);
-  }
+  // triggerChange() {
+  //   this.waterLevelMeasurementChange.emit(this.waterLevelMeasurement);
+  // }
 }

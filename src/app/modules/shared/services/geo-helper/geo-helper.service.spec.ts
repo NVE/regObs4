@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { GeoHelperService } from './geo-helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Spied, provideMock } from '../../../../core/helpers/spied';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 describe('GeoHelperService', () => {
   let translateService: Spied<TranslateService>;
@@ -32,7 +32,7 @@ describe('GeoHelperService', () => {
     );
   });
   it('geoHazard dirt should return translation key GEO_HAZARDS.DIRT', () => {
-    expect(geoHelperService.getTranslationKey(GeoHazard.Dirt)).toEqual(
+    expect(geoHelperService.getTranslationKey(GeoHazard.Soil)).toEqual(
       'GEO_HAZARDS.DIRT'
     );
   });

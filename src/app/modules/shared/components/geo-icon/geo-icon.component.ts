@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 @Component({
   selector: 'app-geo-icon',
@@ -15,7 +15,7 @@ export class GeoIconComponent implements OnInit {
   get geoClass() {
     if (this.geoHazards && this.geoHazards.length > 0) {
       return this.geoHazards
-        .map((geoHazard) => (<string>GeoHazard[geoHazard]).toLowerCase())
+        .map((geoHazard) => geoHazard !== GeoHazard.Soil ? (<string>GeoHazard[geoHazard]).toLowerCase() : 'dirt')
         .join('-');
     }
     return '';

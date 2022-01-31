@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DensityProfileLayerDto } from '../../../../../../regobs-api/models';
+import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { SnowDensityLayerModalPage } from '../snow-density-layer-modal/snow-density-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
@@ -8,8 +8,9 @@ import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-hel
 import { RegistrationService } from '../../../../../services/registration.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { IRegistration } from '../../../../../models/registration.model';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import cloneDeep from 'clone-deep';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 
 @Component({
   selector: 'app-snow-density-modal',
@@ -46,12 +47,13 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
   constructor(
     private modalController: ModalController,
     private registrationService: RegistrationService,
+    private commonRegistrationService: CommonRegistrationService,
     private ngZone: NgZone
   ) {}
 
-  ngOnInit() {
-    this.registrationService
-      .getSavedRegistrationByIdObservable(this.regId)
+  async ngOnInit() {
+    this.commonRegistrationService
+      .getRegistrationByIdShared$(this.regId)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((reg) => {
         this.ngZone.run(async () => {
@@ -113,7 +115,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
     );
   }
 
-  async addOrEditLayer(index: number, layer: DensityProfileLayerDto) {
+  async addOrEditLayer(index: number, layer: SnowDensityLayerModel) {
     if (!this.layerModal) {
       this.layerModal = await this.modalController.create({
         component: SnowDensityLayerModalPage,
@@ -144,7 +146,7 @@ export class SnowDensityModalPage implements OnInit, OnDestroy {
 
   recalculateLayers() {
     if (this.useCylinder && this.hasLayers) {
-      this.profile.Layers.forEach((layer: DensityProfileLayerDto) => {
+      this.profile.Layers.forEach((layer: SnowDensityLayerModel) => {
         layer.Density = HydrologyHelper.calculateDensity(
           layer.Weight,
           layer.Thickness,

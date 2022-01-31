@@ -4,13 +4,8 @@
     <p *ngIf="item.subTitle">
       {{ item.subTitle | translate }}
     </p>
-    <p class="images" *ngIf="item.images">
-      <ng-container *ngFor="let image of item.images">
-        <app-base64-image *ngIf="isBase64Image(image.PictureImageBase64)"
-          [base64encodedImage]="image.PictureImageBase64">
-        </app-base64-image>
-        <img [src]="convertFileSrc(image.PictureImageBase64)" *ngIf="!isBase64Image(image.PictureImageBase64)">
-      </ng-container>
+    <p class="images" *ngIf="attachments">
+      <ro-blob-image  *ngFor="let attachment of attachments" [imgBlob]="attachment.blob"></ro-blob-image>
     </p>
   </ion-label>
   <ion-icon *ngIf="item.hasData && !readonly" slot="end" color="success" name="checkmark-circle"></ion-icon>

@@ -1,14 +1,14 @@
 import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
-import { IRegistration } from '../../models/registration.model';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../services/registration.service';
 import { NavController } from '@ionic/angular';
 import {
   ObsLocationsResponseDtoV2,
-  ObsLocationDto
-} from '../../../regobs-api/models';
+  ObsLocationEditModel
+} from 'src/app/modules/common-regobs-api/models';
 import { ActivatedRoute } from '@angular/router';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable, Subscription } from 'rxjs';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { SwipeBackService } from '../../../../core/services/swipe-back/swipe-back.service';
@@ -128,17 +128,16 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     );
   }
 
-  onLocationSet(event: ObsLocationDto) {
+  async onLocationSet(event: ObsLocationEditModel) {
     this.ngZone.run(() => {
       this.isSaveDisabled = true;
     });
     if (!this.registration) {
       this.registration = this.registrationService.createNewRegistration(
         this.geoHazard,
-        this.loggedInUser
       );
     }
-    this.setLocationAndSaveRegistration(event);
+    await this.setLocationAndSaveRegistration(event);
     if (this.registration.request.DtObsTime) {
       this.navController.navigateForward(
         'registration/edit/' + this.registration.id
@@ -150,12 +149,12 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     }
   }
 
-  private setLocationAndSaveRegistration(loc: ObsLocationDto) {
+  private async setLocationAndSaveRegistration(loc: ObsLocationEditModel) {
     if (loc === undefined || this.registration === undefined) {
       return;
     }
     this.registration.request.ObsLocation = loc;
-    this.registrationService.saveRegistrationAsync(this.registration);
+    await this.registrationService.saveRegistrationAsync(this.registration);
     this.isSaveDisabled = false;
   }
 }

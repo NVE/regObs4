@@ -7,6 +7,10 @@ import moment from 'moment';
 import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFullUpdateObservable';
 
+/**
+ * Håndterer spinnere og status på når sist oppdatering har skjedd.
+ * Trenger nye data og hentes? osv.
+ */
 @Injectable({
   providedIn: 'root'
 })

@@ -6,8 +6,7 @@ import {
   EventEmitter,
   NgZone
 } from '@angular/core';
-import { IRegistration } from '../../models/registration.model';
-import { RegistrationStatus } from '../../models/registrationStatus.enum';
+import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../services/registration.service';
 import {
   EmailComposer,
@@ -30,13 +29,13 @@ export class FailedRegistrationComponent implements OnInit {
     private registrationService: RegistrationService,
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
   ) {}
 
   ngOnInit() {}
 
   async openForEdit() {
-    this.registration.status = RegistrationStatus.Draft;
+    this.registration.syncStatus = SyncStatus.Draft;
     await this.registrationService.saveRegistrationAsync(this.registration);
     this.ngZone.run(() => {
       this.registrationChange.emit(this.registration);
@@ -47,16 +46,17 @@ export class FailedRegistrationComponent implements OnInit {
     const translations = await this.translateService
       .get(['REGISTRATION.EMAIL.SUBJECT', 'REGISTRATION.EMAIL.BODY'])
       .toPromise();
-    const pictures = this.registrationService
-      .getAllPictures(this.registration.request)
-      .filter(
-        (p) => p.PictureImageBase64 && !p.PictureImageBase64.startsWith('data')
-      )
-      .map((p) => p.PictureImageBase64);
+    // const pictures = this.registrationService
+    //   .getAllPictures(this.registration.request)
+    //   .filter(
+    //     (p) => p.PictureImageBase64 && !p.PictureImageBase64.startsWith('data')
+    //   )
+    //   .map((p) => p.PictureImageBase64);
     const base64string = btoa(stringify(this.registration));
-    const attachments = ['base64:registration.json//' + base64string].concat(
-      pictures
-    );
+    const attachments = ['base64:registration.json//' + base64string];
+    // const attachments = ['base64:registration.json//' + base64string].concat(
+    //   pictures
+    // );
     const email: EmailComposerOptions = {
       to: settings.errorEmailAddress,
       attachments,

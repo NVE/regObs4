@@ -1,10 +1,15 @@
 import { Injectable, NgZone } from '@angular/core';
-import { RegistrationTid } from '../models/registrationTid.enum';
+import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { getPropertyName, isArrayType } from 'src/app/modules/common-registration/registration.helpers';
+import { NewAttachmentService, RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationService } from '../services/registration.service';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { IRegistration } from '../models/registration.model';
+import { switchMap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { LoggingService } from '../../shared/services/logging/logging.service';
 
+const DEBUG_TAG = 'BasePageService';
 @Injectable({
   providedIn: 'root'
 })
@@ -25,54 +30,32 @@ export class BasePageService {
     return this.translateService;
   }
 
+  get CommonRegistrationService() {
+    return this.commonRegistrationService;
+  }
+
   constructor(
     private registrationService: RegistrationService,
+    private newAttachmentService: NewAttachmentService,
+    private commonRegistrationService: CommonRegistrationService,
     private ngZone: NgZone,
     private alertController: AlertController,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private loggingService: LoggingService
   ) {}
 
-  async confirmLeave(
-    registration: IRegistration,
-    registrationTid: RegistrationTid,
-    onReset?: () => void
-  ) {
-    const leaveText = await this.translateService
-      .get('REGISTRATION.REQUIRED_FIELDS_MISSING')
-      .toPromise();
-    return this.createResetDialog(
-      leaveText,
-      registration,
-      registrationTid,
-      onReset
-    );
+  async confirmLeave(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+    const leaveText = await this.translateService.get('REGISTRATION.REQUIRED_FIELDS_MISSING').toPromise();
+    return this.createResetDialog(leaveText, registration, registrationTid, onReset);
   }
 
-  async confirmReset(
-    registration: IRegistration,
-    registrationTid: RegistrationTid,
-    onReset?: () => void
-  ) {
-    const leaveText = await this.translateService
-      .get('REGISTRATION.CONFIRM_RESET')
-      .toPromise();
-    return this.createResetDialog(
-      leaveText,
-      registration,
-      registrationTid,
-      onReset
-    );
+  async confirmReset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+    const leaveText = await this.translateService.get('REGISTRATION.CONFIRM_RESET').toPromise();
+    return this.createResetDialog(leaveText, registration, registrationTid, onReset);
   }
 
-  private async createResetDialog(
-    message: string,
-    registration: IRegistration,
-    registrationTid: RegistrationTid,
-    onReset?: () => void
-  ) {
-    const translations = await this.translateService
-      .get(['DIALOGS.CANCEL', 'DIALOGS.YES'])
-      .toPromise();
+  private async createResetDialog(message: string, registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+    const translations = await this.translateService.get(['DIALOGS.CANCEL', 'DIALOGS.YES']).toPromise();
     const alert = await this.alertController.create({
       message,
       buttons: [
@@ -94,17 +77,11 @@ export class BasePageService {
     return reset;
   }
 
-  async reset(
-    registration: IRegistration,
-    registrationTid: RegistrationTid,
-    onReset?: () => void
-  ) {
+  async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
     this.Zone.run(() => {
       if (registrationTid) {
-        registration.request[
-          this.registrationService.getPropertyName(registrationTid)
-        ] = this.getDefaultValue(registrationTid);
-        this.resetImages(registration, registrationTid);
+        registration.request[getPropertyName(registrationTid)] = this.getDefaultValue(registrationTid);
+        this.resetImages(registration);
       }
       if (onReset) {
         onReset();
@@ -113,43 +90,33 @@ export class BasePageService {
     await this.registrationService.saveRegistrationAsync(registration);
   }
 
-  createDefaultProps(
-    registration: IRegistration,
-    registrationTid: RegistrationTid
-  ) {
-    const propName = this.registrationService.getPropertyName(registrationTid);
+  createDefaultProps(registration: IRegistration, registrationTid: RegistrationTid) {
+    const propName = getPropertyName(registrationTid);
     if (!registration.request[propName]) {
       // Init to new object if null
       registration.request[propName] = this.getDefaultValue(registrationTid);
     }
-    if (!registration.request.Picture) {
-      registration.request.Picture = [];
-    }
   }
 
   getDefaultValue(registrationTid: RegistrationTid) {
-    if (this.registrationService.getType(registrationTid) === 'array') {
+    if (isArrayType(registrationTid)) {
       return [];
     } else {
       return {};
     }
   }
 
-  resetImages(registration: IRegistration, registrationTid: RegistrationTid) {
-    if (
-      registration.request.Picture &&
-      registration.request.Picture.length > 0
-    ) {
-      registration.request.Picture = registration.request.Picture.filter(
-        (p) => p.RegistrationTID !== registrationTid
+  resetImages(registration: IRegistration) {
+    this.newAttachmentService
+      .getAttachments(registration.id)
+      .pipe(switchMap((attachments) => forkJoin(attachments.map((a) => this.newAttachmentService.removeAttachment(registration.id, a.id)))))
+      .subscribe(
+        () => {
+          this.loggingService.debug('Reset images complete', DEBUG_TAG);
+        },
+        (error) => {
+          this.loggingService.error(error, DEBUG_TAG, 'Could not reset images');
+        }
       );
-    }
-  }
-
-  hasImages(registration: IRegistration, registrationTid: RegistrationTid) {
-    return (
-      this.registrationService.getImages(registration, registrationTid).length >
-      0
-    );
   }
 }

@@ -27,7 +27,10 @@
       ],
       "core-js/es6/*": [
         "../node_modules/core-js/es/*"
-      ]
+      ],
+      "@varsom-regobs-common/*": [
+        "./node_modules/@varsom-regobs-common/*"
+      ],
     },
     "skipLibCheck": true, // Skip lib check until issue is resolved: https://github.com/Turfjs/turf/issues/2017
     "types": [
@@ -38,7 +41,7 @@
     ]
   },
   "angularCompilerOptions": {
-    "fullTemplateTypeCheck": false,
+    "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
     "enableIvy": true,
   }

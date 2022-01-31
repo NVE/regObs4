@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../../core/models/user-settings.model';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -21,7 +21,7 @@ export class GeoSelectComponent implements OnInit {
     this.geoHazardTypes = [
       [GeoHazard.Snow],
       [GeoHazard.Ice],
-      [GeoHazard.Water, GeoHazard.Dirt]
+      [GeoHazard.Water, GeoHazard.Soil]
     ];
     this.userSettings$ = this.userSettingService.userSetting$;
   }

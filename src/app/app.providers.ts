@@ -12,19 +12,11 @@ import { Zip } from '@ionic-native/zip/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import {
-  ErrorHandler,
-  Provider,
-  forwardRef,
-  LOCALE_ID,
-  APP_INITIALIZER,
-  NgZone
-} from '@angular/core';
+import { ErrorHandler, LOCALE_ID, APP_INITIALIZER, NgZone } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { Camera } from '@ionic-native/camera/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { StartWizardGuard } from './core/guards/start-wizard.guard';
@@ -41,23 +33,29 @@ import { environment } from '../environments/environment';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { ApiConfiguration } from './core/http-interceptor/api-configuration';
-import { RegobsApiConfiguration } from './modules/regobs-api/regobs-api-configuration';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { RegistrationRepositoryService } from './modules/registration/services/registration-repository/registration-repository.service';
 import { initTranslateService } from './custom-translate.loader';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AuthService } from 'ionic-appauth';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { API_KEY_TOKEN, IRegobsApiKeyProvider } from 'src/app/modules/common-regobs-api';
+import {
+  IRegistrationModuleOptions,
+  FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN
+} from './modules/common-registration/module.options';
+import { AppModeService } from 'src/app/modules/common-core/services';
+import { addRxPlugin } from 'rxdb';
+import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
+import { OfflineDbService } from './modules/common-registration/registration.services';
 
-export const API_INTERCEPTOR_PROVIDER: Provider = {
-  provide: HTTP_INTERCEPTORS,
-  useExisting: forwardRef(() => ApiInterceptor),
-  multi: true
-};
+// export const API_INTERCEPTOR_PROVIDER: Provider = {
+//   provide: HTTP_INTERCEPTORS,
+//   useExisting: forwardRef(() => ApiInterceptor),
+//   multi: true
+// };
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -71,6 +69,40 @@ export class DynamicLocaleId extends String {
 function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
+
+export function initCommonApiKey(): IRegobsApiKeyProvider {
+  return { apiKey: require('../assets/apikey.json').apiKey };
+}
+
+export function initAppModeService(userSettingService: UserSettingService): any {
+  return { appMode$: userSettingService.appMode$ };
+}
+
+// export function initCommonApiOptions(
+//   appConfig: IAppConfig
+// ): RegobsApiConfigurationInterface {
+//   return { rootUrl: appConfig.api.baseUrl };
+// }
+export function initCommonRegistrationOptions(): IRegistrationModuleOptions {
+  const options = {
+    autoSync: false,
+    adapter: 'idb',
+    attachmentsSupported: false
+  };
+  return options;
+}
+
+export function initDb(dbService: OfflineDbService) {
+  return (): Promise<void> => {
+    return import('pouchdb-adapter-idb').then(addRxPlugin).then(() => dbService.initDatabase('idb'));
+  };
+}
+
+// export function initAppMode(userSettings: UserSettingService, appModeService: AppModeService){
+//   return () => {
+//     userSettings.appMode$.subscribe((appMode) => appModeService.setAppMode(appMode));
+//   }
+// }
 
 export const APP_PROVIDERS = [
   StartWizardGuard,
@@ -91,7 +123,6 @@ export const APP_PROVIDERS = [
   SafariViewController,
   HTTP,
   WebView,
-  ApiInterceptor,
   EmailComposer,
   Keyboard,
   SQLite,
@@ -99,8 +130,14 @@ export const APP_PROVIDERS = [
   Network,
   ScreenOrientation,
   Diagnostic,
-  API_INTERCEPTOR_PROVIDER,
-  { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: ApiInterceptor, // TODO: Move to auth module
+    multi: true
+  },
+  // API_INTERCEPTOR_PROVIDER,
+  // { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
+
   { provide: ErrorHandler, useClass: AppErrorHandler },
   {
     provide: LoggingService,
@@ -126,22 +163,48 @@ export const APP_PROVIDERS = [
     multi: true
   },
 
+  // @varsom-regobs-common providers
+  {
+    provide: API_KEY_TOKEN,
+    useFactory: initCommonApiKey
+  },
+  {
+    provide: AppModeService,
+    useFactory: initAppModeService,
+    deps: [UserSettingService]
+  },
+  // {
+  //   provide: FOR_ROOT_OPTIONS_TOKEN,
+  //   useFactory: initCommonApiOptions,
+  //   deps: [APP_CONFIG]
+  // },
+  {
+    provide: COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
+    useFactory: initCommonRegistrationOptions,
+    deps: []
+  },
+  {
+    provide: APP_INITIALIZER,
+    useFactory: initDb,
+    multi: true,
+    deps: [OfflineDbService]
+  },
+  // {
+  //   provide: APP_INITIALIZER,
+  //   useFactory: initAppMode,
+  //   multi: true,
+  //   deps: [UserSettingService, AppModeService]
+  // },
+
   // Interface implementations
   { provide: 'OnReset', useExisting: DataMarshallService, multi: true },
   { provide: 'OnReset', useExisting: UserSettingService, multi: true },
   { provide: 'OnReset', useExisting: OfflineMapService, multi: true },
-  {
-    provide: 'OnReset',
-    useExisting: RegistrationRepositoryService,
-    multi: true
-  },
 
   // Custom native/web providers
   {
     provide: BackgroundGeolocationService,
-    useClass: window.hasOwnProperty('cordova')
-      ? BackgroundGeolocationNativeService
-      : BackgroundGeolocationWebService
+    useClass: window.hasOwnProperty('cordova') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService
   },
   {
     provide: BackgroundDownloadService,

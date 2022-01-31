@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppMode } from '../../../../core/models/app-mode.enum';
+import { AppMode } from 'src/app/modules/common-core/models';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 import { LogLevel } from './log-level.model';
 import { LoggingService } from './logging.service';

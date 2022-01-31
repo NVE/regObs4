@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { RegistrationTid } from '../../models/registrationTid.enum';
-import { IRegistration } from '../../models/registration.model';
+import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 
 @Component({
   selector: 'app-registration-content-wrapper',

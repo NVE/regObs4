@@ -15,7 +15,7 @@ import { ImageLocation } from '../../components/img-swiper/image-location.model'
 import { settings } from '../../../settings';
 import { SmartChanges } from '../../core/helpers/simple-changes.helper';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';

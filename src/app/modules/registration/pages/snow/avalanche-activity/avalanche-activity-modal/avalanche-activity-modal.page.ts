@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AvalancheActivityObs2Dto } from '../../../../../regobs-api/models';
-import { ModalController, AlertController } from '@ionic/angular';
+import { AvalancheActivityObs2EditModel } from 'src/app/modules/common-regobs-api/models';
+import { ModalController } from '@ionic/angular';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import moment from 'moment';
 
@@ -10,10 +10,10 @@ import moment from 'moment';
   styleUrls: ['./avalanche-activity-modal.page.scss']
 })
 export class AvalancheActivityModalPage implements OnInit {
-  @Input() avalancheActivity: AvalancheActivityObs2Dto;
+  @Input() avalancheActivity: AvalancheActivityObs2EditModel;
   @Input() dtObsTime: string;
 
-  avalancheActivityCopy: AvalancheActivityObs2Dto;
+  avalancheActivityCopy: AvalancheActivityObs2EditModel;
   isNew = false;
   maxDate: string;
 

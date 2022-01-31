@@ -21,8 +21,7 @@ import {
 } from 'rxjs/operators';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
-import { LangKey } from '../../models/langKey';
-import { GeoHazard } from '../../models/geo-hazard.enum';
+import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
 import { Router } from '@angular/router';

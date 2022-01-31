@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import * as RegobsApi from '../../../modules/regobs-api/services';
 import { NanoSql } from '../../../../nanosql';
-import { AppMode } from '../../models/app-mode.enum';
+import { AppMode } from 'src/app/modules/common-core/models';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
-import {
-  ObserverGroupDto,
-  ObserverResponseDto
-} from '../../../modules/regobs-api/models';
+import { ObserverGroupDto } from 'src/app/modules/common-regobs-api/models';
+import { AccountService as RegobsApiAccountService } from 'src/app/modules/common-regobs-api/services';
 import moment from 'moment';
-import { from, combineLatest, Observable } from 'rxjs';
+import { from, combineLatest, Observable, lastValueFrom, firstValueFrom } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
+import { nSQL } from '@nano-sql/core';
 
 @Injectable({
   providedIn: 'root'
@@ -20,61 +18,67 @@ export class UserGroupService {
   constructor(
     private regobsAuthService: RegobsAuthService,
     private userSettingService: UserSettingService,
-    private accountApiService: RegobsApi.AccountService,
+    private accountApiService: RegobsApiAccountService,
     private dataLoadService: DataLoadService
   ) {}
 
   async updateUserGroups() {
     const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
     if (loggedInUser.isLoggedIn) {
-      const appMode = await this.userSettingService.appMode$
-        .pipe(take(1))
-        .toPromise();
-      await this.checkLastUpdatedAndUpdateDataIfNeeded(
-        appMode,
-        loggedInUser.user
-      );
+      const appMode = await firstValueFrom(this.userSettingService.appMode$);
+      await this.checkLastUpdatedAndUpdateDataIfNeeded(appMode, loggedInUser.email);
     }
   }
 
-  private async checkLastUpdatedAndUpdateDataIfNeeded(
-    appMode: AppMode,
-    user: ObserverResponseDto
-  ) {
-    const dataLoadId = this.getDataLoadId(appMode, user);
+  private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, email: string) {
+    const dataLoadId = this.getDataLoadId(appMode, email);
     const dataLoad = await this.dataLoadService.getState(dataLoadId);
     const lastUpdateLimit = moment().subtract(1, 'hour');
-    if (
-      !dataLoad.lastUpdated ||
-      moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
-    ) {
-      await this.updateUserGroupsForUser(appMode, user);
+    if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
+      await this.updateUserGroupsForUser(appMode, email);
     }
   }
 
-  async updateUserGroupsForUser(appMode: AppMode, user: ObserverResponseDto) {
-    const dataLoadId = this.getDataLoadId(appMode, user);
+  async updateUserGroupsForUser(appMode: AppMode, email: string) {
+    const dataLoadId = this.getDataLoadId(appMode, email);
     await this.dataLoadService.startLoading(dataLoadId);
-    const result = await this.accountApiService
-      .AccountGetObserverGroups(user.Guid)
-      .toPromise();
-    this.regobsAuthService.saveUserGroups(appMode, user, result);
+    const result = await lastValueFrom(this.accountApiService.AccountGetObserverGroups());
+    this.saveUserGroups(appMode, email, result);
     await this.dataLoadService.loadingCompleted(dataLoadId, result.length);
   }
 
-  private getDataLoadId(appMode: AppMode, user: ObserverResponseDto) {
-    return `${NanoSql.TABLES.OBSERVER_GROUPS.name}_${appMode}_${user.Guid}`;
+  async saveUserGroups(appMode: AppMode, email: string, observerGroups: ObserverGroupDto[]): Promise<void> {
+    const userGroups = (observerGroups || []).map((val) => {
+      return {
+        key: `${email}_${val.Id}`,
+        userId: email,
+        Id: val.Id,
+        Name: val.Name
+      };
+    });
+    const instanceName = NanoSql.getInstanceName(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode);
+    await nSQL(instanceName).loadJS(userGroups);
+    await this.deleteUserGroupsNoLongerInResult(
+      appMode,
+      userGroups.map((ug) => ug.key)
+    );
+  }
+
+  private async deleteUserGroupsNoLongerInResult(appMode: AppMode, ids: string[]) {
+    await NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
+      .query('delete')
+      .where((dbGroup: { key: string; userId: string; Id: number; Name: string }) => ids.indexOf(dbGroup.key) < 0)
+      .exec();
+  }
+
+  private getDataLoadId(appMode: AppMode, email: string) {
+    return `${NanoSql.TABLES.OBSERVER_GROUPS.name}_${appMode}_${email}`;
   }
 
   getUserGroupsAsObservable(): Observable<ObserverGroupDto[]> {
-    return combineLatest([
-      this.regobsAuthService.loggedInUser$,
-      this.userSettingService.appMode$
-    ]).pipe(
+    return combineLatest([this.regobsAuthService.loggedInUser$, this.userSettingService.appMode$]).pipe(
       switchMap(([loggedInUser, appMode]) =>
-        loggedInUser.isLoggedIn
-          ? from(this.getUserGroupsFromDb(appMode, loggedInUser.user))
-          : from(Promise.resolve([]))
+        loggedInUser.isLoggedIn ? from(this.getUserGroupsFromDb(appMode, loggedInUser.email)) : from(Promise.resolve([]))
       )
     );
   }
@@ -83,13 +87,10 @@ export class UserGroupService {
     return this.getUserGroupsAsObservable().pipe(take(1)).toPromise();
   }
 
-  private async getUserGroupsFromDb(
-    appMode: AppMode,
-    user: ObserverResponseDto
-  ): Promise<ObserverGroupDto[]> {
+  private async getUserGroupsFromDb(appMode: AppMode, email: string): Promise<ObserverGroupDto[]> {
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVER_GROUPS.name, appMode)
       .query('select')
-      .where((x) => x.userId === user.Guid)
+      .where((x) => x.userId === email)
       .exec();
   }
 }

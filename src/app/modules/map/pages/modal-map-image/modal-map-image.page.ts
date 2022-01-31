@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ModalController } from '@ionic/angular';
 
 @Component({

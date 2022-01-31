@@ -1,11 +1,11 @@
 import { Component, NgZone } from '@angular/core';
-import { RegistrationTid } from '../../models/registrationTid.enum';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';
 import { ModalController } from '@ionic/angular';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
-import { DangerObsDto, KdvElement } from '../../../regobs-api/models';
+import { DangerObsEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -46,7 +46,7 @@ export class DangerObsPage extends BasePage {
       });
   }
 
-  async addOrEdit(index: number) {
+  async addOrEdit(index?: number) {
     const dangerObs =
       index !== undefined
         ? this.registration.request.DangerObs[index]
@@ -70,7 +70,7 @@ export class DangerObsPage extends BasePage {
     }
   }
 
-  setDangerObs(index: number, dangerObs: DangerObsDto) {
+  setDangerObs(index: number, dangerObs: DangerObsEditModel) {
     this.zone.run(() => {
       if (!this.registration.request.DangerObs) {
         this.registration.request.DangerObs = [];
@@ -79,7 +79,7 @@ export class DangerObsPage extends BasePage {
     });
   }
 
-  addDangerObs(dangerObs: DangerObsDto) {
+  addDangerObs(dangerObs: DangerObsEditModel) {
     this.zone.run(() => {
       if (!this.registration.request.DangerObs) {
         this.registration.request.DangerObs = [];
@@ -99,7 +99,7 @@ export class DangerObsPage extends BasePage {
     });
   }
 
-  getSummaryText(dangerObs: DangerObsDto) {
+  getSummaryText(dangerObs: DangerObsEditModel) {
     const text = [];
     if (dangerObs.DangerSignTID % 100 !== 0 && this.dangerSignKdv) {
       const kdvElement = this.dangerSignKdv.find(

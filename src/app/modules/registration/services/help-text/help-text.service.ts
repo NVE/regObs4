@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import moment from 'moment';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { DataLoadService } from '../../../data-load/services/data-load.service';
-import { AppMode } from '../../../../core/models/app-mode.enum';
-import { LangKey } from '../../../../core/models/langKey';
 import { NanoSql } from '../../../../../nanosql';
 import { toPromiseWithCancel } from '../../../../core/helpers/observable-helper';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
-import { HelptextDto } from '../../../regobs-api/models';
+import { GeoHazard, LangKey, AppMode } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../../settings';
-import { HelptextService } from '../../../regobs-api/services';
+import { HelptextDto } from 'src/app/modules/common-regobs-api/models';
+import { HelptextService } from 'src/app/modules/common-regobs-api/services';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { take } from 'rxjs/operators';
 
@@ -27,67 +25,32 @@ export class HelpTextService {
   ) {}
 
   async updateHelpTexts(cancel?: Promise<void>) {
-    const userSetting = await this.userSettingService.userSetting$
-      .pipe(take(1))
-      .toPromise();
-    await this.checkLastUpdatedAndUpdateDataIfNeeded(
-      userSetting.appMode,
-      userSetting.language,
-      cancel
-    );
+    const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+    await this.checkLastUpdatedAndUpdateDataIfNeeded(userSetting.appMode, userSetting.language, cancel);
   }
 
   private getDataLoadId(appMode: AppMode, language: LangKey) {
     return `${NanoSql.TABLES.HELP_TEXTS.name}_${appMode}_${language}`;
   }
 
-  private async checkLastUpdatedAndUpdateDataIfNeeded(
-    appMode: AppMode,
-    language: LangKey,
-    cancel?: Promise<void>
-  ) {
-    const dataLoad = await this.dataLoadService.getState(
-      this.getDataLoadId(appMode, language)
-    );
-    const isLoadingTimeout = moment().subtract(
-      settings.foregroundUpdateIntervalMs,
-      'milliseconds'
-    );
-    if (
-      dataLoad.isLoading &&
-      moment(dataLoad.startedDate).isAfter(isLoadingTimeout)
-    ) {
-      this.loggingService.debug(
-        'Kdv elements is allready being updated.',
-        DEBUG_TAG
-      );
+  private async checkLastUpdatedAndUpdateDataIfNeeded(appMode: AppMode, language: LangKey, cancel?: Promise<void>) {
+    const dataLoad = await this.dataLoadService.getState(this.getDataLoadId(appMode, language));
+    const isLoadingTimeout = moment().subtract(settings.foregroundUpdateIntervalMs, 'milliseconds');
+    if (dataLoad.isLoading && moment(dataLoad.startedDate).isAfter(isLoadingTimeout)) {
+      this.loggingService.debug('Kdv elements is allready being updated.', DEBUG_TAG);
     } else {
-      const lastUpdateLimit = moment().subtract(
-        settings.helpTexts.daysBeforeUpdate,
-        'day'
-      );
-      if (
-        !dataLoad.lastUpdated ||
-        moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)
-      ) {
+      const lastUpdateLimit = moment().subtract(settings.helpTexts.daysBeforeUpdate, 'day');
+      if (!dataLoad.lastUpdated || moment(dataLoad.lastUpdated).isBefore(lastUpdateLimit)) {
         await this.updateHelpTextsForLanguage(appMode, language, cancel);
       }
     }
   }
 
-  async updateHelpTextsForLanguage(
-    appMode: AppMode,
-    language: LangKey,
-    cancel?: Promise<void>
-  ) {
+  async updateHelpTextsForLanguage(appMode: AppMode, language: LangKey, cancel?: Promise<void>) {
     const dataLoadId = this.getDataLoadId(appMode, language);
     await this.dataLoadService.startLoading(dataLoadId);
     try {
-      const helpTexts = await toPromiseWithCancel(
-        this.helptextApiService.HelptextGet(language),
-        cancel,
-        20000
-      );
+      const helpTexts = await toPromiseWithCancel(this.helptextApiService.HelptextGet(language), cancel, 20000);
       await NanoSql.getInstance(NanoSql.TABLES.HELP_TEXTS.name, appMode)
         .query('upsert', { langKey: language, helpTexts: helpTexts })
         .exec();
@@ -97,19 +60,9 @@ export class HelpTextService {
     }
   }
 
-  async getHelpTextByKey(
-    langKey: LangKey,
-    appMode: AppMode,
-    geoHazard: GeoHazard,
-    registrationTid: number
-  ) {
+  async getHelpTextByKey(langKey: LangKey, appMode: AppMode, geoHazard: GeoHazard, registrationTid: number) {
     const helpTexts = await this.getHelpTexts(langKey, appMode);
-    return helpTexts.find(
-      (x) =>
-        !!x &&
-        x.GeoHazardTID === geoHazard &&
-        x.RegistrationTID === registrationTid
-    );
+    return helpTexts.find((x) => !!x && x.GeoHazardTID === geoHazard && x.RegistrationTID === registrationTid);
   }
 
   async getHelpTexts(langKey: LangKey, appMode: AppMode) {
@@ -118,19 +71,13 @@ export class HelpTextService {
       return resultFromDb;
     } else {
       const langKeyName = LangKey[langKey];
-      const defaultHelptexts: HelptextDto[] = require(`../../../../../assets/json/helptexts.${langKeyName}.json`);
+      const defaultHelptexts: HelptextDto[] = require(`src/assets/json/helptexts.${langKeyName}.json`);
       return defaultHelptexts;
     }
   }
 
-  private async getHelpTextsFromDb(
-    langKey: LangKey,
-    appMode: AppMode
-  ): Promise<HelptextDto[]> {
-    const result = await NanoSql.getInstance(
-      NanoSql.TABLES.HELP_TEXTS.name,
-      appMode
-    )
+  private async getHelpTextsFromDb(langKey: LangKey, appMode: AppMode): Promise<HelptextDto[]> {
+    const result = await NanoSql.getInstance(NanoSql.TABLES.HELP_TEXTS.name, appMode)
       .query('select')
       .where(['langKey', '=', langKey])
       .exec();

@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
-import { CompressionTestDto } from '../../../../../../regobs-api/models';
+import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { RegistrationService } from '../../../../../services/registration.service';
 import { Subject } from 'rxjs';
-import { IRegistration } from '../../../../../models/registration.model';
 import { takeUntil } from 'rxjs/operators';
 import cloneDeep from 'clone-deep';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 
 @Component({
   selector: 'app-compression-test-list-modal',
@@ -19,19 +20,20 @@ export class CompressionTestListModalPage implements OnInit, OnDestroy {
   private initialRegistrationClone: IRegistration;
   reg: IRegistration;
 
-  set tests(val: CompressionTestDto[]) {
+  set tests(val: CompressionTestEditModel[]) {
     this.reg.request.CompressionTest = val;
   }
 
   constructor(
     private modalController: ModalController,
     private registrationService: RegistrationService,
+    private commonRegistrationService: CommonRegistrationService,
     private ngZone: NgZone
   ) {}
 
   ngOnInit() {
-    this.registrationService
-      .getSavedRegistrationByIdObservable(this.regId)
+    this.commonRegistrationService
+      .getRegistrationByIdShared$(this.regId)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((reg) => {
         this.ngZone.run(async () => {

@@ -1,6 +1,4 @@
-import { GeoHazard } from './geo-hazard.enum';
-import { AppMode } from './app-mode.enum';
-import { LangKey } from './langKey';
+import { GeoHazard, AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { TopoMap } from './topo-map.enum';
 import { SupportTileStore, SupportTile } from './support-tile.model';
 

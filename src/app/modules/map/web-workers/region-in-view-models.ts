@@ -1,4 +1,4 @@
-import { GeoHazard } from '../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 export interface IRegionInViewInput {
   bounds: number[];

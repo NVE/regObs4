@@ -5,17 +5,9 @@ import { TripLogState } from './trip-log-state.enum';
 import { TripLogActivity } from './trip-log-activity.model';
 import { NanoSql } from '../../../../nanosql';
 import { Observable, from, BehaviorSubject, throwError } from 'rxjs';
-import { TripService } from '../../../modules/regobs-api/services';
-import { CreateTripDto } from '../../../modules/regobs-api/models';
-import {
-  switchMap,
-  take,
-  map,
-  concatMap,
-  filter,
-  tap,
-  catchError
-} from 'rxjs/operators';
+import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
+import { TripService } from 'src/app/modules/common-regobs-api/services';
+import { switchMap, take, map, concatMap, filter, tap, catchError } from 'rxjs/operators';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { ToastController, AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -23,7 +15,7 @@ import { LegacyTrip } from './legacy-trip.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { nSQL } from '@nano-sql/core';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
-import { AppMode } from '../../models/app-mode.enum';
+import { AppMode } from 'src/app/modules/common-core/models';
 
 const DEBUG_TAG = 'TripLoggerService';
 
@@ -46,9 +38,7 @@ export class TripLoggerService {
     private toastController: ToastController
   ) {
     this.userSettingService.appMode$
-      .pipe(
-        switchMap((appMode) => from(this.getLegacyTripFromDbByAppMode(appMode)))
-      )
+      .pipe(switchMap((appMode) => from(this.getLegacyTripFromDbByAppMode(appMode))))
       .subscribe((legacyTrip) => {
         this.tripStartedSubject.next(legacyTrip != null);
       });
@@ -59,46 +49,29 @@ export class TripLoggerService {
   }
 
   getTripLogAsObservable(): Observable<TripLogItem[]> {
-    return new NSqlFullUpdateObservable<TripLogItem[]>(
-      nSQL(NanoSql.TABLES.TRIP_LOG.name).query('select').listen()
-    );
+    return new NSqlFullUpdateObservable<TripLogItem[]>(nSQL(NanoSql.TABLES.TRIP_LOG.name).query('select').listen());
   }
 
   updateState(state: TripLogState): Promise<unknown> {
-    return nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name)
-      .query('upsert', { state, timestamp: moment().unix() })
-      .exec();
+    return nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('upsert', { state, timestamp: moment().unix() }).exec();
   }
 
   getTripLogStateAsObservable(): Observable<TripLogActivity> {
     return new NSqlFullUpdateObservable<TripLogActivity[]>(
-      nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name)
-        .query('select')
-        .orderBy(['id: desc'])
-        .limit(1)
-        .listen({})
+      nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').orderBy(['id: desc']).limit(1).listen({})
     ).pipe(map((ta) => ta[0]));
   }
 
   getTripLogActivityAsObservable(): Observable<TripLogActivity[]> {
-    return new NSqlFullUpdateObservable<TripLogActivity[]>(
-      nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').listen()
-    );
+    return new NSqlFullUpdateObservable<TripLogActivity[]>(nSQL(NanoSql.TABLES.TRIP_LOG_ACTIVITY.name).query('select').listen());
   }
 
   getLegacyTripAsObservable(): Observable<LegacyTrip> {
-    return this.userSettingService.appMode$.pipe(
-      switchMap((appMode) => from(this.getLegacyTripFromDbByAppMode(appMode)))
-    );
+    return this.userSettingService.appMode$.pipe(switchMap((appMode) => from(this.getLegacyTripFromDbByAppMode(appMode))));
   }
 
   async getLegacyTripFromDbByAppMode(appMode: AppMode): Promise<LegacyTrip> {
-    const result = (await NanoSql.getInstance(
-      NanoSql.TABLES.LEGACY_TRIP_LOG.name,
-      appMode
-    )
-      .query('select')
-      .exec()) as LegacyTrip[];
+    const result = (await NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('select').exec()) as LegacyTrip[];
     return result[0];
   }
 
@@ -113,18 +86,7 @@ export class TripLoggerService {
       switchMap((appMode) =>
         this.tripService
           .TripPost(tripDto)
-          .pipe(
-            switchMap(() =>
-              from(
-                NanoSql.getInstance(
-                  NanoSql.TABLES.LEGACY_TRIP_LOG.name,
-                  appMode
-                )
-                  .query('upsert', legacyTrip)
-                  .exec()
-              )
-            )
-          )
+          .pipe(switchMap(() => from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('upsert', legacyTrip).exec())))
       ),
       tap(() => this.tripStartedSubject.next(true)),
       switchMap(() => this.infoMessage(true)),
@@ -144,23 +106,17 @@ export class TripLoggerService {
   }
 
   async showTripErrorMessage(start: boolean): Promise<void> {
-    const translations = await this.translateService
-      .get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR', 'TRIP.END_ERROR'])
-      .toPromise();
+    const translations = await this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR', 'TRIP.END_ERROR']).toPromise();
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
-      message: start
-        ? translations['TRIP.ERROR']
-        : translations['TRIP.END_ERROR'],
+      message: start ? translations['TRIP.ERROR'] : translations['TRIP.END_ERROR'],
       buttons: [translations['ALERT.OK']]
     });
     return alert.present();
   }
 
   async showTripNoPositionErrorMessage(): Promise<void> {
-    const translations = await this.translateService
-      .get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR_POSITION'])
-      .toPromise();
+    const translations = await this.translateService.get(['ALERT.DEFAULT_HEADER', 'ALERT.OK', 'TRIP.ERROR_POSITION']).toPromise();
     const alert = await this.alertController.create({
       header: translations['ALERT.DEFAULT_HEADER'],
       message: translations['TRIP.ERROR_POSITION'],
@@ -171,12 +127,7 @@ export class TripLoggerService {
 
   private async confirmStopTrip(): Promise<void> {
     const translations = await this.translateService
-      .get([
-        'TRIP.STOP_TRIP',
-        'REGISTRATION.DELETE_CONFIRM',
-        'ALERT.OK',
-        'ALERT.CANCEL'
-      ])
+      .get(['TRIP.STOP_TRIP', 'REGISTRATION.DELETE_CONFIRM', 'ALERT.OK', 'ALERT.CANCEL'])
       .toPromise();
     const alert = await this.alertController.create({
       header: translations['TRIP.STOP_TRIP'] + '?',
@@ -201,9 +152,7 @@ export class TripLoggerService {
       .pipe(
         take(1),
         filter((trip) => !!trip),
-        concatMap((trip) =>
-          this.tripService.TripPut({ DeviceGuid: trip.request.DeviceGuid })
-        ),
+        concatMap((trip) => this.tripService.TripPut({ DeviceGuid: trip.request.DeviceGuid })),
         concatMap(() => this.deleteLegacyTripsFromDb()),
         concatMap(() => this.infoMessage(false))
       )
@@ -221,22 +170,14 @@ export class TripLoggerService {
 
   private deleteLegacyTripsFromDb() {
     return this.userSettingService.appMode$.pipe(
-      concatMap((appMode) =>
-        from(
-          NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode)
-            .query('delete')
-            .exec()
-        )
-      )
+      concatMap((appMode) => from(NanoSql.getInstance(NanoSql.TABLES.LEGACY_TRIP_LOG.name, appMode).query('delete').exec()))
     );
   }
 
   cleanupOldLegacyTrip(): Promise<unknown> {
     return this.getLegacyTripAsObservable()
       .pipe(
-        filter(
-          (trip) => trip && trip.timestamp < moment().startOf('day').unix()
-        ),
+        filter((trip) => trip && trip.timestamp < moment().startOf('day').unix()),
         concatMap(() => this.deleteLegacyTripsFromDb()),
         take(1)
       )
@@ -245,9 +186,7 @@ export class TripLoggerService {
 
   private infoMessage(started: boolean) {
     const key = started ? 'TRIP.STARTED' : 'TRIP.STOPPED';
-    return this.translateService
-      .get(key)
-      .pipe(switchMap((message) => from(this.presentToast(message))));
+    return this.translateService.get(key).pipe(switchMap((message) => from(this.presentToast(message))));
   }
 
   async presentToast(message: string): Promise<void> {

@@ -6,19 +6,20 @@ import {
 import { Injectable } from '@angular/core';
 import { OverviewPage } from './overview/overview.page';
 import { AlertController } from '@ionic/angular';
-import { RegistrationService } from '../services/registration.service';
+// import { RegistrationService } from '../services/registration.service';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { ObsLocationPage } from './obs-location/obs-location.page';
 import { TranslateService } from '@ngx-translate/core';
-import { RegistrationStatus } from '../models/registrationStatus.enum';
 import { take } from 'rxjs/operators';
+import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 
 @Injectable()
 export class SaveAsDraftRouteGuard
 implements CanDeactivate<OverviewPage | ObsLocationPage> {
   constructor(
     private alertController: AlertController,
-    private registrationService: RegistrationService,
+    private registrationService: CommonRegistrationService,
     private userSettingService: UserSettingService,
     private translateService: TranslateService
   ) {}
@@ -34,17 +35,13 @@ implements CanDeactivate<OverviewPage | ObsLocationPage> {
       !this.isInWhitelist(nextState.url) &&
       component.registration
     ) {
-      const reg = await this.registrationService.getSavedRegistrationById(
+      const reg = await this.registrationService.getRegistrationById(
         component.registration.id
       );
-      if (reg && reg.status === RegistrationStatus.Draft) {
+      if (reg && reg.syncStatus === SyncStatus.Draft) {
         const save = await this.createAlert();
         if (!save) {
-          const appMode = await this.userSettingService.appMode$
-            .pipe(take(1))
-            .toPromise();
-          await this.registrationService.deleteRegistrationById(
-            appMode,
+          await this.registrationService.deleteRegistrationFromOfflineStorage(
             component.registration.id
           );
         }

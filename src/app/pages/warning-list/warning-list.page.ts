@@ -1,17 +1,11 @@
-import {
-  Component,
-  OnInit,
-  NgZone,
-  ViewChildren,
-  QueryList
-} from '@angular/core';
+import { Component, OnInit, NgZone, ViewChildren, QueryList } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { map, switchMap, tap, takeUntil } from 'rxjs/operators';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IVirtualScrollItem } from '../../core/models/virtual-scroll-item.model';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { WarningListItemComponent } from '../../components/warning-list-item/warning-list-item.component';
 
 type SelectedTab = 'inMapView' | 'all' | 'favourites';
@@ -50,17 +44,11 @@ export class WarningListPage implements OnInit {
     return this.showNoFavourites || this.showNoRelevantEmptyState;
   }
 
-  constructor(
-    private warningService: WarningService,
-    private userSettingService: UserSettingService,
-    private ngZone: NgZone
-  ) {}
+  constructor(private warningService: WarningService, private userSettingService: UserSettingService, private ngZone: NgZone) {}
 
   ngOnInit() {
     this.selectedTab = 'inMapView';
-    this.segmentPageSubject = new BehaviorSubject<SelectedTab>(
-      this.selectedTab
-    );
+    this.segmentPageSubject = new BehaviorSubject<SelectedTab>(this.selectedTab);
     this.segmentPageObservable = this.segmentPageSubject.asObservable();
   }
 
@@ -75,14 +63,9 @@ export class WarningListPage implements OnInit {
   ionViewDidEnter() {
     this.ngDestroySubject = new Subject();
     this.loaded = false;
-    combineLatest([
-      this.segmentPageObservable,
-      this.userSettingService.currentGeoHazard$
-    ])
+    combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazard$])
       .pipe(
-        switchMap(([segment, currentGeoHazard]) =>
-          this.getWarningGroupObservable(segment, currentGeoHazard)
-        ),
+        switchMap(([segment, currentGeoHazard]) => this.getWarningGroupObservable(segment, currentGeoHazard)),
         takeUntil(this.ngDestroySubject)
       )
       .subscribe((warningGroups) => {
@@ -92,10 +75,7 @@ export class WarningListPage implements OnInit {
           this.hackToShowVirtualScrollItemsThatIsNotVisibleAtFirstLoad();
         });
       });
-    combineLatest([
-      this.segmentPageObservable,
-      this.userSettingService.currentGeoHazard$
-    ])
+    combineLatest([this.segmentPageObservable, this.userSettingService.currentGeoHazard$])
       .pipe(takeUntil(this.ngDestroySubject))
       .subscribe(([selectedTab, currentGeoHazard]) => {
         this.ngZone.run(() => {
@@ -120,9 +100,7 @@ export class WarningListPage implements OnInit {
 
   private setTitle(selectedTab: SelectedTab, currentGeoHazard: GeoHazard[]) {
     if (selectedTab !== 'favourites') {
-      this.title = `WARNING_LIST.TITLE_${GeoHazard[
-        currentGeoHazard[0]
-      ].toUpperCase()}`;
+      this.title = `WARNING_LIST.TITLE_${GeoHazard[currentGeoHazard[0]].toUpperCase()}`;
     } else {
       this.title = 'WARNING_LIST.TITLE';
     }
@@ -132,10 +110,7 @@ export class WarningListPage implements OnInit {
     return this.warningService.updateWarningsForCurrentGeoHazard(cancelPromise);
   }
 
-  private getWarningGroupObservable(
-    segment: SelectedTab,
-    currentGeoHazard: GeoHazard[]
-  ): Observable<IVirtualScrollItem<WarningGroup>[]> {
+  private getWarningGroupObservable(segment: SelectedTab, currentGeoHazard: GeoHazard[]): Observable<IVirtualScrollItem<WarningGroup>[]> {
     switch (segment) {
     case 'inMapView':
       return this.getWarningsInMapView();
@@ -146,11 +121,7 @@ export class WarningListPage implements OnInit {
     }
   }
 
-  private mapToVirtualScrollItem(
-    wg: WarningGroup[],
-    header?: string,
-    infoText?: string
-  ): IVirtualScrollItem<WarningGroup>[] {
+  private mapToVirtualScrollItem(wg: WarningGroup[], header?: string, infoText?: string): IVirtualScrollItem<WarningGroup>[] {
     return wg.map((item, index) => ({
       header: index === 0 ? header : undefined,
       infoText: index === 0 ? infoText : undefined,
@@ -159,11 +130,7 @@ export class WarningListPage implements OnInit {
   }
 
   private getWarningsInMapView() {
-    return combineLatest([
-      this.getWarningsInMapViewCenter(),
-      this.getWarningsInMapViewBounds(),
-      this.getWarningsInMapViewBuffer()
-    ]).pipe(
+    return combineLatest([this.getWarningsInMapViewCenter(), this.getWarningsInMapViewBounds(), this.getWarningsInMapViewBuffer()]).pipe(
       map(([a, b, c]) => [...a, ...b, ...(b.length < 3 ? c : [])]),
       tap((val) => {
         this.ngZone.run(() => {
@@ -173,29 +140,19 @@ export class WarningListPage implements OnInit {
     );
   }
 
-  private getWarningsInMapViewCenter(): Observable<
-    IVirtualScrollItem<WarningGroup>[]
-    > {
+  private getWarningsInMapViewCenter(): Observable<IVirtualScrollItem<WarningGroup>[]> {
     return this.warningService.warningGroupInMapViewObservable$.pipe(
-      map((val) =>
-        this.mapToVirtualScrollItem(val.center, 'WARNING_LIST.IN_MAP_CENTER')
-      )
+      map((val) => this.mapToVirtualScrollItem(val.center, 'WARNING_LIST.IN_MAP_CENTER'))
     );
   }
 
-  private getWarningsInMapViewBounds(): Observable<
-    IVirtualScrollItem<WarningGroup>[]
-    > {
+  private getWarningsInMapViewBounds(): Observable<IVirtualScrollItem<WarningGroup>[]> {
     return this.warningService.warningGroupInMapViewObservable$.pipe(
-      map((val) =>
-        this.mapToVirtualScrollItem(val.viewBounds, 'WARNING_LIST.IN_MAP_VIEW')
-      )
+      map((val) => this.mapToVirtualScrollItem(val.viewBounds, 'WARNING_LIST.IN_MAP_VIEW'))
     );
   }
 
-  private getWarningsInMapViewBuffer(): Observable<
-    IVirtualScrollItem<WarningGroup>[]
-    > {
+  private getWarningsInMapViewBuffer(): Observable<IVirtualScrollItem<WarningGroup>[]> {
     return this.warningService.warningGroupInMapViewObservable$.pipe(
       map((val) =>
         this.mapToVirtualScrollItem(
@@ -206,23 +163,17 @@ export class WarningListPage implements OnInit {
     );
   }
 
-  private getAllWarnings(
-    currentGeoHazard: GeoHazard[]
-  ): Observable<IVirtualScrollItem<WarningGroup>[]> {
+  private getAllWarnings(currentGeoHazard: GeoHazard[]): Observable<IVirtualScrollItem<WarningGroup>[]> {
     if (currentGeoHazard[0] === GeoHazard.Snow) {
       return this.getSnowRegionWarnings();
     } else {
       return this.warningService.warningsForCurrentGeoHazardObservable$.pipe(
-        map((wg: WarningGroup[]) =>
-          this.mapToVirtualScrollItem(wg, 'WARNING_LIST.ALL_WARNINGS')
-        )
+        map((wg: WarningGroup[]) => this.mapToVirtualScrollItem(wg, 'WARNING_LIST.ALL_WARNINGS'))
       );
     }
   }
 
-  private getSnowRegionWarnings(): Observable<
-    IVirtualScrollItem<WarningGroup>[]
-    > {
+  private getSnowRegionWarnings(): Observable<IVirtualScrollItem<WarningGroup>[]> {
     return combineLatest([
       this.getARegionWarnings(),
       this.getBRegionWarnings()
@@ -259,33 +210,21 @@ export class WarningListPage implements OnInit {
           this.noFavourites = val.length === 0;
         });
       }),
-      map((warningGroups) =>
-        this.mapToVirtualScrollItem(warningGroups, 'WARNING_LIST.FAVOURITES')
-      )
+      map((warningGroups) => this.mapToVirtualScrollItem(warningGroups, 'WARNING_LIST.FAVOURITES'))
     );
   }
 
-  myHeaderFn(
-    item: IVirtualScrollItem<WarningGroup>,
-    index: number,
-    items: IVirtualScrollItem<WarningGroup>[]
-  ) {
+  myHeaderFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
     return item.header
       ? {
         header: item.header,
         infoText: item.infoText,
-        showDayNames: items.some(
-          (x) => x.item.key.geoHazard !== GeoHazard.Ice
-        )
+        showDayNames: items.some((x) => x.item.key.geoHazard !== GeoHazard.Ice)
       }
       : null;
   }
 
-  private footerFn(
-    item: IVirtualScrollItem<WarningGroup>,
-    index: number,
-    items: IVirtualScrollItem<WarningGroup>[]
-  ) {
+  private footerFn(item: IVirtualScrollItem<WarningGroup>, index: number, items: IVirtualScrollItem<WarningGroup>[]) {
     if (this.selectedTab !== 'inMapView' && index === items.length - 1) {
       return 'footer';
     }

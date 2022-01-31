@@ -1,75 +1,69 @@
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import {
-  Component,
-  OnInit,
-  ChangeDetectorRef,
-  OnDestroy,
-  NgZone
-} from '@angular/core';
-import { RegistrationService } from '../../services/registration.service';
-import { Subscription, combineLatest, of, from } from 'rxjs';
-import { IRegistration } from '../../models/registration.model';
+  NewAttachmentService,
+  RegistrationService as CommonRegistrationService
+} from 'src/app/modules/common-registration/registration.services';
+import { combineLatest, from, Observable } from 'rxjs';
+import { IRegistration, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
-import { ObserverGroupDto } from '../../../regobs-api/models';
-import { RegistrationTid } from '../../models/registrationTid.enum';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
 import { ActivatedRoute } from '@angular/router';
-import { RegistrationStatus } from '../../models/registrationStatus.enum';
 import { SummaryItemService } from '../../services/summary-item.service';
-import { switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import deepEqual from 'fast-deep-equal';
 
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.page.html',
-  styleUrls: ['./overview.page.scss']
+  styleUrls: ['./overview.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OverviewPage implements OnInit, OnDestroy {
+export class OverviewPage extends NgDestoryBase implements OnInit {
   registration: IRegistration;
   RegistationTid = RegistrationTid;
   GeoHazard = GeoHazard;
-  RegistrationStatus = RegistrationStatus;
+  RegistrationStatus = SyncStatus;
   summaryItems: Array<ISummaryItem> = [];
-  private summarySubscription: Subscription;
-  private registrationSubscription: Subscription;
-
-  get regiatration$() {
-    const id = this.activatedRoute.snapshot.params['id'];
-    return this.registrationService.getSavedRegistrationByIdObservable(id);
-  }
-
+  private registration$: Observable<IRegistration>;
   constructor(
-    private registrationService: RegistrationService,
-    private ngZone: NgZone,
+    private commonRegistrationService: CommonRegistrationService,
+    private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private summaryItemService: SummaryItemService,
-    private userGroupService: UserGroupService
-  ) {}
+    private userGroupService: UserGroupService,
+    private newAttachmentService: NewAttachmentService
+  ) {
+    super();
+  }
 
   ngOnInit() {
-    this.registrationSubscription = this.regiatration$.subscribe(
-      (registration) => {
-        this.ngZone.run(() => {
-          this.registration = registration;
-        });
-      }
-    );
-    this.summarySubscription = combineLatest([
-      this.regiatration$,
-      this.userGroupService.getUserGroupsAsObservable()
-    ])
+    const id = this.activatedRoute.snapshot.params['id'];
+    this.registration$ = this.commonRegistrationService.getRegistrationByIdShared$(id);
+    this.registration$.pipe(takeUntil(this.ngDestroy$)).subscribe((registration) => {
+      this.registration = registration;
+      this.cdr.detectChanges();
+    });
+    this.initSummaryItemSubscription();
+    this.userGroupService.updateUserGroups();
+  }
+
+  private initSummaryItemSubscription() {
+    this.registration$
       .pipe(
-        switchMap(([registration, userGroups]) =>
-          from(
-            this.summaryItemService.getSummaryItems(registration, userGroups)
+        switchMap((reg) =>
+          combineLatest([this.userGroupService.getUserGroupsAsObservable(), this.newAttachmentService.getAttachments(reg.id)]).pipe(
+            switchMap(([userGroups]) => from(this.summaryItemService.getSummaryItems(reg, userGroups)))
           )
-        )
+        ),
+        distinctUntilChanged((a, b) => deepEqual(a, b)),
+        takeUntil(this.ngDestroy$)
       )
       .subscribe((summaryItems) => {
-        this.ngZone.run(() => {
-          this.summaryItems = summaryItems;
-        });
+        this.summaryItems = summaryItems;
+        this.cdr.detectChanges();
       });
-    this.userGroupService.updateUserGroups();
   }
 
   trackByFunction(index: number, item: ISummaryItem) {
@@ -77,14 +71,5 @@ export class OverviewPage implements OnInit, OnDestroy {
       return null;
     }
     return item.href;
-  }
-
-  ngOnDestroy(): void {
-    if (this.summarySubscription) {
-      this.summarySubscription.unsubscribe();
-    }
-    if (this.registrationSubscription) {
-      this.registrationSubscription.unsubscribe();
-    }
   }
 }

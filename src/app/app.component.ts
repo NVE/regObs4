@@ -14,6 +14,7 @@ import { isAndroidOrIos } from './core/helpers/ionic/platform-helper';
 import { switchMap, take, concatMap, catchError, filter } from 'rxjs/operators';
 import { UserSetting } from './core/models/user-settings.model';
 import { FileLoggingService } from './modules/shared/services/logging/file-logging.service';
+import { AuthService } from 'ionic-appauth';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { NavigationError, Router, RouterEvent } from '@angular/router';
 import { removeOauthTokenFromUrl } from './modules/shared/services/logging/url-utils';
@@ -39,6 +40,7 @@ export class AppComponent {
     private screenOrientation: ScreenOrientation,
     private shortcutService: ShortcutService,
     private fileLoggingService: FileLoggingService,
+    private auth: AuthService,
     private router: Router
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
@@ -49,13 +51,13 @@ export class AppComponent {
     from(this.fileLoggingService.init({})).pipe(switchMap(() =>
       this.getUserSettings()
         .pipe(this.initServices())))
-      .subscribe(() => {
+      .subscribe({ next: () => {
         this.loggingService.debug('Init complete. Hide splash screen', DEBUG_TAG);
         this.afterAppInitialized();
-      }, (err) => {
+      }, error: (err) => {
         this.loggingService.error(err, DEBUG_TAG, 'Error when init app.');
         this.afterAppInitialized();
-      });
+      }});
   }
 
   private afterAppInitialized() {
@@ -74,19 +76,9 @@ export class AppComponent {
         concatMap((userSettings) =>
           forkJoin([
             of(this.lockScreenOrientation()).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not lock lockScreenOrientation'
-                )
-              )
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not lock lockScreenOrientation'))
             ),
-            from(this.dbHelperService.init()).pipe(
-              catchError((err) =>
-                this.loggingService.error(err, DEBUG_TAG, 'Could not init db')
-              )
-            ),
+            from(this.dbHelperService.init()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))),
             of(this.loggingService.configureLogging(userSettings.appMode)).pipe(
               catchError((err) =>
                 this.loggingService.error(
@@ -140,11 +132,14 @@ export class AppComponent {
               )
             ),
             of(this.shortcutService.init()).pipe(
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init shortcutService'))
+            ),
+            from(this.auth.init()).pipe(
               catchError((err) =>
                 this.loggingService.error(
                   err,
                   DEBUG_TAG,
-                  'Could not init shortcutService'
+                  'Could not init auth service'
                 )
               )
             ),
@@ -172,9 +167,7 @@ export class AppComponent {
   }
 
   private getUserSettings() {
-    return from(this.platform.ready()).pipe(
-      switchMap(() => this.userSettings.userSetting$.pipe(take(1)))
-    );
+    return from(this.platform.ready()).pipe(switchMap(() => this.userSettings.userSetting$.pipe(take(1))));
   }
 
   private async initRouteNavigationLogger(): Promise<void> {

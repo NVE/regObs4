@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,7 +11,8 @@ export class GeoHelperService {
   constructor(private translateService: TranslateService) {}
 
   getTranslationKey(geoHazard: GeoHazard) {
-    return `GEO_HAZARDS.${GeoHazard[geoHazard]}`.toUpperCase();
+    const geoHazardKey = geoHazard !== GeoHazard.Soil ? GeoHazard[geoHazard] : 'Dirt';
+    return `GEO_HAZARDS.${geoHazardKey}`.toUpperCase();
   }
 
   getTranslationKeys(geoHazards: GeoHazard[]) {

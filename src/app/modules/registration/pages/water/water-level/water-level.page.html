@@ -53,6 +53,7 @@
           [waterLevelMethod]="registration.request.WaterLevel2.WaterLevelMethodTID"
           [(waterLevelMeasurement)]="registration.request.WaterLevel2.WaterLevelMeasurement[i]"
           [registrationTid]="registrationTid" [dtObsTime]="registration.request.DtObsTime"
+          [registrationId]="registration.id" [geoHazard]="registration.geoHazard"
           (waterLevelMeasurementChange)="save()"
           *ngFor="let measurement of registration.request.WaterLevel2.WaterLevelMeasurement; let i = index">
         </app-water-level-measurement>

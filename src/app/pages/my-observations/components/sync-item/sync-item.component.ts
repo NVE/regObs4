@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, OnDestroy, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { IRegistration } from '../../../../modules/registration/models/registration.model';
+import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { ProgressService } from 'src/app/modules/common-registration/registration.services';
 import { Subscription } from 'rxjs';
 import { RegistrationService } from '../../../../modules/registration/services/registration.service';
 import { map, filter } from 'rxjs/operators';
-import { RegistrationStatus } from 'src/app/modules/registration/models/registrationStatus.enum';
 
 @Component({
   selector: 'app-sync-item',
@@ -18,12 +18,13 @@ export class SyncItemComponent implements OnInit, OnDestroy {
 
   constructor(
     private registrationService: RegistrationService,
+    private progressService: ProgressService,
     private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
 
-    this.isDraft = this.registration.status === RegistrationStatus.Draft;
+    this.isDraft = this.registration.syncStatus === SyncStatus.Draft;
     this.loading = !this.isDraft;
     this.subscriptions.push(
       this.registrationService
@@ -36,13 +37,13 @@ export class SyncItemComponent implements OnInit, OnDestroy {
         )
         .subscribe((val) => {
           this.registration = val;
-          this.isDraft = this.registration.status === RegistrationStatus.Draft;
+          this.isDraft = this.registration.syncStatus === SyncStatus.Draft;
           this.cdr.detectChanges();
         })
     );
     this.subscriptions.push(
-      this.registrationService.getDataLoadState().subscribe((val) => {
-        this.loading = val.isLoading;
+      this.progressService.registrationSyncProgress$.subscribe((val) => {
+        this.loading = val.inProgress;
         this.cdr.detectChanges();
       })
     );

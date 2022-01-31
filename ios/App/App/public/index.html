@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Varsom Regobs</title>
+
+  <base href="/"/>
+
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' * 'unsafe-inline' data: gap: cdvfile: blob: 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src * filesystem: app-file: cdvfile: data: blob:; media-src * blob:">
+  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'"> -->
+  <link rel="icon" type="image/png" href="assets/icon/favicon.png">
+
+  <!-- add to homescreen for ios -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<link rel="stylesheet" href="styles.css"></head>
+
+<body>
+  <app-root></app-root>
+  <script>
+    // Instructs analytics.js to use the name `ga`.
+    window.GoogleAnalyticsObject = 'ga';
+
+    // Creates an initial analytics ga() function.
+    // The queued commands will be executed once analytics.js loads.
+    // This is used later in analytics.service.ts
+    window.ga = window.ga || function() {
+      (ga.q = ga.q || []).push(arguments)
+    };
+
+    // Sets the time (as an integer) this tag was executed.
+    // Used for timing hits.
+    ga.l = +new Date;
+    
+    window.addEventListener("load", function () {
+      console.log("Page loaded. Adding analytics.js script tag to load ga.");
+      var tag = document.createElement("script");
+      tag.async = 1;
+      tag.src = "https://www.google-analytics.com/analytics.js";
+      document.getElementsByTagName("head")[0].appendChild(tag);
+    });
+  </script>
+<script src="runtime-es2015.js" type="module"></script><script src="runtime-es5.js" nomodule defer></script><script src="polyfills-es5.js" nomodule defer></script><script src="polyfills-es2015.js" type="module"></script><script src="scripts.js" defer></script><script src="vendor-es2015.js" type="module"></script><script src="vendor-es5.js" nomodule defer></script><script src="main-es2015.js" type="module"></script><script src="main-es5.js" nomodule defer></script></body>
+
+</html>

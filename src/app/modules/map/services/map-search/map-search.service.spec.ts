@@ -1,4 +1,4 @@
-import { LangKey } from 'src/app/core/models/langKey';
+import { LangKey } from 'src/app/modules/common-core/models';
 import { MapSearchService } from './map-search.service';
 import { Navn } from './norwegian-search-result.model';
 

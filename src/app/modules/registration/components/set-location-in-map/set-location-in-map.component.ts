@@ -14,16 +14,16 @@ import { HelperService } from '../../../../core/services/helpers/helper.service'
 import { MapSearchService } from '../../../map/services/map-search/map-search.service';
 import { take, switchMap, filter, takeUntil } from 'rxjs/operators';
 import { Position } from '@capacitor/geolocation';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { LocationName } from '../../../map/services/map-search/location-name.model';
 import {
   ObsLocationsResponseDtoV2,
-  ObsLocationDto
-} from '../../../regobs-api/models';
+  ObsLocationEditModel
+} from 'src/app/modules/common-regobs-api/models';
 import { LocationService } from '../../../../core/services/location/location.service';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { ViewInfo } from '../../../map/services/map-search/view-info.model';
-import { GeoHazard } from '../../../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IonInput } from '@ionic/angular';
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
@@ -57,7 +57,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Input() locationMarker: L.Marker;
   @Input() locationMarkerIconUrl = '/assets/icon/map/obs-location.svg';
-  @Output() locationSet = new EventEmitter<ObsLocationDto>();
+  @Output() locationSet = new EventEmitter<ObsLocationEditModel>();
   @Input() showPreviousUsedLocations = true;
   @Input() showUserPosition = true;
   @Input() confirmLocationText = 'REGISTRATION.OBS_LOCATION.CONFIRM_TEXT';
@@ -103,7 +103,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     private locationService: LocationService
   ) {}
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
     L.Marker.prototype.options.icon = defaultIcon;
 
     const locationMarkerIcon = L.icon({
@@ -143,7 +143,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.ngDestroy$.complete();
   }
 
-  private getLocationsObservable() {
+  private getLocationsObservable(): Observable<ObsLocationsResponseDtoV2[]> {
     return this.mapService.mapView$.pipe(
       filter(
         (mapView) =>
@@ -166,7 +166,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     );
   }
 
-  private addLocationIfNotExists(loc: ObsLocationsResponseDtoV2) {
+  private addLocationIfNotExists(loc: ObsLocationsResponseDtoV2): void {
     const existing = this.locations.some((location) => loc.Id === location.Id);
     if (!existing) {
       this.locations.push(loc);
@@ -178,7 +178,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMapReady(m: L.Map) {
+  onMapReady(m: L.Map): void {
     this.map = m;
     this.locationMarker.setZIndexOffset(100).addTo(this.map);
     if (this.fromMarker) {
@@ -232,13 +232,13 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.updatePathAndDistance();
   }
 
-  private setLocationMarkerLatLng(latLng: L.LatLngExpression) {
+  private setLocationMarkerLatLng(latLng: L.LatLngExpression): void {
     this.locationMarker.setLatLng(latLng);
     this.updatePathAndDistance();
     this.updateMapViewInfo();
   }
 
-  private setToPrevouslyUsedLocation(location: ObsLocationsResponseDtoV2) {
+  private setToPrevouslyUsedLocation(location: ObsLocationsResponseDtoV2): void {
     this.ngZone.run(() => {
       this.mapService.followMode = false;
       this.selectedLocation = location;
@@ -253,7 +253,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     });
   }
 
-  private moveLocationMarkerToCenter() {
+  private moveLocationMarkerToCenter(): void {
     this.mapService.followMode = false;
     this.selectedLocation = null;
     const center = this.map.getCenter();
@@ -261,7 +261,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     this.updatePathAndDistance();
   }
 
-  private updateMapViewInfo() {
+  private updateMapViewInfo(): void {
     const latLng = this.locationMarker.getLatLng();
     this.mapSearchService
       .getViewInfo({ center: latLng, bounds: null, zoom: 0 }, this.geoHazard)
@@ -293,7 +293,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
-  updatePathAndDistance() {
+  updatePathAndDistance(): void {
     const from = this.fromMarker
       ? this.fromMarker.getLatLng()
       : this.userposition
@@ -337,13 +337,13 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleDetails() {
+  toggleDetails(): void {
     this.ngZone.run(() => {
       this.showDetails = !this.showDetails;
     });
   }
 
-  getLocationName(location: LocationName) {
+  getLocationName(location: LocationName): string {
     if (location) {
       return location.adminName !== location.name
         ? `${location.name} / ${location.adminName}`
@@ -352,13 +352,13 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  confirmLocation() {
+  confirmLocation(): void {
     const obsLocation = this.getLocation();
     this.locationSet.emit(obsLocation);
   }
 
-  getLocation(): ObsLocationDto {
-    const obsLocation: ObsLocationDto = {
+  getLocation(): ObsLocationEditModel {
+    const obsLocation: ObsLocationEditModel = {
       Latitude: this.locationMarker.getLatLng().lat,
       Longitude: this.locationMarker.getLatLng().lng,
       Uncertainty: 0,
@@ -387,7 +387,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return obsLocation;
   }
 
-  editLocation() {
+  editLocation(): void {
     if (this.canEditLocationName) {
       this.editLocationName = true;
       setTimeout(() => {
@@ -398,7 +398,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     }
   }
 
-  onLocationEditComplete() {
+  onLocationEditComplete(): void {
     if (this.editLocationNameInput.value?.toString().length === 0) {
       // User has deleted all text
       this.editLocationName = false;

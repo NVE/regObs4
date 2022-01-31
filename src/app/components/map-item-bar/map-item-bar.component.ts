@@ -5,10 +5,8 @@ import * as L from 'leaflet';
 import { HelperService } from '../../core/services/helpers/helper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
-import { RegistrationViewModel } from '../../modules/regobs-api/models';
-import { AppMode } from '../../core/models/app-mode.enum';
-import { settings } from '../../../settings';
+import { GeoHazard, AppMode } from 'src/app/modules/common-core/models';
+import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { take } from 'rxjs/operators';
@@ -54,12 +52,10 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscription = this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(
-      ([appMode, _, __]) => {
-        this.appMode = appMode;
-        this.hide();
-      }
-    );
+    this.subscription = this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, _, __]) => {
+      this.appMode = appMode;
+      this.hide();
+    });
   }
 
   ngOnDestroy(): void {
@@ -69,16 +65,14 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   }
 
   getTitle(item: RegistrationViewModel) {
-    const allRegistrationNames: Array<string> = (item.Summaries || []).map(
-      (registration) => registration.RegistrationName
-    );
+    const allRegistrationNames: Array<string> = (item.Summaries || []).map((registration) => registration.RegistrationName);
     const uniqueValues = Array.from(new Set(allRegistrationNames));
     return uniqueValues.join(', ');
   }
 
   show(item: MapItem) {
     this.zone.run(() => {
-      this.id = item.RegID;
+      this.id = item.RegId;
       this.topHeader = item.DtObsTime;
       this.title = this.getTitle(item);
       this.name = item.Observer.NickName;
@@ -88,13 +82,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.setDistanceAndType(item);
       this.imageUrls = [];
       if (this.appMode && item.Attachments && item.Attachments.length > 0) {
-        this.imageUrls = item.Attachments.map((attachment) =>
-          this.getImageUrl(
-            this.appMode,
-            attachment.AttachmentFileName,
-            'medium'
-          )
-        );
+        this.imageUrls = item.Attachments.map((attachment) => this.getImageUrl(attachment, 'Medium'));
       }
       this.visible = true;
       this.publishChange();
@@ -108,12 +96,8 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
     });
   }
 
-  getImageUrl(
-    appMode: AppMode,
-    filename: string,
-    size: 'thumbnail' | 'medium' | 'large' | 'original' | 'raw' = 'medium'
-  ) {
-    return `${settings.services.regObs.webUrl[appMode]}/Attachments/${size}/${filename}`;
+  getImageUrl(attachment: AttachmentViewModel, size: 'Thumbnail' | 'Medium' | 'Large' | 'Original' | 'Raw' = 'Medium') {
+    return attachment.UrlFormats[size];
   }
 
   navigateToItem() {
@@ -126,44 +110,26 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
 
   private async setDistanceAndType(item: MapItem) {
     this.distanceAndType = ''; // set by promise
-    const translations = await this.translateService
-      .get(['MAP_ITEM_BAR.OBSERVATION', 'MAP_ITEM_BAR.AWAY'])
-      .toPromise();
+    const translations = await this.translateService.get(['MAP_ITEM_BAR.OBSERVATION', 'MAP_ITEM_BAR.AWAY']).toPromise();
     try {
-      const currentPosition = await this.geoPositionService.currentPosition$
-        .pipe(take(1))
-        .toPromise();
+      const currentPosition = await this.geoPositionService.currentPosition$.pipe(take(1)).toPromise();
       if (currentPosition) {
-        const distance = L.latLng(
-          item.ObsLocation.Latitude,
-          item.ObsLocation.Longitude
-        ).distanceTo(
-          L.latLng(
-            currentPosition.coords.latitude,
-            currentPosition.coords.longitude
-          )
+        const distance = L.latLng(item.ObsLocation.Latitude, item.ObsLocation.Longitude).distanceTo(
+          L.latLng(currentPosition.coords.latitude, currentPosition.coords.longitude)
         );
         this.zone.run(() => {
           this.distanceAndType =
-            `${item.GeoHazardName}${translations[
-              'MAP_ITEM_BAR.OBSERVATION'
-            ].toLowerCase()} ` +
-            `${this.helper.getDistanceText(distance)} ${translations[
-              'MAP_ITEM_BAR.AWAY'
-            ].toLowerCase()}`;
+            `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()} ` +
+            `${this.helper.getDistanceText(distance)} ${translations['MAP_ITEM_BAR.AWAY'].toLowerCase()}`;
         });
       } else {
         this.zone.run(() => {
-          this.distanceAndType = `${item.GeoHazardName}${translations[
-            'MAP_ITEM_BAR.OBSERVATION'
-          ].toLowerCase()}`;
+          this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
         });
       }
     } catch {
       this.zone.run(() => {
-        this.distanceAndType = `${item.GeoHazardName}${translations[
-          'MAP_ITEM_BAR.OBSERVATION'
-        ].toLowerCase()}`;
+        this.distanceAndType = `${item.GeoHazardName}${translations['MAP_ITEM_BAR.OBSERVATION'].toLowerCase()}`;
       });
     }
   }

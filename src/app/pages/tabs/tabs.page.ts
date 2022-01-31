@@ -5,7 +5,7 @@ import { WarningService } from '../../core/services/warning/warning.service';
 import { map } from 'rxjs/operators';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
-import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 @Component({
   selector: 'app-tabs',
@@ -36,9 +36,7 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   get badgeText(): string {
-    return `${this.warningsInView.maxWarning}${
-      this.warningsInView.hasEmergencyWarning ? '!' : ''
-    }`;
+    return `${this.warningsInView.maxWarning}${this.warningsInView.hasEmergencyWarning ? '!' : ''}`;
   }
 
   constructor(
@@ -57,15 +55,10 @@ export class TabsPage implements OnInit, OnDestroy {
     this.warningGroupInMapViewSubscription = this.warningService.warningGroupInMapViewObservable$
       .pipe(
         map((warningsInView) => {
-          const allWarnings = [
-            ...warningsInView.center,
-            ...warningsInView.viewBounds
-          ];
+          const allWarnings = [...warningsInView.center, ...warningsInView.viewBounds];
           const allMaxWarnings = allWarnings.map((g) => g.getMaxWarning(0));
           const maxWarning = Math.max(...allMaxWarnings.map((x) => x.max));
-          const hasEmergencyWarning = allMaxWarnings.some(
-            (x) => x.max === maxWarning && x.hasWarning
-          );
+          const hasEmergencyWarning = allMaxWarnings.some((x) => x.max === maxWarning && x.hasWarning);
           return {
             count: allWarnings.length,
             text: allWarnings.length > 9 ? '9+' : allWarnings.length.toString(),
@@ -80,13 +73,11 @@ export class TabsPage implements OnInit, OnDestroy {
         });
       });
 
-    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazard$.subscribe(
-      (val) => {
-        this.ngZone.run(() => {
-          this.showTrips = val.indexOf(GeoHazard.Snow) >= 0;
-        });
-      }
-    );
+    this.currentGeoHazardSubscription = this.userSettingService.currentGeoHazard$.subscribe((val) => {
+      this.ngZone.run(() => {
+        this.showTrips = val.indexOf(GeoHazard.Snow) >= 0;
+      });
+    });
   }
 
   ngOnDestroy(): void {

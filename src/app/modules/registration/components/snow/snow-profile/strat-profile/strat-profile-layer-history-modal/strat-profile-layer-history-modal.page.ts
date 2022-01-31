@@ -1,17 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { SearchService } from '../../../../../../regobs-api/services';
 import { map, tap } from 'rxjs/operators';
-import {
-  RegistrationViewModel,
-  StratProfileLayerViewModel,
-  StratProfileLayerDto
-} from '../../../../../../regobs-api/models';
-import { Observable, pipe } from 'rxjs';
+import { RegistrationViewModel, StratProfileLayerViewModel } from 'src/app/modules/common-regobs-api/models';
+import { SearchService } from 'src/app/modules/common-regobs-api/services';
+import { Observable } from 'rxjs';
 import moment from 'moment';
-import { GeoHazard } from '../../../../../../../core/models/geo-hazard.enum';
-import { RegistrationTid } from '../../../../../models/registrationTid.enum';
-import { IRegistration } from '../../../../../models/registration.model';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { RegistrationTid, IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../../services/registration.service';
 
 @Component({
@@ -20,14 +15,11 @@ import { RegistrationService } from '../../../../../services/registration.servic
   styleUrls: ['./strat-profile-layer-history-modal.page.scss']
 })
 export class StratProfileLayerHistoryModalPage implements OnInit {
-  @Input() observerGuid: string;
   @Input() reg: IRegistration;
 
   isLoading = true;
 
-  $previousUsedLayers: Observable<
-    { id: number; date: string; layers: StratProfileLayerViewModel[] }[]
-  >;
+  $previousUsedLayers: Observable<{ id: number; date: string; layers: StratProfileLayerViewModel[] }[]>;
 
   constructor(
     private modalController: ModalController,
@@ -39,8 +31,8 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
     if (this.reg && this.reg.request && this.reg.request.ObsLocation) {
       this.$previousUsedLayers = this.searchService
         .SearchSearch({
-          ObserverGuid: this.observerGuid,
-          FromDate: moment().subtract(14, 'days').startOf('day').toISOString(),
+          // ObserverGuid: this.observerGuid, TODO: Call "my obervations" in api instead
+          FromDtObsTime: moment().subtract(14, 'days').startOf('day').toISOString(),
           Radius: {
             Position: {
               Latitude: this.reg.request.ObsLocation.Latitude,
@@ -68,12 +60,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
     this.modalController.dismiss();
   }
 
-  async selectLayer(item: {
-    id: number;
-    date: string;
-    layers: StratProfileLayerViewModel[];
-  }) {
-    const layers = this.convertToStratProfileLayerDto(item.layers);
+  async selectLayer(item: { id: number; date: string; layers: StratProfileLayerViewModel[] }) {
     if (!this.reg.request.SnowProfile2) {
       this.reg.request.SnowProfile2 = {};
     }
@@ -81,34 +68,12 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
     if (!this.reg.request.SnowProfile2.StratProfile) {
       this.reg.request.SnowProfile2.StratProfile = {};
     }
-    this.reg.request.SnowProfile2.StratProfile.Layers = layers;
+    this.reg.request.SnowProfile2.StratProfile.Layers = item.layers;
     await this.registrationService.saveRegistrationAsync(this.reg);
     this.modalController.dismiss();
   }
 
-  convertToStratProfileLayerDto(
-    layer: StratProfileLayerViewModel[]
-  ): StratProfileLayerDto[] {
-    if (!layer) {
-      return [];
-    }
-    return layer.map((vm) => ({
-      GrainSizeAvg: vm.GrainSizeAvg,
-      HardnessTID: vm.HardnessTID,
-      GrainFormPrimaryTID: vm.GrainFormPrimaryTID,
-      GrainFormSecondaryTID: vm.GrainFormSecondaryTID,
-      Thickness: vm.Thickness,
-      GrainSizeAvgMax: vm.GrainSizeAvgMax,
-      HardnessBottomTID: vm.HardnessBottomTID,
-      WetnessTID: vm.WetnessTID,
-      CriticalLayerTID: vm.CriticalLayerTID,
-      Comment: vm.Comment
-    }));
-  }
-
-  private getLayersFromSearchResult(
-    result: RegistrationViewModel[]
-  ): { id: number; date: string; layers: StratProfileLayerViewModel[] }[] {
+  private getLayersFromSearchResult(result: RegistrationViewModel[]): { id: number; date: string; layers: StratProfileLayerViewModel[] }[] {
     return result
       .map((reg) => {
         if (
@@ -120,7 +85,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
           reg.SnowProfile2.StratProfile.Layers.length > 0
         ) {
           return {
-            id: reg.RegID,
+            id: reg.RegId,
             date: reg.DtObsTime,
             layers: reg.SnowProfile2.StratProfile.Layers
           };

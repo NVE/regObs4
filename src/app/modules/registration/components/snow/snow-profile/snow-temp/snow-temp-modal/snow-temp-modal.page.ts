@@ -1,16 +1,15 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import {
-  TempProfileObsDto,
-  TempObsDto
-} from '../../../../../../regobs-api/models';
+  SnowTempObsModel,
+} from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
-import { IRegistration } from '../../../../../models/registration.model';
+import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../../services/registration.service';
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import cloneDeep from 'clone-deep';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-snow-temp-modal',
@@ -49,12 +48,13 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
   constructor(
     private modalController: ModalController,
     private registrationService: RegistrationService,
+    private commonRegistrationService: CommonRegistrationService,
     private ngZone: NgZone
   ) {}
 
   ngOnInit() {
-    this.registrationService
-      .getSavedRegistrationByIdObservable(this.regId)
+    this.commonRegistrationService
+      .getRegistrationByIdShared$(this.regId)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((reg) => {
         this.ngZone.run(() => {
@@ -100,7 +100,7 @@ export class SnowTempModalPage implements OnInit, OnDestroy {
     );
   }
 
-  async addOrEditLayer(index: number, layer: TempProfileObsDto) {
+  async addOrEditLayer(index: number, layer: SnowTempObsModel) {
     if (!this.layerModal) {
       this.layerModal = await this.modalController.create({
         component: SnowTempLayerModalPage,
