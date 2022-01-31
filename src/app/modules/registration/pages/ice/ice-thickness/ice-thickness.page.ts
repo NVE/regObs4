@@ -6,7 +6,7 @@ import { IceLayerPage } from './ice-layer/ice-layer.page';
 import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { NumberHelper } from '../../../../../core/helpers/number-helper';
+import { NumberHelper } from 'src/app/core/helpers/number-helper';
 
 @Component({
   selector: 'app-ice-thickness',
@@ -46,28 +46,32 @@ export class IceThicknessPage extends BasePage {
     }
   }
 
-  onBeforeLeave() {
+  makeValidBeforeAfter() {
     if (this.registration) {
-      if (this.iceHeightBefore !== true) {
+      if (this.iceHeightBefore === undefined) {
         this.registration.request.IceThickness.IceHeightBefore = undefined;
-      } else if (this.registration.request.IceThickness.IceHeightBefore > 0) {
+      } else if (this.iceHeightBefore && this.registration.request.IceThickness.IceHeightBefore > 0) {
         this.registration.request.IceThickness.IceHeightBefore =
           this.registration.request.IceThickness.IceHeightBefore * -1;
       } else {
         this.registration.request.IceThickness.IceHeightBefore = 0;
       }
+      
       if (this.iceHeightAfter === undefined) {
         this.registration.request.IceThickness.IceHeightAfter = undefined;
-      } else if (
-        this.iceHeightAfter === true &&
-        NumberHelper.isNumeric(
-          this.registration.request.IceThickness.IceHeightAfter
-        )
-      ) {
+      } else if (this.iceHeightAfter && NumberHelper.isNumeric(this.registration.request.IceThickness.IceHeightAfter)) {
         this.registration.request.IceThickness.IceHeightAfter =
           this.registration.request.IceThickness.IceHeightAfter * -1;
       }
     }
+  }
+
+  isValid() {
+    this.makeValidBeforeAfter();
+    let checkBefore = this.iceHeightBefore == Boolean(this.registration.request.IceThickness.IceHeightBefore);
+    let checkAfter =
+        (this.iceHeightAfter !== undefined) == Boolean(this.registration.request.IceThickness.IceHeightAfter);
+    return checkBefore && checkAfter;
   }
 
   async isEmpty() {
