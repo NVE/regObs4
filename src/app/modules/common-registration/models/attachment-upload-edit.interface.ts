@@ -1,4 +1,4 @@
-import { AttachmentEditModel } from '@varsom-regobs-common/regobs-api';
+import { AttachmentEditModel } from 'src/app/modules/common-regobs-api/models';
 
 export interface AttachmentUploadEditModel extends AttachmentEditModel {
   id: string;

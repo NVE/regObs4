@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../../../core/models/user-settings.model';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 

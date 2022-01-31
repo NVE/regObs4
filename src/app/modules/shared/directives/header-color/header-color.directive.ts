@@ -6,7 +6,7 @@ import {
   NgZone
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AppMode } from '@varsom-regobs-common/core';
+import { AppMode } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 
 @Directive({

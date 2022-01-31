@@ -6,7 +6,7 @@
 import { Injectable, Optional } from '@angular/core';
 import { LogLevel } from './log-level.model';
 import { LoggingService } from './logging.service';
-import { AppMode } from '@varsom-regobs-common/core';
+import { AppMode } from 'src/app/modules/common-core/models';
 import { LoggedInUser } from '../../../login/models/logged-in-user.model';
 
 @Injectable({

@@ -7,8 +7,8 @@ import { map, switchMap, catchError, take } from 'rxjs/operators';
 import { Observable, forkJoin, of, Subject } from 'rxjs';
 import { ViewInfo } from './view-info.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
-import { GeoCodeService } from '@varsom-regobs-common/regobs-api';
+import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
+import { GeoCodeService } from 'src/app/modules/common-regobs-api/services';
 import { NanoSql } from '../../../../../nanosql';
 import { MapSearchHistory } from './map-search-history.model';
 import moment from 'moment';
@@ -33,14 +33,8 @@ export class MapSearchService {
     this._mapSearchItemClickSubject.next(item);
   }
 
-  constructor(
-    private httpClient: HttpClient,
-    private userSettingService: UserSettingService,
-    private geoCodeService: GeoCodeService
-  ) {
-    this._mapSearchItemClickSubject = new Subject<
-      MapSearchResponse | L.LatLng
-    >();
+  constructor(private httpClient: HttpClient, private userSettingService: UserSettingService, private geoCodeService: GeoCodeService) {
+    this._mapSearchItemClickSubject = new Subject<MapSearchResponse | L.LatLng>();
     this._mapSearchItemClickObservable = this._mapSearchItemClickSubject.asObservable();
     this._mapSearchItemClickObservable.subscribe((item) => {
       if (!(item instanceof L.LatLng)) {
@@ -52,18 +46,12 @@ export class MapSearchService {
   searchAll(text: string): Observable<MapSearchResponse[]> {
     return this.userSettingService.language$.pipe(
       switchMap((language) =>
-        forkJoin([
-          this.searchNorwegianPlaces(text, language),
-          this.searchWorld(text, language)
-        ]).pipe(map(([s1, s2]) => [...s1, ...s2]))
+        forkJoin([this.searchNorwegianPlaces(text, language), this.searchWorld(text, language)]).pipe(map(([s1, s2]) => [...s1, ...s2]))
       )
     );
   }
 
-  searchNorwegianPlaces(
-    text: string,
-    lang: LangKey
-  ): Observable<MapSearchResponse[]> {
+  searchNorwegianPlaces(text: string, lang: LangKey): Observable<MapSearchResponse[]> {
     return this.httpClient
       .get(
         `${settings.map.search.no.url}?sok=${text.trim()}*&treffPerSide=${settings.map.search.no.maxResults}`
@@ -158,10 +146,7 @@ export class MapSearchService {
       );
   }
 
-  getViewInfo(
-    mapView: IMapView,
-    geoHazard = GeoHazard.Soil
-  ): Observable<ViewInfo> {
+  getViewInfo(mapView: IMapView, geoHazard = GeoHazard.Soil): Observable<ViewInfo> {
     const latLng = mapView.center;
     return this.geoCodeService
       .GeoCodeLocationInfo({
@@ -184,32 +169,19 @@ export class MapSearchService {
   }
 
   private async saveSearchHistoryToDb(searchResult: MapSearchResponse) {
-    const existingHistory = (
-      await this.getSearchHistoryAsObservable().pipe(take(1)).toPromise()
-    ).filter(
-      (item) =>
-        !(
-          item.latlng.lat === searchResult.latlng.lat &&
-          item.latlng.lng === searchResult.latlng.lng
-        )
+    const existingHistory = (await this.getSearchHistoryAsObservable().pipe(take(1)).toPromise()).filter(
+      (item) => !(item.latlng.lat === searchResult.latlng.lat && item.latlng.lng === searchResult.latlng.lng)
     );
     existingHistory.splice(0, 0, {
       timestamp: moment().unix(),
       ...searchResult
     }); // Insert new search item at index 0
-    const items = existingHistory.slice(
-      0,
-      settings.map.search.searchHistorySize
-    ); // Keep only last 5 items
-    await nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name)
-      .query('upsert', { id: 'searchresults', items })
-      .exec();
+    const items = existingHistory.slice(0, settings.map.search.searchHistorySize); // Keep only last 5 items
+    await nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('upsert', { id: 'searchresults', items }).exec();
   }
 
   getSearchHistoryAsObservable(): Observable<MapSearchHistory[]> {
-    return new NSqlFullUpdateObservable<
-      { id: string; items: MapSearchHistory[] }[]
-    >(
+    return new NSqlFullUpdateObservable<{ id: string; items: MapSearchHistory[] }[]>(
       nSQL(NanoSql.TABLES.MAP_SEARCH_HISTORY.name).query('select').listen()
     ).pipe(map((val) => (val.length > 0 ? val[0].items : [])));
   }

@@ -19,11 +19,11 @@ import { LocationName } from '../../../map/services/map-search/location-name.mod
 import {
   ObsLocationsResponseDtoV2,
   ObsLocationEditModel
-} from '@varsom-regobs-common/regobs-api';
+} from 'src/app/modules/common-regobs-api/models';
 import { LocationService } from '../../../../core/services/location/location.service';
 import { UtmSource } from '../../pages/obs-location/utm-source.enum';
 import { ViewInfo } from '../../../map/services/map-search/view-info.model';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IonInput } from '@ionic/angular';
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';

@@ -8,7 +8,7 @@ import { IRegistration, RegistrationTid } from 'src/app/modules/common-registrat
 import { ModalController } from '@ionic/angular';
 import * as L from 'leaflet';
 import { SetDamageLocationPage } from '../../pages/set-damage-location/set-damage-location.page';
-import { ObsLocationEditModel } from '@varsom-regobs-common/regobs-api';
+import { ObsLocationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { RegistrationService } from '../../services/registration.service';
 
 @Component({

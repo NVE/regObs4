@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { CompressionTestEditModel } from '@varsom-regobs-common/regobs-api';
+import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { SelectOption } from '../../../../../shared/components/input/select/select-option.model';
 

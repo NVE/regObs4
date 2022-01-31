@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LoggerService } from '@varsom-regobs-common/core';
+import { LoggerService } from 'src/app/modules/common-core/services';
 import { debounceTime, distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
 import { ISyncProgress } from '../../models/sync-progress.interface';
 import { OfflineDbService, TABLE_NAMES } from '../offline-db/offline-db.service';
@@ -18,13 +18,15 @@ export class ProgressService {
   public readonly registrationSyncProgress$: Observable<ISyncProgress>;
 
   constructor(private loggerService: LoggerService, private offlineDbService: OfflineDbService) {
-    this.registrationSyncProgress$ = this.getRegistrationSyncProgressCollection().find().$.pipe(
-      debounceTime(100),
-      map((records) => records[0]),
-      map((rec) => this.convertToSyncProgress(rec)),
-      distinctUntilChanged((a, b) => deepEqual(a, b)),
-      shareReplay(1)
-    );
+    this.registrationSyncProgress$ = this.getRegistrationSyncProgressCollection()
+      .find()
+      .$.pipe(
+        debounceTime(100),
+        map((records) => records[0]),
+        map((rec) => this.convertToSyncProgress(rec)),
+        distinctUntilChanged((a, b) => deepEqual(a, b)),
+        shareReplay(1)
+      );
   }
 
   async resetSyncProgress(records: Array<string> = null): Promise<void> {
@@ -33,18 +35,18 @@ export class ProgressService {
       recordsLeft: records || [],
       startedTimestamp: moment().unix(),
       totalRecords: (records || []).length,
-      errors: [],
+      errors: []
     });
   }
 
   async setSyncProgress(recordId: string, error?: string | unknown): Promise<void> {
     this.loggerService.log('Sync record item complete', recordId);
     const doc = await this.getSyncProgressDocument();
-    if(doc) {
+    if (doc) {
       const docJson = doc.toJSON();
       const errors = [...docJson.errors];
-      if(error) {
-        errors.push({ id: recordId, error});
+      if (error) {
+        errors.push({ id: recordId, error });
       }
       await this.getRegistrationSyncProgressCollection().atomicUpsert({
         id: SYNC_PROGRESS_ID,
@@ -54,9 +56,13 @@ export class ProgressService {
     }
   }
 
-  getAttachmentProgress(imageId: string): Observable<{totalBytes: number; complete: number}> {
-    return this.getUploadProgressCollection().findByIds$([imageId]).pipe(
-      map((result) => result.get(imageId)), map((result) => result ? result.toJSON() : null));
+  getAttachmentProgress(imageId: string): Observable<{ totalBytes: number; complete: number }> {
+    return this.getUploadProgressCollection()
+      .findByIds$([imageId])
+      .pipe(
+        map((result) => result.get(imageId)),
+        map((result) => (result ? result.toJSON() : null))
+      );
   }
 
   async setAttachmentProgress(imageId: string, totalBytes: number, complete: number): Promise<void> {
@@ -94,12 +100,12 @@ export class ProgressService {
       percentageCompleteFormatted: undefined,
       recordsLeft: [],
       startedTimestamp: undefined,
-      totalRecords: 0,
+      totalRecords: 0
     };
   }
 
   private convertToSyncProgress(rec: ISyncProgressRecord): ISyncProgress {
-    if(!rec) {
+    if (!rec) {
       return this.getEmptySyncProgress();
     }
 
@@ -121,7 +127,7 @@ export class ProgressService {
     const ms = moment().diff(startedMoment, 'milliseconds');
     const itemsLeft = rec.recordsLeft.length;
     const completed = rec.totalRecords - itemsLeft;
-    if(completed > 0) {
+    if (completed > 0) {
       const msPerCompleted = ms / completed;
       return msPerCompleted * itemsLeft;
     }

@@ -76,19 +76,9 @@ export class AppComponent {
         concatMap((userSettings) =>
           forkJoin([
             of(this.lockScreenOrientation()).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not lock lockScreenOrientation'
-                )
-              )
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not lock lockScreenOrientation'))
             ),
-            from(this.dbHelperService.init()).pipe(
-              catchError((err) =>
-                this.loggingService.error(err, DEBUG_TAG, 'Could not init db')
-              )
-            ),
+            from(this.dbHelperService.init()).pipe(catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init db'))),
             of(this.loggingService.configureLogging(userSettings.appMode)).pipe(
               catchError((err) =>
                 this.loggingService.error(
@@ -142,13 +132,7 @@ export class AppComponent {
               )
             ),
             of(this.shortcutService.init()).pipe(
-              catchError((err) =>
-                this.loggingService.error(
-                  err,
-                  DEBUG_TAG,
-                  'Could not init shortcutService'
-                )
-              )
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not init shortcutService'))
             ),
             from(this.auth.init()).pipe(
               catchError((err) =>
@@ -183,9 +167,7 @@ export class AppComponent {
   }
 
   private getUserSettings() {
-    return from(this.platform.ready()).pipe(
-      switchMap(() => this.userSettings.userSetting$.pipe(take(1)))
-    );
+    return from(this.platform.ready()).pipe(switchMap(() => this.userSettings.userSetting$.pipe(take(1))));
   }
 
   private async initRouteNavigationLogger(): Promise<void> {

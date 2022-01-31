@@ -4,7 +4,7 @@ import { AuthService, Browser } from 'ionic-appauth';
 import { NgZone } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../settings';
-import { AppMode } from '@varsom-regobs-common/core';
+import { AppMode } from 'src/app/modules/common-core/models';
 import { RegobsAuthServiceOverride } from '../services/regobs-auth-service-override';
 
 export const AUTH_CALLBACK_PATH = 'auth/callback';

@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { HelpTextService } from '../../services/help-text/help-text.service';
-import { HelptextDto } from '@varsom-regobs-common/regobs-api';
+import { HelptextDto } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { HelpModalPage } from '../../pages/modal-pages/help-modal/help-modal.page';
 import { take } from 'rxjs/operators';

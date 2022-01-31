@@ -1,4 +1,5 @@
-import { GeoHazard, uuidv4 } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
+import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { BehaviorSubject, firstValueFrom, from, Observable, switchMap, tap } from 'rxjs';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';

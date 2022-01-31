@@ -1,4 +1,4 @@
-import { RegObsGenericValue } from '@varsom-regobs-common/regobs-api';
+import { RegObsGenericValue } from 'src/app/modules/common-regobs-api/models';
 import { SummaryKind } from './summary-kind.enum';
 
 export class UrlSummary implements RegObsGenericValue {

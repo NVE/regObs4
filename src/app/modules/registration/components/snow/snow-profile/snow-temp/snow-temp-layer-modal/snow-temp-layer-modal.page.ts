@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SnowTempObsModel } from '@varsom-regobs-common/regobs-api';
+import { SnowTempObsModel } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';

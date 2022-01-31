@@ -1,6 +1,7 @@
 import { Injectable, Inject, InjectionToken } from '@angular/core';
 import { Observable, combineLatest, from, of, BehaviorSubject } from 'rxjs';
-import { LanguageService, LoggerService, AppMode, LangKey, AppModeService } from '@varsom-regobs-common/core';
+import { AppMode, LangKey } from 'src/app/modules/common-core/models';
+import { LanguageService, LoggerService, AppModeService } from 'src/app/modules/common-core/services';
 import { map, switchMap, shareReplay, catchError, concatMap, take } from 'rxjs/operators';
 import { OfflineSyncMeta } from '../../models/offline-sync-meta.interface';
 import moment from 'moment';
@@ -8,7 +9,9 @@ import { OfflineDbService } from '../offline-db/offline-db.service';
 import { RxKdvCollection } from '../../db/RxDB';
 import { RxDocument } from 'rxdb';
 
-export const API_SYNCE_OFFLINE_BASE_SERVICE_OPTIONS_CONFIG = new InjectionToken<ApiSyncOfflineBaseServiceOptions>('ApiSyncOfflineBaseServiceOptions.config');
+export const API_SYNCE_OFFLINE_BASE_SERVICE_OPTIONS_CONFIG = new InjectionToken<ApiSyncOfflineBaseServiceOptions>(
+  'ApiSyncOfflineBaseServiceOptions.config'
+);
 export interface ApiSyncOfflineBaseServiceOptions {
   useLangKeyAsDbKey: boolean;
   validSeconds: number;
@@ -16,8 +19,7 @@ export interface ApiSyncOfflineBaseServiceOptions {
 }
 
 @Injectable()
-export abstract class ApiSyncOfflineBaseService<T>  {
-
+export abstract class ApiSyncOfflineBaseService<T> {
   public readonly data$: Observable<T>;
   private isUpdatingSubject = new BehaviorSubject<boolean>(false);
 
@@ -30,7 +32,8 @@ export abstract class ApiSyncOfflineBaseService<T>  {
     protected offlineDbService: OfflineDbService,
     protected languageService: LanguageService,
     protected appModeService: AppModeService,
-    protected logger: LoggerService) {
+    protected logger: LoggerService
+  ) {
     this.data$ = this.getDataObservable().pipe(shareReplay(1));
   }
 
@@ -41,11 +44,14 @@ export abstract class ApiSyncOfflineBaseService<T>  {
   /** Force update offline data */
   public update(): void {
     this.isUpdatingSubject.next(true);
-    combineLatest([this.languageService.language$, this.appModeService.appMode$]).pipe(
-      switchMap(([langKey, appMode]) => this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey)),
-      take(1)).subscribe(() => {
-      this.isUpdatingSubject.next(false);
-    });
+    combineLatest([this.languageService.language$, this.appModeService.appMode$])
+      .pipe(
+        switchMap(([langKey, appMode]) => this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey)),
+        take(1)
+      )
+      .subscribe(() => {
+        this.isUpdatingSubject.next(false);
+      });
   }
 
   /**
@@ -53,7 +59,7 @@ export abstract class ApiSyncOfflineBaseService<T>  {
    * @param metaData cached offline data
    */
   protected isValid(metaData: RxDocument<OfflineSyncMeta<T>>): boolean {
-    const valid = metaData && (metaData.lastUpdated > this.getInvalidTime().unix());
+    const valid = metaData && metaData.lastUpdated > this.getInvalidTime().unix();
     this.logger.debug(`Offline data is ${valid ? 'valid -> returning offline data' : 'not valid -> Fetch new data'}`, metaData);
     return valid;
   }
@@ -71,9 +77,14 @@ export abstract class ApiSyncOfflineBaseService<T>  {
   private getDataObservable(): Observable<T> {
     return combineLatest([this.languageService.language$, this.appModeService.appMode$]).pipe(
       switchMap(([langKey, appMode]) =>
-        this.getOfflineDataAndReturnIfDataIsUpToDate(appMode, langKey)
-          .pipe(take(1), switchMap((updatedData) =>
-            updatedData != null ? of(updatedData) : this.getUpdatedDataAndSaveResultIfSuccessOrFallbackToAssetsFolder(appMode, langKey)))));
+        this.getOfflineDataAndReturnIfDataIsUpToDate(appMode, langKey).pipe(
+          take(1),
+          switchMap((updatedData) =>
+            updatedData != null ? of(updatedData) : this.getUpdatedDataAndSaveResultIfSuccessOrFallbackToAssetsFolder(appMode, langKey)
+          )
+        )
+      )
+    );
   }
 
   /**
@@ -82,13 +93,15 @@ export abstract class ApiSyncOfflineBaseService<T>  {
    * @param langKey Language
    */
   private getOfflineDataAndReturnIfDataIsUpToDate(appMode: AppMode, langKey: LangKey): Observable<T> {
-    return this.getOfflineData(appMode, langKey).pipe(map((offlineMeta) => {
-      // Check if offline data is newer than 24 hours
-      if(this.isValid(offlineMeta)) {
-        return offlineMeta.data;
-      }
-      return null;
-    }));
+    return this.getOfflineData(appMode, langKey).pipe(
+      map((offlineMeta) => {
+        // Check if offline data is newer than 24 hours
+        if (this.isValid(offlineMeta)) {
+          return offlineMeta.data;
+        }
+        return null;
+      })
+    );
   }
 
   /**
@@ -101,7 +114,8 @@ export abstract class ApiSyncOfflineBaseService<T>  {
       catchError((err) => {
         this.logger.warn('Could not get kvd elements from API. Fallback to offline storage', err);
         return this.getOfflineDataOrFallbackToAssets(appMode, langKey);
-      }));
+      })
+    );
   }
 
   /**
@@ -109,10 +123,16 @@ export abstract class ApiSyncOfflineBaseService<T>  {
    */
   private getUpdatedDataAndSaveResultIfSuccess(appMode: AppMode, langKey: LangKey) {
     return this.getUpdatedData(appMode, langKey).pipe(
-      switchMap((data) => this.saveDataToOfflineDb(appMode, langKey, data).pipe(catchError((err) => {
-        this.logger.error('Could not save data to offline storage', err);
-        return of(data);
-      }), map(() => data))));
+      switchMap((data) =>
+        this.saveDataToOfflineDb(appMode, langKey, data).pipe(
+          catchError((err) => {
+            this.logger.error('Could not save data to offline storage', err);
+            return of(data);
+          }),
+          map(() => data)
+        )
+      )
+    );
   }
 
   /**
@@ -145,9 +165,11 @@ export abstract class ApiSyncOfflineBaseService<T>  {
    * @param langKey Language
    */
   private getOfflineData(appMode: AppMode, langKey: LangKey): Observable<RxDocument<OfflineSyncMeta<T>>> {
-    const collection =  this.getDbCollection(appMode);
+    const collection = this.getDbCollection(appMode);
     const key = this.getOfflineStorageDbKey(langKey);
-    return collection.findByIds$([key]).pipe(map((val) => val.has(key) ? val.get(key) : null)) as Observable<RxDocument<OfflineSyncMeta<T>>>;
+    return collection.findByIds$([key]).pipe(map((val) => (val.has(key) ? val.get(key) : null))) as Observable<
+      RxDocument<OfflineSyncMeta<T>>
+    >;
   }
 
   /**
@@ -155,7 +177,7 @@ export abstract class ApiSyncOfflineBaseService<T>  {
    * @param langKey Language
    */
   private getOfflineStorageDbKey(langKey: LangKey) {
-    return  this.options.useLangKeyAsDbKey ? `${langKey}` : `${this.options.offlineTableKey}`;
+    return this.options.useLangKeyAsDbKey ? `${langKey}` : `${this.options.offlineTableKey}`;
   }
 
   /**
@@ -166,11 +188,12 @@ export abstract class ApiSyncOfflineBaseService<T>  {
   private getOfflineDataOrFallbackToAssets(appMode: AppMode, langKey: LangKey) {
     return this.getOfflineData(appMode, langKey).pipe(
       concatMap((val) => {
-        if(!val) {
+        if (!val) {
           this.logger.warn('No kdv elements found in offline storage. Get fallback data');
           return this.getFallbackData(appMode, langKey);
         }
         return of(val.data);
-      }));
+      })
+    );
   }
 }

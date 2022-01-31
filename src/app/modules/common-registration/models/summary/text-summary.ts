@@ -1,32 +1,31 @@
-import { RegObsGenericValue } from '@varsom-regobs-common/regobs-api';
+import { RegObsGenericValue } from 'src/app/modules/common-regobs-api/models';
 import { SummaryKind } from './summary-kind.enum';
 
 export class TextSummary implements RegObsGenericValue {
-    readonly Kind = SummaryKind.Text;
-    readonly KindType = 'Text';
+  readonly Kind = SummaryKind.Text;
+  readonly KindType = 'Text';
 
-    private _header: string;
-    private _value: string;
+  private _header: string;
+  private _value: string;
 
-    get Header() {
-      return this._header;
-    }
+  get Header() {
+    return this._header;
+  }
 
-    set Header(header: string) {
-      this._header = header;
-    }
+  set Header(header: string) {
+    this._header = header;
+  }
 
-    get Value() {
-      return this._value;
-    }
+  get Value() {
+    return this._value;
+  }
 
-    set Value(value: string) {
-      this._value = value;
-    }
+  set Value(value: string) {
+    this._value = value;
+  }
 
-    constructor(header: string, value: string) {
-      this._header = header;
-      this._value = value;
-    }
-
+  constructor(header: string, value: string) {
+    this._header = header;
+    this._value = value;
+  }
 }

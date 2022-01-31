@@ -7,7 +7,7 @@ import {
   NgZone
 } from '@angular/core';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
-import { KdvElement } from '@varsom-regobs-common/regobs-api';
+import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Subscription, Observable } from 'rxjs';
 import { enterZone } from '../../../../core/helpers/observable-helper';
 

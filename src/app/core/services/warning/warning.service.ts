@@ -3,7 +3,7 @@ import { settings } from '../../../../settings';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import moment, { lang } from 'moment';
 import 'moment-timezone';
-import { LangKey, GeoHazard } from '@varsom-regobs-common/core';
+import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 import { HttpClient } from '@angular/common/http';
 import { NanoSql } from '../../../../nanosql';
 import {

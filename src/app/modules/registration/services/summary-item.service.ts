@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { DateHelperService } from '../../shared/services/date-helper/date-helper.service';
 import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from 'src/app/modules/common-registration/services/registration/registration.service';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ISummaryItem } from '../components/summary-item/summary-item.model';
 import { UserGroupService } from '../../../core/services/user-group/user-group.service';
-import { ObserverGroupDto } from '@varsom-regobs-common/regobs-api';
+import { ObserverGroupDto } from 'src/app/modules/common-regobs-api/models';
 import { NavController } from '@ionic/angular';
 import { RouterDirection } from '@ionic/core';
-import { isEmpty } from '@varsom-regobs-common/core';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { take } from 'rxjs/operators';
 
 @Injectable({
@@ -22,16 +22,11 @@ export class SummaryItemService {
     private navController: NavController
   ) {}
 
-  async getSummaryItems(
-    registration: IRegistration,
-    userGroups?: ObserverGroupDto[]
-  ) {
+  async getSummaryItems(registration: IRegistration, userGroups?: ObserverGroupDto[]) {
     if (!registration) {
       return [];
     }
-    const userGroupsToUse = userGroups
-      ? userGroups
-      : await this.userGroupService.getUserGroups();
+    const userGroupsToUse = userGroups ? userGroups : await this.userGroupService.getUserGroups();
     const summaryItems: ISummaryItem[] = [
       {
         id: registration.id,
@@ -39,8 +34,7 @@ export class SummaryItemService {
         queryParams: { geoHazard: registration.geoHazard },
         title: 'REGISTRATION.OBS_LOCATION.TITLE',
         subTitle: registration.request.ObsLocation
-          ? registration.request.ObsLocation.LocationName ||
-            registration.request.ObsLocation.LocationDescription
+          ? registration.request.ObsLocation.LocationName || registration.request.ObsLocation.LocationDescription
           : '',
         hasData: !isEmpty(registration.request.ObsLocation)
       },
@@ -66,16 +60,14 @@ export class SummaryItemService {
       });
     }
 
-    summaryItems.push(... await this.getGeoHazardItems(registration));
+    summaryItems.push(...(await this.getGeoHazardItems(registration)));
 
     summaryItems.push(
       await this.getRegItem(
         registration,
         '/registration/general-comment',
         'REGISTRATION.GENERAL_COMMENT.TITLE',
-        registration.request.GeneralObservation
-          ? registration.request.GeneralObservation.ObsComment
-          : '',
+        registration.request.GeneralObservation ? registration.request.GeneralObservation.ObsComment : '',
         RegistrationTid.GeneralObservation
       )
     );
@@ -83,10 +75,7 @@ export class SummaryItemService {
     return summaryItems;
   }
 
-  async getPreviousAndNext(
-    registration: IRegistration,
-    url: string
-  ): Promise<{ previous: ISummaryItem; next: ISummaryItem }> {
+  async getPreviousAndNext(registration: IRegistration, url: string): Promise<{ previous: ISummaryItem; next: ISummaryItem }> {
     const summaryItems = await this.getSummaryItems(registration);
     const currentItem = summaryItems.find((x) => url.indexOf(x.href) >= 0);
     const result = { previous: undefined, next: undefined };
@@ -103,15 +92,9 @@ export class SummaryItemService {
     return result;
   }
 
-  navigateTo(
-    registration: IRegistration,
-    summaryItem: ISummaryItem,
-    direction: RouterDirection = 'forward'
-  ) {
+  navigateTo(registration: IRegistration, summaryItem: ISummaryItem, direction: RouterDirection = 'forward') {
     const url = `${summaryItem.href}/${registration.id}`;
-    return direction === 'forward'
-      ? this.navController.navigateForward(url)
-      : this.navController.navigateBack(url);
+    return direction === 'forward' ? this.navController.navigateForward(url) : this.navController.navigateBack(url);
   }
 
   async navigateForward(registration: IRegistration, url: string) {
@@ -119,20 +102,13 @@ export class SummaryItemService {
     if (prevAndNext.next) {
       return this.navigateTo(registration, prevAndNext.next, 'forward');
     } else {
-      return this.navController.navigateRoot(
-        `/registration/edit/${registration.id}`
-      );
+      return this.navController.navigateRoot(`/registration/edit/${registration.id}`);
     }
   }
 
-  private getObservationGroupName(
-    registration: IRegistration,
-    userGroups: ObserverGroupDto[]
-  ) {
+  private getObservationGroupName(registration: IRegistration, userGroups: ObserverGroupDto[]) {
     if (registration && registration.request.ObserverGroupID && userGroups) {
-      const selectedGroup = userGroups.find(
-        (x) => x.Id === registration.request.ObserverGroupID
-      );
+      const selectedGroup = userGroups.find((x) => x.Id === registration.request.ObserverGroupID);
       if (selectedGroup) {
         return selectedGroup.Name;
       }
@@ -159,9 +135,7 @@ export class SummaryItemService {
         registration,
         '/registration/water/water-level',
         'REGISTRATION.WATER.WATER_LEVEL.TITLE',
-        registration.request.WaterLevel2
-          ? registration.request.WaterLevel2.Comment
-          : '',
+        registration.request.WaterLevel2 ? registration.request.WaterLevel2.Comment : '',
         RegistrationTid.WaterLevel2
       ),
       await this.getRegItem(
@@ -187,26 +161,21 @@ export class SummaryItemService {
       title,
       subTitle,
       hasData: await this.registrationService.hasAnyDataToShowInRegistrationTypes(registration, registrationTid).pipe(take(1)).toPromise(),
-      attachments: await this.registrationService.getAllAttachmentsForRegistrationTid$(registration.id, registrationTid).pipe(take(1)).toPromise()
+      attachments: await this.registrationService
+        .getAllAttachmentsForRegistrationTid$(registration.id, registrationTid)
+        .pipe(take(1))
+        .toPromise()
     };
   }
 
   private async getDirtItems(registration: IRegistration) {
     return [
-      await this.getRegItem(
-        registration,
-        '/registration/danger-obs',
-        'REGISTRATION.DANGER_OBS.TITLE',
-        '',
-        RegistrationTid.DangerObs
-      ),
+      await this.getRegItem(registration, '/registration/danger-obs', 'REGISTRATION.DANGER_OBS.TITLE', '', RegistrationTid.DangerObs),
       await this.getRegItem(
         registration,
         '/registration/dirt/landslide-obs',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE',
-        registration.request.LandSlideObs
-          ? registration.request.LandSlideObs.Comment
-          : '',
+        registration.request.LandSlideObs ? registration.request.LandSlideObs.Comment : '',
         RegistrationTid.LandSlideObs
       )
     ];
@@ -218,46 +187,24 @@ export class SummaryItemService {
         registration,
         '/registration/ice/ice-cover',
         'REGISTRATION.ICE.ICE_COVER.TITLE',
-        registration.request.IceCoverObs
-          ? registration.request.IceCoverObs.Comment
-          : '',
+        registration.request.IceCoverObs ? registration.request.IceCoverObs.Comment : '',
         RegistrationTid.IceCoverObs
       ),
       await this.getRegItem(
         registration,
         '/registration/ice/ice-thickness',
         'REGISTRATION.ICE.ICE_THICKNESS.TITLE',
-        registration.request.IceThickness
-          ? registration.request.IceThickness.Comment
-          : '',
+        registration.request.IceThickness ? registration.request.IceThickness.Comment : '',
         RegistrationTid.IceThickness
       ),
-      await this.getRegItem(
-        registration,
-        '/registration/danger-obs',
-        'REGISTRATION.DANGER_OBS.TITLE',
-        '',
-        RegistrationTid.DangerObs
-      ),
-      await this.getRegItem(
-        registration,
-        '/registration/incident',
-        'REGISTRATION.INCIDENT.TITLE',
-        '',
-        RegistrationTid.Incident
-      )
+      await this.getRegItem(registration, '/registration/danger-obs', 'REGISTRATION.DANGER_OBS.TITLE', '', RegistrationTid.DangerObs),
+      await this.getRegItem(registration, '/registration/incident', 'REGISTRATION.INCIDENT.TITLE', '', RegistrationTid.Incident)
     ];
   }
 
   private async getSnowItems(registration: IRegistration) {
     return [
-      await this.getRegItem(
-        registration,
-        '/registration/danger-obs',
-        'REGISTRATION.DANGER_OBS.TITLE',
-        '',
-        RegistrationTid.DangerObs
-      ),
+      await this.getRegItem(registration, '/registration/danger-obs', 'REGISTRATION.DANGER_OBS.TITLE', '', RegistrationTid.DangerObs),
       await this.getRegItem(
         registration,
         '/registration/snow/avalanche-obs',
@@ -299,18 +246,15 @@ export class SummaryItemService {
         title: 'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
         subTitle: '',
         hasData:
-          await this.registrationService.hasAnyDataToShowInRegistrationTypes(
-            registration,
-            RegistrationTid.SnowProfile2
-          ).pipe(take(1)).toPromise() ||
-          (registration.request.CompressionTest &&
-            registration.request.CompressionTest.some(
-              (x) => x.IncludeInSnowProfile === true
-            )),
-        attachments: await this.registrationService.getAllAttachmentsForRegistrationTid$(
-          registration.id,
-          RegistrationTid.SnowProfile2
-        ).pipe(take(1)).toPromise()
+          (await this.registrationService
+            .hasAnyDataToShowInRegistrationTypes(registration, RegistrationTid.SnowProfile2)
+            .pipe(take(1))
+            .toPromise()) ||
+          (registration.request.CompressionTest && registration.request.CompressionTest.some((x) => x.IncludeInSnowProfile === true)),
+        attachments: await this.registrationService
+          .getAllAttachmentsForRegistrationTid$(registration.id, RegistrationTid.SnowProfile2)
+          .pipe(take(1))
+          .toPromise()
       },
       await this.getRegItem(
         registration,

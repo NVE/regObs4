@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GeoIconComponent } from './geo-icon.component';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IonicModule } from '@ionic/angular';
 
 describe('GeoIconComponent', () => {

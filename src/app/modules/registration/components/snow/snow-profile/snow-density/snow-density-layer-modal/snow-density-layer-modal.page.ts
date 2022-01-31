@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { SnowDensityLayerModel } from '@varsom-regobs-common/regobs-api';
+import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
 import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import cloneDeep from 'clone-deep';

@@ -3,7 +3,7 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 import { BasePage } from '../../base.page';
 import { ModalController } from '@ionic/angular';
 import { IceLayerPage } from './ice-layer/ice-layer.page';
-import { IceThicknessLayerEditModel } from '@varsom-regobs-common/regobs-api';
+import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { NumberHelper } from '../../../../../core/helpers/number-helper';

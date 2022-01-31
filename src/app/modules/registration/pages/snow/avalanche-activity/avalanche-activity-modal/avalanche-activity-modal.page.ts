@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AvalancheActivityObs2EditModel } from '@varsom-regobs-common/regobs-api';
+import { AvalancheActivityObs2EditModel } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import moment from 'moment';

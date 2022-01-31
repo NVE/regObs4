@@ -1,4 +1,4 @@
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import * as L from 'leaflet';
 
 export interface ImageLocation {

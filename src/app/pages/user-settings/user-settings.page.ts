@@ -1,11 +1,7 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { UserSetting } from '../../core/models/user-settings.model';
-import {
-  NavController,
-  AlertController,
-  LoadingController
-} from '@ionic/angular';
+import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { TranslateService } from '@ngx-translate/core';
 import { AppVersionService } from '../../core/services/app-version/app-version.service';
@@ -88,10 +84,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   versionClick() {
     this.versionClicks++;
-    if (
-      this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE &&
-      !this.userSettings.featureToggleDeveloperMode
-    ) {
+    if (this.versionClicks >= TAPS_TO_ENABLE_TEST_MODE && !this.userSettings.featureToggleDeveloperMode) {
       this.userSettings.featureToggleDeveloperMode = true;
       this.updateSettings();
     }
@@ -120,16 +113,10 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   async showKdvElementsUpdated(ok: boolean) {
     const translations = await this.translateService
-      .get([
-        'SETTINGS.DROPDOWNS_UPDATED',
-        'SETTINGS.DROPDOWNS_FAILED',
-        'ALERT.OK'
-      ])
+      .get(['SETTINGS.DROPDOWNS_UPDATED', 'SETTINGS.DROPDOWNS_FAILED', 'ALERT.OK'])
       .toPromise();
     const alert = await this.alertController.create({
-      message: ok
-        ? translations['SETTINGS.DROPDOWNS_UPDATED']
-        : translations['SETTINGS.DROPDOWNS_FAILED'],
+      message: ok ? translations['SETTINGS.DROPDOWNS_UPDATED'] : translations['SETTINGS.DROPDOWNS_FAILED'],
       buttons: [translations['ALERT.OK']]
     });
     alert.present();
@@ -137,9 +124,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   async confirmReset() {
-    const translations = await this.translateService
-      .get(['SETTINGS.CONFIRM_RESET', 'ALERT.OK', 'ALERT.CANCEL'])
-      .toPromise();
+    const translations = await this.translateService.get(['SETTINGS.CONFIRM_RESET', 'ALERT.OK', 'ALERT.CANCEL']).toPromise();
     const alert = await this.alertController.create({
       message: translations['SETTINGS.CONFIRM_RESET'],
       buttons: [
@@ -157,9 +142,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
   }
 
   async reset() {
-    const message = await this.translateService
-      .get('SETTINGS.RESETTING')
-      .toPromise();
+    const message = await this.translateService.get('SETTINGS.RESETTING').toPromise();
     const loading = await this.loadingController.create({
       message
     });
@@ -169,12 +152,7 @@ export class UserSettingsPage implements OnInit, OnDestroy {
     try {
       await this.doReset();
     } catch (err) {
-      this.loggingService.log(
-        'Could not reset db',
-        err,
-        LogLevel.Warning,
-        DEBUG_TAG
-      );
+      this.loggingService.log('Could not reset db', err, LogLevel.Warning, DEBUG_TAG);
     }
     this.ngZone.run(() => {
       this.isUpdating = false;

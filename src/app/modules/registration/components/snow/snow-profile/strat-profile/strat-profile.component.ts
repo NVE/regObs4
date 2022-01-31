@@ -4,7 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
 import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../services/registration.service';
-import { StratProfileEditModel } from '@varsom-regobs-common/regobs-api';
+import { StratProfileEditModel } from 'src/app/modules/common-regobs-api/models';
 
 @Component({
   selector: 'app-strat-profile',

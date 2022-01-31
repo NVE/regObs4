@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { SnowDensityModel } from '@varsom-regobs-common/regobs-api';
+import { SnowDensityModel } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
 import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService } from '../../../../services/registration.service';
-import { isEmpty } from '@varsom-regobs-common/core';
+import { isEmpty } from 'src/app/modules/common-core/helpers';
 
 @Component({
   selector: 'app-snow-density',
@@ -32,10 +32,7 @@ export class SnowDensityComponent {
     return isEmpty(this.profiles);
   }
 
-  constructor(
-    private modalContoller: ModalController,
-    private registrationService: RegistrationService
-  ) {}
+  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) {}
 
   async openModal(): Promise<void> {
     if (!this.densityModal) {

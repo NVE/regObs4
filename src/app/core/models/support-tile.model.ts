@@ -1,4 +1,4 @@
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 export interface SupportTile extends SubTile {
   opacity: number;

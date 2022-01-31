@@ -8,7 +8,7 @@ import { ItemReorderEventDetail } from '@ionic/core';
 import {
   AvalancheEvalProblem2EditModel,
   KdvElement
-} from '@varsom-regobs-common/regobs-api';
+} from 'src/app/modules/common-regobs-api/models';
 import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-problem-modal.page';
 import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { Subscription } from 'rxjs';

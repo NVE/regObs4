@@ -12,14 +12,7 @@ import { Zip } from '@ionic-native/zip/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
-import {
-  ErrorHandler,
-  Provider,
-  forwardRef,
-  LOCALE_ID,
-  APP_INITIALIZER,
-  NgZone
-} from '@angular/core';
+import { ErrorHandler, LOCALE_ID, APP_INITIALIZER, NgZone } from '@angular/core';
 import { AppErrorHandler } from './core/error-handler/error-handler.class';
 import { HTTP } from '@ionic-native/http/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
@@ -47,12 +40,12 @@ import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AuthService } from 'ionic-appauth';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { API_KEY_TOKEN, IRegobsApiKeyProvider } from '@varsom-regobs-common/regobs-api';
+import { API_KEY_TOKEN, IRegobsApiKeyProvider } from 'src/app/modules/common-regobs-api';
 import {
   IRegistrationModuleOptions,
-  FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
+  FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN
 } from './modules/common-registration/module.options';
-import { AppModeService } from '@varsom-regobs-common/core';
+import { AppModeService } from 'src/app/modules/common-core/services';
 import { addRxPlugin } from 'rxdb';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
@@ -82,7 +75,7 @@ export function initCommonApiKey(): IRegobsApiKeyProvider {
 }
 
 export function initAppModeService(userSettingService: UserSettingService): any {
-  return { appMode$: userSettingService.appMode$  };
+  return { appMode$: userSettingService.appMode$ };
 }
 
 // export function initCommonApiOptions(
@@ -90,8 +83,7 @@ export function initAppModeService(userSettingService: UserSettingService): any 
 // ): RegobsApiConfigurationInterface {
 //   return { rootUrl: appConfig.api.baseUrl };
 // }
-export function initCommonRegistrationOptions(
-): IRegistrationModuleOptions {
+export function initCommonRegistrationOptions(): IRegistrationModuleOptions {
   const options = {
     autoSync: false,
     adapter: 'idb',
@@ -101,7 +93,7 @@ export function initCommonRegistrationOptions(
 }
 
 export function initDb(dbService: OfflineDbService) {
-  return (): Promise<void> =>  {
+  return (): Promise<void> => {
     return import('pouchdb-adapter-idb').then(addRxPlugin).then(() => dbService.initDatabase('idb'));
   };
 }
@@ -174,7 +166,7 @@ export const APP_PROVIDERS = [
   // @varsom-regobs-common providers
   {
     provide: API_KEY_TOKEN,
-    useFactory: initCommonApiKey,
+    useFactory: initCommonApiKey
   },
   {
     provide: AppModeService,
@@ -212,9 +204,7 @@ export const APP_PROVIDERS = [
   // Custom native/web providers
   {
     provide: BackgroundGeolocationService,
-    useClass: window.hasOwnProperty('cordova')
-      ? BackgroundGeolocationNativeService
-      : BackgroundGeolocationWebService
+    useClass: window.hasOwnProperty('cordova') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService
   },
   {
     provide: BackgroundDownloadService,

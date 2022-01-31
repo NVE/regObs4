@@ -1,5 +1,5 @@
 import { UserSetting } from '../../models/user-settings.model';
-import { GeoHazard, LangKey, AppMode } from '@varsom-regobs-common/core';
+import { GeoHazard, LangKey, AppMode } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import { TopoMap } from '../../models/topo-map.enum';
 

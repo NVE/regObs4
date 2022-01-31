@@ -3,7 +3,7 @@ import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 @Component({
   selector: 'app-incident',

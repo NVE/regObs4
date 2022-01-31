@@ -3,9 +3,9 @@ import { RegistrationTid } from 'src/app/modules/common-registration/registratio
 import { BasePage } from '../base.page';
 import { ModalController } from '@ionic/angular';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
-import { DangerObsEditModel, KdvElement } from '@varsom-regobs-common/regobs-api';
+import { DangerObsEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { KdvService } from '../../../../core/services/kdv/kdv.service';
-import { GeoHazard } from '@varsom-regobs-common/core';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
