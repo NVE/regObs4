@@ -92,7 +92,7 @@ export class RegistrationModule {
         },
         {
           provide: NewAttachmentService,
-          useClass: window.hasOwnProperty('cordova') ? FileAttachmentService : OfflineDbNewAttachmentService
+          useClass: window.hasOwnProperty('hybrid') ? FileAttachmentService : OfflineDbNewAttachmentService
         },
         TranslateService
       ]

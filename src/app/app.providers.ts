@@ -204,7 +204,7 @@ export const APP_PROVIDERS = [
   // Custom native/web providers
   {
     provide: BackgroundGeolocationService,
-    useClass: window.hasOwnProperty('cordova') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService
+    useClass: window.hasOwnProperty('hybrid') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService
   },
   {
     provide: BackgroundDownloadService,
