@@ -6,11 +6,11 @@
     "TITLE": "Abonné à Varsom"
   },
   "ADD_MENU": {
-    "DRAFT_TITLE_DIRT": "Brouillon: Observation glissement de terrain",
+    "DRAFT_TITLE_SOIL": "Brouillon: Observation glissement de terrain",
     "DRAFT_TITLE_ICE": "Brouillon: Observation glace",
     "DRAFT_TITLE_SNOW": "Brouillon: Observation neige",
     "DRAFT_TITLE_WATER": "Brouillon: Observation hydrologie",
-    "NEW_DIRT_OBSERVATION": "Nouvelle observation glissement de terrain",
+    "NEW_SOIL_OBSERVATION": "Nouvelle observation glissement de terrain",
     "NEW_ICE_OBSERVATION": "Nouvelle observation glace",
     "NEW_SNOW_OBSERVATION": "Nouvelle observation neige",
     "NEW_WATER_OBSERVATION": "Nouvelle observation hydrologie"

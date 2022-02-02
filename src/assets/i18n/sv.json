@@ -6,11 +6,11 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT_TITLE_DIRT": "Utkast: Jordobservation",
+    "DRAFT_TITLE_SOIL": "Utkast: Jordobservation",
     "DRAFT_TITLE_ICE": "Utkast: Isobservation",
     "DRAFT_TITLE_SNOW": "Utkast: Snöobservation",
     "DRAFT_TITLE_WATER": "Utkast: Vattenobservation",
-    "NEW_DIRT_OBSERVATION": "Ny jordobservation",
+    "NEW_SOIL_OBSERVATION": "Ny jordobservation",
     "NEW_ICE_OBSERVATION": "Ny isobservation",
     "NEW_SNOW_OBSERVATION": "Ny snöobservation",
     "NEW_WATER_OBSERVATION": "Ny vattenobservation"

@@ -6,11 +6,11 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT_TITLE_DIRT": "Osnutek: Zemlja opažanje",
+    "DRAFT_TITLE_SOIL": "Osnutek: Zemlja opažanje",
     "DRAFT_TITLE_ICE": "Osnutek: Led opažanje",
     "DRAFT_TITLE_SNOW": "Osnutek: Sneg opažanje",
     "DRAFT_TITLE_WATER": "Osnutek: Voda opažanje",
-    "NEW_DIRT_OBSERVATION": "Novo zemlja opažanje",
+    "NEW_SOIL_OBSERVATION": "Novo zemlja opažanje",
     "NEW_ICE_OBSERVATION": "Novo led opažanje",
     "NEW_SNOW_OBSERVATION": "Novo sneg opažanje",
     "NEW_WATER_OBSERVATION": "Novo voda opažanje"

@@ -6,11 +6,11 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT_TITLE_DIRT": "Draft: Soil observation",
+    "DRAFT_TITLE_SOIL": "Draft: Soil observation",
     "DRAFT_TITLE_ICE": "Draft: Ice observation",
     "DRAFT_TITLE_SNOW": "Draft: Snow observation",
     "DRAFT_TITLE_WATER": "Draft: Water observation",
-    "NEW_DIRT_OBSERVATION": "New soil observation",
+    "NEW_SOIL_OBSERVATION": "New soil observation",
     "NEW_ICE_OBSERVATION": "New ice observation",
     "NEW_SNOW_OBSERVATION": "New snow observation",
     "NEW_WATER_OBSERVATION": "New water observation"
