@@ -8,6 +8,7 @@ import {
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import {
+  AdaptiveElement,
   AttachmentViewModel,
   RegistrationViewModel,
   Summary
@@ -29,9 +30,6 @@ import { getStarCount } from '../../../core/helpers/competence-helper';
 import { take } from 'rxjs/operators';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { RegistrationTid } from 'src/app/modules/common-registration/models/registration-tid.enum';
-import {
-  AdaptiveElement,
-} from '@varsom-regobs-common/regobs-api';
 import { SnowProfileData } from 'src/app/modules/adaptive-cards/adaptive-snow-profile';
 
 @Component({
