@@ -28,21 +28,18 @@ export class ApiInterceptor implements HttpInterceptor {
     private storage: StorageBackend
   ) {}
 
-  private isRegObsApi(url: string): boolean {
-    return (
-      url.startsWith(
-        `${settings.services.regObs.apiUrl['TEST']}/Registration`
-      ) ||
-      url.startsWith(
-        `${settings.services.regObs.apiUrl['DEMO']}/Registration`
-      ) ||
-      url.startsWith(
-        `${settings.services.regObs.apiUrl['PROD']}/Registration`
-      ) ||
-      url.startsWith(`${settings.services.regObs.apiUrl['TEST']}/Account`) ||
-      url.startsWith(`${settings.services.regObs.apiUrl['DEMO']}/Account`) ||
-      url.startsWith(`${settings.services.regObs.apiUrl['PROD']}/Account`)
-    );
+  //return true if given url belongs to any of the protected Regobs API urls in any environment
+  private isRegObsApiThatRequireLogin(url: string): boolean {
+    const apiUrls = settings.services.regObs.apiUrl;
+    for (const environment of Object.keys(apiUrls)) {
+      const server = apiUrls[environment];
+      for (const service of ['Search/MyRegistrations', 'Registration', 'Account']) {
+        if (url.startsWith(`${server}/${service}`)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private isB2cApi(url: string): boolean {
@@ -65,7 +62,7 @@ export class ApiInterceptor implements HttpInterceptor {
         })
       );
     }
-    if (this.isRegObsApi(req.url) && !req.headers.has('Authorization')) {
+    if (this.isRegObsApiThatRequireLogin(req.url) && !req.headers.has('Authorization')) {
       return this.addAuthHeader(req).pipe(
         switchMap((requestWithAuthHeader) => {
           return next.handle(requestWithAuthHeader).pipe(
@@ -97,6 +94,7 @@ export class ApiInterceptor implements HttpInterceptor {
           'Authorization',
           `Bearer ${user.token}`
         );
+        this.loggerService.debug(`adding token to this request: ${request.url}`);
         return request.clone({ headers });
       })
     );

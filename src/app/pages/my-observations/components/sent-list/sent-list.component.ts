@@ -77,10 +77,10 @@ export class SentListComponent implements OnInit {
   }
 
   private getMyRegistrations$(pageNumber: number): Observable<RegistrationViewModel[]> {
-    return combineLatest([this.userSettingService.appModeAndLanguage$, this.regobsAuthService.loggedInUser$]).pipe(
-      switchMap(([[appMode, langKey], loggedInUser]) => {
+    return combineLatest([this.userSettingService.language$, this.regobsAuthService.loggedInUser$]).pipe(
+      switchMap(([langKey, loggedInUser]) => {
         if (loggedInUser.isLoggedIn) {
-          return this.observationService.getObservationsForCurrentUser(appMode, langKey, pageNumber, PAGE_SIZE);
+          return this.observationService.getObservationsForCurrentUser(langKey, pageNumber, PAGE_SIZE);
         }
         return of([]);
       }),
