@@ -20,7 +20,7 @@ export const authFactory = (
   const authService = new RegobsAuthServiceOverride(browser, storage, requestor);
   userSettingService.appMode$.subscribe((appMode: AppMode) => {
     authService.authConfig = settings.authConfig[appMode];
-    if (!platform.is('cordova')) {
+    if (!platform.is('hybrid')) {
       const url = `${window.location.origin}/${AUTH_CALLBACK_PATH}`;
       authService.authConfig.redirect_url = url;
       authService.authConfig.end_session_redirect_url = url;
