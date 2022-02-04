@@ -94,7 +94,6 @@ export class ApiInterceptor implements HttpInterceptor {
           'Authorization',
           `Bearer ${user.token}`
         );
-        this.loggerService.debug(`adding token to this request: ${request.url}`);
         return request.clone({ headers });
       })
     );
