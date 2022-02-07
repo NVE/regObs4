@@ -17,6 +17,11 @@ import { OfflineDbNewAttachmentService } from './services/add-new-attachment/off
 import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions, SUMMARY_PROVIDER_TOKEN } from './module.options';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import FileAttachmentService from './services/add-new-attachment/file-attachment.service';
+import { Platform } from '@ionic/angular';
+import { OfflineDbService } from './registration.services';
+import { AppModeService, LoggerService } from '../common-core/services';
+import { File } from '@ionic-native/file/ngx';
+import { LoggingService } from '../shared/services/logging/logging.service';
 
 export function offlineDbServiceOptionsFactory(options?: IRegistrationModuleOptions): OfflineDbServiceOptions {
   const offlineDbServiceOptions = new OfflineDbServiceOptions();
@@ -42,6 +47,20 @@ export function getFakeHelpTextApiService(): unknown {
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
+function createAttachmentService(
+  platform: Platform,
+  offlineDbService: OfflineDbService,
+  appModeService: AppModeService,
+  file: File,
+  loggingService: LoggingService,
+  loggerService: LoggerService): NewAttachmentService {
+
+  if (platform.is('hybrid')) {
+    return new FileAttachmentService(file, loggingService);
+  }
+  return new OfflineDbNewAttachmentService(offlineDbService, appModeService, loggerService);
 }
 
 export const translateModuleForRoot = TranslateModule.forRoot({
@@ -92,7 +111,8 @@ export class RegistrationModule {
         },
         {
           provide: NewAttachmentService,
-          useClass: window.hasOwnProperty('hybrid') ? FileAttachmentService : OfflineDbNewAttachmentService
+          useFactory: createAttachmentService,
+          deps: [Platform, OfflineDbService, AppModeService, File, LoggingService,LoggerService]
         },
         TranslateService
       ]
