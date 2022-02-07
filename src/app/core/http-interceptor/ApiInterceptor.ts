@@ -41,7 +41,16 @@ export class ApiInterceptor implements HttpInterceptor {
       ) ||
       url.startsWith(`${settings.services.regObs.apiUrl['TEST']}/Account`) ||
       url.startsWith(`${settings.services.regObs.apiUrl['DEMO']}/Account`) ||
-      url.startsWith(`${settings.services.regObs.apiUrl['PROD']}/Account`)
+      url.startsWith(`${settings.services.regObs.apiUrl['PROD']}/Account`) ||
+      url.startsWith(
+        `${settings.services.regObs.apiUrl['TEST']}/Search/MyRegistrations`
+      ) ||
+      url.startsWith(
+        `${settings.services.regObs.apiUrl['DEMO']}/Search/MyRegistrations`
+      ) ||
+      url.startsWith(
+        `${settings.services.regObs.apiUrl['PROD']}/Search/MyRegistrations`
+      )
     );
   }
 

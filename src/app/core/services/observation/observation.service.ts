@@ -197,11 +197,10 @@ export class ObservationService {
     numberOfRecords = 10
   ): Observable<RegistrationViewModel[]> {
     return this.searchService
-      .SearchSearch({
+      .SearchPostSearchMyRegistrations({
         NumberOfRecords: numberOfRecords,
         LangKey: langKey,
         Offset: (pageNr || 0) * numberOfRecords,
-        ObserverGuid: 'user.Guid', //TODO: Create call for "My registrations" in api v5
         TimeZone: moment().format('Z')
       })
       .pipe(catchError((err) => of([]))); // Return empty list if http request fails);
