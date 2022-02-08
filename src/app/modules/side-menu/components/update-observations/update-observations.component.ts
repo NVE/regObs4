@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { switchMap, map, distinctUntilChanged, tap } from 'rxjs/operators';
+import { switchMap, map, distinctUntilChanged } from 'rxjs/operators';
 import { settings } from '../../../../../settings';
 import { ObservationService } from '../../../../core/services/observation/observation.service';
 import { DataMarshallService } from '../../../../core/services/data-marshall/data-marshall.service';

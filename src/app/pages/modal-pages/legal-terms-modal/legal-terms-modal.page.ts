@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -6,10 +6,8 @@ import { ModalController } from '@ionic/angular';
   templateUrl: './legal-terms-modal.page.html',
   styleUrls: ['./legal-terms-modal.page.scss']
 })
-export class LegalTermsModalPage implements OnInit {
+export class LegalTermsModalPage {
   constructor(private modalController: ModalController) {}
-
-  ngOnInit() {}
 
   close() {
     this.modalController.dismiss();

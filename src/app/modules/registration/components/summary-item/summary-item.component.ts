@@ -34,17 +34,17 @@ export class SummaryItemComponent extends NgDestoryBase implements OnChanges {
             attachments.length === 0
               ? of([])
               : forkJoin([
-                  ...attachments.map((a) =>
-                    this.newAttachmentService.getBlob(this.item.id, a.id).pipe(
-                      take(1),
-                      map((blob) => ({ ...a, blob })),
-                      catchError((err) => {
-                        this.logger.error(err, DEBUG_TAG, 'Could not get blob from attachment');
-                        return of({ ...a, blob: undefined });
-                      })
-                    )
+                ...attachments.map((a) =>
+                  this.newAttachmentService.getBlob(this.item.id, a.id).pipe(
+                    take(1),
+                    map((blob) => ({ ...a, blob })),
+                    catchError((err) => {
+                      this.logger.error(err, DEBUG_TAG, 'Could not get blob from attachment');
+                      return of({ ...a, blob: undefined });
+                    })
                   )
-                ])
+                )
+              ])
           ),
           takeUntil(this.ngDestroy$)
         )

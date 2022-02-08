@@ -10,7 +10,6 @@ import { AlertController } from '@ionic/angular';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { ObsLocationPage } from './obs-location/obs-location.page';
 import { TranslateService } from '@ngx-translate/core';
-import { take } from 'rxjs/operators';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 

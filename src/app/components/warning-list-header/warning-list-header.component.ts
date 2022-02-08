@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import moment from 'moment';
 import { Platform } from '@ionic/angular';
 
@@ -7,7 +7,7 @@ import { Platform } from '@ionic/angular';
   templateUrl: './warning-list-header.component.html',
   styleUrls: ['./warning-list-header.component.scss']
 })
-export class WarningListHeaderComponent implements OnInit {
+export class WarningListHeaderComponent {
   @Input() title: string;
   @Input() subTitle: string;
   @Input() showDayNames: boolean;
@@ -17,8 +17,6 @@ export class WarningListHeaderComponent implements OnInit {
   }
 
   constructor(private platform: Platform) {}
-
-  ngOnInit() {}
 
   getDayName(daysToAdd: number) {
     return `DAYS.SHORT.${moment().add(daysToAdd, 'days').day()}`;

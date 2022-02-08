@@ -92,7 +92,7 @@ export class RegistrationModule {
         },
         {
           provide: NewAttachmentService,
-          useClass: window.hasOwnProperty('hybrid') ? FileAttachmentService : OfflineDbNewAttachmentService
+          useClass: Object.prototype.hasOwnProperty.call(window, 'hybrid') ? FileAttachmentService : OfflineDbNewAttachmentService
         },
         TranslateService
       ]

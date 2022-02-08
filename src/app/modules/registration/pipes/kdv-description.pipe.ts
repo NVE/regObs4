@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform, NgZone } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { KdvService } from '../../../core/services/kdv/kdv.service';
 import { take } from 'rxjs/operators';
 

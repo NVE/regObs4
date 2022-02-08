@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface StratProfileLayerViewModel {
   GrainFormPrimaryTName?: string;
   GrainFormSecondaryTName?: string;

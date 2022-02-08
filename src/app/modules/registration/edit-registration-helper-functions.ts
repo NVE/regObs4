@@ -47,19 +47,19 @@ export function getObserverEditCheckObservable(reg: RegistrationViewModel, obser
 export function getWithin48HoursCheckUntilFalseObservable(reg: RegistrationViewModel): Observable<boolean> {
   const completeWith =
     <T>(predicate: (arg: T) => boolean) =>
-    (source: Observable<T>) =>
-      new Observable<T>((observer) =>
-        source.subscribe(
-          (value) => {
-            observer.next(value);
-            if (predicate(value)) {
-              observer.complete();
-            }
-          },
-          (error) => observer.error(error),
-          () => observer.complete()
-        )
-      );
+      (source: Observable<T>) =>
+        new Observable<T>((observer) =>
+          source.subscribe(
+            (value) => {
+              observer.next(value);
+              if (predicate(value)) {
+                observer.complete();
+              }
+            },
+            (error) => observer.error(error),
+            () => observer.complete()
+          )
+        );
 
   const forthyEightHoursInMS = 48 * 60 * 60 * 1000;
   const timerCheckEveryMinuteMS = 60 * 1000;

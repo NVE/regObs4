@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface AvalancheEvalProblemViewModel {
   AvalancheEvalProblemID?: number;
   AvalProbabilityTID?: number;

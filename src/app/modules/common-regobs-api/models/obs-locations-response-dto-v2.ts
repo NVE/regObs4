@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { LatLngObject } from './lat-lng-object';
 export interface ObsLocationsResponseDtoV2 {
   Name?: string;

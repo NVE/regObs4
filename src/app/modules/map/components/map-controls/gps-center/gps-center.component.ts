@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   OnDestroy,
   AfterContentInit,
   ChangeDetectionStrategy,
@@ -15,7 +14,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./gps-center.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GpsCenterComponent implements OnInit, OnDestroy, AfterContentInit {
+export class GpsCenterComponent implements OnDestroy, AfterContentInit {
   followMode: boolean;
 
   private subscription: Subscription;
@@ -32,8 +31,6 @@ export class GpsCenterComponent implements OnInit, OnDestroy, AfterContentInit {
     });
     this.cdRef.detectChanges();
   }
-
-  ngOnInit() {}
 
   ngOnDestroy(): void {
     if (this.subscription) {

@@ -1,6 +1,7 @@
-const stringify = require('json-stringify-safe');
+import stringify from 'json-stringify-safe';
+
 export class IsEmptyHelper {
-  static isEmpty(obj: Object | Array<Object | Array<Object>>) {
+  static isEmpty(obj: unknown | Array<unknown | Array<unknown>>) {
     if (obj === null || obj === undefined) {
       return true;
     } else if (typeof obj === 'string') {
@@ -8,7 +9,7 @@ export class IsEmptyHelper {
     } else if (typeof obj === 'number' || typeof obj === 'boolean') {
       return false;
     } else if (obj instanceof Array) {
-      const arr = <Array<Object | Array<Object>>>obj;
+      const arr = <Array<unknown | Array<unknown>>>obj;
       return arr.length === 0 || !arr.some((x) => !IsEmptyHelper.isEmpty(x));
     } else {
       const props = Object.getOwnPropertyNames(obj);

@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface AvalancheActivityObs2ViewModel {
   EstimatedNumName?: string;
   ExposedHeightComboName?: string;

@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SupportTile } from 'src/app/core/models/support-tile.model';
-import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';import { SupportMapInfoPage } from 'src/app/modules/map/pages/support-map-info/support-map-info.page';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import {
   setObservableTimeout
 } from '../../../../../../core/helpers/observable-helper';

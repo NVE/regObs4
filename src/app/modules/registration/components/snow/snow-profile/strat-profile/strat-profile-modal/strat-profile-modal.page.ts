@@ -16,6 +16,9 @@ import { takeUntil } from 'rxjs/operators';
 import cloneDeep from 'clone-deep';
 import { RegobsAuthService } from '../../../../../../auth/services/regobs-auth.service';
 
+/**
+ * Add layers, drag to change layer ordering, fetch layers from other profiles.
+ */
 @Component({
   selector: 'app-strat-profile-modal',
   templateUrl: './strat-profile-modal.page.html',

@@ -11,7 +11,7 @@ describe('DateHelperService', () => {
 
   beforeEach(() => {
     translateService = jasmine.createSpyObj('TranslateService', {
-      getTranslation: (lang: string) => of({})
+      getTranslation: () => of({})
     });
     TestBed.configureTestingModule({
       providers: [

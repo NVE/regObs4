@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface KdvElement {
   Id?: number;
   Name?: string;

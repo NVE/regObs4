@@ -71,6 +71,7 @@ function createTranslateLoader(http: HttpClient) {
 }
 
 export function initCommonApiKey(): IRegobsApiKeyProvider {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   return { apiKey: require('../assets/apikey.json').apiKey };
 }
 
@@ -204,7 +205,7 @@ export const APP_PROVIDERS = [
   // Custom native/web providers
   {
     provide: BackgroundGeolocationService,
-    useClass: window.hasOwnProperty('hybrid') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService
+    useClass: Object.prototype.hasOwnProperty.call(window, 'hybrid') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService
   },
   {
     provide: BackgroundDownloadService,

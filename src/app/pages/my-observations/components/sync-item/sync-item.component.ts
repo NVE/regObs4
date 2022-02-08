@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { ProgressService } from 'src/app/modules/common-registration/registration.services';
 import { Subscription } from 'rxjs';

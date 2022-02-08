@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { ActionSheetController } from '@ionic/angular';
 import { ActionSheetButton } from '@ionic/core';
 import { SelectOption } from './select-option.model';
@@ -12,7 +12,7 @@ const TRANSLATION_KEY_RESET = 'DIALOGS.RESET';
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss']
 })
-export class SelectComponent implements OnInit {
+export class SelectComponent {
   @Input() title: string;
   @Input() subTitle: string;
   @Input() selectedValue: number | string;
@@ -41,8 +41,6 @@ export class SelectComponent implements OnInit {
     private actionSheetController: ActionSheetController,
     private translateService: TranslateService
   ) {}
-
-  ngOnInit() {}
 
   private async getActionSheetButtons() {
     const buttons: ActionSheetButton[] = [];

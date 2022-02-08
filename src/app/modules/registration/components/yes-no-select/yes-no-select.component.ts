@@ -1,6 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { SelectInterface } from '@ionic/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SelectOption } from '../../../shared/components/input/select/select-option.model';
 
 @Component({
@@ -18,6 +16,4 @@ export class YesNoSelectComponent {
     { id: true, text: 'DIALOGS.YES' },
     { id: false, text: 'DIALOGS.NO' }
   ];
-
-  constructor() {}
 }

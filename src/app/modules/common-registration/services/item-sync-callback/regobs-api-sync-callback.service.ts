@@ -107,19 +107,19 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
     // Kunne vi bare brukt InsertOrUpdate hver gang?
     return item.response
       ? // PUT
-        this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
-          registration: item.request,
-          id: item.response.RegId,
-          langKey,
-          externalReferenceId: item.id,
-          ignoreVersionCheck: ignoreVersionCheck
-        })
+      this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
+        registration: item.request,
+        id: item.response.RegId,
+        langKey,
+        externalReferenceId: item.id,
+        ignoreVersionCheck: ignoreVersionCheck
+      })
       : // POST
-        this.regobsApiRegistrationService.RegistrationInsert({
-          registration: item.request,
-          langKey,
-          externalReferenceId: item.id
-        });
+      this.regobsApiRegistrationService.RegistrationInsert({
+        registration: item.request,
+        langKey,
+        externalReferenceId: item.id
+      });
   }
 
   removeAllNewAttachments(item: IRegistration): Observable<IRegistration> {

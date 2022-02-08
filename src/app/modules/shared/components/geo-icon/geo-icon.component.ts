@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 
 @Component({
@@ -6,8 +6,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
   templateUrl: './geo-icon.component.html',
   styleUrls: ['./geo-icon.component.scss']
 })
-export class GeoIconComponent implements OnInit {
-  constructor() {}
+export class GeoIconComponent {
 
   @Input() geoHazards: GeoHazard[];
   @Input() useGeoColors = true;
@@ -24,6 +23,4 @@ export class GeoIconComponent implements OnInit {
   get iconSrc() {
     return `/assets/icon/${this.geoClass.replace(/-/, '_')}.svg`;
   }
-
-  ngOnInit() {}
 }

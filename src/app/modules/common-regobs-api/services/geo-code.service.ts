@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { BaseService as __BaseService } from '../base-service';
@@ -36,14 +36,14 @@ class GeoCodeService extends __BaseService {
    */
   GeoCodeLocationInfoResponse(params: GeoCodeService.GeoCodeLocationInfoParams): __Observable<__StrictHttpResponse<GeoLocationInfo>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __headers = new HttpHeaders();
+    const __body: any = null;
     if (params.longitude != null) __params = __params.set('longitude', params.longitude.toString());
     if (params.latitude != null) __params = __params.set('latitude', params.latitude.toString());
     if (params.geoHazardId != null) __params = __params.set('geoHazardId', params.geoHazardId.toString());
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/GeoCode/LocationInfo`,
+      this.rootUrl + '/GeoCode/LocationInfo',
       __body,
       {
         headers: __headers,
@@ -105,15 +105,15 @@ class GeoCodeService extends __BaseService {
    */
   GeoCodeLocationSummaryResponse(params: GeoCodeService.GeoCodeLocationSummaryParams): __Observable<__StrictHttpResponse<GeoLocationSummary>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __headers = new HttpHeaders();
+    const __body: any = null;
     if (params.longitude != null) __params = __params.set('longitude', params.longitude.toString());
     if (params.latitude != null) __params = __params.set('latitude', params.latitude.toString());
     if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
     if (params.geoHazardId != null) __params = __params.set('geoHazardId', params.geoHazardId.toString());
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/GeoCode/LocationSummary`,
+      this.rootUrl + '/GeoCode/LocationSummary',
       __body,
       {
         headers: __headers,
@@ -163,7 +163,7 @@ class GeoCodeService extends __BaseService {
   }
 }
 
-module GeoCodeService {
+namespace GeoCodeService {
 
   /**
    * Parameters for GeoCodeLocationInfo
@@ -201,4 +201,4 @@ module GeoCodeService {
   }
 }
 
-export { GeoCodeService }
+export { GeoCodeService };

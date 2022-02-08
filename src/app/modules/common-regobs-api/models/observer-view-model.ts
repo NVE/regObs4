@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface ObserverViewModel {
   NickName?: string;
   ObserverID?: number;

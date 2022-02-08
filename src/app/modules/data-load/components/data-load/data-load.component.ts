@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   Input,
   NgZone,
   OnDestroy,
@@ -16,7 +15,7 @@ import { map } from 'rxjs/operators';
   templateUrl: './data-load.component.html',
   styleUrls: ['./data-load.component.scss']
 })
-export class DataLoadComponent implements OnInit, OnDestroy, OnChanges {
+export class DataLoadComponent implements OnDestroy, OnChanges {
   dataLoad: IDataLoad[] = [];
   subscription: Subscription;
   get isLoading() {
@@ -30,7 +29,6 @@ export class DataLoadComponent implements OnInit, OnDestroy, OnChanges {
     private dataLoadService: DataLoadService,
     private ngZone: NgZone
   ) {}
-  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges) {
     const ids = changes.ids.currentValue as string[];

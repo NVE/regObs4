@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IonSlides, NavController } from '@ionic/angular';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';
@@ -13,7 +13,7 @@ import { settings } from '../../../settings';
   styleUrls: ['./start-wizard.page.scss'],
   animations: animations
 })
-export class StartWizardPage implements OnInit, OnDestroy {
+export class StartWizardPage implements OnDestroy {
   @ViewChild(IonSlides) slides: IonSlides;
   GeoHazard = GeoHazard;
   LangKey = LangKey;
@@ -45,8 +45,6 @@ export class StartWizardPage implements OnInit, OnDestroy {
       this.setPageIndex(0);
     });
   }
-
-  ngOnInit() {}
 
   async saveLanguage() {
     const userSettings = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
