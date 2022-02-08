@@ -47,6 +47,6 @@ export class RegobsApiModule {
           useValue: {rootUrl: customParams.rootUrl}
         }
       ]
-    }
+    };
   }
 }

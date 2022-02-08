@@ -47,13 +47,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchSearchResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search`,
+      this.rootUrl + '/Search',
       __body,
       {
         headers: __headers,
@@ -92,13 +92,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchPostSearchMyRegistrationsResponse(criteria: SearchCriteriaExclUserRequestDto): __Observable<__StrictHttpResponse<Array<RegistrationViewModel>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search/MyRegistrations`,
+      this.rootUrl + '/Search/MyRegistrations',
       __body,
       {
         headers: __headers,
@@ -132,13 +132,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchCountResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<SearchCountResponseDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search/Count`,
+      this.rootUrl + '/Search/Count',
       __body,
       {
         headers: __headers,
@@ -173,12 +173,12 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchGetSearchCriteriaResponse(params: SearchService.SearchGetSearchCriteriaParams): __Observable<__StrictHttpResponse<SearchSideBarDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
 
 
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'GET',
       this.rootUrl + `/Search/SearchCriteria/${params.geoHazards}/${params.langKey}`,
       __body,
@@ -215,13 +215,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchSearchCriteriaResponse(request: SearchSideBarRequestDto): __Observable<__StrictHttpResponse<SearchSideBarDto>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = request;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search/SearchCriteria`,
+      this.rootUrl + '/Search/SearchCriteria',
       __body,
       {
         headers: __headers,
@@ -251,13 +251,13 @@ class SearchService extends __BaseService {
    * @return OK
    */
   SearchAtAGlanceResponse(criteria: SearchCriteriaRequestDto): __Observable<__StrictHttpResponse<Array<AtAGlanceViewModel>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = criteria;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Search/AtAGlance`,
+      this.rootUrl + '/Search/AtAGlance',
       __body,
       {
         headers: __headers,
@@ -283,7 +283,7 @@ class SearchService extends __BaseService {
   }
 }
 
-module SearchService {
+namespace SearchService {
 
   /**
    * Parameters for SearchGetSearchCriteria
@@ -302,4 +302,4 @@ module SearchService {
   }
 }
 
-export { SearchService }
+export { SearchService };

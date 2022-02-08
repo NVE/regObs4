@@ -362,10 +362,10 @@ export class RegistrationService {
       switchMap((regTypes) =>
         regTypes.length > 0
           ? forkJoin(
-              regTypes.map((regType) =>
-                this.hasAnyDataToShowInRegistrationTypes(reg, regType.registrationTid).pipe(map((anyData) => ({ anyData, regType })))
-              )
+            regTypes.map((regType) =>
+              this.hasAnyDataToShowInRegistrationTypes(reg, regType.registrationTid).pipe(map((anyData) => ({ anyData, regType })))
             )
+          )
           : of([])
       ),
       map((result) => result.filter((r) => r.anyData).map((r) => r.regType))
@@ -514,9 +514,9 @@ export class RegistrationService {
       switchMap((reg: IRegistration) =>
         reg
           ? this.saveRegistrationToOfflineStorage(reg).pipe(
-              switchMap(() => this.newAttachmentService.removeAttachments$(id)),
-              map(() => true)
-            )
+            switchMap(() => this.newAttachmentService.removeAttachments$(id)),
+            map(() => true)
+          )
           : of(false)
       )
     );
@@ -612,7 +612,7 @@ export class RegistrationService {
         records.length > 0
           ? from(Promise.all(records.map((reg) => this.shouldSync(reg, includeThrottle).then((shouldSync) => ({ reg, shouldSync })))))
           : // forkJoin(records.map((reg) => this.shouldSync(reg, includeThrottle).pipe(map((shouldSync) => ({ reg, shouldSync })))))
-            of([])
+          of([])
       ),
       map((result) => result.filter((result) => result.shouldSync).map((result) => result.reg))
     );

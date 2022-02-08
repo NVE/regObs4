@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
 import { ModalController } from '@ionic/angular';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
@@ -17,7 +17,7 @@ import { StratProfileEditModel } from 'src/app/modules/common-regobs-api/models'
   templateUrl: './strat-profile.component.html',
   styleUrls: ['./strat-profile.component.scss']
 })
-export class StratProfileComponent implements OnInit {
+export class StratProfileComponent {
   @Input() reg: IRegistration;
 
   private modal: HTMLIonModalElement;
@@ -42,8 +42,6 @@ export class StratProfileComponent implements OnInit {
     private modalContoller: ModalController,
     private registrationService: RegistrationService
   ) {}
-
-  ngOnInit() {}
 
   async openModal() {
     if (!this.modal) {

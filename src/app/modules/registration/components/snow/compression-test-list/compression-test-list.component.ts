@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
@@ -7,15 +7,13 @@ import { CompressionTestModalPage } from './compression-test-modal/compression-t
   templateUrl: './compression-test-list.component.html',
   styleUrls: ['./compression-test-list.component.scss']
 })
-export class CompressionTestListComponent implements OnInit {
+export class CompressionTestListComponent {
   @Input() tests: Array<CompressionTestEditModel>;
   @Input() includeInSnowProfileAsDefault = false;
   @Output() testsChange = new EventEmitter();
   private isOpen = false;
 
   constructor(private modalController: ModalController) {}
-
-  ngOnInit() {}
 
   async addOrEditCompressionTest(index?: number) {
     if (!this.isOpen) {

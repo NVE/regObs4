@@ -27,13 +27,13 @@ class TripService extends __BaseService {
    * @param trip undefined
    */
   TripPutResponse(trip: FinishTripDto): __Observable<__StrictHttpResponse<null>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = trip;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'PUT',
-      this.rootUrl + `/Trip`,
+      this.rootUrl + '/Trip',
       __body,
       {
         headers: __headers,
@@ -61,13 +61,13 @@ class TripService extends __BaseService {
    * @param trip undefined
    */
   TripPostResponse(trip: CreateTripDto): __Observable<__StrictHttpResponse<null>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = trip;
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Trip`,
+      this.rootUrl + '/Trip',
       __body,
       {
         headers: __headers,
@@ -92,7 +92,7 @@ class TripService extends __BaseService {
   }
 }
 
-module TripService {
+namespace TripService {
 }
 
-export { TripService }
+export { TripService };

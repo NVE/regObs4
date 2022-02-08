@@ -104,9 +104,9 @@ export class AvalancheObsPage extends BasePage {
       this.registrationTid
     ).pipe(take(1)).toPromise();
     const isIncidentEmpty = !await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
-        this.registration,
-        RegistrationTid.Incident
-      ).pipe(take(1)).toPromise();
+      this.registration,
+      RegistrationTid.Incident
+    ).pipe(take(1)).toPromise();
     return isEmpty && isIncidentEmpty;
   }
 

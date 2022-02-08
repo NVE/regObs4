@@ -27,8 +27,8 @@ export class AddOrEditDangerObsModalPage implements OnInit {
   interfaceOptions = {};
 
   get GeoHazardName(): string {
-    let name = GeoHazard[this.geoHazard];
-    return name != "Soil" ? name : "Dirt";
+    const name = GeoHazard[this.geoHazard];
+    return name != 'Soil' ? name : 'Dirt';
   }
 
   constructor(

@@ -71,6 +71,7 @@ export class HelpTextService {
       return resultFromDb;
     } else {
       const langKeyName = LangKey[langKey];
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const defaultHelptexts: HelptextDto[] = require(`src/assets/json/helptexts.${langKeyName}.json`);
       return defaultHelptexts;
     }

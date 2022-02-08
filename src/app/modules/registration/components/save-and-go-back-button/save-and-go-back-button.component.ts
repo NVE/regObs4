@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services'; 
+import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
 import { take } from 'rxjs/operators';
 
@@ -26,7 +26,7 @@ export class SaveAndGoBackButtonComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges & SmartChanges<this>): void {
     if(changes && changes.registration && !changes.registration.isFirstChange()) {
-     this.setHasData();
+      this.setHasData();
     }
   }
 
@@ -37,10 +37,10 @@ export class SaveAndGoBackButtonComponent implements OnInit, OnChanges {
   private setHasData(): void {
     if(this.registration != null && this.registrationTid != null) {
       this.commonRegistrationService.hasAnyDataToShowInRegistrationTypes(this.registration, this.registrationTid)
-      .pipe((take(1))).subscribe((hasData) => {
+        .pipe((take(1))).subscribe((hasData) => {
           this.hasData = hasData;
           this.cdr.markForCheck();
-      });
+        });
     }
   }
 

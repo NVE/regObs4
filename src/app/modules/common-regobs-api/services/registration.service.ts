@@ -38,12 +38,12 @@ class RegistrationService extends __BaseService {
    * @return OK
    */
   RegistrationGetResponse(params: RegistrationService.RegistrationGetParams): __Observable<__StrictHttpResponse<RegistrationViewModel>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
 
 
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'GET',
       this.rootUrl + `/Registration/${params.regId}/${params.langKey}`,
       __body,
@@ -83,11 +83,11 @@ class RegistrationService extends __BaseService {
    * @return OK
    */
   RegistrationGetCaamlResponse(regId: number): __Observable<__StrictHttpResponse<{}>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
 
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'GET',
       this.rootUrl + `/Registration/Caaml/${regId}`,
       __body,
@@ -134,16 +134,16 @@ class RegistrationService extends __BaseService {
    */
   RegistrationPlotPreviewPngResponse(params: RegistrationService.RegistrationPlotPreviewPngParams): __Observable<__StrictHttpResponse<{}>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     if (params.width != null) __params = __params.set('width', params.width.toString());
     __body = params.registration;
     if (params.height != null) __params = __params.set('height', params.height.toString());
     if (params.format != null) __params = __params.set('format', params.format.toString());
     if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Registration/PlotPreviewPng`,
+      this.rootUrl + '/Registration/PlotPreviewPng',
       __body,
       {
         headers: __headers,
@@ -196,14 +196,14 @@ class RegistrationService extends __BaseService {
    */
   RegistrationInsertOrUpdateResponse(params: RegistrationService.RegistrationInsertOrUpdateParams): __Observable<__StrictHttpResponse<RegistrationViewModel>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = params.registration;
 
     if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
     if (params.ignoreVersionCheck != null) __params = __params.set('ignoreVersionCheck', params.ignoreVersionCheck.toString());
     if (params.externalReferenceId != null) __params = __params.set('externalReferenceId', params.externalReferenceId.toString());
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'PUT',
       this.rootUrl + `/Registration/${params.id}`,
       __body,
@@ -245,11 +245,11 @@ class RegistrationService extends __BaseService {
    * @param id undefined
    */
   RegistrationDeleteResponse(id: number): __Observable<__StrictHttpResponse<null>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
 
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'DELETE',
       this.rootUrl + `/Registration/${id}`,
       __body,
@@ -309,14 +309,14 @@ class RegistrationService extends __BaseService {
    */
   RegistrationInsertResponse(params: RegistrationService.RegistrationInsertParams): __Observable<__StrictHttpResponse<RegistrationViewModel>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = params.registration;
     if (params.langKey != null) __params = __params.set('langKey', params.langKey.toString());
     if (params.externalReferenceId != null) __params = __params.set('externalReferenceId', params.externalReferenceId.toString());
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Registration`,
+      this.rootUrl + '/Registration',
       __body,
       {
         headers: __headers,
@@ -382,12 +382,12 @@ class RegistrationService extends __BaseService {
    */
   RegistrationValidateResponse(params: RegistrationService.RegistrationValidateParams): __Observable<__StrictHttpResponse<RegistrationEditModel>> {
     let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __headers = new HttpHeaders();
     let __body: any = null;
     __body = params.registration;
 
     if (params.externalReferenceId != null) __params = __params.set('externalReferenceId', params.externalReferenceId.toString());
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
       this.rootUrl + `/Registration/Validate/${params.id}`,
       __body,
@@ -422,7 +422,7 @@ class RegistrationService extends __BaseService {
   }
 }
 
-module RegistrationService {
+namespace RegistrationService {
 
   /**
    * Parameters for RegistrationGet
@@ -533,4 +533,4 @@ module RegistrationService {
   }
 }
 
-export { RegistrationService }
+export { RegistrationService };
