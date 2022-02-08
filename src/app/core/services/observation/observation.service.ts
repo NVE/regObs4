@@ -11,7 +11,7 @@ import { DataLoadService } from '../../../modules/data-load/services/data-load.s
 import { UserSetting } from '../../models/user-settings.model';
 import { LangKey, GeoHazard, AppMode } from 'src/app/modules/common-core/models';
 import { SearchService } from 'src/app/modules/common-regobs-api/services';
-import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
+import { RegistrationViewModel, SearchCriteriaExclUserRequestDto } from 'src/app/modules/common-regobs-api/models';
 import { toPromiseWithCancel } from '../../helpers/observable-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { DbHelperService } from '../db-helper/db-helper.service';
@@ -190,21 +190,28 @@ export class ObservationService {
     await this.deleteOldObservations(userSetting.appMode, geoHazards);
   }
 
+  /**
+   * Return registrations done by current logged in user.
+   * Empty list if no user is logged in.
+   * @param langKey the language key you want registrations in
+   * @param pageNr like to get next page or any more pages
+   * @param numberOfRecords how many records you like returned
+   * @returns the registrations if there are any
+   */
   getObservationsForCurrentUser(
-    appMode: AppMode,
     langKey: LangKey,
     pageNr?: number,
     numberOfRecords = 10
   ): Observable<RegistrationViewModel[]> {
-    return this.searchService
-      .SearchSearch({
-        NumberOfRecords: numberOfRecords,
-        LangKey: langKey,
-        Offset: (pageNr || 0) * numberOfRecords,
-        ObserverGuid: 'user.Guid', //TODO: Create call for "My registrations" in api v5
-        TimeZone: moment().format('Z')
-      })
-      .pipe(catchError((err) => of([]))); // Return empty list if http request fails);
+
+    const criteria: SearchCriteriaExclUserRequestDto = {
+      NumberOfRecords: numberOfRecords,
+      LangKey: langKey,
+      Offset: (pageNr || 0) * numberOfRecords,
+      TimeZone: moment().format('Z')
+    };
+    return this.searchService.SearchPostSearchMyRegistrations(criteria)
+      .pipe(catchError(() => of([]))); // Return empty list if http request fails);
   }
 
   async updateObservationById(regId: number, appMode: AppMode, langKey: LangKey, currentGeoHazards: GeoHazard[]) {
