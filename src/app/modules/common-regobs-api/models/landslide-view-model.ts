@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { UrlViewModel } from './url-view-model';
 export interface LandslideViewModel {
   LandSlideName?: string;

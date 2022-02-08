@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   Input,
   NgZone,
   Output,
@@ -15,7 +14,7 @@ import { UrlViewModel } from 'src/app/modules/common-regobs-api/models';
   templateUrl: './add-web-url-item.component.html',
   styleUrls: ['./add-web-url-item.component.scss']
 })
-export class AddWebUrlItemComponent implements OnInit {
+export class AddWebUrlItemComponent {
   @Input() title = 'REGISTRATION.ADD_WEB_URL.TITLE';
   @Input() weburls: UrlViewModel[];
   @Output() weburlsChange = new EventEmitter();
@@ -23,8 +22,6 @@ export class AddWebUrlItemComponent implements OnInit {
   @Input() iconColor = 'dark';
 
   constructor(private modalController: ModalController, private zone: NgZone) {}
-
-  ngOnInit() {}
 
   async addOrEdit(index?: number) {
     const weburl = index !== undefined ? this.weburls[index] : undefined;

@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface DangerObsViewModel {
   GeoHazardName?: string;
   DangerSignName?: string;

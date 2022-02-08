@@ -337,6 +337,7 @@ export class WarningService {
   }
 
   private getCountyWarningGroups(geoHazard: GeoHazard) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const regions = require('../../../../assets/json/regions.json');
     const regionGroups: IWarningGroup[] = regions.map((region) => ({
       id: `${region.Id}_${geoHazard}`,
@@ -359,6 +360,7 @@ export class WarningService {
   }
 
   private getDefaultAvalancheWarningGroups() {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const regions = require('../../../../assets/json/varslingsomraader.json');
     const avalancheRegions: IWarningGroup[] = regions.features.map(
       (region) => ({

@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   Input,
   EventEmitter,
   Output,
@@ -23,7 +22,7 @@ import { ImageLocation } from './image-location.model';
   styleUrls: ['./img-swiper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
+export class ImgSwiperComponent implements OnChanges, OnDestroy {
   @Input() imgUrl: string[] = [];
   @Input() showLabels = true;
   @Input() imgComments: string[] = [];
@@ -116,8 +115,6 @@ export class ImgSwiperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   constructor(private cdr: ChangeDetectorRef) {}
-
-  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.cdr.detach();

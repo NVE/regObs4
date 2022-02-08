@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController } from '@ionic/angular';
 
@@ -7,7 +7,7 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './modal-save-or-delete-buttons.component.html',
   styleUrls: ['./modal-save-or-delete-buttons.component.scss']
 })
-export class ModalSaveOrDeleteButtonsComponent implements OnInit {
+export class ModalSaveOrDeleteButtonsComponent {
   @Input() saveText = 'DIALOGS.OK';
   @Input() saveDisabled = false;
   @Output() saveClicked = new EventEmitter();
@@ -20,8 +20,6 @@ export class ModalSaveOrDeleteButtonsComponent implements OnInit {
     private translateService: TranslateService,
     private alertController: AlertController
   ) {}
-
-  ngOnInit() {}
 
   ok() {
     this.saveClicked.emit();

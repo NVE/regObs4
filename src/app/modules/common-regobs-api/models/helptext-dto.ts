@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface HelptextDto {
   RegistrationTID?: number;
   GeoHazardTID?: number;

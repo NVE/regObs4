@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { StratProfileEditModel } from './strat-profile-edit-model';
 import { SnowTempModel } from './snow-temp-model';
 import { SnowDensityModel } from './snow-density-model';

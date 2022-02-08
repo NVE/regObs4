@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { AvalancheEvalProblemViewModel } from './avalanche-eval-problem-view-model';
 export interface AvalancheEvaluation2ViewModel {
   AvalancheDangerName?: string;

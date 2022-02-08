@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { RegistrationTypeCriteriaDto } from './registration-type-criteria-dto';
 import { WithinRadiusCriteriaDto } from './within-radius-criteria-dto';
 import { WithinExtentCriteriaDto } from './within-extent-criteria-dto';

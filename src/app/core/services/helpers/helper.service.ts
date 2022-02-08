@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class HelperService {
-  constructor() {}
 
   getDistanceText(distanceInMeter: number, numDecimals = 1): string {
     const options = {

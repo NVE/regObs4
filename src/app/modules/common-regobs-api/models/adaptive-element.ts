@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { AdaptiveHeight } from './adaptive-height';
 import { AdaptiveFallbackElement } from './adaptive-fallback-element';
 export interface AdaptiveElement {

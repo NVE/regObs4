@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface AvalancheEvaluationViewModel {
   RegID?: number;
   CanPublish?: boolean;

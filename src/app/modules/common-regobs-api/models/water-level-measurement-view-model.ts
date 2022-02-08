@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { AttachmentViewModel } from './attachment-view-model';
 export interface WaterLevelMeasurementViewModel {
   WaterLevelMeasurementId?: number;

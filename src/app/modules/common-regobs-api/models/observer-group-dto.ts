@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface ObserverGroupDto {
   Id?: number;
   Name?: string;

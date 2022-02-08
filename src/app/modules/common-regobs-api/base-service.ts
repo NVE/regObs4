@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { HttpClient, HttpParameterCodec, HttpParams } from '@angular/common/http';
 import { RegobsApiConfiguration } from './regobs-api-configuration';
 

@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface AvalancheActivityObs2EditModel {
   EstimatedNumTID?: number;
   DtStart?: string;
