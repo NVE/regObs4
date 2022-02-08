@@ -83,7 +83,8 @@ export class SnowProfilePage extends BasePage {
           this.openImageModal(result);
           this.loadingController.dismiss();
         },
-        (err) => {
+        // Error handler
+        () => {
           this.loadingController.dismiss();
           this.showPreviewError();
         }

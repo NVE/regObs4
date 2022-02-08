@@ -54,7 +54,7 @@ export class SupportTilesMenuComponent extends NgDestoryBase {
     this.checkSupportMap = {
       subscription: undefined,
       checker: popupInfoService.checkSupportMapInfoPopup,
-      condition: (_) => true,
+      condition: () => true,
     };
   }
 

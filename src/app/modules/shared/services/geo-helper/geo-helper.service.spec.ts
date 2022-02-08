@@ -2,18 +2,16 @@ import { TestBed } from '@angular/core/testing';
 
 import { GeoHelperService } from './geo-helper.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Spied, provideMock } from '../../../../core/helpers/spied';
+import { provideMock } from '../../../../core/helpers/spied';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 
 describe('GeoHelperService', () => {
-  let translateService: Spied<TranslateService>;
   let geoHelperService: GeoHelperService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [TranslateService, provideMock(TranslateService)]
     });
-    translateService = TestBed.get(TranslateService);
     geoHelperService = TestBed.get(GeoHelperService);
   });
 
