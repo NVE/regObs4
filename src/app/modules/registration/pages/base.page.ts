@@ -1,4 +1,4 @@
-import { Directive, OnInit } from '@angular/core';
+import { Directive } from '@angular/core';
 import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
 import { IRegistration, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
@@ -7,7 +7,7 @@ import { take, takeUntil, map, switchMap, tap } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
 
 @Directive()
-export abstract class BasePage extends NgDestoryBase implements OnInit {
+export abstract class BasePage extends NgDestoryBase {
   registration: IRegistration;
   basePageService: BasePageService;
   registrationTid: RegistrationTid;
@@ -19,8 +19,6 @@ export abstract class BasePage extends NgDestoryBase implements OnInit {
     this.activatedRoute = activatedRoute;
     this.registrationTid = registrationTid;
   }
-
-  ngOnInit() {}
 
   ionViewDidEnter() {
     const id = this.activatedRoute.snapshot.params['id'];

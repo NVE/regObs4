@@ -6,6 +6,12 @@ import { IRegistration } from 'src/app/modules/common-registration/registration.
 import { RegistrationService } from '../../../../services/registration.service';
 import { StratProfileEditModel } from 'src/app/modules/common-regobs-api/models';
 
+/**
+ * The small summary component on the main snow profile page,
+ * showing how many layers you have added.
+ * When you click on this component, you open / navigate to the
+ * modal where you add layers etc.
+ */
 @Component({
   selector: 'app-strat-profile',
   templateUrl: './strat-profile.component.html',

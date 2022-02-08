@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
@@ -19,6 +19,15 @@ import { SelectOption } from 'src/app/modules/shared/components/input/select/sel
 
 const DEBUG_TAG = 'SnowProfilePage';
 
+/**
+ * Main snow profile page.
+ *
+ * Contains sub forms:
+ *   - Snow profile
+ *   - Temp profile
+ *   - Density
+ *   - Tests
+ */
 @Component({
   selector: 'app-snow-profile',
   templateUrl: './snow-profile.page.html',
@@ -49,8 +58,6 @@ export class SnowProfilePage extends BasePage {
   ) {
     super(RegistrationTid.SnowProfile2, basePageService, activatedRoute);
   }
-
-  onInit() {}
 
   isEmpty() {
     const isEmptyResult =
@@ -88,7 +95,7 @@ export class SnowProfilePage extends BasePage {
 
   private getPlotFromApiWithFallback(userSetting: UserSetting, format: number, size: number) {
     return this.getPlotFromApi(userSetting, format, size).pipe(
-      catchError((error) => {
+      catchError(() => {
         this.loggingService.debug('Could not generate plot', DEBUG_TAG);
         if (format === 5) {
           this.loggingService.debug('Fallback to BareSimpleProfile', DEBUG_TAG);
