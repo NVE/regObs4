@@ -28,7 +28,11 @@ export abstract class BasePage extends NgDestoryBase {
       .pipe(
         take(1),
         map((reg) => {
-          this.basePageService.createDefaultProps(reg, this.registrationTid);
+          // Seems like this class is also used by the top level summary view,
+          // where we don't have a registrationTid.
+          if (this.registrationTid != null) {
+            this.basePageService.createDefaultProps(reg, this.registrationTid);
+          }
           return reg;
         }),
         tap((reg) => {
