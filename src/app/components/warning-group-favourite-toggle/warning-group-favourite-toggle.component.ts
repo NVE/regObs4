@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   Input,
   NgZone,
   OnDestroy,
@@ -20,8 +19,7 @@ import { ToastController, DomController, IonIcon } from '@ionic/angular';
   templateUrl: './warning-group-favourite-toggle.component.html',
   styleUrls: ['./warning-group-favourite-toggle.component.scss']
 })
-export class WarningGroupFavouriteToggleComponent
-implements OnInit, OnDestroy, OnChanges {
+export class WarningGroupFavouriteToggleComponent implements OnDestroy, OnChanges {
   @Input() key: WarningGroupKey;
   @ViewChild(IonIcon) ionIcon: IonIcon;
 
@@ -37,8 +35,6 @@ implements OnInit, OnDestroy, OnChanges {
     private renderer: Renderer2,
     private toastController: ToastController
   ) {}
-
-  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges): void {
     const currentKey: WarningGroupKey = changes.key.currentValue;

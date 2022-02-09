@@ -12,7 +12,7 @@ import { nSQL } from '@nano-sql/core';
 import { NanoSql } from '../../../../nanosql';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
-const stringify = require('json-stringify-safe');
+import stringify from 'json-stringify-safe';
 
 const DEBUG_CONTEXT = 'DbHelperService';
 

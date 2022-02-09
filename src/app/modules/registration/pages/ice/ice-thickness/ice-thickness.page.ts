@@ -71,7 +71,7 @@ export class IceThicknessPage extends BasePage {
   }
 
   async isEmpty() {
-    const isEmptyResult = 
+    const isEmptyResult =
       (!await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
         this.registration,
         this.registrationTid

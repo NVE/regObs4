@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { ObserverViewModel } from './observer-view-model';
 import { ObsLocationViewModel } from './obs-location-view-model';
 import { AttachmentViewModel } from './attachment-view-model';

@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface WaterLevelViewModel {
   WaterLevelDescribed?: string;
   WaterLevelValue?: number;

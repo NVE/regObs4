@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 
 /**
@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class RegobsApiConfiguration {
-  rootUrl: string = 'https://test-api.regobs.no/v5';
+  rootUrl = 'https://test-api.regobs.no/v5';
 }
 
 export interface RegobsApiConfigurationInterface {

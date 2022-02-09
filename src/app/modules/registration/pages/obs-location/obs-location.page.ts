@@ -18,8 +18,6 @@ import { UserSettingService } from '../../../../core/services/user-setting/user-
 import { take } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 
-const DEBUG_TAG = 'ObsLocationPage';
-
 @Component({
   selector: 'app-obs-location',
   templateUrl: './obs-location.page.html',

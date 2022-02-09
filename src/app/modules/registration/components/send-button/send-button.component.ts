@@ -55,8 +55,8 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
         this.ngZone.run(() => {
           this.isLoggingIn = val;
           this.cdr.detectChanges();
+        });
       });
-    });
   }
 
   ngOnChanges(changes: SimpleChanges & SmartChanges<this>): void {
@@ -77,18 +77,18 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     if (!this.isSending) {
       this.isSending = true;
       this.cdr.detectChanges();
-        try {
-          const userSettings = await this.userSettingService.userSetting$
-            .pipe(take(1))
-            .toPromise();
-          await this.registrationService.sendRegistration(
-            userSettings.appMode,
-            this.registration
-          );
-        } finally {
-            this.isSending = false;
-            this.cdr.detectChanges();
-        }
+      try {
+        const userSettings = await this.userSettingService.userSetting$
+          .pipe(take(1))
+          .toPromise();
+        await this.registrationService.sendRegistration(
+          userSettings.appMode,
+          this.registration
+        );
+      } finally {
+        this.isSending = false;
+        this.cdr.detectChanges();
+      }
     }
   }
 

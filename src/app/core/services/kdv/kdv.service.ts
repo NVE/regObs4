@@ -95,6 +95,7 @@ export class KdvService {
 
   private getDefaultKdvElements(langKey: LangKey) {
     const langKeyName = LangKey[langKey];
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const defaultKdvElements: KdvElementsResponseDto = require(`../../../../assets/json/kdvelements.${langKeyName}.json`);
     return defaultKdvElements;
   }

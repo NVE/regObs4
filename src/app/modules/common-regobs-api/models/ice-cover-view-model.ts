@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface IceCoverViewModel {
   IceCoverBeforeName?: string;
   IceCoverName?: string;

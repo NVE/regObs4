@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   Input,
   Output,
   EventEmitter,
@@ -14,14 +13,14 @@ import {
 } from '@ionic-native/email-composer/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { settings } from '../../../../../settings';
-const stringify = require('json-stringify-safe');
+import stringify from 'json-stringify-safe';
 
 @Component({
   selector: 'app-failed-registration',
   templateUrl: './failed-registration.component.html',
   styleUrls: ['./failed-registration.component.scss']
 })
-export class FailedRegistrationComponent implements OnInit {
+export class FailedRegistrationComponent {
   @Input() registration: IRegistration;
   @Output() registrationChange = new EventEmitter();
 
@@ -31,8 +30,6 @@ export class FailedRegistrationComponent implements OnInit {
     private translateService: TranslateService,
     private ngZone: NgZone,
   ) {}
-
-  ngOnInit() {}
 
   async openForEdit() {
     this.registration.syncStatus = SyncStatus.Draft;

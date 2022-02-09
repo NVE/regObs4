@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { WaterLevelMeasurementEditModel } from './water-level-measurement-edit-model';
 export interface Waterlevel2EditModel {
   WaterAstrayTID?: number;

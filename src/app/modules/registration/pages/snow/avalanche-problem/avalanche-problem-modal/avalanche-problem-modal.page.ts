@@ -19,7 +19,7 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
   @Input() avalancheEvalProblem: AvalancheEvalProblem2EditModel;
   avalancheEvalProblemCopy: AvalancheEvalProblem2EditModel;
   isNew = false;
-  avalancheExtKdvFilter: Function;
+  avalancheExtKdvFilter: (id: number) => boolean;
 
   get noWeakLayers() {
     return (
@@ -88,21 +88,21 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
       selected: boolean;
     }[] {
     return kdvElements.map((val) => ({
-          kdvElement: val,
-          selected: this.isAvalancheCauseSelected(val)
-        }));
+      kdvElement: val,
+      selected: this.isAvalancheCauseSelected(val)
+    }));
   }
 
   isAvalancheCauseSelected(kdvElement: KdvElement): boolean {
     switch (kdvElement.Id) {
-      case 1:
-        return this.avalancheEvalProblemCopy.AvalCauseAttributeLightTID === kdvElement.Id;
-      case 2:
-        return this.avalancheEvalProblemCopy.AvalCauseAttributeThinTID === kdvElement.Id;
-      case 4:
-        return this.avalancheEvalProblemCopy.AvalCauseAttributeSoftTID === kdvElement.Id;
-      case 8:
-        return this.avalancheEvalProblemCopy.AvalCauseAttributeCrystalTID === kdvElement.Id;
+    case 1:
+      return this.avalancheEvalProblemCopy.AvalCauseAttributeLightTID === kdvElement.Id;
+    case 2:
+      return this.avalancheEvalProblemCopy.AvalCauseAttributeThinTID === kdvElement.Id;
+    case 4:
+      return this.avalancheEvalProblemCopy.AvalCauseAttributeSoftTID === kdvElement.Id;
+    case 8:
+      return this.avalancheEvalProblemCopy.AvalCauseAttributeCrystalTID === kdvElement.Id;
     }
     return false;
   }
@@ -138,26 +138,26 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
       //   causeAttribute > 0 ? causeAttribute : undefined;
       for (const val of this.avalancheCauseAttributes) {
         switch (val.kdvElement.Id) {
-          case 1:
-            this.avalancheEvalProblemCopy.AvalCauseAttributeLightTID = val.selected
-              ? val.kdvElement.Id
-              : undefined;
-            break;
-          case 2:
-            this.avalancheEvalProblemCopy.AvalCauseAttributeThinTID = val.selected
-              ? val.kdvElement.Id
-              : undefined;
-            break;
-          case 4:
-            this.avalancheEvalProblemCopy.AvalCauseAttributeSoftTID = val.selected
-              ? val.kdvElement.Id
-              : undefined;
-            break;
-          case 8:
-            this.avalancheEvalProblemCopy.AvalCauseAttributeCrystalTID = val.selected
-              ? val.kdvElement.Id
-              : undefined;
-            break;
+        case 1:
+          this.avalancheEvalProblemCopy.AvalCauseAttributeLightTID = val.selected
+            ? val.kdvElement.Id
+            : undefined;
+          break;
+        case 2:
+          this.avalancheEvalProblemCopy.AvalCauseAttributeThinTID = val.selected
+            ? val.kdvElement.Id
+            : undefined;
+          break;
+        case 4:
+          this.avalancheEvalProblemCopy.AvalCauseAttributeSoftTID = val.selected
+            ? val.kdvElement.Id
+            : undefined;
+          break;
+        case 8:
+          this.avalancheEvalProblemCopy.AvalCauseAttributeCrystalTID = val.selected
+            ? val.kdvElement.Id
+            : undefined;
+          break;
         }
       }
     }

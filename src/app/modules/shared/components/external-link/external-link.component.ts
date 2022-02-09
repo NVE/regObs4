@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
 
 @Component({
@@ -6,12 +6,10 @@ import { ExternalLinkService } from '../../../../core/services/external-link/ext
   templateUrl: './external-link.component.html',
   styleUrls: ['./external-link.component.scss']
 })
-export class ExternalLinkComponent implements OnInit {
+export class ExternalLinkComponent {
   @Input() src: string;
 
   constructor(private externalLinkService: ExternalLinkService) {}
-
-  ngOnInit() {}
 
   openLink(event: Event) {
     event.preventDefault();

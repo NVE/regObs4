@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { TestBed, inject } from '@angular/core/testing';
 import { WarningService } from './warning.service';
 import { HttpClient } from '@angular/common/http';

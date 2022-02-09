@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { RegistrationTypeDto } from './registration-type-dto';
 import { ObserverCompetenceLevelDto } from './observer-competence-level-dto';
 import { AreasDto } from './areas-dto';

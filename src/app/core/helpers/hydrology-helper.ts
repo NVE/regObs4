@@ -1,8 +1,6 @@
 import { NumberHelper } from './number-helper';
 
 export class HydrologyHelper {
-  static isEmpty(obj: Object | Array<Object | Array<Object>>) {}
-
   static calculateDensity(
     weightInKg: number,
     heightInM: number,

@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { ObsLocationEditModel } from './obs-location-edit-model';
 import { AttachmentEditModel } from './attachment-edit-model';
 import { AvalancheActivityObs2EditModel } from './avalanche-activity-obs-2edit-model';

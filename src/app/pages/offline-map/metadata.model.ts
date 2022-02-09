@@ -1,5 +1,5 @@
 import type { BBox, Feature, Polygon } from 'geojson';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 
 type XYZ = [number, number, number];
 

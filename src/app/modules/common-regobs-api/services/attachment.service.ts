@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { BaseService as __BaseService } from '../base-service';
@@ -26,15 +26,15 @@ class AttachmentService extends __BaseService {
    * @return OK
    */
   AttachmentPostResponse(file: Blob): __Observable<__StrictHttpResponse<string>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
     let __body: any = null;
-    let __formData = new FormData();
+    const __formData = new FormData();
     __body = __formData;
     if (file != null) { __formData.append('file', file as string | Blob);}
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/Attachment/Upload`,
+      this.rootUrl + '/Attachment/Upload',
       __body,
       {
         headers: __headers,
@@ -67,12 +67,12 @@ class AttachmentService extends __BaseService {
    * - `format`: Image format. For video, use Raw. Possible image formats: Raw, Original, Large, Medium, Thumbnail
    */
   AttachmentGetResponse(params: AttachmentService.AttachmentGetParams): __Observable<__StrictHttpResponse<null>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
+    const __params = this.newParams();
+    const __headers = new HttpHeaders();
+    const __body: any = null;
 
 
-    let req = new HttpRequest<any>(
+    const req = new HttpRequest<any>(
       'GET',
       this.rootUrl + `/Attachment/${params.format}/${params.id}`,
       __body,
@@ -103,7 +103,7 @@ class AttachmentService extends __BaseService {
   }
 }
 
-module AttachmentService {
+namespace AttachmentService {
 
   /**
    * Parameters for AttachmentGet
@@ -122,4 +122,4 @@ module AttachmentService {
   }
 }
 
-export { AttachmentService }
+export { AttachmentService };

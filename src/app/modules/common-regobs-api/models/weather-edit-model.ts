@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface WeatherEditModel {
   PrecipitationTID?: number;
   AirTemperature?: number;

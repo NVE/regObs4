@@ -15,7 +15,6 @@ import { NSqlFullUpdateObservable } from '../../../core/helpers/nano-sql/NSqlFul
   providedIn: 'root'
 })
 export class DataLoadService {
-  constructor() {}
 
   async startLoading(id: string, totalItems?: number) {
     const existingItem = await this.getState(id);

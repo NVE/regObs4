@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 export interface AdaptiveHeight {
   heightType?: 'auto' | 'stretch' | 'pixel';
   unit?: number;

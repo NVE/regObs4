@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { ForecastRegionDto } from './forecast-region-dto';
 import { CountyDto } from './county-dto';
 export interface AreasDto {

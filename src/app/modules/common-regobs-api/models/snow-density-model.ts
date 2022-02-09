@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* eslint-disable */
 import { SnowDensityLayerModel } from './snow-density-layer-model';
 export interface SnowDensityModel {
   CylinderDiameter?: number;
