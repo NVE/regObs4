@@ -17,11 +17,7 @@ import { OfflineDbNewAttachmentService } from './services/add-new-attachment/off
 import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions, SUMMARY_PROVIDER_TOKEN } from './module.options';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import FileAttachmentService from './services/add-new-attachment/file-attachment.service';
-import { Platform } from '@ionic/angular';
-import { OfflineDbService } from './registration.services';
-import { AppModeService, LoggerService } from '../common-core/services';
-import { File } from '@ionic-native/file/ngx';
-import { LoggingService } from '../shared/services/logging/logging.service';
+import { isPlatform } from '@ionic/angular';
 
 export function offlineDbServiceOptionsFactory(options?: IRegistrationModuleOptions): OfflineDbServiceOptions {
   const offlineDbServiceOptions = new OfflineDbServiceOptions();
@@ -36,31 +32,17 @@ export function offlineDbServiceOptionsFactory(options?: IRegistrationModuleOpti
 }
 
 export function getFakeKdvElementsService(): unknown {
-  const fakeService = { KdvElementsGetKdvs: () => throwError(Error('Fake service')) };
+  const fakeService = { KdvElementsGetKdvs: () => throwError(() => new Error('Fake service')) };
   return fakeService;
 }
 
 export function getFakeHelpTextApiService(): unknown {
-  const fakeService = { HelptextGet: () => throwError(Error('Fake service')) };
+  const fakeService = { HelptextGet: () => throwError(() => new Error('Fake service')) };
   return fakeService;
 }
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
-
-function createAttachmentService(
-  platform: Platform,
-  offlineDbService: OfflineDbService,
-  appModeService: AppModeService,
-  file: File,
-  loggingService: LoggingService,
-  loggerService: LoggerService): NewAttachmentService {
-
-  if (platform.is('hybrid')) {
-    return new FileAttachmentService(file, loggingService);
-  }
-  return new OfflineDbNewAttachmentService(offlineDbService, appModeService, loggerService);
 }
 
 export const translateModuleForRoot = TranslateModule.forRoot({
@@ -111,8 +93,7 @@ export class RegistrationModule {
         },
         {
           provide: NewAttachmentService,
-          useFactory: createAttachmentService,
-          deps: [Platform, OfflineDbService, AppModeService, File, LoggingService,LoggerService]
+          useClass: isPlatform('hybrid') ? FileAttachmentService : OfflineDbNewAttachmentService
         },
         TranslateService
       ]
