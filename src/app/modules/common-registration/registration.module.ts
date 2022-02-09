@@ -17,6 +17,7 @@ import { OfflineDbNewAttachmentService } from './services/add-new-attachment/off
 import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions, SUMMARY_PROVIDER_TOKEN } from './module.options';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import FileAttachmentService from './services/add-new-attachment/file-attachment.service';
+import { isPlatform } from '@ionic/angular';
 
 export function offlineDbServiceOptionsFactory(options?: IRegistrationModuleOptions): OfflineDbServiceOptions {
   const offlineDbServiceOptions = new OfflineDbServiceOptions();
@@ -31,12 +32,12 @@ export function offlineDbServiceOptionsFactory(options?: IRegistrationModuleOpti
 }
 
 export function getFakeKdvElementsService(): unknown {
-  const fakeService = { KdvElementsGetKdvs: () => throwError(Error('Fake service')) };
+  const fakeService = { KdvElementsGetKdvs: () => throwError(() => new Error('Fake service')) };
   return fakeService;
 }
 
 export function getFakeHelpTextApiService(): unknown {
-  const fakeService = { HelptextGet: () => throwError(Error('Fake service')) };
+  const fakeService = { HelptextGet: () => throwError(() => new Error('Fake service')) };
   return fakeService;
 }
 
@@ -92,7 +93,7 @@ export class RegistrationModule {
         },
         {
           provide: NewAttachmentService,
-          useClass: Object.prototype.hasOwnProperty.call(window, 'hybrid') ? FileAttachmentService : OfflineDbNewAttachmentService
+          useClass: isPlatform('hybrid') ? FileAttachmentService : OfflineDbNewAttachmentService
         },
         TranslateService
       ]

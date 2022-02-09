@@ -1,5 +1,5 @@
 import { Router, RouteReuseStrategy } from '@angular/router';
-import { IonicRouteStrategy, NavController, Platform } from '@ionic/angular';
+import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/angular';
 import { BackgroundGeolocationNativeService } from './core/services/background-geolocation/background-geolocation-native.service';
 import { BackgroundGeolocationWebService } from './core/services/background-geolocation/background-geolocation-web.service';
 import { BackgroundGeolocationService } from './core/services/background-geolocation/background-geolocation.service';
@@ -205,7 +205,7 @@ export const APP_PROVIDERS = [
   // Custom native/web providers
   {
     provide: BackgroundGeolocationService,
-    useClass: Object.prototype.hasOwnProperty.call(window, 'hybrid') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService
+    useClass: isPlatform('hybrid') ? BackgroundGeolocationNativeService : BackgroundGeolocationWebService
   },
   {
     provide: BackgroundDownloadService,
