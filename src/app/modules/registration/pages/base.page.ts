@@ -3,7 +3,7 @@ import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
 import { IRegistration, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { ActivatedRoute } from '@angular/router';
-import { take, takeUntil, map, switchMap, tap } from 'rxjs/operators';
+import { take, takeUntil, map, switchMap, tap, skip } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
 
 @Directive()
@@ -22,20 +22,35 @@ export abstract class BasePage extends NgDestoryBase {
 
   ionViewDidEnter() {
     const id = this.activatedRoute.snapshot.params['id'];
+
+    // The first time we get a registration object, run some additional logic
     this.basePageService.CommonRegistrationService.getRegistrationByIdShared$(id)
       .pipe(
         take(1),
         map((reg) => {
-          this.basePageService.createDefaultProps(reg, this.registrationTid);
+          // Seems like this class is also used by the top level summary view,
+          // where we don't have a registrationTid.
+          if (this.registrationTid != null) {
+            this.basePageService.createDefaultProps(reg, this.registrationTid);
+          }
           return reg;
         }),
         tap((reg) => {
           this.registration = reg;
         }),
         switchMap(() => this.createInitObservable()),
-        takeUntil(this.ngDestroy$)
       )
       .subscribe();
+
+    // Update registration data eg. when navigating back from subforms
+    this.basePageService.CommonRegistrationService.getRegistrationByIdShared$(id)
+      .pipe(
+        skip(1),
+        takeUntil(this.ngDestroy$)
+      )
+      .subscribe((reg) => {
+        this.registration = reg;
+      });
   }
 
   onInit?(): void | Promise<any>;

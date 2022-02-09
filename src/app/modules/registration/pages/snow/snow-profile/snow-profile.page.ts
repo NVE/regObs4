@@ -59,12 +59,16 @@ export class SnowProfilePage extends BasePage {
     super(RegistrationTid.SnowProfile2, basePageService, activatedRoute);
   }
 
+  noLayersInSnowProfile(): boolean {
+    return isEmpty(this.registration.request.SnowProfile2);
+  }
+
+  private noTestsIncludedInSnowProfile(): boolean {
+    return !(this.registration.request.CompressionTest || []).some((ct) => ct.IncludeInSnowProfile === true);
+  }
+
   isEmpty() {
-    const isEmptyResult =
-     isEmpty(this.registration.request.SnowProfile2) &&
-      !(this.registration.request.CompressionTest || []).some(
-        (ct) => ct.IncludeInSnowProfile === true
-      );
+    const isEmptyResult = this.noLayersInSnowProfile() && this.noTestsIncludedInSnowProfile();
     return Promise.resolve(isEmptyResult);
   }
 
