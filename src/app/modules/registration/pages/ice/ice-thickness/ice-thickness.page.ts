@@ -68,7 +68,7 @@ export class IceThicknessPage extends BasePage {
 
   isValid() {
     this.makeValidBeforeAfter();
-    let checkBefore = this.iceHeightBefore == Boolean(this.registration.request.IceThickness.IceHeightBefore);
+    let checkBefore = Boolean(this.iceHeightBefore) == Boolean(this.registration.request.IceThickness.IceHeightBefore);
     let checkAfter =
         (this.iceHeightAfter !== undefined) == Boolean(this.registration.request.IceThickness.IceHeightAfter);
     return checkBefore && checkAfter;
