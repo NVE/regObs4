@@ -6,7 +6,6 @@ import { IceLayerPage } from './ice-layer/ice-layer.page';
 import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { NumberHelper } from 'src/app/core/helpers/number-helper';
 
 @Component({
   selector: 'app-ice-thickness',
@@ -14,8 +13,11 @@ import { NumberHelper } from 'src/app/core/helpers/number-helper';
   styleUrls: ['./ice-thickness.page.scss']
 })
 export class IceThicknessPage extends BasePage {
-  iceHeightBefore: boolean = undefined;
-  iceHeightAfter: boolean = undefined;
+  isWaterBefore: boolean = undefined;
+  isWaterAfter: boolean = undefined;
+  waterHeightBefore: number = undefined;
+  waterHeightAfter: number = undefined;
+  waterDepthAfter: number = undefined;
 
   constructor(
     basePageService: BasePageService,
@@ -27,51 +29,61 @@ export class IceThicknessPage extends BasePage {
   }
 
   onInit() {
-    if (!this.registration.request.IceThickness.IceThicknessLayers) {
-      this.registration.request.IceThickness.IceThicknessLayers = [];
+    let iceThickness = this.registration.request.IceThickness;
+
+    if (!iceThickness.IceThicknessLayers) {
+      iceThickness.IceThicknessLayers = [];
     }
-    if (this.registration.request.IceThickness.IceHeightBefore < 0) {
-      this.registration.request.IceThickness.IceHeightBefore =
-        this.registration.request.IceThickness.IceHeightBefore * -1;
-      this.iceHeightBefore = true;
-    } else if (this.registration.request.IceThickness.IceHeightBefore === 0) {
-      this.iceHeightBefore = false;
+
+    if (iceThickness.IceHeightBefore < 0) {
+      this.isWaterBefore = true;
+      this.waterHeightBefore = -iceThickness.IceHeightBefore;
+    } else if (iceThickness.IceHeightBefore === 0) {
+      this.isWaterBefore = false;
     }
-    if (this.registration.request.IceThickness.IceHeightAfter > 0) {
-      this.iceHeightAfter = false;
-    } else if (this.registration.request.IceThickness.IceHeightAfter < 0) {
-      this.registration.request.IceThickness.IceHeightAfter =
-        this.registration.request.IceThickness.IceHeightAfter * -1;
-      this.iceHeightAfter = true;
+
+
+    if (iceThickness.IceHeightAfter < 0) {
+      this.isWaterAfter = true;
+      this.waterHeightAfter = -iceThickness.IceHeightAfter;
+    } else if (iceThickness.IceHeightAfter >= 0) {
+      this.isWaterAfter = false;
+      this.waterDepthAfter = iceThickness.IceHeightAfter;
     }
   }
 
   makeValidBeforeAfter() {
-    if (this.registration) {
-      if (this.iceHeightBefore === undefined) {
-        this.registration.request.IceThickness.IceHeightBefore = undefined;
-      } else if (this.iceHeightBefore && this.registration.request.IceThickness.IceHeightBefore > 0) {
-        this.registration.request.IceThickness.IceHeightBefore =
-          this.registration.request.IceThickness.IceHeightBefore * -1;
-      } else {
-        this.registration.request.IceThickness.IceHeightBefore = 0;
-      }
-      
-      if (this.iceHeightAfter === undefined) {
-        this.registration.request.IceThickness.IceHeightAfter = undefined;
-      } else if (this.iceHeightAfter && NumberHelper.isNumeric(this.registration.request.IceThickness.IceHeightAfter)) {
-        this.registration.request.IceThickness.IceHeightAfter =
-          this.registration.request.IceThickness.IceHeightAfter * -1;
-      }
+    let iceThickness = this.registration.request.IceThickness;
+
+    if (this.isWaterBefore === undefined) {
+      iceThickness.IceHeightBefore = undefined;
+    } else if (this.isWaterBefore && this.waterHeightBefore > 0) {
+      iceThickness.IceHeightBefore = -this.waterHeightBefore;
+    } else {
+      iceThickness.IceHeightBefore = 0;
+    }
+    
+    if (this.isWaterAfter === undefined) {
+      iceThickness.IceHeightAfter = undefined;
+    } else if (this.isWaterAfter && !isNaN(this.waterHeightAfter)) {
+      iceThickness.IceHeightAfter = -this.waterHeightAfter;
+    } else if (!this.isWaterAfter && !isNaN(this.waterDepthAfter)) {
+      iceThickness.IceHeightAfter = this.waterDepthAfter;
+    } else {
+      iceThickness.IceHeightAfter = 0;
     }
   }
 
   isValid() {
-    this.makeValidBeforeAfter();
-    let checkBefore = Boolean(this.iceHeightBefore) == Boolean(this.registration.request.IceThickness.IceHeightBefore);
-    let checkAfter =
-        (this.iceHeightAfter !== undefined) == Boolean(this.registration.request.IceThickness.IceHeightAfter);
-    return checkBefore && checkAfter;
+    let checkBefore = Boolean(this.isWaterBefore) == Boolean(this.waterHeightBefore);
+    let checkAfter = this.isWaterAfter && !isNaN(this.waterHeightAfter)
+        || this.isWaterAfter == false && !isNaN(this.waterDepthAfter);
+
+    let valid = checkBefore && checkAfter;
+    if (valid) {
+      this.makeValidBeforeAfter();
+    }
+    return valid;
   }
 
   async isEmpty() {
@@ -80,14 +92,17 @@ export class IceThicknessPage extends BasePage {
         this.registration,
         this.registrationTid
       )) &&
-      this.iceHeightAfter === undefined &&
-      this.iceHeightBefore === undefined;
+      this.isWaterAfter === undefined &&
+      this.isWaterBefore === undefined;
     return isEmptyResult;
   }
 
   onReset() {
-    this.iceHeightAfter = undefined;
-    this.iceHeightBefore = undefined;
+    this.isWaterAfter = undefined;
+    this.isWaterBefore = undefined;
+    this.waterHeightBefore = undefined;
+    this.waterHeightAfter = undefined;
+    this.waterDepthAfter = undefined;
     this.registration.request.IceThickness.IceThicknessLayers = [];
   }
 

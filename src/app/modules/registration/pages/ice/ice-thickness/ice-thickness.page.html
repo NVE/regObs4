@@ -38,27 +38,39 @@
       <app-numeric-input [readonly]="true" [(value)]="registration.request.IceThickness.IceThicknessSum"
         title="REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM" [min]="0" [max]="999" [decimalPlaces]="2"
         [convertRatio]="100" suffix="cm"></app-numeric-input>
-      <app-yes-no-select [(value)]="iceHeightBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE">
+      <app-yes-no-select [(value)]="isWaterBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE">
       </app-yes-no-select>
       <app-numeric-input
-        *ngIf="iceHeightBefore"
-        [color]="(!registration.request.IceThickness.IceHeightBefore) ? 'danger' : 'medium'"
-        [(value)]="registration.request.IceThickness.IceHeightBefore"
+        *ngIf="isWaterBefore"
+        [color]="!waterHeightBefore ? 'danger' : 'medium'"
+        [(value)]="waterHeightBefore"
         title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
-        [min]="0"
+        [min]="0.01"
         [max]="999"
         [decimalPlaces]="2"
         [convertRatio]="100"
         placeholder="REGISTRATION.IN_CM"
         suffix="cm">
       </app-numeric-input>
-      <app-yes-no-select [(value)]="iceHeightAfter" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_TOGGLE">
+      <app-yes-no-select [(value)]="isWaterAfter" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_TOGGLE">
       </app-yes-no-select>
       <app-numeric-input
-        *ngIf="iceHeightAfter !== undefined"
-        [color]="(!registration.request.IceThickness.IceHeightAfter) ? 'danger' : 'medium'"
-        [(value)]="registration.request.IceThickness.IceHeightAfter"
-        [title]="iceHeightAfter === true ? 'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT' : 'REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO'"
+        *ngIf="isWaterAfter === true"
+        [color]="!waterHeightAfter ? 'danger' : 'medium'"
+        [(value)]="waterHeightAfter"
+        title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_INPUT"
+        [min]="0.01"
+        [max]="999"
+        [decimalPlaces]="2"
+        [convertRatio]="100"
+        suffix="cm"
+        placeholder="REGISTRATION.IN_CM">
+      </app-numeric-input>
+      <app-numeric-input
+        *ngIf="isWaterAfter === false"
+        [color]="waterDepthAfter === undefined ? 'danger' : 'medium'"
+        [(value)]="waterDepthAfter"
+        title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_AFTER_NO"
         [min]="0"
         [max]="999"
         [decimalPlaces]="2"
