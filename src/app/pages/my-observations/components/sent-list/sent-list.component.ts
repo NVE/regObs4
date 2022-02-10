@@ -52,10 +52,7 @@ export class SentListComponent implements OnInit {
         filter((diff) => diff < 0), //only fetch observations when num drafts decrease
         debounceTime(500) //wait a bit in case multiple observations were shipped
       )
-      .subscribe(() => {
-        this.initRegistrationSubscription();
-        this.observationService.forceUpdateObservationsForCurrentGeoHazard();
-      });
+      .subscribe(() => this.initRegistrationSubscription());
   }
 
   async refresh(cancelPromise: Promise<void>): Promise<void> {
