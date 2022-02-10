@@ -33,7 +33,7 @@ export class ApiInterceptor implements HttpInterceptor {
     const apiUrls = settings.services.regObs.apiUrl;
     for (const environment of Object.keys(apiUrls)) {
       const server = apiUrls[environment];
-      for (const service of ['Search/MyRegistrations', 'Registration', 'Account']) {
+      for (const service of ['Search/MyRegistrations', 'Registration', 'Account', 'Trip']) {
         if (url.startsWith(`${server}/${service}`)) {
           return true;
         }
