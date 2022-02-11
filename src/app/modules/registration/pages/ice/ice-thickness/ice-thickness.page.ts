@@ -77,7 +77,8 @@ export class IceThicknessPage extends BasePage {
   isValid() {
     let checkBefore = Boolean(this.isWaterBefore) == Boolean(this.waterHeightBefore);
     let checkAfter = this.isWaterAfter && !isNaN(this.waterHeightAfter)
-        || this.isWaterAfter == false && !isNaN(this.waterDepthAfter);
+        || this.isWaterAfter == false && !isNaN(this.waterDepthAfter)
+        || this.isWaterAfter == undefined;
 
     let valid = checkBefore && checkAfter;
     if (valid) {
