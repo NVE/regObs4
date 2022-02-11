@@ -79,7 +79,11 @@ export default class FileAttachmentService implements NewAttachmentService {
 
   async removeAttachments(registrationId: string): Promise<void> {
     const path = await this.getRootPath();
-    await this.file.removeDir(`${path}/`, registrationId);
+    if (await this.directoryForRegistrationExists(registrationId)) {
+      await this.file.removeRecursively(`${path}/`, registrationId);
+    } else {
+      this.loggingService.debug(`Tried to remove ${path}/${registrationId}, but didn't find it`, DEBUG_TAG);
+    }
     this.attachmentsChanged.next();
   }
 
@@ -101,7 +105,7 @@ export default class FileAttachmentService implements NewAttachmentService {
 
   /**
    * Get root directory folder path
-   * @returns directory path as string
+   * @returns directory path as string (without trailing /)
    */
   private async getRootPath(): Promise<string> {
     const dataFolder = this.getDataDirectoryFileUrl();
