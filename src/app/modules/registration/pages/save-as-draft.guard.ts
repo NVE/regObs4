@@ -12,15 +12,16 @@ import { ObsLocationPage } from './obs-location/obs-location.page';
 import { TranslateService } from '@ngx-translate/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Injectable()
 export class SaveAsDraftRouteGuard
 implements CanDeactivate<OverviewPage | ObsLocationPage> {
   constructor(
     private alertController: AlertController,
-    private registrationService: CommonRegistrationService,
     private userSettingService: UserSettingService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private draftRepositoryService: DraftRepositoryService
   ) {}
 
   async canDeactivate(
@@ -34,15 +35,11 @@ implements CanDeactivate<OverviewPage | ObsLocationPage> {
       !this.isInWhitelist(nextState.url) &&
       component.registration
     ) {
-      const reg = await this.registrationService.getRegistrationById(
-        component.registration.id
-      );
-      if (reg && reg.syncStatus === SyncStatus.Draft) {
+      const reg = await this.draftRepositoryService.load(component.registration.id);
+      if (!reg || (reg && reg.syncStatus === SyncStatus.Draft)) { //TODO: Trenger vi å sjekke for dette? Kan det være man prøver å trykke tilbake etter man har sendt inn?
         const save = await this.createAlert();
-        if (!save) {
-          await this.registrationService.deleteRegistrationFromOfflineStorage(
-            component.registration.id
-          );
+        if (reg && !save) {
+          await this.draftRepositoryService.delete(component.registration.id);
         }
       }
     }

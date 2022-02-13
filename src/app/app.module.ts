@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicModule } from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage-angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,6 +30,7 @@ import { RegobsApiModuleWithConfig } from 'src/app/modules/common-regobs-api';
     HttpClientModule,
     FormsModule,
     IonicModule.forRoot(),
+    IonicStorageModule.forRoot(),
     AppRoutingModule,
     TranslateModule.forRoot(),
     MarkdownModule.forRoot(),

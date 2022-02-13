@@ -1,0 +1,1046 @@
+{
+  "uuid": 290525,
+  "syncStatus": 0,
+  "draft": {
+      "DtRegTime": "2022-02-12T23:15:25+00:00",
+      "DtChangeTime": "2022-02-12T23:15:25+00:00",
+      "SourceName": "Ikkje gitt",
+      "Observer": {
+          "NickName": "Vidar@obskorps",
+          "ObserverID": 801,
+          "CompetenceLevelTID": 130,
+          "CompetenceLevelName": "****"
+      },
+      "ObsLocation": {
+          "ObsLocationID": 171596,
+          "ForecastRegionTID": 3027,
+          "ForecastRegionName": "Indre Fjordane",
+          "Height": 1270,
+          "MunicipalName": "Stryn",
+          "MunicipalNo": "4651",
+          "CountryId": 578,
+          "CountryName": "Norge",
+          "UTMSourceName": "Klikk i kart i regObs-app",
+          "Title": "Indre Fjordane / Stryn",
+          "LocationName": null,
+          "LocationDescription": "Stryn / Indre Fjordane",
+          "Latitude": 61.953260185,
+          "Longitude": 6.7332655427,
+          "UTMSourceTID": 35,
+          "Uncertainty": 0
+      },
+      "Attachments": [{
+              "AttachmentId": 230934,
+              "GeoHazardName": "Snø",
+              "RegistrationName": "Vêr",
+              "UrlFormats": {
+                  "Original": "https://api.regobs.no/Attachments/Original/230934.jpg",
+                  "Large": "https://api.regobs.no/Attachments/Large/230934.jpg",
+                  "Medium": "https://api.regobs.no/Attachments/Medium/230934.jpg",
+                  "Raw": "https://api.regobs.no/Attachments/Raw/230934.jpg",
+                  "Thumbnail": "https://api.regobs.no/Attachments/Thumbnail/230934.jpg"
+              },
+              "Url": "https://api.regobs.no/Attachments/Original/230934.jpg",
+              "Photographer": null,
+              "Copyright": "Vidar@obskorps",
+              "Aspect": null,
+              "GeoHazardTID": 10,
+              "RegistrationTID": 21,
+              "Comment": null,
+              "AttachmentMimeType": "image/jpeg",
+              "IsMainAttachment": true
+          }, {
+              "AttachmentId": 230935,
+              "GeoHazardName": "Snø",
+              "RegistrationName": "Vêr",
+              "UrlFormats": {
+                  "Original": "https://api.regobs.no/Attachments/Original/230935.jpg",
+                  "Large": "https://api.regobs.no/Attachments/Large/230935.jpg",
+                  "Medium": "https://api.regobs.no/Attachments/Medium/230935.jpg",
+                  "Raw": "https://api.regobs.no/Attachments/Raw/230935.jpg",
+                  "Thumbnail": "https://api.regobs.no/Attachments/Thumbnail/230935.jpg"
+              },
+              "Url": "https://api.regobs.no/Attachments/Original/230935.jpg",
+              "Photographer": null,
+              "Copyright": "Vidar@obskorps",
+              "Aspect": null,
+              "GeoHazardTID": 10,
+              "RegistrationTID": 21,
+              "Comment": null,
+              "AttachmentMimeType": "image/jpeg",
+              "IsMainAttachment": false
+          }
+      ],
+      "AvalancheActivityObs2": [{
+              "EstimatedNumName": "Ingen skredaktivitet",
+              "ExposedHeightComboName": "Ikkje gitt",
+              "AvalancheExtName": "Ikkje gitt",
+              "AvalCauseName": "Ikkje gitt",
+              "AvalTriggerSimpleName": "Ikkje gitt",
+              "DestructiveSizeName": "Ikkje gitt",
+              "AvalPropagationName": "Ikkje gitt",
+              "EstimatedNumTID": 1,
+              "DtStart": "2022-02-12T00:00:00+01:00",
+              "DtEnd": "2022-02-12T23:59:00+01:00",
+              "ValidExposition": null,
+              "ExposedHeight1": null,
+              "ExposedHeight2": null,
+              "ExposedHeightComboTID": 0,
+              "AvalancheExtTID": 0,
+              "AvalCauseTID": 0,
+              "AvalTriggerSimpleTID": 0,
+              "DestructiveSizeTID": 0,
+              "AvalPropagationTID": 0,
+              "Comment": null
+          }
+      ],
+      "AvalancheEvalProblem2": [{
+              "AvalProbabilityName": "Ikkje gitt",
+              "AvalTriggerSimpleName": "Vanskeleg å løyse ut",
+              "AvalCauseDepthName": "Ikkje gitt",
+              "ExposedHeightComboName": "Kvitt nedst",
+              "AvalancheExtName": "Tørre flakskred",
+              "AvalCauseName": "Nedføyka svakt lag med nysnø",
+              "DestructiveSizeName": "3 - Store",
+              "AvalPropagationName": "Nokre bratte heng",
+              "AvalCauseAttributeLightName": null,
+              "AvalCauseAttributeThinName": null,
+              "AvalCauseAttributeSoftName": null,
+              "AvalCauseAttributeCrystalName": null,
+              "AvalProbabilityTID": 0,
+              "AvalPropagationTID": 2,
+              "AvalTriggerSimpleTID": 40,
+              "AvalCauseDepthTID": 0,
+              "ValidExposition": "11111111",
+              "ExposedHeight1": 700,
+              "ExposedHeight2": null,
+              "ExposedHeightComboTID": 1,
+              "AvalancheExtTID": 20,
+              "Comment": null,
+              "AvalCauseTID": 10,
+              "AvalCauseAttributeLightTID": 0,
+              "AvalCauseAttributeThinTID": 0,
+              "AvalCauseAttributeSoftTID": 0,
+              "AvalCauseAttributeCrystalTID": 0,
+              "DestructiveSizeTID": 3
+          }, {
+              "AvalProbabilityName": "Ikkje gitt",
+              "AvalTriggerSimpleName": "Svært vanskeleg å løyse ut",
+              "AvalCauseDepthName": "Innan ein meter",
+              "ExposedHeightComboName": "Kvitt nedst",
+              "AvalancheExtName": "Tørre flakskred",
+              "AvalCauseName": "Dårleg binding mellom glatt skare og overliggande snø",
+              "DestructiveSizeName": "3 - Store",
+              "AvalPropagationName": "Nokre bratte heng",
+              "AvalCauseAttributeLightName": null,
+              "AvalCauseAttributeThinName": null,
+              "AvalCauseAttributeSoftName": null,
+              "AvalCauseAttributeCrystalName": null,
+              "AvalProbabilityTID": 0,
+              "AvalPropagationTID": 2,
+              "AvalTriggerSimpleTID": 30,
+              "AvalCauseDepthTID": 2,
+              "ValidExposition": "11111111",
+              "ExposedHeight1": 800,
+              "ExposedHeight2": null,
+              "ExposedHeightComboTID": 1,
+              "AvalancheExtTID": 20,
+              "Comment": null,
+              "AvalCauseTID": 14,
+              "AvalCauseAttributeLightTID": 0,
+              "AvalCauseAttributeThinTID": 0,
+              "AvalCauseAttributeSoftTID": 0,
+              "AvalCauseAttributeCrystalTID": 0,
+              "DestructiveSizeTID": 3
+          }
+      ],
+      "AvalancheEvaluation3": {
+          "AvalancheDangerName": "2 Moderat",
+          "ForecastCorrectName": "Varsla faregrad er for høg",
+          "AvalancheDangerTID": 2,
+          "AvalancheEvaluation": "Mildværsutløsning av enkelte store leheng kan ikke utelukkes. Moderat fare for skiløperutløsning i enkelte heng.",
+          "AvalancheDevelopment": "Mer og høyere regn vil gi oppfuktning og fare for våte løssnø skred søndag.",
+          "ForecastCorrectTID": 3,
+          "ForecastComment": "Avspeiler at oppfuktning foreløbig er moderat."
+      },
+      "AvalancheObs": null,
+      "CompressionTest": [{
+              "CompressionTestName": "N / A",
+              "PropagationName": "CTM",
+              "StabilityEvalName": "Middels",
+              "ComprTestFractureName": "Q3",
+              "CompressionTestTID": 0,
+              "TapsFracture": 11,
+              "TapsFullPropagation": null,
+              "PropagationTID": 13,
+              "FractureDepth": 0.12,
+              "StabilityEvalTID": 2,
+              "ComprTestFractureTID": 3,
+              "Comment": "Løsere skikt under tynt mykt flak. 1240 SV. Annen svak tetthetsvariasjon under CTH@48cm Q2. Q1 mildvær skare på 110cm går utenfor skala.",
+              "IncludeInSnowProfile": false
+          }
+      ],
+      "DangerObs": [],
+      "GeneralObservation": null,
+      "IceCoverObs": null,
+      "IceThickness": null,
+      "Incident": null,
+      "LandSlideObs": null,
+      "SnowProfile2": {
+          "TotalDepth": 1.725,
+          "StratProfile": {
+              "TotalDepth": 1.725,
+              "Layers": [{
+                      "GrainFormPrimaryTName": "DFbk",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "4F",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": "D",
+                      "CriticalLayerTName": null,
+                      "DepthTop": 0,
+                      "Thickness": 0.04,
+                      "GrainFormPrimaryTID": 16,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 6,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": 1,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "RG",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "1F",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": "D",
+                      "CriticalLayerTName": null,
+                      "DepthTop": 0.04,
+                      "Thickness": 0.08,
+                      "GrainFormPrimaryTID": 17,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 10,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": 1,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "DFbk",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "4F",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": "D",
+                      "CriticalLayerTName": null,
+                      "DepthTop": 0.12,
+                      "Thickness": 0.05,
+                      "GrainFormPrimaryTID": 16,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 6,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": 1,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "RG",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "1F",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": "D",
+                      "CriticalLayerTName": null,
+                      "DepthTop": 0.17,
+                      "Thickness": 0.9,
+                      "GrainFormPrimaryTID": 17,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 10,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": 1,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "MFcr",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "P",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": null,
+                      "CriticalLayerTName": null,
+                      "DepthTop": 1.07,
+                      "Thickness": 0.005,
+                      "GrainFormPrimaryTID": 40,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 14,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": null,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "RG",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "1F-P",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": "D",
+                      "CriticalLayerTName": null,
+                      "DepthTop": 1.075,
+                      "Thickness": 0.1,
+                      "GrainFormPrimaryTID": 17,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 12,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": 1,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "MFcr",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "K",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": null,
+                      "CriticalLayerTName": null,
+                      "DepthTop": 1.175,
+                      "Thickness": 0.02,
+                      "GrainFormPrimaryTID": 40,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 18,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": null,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "RGxf",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "1F-",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": "D",
+                      "CriticalLayerTName": null,
+                      "DepthTop": 1.195,
+                      "Thickness": 0.03,
+                      "GrainFormPrimaryTID": 21,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 9,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": 1,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "RG",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "1F+",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": "D",
+                      "CriticalLayerTName": null,
+                      "DepthTop": 1.225,
+                      "Thickness": 0.05,
+                      "GrainFormPrimaryTID": 17,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 11,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": 1,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "MFcr",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "K",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": null,
+                      "CriticalLayerTName": null,
+                      "DepthTop": 1.275,
+                      "Thickness": 0.03,
+                      "GrainFormPrimaryTID": 40,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 18,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": null,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "RG",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "P",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": "D",
+                      "CriticalLayerTName": null,
+                      "DepthTop": 1.305,
+                      "Thickness": 0.15,
+                      "GrainFormPrimaryTID": 17,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 14,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": 1,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "MFcl",
+                      "GrainFormSecondaryTName": null,
+                      "HardnessTName": "1F",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": "M",
+                      "CriticalLayerTName": null,
+                      "DepthTop": 1.455,
+                      "Thickness": 0.12,
+                      "GrainFormPrimaryTID": 37,
+                      "GrainFormSecondaryTID": null,
+                      "GrainSizeAvg": 0.015,
+                      "GrainSizeAvgMax": null,
+                      "HardnessTID": 10,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": 3,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }, {
+                      "GrainFormPrimaryTName": "RG",
+                      "GrainFormSecondaryTName": "RGxf",
+                      "HardnessTName": "P",
+                      "HardnessBottomTName": null,
+                      "WetnessTName": "D",
+                      "CriticalLayerTName": null,
+                      "DepthTop": 1.575,
+                      "Thickness": 0.15,
+                      "GrainFormPrimaryTID": 17,
+                      "GrainFormSecondaryTID": 21,
+                      "GrainSizeAvg": null,
+                      "GrainSizeAvgMax": 0.007,
+                      "HardnessTID": 14,
+                      "HardnessBottomTID": null,
+                      "WetnessTID": 1,
+                      "CriticalLayerTID": null,
+                      "Comment": null,
+                      "SortOrder": 0
+                  }
+              ]
+          },
+          "Comment": "1240 m",
+          "IsProfileToGround": false,
+          "Exposition": 5,
+          "SlopeAngle": 10,
+          "SnowTemp": {
+              "Layers": [{
+                      "Depth": 0.05,
+                      "SnowTemp": -4
+                  }, {
+                      "Depth": 0.25,
+                      "SnowTemp": -3.6
+                  }, {
+                      "Depth": 0.45,
+                      "SnowTemp": -2.4
+                  }, {
+                      "Depth": 0.65,
+                      "SnowTemp": -2.1
+                  }, {
+                      "Depth": 0.85,
+                      "SnowTemp": -1.8
+                  }, {
+                      "Depth": 1.05,
+                      "SnowTemp": -0.9
+                  }, {
+                      "Depth": 1.25,
+                      "SnowTemp": -0.7
+                  }, {
+                      "Depth": 1.45,
+                      "SnowTemp": -0.6
+                  }
+              ]
+          },
+          "SnowDensity": []
+      },
+      "SnowSurfaceObservation": {
+          "SnowWindDepth24": null,
+          "SurfaceWaterContentName": "Tørr",
+          "SnowDriftName": "Lett snøfokk",
+          "SnowSurfaceName": "Vindpakka mjuk",
+          "SurfaceRougnessTID": 0,
+          "SurfaceRougnessName": "Ikkje observert",
+          "FootPenetration": null,
+          "SnowDepth": null,
+          "NewSnowDepth24": 0.15,
+          "NewSnowLine": 700,
+          "SurfaceWaterContentTID": 2,
+          "SnowDriftTID": 2,
+          "SnowSurfaceTID": 106,
+          "Comment": "Temperaturøkning fra i formiddag gir rask setning som snødekket ser ut til å tåle. Foreløbig moderat oppfuktning under mildværsgrensen (typisk kramsnø). De uvanlig store snømengdene har en relativt jevn fordeling i høyfjellet, nesten uten synlige konturer eller avblåste rygger. Siste dagers snøfall er ubundet utenom utsatte  rygger med myk flakdannelse.  Snødekket har relativt lite spenninger og overganger. Skikt og tetthetsvariasjoner er moderate. Reneste deling på 1240 er en syltynn mildvær skare ovenfor Gyda-skiktet som går Q1 men utenfor skala. Litt fukt i Gyda-skikt men ikke kantkorn eller særlig gradient. .",
+          "HeightLimitLayeredSnow": 300,
+          "SnowLine": 0
+      },
+      "WeatherObservation": {
+          "PrecipitationName": "Snø",
+          "WindDirectionName": "V",
+          "PrecipitationTID": 5,
+          "AirTemperature": -2.5,
+          "WindSpeed": 9,
+          "WindDirection": 270,
+          "CloudCover": 100,
+          "Comment": "Lite nedbør i dag. Noen lette byger som snø over 700 m."
+      },
+      "WaterLevel2": null,
+      "DamageObs": [],
+      "Summaries": [{
+              "RegistrationTID": 33,
+              "RegistrationName": "Skredaktivitet",
+              "AdaptiveElements": [{
+                      "type": "FactSet",
+                      "facts": [{
+                              "title": "Tid",
+                              "value": "12. feb. I løpet av dagen"
+                          }, {
+                              "title": "Antal, storleik og skredutløysar",
+                              "value": "Ingen skredaktivitet"
+                          }
+                      ]
+                  }
+              ],
+              "Summaries": [{
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Tid",
+                      "Value": "12. feb. I løpet av dagen"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Antal, storleik og skredutløysar",
+                      "Value": "Ingen skredaktivitet"
+                  }
+              ]
+          }, {
+              "RegistrationTID": 21,
+              "RegistrationName": "Vêr",
+              "AdaptiveElements": [{
+                      "type": "FactSet",
+                      "facts": [{
+                              "title": "Nedbørstype",
+                              "value": "Snø"
+                          }, {
+                              "title": "Temperatur",
+                              "value": "-2,5 °C"
+                          }, {
+                              "title": "Vind",
+                              "value": "9 m/s frå V →"
+                          }, {
+                              "title": "Skydekke",
+                              "value": "100% skyer"
+                          }, {
+                              "title": "Kommentar",
+                              "value": "Lite nedbør i dag. Noen lette byger som snø over 700 m."
+                          }
+                      ]
+                  }
+              ],
+              "Summaries": [{
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Nedbørstype",
+                      "Value": "Snø"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Temperatur",
+                      "Value": "-2,5 °C"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Vind",
+                      "Value": "9 m/s frå V →"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Skydekke",
+                      "Value": "100% skyer"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Kommentar",
+                      "Value": "Lite nedbør i dag. Noen lette byger som snø over 700 m."
+                  }
+              ]
+          }, {
+              "RegistrationTID": 22,
+              "RegistrationName": "Snødekke",
+              "AdaptiveElements": [{
+                      "type": "FactSet",
+                      "facts": [{
+                              "title": "Snøfokk",
+                              "value": "Lett snøfokk"
+                          }, {
+                              "title": "Siste døgn",
+                              "value": "15 cm nysnø"
+                          }, {
+                              "title": "Snøgrenser",
+                              "value": "Nysnøgrense på 700 moh. Snøgrense på 0 moh. Grense for lagdelt snø er på 300 moh"
+                          }, {
+                              "title": "Snødekkehardheit",
+                              "value": "Vindpakka mjuk"
+                          }, {
+                              "title": "Snøfuktigheit",
+                              "value": "Tørr"
+                          }, {
+                              "title": "Kommentar",
+                              "value": "Temperaturøkning fra i formiddag gir rask setning som snødekket ser ut til å tåle. Foreløbig moderat oppfuktning under mildværsgrensen (typisk kramsnø). De uvanlig store snømengdene har en relativt jevn fordeling i høyfjellet, nesten uten synlige konturer eller avblåste rygger. Siste dagers snøfall er ubundet utenom utsatte  rygger med myk flakdannelse.  Snødekket har relativt lite spenninger og overganger. Skikt og tetthetsvariasjoner er moderate. Reneste deling på 1240 er en syltynn mildvær skare ovenfor Gyda-skiktet som går Q1 men utenfor skala. Litt fukt i Gyda-skikt men ikke kantkorn eller særlig gradient. ."
+                          }
+                      ]
+                  }
+              ],
+              "Summaries": [{
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Snøfokk",
+                      "Value": "Lett snøfokk"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Siste døgn",
+                      "Value": "15 cm nysnø"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Snøgrenser",
+                      "Value": "Nysnøgrense på 700 moh. Snøgrense på 0 moh. Grense for lagdelt snø er på 300 moh"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Snødekkehardheit",
+                      "Value": "Vindpakka mjuk"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Snøfuktigheit",
+                      "Value": "Tørr"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Kommentar",
+                      "Value": "Temperaturøkning fra i formiddag gir rask setning som snødekket ser ut til å tåle. Foreløbig moderat oppfuktning under mildværsgrensen (typisk kramsnø). De uvanlig store snømengdene har en relativt jevn fordeling i høyfjellet, nesten uten synlige konturer eller avblåste rygger. Siste dagers snøfall er ubundet utenom utsatte  rygger med myk flakdannelse.  Snødekket har relativt lite spenninger og overganger. Skikt og tetthetsvariasjoner er moderate. Reneste deling på 1240 er en syltynn mildvær skare ovenfor Gyda-skiktet som går Q1 men utenfor skala. Litt fukt i Gyda-skikt men ikke kantkorn eller særlig gradient. ."
+                  }
+              ]
+          }, {
+              "RegistrationTID": 25,
+              "RegistrationName": "Testar",
+              "AdaptiveElements": [{
+                      "type": "FactSet",
+                      "facts": [{
+                              "title": "Test",
+                              "value": "CTM11@12cmQ3"
+                          }, {
+                              "title": "Stabilitet",
+                              "value": "Middels"
+                          }, {
+                              "title": "Kommentar",
+                              "value": "Løsere skikt under tynt mykt flak. 1240 SV. Annen svak tetthetsvariasjon under CTH@48cm Q2. Q1 mildvær skare på 110cm går utenfor skala."
+                          }
+                      ]
+                  }
+              ],
+              "Summaries": [{
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Test",
+                      "Value": "CTM11@12cmQ3"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Stabilitet",
+                      "Value": "Middels"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Kommentar",
+                      "Value": "Løsere skikt under tynt mykt flak. 1240 SV. Annen svak tetthetsvariasjon under CTH@48cm Q2. Q1 mildvær skare på 110cm går utenfor skala."
+                  }
+              ]
+          }, {
+              "RegistrationTID": 36,
+              "RegistrationName": "Snøprofil",
+              "AdaptiveElements": [{
+                      "type": "FactSet",
+                      "facts": [{
+                              "title": "Kommentar",
+                              "value": "1240 m"
+                          }
+                      ]
+                  }, {
+                      "type": "FactSet",
+                      "facts": [{
+                              "title": "Temperatur",
+                              "value": "-4 °C @ 5 cm, -3,6 °C @ 25 cm, -2,4 °C @ 45 cm, -2,1 °C @ 65 cm, -1,8 °C @ 85 cm, -0,9 °C @ 105 cm, -0,7 °C @ 125 cm, -0,6 °C @ 145 cm"
+                          }
+                      ]
+                  }, {
+                      "type": "SnowProfilePlot",
+                      "pngUrl": "https://api.regobs.no/Attachments/Medium/230936.jpg?lastMod=1644707725",
+                      "svgUrl": "https://api.regobs.no/Attachments/Large/230936.jpg?lastMod=1644707725",
+                      "interactiveUrl": "https://plot.regobs.no/v1/SnowProfile/290525/SimpleProfile?lastMod=1644707725",
+                      "altText": "Lagdeling: 4 cm 4F DFbk D, 8 cm 1F RG D, 5 cm 4F DFbk D, 90 cm 1F RG D, 0,5 cm P MFcr, 10 cm 1F-P RG D, 2 cm K MFcr, 3 cm 1F- RGxf D, 5 cm 1F+ RG D, 3 cm K MFcr, 15 cm P RG D, 12 cm 1F MFcl 2 mm M, 15 cm P RG/RGxf D",
+                      "fallback": {
+                          "type": "Image",
+                          "url": "https://api.regobs.no/Attachments/Medium/230936.jpg?lastMod=1644707725",
+                          "altText": "Lagdeling: 4 cm 4F DFbk D, 8 cm 1F RG D, 5 cm 4F DFbk D, 90 cm 1F RG D, 0,5 cm P MFcr, 10 cm 1F-P RG D, 2 cm K MFcr, 3 cm 1F- RGxf D, 5 cm 1F+ RG D, 3 cm K MFcr, 15 cm P RG D, 12 cm 1F MFcl 2 mm M, 15 cm P RG/RGxf D"
+                      }
+                  }, {
+                      "type": "FactSet",
+                      "facts": [{
+                              "title": "Lagdeling",
+                              "value": "4 cm 4F DFbk D, 8 cm 1F RG D, 5 cm 4F DFbk D, 90 cm 1F RG D, 0,5 cm P MFcr, 10 cm 1F-P RG D, 2 cm K MFcr, 3 cm 1F- RGxf D, 5 cm 1F+ RG D, 3 cm K MFcr, 15 cm P RG D, 12 cm 1F MFcl 2 mm M, 15 cm P RG/RGxf D"
+                          }
+                      ]
+                  }
+              ],
+              "Summaries": [{
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Eksposisjon",
+                      "Value": "SV"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Bratthet",
+                      "Value": "10°"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Kommentar",
+                      "Value": "1240 m"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Temperatur",
+                      "Value": "-4 °C @ 5 cm, -3,6 °C @ 25 cm, -2,4 °C @ 45 cm, -2,1 °C @ 65 cm, -1,8 °C @ 85 cm, -0,9 °C @ 105 cm, -0,7 °C @ 125 cm, -0,6 °C @ 145 cm"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Lagdeling",
+                      "Value": "4 cm 4F DFbk D, 8 cm 1F RG D, 5 cm 4F DFbk D, 90 cm 1F RG D, 0,5 cm P MFcr, 10 cm 1F-P RG D, 2 cm K MFcr, 3 cm 1F- RGxf D, 5 cm 1F+ RG D, 3 cm K MFcr, 15 cm P RG D, 12 cm 1F MFcl 2 mm M, 15 cm P RG/RGxf D"
+                  }
+              ]
+          }, {
+              "RegistrationTID": 32,
+              "RegistrationName": "Skredproblem",
+              "AdaptiveElements": [{
+                      "type": "TextBlock",
+                      "size": "large",
+                      "weight": "bolder",
+                      "text": "Nedføyka svakt lag med nysnø"
+                  }, {
+                      "type": "FactSet",
+                      "facts": [{
+                              "title": "Skredtype",
+                              "value": "Tørre flakskred"
+                          }, {
+                              "title": "Sannsynleg last for å løyse ut skred",
+                              "value": "Vanskeleg å løyse ut"
+                          }, {
+                              "title": "Storleik på forventa skred",
+                              "value": "3 - Store"
+                          }, {
+                              "title": "Utbreiing",
+                              "value": "Nokre bratte heng"
+                          }
+                      ]
+                  }, {
+                      "type": "ColumnSet",
+                      "columns": [{
+                              "type": "Column",
+                              "items": [{
+                                      "type": "Exposition",
+                                      "value": "11111111",
+                                      "text": "N, NØ, Ø, SØ, S, SV, V, NV",
+                                      "fallback": {
+                                          "type": "Image",
+                                          "url": "https://api.regobs.no/static/svg/exp/11111111.svg"
+                                      }
+                                  }
+                              ]
+                          }, {
+                              "type": "Column",
+                              "items": [{
+                                      "type": "ExposedHeight",
+                                      "exposedHeight1": 700,
+                                      "exposedHeight2": null,
+                                      "exposedHeightComboTid": 1
+                                  }
+                              ],
+                              "verticalContentAlignment": "center"
+                          }
+                      ]
+                  }
+              ],
+              "Summaries": [{
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Skredtype",
+                      "Value": "Tørre flakskred"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Type svakt lag",
+                      "Value": "Nedføyka svakt lag med nysnø"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Sannsynleg last for å løyse ut skred",
+                      "Value": "Vanskeleg å løyse ut"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Storleik på forventa skred",
+                      "Value": "3 - Store"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Utbreiing losneområder",
+                      "Value": "Nokre bratte heng N, NØ, Ø, SØ, S, SV, V, NV over 700 moh"
+                  }
+              ]
+          }, {
+              "RegistrationTID": 32,
+              "RegistrationName": "Skredproblem",
+              "AdaptiveElements": [{
+                      "type": "TextBlock",
+                      "size": "large",
+                      "weight": "bolder",
+                      "text": "Dårleg binding mellom glatt skare og overliggande snø"
+                  }, {
+                      "type": "FactSet",
+                      "facts": [{
+                              "title": "Skredtype",
+                              "value": "Tørre flakskred"
+                          }, {
+                              "title": "Avstanden mellom det svake laget og overflata",
+                              "value": "Innan ein meter"
+                          }, {
+                              "title": "Sannsynleg last for å løyse ut skred",
+                              "value": "Svært vanskeleg å løyse ut"
+                          }, {
+                              "title": "Storleik på forventa skred",
+                              "value": "3 - Store"
+                          }, {
+                              "title": "Utbreiing",
+                              "value": "Nokre bratte heng"
+                          }
+                      ]
+                  }, {
+                      "type": "ColumnSet",
+                      "columns": [{
+                              "type": "Column",
+                              "items": [{
+                                      "type": "Exposition",
+                                      "value": "11111111",
+                                      "text": "N, NØ, Ø, SØ, S, SV, V, NV",
+                                      "fallback": {
+                                          "type": "Image",
+                                          "url": "https://api.regobs.no/static/svg/exp/11111111.svg"
+                                      }
+                                  }
+                              ]
+                          }, {
+                              "type": "Column",
+                              "items": [{
+                                      "type": "ExposedHeight",
+                                      "exposedHeight1": 800,
+                                      "exposedHeight2": null,
+                                      "exposedHeightComboTid": 1
+                                  }
+                              ],
+                              "verticalContentAlignment": "center"
+                          }
+                      ]
+                  }
+              ],
+              "Summaries": [{
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Skredtype",
+                      "Value": "Tørre flakskred"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Type svakt lag",
+                      "Value": "Dårleg binding mellom glatt skare og overliggande snø"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Avstanden mellom det svake laget og overflata",
+                      "Value": "Innan ein meter"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Sannsynleg last for å løyse ut skred",
+                      "Value": "Svært vanskeleg å løyse ut"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Storleik på forventa skred",
+                      "Value": "3 - Store"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Utbreiing losneområder",
+                      "Value": "Nokre bratte heng N, NØ, Ø, SØ, S, SV, V, NV over 800 moh"
+                  }
+              ]
+          }, {
+              "RegistrationTID": 31,
+              "RegistrationName": "Skredfarevurdering",
+              "AdaptiveElements": [{
+                      "type": "Container",
+                      "items": [{
+                              "type": "TextBlock",
+                              "weight": "bolder",
+                              "text": "Faregrad"
+                          }, {
+                              "type": "ColumnSet",
+                              "columns": [{
+                                      "type": "Column",
+                                      "width": "auto",
+                                      "items": [{
+                                              "type": "Image",
+                                              "url": "https://api.regobs.no/static/svg/Icon-Avalanche-Danger-Level-Dry-Snow-2-EAWS.svg",
+                                              "width": "72px"
+                                          }
+                                      ]
+                                  }, {
+                                      "type": "Column",
+                                      "width": "stretch",
+                                      "items": [{
+                                              "type": "TextBlock",
+                                              "text": "2 Moderat"
+                                          }
+                                      ],
+                                      "verticalContentAlignment": "center",
+                                      "height": "stretch"
+                                  }
+                              ]
+                          }
+                      ],
+                      "fallback": {
+                          "type": "FactSet",
+                          "facts": [{
+                                  "title": "Faregrad",
+                                  "value": "2 Moderat"
+                              }
+                          ]
+                      }
+                  }, {
+                      "type": "FactSet",
+                      "facts": [{
+                              "title": "Skredfarevurdering",
+                              "value": "Mildværsutløsning av enkelte store leheng kan ikke utelukkes. Moderat fare for skiløperutløsning i enkelte heng."
+                          }, {
+                              "title": "Utvikling",
+                              "value": "Mer og høyere regn vil gi oppfuktning og fare for våte løssnø skred søndag."
+                          }, {
+                              "title": "Riktigheit av varselet",
+                              "value": "Varsla faregrad er for høg"
+                          }, {
+                              "title": "Kommentar",
+                              "value": "Avspeiler at oppfuktning foreløbig er moderat."
+                          }
+                      ]
+                  }
+              ],
+              "Summaries": [{
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Skredfarevurdering",
+                      "Value": "Mildværsutløsning av enkelte store leheng kan ikke utelukkes. Moderat fare for skiløperutløsning i enkelte heng."
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Utvikling",
+                      "Value": "Mer og høyere regn vil gi oppfuktning og fare for våte løssnø skred søndag."
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Faregrad",
+                      "Value": "2 Moderat"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Riktigheit av varselet",
+                      "Value": "Varsla faregrad er for høg"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Kommentar",
+                      "Value": "Avspeiler at oppfuktning foreløbig er moderat."
+                  }
+              ]
+          }
+      ],
+      "AttachmentSummaries": [{
+              "RegistrationTID": 12,
+              "RegistrationName": null,
+              "AdaptiveElements": [],
+              "Summaries": [{
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Av",
+                      "Value": "Vêr"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Opphavsrett",
+                      "Value": "Vidar@obskorps"
+                  }
+              ]
+          }, {
+              "RegistrationTID": 12,
+              "RegistrationName": null,
+              "AdaptiveElements": [],
+              "Summaries": [{
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Av",
+                      "Value": "Vêr"
+                  }, {
+                      "Kind": 1,
+                      "KindType": "Text",
+                      "Header": "Opphavsrett",
+                      "Value": "Vidar@obskorps"
+                  }
+              ]
+          }
+      ],
+      "SnowProfile": null,
+      "AvalancheEvaluation": null,
+      "AvalancheActivityObs": null,
+      "AvalancheDangerObs": [],
+      "AvalancheEvalProblem": [],
+      "AvalancheEvaluation2": null,
+      "SnowCoverObs": null,
+      "WaterLevel": null,
+      "GeoHazardTID": 10,
+      "SourceTID": 0,
+      "DtObsTime": "2022-02-12T17:10:08+01:00",
+      "ObserverGroupID": null,
+      "ObserverGroupName": null
+  }
+}
