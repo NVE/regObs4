@@ -9,7 +9,7 @@ import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class DatabaseService {
+export class DatabaseService implements KeyValueStore {
   private database: Storage = null;
   private ready = new ReplaySubject<void>();
 
@@ -20,8 +20,8 @@ export class DatabaseService {
 
   constructor(private storage: Storage) {
     this.init();
-    this.ready$ = this.ready.asObservable();  
-  }  
+    this.ready$ = this.ready.asObservable();
+  }
 
   async init() {
     // If using, define drivers here: await this.storage.defineDriver(/*...*/);
@@ -56,7 +56,8 @@ export class DatabaseService {
    * @param key the key to identify this value
    * @returns Returns a promise that resolves when the value is removed
    */
-  public remove(key: string): Promise<void> {
+  public async remove(key: string): Promise<void> {
+    await firstValueFrom(this.ready$);
     return this.database.remove(key);
   }
 
@@ -64,21 +65,23 @@ export class DatabaseService {
     * Clear the entire key value store. WARNING: HOT!
     * @returns Returns a promise that resolves when the store is cleared
     */
-  public clear(): Promise<void> {
+  public async clear(): Promise<void> {
+    await firstValueFrom(this.ready$);
     return this.database.clear();
-
   }
   /**
     * @returns Returns a promise that resolves with the number of keys stored.
     */
-  length(): Promise<number> {
+  async length(): Promise<number> {
+    await firstValueFrom(this.ready$);
     return this.database.length();
   }
 
   /**
   * @returns Returns a promise that resolves with the keys in the store.
   */
-  keys(): Promise<string[]> {
+  async keys(): Promise<string[]> {
+    await firstValueFrom(this.ready$);
     return this.database.keys();
   }
 

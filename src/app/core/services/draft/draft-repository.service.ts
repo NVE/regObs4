@@ -3,8 +3,9 @@ import moment from 'moment';
 import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { AppModeService, LoggerService } from 'src/app/modules/common-core/services';
+import { AppModeService } from 'src/app/modules/common-core/services';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { DatabaseService } from '../database/database.service';
 import { RegistrationDraft } from './draft-model';
 
@@ -31,11 +32,11 @@ export class DraftRepositoryService {
 
    constructor(
       private appModeService: AppModeService,
-      private loggerService: LoggerService,
+      private logger: LoggingService,
       private databaseService: DatabaseService) {
 
      this.drafts$ = this.drafts.asObservable();
-     //  this.appModeService.appMode$.subscribe((appMode) => this.reloadAndNotify(appMode));
+
      combineLatest([this.appModeService.appMode$, this.databaseService.ready$])
        .subscribe(([appMode, ]) => {
          this.saveTestdata();
@@ -90,7 +91,7 @@ export class DraftRepositoryService {
      }
      await this.saveAllToDatabase(drafts, appMode);
      const finish = performance.now();
-     this.loggerService.debug(`Draft ${registration.uuid} saved in ${finish-start} ms`, DEBUG_TAG, registration);
+     this.logger.debug(`Draft ${registration.uuid} saved in ${finish-start} ms`, DEBUG_TAG, registration);
      this.drafts.next(drafts); //spread the word that drafts have changed
    }
 
@@ -105,10 +106,10 @@ export class DraftRepositoryService {
      const drafts = await this.loadAll();
      if (drafts && drafts.length > 0) {
        const filteredDrafts = drafts.filter(f => f.uuid === uuid);
-       this.loggerService.debug(`Draft ${uuid} loaded in ${performance.now()-start} ms`, DEBUG_TAG);
+       this.logger.debug(`Draft ${uuid} loaded in ${performance.now()-start} ms`, DEBUG_TAG);
        return filteredDrafts[0];
      }
-     this.loggerService.debug(`Draft ${uuid} not found in ${performance.now()-start} ms`, DEBUG_TAG);
+     this.logger.debug(`Draft ${uuid} not found in ${performance.now()-start} ms`, DEBUG_TAG);
      return undefined;
    }
 
@@ -119,7 +120,7 @@ export class DraftRepositoryService {
      const start = performance.now();
      const appMode = await firstValueFrom(this.appModeService.appMode$);
      const drafts = await this.loadAllFromDatabase(appMode);
-     this.loggerService.debug(`Drafts loaded in ${performance.now()-start} ms`, DEBUG_TAG);
+     this.logger.debug(`Drafts loaded in ${performance.now()-start} ms`, DEBUG_TAG);
      return drafts;
    }
 
