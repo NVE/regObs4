@@ -8,6 +8,7 @@ import {
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import {
+  AdaptiveElement,
   AttachmentViewModel,
   RegistrationViewModel,
   Summary
@@ -28,6 +29,8 @@ import 'leaflet.utm';
 import { getStarCount } from '../../../core/helpers/competence-helper';
 import { take } from 'rxjs/operators';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
+import { RegistrationTid } from 'src/app/modules/common-registration/models/registration-tid.enum';
+import { SnowProfileData } from 'src/app/modules/adaptive-cards/adaptive-snow-profile';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -154,6 +157,30 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   updateImages(baseUrl: string): void {
+    let snowProfileSummary = this.obs.Summaries.find(
+      (s) => s.RegistrationTID === RegistrationTid.SnowProfile2
+    );
+    let snowProfilePlot = snowProfileSummary?.AdaptiveElements.find(
+      (e: AdaptiveElement) => e.type == 'SnowProfilePlot'
+    ) as SnowProfileData;
+    if (snowProfilePlot) {
+      let profilePlot: AttachmentViewModel & {Href: string} = {
+        GeoHazardTID: this.obs.GeoHazardTID,
+        GeoHazardName: this.obs.GeoHazardName,
+        RegistrationTID: snowProfileSummary?.RegistrationTID,
+        RegistrationName: snowProfileSummary?.RegistrationName,
+        UrlFormats: {
+          Original: snowProfilePlot?.svgUrl,
+          Large: snowProfilePlot?.svgUrl,
+          Medium: snowProfilePlot?.pngUrl,
+        },
+        Url: snowProfilePlot?.svgUrl,
+        Comment: this.obs?.SnowProfile2?.Comment,
+        Href: snowProfilePlot?.interactiveUrl,
+      }
+      this.obs.Attachments.unshift(profilePlot);
+    }
+
     this.imageHeaders = this.obs.Attachments.map((x) => x.RegistrationName);
     this.imageDescriptions = this.obs.Attachments.map((x) => x.Comment);
     this.imageUrls = this.obs.Attachments.map((x) =>
@@ -173,7 +200,7 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   async openImage(event: { index: number; imgUrl: string }): Promise<void> {
-    const image = this.obs.Attachments[event.index];
+    const image = this.obs.Attachments[event.index] as AttachmentViewModel & {Href: string};
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
       componentProps: {
@@ -181,8 +208,9 @@ export class ObservationListCardComponent implements OnChanges {
           image,
           'Original'
         )}?r=${utils.uuid()}`,
-        header: this.obs.Attachments[event.index].RegistrationName,
-        description: this.obs.Attachments[event.index].Comment
+        header: image.RegistrationName,
+        description: image.Comment,
+        href: image.Href,
       }
     });
     modal.present();

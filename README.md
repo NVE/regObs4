@@ -56,7 +56,7 @@ C:\gradle\gradle-6.7.1\bin
 ```
 
 - You have to uninstall the regular RegObs app from your phone in order to debug
-- This may be helpful for device connection problmems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
+- This may be helpful for device connection problems: [More info](https://stackoverflow.com/questions/23081263/adb-android-device-unauthorized)
 
 #### Error: package android.support.v4.content does not exist
 [More info] https://github.com/ionic-team/capacitor/issues/2822

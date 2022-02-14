@@ -75,6 +75,9 @@ export class RegistrationService {
     @Inject(FOR_ROOT_OPTIONS_TOKEN) private options: IRegistrationModuleOptions
   ) {
     this.registrationStorage$ = this.getRegistrationObservable().pipe(
+      map(regs => regs.filter(
+        (reg: IRegistration) => reg.syncStatus == SyncStatus.Sync || reg.syncStatus == SyncStatus.Draft)
+      ),
       tap((reg) => {
         this.loggerService.debug('Registrations changed', reg);
       }),
