@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { Observable, ReplaySubject } from 'rxjs';
+import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 
 /**
  * Common interface to our key-value database.
@@ -20,14 +20,14 @@ export class DatabaseService {
 
   constructor(private storage: Storage) {
     this.init();
-    this.ready$ = this.ready.asObservable();
-    this.ready.next(); //notify clients that we are ready
-  }
+    this.ready$ = this.ready.asObservable();  
+  }  
 
   async init() {
     // If using, define drivers here: await this.storage.defineDriver(/*...*/);
     const storage = await this.storage.create();
     this.database = storage;
+    this.ready.next(); //notify clients that we are ready
   }
 
   /**
@@ -36,10 +36,8 @@ export class DatabaseService {
    * @param value the value for this key
    * @returns Returns a promise that resolves when the key and value are set
    */
-  public set(key: string, value: any): Promise<void> {
-    if (this.database === null) {
-      throw Error('Database not ready');
-    }
+  public async set(key: string, value: any): Promise<void> {
+    await firstValueFrom(this.ready$);
     return this.database.set(key, value);
   }
 
@@ -48,10 +46,8 @@ export class DatabaseService {
    * @param key the key to identify this value
    * @returns Returns a promise with the value of the given key
    */
-  public get(key: string): Promise<any> {
-    if (this.database === null) {
-      throw Error('Database not ready');
-    }
+  public async get(key: string): Promise<any> {
+    await firstValueFrom(this.ready$);
     return this.database.get(key);
   }
 
