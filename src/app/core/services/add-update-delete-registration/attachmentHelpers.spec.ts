@@ -2,7 +2,7 @@ import cloneDeep from 'clone-deep';
 import { AttachmentUploadEditModel, WaterLevelMeasurementUploadModel } from 'src/app/modules/common-registration/registration.models';
 import { AttachmentEditModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 import { GeoHazard } from '../../models/geo-hazard.enum';
-import { addAttachmentToDraft } from './postRegistrationHelpers';
+import { addAttachmentToDraft } from './attachmentHelpers';
 
 const getSmallTestDraft = (): RegistrationEditModel => ({
   GeneralObservation: { ObsComment: 'a test' },
