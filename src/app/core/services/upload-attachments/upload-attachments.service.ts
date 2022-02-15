@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, filter, firstValueFrom, iif, map, mergeMap, Observable, of, tap } from 'rxjs';
+import { filter, firstValueFrom, map, Observable, tap } from 'rxjs';
 import { AttachmentUploadEditModel, IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService, ProgressService } from 'src/app/modules/common-registration/registration.services';
 import { AttachmentService as ApiAttachmentService } from 'src/app/modules/common-regobs-api';

@@ -1,24 +1,14 @@
-import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse, HttpUploadProgressEvent } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 import cloneDeep from 'clone-deep';
-import { map, Observable, of, tap } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AttachmentUploadEditModel, IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService, ProgressService } from 'src/app/modules/common-registration/registration.services';
 import { AttachmentService, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { GeoHazard } from '../../models/geo-hazard.enum';
-
 import { UploadAttachmentError, UploadAttachmentsService } from './upload-attachments.service';
 
 describe('UploadAttachmentsService', () => {
   let service: UploadAttachmentsService;
-
-  // beforeEach(() => {
-  //   TestBed.configureTestingModule({
-  //     providers: []
-  //   });
-  //   service = TestBed.inject(UploadAttachmentsService);
-  // });
 
   it('should not upload attachments with AttachmentUploadId (already uploaded)', async () => {
     const httpClient = jasmine.createSpyObj('HttpClient', ['post']);
