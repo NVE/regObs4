@@ -1,0 +1,890 @@
+{
+	"uuid": "287790",
+	"syncStatus": 0,
+	"draft": {
+		"GeoHazardName": "Snø",
+		"DtRegTime": "2022-01-28T17:33:47+00:00",
+		"DtChangeTime": "2022-01-28T17:39:26+00:00",
+		"SourceName": "Ikke gitt",
+		"ObsLocation": {
+			"ObsLocationID": 169748,
+			"ForecastRegionTID": 3029,
+			"ForecastRegionName": "Indre Sogn",
+			"Height": 1147,
+			"MunicipalName": "Luster",
+			"MunicipalNo": "4644",
+			"CountryId": 578,
+			"CountryName": "Norge",
+			"UTMSourceName": "Klikk i kart i regObs-app",
+			"Title": "Indre Sogn / Luster",
+			"LocationName": null,
+			"LocationDescription": "Luster / Indre Sogn",
+			"Latitude": 61.629137125,
+			"Longitude": 7.3149096966,
+			"UTMSourceTID": 35,
+			"Uncertainty": 0
+		},
+		"Attachments": [{
+				"AttachmentId": 227478,
+				"GeoHazardName": "Snø",
+				"RegistrationName": "Vær",
+				"UrlFormats": {
+					"Original": "https://api.regobs.no/Attachments/Original/227478.jpg",
+					"Large": "https://api.regobs.no/Attachments/Large/227478.jpg",
+					"Medium": "https://api.regobs.no/Attachments/Medium/227478.jpg",
+					"Raw": "https://api.regobs.no/Attachments/Raw/227478.jpg",
+					"Thumbnail": "https://api.regobs.no/Attachments/Thumbnail/227478.jpg"
+				},
+				"Url": "https://api.regobs.no/Attachments/Original/227478.jpg",
+				"Photographer": null,
+				"Copyright": "Siggen@obskorps",
+				"Aspect": null,
+				"GeoHazardTID": 10,
+				"RegistrationTID": 21,
+				"Comment": "Dagens vær begynte å snø i 12 tiden",
+				"AttachmentMimeType": "image/jpeg",
+				"IsMainAttachment": true
+			}, {
+				"AttachmentId": 227479,
+				"GeoHazardName": "Snø",
+				"RegistrationName": "Snødekke",
+				"UrlFormats": {
+					"Original": "https://api.regobs.no/Attachments/Original/227479.jpg",
+					"Large": "https://api.regobs.no/Attachments/Large/227479.jpg",
+					"Medium": "https://api.regobs.no/Attachments/Medium/227479.jpg",
+					"Raw": "https://api.regobs.no/Attachments/Raw/227479.jpg",
+					"Thumbnail": "https://api.regobs.no/Attachments/Thumbnail/227479.jpg"
+				},
+				"Url": "https://api.regobs.no/Attachments/Original/227479.jpg",
+				"Photographer": null,
+				"Copyright": "Siggen@obskorps",
+				"Aspect": null,
+				"GeoHazardTID": 10,
+				"RegistrationTID": 22,
+				"Comment": "Høyfjellet i Jostedalen",
+				"AttachmentMimeType": "image/jpeg",
+				"IsMainAttachment": false
+			}, {
+				"AttachmentId": 227480,
+				"GeoHazardName": "Snø",
+				"RegistrationName": "Snødekke",
+				"UrlFormats": {
+					"Original": "https://api.regobs.no/Attachments/Original/227480.jpg",
+					"Large": "https://api.regobs.no/Attachments/Large/227480.jpg",
+					"Medium": "https://api.regobs.no/Attachments/Medium/227480.jpg",
+					"Raw": "https://api.regobs.no/Attachments/Raw/227480.jpg",
+					"Thumbnail": "https://api.regobs.no/Attachments/Thumbnail/227480.jpg"
+				},
+				"Url": "https://api.regobs.no/Attachments/Original/227480.jpg",
+				"Photographer": null,
+				"Copyright": "Siggen@obskorps",
+				"Aspect": null,
+				"GeoHazardTID": 10,
+				"RegistrationTID": 22,
+				"Comment": "Ikke mye sikt videre her. Vindtegn i snøen men mye mykere snødekke som du må brøyte i. Det er veldig vekslende fra helt løst til ganske så hardt og avblåst til skaren.",
+				"AttachmentMimeType": "image/jpeg",
+				"IsMainAttachment": false
+			}
+		],
+		"AvalancheActivityObs2": [],
+		"AvalancheEvalProblem2": [{
+				"AvalProbabilityName": "Ikke gitt",
+				"AvalTriggerSimpleName": "Lett å løse ut",
+				"AvalCauseDepthName": "Innen en halv meter",
+				"ExposedHeightComboName": "Hvit nederst",
+				"AvalancheExtName": "Tørre flakskred",
+				"AvalCauseName": "Nedføyket svakt lag med nysnø",
+				"DestructiveSizeName": "2 - Middels",
+				"AvalPropagationName": "Noen bratte heng",
+				"AvalCauseAttributeLightName": null,
+				"AvalCauseAttributeThinName": null,
+				"AvalCauseAttributeSoftName": null,
+				"AvalCauseAttributeCrystalName": null,
+				"AvalProbabilityTID": 0,
+				"AvalPropagationTID": 2,
+				"AvalTriggerSimpleTID": 50,
+				"AvalCauseDepthTID": 1,
+				"ValidExposition": "11111000",
+				"ExposedHeight1": 900,
+				"ExposedHeight2": null,
+				"ExposedHeightComboTID": 1,
+				"AvalancheExtTID": 20,
+				"Comment": "Det jeg var mye mykere flak tenker str 2 her mest gjeldene men skal ikke utelukkes str 3 i få heng. Snøen jeg tråkket later til å ikke har stor evne til å forplante brudd. Får ingen sprekker som skyter ut. Men dette er vanskelig å si nøyaktig hvor stort et skred blir. Jeg blir ikke overrasket om det kan finnes et og anna str 3 skred i regionen. Men der jeg gikk tror jeg str 1-2 var mer gjeldene.",
+				"AvalCauseTID": 10,
+				"AvalCauseAttributeLightTID": 0,
+				"AvalCauseAttributeThinTID": 0,
+				"AvalCauseAttributeSoftTID": 0,
+				"AvalCauseAttributeCrystalTID": 0,
+				"DestructiveSizeTID": 2
+			}
+		],
+		"AvalancheEvaluation3": {
+			"AvalancheDangerName": "2 Moderat",
+			"ForecastCorrectName": "Ikke gitt",
+			"AvalancheDangerTID": 2,
+			"AvalancheEvaluation": "Jo jo temp har laget et snødekke som mange steder har en god grunnmur. Du skal høyt til fjells før du finner kantkorn over ca 1300moh og denne skal nok mye til å påvirke. Men merk jeg fant noe overraskende for meg løs smeltekant på rundt 1100moh som ga forplantningsbrudd med futt. Men tenker det ikke er gjeldene. Skredproblemet er nok i nysnøen som har kommet denne her uken. Legger seg på øst er lett å løse ut for det meste mykere flak, men det vil nok varierer hvor du er hen i regionen.",
+			"AvalancheDevelopment": "Lavtrykk i vest står i kø. Begynte å snø nå i formiddag ned til fjorden. Økende nedbør i morgen som regn midt på dagen til ca 1300moh meldt før synkende temp . Det skal blåse økende til full storm seint lørdag kveld og natt til søndag. Naturlige tørre og våte skred forventes når været står på, skredfaren er økende. Utover Søndagen roligere vind og oppholdsvær snødekke vil stabilisere seg. Utover neste uke fortsatt vær fra vest men per nå meldt roligere vindforhold og ikke så alt for mye nedbør, kan bli fint skiføre med løs tørr snø til topps? Det blir mer og mer vinterlig i høyfjellet for vær dag som går i skogen og nedi Jostedalen «sentrum» er det fortsatt ikke all verdens med snø. ",
+			"ForecastCorrectTID": 0,
+			"ForecastComment": "Finner noe overraskende smeltekant på ca 1100moh se profil. I et området med god vekst for kant hittil i vinter. Så vi har nok kant noe lavere enn 1300moh, men tenker hovedproblemet er i toppen av dekke. Og kanten er jo nevnt i tekst men mulig vi skulle jekka høyden noe ned? Men jeg tviler på jeg finner det feks i Sogndalsdalen på 1100moh mer trua øst i regionen. "
+		},
+		"AvalancheObs": null,
+		"CompressionTest": [{
+				"CompressionTestName": "N/A",
+				"PropagationName": "ECTP",
+				"StabilityEvalName": "Ikke gitt",
+				"ComprTestFractureName": "Q1",
+				"CompressionTestTID": 0,
+				"TapsFracture": 5,
+				"TapsFullPropagation": null,
+				"PropagationTID": 22,
+				"FractureDepth": 0.10,
+				"StabilityEvalTID": 0,
+				"ComprTestFractureTID": 1,
+				"Comment": "Forplanter seg over hele med lite \"futt\" i bruddet.",
+				"IncludeInSnowProfile": true
+			}, {
+				"CompressionTestName": "N/A",
+				"PropagationName": "ECTP",
+				"StabilityEvalName": "Ikke gitt",
+				"ComprTestFractureName": "Q1",
+				"CompressionTestTID": 0,
+				"TapsFracture": 28,
+				"TapsFullPropagation": null,
+				"PropagationTID": 22,
+				"FractureDepth": 0.50,
+				"StabilityEvalTID": 0,
+				"ComprTestFractureTID": 1,
+				"Comment": "Slo videre er ikke helt slik testen skal gjøres men men fikk forplantings brudd med futt. Blokka spratt ut som et gammeldags kassaapparat.",
+				"IncludeInSnowProfile": true
+			}
+		],
+		"DangerObs": [],
+		"GeneralObservation": null,
+		"IceCoverObs": null,
+		"IceThickness": null,
+		"Incident": null,
+		"LandSlideObs": null,
+		"SnowProfile2": {
+			"TotalDepth": 1.000,
+			"StratProfile": {
+				"TotalDepth": 1.000,
+				"Layers": [{
+						"GrainFormPrimaryTName": "RG",
+						"GrainFormSecondaryTName": null,
+						"HardnessTName": "1F+",
+						"HardnessBottomTName": null,
+						"WetnessTName": "D",
+						"CriticalLayerTName": null,
+						"DepthTop": 0.000,
+						"Thickness": 0.080,
+						"GrainFormPrimaryTID": 17,
+						"GrainFormSecondaryTID": null,
+						"GrainSizeAvg": null,
+						"GrainSizeAvgMax": null,
+						"HardnessTID": 11,
+						"HardnessBottomTID": null,
+						"WetnessTID": 1,
+						"CriticalLayerTID": null,
+						"Comment": null,
+						"SortOrder": 0
+					}, {
+						"GrainFormPrimaryTName": "DF",
+						"GrainFormSecondaryTName": null,
+						"HardnessTName": "4F",
+						"HardnessBottomTName": null,
+						"WetnessTName": "D",
+						"CriticalLayerTName": null,
+						"DepthTop": 0.080,
+						"Thickness": 0.080,
+						"GrainFormPrimaryTID": 14,
+						"GrainFormSecondaryTID": null,
+						"GrainSizeAvg": null,
+						"GrainSizeAvgMax": null,
+						"HardnessTID": 6,
+						"HardnessBottomTID": null,
+						"WetnessTID": 1,
+						"CriticalLayerTID": null,
+						"Comment": null,
+						"SortOrder": 0
+					}, {
+						"GrainFormPrimaryTName": "RG",
+						"GrainFormSecondaryTName": null,
+						"HardnessTName": "1F",
+						"HardnessBottomTName": null,
+						"WetnessTName": "D",
+						"CriticalLayerTName": null,
+						"DepthTop": 0.160,
+						"Thickness": 0.090,
+						"GrainFormPrimaryTID": 17,
+						"GrainFormSecondaryTID": null,
+						"GrainSizeAvg": null,
+						"GrainSizeAvgMax": null,
+						"HardnessTID": 10,
+						"HardnessBottomTID": null,
+						"WetnessTID": 1,
+						"CriticalLayerTID": null,
+						"Comment": null,
+						"SortOrder": 0
+					}, {
+						"GrainFormPrimaryTName": "MFcr",
+						"GrainFormSecondaryTName": null,
+						"HardnessTName": "P",
+						"HardnessBottomTName": null,
+						"WetnessTName": null,
+						"CriticalLayerTName": null,
+						"DepthTop": 0.250,
+						"Thickness": 0.010,
+						"GrainFormPrimaryTID": 40,
+						"GrainFormSecondaryTID": null,
+						"GrainSizeAvg": null,
+						"GrainSizeAvgMax": null,
+						"HardnessTID": 14,
+						"HardnessBottomTID": null,
+						"WetnessTID": null,
+						"CriticalLayerTID": null,
+						"Comment": null,
+						"SortOrder": 0
+					}, {
+						"GrainFormPrimaryTName": "RG",
+						"GrainFormSecondaryTName": null,
+						"HardnessTName": "P",
+						"HardnessBottomTName": null,
+						"WetnessTName": "D",
+						"CriticalLayerTName": null,
+						"DepthTop": 0.260,
+						"Thickness": 0.190,
+						"GrainFormPrimaryTID": 17,
+						"GrainFormSecondaryTID": null,
+						"GrainSizeAvg": null,
+						"GrainSizeAvgMax": null,
+						"HardnessTID": 14,
+						"HardnessBottomTID": null,
+						"WetnessTID": 1,
+						"CriticalLayerTID": null,
+						"Comment": null,
+						"SortOrder": 0
+					}, {
+						"GrainFormPrimaryTName": "RGxf",
+						"GrainFormSecondaryTName": null,
+						"HardnessTName": "1F-",
+						"HardnessBottomTName": null,
+						"WetnessTName": "D",
+						"CriticalLayerTName": null,
+						"DepthTop": 0.450,
+						"Thickness": 0.050,
+						"GrainFormPrimaryTID": 21,
+						"GrainFormSecondaryTID": null,
+						"GrainSizeAvg": 0.005,
+						"GrainSizeAvgMax": null,
+						"HardnessTID": 9,
+						"HardnessBottomTID": null,
+						"WetnessTID": 1,
+						"CriticalLayerTID": null,
+						"Comment": null,
+						"SortOrder": 0
+					}, {
+						"GrainFormPrimaryTName": "FCxr",
+						"GrainFormSecondaryTName": null,
+						"HardnessTName": "4F-",
+						"HardnessBottomTName": null,
+						"WetnessTName": "D",
+						"CriticalLayerTName": null,
+						"DepthTop": 0.500,
+						"Thickness": 0.030,
+						"GrainFormPrimaryTID": 25,
+						"GrainFormSecondaryTID": null,
+						"GrainSizeAvg": 0.010,
+						"GrainSizeAvgMax": 0.020,
+						"HardnessTID": 5,
+						"HardnessBottomTID": null,
+						"WetnessTID": 1,
+						"CriticalLayerTID": null,
+						"Comment": null,
+						"SortOrder": 0
+					}, {
+						"GrainFormPrimaryTName": "FCxr",
+						"GrainFormSecondaryTName": null,
+						"HardnessTName": "1F-",
+						"HardnessBottomTName": null,
+						"WetnessTName": "D",
+						"CriticalLayerTName": null,
+						"DepthTop": 0.530,
+						"Thickness": 0.370,
+						"GrainFormPrimaryTID": 25,
+						"GrainFormSecondaryTID": null,
+						"GrainSizeAvg": 0.010,
+						"GrainSizeAvgMax": 0.020,
+						"HardnessTID": 9,
+						"HardnessBottomTID": null,
+						"WetnessTID": 1,
+						"CriticalLayerTID": null,
+						"Comment": null,
+						"SortOrder": 0
+					}, {
+						"GrainFormPrimaryTName": "MFcr",
+						"GrainFormSecondaryTName": null,
+						"HardnessTName": "K",
+						"HardnessBottomTName": null,
+						"WetnessTName": null,
+						"CriticalLayerTName": null,
+						"DepthTop": 0.900,
+						"Thickness": 0.100,
+						"GrainFormPrimaryTID": 40,
+						"GrainFormSecondaryTID": null,
+						"GrainSizeAvg": null,
+						"GrainSizeAvgMax": null,
+						"HardnessTID": 18,
+						"HardnessBottomTID": null,
+						"WetnessTID": null,
+						"CriticalLayerTID": null,
+						"Comment": null,
+						"SortOrder": 0
+					}
+				]
+			},
+			"Comment": "1120moh sø -6,6 i lufta",
+			"IsProfileToGround": true,
+			"Exposition": 3,
+			"SlopeAngle": null,
+			"SnowTemp": {
+				"Layers": [{
+						"Depth": 0.000,
+						"SnowTemp": -6.400
+					}, {
+						"Depth": 0.100,
+						"SnowTemp": -5.800
+					}, {
+						"Depth": 0.200,
+						"SnowTemp": -4.300
+					}, {
+						"Depth": 0.300,
+						"SnowTemp": -3.600
+					}, {
+						"Depth": 0.400,
+						"SnowTemp": -2.900
+					}, {
+						"Depth": 0.500,
+						"SnowTemp": -2.700
+					}, {
+						"Depth": 0.600,
+						"SnowTemp": -2.000
+					}, {
+						"Depth": 0.700,
+						"SnowTemp": -1.800
+					}
+				]
+			},
+			"SnowDensity": []
+		},
+		"SnowSurfaceObservation": {
+			"SnowWindDepth24": null,
+			"SurfaceWaterContentName": "Tørr",
+			"SnowDriftName": "Ikke snøfokk",
+			"SnowSurfaceName": "Vindpakket myk",
+			"SurfaceRougnessTID": 0,
+			"SurfaceRougnessName": "Ikke observert",
+			"FootPenetration": null,
+			"SnowDepth": null,
+			"NewSnowDepth24": null,
+			"NewSnowLine": null,
+			"SurfaceWaterContentTID": 2,
+			"SnowDriftTID": 1,
+			"SnowSurfaceTID": 106,
+			"Comment": "Det ligger snø til fjorden og det snør nå. Men mer og mer snø med høyde over havet, målte 65cm på 550moh i Jostedalen det er nok noe mer i Sogndalsdalen. Jo jo temp har laget et underliggende snødekke som består nærmest utelukkende av smelteformer, fortsatt våte en rekke steder. Det finnes eldre kant over ca 1300moh og jeg fant i dag også smeltekant ved ca 1100moh der snødekke var 100cm. Det har kommet en god del snø bare den her uken. Dermed har du snø oppå smelteformer. Det har blåst fra vest og snøen er ujevnt fordelt avblåst til skare på utsatte steder og tydelig ferske småskavler og innblåst mot øst. Sikkert over 1 meter innblåst en rekke steder. Det er for det meste mykere flak men der vinden har vært sterk vil snøen være bærende og hard. I skjerma formasjoner og skogen er det løs snø.",
+			"HeightLimitLayeredSnow": null,
+			"SnowLine": null
+		},
+		"WeatherObservation": {
+			"PrecipitationName": "Snø",
+			"WindDirectionName": "SV",
+			"PrecipitationTID": 5,
+			"AirTemperature": -6.5,
+			"WindSpeed": 4.0,
+			"WindDirection": 225,
+			"CloudCover": 100,
+			"Comment": "Kaldere i dag enn i går. Nedbør som snø fra ca kl 12. Det snør helt ned til fjorden. Helt ned til fjorden er den, lett tørr og luftig snø tross ikke så veldig kaldt. Rundt 0 grader ved fjorden. Lavt skydekke dårlig sikt i høyfjellet."
+		},
+		"WaterLevel2": null,
+		"DamageObs": [],
+		"Summaries": [{
+				"RegistrationTID": 21,
+				"RegistrationName": "Vær",
+				"AdaptiveElements": [{
+						"type": "FactSet",
+						"facts": [{
+								"title": "Nedbørstype",
+								"value": "Snø"
+							}, {
+								"title": "Temperatur",
+								"value": "-6,5 °C"
+							}, {
+								"title": "Vind",
+								"value": "4 m/s fra SV ↗"
+							}, {
+								"title": "Skydekke",
+								"value": "100% skyer"
+							}, {
+								"title": "Kommentar",
+								"value": "Kaldere i dag enn i går. Nedbør som snø fra ca kl 12. Det snør helt ned til fjorden. Helt ned til fjorden er den, lett tørr og luftig snø tross ikke så veldig kaldt. Rundt 0 grader ved fjorden. Lavt skydekke dårlig sikt i høyfjellet."
+							}
+						]
+					}
+				],
+				"Summaries": [{
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Nedbørstype",
+						"Value": "Snø"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Temperatur",
+						"Value": "-6,5 °C"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Vind",
+						"Value": "4 m/s fra SV ↗"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Skydekke",
+						"Value": "100% skyer"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Kaldere i dag enn i går. Nedbør som snø fra ca kl 12. Det snør helt ned til fjorden. Helt ned til fjorden er den, lett tørr og luftig snø tross ikke så veldig kaldt. Rundt 0 grader ved fjorden. Lavt skydekke dårlig sikt i høyfjellet."
+					}
+				]
+			}, {
+				"RegistrationTID": 22,
+				"RegistrationName": "Snødekke",
+				"AdaptiveElements": [{
+						"type": "FactSet",
+						"facts": [{
+								"title": "Snøfokk",
+								"value": "Ikke snøfokk"
+							}, {
+								"title": "Snødekkehardhet",
+								"value": "Vindpakket myk"
+							}, {
+								"title": "Snøfuktighet",
+								"value": "Tørr"
+							}, {
+								"title": "Kommentar",
+								"value": "Det ligger snø til fjorden og det snør nå. Men mer og mer snø med høyde over havet, målte 65cm på 550moh i Jostedalen det er nok noe mer i Sogndalsdalen. Jo jo temp har laget et underliggende snødekke som består nærmest utelukkende av smelteformer, fortsatt våte en rekke steder. Det finnes eldre kant over ca 1300moh og jeg fant i dag også smeltekant ved ca 1100moh der snødekke var 100cm. Det har kommet en god del snø bare den her uken. Dermed har du snø oppå smelteformer. Det har blåst fra vest og snøen er ujevnt fordelt avblåst til skare på utsatte steder og tydelig ferske småskavler og innblåst mot øst. Sikkert over 1 meter innblåst en rekke steder. Det er for det meste mykere flak men der vinden har vært sterk vil snøen være bærende og hard. I skjerma formasjoner og skogen er det løs snø."
+							}
+						]
+					}
+				],
+				"Summaries": [{
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Snøfokk",
+						"Value": "Ikke snøfokk"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Snødekkehardhet",
+						"Value": "Vindpakket myk"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Snøfuktighet",
+						"Value": "Tørr"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Det ligger snø til fjorden og det snør nå. Men mer og mer snø med høyde over havet, målte 65cm på 550moh i Jostedalen det er nok noe mer i Sogndalsdalen. Jo jo temp har laget et underliggende snødekke som består nærmest utelukkende av smelteformer, fortsatt våte en rekke steder. Det finnes eldre kant over ca 1300moh og jeg fant i dag også smeltekant ved ca 1100moh der snødekke var 100cm. Det har kommet en god del snø bare den her uken. Dermed har du snø oppå smelteformer. Det har blåst fra vest og snøen er ujevnt fordelt avblåst til skare på utsatte steder og tydelig ferske småskavler og innblåst mot øst. Sikkert over 1 meter innblåst en rekke steder. Det er for det meste mykere flak men der vinden har vært sterk vil snøen være bærende og hard. I skjerma formasjoner og skogen er det løs snø."
+					}
+				]
+			}, {
+				"RegistrationTID": 25,
+				"RegistrationName": "Tester",
+				"AdaptiveElements": [{
+						"type": "FactSet",
+						"facts": [{
+								"title": "Test",
+								"value": "ECTP5@10cmQ1"
+							}, {
+								"title": "Kommentar",
+								"value": "Forplanter seg over hele med lite \"futt\" i bruddet."
+							}
+						]
+					}
+				],
+				"Summaries": [{
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Test",
+						"Value": "ECTP5@10cmQ1"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Forplanter seg over hele med lite \"futt\" i bruddet."
+					}
+				]
+			}, {
+				"RegistrationTID": 25,
+				"RegistrationName": "Tester",
+				"AdaptiveElements": [{
+						"type": "FactSet",
+						"facts": [{
+								"title": "Test",
+								"value": "ECTP28@50cmQ1"
+							}, {
+								"title": "Kommentar",
+								"value": "Slo videre er ikke helt slik testen skal gjøres men men fikk forplantings brudd med futt. Blokka spratt ut som et gammeldags kassaapparat."
+							}
+						]
+					}
+				],
+				"Summaries": [{
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Test",
+						"Value": "ECTP28@50cmQ1"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Slo videre er ikke helt slik testen skal gjøres men men fikk forplantings brudd med futt. Blokka spratt ut som et gammeldags kassaapparat."
+					}
+				]
+			}, {
+				"RegistrationTID": 36,
+				"RegistrationName": "Snøprofil",
+				"AdaptiveElements": [{
+						"type": "FactSet",
+						"facts": [{
+								"title": "Kommentar",
+								"value": "1120moh sø -6,6 i lufta"
+							}
+						]
+					}, {
+						"type": "FactSet",
+						"facts": [{
+								"title": "Temperatur",
+								"value": "-6,4 °C @ 0 cm, -5,8 °C @ 10 cm, -4,3 °C @ 20 cm, -3,6 °C @ 30 cm, -2,9 °C @ 40 cm, -2,7 °C @ 50 cm, -2 °C @ 60 cm, -1,8 °C @ 70 cm"
+							}
+						]
+					}, {
+						"type": "SnowProfilePlot",
+						"pngUrl": "https://api.regobs.no/Attachments/Medium/227481.jpg?lastMod=1643391566",
+						"svgUrl": "https://api.regobs.no/Attachments/Large/227481.jpg?lastMod=1643391566",
+						"interactiveUrl": "https://plot.regobs.no/v1/SnowProfile/287790/SimpleProfile?lastMod=1643391566",
+						"altText": "Lagdeling: 8 cm 1F+ RG D, 8 cm 4F DF D, 9 cm 1F RG D, 1 cm P MFcr, 19 cm P RG D, 5 cm 1F- RGxf 1 mm D, 3 cm 4F- FCxr 1 mm/2 mm D, 37 cm 1F- FCxr 1 mm/2 mm D, 10 cm K MFcr",
+						"fallback": {
+							"type": "Image",
+							"url": "https://api.regobs.no/Attachments/Medium/227481.jpg?lastMod=1643391566",
+							"altText": "Lagdeling: 8 cm 1F+ RG D, 8 cm 4F DF D, 9 cm 1F RG D, 1 cm P MFcr, 19 cm P RG D, 5 cm 1F- RGxf 1 mm D, 3 cm 4F- FCxr 1 mm/2 mm D, 37 cm 1F- FCxr 1 mm/2 mm D, 10 cm K MFcr"
+						}
+					}, {
+						"type": "FactSet",
+						"facts": [{
+								"title": "Lagdeling",
+								"value": "8 cm 1F+ RG D, 8 cm 4F DF D, 9 cm 1F RG D, 1 cm P MFcr, 19 cm P RG D, 5 cm 1F- RGxf 1 mm D, 3 cm 4F- FCxr 1 mm/2 mm D, 37 cm 1F- FCxr 1 mm/2 mm D, 10 cm K MFcr"
+							}
+						]
+					}
+				],
+				"Summaries": [{
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Eksposisjon",
+						"Value": "SØ"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "1120moh sø -6,6 i lufta"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Temperatur",
+						"Value": "-6,4 °C @ 0 cm, -5,8 °C @ 10 cm, -4,3 °C @ 20 cm, -3,6 °C @ 30 cm, -2,9 °C @ 40 cm, -2,7 °C @ 50 cm, -2 °C @ 60 cm, -1,8 °C @ 70 cm"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Lagdeling",
+						"Value": "8 cm 1F+ RG D, 8 cm 4F DF D, 9 cm 1F RG D, 1 cm P MFcr, 19 cm P RG D, 5 cm 1F- RGxf 1 mm D, 3 cm 4F- FCxr 1 mm/2 mm D, 37 cm 1F- FCxr 1 mm/2 mm D, 10 cm K MFcr"
+					}
+				]
+			}, {
+				"RegistrationTID": 32,
+				"RegistrationName": "Skredproblem",
+				"AdaptiveElements": [{
+						"type": "TextBlock",
+						"size": "large",
+						"weight": "bolder",
+						"text": "Nedføyket svakt lag med nysnø"
+					}, {
+						"type": "FactSet",
+						"facts": [{
+								"title": "Skredtype",
+								"value": "Tørre flakskred"
+							}, {
+								"title": "Avstand fra overflaten til det svake laget",
+								"value": "Innen en halv meter"
+							}, {
+								"title": "Sannsynlig belasting for å løse ut skred",
+								"value": "Lett å løse ut"
+							}, {
+								"title": "Størrelse på forventet skred",
+								"value": "2 - Middels"
+							}, {
+								"title": "Utbredelse",
+								"value": "Noen bratte heng"
+							}
+						]
+					}, {
+						"type": "ColumnSet",
+						"columns": [{
+								"type": "Column",
+								"items": [{
+										"type": "Exposition",
+										"value": "11111000",
+										"text": "N, NØ, Ø, SØ, S",
+										"fallback": {
+											"type": "Image",
+											"url": "https://api.regobs.no/static/svg/exp/11111000.svg"
+										}
+									}
+								]
+							}, {
+								"type": "Column",
+								"items": [{
+										"type": "ExposedHeight",
+										"exposedHeight1": 900,
+										"exposedHeight2": null,
+										"exposedHeightComboTid": 1
+									}
+								],
+								"verticalContentAlignment": "center"
+							}
+						]
+					}, {
+						"type": "FactSet",
+						"facts": [{
+								"title": "Kommentar",
+								"value": "Det jeg var mye mykere flak tenker str 2 her mest gjeldene men skal ikke utelukkes str 3 i få heng. Snøen jeg tråkket later til å ikke har stor evne til å forplante brudd. Får ingen sprekker som skyter ut. Men dette er vanskelig å si nøyaktig hvor stort et skred blir. Jeg blir ikke overrasket om det kan finnes et og anna str 3 skred i regionen. Men der jeg gikk tror jeg str 1-2 var mer gjeldene."
+							}
+						]
+					}
+				],
+				"Summaries": [{
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Skredtype",
+						"Value": "Tørre flakskred"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Type svakt lag",
+						"Value": "Nedføyket svakt lag med nysnø"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Avstand fra overflaten til det svake laget",
+						"Value": "Innen en halv meter"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Sannsynlig belasting for å løse ut skred",
+						"Value": "Lett å løse ut"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Størrelse på forventet skred",
+						"Value": "2 - Middels"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Utbredelse løsneområder",
+						"Value": "Noen bratte heng N, NØ, Ø, SØ, S over 900 moh"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Det jeg var mye mykere flak tenker str 2 her mest gjeldene men skal ikke utelukkes str 3 i få heng. Snøen jeg tråkket later til å ikke har stor evne til å forplante brudd. Får ingen sprekker som skyter ut. Men dette er vanskelig å si nøyaktig hvor stort et skred blir. Jeg blir ikke overrasket om det kan finnes et og anna str 3 skred i regionen. Men der jeg gikk tror jeg str 1-2 var mer gjeldene."
+					}
+				]
+			}, {
+				"RegistrationTID": 31,
+				"RegistrationName": "Skredfarevurdering",
+				"AdaptiveElements": [{
+						"type": "Container",
+						"items": [{
+								"type": "TextBlock",
+								"weight": "bolder",
+								"text": "Faregrad"
+							}, {
+								"type": "ColumnSet",
+								"columns": [{
+										"type": "Column",
+										"width": "auto",
+										"items": [{
+												"type": "Image",
+												"url": "https://api.regobs.no/static/svg/Icon-Avalanche-Danger-Level-Dry-Snow-2-EAWS.svg",
+												"width": "72px"
+											}
+										]
+									}, {
+										"type": "Column",
+										"width": "stretch",
+										"items": [{
+												"type": "TextBlock",
+												"text": "2 Moderat"
+											}
+										],
+										"verticalContentAlignment": "center",
+										"height": "stretch"
+									}
+								]
+							}
+						],
+						"fallback": {
+							"type": "FactSet",
+							"facts": [{
+									"title": "Faregrad",
+									"value": "2 Moderat"
+								}
+							]
+						}
+					}, {
+						"type": "FactSet",
+						"facts": [{
+								"title": "Skredfarevurdering",
+								"value": "Jo jo temp har laget et snødekke som mange steder har en god grunnmur. Du skal høyt til fjells før du finner kantkorn over ca 1300moh og denne skal nok mye til å påvirke. Men merk jeg fant noe overraskende for meg løs smeltekant på rundt 1100moh som ga forplantningsbrudd med futt. Men tenker det ikke er gjeldene. Skredproblemet er nok i nysnøen som har kommet denne her uken. Legger seg på øst er lett å løse ut for det meste mykere flak, men det vil nok varierer hvor du er hen i regionen."
+							}, {
+								"title": "Utvikling",
+								"value": "Lavtrykk i vest står i kø. Begynte å snø nå i formiddag ned til fjorden. Økende nedbør i morgen som regn midt på dagen til ca 1300moh meldt før synkende temp . Det skal blåse økende til full storm seint lørdag kveld og natt til søndag. Naturlige tørre og våte skred forventes når været står på, skredfaren er økende. Utover Søndagen roligere vind og oppholdsvær snødekke vil stabilisere seg. Utover neste uke fortsatt vær fra vest men per nå meldt roligere vindforhold og ikke så alt for mye nedbør, kan bli fint skiføre med løs tørr snø til topps? Det blir mer og mer vinterlig i høyfjellet for vær dag som går i skogen og nedi Jostedalen «sentrum» er det fortsatt ikke all verdens med snø. "
+							}, {
+								"title": "Kommentar",
+								"value": "Finner noe overraskende smeltekant på ca 1100moh se profil. I et området med god vekst for kant hittil i vinter. Så vi har nok kant noe lavere enn 1300moh, men tenker hovedproblemet er i toppen av dekke. Og kanten er jo nevnt i tekst men mulig vi skulle jekka høyden noe ned? Men jeg tviler på jeg finner det feks i Sogndalsdalen på 1100moh mer trua øst i regionen. "
+							}
+						]
+					}
+				],
+				"Summaries": [{
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Skredfarevurdering",
+						"Value": "Jo jo temp har laget et snødekke som mange steder har en god grunnmur. Du skal høyt til fjells før du finner kantkorn over ca 1300moh og denne skal nok mye til å påvirke. Men merk jeg fant noe overraskende for meg løs smeltekant på rundt 1100moh som ga forplantningsbrudd med futt. Men tenker det ikke er gjeldene. Skredproblemet er nok i nysnøen som har kommet denne her uken. Legger seg på øst er lett å løse ut for det meste mykere flak, men det vil nok varierer hvor du er hen i regionen."
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Utvikling",
+						"Value": "Lavtrykk i vest står i kø. Begynte å snø nå i formiddag ned til fjorden. Økende nedbør i morgen som regn midt på dagen til ca 1300moh meldt før synkende temp . Det skal blåse økende til full storm seint lørdag kveld og natt til søndag. Naturlige tørre og våte skred forventes når været står på, skredfaren er økende. Utover Søndagen roligere vind og oppholdsvær snødekke vil stabilisere seg. Utover neste uke fortsatt vær fra vest men per nå meldt roligere vindforhold og ikke så alt for mye nedbør, kan bli fint skiføre med løs tørr snø til topps? Det blir mer og mer vinterlig i høyfjellet for vær dag som går i skogen og nedi Jostedalen «sentrum» er det fortsatt ikke all verdens med snø. "
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Faregrad",
+						"Value": "2 Moderat"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Finner noe overraskende smeltekant på ca 1100moh se profil. I et området med god vekst for kant hittil i vinter. Så vi har nok kant noe lavere enn 1300moh, men tenker hovedproblemet er i toppen av dekke. Og kanten er jo nevnt i tekst men mulig vi skulle jekka høyden noe ned? Men jeg tviler på jeg finner det feks i Sogndalsdalen på 1100moh mer trua øst i regionen. "
+					}
+				]
+			}
+		],
+		"AttachmentSummaries": [{
+				"RegistrationTID": 12,
+				"RegistrationName": "Bilde",
+				"AdaptiveElements": [],
+				"Summaries": [{
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Dagens vær begynte å snø i 12 tiden"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Av",
+						"Value": "Vær"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Copyright",
+						"Value": "Siggen@obskorps"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Dagens vær begynte å snø i 12 tiden"
+					}
+				]
+			}, {
+				"RegistrationTID": 12,
+				"RegistrationName": "Bilde",
+				"AdaptiveElements": [],
+				"Summaries": [{
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Høyfjellet i Jostedalen"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Av",
+						"Value": "Snødekke"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Copyright",
+						"Value": "Siggen@obskorps"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Høyfjellet i Jostedalen"
+					}
+				]
+			}, {
+				"RegistrationTID": 12,
+				"RegistrationName": "Bilde",
+				"AdaptiveElements": [],
+				"Summaries": [{
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Ikke mye sikt videre her. Vindtegn i snøen men mye mykere snødekke som du må brøyte i. Det er veldig vekslende fra helt løst til ganske så hardt og avblåst til skaren."
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Av",
+						"Value": "Snødekke"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Copyright",
+						"Value": "Siggen@obskorps"
+					}, {
+						"Kind": 1,
+						"KindType": "Text",
+						"Header": "Kommentar",
+						"Value": "Ikke mye sikt videre her. Vindtegn i snøen men mye mykere snødekke som du må brøyte i. Det er veldig vekslende fra helt løst til ganske så hardt og avblåst til skaren."
+					}
+				]
+			}
+		],
+		"SnowProfile": null,
+		"AvalancheEvaluation": null,
+		"AvalancheActivityObs": null,
+		"AvalancheDangerObs": [],
+		"AvalancheEvalProblem": [],
+		"AvalancheEvaluation2": null,
+		"SnowCoverObs": null,
+		"WaterLevel": null,
+		"GeoHazardTID": 10,
+		"SourceTID": 0,
+		"DtObsTime": "2022-01-28T16:04:09+01:00",
+		"ObserverGroupID": null,
+		"ObserverGroupName": null
+	}
+}

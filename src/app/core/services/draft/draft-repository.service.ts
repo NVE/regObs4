@@ -39,15 +39,19 @@ export class DraftRepositoryService {
 
      combineLatest([this.appModeService.appMode$, this.databaseService.ready$])
        .subscribe(([appMode, ]) => {
-         this.saveTestdata();
+         //TODO: this.saveTestdata(); //TODO: Remove
          this.reloadAndNotify(appMode);
        });
    }
 
    private async saveTestdata(): Promise<void> {
      // eslint-disable-next-line @typescript-eslint/no-var-requires
-     const draft: RegistrationDraft = require('./290525-som-edit-model.json');
-     await this.save(draft);
+     let draft: RegistrationDraft = require('./287790-test-kladd.json');
+     for (let i = 1; i <= 10; i++) {
+        draft.uuid = uuidv4();
+        this.logger.debug(`saving test draft with uuid = ${draft.uuid}`);
+        await this.save(draft);
+     }
    }
 
    private async reloadAndNotify(appMode: AppMode): Promise<void> {
@@ -91,7 +95,7 @@ export class DraftRepositoryService {
      }
      await this.saveAllToDatabase(drafts, appMode);
      const finish = performance.now();
-     this.logger.debug(`Draft ${registration.uuid} saved in ${finish-start} ms`, DEBUG_TAG, registration);
+     this.logger.debug(`Draft ${registration.uuid} saved in ${(finish-start).toFixed()} ms. We now have ${drafts.length} drafts in environment ${appMode}`, DEBUG_TAG, registration);
      this.drafts.next(drafts); //spread the word that drafts have changed
    }
 
@@ -146,7 +150,7 @@ export class DraftRepositoryService {
     * @returns a key for all drafts for given app mode
     */
    private createKey(appMode: AppMode): string {
-     return `regobs.drafts.${appMode}`;
+     return `drafts.${appMode}`;
    }
 
    /**

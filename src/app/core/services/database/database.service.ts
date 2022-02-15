@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
+import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver'
+import { Platform } from '@ionic/angular';
 
 /**
  * Common interface to our key-value database.
@@ -9,22 +11,24 @@ import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class DatabaseService implements KeyValueStore {
+export class DatabaseService {
   private database: Storage = null;
   private ready = new ReplaySubject<void>();
 
   /**
    * Listen to this to get notified when the database is ready to use
    */
-  public readonly ready$: Observable<void>;
+  readonly ready$: Observable<void>;
 
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage, private platform: Platform) {
     this.init();
     this.ready$ = this.ready.asObservable();
   }
 
   async init() {
-    // If using, define drivers here: await this.storage.defineDriver(/*...*/);
+    if (this.platform.is('hybrid')) {
+      await this.storage.defineDriver(CordovaSQLiteDriver);
+    }
     const storage = await this.storage.create();
     this.database = storage;
     this.ready.next(); //notify clients that we are ready
@@ -36,7 +40,7 @@ export class DatabaseService implements KeyValueStore {
    * @param value the value for this key
    * @returns Returns a promise that resolves when the key and value are set
    */
-  public async set(key: string, value: any): Promise<void> {
+  async set(key: string, value: any): Promise<void> {
     await firstValueFrom(this.ready$);
     return this.database.set(key, value);
   }
@@ -46,7 +50,7 @@ export class DatabaseService implements KeyValueStore {
    * @param key the key to identify this value
    * @returns Returns a promise with the value of the given key
    */
-  public async get(key: string): Promise<any> {
+  async get(key: string): Promise<any> {
     await firstValueFrom(this.ready$);
     return this.database.get(key);
   }
@@ -56,7 +60,7 @@ export class DatabaseService implements KeyValueStore {
    * @param key the key to identify this value
    * @returns Returns a promise that resolves when the value is removed
    */
-  public async remove(key: string): Promise<void> {
+  async remove(key: string): Promise<void> {
     await firstValueFrom(this.ready$);
     return this.database.remove(key);
   }
@@ -65,7 +69,7 @@ export class DatabaseService implements KeyValueStore {
     * Clear the entire key value store. WARNING: HOT!
     * @returns Returns a promise that resolves when the store is cleared
     */
-  public async clear(): Promise<void> {
+  async clear(): Promise<void> {
     await firstValueFrom(this.ready$);
     return this.database.clear();
   }
