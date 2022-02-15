@@ -7,10 +7,10 @@ import { UploadAttachmentsService } from '../upload-attachments/upload-attachmen
 import { addAttachmentToDraft } from './attachmentHelpers';
 
 /**
- * Service for posting a new or updated registration to regobs, or deleting an existing registration.
+ * Service for adding or updating a registration in regobs, or deleting an existing registration.
  *
  * If the registration contains attachments, this service sends the attachments to the api before posting registration
- * data. This service will also request an update of attachment metadata after a successful attachment upload.
+ * data. Underlying services will also request an update of attachment metadata after a successful attachment upload.
  */
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class AddUpdateDeleteRegistrationService {
    * @throws {HttpErrorResponse} If the operation is unsuccessful
    * @throws {UploadAttachmentError} If uploading attachments fails
    */
-  async post(
+  async add(
     registration: IRegistration,
     langKey: LangKey,
   ): Promise<RegistrationViewModel> {
@@ -60,7 +60,7 @@ export class AddUpdateDeleteRegistrationService {
    * @throws {HttpErrorResponse} If the operation is unsuccessful
    * @throws {UploadAttachmentError} If uploading attachments fails
    */
-  async put(
+  async update(
     registration: IRegistration,
     langKey: LangKey,
     ignoreVersionCheck = false
