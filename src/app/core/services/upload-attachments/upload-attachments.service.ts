@@ -88,6 +88,7 @@ export class UploadAttachmentsService {
 
   private onHttpResponseEvent(event: HttpResponse<string>) {
     if (event instanceof HttpErrorResponse) {
+      // This is already an error and contains useful info, so we can just throw it
       throw event;
     }
     if (!event.ok) {
@@ -118,9 +119,6 @@ export class UploadAttachmentsService {
 
     const request = this.sendPostRequestWithImageBlob(blob)
       .pipe(
-        // tap(e => {
-        //   this.loggingService.debug('tap', 'test', e);
-        // }),
         tap((event) => this.onHttpEvent(event, attachment)),
         filter((event) => event.type === HttpEventType.Response || event instanceof HttpErrorResponse),
         map((event: HttpResponse<string>) => this.onHttpResponseEvent(event)),
@@ -128,9 +126,6 @@ export class UploadAttachmentsService {
       );
 
     const response = await firstValueFrom(request);
-    // if (response instanceof Error) {
-    //   throw response;
-    // }
 
     const uploadedAttachment = {
       ...attachment,
