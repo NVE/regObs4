@@ -33,10 +33,7 @@ export class AddUpdateDeleteRegistrationService {
    * @throws {HttpErrorResponse} If the operation is unsuccessful
    * @throws {UploadAttachmentError} If uploading attachments fails
    */
-  async add(
-    registration: IRegistration,
-    langKey: LangKey,
-  ): Promise<RegistrationViewModel> {
+  async add(registration: IRegistration, langKey: LangKey): Promise<RegistrationViewModel> {
     const draft = await this.uploadAttachments(registration);
 
     // Send registration to regobs
