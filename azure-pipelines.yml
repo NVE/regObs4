@@ -1,6 +1,4 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
+# Regobs app build script
 # https://aka.ms/yaml
 
 trigger:
@@ -47,7 +45,7 @@ steps:
   inputs:
     command: custom
     verbose: false
-    customCommand: 'run test'
+    customCommand: 'run test-ci'
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TESTS-*.xml'
