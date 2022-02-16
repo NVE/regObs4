@@ -11,8 +11,6 @@ import { RegistrationService } from '../../../registration/services/registration
 import { map, tap, switchMap } from 'rxjs/operators';
 import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
 import { LoggingService } from '../../services/logging/logging.service';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 const DEBUG_TAG = 'AddMenuComponent';
 
@@ -33,7 +31,7 @@ export class AddMenuComponent implements OnInit {
   showSpace$: Observable<boolean>;
 
   constructor(
-    private draftRepositoryService: DraftRepositoryService,
+    private registrationService: RegistrationService,
     private navController: NavController,
     private dateHelperService: DateHelperService,
     private tripLoggerService: TripLoggerService,
@@ -49,7 +47,7 @@ export class AddMenuComponent implements OnInit {
       })),
       setObservableTimeout()
     );
-    this.drafts$ = this.draftRepositoryService.drafts$.pipe(
+    this.drafts$ = this.registrationService.drafts$.pipe(
       tap((drafts) =>
         this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)
       ),
@@ -71,10 +69,10 @@ export class AddMenuComponent implements OnInit {
   }
 
   private convertDraftToDate(
-    draft: RegistrationDraft
+    draft: IRegistration
   ): Observable<{ id: string; geoHazard: GeoHazard; date: string }> {
-    return from(draft.draft.DtChangeTime).pipe(
-      map((date) => ({ id: draft.uuid, geoHazard: draft.draft.GeoHazardTID, date }))
+    return from(this.getDate(draft.changed)).pipe(
+      map((date) => ({ id: draft.id, geoHazard: draft.geoHazard, date }))
     );
   }
 
