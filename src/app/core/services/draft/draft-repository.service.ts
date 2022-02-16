@@ -13,6 +13,8 @@ const DEBUG_TAG = 'DraftRepositoryService';
 
 /**
  * Takes care of your draft registrations and save them on your device.
+ * Drafts saved in different app modes / environments are separate.
+ * The service relates to current app mode all the time, so drafts saved in other app modes are not available
  * TODO: Error handling
  */
  @Injectable({
@@ -46,11 +48,11 @@ export class DraftRepositoryService {
 
    private async saveTestdata(): Promise<void> {
      // eslint-disable-next-line @typescript-eslint/no-var-requires
-     let draft: RegistrationDraft = require('./287790-test-kladd.json');
+     const draft: RegistrationDraft = require('./287790-test-kladd.json');
      for (let i = 1; i <= 10; i++) {
-        draft.uuid = uuidv4();
-        this.logger.debug(`saving test draft with uuid = ${draft.uuid}`);
-        await this.save(draft);
+       draft.uuid = uuidv4();
+       this.logger.debug(`saving test draft with uuid = ${draft.uuid}`);
+       await this.save(draft);
      }
    }
 
@@ -70,7 +72,6 @@ export class DraftRepositoryService {
        syncStatus: SyncStatus.Draft,
        draft: {
          GeoHazardTID: geoHazard,
-         DtChangeTime: moment().unix().toString(),
          DtObsTime: undefined,
          ObsLocation: { Latitude: 0, Longitude: 0 },
          Attachments: []
@@ -103,7 +104,7 @@ export class DraftRepositoryService {
    /**
    * Load a registration from device
    * @param uuid registration uuid
-   * @returns registration with given id or undefined if not found
+   * @returns registration with given uuid or undefined if not found
    */
    async load(uuid: string): Promise<RegistrationDraft|undefined> {
      const start = performance.now();
