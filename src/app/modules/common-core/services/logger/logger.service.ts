@@ -1,6 +1,9 @@
 import { Injectable, Optional } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 
+/**
+ * @deprecated Use LoggingService
+ */
 @Injectable({
   providedIn: 'root'
 })
