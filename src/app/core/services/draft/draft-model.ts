@@ -19,6 +19,12 @@ export interface RegistrationDraft {
   regId?: number;
 
   /**
+   * Timestamp in millis that changes each time we save the draft locally.
+   * Do not mix with registration.DtChangeTime, which is last time the registration was saved in Regobs
+   */
+  lastSavedTime: number;
+
+  /**
    * @see SyncStatus
    */
   syncStatus: SyncStatus;
