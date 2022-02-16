@@ -40,7 +40,7 @@ export class DraftRepositoryService {
 
      combineLatest([this.appModeService.appMode$, this.databaseService.ready$])
        .subscribe(([appMode, ]) => {
-         //TODO: this.saveTestdata(); //TODO: Remove
+         this.saveTestdata(); //TODO: Remove
          this.reloadAndNotify(appMode);
        });
    }
@@ -85,19 +85,14 @@ export class DraftRepositoryService {
    */
    async save(draft: RegistrationDraft): Promise<void> {
      const start = Date.now();
+     draft.lastSavedTime = start;
      const appMode = await firstValueFrom(this.appModeService.appMode$);
-     const drafts: RegistrationDraft[] = await this.loadAllFromDatabase(appMode);
-     const index = drafts.findIndex((element) => element.uuid === draft.uuid);
-     draft.lastSavedTime = Date.now();
-     if (index === -1) {
-       drafts.push(draft); //not saved before, so add it
-     } else {
-       drafts[index] = draft; //replace saved draft
-     }
-     await this.saveAllToDatabase(drafts, appMode);
-     this.logger.debug(`Draft ${draft.uuid} saved in ${this.millisSince(start)} ms. 
-      We now have ${drafts.length} drafts in environment ${appMode}`, DEBUG_TAG, draft);
-     this.drafts.next(drafts); //spread the word that drafts have changed
+     const key = this.createKey(draft.uuid, appMode);
+     await this.databaseService.set(key, draft);
+     this.logger.debug(`Draft ${draft.uuid} saved in ${this.millisSince(start)} ms 
+      in environment ${appMode}`, DEBUG_TAG, draft);
+     this.reloadAndNotify(appMode);
+     //  this.pleaseReload.next();
    }
 
 
@@ -108,24 +103,19 @@ export class DraftRepositoryService {
    */
    async load(uuid: string): Promise<RegistrationDraft|undefined> {
      const start = Date.now();
-     const drafts = await this.loadAll();
-     if (drafts && drafts.length > 0) {
-       const filteredDrafts = drafts.filter(element => element.uuid === uuid);
-       this.logger.debug(`Draft ${uuid} loaded in ${this.millisSince(start)} ms`, DEBUG_TAG);
-       return filteredDrafts[0];
-     }
-     this.logger.debug(`Draft ${uuid} not found in ${this.millisSince(start)} ms`, DEBUG_TAG);
-     return undefined;
+     const appMode = await firstValueFrom(this.appModeService.appMode$);
+     const key = this.createKey(uuid, appMode);
+     const draft = await this.databaseService.get(key);
+     this.logger.debug(`Draft ${uuid} loaded in ${this.millisSince(start)} ms`, DEBUG_TAG);
+     return draft;
    }
 
    /**
     * @returns all drafts regardsless of geo hazard
     */
    async loadAll(): Promise<RegistrationDraft[]> {
-     const start = Date.now();
      const appMode = await firstValueFrom(this.appModeService.appMode$);
      const drafts = await this.loadAllFromDatabase(appMode);
-     this.logger.debug(`Drafts loaded in ${this.millisSince(start)} ms`, DEBUG_TAG);
      return drafts;
    }
 
@@ -137,41 +127,41 @@ export class DraftRepositoryService {
    */
    async delete(uuid: string): Promise<void> {
      const appMode = await firstValueFrom(this.appModeService.appMode$);
-     const drafts = await this.loadAllFromDatabase(appMode);
-     if (drafts.length > 0) {
-       const filteredDrafts = drafts.filter((draft) => draft.uuid !== uuid);
-       this.saveAllToDatabase(filteredDrafts, appMode);
-       this.drafts.next(filteredDrafts);
-     } else {
-       this.drafts.next([]);
-     }
+     const key = this.createKey(uuid, appMode);
+     await this.databaseService.remove(key);
+     this.reloadAndNotify(appMode);
    }
 
    /**
     * @returns a key for all drafts for given app mode
     */
-   private createKey(appMode: AppMode): string {
+   private createKeyForAllDrafts(appMode: AppMode): string {
      return `drafts.${appMode}`;
    }
+
+   /**
+    * @returns a key for given draft uuid and given app mode
+    */
+   private createKey(uuid: string, appMode: AppMode): string {
+     return `${this.createKeyForAllDrafts(appMode)}.${uuid}`;
+   }
+
 
    /**
     * @returns all drafts for given geo hazard and app mode or empty list if not found
     */
    private async loadAllFromDatabase(appMode: AppMode): Promise<RegistrationDraft[]> {
-     const key = this.createKey(appMode);
-     const drafts = await this.databaseService.get(key) as RegistrationDraft[];
-     if (drafts) {
-       return drafts;
+     const start = Date.now();
+     const drafts: RegistrationDraft[] = [];
+     const keyPrefix = this.createKeyForAllDrafts(appMode);
+     const keys = await this.databaseService.keys();
+     const keysForAppMode = keys.filter(k => k.startsWith(keyPrefix));
+     for (const key of keysForAppMode) {
+       const draft = await this.databaseService.get(key);
+       drafts.push(draft);
      }
-     return [];
-   }
-
-   /**
-    *  Save all drafts to database. Will overwrite earlier saved drafts
-    */
-   private async saveAllToDatabase(drafts: RegistrationDraft[], appMode: AppMode): Promise<void> {
-     const key = this.createKey(appMode);
-     await this.databaseService.set(key, drafts);
+     this.logger.debug(`${drafts.length} drafts loaded in ${this.millisSince(start)} ms`, DEBUG_TAG);
+     return drafts;
    }
 
    private millisSince(start: number): string {
