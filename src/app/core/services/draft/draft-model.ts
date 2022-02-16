@@ -11,6 +11,14 @@ export interface RegistrationDraft {
   uuid: string;
 
   /**
+   * Registration ID, for example 283962.
+   *
+   * Returned by regobs api when a registration is submitted.
+   * Will only be used for reference when editing existing observations.
+   */
+  regId?: number;
+
+  /**
    * @see SyncStatus
    */
   syncStatus: SyncStatus;
