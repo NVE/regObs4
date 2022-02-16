@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import moment from 'moment';
 import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
@@ -70,7 +69,7 @@ export class DraftRepositoryService {
      const draft: RegistrationDraft = {
        uuid: uuidv4(),
        syncStatus: SyncStatus.Draft,
-       draft: {
+       registration: {
          GeoHazardTID: geoHazard,
          DtObsTime: undefined,
          ObsLocation: { Latitude: 0, Longitude: 0 },
@@ -82,21 +81,22 @@ export class DraftRepositoryService {
 
    /**
    * Save a registration on device
-   * @param registration the registration to save
+   * @param draft the registration to save
    */
-   async save(registration: RegistrationDraft): Promise<void> {
-     const start = performance.now();
+   async save(draft: RegistrationDraft): Promise<void> {
+     const start = Date.now();
      const appMode = await firstValueFrom(this.appModeService.appMode$);
      const drafts: RegistrationDraft[] = await this.loadAllFromDatabase(appMode);
-     const index = drafts.findIndex((draft) => registration.uuid === draft.uuid);
+     const index = drafts.findIndex((element) => element.uuid === draft.uuid);
+     draft.lastSavedTime = Date.now();
      if (index === -1) {
-       drafts.push(registration); //not saved before, so add it
+       drafts.push(draft); //not saved before, so add it
      } else {
-       drafts[index] = registration; //replace saved draft
+       drafts[index] = draft; //replace saved draft
      }
      await this.saveAllToDatabase(drafts, appMode);
-     const finish = performance.now();
-     this.logger.debug(`Draft ${registration.uuid} saved in ${(finish-start).toFixed()} ms. We now have ${drafts.length} drafts in environment ${appMode}`, DEBUG_TAG, registration);
+     this.logger.debug(`Draft ${draft.uuid} saved in ${this.millisSince(start)} ms. 
+      We now have ${drafts.length} drafts in environment ${appMode}`, DEBUG_TAG, draft);
      this.drafts.next(drafts); //spread the word that drafts have changed
    }
 
@@ -107,14 +107,14 @@ export class DraftRepositoryService {
    * @returns registration with given uuid or undefined if not found
    */
    async load(uuid: string): Promise<RegistrationDraft|undefined> {
-     const start = performance.now();
+     const start = Date.now();
      const drafts = await this.loadAll();
      if (drafts && drafts.length > 0) {
-       const filteredDrafts = drafts.filter(f => f.uuid === uuid);
-       this.logger.debug(`Draft ${uuid} loaded in ${performance.now()-start} ms`, DEBUG_TAG);
+       const filteredDrafts = drafts.filter(element => element.uuid === uuid);
+       this.logger.debug(`Draft ${uuid} loaded in ${this.millisSince(start)} ms`, DEBUG_TAG);
        return filteredDrafts[0];
      }
-     this.logger.debug(`Draft ${uuid} not found in ${performance.now()-start} ms`, DEBUG_TAG);
+     this.logger.debug(`Draft ${uuid} not found in ${this.millisSince(start)} ms`, DEBUG_TAG);
      return undefined;
    }
 
@@ -122,10 +122,10 @@ export class DraftRepositoryService {
     * @returns all drafts regardsless of geo hazard
     */
    async loadAll(): Promise<RegistrationDraft[]> {
-     const start = performance.now();
+     const start = Date.now();
      const appMode = await firstValueFrom(this.appModeService.appMode$);
      const drafts = await this.loadAllFromDatabase(appMode);
-     this.logger.debug(`Drafts loaded in ${performance.now()-start} ms`, DEBUG_TAG);
+     this.logger.debug(`Drafts loaded in ${this.millisSince(start)} ms`, DEBUG_TAG);
      return drafts;
    }
 
@@ -172,5 +172,9 @@ export class DraftRepositoryService {
    private async saveAllToDatabase(drafts: RegistrationDraft[], appMode: AppMode): Promise<void> {
      const key = this.createKey(appMode);
      await this.databaseService.set(key, drafts);
+   }
+
+   private millisSince(start: number): string {
+     return (Date.now() - start).toFixed();
    }
 }

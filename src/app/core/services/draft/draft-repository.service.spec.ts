@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import moment from 'moment';
 import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from './draft-repository.service';
@@ -47,102 +46,106 @@ describe('DraftRepositoryService', () => {
   });
 
   it('create() should return an empty draft', async () => {
-    const registration = await service.create(GeoHazard.Ice);
-    expect(registration.uuid.length).toBeGreaterThan(0);
-    expect(registration.syncStatus).toBe(SyncStatus.Draft);
-    expect(registration.draft.GeoHazardTID).toBe(GeoHazard.Ice);
-    //TODO: Sjekk eget felt for endringstidspunkt for kladd    expect(registration.changed).toBeGreaterThanOrEqual(moment().unix());
-    expect(registration.draft.DtObsTime).toBe(undefined);
-    expect(registration.draft.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });
-    expect(registration.draft.Attachments).toEqual([]);
+    const draft = await service.create(GeoHazard.Ice);
+    expect(draft.uuid.length).toBeGreaterThan(0);
+    expect(draft.syncStatus).toBe(SyncStatus.Draft);
+    expect(draft.registration.GeoHazardTID).toBe(GeoHazard.Ice);
+    expect(draft.lastSavedTime).toBe(undefined); //not saved yet
+    expect(draft.registration.DtObsTime).toBe(undefined);
+    expect(draft.registration.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });
+    expect(draft.registration.Attachments).toEqual([]);
   });
 
   it('save() should store a draft', async () => {
-    const registration = await service.create(GeoHazard.Snow);
-    registration.draft.DtObsTime = '2022-02-13 08:00';
-    registration.draft.SnowSurfaceObservation = {
+    const draft = await service.create(GeoHazard.Snow);
+    draft.registration.DtObsTime = '2022-02-13 08:00';
+    draft.registration.SnowSurfaceObservation = {
       Comment: 'comment',
       SnowDepth: 3.5
     };
-    await service.save(registration);
+    await service.save(draft);
 
-    const savedRegistrations: RegistrationDraft[] = await database.get('drafts.TEST');
-    const savedRegistration = savedRegistrations[0];
-    expect(savedRegistration.uuid).toEqual(registration.uuid);
-    expect(savedRegistration.syncStatus).toBe(SyncStatus.Draft);
-    expect(savedRegistration.draft.GeoHazardTID).toBe(GeoHazard.Snow);
-    //TODO: Sjekk eget felt for endringstidspunkt for kladd    expect(savedRegistration.changed).toBeGreaterThanOrEqual(moment().unix());
-    expect(savedRegistration.draft.DtObsTime).toBe('2022-02-13 08:00');
-    expect(savedRegistration.draft.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });
-    expect(savedRegistration.draft.Attachments).toEqual([]);
-    expect(savedRegistration.draft.SnowSurfaceObservation).toEqual( {
+    const savedDrafts: RegistrationDraft[] = await database.get('drafts.TEST');
+    const savedDraft = savedDrafts[0];
+    expect(savedDraft.uuid).toEqual(draft.uuid);
+    expect(savedDraft.syncStatus).toBe(SyncStatus.Draft);
+    expect(savedDraft.registration.GeoHazardTID).toBe(GeoHazard.Snow);
+    expect(savedDraft.lastSavedTime).toBeLessThanOrEqual(Date.now());
+    expect(savedDraft.registration.DtObsTime).toBe('2022-02-13 08:00');
+    expect(savedDraft.registration.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });
+    expect(savedDraft.registration.Attachments).toEqual([]);
+    expect(savedDraft.registration.SnowSurfaceObservation).toEqual( {
       Comment: 'comment',
       SnowDepth: 3.5
     });
   });
 
   it('newly saved drafts should be unique', async () => {
-    const registration = await service.create(GeoHazard.Snow);
-    await service.save(registration);
-    const registration2 = await service.create(GeoHazard.Snow);
-    await service.save(registration2);
+    const draft = await service.create(GeoHazard.Snow);
+    await service.save(draft);
+    const draft2 = await service.create(GeoHazard.Snow);
+    await service.save(draft2);
 
-    const savedRegistrations: RegistrationDraft[] = await database.get('drafts.TEST');
-    expect(savedRegistrations.length).toEqual(2);
-    expect(savedRegistrations[0].uuid !== savedRegistrations[1].uuid).toBeTrue;
+    const savedDrafts: RegistrationDraft[] = await database.get('drafts.TEST');
+    expect(savedDrafts.length).toEqual(2);
+    expect(savedDrafts[0].uuid !== savedDrafts[1].uuid).toBeTrue;
   });
 
   it('we can change a registration, save it and load the changed registration', async () => {
-    const irrelevantRegistration1 = await service.create(GeoHazard.Snow);
-    await service.save(irrelevantRegistration1);
+    const irrelevantDraft1 = await service.create(GeoHazard.Snow);
+    await service.save(irrelevantDraft1);
 
-    const registration = await service.create(GeoHazard.Ice);
-    registration.draft.GeneralObservation = { Comment: 'v.1' };
-    await service.save(registration);
+    const draft = await service.create(GeoHazard.Ice);
+    draft.registration.GeneralObservation = { Comment: 'v.1' };
+    await service.save(draft);
 
-    const irrelevantRegistration2 = await service.create(GeoHazard.Soil);
-    await service.save(irrelevantRegistration2);
+    const irrelevantDraft2 = await service.create(GeoHazard.Soil);
+    await service.save(irrelevantDraft2);
 
     //verify that the comment was saved and we can load it
-    const savedRegistration = await service.load(registration.uuid);
-    expect(savedRegistration.draft.GeneralObservation).toEqual({ Comment: 'v.1' });
+    const savedDraft = await service.load(draft.uuid);
+    expect(savedDraft.registration.GeneralObservation).toEqual({ Comment: 'v.1' });
 
     //irreleant registrations are not changed
-    expect(await service.load(irrelevantRegistration1.uuid)).toEqual(irrelevantRegistration1);
-    expect(await service.load(irrelevantRegistration2.uuid)).toEqual(irrelevantRegistration2);
+    expect(await service.load(irrelevantDraft1.uuid)).toEqual(irrelevantDraft1);
+    expect(await service.load(irrelevantDraft2.uuid)).toEqual(irrelevantDraft2);
   });
 
   it('we get notified when registrations are saved', async () => {
-    const registration = await service.create(GeoHazard.Ice);
-    registration.draft.GeneralObservation = { Comment: 'v.1' };
-    await service.save(registration);
+    const draft = await service.create(GeoHazard.Ice);
+    draft.registration.GeneralObservation = { Comment: 'v.1' };
+    await service.save(draft);
 
+    //check if we get notified after first save
     const updatedDrafts = await firstValueFrom(service.drafts$);
     expect(updatedDrafts.length).toBe(1);
     const updatedDraft = updatedDrafts[0];
-    expect(updatedDraft.uuid).toEqual(registration.uuid);
-    expect(updatedDraft.draft.GeneralObservation).toEqual({ Comment: 'v.1' });
+    expect(updatedDraft.uuid).toEqual(draft.uuid);
+    expect(updatedDraft.registration.GeneralObservation).toEqual({ Comment: 'v.1' });
 
-    updatedDraft.draft.GeneralObservation = { Comment: 'v.2' };
+    //try to change the comment and check if we get notified about the changes
+    updatedDraft.registration.GeneralObservation = { Comment: 'v.2' };
     await service.save(updatedDraft);
+
+    //check notfication
     const updatedDrafts2 = await firstValueFrom(service.drafts$);
     expect(updatedDrafts2.length).toBe(1);
     const updatedDraft2 = updatedDrafts2[0];
-    expect(updatedDraft2.uuid).toEqual(registration.uuid);
-    expect(updatedDraft2.draft.GeneralObservation).toEqual({ Comment: 'v.2' });
+    expect(updatedDraft2.uuid).toEqual(draft.uuid);
+    expect(updatedDraft2.registration.GeneralObservation).toEqual({ Comment: 'v.2' });
   });
 
   it('delete works', async () => {
-    const registration = await service.create(GeoHazard.Ice);
-    await service.save(registration);
+    const draft = await service.create(GeoHazard.Ice);
+    await service.save(draft);
     expect((await database.store.get('drafts.TEST')).length).toBe(1);
     expect((await firstValueFrom(service.drafts$)).length).toBe(1);
 
-    await service.delete(registration.uuid);
+    await service.delete(draft.uuid);
 
     //verify that we have no drafts left
     expect((await firstValueFrom(service.drafts$)).length).toBe(0);
     expect((await database.store.get('drafts.TEST')).length).toBe(0);
-    expect(await service.load(registration.uuid)).toBeUndefined();
+    expect(await service.load(draft.uuid)).toBeUndefined();
   });
 });
