@@ -1,10 +1,11 @@
 import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 import cloneDeep from 'clone-deep';
 import { Observable, of } from 'rxjs';
-import { AttachmentUploadEditModel, IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { AttachmentUploadEditModel, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService, ProgressService } from 'src/app/modules/common-registration/registration.services';
-import { AttachmentService, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
+import { AttachmentService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { RegistrationDraft } from '../draft/draft-model';
 import { UploadAttachmentError, UploadAttachmentsService } from './upload-attachments.service';
 
 describe('UploadAttachmentsService', () => {
@@ -35,20 +36,16 @@ describe('UploadAttachmentsService', () => {
       {} as LoggingService
     );
 
-    const draft: RegistrationEditModel = {
-      GeoHazardTID: 10,
-      DtObsTime: 'test',
-    };
-
-    const registration: IRegistration = {
-      id: '12345-abc',
-      changed: Date.now(),
-      geoHazard: 10,
+    const draft: RegistrationDraft = {
+      uuid: '12345-abc',
       syncStatus: SyncStatus.Sync,
-      request: draft
+      registration: {
+        GeoHazardTID: 10,
+        DtObsTime: 'test',
+      }
     };
 
-    const result = await service.uploadAllAttachments(registration);
+    const result = await service.uploadAllAttachments(draft);
 
     // Test that post is not called at all
     expect(httpClient.post.calls.any()).toBe(false);
@@ -77,7 +74,7 @@ describe('UploadAttachmentsService', () => {
 
     const fakeAttachments: AttachmentUploadEditModel[] = [
       {id: '1234', type: 'Attachment', AttachmentUploadId: '1234' },
-      {id: '5678', type: 'Attachment' }
+      {id: '5678', type: 'Attachment' }  // This attachment has no AttachmentUploadId and should be uploaded
     ];
 
     const addAttachmentsResult: AttachmentUploadEditModel[] = [
@@ -108,20 +105,16 @@ describe('UploadAttachmentsService', () => {
       jasmine.createSpyObj('LoggingService', ['debug'])
     );
 
-    const draft: RegistrationEditModel = {
-      GeoHazardTID: 10,
-      DtObsTime: 'test',
-    };
-
-    const registration: IRegistration = {
-      id: '12345-abc',
-      changed: Date.now(),
-      geoHazard: 10,
+    const draft: RegistrationDraft = {
+      uuid: '12345-abc',
       syncStatus: SyncStatus.Sync,
-      request: draft
+      registration: {
+        GeoHazardTID: 10,
+        DtObsTime: 'test',
+      }
     };
 
-    const result = await service.uploadAllAttachments(registration);
+    const result = await service.uploadAllAttachments(draft);
 
     // Test that we call post one time as we have one image to upload
     expect(httpClient.post).toHaveBeenCalledTimes(1);
@@ -207,24 +200,20 @@ describe('UploadAttachmentsService', () => {
       loggingService
     );
 
-    const draft: RegistrationEditModel = {
-      GeoHazardTID: 10,
-      DtObsTime: 'test',
-    };
-
-    const regId = '12345-abc';
-    const registration: IRegistration = {
-      id: regId,
-      changed: Date.now(),
-      geoHazard: 10,
+    const regUuid = '12345-abc';
+    const draft: RegistrationDraft = {
+      uuid: regUuid,
       syncStatus: SyncStatus.Sync,
-      request: draft
+      registration: {
+        GeoHazardTID: 10,
+        DtObsTime: 'test',
+      }
     };
 
     // Test that uploadAllAttachments rejects with an error
     // containing regid and attachment ids
-    await expectAsync(service.uploadAllAttachments(registration))
-      .toBeRejectedWith(new UploadAttachmentError(regId, [attachmentIdThatFails]));
+    await expectAsync(service.uploadAllAttachments(draft))
+      .toBeRejectedWith(new UploadAttachmentError(regUuid, [attachmentIdThatFails]));
 
     expect(loggingService.error).toHaveBeenCalled();
     expect(httpClient.post).toHaveBeenCalledTimes(2);

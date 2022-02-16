@@ -1,21 +1,22 @@
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, firstValueFrom, map, Observable, tap } from 'rxjs';
-import { AttachmentUploadEditModel, IRegistration } from 'src/app/modules/common-registration/registration.models';
+import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService, ProgressService } from 'src/app/modules/common-registration/registration.services';
 import { AttachmentService as ApiAttachmentService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { RegistrationDraft } from '../draft/draft-model';
 
 const DEBUG_TAG = 'UploadAttachmentsService';
 
 export class UploadAttachmentError extends Error {
-  registrationId: string;
+  registrationUuid: string;
   attachmentIds: string[];
 
-  constructor(registrationId: string, attachmentIds: string[]) {
-    super(`Failed to upload ${attachmentIds.length} attachments for registrationId '${registrationId}'`);
+  constructor(registrationUuid: string, attachmentIds: string[]) {
+    super(`Failed to upload ${attachmentIds.length} attachments for registration '${registrationUuid}'`);
     this.name = 'UploadAttachmentError';
-    this.registrationId = registrationId;
+    this.registrationUuid = registrationUuid;
     this.attachmentIds = attachmentIds;
   }
 }
@@ -45,24 +46,25 @@ export class UploadAttachmentsService {
    * After attachments are uploaded, we request an update of local attachment metadata so that we do not need to update
    * the attachments again later if the post/put registration request fails.
    *
-   * @param registration Registration object
    * @returns Attachments with attachment ids from upload response
    * @throws {UploadAttachmentError} If the attachment upload fails
    */
-  async uploadAllAttachments(registration: IRegistration): Promise<AttachmentUploadEditModel[]> {
-    const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(registration.id));
+  async uploadAllAttachments(draft: RegistrationDraft): Promise<AttachmentUploadEditModel[]> {
+    const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
 
     // Some attachments may already be uploaded
     const alreadyUploaded = attachments.filter(a => a.AttachmentUploadId != null);
     const attachmentsToUpload = attachments.filter(a => a.AttachmentUploadId == null);
 
+    // Error handling
+    // wrap this.uploadAttachment in a function that saves exceptions so that we can handle those that fail later
     const failedAttachmentIds = [];
-    const uploadAttachmentAndHandleErrors = async (a: AttachmentUploadEditModel) => {
+    const uploadAttachmentAndHandleErrors = async (attachment: AttachmentUploadEditModel) => {
       try {
-        return await this.uploadAttachment(a, registration);
+        return await this.uploadAttachment(attachment, draft);
       } catch (error) {
-        this.loggingService.error(error, DEBUG_TAG, 'Failed to upload attachment', a.AttachmentId);
-        failedAttachmentIds.push(a.AttachmentId);
+        this.loggingService.error(error, DEBUG_TAG, 'Failed to upload attachment', attachment.AttachmentId);
+        failedAttachmentIds.push(attachment.AttachmentId);
       }
     };
 
@@ -70,7 +72,7 @@ export class UploadAttachmentsService {
     const uploadedAttachments = await Promise.all(attachmentsToUpload.map(uploadAttachmentAndHandleErrors));
 
     if (failedAttachmentIds.length) {
-      throw new UploadAttachmentError(registration.id, failedAttachmentIds);
+      throw new UploadAttachmentError(draft.uuid, failedAttachmentIds);
     }
 
     return [
@@ -105,6 +107,8 @@ export class UploadAttachmentsService {
 
     return this.httpClient.post(attachmentPostPath, formData, {
       responseType: 'json',
+      // reportProgress makes this a stream that returns HttpEvents, not just the final response.
+      // We can use the events to track the upload progress.
       reportProgress: true,
       observe: 'events',
       headers: { 'ngsw-bypass': '' }
@@ -113,9 +117,9 @@ export class UploadAttachmentsService {
 
   private async uploadAttachment(
     attachment: AttachmentUploadEditModel,
-    registration: IRegistration
+    draft: RegistrationDraft
   ): Promise<AttachmentUploadEditModel> {
-    const blob = await firstValueFrom(this.newAttachmentService.getBlob(registration.id, attachment.id));
+    const blob = await firstValueFrom(this.newAttachmentService.getBlob(draft.uuid, attachment.id));
 
     const request = this.sendPostRequestWithImageBlob(blob)
       .pipe(
@@ -125,15 +129,14 @@ export class UploadAttachmentsService {
         tap((result) => this.loggingService.debug(`Attachment uploaded with attachment id: ${result}`)),
       );
 
-    const response = await firstValueFrom(request);
-
     const uploadedAttachment = {
       ...attachment,
-      AttachmentUploadId: response as string
+      // The response body contains only the AttachmentUploadId
+      AttachmentUploadId: await firstValueFrom(request)
     };
 
     // Update metadata
-    await firstValueFrom(this.newAttachmentService.saveAttachmentMeta$(registration.id, uploadedAttachment));
+    await firstValueFrom(this.newAttachmentService.saveAttachmentMeta$(draft.uuid, uploadedAttachment));
 
     return uploadedAttachment;
   }

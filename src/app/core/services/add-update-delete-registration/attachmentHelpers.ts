@@ -15,10 +15,9 @@ import { AttachmentEditModel, RegistrationEditModel } from 'src/app/modules/comm
  * Otherwise, attachments are added to the root Attachments property.
  *
  * @param uploadedAttachment Attachment to add to the registration
- * @param draft Registration object
- * @returns draft with attachment info
+ * @returns New registration draft with attachment info
  */
-export function addAttachmentToDraft(
+export function addAttachmentToRegistration(
   uploadedAttachment: AttachmentUploadEditModel,
   draft: RegistrationEditModel
 ): RegistrationEditModel {
@@ -60,6 +59,7 @@ function addWaterLevelAttachment(attachment: AttachmentEditModel, draft: Registr
 
   const modifiedMeasurements = draft.WaterLevel2.WaterLevelMeasurement
     .map((measurement: WaterLevelMeasurementUploadModel) => {
+      // When we find a matching measurement, return a new object with updated attachment info
       if (measurement.ref === ref) {
         found = true;
         const modifiedMeasurement = { ...measurement };
@@ -70,6 +70,7 @@ function addWaterLevelAttachment(attachment: AttachmentEditModel, draft: Registr
         }
         return modifiedMeasurement;
       }
+
       return measurement;
     });
 

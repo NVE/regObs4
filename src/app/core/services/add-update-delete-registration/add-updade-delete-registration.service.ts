@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { LangKey } from 'src/app/modules/common-core/models';
-import { IRegistration } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationEditModel, RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import { RegistrationDraft } from '../draft/draft-model';
 import { UploadAttachmentsService } from '../upload-attachments/upload-attachments.service';
-import { addAttachmentToDraft } from './attachmentHelpers';
+import { addAttachmentToRegistration } from './attachmentHelpers';
 
 /**
  * Service for adding or updating a registration in regobs, or deleting an existing registration.
@@ -28,19 +28,17 @@ export class AddUpdateDeleteRegistrationService {
    * Uploads attachments, requests a local attachment metadata update, sets attachment ids on the registration, and
    * then sends a POST request to regobs with new registration data.
    *
-   * @param registration Registration object
-   * @param langKey Language key
-   * @throws {HttpErrorResponse} If the operation is unsuccessful
+   * @throws {HttpErrorResponse} If the request is unsuccessful
    * @throws {UploadAttachmentError} If uploading attachments fails
    */
-  async add(registration: IRegistration, langKey: LangKey): Promise<RegistrationViewModel> {
-    const draft = await this.uploadAttachments(registration);
+  async add(draft: RegistrationDraft, langKey: LangKey): Promise<RegistrationViewModel> {
+    const { registration } = await this.uploadAttachments(draft);
 
     // Send registration to regobs
     return firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert({
-      registration: draft,
+      registration,
       langKey,
-      externalReferenceId: registration.id
+      externalReferenceId: draft.uuid
     }));
   }
 
@@ -50,30 +48,28 @@ export class AddUpdateDeleteRegistrationService {
    * Uploads attachments, requests a local attachment metadata update, sets attachment ids on the registration, and
    * then sends a PUT request to regobs with updated registration data.
    *
-   * @param registration Registration object
-   * @param langKey Language key
    * @param ignoreVersionCheck If true, overwrite changes to the registration posted by another client
-   * @throws {Error} If no regId are avalable
-   * @throws {HttpErrorResponse} If the operation is unsuccessful
+   * @throws {Error} If no regId are avalable on the draft
+   * @throws {HttpErrorResponse} If the request is unsuccessful
    * @throws {UploadAttachmentError} If uploading attachments fails
    */
   async update(
-    registration: IRegistration,
+    draft: RegistrationDraft,
     langKey: LangKey,
     ignoreVersionCheck = false
   ): Promise<RegistrationViewModel> {
-    if (!registration.response?.RegId) {
-      throw new Error('Needs regid to update');
+    if (!draft.regId) {
+      throw new Error('Update operation needs regid');
     }
 
-    const draft = await this.uploadAttachments(registration);
+    const { registration } = await this.uploadAttachments(draft);
 
     // Send registration to regobs
     return firstValueFrom(this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
-      registration: draft,
+      registration,
       langKey,
-      externalReferenceId: registration.id,
-      id: registration.response.RegId,
+      externalReferenceId: draft.uuid,
+      id: draft.regId,
       ignoreVersionCheck: ignoreVersionCheck
     }));
   }
@@ -83,7 +79,7 @@ export class AddUpdateDeleteRegistrationService {
    *
    * @param regId Registration id (not registration guid)
    * @throws {Error} If regId parameter is null
-   * @throws {HttpErrorResponse} If the operation is unsuccessful
+   * @throws {HttpErrorResponse} If the request is unsuccessful
    */
   async delete(regId: number): Promise<void> {
     if (regId == null) {
@@ -93,18 +89,21 @@ export class AddUpdateDeleteRegistrationService {
   }
 
   /**
-   * @returns A draft / RegistrationEditModel with updated attachment info
+   * @returns A new draft with updated attachment info
    */
-  private async uploadAttachments(registration: IRegistration): Promise<RegistrationEditModel> {
-    const uploadedAttachments = await this.uploadAttachmentsService.uploadAllAttachments(registration);
+  private async uploadAttachments(draft: RegistrationDraft): Promise<RegistrationDraft> {
+    const uploadedAttachments = await this.uploadAttachmentsService.uploadAllAttachments(draft);
 
     // Add attachment info to draft
-    let draft = registration.request;
+    let registration = draft.registration;
     for (const attachment of uploadedAttachments) {
-      draft = addAttachmentToDraft(attachment, draft);
+      registration = addAttachmentToRegistration(attachment, registration);
     }
 
-    return draft;
+    return {
+      ...draft,
+      registration
+    };
   }
 
 }
