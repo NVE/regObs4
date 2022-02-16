@@ -26,5 +26,5 @@ export interface RegistrationDraft {
   /**
    * The registration to submit
    */
-  draft: RegistrationEditModel;
+  registration: RegistrationEditModel;
 }
