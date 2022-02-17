@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject, } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject, switchMap, from, tap, withLatestFrom } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { AppModeService } from 'src/app/modules/common-core/services';
@@ -22,7 +22,7 @@ const DEBUG_TAG = 'DraftRepositoryService';
 export class DraftRepositoryService {
 
   //used to spread the word about changes in drafts
-  private drafts: Subject<RegistrationDraft[]> = new BehaviorSubject([]);
+  private draftsInMemory: BehaviorSubject<RegistrationDraft[]> = new BehaviorSubject([]);
 
   /**
    * A list of drafts that are saved locally
@@ -30,18 +30,25 @@ export class DraftRepositoryService {
    */
    readonly drafts$: Observable<RegistrationDraft[]>;
 
-
    constructor(
       private appModeService: AppModeService,
       private logger: LoggingService,
-      private databaseService: DatabaseService) {
+      private databaseService: DatabaseService
+   ) {
+     this.drafts$ = combineLatest([this.appModeService.appMode$, this.databaseService.ready$])
+       .pipe(
+         switchMap(([appMode,]) => from(this.loadAllFromDatabase(appMode))),
+         tap((drafts) => {
+           this.draftsInMemory.next(drafts);
+         }),
+         switchMap(() => this.draftsInMemory.asObservable())
+       );
 
-     this.drafts$ = this.drafts.asObservable();
-
-     combineLatest([this.appModeService.appMode$, this.databaseService.ready$])
-       .subscribe(([appMode, ]) => {
-         //TODO: this.saveTestdata(); //TODO: Remove
-         this.reloadAndNotify(appMode);
+     this.drafts$
+       .pipe(withLatestFrom(this.appModeService.appMode$))
+       // Skip 1 når appmode endres
+       .subscribe(([drafts, appMode]) => {
+         this.saveAllToDatabase(drafts, appMode);
        });
    }
 
@@ -57,7 +64,7 @@ export class DraftRepositoryService {
 
    private async reloadAndNotify(appMode: AppMode): Promise<void> {
      const drafts = await this.loadAllFromDatabase(appMode);
-     this.drafts.next(drafts); //spread the word that drafts have changed
+     this.draftsInMemory.next(drafts); //spread the word that drafts have changed
    }
 
    /**
@@ -97,7 +104,7 @@ export class DraftRepositoryService {
      await this.saveAllToDatabase(drafts, appMode);
      this.logger.debug(`Draft ${draft.uuid} saved in ${this.millisSince(start)} ms. 
       We now have ${drafts.length} drafts in environment ${appMode}`, DEBUG_TAG, draft);
-     this.drafts.next(drafts); //spread the word that drafts have changed
+     this.draftsInMemory.next(drafts); //spread the word that drafts have changed
    }
 
 
@@ -141,9 +148,9 @@ export class DraftRepositoryService {
      if (drafts.length > 0) {
        const filteredDrafts = drafts.filter((draft) => draft.uuid !== uuid);
        this.saveAllToDatabase(filteredDrafts, appMode);
-       this.drafts.next(filteredDrafts);
+       this.draftsInMemory.next(filteredDrafts);
      } else {
-       this.drafts.next([]);
+       this.draftsInMemory.next([]);
      }
    }
 
