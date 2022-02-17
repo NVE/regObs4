@@ -31,6 +31,29 @@ class TestDatabaseService {
     }
 }
 
+// describe('DraftRepositoryService async usage', () => {
+//   it('should handle multiple saves at the same time', async () => {
+//     const appModeService = new AppModeService({ appMode: AppMode.Test, language: LangKey.nb });
+//     const dbService = {
+
+//     };
+//     const draftService = new DraftRepositoryService(
+//       appModeService,
+//       new TestLoggingService(),
+//       dbService as DatabaseService
+//     );
+
+//     const save1 = draftService.save({uuid: 'abc', syncStatus: SyncStatus.Draft, registration: { GeoHazardTID: 10, DtObsTime: 'test' }});
+//     const save2 = draftService.save({uuid: 'def', syncStatus: SyncStatus.Draft, registration: { GeoHazardTID: 10, DtObsTime: 'test' }});
+
+//     await Promise.all([save1, save2]);
+
+//     const drafts = await draftService.loadAll();
+
+//     expect(drafts.length).toEqual(2);
+//   });
+// });
+
 describe('DraftRepositoryService', () => {
 
   let service: DraftRepositoryService;
@@ -63,10 +86,12 @@ describe('DraftRepositoryService', () => {
       Comment: 'comment',
       SnowDepth: 3.5
     };
-    await service.save(draft);
 
-    const savedDrafts: RegistrationDraft[] = await database.get('drafts.TEST');
-    const savedDraft = savedDrafts[0];
+    await service.save(draft);
+    const savedDraft = await service.load(draft.uuid);
+
+    // const savedDrafts: RegistrationDraft[] = await database.get('drafts.TEST');
+    // const savedDraft = savedDrafts[0];
     expect(savedDraft.uuid).toEqual(draft.uuid);
     expect(savedDraft.syncStatus).toBe(SyncStatus.Draft);
     expect(savedDraft.registration.GeoHazardTID).toBe(GeoHazard.Snow);
@@ -138,7 +163,7 @@ describe('DraftRepositoryService', () => {
   it('delete works', async () => {
     const draft = await service.create(GeoHazard.Ice);
     await service.save(draft);
-    expect((await database.store.get('drafts.TEST')).length).toBe(1);
+    // expect((await database.store.get('drafts.TEST')).length).toBe(1);
     expect((await firstValueFrom(service.drafts$)).length).toBe(1);
 
     await service.delete(draft.uuid);
