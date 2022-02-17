@@ -21,12 +21,14 @@ class TestDatabaseService {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async set(key: string, value: any): Promise<void> {
-      this.store.set(key, value);
+      this.store.set(key, JSON.stringify(value));
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async get(key: string): Promise<any> {
-      return this.store.get(key);
+      const value = this.store.get(key);
+      if (value) return JSON.parse(value);
+      return undefined;
     }
 
     async keys(): Promise<string[]> {
@@ -58,7 +60,7 @@ describe('DraftRepositoryService', () => {
     expect(draft.syncStatus).toBe(SyncStatus.Draft);
     expect(draft.registration.GeoHazardTID).toBe(GeoHazard.Ice);
     expect(draft.lastSavedTime).toBe(undefined); //not saved yet
-    expect(draft.registration.DtObsTime).toBe(undefined);
+    expect(draft.registration.DtObsTime).toBe(null);
     expect(draft.registration.ObsLocation).toEqual({ Latitude: 0, Longitude: 0 });
     expect(draft.registration.Attachments).toEqual([]);
   });
@@ -119,11 +121,12 @@ describe('DraftRepositoryService', () => {
   it('we get notified when registrations are saved', async () => {
     const draft = await service.create(GeoHazard.Ice);
     draft.registration.GeneralObservation = { Comment: 'v.1' };
-    const draftChanges = firstValueFrom(service.drafts$.pipe(skip(1)));
+
     await service.save(draft);
 
     //check if we get notified after first save
-    const updatedDrafts = await draftChanges;
+    const updatedDrafts = await firstValueFrom(service.drafts$);
+
     expect(updatedDrafts.length).toBe(1);
     const updatedDraft = updatedDrafts[0];
     expect(updatedDraft.uuid).toEqual(draft.uuid);
@@ -134,26 +137,79 @@ describe('DraftRepositoryService', () => {
     await service.save(updatedDraft);
 
     //check notfication
-    const updatedDrafts2 = await draftChanges;
+    const updatedDrafts2 = await firstValueFrom(service.drafts$);
     expect(updatedDrafts2.length).toBe(1);
     const updatedDraft2 = updatedDrafts2[0];
     expect(updatedDraft2.uuid).toEqual(draft.uuid);
     expect(updatedDraft2.registration.GeneralObservation).toEqual({ Comment: 'v.2' });
   });
 
+  it('we can use drafts$ as a stream when registrations are saved', async () => {
+    const draft = await service.create(GeoHazard.Ice);
+    draft.registration.GeneralObservation = { Comment: 'v.1' };
+
+    let i = 0;
+    const draftsResult = [];
+    const streamFinished = new Promise<void>((resolve) => {
+      service.drafts$.subscribe((drafts) => {
+        draftsResult.push(drafts);
+        i += 1;
+        if (i === 3) {
+          resolve();
+        }
+      });
+    });
+
+    await service.save(draft);
+
+    //try to change the comment and check if we get notified about the changes
+    draft.registration.GeneralObservation = { Comment: 'v.2' };
+    await service.save(draft);
+
+    await streamFinished;
+
+    expect(draftsResult[0]).toEqual([]);
+
+    expect(draftsResult[1].length).toBe(1);
+    const updatedDraft = draftsResult[1][0];
+    expect(updatedDraft.uuid).toEqual(draft.uuid);
+    expect(updatedDraft.registration.GeneralObservation).toEqual({ Comment: 'v.1' });
+
+    //check notfication
+    expect(draftsResult[2].length).toBe(1);
+    const updatedDraft2 = draftsResult[2][0];
+    expect(updatedDraft2.uuid).toEqual(draft.uuid);
+    expect(updatedDraft2.registration.GeneralObservation).toEqual({ Comment: 'v.2' });
+  });
+
   it('delete works', async () => {
     const draft = await service.create(GeoHazard.Ice);
-
-    //we need to skip initial tick and the tick after save to capture the tick after delete
-    const draftChanges = firstValueFrom(service.drafts$.pipe(skip(2)));
     await service.save(draft);
 
     expect(database.store.size).toBe(1);
 
     await service.delete(draft.uuid);
 
+    const draftChanges = await firstValueFrom(service.drafts$);
+
     //verify that we have no drafts left
-    expect((await draftChanges).length).toBe(0);
+    expect(draftChanges.length).toBe(0);
+    expect(!database.store.has(`drafts.TEST.${draft.uuid}`));
+    expect(await service.load(draft.uuid)).toBeUndefined();
+  });
+
+  it('delete works', async () => {
+    const draft = await service.create(GeoHazard.Ice);
+    await service.save(draft);
+
+    expect(database.store.size).toBe(1);
+
+    await service.delete(draft.uuid);
+
+    const draftChanges = await firstValueFrom(service.drafts$);
+
+    //verify that we have no drafts left
+    expect(draftChanges.length).toBe(0);
     expect(!database.store.has(`drafts.TEST.${draft.uuid}`));
     expect(await service.load(draft.uuid)).toBeUndefined();
   });
