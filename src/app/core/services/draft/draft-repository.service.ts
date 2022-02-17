@@ -25,8 +25,7 @@ export class DraftRepositoryService {
   private shouldLoad: BehaviorSubject<void> = new BehaviorSubject(null);
 
   /**
-   * A list of drafts that are saved locally
-   * TODO: Skal kladder som er under innsending være med i denne? De er det nå
+   * A list of drafts that are saved locally. Drafts under sumbission are also included.
    */
   readonly drafts$: Observable<RegistrationDraft[]>;
 
@@ -35,9 +34,10 @@ export class DraftRepositoryService {
     private logger: LoggingService,
     private databaseService: DatabaseService) {
 
+    //TODO: Vurdere å bruke share eller shareReplay på denne for å hindre at man må lese fra basen uten at noen ting er endret,
     this.drafts$ = combineLatest([this.appModeService.appMode$, this.databaseService.ready$, this.shouldLoad])
       .pipe(
-        switchMap(([appMode]) => from(this.loadAllFromDatabase(appMode)))
+        switchMap(([appMode]) => from(this.loadAllFromDatabase(appMode))),
       );
   }
 

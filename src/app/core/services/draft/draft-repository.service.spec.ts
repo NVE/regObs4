@@ -4,8 +4,10 @@ import { SyncStatus } from 'src/app/modules/common-registration/registration.mod
 import { DraftRepositoryService } from './draft-repository.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
 import { AppModeService } from 'src/app/modules/common-core/services';
-import { firstValueFrom, Observable, ReplaySubject, skip } from 'rxjs';
+import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import { DatabaseService } from '../database/database.service';
+import { environment } from 'src/environments/environment';
+import exp from 'constants';
 
 //key-value-store used to mock the database
 class TestDatabaseService {
@@ -194,23 +196,42 @@ describe('DraftRepositoryService', () => {
 
     //verify that we have no drafts left
     expect(draftChanges.length).toBe(0);
-    expect(!database.store.has(`drafts.TEST.${draft.uuid}`));
+    expect(!database.store.has(`drafts.TEST.${draft.uuid}`)).toBeTrue();
     expect(await service.load(draft.uuid)).toBeUndefined();
   });
 
-  it('delete works', async () => {
-    const draft = await service.create(GeoHazard.Ice);
-    await service.save(draft);
+  it('we do not mix data from different environments', async () => {
+    //save 2 drafts in test environment
+    const draft1inTest = await service.create(GeoHazard.Ice);
+    await service.save(draft1inTest);
 
-    expect(database.store.size).toBe(1);
+    const draft2inTest = await service.create(GeoHazard.Ice);
+    await service.save(draft2inTest);
 
-    await service.delete(draft.uuid);
+    appModeService.setAppMode(AppMode.Demo); //switch to demo environment
 
     const draftChanges = await firstValueFrom(service.drafts$);
+    expect(draftChanges.length).toBe(0); //no drafts in demo yet
 
-    //verify that we have no drafts left
-    expect(draftChanges.length).toBe(0);
-    expect(!database.store.has(`drafts.TEST.${draft.uuid}`));
-    expect(await service.load(draft.uuid)).toBeUndefined();
+    //save a draft in demo environment
+    const draft1inDemo = await service.create(GeoHazard.Ice);
+    await service.save(draft1inDemo);
+
+    //drafts in test database not available in demo environment
+    expect(await service.load(draft1inTest.uuid)).toBe(undefined);
+
+    //but all drafts exists in database regardsless of environment
+    expect(database.store.has(`drafts.TEST.${draft1inTest.uuid}`)).toBeTrue();
+    expect(database.store.has(`drafts.TEST.${draft2inTest.uuid}`)).toBeTrue();
+    expect(database.store.has(`drafts.DEMO.${draft1inDemo.uuid}`)).toBeTrue();
+
+    appModeService.setAppMode(AppMode.Test); //change back to test environment
+    const draftChanges2 = await firstValueFrom(service.drafts$);
+    expect(draftChanges2.length).toBe(2); //we have 2 drafts in test
+    expect(await service.load(draft1inTest.uuid)).toEqual(draft1inTest);
+    expect(await service.load(draft2inTest.uuid)).toEqual(draft2inTest);
+
+    //drafts in demo database not available when in environment test
+    expect(await service.load(draft1inDemo.uuid)).toBe(undefined);
   });
 });
