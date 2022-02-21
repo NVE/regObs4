@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, from, Subscription, of, concat, forkJoin, timer, merge, combineLatest, firstValueFrom } from 'rxjs';
 import { GeoHazard, AppMode } from 'src/app/modules/common-core/models';
-import { LoggerService, AppModeService } from 'src/app/modules/common-core/services';
+import { AppModeService } from 'src/app/modules/common-core/services';
 import {
   switchMap,
   shareReplay,
@@ -50,7 +50,10 @@ import {
 } from '../../models/attachment-upload-edit.interface';
 import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions } from '../../module.options';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 
+const DEBUG_TAG = '(Common)RegistrationService';
 const SYNC_TIMER_TRIGGER_MS = 60 * 1000; // try to trigger sync every 60 seconds if nothing has changed to network conditions
 const SYNC_BUFFER_MS = 3 * 1000; // Wait at least 3 seconds before next sync attempt
 
@@ -63,7 +66,7 @@ export class RegistrationService {
 
   constructor(
     private offlineDbService: OfflineDbService,
-    private loggerService: LoggerService,
+    private logger: LoggingService,
     private progressService: ProgressService,
     private kdvService: KdvService,
     private internetConnectivity: InternetConnectivity,
@@ -79,7 +82,7 @@ export class RegistrationService {
         (reg: IRegistration) => reg.syncStatus == SyncStatus.Sync || reg.syncStatus == SyncStatus.Draft)
       ),
       tap((reg) => {
-        this.loggerService.debug('Registrations changed', reg);
+        this.logger.debug('Registrations changed', DEBUG_TAG, reg);
       }),
       shareReplay(1)
     );
@@ -115,7 +118,7 @@ export class RegistrationService {
     return this.saveRegistrationToOfflineStorage(reg).pipe(
       switchMap(() => this.syncSingleRegistration(reg, ignoreVersionCheck)),
       tap(() => {
-        this.loggerService.debug('Single registration synced. Start autosync.');
+        this.logger.debug('Single registration synced. Start autosync.');
         this.initAutoSync();
       })
     );
@@ -289,9 +292,9 @@ export class RegistrationService {
 
   private getAutoSyncObservable() {
     return this.getAutosyncChangeTrigger().pipe(
-      tap((source) => this.loggerService.debug(`Auto sync triggered. Source: ${source}`)),
+      tap((source) => this.logger.debug(`Auto sync triggered. Source: ${source}`)),
       switchMap(() => this.offlineDbService.waitForLeadership()),
-      tap(() => this.loggerService.debug('Current tab is in leadership, so this tab is used for sync items')),
+      tap(() => this.logger.debug('Current tab is in leadership, so this tab is used for sync items')),
       switchMap(() => this.getRegistrationsToSyncObservable()),
       this.filterWhenProgressIsAllreadyRunning(),
       this.resetProgressAndSyncItems()
@@ -323,7 +326,7 @@ export class RegistrationService {
         this.updateRowAndReturnItem(),
         toArray(),
         catchError((error) => {
-          this.loggerService.warn('Could not sync registrations', error);
+          this.logger.error(error, 'Could not sync registrations', DEBUG_TAG);
           return of([]);
         }),
         tap(() => this.progressService.resetSyncProgress())
@@ -393,7 +396,7 @@ export class RegistrationService {
       // TODO: Implement all providers to get summaries generated client side before synchronized to API...
       return this.fallbackSummaryProvider
         .generateSummary(reg, registrationTid)
-        .pipe(tap((genericSummary) => this.loggerService.debug('Generic fallback summary', genericSummary)));
+        .pipe(tap((genericSummary) => this.logger.debug('Generic fallback summary', DEBUG_TAG, genericSummary)));
     }
     return addIfEmpty ? this.generateEmptySummary(registrationTid).pipe(map((s) => [s])) : of([]);
   }
@@ -482,10 +485,10 @@ export class RegistrationService {
       take(1),
       tap(([collection, reg]) => {
         if (!collection) {
-          this.loggerService.warn('No db collection found for appMode when saveRollbackState');
+          this.logger.log('No db collection found for appMode when saveRollbackState', null, LogLevel.Warning, DEBUG_TAG);
         }
         if (!reg) {
-          this.loggerService.warn('No registration found by id when saveRollbackState: ', id);
+          this.logger.log('No registration found by id when saveRollbackState: ', null, LogLevel.Warning, DEBUG_TAG, id);
         }
       }),
       switchMap(([collection, reg]) => (reg && collection ? from(collection.upsertLocal(`undo_state_${id}`, { reg })) : of({})))
@@ -496,7 +499,7 @@ export class RegistrationService {
     this.saveRollbackState$(id).subscribe(
       () => null,
       (err) => {
-        this.loggerService.warn('Could not save rollback state', err);
+        this.logger.error(err, 'Could not save rollback state', DEBUG_TAG);
       }
     );
   }
@@ -508,7 +511,7 @@ export class RegistrationService {
     return this.getRegistrationDbCollectionForAppMode().pipe(
       tap((collection) => {
         if (!collection) {
-          this.loggerService.warn('No db collection found for appMode when saveRollbackState');
+          this.logger.log('No db collection found for appMode when saveRollbackState', null, LogLevel.Warning, DEBUG_TAG);
         }
       }),
       switchMap((collection) =>
@@ -596,7 +599,7 @@ export class RegistrationService {
     return this.internetConnectivity.isOnline$.pipe(
       distinctUntilChanged(),
       filter((online) => online),
-      tap(() => this.loggerService.debug('App is now online!'))
+      tap(() => this.logger.debug('App is now online!'))
     );
   }
 
@@ -656,7 +659,7 @@ export class RegistrationService {
     }
     const msToNextSync = this.getMsUntilNextSync(reg.lastSync, SYNC_BUFFER_MS);
     if (msToNextSync > 0) {
-      this.loggerService.debug(`Should throttle: ${msToNextSync / 1000}`, reg);
+      this.logger.debug(`Should throttle: ${msToNextSync / 1000}`, DEBUG_TAG, reg);
       return true;
     }
     return false;
@@ -678,7 +681,7 @@ export class RegistrationService {
   private syncRecord(item: IRegistration, ignoreVersionCheck: boolean): Observable<ItemSyncCompleteStatus<IRegistration>> {
     return this.offlineRegistrationSyncService.syncItem(item, ignoreVersionCheck).pipe(
       catchError((err) => of({ item, success: false, error: err })),
-      tap((result) => this.loggerService.log('Record sync complete', result))
+      tap((result) => this.logger.debug('Record sync complete', DEBUG_TAG, result))
     );
   }
 
@@ -703,7 +706,7 @@ export class RegistrationService {
         switchMap((item: IRegistration) =>
           this.saveRegistrationToOfflineStorage(item).pipe(
             catchError((err) => {
-              this.loggerService.error('Could not update record in offline storage', err);
+              this.logger.error(err, 'Could not update record in offline storage', DEBUG_TAG);
               return of([]);
             }),
             map(() => item)

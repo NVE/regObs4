@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, EMPTY, forkJoin, from, Observable, of } from 'rxjs';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { AppModeService, LoggerService } from 'src/app/modules/common-core/services';
+import { AppModeService } from 'src/app/modules/common-core/services';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { OfflineDbService, TABLE_NAMES } from '../offline-db/offline-db.service';
@@ -9,13 +9,16 @@ import { NewAttachmentService } from './new-attachment.service';
 import { catchError, filter, map, startWith, switchMap, take } from 'rxjs/operators';
 import { RxAttachmentMetaCollection, RxAttachmentMetaDocument, RxRegistrationCollection, RxRegistrationDocument } from '../../db/RxDB';
 import { RegistrationTid } from '../../models/registration-tid.enum';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'OfflineDbNewAttachmentService';
 
 @Injectable()
 export class OfflineDbNewAttachmentService implements NewAttachmentService {
   constructor(
     private offlineDbService: OfflineDbService,
     protected appModeService: AppModeService,
-    protected loggerService: LoggerService
+    protected logger: LoggingService
   ) {}
 
   async addAttachment(
@@ -53,7 +56,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
           )
         ),
         catchError((err) => {
-          this.loggerService.error(() => 'Could not add attachment', err);
+          this.logger.error(err, 'Could not add attachment', DEBUG_TAG);
           return EMPTY;
         })
       )
@@ -110,7 +113,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
   async removeAttachments(registrationId: string): Promise<void> {
     const regDoc = await this.getRegistrationOfflineDocumentById(registrationId).pipe(take(1)).toPromise();
     if (!regDoc) {
-      this.loggerService.debug('No registration document found!');
+      this.logger.debug('No registration document found!');
       return;
     }
     const metaDocs = await this.getAttachmentMetaDocumentsFromRegistrationDocument(regDoc).pipe(take(1)).toPromise();
@@ -118,7 +121,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
       try {
         await metaDoc.remove();
       } catch (err) {
-        this.loggerService.debug('Could not remove attachment meta document from registration document', metaDoc, err);
+        this.logger.error(err, 'Could not remove attachment meta document from registration document', DEBUG_TAG, metaDoc);
       }
     }
     const collection = await this.getRegistrationDbCollectionForAppMode().pipe(take(1)).toPromise();
