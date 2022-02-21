@@ -300,8 +300,8 @@ export const settings: ISettings = {
   gps: {
     highAccuracyPositionOptions: {
       enableHighAccuracy: true,
-      timeout: 20 * 1000, // 20 sec
-      maximumAge: Infinity // Start with latest cached value
+      timeout: 20 * 1000, //get notified with new position data at least each 20 sec
+      maximumAge: 0 //we do not accept cached positions, ask for GPS position immediately
     }
   },
   dateFormats: {
