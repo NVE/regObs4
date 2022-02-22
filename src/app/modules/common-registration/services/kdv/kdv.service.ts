@@ -13,7 +13,8 @@ import { KdvViewRepositoryKey } from '../../models/view-repository-key.type';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
-const KDV_ASSETS_FOLDER = '/assets/json'; // TODO: Add this to module config?
+const KDV_ASSETS_FOLDER = '/assets/json';
+const CACHE_AGE = 43200; // 12 hours
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,15 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
     private kdvElementsService: KdvElementsService,
     private httpClient: HttpClient
   ) {
-    super({ useLangKeyAsDbKey: true, validSeconds: 12 * 60 * 60 }, offlineDbService, languageService, appModeService, logger);
+    super(
+      {
+        useLangKeyAsDbKey: true,
+        validSeconds: CACHE_AGE
+      },
+      offlineDbService,
+      languageService,
+      appModeService,
+      logger);
   }
 
   protected getDebugTag(): string {
@@ -51,9 +60,10 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
   }
 
   protected getFallbackData(_: AppMode, langKey: LangKey): Observable<KdvElementsResponseDto> {
-    return this.httpClient.get<KdvElementsResponseDto>(`${KDV_ASSETS_FOLDER}/kdvelements.${getLangKeyString(langKey)}.json`).pipe(
+    const filename = `${KDV_ASSETS_FOLDER}/kdvelements.${getLangKeyString(langKey)}.json`;
+    return this.httpClient.get<KdvElementsResponseDto>(filename).pipe(
       catchError((err) => {
-        this.logger.error(err, `Kdv elements for language ${getLangKeyString(langKey)} not found in assets/kdvelements folder`, this.getDebugTag());
+        this.logger.error(err, this.getDebugTag(), `${filename} not found`);
         return of({
           KdvRepositories: {},
           ViewRepositories: {}
