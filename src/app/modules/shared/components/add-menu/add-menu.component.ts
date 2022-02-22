@@ -11,8 +11,6 @@ import { RegistrationService } from '../../../registration/services/registration
 import { map, tap, switchMap } from 'rxjs/operators';
 import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
 import { LoggingService } from '../../services/logging/logging.service';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 const DEBUG_TAG = 'AddMenuComponent';
 
@@ -38,8 +36,7 @@ export class AddMenuComponent implements OnInit {
     private dateHelperService: DateHelperService,
     private tripLoggerService: TripLoggerService,
     private userSettingService: UserSettingService,
-    private loggingService: LoggingService,
-    private draftRepositoryService: DraftRepositoryService
+    private loggingService: LoggingService
   ) {}
 
   ngOnInit(): void {
@@ -50,7 +47,7 @@ export class AddMenuComponent implements OnInit {
       })),
       setObservableTimeout()
     );
-    this.drafts$ = this.draftRepositoryService.drafts$.pipe(
+    this.drafts$ = this.registrationService.drafts$.pipe(
       tap((drafts) =>
         this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)
       ),
@@ -72,10 +69,10 @@ export class AddMenuComponent implements OnInit {
   }
 
   private convertDraftToDate(
-    draft: RegistrationDraft
+    draft: IRegistration
   ): Observable<{ id: string; geoHazard: GeoHazard; date: string }> {
-    return from(this.getDate(draft.lastSavedTime)).pipe(
-      map((date) => ({ id: draft.uuid, geoHazard: draft.registration.GeoHazardTID, date }))
+    return from(this.getDate(draft.changed)).pipe(
+      map((date) => ({ id: draft.id, geoHazard: draft.geoHazard, date }))
     );
   }
 
@@ -84,7 +81,7 @@ export class AddMenuComponent implements OnInit {
   }
 
   getDate(timestamp: number): Promise<string> {
-    return this.dateHelperService.formatDate(moment(timestamp));
+    return this.dateHelperService.formatDate(moment.unix(timestamp));
   }
 
   closeAndNavigate(url: string): void {
