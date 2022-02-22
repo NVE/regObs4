@@ -12,7 +12,7 @@ import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-off
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
-const VALID_HELP_TEXT_SECONDS = 73200; // 12 hours
+const CACHE_AGE = 43200; // 12 hours
 const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
 
 @Injectable({
@@ -30,7 +30,7 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
     super(
       {
         useLangKeyAsDbKey: true,
-        validSeconds: VALID_HELP_TEXT_SECONDS
+        validSeconds: CACHE_AGE
       },
       offlineDbService,
       languageService,
@@ -52,9 +52,10 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
   }
 
   protected getFallbackData(_: AppMode, langKey: LangKey): Observable<HelptextDto[]> {
-    return this.httpClient.get<HelptextDto[]>(`${HELP_TEXTS_ASSETS_FOLDER}/helptexts.${getLangKeyString(langKey)}.json`).pipe(
+    const filename = `${HELP_TEXTS_ASSETS_FOLDER}/helptexts.${getLangKeyString(langKey)}.json`;
+    return this.httpClient.get<HelptextDto[]>(filename).pipe(
       catchError((err) => {
-        this.logger.error(err, this.getDebugTag(), `Helptexts for language ${getLangKeyString(langKey)} not found in assets/kdvelements folder`);
+        this.logger.error(err, this.getDebugTag(), `${filename} not found`);
         return of([]);
       })
     );

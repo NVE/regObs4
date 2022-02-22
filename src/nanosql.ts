@@ -174,15 +174,6 @@ export class NanoSql {
       indexes: {
         'userId:string': {}
       }
-    },
-    HELP_TEXTS: {
-      name: 'helptexts',
-      instancePerAppMode: true,
-      model: {
-        'langKey:int': { pk: true },
-        '*:any': {}
-      },
-      indexes: {}
     }
   };
 
