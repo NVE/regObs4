@@ -3,14 +3,16 @@ import { HelptextDto } from 'src/app/modules/common-regobs-api/models';
 import { HelptextService as HelpTextApiService } from 'src/app/modules/common-regobs-api/services';
 import { AppMode, LangKey, GeoHazard } from 'src/app/modules/common-core/models';
 
-import { LoggerService, LanguageService, AppModeService } from 'src/app/modules/common-core/services';
+import { LanguageService, AppModeService } from 'src/app/modules/common-core/services';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { OfflineDbService } from '../offline-db/offline-db.service';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
+const DEBUG_TAG = 'HelpTextService';
 const VALID_HELP_TEXT_SECONDS = 73200; // 12 hours
 const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
 
@@ -22,7 +24,7 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
     protected offlineDbService: OfflineDbService,
     protected languageService: LanguageService,
     protected appModeService: AppModeService,
-    protected logger: LoggerService,
+    protected logger: LoggingService,
     private helpTextApiService: HelpTextApiService,
     private httpClient: HttpClient
   ) {
@@ -49,7 +51,7 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
   public getFallbackData(_: AppMode, langKey: LangKey): Observable<HelptextDto[]> {
     return this.httpClient.get<HelptextDto[]>(`${HELP_TEXTS_ASSETS_FOLDER}/helptexts.${getLangKeyString(langKey)}.json`).pipe(
       catchError((err) => {
-        this.logger.warn(`Helptexts for language ${getLangKeyString(langKey)} not found in assets/kdvelements folder`, err);
+        this.logger.error(err, DEBUG_TAG, `Helptexts for language ${getLangKeyString(langKey)} not found in assets/kdvelements folder`);
         return of([]);
       })
     );

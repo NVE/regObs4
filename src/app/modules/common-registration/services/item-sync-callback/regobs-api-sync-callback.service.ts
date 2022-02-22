@@ -7,13 +7,17 @@ import { AttachmentEditModel, RegistrationViewModel } from 'src/app/modules/comm
 import { RegistrationService, AttachmentService as ApiAttachmentService } from 'src/app/modules/common-regobs-api/services';
 import { map, catchError, switchMap, tap, filter, take } from 'rxjs/operators';
 import { LangKey } from 'src/app/modules/common-core/models';
-import { LanguageService, LoggerService } from 'src/app/modules/common-core/services';
+import { LanguageService } from 'src/app/modules/common-core/services';
 import { AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { HttpClient, HttpEventType, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ProgressService } from '../progress/progress.service';
 import { NewAttachmentService } from '../add-new-attachment/new-attachment.service';
 import { WaterLevelMeasurementUploadModel } from '../../models/water-level-measurement-upload-model';
 import cloneDeep from 'clone-deep';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+
+const DEBUG_TAG = 'RegobsApiSyncCallbackService';
 
 @Injectable()
 export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRegistration> {
@@ -22,7 +26,7 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
     private languageService: LanguageService,
     private apiAttachmentService: ApiAttachmentService,
     private newAttachmentService: NewAttachmentService,
-    private loggerService: LoggerService,
+    private loggingService: LoggingService,
     private httpClient: HttpClient,
     private progressService: ProgressService
   ) {}
@@ -42,11 +46,11 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
   }
 
   insertOrUpdate(item: IRegistration, langKey: LangKey, ignoreVersionCheck: boolean): Observable<ItemSyncCompleteStatus<IRegistration>> {
-    this.loggerService.debug('Start insertOrUpdate: ', item, langKey);
+    this.loggingService.debug('Start insertOrUpdate: ', DEBUG_TAG, item, langKey);
     return this.uploadAttachments(item).pipe(
       switchMap((uploadAttachmentResult) => {
-        this.loggerService.debug('Result from attachment upload: ', uploadAttachmentResult);
-        this.loggerService.debug('Registration is now: ', item);
+        this.loggingService.debug('Result from attachment upload: ', DEBUG_TAG, uploadAttachmentResult);
+        this.loggingService.debug('Registration is now: ', DEBUG_TAG, item);
         const uploadSuccess = !uploadAttachmentResult.some((a) => a.error);
         let attachmentStatusCode: number = undefined;
         if (!uploadSuccess) {
@@ -131,10 +135,10 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
       take(1),
       switchMap((attachmentsToUpload) => {
         if (attachmentsToUpload.length > 0) {
-          this.loggerService.debug('Attachments to upload: ', attachmentsToUpload);
+          this.loggingService.debug('Attachments to upload: ', DEBUG_TAG, attachmentsToUpload);
           return forkJoin(attachmentsToUpload.map((a) => this.uploadAttachmentAndSetAttachmentUploadId(item, a).pipe(take(1))));
         }
-        this.loggerService.debug('No attachments to uplaod');
+        this.loggingService.debug('No attachments to uplaod');
         return of([]);
       })
     );
@@ -149,7 +153,7 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
       switchMap((blob) =>
         this.uploadAttachmentWithProgress(attachmentUpload.id, blob).pipe(
           switchMap((uploadId) => {
-            this.loggerService.debug('Attachment uploaded. Setting uploadId', attachmentUpload, uploadId);
+            this.loggingService.debug('Attachment uploaded. Setting uploadId', DEBUG_TAG, attachmentUpload, uploadId);
             // this.addAttachmentToRequest(uploadId, attachmentUpload, reg);
             attachmentUpload.AttachmentUploadId = uploadId;
             return this.newAttachmentService.saveAttachmentMeta$(reg.id, attachmentUpload).pipe(map(() => attachmentUpload));
@@ -157,7 +161,7 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
         )
       ),
       catchError((err: Error) => {
-        this.loggerService.debug('Could not upload attachment. Setting error.', err);
+        this.loggingService.log('Could not upload attachment. Setting error.', err, LogLevel.Debug, DEBUG_TAG);
         attachmentUpload.error = err;
         return of(attachmentUpload);
       })
@@ -191,14 +195,14 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
   }
 
   private addDamageObsAttachment(attachment: AttachmentEditModel, reg: IRegistration, ref: string) {
-    this.loggerService.error('Uploading of damage obs attachments not implemented', attachment, reg, ref);
+    throw new Error('Uploading of damage obs attachments not implemented');
   }
 
   private addWaterLevelAttachment(attachment: AttachmentEditModel, reg: IRegistration, ref: string) {
     const predicate = (m: WaterLevelMeasurementUploadModel) => m.ref === ref;
     const measurement = reg.request.WaterLevel2.WaterLevelMeasurement.find(predicate);
     if (!measurement) {
-      this.loggerService.error(`Did not find measurement for attachment with ref ${ref}`, attachment, reg, ref);
+      this.loggingService.log(`Did not find measurement for attachment with ref ${ref}`, null, LogLevel.Error, DEBUG_TAG, attachment, reg, ref);
     }
     if (!measurement.Attachments) {
       measurement.Attachments = [];
@@ -223,7 +227,7 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
       })
       .pipe(
         tap((event) => {
-          this.loggerService.debug('uploadAttachmentWithProgress got event:', event);
+          this.loggingService.debug('uploadAttachmentWithProgress got event:', DEBUG_TAG, event);
           if (event.type === HttpEventType.UploadProgress) {
             this.progressService.setAttachmentProgress(id, event.total, event.loaded);
           }
@@ -235,7 +239,7 @@ export class RegobsApiSyncCallbackService implements ItemSyncCallbackService<IRe
           }
           return event.body;
         }),
-        tap((result) => this.loggerService.debug(`Attachment uploaded with attachment id: ${result} `))
+        tap((result) => this.loggingService.debug(`Attachment uploaded with attachment id: ${result} `))
       );
   }
 }
