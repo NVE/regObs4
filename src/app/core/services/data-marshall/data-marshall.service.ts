@@ -6,7 +6,6 @@ import { UserSettingService } from '../user-setting/user-setting.service';
 import { settings } from '../../../../settings';
 import { Platform } from '@ionic/angular';
 import { RegistrationService } from '../../../modules/registration/services/registration.service';
-import { HelpTextService } from '../../../modules/registration/services/help-text/help-text.service';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { Subject, Subscription } from 'rxjs';
@@ -49,7 +48,6 @@ export class DataMarshallService implements OnReset {
     private ngZone: NgZone,
     private warningService: WarningService,
     private observationService: ObservationService,
-    private helpTextService: HelpTextService,
     private userSettingService: UserSettingService,
     private regobsAuthService: RegobsAuthService,
     private platform: Platform,
@@ -74,12 +72,6 @@ export class DataMarshallService implements OnReset {
         })
       );
 
-      this.subscriptions.push(
-        this.userSettingService.appModeAndLanguage$.subscribe(() => {
-          this.helpTextService.updateHelpTexts();
-          this.loggingService.debug('AppMode or Language has changed. Update help texts.', DEBUG_TAG);
-        })
-      );
       this.subscriptions.push(
         this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(
           ([appMode, langKey, geoHazards]) => {
@@ -274,7 +266,6 @@ export class DataMarshallService implements OnReset {
         cancelPromiseForObservations
       );
       await this.warningService.updateWarnings(cancelTimer);
-      await this.helpTextService.updateHelpTexts(cancelTimer);
       await this.tripLoggerService.cleanupOldLegacyTrip();
       this.loggingService.debug('Background update completed', DEBUG_TAG);
     });
