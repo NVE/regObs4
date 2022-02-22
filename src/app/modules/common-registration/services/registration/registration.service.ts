@@ -145,6 +145,7 @@ export class RegistrationService {
 
   /**
    * Shared change feed on getRegistrationById. Might have some delay when saving.
+   * @deprecated Bruk DraftRepositoryService
    */
   public getRegistrationByIdShared$(id: string): Observable<IRegistration> {
     return this.registrationStorage$.pipe(
@@ -153,6 +154,9 @@ export class RegistrationService {
     );
   }
 
+  /**
+   * @deprecated Bruk DraftRepositoryService
+   */
   public async getRegistrationById(id: string): Promise<IRegistration> {
     const collection = await this.getRegistrationDbCollectionForAppMode().pipe(take(1)).toPromise();
     const resultMap = await collection.findByIds([id]);

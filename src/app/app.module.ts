@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicModule } from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage-angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,6 +21,9 @@ import { MapModule } from './modules/map/map.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { RegistrationModule as CommonRegistrationModule } from './modules/common-registration/registration.module';
 import { RegobsApiModuleWithConfig } from 'src/app/modules/common-regobs-api';
+import { Drivers } from '@ionic/storage';
+import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
+import { settings } from 'src/settings';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,6 +33,10 @@ import { RegobsApiModuleWithConfig } from 'src/app/modules/common-regobs-api';
     HttpClientModule,
     FormsModule,
     IonicModule.forRoot(),
+    IonicStorageModule.forRoot({
+      driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB],
+      storeName: settings.db.nanoSql.dbName,
+    }),
     AppRoutingModule,
     TranslateModule.forRoot(),
     MarkdownModule.forRoot(),
