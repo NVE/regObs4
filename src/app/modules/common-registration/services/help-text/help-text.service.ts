@@ -12,7 +12,6 @@ import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-off
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
-const DEBUG_TAG = 'HelpTextService';
 const VALID_HELP_TEXT_SECONDS = 73200; // 12 hours
 const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
 
@@ -40,18 +39,22 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
     );
   }
 
-  public getTableName(appMode: AppMode): string {
+  protected getDebugTag(): string {
+    return 'HelpTextService';
+  }
+
+  protected getTableName(appMode: AppMode): string {
     return `${appMode.toLocaleLowerCase()}/helptexts`;
   }
 
-  public getUpdatedData(_: AppMode, langKey: LangKey): Observable<HelptextDto[]> {
+  protected getUpdatedData(_: AppMode, langKey: LangKey): Observable<HelptextDto[]> {
     return this.helpTextApiService.HelptextGet(langKey);
   }
 
-  public getFallbackData(_: AppMode, langKey: LangKey): Observable<HelptextDto[]> {
+  protected getFallbackData(_: AppMode, langKey: LangKey): Observable<HelptextDto[]> {
     return this.httpClient.get<HelptextDto[]>(`${HELP_TEXTS_ASSETS_FOLDER}/helptexts.${getLangKeyString(langKey)}.json`).pipe(
       catchError((err) => {
-        this.logger.error(err, DEBUG_TAG, `Helptexts for language ${getLangKeyString(langKey)} not found in assets/kdvelements folder`);
+        this.logger.error(err, this.getDebugTag(), `Helptexts for language ${getLangKeyString(langKey)} not found in assets/kdvelements folder`);
         return of([]);
       })
     );

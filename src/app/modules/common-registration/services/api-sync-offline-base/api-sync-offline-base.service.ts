@@ -20,8 +20,6 @@ export interface ApiSyncOfflineBaseServiceOptions {
   offlineTableKey?: string | number;
 }
 
-const DEBUG_TAG = 'ApiSyncOfflineBaseService';
-
 @Injectable()
 export abstract class ApiSyncOfflineBaseService<T> {
   public readonly data$: Observable<T>;
@@ -41,9 +39,10 @@ export abstract class ApiSyncOfflineBaseService<T> {
     this.data$ = this.getDataObservable().pipe(shareReplay(1));
   }
 
-  public abstract getUpdatedData(appMode: AppMode, langKey: LangKey): Observable<T>;
-  public abstract getFallbackData(appMode: AppMode, langKey: LangKey): Observable<T>;
-  public abstract getTableName(appMode: AppMode): string;
+  protected abstract getUpdatedData(appMode: AppMode, langKey: LangKey): Observable<T>;
+  protected abstract getFallbackData(appMode: AppMode, langKey: LangKey): Observable<T>;
+  protected abstract getTableName(appMode: AppMode): string;
+  protected abstract getDebugTag(): string;
 
   /** Force update offline data */
   public update(): void {
@@ -65,7 +64,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
   protected isValid(metaData: RxDocument<OfflineSyncMeta<T>>): boolean {
     const valid = metaData && metaData.lastUpdated > this.getInvalidTime().unix();
     this.logger.debug(`Offline data is ${valid ? 'valid -> returning offline data' : 'not valid -> Fetch new data'}`,
-      DEBUG_TAG, metaData);
+      this.getDebugTag(), metaData);
     return valid;
   }
 
@@ -117,7 +116,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
   private getUpdatedDataAndSaveResultIfSuccessOrFallbackToAssetsFolder(appMode: AppMode, langKey: LangKey) {
     return this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey).pipe(
       catchError((err) => {
-        this.logger.error(err, DEBUG_TAG, 'Could not get kvd elements from API. Fallback to offline storage');
+        this.logger.error(err, this.getDebugTag(), 'Could not get data from API. Fallback to offline storage');
         return this.getOfflineDataOrFallbackToAssets(appMode, langKey);
       })
     );
@@ -131,7 +130,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
       switchMap((data) =>
         this.saveDataToOfflineDb(appMode, langKey, data).pipe(
           catchError((err) => {
-            this.logger.error(err, DEBUG_TAG, 'Could not save data to offline storage');
+            this.logger.error(err, this.getDebugTag(), 'Could not save data to offline storage');
             return of(data);
           }),
           map(() => data)
@@ -194,7 +193,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
     return this.getOfflineData(appMode, langKey).pipe(
       concatMap((val) => {
         if (!val) {
-          this.logger.log('No kdv elements found in offline storage. Get fallback data', null, LogLevel.Warning, DEBUG_TAG);
+          this.logger.log('No data found in offline storage. Get fallback data', null, LogLevel.Warning, this.getDebugTag());
           return this.getFallbackData(appMode, langKey);
         }
         return of(val.data);

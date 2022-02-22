@@ -1,7 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { WarningService } from '../warning/warning.service';
 import { ObservationService } from '../observation/observation.service';
-import { KdvService } from '../kdv/kdv.service';
 import { CancelPromiseTimer } from '../../helpers/cancel-promise-timer';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { settings } from '../../../../settings';
@@ -49,7 +48,6 @@ export class DataMarshallService implements OnReset {
     private ngZone: NgZone,
     private warningService: WarningService,
     private observationService: ObservationService,
-    private kdvService: KdvService,
     private helpTextService: HelpTextService,
     private userSettingService: UserSettingService,
     private regobsAuthService: RegobsAuthService,
@@ -76,12 +74,8 @@ export class DataMarshallService implements OnReset {
 
       this.subscriptions.push(
         this.userSettingService.appModeAndLanguage$.subscribe(() => {
-          this.kdvService.updateKdvElements();
           this.helpTextService.updateHelpTexts();
-          this.loggingService.debug(
-            'AppMode or Language has changed. Update kdv elements and help texts.',
-            DEBUG_TAG
-          );
+          this.loggingService.debug('AppMode or Language has changed. Update help texts.', DEBUG_TAG);
         })
       );
       this.subscriptions.push(
@@ -278,7 +272,6 @@ export class DataMarshallService implements OnReset {
         cancelPromiseForObservations
       );
       await this.warningService.updateWarnings(cancelTimer);
-      await this.kdvService.updateKdvElements(cancelTimer);
       await this.helpTextService.updateHelpTexts(cancelTimer);
       await this.tripLoggerService.cleanupOldLegacyTrip();
       this.loggingService.debug('Background update completed', DEBUG_TAG);

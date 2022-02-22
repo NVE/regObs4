@@ -13,7 +13,6 @@ import { KdvViewRepositoryKey } from '../../models/view-repository-key.type';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
-const DEBUG_TAG = 'KdvService';
 const KDV_ASSETS_FOLDER = '/assets/json'; // TODO: Add this to module config?
 
 @Injectable({
@@ -31,6 +30,10 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
     super({ useLangKeyAsDbKey: true, validSeconds: 12 * 60 * 60 }, offlineDbService, languageService, appModeService, logger);
   }
 
+  protected getDebugTag(): string {
+    return 'KdvService';
+  }
+
   public getKdvRepositoryByKeyObservable(key: KdvKey): Observable<KdvElement[]> {
     return this.data$.pipe(map((val) => val.KdvRepositories[key]));
   }
@@ -39,18 +42,18 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
     return this.data$.pipe(map((val) => val.ViewRepositories[key]));
   }
 
-  public getUpdatedData(_: AppMode, langKey: LangKey): Observable<KdvElementsResponseDto> {
+  protected getUpdatedData(_: AppMode, langKey: LangKey): Observable<KdvElementsResponseDto> {
     return this.kdvElementsService.KdvElementsGetKdvs({ langkey: langKey });
   }
 
-  public getTableName(appMode: AppMode): string {
+  protected getTableName(appMode: AppMode): string {
     return `${appMode.toLocaleLowerCase()}/kdvelements`;
   }
 
-  public getFallbackData(_: AppMode, langKey: LangKey): Observable<KdvElementsResponseDto> {
+  protected getFallbackData(_: AppMode, langKey: LangKey): Observable<KdvElementsResponseDto> {
     return this.httpClient.get<KdvElementsResponseDto>(`${KDV_ASSETS_FOLDER}/kdvelements.${getLangKeyString(langKey)}.json`).pipe(
       catchError((err) => {
-        this.logger.error(err, `Kdv elements for language ${getLangKeyString(langKey)} not found in assets/kdvelements folder`, DEBUG_TAG);
+        this.logger.error(err, `Kdv elements for language ${getLangKeyString(langKey)} not found in assets/kdvelements folder`, this.getDebugTag());
         return of({
           KdvRepositories: {},
           ViewRepositories: {}
