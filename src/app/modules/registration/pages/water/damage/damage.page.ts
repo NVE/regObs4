@@ -1,13 +1,13 @@
 import { Component, NgZone } from '@angular/core';
 import { BasePage } from '../../base.page';
-import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { KdvService } from '../../../../../core/services/kdv/kdv.service';
+import { KdvKey, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 const NO_DAMAGE_VISIBLE = 7;
 
@@ -66,7 +66,7 @@ export class DamagePage extends BasePage {
   onInit() {
     const geoHazardName = GeoHazard[this.registration.geoHazard];
     this.kdvSubscription = this.kdvService
-      .getKdvRepositoryByKeyObservable(`${geoHazardName}_DamageTypeKDV`)
+      .getKdvRepositoryByKeyObservable(`${geoHazardName}_DamageTypeKDV` as KdvKey)
       .pipe(map((val) => val.filter((x) => x.Id !== NO_DAMAGE_VISIBLE)))
       .subscribe((kdvElements) => {
         this.ngZone.run(() => {

@@ -5,10 +5,12 @@ import {
 } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { IsEmptyHelper } from '../../../../../../core/helpers/is-empty.helper';
-import { KdvService } from '../../../../../../core/services/kdv/kdv.service';
 import { Subscription, combineLatest } from 'rxjs';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 const NO_WEAK_LAYER_KDV_VALUE = 24;
+
+interface AvalancheProblemKeys { AvalancheExtTID: number; AvalCauseTID: number }
 
 @Component({
   selector: 'app-avalanche-problem-modal',
@@ -33,7 +35,7 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
       : undefined;
   }
 
-  avalancheProblemView: { AvalancheExtTID: number; AvalCauseTID: number }[];
+  avalancheProblemView: AvalancheProblemKeys[];
   avalancheCauseAttributes: { kdvElement: KdvElement; selected: boolean }[];
   exposition: number[];
 
@@ -54,13 +56,11 @@ export class AvalancheProblemModalPage implements OnInit, OnDestroy {
       this.isNew = true;
     }
 
-    this.viewSubscription = combineLatest(
-      this.kdvService.getKdvRepositoryByKeyObservable(
-        'Snow_AvalCauseAttributeFlags'
-      ),
-      this.kdvService.getViewRepositoryByKeyObservable('AvalancheProblemMenu3V')
+    this.viewSubscription = combineLatest([
+      this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalCauseAttributeFlags'),
+      this.kdvService.getViewRepositoryByKeyObservable('AvalancheProblemMenu3V')]
     ).subscribe(([snowCauseAttributesKdvElements, avalancheProblemView]) => {
-      this.avalancheProblemView = avalancheProblemView;
+      this.avalancheProblemView = avalancheProblemView as AvalancheProblemKeys[];
       this.avalancheCauseAttributes = this.getAvalancheCauseAttributes(
         snowCauseAttributesKdvElements
       );

@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { KdvService } from '../../../core/services/kdv/kdv.service';
-import { take } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
+import { KdvKey } from '../../common-registration/registration.models';
+import { KdvService } from '../../common-registration/registration.services';
 
 @Pipe({
   name: 'kdvDescription'
@@ -10,13 +11,10 @@ export class KdvDescriptionPipe implements PipeTransform {
 
   async transform(
     value: number,
-    kdvKey: string,
+    kdvKey: KdvKey,
     returnDescription = false
   ): Promise<string> {
-    const kdvelements = await this.kdvService
-      .getKdvRepositoryByKeyObservable(kdvKey)
-      .pipe(take(1))
-      .toPromise();
+    const kdvelements = await firstValueFrom(this.kdvService.getKdvRepositoryByKeyObservable(kdvKey));
     const kdvelement = kdvelements.find((x) => x.Id === value);
     const result = kdvelement
       ? returnDescription

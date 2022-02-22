@@ -10,9 +10,9 @@ import {
   KdvElement
 } from 'src/app/modules/common-regobs-api/models';
 import { AvalancheProblemModalPage } from './avalanche-problem-modal/avalanche-problem-modal.page';
-import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { Subscription } from 'rxjs';
 import { ArrayHelper } from 'src/app/core/helpers/array-helper';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 @Component({
   selector: 'app-avalanche-problem',
