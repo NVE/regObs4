@@ -264,7 +264,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private updateMapViewInfo(): void {
     const latLng = this.locationMarker.getLatLng();
     this.mapSearchService
-      .getViewInfo({ center: latLng, bounds: null, zoom: 0 }, this.geoHazard)
+      .getViewInfo(latLng, this.geoHazard)
       .subscribe(
         (val) => {
           this.ngZone.run(() => {
