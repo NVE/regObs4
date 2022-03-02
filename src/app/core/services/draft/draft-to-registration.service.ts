@@ -19,6 +19,8 @@ const DEBUG_TAG = 'DraftToRegistrationService';
 
 // TODO: Hva skjer om man skifter app miljø osv? Eller hvis en draft har status "sync" og man ikke er logget inn?
 
+// TODO: Nå vil den prøve å sende inn registreringer på nytt hver gang det kommer noe til drafts$, den bør vel bare sende inn én gang med mindre noe endres
+
 @Injectable({
   providedIn: 'root'
 })
