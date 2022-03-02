@@ -12,7 +12,7 @@
 <ion-content>
   <app-registration-content-wrapper
     *ngIf="registration && registration.request.AvalancheObs && registration.request.Incident"
-    [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
+    [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
         <ion-label>

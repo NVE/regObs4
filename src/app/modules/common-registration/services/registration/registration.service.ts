@@ -26,7 +26,7 @@ import { RegistrationTid } from '../../models/registration-tid.enum';
 import { Summary, AttachmentViewModel, RegistrationViewModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   getAllAttachments,
-  getPropertyName,
+  getRegistrationName,
   getRegistrationTidsForGeoHazard,
   hasAnyObservations,
   isArrayType,
@@ -61,7 +61,12 @@ const SYNC_BUFFER_MS = 3 * 1000; // Wait at least 3 seconds before next sync att
   providedIn: 'root'
 })
 export class RegistrationService {
+
+  /**
+   * @deprecated Use draft service
+   */
   public readonly registrationStorage$: Observable<IRegistration[]>;
+
   private _registrationSyncSubscription: Subscription;
 
   constructor(
@@ -86,20 +91,28 @@ export class RegistrationService {
       }),
       shareReplay(1)
     );
-    this.initAutoSync();
+    // this.initAutoSync();
   }
 
+  /**
+   * @deprecated
+   */
   public saveAndSync(
     reg: IRegistration,
     changedRegistrationTid: RegistrationTid = undefined,
     ignoreVersionCheck = false
   ): Observable<boolean> {
+    throw new Error('To be removed');
     reg.changedRegistrationTid = changedRegistrationTid;
     reg.syncStatus = SyncStatus.Sync;
     return this.saveRegistration(reg, ignoreVersionCheck);
   }
 
+  /**
+   * @deprecated
+   */
   public saveRegistration(reg: IRegistration, ignoreVersionCheck = false, updateChangedTimestamp = true): Observable<boolean> {
+    throw new Error('To be removed');
     if (updateChangedTimestamp) {
       reg.changed = moment().unix();
     }
@@ -110,7 +123,11 @@ export class RegistrationService {
     }
   }
 
+  /**
+   * @deprecated
+   */
   private saveAndSyncSingleRegistration(reg: IRegistration, ignoreVersionCheck: boolean) {
+    throw new Error('To be removed');
     // Hvorfor kalles unsubscribe på denne?
     if (this._registrationSyncSubscription) {
       this._registrationSyncSubscription.unsubscribe();
@@ -131,7 +148,11 @@ export class RegistrationService {
     );
   }
 
+  /**
+   * @deprecated
+   */
   public deleteRegistration(id: string): Observable<boolean> {
+    throw new Error('To be removed');
     return this.getRegistrationOfflineDocumentById(id).pipe(
       take(1),
       switchMap((doc) => (doc ? this.offlineRegistrationSyncService.deleteItem(doc.toJSON()).pipe(map(() => doc)) : of(undefined))),
@@ -139,7 +160,11 @@ export class RegistrationService {
     );
   }
 
+  /**
+   * @deprecated
+   */
   public deleteRegistrationFromOfflineStorage(id: string): Observable<unknown> {
+    throw new Error('To be removed');
     return this.getRegistrationOfflineDocumentById(id).pipe(
       take(1),
       switchMap((doc) => (doc ? from(doc.remove()) : of(false)))
@@ -151,6 +176,7 @@ export class RegistrationService {
    * @deprecated Bruk DraftRepositoryService
    */
   public getRegistrationByIdShared$(id: string): Observable<IRegistration> {
+    throw new Error('To be removed');
     return this.registrationStorage$.pipe(
       map((registrations) => registrations.find((r) => r.id === id)),
       filter((reg) => reg != null)
@@ -161,12 +187,17 @@ export class RegistrationService {
    * @deprecated Bruk DraftRepositoryService
    */
   public async getRegistrationById(id: string): Promise<IRegistration> {
+    throw new Error('To be removed');
     const collection = await this.getRegistrationDbCollectionForAppMode().pipe(take(1)).toPromise();
     const resultMap = await collection.findByIds([id]);
     return resultMap.get(id)?.toJSON();
   }
 
+  /**
+   * @deprecated
+   */
   public async cancelSync(): Promise<void> {
+    throw new Error('To be removed');
     await this.progressService.resetSyncProgress();
     if (this._registrationSyncSubscription) {
       this._registrationSyncSubscription.unsubscribe();
@@ -174,13 +205,21 @@ export class RegistrationService {
     this.initAutoSync();
   }
 
+  /**
+   * @deprecated
+   */
   public initAutoSync(): void {
+    throw new Error('To be removed');
     if (this.options.autoSync) {
       this._registrationSyncSubscription = this.getAutoSyncObservable().subscribe();
     }
   }
 
+  /**
+   * @deprecated
+   */
   public getFirstDraftForGeoHazard(geoHazard: GeoHazard, draftsOnly = true): Promise<IRegistration> {
+    throw new Error('To be removed');
     return this.getDraftsForGeoHazardObservable(geoHazard, draftsOnly)
       .pipe(
         map((rows) => rows.sort((a, b) => b.changed - a.changed)[0]),
@@ -189,7 +228,11 @@ export class RegistrationService {
       .toPromise();
   }
 
+  /**
+   * @deprecated
+   */
   public getDraftsForGeoHazardObservable(geoHazard: GeoHazard, draftsOnly = true): Observable<IRegistration[]> {
+    throw new Error('To be removed');
     return this.registrationStorage$.pipe(
       map((records) =>
         records.filter(
@@ -218,20 +261,24 @@ export class RegistrationService {
     this.deleteAllRegistrationsFromOfflineStorage$(geoHazard).pipe(take(1)).subscribe();
   }
 
+  // TODO: Move to draft service?
+  /**
+   * @deprecated
+   */
   public deleteForm(regId: string, registrationTid: RegistrationTid, index: number): Observable<unknown> {
     return this.getRegistrationByIdShared$(regId).pipe(
       take(1),
       map((reg) => {
         const regToEdit = cloneDeep(reg);
         this.makeExistingRegistrationEditable(regToEdit);
-        if (isArrayType(registrationTid) && regToEdit.request[getPropertyName(registrationTid)].length > index) {
-          (regToEdit.request[getPropertyName(registrationTid)] as Array<unknown>).splice(index, 1);
+        if (isArrayType(registrationTid) && regToEdit.request[getRegistrationName(registrationTid)].length > index) {
+          (regToEdit.request[getRegistrationName(registrationTid)] as Array<unknown>).splice(index, 1);
           // Deletes images if no forms left in array
-          if ((regToEdit.request[getPropertyName(registrationTid)] as Array<unknown>).length === 0) {
+          if ((regToEdit.request[getRegistrationName(registrationTid)] as Array<unknown>).length === 0) {
             this.deleteExistingAttachmentsForRegistrationType(regToEdit, registrationTid);
           }
         } else if (!isArrayType(registrationTid)) {
-          delete regToEdit.request[getPropertyName(registrationTid)];
+          delete regToEdit.request[getRegistrationName(registrationTid)];
           this.deleteExistingAttachmentsForRegistrationType(regToEdit, registrationTid);
         }
         return regToEdit;
@@ -247,7 +294,11 @@ export class RegistrationService {
     return reg;
   }
 
+  /**
+   * @deprecated
+   */
   public createNewEmptyDraft(geoHazard: GeoHazard): IRegistration {
+    throw new Error('To be removed');
     const id = uuidv4();
     const draft: IRegistration = {
       id,
@@ -264,7 +315,11 @@ export class RegistrationService {
     return draft;
   }
 
+  /**
+   * @deprecated
+   */
   public async editExistingRegistrationAndSave(registrationViewModel: RegistrationViewModel): Promise<IRegistration> {
+    throw new Error('To be removed');
     const reg = this.createNewEmptyDraft(registrationViewModel.GeoHazardTID);
     reg.id = registrationViewModel.ExternalReferenceId || reg.id; // Keep the same id as reference id
     reg.request = cloneDeep(registrationViewModel);
@@ -274,7 +329,12 @@ export class RegistrationService {
     return reg;
   }
 
+  // TODO: Implement new method on draft service
+  /**
+   * @deprecated
+   */
   public makeExistingRegistrationEditable(reg: IRegistration): void {
+    throw new Error('To be removed');
     if (reg && reg.syncStatus === SyncStatus.InSync) {
       reg.request = cloneDeep(reg.response);
     }
@@ -284,7 +344,11 @@ export class RegistrationService {
     return this.getRegistrationsToSyncObservable().pipe(take(1), this.resetProgressAndSyncItems());
   }
 
+  /**
+   * @deprecated
+   */
   public syncSingleRegistration(reg: IRegistration, ignoreVersionCheck: boolean): Observable<boolean> {
+    throw new Error('To be removed');
     if (!reg) {
       return of(false);
     }
@@ -390,8 +454,10 @@ export class RegistrationService {
    * Converts a registration draft to summary as the same model as generated from the API
    * @param reg Registration draft
    * @param registrationTid Registration tid
+   * @deprecated
    */
   public getDraftSummary(reg: IRegistration, registrationTid: RegistrationTid, addIfEmpty = true): Observable<Summary[]> {
+    throw new Error('To be removed');
     if (!isObservationEmptyForRegistrationTid(reg, registrationTid)) {
       // const provider = this.summaryProviders.find((p) => p.registrationTid === registrationTid);
       // if (provider) {
@@ -406,13 +472,16 @@ export class RegistrationService {
   }
 
   public getSummaryForRegistrationTid(reg: IRegistration, registrationTid: RegistrationTid, addIfEmpty = true): Observable<Summary[]> {
+    throw new Error('To be removed');
     if (reg.changedRegistrationTid === registrationTid && reg.syncStatus !== SyncStatus.InSync) {
       return this.getDraftSummary(reg, registrationTid, addIfEmpty);
     }
     return this.getResponseSummaryForRegistrationTid(reg, registrationTid, addIfEmpty);
   }
 
+  // TODO: Decide if we should use this or the RegistrationTid enum that lives somewhere
   public getRegistrationName(registrationTid: RegistrationTid): Observable<string> {
+    throw new Error('To be removed');
     return this.kdvService.getKdvRepositoryByKeyObservable('RegistrationKDV').pipe(
       map((kdvElements) => kdvElements.find((kdv) => kdv.Id === registrationTid)),
       map((val) => (val ? val.Name : ''))
@@ -628,7 +697,11 @@ export class RegistrationService {
     );
   }
 
+  /**
+   * @deprecated
+   */
   public async isEmpty(reg: IRegistration): Promise<boolean> {
+    throw new Error('Use method on draft service');
     const isNotEmpty = await this.isNotEmpty(reg);
     return !isNotEmpty;
   }

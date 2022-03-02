@@ -1,14 +1,27 @@
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+// If we want to make RegistrationEditModel immutable, use Immutable<RegistrationEditModel>
+// type ImmutablePrimitive = undefined | null | boolean | string | number | Function;
+// type Immutable<T> =
+//   T extends ImmutablePrimitive ? T :
+//   T extends Array<infer U> ? ImmutableArray<U> :
+//   ImmutableObject<T>;
+// type ImmutableArray<T> = ReadonlyArray<Immutable<T>>;
+// type ImmutableObject<T> = { readonly [K in keyof T]: Immutable<T[K]> };
+
 /**
  * A registration that is not submitted to the server (yet).
  * It can be a new registration or an earlier submitted registration changed by you.
  */
 export interface RegistrationDraft {
 
+  // TODO: Tror vi trenger en knagg å henge innsendingsfeil på her.
+  // En optional error
+
   /** Unique ID. Will never change */
-  uuid: string;
+  readonly uuid: string;
 
   /**
    * Registration ID, for example 283962.
@@ -16,22 +29,22 @@ export interface RegistrationDraft {
    * Returned by regobs api when a registration is submitted.
    * Will only be used for reference when editing existing observations.
    */
-  regId?: number;
+  readonly regId?: number;
 
   /**
    * Timestamp in millis that changes each time we save the draft locally.
    * Do not mix with registration.DtChangeTime, which is last time the registration was saved in Regobs
    * @returns last saved time or undefined if not saved
    */
-  lastSavedTime?: number;
+  readonly lastSavedTime?: number;
 
   /**
    * @see SyncStatus
    */
-  syncStatus: SyncStatus;
+  readonly syncStatus: SyncStatus;
 
   /**
    * The registration to submit
    */
-  registration: RegistrationEditModel;
+  readonly registration: RegistrationEditModel;
 }

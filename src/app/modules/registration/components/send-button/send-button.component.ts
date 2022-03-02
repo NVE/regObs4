@@ -2,13 +2,15 @@ import { Component, OnInit, Input, NgZone, OnDestroy, ChangeDetectionStrategy, C
 import { RegistrationService } from '../../services/registration.service';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { IRegistration } from 'src/app/modules/common-registration/registration.models';
+import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { Subject } from 'rxjs';
 import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-send-button',
@@ -17,7 +19,7 @@ import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() registration: IRegistration;
+  @Input() draft: RegistrationDraft;
 
   // get isEmpty(): boolean {
   //   return this.registrationService.isRegistrationEmpty(this.registration);
@@ -35,13 +37,14 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
   private ngDestroy$ = new Subject<void>();
 
   constructor(
-    private registrationService: RegistrationService,
+    private draftService: DraftRepositoryService,
+    // private registrationService: RegistrationService,
     private alertController: AlertController,
     private userSettingService: UserSettingService,
     private translateService: TranslateService,
     private navController: NavController,
     private regobsAuthService: RegobsAuthService,
-    private commonRegistrationService: CommonRegistrationService,
+    // private commonRegistrationService: CommonRegistrationService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
   ) {}
@@ -60,11 +63,12 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges & SmartChanges<this>): void {
-    if (changes.registration?.currentValue) {
-      this.commonRegistrationService.isEmpty(changes.registration.currentValue).then((empty) => {
-        this.isEmpty = empty;
-        this.cdr.detectChanges();
-      });
+    if (changes.draft?.currentValue) {
+      // TODO need empty method on draft service
+      // this.commonRegistrationService.isEmpty(changes.registration.currentValue).then((empty) => {
+      //   this.isEmpty = empty;
+      //   this.cdr.detectChanges();
+      // });
     }
   }
 
@@ -78,13 +82,18 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
       this.isSending = true;
       this.cdr.detectChanges();
       try {
-        const userSettings = await this.userSettingService.userSetting$
-          .pipe(take(1))
-          .toPromise();
-        await this.registrationService.sendRegistration(
-          userSettings.appMode,
-          this.registration
-        );
+        // Redirect user to log in if not authenticated
+        const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
+        if (!loggedInUser.isLoggedIn) {
+          this.regobsAuthService.signIn();
+          return;
+        }
+
+        // Mark draft as ready to submit
+        this.draftService.save({ ...this.draft, syncStatus: SyncStatus.Sync });
+
+        // Navigate to my observations
+        this.navController.navigateRoot('my-observations');
       } finally {
         this.isSending = false;
         this.cdr.detectChanges();
@@ -114,9 +123,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
         {
           text: translations['ALERT.OK'],
           handler: () => {
-            this.commonRegistrationService.deleteRegistrationFromOfflineStorage(
-              this.registration.id
-            ).subscribe(() => {
+            this.draftService.delete(this.draft.uuid).then(() => {
               this.navController.navigateRoot('');
             });
           }

@@ -88,7 +88,7 @@ export class AvalancheObsPage extends BasePage {
     this.showWarning = false;
     // Also reset Incident when Avalanche obs is reset.
     await this.basePageService.reset(
-      this.registration,
+      this.draft,
       RegistrationTid.Incident
     );
   }
@@ -99,15 +99,16 @@ export class AvalancheObsPage extends BasePage {
   }
 
   async isEmpty(): Promise<boolean> {
-    const isEmpty = !await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
-      this.registration,
-      this.registrationTid
-    ).pipe(take(1)).toPromise();
-    const isIncidentEmpty = !await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
-      this.registration,
-      RegistrationTid.Incident
-    ).pipe(take(1)).toPromise();
-    return isEmpty && isIncidentEmpty;
+    const isAvalancheObsEmpty = await this.basePageService.DraftService.isDraftEmptyForRegistrationType(
+      this.draft, this.registrationTid
+    );
+    if (!isAvalancheObsEmpty) {
+      return false;
+    }
+    const isIncidentEmpty = await this.basePageService.DraftService.isDraftEmptyForRegistrationType(
+      this.draft, RegistrationTid.Incident
+    );
+    return isIncidentEmpty;
   }
 
   setAvalancheTimeTimeToNow() {

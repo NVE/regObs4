@@ -1,25 +1,22 @@
 import { Injectable, NgZone } from '@angular/core';
 import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { getPropertyName, isArrayType } from 'src/app/modules/common-registration/registration.helpers';
-import { NewAttachmentService, RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
-import { RegistrationService } from '../services/registration.service';
+import { getRegistrationName, isArrayType } from 'src/app/modules/common-registration/registration.helpers';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { switchMap } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
 import { LoggingService } from '../../shared/services/logging/logging.service';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 const DEBUG_TAG = 'BasePageService';
 @Injectable({
   providedIn: 'root'
 })
 export class BasePageService {
+
+  // TODO: Hvorfor alle disse getters?
   get Zone() {
     return this.ngZone;
-  }
-
-  get RegistrationService() {
-    return this.registrationService;
   }
 
   get AlertController() {
@@ -30,31 +27,39 @@ export class BasePageService {
     return this.translateService;
   }
 
-  get CommonRegistrationService() {
-    return this.commonRegistrationService;
+  get DraftService() {
+    return this.draftService;
+  }
+
+  get NewAttachmentService() {
+    return this.newAttachmentService;
   }
 
   constructor(
-    private registrationService: RegistrationService,
+    private draftService: DraftRepositoryService,
     private newAttachmentService: NewAttachmentService,
-    private commonRegistrationService: CommonRegistrationService,
     private ngZone: NgZone,
     private alertController: AlertController,
     private translateService: TranslateService,
     private loggingService: LoggingService
   ) {}
 
-  async confirmLeave(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+  async confirmLeave(draft: RegistrationDraft, registrationTid: RegistrationTid, onReset?: () => void) {
     const leaveText = await this.translateService.get('REGISTRATION.REQUIRED_FIELDS_MISSING').toPromise();
-    return this.createResetDialog(leaveText, registration, registrationTid, onReset);
+    return this.createResetDialog(leaveText, draft, registrationTid, onReset);
   }
 
-  async confirmReset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+  async confirmReset(draft: RegistrationDraft, registrationTid: RegistrationTid, onReset?: () => void) {
     const leaveText = await this.translateService.get('REGISTRATION.CONFIRM_RESET').toPromise();
-    return this.createResetDialog(leaveText, registration, registrationTid, onReset);
+    return this.createResetDialog(leaveText, draft, registrationTid, onReset);
   }
 
-  private async createResetDialog(message: string, registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
+  private async createResetDialog(
+    message: string,
+    draft: RegistrationDraft,
+    registrationTid: RegistrationTid,
+    onReset?: () => void
+  ) {
     const translations = await this.translateService.get(['DIALOGS.CANCEL', 'DIALOGS.YES']).toPromise();
     const alert = await this.alertController.create({
       message,
@@ -72,30 +77,44 @@ export class BasePageService {
     const result = await alert.onDidDismiss();
     const reset: boolean = result.role !== 'cancel';
     if (reset) {
-      await this.reset(registration, registrationTid, onReset);
+      await this.reset(draft, registrationTid, onReset);
     }
     return reset;
   }
 
-  async reset(registration: IRegistration, registrationTid: RegistrationTid, onReset?: () => void) {
-    this.Zone.run(() => {
-      if (registrationTid) {
-        registration.request[getPropertyName(registrationTid)] = this.getDefaultValue(registrationTid);
-        this.resetImages(registration);
-      }
+  // TODO: Test how ng zone works here
+  async reset(draft: RegistrationDraft, registrationTid: RegistrationTid, onReset?: () => void) {
+    if (registrationTid) {
+      const draftReset: RegistrationDraft = {
+        ...draft,
+        registration: {
+          ...draft.registration,
+          [getRegistrationName(registrationTid)]: this.getDefaultValue(registrationTid)
+        }
+      };
+
+      await this.resetImages(draftReset);
+      await this.draftService.save(draftReset);
+    }
+    this.ngZone.run(() => {
       if (onReset) {
         onReset();
       }
     });
-    await this.registrationService.saveRegistrationAsync(registration);
   }
 
-  createDefaultProps(registration: IRegistration, registrationTid: RegistrationTid) {
-    const propName = getPropertyName(registrationTid);
-    if (!registration.request[propName]) {
-      // Init to new object if null
-      registration.request[propName] = this.getDefaultValue(registrationTid);
+  createDefaultProps(draft: RegistrationDraft, registrationTid: RegistrationTid): RegistrationDraft {
+    const propName = getRegistrationName(registrationTid);
+    if (!draft.registration[propName]) {
+      return {
+        ...draft,
+        registration: {
+          ...draft.registration,
+          [propName]: this.getDefaultValue(registrationTid)
+        }
+      };
     }
+    return draft;
   }
 
   getDefaultValue(registrationTid: RegistrationTid) {
@@ -106,17 +125,13 @@ export class BasePageService {
     }
   }
 
-  resetImages(registration: IRegistration) {
-    this.newAttachmentService
-      .getAttachments(registration.id)
-      .pipe(switchMap((attachments) => forkJoin(attachments.map((a) => this.newAttachmentService.removeAttachment(registration.id, a.id)))))
-      .subscribe(
-        () => {
-          this.loggingService.debug('Reset images complete', DEBUG_TAG);
-        },
-        (error) => {
-          this.loggingService.error(error, DEBUG_TAG, 'Could not reset images');
-        }
-      );
+  // TODO: Test if reset images works ok
+  async resetImages(draft: RegistrationDraft) {
+    try {
+      await this.newAttachmentService.removeAttachments(draft.uuid);
+      this.loggingService.debug('Reset images complete', DEBUG_TAG);
+    } catch (error) {
+      this.loggingService.error(error, DEBUG_TAG, 'Could not reset images');
+    }
   }
 }

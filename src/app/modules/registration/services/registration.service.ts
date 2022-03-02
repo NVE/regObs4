@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+// import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import moment from 'moment';
@@ -13,7 +13,7 @@ import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../shared/services/logging/logging.service';
 import { RegobsAuthService } from '../../auth/services/regobs-auth.service';
 import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
+// import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
 import { GeoHazard, AppMode } from 'src/app/modules/common-core/models';
 
 const DEBUG_TAG = 'RegistrationService';
@@ -22,8 +22,8 @@ const DEBUG_TAG = 'RegistrationService';
   providedIn: 'root'
 })
 export class RegistrationService {
-  public readonly drafts$: Observable<IRegistration[]>;
-  public readonly registrations$: Observable<IRegistration[]>;
+  // public readonly drafts$: Observable<IRegistration[]>;
+  // public readonly registrations$: Observable<IRegistration[]>;
 
   constructor(
     private regobsAuthService: RegobsAuthService,
@@ -34,13 +34,13 @@ export class RegistrationService {
     private loggingService: LoggingService,
     private observationService: ObservationService,
     // private registrationRepositoryService: RegistrationRepositoryService,
-    private commonRegistrationService: CommonRegistrationService,
+    // private commonRegistrationService: CommonRegistrationService,
     private httpClient: HttpClient,
     private file: File
   ) {
     // this.registrations$ = this.registrationRepositoryService.registrations$;
-    this.registrations$ = this.commonRegistrationService.registrationStorage$;
-    this.drafts$ = this.registrations$.pipe(map((val) => val.filter((item) => item.syncStatus === SyncStatus.Draft)));
+    // this.registrations$ = this.commonRegistrationService.registrationStorage$;
+    // this.drafts$ = this.registrations$.pipe(map((val) => val.filter((item) => item.syncStatus === SyncStatus.Draft)));
   }
 
   // saveRegistration(appMode: AppMode, registration: IRegistration) {
@@ -53,7 +53,11 @@ export class RegistrationService {
   //   this.commonRegistrationService.saveRegistration(registration);
   // }
 
+  /**
+   * @deprecated Use DraftService
+   */
   async saveRegistrationAsync(registration: IRegistration, clean = false) {
+    throw new Error('Do not use');
     // const appMode = await this.userSettingService.appMode$
     //   .pipe(take(1))
     //   .toPromise();
@@ -61,9 +65,12 @@ export class RegistrationService {
     //   await this.cleanupRegistration(registration);
     // }
     // this.saveRegistration(appMode, registration);
-    await this.commonRegistrationService.saveRegistration(registration).pipe(take(1)).toPromise();
+    // await this.commonRegistrationService.saveRegistration(registration).pipe(take(1)).toPromise();
   }
 
+  /**
+   * @deprecated Use DraftService
+   */
   createNewRegistration(geoHazard: GeoHazard) {
     const newId = utils.uuid();
     const reg: IRegistration = {
@@ -233,14 +240,19 @@ export class RegistrationService {
   //   return arrays.indexOf(registrationTid) >= 0 ? 'array' : 'object';
   // }
 
+  /**
+   * @deprecated TODO: Implement new send registration
+   */
   async sendRegistration(appMode: AppMode, reg: IRegistration) {
+    throw new Error('Not implemented');
+
     const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
     if (!loggedInUser.isLoggedIn) {
       this.regobsAuthService.signIn();
       return;
     }
     reg.syncStatus = SyncStatus.Sync;
-    this.commonRegistrationService.saveAndSync(reg, null, true).subscribe();
+    // this.commonRegistrationService.saveAndSync(reg, null, true).subscribe();
     // TODO: Ignore version check is set to true for now
     this.navController.navigateRoot('my-observations');
   }
@@ -259,8 +271,12 @@ export class RegistrationService {
   //   );
   // }
 
+  /**
+   * @deprecated TODO: We should not sync any more
+   */
   async syncRegistrations(cancel?: Promise<any>): Promise<IRegistration[]> {
-    return toPromiseWithCancel(this.commonRegistrationService.syncRegistrations(), cancel);
+    throw new Error('Not implemented');
+    // return toPromiseWithCancel(this.commonRegistrationService.syncRegistrations(), cancel);
   }
 
   // async syncRegistrations(cancel?: Promise<any>) {
@@ -417,15 +433,23 @@ export class RegistrationService {
   //   );
   // }
 
+  /**
+   * @deprecated TODO: We should not sync any more
+   */
   getRegistrationsToSync() {
-    return this.registrations$.pipe(
-      // TODO: Why drafts?
-      map((items) => items.filter((x) => x.syncStatus === SyncStatus.Draft))
-    );
+    throw new Error('Not implemented');
+    // return this.registrations$.pipe(
+    //   // TODO: Why drafts?
+    //   map((items) => items.filter((x) => x.syncStatus === SyncStatus.Draft))
+    // );
   }
 
+  /**
+   * @deprecated TODO: We should not sync any more
+   */
   getSavedRegistrationById(id: string): Promise<IRegistration> {
-    return this.commonRegistrationService.getRegistrationById(id);
+    throw new Error('Not implemented');
+    // return this.commonRegistrationService.getRegistrationById(id);
   }
 
   // getSavedRegistrationByIdObservable(id: string) {

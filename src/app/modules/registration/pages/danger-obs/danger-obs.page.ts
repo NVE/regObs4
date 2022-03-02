@@ -36,7 +36,7 @@ export class DangerObsPage extends BasePage {
   }
 
   onInit() {
-    const kdvKey = `${GeoHazard[this.registration.geoHazard]}_DangerSignKDV`;
+    const kdvKey = `${GeoHazard[this.draft.registration.GeoHazardTID]}_DangerSignKDV`;
     this.dangerSignKdvSubscription = this.kdvService
       .getKdvRepositoryByKeyObservable(kdvKey)
       .subscribe((val) => {
@@ -49,11 +49,11 @@ export class DangerObsPage extends BasePage {
   async addOrEdit(index?: number) {
     const dangerObs =
       index !== undefined
-        ? this.registration.request.DangerObs[index]
+        ? this.draft.registration.DangerObs[index]
         : undefined;
     const modal = await this.modalController.create({
       component: AddOrEditDangerObsModalPage,
-      componentProps: { dangerObs, geoHazard: this.registration.geoHazard }
+      componentProps: { dangerObs, geoHazard: this.draft.registration.GeoHazardTID }
     });
     modal.present();
     const result = await modal.onDidDismiss();

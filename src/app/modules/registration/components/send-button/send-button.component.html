@@ -1,12 +1,16 @@
-<ion-footer *ngIf="registration">
+<ion-footer *ngIf="draft">
   <ion-toolbar>
     <ion-grid class="ion-no-padding">
       <ion-row>
         <ion-col class="send-button-col" size="12">
           <ion-button [disabled]="isDisabled" expand="block" color="varsom-orange" (click)="send()">
             <ion-icon slot="start" name="send"></ion-icon>
-            <span *ngIf="registration.syncError">{{"REGISTRATION.RESEND" | translate}}</span>
-            <span *ngIf="!registration.syncError">{{"REGISTRATION.SEND" | translate}}</span>
+            
+            <!-- TODO: error handling -->
+            <!-- <span *ngIf="registration.syncError">{{"REGISTRATION.RESEND" | translate}}</span>
+            <span *ngIf="!registration.syncError">{{"REGISTRATION.SEND" | translate}}</span> -->
+            <span>{{"REGISTRATION.SEND" | translate}}</span>
+
           </ion-button>
         </ion-col>
       </ion-row>

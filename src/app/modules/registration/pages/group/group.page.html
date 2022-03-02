@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content>
-  <app-registration-content-wrapper [isEmpty]="isEmpty()" *ngIf="registration" [registration]="registration"
+  <app-registration-content-wrapper [isEmpty]="isEmpty()" *ngIf="registration" [draft]="draft"
     [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">

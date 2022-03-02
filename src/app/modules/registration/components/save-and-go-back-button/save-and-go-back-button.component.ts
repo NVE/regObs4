@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
-import { take } from 'rxjs/operators';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-save-and-go-back-button',
@@ -12,7 +12,7 @@ import { take } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SaveAndGoBackButtonComponent implements OnInit, OnChanges {
-  @Input() registration: IRegistration;
+  @Input() draft: RegistrationDraft;
   @Input() registrationTid: RegistrationTid;
   @Output() reset = new EventEmitter();
 
@@ -20,7 +20,7 @@ export class SaveAndGoBackButtonComponent implements OnInit, OnChanges {
 
   constructor(
     private navContoller: NavController,
-    private commonRegistrationService: CommonRegistrationService,
+    private draftService: DraftRepositoryService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -34,18 +34,15 @@ export class SaveAndGoBackButtonComponent implements OnInit, OnChanges {
     this.setHasData();
   }
 
-  private setHasData(): void {
-    if(this.registration != null && this.registrationTid != null) {
-      this.commonRegistrationService.hasAnyDataToShowInRegistrationTypes(this.registration, this.registrationTid)
-        .pipe((take(1))).subscribe((hasData) => {
-          this.hasData = hasData;
-          this.cdr.markForCheck();
-        });
+  private async setHasData(): Promise<void> {
+    if (this.draft != null && this.registrationTid != null) {
+      await this.draftService.isDraftEmptyForRegistrationType(this.draft, this.registrationTid);
+      this.cdr.markForCheck();
     }
   }
 
   async goBack() {
-    this.navContoller.navigateBack('registration/edit/' + this.registration.id);
+    this.navContoller.navigateBack('registration/edit/' + this.draft.uuid);
   }
 
   doReset() {

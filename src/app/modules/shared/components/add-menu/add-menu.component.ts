@@ -7,10 +7,11 @@ import { TripLoggerService } from '../../../../core/services/trip-logger/trip-lo
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { RegistrationService } from '../../../registration/services/registration.service';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
 import { LoggingService } from '../../services/logging/logging.service';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 const DEBUG_TAG = 'AddMenuComponent';
 
@@ -31,7 +32,7 @@ export class AddMenuComponent implements OnInit {
   showSpace$: Observable<boolean>;
 
   constructor(
-    private registrationService: RegistrationService,
+    private draftService: DraftRepositoryService,
     private navController: NavController,
     private dateHelperService: DateHelperService,
     private tripLoggerService: TripLoggerService,
@@ -47,7 +48,8 @@ export class AddMenuComponent implements OnInit {
       })),
       setObservableTimeout()
     );
-    this.drafts$ = this.registrationService.drafts$.pipe(
+
+    this.drafts$ = this.draftService.drafts$.pipe(
       tap((drafts) =>
         this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)
       ),
@@ -69,10 +71,10 @@ export class AddMenuComponent implements OnInit {
   }
 
   private convertDraftToDate(
-    draft: IRegistration
+    draft: RegistrationDraft
   ): Observable<{ id: string; geoHazard: GeoHazard; date: string }> {
-    return from(this.getDate(draft.changed)).pipe(
-      map((date) => ({ id: draft.id, geoHazard: draft.geoHazard, date }))
+    return from(this.getDate(draft.lastSavedTime)).pipe(
+      map((date) => ({ id: draft.uuid, geoHazard: draft.registration.GeoHazardTID, date }))
     );
   }
 

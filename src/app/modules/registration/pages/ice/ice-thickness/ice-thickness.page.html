@@ -9,8 +9,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.IceThickness"
-    [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="draft && draft.registration.IceThickness"
+    [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full" reorder="true">
       <app-numeric-input [(value)]="registration.request.IceThickness.SnowDepth"
         title="REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL" [min]="0" [max]="999" [decimalPlaces]="2"

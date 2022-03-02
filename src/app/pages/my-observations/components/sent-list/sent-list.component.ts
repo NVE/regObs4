@@ -6,7 +6,7 @@ import { enterZone, toPromiseWithCancel } from 'src/app/core/helpers/observable-
 import { ObservationService } from 'src/app/core/services/observation/observation.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
-import { RegistrationService } from 'src/app/modules/registration/services/registration.service';
+// import { RegistrationService } from 'src/app/modules/registration/services/registration.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
@@ -32,7 +32,7 @@ export class SentListComponent implements OnInit {
   constructor(
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
-    private registrationService: RegistrationService,
+    // private registrationService: RegistrationService,
     private regobsAuthService: RegobsAuthService,
     private changeDetectorRef: ChangeDetectorRef,
     private loggingService: LoggingService,
@@ -43,20 +43,20 @@ export class SentListComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.initRegistrationSubscription();
-    this.registrationService.registrations$
-      .pipe(
-        map((regs) => regs.length),
-        pairwise(),
-        map(([lastCount, newCount]) => newCount - lastCount),
-        distinctUntilChanged(),
-        filter((diff) => diff < 0), //only fetch observations when num drafts decrease
-        debounceTime(500) //wait a bit in case multiple observations were shipped
-      )
-      .subscribe(() => this.initRegistrationSubscription());
+    // this.registrationService.registrations$
+    //   .pipe(
+    //     map((regs) => regs.length),
+    //     pairwise(),
+    //     map(([lastCount, newCount]) => newCount - lastCount),
+    //     distinctUntilChanged(),
+    //     filter((diff) => diff < 0), //only fetch observations when num drafts decrease
+    //     debounceTime(500) //wait a bit in case multiple observations were shipped
+    //   )
+    //   .subscribe(() => this.initRegistrationSubscription());
   }
 
   async refresh(cancelPromise: Promise<void>): Promise<void> {
-    await this.registrationService.syncRegistrations(cancelPromise);
+    // await this.registrationService.syncRegistrations(cancelPromise);
     await this.initRegistrationSubscription(cancelPromise);
   }
 

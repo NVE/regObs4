@@ -4,12 +4,12 @@
       <ion-back-button defaultHref="/" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{'REGISTRATION.DANGER_OBS.TITLE' | translate}}
+      {{ 'REGISTRATION.DANGER_OBS.TITLE' | translate }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration" [registration]="registration"
+  <app-registration-content-wrapper *ngIf="draft" [draft]="draft"
     [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
@@ -30,7 +30,7 @@
         </ion-label>
       </ion-list-header>
       <app-add-picture-item
-        [registrationTid]="registrationTid" [geoHazard]="registration.geoHazard" [registrationId]="registration.id"></app-add-picture-item>
+        [registrationTid]="registrationTid" [geoHazard]="draft.registration.GeoHazardTID" [registrationId]="draft.uuid"></app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

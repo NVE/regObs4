@@ -272,7 +272,9 @@ export class DataMarshallService implements OnReset {
         )
         : null;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
-      await this.registrationService.syncRegistrations(cancelTimer);
+
+      // TODO: Vi skal vel ikke synce registreringer lenger - finn ut hva denne gjør og eventuelt fjern
+      // await this.registrationService.syncRegistrations(cancelTimer);
       const cancelPromiseForObservations = cancelTimer
         ? Promise.race([this.cancelObservationsPromise, cancelTimer])
         : this.cancelObservationsPromise;

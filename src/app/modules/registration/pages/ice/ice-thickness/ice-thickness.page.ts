@@ -29,7 +29,7 @@ export class IceThicknessPage extends BasePage {
   }
 
   onInit() {
-    let iceThickness = this.registration.request.IceThickness;
+    const iceThickness = this.registration.request.IceThickness;
 
     if (!iceThickness.IceThicknessLayers) {
       iceThickness.IceThicknessLayers = [];
@@ -53,7 +53,7 @@ export class IceThicknessPage extends BasePage {
   }
 
   makeValidBeforeAfter() {
-    let iceThickness = this.registration.request.IceThickness;
+    const iceThickness = this.registration.request.IceThickness;
 
     if (this.isWaterBefore === undefined) {
       iceThickness.IceHeightBefore = undefined;
@@ -62,7 +62,7 @@ export class IceThicknessPage extends BasePage {
     } else {
       iceThickness.IceHeightBefore = 0;
     }
-    
+
     if (this.isWaterAfter === undefined) {
       iceThickness.IceHeightAfter = undefined;
     } else if (this.isWaterAfter && !isNaN(this.waterHeightAfter)) {
@@ -75,27 +75,24 @@ export class IceThicknessPage extends BasePage {
   }
 
   isValid() {
-    let checkBefore = Boolean(this.isWaterBefore) == Boolean(this.waterHeightBefore);
-    let checkAfter = this.isWaterAfter && !isNaN(this.waterHeightAfter)
+    const checkBefore = Boolean(this.isWaterBefore) == Boolean(this.waterHeightBefore);
+    const checkAfter = this.isWaterAfter && !isNaN(this.waterHeightAfter)
         || this.isWaterAfter == false && !isNaN(this.waterDepthAfter)
         || this.isWaterAfter == undefined;
 
-    let valid = checkBefore && checkAfter;
+    const valid = checkBefore && checkAfter;
     if (valid) {
       this.makeValidBeforeAfter();
     }
     return valid;
   }
 
-  async isEmpty() {
-    const isEmptyResult =
-      (!await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
-        this.registration,
-        this.registrationTid
-      )) &&
+  async isEmpty(): Promise<boolean> {
+    return (
+      (await this.basePageService.DraftService.isDraftEmptyForRegistrationType(this.draft, this.registrationTid)) &&
       this.isWaterAfter === undefined &&
-      this.isWaterBefore === undefined;
-    return isEmptyResult;
+      this.isWaterBefore === undefined
+    );
   }
 
   onReset() {

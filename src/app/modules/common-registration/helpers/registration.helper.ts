@@ -11,6 +11,8 @@ import {
 } from 'src/app/modules/common-regobs-api/models';
 import { SyncStatus } from '../registration.models';
 
+// TODO: Sjekk hvilke av disse vi egentlig trenger
+
 export function getAllAttachments(reg: IRegistration, registrationTid?: RegistrationTid): AttachmentEditModel[] {
   if (!reg) {
     return [];
@@ -102,8 +104,10 @@ export function editExistingAttachmentById(reg: IRegistration, attachmentId: num
   }
 }
 
-export function getPropertyName(registrationTid: RegistrationTid): string {
-  return RegistrationTid[registrationTid];
+type RegistrationName = keyof typeof RegistrationTid;
+
+export function getRegistrationName(registrationTid: RegistrationTid): RegistrationName {
+  return RegistrationTid[registrationTid] as RegistrationName;
 }
 
 export function getRegistationPropertyForModel(
@@ -111,7 +115,7 @@ export function getRegistationPropertyForModel(
   registrationTid: RegistrationTid
 ): ValidRegistrationType {
   if (regModel && registrationTid) {
-    return regModel[getPropertyName(registrationTid)];
+    return regModel[getRegistrationName(registrationTid)];
   }
   return null;
 }

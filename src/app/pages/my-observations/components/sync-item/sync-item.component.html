@@ -1,18 +1,18 @@
 <!-- Shows brief info from one observation not saved on server -->
-<ion-item lines="full" [detail]="!loading" [routerLink]="'/registration/edit/' + registration.id">
+<ion-item lines="full" [detail]="!loading" [routerLink]="'/registration/edit/' + draft.uuid">
   <div slot="start" class="geo-icon-circle">
-    <app-geo-icon [geoHazards]="[registration.geoHazard]"></app-geo-icon>
+    <app-geo-icon [geoHazards]="[draft.registration.GeoHazardTID]"></app-geo-icon>
   </div>
   <ion-label>
     <h2>
-      {{ getLocationName(registration) }}
+      {{ getLocationName(draft) }}
     </h2>
     <p class="ion-text-wrap">
-      <ion-icon name="calendar"></ion-icon> {{ registration.request.DtObsTime | formatDate | async }}
+      <ion-icon name="calendar"></ion-icon> {{ draft.registration.DtObsTime | formatDate | async }}
       <span *ngIf="isDraft"> - {{ 'DRAFT' | translate }}</span>
     </p>
   </ion-label>
-  <ion-icon *ngIf="!loading && registration.syncError" slot="end" name="warning">
-  </ion-icon>
+  <!-- TODO: Error handling -->
+  <!-- <ion-icon *ngIf="!loading && registration.syncError" slot="end" name="warning"></ion-icon> -->
   <ion-spinner *ngIf="loading" slot="end"></ion-spinner>
 </ion-item>

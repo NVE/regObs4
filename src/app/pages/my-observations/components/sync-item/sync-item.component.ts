@@ -4,6 +4,7 @@ import { ProgressService } from 'src/app/modules/common-registration/registratio
 import { Subscription } from 'rxjs';
 import { RegistrationService } from '../../../../modules/registration/services/registration.service';
 import { map, filter } from 'rxjs/operators';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 @Component({
   selector: 'app-sync-item',
@@ -11,7 +12,7 @@ import { map, filter } from 'rxjs/operators';
   styleUrls: ['./sync-item.component.scss'],changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SyncItemComponent implements OnInit, OnDestroy {
-  @Input() registration: IRegistration;
+  @Input() draft: RegistrationDraft;
   private subscriptions: Subscription[] = [];
   loading: boolean;
   isDraft = false;
@@ -23,23 +24,24 @@ export class SyncItemComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-
-    this.isDraft = this.registration.syncStatus === SyncStatus.Draft;
+    // TODO: Hva brukes dette til? Vise de som er drafts men ikke sent inn kanskje?
+    this.isDraft = this.draft.syncStatus === SyncStatus.Draft;
     this.loading = !this.isDraft;
+
     this.subscriptions.push(
-      this.registrationService
-        .getRegistrationsToSync()
-        .pipe(
-          map((val: IRegistration[]) =>
-            val.find((item) => item.id === this.registration.id)
-          ),
-          filter((x) => !!x)
-        )
-        .subscribe((val) => {
-          this.registration = val;
-          this.isDraft = this.registration.syncStatus === SyncStatus.Draft;
-          this.cdr.detectChanges();
-        })
+      // this.registrationService
+      //   .getRegistrationsToSync()
+      //   .pipe(
+      //     map((val: IRegistration[]) =>
+      //       val.find((item) => item.id === this.registration.id)
+      //     ),
+      //     filter((x) => !!x)
+      //   )
+      //   .subscribe((val) => {
+      //     this.registration = val;
+      //     this.isDraft = this.registration.syncStatus === SyncStatus.Draft;
+      //     this.cdr.detectChanges();
+      //   })
     );
     this.subscriptions.push(
       this.progressService.registrationSyncProgress$.subscribe((val) => {
@@ -55,10 +57,7 @@ export class SyncItemComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLocationName(reg: IRegistration) {
-    return reg.request.ObsLocation
-      ? reg.request.ObsLocation.LocationName ||
-          reg.request.ObsLocation.LocationDescription
-      : '';
+  getLocationName(draft: RegistrationDraft): string {
+    return draft.registration.ObsLocation?.LocationName || draft.registration.ObsLocation?.LocationDescription || '';
   }
 }

@@ -188,7 +188,7 @@ export const APP_PROVIDERS = [
     provide: APP_INITIALIZER,
     useFactory: initDb,
     multi: true,
-    deps: [OfflineDbService]
+    deps: [OfflineDbService, ]
   },
   // {
   //   provide: APP_INITIALIZER,
