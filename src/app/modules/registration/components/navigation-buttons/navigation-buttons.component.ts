@@ -4,6 +4,9 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { Router } from '@angular/router';
 import { ISummaryItem } from '../summary-item/summary-item.model';
 
+/**
+ * Used to navigate from one registration form to previous or next form
+ */
 @Component({
   selector: 'app-navigation-buttons',
   templateUrl: './navigation-buttons.component.html',

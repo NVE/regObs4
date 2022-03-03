@@ -67,7 +67,7 @@ export class ProgressService {
   }
 
   async setAttachmentProgress(imageId: string, totalBytes: number, complete: number): Promise<void> {
-    this.logger.log(`Set attachment progress. Complete: ${complete}/${totalBytes}. ${imageId}`);
+    this.logger.debug(`Set attachment progress. Complete: ${complete}/${totalBytes}. ${imageId}`, DEBUG_TAG);
     await this.getUploadProgressCollection().atomicUpsert({
       id: imageId,
       totalBytes,
