@@ -1,5 +1,4 @@
 import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { RegistrationService } from '../../modules/registration/services/registration.service';
 import { IonContent, IonInfiniteScroll } from '@ionic/angular';
 import { SentListComponent } from './components/sent-list/sent-list.component';
 
@@ -19,11 +18,7 @@ export class MyObservationsPage {
   draftIsEmpty = false;
   sentRegistrationsIsEmpty = false;
 
-  constructor(private registrationService: RegistrationService) {}
-
-  async refresh(cancelPromise: Promise<void>): Promise<void> {
-    await this.registrationService.syncRegistrations(cancelPromise);
-
+  async refresh(cancelPromise?: Promise<void>): Promise<void> {
     await this.sentListComponent.refresh(cancelPromise);
   }
 

@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { filter, firstValueFrom, from, Subscription, switchMap, tap } from 'rxjs';
+import { filter, firstValueFrom, from, Observable, Subject, Subscription, switchMap, tap } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -23,6 +23,11 @@ const DEBUG_TAG = 'DraftToRegistrationService';
 })
 export class DraftToRegistrationService {
 
+  get newRegistrations$(): Observable<RegistrationViewModel> {
+    return this.newRegistrations.asObservable();
+  }
+
+  private newRegistrations = new Subject<RegistrationViewModel>();
   private uploadRegistrationsSubscription: Subscription;
   private registrationsUploading: string[] = [];
 
@@ -82,6 +87,7 @@ export class DraftToRegistrationService {
 
     if (result?.RegId) {
       await this.draftService.delete(draft.uuid);
+      this.newRegistrations.next(result);
     } else {
       // TODO: Trenger vi håndtere rare responser fra apier?
     }
