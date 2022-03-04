@@ -1,8 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, filter, firstValueFrom, from, of, Subscription, switchMap, tap } from 'rxjs';
+import { filter, firstValueFrom, from, Subscription, switchMap, tap } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { ProgressService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-updade-delete-registration.service';
@@ -32,7 +31,6 @@ export class DraftToRegistrationService {
     private addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
     private userSettings: UserSettingService,
     private loggerService: LoggingService,
-    private progressService: ProgressService
   ) {}
 
   public startUploadingRegistrations() {
@@ -59,9 +57,6 @@ export class DraftToRegistrationService {
     const langKey = await firstValueFrom(this.userSettings.language$);
 
     this.loggerService.debug(`Sending registration ${draft.uuid} to regobs api`, DEBUG_TAG);
-
-    // TODO: Dette apiet er snodig, hva skjer egentlig når man setter sync progress?
-    await this.progressService.setSyncProgress(draft.uuid);
 
     let result: RegistrationViewModel;
 
@@ -94,8 +89,5 @@ export class DraftToRegistrationService {
     // Stop tracking that we are uploading this registration
     const i = this.registrationsUploading.indexOf(draft.uuid);
     this.registrationsUploading.splice(i, 1);
-
-    // TODO: Er dette riktig? Usikker på hva den egentlig gjør.
-    await this.progressService.resetSyncProgress();
   }
 }
