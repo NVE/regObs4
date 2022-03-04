@@ -13,8 +13,6 @@ import { DraftRepositoryService } from './draft-repository.service';
 
 const DEBUG_TAG = 'DraftToRegistrationService';
 
-// TODO: Where to delete attachments after successfull upload? Right now they are not deleted
-
 // TODO: Vi må vel ha en slags SyncStatus Error, og en slags automatisk prøv igjen håndtering, i tillfelle man ikke har nett?
 
 // TODO: Hva skjer om man skifter app miljø osv? Eller hvis en draft har status "sync" og man ikke er logget inn?

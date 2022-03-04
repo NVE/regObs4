@@ -163,6 +163,9 @@ export class DraftRepositoryService {
   * @param uuid uuid of the registration you want to delete
   */
   async delete(uuid: string): Promise<void> {
+
+    // TODO: Slett alle bilder knytta til kladden - vha NewAttachmentService
+
     const appMode = await firstValueFrom(this.appModeService.appMode$);
     const key = this.createKey(uuid, appMode);
     await this.databaseService.remove(key);
