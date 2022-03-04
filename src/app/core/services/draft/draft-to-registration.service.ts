@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { filter, firstValueFrom, from, of, Subscription, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, filter, firstValueFrom, from, of, Subscription, switchMap, tap } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { ProgressService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
@@ -25,6 +25,7 @@ const DEBUG_TAG = 'DraftToRegistrationService';
 export class DraftToRegistrationService {
 
   private uploadRegistrationsSubscription: Subscription;
+  private registrationsUploading: string[] = [];
 
   constructor(
     private draftService: DraftRepositoryService,
@@ -40,13 +41,21 @@ export class DraftToRegistrationService {
     // Listen for drafts ready to submit to regobs api
     this.uploadRegistrationsSubscription = this.draftService.drafts$.pipe(
       tap((drafts) => this.loggerService.debug('drafts updated', DEBUG_TAG, drafts)),
+      // Change this stream from a stream 'draft[]' to a stream of 'draft'
+      // This makes the filtering below a bit easier
       switchMap(drafts => from(drafts)),
+      // Only upload drafts with status sync
       filter(draft => draft.syncStatus === SyncStatus.Sync),
+      // Only start one upload at a time
+      filter(draft => !this.registrationsUploading.includes(draft.uuid))
     )
       .subscribe(draftToSubmit => this.addOrUpdateRegistration(draftToSubmit));
   }
 
   private async addOrUpdateRegistration(draft: RegistrationDraft) {
+    // Save this draft uuid to an in memory list so that we can keep track of what we are currently uploading
+    this.registrationsUploading.push(draft.uuid);
+
     const langKey = await firstValueFrom(this.userSettings.language$);
 
     this.loggerService.debug(`Sending registration ${draft.uuid} to regobs api`, DEBUG_TAG);
@@ -81,6 +90,10 @@ export class DraftToRegistrationService {
     } else {
       // TODO: Trenger vi håndtere rare responser fra apier?
     }
+
+    // Stop tracking that we are uploading this registration
+    const i = this.registrationsUploading.indexOf(draft.uuid);
+    this.registrationsUploading.splice(i, 1);
 
     // TODO: Er dette riktig? Usikker på hva den egentlig gjør.
     await this.progressService.resetSyncProgress();
