@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
-import { IRegistration } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationService } from '../../../../services/registration.service';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-snow-temp',
@@ -11,29 +11,26 @@ import { isEmpty } from 'src/app/modules/common-core/helpers';
   styleUrls: ['./snow-temp.component.scss']
 })
 export class SnowTempComponent {
-  @Input() reg: IRegistration;
+  @Input() draft: RegistrationDraft;
   private snowTempModal: HTMLIonModalElement;
 
   get tempProfile() {
-    if (this.reg && this.reg.request && this.reg.request.SnowProfile2 && this.reg.request.SnowProfile2.SnowTemp) {
-      return this.reg.request.SnowProfile2.SnowTemp;
-    }
-    return {};
+    return this.draft.registration.SnowProfile2.SnowTemp;
   }
 
   get isEmpty() {
     return isEmpty(this.tempProfile);
   }
 
-  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) {}
+  constructor(private modalContoller: ModalController, private draftService: DraftRepositoryService) {}
 
   async openModal() {
     if (!this.snowTempModal) {
-      await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
+      await this.draftService.save(this.draft); // Save registration before open modal page
       this.snowTempModal = await this.modalContoller.create({
         component: SnowTempModalPage,
         componentProps: {
-          regId: this.reg.id
+          uuid: this.draft.uuid
         }
       });
       this.snowTempModal.present();
