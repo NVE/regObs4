@@ -9,30 +9,30 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.IceCoverObs"
+  <app-registration-content-wrapper *ngIf="draft && draft.registration.IceCoverObs"
     [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <app-kdv-select title="REGISTRATION.ICE.ICE_COVER.ICE_COVER" kdvKey="Ice_IceCoverKDV"
-        [(value)]="registration.request.IceCoverObs.IceCoverTID"></app-kdv-select>
+        [(value)]="draft.registration.IceCoverObs.IceCoverTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.ICE.ICE_COVER.ICE_COVER_BEFORE" kdvKey="Ice_IceCoverBeforeKDV"
-        [(value)]="registration.request.IceCoverObs.IceCoverBeforeTID"></app-kdv-select>
+        [(value)]="draft.registration.IceCoverObs.IceCoverBeforeTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.ICE.ICE_COVER.ICE_CAPACITY" kdvKey="Ice_IceCapacityKDV"
-        [(value)]="registration.request.IceCoverObs.IceCapacityTID"></app-kdv-select>
+        [(value)]="draft.registration.IceCoverObs.IceCapacityTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.ICE.ICE_COVER.ICE_SKATEABILITY" kdvKey="Ice_IceSkateabilityKDV"
-        [(value)]="registration.request.IceCoverObs.IceSkateabilityTID"></app-kdv-select>
+        [(value)]="draft.registration.IceCoverObs.IceSkateabilityTID"></app-kdv-select>
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-text-comment [(value)]="registration.request.IceCoverObs.Comment"
+      <app-text-comment [(value)]="draft.registration.IceCoverObs.Comment"
         placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [geoHazard]="registration.geoHazard" [registrationId]="registration.id" 
+      <app-add-picture-item [geoHazard]="draft.registration.GeoHazardTID" [registrationId]="draft.uuid" 
         [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>
