@@ -8,6 +8,7 @@ import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import { DatabaseService } from '../database/database.service';
 import { environment } from 'src/environments/environment';
 import exp from 'constants';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 
 //key-value-store used to mock the database
 class TestDatabaseService {
@@ -53,7 +54,12 @@ describe('DraftRepositoryService', () => {
 
     appModeService = new AppModeService({ appMode: AppMode.Test, language: LangKey.nb });
     database = new TestDatabaseService();
-    service = new DraftRepositoryService(appModeService, new TestLoggingService(), database as unknown as DatabaseService);
+    service = new DraftRepositoryService(
+      appModeService,
+      new TestLoggingService(),
+      {} as unknown as NewAttachmentService,
+      database as unknown as DatabaseService
+    );
   });
 
   it('create() should return an empty draft', async () => {
