@@ -24,7 +24,7 @@ const DEBUG_TAG = 'DraftToRegistrationService';
 })
 export class DraftToRegistrationService {
 
-  sub: Subscription;
+  private uploadRegistrationsSubscription: Subscription;
 
   constructor(
     private draftService: DraftRepositoryService,
@@ -35,10 +35,10 @@ export class DraftToRegistrationService {
   ) {}
 
   public startUploadingRegistrations() {
-    if (this.sub) return;
+    if (this.uploadRegistrationsSubscription) return;
 
     // Listen for drafts ready to submit to regobs api
-    this.sub = this.draftService.drafts$.pipe(
+    this.uploadRegistrationsSubscription = this.draftService.drafts$.pipe(
       tap((drafts) => this.loggerService.debug('drafts updated', DEBUG_TAG, drafts)),
       switchMap(drafts => from(drafts)),
       filter(draft => draft.syncStatus === SyncStatus.Sync),
