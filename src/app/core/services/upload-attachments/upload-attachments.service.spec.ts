@@ -30,7 +30,6 @@ describe('UploadAttachmentsService', () => {
 
     service = new UploadAttachmentsService(
       httpClient,
-      {} as ProgressService,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
       {} as LoggingService
@@ -54,7 +53,7 @@ describe('UploadAttachmentsService', () => {
     expect(result).toEqual(fakeAttachmentsCopy);
   });
 
-  it('should upload attachments for attachments without AttachmentUploadId and set progress', async () => {
+  it('should upload attachments for attachments without AttachmentUploadId', async () => {
     const httpClient = jasmine.createSpyObj('HttpClient', ['post']);
     const responseAttachmentUploadId = '12345-test-id';
 
@@ -95,11 +94,8 @@ describe('UploadAttachmentsService', () => {
       saveAttachmentMeta$: saveAttachmentMeta$
     };
 
-    const progressService = jasmine.createSpyObj('ProgressService', ['setAttachmentProgress']);
-
     service = new UploadAttachmentsService(
       httpClient,
-      progressService,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
       jasmine.createSpyObj('LoggingService', ['debug'])
@@ -118,9 +114,6 @@ describe('UploadAttachmentsService', () => {
 
     // Test that we call post one time as we have one image to upload
     expect(httpClient.post).toHaveBeenCalledTimes(1);
-
-    // Test that upload progress is reported as we upload
-    expect(progressService.setAttachmentProgress).toHaveBeenCalledTimes(2);
 
     // Test that uploadAllAttachments just returns the attachments,
     // as they are already uploaded
@@ -189,12 +182,10 @@ describe('UploadAttachmentsService', () => {
       saveAttachmentMeta$: saveAttachmentMeta$
     };
 
-    const progressService = jasmine.createSpyObj('ProgressService', ['setAttachmentProgress']);
     const loggingService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
 
     service = new UploadAttachmentsService(
       httpClient,
-      progressService,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
       loggingService

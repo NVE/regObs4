@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse }
 import { Injectable } from '@angular/core';
 import { filter, firstValueFrom, map, Observable, tap } from 'rxjs';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
-import { NewAttachmentService, ProgressService } from 'src/app/modules/common-registration/registration.services';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { AttachmentService as ApiAttachmentService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';
@@ -31,7 +31,6 @@ export class UploadAttachmentsService {
 
   constructor(
     private httpClient: HttpClient,
-    private progressService: ProgressService,
     private newAttachmentService: NewAttachmentService,
     private apiAttachmentService: ApiAttachmentService,
     private loggingService: LoggingService
@@ -83,9 +82,10 @@ export class UploadAttachmentsService {
 
   private onHttpEvent(event: HttpEvent<any>, attachment: AttachmentUploadEditModel) {
     this.loggingService.debug('Attachment upload http event', DEBUG_TAG, event);
-    if (event.type === HttpEventType.UploadProgress) {
-      this.progressService.setAttachmentProgress(attachment.id, event.total, event.loaded);
-    }
+    // Here we can keep track of upload progress if we want to
+    // if (event.type === HttpEventType.UploadProgress) {
+    //   // Track upload progress
+    // }
   }
 
   private onHttpResponseEvent(event: HttpResponse<string>) {
