@@ -68,7 +68,7 @@ export abstract class BasePage extends NgDestoryBase {
         // Seems like this class is also used by the set datetime page,
         // where we don't have a registrationTid
         if (this.registrationTid != null) {
-          this.basePageService.createDefaultProps(draft, this.registrationTid);
+          return this.basePageService.createDefaultProps(draft, this.registrationTid);
         }
         return draft;
       }),
