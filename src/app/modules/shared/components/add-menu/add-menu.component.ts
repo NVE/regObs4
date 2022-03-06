@@ -5,7 +5,7 @@ import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { IRegistration } from 'src/app/modules/common-registration/registration.models';
+import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { setObservableTimeout } from '../../../../core/helpers/observable-helper';
@@ -50,21 +50,14 @@ export class AddMenuComponent implements OnInit {
     );
 
     this.drafts$ = this.draftService.drafts$.pipe(
-      tap((drafts) =>
-        this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)
-      ),
+      tap((drafts) => this.loggingService.debug('Drafts has changed to', DEBUG_TAG, drafts)),
+      map((drafts) => drafts.filter(d => d.syncStatus === SyncStatus.Draft)),
       switchMap((drafts) =>
         drafts.length > 0
           ? combineLatest(drafts.map((draft) => this.convertDraftToDate(draft)))
           : of([])
       ),
-      tap((drafts) =>
-        this.loggingService.debug(
-          'Converted drafts has changed to',
-          DEBUG_TAG,
-          drafts
-        )
-      ),
+      tap((drafts) => this.loggingService.debug('Converted drafts has changed to', DEBUG_TAG, drafts)),
       setObservableTimeout()
     );
     this.tripStarted$ = this.tripLoggerService.isTripRunning$;
@@ -83,7 +76,7 @@ export class AddMenuComponent implements OnInit {
   }
 
   getDate(timestamp: number): Promise<string> {
-    return this.dateHelperService.formatDate(moment.unix(timestamp));
+    return this.dateHelperService.formatDate(moment(timestamp));
   }
 
   closeAndNavigate(url: string): void {
