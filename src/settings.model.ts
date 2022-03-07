@@ -88,7 +88,6 @@ export interface ISettings {
   services: any;
   db: any;
   map: IMapSettings;
-  gps: any;
   dateFormats: any;
   kdvElements: any;
   helpTexts: any;
