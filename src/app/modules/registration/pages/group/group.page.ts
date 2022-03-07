@@ -58,7 +58,7 @@ export class GroupPage extends BasePage {
 
   isEmpty(): Promise<boolean> {
     return Promise.resolve(
-      this.registration &&
+      this.draft &&
       (this.draft.registration.ObserverGroupID === undefined ||
         this.draft.registration.ObserverGroupID === null)
     );
