@@ -48,16 +48,18 @@ describe('DraftRepositoryService', () => {
   let service: DraftRepositoryService;
   let database: TestDatabaseService;
   let appModeService: AppModeService;
+  let newAttachmentService: NewAttachmentService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
 
     appModeService = new AppModeService({ appMode: AppMode.Test, language: LangKey.nb });
     database = new TestDatabaseService();
+    newAttachmentService = jasmine.createSpyObj('NewAttachmentService', ['removeAttachments']);
     service = new DraftRepositoryService(
       appModeService,
       new TestLoggingService(),
-      {} as unknown as NewAttachmentService,
+      newAttachmentService,
       database as unknown as DatabaseService
     );
   });
@@ -122,8 +124,14 @@ describe('DraftRepositoryService', () => {
     expect(savedDraft.registration.GeneralObservation).toEqual({ Comment: 'v.1' });
 
     //irreleant registrations are not changed
-    expect(await service.load(irrelevantDraft1.uuid)).toEqual(irrelevantDraft1);
-    expect(await service.load(irrelevantDraft2.uuid)).toEqual(irrelevantDraft2);
+    expect(await service.load(irrelevantDraft1.uuid)).toEqual({
+      ...irrelevantDraft1,
+      lastSavedTime: jasmine.any(Number)
+    });
+    expect(await service.load(irrelevantDraft2.uuid)).toEqual({
+      ...irrelevantDraft2,
+      lastSavedTime: jasmine.any(Number)
+    });
   });
 
   it('we get notified when registrations are saved', async () => {
@@ -204,6 +212,8 @@ describe('DraftRepositoryService', () => {
     expect(draftChanges.length).toBe(0);
     expect(!database.store.has(`drafts.TEST.${draft.uuid}`)).toBeTrue();
     expect(await service.load(draft.uuid)).toBeUndefined();
+    // Check that draftService requests newAttachmentService to delete draft images
+    expect(newAttachmentService.removeAttachments).toHaveBeenCalledWith(draft.uuid);
   });
 
   it('we do not mix data from different environments', async () => {
@@ -234,8 +244,14 @@ describe('DraftRepositoryService', () => {
     appModeService.setAppMode(AppMode.Test); //change back to test environment
     const draftChanges2 = await firstValueFrom(service.drafts$);
     expect(draftChanges2.length).toBe(2); //we have 2 drafts in test
-    expect(await service.load(draft1inTest.uuid)).toEqual(draft1inTest);
-    expect(await service.load(draft2inTest.uuid)).toEqual(draft2inTest);
+    expect(await service.load(draft1inTest.uuid)).toEqual({
+      ...draft1inTest,
+      lastSavedTime: jasmine.any(Number)
+    });
+    expect(await service.load(draft2inTest.uuid)).toEqual({
+      ...draft2inTest,
+      lastSavedTime: jasmine.any(Number)
+    });
 
     //drafts in demo database not available when in environment test
     expect(await service.load(draft1inDemo.uuid)).toBe(undefined);
