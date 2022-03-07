@@ -21,7 +21,7 @@ export class GroupPage extends BasePage {
   get isSelected(): boolean {
     return (
       this.groups.length > 0 &&
-      this.groups[0].Id === this.registration.request.ObserverGroupID
+      this.groups[0].Id === this.draft.registration.ObserverGroupID
     );
   }
 
@@ -43,24 +43,24 @@ export class GroupPage extends BasePage {
 
   onReset(): void {
     this.ngZone.run(() => {
-      this.registration.request.ObserverGroupID = undefined;
+      this.draft.registration.ObserverGroupID = undefined;
     });
   }
 
   checkedChanged(event: CustomEvent): void {
     const checkBox = (<any>event.target) as IonCheckbox;
     if (checkBox.checked) {
-      this.registration.request.ObserverGroupID = this.firstGroup.Id;
+      this.draft.registration.ObserverGroupID = this.firstGroup.Id;
     } else {
-      this.registration.request.ObserverGroupID = undefined;
+      this.draft.registration.ObserverGroupID = undefined;
     }
   }
 
   isEmpty(): Promise<boolean> {
     return Promise.resolve(
       this.registration &&
-      (this.registration.request.ObserverGroupID === undefined ||
-        this.registration.request.ObserverGroupID === null)
+      (this.draft.registration.ObserverGroupID === undefined ||
+        this.draft.registration.ObserverGroupID === null)
     );
   }
 }
