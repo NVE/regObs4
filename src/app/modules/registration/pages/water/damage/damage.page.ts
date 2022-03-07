@@ -11,6 +11,10 @@ import { map } from 'rxjs/operators';
 
 const NO_DAMAGE_VISIBLE = 7;
 
+/**
+ * Form to register damage observations caused by water.
+ * Contains sub forms for specific damage types, see DamageObsComponent
+ */
 @Component({
   selector: 'app-damage',
   templateUrl: './damage.page.html',
@@ -21,17 +25,11 @@ export class DamagePage extends BasePage {
   checked: boolean;
 
   get isChecked() {
-    if (
-      !this.registration ||
-      !this.registration.request ||
-      !this.registration.request.DamageObs ||
-      this.registration.request.DamageObs.length === 0
-    ) {
+    if (this.draft?.registration?.DamageObs?.length === 0) {
       return this.checked;
     }
     return (
-      this.registration &&
-      this.registration.request.DamageObs.filter(
+      this.draft?.registration?.DamageObs.filter(
         (x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE
       ).length > 0
     );
@@ -40,13 +38,13 @@ export class DamagePage extends BasePage {
   set isChecked(val: boolean) {
     this.checked = val;
     if (val === false) {
-      this.registration.request.DamageObs = [
+      this.draft.registration.DamageObs = [
         {
           DamageTypeTID: NO_DAMAGE_VISIBLE
         }
       ];
     } else {
-      this.registration.request.DamageObs = this.registration.request.DamageObs.filter(
+      this.draft.registration.DamageObs = this.draft.registration.DamageObs.filter(
         (x) => x.DamageTypeTID !== NO_DAMAGE_VISIBLE
       );
     }
@@ -64,7 +62,7 @@ export class DamagePage extends BasePage {
   }
 
   onInit() {
-    const geoHazardName = GeoHazard[this.registration.geoHazard];
+    const geoHazardName = GeoHazard[this.draft.registration.GeoHazardTID];
     this.kdvSubscription = this.kdvService
       .getKdvRepositoryByKeyObservable(`${geoHazardName}_DamageTypeKDV`)
       .pipe(map((val) => val.filter((x) => x.Id !== NO_DAMAGE_VISIBLE)))

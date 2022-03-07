@@ -6,6 +6,11 @@ import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { WaterLevelMeasurementComponent } from '../../../components/water/water-level-measurement/water-level-measurement.component';
 
+/**
+ * Used to show water level measurements and to add measurements.
+ * Contains a form for each specific measurement added (see WaterLevelMeasurementComponent)
+ * and a button to add more measuremensts.
+ */
 @Component({
   selector: 'app-water-level',
   templateUrl: './water-level.page.html',
@@ -24,23 +29,23 @@ export class WaterLevelPage extends BasePage {
 
   onInit() {
     if (
-      !this.registration.request.WaterLevel2.WaterLevelMeasurement ||
-      this.registration.request.WaterLevel2.WaterLevelMeasurement.length === 0
+      !this.draft.registration.WaterLevel2.WaterLevelMeasurement ||
+      this.draft.registration.WaterLevel2.WaterLevelMeasurement.length === 0
     ) {
-      this.registration.request.WaterLevel2.WaterLevelMeasurement = [
+      this.draft.registration.WaterLevel2.WaterLevelMeasurement = [
         { DtMeasurementTime: undefined }
       ];
     }
   }
 
   onReset() {
-    this.registration.request.WaterLevel2.WaterLevelMeasurement = [
+    this.draft.registration.WaterLevel2.WaterLevelMeasurement = [
       { DtMeasurementTime: undefined }
     ];
   }
 
   addWaterLevelMeasurement() {
-    this.registration.request.WaterLevel2.WaterLevelMeasurement.push({
+    this.draft.registration.WaterLevel2.WaterLevelMeasurement.push({
       DtMeasurementTime: undefined
     });
     this.save();
@@ -48,22 +53,22 @@ export class WaterLevelPage extends BasePage {
 
   onBeforeLeave() {
     // Cleanup
-    if (this.registration.request.WaterLevel2.WaterLevelMethodTID === 2) {
-      this.registration.request.WaterLevel2.MarkingReferenceTID = null;
+    if (this.draft.registration.WaterLevel2.WaterLevelMethodTID === 2) {
+      this.draft.registration.WaterLevel2.MarkingReferenceTID = null;
     }
-    if (this.registration.request.WaterLevel2.MeasurementTypeTID !== 3) {
-      this.registration.request.WaterLevel2.MeasuringToolDescription = undefined;
+    if (this.draft.registration.WaterLevel2.MeasurementTypeTID !== 3) {
+      this.draft.registration.WaterLevel2.MeasuringToolDescription = undefined;
     }
     if (
       !(
-        this.registration.request.WaterLevel2.WaterLevelMethodTID === 1 ||
-        this.registration.request.WaterLevel2.MeasurementTypeTID === 1
+        this.draft.registration.WaterLevel2.WaterLevelMethodTID === 1 ||
+        this.draft.registration.WaterLevel2.MeasurementTypeTID === 1
       )
     ) {
-      this.registration.request.WaterLevel2.Comment = undefined;
+      this.draft.registration.WaterLevel2.Comment = undefined;
     }
-    this.registration.request.WaterLevel2.WaterLevelMeasurement = (
-      this.registration.request.WaterLevel2.WaterLevelMeasurement || []
+    this.draft.registration.WaterLevel2.WaterLevelMeasurement = (
+      this.draft.registration.WaterLevel2.WaterLevelMeasurement || []
     ).filter((item) => !IsEmptyHelper.isEmpty(item));
   }
 
