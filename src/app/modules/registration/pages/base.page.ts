@@ -1,7 +1,7 @@
 import { Directive } from '@angular/core';
 import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
-import { IRegistration, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { ActivatedRoute } from '@angular/router';
 import { take, takeUntil, map, switchMap, tap, skip } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
@@ -16,34 +16,6 @@ export abstract class BasePage extends NgDestoryBase {
   basePageService: BasePageService;
   registrationTid: RegistrationTid;
   activatedRoute: ActivatedRoute;
-
-  // TODO: Hva gjør vi med dette her?
-  // Search-replace til this.draft.registration over alt?
-  get registration(): IRegistration {
-    if (!this.draft) return undefined;
-    return {
-      get id() { throw new Error('Use draft'); },
-      get changed() { throw new Error('Use draft'); },
-      get geoHazard() { throw new Error('Use draft'); },
-      get syncStatus() { throw new Error('Use draft'); },
-      get lastSync() { throw new Error('Use draft'); },
-      get syncError() { throw new Error('Use draft'); },
-      get syncStatusCode() { throw new Error('Use draft'); },
-      get response() { throw new Error('Use draft'); },
-      get changedRegistrationTid() { throw new Error('Use draft'); },
-      request: this.draft.registration
-    } as unknown as IRegistration;
-  }
-
-  set registration(data: IRegistration) {
-    this.draft = {
-      ...this.draft,
-      registration: {
-        ...this.draft.registration,
-        ...data.request
-      }
-    };
-  }
 
   constructor(
     registrationTid: RegistrationTid,
