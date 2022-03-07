@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.LandSlideObs"
+  <app-registration-content-wrapper *ngIf="draft?.registration.LandSlideObs"
     [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full">
       <ion-list-header class="ion-text-uppercase">
@@ -23,15 +23,15 @@
               translate}}</ion-label>
         <ion-text class="ion-align-self-start ion-text-wrap">
           <ion-icon class="position-pin" color="medium" name="location"></ion-icon>
-          <ng-container *ngIf="registration.request.LandSlideObs.StartLat else noPosition">
-            {{ registration.request.LandSlideObs.StartLat |
+          <ng-container *ngIf="draft.registration.LandSlideObs.StartLat else noPosition">
+            {{ draft.registration.LandSlideObs.StartLat |
                           number:'0.3'
                           }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-            {{ registration.request.LandSlideObs.StartLong | number:'0.3'
-                          }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{ registration.request.LandSlideObs.StopLat |
+            {{ draft.registration.LandSlideObs.StartLong | number:'0.3'
+                          }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}} - {{ draft.registration.LandSlideObs.StopLat |
                           number:'0.3'
                           }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-            {{ registration.request.LandSlideObs.StopLong | number:'0.3'
+            {{ draft.registration.LandSlideObs.StopLong | number:'0.3'
                           }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}
           </ng-container>
         </ion-text>
@@ -39,12 +39,12 @@
         </ion-icon>
       </ion-item>
       <ion-item [ngClass]="{'hasWarning': dateIsDifferentThanObsTime}">
-        <ion-label [color]="!registration.request.LandSlideObs.DtLandSlideTime ? 'danger' : 'medium'" position="stacked"
+        <ion-label [color]="!draft.registration.LandSlideObs.DtLandSlideTime ? 'danger' : 'medium'" position="stacked"
           class="ion-text-uppercase">{{
           'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME' | translate }}</ion-label>
         <ion-datetime color="medium" [max]="maxDateStart" monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}"
           doneText="{{'DIALOGS.OK' | translate}}" cancelText="{{'DIALOGS.CANCEL' | translate}}"
-          display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.LandSlideObs.DtLandSlideTime"
+          display-format="D. MMM, YYYY HH:mm" [(ngModel)]="draft.registration.LandSlideObs.DtLandSlideTime"
           (ionChange)="dtTimeChanged()">
         </ion-datetime>
         <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium"
@@ -58,13 +58,13 @@
         </ion-label>
       </ion-item>
       <ion-item [ngClass]="{'hasWarning': dateEndIsDifferentThanObsTime}">
-        <ion-label [color]="!registration.request.LandSlideObs.DtLandSlideTimeEnd ? 'danger' : 'medium'"
+        <ion-label [color]="!draft.registration.LandSlideObs.DtLandSlideTimeEnd ? 'danger' : 'medium'"
           position="stacked" class="ion-text-uppercase">{{
           'REGISTRATION.DIRT.LAND_SLIDE_OBS.DT_LAND_SLIDE_TIME_END' | translate }}</ion-label>
         <ion-datetime [min]="minDateEnd" [max]="maxDateEnd" color="medium"
           monthShortNames="{{ 'MONTHS.SHORT_LIST' | translate }}" doneText="{{'DIALOGS.OK' | translate}}"
           cancelText="{{'DIALOGS.CANCEL' | translate}}" (ionChange)="dtEndTimeChanged()"
-          display-format="D. MMM, YYYY HH:mm" [(ngModel)]="registration.request.LandSlideObs.DtLandSlideTimeEnd">
+          display-format="D. MMM, YYYY HH:mm" [(ngModel)]="draft.registration.LandSlideObs.DtLandSlideTimeEnd">
         </ion-datetime>
         <ion-button class="set-to-now-button" slot="end" fill="outline" color="medium"
           (click)="setDtLandSlideTimeEndToNow()">
@@ -77,31 +77,31 @@
         </ion-label>
       </ion-item>
       <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.LANDSLIDE_TYPE" kdvKey="Dirt_LandSlideKDV"
-        [(value)]="registration.request.LandSlideObs.LandSlideTID"></app-kdv-select>
+        [(value)]="draft.registration.LandSlideObs.LandSlideTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DESTRUCTIVE_SIZE" kdvKey="Dirt_LandSlideSizeKDV"
-        [(value)]="registration.request.LandSlideObs.LandSlideSizeTID"></app-kdv-select>
+        [(value)]="draft.registration.LandSlideObs.LandSlideSizeTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.AVAL_TRIGGER" kdvKey="Dirt_LandSlideTriggerKDV"
-        [(value)]="registration.request.LandSlideObs.LandSlideTriggerTID"></app-kdv-select>
+        [(value)]="draft.registration.LandSlideObs.LandSlideTriggerTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DIRT_ACTIVITY_INFLUENCED"
-        kdvKey="Dirt_ActivityInfluencedKDV" [(value)]="registration.request.LandSlideObs.ActivityInfluencedTID">
+        kdvKey="Dirt_ActivityInfluencedKDV" [(value)]="draft.registration.LandSlideObs.ActivityInfluencedTID">
       </app-kdv-select>
       <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DAMAGE_EXTENT" kdvKey="DamageExtentKDV"
-        [(value)]="registration.request.LandSlideObs.DamageExtentTID"></app-kdv-select>
+        [(value)]="draft.registration.LandSlideObs.DamageExtentTID"></app-kdv-select>
       <app-kdv-select title="REGISTRATION.DIRT.LAND_SLIDE_OBS.DIRT_FORECAST_ACCURATE" kdvKey="ForecastAccurateKDV"
-        [(value)]="registration.request.LandSlideObs.ForecastAccurateTID"></app-kdv-select>
+        [(value)]="draft.registration.LandSlideObs.ForecastAccurateTID"></app-kdv-select>
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-text-comment [(value)]="registration.request.LandSlideObs.Comment"
+      <app-text-comment [(value)]="draft.registration.LandSlideObs.Comment"
         placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [geoHazard]="registration.geoHazard" [registrationId]="registration.id" [registrationTid]="registrationTid"
+      <app-add-picture-item [geoHazard]="draft.registration.GeoHazardTID" [registrationId]="draft.uuid" [registrationTid]="registrationTid"
         [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
       <ion-list-header class="ion-text-uppercase">
@@ -109,7 +109,7 @@
           {{ 'REGISTRATION.ADD_WEB_URL.TITLE' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-web-url-item [(weburls)]="registration.request.LandSlideObs.Urls"></app-add-web-url-item>
+      <app-add-web-url-item [(weburls)]="draft.registration.LandSlideObs.Urls"></app-add-web-url-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>
