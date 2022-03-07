@@ -21,7 +21,6 @@ import {
   ClearWatchOptions,
   Geolocation, Position, WatchPositionCallback,
 } from '@capacitor/geolocation';
-import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,6 +32,18 @@ import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 
 const DEBUG_TAG = 'GeoPositionService';
+
+const POSITION_OPTIONS_DEFAULT: PositionOptions = {
+  enableHighAccuracy: true,
+  timeout: 20 * 1000, // 20 sec
+  maximumAge: Infinity // Start with latest cached value
+};
+
+const POSITION_OPTIONS_ANDROID: PositionOptions = {
+  enableHighAccuracy: true,
+  timeout: 1000, //get notified with new position data at least each 1 sec
+  maximumAge: 0 //we do not accept cached positions, ask for GPS position immediately
+};
 
 /**
  * Henter posisjon fra GPS og himmelretning fra kompasset
@@ -52,6 +63,8 @@ export class GeoPositionService implements OnDestroy {
 
   // Subscriptions
   private watchPositionCallbackId: CallbackID = null;
+  private watchPositionRequestTime: number = null;
+  private watchPositionFirstCallbackReceived = false;
   private headingSubscription: Subscription;
 
   get currentPosition$(): Observable<Position> {
@@ -173,8 +186,9 @@ export class GeoPositionService implements OnDestroy {
   public async startTrackingComponent(
     name: string,
     forcePermissionDialog = false
-  ) {
+  ): Promise<void> {
     if (forcePermissionDialog) {
+      this.loggingService.debug(`startTrackingComponent: name = ${name}. Check permissions...`, DEBUG_TAG);
       const valid = await this.checkPermissions();
       if (!valid) {
         this.gpsPositionLog.next(
@@ -185,6 +199,7 @@ export class GeoPositionService implements OnDestroy {
         );
         return;
       }
+      this.loggingService.debug(`startTrackingComponent: name = ${name}. Permissions ok = ${valid}`, DEBUG_TAG);
     }
     this.trackingComponents.next([
       ...this.getTrackingComponentsExcludeByName(name),
@@ -214,11 +229,15 @@ export class GeoPositionService implements OnDestroy {
 
   private stopWatchingPosition() {
     if (this.watchPositionCallbackId !== null) {
-      this.loggingService.debug(`Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`, DEBUG_TAG);
+      this.loggingService.debug(
+        `Stop current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`, DEBUG_TAG
+      );
       this.addStatusToGpsPositionLog('StopGpsTracking');
-      const options:  ClearWatchOptions = { id : this.watchPositionCallbackId };
+      const options: ClearWatchOptions = { id: this.watchPositionCallbackId };
       Geolocation.clearWatch(options);
       this.watchPositionCallbackId = null;
+      this.watchPositionRequestTime = null;
+      this.watchPositionFirstCallbackReceived = false;
     }
   }
 
@@ -236,6 +255,17 @@ export class GeoPositionService implements OnDestroy {
         this.gpsPositionLog.next(this.createPositionError('Unknown error'));
       }
       if (position !== null) {
+        if (this.watchPositionFirstCallbackReceived === false) {
+          this.watchPositionFirstCallbackReceived = true;
+          const secondsSinceStartWatch = (Date.now() - this.watchPositionRequestTime) / 1000;
+          this.loggingService.debug(
+            'First callback received. ' +
+            `Timestamp: ${new Date(position.timestamp).toLocaleTimeString()}, ` +
+            `Delay since request: ${secondsSinceStartWatch}s`,
+            DEBUG_TAG,
+            { accuracy: position.coords.accuracy }
+          );
+        }
         this.gpsPositionLog.next(this.createGpsPositionLogElement(position));
         if (this.isValidPosition(position)) {
           this.currentPosition.next(position);
@@ -244,8 +274,23 @@ export class GeoPositionService implements OnDestroy {
     };
     this.addStatusToGpsPositionLog('StartGpsTracking');
     this.stopWatchingPosition(); //we need to stop current watch of position if any
-    this.watchPositionCallbackId = await Geolocation.watchPosition(settings.gps.highAccuracyPositionOptions, watchPositionCallback);
-    this.loggingService.debug(`Start current GPS position watch subscription with callback ID: ${this.watchPositionCallbackId}`, DEBUG_TAG);
+    this.watchPositionRequestTime = Date.now();
+    this.watchPositionCallbackId = await Geolocation.watchPosition(
+      this.getPositionOptions(),
+      watchPositionCallback
+    );
+    this.loggingService.debug(
+      `Start GPS position subscription with callback ID: ${this.watchPositionCallbackId}`,
+      DEBUG_TAG,
+      this.getPositionOptions()
+    );
+  }
+
+  private getPositionOptions(): PositionOptions {
+    if (this.platform.is('android')) {
+      return POSITION_OPTIONS_ANDROID;
+    }
+    return POSITION_OPTIONS_DEFAULT;
   }
 
   private isValidPosition(pos: Position): boolean {
@@ -270,7 +315,7 @@ export class GeoPositionService implements OnDestroy {
     // https://www.devhybrid.com/ionic-4-requesting-user-permissions/
     try {
       const currentPermissions = await Geolocation.checkPermissions();
-      this.loggingService.debug(`Geolocation (PermissionState) is ${currentPermissions?.location}`, DEBUG_TAG);
+      this.loggingService.debug('Geolocation permissions', DEBUG_TAG, currentPermissions);
       const authorized = currentPermissions.location === 'granted';
       if (!authorized) {
         if (this.platform.is('ios')) {
@@ -279,7 +324,7 @@ export class GeoPositionService implements OnDestroy {
         }
         // location is not authorized, request new. This only works on Android
         const newPermissionsAfterRequest = await Geolocation.requestPermissions();
-        this.loggingService.debug(`Geolocation (PermissionState) after new request is ${newPermissionsAfterRequest?.location}`, DEBUG_TAG);
+        this.loggingService.debug('Geolocation permissions after new request', DEBUG_TAG, newPermissionsAfterRequest);
         if (newPermissionsAfterRequest?.location === 'denied') {
           await this.showPermissionDeniedError();
           return false;
