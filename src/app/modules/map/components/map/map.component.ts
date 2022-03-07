@@ -573,7 +573,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         filter(([, active]) => active),
         takeUntil(this.ngDestroy$)
       )
-      .subscribe(() => this.redrawMap());
+      .subscribe(() => {
+        this.loggingService.debug('InvalidateSizeMapTimer: Trigger redraw of map', DEBUG_TAG);
+        this.redrawMap();
+      });
   }
 
   redrawMap() {
