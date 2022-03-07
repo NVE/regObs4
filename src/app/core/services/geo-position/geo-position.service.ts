@@ -21,7 +21,6 @@ import {
   ClearWatchOptions,
   Geolocation, Position, WatchPositionCallback,
 } from '@capacitor/geolocation';
-import { settings } from '../../../../settings';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,6 +32,18 @@ import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 
 const DEBUG_TAG = 'GeoPositionService';
+
+const POSITION_OPTIONS_DEFAULT: PositionOptions = {
+  enableHighAccuracy: true,
+  timeout: 20 * 1000, // 20 sec
+  maximumAge: Infinity // Start with latest cached value
+};
+
+const POSITION_OPTIONS_ANDROID: PositionOptions = {
+  enableHighAccuracy: true,
+  timeout: 1000, //get notified with new position data at least each 1 sec
+  maximumAge: 0 //we do not accept cached positions, ask for GPS position immediately
+};
 
 /**
  * Henter posisjon fra GPS og himmelretning fra kompasset
@@ -265,14 +276,21 @@ export class GeoPositionService implements OnDestroy {
     this.stopWatchingPosition(); //we need to stop current watch of position if any
     this.watchPositionRequestTime = Date.now();
     this.watchPositionCallbackId = await Geolocation.watchPosition(
-      settings.gps.highAccuracyPositionOptions,
+      this.getPositionOptions(),
       watchPositionCallback
     );
     this.loggingService.debug(
       `Start GPS position subscription with callback ID: ${this.watchPositionCallbackId}`,
       DEBUG_TAG,
-      settings.gps.highAccuracyPositionOptions
+      this.getPositionOptions()
     );
+  }
+
+  private getPositionOptions(): PositionOptions {
+    if (this.platform.is('android')) {
+      return POSITION_OPTIONS_ANDROID;
+    }
+    return POSITION_OPTIONS_DEFAULT;
   }
 
   private isValidPosition(pos: Position): boolean {

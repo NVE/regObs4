@@ -297,13 +297,6 @@ export const settings: ISettings = {
     flyToOnGpsZoom: 13,
     maxClusterRadius: 60 // 30,
   },
-  gps: {
-    highAccuracyPositionOptions: {
-      enableHighAccuracy: true,
-      timeout: 1000, //get notified with new position data at least each 1 sec
-      maximumAge: 0 //we do not accept cached positions, ask for GPS position immediately
-    }
-  },
   dateFormats: {
     angular: {
       date: 'dd.MM.yyyy',
