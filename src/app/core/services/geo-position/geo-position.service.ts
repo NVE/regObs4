@@ -248,7 +248,7 @@ export class GeoPositionService implements OnDestroy {
           const secondsSinceStartWatch = (Date.now() - this.watchPositionRequestTime) / 1000;
           delayInfo = `. Delay since request: ${secondsSinceStartWatch}s`;
         }
-        this.loggingService.debug(`Got position from device: Timestamp: ${new Date(position.timestamp).toLocaleTimeString()}, lat: ${position.coords?.latitude}, lon: ${position.coords?.longitude}${delayInfo}`, DEBUG_TAG);
+        this.loggingService.debug(`Got position from device: Timestamp: ${new Date(position.timestamp).toLocaleTimeString()}, accuracy: ${position.coords?.accuracy}${delayInfo}`, DEBUG_TAG);
         this.gpsPositionLog.next(this.createGpsPositionLogElement(position));
         if (this.isValidPosition(position)) {
           this.currentPosition.next(position);
