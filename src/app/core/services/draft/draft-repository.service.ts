@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, filter, firstValueFrom, from, map, Observable, shareReplay, switchMap, } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { AppModeService } from 'src/app/modules/common-core/services';
@@ -48,11 +48,22 @@ export class DraftRepositoryService {
       );
   }
 
-  // TODO: Test - what if we delete a draft, what should this return?
-  getDraft$(uuid: string) {
+  /**
+   * Returns an observable with draft changes for a single draft.
+   * Does not emit until the specified draft is available in the database.
+   * If the draft is deleted a subscription has been made, undefined is returned and the observable is completed.
+   */
+  getDraft$(uuid: string): Observable<RegistrationDraft | undefined> {
+    const gotDraft = new Subject<boolean>();
     return this.drafts$.pipe(
       map(drafts => drafts.find(draft => draft.uuid === uuid)),
-      filter((draft) => draft != null)
+      tap((draft) => {
+        if (draft != null) {
+          gotDraft.next(true);
+        }
+      }),
+      skipUntil(gotDraft),
+      takeWhile(draft => draft != null, true)
     );
   }
 

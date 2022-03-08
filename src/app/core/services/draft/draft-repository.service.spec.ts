@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from './draft-repository.service';
@@ -7,6 +7,7 @@ import { AppModeService } from 'src/app/modules/common-core/services';
 import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import { DatabaseService } from '../database/database.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
+import { RegistrationDraft } from './draft-model';
 
 //key-value-store used to mock the database
 class TestDatabaseService {
@@ -256,5 +257,47 @@ describe('DraftRepositoryService', () => {
 
     //drafts in demo database not available when in environment test
     expect(await service.load(draft1inDemo.uuid)).toBe(undefined);
+  }));
+
+  it('drafts$ returns a draft only when it is available, and completes if it is deleted', fakeAsync(async () => {
+    let draft: RegistrationDraft = {
+      ...await service.create(GeoHazard.Ice),
+      uuid: 'test'
+    };
+
+    let i = 0;
+    const sub = service.getDraft$('test').subscribe({
+      next: (d) => {
+        if (i < 2) {
+          expect(d).toEqual({ ...draft, lastSavedTime: jasmine.any(Number) });
+        } else {
+          expect(d).toBeUndefined();
+        }
+        i += 1;
+      }
+    });
+
+    tick(1);
+
+    await service.save(draft);
+
+    tick(1);
+
+    // Update draft
+    draft = { ...draft, regId: 123 };
+    await service.save(draft);
+
+    tick(1);
+
+    draft = null;
+    await service.delete('test');
+
+    flush();
+
+    // The observable should have emitted three times total, two drafts and undefined after it was deleted
+    expect(i).toBe(3);
+
+    // As we deleted the draft, the subscription should be closed
+    expect(sub.closed).toBe(true);
   }));
 });
