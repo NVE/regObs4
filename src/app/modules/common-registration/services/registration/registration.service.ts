@@ -706,12 +706,16 @@ export class RegistrationService {
     return !isNotEmpty;
   }
 
+  /**
+   * @deprecated
+   */
   private isNotEmpty(reg: IRegistration): Promise<boolean> {
-    const notEmpty = hasAnyObservations(reg);
-    if (notEmpty) {
-      return Promise.resolve(true);
-    }
-    return this.hasRegistrationAnyAttachment$(reg.id).pipe(take(1)).toPromise();
+    throw new Error('Use method on draft service');
+    // const notEmpty = hasAnyObservations(reg);
+    // if (notEmpty) {
+    //   return Promise.resolve(true);
+    // }
+    // return this.hasRegistrationAnyAttachment$(reg.id).pipe(take(1)).toPromise();
   }
 
   private async shouldSync(reg: IRegistration, includeThrottle = false): Promise<boolean> {

@@ -10,6 +10,7 @@ import {
   RegistrationViewModel
 } from 'src/app/modules/common-regobs-api/models';
 import { SyncStatus } from '../registration.models';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 // TODO: Sjekk hvilke av disse vi egentlig trenger
 
@@ -144,12 +145,12 @@ export function isObservationEmptyForRegistrationTid(reg: IRegistration, registr
   return isObservationModelEmptyForRegistrationTid(reg.request, registrationTid);
 }
 
-export function hasAnyObservations(reg: IRegistration): boolean {
-  if (reg === undefined || reg === null) {
+export function hasAnyObservations(draft: RegistrationDraft): boolean {
+  if (draft == null) {
     return false;
   }
   const registrationTids = getRegistrationTids();
-  return registrationTids.some((x) => !isObservationEmptyForRegistrationTid(reg, x));
+  return registrationTids.some((tid) => !isObservationModelEmptyForRegistrationTid(draft.registration, tid));
 }
 
 export function isArrayType(tid: RegistrationTid): boolean {

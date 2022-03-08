@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from './draft-repository.service';
@@ -6,8 +6,6 @@ import { TestLoggingService } from 'src/app/modules/shared/services/logging/test
 import { AppModeService } from 'src/app/modules/common-core/services';
 import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import { DatabaseService } from '../database/database.service';
-import { environment } from 'src/environments/environment';
-import exp from 'constants';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 
 //key-value-store used to mock the database
@@ -216,7 +214,7 @@ describe('DraftRepositoryService', () => {
     expect(newAttachmentService.removeAttachments).toHaveBeenCalledWith(draft.uuid);
   });
 
-  it('we do not mix data from different environments', async () => {
+  it('we do not mix data from different environments', fakeAsync(async () => {
     //save 2 drafts in test environment
     const draft1inTest = await service.create(GeoHazard.Ice);
     await service.save(draft1inTest);
@@ -242,6 +240,9 @@ describe('DraftRepositoryService', () => {
     expect(database.store.has(`drafts.DEMO.${draft1inDemo.uuid}`)).toBeTrue();
 
     appModeService.setAppMode(AppMode.Test); //change back to test environment
+
+    tick(1);
+
     const draftChanges2 = await firstValueFrom(service.drafts$);
     expect(draftChanges2.length).toBe(2); //we have 2 drafts in test
     expect(await service.load(draft1inTest.uuid)).toEqual({
@@ -255,5 +256,5 @@ describe('DraftRepositoryService', () => {
 
     //drafts in demo database not available when in environment test
     expect(await service.load(draft1inDemo.uuid)).toBe(undefined);
-  });
+  }));
 });

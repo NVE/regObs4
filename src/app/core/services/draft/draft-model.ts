@@ -11,14 +11,26 @@ import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 // type ImmutableArray<T> = ReadonlyArray<Immutable<T>>;
 // type ImmutableObject<T> = { readonly [K in keyof T]: Immutable<T[K]> };
 
+export declare const enum RegistrationDraftErrorCode {
+  NoNetworkOrTimedOut = 0,
+  AttachmentError = 10,
+  RegistrationError = 20,
+  ConflictError = 25,
+  ServerError = 30,
+  Unknown = 40,
+}
+
+export interface RegistrationDraftError {
+  code: RegistrationDraftErrorCode;
+  timestamp?: number;
+  message?: string;
+}
+
 /**
  * A registration that is not submitted to the server (yet).
  * It can be a new registration or an earlier submitted registration changed by you.
  */
 export interface RegistrationDraft {
-
-  // TODO: Tror vi trenger en knagg å henge innsendingsfeil på her.
-  // En optional error
 
   /** Unique ID. Will never change */
   readonly uuid: string;
@@ -47,4 +59,6 @@ export interface RegistrationDraft {
    * The registration to submit
    */
   readonly registration: RegistrationEditModel;
+
+  readonly error?: RegistrationDraftError;
 }

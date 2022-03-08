@@ -1,18 +1,38 @@
 <!-- Shows brief info from one observation not saved on server -->
-<ion-item lines="full" [detail]="!loading" [routerLink]="'/registration/edit/' + draft.uuid">
+<ion-item
+  lines="full"
+  [detail]="!loading"
+  [routerLink]="'/registration/edit/' + draft.uuid"
+  [disabled]="loading"
+>
+  <!-- GeoHazard Icon -->
   <div slot="start" class="geo-icon-circle">
-    <app-geo-icon [geoHazards]="[draft.registration.GeoHazardTID]"></app-geo-icon>
+    <app-geo-icon
+      [geoHazards]="[draft.registration.GeoHazardTID]"
+    ></app-geo-icon>
   </div>
+
+  <!-- Registration draft title -->
   <ion-label>
     <h2>
-      {{ getLocationName(draft) }}
+      {{ locationName }}
     </h2>
     <p class="ion-text-wrap">
       <ion-icon name="calendar"></ion-icon> {{ draft.registration.DtObsTime | formatDate | async }}
       <span *ngIf="isDraft"> - {{ 'DRAFT' | translate }}</span>
     </p>
   </ion-label>
-  <!-- TODO: Error handling -->
-  <!-- <ion-icon *ngIf="!loading && registration.syncError" slot="end" name="warning"></ion-icon> -->
-  <ion-spinner *ngIf="loading" slot="end"></ion-spinner>
+  
+  <!-- Show error icon if the app failed to post this draft -->
+  <ion-icon
+    *ngIf="!loading && draft.error"
+    slot="end"
+    name="warning"
+  ></ion-icon>
+  
+  <!-- Show loading spinner if this draft is being posted right now -->
+  <ion-spinner
+    *ngIf="loading"
+    slot="end"
+  ></ion-spinner>
 </ion-item>

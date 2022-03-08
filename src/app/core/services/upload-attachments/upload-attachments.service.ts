@@ -9,15 +9,19 @@ import { RegistrationDraft } from '../draft/draft-model';
 
 const DEBUG_TAG = 'UploadAttachmentsService';
 
+export interface FailedAttachment extends Pick<AttachmentUploadEditModel, 'id'> {
+  error: Error;
+}
+
 export class UploadAttachmentError extends Error {
   registrationUuid: string;
-  attachmentIds: string[];
+  attachments: FailedAttachment[];
 
-  constructor(registrationUuid: string, attachmentIds: string[]) {
-    super(`Failed to upload ${attachmentIds.length} attachments for registration '${registrationUuid}'`);
+  constructor(registrationUuid: string, attachments: FailedAttachment[]) {
+    super(`Failed to upload ${attachments.length} attachments for registration '${registrationUuid}'`);
     this.name = 'UploadAttachmentError';
     this.registrationUuid = registrationUuid;
-    this.attachmentIds = attachmentIds;
+    this.attachments = attachments;
   }
 }
 
@@ -47,6 +51,7 @@ export class UploadAttachmentsService {
    *
    * @returns Attachments with attachment ids from upload response
    * @throws {UploadAttachmentError} If the attachment upload fails
+   * @throws {HttpErrorResponse} If any upload requests fails with http status = 0, probably no network
    */
   async uploadAllAttachments(draft: RegistrationDraft): Promise<AttachmentUploadEditModel[]> {
     const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
@@ -57,21 +62,29 @@ export class UploadAttachmentsService {
 
     // Error handling
     // wrap this.uploadAttachment in a function that saves exceptions so that we can handle those that fail later
-    const failedAttachmentIds = [];
+    const failedAttachments: FailedAttachment[] = [];
     const uploadAttachmentAndHandleErrors = async (attachment: AttachmentUploadEditModel) => {
       try {
         return await this.uploadAttachment(attachment, draft);
       } catch (error) {
+        if (error instanceof HttpErrorResponse && error.status === 0) {
+          // Probably no network, stop trying to upload any attachments
+          throw error;
+        }
+
         this.loggingService.error(error, DEBUG_TAG, 'Failed to upload attachment', attachment.AttachmentId);
-        failedAttachmentIds.push(attachment.AttachmentId);
+        failedAttachments.push({
+          id: attachment.id,
+          error
+        });
       }
     };
 
     // Upload all attachments concurrently
     const uploadedAttachments = await Promise.all(attachmentsToUpload.map(uploadAttachmentAndHandleErrors));
 
-    if (failedAttachmentIds.length) {
-      throw new UploadAttachmentError(draft.uuid, failedAttachmentIds);
+    if (failedAttachments.length) {
+      throw new UploadAttachmentError(draft.uuid, failedAttachments);
     }
 
     return [

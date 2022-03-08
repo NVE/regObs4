@@ -1,5 +1,5 @@
 <!-- shows list of registrations not saved on server (both drafts and registrations in sync)-->
-<div *ngIf="draftService.drafts$| async as drafts">
+<div *ngIf="drafts$ | async as drafts">
   <ion-item-divider *ngIf="drafts?.length > 0" no-border>
     <ion-grid class="ion-no-padding ion-no-margin">
       <ion-row>
@@ -13,6 +13,10 @@
     </ion-grid>
   </ion-item-divider>
   <ion-list>
-    <app-sync-item *ngFor="let draft of drafts; trackBy: trackByIdFunc" [draft]="draft"></app-sync-item>
+    <!-- Create an app-sync-item for each draft -->
+    <app-sync-item
+      *ngFor="let draft of drafts; trackBy: trackByIdFunc"
+      [draft]="draft"
+    ></app-sync-item>
   </ion-list>
 </div>

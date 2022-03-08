@@ -1,12 +1,7 @@
 import {
   Component,
-  Input,
-  Output,
-  EventEmitter,
-  NgZone
-} from '@angular/core';
-import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationService } from '../../services/registration.service';
+  Input} from '@angular/core';
+import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import {
   EmailComposer,
   EmailComposerOptions
@@ -14,6 +9,9 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { settings } from '../../../../../settings';
 import stringify from 'json-stringify-safe';
+import { RegistrationDraft, RegistrationDraftErrorCode } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-failed-registration',
@@ -21,35 +19,53 @@ import stringify from 'json-stringify-safe';
   styleUrls: ['./failed-registration.component.scss']
 })
 export class FailedRegistrationComponent {
-  @Input() registration: IRegistration;
-  @Output() registrationChange = new EventEmitter();
+  @Input() draft: RegistrationDraft;
 
   constructor(
-    private registrationService: RegistrationService,
+    private draftService: DraftRepositoryService,
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
-    private ngZone: NgZone,
   ) {}
 
+  get networkError() {
+    return this.draft.error.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut;
+  }
+
+  get registrationError() {
+    return this.draft.error.code === RegistrationDraftErrorCode.RegistrationError;
+  }
+
+  get unknownError() {
+    return (
+      this.draft.error.code === RegistrationDraftErrorCode.AttachmentError ||
+      this.draft.error.code === RegistrationDraftErrorCode.ConflictError ||
+      this.draft.error.code === RegistrationDraftErrorCode.Unknown
+    );
+  }
+
+  get serverError() {
+    return this.draft.error.code === RegistrationDraftErrorCode.ServerError;
+  }
+
   async openForEdit() {
-    this.registration.syncStatus = SyncStatus.Draft;
-    await this.registrationService.saveRegistrationAsync(this.registration);
-    this.ngZone.run(() => {
-      this.registrationChange.emit(this.registration);
+    await this.draftService.save({
+      ...this.draft,
+      syncStatus: SyncStatus.Draft,
     });
   }
 
   async sendEmail() {
-    const translations = await this.translateService
-      .get(['REGISTRATION.EMAIL.SUBJECT', 'REGISTRATION.EMAIL.BODY'])
-      .toPromise();
+    const translations = await firstValueFrom(this.translateService.get([
+      'REGISTRATION.EMAIL.SUBJECT',
+      'REGISTRATION.EMAIL.BODY'
+    ]));
     // const pictures = this.registrationService
     //   .getAllPictures(this.registration.request)
     //   .filter(
     //     (p) => p.PictureImageBase64 && !p.PictureImageBase64.startsWith('data')
     //   )
     //   .map((p) => p.PictureImageBase64);
-    const base64string = btoa(stringify(this.registration));
+    const base64string = btoa(stringify(this.draft));
     const attachments = ['base64:registration.json//' + base64string];
     // const attachments = ['base64:registration.json//' + base64string].concat(
     //   pictures

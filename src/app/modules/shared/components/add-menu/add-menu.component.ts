@@ -5,7 +5,7 @@ import moment from 'moment';
 import { DateHelperService } from '../../services/date-helper/date-helper.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { setObservableTimeout } from '../../../../core/helpers/observable-helper';

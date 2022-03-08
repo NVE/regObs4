@@ -163,7 +163,7 @@ export class AppComponent {
                 )
               )
             ),
-            of(this.draftToRegService.startUploadingRegistrations()).pipe(
+            of(this.draftToRegService.createSubscriptions()).pipe(
               catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not start draftToRegService'))
             )
           ])

@@ -10,17 +10,27 @@
 </ion-header>
 <ng-container *ngIf="draft">
   <ion-content>
-    <!-- TODO: Handle sync errors -->
-    <!-- <app-failed-registration *ngIf="registration.syncError && registration.syncStatus === RegistrationStatus.Sync"
-      [registration]="registration"></app-failed-registration> -->
+    <!-- Error info if posting the registration failed -->
+    <app-failed-registration
+      *ngIf="draft.error && draft.syncStatus === RegistrationStatus.Sync"
+      [draft]="draft"
+    ></app-failed-registration>
+
     <ion-list lines="full">
+      <!-- Registration -->
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{"REGISTRATION.OVERVIEW.MY_OBSERVATION" | translate}}
         </ion-label>
       </ion-list-header>
-      <app-summary-item [readonly]="draft.syncStatus === RegistrationStatus.Sync"
-        *ngFor="let item of summaryItems; trackBy: trackByFunction" [item]="item"></app-summary-item>
+
+      <!-- "Summary" items for each form -->
+      <app-summary-item
+        [readonly]="draft.syncStatus === RegistrationStatus.Sync"
+        *ngFor="let item of summaryItems; trackBy: trackByFunction"
+        [item]="item"
+      ></app-summary-item>
+
     </ion-list>
   </ion-content>
   <app-send-button [draft]="draft"></app-send-button>

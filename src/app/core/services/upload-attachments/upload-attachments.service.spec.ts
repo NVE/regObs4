@@ -203,8 +203,12 @@ describe('UploadAttachmentsService', () => {
 
     // Test that uploadAllAttachments rejects with an error
     // containing regid and attachment ids
+    const error = new UploadAttachmentError(regUuid, [{
+      id: attachmentIdThatFails,
+      error: jasmine.any(Error) as unknown as Error
+    }]);
     await expectAsync(service.uploadAllAttachments(draft))
-      .toBeRejectedWith(new UploadAttachmentError(regUuid, [attachmentIdThatFails]));
+      .toBeRejectedWith(error);
 
     expect(loggingService.error).toHaveBeenCalled();
     expect(httpClient.post).toHaveBeenCalledTimes(2);

@@ -6,10 +6,8 @@
           <ion-button [disabled]="isDisabled" expand="block" color="varsom-orange" (click)="send()">
             <ion-icon slot="start" name="send"></ion-icon>
             
-            <!-- TODO: error handling -->
-            <!-- <span *ngIf="registration.syncError">{{"REGISTRATION.RESEND" | translate}}</span>
-            <span *ngIf="!registration.syncError">{{"REGISTRATION.SEND" | translate}}</span> -->
-            <span>{{"REGISTRATION.SEND" | translate}}</span>
+            <span *ngIf="draft.error">{{"REGISTRATION.RESEND" | translate}}</span>
+            <span *ngIf="!draft.error">{{"REGISTRATION.SEND" | translate}}</span>
 
           </ion-button>
         </ion-col>

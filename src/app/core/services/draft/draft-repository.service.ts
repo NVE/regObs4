@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, filter, firstValueFrom, from, map, Observable, switchMap, } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, firstValueFrom, from, map, Observable, shareReplay, switchMap, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { AppModeService } from 'src/app/modules/common-core/services';
-import { getAllAttachments, getAllAttachmentsFromViewModel, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
+import { getAllAttachmentsFromViewModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
 import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { DatabaseService } from '../database/database.service';
 import { RegistrationDraft } from './draft-model';
@@ -38,11 +37,14 @@ export class DraftRepositoryService {
     private newAttachmentSerivice: NewAttachmentService,
     private databaseService: DatabaseService
   ) {
-    // TODO: Vurdere å bruke share eller shareReplay på denne
-    // for å hindre at man må lese fra basen uten at noen ting er endret,
-    this.drafts$ = combineLatest([this.appModeService.appMode$, this.databaseService.ready$, this.shouldLoad])
+    this.drafts$ = combineLatest([
+      this.appModeService.appMode$,
+      this.databaseService.ready$,
+      this.shouldLoad
+    ])
       .pipe(
         switchMap(([appMode]) => from(this.loadAllFromDatabase(appMode))),
+        shareReplay(1)
       );
   }
 
@@ -71,6 +73,15 @@ export class DraftRepositoryService {
       ...existingAttachmentsForRegistrationType,
       ...newAttachmentsForRegistrationType
     ];
+  }
+
+  async isDraftEmpty(draft: RegistrationDraft) {
+    if (hasAnyObservations(draft)) {
+      return false;
+    }
+
+    const attachments = await firstValueFrom(this.newAttachmentSerivice.getAttachments(draft.uuid));
+    return attachments.length === 0;
   }
 
   // TODO: Add test?
