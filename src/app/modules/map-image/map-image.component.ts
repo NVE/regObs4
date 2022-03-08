@@ -11,12 +11,15 @@ import {
 import * as L from 'leaflet';
 import { BehaviorSubject, Subject, timer } from 'rxjs';
 import { takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { point, booleanWithin } from '@turf/turf';
 import { ImageLocation } from '../../components/img-swiper/image-location.model';
 import { settings } from '../../../settings';
 import { SmartChanges } from '../../core/helpers/simple-changes.helper';
-import { BorderHelper } from '../../core/helpers/leaflet/border-helper';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
+import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
+import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
+import { SVALBARD_BOUNDS } from 'src/app/core/helpers/leaflet/svalbard-bounds';
 
 const START_ICON = '/assets/icon/map/GPS_start.svg';
 const END_ICON = '/assets/icon/map/GPS_stop.svg';
@@ -137,21 +140,21 @@ export class MapImageComponent implements OnInit, OnDestroy, OnChanges {
       });
   }
 
-  private isInNorway() {
-    if (this.location && this.location.latLng) {
-      return (
-        BorderHelper.isInNorway(this.location.latLng) ||
-        BorderHelper.isInSvalbard(this.location.latLng)
-      );
+  private getMatchingBaseLayer() {
+    const location = point([this.location.latLng.lng, this.location.latLng.lat]);
+    if (booleanWithin(location, NORWAY_BOUNDS)) {
+      return settings.map.tiles.topoMapLayers[TopoMapLayer.statensKartverk];
     }
-    return false;
+    if (booleanWithin(location, SVALBARD_BOUNDS)) {
+      return settings.map.tiles.topoMapLayers[TopoMapLayer.npolarBasiskart];
+    }
+    return settings.map.tiles.topoMapLayers[TopoMapLayer.arcGisOnline];
   }
 
   private addTileLayers() {
-    const url = this.isInNorway()
-      ? settings.map.tiles.statensKartverkMapUrl
-      : settings.map.tiles.arcGisOnlineTopoMapUrl;
-    L.tileLayer(url, {
+    const baseLayer = this.getMatchingBaseLayer();
+    L.tileLayer(baseLayer.url, {
+      ...baseLayer.options,
       updateWhenIdle: true,
       keepBuffer: 0
     }).addTo(this.map);

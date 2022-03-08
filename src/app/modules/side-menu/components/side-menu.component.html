@@ -52,11 +52,14 @@
     <ion-label position="stacked" color="dark" class="stacked-label">{{ 'MENU.MAP' | translate }}</ion-label>
     <ion-select cancelText="{{'DIALOGS.CANCEL' | translate}}" [(ngModel)]="userSettings.topoMap"
       interface="action-sheet" (ngModelChange)="saveUserSettings()">
-      <ion-select-option [value]="TopoMap.default">{{ 'MENU.TILES.ARC_GIS' | translate }} + {{
-        'MENU.TILES.KARTVERKET' | translate }}</ion-select-option>
-      <ion-select-option [value]="TopoMap.mixOpenTopo">{{ 'MENU.TILES.OPEN_TOPO' | translate }} + {{
-        'MENU.TILES.KARTVERKET' | translate }}</ion-select-option>
-      <ion-select-option [value]="TopoMap.geoDataLandskap">{{ 'MENU.TILES.GEODATA_LANDSKAP' | translate }}
+      <ion-select-option [value]="TopoMap.default">
+        {{ 'MENU.TILES.ARC_GIS' | translate }} + {{ 'MENU.TILES.KARTVERKET' | translate }} + {{ 'MENU.TILES.NORWEGIAN_POLAR_INSTITUTE' | translate }}
+      </ion-select-option>
+      <ion-select-option [value]="TopoMap.mixOpenTopo">
+        {{ 'MENU.TILES.OPEN_TOPO' | translate }} + {{ 'MENU.TILES.KARTVERKET' | translate }} + {{ 'MENU.TILES.NORWEGIAN_POLAR_INSTITUTE' | translate }}
+      </ion-select-option>
+      <ion-select-option [value]="TopoMap.geoDataLandskap">
+        {{ 'MENU.TILES.GEODATA_LANDSKAP' | translate }}
       </ion-select-option>
     </ion-select>
   </ion-item>
@@ -95,6 +98,8 @@
   <ion-item-divider>
     <ion-label class="ion-text-wrap">
       {{'MENU.TOPO_MAP_CREDITS' | translate}} <app-external-link src="https://www.kartverket.no/">Kartverket
+      </app-external-link>,
+      <app-external-link src="https://www.npolar.no/">Norsk Polarinstitutt
       </app-external-link>,
       <app-external-link src="https://www.esri.com/">Esri</app-external-link>, <app-external-link
         src="https://www.geodata.no/">Geodata</app-external-link>

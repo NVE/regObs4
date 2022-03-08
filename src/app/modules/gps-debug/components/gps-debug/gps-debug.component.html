@@ -12,7 +12,7 @@
         <span *ngIf="item.pos else NoPosition">&nbsp;
           {{ item.pos.coords.latitude | number:'.5' }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
           {{ item.pos.coords.longitude | number:'.5' }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}},
-          {{ item.pos.coords.accuracy }}
+          {{ item.pos.coords.accuracy | number: '1.0-0'}}m
         </span>
       </span>
       <span *ngIf="item.status === 'PositionError'">

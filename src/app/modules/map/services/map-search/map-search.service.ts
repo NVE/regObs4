@@ -159,11 +159,7 @@ export class MapSearchService {
       );
   }
 
-  getViewInfo(
-    mapView: IMapView,
-    geoHazard = GeoHazard.Dirt
-  ): Observable<ViewInfo> {
-    const latLng = mapView.center;
+  getViewInfo(latLng: L.LatLng, geoHazard = GeoHazard.Dirt): Observable<ViewInfo> {
     return this.geoCodeService
       .GeoCodeLocationInfo({
         latitude: latLng.lat,

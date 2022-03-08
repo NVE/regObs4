@@ -153,6 +153,7 @@
       "ARC_GIS": "ESRI World Topo (weltweit)",
       "GEODATA_LANDSKAP": "Geodata Topo (Norway)",
       "KARTVERKET": "Kartverket (Norway)",
+      "NORWEGIAN_POLAR_INSTITUTE": "Npolar (Svalbard)",
       "OPEN_TOPO": "OpenTopoMap (weltweit)"
     },
     "TIME_FRAME": "Zeitraum",
@@ -693,7 +694,6 @@
     "STEEPNESS_OUTLET_LEGEND_TEXT_2": "Mittlere Auslaufzonen (25% der Lawinen reichen weiter)",
     "STEEPNESS_OUTLET_LEGEND_TEXT_3": "Lange Auslaufzonen (5% der Lawinen reichen weiter)\nEinige Lawinen haben möglicherweise längere Auslaufzonen, wie die auf der Karte angezeigten.",
     "STEEPNESS_OUTLET_MAP_DESCRIPTION": "Hangneigungskarte mit Auslaufzonen",
-    "STEEPNESS_OUTLET_MAP_DISCLAMER": "<i>Nur</i> für die Reiseplanung. Die Karte wird automatisch erstellt und kann Fehler und Auslassungen aufweisen, z.B. steiles Gelände oder Unebenheiten werden nicht angezeigt.\n<br/>\n<br/>\nFarben geben Auslaufzonen für Lawinen wieder:",
     "WEAKENED_ICE_MAP_DESCRIPTION": "Geschwächtes Eis"
   },
   "TABS": {
