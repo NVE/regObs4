@@ -115,7 +115,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
         this.calculate();
       }
     } else {
-      this.regobsAuthService.signIn();
+      this.regobsAuthService.signIn(); //TODO: Denne redirecter tilbake til snøprofil-sida
     }
   }
 
