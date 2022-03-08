@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { combineLatest, concatMap, filter, firstValueFrom, from, interval, Observable, startWith, Subject, switchMap, withLatestFrom } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
@@ -28,6 +29,7 @@ export class DraftToRegistrationService {
   private registrationsUploading: string[] = [];
 
   constructor(
+    private platform: Platform,
     private draftService: DraftRepositoryService,
     private addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
     private userSettings: UserSettingService,
@@ -68,7 +70,8 @@ export class DraftToRegistrationService {
   private removeNetworkErrorsOnDraftsOnNetworkConnected() {
     combineLatest([
       this.networkStatus.connected$,
-      interval(5 * 60 * 1000).pipe(startWith(true))
+      interval(5 * 60 * 1000).pipe(startWith(true)),
+      this.platform.resume.pipe(startWith(true))
     ]).pipe(
       filter(([isConnected,]) => isConnected === true),
       withLatestFrom(this.draftService.drafts$),
@@ -114,8 +117,8 @@ export class DraftToRegistrationService {
       throw new Error('Draft without network error received');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { error, ...draftWithoutError } = draft;
+    this.loggerService.debug('Removing network error from draft', DEBUG_TAG, { error, draftId: draft.uuid });
     await this.draftService.save(draftWithoutError);
   }
 

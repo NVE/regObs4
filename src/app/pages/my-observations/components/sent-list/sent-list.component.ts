@@ -63,6 +63,7 @@ export class SentListComponent implements OnInit, OnDestroy {
           ...regsWithoutNewRegistration
         ];
 
+        this.isEmpty.next(false);
         this.changeDetectorRef.detectChanges();
       });
   }
