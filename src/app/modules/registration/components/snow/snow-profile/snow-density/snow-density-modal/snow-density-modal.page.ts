@@ -5,7 +5,6 @@ import { SnowDensityLayerModalPage } from '../snow-density-layer-modal/snow-dens
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
-import { RegistrationService } from '../../../../../services/registration.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import cloneDeep from 'clone-deep';

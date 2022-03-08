@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { IRegistration, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { getRegistrationName, isArrayType } from 'src/app/modules/common-registration/registration.helpers';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { AlertController } from '@ionic/angular';

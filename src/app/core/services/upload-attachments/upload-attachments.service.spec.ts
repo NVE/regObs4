@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/
 import cloneDeep from 'clone-deep';
 import { Observable, of } from 'rxjs';
 import { AttachmentUploadEditModel, SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { NewAttachmentService, ProgressService } from 'src/app/modules/common-registration/registration.services';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { AttachmentService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';

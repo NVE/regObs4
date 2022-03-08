@@ -1,6 +1,4 @@
 import { RegistrationTid } from '../models/registration-tid.enum';
-import { IRegistration } from '../models/registration.interface';
-import { GeoHazard } from 'src/app/modules/common-core/models';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { ValidRegistrationType } from '../models/valid-registration.type';
 import {
@@ -9,20 +7,9 @@ import {
   RegistrationEditModel,
   RegistrationViewModel
 } from 'src/app/modules/common-regobs-api/models';
-import { SyncStatus } from '../registration.models';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 // TODO: Sjekk hvilke av disse vi egentlig trenger
-
-export function getAllAttachments(reg: IRegistration, registrationTid?: RegistrationTid): AttachmentEditModel[] {
-  if (!reg) {
-    return [];
-  }
-  if (reg.syncStatus === SyncStatus.InSync && reg.response) {
-    return getAllAttachmentsFromResponse(reg, registrationTid);
-  }
-  return getAllAttachmentsFromRequest(reg, registrationTid);
-}
 
 export function getAttachmentsFromRegistrationViewModel(
   viewModel: RegistrationEditModel | RegistrationViewModel,
@@ -61,50 +48,6 @@ export function getAllAttachmentsFromViewModel(viewModel: RegistrationEditModel,
   return [].concat(...attachments, ...damageObsAttachments, ...waterLevelAttachmetns);
 }
 
-export function getAllAttachmentsFromRequest(reg: IRegistration, registrationTid?: RegistrationTid): AttachmentEditModel[] {
-  return getAllAttachmentsFromViewModel(reg.request, registrationTid);
-}
-
-export function getAllAttachmentsFromResponse(reg: IRegistration, registrationTid?: RegistrationTid): AttachmentEditModel[] {
-  return getAllAttachmentsFromViewModel(reg.response, registrationTid);
-}
-
-export function deleteExistingAttachmentById(reg: IRegistration, attachmentId: number): void {
-  if (reg && reg.request) {
-    if (reg.request.Attachments && reg.request.Attachments.length > 0) {
-      reg.request.Attachments = reg.request.Attachments.filter((a) => a.AttachmentId !== attachmentId);
-    }
-    if (reg.request.WaterLevel2 && reg.request.WaterLevel2.WaterLevelMeasurement) {
-      for (const wlm of reg.request.WaterLevel2.WaterLevelMeasurement) {
-        wlm.Attachments = wlm.Attachments.filter((a) => a.AttachmentId !== attachmentId);
-      }
-    }
-  }
-}
-
-export function editExistingAttachmentById(reg: IRegistration, attachmentId: number, model: AttachmentEditModel): void {
-  if (reg && reg.request) {
-    if (reg.request.Attachments && reg.request.Attachments.length > 0) {
-      reg.request.Attachments = (reg.request.Attachments || []).map((a) => {
-        if (a.AttachmentId === attachmentId) {
-          return Object.assign(a, model);
-        }
-        return a;
-      });
-    }
-    if (reg.request.WaterLevel2 && reg.request.WaterLevel2.WaterLevelMeasurement) {
-      for (const wlm of reg.request.WaterLevel2.WaterLevelMeasurement) {
-        wlm.Attachments = (wlm.Attachments || []).map((a) => {
-          if (a.AttachmentId === attachmentId) {
-            return Object.assign(a, model);
-          }
-          return a;
-        });
-      }
-    }
-  }
-}
-
 type RegistrationName = keyof typeof RegistrationTid;
 
 export function getRegistrationName(registrationTid: RegistrationTid): RegistrationName {
@@ -121,10 +64,6 @@ export function getRegistationPropertyForModel(
   return null;
 }
 
-export function getRegistationProperty(reg: IRegistration, registrationTid: RegistrationTid): ValidRegistrationType {
-  return getRegistationPropertyForModel(reg.request, registrationTid);
-}
-
 export function getRegistrationTids(): RegistrationTid[] {
   return Object.keys(RegistrationTid)
     .map((key) => RegistrationTid[key])
@@ -139,10 +78,6 @@ export function isObservationModelEmptyForRegistrationTid(
     return isEmpty(getRegistationPropertyForModel(regModel, registrationTid));
   }
   return true;
-}
-
-export function isObservationEmptyForRegistrationTid(reg: IRegistration, registrationTid: RegistrationTid): boolean {
-  return isObservationModelEmptyForRegistrationTid(reg.request, registrationTid);
 }
 
 export function hasAnyObservations(draft: RegistrationDraft): boolean {
@@ -168,34 +103,3 @@ export function isArrayType(tid: RegistrationTid): boolean {
   );
 }
 
-export function getRegistrationTidsForGeoHazard(geoHazard: GeoHazard): RegistrationTid[] {
-  const commonTypes = [RegistrationTid.GeneralObservation];
-  const geoHazardValidTypes = new Map<GeoHazard, RegistrationTid[]>([
-    [
-      GeoHazard.Snow,
-      [
-        RegistrationTid.DangerObs,
-        RegistrationTid.AvalancheObs,
-        RegistrationTid.AvalancheActivityObs2,
-        RegistrationTid.WeatherObservation,
-        RegistrationTid.SnowSurfaceObservation,
-        RegistrationTid.CompressionTest,
-        RegistrationTid.SnowProfile2,
-        RegistrationTid.AvalancheEvalProblem2,
-        RegistrationTid.AvalancheEvaluation3,
-        RegistrationTid.Incident
-      ]
-    ],
-    [GeoHazard.Ice, [RegistrationTid.IceCoverObs, RegistrationTid.IceThickness, RegistrationTid.DangerObs, RegistrationTid.Incident]],
-    [GeoHazard.Water, [RegistrationTid.WaterLevel2, RegistrationTid.DamageObs]],
-    [GeoHazard.Soil, [RegistrationTid.DangerObs, RegistrationTid.LandSlideObs]]
-  ]);
-  return geoHazardValidTypes.get(geoHazard).concat(commonTypes);
-}
-
-export function getOrCreateNewRegistrationForm(reg: IRegistration, tid: RegistrationTid): ValidRegistrationType {
-  if (isObservationEmptyForRegistrationTid(reg, tid)) {
-    return isArrayType(tid) ? [] : {};
-  }
-  return getRegistationProperty(reg, tid);
-}

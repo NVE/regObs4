@@ -1,20 +1,16 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CoreModule } from 'src/app/modules/common-core/core.module';
-import { FakeItemSyncCallbackService } from './services/item-sync-callback/fake-item-sync-callback.service';
-import { RegobsApiSyncCallbackService } from './services/item-sync-callback/regobs-api-sync-callback.service';
 import { RegobsApiModuleWithConfig } from 'src/app/modules/common-regobs-api';
 import { KdvElementsService, HelptextService as HelpTextApiService } from 'src/app/modules/common-regobs-api/services';
 import { OfflineDbServiceOptions } from './services/offline-db/offline-db-service.options';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { GeneralObservationSummaryProvider } from './services/summary-providers/general-observation/general-observation.summary-provider';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpConnectivityInterceptor } from 'ngx-connectivity';
 import { NewAttachmentService } from './services/add-new-attachment/new-attachment.service';
 import { throwError } from 'rxjs';
-import { WeatherSummaryProvider } from './services/summary-providers/snow/weather/weather.summary-provider';
 import { RegobsRegistrationPipesModule } from './registration.pipes';
 import { OfflineDbNewAttachmentService } from './services/add-new-attachment/offline-db-new-attachment.service';
-import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions, SUMMARY_PROVIDER_TOKEN } from './module.options';
+import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions } from './module.options';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import FileAttachmentService from './services/add-new-attachment/file-attachment.service';
 import { isPlatform } from '@ionic/angular';
@@ -73,20 +69,6 @@ export class RegistrationModule {
           deps: [FOR_ROOT_OPTIONS_TOKEN]
         },
         {
-          provide: 'OfflineRegistrationSyncService',
-          useClass: RegobsApiSyncCallbackService
-        },
-        {
-          provide: SUMMARY_PROVIDER_TOKEN,
-          useClass: GeneralObservationSummaryProvider,
-          multi: true
-        },
-        {
-          provide: SUMMARY_PROVIDER_TOKEN,
-          useClass: WeatherSummaryProvider,
-          multi: true
-        },
-        {
           provide: HTTP_INTERCEPTORS,
           useClass: HttpConnectivityInterceptor,
           multi: true
@@ -115,20 +97,6 @@ export class RegistrationModule {
         {
           provide: OfflineDbServiceOptions,
           useValue: { adapter: 'memory' }
-        },
-        {
-          provide: 'OfflineRegistrationSyncService',
-          useClass: FakeItemSyncCallbackService
-        },
-        {
-          provide: SUMMARY_PROVIDER_TOKEN,
-          useClass: GeneralObservationSummaryProvider,
-          multi: true
-        },
-        {
-          provide: SUMMARY_PROVIDER_TOKEN,
-          useClass: WeatherSummaryProvider,
-          multi: true
         },
         {
           provide: NewAttachmentService,
