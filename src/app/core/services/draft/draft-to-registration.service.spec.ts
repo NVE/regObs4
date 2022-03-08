@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
+import { Platform } from '@ionic/angular';
 import { Observable, of, ReplaySubject, share } from 'rxjs';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
@@ -61,6 +62,7 @@ describe('DraftToRegistrationService', () => {
     loggerService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
 
     service = new DraftToRegistrationService(
+      { resume: of(true) } as unknown as Platform,
       draftService as unknown as DraftRepositoryService,
       addUpdateDeleteRegService,
       userSettings as unknown as UserSettingService,
@@ -161,8 +163,8 @@ describe('DraftToRegistrationService', () => {
     // Wait 50 ms
     tick(50);
 
-    // service should have started saving one of the two drafts that should be updated
-    expect(draftService.save).toHaveBeenCalledTimes(1);
+    // service should have started saving the updated drafts without network errors
+    expect(draftService.save).toHaveBeenCalledTimes(2);
 
     // Update drafts
     drafts.next([

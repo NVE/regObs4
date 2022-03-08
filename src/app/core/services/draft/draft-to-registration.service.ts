@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { combineLatest, concatMap, filter, firstValueFrom, from, interval, Observable, startWith, Subject, switchMap, withLatestFrom } from 'rxjs';
+import { combineLatest, concatMap, exhaustMap, filter, firstValueFrom, from, interval, map, Observable, startWith, Subject, switchMap, throttleTime, withLatestFrom } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -51,20 +51,19 @@ export class DraftToRegistrationService {
     combineLatest([
       this.draftService.drafts$,
       this.networkStatus.connected$
-    ]).pipe(
-      // No need to try sending registrations if we are offline
-      filter(([, isConnected]) => isConnected === true),
-      // Change this stream from a stream 'draft[]' to a stream of 'draft'
-      // This makes the filtering below a bit easier
-      switchMap(([drafts,]) => from(drafts)),
-      // Only upload drafts with status sync
-      filter(draft => draft.syncStatus === SyncStatus.Sync),
-      // Do not try to send registrations with errors
-      filter(draft => draft.error == null),
-      // Only start one upload at a time
-      filter(draft => !this.registrationsUploading.includes(draft.uuid))
-    )
-      .subscribe(draftToSubmit => this.addOrUpdateRegistration(draftToSubmit));
+    ])
+      .subscribe(([drafts, isConnected]) => {
+        if (!isConnected) return;
+
+        const draftsToSync = drafts
+          .filter(d => d.syncStatus === SyncStatus.Sync)
+          .filter(d => d.error == null)
+          .filter(d => !this.registrationsUploading.includes(d.uuid));
+
+        for (const draft of draftsToSync) {
+          this.addOrUpdateRegistration(draft);
+        }
+      });
   }
 
   private removeNetworkErrorsOnDraftsOnNetworkConnected() {
@@ -74,10 +73,13 @@ export class DraftToRegistrationService {
       this.platform.resume.pipe(startWith(true))
     ]).pipe(
       filter(([isConnected,]) => isConnected === true),
+      // Only emit that we have a connection one time per 5 seconds, in case two or more emits at almost the same time
+      throttleTime(5000),
       withLatestFrom(this.draftService.drafts$),
-      switchMap(([,drafts]) => from(drafts)),
-      filter(draft => draft.error?.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut),
-      concatMap(draft => from(this.retryDraftThatFailedWithNetworkError(draft)))
+      // Pick drafts with network errors
+      map(([,drafts]) => drafts.filter(d => d.error?.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut)),
+      // exhaustMap ignores new incoming drafts until we have successfully saved
+      exhaustMap(drafts => from(this.retryDraftsFailedWithNetworkError(drafts)))
     )
       .subscribe();
   }
@@ -110,6 +112,12 @@ export class DraftToRegistrationService {
     // Stop tracking that we are uploading this registration
     const i = this.registrationsUploading.indexOf(draft.uuid);
     this.registrationsUploading.splice(i, 1);
+  }
+
+  private retryDraftsFailedWithNetworkError(drafts: RegistrationDraft[]): Promise<void[]> {
+    const updateTasks = drafts.map(d => this.retryDraftThatFailedWithNetworkError(d));
+    // Concurrently save updates and return the promise to allow it to be awaited
+    return Promise.all(updateTasks);
   }
 
   private async retryDraftThatFailedWithNetworkError(draft: RegistrationDraft) {
