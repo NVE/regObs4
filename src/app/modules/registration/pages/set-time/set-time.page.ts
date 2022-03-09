@@ -4,7 +4,7 @@ import { NavController } from '@ionic/angular';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { IRegistration } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 @Component({
   selector: 'app-set-time',
@@ -13,7 +13,6 @@ import { IRegistration } from 'src/app/modules/common-registration/registration.
 })
 export class SetTimePage extends BasePage {
   maxDate: string;
-  registration: IRegistration;
   localDate: string;
 
   constructor(
@@ -26,10 +25,11 @@ export class SetTimePage extends BasePage {
   }
 
   onInit() {
-    if (this.registration && this.registration.request.DtObsTime) {
-      this.localDate = this.registration.request.DtObsTime;
+    if (this.draft && this.draft.registration.DtObsTime) {
+      this.localDate = this.draft.registration.DtObsTime;
     }
   }
+
   setToNow() {
     const now = moment().toISOString(true);
     this.maxDate = this.getMaxDateForNow();
@@ -43,12 +43,15 @@ export class SetTimePage extends BasePage {
   }
 
   confirm() {
-    if (this.registration) {
-      this.registration.request.DtObsTime =
-        this.localDate || moment().toISOString(true);
-      this.navController.navigateRoot(
-        'registration/edit/' + this.registration.id
-      );
+    if (this.draft) {
+      this.draft = {
+        ...this.draft,
+        registration: {
+          ...this.draft.registration,
+          DtObsTime: this.localDate || moment().toISOString(true)
+        }
+      };
+      this.navController.navigateRoot('registration/edit/' + this.draft.uuid);
     }
   }
 }

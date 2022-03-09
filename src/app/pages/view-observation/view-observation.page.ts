@@ -5,8 +5,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
-import { takeUntil, switchMap, withLatestFrom, tap } from 'rxjs/operators';
-import { RegistrationService } from 'src/app/modules/common-registration/registration.services';
+import { takeUntil, switchMap, withLatestFrom } from 'rxjs/operators';
 import { from, Observable } from 'rxjs';
 import { EditMode, getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
@@ -26,7 +25,6 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
     private popupInfoService: PopupInfoService,
-    private registrationService: RegistrationService,
     private router: Router,
     private regobsAuthService: RegobsAuthService
   ) {
@@ -34,8 +32,9 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   }
 
   async editRegistration(registration: RegistrationViewModel) {
-    const reg = await this.registrationService.editExistingRegistrationAndSave(registration);
-    this.router.navigate(['registration', 'edit', reg.id]);
+    throw new Error('Not implemented');
+    // const reg = await this.registrationService.editExistingRegistrationAndSave(registration);
+    // this.router.navigate(['registration', 'edit', reg.id]);
   }
 
   ngOnInit() {

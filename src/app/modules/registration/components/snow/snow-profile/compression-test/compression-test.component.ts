@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { CompressionTestListModalPage } from './compression-test-list-modal/compression-test-list-modal.page';
 import { ModalController } from '@ionic/angular';
-import { IRegistration } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationService } from '../../../../services/registration.service';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-compression-test',
@@ -11,7 +11,7 @@ import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/mode
   styleUrls: ['./compression-test.component.scss']
 })
 export class CompressionTestComponent {
-  @Input() reg: IRegistration;
+  @Input() draft: RegistrationDraft;
   private compressionTestListModal: HTMLIonModalElement;
 
   get connectedTests(): CompressionTestEditModel[] {
@@ -19,7 +19,7 @@ export class CompressionTestComponent {
   }
 
   get tests(): CompressionTestEditModel[] {
-    return this.reg.request.CompressionTest || [];
+    return this.draft.registration.CompressionTest || [];
   }
 
   get isEmpty(): boolean {
@@ -28,16 +28,16 @@ export class CompressionTestComponent {
 
   constructor(
     private modalContoller: ModalController,
-    private registrationService: RegistrationService
+    private draftService: DraftRepositoryService
   ) {}
 
   async openModal(): Promise<void> {
     if (!this.compressionTestListModal) {
-      await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
+      await this.draftService.save(this.draft); // Save registration before open modal page
       this.compressionTestListModal = await this.modalContoller.create({
         component: CompressionTestListModalPage,
         componentProps: {
-          regId: this.reg.id
+          uuid: this.draft.uuid
         }
       });
       this.compressionTestListModal.present();

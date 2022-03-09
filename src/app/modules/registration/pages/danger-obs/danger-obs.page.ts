@@ -10,6 +10,12 @@ import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+/**
+ * Used to add or edit danger observations.
+ * Contains a list of danger observations already registered.
+ * You may click an observation open the specific observation in a form.
+ * Contains also a button to add new observations and a function to upload images.
+ */
 @Component({
   selector: 'app-danger-obs',
   templateUrl: './danger-obs.page.html',
@@ -36,7 +42,7 @@ export class DangerObsPage extends BasePage {
   }
 
   onInit() {
-    const kdvKey = `${GeoHazard[this.registration.geoHazard]}_DangerSignKDV`;
+    const kdvKey = `${GeoHazard[this.draft.registration.GeoHazardTID]}_DangerSignKDV`;
     this.dangerSignKdvSubscription = this.kdvService
       .getKdvRepositoryByKeyObservable(kdvKey)
       .subscribe((val) => {
@@ -49,11 +55,11 @@ export class DangerObsPage extends BasePage {
   async addOrEdit(index?: number) {
     const dangerObs =
       index !== undefined
-        ? this.registration.request.DangerObs[index]
+        ? this.draft.registration.DangerObs[index]
         : undefined;
     const modal = await this.modalController.create({
       component: AddOrEditDangerObsModalPage,
-      componentProps: { dangerObs, geoHazard: this.registration.geoHazard }
+      componentProps: { dangerObs, geoHazard: this.draft.registration.GeoHazardTID }
     });
     modal.present();
     const result = await modal.onDidDismiss();
@@ -72,29 +78,29 @@ export class DangerObsPage extends BasePage {
 
   setDangerObs(index: number, dangerObs: DangerObsEditModel) {
     this.zone.run(() => {
-      if (!this.registration.request.DangerObs) {
-        this.registration.request.DangerObs = [];
+      if (!this.draft.registration.DangerObs) {
+        this.draft.registration.DangerObs = [];
       }
-      this.registration.request.DangerObs[index] = dangerObs;
+      this.draft.registration.DangerObs[index] = dangerObs;
     });
   }
 
   addDangerObs(dangerObs: DangerObsEditModel) {
     this.zone.run(() => {
-      if (!this.registration.request.DangerObs) {
-        this.registration.request.DangerObs = [];
+      if (!this.draft.registration.DangerObs) {
+        this.draft.registration.DangerObs = [];
       }
-      this.registration.request.DangerObs.push(dangerObs);
+      this.draft.registration.DangerObs.push(dangerObs);
     });
   }
 
   removeAtIndex(index: number) {
     this.zone.run(() => {
-      if (!this.registration.request.DangerObs) {
-        this.registration.request.DangerObs = [];
+      if (!this.draft.registration.DangerObs) {
+        this.draft.registration.DangerObs = [];
       }
-      if (this.registration.request.DangerObs.length > 0) {
-        this.registration.request.DangerObs.splice(index, 1);
+      if (this.draft.registration.DangerObs.length > 0) {
+        this.draft.registration.DangerObs.splice(index, 1);
       }
     });
   }

@@ -10,12 +10,13 @@ import { DataUrlHelper } from '../../../../../core/helpers/data-url.helper';
 import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from '../../../../../core/services/user-setting/user-setting.service';
 import { settings } from '../../../../../../settings';
-import { from, of } from 'rxjs';
-import { catchError, switchMap, take } from 'rxjs/operators';
+import { firstValueFrom, from, of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { UserSetting } from '../../../../../core/models/user-settings.model';
 import { LoggingService } from '../../../../shared/services/logging/logging.service';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
+import { SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
 
 const DEBUG_TAG = 'SnowProfilePage';
 
@@ -59,12 +60,16 @@ export class SnowProfilePage extends BasePage {
     super(RegistrationTid.SnowProfile2, basePageService, activatedRoute);
   }
 
+  get snowProfile(): SnowProfileEditModel {
+    return this.draft.registration.SnowProfile2;
+  }
+
   noLayersInSnowProfile(): boolean {
-    return isEmpty(this.registration.request.SnowProfile2);
+    return isEmpty(this.snowProfile);
   }
 
   private noTestsIncludedInSnowProfile(): boolean {
-    return !(this.registration.request.CompressionTest || []).some((ct) => ct.IncludeInSnowProfile === true);
+    return !(this.draft.registration.CompressionTest || []).some((ct) => ct.IncludeInSnowProfile === true);
   }
 
   isEmpty() {
@@ -79,7 +84,7 @@ export class SnowProfilePage extends BasePage {
         backdropDismiss: true // enable cancel
       });
       await loader.present();
-      const userSetting = await this.userSettingService.userSetting$.pipe(take(1)).toPromise();
+      const userSetting = await firstValueFrom(this.userSettingService.userSetting$);
       const format = 5; // Mobile profile plot
       const size = 400;
       const subscription = this.getPlotFromApiWithFallback(userSetting, format, size).subscribe(
@@ -116,19 +121,10 @@ export class SnowProfilePage extends BasePage {
     const rootUrl = settings.services.regObs.apiUrl[userSetting.appMode];
     return this.httpClient.post(
       `${rootUrl}/Registration/PlotPreviewPng?format=${format}` + `&height=${size}&width=${size}&langKey=${userSetting.language}`,
-      this.registration.request,
+      this.draft.registration,
       {
         responseType: 'blob'
       }
-    );
-  }
-
-  private hasAnyTempLayers() {
-    return (
-      this.registration.request.SnowProfile2 &&
-      this.registration.request.SnowProfile2.SnowTemp &&
-      this.registration.request.SnowProfile2.SnowTemp.Layers &&
-      this.registration.request.SnowProfile2.SnowTemp.Layers.some((x) => x.SnowTemp < 0)
     );
   }
 

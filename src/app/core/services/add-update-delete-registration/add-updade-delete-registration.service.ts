@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { LangKey } from 'src/app/modules/common-core/models';
 import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegistrationDraft } from '../draft/draft-model';
 import { UploadAttachmentsService } from '../upload-attachments/upload-attachments.service';
+import { UserSettingService } from '../user-setting/user-setting.service';
 import { addAttachmentToRegistration } from './attachmentHelpers';
 
 /**
@@ -20,6 +20,7 @@ export class AddUpdateDeleteRegistrationService {
   constructor(
     private uploadAttachmentsService: UploadAttachmentsService,
     private regobsApiRegistrationService: RegistrationService,
+    private userSettings: UserSettingService
   ) {}
 
   /**
@@ -31,8 +32,9 @@ export class AddUpdateDeleteRegistrationService {
    * @throws {HttpErrorResponse} If the request is unsuccessful
    * @throws {UploadAttachmentError} If uploading attachments fails
    */
-  async add(draft: RegistrationDraft, langKey: LangKey): Promise<RegistrationViewModel> {
+  async add(draft: RegistrationDraft): Promise<RegistrationViewModel> {
     const { registration } = await this.uploadAttachments(draft);
+    const langKey = await firstValueFrom(this.userSettings.language$);
 
     // Send registration to regobs
     return firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert({
@@ -55,13 +57,13 @@ export class AddUpdateDeleteRegistrationService {
    */
   async update(
     draft: RegistrationDraft,
-    langKey: LangKey,
     ignoreVersionCheck = false
   ): Promise<RegistrationViewModel> {
     if (!draft.regId) {
       throw new Error('Update operation needs regid');
     }
 
+    const langKey = await firstValueFrom(this.userSettings.language$);
     const { registration } = await this.uploadAttachments(draft);
 
     // Send registration to regobs

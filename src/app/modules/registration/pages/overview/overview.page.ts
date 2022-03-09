@@ -1,10 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import {
-  NewAttachmentService,
-  RegistrationService as CommonRegistrationService
-} from 'src/app/modules/common-registration/registration.services';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { combineLatest, from, Observable } from 'rxjs';
-import { IRegistration, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
@@ -13,6 +10,8 @@ import { SummaryItemService } from '../../services/summary-item.service';
 import { distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import deepEqual from 'fast-deep-equal';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-overview',
@@ -21,14 +20,15 @@ import deepEqual from 'fast-deep-equal';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OverviewPage extends NgDestoryBase implements OnInit {
-  registration: IRegistration;
+  draft: RegistrationDraft
   RegistationTid = RegistrationTid;
   GeoHazard = GeoHazard;
   RegistrationStatus = SyncStatus;
   summaryItems: Array<ISummaryItem> = [];
-  private registration$: Observable<IRegistration>;
+  private draft$: Observable<RegistrationDraft>;
+
   constructor(
-    private commonRegistrationService: CommonRegistrationService,
+    private draftService: DraftRepositoryService,
     private cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private summaryItemService: SummaryItemService,
@@ -40,21 +40,27 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
 
   ngOnInit() {
     const id = this.activatedRoute.snapshot.params['id'];
-    this.registration$ = this.commonRegistrationService.getRegistrationByIdShared$(id);
-    this.registration$.pipe(takeUntil(this.ngDestroy$)).subscribe((registration) => {
-      this.registration = registration;
+
+    this.draft$ = this.draftService.getDraft$(id);
+
+    this.draft$.pipe(takeUntil(this.ngDestroy$)).subscribe((draft) => {
+      this.draft = draft;
       this.cdr.detectChanges();
     });
+
     this.initSummaryItemSubscription();
     this.userGroupService.updateUserGroups();
   }
 
   private initSummaryItemSubscription() {
-    this.registration$
+    this.draft$
       .pipe(
-        switchMap((reg) =>
-          combineLatest([this.userGroupService.getUserGroupsAsObservable(), this.newAttachmentService.getAttachments(reg.id)]).pipe(
-            switchMap(([userGroups]) => from(this.summaryItemService.getSummaryItems(reg, userGroups)))
+        switchMap((draft) =>
+          combineLatest([
+            this.userGroupService.getUserGroupsAsObservable(),
+            this.newAttachmentService.getAttachments(draft.uuid)
+          ]).pipe(
+            switchMap(([userGroups]) => from(this.summaryItemService.getSummaryItems(draft, userGroups)))
           )
         ),
         distinctUntilChanged((a, b) => deepEqual(a, b)),

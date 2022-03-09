@@ -23,11 +23,9 @@ export class AvalancheEvaluationPage extends BasePage {
 
   onBeforeLeave() {
     if (
-      !this.isEmpty() &&
-      this.registration.request.AvalancheEvaluation3.AvalancheDangerTID ===
-        undefined
+      !this.isEmpty() && this.draft.registration.AvalancheEvaluation3.AvalancheDangerTID === undefined
     ) {
-      this.registration.request.AvalancheEvaluation3.AvalancheDangerTID = 0;
+      this.draft.registration.AvalancheEvaluation3.AvalancheDangerTID = 0;
       // NOTE: If anything is registered, but danger is not set, set to 0 - not evaluated
     }
   }

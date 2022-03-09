@@ -9,13 +9,13 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-registration-content-wrapper *ngIf="registration && registration.request.IceThickness"
-    [registration]="registration" [registrationTid]="registrationTid" (reset)="reset()">
+  <app-registration-content-wrapper *ngIf="draft && iceThickness"
+    [draft]="draft" [registrationTid]="registrationTid" (reset)="reset()">
     <ion-list lines="full" reorder="true">
-      <app-numeric-input [(value)]="registration.request.IceThickness.SnowDepth"
+      <app-numeric-input [(value)]="iceThickness.SnowDepth"
         title="REGISTRATION.ICE.ICE_THICKNESS.DRY_SNOW_BEFORE_DRILL" [min]="0" [max]="999" [decimalPlaces]="2"
         [convertRatio]="100" placeholder="REGISTRATION.IN_CM" suffix="cm"></app-numeric-input>
-      <app-numeric-input [(value)]="registration.request.IceThickness.SlushSnow"
+      <app-numeric-input [(value)]="iceThickness.SlushSnow"
         title="REGISTRATION.ICE.ICE_THICKNESS.SLUSH_SNOW_BEFORE_DRILL" [min]="0" [max]="999" [decimalPlaces]="2"
         [convertRatio]="100" placeholder="REGISTRATION.IN_CM" suffix="cm"></app-numeric-input>
       <ion-list-header class="ion-text-uppercase">
@@ -25,7 +25,7 @@
       </ion-list-header>
       <ion-reorder-group disabled="false" (ionItemReorder)="onIceThicknessReorder($event)">
         <ion-item (click)="addOrEditThicknessLayer(i)"
-          *ngFor="let layer of registration.request.IceThickness.IceThicknessLayers; let i = index">
+          *ngFor="let layer of iceThickness.IceThicknessLayers; let i = index">
           <ion-label> {{ layer.IceLayerTID | kdvDescription:'Ice_IceLayerKDV' | async }} -
             {{ layer.IceLayerThickness | metersToCm }} cm</ion-label>
           <ion-reorder slot="end"></ion-reorder>
@@ -35,7 +35,7 @@
         <ion-icon color="primary" name="add-circle-outline" slot="start"></ion-icon>
         <ion-label>{{'REGISTRATION.ICE.ICE_THICKNESS.ADD_ICE_LAYER' | translate}}</ion-label>
       </ion-item>
-      <app-numeric-input [readonly]="true" [(value)]="registration.request.IceThickness.IceThicknessSum"
+      <app-numeric-input [readonly]="true" [(value)]="iceThickness.IceThicknessSum"
         title="REGISTRATION.ICE.ICE_THICKNESS.ICE_THICKNESS_SUM" [min]="0" [max]="999" [decimalPlaces]="2"
         [convertRatio]="100" suffix="cm"></app-numeric-input>
       <app-yes-no-select [(value)]="isWaterBefore" title="REGISTRATION.ICE.ICE_THICKNESS.ICE_HEIGHT_BEFORE_TOGGLE">
@@ -83,14 +83,14 @@
           {{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-text-comment [(value)]="registration.request.IceThickness.Comment"
+      <app-text-comment [(value)]="iceThickness.Comment"
         placeholder="{{'REGISTRATION.GENERAL_COMMENT.COMMENT_PLACEHOLDER' | translate }}"></app-text-comment>
       <ion-list-header class="ion-text-uppercase">
         <ion-label>
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item [geoHazard]="registration.geoHazard" [registrationId]="registration.id"
+      <app-add-picture-item [geoHazard]="this.draft.registration.GeoHazardTID" [registrationId]="draft.uuid"
         [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
       </app-add-picture-item>
     </ion-list>
