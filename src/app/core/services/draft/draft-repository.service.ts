@@ -51,7 +51,7 @@ export class DraftRepositoryService {
   /**
    * Returns an observable with draft changes for a single draft.
    * Does not emit until the specified draft is available in the database.
-   * If the draft is deleted a subscription has been made, undefined is returned and the observable is completed.
+   * If the draft is deleted after a subscription has been made, undefined is returned and the observable is completed.
    */
   getDraft$(uuid: string): Observable<RegistrationDraft | undefined> {
     const gotDraft = new Subject<boolean>();
@@ -95,9 +95,14 @@ export class DraftRepositoryService {
     return attachments.length === 0;
   }
 
-  // TODO: Add test?
-  // TODO: Kan / Burde denne ligge et annet sted? Den bruker egentlig ingen metoder internt i denne servicen.
+  /**
+   * Check if the given draft is empty for a registration type, given by the regitrationTid.
+   * @example
+   * // Check if a draft contains a snow cover observation:
+   * isDraftEmptyForRegistrationType(draft, RegistrationTid.SnowCoverObs)
+   */
   async isDraftEmptyForRegistrationType(draft: RegistrationDraft, registrationTid: RegistrationTid): Promise<boolean> {
+    // TODO: Add test?
     if (registrationTid == null) {
       throw new Error('Not implemented');
     }
