@@ -31,7 +31,7 @@ export abstract class BasePage extends NgDestoryBase {
   ionViewDidEnter() {
     const id = this.activatedRoute.snapshot.params['id'];
 
-    const draft$ = this.basePageService.DraftService.getDraft$(id);
+    const draft$ = this.basePageService.draftRepository.getDraft$(id);
 
     // The first time we get a registration object, run some additional logic
     draft$.pipe(
@@ -100,15 +100,15 @@ export abstract class BasePage extends NgDestoryBase {
   }
 
   save() {
-    return this.basePageService.DraftService.save({ ...this.draft, syncStatus: SyncStatus.Draft });
+    return this.basePageService.draftRepository.save({ ...this.draft, syncStatus: SyncStatus.Draft });
   }
 
   getSaveFunc() {
     return () => this.save();
   }
 
-  isEmpty(): Promise<boolean> {
-    return this.basePageService.DraftService.isDraftEmptyForRegistrationType(this.draft, this.registrationTid);
+  async isEmpty(registrationType = this.registrationTid): Promise<boolean> {
+    return this.basePageService.draftRepository.isDraftEmptyForRegistrationType(this.draft, registrationType);
   }
 
   reset() {

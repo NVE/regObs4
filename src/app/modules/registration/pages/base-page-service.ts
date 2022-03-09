@@ -14,29 +14,12 @@ const DEBUG_TAG = 'BasePageService';
 })
 export class BasePageService {
 
-  // TODO: Hvorfor alle disse getters?
-  get Zone() {
-    return this.ngZone;
-  }
-
-  get AlertController() {
-    return this.alertController;
-  }
-
-  get TranslateService() {
-    return this.translateService;
-  }
-
-  get DraftService() {
-    return this.draftService;
-  }
-
-  get NewAttachmentService() {
-    return this.newAttachmentService;
+  get draftRepository(): DraftRepositoryService {
+    return this.draftRepositoryService;
   }
 
   constructor(
-    private draftService: DraftRepositoryService,
+    private draftRepositoryService: DraftRepositoryService,
     private newAttachmentService: NewAttachmentService,
     private ngZone: NgZone,
     private alertController: AlertController,
@@ -94,7 +77,7 @@ export class BasePageService {
       };
 
       await this.resetImages(draftReset);
-      await this.draftService.save(draftReset);
+      await this.draftRepository.save(draftReset);
     }
     this.ngZone.run(() => {
       if (onReset) {

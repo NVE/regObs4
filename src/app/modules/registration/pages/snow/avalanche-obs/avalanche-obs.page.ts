@@ -107,15 +107,11 @@ export class AvalancheObsPage extends BasePage {
   }
 
   async isEmpty(): Promise<boolean> {
-    const isAvalancheObsEmpty = await this.basePageService.DraftService.isDraftEmptyForRegistrationType(
-      this.draft, this.registrationTid
-    );
-    if (!isAvalancheObsEmpty) {
+    const isEmpty = await super.isEmpty();
+    if (!isEmpty) {
       return false;
     }
-    const isIncidentEmpty = await this.basePageService.DraftService.isDraftEmptyForRegistrationType(
-      this.draft, RegistrationTid.Incident
-    );
+    const isIncidentEmpty = await super.isEmpty(RegistrationTid.Incident);
     return isIncidentEmpty;
   }
 

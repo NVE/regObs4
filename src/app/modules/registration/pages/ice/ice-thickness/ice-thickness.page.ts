@@ -93,7 +93,7 @@ export class IceThicknessPage extends BasePage {
 
   async isEmpty(): Promise<boolean> {
     return (
-      (await this.basePageService.DraftService.isDraftEmptyForRegistrationType(this.draft, this.registrationTid)) &&
+      (await super.isEmpty()) &&
       this.isWaterAfter === undefined &&
       this.isWaterBefore === undefined
     );
