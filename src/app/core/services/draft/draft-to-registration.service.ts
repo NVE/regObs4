@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { combineLatest, concatMap, exhaustMap, filter, firstValueFrom, from, interval, map, Observable, startWith, Subject, switchMap, throttleTime, withLatestFrom } from 'rxjs';
+import { combineLatest, exhaustMap, filter, firstValueFrom, from, interval, map, Observable, startWith, Subject, throttleTime, withLatestFrom } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -15,12 +15,20 @@ import { DraftRepositoryService } from './draft-repository.service';
 const DEBUG_TAG = 'DraftToRegistrationService';
 
 
+/**
+ * Service that listens for new drafts ready to send to regobs api (drafts with SyncStatus.Sync), and asks
+ * AddUpdateDeleteRegistrationService to send them. If an upload fails, it asks DraftService to save the draft with an
+ * error property.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class DraftToRegistrationService {
   private initialized = false;
 
+  /**
+   * Emits new uploaded registrations.
+   */
   get newRegistrations$(): Observable<RegistrationViewModel> {
     return this.newRegistrations.asObservable();
   }
