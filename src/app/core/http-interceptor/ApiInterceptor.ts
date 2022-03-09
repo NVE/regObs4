@@ -1,4 +1,4 @@
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import {
   HttpRequest,
   HttpInterceptor,
