@@ -1,14 +1,12 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
 import { Platform } from '@ionic/angular';
-import { Observable, of, ReplaySubject, share } from 'rxjs';
-import { LangKey } from 'src/app/modules/common-core/models';
+import { Observable, of, ReplaySubject } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-updade-delete-registration.service';
 import { NetworkStatusService } from '../network-status/network-status.service';
-import { UserSettingService } from '../user-setting/user-setting.service';
 import { RegistrationDraft, RegistrationDraftErrorCode } from './draft-model';
 import { DraftRepositoryService } from './draft-repository.service';
 import { DraftToRegistrationService } from './draft-to-registration.service';
@@ -17,11 +15,6 @@ import { DraftToRegistrationService } from './draft-to-registration.service';
 describe('DraftToRegistrationService', () => {
   let service: DraftToRegistrationService;
   let addUpdateDeleteRegService: jasmine.SpyObj<AddUpdateDeleteRegistrationService>;
-
-  const userSettings = {
-    language$: of(LangKey.nb).pipe(share())
-  };
-
   let connected: ReplaySubject<boolean>;
   let networkService: NetworkStatusService;
 
@@ -65,11 +58,62 @@ describe('DraftToRegistrationService', () => {
       { resume: of(true) } as unknown as Platform,
       draftService as unknown as DraftRepositoryService,
       addUpdateDeleteRegService,
-      userSettings as unknown as UserSettingService,
       loggerService,
       networkService
     );
   });
+
+  it('Adds a network error to the draft if we try to upload without a connection', fakeAsync(() => {
+    // Test database for drafts
+    let testDrafts = [
+      { ...draft, uuid: 'a' },
+      { ...draft, uuid: 'b' }
+    ];
+
+    draftService.save.and.callFake((draftToSave) => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          testDrafts = [
+            ...testDrafts.filter(d => d.uuid !== draftToSave.uuid),
+            draftToSave
+          ];
+          drafts.next(testDrafts);
+          resolve();
+        }, 100);
+      });
+    });
+
+    // Start with no connection to internet and with two drafts to upload
+    connected.next(false);
+    drafts.next(testDrafts);
+
+    // Start listening
+    service.createSubscriptions();
+
+    // Saving takes 100ms. After 50ms, add another draft.
+    tick(50);
+    testDrafts = [...testDrafts, { ...draft, uuid: 'c' }];
+    drafts.next(testDrafts);
+
+    // Let all timeouts etc complete
+    flush();
+
+    // The drafts should have been saved with an error object on it
+    const error = jasmine.objectContaining({
+      code: RegistrationDraftErrorCode.NoNetworkOrTimedOut
+    });
+    expect(draftService.save).toHaveBeenCalledTimes(3);
+    expect(draftService.save.calls.allArgs()).toEqual([
+      [{ ...draft, uuid: 'a', error }],
+      [{ ...draft, uuid: 'b', error }],
+      [{ ...draft, uuid: 'c', error }]
+    ]);
+
+    // We should not try to upload any drafts
+    expect(addUpdateDeleteRegService.add).toHaveBeenCalledTimes(0);
+
+    discardPeriodicTasks();
+  }));
 
   it('Handles errors while uploading registrations', fakeAsync(() => {
     const error = new HttpErrorResponse({ status: HttpStatusCode.InternalServerError });
@@ -84,7 +128,6 @@ describe('DraftToRegistrationService', () => {
 
     // Let all timeouts etc complete
     flush();
-    discardPeriodicTasks();
 
     // The draft should have been saved with an error object on it
     expect(draftService.save).toHaveBeenCalledWith({
@@ -98,6 +141,8 @@ describe('DraftToRegistrationService', () => {
 
     // We should have logged the error
     expect(loggerService.error).toHaveBeenCalledTimes(1);
+
+    discardPeriodicTasks();
   }));
 
   it('Removes network errors when we have a connection', fakeAsync(() => {
@@ -126,7 +171,6 @@ describe('DraftToRegistrationService', () => {
     connected.next(true);
 
     flush();
-    discardPeriodicTasks();
 
     // We expect that draftService.save have been called two times with each draft with network error, a and b
     expect(draftService.save).toHaveBeenCalledTimes(2);
@@ -134,6 +178,8 @@ describe('DraftToRegistrationService', () => {
       [{ ...draft, uuid: 'a'}],
       [{ ...draft, uuid: 'b'}]
     ]);
+
+    discardPeriodicTasks();
   }));
 
   it('Remove network errors handles that drafts$ is updated', fakeAsync(() => {
@@ -193,7 +239,6 @@ describe('DraftToRegistrationService', () => {
     ]);
 
     flush();
-    discardPeriodicTasks();
 
     // We expect that draftService.save have been called two times with each draft with network error, a and b
     expect(draftService.save).toHaveBeenCalledTimes(2);
@@ -201,6 +246,8 @@ describe('DraftToRegistrationService', () => {
       [{ ...draft, uuid: 'a'}],
       [{ ...draft, uuid: 'b'}]
     ]);
+
+    discardPeriodicTasks();
   }));
 
   it(
@@ -233,20 +280,21 @@ describe('DraftToRegistrationService', () => {
 
       // After 100 ms, we expect addUpdateDeleteRegService.add to have been called,
       // but as the request has not been finished yet, the draft should not have been deleted
-      expect(addUpdateDeleteRegService.add).toHaveBeenCalledOnceWith(draft, LangKey.nb);
+      expect(addUpdateDeleteRegService.add).toHaveBeenCalledOnceWith(draft);
       expect(draftService.delete).toHaveBeenCalledTimes(0);
 
       // Drafts is updated, we are editing another draft while the draft is being submitted
       drafts.next([draft, { ...draft, uuid: 'def', syncStatus: SyncStatus.Draft }]);
 
       flush();
-      discardPeriodicTasks();
 
       // Even though drafts$ updates, we should only upload the draft a single time
-      expect(addUpdateDeleteRegService.add).toHaveBeenCalledOnceWith(draft, LangKey.nb);
+      expect(addUpdateDeleteRegService.add).toHaveBeenCalledOnceWith(draft);
 
       // Check that we try to delete the uploaded draft after a successful upload
       expect(draftService.delete).toHaveBeenCalledTimes(1);
       expect(draftService.delete).toHaveBeenCalledWith(draft.uuid);
+
+      discardPeriodicTasks();
     }));
 });

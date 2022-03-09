@@ -8,7 +8,6 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-updade-delete-registration.service';
 import { NetworkStatusService } from '../network-status/network-status.service';
 import { UploadAttachmentError } from '../upload-attachments/upload-attachments.service';
-import { UserSettingService } from '../user-setting/user-setting.service';
 import { RegistrationDraft, RegistrationDraftErrorCode } from './draft-model';
 import { DraftRepositoryService } from './draft-repository.service';
 
@@ -34,13 +33,17 @@ export class DraftToRegistrationService {
   }
 
   private newRegistrations = new Subject<RegistrationViewModel>();
+
+  /**
+   * Used to track what registrations we are currently uploading,
+   * as DraftService.drafts$ can emit the same draft multiple times
+   */
   private registrationsUploading: string[] = [];
 
   constructor(
     private platform: Platform,
     private draftService: DraftRepositoryService,
     private addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
-    private userSettings: UserSettingService,
     private loggerService: LoggingService,
     private networkStatus: NetworkStatusService
   ) {}
@@ -56,22 +59,16 @@ export class DraftToRegistrationService {
 
   private startUploadingRegistrations() {
     // Listen for drafts ready to submit to regobs api, and network status
-    combineLatest([
-      this.draftService.drafts$,
-      this.networkStatus.connected$
-    ])
-      .subscribe(([drafts, isConnected]) => {
-        if (!isConnected) return;
+    this.draftService.drafts$.subscribe((drafts) => {
+      const draftsToSync = drafts
+        .filter(d => d.syncStatus === SyncStatus.Sync)
+        .filter(d => d.error == null)
+        .filter(d => !this.registrationsUploading.includes(d.uuid));
 
-        const draftsToSync = drafts
-          .filter(d => d.syncStatus === SyncStatus.Sync)
-          .filter(d => d.error == null)
-          .filter(d => !this.registrationsUploading.includes(d.uuid));
-
-        for (const draft of draftsToSync) {
-          this.addOrUpdateRegistration(draft);
-        }
-      });
+      for (const draft of draftsToSync) {
+        this.addOrUpdateRegistrationWithTracker(draft);
+      }
+    });
   }
 
   private removeNetworkErrorsOnDraftsOnNetworkConnected() {
@@ -92,11 +89,27 @@ export class DraftToRegistrationService {
       .subscribe();
   }
 
-  private async addOrUpdateRegistration(draft: RegistrationDraft) {
+  private async addOrUpdateRegistrationWithTracker(draft: RegistrationDraft) {
     // Save this draft uuid to an in memory list so that we can keep track of what we are currently uploading
     this.registrationsUploading.push(draft.uuid);
+    try {
+      await this.addOrUpdateRegistration(draft);
+    } finally {
+      // Stop tracking that we are uploading this registration
+      const i = this.registrationsUploading.indexOf(draft.uuid);
+      this.registrationsUploading.splice(i, 1);
+    }
+  }
 
-    const langKey = await firstValueFrom(this.userSettings.language$);
+  private async addOrUpdateRegistration(draft: RegistrationDraft) {
+    // No need to upload if we do not have a connection.
+    // We need to set the network error anyway so that we know we have tried to upload this.
+    const connected = await firstValueFrom(this.networkStatus.connected$);
+    if (!connected) {
+      await this.setNetworkErrorOnDraft(draft);
+      return;
+    }
+
     this.loggerService.debug(`Sending registration ${draft.uuid} to regobs api`, DEBUG_TAG);
 
     try {
@@ -104,9 +117,9 @@ export class DraftToRegistrationService {
 
       if (draft.regId) {
         // We can add ignore version check functionality here later
-        result = await this.addUpdateDeleteRegistrationService.update(draft, langKey);
+        result = await this.addUpdateDeleteRegistrationService.update(draft);
       } else {
-        result = await this.addUpdateDeleteRegistrationService.add(draft, langKey);
+        result = await this.addUpdateDeleteRegistrationService.add(draft);
       }
 
       await this.draftService.delete(draft.uuid);
@@ -116,10 +129,16 @@ export class DraftToRegistrationService {
       this.loggerService.error(error, DEBUG_TAG, message);
       await this.draftService.save({ ...draft, error: { code, message, timestamp: Date.now() } });
     }
+  }
 
-    // Stop tracking that we are uploading this registration
-    const i = this.registrationsUploading.indexOf(draft.uuid);
-    this.registrationsUploading.splice(i, 1);
+  private async setNetworkErrorOnDraft(draft: RegistrationDraft) {
+    await this.draftService.save({
+      ...draft,
+      error: {
+        code: RegistrationDraftErrorCode.NoNetworkOrTimedOut,
+        timestamp: Date.now()
+      }
+    });
   }
 
   private retryDraftsFailedWithNetworkError(drafts: RegistrationDraft[]): Promise<void[]> {
