@@ -80,6 +80,7 @@ export class ApiInterceptor implements HttpInterceptor {
     request: HttpRequest<unknown>
   ): Observable<HttpRequest<unknown>> {
     return this.regobsAuthService.loggedInUser$.pipe(
+      take(1),
       catchError((err) => {
         this.loggerService.debug(
           'Could not get valid token',
