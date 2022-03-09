@@ -1,4 +1,4 @@
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import {
   HttpRequest,
   HttpInterceptor,
@@ -80,6 +80,10 @@ export class ApiInterceptor implements HttpInterceptor {
     request: HttpRequest<unknown>
   ): Observable<HttpRequest<unknown>> {
     return this.regobsAuthService.loggedInUser$.pipe(
+      // We do not want this do be a long lived observable,
+      // we want it to complete after we get the first loggedInUser.
+      // take(1) makes the observable complete after getting the first loggedInUser.
+      take(1),
       catchError((err) => {
         this.loggerService.debug(
           'Could not get valid token',
