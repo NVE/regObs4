@@ -2,9 +2,9 @@ import { Component, Input } from '@angular/core';
 import { SnowDensityModel } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
-import { IRegistration } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationService } from '../../../../services/registration.service';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-snow-density',
@@ -12,18 +12,12 @@ import { isEmpty } from 'src/app/modules/common-core/helpers';
   styleUrls: ['./snow-density.component.scss']
 })
 export class SnowDensityComponent {
-  @Input() reg: IRegistration;
+  @Input() draft: RegistrationDraft;
   private densityModal: HTMLIonModalElement;
 
   get profiles(): SnowDensityModel[] {
-    if (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.SnowDensity &&
-      this.reg.request.SnowProfile2.SnowDensity.length > 0
-    ) {
-      return this.reg.request.SnowProfile2.SnowDensity;
+    if (this.draft?.registration?.SnowProfile2?.SnowDensity?.length > 0) {
+      return this.draft.registration.SnowProfile2.SnowDensity;
     }
     return [];
   }
@@ -32,15 +26,15 @@ export class SnowDensityComponent {
     return isEmpty(this.profiles);
   }
 
-  constructor(private modalContoller: ModalController, private registrationService: RegistrationService) {}
+  constructor(private modalContoller: ModalController, private draftRepository: DraftRepositoryService) {}
 
   async openModal(): Promise<void> {
     if (!this.densityModal) {
-      await this.registrationService.saveRegistrationAsync(this.reg); // Save registration before open modal page
+      await this.draftRepository.save(this.draft); // Save registration before open modal page
       this.densityModal = await this.modalContoller.create({
         component: SnowDensityModalPage,
         componentProps: {
-          regId: this.reg.id
+          uuid: this.draft.uuid
         }
       });
       this.densityModal.present();

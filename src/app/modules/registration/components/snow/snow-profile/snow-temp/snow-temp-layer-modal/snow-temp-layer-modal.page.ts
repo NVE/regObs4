@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SnowTempObsModel } from 'src/app/modules/common-regobs-api/models';
 import { ModalController } from '@ionic/angular';
-import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import { IsEmptyHelper } from '../../../../../../../core/helpers/is-empty.helper';
-import { RegistrationService } from '../../../../../services/registration.service';
 import cloneDeep from 'clone-deep';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-snow-temp-layer-modal',
@@ -14,18 +14,18 @@ import cloneDeep from 'clone-deep';
 export class SnowTempLayerModalPage implements OnInit {
   @Input() layer: SnowTempObsModel;
   @Input() index: number;
-  @Input() reg: IRegistration;
+  @Input() draft: RegistrationDraft;
   addNew: boolean;
 
-  private initialRegistrationState: IRegistration;
+  private initialRegistrationState: RegistrationDraft;
 
   constructor(
     private modalController: ModalController,
-    private registrationService: RegistrationService
+    private draftRepository: DraftRepositoryService
   ) {}
 
   ngOnInit() {
-    this.initialRegistrationState = cloneDeep(this.reg);
+    this.initialRegistrationState = cloneDeep(this.draft);
     this.initLayer();
   }
 
@@ -37,19 +37,12 @@ export class SnowTempLayerModalPage implements OnInit {
   }
 
   get hasLayers() {
-    return (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.SnowTemp &&
-      this.reg.request.SnowProfile2.SnowTemp.Layers &&
-      this.reg.request.SnowProfile2.SnowTemp.Layers.length > 0
-    );
+    return this.draft?.registration?.SnowProfile2?.SnowTemp?.Layers?.length > 0;
   }
 
   get layerLenght() {
     return this.hasLayers
-      ? this.reg.request.SnowProfile2.SnowTemp.Layers.length
+      ? this.draft.registration.SnowProfile2.SnowTemp.Layers.length
       : 0;
   }
 
@@ -63,27 +56,27 @@ export class SnowTempLayerModalPage implements OnInit {
   }
 
   async ok(gotoIndex?: number) {
-    if (!this.reg.request.SnowProfile2) {
-      this.reg.request.SnowProfile2 = {};
+    if (!this.draft.registration.SnowProfile2) {
+      this.draft.registration.SnowProfile2 = {};
     }
-    if (!this.reg.request.SnowProfile2.SnowTemp) {
-      this.reg.request.SnowProfile2.SnowTemp = {};
+    if (!this.draft.registration.SnowProfile2.SnowTemp) {
+      this.draft.registration.SnowProfile2.SnowTemp = {};
     }
-    if (!this.reg.request.SnowProfile2.SnowTemp.Layers) {
-      this.reg.request.SnowProfile2.SnowTemp.Layers = [];
+    if (!this.draft.registration.SnowProfile2.SnowTemp.Layers) {
+      this.draft.registration.SnowProfile2.SnowTemp.Layers = [];
     }
     if (this.addNew && !IsEmptyHelper.isEmpty(this.layer)) {
-      this.reg.request.SnowProfile2.SnowTemp.Layers.splice(
+      this.draft.registration.SnowProfile2.SnowTemp.Layers.splice(
         this.index,
         0,
         this.layer
       );
     }
-    await this.registrationService.saveRegistrationAsync(this.reg);
+    await this.draftRepository.save(this.draft);
 
     if (gotoIndex !== undefined) {
       this.index = this.index + gotoIndex;
-      this.layer = this.reg.request.SnowProfile2.SnowTemp.Layers[this.index];
+      this.layer = this.draft.registration.SnowProfile2.SnowTemp.Layers[this.index];
       this.initLayer();
     } else {
       this.modalController.dismiss();
@@ -91,25 +84,16 @@ export class SnowTempLayerModalPage implements OnInit {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistrationAsync(
-      this.initialRegistrationState
-    );
+    await this.draftRepository.save(this.initialRegistrationState);
     this.modalController.dismiss();
   }
 
   async delete() {
-    if (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.SnowTemp &&
-      this.reg.request.SnowProfile2.SnowTemp.Layers &&
-      this.reg.request.SnowProfile2.SnowTemp.Layers.length > 0
-    ) {
-      this.reg.request.SnowProfile2.SnowTemp.Layers = this.reg.request.SnowProfile2.SnowTemp.Layers.filter(
+    if (this.hasLayers) {
+      this.draft.registration.SnowProfile2.SnowTemp.Layers = this.draft.registration.SnowProfile2.SnowTemp.Layers.filter(
         (l) => l !== this.layer
       );
-      await this.registrationService.saveRegistrationAsync(this.reg);
+      await this.draftRepository.save(this.draft);
     }
     this.modalController.dismiss({ delete: true });
   }

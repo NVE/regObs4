@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, switchMap, } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { AppModeService } from 'src/app/modules/common-core/services';
-import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { getAllAttachmentsFromViewModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
+import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { DatabaseService } from '../database/database.service';
 import { RegistrationDraft } from './draft-model';
@@ -32,13 +34,89 @@ export class DraftRepositoryService {
   constructor(
     private appModeService: AppModeService,
     private logger: LoggingService,
-    private databaseService: DatabaseService) {
-
-    //TODO: Vurdere å bruke share eller shareReplay på denne for å hindre at man må lese fra basen uten at noen ting er endret,
-    this.drafts$ = combineLatest([this.appModeService.appMode$, this.databaseService.ready$, this.shouldLoad])
+    private newAttachmentSerivice: NewAttachmentService,
+    private databaseService: DatabaseService
+  ) {
+    this.drafts$ = combineLatest([
+      this.appModeService.appMode$,
+      this.databaseService.ready$,
+      this.shouldLoad
+    ])
       .pipe(
         switchMap(([appMode]) => from(this.loadAllFromDatabase(appMode))),
+        shareReplay(1)
       );
+  }
+
+  /**
+   * Returns an observable with draft changes for a single draft.
+   * Does not emit until the specified draft is available in the database.
+   * If the draft is deleted after a subscription has been made, undefined is returned and the observable is completed.
+   */
+  getDraft$(uuid: string): Observable<RegistrationDraft | undefined> {
+    const gotDraft = new Subject<boolean>();
+    return this.drafts$.pipe(
+      map(drafts => drafts.find(draft => draft.uuid === uuid)),
+      tap((draft) => {
+        if (draft != null) {
+          gotDraft.next(true);
+        }
+      }),
+      skipUntil(gotDraft),
+      takeWhile(draft => draft != null, true)
+    );
+  }
+
+  // TODO: Add test?
+  async getAttachments(draft: RegistrationDraft, registrationTid: RegistrationTid): Promise<ExistingOrNewAttachment[]> {
+    const existingAttachmentsForRegistrationType = getAllAttachmentsFromViewModel(
+      draft.registration,
+      registrationTid
+    )
+      .map(attachment => ({ type: 'existing' as ExistingAttachmentType, attachment }));
+
+    const newAttachments = await firstValueFrom(this.newAttachmentSerivice.getAttachments(draft.uuid));
+    const newAttachmentsForRegistrationType = newAttachments
+      .filter(a => a.RegistrationTID === registrationTid)
+      .map(attachment => ({ type: 'new' as NewAttachmentType, attachment }));
+
+    return [
+      ...existingAttachmentsForRegistrationType,
+      ...newAttachmentsForRegistrationType
+    ];
+  }
+
+  async isDraftEmpty(draft: RegistrationDraft) {
+    if (hasAnyObservations(draft)) {
+      return false;
+    }
+
+    const attachments = await firstValueFrom(this.newAttachmentSerivice.getAttachments(draft.uuid));
+    return attachments.length === 0;
+  }
+
+  /**
+   * Check if the given draft is empty for a registration type, given by the regitrationTid.
+   * @example
+   * // Check if a draft contains a snow cover observation:
+   * isDraftEmptyForRegistrationType(draft, RegistrationTid.SnowCoverObs)
+   */
+  async isDraftEmptyForRegistrationType(draft: RegistrationDraft, registrationTid: RegistrationTid): Promise<boolean> {
+    // TODO: Add test?
+    if (registrationTid == null) {
+      throw new Error('Not implemented');
+    }
+    let isEmpty = isObservationModelEmptyForRegistrationTid(
+      draft.registration,
+      registrationTid
+    );
+
+    if (isEmpty) {
+      const attachments = await this.getAttachments(draft, registrationTid);
+      isEmpty = attachments.length === 0;
+    }
+
+    return isEmpty;
   }
 
   /**
@@ -46,7 +124,7 @@ export class DraftRepositoryService {
   * @param geoHazard the geo hazard you have observed
   * @returns the registration
   */
-  async create(geoHazard: GeoHazard): Promise<RegistrationDraft> {
+  create(geoHazard: GeoHazard): RegistrationDraft {
     const draft: RegistrationDraft = {
       uuid: uuidv4(),
       syncStatus: SyncStatus.Draft,
@@ -66,10 +144,16 @@ export class DraftRepositoryService {
   */
   async save(draft: RegistrationDraft): Promise<void> {
     const start = Date.now();
-    draft.lastSavedTime = start;
+
     const appMode = await firstValueFrom(this.appModeService.appMode$);
     const key = this.createKey(draft.uuid, appMode);
-    await this.databaseService.set(key, draft);
+
+    const updatedDraft: RegistrationDraft = {
+      ...draft,
+      lastSavedTime: Date.now()
+    };
+    await this.databaseService.set(key, updatedDraft);
+
     this.logger.debug(`Draft ${draft.uuid} saved in ${this.millisSince(start)} ms 
       in environment ${appMode}`, DEBUG_TAG, draft);
     this.shouldLoad.next();
@@ -106,6 +190,7 @@ export class DraftRepositoryService {
   * @param uuid uuid of the registration you want to delete
   */
   async delete(uuid: string): Promise<void> {
+    await this.newAttachmentSerivice.removeAttachments(uuid);
     const appMode = await firstValueFrom(this.appModeService.appMode$);
     const key = this.createKey(uuid, appMode);
     await this.databaseService.remove(key);

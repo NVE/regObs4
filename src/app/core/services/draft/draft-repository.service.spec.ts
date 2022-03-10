@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from './draft-repository.service';
@@ -6,8 +6,8 @@ import { TestLoggingService } from 'src/app/modules/shared/services/logging/test
 import { AppModeService } from 'src/app/modules/common-core/services';
 import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import { DatabaseService } from '../database/database.service';
-import { environment } from 'src/environments/environment';
-import exp from 'constants';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
+import { RegistrationDraft } from './draft-model';
 
 //key-value-store used to mock the database
 class TestDatabaseService {
@@ -47,13 +47,20 @@ describe('DraftRepositoryService', () => {
   let service: DraftRepositoryService;
   let database: TestDatabaseService;
   let appModeService: AppModeService;
+  let newAttachmentService: NewAttachmentService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
 
     appModeService = new AppModeService({ appMode: AppMode.Test, language: LangKey.nb });
     database = new TestDatabaseService();
-    service = new DraftRepositoryService(appModeService, new TestLoggingService(), database as unknown as DatabaseService);
+    newAttachmentService = jasmine.createSpyObj('NewAttachmentService', ['removeAttachments']);
+    service = new DraftRepositoryService(
+      appModeService,
+      new TestLoggingService(),
+      newAttachmentService,
+      database as unknown as DatabaseService
+    );
   });
 
   it('create() should return an empty draft', async () => {
@@ -116,8 +123,14 @@ describe('DraftRepositoryService', () => {
     expect(savedDraft.registration.GeneralObservation).toEqual({ Comment: 'v.1' });
 
     //irreleant registrations are not changed
-    expect(await service.load(irrelevantDraft1.uuid)).toEqual(irrelevantDraft1);
-    expect(await service.load(irrelevantDraft2.uuid)).toEqual(irrelevantDraft2);
+    expect(await service.load(irrelevantDraft1.uuid)).toEqual({
+      ...irrelevantDraft1,
+      lastSavedTime: jasmine.any(Number)
+    });
+    expect(await service.load(irrelevantDraft2.uuid)).toEqual({
+      ...irrelevantDraft2,
+      lastSavedTime: jasmine.any(Number)
+    });
   });
 
   it('we get notified when registrations are saved', async () => {
@@ -198,9 +211,11 @@ describe('DraftRepositoryService', () => {
     expect(draftChanges.length).toBe(0);
     expect(!database.store.has(`drafts.TEST.${draft.uuid}`)).toBeTrue();
     expect(await service.load(draft.uuid)).toBeUndefined();
+    // Check that draftService requests newAttachmentService to delete draft images
+    expect(newAttachmentService.removeAttachments).toHaveBeenCalledWith(draft.uuid);
   });
 
-  it('we do not mix data from different environments', async () => {
+  it('we do not mix data from different environments', fakeAsync(async () => {
     //save 2 drafts in test environment
     const draft1inTest = await service.create(GeoHazard.Ice);
     await service.save(draft1inTest);
@@ -226,12 +241,63 @@ describe('DraftRepositoryService', () => {
     expect(database.store.has(`drafts.DEMO.${draft1inDemo.uuid}`)).toBeTrue();
 
     appModeService.setAppMode(AppMode.Test); //change back to test environment
+
+    tick(1);
+
     const draftChanges2 = await firstValueFrom(service.drafts$);
     expect(draftChanges2.length).toBe(2); //we have 2 drafts in test
-    expect(await service.load(draft1inTest.uuid)).toEqual(draft1inTest);
-    expect(await service.load(draft2inTest.uuid)).toEqual(draft2inTest);
+    expect(await service.load(draft1inTest.uuid)).toEqual({
+      ...draft1inTest,
+      lastSavedTime: jasmine.any(Number)
+    });
+    expect(await service.load(draft2inTest.uuid)).toEqual({
+      ...draft2inTest,
+      lastSavedTime: jasmine.any(Number)
+    });
 
     //drafts in demo database not available when in environment test
     expect(await service.load(draft1inDemo.uuid)).toBe(undefined);
-  });
+  }));
+
+  it('drafts$ returns a draft only when it is available, and completes if it is deleted', fakeAsync(async () => {
+    let draft: RegistrationDraft = {
+      ...await service.create(GeoHazard.Ice),
+      uuid: 'test'
+    };
+
+    let i = 0;
+    const sub = service.getDraft$('test').subscribe({
+      next: (d) => {
+        if (i < 2) {
+          expect(d).toEqual({ ...draft, lastSavedTime: jasmine.any(Number) });
+        } else {
+          expect(d).toBeUndefined();
+        }
+        i += 1;
+      }
+    });
+
+    tick(1);
+
+    await service.save(draft);
+
+    tick(1);
+
+    // Update draft
+    draft = { ...draft, regId: 123 };
+    await service.save(draft);
+
+    tick(1);
+
+    draft = null;
+    await service.delete('test');
+
+    flush();
+
+    // The observable should have emitted three times total, two drafts and undefined after it was deleted
+    expect(i).toBe(3);
+
+    // As we deleted the draft, the subscription should be closed
+    expect(sub.closed).toBe(true);
+  }));
 });

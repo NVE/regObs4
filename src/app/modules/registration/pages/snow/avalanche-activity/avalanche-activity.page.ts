@@ -38,6 +38,10 @@ export class AvalancheActivityPage extends BasePage {
     this.estimatedNumber = [];
   }
 
+  get avalancheActivities(): AvalancheActivityObs2EditModel[] {
+    return this.draft.registration.AvalancheActivityObs2;
+  }
+
   onInit() {
     this.kdvSubscription = combineLatest([
       this.kdvService.getKdvRepositoryByKeyObservable('Snow_AvalancheExtKDV'),
@@ -58,10 +62,8 @@ export class AvalancheActivityPage extends BasePage {
     const modal = await this.modalController.create({
       component: AvalancheActivityModalPage,
       componentProps: {
-        avalancheActivity: this.registration.request.AvalancheActivityObs2[
-          index
-        ],
-        dtObsTime: this.registration.request.DtObsTime
+        avalancheActivity: this.avalancheActivities[index],
+        dtObsTime: this.draft.registration.DtObsTime
       }
     });
     modal.present();
@@ -69,17 +71,13 @@ export class AvalancheActivityPage extends BasePage {
     this.ngZone.run(() => {
       if (result.data) {
         if (result.data.delete) {
-          this.registration.request.AvalancheActivityObs2.splice(index, 1);
+          this.avalancheActivities.splice(index, 1);
         } else {
           const avalancheActivityObs: AvalancheActivityObs2EditModel = result.data;
           if (index !== undefined) {
-            this.registration.request.AvalancheActivityObs2[
-              index
-            ] = avalancheActivityObs;
+            this.avalancheActivities[index] = avalancheActivityObs;
           } else {
-            this.registration.request.AvalancheActivityObs2.push(
-              avalancheActivityObs
-            );
+            this.avalancheActivities.push(avalancheActivityObs);
           }
         }
       }

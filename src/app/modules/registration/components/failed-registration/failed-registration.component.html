@@ -5,13 +5,17 @@
     </ion-label>
   </ion-list-header>
   <ion-item>
-    <ion-label class="ion-text-wrap" *ngIf="registration.syncStatusCode === 0">
+    <ion-label class="ion-text-wrap" *ngIf="networkError">
       {{'REGISTRATION.FAILED.SUBTITLE' | translate}}
     </ion-label>
-    <ion-label class="ion-text-wrap" *ngIf="registration.syncStatusCode === 400">
-      {{'REGISTRATION.FAILED.PROBLEM' | translate}}: {{ registration.syncError }}
+    <!-- TODO: Handle attachment error? -->
+    <ion-label class="ion-text-wrap" *ngIf="unknownError">
+      {{'REGISTRATION.FAILED.PROBLEM' | translate}}
     </ion-label>
-    <ion-label class="ion-text-wrap" *ngIf="registration.syncStatusCode > 400">
+    <ion-label class="ion-text-wrap" *ngIf="registrationError">
+      {{'REGISTRATION.FAILED.PROBLEM' | translate}}: {{ draft.error.message }}
+    </ion-label>
+    <ion-label class="ion-text-wrap" *ngIf="serverError">
       {{'REGISTRATION.FAILED.PROBLEM' | translate}}. {{'REGISTRATION.FAILED.LOGGED' | translate}}
       <!-- Ta skjermbilde og
       <app-external-link src="http://www.regobs.no/Home/About">kontakt oss</app-external-link>
@@ -19,9 +23,9 @@
       {{'REGISTRATION.FAILED.PROBLEM_HELP_TEXT' | translate}}
     </ion-label>
   </ion-item>
-  <ion-item *ngIf="registration.syncStatusCode >= 400">
+  <ion-item *ngIf="registrationError || serverError || unknownError">
     <ion-label class="ion-text-wrap">
-      {{'REGISTRATION.FAILED.REFERENCE' | translate}} ID: {{ registration.id }}
+      {{'REGISTRATION.FAILED.REFERENCE' | translate}} ID: {{ draft.uuid }}
     </ion-label>
   </ion-item>
   <ion-item (click)="sendEmail()">

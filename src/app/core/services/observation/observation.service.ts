@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { settings } from '../../../../settings';
 import { RowCount } from '../../models/row-count.model';
-import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs';
+import { Observable, combineLatest, of, BehaviorSubject, firstValueFrom } from 'rxjs';
 import moment from 'moment';
 import 'moment-timezone';
 import { NanoSql } from '../../../../nanosql';
@@ -17,6 +17,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
+import { DraftToRegistrationService } from '../draft/draft-to-registration.service';
 
 const DEBUG_TAG = 'ObservationService';
 
@@ -43,11 +44,17 @@ export class ObservationService {
     private userSettingService: UserSettingService,
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
-    private dbHelperService: DbHelperService
+    private dbHelperService: DbHelperService,
+    draftToRegService: DraftToRegistrationService
   ) {
     this.latestObservations = new BehaviorSubject({});
     this._observationsObservable = this.getObservationsAsObservable();
     this._dataLoadObservable = this.getDataLoadObservable();
+
+    // When a new registration has been uploaded, update app cache
+    draftToRegService.newRegistrations$.subscribe((newRegistration) => {
+      this.addAlreadyFetchedObservation(newRegistration);
+    });
   }
 
   async updateObservations(cancel?: Promise<any>) {
@@ -166,6 +173,28 @@ export class ObservationService {
       await this.dataLoadService.loadingError(dataLoadId, err.message);
       return 0;
     }
+  }
+
+  private async addAlreadyFetchedObservation(observation: RegistrationViewModel) {
+    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
+    const inMemoryCache = this.latestObservations.getValue();
+    const geoHazards = [observation.GeoHazardTID];
+    const key = this.getGeoHazardKeyFull(userSettings.appMode, userSettings.language, geoHazards);
+    const cachedObservations = await firstValueFrom(this.observations$);
+
+    // Remove old version of observation if we already have it
+    const cachedObservationsWithoutCurrentObs = cachedObservations.filter(obs => obs.RegId !== observation.RegId);
+
+    // Update cached observations
+    const newObservations = [observation, ...cachedObservationsWithoutCurrentObs];
+    this.latestObservations.next({
+      ...inMemoryCache,
+      [key]: newObservations
+    });
+
+    // Update offline storage
+    const fromDate = await this.getDaysBackToFetchAsDate(userSettings, geoHazards);
+    await this.saveAndClenupOfflineObservations(fromDate, geoHazards, userSettings, newObservations);
   }
 
   private updateLatestObservations(appMode: AppMode, langKey: LangKey, geoHazards: GeoHazard[], observations: RegistrationViewModel[]) {

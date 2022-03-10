@@ -21,10 +21,10 @@ implements CanDeactivate<SetTimePage> {
     if (
       nextState &&
       nextState.url.indexOf('registration/new') >= 0 &&
-      component.registration
+      component.draft
     ) {
       this.navController.navigateBack(
-        `registration/obs-location/${component.registration.id}`
+        `registration/obs-location/${component.draft.uuid}`
       );
     }
     return true;

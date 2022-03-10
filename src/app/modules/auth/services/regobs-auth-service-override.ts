@@ -35,11 +35,18 @@ export class RegobsAuthServiceOverride extends AuthService {
   /**
    * Refresh token. If refresh fails, you can just try again.
    * Will only remove cached tokens if refresh token is expired
+   *
+   * @throws {Error} if no token is defined
    */
   public async refreshToken() {
-    await super.requestTokenRefresh().catch((error) => {
+    try {
+      await super.requestTokenRefresh();
+    } catch (error) {
+      if (error?.message?.toLowerCase().indexOf('no token defined') > -1) {
+        throw error;
+      }
       this.clearTokensIfRefreshTokenIsExpired(error);
-    });
+    }
   }
 
   private async clearTokensIfRefreshTokenIsExpired(error: unknown) {

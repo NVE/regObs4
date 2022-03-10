@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/
 import cloneDeep from 'clone-deep';
 import { Observable, of } from 'rxjs';
 import { AttachmentUploadEditModel, SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { NewAttachmentService, ProgressService } from 'src/app/modules/common-registration/registration.services';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { AttachmentService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';
@@ -30,7 +30,6 @@ describe('UploadAttachmentsService', () => {
 
     service = new UploadAttachmentsService(
       httpClient,
-      {} as ProgressService,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
       {} as LoggingService
@@ -54,7 +53,7 @@ describe('UploadAttachmentsService', () => {
     expect(result).toEqual(fakeAttachmentsCopy);
   });
 
-  it('should upload attachments for attachments without AttachmentUploadId and set progress', async () => {
+  it('should upload attachments for attachments without AttachmentUploadId', async () => {
     const httpClient = jasmine.createSpyObj('HttpClient', ['post']);
     const responseAttachmentUploadId = '12345-test-id';
 
@@ -95,11 +94,8 @@ describe('UploadAttachmentsService', () => {
       saveAttachmentMeta$: saveAttachmentMeta$
     };
 
-    const progressService = jasmine.createSpyObj('ProgressService', ['setAttachmentProgress']);
-
     service = new UploadAttachmentsService(
       httpClient,
-      progressService,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
       jasmine.createSpyObj('LoggingService', ['debug'])
@@ -118,9 +114,6 @@ describe('UploadAttachmentsService', () => {
 
     // Test that we call post one time as we have one image to upload
     expect(httpClient.post).toHaveBeenCalledTimes(1);
-
-    // Test that upload progress is reported as we upload
-    expect(progressService.setAttachmentProgress).toHaveBeenCalledTimes(2);
 
     // Test that uploadAllAttachments just returns the attachments,
     // as they are already uploaded
@@ -189,12 +182,10 @@ describe('UploadAttachmentsService', () => {
       saveAttachmentMeta$: saveAttachmentMeta$
     };
 
-    const progressService = jasmine.createSpyObj('ProgressService', ['setAttachmentProgress']);
     const loggingService = jasmine.createSpyObj('LoggingService', ['debug', 'error']);
 
     service = new UploadAttachmentsService(
       httpClient,
-      progressService,
       newAttachmentService as unknown as NewAttachmentService,
       {} as AttachmentService,
       loggingService
@@ -212,8 +203,12 @@ describe('UploadAttachmentsService', () => {
 
     // Test that uploadAllAttachments rejects with an error
     // containing regid and attachment ids
+    const error = new UploadAttachmentError(regUuid, [{
+      id: attachmentIdThatFails,
+      error: jasmine.any(Error) as unknown as Error
+    }]);
     await expectAsync(service.uploadAllAttachments(draft))
-      .toBeRejectedWith(new UploadAttachmentError(regUuid, [attachmentIdThatFails]));
+      .toBeRejectedWith(error);
 
     expect(loggingService.error).toHaveBeenCalled();
     expect(httpClient.post).toHaveBeenCalledTimes(2);

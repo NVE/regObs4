@@ -17,6 +17,7 @@ import { SnowSurfaceEditModel } from './snow-surface-edit-model';
 import { WeatherEditModel } from './weather-edit-model';
 import { Waterlevel2EditModel } from './waterlevel-2edit-model';
 import { DamageObsEditModel } from './damage-obs-edit-model';
+
 export interface RegistrationEditModel {
 
   /**

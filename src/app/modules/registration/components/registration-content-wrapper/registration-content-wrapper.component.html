@@ -1,4 +1,4 @@
-<ion-grid *ngIf="registration" class="pull-last-bottom ion-no-padding ion-no-margin">
+<ion-grid *ngIf="draft" class="pull-last-bottom ion-no-padding ion-no-margin">
   <ion-row>
     <ion-col class="ion-no-padding">
       <ng-content></ng-content>
@@ -6,9 +6,9 @@
   </ion-row>
   <ion-row>
     <ion-col class="ion-no-padding">
-      <app-help-text [registrationTid]="registrationTid" [geoHazard]="registration.geoHazard"></app-help-text>
-      <app-navigation-buttons [registration]="registration"></app-navigation-buttons>
-      <app-save-and-go-back-button [registration]="registration" [registrationTid]="registrationTid"
+      <app-help-text [registrationTid]="registrationTid" [geoHazard]="draft.registration.GeoHazardTID"></app-help-text>
+      <app-navigation-buttons [draft]="draft"></app-navigation-buttons>
+      <app-save-and-go-back-button [draft]="draft" [registrationTid]="registrationTid"
         (reset)="emitReset()"></app-save-and-go-back-button>
     </ion-col>
   </ion-row>

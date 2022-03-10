@@ -1,19 +1,27 @@
 import { Directive } from '@angular/core';
 import { from, of } from 'rxjs';
 import { BasePageService } from './base-page-service';
-import { IRegistration, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { ActivatedRoute } from '@angular/router';
 import { take, takeUntil, map, switchMap, tap, skip } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
+/**
+ * Base page for a registration form, eg. danger sign
+ */
 @Directive()
 export abstract class BasePage extends NgDestoryBase {
-  registration: IRegistration;
+  draft: RegistrationDraft;
   basePageService: BasePageService;
   registrationTid: RegistrationTid;
   activatedRoute: ActivatedRoute;
 
-  constructor(registrationTid: RegistrationTid, basePageService: BasePageService, activatedRoute: ActivatedRoute) {
+  constructor(
+    registrationTid: RegistrationTid,
+    basePageService: BasePageService,
+    activatedRoute: ActivatedRoute
+  ) {
     super();
     this.basePageService = basePageService;
     this.activatedRoute = activatedRoute;
@@ -23,33 +31,33 @@ export abstract class BasePage extends NgDestoryBase {
   ionViewDidEnter() {
     const id = this.activatedRoute.snapshot.params['id'];
 
+    const draft$ = this.basePageService.draftRepository.getDraft$(id);
+
     // The first time we get a registration object, run some additional logic
-    this.basePageService.CommonRegistrationService.getRegistrationByIdShared$(id)
-      .pipe(
-        take(1),
-        map((reg) => {
-          // Seems like this class is also used by the top level summary view,
-          // where we don't have a registrationTid.
-          if (this.registrationTid != null) {
-            this.basePageService.createDefaultProps(reg, this.registrationTid);
-          }
-          return reg;
-        }),
-        tap((reg) => {
-          this.registration = reg;
-        }),
-        switchMap(() => this.createInitObservable()),
-      )
-      .subscribe();
+    draft$.pipe(
+      take(1),
+      map((draft) => {
+        // Seems like this class is also used by the set datetime page,
+        // where we don't have a registrationTid
+        if (this.registrationTid != null) {
+          return this.basePageService.createDefaultProps(draft, this.registrationTid);
+        }
+        return draft;
+      }),
+      tap((reg) => {
+        this.draft = reg;
+      }),
+      switchMap(() => this.createInitObservable()),
+    ).subscribe();
 
     // Update registration data eg. when navigating back from subforms
-    this.basePageService.CommonRegistrationService.getRegistrationByIdShared$(id)
+    draft$
       .pipe(
         skip(1),
         takeUntil(this.ngDestroy$)
       )
-      .subscribe((reg) => {
-        this.registration = reg;
+      .subscribe((draft) => {
+        this.draft = draft;
       });
   }
 
@@ -66,9 +74,13 @@ export abstract class BasePage extends NgDestoryBase {
     // Check if implementation page has implemented custom isValid logic
     const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
     // Only return alert if page is not empty and invalid
-    const isEmpty = await Promise.resolve(this.isEmpty());
+    const isEmpty = await this.isEmpty();
     if (!isEmpty && !valid) {
-      return this.basePageService.confirmLeave(this.registration, this.registrationTid, () => (this.onReset ? this.onReset() : null));
+      return this.basePageService.confirmLeave(
+        this.draft,
+        this.registrationTid,
+        () => (this.onReset ? this.onReset() : null)
+      );
     }
     return true;
   }
@@ -84,29 +96,27 @@ export abstract class BasePage extends NgDestoryBase {
     if (this.onBeforeLeave) {
       await Promise.resolve(this.onBeforeLeave());
     }
-    await this.save(true);
+    await this.save();
   }
 
-  save(clean = false) {
-    this.registration.syncStatus = SyncStatus.Draft;
-    return this.basePageService.RegistrationService.saveRegistrationAsync(this.registration, clean);
+  save() {
+    return this.basePageService.draftRepository.save({ ...this.draft, syncStatus: SyncStatus.Draft });
   }
 
   getSaveFunc() {
     return () => this.save();
   }
 
-  async isEmpty(): Promise<boolean> {
-    return !(await this.basePageService.CommonRegistrationService.hasAnyDataToShowInRegistrationTypes(
-      this.registration,
-      this.registrationTid
-    )
-      .pipe(take(1))
-      .toPromise());
+  async isEmpty(registrationType = this.registrationTid): Promise<boolean> {
+    return this.basePageService.draftRepository.isDraftEmptyForRegistrationType(this.draft, registrationType);
   }
 
   reset() {
-    return this.basePageService.confirmReset(this.registration, this.registrationTid, () => (this.onReset ? this.onReset() : null));
+    return this.basePageService.confirmReset(
+      this.draft,
+      this.registrationTid,
+      () => (this.onReset ? this.onReset() : null)
+    );
   }
 
   getResolvedUrl(): string {
@@ -118,11 +128,4 @@ export abstract class BasePage extends NgDestoryBase {
         .join('/')
     );
   }
-
-  // getConfiguredUrl(): string {
-  //     return '/' + this.activatedRoute.snapshot.pathFromRoot
-  //         .filter(v => v.routeConfig)
-  //         .map(v => v.routeConfig.path)
-  //         .join('/');
-  // }
 }

@@ -8,13 +8,12 @@ import { StratProfileLayerModalPage } from '../strat-profile-layer-modal/strat-p
 import { ItemReorderEventDetail } from '@ionic/core';
 import { ArrayHelper } from '../../../../../../../core/helpers/array-helper';
 import { StratProfileLayerHistoryModalPage } from '../strat-profile-layer-history-modal/strat-profile-layer-history-modal.page';
-import { IRegistration } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationService as CommonRegistrationService } from 'src/app/modules/common-registration/registration.services';
-import { RegistrationService } from '../../../../../services/registration.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import cloneDeep from 'clone-deep';
 import { RegobsAuthService } from '../../../../../../auth/services/regobs-auth.service';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 /**
  * Add layers, drag to change layer ordering, fetch layers from other profiles.
@@ -25,51 +24,38 @@ import { RegobsAuthService } from '../../../../../../auth/services/regobs-auth.s
   styleUrls: ['./strat-profile-modal.page.scss']
 })
 export class StratProfileModalPage implements OnInit, OnDestroy {
-  @Input() regId: string;
-
-  reg: IRegistration;
-
-  private regInitClone: IRegistration;
+  @Input() uuid: string;
+  private draft: RegistrationDraft;
+  private draftInitClone: RegistrationDraft;
   totalThickness: number;
-
   private ngDestroy$ = new Subject<void>();
-
   private layerModal: HTMLIonModalElement;
 
   get hasLayers(): boolean {
-    return this.profile.Layers && this.profile.Layers.length > 0;
+    return this.profile.Layers?.length > 0;
   }
 
   get profile(): StratProfileEditModel {
-    if (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.StratProfile
-    ) {
-      return this.reg.request.SnowProfile2.StratProfile;
-    }
-    return {};
+    return this.draft?.registration?.SnowProfile2?.StratProfile || {};
   }
 
   constructor(
     private modalController: ModalController,
     private regobsAuthService: RegobsAuthService,
     private ngZone: NgZone,
-    private registrationService: RegistrationService,
-    private commonRegistrationService: CommonRegistrationService,
+    private draftRepository: DraftRepositoryService,
   ) {}
 
   ngOnInit(): void {
-    this.commonRegistrationService
-      .getRegistrationByIdShared$(this.regId)
+    this.draftRepository
+      .getDraft$(this.uuid)
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((reg) => {
+      .subscribe((draft) => {
         this.ngZone.run(() => {
-          if (!this.regInitClone) {
-            this.regInitClone = cloneDeep(reg);
+          if (!this.draftInitClone) {
+            this.draftInitClone = cloneDeep(draft);
           }
-          this.reg = reg;
+          this.draft = draft;
           this.calculate();
         });
       });
@@ -81,12 +67,12 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   }
 
   async ok(): Promise<void> {
-    await this.registrationService.saveRegistrationAsync(this.reg);
+    await this.draftRepository.save(this.draft);
     this.modalController.dismiss();
   }
 
   async cancel(): Promise<void> {
-    await this.registrationService.saveRegistrationAsync(this.regInitClone); // Reset to inital state
+    await this.draftRepository.save(this.draftInitClone); // Reset to inital state
     this.modalController.dismiss();
   }
 
@@ -97,30 +83,30 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
   addLayerBottom(): void {
     this.addOrEditLayer(
       this.hasLayers
-        ? this.reg.request.SnowProfile2.StratProfile.Layers.length
+        ? this.draft.registration.SnowProfile2.StratProfile.Layers.length
         : 0,
       undefined
     );
   }
 
   onLayerReorder(event: CustomEvent<ItemReorderEventDetail>): void {
-    this.reg.request.SnowProfile2.StratProfile.Layers = ArrayHelper.reorderList(
-      this.reg.request.SnowProfile2.StratProfile.Layers,
+    this.draft.registration.SnowProfile2.StratProfile.Layers = ArrayHelper.reorderList(
+      this.draft.registration.SnowProfile2.StratProfile.Layers,
       event.detail.from,
       event.detail.to
     );
     event.detail.complete();
-    this.registrationService.saveRegistrationAsync(this.reg);
+    this.draftRepository.save(this.draft);
   }
 
   async getPrevousUsedLayers(): Promise<void> {
     const loggedInUser = await this.regobsAuthService.getLoggedInUserAsPromise();
-    if (loggedInUser && loggedInUser.isLoggedIn) {
+    if (loggedInUser?.isLoggedIn) {
       if (!this.layerModal) {
         this.layerModal = await this.modalController.create({
           component: StratProfileLayerHistoryModalPage,
           componentProps: {
-            reg: this.reg
+            draft: this.draft
           }
         });
         this.layerModal.present();
@@ -129,7 +115,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
         this.calculate();
       }
     } else {
-      this.regobsAuthService.signIn();
+      this.regobsAuthService.signIn(); //TODO: Denne redirecter tilbake til snøprofil-sida
     }
   }
 
@@ -138,7 +124,7 @@ export class StratProfileModalPage implements OnInit, OnDestroy {
       this.layerModal = await this.modalController.create({
         component: StratProfileLayerModalPage,
         componentProps: {
-          reg: this.reg,
+          draft: this.draft,
           layer,
           index
         }

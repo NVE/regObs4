@@ -18,6 +18,7 @@ import { AuthService } from 'ionic-appauth';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { NavigationError, Router, RouterEvent } from '@angular/router';
 import { removeOauthTokenFromUrl } from './modules/shared/services/logging/url-utils';
+import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
 
 const DEBUG_TAG = 'AppComponent';
 const ROUTER_DEBUG_TAG = 'Router';
@@ -41,7 +42,8 @@ export class AppComponent {
     private shortcutService: ShortcutService,
     private fileLoggingService: FileLoggingService,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private draftToRegService: DraftToRegistrationService
   ) {
     this.swipeBackEnabled$ = this.swipeBackService.swipeBackEnabled$;
     this.initializeApp();
@@ -160,6 +162,9 @@ export class AppComponent {
                   'Could not init route navigation logging'
                 )
               )
+            ),
+            of(this.draftToRegService.createSubscriptions()).pipe(
+              catchError((err) => this.loggingService.error(err, DEBUG_TAG, 'Could not start draftToRegService'))
             )
           ])
         )

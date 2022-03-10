@@ -183,10 +183,9 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       case LangKey.nn:
         registerLocaleData(nnData);
         break;
-      //TODO: Ta med denne når API'et støtter fransk
-      // case LangKey.fr:
-      //   registerLocaleData(frData);
-      //   break;
+      case LangKey.fr:
+        registerLocaleData(frData);
+        break;
       }
       this.translate.use(lang);
     });

@@ -1,64 +1,28 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { IRegistration, SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { ProgressService } from 'src/app/modules/common-registration/registration.services';
-import { Subscription } from 'rxjs';
-import { RegistrationService } from '../../../../modules/registration/services/registration.service';
-import { map, filter } from 'rxjs/operators';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 @Component({
   selector: 'app-sync-item',
   templateUrl: './sync-item.component.html',
   styleUrls: ['./sync-item.component.scss'],changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SyncItemComponent implements OnInit, OnDestroy {
-  @Input() registration: IRegistration;
-  private subscriptions: Subscription[] = [];
-  loading: boolean;
-  isDraft = false;
+export class SyncItemComponent {
+  @Input() draft: RegistrationDraft;
 
-  constructor(
-    private registrationService: RegistrationService,
-    private progressService: ProgressService,
-    private cdr: ChangeDetectorRef,
-  ) {}
-
-  ngOnInit() {
-
-    this.isDraft = this.registration.syncStatus === SyncStatus.Draft;
-    this.loading = !this.isDraft;
-    this.subscriptions.push(
-      this.registrationService
-        .getRegistrationsToSync()
-        .pipe(
-          map((val: IRegistration[]) =>
-            val.find((item) => item.id === this.registration.id)
-          ),
-          filter((x) => !!x)
-        )
-        .subscribe((val) => {
-          this.registration = val;
-          this.isDraft = this.registration.syncStatus === SyncStatus.Draft;
-          this.cdr.detectChanges();
-        })
-    );
-    this.subscriptions.push(
-      this.progressService.registrationSyncProgress$.subscribe((val) => {
-        this.loading = val.inProgress;
-        this.cdr.detectChanges();
-      })
-    );
+  get loading() {
+    return this.draft.syncStatus === SyncStatus.Sync && this.draft.error == null;
   }
 
-  ngOnDestroy(): void {
-    for (const subscription of this.subscriptions) {
-      subscription.unsubscribe();
-    }
+  get isDraft() {
+    return this.draft.syncStatus === SyncStatus.Draft;
   }
 
-  getLocationName(reg: IRegistration) {
-    return reg.request.ObsLocation
-      ? reg.request.ObsLocation.LocationName ||
-          reg.request.ObsLocation.LocationDescription
-      : '';
+  get locationName(): string {
+    return (
+      this.draft.registration.ObsLocation?.LocationName ||
+      this.draft.registration.ObsLocation?.LocationDescription ||
+      ''
+    );
   }
 }

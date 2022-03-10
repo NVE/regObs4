@@ -8,6 +8,9 @@ import { BasePageService } from '../../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import moment from 'moment';
 
+/**
+ * Form to register landslide observations
+ */
 @Component({
   selector: 'app-landslide-obs',
   templateUrl: './landslide-obs.page.html',
@@ -28,36 +31,36 @@ export class LandslideObsPage extends BasePage {
 
   get dateIsDifferentThanObsTime() {
     return (
-      this.registration.request.LandSlideObs.DtLandSlideTime &&
-      !moment(this.registration.request.LandSlideObs.DtLandSlideTime)
+      this.draft.registration.LandSlideObs.DtLandSlideTime &&
+      !moment(this.draft.registration.LandSlideObs.DtLandSlideTime)
         .startOf('day')
-        .isSame(moment(this.registration.request.DtObsTime).startOf('day'))
+        .isSame(moment(this.draft.registration.DtObsTime).startOf('day'))
     );
   }
 
   get dateEndIsDifferentThanObsTime() {
     return (
-      this.registration.request.LandSlideObs.DtLandSlideTimeEnd &&
-      !moment(this.registration.request.LandSlideObs.DtLandSlideTimeEnd)
+      this.draft.registration.LandSlideObs.DtLandSlideTimeEnd &&
+      !moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd)
         .startOf('day')
-        .isSame(moment(this.registration.request.DtObsTime).startOf('day'))
+        .isSame(moment(this.draft.registration.DtObsTime).startOf('day'))
     );
   }
 
   onInit() {
-    if (!this.registration.request.LandSlideObs.Urls) {
-      this.registration.request.LandSlideObs.Urls = [];
+    if (!this.draft.registration.LandSlideObs.Urls) {
+      this.draft.registration.LandSlideObs.Urls = [];
     }
-    if (this.registration.request.LandSlideObs.DtLandSlideTimeEnd) {
+    if (this.draft.registration.LandSlideObs.DtLandSlideTimeEnd) {
       this.maxDateStart = moment(
-        this.registration.request.LandSlideObs.DtLandSlideTimeEnd
+        this.draft.registration.LandSlideObs.DtLandSlideTimeEnd
       ).toISOString(true);
     } else {
       this.maxDateStart = this.getMaxDateForNow();
     }
-    if (this.registration.request.LandSlideObs.DtLandSlideTime) {
+    if (this.draft.registration.LandSlideObs.DtLandSlideTime) {
       this.minDateEnd = moment(
-        this.registration.request.LandSlideObs.DtLandSlideTime
+        this.draft.registration.LandSlideObs.DtLandSlideTime
       ).toISOString(true);
     }
     this.maxDateEnd = this.getMaxDateForNow();
@@ -71,74 +74,73 @@ export class LandslideObsPage extends BasePage {
 
   dtTimeChanged() {
     this.minDateEnd = moment(
-      this.registration.request.LandSlideObs.DtLandSlideTime
+      this.draft.registration.LandSlideObs.DtLandSlideTime
     ).toISOString(true);
     if (
-      this.registration.request.LandSlideObs.DtLandSlideTimeEnd &&
+      this.draft.registration.LandSlideObs.DtLandSlideTimeEnd &&
       moment(
-        this.registration.request.LandSlideObs.DtLandSlideTimeEnd
-      ).isBefore(moment(this.registration.request.LandSlideObs.DtLandSlideTime))
+        this.draft.registration.LandSlideObs.DtLandSlideTimeEnd
+      ).isBefore(moment(this.draft.registration.LandSlideObs.DtLandSlideTime))
     ) {
-      this.registration.request.LandSlideObs.DtLandSlideTimeEnd = this.registration.request.LandSlideObs.DtLandSlideTime;
+      this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = this.draft.registration.LandSlideObs.DtLandSlideTime;
     }
   }
 
   dtEndTimeChanged() {
     this.maxDateStart = moment(
-      this.registration.request.LandSlideObs.DtLandSlideTimeEnd
+      this.draft.registration.LandSlideObs.DtLandSlideTimeEnd
     ).toISOString(true);
     if (
-      this.registration.request.LandSlideObs.DtLandSlideTime &&
-      moment(this.registration.request.LandSlideObs.DtLandSlideTime).isAfter(
-        moment(this.registration.request.LandSlideObs.DtLandSlideTimeEnd)
+      this.draft.registration.LandSlideObs.DtLandSlideTime &&
+      moment(this.draft.registration.LandSlideObs.DtLandSlideTime).isAfter(
+        moment(this.draft.registration.LandSlideObs.DtLandSlideTimeEnd)
       )
     ) {
-      this.registration.request.LandSlideObs.DtLandSlideTime = this.registration.request.LandSlideObs.DtLandSlideTimeEnd;
+      this.draft.registration.LandSlideObs.DtLandSlideTime = this.draft.registration.LandSlideObs.DtLandSlideTimeEnd;
     }
   }
 
   isValid() {
     return (
-      this.registration &&
-      this.registration.request.LandSlideObs &&
-      !!this.registration.request.LandSlideObs.DtLandSlideTime &&
-      !!this.registration.request.LandSlideObs.DtLandSlideTimeEnd
+      this.draft?.registration?.LandSlideObs &&
+      !!this.draft.registration.LandSlideObs.DtLandSlideTime &&
+      !!this.draft.registration.LandSlideObs.DtLandSlideTimeEnd
     );
   }
 
   setDtLandSlideTimeToNow() {
-    this.registration.request.LandSlideObs.DtLandSlideTime = moment().toISOString(
+    this.draft.registration.LandSlideObs.DtLandSlideTime = moment().toISOString(
       true
     );
   }
 
   setDtLandSlideTimeEndToNow() {
-    this.registration.request.LandSlideObs.DtLandSlideTimeEnd = moment().toISOString(
+    this.draft.registration.LandSlideObs.DtLandSlideTimeEnd = moment().toISOString(
       true
     );
   }
 
   async setLandslidePosition() {
-    const relativeToLatLng = this.registration.request.ObsLocation
+    const relativeToLatLng = this.draft.registration.ObsLocation
       ? L.latLng(
-        this.registration.request.ObsLocation.Latitude,
-        this.registration.request.ObsLocation.Longitude
+        this.draft.registration.ObsLocation.Latitude,
+        this.draft.registration.ObsLocation.Longitude
       )
       : null;
     const startLatLng =
-      this.registration.request.LandSlideObs.StartLat &&
-      this.registration.request.LandSlideObs.StartLong
+      this.draft.registration.LandSlideObs.StartLat &&
+      this.draft.registration.LandSlideObs.StartLong
         ? L.latLng(
-          this.registration.request.LandSlideObs.StartLat,
-          this.registration.request.LandSlideObs.StartLong
+          this.draft.registration.LandSlideObs.StartLat,
+          this.draft.registration.LandSlideObs.StartLong
         )
         : null;
     const endLatLng =
-      this.registration.request.LandSlideObs.StopLat &&
-      this.registration.request.LandSlideObs.StopLong
+      this.draft.registration.LandSlideObs.StopLat &&
+      this.draft.registration.LandSlideObs.StopLong
         ? L.latLng(
-          this.registration.request.LandSlideObs.StopLat,
-          this.registration.request.LandSlideObs.StopLong
+          this.draft.registration.LandSlideObs.StopLat,
+          this.draft.registration.LandSlideObs.StopLong
         )
         : null;
     const modal = await this.modalController.create({
@@ -147,7 +149,7 @@ export class LandslideObsPage extends BasePage {
         relativeToLatLng,
         startLatLng,
         endLatLng,
-        geoHazard: this.registration.geoHazard
+        geoHazard: this.draft.registration.GeoHazardTID
       }
     });
     modal.present();
@@ -155,10 +157,10 @@ export class LandslideObsPage extends BasePage {
     if (result.data) {
       const start: L.LatLng = result.data.start;
       const end: L.LatLng = result.data.end;
-      this.registration.request.LandSlideObs.StartLat = start.lat;
-      this.registration.request.LandSlideObs.StartLong = start.lng;
-      this.registration.request.LandSlideObs.StopLat = end.lat;
-      this.registration.request.LandSlideObs.StopLong = end.lng;
+      this.draft.registration.LandSlideObs.StartLat = start.lat;
+      this.draft.registration.LandSlideObs.StartLong = start.lng;
+      this.draft.registration.LandSlideObs.StopLat = end.lat;
+      this.draft.registration.LandSlideObs.StopLong = end.lng;
     }
   }
 }

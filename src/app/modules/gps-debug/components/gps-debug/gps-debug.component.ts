@@ -102,7 +102,10 @@ export class GpsDebugComponent implements OnInit, OnDestroy {
   }
 
   timestampToString(timestamp: number) {
-    return moment.unix(timestamp).local().format('dd.MM HH:mm:ss.SSS');
+    const isMillis = timestamp > 99999999999; //sometimes we get timestamp in seconds instead of millis
+    const timestampInMillis = isMillis ? timestamp : timestamp * 1000;
+    const result = new Date(timestampInMillis).toLocaleString();
+    return result;
   }
 
   getErrorCodeOrMessage(err: PositionError) {

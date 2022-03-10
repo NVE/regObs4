@@ -10,8 +10,8 @@
 </ion-header>
 <ion-content>
   <form (ngSubmit)="ok()">
-    <ng-container *ngIf="reg && reg.request && reg.request.CompressionTest">
-      <app-compression-test-list [(tests)]="reg.request.CompressionTest" (testsChange)="save()"
+    <ng-container *ngIf="draft && draft.registration && draft.registration.CompressionTest">
+      <app-compression-test-list [(tests)]="draft.registration.CompressionTest" (testsChange)="save()"
         [includeInSnowProfileAsDefault]="true">
       </app-compression-test-list>
     </ng-container>

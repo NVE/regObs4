@@ -4,6 +4,7 @@ import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
+import { IncidentEditModel } from 'src/app/modules/common-regobs-api';
 
 @Component({
   selector: 'app-incident',
@@ -11,14 +12,16 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
   styleUrls: ['./incident.page.scss']
 })
 export class IncidentPage extends BasePage {
-  get geoHazardName() {
-    return GeoHazard[this.registration.geoHazard];
+
+  get geoHazardName(): string {
+    return GeoHazard[this.draft.registration.GeoHazardTID];
   }
 
-  constructor(
-    basePageService: BasePageService,
-    activatedRoute: ActivatedRoute
-  ) {
+  get incident(): IncidentEditModel {
+    return this.draft.registration.Incident;
+  }
+
+  constructor(basePageService: BasePageService, activatedRoute: ActivatedRoute) {
     super(RegistrationTid.Incident, basePageService, activatedRoute);
   }
 }

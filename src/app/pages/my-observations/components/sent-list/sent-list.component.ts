@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, NgZone, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { combineLatest, Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, finalize, map, pairwise, switchMap, take } from 'rxjs/operators';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { distinctUntilChanged, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { enterZone, toPromiseWithCancel } from 'src/app/core/helpers/observable-helper';
+import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
 import { ObservationService } from 'src/app/core/services/observation/observation.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
-import { RegistrationService } from 'src/app/modules/registration/services/registration.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
@@ -14,13 +14,24 @@ import { settings } from 'src/settings';
 const PAGE_SIZE = 10;
 const MAX_REGISTRATIONS_COUNT = 100;
 
+const getUniqueRegistrations = (regs: RegistrationViewModel[]) => {
+  const regIds = new Set();
+  return regs.filter(reg => {
+    if (regIds.has(reg.RegId)) {
+      return false;
+    }
+    regIds.add(reg.RegId);
+    return true;
+  });
+};
+
 @Component({
   selector: 'app-sent-list',
   templateUrl: './sent-list.component.html',
   styleUrls: ['./sent-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SentListComponent implements OnInit {
+export class SentListComponent implements OnInit, OnDestroy {
   loadedRegistrations: RegistrationViewModel[] = [];
   loaded = false;
   refreshFunc = this.refresh.bind(this);
@@ -28,46 +39,63 @@ export class SentListComponent implements OnInit {
   loadingMore = false;
   pageIndex: number;
   myObservationsUrl$: Observable<string>;
+  private ngDestroy$ = new Subject<void>();
 
   constructor(
+    draftToRegService: DraftToRegistrationService,
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
-    private registrationService: RegistrationService,
     private regobsAuthService: RegobsAuthService,
     private changeDetectorRef: ChangeDetectorRef,
     private loggingService: LoggingService,
     private ngZone: NgZone
   ) {
     this.myObservationsUrl$ = this.createMyObservationsUrl$();
+
+    draftToRegService.newRegistrations$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((newRegistration) => {
+        const regsWithoutNewRegistration = this.loadedRegistrations
+          .filter(reg => reg.RegId !== newRegistration.RegId);
+
+        this.loadedRegistrations = [
+          newRegistration,
+          ...regsWithoutNewRegistration
+        ];
+
+        this.isEmpty.next(false);
+        this.changeDetectorRef.detectChanges();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.ngDestroy$.next();
+    this.ngDestroy$.complete();
   }
 
   async ngOnInit(): Promise<void> {
     this.initRegistrationSubscription();
-    this.registrationService.registrations$
-      .pipe(
-        map((regs) => regs.length),
-        pairwise(),
-        map(([lastCount, newCount]) => newCount - lastCount),
-        distinctUntilChanged(),
-        filter((diff) => diff < 0), //only fetch observations when num drafts decrease
-        debounceTime(500) //wait a bit in case multiple observations were shipped
-      )
-      .subscribe(() => this.initRegistrationSubscription());
   }
 
-  async refresh(cancelPromise: Promise<void>): Promise<void> {
-    await this.registrationService.syncRegistrations(cancelPromise);
+  async refresh(cancelPromise?: Promise<void>): Promise<void> {
     await this.initRegistrationSubscription(cancelPromise);
   }
 
   private async initRegistrationSubscription(cancel?: Promise<void>): Promise<void> {
+    this.loadedRegistrations = [];
     this.loaded = false;
     this.changeDetectorRef.detectChanges();
     this.pageIndex = 0;
     try {
       const result = await toPromiseWithCancel(this.getMyRegistrations$(0), cancel, 20000);
-      this.loadedRegistrations = result;
-      this.isEmpty.emit(result.length === 0);
+      // Since this.loadedRegistrations can be modified by the draftToRegService subscription above as well,
+      // add results to the end and filter unique observations in case the my-observations request returns after a
+      // new registration has been added
+      this.loadedRegistrations = getUniqueRegistrations([
+        ...this.loadedRegistrations,
+        ...result
+      ]);
+      this.isEmpty.emit(this.loadedRegistrations.length === 0);
     } catch (error) {
       this.loggingService.debug('Could not load my registrations', 'SentListComponent.initRegistrationSubscription()', error);
     } finally {
@@ -100,7 +128,9 @@ export class SentListComponent implements OnInit {
         })
       )
       .subscribe((nextPage) => {
-        this.loadedRegistrations = this.loadedRegistrations.concat(nextPage);
+        // Filter unique registrations as the paging indexes can be a bit off when a new registration has been
+        // submitted after the first page has loaded
+        this.loadedRegistrations = getUniqueRegistrations(this.loadedRegistrations.concat(nextPage));
         this.pageIndex += 1;
         const target: IonInfiniteScroll = event.target as unknown as IonInfiniteScroll;
         target.complete();

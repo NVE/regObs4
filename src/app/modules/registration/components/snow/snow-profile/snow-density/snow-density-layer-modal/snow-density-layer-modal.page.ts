@@ -2,9 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
-import { IRegistration } from 'src/app/modules/common-registration/registration.models';
 import cloneDeep from 'clone-deep';
-import { RegistrationService } from '../../../../../services/registration.service';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
   selector: 'app-snow-density-layer-modal',
@@ -12,22 +12,22 @@ import { RegistrationService } from '../../../../../services/registration.servic
   styleUrls: ['./snow-density-layer-modal.page.scss']
 })
 export class SnowDensityLayerModalPage implements OnInit {
-  @Input() reg: IRegistration;
+  @Input() draft: RegistrationDraft;
   @Input() layer: SnowDensityLayerModel;
   @Input() useCylinder = true;
   @Input() cylinderDiameterInM: number;
   @Input() tareWeight: number;
   @Input() index: number;
   addNew: boolean;
-  private initialRegistrationState: IRegistration;
+  private initialDraftState: RegistrationDraft;
 
   constructor(
     private modalController: ModalController,
-    private registrationService: RegistrationService
+    private draftRepository: DraftRepositoryService
   ) {}
 
   ngOnInit() {
-    this.initialRegistrationState = cloneDeep(this.reg);
+    this.initialDraftState = cloneDeep(this.draft);
     this.initLayer();
   }
 
@@ -41,19 +41,14 @@ export class SnowDensityLayerModalPage implements OnInit {
 
   get hasLayers() {
     return (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.SnowDensity &&
-      this.reg.request.SnowProfile2.SnowDensity[0] &&
-      this.reg.request.SnowProfile2.SnowDensity[0].Layers &&
-      this.reg.request.SnowProfile2.SnowDensity[0].Layers.length > 0
+      this.draft?.registration?.SnowProfile2?.SnowDensity &&
+      this.draft.registration.SnowProfile2.SnowDensity[0]?.Layers?.length > 0
     );
   }
 
   get layerLenght() {
     return this.hasLayers
-      ? this.reg.request.SnowProfile2.SnowDensity[0].Layers.length
+      ? this.draft.registration.SnowProfile2.SnowDensity[0].Layers.length
       : 0;
   }
 
@@ -74,27 +69,27 @@ export class SnowDensityLayerModalPage implements OnInit {
   }
 
   async ok(gotoIndex?: number) {
-    if (!this.reg.request.SnowProfile2) {
-      this.reg.request.SnowProfile2 = {};
+    if (!this.draft.registration.SnowProfile2) {
+      this.draft.registration.SnowProfile2 = {};
     }
-    if (!this.reg.request.SnowProfile2.SnowDensity) {
-      this.reg.request.SnowProfile2.SnowDensity = [];
+    if (!this.draft.registration.SnowProfile2.SnowDensity) {
+      this.draft.registration.SnowProfile2.SnowDensity = [];
     }
-    if (!this.reg.request.SnowProfile2.SnowDensity[0].Layers) {
-      this.reg.request.SnowProfile2.SnowDensity[0].Layers = [];
+    if (!this.draft.registration.SnowProfile2.SnowDensity[0].Layers) {
+      this.draft.registration.SnowProfile2.SnowDensity[0].Layers = [];
     }
     if (this.addNew && !this.isEmpty(this.layer)) {
-      this.reg.request.SnowProfile2.SnowDensity[0].Layers.splice(
+      this.draft.registration.SnowProfile2.SnowDensity[0].Layers.splice(
         this.index,
         0,
         this.layer
       );
     }
-    await this.registrationService.saveRegistrationAsync(this.reg);
+    await this.draftRepository.save(this.draft);
 
     if (gotoIndex !== undefined) {
       this.index = this.index + gotoIndex;
-      this.layer = this.reg.request.SnowProfile2.SnowDensity[0].Layers[
+      this.layer = this.draft.registration.SnowProfile2.SnowDensity[0].Layers[
         this.index
       ];
       this.initLayer();
@@ -104,26 +99,17 @@ export class SnowDensityLayerModalPage implements OnInit {
   }
 
   async cancel() {
-    await this.registrationService.saveRegistrationAsync(
-      this.initialRegistrationState
-    );
+    await this.draftRepository.save(this.initialDraftState);
     this.modalController.dismiss();
   }
 
   async delete() {
-    if (
-      this.reg &&
-      this.reg.request &&
-      this.reg.request.SnowProfile2 &&
-      this.reg.request.SnowProfile2.SnowDensity &&
-      this.reg.request.SnowProfile2.SnowDensity.length > 0 &&
-      this.reg.request.SnowProfile2.SnowDensity[0].Layers &&
-      this.reg.request.SnowProfile2.SnowDensity[0].Layers.length > 0
-    ) {
-      this.reg.request.SnowProfile2.SnowDensity[0].Layers = this.reg.request.SnowProfile2.SnowDensity[0].Layers.filter(
-        (l) => l !== this.layer
-      );
-      await this.registrationService.saveRegistrationAsync(this.reg);
+    if (this.hasLayers) {
+      this.draft.registration.SnowProfile2.SnowDensity[0].Layers
+      = this.draft.registration.SnowProfile2.SnowDensity[0].Layers.filter(
+          (l) => l !== this.layer
+        );
+      await this.draftRepository.save(this.draft);
     }
     this.modalController.dismiss();
   }

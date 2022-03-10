@@ -2,22 +2,26 @@ import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse }
 import { Injectable } from '@angular/core';
 import { filter, firstValueFrom, map, Observable, tap } from 'rxjs';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
-import { NewAttachmentService, ProgressService } from 'src/app/modules/common-registration/registration.services';
+import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { AttachmentService as ApiAttachmentService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RegistrationDraft } from '../draft/draft-model';
 
 const DEBUG_TAG = 'UploadAttachmentsService';
 
+export interface FailedAttachment extends Pick<AttachmentUploadEditModel, 'id'> {
+  error: Error;
+}
+
 export class UploadAttachmentError extends Error {
   registrationUuid: string;
-  attachmentIds: string[];
+  attachments: FailedAttachment[];
 
-  constructor(registrationUuid: string, attachmentIds: string[]) {
-    super(`Failed to upload ${attachmentIds.length} attachments for registration '${registrationUuid}'`);
+  constructor(registrationUuid: string, attachments: FailedAttachment[]) {
+    super(`Failed to upload ${attachments.length} attachments for registration '${registrationUuid}'`);
     this.name = 'UploadAttachmentError';
     this.registrationUuid = registrationUuid;
-    this.attachmentIds = attachmentIds;
+    this.attachments = attachments;
   }
 }
 
@@ -31,7 +35,6 @@ export class UploadAttachmentsService {
 
   constructor(
     private httpClient: HttpClient,
-    private progressService: ProgressService,
     private newAttachmentService: NewAttachmentService,
     private apiAttachmentService: ApiAttachmentService,
     private loggingService: LoggingService
@@ -48,6 +51,7 @@ export class UploadAttachmentsService {
    *
    * @returns Attachments with attachment ids from upload response
    * @throws {UploadAttachmentError} If the attachment upload fails
+   * @throws {HttpErrorResponse} If any upload requests fails with http status = 0, probably no network
    */
   async uploadAllAttachments(draft: RegistrationDraft): Promise<AttachmentUploadEditModel[]> {
     const attachments = await firstValueFrom(this.newAttachmentService.getAttachments(draft.uuid));
@@ -58,21 +62,29 @@ export class UploadAttachmentsService {
 
     // Error handling
     // wrap this.uploadAttachment in a function that saves exceptions so that we can handle those that fail later
-    const failedAttachmentIds = [];
+    const failedAttachments: FailedAttachment[] = [];
     const uploadAttachmentAndHandleErrors = async (attachment: AttachmentUploadEditModel) => {
       try {
         return await this.uploadAttachment(attachment, draft);
       } catch (error) {
+        if (error instanceof HttpErrorResponse && error.status === 0) {
+          // Probably no network, stop trying to upload any attachments
+          throw error;
+        }
+
         this.loggingService.error(error, DEBUG_TAG, 'Failed to upload attachment', attachment.AttachmentId);
-        failedAttachmentIds.push(attachment.AttachmentId);
+        failedAttachments.push({
+          id: attachment.id,
+          error
+        });
       }
     };
 
     // Upload all attachments concurrently
     const uploadedAttachments = await Promise.all(attachmentsToUpload.map(uploadAttachmentAndHandleErrors));
 
-    if (failedAttachmentIds.length) {
-      throw new UploadAttachmentError(draft.uuid, failedAttachmentIds);
+    if (failedAttachments.length) {
+      throw new UploadAttachmentError(draft.uuid, failedAttachments);
     }
 
     return [
@@ -83,9 +95,10 @@ export class UploadAttachmentsService {
 
   private onHttpEvent(event: HttpEvent<any>, attachment: AttachmentUploadEditModel) {
     this.loggingService.debug('Attachment upload http event', DEBUG_TAG, event);
-    if (event.type === HttpEventType.UploadProgress) {
-      this.progressService.setAttachmentProgress(attachment.id, event.total, event.loaded);
-    }
+    // Here we can keep track of upload progress if we want to
+    // if (event.type === HttpEventType.UploadProgress) {
+    //   // Track upload progress
+    // }
   }
 
   private onHttpResponseEvent(event: HttpResponse<string>) {

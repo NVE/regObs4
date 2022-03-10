@@ -22,8 +22,8 @@
       translate}}</ion-label>
   </ion-item>
   <app-add-picture-item iconColor="primary" 
-    [geoHazard]="registration.geoHazard" 
-    [registrationId]="registration.id" 
+    [geoHazard]="draft.registration.GeoHazardTID" 
+    [registrationId]="draft.uuid" 
     [registrationTid]="registrationTid"
     pictureCommentText="" [onBeforeAdd]="getSaveFunc()"
     pictureCommentPlaceholder="REGISTRATION.INCIDENT.IMAGE_PLACEHOLDER">

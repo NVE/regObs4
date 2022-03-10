@@ -5,7 +5,6 @@ import { CancelPromiseTimer } from '../../helpers/cancel-promise-timer';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { settings } from '../../../../settings';
 import { Platform } from '@ionic/angular';
-import { RegistrationService } from '../../../modules/registration/services/registration.service';
 import { TripLoggerService } from '../trip-logger/trip-logger.service';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { Subject, Subscription } from 'rxjs';
@@ -51,7 +50,6 @@ export class DataMarshallService implements OnReset {
     private userSettingService: UserSettingService,
     private regobsAuthService: RegobsAuthService,
     private platform: Platform,
-    private registrationService: RegistrationService,
     private tripLoggerService: TripLoggerService,
     private loggingService: LoggingService,
     private analyticService: AnalyticService,
@@ -258,7 +256,7 @@ export class DataMarshallService implements OnReset {
         )
         : null;
       // Use max 20 seconds to backround update, else app will crash (after 30 seconds)
-      await this.registrationService.syncRegistrations(cancelTimer);
+
       const cancelPromiseForObservations = cancelTimer
         ? Promise.race([this.cancelObservationsPromise, cancelTimer])
         : this.cancelObservationsPromise;
