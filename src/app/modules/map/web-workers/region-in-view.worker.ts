@@ -96,7 +96,7 @@ implements DoWork<IRegionInViewInput, IRegionInViewOutput> {
         const featureName =
           mapView.geoHazards[0] === GeoHazard.Snow
             ? settings.services.warning.Snow.featureName
-            : settings.services.warning.Dirt.featureName;
+            : settings.services.warning.Soil.featureName;
         regionsInViewBounds = featuresInViewBounds.map((f) =>
           f.properties[featureName].toString()
         );
