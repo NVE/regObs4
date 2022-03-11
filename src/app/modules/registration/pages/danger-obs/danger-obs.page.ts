@@ -13,7 +13,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
 /**
  * Used to add or edit danger observations.
  * Contains a list of danger observations already registered.
- * You may click an observation open the specific observation in a form.
+ * You may click an observation to open the specific observation in a form.
  * Contains also a button to add new observations and a function to upload images.
  */
 @Component({

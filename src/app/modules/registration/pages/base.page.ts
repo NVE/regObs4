@@ -61,26 +61,34 @@ export abstract class BasePage extends NgDestoryBase {
       });
   }
 
-  onInit?(): void | Promise<any>;
+  /**
+   * Implement this to initialize the registration
+   */
+  onInit?(): void | Promise<unknown>;
 
-  onBeforeLeave?(): void | Promise<any>;
+  /**
+   * Implement this to cleanup when the page closes
+   */
+  onBeforeLeave?(): void | Promise<unknown>;
 
-  onReset?(): void;
-
+  /**
+   * Implement this to do form validation
+   */
   isValid?(): boolean | Promise<boolean>;
 
   // NOTE: Remember to add canDeactivate: [CanDeactivateRouteGuard] in page module
-  async canLeave() {
+  async canLeave(): Promise<boolean> {
     // Check if implementation page has implemented custom isValid logic
     const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
     // Only return alert if page is not empty and invalid
     const isEmpty = await this.isEmpty();
     if (!isEmpty && !valid) {
-      return this.basePageService.confirmLeave(
-        this.draft,
-        this.registrationTid,
-        () => (this.onReset ? this.onReset() : null)
-      );
+      const pleaseLeave = await this.basePageService.confirmLeave();
+      if (pleaseLeave) {
+        await this.doDelete();
+      } else {
+        return false; //operator wants to stay
+      }
     }
     return true;
   }
@@ -111,21 +119,27 @@ export abstract class BasePage extends NgDestoryBase {
     return this.basePageService.draftRepository.isDraftEmptyForRegistrationType(this.draft, registrationType);
   }
 
-  reset() {
-    return this.basePageService.confirmReset(
-      this.draft,
-      this.registrationTid,
-      () => (this.onReset ? this.onReset() : null)
-    );
+  /**
+   * Clear all fields in the registration if the operator confirms
+   */
+  async reset() {
+    const pleaseReset = await this.basePageService.confirmReset();
+    if (pleaseReset) {
+      await this.doReset();
+    }
   }
 
-  getResolvedUrl(): string {
-    return (
-      '/' +
-      this.activatedRoute.snapshot.pathFromRoot
-        .map((v) => v.url.map((segment) => segment.toString()).join('/'))
-        .filter((path) => !!path)
-        .join('/')
-    );
+  /**
+   * Clear all fields in the registration(s) and save the draft
+   */
+  protected async doReset() {
+    await this.basePageService.reset(this.draft, [this.registrationTid]);
+  }
+
+  /**
+   * Delete the registration(s) behind the form and save the draft
+   */
+  protected async doDelete() {
+    await this.basePageService.reset(this.draft, [this.registrationTid], true);
   }
 }

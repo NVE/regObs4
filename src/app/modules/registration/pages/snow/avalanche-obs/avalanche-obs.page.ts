@@ -10,6 +10,11 @@ import moment from 'moment';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { AvalancheObsEditModel, IncidentEditModel } from 'src/app/modules/common-regobs-api';
 
+
+/**
+ * Used to register both avalanche observations and incidents, so this page contains two forms.
+ * You can also upload images which will be attached to the avalanche observation.
+ */
 @Component({
   selector: 'app-avalanche-obs',
   templateUrl: './avalanche-obs.page.html',
@@ -92,13 +97,14 @@ export class AvalancheObsPage extends BasePage {
     return moment().minutes(59).toISOString(true);
   }
 
-  async onReset() {
-    this.showWarning = false;
-    // Also reset Incident when Avalanche obs is reset.
-    await this.basePageService.reset(
-      this.draft,
-      RegistrationTid.Incident
-    );
+  protected async doReset() {
+    //clear both forms
+    await this.basePageService.reset(this.draft, [this.registrationTid, RegistrationTid.Incident], false);
+  }
+
+  protected async doDelete() {
+    //delete both forms
+    await this.basePageService.reset(this.draft, [this.registrationTid, RegistrationTid.Incident], true);
   }
 
   isValid() {
