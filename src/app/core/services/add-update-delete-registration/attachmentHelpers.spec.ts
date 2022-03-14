@@ -1,7 +1,7 @@
 import cloneDeep from 'clone-deep';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 import { AttachmentUploadEditModel, WaterLevelMeasurementUploadModel } from 'src/app/modules/common-registration/registration.models';
 import { AttachmentEditModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
-import { GeoHazard } from '../../models/geo-hazard.enum';
 import { addAttachmentToRegistration } from './attachmentHelpers';
 
 const getSmallTestReg = (): RegistrationEditModel => ({

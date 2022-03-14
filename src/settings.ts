@@ -48,7 +48,7 @@ export const settings: ISettings = {
       Snow: [0, 1, 2, 3, 7, 7 * 2],
       Ice: [0, 1, 2, 7, 7 * 4, 7 * 12],
       Water: [0, 1, 2, 3, 7, 7 * 2],
-      Dirt: [0, 1, 2, 3, 7, 7 * 2]
+      Soil: [0, 1, 2, 3, 7, 7 * 2]
     },
     timeZone: 'Europe/Oslo'
   },
@@ -89,7 +89,7 @@ export const settings: ISettings = {
         },
         featureName: 'omradeID'
       },
-      Dirt: {
+      Soil: {
         apiUrl: 'https://api01.nve.no/hydrology/forecast/landslide/v1.0.6/api',
         webUrl: {
           nb: 'http://www.varsom.no/flom-og-jordskredvarsling/varsel/{regionName}/?date={day}&utm_source=regobs&utm_medium=app&utm_campaign=landslide',
