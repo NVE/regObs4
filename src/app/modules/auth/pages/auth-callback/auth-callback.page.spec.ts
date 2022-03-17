@@ -1,13 +1,6 @@
-import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-import { TranslateModule } from '@ngx-translate/core';
-import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { LoggingService } from '../../../shared/services/logging/logging.service';
-import { TestLoggingService } from '../../../shared/services/logging/test-logging.service';
-import { SharedModule } from '../../../shared/shared.module';
+import { Router } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { RegobsAuthService } from '../../services/regobs-auth.service';
 
 import { AuthCallbackPage } from './auth-callback.page';
@@ -15,21 +8,19 @@ import { AuthCallbackPage } from './auth-callback.page';
 describe('AuthCallbackPage', () => {
   let component: AuthCallbackPage;
   let fixture: ComponentFixture<AuthCallbackPage>;
+  let regobsAuthService: jasmine.SpyObj<RegobsAuthService>;
 
   beforeEach(waitForAsync(() => {
+    regobsAuthService = jasmine.createSpyObj(['authorizationCallback']);
+
     TestBed.configureTestingModule({
       declarations: [AuthCallbackPage],
       providers: [
-        { provide: LoggingService, useClass: TestLoggingService },
-        SafariViewController,
-        InAppBrowser,
-        Location
+        { provide: RegobsAuthService, useValue: regobsAuthService },
+        { provide: Router, useValue: { url: '/testurl?abc=123' } },
       ],
       imports: [
-        SharedModule,
-        HttpClientModule,
-        TranslateModule.forRoot(),
-        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })
+        IonicModule
       ]
     }).compileComponents();
   }));
@@ -42,5 +33,10 @@ describe('AuthCallbackPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should call the authorization callback when initialized', () => {
+    expect(regobsAuthService.authorizationCallback).toHaveBeenCalledTimes(1);
+    expect(regobsAuthService.authorizationCallback).toHaveBeenCalledWith(window.location.origin + '/testurl?abc=123');
   });
 });
