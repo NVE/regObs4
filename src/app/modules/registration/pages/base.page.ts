@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { take, takeUntil, map, switchMap, tap, skip } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { createEmptyRegistration } from '../../common-registration/registration.helpers';
 
 /**
  * Base page for a registration form, eg. danger sign
@@ -40,7 +41,7 @@ export abstract class BasePage extends NgDestoryBase {
         // Seems like this class is also used by the set datetime page,
         // where we don't have a registrationTid
         if (this.registrationTid != null) {
-          return this.basePageService.createDefaultProps(draft, this.registrationTid);
+          return createEmptyRegistration(draft, this.registrationTid);
         }
         return draft;
       }),
@@ -85,9 +86,9 @@ export abstract class BasePage extends NgDestoryBase {
     if (!isEmpty && !valid) {
       const pleaseLeave = await this.basePageService.confirmLeave();
       if (pleaseLeave) {
-        await this.doDelete();
+        await this.delete();
       } else {
-        return false; //operator wants to stay
+        return false; //user wants to stay
       }
     }
     return true;
@@ -120,26 +121,20 @@ export abstract class BasePage extends NgDestoryBase {
   }
 
   /**
-   * Clear all fields in the registration if the operator confirms
+   * Delete the registration if the user confirms
    */
   async reset() {
-    const pleaseReset = await this.basePageService.confirmReset();
+    const pleaseReset = await this.basePageService.confirmDelete();
     if (pleaseReset) {
-      await this.doReset();
+      await this.delete();
     }
   }
 
   /**
-   * Clear all fields in the registration(s) and save the draft
+   * Delete the registration behind the form and save the draft.
+   * You may override this if your form contains other data.
    */
-  protected async doReset() {
-    await this.basePageService.reset(this.draft, [this.registrationTid]);
-  }
-
-  /**
-   * Delete the registration(s) behind the form and save the draft
-   */
-  protected async doDelete() {
-    await this.basePageService.reset(this.draft, [this.registrationTid], true);
+  protected async delete() {
+    await this.basePageService.delete(this.draft, [this.registrationTid]);
   }
 }

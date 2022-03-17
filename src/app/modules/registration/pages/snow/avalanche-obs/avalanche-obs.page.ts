@@ -97,14 +97,9 @@ export class AvalancheObsPage extends BasePage {
     return moment().minutes(59).toISOString(true);
   }
 
-  protected async doReset() {
-    //clear both forms
-    await this.basePageService.reset(this.draft, [this.registrationTid, RegistrationTid.Incident], false);
-  }
-
-  protected async doDelete() {
+  protected async delete() {
     //delete both forms
-    await this.basePageService.reset(this.draft, [this.registrationTid, RegistrationTid.Incident], true);
+    await this.basePageService.delete(this.draft, [this.registrationTid, RegistrationTid.Incident]);
   }
 
   isValid() {

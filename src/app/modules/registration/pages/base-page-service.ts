@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-import { getRegistrationName, isArrayType } from 'src/app/modules/common-registration/registration.helpers';
+import { getRegistrationName } from 'src/app/modules/common-registration/registration.helpers';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -36,9 +36,9 @@ export class BasePageService {
   }
 
   /**
-   * @returns true if operator confirms to reset registration form
+   * @returns true if user confirms to delete registration form
    */
-  async confirmReset(): Promise<boolean> {
+  async confirmDelete(): Promise<boolean> {
     const leaveText = await firstValueFrom(this.translateService.get('REGISTRATION.CONFIRM_RESET'));
     return this.askForResetConfirmation(leaveText);
   }
@@ -64,13 +64,12 @@ export class BasePageService {
   }
 
   /**
-   * Reset or delete the registrations with given registrationTids and save the draft.
+   * Delete the registrations with given registrationTids and save the draft.
    * The attachments that belong to the registrations will be de removed.
    * @param draft the draft the registrations belong to
    * @param registrationTids type ID's of the registrations
-   * @param doDelete use this if you like to delete instead of reset
    */
-  async reset(draft: RegistrationDraft, registrationTids: RegistrationTid[], doDelete = false) {
+  async delete(draft: RegistrationDraft, registrationTids: RegistrationTid[]) {
     if (registrationTids?.length > 0) {
       const draftCopy: RegistrationDraft = {
         ...draft,
@@ -83,11 +82,7 @@ export class BasePageService {
 
       for (const registrationTid of registrationTids) {
         const registrationName = getRegistrationName(registrationTid);
-        if (doDelete) {
-          delete draftCopy.registration[registrationName];
-        } else {
-          draftCopy.registration[registrationName] = this.getDefaultValue(registrationTid); //reset field
-        }
+        delete draftCopy.registration[registrationName];
         for (const attachment of attachments) {
           if (attachment.RegistrationTID === registrationTid) {
             try {
@@ -104,26 +99,5 @@ export class BasePageService {
     }
   }
 
-  createDefaultProps(draft: RegistrationDraft, registrationTid: RegistrationTid): RegistrationDraft {
-    const propName = getRegistrationName(registrationTid);
-    if (!draft.registration[propName]) {
-      return {
-        ...draft,
-        registration: {
-          ...draft.registration,
-          [propName]: this.getDefaultValue(registrationTid)
-        }
-      };
-    }
-    return draft;
-  }
-
-  getDefaultValue(registrationTid: RegistrationTid) {
-    if (isArrayType(registrationTid)) {
-      return [];
-    } else {
-      return {};
-    }
-  }
 }
 

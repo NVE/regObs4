@@ -103,3 +103,30 @@ export function isArrayType(tid: RegistrationTid): boolean {
   );
 }
 
+/**
+ * Create an empty registration for given draft, if it does not exists
+ * @returns the draft with actual registration initialized
+ */
+export function createEmptyRegistration(draft: RegistrationDraft, registrationTid: RegistrationTid): RegistrationDraft {
+  const propName = getRegistrationName(registrationTid);
+  if (!draft.registration[propName]) {
+    return {
+      ...draft,
+      registration: {
+        ...draft.registration,
+        [propName]: getDefaultValue(registrationTid)
+      }
+    };
+  }
+  return draft;
+}
+
+function getDefaultValue(registrationTid: RegistrationTid) {
+  if (isArrayType(registrationTid)) {
+    return [];
+  } else {
+    return {};
+  }
+}
+
+

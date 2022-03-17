@@ -76,7 +76,7 @@ describe('BasePageService', () => {
     );
   });
 
-  it('reset(doDelete) should delete the avalanche and incident registration', async () => {
+  it('delete should delete the avalanche and incident registration', async () => {
 
     const expectedEmptyDraft: RegistrationDraft = {
       uuid: 'draft',
@@ -89,34 +89,7 @@ describe('BasePageService', () => {
     };
     newAttachmentService.getAttachments.and.returnValue(of(attachments));
 
-    await service.reset(avalancheObsDraft, [RegistrationTid.AvalancheObs, RegistrationTid.Incident], true);
-    expect(draftRepository.save).toHaveBeenCalledTimes(1);
-    expect(draftRepository.save.calls.allArgs()).toEqual([
-      [{ ...expectedEmptyDraft }],
-    ]);
-    expect(newAttachmentService.getAttachments).toHaveBeenCalledOnceWith('draft');
-    expect(newAttachmentService.removeAttachment).toHaveBeenCalledTimes(3);
-    expect(newAttachmentService.removeAttachment).toHaveBeenCalledWith('draft', '1');
-    expect(newAttachmentService.removeAttachment).toHaveBeenCalledWith('draft', '2');
-    expect(newAttachmentService.removeAttachment).toHaveBeenCalledWith('draft', '3');
-  });
-
-  //TODO: Denne feiler fordi jeg vet ikke hvordan jeg kan angi at AvalancheObs er tom uten å få trøbbel med Typescript
-  it('reset(clear) should only clear the avalanche and incident registration', async () => {
-
-    const expectedEmptyDraft: RegistrationDraft = {
-      uuid: 'draft',
-      syncStatus: SyncStatus.Draft,
-      registration: {
-        GeoHazardTID: 10,
-        DtObsTime: 'obsTime',
-        Incident: {}
-      }
-    };
-    expectedEmptyDraft['AvalancheObs'] = {};
-    newAttachmentService.getAttachments.and.returnValue(of(attachments));
-
-    await service.reset(avalancheObsDraft, [RegistrationTid.AvalancheObs, RegistrationTid.Incident]);
+    await service.delete(avalancheObsDraft, [RegistrationTid.AvalancheObs, RegistrationTid.Incident]);
     expect(draftRepository.save).toHaveBeenCalledTimes(1);
     expect(draftRepository.save.calls.allArgs()).toEqual([
       [{ ...expectedEmptyDraft }],
