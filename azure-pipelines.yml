@@ -42,7 +42,6 @@ steps:
 
 - task: Npm@1
   displayName: 'npm run tests'
-  continueOnError: true
   inputs:
     command: custom
     verbose: false
@@ -50,13 +49,13 @@ steps:
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TESTS-*.xml'
-  continueOnError: true
+  condition: succeededOrFailed() 
   inputs:
     testResultsFiles: '**/TESTS-*.xml'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage from **/cobertura-coverage.xml'
-  continueOnError: true
+  condition: succeededOrFailed() 
   inputs:
     codeCoverageTool: Cobertura
     summaryFileLocation: '**/cobertura-coverage.xml'
