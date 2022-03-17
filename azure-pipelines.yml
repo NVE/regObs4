@@ -7,12 +7,25 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  npm_config_cache: $(Pipeline.Workspace)/.npm
+
 steps:
 - task: NodeTool@0
   displayName: 'Use Node 14.x'
   inputs:
     versionSpec: 14.x
     checkLatest: true
+
+- task: Cache@2
+  inputs:
+    key: 'npm | "$(Agent.OS)" | package-lock.json'
+    restoreKeys: |
+       npm | "$(Agent.OS)"
+    path: $(npm_config_cache)
+  displayName: Cache npm
+
+- script: npm ci
 
 - task: DownloadSecureFile@1
   displayName: 'Download secure file'
@@ -28,20 +41,8 @@ steps:
     TargetFolder: ./src/assets
 
 - task: Npm@1
-  displayName: 'npm install'
-  inputs:
-    verbose: false
-
-- task: Npm@1
-  displayName: 'npm run build'
-  inputs:
-    command: custom
-    verbose: false
-    customCommand: 'run build --source-map'
-  continueOnError: true
-
-- task: Npm@1
   displayName: 'npm run tests'
+  continueOnError: true
   inputs:
     command: custom
     verbose: false
@@ -49,11 +50,13 @@ steps:
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TESTS-*.xml'
+  continueOnError: true
   inputs:
     testResultsFiles: '**/TESTS-*.xml'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage from **/cobertura-coverage.xml'
+  continueOnError: true
   inputs:
     codeCoverageTool: Cobertura
     summaryFileLocation: '**/cobertura-coverage.xml'
