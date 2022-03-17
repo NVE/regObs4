@@ -99,7 +99,7 @@ export class AvalancheObsPage extends BasePage {
 
   protected async delete() {
     //delete both forms
-    await this.basePageService.delete(this.draft, [this.registrationTid, RegistrationTid.Incident]);
+    this.draft = await this.basePageService.delete(this.draft, [this.registrationTid, RegistrationTid.Incident]);
   }
 
   isValid() {

@@ -88,12 +88,11 @@ describe('BasePageService', () => {
       }
     };
     newAttachmentService.getAttachments.and.returnValue(of(attachments));
+    const registrationTids = [RegistrationTid.AvalancheObs, RegistrationTid.Incident];
 
-    await service.delete(avalancheObsDraft, [RegistrationTid.AvalancheObs, RegistrationTid.Incident]);
-    expect(draftRepository.save).toHaveBeenCalledTimes(1);
-    expect(draftRepository.save.calls.allArgs()).toEqual([
-      [{ ...expectedEmptyDraft }],
-    ]);
+    const actualDraft = await service.delete(avalancheObsDraft, registrationTids);
+
+    expect(actualDraft).toEqual(expectedEmptyDraft);
     expect(newAttachmentService.getAttachments).toHaveBeenCalledOnceWith('draft');
     expect(newAttachmentService.removeAttachment).toHaveBeenCalledTimes(3);
     expect(newAttachmentService.removeAttachment).toHaveBeenCalledWith('draft', '1');

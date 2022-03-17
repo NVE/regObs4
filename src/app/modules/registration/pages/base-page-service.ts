@@ -64,12 +64,14 @@ export class BasePageService {
   }
 
   /**
-   * Delete the registrations with given registrationTids and save the draft.
+   * Delete the registrations with given registrationTids
    * The attachments that belong to the registrations will be de removed.
+   * You must save the returned draft yourself.
    * @param draft the draft the registrations belong to
    * @param registrationTids type ID's of the registrations
+   * @return the draft without the registrations
    */
-  async delete(draft: RegistrationDraft, registrationTids: RegistrationTid[]) {
+  async delete(draft: RegistrationDraft, registrationTids: RegistrationTid[]): Promise<RegistrationDraft> {
     if (registrationTids?.length > 0) {
       const draftCopy: RegistrationDraft = {
         ...draft,
@@ -95,8 +97,10 @@ export class BasePageService {
         }
       }
 
-      await this.draftRepository.save(draftCopy);
+      //await this.draftRepository.save(draftCopy);
+      return draftCopy;
     }
+    return draft;
   }
 
 }

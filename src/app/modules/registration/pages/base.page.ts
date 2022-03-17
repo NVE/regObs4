@@ -101,6 +101,9 @@ export abstract class BasePage extends NgDestoryBase {
     return of({});
   }
 
+  /**
+   * Save automatically when you leave the page. Will also run onBeforeLeave() hook if you have any
+   */
   async ionViewWillLeave() {
     if (this.onBeforeLeave) {
       await Promise.resolve(this.onBeforeLeave());
@@ -135,6 +138,6 @@ export abstract class BasePage extends NgDestoryBase {
    * You may override this if your form contains other data.
    */
   protected async delete() {
-    await this.basePageService.delete(this.draft, [this.registrationTid]);
+    this.draft = await this.basePageService.delete(this.draft, [this.registrationTid]);
   }
 }
