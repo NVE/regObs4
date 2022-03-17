@@ -58,6 +58,6 @@ steps:
   condition: succeededOrFailed() 
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: '**/cobertura-coverage.xml'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
     reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
     failIfCoverageEmpty: true
