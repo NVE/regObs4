@@ -163,15 +163,6 @@ export class NanoSql {
       },
       indexes: {}
     },
-    KDV_ELEMENTS: {
-      name: 'kdvelements',
-      instancePerAppMode: true,
-      model: {
-        'langKey:int': { pk: true },
-        '*:any': {}
-      },
-      indexes: {}
-    },
     OBSERVER_GROUPS: {
       name: 'groups',
       instancePerAppMode: true,
@@ -183,15 +174,6 @@ export class NanoSql {
       indexes: {
         'userId:string': {}
       }
-    },
-    HELP_TEXTS: {
-      name: 'helptexts',
-      instancePerAppMode: true,
-      model: {
-        'langKey:int': { pk: true },
-        '*:any': {}
-      },
-      indexes: {}
     }
   };
 

@@ -1,14 +1,14 @@
 import { Component, NgZone } from '@angular/core';
-import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { KdvKey, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';
 import { ModalController } from '@ionic/angular';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { DangerObsEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
-import { KdvService } from '../../../../core/services/kdv/kdv.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 /**
  * Used to add or edit danger observations.
@@ -42,7 +42,7 @@ export class DangerObsPage extends BasePage {
   }
 
   onInit() {
-    const kdvKey = `${GeoHazard[this.draft.registration.GeoHazardTID]}_DangerSignKDV`;
+    const kdvKey = `${GeoHazard[this.draft.registration.GeoHazardTID]}_DangerSignKDV` as KdvKey;
     this.dangerSignKdvSubscription = this.kdvService
       .getKdvRepositoryByKeyObservable(kdvKey)
       .subscribe((val) => {

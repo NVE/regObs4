@@ -9,8 +9,8 @@ import {
   AvalancheActivityObs2EditModel,
   KdvElement
 } from 'src/app/modules/common-regobs-api/models';
-import { KdvService } from '../../../../../core/services/kdv/kdv.service';
 import { Subscription, combineLatest } from 'rxjs';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
 
 @Component({
   selector: 'app-avalanche-activity',

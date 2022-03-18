@@ -9,8 +9,9 @@ import {
 } from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Subscription } from 'rxjs';
-import { KdvService } from '../../../../core/services/kdv/kdv.service';
 import { SelectOption } from '../../../shared/components/input/select/select-option.model';
+import { KdvService } from 'src/app/modules/common-registration/registration.services';
+import { KdvKey } from 'src/app/modules/common-registration/registration.models';
 
 @Component({
   selector: 'app-kdv-select',
@@ -19,7 +20,7 @@ import { SelectOption } from '../../../shared/components/input/select/select-opt
 })
 export class KdvSelectComponent implements OnInit, OnDestroy {
   @Input() title: string;
-  @Input() kdvKey: string;
+  @Input() kdvKey: KdvKey;
   @Input() value: number;
   @Output() valueChange = new EventEmitter();
   @Input() showZeroValues = false;
