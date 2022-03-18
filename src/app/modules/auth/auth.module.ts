@@ -11,23 +11,6 @@ import { storageFactory } from './factories/storage-factory';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { CapacitorBrowser } from 'ionic-appauth/lib/capacitor';
 
-// Override Capacitor Browser to avoid the 'no active window to close' error
-// export class CapacitorBrowserThatSwallowsNoActiveWindowToCloseErrors extends CapacitorBrowser {
-//   closeWindow(): void | Promise<void> {
-//     try {
-//       super.closeWindow();
-//     } catch (error) {
-//       if (error?.message?.toLowerCase().indexOf('no active window to close') > -1) {
-//         // eslint-disable-next-line no-console
-//         console.warn(`Catched error from ionic-appauth: "${error.message}"`);
-//       } else {
-//         throw error;
-//       }
-//     }
-//   }
-// }
-
-
 @NgModule({
   declarations: [],
   imports: [CommonModule, AuthRoutingModule],
