@@ -34,7 +34,7 @@ export class RegobsAuthServiceOverride extends AuthService {
 
   /**
    * Refresh token. If refresh fails, you can just try again.
-   * Will only remove cached tokens if refresh token is expired
+   * Will remove cached tokens if we get HTTP 400 or 401 from server or refresh token is expired
    *
    * @throws {Error} if no token is defined
    */
@@ -54,17 +54,18 @@ export class RegobsAuthServiceOverride extends AuthService {
   }
 
   async shouldTokensBeCleared(error: unknown): Promise<boolean> {
-    if (error && error instanceof HttpErrorResponse && error.status !== 401 && error.status !== 400) {
-      // Only check if refresh token is valid if not 401 - Unauthorized or 400 - Bad request is returned from token endpoint
-      const tokenResponseFullString: string | null = await this.storage.getItem(TOKEN_RESPONSE_FULL_KEY);
-      if (tokenResponseFullString != null) {
-        const tokenResponseFull = new TokenResponseFull(JSON.parse(tokenResponseFullString));
-        if (tokenResponseFull.isRefreshTokenValid()) {
-          return false; // Do not clear token from storage if refresh token is still valid
-        }
+    if (error && error instanceof HttpErrorResponse && (error.status === 401 || error.status === 400)) {
+      return true;
+    }
+    //check if cached token is valid
+    const tokenResponseFullString: string | null = await this.storage.getItem(TOKEN_RESPONSE_FULL_KEY);
+    if (tokenResponseFullString != null) {
+      const tokenResponseFull = new TokenResponseFull(JSON.parse(tokenResponseFullString));
+      if (tokenResponseFull.isRefreshTokenValid()) {
+        return false; // Do not clear token from storage if refresh token is still valid
       }
     }
-    return true;
+    return true; //no token cahced or token expired
   }
 
   private async clearTokens() {

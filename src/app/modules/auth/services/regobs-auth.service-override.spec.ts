@@ -23,10 +23,10 @@ describe('RegobsAuthServiceOverride', () => {
     refresh_token_expires_in: '86400'
   };
 
-  //contains expired tokens
+  //this token was issued in 2020 and should be expired
   const expiredTokenResponse: TokenResponseFullJson = {
     ...validTokenResponse,
-    issued_at: 0
+    issued_at: 1584779614
   };
 
   beforeEach(() => {
@@ -42,38 +42,37 @@ describe('RegobsAuthServiceOverride', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should clear token if we get HTTP 400 or 401 even if token is not expired', () => {
+  it('should clear token if we get HTTP 400 or 401 even if token is not expired', async () => {
     storageBackend.getItem.and.returnValue(Promise.resolve(JSON.stringify(validTokenResponse)));
 
     const badRequest = new HttpErrorResponse({ status: HttpStatusCode.BadRequest });
-    expect(service.shouldTokensBeCleared(badRequest)).toBeTrue();
+    expect(await service.shouldTokensBeCleared(badRequest)).toBeTrue();
 
     const unauthorized = new HttpErrorResponse({ status: HttpStatusCode.Unauthorized });
-    expect(service.shouldTokensBeCleared(unauthorized)).toBeTrue();
+    expect(await service.shouldTokensBeCleared(unauthorized)).toBeTrue();
   });
 
-  it('should clear token if we get HTTP error (except 400 and 401) if token is expired', () => {
+  it('should clear token if we get any HTTP error if token is expired', async () => {
     storageBackend.getItem.and.returnValue(Promise.resolve(JSON.stringify(expiredTokenResponse)));
 
     const randomError = new HttpErrorResponse({ status: HttpStatusCode.ImATeapot });
-    expect(service.shouldTokensBeCleared(randomError)).toBeTrue();
+    expect(await service.shouldTokensBeCleared(randomError)).toBeTrue();
   });
 
-  it('should not clear token if we get HTTP error (except 400 and 401) if token is not expired', () => {
+  it('should not clear token if we get HTTP error (except 400 and 401) if token is not expired', async () => {
     storageBackend.getItem.and.returnValue(Promise.resolve(JSON.stringify(validTokenResponse)));
 
     const randomError = new HttpErrorResponse({ status: HttpStatusCode.ImATeapot });
-    expect(service.shouldTokensBeCleared(randomError)).toBeFalse();
+    expect(await service.shouldTokensBeCleared(randomError)).toBeFalse();
   });
 
-  it('should not clear token if no network', () => {
+  it('should not clear token if no network', async () => {
     storageBackend.getItem.and.returnValue(Promise.resolve(JSON.stringify(validTokenResponse)));
 
     const error: Error = {
       name: 'Error',
       message: 'Unable To Obtain Server Configuration'
     };
-
-    expect(service.shouldTokensBeCleared(error)).toBeFalse();
+    expect(await service.shouldTokensBeCleared(error)).toBeFalse();
   });
 });
