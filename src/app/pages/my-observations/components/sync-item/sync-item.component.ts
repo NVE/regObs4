@@ -20,8 +20,8 @@ export class SyncItemComponent {
 
   get locationName(): string {
     return (
-      this.draft.registration.ObsLocation?.LocationName ||
-      this.draft.registration.ObsLocation?.LocationDescription ||
+      this.draft.registration?.ObsLocation?.LocationName ||
+      this.draft.registration?.ObsLocation?.LocationDescription ||
       ''
     );
   }

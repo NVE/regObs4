@@ -6,7 +6,7 @@
   [disabled]="loading"
 >
   <!-- GeoHazard Icon -->
-  <div slot="start" class="geo-icon-circle">
+  <div slot="start" class="geo-icon-circle" *ngIf="draft.registration">
     <app-geo-icon
       [geoHazards]="[draft.registration.GeoHazardTID]"
     ></app-geo-icon>
@@ -18,7 +18,7 @@
       {{ locationName }}
     </h2>
     <p class="ion-text-wrap">
-      <ion-icon name="calendar"></ion-icon> {{ draft.registration.DtObsTime | formatDate | async }}
+      <ion-icon name="calendar" *ngIf="draft.registration?.DtObsTime"></ion-icon> {{ draft.registration?.DtObsTime | formatDate | async }}
       <span *ngIf="isDraft"> - {{ 'DRAFT' | translate }}</span>
     </p>
   </ion-label>
