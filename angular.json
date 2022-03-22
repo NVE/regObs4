@@ -157,11 +157,6 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "/assets"
-              },
-              {
-                "glob": "**/*.json",
-                "input": "node_modules/@varsom-regobs-common/translations/app/i18n",
-                "output": "assets/i18n"
               }
             ]
           },
