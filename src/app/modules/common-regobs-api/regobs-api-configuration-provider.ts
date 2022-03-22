@@ -3,7 +3,7 @@ import { AppModeService } from 'src/app/modules/common-core/services';
 import { RegobsApiConfigurationInterface } from './regobs-api-configuration';
 import { OnDestroy, Injectable } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { settings } from './settings';
+import { settings } from 'src/settings';
 
 @Injectable()
 export class RegObsApiConfigurationProvider implements RegobsApiConfigurationInterface, OnDestroy {
@@ -17,7 +17,7 @@ export class RegObsApiConfigurationProvider implements RegobsApiConfigurationInt
   }
 
   get rootUrl() {
-    return settings.regObsApi.baseUrl[this.appMode];
+    return settings.services.regObs.apiUrl[this.appMode];
   }
 
   ngOnDestroy(): void {

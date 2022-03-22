@@ -2,15 +2,10 @@ import { NgModule, InjectionToken, ModuleWithProviders } from '@angular/core';
 import { AppModeService } from 'src/app/modules/common-core/services';
 import { RegobsApiConfigurationInterface, RegobsApiConfiguration } from './regobs-api-configuration';
 import { RegObsApiConfigurationProvider } from './regobs-api-configuration-provider';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { ApiInterceptor } from './api-interceptor';
+import { HttpClientModule } from '@angular/common/http';
 
 export const FOR_ROOT_OPTIONS_TOKEN = new InjectionToken<RegobsApiConfigurationInterface>('forRoot() Module configuration');
-export const API_KEY_TOKEN = new InjectionToken<IRegobsApiKeyProvider>('forRoot() Module configuration');
 
-export interface IRegobsApiKeyProvider {
-  apiKey: string;
-}
 
 @NgModule({
   providers: [],
@@ -30,12 +25,6 @@ export class RegobsApiModuleWithConfig {
           provide: RegobsApiConfiguration,
           useFactory: regObsConfigurationFactory,
           deps: [AppModeService, FOR_ROOT_OPTIONS_TOKEN]
-        },
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: ApiInterceptor,
-          deps: [API_KEY_TOKEN, RegobsApiConfiguration],
-          multi: true
         }
       ]
     };

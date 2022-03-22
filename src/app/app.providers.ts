@@ -40,7 +40,6 @@ import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
 import { initDeepLinks } from './core/app-init/deep-links-initializer';
 import { AuthService } from 'ionic-appauth';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { API_KEY_TOKEN, IRegobsApiKeyProvider } from 'src/app/modules/common-regobs-api';
 import {
   IRegistrationModuleOptions,
   FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN
@@ -50,12 +49,6 @@ import { addRxPlugin } from 'rxdb';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
 import { OfflineDbService } from './modules/common-registration/registration.services';
-
-// export const API_INTERCEPTOR_PROVIDER: Provider = {
-//   provide: HTTP_INTERCEPTORS,
-//   useExisting: forwardRef(() => ApiInterceptor),
-//   multi: true
-// };
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -68,11 +61,6 @@ export class DynamicLocaleId extends String {
 
 function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
-}
-
-export function initCommonApiKey(): IRegobsApiKeyProvider {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  return { apiKey: require('../assets/apikey.json').apiKey };
 }
 
 export function initAppModeService(userSettingService: UserSettingService): any {
@@ -136,9 +124,6 @@ export const APP_PROVIDERS = [
     useClass: ApiInterceptor, // TODO: Move to auth module
     multi: true
   },
-  // API_INTERCEPTOR_PROVIDER,
-  // { provide: RegobsApiConfiguration, useClass: ApiConfiguration },
-
   { provide: ErrorHandler, useClass: AppErrorHandler },
   {
     provide: LoggingService,
@@ -165,10 +150,6 @@ export const APP_PROVIDERS = [
   },
 
   // @varsom-regobs-common providers
-  {
-    provide: API_KEY_TOKEN,
-    useFactory: initCommonApiKey
-  },
   {
     provide: AppModeService,
     useFactory: initAppModeService,
