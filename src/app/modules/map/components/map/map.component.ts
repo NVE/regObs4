@@ -336,6 +336,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           // zooming in/out etc.
           redrawLayersInLayerGroup(this.offlineTopoLayerGroup);
           redrawLayersInLayerGroup(this.offlineSupportMapLayerGroup);
+          this.logLayers();
         });
       });
   }
@@ -388,6 +389,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     const nativeZoomOptions = getNativeZoomOptions(map, detectRetina);
 
     const layer = new L.TileLayer(url, {
+      id: map.mapId,
       ...nativeZoomOptions,
       bounds,
       // When in offlinePackageMode / on offline-map.page.ts,
@@ -404,6 +406,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     const url = `${map.url}/{z}/{x}/{y}.png`;
     const nativeZoomOptions = getNativeZoomOptions(map, detectRetina);
     const layer = new L.TileLayer(url, {
+      id: map.mapId,
       ...nativeZoomOptions,
       bounds,
       opacity,
@@ -414,8 +417,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       detectRetina
     });
     this.offlineSupportMapLayerGroup.addLayer(layer);
+    this.logLayers;
   }
 
+  private logLayers(): void {
+    this.map.eachLayer(layer => {
+      if (layer instanceof L.TileLayer) {
+        const tileLayer: L.TileLayer = layer;
+        this.loggingService.debug(`logLayers: ID = ${tileLayer.options.id}, zIndex = ${tileLayer.options.zIndex}, opacity = ${tileLayer.options.opacity}`, DEBUG_TAG);
+      }
+    });
+  }
 
   private startActiveSubscriptions() {
     this.isActive
@@ -501,9 +513,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         };
 
         const layer = this.createSupportMapTileLayer(supportMaps.name, supportMaps.url, options);
+        layer.options.id = supportMaps.name;
         layer.setOpacity(supportMaps.opacity);
         layer.addTo(this.layerGroup);
       }
+      this.loggingService.debug('configureTileLayers()', DEBUG_TAG);
+      this.logLayers();
     });
   }
 
@@ -541,6 +556,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         ...this.getTileLayerDefaultOptions(useRetinaMap),
         ...(defaultLayerSettings.options || {}),
         ...(layerSettings.options || {}),
+        //TODO:        id: topoMap
       };
 
       if (defaultLayerSettings.supportsOffline && isAndroidOrIos(this.platform)) {
