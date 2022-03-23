@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, filter, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
+import cloneDeep from 'clone-deep';
+import { BehaviorSubject, combineLatest, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { getAllAttachmentsFromViewModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
 import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
+import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { DatabaseService } from '../database/database.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
@@ -136,6 +138,22 @@ export class DraftRepositoryService {
       }
     };
     return draft;
+  }
+
+  /**
+   * Create and save a draft from a registration already sent to server
+   * @param registrationViewModel the registration you like to edit
+   */
+  async saveAsDraft(registrationViewModel: RegistrationViewModel) {
+    if (!registrationViewModel.RegId) {
+      throw new Error('Missing RegId. Are you sure this registration has been saved in Regobs earlier?');
+    }
+    const draft: RegistrationDraft = {
+      uuid: registrationViewModel.ExternalReferenceId,
+      syncStatus: SyncStatus.Draft,
+      registration: cloneDeep(registrationViewModel)
+    };
+    await this.save(draft);
   }
 
   /**

@@ -315,6 +315,7 @@
     },
     "DRAFTS": "Mine kladder",
     "DRAFTS_DESCRIPTION": "Disse observasjonene er under arbeid og ikke sendt inn.",
+    "EDIT": "Endre",
     "EMAIL": {
       "BODY": "Hei! Jeg har problemer med å sende inn denne registreringen. Kan dere hjelpe meg?",
       "SUBJECT": "Registrering feilet"

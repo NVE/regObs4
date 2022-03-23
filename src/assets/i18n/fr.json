@@ -276,6 +276,7 @@
     },
     "DRAFTS": "Mes brouillons",
     "DRAFTS_DESCRIPTION": "Ces observations sont en cours et non soumises.",
+    "EDIT": "Afficher",
     "EMAIL": {
       "BODY": "Bonjour, j'ai des problèmes pour envoyer cette inscription. Pouvez-vous m'aider ?",
       "SUBJECT": "L'enregistrement/inscription a échoué"

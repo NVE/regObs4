@@ -31,6 +31,12 @@ import { take } from 'rxjs/operators';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { RegistrationTid } from 'src/app/modules/common-registration/models/registration-tid.enum';
 import { SnowProfileData } from 'src/app/modules/adaptive-cards/adaptive-snow-profile';
+import { getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
+import { firstValueFrom } from 'rxjs';
+import { RegistrationService } from 'src/app/modules/common-regobs-api';
+import { LanguageService } from 'src/app/modules/common-core/services';
+import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -52,6 +58,7 @@ export class ObservationListCardComponent implements OnChanges {
   imageDecription = '';
   competenceLevel: number;
   geoHazard: GeoHazard;
+  userCanEdit = false;
 
   imageUrls: string[] = [];
   imageHeaders: string[] = [];
@@ -65,11 +72,14 @@ export class ObservationListCardComponent implements OnChanges {
     private socialSharing: SocialSharing,
     private cdr: ChangeDetectorRef,
     private analyticService: AnalyticService,
-    private regobsAuthService: RegobsAuthService
+    private regobsAuthService: RegobsAuthService,
+    private registrationService: RegistrationService,
+    private languageService: LanguageService,
+    private draftRepository: DraftRepositoryService,
+    private router: Router
   ) {}
 
   private async load() {
-    const baseUrl = await this.getBaseUrl();
     this.geoHazard = <GeoHazard>this.obs.GeoHazardTID;
     this.header = this.obs.ObsLocation.Title;
     this.location = this.getLocation(this.obs);
@@ -77,9 +87,9 @@ export class ObservationListCardComponent implements OnChanges {
     this.icon = this.getGeoHazardCircleIcon(this.geoHazard);
     this.summaries = this.obs.Summaries;
     this.competenceLevel = getStarCount(this.obs.Observer.CompetenceLevelName);
-    this.updateImages(baseUrl);
+    this.updateImages();
     this.loaded = true;
-
+    this.userCanEdit = await this.checkIfUserCanEdit();
     this.cdr.markForCheck();
   }
 
@@ -156,7 +166,7 @@ export class ObservationListCardComponent implements OnChanges {
     }
   }
 
-  updateImages(baseUrl: string): void {
+  updateImages(): void {
     const snowProfileSummary = this.obs.Summaries.find(
       (s) => s.RegistrationTID === RegistrationTid.SnowProfile2
     );
@@ -265,5 +275,20 @@ export class ObservationListCardComponent implements OnChanges {
       this.obs.RegId
     );
     this.socialSharing.share(null, null, null, url);
+  }
+
+  private async checkIfUserCanEdit(): Promise<boolean> {
+    const observer = await firstValueFrom(this.regobsAuthService.myPageData$);
+    const editMode = await firstValueFrom(getObserverEditCheckObservable(this.obs, observer));
+    return editMode === 'EDIT_OWN_REGISTRATION' || editMode === 'EDIT_AS_MODERATOR';
+  }
+
+  async edit() {
+    const langKey = await firstValueFrom(this.languageService.language$);
+    const registrationFromServer = await firstValueFrom(
+      this.registrationService.RegistrationGet({ regId: this.obs.RegId, langKey: langKey })
+    );
+    await this.draftRepository.saveAsDraft(registrationFromServer);
+    this.router.navigate(['registration', 'edit', registrationFromServer.ExternalReferenceId]);
   }
 }
