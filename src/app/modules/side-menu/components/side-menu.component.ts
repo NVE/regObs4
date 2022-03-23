@@ -4,8 +4,7 @@ import { UserSettingService } from '../../../core/services/user-setting/user-set
 import { UserSetting } from '../../../core/models/user-settings.model';
 import { settings } from '../../../../settings';
 import { Subscription } from 'rxjs';
-import { ModalController, Platform, NavController } from '@ionic/angular';
-import { LegalTermsModalPage } from '../../../pages/modal-pages/legal-terms-modal/legal-terms-modal.page';
+import { Platform, NavController } from '@ionic/angular';
 import { TopoMap } from '../../../core/models/topo-map.enum';
 import {
   EmailComposer,
@@ -16,6 +15,7 @@ import { AppVersionService } from '../../../core/services/app-version/app-versio
 import { LangKey } from 'src/app/modules/common-core/models';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { DataMarshallService } from 'src/app/core/services/data-marshall/data-marshall.service';
+import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 
 @Component({
   selector: 'app-side-menu',
@@ -45,14 +45,14 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   constructor(
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
-    private modalController: ModalController,
     private emailComposer: EmailComposer,
     private translateService: TranslateService,
     private appVersionService: AppVersionService,
     private platform: Platform,
     private navController: NavController,
     private ngZone: NgZone,
-    private dataMarshallService: DataMarshallService
+    private dataMarshallService: DataMarshallService,
+    private externalLinkService: ExternalLinkService
   ) {}
 
   async ngOnInit() {
@@ -90,11 +90,15 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     this.observationService.forceUpdateObservationsForCurrentGeoHazard();
   }
 
-  async showLegalTerms() {
-    const modal = await this.modalController.create({
-      component: LegalTermsModalPage
-    });
-    modal.present();
+  async showLegalTerms(): Promise<void> {
+    let url: string;
+    let language = this.userSettings.language;
+    if (language == LangKey.nb || language == LangKey.nn) {
+      url = this.settings.legalUrl.nb;
+    } else {
+      url = this.settings.legalUrl.en;
+    }
+    this.externalLinkService.openExternalLink(url);
   }
 
   openStartWizard() {

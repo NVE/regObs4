@@ -99,4 +99,8 @@ export interface ISettings {
   popupDisclamerRefreshTimeMs: number;
   googleAnalytics: any;
   language: any;
+  legalUrl: {
+    nb: string,
+    en: string,
+  }
 }
