@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { IonSlides, NavController } from '@ionic/angular';
 import { GeoHazard } from '../../core/models/geo-hazard.enum';
 import { LangKey } from '../../core/models/langKey';
 import { animations } from './start-wizard.animations';
-import { Subject, timer, interval } from 'rxjs';
+import { Subject, timer, interval, Subscription } from 'rxjs';
 import { takeUntil, skipWhile, switchMap, take } from 'rxjs/operators';
 import { settings } from '../../../settings';
+import { UserSetting } from 'src/app/core/models/user-settings.model';
 
 @Component({
   selector: 'app-start-wizard',
@@ -23,6 +24,8 @@ export class StartWizardPage implements OnInit, OnDestroy {
   showLegalIcon = false;
   visibleStarNumber = -1;
   language: LangKey;
+  legalUrl: string;
+  userSettings: UserSetting;
   supportedLanguages: {
     lang: string;
     name: string;
@@ -35,11 +38,24 @@ export class StartWizardPage implements OnInit, OnDestroy {
   private ngDestroy$ = new Subject<void>();
   private activeIndex = new Subject<number>();
   private isIncreasing = true;
+  private userSettingSubscription: Subscription;
 
   constructor(
     private userSettingService: UserSettingService,
-    private navController: NavController
+    private navController: NavController,
+    private ngZone: NgZone,
   ) {}
+
+  async ngOnInit() {
+    this.userSettingSubscription = this.userSettingService.userSetting$.subscribe(
+      (val) => {
+        this.ngZone.run(() => {
+          this.userSettings = val;
+          this.legalUrl = this.userSettingService.legalUrl;
+        });
+      }
+    );
+  }
 
   ionViewWillEnter() {
     this.state = 'x';
@@ -49,8 +65,6 @@ export class StartWizardPage implements OnInit, OnDestroy {
       this.setPageIndex(0);
     });
   }
-
-  ngOnInit() {}
 
   async saveLanguage() {
     const userSettings = await this.userSettingService.userSetting$
@@ -76,6 +90,9 @@ export class StartWizardPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.userSettingSubscription) {
+      this.userSettingSubscription.unsubscribe();
+    }
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
   }

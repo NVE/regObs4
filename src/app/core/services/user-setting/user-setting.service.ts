@@ -83,6 +83,15 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     return this.userSetting$.pipe(map((us) => this.getSupportTilesOptions(us, false)));
   }
 
+  get legalUrl() {
+    let language = this.userSettingInMemory.value.language;
+    if (language == LangKey.nb || language == LangKey.nn) {
+      return settings.legalUrl.nb;
+    } else {
+      return settings.legalUrl.en;
+    }
+  }
+
   constructor(
     private translate: TranslateService,
     private loggingService: LoggingService

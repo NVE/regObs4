@@ -100,7 +100,8 @@
     "LINE_1": "Use the warnings, data and maps at your own risk. Errors and omissions may be present.",
     "LINE_2": "A warning is a planning tool and may differ from the actual situation. Always make your own evaluation. Conditions may be complex and differ from the warning.",
     "LINE_3": "Data on Regobs is produced by the users and is available «as is». It may contain errors and omissions. NVE makes no warranties for errors, omissions and assessments produced by the users.",
-    "LINE_4": "When publishing images with observations in Regobs, you also accept reuse of these images (licensed under <a href='https://data.norge.no/nlod/no/'>NLOD</a>).",
+    "LINE_4": "When publishing images with observations in Regobs, you also accept reuse of these images (licensed under <a href='https://data.norge.no/nlod/en/'>NLOD</a>).",
+    "LINE_5": "Read more in our <a href=\"{{legalUrl}}\" target=\"_blank\">Terms of Service</a>.",
     "OK": "Ok, I accept",
     "TERMS": "Data on Varsom Regobs is produced by the users of Regobs and is available as it is. The information may contain errors and omissions. NVE makes no guarantee for the quality or accuracy of the information which is found on Regobs and does not take responsibility for data which is incorrect or misleading. The number of stars besides a username (1-5) indicates the level of competence of the person providing observations. Without stars, competence is unknown or low."
   },
@@ -661,7 +662,7 @@
     "LANGUAGE": "Language",
     "NORWAY_ONLY": "In Norway only",
     "NUMBER_OF_TILES_IN_CACHE": "Offline tiles cache size",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "You can read about our use of data in our privacy policy.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "You can read about our use of data in our <a href=\"{{legalUrl}}\" target=\"_blank\">privacy policy</a>.",
     "RESET": "Reset app",
     "RESETTING": "App is resetting. Please wait...",
     "SHOW_ADVANCED": "Show advanced settings",

@@ -586,7 +586,7 @@
     "LANGUAGE": "Sprache",
     "NORWAY_ONLY": "Nur in Norwegen",
     "NUMBER_OF_TILES_IN_CACHE": "Speichergröße für Offlinkacheln",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Informationen zur Verwendung von Daten finden Sie in unseren Datenschutzbestimmungen.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Informationen zur Verwendung von Daten finden Sie in unseren <a href=\"{{legalUrl}}\" target=\"_blank\">Datenschutzbestimmungen</a>.",
     "RESET": "App zurücksetzen",
     "RESETTING": "App wird zurückgesetzt. Bitte warten...",
     "SHOW_ADVANCED": "Erweiterte Einstellungen zeigen",

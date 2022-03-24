@@ -623,7 +623,7 @@
     "LANGUAGE": "Langue",
     "NORWAY_ONLY": "En Norvège uniquement",
     "NUMBER_OF_TILES_IN_CACHE": "Taille du cache des tuiles hors connexion",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Vous pouvez consulter l'utilisation des données dans notre politique de confidentialité.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Vous pouvez consulter l'utilisation des données dans <a href=\"{{legalUrl}}\" target=\"_blank\">notre politique de confidentialité</a>.",
     "RESET": "Réinitialiser l'application",
     "RESETTING": "Réinitialisation de l'application. Veuillez patienter...",
     "SHOW_ADVANCED": "Paramètres avancés",
