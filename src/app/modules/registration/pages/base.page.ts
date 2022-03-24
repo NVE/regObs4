@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { take, takeUntil, map, switchMap, tap, skip } from 'rxjs/operators';
 import { NgDestoryBase } from '../../../core/helpers/observable-helper';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { createEmptyRegistration } from '../../common-registration/registration.helpers';
 
 /**
  * Base page for a registration form, eg. danger sign
@@ -40,7 +41,7 @@ export abstract class BasePage extends NgDestoryBase {
         // Seems like this class is also used by the set datetime page,
         // where we don't have a registrationTid
         if (this.registrationTid != null) {
-          return this.basePageService.createDefaultProps(draft, this.registrationTid);
+          return createEmptyRegistration(draft, this.registrationTid);
         }
         return draft;
       }),
@@ -61,26 +62,34 @@ export abstract class BasePage extends NgDestoryBase {
       });
   }
 
-  onInit?(): void | Promise<any>;
+  /**
+   * Implement this to initialize the registration
+   */
+  onInit?(): void | Promise<unknown>;
 
-  onBeforeLeave?(): void | Promise<any>;
+  /**
+   * Implement this to cleanup when the page closes
+   */
+  onBeforeLeave?(): void | Promise<unknown>;
 
-  onReset?(): void;
-
+  /**
+   * Implement this to do form validation
+   */
   isValid?(): boolean | Promise<boolean>;
 
   // NOTE: Remember to add canDeactivate: [CanDeactivateRouteGuard] in page module
-  async canLeave() {
+  async canLeave(): Promise<boolean> {
     // Check if implementation page has implemented custom isValid logic
     const valid = await Promise.resolve(this.isValid ? this.isValid() : true);
     // Only return alert if page is not empty and invalid
     const isEmpty = await this.isEmpty();
     if (!isEmpty && !valid) {
-      return this.basePageService.confirmLeave(
-        this.draft,
-        this.registrationTid,
-        () => (this.onReset ? this.onReset() : null)
-      );
+      const pleaseLeave = await this.basePageService.confirmLeave();
+      if (pleaseLeave) {
+        await this.delete();
+      } else {
+        return false; //user wants to stay
+      }
     }
     return true;
   }
@@ -92,6 +101,9 @@ export abstract class BasePage extends NgDestoryBase {
     return of({});
   }
 
+  /**
+   * Save automatically when you leave the page. Will also run onBeforeLeave() hook if you have any
+   */
   async ionViewWillLeave() {
     if (this.onBeforeLeave) {
       await Promise.resolve(this.onBeforeLeave());
@@ -111,21 +123,21 @@ export abstract class BasePage extends NgDestoryBase {
     return this.basePageService.draftRepository.isDraftEmptyForRegistrationType(this.draft, registrationType);
   }
 
-  reset() {
-    return this.basePageService.confirmReset(
-      this.draft,
-      this.registrationTid,
-      () => (this.onReset ? this.onReset() : null)
-    );
+  /**
+   * Delete the registration if the user confirms
+   */
+  async reset() {
+    const pleaseReset = await this.basePageService.confirmDelete();
+    if (pleaseReset) {
+      await this.delete();
+    }
   }
 
-  getResolvedUrl(): string {
-    return (
-      '/' +
-      this.activatedRoute.snapshot.pathFromRoot
-        .map((v) => v.url.map((segment) => segment.toString()).join('/'))
-        .filter((path) => !!path)
-        .join('/')
-    );
+  /**
+   * Delete the registration behind the form and save the draft.
+   * You may override this if your form contains other data.
+   */
+  protected async delete() {
+    this.draft = await this.basePageService.delete(this.draft, [this.registrationTid]);
   }
 }
