@@ -93,6 +93,8 @@
     "LINE_1": "Använd varningar, observationer och kartor på egen risk. Det kan finnas fel och information kan saknas.",
     "LINE_2": "En prognos är ett planeringsverktyg och kan skilja sig från den faktiska situationen. Gör alltid din egen utvärdering. Förhållandena kan vara komplexa och skiljer sig från prognosen.",
     "LINE_3": "Data på Regobs har producerats av användarna och är tillgängliga «som de är». Datan kan innehålla fel och utelämnanden. NVE lämnar inga garanterar för fel och utelämnanden i uppgifterna.",
+    "LINE_4": "När du publicerar bilder på observationer i Regobs accepterar du att bilderna kan återanvändas (licensierat under <a href='https://data.norge.no/nlod/no/'>Norsk lisens for offentlige data</a>).",
+    "LINE_5": "Läs mer i våra <a href=\"{{legalUrl}}\" target=\"_blank\">användarvillkor</a>.",
     "OK": "Okej, jag accepterar",
     "TERMS": "Data på Regobs har producerats av användarna och är tillgängliga \"som de är\". Datan kan innehålla fel och utelämnanden. NVE garanterar inte informationens aktualitet och tar inget ansvar för att data kan ge felaktig eller vilseledande information. Antalet stjärnor (1-5) beskriver kompetensnivån för leverantören av observationer. Utan stjärnor är kompetensen okänd eller låg."
   },
@@ -624,7 +626,7 @@
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Endast i Norge",
     "NUMBER_OF_TILES_IN_CACHE": "Maximalt antal kartblad offline",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan läsa om vår användning av data i vår sekretesspolicy.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan läsa om vår användning av data i vår <a href=\"{{legalUrl}}\" target=\"_blank\">sekretesspolicy</a>.",
     "RESET": "Återställ app",
     "RESETTING": "App återställs. Vänta ...",
     "SHOW_ADVANCED": "Visa avancerade inställningar",

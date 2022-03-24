@@ -91,13 +91,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   async showLegalTerms(): Promise<void> {
-    let url: string;
-    let language = this.userSettings.language;
-    if (language == LangKey.nb || language == LangKey.nn) {
-      url = this.settings.legalUrl.nb;
-    } else {
-      url = this.settings.legalUrl.en;
-    }
+    let url = this.userSettingService.legalUrl
     this.externalLinkService.openExternalLink(url);
   }
 

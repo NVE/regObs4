@@ -50,12 +50,7 @@ export class StartWizardPage implements OnInit, OnDestroy {
       (val) => {
         this.ngZone.run(() => {
           this.userSettings = val;
-          let language = this.userSettings.language;
-          if (language == LangKey.nb || language == LangKey.nn) {
-            this.legalUrl = settings.legalUrl.nb;
-          } else {
-            this.legalUrl = settings.legalUrl.en;
-          }
+          this.legalUrl = this.userSettingService.legalUrl;
         });
       }
     );
