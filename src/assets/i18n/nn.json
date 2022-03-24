@@ -649,7 +649,7 @@
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Berre i Noreg",
     "NUMBER_OF_TILES_IN_CACHE": "Maksimalt tal på offline kartblad. ",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om bruken av data i personvernerklæringa.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om bruken av data i <a href=\"{{legalUrl}}\" target=\"_blank\">personvernerklæringa</a>.",
     "RESET": "Reset app",
     "RESETTING": "Appen resetjast. Vær vennleg å vent...",
     "SHOW_ADVANCED": "Vis avanserte innstillingar",

@@ -101,6 +101,7 @@
     "LINE_2": "Husk at varselet er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger. Lokale forhold der du er, kan være mer komplekse og avvike fra det som er varslet.",
     "LINE_3": "Data på Regobs produseres av brukerne av Regobs og foreligger «som den er». Den kan inneholde feil og utelatelser. NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.",
     "LINE_4": "Når du publiserer bilder på observasjoner i Regobs aksepterer du at bildene kan gjenbrukes (lisensiert under <a href='https://data.norge.no/nlod/no/'> Norsk lisens for offentlige data</a>).",
+    "LINE_5": "Les mer i våre <a href=\"{{legalUrl}}\" target=\"_blank\">brukervilkår</a>.",
     "OK": "Ok, jeg aksepterer",
     "TERMS": "Data på Varsom Regobs produseres av brukerne av Regobs og foreligger \"som den er\". Den kan inneholde feil og utelatelser. NVE gir ingen garantier for informasjonens aktualitet og tar ikke ansvar for at data kan gi feil eller villedende informasjon. Antall stjerner (1-5) beskriver kompetansenivået til den som leverer observasjoner. Uten stjerner er kompetansen ukjent eller lav."
   },
@@ -661,7 +662,7 @@
     "LANGUAGE": "Språk",
     "NORWAY_ONLY": "Kun i Norge",
     "NUMBER_OF_TILES_IN_CACHE": "Maksimalt antall offline kartblad",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om vår bruk av data i vår personvernerklæring.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "Du kan lese om vår bruk av data i vår <a href=\"{{legalUrl}}\" target=\"_blank\">personvernerklæring</a>.",
     "RESET": "Tilbakestill app",
     "RESETTING": "App tilbakestilles. Vennligst vent...",
     "SHOW_ADVANCED": "Vis avanserte innstillinger",

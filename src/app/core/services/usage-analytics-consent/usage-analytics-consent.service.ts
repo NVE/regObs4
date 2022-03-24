@@ -39,7 +39,7 @@ export class UsageAnalyticsConsentService {
       READ_MORE_TEXT,
       OK,
       NO_THANKS
-    ]));
+    ], {legalUrl: this.userSettingService.legalUrl}));
 
     const cssClass = this.platform.is('ios') ? ['normal-weight', 'full-width'] : [];
 

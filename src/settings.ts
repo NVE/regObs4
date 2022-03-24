@@ -337,5 +337,9 @@ export const settings: ISettings = {
       { lang: 'sl', name: 'Slovenski' },
       { lang: 'fr', name: 'Français' },
     ]
+  },
+  legalUrl: {
+    en: "https://www.varsom.no/en/regobs-terms-of-service/",
+    nb: "https://varsom.no/regobs/regobsbrukervilkar/",
   }
 };
