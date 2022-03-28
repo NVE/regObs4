@@ -37,6 +37,9 @@ import { RegistrationService } from 'src/app/modules/common-regobs-api';
 import { LanguageService } from 'src/app/modules/common-core/services';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { Router } from '@angular/router';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'ObservationListCardComponent';
 
 @Component({
   selector: 'app-observation-list-card',
@@ -76,7 +79,8 @@ export class ObservationListCardComponent implements OnChanges {
     private registrationService: RegistrationService,
     private languageService: LanguageService,
     private draftRepository: DraftRepositoryService,
-    private router: Router
+    private router: Router,
+    private logger: LoggingService
   ) {}
 
   private async load() {
@@ -284,11 +288,19 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   async edit() {
-    const langKey = await firstValueFrom(this.languageService.language$);
-    const registrationFromServer = await firstValueFrom(
-      this.registrationService.RegistrationGet({ regId: this.obs.RegId, langKey: langKey })
-    );
-    await this.draftRepository.saveAsDraft(registrationFromServer);
-    this.router.navigate(['registration', 'edit', registrationFromServer.ExternalReferenceId]);
+    const uuid = this.obs.ExternalReferenceId;
+    const draft = await this.draftRepository.load(uuid);
+    if (!draft) {
+      //we don't have a local working copy of this regstration yet, so fetch it and save as draft
+      this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+      const langKey = await firstValueFrom(this.languageService.language$);
+      const registrationFromServer = await firstValueFrom(
+        this.registrationService.RegistrationGet({ regId: this.obs.RegId, langKey: langKey })
+      );
+      await this.draftRepository.saveAsDraft(registrationFromServer);
+    } else {
+      this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+    }
+    this.router.navigate(['registration', 'edit', this.obs.ExternalReferenceId]);
   }
 }
