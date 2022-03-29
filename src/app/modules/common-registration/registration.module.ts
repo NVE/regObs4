@@ -1,6 +1,5 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CoreModule } from 'src/app/modules/common-core/core.module';
-import { RegobsApiModuleWithConfig } from 'src/app/modules/common-regobs-api';
 import { KdvElementsService, HelptextService as HelpTextApiService } from 'src/app/modules/common-regobs-api/services';
 import { OfflineDbServiceOptions } from './services/offline-db/offline-db-service.options';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -50,7 +49,7 @@ export const translateModuleForRoot = TranslateModule.forRoot({
 });
 
 @NgModule({
-  imports: [CoreModule, RegobsApiModuleWithConfig, translateModuleForRoot],
+  imports: [CoreModule, translateModuleForRoot],
   declarations: [],
   exports: [RegobsRegistrationPipesModule]
 })

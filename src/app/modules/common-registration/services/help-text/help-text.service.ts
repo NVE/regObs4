@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HelptextDto } from 'src/app/modules/common-regobs-api/models';
 import { HelptextService as HelpTextApiService } from 'src/app/modules/common-regobs-api/services';
 import { AppMode, LangKey, GeoHazard } from 'src/app/modules/common-core/models';
-
-import { LanguageService, AppModeService } from 'src/app/modules/common-core/services';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -11,6 +9,7 @@ import { OfflineDbService } from '../offline-db/offline-db.service';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
 const CACHE_AGE = 43200; // 12 hours
 const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
@@ -21,11 +20,10 @@ const HELP_TEXTS_ASSETS_FOLDER = '/assets/json';
 export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
   constructor(
     protected offlineDbService: OfflineDbService,
-    protected languageService: LanguageService,
-    protected appModeService: AppModeService,
     protected logger: LoggingService,
     private helpTextApiService: HelpTextApiService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    protected userSettingService: UserSettingService
   ) {
     super(
       {
@@ -33,9 +31,8 @@ export class HelpTextService extends ApiSyncOfflineBaseService<HelptextDto[]> {
         validSeconds: CACHE_AGE
       },
       offlineDbService,
-      languageService,
-      appModeService,
-      logger
+      logger,
+      userSettingService
     );
   }
 

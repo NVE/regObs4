@@ -1,7 +1,6 @@
 import { Injectable, Inject, InjectionToken } from '@angular/core';
 import { Observable, combineLatest, from, of, BehaviorSubject } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
-import { LanguageService, AppModeService } from 'src/app/modules/common-core/services';
 import { map, switchMap, shareReplay, catchError, concatMap, take } from 'rxjs/operators';
 import { OfflineSyncMeta } from '../../models/offline-sync-meta.interface';
 import moment from 'moment';
@@ -10,6 +9,7 @@ import { RxKdvCollection } from '../../db/RxDB';
 import { RxDocument } from 'rxdb';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
 export const API_SYNCE_OFFLINE_BASE_SERVICE_OPTIONS_CONFIG = new InjectionToken<ApiSyncOfflineBaseServiceOptions>(
   'ApiSyncOfflineBaseServiceOptions.config'
@@ -32,9 +32,8 @@ export abstract class ApiSyncOfflineBaseService<T> {
   constructor(
     @Inject(API_SYNCE_OFFLINE_BASE_SERVICE_OPTIONS_CONFIG) protected options: ApiSyncOfflineBaseServiceOptions,
     protected offlineDbService: OfflineDbService,
-    protected languageService: LanguageService,
-    protected appModeService: AppModeService,
-    protected logger: LoggingService
+    protected logger: LoggingService,
+    protected userSettingService: UserSettingService
   ) {
     this.data$ = this.getDataObservable().pipe(shareReplay(1));
   }
@@ -47,7 +46,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
   /** Force update offline data */
   public update(): void {
     this.isUpdatingSubject.next(true);
-    combineLatest([this.languageService.language$, this.appModeService.appMode$])
+    combineLatest([this.userSettingService.language$, this.userSettingService.appMode$])
       .pipe(
         switchMap(([langKey, appMode]) => this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey)),
         take(1)
@@ -79,7 +78,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
    * Get data observable
    */
   private getDataObservable(): Observable<T> {
-    return combineLatest([this.languageService.language$, this.appModeService.appMode$]).pipe(
+    return combineLatest([this.userSettingService.language$, this.userSettingService.appMode$]).pipe(
       switchMap(([langKey, appMode]) =>
         this.getOfflineDataAndReturnIfDataIsUpToDate(appMode, langKey).pipe(
           take(1),
@@ -99,6 +98,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
   private getOfflineDataAndReturnIfDataIsUpToDate(appMode: AppMode, langKey: LangKey): Observable<T> {
     return this.getOfflineData(appMode, langKey).pipe(
       map((offlineMeta) => {
+        console.log("langkey is", langKey);
         // Check if offline data is newer than 24 hours
         if (this.isValid(offlineMeta)) {
           return offlineMeta.data;
