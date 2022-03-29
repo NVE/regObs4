@@ -9,6 +9,7 @@ import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avala
 import moment from 'moment';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';
 import { AvalancheObsEditModel, IncidentEditModel } from 'src/app/modules/common-regobs-api';
+import { createEmptyRegistration } from 'src/app/modules/common-registration/registration.helpers';
 
 
 /**
@@ -95,6 +96,12 @@ export class AvalancheObsPage extends BasePage {
     // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
     // Workaround is to set minutes to 59.
     return moment().minutes(59).toISOString(true);
+  }
+
+  async reset() {
+    await super.reset();
+    // Also create new empty incident form
+    this.draft = createEmptyRegistration(this.draft, RegistrationTid.Incident);
   }
 
   protected async delete() {
