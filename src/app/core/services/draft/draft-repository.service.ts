@@ -51,7 +51,7 @@ export class DraftRepositoryService {
   /**
    * Returns an observable with draft changes for a single draft.
    * Does not emit until the specified draft is available in the database.
-   * If the draft is deleted after a subscription has been made, undefined is returned and the observable is completed.
+   * If the draft is deleted after a subscription has been made, the observable completes.
    */
   getDraft$(uuid: string): Observable<RegistrationDraft | undefined> {
     const gotDraft = new Subject<boolean>();
@@ -63,7 +63,7 @@ export class DraftRepositoryService {
         }
       }),
       skipUntil(gotDraft),
-      takeWhile(draft => draft != null, true)
+      takeWhile(draft => draft != null)
     );
   }
 

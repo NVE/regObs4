@@ -266,6 +266,7 @@ describe('DraftRepositoryService', () => {
     };
 
     let i = 0;
+    let completed = false;
     const sub = service.getDraft$('test').subscribe({
       next: (d) => {
         if (i < 2) {
@@ -274,6 +275,9 @@ describe('DraftRepositoryService', () => {
           expect(d).toBeUndefined();
         }
         i += 1;
+      },
+      complete: () => {
+        completed = true;
       }
     });
 
@@ -289,13 +293,19 @@ describe('DraftRepositoryService', () => {
 
     tick(1);
 
+    // The observable should have emitted two times, two versions of the draft
+    expect(i).toBe(2);
+
     draft = null;
     await service.delete('test');
 
     flush();
 
-    // The observable should have emitted three times total, two drafts and undefined after it was deleted
-    expect(i).toBe(3);
+    // The observable should still only have emitted two times, two versions of the draft
+    expect(i).toBe(2);
+
+    // It should also have completed the observable when the draft was deleted
+    expect(completed).toBeTrue();
 
     // As we deleted the draft, the subscription should be closed
     expect(sub.closed).toBe(true);
