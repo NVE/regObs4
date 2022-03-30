@@ -269,11 +269,7 @@ describe('DraftRepositoryService', () => {
     let completed = false;
     const sub = service.getDraft$('test').subscribe({
       next: (d) => {
-        if (i < 2) {
-          expect(d).toEqual({ ...draft, lastSavedTime: jasmine.any(Number) });
-        } else {
-          expect(d).toBeUndefined();
-        }
+        expect(d).toEqual({ ...draft, lastSavedTime: jasmine.any(Number) });
         i += 1;
       },
       complete: () => {
