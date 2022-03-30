@@ -339,7 +339,7 @@ export const settings: ISettings = {
     ]
   },
   legalUrl: {
-    en: "https://www.varsom.no/en/regobs-terms-of-service/",
-    nb: "https://varsom.no/regobs/regobsbrukervilkar/",
+    en: 'https://www.varsom.no/en/regobs-terms-of-service/',
+    nb: 'https://varsom.no/regobs/regobsbrukervilkar/',
   }
 };

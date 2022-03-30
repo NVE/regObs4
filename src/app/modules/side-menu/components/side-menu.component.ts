@@ -91,7 +91,7 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   async showLegalTerms(): Promise<void> {
-    let url = this.userSettingService.legalUrl
+    const url = this.userSettingService.legalUrl;
     this.externalLinkService.openExternalLink(url);
   }
 

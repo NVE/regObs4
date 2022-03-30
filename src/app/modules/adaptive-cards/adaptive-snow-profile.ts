@@ -1,4 +1,4 @@
-import { AdaptiveElement } from "../common-regobs-api/models/adaptive-element";
+import { AdaptiveElement } from '../common-regobs-api/models/adaptive-element';
 
 /**
  * We need a custom component for SnowProfile plots,

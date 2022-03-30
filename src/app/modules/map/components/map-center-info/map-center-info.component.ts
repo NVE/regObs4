@@ -111,15 +111,24 @@ export class MapCenterInfoComponent extends NgDestoryBase {
         this.lastUserPos = latLng;
         const locationInfo = await firstValueFrom(this.getLocationInfo$(latLng));
         if (locationInfo && locationInfo.elevation) {
-          this._userAltitude = locationInfo.elevation
-          this.cdr.markForCheck();        
-          this.loggingService.debug(`Device altitude ${this.userPos.coords.altitude} adjusted to ${locationInfo.elevation} in ${Date.now() - start}ms`, DEBUG_TAG);
+          this._userAltitude = locationInfo.elevation;
+          this.cdr.markForCheck();
+          this.loggingService.debug(
+            `Device altitude ${this.userPos.coords.altitude} adjusted to ${locationInfo.elevation} ` +
+            `in ${Date.now() - start}ms`, DEBUG_TAG
+          );
         } else {
           this._userAltitude = null;
-          this.loggingService.debug(`Tried to adjust user position altitude, but got no response from server, keeping altitude from device: ${this.userPos.coords.altitude}, took ${Date.now() - start}ms`, DEBUG_TAG);
-        }  
+          this.loggingService.debug(
+            'Tried to adjust user position altitude, but got no response from server, ' +
+            `keeping altitude from device: ${this.userPos.coords.altitude}, took ${Date.now() - start}ms`, DEBUG_TAG
+          );
+        }
       } else {
-        this.loggingService.debug(`Distance to last user position is ${this.lastUserPos.distanceTo(latLng)}m. Skips adjustment of altitude when distance is < 5m`, DEBUG_TAG);
+        this.loggingService.debug(
+          `Distance to last user position is ${this.lastUserPos.distanceTo(latLng)}m. ` +
+          'Skips adjustment of altitude when distance is < 5m', DEBUG_TAG
+        );
       }
     }
   }

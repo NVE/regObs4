@@ -62,7 +62,7 @@ export class StratProfileLayerHistoryModalPage implements OnInit {
           Id: RegistrationTid.SnowProfile2
         }
       ]
-    }
+    };
   }
 
   async selectLayer(item: { id: number; date: string; layers: StratProfileLayerViewModel[] }) {

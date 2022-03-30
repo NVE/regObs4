@@ -1,6 +1,4 @@
 import { BasePageService } from '../../base-page-service';
-import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
-
 import { IceThicknessPage } from './ice-thickness.page';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 
@@ -25,21 +23,21 @@ describe('IceThicknessPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it("empty icethickness is valid", () => {
+  it('empty icethickness is valid', () => {
     expect(component.isValid()).toBeTrue();
   });
 
-  it("isWaterBefore without waterheightbefore should be invalid", () => {
+  it('isWaterBefore without waterheightbefore should be invalid', () => {
     component.isWaterBefore = true;
     expect(component.isValid()).toBeFalse();
   });
 
-  it("isWaterAfter without waterheightafter should be invalid", () => {
+  it('isWaterAfter without waterheightafter should be invalid', () => {
     component.isWaterAfter = true;
     expect(component.isValid()).toBeFalse();
   });
 
-  it("validity check shouldn't modify values", () => {
+  it('validity check shouldn\'t modify values', () => {
     component.isWaterBefore = true;
     component.isWaterAfter = true;
     component.waterHeightBefore = 6;
@@ -49,11 +47,11 @@ describe('IceThicknessPage', () => {
     expect(component.waterHeightAfter).toEqual(10);
   });
 
-  it("fills out registration correctly", () => {
-    let iceThickness = component.draft.registration.IceThickness;
-    component.isWaterBefore = undefined
+  it('fills out registration correctly', () => {
+    const iceThickness = component.draft.registration.IceThickness;
+    component.isWaterBefore = undefined;
     component.waterHeightBefore = 10;
-    component.isWaterAfter = undefined
+    component.isWaterAfter = undefined;
     component.waterHeightAfter = 12;
     component.waterDepthAfter = 15;
     expect(component.isValid()).toBeTrue();

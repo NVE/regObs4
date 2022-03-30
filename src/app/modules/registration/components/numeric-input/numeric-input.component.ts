@@ -24,7 +24,7 @@ export class NumericInputComponent {
   @Input() placeholder: string;
   @Input() convertRatio: number;
   @Input() readonly = false;
-  @Input() color: string = 'medium';
+  @Input() color = 'medium';
 
   private isOpen = false;
 

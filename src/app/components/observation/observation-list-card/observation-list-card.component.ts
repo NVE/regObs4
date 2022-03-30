@@ -157,14 +157,14 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   updateImages(baseUrl: string): void {
-    let snowProfileSummary = this.obs.Summaries.find(
+    const snowProfileSummary = this.obs.Summaries.find(
       (s) => s.RegistrationTID === RegistrationTid.SnowProfile2
     );
-    let snowProfilePlot = snowProfileSummary?.AdaptiveElements.find(
+    const snowProfilePlot = snowProfileSummary?.AdaptiveElements.find(
       (e: AdaptiveElement) => e.type == 'SnowProfilePlot'
     ) as SnowProfileData;
     if (snowProfilePlot) {
-      let profilePlot: AttachmentViewModel & {Href: string} = {
+      const profilePlot: AttachmentViewModel & {Href: string} = {
         GeoHazardTID: this.obs.GeoHazardTID,
         GeoHazardName: this.obs.GeoHazardName,
         RegistrationTID: snowProfileSummary?.RegistrationTID,
@@ -177,7 +177,7 @@ export class ObservationListCardComponent implements OnChanges {
         Url: snowProfilePlot?.svgUrl,
         Comment: this.obs?.SnowProfile2?.Comment,
         Href: snowProfilePlot?.interactiveUrl,
-      }
+      };
       this.obs.Attachments.unshift(profilePlot);
     }
 

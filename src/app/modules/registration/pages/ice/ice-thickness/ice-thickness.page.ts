@@ -29,7 +29,7 @@ export class IceThicknessPage extends BasePage {
   }
 
   get iceThickness(): IceThicknessEditModel {
-    return this.draft.registration.IceThickness
+    return this.draft.registration.IceThickness;
   }
 
   onInit() {
