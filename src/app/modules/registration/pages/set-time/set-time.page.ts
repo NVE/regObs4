@@ -4,7 +4,6 @@ import { NavController } from '@ionic/angular';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 @Component({
   selector: 'app-set-time',
@@ -40,6 +39,10 @@ export class SetTimePage extends BasePage {
     // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
     // Workaround is to set minutes to 59.
     return moment().minutes(59).toISOString(true);
+  }
+
+  async isEmpty(): Promise<boolean> {
+    return false;
   }
 
   confirm() {

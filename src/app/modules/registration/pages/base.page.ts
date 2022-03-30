@@ -111,8 +111,11 @@ export abstract class BasePage extends NgDestoryBase {
     await this.save();
   }
 
-  save() {
-    return this.basePageService.draftRepository.save({ ...this.draft, syncStatus: SyncStatus.Draft });
+  async save() {
+    if (await this.isEmpty()) {
+      await this.delete();
+    }
+    await this.basePageService.draftRepository.save({ ...this.draft, syncStatus: SyncStatus.Draft });
   }
 
   getSaveFunc() {
