@@ -3,11 +3,11 @@ import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models'
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from './draft-repository.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
-import { AppModeService } from 'src/app/modules/common-core/services';
-import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
+import { firstValueFrom, Observable, ReplaySubject, take } from 'rxjs';
 import { DatabaseService } from '../database/database.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationDraft } from './draft-model';
+import { UserSettingService } from '../user-setting/user-setting.service';
 
 //key-value-store used to mock the database
 class TestDatabaseService {
@@ -46,21 +46,26 @@ describe('DraftRepositoryService', () => {
 
   let service: DraftRepositoryService;
   let database: TestDatabaseService;
-  let appModeService: AppModeService;
   let newAttachmentService: NewAttachmentService;
+  let userSettingService: UserSettingService;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({});
 
-    appModeService = new AppModeService({ appMode: AppMode.Test, language: LangKey.nb });
     database = new TestDatabaseService();
     newAttachmentService = jasmine.createSpyObj('NewAttachmentService', ['removeAttachments']);
+    userSettingService = new UserSettingService(null, null);
     service = new DraftRepositoryService(
-      appModeService,
       new TestLoggingService(),
       newAttachmentService,
-      database as unknown as DatabaseService
+      database as unknown as DatabaseService,
+      userSettingService
     );
+
+    userSettingService.saveUserSettings({
+      ...await firstValueFrom(userSettingService.userSetting$),
+      appMode: AppMode.Test,
+    })
   });
 
   it('create() should return an empty draft', async () => {
@@ -223,7 +228,10 @@ describe('DraftRepositoryService', () => {
     const draft2inTest = await service.create(GeoHazard.Ice);
     await service.save(draft2inTest);
 
-    appModeService.setAppMode(AppMode.Demo); //switch to demo environment
+    userSettingService.saveUserSettings({
+      ...await firstValueFrom(userSettingService.userSetting$),
+      appMode: AppMode.Demo,
+    })
 
     const draftChanges = await firstValueFrom(service.drafts$);
     expect(draftChanges.length).toBe(0); //no drafts in demo yet
@@ -240,7 +248,10 @@ describe('DraftRepositoryService', () => {
     expect(database.store.has(`drafts.TEST.${draft2inTest.uuid}`)).toBeTrue();
     expect(database.store.has(`drafts.DEMO.${draft1inDemo.uuid}`)).toBeTrue();
 
-    appModeService.setAppMode(AppMode.Test); //change back to test environment
+    userSettingService.saveUserSettings({
+      ...await firstValueFrom(userSettingService.userSetting$),
+      appMode: AppMode.Test,
+    })
 
     tick(1);
 

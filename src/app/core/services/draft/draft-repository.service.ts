@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, filter, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { AppModeService } from 'src/app/modules/common-core/services';
 import { getAllAttachmentsFromViewModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
 import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { DatabaseService } from '../database/database.service';
+import { UserSettingService } from '../user-setting/user-setting.service';
 import { RegistrationDraft } from './draft-model';
 
 const DEBUG_TAG = 'DraftRepositoryService';
@@ -32,13 +32,13 @@ export class DraftRepositoryService {
   readonly drafts$: Observable<RegistrationDraft[]>;
 
   constructor(
-    private appModeService: AppModeService,
     private logger: LoggingService,
     private newAttachmentSerivice: NewAttachmentService,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    private userSettingService: UserSettingService,
   ) {
     this.drafts$ = combineLatest([
-      this.appModeService.appMode$,
+      this.userSettingService.appMode$,
       this.databaseService.ready$,
       this.shouldLoad
     ])
@@ -145,7 +145,7 @@ export class DraftRepositoryService {
   async save(draft: RegistrationDraft): Promise<void> {
     const start = Date.now();
 
-    const appMode = await firstValueFrom(this.appModeService.appMode$);
+    const appMode = await firstValueFrom(this.userSettingService.appMode$);
     const key = this.createKey(draft.uuid, appMode);
 
     const updatedDraft: RegistrationDraft = {
@@ -167,7 +167,7 @@ export class DraftRepositoryService {
   */
   async load(uuid: string): Promise<RegistrationDraft | undefined> {
     const start = Date.now();
-    const appMode = await firstValueFrom(this.appModeService.appMode$);
+    const appMode = await firstValueFrom(this.userSettingService.appMode$);
     const key = this.createKey(uuid, appMode);
     const draft = await this.databaseService.get(key);
     this.logger.debug(`Draft ${uuid} loaded in ${this.millisSince(start)} ms`, DEBUG_TAG);
@@ -178,7 +178,7 @@ export class DraftRepositoryService {
    * @returns all drafts regardsless of geo hazard
    */
   async loadAll(): Promise<RegistrationDraft[]> {
-    const appMode = await firstValueFrom(this.appModeService.appMode$);
+    const appMode = await firstValueFrom(this.userSettingService.appMode$);
     const drafts = await this.loadAllFromDatabase(appMode);
     return drafts;
   }
@@ -191,7 +191,7 @@ export class DraftRepositoryService {
   */
   async delete(uuid: string): Promise<void> {
     await this.newAttachmentSerivice.removeAttachments(uuid);
-    const appMode = await firstValueFrom(this.appModeService.appMode$);
+    const appMode = await firstValueFrom(this.userSettingService.appMode$);
     const key = this.createKey(uuid, appMode);
     await this.databaseService.remove(key);
     this.shouldLoad.next();

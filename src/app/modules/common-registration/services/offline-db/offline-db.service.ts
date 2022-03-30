@@ -1,6 +1,5 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { AppMode } from 'src/app/modules/common-core/models';
-import { AppModeService } from 'src/app/modules/common-core/services';
 import { OfflineDbServiceOptions } from './offline-db-service.options';
 import { RegistrationSchema } from '../../db/schemas/registration.schema';
 import { createRxDatabase, addRxPlugin, RxJsonSchema } from 'rxdb/plugins/core';
@@ -69,7 +68,7 @@ export class OfflineDbService {
   // public readonly appModeInitialized$: Observable<AppMode>;
   private dbInstance: RxRegistrationDatabase;
 
-  constructor(private appModeService: AppModeService, private options: OfflineDbServiceOptions) {}
+  constructor(private options: OfflineDbServiceOptions) {}
 
   async initDatabase(adapter: string): Promise<void> {
     this.dbInstance = await this.create(adapter);

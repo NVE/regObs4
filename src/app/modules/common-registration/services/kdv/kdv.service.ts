@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
-import { LanguageService, AppModeService } from 'src/app/modules/common-core/services';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { of, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -12,6 +11,7 @@ import { KdvKey } from '../../models/kdv-key.type';
 import { KdvViewRepositoryKey } from '../../models/view-repository-key.type';
 import { ApiSyncOfflineBaseService } from '../api-sync-offline-base/api-sync-offline-base.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
 const KDV_ASSETS_FOLDER = '/assets/json';
 const CACHE_AGE = 43200; // 12 hours
@@ -22,11 +22,10 @@ const CACHE_AGE = 43200; // 12 hours
 export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto> {
   constructor(
     protected offlineDbService: OfflineDbService,
-    protected languageService: LanguageService,
     protected logger: LoggingService,
-    protected appModeService: AppModeService,
     private kdvElementsService: KdvElementsService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    protected userSettingService: UserSettingService
   ) {
     super(
       {
@@ -34,9 +33,8 @@ export class KdvService extends ApiSyncOfflineBaseService<KdvElementsResponseDto
         validSeconds: CACHE_AGE
       },
       offlineDbService,
-      languageService,
-      appModeService,
-      logger);
+      logger,
+      userSettingService);
   }
 
   protected getDebugTag(): string {

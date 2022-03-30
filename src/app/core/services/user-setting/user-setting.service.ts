@@ -32,7 +32,6 @@ import deData from '@angular/common/locales/de';
 import slData from '@angular/common/locales/sl';
 import nnData from '@angular/common/locales/nn';
 import frData from '@angular/common/locales/fr';
-import { UserSettingsPage } from 'src/app/pages/user-settings/user-settings.page';
 import { SupportTile } from '../../models/support-tile.model';
 
 const DEBUG_TAG = 'UserSettingService';

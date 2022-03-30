@@ -44,7 +44,6 @@ import {
   IRegistrationModuleOptions,
   FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN
 } from './modules/common-registration/module.options';
-import { AppModeService } from 'src/app/modules/common-core/services';
 import { addRxPlugin } from 'rxdb';
 import { ApiInterceptor } from './core/http-interceptor/ApiInterceptor';
 import { HttpClientDownloadService } from './core/services/background-download/http-client-download.service';
@@ -150,16 +149,6 @@ export const APP_PROVIDERS = [
   },
 
   // @varsom-regobs-common providers
-  {
-    provide: AppModeService,
-    useFactory: initAppModeService,
-    deps: [UserSettingService]
-  },
-  // {
-  //   provide: FOR_ROOT_OPTIONS_TOKEN,
-  //   useFactory: initCommonApiOptions,
-  //   deps: [APP_CONFIG]
-  // },
   {
     provide: COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
     useFactory: initCommonRegistrationOptions,

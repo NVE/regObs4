@@ -1,17 +1,17 @@
 import { AppMode } from 'src/app/modules/common-core/models';
-import { AppModeService } from 'src/app/modules/common-core/services';
 import { RegobsApiConfigurationInterface } from './regobs-api-configuration';
 import { OnDestroy, Injectable } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { settings } from 'src/settings';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
 @Injectable()
 export class RegObsApiConfigurationProvider implements RegobsApiConfigurationInterface, OnDestroy {
   private subscription: Subscription;
   private appMode: AppMode = AppMode.Prod;
 
-  constructor(private appModeService: AppModeService) {
-    this.subscription = this.appModeService.appMode$.subscribe((val) => {
+  constructor(private userSettingService: UserSettingService) {
+    this.subscription = this.userSettingService.appMode$.subscribe((val) => {
       this.appMode = val;
     });
   }

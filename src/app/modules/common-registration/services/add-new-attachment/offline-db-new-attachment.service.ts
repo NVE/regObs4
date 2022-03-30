@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, EMPTY, forkJoin, from, Observable, of } from 'rxjs';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { AppModeService } from 'src/app/modules/common-core/services';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { OfflineDbService, TABLE_NAMES } from '../offline-db/offline-db.service';
@@ -10,6 +9,7 @@ import { catchError, filter, map, startWith, switchMap, take } from 'rxjs/operat
 import { RxAttachmentMetaCollection, RxAttachmentMetaDocument, RxRegistrationCollection, RxRegistrationDocument } from '../../db/RxDB';
 import { RegistrationTid } from '../../models/registration-tid.enum';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
 const DEBUG_TAG = 'OfflineDbNewAttachmentService';
 
@@ -17,8 +17,8 @@ const DEBUG_TAG = 'OfflineDbNewAttachmentService';
 export class OfflineDbNewAttachmentService implements NewAttachmentService {
   constructor(
     private offlineDbService: OfflineDbService,
-    protected appModeService: AppModeService,
-    protected logger: LoggingService
+    protected logger: LoggingService,
+    private userSettingService: UserSettingService
   ) {}
 
   async addAttachment(
@@ -163,7 +163,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
   }
 
   private getAttachmentMetaDbCollectionForAppMode(): Observable<RxAttachmentMetaCollection> {
-    return this.appModeService.appMode$.pipe(map((appMode) => this.getAttachmentMetaDbCollection(appMode)));
+    return this.userSettingService.appMode$.pipe(map((appMode) => this.getAttachmentMetaDbCollection(appMode)));
   }
 
   private getAttachmentMetaDbCollection(appMode: AppMode): RxAttachmentMetaCollection {
@@ -178,7 +178,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
   }
 
   private getRegistrationDbCollectionForAppMode(): Observable<RxRegistrationCollection> {
-    return this.appModeService.appMode$.pipe(map((appMode) => this.getRegistrationsDbCollection(appMode)));
+    return this.userSettingService.appMode$.pipe(map((appMode) => this.getRegistrationsDbCollection(appMode)));
   }
 
   private getRegistrationsDbCollection(appMode: AppMode): RxRegistrationCollection {

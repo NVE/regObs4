@@ -20,7 +20,6 @@ import { GpsDebugModule } from './modules/gps-debug/gps-debug.module';
 import { MapModule } from './modules/map/map.module';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { RegistrationModule as CommonRegistrationModule } from './modules/common-registration/registration.module';
-import { RegobsApiModuleWithConfig } from 'src/app/modules/common-regobs-api';
 import { Drivers } from '@ionic/storage';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 import { settings } from 'src/settings';
@@ -49,7 +48,6 @@ import { settings } from 'src/settings';
     SideMenuModule,
     GpsDebugModule,
     AnalyticsModule.forRoot(),
-    RegobsApiModuleWithConfig.forRoot(),
     CommonRegistrationModule.forRoot()
   ],
   providers: APP_PROVIDERS,
