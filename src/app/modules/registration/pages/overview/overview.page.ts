@@ -12,6 +12,7 @@ import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import deepEqual from 'fast-deep-equal';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-overview',
@@ -33,7 +34,8 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     private activatedRoute: ActivatedRoute,
     private summaryItemService: SummaryItemService,
     private userGroupService: UserGroupService,
-    private newAttachmentService: NewAttachmentService
+    private newAttachmentService: NewAttachmentService,
+    private navController: NavController,
   ) {
     super();
   }
@@ -66,9 +68,15 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
         distinctUntilChanged((a, b) => deepEqual(a, b)),
         takeUntil(this.ngDestroy$)
       )
-      .subscribe((summaryItems) => {
-        this.summaryItems = summaryItems;
-        this.cdr.detectChanges();
+      .subscribe({
+        next: (summaryItems) => {
+          this.summaryItems = summaryItems;
+          this.cdr.detectChanges();
+        },
+        complete: () => {
+          // Draft has been deleted / this registration does not exist any more, we should navigate to front page
+          this.navController.navigateRoot('');
+        }
       });
   }
 
