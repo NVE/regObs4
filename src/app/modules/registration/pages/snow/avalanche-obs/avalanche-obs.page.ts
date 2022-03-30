@@ -99,9 +99,12 @@ export class AvalancheObsPage extends BasePage {
   }
 
   async reset() {
-    await super.reset();
-    // Also create new empty incident form
-    this.draft = createEmptyRegistration(this.draft, RegistrationTid.Incident);
+    const pleaseReset = await super.reset();
+    if (pleaseReset) {
+      // Also create new empty incident form
+      this.draft = createEmptyRegistration(this.draft, RegistrationTid.Incident);
+    }
+    return pleaseReset;
   }
 
   protected async delete() {
