@@ -13,7 +13,12 @@
       {{'REGISTRATION.FAILED.PROBLEM' | translate}}
     </ion-label>
     <ion-label class="ion-text-wrap" *ngIf="registrationError">
-      {{'REGISTRATION.FAILED.PROBLEM' | translate}}: {{ draft.error.message }}
+      {{'REGISTRATION.FAILED.PROBLEM' | translate}}
+      <ng-container *ngIf="draft.error.message">
+        :<div class="error-message">
+          {{ draft.error.message }}
+        </div>
+      </ng-container>
     </ion-label>
     <ion-label class="ion-text-wrap" *ngIf="serverError">
       {{'REGISTRATION.FAILED.PROBLEM' | translate}}. {{'REGISTRATION.FAILED.LOGGED' | translate}}

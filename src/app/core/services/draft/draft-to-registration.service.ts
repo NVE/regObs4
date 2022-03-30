@@ -125,7 +125,7 @@ export class DraftToRegistrationService {
       await this.draftService.delete(draft.uuid);
       this.newRegistrations.next(result);
     } catch (error) {
-      const { message, code } = this.handleError(error);
+      const { message, code } = handleError(error);
       this.loggerService.error(error, DEBUG_TAG, message);
       await this.draftService.save({ ...draft, error: { code, message, timestamp: Date.now() } });
     }
@@ -156,40 +156,54 @@ export class DraftToRegistrationService {
     this.loggerService.debug('Removing network error from draft', DEBUG_TAG, { error, draftId: draft.uuid });
     await this.draftService.save(draftWithoutError);
   }
+}
 
-  private handleError(error: Error): {code: RegistrationDraftErrorCode; message: string} {
-    let code: RegistrationDraftErrorCode;
-    let message: string;
 
-    if (error instanceof UploadAttachmentError) {
-      // Handle attachment errors
-      // We can do a lot more here, we know which attachments failed etc.
-      code = RegistrationDraftErrorCode.AttachmentError;
-      message = error.message;
-    } else if (error instanceof HttpErrorResponse) {
-      // Handle Http Errors
-      if (error.status === 0) {
-        code = RegistrationDraftErrorCode.NoNetworkOrTimedOut,
-        message = error.message || 'Response failed with status code 0, probably no network?';
-      } else if (error.status === HttpStatusCode.BadRequest) {
-        code = RegistrationDraftErrorCode.RegistrationError;
-        message = error.message || `Response failed with ${error.status} - ${error.statusText}`;
-      } else if (error.status === HttpStatusCode.Conflict) {
-        code = RegistrationDraftErrorCode.ConflictError;
-        message = error.message || `Registration conflict ${error.status} - ${error.statusText}`;
-      } else if (error.status > HttpStatusCode.BadRequest) {
-        code = RegistrationDraftErrorCode.ServerError;
-        message = error.message || `Response failed with ${error.status} - ${error.statusText}`;
-      } else {
-        code = RegistrationDraftErrorCode.Unknown;
-        message = error.message || `Got an unknown http error: ${error.status} - ${error.statusText}`;
+function handleError(error: Error): {code: RegistrationDraftErrorCode; message: string} {
+  let code: RegistrationDraftErrorCode;
+  let message: string;
+
+  if (error instanceof UploadAttachmentError) {
+    // Handle attachment errors
+    // We can do a lot more here, we know which attachments failed etc.
+    code = RegistrationDraftErrorCode.AttachmentError;
+    message = error.message;
+  } else if (error instanceof HttpErrorResponse) {
+    // Handle Http Errors
+    if (error.status === 0) {
+      code = RegistrationDraftErrorCode.NoNetworkOrTimedOut,
+      message = error.message || 'Response failed with status code 0, probably no network?';
+    } else if (error.status === HttpStatusCode.BadRequest) {
+      code = RegistrationDraftErrorCode.RegistrationError;
+      // Regobs api returns additional info for bad requests.
+      // Put this info into a readable error message.
+      let messages = [];
+      if (error.error?.Message) {
+        messages.push(error.error.Message);
       }
+      if (error.error?.ModelState) {
+        messages = [...messages, ...Object.values(error.error.ModelState)];
+      }
+      if (messages.length > 0) {
+        message = messages.join(' ');
+      } else {
+        message = error.message || `Response failed with ${error.status} - ${error.statusText}`;
+      }
+    } else if (error.status === HttpStatusCode.Conflict) {
+      code = RegistrationDraftErrorCode.ConflictError;
+      message = error.message || `Registration conflict ${error.status} - ${error.statusText}`;
+    } else if (error.status > HttpStatusCode.BadRequest) {
+      code = RegistrationDraftErrorCode.ServerError;
+      message = error.message || `Response failed with ${error.status} - ${error.statusText}`;
     } else {
-      // Handle unknown errors
       code = RegistrationDraftErrorCode.Unknown;
-      message = error.message || 'An unknown error occured while uploading the registration';
+      message = error.message || `Got an unknown http error: ${error.status} - ${error.statusText}`;
     }
-
-    return { code, message };
+  } else {
+    // Handle unknown errors
+    code = RegistrationDraftErrorCode.Unknown;
+    message = error.message || 'An unknown error occured while uploading the registration';
   }
+
+  return { code, message };
 }
