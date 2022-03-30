@@ -8,10 +8,8 @@ describe('IceThicknessPage', () => {
   let component: IceThicknessPage;
 
   beforeEach(() => {
-    let basePageService = new BasePageService(null, null, null, null,
-                                              null, null);
-    component = new IceThicknessPage(basePageService,
-                                     null, null, null);
+    const basePageService = new BasePageService(null, null, null, null, null);
+    component = new IceThicknessPage(basePageService, null, null, null);
     component.draft = {
       registration: {
         DtObsTime: new Date(2020, 0, 1).toISOString(),
