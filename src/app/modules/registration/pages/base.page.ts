@@ -124,13 +124,19 @@ export abstract class BasePage extends NgDestoryBase {
   }
 
   /**
-   * Delete the registration if the user confirms
+   * Reset the registration if the user confirms.
+   * @returns {boolean} true if the user wants to reset
    */
-  async reset() {
+  async reset(): Promise<boolean> {
     const pleaseReset = await this.basePageService.confirmDelete();
     if (pleaseReset) {
       await this.delete();
+
+      // Create a new empty form / registration
+      this.draft = createEmptyRegistration(this.draft, this.registrationTid);
     }
+
+    return pleaseReset;
   }
 
   /**
