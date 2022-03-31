@@ -69,7 +69,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('create() should return an empty draft', async () => {
-    const draft = await service.create(GeoHazard.Ice);
+    const draft = service.create(GeoHazard.Ice);
     expect(draft.uuid.length).toBeGreaterThan(0);
     expect(draft.syncStatus).toBe(SyncStatus.Draft);
     expect(draft.registration.GeoHazardTID).toBe(GeoHazard.Ice);
@@ -80,7 +80,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('save() should store a draft', async () => {
-    const draft = await service.create(GeoHazard.Snow);
+    const draft = service.create(GeoHazard.Snow);
     draft.registration.DtObsTime = '2022-02-13 08:00';
     draft.registration.SnowSurfaceObservation = {
       Comment: 'comment',
@@ -103,9 +103,9 @@ describe('DraftRepositoryService', () => {
   });
 
   it('newly saved drafts should be unique', async () => {
-    const draft = await service.create(GeoHazard.Snow);
+    const draft = service.create(GeoHazard.Snow);
     await service.save(draft);
-    const draft2 = await service.create(GeoHazard.Snow);
+    const draft2 = service.create(GeoHazard.Snow);
     await service.save(draft2);
     expect(database.store.size).toEqual(2);
     expect(database.store.has(`drafts.TEST.${draft.uuid}`)).toBeTrue();
@@ -113,7 +113,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('save of invalid drafts should fail', async () => {
-    const draft = await service.create(GeoHazard.Snow);
+    const draft = service.create(GeoHazard.Snow);
     draft.registration.GeoHazardTID = undefined;
     draft.registration.DtObsTime = undefined;
     service.save(draft)
@@ -124,14 +124,14 @@ describe('DraftRepositoryService', () => {
   });
 
   it('we can change a registration, save it and load the changed registration', async () => {
-    const irrelevantDraft1 = await service.create(GeoHazard.Snow);
+    const irrelevantDraft1 = service.create(GeoHazard.Snow);
     await service.save(irrelevantDraft1);
 
-    const draft = await service.create(GeoHazard.Ice);
+    const draft = service.create(GeoHazard.Ice);
     draft.registration.GeneralObservation = { Comment: 'v.1' };
     await service.save(draft);
 
-    const irrelevantDraft2 = await service.create(GeoHazard.Soil);
+    const irrelevantDraft2 = service.create(GeoHazard.Soil);
     await service.save(irrelevantDraft2);
 
     //verify that the comment was saved and we can load it
@@ -150,7 +150,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('we get notified when registrations are saved', async () => {
-    const draft = await service.create(GeoHazard.Ice);
+    const draft = service.create(GeoHazard.Ice);
     draft.registration.GeneralObservation = { Comment: 'v.1' };
 
     await service.save(draft);
@@ -176,7 +176,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('we can use drafts$ as a stream when registrations are saved', async () => {
-    const draft = await service.create(GeoHazard.Ice);
+    const draft = service.create(GeoHazard.Ice);
     draft.registration.GeneralObservation = { Comment: 'v.1' };
 
     let i = 0;
@@ -214,7 +214,7 @@ describe('DraftRepositoryService', () => {
   });
 
   it('delete works', async () => {
-    const draft = await service.create(GeoHazard.Ice);
+    const draft = service.create(GeoHazard.Ice);
     await service.save(draft);
 
     expect(database.store.size).toBe(1);
@@ -233,10 +233,10 @@ describe('DraftRepositoryService', () => {
 
   it('we do not mix data from different environments', fakeAsync(async () => {
     //save 2 drafts in test environment
-    const draft1inTest = await service.create(GeoHazard.Ice);
+    const draft1inTest = service.create(GeoHazard.Ice);
     await service.save(draft1inTest);
 
-    const draft2inTest = await service.create(GeoHazard.Ice);
+    const draft2inTest = service.create(GeoHazard.Ice);
     await service.save(draft2inTest);
 
     userSettingService.saveUserSettings({
@@ -248,7 +248,7 @@ describe('DraftRepositoryService', () => {
     expect(draftChanges.length).toBe(0); //no drafts in demo yet
 
     //save a draft in demo environment
-    const draft1inDemo = await service.create(GeoHazard.Ice);
+    const draft1inDemo = service.create(GeoHazard.Ice);
     await service.save(draft1inDemo);
 
     //drafts in test database not available in demo environment
@@ -283,7 +283,7 @@ describe('DraftRepositoryService', () => {
 
   it('drafts$ returns a draft only when it is available, and completes if it is deleted', fakeAsync(async () => {
     let draft: RegistrationDraft = {
-      ...await service.create(GeoHazard.Ice),
+      ...service.create(GeoHazard.Ice),
       uuid: 'test'
     };
 
