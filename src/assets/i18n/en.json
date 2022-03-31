@@ -210,7 +210,6 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "All observations",
     "FORMS": "Forms",
-    "GO_TO_OBSERVATION": "Go to observation",
     "IN_MAP_VIEW": "Observations in map view",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
