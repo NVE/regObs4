@@ -9,14 +9,5 @@
   </ion-toolbar>
 </ion-header>
 <ion-content *ngIf="registrationViewModel$ | async as registration">
-  <ng-container *ngIf="editMode$ | async as editMode">
-    <span *ngIf="editMode === 'EDIT_AS_MODERATOR'">
-      {{ "RegistrationDetail.EditInfoAsModerator" | translate }}
-    </span>
-    <span *ngIf="editMode === 'EDIT_OWN_REGISTRATION'">
-      {{ "RegistrationDetail.EditInfo" | translate }}
-    </span>
-    <ion-button (click)=editRegistration(registration)>Edit registration</ion-button>
-  </ng-container>
   <app-observation-list-card [obs]="registration"></app-observation-list-card>
 </ion-content>

@@ -64,8 +64,9 @@
       </ion-row>
     </ion-grid>
     <ion-item class="ion-no-padding" color="light">
-      <ion-button mode="ios" fill="clear" class="link-title" (click)="openWeb()">
-        {{'OBSERVATION_LIST.GO_TO_OBSERVATION' | translate}}
+      <ion-button *ngIf="userCanEdit" mode="ios" fill="clear" class="link-title" (click)="edit()">
+        <svg-icon class="edit-icon" slot="start" src="/assets/icon/pencil.svg"></svg-icon>
+        {{'REGISTRATION.EDIT' | translate}}
       </ion-button>
       <ion-button mode="ios" fill="clear" class="reg-id" slot="end" (click)="share()">
         ID: {{ obs.RegId }}

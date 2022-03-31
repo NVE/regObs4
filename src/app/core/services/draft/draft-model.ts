@@ -1,5 +1,5 @@
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationEditModel } from 'src/app/modules/common-regobs-api';
+import { AttachmentEditModel, AttachmentViewModel, RegistrationEditModel } from 'src/app/modules/common-regobs-api';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 // If we want to make RegistrationEditModel immutable, use Immutable<RegistrationEditModel>
@@ -24,6 +24,12 @@ export interface RegistrationDraftError {
   code: RegistrationDraftErrorCode;
   timestamp?: number;
   message?: string;
+}
+
+export type RemoteOrLocalAttachmentEditModel = Pick<AttachmentViewModel, 'Url' | 'UrlFormats'> & AttachmentEditModel;
+
+export interface RegistrationEditModelWithRemoteOrLocalAttachments extends Omit<RegistrationEditModel, 'Attachments'> {
+  Attachments?: RemoteOrLocalAttachmentEditModel[]
 }
 
 /**
@@ -58,7 +64,7 @@ export interface RegistrationDraft {
   /**
    * The registration to submit
    */
-  readonly registration: RegistrationEditModel;
+  readonly registration: RegistrationEditModelWithRemoteOrLocalAttachments;
 
   readonly error?: RegistrationDraftError;
 }

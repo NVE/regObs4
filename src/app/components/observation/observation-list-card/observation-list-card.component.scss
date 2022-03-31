@@ -70,6 +70,7 @@ ion-card {
           letter-spacing: 0.75px;
           text-transform: uppercase;
           font-weight: 600;
+          color: var(--ion-color-varsom-blue);
         }
 
         &.reg-id {
@@ -99,4 +100,8 @@ app-img-swiper {
   height: auto;
   width: 100%;
   display: block;
+}
+
+.edit-icon {
+    margin-right: 5px;
 }

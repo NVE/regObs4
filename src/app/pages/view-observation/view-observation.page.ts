@@ -1,14 +1,13 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ObservationService } from '../../core/services/observation/observation.service';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
-import { takeUntil, switchMap, withLatestFrom } from 'rxjs/operators';
+import { takeUntil, switchMap } from 'rxjs/operators';
 import { from, Observable } from 'rxjs';
-import { EditMode, getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
-import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
+import { EditMode } from 'src/app/modules/registration/edit-registration-helper-functions';
 
 @Component({
   selector: 'app-view-observation',
@@ -25,31 +24,16 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
     private popupInfoService: PopupInfoService,
-    private router: Router,
-    private regobsAuthService: RegobsAuthService
   ) {
     super();
-  }
-
-  async editRegistration(registration: RegistrationViewModel) {
-    throw new Error('Not implemented');
-    // const reg = await this.registrationService.editExistingRegistrationAndSave(registration);
-    // this.router.navigate(['registration', 'edit', reg.id]);
   }
 
   ngOnInit() {
     this.popupInfoService.checkObservationInfoPopup().pipe(takeUntil(this.ngDestroy$)).subscribe();
     const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
     this.registrationViewModel$ = this.userSettingService.userSetting$.pipe(
-      switchMap((userSetting) => from(this.observationService.getObservationById(id, userSetting.appMode, userSetting.language)))
-    );
-    this.editMode$ = this.createEditMode$();
-  }
-
-  private createEditMode$(): Observable<EditMode> {
-    return this.registrationViewModel$.pipe(
-      withLatestFrom(this.regobsAuthService.myPageData$),
-      switchMap(([reg, observer]) => getObserverEditCheckObservable(reg, observer))
+      switchMap((userSetting) =>
+        from(this.observationService.getObservationById(id, userSetting.appMode, userSetting.language)))
     );
   }
 }
