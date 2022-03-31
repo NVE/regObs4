@@ -34,7 +34,6 @@ import { SnowProfileData } from 'src/app/modules/adaptive-cards/adaptive-snow-pr
 import { getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
 import { firstValueFrom } from 'rxjs';
 import { RegistrationService } from 'src/app/modules/common-regobs-api';
-import { LanguageService } from 'src/app/modules/common-core/services';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { Router } from '@angular/router';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -77,7 +76,6 @@ export class ObservationListCardComponent implements OnChanges {
     private analyticService: AnalyticService,
     private regobsAuthService: RegobsAuthService,
     private registrationService: RegistrationService,
-    private languageService: LanguageService,
     private draftRepository: DraftRepositoryService,
     private router: Router,
     private logger: LoggingService
@@ -293,7 +291,7 @@ export class ObservationListCardComponent implements OnChanges {
     if (!draft) {
       //we don't have a local working copy of this regstration yet, so fetch it and save as draft
       this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
-      const langKey = await firstValueFrom(this.languageService.language$);
+      const langKey = await firstValueFrom(this.userSettingService.language$);
       const registrationFromServer = await firstValueFrom(
         this.registrationService.RegistrationGet({ regId: this.obs.RegId, langKey: langKey })
       );
