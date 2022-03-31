@@ -1,9 +1,9 @@
 import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models';
+import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from './draft-repository.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
-import { firstValueFrom, Observable, ReplaySubject, take } from 'rxjs';
+import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import { DatabaseService } from '../database/database.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationDraft } from './draft-model';
@@ -65,7 +65,7 @@ describe('DraftRepositoryService', () => {
     userSettingService.saveUserSettings({
       ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Test,
-    })
+    });
   });
 
   it('create() should return an empty draft', async () => {
@@ -110,6 +110,17 @@ describe('DraftRepositoryService', () => {
     expect(database.store.size).toEqual(2);
     expect(database.store.has(`drafts.TEST.${draft.uuid}`)).toBeTrue();
     expect(database.store.has(`drafts.TEST.${draft2.uuid}`)).toBeTrue();
+  });
+
+  it('save of invalid drafts should fail', async () => {
+    const draft = await service.create(GeoHazard.Snow);
+    draft.registration.GeoHazardTID = undefined;
+    draft.registration.DtObsTime = undefined;
+    service.save(draft)
+      .then(() => fail('save of invalid drafts should fail'))
+      .catch((err) => {
+        expect(err.message).toEqual(`Save of invalid draft failed. UUID: '${draft.uuid}'. Cause: missing GeoHazardTID`);
+      });
   });
 
   it('we can change a registration, save it and load the changed registration', async () => {
@@ -231,7 +242,7 @@ describe('DraftRepositoryService', () => {
     userSettingService.saveUserSettings({
       ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Demo,
-    })
+    });
 
     const draftChanges = await firstValueFrom(service.drafts$);
     expect(draftChanges.length).toBe(0); //no drafts in demo yet
@@ -251,7 +262,7 @@ describe('DraftRepositoryService', () => {
     userSettingService.saveUserSettings({
       ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Test,
-    })
+    });
 
     tick(1);
 

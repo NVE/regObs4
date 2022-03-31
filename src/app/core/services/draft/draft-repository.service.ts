@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, filter, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { getAllAttachmentsFromViewModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
@@ -139,12 +139,49 @@ export class DraftRepositoryService {
   }
 
   /**
-  * Save a registration on device
+   * Validate given draft
+   * @return an error message or undefined if it went ok
+   */
+  validate(draft: RegistrationDraft): string | undefined {
+    const messages: string[] = [];
+    if (!draft) {
+      messages.push('no draft');
+    }
+    if (!draft.uuid || draft.uuid === '' || draft.uuid.length === 0) {
+      messages.push('missing uuid');
+    }
+    if (!draft.registration?.GeoHazardTID) {
+      messages.push('missing GeoHazardTID');
+    }
+    //TODO: Vurdere om vi bør sjekke disse også og kanskje flere felter.
+    //I så fall må vi skrive om noen tester som lagrer kladder uten DtObsTime og ObsLocation
+    // if (!draft.registration?.DtObsTime) {
+    //   messages.push('missing DtObsTime');
+    // }
+    // if (!draft.registration?.ObsLocation?.Latitude) {
+    //   messages.push('missing ObsLocation.Latitude');
+    // }
+    // if (!draft.registration?.ObsLocation?.Longitude) {
+    //   messages.push('missing ObsLocation.Longitude');
+    // }
+    if (messages.length > 0) {
+      return messages.join(', ');
+    }
+    return undefined;
+  }
+
+  /**
+  * Save a registration on device.
   * @param draft the registration to save
+  * @see validate
+  * @throws Error if validation fails
   */
   async save(draft: RegistrationDraft): Promise<void> {
     const start = Date.now();
-
+    const errorMessages = this.validate(draft);
+    if (errorMessages) {
+      throw new Error(`Save of invalid draft failed. UUID: '${draft?.uuid}'. Cause: ${errorMessages}`);
+    }
     const appMode = await firstValueFrom(this.userSettingService.appMode$);
     const key = this.createKey(draft.uuid, appMode);
 
@@ -154,8 +191,10 @@ export class DraftRepositoryService {
     };
     await this.databaseService.set(key, updatedDraft);
 
-    this.logger.debug(`Draft ${draft.uuid} saved in ${this.millisSince(start)} ms 
-      in environment ${appMode}`, DEBUG_TAG, draft);
+    this.logger.debug(
+      `Draft ${draft.uuid} saved in ${this.millisSince(start)} ms in environment ${appMode}`,
+      DEBUG_TAG,
+      draft);
     this.shouldLoad.next();
   }
 
