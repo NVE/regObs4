@@ -12,7 +12,9 @@ import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import deepEqual from 'fast-deep-equal';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { NavController } from '@ionic/angular';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'OverviewPage';
 
 @Component({
   selector: 'app-overview',
@@ -35,7 +37,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     private summaryItemService: SummaryItemService,
     private userGroupService: UserGroupService,
     private newAttachmentService: NewAttachmentService,
-    private navController: NavController,
+    private logger: LoggingService
   ) {
     super();
   }
@@ -74,8 +76,9 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
           this.cdr.detectChanges();
         },
         complete: () => {
-          // Draft has been deleted / this registration does not exist any more, we should navigate to front page
-          this.navController.navigateRoot('');
+          // Draft has been deleted / this registration does not exist any more
+          const id = this.activatedRoute.snapshot.params['id'];
+          this.logger.debug(`Draft ${id} is gone, probably submitted to regobs api or deleted`, DEBUG_TAG);
         }
       });
   }

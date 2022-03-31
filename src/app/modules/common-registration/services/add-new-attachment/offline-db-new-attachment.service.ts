@@ -113,7 +113,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
   async removeAttachments(registrationId: string): Promise<void> {
     const regDoc = await this.getRegistrationOfflineDocumentById(registrationId).pipe(take(1)).toPromise();
     if (!regDoc) {
-      this.logger.debug('No registration document found!');
+      this.logger.debug(`No registration document found for ID '${registrationId}'`, DEBUG_TAG);
       return;
     }
     const metaDocs = await this.getAttachmentMetaDocumentsFromRegistrationDocument(regDoc).pipe(take(1)).toPromise();
@@ -121,7 +121,11 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
       try {
         await metaDoc.remove();
       } catch (err) {
-        this.logger.error(err, 'Could not remove attachment meta document from registration document', DEBUG_TAG, metaDoc);
+        this.logger.error(
+          err,
+          `Could not remove attachment meta document from registration document with ID = '${registrationId}`,
+          DEBUG_TAG,
+          metaDoc);
       }
     }
     const collection = await this.getRegistrationDbCollectionForAppMode().pipe(take(1)).toPromise();
