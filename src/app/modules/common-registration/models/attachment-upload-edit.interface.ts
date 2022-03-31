@@ -1,3 +1,4 @@
+import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { AttachmentEditModel } from 'src/app/modules/common-regobs-api/models';
 
 export interface AttachmentUploadEditModel extends AttachmentEditModel {
@@ -9,7 +10,7 @@ export interface AttachmentUploadEditModel extends AttachmentEditModel {
   ref?: string; // Guid
 }
 
-export type ExistingOrNewAttachmentModel = AttachmentUploadEditModel | AttachmentEditModel;
+export type ExistingOrNewAttachmentModel = AttachmentUploadEditModel | RemoteOrLocalAttachmentEditModel;
 export type NewAttachmentType = 'new';
 export type ExistingAttachmentType = 'existing';
 export type ExistingOrNewAttachmentType = NewAttachmentType | ExistingAttachmentType;

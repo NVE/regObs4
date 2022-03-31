@@ -1,4 +1,5 @@
 <div class="images">
+  <!-- TODO: Add support for existing attachments -->
   <div class="image-wrapper" *ngFor="let attachment of attachments; let i = index">
     <!-- <img [src]="convertFileSrc(image.PictureImageBase64)" /> -->
     <ro-blob-image [imgBlob]="attachment.blob"></ro-blob-image>

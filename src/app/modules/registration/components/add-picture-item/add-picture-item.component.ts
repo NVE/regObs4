@@ -23,6 +23,7 @@ export interface AttachmentUploadEditModelWithBlob extends AttachmentUploadEditM
   blob: Blob;
 }
 
+// TODO: Add support for existing attachments
 @Component({
   selector: 'app-add-picture-item',
   templateUrl: './add-picture-item.component.html',
