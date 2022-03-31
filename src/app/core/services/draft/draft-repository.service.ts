@@ -11,6 +11,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { DatabaseService } from '../database/database.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { RegistrationDraft } from './draft-model';
+import { viewModelToEditModel } from './reg-to-draft';
 
 const DEBUG_TAG = 'DraftRepositoryService';
 
@@ -148,10 +149,14 @@ export class DraftRepositoryService {
     if (!registrationViewModel.RegId) {
       throw new Error('Missing RegId. Are you sure this registration has been saved in Regobs earlier?');
     }
+
+    const registration = cloneDeep(viewModelToEditModel(registrationViewModel));
+
     const draft: RegistrationDraft = {
       uuid: registrationViewModel.ExternalReferenceId,
+      regId: registrationViewModel.RegId,
       syncStatus: SyncStatus.Draft,
-      registration: cloneDeep(registrationViewModel)
+      registration: registration
     };
     await this.save(draft);
   }
