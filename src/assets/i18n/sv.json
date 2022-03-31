@@ -279,6 +279,7 @@
     },
     "DRAFTS": "Utkast",
     "DRAFTS_DESCRIPTION": "Dessa observationer är under arbete och har inte skickas in.",
+    "EDIT": "Redigera",
     "EMAIL": {
       "BODY": "Hej! Jag har problem med att skicka in den här registreringen. Kan du hjälpa mig?",
       "SUBJECT": "Registreringen misslyckades"

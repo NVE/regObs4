@@ -1,9 +1,9 @@
 import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { AppMode, GeoHazard, LangKey } from 'src/app/modules/common-core/models';
+import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { DraftRepositoryService } from './draft-repository.service';
 import { TestLoggingService } from 'src/app/modules/shared/services/logging/test-logging.service';
-import { firstValueFrom, Observable, ReplaySubject, take } from 'rxjs';
+import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import { DatabaseService } from '../database/database.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationDraft } from './draft-model';
@@ -65,7 +65,7 @@ describe('DraftRepositoryService', () => {
     userSettingService.saveUserSettings({
       ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Test,
-    })
+    });
   });
 
   it('create() should return an empty draft', async () => {
@@ -231,7 +231,7 @@ describe('DraftRepositoryService', () => {
     userSettingService.saveUserSettings({
       ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Demo,
-    })
+    });
 
     const draftChanges = await firstValueFrom(service.drafts$);
     expect(draftChanges.length).toBe(0); //no drafts in demo yet
@@ -251,7 +251,7 @@ describe('DraftRepositoryService', () => {
     userSettingService.saveUserSettings({
       ...await firstValueFrom(userSettingService.userSetting$),
       appMode: AppMode.Test,
-    })
+    });
 
     tick(1);
 
