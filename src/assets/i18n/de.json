@@ -250,7 +250,7 @@
     },
     "DRAFTS": "Meine Entwürfe",
     "DRAFTS_DESCRIPTION": "Diese Beobachtungen sind in Bearbeitung und noch nicht übermittelt.",
-    "EDIT": "Bearbeiten",
+    "EDIT": "Beobachtung bearbeiten",
     "EMAIL": {
       "BODY": "Hallo! Ich habe Probleme beim Versenden dieser Registrierung. Können Sie mir helfen?",
       "SUBJECT": "Registrierung fehlgeschlagen"
