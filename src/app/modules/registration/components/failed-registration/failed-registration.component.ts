@@ -31,6 +31,10 @@ export class FailedRegistrationComponent {
     return this.draft.error.code === RegistrationDraftErrorCode.NoNetworkOrTimedOut;
   }
 
+  get conflictError() {
+    return this.draft.error.code === RegistrationDraftErrorCode.ConflictError;
+  }
+
   get registrationError() {
     return this.draft.error.code === RegistrationDraftErrorCode.RegistrationError;
   }

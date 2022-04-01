@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { combineLatest, exhaustMap, filter, firstValueFrom, from, interval, map, Observable, startWith, Subject, throttleTime, withLatestFrom } from 'rxjs';
+import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -57,11 +58,33 @@ export class DraftToRegistrationService {
     this.initialized = true;
   }
 
+  /**
+   * Initialize submitting of given draft
+   * @param draft the draft to submit
+   * @param ignoreVersionCheck set this to true to overwrite conflicting versions on server
+   */
+  async markDraftAsReadyToSubmit(draft: RegistrationDraft, ignoreVersionCheck = false): Promise<void> {
+    const { error, ...draftToUpdate } = draft;
+    if (error) {
+      this.loggerService.debug('Draft had error, will remove error when saving to retry upload', DEBUG_TAG, {
+        uuid: draftToUpdate.uuid,
+        error
+      });
+    }
+
+    // Mark draft as ready to submit
+    const syncStatus = ignoreVersionCheck ? SyncStatus.SyncAndIgnoreVersionCheck : SyncStatus.Sync;
+    this.draftService.save({
+      ...draftToUpdate,
+      syncStatus: syncStatus,
+    });
+  }
+
   private startUploadingRegistrations() {
     // Listen for drafts ready to submit to regobs api, and network status
     this.draftService.drafts$.subscribe((drafts) => {
       const draftsToSync = drafts
-        .filter(d => d.syncStatus === SyncStatus.Sync)
+        .filter(d => d.syncStatus === SyncStatus.Sync || d.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck)
         .filter(d => d.error == null)
         .filter(d => !this.registrationsUploading.includes(d.uuid));
 
@@ -116,8 +139,8 @@ export class DraftToRegistrationService {
       let result: RegistrationViewModel;
 
       if (draft.regId) {
-        // We can add ignore version check functionality here later
-        result = await this.addUpdateDeleteRegistrationService.update(draft);
+        const ignoreVersionCheck = draft.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck;
+        result = await this.addUpdateDeleteRegistrationService.update(draft, ignoreVersionCheck);
       } else {
         result = await this.addUpdateDeleteRegistrationService.add(draft);
       }

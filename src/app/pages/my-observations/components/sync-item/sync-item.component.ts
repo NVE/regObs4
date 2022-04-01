@@ -11,7 +11,8 @@ export class SyncItemComponent {
   @Input() draft: RegistrationDraft;
 
   get loading() {
-    return this.draft.syncStatus === SyncStatus.Sync && this.draft.error == null;
+    return (this.draft.syncStatus === SyncStatus.Sync || this.draft.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck)
+    && this.draft.error == null;
   }
 
   get isDraft() {

@@ -328,7 +328,10 @@
       "REFERENCE": "Reference",
       "SEND_EMAIL": "Send to us by email",
       "SUBTITLE": "Missing network or submission took too long. We'll try again after a while and hope that the network has improved.",
-      "TITLE": "Submission failed"
+      "TITLE": "Submission failed",
+      "CONFLICT": "A new version was saved while you worked.<br/>Would you like to cancel your work and load the new version or submit your version and overwrite?",
+      "ABANDON": "Cancel my work",
+      "OVERWRITE": "Submit and overwrite"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notes for observation",
