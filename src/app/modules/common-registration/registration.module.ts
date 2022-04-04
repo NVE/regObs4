@@ -13,6 +13,7 @@ import { FOR_ROOT_OPTIONS_TOKEN, IRegistrationModuleOptions } from './module.opt
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import FileAttachmentService from './services/add-new-attachment/file-attachment.service';
 import { isPlatform } from '@ionic/angular';
+import { RegobsApiModuleWithConfig } from '../common-regobs-api';
 
 export function offlineDbServiceOptionsFactory(options?: IRegistrationModuleOptions): OfflineDbServiceOptions {
   const offlineDbServiceOptions = new OfflineDbServiceOptions();
@@ -49,7 +50,7 @@ export const translateModuleForRoot = TranslateModule.forRoot({
 });
 
 @NgModule({
-  imports: [CoreModule, translateModuleForRoot],
+  imports: [CoreModule, RegobsApiModuleWithConfig, translateModuleForRoot],
   declarations: [],
   exports: [RegobsRegistrationPipesModule]
 })

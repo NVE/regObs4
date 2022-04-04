@@ -23,6 +23,7 @@ import { RegistrationModule as CommonRegistrationModule } from './modules/common
 import { Drivers } from '@ionic/storage';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 import { settings } from 'src/settings';
+import { RegobsApiModuleWithConfig } from './modules/common-regobs-api';
 
 @NgModule({
   declarations: [AppComponent],
@@ -48,6 +49,7 @@ import { settings } from 'src/settings';
     SideMenuModule,
     GpsDebugModule,
     AnalyticsModule.forRoot(),
+    RegobsApiModuleWithConfig.forRoot(),
     CommonRegistrationModule.forRoot()
   ],
   providers: APP_PROVIDERS,
