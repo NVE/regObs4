@@ -1,6 +1,8 @@
 import { NgModule, InjectionToken, ModuleWithProviders } from '@angular/core';
 import { RegobsApiConfigurationInterface, RegobsApiConfiguration } from './regobs-api-configuration';
 import { HttpClientModule } from '@angular/common/http';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { RegObsApiConfigurationProvider } from './regobs-api-configuration-provider';
 
 export const FOR_ROOT_OPTIONS_TOKEN = new InjectionToken<RegobsApiConfigurationInterface>('forRoot() Module configuration');
 
@@ -19,6 +21,11 @@ export class RegobsApiModuleWithConfig {
           provide: FOR_ROOT_OPTIONS_TOKEN,
           useValue: options
         },
+        {
+          provide: RegobsApiConfiguration,
+          useFactory: regObsConfigurationFactory,
+          deps: [UserSettingService, FOR_ROOT_OPTIONS_TOKEN]
+        }
       ]
     };
   }
@@ -28,4 +35,11 @@ export class RegobsApiModuleWithConfig {
   //     providers: []
   //   });
   // }
+}
+
+export function regObsConfigurationFactory(
+  userSettingService: UserSettingService,
+  options?: RegobsApiConfigurationInterface
+) {
+  return options ? options : new RegObsApiConfigurationProvider(userSettingService);
 }
