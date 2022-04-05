@@ -17,20 +17,12 @@
     ></app-failed-registration>
 
     <ion-list lines="full">
-      <!-- Registration -->
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label>
-          {{"REGISTRATION.OVERVIEW.MY_OBSERVATION" | translate}}
-        </ion-label>
-      </ion-list-header>
-
       <!-- "Summary" items for each form -->
       <app-summary-item
         [readonly]="draft.syncStatus === RegistrationStatus.Sync"
         *ngFor="let item of summaryItems$ | async; trackBy: trackByFunction"
         [item]="item"
       ></app-summary-item>
-
     </ion-list>
   </ion-content>
   <app-send-button [draft]="draft"></app-send-button>
