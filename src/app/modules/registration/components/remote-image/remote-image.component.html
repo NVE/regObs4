@@ -1,1 +1,12 @@
-<img [src]="this.imgSrc">
+<img
+  [src]="this.imgSrc"
+  (error)="onError()"
+  *ngIf="showImage"
+>
+<div *ngIf="!showImage" class="error">
+    <ion-icon name="image"></ion-icon>
+    <p>
+        Klarte ikke laste bilde fra regobs.no
+    </p>
+    <p>Har du nett?</p>
+</div>

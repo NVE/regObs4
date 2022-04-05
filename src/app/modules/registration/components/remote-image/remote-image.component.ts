@@ -15,13 +15,28 @@ import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/dr
 })
 export class RemoteImageComponent implements OnInit {
   @Input() attachment: RemoteOrLocalAttachmentEditModel;
+  @Input() preferSize: keyof RemoteOrLocalAttachmentEditModel['UrlFormats'] = 'Thumbnail';
 
   imgSrc: SafeUrl;
+  showImage = true;
 
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-    const imageUrl = this.attachment.UrlFormats?.Thumbnail ? this.attachment.UrlFormats.Thumbnail : this.attachment.Url;
+    let imageUrl: string;
+    if (this.attachment.UrlFormats?.[this.preferSize]) {
+      imageUrl = this.attachment.UrlFormats[this.preferSize];
+    } else {
+      imageUrl = this.attachment.Url;
+    }
     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+  }
+
+  onError() {
+    if (this.imgSrc !== this.attachment.Url) {
+      this.imgSrc = this.attachment.Url;
+    } else {
+      this.showImage = false;
+    }
   }
 }

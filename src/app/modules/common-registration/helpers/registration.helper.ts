@@ -41,10 +41,14 @@ export function getWaterLevelAttachments(viewModel: RegistrationEditModelWithRem
     .filter((a) => (registrationTid > 0 ? a.RegistrationTID === registrationTid : true));
 }
 
-export function getAllAttachmentsFromViewModel(viewModel: RegistrationEditModelWithRemoteOrLocalAttachments, registrationTid?: RegistrationTid): RemoteOrLocalAttachmentEditModel[] {
-  const attachments = getAttachmentsFromRegistrationViewModel(viewModel, registrationTid);
-  const damageObsAttachments = getDamageObsAttachments(viewModel, registrationTid);
-  const waterLevelAttachmetns = getWaterLevelAttachments(viewModel, registrationTid);
+// TODO: Returnerer denne også nye som har feks en kommentar?
+export function getAttachmentsFromRegistration(
+  registration: RegistrationEditModelWithRemoteOrLocalAttachments,
+  registrationTid?: RegistrationTid
+): RemoteOrLocalAttachmentEditModel[] {
+  const attachments = getAttachmentsFromRegistrationViewModel(registration, registrationTid);
+  const damageObsAttachments = getDamageObsAttachments(registration, registrationTid);
+  const waterLevelAttachmetns = getWaterLevelAttachments(registration, registrationTid);
   return [].concat(...attachments, ...damageObsAttachments, ...waterLevelAttachmetns);
 }
 

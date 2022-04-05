@@ -25,9 +25,7 @@ export function addAttachmentToRegistration(
     throw new Error('Cant add attachment without AttachmentUploadId');
   }
 
-  const attachment: AttachmentEditModel = {
-    ...uploadedAttachment
-  };
+  const attachment: AttachmentEditModel = { ...uploadedAttachment };
 
   delete attachment['id'];
   delete attachment['ref'];

@@ -38,7 +38,7 @@ export interface RegistrationEditModelWithRemoteOrLocalAttachments extends Omit<
  */
 export interface RegistrationDraft {
 
-  /** Unique ID. Will never change */
+  /** Unique Draft ID */
   readonly uuid: string;
 
   /**

@@ -10,10 +10,15 @@ export interface AttachmentUploadEditModel extends AttachmentEditModel {
   ref?: string; // Guid
 }
 
+export interface AttachmentUploadEditModelWithBlob extends AttachmentUploadEditModel {
+  blob: Blob;
+}
+
 export type ExistingOrNewAttachmentModel = AttachmentUploadEditModel | RemoteOrLocalAttachmentEditModel;
 export type NewAttachmentType = 'new';
 export type ExistingAttachmentType = 'existing';
 export type ExistingOrNewAttachmentType = NewAttachmentType | ExistingAttachmentType;
+
 export interface ExistingOrNewAttachment {
   type: ExistingOrNewAttachmentType;
   attachment: ExistingOrNewAttachmentModel;

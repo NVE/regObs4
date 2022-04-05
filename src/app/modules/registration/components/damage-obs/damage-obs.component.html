@@ -21,13 +21,13 @@
     <ion-label color="medium" position="stacked" class="ion-text-uppercase">{{'REGISTRATION.WATER.DAMAGE.IMAGE_OF_DAMAGES' |
       translate}}</ion-label>
   </ion-item>
-  <app-add-picture-item iconColor="primary" 
+  <!-- <app-add-picture-item iconColor="primary" 
     [geoHazard]="draft.registration.GeoHazardTID" 
     [registrationId]="draft.uuid" 
     [registrationTid]="registrationTid"
     pictureCommentText="" [onBeforeAdd]="getSaveFunc()"
     pictureCommentPlaceholder="REGISTRATION.INCIDENT.IMAGE_PLACEHOLDER">
-  </app-add-picture-item>
+  </app-add-picture-item> -->
   <app-text-comment title="REGISTRATION.WATER.DAMAGE.COMMENT" [(value)]="damageObs.Comment"
     placeholder="REGISTRATION.WATER.DAMAGE.COMMENT_PLACEHOLDER"></app-text-comment>
 </ion-list>

@@ -30,7 +30,11 @@
         </ion-label>
       </ion-list-header>
       <app-add-picture-item
-        [registrationTid]="registrationTid" [geoHazard]="draft.registration.GeoHazardTID" [registrationId]="draft.uuid"></app-add-picture-item>
+        [registrationTid]="registrationTid"
+        [geoHazard]="draft.registration.GeoHazardTID"
+        [draftUuid]="draft.uuid"
+        [(existingAttachments)]="draft.registration.Attachments"
+      ></app-add-picture-item>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

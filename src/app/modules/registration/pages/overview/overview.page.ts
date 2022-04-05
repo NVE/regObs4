@@ -47,10 +47,12 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
 
     this.draft$ = this.draftService.getDraft$(id);
 
-    this.draft$.pipe(takeUntil(this.ngDestroy$)).subscribe((draft) => {
-      this.draft = draft;
-      this.cdr.detectChanges();
-    });
+    this.draft$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((draft) => {
+        this.draft = draft;
+        this.cdr.detectChanges();
+      });
 
     this.initSummaryItemSubscription();
     this.userGroupService.updateUserGroups();
@@ -59,6 +61,7 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   private initSummaryItemSubscription() {
     this.draft$
       .pipe(
+        // TODO: Endre til combinelatest på userGroups og draft? JA
         switchMap((draft) =>
           combineLatest([
             this.userGroupService.getUserGroupsAsObservable(),

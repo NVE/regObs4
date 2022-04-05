@@ -1,19 +1,39 @@
 import { Injectable } from '@angular/core';
 import cloneDeep from 'clone-deep';
-import { BehaviorSubject, combineLatest, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, distinctUntilChanged, firstValueFrom, forkJoin, from, iif, map, Observable, of, shareReplay, skipUntil, Subject, switchMap, take, takeWhile, tap, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { getAllAttachmentsFromViewModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
-import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
+import { getAttachmentsFromRegistration, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
+import { AttachmentType, AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { DatabaseService } from '../database/database.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { RegistrationDraft } from './draft-model';
+import { RegistrationDraft, RemoteOrLocalAttachmentEditModel } from './draft-model';
 import { viewModelToEditModel } from './reg-to-draft';
 
+/**
+ * Comparator for list of attachments that can be used with {@link distinctUntilChanged}
+ *
+ * @param previous Previous list of attachments
+ * @param current Current list of attachments
+ * @param {string} key 'Id' property used when comparing attachment objects
+ */
+function attachmentsComparator<T>(previous: T[], current: T[], key: keyof T): boolean {
+  if (previous.length !== current.length) {
+    return false;
+  }
+  const previousIds = previous.map(a => a[key]).sort();
+  const currentIds = previous.map(a => a[key]).sort();
+  return previousIds.every((id, index) => id == currentIds[index]);
+}
+
 const DEBUG_TAG = 'DraftRepositoryService';
+
+type AttachmentWithOrWithoutBlob<T extends boolean> = T extends true
+  ? Observable<AttachmentUploadEditModelWithBlob[]>
+  : Observable<AttachmentUploadEditModel[]>;
 
 /**
  * Takes care of your draft registrations and save them on your device.
@@ -70,22 +90,88 @@ export class DraftRepositoryService {
     );
   }
 
-  // TODO: Add test?
-  async getAttachments(draft: RegistrationDraft, registrationTid: RegistrationTid): Promise<ExistingOrNewAttachment[]> {
-    const existingAttachmentsForRegistrationType = getAllAttachmentsFromViewModel(
-      draft.registration,
-      registrationTid
-    )
-      .map(attachment => ({ type: 'existing' as ExistingAttachmentType, attachment }));
+  /**
+   * Get attachments already posted to regobs
+   */
+  getExistingAttachments$(
+    uuid: string,
+    registrationTid: RegistrationTid
+  ): Observable<RemoteOrLocalAttachmentEditModel[]> {
+    return this.getDraft$(uuid).pipe(
+      map(draft => getAttachmentsFromRegistration(draft.registration, registrationTid)),
+      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId')),
+    );
+  }
 
-    const newAttachments = await firstValueFrom(this.newAttachmentSerivice.getAttachments(draft.uuid));
-    const newAttachmentsForRegistrationType = newAttachments
-      .filter(a => a.RegistrationTID === registrationTid)
-      .map(attachment => ({ type: 'new' as NewAttachmentType, attachment }));
+  /**
+   * Get new attachments for a draft with the given uuid, saved in the local filesystem or browser.
+   *
+   * @param {string} uuid Draft uuid
+   * @param {Object} [options] Optional filter and datatype options
+   */
+  getNewAttachments$<T extends boolean>(
+    uuid: string,
+    options: {
+      /**
+       * Filter for attachment type, eg. Water Level Attachments
+       */
+      type?: AttachmentType | 'All';
+      /**
+       * Set to true to include the blob in the attachment object
+       */
+      includeBlob?: T;
+      /**
+       * Reference used to filter attachments matching eg. a water level measurement
+       */
+      ref?: string;
+      /**
+       * Filter for registration type, eg. Danger Sign
+       */
+      registrationTid?: RegistrationTid;
+    } = null
+  ): AttachmentWithOrWithoutBlob<T> {
+    const defaultOptions = { includeBlob: true, type: 'All' };
+    const { ref, includeBlob, type, registrationTid: regTid } = { ...defaultOptions, ...options };
+
+    // Get the blob for a single attachment
+    const addBlob = (attachment: AttachmentUploadEditModel): Observable<AttachmentUploadEditModelWithBlob> => {
+      return this.newAttachmentSerivice.getBlob(uuid, attachment.id).pipe(
+        take(1),
+        map((blob) => ({ ...attachment, blob })),
+        catchError((err) => {
+          this.logger.error(err, DEBUG_TAG, 'Could not get blob from attachment');
+          return of({ ...attachment, blob: undefined });
+        })
+      );
+    };
+
+    // Get blobs for all attachments
+    const addBlobs = (attachments: AttachmentUploadEditModel[]) => forkJoin(attachments.map(a => addBlob(a)));
+
+    return this.newAttachmentSerivice.getAttachments(uuid).pipe(
+      // If registrationTid filter is provided, filter
+      map(attachments => regTid ? attachments.filter(a => a.RegistrationTID === regTid) : attachments),
+      // If type of attachments is provided, return only attachments of that type, eg water level attachments
+      map(attachments => type !== 'All' ? attachments.filter(a => a.type === type) : attachments),
+      // If ref filter is provided, return only attachments matching ref
+      // Ref is used eg. to link an attachment to a specific water level measurement
+      map(attachments => ref ? attachments.filter(a => a.ref === ref) : attachments),
+      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
+      // If includeBlob - add blobs
+      switchMap(attachments => attachments.length > 0 && includeBlob ? addBlobs(attachments) : of(attachments))
+    ) as AttachmentWithOrWithoutBlob<T>;
+  }
+
+  async getAttachments(draft: RegistrationDraft, registrationTid: RegistrationTid): Promise<ExistingOrNewAttachment[]> {
+    // TODO: Use this.getExistingAttachments$?
+    const existingAttachments = getAttachmentsFromRegistration(draft.registration, registrationTid);
+    const newAttachments = await firstValueFrom(
+      this.getNewAttachments$(draft.uuid, { includeBlob: false, registrationTid })
+    );
 
     return [
-      ...existingAttachmentsForRegistrationType,
-      ...newAttachmentsForRegistrationType
+      ...existingAttachments.map(attachment => ({ type: 'existing' as ExistingAttachmentType, attachment })),
+      ...newAttachments.map(attachment => ({ type: 'new' as NewAttachmentType, attachment }))
     ];
   }
 
@@ -94,7 +180,7 @@ export class DraftRepositoryService {
       return false;
     }
 
-    const attachments = await firstValueFrom(this.newAttachmentSerivice.getAttachments(draft.uuid));
+    const attachments = await firstValueFrom(this.getNewAttachments$(draft.uuid));
     return attachments.length === 0;
   }
 

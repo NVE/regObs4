@@ -29,7 +29,7 @@ export class SummaryItemService {
     const userGroupsToUse = userGroups ? userGroups : await this.userGroupService.getUserGroups();
     const summaryItems: ISummaryItem[] = [
       {
-        id: draft.uuid,
+        uuid: draft.uuid,
         href: '/registration/obs-location',
         queryParams: { geoHazard: draft.registration.GeoHazardTID },
         title: 'REGISTRATION.OBS_LOCATION.TITLE',
@@ -39,7 +39,7 @@ export class SummaryItemService {
         hasData: !isEmpty(draft.registration.ObsLocation)
       },
       {
-        id: draft.uuid,
+        uuid: draft.uuid,
         href: '/registration/set-time',
         title: 'REGISTRATION.OVERVIEW.DATE_AND_TIME',
         subTitle: draft.registration.DtObsTime
@@ -52,7 +52,7 @@ export class SummaryItemService {
     ];
     if (userGroupsToUse.length > 0) {
       summaryItems.push({
-        id: draft.uuid,
+        uuid: draft.uuid,
         href: '/registration/group',
         title: 'REGISTRATION.OVERVIEW.SHARE_WITH_GROUP',
         subTitle: this.getObservationGroupName(draft, userGroupsToUse),
@@ -116,7 +116,7 @@ export class SummaryItemService {
     return '';
   }
 
-  private getGeoHazardItems(draft: RegistrationDraft) {
+  private getGeoHazardItems(draft: RegistrationDraft): Promise<ISummaryItem[]> {
     switch (draft.registration.GeoHazardTID) {
     case GeoHazard.Water:
       return this.getWaterItems(draft);
@@ -129,7 +129,7 @@ export class SummaryItemService {
     }
   }
 
-  private async getWaterItems(draft: RegistrationDraft) {
+  private async getWaterItems(draft: RegistrationDraft): Promise<ISummaryItem[]> {
     return [
       await this.getRegItem(
         draft,
@@ -156,7 +156,7 @@ export class SummaryItemService {
     registrationTid: RegistrationTid
   ): Promise<ISummaryItem> {
     return {
-      id: draft.uuid,
+      uuid: draft.uuid,
       href,
       title,
       subTitle,
@@ -165,7 +165,7 @@ export class SummaryItemService {
     };
   }
 
-  private async getDirtItems(draft: RegistrationDraft) {
+  private async getDirtItems(draft: RegistrationDraft): Promise<ISummaryItem[]> {
     return [
       await this.getRegItem(
         draft,
@@ -184,7 +184,7 @@ export class SummaryItemService {
     ];
   }
 
-  private async getIceItems(draft: RegistrationDraft) {
+  private async getIceItems(draft: RegistrationDraft): Promise<ISummaryItem[]> {
     return [
       await this.getRegItem(
         draft,
@@ -217,7 +217,7 @@ export class SummaryItemService {
     ];
   }
 
-  private async getSnowItems(draft: RegistrationDraft) {
+  private async getSnowItems(draft: RegistrationDraft): Promise<ISummaryItem[]> {
     return [
       await this.getRegItem(
         draft,
@@ -262,7 +262,7 @@ export class SummaryItemService {
         RegistrationTid.CompressionTest
       ),
       {
-        id: draft.uuid,
+        uuid: draft.uuid,
         href: '/registration/snow/snow-profile',
         title: 'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
         subTitle: '',
