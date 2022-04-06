@@ -1,7 +1,7 @@
 <div class="images">
 
   <!-- Existing attachments -->
-  <div class="image-wrapper" *ngFor="let attachment of filteredExistingImages; let i = index">
+  <div class="image-wrapper" *ngFor="let attachment of filteredExistingImages; trackBy: trackExisting">
     <app-remote-image [attachment]="attachment" preferSize="Large"></app-remote-image>
     <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">
       <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeExistingImage(attachment)">
@@ -13,7 +13,7 @@
   </div>
 
   <!-- New attachments -->
-  <div class="image-wrapper" *ngFor="let attachment of newAttachments$ | async; let i = index">
+  <div class="image-wrapper" *ngFor="let attachment of newAttachments$ | async; trackBy: trackNew">
     <!-- <img [src]="convertFileSrc(image.PictureImageBase64)" /> -->
     <ro-blob-image [imgBlob]="attachment.blob"></ro-blob-image>
     <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">

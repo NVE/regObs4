@@ -1,68 +1,46 @@
 import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { ISummaryItem } from './summary-item.model';
 import { NavController } from '@ionic/angular';
-import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { forkJoin, map, of, switchMap, take, catchError, distinctUntilChanged, Observable, ReplaySubject } from 'rxjs';
+import { map, distinctUntilChanged, Observable, ReplaySubject } from 'rxjs';
 import { AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, ExistingOrNewAttachment } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
 
-
-// TODO: Defined elsewhere?
-function attachmentsComparator<T>(previous: T[], current: T[], key: keyof T): boolean {
-  if (previous.length !== current.length) {
-    return false;
-  }
-  const previousIds = previous.map(a => a[key]).sort();
-  const currentIds = previous.map(a => a[key]).sort();
-  return previousIds.every((id, index) => id == currentIds[index]);
-}
-
-
-const DEBUG_TAG = 'SummaryItemComponent';
 @Component({
   selector: 'app-summary-item',
   templateUrl: './summary-item.component.html',
   styleUrls: ['./summary-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SummaryItemComponent implements OnChanges {
+export class SummaryItemComponent implements OnChanges, OnInit {
   @Input() item: ISummaryItem;
   @Input() readonly = false;
 
   private attachments = new ReplaySubject<ExistingOrNewAttachment[]>(1);
 
-  newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]> = this.attachments.pipe(
-    map(attachments => attachments.filter(a => a.type === 'new')),
-    map(attachments => attachments.map(a => a.attachment as AttachmentUploadEditModel)),
-    distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
-    switchMap((attachments: AttachmentUploadEditModel[]) => attachments.length === 0 ? of([]) : forkJoin([
-      ...attachments.map((a) =>
-        this.newAttachmentService.getBlob(this.item.uuid, a.id).pipe(
-          take(1),
-          map((blob) => ({ ...a, blob })),
-          catchError((err) => {
-            this.logger.error(err, DEBUG_TAG, 'Could not get blob from attachment');
-            return of({ ...a, blob: undefined });
-          })
-        )
-      )
-    ]))
-  );
-
-  existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]> = this.attachments.pipe(
-    map(attachments => attachments.filter(a => a.type === 'existing')),
-    map(attachments => attachments.map(a => a.attachment as RemoteOrLocalAttachmentEditModel)),
-    distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId'))
-  );
+  newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
+  existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
 
   constructor(
     private navController: NavController,
     private newAttachmentService: NewAttachmentService,
-    private logger: LoggingService
   ) {}
+
+  ngOnInit(): void {
+    this.newAttachments$ = this.attachments.pipe(
+      map(attachments => attachments.filter(a => a.type === 'new')),
+      map(attachments => attachments.map(a => a.attachment as AttachmentUploadEditModel)),
+      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
+      this.newAttachmentService.addBlobs(this.item.uuid)
+    );
+
+    this.existingAttachments$ = this.attachments.pipe(
+      map(attachments => attachments.filter(a => a.type === 'existing')),
+      map(attachments => attachments.map(a => a.attachment as RemoteOrLocalAttachmentEditModel)),
+      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId'))
+    );
+  }
 
   trackExisting(index: number, attachment: RemoteOrLocalAttachmentEditModel) {
     return attachment.AttachmentId;

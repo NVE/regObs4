@@ -11,15 +11,17 @@ import { RegistrationTid } from '../../models/registration-tid.enum';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 
-const DEBUG_TAG = 'OfflineDbNewAttachmentService';
-
 @Injectable()
-export class OfflineDbNewAttachmentService implements NewAttachmentService {
+export class OfflineDbNewAttachmentService extends NewAttachmentService {
+  protected DEBUG_TAG = 'OfflineDbNewAttachmentService';
+
   constructor(
     private offlineDbService: OfflineDbService,
     protected logger: LoggingService,
     private userSettingService: UserSettingService
-  ) {}
+  ) {
+    super();
+  }
 
   async addAttachment(
     registrationId: string,
@@ -56,14 +58,14 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
           )
         ),
         catchError((err) => {
-          this.logger.error(err, 'Could not add attachment', DEBUG_TAG);
+          this.logger.error(err, 'Could not add attachment', this.DEBUG_TAG);
           return EMPTY;
         })
       )
       .subscribe();
   }
 
-  getAttachments(registrationId: string): Observable<AttachmentUploadEditModel[]> {
+  protected getAttachmentsObservable(registrationId: string): Observable<AttachmentUploadEditModel[]> {
     return combineLatest([this.getRegistrationOfflineDocumentById(registrationId), this.getAnyChangesToMetaData$()]).pipe(
       switchMap(([doc]) => (doc && doc.allAttachments().length > 0 ? this.getAttachmentMetaFromDocument(doc) : of([])))
     );
@@ -113,7 +115,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
   async removeAttachments(registrationId: string): Promise<void> {
     const regDoc = await this.getRegistrationOfflineDocumentById(registrationId).pipe(take(1)).toPromise();
     if (!regDoc) {
-      this.logger.debug(`No registration document found for ID '${registrationId}'`, DEBUG_TAG);
+      this.logger.debug(`No registration document found for ID '${registrationId}'`, this.DEBUG_TAG);
       return;
     }
     const metaDocs = await this.getAttachmentMetaDocumentsFromRegistrationDocument(regDoc).pipe(take(1)).toPromise();
@@ -124,7 +126,7 @@ export class OfflineDbNewAttachmentService implements NewAttachmentService {
         this.logger.error(
           err,
           `Could not remove attachment meta document from registration document with ID = '${registrationId}`,
-          DEBUG_TAG,
+          this.DEBUG_TAG,
           metaDoc);
       }
     }

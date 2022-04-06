@@ -68,16 +68,10 @@ export class EditImagesComponent extends NgDestoryBase implements OnInit {
   }
 
   ngOnInit() {
-    this.newAttachments$ = this.draftRepository.getNewAttachments$(
+    this.newAttachments$ = this.newAttachmentService.getAttachmentsWithBlob(
       this.draftUuid,
-      { includeBlob: true, ref: this.ref, type: this.attachmentType, registrationTid: this.registrationTid }
+      { ref: this.ref, type: this.attachmentType, registrationTid: this.registrationTid }
     );
-
-    // this.newAttachments$ = this.draftRepository.getNewAttachments$(
-    //   this.registrationId,
-    //   this.registrationTid,
-    //   { includeBlob: true, ref: this.ref, type: this.attachmentType }
-    // );
   }
 
   async addClick() {
@@ -204,5 +198,13 @@ export class EditImagesComponent extends NgDestoryBase implements OnInit {
     if (existingAttachments.length !== this.existingAttachments.length) {
       this.existingAttachmentsChange.emit(existingAttachments);
     }
+  }
+
+  trackExisting(index: number, attachment: RemoteOrLocalAttachmentEditModel) {
+    return attachment.AttachmentId;
+  }
+
+  trackNew(index: number, attachment: AttachmentUploadEditModelWithBlob) {
+    return attachment.id;
   }
 }
