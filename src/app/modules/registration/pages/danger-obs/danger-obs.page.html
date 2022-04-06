@@ -29,12 +29,12 @@
           {{ 'REGISTRATION.ADD_IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <app-add-picture-item
+      <app-edit-images
         [registrationTid]="registrationTid"
         [geoHazard]="draft.registration.GeoHazardTID"
         [draftUuid]="draft.uuid"
         [(existingAttachments)]="draft.registration.Attachments"
-      ></app-add-picture-item>
+      ></app-edit-images>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

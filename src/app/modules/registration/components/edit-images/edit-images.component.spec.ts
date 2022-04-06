@@ -1,6 +1,6 @@
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-// import { AddPictureItemComponent } from './add-picture-item.component';
+// import { AddPictureItemComponent } from './edit-images.component';
 
 // describe('AddPictureItemComponent', () => {
 //   let component: AddPictureItemComponent;

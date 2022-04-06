@@ -56,9 +56,13 @@
           {{'REGISTRATION.IMAGES' | translate}}
         </ion-label>
       </ion-list-header>
-      <!-- <app-add-picture-item [geoHazard]="draft.registration.GeoHazardTID" [registrationId]="draft.uuid"
-        [registrationTid]="registrationTid" [onBeforeAdd]="getSaveFunc()">
-      </app-add-picture-item> -->
+      <app-edit-images
+        [registrationTid]="registrationTid"
+        [geoHazard]="draft.registration.GeoHazardTID"
+        [draftUuid]="draft.uuid"
+        [(existingAttachments)]="draft.registration.Attachments"
+        [onBeforeAdd]="getSaveFunc()"
+      ></app-edit-images>
     </ion-list>
   </app-registration-content-wrapper>
 </ion-content>

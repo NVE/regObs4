@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionSheetController, Platform, ToastController } from '@ionic/angular';
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
@@ -6,18 +6,14 @@ import { settings } from '../../../../../settings';
 import { AttachmentType, AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
-import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { DomSanitizer } from '@angular/platform-browser';
 import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { forkJoin, Observable, of, ReplaySubject } from 'rxjs';
-import { catchError, distinctUntilChanged, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { RegistrationDraft, RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
+import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { getAttachmentsFromRegistration } from 'src/app/modules/common-registration/registration.helpers';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -29,12 +25,12 @@ const MIME_TYPE = 'image/jpeg';
 // TODO: Check if we can remove NgDestoryBase
 // TODO: Add support for existing attachments
 @Component({
-  selector: 'app-add-picture-item',
-  templateUrl: './add-picture-item.component.html',
-  styleUrls: ['./add-picture-item.component.scss'],
+  selector: 'app-edit-images',
+  templateUrl: './edit-images.component.html',
+  styleUrls: ['./edit-images.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
+export class EditImagesComponent extends NgDestoryBase implements OnInit {
   @Input() draftUuid: string;
   @Input() existingAttachments: RemoteOrLocalAttachmentEditModel[];
   @Output() existingAttachmentsChange = new EventEmitter();
