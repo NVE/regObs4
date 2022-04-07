@@ -49,9 +49,6 @@ export class GroupPage extends BasePage {
     }
 
     return pleaseReset;
-    // this.ngZone.run(() => {
-    //   this.draft.registration.ObserverGroupID = undefined;
-    // });
   }
 
   groupChanged(ObserverGroupID: RegistrationEditModel['ObserverGroupID']) {
