@@ -12,10 +12,8 @@ describe('NumericInputComponent', () => {
   });
 
   it('displayValue should handle null values', () => {
-    // component.value = undefined;
-    // expect(component.displayValue).toBeUndefined();
-    component.value = 3.14;
-    expect(component.displayValue).toEqual('3,14');
+    component.value = undefined;
+    expect(component.displayValue).toBeUndefined();
 
     component.value = null;
     expect(component.displayValue).toBeUndefined();
