@@ -1,0 +1,22 @@
+img {
+  height: inherit;
+  width: inherit;
+  object-fit: cover;
+}
+
+ion-icon {
+  font-size: 64px;
+}
+
+.error {
+  width: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #eee;
+  height: 100vw;
+  outline: 5px dashed white;
+  outline-offset: -15px;
+  margin-bottom: 5px;
+}

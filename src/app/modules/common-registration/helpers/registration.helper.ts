@@ -2,28 +2,28 @@ import { RegistrationTid } from '../models/registration-tid.enum';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { ValidRegistrationType } from '../models/valid-registration.type';
 import {
-  AttachmentEditModel,
-  AttachmentViewModel,
-  RegistrationEditModel,
   RegistrationViewModel
 } from 'src/app/modules/common-regobs-api/models';
-import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { RegistrationDraft, RegistrationEditModelWithRemoteOrLocalAttachments, RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 
 // TODO: Sjekk hvilke av disse vi egentlig trenger
 
 export function getAttachmentsFromRegistrationViewModel(
-  viewModel: RegistrationEditModel | RegistrationViewModel,
+  viewModel: RegistrationEditModelWithRemoteOrLocalAttachments | RegistrationViewModel,
   registrationTid?: RegistrationTid
-): AttachmentEditModel[] {
+): RemoteOrLocalAttachmentEditModel[] {
   if (!viewModel || !viewModel.Attachments) {
     return [];
   }
-  return (viewModel.Attachments as AttachmentViewModel[])
+  return (viewModel.Attachments as RemoteOrLocalAttachmentEditModel[])
     .filter((a) => (registrationTid > 0 ? a.RegistrationTID === registrationTid : true))
     .map((a) => ({ ...a, type: 'Attachment' }));
 }
 
-export function getDamageObsAttachments(viewModel: RegistrationEditModel, registrationTid?: RegistrationTid): AttachmentEditModel[] {
+export function getDamageObsAttachments(
+  viewModel: RegistrationEditModelWithRemoteOrLocalAttachments,
+  registrationTid?: RegistrationTid
+): RemoteOrLocalAttachmentEditModel[] {
   if (!viewModel || !viewModel.DamageObs) {
     return [];
   }
@@ -32,7 +32,7 @@ export function getDamageObsAttachments(viewModel: RegistrationEditModel, regist
     .filter((a) => (registrationTid > 0 ? a.RegistrationTID === registrationTid : true));
 }
 
-export function getWaterLevelAttachments(viewModel: RegistrationEditModel, registrationTid?: RegistrationTid): AttachmentEditModel[] {
+export function getWaterLevelAttachments(viewModel: RegistrationEditModelWithRemoteOrLocalAttachments, registrationTid?: RegistrationTid): RemoteOrLocalAttachmentEditModel[] {
   if (!viewModel || !viewModel.WaterLevel2 || !viewModel.WaterLevel2.WaterLevelMeasurement) {
     return [];
   }
@@ -41,10 +41,13 @@ export function getWaterLevelAttachments(viewModel: RegistrationEditModel, regis
     .filter((a) => (registrationTid > 0 ? a.RegistrationTID === registrationTid : true));
 }
 
-export function getAllAttachmentsFromViewModel(viewModel: RegistrationEditModel, registrationTid?: RegistrationTid): AttachmentEditModel[] {
-  const attachments = getAttachmentsFromRegistrationViewModel(viewModel, registrationTid);
-  const damageObsAttachments = getDamageObsAttachments(viewModel, registrationTid);
-  const waterLevelAttachmetns = getWaterLevelAttachments(viewModel, registrationTid);
+export function getAttachmentsFromRegistration(
+  registration: RegistrationEditModelWithRemoteOrLocalAttachments,
+  registrationTid?: RegistrationTid
+): RemoteOrLocalAttachmentEditModel[] {
+  const attachments = getAttachmentsFromRegistrationViewModel(registration, registrationTid);
+  const damageObsAttachments = getDamageObsAttachments(registration, registrationTid);
+  const waterLevelAttachmetns = getWaterLevelAttachments(registration, registrationTid);
   return [].concat(...attachments, ...damageObsAttachments, ...waterLevelAttachmetns);
 }
 
@@ -55,7 +58,7 @@ export function getRegistrationName(registrationTid: RegistrationTid): Registrat
 }
 
 export function getRegistationPropertyForModel(
-  regModel: RegistrationEditModel | RegistrationViewModel,
+  regModel: RegistrationEditModelWithRemoteOrLocalAttachments | RegistrationViewModel,
   registrationTid: RegistrationTid
 ): ValidRegistrationType {
   if (regModel && registrationTid) {
@@ -71,13 +74,18 @@ export function getRegistrationTids(): RegistrationTid[] {
 }
 
 export function isObservationModelEmptyForRegistrationTid(
-  regModel: RegistrationEditModel | RegistrationViewModel,
+  regModel: RegistrationEditModelWithRemoteOrLocalAttachments | RegistrationViewModel,
   registrationTid: RegistrationTid
 ): boolean {
   if (regModel && registrationTid) {
     return isEmpty(getRegistationPropertyForModel(regModel, registrationTid));
   }
   return true;
+}
+
+export function getRegistrationsWithData(draft: RegistrationDraft): RegistrationTid[] {
+  const registrationTids = getRegistrationTids();
+  return registrationTids.filter((tid) => !isObservationModelEmptyForRegistrationTid(draft.registration, tid));
 }
 
 export function hasAnyObservations(draft: RegistrationDraft): boolean {

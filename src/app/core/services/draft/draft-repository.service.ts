@@ -3,7 +3,7 @@ import cloneDeep from 'clone-deep';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { getAllAttachmentsFromViewModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
+import { getAttachmentsFromRegistration, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
 import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
@@ -70,25 +70,6 @@ export class DraftRepositoryService {
     );
   }
 
-  // TODO: Add test?
-  async getAttachments(draft: RegistrationDraft, registrationTid: RegistrationTid): Promise<ExistingOrNewAttachment[]> {
-    const existingAttachmentsForRegistrationType = getAllAttachmentsFromViewModel(
-      draft.registration,
-      registrationTid
-    )
-      .map(attachment => ({ type: 'existing' as ExistingAttachmentType, attachment }));
-
-    const newAttachments = await firstValueFrom(this.newAttachmentSerivice.getAttachments(draft.uuid));
-    const newAttachmentsForRegistrationType = newAttachments
-      .filter(a => a.RegistrationTID === registrationTid)
-      .map(attachment => ({ type: 'new' as NewAttachmentType, attachment }));
-
-    return [
-      ...existingAttachmentsForRegistrationType,
-      ...newAttachmentsForRegistrationType
-    ];
-  }
-
   async isDraftEmpty(draft: RegistrationDraft) {
     if (hasAnyObservations(draft)) {
       return false;
@@ -115,8 +96,15 @@ export class DraftRepositoryService {
     );
 
     if (isEmpty) {
-      const attachments = await this.getAttachments(draft, registrationTid);
-      isEmpty = attachments.length === 0;
+      const existingAttachments = getAttachmentsFromRegistration(draft.registration, registrationTid);
+      isEmpty = existingAttachments.length === 0;
+    }
+
+    if (isEmpty) {
+      const newAttachments = await firstValueFrom(
+        this.newAttachmentSerivice.getAttachments(draft.uuid, { registrationTid })
+      );
+      isEmpty = newAttachments.length === 0;
     }
 
     return isEmpty;

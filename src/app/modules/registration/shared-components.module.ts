@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { SaveAndGoBackButtonComponent } from './components/save-and-go-back-button/save-and-go-back-button.component';
 import { TextCommentComponent } from './components/text-comment/text-comment.component';
-import { AddPictureItemComponent } from './components/add-picture-item/add-picture-item.component';
+import { EditImagesComponent } from './components/edit-images/edit-images.component';
 import { KdvRadiobuttonListComponent } from './components/kdv-radiobutton-list/kdv-radiobutton-list.component';
 import { NavigationButtonsComponent } from './components/navigation-buttons/navigation-buttons.component';
 import { SetLocationInMapComponent } from './components/set-location-in-map/set-location-in-map.component';
@@ -23,6 +23,7 @@ import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
 import { CompressionTestListComponent } from './components/snow/compression-test-list/compression-test-list.component';
 import { KdvSelectComponent } from './components/kdv-select/kdv-select.component';
 import { BlobImageComponent } from './components/blob-image/blob-image.component';
+import { RemoteImageComponent } from './components/remote-image/remote-image.component';
 
 @NgModule({
   imports: [
@@ -35,7 +36,7 @@ import { BlobImageComponent } from './components/blob-image/blob-image.component
     SharedModule,
     MapModule,
     SaveAndGoBackButtonComponent,
-    AddPictureItemComponent,
+    EditImagesComponent,
     TextCommentComponent,
     KdvRadiobuttonListComponent,
     NavigationButtonsComponent,
@@ -56,10 +57,11 @@ import { BlobImageComponent } from './components/blob-image/blob-image.component
     CompressionTestListComponent,
     KdvSelectComponent,
     BlobImageComponent,
+    RemoteImageComponent
   ],
   declarations: [
     SaveAndGoBackButtonComponent,
-    AddPictureItemComponent,
+    EditImagesComponent,
     TextCommentComponent,
     KdvRadiobuttonListComponent,
     NavigationButtonsComponent,
@@ -77,7 +79,8 @@ import { BlobImageComponent } from './components/blob-image/blob-image.component
     NumericInputComponent,
     CompressionTestListComponent,
     KdvSelectComponent,
-    BlobImageComponent
+    BlobImageComponent,
+    RemoteImageComponent
   ]
 })
 export class SharedComponentsModule {}

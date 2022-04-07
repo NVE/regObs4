@@ -1,36 +1,31 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionSheetController, Platform, ToastController } from '@ionic/angular';
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
 import { settings } from '../../../../../settings';
-import { AttachmentType, AttachmentUploadEditModel, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { AttachmentType, AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { DataUrlHelper } from '../../../../core/helpers/data-url.helper';
-import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { DomSanitizer } from '@angular/platform-browser';
 import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { forkJoin, of } from 'rxjs';
-import { catchError, map, switchMap, take, takeUntil } from 'rxjs/operators';
-import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
+import { Observable } from 'rxjs';
+import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
 
-export interface AttachmentUploadEditModelWithBlob extends AttachmentUploadEditModel {
-  blob: Blob;
-}
-
 @Component({
-  selector: 'app-add-picture-item',
-  templateUrl: './add-picture-item.component.html',
-  styleUrls: ['./add-picture-item.component.scss'],
+  selector: 'app-edit-images',
+  templateUrl: './edit-images.component.html',
+  styleUrls: ['./edit-images.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
-  @Input() registrationId: string;
+export class EditImagesComponent implements OnInit {
+  @Input() draftUuid: string;
+  @Input() existingAttachments: RemoteOrLocalAttachmentEditModel[];
+  @Output() existingAttachmentsChange = new EventEmitter();
   @Input() registrationTid: RegistrationTid;
   @Input() geoHazard: GeoHazard;
   @Input() title = 'REGISTRATION.ADD_IMAGES';
@@ -43,7 +38,12 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
   @Input() attachmentType: AttachmentType = 'Attachment';
   @Input() ref?: string;
 
-  attachments: AttachmentUploadEditModelWithBlob[];
+  newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
+
+  get filteredExistingImages(): RemoteOrLocalAttachmentEditModel[] {
+    return this.existingAttachments
+      .filter(a => this.registrationTid ? a.RegistrationTID === this.registrationTid : true);
+  }
 
   constructor(
     private translateService: TranslateService,
@@ -51,45 +51,16 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
     private platform: Platform,
     private file: File,
     private logger: LoggingService,
-    private webView: WebView,
     private toastController: ToastController,
-    private domSanitizer: DomSanitizer,
     private actionSheetController: ActionSheetController,
     private newAttachmentService: NewAttachmentService,
-    private cdr: ChangeDetectorRef
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit() {
-    this.newAttachmentService
-      .getAttachments(this.registrationId)
-      .pipe(
-        map((attachments) =>
-          attachments.filter((a) => a.RegistrationTID === this.registrationTid && a.type === this.attachmentType && a.ref === this.ref)
-        ),
-        switchMap((attachments) =>
-          attachments.length === 0
-            ? of([])
-            : forkJoin([
-              ...attachments.map((a) =>
-                this.newAttachmentService.getBlob(this.registrationId, a.id).pipe(
-                  take(1),
-                  map((blob) => ({ ...a, blob })),
-                  catchError((err) => {
-                    this.logger.error(err, DEBUG_TAG, 'Could not get blob from attachment');
-                    return of({ ...a, blob: undefined });
-                  })
-                )
-              )
-            ])
-        ),
-        takeUntil(this.ngDestroy$)
-      )
-      .subscribe((result) => {
-        this.attachments = result;
-        this.cdr.detectChanges();
-      });
+    this.newAttachments$ = this.newAttachmentService.getAttachmentsWithBlob(
+      this.draftUuid,
+      { ref: this.ref, type: this.attachmentType, registrationTid: this.registrationTid }
+    );
   }
 
   async addClick() {
@@ -197,7 +168,7 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
 
   async addImage(data: Blob, mimeType: string) {
     await this.newAttachmentService.addAttachment(
-      this.registrationId,
+      this.draftUuid,
       data,
       mimeType,
       this.geoHazard,
@@ -207,7 +178,22 @@ export class AddPictureItemComponent extends NgDestoryBase implements OnInit {
     );
   }
 
-  removeImage(image: AttachmentUploadEditModel) {
-    this.newAttachmentService.removeAttachment(this.registrationId, image.id);
+  removeNewImage(image: AttachmentUploadEditModel) {
+    this.newAttachmentService.removeAttachment(this.draftUuid, image.id);
+  }
+
+  removeExistingImage(image: RemoteOrLocalAttachmentEditModel) {
+    const existingAttachments = this.existingAttachments.filter(a => a.AttachmentId !== image.AttachmentId);
+    if (existingAttachments.length !== this.existingAttachments.length) {
+      this.existingAttachmentsChange.emit(existingAttachments);
+    }
+  }
+
+  trackExisting(index: number, attachment: RemoteOrLocalAttachmentEditModel) {
+    return attachment.AttachmentId;
+  }
+
+  trackNew(index: number, attachment: AttachmentUploadEditModelWithBlob) {
+    return attachment.id;
   }
 }

@@ -1,63 +1,64 @@
-import { Component, OnChanges, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnChanges, Input, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { ISummaryItem } from './summary-item.model';
 import { NavController } from '@ionic/angular';
-import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
-import { forkJoin, map, of, switchMap, take, takeUntil, catchError } from 'rxjs';
-import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
+import { map, distinctUntilChanged, Observable, ReplaySubject } from 'rxjs';
+import { AttachmentUploadEditModel, AttachmentUploadEditModelWithBlob, ExistingOrNewAttachment } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
-import { AttachmentUploadEditModelWithBlob } from '../add-picture-item/add-picture-item.component';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
+import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
 
-const DEBUG_TAG = 'SummaryItemComponent';
 @Component({
   selector: 'app-summary-item',
   templateUrl: './summary-item.component.html',
   styleUrls: ['./summary-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SummaryItemComponent extends NgDestoryBase implements OnChanges {
+export class SummaryItemComponent implements OnChanges, OnInit {
   @Input() item: ISummaryItem;
   @Input() readonly = false;
 
-  attachments: AttachmentUploadEditModelWithBlob[];
+  private attachments = new ReplaySubject<ExistingOrNewAttachment[]>(1);
 
-  constructor(private navController: NavController, private newAttachmentService: NewAttachmentService, private cdr: ChangeDetectorRef, private logger: LoggingService) {
-    super();
+  newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
+  existingAttachments$: Observable<RemoteOrLocalAttachmentEditModel[]>;
+
+  constructor(
+    private navController: NavController,
+    private newAttachmentService: NewAttachmentService,
+  ) {}
+
+  ngOnInit(): void {
+    this.newAttachments$ = this.attachments.pipe(
+      map(attachments => attachments.filter(a => a.type === 'new')),
+      map(attachments => attachments.map(a => a.attachment as AttachmentUploadEditModel)),
+      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')),
+      this.newAttachmentService.addBlobs(this.item.uuid)
+    );
+
+    this.existingAttachments$ = this.attachments.pipe(
+      map(attachments => attachments.filter(a => a.type === 'existing')),
+      map(attachments => attachments.map(a => a.attachment as RemoteOrLocalAttachmentEditModel)),
+      distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'AttachmentId'))
+    );
+  }
+
+  trackExisting(index: number, attachment: RemoteOrLocalAttachmentEditModel) {
+    return attachment.AttachmentId;
+  }
+
+  trackNew(index: number, attachment: AttachmentUploadEditModelWithBlob) {
+    return attachment.id;
   }
 
   ngOnChanges() {
     if (this.item?.attachments != null) {
-      of(this.item.attachments)
-        .pipe(
-          map((attachments) => attachments.filter((a) => a.type === 'new').map((a) => a.attachment as AttachmentUploadEditModel)),
-          switchMap((attachments) =>
-            attachments.length === 0
-              ? of([])
-              : forkJoin([
-                ...attachments.map((a) =>
-                  this.newAttachmentService.getBlob(this.item.id, a.id).pipe(
-                    take(1),
-                    map((blob) => ({ ...a, blob })),
-                    catchError((err) => {
-                      this.logger.error(err, DEBUG_TAG, 'Could not get blob from attachment');
-                      return of({ ...a, blob: undefined });
-                    })
-                  )
-                )
-              ])
-          ),
-          takeUntil(this.ngDestroy$)
-        )
-        .subscribe((result) => {
-          this.attachments = result;
-          this.cdr.detectChanges();
-        });
+      this.attachments.next(this.item.attachments);
     }
   }
 
   navigate() {
     if (!this.readonly) {
-      this.navController.navigateForward([this.item.href, this.item.id], {
+      this.navController.navigateForward([this.item.href, this.item.uuid], {
         queryParams: this.item.queryParams
       });
     }

@@ -22,13 +22,13 @@ implements CanDeactivate<OverviewPage | ObsLocationPage> {
 
   async canDeactivate(
     component: OverviewPage,
-    _: ActivatedRouteSnapshot,
+    activatedRoute: ActivatedRouteSnapshot,
     __: RouterStateSnapshot,
     nextState?: RouterStateSnapshot
   ) {
-    if (nextState && !this.isInWhitelist(nextState.url) && component.draft) {
-      const draft = await this.draftService.load(component.draft.uuid);
-      // TODO: Hva annet enn SyncStatus.Draft kan det være her? Usikker på om denne if-setningen trengs.
+    const uuid = activatedRoute.params['id'];
+    if (nextState && !this.isInWhitelist(nextState.url) && uuid != null) {
+      const draft = await this.draftService.load(uuid);
       if (draft && draft.syncStatus === SyncStatus.Draft) {
         const save = await this.createAlert();
         if (!save) {

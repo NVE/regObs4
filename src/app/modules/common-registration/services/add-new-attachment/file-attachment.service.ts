@@ -4,23 +4,24 @@ import { BehaviorSubject, firstValueFrom, from, Observable, switchMap, tap } fro
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { RegistrationTid } from '../../registration.models';
-import { NewAttachmentService } from './new-attachment.service';
+import { GetAttachmentFilterOptions, NewAttachmentService } from './new-attachment.service';
 import { File } from '@ionic-native/file/ngx';
 import { Injectable } from '@angular/core';
 
-const DEBUG_TAG = 'FileAttachmentService';
 const ROOT_DIR = 'attachments';
 
 /**
  * Provides attachments saved on local drive
  */
 @Injectable()
-export default class FileAttachmentService implements NewAttachmentService {
+export default class FileAttachmentService extends NewAttachmentService {
+  protected DEBUG_TAG = 'FileAttachmentService';
   private hasCreatedRootFolder = false;
   private attachmentsChanged = new BehaviorSubject<void>(undefined); //get a tick each time a registration's attachment changes
 
-  constructor(private file: File, private loggingService: LoggingService) {
-    this.attachmentsChanged.pipe(tap(() => this.loggingService.debug('Attachments changed', DEBUG_TAG)));
+  constructor(private file: File, protected logger: LoggingService) {
+    super();
+    this.attachmentsChanged.pipe(tap(() => this.logger.debug('Attachments changed', this.DEBUG_TAG)));
   }
 
   async addAttachment(
@@ -49,7 +50,10 @@ export default class FileAttachmentService implements NewAttachmentService {
       fileName: attachmentFileName,
       ref
     };
-    this.loggingService.debug(`Attachment saved in ${rootDir}/${registrationId}/${attachmentFileName}`, DEBUG_TAG, metadata);
+
+    this.logger.debug(
+      `Attachment saved in ${rootDir}/${registrationId}/${attachmentFileName}`, this.DEBUG_TAG, metadata
+    );
     await firstValueFrom(this.saveAttachmentMeta$(registrationId, metadata));
   }
 
@@ -61,7 +65,7 @@ export default class FileAttachmentService implements NewAttachmentService {
     ).pipe(tap(() => this.attachmentsChanged.next()));
   }
 
-  getAttachments(registrationId: string): Observable<AttachmentUploadEditModel[]> {
+  protected getAttachmentsObservable(registrationId: string): Observable<AttachmentUploadEditModel[]> {
     return this.attachmentsChanged.pipe(switchMap(() => from(this.getAttachmentsFromFile(registrationId))));
   }
 
@@ -82,7 +86,7 @@ export default class FileAttachmentService implements NewAttachmentService {
     if (await this.directoryForRegistrationExists(registrationId)) {
       await this.file.removeRecursively(`${path}/`, registrationId);
     } else {
-      this.loggingService.debug(`Tried to remove ${path}/${registrationId}, but didn't find it`, DEBUG_TAG);
+      this.logger.debug(`Tried to remove ${path}/${registrationId}, but didn't find it`, this.DEBUG_TAG);
     }
     this.attachmentsChanged.next();
   }

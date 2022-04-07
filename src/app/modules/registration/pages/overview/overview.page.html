@@ -8,7 +8,7 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ng-container *ngIf="draft">
+<ng-container *ngIf="draft$ | async as draft">
   <ion-content>
     <!-- Error info if posting the registration failed -->
     <app-failed-registration
@@ -27,7 +27,7 @@
       <!-- "Summary" items for each form -->
       <app-summary-item
         [readonly]="draft.syncStatus === RegistrationStatus.Sync"
-        *ngFor="let item of summaryItems; trackBy: trackByFunction"
+        *ngFor="let item of summaryItems$ | async; trackBy: trackByFunction"
         [item]="item"
       ></app-summary-item>
 

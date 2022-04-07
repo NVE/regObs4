@@ -1,7 +1,7 @@
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { ExistingOrNewAttachment } from 'src/app/modules/common-registration/registration.models';
 
-export interface ISummaryItem {
-  id: string;
+export interface ISummaryItem extends Pick<RegistrationDraft, 'uuid'> {
   href: string;
   queryParams?: unknown;
   title: string;
