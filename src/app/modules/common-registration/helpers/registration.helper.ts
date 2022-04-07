@@ -129,6 +129,25 @@ export function createEmptyRegistration(draft: RegistrationDraft, registrationTi
   return draft;
 }
 
+/**
+ * Removes empty registrations from given draft
+ * @param draft the draft to filter
+ * @returns same draft but without empty registrations
+ */
+export function removeEmptyRegistrations(draft: RegistrationDraft): RegistrationDraft {
+  const registration = Object.keys(draft.registration)
+    .reduce((registration, key) => {
+      if (!isEmpty(draft.registration[key])) {
+        registration[key] = draft.registration[key];
+      }
+      return registration;
+    }, {} as RegistrationEditModelWithRemoteOrLocalAttachments);
+  return {
+    ...draft,
+    registration
+  };
+}
+
 function getDefaultValue(registrationTid: RegistrationTid) {
   if (isArrayType(registrationTid)) {
     return [];
