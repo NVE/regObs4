@@ -18,7 +18,11 @@
           {{"REGISTRATION.GROUP.SUBTITLE" | translate}}
         </ion-label>
       </ion-list-header>
-      <ion-radio-group *ngIf="groups.length > 1" [(ngModel)]="draft.registration.ObserverGroupID">
+      <ion-radio-group
+        *ngIf="groups.length > 1"
+        [ngModel]="draft.registration.ObserverGroupID"
+        (ngModelChange)="groupChanged($event)"
+      >
         <ion-item *ngFor="let group of groups">
           <ion-radio mode="md" slot="start" [value]="group.Id"></ion-radio>
           <ion-label>{{group.Name}}</ion-label>
