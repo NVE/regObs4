@@ -11,26 +11,18 @@ import { LoggingService } from '../../../shared/services/logging/logging.service
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { Observable } from 'rxjs';
-import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
 
-// export interface AttachmentUploadEditModelWithBlob extends AttachmentUploadEditModel {
-//   blob: Blob;
-// }
-
-// TODO: Check if we can remove NgDestoryBase
-// TODO: Add support for existing attachments
 @Component({
   selector: 'app-edit-images',
   templateUrl: './edit-images.component.html',
   styleUrls: ['./edit-images.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditImagesComponent extends NgDestoryBase implements OnInit {
+export class EditImagesComponent implements OnInit {
   @Input() draftUuid: string;
   @Input() existingAttachments: RemoteOrLocalAttachmentEditModel[];
   @Output() existingAttachmentsChange = new EventEmitter();
@@ -62,10 +54,7 @@ export class EditImagesComponent extends NgDestoryBase implements OnInit {
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private newAttachmentService: NewAttachmentService,
-    private draftRepository: DraftRepositoryService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit() {
     this.newAttachments$ = this.newAttachmentService.getAttachmentsWithBlob(
