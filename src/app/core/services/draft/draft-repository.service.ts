@@ -71,7 +71,6 @@ export class DraftRepositoryService {
   }
 
   async getAttachments(draft: RegistrationDraft, registrationTid: RegistrationTid): Promise<ExistingOrNewAttachment[]> {
-    // TODO: Use this.getExistingAttachments$?
     const existingAttachments = getAttachmentsFromRegistration(draft.registration, registrationTid);
     const newAttachments = await firstValueFrom(
       this.newAttachmentSerivice.getAttachments(draft.uuid, { registrationTid })
