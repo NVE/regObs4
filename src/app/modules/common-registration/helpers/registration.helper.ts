@@ -41,7 +41,6 @@ export function getWaterLevelAttachments(viewModel: RegistrationEditModelWithRem
     .filter((a) => (registrationTid > 0 ? a.RegistrationTID === registrationTid : true));
 }
 
-// TODO: Returnerer denne også nye som har feks en kommentar?
 export function getAttachmentsFromRegistration(
   registration: RegistrationEditModelWithRemoteOrLocalAttachments,
   registrationTid?: RegistrationTid
@@ -82,6 +81,11 @@ export function isObservationModelEmptyForRegistrationTid(
     return isEmpty(getRegistationPropertyForModel(regModel, registrationTid));
   }
   return true;
+}
+
+export function getRegistrationsWithData(draft: RegistrationDraft): RegistrationTid[] {
+  const registrationTids = getRegistrationTids();
+  return registrationTids.filter((tid) => !isObservationModelEmptyForRegistrationTid(draft.registration, tid));
 }
 
 export function hasAnyObservations(draft: RegistrationDraft): boolean {

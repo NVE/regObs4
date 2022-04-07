@@ -70,18 +70,6 @@ export class DraftRepositoryService {
     );
   }
 
-  async getAttachments(draft: RegistrationDraft, registrationTid: RegistrationTid): Promise<ExistingOrNewAttachment[]> {
-    const existingAttachments = getAttachmentsFromRegistration(draft.registration, registrationTid);
-    const newAttachments = await firstValueFrom(
-      this.newAttachmentSerivice.getAttachments(draft.uuid, { registrationTid })
-    );
-
-    return [
-      ...existingAttachments.map(attachment => ({ type: 'existing' as ExistingAttachmentType, attachment })),
-      ...newAttachments.map(attachment => ({ type: 'new' as NewAttachmentType, attachment }))
-    ];
-  }
-
   async isDraftEmpty(draft: RegistrationDraft) {
     if (hasAnyObservations(draft)) {
       return false;
@@ -108,8 +96,15 @@ export class DraftRepositoryService {
     );
 
     if (isEmpty) {
-      const attachments = await this.getAttachments(draft, registrationTid);
-      isEmpty = attachments.length === 0;
+      const existingAttachments = getAttachmentsFromRegistration(draft.registration, registrationTid);
+      isEmpty = existingAttachments.length === 0;
+    }
+
+    if (isEmpty) {
+      const newAttachments = await firstValueFrom(
+        this.newAttachmentSerivice.getAttachments(draft.uuid, { registrationTid })
+      );
+      isEmpty = newAttachments.length === 0;
     }
 
     return isEmpty;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DateHelperService } from '../../shared/services/date-helper/date-helper.service';
-import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { ISummaryItem } from '../components/summary-item/summary-item.model';
 import { UserGroupService } from '../../../core/services/user-group/user-group.service';
@@ -10,23 +10,112 @@ import { RouterDirection } from '@ionic/core';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
+import { combineLatest, distinctUntilChanged, from, map, Observable, switchMap } from 'rxjs';
+import deepEqual from 'fast-deep-equal';
+import { getAttachmentsFromRegistration, getRegistrationsWithData, isObservationModelEmptyForRegistrationTid } from '../../common-registration/registration.helpers';
+import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
+import { NewAttachmentService } from '../../common-registration/registration.services';
+
+function draftHasNotChanged(previous: RegistrationDraft, current: RegistrationDraft) {
+  // Check if draft time has changed
+  if (previous.registration.DtObsTime !== current.registration.DtObsTime) {
+    return false;
+  }
+
+  // Check if groups on draft has changed
+  if (previous.registration.ObserverGroupID !== current.registration.ObserverGroupID) {
+    return false;
+  }
+
+  // Check if draft location has changed
+  if (!deepEqual(previous.registration.ObsLocation, current.registration.ObsLocation)) {
+    return false;
+  }
+
+  const preTids = getRegistrationsWithData(previous).sort((a, b) => a - b);
+  const curTids = getRegistrationsWithData(current).sort((a, b) => a - b);
+
+  // Check if we have any new or removed forms
+  if (preTids.length !== curTids.length) {
+    return false;
+  }
+
+  // Check if we have any changed forms
+  const anyTidsChanged = curTids.some((curTid, i) => curTid !== preTids[i]);
+  if (anyTidsChanged) {
+    return false;
+  }
+
+  const preExistingAttachments = getAttachmentsFromRegistration(previous.registration);
+  const curExistingAttachments = getAttachmentsFromRegistration(current.registration);
+
+  // Check if existing attachments has changed
+  return attachmentsComparator(preExistingAttachments, curExistingAttachments, 'AttachmentId');
+}
+
+function groupsHasNotChanged(previous: ObserverGroupDto[], current: ObserverGroupDto[]) {
+  if (previous.length !== current.length) {
+    return false;
+  }
+
+  const sortedCurrent = current.sort((a, b) => a.Id - b.Id);
+  const sortedPrevious = current.sort((a, b) => a.Id - b.Id);
+
+  return !sortedCurrent.some((group, i) => group.Id !== sortedPrevious[i].Id);
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SummaryItemService {
+
   constructor(
     private draftService: DraftRepositoryService,
+    private newAttachmentService: NewAttachmentService,
     private dateHelperService: DateHelperService,
     private userGroupService: UserGroupService,
     private navController: NavController
   ) {}
 
-  async getSummaryItems(draft: RegistrationDraft, userGroups?: ObserverGroupDto[]) {
+  getSummaryItems$(uuid: string): Observable<ISummaryItem[]> {
+    // Observables that only emits when the properties we need has changed
+    const draft$ = this.draftService.getDraft$(uuid).pipe(distinctUntilChanged(draftHasNotChanged));
+    const groups$ = this.userGroupService.getUserGroupsAsObservable().pipe(distinctUntilChanged(groupsHasNotChanged));
+    const newAttachments$ = this.newAttachmentService.getAttachments(uuid)
+      .pipe(distinctUntilChanged((prev, curr) => attachmentsComparator(prev, curr, 'id')));
+
+    return combineLatest([draft$, groups$, newAttachments$]).pipe(
+      // Combine new attachments and existing attachments into one array
+      map(([draft, groups, newAttachments]) => {
+        const existingAttachments = getAttachmentsFromRegistration(draft.registration);
+        return [
+          draft,
+          groups,
+          [
+            ...existingAttachments.map(attachment => ({ type: 'existing' as ExistingAttachmentType, attachment })),
+            ...newAttachments.map(attachment => ({ type: 'new' as NewAttachmentType, attachment }))
+          ]
+        ] as [RegistrationDraft, ObserverGroupDto[], ExistingOrNewAttachment[]];
+      }),
+      // Get summary items
+      switchMap(inputs => from(this.getSummaryItems(...inputs)))
+    );
+  }
+
+  private async getSummaryItems(
+    draft: RegistrationDraft,
+    userGroups?: ObserverGroupDto[],
+    attachments?: ExistingOrNewAttachment[],
+  ): Promise<ISummaryItem[]> {
     if (!draft) {
       return [];
     }
-    const userGroupsToUse = userGroups ? userGroups : await this.userGroupService.getUserGroups();
+
+    // If usergroups or attachments are not provided, do not use them.
+    // This is used internally by getPreviousAndNext to get all the hrefs
+    const userGroupsToUse = userGroups ? userGroups : [];
+    const attachmentsToUse = attachments ? attachments : [];
+
     const summaryItems: ISummaryItem[] = [
       {
         uuid: draft.uuid,
@@ -60,7 +149,7 @@ export class SummaryItemService {
       });
     }
 
-    summaryItems.push(...(await this.getGeoHazardItems(draft)));
+    summaryItems.push(...(await this.getGeoHazardItems(draft, attachmentsToUse)));
 
     summaryItems.push(
       await this.getRegItem(
@@ -68,14 +157,18 @@ export class SummaryItemService {
         '/registration/general-comment',
         'REGISTRATION.GENERAL_COMMENT.TITLE',
         draft.registration.GeneralObservation ? draft.registration.GeneralObservation.ObsComment : '',
-        RegistrationTid.GeneralObservation
+        RegistrationTid.GeneralObservation,
+        attachmentsToUse
       )
     );
 
     return summaryItems;
   }
 
-  async getPreviousAndNext(draft: RegistrationDraft, url: string): Promise<{ previous: ISummaryItem; next: ISummaryItem }> {
+  async getPreviousAndNext(
+    draft: RegistrationDraft,
+    url: string
+  ): Promise<{ previous: ISummaryItem; next: ISummaryItem }> {
     const summaryItems = await this.getSummaryItems(draft);
     const currentItem = summaryItems.find((x) => url.indexOf(x.href) >= 0);
     const result = { previous: undefined, next: undefined };
@@ -116,34 +209,42 @@ export class SummaryItemService {
     return '';
   }
 
-  private getGeoHazardItems(draft: RegistrationDraft): Promise<ISummaryItem[]> {
+  private getGeoHazardItems(
+    draft: RegistrationDraft,
+    attachments: ExistingOrNewAttachment[]
+  ): Promise<ISummaryItem[]> {
     switch (draft.registration.GeoHazardTID) {
     case GeoHazard.Water:
-      return this.getWaterItems(draft);
+      return this.getWaterItems(draft, attachments);
     case GeoHazard.Ice:
-      return this.getIceItems(draft);
+      return this.getIceItems(draft, attachments);
     case GeoHazard.Soil:
-      return this.getDirtItems(draft);
+      return this.getDirtItems(draft, attachments);
     case GeoHazard.Snow:
-      return this.getSnowItems(draft);
+      return this.getSnowItems(draft, attachments);
     }
   }
 
-  private async getWaterItems(draft: RegistrationDraft): Promise<ISummaryItem[]> {
+  private async getWaterItems(
+    draft: RegistrationDraft,
+    attachments: ExistingOrNewAttachment[]
+  ): Promise<ISummaryItem[]> {
     return [
       await this.getRegItem(
         draft,
         '/registration/water/water-level',
         'REGISTRATION.WATER.WATER_LEVEL.TITLE',
         draft.registration.WaterLevel2 ? draft.registration.WaterLevel2.Comment : '',
-        RegistrationTid.WaterLevel2
+        RegistrationTid.WaterLevel2,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/water/damage',
         'REGISTRATION.WATER.DAMAGE.TITLE',
         '', // this.registration.DamageObs ? this.registration.DamageObs.map((x) => x.Comment).join() : '',
-        RegistrationTid.DamageObs
+        RegistrationTid.DamageObs,
+        attachments
       )
     ];
   }
@@ -153,137 +254,170 @@ export class SummaryItemService {
     href: string,
     title: string,
     subTitle: string,
-    registrationTid: RegistrationTid
+    registrationTid: RegistrationTid,
+    allAttachments: ExistingOrNewAttachment[]
   ): Promise<ISummaryItem> {
+    const attachments = allAttachments.filter(a => a.attachment.RegistrationTID === registrationTid);
+    const isEmpty = attachments.length === 0
+      && isObservationModelEmptyForRegistrationTid(draft.registration, registrationTid);
+
     return {
       uuid: draft.uuid,
       href,
       title,
       subTitle,
-      hasData: !await this.draftService.isDraftEmptyForRegistrationType(draft, registrationTid),
-      attachments: await this.draftService.getAttachments(draft, registrationTid)
+      hasData: !isEmpty,
+      attachments
     };
   }
 
-  private async getDirtItems(draft: RegistrationDraft): Promise<ISummaryItem[]> {
+  private async getDirtItems(
+    draft: RegistrationDraft,
+    attachments: ExistingOrNewAttachment[]
+  ): Promise<ISummaryItem[]> {
     return [
       await this.getRegItem(
         draft,
         '/registration/danger-obs',
         'REGISTRATION.DANGER_OBS.TITLE',
         '',
-        RegistrationTid.DangerObs
+        RegistrationTid.DangerObs,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/dirt/landslide-obs',
         'REGISTRATION.DIRT.LAND_SLIDE_OBS.TITLE',
         draft.registration.LandSlideObs ? draft.registration.LandSlideObs.Comment : '',
-        RegistrationTid.LandSlideObs
+        RegistrationTid.LandSlideObs,
+        attachments
       )
     ];
   }
 
-  private async getIceItems(draft: RegistrationDraft): Promise<ISummaryItem[]> {
+  private async getIceItems(
+    draft: RegistrationDraft,
+    attachments: ExistingOrNewAttachment[]
+  ): Promise<ISummaryItem[]> {
     return [
       await this.getRegItem(
         draft,
         '/registration/ice/ice-cover',
         'REGISTRATION.ICE.ICE_COVER.TITLE',
         draft.registration.IceCoverObs ? draft.registration.IceCoverObs.Comment : '',
-        RegistrationTid.IceCoverObs
+        RegistrationTid.IceCoverObs,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/ice/ice-thickness',
         'REGISTRATION.ICE.ICE_THICKNESS.TITLE',
         draft.registration.IceThickness ? draft.registration.IceThickness.Comment : '',
-        RegistrationTid.IceThickness
+        RegistrationTid.IceThickness,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/danger-obs',
         'REGISTRATION.DANGER_OBS.TITLE',
         '',
-        RegistrationTid.DangerObs
+        RegistrationTid.DangerObs,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/incident',
         'REGISTRATION.INCIDENT.TITLE',
         '',
-        RegistrationTid.Incident
+        RegistrationTid.Incident,
+        attachments
       )
     ];
   }
 
-  private async getSnowItems(draft: RegistrationDraft): Promise<ISummaryItem[]> {
+  private async getSnowItems(
+    draft: RegistrationDraft,
+    attachments: ExistingOrNewAttachment[]
+  ): Promise<ISummaryItem[]> {
+    const snowProfileAttachments = attachments
+      .filter(a => a.attachment.RegistrationTID === RegistrationTid.SnowProfile2);
+    const snowProfileHasTests = draft.registration.CompressionTest?.some((x) => x.IncludeInSnowProfile === true);
+    const snowProfileIsEmpty = snowProfileAttachments.length === 0
+      && isObservationModelEmptyForRegistrationTid(draft.registration, RegistrationTid.SnowProfile2)
+      && !snowProfileHasTests;
+
     return [
       await this.getRegItem(
         draft,
         '/registration/danger-obs',
         'REGISTRATION.DANGER_OBS.TITLE',
         '',
-        RegistrationTid.DangerObs
+        RegistrationTid.DangerObs,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/snow/avalanche-obs',
         'REGISTRATION.SNOW.AVALANCHE_OBS.TITLE',
         '',
-        RegistrationTid.AvalancheObs
+        RegistrationTid.AvalancheObs,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/snow/avalanche-activity',
         'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.TITLE',
         '',
-        RegistrationTid.AvalancheActivityObs2
+        RegistrationTid.AvalancheActivityObs2,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/snow/weather',
         'REGISTRATION.SNOW.WEATHER.TITLE',
         '',
-        RegistrationTid.WeatherObservation
+        RegistrationTid.WeatherObservation,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/snow/snow-surface',
         'REGISTRATION.SNOW.SNOW_SURFACE.TITLE',
         '',
-        RegistrationTid.SnowSurfaceObservation
+        RegistrationTid.SnowSurfaceObservation,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/snow/compression-test',
         'REGISTRATION.SNOW.COMPRESSION_TEST.TITLE',
         '',
-        RegistrationTid.CompressionTest
+        RegistrationTid.CompressionTest,
+        attachments
       ),
       {
         uuid: draft.uuid,
         href: '/registration/snow/snow-profile',
         title: 'REGISTRATION.SNOW.SNOW_PROFILE.TITLE',
         subTitle: '',
-        hasData:
-          !await this.draftService.isDraftEmptyForRegistrationType(draft, RegistrationTid.SnowProfile2) ||
-          draft.registration.CompressionTest?.some((x) => x.IncludeInSnowProfile === true),
-        attachments: await this.draftService.getAttachments(draft, RegistrationTid.SnowProfile2)
+        hasData: !snowProfileIsEmpty,
+        attachments: snowProfileAttachments
       },
       await this.getRegItem(
         draft,
         '/registration/snow/avalanche-problem',
         'REGISTRATION.SNOW.AVALANCHE_PROBLEM.TITLE',
         '',
-        RegistrationTid.AvalancheEvalProblem2
+        RegistrationTid.AvalancheEvalProblem2,
+        attachments
       ),
       await this.getRegItem(
         draft,
         '/registration/snow/avalanche-evaluation',
         'REGISTRATION.SNOW.AVALANCHE_EVALUATION.TITLE',
         '',
-        RegistrationTid.AvalancheEvaluation3
+        RegistrationTid.AvalancheEvaluation3,
+        attachments
       )
     ];
   }
