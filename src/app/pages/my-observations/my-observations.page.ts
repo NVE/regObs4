@@ -18,6 +18,10 @@ export class MyObservationsPage {
   draftIsEmpty = false;
   sentRegistrationsIsEmpty = false;
 
+  ionViewDidEnter() {
+    this.content.scrollToTop();
+  }
+
   async refresh(cancelPromise?: Promise<void>): Promise<void> {
     await this.sentListComponent.refresh(cancelPromise);
   }
