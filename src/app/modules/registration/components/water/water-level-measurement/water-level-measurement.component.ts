@@ -38,6 +38,10 @@ export class WaterLevelMeasurementComponent implements OnInit {
 
   ngOnInit() {
     this.maxDate = this.getMaxDateForNow();
+
+    //quick fix to avoid submitting measurements without mandatory fields, which can happen if you only add images
+    this.setToNow();
+
     if (!this.waterLevelMeasurement.Attachments) {
       this.waterLevelMeasurement.Attachments = [];
     }
