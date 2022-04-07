@@ -115,22 +115,8 @@ export class SummaryItemService {
     // This is used internally by getPreviousAndNext to get all the hrefs
     const userGroupsToUse = userGroups ? userGroups : [];
     const attachmentsToUse = attachments ? attachments : [];
-    const summaryItems: ISummaryItem[] = [...(await this.getGeoHazardItems(draft, attachmentsToUse))];
 
-    summaryItems.splice(
-      draft.registration.GeoHazardTID == GeoHazard.Water ? 0 : summaryItems.length,
-      0,
-      await this.getRegItem(
-        draft,
-        '/registration/general-comment',
-        'REGISTRATION.GENERAL_COMMENT.TITLE',
-        draft.registration.GeneralObservation ? draft.registration.GeneralObservation.ObsComment : '',
-        RegistrationTid.GeneralObservation,
-        attachmentsToUse
-      )
-    );
-
-    summaryItems.push(...[
+    const summaryItems: ISummaryItem[] = [
       {
         uuid: draft.uuid,
         href: '/registration/obs-location',
@@ -151,8 +137,22 @@ export class SummaryItemService {
           )
           : '',
         hasData: !!draft.registration.DtObsTime
-      }
-    ]);
+      },
+      ...(await this.getGeoHazardItems(draft, attachmentsToUse))
+    ];
+
+    summaryItems.splice(
+      draft.registration.GeoHazardTID == GeoHazard.Water ? 2 : summaryItems.length,
+      0,
+      await this.getRegItem(
+        draft,
+        '/registration/general-comment',
+        'REGISTRATION.GENERAL_COMMENT.TITLE',
+        draft.registration.GeneralObservation ? draft.registration.GeneralObservation.ObsComment : '',
+        RegistrationTid.GeneralObservation,
+        attachmentsToUse,
+      )
+    );
 
     if (userGroupsToUse.length > 0) {
       summaryItems.push({
