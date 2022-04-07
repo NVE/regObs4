@@ -30,7 +30,7 @@ export class NumericInputComponent {
 
   get displayValue() {
     const converted = this.convert(this.value, 'from');
-    if (converted !== undefined) {
+    if (converted !== undefined && converted !== null) {
       return converted.toLocaleString();
     }
     return undefined;
