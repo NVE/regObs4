@@ -103,18 +103,20 @@ export abstract class BasePage extends NgDestoryBase {
 
   /**
    * Save automatically when you leave the page. Will also run onBeforeLeave() hook if you have any
+   * If registration is empty, it will be deleted.
    */
   async ionViewWillLeave() {
     if (this.onBeforeLeave) {
       await Promise.resolve(this.onBeforeLeave());
     }
+    if (await this.isEmpty()) {
+      await this.delete();
+    }
     await this.save();
   }
 
   async save() {
-    if (await this.isEmpty()) {
-      await this.delete();
-    }
+    //also empty registrations is saved in order to make it possible to add images to empty registrations
     await this.basePageService.draftRepository.save({ ...this.draft, syncStatus: SyncStatus.Draft });
   }
 
