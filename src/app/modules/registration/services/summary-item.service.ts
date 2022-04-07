@@ -12,7 +12,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { combineLatest, distinctUntilChanged, from, map, Observable, switchMap } from 'rxjs';
 import deepEqual from 'fast-deep-equal';
-import { getAttachmentsFromRegistration, getRegistrationsWithData, isObservationModelEmptyForRegistrationTid } from '../../common-registration/registration.helpers';
+import { getAllAttachmentsFromEditModel, getRegistrationsWithData, isObservationModelEmptyForRegistrationTid } from '../../common-registration/registration.helpers';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
 import { NewAttachmentService } from '../../common-registration/registration.services';
 
@@ -46,8 +46,8 @@ function draftHasNotChanged(previous: RegistrationDraft, current: RegistrationDr
     return false;
   }
 
-  const preExistingAttachments = getAttachmentsFromRegistration(previous.registration);
-  const curExistingAttachments = getAttachmentsFromRegistration(current.registration);
+  const preExistingAttachments = getAllAttachmentsFromEditModel(previous.registration);
+  const curExistingAttachments = getAllAttachmentsFromEditModel(current.registration);
 
   // Check if existing attachments has changed
   return attachmentsComparator(preExistingAttachments, curExistingAttachments, 'AttachmentId');
@@ -87,7 +87,7 @@ export class SummaryItemService {
     return combineLatest([draft$, groups$, newAttachments$]).pipe(
       // Combine new attachments and existing attachments into one array
       map(([draft, groups, newAttachments]) => {
-        const existingAttachments = getAttachmentsFromRegistration(draft.registration);
+        const existingAttachments = getAllAttachmentsFromEditModel(draft.registration);
         return [
           draft,
           groups,

@@ -3,7 +3,7 @@ import cloneDeep from 'clone-deep';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, map, Observable, shareReplay, skipUntil, Subject, switchMap, takeWhile, tap, } from 'rxjs';
 import { uuidv4 } from 'src/app/modules/common-core/helpers';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
-import { getAttachmentsFromRegistration, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
+import { getAllAttachmentsFromEditModel, hasAnyObservations, isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';
 import { ExistingAttachmentType, ExistingOrNewAttachment, NewAttachmentType, RegistrationTid, SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
@@ -96,7 +96,7 @@ export class DraftRepositoryService {
     );
 
     if (isEmpty) {
-      const existingAttachments = getAttachmentsFromRegistration(draft.registration, registrationTid);
+      const existingAttachments = getAllAttachmentsFromEditModel(draft.registration, registrationTid);
       isEmpty = existingAttachments.length === 0;
     }
 
