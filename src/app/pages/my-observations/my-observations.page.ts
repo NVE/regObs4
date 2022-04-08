@@ -20,6 +20,7 @@ export class MyObservationsPage {
 
   ionViewDidEnter() {
     this.content.scrollToTop();
+    this.refresh();
   }
 
   async refresh(cancelPromise?: Promise<void>): Promise<void> {

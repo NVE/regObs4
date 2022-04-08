@@ -31,7 +31,7 @@ const getUniqueRegistrations = (regs: RegistrationViewModel[]) => {
   styleUrls: ['./sent-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SentListComponent implements OnInit, OnDestroy {
+export class SentListComponent implements OnDestroy {
   loadedRegistrations: RegistrationViewModel[] = [];
   loaded = false;
   refreshFunc = this.refresh.bind(this);
@@ -71,10 +71,6 @@ export class SentListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.ngDestroy$.next();
     this.ngDestroy$.complete();
-  }
-
-  async ngOnInit(): Promise<void> {
-    this.initRegistrationSubscription();
   }
 
   async refresh(cancelPromise?: Promise<void>): Promise<void> {
