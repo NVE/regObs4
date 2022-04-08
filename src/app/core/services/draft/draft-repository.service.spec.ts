@@ -138,7 +138,7 @@ describe('DraftRepositoryService', () => {
     });
   });
 
-  it('we get notified when registrations are saved', async () => {
+  it('we get notified when registrations are saved', fakeAsync(async () => {
     const draft = await service.create(GeoHazard.Ice);
     draft.registration.GeneralObservation = { Comment: 'v.1' };
 
@@ -156,13 +156,16 @@ describe('DraftRepositoryService', () => {
     updatedDraft.registration.GeneralObservation = { Comment: 'v.2' };
     await service.save(updatedDraft);
 
+    // Let draftService handle the update
+    tick(1);
+
     //check notfication
     const updatedDrafts2 = await firstValueFrom(service.drafts$);
     expect(updatedDrafts2.length).toBe(1);
     const updatedDraft2 = updatedDrafts2[0];
     expect(updatedDraft2.uuid).toEqual(draft.uuid);
     expect(updatedDraft2.registration.GeneralObservation).toEqual({ Comment: 'v.2' });
-  });
+  }));
 
   it('we can use drafts$ as a stream when registrations are saved', async () => {
     const draft = await service.create(GeoHazard.Ice);
