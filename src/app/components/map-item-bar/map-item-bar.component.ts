@@ -11,6 +11,7 @@ import { UserSettingService } from '../../core/services/user-setting/user-settin
 import { GeoPositionService } from '../../core/services/geo-position/geo-position.service';
 import { take } from 'rxjs/operators';
 import { getStarCount } from '../../core/helpers/competence-helper';
+import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 
 @Component({
   selector: 'app-map-item-bar',
@@ -81,8 +82,9 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
       this.setDistanceAndType(item);
       this.imageUrls = [];
-      if (this.appMode && item.Attachments && item.Attachments.length > 0) {
-        this.imageUrls = item.Attachments.map((attachment) => this.getImageUrl(attachment, 'Medium'));
+      // Why do we check for AppMode?
+      if (this.appMode) {
+        this.imageUrls = getAllAttachmentsFromViewModel(item).map(x => x.UrlFormats["Medium"]);
       }
       this.visible = true;
       this.publishChange();
@@ -94,10 +96,6 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.visible = false;
       this.publishChange();
     });
-  }
-
-  getImageUrl(attachment: AttachmentViewModel, size: 'Thumbnail' | 'Medium' | 'Large' | 'Original' | 'Raw' = 'Medium') {
-    return attachment.UrlFormats[size];
   }
 
   navigateToItem() {

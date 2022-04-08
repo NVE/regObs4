@@ -2,9 +2,12 @@ import { RegistrationTid } from '../models/registration-tid.enum';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { ValidRegistrationType } from '../models/valid-registration.type';
 import {
+  AdaptiveElement,
+  AttachmentViewModel,
   RegistrationViewModel
 } from 'src/app/modules/common-regobs-api/models';
 import { RegistrationDraft, RegistrationEditModelWithRemoteOrLocalAttachments, RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
+import { SnowProfileData } from '../../adaptive-cards/adaptive-snow-profile';
 
 // TODO: Sjekk hvilke av disse vi egentlig trenger
 
@@ -32,7 +35,10 @@ export function getDamageObsAttachments(
     .filter((a) => (registrationTid > 0 ? a.RegistrationTID === registrationTid : true));
 }
 
-export function getWaterLevelAttachments(viewModel: RegistrationEditModelWithRemoteOrLocalAttachments, registrationTid?: RegistrationTid): RemoteOrLocalAttachmentEditModel[] {
+export function getWaterLevelAttachments(
+  viewModel: RegistrationEditModelWithRemoteOrLocalAttachments,
+  registrationTid?: RegistrationTid
+): RemoteOrLocalAttachmentEditModel[] {
   if (!viewModel || !viewModel.WaterLevel2 || !viewModel.WaterLevel2.WaterLevelMeasurement) {
     return [];
   }
@@ -41,14 +47,57 @@ export function getWaterLevelAttachments(viewModel: RegistrationEditModelWithRem
     .filter((a) => (registrationTid > 0 ? a.RegistrationTID === registrationTid : true));
 }
 
-export function getAttachmentsFromRegistration(
+export function getSnowProfileAttachments(
+  viewModel: RegistrationViewModel,
+  registrationTid?: RegistrationTid
+): AttachmentViewModel & {Href: string} {
+  if (registrationTid && registrationTid != RegistrationTid.SnowProfile2) {
+    return null;
+  }
+  const snowProfileSummary = viewModel.Summaries?.find(
+    (s) => s.RegistrationTID === RegistrationTid.SnowProfile2
+  );
+  const snowProfilePlot = snowProfileSummary?.AdaptiveElements.find(
+    (e: AdaptiveElement) => e.type == 'SnowProfilePlot'
+  ) as SnowProfileData;
+  if (snowProfilePlot) {
+    return {
+      GeoHazardTID: viewModel?.GeoHazardTID,
+      GeoHazardName: viewModel?.GeoHazardName,
+      RegistrationTID: snowProfileSummary?.RegistrationTID,
+      RegistrationName: snowProfileSummary?.RegistrationName,
+      UrlFormats: {
+        Original: snowProfilePlot?.svgUrl,
+        Large: snowProfilePlot?.svgUrl,
+        Medium: snowProfilePlot?.pngUrl,
+      },
+      Url: snowProfilePlot?.svgUrl,
+      Comment: viewModel?.SnowProfile2?.Comment,
+      Href: snowProfilePlot?.interactiveUrl,
+    };
+  }
+}
+
+export function getAllAttachmentsFromViewModel(
+  viewModel: RegistrationViewModel,
+  registrationTid?: RegistrationTid
+): AttachmentViewModel[] {
+  const snowProfile = getSnowProfileAttachments(viewModel, registrationTid);
+  let attachments = getAllAttachmentsFromEditModel(viewModel, registrationTid);
+  if (snowProfile) {
+    attachments.unshift(snowProfile);
+  }
+  return attachments
+}
+
+export function getAllAttachmentsFromEditModel(
   registration: RegistrationEditModelWithRemoteOrLocalAttachments,
   registrationTid?: RegistrationTid
 ): RemoteOrLocalAttachmentEditModel[] {
   const attachments = getAttachmentsFromRegistrationViewModel(registration, registrationTid);
   const damageObsAttachments = getDamageObsAttachments(registration, registrationTid);
   const waterLevelAttachmetns = getWaterLevelAttachments(registration, registrationTid);
-  return [].concat(...attachments, ...damageObsAttachments, ...waterLevelAttachmetns);
+  return [...attachments, ...damageObsAttachments, ...waterLevelAttachmetns];
 }
 
 type RegistrationName = keyof typeof RegistrationTid;
