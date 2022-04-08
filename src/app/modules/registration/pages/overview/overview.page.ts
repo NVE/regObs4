@@ -15,7 +15,6 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OverviewPage implements OnInit {
-  RegistrationStatus = SyncStatus;
   summaryItems$: Observable<Array<ISummaryItem>>;
   draft$: Observable<RegistrationDraft>;
 
@@ -31,6 +30,10 @@ export class OverviewPage implements OnInit {
     this.draft$ = this.draftService.getDraft$(uuid);
     this.summaryItems$ = this.summaryItemService.getSummaryItems$(uuid);
     this.userGroupService.updateUserGroups();
+  }
+
+  draftHasStatusSync(draft: RegistrationDraft): boolean {
+    return draft?.syncStatus === SyncStatus.Sync || draft?.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck;
   }
 
   trackByFunction(index: number, item: ISummaryItem) {

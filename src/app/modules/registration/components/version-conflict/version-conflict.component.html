@@ -1,0 +1,17 @@
+<ion-list lines="full">
+  <ion-item>
+    <ion-label class="ion-text-wrap" [innerHTML]="'REGISTRATION.FAILED.CONFLICT' | translate"></ion-label>
+  </ion-item>
+  <ion-item (click)="abandon()">
+    <ion-icon slot="start" name="refresh"></ion-icon>
+    <ion-label class="ion-text-wrap">
+      {{'REGISTRATION.FAILED.ABANDON' | translate}}
+    </ion-label>
+  </ion-item>
+  <ion-item (click)="overwrite()">
+    <ion-icon slot="start" name="warning"></ion-icon>
+    <ion-label class="ion-text-wrap">
+      {{'REGISTRATION.FAILED.OVERWRITE' | translate}}
+    </ion-label>
+  </ion-item>
+</ion-list>

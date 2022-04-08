@@ -315,7 +315,10 @@
       "REFERENCE": "Referanse",
       "SEND_EMAIL": "Send til oss på e-post",
       "SUBTITLE": "Manglar nettverk eller innsending tok for lang tid. Vi prøvar igjen om ei stund og håper nettverket har betra seg. ",
-      "TITLE": "Innsendinga misslykkast"
+      "TITLE": "Innsendinga misslykkast",
+      "CONFLICT": "Mens du jobba har observasjonen blitt endra ein annan plass.<br/>Vil du forkaste dine endringar eller vil du sende inn og overskrive endringene som blei gjort den andre plassen?",
+      "ABANDON": "Forkast mine endringar",
+      "OVERWRITE": "Send inn og overskriv"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notat frå observasjonen",

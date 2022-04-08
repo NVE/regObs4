@@ -6,6 +6,7 @@ import { SummaryItemComponent } from '../../components/summary-item/summary-item
 import { SharedComponentsModule } from '../../shared-components.module';
 import { FailedRegistrationComponent } from '../../components/failed-registration/failed-registration.component';
 import { SaveAsDraftRouteGuard } from '../save-as-draft.guard';
+import { VersionConflictComponent } from '../../components/version-conflict/version-conflict.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,8 @@ const routes: Routes = [
     OverviewPage,
     SendButtonComponent,
     SummaryItemComponent,
-    FailedRegistrationComponent
+    FailedRegistrationComponent,
+    VersionConflictComponent
   ]
 })
 export class OverviewPageModule {}

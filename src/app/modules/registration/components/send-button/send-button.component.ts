@@ -1,16 +1,13 @@
 import { Component, OnInit, Input, NgZone, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
 import { Subject } from 'rxjs';
 import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-
-const DEBUG_TAG = 'app-send-button';
+import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
 
 @Component({
   selector: 'app-send-button',
@@ -40,7 +37,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     private regobsAuthService: RegobsAuthService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
-    private loggingService: LoggingService
+    private draftToRegistrationService: DraftToRegistrationService
   ) {}
 
   ngOnInit(): void {
@@ -82,19 +79,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
           return;
         }
 
-        const { error, ...draftToUpdate } = this.draft;
-        if (error) {
-          this.loggingService.debug('Draft had error, will remove error when saving to retry upload', DEBUG_TAG, {
-            uuid: draftToUpdate.uuid,
-            error
-          });
-        }
-
-        // Mark draft as ready to submit
-        this.draftService.save({
-          ...draftToUpdate,
-          syncStatus: SyncStatus.Sync,
-        });
+        this.draftToRegistrationService.markDraftAsReadyToSubmit(this.draft);
 
         // Navigate to my observations
         this.navController.navigateRoot('my-observations');

@@ -12,7 +12,7 @@
   <ion-content>
     <!-- Error info if posting the registration failed -->
     <app-failed-registration
-      *ngIf="draft.error && draft.syncStatus === RegistrationStatus.Sync"
+      *ngIf="draft.error && draftHasStatusSync(draft)"
       [draft]="draft"
     ></app-failed-registration>
 
@@ -26,7 +26,7 @@
 
       <!-- "Summary" items for each form -->
       <app-summary-item
-        [readonly]="draft.syncStatus === RegistrationStatus.Sync"
+        [readonly]="draftHasStatusSync(draft)"
         *ngFor="let item of summaryItems$ | async; trackBy: trackByFunction"
         [item]="item"
       ></app-summary-item>

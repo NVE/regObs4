@@ -328,7 +328,10 @@
       "REFERENCE": "Referanse",
       "SEND_EMAIL": "Send til oss på e-post",
       "SUBTITLE": "Mangler nettverk eller innsending tok for lang tid. Vi prøver igjen etter en stund og håper at nettet har bedret seg.",
-      "TITLE": "Innsending feilet"
+      "TITLE": "Innsending feilet",
+      "CONFLICT": "Mens du jobbet har observasjonen blitt endret et annet sted.<br/>Vil du forkaste dine endringer eller vil du sende inn og overskrive endringene som ble gjort et annet sted?",
+      "ABANDON": "Forkast mine endringer",
+      "OVERWRITE": "Send inn og overskriv"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notat fra observasjonen",
@@ -399,7 +402,7 @@
       "TITLE": "Observasjon"
     },
     "REQUIRED_FIELDS_MISSING": "Ugyldig skjema. Vil du nullstille skjemaet og gå tilbake?",
-    "RESEND": "Prøv å send på nytt",
+    "RESEND": "Prøv å sende på nytt",
     "RESET": "Nullstill denne siden",
     "SAVED_DESCRIPTION": "Disse er under innsending og blir synkronisert når du har nettverk.",
     "SAVED_ON_PHONE": "Lagret på telefonen",
