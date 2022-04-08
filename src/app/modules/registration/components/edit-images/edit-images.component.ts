@@ -10,8 +10,9 @@ import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { Observable } from 'rxjs';
+import { concatMap, debounceTime, Observable, Subject, takeUntil } from 'rxjs';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
+import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -22,7 +23,7 @@ const MIME_TYPE = 'image/jpeg';
   styleUrls: ['./edit-images.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditImagesComponent implements OnInit {
+export class EditImagesComponent extends NgDestoryBase implements OnInit {
   @Input() draftUuid: string;
   @Input() existingAttachments: RemoteOrLocalAttachmentEditModel[];
   @Output() existingAttachmentsChange = new EventEmitter();
@@ -39,6 +40,7 @@ export class EditImagesComponent implements OnInit {
   @Input() ref?: string;
 
   newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
+  attachmentMetaToSave = new Subject<AttachmentUploadEditModel>();
 
   get filteredExistingImages(): RemoteOrLocalAttachmentEditModel[] {
     if (this.existingAttachments == null) {
@@ -57,13 +59,23 @@ export class EditImagesComponent implements OnInit {
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private newAttachmentService: NewAttachmentService,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.newAttachments$ = this.newAttachmentService.getAttachmentsWithBlob(
       this.draftUuid,
       { ref: this.ref, type: this.attachmentType, registrationTid: this.registrationTid }
     );
+
+    this.attachmentMetaToSave.pipe(
+      // Lagre bare metadata hvis det er en pause på 500ms mellom input.
+      // Hindrer at vi skriver til disk hver gang man skriver en bokstav.
+      debounceTime(500),
+      concatMap(meta => this.newAttachmentService.saveAttachmentMeta$(this.draftUuid, meta)),
+      takeUntil(this.ngDestroy$)
+    ).subscribe();
   }
 
   async addClick() {
@@ -198,5 +210,12 @@ export class EditImagesComponent implements OnInit {
 
   trackNew(index: number, attachment: AttachmentUploadEditModelWithBlob) {
     return attachment.id;
+  }
+
+  async setNewAttachmentComment(comment: string, attachment: AttachmentUploadEditModel) {
+    this.attachmentMetaToSave.next({
+      ...attachment,
+      Comment: comment
+    });
   }
 }

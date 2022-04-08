@@ -21,8 +21,13 @@
         <ion-icon name="close"></ion-icon>
       </ion-fab-button>
     </ion-fab>
-    <app-text-comment [(value)]="attachment.Comment" title="{{ pictureCommentText | translate}}" rows="2"
-      placeholder="{{ pictureCommentPlaceholder | translate }}"></app-text-comment>
+    <app-text-comment 
+      [value]="attachment.Comment"
+      (valueChange)="setNewAttachmentComment($event, attachment)"
+      title="{{ pictureCommentText | translate}}"
+      rows="2"
+      placeholder="{{ pictureCommentPlaceholder | translate }}"
+    ></app-text-comment>
   </div>
 
 </div>
