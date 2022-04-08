@@ -28,9 +28,9 @@ export class NumericInputComponent {
 
   private isOpen = false;
 
-  get displayValue() {
+  get displayValue(): string {
     const converted = this.convert(this.value, 'from');
-    if (converted !== undefined) {
+    if (converted != null) {
       return converted.toLocaleString();
     }
     return undefined;
@@ -64,10 +64,9 @@ export class NumericInputComponent {
     }
   }
 
-  private convert(val: number, direction: 'from' | 'to') {
+  private convert(val: number, direction: 'from' | 'to'): number {
     if (
-      val === undefined ||
-      val === null ||
+      val == null ||
       val === 0 ||
       this.convertRatio === undefined
     ) {
