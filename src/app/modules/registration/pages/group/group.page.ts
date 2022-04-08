@@ -1,6 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
-import { ObserverGroupDto } from 'src/app/modules/common-regobs-api/models';
+import { ObserverGroupDto, RegistrationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePage } from '../base.page';
 import { BasePageService } from '../base-page-service';
 import { ActivatedRoute } from '@angular/router';
@@ -41,19 +41,33 @@ export class GroupPage extends BasePage {
     });
   }
 
-  onReset(): void {
-    this.ngZone.run(() => {
-      this.draft.registration.ObserverGroupID = undefined;
-    });
+  async reset() {
+    const pleaseReset = await super.reset();
+
+    if (pleaseReset) {
+      this.groupChanged(null);
+    }
+
+    return pleaseReset;
+  }
+
+  groupChanged(ObserverGroupID: RegistrationEditModel['ObserverGroupID']) {
+    this.draft = {
+      ...this.draft,
+      registration: {
+        ...this.draft.registration,
+        ObserverGroupID
+      }
+    };
   }
 
   checkedChanged(event: CustomEvent): void {
     const checkBox = (<any>event.target) as IonCheckbox;
+    let ObserverGroupID: RegistrationEditModel['ObserverGroupID'] = null;
     if (checkBox.checked) {
-      this.draft.registration.ObserverGroupID = this.firstGroup.Id;
-    } else {
-      this.draft.registration.ObserverGroupID = undefined;
+      ObserverGroupID = this.firstGroup.Id;
     }
+    this.groupChanged(ObserverGroupID);
   }
 
   isEmpty(): Promise<boolean> {
