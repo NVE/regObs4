@@ -27,12 +27,12 @@ import { AppEventAction } from '../../../modules/analytics/enums/app-event-actio
 import { ImageLocation } from '../../img-swiper/image-location.model';
 import 'leaflet.utm';
 import { getStarCount } from '../../../core/helpers/competence-helper';
-import { take } from 'rxjs/operators';
+import { catchError, switchMap, take, timeout } from 'rxjs/operators';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { RegistrationTid } from 'src/app/modules/common-registration/models/registration-tid.enum';
 import { SnowProfileData } from 'src/app/modules/adaptive-cards/adaptive-snow-profile';
 import { getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable, of, TimeoutError } from 'rxjs';
 import { RegistrationService } from 'src/app/modules/common-regobs-api';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { Router } from '@angular/router';
@@ -40,6 +40,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { getAllAttachmentsFromEditModel, getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
+const FETCH_OBS_TIMEOUT_MS = 5000;
 
 @Component({
   selector: 'app-observation-list-card',
@@ -62,6 +63,7 @@ export class ObservationListCardComponent implements OnChanges {
   competenceLevel: number;
   geoHazard: GeoHazard;
   userCanEdit = false;
+  isLoadingObsForEdit = false;
 
   imageUrls: string[] = [];
   imageHeaders: string[] = [];
@@ -263,19 +265,41 @@ export class ObservationListCardComponent implements OnChanges {
     return editMode === 'EDIT_OWN_REGISTRATION' || editMode === 'EDIT_AS_MODERATOR';
   }
 
+  private fetchRegistrationBeforeEdit(
+    regId: RegistrationService.RegistrationGetParams['regId']
+  ): Observable<RegistrationViewModel> {
+    return this.userSettingService.language$.pipe(
+      switchMap(langKey => this.registrationService.RegistrationGet({ regId, langKey })),
+      timeout(FETCH_OBS_TIMEOUT_MS),
+      catchError(error => {
+        let msg: string;
+        if (error instanceof TimeoutError) {
+          msg = `Failed to fetch obs before edit after ${FETCH_OBS_TIMEOUT_MS}ms, using cached obs`;
+        } else {
+          msg = 'An unknown error occured while fetching obs before edit, using cached obs';
+        }
+        this.logger.error(error, DEBUG_TAG, msg);
+        return of(this.obs);
+      })
+    );
+  }
+
   async edit() {
-    const uuid = this.obs.ExternalReferenceId;
-    const draft = await this.draftRepository.load(uuid);
-    if (!draft) {
-      //we don't have a local working copy of this regstration yet, so fetch it and save as draft
-      this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
-      const langKey = await firstValueFrom(this.userSettingService.language$);
-      const registrationFromServer = await firstValueFrom(
-        this.registrationService.RegistrationGet({ regId: this.obs.RegId, langKey: langKey })
-      );
-      await this.draftRepository.saveAsDraft(registrationFromServer);
-    } else {
-      this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+    this.isLoadingObsForEdit = true;
+    try {
+      const uuid = this.obs.ExternalReferenceId;
+      const draft = await this.draftRepository.load(uuid);
+      if (!draft) {
+        //we don't have a local working copy of this regstration yet, so fetch it and save as draft
+        this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+        const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(this.obs.RegId));
+        await this.draftRepository.saveAsDraft(registrationFromServer);
+      } else {
+        this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+      }
+    } finally {
+      this.isLoadingObsForEdit = false;
+      this.cdr.markForCheck();
     }
     this.router.navigate(['registration', 'edit', this.obs.ExternalReferenceId]);
   }
