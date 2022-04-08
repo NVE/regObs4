@@ -47,7 +47,10 @@ export class DraftRepositoryService {
     ])
       .pipe(
         switchMap(([appMode]) => from(this.loadAllFromDatabase(appMode))),
-        shareReplay(1)
+        shareReplay(1),
+        // As we use shareReplay(1) to avoid reading from the database more than needed,
+        // clone the drafts before they are returned
+        map(drafts => cloneDeep(drafts))
       );
   }
 
