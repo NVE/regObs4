@@ -2,7 +2,6 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { combineLatest, exhaustMap, filter, firstValueFrom, from, interval, map, Observable, startWith, Subject, throttleTime, withLatestFrom } from 'rxjs';
-import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
