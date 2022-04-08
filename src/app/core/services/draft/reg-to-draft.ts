@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import { isEmpty } from 'src/app/modules/common-core/helpers';
-import { AttachmentViewModel, AvalancheActivityObs2EditModel, AvalancheActivityObs2ViewModel, ObsLocationViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
+import { AttachmentViewModel, AvalancheActivityObs2EditModel, AvalancheActivityObs2ViewModel, ObsLocationEditModel, ObsLocationViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegistrationEditModelWithRemoteOrLocalAttachments, RemoteOrLocalAttachmentEditModel } from './draft-model';
 
 export function viewModelToEditModel(viewModel: RegistrationViewModel): RegistrationEditModelWithRemoteOrLocalAttachments {
@@ -145,7 +145,7 @@ export function viewModelToEditModel(viewModel: RegistrationViewModel): Registra
   return registration;
 }
 
-function obsLocationEditModel(viewModel: ObsLocationViewModel) {
+function obsLocationEditModel(viewModel: ObsLocationViewModel): ObsLocationEditModel {
   const {
     ForecastRegionTID,
     ForecastRegionName,
@@ -155,7 +155,7 @@ function obsLocationEditModel(viewModel: ObsLocationViewModel) {
     CountryId,
     CountryName,
     UTMSourceName,
-    Title,
+    // Title,  -- include title as api returns the model without description and name
     ...ObsLocation
   } = viewModel;
   return ObsLocation;
