@@ -308,15 +308,20 @@ export class ObservationListCardComponent implements OnChanges {
 
   async edit() {
     this.isLoadingObsForEdit = true;
-    const uuid = this.obs.ExternalReferenceId;
-    const draft = await this.draftRepository.load(uuid);
-    if (!draft) {
-      //we don't have a local working copy of this regstration yet, so fetch it and save as draft
-      this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
-      const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(this.obs.RegId));
-      await this.draftRepository.saveAsDraft(registrationFromServer);
-    } else {
-      this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+    try {
+      const uuid = this.obs.ExternalReferenceId;
+      const draft = await this.draftRepository.load(uuid);
+      if (!draft) {
+        //we don't have a local working copy of this regstration yet, so fetch it and save as draft
+        this.logger.debug(`Registration edit: Fetching from API. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+        const registrationFromServer = await firstValueFrom(this.fetchRegistrationBeforeEdit(this.obs.RegId));
+        await this.draftRepository.saveAsDraft(registrationFromServer);
+      } else {
+        this.logger.debug(`Registration edit: Using local draft. RegID = ${this.obs.RegId}, uuid = ${uuid}`, DEBUG_TAG);
+      }
+    } finally {
+      this.isLoadingObsForEdit = false;
+      this.cdr.markForCheck();
     }
     this.router.navigate(['registration', 'edit', this.obs.ExternalReferenceId]);
   }
