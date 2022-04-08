@@ -41,6 +41,9 @@ export class EditImagesComponent implements OnInit {
   newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
 
   get filteredExistingImages(): RemoteOrLocalAttachmentEditModel[] {
+    if (this.existingAttachments == null) {
+      return [];
+    }
     return this.existingAttachments
       .filter(a => this.registrationTid ? a.RegistrationTID === this.registrationTid : true);
   }
