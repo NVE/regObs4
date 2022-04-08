@@ -1,6 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
+import { ObsLocationViewModel } from 'src/app/modules/common-regobs-api';
 
 @Component({
   selector: 'app-sync-item',
@@ -23,6 +24,7 @@ export class SyncItemComponent {
     return (
       this.draft.registration.ObsLocation?.LocationName ||
       this.draft.registration.ObsLocation?.LocationDescription ||
+      (this.draft.registration.ObsLocation as ObsLocationViewModel)?.Title ||
       ''
     );
   }

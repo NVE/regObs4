@@ -8,7 +8,6 @@ import {
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
 import {
-  AdaptiveElement,
   AttachmentViewModel,
   RegistrationViewModel,
   Summary
@@ -29,15 +28,13 @@ import 'leaflet.utm';
 import { getStarCount } from '../../../core/helpers/competence-helper';
 import { catchError, switchMap, take, timeout } from 'rxjs/operators';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
-import { RegistrationTid } from 'src/app/modules/common-registration/models/registration-tid.enum';
-import { SnowProfileData } from 'src/app/modules/adaptive-cards/adaptive-snow-profile';
 import { getObserverEditCheckObservable } from 'src/app/modules/registration/edit-registration-helper-functions';
 import { firstValueFrom, Observable, of, TimeoutError } from 'rxjs';
 import { RegistrationService } from 'src/app/modules/common-regobs-api';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { Router } from '@angular/router';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { getAllAttachmentsFromEditModel, getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
+import { getAllAttachmentsFromViewModel } from 'src/app/modules/common-registration/registration.helpers';
 
 const DEBUG_TAG = 'ObservationListCardComponent';
 const FETCH_OBS_TIMEOUT_MS = 5000;
@@ -172,7 +169,7 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   updateImages(): void {
-    let allAttachments = getAllAttachmentsFromViewModel(this.obs)
+    const allAttachments = getAllAttachmentsFromViewModel(this.obs);
 
     this.imageHeaders = allAttachments.map((x) => x.RegistrationName);
     this.imageDescriptions = allAttachments.map((x) => x.Comment);
@@ -191,7 +188,7 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   async openImage(event: { index: number; imgUrl: string }): Promise<void> {
-    let attachments = getAllAttachmentsFromViewModel(this.obs)
+    const attachments = getAllAttachmentsFromViewModel(this.obs);
     const image = attachments[event.index] as AttachmentViewModel & {Href: string};
     const modal = await this.modalController.create({
       component: FullscreenImageModalPage,
