@@ -64,10 +64,11 @@
       </ion-row>
     </ion-grid>
     <ion-item class="ion-no-padding" color="light">
-      <ion-button *ngIf="userCanEdit" mode="ios" fill="clear" class="link-title" (click)="edit()">
-        <svg-icon class="edit-icon" slot="start" src="/assets/icon/pencil.svg"></svg-icon>
+      <ion-button *ngIf="userCanEdit" mode="ios" fill="clear" class="link-title" slot="start" (click)="edit()" [disabled]="isLoadingObsForEdit">
+        <svg-icon class="edit-icon" src="/assets/icon/pencil.svg"></svg-icon>
         {{'REGISTRATION.EDIT' | translate}}
       </ion-button>
+      <ion-spinner slot="start" name="dots" *ngIf="isLoadingObsForEdit"></ion-spinner>
       <ion-button mode="ios" fill="clear" class="reg-id" slot="end" (click)="share()">
         ID: {{ obs.RegId }}
         <ion-icon slot="end" class="share-icon" name="share-social"></ion-icon>
