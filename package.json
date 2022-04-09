@@ -96,7 +96,7 @@
     "leaflet.utm": "1.0.0",
     "localforage-cordovasqlitedriver": "^1.8.0",
     "lru-fast": "^0.2.2",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.33",
     "ngx-connectivity": "0.0.5",
     "ngx-leaflet-edgebuffer": "^1.0.6",
