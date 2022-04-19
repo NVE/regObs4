@@ -180,7 +180,6 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alla observationer",
     "FORMS": "Formulär",
-    "GO_TO_OBSERVATION": "Gå till observation",
     "IN_MAP_VIEW": "Observationer i kartavsnittet",
     "NO_OBSERVATIONS": "Inga observationer",
     "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
