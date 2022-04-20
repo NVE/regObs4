@@ -12,11 +12,17 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { combineLatest, distinctUntilChanged, from, map, Observable, switchMap } from 'rxjs';
 import deepEqual from 'fast-deep-equal';
-import { getAllAttachmentsFromEditModel, getRegistrationsWithData, isObservationModelEmptyForRegistrationTid } from '../../common-registration/registration.helpers';
+import { getAllAttachmentsFromEditModel, getRegistationPropertyForModel, getRegistrationsWithData, isObservationModelEmptyForRegistrationTid } from '../../common-registration/registration.helpers';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
 import { NewAttachmentService } from '../../common-registration/registration.services';
 
-function draftHasNotChanged(previous: RegistrationDraft, current: RegistrationDraft) {
+/**
+ *
+ * @param previous
+ * @param current
+ * @returns
+ */
+export function draftHasNotChanged(previous: RegistrationDraft, current: RegistrationDraft) {
   // Check if draft time has changed
   if (previous.registration.DtObsTime !== current.registration.DtObsTime) {
     return false;
@@ -41,9 +47,13 @@ function draftHasNotChanged(previous: RegistrationDraft, current: RegistrationDr
   }
 
   // Check if we have any changed forms
-  const anyTidsChanged = curTids.some((curTid, i) => curTid !== preTids[i]);
-  if (anyTidsChanged) {
-    return false;
+  const allTidsThatMayHaveChanged = [...preTids, ...curTids].filter((v, i, a) => a.indexOf(v) === i);
+  for (const tid of allTidsThatMayHaveChanged) {
+    const previousRegistration = getRegistationPropertyForModel(previous.registration, tid);
+    const currentRegistration = getRegistationPropertyForModel(current.registration, tid);
+    if (!deepEqual(previousRegistration, currentRegistration)) {
+      return false;
+    }
   }
 
   const preExistingAttachments = getAllAttachmentsFromEditModel(previous.registration);
