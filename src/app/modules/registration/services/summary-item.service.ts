@@ -47,8 +47,7 @@ export function draftHasNotChanged(previous: RegistrationDraft, current: Registr
   }
 
   // Check if we have any changed forms
-  const allTidsThatMayHaveChanged = [...preTids, ...curTids].filter((v, i, a) => a.indexOf(v) === i);
-  for (const tid of allTidsThatMayHaveChanged) {
+  for (const tid of curTids) {
     const previousRegistration = getRegistationPropertyForModel(previous.registration, tid);
     const currentRegistration = getRegistationPropertyForModel(current.registration, tid);
     if (!deepEqual(previousRegistration, currentRegistration)) {
