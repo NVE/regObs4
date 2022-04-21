@@ -25,6 +25,12 @@
       &:last-child {
         margin-right: 0px;
       }
+
+      &.small {
+        width: inherit;
+        max-width: 80vw;
+        height: 100%;
+      }
     }
   }
 
@@ -37,16 +43,14 @@
     }
   }
 
-  app-offline-image {
+  app-remote-image {
     display: inline-flex;
     height: 100%;
     width: 100%;
+    min-height: 0;
     object-fit: cover;
     position: relative;
     flex-grow: 1;
-    &.single {
-      height: 80vw;
-    }
   }
 
   ion-slides {

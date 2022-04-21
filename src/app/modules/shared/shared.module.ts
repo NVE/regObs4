@@ -21,12 +21,12 @@ import { AddMenuComponent } from './components/add-menu/add-menu.component';
 import { ExternalLinkComponent } from './components/external-link/external-link.component';
 import { RefreshWithCancelComponent } from './components/refresh-with-cancel/refresh-with-cancel.component';
 import { HeaderComponent } from './components/header/header.component';
-import { OfflineImageComponent } from './components/offline-image/offline-image.component';
 import { CompetenceComponent } from '../../components/competence/competence.component';
 import { MapImageModule } from '../map-image/map-image.module';
 import { AuthModule } from './../auth/auth.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { AbsPipe } from './pipes/abs.pipe';
+import { RemoteImageComponent } from './components/remote-image/remote-image.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -43,7 +43,6 @@ import { AbsPipe } from './pipes/abs.pipe';
   declarations: [
     ShadowCssDirective,
     AddMenuComponent,
-    OfflineImageComponent,
     ExternalLinkComponent,
     GeoIconComponent,
     GeoSelectComponent,
@@ -59,7 +58,8 @@ import { AbsPipe } from './pipes/abs.pipe';
     GeoFabComponent,
     GeoNameComponent,
     CompetenceComponent,
-    AbsPipe
+    AbsPipe,
+    RemoteImageComponent
   ],
   exports: [
     CommonModule,
@@ -72,7 +72,6 @@ import { AbsPipe } from './pipes/abs.pipe';
     AngularSvgIconModule,
     MapImageModule,
     AddMenuComponent,
-    OfflineImageComponent,
     ExternalLinkComponent,
     GeoIconComponent,
     GeoSelectComponent,
@@ -89,7 +88,8 @@ import { AbsPipe } from './pipes/abs.pipe';
     CompetenceComponent,
     AuthModule,
     VirtualScrollerModule,
-    AbsPipe
+    AbsPipe,
+    RemoteImageComponent
   ]
 })
 export class SharedModule {}

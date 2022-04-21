@@ -3,10 +3,10 @@
   (error)="onError()"
   *ngIf="showImage"
 >
-<div *ngIf="!showImage" class="error">
+<div *ngIf="!showImage"  [class]="{error: true, large: largeFallback}">
     <ion-icon name="image"></ion-icon>
-    <p>
+    <p *ngIf="withFallbackText">
         Klarte ikke laste bilde fra regobs.no
     </p>
-    <p>Har du nett?</p>
+    <p *ngIf="withFallbackText">Har du nett?</p>
 </div>

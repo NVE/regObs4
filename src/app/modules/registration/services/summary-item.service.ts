@@ -12,7 +12,7 @@ import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { combineLatest, distinctUntilChanged, from, map, Observable, switchMap } from 'rxjs';
 import deepEqual from 'fast-deep-equal';
-import { getAllAttachmentsFromEditModel, getRegistrationsWithData, isObservationModelEmptyForRegistrationTid } from '../../common-registration/registration.helpers';
+import { getAllAttachmentsFromEditModel, getRegistationPropertyForModel, getRegistrationsWithData, isObservationModelEmptyForRegistrationTid } from '../../common-registration/registration.helpers';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
 import { NewAttachmentService } from '../../common-registration/registration.services';
 
@@ -31,6 +31,8 @@ function draftHasNotChanged(previous: RegistrationDraft, current: RegistrationDr
   if (!deepEqual(previous.registration.ObsLocation, current.registration.ObsLocation)) {
     return false;
   }
+
+  const currSchema = getRegistationPropertyForModel(current.registration, 10)
 
   const preTids = getRegistrationsWithData(previous).sort((a, b) => a - b);
   const curTids = getRegistrationsWithData(current).sort((a, b) => a - b);

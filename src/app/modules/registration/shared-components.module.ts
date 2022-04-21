@@ -23,7 +23,6 @@ import { MetersToCmPipe } from './pipes/meters-to-cm.pipe';
 import { CompressionTestListComponent } from './components/snow/compression-test-list/compression-test-list.component';
 import { KdvSelectComponent } from './components/kdv-select/kdv-select.component';
 import { BlobImageComponent } from './components/blob-image/blob-image.component';
-import { RemoteImageComponent } from './components/remote-image/remote-image.component';
 
 @NgModule({
   imports: [
@@ -56,8 +55,7 @@ import { RemoteImageComponent } from './components/remote-image/remote-image.com
     NumericInputModalPageModule,
     CompressionTestListComponent,
     KdvSelectComponent,
-    BlobImageComponent,
-    RemoteImageComponent
+    BlobImageComponent
   ],
   declarations: [
     SaveAndGoBackButtonComponent,
@@ -79,8 +77,7 @@ import { RemoteImageComponent } from './components/remote-image/remote-image.com
     NumericInputComponent,
     CompressionTestListComponent,
     KdvSelectComponent,
-    BlobImageComponent,
-    RemoteImageComponent
+    BlobImageComponent
   ]
 })
 export class SharedComponentsModule {}

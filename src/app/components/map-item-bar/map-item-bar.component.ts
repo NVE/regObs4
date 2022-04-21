@@ -26,7 +26,7 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
   name: string;
   id: number;
   geoHazard: GeoHazard;
-  imageUrls: string[] = [];
+  attachments: AttachmentViewModel[] = [];
   masl: number;
   competenceLevel: number;
 
@@ -81,10 +81,10 @@ export class MapItemBarComponent implements OnInit, OnDestroy {
       this.geoHazard = item.GeoHazardTID;
       this.masl = item.ObsLocation ? item.ObsLocation.Height : undefined;
       this.setDistanceAndType(item);
-      this.imageUrls = [];
+      this.attachments = [];
       // Why do we check for AppMode?
       if (this.appMode) {
-        this.imageUrls = getAllAttachmentsFromViewModel(item).map(x => x.UrlFormats["Medium"]);
+        this.attachments = getAllAttachmentsFromViewModel(item);
       }
       this.visible = true;
       this.publishChange();

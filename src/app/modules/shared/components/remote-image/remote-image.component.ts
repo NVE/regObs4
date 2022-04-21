@@ -16,6 +16,8 @@ import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/dr
 export class RemoteImageComponent implements OnInit {
   @Input() attachment: RemoteOrLocalAttachmentEditModel;
   @Input() preferSize: keyof RemoteOrLocalAttachmentEditModel['UrlFormats'] = 'Thumbnail';
+  @Input() largeFallback: boolean = false;
+  @Input() withFallbackText: boolean = false;
 
   imgSrc: SafeUrl;
   showImage = true;
@@ -30,6 +32,7 @@ export class RemoteImageComponent implements OnInit {
       imageUrl = this.attachment.Url;
     }
     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+    console.log(this)
   }
 
   onError() {
