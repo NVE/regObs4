@@ -6,13 +6,15 @@
     "TITLE": "Varsom Abonner"
   },
   "ADD_MENU": {
-    "DRAFT_TITLE_SOIL": "Draft: Soil observation",
+    "DRAFT_TITLE_DIRT": "Draft: Soil observation",
     "DRAFT_TITLE_ICE": "Draft: Ice observation",
     "DRAFT_TITLE_SNOW": "Draft: Snow observation",
+    "DRAFT_TITLE_SOIL": "Draft: Soil observation",
     "DRAFT_TITLE_WATER": "Draft: Water observation",
-    "NEW_SOIL_OBSERVATION": "New soil observation",
+    "NEW_DIRT_OBSERVATION": "New soil observation",
     "NEW_ICE_OBSERVATION": "New ice observation",
     "NEW_SNOW_OBSERVATION": "New snow observation",
+    "NEW_SOIL_OBSERVATION": "New soil observation",
     "NEW_WATER_OBSERVATION": "New water observation"
   },
   "ALERT": {
@@ -100,7 +102,7 @@
     "LINE_1": "Use the warnings, data and maps at your own risk. Errors and omissions may be present.",
     "LINE_2": "A warning is a planning tool and may differ from the actual situation. Always make your own evaluation. Conditions may be complex and differ from the warning.",
     "LINE_3": "Data on Regobs is produced by the users and is available «as is». It may contain errors and omissions. NVE makes no warranties for errors, omissions and assessments produced by the users.",
-    "LINE_4": "When publishing images with observations in Regobs, you also accept reuse of these images (licensed under <a href='https://data.norge.no/nlod/en/'>NLOD</a>).",
+    "LINE_4": "When publishing images with observations in Regobs, you also accept reuse of these images (licensed under <a href='https://data.norge.no/nlod/no/'>NLOD</a>).",
     "LINE_5": "Read more in our <a href=\"{{legalUrl}}\" target=\"_blank\">Terms of Service</a>.",
     "OK": "Ok, I accept",
     "TERMS": "Data on Varsom Regobs is produced by the users of Regobs and is available as it is. The information may contain errors and omissions. NVE makes no guarantee for the quality or accuracy of the information which is found on Regobs and does not take responsibility for data which is incorrect or misleading. The number of stars besides a username (1-5) indicates the level of competence of the person providing observations. Without stars, competence is unknown or low."
@@ -210,6 +212,7 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "All observations",
     "FORMS": "Forms",
+    "GO_TO_OBSERVATION": "Go to observation",
     "IN_MAP_VIEW": "Observations in map view",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
@@ -292,8 +295,15 @@
       "RIGHT_HERE": "Right here",
       "TITLE": "Danger Sign"
     },
-    "DELETE": "Delete observation",
-    "DELETE_CONFIRM": "Are you sure?",
+    "DELETE": {
+      "BUTTON": {
+        "DELETE_FROM_REGOBS": "Delete from Regobs",
+        "CANCEL_CHANGES": "Cancel changes"
+      },
+      "DRAFT_CONFIRMATION": "This observation is not sent to Regobs yet. Do you want to delete it?",
+      "HEADER": "Delete observation",
+      "REGOBS_CONFIRMATION": "This observation is already in Regobs. Do you want to delete the observation for good from Regobs or cancel your latest changes?"
+    },
     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AVAL_TRIGGER": "Landslide trigger",
@@ -320,17 +330,17 @@
       "SUBJECT": "Registration failed"
     },
     "FAILED": {
+      "ABANDON": "Cancel my work",
+      "CONFLICT": "A new version was saved while you worked.<br/>Would you like to cancel your work and load the new version or submit your version and overwrite?",
       "EDIT_OBSERVATION": "Edit observation",
       "LOGGED": "The problem has been logged.",
+      "OVERWRITE": "Submit and overwrite",
       "PROBLEM": "There has been a problem with your registration",
       "PROBLEM_HELP_TEXT": "Observations with errors are stored in your phone and when the problem is resolved you will be able to resubmit.",
       "REFERENCE": "Reference",
       "SEND_EMAIL": "Send to us by email",
       "SUBTITLE": "Missing network or submission took too long. We'll try again after a while and hope that the network has improved.",
-      "TITLE": "Submission failed",
-      "CONFLICT": "A new version was saved while you worked.<br/>Would you like to cancel your work and load the new version or submit your version and overwrite?",
-      "ABANDON": "Cancel my work",
-      "OVERWRITE": "Submit and overwrite"
+      "TITLE": "Submission failed"
     },
     "GENERAL_COMMENT": {
       "ADD_NOTES_HEADER": "Notes for observation",
@@ -665,7 +675,7 @@
     "LANGUAGE": "Language",
     "NORWAY_ONLY": "In Norway only",
     "NUMBER_OF_TILES_IN_CACHE": "Offline tiles cache size",
-    "READ_MORE_IN_LICENSE_AGREEMENT": "You can read about our use of data in our <a href=\"{{legalUrl}}\" target=\"_blank\">privacy policy</a>.",
+    "READ_MORE_IN_LICENSE_AGREEMENT": "You can read about our use of data in our privacy policy.",
     "RESET": "Reset app",
     "RESETTING": "App is resetting. Please wait...",
     "SHOW_ADVANCED": "Show advanced settings",

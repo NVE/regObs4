@@ -212,6 +212,28 @@ export class DraftRepositoryService {
   }
 
   /**
+  * Request to delete a registration from server
+  * The registration will be deleted from server next time we can reach the server
+  * Nothing will happen if we don't find it.
+  * @param uuid uuid of the registration you want to delete
+  * @throw error if the registration doesn't have a RegId (not submitted to server)
+  */
+  async deleteFromServer(uuid: string): Promise<void> {
+    const draft = await this.load(uuid);
+    if (draft) {
+      if (!draft.regId) {
+        throw new Error('Missing RegId. Are you sure this registration has been saved in Regobs earlier?');
+      }
+      const updatedDraft: RegistrationDraft = {
+        ...draft,
+        syncStatus: SyncStatus.DeleteRequested
+      };
+      this.logger.debug(`Draft ${uuid} requested for deletion from server`, DEBUG_TAG);
+      await this.save(updatedDraft);
+    }
+  }
+
+  /**
    * @returns a key for all drafts for given app mode
    */
   private createKeyForAllDrafts(appMode: AppMode): string {

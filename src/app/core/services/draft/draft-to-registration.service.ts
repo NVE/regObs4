@@ -35,6 +35,15 @@ export class DraftToRegistrationService {
   private newRegistrations = new Subject<RegistrationViewModel>();
 
   /**
+   * Emits regId's of newly deleted registrations.
+   */
+  get deletedRegistrationIds$(): Observable<number> {
+    return this.deletedRegistrationIds.asObservable();
+  }
+
+    private deletedRegistrationIds = new Subject<number>();
+
+  /**
    * Used to track what registrations we are currently uploading,
    * as DraftService.drafts$ can emit the same draft multiple times
    */
@@ -83,7 +92,10 @@ export class DraftToRegistrationService {
     // Listen for drafts ready to submit to regobs api, and network status
     this.draftService.drafts$.subscribe((drafts) => {
       const draftsToSync = drafts
-        .filter(d => d.syncStatus === SyncStatus.Sync || d.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck)
+        .filter(d =>
+          d.syncStatus === SyncStatus.Sync ||
+          d.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck ||
+          d.syncStatus === SyncStatus.DeleteRequested)
         .filter(d => d.error == null)
         .filter(d => !this.registrationsUploading.includes(d.uuid));
 
@@ -132,20 +144,27 @@ export class DraftToRegistrationService {
       return;
     }
 
-    this.loggerService.debug(`Sending registration ${draft.uuid} to regobs api`, DEBUG_TAG);
-
     try {
       let result: RegistrationViewModel;
 
-      if (draft.regId) {
-        const ignoreVersionCheck = draft.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck;
-        result = await this.addUpdateDeleteRegistrationService.update(draft, ignoreVersionCheck);
+      if (draft.syncStatus === SyncStatus.DeleteRequested) {
+        this.loggerService.debug(`Deleting registration ${draft.uuid} through regobs api`, DEBUG_TAG);
+        await this.addUpdateDeleteRegistrationService.delete(draft.regId);
+        this.deletedRegistrationIds.next(draft.regId);
       } else {
-        result = await this.addUpdateDeleteRegistrationService.add(draft);
+        this.loggerService.debug(`Sending registration ${draft.uuid} to regobs api`, DEBUG_TAG);
+        if (draft.regId) {
+          const ignoreVersionCheck = draft.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck;
+          result = await this.addUpdateDeleteRegistrationService.update(draft, ignoreVersionCheck);
+        } else {
+          result = await this.addUpdateDeleteRegistrationService.add(draft);
+        }
       }
 
       await this.draftService.delete(draft.uuid);
-      this.newRegistrations.next(result);
+      if (result) {
+        this.newRegistrations.next(result);
+      }
     } catch (error) {
       const { message, code } = handleError(error);
       this.loggerService.error(error, DEBUG_TAG, message);

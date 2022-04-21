@@ -3,7 +3,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
-import { Subject } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
@@ -91,29 +91,35 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async delete(): Promise<void> {
+    if (this.draft.regId) {
+      this.deleteFromRegobs();
+    } else {
+      this.deleteDraft();
+    }
+  }
 
-    const translations = await this.translateService
+  async deleteDraft(): Promise<void> {
+    const translations = await firstValueFrom(this.translateService
       .get([
-        'REGISTRATION.DELETE',
-        'REGISTRATION.DELETE_CONFIRM',
-        'ALERT.OK',
-        'ALERT.CANCEL'
-      ])
-      .toPromise();
+        'REGISTRATION.DELETE.HEADER',
+        'REGISTRATION.DELETE.DRAFT_CONFIRMATION',
+        'DIALOGS.YES',
+        'DIALOGS.NO'
+      ]));
     const alert = await this.alertController.create({
-      header: translations['REGISTRATION.DELETE'],
-      message: translations['REGISTRATION.DELETE_CONFIRM'],
+      header: translations['REGISTRATION.DELETE.HEADER'],
+      message: translations['REGISTRATION.DELETE.DRAFT_CONFIRMATION'],
       buttons: [
         {
-          text: translations['ALERT.CANCEL'],
+          text: translations['DIALOGS.NO'],
           role: 'cancel',
           cssClass: 'secondary'
         },
         {
-          text: translations['ALERT.OK'],
+          text: translations['DIALOGS.YES'],
           handler: () => {
             this.draftService.delete(this.draft.uuid).then(() => {
-              this.navController.navigateRoot('');
+              this.navController.navigateRoot('my-observations'); //TODO: Go back to where we started. May be the map or any place we have the "add key"
             });
           }
         }
@@ -121,4 +127,44 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     });
     await alert.present();
   }
+
+  async deleteFromRegobs(): Promise<void> {
+    const translations = await firstValueFrom(this.translateService
+      .get([
+        'REGISTRATION.DELETE.HEADER',
+        'REGISTRATION.DELETE.REGOBS_CONFIRMATION',
+        'REGISTRATION.DELETE.BUTTON.CANCEL_CHANGES',
+        'REGISTRATION.DELETE.BUTTON.DELETE_FROM_REGOBS',
+        'DIALOGS.CANCEL'
+      ]));
+    const alert = await this.alertController.create({
+      header: translations['REGISTRATION.DELETE.HEADER'],
+      message: translations['REGISTRATION.DELETE.REGOBS_CONFIRMATION'],
+      buttons: [
+        {
+          text: translations['DIALOGS.CANCEL'],
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: translations['REGISTRATION.DELETE.BUTTON.CANCEL_CHANGES'],
+          handler: () => {
+            this.draftService.delete(this.draft.uuid).then(() => {
+              this.navController.navigateRoot('my-observations');
+            });
+          }
+        },
+        {
+          text: translations['REGISTRATION.DELETE.BUTTON.DELETE_FROM_REGOBS'],
+          handler: () => {
+            this.draftService.deleteFromServer(this.draft.uuid).then(() => {
+              this.navController.navigateRoot('my-observations');
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
 }

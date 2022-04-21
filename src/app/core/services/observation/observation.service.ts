@@ -55,6 +55,11 @@ export class ObservationService {
     draftToRegService.newRegistrations$.subscribe((newRegistration) => {
       this.addAlreadyFetchedObservation(newRegistration);
     });
+
+    // When a registration has been deleted, update app cache
+    draftToRegService.deletedRegistrationIds$.subscribe((regId) => {
+      this.deleteFetchedObservation(regId);
+    });
   }
 
   async updateObservations(cancel?: Promise<any>) {
@@ -176,25 +181,41 @@ export class ObservationService {
   }
 
   private async addAlreadyFetchedObservation(observation: RegistrationViewModel) {
-    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
-    const inMemoryCache = this.latestObservations.getValue();
-    const geoHazards = [observation.GeoHazardTID];
-    const key = this.getGeoHazardKeyFull(userSettings.appMode, userSettings.language, geoHazards);
     const cachedObservations = await firstValueFrom(this.observations$);
 
     // Remove old version of observation if we already have it
     const cachedObservationsWithoutCurrentObs = cachedObservations.filter(obs => obs.RegId !== observation.RegId);
+    const newObservations = [observation, ...cachedObservationsWithoutCurrentObs];
+
+    await this.updateCacheAndSave(newObservations, observation.GeoHazardTID);
+  }
+
+  private async deleteFetchedObservation(regId: number) {
+    const cachedObservations = await firstValueFrom(this.observations$);
+
+    const index = cachedObservations.findIndex(obs => obs.RegId === regId);
+    if (index !== -1) {
+      const observation = cachedObservations[index];
+      const cachedObservationsWithoutDeletedObs = cachedObservations.splice(index, 1);
+      await this.updateCacheAndSave(cachedObservationsWithoutDeletedObs, observation.GeoHazardTID);
+    }
+  }
+
+  private async updateCacheAndSave(observations: RegistrationViewModel[], geoHazard: GeoHazard): Promise<void> {
+    const userSettings = await firstValueFrom(this.userSettingService.userSetting$);
+    const inMemoryCache = this.latestObservations.getValue();
+    const geoHazards = [geoHazard];
+    const key = this.getGeoHazardKeyFull(userSettings.appMode, userSettings.language, geoHazards);
 
     // Update cached observations
-    const newObservations = [observation, ...cachedObservationsWithoutCurrentObs];
     this.latestObservations.next({
       ...inMemoryCache,
-      [key]: newObservations
+      [key]: observations
     });
 
     // Update offline storage
     const fromDate = await this.getDaysBackToFetchAsDate(userSettings, geoHazards);
-    await this.saveAndClenupOfflineObservations(fromDate, geoHazards, userSettings, newObservations);
+    await this.saveAndClenupOfflineObservations(fromDate, geoHazards, userSettings, observations);
   }
 
   private updateLatestObservations(appMode: AppMode, langKey: LangKey, geoHazards: GeoHazard[], observations: RegistrationViewModel[]) {
