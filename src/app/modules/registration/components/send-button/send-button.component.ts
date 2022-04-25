@@ -87,9 +87,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
         }
 
         this.draftToRegistrationService.markDraftAsReadyToSubmit(this.draft);
-
-        // Navigate to my observations
-        this.navController.navigateRoot('my-observations');
+        this.navigateToMyObservations();
       } finally {
         this.isSending = false;
         this.cdr.detectChanges();
@@ -167,7 +165,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
 
   private async deleteDraft(): Promise<void> {
     this.draftService.delete(this.draft.uuid).then(() => {
-      this.navController.pop(); //Go back to where we started
+      this.navigateToMyObservations();
     });
   }
 
@@ -175,7 +173,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     this.addUpdateDeleteRegistrationService.delete(this.draft.regId, DELETE_OBS_TIMEOUT_MS)
       .then(() => {
         this.draftService.delete(this.draft.uuid);
-        this.navController.navigateRoot('my-observations');
+        this.navigateToMyObservations();
       })
       .catch((err) => {
         this.handleDeleteFromRegobsFailed(err);
@@ -195,5 +193,9 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     });
     this.logger.debug(`Delete of registration with regID ${this.draft.regId} failed`, DEBUG_TAG, err);
     await alert.present();
+  }
+
+  private navigateToMyObservations(): void {
+    this.navController.navigateRoot('my-observations');
   }
 }
