@@ -384,6 +384,8 @@
       "TITLE": "Accident / Incident"
     },
     "INVALID_IMAGE": "Sorry, this is an invalid image",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image from regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Are you online?",
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
     "NONE": "Not selected",
