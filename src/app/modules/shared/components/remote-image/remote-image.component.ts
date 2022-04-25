@@ -40,7 +40,6 @@ export class RemoteImageComponent implements OnInit {
       imageUrl = this.attachment.Url;
     }
     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
-    console.log(this)
   }
 
   onError() {
