@@ -3,6 +3,7 @@ import { IonInfiniteScroll } from '@ionic/angular';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { enterZone, toPromiseWithCancel } from 'src/app/core/helpers/observable-helper';
+import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-updade-delete-registration.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
 import { ObservationService } from 'src/app/core/services/observation/observation.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
@@ -48,7 +49,8 @@ export class SentListComponent implements OnDestroy {
     private regobsAuthService: RegobsAuthService,
     private changeDetectorRef: ChangeDetectorRef,
     private loggingService: LoggingService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService
   ) {
     this.myObservationsUrl$ = this.createMyObservationsUrl$();
 
@@ -64,6 +66,18 @@ export class SentListComponent implements OnDestroy {
         ];
 
         this.isEmpty.next(false);
+        this.changeDetectorRef.detectChanges();
+      });
+
+    //remove deleted registrations from the list when we get notified
+    addUpdateDeleteRegistrationService.deletedRegistrationIds$
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe((deletedRegId) => {
+        const regsWithoutDeletedRegistration = this.loadedRegistrations
+          .filter(reg => reg.RegId !== deletedRegId);
+
+        this.loadedRegistrations = regsWithoutDeletedRegistration;
+        this.isEmpty.emit(this.loadedRegistrations.length === 0);
         this.changeDetectorRef.detectChanges();
       });
   }

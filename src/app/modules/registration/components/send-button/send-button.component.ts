@@ -3,11 +3,16 @@ import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';
-import { Subject } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
+import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-updade-delete-registration.service';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+
+const DEBUG_TAG = 'SendButtonComponent';
+const DELETE_OBS_TIMEOUT_MS = 5000;
 
 @Component({
   selector: 'app-send-button',
@@ -37,7 +42,9 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     private regobsAuthService: RegobsAuthService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
-    private draftToRegistrationService: DraftToRegistrationService
+    private draftToRegistrationService: DraftToRegistrationService,
+    private addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
+    private logger: LoggingService
   ) {}
 
   ngOnInit(): void {
@@ -90,35 +97,103 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  async delete(): Promise<void> {
+  async requestDelete(): Promise<void> {
+    if (this.draft.regId) {
+      this.requestDeleteFromRegobs();
+    } else {
+      this.requestDeleteDraft();
+    }
+  }
 
-    const translations = await this.translateService
+  async requestDeleteDraft(): Promise<void> {
+    const translations = await firstValueFrom(this.translateService
       .get([
-        'REGISTRATION.DELETE',
-        'REGISTRATION.DELETE_CONFIRM',
-        'ALERT.OK',
-        'ALERT.CANCEL'
-      ])
-      .toPromise();
+        'REGISTRATION.DELETE.DRAFT.HEADER',
+        'REGISTRATION.DELETE.DRAFT.MESSAGE_NEW',
+        'REGISTRATION.DELETE.DRAFT.MESSAGE_EDIT',
+        'DIALOGS.YES',
+        'DIALOGS.NO'
+      ]));
     const alert = await this.alertController.create({
-      header: translations['REGISTRATION.DELETE'],
-      message: translations['REGISTRATION.DELETE_CONFIRM'],
+      header: translations['REGISTRATION.DELETE.DRAFT.HEADER'],
+      message:
+      this.draft.regId
+        ? translations['REGISTRATION.DELETE.DRAFT.MESSAGE_EDIT']
+        : translations['REGISTRATION.DELETE.DRAFT.MESSAGE_NEW'],
       buttons: [
         {
-          text: translations['ALERT.CANCEL'],
+          text: translations['DIALOGS.NO'],
           role: 'cancel',
           cssClass: 'secondary'
         },
         {
-          text: translations['ALERT.OK'],
+          text: translations['DIALOGS.YES'],
           handler: () => {
-            this.draftService.delete(this.draft.uuid).then(() => {
-              this.navController.navigateRoot('');
-            });
+            this.deleteDraft();
           }
         }
       ]
     });
+    await alert.present();
+  }
+
+  async requestDeleteFromRegobs(): Promise<void> {
+    const translations = await firstValueFrom(this.translateService
+      .get([
+        'REGISTRATION.DELETE.REGOBS.HEADER',
+        'REGISTRATION.DELETE.REGOBS.MESSAGE',
+        'REGISTRATION.DELETE.REGOBS.BUTTON',
+        'DIALOGS.CANCEL'
+      ]));
+    const alert = await this.alertController.create({
+      header: translations['REGISTRATION.DELETE.REGOBS.HEADER'],
+      message: translations['REGISTRATION.DELETE.REGOBS.MESSAGE'],
+      buttons: [
+        {
+          text: translations['DIALOGS.CANCEL'],
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: translations['REGISTRATION.DELETE.REGOBS.BUTTON'],
+          handler: () => {
+            this.deleteFromRegobs();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  private async deleteDraft(): Promise<void> {
+    this.draftService.delete(this.draft.uuid).then(() => {
+      this.navController.pop(); //Go back to where we started
+    });
+  }
+
+  private async deleteFromRegobs(): Promise<void> {
+    this.addUpdateDeleteRegistrationService.delete(this.draft.regId, DELETE_OBS_TIMEOUT_MS)
+      .then(() => {
+        this.draftService.delete(this.draft.uuid);
+        this.navController.navigateRoot('my-observations');
+      })
+      .catch((err) => {
+        this.handleDeleteFromRegobsFailed(err);
+      });
+  }
+
+  private async handleDeleteFromRegobsFailed(err: Error) {
+    this.deleteDraft();
+    const translations = await firstValueFrom(this.translateService
+      .get([
+        'REGISTRATION.DELETE.REGOBS.FAILED.HEADER',
+        'REGISTRATION.DELETE.REGOBS.FAILED.MESSAGE'
+      ]));
+    const alert = await this.alertController.create({
+      header: translations['REGISTRATION.DELETE.REGOBS.FAILED.HEADER'],
+      message: translations['REGISTRATION.DELETE.REGOBS.FAILED.MESSAGE']
+    });
+    this.logger.debug(`Delete of registration with regID ${this.draft.regId} failed`, DEBUG_TAG, err);
     await alert.present();
   }
 }

@@ -292,8 +292,24 @@
       "RIGHT_HERE": "Akkurat her",
       "TITLE": "Faretegn"
     },
-    "DELETE": "Slett observasjon",
-    "DELETE_CONFIRM": "Er du sikker?",
+    "DELETE": {
+      "BUTTON": "Slett observasjon",
+      "DRAFT": {
+        "BUTTON": "Slett kladd",
+        "HEADER": "Slett kladd",
+        "MESSAGE_NEW": "Denne observasjonen er ikke sendt inn til Regobs. Vil du slette den?",
+        "MESSAGE_EDIT": "Vil du slette evt. endringer du har gjort på denne observasjonen?"
+      },
+      "REGOBS": {
+        "BUTTON": "Slett observasjon fra Regobs",
+        "HEADER": "Slett observasjon",
+        "MESSAGE": "Vil du slette denne observasjonen fra Regobs for godt?",
+        "FAILED": {
+          "HEADER": "Sletting feilet",
+          "MESSAGE": "Vi fikk ikke slettet observasjonen fra Regobs. Sjekk gjerne om du har nett og prøv igjen."
+        }
+      }
+    },
     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AVAL_TRIGGER": "Skredutløser",
