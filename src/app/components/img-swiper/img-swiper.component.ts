@@ -15,6 +15,7 @@ import { ImgSwiperSlide } from './img-swiper-slide';
 import { Subject, interval, race } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ImageLocation } from './image-location.model';
+import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
 
 @Component({
   selector: 'app-img-swiper',
@@ -23,16 +24,16 @@ import { ImageLocation } from './image-location.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImgSwiperComponent implements OnChanges, OnDestroy {
-  @Input() imgUrl: string[] = [];
+  @Input() attachments: AttachmentViewModel[] = [];
   @Input() showLabels = true;
-  @Input() imgComments: string[] = [];
-  @Input() imgHeaders: string[] = [];
+  @Input() location: ImageLocation;
+  @Input() withFallbackText: boolean = true;
+  @Input() small: boolean = false;
+  @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
   @Output() imgClick: EventEmitter<{
     index: number;
     imgUrl: string;
   }> = new EventEmitter();
-  @Input() location: ImageLocation;
-  @Output() locationClick: EventEmitter<ImageLocation> = new EventEmitter();
 
   slideOptions = {
     autoplay: false,
@@ -90,11 +91,11 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   get shouldMoveMap() {
-    return this.location && this.imgUrl && this.imgUrl.length > 0;
+    return this.location && this.attachments && this.attachments.length > 0;
   }
 
   get imageLength() {
-    return this.imgUrl ? this.imgUrl.length : 0;
+    return this.attachments ? this.attachments.length : 0;
   }
 
   get imageIndex() {
@@ -102,13 +103,13 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
       this.slides[this.activeIndex] &&
       this.slides[this.activeIndex].type === 'image'
     ) {
-      return this.getImageIndex(this.slides[this.activeIndex].img as string);
+      return this.getImageIndex(this.slides[this.activeIndex].img as AttachmentViewModel);
     }
     return 0;
   }
 
   get showIndex() {
-    if (this.imgUrl && this.imgUrl.length > 1) {
+    if (this.attachments && this.attachments.length > 1) {
       return this.location ? this.activeIndex > 0 : true;
     }
     return false;
@@ -166,11 +167,11 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   private calculateNewState() {
-    if (this.location && (!this.imgUrl || this.imgUrl.length === 0)) {
+    if (this.location && (!this.attachments || this.attachments.length === 0)) {
       return 'singlemap';
-    } else if (!this.location && this.imgUrl && this.imgUrl.length === 1) {
+    } else if (!this.location && this.attachments && this.attachments.length === 1) {
       return 'singleimage';
-    } else if (!this.location && (!this.imgUrl || this.imgUrl.length === 0)) {
+    } else if (!this.location && (!this.attachments || this.attachments.length === 0)) {
       return 'empty';
     } else {
       return 'loading-swiper';
@@ -190,11 +191,11 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
   }
 
   private getImageSlides(): ImgSwiperSlide[] {
-    return (this.imgUrl || []).map((img, index) => ({
+    return (this.attachments || []).map((img, index) => ({
       type: 'image',
       img,
-      header: this.imgHeaders[index],
-      description: this.imgComments[index]
+      header: this.attachments[index].RegistrationName,
+      description: this.attachments[index].Comment
     }));
   }
 
@@ -204,16 +205,18 @@ export class ImgSwiperComponent implements OnChanges, OnDestroy {
     }
   }
 
-  getImageIndex(src: string) {
-    return this.imgUrl && this.imgUrl.length > 0
-      ? this.imgUrl.indexOf(src)
-      : -1;
+  getImageIndex(img: AttachmentViewModel) {
+    if (this.attachments) {
+      return this.attachments.indexOf(img)
+    } else {
+      return -1
+    }
   }
 
-  onImageClick(imgUrlSrc: string) {
-    const index = this.getImageIndex(imgUrlSrc);
+  onImageClick(img: AttachmentViewModel) {
+    const index = this.getImageIndex(img);
     if (index >= 0) {
-      this.imgClick.emit({ index, imgUrl: imgUrlSrc });
+      this.imgClick.emit({ index, imgUrl: img.Url });
     }
   }
 

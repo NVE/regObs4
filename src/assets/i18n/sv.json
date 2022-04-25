@@ -345,6 +345,8 @@
       "TITLE": "Olycka / tillbud"
     },
     "INVALID_IMAGE": "Tyvärr, ogiltig bildformat",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Bilden kunde inte laddas ned från regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Är du online?",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hela centimeter",
     "NONE": "Ej vald",

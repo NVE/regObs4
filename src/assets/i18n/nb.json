@@ -384,6 +384,8 @@
       "TITLE": "Ulykke / hendelse"
     },
     "INVALID_IMAGE": "Beklager, ugyldig bildeformat",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikke å laste bilde fra regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Har du nett?",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hele centimeter",
     "NONE": "Ingen valgt",

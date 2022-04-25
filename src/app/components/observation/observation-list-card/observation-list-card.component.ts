@@ -62,9 +62,7 @@ export class ObservationListCardComponent implements OnChanges {
   userCanEdit = false;
   isLoadingObsForEdit = false;
 
-  imageUrls: string[] = [];
-  imageHeaders: string[] = [];
-  imageDescriptions: string[] = [];
+  attachments: AttachmentViewModel[] = [];
   location: ImageLocation;
 
   constructor(
@@ -169,11 +167,7 @@ export class ObservationListCardComponent implements OnChanges {
   }
 
   updateImages(): void {
-    const allAttachments = getAllAttachmentsFromViewModel(this.obs);
-
-    this.imageHeaders = allAttachments.map((x) => x.RegistrationName);
-    this.imageDescriptions = allAttachments.map((x) => x.Comment);
-    this.imageUrls = allAttachments.map((x) => this.getImageUrl(x));
+    this.attachments = getAllAttachmentsFromViewModel(this.obs)
   }
 
   getImageUrl(
