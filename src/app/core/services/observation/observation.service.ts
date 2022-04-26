@@ -17,8 +17,7 @@ import { LoggingService } from '../../../modules/shared/services/logging/logging
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { NSqlFullUpdateObservable } from '../../helpers/nano-sql/NSqlFullUpdateObservable';
-import { DraftToRegistrationService } from '../draft/draft-to-registration.service';
-import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-updade-delete-registration.service';
+import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-update-delete-registration.service';
 
 const DEBUG_TAG = 'ObservationService';
 
@@ -46,15 +45,14 @@ export class ObservationService {
     private dataLoadService: DataLoadService,
     private loggingService: LoggingService,
     private dbHelperService: DbHelperService,
-    draftToRegService: DraftToRegistrationService,
     addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService
   ) {
     this.latestObservations = new BehaviorSubject({});
     this._observationsObservable = this.getObservationsAsObservable();
     this._dataLoadObservable = this.getDataLoadObservable();
 
-    // When a new registration has been uploaded, update app cache
-    draftToRegService.newRegistrations$.subscribe((newRegistration) => {
+    // When a registration has been uploaded, update app cache
+    addUpdateDeleteRegistrationService.changedRegistrations$.subscribe((newRegistration) => {
       this.addAlreadyFetchedObservation(newRegistration);
     });
 
@@ -199,8 +197,8 @@ export class ObservationService {
     if (index !== -1) {
       //we found the registration in the cache, so remove it
       const observation = cachedObservations[index];
-      cachedObservations.splice(index, 1);
-      await this.updateCacheAndSave(cachedObservations, observation.GeoHazardTID);
+      const observationsToKeep = cachedObservations.filter(obs => obs.RegId !== regId);
+      await this.updateCacheAndSave(observationsToKeep, observation.GeoHazardTID);
     }
   }
 
@@ -350,7 +348,6 @@ export class ObservationService {
           const filteredObservations = latestObservations[key].filter((reg) =>
             this.observationByParameterFilter(
               reg,
-              userSetting.language,
               userSetting.currentGeoHazard,
               this.getObservationDaysBackAsDate(userSetting)
             )
@@ -376,15 +373,13 @@ export class ObservationService {
   private getObservationsByParametersQuery(appMode: AppMode, langKey: LangKey, geoHazards?: GeoHazard[], fromDate?: Date) {
     return NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode)
       .query('select')
-      .where((reg: RegistrationViewModel) => this.observationByParameterFilter(reg, langKey, geoHazards, fromDate));
+      .where((reg: RegistrationViewModel) => this.observationByParameterFilter(reg, geoHazards, fromDate));
   }
 
   private observationByParameterFilter(
     reg: RegistrationViewModel,
-    langKey: LangKey,
     geoHazards?: GeoHazard[],
-    fromDate?: Date,
-    observerGuid?: string
+    fromDate?: Date
   ) {
     return (
       !!reg &&
@@ -434,7 +429,7 @@ export class ObservationService {
     return rows.map((x) => this.uniqueObservation(x, langKey)).join('#');
   }
 
-  async getObservationById(id: number, appMode: AppMode, langKey: LangKey) {
+  async getObservationById(id: number, appMode: AppMode) {
     const result = await NanoSql.getInstance(NanoSql.TABLES.OBSERVATION.name, appMode).query('select').where(['RegId', '=', id]).exec();
     return result[0] as RegistrationViewModel;
   }

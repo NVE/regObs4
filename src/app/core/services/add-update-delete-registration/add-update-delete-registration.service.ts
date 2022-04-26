@@ -24,10 +24,18 @@ export class AddUpdateDeleteRegistrationService {
     private userSettings: UserSettingService
   ) {}
 
+  private changedRegistrations = new Subject<RegistrationViewModel>();
   private deletedRegistrationIds = new Subject<number>();
 
   /**
-   * Emits regId's of newly deleted registrations.
+   * Emits uploaded registrations.
+   */
+  get changedRegistrations$(): Observable<RegistrationViewModel> {
+    return this.changedRegistrations.asObservable();
+  }
+
+  /**
+   * Emits regId's of deleted registrations.
    */
   get deletedRegistrationIds$(): Observable<number> {
     return this.deletedRegistrationIds.asObservable();
@@ -49,11 +57,14 @@ export class AddUpdateDeleteRegistrationService {
     const langKey = await firstValueFrom(this.userSettings.language$);
 
     // Send registration to regobs
-    return firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert({
+    const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert({
       registration,
       langKey,
       externalReferenceId: draft.uuid
     }));
+
+    this.changedRegistrations.next(result);
+    return result;
   }
 
   /**
@@ -81,13 +92,16 @@ export class AddUpdateDeleteRegistrationService {
     const { registration } = await this.uploadAttachments(draftWithoutEmptyRegistrations);
 
     // Send registration to regobs
-    return firstValueFrom(this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
+    const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
       registration,
       langKey,
       externalReferenceId: draft.uuid,
       id: draft.regId,
       ignoreVersionCheck: ignoreVersionCheck
     }));
+
+    this.changedRegistrations.next(result);
+    return result;
   }
 
   /**

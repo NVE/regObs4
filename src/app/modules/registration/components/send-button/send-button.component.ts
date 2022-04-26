@@ -8,7 +8,7 @@ import { SmartChanges } from 'src/app/core/helpers/simple-changes.helper';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
-import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-updade-delete-registration.service';
+import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
 const DEBUG_TAG = 'SendButtonComponent';
@@ -95,14 +95,6 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  async requestDelete(): Promise<void> {
-    if (this.draft.regId) {
-      this.requestDeleteFromRegobs();
-    } else {
-      this.requestDeleteDraft();
-    }
-  }
-
   async requestDeleteDraft(): Promise<void> {
     const translations = await firstValueFrom(this.translateService
       .get([
@@ -138,14 +130,14 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
   async requestDeleteFromRegobs(): Promise<void> {
     const translations = await firstValueFrom(this.translateService
       .get([
-        'REGISTRATION.DELETE.REGOBS.HEADER',
-        'REGISTRATION.DELETE.REGOBS.MESSAGE',
-        'REGISTRATION.DELETE.REGOBS.BUTTON',
+        'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.HEADER',
+        'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.MESSAGE',
+        'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON',
         'DIALOGS.CANCEL'
       ]));
     const alert = await this.alertController.create({
-      header: translations['REGISTRATION.DELETE.REGOBS.HEADER'],
-      message: translations['REGISTRATION.DELETE.REGOBS.MESSAGE'],
+      header: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.HEADER'],
+      message: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.MESSAGE'],
       buttons: [
         {
           text: translations['DIALOGS.CANCEL'],
@@ -153,7 +145,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
           cssClass: 'secondary'
         },
         {
-          text: translations['REGISTRATION.DELETE.REGOBS.BUTTON'],
+          text: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON'],
           handler: () => {
             this.deleteFromRegobs();
           }
@@ -164,32 +156,31 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private async deleteDraft(): Promise<void> {
-    this.draftService.delete(this.draft.uuid).then(() => {
-      this.navigateToMyObservations();
-    });
+    await this.draftService.delete(this.draft.uuid);
+    this.navigateToMyObservations();
   }
 
   private async deleteFromRegobs(): Promise<void> {
-    this.addUpdateDeleteRegistrationService.delete(this.draft.regId, DELETE_OBS_TIMEOUT_MS)
-      .then(() => {
-        this.draftService.delete(this.draft.uuid);
-        this.navigateToMyObservations();
-      })
-      .catch((err) => {
-        this.handleDeleteFromRegobsFailed(err);
-      });
+    try {
+      this.addUpdateDeleteRegistrationService.delete(this.draft.regId, DELETE_OBS_TIMEOUT_MS);
+    } catch (err) {
+      this.handleDeleteFromRegobsFailed(err);
+      return;
+    }
+    this.draftService.delete(this.draft.uuid);
+    this.navigateToMyObservations();
   }
 
   private async handleDeleteFromRegobsFailed(err: Error) {
     this.deleteDraft();
     const translations = await firstValueFrom(this.translateService
       .get([
-        'REGISTRATION.DELETE.REGOBS.FAILED.HEADER',
-        'REGISTRATION.DELETE.REGOBS.FAILED.MESSAGE'
+        'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.FAILED.HEADER',
+        'REGISTRATION.DELETE.SUBMITTED_REGISTRATION.FAILED.MESSAGE'
       ]));
     const alert = await this.alertController.create({
-      header: translations['REGISTRATION.DELETE.REGOBS.FAILED.HEADER'],
-      message: translations['REGISTRATION.DELETE.REGOBS.FAILED.MESSAGE']
+      header: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.FAILED.HEADER'],
+      message: translations['REGISTRATION.DELETE.SUBMITTED_REGISTRATION.FAILED.MESSAGE']
     });
     this.logger.debug(`Delete of registration with regID ${this.draft.regId} failed`, DEBUG_TAG, err);
     await alert.present();
