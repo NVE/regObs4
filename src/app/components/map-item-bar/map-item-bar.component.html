@@ -32,7 +32,11 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <div class="img-wrapper" *ngIf="imageUrls.length > 0" [ngClass]="{'full': imageUrls.length > 1 }">
-    <app-img-swiper [showLabels]="false" [imgUrl]="imageUrls"></app-img-swiper>
+  <div class="img-wrapper" *ngIf="attachments.length > 0" [ngClass]="{'full': attachments.length > 1 }">
+    <app-img-swiper
+      [showLabels]="false"
+      [attachments]="attachments"
+      [withFallbackText]="false"
+      [small]="true"></app-img-swiper>
   </div>
 </div>

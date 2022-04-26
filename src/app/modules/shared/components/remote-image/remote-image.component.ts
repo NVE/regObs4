@@ -7,6 +7,14 @@ import {
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 
+/**
+ * Component for showing online images.
+ *
+ * If the image cannot be fetched, a fallback image is displayed. The behaviour of
+ * this fallback is governed by the inputs "largeFallback" and "withFallbackText".
+ * 
+ * Image resolution can be set by the "preferSize" input.
+ */
 @Component({
   selector: 'app-remote-image',
   templateUrl: './remote-image.component.html',
@@ -16,6 +24,8 @@ import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/dr
 export class RemoteImageComponent implements OnInit {
   @Input() attachment: RemoteOrLocalAttachmentEditModel;
   @Input() preferSize: keyof RemoteOrLocalAttachmentEditModel['UrlFormats'] = 'Thumbnail';
+  @Input() largeFallback: boolean = false;
+  @Input() withFallbackText: boolean = false;
 
   imgSrc: SafeUrl;
   showImage = true;

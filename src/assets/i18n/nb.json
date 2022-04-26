@@ -210,7 +210,6 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alle observasjoner",
     "FORMS": "Skjemaer",
-    "GO_TO_OBSERVATION": "Gå til observasjon",
     "IN_MAP_VIEW": "Observasjoner i kartutsnittet",
     "MAX_COUNT_REACHED_HEADER": "Ingen flere observasjoner",
     "MAX_COUNT_REACHED_TEXT": "Vi viser maks {{ maxCount }} observasjoner her. Hvis du ikke fant det du lette etter, prøv å zoome inn på kartet eller snevre inn perioden du vil se observasjoner fra.",
@@ -293,8 +292,23 @@
       "RIGHT_HERE": "Akkurat her",
       "TITLE": "Faretegn"
     },
-    "DELETE": "Slett observasjon",
-    "DELETE_CONFIRM": "Er du sikker?",
+    "DELETE": {
+      "DRAFT": {
+        "BUTTON": "Slett kladd",
+        "HEADER": "Slett kladd",
+        "MESSAGE_NEW": "Denne observasjonen er ikke sendt inn til Regobs. Vil du slette den?",
+        "MESSAGE_EDIT": "Vil du slette evt. endringer du har gjort på denne observasjonen?"
+      },
+      "SUBMITTED_REGISTRATION": {
+        "BUTTON": "Slett observasjon fra Regobs",
+        "HEADER": "Slett observasjon",
+        "MESSAGE": "Vil du slette denne observasjonen fra Regobs for godt?",
+        "FAILED": {
+          "HEADER": "Sletting feilet",
+          "MESSAGE": "Vi fikk ikke slettet observasjonen fra Regobs. Sjekk gjerne om du har nett og prøv igjen."
+        }
+      }
+    },
     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AVAL_TRIGGER": "Skredutløser",
@@ -385,6 +399,8 @@
       "TITLE": "Ulykke / hendelse"
     },
     "INVALID_IMAGE": "Beklager, ugyldig bildeformat",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Klarte ikke å laste bilde fra regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Har du nett?",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hele centimeter",
     "NONE": "Ingen valgt",

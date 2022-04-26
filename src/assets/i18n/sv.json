@@ -180,7 +180,6 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "Alla observationer",
     "FORMS": "Formulär",
-    "GO_TO_OBSERVATION": "Gå till observation",
     "IN_MAP_VIEW": "Observationer i kartavsnittet",
     "NO_OBSERVATIONS": "Inga observationer",
     "NO_OBSERVATIONS_TEXT": "Det finns inga observationer i kartavsnittet, försök att ändra vyn eller utöka perioden du vill se observationer för.",
@@ -346,6 +345,8 @@
       "TITLE": "Olycka / tillbud"
     },
     "INVALID_IMAGE": "Tyvärr, ogiltig bildformat",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Bilden kunde inte laddas ned från regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Är du online?",
     "IN_CM": "I centimeter",
     "IN_FULL_CM": "I hela centimeter",
     "NONE": "Ej vald",

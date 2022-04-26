@@ -5,7 +5,7 @@ import { Observable, of, ReplaySubject } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-updade-delete-registration.service';
+import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from '../network-status/network-status.service';
 import { RegistrationDraft, RegistrationDraftErrorCode } from './draft-model';
 import { DraftRepositoryService } from './draft-repository.service';

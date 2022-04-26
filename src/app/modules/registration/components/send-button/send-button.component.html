@@ -14,10 +14,15 @@
       </ion-row>
       <ion-row class="ion-no-padding">
         <ion-col class="delete-button-col ion-no-padding ion-text-center">
-          <ion-button (click)="delete()" color="dark" size="small" fill="clear">
-            <!-- <ion-icon slot="start" name="trash"></ion-icon> -->
+          <ion-button (click)="requestDeleteDraft()" color="dark" size="small" fill="clear">
+            <svg-icon slot="start" src="/assets/icon/reset.svg"></svg-icon>
+            {{"REGISTRATION.DELETE.DRAFT.BUTTON" | translate}}
+          </ion-button>
+        </ion-col>
+        <ion-col *ngIf="draft.regId" class="delete-button-col ion-no-padding ion-text-center">
+          <ion-button (click)="requestDeleteFromRegobs()" color="dark" size="small" fill="clear">
             <svg-icon slot="start" src="/assets/icon/delete.svg"></svg-icon>
-            {{"REGISTRATION.DELETE" | translate}}
+            {{"REGISTRATION.DELETE.SUBMITTED_REGISTRATION.BUTTON" | translate}}
           </ion-button>
         </ion-col>
       </ion-row>

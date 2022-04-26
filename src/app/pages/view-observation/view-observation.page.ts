@@ -33,7 +33,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     const id = parseInt(this.activatedRoute.snapshot.params['id'], 10);
     this.registrationViewModel$ = this.userSettingService.userSetting$.pipe(
       switchMap((userSetting) =>
-        from(this.observationService.getObservationById(id, userSetting.appMode, userSetting.language)))
+        from(this.observationService.getObservationById(id, userSetting.appMode)))
     );
   }
 }

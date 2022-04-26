@@ -2,7 +2,8 @@
 
   <!-- Existing attachments -->
   <div class="image-wrapper" *ngFor="let attachment of filteredExistingImages; trackBy: trackExisting">
-    <app-remote-image [attachment]="attachment" preferSize="Large"></app-remote-image>
+    <app-remote-image [attachment]="attachment" preferSize="Large"
+    withFallbackText="true" largeFallback="true"></app-remote-image>
     <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">
       <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeExistingImage(attachment)">
         <ion-icon name="close"></ion-icon>

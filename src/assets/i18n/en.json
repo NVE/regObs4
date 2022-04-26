@@ -210,7 +210,6 @@
   "OBSERVATION_LIST": {
     "ALL_OBSERVATIONS": "All observations",
     "FORMS": "Forms",
-    "GO_TO_OBSERVATION": "Go to observation",
     "IN_MAP_VIEW": "Observations in map view",
     "MAX_COUNT_REACHED_HEADER": "No more observations",
     "MAX_COUNT_REACHED_TEXT": "We show max {{ maxCount }} observations here. If you didn't find what you looked for you may try to zoom in or narrow the period you want to see observations from.",
@@ -293,9 +292,24 @@
       "RIGHT_HERE": "Right here",
       "TITLE": "Danger Sign"
     },
-    "DELETE": "Delete observation",
-    "DELETE_CONFIRM": "Are you sure?",
-    "DIRT": {
+    "DELETE": {
+      "DRAFT": {
+        "BUTTON": "Delete draft",
+        "HEADER": "Delete draft",
+        "MESSAGE_NEW": "This observation is not sent to Regobs yet. Do you want to delete it?",
+        "MESSAGE_EDIT": "Discard changes?"
+      },
+      "SUBMITTED_REGISTRATION": {
+        "BUTTON": "Delete observation from Regobs",
+        "HEADER": "Delete observation",
+        "MESSAGE": "Do you want to delete this observation from Regobs?",
+        "FAILED": {
+          "HEADER": "Delete failed",
+          "MESSAGE": "We were not able to delete the observation from Regobs. Please check your network connection and try again."
+        }
+      }
+    },
+     "DIRT": {
       "LAND_SLIDE_OBS": {
         "AVAL_TRIGGER": "Landslide trigger",
         "DAMAGE_EXTENT": "Damage extent",
@@ -385,6 +399,8 @@
       "TITLE": "Accident / Incident"
     },
     "INVALID_IMAGE": "Sorry, this is an invalid image",
+    "COULD_NOT_DOWNLOAD_IMAGE": "Could not download image from regobs.no.",
+    "COULD_NOT_DOWNLOAD_IMAGE_NET_Q": "Are you online?",
     "IN_CM": "In centimeter",
     "IN_FULL_CM": "In centimeters without decimals",
     "NONE": "Not selected",
