@@ -3,8 +3,7 @@ import { IonInfiniteScroll } from '@ionic/angular';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { enterZone, toPromiseWithCancel } from 'src/app/core/helpers/observable-helper';
-import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-updade-delete-registration.service';
-import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';
+import { AddUpdateDeleteRegistrationService } from 'src/app/core/services/add-update-delete-registration/add-update-delete-registration.service';
 import { ObservationService } from 'src/app/core/services/observation/observation.service';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
@@ -12,6 +11,7 @@ import { RegistrationViewModel } from 'src/app/modules/common-regobs-api/models'
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
 
+const DEBUG_TAG = 'SentListComponent';
 const PAGE_SIZE = 10;
 const MAX_REGISTRATIONS_COUNT = 100;
 
@@ -43,18 +43,17 @@ export class SentListComponent implements OnDestroy {
   private ngDestroy$ = new Subject<void>();
 
   constructor(
-    draftToRegService: DraftToRegistrationService,
+    addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService,
     private observationService: ObservationService,
     private userSettingService: UserSettingService,
     private regobsAuthService: RegobsAuthService,
     private changeDetectorRef: ChangeDetectorRef,
     private loggingService: LoggingService,
     private ngZone: NgZone,
-    addUpdateDeleteRegistrationService: AddUpdateDeleteRegistrationService
   ) {
     this.myObservationsUrl$ = this.createMyObservationsUrl$();
 
-    draftToRegService.newRegistrations$
+    addUpdateDeleteRegistrationService.changedRegistrations$
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((newRegistration) => {
         const regsWithoutNewRegistration = this.loadedRegistrations
@@ -107,7 +106,7 @@ export class SentListComponent implements OnDestroy {
       ]);
       this.isEmpty.emit(this.loadedRegistrations.length === 0);
     } catch (error) {
-      this.loggingService.debug('Could not load my registrations', 'SentListComponent.initRegistrationSubscription()', error);
+      this.loggingService.debug('Could not load my registrations', DEBUG_TAG, error);
     } finally {
       this.loaded = true;
       this.changeDetectorRef.detectChanges();
