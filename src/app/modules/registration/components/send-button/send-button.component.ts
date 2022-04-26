@@ -162,7 +162,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
 
   private async deleteFromRegobs(): Promise<void> {
     try {
-      this.addUpdateDeleteRegistrationService.delete(this.draft.regId, DELETE_OBS_TIMEOUT_MS);
+      await this.addUpdateDeleteRegistrationService.delete(this.draft.regId, DELETE_OBS_TIMEOUT_MS);
     } catch (err) {
       this.handleDeleteFromRegobsFailed(err);
       return;
