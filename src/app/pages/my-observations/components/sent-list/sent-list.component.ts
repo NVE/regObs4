@@ -67,18 +67,6 @@ export class SentListComponent implements OnDestroy {
         this.isEmpty.next(false);
         this.changeDetectorRef.detectChanges();
       });
-
-    //remove deleted registrations from the list when we get notified
-    addUpdateDeleteRegistrationService.deletedRegistrationIds$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((deletedRegId) => {
-        const regsWithoutDeletedRegistration = this.loadedRegistrations
-          .filter(reg => reg.RegId !== deletedRegId);
-
-        this.loadedRegistrations = regsWithoutDeletedRegistration;
-        this.isEmpty.emit(this.loadedRegistrations.length === 0);
-        this.changeDetectorRef.detectChanges();
-      });
   }
 
   ngOnDestroy(): void {
