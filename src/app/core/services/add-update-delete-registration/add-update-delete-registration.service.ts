@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, Observable, Subject, take, tap, timeout } from 'rxjs';
 import { removeEmptyRegistrations } from 'src/app/modules/common-registration/registration.helpers';
 import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegistrationDraft } from '../draft/draft-model';
@@ -24,6 +24,23 @@ export class AddUpdateDeleteRegistrationService {
     private userSettings: UserSettingService
   ) {}
 
+  private changedRegistrations = new Subject<RegistrationViewModel>();
+  private deletedRegistrationIds = new Subject<number>();
+
+  /**
+   * Emits uploaded registrations.
+   */
+  get changedRegistrations$(): Observable<RegistrationViewModel> {
+    return this.changedRegistrations.asObservable();
+  }
+
+  /**
+   * Emits regId's of deleted registrations.
+   */
+  get deletedRegistrationIds$(): Observable<number> {
+    return this.deletedRegistrationIds.asObservable();
+  }
+
   /**
    * Create a registration in regobs.
    *
@@ -40,11 +57,14 @@ export class AddUpdateDeleteRegistrationService {
     const langKey = await firstValueFrom(this.userSettings.language$);
 
     // Send registration to regobs
-    return firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert({
+    const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert({
       registration,
       langKey,
       externalReferenceId: draft.uuid
     }));
+
+    this.changedRegistrations.next(result);
+    return result;
   }
 
   /**
@@ -72,27 +92,36 @@ export class AddUpdateDeleteRegistrationService {
     const { registration } = await this.uploadAttachments(draftWithoutEmptyRegistrations);
 
     // Send registration to regobs
-    return firstValueFrom(this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
+    const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsertOrUpdate({
       registration,
       langKey,
       externalReferenceId: draft.uuid,
       id: draft.regId,
       ignoreVersionCheck: ignoreVersionCheck
     }));
+
+    this.changedRegistrations.next(result);
+    return result;
   }
 
   /**
    * Delete a registration
+   * You may get notified when registrations is deleted, see deletedRegistrationIds$
    *
    * @param regId Registration id (not registration guid)
+   * @param timeoutInMillis timout in millis
    * @throws {Error} If regId parameter is null
    * @throws {HttpErrorResponse} If the request is unsuccessful
+   * @throws {TimeoutError} if the request timed out
    */
-  async delete(regId: number): Promise<void> {
+  async delete(regId: number, timeoutInMillis = 10000): Promise<void> {
     if (regId == null) {
       throw new Error('regId required');
     }
-    return firstValueFrom(this.regobsApiRegistrationService.RegistrationDelete(regId));
+    return firstValueFrom(this.regobsApiRegistrationService.RegistrationDelete(regId).pipe(
+      timeout(timeoutInMillis),
+      tap(() => this.deletedRegistrationIds.next(regId))
+    ));
   }
 
   /**

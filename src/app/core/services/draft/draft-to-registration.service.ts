@@ -1,11 +1,10 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { combineLatest, exhaustMap, filter, firstValueFrom, from, interval, map, Observable, startWith, Subject, throttleTime, withLatestFrom } from 'rxjs';
+import { combineLatest, exhaustMap, filter, firstValueFrom, from, interval, map, startWith, throttleTime, withLatestFrom } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
-import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-updade-delete-registration.service';
+import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registration/add-update-delete-registration.service';
 import { NetworkStatusService } from '../network-status/network-status.service';
 import { UploadAttachmentError } from '../upload-attachments/upload-attachments.service';
 import { RegistrationDraft, RegistrationDraftErrorCode } from './draft-model';
@@ -24,15 +23,6 @@ const DEBUG_TAG = 'DraftToRegistrationService';
 })
 export class DraftToRegistrationService {
   private initialized = false;
-
-  /**
-   * Emits new uploaded registrations.
-   */
-  get newRegistrations$(): Observable<RegistrationViewModel> {
-    return this.newRegistrations.asObservable();
-  }
-
-  private newRegistrations = new Subject<RegistrationViewModel>();
 
   /**
    * Used to track what registrations we are currently uploading,
@@ -135,17 +125,14 @@ export class DraftToRegistrationService {
     this.loggerService.debug(`Sending registration ${draft.uuid} to regobs api`, DEBUG_TAG);
 
     try {
-      let result: RegistrationViewModel;
-
       if (draft.regId) {
         const ignoreVersionCheck = draft.syncStatus === SyncStatus.SyncAndIgnoreVersionCheck;
-        result = await this.addUpdateDeleteRegistrationService.update(draft, ignoreVersionCheck);
+        await this.addUpdateDeleteRegistrationService.update(draft, ignoreVersionCheck);
       } else {
-        result = await this.addUpdateDeleteRegistrationService.add(draft);
+        await this.addUpdateDeleteRegistrationService.add(draft);
       }
 
       await this.draftService.delete(draft.uuid);
-      this.newRegistrations.next(result);
     } catch (error) {
       const { message, code } = handleError(error);
       this.loggerService.error(error, DEBUG_TAG, message);
