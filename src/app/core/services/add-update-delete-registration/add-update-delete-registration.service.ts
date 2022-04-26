@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, Observable, Subject, timeout } from 'rxjs';
+import { catchError, firstValueFrom, Observable, Subject, take, tap, timeout } from 'rxjs';
 import { removeEmptyRegistrations } from 'src/app/modules/common-registration/registration.helpers';
 import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { RegistrationDraft } from '../draft/draft-model';
@@ -119,10 +119,9 @@ export class AddUpdateDeleteRegistrationService {
       throw new Error('regId required');
     }
     return firstValueFrom(this.regobsApiRegistrationService.RegistrationDelete(regId).pipe(
-      timeout( timeoutInMillis),
-    )).then(() => {
-      this.deletedRegistrationIds.next(regId);
-    });
+      timeout(timeoutInMillis),
+      tap(() => this.deletedRegistrationIds.next(regId))
+    ));
   }
 
   /**
