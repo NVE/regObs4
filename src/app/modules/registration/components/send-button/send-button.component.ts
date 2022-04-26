@@ -167,7 +167,7 @@ export class SendButtonComponent implements OnInit, OnDestroy, OnChanges {
       this.handleDeleteFromRegobsFailed(err);
       return;
     }
-    this.draftService.delete(this.draft.uuid);
+    await this.draftService.delete(this.draft.uuid);
     this.navigateToMyObservations();
   }
 
