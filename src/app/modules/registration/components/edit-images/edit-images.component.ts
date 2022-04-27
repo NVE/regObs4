@@ -68,7 +68,7 @@ export class EditImagesComponent extends NgDestoryBase implements OnInit {
   ) {
     super();
 
-    // Save new attachment metadata every 5 seconds, when we navigate away, or when this component is destroyed
+    // Save new attachment metadata every 5 seconds or when we navigate away
     combineLatest([
       router.events.pipe(filter(e => e instanceof NavigationStart), startWith(null)),
       interval(5000).pipe(startWith(null)),
