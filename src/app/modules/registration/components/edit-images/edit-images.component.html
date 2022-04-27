@@ -22,9 +22,14 @@
         <ion-icon name="close"></ion-icon>
       </ion-fab-button>
     </ion-fab>
-    <!-- Har kommentert ut denne til vi finner en løsning på RO-1689 som ikke lugger-->
-    <!--app-text-comment [(value)]="attachment.Comment" title="{{ pictureCommentText | translate}}" rows="2"
-      placeholder="{{ pictureCommentPlaceholder | translate }}"></app-text-comment-->
+
+    <app-text-comment
+      [value]="attachment.Comment"
+      (valueChange)="setNewAttachmentComment(attachment, $event)"
+      title="{{ pictureCommentText | translate}}"
+      rows="2"
+      placeholder="{{ pictureCommentPlaceholder | translate }}"
+    ></app-text-comment>
   </div>
 
 </div>
