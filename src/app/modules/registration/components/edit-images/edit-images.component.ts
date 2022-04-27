@@ -10,10 +10,8 @@ import { File } from '@ionic-native/file/ngx';
 import { LoggingService } from '../../../shared/services/logging/logging.service';
 import { LogLevel } from '../../../shared/services/logging/log-level.model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { combineLatest, concatMap, filter, firstValueFrom, interval, Observable, skip, startWith, takeUntil } from 'rxjs';
+import { Observable } from 'rxjs';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
-import { NavigationStart, Router } from '@angular/router';
-import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -24,7 +22,7 @@ const MIME_TYPE = 'image/jpeg';
   styleUrls: ['./edit-images.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditImagesComponent extends NgDestoryBase implements OnInit {
+export class EditImagesComponent implements OnInit {
   @Input() draftUuid: string;
   @Input() existingAttachments: RemoteOrLocalAttachmentEditModel[];
   @Output() existingAttachmentsChange = new EventEmitter();
@@ -41,11 +39,6 @@ export class EditImagesComponent extends NgDestoryBase implements OnInit {
   @Input() ref?: string;
 
   newAttachments$: Observable<AttachmentUploadEditModelWithBlob[]>;
-  // On ios or android, metadata is saved to disk,
-  // but that lags when we save to disk too often, so keep a memory cache here.
-  // In the constructor there is a subscription that saves the cache to disk on an interval,
-  // or when we navigate away from this page.
-  newAttachmentMetadataCache = new Map<AttachmentUploadEditModel['id'], AttachmentUploadEditModel>();
 
   get filteredExistingImages(): RemoteOrLocalAttachmentEditModel[] {
     if (this.existingAttachments == null) {
@@ -64,23 +57,7 @@ export class EditImagesComponent extends NgDestoryBase implements OnInit {
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private newAttachmentService: NewAttachmentService,
-    router: Router
-  ) {
-    super();
-
-    // Save new attachment metadata every 5 seconds or when we navigate away
-    combineLatest([
-      router.events.pipe(filter(e => e instanceof NavigationStart), startWith(null)),
-      interval(5000).pipe(startWith(null)),
-    ]).pipe(
-      skip(1),
-      // Use concatmap to avoid paralell saving to disk. We want the current save operation to complete before a new
-      // one starts. The save operation clears the cache, so if two save operations are initiated at the same time,
-      // the first one will save and the last one will do nothing.
-      concatMap(() => this.saveNewAttachmentMetadata()),
-      takeUntil(this.ngDestroy$),
-    ).subscribe();
-  }
+  ) {}
 
   ngOnInit() {
     this.newAttachments$ = this.newAttachmentService.getAttachmentsWithBlob(
@@ -89,28 +66,9 @@ export class EditImagesComponent extends NgDestoryBase implements OnInit {
     );
   }
 
-  private async saveNewAttachmentMetadata() {
-    let i = 0;
-    for (const metadata of this.newAttachmentMetadataCache.values()) {
-      await firstValueFrom(this.newAttachmentService.saveAttachmentMeta$(this.draftUuid, metadata));
-      i += 1;
-    }
-
-    if (i > 0) {
-      this.logger.debug(`Saved metadata for ${i} attachments`, DEBUG_TAG);
-    }
-    this.newAttachmentMetadataCache.clear();
-  }
-
-  getNewAttachmentComment(attachment: AttachmentUploadEditModel): AttachmentUploadEditModel['Comment'] {
-    if (this.newAttachmentMetadataCache.has(attachment.id)) {
-      return this.newAttachmentMetadataCache.get(attachment.id).Comment;
-    }
-    return attachment.Comment;
-  }
-
   setNewAttachmentComment(attachment: AttachmentUploadEditModel, comment: AttachmentUploadEditModel['Comment']) {
-    this.newAttachmentMetadataCache.set(attachment.id, { ...attachment, Comment: comment });
+    this.logger.debug('Updating new attachment comment', DEBUG_TAG, comment);
+    this.newAttachmentService.saveAttachmentMeta$(this.draftUuid, { ...attachment, Comment: comment });
   }
 
   async addClick() {
