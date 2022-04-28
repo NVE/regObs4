@@ -60,7 +60,7 @@ function addWaterLevelAttachment(attachment: AttachmentEditModel, draft: Registr
   const modifiedMeasurements = draft.WaterLevel2.WaterLevelMeasurement
     .map((measurement: WaterLevelMeasurementUploadModel) => {
       // When we find a matching measurement, return a new object with updated attachment info
-      if (measurement.ref === ref) {
+      if (measurement.ref === ref && ref != null) {
         found = true;
         const modifiedMeasurement = { ...measurement };
         if (modifiedMeasurement.Attachments == null) {
