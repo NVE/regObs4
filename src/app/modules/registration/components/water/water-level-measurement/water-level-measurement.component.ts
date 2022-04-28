@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WaterLevelMeasurementEditModel } from 'src/app/modules/common-regobs-api/models';
 import moment from 'moment';
-import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
+import { RegistrationTid, WaterLevelMeasurementUploadModel } from 'src/app/modules/common-registration/registration.models';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { isEmpty } from 'src/app/modules/common-core/helpers';
+import { isEmpty, uuidv4 } from 'src/app/modules/common-core/helpers';
 
 @Component({
   selector: 'app-water-level-measurement',
@@ -21,6 +21,8 @@ export class WaterLevelMeasurementComponent implements OnInit {
   @Output() waterLevelMeasurementChange = new EventEmitter();
   maxDate: string;
   showDtMeasurementTimeError = false;
+
+  ref: WaterLevelMeasurementUploadModel['ref'];
 
   get dateIsDifferentThanObsTime() {
     return (
@@ -45,6 +47,14 @@ export class WaterLevelMeasurementComponent implements OnInit {
     if (!this.waterLevelMeasurement.Attachments) {
       this.waterLevelMeasurement.Attachments = [];
     }
+
+    // Ref is used to attach each image to a measurement later, after we upload the images to regobs.
+    // See addWaterLevelAttachment in attachmentHelpers.ts
+    const uploadModel = this.waterLevelMeasurement as WaterLevelMeasurementUploadModel;
+    if (uploadModel.ref == null) {
+      uploadModel.ref = uuidv4();
+    }
+    this.ref = uploadModel.ref;
   }
 
   getMaxDateForNow() {

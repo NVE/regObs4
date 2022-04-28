@@ -66,6 +66,11 @@ export class EditImagesComponent implements OnInit {
     );
   }
 
+  setNewAttachmentComment(attachment: AttachmentUploadEditModel, comment: AttachmentUploadEditModel['Comment']) {
+    this.logger.debug('Updating new attachment comment', DEBUG_TAG, comment);
+    this.newAttachmentService.saveAttachmentMeta$(this.draftUuid, { ...attachment, Comment: comment });
+  }
+
   async addClick() {
     if (this.onBeforeAdd !== undefined) {
       await Promise.resolve(this.onBeforeAdd());
