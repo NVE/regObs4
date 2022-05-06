@@ -25,7 +25,7 @@ export class DatabaseService {
     this.ready$ = this.ready.asObservable();
   }
 
-  async init() {
+  private async init() {
     if (this.platform.is('hybrid')) {
       await this.storage.defineDriver(CordovaSQLiteDriver);
     }
@@ -50,7 +50,7 @@ export class DatabaseService {
    * @param key the key to identify this value
    * @returns Returns a promise with the value of the given key
    */
-  async get(key: string): Promise<any> {
+  async get<T>(key: string): Promise<T> {
     await firstValueFrom(this.ready$);
     return this.database.get(key);
   }

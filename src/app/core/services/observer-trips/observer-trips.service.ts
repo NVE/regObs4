@@ -1,48 +1,18 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
-import { Platform } from '@ionic/angular';
 import { FeatureCollection } from '@turf/turf';
 import { firstValueFrom } from 'rxjs';
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
-import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
+import { DatabaseService } from '../database/database.service';
 
 const msOneWeek = 604800000;
-
-const getDataPath = async () => {
-  const uri = await Filesystem.getUri({
-    path: 'obsturer.json',
-    directory: Directory.Data
-  });
-  return uri.uri;
-};
-
-const getLastModifiedTime = async (path: string) => {
-  const result = await Filesystem.stat({
-    path,
-  });
-  return result.mtime;
-};
+const dataKey = 'REGOBS_OBSTRIPS_GEOJSON';
+const dataModifiedKey = 'REGOBS_OBSTRIPS_CHANGED_DATE';
 
 const shouldUpdate = (mTime: number) => {
   const msSinceUpdate = Date.now() - mTime;
   return msSinceUpdate > msOneWeek;
-};
-
-const saveFile = async (path: string, data: string) => {
-  await Filesystem.writeFile({
-    path,
-    data,
-    encoding: Encoding.UTF8,
-  });
-};
-
-const readFile = async (path: string) => {
-  return await Filesystem.readFile({
-    path,
-    encoding: Encoding.UTF8,
-  });
 };
 
 const DEBUG_TAG = 'ObserverTrips';
@@ -54,57 +24,46 @@ export class ObserverTripsService {
   constructor(
     private tripService: TripService,
     private logger: LoggingService,
-    private platform: Platform
+    private dbService: DatabaseService
   ) {}
 
+  async read() {
+    this.logger.debug('Reading data from storage', DEBUG_TAG, dataKey);
+    return this.dbService.get<FeatureCollection>(dataKey);
+  }
+
+  async readLastModified() {
+    this.logger.debug('Reading mtime from storage', DEBUG_TAG, dataModifiedKey);
+    return this.dbService.get<number>(dataModifiedKey);
+  }
+
+  private async save(data: FeatureCollection) {
+    this.logger.debug('Saving data', DEBUG_TAG);
+    await this.dbService.set(dataKey, data);
+    await this.dbService.set(dataModifiedKey, Date.now());
+  }
+
   async getData(): Promise<FeatureCollection | null> {
-    let path: string;
+    let geojson = await this.read();
+    const modifiedTime = await this.readLastModified();
+    const couldReadGeojson = geojson != null;
+    this.logger.debug('Read result', DEBUG_TAG, { couldReadGeojson, modifiedTime });
 
-    if (!isAndroidOrIos(this.platform)) {
-      return await this.fetchData();
-    } else {
-      path = await getDataPath();
-      this.logger.debug('Path', DEBUG_TAG, path);
-
-      let fileExists = false;
-      let tryUpdate = true;
-      let mTime: number;
-
-      try {
-        mTime = await getLastModifiedTime(path);
-        fileExists = mTime != null;
-        this.logger.debug('Last modified time', DEBUG_TAG, { mTime, fileExists });
-      } catch (error) {
-        this.logger.error(error, DEBUG_TAG, 'Could not get mtime, probably not existing');
-      }
-
-      if (fileExists) {
-        tryUpdate = shouldUpdate(mTime);
-      }
-
-      this.logger.debug('Try update?', DEBUG_TAG, tryUpdate);
-
-      if (tryUpdate) {
-        const data = await this.fetchData();
-
-        if (data != null) {
-          this.logger.debug('Saving data', DEBUG_TAG);
-          try {
-            await saveFile(path, JSON.stringify(data));
-          } catch (error) {
-            this.logger.error(error, DEBUG_TAG, 'Could not save data', { path, data });
-            fileExists = false;
-          }
-        }
-
-        if (!fileExists) {
-          return data;
-        }
-      }
-
-      const result = await readFile(path);
-      return JSON.parse(result.data);
+    let tryUpdate = true;
+    if (couldReadGeojson && modifiedTime) {
+      tryUpdate = shouldUpdate(modifiedTime);
     }
+
+    this.logger.debug('Should update?', DEBUG_TAG, tryUpdate);
+    if (tryUpdate) {
+      const data = await this.fetchData();
+      if (data != null) {
+        geojson = data;
+        await this.save(data);
+      }
+    }
+
+    return geojson;
   }
 
   private async fetchData() {
