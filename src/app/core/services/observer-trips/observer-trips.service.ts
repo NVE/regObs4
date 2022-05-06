@@ -19,6 +19,12 @@ const shouldUpdate = (mTime: number) => {
 
 const DEBUG_TAG = 'ObserverTrips';
 
+/**
+ * Provides geojson data for observer trips, and a toggle mechanism that can be used to show/hide data.
+ * If data is toggled off, geojson will be null.
+ * If user does not have access (401 is returned from API), geojson will be null.
+ * If user logs out, cached geojson data will be deleted and geojson will be null.
+ */
 @Injectable({
   providedIn: 'root'
 })
