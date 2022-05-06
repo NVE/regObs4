@@ -171,8 +171,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         new L.LatLng(90.0, -180.0),
         new L.LatLng(-90, 180.0)
       ),
-      maxBoundsViscosity: 1.0,
-      tapTolerance: 30,
+      maxBoundsViscosity: 1.0
     };
     this.isActive = new BehaviorSubject(this.autoActivate);
     try {
