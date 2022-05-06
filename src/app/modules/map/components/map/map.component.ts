@@ -378,9 +378,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
     if (this.showUserLocation) {
+      // Update user marker every time we get a new position,
+      // it should always show the most recent position
       this.geoPositionService.currentPosition$
         .pipe(takeUntil(this.ngDestroy$))
-        .subscribe((pos) => this.onPositionUpdate(pos));
+        .subscribe((pos) => this.updateUserMarker(pos));
+
+      // Update map view when the position changes at least 10 meters,
+      // or when we are moving (Position.speed > 0.1)
+      this.geoPositionService.currentPosWithRelevantXYChange$
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe((pos) => this.flyToNewPosition(pos));
 
       this.geoPositionService.currentHeading$
         .pipe(takeUntil(this.ngDestroy$))
@@ -676,22 +684,21 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.redrawMap();
   }
 
-  private onPositionUpdate(data: Position) {
+  private flyToNewPosition(newPos: L.LatLng) {
     this.zone.runOutsideAngular(() => {
-      if (this.map) {
-        const latLng = L.latLng({
-          lat: data.coords.latitude,
-          lng: data.coords.longitude
-        });
-        if (!this.userMarker) {
-          this.userMarker = new UserMarker(this.map, data);
-        } else {
-          this.userMarker.updatePosition(data);
-        }
-        if (this.followMode && !this.isDoingMoveAction) {
-          this.flyToMaxZoom(latLng, !this.firstPositionUpdate);
-          this.firstPositionUpdate = false;
-        }
+      if (this.followMode && !this.isDoingMoveAction) {
+        this.flyToMaxZoom(newPos, !this.firstPositionUpdate);
+        this.firstPositionUpdate = false;
+      }
+    });
+  }
+
+  private updateUserMarker(newPos: Position) {
+    this.zone.runOutsideAngular(() => {
+      if (!this.userMarker) {
+        this.userMarker = new UserMarker(this.map, newPos);
+      } else {
+        this.userMarker.updatePosition(newPos);
       }
     });
   }

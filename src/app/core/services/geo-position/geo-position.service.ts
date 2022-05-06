@@ -30,6 +30,7 @@ import { GeoPositionErrorCode } from './geo-position-error.enum';
 import moment from 'moment';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { DeviceOrientation } from '@ionic-native/device-orientation/ngx';
+import * as L from 'leaflet';
 
 const DEBUG_TAG = 'GeoPositionService';
 
@@ -69,6 +70,22 @@ export class GeoPositionService implements OnDestroy {
 
   get currentPosition$(): Observable<Position> {
     return this.currentPosition.pipe(filter((cp) => cp !== null));
+  }
+
+  get currentPosWithRelevantXYChange$(): Observable<L.LatLng> {
+    return this.currentPosition$.pipe(
+      map(pos => ({
+        pos: L.latLng(pos.coords.latitude, pos.coords.longitude),
+        speed: pos.coords.speed
+      })),
+      distinctUntilChanged((prev, curr) => {
+        if (curr.speed && curr.speed > 0.1) {
+          return false;
+        }
+        return prev.pos.distanceTo(curr.pos) < 10;
+      }),
+      map((posAndSpeed) => posAndSpeed.pos)
+    );
   }
 
   get currentHeading$(): Observable<number> {
