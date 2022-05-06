@@ -1,6 +1,13 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+# Do not convert LF til CR-LF for these files, or else Git think they are changed every time you do cap sync on Windows
+android\capacitor.settings.gradle text eol=lf
+android\app\capacitor.build.gradle text eol=lf
+android\app\src\main\assets\capacitor.config.json text eol=lf
+android\app\src\main\assets\capacitor.plugins.json text eol=lf
+android\app\src\main\res\xml\config.xml text eol=lf
+
 # Custom for Visual Studio
 *.cs     diff=csharp
 

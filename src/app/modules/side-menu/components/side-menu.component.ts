@@ -16,6 +16,7 @@ import { LangKey } from 'src/app/modules/common-core/models';
 import { isAndroidOrIos } from 'src/app/core/helpers/ionic/platform-helper';
 import { DataMarshallService } from 'src/app/core/services/data-marshall/data-marshall.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
+import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
 
 @Component({
   selector: 'app-side-menu',
@@ -52,7 +53,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     private navController: NavController,
     private ngZone: NgZone,
     private dataMarshallService: DataMarshallService,
-    private externalLinkService: ExternalLinkService
+    private externalLinkService: ExternalLinkService,
+    public observerTrips: ObserverTripsService
   ) {}
 
   async ngOnInit() {

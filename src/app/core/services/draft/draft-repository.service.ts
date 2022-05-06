@@ -183,7 +183,7 @@ export class DraftRepositoryService {
     const start = Date.now();
     const appMode = await firstValueFrom(this.userSettingService.appMode$);
     const key = this.createKey(uuid, appMode);
-    const draft = await this.databaseService.get(key);
+    const draft = await this.databaseService.get<RegistrationDraft>(key);
     this.logger.debug(`Draft ${uuid} loaded in ${this.millisSince(start)} ms`, DEBUG_TAG);
     return draft;
   }
@@ -225,7 +225,6 @@ export class DraftRepositoryService {
     return `${this.createKeyForAllDrafts(appMode)}.${uuid}`;
   }
 
-
   /**
    * @returns all drafts for given geo hazard and app mode or empty list if not found
    */
@@ -236,7 +235,7 @@ export class DraftRepositoryService {
     const keys = await this.databaseService.keys();
     const keysForAppMode = keys.filter(k => k.startsWith(keyPrefix));
     for (const key of keysForAppMode) {
-      const draft = await this.databaseService.get(key);
+      const draft = await this.databaseService.get<RegistrationDraft>(key);
       drafts.push(draft);
     }
     this.logger.debug(`${drafts.length} drafts loaded in ${this.millisSince(start)} ms`, DEBUG_TAG);

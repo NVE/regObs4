@@ -7,7 +7,9 @@ import {
   AfterViewInit,
   Output,
   EventEmitter,
-  Injector
+  Injector,
+  ElementRef,
+  ViewChild
 } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
@@ -42,8 +44,13 @@ import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/o
 import { MapZoomService } from '../../services/map/map-zoom.service';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
+import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
+import { FeatureCollection } from '@turf/turf';
 
 const DEBUG_TAG = 'MapComponent';
+
+const noObserverTripDescription = 'Turen har ikke beskrivelse';
+const observerTripsMinZoom = 10;
 
 const isTopoMapLayer = (mapId: string) => (<string[]>Object.values(TopoMapLayer)).includes(mapId);
 const redrawLayersInLayerGroup = (layerGroup: L.LayerGroup) => {
@@ -89,6 +96,12 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() autoActivate = true;
   @Input() geoTag = DEBUG_TAG;
   @Input() offlinePackageMode = false;
+  @Input() showObserverTrips = false;
+
+  @ViewChild('observerTripsContainer') observerTripsContainer: ElementRef<HTMLDivElement>;
+  observationTripName = '';
+  observationTripDescription: string = null;
+  observationTripLayers: L.GeoJSON[];
 
   loaded = false;
   private map: L.Map;
@@ -114,6 +127,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private geoPositionService: GeoPositionService,
     private platform: Platform,
     private mapZoomService: MapZoomService,
+    private observerTripsService: ObserverTripsService,
     injector: Injector
   ) {
     if (isAndroidOrIos(this.platform)) {
@@ -189,6 +203,74 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isActive.next(isActive);
   }
 
+  removeObserverTripDescription() {
+    this.observerTripsContainer.nativeElement.style.display = 'none';
+  }
+
+  private cleanupObserverTrips(map: L.Map) {
+    if (this.observationTripLayers != null) {
+      this.observationTripLayers.forEach(l => {
+        if (map.hasLayer(l)) {
+          map.removeLayer(l);
+        }
+      });
+      this.observationTripLayers = null;
+    }
+  }
+
+  private async addObserverTripsLayer(map: L.Map, geojson: FeatureCollection) {
+    if (geojson == null) {
+      this.cleanupObserverTrips(map);
+      return;
+    }
+
+    // NB: The side menu icon has the same style
+    const geojsonLayer = L.geoJSON(geojson, { style: { dashArray: '4', color: 'red', stroke: true } });
+    this.observationTripLayers = [geojsonLayer];
+    let layerToBindClickHandlerTo: L.GeoJSON;
+
+    if (isAndroidOrIos(this.platform)) {
+      // To get a bigger tap hit radius on devices, add the geojson twice with much wider stroke
+      const bgLayer = L.geoJSON(geojson, { style: { color: 'rgba(0,0,0,0)', weight: 30, stroke: true } });
+      layerToBindClickHandlerTo = bgLayer;
+      this.observationTripLayers.push(bgLayer);
+    } else {
+      layerToBindClickHandlerTo = geojsonLayer;
+    }
+
+    if (map.getZoom() >= observerTripsMinZoom) {
+      this.observationTripLayers.forEach(l => l.addTo(map));
+    }
+
+    const clickHandler = (e) => {
+      this.observationTripName = e.layer?.feature?.properties?.navn;
+      this.observationTripDescription = e.layer?.feature?.properties?.beskrivelse || noObserverTripDescription;
+      this.observerTripsContainer.nativeElement.style.display = 'block';
+    };
+
+    const addOrRemoveLayers = () => {
+      const zoomLevel = map.getZoom();
+      if (zoomLevel < observerTripsMinZoom) {
+        if (map.hasLayer(geojsonLayer)) {
+          this.observationTripLayers.forEach(l => map.removeLayer(l));
+        }
+      } else {
+        if (!map.hasLayer(geojsonLayer)) {
+          this.observationTripLayers.forEach(l => map.addLayer(l));
+        }
+      }
+    };
+
+    layerToBindClickHandlerTo.on('click', clickHandler);
+    map.on('zoomend', addOrRemoveLayers);
+
+    // Clean up event listeners on destroy
+    this.ngDestroy$.subscribe(() => {
+      layerToBindClickHandlerTo.off('click', clickHandler);
+      map.off('zoomend', addOrRemoveLayers);
+    });
+  }
+
   onLeafletMapReady(map: L.Map) {
     //TODO: Denne metoden er altfor lang, splitte opp i flere funksjoner!
     this.map = map;
@@ -196,9 +278,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       L.control.scale({ imperial: false }).addTo(map);
     }
 
+    if (this.showObserverTrips) {
+      this.observerTripsService.geojson.pipe(takeUntil(this.ngDestroy$)).subscribe(geojson => {
+        this.addObserverTripsLayer(map, geojson);
+      });
+    }
+
     this.offlineTopoLayerGroup.addTo(this.map);
     this.layerGroup.addTo(this.map);
     this.offlineSupportMapLayerGroup.addTo(this.map);
+
 
     if (this.offlinePackageMode) {
       // Style all online maps grayscale.
