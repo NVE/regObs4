@@ -226,6 +226,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
+    // NB: The side menu icon has the same style
     const geojsonLayer = L.geoJSON(geojson, { style: { dashArray: '4', color: 'red', stroke: true } });
     this.observationTripLayers = [geojsonLayer];
     let layerToBindClickHandlerTo: L.GeoJSON;
