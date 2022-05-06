@@ -13,6 +13,7 @@ import { CreateTripDto } from '../models/create-trip-dto';
   providedIn: 'root',
 })
 class TripService extends __BaseService {
+  static readonly TripGetPath = '/Trip/ObserverTrips';
   static readonly TripPutPath = '/Trip';
   static readonly TripPostPath = '/Trip';
 
@@ -24,16 +25,51 @@ class TripService extends __BaseService {
   }
 
   /**
+   * Fetches GeoJSON representations of the pre-approved observation trips.
+   * Only available for users in Obskorps administrative group.
+   */
+  TripGetResponse(): __Observable<__StrictHttpResponse<null>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/Trip/ObserverTrips`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<null>;
+      })
+    );
+  }
+  /**
+   * Fetches GeoJSON representations of the pre-approved observation trips.
+   * Only available for users in Obskorps administrative group.
+   */
+  TripGet(): __Observable<null> {
+    return this.TripGetResponse().pipe(
+      __map(_r => _r.body as null)
+    );
+  }
+
+  /**
    * @param trip undefined
    */
   TripPutResponse(trip: FinishTripDto): __Observable<__StrictHttpResponse<null>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = trip;
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'PUT',
-      this.rootUrl + '/Trip',
+      this.rootUrl + `/Trip`,
       __body,
       {
         headers: __headers,
@@ -61,13 +97,13 @@ class TripService extends __BaseService {
    * @param trip undefined
    */
   TripPostResponse(trip: CreateTripDto): __Observable<__StrictHttpResponse<null>> {
-    const __params = this.newParams();
-    const __headers = new HttpHeaders();
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
     let __body: any = null;
     __body = trip;
-    const req = new HttpRequest<any>(
+    let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + '/Trip',
+      this.rootUrl + `/Trip`,
       __body,
       {
         headers: __headers,
@@ -92,7 +128,7 @@ class TripService extends __BaseService {
   }
 }
 
-namespace TripService {
+module TripService {
 }
 
-export { TripService };
+export { TripService }
