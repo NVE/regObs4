@@ -102,7 +102,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   observationTripName = '';
   observationTripDescription: string = null;
   observationTripLayers: L.GeoJSON[];
-  showObservationTripDescription = false;
 
   loaded = false;
   private map: L.Map;
