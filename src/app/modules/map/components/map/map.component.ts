@@ -244,7 +244,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     const clickHandler = (e) => {
-      this.observationTripName = e.layer?.feature?.properties?.navn ? ` ${e.layer.feature.properties.navn}` : '';
+      this.observationTripName = e.layer?.feature?.properties?.navn;
       this.observationTripDescription = e.layer?.feature?.properties?.beskrivelse || noObserverTripDescription;
       this.observerTripsContainer.nativeElement.style.display = 'block';
     };

@@ -20,7 +20,7 @@
 >
   <div class="observer-trip-desc">
     <div>
-      <strong>Obsturbeskrivelse{{ observationTripName }}:</strong>
+      <strong>Obsturbeskrivelse{{ observationTripName ? ' ' + observationTripName : '' }}:</strong>
     </div>
     <div>{{ observationTripDescription }}</div>
   </div>
