@@ -98,6 +98,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() showObserverTrips = false;
 
   @ViewChild('observerTripsContainer') observerTripsContainer: ElementRef<HTMLDivElement>;
+  observationTripName = '';
   observationTripDescription: string = null;
   showObservationTripDescription = false;
 
@@ -207,7 +208,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async addObserverTripsLayer(map: L.Map) {
-    const geojson: any = await this.observerTripsService.getData();
+    const geojson = await this.observerTripsService.getData();
     if (geojson == null) {
       return;
     }
@@ -222,6 +223,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     const layers = [geojsonLayer];
 
     if (isAndroidOrIos(this.platform)) {
+      // To get a bigger tap hit radius on devices, add the geojson twice with much wider stroke
       const bgLayer = L.geoJSON(geojson, {
         style: () => ({ color: 'rgba(0,0,0,0)', weight: 30, stroke: true })
       });
@@ -231,16 +233,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       layerToBindClickHandlerTo = geojsonLayer;
     }
 
-    layerToBindClickHandlerTo.on('click', (e: any) => {
-      this.observationTripDescription = e.layer.feature.properties.beskrivelse || noObserverTripDescription;
-      this.observerTripsContainer.nativeElement.style.display = 'block';
-    });
-
     if (map.getZoom() >= observerTripsMinZoom) {
       layers.forEach(l => l.addTo(map));
     }
 
-    map.on('zoomend', () => {
+    const clickHandler = (e) => {
+      this.observationTripName = e.layer?.feature?.properties?.navn ? ` ${e.layer.feature.properties.navn}` : '';
+      this.observationTripDescription = e.layer?.feature?.properties?.beskrivelse || noObserverTripDescription;
+      this.observerTripsContainer.nativeElement.style.display = 'block';
+    };
+
+    const addOrRemoveLayers = () => {
       const zoomLevel = map.getZoom();
       if (zoomLevel < observerTripsMinZoom) {
         if (map.hasLayer(geojsonLayer)) {
@@ -251,6 +254,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           layers.forEach(l => map.addLayer(l));
         }
       }
+    };
+
+    layerToBindClickHandlerTo.on('click', clickHandler);
+    map.on('zoomend', addOrRemoveLayers);
+
+    // Clean up event listeners on destroy
+    this.ngDestroy$.subscribe(() => {
+      layerToBindClickHandlerTo.off('click', clickHandler);
+      map.off('zoomend', addOrRemoveLayers);
     });
   }
 

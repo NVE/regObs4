@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { Platform } from '@ionic/angular';
+import { FeatureCollection } from '@turf/turf';
 import { firstValueFrom } from 'rxjs';
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -56,7 +57,7 @@ export class ObserverTripsService {
     private platform: Platform
   ) {}
 
-  async getData() {
+  async getData(): Promise<FeatureCollection | null> {
     let path: string;
 
     if (!isAndroidOrIos(this.platform)) {
