@@ -1,13 +1,15 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/turf';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, from, map, mapTo, Observable, ReplaySubject, skipWhile, switchMap } from 'rxjs';
+import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { DatabaseService } from '../database/database.service';
 
 const msOneWeek = 604800000;
 const dataKey = 'REGOBS_OBSTRIPS_GEOJSON';
+const toggleKey = 'REGOBS_OBSTRIPS_ON';
 const dataModifiedKey = 'REGOBS_OBSTRIPS_CHANGED_DATE';
 
 const shouldUpdate = (mTime: number) => {
@@ -21,18 +23,53 @@ const DEBUG_TAG = 'ObserverTrips';
   providedIn: 'root'
 })
 export class ObserverTripsService {
+
+  geojson: Observable<FeatureCollection | null>;
+  canShow = new ReplaySubject(1);
+  toggleOn = new BehaviorSubject(false);
+
   constructor(
     private tripService: TripService,
     private logger: LoggingService,
-    private dbService: DatabaseService
-  ) {}
+    private dbService: DatabaseService,
+    authService: RegobsAuthService
+  ) {
+    this.geojson = combineLatest([
+      authService.loggedInUser$,
+      this.toggleOn
+    ]).pipe(
+      skipWhile(([o,]) => !o.isLoggedIn),
+      switchMap(([o,]) => o.isLoggedIn ? from(this.getData()) : from(this.clear()).pipe(mapTo(null))),
+      map((geojson) => this.toggleOn.value ? geojson : null)
+    );
+    this.checkOn();
+  }
 
-  async read() {
+  async toggle() {
+    const toggled = !this.toggleOn.value;
+    await this.dbService.set(toggleKey, toggled);
+    this.toggleOn.next(toggled);
+  }
+
+  private async checkOn() {
+    this.logger.debug('Checking on/off', DEBUG_TAG);
+    const toggledOn = !!await this.dbService.get<boolean>(toggleKey);
+    this.toggleOn.next(toggledOn);
+  }
+
+  private async clear() {
+    this.canShow.next(false);
+    this.logger.debug('Removing data', DEBUG_TAG);
+    await this.dbService.remove(dataKey);
+    await this.dbService.remove(dataModifiedKey);
+  }
+
+  private async read() {
     this.logger.debug('Reading data from storage', DEBUG_TAG, dataKey);
     return this.dbService.get<FeatureCollection>(dataKey);
   }
 
-  async readLastModified() {
+  private async readLastModified() {
     this.logger.debug('Reading mtime from storage', DEBUG_TAG, dataModifiedKey);
     return this.dbService.get<number>(dataModifiedKey);
   }
@@ -43,7 +80,7 @@ export class ObserverTripsService {
     await this.dbService.set(dataModifiedKey, Date.now());
   }
 
-  async getData(): Promise<FeatureCollection | null> {
+  private async getData(): Promise<FeatureCollection | null> {
     let geojson = await this.read();
     const modifiedTime = await this.readLastModified();
     const couldReadGeojson = geojson != null;
@@ -63,6 +100,7 @@ export class ObserverTripsService {
       }
     }
 
+    this.canShow.next(geojson != null);
     return geojson;
   }
 

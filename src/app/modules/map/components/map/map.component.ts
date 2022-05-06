@@ -45,6 +45,7 @@ import { MapZoomService } from '../../services/map/map-zoom.service';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
+import { FeatureCollection } from '@turf/turf';
 
 const DEBUG_TAG = 'MapComponent';
 
@@ -100,6 +101,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('observerTripsContainer') observerTripsContainer: ElementRef<HTMLDivElement>;
   observationTripName = '';
   observationTripDescription: string = null;
+  observationTripLayers: L.GeoJSON[];
   showObservationTripDescription = false;
 
   loaded = false;
@@ -207,34 +209,38 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.observerTripsContainer.nativeElement.style.display = 'none';
   }
 
-  async addObserverTripsLayer(map: L.Map) {
-    const geojson = await this.observerTripsService.getData();
+  private cleanupObserverTrips(map: L.Map) {
+    if (this.observationTripLayers != null) {
+      this.observationTripLayers.forEach(l => {
+        if (map.hasLayer(l)) {
+          map.removeLayer(l);
+        }
+      });
+      this.observationTripLayers = null;
+    }
+  }
+
+  private async addObserverTripsLayer(map: L.Map, geojson: FeatureCollection) {
     if (geojson == null) {
+      this.cleanupObserverTrips(map);
       return;
     }
 
-    const geojsonLayer = L.geoJSON(geojson, {
-      style: function () {
-        return {dashArray: '4', color: 'red', stroke: true };
-      },
-    });
-
-    let layerToBindClickHandlerTo;
-    const layers = [geojsonLayer];
+    const geojsonLayer = L.geoJSON(geojson, { style: { dashArray: '4', color: 'red', stroke: true } });
+    this.observationTripLayers = [geojsonLayer];
+    let layerToBindClickHandlerTo: L.GeoJSON;
 
     if (isAndroidOrIos(this.platform)) {
       // To get a bigger tap hit radius on devices, add the geojson twice with much wider stroke
-      const bgLayer = L.geoJSON(geojson, {
-        style: () => ({ color: 'rgba(0,0,0,0)', weight: 30, stroke: true })
-      });
+      const bgLayer = L.geoJSON(geojson, { style: { color: 'rgba(0,0,0,0)', weight: 30, stroke: true } });
       layerToBindClickHandlerTo = bgLayer;
-      layers.push(bgLayer);
+      this.observationTripLayers.push(bgLayer);
     } else {
       layerToBindClickHandlerTo = geojsonLayer;
     }
 
     if (map.getZoom() >= observerTripsMinZoom) {
-      layers.forEach(l => l.addTo(map));
+      this.observationTripLayers.forEach(l => l.addTo(map));
     }
 
     const clickHandler = (e) => {
@@ -247,11 +253,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       const zoomLevel = map.getZoom();
       if (zoomLevel < observerTripsMinZoom) {
         if (map.hasLayer(geojsonLayer)) {
-          layers.forEach(l => map.removeLayer(l));
+          this.observationTripLayers.forEach(l => map.removeLayer(l));
         }
       } else {
         if (!map.hasLayer(geojsonLayer)) {
-          layers.forEach(l => map.addLayer(l));
+          this.observationTripLayers.forEach(l => map.addLayer(l));
         }
       }
     };
@@ -274,7 +280,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (this.showObserverTrips) {
-      this.addObserverTripsLayer(map);
+      this.observerTripsService.geojson.pipe(takeUntil(this.ngDestroy$)).subscribe(geojson => {
+        this.addObserverTripsLayer(map, geojson);
+      });
     }
 
     this.offlineTopoLayerGroup.addTo(this.map);
