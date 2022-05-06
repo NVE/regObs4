@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/turf';
-import { BehaviorSubject, combineLatest, firstValueFrom, from, map, mapTo, Observable, ReplaySubject, skipWhile, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, firstValueFrom, from, map, mapTo, Observable, ReplaySubject, skipWhile, switchMap } from 'rxjs';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -36,7 +36,7 @@ export class ObserverTripsService {
   ) {
     this.geojson = combineLatest([
       authService.loggedInUser$,
-      this.toggleOn
+      this.toggleOn.pipe(distinctUntilChanged())
     ]).pipe(
       skipWhile(([o,]) => !o.isLoggedIn),
       switchMap(([o,]) => o.isLoggedIn ? from(this.getData()) : from(this.clear()).pipe(mapTo(null))),
