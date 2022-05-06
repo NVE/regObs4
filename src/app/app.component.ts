@@ -20,7 +20,7 @@ import { removeOauthTokenFromUrl } from './modules/shared/services/logging/url-u
 import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
 import { BreakpointService } from './core/services/breakpoint.service';
 import { RegobsNative } from 'src/regobs-plugin';
-import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
+import { Directory } from '@capacitor/filesystem';
 
 const DEBUG_TAG = 'AppComponent';
 const ROUTER_DEBUG_TAG = 'Router';

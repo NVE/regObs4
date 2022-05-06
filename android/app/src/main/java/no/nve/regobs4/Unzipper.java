@@ -10,11 +10,12 @@ import net.lingala.zip4j.progress.ProgressMonitor;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Unzipper {
 
-    public void unzipFile(String zipFilePath, String destinationPath, PluginCall call) {
-        Date start = new Date();
+    public ProgressMonitor unzipFile(String zipFilePath, String destinationPath, PluginCall call) {
         String source = zipFilePath;
         String destination = destinationPath;
         String password = call.getString("password", "");
@@ -26,17 +27,17 @@ public class Unzipper {
         // Validate Inputs
         if (source.equals("")) {
             call.reject("No source specified", ErrorCodes.NO_SOURCE_SPECIFIED);
-            return;
+            return null;
         }
         if (destination.equals("")) {
             call.reject("No destination specified", ErrorCodes.NO_DESTINATION_SPECIFIED);
-            return;
+            return null;
         }
 
         File file = new File(source);
         if (!file.exists()) {
             call.reject("File doesn't exist", ErrorCodes.NO_FILE_EXISTS);
-            return;
+            return null;
         }
 
         // Create zip instance
@@ -45,7 +46,7 @@ public class Unzipper {
         // Check zip file validity
         if (!zipFile.isValidZipFile()) {
             call.reject("File is corrupted or not valid", ErrorCodes.NO_FILE_VALID);
-            return;
+            return null;
         }
 
         try {
@@ -53,7 +54,7 @@ public class Unzipper {
             boolean isEncrypted = zipFile.isEncrypted();
             if (isEncrypted && password.equals("")) {
                 call.reject("Zip is encrypted, specify a password", ErrorCodes.NO_PASSWORD_SPECIFIED);
-                return;
+                return null;
             }
 
             if (isEncrypted) {
@@ -73,12 +74,6 @@ public class Unzipper {
                 System.out.println("Percentage done: " + progressMonitor.getPercentDone());
                 System.out.println("Current file: " + progressMonitor.getFileName());
                 System.out.println("Current task: " + progressMonitor.getCurrentTask());
-
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
             }
 
             ProgressMonitor.Result progressResult = progressMonitor.getResult();
@@ -94,14 +89,7 @@ public class Unzipper {
 
             zipFile.extractAll(destination);
             zipFile.close();
-
-            long timeSpent = new Date().getTime() - start.getTime();
-
-            JSObject ret = new JSObject();
-            ret.put("message", ErrorCodes.SUCCESS);
-            ret.put("uri", "file://" + destination);
-            ret.put("performance", "Unzip of " + zipFile + " finished in " + timeSpent + "ms");
-            call.resolve(ret);
+            return progressMonitor;
         } catch (ZipException e) {
             call.reject("Zip Error Occurred", ErrorCodes.UNKNOWN_ERROR, e);
             e.printStackTrace();
@@ -109,6 +97,7 @@ public class Unzipper {
             call.reject("IO Error Occurred", ErrorCodes.UNKNOWN_ERROR, e);
             e.printStackTrace();
         }
+        return null;
     }
 
     private String convertToNativePath(String capacitorPath) {

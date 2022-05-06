@@ -5,9 +5,10 @@ import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import JSZip from 'jszip';
 import moment from 'moment';
-import { BehaviorSubject, firstValueFrom, from, Observable, Subject, Subscription } from 'rxjs';
-import { finalize, map, mergeMap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, from, interval, Observable, Subject, Subscription } from 'rxjs';
+import { finalize, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
 import { CompoundPackage, Part } from 'src/app/pages/offline-map/metadata.model';
+import { RegobsNative } from 'src/regobs-plugin';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
@@ -215,7 +216,7 @@ export class OfflineMapService {
     const parts = offlineMapPackage.compoundPackageMetadata.getParts();
 
     // Start recursive download and unzip
-    this.downloadAndUnzipPart(
+    this.downloadAndUnzipPartNative(
       parts[0],
       parts,
       offlineMapPackage,
@@ -245,6 +246,41 @@ export class OfflineMapService {
         (mapPackage) => mapPackage.name !== offlineMapPackage.name
       )
     );
+  }
+
+  private async downloadAndUnzipPartNative(
+    part: Part,
+    parts: Part[],
+    mapPackage: OfflineMapPackage,
+    partNumber: number
+  ): Promise<void> {
+    const folder = await this.getRootFileUrl();
+    const destinationPath = `${folder}/${mapPackage.name}/${part.name}`;
+
+    try {
+      const result = await RegobsNative.downloadAndUnzip({
+        downloadUrl: part.url,
+        destinationPath: destinationPath
+      });
+      this.loggingService.debug(`Started native download of part ${partNumber}/${parts.length} : ${part.name}, 
+      fileRef = ${result.fileReference}`, DEBUG_TAG);
+
+      const done = new Subject<void>();
+      //check status regularly
+      interval(5000).pipe(
+        takeUntil(done))
+        .subscribe(async () => {
+          const status = await RegobsNative.getStatus({fileReference: result.fileReference});
+          if (status.progress >= 100) {
+            done.next();
+            done.complete();
+            this.onUnzipStepComplete(parts, mapPackage, partNumber);
+          }
+          await this.reportDownloadProgress(mapPackage, status.progress, partNumber, parts.length);
+        });
+    } catch(err) {
+      (err) => this.onUnzipOrDownloadError(mapPackage, err, true);
+    }
   }
 
   private downloadAndUnzipPart(
@@ -350,7 +386,7 @@ export class OfflineMapService {
     const nextPart = partNumber + 1;
     const totalParts = parts.length;
     if (nextPart < totalParts) {
-      this.downloadAndUnzipPart(
+      this.downloadAndUnzipPartNative(
         parts[nextPart],
         parts,
         mapPackage,

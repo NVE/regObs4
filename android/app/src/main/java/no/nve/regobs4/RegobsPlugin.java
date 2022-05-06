@@ -8,34 +8,27 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 
 import com.getcapacitor.JSObject;
-import com.getcapacitor.Logger;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import net.lingala.zip4j.progress.ProgressMonitor;
 
-@CapacitorPlugin(name = "Regobs")
+import java.util.HashMap;
+import java.util.Map;
+
+@CapacitorPlugin(name = "Regobs") //TODO: Endre navn
 public class RegobsPlugin extends Plugin {
 
     private final Unzipper unzipper = new Unzipper();
+    private Map<Long, ProgressMonitor> progressPerFileRef = new HashMap();
 
     @PluginMethod()
-    public void echo(PluginCall call) {
+    public void downloadAndUnzip(PluginCall call) {
         String downloadUrl = call.getString("downloadUrl");
         String destinationPath = call.getString("destinationPath");
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
@@ -50,16 +43,42 @@ public class RegobsPlugin extends Plugin {
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-            long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (downloadedFileId == reference) {
-                openDownloadedAttachment(context, downloadedFileId, destinationPath, call);
-            }
+                long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                if (downloadedFileId == reference) {
+                    openDownloadedAttachment(context, downloadedFileId, destinationPath, call);
+                }
             }
         };
         context.registerReceiver(receiver, filter);
+
+        JSObject ret = new JSObject();
+        ret.put("fileReference", downloadedFileId);
+        call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void getStatus(PluginCall call) {
+        JSObject result = new JSObject();
+        result.put("status", "UNKNOWN_FILEREF_MAYBE_STILL_DOWNLOADING?"); //TODO: Hva hvis vi ikke har startet å pakke ut?
+
+        Integer fileRef = call.getInt("fileReference");
+        if (fileRef != null) {
+            ProgressMonitor progressMonitor = progressPerFileRef.get(fileRef.longValue());
+            if (progressMonitor != null) {
+                result.put("progress", progressMonitor.getPercentDone());
+                if (progressMonitor.getResult() != null) {
+                    result.put("status", progressMonitor.getResult().toString());
+                }
+            }
+        }
+        call.resolve(result);
+    }
+
+    @PluginMethod()
+    public void echo(PluginCall call) {
+        String downloadUrl = call.getString("downloadUrl");
         JSObject ret = new JSObject();
         ret.put("value", downloadUrl);
-
         call.resolve(ret);
     }
 
@@ -75,68 +94,14 @@ public class RegobsPlugin extends Plugin {
             if ((downloadStatus == DownloadManager.STATUS_SUCCESSFUL) && downloadLocalUri != null) {
                 Uri uri = Uri.parse(downloadLocalUri);
                 String filename = uri.getLastPathSegment();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    destinationPath = context.getDataDir().getAbsolutePath() + "/files/maps";
-                }
-                unzipWithZip4j(uri.getPath(), destinationPath, call);
+                unzipWithZip4j(uri.getPath(), destinationPath, downloadId, call);
             }
         }
         cursor.close();
     }
 
-    private void unzipWithZip4j(String zipFilePath, String destinationPath, PluginCall call) {
-        unzipper.unzipFile(zipFilePath, destinationPath, call);
-    }
-
-    private void unzip(String zipFile, String location, PluginCall call) throws IOException {
-        Date start = new Date();
-        try {
-            File f = new File(location);
-            if (!f.isDirectory()) {
-                f.mkdirs();
-            }
-            ZipInputStream zin = new ZipInputStream(new FileInputStream(zipFile));
-            try {
-                ZipEntry ze = null;
-                while ((ze = zin.getNextEntry()) != null) {
-                    String path = location + File.separator + ze.getName();
-
-                    if (ze.isDirectory()) {
-                        File unzipFile = new File(path);
-                        if (!unzipFile.isDirectory()) {
-                            unzipFile.mkdirs();
-                        }
-                    } else {
-
-                        File unzipFile = new File(path);
-                        if (unzipFile.getParentFile() != null && !unzipFile.getParentFile().exists()) {
-                            unzipFile.getParentFile().mkdirs();
-                        }
-                        FileOutputStream fout = new FileOutputStream(path, false);
-                        try {
-                            for (int c = zin.read(); c != -1; c = zin.read()) {
-                                fout.write(c);
-                            }
-                            zin.closeEntry();
-                        } finally {
-                            fout.close();
-                        }
-                    }
-                }
-            } finally {
-                zin.close();
-                long timeSpent = new Date().getTime() - start.getTime();
-                String message = "Unzip of " + zipFile + " finished in " + timeSpent + "ms";
-                Logger.debug(message);
-                JSObject result = new JSObject();
-                result.put("message", message);
-                call.resolve(result);
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Logger.error("TODO", "Unzip exception", e);
-            call.errorCallback(e.getMessage());
-        }
+    private void unzipWithZip4j(String zipFilePath, String destinationPath, final long downloadId, PluginCall call) {
+        ProgressMonitor progressMonitor = unzipper.unzipFile(zipFilePath, destinationPath, call);
+        progressPerFileRef.put(downloadId, progressMonitor);
     }
 }
