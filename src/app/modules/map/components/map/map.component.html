@@ -12,9 +12,11 @@
 ></app-map-controls>
 
 <div
+  #observerTripsContainer
   class="observer-trip-backdrop"
-  *ngIf="showObservationTripDescription"
+  style="display: none;"
   (click)="removeObserverTripDescription()"
+  *ngIf="showObserverTrips"
 >
   <div class="observer-trip-desc">
     <div>

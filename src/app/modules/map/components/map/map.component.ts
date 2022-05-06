@@ -8,13 +8,12 @@ import {
   Output,
   EventEmitter,
   Injector,
-  ChangeDetectorRef,
   ElementRef,
   ViewChild
 } from '@angular/core';
 import * as L from 'leaflet';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { timer, Subject, from, BehaviorSubject, combineLatest, firstValueFrom } from 'rxjs';
+import { timer, Subject, from, BehaviorSubject, combineLatest } from 'rxjs';
 import { UserSetting } from '../../../../core/models/user-settings.model';
 import { settings } from '../../../../../settings';
 import { Position } from '@capacitor/geolocation';
@@ -45,7 +44,6 @@ import { OfflineMapPackage, OfflineTilesMetadata } from 'src/app/core/services/o
 import { MapZoomService } from '../../services/map/map-zoom.service';
 import { MapLayerZIndex } from 'src/app/core/models/maplayer-zindex.enum';
 import { TopoMapLayer } from 'src/app/core/models/topo-map-layer.enum';
-import { HttpClient, HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { ObserverTripsService } from 'src/app/core/services/observer-trips/observer-trips.service';
 
 const DEBUG_TAG = 'MapComponent';
@@ -99,6 +97,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() offlinePackageMode = false;
   @Input() showObserverTrips = false;
 
+  @ViewChild('observerTripsContainer') observerTripsContainer: ElementRef<HTMLDivElement>;
   observationTripDescription: string = null;
   showObservationTripDescription = false;
 
@@ -126,9 +125,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private geoPositionService: GeoPositionService,
     private platform: Platform,
     private mapZoomService: MapZoomService,
-    // private http: HttpClient,
     private observerTripsService: ObserverTripsService,
-    private cdr: ChangeDetectorRef,
     injector: Injector
   ) {
     if (isAndroidOrIos(this.platform)) {
@@ -206,7 +203,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   removeObserverTripDescription() {
-    this.showObservationTripDescription = false;
+    this.observerTripsContainer.nativeElement.style.display = 'none';
   }
 
   async addObserverTripsLayer(map: L.Map) {
@@ -217,29 +214,41 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const geojsonLayer = L.geoJSON(geojson, {
       style: function () {
-        return {dashArray: '4', color: 'red'};
+        return {dashArray: '4', color: 'red', stroke: true };
       },
     });
 
-    geojsonLayer.on('click', (e: any) => {
+    let layerToBindClickHandlerTo;
+    const layers = [geojsonLayer];
+
+    if (isAndroidOrIos(this.platform)) {
+      const bgLayer = L.geoJSON(geojson, {
+        style: () => ({ color: 'rgba(0,0,0,0)', weight: 30, stroke: true })
+      });
+      layerToBindClickHandlerTo = bgLayer;
+      layers.push(bgLayer);
+    } else {
+      layerToBindClickHandlerTo = geojsonLayer;
+    }
+
+    layerToBindClickHandlerTo.on('click', (e: any) => {
       this.observationTripDescription = e.layer.feature.properties.beskrivelse || noObserverTripDescription;
-      this.showObservationTripDescription = true;
-      this.cdr.detectChanges();
+      this.observerTripsContainer.nativeElement.style.display = 'block';
     });
 
     if (map.getZoom() >= observerTripsMinZoom) {
-      geojsonLayer.addTo(map);
+      layers.forEach(l => l.addTo(map));
     }
 
     map.on('zoomend', () => {
       const zoomLevel = map.getZoom();
       if (zoomLevel < observerTripsMinZoom) {
         if (map.hasLayer(geojsonLayer)) {
-          map.removeLayer(geojsonLayer);
+          layers.forEach(l => map.removeLayer(l));
         }
       } else {
         if (!map.hasLayer(geojsonLayer)) {
-          map.addLayer(geojsonLayer);
+          layers.forEach(l => map.addLayer(l));
         }
       }
     });
