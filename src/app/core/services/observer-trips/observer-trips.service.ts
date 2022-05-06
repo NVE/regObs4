@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/turf';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, firstValueFrom, from, map, mapTo, Observable, ReplaySubject, skipWhile, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, distinctUntilKeyChanged, firstValueFrom, from, mapTo, Observable, of, ReplaySubject, skipWhile, switchMap, withLatestFrom } from 'rxjs';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -11,6 +11,7 @@ const msOneWeek = 604800000;
 const dataKey = 'REGOBS_OBSTRIPS_GEOJSON';
 const toggleKey = 'REGOBS_OBSTRIPS_ON';
 const dataModifiedKey = 'REGOBS_OBSTRIPS_CHANGED_DATE';
+const isUnauthorizedKey = 'REGOBS_OBSTRIPS_UNAUTHORIZED';
 
 const shouldUpdate = (mTime: number) => {
   const msSinceUpdate = Date.now() - mTime;
@@ -31,8 +32,12 @@ const DEBUG_TAG = 'ObserverTrips';
 export class ObserverTripsService {
 
   geojson: Observable<FeatureCollection | null>;
-  canShow = new ReplaySubject(1);
+  canShow = new BehaviorSubject(false);
   toggleOn = new BehaviorSubject(false);
+
+  // To avoid requesting the dataset each time an unauthorized user starts the app
+  // we cache that the user is unauthorized.
+  private isUnauthorized = new ReplaySubject(1);
 
   constructor(
     private tripService: TripService,
@@ -41,14 +46,37 @@ export class ObserverTripsService {
     authService: RegobsAuthService
   ) {
     this.geojson = combineLatest([
-      authService.loggedInUser$,
-      this.toggleOn.pipe(distinctUntilChanged())
+      authService.loggedInUser$.pipe(distinctUntilKeyChanged('isLoggedIn')),
+      this.toggleOn.pipe(distinctUntilChanged()),
     ]).pipe(
-      skipWhile(([o,]) => !o.isLoggedIn),
-      switchMap(([o,]) => o.isLoggedIn ? from(this.getData()) : from(this.clear()).pipe(mapTo(null))),
-      map((geojson) => this.toggleOn.value ? geojson : null)
+      // Do not emit anything until we get a logged in user object,
+      // no need to try fetching data before user has logged in.
+      skipWhile(([user]) => !user.isLoggedIn),
+      withLatestFrom(this.isUnauthorized),
+      switchMap(([[user, isToggledOn], isUnauthorized]) => {
+        if (isUnauthorized === true) {
+          if (!user.isLoggedIn) {
+            // User has been logged out and may now log in with a valid user, so remove unauthorized cache
+            return from(this.removeUnauthorized());
+          }
+          return of(null);
+        }
+
+        if (isToggledOn === false && this.canShow.value === true) {
+          return of(null);
+        }
+
+        // If user is logged in, try to read data from cache, or fetch data.
+        if (user.isLoggedIn) {
+          return from(this.getData());
+        }
+
+        // If user has logged out, clear data.
+        return from(this.clear()).pipe(mapTo(null));
+      }),
     );
-    this.checkOn();
+
+    this.doInitChecks();
   }
 
   async toggle() {
@@ -57,10 +85,33 @@ export class ObserverTripsService {
     this.toggleOn.next(toggled);
   }
 
-  private async checkOn() {
+  private async setUnauthorized() {
+    this.logger.debug('Set unauthorized', DEBUG_TAG);
+    await this.dbService.set(isUnauthorizedKey, true);
+    this.isUnauthorized.next(true);
+  }
+
+  private async removeUnauthorized() {
+    this.logger.debug('Remove unauthorized', DEBUG_TAG);
+    await this.dbService.remove(isUnauthorizedKey);
+    this.isUnauthorized.next(null);
+  }
+
+  private async checkToggle() {
     this.logger.debug('Checking on/off', DEBUG_TAG);
     const toggledOn = !!await this.dbService.get<boolean>(toggleKey);
+    this.logger.debug('Toggled on?', DEBUG_TAG, toggledOn);
     this.toggleOn.next(toggledOn);
+  }
+
+  private async doInitChecks() {
+    this.logger.debug('Checking unauthorized', DEBUG_TAG);
+    const isUnauthorized = await this.dbService.get<boolean>(isUnauthorizedKey);
+    if (isUnauthorized == null) {
+      this.checkToggle();
+    }
+    this.logger.debug('isUnauthorized', DEBUG_TAG, isUnauthorized);
+    this.isUnauthorized.next(isUnauthorized || null);
   }
 
   private async clear() {
@@ -120,6 +171,7 @@ export class ObserverTripsService {
       if (error instanceof HttpErrorResponse) {
         if (error.status === HttpStatusCode.Unauthorized) {
           this.logger.debug('User does not have access to observertrips', DEBUG_TAG);
+          await this.setUnauthorized();
           return null;
         }
       }
