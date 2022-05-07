@@ -48,6 +48,7 @@ export default class FileAttachmentService extends NewAttachmentService {
       type,
       fileSize: data.size,
       fileName: attachmentFileName,
+      fileAddedTime: Date.now(),
       ref
     };
 
