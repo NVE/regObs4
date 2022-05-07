@@ -135,6 +135,22 @@ export class ObservationService {
     return fromDate.toDate();
   }
 
+  private checkForDuplicates(registrations: Array<RegistrationViewModel>): void {
+    const regIds: Set<number> = new Set();
+    let duplicatesFound = false;
+    registrations.forEach((reg) => {
+      const regiId = reg.RegId;
+      if (regIds.has(regiId)) {
+        this.loggingService.debug(`Fant duplikat: ${regiId}`, DEBUG_TAG);
+        duplicatesFound = true;
+      }
+      regIds.add(regiId);
+    });
+    if (!duplicatesFound) {
+      this.loggingService.debug('Fant ingen duplikater', DEBUG_TAG);
+    }
+  }
+
   async updateObservationsForGeoHazard(geoHazards: GeoHazard[], userSetting: UserSetting, cancel?: Promise<any>) {
     this.loggingService.debug(`Updating observations for geoHazard: ${geoHazards.join(', ')}`, DEBUG_TAG);
     const dataLoadId = this.getDataLoadId(userSetting.appMode, geoHazards, userSetting.language);
@@ -159,6 +175,7 @@ export class ObservationService {
         60000
       );
       this.loggingService.debug(`Got ${searchResult.length} new observations for geoHazards ${geoHazards.join(', ')}`, DEBUG_TAG);
+      this.checkForDuplicates(searchResult);
       if (!isCanceled) {
         this.updateLatestObservations(userSetting.appMode, userSetting.language, geoHazards, searchResult);
         await this.dataLoadService.loadingCompleted(dataLoadId, searchResult.length, fromDate, new Date());
