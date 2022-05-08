@@ -145,7 +145,7 @@ export class MapCenterInfoComponent extends NgDestoryBase {
       );
   }
 
-  private fetchNewLocationInfo(latLng: L.LatLng) {
+  private async fetchNewLocationInfo(latLng: L.LatLng) {
     this.loading = true;
 
     // Track request number, so we only update the view
@@ -153,16 +153,15 @@ export class MapCenterInfoComponent extends NgDestoryBase {
     requestCounter++;
     const requestIndex = requestCounter;
 
-    firstValueFrom(this.getLocationInfo$(latLng))
-      .then(viewInfo => {
-        if (requestIndex < requestCounter) return;
+    const locationInfo = await firstValueFrom(this.getLocationInfo$(latLng));
 
-        this.location = viewInfo.location;
-        this.elevation = viewInfo.elevation;
-        this.steepness = viewInfo.steepness;
-        this.loading = false;
-        this.cdr.markForCheck();
-      });
+    if (requestIndex >= requestCounter && locationInfo != null) {
+      this.location = locationInfo.location;
+      this.elevation = locationInfo.elevation;
+      this.steepness = locationInfo.steepness;
+      this.loading = false;
+      this.cdr.markForCheck();
+    }
   }
 
   private useNativeClipboardPlugin() {
