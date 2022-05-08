@@ -6,6 +6,7 @@ export interface AttachmentUploadEditModel extends AttachmentEditModel {
   type: AttachmentType;
   fileSize?: number;
   fileName?: string; //attachment filename
+  fileAddedTime?: number; //milliseconds
   error?: Error;
   ref?: string; // Guid
 }
