@@ -4,7 +4,7 @@ import moment from 'moment';
 import { TripLogState } from './trip-log-state.enum';
 import { TripLogActivity } from './trip-log-activity.model';
 import { NanoSql } from '../../../../nanosql';
-import { Observable, from, BehaviorSubject, throwError } from 'rxjs';
+import { Observable, from, BehaviorSubject, throwError, firstValueFrom } from 'rxjs';
 import { CreateTripDto } from 'src/app/modules/common-regobs-api/models';
 import { TripService } from 'src/app/modules/common-regobs-api/services';
 import { switchMap, take, map, concatMap, filter, tap, catchError } from 'rxjs/operators';
@@ -126,12 +126,11 @@ export class TripLoggerService {
   }
 
   private async confirmStopTrip(): Promise<void> {
-    const translations = await this.translateService
-      .get(['TRIP.STOP_TRIP', 'REGISTRATION.DELETE_CONFIRM', 'ALERT.OK', 'ALERT.CANCEL'])
-      .toPromise();
+    const translations = await firstValueFrom(this.translateService
+      .get(['TRIP.STOP_TRIP', 'DIALOGS.ARE_YOU_SURE', 'ALERT.OK', 'ALERT.CANCEL']));
     const alert = await this.alertController.create({
       header: translations['TRIP.STOP_TRIP'] + '?',
-      message: translations['REGISTRATION.DELETE_CONFIRM'],
+      message: translations['DIALOGS.ARE_YOU_SURE'],
       buttons: [
         {
           text: translations['ALERT.CANCEL'],
