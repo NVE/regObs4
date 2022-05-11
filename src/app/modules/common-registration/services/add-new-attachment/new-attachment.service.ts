@@ -63,16 +63,27 @@ export abstract class NewAttachmentService {
     return filters as [AttachmentFilter?, AttachmentFilter?, AttachmentFilter?];
   }
 
+  protected compareByAddedTime = (a: AttachmentUploadEditModel, b: AttachmentUploadEditModel) => {
+    if (a.fileAddedTime == null || b.fileAddedTime == null) {
+      return 0;
+    }
+    return a.fileAddedTime - b.fileAddedTime;
+  }
+
   protected abstract getAttachmentsObservable(registrationId: string): Observable<AttachmentUploadEditModel[]>;
 
   /**
-   * Get list of attachment metadata each time an attachment (or attachment metadata) changes on provided registration
+   * Get list of attachment metadata each time an attachment (or attachment metadata) changes on provided registration.
+   * The list is ordered by when the attachment was added (oldest first)
    */
   getAttachments(
     registrationId: string,
     options?: GetAttachmentFilterOptions
   ): Observable<AttachmentUploadEditModel[]> {
-    return this.getAttachmentsObservable(registrationId).pipe(...this.getAttachmentFilterOperators(options));
+    return this.getAttachmentsObservable(registrationId).pipe(
+      ...this.getAttachmentFilterOperators(options),
+      map(attachments => attachments.sort(this.compareByAddedTime))
+    );
   }
 
   getAttachmentsWithBlob(
