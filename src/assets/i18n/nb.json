@@ -99,11 +99,11 @@
     "HEADER": "Om data i Varsom Regobs",
     "LINE_1": "Bruk varslene, observasjonene og kartene på eget ansvar. Det kan forekomme feil og mangler.",
     "LINE_2": "Husk at varselet er et hjelpemiddel, ikke en fasit. Gjør alltid egne vurderinger. Lokale forhold der du er, kan være mer komplekse og avvike fra det som er varslet.",
-    "LINE_3": "Data på Regobs produseres av brukerne av Regobs og foreligger «som den er». Den kan inneholde feil og utelatelser. NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.",
+    "LINE_3": "Data i Varsom Regobs produseres av brukerne av Regobs og foreligger «som de er». Data kan inneholde feil og mangler. NVE har ikke ansvar for feil, mangler og vurderinger som produseres av brukerne.",
     "LINE_4": "Når du publiserer bilder på observasjoner i Regobs aksepterer du at bildene kan gjenbrukes (lisensiert under <a href='https://data.norge.no/nlod/no/'> Norsk lisens for offentlige data</a>).",
     "LINE_5": "Les mer i våre <a href=\"{{legalUrl}}\" target=\"_blank\">brukervilkår</a>.",
     "OK": "Ok, jeg aksepterer",
-    "TERMS": "Data på Varsom Regobs produseres av brukerne av Regobs og foreligger \"som den er\". Den kan inneholde feil og utelatelser. NVE gir ingen garantier for informasjonens aktualitet og tar ikke ansvar for at data kan gi feil eller villedende informasjon. Antall stjerner (1-5) beskriver kompetansenivået til den som leverer observasjoner. Uten stjerner er kompetansen ukjent eller lav."
+    "TERMS": "Data i Varsom Regobs produseres av brukerne av Regobs og foreligger \"som de er\". Data kan inneholde feil og mangler. NVE gir ingen garantier for informasjonens aktualitet og tar ikke ansvar for at data kan gi feil eller villedende informasjon. Antall stjerner (1-5) beskriver kompetansenivået til den som leverer observasjoner. Uten stjerner er kompetansen ukjent eller lav."
   },
   "LOGIN": {
     "CHANGE_PASSWORD": "Endre passord",
