@@ -116,6 +116,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private firstClickOnZoomToUser = true;
   private isActive: BehaviorSubject<boolean>;
   private offlineMapService: OfflineMapService;
+  private layersControl = new L.Control.Layers({'online-kart': this.layerGroup}, {'offline-bakgrunn': this.offlineTopoLayerGroup, 'offline-støtte': this.offlineSupportMapLayerGroup}, { position: 'topleft' });
 
   constructor(
     private userSettingService: UserSettingService,
@@ -390,6 +391,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         });
 
+      // this.layersControl.addOverlay(this.offlineSupportMapLayerGroup, 'Offline-støttekart');
+      this.layersControl.addTo(this.map);
+
       this.startActiveSubscriptions();
     }
 
@@ -592,6 +596,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         const layer = this.createSupportMapTileLayer(supportMaps.name, supportMaps.url, options);
         layer.setOpacity(supportMaps.opacity);
         layer.addTo(this.layerGroup);
+        // this.layersControl.addOverlay(layer, 'Online ' + supportMaps.name);
       }
     });
   }
