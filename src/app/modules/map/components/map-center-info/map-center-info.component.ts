@@ -3,7 +3,7 @@ import { ToastController, Platform } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, firstValueFrom, Observable, of } from 'rxjs';
-import { catchError, takeUntil, timeout } from 'rxjs/operators';
+import { catchError, switchMap, takeUntil, tap, timeout } from 'rxjs/operators';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
@@ -18,7 +18,6 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 
 const DEBUG_TAG = 'MapCenterInfoComponent';
 const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
-let requestCounter = 0;
 
 @Component({
   selector: 'app-map-center-info',
@@ -91,14 +90,28 @@ export class MapCenterInfoComponent extends NgDestoryBase {
         this.cdr.markForCheck();
       });
 
+    //fetch location info from Regobs API on map pan or zoom
+    //update location, elevation and steepness when/if we get results from the API
     mapService.relevantMapChangeWithInitialView$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe((newMapView) => {
-        this.mapCenter = newMapView.center;
-        this.location = null;
-        this.elevation = null;
-        this.steepness = null;
-        this.fetchNewLocationInfo(newMapView.center);
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        tap((newMapView) => {
+          this.loading = true;
+          this.mapCenter = newMapView.center;
+          this.location = null;
+          this.elevation = null;
+          this.steepness = null;
+          this.cdr.markForCheck();
+        }),
+        switchMap((newMapView) => this.getLocationInfo$(newMapView.center))
+      )
+      .subscribe((locationInfo) => {
+        if (locationInfo != null) {
+          this.location = locationInfo.location;
+          this.elevation = locationInfo.elevation;
+          this.steepness = locationInfo.steepness;
+        }
+        this.loading = false;
         this.cdr.markForCheck();
       });
   }
@@ -143,25 +156,6 @@ export class MapCenterInfoComponent extends NgDestoryBase {
         timeout(LOCATION_INFO_REQUEST_TIMEOUT),
         catchError(() => of({} as ViewInfo)),
       );
-  }
-
-  private async fetchNewLocationInfo(latLng: L.LatLng) {
-    this.loading = true;
-
-    // Track request number, so we only update the view
-    // after the last observable completes.
-    requestCounter++;
-    const requestIndex = requestCounter;
-
-    const locationInfo = await firstValueFrom(this.getLocationInfo$(latLng));
-
-    if (requestIndex >= requestCounter && locationInfo != null) {
-      this.location = locationInfo.location;
-      this.elevation = locationInfo.elevation;
-      this.steepness = locationInfo.steepness;
-      this.loading = false;
-      this.cdr.markForCheck();
-    }
   }
 
   private useNativeClipboardPlugin() {
