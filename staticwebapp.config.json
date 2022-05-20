@@ -1,0 +1,6 @@
+{
+    "navigationFallback": {
+        "rewrite": "index.html",
+        "exclude": ["/assets/*", "/leaflet/*", "/svg/*", "/turf/*", "/*.txt", "/*.js", "/*.js.map", "/*.png", "/*.txt", "/*.ttf", "/*.woff", "/*.woff2", "/*.otf", "/*.css", "/*.css.map"]
+    }
+}
