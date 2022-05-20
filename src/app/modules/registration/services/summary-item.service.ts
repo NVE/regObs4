@@ -148,8 +148,23 @@ export class SummaryItemService {
           )
           : '',
         hasData: !!draft.registration.DtObsTime
-      }
+      },
+      ...(await this.getGeoHazardItems(draft, attachmentsToUse))
     ];
+
+    summaryItems.splice(
+      draft.registration.GeoHazardTID == GeoHazard.Water ? 2 : summaryItems.length,
+      0,
+      await this.getRegItem(
+        draft,
+        '/registration/general-comment',
+        'REGISTRATION.GENERAL_COMMENT.TITLE',
+        draft.registration.GeneralObservation ? draft.registration.GeneralObservation.ObsComment : '',
+        RegistrationTid.GeneralObservation,
+        attachmentsToUse,
+      )
+    );
+
     if (userGroupsToUse.length > 0) {
       summaryItems.push({
         uuid: draft.uuid,
@@ -159,19 +174,6 @@ export class SummaryItemService {
         hasData: !!draft.registration.ObserverGroupID
       });
     }
-
-    summaryItems.push(...(await this.getGeoHazardItems(draft, attachmentsToUse)));
-
-    summaryItems.push(
-      await this.getRegItem(
-        draft,
-        '/registration/general-comment',
-        'REGISTRATION.GENERAL_COMMENT.TITLE',
-        draft.registration.GeneralObservation ? draft.registration.GeneralObservation.ObsComment : '',
-        RegistrationTid.GeneralObservation,
-        attachmentsToUse
-      )
-    );
 
     return summaryItems;
   }
