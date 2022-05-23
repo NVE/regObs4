@@ -135,6 +135,8 @@ Appene må produksjonssettes manuelt i i App Store og i Google Play
 
 - Gå til https://appstoreconnect.apple.com/
 - Bruk + øverst til venstre for "Opprett ny utgave". Det kan ta et par dager før du får godkjent den nye versjonen.
+- Oppdater versjonsnotater - engelsk og norsk
+- Velg riktig bygg
 - Når versjonen er godkjent, kan du sende den til produksjon
 
 ### Produksjonssette på Google Play
@@ -142,6 +144,7 @@ Appene må produksjonssettes manuelt i i App Store og i Google Play
 - For å rulle videre fra beta til produksjon, logg på https://play.google.com/console/
 - Siste versjon av appen finner du under "Tester/Åpen testing"
 - Velg "Kopier utgaven til et annet spor"
+- Oppdater versjonsnotater hvis nødvendig - engelsk og norsk
 - Pass på at 100% av brukerne får tilgang. Mulig du må endre andelen fra 20 til 100% etterpå.
 
 ### Flette inn release-greina
