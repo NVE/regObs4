@@ -405,11 +405,11 @@
     "IN_FULL_CM": "I hele centimeter",
     "NONE": "Ingen valgt",
     "OBS_LOCATION": {
-      "CONFIRM_TEXT": "Bekreft observasjonspunkt",
+      "CONFIRM_TEXT": "Bekreft observasjonspunkt og -tid",
       "CURRENT_LOCATION": "Nåværende posisjon",
       "HIDE_DETAILS": "Skjul detaljer",
       "SHOW_DETAILS": "Vis detaljer",
-      "TITLE": "Observasjonspunkt"
+      "TITLE": "Observasjonspunkt og -tid"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",

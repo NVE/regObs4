@@ -375,11 +375,11 @@
     "IN_FULL_CM": "I heile centimeter",
     "NONE": "Ingen valt",
     "OBS_LOCATION": {
-      "CONFIRM_TEXT": "Stadfest observasjonspunkt",
+      "CONFIRM_TEXT": "Stadfest observasjonspunkt og -tid",
       "CURRENT_LOCATION": "Noværande posisjon",
       "HIDE_DETAILS": "Skjul detaljar",
       "SHOW_DETAILS": "Vis detaljar",
-      "TITLE": "Observasjonspunkt"
+      "TITLE": "Observasjonspunkt og -tid"
     },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",

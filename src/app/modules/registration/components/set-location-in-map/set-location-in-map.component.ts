@@ -27,6 +27,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { IonInput } from '@ionic/angular';
 import { LeafletClusterHelper } from '../../../map/helpers/leaflet-cluser.helper';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
+import moment from 'moment';
 
 const defaultIcon = L.icon({
   iconUrl: 'leaflet/marker-icon.png',
@@ -57,7 +58,7 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() fromMarkerIconUrl = '/assets/icon/map/obs-location.svg';
   @Input() locationMarker: L.Marker;
   @Input() locationMarkerIconUrl = '/assets/icon/map/obs-location.svg';
-  @Output() locationSet = new EventEmitter<ObsLocationEditModel>();
+  @Output() locationTimeSet = new EventEmitter<[ObsLocationEditModel, string]>();
   @Input() showPreviousUsedLocations = true;
   @Input() showUserPosition = true;
   @Input() confirmLocationText = 'REGISTRATION.OBS_LOCATION.CONFIRM_TEXT';
@@ -66,15 +67,14 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   @Input() selectedLocation: ObsLocationsResponseDtoV2;
   @Output() mapReady = new EventEmitter<L.Map>();
   @Input() showPolyline = true;
-  @Input() showFromMarkerInDetails = true;
   @Input() allowEditLocationName = false;
-  @Input() isSaveDisabled = false;
+  @Input() setObsTime = false;
+  @Input() localDate: string;
 
   private map: L.Map;
   followMode = false;
   private userposition: Position;
   private pathLine: L.Polyline;
-  showDetails = false;
   distanceToObservationText = '';
   viewInfo: ViewInfo;
   isLoading = false;
@@ -84,6 +84,8 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
   private locationGroup = LeafletClusterHelper.createMarkerClusterGroup();
   editLocationName = false;
   locationName: string;
+  
+  maxDate: string;
 
   @ViewChild('editLocationNameInput') editLocationNameInput: IonInput;
 
@@ -101,10 +103,16 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     private mapSearchService: MapSearchService,
     private geoPositionService: GeoPositionService,
     private locationService: LocationService
-  ) {}
+  ) {
+    this.setToNow();
+  }
 
   async ngOnInit(): Promise<void> {
     L.Marker.prototype.options.icon = defaultIcon;
+
+    if (!this.localDate) {
+      this.setToNow()
+    }
 
     const locationMarkerIcon = L.icon({
       iconUrl: this.locationMarkerIconUrl,
@@ -249,7 +257,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
         )
       );
       this.map.panTo(this.locationMarker.getLatLng());
-      this.showDetails = true;
     });
   }
 
@@ -337,12 +344,6 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleDetails(): void {
-    this.ngZone.run(() => {
-      this.showDetails = !this.showDetails;
-    });
-  }
-
   getLocationName(location: LocationName): string {
     if (location) {
       return location.adminName !== location.name
@@ -352,9 +353,13 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  confirmLocation(): void {
+  confirm(): void {
     const obsLocation = this.getLocation();
-    this.locationSet.emit(obsLocation);
+    let obsTime: string = undefined;
+    if (this.setObsTime) {
+     obsTime = this.localDate || moment().toISOString(true);
+    }
+    this.locationTimeSet.emit([obsLocation, obsTime]);
   }
 
   getLocation(): ObsLocationEditModel {
@@ -404,5 +409,17 @@ export class SetLocationInMapComponent implements OnInit, OnDestroy {
       this.editLocationName = false;
       this.updateMapViewInfo();
     }
+  }
+
+  setToNow() {
+    const now = moment().toISOString(true);
+    this.maxDate = this.getMaxDateForNow();
+    this.localDate = now;
+  }
+
+  getMaxDateForNow() {
+    // There is an issue when setting max date that when changing hour, the minutes is still max minutes.
+    // Workaround is to set minutes to 59.
+    return moment().minutes(59).toISOString(true);
   }
 }

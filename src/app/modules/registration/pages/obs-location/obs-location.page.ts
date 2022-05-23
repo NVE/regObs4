@@ -29,7 +29,6 @@ export class ObsLocationPage implements OnInit, OnDestroy {
   draft: RegistrationDraft;
   fullscreen$: Observable<boolean>;
   geoHazard: GeoHazard;
-  isSaveDisabled = false;
   @ViewChild(SetLocationInMapComponent)
   setLocationInMapComponent: SetLocationInMapComponent;
 
@@ -120,42 +119,42 @@ export class ObsLocationPage implements OnInit, OnDestroy {
     );
   }
 
-  async onLocationSet(event: ObsLocationEditModel) {
-    this.ngZone.run(() => {
-      this.isSaveDisabled = true;
-    });
+  async onLocationTimeSet(event: [ObsLocationEditModel, string]) {
 
     if (!this.draft) {
       this.draft = this.draftService.create(this.geoHazard);
     }
 
-    await this.setLocationAndSaveDraft(event);
-
-    if (this.draft.registration.DtObsTime) {
-      this.navController.navigateForward(
-        'registration/edit/' + this.draft.uuid
-      );
-    } else {
-      this.navController.navigateForward(
-        'registration/set-time/' + this.draft.uuid
-      );
-    }
+    await this.setLocationTimeAndSaveDraft(event);
+    this.navController.navigateRoot('registration/edit/' + this.draft.uuid);
   }
 
-  private async setLocationAndSaveDraft(loc: ObsLocationEditModel) {
-    if (loc === undefined || this.draft === undefined) {
+  private async setLocationTimeAndSaveDraft([loc, time]: [ObsLocationEditModel, string]) {
+    if (this.draft === undefined) {
       return;
     }
 
-    // Save updated draft with new obs location
-    await this.draftService.save({
-      ...this.draft,
-      registration: {
-        ...this.draft.registration,
-        ObsLocation: loc
+    if (loc !== undefined) {
+      this.draft = {
+        ...this.draft,
+        registration: {
+          ...this.draft.registration,
+          ObsLocation: loc
+        }
       }
-    });
+    }
 
-    this.isSaveDisabled = false;
+    if (time !== undefined) {
+      this.draft = {
+        ...this.draft,
+        registration: {
+          ...this.draft.registration,
+          DtObsTime: time
+        }
+      }
+    }
+
+    // Save updated draft with new obs location
+    await this.draftService.save(this.draft);
   }
 }
