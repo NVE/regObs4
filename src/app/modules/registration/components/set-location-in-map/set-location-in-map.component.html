@@ -53,9 +53,9 @@
                       <ion-row>
                         <ion-col class="ion-no-padding">
                           <ion-label class="small-text ion-no-margin">
-                            <span>{{ locationMarker?.getLatLng().lat | number:'0.3'
+                            <span *ngIf="!isLoading && locationMarker">{{ locationMarker.getLatLng().lat | number:'0.3'
                               }}&deg;{{'MAP_CENTER_INFO.NORTH_SHORT'|translate}},
-                              {{ locationMarker?.getLatLng().lng | number:'0.3'
+                              {{ locationMarker.getLatLng().lng | number:'0.3'
                               }}&deg;{{'MAP_CENTER_INFO.EAST_SHORT'|translate}}</span>
                             <span *ngIf="!isLoading && viewInfo && viewInfo.elevation !== null">, {{ viewInfo.elevation
                               }}
