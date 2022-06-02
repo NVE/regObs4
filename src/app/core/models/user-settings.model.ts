@@ -1,6 +1,6 @@
 import { GeoHazard, AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { TopoMap } from './topo-map.enum';
-import { SupportTileStore, SupportTile } from './support-tile.model';
+import { SupportTileStore } from './support-tile.model';
 
 export interface UserSetting {
   appMode: AppMode;
@@ -24,4 +24,10 @@ export interface UserSetting {
   infoAboutOfflineSupportMapsRecievedTimestamps?: {[name: string]: number};
   copyright?: string;
   photographer?: string;
+
+  /**
+   * true = use simple snow obs schema
+   * false/undefined = use full/complete snow obs schemas
+   */
+   simpleSnowObservations: boolean;
 }
