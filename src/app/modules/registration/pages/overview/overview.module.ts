@@ -7,6 +7,8 @@ import { SharedComponentsModule } from '../../shared-components.module';
 import { FailedRegistrationComponent } from '../../components/failed-registration/failed-registration.component';
 import { SaveAsDraftRouteGuard } from '../save-as-draft.guard';
 import { VersionConflictComponent } from '../../components/version-conflict/version-conflict.component';
+import { SimpleSnowObsComponent } from '../../components/snow/simple-snow-obs/simple-snow-obs.component';
+import { KdvIconSelectComponent } from '../../components/kdv-icon-select/kdv-icon-select.component';
 
 const routes: Routes = [
   {
@@ -23,7 +25,9 @@ const routes: Routes = [
     SendButtonComponent,
     SummaryItemComponent,
     FailedRegistrationComponent,
-    VersionConflictComponent
+    VersionConflictComponent,
+    SimpleSnowObsComponent,
+    KdvIconSelectComponent
   ]
 })
 export class OverviewPageModule {}
