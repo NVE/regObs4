@@ -1,0 +1,47 @@
+.app {
+    width: 500px;
+    height: 100%;
+    border: 1px solid red;
+  }
+  
+  .a {
+    position: relative;
+  }
+  
+  .faretegn {
+    height: 200px;
+    width: 100%;
+    display: flex;
+    overflow-x: scroll;
+  }
+  
+  .selected {
+    width: 20px;
+    height: 20px;
+    background-color: #bada55;
+    position: absolute;
+    top: 5px;
+    right: 15px;
+  }
+  
+  .faretegn > div {
+    flex-basis: fit-content;
+  }
+  
+  .item {
+    height: 200px;
+    width: 200px;
+    margin-right: 8px;
+    background-color: #aaa;
+  }
+  
+  .faretegn::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+  
+  .faretegn::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .5);
+    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+  }

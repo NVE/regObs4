@@ -8,6 +8,8 @@ import { FailedRegistrationComponent } from '../../components/failed-registratio
 import { SaveAsDraftRouteGuard } from '../save-as-draft.guard';
 import { VersionConflictComponent } from '../../components/version-conflict/version-conflict.component';
 import { GoneRegistrationComponent } from '../../components/gone-registration/gone-registration.component';
+import { SimpleSnowObsComponent } from '../../components/snow/simple-snow-obs/simple-snow-obs.component';
+import { KdvIconSelectComponent } from '../../components/kdv-icon-select/kdv-icon-select.component';
 
 const routes: Routes = [
   {
@@ -25,7 +27,9 @@ const routes: Routes = [
     SummaryItemComponent,
     FailedRegistrationComponent,
     VersionConflictComponent,
-    GoneRegistrationComponent
+    GoneRegistrationComponent,
+    SimpleSnowObsComponent,
+    KdvIconSelectComponent
   ]
 })
 export class OverviewPageModule {}
