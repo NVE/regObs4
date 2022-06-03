@@ -1,0 +1,15 @@
+<div class="app" *ngIf="kdvElements$ | async as kdvElements">
+    <p>{{ title }}</p>
+    <div class="faretegn">
+      
+      <div class="a" *ngFor="let element of kdvElements">
+        <div class="item">
+          <ion-label> {{ element.Id }} </ion-label>
+            <!-- TODO: Kun vise elementet hvis vi finner et bilde? -->
+            <svg-icon class="card-icon-item-icon" src="{{ getImageSrc(element) }}"
+          [svgStyle]="{'width.px':70, 'height.px':45  }"></svg-icon>
+        </div>
+        <div class="selected"></div>
+      </div>
+    </div>
+  </div>

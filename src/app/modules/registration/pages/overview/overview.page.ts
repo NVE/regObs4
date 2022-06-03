@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, NgZone } from '@angular/core';
-import { firstValueFrom, map, Observable, takeUntil } from 'rxjs';
+import { map, Observable, takeUntil } from 'rxjs';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
@@ -12,6 +12,14 @@ import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { UserSetting } from 'src/app/core/models/user-settings.model';
 
+/**
+ * Overview page for a registration. If you edit an existing registration you start on this page.
+ * If you create a new registration you end here after you have chosed date/time and location.
+ * Have two modes:
+ * 1) Standard mode: Show an overview of all schemas in the registration.
+ * You can click on a schema go to a separate page for the schema
+ * 2) Simple mode: A simplified schema, available only for snow observations.
+ */
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.page.html',
