@@ -1,15 +1,17 @@
 <div class="app" *ngIf="kdvElements$ | async as kdvElements">
-    <p>{{ title }}</p>
+    <div class="title">{{ title | translate}}</div>
     <div class="faretegn">
       
       <div class="a" *ngFor="let element of kdvElements" (click)="onClick(element)">
-        <div class="item">
-          <ion-label> {{ element.Id }} </ion-label>
+        <div class="item" [ngClass]="isSelected(element) ? 'selected' : 'deselected'">
             <!-- TODO: Kun vise elementet hvis vi finner et bilde? -->
-            <svg-icon class="card-icon-item-icon" src="{{ getImageSrc(element) }}"
-          [svgStyle]="{'width.px':70, 'height.px':45  }"></svg-icon>
+            <svg-icon src="{{ getImageSrc(element) }}"
+          [svgStyle]="{'width.px':70, 'height.px':45, 'transparency': 50  }"></svg-icon>
+          <ion-label class="item-text">{{ element.Id + '-' + element.Name }}</ion-label>
         </div>
-        <div *ngIf="isSelected(element)" class="selected"></div>
-      </div>
+        <!--div *ngIf="isSelected(element)" class="selected"></div-->
+        <svg-icon *ngIf="isSelected(element)" class="checkmark" src="/assets/icon/checked.svg"
+        [svgStyle]="{'width.px':22, 'height.px':22  }"></svg-icon>
+    </div>
     </div>
   </div>
