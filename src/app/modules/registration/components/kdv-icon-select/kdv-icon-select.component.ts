@@ -9,7 +9,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 const DEBUG_TAG = 'KdvIconSelectComponent';
 
 /**
- * Use this to choose a KDV element, for example Snow surface.
+ * Use this to choose a KDV element, for example snow surface.
  * Shows a horizontal scroll with icons for all KDV elements. Click on an icon to select or deselect.
  */
 @Component({
@@ -24,6 +24,7 @@ export class KdvIconSelectComponent {
 
   /**
    * Bind this to the field where you want to save the selection.
+   * It is the ID of the KDV element that will be stored.
    * If multiselect is set, the value field will be handled as an array.
    */
   @Input() value: number|number[];
@@ -58,7 +59,7 @@ export class KdvIconSelectComponent {
    */
   onClick(element: KdvElement): void {
     if (this.multiSelect) {
-      let values = this.value as number[];
+      let values = this.value as number[]; //redefine value as array
       if (this.isSelected(element)) {
         //remove this element
         const index = values.indexOf(element.Id);
@@ -66,12 +67,12 @@ export class KdvIconSelectComponent {
           values.splice(index, 1);
         }
       } else {
-        values = [element.Id, ...values];
+        values = [element.Id, ...values]; //add element to selection
       }
       this.value = values;
     } else { //single select
       if (this.isSelected(element)) {
-        this.value = undefined;
+        this.value = undefined; //deselect if it was selected earlier
       } else {
         this.value = element.Id;
       }
