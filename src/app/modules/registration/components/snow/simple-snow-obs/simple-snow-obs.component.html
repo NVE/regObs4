@@ -6,7 +6,12 @@
     </ion-item>
     
     <ion-item>
-        <app-kdv-icon-select title="TODO: Snøoverflate" kdvKey="Snow_SnowSurfaceKDV"></app-kdv-icon-select>
+        <app-kdv-icon-select 
+        title="TODO: Snøoverflate" 
+        kdvKey="Snow_SnowSurfaceKDV"
+        [(value)]="draft.registration.SnowSurfaceObservation.SnowSurfaceTID"
+        (valueChange)="save()">
+        </app-kdv-icon-select>
     </ion-item>
     <ion-item>
         <app-edit-images
