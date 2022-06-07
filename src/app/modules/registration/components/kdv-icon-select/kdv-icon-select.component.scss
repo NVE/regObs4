@@ -9,19 +9,18 @@
   }
   
   .faretegn {
-    height: 200px;
-    width: 100%;
+    // height: 200px;
+    // width: 100%;
     display: flex;
     overflow-x: scroll;
+    padding: 8px 16px;
+    gap: 4px;
   }
   
-  .selected {
-    width: 20px;
-    height: 20px;
-    background-color: #bada55;
+  .checkmark {
     position: absolute;
-    top: 5px;
-    right: 15px;
+    top: 0px;
+    right: 20px;
   }
   
   .faretegn > div {
@@ -29,10 +28,45 @@
   }
   
   .item {
-    height: 200px;
-    width: 200px;
-    margin-right: 8px;
-    background-color: #aaa;
+    height: 78px;
+    width: 99px;
+    // margin-right: 8px;
+    border: 1px solid red;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: flex-start;
+    padding: 4px;
+    background: #FFFFFF;
+    // opacity: 0.6;
+  }
+
+  .item-text {
+    width: 70px;
+    height: 42px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    color: var(--ion-color-varsom-blue);
+  }
+
+  .selected {
+    opacity: 1;
+  }
+
+  .deselected {
+    opacity: 0.6;
+  }
+
+  .title {
+    width: 80px;
+    height: 16px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: var(--ion-text-color-heading);
   }
   
   .faretegn::-webkit-scrollbar {
